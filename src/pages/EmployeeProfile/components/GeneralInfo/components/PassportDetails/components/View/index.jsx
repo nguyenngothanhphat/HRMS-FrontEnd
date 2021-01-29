@@ -75,7 +75,7 @@ class View extends PureComponent {
           Issued Country
         </Col>
         <Col span={18} className={styles.textValue}>
-          {item.passportIssuedCountry.name ? item.passportIssuedCountry.name : ''}
+          {item.passportIssuedCountry ? item.passportIssuedCountry.name : ''}
         </Col>
         <Col span={6} className={styles.textLabel}>
           Issued On

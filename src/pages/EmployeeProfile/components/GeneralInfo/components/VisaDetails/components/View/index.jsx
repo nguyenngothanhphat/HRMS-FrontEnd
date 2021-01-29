@@ -54,7 +54,7 @@ class View extends PureComponent {
         visaNumber = '',
         document = {},
         document: { attachment: { url = '', name = '' } = {} } = {},
-        visaIssuedCountry: { id: id1 = '', name: name1 = '', flag = '' } = {},
+        visaIssuedCountry: {  name: name1 = '', flag = '' } = {},
         visaType = [],
         visaEntryType = '',
         visaIssuedOn = '',
@@ -100,7 +100,7 @@ class View extends PureComponent {
             Country
           </Col>
           <Col span={18} className={styles.textValue}>
-            {id1}
+            {name1}
           </Col>
           <Col span={6} className={styles.textLabel}>
             Entry Type

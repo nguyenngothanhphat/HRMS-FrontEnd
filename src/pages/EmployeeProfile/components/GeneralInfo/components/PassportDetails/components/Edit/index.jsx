@@ -1,13 +1,10 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Row, Input, Form, DatePicker, Select, Button, Spin, Col } from 'antd';
-import { connect, formatMessage } from 'umi';
+import { Row,  Form,   Button,  Col } from 'antd';
+import { connect } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import ModalReviewImage from '@/components/ModalReviewImage';
 import moment from 'moment';
-import cancelIcon from '@/assets/cancel-symbols-copy.svg';
-import removeIcon from './assets/removeIcon.svg';
-import UploadImage from '../UploadImage';
 import PassportItem from './PassportItem';
 import styles from './index.less';
 
@@ -58,6 +55,7 @@ class Edit extends Component {
       linkImage: '',
       checkValidate: [{}],
     };
+    this.formRef = React.createRef();
   }
 
   validateDate = (getPassportData, index) => {
@@ -81,6 +79,8 @@ class Edit extends Component {
       this.setState({ isDate: true });
     }
   };
+
+
 
   handleChange = (index, name, value) => {
     const { dispatch, passportData, passportDataOrigin } = this.props;
@@ -156,7 +156,6 @@ class Edit extends Component {
   };
 
   processDataChangesPassPort = (item) => {
-    console.log('item', item);
     const {
       urlFile,
       document,
@@ -222,7 +221,6 @@ class Edit extends Component {
     const dataTempKeptPassport = this.processDataKeptPassPort(item) || {};
 
     this.handleAddPassPortAllField(item, index);
-    console.log('payloadUpdatePassPort', payloadUpdatePassPort);
     dispatch({
       type: 'employeeProfile/updatePassPort',
       payload: payloadUpdatePassPort,
@@ -231,21 +229,36 @@ class Edit extends Component {
     });
   };
 
-  handleSave = async () => {
+  handleSave = async ({formPassPort = [] } ) => {
     const { passportData = [] } = this.props;
-
-    passportData.map((item, index) => {
-      let idPassPort = '';
-      const { _id } = item;
+    formPassPort.map((item,index)=>{
+      let idPassPort='';
+      const newData={
+        ...item,
+        ...passportData[index],
+      }
+      const { _id } = passportData[index];
+      console.log(newData);
       if (_id) {
         idPassPort = _id;
       }
-
       if (idPassPort) {
-        return this.handleUpdatePassportGroup(item, index);
+        return this.handleUpdatePassportGroup(newData, index);
       }
-      return this.handleAddPassPortAllField(item, index);
-    });
+      return this.handleAddPassPortAllField(newData, index);
+    })
+    // passportData.map((item, index) => {
+    //   let idPassPort = '';
+    //   const { _id } = item;
+    //   if (_id) {
+    //     idPassPort = _id;
+    //   }
+
+    //   if (idPassPort) {
+    //     return this.handleUpdatePassportGroup(item, index);
+    //   }
+    //   return this.handleAddPassPortAllField(item, index);
+    // });
   };
 
   handleCanCelIcon = (index) => {
@@ -265,12 +278,6 @@ class Edit extends Component {
       type: 'employeeProfile/save',
       payload: { isModified },
     });
-  };
-
-  handleNameDataUpload = (url) => {
-    const split1URL = url.split('/');
-    const nameData1URL = split1URL[split1URL.length - 1];
-    return nameData1URL;
   };
 
   handleGetSetSizeImage = (index, isLt5M) => {
@@ -359,51 +366,69 @@ class Edit extends Component {
       },
     };
 
-    const renderForm = passportData.length > 0 ? passportData : dummyPassPorts;
+    const newPassportData =passportData.map(item=>{   
+        const {passportIssuedOn,passportValidTill,passportIssuedCountry}=item;
+        const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
+        const formatDatePassportIssueOn = passportIssuedOn && moment(passportIssuedOn);
+    
+         const newItem={
+            ...item,
+            passportIssuedCountry:passportIssuedCountry?passportIssuedCountry._id:'',
+            passportIssuedOn:formatDatePassportIssueOn,
+            passportValidTill:formatDatePassportValidTill,
+          }
+        return newItem
+    })
+    const renderForm = passportData.length > 0 ? newPassportData : dummyPassPorts;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form
           className={styles.Form}
+          initialValues={{ formPassPort: renderForm }}
           // eslint-disable-next-line react/jsx-props-no-spreading
           {...formItemLayout}
           onFinish={this.handleSave}
         >
-
-          <Form.List name="users">
+          <Form.List name="formPassPort">
             {(fields, { add, remove }) => (
               <>
-                {fields.map(field => (
-                  <Space key={field.key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
-                    <Form.Item
-                      {...field}
-                      name={[field.name, 'first']}
-                      fieldKey={[field.fieldKey, 'first']}
-                      rules={[{ required: true, message: 'Missing first name' }]}
-                    >
-                      <Input placeholder="First Name" />
-                    </Form.Item>
-                    <Form.Item
-                      {...field}
-                      name={[field.name, 'last']}
-                      fieldKey={[field.fieldKey, 'last']}
-                      rules={[{ required: true, message: 'Missing last name' }]}
-                    >
-                      <Input placeholder="Last Name" />
-                    </Form.Item>
-                    <MinusCircleOutlined onClick={() => remove(field.name)} />
-                  </Space>
-            ))}
-                <Form.Item>
-                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-                    Add field
-                  </Button>
-                </Form.Item>
+                {fields.map((field,index) =>                 
+                  (
+                    <PassportItem
+                      getHandleChange={this.handleChange}
+                      field={field}
+                      key={field.name}
+                      onRemove={() => remove(field.name)}
+                      formRef={this.formRef}
+                      getCancelImage={this.handleCanCelIcon}
+                      getShowModal={this.handleOpenModalReview}
+                      index={index}
+                      passportData={passportData}
+                      getSizeImage={this.handleGetSetSizeImage}
+                      getDataImage={this.handleChange}
+                      isLt5M={isLt5M}
+                      isDate={isDate}
+                      formatCountryList={formatCountryList}
+                    />
+                ))}
+ 
+                
+     
+                <Col span={9} offset={1} className={styles.addMoreButton}>
+                  <div 
+                    // onClick={this.handleAddBtn}
+                    onClick={() => add()}
+                  >
+                    <PlusOutlined className={styles.addMoreButtonIcon} />
+                    Add more
+                  </div>
+                </Col>
               </>
-        )}
+             )}
           </Form.List>
 
 
-          {renderForm.map((item, index) => {
+          {/* {renderForm.map((item, index) => {
             const {
               passportNumber,
               passportIssuedCountry,
@@ -432,7 +457,7 @@ class Edit extends Component {
               <PlusOutlined className={styles.addMoreButtonIcon} />
               Add more
             </div>
-          </Col>
+          </Col> */}
 
           <div className={styles.spaceFooter}>
             <div className={styles.cancelFooter} onClick={handleCancel}>
