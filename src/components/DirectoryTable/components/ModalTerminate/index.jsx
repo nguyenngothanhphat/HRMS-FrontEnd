@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Modal, Input, Form, Button, DatePicker } from 'antd';
-// import moment from 'moment';
 
 import styles from './index.less';
 
@@ -18,6 +17,7 @@ const ModalTerminate = (props) => {
     // onChange = () => {},
     handleSubmit = () => {},
     handleCandelModal = () => {},
+    loading,
   } = props;
 
   const handleFinish = (values) => {
@@ -68,7 +68,7 @@ const ModalTerminate = (props) => {
           </Form.Item>
           <Form.Item
             label="Working Day"
-            name="workingDay"
+            name="workingDate"
             className={styles.datePickerForm}
             rules={[
               {
@@ -86,7 +86,11 @@ const ModalTerminate = (props) => {
             >
               Cancel
             </Button>
-            <Button className={`${styles.btnGroup} ${styles.btnSubmit}`} htmlType="submit">
+            <Button
+              className={`${styles.btnGroup} ${styles.btnSubmit}`}
+              htmlType="submit"
+              loading={loading}
+            >
               Submit
             </Button>
           </Form.Item>

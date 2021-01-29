@@ -476,7 +476,6 @@ const offboarding = {
       }
     },
     *terminateReason({ payload }, { call, put }) {
-      console.log(payload)
       try {
         const response = yield call(terminateReason, payload);
         const { statusCode, message, data } = response;
