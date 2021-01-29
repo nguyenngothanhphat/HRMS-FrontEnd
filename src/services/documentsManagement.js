@@ -111,3 +111,17 @@ export const updateAdhaarCard = async (payload) => {
     data: payload,
   });
 };
+
+export const getListDocumentsAccountSetup = (payload) => {
+  return request('/api/documentcompany/list-by-company', {
+    method: 'POST',
+    data: payload,
+  });
+};
+
+export const addDocumentAccountSetup = (payload) => {
+  return request('/api/documentcompany/add', {
+    method: 'POST',
+    data: payload,
+  });
+};

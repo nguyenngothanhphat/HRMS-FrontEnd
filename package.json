@@ -53,7 +53,7 @@
     "@dabeng/react-orgchart": "^1.0.0",
     "@tinymce/tinymce-react": "^3.9.0",
     "antd": "^4.5.3",
-    "axios": "^0.20.0",
+    "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
     "classnames": "^2.2.6",
     "csvtojson": "^2.0.10",

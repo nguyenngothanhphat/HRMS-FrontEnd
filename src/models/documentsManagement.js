@@ -15,6 +15,8 @@ import {
   getAdhaarCard,
   addAdhaarCard,
   updateAdhaarCard,
+  getListDocumentsAccountSetup,
+  addDocumentAccountSetup,
 } from '../services/documentsManagement';
 
 const documentsManagement = {
@@ -30,6 +32,7 @@ const documentsManagement = {
     adhaarCardDetail: {},
     generalInfoId: '',
     companyList: [],
+    listDocumentAccountSetup: [],
   },
   effects: {
     *fetchListDocuments(_, { call, put }) {
@@ -304,6 +307,34 @@ const documentsManagement = {
         dialog(errors);
         return '';
       }
+    },
+    *fetchListDocumentsAccountSetup({ payload }, { call, put }) {
+      try {
+        const response = yield call(getListDocumentsAccountSetup, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listDocumentAccountSetup: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addDocumentAccountSetup({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(addDocumentAccountSetup, payload);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchListDocumentsAccountSetup',
+          payload: { company: payload?.company },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
 

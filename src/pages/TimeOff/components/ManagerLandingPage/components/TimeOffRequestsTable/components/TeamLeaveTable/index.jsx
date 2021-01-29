@@ -1,17 +1,20 @@
 import React, { PureComponent } from 'react';
-import { Table, Tag, Tooltip } from 'antd';
+import { Table, Tag, Tooltip, Spin } from 'antd';
 import { history, connect } from 'umi';
 import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
 import moment from 'moment';
 // import MultipleCheckTablePopup from '@/components/MultipleCheckTablePopup';
+import { LoadingOutlined } from '@ant-design/icons';
+
 import RejectCommentModal from '../RejectCommentModal';
+
 import styles from './index.less';
 
 @connect(({ loading }) => ({
   loading1: loading.effects['timeOff/fetchTeamLeaveRequests'],
-  loading2: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
+  // loading2: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
   loading3: loading.effects['timeOff/approveMultipleTimeoffRequest'],
   loading4: loading.effects['timeOff/rejectMultipleTimeoffRequest'],
 }))
@@ -383,7 +386,7 @@ class TeamLeaveTable extends PureComponent {
   };
 
   render() {
-    const { data = [], loading1, loading2, loading4, selectedTab = '' } = this.props;
+    const { data = [], loading1, loading4, selectedTab = '' } = this.props;
     const {
       selectedRowKeys,
       pageSelected,
@@ -392,6 +395,13 @@ class TeamLeaveTable extends PureComponent {
       rejectMultiple,
     } = this.state;
     const rowSize = 10;
+
+    const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+
+    const tableLoading = {
+      spinning: loading1,
+      indicator: <Spin indicator={antIcon} />,
+    };
 
     const parsedData = this.processData(data);
 
@@ -433,7 +443,7 @@ class TeamLeaveTable extends PureComponent {
       <div className={styles.TeamLeaveTable}>
         <Table
           size="middle"
-          loading={loading1 || loading2}
+          loading={tableLoading}
           rowSelection={rowSelection}
           pagination={{ ...pagination, total: parsedData.length }}
           columns={tableByRole}

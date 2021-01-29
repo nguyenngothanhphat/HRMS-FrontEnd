@@ -4,6 +4,24 @@
 }
 .salaryStructureTemplate {
   :global {
+    .ant-btn.ant-btn-primary {
+      display: flex;
+      align-items: center;
+    }
+
+    .ant-table-placeholder {
+      // display: none;
+      td.ant-table-cell {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+
+      .ant-empty-description {
+        // margin: 0 !important;
+        width: unset !important;
+      }
+    }
+
     .ant-input {
       height: 27px;
       background: #ffffff;

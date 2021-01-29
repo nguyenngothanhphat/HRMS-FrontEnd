@@ -218,7 +218,7 @@ class RequestInformation extends PureComponent {
     const { projectId = '', description = '', personCC = [] } = values;
     const { action: pageAction = '' } = this.props; // edit or new compoff request
     const { dateLists, buttonState, viewingCompoffRequestId, totalHours } = this.state;
-    const { timeOff: { compoffApprovalFlow = {} } = {} } = this.props;
+    // const { timeOff: { compoffApprovalFlow = {} } = {} } = this.props;
 
     const action = buttonState === 1 ? 'saveDraft' : 'submit';
 
@@ -227,7 +227,7 @@ class RequestInformation extends PureComponent {
       extraTime: dateLists,
       description,
       action,
-      approvalFlow: compoffApprovalFlow,
+      // approvalFlow: compoffApprovalFlow, // no need more
       cc: personCC,
       onDate: moment(),
       totalHours,
@@ -311,12 +311,6 @@ class RequestInformation extends PureComponent {
         extraTimeLists: [],
       });
     }
-  };
-
-  // ON SAVE DRAFT CLICKED
-  saveDraft = () => {
-    // eslint-disable-next-line no-alert
-    alert('Save Draft');
   };
 
   // GET LIST OF DAYS FROM DAY A TO DAY B

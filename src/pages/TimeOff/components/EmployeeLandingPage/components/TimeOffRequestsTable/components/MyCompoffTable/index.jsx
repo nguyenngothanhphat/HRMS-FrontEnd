@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Table, Avatar, Tooltip } from 'antd';
+import { Table, Avatar, Tooltip, Spin } from 'antd';
 import { history, connect } from 'umi';
 import moment from 'moment';
+import { LoadingOutlined } from '@ant-design/icons';
+
 import styles from './index.less';
 
 @connect(({ timeOff, loading, user }) => ({
@@ -170,6 +172,13 @@ class MyCompoffTable extends PureComponent {
     const { selectedRowKeys, pageSelected } = this.state;
     const rowSize = 10;
 
+    const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
+
+    const tableLoading = {
+      spinning: loadingFetchMyCompoffRequests,
+      indicator: <Spin indicator={antIcon} />,
+    };
+
     const parsedData = this.processData(data);
     const pagination = {
       position: ['bottomLeft'],
@@ -204,7 +213,7 @@ class MyCompoffTable extends PureComponent {
         <Table
           size="middle"
           rowSelection={rowSelection}
-          loading={loadingFetchMyCompoffRequests}
+          loading={tableLoading}
           pagination={{ ...pagination, total: parsedData.length }}
           columns={this.columns}
           dataSource={parsedData}

@@ -89,7 +89,7 @@ class ChangePassword extends Component {
                   </div>
                 ))}
               </div>
-              <Row className={styles.passwordContainer} gutter={[16, 50]}>
+              <Row className={styles.passwordContainer} gutter={[16, 16]}>
                 <Col xl={12} lg={18}>
                   <Form.Item
                     label={formatMessage({ id: 'page.changePassword.currentPassword' })}
@@ -120,7 +120,7 @@ class ChangePassword extends Component {
                 </Col>
                 <Col />
               </Row>
-              <Row className={styles.passwordContainer} gutter={[16, 50]}>
+              <Row className={styles.passwordContainer} gutter={[16, 16]}>
                 <Col xl={12} lg={18}>
                   <Form.Item
                     label={formatMessage({ id: 'page.changePassword.newPassword' })}

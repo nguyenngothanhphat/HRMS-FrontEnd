@@ -1,12 +1,12 @@
 .root {
   .titlePage {
     width: 100%;
-    background-color: #fff;
     padding: 15px 20px;
+    color: #2c6df9;
     font-weight: 700;
     font-size: 16px;
     line-height: 19px;
-    color: #2c6df9;
+    background-color: #fff;
   }
   :global {
     .ant-tabs > .ant-tabs-nav,
@@ -25,8 +25,35 @@
     .ant-tabs-tab-btn {
       color: #161c29;
       font-weight: 500;
-      opacity: 0.3;
       font-size: 14px;
+      opacity: 0.3;
     }
+  }
+}
+
+.btn {
+  margin-right: 17px;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 16px;
+  text-align: center;
+  background: #ffa100;
+  border: none;
+  border-radius: 25px;
+  &:disabled {
+    opacity: 0.5;
+  }
+  &:hover,
+  &:active {
+    margin-right: 17px;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 16px;
+    text-align: center;
+    background: #ffa100;
+    border: none;
+    border-radius: 25px;
   }
 }

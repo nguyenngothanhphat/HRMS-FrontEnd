@@ -11,11 +11,11 @@ import { Form, Input, Row, Col, Button, Select, Radio, Checkbox, Tag, Spin } fro
 import { CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Quill } from 'react-quill';
 import QuillMention from 'quill-mention';
+import EditorQuill from '@/components/EditorQuill';
 
 import removeIcon from './assets/removeIcon.svg';
 import 'react-quill/dist/quill.snow.css';
 import styles from './index.less';
-import EditorQuill from './components/EditorQuill';
 
 Quill.register('modules/mentions', QuillMention);
 
@@ -581,13 +581,13 @@ class EmailReminderForm extends PureComponent {
     const triggerEvent = triggerEventList.filter((item) => item.value === triggerEventValue)[0];
     newValue.triggerEvent = triggerEvent;
 
-    const message = messages.replace(/<[^>]+>/g, '');
+    // const message = messages.replace(/<[^>]+>/g, '');
 
     if (appliesToData === 'any') {
-      dataSubmit = { ...newValue, message, sendToExistingWorker };
+      dataSubmit = { ...newValue, message: messages, sendToExistingWorker };
     }
     if (appliesToData === 'condition') {
-      dataSubmit = { ...newValue, conditions, message, sendToExistingWorker };
+      dataSubmit = { ...newValue, conditions, message: messages, sendToExistingWorker };
     }
 
     dispatch({

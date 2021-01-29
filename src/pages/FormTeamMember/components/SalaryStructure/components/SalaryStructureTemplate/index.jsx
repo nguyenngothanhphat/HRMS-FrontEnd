@@ -105,6 +105,7 @@ class SalaryStructureTemplate extends PureComponent {
     super(props);
 
     this.state = {
+      salaryTitle: '',
       error: '',
       errorInfo: '',
       isEditted: false,
@@ -121,13 +122,6 @@ class SalaryStructureTemplate extends PureComponent {
     };
   }
 
-  componentDidCatch(error, errorInfo) {
-    // Catch errors in any components below and re-render with error message
-    console.log(error);
-    console.log(errorInfo);
-    // You can also log error messages to an error reporting service here
-  }
-
   componentWillUnmount = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -139,19 +133,41 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   onFocusSelect = () => {
-    const { dispatch, _id, processStatus } = this.props;
-    // const tempTableData = [...settings];
-
-    if (processStatus === 'DRAFT') {
-      dispatch({
-        type: 'candidateInfo/fetchTitleListByCompany',
-        payload: { company: _id },
-      });
-    }
+    // const { dispatch, _id, processStatus } = this.props;
+    // // const tempTableData = [...settings];
+    // if (processStatus === 'DRAFT') {
+    //   dispatch({
+    //     type: 'candidateInfo/fetchTitleListByCompany',
+    //     payload: { company: _id },
+    //   });
+    // }
   };
 
+  componentDidUpdate(prevProps) {
+    const { listTitle = [], salaryTitle: salaryTitleId } = this.props;
+    const { salaryTitle = '' } = this.state;
+    console.log('DID UPDATE');
+    console.log('id', salaryTitleId === null);
+    if (!salaryTitleId) {
+      return;
+    }
+    const titleName = listTitle.find((item) => item._id === salaryTitleId);
+    if (titleName && !salaryTitle) {
+      this.setState({
+        salaryTitle: titleName.name,
+      });
+    }
+  }
+
+  componentDidCatch(error, errorInfo) {
+    // Catch errors in any components below and re-render with error message
+    console.log(error);
+    console.log(errorInfo);
+    // You can also log error messages to an error reporting service here
+  }
+
   componentDidMount = () => {
-    const { dispatch, settings } = this.props;
+    const { dispatch, settings, listTitle = [] } = this.props;
     const tempTableData = [...settings];
     const isFilled = tempTableData.filter((item) => item.value === '');
 
@@ -160,7 +176,24 @@ class SalaryStructureTemplate extends PureComponent {
     //     type: 'candidateInfo/fetchTitleListByCompany',
     //     payload: { company: _id },
     //   });
-    // }
+    //
+
+    // dispatch({
+    //   type: 'candidateInfo/saveTemp',
+    //   payload: {
+    //     salaryTitle: '',
+    //   },
+    // });
+
+    const { _id, processStatus } = this.props;
+    // const tempTableData = [...settings];
+
+    if (processStatus === 'DRAFT') {
+      dispatch({
+        type: 'candidateInfo/fetchTitleListByCompany',
+        payload: { company: _id },
+      });
+    }
 
     if (isFilled.length === 0 && tempTableData.length > 0) {
       dispatch({
@@ -357,6 +390,14 @@ class SalaryStructureTemplate extends PureComponent {
     //     },
     //   },
     // });
+    console.log('id', this.props.salaryTitleId === null);
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        salaryTitle: value,
+      },
+    });
+
     dispatch({
       type: 'candidateInfo/fetchTableData',
       payload: { title: value },
@@ -535,7 +576,6 @@ class SalaryStructureTemplate extends PureComponent {
     ) {
       return (
         <Form.Item className={styles.buttons}>
-          {' '}
           {isEditted === true ? (
             <Button type="primary" onClick={this.onClickEdit}>
               <img src={doneIcon} alt="icon" />
@@ -613,23 +653,22 @@ class SalaryStructureTemplate extends PureComponent {
 
   render() {
     const { Option } = Select;
-    const { settings = [], title, loadingTable } = this.props;
+    const { settings = [], loadingTable, salaryTitle: salaryTitleId } = this.props;
     const { processStatus, listTitle = [] } = this.props;
-    const idTitle = title?._id;
-    const titleName = listTitle.filter((item) => {
-      if (item._id === idTitle) {
-        return item.name;
-      }
-      return null;
-    });
+    // const idTitle = title?._id;
+    const { salaryTitle = '' } = this.state;
+
     // const defaultValue = listTitle.length > 0 ? listTitle[0].name : [];
+    console.log('render ', salaryTitle);
     return (
       <div className={styles.salaryStructureTemplate}>
-        <Form onFinish={this.onFinish}>
-          {' '}
-          <div className={styles.salaryStructureTemplate_select}>
-            <Form.Item label="Select a salary structure template" name="salaryTemplate">
-              {/* {listTitle.length > 0 && (
+        {/* {(salaryTitle !== '' || salaryTitle === null) && ( */}
+        {(salaryTitle !== '' || salaryTitleId === null) && (
+          <Form onFinish={this.onFinish}>
+            {' '}
+            <div className={styles.salaryStructureTemplate_select}>
+              <Form.Item label="Select a salary structure template" name="salaryTemplate">
+                {/* {listTitle.length > 0 && (
                 <Select
                   onChange={this.handleChangeSelect}
                   defaultValue={listTitle[0].name}
@@ -645,40 +684,41 @@ class SalaryStructureTemplate extends PureComponent {
                   })}
                 </Select>
               )} */}
-              <Select
-                defaultValue={titleName}
-                onChange={this.handleChangeSelect}
-                onFocus={this.onFocusSelect}
-                placeholder="Please select a choice!"
-                size="large"
-                style={{ width: 280 }}
-                disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
-              >
-                {listTitle.map((template) => {
-                  return (
-                    <Option key={template._id} value={template._id}>
-                      {template.name}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-          </div>
-          {this._renderButtons()}
-          <div className={styles.salaryStructureTemplate_table}>
-            <Table
-              loading={loadingTable}
-              dataSource={settings}
-              columns={this._renderColumns()}
-              // size="large"
-              pagination={false}
-            />
-          </div>
-          {this._renderFooter()}
-          {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
-            ? this._renderBottomBar()
-            : null}
-        </Form>
+                <Select
+                  defaultValue={salaryTitle}
+                  onChange={this.handleChangeSelect}
+                  onFocus={this.onFocusSelect}
+                  placeholder="Please select a choice!"
+                  size="large"
+                  style={{ width: 280 }}
+                  disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
+                >
+                  {listTitle.map((template) => {
+                    return (
+                      <Option key={template._id} value={template._id}>
+                        {template.name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </div>
+            {this._renderButtons()}
+            <div className={styles.salaryStructureTemplate_table}>
+              <Table
+                loading={loadingTable}
+                dataSource={settings}
+                columns={this._renderColumns()}
+                // size="large"
+                pagination={false}
+              />
+            </div>
+            {this._renderFooter()}
+            {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
+              ? this._renderBottomBar()
+              : null}
+          </Form>
+        )}
       </div>
     );
   }

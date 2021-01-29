@@ -172,29 +172,29 @@ const SignUp2 = (props) => {
 
       <div className={styles.btnContainer}>
         <Button>
-          <Link to="http://gmail.com/">
-            <div className={styles.btn}>
-              <img src={gmail} alt="gmail icon" />
-              <span>
-                {formatMessage({
-                  id: 'page.signUp.openGmail',
-                })}
-              </span>
-            </div>
-          </Link>
+          {/* <Link to="http://gmail.com/"> */}
+          <div className={styles.btn}>
+            <img src={gmail} alt="gmail icon" />
+            <span>
+              {formatMessage({
+                id: 'page.signUp.openGmail',
+              })}
+            </span>
+          </div>
+          {/* </Link> */}
         </Button>
 
         <Button>
-          <Link to="https://outlook.office.com/">
-            <div className={styles.btn}>
-              <img src={outlook} alt="outlook icon" />
-              <span>
-                {formatMessage({
-                  id: 'page.signUp.openOutlook',
-                })}
-              </span>
-            </div>
-          </Link>
+          {/* <Link to="https://outlook.office.com/"> */}
+          <div className={styles.btn}>
+            <img src={outlook} alt="outlook icon" />
+            <span>
+              {formatMessage({
+                id: 'page.signUp.openOutlook',
+              })}
+            </span>
+          </div>
+          {/* </Link> */}
         </Button>
       </div>
     </div>

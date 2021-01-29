@@ -79,31 +79,22 @@ const routes = [
       {
         path: '/account-setup',
         component: '../layouts/AccountSetupLayout',
-        authority: ['hr-manager'],
+        authority: ['admin-csa'],
         routes: [
           {
             path: '/account-setup',
             component: './AccountSetup',
             name: 'Account Setup',
-            authority: ['hr-manager'],
+            authority: ['admin-csa'],
           },
           {
-            path: '/account-setup/get-started',
-            component: './GetStarted',
-            name: 'Getting Started',
-            authority: ['hr-manager'],
-          },
-          {
-            path: '/account-setup/get-started/company-profile',
+            path: '/account-setup/company-profile',
             component: './CompanyProfile',
             name: 'Company Profile',
-            authority: ['hr-manager'],
+            authority: ['admin-csa'],
           },
           {
-            path: '/account-setup/get-started/setup-employee-directory',
-            component: './SetupEmployeeDirectory',
-            name: 'Setup Employee Directory',
-            authority: ['hr-manager'],
+            component: './404',
           },
         ],
       },

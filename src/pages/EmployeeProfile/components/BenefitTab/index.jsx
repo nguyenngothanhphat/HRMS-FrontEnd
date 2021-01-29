@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Collapse } from 'antd';
-import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
+// import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { formatMessage } from 'umi';
+import PlusIcon from '@/assets/plusIcon1.svg';
+import MinusIcon from '@/assets/minusIcon1.svg';
 import styles from './styles.less';
 import GroupInfoType2 from '../../../../components/GroupInfoType2';
 import DependentTabs from './components/DependentTabs';
@@ -89,11 +91,12 @@ export default class BenefitTab extends PureComponent {
               bordered={false}
               expandIcon={({ isActive }) =>
                 isActive ? (
-                  <MinusOutlined style={{ color: '#2c6df9', fontSize: '30px' }} />
+                  <img src={MinusIcon} alt="collapse" />
                 ) : (
-                  <PlusOutlined style={{ color: '#2c6df9', fontSize: '30px' }} />
-                )
-              }
+                  // <MinusOutlined style={{ color: '#2c6df9', fontSize: '30px' }} />
+                  <img src={PlusIcon} alt="expand" />
+                  // <PlusOutlined style={{ color: '#2c6df9', fontSize: '30px' }} />
+                )}
               className="site-collapse-custom-collapse"
               expandIconPosition="right"
             >

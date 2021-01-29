@@ -18,6 +18,18 @@ class Screen1 extends Component {
     this.formRefLegal = React.createRef();
   }
 
+  componentDidMount() {
+    this.removeAutocomplete();
+  }
+
+  removeAutocomplete = () => {
+    const searchInputs = document.querySelectorAll(`input`);
+    const forms = document.querySelectorAll(`form`);
+
+    forms.forEach((element) => element.setAttribute('autocomplete', 'asdasdasdsa'));
+    searchInputs.forEach((element) => element.setAttribute('autocomplete', 'asdsadsa'));
+  };
+
   onChangeCountryHeadquarter = (value) => {
     const { dispatch } = this.props;
     this.formRef.current.setFieldsValue({
@@ -208,8 +220,7 @@ class Screen1 extends Component {
                   showSearch
                   onChange={this.onChangeCountryHeadquarter}
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   {listCountry.map((item) => (
                     <Option key={item._id}>{item.name}</Option>
@@ -225,8 +236,7 @@ class Screen1 extends Component {
                       showSearch
                       disabled={!countryHead}
                       filterOption={(input, option) =>
-                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                     >
                       {listStateHead.map((item) => (
                         <Option key={item}>{item}</Option>
@@ -280,8 +290,7 @@ class Screen1 extends Component {
                   onChange={this.onChangeSelectLegal}
                   disabled={checkLegalSameHeadQuarter}
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
                   {listCountry.map((item) => (
                     <Option key={item._id}>{item.name}</Option>
@@ -297,8 +306,7 @@ class Screen1 extends Component {
                       showSearch
                       disabled={checkLegalSameHeadQuarter || !country}
                       filterOption={(input, option) =>
-                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                     >
                       {listStateLegal.map((item) => (
                         <Option key={item}>{item}</Option>

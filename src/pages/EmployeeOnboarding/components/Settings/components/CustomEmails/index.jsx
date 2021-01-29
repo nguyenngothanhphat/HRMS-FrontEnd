@@ -14,9 +14,9 @@ class CustomEmails extends PureComponent {
 
         <CustomEmailsTableField />
 
-        <Link to="/employee-onboarding/create-email-reminder">
+        {/* <Link to="/employee-onboarding/create-email-reminder">
           <img className={styles.addButton} src={addButton} alt="add button" />
-        </Link>
+        </Link> */}
       </div>
     );
   }

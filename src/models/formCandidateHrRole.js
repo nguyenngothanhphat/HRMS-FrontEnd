@@ -208,6 +208,7 @@ const candidateInfo = {
       ],
 
       cancelCandidate: false,
+      salaryTitle: null,
     },
     data: {
       fullName: null,
@@ -672,7 +673,8 @@ const candidateInfo = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
-          payload: { ...data, listTitle: data },
+          // payload: { ...data, listTitle: data },
+          payload: { listTitle: data },
         });
       } catch (error) {
         dialog(error);
@@ -1023,6 +1025,17 @@ const candidateInfo = {
         history.push({
           pathname: `/employee-onboarding/review/${rookieId}`,
           state: { isAddNew: true },
+        });
+        yield null;
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *redirectToOnboardList() {
+      try {
+        history.push({
+          pathname: `/employee-onboarding`,
         });
         yield null;
       } catch (error) {

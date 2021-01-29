@@ -1,8 +1,22 @@
 import { Col, Row, Button } from 'antd';
 import React, { Component } from 'react';
+import { connect } from 'umi';
 import ModalUploadDocument from './components/ModalUploadDocument';
+import TableDocuments from './components/TableDocuments';
 import s from './index.less';
 
+@connect(
+  ({
+    loading,
+    user: { currentUser = {} } = {},
+    documentsManagement: { listDocumentAccountSetup = [] } = {},
+  }) => ({
+    currentUser,
+    loading: loading.effects['documentsManagement/fetchListDocumentsAccountSetup'],
+    loadingSubmit: loading.effects['documentsManagement/addDocumentAccountSetup'],
+    listDocumentAccountSetup,
+  }),
+)
 class CompanyDocuments extends Component {
   constructor(props) {
     super(props);
@@ -12,9 +26,27 @@ class CompanyDocuments extends Component {
     };
   }
 
+  componentDidMount() {
+    const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
+    dispatch({
+      type: 'documentsManagement/fetchListDocumentsAccountSetup',
+      payload: {
+        company: _id,
+      },
+    });
+  }
+
   handleSubmitUpload = (values) => {
-    console.log('values', values);
-    this.hideModalUpload();
+    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
+    const payload = { ...values, company: id };
+    dispatch({
+      type: 'documentsManagement/addDocumentAccountSetup',
+      payload,
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        this.hideModalUpload();
+      }
+    });
   };
 
   showModalUpload = () => {
@@ -33,10 +65,11 @@ class CompanyDocuments extends Component {
 
   render() {
     const { visible = false, keyModal = '' } = this.state;
+    const { listDocumentAccountSetup = [], loading, loadingSubmit } = this.props;
     return (
       <>
         <Row className={s.root} gutter={[24, 0]}>
-          <Col span={7}>
+          <Col span={6}>
             <div className={`${s.container} ${s.viewLeft}`}>
               <p>All administrative and policy documents are store here.</p>
               <p>
@@ -48,8 +81,10 @@ class CompanyDocuments extends Component {
               </Button>
             </div>
           </Col>
-          <Col span={17}>
-            <div className={`${s.container} ${s.viewRight}`}>View Right</div>
+          <Col span={18}>
+            <div className={`${s.container} ${s.viewRight}`}>
+              <TableDocuments loading={loading} data={listDocumentAccountSetup} />
+            </div>
           </Col>
         </Row>
         <ModalUploadDocument
@@ -57,6 +92,7 @@ class CompanyDocuments extends Component {
           visible={visible}
           handleCancel={this.hideModalUpload}
           handleSubmit={this.handleSubmitUpload}
+          loadingSubmit={loadingSubmit}
         />
       </>
     );
