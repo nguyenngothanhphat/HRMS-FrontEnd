@@ -78,8 +78,16 @@ const routes = [
       },
       {
         path: '/select-location',
-        component: './LocationSelection',
+        component: '../layouts/AccountSetupLayout',
         authority: ['admin-csa'],
+        routes: [
+          {
+            path: '/select-location',
+            component: './LocationSelection',
+            name: 'Location Selection',
+            authority: ['admin-csa'],
+          },
+        ],
       },
       {
         path: '/account-setup',
