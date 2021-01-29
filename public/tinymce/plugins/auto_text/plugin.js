@@ -79,7 +79,7 @@
      * @return {string}
      */
     function cleanVariable(value) {
-      return value.replace(/[^a-zA-Z0-9_ ]/gm, '');
+      return value.replace(/[^a-zA-Z0-9_ @]/gm, '');
       //   return value;
     }
 
