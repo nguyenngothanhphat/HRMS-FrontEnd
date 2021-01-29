@@ -83,6 +83,7 @@ const ModalTerminate = (props) => {
             <Button
               className={`${styles.btnGroup} ${styles.btnCancel}`}
               onClick={handleCandelModal}
+              disabled={loading}
             >
               Cancel
             </Button>
