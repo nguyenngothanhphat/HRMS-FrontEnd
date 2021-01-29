@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Input, Form, Button, DatePicker } from 'antd';
+import moment from 'moment';
 
 import styles from './index.less';
 
@@ -77,7 +78,14 @@ const ModalTerminate = (props) => {
               },
             ]}
           >
-            <DatePicker className={styles.datePicker} format={dateFormat} onChange={changeDate} />
+            <DatePicker
+              className={styles.datePicker}
+              format={dateFormat}
+              onChange={changeDate}
+              disabledDate={(current) => {
+                return current && current < moment().subtract(1, 'day').endOf('day');
+              }}
+            />
           </Form.Item>
           <Form.Item className={styles.flexContent}>
             <Button
