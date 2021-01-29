@@ -181,3 +181,10 @@ export async function removeOffBoardingPackage(payload) {
     data: payload,
   });
 }
+
+export async function terminateReason(payload) {
+  return request('/api/offboardingrequest/terminate-hr', {
+    method: 'POST',
+    data: payload,
+  });
+}
