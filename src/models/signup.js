@@ -69,6 +69,10 @@ const signup = {
         yield call(delay, 2000);
         const response = yield call(signupAdmin, payload);
         const { statusCode, message, data: { id = '' } = {} } = response;
+        const payloadAutoLogin = {
+          email: payload?.user?.email,
+          password: payload?.user?.password,
+        };
         if (statusCode !== 200) throw response;
         notification.success({
           message,
@@ -76,17 +80,23 @@ const signup = {
         yield put({
           type: 'activeAdmin',
           payload: { id },
+          payloadAutoLogin,
         });
       } catch (errors) {
         dialog(errors);
       }
     },
-    *activeAdmin({ payload }, { call }) {
+    *activeAdmin({ payload, payloadAutoLogin = false }, { call, put }) {
       try {
         const response = yield call(activeAdmin, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        history.replace('/login');
+        if (payloadAutoLogin) {
+          yield put({
+            type: 'login/login',
+            payload: payloadAutoLogin,
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }

@@ -1,6 +1,6 @@
 // import React, { Component } from 'react';
 import { Row, Col } from 'antd';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import icon from '@/assets/offboarding-schedule.svg';
 import righticon1 from '@/assets/offboarding-1.svg';
 import righticon2 from '@/assets/offboarding-2.svg';
@@ -35,20 +35,20 @@ const array = [
   },
 ];
 
-export default class ViewRight extends Component {
+export default class ViewRight extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
-  rederItem = (reder) => {
+  renderItem = (render) => {
     return (
       <Row>
         <Col span={4}>
-          <img src={reder.icon} alt="iconCheck" />
+          <img src={render.icon} alt="iconCheck" />
         </Col>
         <Col span={19}>
-          <div>{reder.decription} </div>
+          <div className={styles.description}>{render.decription} </div>
         </Col>
       </Row>
     );
@@ -56,18 +56,20 @@ export default class ViewRight extends Component {
 
   render() {
     return (
-      <div className={styles.root}>
+      <div className={styles.ViewRight}>
         <div className={styles.boxRight}>
           <img alt="icontop" className={styles.icon} src={icon} />
           <div className={styles.text_Title}> Did you know?</div>
           <div className={styles.text_Body}>
-            Your Manager, Sandeep, usually conducts 1-on-1s and you can speak anything to him. 8/10
-            employees have changed their mind!
+            <p>
+              Your Manager, Sandeep, usually conducts 1-on-1s and you can speak anything to him.
+              8/10 employees have changed their mind!
+            </p>
           </div>
           <div className={styles.text_Schedule}>Schedule 1-on-1 Now!</div>
           <div className={styles.twoRight}>
-            <p className={styles.text_twoRight}> Few thing to consider</p>
-            <div>{array.map((reder) => this.rederItem(reder))}</div>
+            <p className={styles.text_twoRight}>Few thing to consider</p>
+            <div>{array.map((render) => this.renderItem(render))}</div>
           </div>
         </div>
       </div>

@@ -41,3 +41,10 @@ export async function updateLocation(payload) {
     data: payload,
   });
 }
+
+export async function upsertLocationsList(payload) {
+  return request('/api/location/upsert', {
+    method: 'POST',
+    data: payload.locations,
+  });
+}

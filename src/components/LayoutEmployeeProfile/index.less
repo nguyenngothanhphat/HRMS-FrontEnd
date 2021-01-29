@@ -1,18 +1,35 @@
 .root {
   display: flex;
   flex-direction: row;
-  background-color: #f6f7f9;
   min-height: 90vh;
+  background-color: #f6f7f9;
   .viewLeft {
     width: 250px;
     height: auto;
+    margin-top: 1px;
     &__menu {
-      box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
       padding: 24px 0 24px 20px;
       background-color: #ffffff;
+      box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
       div:last-child {
         border-bottom: none;
         // margin-bottom: 50px;
+      }
+      &__btn {
+        width: 83%;
+        height: 40px;
+        margin-top: 24px;
+        color: #ffffff;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 16px;
+        text-align: center;
+        background: #ffa100;
+        border: none;
+        border-radius: 25px;
+        &:disabled {
+          opacity: 0.5;
+        }
       }
     }
   }
@@ -22,35 +39,35 @@
     &__infoEmployee {
       width: 100%;
       height: auto;
-      background-color: #fff;
-      border-radius: 5px;
-      border: solid 1px #d6dce0;
       overflow: hidden;
+      background-color: #fff;
+      border: solid 1px #d6dce0;
+      border-radius: 5px;
       .infoEmployee {
         &__imgCover {
-          height: 103px;
-          width: 100%;
-          object-fit: cover;
           position: relative;
+          width: 100%;
+          height: 103px;
+          object-fit: cover;
         }
         &__imgAvt {
-          border: solid 1.5px #fff;
           position: absolute;
-          left: 0;
-          right: 0;
           top: 54px;
-          margin: auto;
+          right: 0;
+          left: 0;
           width: 96px;
           height: 96px;
-          border-radius: 50%;
+          margin: auto;
           object-fit: cover;
+          border: solid 1.5px #fff;
+          border-radius: 50%;
           &__upload {
             position: absolute;
-            cursor: pointer;
-            right: -65px;
-            margin: auto;
-            left: 0;
             top: 120px;
+            right: -65px;
+            left: 0;
+            margin: auto;
+            cursor: pointer;
             &:active,
             &:hover {
               opacity: 0.5;
@@ -59,21 +76,22 @@
         }
         &__textNameAndTitle {
           display: flex;
-          justify-content: center;
-          align-items: center;
           flex-direction: column;
+          align-items: center;
+          justify-content: center;
           margin-top: 60px;
           &__name {
-            font-size: 16px;
-            font-weight: 500;
-            color: #161c29;
             margin: 0;
+            color: #161c29;
+            font-weight: 500;
+            font-size: 16px;
           }
           &__title {
-            opacity: 0.5;
-            font-size: 12px;
-            color: #161c29;
             margin: 0;
+            text-align: right;
+            color: #161c29;
+            font-size: 12px;
+            opacity: 0.5;
           }
         }
         &__viewBottom {
@@ -81,38 +99,38 @@
           &__row {
             display: flex;
             flex-direction: row;
-            justify-content: space-between;
             align-items: flex-start;
+            justify-content: space-between;
           }
           .titleTag {
-            font-size: 12px;
-            font-weight: 500;
             color: #161c29;
+            font-weight: 500;
+            font-size: 12px;
           }
           .titleTag1 {
-            font-size: 12px;
-            font-weight: 400;
             color: #161c29;
+            font-weight: 400;
+            font-size: 12px;
           }
           &__description {
-            opacity: 0.5;
+            margin: 0;
+            color: #161c29;
             font-size: 12px;
             line-height: 1.5;
-            color: #161c29;
             // text-align: justify;
             text-align: center;
-            margin: 0;
+            opacity: 0.5;
           }
           :global {
             .ant-divider-horizontal {
               margin: 5px 0 15px 0;
             }
             .ant-tag {
+              margin-bottom: 10px;
+              color: #00c598;
+              font-weight: 500;
               border: none;
               border-radius: 5px;
-              margin-bottom: 10px;
-              font-weight: 500;
-              color: #00c598;
             }
           }
         }
@@ -122,27 +140,27 @@
       }
     }
     .viewBtnAction {
-      margin: 25px 0 15px 0;
-      width: 100%;
       display: flex;
       justify-content: center;
+      width: 100%;
+      margin: 25px 0 15px 0;
       .btnEditBio {
-        background: #ffa100;
-        border-radius: 25px;
-        height: 40px;
         width: 150px;
+        height: 40px;
+        color: #ffffff;
         font-weight: 500;
         font-size: 14px;
         line-height: 16px;
         text-align: center;
-        color: #ffffff;
+        background: #ffa100;
         border: none;
+        border-radius: 25px;
       }
     }
     .viewLoading {
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       height: 200px;
     }
   }
@@ -159,18 +177,18 @@
 .formEditBio {
   padding: 24px;
   &__title {
-    text-align: center;
-    color: #161c29;
-    font-size: 18px;
-    font-weight: 500;
     margin-bottom: 24px;
+    color: #161c29;
+    font-weight: 500;
+    font-size: 18px;
+    text-align: center;
   }
   &__description1 {
-    text-align: center;
+    margin-bottom: 24px;
     color: #707177;
     font-size: 13px;
     line-height: 1.38;
-    margin-bottom: 24px;
+    text-align: center;
   }
 
   &__description2 {
@@ -185,14 +203,14 @@
     justify-content: center;
     margin-top: 24px;
     .btnSave {
-      font-size: 14px;
       width: 80px;
       height: 40px;
-      font-weight: 500;
-      border-radius: 30px;
       color: #fff;
+      font-weight: 500;
+      font-size: 14px;
       background-color: #ffa100;
       border: none;
+      border-radius: 30px;
       &:disabled {
         opacity: 0.5;
       }
@@ -201,9 +219,9 @@
   :global {
     textarea.ant-input {
       padding: 16px;
-      border-radius: 8px;
-      font-size: 13px;
       color: #000;
+      font-size: 13px;
+      border-radius: 8px;
     }
   }
 }

@@ -180,7 +180,7 @@ const employeesManagement = {
       }
       yield put({ type: 'save', payload: { statusAddEmployee } });
     },
-    *importEmployees({ payload }, { call, put }) {
+    *importEmployees({ payload, isAccountSetup = false }, { call, put }) {
       let statusImportEmployees = false;
       try {
         const response = yield call(importEmployees, payload);
@@ -191,6 +191,12 @@ const employeesManagement = {
         });
         statusImportEmployees = true;
         yield put({ type: 'save', payload: { returnEmployeesList } });
+        if (isAccountSetup) {
+          yield put({
+            type: 'employee/fetchListEmployeeActive',
+            payload: { company: payload?.company },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }

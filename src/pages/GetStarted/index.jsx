@@ -1,18 +1,39 @@
-import { Button } from 'antd';
+import { Button, Spin } from 'antd';
 import React, { PureComponent } from 'react';
 import Breadcrumb from '@/components/Breadcrumb';
+import { connect, history } from 'umi';
 import ItemSetup from './components/ItemSetup';
 import s from './index.less';
 
-export default class GetStarted extends PureComponent {
+@connect(
+  ({
+    loading,
+    departmentManagement: { listByCompany: listDepartment = [] } = {},
+    user: { currentUser = {} } = {},
+  }) => ({
+    listDepartment,
+    currentUser,
+    loading: loading.effects['departmentManagement/fetchListDepartmentByCompany'],
+  }),
+)
+class GetStarted extends PureComponent {
+  componentDidMount() {
+    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
+    dispatch({
+      type: 'departmentManagement/fetchListDepartmentByCompany',
+      payload: { company: id },
+    });
+  }
+
   render() {
+    const { loading, listDepartment = [] } = this.props;
     const dummyListSetup = [
       { id: '1', name: 'Setup Company profile', description: '15 minutes' },
       {
         id: '2',
         name: 'Setup Employee Directory',
         description: 'Setup company profile to unlock',
-        // status: 'lock',
+        status: listDepartment.length === 0 ? 'lock' : '',
       },
       {
         id: '3',
@@ -21,6 +42,12 @@ export default class GetStarted extends PureComponent {
       },
     ];
     const routes = [{ name: 'Getting Started', path: '/account-setup/get-started' }];
+    if (loading)
+      return (
+        <div className={s.viewLoading}>
+          <Spin size="large" />
+        </div>
+      );
     return (
       <>
         <Breadcrumb routes={routes} />
@@ -36,7 +63,7 @@ export default class GetStarted extends PureComponent {
             ))}
           </div>
           <div className={s.viewBtn}>
-            <Button disabled className={s.btnGoToDashboard}>
+            <Button className={s.btnGoToDashboard} onClick={() => history.push('/select-location')}>
               Go to dashboard
             </Button>
           </div>
@@ -45,3 +72,5 @@ export default class GetStarted extends PureComponent {
     );
   }
 }
+
+export default GetStarted;

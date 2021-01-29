@@ -4,27 +4,55 @@
 import React, { PureComponent } from 'react';
 import { Form, Divider, Button } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
 import FormDepartment from './components/FormDepartment';
 import s from './index.less';
 
-export default class Departments extends PureComponent {
+@connect(
+  ({
+    loading,
+    departmentManagement: { listDefault = [], listByCompany: listDepartment = [] } = {},
+    user: { currentUser = {} } = {},
+  }) => ({
+    listDefault,
+    listDepartment,
+    currentUser,
+    loading: loading.effects['departmentManagement/upsertDepartment'],
+  }),
+)
+class Departments extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
   onFinish = ({ listDepartment }) => {
-    console.log('payload department:', listDepartment);
+    const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
+    const payload = { listDepartment, company: _id };
+    dispatch({
+      type: 'departmentManagement/upsertDepartment',
+      payload,
+    });
+  };
+
+  removeDepartment = (id) => {
+    const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
+    const payload = { id, company: _id };
+    dispatch({
+      type: 'departmentManagement/removeDepartment',
+      payload,
+    });
   };
 
   render() {
-    const listDepartment = [undefined];
+    const { listDefault = [], listDepartment = [], loading } = this.props;
+    const listByCompany = listDepartment.length === 0 ? [{}] : listDepartment;
     return (
       <Form
         ref={this.formRef}
         onFinish={this.onFinish}
         autoComplete="off"
-        initialValues={{ listDepartment }}
+        initialValues={{ listDepartment: listByCompany }}
       >
         <div className={s.root}>
           <div className={s.content__viewTop}>
@@ -43,10 +71,13 @@ export default class Departments extends PureComponent {
                       field={field}
                       key={field.name}
                       onRemove={() => remove(field.name)}
+                      list={listDefault}
+                      listDepartment={listDepartment}
+                      removeDepartment={this.removeDepartment}
                     />
                   ))}
-                  <div className={s.viewAddDepartments}>
-                    <p className={s.viewAddDepartments__icon} onClick={() => add()}>
+                  <div className={s.viewAddDepartments} onClick={() => add()}>
+                    <p className={s.viewAddDepartments__icon}>
                       <PlusOutlined />
                     </p>
                     <p className={s.viewAddDepartments__text}>Add a department</p>
@@ -57,7 +88,7 @@ export default class Departments extends PureComponent {
           </div>
         </div>
         <div className={s.viewBtn}>
-          <Button className={s.btnSubmit} htmlType="submit">
+          <Button className={s.btnSubmit} htmlType="submit" loading={loading}>
             Save
           </Button>
         </div>
@@ -65,3 +96,5 @@ export default class Departments extends PureComponent {
     );
   }
 }
+
+export default Departments;

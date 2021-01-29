@@ -1,14 +1,16 @@
+/* eslint-disable react/jsx-curly-newline */
 import { Affix, Col, Row } from 'antd';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import ItemMenu from './components/ItemMenu';
-import ViewInformation from './components/ViewInformation';
 import UploadLogoCompany from './components/UploadLogoCompany';
+import ViewInformation from './components/ViewInformation';
 import s from './index.less';
 
-@connect(({ employeeProfile: { isModified } = {} }) => ({
+@connect(({ employeeProfile: { isModified } = {}, user: { currentUser } = {} }) => ({
   isModified,
+  currentUser,
 }))
 class CommonLayout extends PureComponent {
   constructor(props) {
@@ -80,7 +82,7 @@ class CommonLayout extends PureComponent {
 
     return (
       <div className={s.root}>
-        <Affix offsetTop={isCompanyProfile ? 0 : 90}>
+        <Affix offsetTop={isCompanyProfile ? 0 : 100}>
           <div className={s.viewLeft}>
             <div
               className={s.viewLeft__menu}
@@ -94,6 +96,19 @@ class CommonLayout extends PureComponent {
                   selectedItemId={selectedItemId}
                 />
               ))}
+              {/* {isCompanyProfile && (
+                <Button
+                  className={s.viewLeft__menu__btn}
+                  disabled={currentUser?.firstCreated}
+                  onClick={() =>
+                    history.push({
+                      pathname: '/',
+                    })
+                  }
+                >
+                  Go to dashboard
+                </Button>
+              )} */}
             </div>
           </div>
         </Affix>

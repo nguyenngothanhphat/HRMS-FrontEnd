@@ -1,73 +1,119 @@
-import { LogoutOutlined, SettingOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
+/* eslint-disable react/jsx-curly-newline */
+import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import avtDefault from '@/assets/avtDefault.jpg';
+import { Avatar } from 'antd';
 import React, { Component } from 'react';
 import { connect } from 'umi';
 import ItemCompany from './components/ItemCompany';
 import s from './index.less';
 
-@connect(({ user: { currentUser = {} } = {} }) => ({
-  currentUser,
-}))
+// const { Option } = Select;
+
+// const dummyPosition = ['Owner', 'CEO', 'ADMIN-CSA', 'HR-GLOBAL', 'HR-MANAGER'];
+
+@connect(
+  ({ user: { currentUser = {} } = {}, companiesManagement: { locationsList = [] } = {} }) => ({
+    currentUser,
+    locationsList,
+  }),
+)
 class AccountSetup extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      // q: '',
-    };
+    this.state = {};
   }
 
-  // onChangeSearch = ({ target: { value } }) => {
-  //   this.setState({
-  //     q: value,
-  //   });
-  // };
+  componentDidMount() {
+    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
+    dispatch({
+      type: 'companiesManagement/fetchLocationsList',
+      payload: { company: id },
+    });
+    // dispatch({
+    //   type: 'departmentManagement/fetchListDepartmentByCompany',
+    //   payload: { company: id },
+    // });
+  }
+
+  onChangeSelect = (value, name) => {
+    this.setState({
+      [name]: value,
+    });
+  };
+
+  handleLogout = () => {
+    const { dispatch } = this.props;
+    if (dispatch) {
+      dispatch({
+        type: 'login/logout',
+      });
+    }
+  };
 
   render() {
-    // const { q = '' } = this.state;
     const {
-      currentUser: { generalInfo: { workEmail = '', avatar = '' } = {}, company = {} } = {},
+      currentUser: { generalInfo: { avatar = '' } = {}, company = {}, email = '' } = {},
+      // locationsList = [],
     } = this.props;
     return (
       <div className={s.root}>
         <div style={{ width: '629px' }}>
           <div className={s.blockUserLogin}>
             <div className={s.blockUserLogin__avt}>
-              <img
-                src={
-                  avatar ||
-                  'https://orthosera.com/wp-content/uploads/2016/02/user-profile-placeholder.png'
-                }
-                alt="avatar"
-                className={s.blockUserLogin__avt__img}
-              />
+              <Avatar size={56} icon={<UserOutlined />} src={avatar || avtDefault} />
             </div>
             <div className={s.blockUserLogin__info}>
               <p>
-                You are logged in as{' '}
-                <span className={s.blockUserLogin__info__email}>{workEmail}</span>
+                You are logged in as <span className={s.blockUserLogin__info__email}>{email}</span>
               </p>
               <p style={{ marginTop: '8px' }}>You have administrative privileges.</p>
-              <p className={s.blockUserLogin__info__action}>Log in with another account</p>
             </div>
             <div className={s.blockUserLogin__action}>
               <SettingOutlined className={s.blockUserLogin__action__icon} />
               <LogoutOutlined
+                onClick={this.handleLogout}
                 className={s.blockUserLogin__action__icon}
                 style={{ marginLeft: '24px' }}
               />
             </div>
           </div>
-          <div className={s.text}>Please select a company profile to proceed</div>
-          {/* <Input
-            placeholder="Search for company"
-            suffix={<SearchOutlined style={{ color: '#707177' }} />}
-            onChange={this.onChangeSearch}
-            value={q}
-          /> */}
-
+          {/* <Row className={s.blockQuestion}>
+            <Col span={11}>
+              <p className={s.blockQuestion__title}>What’s your position in company</p>
+              <Select
+                placeholder="Select Position"
+                showArrow
+                showSearch
+                onChange={(value) => this.onChangeSelect(value, 'position')}
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                value={position}
+              >
+                {dummyPosition.map((item) => (
+                  <Option key={item}>{item}</Option>
+                ))}
+              </Select>
+            </Col>
+            <Col span={11} offset={2}>
+              <p className={s.blockQuestion__title}>Work location</p>
+              <Select
+                placeholder="Select Location"
+                showArrow
+                showSearch
+                onChange={(value) => this.onChangeSelect(value, 'location')}
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                value={location}
+              >
+                {locationsList.map((item) => (
+                  <Option key={item._id}>{item.name}</Option>
+                ))}
+              </Select>
+            </Col>
+          </Row> */}
           <ItemCompany company={company} />
-
-          <Button className={s.btnAddNew}>Add a new company profile</Button>
         </div>
       </div>
     );

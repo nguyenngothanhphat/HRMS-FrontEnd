@@ -1,0 +1,121 @@
+.LocationSelection {
+  :global {
+    .ant-input:focus {
+      border-color: #2c6df9;
+      outline: 0;
+      box-shadow: unset;
+    }
+
+    .ant-modal-content {
+      border-radius: 10px;
+    }
+    .ant-modal-body {
+      padding: 0;
+    }
+    .ant-modal-close {
+      display: none;
+    }
+    .ant-picker,
+    .ant-input {
+      border-radius: 5px !important;
+      min-height: 42px !important;
+      //   font-size: 13px;
+    }
+
+    .ant-select {
+      width: 100%;
+    }
+    .ant-select-selector {
+      border-radius: 5px !important;
+      height: 42px !important;
+      //   font-size: 13px;
+      padding-top: 5px !important;
+    }
+
+    // text area
+    .ant-form-item-control-input-content {
+      textarea {
+        padding-top: 9px;
+      }
+    }
+
+    .ant-input {
+      padding: 10px;
+    }
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 32px;
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .title {
+        display: inline-block;
+        font-weight: 700;
+        font-size: 18px;
+        color: #161c29;
+      }
+    }
+
+    .subtitle1 {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #161c29;
+    }
+    .subtitle2 {
+      color: #707177;
+      font-size: 13px;
+    }
+
+    .locationSelectBox {
+      margin: 25px 0 15px 0;
+      width: 60%;
+      .loadingSpin {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 41px;
+      }
+    }
+    .operationButtons {
+      display: flex;
+      justify-content: flex-start;
+      .proceedBtn {
+      }
+      .cancelBtn {
+        margin-left: 20px;
+        span {
+          color: #161c29 !important;
+        }
+        background-color: #ffa1001a !important;
+      }
+    }
+
+    :global {
+      .ant-modal-body {
+        border-radius: 10px;
+      }
+      .ant-btn {
+        margin-top: 15px;
+        background-color: #ffa100;
+        border: none;
+        border-radius: 30px;
+        height: 40px;
+        // width: 108px;
+        padding: 0 30px;
+        span {
+          color: white;
+          font-weight: 700;
+        }
+        &:hover {
+          background-color: #ffa100cc; // hex with alpha 0.8
+        }
+      }
+    }
+  }
+}

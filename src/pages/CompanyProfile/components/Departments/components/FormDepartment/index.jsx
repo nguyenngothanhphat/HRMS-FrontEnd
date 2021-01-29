@@ -2,28 +2,40 @@
 /* eslint-disable prefer-promise-reject-errors */
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable react/jsx-props-no-spreading */
-import { DeleteOutlined } from '@ant-design/icons';
-import { Form, Select } from 'antd';
+import { DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { Form, Select, Modal } from 'antd';
 import React, { PureComponent } from 'react';
 import FormDefineTeam from '../FormDefineTeam';
 import s from './index.less';
 
-const dummyListDepartment = [
-  { _id: '12345', name: 'Engineering' },
-  { _id: '45678', name: 'User Experience Design & Research' },
-  { _id: '99999', name: 'Visual Design' },
-];
-
 const { Option } = Select;
+const { confirm } = Modal;
 
 class FormDepartment extends PureComponent {
+  showConfirm = (id) => {
+    const { removeDepartment = () => {} } = this.props;
+    confirm({
+      title: 'Do you want to delete these department?',
+      icon: <ExclamationCircleOutlined />,
+      // content: 'Some descriptions',
+      onOk() {
+        removeDepartment(id);
+      },
+      onCancel() {},
+    });
+  };
+
   handleRemove = () => {
-    const { onRemove = () => {} } = this.props;
-    onRemove();
+    const { onRemove = () => {}, listDepartment = [], field: { name } = {} } = this.props;
+    const itemRemove = listDepartment[name] || {};
+    const { _id: id } = itemRemove;
+    if (id) {
+      this.showConfirm(id);
+    } else onRemove();
   };
 
   render() {
-    const { field = {} } = this.props;
+    const { field = {}, list = [] } = this.props;
     return (
       <div className={s.content}>
         <div className={s.viewTop}>
@@ -59,10 +71,8 @@ class FormDepartment extends PureComponent {
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
               >
-                {dummyListDepartment.map(({ name = '', _id = '' }) => (
-                  <Option key={_id} value={name}>
-                    {name}
-                  </Option>
+                {list.map((item) => (
+                  <Option key={item}>{item}</Option>
                 ))}
               </Select>
             </Form.Item>

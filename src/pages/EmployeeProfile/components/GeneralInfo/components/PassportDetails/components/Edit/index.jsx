@@ -8,7 +8,6 @@ import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import removeIcon from './assets/removeIcon.svg';
 import UploadImage from '../UploadImage';
-import VisaGeneral from './components/Visa';
 import styles from './index.less';
 
 @connect(
@@ -20,16 +19,14 @@ import styles from './index.less';
       passport1URL = '',
       urlImage = '',
       loadingPassportTest = [],
-      visa0IDURL = '',
-      visa1IDURL = '',
       passPortIDURL = '',
       loadingPassPort = false,
     },
     employeeProfile: {
       countryList,
       idCurrentEmployee,
-      originData: { passportData: passportDataOrigin = [], visaData: visaDataOrigin = [] } = {},
-      tempData: { passportData = [], generalData = {}, visaData = [], document = {} } = {},
+      originData: { passportData: passportDataOrigin = [] } = {},
+      tempData: { passportData = [], generalData = {}, document = {} } = {},
     } = {},
   }) => ({
     loading: loading.effects['upload/uploadFile'],
@@ -37,11 +34,7 @@ import styles from './index.less';
     passportDataOrigin,
     passportData,
     generalData,
-    visaDataOrigin,
-    visaData,
     passPortURL,
-    visa0IDURL,
-    visa1IDURL,
     passPortIDURL,
     document,
     idCurrentEmployee,
@@ -60,27 +53,28 @@ class Edit extends Component {
       isLt5M: true,
       getContent: true,
       isDate: true,
-      isCheckDateVisa: true,
       visible: false,
       linkImage: '',
       checkValidate: [{}],
     };
   }
 
-  validateDate = (getPassportData) => {
+  validateDate = (getPassportData, index) => {
     if (getPassportData === []) return;
     const { passportDataOrigin } = this.props;
     const formatDatePassportIssueOn =
       passportDataOrigin.passportIssuedOn && moment(passportDataOrigin.passportIssuedOn);
     const DatePassportIssueOn =
-      getPassportData.passportIssuedOn && moment(getPassportData.passportIssuedOn);
+      getPassportData[index].passportIssuedOn && moment(getPassportData[index].passportIssuedOn);
     const formatDatePassportValidTill =
       passportDataOrigin.passportValidTill && moment(passportDataOrigin.passportValidTill);
     const DatePassportValidTill =
-      getPassportData.passportValidTill && moment(getPassportData.passportValidTill);
+      getPassportData[index].passportValidTill && moment(getPassportData[index].passportValidTill);
     const IssuedOn = DatePassportIssueOn || formatDatePassportIssueOn;
     const ValidTill = DatePassportValidTill || formatDatePassportValidTill;
-    if (IssuedOn > ValidTill) {
+
+    const issueAfter3Year = moment(IssuedOn).add(3, 'years');
+    if (moment(ValidTill).isSameOrBefore(moment(issueAfter3Year))) {
       this.setState({ isDate: false });
     } else {
       this.setState({ isDate: true });
@@ -95,7 +89,7 @@ class Edit extends Component {
     const newList = [...passportData];
 
     newList.splice(index, 1, newItem);
-    this.validateDate(newList);
+    this.validateDate(newList, index);
     const isModified = JSON.stringify(newList) !== JSON.stringify(passportDataOrigin);
     dispatch({
       type: 'employeeProfile/saveTemp',
@@ -156,11 +150,12 @@ class Edit extends Component {
       type: 'employeeProfile/addPassPort',
       payload: payloadAddPassPort,
       dataTempKept,
-      key: 'openPassportandVisa',
+      key: 'openPassport',
     });
   };
 
   processDataChangesPassPort = (item) => {
+    console.log('item', item);
     const {
       urlFile,
       document,
@@ -182,34 +177,6 @@ class Edit extends Component {
     };
 
     return payloadChanges;
-  };
-
-  processDataChangesVisa = (item) => {
-    const { generalData } = this.props;
-    const { employee = '' } = generalData;
-    const {
-      _id: id,
-      document,
-      visaNumber,
-      visaIssuedCountry,
-      visaIssuedOn,
-      visaType,
-      visaValidTill,
-      visaEntryType,
-    } = item;
-    const formVisa = {
-      id,
-      document: document ? document._id : '',
-      employee,
-      visaNumber,
-      visaIssuedCountry,
-      visaIssuedOn,
-      visaType,
-      visaValidTill,
-      visaEntryType,
-    };
-
-    return formVisa;
   };
 
   processDataAddPassPort = (id, item) => {
@@ -234,69 +201,6 @@ class Edit extends Component {
     return payloadChanges;
   };
 
-  handleAddVisaAllField = (item, index) => {
-    const { dispatch, idCurrentEmployee } = this.props;
-    const { urlFile, document: documentVisa } = item;
-    let getFile = '';
-    if (urlFile) {
-      getFile = urlFile;
-    }
-    if (documentVisa) {
-      const dataVisa = { id: documentVisa._id, attachment: getFile.id, key: `Visa${index + 1}` };
-      dispatch({
-        type: 'employeeProfile/fetchDocumentUpdate',
-        payload: dataVisa,
-      });
-    } else {
-      dispatch({
-        type: 'employeeProfile/fetchDocumentAdd',
-        payload: {
-          key: `Visa${index + 1}`,
-          attachment: getFile.id,
-          employeeGroup: 'Identity',
-          parentEmployeeGroup: 'Indentification Documents',
-          employee: idCurrentEmployee,
-        },
-      }).then((id) => this.handleAddVisa(id, index, item));
-    }
-  };
-
-  handleAddVisa = (id, index, item) => {
-    const { dispatch } = this.props;
-    const dataTempKept = this.processDataKeptVisa() || {};
-    const payloadAddPassPort = this.processDataAddVisa(id, item) || {};
-    dispatch({
-      type: 'employeeProfile/addVisa',
-      payload: payloadAddPassPort,
-      dataTempKept,
-      key: 'openPassportandVisa',
-    });
-  };
-
-  processDataAddVisa = (id, item) => {
-    const { generalData } = this.props;
-    const { employee = '' } = generalData;
-    const {
-      visaNumber,
-      visaIssuedCountry,
-      visaIssuedOn,
-      visaType,
-      visaValidTill,
-      visaEntryType,
-    } = item;
-    const formVisa = {
-      document: id,
-      employee,
-      visaNumber,
-      visaIssuedCountry,
-      visaIssuedOn,
-      visaType,
-      visaValidTill,
-      visaEntryType,
-    };
-    return formVisa;
-  };
-
   processDataKeptPassPort = (item) => {
     const newObj = { ...item };
     const listKey = [
@@ -311,51 +215,23 @@ class Edit extends Component {
     return newObj;
   };
 
-  processDataKeptVisa = (item) => {
-    const newobj = { ...item };
-    const listKey = [
-      'visaNumber',
-      'urlFile',
-      'visaIssuedCountry',
-      'visaIssuedOn',
-      'visaValidTill',
-      'visaEntryType',
-      'visaType',
-      'document',
-    ];
-    listKey.forEach((itemVisa) => delete newobj[itemVisa]);
-    return newobj;
-  };
-
-  handleUpdateVisaGroup = (item, index) => {
-    const payloadUpdateVisa = this.processDataChangesVisa(item) || {};
-    const dataTempKeptVisa = this.processDataKeptVisa(item) || {};
-    const { dispatch } = this.props;
-    this.handleAddVisaAllField(item, index);
-    dispatch({
-      type: 'employeeProfile/updateVisa',
-      payload: payloadUpdateVisa,
-      dataTempKeptVisa,
-      key: 'openPassportandVisa',
-    });
-  };
-
   handleUpdatePassportGroup = (item, index) => {
     const { dispatch } = this.props;
     const payloadUpdatePassPort = this.processDataChangesPassPort(item) || {};
     const dataTempKeptPassport = this.processDataKeptPassPort(item) || {};
 
     this.handleAddPassPortAllField(item, index);
+    console.log('payloadUpdatePassPort', payloadUpdatePassPort);
     dispatch({
       type: 'employeeProfile/updatePassPort',
       payload: payloadUpdatePassPort,
       dataTempKeptPassport,
-      key: 'openPassportandVisa',
+      key: 'openPassport',
     });
   };
 
   handleSave = async () => {
-    const { passportData = [], visaData = [] } = this.props;
+    const { passportData = [] } = this.props;
 
     passportData.map((item, index) => {
       let idPassPort = '';
@@ -368,19 +244,6 @@ class Edit extends Component {
         return this.handleUpdatePassportGroup(item, index);
       }
       return this.handleAddPassPortAllField(item, index);
-    });
-
-    visaData.map((item, index) => {
-      let idVisa = '';
-      const { _id } = item;
-      if (_id) {
-        idVisa = _id;
-      }
-
-      if (idVisa) {
-        return this.handleUpdateVisaGroup(item, index);
-      }
-      return this.handleAddVisaAllField(item, index);
     });
   };
 
@@ -425,12 +288,6 @@ class Edit extends Component {
     }
   };
 
-  getcheckArrayVisa = (getCheck) => {
-    const isCheckVisa = (currentValue) => currentValue === true;
-    const getIsCheckVisa = getCheck.every(isCheckVisa);
-    this.setState({ isCheckDateVisa: getIsCheckVisa });
-  };
-
   handleOpenModalReview = (linkImage) => {
     this.setState({
       visible: true,
@@ -468,13 +325,9 @@ class Edit extends Component {
 
   onRemoveCondition = (index) => {
     const { passportData = [], dispatch } = this.props;
-
     const newPassportData = [...passportData];
-
     newPassportData.splice(index, 1);
-    // console.log('remove index: ', index);
-    // console.log('newPassportData: ', newPassportData);
-
+    // console.log('newPassportData', newPassportData);
     dispatch({
       type: 'employeeProfile/saveTemp',
       payload: { passportData: newPassportData },
@@ -482,15 +335,7 @@ class Edit extends Component {
   };
 
   render() {
-    const {
-      isLt5M,
-      getContent,
-      isDate,
-      isCheckDateVisa,
-      visible,
-      linkImage,
-      dummyPassPorts,
-    } = this.state;
+    const { isLt5M, getContent, isDate, visible, linkImage, dummyPassPorts } = this.state;
 
     const { Option } = Select;
     const {
@@ -688,10 +533,6 @@ class Edit extends Component {
             </div>
           </Col>
 
-          <VisaGeneral
-            setConfirmContent={this.getConfirmContent}
-            checkArrayVisa={this.getcheckArrayVisa}
-          />
           <div className={styles.spaceFooter}>
             <div className={styles.cancelFooter} onClick={handleCancel}>
               Cancel
@@ -700,12 +541,7 @@ class Edit extends Component {
               type="primary"
               htmlType="submit"
               className={styles.buttonFooter}
-              disabled={
-                isLt5M === false ||
-                getContent === false ||
-                isDate === false ||
-                isCheckDateVisa === false
-              }
+              disabled={isLt5M === false || getContent === false || isDate === false}
             >
               Save
             </Button>
