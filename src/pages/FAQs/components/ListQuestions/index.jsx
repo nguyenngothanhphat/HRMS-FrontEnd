@@ -79,10 +79,11 @@ class ListQuestions extends PureComponent {
         <div className={styles.childrenFrom}>
           {questionAndAnswer.map((item) => {
             const { question, answer, _id } = item;
+
             return (
               <div key={item} className={styles.collapse} id={_id}>
                 <Collapse
-                  defaultActiveKey={[question]}
+                  defaultActiveKey={[idQuestion]}
                   expandIconPosition="right"
                   ghost
                   expandIcon={(props) => {
@@ -131,13 +132,11 @@ class ListQuestions extends PureComponent {
     const { list = [], idQuestion = {} } = this.props;
     const { id = '' } = idQuestion;
     const listQuestion = [];
-
     list.forEach(({ questionAndAnswer, category }) => {
       const listQAs = questionAndAnswer.map((qa) => ({ ...qa, category }));
       listQuestion.push(...listQAs);
       return listQuestion;
     });
-
     return (
       <div className={styles.container}>
         <Row>

@@ -31,7 +31,6 @@ export default class Links extends Component {
 
   mapItemMenu = (value) => {
     const { _id } = value;
-
     history.push({
       pathname: `/faqpage`,
       query: {

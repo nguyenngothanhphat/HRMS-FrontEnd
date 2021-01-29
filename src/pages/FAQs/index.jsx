@@ -8,22 +8,22 @@ import styles from './index.less';
 
 @connect(
   ({
-    user: { currentUser: { company: { _id: idCompany = '' } = {} } = {} } = {},
+    user: { currentUser = {} } = {},
     frequentlyAskedQuestions: { list = [], listDefault = {}, getListByCompany = {} } = {},
   }) => ({
     list,
     listDefault,
-    idCompany,
+    currentUser,
     getListByCompany,
   }),
 )
 class FAQs extends PureComponent {
   componentDidMount() {
-    const { dispatch, idCompany } = this.props;
+    const { dispatch, currentUser: { company: { _id: idCompany = '' } = {} } = {} } = this.props;
     if (dispatch) {
       dispatch({
         type: 'frequentlyAskedQuestions/getListByCompany',
-        payyload: { company: idCompany },
+        payload: { company: idCompany },
       });
     }
   }
@@ -31,7 +31,7 @@ class FAQs extends PureComponent {
   render() {
     const { location: { query = {} } = {}, getListByCompany = {} } = this.props;
     const { faq = [] } = getListByCompany;
-
+    console.log(getListByCompany, 'getListByCompany');
     return (
       <PageContainer>
         <div className={styles.root}>
