@@ -138,7 +138,7 @@ class AddEmployeeForm extends Component {
             name="workEmail"
             rules={[{ required: true, type: 'email' }]}
           >
-            <Input disabled={userSelected._id} />
+            <Input disabled={userSelected?.workEmail} />
           </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'addEmployee.roles' })}
