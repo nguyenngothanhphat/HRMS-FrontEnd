@@ -67,8 +67,8 @@ const ModalTerminate = (props) => {
             />
           </Form.Item>
           <Form.Item
-            label="Working Day"
-            name="workingDate"
+            label="Last Working Date"
+            name="lastWorkingDate"
             className={styles.datePickerForm}
             rules={[
               {

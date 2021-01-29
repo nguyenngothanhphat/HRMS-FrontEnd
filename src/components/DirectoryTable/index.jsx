@@ -80,9 +80,9 @@ class DirectoryTable extends Component {
     const { rowData = {} } = this.state;
     const { dispatch } = this.props;
     const { _id = '' } = rowData;
-    const { reason, workingDate } = values;
+    const { reason, lastWorkingDate } = values;
 
-    const payload = this.getPayload(_id, reason, workingDate);
+    const payload = this.getPayload(_id, reason, lastWorkingDate);
 
     dispatch({
       type: 'offboarding/terminateReason',
