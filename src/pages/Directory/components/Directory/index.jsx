@@ -13,14 +13,22 @@ import TableFilter from '../TableFilter';
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
-@connect(({ loading, employee, user: { currentUser = {}, permissions = {} } }) => ({
-  loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
-  loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
-  loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
-  employee,
-  currentUser,
-  permissions,
-}))
+@connect(
+  ({
+    loading,
+    employee,
+    user: { currentUser = {}, permissions = {} },
+    offboarding: { approvalflow = [] } = {},
+  }) => ({
+    loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
+    loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
+    loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
+    employee,
+    currentUser,
+    permissions,
+    approvalflow,
+  }),
+)
 class DirectoryComponent extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if ('employee' in nextProps) {
@@ -83,6 +91,7 @@ class DirectoryComponent extends PureComponent {
   componentDidMount() {
     this.initDataTable();
     this.initTabId();
+    this.fetchApprovalFlowList();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -115,6 +124,24 @@ class DirectoryComponent extends PureComponent {
       type: 'employee/ClearFilter',
     });
   }
+
+  fetchApprovalFlowList = () => {
+    const {
+      currentUser: {
+        location: { _id: locationID = '' } = {},
+        company: { _id: companyID } = {},
+      } = {},
+      dispatch,
+    } = this.props;
+
+    dispatch({
+      type: 'offboarding/fetchApprovalFlowList',
+      payload: {
+        company: companyID,
+        location: locationID,
+      },
+    });
+  };
 
   // Define tabID to filter
   initTabId = () => {
@@ -532,11 +559,17 @@ class DirectoryComponent extends PureComponent {
 
   renderTab = (tabName, key, loading, indexShowLocation) => {
     const { tabId, collapsed, changeTab } = this.state;
+    const { approvalflow = [] } = this.props;
     return (
       <TabPane tab={tabName} key={key}>
         <Layout className={styles.directoryLayout_inner}>
           <Content className="site-layout-background">
-            <DirectoryTable loading={loading} list={this.renderListEmployee(key)} keyTab={key} />
+            <DirectoryTable
+              loading={loading}
+              list={this.renderListEmployee(key)}
+              keyTab={key}
+              approvalflow={approvalflow}
+            />
           </Content>
           <TableFilter
             onToggle={this.handleToggle}

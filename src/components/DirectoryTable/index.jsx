@@ -1,11 +1,14 @@
 /* eslint-disable no-console */
 import React, { Component } from 'react';
-import { history, formatMessage } from 'umi';
+import { history, formatMessage, connect } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Table, Avatar, Button, message } from 'antd';
+import { Table, Avatar, Button } from 'antd';
 import styles from './index.less';
 import ModalTerminate from './components/ModalTerminate';
 
+@connect(({ loading }) => ({
+  loadingTerminateReason: loading.effects['offboarding/terminateReason'],
+}))
 class DirectoryTable extends Component {
   constructor(props) {
     super(props);
@@ -47,19 +50,48 @@ class DirectoryTable extends Component {
     });
   };
 
-  handleCandelModal = (e) => {
+  handleCandelModal = () => {
     // e.stopPropagation();
     this.setState({
       openModal: false,
     });
   };
 
+  getPayload = (id, reasonForLeaving, lastWorkingDate) => {
+    const { approvalflow = [] } = this.props;
+
+    let approvalFlowID = '';
+    approvalflow.forEach((item) => {
+      approvalFlowID = item._id;
+    });
+
+    const payload = {
+      action: 'submit',
+      employee: id,
+      reasonForLeaving,
+      approvalFlow: approvalFlowID,
+      lastWorkingDate,
+    };
+
+    return payload;
+  };
+
   handleSubmit = (values) => {
     const { rowData = {} } = this.state;
-    // // e.stopPropagation();
-    console.log('Row: ', rowData);
-    console.log('values', values);
-    message.success('Submit successfully !');
+    const { dispatch } = this.props;
+    const { _id = '' } = rowData;
+    const { reason, lastWorkingDate } = values;
+
+    const payload = this.getPayload(_id, reason, lastWorkingDate);
+
+    dispatch({
+      type: 'offboarding/terminateReason',
+      payload,
+    }).then(() => {
+      this.setState({
+        openModal: false,
+      });
+    });
   };
 
   // onChangeReason = ({ target: { value } }) => {
@@ -225,7 +257,7 @@ class DirectoryTable extends Component {
 
   render() {
     const { sortedName = {}, pageSelected, openModal = false, valueReason = '' } = this.state;
-    const { list = [], loading, keyTab } = this.props;
+    const { list = [], loading, keyTab, loadingTerminateReason } = this.props;
     const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
@@ -271,6 +303,7 @@ class DirectoryTable extends Component {
           />
         </div>
         <ModalTerminate
+          loading={loadingTerminateReason}
           visible={openModal}
           handleSubmit={this.handleSubmit}
           handleCandelModal={this.handleCandelModal}
