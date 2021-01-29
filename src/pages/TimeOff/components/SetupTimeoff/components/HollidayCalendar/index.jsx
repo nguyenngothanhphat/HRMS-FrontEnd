@@ -2,12 +2,16 @@ import React, { Component } from 'react';
 import { Button, Checkbox, Select, Row, Col, Spin, InputNumber } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
-import { mockData } from './ListData';
 import s from './index.less';
 
-const CheckboxGroup = Checkbox.Group;
-
 const { Option } = Select;
+
+const listCountry = [
+  { country: 'VN', code: 'vietnamese', label: 'Viet Nam' },
+  { country: 'US', code: 'usa', label: 'US' },
+  { country: 'IN', code: 'indian', label: ' India' },
+];
+
 const MOCK_DATA = [
   {
     text: 'Jan',
@@ -70,71 +74,119 @@ const MOCK_DATA = [
     children: [],
   },
 ];
-@connect(({ timeOff, loading }) => ({
-  timeOff,
-  loading: loading.effects['timeOff/fetchHolidaysList'],
-}))
+@connect(
+  ({
+    timeOff,
+    loading,
+    user: {
+      currentUser: {
+        company: { _id: idCompany = '' } = {},
+        location: { _id: idLocation = '' } = {},
+      } = {},
+    } = {},
+  }) => ({
+    timeOff,
+    loading: loading.effects['timeOff/fetchHolidaysListBylocation'],
+    loadingbyCountry: loading.effects['timeOff/fetchHolidaysListBylocation'],
+    idCompany,
+    idLocation,
+  }),
+)
 class HollidayCalendar extends Component {
   constructor(props) {
     super(props);
     this.state = {
       data: [],
+      role: '',
+      yearSelect: 2021,
+      list: {},
     };
   }
 
+  findRole = (roles) => {
+    const hrGlobal = roles.find((item) => item === 'hr-global');
+    const role = hrGlobal || 'employee';
+    return role;
+  };
+
   componentDidMount = () => {
+    const listRole = localStorage.getItem('antd-pro-authority');
+    const role = this.findRole(JSON.parse(listRole));
+    this.setState({
+      role,
+    });
     const d = new Date();
     const year = d.getFullYear();
-    const n = year.toString();
+    const formatYear = year.toString();
+    this.initListHoliday(formatYear);
+  };
 
-    const { items = [] } = mockData;
-    const newList = items.filter((item) => {
-      const { end: { date: ngay } = {} } = item;
-      const yearCurrent = moment(ngay).format('YYYY');
-      return yearCurrent === n;
-    });
-
-    const { dispatch } = this.props;
-    // const { year } = this.state;
+  initListHoliday = (year) => {
+    const { dispatch, idLocation } = this.props;
     dispatch({
-      type: 'timeOff/fetchGoogleHolidayList',
+      type: 'timeOff/fetchHolidaysListBylocation',
+      payload: { location: idLocation },
+    }).then((response) => {
+      const { statusCode, data: listData = {} } = response;
+      this.setState({
+        list: listData,
+      });
+      const { holiday = [] } = listData;
+      if (statusCode === 200) {
+        const newList = holiday.filter((item) => {
+          const { date } = item;
+          const yearCurrent = moment(date).format('YYYY');
+          return yearCurrent === year;
+        });
+        this.fomatDate(newList);
+      }
     });
-
-    this.initListHoliday(newList);
-  };
-
-  initListHoliday = (holidaysList) => {
-    this.fomatArray(holidaysList);
-  };
-
-  fomatArray = (holidaysList = []) => {
-    let result = MOCK_DATA;
-    holidaysList.forEach((item) => {
-      const { end: { date: month } = {} } = item;
-      const monthItem = moment(month).format('MMM');
-      const fomatDataItem = moment(month).format('YYYY, MMM');
-
-      result = result.map((resultItem) => ({
-        ...resultItem,
-        month: resultItem.text === monthItem ? fomatDataItem : resultItem.month,
-        children:
-          resultItem.text === monthItem ? [...resultItem.children, item] : resultItem.children,
-      }));
-    });
-    console.log(result, 'result');
-    this.setState({ data: result });
   };
 
   handleChange = (value) => {
     const { data } = this.state;
-    // this.setState({ select: value });
     const refComponent = data.find((item) => item.text === value);
     refComponent.ref.current.scrollIntoView(true);
-    window.scrollBy(0, -70);
+    window.scrollBy(0, -80);
   };
 
   onChange = (value) => {
-    this.initListHoliday(value);
+    const { list } = this.state;
+
+    this.setState({
+      yearSelect: value,
+    });
+    const { holiday = [] } = list;
+    const newList = holiday.filter((item) => {
+      const { date } = item;
+      const yearCurrent = moment(date).format('YYYY');
+      return yearCurrent === value.toString();
+    });
+    this.fomatDate(newList);
+  };
+
+  changeCountry = (value) => {
+    const { yearSelect } = this.state;
+    const { dispatch } = this.props;
+    const year = yearSelect.toString();
+    dispatch({
+      type: 'timeOff/fetchHolidaysByCountry',
+      payload: { country: value },
+    }).then((response) => {
+      const { statusCode, data: listByCountry = {} } = response;
+      this.setState({
+        list: listByCountry,
+      });
+      const { holiday = [] } = listByCountry;
+      if (statusCode === 200) {
+        const newList = holiday.filter((item) => {
+          const { date } = item;
+          const yearCurrent = moment(date).format('YYYY');
+          return yearCurrent === year;
+        });
+        this.fomatDate(newList);
+      }
+    });
   };
 
   renderItem = (item) => {
@@ -144,26 +196,26 @@ class HollidayCalendar extends Component {
         <div key={item.text} className={s.formTable}>
           <div className={s.title}>{item.month}</div>
           <div>
-            {children.map((itemChildren) => {
-              const { summary, visibility, start: { date: day } = {} } = itemChildren;
-              const dateFormat = moment(day).format('dddd');
-              // const day = moment(date).format('dddd');
+            {children.map((itemChildren, index) => {
+              const { date, name, type } = itemChildren;
+              const dateFormat = moment(date).format('MMM Do');
+              const day = moment(date).format('dddd');
               return (
                 <div>
                   <Row gutter={[30, 20]} className={s.textStyles}>
                     <Col>
                       <Checkbox />
                     </Col>
-                    <Col span={6} className={s.textHoliday}>
-                      {summary}
+                    <Col span={8} className={s.textHoliday}>
+                      {name}
                     </Col>
                     <Col span={4} className={s.textHoliday}>
-                      {day}
+                      {dateFormat}
                     </Col>
-                    <Col span={4}>{dateFormat}</Col>
-                    <Col span={6}>{visibility}</Col>
+                    <Col span={4}>{day}</Col>
+                    <Col span={4}>{type}</Col>
                   </Row>
-                  <div className={s.straight} />
+                  {index !== children.length - 1 ? <div className={s.straight} /> : ''}
                 </div>
               );
             })}
@@ -177,7 +229,7 @@ class HollidayCalendar extends Component {
     let result = MOCK_DATA;
     holidaysList.forEach((item) => {
       const monthItem = moment(item.date).format('MMM');
-      const fomatDataItem = moment(item.date).format('YYYY, MMM');
+      const fomatDataItem = moment(item.date).format('MMM , YYYY');
       result = result.map((resultItem) => ({
         ...resultItem,
         month: resultItem.text === monthItem ? fomatDataItem : resultItem.month,
@@ -190,15 +242,8 @@ class HollidayCalendar extends Component {
   };
 
   render() {
-    const { data } = this.state;
-    const newList = data.filter((item) => {
-      const { children = [] } = item;
-      return children.length > 0;
-    });
-
-    console.log(data, 'data');
-
-    const { loading = false } = this.props;
+    const { data, role, yearSelect } = this.state;
+    const { loading = false, loadingbyCountry = false } = this.props;
     return (
       <div className={s.root}>
         <div className={s.setUpWrap}>
@@ -208,16 +253,21 @@ class HollidayCalendar extends Component {
             your company
             <p> provides holidays. You may add holidays to the list as well.</p>
           </div>
+
+          {role === 'hr-global' && (
+            <Select style={{ width: 250 }} onChange={this.changeCountry}>
+              {listCountry.map((item) => (
+                <Option key={item.code} value={item.country}>
+                  {item.label}
+                </Option>
+              ))}
+            </Select>
+          )}
         </div>
         <div className={s.listHoliday}>
           <div span={24} className={s.flex}>
             <div>
-              <Checkbox
-                // indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}
-                className={s.select}
-              >
-                Select All
-              </Checkbox>
+              <Checkbox className={s.select}>Select All</Checkbox>
             </div>
             <div>
               <Row gutter={[24, 0]}>
@@ -226,16 +276,16 @@ class HollidayCalendar extends Component {
                 </Col>
                 <Col>
                   <InputNumber
-                    min={2019}
+                    min={2020}
                     max={2022}
-                    defaultValue={moment().format('YYYY')}
+                    defaultValue={yearSelect}
                     onChange={this.onChange}
                   />
                 </Col>
                 <Col>
                   <Select style={{ width: 120 }} onChange={this.handleChange}>
-                    {newList.map((item) => (
-                      <Option key={item} value={item.text}>
+                    {data.map((item) => (
+                      <Option key={item.month} value={item.text}>
                         {item.text}
                       </Option>
                     ))}
@@ -246,7 +296,7 @@ class HollidayCalendar extends Component {
           </div>
           <div>
             <Row>
-              {loading ? (
+              {loading || loadingbyCountry ? (
                 <Col span={24} className={s.center}>
                   <Spin />
                 </Col>

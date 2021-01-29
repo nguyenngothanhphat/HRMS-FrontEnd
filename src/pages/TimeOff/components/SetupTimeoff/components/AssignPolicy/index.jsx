@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Select, Form, Divider, Row, Col, Button } from 'antd';
-import ModalNotice from '../Modalupload';
+// import ModalNotice from '../Modalupload';
 import styles from './index.less';
 
 class AssignPolicy extends Component {

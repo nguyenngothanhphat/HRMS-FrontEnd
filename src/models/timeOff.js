@@ -38,8 +38,9 @@ import {
   rejectMultipleTimeoffRequest,
   approveMultipleCompoffRequest,
   rejectMultipleCompoffRequest,
-  getCalendarHoliday,
-  dssd,
+  // getCalendarHoliday,
+  getHolidaysListByLocation,
+  getHolidaysByCountry,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -49,6 +50,8 @@ const timeOff = {
     currentMineOrTeamTab: '1',
     currentFilterTab: '1',
     holidaysList: [],
+    holidaysListByLocation: {},
+    holidaysListByCountry: {},
     allMyLeaveRequests: {},
     leavingList: [],
     totalLeaveBalance: {},
@@ -69,6 +72,7 @@ const timeOff = {
     allTeamLeaveRequests: {},
     allTeamCompoffRequests: {},
     compoffApprovalFlow: {},
+
     currentUserRole: '', // employee, manager, hr-manager
   },
   effects: {
@@ -169,10 +173,11 @@ const timeOff = {
       }
       return 0;
     },
-    *fetchHolidaysList({ payload: { year = '', month = '' } = {} }, { call, put }) {
+    // Holiday list
+    *fetchHolidaysList(_, { call, put }) {
       let response;
       try {
-        response = yield call(getHolidaysList, { year, month });
+        response = yield call(getHolidaysList);
         const { statusCode, data: holidaysList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -183,6 +188,36 @@ const timeOff = {
         // dialog(errors);
         // eslint-disable-next-line no-console
         // console.log('errors of holiday list', erros);
+      }
+      return response;
+    },
+    *fetchHolidaysListBylocation({ payload = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getHolidaysListByLocation, payload);
+        const { statusCode, data: holidaysListByLocation = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { holidaysListByLocation },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchHolidaysByCountry({ payload = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getHolidaysByCountry, payload);
+        const { statusCode, data: holidaysListByCountry = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { holidaysListByCountry },
+        });
+      } catch (errors) {
+        dialog(errors);
       }
       return response;
     },
@@ -685,24 +720,6 @@ const timeOff = {
         dialog(errors);
         return {};
       }
-    },
-    *fetchGoogleHolidayList(_, { call, put }) {
-      let response;
-      try {
-        response = yield call(getCalendarHoliday);
-        console.log(response);
-        // const { statusCode, data: holidaysList = [] } = response;
-        // if (statusCode !== 200) throw response;
-        // yield put({
-        //   type: 'save',
-        //   payload: { holidaysList },
-        // });
-      } catch (errors) {
-        // dialog(errors);
-        // eslint-disable-next-line no-console
-        // console.log('errors of holiday list', erros);
-      }
-      return response;
     },
   },
   reducers: {

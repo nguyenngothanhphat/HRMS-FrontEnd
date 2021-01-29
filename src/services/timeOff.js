@@ -111,9 +111,20 @@ export async function getProjectsListByEmployee(payload) {
     data: payload,
   });
 }
-
-export async function getHolidaysList(payload) {
+// Holidays
+export async function getHolidaysList() {
   return request('/api/holidaycalendar/list', {
+    method: 'POST',
+  });
+}
+export async function getHolidaysListByLocation(payload) {
+  return request('/api/holidaycalendar/get-by-location', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getHolidaysByCountry(payload) {
+  return request('/api/holidaycalendar/get-by-country', {
     method: 'POST',
     data: payload,
   });
@@ -247,7 +258,7 @@ export async function getCalendarHoliday() {
     `/apigoogle/calendar/v3/calendars/en.vietnamese%23holiday%40group.v.calendar.google.com/events`,
     {
       params: {
-        key: 'AIzaSyD7eFV9iwCw-YR7UKRHCV7ayiiDQl1SYHo',
+        key: 'AIzaSyC4yCRj10KxwrEebj2DlZT9F6kQwgHy6hM',
       },
       method: 'GET',
     },
