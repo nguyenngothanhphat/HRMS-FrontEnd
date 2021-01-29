@@ -1,11 +1,12 @@
 /* eslint-disable no-console */
 import React, { Component } from 'react';
-import { history, formatMessage } from 'umi';
+import { history, formatMessage, connect } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
 import { Table, Avatar, Button, message } from 'antd';
 import styles from './index.less';
 import ModalTerminate from './components/ModalTerminate';
 
+@connect()
 class DirectoryTable extends Component {
   constructor(props) {
     super(props);
@@ -54,12 +55,37 @@ class DirectoryTable extends Component {
     });
   };
 
+  getPayload = (id, reasonForLeaving, lastWorkingDate) => {
+    const { approvalflow = [] } = this.props;
+
+    let approvalFlowID = '';
+    approvalflow.forEach((item) => {
+      approvalFlowID = item._id;
+    });
+
+    const payload = {
+      action: 'submit',
+      employee: id,
+      reasonForLeaving,
+      approvalFlow: approvalFlowID,
+      lastWorkingDate,
+    };
+
+    return payload;
+  };
+
   handleSubmit = (values) => {
     const { rowData = {} } = this.state;
-    // // e.stopPropagation();
-    console.log('Row: ', rowData);
-    console.log('values', values);
-    message.success('Submit successfully !');
+    const { dispatch } = this.props;
+    const { _id = '' } = rowData;
+    const { reason, workingDay } = values;
+
+    const payload = this.getPayload(_id, reason, workingDay);
+
+    dispatch({
+      type: 'offboarding/terminateReason',
+      payload,
+    });
   };
 
   // onChangeReason = ({ target: { value } }) => {
