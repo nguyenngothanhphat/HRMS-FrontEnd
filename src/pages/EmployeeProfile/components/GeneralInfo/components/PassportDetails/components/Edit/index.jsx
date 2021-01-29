@@ -8,6 +8,7 @@ import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import removeIcon from './assets/removeIcon.svg';
 import UploadImage from '../UploadImage';
+import PassportItem from './PassportItem';
 import styles from './index.less';
 
 @connect(
@@ -337,14 +338,7 @@ class Edit extends Component {
   render() {
     const { isLt5M, getContent, isDate, visible, linkImage, dummyPassPorts } = this.state;
 
-    const { Option } = Select;
-    const {
-      passportData = [],
-      handleCancel = () => {},
-      countryList,
-      loading,
-      loadingPassportTest,
-    } = this.props;
+    const { passportData = [], handleCancel = () => {}, countryList } = this.props;
 
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
@@ -365,7 +359,6 @@ class Edit extends Component {
       },
     };
 
-    const dateFormat = 'Do MMM YYYY';
     const renderForm = passportData.length > 0 ? passportData : dummyPassPorts;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
@@ -375,6 +368,41 @@ class Edit extends Component {
           {...formItemLayout}
           onFinish={this.handleSave}
         >
+
+          <Form.List name="users">
+            {(fields, { add, remove }) => (
+              <>
+                {fields.map(field => (
+                  <Space key={field.key} style={{ display: 'flex', marginBottom: 8 }} align="baseline">
+                    <Form.Item
+                      {...field}
+                      name={[field.name, 'first']}
+                      fieldKey={[field.fieldKey, 'first']}
+                      rules={[{ required: true, message: 'Missing first name' }]}
+                    >
+                      <Input placeholder="First Name" />
+                    </Form.Item>
+                    <Form.Item
+                      {...field}
+                      name={[field.name, 'last']}
+                      fieldKey={[field.fieldKey, 'last']}
+                      rules={[{ required: true, message: 'Missing last name' }]}
+                    >
+                      <Input placeholder="Last Name" />
+                    </Form.Item>
+                    <MinusCircleOutlined onClick={() => remove(field.name)} />
+                  </Space>
+            ))}
+                <Form.Item>
+                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                    Add field
+                  </Button>
+                </Form.Item>
+              </>
+        )}
+          </Form.List>
+
+
           {renderForm.map((item, index) => {
             const {
               passportNumber,
@@ -384,145 +412,18 @@ class Edit extends Component {
               urlFile = '',
             } = item;
 
-            const formatDatePassportIssueOn = passportIssuedOn && moment(passportIssuedOn);
-            const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
-
             return (
-              <div key={`passport${index + 1}`}>
-                {index > 0 ? <div className={styles.line} /> : null}
-
-                <div className={styles.styleUpLoad}>
-                  <Form.Item
-                    label="Passport Number"
-                    name={`passportNumber ${index}`}
-                    rules={[
-                      {
-                        pattern: /^[a-zA-Z0-9]{0,12}$/,
-                        message: formatMessage({
-                          id: 'pages.employeeProfile.validatePassPortNumber',
-                        }),
-                      },
-                    ]}
-                  >
-                    <Input
-                      className={isLt5M ? styles.inputForm : styles.inputFormImageValidate}
-                      defaultValue={passportNumber}
-                      onChange={(event) => {
-                        const { value: fieldValue } = event.target;
-                        this.handleChange(index, 'passportNumber', fieldValue);
-                      }}
-                    />
-                  </Form.Item>
-                  {index >= 1 ? (
-                    <div>
-                      <img
-                        className={styles.removeIcon}
-                        onClick={() => this.onRemoveCondition(index)}
-                        src={removeIcon}
-                        alt="remove"
-                      />
-                    </div>
-                  ) : null}
-
-                  {!urlFile ? (
-                    <div className={styles.textUpload}>
-                      {loadingPassportTest[index] === false ||
-                      loadingPassportTest[index] === undefined ? (
-                        <UploadImage
-                          content={isLt5M ? 'Choose file' : `Retry`}
-                          setSizeImageMatch={(isImage5M) =>
-                            this.handleGetSetSizeImage(index, isImage5M)
-                          }
-                          getResponse={(resp) => this.handleGetUpLoad(index, resp)}
-                          loading={loading}
-                          index={index}
-                          name="passport"
-                        />
-                      ) : (
-                        <Spin loading={loadingPassportTest[index]} active="true" />
-                      )}
-                    </div>
-                  ) : (
-                    <div className={styles.viewUpLoadData}>
-                      <p
-                        onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
-                        className={styles.viewUpLoadDataURL}
-                      >
-                        fileName
-                      </p>
-                      <p className={styles.viewUpLoadDataText}>Uploaded</p>
-                      <img
-                        src={cancelIcon}
-                        alt=""
-                        onClick={() => this.handleCanCelIcon(index)}
-                        className={styles.viewUpLoadDataIconCancel}
-                      />
-                    </div>
-                  )}
-                </div>
-                {urlFile ? (
-                  <Form.Item label="Uploaded file:" className={styles.labelUpload}>
-                    <p
-                      onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
-                      className={styles.urlUpload}
-                    >
-                      {this.handleNameDataUpload(urlFile.url)}
-                    </p>
-                  </Form.Item>
-                ) : (
-                  ''
-                )}
-                <Form.Item label="Issued Country" name={`passportIssuedCountry ${index}`}>
-                  <Select
-                    showArrow
-                    className={styles.selectForm}
-                    defaultValue={passportIssuedCountry ? passportIssuedCountry._id : ''}
-                    onChange={(value) => {
-                      this.handleChange(index, 'passportIssuedCountry', value);
-                    }}
-                    // suffixIcon={<DownOutlined className={styles.arrowDown} />}
-                  >
-                    {formatCountryList.map((itemCountry) => {
-                      return (
-                        <Option key={itemCountry.value} value={itemCountry.value}>
-                          {itemCountry.name}
-                        </Option>
-                      );
-                    })}
-                  </Select>
-                </Form.Item>
-                <Form.Item label="Issued On" name={`passportIssuedOn ${index}`}>
-                  <DatePicker
-                    format={dateFormat}
-                    defaultValue={formatDatePassportIssueOn}
-                    onChange={(dates) => {
-                      this.handleChange(index, 'passportIssuedOn', dates);
-                    }}
-                    className={styles.dateForm}
-                  />
-                </Form.Item>
-                <Form.Item
-                  label="Valid Till"
-                  name={`passportValidTill ${index}`}
-                  validateStatus={isDate === false ? 'error' : 'success'}
-                  help={
-                    isDate === false
-                      ? formatMessage({
-                          id: 'pages.employeeProfile.validateDate',
-                        })
-                      : ''
-                  }
-                >
-                  <DatePicker
-                    format={dateFormat}
-                    defaultValue={formatDatePassportValidTill}
-                    onChange={(dates) => {
-                      this.handleChange(index, 'passportValidTill', dates);
-                    }}
-                    className={isDate === false ? styles.dateFormValidate : styles.dateForm}
-                  />
-                </Form.Item>
-              </div>
+              <PassportItem
+                passportNumber={passportNumber}
+                passportIssuedCountry={passportIssuedCountry}
+                passportIssuedOn={passportIssuedOn}
+                passportValidTill={passportValidTill}
+                urlFile={urlFile}
+                index={index}
+                isLt5M={isLt5M}
+                isDate={isDate}
+                formatCountryList={formatCountryList}
+              />
             );
           })}
 
