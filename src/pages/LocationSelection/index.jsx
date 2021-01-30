@@ -82,8 +82,8 @@ class LocationSelection extends Component {
             </div>
           </div>
           {listLocationsByCompany.map((value) => {
-            const { name = '' } = value;
-            return <ItemCompany company={company} location={name} />;
+            const { name = '', _id = '' } = value;
+            return <ItemCompany company={company} location={name} locationId={_id} />;
           })}
         </div>
       </div>
