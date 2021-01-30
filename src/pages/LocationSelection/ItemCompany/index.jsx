@@ -5,12 +5,17 @@ import { history } from 'umi';
 import s from './index.less';
 
 export default class ItemCompany extends PureComponent {
-  handleGetStarted = () => {
+  handleGetStarted = (locationId) => {
+    localStorage.setItem('currentLocation', locationId);
     history.push('/');
   };
 
   render() {
-    const { company: { logoUrl = '', name = '' } = {}, location = '' } = this.props;
+    const {
+      company: { logoUrl = '', name = '' } = {},
+      location = '',
+      locationId = '',
+    } = this.props;
     return (
       <div className={s.root}>
         <img
@@ -24,7 +29,7 @@ export default class ItemCompany extends PureComponent {
           <p className={s.viewInfo__location}>{location}</p>
         </div>
         <div className={s.viewAction}>
-          <Button className={s.btnOutline} onClick={this.handleGetStarted}>
+          <Button className={s.btnOutline} onClick={() => this.handleGetStarted(locationId)}>
             Go to dashboard
           </Button>
         </div>

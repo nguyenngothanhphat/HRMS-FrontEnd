@@ -90,6 +90,7 @@ class AvatarDropdown extends React.Component {
       return;
     }
 
+    localStorage.setItem('currentLocation', key);
     let selectLocation = '';
 
     listLocationsByCompany.forEach((value) => {
@@ -100,7 +101,8 @@ class AvatarDropdown extends React.Component {
     });
 
     if (selectLocation) {
-      history.push(`/#${selectLocation}`);
+      window.location.reload();
+      // history.push(`/#${selectLocation}`);
       return;
     }
 
@@ -109,6 +111,7 @@ class AvatarDropdown extends React.Component {
 
   renderLocationList = () => {
     const { listLocationsByCompany = [] } = this.props;
+    const currentLocation = localStorage.getItem('currentLocation');
 
     return (
       <>
@@ -117,7 +120,10 @@ class AvatarDropdown extends React.Component {
         {listLocationsByCompany.map((value) => {
           const { _id = '', name: locationName = '' } = value;
           return (
-            <Menu.Item key={_id} className={styles.menuItemLink}>
+            <Menu.Item
+              key={_id}
+              className={currentLocation !== _id ? styles.menuItemLink : styles.menuItemLink2}
+            >
               {locationName}
             </Menu.Item>
           );
