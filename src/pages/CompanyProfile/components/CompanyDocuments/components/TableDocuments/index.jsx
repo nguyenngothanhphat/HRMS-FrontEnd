@@ -4,6 +4,7 @@ import avtDefault from '@/assets/avtDefault.jpg';
 import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import Download from '@/components/DownloadFile';
+import ModalViewPDF from '@/components/ModalViewPDF';
 import s from './index.less';
 
 class TableDocuments extends Component {
@@ -11,6 +12,8 @@ class TableDocuments extends Component {
     super(props);
     this.state = {
       pageNavigation: 1,
+      modalVisible: false,
+      linkFile: '',
     };
   }
 
@@ -20,13 +23,43 @@ class TableDocuments extends Component {
     });
   };
 
+  onFileNameClicked = (link) => {
+    this.setState({
+      modalVisible: true,
+      linkFile: link,
+    });
+  };
+
+  handleCancel = () => {
+    this.setState({
+      modalVisible: false,
+      linkFile: '',
+    });
+  };
+
+  parsedData = (data) => {
+    return data.map((value) => {
+      const { attachment = {}, key = '' } = value;
+      return {
+        ...value,
+        newKey: {
+          attachment,
+          key,
+        },
+      };
+    });
+  };
+
   render() {
     const { loading, data = [] } = this.props;
     const { pageNavigation } = this.state;
+
+    const parsedData = this.parsedData(data);
+
     const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
-      total: data.length,
+      total: parsedData.length,
       showTotal: (total, range) => (
         <span>
           Showing{' '}
@@ -44,10 +77,15 @@ class TableDocuments extends Component {
     const columns = [
       {
         title: <span className={s.title}>Document name</span>,
-        dataIndex: 'key',
-        key: 'name',
-        render: (key) => {
-          return <p className={s.text}>{key}</p>;
+        dataIndex: 'newKey',
+        key: 'newKey',
+        render: (newKey) => {
+          const { key = '', attachment: { url = '' } = {} } = newKey;
+          return (
+            <p onClick={() => this.onFileNameClicked(url)} className={s.documentName}>
+              {key}
+            </p>
+          );
         },
       },
       {
@@ -102,20 +140,28 @@ class TableDocuments extends Component {
       },
     ];
 
+    const { modalVisible, linkFile } = this.state;
+
     return (
       <div className={s.tableDocuments}>
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={parsedData}
           hideOnSinglePage
           pagination={{
             ...pagination,
-            total: data.length,
+            total: parsedData.length,
             // hideOnSinglePage: true,
           }}
           rowKey="_id"
           scroll={{ x: 'max-content' }}
           loading={loading}
+        />
+        <ModalViewPDF
+          visible={modalVisible}
+          handleCancel={this.handleCancel}
+          link={linkFile}
+          title="View Document"
         />
       </div>
     );
