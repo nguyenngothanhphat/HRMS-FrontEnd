@@ -13,7 +13,7 @@ class EditorQuill extends Component {
   }
 
   render() {
-    const { messages = '', handleChangeEmail = () => {}, listAutoText = [] } = this.props;
+    const { messages = '', handleChangeEmail, listAutoText = [] } = this.props;
 
     return (
       <div className={styles.EditorQuill}>
@@ -23,16 +23,41 @@ class EditorQuill extends Component {
           init={{
             height: '100%',
             menubar: true,
+            extended_valid_elements: '*[*]',
+            valid_children: '+*[*]',
             plugins: [
-              'save advlist autolink lists link image charmap print preview anchor',
+              'save advlist autolink lists link image charmap print anchor',
               'searchreplace visualblocks fullscreen',
               'insertdatetime media table paste help wordcount variable',
             ],
             toolbar:
-              'undo redo formatselect bold italic size backcolor  alignleft aligncenter alignright alignjustify bullist numlist outdent indent removeformat help variable',
+              'undo redo formatselect bold italic size backcolor  alignleft aligncenter alignright alignjustify bullist numlist outdent indent removeformat help variable custom-preview',
             content_style: 'body { margin: 1rem auto; max-width: 900px; padding: 0 13px; }',
             setup(ed) {
-              window.tester = ed;
+              ed.ui.registry.addButton('custom-preview', {
+                text: 'Preview',
+                onAction() {
+                  ed.windowManager.open({
+                    title: 'Previewing changes',
+                    body: {
+                      type: 'panel',
+                      items: [
+                        {
+                          type: 'htmlpanel',
+                          html: ed.getContent({ format: 'raw' }),
+                        },
+                      ],
+                    },
+                    buttons: [
+                      {
+                        text: 'OK',
+                        type: 'cancel',
+                      },
+                    ],
+                    size: 'large',
+                  });
+                },
+              });
               ed.ui.registry.addMenuButton('variable', {
                 text: 'Insert auto-text',
                 fetch(callback) {
@@ -48,18 +73,7 @@ class EditorQuill extends Component {
                   callback(menuItems);
                 },
               });
-
-              // ed.on('variableClick', (e) => {
-              //   notification.info({
-              //     message: `You clicked on ${e.value}!`,
-              //     description:
-              //       'You are selecting this field. You can change this field by inserting another one or delete it! Made with <3 by Quan',
-              //   });
-              // });
             },
-            variable_prefix: '@',
-            variable_suffix: '',
-
             variable_style:
               'background-color: #ffa100; color: #fff; border-radius: 4px; padding: 4px; margin: 0 2px; font-weight: 500',
             external_plugins: {

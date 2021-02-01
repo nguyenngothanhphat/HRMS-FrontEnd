@@ -54,7 +54,7 @@ class View extends PureComponent {
         visaNumber = '',
         document = {},
         document: { attachment: { url = '', name = '' } = {} } = {},
-        visaIssuedCountry: {  name: name1 = '', flag = '' } = {},
+        visaIssuedCountry: { name: name1 = '', flag = '' } = {},
         visaType = [],
         visaEntryType = '',
         visaIssuedOn = '',

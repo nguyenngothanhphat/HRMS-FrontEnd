@@ -25,6 +25,23 @@ class ModalViewPDF extends Component {
     });
   };
 
+  identifyImageOrPdf = (fileName) => {
+    const parts = fileName.split('.');
+    const ext = parts[parts.length - 1];
+    switch (ext.toLowerCase()) {
+      case 'jpg':
+      case 'jpeg':
+      case 'gif':
+      case 'bmp':
+      case 'png':
+        return 0;
+      case 'pdf':
+        return 1;
+      default:
+        return 0;
+    }
+  };
+
   render() {
     const { visible, handleCancel = () => {}, link = '', title = '' } = this.props;
     const { numPages } = this.state;
@@ -40,21 +57,27 @@ class ModalViewPDF extends Component {
         centered
       >
         <div className={s.viewDocument}>
-          <Document
-            file={link}
-            onLoadSuccess={this.onDocumentLoadSuccess}
-            loading={this.documentWarning('Loading document. Please wait...')}
-            noData={this.documentWarning('URL is not available.')}
-          >
-            {Array.from(new Array(numPages), (el, index) => (
-              <Page
-                loading=""
-                className={s.pdfPage}
-                key={`page_${index + 1}`}
-                pageNumber={index + 1}
-              />
-            ))}
-          </Document>
+          {this.identifyImageOrPdf(link) === 0 ? (
+            <div className={s.imageFrame}>
+              <img alt="preview" src={link} />
+            </div>
+          ) : (
+            <Document
+              file={link}
+              onLoadSuccess={this.onDocumentLoadSuccess}
+              loading={this.documentWarning('Loading document. Please wait...')}
+              noData={this.documentWarning('URL is not available.')}
+            >
+              {Array.from(new Array(numPages), (el, index) => (
+                <Page
+                  loading=""
+                  className={s.pdfPage}
+                  key={`page_${index + 1}`}
+                  pageNumber={index + 1}
+                />
+              ))}
+            </Document>
+          )}
         </div>
       </Modal>
     );
