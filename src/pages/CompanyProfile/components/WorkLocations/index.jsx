@@ -21,6 +21,7 @@ import s from './index.less';
     workLocations,
     loading: loading.effects['companiesManagement/upsertLocationsList'],
     fetchingLocationsList: loading.effects['companiesManagement/fetchLocationsList'],
+    loadingCountry: loading.effects['country/fetchListCountry'],
   }),
 )
 class WorkLocations extends PureComponent {
@@ -51,10 +52,25 @@ class WorkLocations extends PureComponent {
     return listLocation;
   };
 
+  removeLocation = (id) => {
+    const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
+    const payload = { id, company: _id };
+    dispatch({
+      type: 'companiesManagement/removeLocation',
+      payload,
+    });
+  };
+
   render() {
-    const { listCountry = [], workLocations = [], loading, fetchingLocationsList } = this.props;
+    const {
+      listCountry = [],
+      workLocations = [],
+      loading,
+      fetchingLocationsList,
+      loadingCountry,
+    } = this.props;
     const listLocation = this.formatListLocation();
-    if (fetchingLocationsList)
+    if (fetchingLocationsList || loadingCountry)
       return (
         <div className={s.root}>
           <div className={s.content__viewTop}>
@@ -99,11 +115,13 @@ class WorkLocations extends PureComponent {
                 <>
                   {fields.map((field) => (
                     <FormWorkLocation
-                      {...field}
+                      field={field}
                       key={field.name}
                       formRef={this.formRef}
                       listCountry={listCountry}
                       listLocation={listLocation}
+                      removeLocation={this.removeLocation}
+                      onRemove={() => remove(field.name)}
                     />
                   ))}
                   <div className={s.viewAddWorkLocation} onClick={() => add()}>

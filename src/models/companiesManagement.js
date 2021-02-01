@@ -7,6 +7,7 @@ import {
   addLocation,
   updateLocation,
   upsertLocationsList,
+  removeLocation,
 } from '@/services/companiesManangement';
 import { notification } from 'antd';
 
@@ -160,6 +161,22 @@ const companiesManagement = {
     *upsertLocationsList({ payload: { locations = [], company = '' } = {} }, { call, put }) {
       try {
         const response = yield call(upsertLocationsList, { locations });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({ type: 'fetchLocationsList', payload: { company } });
+        yield put({
+          type: 'user/fetchCurrent',
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *removeLocation({ payload: { id = '', company = '' } = {} }, { call, put }) {
+      try {
+        const response = yield call(removeLocation, { id });
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
