@@ -82,7 +82,7 @@ class View extends PureComponent {
         </Col>
         <Col span={18} className={styles.textValue}>
           {item.passportIssuedOn
-            ? Moment(item.passportIssuedOn).locale('en').format('Do MMM YYYY')
+            ? Moment(item.passportIssuedOn).locale('en').format('MM.DD.YY')
             : ''}
         </Col>
         <Col span={6} className={styles.textLabel}>
@@ -90,7 +90,7 @@ class View extends PureComponent {
         </Col>
         <Col span={18} className={styles.textValue}>
           {item.passportValidTill
-            ? Moment(item.passportValidTill).locale('en').format('Do MMM YYYY')
+            ? Moment(item.passportValidTill).locale('en').format('MM.DD.YY')
             : ''}
         </Col>
       </Fragment>

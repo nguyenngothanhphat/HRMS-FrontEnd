@@ -155,7 +155,6 @@ class Edit extends Component {
   };
 
   processDataChangesPassPort = (item) => {
-    console.log('item', item);
     const {
       urlFile,
       document,
@@ -221,7 +220,7 @@ class Edit extends Component {
     const dataTempKeptPassport = this.processDataKeptPassPort(item) || {};
 
     this.handleAddPassPortAllField(item, index);
-    console.log('payloadUpdatePassPort', payloadUpdatePassPort);
+
     dispatch({
       type: 'employeeProfile/updatePassPort',
       payload: payloadUpdatePassPort,
@@ -365,7 +364,7 @@ class Edit extends Component {
       },
     };
 
-    const dateFormat = 'Do MMM YYYY';
+    const dateFormat = 'MM.DD.YY';
     const renderForm = passportData.length > 0 ? passportData : dummyPassPorts;
     return (
       <Row gutter={[0, 16]} className={styles.root}>

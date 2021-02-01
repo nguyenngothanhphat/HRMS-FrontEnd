@@ -12,15 +12,15 @@ import KYC from './components/KYC';
 const data = [
   {
     title: 'Medical',
-    plans: [{ 'Medical stuff': '20 July 2020' }, { 'Medical stuff': '20 July 2021' }],
+    plans: [{ 'Medical stuff': '07.20.21' }, { 'Medical stuff': '07.20.21' }],
   },
-  { title: 'Life', plans: [{ 'Life stuff': '20 July 2020' }, { 'Life stuff': '20 July 2021' }] },
+  { title: 'Life', plans: [{ 'Life stuff': '07.20.21' }, { 'Life stuff': '07.20.21' }] },
   {
     title: 'Money',
-    plans: [{ 'Medical money stuff': '20 July 2020' }, { 'Money stuff': '20 July 2021' }],
+    plans: [{ 'Medical money stuff': '07.20.21' }, { 'Money stuff': '07.20.21' }],
   },
-  { title: 'Lunch', plans: [{ 'Food stuff': '20 July 2020' }, { 'Soup stuff': '20 July 2021' }] },
-  { title: 'Over Time', plans: [{ 'Over Time stuff': '20 July 2020' }] },
+  { title: 'Lunch', plans: [{ 'Food stuff': '07.20.21' }, { 'Soup stuff': '07.20.21' }] },
+  { title: 'Over Time', plans: [{ 'Over Time stuff': '07.20.21' }] },
 ];
 
 const dependentData = [
@@ -28,13 +28,13 @@ const dependentData = [
     name: 'John Doe',
     gender: 'Not sure',
     relationship: 'Married to Susan',
-    dob: '21-5-1995',
+    dob: '05.21.95',
   },
   {
     name: 'Mary Doe',
     gender: 'Lesbian',
     relationship: 'Married to John',
-    dob: '21-5-1995',
+    dob: '05.21.95',
   },
 ];
 

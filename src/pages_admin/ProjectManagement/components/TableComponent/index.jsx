@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { formatMessage } from 'umi';
 import { Table } from 'antd';
 import CustomModal from '@/components/CustomModal';
+import moment from 'moment';
 import ModalContent from '../ModalContent';
 import dropbox from '../assets/dropbox.png';
 
@@ -89,6 +90,7 @@ const columns = [
     title: CREATED_DATE,
     dataIndex: 'createdDate',
     key: 'createdDate',
+    render: (createdDate) => <span>{moment(createdDate).format('MM.DD.YY')}</span>,
   },
   {
     title: PROJECT_MANAGER,

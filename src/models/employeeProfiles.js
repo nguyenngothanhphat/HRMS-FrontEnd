@@ -632,12 +632,9 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *updateDocument({ payload: { id = '', attachment = '' } = {} }, { call, put }) {
+    *updateDocument({ payload }, { call, put }) {
       try {
-        const response = yield call(getDocumentUpdate, {
-          id,
-          attachment,
-        });
+        const response = yield call(getDocumentUpdate, payload);
         const { statusCode, message, data: newDocument = {} } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -647,8 +644,10 @@ const employeeProfile = {
           type: 'save',
           payload: { newDocument },
         });
+        return response;
       } catch (errors) {
         dialog(errors);
+        return {};
       }
     },
     *fetchEmailsListByCompany({ payload: { company = [] } = {} }, { call, put }) {

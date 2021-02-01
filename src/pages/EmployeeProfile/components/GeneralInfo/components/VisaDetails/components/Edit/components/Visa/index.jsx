@@ -215,7 +215,7 @@ class VisaGeneral extends Component {
         name,
       };
     });
-    const dateFormat = 'Do MMM YYYY';
+    const dateFormat = 'MM.DD.YY';
     return (
       <>
         {visaData.length === 0

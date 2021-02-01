@@ -90,7 +90,7 @@ class EditCurrentInfo extends PureComponent {
       // timeOffPolicy = ''
     } = employeeProfile.originData.compensationData;
 
-    const dateFormat = 'Do MMMM YYYY';
+    const dateFormat = 'MM.DD.YY';
 
     if (loadingLocationsList || loadingTitleList) {
       return (

@@ -112,13 +112,13 @@ class View extends PureComponent {
             Issued On
           </Col>
           <Col span={18} className={styles.textValue}>
-            {Moment(visaIssuedOn).locale('en').format('Do MMM YYYY')}
+            {Moment(visaIssuedOn).locale('en').format('MM.DD.YY')}
           </Col>
           <Col span={6} className={styles.textLabel}>
             Valid Till
           </Col>
           <Col span={18} className={styles.textValue}>
-            {Moment(visaValidTill).locale('en').format('Do MMM YYYY')}
+            {Moment(visaValidTill).locale('en').format('MM.DD.YY')}
           </Col>
           <Col span={24} className={styles.line} />
         </Fragment>

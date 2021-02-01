@@ -34,7 +34,7 @@ class TableTimeOff extends PureComponent {
       dataIndex: 'fromDate',
       sortDirections: ['ascend', 'descend', 'ascend'],
       render: (fromDate) => {
-        const formatedDate = moment(fromDate).format('MM/DD/YYYY');
+        const formatedDate = moment(fromDate).format('MM.DD.YY');
         return <span>{formatedDate}</span>;
       },
       sorter: {
@@ -46,7 +46,7 @@ class TableTimeOff extends PureComponent {
       dataIndex: 'toDate',
       sortDirections: ['ascend', 'descend', 'ascend'],
       render: (toDate) => {
-        const formatedDate = moment(toDate).format('MM/DD/YYYY');
+        const formatedDate = moment(toDate).format('MM.DD.YY');
         return <span>{formatedDate}</span>;
       },
       sorter: {

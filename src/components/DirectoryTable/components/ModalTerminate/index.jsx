@@ -4,7 +4,7 @@ import moment from 'moment';
 
 import styles from './index.less';
 
-const dateFormat = 'YYYY/MM/DD';
+const dateFormat = 'MM.DD.YY';
 
 const { TextArea } = Input;
 

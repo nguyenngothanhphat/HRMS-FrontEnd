@@ -289,7 +289,7 @@ class Edit extends PureComponent {
       },
     };
     const formatDate = DOB && moment(DOB);
-    const dateFormat = 'Do MMM YYYY';
+    const dateFormat = 'MM.DD.YY';
 
     const permissions = checkPermissions(roles);
 

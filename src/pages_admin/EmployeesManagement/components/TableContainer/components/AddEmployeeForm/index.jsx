@@ -181,7 +181,7 @@ class AddEmployeeForm extends Component {
     const { dispatch } = this.props;
     const payload = {
       ...values,
-      joinDate: moment(values.joinDate).format('YYYY-MM-DD'),
+      joinDate: moment(values.joinDate).format('MM.DD.YY'),
     };
     dispatch({
       type: 'employeesManagement/addEmployee',

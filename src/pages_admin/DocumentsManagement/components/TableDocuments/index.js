@@ -67,7 +67,7 @@ class TableDocuments extends PureComponent {
       align: 'center',
       sortDirections: ['ascend', 'descend', 'ascend'],
       render: (createdAt) => {
-        const formatedDate = moment(createdAt).format('MM/DD/YYYY');
+        const formatedDate = moment(createdAt).format('MM.DD.YY');
         return <span>{formatedDate}</span>;
       },
       sorter: {
