@@ -10,15 +10,6 @@ import Links from './components/Links';
 import Carousel from './components/Carousel';
 import styles from './index.less';
 
-const listLinkFQAs = [
-  { name: 'I cannot access an app?', href: '/faqpage' },
-  { name: 'How do I integrate google calendar with the portal?', href: '/faqpage' },
-  { name: 'I cannot access an app?', href: '/faqpage' },
-  { name: 'How do I integrate google calendar with the portal?', href: '/faqpage' },
-  { name: 'How do I remove an app from the list of apps?', href: '/faqpage' },
-  { name: 'How do I remove an app from the list of apps?', href: '/faqpage' },
-];
-
 const listQuickLinks = [
   {
     name: 'Coronavirus resources',
@@ -54,6 +45,7 @@ const listQuickLinks = [
     user: { currentUser = {}, currentUser: { roles = [] } = {} } = {},
     employee: { listEmployeeMyTeam = [] } = {},
     offboarding: { listProjectByEmployee = [] } = {},
+    frequentlyAskedQuestions: { getListByCompany = {} } = {},
     locationSelection,
   }) => ({
     fetchMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
@@ -62,6 +54,7 @@ const listQuickLinks = [
     roles,
     listEmployeeMyTeam,
     listProjectByEmployee,
+    getListByCompany,
     locationSelection,
   }),
 )
@@ -80,6 +73,7 @@ class Dashboard extends PureComponent {
         location: { _id: locationId = '' } = {},
         company: { _id: companyId = '' } = {},
         employee: { _id: employee = '' } = {},
+        company: { _id: idCompany = '' } = {},
       } = {},
     } = this.props;
     dispatch({
@@ -94,6 +88,11 @@ class Dashboard extends PureComponent {
         employee,
       },
     });
+    dispatch({
+      type: 'frequentlyAskedQuestions/getListByCompany',
+      payload: { company: idCompany },
+    });
+
     const locations = await dispatch({
       type: 'locationSelection/fetchLocationsByCompany',
       payload: {
@@ -125,7 +124,16 @@ class Dashboard extends PureComponent {
       currentUser = {},
       listProjectByEmployee = [],
       fetchListProject,
+      getListByCompany = {},
     } = this.props;
+    const { faq = [] } = getListByCompany;
+
+    const listQuestion = [];
+    faq.forEach(({ questionAndAnswer, category }) => {
+      const listQAs = questionAndAnswer.map((qa) => ({ ...qa, category }));
+      listQuestion.push(...listQAs);
+      return listQuestion;
+    });
 
     const { currentLocation } = this.state;
     return (
@@ -156,7 +164,7 @@ class Dashboard extends PureComponent {
                   />
                 </Col>
                 <Col span={14}>
-                  <Links title="FAQs" showButton listData={listLinkFQAs} type="link" />
+                  <Links title="FAQs" showButton listData={listQuestion} type="link" />
                 </Col>
                 <Col span={10}>
                   <Links title="Quick Links" listData={listQuickLinks} type="viewPDF" />
