@@ -20,30 +20,27 @@ class FormWorkLocation extends Component {
   }
 
   componentDidMount() {
-    const { name = 0, listLocation = [] } = this.props;
+    const { field: { name = 0 } = {}, listLocation = [] } = this.props;
     const itemLocation = listLocation[name] || {};
     this.setState({
       country: itemLocation?.country,
     });
   }
 
-  onChangeCountry = (country, nameField) => {
-    const { formRef = {}, isListField = false, name } = this.props;
+  onChangeCountry = (country) => {
+    const { formRef = {}, field: { name = 0 } = {} } = this.props;
     this.setState({
       country,
     });
-    if (isListField) {
-      const workLocations = formRef.current.getFieldValue('workLocations');
-      const cloneWorkLocations = [...workLocations];
+    const workLocations = formRef.current.getFieldValue('workLocations');
+    const cloneWorkLocations = [...workLocations];
+    const check = cloneWorkLocations[name];
+    if (check) {
       cloneWorkLocations[name].state = undefined;
-      formRef.current.setFieldsValue({
-        workLocations: cloneWorkLocations,
-      });
-    } else {
-      formRef.current.setFieldsValue({
-        [nameField]: undefined,
-      });
     }
+    formRef.current.setFieldsValue({
+      workLocations: cloneWorkLocations,
+    });
   };
 
   findListState = (idCountry) => {
@@ -51,11 +48,6 @@ class FormWorkLocation extends Component {
     const itemCountry = listCountry.find((item) => item._id === idCountry) || {};
     const listState = itemCountry.states || [];
     return listState;
-  };
-
-  getName = (fieldName) => {
-    const { isListField, fieldKey } = this.props;
-    return isListField ? [fieldKey, fieldName] : fieldName;
   };
 
   showConfirm = (id) => {
@@ -71,8 +63,8 @@ class FormWorkLocation extends Component {
   };
 
   handleRemove = () => {
-    const { onRemove = () => {}, listLocation = [], name = 0 } = this.props;
-    const itemRemove = listLocation[name] || {};
+    const { onRemove = () => {}, listLocation = [], field = {} } = this.props;
+    const itemRemove = listLocation[field.name] || {};
     const { _id: id } = itemRemove;
     if (id) {
       this.showConfirm(id);
@@ -81,11 +73,11 @@ class FormWorkLocation extends Component {
 
   render() {
     const { country = '' } = this.state;
-    const { listCountry = [], isListField = false, name = 0, listLocation = [] } = this.props;
+    const { listCountry = [], listLocation = [], field = {} } = this.props;
     const listState = this.findListState(country) || [];
-    const itemLocation = listLocation[name] || {};
+    const itemLocation = listLocation[field.name] || {};
     return (
-      <div className={s.content} style={name > 0 ? { marginTop: '24px' } : {}}>
+      <div className={s.content} style={field.name > 0 ? { marginTop: '24px' } : {}}>
         <div className={s.content__viewBottom}>
           <div className={s.content__viewBottom__viewTitle}>
             <p className={s.title}>{itemLocation?.name || 'New work location'}</p>
@@ -98,9 +90,10 @@ class FormWorkLocation extends Component {
           <div className={s.content__viewBottom__row}>
             <p className={s.content__viewBottom__row__textLabel}>Name</p>
             <Form.Item
-              isListField={isListField}
-              name={this.getName('name')}
+              {...field}
               label={false}
+              name={[field.name, 'name']}
+              fieldKey={[field.fieldKey, 'name']}
               rules={[
                 {
                   required: true,
@@ -125,9 +118,10 @@ class FormWorkLocation extends Component {
           <div className={s.content__viewBottom__row}>
             <p className={s.content__viewBottom__row__textLabel}>Address</p>
             <Form.Item
-              isListField={isListField}
-              name={this.getName('address')}
+              {...field}
               label={false}
+              name={[field.name, 'address']}
+              fieldKey={[field.fieldKey, 'address']}
               rules={[
                 {
                   required: true,
@@ -142,9 +136,10 @@ class FormWorkLocation extends Component {
             <div className={s.viewFormVertical}>
               <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>Country</p>
               <Form.Item
-                isListField
-                name={this.getName('country')}
+                {...field}
                 label={false}
+                name={[field.name, 'country']}
+                fieldKey={[field.fieldKey, 'country']}
                 rules={[
                   {
                     required: true,
@@ -156,7 +151,7 @@ class FormWorkLocation extends Component {
                   placeholder="Select Country"
                   showArrow
                   showSearch
-                  onChange={(value) => this.onChangeCountry(value, this.getName('state'))}
+                  onChange={this.onChangeCountry}
                   filterOption={(input, option) =>
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
@@ -170,9 +165,10 @@ class FormWorkLocation extends Component {
             <div className={s.viewFormVertical}>
               <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>State</p>
               <Form.Item
-                isListField
-                name={this.getName('state')}
+                {...field}
                 label={false}
+                name={[field.name, 'state']}
+                fieldKey={[field.fieldKey, 'state']}
                 rules={[
                   {
                     required: true,
@@ -198,9 +194,10 @@ class FormWorkLocation extends Component {
             <div className={s.viewFormVertical}>
               <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>Zip</p>
               <Form.Item
-                fdsf
-                name={this.getName('zipCode')}
+                {...field}
                 label={false}
+                name={[field.name, 'zipCode']}
+                fieldKey={[field.fieldKey, 'zipCode']}
                 rules={[
                   {
                     required: true,
