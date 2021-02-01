@@ -1,10 +1,33 @@
 import logoDefault from '@/assets/companyDefault.png';
 import { Button } from 'antd';
 import React, { PureComponent } from 'react';
-import { history } from 'umi';
+import { history, connect } from 'umi';
 import s from './index.less';
 
-export default class ItemCompany extends PureComponent {
+@connect(({ employee }) => ({
+  employee,
+}))
+class ItemCompany extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      countActiveEmp: 0,
+    };
+  }
+
+  componentDidMount = async () => {
+    const { dispatch, locationId = '' } = this.props;
+    const countActiveEmp = await dispatch({
+      type: 'employee/fetchListEmployeeActive',
+      payload: {
+        location: [locationId],
+      },
+    });
+    this.setState({
+      countActiveEmp: countActiveEmp.length,
+    });
+  };
+
   handleGetStarted = (locationId) => {
     localStorage.setItem('currentLocation', locationId);
     history.push('/');
@@ -16,6 +39,7 @@ export default class ItemCompany extends PureComponent {
       location = '',
       locationId = '',
     } = this.props;
+    const { countActiveEmp } = this.state;
     return (
       <div className={s.root}>
         <img
@@ -26,7 +50,9 @@ export default class ItemCompany extends PureComponent {
         />
         <div className={s.viewInfo}>
           <p className={s.viewInfo__name}>{name}</p>
-          <p className={s.viewInfo__location}>{location}</p>
+          <p className={s.viewInfo__location}>
+            {location} ({countActiveEmp})
+          </p>
         </div>
         <div className={s.viewAction}>
           <Button className={s.btnOutline} onClick={() => this.handleGetStarted(locationId)}>
@@ -37,3 +63,4 @@ export default class ItemCompany extends PureComponent {
     );
   }
 }
+export default ItemCompany;

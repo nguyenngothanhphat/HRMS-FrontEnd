@@ -110,8 +110,10 @@ const employee = {
         if (statusCode !== 200) throw response;
 
         yield put({ type: 'listEmployeeActive', payload: { listEmployeeActive } });
+        return listEmployeeActive;
       } catch (errors) {
         dialog(errors);
+        return 0;
       }
     },
     *fetchListEmployeeInActive(
