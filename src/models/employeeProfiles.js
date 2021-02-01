@@ -91,7 +91,7 @@ const employeeProfile = {
     originData: {
       generalData: {},
       compensationData: {},
-      passportData: [],
+      passportData: [{}],
       visaData: [],
       employmentData: {},
       changeHistories: [],
@@ -101,7 +101,7 @@ const employeeProfile = {
     tempData: {
       generalData: {},
       compensationData: {},
-      passportData: [],
+      passportData: [{}],
       visaData: [],
       document: {},
       bankData: {},

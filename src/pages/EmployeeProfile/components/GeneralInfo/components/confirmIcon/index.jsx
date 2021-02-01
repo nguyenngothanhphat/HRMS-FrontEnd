@@ -5,7 +5,7 @@ import iconImage from '@/assets/group-14-copy.svg';
 class ConformIcondata extends PureComponent {
   setIcon = (data) => {
     if (data) {
-      if (data.includes('jpg') || data.includes('png')) {
+      if (data.includes('jpg') || data.includes('png')||data.includes('jpeg')) {
         return <img src={iconImage} alt="iconFilePDF" />;
       }
       return <img src={iconPDF} alt="iconFilePDF" />;
