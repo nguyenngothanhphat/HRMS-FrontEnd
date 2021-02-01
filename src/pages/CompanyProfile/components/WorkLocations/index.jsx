@@ -53,13 +53,12 @@ class WorkLocations extends PureComponent {
   };
 
   removeLocation = (id) => {
-    const { currentUser: { company: { _id } = {} } = {} } = this.props;
-    // const payload = { id, company: _id };
-    // dispatch({
-    //   type: 'departmentManagement/removeDepartment',
-    //   payload,
-    // });
-    console.log('remove location', { id, company: _id });
+    const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
+    const payload = { id, company: _id };
+    dispatch({
+      type: 'companiesManagement/removeLocation',
+      payload,
+    });
   };
 
   render() {
