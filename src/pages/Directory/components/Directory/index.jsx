@@ -221,7 +221,8 @@ class DirectoryComponent extends PureComponent {
     const { currentUser } = this.props;
     const { roles } = currentUser;
     const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
-    if (filterRoles.length > 0) {
+    const filterRolesCSA=roles.filter((item) => item._id === 'ADMIN-CSA');
+    if (filterRoles.length > 0||filterRolesCSA.length>0) {
       return this.renderHrGloBal();
     }
     return this.renderHrTeam();
@@ -299,7 +300,8 @@ class DirectoryComponent extends PureComponent {
     const { currentUser } = this.props;
     const { roles } = currentUser;
     const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
-    if (filterRoles.length > 0) {
+    const filterRolesCSA = roles.filter((item) => item._id === 'ADMIN-CSA');
+    if (filterRoles.length > 0||filterRolesCSA.length>0) {
       return this.ChangeTabHrGloBal(params, tabId);
     }
     return this.ChangeTabHrTeam(params, tabId);
@@ -610,10 +612,12 @@ class DirectoryComponent extends PureComponent {
       employee: { location = []}
     } = this.props;
     const { collapsed, visible, visibleImportEmployee,locationNew } = this.state;
+    console.log(locationNew);
     const getRole=roles.filter(item=>item._id=== "HR-GLOBAL");
+    const getRoleCSA=roles.filter(item=>item._id=== "ADMIN-CSA");
     return (
       <div className={styles.DirectoryComponent}>
-        {getRole[0]?._id==="HR-GLOBAL"? 
+        {getRole[0]||getRoleCSA[0]?._id==="HR-GLOBAL"||"ADMIN-CSA"? 
           <div>   
             <Select style={{ width: 120 }} onChange={this.handleChangeGetLocation}>
               {location.map(item=>
@@ -622,7 +626,7 @@ class DirectoryComponent extends PureComponent {
             </Select>
           </div>
         :''}
-        {this.handleRenderTable(getRole[0],locationNew,collapsed,roles)}
+        {this.handleRenderTable(getRole[0]||getRoleCSA[0],locationNew,collapsed,roles)}
        
         <AddEmployeeForm
           company={company}
