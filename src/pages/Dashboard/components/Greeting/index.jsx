@@ -9,10 +9,7 @@ const Greeting = (props) => {
       <h1>
         {formatMessage({ id: 'pages.dashboard.greeting.hello' })} {name}!
       </h1>
-      <p>Current location: {currentLocation}</p>
-      {/* <p>
-        You have <span>7 activities </span> today and <span>16 notifications</span>
-      </p> */}
+      {currentLocation && <p>Current location: {currentLocation}</p>}
     </div>
   );
 };

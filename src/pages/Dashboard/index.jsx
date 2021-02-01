@@ -1,15 +1,13 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Row, Col } from 'antd';
+import { Row, Col, Affix } from 'antd';
 import { connect } from 'umi';
 import Greeting from './components/Greeting';
 import ActivityLog from './components/ActivityLog';
 import MyApps from './components/MyApps';
 import TabManageTeamWork from './components/TabManageTeamWork';
-// import TimeSheet from './components/TimeSheet';
 import Links from './components/Links';
 import Carousel from './components/Carousel';
-// import SwitchLocation from './components/SwitchLocation';
 import styles from './index.less';
 
 const listLinkFQAs = [
@@ -130,23 +128,23 @@ class Dashboard extends PureComponent {
     } = this.props;
 
     const { currentLocation } = this.state;
-    console.log('currentLocation', currentLocation);
     return (
       <PageContainer>
         <div className={styles.containerDashboard}>
           <Row gutter={[24, 24]} style={{ padding: '20px 20px 0 0' }}>
             <Col span={8}>
-              <Greeting
-                name={currentUser?.generalInfo?.firstName}
-                currentLocation={currentLocation}
-              />
-              <div className={styles.leftContainer}>
-                <ActivityLog />
-              </div>
+              <Affix offsetTop={10}>
+                <Greeting
+                  name={currentUser?.generalInfo?.firstName}
+                  currentLocation={currentLocation}
+                />
+                <div className={styles.leftContainer}>
+                  <ActivityLog />
+                </div>
+              </Affix>
             </Col>
             <Col span={16}>
               <Carousel />
-              {/* {isAdminCSA && <SwitchLocation />} */}
               <MyApps />
               <Row gutter={[12, 12]}>
                 <Col span={24}>
@@ -157,9 +155,6 @@ class Dashboard extends PureComponent {
                     loadingProject={fetchListProject}
                   />
                 </Col>
-                {/* <Col span={10}>
-                  <TimeSheet />
-                </Col> */}
                 <Col span={14}>
                   <Links title="FAQs" showButton listData={listLinkFQAs} type="link" />
                 </Col>
