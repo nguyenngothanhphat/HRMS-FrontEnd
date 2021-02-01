@@ -49,10 +49,10 @@ class ItemCompany extends PureComponent {
           style={logoUrl ? {} : { opacity: 0.8 }}
         />
         <div className={s.viewInfo}>
-          <p className={s.viewInfo__name}>
-            {name} ({countActiveEmp})
+          <p className={s.viewInfo__name}>{name}</p>
+          <p className={s.viewInfo__location}>
+            {location} ({countActiveEmp})
           </p>
-          <p className={s.viewInfo__location}>{location}</p>
         </div>
         <div className={s.viewAction}>
           <Button className={s.btnOutline} onClick={() => this.handleGetStarted(locationId)}>

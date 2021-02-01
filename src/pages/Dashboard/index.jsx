@@ -56,6 +56,7 @@ const listQuickLinks = [
     user: { currentUser = {}, currentUser: { roles = [] } = {} } = {},
     employee: { listEmployeeMyTeam = [] } = {},
     offboarding: { listProjectByEmployee = [] } = {},
+    locationSelection,
   }) => ({
     fetchMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
     fetchListProject: loading.effects['offboarding/getListProjectByEmployee'],
@@ -63,14 +64,23 @@ const listQuickLinks = [
     roles,
     listEmployeeMyTeam,
     listProjectByEmployee,
+    locationSelection,
   }),
 )
 class Dashboard extends PureComponent {
-  componentDidMount() {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentLocation: '',
+    };
+  }
+
+  componentDidMount = async () => {
     const {
       dispatch,
       currentUser: {
-        location: { _id: locationId } = {},
+        location: { _id: locationId = '' } = {},
+        company: { _id: companyId = '' } = {},
         employee: { _id: employee = '' } = {},
       } = {},
     } = this.props;
@@ -86,7 +96,19 @@ class Dashboard extends PureComponent {
         employee,
       },
     });
-  }
+    const locations = await dispatch({
+      type: 'locationSelection/fetchLocationsByCompany',
+      payload: {
+        company: companyId,
+      },
+    });
+
+    const currentLocation = localStorage.getItem('currentLocation');
+    const locationName = locations.find((item) => item._id === currentLocation);
+    this.setState({
+      currentLocation: locationName?.name || '',
+    });
+  };
 
   componentWillUnmount() {
     const { dispatch } = this.props;
@@ -106,12 +128,18 @@ class Dashboard extends PureComponent {
       listProjectByEmployee = [],
       fetchListProject,
     } = this.props;
+
+    const { currentLocation } = this.state;
+    console.log('currentLocation', currentLocation);
     return (
       <PageContainer>
         <div className={styles.containerDashboard}>
           <Row gutter={[24, 24]} style={{ padding: '20px 20px 0 0' }}>
             <Col span={8}>
-              <Greeting name={currentUser?.generalInfo?.firstName} />
+              <Greeting
+                name={currentUser?.generalInfo?.firstName}
+                currentLocation={currentLocation}
+              />
               <div className={styles.leftContainer}>
                 <ActivityLog />
               </div>
