@@ -5,7 +5,8 @@
   border: 1px solid #ebeff2;
   box-sizing: border-box;
   border-radius: 5px;
-  overflow: hidden;
+  // overflow: hidden;
+  overflow-y: scroll;
   padding: 24px;
   .viewTop {
     display: flex;
@@ -51,6 +52,7 @@
     cursor: pointer;
   }
   .link {
+    cursor: pointer;
     text-decoration: underline;
     color: #2c6df9;
     margin-bottom: 5px;
@@ -67,5 +69,8 @@
     color: #fff;
     border-radius: 5px;
     font-size: 10px;
+  }
+  .listQuestion {
+    overflow-y: scroll;
   }
 }
