@@ -3,11 +3,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Select, Divider } from 'antd';
+import { Form, Input, Select, Divider, Modal } from 'antd';
+import { ExclamationCircleOutlined, DeleteOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
 import s from './index.less';
 
 const { Option } = Select;
+const { confirm } = Modal;
 
 class FormWorkLocation extends Component {
   constructor(props) {
@@ -56,6 +58,27 @@ class FormWorkLocation extends Component {
     return isListField ? [fieldKey, fieldName] : fieldName;
   };
 
+  showConfirm = (id) => {
+    const { removeLocation = () => {} } = this.props;
+    confirm({
+      title: 'Do you want to delete these location?',
+      icon: <ExclamationCircleOutlined />,
+      onOk() {
+        removeLocation(id);
+      },
+      onCancel() {},
+    });
+  };
+
+  handleRemove = () => {
+    const { onRemove = () => {}, listLocation = [], name = 0 } = this.props;
+    const itemRemove = listLocation[name] || {};
+    const { _id: id } = itemRemove;
+    if (id) {
+      this.showConfirm(id);
+    } else onRemove();
+  };
+
   render() {
     const { country = '' } = this.state;
     const { listCountry = [], isListField = false, name = 0, listLocation = [] } = this.props;
@@ -64,9 +87,14 @@ class FormWorkLocation extends Component {
     return (
       <div className={s.content} style={name > 0 ? { marginTop: '24px' } : {}}>
         <div className={s.content__viewBottom}>
-          <p className={classnames(s.title, s.mgb16)}>
-            {itemLocation?.name || 'New work location'}
-          </p>
+          <div className={s.content__viewBottom__viewTitle}>
+            <p className={s.title}>{itemLocation?.name || 'New work location'}</p>
+            <div className={s.action} onClick={this.handleRemove}>
+              <DeleteOutlined className={s.action__icon} />
+              <span>Delete</span>
+            </div>
+          </div>
+
           <div className={s.content__viewBottom__row}>
             <p className={s.content__viewBottom__row__textLabel}>Name</p>
             <Form.Item

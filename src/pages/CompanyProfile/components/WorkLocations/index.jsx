@@ -51,6 +51,16 @@ class WorkLocations extends PureComponent {
     return listLocation;
   };
 
+  removeLocation = (id) => {
+    const { currentUser: { company: { _id } = {} } = {} } = this.props;
+    // const payload = { id, company: _id };
+    // dispatch({
+    //   type: 'departmentManagement/removeDepartment',
+    //   payload,
+    // });
+    console.log('remove location', { id, company: _id });
+  };
+
   render() {
     const { listCountry = [], workLocations = [], loading, fetchingLocationsList } = this.props;
     const listLocation = this.formatListLocation();
@@ -104,6 +114,8 @@ class WorkLocations extends PureComponent {
                       formRef={this.formRef}
                       listCountry={listCountry}
                       listLocation={listLocation}
+                      removeLocation={this.removeLocation}
+                      onRemove={() => remove(field.name)}
                     />
                   ))}
                   <div className={s.viewAddWorkLocation} onClick={() => add()}>
