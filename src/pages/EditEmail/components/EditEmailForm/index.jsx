@@ -618,7 +618,7 @@ class EditEmailForm extends PureComponent {
     const { subject } = newValue;
 
     // const message = messages.replace(/<[^>]+>/g, '');
-    
+
     dataSubmit = {
       _id,
       subject,
@@ -748,7 +748,8 @@ class EditEmailForm extends PureComponent {
                         mode={valueToBeVerb === 'is' ? '' : 'multiple'}
                         showArrow
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                         placeholder="Please select a choice"
                         onChange={(value) => this.onChangeCondition(index, 'value', value)}
                         onClick={() => this.onClickCondition(index)}

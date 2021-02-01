@@ -92,7 +92,7 @@ class CompanyProfile extends Component {
                 disabled={currentUser?.firstCreated}
                 onClick={() =>
                   history.push({
-                    pathname: '/',
+                    pathname: '/select-location',
                   })
                 }
               >

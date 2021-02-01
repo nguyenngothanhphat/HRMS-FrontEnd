@@ -79,7 +79,7 @@
      * @return {string}
      */
     function cleanVariable(value) {
-      return value.replace(/[^a-zA-Z0-9_ ]/gm, '');
+      return value.replace(/[^a-zA-Z0-9_ @]/gm, '');
       //   return value;
     }
 
@@ -103,7 +103,7 @@
       });
 
       const variable = prefix + cleanValue + suffix;
-      return `<span style="${styles}" data-original-variable="${variable}" contenteditable="false">${cleanMappedValue}</span>`;
+      return `<span style="${styles}"  data-value="${variable}" contenteditable="false">${cleanMappedValue}</span>`;
     }
 
     /**

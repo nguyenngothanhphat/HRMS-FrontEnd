@@ -31,7 +31,6 @@ class FAQs extends PureComponent {
   render() {
     const { location: { query = {} } = {}, getListByCompany = {} } = this.props;
     const { faq = [] } = getListByCompany;
-    console.log(getListByCompany, 'getListByCompany');
     return (
       <PageContainer>
         <div className={styles.root}>

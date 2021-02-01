@@ -27,6 +27,7 @@ import {
   updateRelieving,
   sendOffBoardingPackage,
   removeOffBoardingPackage,
+  terminateReason,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -58,6 +59,7 @@ const offboarding = {
     listAssigned: [],
     listAssignee: [],
     hrManager: {},
+    terminateData: {},
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
@@ -469,6 +471,20 @@ const offboarding = {
         const { statusCode: newRequestStat, data: relievingDetails = {} } = newRequest;
         if (newRequestStat !== 200) throw newRequest;
         yield put({ type: 'save', payload: { relievingDetails } });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *terminateReason({ payload }, { call, put }) {
+      try {
+        const response = yield call(terminateReason, payload);
+        const { statusCode, message, data } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+
+        yield put({ type: 'save', payload: { terminateData: data } });
       } catch (error) {
         dialog(error);
       }

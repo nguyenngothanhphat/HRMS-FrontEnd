@@ -68,7 +68,8 @@ const employeeProfile = {
     editGeneral: {
       openContactDetails: false,
       openEmployeeInfor: false,
-      openPassportandVisa: false,
+      openPassport: false,
+      openVisa: false,
       openPersonnalInfor: false,
       openAcademic: false,
       openTax: false,
@@ -90,7 +91,7 @@ const employeeProfile = {
     originData: {
       generalData: {},
       compensationData: {},
-      passportData: [],
+      passportData: [{}],
       visaData: [],
       employmentData: {},
       changeHistories: [],
@@ -100,7 +101,7 @@ const employeeProfile = {
     tempData: {
       generalData: {},
       compensationData: {},
-      passportData: [],
+      passportData: [{}],
       visaData: [],
       document: {},
       bankData: {},
@@ -361,10 +362,10 @@ const employeeProfile = {
           payload: { employee: idCurrentEmployee },
           dataTempKept,
         });
-        if (key === 'openPassportandVisa') {
+        if (key === 'openPassport') {
           yield put({
             type: 'saveOpenEdit',
-            payload: { openPassportandVisa: false },
+            payload: { openPassport: false },
           });
         }
       } catch (errors) {
@@ -385,10 +386,10 @@ const employeeProfile = {
           payload: { employee: idCurrentEmployee },
           dataTempKept,
         });
-        if (key === 'openPassportandVisa') {
+        if (key === 'openVisa') {
           yield put({
             type: 'saveOpenEdit',
-            payload: { openPassportandVisa: false },
+            payload: { openVisa: false },
           });
         }
       } catch (errors) {
@@ -410,10 +411,10 @@ const employeeProfile = {
           payload: { employee: idCurrentEmployee },
           dataTempKept,
         });
-        if (key === 'openPassportandVisa') {
+        if (key === 'openPassport') {
           yield put({
             type: 'saveOpenEdit',
-            payload: { openPassportandVisa: false },
+            payload: { openPassport: false },
           });
         }
       } catch (errors) {
@@ -435,10 +436,10 @@ const employeeProfile = {
           payload: { employee: idCurrentEmployee },
           dataTempKept,
         });
-        if (key === 'openPassportandVisa') {
+        if (key === 'openVisa') {
           yield put({
             type: 'saveOpenEdit',
-            payload: { openPassportandVisa: false },
+            payload: { openVisa: false },
           });
         }
       } catch (errors) {
@@ -476,10 +477,16 @@ const employeeProfile = {
               payload: { openEmployeeInfor: false },
             });
             break;
-          case 'openPassportandVisa':
+          case 'openPassport':
             yield put({
               type: 'saveOpenEdit',
-              payload: { openPassportandVisa: false },
+              payload: { openPassport: false },
+            });
+            break;
+          case 'openVisa':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openVisa: false },
             });
             break;
           case 'openPersonnalInfor':
@@ -1093,6 +1100,7 @@ const employeeProfile = {
         saveDocuments: result,
       };
     },
+
     saveTemp(state, action) {
       const { tempData } = state;
       return {
@@ -1119,7 +1127,8 @@ const employeeProfile = {
         editGeneral: {
           openContactDetails: false,
           openEmployeeInfor: false,
-          openPassportandVisa: false,
+          openPassport: false,
+          openVisa: false,
           openPersonnalInfor: false,
           openAcademic: false,
           openTax: false,

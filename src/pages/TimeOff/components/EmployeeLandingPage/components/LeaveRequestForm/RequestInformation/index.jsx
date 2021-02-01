@@ -37,7 +37,7 @@ class RequestInformation extends PureComponent {
       viewingLeaveRequestId: '',
       isEditingDrafts: false,
       remainingDayOfSelectedType: 0,
-      totalDayOfSelectedType: 0,
+      // totalDayOfSelectedType: 0,
       unpaidLeaveActivate: false,
       negativeLeave: 0,
       viewPolicyModal: false,
@@ -220,13 +220,13 @@ class RequestInformation extends PureComponent {
     } = this.props;
 
     let count = 0;
-    let total = 0;
+    // let total = 0;
     let check = false;
 
     timeOffTypesAB.forEach((value) => {
       const {
         defaultSettings: {
-          baseAccrual: { time = 0 } = {},
+          // baseAccrual: { time = 0 } = {},
           shortType: shortType1 = '',
           type = '',
         } = {},
@@ -234,7 +234,7 @@ class RequestInformation extends PureComponent {
       } = value;
       if (shortType === shortType1 && type === 'A') {
         count = currentAllowance;
-        total = time;
+        // total = time;
         check = true;
       }
     });
@@ -242,12 +242,15 @@ class RequestInformation extends PureComponent {
     if (!check)
       timeOffTypesC.forEach((value) => {
         const {
-          defaultSettings: { baseAccrual: { time = 0 } = {}, shortType: shortType1 = '' } = {},
+          defaultSettings: {
+            // baseAccrual: { time = 0 } = {},
+            shortType: shortType1 = '',
+          } = {},
           currentAllowance = 0,
         } = value;
         if (shortType === shortType1) {
           count = currentAllowance;
-          total = time;
+          // total = time;
         }
       });
 
@@ -256,13 +259,13 @@ class RequestInformation extends PureComponent {
         const { baseAccrual: { time = 0 } = {}, shortType: shortType1 = '', type = '' } = value;
         if (shortType === shortType1 && type === 'D') {
           count = time;
-          total = time;
+          // total = time;
         }
       });
 
     this.setState({
       remainingDayOfSelectedType: count,
-      totalDayOfSelectedType: total,
+      // totalDayOfSelectedType: total,
     });
 
     return count;
@@ -979,6 +982,10 @@ class RequestInformation extends PureComponent {
       moment(current).day() === 0 ||
       moment(current).day() === 6
     );
+  };
+
+  disabledDate = (current) => {
+    return current && current > moment();
   };
 
   disabledToDate = (current) => {
