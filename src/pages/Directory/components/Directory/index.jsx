@@ -606,18 +606,18 @@ class DirectoryComponent extends PureComponent {
     )
   }
 
+
   render() {
     const {
       currentUser: { company, roles = [] },
       employee: { location = []}
     } = this.props;
     const { collapsed, visible, visibleImportEmployee,locationNew } = this.state;
-    console.log(locationNew);
     const getRole=roles.filter(item=>item._id=== "HR-GLOBAL");
     const getRoleCSA=roles.filter(item=>item._id=== "ADMIN-CSA");
     return (
       <div className={styles.DirectoryComponent}>
-        {getRole[0]||getRoleCSA[0]?._id==="HR-GLOBAL"||"ADMIN-CSA"? 
+        {getRole[0]||getRoleCSA[0]?._id? 
           <div>   
             <Select style={{ width: 120 }} onChange={this.handleChangeGetLocation}>
               {location.map(item=>
