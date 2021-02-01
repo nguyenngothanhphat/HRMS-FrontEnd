@@ -2,7 +2,7 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
-import { Form, Divider, Button } from 'antd';
+import { Form, Divider, Button, Skeleton } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import FormDepartment from './components/FormDepartment';
@@ -18,6 +18,7 @@ import s from './index.less';
     listDepartment,
     currentUser,
     loading: loading.effects['departmentManagement/upsertDepartment'],
+    fetchingListDepartment: loading.effects['departmentManagement/fetchListDepartmentByCompany'],
   }),
 )
 class Departments extends PureComponent {
@@ -45,8 +46,24 @@ class Departments extends PureComponent {
   };
 
   render() {
-    const { listDefault = [], listDepartment = [], loading } = this.props;
+    const { listDefault = [], listDepartment = [], loading, fetchingListDepartment } = this.props;
     const listByCompany = listDepartment.length === 0 ? [{}] : listDepartment;
+    if (fetchingListDepartment) {
+      return (
+        <div className={s.root}>
+          <div className={s.content__viewTop}>
+            <p className={s.title}>Departments</p>
+            <p className={s.text}>
+              Add departments to each work location. We will help to assign administrators and user
+              rights to each of them in the later steps.
+            </p>
+          </div>
+          <div className={s.content__viewBottom}>
+            <Skeleton active />
+          </div>
+        </div>
+      );
+    }
     return (
       <Form
         ref={this.formRef}
