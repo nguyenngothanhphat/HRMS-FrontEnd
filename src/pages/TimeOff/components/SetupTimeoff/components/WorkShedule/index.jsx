@@ -12,36 +12,36 @@ class WorkShedule extends Component {
       array: [
         {
           id: 1,
-          name: 'Sun',
+          name: 'SUNDAY',
         },
         {
           id: 2,
-          name: 'Mon',
+          name: 'MONDAY',
           check: true,
         },
         {
           id: 3,
-          name: 'Tue',
+          name: 'TUESDAY',
           check: true,
         },
         {
           id: 4,
-          name: 'Wed',
+          name: 'WEDNESDAY',
           check: true,
         },
         {
           id: 5,
-          name: 'Thu',
+          name: 'THURSDAY',
           check: true,
         },
         {
           id: 6,
-          name: 'Fri',
+          name: 'FRIDAY',
           check: true,
         },
         {
           id: 7,
-          name: 'Sat',
+          name: 'SATURDAY',
         },
       ],
     };
