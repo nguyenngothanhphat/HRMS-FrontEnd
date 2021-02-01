@@ -50,15 +50,25 @@ class Edit extends Component {
       dummyPassPorts: [{}],
       isLt5M: true,
       getContent: true,
-      isDate: true,
       visible: false,
       linkImage: '',
       checkValidate: [{}],
+      validatePassPort:[],
     };
     this.formRef = React.createRef();
   }
 
+  componentDidMount(){
+    const {passportData=[]}=this.props;
+    const checkValidatePassPort=[...passportData];
+    const valueFalse=[passportData[0].employee];
+    const result=checkValidatePassPort.map(item=> valueFalse.includes(item.employee))
+    this.setState({validatePassPort:result})
+    
+  }
+
   validateDate = (getPassportData, index) => {
+    const {validatePassPort}=this.state;
     if (getPassportData === []) return;
     const { passportDataOrigin } = this.props;
     const formatDatePassportIssueOn =
@@ -74,9 +84,13 @@ class Edit extends Component {
 
     const issueAfter3Year = moment(IssuedOn).add(3, 'years');
     if (moment(ValidTill).isSameOrBefore(moment(issueAfter3Year))) {
-      this.setState({ isDate: false });
+      const newCheck=[...validatePassPort];
+      newCheck.splice(index,1,false)
+      this.setState({ validatePassPort:newCheck });
     } else {
-      this.setState({ isDate: true });
+      const newCheck=[...validatePassPort];
+      newCheck.splice(index,1,true)
+      this.setState({ validatePassPort:newCheck });
     }
   };
 
@@ -238,7 +252,6 @@ class Edit extends Component {
         ...passportData[index],
       }
       const { _id } = passportData[index];
-      console.log(newData);
       if (_id) {
         idPassPort = _id;
       }
@@ -310,25 +323,10 @@ class Edit extends Component {
     });
   };
 
-  handleAddBtn = () => {
-    const { passportData = [], dispatch } = this.props;
-    const { dummyPassPorts } = this.state;
-
-    if (passportData.length > 0) {
-      const newData = [...passportData, {}];
-
-      dispatch({
-        type: 'employeeProfile/saveTemp',
-        payload: { passportData: newData },
-      });
-    } else {
-      const newData = [...dummyPassPorts, {}];
-
-      dispatch({
-        type: 'employeeProfile/saveTemp',
-        payload: { passportData: newData },
-      });
-    }
+  handleAddBtn = (add,validatePassPort) => {
+    const newArr=[...validatePassPort,true];
+    this.setState({validatePassPort:newArr})
+    add()
   };
 
   onRemoveCondition = (index) => {
@@ -343,7 +341,7 @@ class Edit extends Component {
   };
 
   render() {
-    const { isLt5M, getContent, isDate, visible, linkImage, dummyPassPorts } = this.state;
+    const { isLt5M, getContent, visible, linkImage, dummyPassPorts,validatePassPort } = this.state;
 
     const { passportData = [], handleCancel = () => {}, countryList } = this.props;
 
@@ -365,7 +363,7 @@ class Edit extends Component {
         sm: { span: 12 },
       },
     };
-
+    
     const newPassportData =passportData.map(item=>{   
         const {passportIssuedOn,passportValidTill,passportIssuedCountry}=item;
         const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
@@ -379,6 +377,8 @@ class Edit extends Component {
           }
         return newItem
     })
+    console.log(validatePassPort);
+    const checkPassPort=validatePassPort.filter(item=>item===true)
     const renderForm = passportData.length > 0 ? newPassportData : dummyPassPorts;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
@@ -395,6 +395,7 @@ class Edit extends Component {
                 {fields.map((field,index) =>                 
                   (
                     <PassportItem
+                      validatePassPort={validatePassPort[index]}
                       getHandleChange={this.handleChange}
                       field={field}
                       key={field.name}
@@ -407,7 +408,6 @@ class Edit extends Component {
                       getSizeImage={this.handleGetSetSizeImage}
                       getDataImage={this.handleChange}
                       isLt5M={isLt5M}
-                      isDate={isDate}
                       formatCountryList={formatCountryList}
                     />
                 ))}
@@ -417,7 +417,7 @@ class Edit extends Component {
                 <Col span={9} offset={1} className={styles.addMoreButton}>
                   <div 
                     // onClick={this.handleAddBtn}
-                    onClick={() => add()}
+                    onClick={() =>{this.handleAddBtn(add,validatePassPort)}}
                   >
                     <PlusOutlined className={styles.addMoreButtonIcon} />
                     Add more
@@ -467,7 +467,7 @@ class Edit extends Component {
               type="primary"
               htmlType="submit"
               className={styles.buttonFooter}
-              disabled={isLt5M === false || getContent === false || isDate === false}
+              disabled={isLt5M === false || getContent === false || checkPassPort.length===0}
             >
               Save
             </Button>

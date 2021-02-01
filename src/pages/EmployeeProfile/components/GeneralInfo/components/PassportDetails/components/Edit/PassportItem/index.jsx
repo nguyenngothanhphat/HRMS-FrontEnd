@@ -59,11 +59,11 @@ class PassportItem extends Component {
       isLt5M,
       loadingPassportTest,
       loading,
-      isDate,
       formatCountryList = [],
       field,
       onRemove,
-      passportData
+      passportData,
+      validatePassPort
     } = this.props;
 
 
@@ -212,9 +212,9 @@ class PassportItem extends Component {
           // name={`passportValidTill ${index}`}
           name={[field.name, 'passportValidTill']}
           fieldKey={[field.fieldKey, 'passportValidTill']}
-          validateStatus={isDate === false ? 'error' : 'success'}
+          validateStatus={validatePassPort === false ? 'error' : 'success'}
           help={
-            isDate === false
+            validatePassPort === false
               ? formatMessage({
                   id: 'pages.employeeProfile.validateDate',
                 })
@@ -227,7 +227,7 @@ class PassportItem extends Component {
             onChange={(dates) => {
               this.handleChange(index, 'passportValidTill', dates);
             }}
-            className={isDate === false ? s.dateFormValidate : s.dateForm}
+            className={validatePassPort === false ? s.dateFormValidate : s.dateForm}
           />
         </Form.Item>
       </div>
