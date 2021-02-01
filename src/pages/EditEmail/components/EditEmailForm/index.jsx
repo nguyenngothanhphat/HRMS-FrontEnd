@@ -1017,8 +1017,7 @@ class EditEmailForm extends PureComponent {
                 <Form.Item>
                   <Button
                     type="primary"
-                    htmlType="button"
-                    onClick={this.onFinish}
+                    htmlType="submit"
                     disabled={disabled}
                     loading={loadingUpdateCustomEmail}
                   >

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
-import { Tabs, Layout } from 'antd';
+import { Tabs, Layout,Select } from 'antd';
 import DirectoryTable from '@/components/DirectoryTable';
 import { debounce } from 'lodash';
 import AddEmployeeForm from '@/pages_admin/EmployeesManagement/components/TableContainer/components/AddEmployeeForm';
@@ -12,23 +12,16 @@ import TableFilter from '../TableFilter';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
+const { Option } = Select;
+@connect(({ loading, employee, user: { currentUser = {}, permissions = {} } }) => ({
+  loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
+  loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
+  loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
+  employee,
+  currentUser,
+  permissions,
+}))
 
-@connect(
-  ({
-    loading,
-    employee,
-    user: { currentUser = {}, permissions = {} },
-    offboarding: { approvalflow = [] } = {},
-  }) => ({
-    loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
-    loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
-    loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
-    employee,
-    currentUser,
-    permissions,
-    approvalflow,
-  }),
-)
 class DirectoryComponent extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if ('employee' in nextProps) {
@@ -67,6 +60,7 @@ class DirectoryComponent extends PureComponent {
       department: [],
       location: [],
       employeeType: [],
+      locationNew:[],
       filterName: '',
       tabList: {
         active: 'active',
@@ -89,25 +83,28 @@ class DirectoryComponent extends PureComponent {
   }
 
   componentDidMount() {
+    const {dispatch}=this.props;
     this.initDataTable();
     this.initTabId();
-    this.fetchApprovalFlowList();
+    dispatch({
+      type: 'employee/fetchLocation',
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { department, location, employeeType, filterName, tabId } = this.state;
 
+    const { department,location, employeeType, filterName, tabId,locationNew } = this.state;
     const params = {
       name: filterName,
       department,
-      location,
+      location:locationNew,
       employeeType,
     };
-
     if (
       prevState.tabId !== tabId ||
       prevState.department.length !== department.length ||
       prevState.location.length !== location.length ||
+      prevState.locationNew!==locationNew||
       prevState.employeeType.length !== employeeType.length ||
       prevState.filterName !== filterName
     ) {
@@ -124,24 +121,6 @@ class DirectoryComponent extends PureComponent {
       type: 'employee/ClearFilter',
     });
   }
-
-  fetchApprovalFlowList = () => {
-    const {
-      currentUser: {
-        location: { _id: locationID = '' } = {},
-        company: { _id: companyID } = {},
-      } = {},
-      dispatch,
-    } = this.props;
-
-    dispatch({
-      type: 'offboarding/fetchApprovalFlowList',
-      payload: {
-        company: companyID,
-        location: locationID,
-      },
-    });
-  };
 
   // Define tabID to filter
   initTabId = () => {
@@ -242,7 +221,8 @@ class DirectoryComponent extends PureComponent {
     const { currentUser } = this.props;
     const { roles } = currentUser;
     const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
-    if (filterRoles.length > 0) {
+    const filterRolesCSA=roles.filter((item) => item._id === 'ADMIN-CSA');
+    if (filterRoles.length > 0||filterRolesCSA.length>0) {
       return this.renderHrGloBal();
     }
     return this.renderHrTeam();
@@ -320,7 +300,8 @@ class DirectoryComponent extends PureComponent {
     const { currentUser } = this.props;
     const { roles } = currentUser;
     const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
-    if (filterRoles.length > 0) {
+    const filterRolesCSA = roles.filter((item) => item._id === 'ADMIN-CSA');
+    if (filterRoles.length > 0||filterRolesCSA.length>0) {
       return this.ChangeTabHrGloBal(params, tabId);
     }
     return this.ChangeTabHrTeam(params, tabId);
@@ -559,17 +540,11 @@ class DirectoryComponent extends PureComponent {
 
   renderTab = (tabName, key, loading, indexShowLocation) => {
     const { tabId, collapsed, changeTab } = this.state;
-    const { approvalflow = [] } = this.props;
     return (
       <TabPane tab={tabName} key={key}>
         <Layout className={styles.directoryLayout_inner}>
           <Content className="site-layout-background">
-            <DirectoryTable
-              loading={loading}
-              list={this.renderListEmployee(key)}
-              keyTab={key}
-              approvalflow={approvalflow}
-            />
+            <DirectoryTable loading={loading} list={this.renderListEmployee(key)} keyTab={key} />
           </Content>
           <TableFilter
             onToggle={this.handleToggle}
@@ -593,24 +568,66 @@ class DirectoryComponent extends PureComponent {
     this.initDataTable();
   };
 
+  handleChangeGetLocation=(value)=>{
+    const newItem=[value];
+    this.setState({locationNew:newItem});
+  }
+
+  handleRenderTable=(checkRole,location,collapsed,roles)=>{
+    if(checkRole){
+      if(checkRole._id){
+        if( location.length>0){
+          return(
+            <div className={styles.contentContainer}>
+              <Tabs
+                className={styles.TabComponent}
+                onTabClick={this.handleClickTabPane}
+                tabBarExtraContent={this.rightButton(roles, collapsed)}
+              >
+                {this.renderTabPane()}
+              </Tabs>
+            </div>
+          )
+        }
+        return ""
+      }
+    }
+    return(
+      <div className={styles.contentContainer}>
+        <Tabs
+        // defaultActiveKey="active"
+          className={styles.TabComponent}
+          onTabClick={this.handleClickTabPane}
+          tabBarExtraContent={this.rightButton(roles, collapsed)}
+        >
+          {this.renderTabPane()}
+        </Tabs>
+      </div>
+    )
+  }
+
+
   render() {
     const {
       currentUser: { company, roles = [] },
+      employee: { location = []}
     } = this.props;
-    const { collapsed, visible, visibleImportEmployee } = this.state;
-
+    const { collapsed, visible, visibleImportEmployee,locationNew } = this.state;
+    const getRole=roles.filter(item=>item._id=== "HR-GLOBAL");
+    const getRoleCSA=roles.filter(item=>item._id=== "ADMIN-CSA");
     return (
       <div className={styles.DirectoryComponent}>
-        <div className={styles.contentContainer}>
-          <Tabs
-            // defaultActiveKey="active"
-            className={styles.TabComponent}
-            onTabClick={this.handleClickTabPane}
-            tabBarExtraContent={this.rightButton(roles, collapsed)}
-          >
-            {this.renderTabPane()}
-          </Tabs>
-        </div>
+        {getRole[0]||getRoleCSA[0]?._id? 
+          <div>   
+            <Select style={{ width: 120 }} onChange={this.handleChangeGetLocation}>
+              {location.map(item=>
+                <Option value={item._id}>{item.name}</Option>
+              )}
+            </Select>
+          </div>
+        :''}
+        {this.handleRenderTable(getRole[0]||getRoleCSA[0],locationNew,collapsed,roles)}
+       
         <AddEmployeeForm
           company={company}
           titleModal="Add Employee"
@@ -624,6 +641,7 @@ class DirectoryComponent extends PureComponent {
           visible={visibleImportEmployee}
           handleCancel={this.handleCancel}
         />
+        
       </div>
     );
   }

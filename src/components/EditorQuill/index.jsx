@@ -38,7 +38,7 @@ class EditorQuill extends Component {
                 text: 'Preview',
                 onAction() {
                   ed.windowManager.open({
-                    title: 'Previewing changes',
+                    title: '',
                     body: {
                       type: 'panel',
                       items: [
