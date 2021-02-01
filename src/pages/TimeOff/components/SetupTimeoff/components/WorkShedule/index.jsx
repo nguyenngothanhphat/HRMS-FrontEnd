@@ -1,8 +1,15 @@
 import React, { Component } from 'react';
 import moment from 'moment';
+import { connect } from 'umi';
 import { Form, InputNumber, Row, Col, Radio, Button, TimePicker } from 'antd';
 import s from './index.less';
 
+@connect(
+  ({ timeOff, user: { currentUser: { location: { _id: idLocation = '' } = {} } = {} } = {} }) => ({
+    timeOff,
+    idLocation,
+  }),
+)
 class WorkShedule extends Component {
   constructor(props) {
     super(props);
@@ -45,6 +52,29 @@ class WorkShedule extends Component {
         },
       ],
     };
+  }
+
+  componentDidMount() {
+    const { dispatch, idLocation } = this.props;
+    // dispatch({
+    //   type: 'timeOff/getInitEmployeeSchedule',
+    // }).then(
+    //   dispatch({
+    //     type: 'timeOff/getEmployeeScheduleByLocation',
+    //     payload: { location: idLocation },
+    //   }),
+    // );
+    dispatch({
+      type: 'timeOff/getInitEmployeeSchedule',
+      // payload: { location: idLocation },
+    }).then((response = {}) => {
+      console.log(response);
+      const { statusCode, data: listData = {} } = response;
+      if (statusCode === 200) {
+        const { totalHour, startWorkDay = {}, endWorkDay = {}, workDay = [] } = listData;
+        console.log(totalHour);
+      }
+    });
   }
 
   onChange1 = (e) => {

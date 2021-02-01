@@ -44,6 +44,9 @@ import {
   // ACCOUNT SETTINGS
   getDefaultTimeoffTypesList,
   getCountryList,
+  // timeoffType
+  getInitEmployeeSchedule,
+  getEmployeeScheduleByLocation,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -75,7 +78,7 @@ const timeOff = {
     allTeamLeaveRequests: {},
     allTeamCompoffRequests: {},
     compoffApprovalFlow: {},
-
+    employeeSchedule: {},
     currentUserRole: '', // employee, manager, hr-manager
     // account settings
     defaultTimeoffTypesList: [],
@@ -767,6 +770,36 @@ const timeOff = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    // timeoff type
+    *getInitEmployeeSchedule(_, { call, put }) {
+      let response;
+      try {
+        response = yield call(getInitEmployeeSchedule);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *getEmployeeScheduleByLocation({ payload = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getEmployeeScheduleByLocation, payload);
+        const { statusCode, data: employeeSchedule = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { employeeSchedule },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
   },
   reducers: {

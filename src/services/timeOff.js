@@ -304,3 +304,15 @@ export async function getCountryList() {
     method: 'POST',
   });
 }
+
+export async function getInitEmployeeSchedule() {
+  return request('/api/employeeschedule/init-default-from-location', {
+    method: 'POST',
+  });
+}
+export async function getEmployeeScheduleByLocation(payload) {
+  return request('/api/employeeschedule/get-by-location', {
+    method: 'POST',
+    data: payload,
+  });
+}
