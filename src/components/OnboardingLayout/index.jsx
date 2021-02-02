@@ -68,7 +68,6 @@ class OnboardingLayout extends PureComponent {
       displayComponent: getComponent(firstComponent),
     });
 
-    console.log('CLEAR');
     dispatch({
       type: 'candidateInfo/save',
       payload: {

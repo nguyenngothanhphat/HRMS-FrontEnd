@@ -11,6 +11,7 @@ import { getAuthorityFromRouter } from '@/utils/utils';
 import { Button, Result } from 'antd';
 import { connect, Link, useIntl, Redirect } from 'umi';
 import classnames from 'classnames';
+import { get } from 'lodash';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
@@ -71,6 +72,8 @@ const BasicLayout = (props) => {
     </Link>
   );
 
+  console.log('routers', routes);
+
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
   };
@@ -104,18 +107,17 @@ const BasicLayout = (props) => {
 
           return <Link to={menuItemProps.path}>{defaultDom}</Link>;
         }}
-        breadcrumbRender={(routers = []) => {
-          let listPath = [
+        breadcrumbLayoutRender={(routers = []) => {
+          let listPath = routers;
+          listPath = [
             {
               path: '/',
-              breadcrumbName: formatMessage({
-                id: 'menu.home',
-              }),
+              breadcrumbName: formatMessage, // return listPath;
             },
-            ...routers,
+            ...listPath,
           ];
-          if (routers.length > 0) {
-            const [firstPath] = routers;
+          if (listPath.length > 0) {
+            const [firstPath] = listPath;
             const { breadcrumbName = '' } = firstPath;
             if (breadcrumbName === 'Dashboard')
               listPath = [
