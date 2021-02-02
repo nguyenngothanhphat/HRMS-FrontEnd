@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Row, Form, Button, Col } from 'antd';
 import { connect } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-import ModalReviewImage from '@/components/ModalReviewImage';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import moment from 'moment';
 import PassportItem from './PassportItem';
 import styles from './index.less';
@@ -316,8 +316,12 @@ class Edit extends Component {
   handleCancel = () => {
     this.setState({
       visible: false,
-      linkImage: '',
     });
+    setTimeout(() => {
+      this.setState({
+        linkImage: '',
+      });
+    }, 500);
   };
 
   handleAddBtn = (add, validatePassPort) => {
@@ -467,7 +471,7 @@ class Edit extends Component {
               Save
             </Button>
           </div>
-          <ModalReviewImage visible={visible} handleCancel={this.handleCancel} link={linkImage} />
+          <ViewDocumentModal visible={visible} onClose={this.handleCancel} url={linkImage} />
         </Form>
       </Row>
     );

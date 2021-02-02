@@ -5,7 +5,7 @@ import { connect, formatMessage } from 'umi';
 import UploadImage from '@/components/UploadImage';
 import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
-import ModalReviewImage from '@/components/ModalReviewImage';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { checkPermissions } from '@/utils/permissions';
 import styles from './index.less';
 
@@ -252,8 +252,12 @@ class Edit extends PureComponent {
   handleCancel = () => {
     this.setState({
       visible: false,
-      linkImage: '',
     });
+    setTimeout(() => {
+      this.setState({
+        linkImage: '',
+      });
+    }, 500);
   };
 
   render() {
@@ -447,7 +451,7 @@ class Edit extends PureComponent {
               Save
             </Button>
           </div>
-          <ModalReviewImage visible={visible} handleCancel={this.handleCancel} link={linkImage} />
+          <ViewDocumentModal visible={visible} onClose={this.handleCancel} url={linkImage} />
         </Form>
         {/* Custom Col Here */}
       </Row>

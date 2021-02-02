@@ -3,7 +3,7 @@ import { Row, Col, Tooltip } from 'antd';
 import { connect } from 'umi';
 import Icon from '@ant-design/icons';
 import Moment from 'moment';
-import ModalReviewImage from '@/components/ModalReviewImage';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import ConformIcondata from '../../../confirmIcon';
 import iconQuestTion from '../../../Icon/icon';
 import styles from './index.less';
@@ -35,8 +35,12 @@ class View extends PureComponent {
   handleCancel = () => {
     this.setState({
       visible: false,
-      linkImage: '',
     });
+    setTimeout(() => {
+      this.setState({
+        linkImage: '',
+      });
+    }, 500);
   };
 
   handleOpenModalReview = (linkImage) => {
@@ -111,7 +115,7 @@ class View extends PureComponent {
           </Fragment>
         ))}
         {/* Custom Col Here */}
-        <ModalReviewImage visible={visible} handleCancel={this.handleCancel} link={linkImage} />
+        <ViewDocumentModal visible={visible} onClose={this.handleCancel} url={linkImage} />
       </Row>
     );
   }

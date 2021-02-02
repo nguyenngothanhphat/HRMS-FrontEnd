@@ -4,7 +4,7 @@ import { DownOutlined, PlusOutlined, CloseCircleOutlined } from '@ant-design/ico
 import { connect, formatMessage } from 'umi';
 import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
-import ModalReviewImage from '@/components/ModalReviewImage';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import UploadImage from '../../../UploadImage';
 import styles from '../../index.less';
 
@@ -54,8 +54,12 @@ class VisaGeneral extends Component {
   handleCancel = () => {
     this.setState({
       visible: false,
-      linkImage: '',
     });
+    setTimeout(() => {
+      this.setState({
+        linkImage: '',
+      });
+    }, 500);
   };
 
   handleAddBtn = () => {
@@ -553,10 +557,10 @@ class VisaGeneral extends Component {
                         }
                       />
                     </Form.Item>
-                    <ModalReviewImage
+                    <ViewDocumentModal
                       visible={visible}
-                      handleCancel={this.handleCancel}
-                      link={linkImage}
+                      onClose={this.handleCancel}
+                      url={linkImage}
                     />
                   </Fragment>
                 </>

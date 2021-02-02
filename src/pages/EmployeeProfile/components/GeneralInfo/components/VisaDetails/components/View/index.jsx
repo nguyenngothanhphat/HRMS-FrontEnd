@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 import { Row, Col } from 'antd';
 import { connect } from 'umi';
 import Moment from 'moment';
-import ModalReviewImage from '@/components/ModalReviewImage';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import iconPDF from '@/assets/pdf-2.svg';
 import ConformIcondata from '../../../confirmIcon';
 import styles from './index.less';
@@ -29,8 +29,12 @@ class View extends PureComponent {
   handleCancel = () => {
     this.setState({
       visible: false,
-      linkImage: '',
     });
+    setTimeout(() => {
+      this.setState({
+        linkImage: '',
+      });
+    }, 500);
   };
 
   handleOpenModalReview = (linkImage) => {
@@ -164,7 +168,8 @@ class View extends PureComponent {
           ? this.handleRenderDataVisa()
           : this.handleRenderDataDummyVisa(dummyData2)}
 
-        <ModalReviewImage visible={visible} handleCancel={this.handleCancel} link={linkImage} />
+        <ViewDocumentModal visible={visible} onClose={this.handleCancel} url={linkImage} />
+
         {/* Custom Col Here */}
       </Row>
     );

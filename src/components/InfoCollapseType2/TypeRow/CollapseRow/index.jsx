@@ -186,7 +186,6 @@ class CollapseRow extends PureComponent {
                             src={DownloadIcon}
                             onClick={() => this.handleUploadClick(2, id)}
                             className={styles.downloadButton}
-                            // title="Replace document"
                           />
                         </div>
                       )}
