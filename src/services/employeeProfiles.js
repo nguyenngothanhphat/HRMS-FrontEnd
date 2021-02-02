@@ -302,3 +302,10 @@ export async function shareDocument(payload) {
     data: payload,
   });
 }
+
+export async function getDependentsByEmployee(payload) {
+  return request('/api/dependent/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+}

@@ -46,6 +46,7 @@ import {
   getCountryStates,
   getRevokeHistory,
   shareDocument,
+  getDependentsByEmployee,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -97,6 +98,7 @@ const employeeProfile = {
       changeHistories: [],
       bankData: {},
       taxData: {},
+      dependentDetails: [],
     },
     tempData: {
       generalData: {},
@@ -1071,6 +1073,16 @@ const employeeProfile = {
         dialog(errors);
       }
       return response;
+    },
+    *fetchEmployeeDependentDetails({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getDependentsByEmployee, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { dependentDetails: data.dependents } });
+      } catch (error) {
+        dialog(error);
+      }
     },
   },
 
