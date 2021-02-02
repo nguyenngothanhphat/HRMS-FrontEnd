@@ -89,9 +89,13 @@ class Dashboard extends PureComponent {
       },
     });
     dispatch({
-      type: 'frequentlyAskedQuestions/getListByCompany',
-      payload: { company: idCompany },
-    });
+      type: 'frequentlyAskedQuestions/getListInit',
+    }).then(
+      dispatch({
+        type: 'frequentlyAskedQuestions/getListByCompany',
+        payload: { company: idCompany },
+      }),
+    );
 
     const locations = await dispatch({
       type: 'locationSelection/fetchLocationsByCompany',
