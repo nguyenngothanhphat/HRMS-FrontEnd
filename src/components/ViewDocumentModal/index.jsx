@@ -112,7 +112,7 @@ class ViewDocumentModal extends PureComponent {
     const { numPages } = this.state;
     return (
       <>
-        <p style={{ fontWeight: 'bold', fontSize: '16px' }}>{fileName}</p>
+        <p className={styles.fileName}>{fileName}</p>
         <Document
           className={styles.pdfFrame}
           onLoadSuccess={this.onDocumentLoadSuccess}
