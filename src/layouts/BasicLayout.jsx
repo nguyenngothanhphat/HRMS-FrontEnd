@@ -11,7 +11,6 @@ import { getAuthorityFromRouter } from '@/utils/utils';
 import { Button, Result } from 'antd';
 import { connect, Link, useIntl, Redirect } from 'umi';
 import classnames from 'classnames';
-import { get } from 'lodash';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
@@ -72,8 +71,6 @@ const BasicLayout = (props) => {
     </Link>
   );
 
-  console.log('routers', routes);
-
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
   };
@@ -112,7 +109,9 @@ const BasicLayout = (props) => {
           listPath = [
             {
               path: '/',
-              breadcrumbName: formatMessage, // return listPath;
+              breadcrumbName: formatMessage({
+                id: 'menu.home',
+              }),
             },
             ...listPath,
           ];

@@ -19,7 +19,9 @@ export interface BreadcrumbProps {
   menu?: ProSettings['menu'];
   breadcrumbMap?: Map<string, MenuDataItem>;
   formatMessage?: (message: MessageDescriptor) => string;
-  breadcrumbLayoutRender?: (routers: AntdBreadcrumbProps['routes']) => AntdBreadcrumbProps['routes'];
+  breadcrumbLayoutRender?: (
+    routers: AntdBreadcrumbProps['routes'],
+  ) => AntdBreadcrumbProps['routes'];
   itemRender?: AntdBreadcrumbProps['itemRender'];
 }
 
@@ -178,7 +180,6 @@ export const getBreadcrumbProps = (props: BreadcrumbProps): BreadcrumbListReturn
   const routesArray = genBreadcrumbProps(props);
   const itemRender = propsItemRender || defaultItemRender;
   let routes = routesArray;
-  console.log(routes)
   if (breadcrumbLayoutRender) {
     routes = breadcrumbLayoutRender(routes) || [];
   }
