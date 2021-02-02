@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Collapse } from 'antd';
-// import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
 import PlusIcon from '@/assets/plusIcon1.svg';
 import MinusIcon from '@/assets/minusIcon1.svg';
 import styles from './styles.less';
@@ -23,58 +22,67 @@ const data = [
   { title: 'Over Time', plans: [{ 'Over Time stuff': '07.20.21' }] },
 ];
 
-const dependentData = [
-  {
-    name: 'John Doe',
-    gender: 'Not sure',
-    relationship: 'Married to Susan',
-    dob: '05.21.95',
-  },
-  {
-    name: 'Mary Doe',
-    gender: 'Lesbian',
-    relationship: 'Married to John',
-    dob: '05.21.95',
-  },
-];
+// const dependentData = [
+//   {
+//     name: 'John Doe',
+//     gender: 'Not sure',
+//     relationship: 'Married to Susan',
+//     dob: '21-5-1995',
+//   },
+//   {
+//     name: 'Mary Doe',
+//     gender: 'Lesbian',
+//     relationship: 'Married to John',
+//     dob: '21-5-1995',
+//   },
+// ];
 
-export default class BenefitTab extends PureComponent {
+@connect(({ employeeProfile: { originData: { dependentDetails, benefitPlans } }, loading }) => ({
+  dependentDetails,
+  benefitPlans,
+  loading:
+    loading.effects['employeeProfile/fetchEmployeeDependentDetails'] ||
+    loading.effects['employeeProfile/getBenefitPlans'],
+}))
+class BenefitTab extends PureComponent {
   render() {
+    const { loading, dependentDetails } = this.props;
+    if (loading) return <div>Loading...</div>;
     return (
       <div style={{ backgroundColor: '#f6f7f9' }}>
         <div className={styles.benefitTab}>
           <div className={styles.sideTab}>
-            {Math.floor(Math.random() * 10) > 5 ? (
-              <div>
-                <h3 className={styles.headings}>
-                  {formatMessage({ id: 'pages.employeeProfile.BenefitTab.dependentDetails' })}
-                </h3>
-                <div style={{ paddingLeft: '24px', paddingRight: '24px' }}>
-                  {dependentData.map((item, idx) => {
-                    return (
-                      <DependentTabs
-                        key={Math.random().toString(36).substring(7)}
-                        index={idx}
-                        data={item}
-                      />
-                    );
-                  })}
-                </div>
+            <div>
+              <h3 className={styles.headings}>
+                {formatMessage({ id: 'pages.employeeProfile.BenefitTab.dependentDetails' })}
+              </h3>
+              <div style={{ paddingLeft: '24px', paddingRight: '24px' }}>
+                {dependentDetails.map((item, idx) => {
+                  return (
+                    <DependentTabs
+                      key={Math.random().toString(36).substring(7)}
+                      index={idx}
+                      data={item}
+                    />
+                  );
+                })}
               </div>
-            ) : (
-              <div>
-                <h3 className={styles.headings}>
-                  {formatMessage({ id: 'pages.employeeProfile.BenefitTab.kycDetails' })}
-                </h3>
-                <KYC
-                  kycStat="Complete"
-                  walletStat="Active"
-                  adhaar="8947-9866-9999-9999"
-                  paytm="+91-7876534261"
-                />
-              </div>
-            )}
+            </div>
           </div>
+          <div className={styles.sideTab}>
+            <div>
+              <h3 className={styles.headings}>
+                {formatMessage({ id: 'pages.employeeProfile.BenefitTab.kycDetails' })}
+              </h3>
+              <KYC
+                kycStat="Complete"
+                walletStat="Active"
+                adhaar="8947-9866-9999-9999"
+                paytm="+91-7876534261"
+              />
+            </div>
+          </div>
+
           <div className={styles.sideTab}>
             <h3 className={styles.headings}>
               {formatMessage({ id: 'pages.employeeProfile.BenefitTab.optedPlans' })}
@@ -93,9 +101,7 @@ export default class BenefitTab extends PureComponent {
                 isActive ? (
                   <img src={MinusIcon} alt="collapse" />
                 ) : (
-                  // <MinusOutlined style={{ color: '#2c6df9', fontSize: '30px' }} />
                   <img src={PlusIcon} alt="expand" />
-                  // <PlusOutlined style={{ color: '#2c6df9', fontSize: '30px' }} />
                 )}
               className="site-collapse-custom-collapse"
               expandIconPosition="right"
@@ -137,3 +143,4 @@ export default class BenefitTab extends PureComponent {
     );
   }
 }
+export default BenefitTab;
