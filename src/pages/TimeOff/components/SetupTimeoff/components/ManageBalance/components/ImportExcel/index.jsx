@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, DatePicker, Row, Col, Upload, message } from 'antd';
-// import { UploadOutlined } from '@ant-design/icons';
+import moment from 'moment';
 import Icon from '@/assets/importExcel.svg';
 
 import { connect } from 'umi';
@@ -68,6 +68,10 @@ class ImportExcel extends React.Component {
     });
   };
 
+  disabledDate = (current) => {
+    return current && current < moment().subtract(1, 'day').endOf('day');
+  };
+
   handleUpload = (file) => {
     const { dispatch, getResponse = () => {} } = this.props;
     const formData = new FormData();
@@ -88,9 +92,6 @@ class ImportExcel extends React.Component {
     const { effectiveDate } = this.state;
     const { urlExcel, tab, loading } = this.props;
     const check = !effectiveDate || !urlExcel;
-    // console.log(!effectiveDate, 'effectiveDate');
-    // console.log(!urlExcel, 'urlExcel');
-    // console.log(check, 'check');
 
     return (
       <div className={styles.root}>
@@ -115,6 +116,7 @@ class ImportExcel extends React.Component {
                 className={styles.datePicker}
                 placeholder="Balances effective date"
                 onChange={this.onChange}
+                disabledDate={this.disabledDate}
               />
             </Col>
           </Row>

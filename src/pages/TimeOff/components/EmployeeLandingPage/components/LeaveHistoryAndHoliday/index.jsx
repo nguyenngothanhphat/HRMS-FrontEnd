@@ -9,9 +9,12 @@ import LeaveHistory from './components/LeaveHistory';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
-@connect(({ timeOff }) => ({
-  timeOff,
-}))
+@connect(
+  ({ timeOff, user: { currentUser: { location: { _id: idLocation = '' } = {} } = {} } = {} }) => ({
+    timeOff,
+    idLocation,
+  }),
+)
 class LeaveHistoryAndHoliday extends PureComponent {
   constructor(props) {
     super(props);
@@ -21,10 +24,10 @@ class LeaveHistoryAndHoliday extends PureComponent {
   }
 
   componentDidMount = () => {
-    const { dispatch } = this.props;
+    const { dispatch, idLocation } = this.props;
     dispatch({
-      type: 'timeOff/fetchHolidaysList',
-      payload: { year: parseInt(moment().format('YYYY'), 10), month: '' },
+      type: 'timeOff/fetchHolidaysListBylocation',
+      payload: { location: idLocation },
     });
     dispatch({
       type: 'timeOff/fetchLeaveHistory',

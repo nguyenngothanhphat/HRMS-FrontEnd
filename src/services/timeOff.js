@@ -111,9 +111,20 @@ export async function getProjectsListByEmployee(payload) {
     data: payload,
   });
 }
-
-export async function getHolidaysList(payload) {
+// Holidays
+export async function getHolidaysList() {
   return request('/api/holidaycalendar/list', {
+    method: 'POST',
+  });
+}
+export async function getHolidaysListByLocation(payload) {
+  return request('/api/holidaycalendar/get-by-location', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getHolidaysByCountry(payload) {
+  return request('/api/holidaycalendar/get-by-country', {
     method: 'POST',
     data: payload,
   });
@@ -242,6 +253,18 @@ export async function rejectMultipleCompoffRequest(data) {
   });
 }
 
+export async function getCalendarHoliday() {
+  return request(
+    `/apigoogle/calendar/v3/calendars/en.vietnamese%23holiday%40group.v.calendar.google.com/events`,
+    {
+      params: {
+        key: 'AIzaSyC4yCRj10KxwrEebj2DlZT9F6kQwgHy6hM',
+      },
+      method: 'GET',
+    },
+  );
+}
+
 // ACCOUNT SETTINGS
 const mockData = [
   {
@@ -279,5 +302,29 @@ export async function getDefaultTimeoffTypesList() {
 export async function getCountryList() {
   return request('/api/country/list', {
     method: 'POST',
+  });
+}
+
+export async function getInitEmployeeSchedule() {
+  return request('/api/employeeschedule/init-default-from-location', {
+    method: 'POST',
+  });
+}
+export async function getEmployeeScheduleByLocation(payload) {
+  return request('/api/employeeschedule/get-by-location', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function deleteHoliday(payload) {
+  return request('/api/holidaycalendar/remove-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function addHoliday(payload) {
+  return request('/api/holidaycalendar/add', {
+    method: 'POST',
+    data: payload,
   });
 }

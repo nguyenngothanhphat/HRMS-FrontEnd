@@ -1,9 +1,6 @@
 import React, { PureComponent } from 'react';
-// import FileUploadIcon from '@/assets/dropImage.svg';
-// import icon from '@/assets/svgIcon.svg';
 import { Tabs } from 'antd';
 import SwitchTab from './components/Switch';
-// import ImportData from './components/ImportData';
 import styles from './index.less';
 
 const { TabPane } = Tabs;

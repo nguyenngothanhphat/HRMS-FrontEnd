@@ -1,45 +1,80 @@
 import React, { Component } from 'react';
-// import moment from 'moment';
+import moment from 'moment';
+import { connect } from 'umi';
 import { Form, InputNumber, Row, Col, Radio, Button, TimePicker } from 'antd';
 import s from './index.less';
 
+@connect(
+  ({ timeOff, user: { currentUser: { location: { _id: idLocation = '' } = {} } = {} } = {} }) => ({
+    timeOff,
+    idLocation,
+  }),
+)
 class WorkShedule extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value1: 'am',
-      value2: 'am',
+      value1: 'AM',
+      value2: 'PM',
       array: [
         {
           id: 1,
-          name: 'Sun',
+          name: 'SUNDAY',
         },
         {
           id: 2,
-          name: 'Mon',
+          name: 'MONDAY',
+          check: true,
         },
         {
           id: 3,
-          name: 'Tue',
+          name: 'TUESDAY',
+          check: true,
         },
         {
           id: 4,
-          name: 'Wed',
+          name: 'WEDNESDAY',
+          check: true,
         },
         {
           id: 5,
-          name: 'Thu',
+          name: 'THURSDAY',
+          check: true,
         },
         {
           id: 6,
-          name: 'Fri',
+          name: 'FRIDAY',
+          check: true,
         },
         {
           id: 7,
-          name: 'Sat',
+          name: 'SATURDAY',
         },
       ],
     };
+  }
+
+  componentDidMount() {
+    const { dispatch, idLocation } = this.props;
+    // dispatch({
+    //   type: 'timeOff/getInitEmployeeSchedule',
+    // }).then(
+    //   dispatch({
+    //     type: 'timeOff/getEmployeeScheduleByLocation',
+    //     payload: { location: idLocation },
+    //   }),
+    // );
+    dispatch({
+      type: 'timeOff/getInitEmployeeSchedule',
+      // payload: { location: idLocation },
+    }).then((response = {}) => {
+      console.log(response);
+      const { statusCode, data: listData = {} } = response;
+      if (statusCode === 200) {
+        const { totalHour, startWorkDay = {}, endWorkDay = {}, workDay = [] } = listData;
+        console.log(totalHour);
+      }
+    });
   }
 
   onChange1 = (e) => {
@@ -76,7 +111,10 @@ class WorkShedule extends Component {
 
   onFinish = (values) => {
     const { array } = this.state;
-    const arrayActive = array.filter((item) => item.check === true).map((data) => data.name);
+    const arrayActive = array.filter((item) => item.check === true);
+    const arrayFiler = arrayActive.map((item) => ({ check: item.check, name: item.name }));
+    console.log(arrayFiler);
+
     const { endAmPM, endAt, startAmPM, startAt, totalHour } = values;
     const payload = {
       startWorkDay: { start: startAt, amPM: startAmPM },
@@ -84,6 +122,7 @@ class WorkShedule extends Component {
       totalHour,
       workday: arrayActive,
     };
+    console.log(payload, 'payload');
   };
 
   render() {
@@ -102,7 +141,10 @@ class WorkShedule extends Component {
           requiredMark={false}
           initialValues={{
             startAmPM: 'AM',
-            endAmPM: 'AM',
+            endAmPM: 'PM',
+            totalHour: 8,
+            startAt: moment('8', format),
+            endAt: moment('17', format),
           }}
         >
           <div className={s.title}>Setup the employee work schedule</div>
@@ -129,7 +171,7 @@ class WorkShedule extends Component {
                     <InputNumber
                       min={0}
                       max={12}
-                      defaultValue={0}
+                      defaultValue={8}
                       placeholder="hours/day"
                       formatter={(value) => `${value} hours/day`}
                       parser={(value) => value.replace('days', '')}
@@ -162,7 +204,7 @@ class WorkShedule extends Component {
                   <Row gutter={[16, 0]}>
                     <Col>
                       <Form.Item name="endAt">
-                        <TimePicker format={format} />
+                        <TimePicker format={format} value={moment('5:00', format)} />
                       </Form.Item>
                     </Col>
                     <Col style={{ padding: '2px' }}>

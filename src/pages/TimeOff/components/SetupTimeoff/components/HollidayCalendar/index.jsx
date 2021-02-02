@@ -2,11 +2,17 @@ import React, { Component } from 'react';
 import { Button, Checkbox, Select, Row, Col, Spin, InputNumber } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
+import AddHoliday from './AddHoliday';
 import s from './index.less';
 
-const CheckboxGroup = Checkbox.Group;
-
 const { Option } = Select;
+
+const listCountry = [
+  { country: 'VN', code: 'vietnamese', label: 'Viet Nam' },
+  { country: 'US', code: 'usa', label: 'US' },
+  { country: 'IN', code: 'indian', label: ' India' },
+];
+
 const MOCK_DATA = [
   {
     text: 'Jan',
@@ -69,105 +75,173 @@ const MOCK_DATA = [
     children: [],
   },
 ];
-@connect(({ timeOff, loading }) => ({
-  timeOff,
-  loading: loading.effects['timeOff/fetchHolidaysList'],
-}))
+@connect(
+  ({
+    timeOff,
+    loading,
+    user: {
+      currentUser: {
+        company: { _id: idCompany = '' } = {},
+        location: { _id: idLocation = '' } = {},
+      } = {},
+    } = {},
+  }) => ({
+    timeOff,
+    loading: loading.effects['timeOff/fetchHolidaysListBylocation'],
+    loadingbyCountry: loading.effects['timeOff/fetchHolidaysListBylocation'],
+    idCompany,
+    idLocation,
+  }),
+)
 class HollidayCalendar extends Component {
   constructor(props) {
     super(props);
     this.state = {
       data: [],
-      // indeterminate: true,
-      // checkedList: [],
-      // plainOptions: [],
-      // checkAll: false,
+      role: '',
+      yearSelect: 2021,
+      list: {},
+      idCheck: [],
+      visible: false,
     };
   }
 
-  componentDidMount = () => {
-    const d = new Date();
-    const year = d.getFullYear();
-    this.initListHoliday(year);
+  findRole = (roles) => {
+    const hrGlobal = roles.find((item) => item === 'hr-global');
+    const role = hrGlobal || 'employee';
+    return role;
   };
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   const { year } = this.state;
-  //   const { year: nextyear } = nextState;
-  //   if (year !== nextyear) {
-  //     this.initListHoliday(nextyear);
-  //   }
-  //   return true;
-  // }
+  componentDidMount = () => {
+    const listRole = localStorage.getItem('antd-pro-authority');
+    const role = this.findRole(JSON.parse(listRole));
+    this.setState({
+      role,
+    });
+    const d = new Date();
+    const year = d.getFullYear();
+    const formatYear = year.toString();
+    this.initListHoliday(formatYear);
+  };
 
-  initListHoliday = (currenYear) => {
-    const { dispatch } = this.props;
-    // const { year } = this.state;
+  initListHoliday = (year) => {
+    const { dispatch, idLocation } = this.props;
     dispatch({
-      type: 'timeOff/fetchHolidaysList',
-      payload: { year: currenYear, month: '' },
+      type: 'timeOff/fetchHolidaysListBylocation',
+      payload: { location: idLocation },
     }).then((response) => {
-      const { statusCode, data: holidaysList = [] } = response;
+      const { statusCode, data: listData = {} } = response;
+      this.setState({
+        list: listData,
+      });
+      const { holiday = [] } = listData;
       if (statusCode === 200) {
-        this.fomatDate(holidaysList);
+        const newList = holiday.filter((item) => {
+          const { date } = item;
+          const yearCurrent = moment(date).format('YYYY');
+          return yearCurrent === year;
+        });
+        this.fomatDate(newList);
       }
     });
   };
 
   handleChange = (value) => {
     const { data } = this.state;
-    // this.setState({ select: value });
     const refComponent = data.find((item) => item.text === value);
     refComponent.ref.current.scrollIntoView(true);
-    window.scrollBy(0, -70);
+    window.scrollBy(0, -80);
   };
 
   onChange = (value) => {
-    // this.setState({ year: value });
-    this.initListHoliday(value);
+    const { list } = this.state;
+
+    this.setState({
+      yearSelect: value,
+    });
+    const { holiday = [] } = list;
+    const newList = holiday.filter((item) => {
+      const { date } = item;
+      const yearCurrent = moment(date).format('YYYY');
+      return yearCurrent === value.toString();
+    });
+    this.fomatDate(newList);
   };
 
-  // onChangeCheckAll = (checkedList) => {
-  //   const { plainOptions } = this.state;
-  //   this.setState({
-  //     list: checkedList,
-  //     indeterminate: !!checkedList.length && checkedList.length,
-  //     checkAll: checkedList.length === plainOptions.length,
-  //   });
-  // };
+  changeCountry = (value) => {
+    const { yearSelect } = this.state;
+    const { dispatch } = this.props;
+    const year = yearSelect.toString();
+    dispatch({
+      type: 'timeOff/fetchHolidaysByCountry',
+      payload: { country: value },
+    }).then((response) => {
+      const { statusCode, data: listByCountry = {} } = response;
+      this.setState({
+        list: listByCountry,
+      });
+      const { holiday = [] } = listByCountry;
+      if (statusCode === 200) {
+        const newList = holiday.filter((item) => {
+          const { date } = item;
+          const yearCurrent = moment(date).format('YYYY');
+          return yearCurrent === year;
+        });
+        this.fomatDate(newList);
+      }
+    });
+  };
+
+  handleClickDelete = (e, id) => {
+    const { idCheck } = this.state;
+    this.setState({
+      idCheck: e.target.checked === true ? [...idCheck, id] : idCheck.filter((x) => x !== id),
+    });
+  };
+
+  deleteHoliday = (id) => {
+    const { dispatch } = this.props;
+    const { list = [] } = this.state;
+    const { _id: idObjHolidays } = list;
+    // dispatch({
+    //   type: 'timeOff/deleteHoliday',
+    //   payload: { removeId: id, id: idObjHolidays },
+    // });
+  };
 
   renderItem = (item) => {
     const { children = [] } = item;
-    const { checkedList, plainOptions } = this.state;
+    const { idCheck = [] } = this.state;
     return (
       <div ref={item.ref}>
         <div key={item.text} className={s.formTable}>
           <div className={s.title}>{item.month}</div>
           <div>
-            {children.map((itemChildren) => {
-              const { date, name, type } = itemChildren;
+            {children.map((itemChildren, index) => {
+              const { date, name, type, _id } = itemChildren;
               const dateFormat = moment(date).format('MMM Do');
               const day = moment(date).format('dddd');
               return (
                 <div>
                   <Row gutter={[30, 20]} className={s.textStyles}>
                     <Col>
-                      <CheckboxGroup
-                        options={plainOptions}
-                        value={checkedList}
-                        onChange={this.onChangeCheckAll}
-                      />
+                      <Checkbox onChange={(e) => this.handleClickDelete(e, _id)} />
                     </Col>
-                    <Col span={6} className={s.textHoliday}>
+                    <Col span={8} className={s.textHoliday}>
                       {name}
                     </Col>
-                    <Col span={4} className={s.textHoliday}>
+                    <Col span={3} className={s.textHoliday}>
                       {dateFormat}
                     </Col>
-                    <Col span={4}>{day}</Col>
-                    <Col span={6}>{type}</Col>
+                    <Col span={3}>{day}</Col>
+                    <Col span={3}>{type}</Col>
+                    {idCheck.indexOf(_id) > -1 && (
+                      <Col span={3} onClick={() => this.deleteHoliday(_id)}>
+                        <Button className={s.deleteHoliday}>Delete</Button>
+                      </Col>
+                    )}
                   </Row>
-                  <div className={s.straight} />
+                  {index !== children.length - 1 ? <div className={s.straight} /> : ''}
                 </div>
               );
             })}
@@ -181,7 +255,7 @@ class HollidayCalendar extends Component {
     let result = MOCK_DATA;
     holidaysList.forEach((item) => {
       const monthItem = moment(item.date).format('MMM');
-      const fomatDataItem = moment(item.date).format('YYYY, MMM');
+      const fomatDataItem = moment(item.date).format('MMM , YYYY');
       result = result.map((resultItem) => ({
         ...resultItem,
         month: resultItem.text === monthItem ? fomatDataItem : resultItem.month,
@@ -193,9 +267,21 @@ class HollidayCalendar extends Component {
     this.setState({ data: result });
   };
 
+  handleCandelSchedule = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleClick = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
   render() {
-    const { data } = this.state;
-    const { loading = false } = this.props;
+    const { data, role, yearSelect, visible = true } = this.state;
+    const { loading = false, loadingbyCountry = false } = this.props;
     return (
       <div className={s.root}>
         <div className={s.setUpWrap}>
@@ -205,27 +291,34 @@ class HollidayCalendar extends Component {
             your company
             <p> provides holidays. You may add holidays to the list as well.</p>
           </div>
+
+          {role === 'hr-global' && (
+            <Select style={{ width: 250 }} onChange={this.changeCountry}>
+              {listCountry.map((item) => (
+                <Option key={item.code} value={item.country}>
+                  {item.label}
+                </Option>
+              ))}
+            </Select>
+          )}
         </div>
         <div className={s.listHoliday}>
           <div span={24} className={s.flex}>
             <div>
-              <Checkbox
-                // indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}
-                className={s.select}
-              >
-                Select All
-              </Checkbox>
+              <Checkbox className={s.select}>Select All</Checkbox>
             </div>
             <div>
               <Row gutter={[24, 0]}>
                 <Col>
-                  <Button className={s.btnHoliday}>Add a holiday</Button>
+                  <Button className={s.btnHoliday} onClick={this.handleClick}>
+                    Add a holiday
+                  </Button>
                 </Col>
                 <Col>
                   <InputNumber
-                    min={2019}
+                    min={2020}
                     max={2022}
-                    defaultValue={moment().format('YYYY')}
+                    defaultValue={yearSelect}
                     onChange={this.onChange}
                   />
                 </Col>
@@ -243,7 +336,7 @@ class HollidayCalendar extends Component {
           </div>
           <div>
             <Row>
-              {loading ? (
+              {loading || loadingbyCountry ? (
                 <Col span={24} className={s.center}>
                   <Spin />
                 </Col>
@@ -253,6 +346,7 @@ class HollidayCalendar extends Component {
             </Row>
           </div>
         </div>
+        <AddHoliday visible={visible} handleCancel={this.handleCandelSchedule} />
       </div>
     );
   }
