@@ -67,32 +67,19 @@ class CollapseRow extends PureComponent {
     }, 1000);
   };
 
-  statusAndButtons = () => {
+  checkShowUploadBtn = () => {
     const { data: row = [], parentEmployeeGroup = '', isHR } = this.props;
     const { kind = '' } = row;
-    //  const { files = [] } = row;
-    // let checkExistFile = true;
-    // if (files.length === 1) {
-    //   files.forEach((value) => {
-    //     const { id = '' } = value;
-    //     if (id === '') checkExistFile = false;
-    //   });
-    // }
+    return (!isHR && parentEmployeeGroup !== 'PR Reports' && kind !== 'Identity') || isHR;
+  };
+
+  statusAndButtons = () => {
+    const showUpload = this.checkShowUploadBtn();
     return (
       <div onClick={(event) => event.stopPropagation()} className={styles.statusAndButtons}>
-        {/* <a>Complete</a> */}
         <div onClick={() => this.handleUploadClick(1)} className={styles.uploadButton}>
-          {/* <img src={UploadIcon} alt="upload" /> */}
-          {!isHR ? (
-            parentEmployeeGroup !== 'PR Reports' &&
-            kind !== 'Identity' && <span className={styles.uploadText}>Upload new</span>
-          ) : (
-            <span className={styles.uploadText}>Upload new</span>
-          )}
+          {showUpload && <span className={styles.uploadText}>Upload new</span>}
         </div>
-        {/* <Dropdown overlay={menu}>
-        <EllipsisOutlined onClick={handleMenuClick} className={styles.menuButton} />
-      </Dropdown> */}
       </div>
     );
   };
@@ -148,6 +135,7 @@ class CollapseRow extends PureComponent {
     const { data: row = {}, onFileClick = () => {}, parentEmployeeGroup = '' } = this.props;
     const { kind = '', files = [] } = row;
     const processData = this.processData(files);
+    const showUpload = this.checkShowUploadBtn();
 
     return (
       <div>
@@ -191,15 +179,17 @@ class CollapseRow extends PureComponent {
                   <Col span={7}>{date}</Col>
                   <Col span={2}>
                     <div className={styles.downloadFile}>
-                      <div className={styles.uploadButton}>
-                        <img
-                          alt="upload"
-                          src={DownloadIcon}
-                          onClick={() => this.handleUploadClick(2, id)}
-                          className={styles.downloadButton}
-                          // title="Replace document"
-                        />
-                      </div>
+                      {showUpload && (
+                        <div className={styles.uploadButton}>
+                          <img
+                            alt="upload"
+                            src={DownloadIcon}
+                            onClick={() => this.handleUploadClick(2, id)}
+                            className={styles.downloadButton}
+                            // title="Replace document"
+                          />
+                        </div>
+                      )}
                       <DownloadFile content={this.renderDownloadIcon()} url={source} />
                     </div>
                   </Col>
