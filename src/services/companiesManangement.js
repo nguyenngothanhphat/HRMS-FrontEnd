@@ -48,3 +48,10 @@ export async function upsertLocationsList(payload) {
     data: payload.locations,
   });
 }
+
+export async function removeLocation(payload) {
+  return request('/api/location/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
