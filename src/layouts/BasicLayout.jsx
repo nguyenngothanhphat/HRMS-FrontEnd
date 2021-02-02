@@ -104,18 +104,19 @@ const BasicLayout = (props) => {
 
           return <Link to={menuItemProps.path}>{defaultDom}</Link>;
         }}
-        breadcrumbRender={(routers = []) => {
-          let listPath = [
+        breadcrumbLayoutRender={(routers = []) => {
+          let listPath = routers;
+          listPath = [
             {
               path: '/',
               breadcrumbName: formatMessage({
                 id: 'menu.home',
               }),
             },
-            ...routers,
+            ...listPath,
           ];
-          if (routers.length > 0) {
-            const [firstPath] = routers;
+          if (listPath.length > 0) {
+            const [firstPath] = listPath;
             const { breadcrumbName = '' } = firstPath;
             if (breadcrumbName === 'Dashboard')
               listPath = [
