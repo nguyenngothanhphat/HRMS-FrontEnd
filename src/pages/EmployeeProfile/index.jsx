@@ -95,6 +95,8 @@ class EmployeeProfile extends Component {
     });
     dispatch({ type: 'employeeProfile/fetchEmployees' });
     dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: employee });
+    dispatch({ type: 'employeeProfile/fetchEmployeeDependentDetails', payload: employee });
+    dispatch({ type: 'employeeProfile/getBenefitPlans' });
   };
 
   checkProfileOwner = (currentUserID, employeeID) => {
