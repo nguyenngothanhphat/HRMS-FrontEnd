@@ -309,3 +309,9 @@ export async function getDependentsByEmployee(payload) {
     data: payload,
   });
 }
+
+export async function getBenefitPlans() {
+  return request('/api/benefit/list-by-company', {
+    method: 'POST',
+  });
+}

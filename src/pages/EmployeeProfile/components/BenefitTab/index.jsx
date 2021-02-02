@@ -37,9 +37,12 @@ const data = [
 //   },
 // ];
 
-@connect(({ employeeProfile: { originData: { dependentDetails } }, loading }) => ({
+@connect(({ employeeProfile: { originData: { dependentDetails, benefitPlans } }, loading }) => ({
   dependentDetails,
-  loading: loading.effects['employeeProfile/fetchEmployeeDependentDetails'],
+  benefitPlans,
+  loading:
+    loading.effects['employeeProfile/fetchEmployeeDependentDetails'] ||
+    loading.effects['employeeProfile/getBenefitPlans'],
 }))
 class BenefitTab extends PureComponent {
   render() {

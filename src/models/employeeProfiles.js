@@ -47,6 +47,7 @@ import {
   getRevokeHistory,
   shareDocument,
   getDependentsByEmployee,
+  getBenefitPlans,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -99,6 +100,7 @@ const employeeProfile = {
       bankData: {},
       taxData: {},
       dependentDetails: [],
+      benefitPlans: [],
     },
     tempData: {
       generalData: {},
@@ -1080,6 +1082,16 @@ const employeeProfile = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { dependentDetails: data.dependents } });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *getBenefitPlans(_, { call, put }) {
+      try {
+        const response = yield call(getBenefitPlans);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { benefitPlans: data } });
       } catch (error) {
         dialog(error);
       }
