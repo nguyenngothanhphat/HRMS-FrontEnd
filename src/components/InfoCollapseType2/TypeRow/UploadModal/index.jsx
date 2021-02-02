@@ -188,12 +188,14 @@ class UploadModal extends Component {
       loading = false,
       handleCancel = () => {},
       actionType = 1,
-      fileName = '',
+      currentFileName = '',
     } = this.props;
     const layout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 16 },
     };
+
+    console.log('file', currentFileName);
 
     return (
       <div>
@@ -278,7 +280,7 @@ class UploadModal extends Component {
               </Dragger>
             </div>
             <Form
-              initialValues={{ documentType: employeeGroup, documentName: fileName }}
+              initialValues={{ documentType: employeeGroup, documentName: currentFileName }}
               ref={this.formRef}
               id="myForm"
               className={styles.fileNameInput}

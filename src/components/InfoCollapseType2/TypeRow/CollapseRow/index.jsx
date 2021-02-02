@@ -27,6 +27,7 @@ class CollapseRow extends PureComponent {
       uploadModalVisible: false,
       actionType: 1,
       currentDocumentId: '',
+      currentFileName: '',
     };
   }
 
@@ -36,11 +37,12 @@ class CollapseRow extends PureComponent {
     });
   };
 
-  handleUploadClick = (value, id) => {
+  handleUploadClick = (value, id, fileName) => {
     this.setState({
       uploadModalVisible: true,
       actionType: value,
       currentDocumentId: id || '',
+      currentFileName: fileName || '',
     });
   };
 
@@ -131,7 +133,7 @@ class CollapseRow extends PureComponent {
   };
 
   render() {
-    const { open, uploadModalVisible, actionType, currentDocumentId } = this.state;
+    const { open, uploadModalVisible, actionType, currentDocumentId, currentFileName } = this.state;
     const { data: row = {}, onFileClick = () => {}, parentEmployeeGroup = '' } = this.props;
     const { kind = '', files = [] } = row;
     const processData = this.processData(files);
@@ -147,6 +149,7 @@ class CollapseRow extends PureComponent {
           parentEmployeeGroup={parentEmployeeGroup}
           refreshData={this.refreshData}
           currentDocumentId={currentDocumentId}
+          currentFileName={currentFileName}
         />
         <Collapse
           defaultActiveKey={['1']}
@@ -184,7 +187,7 @@ class CollapseRow extends PureComponent {
                           <img
                             alt="upload"
                             src={DownloadIcon}
-                            onClick={() => this.handleUploadClick(2, id)}
+                            onClick={() => this.handleUploadClick(2, id, fileName)}
                             className={styles.downloadButton}
                           />
                         </div>
