@@ -12,7 +12,7 @@ export default class OptionsHeader extends PureComponent {
   };
 
   render() {
-    const dateFormat = 'Do MMM YYYY';
+    const dateFormat = 'MM.DD.YY';
 
     return (
       <div className={styles.OptionsHeader}>

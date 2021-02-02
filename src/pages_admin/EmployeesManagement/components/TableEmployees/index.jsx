@@ -57,7 +57,7 @@ class TableEmployees extends PureComponent {
         width: '8%',
         align: 'left',
         render: (joinDate) =>
-          joinDate ? <span>{moment(joinDate).locale('en').format('MMM - Do, YY')}</span> : '',
+          joinDate ? <span>{moment(joinDate).locale('en').format('MM.DD.YY')}</span> : '',
       },
       {
         title: formatMessage({ id: 'pages_admin.employees.table.email' }),

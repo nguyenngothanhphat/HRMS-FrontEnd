@@ -60,8 +60,16 @@
       }
       .downloadFile {
         text-align: right;
+        display: flex;
+        justify-content: flex-end;
+        .uploadButton {
+          img {
+            transform: rotate(180deg);
+          }
+        }
         .downloadButton {
           margin-top: -3px;
+          margin-left: 15px;
           height: 16px;
           cursor: pointer;
           &:hover {

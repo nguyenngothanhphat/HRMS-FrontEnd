@@ -79,7 +79,7 @@ class TableUsers extends PureComponent {
         // width: '8%',
         align: 'left',
         render: (joinDate) =>
-          joinDate ? <span>{moment(joinDate).locale('en').format('MMM - Do, YY')}</span> : '',
+          joinDate ? <span>{moment(joinDate).locale('en').format('MM.DD.YY')}</span> : '',
         sortDirections: ['ascend', 'descend', 'ascend'],
         sorter: {
           compare: (a, b) => new Date(a.joinDate) - new Date(b.joinDate),
@@ -190,8 +190,12 @@ class TableUsers extends PureComponent {
   closeEditModal = () => {
     this.setState({
       editModalVisible: false,
-      selectedUserId: null,
     });
+    setTimeout(() => {
+      this.setState({
+        selectedUserId: null,
+      });
+    }, 500);
   };
 
   // delete user
@@ -307,14 +311,14 @@ class TableUsers extends PureComponent {
 
     return (
       <div className={styles.tableUsers}>
-        {!loadingUserProfile && selectedUserId && editModalVisible && (
+        {!loadingUserProfile && selectedUserId && (
           <EditUserModal
             user={employeeDetail}
             editModalVisible={editModalVisible}
             closeEditModal={this.closeEditModal}
           />
         )}
-        {!loadingUserProfile && selectedUserId && deleteConfirmModalVisible && (
+        {!loadingUserProfile && selectedUserId && (
           <ConfirmRemoveModal
             user={employeeDetail}
             titleModal="Remove User Confirm"

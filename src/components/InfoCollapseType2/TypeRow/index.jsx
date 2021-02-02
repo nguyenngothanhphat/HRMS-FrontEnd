@@ -4,7 +4,7 @@ import styles from './index.less';
 
 class TypeRow extends PureComponent {
   render() {
-    const { data = [], onFileClick = () => {}, parentEmployeeGroup = '' } = this.props;
+    const { data = [], onFileClick = () => {}, parentEmployeeGroup = '', isHR } = this.props;
 
     return (
       <div className={styles.TypeRow}>
@@ -15,6 +15,7 @@ class TypeRow extends PureComponent {
               key={`${index + 1}`}
               onFileClick={onFileClick}
               data={row}
+              isHR={isHR}
             />
             {index + 1 < data.length && <div className={styles.divider} />}
           </>

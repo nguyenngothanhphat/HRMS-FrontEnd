@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Row, Col, Tag } from 'antd';
-import ModalReviewImage from '@/components/ModalReviewImage';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { connect } from 'umi';
 import styles from './index.less';
 
@@ -37,8 +37,12 @@ class View extends Component {
   handleCancel = () => {
     this.setState({
       visible: false,
-      linkImage: '',
     });
+    setTimeout(() => {
+      this.setState({
+        linkImage: '',
+      });
+    }, 500);
   };
 
   formatListSkill = (skills, colors) => {
@@ -110,7 +114,7 @@ class View extends Component {
     const formatListSkill = this.formatListSkill(skills, listColors) || [];
 
     return (
-      <Fragment>
+      <>
         <Row gutter={[0, 16]} className={styles.root}>
           {dummyData.map((item) => (
             <Fragment key={item.id}>
@@ -137,8 +141,8 @@ class View extends Component {
             ))}
           </Col>
         </Row>
-        <ModalReviewImage visible={visible} handleCancel={this.handleCancel} link={linkImage} />
-      </Fragment>
+        <ViewDocumentModal visible={visible} onClose={this.handleCancel} url={linkImage} />
+      </>
     );
   }
 }

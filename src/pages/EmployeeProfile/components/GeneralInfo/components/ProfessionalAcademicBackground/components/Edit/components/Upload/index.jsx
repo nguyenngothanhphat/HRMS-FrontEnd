@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Upload, message } from 'antd';
-import ModalReviewImage from '@/components/ModalReviewImage';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { connect } from 'umi';
 import { UploadOutlined } from '@ant-design/icons';
 import styles from './index.less';
@@ -27,8 +27,12 @@ class UploadCertification extends Component {
   handleCancel = () => {
     this.setState({
       visible: false,
-      linkImage: '',
     });
+    setTimeout(() => {
+      this.setState({
+        linkImage: '',
+      });
+    }, 500);
   };
 
   beforeUpload = (file) => {
@@ -113,7 +117,7 @@ class UploadCertification extends Component {
             />
           </div>
         )}
-        <ModalReviewImage visible={visible} handleCancel={this.handleCancel} link={linkImage} />
+        <ViewDocumentModal visible={visible} onClose={this.handleCancel} url={linkImage} />
       </div>
     );
   }

@@ -18,8 +18,7 @@ const activityList = [
     year: 2020,
     info: (
       <p>
-        Resource allocation sheet for Week 17 <strong>[22nd August - 28th August, 2020]</strong>{' '}
-        received.
+        Resource allocation sheet for Week 17 <strong>[08.22.20 - 08.28.20]</strong> received.
       </p>
     ),
   },
@@ -30,8 +29,7 @@ const activityList = [
     year: 2020,
     info: (
       <p>
-        Resource allocation sheet for Week 17 <strong>[22nd August - 28th August, 2020]</strong>{' '}
-        received.
+        Resource allocation sheet for Week 17 <strong>[08.22.20 - 08.28.20]</strong> received.
       </p>
     ),
   },
@@ -42,8 +40,7 @@ const activityList = [
     year: 2020,
     info: (
       <p>
-        Resource allocation sheet for Week 17 <strong>[22nd August - 28th August, 2020]</strong>{' '}
-        received.
+        Resource allocation sheet for Week 17 <strong>[08.22.20 - 08.28.20]</strong> received.
       </p>
     ),
   },
@@ -54,8 +51,7 @@ const activityList = [
     year: 2020,
     info: (
       <p>
-        Resource allocation sheet for Week 17 <strong>[22nd August - 28th August, 2020]</strong>{' '}
-        received.
+        Resource allocation sheet for Week 17 <strong>[08.22.20 - 08.28.20]</strong> received.
       </p>
     ),
   },
@@ -66,8 +62,7 @@ const activityList = [
     year: 2020,
     info: (
       <p>
-        Resource allocation sheet for Week 17 <strong>[22nd August - 28th August, 2020]</strong>{' '}
-        received.
+        Resource allocation sheet for Week 17 <strong>[08.22.20 - 08.28.20]</strong> received.
       </p>
     ),
   },
@@ -78,8 +73,7 @@ const activityList = [
     year: 2020,
     info: (
       <p>
-        Resource allocation sheet for Week 17 <strong>[22nd August - 28th August, 2020]</strong>{' '}
-        received.
+        Resource allocation sheet for Week 17 <strong>[08.22.20 - 08.28.20]</strong> received.
       </p>
     ),
   },
@@ -90,8 +84,7 @@ const activityList = [
     year: 2020,
     info: (
       <p>
-        Resource allocation sheet for Week 17 <strong>[22nd August - 28th August, 2020]</strong>{' '}
-        received.
+        Resource allocation sheet for Week 17 <strong>[08.22.20 - 08.28.20]</strong> received.
       </p>
     ),
   },

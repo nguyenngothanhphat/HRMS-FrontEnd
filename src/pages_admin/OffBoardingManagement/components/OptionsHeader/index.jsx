@@ -9,8 +9,8 @@ export default class OptionsHeader extends PureComponent {
     // eslint-disable-next-line no-console
     // console.log('values', values);
     const { status = [], fromDate = '', toDate = '' } = values;
-    const from = moment(fromDate).locale('en').format('YYYY-MM-DD');
-    const to = moment(toDate).locale('en').format('YYYY-MM-DD');
+    const from = moment(fromDate).locale('en').format('MM.DD.YY');
+    const to = moment(toDate).locale('en').format('MM.DD.YY');
     const filterData = {
       status,
       fromDate: fromDate !== '' && fromDate !== null ? from : '',
@@ -21,7 +21,7 @@ export default class OptionsHeader extends PureComponent {
   };
 
   render() {
-    const dateFormat = 'Do MMM YYYY';
+    const dateFormat = 'MM.DD.YY';
 
     return (
       <div className={styles.OptionsHeader}>

@@ -11,15 +11,15 @@ import KYC from './components/KYC';
 const data = [
   {
     title: 'Medical',
-    plans: [{ 'Medical stuff': '20 July 2020' }, { 'Medical stuff': '20 July 2021' }],
+    plans: [{ 'Medical stuff': '07.20.21' }, { 'Medical stuff': '07.20.21' }],
   },
-  { title: 'Life', plans: [{ 'Life stuff': '20 July 2020' }, { 'Life stuff': '20 July 2021' }] },
+  { title: 'Life', plans: [{ 'Life stuff': '07.20.21' }, { 'Life stuff': '07.20.21' }] },
   {
     title: 'Money',
-    plans: [{ 'Medical money stuff': '20 July 2020' }, { 'Money stuff': '20 July 2021' }],
+    plans: [{ 'Medical money stuff': '07.20.21' }, { 'Money stuff': '07.20.21' }],
   },
-  { title: 'Lunch', plans: [{ 'Food stuff': '20 July 2020' }, { 'Soup stuff': '20 July 2021' }] },
-  { title: 'Over Time', plans: [{ 'Over Time stuff': '20 July 2020' }] },
+  { title: 'Lunch', plans: [{ 'Food stuff': '07.20.21' }, { 'Soup stuff': '07.20.21' }] },
+  { title: 'Over Time', plans: [{ 'Over Time stuff': '07.20.21' }] },
 ];
 
 // const dependentData = [
@@ -102,8 +102,7 @@ class BenefitTab extends PureComponent {
                   <img src={MinusIcon} alt="collapse" />
                 ) : (
                   <img src={PlusIcon} alt="expand" />
-                )
-              }
+                )}
               className="site-collapse-custom-collapse"
               expandIconPosition="right"
             >

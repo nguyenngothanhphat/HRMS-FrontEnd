@@ -443,7 +443,7 @@ class RequestInformation extends PureComponent {
 
     const formatListEmail = this.renderEmailsList() || [];
 
-    const dateFormat = 'DD.MM.YY';
+    const dateFormat = 'MM.DD.YY';
 
     const {
       showSuccessModal,

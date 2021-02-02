@@ -65,7 +65,7 @@ class TableCandidates extends PureComponent {
         dataIndex: 'updatedAt',
         align: 'left',
         render: (updatedAt) => (
-          <span>{updatedAt ? moment(updatedAt).locale('en').format('MMM Do, YYYY') : ''}</span>
+          <span>{updatedAt ? moment(updatedAt).locale('en').format('MM.DD.YY') : ''}</span>
         ),
         // sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
