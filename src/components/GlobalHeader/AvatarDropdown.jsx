@@ -6,6 +6,21 @@ import { connect, formatMessage, history } from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
+@connect(
+  ({
+    locationSelection: { listLocationsByCompany = [] } = {},
+    user: {
+      currentUser: { roles = [], company: { _id: companyId = '', logoUrl = '' } = {} } = {},
+    } = {},
+    loading,
+  }) => ({
+    listLocationsByCompany,
+    companyId,
+    logoUrl,
+    roles,
+    loadingFetchLocation: loading.effects['locationSelection/fetchLocationsByCompany'],
+  }),
+)
 class AvatarDropdown extends React.Component {
   constructor(props) {
     super(props);
@@ -14,13 +29,37 @@ class AvatarDropdown extends React.Component {
       VIEWPROFILE: 'viewProfile',
       CHANGEPASSWORD: 'changePassword',
       SETTINGS: 'settings',
+      selectLocationAbility: false,
     };
   }
+
+  componentDidMount = () => {
+    const { dispatch, companyId = '', roles = [] } = this.props;
+    dispatch({
+      type: 'locationSelection/fetchLocationsByCompany',
+      payload: {
+        company: companyId,
+      },
+    });
+    roles.forEach((role) => {
+      const { _id = '' } = role;
+      if (['ADMIN-CSA', 'HR-GLOBAL'].includes(_id)) {
+        this.setState({
+          selectLocationAbility: true,
+        });
+      }
+    });
+  };
+
+  onFinish = () => {
+    history.push('/');
+  };
 
   onMenuClick = (event) => {
     const { key } = event;
     const { LOGOUT, VIEWPROFILE, CHANGEPASSWORD, SETTINGS } = this.state;
-    const { currentUser } = this.props;
+    const { currentUser, listLocationsByCompany = [] } = this.props;
+
     if (key === LOGOUT) {
       const { dispatch } = this.props;
       if (dispatch) {
@@ -51,7 +90,46 @@ class AvatarDropdown extends React.Component {
       return;
     }
 
+    localStorage.setItem('currentLocation', key);
+    let selectLocation = '';
+
+    listLocationsByCompany.forEach((value) => {
+      const { _id = '' } = value;
+      if (key === _id) {
+        selectLocation = _id;
+      }
+    });
+
+    if (selectLocation) {
+      // window.location.reload();
+      history.push(`/`);
+      return;
+    }
+
     history.push(`/account/${key}`);
+  };
+
+  renderLocationList = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    const currentLocation = localStorage.getItem('currentLocation');
+
+    return (
+      <>
+        <Menu.Divider className={styles.secondDivider} />
+        <Menu.Item className={styles.selectLocation}>Location</Menu.Item>
+        {listLocationsByCompany.map((value) => {
+          const { _id = '', name: locationName = '' } = value;
+          return (
+            <Menu.Item
+              key={_id}
+              className={currentLocation !== _id ? styles.menuItemLink : styles.menuItemLink2}
+            >
+              {locationName}
+            </Menu.Item>
+          );
+        })}
+      </>
+    );
   };
 
   render() {
@@ -61,6 +139,8 @@ class AvatarDropdown extends React.Component {
       generalInfo: { avatar = '', employeeId = '' } = {},
       title = {},
     } = currentUser;
+    const { selectLocationAbility } = this.state;
+
     const { LOGOUT, VIEWPROFILE, CHANGEPASSWORD } = this.state;
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
@@ -94,6 +174,9 @@ class AvatarDropdown extends React.Component {
         {/* <Menu.Item key={SETTINGS} className={styles.menuItemLink}>
           {formatMessage({ id: 'component.globalHeader.avatarDropdown.settings' })}
         </Menu.Item> */}
+
+        {selectLocationAbility && this.renderLocationList()}
+
         <Menu.Divider className={styles.secondDivider} />
         <Menu.ItemGroup className={styles.groupMenuItem}>
           <Menu.Item key={LOGOUT} className={styles.menuItemLogout}>

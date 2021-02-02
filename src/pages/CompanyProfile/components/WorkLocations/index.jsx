@@ -2,7 +2,7 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
-import { Form, Divider, Button } from 'antd';
+import { Form, Divider, Button, Skeleton } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { connect } from 'umi';
@@ -20,6 +20,8 @@ import s from './index.less';
     currentUser,
     workLocations,
     loading: loading.effects['companiesManagement/upsertLocationsList'],
+    fetchingLocationsList: loading.effects['companiesManagement/fetchLocationsList'],
+    loadingCountry: loading.effects['country/fetchListCountry'],
   }),
 )
 class WorkLocations extends PureComponent {
@@ -50,9 +52,45 @@ class WorkLocations extends PureComponent {
     return listLocation;
   };
 
+  removeLocation = (id) => {
+    const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
+    const payload = { id, company: _id };
+    dispatch({
+      type: 'companiesManagement/removeLocation',
+      payload,
+    });
+  };
+
   render() {
-    const { listCountry = [], workLocations = [], loading } = this.props;
+    const {
+      listCountry = [],
+      workLocations = [],
+      loading,
+      fetchingLocationsList,
+      loadingCountry,
+    } = this.props;
     const listLocation = this.formatListLocation();
+    if (fetchingLocationsList || loadingCountry)
+      return (
+        <div className={s.root}>
+          <div className={s.content__viewTop}>
+            <p className={s.title}>Work Locations</p>
+            <p className={s.text}>
+              This information is used to assign the employees to the right office. We will also
+              enable you to assign office specific administrators, filter employees per work
+              location, view Business Intelligence reports, and more. You do not need to add the
+              address of your remote employees here.
+            </p>
+          </div>
+          <div className={s.content__viewBottom}>
+            {workLocations.map((item) => (
+              <div className={s.viewSkeleton} key={item?._id}>
+                <Skeleton active />
+              </div>
+            ))}
+          </div>
+        </div>
+      );
 
     return (
       <Form
@@ -77,11 +115,13 @@ class WorkLocations extends PureComponent {
                 <>
                   {fields.map((field) => (
                     <FormWorkLocation
-                      {...field}
+                      field={field}
                       key={field.name}
                       formRef={this.formRef}
                       listCountry={listCountry}
                       listLocation={listLocation}
+                      removeLocation={this.removeLocation}
+                      onRemove={() => remove(field.name)}
                     />
                   ))}
                   <div className={s.viewAddWorkLocation} onClick={() => add()}>

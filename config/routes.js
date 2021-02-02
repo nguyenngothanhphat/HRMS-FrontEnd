@@ -77,6 +77,19 @@ const routes = [
         ],
       },
       {
+        path: '/select-location',
+        component: '../layouts/AccountSetupLayout',
+        authority: ['admin-csa'],
+        routes: [
+          {
+            path: '/select-location',
+            component: './LocationSelection',
+            name: 'Location Selection',
+            authority: ['admin-csa'],
+          },
+        ],
+      },
+      {
         path: '/account-setup',
         component: '../layouts/AccountSetupLayout',
         authority: ['admin-csa'],
@@ -126,14 +139,14 @@ const routes = [
           {
             path: '/users',
             name: 'users',
-            icon: '/assets/images/CP-icons_users.svg',
+            icon: '/assets/images/menuIcons/user.svg',
             component: '../pages_admin/UsersManagement',
             authority: ['admin-sa'],
           },
           {
             path: '/employees',
             name: 'employees',
-            icon: '/assets/images/CP-icons_employees.svg',
+            icon: '/assets/images/menuIcons/members.svg',
             component: '../pages_admin/EmployeesManagement',
             authority: ['admin-sa'],
           },
@@ -147,7 +160,7 @@ const routes = [
           {
             path: '/companies',
             name: 'companies',
-            icon: '/assets/images/CP-icons_company.svg',
+            icon: '/assets/images/menuIcons/company.svg',
             component: '../pages_admin/CompaniesManagement',
             authority: ['admin-sa'],
           },
@@ -182,14 +195,14 @@ const routes = [
           {
             path: '/candidates',
             name: 'candidates',
-            icon: '/assets/images/CP-icons_Candidates.svg',
+            icon: '/assets/images/menuIcons/candidate.svg',
             component: '../pages_admin/CandidatesManagement',
             authority: ['admin-sa'],
           },
           {
             path: '/documents',
             name: 'documents',
-            icon: '/assets/images/CP-icons_documents.svg',
+            icon: '/assets/images/menuIcons/documents.svg',
             component: '../pages_admin/DocumentsManagement',
             authority: ['admin-sa'],
           },
@@ -217,7 +230,7 @@ const routes = [
           {
             path: '/settings',
             name: 'settings',
-            icon: '/assets/images/CP-icons_settings.svg',
+            icon: '/assets/images/menuIcons/settings.svg',
             component: '../pages_admin/Setting',
             authority: ['admin-sa'],
           },

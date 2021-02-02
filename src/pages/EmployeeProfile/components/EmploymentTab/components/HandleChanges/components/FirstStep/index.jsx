@@ -27,7 +27,7 @@ export default function FirstStep(props) {
                 border: '1px solid #d6dce4',
                 color: '#000',
               }}
-              format="DD/MM/YYYY"
+              format="MM.DD.YY"
             />
           ) : null}
         </div>
@@ -53,7 +53,7 @@ export default function FirstStep(props) {
                 border: '1px solid #d6dce4',
                 color: '#000',
               }}
-              format="DD/MM/YYYY"
+              format="MM.DD.YY"
             />
           ) : null}
         </div>

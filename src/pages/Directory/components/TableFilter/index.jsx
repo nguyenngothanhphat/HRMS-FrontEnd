@@ -14,7 +14,7 @@ class TableFilter extends PureComponent {
     super(props);
     this.state = {
       EmploymentState: 'Employment Type',
-      locationState: 'Location',
+      // locationState: 'Location',
       departmentState: 'Department',
       all: 'All',
       text: '',
@@ -87,20 +87,20 @@ class TableFilter extends PureComponent {
 
   render() {
     const { Sider } = Layout;
-    const { locationState, departmentState, all, EmploymentState, text, reset } = this.state;
+    const {  departmentState, all, EmploymentState, text, reset } = this.state;
     const {
-      employee: { location = [], department = [], employeetype = [], clearName = false },
+      employee: {  department = [], employeetype = [], clearName = false },
       collapsed,
       changeTab,
       tabName,
     } = this.props;
-    const formatDataLocation = location.map((item) => {
-      const { name: label, id: value } = item;
-      return {
-        label,
-        value,
-      };
-    });
+    // const formatDataLocation = location.map((item) => {
+    //   const { name: label, id: value } = item;
+    //   return {
+    //     label,
+    //     value,
+    //   };
+    // });
     const formatDataEmployeeType = employeetype.map((item) => {
       const { name: label, _id: value } = item;
       return {
@@ -169,9 +169,9 @@ class TableFilter extends PureComponent {
                     data={filteredArr(formatDataDepartment)}
                   />
                 )}
-                {reset || changeTab
+                {/* {reset || changeTab
                   ? ''
-                  : this.handleCheckShowLocation(formatDataLocation, locationState, all)}
+                  : this.handleCheckShowLocation(formatDataLocation, locationState, all)} */}
               </>
             )}
           </div>

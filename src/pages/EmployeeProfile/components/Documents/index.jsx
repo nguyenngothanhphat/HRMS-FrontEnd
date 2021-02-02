@@ -6,10 +6,11 @@ import ViewDocument from './ViewDocument';
 import InfoCollapseType2 from '../../../../components/InfoCollapseType2';
 import styles from './index.less';
 
-@connect(({ employeeProfile, loading }) => ({
+@connect(({ employeeProfile, loading, user: { currentUser: { roles = [] } = {} } = {} }) => ({
   loading: loading.effects['employeeProfile/fetchDocuments'],
   loading2: loading.effects['employeeProfile/shareDocumentEffect'],
   employeeProfile,
+  roles,
 }))
 class Documents extends Component {
   constructor(props) {
@@ -17,15 +18,27 @@ class Documents extends Component {
     this.state = {
       isViewingDocument: false,
       selectedFile: 0,
+      isHR: false,
     };
   }
 
   componentDidMount = () => {
     const {
+      roles = [],
       employeeProfile: { idCurrentEmployee = '' },
       dispatch,
     } = this.props;
+    const findHRGlobal =
+      roles.find((role) => {
+        const { _id = '' } = role;
+        return ['HR-GLOBAL'].includes(_id);
+      }) || {};
 
+    if (Object.keys(findHRGlobal).length > 0) {
+      this.setState({
+        isHR: true,
+      });
+    }
     dispatch({
       type: 'employeeProfile/fetchDocuments',
       payload: { employee: idCurrentEmployee },
@@ -54,7 +67,7 @@ class Documents extends Component {
         id: item._id,
         fileName: item.key,
         generatedBy: 'Terralogic',
-        date: moment(date).locale('en').format('MMMM Do, YYYY'),
+        date: moment(date).locale('en').format('MM.DD.YY'),
         source,
       };
     }
@@ -149,7 +162,7 @@ class Documents extends Component {
   };
 
   render() {
-    const { isViewingDocument, selectedFile } = this.state;
+    const { isViewingDocument, selectedFile, isHR } = this.state;
 
     const {
       employeeProfile: { saveDocuments = [], groupViewingDocuments = [] },
@@ -197,6 +210,7 @@ class Documents extends Component {
                       key={`${index + 1}`}
                       onFileClick={this.onFileClick}
                       data={value}
+                      isHR={isHR}
                     />
                   ))
                 )}

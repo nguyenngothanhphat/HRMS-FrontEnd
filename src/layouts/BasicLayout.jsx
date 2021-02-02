@@ -77,10 +77,7 @@ const BasicLayout = (props) => {
   const { formatMessage } = useIntl();
 
   const { pathname } = window.location;
-  const classNameBreadCrumb =
-    pathname === '/dashboard' || pathname === '/search-result'
-      ? styles.breadCrumbA
-      : styles.breadCrumbB;
+  const classNameBreadCrumb = pathname === '/dashboard' ? styles.breadCrumbA : styles.breadCrumbB;
 
   if (currentUser?.firstCreated) {
     return <Redirect to="/account-setup" />;
@@ -107,20 +104,21 @@ const BasicLayout = (props) => {
 
           return <Link to={menuItemProps.path}>{defaultDom}</Link>;
         }}
-        breadcrumbRender={(routers = []) => {
-          let listPath = [
+        breadcrumbLayoutRender={(routers = []) => {
+          let listPath = routers;
+          listPath = [
             {
               path: '/',
               breadcrumbName: formatMessage({
                 id: 'menu.home',
               }),
             },
-            ...routers,
+            ...listPath,
           ];
-          if (routers.length > 0) {
-            const [firstPath] = routers;
+          if (listPath.length > 0) {
+            const [firstPath] = listPath;
             const { breadcrumbName = '' } = firstPath;
-            if (breadcrumbName === 'Dashboard' || breadcrumbName === 'Search Result')
+            if (breadcrumbName === 'Dashboard')
               listPath = [
                 {
                   path: '/',

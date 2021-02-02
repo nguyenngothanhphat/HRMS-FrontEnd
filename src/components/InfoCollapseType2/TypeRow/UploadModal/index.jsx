@@ -95,10 +95,12 @@ class UploadModal extends Component {
   };
 
   renderHeaderModal = () => {
-    const { titleModal = '' } = this.props;
+    const { actionType = 1 } = this.props;
     return (
       <div className={styles.header}>
-        <p className={styles.header__text}>{titleModal}</p>
+        <p className={styles.header__text}>
+          {actionType === 1 ? 'Upload new document' : 'Replace document'}
+        </p>
       </div>
     );
   };
@@ -154,14 +156,46 @@ class UploadModal extends Component {
     }
   };
 
+  replaceDocument = async () => {
+    const { keyFileName: key, fileId } = this.state;
+    const { dispatch, refreshData = () => {}, currentDocumentId = '' } = this.props;
+
+    if (fileId === '') {
+      notification.error({ message: 'Please choose file to upload!' });
+    } else {
+      const payload = {
+        id: currentDocumentId,
+        attachment: fileId,
+      };
+      if (key) {
+        payload.key = key;
+      }
+      const updateDocument = await dispatch({
+        type: 'employeeProfile/updateDocument',
+        payload,
+      });
+      if (updateDocument?.statusCode === 200) {
+        refreshData();
+      }
+    }
+  };
+
   render() {
     const { uploadedFileName = '' } = this.state;
     const { loadingUploadAttachment, employeeGroup = '' } = this.props;
-    const { visible = false, loading = false, handleCancel = () => {} } = this.props;
+    const {
+      visible = false,
+      loading = false,
+      handleCancel = () => {},
+      actionType = 1,
+      currentFileName = '',
+    } = this.props;
     const layout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 16 },
     };
+
+    console.log('file', currentFileName);
 
     return (
       <div>
@@ -196,7 +230,7 @@ class UploadModal extends Component {
                   htmlType="submit"
                   loading={loading}
                   className={styles.btnSubmit}
-                  onClick={this.handleRemoveToServer}
+                  onClick={actionType === 1 ? this.handleRemoveToServer : this.replaceDocument}
                 >
                   Upload
                 </Button>
@@ -246,7 +280,7 @@ class UploadModal extends Component {
               </Dragger>
             </div>
             <Form
-              initialValues={{ documentType: employeeGroup }}
+              initialValues={{ documentType: employeeGroup, documentName: currentFileName }}
               ref={this.formRef}
               id="myForm"
               className={styles.fileNameInput}
@@ -257,7 +291,7 @@ class UploadModal extends Component {
               <Form.Item
                 label="Document Name"
                 name="documentName"
-                rules={[{ required: true, message: 'Please input file name!' }]}
+                rules={[{ required: actionType === 1, message: 'Please input file name!' }]}
               >
                 <Input onChange={this.handleFileName} />
               </Form.Item>

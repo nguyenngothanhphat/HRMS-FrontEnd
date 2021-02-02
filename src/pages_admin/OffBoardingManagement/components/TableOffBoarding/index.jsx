@@ -48,7 +48,7 @@ class TableOffBoarding extends PureComponent {
       dataIndex: 'createdAt',
       sortDirections: ['ascend', 'descend', 'ascend'],
       render: (createdAt) => {
-        const formatedDate = moment(createdAt).format('MM/DD/YYYY');
+        const formatedDate = moment(createdAt).format('MM.DD.YY');
         return <span>{formatedDate}</span>;
       },
       sorter: {
@@ -64,7 +64,7 @@ class TableOffBoarding extends PureComponent {
       dataIndex: 'lastWorkingDate',
       // sortDirections: ['ascend', 'descend', 'ascend'],
       render: (lastWorkingDate) => {
-        const formatedDate = moment(lastWorkingDate).format('MM/DD/YYYY');
+        const formatedDate = moment(lastWorkingDate).format('MM.DD.YY');
         return <span>{formatedDate}</span>;
       },
       // sorter: {

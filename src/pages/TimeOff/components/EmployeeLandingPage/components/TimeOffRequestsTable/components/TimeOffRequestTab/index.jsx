@@ -30,19 +30,19 @@ class TimeOffRequestTab extends PureComponent {
     if (key === 1)
       return requests.filter((req) => {
         const { type: { type = '' } = {} } = req;
-        return type === 'A' || type === 'B';
+        return type === 'A';
       });
 
     if (key === 2)
       return requests.filter((req) => {
-        const { type: { type = '', shortType = '' } = {} } = req;
-        return type === 'C' && shortType !== 'LWP';
+        const { type: { type = '' } = {} } = req;
+        return type === 'C';
       });
 
     if (key === 3)
       return requests.filter((req) => {
-        const { type: { type = '', shortType = '' } = {} } = req;
-        return type === 'C' && shortType === 'LWP';
+        const { type: { type = '' } = {} } = req;
+        return type === 'B';
       });
 
     if (key === 4)

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
-import ViewPolicyModal from '@/components/ViewPolicyModal';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -31,22 +31,22 @@ export default class QuickLinks extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      viewPolicyModal: false,
+      viewDocumentModal: false,
     };
   }
 
-  setViewPolicyModal = (value) => {
+  setViewDocumentModal = (value) => {
     this.setState({
-      viewPolicyModal: value,
+      viewDocumentModal: value,
     });
   };
 
   onLinkClick = () => {
-    this.setViewPolicyModal(true);
+    this.setViewDocumentModal(true);
   };
 
   render() {
-    const { viewPolicyModal } = this.state;
+    const { viewDocumentModal } = this.state;
     return (
       <div className={styles.QuickLinks}>
         <Tabs defaultActiveKey="1">
@@ -58,7 +58,7 @@ export default class QuickLinks extends PureComponent {
             ))}
           </TabPane>
         </Tabs>
-        <ViewPolicyModal visible={viewPolicyModal} onClose={this.setViewPolicyModal} />
+        <ViewDocumentModal visible={viewDocumentModal} onClose={this.setViewDocumentModal} />
       </div>
     );
   }

@@ -3,7 +3,7 @@ import { Row, Col, Tooltip } from 'antd';
 import { connect } from 'umi';
 import Icon from '@ant-design/icons';
 import Moment from 'moment';
-import ModalReviewImage from '@/components/ModalReviewImage';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import ConformIcondata from '../../../confirmIcon';
 import iconQuestTion from '../../../Icon/icon';
 import styles from './index.less';
@@ -35,8 +35,12 @@ class View extends PureComponent {
   handleCancel = () => {
     this.setState({
       visible: false,
-      linkImage: '',
     });
+    setTimeout(() => {
+      this.setState({
+        linkImage: '',
+      });
+    }, 500);
   };
 
   handleOpenModalReview = (linkImage) => {
@@ -63,7 +67,7 @@ class View extends PureComponent {
       { label: 'Legal Name', value: dataAPI.legalName },
       {
         label: 'Date of Birth',
-        value: dataAPI.DOB ? Moment(dataAPI.DOB).locale('en').format('Do MMM YYYY') : '',
+        value: dataAPI.DOB ? Moment(dataAPI.DOB).locale('en').format('MM.DD.YY') : '',
       },
       { label: 'Legal Gender', value: dataAPI.legalGender },
       { label: 'Employee ID', value: dataAPI.employeeId },
@@ -111,7 +115,7 @@ class View extends PureComponent {
           </Fragment>
         ))}
         {/* Custom Col Here */}
-        <ModalReviewImage visible={visible} handleCancel={this.handleCancel} link={linkImage} />
+        <ViewDocumentModal visible={visible} onClose={this.handleCancel} url={linkImage} />
       </Row>
     );
   }

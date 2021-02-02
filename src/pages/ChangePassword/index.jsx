@@ -4,6 +4,7 @@ import { Form, Input, Button, Col, Row, Affix } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import { CheckCircleFilled } from '@ant-design/icons';
+import SecurityImage from '@/assets/changePassword.svg';
 import styles from './index.less';
 
 @connect(({ loading, changePassword: { statusChangePassword = false } }) => ({
@@ -197,7 +198,7 @@ class ChangePassword extends Component {
             </div>
           </Form>
           <div className={styles.changePassword__image}>
-            <img src="/assets/images/Intranet_01@3x.png" alt="image_intranet" />
+            <img src={SecurityImage} alt="image_intranet" />
           </div>
         </div>
       </PageContainer>

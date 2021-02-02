@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Modal, Input, Form, Button, DatePicker } from 'antd';
-// import moment from 'moment';
+import moment from 'moment';
 
 import styles from './index.less';
 
-const dateFormat = 'YYYY/MM/DD';
+const dateFormat = 'MM.DD.YY';
 
 const { TextArea } = Input;
 
@@ -18,6 +18,7 @@ const ModalTerminate = (props) => {
     // onChange = () => {},
     handleSubmit = () => {},
     handleCandelModal = () => {},
+    loading,
   } = props;
 
   const handleFinish = (values) => {
@@ -67,8 +68,8 @@ const ModalTerminate = (props) => {
             />
           </Form.Item>
           <Form.Item
-            label="Working Day"
-            name="workingDay"
+            label="Last Working Date"
+            name="lastWorkingDate"
             className={styles.datePickerForm}
             rules={[
               {
@@ -77,16 +78,28 @@ const ModalTerminate = (props) => {
               },
             ]}
           >
-            <DatePicker className={styles.datePicker} format={dateFormat} onChange={changeDate} />
+            <DatePicker
+              className={styles.datePicker}
+              format={dateFormat}
+              onChange={changeDate}
+              disabledDate={(current) => {
+                return current && current < moment().subtract(1, 'day').endOf('day');
+              }}
+            />
           </Form.Item>
           <Form.Item className={styles.flexContent}>
             <Button
               className={`${styles.btnGroup} ${styles.btnCancel}`}
               onClick={handleCandelModal}
+              disabled={loading}
             >
               Cancel
             </Button>
-            <Button className={`${styles.btnGroup} ${styles.btnSubmit}`} htmlType="submit">
+            <Button
+              className={`${styles.btnGroup} ${styles.btnSubmit}`}
+              htmlType="submit"
+              loading={loading}
+            >
               Submit
             </Button>
           </Form.Item>

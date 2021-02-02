@@ -286,9 +286,9 @@ class TeamLeaveTable extends PureComponent {
 
       let leaveTimes = '';
       if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-        leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YY')} - ${moment(toDate)
+        leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YY')} - ${moment(toDate)
           .locale('en')
-          .format('DD.MM.YY')}`;
+          .format('MM.DD.YY')}`;
       }
 
       // let employeeFromCC = [];

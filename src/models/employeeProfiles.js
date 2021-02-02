@@ -46,6 +46,8 @@ import {
   getCountryStates,
   getRevokeHistory,
   shareDocument,
+  getDependentsByEmployee,
+  getBenefitPlans,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
 
@@ -68,7 +70,8 @@ const employeeProfile = {
     editGeneral: {
       openContactDetails: false,
       openEmployeeInfor: false,
-      openPassportandVisa: false,
+      openPassport: false,
+      openVisa: false,
       openPersonnalInfor: false,
       openAcademic: false,
       openTax: false,
@@ -90,17 +93,19 @@ const employeeProfile = {
     originData: {
       generalData: {},
       compensationData: {},
-      passportData: [],
+      passportData: [{}],
       visaData: [],
       employmentData: {},
       changeHistories: [],
       bankData: {},
       taxData: {},
+      dependentDetails: [],
+      benefitPlans: [],
     },
     tempData: {
       generalData: {},
       compensationData: {},
-      passportData: [],
+      passportData: [{}],
       visaData: [],
       document: {},
       bankData: {},
@@ -361,10 +366,10 @@ const employeeProfile = {
           payload: { employee: idCurrentEmployee },
           dataTempKept,
         });
-        if (key === 'openPassportandVisa') {
+        if (key === 'openPassport') {
           yield put({
             type: 'saveOpenEdit',
-            payload: { openPassportandVisa: false },
+            payload: { openPassport: false },
           });
         }
       } catch (errors) {
@@ -385,10 +390,10 @@ const employeeProfile = {
           payload: { employee: idCurrentEmployee },
           dataTempKept,
         });
-        if (key === 'openPassportandVisa') {
+        if (key === 'openVisa') {
           yield put({
             type: 'saveOpenEdit',
-            payload: { openPassportandVisa: false },
+            payload: { openVisa: false },
           });
         }
       } catch (errors) {
@@ -410,10 +415,10 @@ const employeeProfile = {
           payload: { employee: idCurrentEmployee },
           dataTempKept,
         });
-        if (key === 'openPassportandVisa') {
+        if (key === 'openPassport') {
           yield put({
             type: 'saveOpenEdit',
-            payload: { openPassportandVisa: false },
+            payload: { openPassport: false },
           });
         }
       } catch (errors) {
@@ -435,10 +440,10 @@ const employeeProfile = {
           payload: { employee: idCurrentEmployee },
           dataTempKept,
         });
-        if (key === 'openPassportandVisa') {
+        if (key === 'openVisa') {
           yield put({
             type: 'saveOpenEdit',
-            payload: { openPassportandVisa: false },
+            payload: { openVisa: false },
           });
         }
       } catch (errors) {
@@ -476,10 +481,16 @@ const employeeProfile = {
               payload: { openEmployeeInfor: false },
             });
             break;
-          case 'openPassportandVisa':
+          case 'openPassport':
             yield put({
               type: 'saveOpenEdit',
-              payload: { openPassportandVisa: false },
+              payload: { openPassport: false },
+            });
+            break;
+          case 'openVisa':
+            yield put({
+              type: 'saveOpenEdit',
+              payload: { openVisa: false },
             });
             break;
           case 'openPersonnalInfor':
@@ -625,12 +636,9 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *updateDocument({ payload: { id = '', attachment = '' } = {} }, { call, put }) {
+    *updateDocument({ payload }, { call, put }) {
       try {
-        const response = yield call(getDocumentUpdate, {
-          id,
-          attachment,
-        });
+        const response = yield call(getDocumentUpdate, payload);
         const { statusCode, message, data: newDocument = {} } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -640,8 +648,10 @@ const employeeProfile = {
           type: 'save',
           payload: { newDocument },
         });
+        return response;
       } catch (errors) {
         dialog(errors);
+        return {};
       }
     },
     *fetchEmailsListByCompany({ payload: { company = [] } = {} }, { call, put }) {
@@ -1065,6 +1075,26 @@ const employeeProfile = {
       }
       return response;
     },
+    *fetchEmployeeDependentDetails({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getDependentsByEmployee, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { dependentDetails: data.dependents } });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *getBenefitPlans(_, { call, put }) {
+      try {
+        const response = yield call(getBenefitPlans);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { benefitPlans: data } });
+      } catch (error) {
+        dialog(error);
+      }
+    },
   },
 
   reducers: {
@@ -1093,6 +1123,7 @@ const employeeProfile = {
         saveDocuments: result,
       };
     },
+
     saveTemp(state, action) {
       const { tempData } = state;
       return {
@@ -1119,7 +1150,8 @@ const employeeProfile = {
         editGeneral: {
           openContactDetails: false,
           openEmployeeInfor: false,
-          openPassportandVisa: false,
+          openPassport: false,
+          openVisa: false,
           openPersonnalInfor: false,
           openAcademic: false,
           openTax: false,

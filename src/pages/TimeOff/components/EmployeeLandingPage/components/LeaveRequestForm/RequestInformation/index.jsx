@@ -3,7 +3,7 @@ import { Select, DatePicker, Input, Button, Row, Col, Form, message } from 'antd
 import { connect, history } from 'umi';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
-import ViewPolicyModal from '@/components/ViewPolicyModal';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import LeaveTimeRow from './LeaveTimeRow';
 
@@ -37,10 +37,10 @@ class RequestInformation extends PureComponent {
       viewingLeaveRequestId: '',
       isEditingDrafts: false,
       remainingDayOfSelectedType: 0,
-      totalDayOfSelectedType: 0,
+      // totalDayOfSelectedType: 0,
       unpaidLeaveActivate: false,
       negativeLeave: 0,
-      viewPolicyModal: false,
+      viewDocumentModal: false,
     };
   }
 
@@ -79,9 +79,9 @@ class RequestInformation extends PureComponent {
   };
 
   // view policy modal
-  setViewPolicyModal = (value) => {
+  setViewDocumentModal = (value) => {
     this.setState({
-      viewPolicyModal: value,
+      viewDocumentModal: value,
     });
   };
 
@@ -220,13 +220,13 @@ class RequestInformation extends PureComponent {
     } = this.props;
 
     let count = 0;
-    let total = 0;
+    // let total = 0;
     let check = false;
 
     timeOffTypesAB.forEach((value) => {
       const {
         defaultSettings: {
-          baseAccrual: { time = 0 } = {},
+          // baseAccrual: { time = 0 } = {},
           shortType: shortType1 = '',
           type = '',
         } = {},
@@ -234,7 +234,7 @@ class RequestInformation extends PureComponent {
       } = value;
       if (shortType === shortType1 && type === 'A') {
         count = currentAllowance;
-        total = time;
+        // total = time;
         check = true;
       }
     });
@@ -242,12 +242,15 @@ class RequestInformation extends PureComponent {
     if (!check)
       timeOffTypesC.forEach((value) => {
         const {
-          defaultSettings: { baseAccrual: { time = 0 } = {}, shortType: shortType1 = '' } = {},
+          defaultSettings: {
+            // baseAccrual: { time = 0 } = {},
+            shortType: shortType1 = '',
+          } = {},
           currentAllowance = 0,
         } = value;
         if (shortType === shortType1) {
           count = currentAllowance;
-          total = time;
+          // total = time;
         }
       });
 
@@ -256,13 +259,13 @@ class RequestInformation extends PureComponent {
         const { baseAccrual: { time = 0 } = {}, shortType: shortType1 = '', type = '' } = value;
         if (shortType === shortType1 && type === 'D') {
           count = time;
-          total = time;
+          // total = time;
         }
       });
 
     this.setState({
       remainingDayOfSelectedType: count,
-      totalDayOfSelectedType: total,
+      // totalDayOfSelectedType: total,
     });
 
     return count;
@@ -981,6 +984,10 @@ class RequestInformation extends PureComponent {
     );
   };
 
+  disabledDate = (current) => {
+    return current && current > moment();
+  };
+
   disabledToDate = (current) => {
     const { durationFrom } = this.state;
     return (
@@ -1049,7 +1056,7 @@ class RequestInformation extends PureComponent {
 
   // on policy link clicked
   onLinkClick = () => {
-    this.setViewPolicyModal(true);
+    this.setViewDocumentModal(true);
   };
 
   // validator
@@ -1072,7 +1079,7 @@ class RequestInformation extends PureComponent {
     };
     const formatListEmail = this.renderEmailsList() || [];
 
-    const dateFormat = 'DD.MM.YY';
+    const dateFormat = 'MM.DD.YY';
 
     const {
       selectedShortType,
@@ -1086,7 +1093,7 @@ class RequestInformation extends PureComponent {
       remainingDayOfSelectedType,
       unpaidLeaveActivate,
       // negativeLeave,
-      viewPolicyModal,
+      viewDocumentModal,
     } = this.state;
 
     const {
@@ -1466,7 +1473,7 @@ class RequestInformation extends PureComponent {
           submitText="OK"
         />
 
-        <ViewPolicyModal visible={viewPolicyModal} onClose={this.setViewPolicyModal} />
+        <ViewDocumentModal visible={viewDocumentModal} onClose={this.setViewDocumentModal} />
       </div>
     );
   }

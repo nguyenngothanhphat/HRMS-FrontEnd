@@ -45,7 +45,7 @@ class MyCompoffTable extends PureComponent {
       title: `Req’ted on `,
       dataIndex: 'onDate',
       align: 'left',
-      render: (onDate) => <span>{moment(onDate).locale('en').format('DD.MM.YY')}</span>,
+      render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
         compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
@@ -140,7 +140,7 @@ class MyCompoffTable extends PureComponent {
       if (extraTime.length !== 0) {
         const fromDate = extraTime[0].date;
         const toDate = extraTime[extraTime.length - 1].date;
-        duration = `${moment(fromDate).format('DD.MM.YY')} - ${moment(toDate).format('DD.MM.YY')}`;
+        duration = `${moment(fromDate).format('MM.DD.YY')} - ${moment(toDate).format('MM.DD.YY')}`;
       }
 
       const oneAssign = (step) => {

@@ -4,7 +4,7 @@ import { DownOutlined, PlusOutlined, CloseCircleOutlined } from '@ant-design/ico
 import { connect, formatMessage } from 'umi';
 import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
-import ModalReviewImage from '@/components/ModalReviewImage';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import UploadImage from '../../../UploadImage';
 import styles from '../../index.less';
 
@@ -15,14 +15,12 @@ import styles from '../../index.less';
     employeeProfile: {
       idCurrentEmployee,
       countryList,
-      originData: { passportData: passportDataOrigin = {}, visaData: visaDataOrigin = [] } = {},
-      tempData: { passportData = {}, generalData = {}, visaData = [] } = {},
+      originData: { visaData: visaDataOrigin = [] } = {},
+      tempData: { generalData = {}, visaData = [] } = {},
     } = {},
   }) => ({
     loading: loading.effects['upload/uploadFile'],
     countryList,
-    passportDataOrigin,
-    passportData,
     generalData,
     visaDataOrigin,
     visaData,
@@ -56,17 +54,31 @@ class VisaGeneral extends Component {
   handleCancel = () => {
     this.setState({
       visible: false,
-      linkImage: '',
     });
+    setTimeout(() => {
+      this.setState({
+        linkImage: '',
+      });
+    }, 500);
   };
 
   handleAddBtn = () => {
-    const { visaData, dispatch } = this.props;
-    const newList = [...visaData, {}];
-    dispatch({
-      type: 'employeeProfile/saveTemp',
-      payload: { visaData: newList },
-    });
+    const { visaData = [], dispatch } = this.props;
+
+    const { listItem } = this.state;
+    if (visaData.length > 0) {
+      const newList = [...visaData, {}];
+      dispatch({
+        type: 'employeeProfile/saveTemp',
+        payload: { visaData: newList },
+      });
+    } else {
+      const newList = [...listItem, {}];
+      dispatch({
+        type: 'employeeProfile/saveTemp',
+        payload: { visaData: newList },
+      });
+    }
   };
 
   handleCanCelIcon = (index) => {
@@ -207,14 +219,13 @@ class VisaGeneral extends Component {
         name,
       };
     });
-    const dateFormat = 'Do MMM YYYY';
+    const dateFormat = 'MM.DD.YY';
     return (
       <>
         {visaData.length === 0
           ? listItem.map((item, index) => {
               return (
                 <Fragment key={`edit${index + 1}`}>
-                  <div className={styles.line} />
                   <div className={styles.styleUpLoad}>
                     <Form.Item
                       key={`visaNumber${index + 1}`}
@@ -372,188 +383,187 @@ class VisaGeneral extends Component {
             })
           : visaData.map((item, index) => {
               return (
-                <Fragment key={`visa${index + 1}`}>
-                  <div className={styles.line} />
-                  <div className={styles.styleUpLoad}>
-                    <Form.Item
-                      initialValue={item.visaNumber}
-                      label="Visa Number"
-                      name={`visaNumber${index + 1}`}
-                      rules={[
-                        {
-                          pattern: /^[+]*[\d]{0,12}$/,
-                          message: formatMessage({
-                            id: 'pages.employeeProfile.validateNumber',
-                          }),
-                        },
-                      ]}
-                    >
-                      <Input
-                        className={this.handleSetClass(
-                          index,
-                          checkValidate,
-                          styles.inputForm,
-                          styles.inputFormImageValidate,
-                        )}
-                        onChange={(event) => {
-                          const { value: fieldValue } = event.target;
-                          this.handleFieldChange(index, 'visaNumber', fieldValue);
-                        }}
-                      />
-                    </Form.Item>
+                <>
+                  {index > 0 ? <div className={styles.line} /> : null}
+                  <Fragment key={`visa${index + 1}`}>
+                    <div className={styles.styleUpLoad}>
+                      <Form.Item
+                        initialValue={item.visaNumber}
+                        label="Visa Number"
+                        name={`visaNumber${index + 1}`}
+                        rules={[
+                          {
+                            pattern: /^[+]*[\d]{0,12}$/,
+                            message: formatMessage({
+                              id: 'pages.employeeProfile.validateNumber',
+                            }),
+                          },
+                        ]}
+                      >
+                        <Input
+                          className={this.handleSetClass(
+                            index,
+                            checkValidate,
+                            styles.inputForm,
+                            styles.inputFormImageValidate,
+                          )}
+                          onChange={(event) => {
+                            const { value: fieldValue } = event.target;
+                            this.handleFieldChange(index, 'visaNumber', fieldValue);
+                          }}
+                        />
+                      </Form.Item>
 
-                    {!item.urlFile ? (
-                      <div className={styles.textUpload}>
-                        {loadingVisaTest[index] === false ||
-                        loadingVisaTest[index] === undefined ? (
-                          <UploadImage
-                            content={this.handleShowContent(index, checkValidate)}
-                            setSizeImageMatch={(isLt5M) =>
-                              this.handleGetSetSizeImage(index, isLt5M)}
-                            getResponse={(resp) => this.handleGetUpLoad(index, resp)}
-                            loading={loading}
-                            name="visa"
-                            index={index}
+                      {!item.urlFile ? (
+                        <div className={styles.textUpload}>
+                          {loadingVisaTest[index] === false ||
+                          loadingVisaTest[index] === undefined ? (
+                            <UploadImage
+                              content={this.handleShowContent(index, checkValidate)}
+                              setSizeImageMatch={(isLt5M) =>
+                                this.handleGetSetSizeImage(index, isLt5M)}
+                              getResponse={(resp) => this.handleGetUpLoad(index, resp)}
+                              loading={loading}
+                              name="visa"
+                              index={index}
+                            />
+                          ) : (
+                            <Spin loading={loadingVisaTest[index]} active="true" />
+                          )}
+                        </div>
+                      ) : (
+                        <div className={styles.viewUpLoadData}>
+                          <p
+                            onClick={() =>
+                              this.handleOpenModalReview(item.urlFile ? item.urlFile.url : '')}
+                            className={styles.viewUpLoadDataURL}
+                          >
+                            fileName
+                          </p>
+                          <p className={styles.viewUpLoadDataText}>Uploaded</p>
+                          <img
+                            src={cancelIcon}
+                            alt=""
+                            onClick={() => this.handleCanCelIcon(index)}
+                            className={styles.viewUpLoadDataIconCancel}
                           />
-                        ) : (
-                          <Spin loading={loadingVisaTest[index]} active="true" />
-                        )}
-                      </div>
-                    ) : (
-                      <div className={styles.viewUpLoadData}>
+                        </div>
+                      )}
+                    </div>
+                    {item.urlFile ? (
+                      <Form.Item label="Visa:" className={styles.labelUpload}>
                         <p
                           onClick={() =>
                             this.handleOpenModalReview(item.urlFile ? item.urlFile.url : '')}
-                          className={styles.viewUpLoadDataURL}
+                          className={styles.urlUpload}
                         >
-                          fileName
+                          {this.handleNameDataUpload(item.urlFile.url)}
                         </p>
-                        <p className={styles.viewUpLoadDataText}>Uploaded</p>
-                        <img
-                          src={cancelIcon}
-                          alt=""
-                          onClick={() => this.handleCanCelIcon(index)}
-                          className={styles.viewUpLoadDataIconCancel}
-                        />
-                      </div>
+                      </Form.Item>
+                    ) : (
+                      ''
                     )}
-                  </div>
-                  {item.urlFile ? (
-                    <Form.Item label="Visa:" className={styles.labelUpload}>
-                      <p
-                        onClick={() =>
-                          this.handleOpenModalReview(item.urlFile ? item.urlFile.url : '')}
-                        className={styles.urlUpload}
+                    <Form.Item
+                      label="Visa Type"
+                      name={`visaType${index + 1}`}
+                      initialValue={item.visaType}
+                    >
+                      <Select
+                        className={styles.selectForm}
+                        tagRender={this.tagRender}
+                        mode="multiple"
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        onChange={(value) => {
+                          this.handleFieldChange(index, 'visaType', value);
+                        }}
                       >
-                        {this.handleNameDataUpload(item.urlFile.url)}
-                      </p>
+                        <Option value="B1">B1</Option>
+                        <Option value="B2">B2</Option>
+                        <Option value="B3">B3</Option>
+                        <Option value="nothing">nothing...</Option>
+                      </Select>
                     </Form.Item>
-                  ) : (
-                    ''
-                  )}
-                  <Form.Item
-                    label="Visa Type"
-                    name={`visaType${index + 1}`}
-                    initialValue={item.visaType}
-                  >
-                    <Select
-                      className={styles.selectForm}
-                      tagRender={this.tagRender}
-                      mode="multiple"
-                      filterOption={(input, option) =>
-                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                      onChange={(value) => {
-                        this.handleFieldChange(index, 'visaType', value);
-                      }}
-                      // suffixIcon={<DownOutlined className={styles.arrowDown} />}
+                    <Form.Item
+                      label="Country"
+                      name={`visaIssuedCountry${index + 1}`}
+                      initialValue={item.visaIssuedCountry ? item.visaIssuedCountry.name : ''}
                     >
-                      <Option value="B1">B1</Option>
-                      <Option value="B2">B2</Option>
-                      <Option value="B3">B3</Option>
-                      <Option value="nothing">nothing...</Option>
-                    </Select>
-                  </Form.Item>
-                  <Form.Item
-                    label="Country"
-                    name={`visaIssuedCountry${index + 1}`}
-                    initialValue={item.visaIssuedCountry ? item.visaIssuedCountry.name : ''}
-                  >
-                    <Select
-                      className={styles.selectForm}
-                      onChange={(value) => {
-                        this.handleFieldChange(index, 'visaIssuedCountry', value);
-                      }}
-                      showArrow
-                      // suffixIcon={<DownOutlined className={styles.arrowDown} />}
+                      <Select
+                        className={styles.selectForm}
+                        onChange={(value) => {
+                          this.handleFieldChange(index, 'visaIssuedCountry', value);
+                        }}
+                        showArrow
+                      >
+                        {formatCountryList.map((itemCountry) => {
+                          return (
+                            <Option key={itemCountry.value} value={itemCountry.value}>
+                              {itemCountry.name}
+                            </Option>
+                          );
+                        })}
+                      </Select>
+                    </Form.Item>
+                    <Form.Item
+                      label="Entry Type"
+                      name={`visaEntryType${index + 1}`}
+                      initialValue={item.visaEntryType}
                     >
-                      {formatCountryList.map((itemCountry) => {
-                        return (
-                          <Option key={itemCountry.value} value={itemCountry.value}>
-                            {itemCountry.name}
-                          </Option>
-                        );
-                      })}
-                    </Select>
-                  </Form.Item>
-                  <Form.Item
-                    label="Entry Type"
-                    name={`visaEntryType${index + 1}`}
-                    initialValue={item.visaEntryType}
-                  >
-                    <Select
-                      className={styles.selectForm}
-                      onChange={(value) => {
-                        this.handleFieldChange(index, 'visaEntryType', value);
-                      }}
-                      showArrow
-                      // suffixIcon={<DownOutlined className={styles.arrowDown} />}
+                      <Select
+                        className={styles.selectForm}
+                        onChange={(value) => {
+                          this.handleFieldChange(index, 'visaEntryType', value);
+                        }}
+                        showArrow
+                      >
+                        <Option value="Single Entry">Single Entry</Option>
+                        <Option value="nothing">nothing....</Option>
+                      </Select>
+                    </Form.Item>
+                    <Form.Item
+                      label="Issued On"
+                      name={`visaIssuedOn${index + 1}`}
+                      initialValue={item.visaIssuedOn ? moment(item.visaIssuedOn) : ''}
                     >
-                      <Option value="Single Entry">Single Entry</Option>
-                      <Option value="nothing">nothing....</Option>
-                    </Select>
-                  </Form.Item>
-                  <Form.Item
-                    label="Issued On"
-                    name={`visaIssuedOn${index + 1}`}
-                    initialValue={item.visaIssuedOn ? moment(item.visaIssuedOn) : ''}
-                  >
-                    <DatePicker
-                      format={dateFormat}
-                      onChange={(dates) => {
-                        this.handleFieldChange(index, 'visaIssuedOn', dates);
-                      }}
-                      className={styles.dateForm}
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    label="Valid Till"
-                    name={`visaValidTill${index + 1}`}
-                    validateStatus={formCheck[index] === false ? 'error' : 'success'}
-                    help={
-                      formCheck[index] === false
-                        ? formatMessage({
-                            id: 'pages.employeeProfile.validateDate',
-                          })
-                        : ''
-                    }
-                    initialValue={item.visaValidTill ? moment(item.visaValidTill) : ''}
-                  >
-                    <DatePicker
-                      format={dateFormat}
-                      onChange={(dates) => {
-                        this.handleFieldChange(index, 'visaValidTill', dates);
-                      }}
-                      className={
-                        formCheck[index] === false ? styles.dateFormValidate : styles.dateForm
+                      <DatePicker
+                        format={dateFormat}
+                        onChange={(dates) => {
+                          this.handleFieldChange(index, 'visaIssuedOn', dates);
+                        }}
+                        className={styles.dateForm}
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      label="Valid Till"
+                      name={`visaValidTill${index + 1}`}
+                      validateStatus={formCheck[index] === false ? 'error' : 'success'}
+                      help={
+                        formCheck[index] === false
+                          ? formatMessage({
+                              id: 'pages.employeeProfile.validateDate',
+                            })
+                          : ''
                       }
+                      initialValue={item.visaValidTill ? moment(item.visaValidTill) : ''}
+                    >
+                      <DatePicker
+                        format={dateFormat}
+                        onChange={(dates) => {
+                          this.handleFieldChange(index, 'visaValidTill', dates);
+                        }}
+                        className={
+                          formCheck[index] === false ? styles.dateFormValidate : styles.dateForm
+                        }
+                      />
+                    </Form.Item>
+                    <ViewDocumentModal
+                      visible={visible}
+                      onClose={this.handleCancel}
+                      url={linkImage}
                     />
-                  </Form.Item>
-                  <ModalReviewImage
-                    visible={visible}
-                    handleCancel={this.handleCancel}
-                    link={linkImage}
-                  />
-                </Fragment>
+                  </Fragment>
+                </>
               );
             })}
 
