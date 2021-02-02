@@ -316,3 +316,15 @@ export async function getEmployeeScheduleByLocation(payload) {
     data: payload,
   });
 }
+export async function deleteHoliday(payload) {
+  return request('/api/holidaycalendar/remove-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function addHoliday(payload) {
+  return request('/api/holidaycalendar/add', {
+    method: 'POST',
+    data: payload,
+  });
+}

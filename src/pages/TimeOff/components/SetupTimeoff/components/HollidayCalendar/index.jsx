@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Checkbox, Select, Row, Col, Spin, InputNumber } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
+import AddHoliday from './AddHoliday';
 import s from './index.less';
 
 const { Option } = Select;
@@ -100,6 +101,8 @@ class HollidayCalendar extends Component {
       role: '',
       yearSelect: 2021,
       list: {},
+      idCheck: [],
+      visible: false,
     };
   }
 
@@ -189,31 +192,54 @@ class HollidayCalendar extends Component {
     });
   };
 
+  handleClickDelete = (e, id) => {
+    const { idCheck } = this.state;
+    this.setState({
+      idCheck: e.target.checked === true ? [...idCheck, id] : idCheck.filter((x) => x !== id),
+    });
+  };
+
+  deleteHoliday = (id) => {
+    const { dispatch } = this.props;
+    const { list = [] } = this.state;
+    const { _id: idObjHolidays } = list;
+    // dispatch({
+    //   type: 'timeOff/deleteHoliday',
+    //   payload: { removeId: id, id: idObjHolidays },
+    // });
+  };
+
   renderItem = (item) => {
     const { children = [] } = item;
+    const { idCheck = [] } = this.state;
     return (
       <div ref={item.ref}>
         <div key={item.text} className={s.formTable}>
           <div className={s.title}>{item.month}</div>
           <div>
             {children.map((itemChildren, index) => {
-              const { date, name, type } = itemChildren;
+              const { date, name, type, _id } = itemChildren;
               const dateFormat = moment(date).format('MMM Do');
               const day = moment(date).format('dddd');
               return (
                 <div>
                   <Row gutter={[30, 20]} className={s.textStyles}>
                     <Col>
-                      <Checkbox />
+                      <Checkbox onChange={(e) => this.handleClickDelete(e, _id)} />
                     </Col>
                     <Col span={8} className={s.textHoliday}>
                       {name}
                     </Col>
-                    <Col span={4} className={s.textHoliday}>
+                    <Col span={3} className={s.textHoliday}>
                       {dateFormat}
                     </Col>
-                    <Col span={4}>{day}</Col>
-                    <Col span={4}>{type}</Col>
+                    <Col span={3}>{day}</Col>
+                    <Col span={3}>{type}</Col>
+                    {idCheck.indexOf(_id) > -1 && (
+                      <Col span={3} onClick={() => this.deleteHoliday(_id)}>
+                        <Button className={s.deleteHoliday}>Delete</Button>
+                      </Col>
+                    )}
                   </Row>
                   {index !== children.length - 1 ? <div className={s.straight} /> : ''}
                 </div>
@@ -241,8 +267,20 @@ class HollidayCalendar extends Component {
     this.setState({ data: result });
   };
 
+  handleCandelSchedule = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleClick = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
   render() {
-    const { data, role, yearSelect } = this.state;
+    const { data, role, yearSelect, visible = true } = this.state;
     const { loading = false, loadingbyCountry = false } = this.props;
     return (
       <div className={s.root}>
@@ -272,7 +310,9 @@ class HollidayCalendar extends Component {
             <div>
               <Row gutter={[24, 0]}>
                 <Col>
-                  <Button className={s.btnHoliday}>Add a holiday</Button>
+                  <Button className={s.btnHoliday} onClick={this.handleClick}>
+                    Add a holiday
+                  </Button>
                 </Col>
                 <Col>
                   <InputNumber
@@ -306,6 +346,7 @@ class HollidayCalendar extends Component {
             </Row>
           </div>
         </div>
+        <AddHoliday visible={visible} handleCancel={this.handleCandelSchedule} />
       </div>
     );
   }

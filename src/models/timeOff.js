@@ -38,15 +38,18 @@ import {
   rejectMultipleTimeoffRequest,
   approveMultipleCompoffRequest,
   rejectMultipleCompoffRequest,
-  // getCalendarHoliday,
-  getHolidaysListByLocation,
-  getHolidaysByCountry,
+
   // ACCOUNT SETTINGS
   getDefaultTimeoffTypesList,
   getCountryList,
   // timeoffType
   getInitEmployeeSchedule,
   getEmployeeScheduleByLocation,
+  // getCalendarHoliday,
+  getHolidaysListByLocation,
+  getHolidaysByCountry,
+  deleteHoliday,
+  addHoliday,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -800,6 +803,36 @@ const timeOff = {
         dialog(errors);
       }
       return response;
+    },
+    *deleteHoliday({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(deleteHoliday, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Delete Holiday Successfully',
+        });
+        yield put({
+          type: 'save',
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addHoliday({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(addHoliday, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Add Holiday Successfully',
+        });
+        yield put({
+          type: 'save',
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
   reducers: {
