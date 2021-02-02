@@ -15,21 +15,17 @@ const { Option } = Select;
   loading: loading.effects['upload/uploadFile'],
 }))
 class PassportItem extends Component {
- 
-
   handleGetUpLoad = (index, resp) => {
-    const {getDataImage}=this.props;
+    const { getDataImage } = this.props;
     const { data = [] } = resp;
     const [first] = data;
     const value = { id: first ? first.id : '', url: first ? first.url : '' };
-    getDataImage(index, 'urlFile', value)
-
+    getDataImage(index, 'urlFile', value);
   };
 
   handleGetSetSizeImage = (index, isLt5M) => {
-    const {getSizeImage}=this.props;
-    getSizeImage(index, isLt5M)
-    
+    const { getSizeImage } = this.props;
+    getSizeImage(index, isLt5M);
   };
 
   handleNameDataUpload = (url) => {
@@ -38,20 +34,20 @@ class PassportItem extends Component {
     return nameData1URL;
   };
 
-  handleOpenModalReview=(linkImage)=>{
-    const {getShowModal}=this.props;
-    getShowModal(linkImage)
-  }
+  handleOpenModalReview = (linkImage) => {
+    const { getShowModal } = this.props;
+    getShowModal(linkImage);
+  };
 
-  handleCanCelIcon=(index)=>{
-    const{getCancelImage}=this.props;
-    getCancelImage(index)
-  }
-  
-  handleChange=(index, name, value)=>{
-    const{getHandleChange}=this.props;
-    getHandleChange(index, name, value)
-  }
+  handleCanCelIcon = (index) => {
+    const { getCancelImage } = this.props;
+    getCancelImage(index);
+  };
+
+  handleChange = (index, name, value) => {
+    const { getHandleChange } = this.props;
+    getHandleChange(index, name, value);
+  };
 
   render() {
     const {
@@ -63,16 +59,15 @@ class PassportItem extends Component {
       field,
       onRemove,
       passportData,
-      validatePassPort
+      validatePassPort,
     } = this.props;
 
-
-    const dateFormat = 'Do MMM YYYY';
+    const dateFormat = 'MM.DD.YY';
 
     return (
-      <div 
-        // key={`passport${field.key + 1}`} 
-        // key={key} 
+      <div
+        // key={`passport${field.key + 1}`}
+        // key={key}
         className={s.PassportItem}
       >
         {field.fieldKey > 0 ? <div className={s.line} /> : null}
@@ -102,8 +97,8 @@ class PassportItem extends Component {
               // }}
             />
           </Form.Item>
-          
-          {index>= 1 ? (
+
+          {index >= 1 ? (
             <div>
               <img
                 className={s.removeIcon}
@@ -114,7 +109,7 @@ class PassportItem extends Component {
             </div>
           ) : null}
 
-          {!passportData[index]?.urlFile  ? (
+          {!passportData[index]?.urlFile ? (
             <div className={s.textUpload}>
               {loadingPassportTest[index] === false || loadingPassportTest[index] === undefined ? (
                 <UploadImage
@@ -132,7 +127,10 @@ class PassportItem extends Component {
           ) : (
             <div className={s.viewUpLoadData}>
               <p
-                onClick={() => this.handleOpenModalReview(passportData[index]?.urlFile  ? passportData[index].urlFile .url : '')}
+                onClick={() =>
+                  this.handleOpenModalReview(
+                    passportData[index]?.urlFile ? passportData[index].urlFile.url : '',
+                  )}
                 className={s.viewUpLoadDataURL}
               >
                 fileName
@@ -148,12 +146,12 @@ class PassportItem extends Component {
           )}
         </div>
         {passportData[index]?.urlFile ? (
-          <Form.Item 
-            label="Uploaded file:"
-            className={s.labelUpload}
-          >
+          <Form.Item label="Uploaded file:" className={s.labelUpload}>
             <p
-              onClick={() => this.handleOpenModalReview(passportData[index]?.urlFile ? passportData[index].urlFile.url : '')}
+              onClick={() =>
+                this.handleOpenModalReview(
+                  passportData[index]?.urlFile ? passportData[index].urlFile.url : '',
+                )}
               className={s.urlUpload}
             >
               {this.handleNameDataUpload(passportData[index].urlFile.url)}
@@ -162,15 +160,13 @@ class PassportItem extends Component {
         ) : (
           ''
         )}
-        <Form.Item 
+        <Form.Item
           // {...field}
-          label="Issued Country" 
+          label="Issued Country"
           // name={`passportIssuedCountry ${index}`}
           name={[field.name, 'passportIssuedCountry']}
           fieldKey={[field.fieldKey, 'passportIssuedCountry']}
-
         >
-         
           <Select
             showArrow
             className={s.selectForm}
@@ -189,12 +185,12 @@ class PassportItem extends Component {
           </Select>
         </Form.Item>
 
-        <Form.Item 
+        <Form.Item
           // {...field}
-          label="Issued On" 
+          label="Issued On"
           name={[field.name, 'passportIssuedOn']}
           fieldKey={[field.fieldKey, `passportIssuedOn`]}
-        // name={`passportIssuedOn ${index}`}
+          // name={`passportIssuedOn ${index}`}
         >
           <DatePicker
             format={dateFormat}

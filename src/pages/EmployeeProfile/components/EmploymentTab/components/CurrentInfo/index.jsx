@@ -22,7 +22,7 @@ function CurrentInfo(props) {
   const data = {
     title: title?.name || 'Missing title',
     joiningDate: joinDate
-      ? moment(joinDate).locale('en').format('Do MMMM YYYY')
+      ? moment(joinDate).locale('en').format('MM.DD.YY')
       : 'Missing joined date',
     location: location?.name || 'Missing location',
     employType: employeeType?.name || 'Missing employment type',

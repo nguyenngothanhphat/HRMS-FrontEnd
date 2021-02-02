@@ -3,6 +3,7 @@ import { Table } from 'antd';
 import { DeleteOutlined, FileTextOutlined } from '@ant-design/icons';
 import { formatMessage, connect, history } from 'umi';
 import moment from 'moment';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import styles from './index.less';
 
@@ -67,7 +68,7 @@ class TableDocuments extends PureComponent {
       align: 'center',
       sortDirections: ['ascend', 'descend', 'ascend'],
       render: (createdAt) => {
-        const formatedDate = moment(createdAt).format('MM/DD/YYYY');
+        const formatedDate = moment(createdAt).format('MM.DD.YY');
         return <span>{formatedDate}</span>;
       },
       sorter: {
@@ -102,6 +103,8 @@ class TableDocuments extends PureComponent {
       confirmRemoveModalVisible: false,
       documentId: '',
       documentName: '',
+      viewDocumentModalVisible: false,
+      viewingUrl: '',
     };
   }
 
@@ -124,12 +127,29 @@ class TableDocuments extends PureComponent {
   };
 
   // view document
-  viewDocument = (record) => {
+  viewDocument = (key, url) => {
     // history.push(`/view-document/${record._id}`);
-    history.push({
-      pathname: `/view-document/${record._id}`,
-      state: { renderBackButton: true },
+    // history.push({
+    //   pathname: `/view-document/${record._id}`,
+    //   state: { renderBackButton: true },
+    // });
+    this.setState({
+      viewDocumentModalVisible: true,
+      documentName: key,
+      viewingUrl: url,
     });
+  };
+
+  onCloseViewDocument = () => {
+    this.setState({
+      viewDocumentModalVisible: false,
+    });
+    setTimeout(() => {
+      this.setState({
+        documentName: '',
+        viewingUrl: '',
+      });
+    }, 500);
   };
 
   // pagination
@@ -162,6 +182,8 @@ class TableDocuments extends PureComponent {
       documentId,
       documentName,
       confirmRemoveModalVisible,
+      viewDocumentModalVisible,
+      viewingUrl,
     } = this.state;
     const rowSize = 10;
     const scroll = {
@@ -204,12 +226,21 @@ class TableDocuments extends PureComponent {
             name={documentName}
           />
         )}
+        <ViewDocumentModal
+          visible={viewDocumentModalVisible}
+          fileName={documentName}
+          url={viewingUrl}
+          onClose={this.onCloseViewDocument}
+        />
         <Table
           size="small"
           loading={loading}
           onRow={(record) => {
             return {
-              onClick: () => this.viewDocument(record),
+              onClick: () => {
+                const { key = '', attachment = {} } = record;
+                this.viewDocument(key, attachment?.url);
+              },
               // click row
             };
           }}

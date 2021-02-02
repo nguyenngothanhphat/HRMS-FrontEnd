@@ -302,3 +302,16 @@ export async function shareDocument(payload) {
     data: payload,
   });
 }
+
+export async function getDependentsByEmployee(payload) {
+  return request('/api/dependent/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getBenefitPlans() {
+  return request('/api/benefit/list-by-company', {
+    method: 'POST',
+  });
+}

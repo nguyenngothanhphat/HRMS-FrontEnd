@@ -3,7 +3,7 @@ import { Row, Col, Collapse, Tooltip, Progress } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import ShowBreakdownIcon from '@/assets/iconViewBreakdown.svg';
 import { connect, history } from 'umi';
-import ViewPolicyModal from '@/components/ViewPolicyModal';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import LeaveProgressBar from './components/LeaveProgressBar';
 import SpecialLeaveBox from './components/SpecialLeaveBox';
 
@@ -21,7 +21,7 @@ const CollapseInformation = (props) => {
     policySpecialLeaves = {},
   } = props;
 
-  const [viewPolicyModal, setViewPolicyModal] = useState(false);
+  const [viewDocumentModal, setViewDocumentModal] = useState(false);
 
   const renderPolicyLink = (policy) => {
     if (policy !== null) {
@@ -31,10 +31,10 @@ const CollapseInformation = (props) => {
           //  _id = ''
         } = policy;
 
-        return <a onClick={() => setViewPolicyModal(true)}>{key || 'Unknown name'}</a>;
+        return <a onClick={() => setViewDocumentModal(true)}>{key || 'Unknown name'}</a>;
       }
     }
-    return <a onClick={() => setViewPolicyModal(true)}>Standard Policy</a>;
+    return <a onClick={() => setViewDocumentModal(true)}>Standard Policy</a>;
   };
 
   return (
@@ -111,7 +111,7 @@ const CollapseInformation = (props) => {
           })}
         </Row>
       </div>
-      <ViewPolicyModal visible={viewPolicyModal} onClose={setViewPolicyModal} />
+      <ViewDocumentModal visible={viewDocumentModal} onClose={setViewDocumentModal} />
     </div>
   );
 };

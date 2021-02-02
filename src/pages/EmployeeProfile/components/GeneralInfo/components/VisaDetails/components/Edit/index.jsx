@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Row, Form, Button } from 'antd';
 import { connect } from 'umi';
-import ModalReviewImage from '@/components/ModalReviewImage';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import VisaGeneral from './components/Visa';
 import styles from './index.less';
 
@@ -198,8 +198,12 @@ class Edit extends Component {
   handleCancel = () => {
     this.setState({
       visible: false,
-      linkImage: '',
     });
+    setTimeout(() => {
+      this.setState({
+        linkImage: '',
+      });
+    }, 500);
   };
 
   render() {
@@ -248,7 +252,7 @@ class Edit extends Component {
               Save
             </Button>
           </div>
-          <ModalReviewImage visible={visible} handleCancel={this.handleCancel} link={linkImage} />
+          <ViewDocumentModal visible={visible} onClose={this.handleCancel} url={linkImage} />
         </Form>
       </Row>
     );

@@ -3,7 +3,7 @@ import { Select, DatePicker, Input, Button, Row, Col, Form, message } from 'antd
 import { connect, history } from 'umi';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
-import ViewPolicyModal from '@/components/ViewPolicyModal';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import LeaveTimeRow from './LeaveTimeRow';
 
@@ -40,7 +40,7 @@ class RequestInformation extends PureComponent {
       // totalDayOfSelectedType: 0,
       unpaidLeaveActivate: false,
       negativeLeave: 0,
-      viewPolicyModal: false,
+      viewDocumentModal: false,
     };
   }
 
@@ -79,9 +79,9 @@ class RequestInformation extends PureComponent {
   };
 
   // view policy modal
-  setViewPolicyModal = (value) => {
+  setViewDocumentModal = (value) => {
     this.setState({
-      viewPolicyModal: value,
+      viewDocumentModal: value,
     });
   };
 
@@ -1056,7 +1056,7 @@ class RequestInformation extends PureComponent {
 
   // on policy link clicked
   onLinkClick = () => {
-    this.setViewPolicyModal(true);
+    this.setViewDocumentModal(true);
   };
 
   // validator
@@ -1079,7 +1079,7 @@ class RequestInformation extends PureComponent {
     };
     const formatListEmail = this.renderEmailsList() || [];
 
-    const dateFormat = 'DD.MM.YY';
+    const dateFormat = 'MM.DD.YY';
 
     const {
       selectedShortType,
@@ -1093,7 +1093,7 @@ class RequestInformation extends PureComponent {
       remainingDayOfSelectedType,
       unpaidLeaveActivate,
       // negativeLeave,
-      viewPolicyModal,
+      viewDocumentModal,
     } = this.state;
 
     const {
@@ -1473,7 +1473,7 @@ class RequestInformation extends PureComponent {
           submitText="OK"
         />
 
-        <ViewPolicyModal visible={viewPolicyModal} onClose={this.setViewPolicyModal} />
+        <ViewDocumentModal visible={viewDocumentModal} onClose={this.setViewDocumentModal} />
       </div>
     );
   }

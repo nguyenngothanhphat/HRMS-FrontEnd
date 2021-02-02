@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Row,  Form,   Button,  Col } from 'antd';
+import { Row, Form, Button, Col } from 'antd';
 import { connect } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
-import ModalReviewImage from '@/components/ModalReviewImage';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import moment from 'moment';
 import PassportItem from './PassportItem';
 import styles from './index.less';
@@ -53,22 +53,21 @@ class Edit extends Component {
       visible: false,
       linkImage: '',
       checkValidate: [{}],
-      validatePassPort:[],
+      validatePassPort: [],
     };
     this.formRef = React.createRef();
   }
 
-  componentDidMount(){
-    const {passportData=[]}=this.props;
-    const checkValidatePassPort=[...passportData];
-    const valueFalse=[passportData[0].employee];
-    const result=checkValidatePassPort.map(item=> valueFalse.includes(item.employee))
-    this.setState({validatePassPort:result})
-    
+  componentDidMount() {
+    const { passportData = [] } = this.props;
+    const checkValidatePassPort = [...passportData];
+    const valueFalse = [passportData[0].employee];
+    const result = checkValidatePassPort.map((item) => valueFalse.includes(item.employee));
+    this.setState({ validatePassPort: result });
   }
 
   validateDate = (getPassportData, index) => {
-    const {validatePassPort}=this.state;
+    const { validatePassPort } = this.state;
     if (getPassportData === []) return;
     const { passportDataOrigin } = this.props;
     const formatDatePassportIssueOn =
@@ -84,17 +83,15 @@ class Edit extends Component {
 
     const issueAfter3Year = moment(IssuedOn).add(3, 'years');
     if (moment(ValidTill).isSameOrBefore(moment(issueAfter3Year))) {
-      const newCheck=[...validatePassPort];
-      newCheck.splice(index,1,false)
-      this.setState({ validatePassPort:newCheck });
+      const newCheck = [...validatePassPort];
+      newCheck.splice(index, 1, false);
+      this.setState({ validatePassPort: newCheck });
     } else {
-      const newCheck=[...validatePassPort];
-      newCheck.splice(index,1,true)
-      this.setState({ validatePassPort:newCheck });
+      const newCheck = [...validatePassPort];
+      newCheck.splice(index, 1, true);
+      this.setState({ validatePassPort: newCheck });
     }
   };
-
-
 
   handleChange = (index, name, value) => {
     const { dispatch, passportData, passportDataOrigin } = this.props;
@@ -243,14 +240,14 @@ class Edit extends Component {
     });
   };
 
-  handleSave = async ({formPassPort = [] } ) => {
+  handleSave = async ({ formPassPort = [] }) => {
     const { passportData = [] } = this.props;
-    formPassPort.map((item,index)=>{
-      let idPassPort='';
-      const newData={
+    formPassPort.map((item, index) => {
+      let idPassPort = '';
+      const newData = {
         ...item,
         ...passportData[index],
-      }
+      };
       const { _id } = passportData[index];
       if (_id) {
         idPassPort = _id;
@@ -259,7 +256,7 @@ class Edit extends Component {
         return this.handleUpdatePassportGroup(newData, index);
       }
       return this.handleAddPassPortAllField(newData, index);
-    })
+    });
     // passportData.map((item, index) => {
     //   let idPassPort = '';
     //   const { _id } = item;
@@ -319,14 +316,18 @@ class Edit extends Component {
   handleCancel = () => {
     this.setState({
       visible: false,
-      linkImage: '',
     });
+    setTimeout(() => {
+      this.setState({
+        linkImage: '',
+      });
+    }, 500);
   };
 
-  handleAddBtn = (add,validatePassPort) => {
-    const newArr=[...validatePassPort,true];
-    this.setState({validatePassPort:newArr})
-    add()
+  handleAddBtn = (add, validatePassPort) => {
+    const newArr = [...validatePassPort, true];
+    this.setState({ validatePassPort: newArr });
+    add();
   };
 
   onRemoveCondition = (index) => {
@@ -341,7 +342,7 @@ class Edit extends Component {
   };
 
   render() {
-    const { isLt5M, getContent, visible, linkImage, dummyPassPorts,validatePassPort } = this.state;
+    const { isLt5M, getContent, visible, linkImage, dummyPassPorts, validatePassPort } = this.state;
 
     const { passportData = [], handleCancel = () => {}, countryList } = this.props;
 
@@ -363,22 +364,22 @@ class Edit extends Component {
         sm: { span: 12 },
       },
     };
-    
-    const newPassportData =passportData.map(item=>{   
-        const {passportIssuedOn,passportValidTill,passportIssuedCountry}=item;
-        const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
-        const formatDatePassportIssueOn = passportIssuedOn && moment(passportIssuedOn);
-    
-         const newItem={
-            ...item,
-            passportIssuedCountry:passportIssuedCountry?passportIssuedCountry._id:'',
-            passportIssuedOn:formatDatePassportIssueOn,
-            passportValidTill:formatDatePassportValidTill,
-          }
-        return newItem
-    })
-    console.log(validatePassPort);
-    const checkPassPort=validatePassPort.filter(item=>item===true)
+
+    const newPassportData = passportData.map((item) => {
+      const { passportIssuedOn, passportValidTill, passportIssuedCountry } = item;
+      const formatDatePassportValidTill = passportValidTill && moment(passportValidTill);
+      const formatDatePassportIssueOn = passportIssuedOn && moment(passportIssuedOn);
+
+      const newItem = {
+        ...item,
+        passportIssuedCountry: passportIssuedCountry ? passportIssuedCountry._id : '',
+        passportIssuedOn: formatDatePassportIssueOn,
+        passportValidTill: formatDatePassportValidTill,
+      };
+      return newItem;
+    });
+
+    const checkPassPort = validatePassPort.filter((item) => item === true);
     const renderForm = passportData.length > 0 ? newPassportData : dummyPassPorts;
     return (
       <Row gutter={[0, 16]} className={styles.root}>
@@ -392,41 +393,39 @@ class Edit extends Component {
           <Form.List name="formPassPort">
             {(fields, { add, remove }) => (
               <>
-                {fields.map((field,index) =>                 
-                  (
-                    <PassportItem
-                      validatePassPort={validatePassPort[index]}
-                      getHandleChange={this.handleChange}
-                      field={field}
-                      key={field.name}
-                      onRemove={() => remove(field.name)}
-                      formRef={this.formRef}
-                      getCancelImage={this.handleCanCelIcon}
-                      getShowModal={this.handleOpenModalReview}
-                      index={index}
-                      passportData={passportData}
-                      getSizeImage={this.handleGetSetSizeImage}
-                      getDataImage={this.handleChange}
-                      isLt5M={isLt5M}
-                      formatCountryList={formatCountryList}
-                    />
+                {fields.map((field, index) => (
+                  <PassportItem
+                    validatePassPort={validatePassPort[index]}
+                    getHandleChange={this.handleChange}
+                    field={field}
+                    key={field.name}
+                    onRemove={() => remove(field.name)}
+                    formRef={this.formRef}
+                    getCancelImage={this.handleCanCelIcon}
+                    getShowModal={this.handleOpenModalReview}
+                    index={index}
+                    passportData={passportData}
+                    getSizeImage={this.handleGetSetSizeImage}
+                    getDataImage={this.handleChange}
+                    isLt5M={isLt5M}
+                    formatCountryList={formatCountryList}
+                  />
                 ))}
- 
-                
-     
+
                 <Col span={9} offset={1} className={styles.addMoreButton}>
-                  <div 
+                  <div
                     // onClick={this.handleAddBtn}
-                    onClick={() =>{this.handleAddBtn(add,validatePassPort)}}
+                    onClick={() => {
+                      this.handleAddBtn(add, validatePassPort);
+                    }}
                   >
                     <PlusOutlined className={styles.addMoreButtonIcon} />
                     Add more
                   </div>
                 </Col>
               </>
-             )}
+            )}
           </Form.List>
-
 
           {/* {renderForm.map((item, index) => {
             const {
@@ -467,12 +466,12 @@ class Edit extends Component {
               type="primary"
               htmlType="submit"
               className={styles.buttonFooter}
-              disabled={isLt5M === false || getContent === false || checkPassPort.length===0}
+              disabled={isLt5M === false || getContent === false || checkPassPort.length === 0}
             >
               Save
             </Button>
           </div>
-          <ModalReviewImage visible={visible} handleCancel={this.handleCancel} link={linkImage} />
+          <ViewDocumentModal visible={visible} onClose={this.handleCancel} url={linkImage} />
         </Form>
       </Row>
     );

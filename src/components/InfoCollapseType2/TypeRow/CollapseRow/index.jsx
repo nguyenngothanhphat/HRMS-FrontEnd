@@ -8,14 +8,16 @@ import DownArrowIcon from '@/assets/downArrow.svg';
 import UpArrowIcon from '@/assets/upArrow.svg';
 import DownloadFile from '@/components/DownloadFile';
 import { connect } from 'umi';
+// import UploadIcon from '../../../../../public/assets/images/iconUpload.svg';
 import UploadModal from '../UploadModal';
 
 import styles from './index.less';
 
 const { Panel } = Collapse;
-@connect(({ employeeProfile, loading }) => ({
+@connect(({ employeeProfile, loading, user: { currentUser: { roles = [] } = {} } = {} } = {}) => ({
   loading: loading.effects['upload/uploadFile'],
   employeeProfile,
+  roles,
 }))
 class CollapseRow extends PureComponent {
   constructor(props) {
@@ -23,6 +25,9 @@ class CollapseRow extends PureComponent {
     this.state = {
       open: true,
       uploadModalVisible: false,
+      actionType: 1,
+      currentDocumentId: '',
+      currentFileName: '',
     };
   }
 
@@ -32,15 +37,19 @@ class CollapseRow extends PureComponent {
     });
   };
 
-  handleUploadClick = () => {
+  handleUploadClick = (value, id, fileName) => {
     this.setState({
       uploadModalVisible: true,
+      actionType: value,
+      currentDocumentId: id || '',
+      currentFileName: fileName || '',
     });
   };
 
   handleCancel = () => {
     this.setState({
       uploadModalVisible: false,
+      actionType: 1,
     });
   };
 
@@ -60,27 +69,19 @@ class CollapseRow extends PureComponent {
     }, 1000);
   };
 
-  statusAndButtons = () => {
-    const { data: row = [] } = this.props;
+  checkShowUploadBtn = () => {
+    const { data: row = [], parentEmployeeGroup = '', isHR } = this.props;
     const { kind = '' } = row;
-    //  const { files = [] } = row;
-    // let checkExistFile = true;
-    // if (files.length === 1) {
-    //   files.forEach((value) => {
-    //     const { id = '' } = value;
-    //     if (id === '') checkExistFile = false;
-    //   });
-    // }
+    return (!isHR && parentEmployeeGroup !== 'PR Reports' && kind !== 'Identity') || isHR;
+  };
+
+  statusAndButtons = () => {
+    const showUpload = this.checkShowUploadBtn();
     return (
       <div onClick={(event) => event.stopPropagation()} className={styles.statusAndButtons}>
-        {/* <a>Complete</a> */}
-        <div onClick={this.handleUploadClick} className={styles.uploadButton}>
-          {/* <img src={UploadIcon} alt="upload" /> */}
-          {kind !== 'Identity' && <span className={styles.uploadText}>Choose file</span>}
+        <div onClick={() => this.handleUploadClick(1)} className={styles.uploadButton}>
+          {showUpload && <span className={styles.uploadText}>Upload new</span>}
         </div>
-        {/* <Dropdown overlay={menu}>
-        <EllipsisOutlined onClick={handleMenuClick} className={styles.menuButton} />
-      </Dropdown> */}
       </div>
     );
   };
@@ -132,20 +133,23 @@ class CollapseRow extends PureComponent {
   };
 
   render() {
-    const { open, uploadModalVisible } = this.state;
+    const { open, uploadModalVisible, actionType, currentDocumentId, currentFileName } = this.state;
     const { data: row = {}, onFileClick = () => {}, parentEmployeeGroup = '' } = this.props;
     const { kind = '', files = [] } = row;
     const processData = this.processData(files);
+    const showUpload = this.checkShowUploadBtn();
 
     return (
       <div>
         <UploadModal
-          titleModal="Upload file"
+          actionType={actionType}
           visible={uploadModalVisible}
           handleCancel={this.handleCancel}
           employeeGroup={kind}
           parentEmployeeGroup={parentEmployeeGroup}
           refreshData={this.refreshData}
+          currentDocumentId={currentDocumentId}
+          currentFileName={currentFileName}
         />
         <Collapse
           defaultActiveKey={['1']}
@@ -178,6 +182,16 @@ class CollapseRow extends PureComponent {
                   <Col span={7}>{date}</Col>
                   <Col span={2}>
                     <div className={styles.downloadFile}>
+                      {showUpload && (
+                        <div className={styles.uploadButton}>
+                          <img
+                            alt="upload"
+                            src={DownloadIcon}
+                            onClick={() => this.handleUploadClick(2, id, fileName)}
+                            className={styles.downloadButton}
+                          />
+                        </div>
+                      )}
                       <DownloadFile content={this.renderDownloadIcon()} url={source} />
                     </div>
                   </Col>

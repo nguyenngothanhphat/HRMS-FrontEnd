@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Collapse, Checkbox, Space, Col, Row, Typography, Radio } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
-import PopUpViewDocument from '../PopUpViewDocument';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import styles from './index.less';
 
 class CollapseField extends Component {
@@ -125,11 +125,17 @@ class CollapseField extends Component {
           </Collapse>
         ) : null}
 
-        <PopUpViewDocument
+        {/* <PopUpViewDocument
           titleModal={displayName}
           visible={visible}
           handleCancel={this.handleCancel}
           url={url}
+        /> */}
+        <ViewDocumentModal
+          visible={visible}
+          fileName={displayName}
+          url={url}
+          onClose={this.handleCancel}
         />
       </div>
     );

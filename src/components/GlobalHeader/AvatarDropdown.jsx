@@ -29,7 +29,7 @@ class AvatarDropdown extends React.Component {
       VIEWPROFILE: 'viewProfile',
       CHANGEPASSWORD: 'changePassword',
       SETTINGS: 'settings',
-      isAdminCSA: false,
+      selectLocationAbility: false,
     };
   }
 
@@ -43,9 +43,9 @@ class AvatarDropdown extends React.Component {
     });
     roles.forEach((role) => {
       const { _id = '' } = role;
-      if (_id === 'ADMIN-CSA') {
+      if (['ADMIN-CSA', 'HR-GLOBAL'].includes(_id)) {
         this.setState({
-          isAdminCSA: true,
+          selectLocationAbility: true,
         });
       }
     });
@@ -101,8 +101,8 @@ class AvatarDropdown extends React.Component {
     });
 
     if (selectLocation) {
-      window.location.reload();
-      // history.push(`/#${selectLocation}`);
+      // window.location.reload();
+      history.push(`/`);
       return;
     }
 
@@ -139,7 +139,7 @@ class AvatarDropdown extends React.Component {
       generalInfo: { avatar = '', employeeId = '' } = {},
       title = {},
     } = currentUser;
-    const { isAdminCSA } = this.state;
+    const { selectLocationAbility } = this.state;
 
     const { LOGOUT, VIEWPROFILE, CHANGEPASSWORD } = this.state;
     const menuHeaderDropdown = (
@@ -175,7 +175,7 @@ class AvatarDropdown extends React.Component {
           {formatMessage({ id: 'component.globalHeader.avatarDropdown.settings' })}
         </Menu.Item> */}
 
-        {isAdminCSA && this.renderLocationList()}
+        {selectLocationAbility && this.renderLocationList()}
 
         <Menu.Divider className={styles.secondDivider} />
         <Menu.ItemGroup className={styles.groupMenuItem}>

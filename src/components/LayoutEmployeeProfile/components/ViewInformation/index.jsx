@@ -186,7 +186,7 @@ class ViewInformation extends Component {
 
     const { tittle: { name: title = '' } = {} } = compensationData;
     const { visible, openEditBio } = this.state;
-    const joinningDate = moment(createdAt).format('DD/MM/YYYY');
+    const joinningDate = moment(createdAt).format('MM.DD.YY');
     const { generalInfo: { firstName: managerFN = '', lastName: managerLN = '' } = {} } = manager;
     // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
     // const listColors = ['#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0'];

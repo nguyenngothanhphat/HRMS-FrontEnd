@@ -16,7 +16,7 @@ class VisaForm extends PureComponent {
   };
 
   render() {
-    const dateFormat = 'Do MMM YYYY';
+    const dateFormat = 'MM.DD.YY';
     const {
       documentsManagement: { countryList = [] },
     } = this.props;

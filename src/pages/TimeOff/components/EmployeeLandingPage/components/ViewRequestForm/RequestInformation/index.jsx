@@ -3,7 +3,7 @@ import { Button, Row, Col, Spin, notification } from 'antd';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import { connect, history } from 'umi';
 import moment from 'moment';
-import ViewPolicyModal from '@/components/ViewPolicyModal';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import WithdrawModal from '../WithdrawModal';
 import Withdraw2Modal from '../Withdraw2Modal';
 import styles from './index.less';
@@ -22,20 +22,20 @@ class RequestInformation extends PureComponent {
     this.state = {
       showWithdrawModal: false,
       showWithdraw2Modal: false,
-      viewPolicyModal: false,
+      viewDocumentModal: false,
     };
   }
 
   // view policy modal
-  setViewPolicyModal = (value) => {
+  setViewDocumentModal = (value) => {
     this.setState({
-      viewPolicyModal: value,
+      viewDocumentModal: value,
     });
   };
 
   // on policy link clicked
   onLinkClick = () => {
-    this.setViewPolicyModal(true);
+    this.setViewDocumentModal(true);
   };
 
   refreshPage = () => {
@@ -67,9 +67,9 @@ class RequestInformation extends PureComponent {
   formatDurationTime = (fromDate, toDate) => {
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YY')} - ${moment(toDate)
+      leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YY')} - ${moment(toDate)
         .locale('en')
-        .format('DD.MM.YY')}`;
+        .format('MM.DD.YY')}`;
     }
     return leaveTimes;
   };
@@ -152,7 +152,7 @@ class RequestInformation extends PureComponent {
   };
 
   render() {
-    const { showWithdrawModal, showWithdraw2Modal, viewPolicyModal } = this.state;
+    const { showWithdrawModal, showWithdraw2Modal, viewDocumentModal } = this.state;
     const {
       timeOff: { viewingLeaveRequest = {} } = {},
       loadingFetchLeaveRequestById,
@@ -312,7 +312,7 @@ class RequestInformation extends PureComponent {
           onClose={this.setShowWithdraw2Modal}
           status={status}
         />
-        <ViewPolicyModal visible={viewPolicyModal} onClose={this.setViewPolicyModal} />
+        <ViewDocumentModal visible={viewDocumentModal} onClose={this.setViewDocumentModal} />
       </div>
     );
   }
