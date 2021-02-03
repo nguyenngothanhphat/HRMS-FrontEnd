@@ -5,17 +5,10 @@ import { connect } from 'umi';
 import FormSignature from './components/FormSignature';
 import s from './index.less';
 
-@connect(
-  ({
-    loading,
-    user: { currentUser = {} } = {},
-    companiesManagement: { originData: { companyDetails } = {} } = {},
-  }) => ({
-    currentUser,
-    loading: loading.effects['companiesManagement/updateCompany'],
-    companyDetails,
-  }),
-)
+@connect(({ loading, companiesManagement: { originData: { companyDetails } = {} } = {} }) => ({
+  loading: loading.effects['companiesManagement/updateCompany'],
+  companyDetails,
+}))
 class CompanySignatory extends PureComponent {
   constructor(props) {
     super(props);

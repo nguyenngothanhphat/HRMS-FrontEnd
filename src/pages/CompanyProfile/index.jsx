@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Tabs, Button } from 'antd';
+import { Tabs, Button, Spin } from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import Layout from '@/components/LayoutEmployeeProfile';
 import { connect, history } from 'umi';
@@ -118,7 +118,13 @@ class CompanyProfile extends Component {
             }
           >
             <TabPane tab="Profile Information" key="1">
-              {loading ? <div>Loading...</div> : <Layout listMenu={listMenu} isCompanyProfile />}
+              {loading ? (
+                <div className={styles.viewLoading}>
+                  <Spin size="large" />
+                </div>
+              ) : (
+                <Layout listMenu={listMenu} isCompanyProfile />
+              )}
             </TabPane>
             {id && (
               <>
