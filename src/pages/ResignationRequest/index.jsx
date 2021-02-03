@@ -16,7 +16,7 @@ class ResignationRequest extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.root}>
-          <Affix offsetTop={40}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>
                 Terminate work relationship with {firstName} [{employeeId}]
