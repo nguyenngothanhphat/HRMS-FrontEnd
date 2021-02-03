@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 // import { Steps } from 'antd';
 import NoteIcon from '@/assets/NoteIcon.svg';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 import styles from './index.less';
 
 // const { Step } = Steps;
@@ -16,7 +17,16 @@ class RightContent extends PureComponent {
   // };
 
   renderIcon = (url) => {
-    return <img className={styles.avatar} src={url} alt="avatar" />;
+    return (
+      <img
+        onError={(e) => {
+          e.target.src = DefaultAvatar;
+        }}
+        className={styles.avatar}
+        src={url}
+        alt="avatar"
+      />
+    );
   };
 
   render() {
