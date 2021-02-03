@@ -805,8 +805,9 @@ const timeOff = {
       return response;
     },
     *deleteHoliday({ payload = {} }, { call, put }) {
+      let response;
       try {
-        const response = yield call(deleteHoliday, payload);
+        response = yield call(deleteHoliday, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -818,10 +819,12 @@ const timeOff = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
     *addHoliday({ payload = {} }, { call, put }) {
+      let response;
       try {
-        const response = yield call(addHoliday, payload);
+        response = yield call(addHoliday, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -833,6 +836,7 @@ const timeOff = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
   },
   reducers: {

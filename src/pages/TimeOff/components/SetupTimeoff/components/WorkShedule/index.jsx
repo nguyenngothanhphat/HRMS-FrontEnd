@@ -19,36 +19,43 @@ class WorkShedule extends Component {
       array: [
         {
           id: 1,
-          name: 'SUNDAY',
+          text: 'SUNDAY',
+          name: 'Sun',
         },
         {
           id: 2,
-          name: 'MONDAY',
+          text: 'MONDAY',
+          name: 'Mon',
           check: true,
         },
         {
           id: 3,
-          name: 'TUESDAY',
+          text: 'TUESDAY',
+          name: 'Tue',
           check: true,
         },
         {
           id: 4,
-          name: 'WEDNESDAY',
+          text: 'WEDNESDAY',
+          name: 'Wed',
           check: true,
         },
         {
           id: 5,
-          name: 'THURSDAY',
+          text: 'THURSDAY',
+          name: 'Thu',
           check: true,
         },
         {
           id: 6,
-          name: 'FRIDAY',
+          text: 'FRIDAY',
+          name: 'Fri',
           check: true,
         },
         {
           id: 7,
-          name: 'SATURDAY',
+          name: 'Sat',
+          text: 'SATURDAY',
         },
       ],
     };
@@ -56,25 +63,19 @@ class WorkShedule extends Component {
 
   componentDidMount() {
     const { dispatch, idLocation } = this.props;
-    // dispatch({
-    //   type: 'timeOff/getInitEmployeeSchedule',
-    // }).then(
-    //   dispatch({
-    //     type: 'timeOff/getEmployeeScheduleByLocation',
-    //     payload: { location: idLocation },
-    //   }),
-    // );
     dispatch({
       type: 'timeOff/getInitEmployeeSchedule',
-      // payload: { location: idLocation },
-    }).then((response = {}) => {
-      console.log(response);
-      const { statusCode, data: listData = {} } = response;
-      if (statusCode === 200) {
-        const { totalHour, startWorkDay = {}, endWorkDay = {}, workDay = [] } = listData;
-        console.log(totalHour);
-      }
-    });
+    }).then(
+      dispatch({
+        type: 'timeOff/getEmployeeScheduleByLocation',
+        payload: { location: idLocation },
+      }).then((response = {}) => {
+        const { statusCode, data: listData = {} } = response;
+        if (statusCode === 200) {
+          const { totalHour, startWorkDay = {}, endWorkDay = {}, workDay = [] } = listData;
+        }
+      }),
+    );
   }
 
   onChange1 = (e) => {
@@ -113,16 +114,14 @@ class WorkShedule extends Component {
     const { array } = this.state;
     const arrayActive = array.filter((item) => item.check === true);
     const arrayFiler = arrayActive.map((item) => ({ check: item.check, name: item.name }));
-    console.log(arrayFiler);
 
     const { endAmPM, endAt, startAmPM, startAt, totalHour } = values;
     const payload = {
       startWorkDay: { start: startAt, amPM: startAmPM },
       endWorkDay: { start: endAt, amPM: endAmPM },
       totalHour,
-      workday: arrayActive,
+      workday: arrayFiler,
     };
-    console.log(payload, 'payload');
   };
 
   render() {
