@@ -55,10 +55,15 @@ class AvatarDropdown extends React.Component {
     history.push('/');
   };
 
+  viewProfile = () => {
+    const { currentUser: { employee: { _id = '' } = {} } = {} } = this.props;
+    history.push(`/employees/employee-profile/${_id}`);
+  };
+
   onMenuClick = (event) => {
     const { key } = event;
-    const { LOGOUT, VIEWPROFILE, CHANGEPASSWORD, SETTINGS } = this.state;
-    const { currentUser, listLocationsByCompany = [] } = this.props;
+    const { LOGOUT, CHANGEPASSWORD, SETTINGS } = this.state;
+    const { listLocationsByCompany = [] } = this.props;
 
     if (key === LOGOUT) {
       const { dispatch } = this.props;
@@ -67,12 +72,6 @@ class AvatarDropdown extends React.Component {
           type: 'login/logout',
         });
       }
-
-      return;
-    }
-
-    if (key === VIEWPROFILE) {
-      history.push(`/employees/employee-profile/${currentUser.employee._id}`);
 
       return;
     }
@@ -106,7 +105,7 @@ class AvatarDropdown extends React.Component {
       return;
     }
 
-    history.push(`/account/${key}`);
+    this.viewProfile();
   };
 
   renderLocationList = () => {
@@ -141,7 +140,7 @@ class AvatarDropdown extends React.Component {
     } = currentUser;
     const { selectLocationAbility } = this.state;
 
-    const { LOGOUT, VIEWPROFILE, CHANGEPASSWORD } = this.state;
+    const { LOGOUT, CHANGEPASSWORD } = this.state;
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
         <div className={styles.viewProfile}>
@@ -162,11 +161,13 @@ class AvatarDropdown extends React.Component {
             )}
           </div>
         </div>
-        <Menu.Item key={VIEWPROFILE} className={styles.menuItemViewProfile}>
-          <Button className={styles.buttonLink}>
+        {/* <Menu.Item key={VIEWPROFILE} className={styles.menuItemViewProfile}> */}
+        <div className={styles.viewProfileBtn}>
+          <Button onClick={this.viewProfile} className={styles.buttonLink}>
             {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
           </Button>
-        </Menu.Item>
+        </div>
+        {/* </Menu.Item> */}
         <Menu.Divider className={styles.firstDivider} />
         <Menu.Item key={CHANGEPASSWORD} className={styles.menuItemLink}>
           {formatMessage({ id: 'component.globalHeader.avatarDropdown.change-password' })}

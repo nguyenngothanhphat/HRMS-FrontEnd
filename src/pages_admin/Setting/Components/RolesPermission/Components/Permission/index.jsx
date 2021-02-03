@@ -50,7 +50,7 @@ class Permission extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.Permission}>
-          <Affix offsetTop={40}>
+          <Affix offsetTop={42}>
             <div className={styles.headerText}>
               <span>{formatMessage({ id: 'pages_admin.setting.Permission' })}</span>
             </div>

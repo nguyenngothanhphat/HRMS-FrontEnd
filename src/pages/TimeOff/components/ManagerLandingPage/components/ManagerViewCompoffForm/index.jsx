@@ -128,7 +128,7 @@ class ManagerViewCompoffForm extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.ManagerViewCompoffForm}>
-          <Affix offsetTop={40}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
               <div className={this.getColorOfStatus(status)}>
