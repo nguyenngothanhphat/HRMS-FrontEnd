@@ -5,18 +5,11 @@ import ModalUploadDocument from './components/ModalUploadDocument';
 import TableDocuments from './components/TableDocuments';
 import s from './index.less';
 
-@connect(
-  ({
-    loading,
-    user: { currentUser = {} } = {},
-    documentsManagement: { listDocumentAccountSetup = [] } = {},
-  }) => ({
-    currentUser,
-    loading: loading.effects['documentsManagement/fetchListDocumentsAccountSetup'],
-    loadingSubmit: loading.effects['documentsManagement/addDocumentAccountSetup'],
-    listDocumentAccountSetup,
-  }),
-)
+@connect(({ loading, documentsManagement: { listDocumentAccountSetup = [] } = {} }) => ({
+  loading: loading.effects['documentsManagement/fetchListDocumentsAccountSetup'],
+  loadingSubmit: loading.effects['documentsManagement/addDocumentAccountSetup'],
+  listDocumentAccountSetup,
+}))
 class CompanyDocuments extends Component {
   constructor(props) {
     super(props);
@@ -27,18 +20,20 @@ class CompanyDocuments extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
-    dispatch({
-      type: 'documentsManagement/fetchListDocumentsAccountSetup',
-      payload: {
-        company: _id,
-      },
-    });
+    const { dispatch, companyId } = this.props;
+    if (companyId) {
+      dispatch({
+        type: 'documentsManagement/fetchListDocumentsAccountSetup',
+        payload: {
+          company: companyId,
+        },
+      });
+    }
   }
 
   handleSubmitUpload = (values) => {
-    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
-    const payload = { ...values, company: id };
+    const { dispatch, companyId } = this.props;
+    const payload = { ...values, company: companyId };
     dispatch({
       type: 'documentsManagement/addDocumentAccountSetup',
       payload,

@@ -13,11 +13,9 @@ import s from './index.less';
   ({
     loading,
     country: { listCountry = [] } = {},
-    user: { currentUser = {} } = {},
     companiesManagement: { locationsList: workLocations = [] } = {},
   }) => ({
     listCountry,
-    currentUser,
     workLocations,
     loading: loading.effects['companiesManagement/upsertLocationsList'],
     fetchingLocationsList: loading.effects['companiesManagement/fetchLocationsList'],
@@ -31,13 +29,35 @@ class WorkLocations extends PureComponent {
     this.state = {};
   }
 
-  onFinish = ({ workLocations: locations = [] }) => {
-    const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
-    const payload = { locations, company: _id };
+  componentDidMount() {
+    const { dispatch, companyId = '' } = this.props;
+    if (companyId) {
+      dispatch({
+        type: 'companiesManagement/fetchLocationsList',
+        payload: { company: companyId },
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
     dispatch({
-      type: 'companiesManagement/upsertLocationsList',
-      payload,
+      type: 'companiesManagement/save',
+      payload: { locationsList: [] },
     });
+  }
+
+  onFinish = ({ workLocations: locations = [] }) => {
+    const { dispatch, companyId = '' } = this.props;
+    const payload = { locations, company: companyId };
+    if (companyId) {
+      dispatch({
+        type: 'companiesManagement/upsertLocationsList',
+        payload,
+      });
+    } else {
+      console.log('payload add new company', payload);
+    }
   };
 
   formatListLocation = () => {
@@ -53,8 +73,8 @@ class WorkLocations extends PureComponent {
   };
 
   removeLocation = (id) => {
-    const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
-    const payload = { id, company: _id };
+    const { dispatch, companyId = '' } = this.props;
+    const payload = { id, company: companyId };
     dispatch({
       type: 'companiesManagement/removeLocation',
       payload,
@@ -70,6 +90,7 @@ class WorkLocations extends PureComponent {
       loadingCountry,
     } = this.props;
     const listLocation = this.formatListLocation();
+    const defaultListLocation = listLocation.length === 0 ? [{}] : listLocation;
     if (fetchingLocationsList || loadingCountry)
       return (
         <div className={s.root}>
@@ -83,11 +104,7 @@ class WorkLocations extends PureComponent {
             </p>
           </div>
           <div className={s.content__viewBottom}>
-            {workLocations.map((item) => (
-              <div className={s.viewSkeleton} key={item?._id}>
-                <Skeleton active />
-              </div>
-            ))}
+            <Skeleton active />
           </div>
         </div>
       );
@@ -97,7 +114,7 @@ class WorkLocations extends PureComponent {
         ref={this.formRef}
         onFinish={this.onFinish}
         autoComplete="off"
-        initialValues={{ workLocations: listLocation }}
+        initialValues={{ workLocations: defaultListLocation }}
       >
         <div className={s.root}>
           <div className={s.content__viewTop}>

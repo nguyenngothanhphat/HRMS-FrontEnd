@@ -12,11 +12,9 @@ import s from './index.less';
   ({
     loading,
     departmentManagement: { listDefault = [], listByCompany: listDepartment = [] } = {},
-    user: { currentUser = {} } = {},
   }) => ({
     listDefault,
     listDepartment,
-    currentUser,
     loading: loading.effects['departmentManagement/upsertDepartment'],
     fetchingListDepartment: loading.effects['departmentManagement/fetchListDepartmentByCompany'],
   }),
@@ -27,18 +25,40 @@ class Departments extends PureComponent {
     this.state = {};
   }
 
-  onFinish = ({ listDepartment }) => {
-    const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
-    const payload = { listDepartment, company: _id };
+  componentDidMount() {
+    const { dispatch, companyId } = this.props;
+    if (companyId) {
+      dispatch({
+        type: 'departmentManagement/fetchListDepartmentByCompany',
+        payload: { company: companyId },
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
     dispatch({
-      type: 'departmentManagement/upsertDepartment',
-      payload,
+      type: 'departmentManagement/save',
+      payload: { listByCompany: [] },
     });
+  }
+
+  onFinish = ({ listDepartment }) => {
+    const { dispatch, companyId } = this.props;
+    const payload = { listDepartment, company: companyId };
+    if (companyId) {
+      dispatch({
+        type: 'departmentManagement/upsertDepartment',
+        payload,
+      });
+    } else {
+      console.log('payload add new company', payload);
+    }
   };
 
   removeDepartment = (id) => {
-    const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
-    const payload = { id, company: _id };
+    const { dispatch, companyId } = this.props;
+    const payload = { id, company: companyId };
     dispatch({
       type: 'departmentManagement/removeDepartment',
       payload,

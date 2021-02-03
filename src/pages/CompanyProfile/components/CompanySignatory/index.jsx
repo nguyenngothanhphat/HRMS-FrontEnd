@@ -5,10 +5,17 @@ import { connect } from 'umi';
 import FormSignature from './components/FormSignature';
 import s from './index.less';
 
-@connect(({ loading, user: { currentUser = {} } = {} }) => ({
-  currentUser,
-  loading: loading.effects['companiesManagement/updateCompany'],
-}))
+@connect(
+  ({
+    loading,
+    user: { currentUser = {} } = {},
+    companiesManagement: { originData: { companyDetails } = {} } = {},
+  }) => ({
+    currentUser,
+    loading: loading.effects['companiesManagement/updateCompany'],
+    companyDetails,
+  }),
+)
 class CompanySignatory extends PureComponent {
   constructor(props) {
     super(props);
@@ -16,18 +23,22 @@ class CompanySignatory extends PureComponent {
   }
 
   onFinish = ({ listSignature = [] }) => {
-    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
-    const payload = { id, companySignature: listSignature };
-    dispatch({
-      type: 'companiesManagement/updateCompany',
-      payload,
-      dataTempKept: {},
-      isAccountSetup: true,
-    });
+    const { dispatch, companyId } = this.props;
+    const payload = { id: companyId, companySignature: listSignature };
+    if (companyId) {
+      dispatch({
+        type: 'companiesManagement/updateCompany',
+        payload,
+        dataTempKept: {},
+        isAccountSetup: true,
+      });
+    } else {
+      console.log('payload add new company', payload);
+    }
   };
 
   render() {
-    const { currentUser: { company: { companySignature = [] } = {} } = {}, loading } = this.props;
+    const { loading, companyDetails: { companySignature = [] } = {} } = this.props;
     const defaultList = companySignature.length === 0 ? [{}] : companySignature;
     return (
       <Form

@@ -7,11 +7,17 @@ import s from './index.less';
 
 const { Option } = Select;
 
-@connect(({ loading, country: { listCountry = [] } = {}, user: { currentUser = {} } = {} }) => ({
-  listCountry,
-  currentUser,
-  loadingUpdate: loading.effects['companiesManagement/updateCompany'],
-}))
+@connect(
+  ({
+    loading,
+    country: { listCountry = [] } = {},
+    companiesManagement: { originData: { companyDetails } = {} } = {},
+  }) => ({
+    listCountry,
+    companyDetails,
+    loadingUpdate: loading.effects['companiesManagement/updateCompany'],
+  }),
+)
 class CompanyDetails extends Component {
   constructor(props) {
     super(props);
@@ -24,11 +30,11 @@ class CompanyDetails extends Component {
   }
 
   componentDidMount() {
-    const { currentUser: { company = {} } = {} } = this.props;
+    const { companyDetails = {} } = this.props;
     const {
       headQuarterAddress: { country: { _id: countryHeadquarter } = {} } = {},
       legalAddress: { country: { _id: countryLegal } = {} } = {},
-    } = company;
+    } = companyDetails;
     this.setState({
       countryHeadquarter,
       countryLegal,
@@ -80,7 +86,7 @@ class CompanyDetails extends Component {
   };
 
   onFinish = (values) => {
-    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
+    const { dispatch, companyId } = this.props;
     const {
       countryHeadquarter,
       countryLegal,
@@ -96,7 +102,7 @@ class CompanyDetails extends Component {
       zipLegal,
     } = values;
     const payload = {
-      id,
+      id: companyId,
       dba,
       ein,
       name,
@@ -114,12 +120,16 @@ class CompanyDetails extends Component {
         zipCode: zipLegal,
       },
     };
-    dispatch({
-      type: 'companiesManagement/updateCompany',
-      payload,
-      dataTempKept: {},
-      isAccountSetup: true,
-    });
+    if (companyId) {
+      dispatch({
+        type: 'companiesManagement/updateCompany',
+        payload,
+        dataTempKept: {},
+        isAccountSetup: true,
+      });
+    } else {
+      console.log('payload add new company', payload);
+    }
   };
 
   render() {
@@ -128,7 +138,7 @@ class CompanyDetails extends Component {
       countryLegal = '',
       checkLegalSameHeadQuarter = false,
     } = this.state;
-    const { listCountry = [], currentUser: { company = {} } = {}, loadingUpdate } = this.props;
+    const { listCountry = [], companyDetails = {}, loadingUpdate } = this.props;
     const fieldCompanyDetail = [
       {
         label: 'Legal Business Name*',
@@ -164,7 +174,7 @@ class CompanyDetails extends Component {
         state: stateLegal,
         zipCode: zipLegal,
       } = {},
-    } = company;
+    } = companyDetails;
     return (
       <Form
         className={s.root}

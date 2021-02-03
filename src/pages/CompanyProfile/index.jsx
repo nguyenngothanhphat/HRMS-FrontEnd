@@ -15,69 +15,84 @@ import styles from './index.less';
 
 const { TabPane } = Tabs;
 
-const listMenu = [
-  {
-    id: 1,
-    name: 'Company Details',
-    component: <CompanyDetails />,
-  },
-  {
-    id: 2,
-    name: 'Work Locations',
-    component: <WorkLocations />,
-  },
-  {
-    id: 3,
-    name: 'Departments',
-    component: <Departments />,
-  },
-  {
-    id: 4,
-    name: 'Company Signatory',
-    component: <CompanySignatory />,
-  },
-];
-
 @connect(
   ({
+    loading,
     user: { currentUser = {} } = {},
     departmentManagement: { listByCompany: listDepartment = [] } = {},
   }) => ({
     currentUser,
     listDepartment,
+    loading: loading.effects['companiesManagement/fetchCompanyDetails'],
   }),
 )
 class CompanyProfile extends Component {
   componentDidMount() {
-    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
+    const {
+      dispatch,
+      match: { params: { id = '' } = {} },
+    } = this.props;
     dispatch({
       type: 'country/fetchListCountry',
     });
     dispatch({
-      type: 'companiesManagement/fetchLocationsList',
-      payload: { company: id },
-    });
-    dispatch({
       type: 'departmentManagement/fetchListDefaultDepartment',
-      payload: { company: id },
+    });
+    if (id) {
+      dispatch({
+        type: 'companiesManagement/fetchCompanyDetails',
+        payload: { id },
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'companiesManagement/saveOrigin',
+      payload: { companyDetails: {} },
     });
     dispatch({
-      type: 'departmentManagement/fetchListDepartmentByCompany',
-      payload: { company: id },
-    });
-    dispatch({
-      type: 'employee/fetchListEmployeeActive',
-      payload: {
-        company: id,
-      },
+      type: 'companiesManagement/saveTemp',
+      payload: { companyDetails: {} },
     });
   }
 
   render() {
-    const { currentUser } = this.props;
+    const {
+      currentUser,
+      match: { params: { id = '' } = {} },
+      loading = false,
+    } = this.props;
     const routes = [
       { name: 'Getting Started', path: '/account-setup' },
-      { name: 'Account Setup', path: '/account-setup/company-profile' },
+      {
+        name: id ? 'Account Setup' : 'Add new company',
+        path: id ? `/account-setup/company-profile/${id}` : '/account-setup/add-company',
+      },
+    ];
+
+    const listMenu = [
+      {
+        id: 1,
+        name: 'Company Details',
+        component: <CompanyDetails companyId={id} />,
+      },
+      {
+        id: 2,
+        name: 'Work Locations',
+        component: <WorkLocations companyId={id} />,
+      },
+      {
+        id: 3,
+        name: 'Departments',
+        component: <Departments companyId={id} />,
+      },
+      {
+        id: 4,
+        name: 'Company Signatory',
+        component: <CompanySignatory companyId={id} />,
+      },
     ];
 
     return (
@@ -87,31 +102,37 @@ class CompanyProfile extends Component {
           <Tabs
             defaultActiveKey="1"
             tabBarExtraContent={
-              <Button
-                className={styles.btn}
-                disabled={currentUser?.firstCreated}
-                onClick={() =>
-                  history.push({
-                    pathname: '/select-location',
-                  })
-                }
-              >
-                Finish Setup
-              </Button>
+              id && (
+                <Button
+                  className={styles.btn}
+                  disabled={currentUser?.firstCreated}
+                  onClick={() =>
+                    history.push({
+                      pathname: '/select-location',
+                    })
+                  }
+                >
+                  Finish Setup
+                </Button>
+              )
             }
           >
             <TabPane tab="Profile Information" key="1">
-              <Layout listMenu={listMenu} isCompanyProfile />
+              {loading ? <div>Loading...</div> : <Layout listMenu={listMenu} isCompanyProfile />}
             </TabPane>
-            <TabPane tab="User Management" key="2" disabled={currentUser?.firstCreated}>
-              <UserManagement />
-            </TabPane>
-            <TabPane tab="Company Documents" key="3">
-              <CompanyDocuments />
-            </TabPane>
-            <TabPane tab="Import Employees" key="4" disabled={currentUser?.firstCreated}>
-              <ImportEmployees />
-            </TabPane>
+            {id && (
+              <>
+                <TabPane tab="User Management" key="2" disabled={currentUser?.firstCreated}>
+                  <UserManagement companyId={id} />
+                </TabPane>
+                <TabPane tab="Company Documents" key="3">
+                  <CompanyDocuments companyId={id} />
+                </TabPane>
+                <TabPane tab="Import Employees" key="4" disabled={currentUser?.firstCreated}>
+                  <ImportEmployees companyId={id} />
+                </TabPane>
+              </>
+            )}
           </Tabs>
         </div>
       </>
