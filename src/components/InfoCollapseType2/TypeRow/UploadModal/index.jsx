@@ -10,6 +10,8 @@ import styles from './index.less';
 const { Dragger } = Upload;
 @connect(({ loading, employeeProfile, user: { currentUser: { employeeId = '' } = {} } } = {}) => ({
   loadingUploadAttachment: loading.effects['upload/uploadFile'],
+  loadingUploadDocument: loading.effects['employeeProfile/uploadDocument'],
+  loadingUpdateDocument: loading.effects['employeeProfile/updateDocument'],
   employeeProfile,
   employeeId,
 }))
@@ -108,7 +110,8 @@ class UploadModal extends Component {
   handleFileName = (e) => {
     const { value } = e.target;
     const { employeeId = '' } = this.props;
-    const keyFileName = `${value}_${employeeId}`;
+    const check = value.includes(employeeId);
+    const keyFileName = check ? value : `${value}_${employeeId}`;
     this.setState({
       keyFileName: keyFileName.replace(/ /g, ''),
     });
@@ -146,10 +149,10 @@ class UploadModal extends Component {
       }).then((res) => {
         const { statusCode } = res;
         if (statusCode === 200) {
-          message.success('Uploaded file');
+          // message.success('Uploaded file');
           setTimeout(() => {
             handleCancel();
-          }, 1000);
+          }, 2000);
           refreshData();
         }
       });
@@ -158,7 +161,12 @@ class UploadModal extends Component {
 
   replaceDocument = async () => {
     const { keyFileName: key, fileId } = this.state;
-    const { dispatch, refreshData = () => {}, currentDocumentId = '' } = this.props;
+    const {
+      dispatch,
+      refreshData = () => {},
+      currentDocumentId = '',
+      handleCancel = () => {},
+    } = this.props;
 
     if (fileId === '') {
       notification.error({ message: 'Please choose file to upload!' });
@@ -175,17 +183,25 @@ class UploadModal extends Component {
         payload,
       });
       if (updateDocument?.statusCode === 200) {
+        // message.success('Uploaded file');
+        setTimeout(() => {
+          handleCancel();
+        }, 2000);
         refreshData();
       }
     }
   };
 
   render() {
-    const { uploadedFileName = '' } = this.state;
-    const { loadingUploadAttachment, employeeGroup = '' } = this.props;
+    const { uploadedFileName } = this.state;
+    const {
+      loadingUploadAttachment,
+      employeeGroup = '',
+      loadingUploadDocument,
+      loadingUpdateDocument,
+    } = this.props;
     const {
       visible = false,
-      loading = false,
       handleCancel = () => {},
       actionType = 1,
       currentFileName = '',
@@ -194,8 +210,6 @@ class UploadModal extends Component {
       labelCol: { span: 8 },
       wrapperCol: { span: 16 },
     };
-
-    console.log('file', currentFileName);
 
     return (
       <div>
@@ -228,7 +242,7 @@ class UploadModal extends Component {
                   type="primary"
                   form="myForm"
                   htmlType="submit"
-                  loading={loading}
+                  loading={loadingUpdateDocument || loadingUploadDocument}
                   className={styles.btnSubmit}
                   onClick={actionType === 1 ? this.handleRemoveToServer : this.replaceDocument}
                 >

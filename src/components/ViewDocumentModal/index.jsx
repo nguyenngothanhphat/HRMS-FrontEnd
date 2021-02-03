@@ -5,6 +5,7 @@ import axios from 'axios';
 import DownloadIcon from '@/assets/downloadIconTimeOff.svg';
 import PrintIcon from '@/assets/printIconTimeOff.svg';
 import CloseIcon from '@/assets/closeIconTimeOff.svg';
+import { LoadingOutlined } from '@ant-design/icons';
 import { Document, Page, pdfjs } from 'react-pdf';
 import ReactToPrint from 'react-to-print';
 import styles from './index.less';
@@ -16,13 +17,12 @@ class ViewDocumentModal extends PureComponent {
     super(props);
     this.state = {
       numPages: null,
-      isDownloading: false,
     };
   }
 
   onDownload = (url) => {
     const fileName = url.split('/').pop();
-    this.setState({ isDownloading: true });
+    message.loading('Downloading file. Please wait...');
     axios({
       url,
       method: 'GET',
@@ -34,7 +34,6 @@ class ViewDocumentModal extends PureComponent {
       link.href = urlDownload;
       link.setAttribute('download', fileName);
       document.body.appendChild(link);
-      this.setState({ isDownloading: false });
       link.click();
     });
   };
@@ -68,9 +67,10 @@ class ViewDocumentModal extends PureComponent {
   };
 
   renderLoading = () => {
+    const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
     return (
       <div className={styles.loading}>
-        <Spin />
+        <Spin indicator={antIcon} />,
       </div>
     );
   };
@@ -110,6 +110,7 @@ class ViewDocumentModal extends PureComponent {
       fileName = 'View Document',
     } = this.props;
     const { numPages } = this.state;
+
     return (
       <>
         <p className={styles.fileName}>{fileName}</p>
@@ -151,9 +152,6 @@ class ViewDocumentModal extends PureComponent {
       onClose = () => {},
       url = 'http://api-stghrms.paxanimi.ai/api/attachments/5f744ecfd44f6745847c0eea/Payslip_Apr20.pdf',
     } = this.props;
-
-    const { isDownloading } = this.state;
-    if (isDownloading) message.loading('Downloading file. Please wait...');
 
     const viewType = this.identifyImageOrPdf(url); // 0: images, 1: pdf
 
