@@ -229,7 +229,7 @@ class DetailTicket extends Component {
       <>
         <PageContainer>
           <div className={styles.detailTicket}>
-            <Affix offsetTop={40}>
+            <Affix offsetTop={42}>
               <div className={styles.titlePage}>
                 <p className={styles.titlePage__text}>
                   Terminate work relationship with {nameEmployee} [{employeeId}]

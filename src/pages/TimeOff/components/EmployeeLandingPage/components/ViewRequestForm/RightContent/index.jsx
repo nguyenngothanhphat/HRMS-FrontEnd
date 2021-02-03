@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { history } from 'umi';
 import AlertIcon from '@/assets/alertIcon.svg';
-// import DefaultAvatar from '@/assets/defaultAvatar.png';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
 import styles from './index.less';
 
 class RightContent extends PureComponent {
@@ -11,7 +11,16 @@ class RightContent extends PureComponent {
   }
 
   renderIcon = (url) => {
-    return <img className={styles.avatar} src={url} alt="avatar" />;
+    return (
+      <img
+        onError={(e) => {
+          e.target.src = DefaultAvatar;
+        }}
+        className={styles.avatar}
+        src={url}
+        alt="avatar"
+      />
+    );
   };
 
   viewEmployeeProfile = (_id) => {

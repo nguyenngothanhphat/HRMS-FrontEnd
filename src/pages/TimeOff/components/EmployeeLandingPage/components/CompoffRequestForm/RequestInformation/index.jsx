@@ -702,6 +702,9 @@ class RequestInformation extends PureComponent {
                             }}
                             src={avatar}
                             alt="user"
+                            onError={(e) => {
+                              e.target.src = DefaultAvatar;
+                            }}
                           />
                         </div>
                         <span

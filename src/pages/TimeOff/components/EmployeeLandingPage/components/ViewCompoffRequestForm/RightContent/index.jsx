@@ -14,7 +14,13 @@ class RightContent extends PureComponent {
   renderIcon = (url, status) => {
     return (
       <div className={styles.avatar}>
-        <img src={url} alt="avatar" />
+        <img
+          onError={(e) => {
+            e.target.src = DefaultAvatar;
+          }}
+          src={url}
+          alt="avatar"
+        />
         {status === 'REJECTED' && <CloseCircleTwoTone twoToneColor="#fd4546" />}
       </div>
     );
@@ -23,7 +29,13 @@ class RightContent extends PureComponent {
   renderIcon2 = (url) => {
     return (
       <div className={styles.avatar}>
-        <img src={url} alt="avatar" />
+        <img
+          onError={(e) => {
+            e.target.src = DefaultAvatar;
+          }}
+          src={url}
+          alt="avatar"
+        />
         <CheckCircleTwoTone twoToneColor="#52c41a" />
       </div>
     );

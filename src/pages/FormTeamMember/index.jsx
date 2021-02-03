@@ -427,7 +427,7 @@ class FormTeamMember extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.containerFormTeamMember}>
-          <Affix offsetTop={40}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>{title}</p>
               {action === 'add' && (
