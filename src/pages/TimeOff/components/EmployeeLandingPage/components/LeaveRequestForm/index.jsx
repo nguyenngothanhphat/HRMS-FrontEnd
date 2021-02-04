@@ -5,6 +5,7 @@ import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
+import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 import styles from './index.less';
@@ -31,7 +32,7 @@ class LeaveRequestForm extends PureComponent {
       action,
     });
 
-    if (action === 'edit-leave-request') {
+    if (action === TIMEOFF_LINK_ACTION.editLeaveRequest) {
       dispatch({
         type: 'timeOff/fetchLeaveRequestById',
         id: reId,
@@ -43,15 +44,15 @@ class LeaveRequestForm extends PureComponent {
 
   getColorOfStatus = (status) => {
     switch (status) {
-      case 'IN-PROGRESS':
+      case TIMEOFF_STATUS.inProgress:
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
-      case 'ACCEPTED':
+      case TIMEOFF_STATUS.accepted:
         return `${styles.leaveStatus} ${styles.approvedColor}`;
-      case 'REJECTED':
+      case TIMEOFF_STATUS.rejected:
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
-      case 'DRAFTS':
+      case TIMEOFF_STATUS.drafts:
         return `${styles.leaveStatus} ${styles.draftsColor}`;
-      case 'ON-HOLD':
+      case TIMEOFF_STATUS.onHold:
         return `${styles.leaveStatus} ${styles.onHoldColor}`;
       default:
         return `${styles.leaveStatus}`;
@@ -60,15 +61,15 @@ class LeaveRequestForm extends PureComponent {
 
   getNameOfStatus = (status) => {
     switch (status) {
-      case 'IN-PROGRESS':
+      case TIMEOFF_STATUS.inProgress:
         return 'In Progress';
-      case 'ACCEPTED':
+      case TIMEOFF_STATUS.accepted:
         return 'Approved';
-      case 'REJECTED':
+      case TIMEOFF_STATUS.rejected:
         return 'Rejected';
-      case 'DRAFTS':
+      case TIMEOFF_STATUS.drafts:
         return 'Drafts';
-      case 'ON-HOLD':
+      case TIMEOFF_STATUS.onHold:
         return 'Withdraw';
       default:
         return 'Unknown';
@@ -89,12 +90,12 @@ class LeaveRequestForm extends PureComponent {
         <div className={styles.leaveRequest}>
           <Affix offsetTop={42}>
             <div className={styles.titlePage}>
-              {action === 'new-leave-request' && (
+              {action === TIMEOFF_LINK_ACTION.newLeaveRequest && (
                 <>
                   <p className={styles.titlePage__text}>Apply for Timeoff</p>
                 </>
               )}
-              {action === 'edit-leave-request' && (
+              {action === TIMEOFF_LINK_ACTION.editLeaveRequest && (
                 <>
                   <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
 
@@ -118,9 +119,9 @@ class LeaveRequestForm extends PureComponent {
             </div>
           )}
           {!loadingFetchLeaveRequestById &&
-            action === 'edit-leave-request' &&
-            status !== 'DRAFTS' &&
-            status !== 'IN-PROGRESS' && (
+            action === TIMEOFF_LINK_ACTION.editLeaveRequest &&
+            status !== TIMEOFF_STATUS.drafts &&
+            status !== TIMEOFF_STATUS.inProgress && (
               <div
                 style={{
                   display: 'flex',
@@ -132,10 +133,10 @@ class LeaveRequestForm extends PureComponent {
               </div>
             )}
 
-          {(action === 'new-leave-request' ||
-            (action === 'edit-leave-request' &&
+          {(action === TIMEOFF_LINK_ACTION.newLeaveRequest ||
+            (action === TIMEOFF_LINK_ACTION.editLeaveRequest &&
               !loadingFetchLeaveRequestById &&
-              (status === 'DRAFTS' || status === 'IN-PROGRESS'))) && (
+              (status === TIMEOFF_STATUS.drafts || status === TIMEOFF_STATUS.inProgress))) && (
               <>
                 <Row className={styles.container} gutter={[20, 20]}>
                   <Col xs={24} lg={16}>

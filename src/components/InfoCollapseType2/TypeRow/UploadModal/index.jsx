@@ -5,6 +5,7 @@ import { connect } from 'umi';
 import FileUploadIcon from '@/assets/uploadFile_icon.svg';
 import PDFIcon from '@/assets/pdf_icon.png';
 import ImageIcon from '@/assets/image_icon.png';
+import { LogoutOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 const { Dragger } = Upload;
@@ -107,13 +108,18 @@ class UploadModal extends Component {
     );
   };
 
-  handleFileName = (e) => {
+  handleName = (name) => {
+    const { idCurrentEmployee = '' } = this.props;
+    const check = name.includes(idCurrentEmployee.replace(/ /g, ''));
+    const keyFileName = check ? name : `${name}_${idCurrentEmployee}`;
+    return keyFileName.replace(/ /g, '');
+  };
+
+  handleFileNameInput = (e) => {
     const { value } = e.target;
-    const { employeeId = '' } = this.props;
-    const check = value.includes(employeeId);
-    const keyFileName = check ? value : `${value}_${employeeId}`;
+    const keyFileName = this.handleName(value);
     this.setState({
-      keyFileName: keyFileName.replace(/ /g, ''),
+      keyFileName,
     });
   };
 
@@ -161,6 +167,11 @@ class UploadModal extends Component {
 
   replaceDocument = async () => {
     const { keyFileName: key, fileId } = this.state;
+    const { currentFileName } = this.props;
+    let finalName = '';
+    if (currentFileName && !key) finalName = this.handleName(currentFileName);
+    else finalName = this.handleName(key);
+
     const {
       dispatch,
       refreshData = () => {},
@@ -175,8 +186,8 @@ class UploadModal extends Component {
         id: currentDocumentId,
         attachment: fileId,
       };
-      if (key) {
-        payload.key = key;
+      if (finalName) {
+        payload.key = finalName;
       }
       const updateDocument = await dispatch({
         type: 'employeeProfile/updateDocument',
@@ -305,9 +316,9 @@ class UploadModal extends Component {
               <Form.Item
                 label="Document Name"
                 name="documentName"
-                rules={[{ required: actionType === 1, message: 'Please input file name!' }]}
+                rules={[{ required: true, message: 'Please input file name!' }]}
               >
-                <Input onChange={this.handleFileName} />
+                <Input onChange={this.handleFileNameInput} />
               </Form.Item>
               <Form.Item label="Document Type" name="documentType" rules={[{ required: true }]}>
                 <Input disabled />

@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Steps, Spin } from 'antd';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import styles from './index.less';
@@ -21,7 +22,7 @@ class RightContent extends PureComponent {
           src={url}
           alt="avatar"
         />
-        {status === 'REJECTED' && <CloseCircleTwoTone twoToneColor="#fd4546" />}
+        {status === TIMEOFF_STATUS.rejected && <CloseCircleTwoTone twoToneColor="#fd4546" />}
       </div>
     );
   };

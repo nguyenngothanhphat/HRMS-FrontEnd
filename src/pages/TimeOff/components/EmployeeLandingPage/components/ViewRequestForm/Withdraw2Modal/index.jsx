@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button, Modal, Input } from 'antd';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -39,7 +40,7 @@ export default class Withdraw2Modal extends PureComponent {
     const content1 =
       'Withdrawing request will delete this ticket id and no longer will be kept track of.';
     let content2 = 'Both your Manager and HR will be notified of this change.';
-    if (status === 'DRAFTS') {
+    if (status === TIMEOFF_STATUS.drafts) {
       header = 'Discard draft request?';
       content2 = '';
     }
@@ -64,6 +65,7 @@ export default class Withdraw2Modal extends PureComponent {
                 maxLength={250}
                 placeholder="Reason..."
                 onChange={this.onReasonChange}
+                disabled={loading}
               />
             </div>
           </div>

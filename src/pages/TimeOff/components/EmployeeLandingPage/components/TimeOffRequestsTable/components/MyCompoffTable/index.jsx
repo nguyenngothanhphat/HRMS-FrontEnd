@@ -168,7 +168,7 @@ class MyCompoffTable extends PureComponent {
   };
 
   render() {
-    const { data = [], loadingFetchMyCompoffRequests } = this.props;
+    const { data = [], loadingFetchMyCompoffRequests = false } = this.props;
     const { selectedRowKeys, pageSelected } = this.state;
     const rowSize = 10;
 
