@@ -32,7 +32,7 @@ export default class WithdrawModal extends PureComponent {
         <div className={styles.container}>
           <span className={styles.title}>{header}</span>
           <p className={styles.subtitle1}>{content1}</p>
-          {content2 !== '' && <p className={styles.subtitle2}>{content2}</p>}
+          {content2 && <p className={styles.subtitle2}>{content2}</p>}
           <div className={styles.operationButtons}>
             <Button
               loading={loading}
