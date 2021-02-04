@@ -11,18 +11,11 @@ import s from './index.less';
 
 const { Dragger } = Upload;
 
-@connect(
-  ({
-    user: { currentUser = {} } = {},
-    loading,
-    employeesManagement: { statusImportEmployees, returnEmployeesList },
-  }) => ({
-    currentUser,
-    statusImportEmployees,
-    returnEmployeesList,
-    loading: loading.effects['employeesManagement/importEmployees'],
-  }),
-)
+@connect(({ loading, employeesManagement: { statusImportEmployees, returnEmployeesList } }) => ({
+  statusImportEmployees,
+  returnEmployeesList,
+  loading: loading.effects['employeesManagement/importEmployees'],
+}))
 class UploadListEmployee extends React.Component {
   constructor(props) {
     super(props);
@@ -179,9 +172,9 @@ class UploadListEmployee extends React.Component {
   };
 
   handleFinish = () => {
-    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
+    const { dispatch, companyId } = this.props;
     const { employees = [] } = this.state;
-    const payload = { company: id, employees };
+    const payload = { company: companyId, employees };
     dispatch({
       type: 'employeesManagement/importEmployees',
       payload,

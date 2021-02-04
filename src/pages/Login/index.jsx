@@ -1,6 +1,8 @@
+/* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
 import { Form, Input, Button } from 'antd';
-import { EyeFilled, GooglePlusOutlined } from '@ant-design/icons';
+import { EyeFilled } from '@ant-design/icons';
+import logoGoogle from '@/assets/logo_google.png';
 import GoogleLogin from 'react-google-login';
 import { Link, connect, formatMessage } from 'umi';
 import styles from './index.less';
@@ -132,9 +134,11 @@ class FormLogin extends Component {
                 className={styles.btnSignInGG}
                 onClick={renderProps.onClick}
                 disabled={renderProps.disabled}
-                icon={<GooglePlusOutlined style={{ fontSize: '26px' }} />}
                 loading={loadingLoginThirdParty}
-              />
+              >
+                <img src={logoGoogle} alt="logo" />
+                <span>Login with Google</span>
+              </Button>
             )}
             onSuccess={this.responseGoogle}
           />

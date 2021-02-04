@@ -1,9 +1,8 @@
 import request from '@/utils/request';
 
-export async function getListDefaultDepartment(payload) {
+export async function getListDefaultDepartment() {
   return request('/api/department/list-default', {
     method: 'POST',
-    data: payload,
   });
 }
 

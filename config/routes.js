@@ -101,7 +101,13 @@ const routes = [
             authority: ['admin-csa'],
           },
           {
-            path: '/account-setup/company-profile',
+            path: '/account-setup/company-profile/:id',
+            component: './CompanyProfile',
+            name: 'Company Profile',
+            authority: ['admin-csa'],
+          },
+          {
+            path: '/account-setup/add-company',
             component: './CompanyProfile',
             name: 'Company Profile',
             authority: ['admin-csa'],
