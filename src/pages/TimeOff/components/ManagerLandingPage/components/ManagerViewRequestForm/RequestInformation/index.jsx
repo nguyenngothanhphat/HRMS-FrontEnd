@@ -394,7 +394,7 @@ class RequestInformation extends PureComponent {
                   <span>{reason}</span>
                 </Col>
               </Row>
-              {status !== 'ON-HOLD' && (
+              {status !== TIMEOFF_STATUS.onHold && (
                 <Row>
                   <Col span={6}>Status</Col>
                   <Col span={18} className={styles.detailColumn}>
@@ -458,7 +458,7 @@ class RequestInformation extends PureComponent {
         )}
 
         {/* WITHDRAW */}
-        {!isReject && status === 'ON-HOLD' && (
+        {!isReject && status === TIMEOFF_STATUS.onHold && (
           <div className={styles.footer}>
             <span className={styles.note}>Withdrawing an approved request</span>
             <div className={styles.formButtons}>
