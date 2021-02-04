@@ -18,6 +18,8 @@ import styles from './index.less';
   // loading2: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
   loading3: loading.effects['timeOff/approveMultipleTimeoffRequest'],
   loading4: loading.effects['timeOff/rejectMultipleTimeoffRequest'],
+  loading5: loading.effects['timeOff/reportingManagerApprove'],
+  loading6: loading.effects['timeOff/reportingManagerReject'],
 }))
 class TeamLeaveTable extends PureComponent {
   columns = [
@@ -392,6 +394,8 @@ class TeamLeaveTable extends PureComponent {
       loading1 = false,
       loading3 = false,
       loading4 = false,
+      loading5 = false,
+      loading6 = false,
       selectedTab = '',
     } = this.props;
     const {
@@ -406,7 +410,7 @@ class TeamLeaveTable extends PureComponent {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     const tableLoading = {
-      spinning: loading1 || loading3,
+      spinning: loading1 || loading3 || loading5,
       indicator: <Spin indicator={antIcon} />,
     };
 
@@ -465,7 +469,7 @@ class TeamLeaveTable extends PureComponent {
           onReject={rejectMultiple ? this.onMultipleReject : this.onReject}
           ticketID={rejectingTicketID}
           rejectMultiple={rejectMultiple}
-          loading={loading4}
+          loading={loading4 || loading6}
         />
       </div>
     );

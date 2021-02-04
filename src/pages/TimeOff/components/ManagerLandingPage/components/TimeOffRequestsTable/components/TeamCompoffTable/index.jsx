@@ -17,6 +17,8 @@ import styles from './index.less';
   loading1: loading.effects['timeOff/fetchTeamCompoffRequests'],
   loading3: loading.effects['timeOff/approveMultipleCompoffRequest'],
   loading4: loading.effects['timeOff/rejectMultipleCompoffRequest'],
+  loading5: loading.effects['timeOff/approveCompoffRequest'],
+  loading6: loading.effects['timeOff/rejectCompoffRequest'],
 }))
 class TeamCompoffTable extends PureComponent {
   columns = [
@@ -376,6 +378,8 @@ class TeamCompoffTable extends PureComponent {
       loading1 = false,
       loading3 = false,
       loading4 = false,
+      loading5 = false,
+      loading6 = false,
       selectedTab = '',
     } = this.props;
     const {
@@ -390,7 +394,7 @@ class TeamCompoffTable extends PureComponent {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     const tableLoading = {
-      spinning: loading1 || loading3,
+      spinning: loading1 || loading3 || loading5,
       indicator: <Spin indicator={antIcon} />,
     };
 
@@ -450,7 +454,7 @@ class TeamCompoffTable extends PureComponent {
           onReject={rejectMultiple ? this.onMultipleReject : this.onReject}
           ticketID={rejectingTicketID}
           rejectMultiple={rejectMultiple}
-          loading={loading4}
+          loading={loading4 || loading6}
         />
       </div>
     );
