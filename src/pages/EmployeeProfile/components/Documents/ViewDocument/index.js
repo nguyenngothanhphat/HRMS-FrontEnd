@@ -291,6 +291,7 @@ class ViewDocument extends PureComponent {
       },
     } = this.props;
     const { key = '', employeeGroup = '', attachment: { url = '' } = {} } = documentDetail;
+ 
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
