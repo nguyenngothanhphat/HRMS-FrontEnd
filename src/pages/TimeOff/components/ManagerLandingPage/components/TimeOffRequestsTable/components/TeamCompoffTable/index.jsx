@@ -4,6 +4,8 @@ import { history, connect } from 'umi';
 import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
+// import DefaultAvatar from '@/assets/defaultAvatar.png';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
 import RejectCommentModal from '../RejectCommentModal';
@@ -15,6 +17,8 @@ import styles from './index.less';
   loading1: loading.effects['timeOff/fetchTeamCompoffRequests'],
   loading3: loading.effects['timeOff/approveMultipleCompoffRequest'],
   loading4: loading.effects['timeOff/rejectMultipleCompoffRequest'],
+  loading5: loading.effects['timeOff/approveCompoffRequest'],
+  loading6: loading.effects['timeOff/rejectCompoffRequest'],
 }))
 class TeamCompoffTable extends PureComponent {
   columns = [
@@ -113,7 +117,10 @@ class TeamCompoffTable extends PureComponent {
       render: (id) => {
         const { ticketID = '', _id = '' } = id;
         const { selectedTab = '' } = this.props;
-        if (selectedTab === 'IN-PROGRESS' || selectedTab === 'IN-PROGRESS-NEXT')
+        if (
+          selectedTab === TIMEOFF_STATUS.inProgress ||
+          selectedTab === TIMEOFF_STATUS.inProgressNext
+        )
           return (
             <div className={styles.rowAction}>
               <Tooltip title="View">
@@ -233,7 +240,7 @@ class TeamCompoffTable extends PureComponent {
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
     const { selectedTab = '', loading3, loading4, onHandle = () => {} } = this.props;
-    if (['IN-PROGRESS', 'IN-PROGRESS-NEXT'].includes(selectedTab)) {
+    if ([TIMEOFF_STATUS.inProgress, TIMEOFF_STATUS.inProgressNext].includes(selectedTab)) {
       const payload = {
         onApprove: this.onMultipleApprove,
         onReject: this.onMultipleCancelClick,
@@ -366,7 +373,15 @@ class TeamCompoffTable extends PureComponent {
   };
 
   render() {
-    const { data = [], loading1, loading4, selectedTab = '' } = this.props;
+    const {
+      data = [],
+      loading1 = false,
+      loading3 = false,
+      loading4 = false,
+      loading5 = false,
+      loading6 = false,
+      selectedTab = '',
+    } = this.props;
     const {
       selectedRowKeys,
       pageSelected,
@@ -379,7 +394,7 @@ class TeamCompoffTable extends PureComponent {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     const tableLoading = {
-      spinning: loading1,
+      spinning: loading1 || loading3 || loading5,
       indicator: <Spin indicator={antIcon} />,
     };
 
@@ -416,7 +431,7 @@ class TeamCompoffTable extends PureComponent {
     };
 
     const tableByRole =
-      selectedTab === 'REJECTED' || selectedTab === 'ACCEPTED'
+      selectedTab === TIMEOFF_STATUS.rejected || selectedTab === TIMEOFF_STATUS.accepted
         ? this.columns.filter((col) => col.dataIndex !== 'assigned')
         : this.columns.filter((col) => col.dataIndex !== 'comment');
 
@@ -439,7 +454,7 @@ class TeamCompoffTable extends PureComponent {
           onReject={rejectMultiple ? this.onMultipleReject : this.onReject}
           ticketID={rejectingTicketID}
           rejectMultiple={rejectMultiple}
-          loading={loading4}
+          loading={loading4 || loading6}
         />
       </div>
     );

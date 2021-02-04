@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 import styles from './index.less';
@@ -70,22 +71,23 @@ class ManagerViewCompoffForm extends PureComponent {
   getColorOfStatus = (status) => {
     const { currentUserRole = '' } = this.props;
     if (currentUserRole === 'ADMIN-CLA') {
-      if (status === 'IN-PROGRESS-NEXT') return `${styles.leaveStatus} ${styles.inProgressColor}`;
-    } else if (status === 'IN-PROGRESS-NEXT')
+      if (status === TIMEOFF_STATUS.inProgressNext)
+        return `${styles.leaveStatus} ${styles.inProgressColor}`;
+    } else if (status === TIMEOFF_STATUS.inProgressNext)
       return `${styles.leaveStatus} ${styles.approvedColor}`;
 
     switch (status) {
-      case 'IN-PROGRESS':
+      case TIMEOFF_STATUS.inProgress:
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
-      case 'ACCEPTED':
+      case TIMEOFF_STATUS.accepted:
         return `${styles.leaveStatus} ${styles.approvedColor}`;
-      case 'REJECTED':
+      case TIMEOFF_STATUS.rejected:
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
-      case 'DRAFTS':
+      case TIMEOFF_STATUS.drafts:
         return `${styles.leaveStatus} ${styles.draftsColor}`;
-      case 'ON-HOLD':
+      case TIMEOFF_STATUS.onHold:
         return `${styles.leaveStatus} ${styles.onHoldColor}`;
-      case 'DELETED':
+      case TIMEOFF_STATUS.deleted:
         return `${styles.leaveStatus} ${styles.deletedColor}`;
       default:
         return `${styles.leaveStatus}`;
@@ -95,21 +97,21 @@ class ManagerViewCompoffForm extends PureComponent {
   getNameOfStatus = (status) => {
     const { currentUserRole = '' } = this.props;
     if (currentUserRole === 'ADMIN-CLA' || currentUserRole === 'hr-manager') {
-      if (status === 'IN-PROGRESS-NEXT') return 'In Progress (PM Approved)';
-    } else if (status === 'IN-PROGRESS-NEXT') return 'Approved (PM Approved)';
+      if (status === TIMEOFF_STATUS.inProgressNext) return 'In Progress (PM Approved)';
+    } else if (status === TIMEOFF_STATUS.inProgressNext) return 'Approved (PM Approved)';
 
     switch (status) {
-      case 'IN-PROGRESS':
+      case TIMEOFF_STATUS.inProgress:
         return 'In Progress';
-      case 'ACCEPTED':
+      case TIMEOFF_STATUS.accepted:
         return 'Approved';
-      case 'REJECTED':
+      case TIMEOFF_STATUS.rejected:
         return 'Rejected';
-      case 'DRAFTS':
+      case TIMEOFF_STATUS.drafts:
         return 'Drafts';
-      case 'ON-HOLD':
+      case TIMEOFF_STATUS.onHold:
         return 'Withdraw';
-      case 'DELETED':
+      case TIMEOFF_STATUS.deleted:
         return 'Deleted';
       default:
         return 'Unknown';
@@ -128,7 +130,7 @@ class ManagerViewCompoffForm extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.ManagerViewCompoffForm}>
-          <Affix offsetTop={40}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
               <div className={this.getColorOfStatus(status)}>

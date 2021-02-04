@@ -20,7 +20,13 @@ class RightContent extends PureComponent {
   renderIcon = (url) => {
     return (
       <div className={styles.avatar}>
-        <img src={url} alt="avatar" />
+        <img
+          onError={(e) => {
+            e.target.src = DefaultAvatar;
+          }}
+          src={url}
+          alt="avatar"
+        />
       </div>
     );
   };

@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import TeamLeaveTable from '../../../../../ManagerLandingPage/components/TimeOffRequestsTable/components/TeamLeaveTable';
 import TeamCompoffTable from '../../../../../ManagerLandingPage/components/TimeOffRequestsTable/components/TeamCompoffTable';
 import MyLeaveTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/MyLeaveTable';
@@ -28,7 +29,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength: 0,
       rejectedLength: 0,
       draftLength: 0,
-      selectedTab: 'IN-PROGRESS',
+      selectedTab: TIMEOFF_STATUS.inProgress,
       selectedTabNumber: '1',
       onHoldLength: 0,
       deletedLength: 0,
@@ -91,42 +92,42 @@ class TimeOffRequestTab extends PureComponent {
     let status = '';
     if (tabType === 1) {
       if (filterTab === '1') {
-        status = 'IN-PROGRESS';
+        status = TIMEOFF_STATUS.inProgress;
       }
       if (filterTab === '2') {
-        status = 'ACCEPTED';
+        status = TIMEOFF_STATUS.accepted;
       }
       if (filterTab === '3') {
-        status = 'REJECTED';
+        status = TIMEOFF_STATUS.rejected;
       }
       if (filterTab === '4') {
-        status = 'DRAFTS';
+        status = TIMEOFF_STATUS.drafts;
       }
       if (filterTab === '5') {
-        status = 'ON-HOLD';
+        status = TIMEOFF_STATUS.onHold;
       }
       if (filterTab === '6') {
-        status = 'DELETED';
+        status = TIMEOFF_STATUS.deleted;
       }
     } else if (tabType === 2) {
       // compoff
       if (filterTab === '1') {
-        status = ['IN-PROGRESS-NEXT', 'IN-PROGRESS'];
+        status = [TIMEOFF_STATUS.inProgressNext, TIMEOFF_STATUS.inProgress];
       }
       if (filterTab === '2') {
-        status = ['ACCEPTED'];
+        status = [TIMEOFF_STATUS.accepted];
       }
       if (filterTab === '3') {
-        status = ['REJECTED'];
+        status = [TIMEOFF_STATUS.rejected];
       }
       if (filterTab === '4') {
-        status = ['DRAFTS'];
+        status = [TIMEOFF_STATUS.drafts];
       }
       if (filterTab === '5') {
-        status = ['ON-HOLD'];
+        status = [TIMEOFF_STATUS.onHold];
       }
       if (filterTab === '6') {
-        status = ['DELETED'];
+        status = [TIMEOFF_STATUS.deleted];
       }
     }
 
@@ -164,9 +165,13 @@ class TimeOffRequestTab extends PureComponent {
         this.countTotal(newData);
         let formatMainTabData = newData;
         if (category === 'TEAM' || category === 'ALL')
-          formatMainTabData = formatMainTabData.filter((data) => data.status !== 'DRAFTS');
+          formatMainTabData = formatMainTabData.filter(
+            (data) => data.status !== TIMEOFF_STATUS.drafts,
+          );
         if (category === 'MY')
-          formatMainTabData = formatMainTabData.filter((data) => data.status !== 'DELETED');
+          formatMainTabData = formatMainTabData.filter(
+            (data) => data.status !== TIMEOFF_STATUS.deleted,
+          );
         this.setState({
           formatMainTabData,
         });
@@ -196,17 +201,17 @@ class TimeOffRequestTab extends PureComponent {
     this.fetchFilteredDataFromServer(id);
     this.saveCurrentTab(id);
 
-    let selectedTab = 'IN-PROGRESS';
+    let selectedTab = TIMEOFF_STATUS.inProgress;
     if (id === '2') {
-      selectedTab = 'ACCEPTED';
+      selectedTab = TIMEOFF_STATUS.accepted;
     } else if (id === '3') {
-      selectedTab = 'REJECTED';
+      selectedTab = TIMEOFF_STATUS.rejected;
     } else if (id === '4') {
-      selectedTab = 'DRAFTS';
+      selectedTab = TIMEOFF_STATUS.drafts;
     } else if (id === '5') {
-      selectedTab = 'ON-HOLD';
+      selectedTab = TIMEOFF_STATUS.onHold;
     } else if (id === '6') {
-      selectedTab = 'DELETED';
+      selectedTab = TIMEOFF_STATUS.deleted;
     }
 
     this.setState({
@@ -226,31 +231,31 @@ class TimeOffRequestTab extends PureComponent {
     newData.forEach((row) => {
       const { status = '' } = row;
       switch (status) {
-        case 'IN-PROGRESS': {
+        case TIMEOFF_STATUS.inProgress: {
           inProgressLength.push(row);
           break;
         }
-        case 'IN-PROGRESS-NEXT': {
+        case TIMEOFF_STATUS.inProgressNext: {
           inProgressLength.push(row);
           break;
         }
-        case 'ACCEPTED': {
+        case TIMEOFF_STATUS.accepted: {
           approvedLength.push(row);
           break;
         }
-        case 'REJECTED': {
+        case TIMEOFF_STATUS.rejected: {
           rejectedLength.push(row);
           break;
         }
-        case 'DRAFTS': {
+        case TIMEOFF_STATUS.drafts: {
           draftLength.push(row);
           break;
         }
-        case 'ON-HOLD': {
+        case TIMEOFF_STATUS.onHold: {
           onHoldLength.push(row);
           break;
         }
-        case 'DELETED': {
+        case TIMEOFF_STATUS.deleted: {
           deletedLength.push(row);
           break;
         }

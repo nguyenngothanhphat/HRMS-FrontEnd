@@ -5,6 +5,7 @@ import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
 import moment from 'moment';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 // import MultipleCheckTablePopup from '@/components/MultipleCheckTablePopup';
 import { LoadingOutlined } from '@ant-design/icons';
 
@@ -17,6 +18,8 @@ import styles from './index.less';
   // loading2: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
   loading3: loading.effects['timeOff/approveMultipleTimeoffRequest'],
   loading4: loading.effects['timeOff/rejectMultipleTimeoffRequest'],
+  loading5: loading.effects['timeOff/reportingManagerApprove'],
+  loading6: loading.effects['timeOff/reportingManagerReject'],
 }))
 class TeamLeaveTable extends PureComponent {
   columns = [
@@ -31,7 +34,7 @@ class TeamLeaveTable extends PureComponent {
         const createdDate = moment(onDate).locale('en').format('YYYY/MM/DD');
         const nowDate = moment().locale('en').format('YYYY/MM/DD');
         const isNewRequest =
-          status === 'IN-PROGRESS' &&
+          status === TIMEOFF_STATUS.inProgress &&
           moment(nowDate).subtract(2, 'days').isSameOrBefore(moment(createdDate));
 
         return (
@@ -137,7 +140,7 @@ class TeamLeaveTable extends PureComponent {
       render: (id) => {
         const { ticketID = '', _id = '' } = id;
         const { selectedTab = '' } = this.props;
-        if (selectedTab === 'IN-PROGRESS')
+        if (selectedTab === TIMEOFF_STATUS.inProgress)
           return (
             <div className={styles.rowAction}>
               <Tooltip title="View">
@@ -257,7 +260,7 @@ class TeamLeaveTable extends PureComponent {
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
     const { selectedTab = '', onHandle = () => {}, loading3, loading4 } = this.props;
-    if (selectedTab === 'IN-PROGRESS') {
+    if (selectedTab === TIMEOFF_STATUS.inProgress) {
       const payload = {
         onApprove: this.onMultipleApprove,
         onReject: this.onMultipleCancelClick,
@@ -386,7 +389,15 @@ class TeamLeaveTable extends PureComponent {
   };
 
   render() {
-    const { data = [], loading1, loading4, selectedTab = '' } = this.props;
+    const {
+      data = [],
+      loading1 = false,
+      loading3 = false,
+      loading4 = false,
+      loading5 = false,
+      loading6 = false,
+      selectedTab = '',
+    } = this.props;
     const {
       selectedRowKeys,
       pageSelected,
@@ -399,7 +410,7 @@ class TeamLeaveTable extends PureComponent {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
     const tableLoading = {
-      spinning: loading1,
+      spinning: loading1 || loading3 || loading5,
       indicator: <Spin indicator={antIcon} />,
     };
 
@@ -435,7 +446,7 @@ class TeamLeaveTable extends PureComponent {
     };
 
     const tableByRole =
-      selectedTab === 'REJECTED'
+      selectedTab === TIMEOFF_STATUS.rejected
         ? this.columns.filter((col) => col.dataIndex !== 'assigned')
         : this.columns.filter((col) => col.dataIndex !== 'comment');
 
@@ -458,7 +469,7 @@ class TeamLeaveTable extends PureComponent {
           onReject={rejectMultiple ? this.onMultipleReject : this.onReject}
           ticketID={rejectingTicketID}
           rejectMultiple={rejectMultiple}
-          loading={loading4}
+          loading={loading4 || loading6}
         />
       </div>
     );
