@@ -91,7 +91,8 @@ class RightContent extends PureComponent {
                             {status === TIMEOFF_STATUS.rejected &&
                               this.renderIcon(avatar, TIMEOFF_STATUS.rejected)}
                             {status === TIMEOFF_STATUS.inProgress && this.renderIcon(avatar)}
-                            {(status === TIMEOFF_STATUS.accepted || status === 'ON-HOLD') &&
+                            {(status === TIMEOFF_STATUS.accepted ||
+                              status === TIMEOFF_STATUS.onHold) &&
                               this.renderIcon2(avatar)}
                           </>
                         )}

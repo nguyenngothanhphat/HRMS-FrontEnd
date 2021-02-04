@@ -93,7 +93,7 @@ class TimeOffRequestTab extends PureComponent {
         status = TIMEOFF_STATUS.drafts;
       }
       if (filterTab === '5') {
-        status = 'ON-HOLD';
+        status = TIMEOFF_STATUS.onHold;
       }
     } else if (tabType === 2) {
       // compoff
@@ -114,7 +114,7 @@ class TimeOffRequestTab extends PureComponent {
         status = [TIMEOFF_STATUS.drafts];
       }
       if (filterTab === '5') {
-        status = ['ON-HOLD'];
+        status = [TIMEOFF_STATUS.onHold];
       }
     }
 
@@ -214,7 +214,7 @@ class TimeOffRequestTab extends PureComponent {
     } else if (id === '4') {
       selectedTab = TIMEOFF_STATUS.drafts;
     } else if (id === '5') {
-      selectedTab = 'ON-HOLD';
+      selectedTab = TIMEOFF_STATUS.onHold;
     }
 
     this.setState({
@@ -269,7 +269,7 @@ class TimeOffRequestTab extends PureComponent {
           draftLength.push(row);
           break;
         }
-        case 'ON-HOLD': {
+        case TIMEOFF_STATUS.onHold: {
           onHoldLength.push(row);
           break;
         }

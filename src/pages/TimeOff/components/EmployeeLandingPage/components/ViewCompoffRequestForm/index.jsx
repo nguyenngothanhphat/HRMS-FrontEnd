@@ -53,7 +53,7 @@ class ViewCompoffRequestForm extends PureComponent {
         return `${styles.leaveStatus} ${styles.draftsColor}`;
       case TIMEOFF_STATUS.onHold:
         return `${styles.leaveStatus} ${styles.onHoldColor}`;
-      case 'DELETED':
+      case TIMEOFF_STATUS.deleted:
         return `${styles.leaveStatus} ${styles.deletedColor}`;
       default:
         return `${styles.leaveStatus}`;
@@ -74,7 +74,7 @@ class ViewCompoffRequestForm extends PureComponent {
         return 'Drafts';
       case TIMEOFF_STATUS.onHold:
         return 'Withdraw';
-      case 'DELETED':
+      case TIMEOFF_STATUS.deleted:
         return 'Deleted';
       default:
         return 'Unknown';

@@ -52,7 +52,7 @@ class ManagerViewRequestForm extends PureComponent {
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
       case TIMEOFF_STATUS.drafts:
         return `${styles.leaveStatus} ${styles.draftsColor}`;
-      case 'ON-HOLD':
+      case TIMEOFF_STATUS.onHold:
         return `${styles.leaveStatus} ${styles.onHoldColor}`;
       case TIMEOFF_STATUS.deleted:
         return `${styles.leaveStatus} ${styles.deletedColor}`;
@@ -71,7 +71,7 @@ class ManagerViewRequestForm extends PureComponent {
         return 'Rejected';
       case TIMEOFF_STATUS.drafts:
         return 'Drafts';
-      case 'ON-HOLD':
+      case TIMEOFF_STATUS.onHold:
         return 'Withdraw';
       case TIMEOFF_STATUS.deleted:
         return 'Deleted';
