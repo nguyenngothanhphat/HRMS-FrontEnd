@@ -14,9 +14,9 @@ const departmentManagement = {
     listByCompany: [],
   },
   effects: {
-    *fetchListDefaultDepartment({ payload: { company = '' } = {} }, { call, put }) {
+    *fetchListDefaultDepartment(_, { call, put }) {
       try {
-        const response = yield call(getListDefaultDepartment, { company });
+        const response = yield call(getListDefaultDepartment);
         const { statusCode, data = [] } = response;
         const listDefault = data.map((item = {}) => item?.name) || [];
         if (statusCode !== 200) throw response;
