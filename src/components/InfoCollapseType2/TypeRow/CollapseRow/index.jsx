@@ -200,7 +200,9 @@ class CollapseRow extends PureComponent {
                           />
                         </div>
                       )}
-                      <DownloadFile content={this.renderDownloadIcon()} url={source} />
+                      <div className={styles.downloadButton}>
+                        <DownloadFile content={this.renderDownloadIcon()} url={source} />
+                      </div>
                     </div>
                   </Col>
                 </Row>
