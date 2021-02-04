@@ -72,7 +72,7 @@ class CompanyProfile extends Component {
       },
     ];
 
-    const listMenu = [
+    let listMenu = [
       {
         id: 1,
         name: 'Company Details',
@@ -83,17 +83,23 @@ class CompanyProfile extends Component {
         name: 'Work Locations',
         component: <WorkLocations companyId={id} />,
       },
-      {
-        id: 3,
-        name: 'Departments',
-        component: <Departments companyId={id} />,
-      },
-      {
-        id: 4,
-        name: 'Company Signatory',
-        component: <CompanySignatory companyId={id} />,
-      },
     ];
+
+    if (id) {
+      listMenu = [
+        ...listMenu,
+        {
+          id: 3,
+          name: 'Departments',
+          component: <Departments companyId={id} />,
+        },
+        {
+          id: 4,
+          name: 'Company Signatory',
+          component: <CompanySignatory companyId={id} />,
+        },
+      ];
+    }
 
     return (
       <>

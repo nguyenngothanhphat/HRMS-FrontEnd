@@ -15,12 +15,15 @@ export default class ItemCompany extends PureComponent {
     } = this.props;
     return (
       <div className={s.root}>
-        <img
-          src={logoUrl || logoDefault}
-          alt="logo"
-          className={s.logoCompany}
-          style={logoUrl ? {} : { opacity: 0.8 }}
-        />
+        <div className={s.logoCompany}>
+          <img
+            className={s.logoCompany__img}
+            src={logoUrl || logoDefault}
+            alt="logo"
+            style={logoUrl ? {} : { opacity: 0.8 }}
+          />
+        </div>
+
         <div className={s.viewInfo}>
           <p className={s.viewInfo__name}>{name}</p>
           <p className={s.viewInfo__location}>{headQuarterAddress?.country?.name}</p>

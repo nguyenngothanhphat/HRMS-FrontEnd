@@ -1,6 +1,6 @@
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import avtDefault from '@/assets/avtDefault.jpg';
-import { Avatar } from 'antd';
+import { Avatar, Button } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import ItemCompany from './components/ItemCompany';
@@ -10,6 +10,10 @@ import s from './index.less';
   currentUser,
 }))
 class AccountSetup extends Component {
+  componentDidMount() {
+    // fetch list company
+  }
+
   handleLogout = () => {
     const { dispatch } = this.props;
     if (dispatch) {
@@ -46,8 +50,12 @@ class AccountSetup extends Component {
             </div>
           </div>
           <ItemCompany company={company} />
-
-          <div onClick={() => history.push('/account-setup/add-company')}>Add new company</div>
+          <Button
+            className={s.btnAddNew}
+            onClick={() => history.push('/account-setup/add-company')}
+          >
+            Add new company
+          </Button>
         </div>
       </div>
     );
