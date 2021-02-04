@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Tabs, Tooltip } from 'antd';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { connect } from 'umi';
 import moment from 'moment';
 import Holiday from './components/Holiday';
@@ -109,7 +110,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
         _id = '',
       } = each;
 
-      if (status === 'ACCEPTED') {
+      if (status === TIMEOFF_STATUS.accepted) {
         const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
         const toDate = moment(to).locale('en').format('MM/DD/YYYY');
         const now = moment().locale('en').format('MM/DD/YYYY');

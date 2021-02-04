@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col } from 'antd';
 import { connect } from 'umi';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
 import styles from './index.less';
@@ -38,15 +39,15 @@ class ViewRequestForm extends PureComponent {
 
   getColorOfStatus = (status) => {
     switch (status) {
-      case 'IN-PROGRESS':
+      case TIMEOFF_STATUS.inProgress:
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
-      case 'ACCEPTED':
+      case TIMEOFF_STATUS.accepted:
         return `${styles.leaveStatus} ${styles.approvedColor}`;
-      case 'REJECTED':
+      case TIMEOFF_STATUS.rejected:
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
-      case 'DRAFTS':
+      case TIMEOFF_STATUS.drafts:
         return `${styles.leaveStatus} ${styles.draftsColor}`;
-      case 'ON-HOLD':
+      case TIMEOFF_STATUS.onHold:
         return `${styles.leaveStatus} ${styles.onHoldColor}`;
       case 'DELETED':
         return `${styles.leaveStatus} ${styles.deletedColor}`;
@@ -57,15 +58,15 @@ class ViewRequestForm extends PureComponent {
 
   getNameOfStatus = (status) => {
     switch (status) {
-      case 'IN-PROGRESS':
+      case TIMEOFF_STATUS.inProgress:
         return 'In Progress';
-      case 'ACCEPTED':
+      case TIMEOFF_STATUS.accepted:
         return 'Approved';
-      case 'REJECTED':
+      case TIMEOFF_STATUS.rejected:
         return 'Rejected';
-      case 'DRAFTS':
+      case TIMEOFF_STATUS.drafts:
         return 'Drafts';
-      case 'ON-HOLD':
+      case TIMEOFF_STATUS.onHold:
         return 'Withdraw';
       case 'DELETED':
         return 'Deleted';

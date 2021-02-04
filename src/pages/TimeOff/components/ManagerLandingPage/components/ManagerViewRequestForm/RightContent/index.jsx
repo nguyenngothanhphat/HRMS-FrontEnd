@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Steps } from 'antd';
 import { CheckCircleTwoTone, CloseCircleTwoTone } from '@ant-design/icons';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
 
 const { Step } = Steps;
@@ -21,7 +22,7 @@ class RightContent extends PureComponent {
           src={url}
           alt="avatar"
         />
-        {status === 'REJECTED' && <CloseCircleTwoTone twoToneColor="#fd4546" />}
+        {status === TIMEOFF_STATUS.rejected && <CloseCircleTwoTone twoToneColor="#fd4546" />}
       </div>
     );
   };
@@ -73,23 +74,25 @@ class RightContent extends PureComponent {
       <div className={styles.RightContent}>
         <div className={styles.content}>
           <span className={styles.title}>Chain of approval</span>
-          <Steps current={status === 'IN-PROGRESS' ? 1 : 2} labelPlacement="vertical">
+          <Steps current={status === TIMEOFF_STATUS.inProgress ? 1 : 2} labelPlacement="vertical">
             {people.map((value, index) => {
               const { avatar = '', name = '' } = value;
               return (
                 <Step
                   key={`${index + 1}`}
                   icon={
-                    status === 'DELETED' ? (
+                    status === TIMEOFF_STATUS.deleted ? (
                       this.renderIcon(avatar)
                     ) : (
                       <>
                         {index === 0 && this.renderIcon2(avatar)}
                         {index === 1 && (
                           <>
-                            {status === 'REJECTED' && this.renderIcon(avatar, 'REJECTED')}
-                            {status === 'IN-PROGRESS' && this.renderIcon(avatar)}
-                            {status === 'ACCEPTED' && this.renderIcon2(avatar)}
+                            {status === TIMEOFF_STATUS.rejected &&
+                              this.renderIcon(avatar, TIMEOFF_STATUS.rejected)}
+                            {status === TIMEOFF_STATUS.inProgress && this.renderIcon(avatar)}
+                            {(status === TIMEOFF_STATUS.accepted || status === 'ON-HOLD') &&
+                              this.renderIcon2(avatar)}
                           </>
                         )}
                       </>

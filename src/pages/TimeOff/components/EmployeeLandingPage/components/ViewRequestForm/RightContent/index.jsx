@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { history } from 'umi';
 import AlertIcon from '@/assets/alertIcon.svg';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
+// import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
 
 class RightContent extends PureComponent {
@@ -46,7 +47,7 @@ class RightContent extends PureComponent {
             </p>
           </span>
         </div>
-        {/* {status !== 'DRAFTS' && status !== 'IN-PROGRESS' && ( */}
+        {/* {status !== TIMEOFF_STATUS.drafts && status !== TIMEOFF_STATUS.inProgress && ( */}
         <div className={styles.underReview}>
           <div className={styles.cautionIcon}>
             <img src={AlertIcon} alt="alert" />
