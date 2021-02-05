@@ -1,33 +1,37 @@
 /* eslint-disable react/no-array-index-key */
-import React, { PureComponent } from 'react';
-import { UserOutlined, AntDesignOutlined, SearchOutlined } from '@ant-design/icons';
-import { history } from 'umi';
-import { Avatar, Row, Col } from 'antd';
+import avtDefault from '@/assets/avtDefault.jpg';
+import { AntDesignOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Col, Row } from 'antd';
+import React, { Component } from 'react';
+import { connect, history } from 'umi';
 import s from './index.less';
 
-const dummyListRecent = ['PSI 2021', 'Townhall - December, 2020', 'Pitch doc'];
-const dummyListPeople = [
-  'Krithi Priyadarshini',
-  'Shipra Purohit',
-  'Aditya Venkatesan',
-  'Manasi Sanghani',
-];
-
-const dummyListType = ['Documents', 'Reports', 'Requests', 'Events'];
-
-class ViewHistory extends PureComponent {
-  renderItem = (item, index, isType = false) => {
+@connect(({ searchAdvance: { historySearch = {} } = {} }) => ({
+  historySearch,
+}))
+class ViewHistory extends Component {
+  renderItem = (item = {}, index) => {
+    const { resetSearch = () => {} } = this.props;
+    const { _id = '', generalInfo: { firstName = '', avatar = '' } = {} } = item;
     return (
-      <Col span={6} key={index} className={s.itemDisplay}>
-        <Avatar size={48} icon={!isType ? <UserOutlined /> : <AntDesignOutlined />} />
-        <p className={s.itemDisplay__text}>{item}</p>
+      <Col
+        span={6}
+        key={index}
+        className={s.itemDisplay}
+        onClick={() => {
+          history.push(`/employees/employee-profile/${_id}`);
+          resetSearch();
+        }}
+      >
+        <Avatar size={48} icon={<UserOutlined />} src={avatar || avtDefault} />
+        <p className={s.itemDisplay__text}>{firstName}</p>
       </Col>
     );
   };
 
   searchByHistoryKeyword = (value) => {
     const { closeSearch = () => {}, setKeyword = () => {} } = this.props;
-    closeSearch(false);
+    closeSearch(true);
     setKeyword(value);
     history.push({
       pathname: '/search-result',
@@ -35,13 +39,24 @@ class ViewHistory extends PureComponent {
     });
   };
 
+  handleSearchByCategory = () => {
+    const { resetSearch = () => {} } = this.props;
+    history.push({
+      pathname: '/search-result',
+      query: { isSearchByCategory: true },
+    });
+    resetSearch();
+  };
+
   render() {
-    const { changeMode = () => {} } = this.props;
+    const { changeMode = () => {}, historySearch: { key = [], data = [] } = {} } = this.props;
     return (
       <div className={s.containerViewHistory}>
-        {dummyListRecent.length !== 0 && (
+        {key.length === 0 ? (
+          <div className={`${s.blockRecent} ${s.viewRecent}`}>No recents</div>
+        ) : (
           <div className={`${s.blockRecent} ${s.viewRecent}`}>
-            {dummyListRecent.map((item, index) => (
+            {key.map((item, index) => (
               <div
                 key={index}
                 className={s.itemRecent}
@@ -53,12 +68,19 @@ class ViewHistory extends PureComponent {
             ))}
           </div>
         )}
-        <div className={s.blockRecent}>
-          <Row>{dummyListPeople.map((item, index) => this.renderItem(item, index))}</Row>
-        </div>
-        <div className={s.blockRecent}>
-          <Row>{dummyListType.map((item, index) => this.renderItem(item, index, true))}</Row>
-        </div>
+        {data.length === 0 ? (
+          <div className={`${s.blockRecent} ${s.viewRecent}`}>No recents</div>
+        ) : (
+          <Row className={s.blockRecent}>
+            {data.map((item, index) => this.renderItem(item, index))}
+          </Row>
+        )}
+        <Row className={s.blockRecent}>
+          <Col span={6} className={s.itemDisplay} onClick={this.handleSearchByCategory}>
+            <Avatar size={48} icon={<AntDesignOutlined />} />
+            <p className={s.itemDisplay__text}>Documents</p>
+          </Col>
+        </Row>
         <div className={s.viewActionChangeMode} onClick={() => changeMode('advanced')}>
           Advanced Search
         </div>
