@@ -1,16 +1,15 @@
 /* eslint-disable react/no-array-index-key */
-import React, { PureComponent } from 'react';
-import { UserOutlined, AntDesignOutlined, SearchOutlined } from '@ant-design/icons';
-import { history, connect } from 'umi';
-import { Avatar, Row, Col } from 'antd';
 import avtDefault from '@/assets/avtDefault.jpg';
+import { AntDesignOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { Avatar, Col, Row } from 'antd';
+import React, { Component } from 'react';
+import { connect, history } from 'umi';
 import s from './index.less';
 
-@connect(({ searchAdvance: { historyKeyword = [], historyEmployees = [] } = {} }) => ({
-  historyKeyword,
-  historyEmployees,
+@connect(({ searchAdvance: { historySearch = {} } = {} }) => ({
+  historySearch,
 }))
-class ViewHistory extends PureComponent {
+class ViewHistory extends Component {
   renderItem = (item = {}, index) => {
     const { resetSearch = () => {} } = this.props;
     const { _id = '', generalInfo: { firstName = '', avatar = '' } = {} } = item;
@@ -50,12 +49,14 @@ class ViewHistory extends PureComponent {
   };
 
   render() {
-    const { changeMode = () => {}, historyKeyword = [], historyEmployees = [] } = this.props;
+    const { changeMode = () => {}, historySearch: { key = [], data = [] } = {} } = this.props;
     return (
       <div className={s.containerViewHistory}>
-        {historyKeyword.length !== 0 && (
+        {key.length === 0 ? (
+          <div className={`${s.blockRecent} ${s.viewRecent}`}>No recents</div>
+        ) : (
           <div className={`${s.blockRecent} ${s.viewRecent}`}>
-            {historyKeyword.map((item, index) => (
+            {key.map((item, index) => (
               <div
                 key={index}
                 className={s.itemRecent}
@@ -67,9 +68,11 @@ class ViewHistory extends PureComponent {
             ))}
           </div>
         )}
-        {historyEmployees.length > 0 && (
+        {data.length === 0 ? (
+          <div className={`${s.blockRecent} ${s.viewRecent}`}>No recents</div>
+        ) : (
           <Row className={s.blockRecent}>
-            {historyEmployees.map((item, index) => this.renderItem(item, index))}
+            {data.map((item, index) => this.renderItem(item, index))}
           </Row>
         )}
         <Row className={s.blockRecent}>
