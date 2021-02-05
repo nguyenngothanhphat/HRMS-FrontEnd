@@ -13,22 +13,14 @@ import TableFilter from '../TableFilter';
 const { Content } = Layout;
 const { TabPane } = Tabs;
 
-@connect(
-  ({
-    loading,
-    employee,
-    user: { currentUser = {}, permissions = {} },
-    offboarding: { approvalflow = [] } = {},
-  }) => ({
-    loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
-    loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
-    loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
-    employee,
-    currentUser,
-    permissions,
-    approvalflow,
-  }),
-)
+@connect(({ loading, employee, user: { currentUser = {}, permissions = {} } }) => ({
+  loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
+  loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
+  loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
+  employee,
+  currentUser,
+  permissions,
+}))
 class DirectoryComponent extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if ('employee' in nextProps) {
@@ -559,17 +551,11 @@ class DirectoryComponent extends PureComponent {
 
   renderTab = (tabName, key, loading, indexShowLocation) => {
     const { tabId, collapsed, changeTab } = this.state;
-    const { approvalflow = [] } = this.props;
     return (
       <TabPane tab={tabName} key={key}>
         <Layout className={styles.directoryLayout_inner}>
           <Content className="site-layout-background">
-            <DirectoryTable
-              loading={loading}
-              list={this.renderListEmployee(key)}
-              keyTab={key}
-              approvalflow={approvalflow}
-            />
+            <DirectoryTable loading={loading} list={this.renderListEmployee(key)} keyTab={key} />
           </Content>
           <TableFilter
             onToggle={this.handleToggle}

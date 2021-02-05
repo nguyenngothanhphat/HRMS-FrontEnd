@@ -5,7 +5,9 @@ import { connect, formatMessage } from 'umi';
 import DirectoryComponent from './components/Directory';
 import styles from './index.less';
 
-@connect(({ user: { currentUser = {} } }) => ({ currentUser }))
+@connect(({ user: { currentUser = {} } }) => ({
+  currentUser,
+}))
 class Directory extends PureComponent {
   constructor(props) {
     super(props);
