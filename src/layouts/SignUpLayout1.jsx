@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'umi';
-import { Layout, Row, Col, InputNumber, Button } from 'antd';
-
-import gmail from '@/assets/gmail-icon.png';
-import outlook from '@/assets/outlook-icon.png';
 import img from '@/assets/sign-up-img.png';
-
+import { Layout } from 'antd';
+import React from 'react';
+import { Link } from 'umi';
 import styles from './SignUpLayout1.less';
 
 const { Header, Content } = Layout;
@@ -17,10 +13,7 @@ const SignUpLayout1 = (props) => {
     <Layout className={styles.root}>
       <Header>
         <div className={styles.header}>
-          <div className={styles.logo}>
-            <span>Logo</span>
-          </div>
-
+          <div className={styles.logo}>{/* <span>Logo</span> */}</div>
           <div className={styles.ask}>
             <span>Already have an account?</span>
             <Link to="/signin">sign in</Link>

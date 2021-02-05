@@ -95,6 +95,8 @@ class EmployeeProfile extends Component {
     });
     dispatch({ type: 'employeeProfile/fetchEmployees' });
     dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: employee });
+    dispatch({ type: 'employeeProfile/fetchEmployeeDependentDetails', payload: employee });
+    dispatch({ type: 'employeeProfile/getBenefitPlans' });
   };
 
   checkProfileOwner = (currentUserID, employeeID) => {
@@ -151,7 +153,7 @@ class EmployeeProfile extends Component {
     return (
       <PageContainer>
         <div className={styles.containerEmployeeProfile}>
-          <Affix offsetTop={40}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Employee Profile</p>
             </div>

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Tabs, Tooltip } from 'antd';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 import ListIcon from '@/assets/list_icon.svg';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { connect } from 'umi';
 import moment from 'moment';
 import Holiday from './components/Holiday';
@@ -9,9 +10,12 @@ import LeaveHistory from './components/LeaveHistory';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
-@connect(({ timeOff }) => ({
-  timeOff,
-}))
+@connect(
+  ({ timeOff, user: { currentUser: { location: { _id: idLocation = '' } = {} } = {} } = {} }) => ({
+    timeOff,
+    idLocation,
+  }),
+)
 class LeaveHistoryAndHoliday extends PureComponent {
   constructor(props) {
     super(props);
@@ -21,10 +25,10 @@ class LeaveHistoryAndHoliday extends PureComponent {
   }
 
   componentDidMount = () => {
-    const { dispatch } = this.props;
+    const { dispatch, idLocation } = this.props;
     dispatch({
-      type: 'timeOff/fetchHolidaysList',
-      payload: { year: parseInt(moment().format('YYYY'), 10), month: '' },
+      type: 'timeOff/fetchHolidaysListBylocation',
+      payload: { location: idLocation },
     });
     dispatch({
       type: 'timeOff/fetchLeaveHistory',
@@ -106,7 +110,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
         _id = '',
       } = each;
 
-      if (status === 'ACCEPTED') {
+      if (status === TIMEOFF_STATUS.accepted) {
         const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
         const toDate = moment(to).locale('en').format('MM/DD/YYYY');
         const now = moment().locale('en').format('MM/DD/YYYY');

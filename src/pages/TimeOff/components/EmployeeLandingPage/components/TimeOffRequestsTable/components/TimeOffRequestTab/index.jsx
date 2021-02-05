@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
 import { connect } from 'umi';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import MyLeaveTable from '../MyLeaveTable';
 import MyCompoffTable from '../MyCompoffTable';
 import FilterBar from '../FilterBar';
@@ -30,19 +31,19 @@ class TimeOffRequestTab extends PureComponent {
     if (key === 1)
       return requests.filter((req) => {
         const { type: { type = '' } = {} } = req;
-        return type === 'A' || type === 'B';
+        return type === 'A';
       });
 
     if (key === 2)
       return requests.filter((req) => {
-        const { type: { type = '', shortType = '' } = {} } = req;
-        return type === 'C' && shortType !== 'LWP';
+        const { type: { type = '' } = {} } = req;
+        return type === 'C';
       });
 
     if (key === 3)
       return requests.filter((req) => {
-        const { type: { type = '', shortType = '' } = {} } = req;
-        return type === 'C' && shortType === 'LWP';
+        const { type: { type = '' } = {} } = req;
+        return type === 'B';
       });
 
     if (key === 4)
@@ -67,36 +68,36 @@ class TimeOffRequestTab extends PureComponent {
 
     if (tabType === 1) {
       if (filterTab === '1') {
-        status = 'IN-PROGRESS';
+        status = TIMEOFF_STATUS.inProgress;
       }
       if (filterTab === '2') {
-        status = 'ACCEPTED';
+        status = TIMEOFF_STATUS.accepted;
       }
       if (filterTab === '3') {
-        status = 'REJECTED';
+        status = TIMEOFF_STATUS.rejected;
       }
       if (filterTab === '4') {
-        status = 'DRAFTS';
+        status = TIMEOFF_STATUS.drafts;
       }
       if (filterTab === '5') {
-        status = 'ON-HOLD';
+        status = TIMEOFF_STATUS.onHold;
       }
     } else if (tabType === 2) {
       // compoff
       if (filterTab === '1') {
-        status = ['IN-PROGRESS-NEXT', 'IN-PROGRESS'];
+        status = [TIMEOFF_STATUS.inProgressNext, TIMEOFF_STATUS.inProgress];
       }
       if (filterTab === '2') {
-        status = ['ACCEPTED'];
+        status = [TIMEOFF_STATUS.accepted];
       }
       if (filterTab === '3') {
-        status = ['REJECTED'];
+        status = [TIMEOFF_STATUS.rejected];
       }
       if (filterTab === '4') {
-        status = ['DRAFTS'];
+        status = [TIMEOFF_STATUS.drafts];
       }
       if (filterTab === '5') {
-        status = ['ON-HOLD'];
+        status = [TIMEOFF_STATUS.onHold];
       }
     }
 
@@ -137,7 +138,7 @@ class TimeOffRequestTab extends PureComponent {
       if (statusCode === 200) {
         const newData = this.getDataByType(items, tab);
         this.countTotal(newData);
-        const formatMainTabData = newData.filter((data) => data.status !== 'DELETED');
+        const formatMainTabData = newData.filter((data) => data.status !== TIMEOFF_STATUS.deleted);
         this.setState({
           formatMainTabData,
         });
@@ -177,23 +178,23 @@ class TimeOffRequestTab extends PureComponent {
     newData.forEach((row) => {
       const { status = '' } = row;
       switch (status) {
-        case 'IN-PROGRESS': {
+        case TIMEOFF_STATUS.inProgress: {
           inProgressLength.push(row);
           break;
         }
-        case 'ACCEPTED': {
+        case TIMEOFF_STATUS.accepted: {
           approvedLength.push(row);
           break;
         }
-        case 'REJECTED': {
+        case TIMEOFF_STATUS.rejected: {
           rejectedLength.push(row);
           break;
         }
-        case 'DRAFTS': {
+        case TIMEOFF_STATUS.drafts: {
           draftLength.push(row);
           break;
         }
-        case 'ON-HOLD': {
+        case TIMEOFF_STATUS.onHold: {
           onHoldLength.push(row);
           break;
         }

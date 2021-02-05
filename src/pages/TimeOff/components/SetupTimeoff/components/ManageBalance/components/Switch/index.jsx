@@ -9,7 +9,7 @@ import styles from './index.less';
 class Switch extends PureComponent {
   downloadFile = () => {
     window.location.href =
-      'http://api-stghrms.paxanimi.ai/api/attachments/5fc9aaccd0fba236930fddf6/BALANCE%20TEMPLATE.xlsx';
+      'http://api-stghrms.paxanimi.ai/api/attachments/600fafe72411a162f84dbdbb/BALANCE%20TEMPLATE.xlsx';
   };
 
   render() {
@@ -20,7 +20,6 @@ class Switch extends PureComponent {
         <div className={styles.subText}>{content}</div>
         <div>
           <img src={icon} alt="" />
-          {/* <ExportCSV csvData={customers} fileName={fileName} /> */}
           <div onClick={this.downloadFile} className={styles.navLink}>
             Download spreadsheet
           </div>

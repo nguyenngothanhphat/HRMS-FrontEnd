@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
-const dateFormat = 'Do MMM YYYY';
+const dateFormat = 'MM.DD.YY';
 
 const layout = {
   labelCol: { span: 6 },

@@ -3,7 +3,8 @@ import { Button, Row, Col, Spin, notification } from 'antd';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import { connect, history } from 'umi';
 import moment from 'moment';
-import ViewPolicyModal from '@/components/ViewPolicyModal';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import WithdrawModal from '../WithdrawModal';
 import Withdraw2Modal from '../Withdraw2Modal';
 import styles from './index.less';
@@ -22,20 +23,20 @@ class RequestInformation extends PureComponent {
     this.state = {
       showWithdrawModal: false,
       showWithdraw2Modal: false,
-      viewPolicyModal: false,
+      viewDocumentModal: false,
     };
   }
 
   // view policy modal
-  setViewPolicyModal = (value) => {
+  setViewDocumentModal = (value) => {
     this.setState({
-      viewPolicyModal: value,
+      viewDocumentModal: value,
     });
   };
 
   // on policy link clicked
   onLinkClick = () => {
-    this.setViewPolicyModal(true);
+    this.setViewDocumentModal(true);
   };
 
   refreshPage = () => {
@@ -67,16 +68,16 @@ class RequestInformation extends PureComponent {
   formatDurationTime = (fromDate, toDate) => {
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YY')} - ${moment(toDate)
+      leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YY')} - ${moment(toDate)
         .locale('en')
-        .format('DD.MM.YY')}`;
+        .format('MM.DD.YY')}`;
     }
     return leaveTimes;
   };
 
   // WITHDRAW CLICKED
   withDraw = (status) => {
-    if (status !== 'ACCEPTED') this.setShowWithdrawModal(true);
+    if (status !== TIMEOFF_STATUS.accepted) this.setShowWithdrawModal(true);
     else this.setShowWithdraw2Modal(true);
   };
 
@@ -152,7 +153,7 @@ class RequestInformation extends PureComponent {
   };
 
   render() {
-    const { showWithdrawModal, showWithdraw2Modal, viewPolicyModal } = this.state;
+    const { showWithdrawModal, showWithdraw2Modal, viewDocumentModal } = this.state;
     const {
       timeOff: { viewingLeaveRequest = {} } = {},
       loadingFetchLeaveRequestById,
@@ -183,7 +184,7 @@ class RequestInformation extends PureComponent {
           <span className={styles.title}>
             [Ticket ID: {ticketID}]: {subject}
           </span>
-          {(status === 'DRAFTS' || status === 'IN-PROGRESS') && (
+          {(status === TIMEOFF_STATUS.drafts || status === TIMEOFF_STATUS.inProgress) && (
             <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
               <img src={EditIcon} className={styles.icon} alt="edit-icon" />
               <span className={styles.label}>Edit</span>
@@ -272,7 +273,7 @@ class RequestInformation extends PureComponent {
                   <span>{description}</span>
                 </Col>
               </Row>
-              {status === 'REJECTED' && (
+              {status === TIMEOFF_STATUS.rejected && (
                 <Row>
                   <Col span={6}>Request Rejection Comments</Col>
                   <Col span={18} className={styles.detailColumn}>
@@ -281,9 +282,9 @@ class RequestInformation extends PureComponent {
                 </Row>
               )}
             </div>
-            {(status === 'DRAFTS' ||
-              status === 'IN-PROGRESS' ||
-              (status === 'ACCEPTED' && checkWithdrawValid)) && (
+            {(status === TIMEOFF_STATUS.drafts ||
+              status === TIMEOFF_STATUS.inProgress ||
+              (status === TIMEOFF_STATUS.accepted && checkWithdrawValid)) && (
               <div className={styles.footer}>
                 <span className={styles.note}>
                   By default notifications will be sent to HR, your manager and recursively loop to
@@ -291,7 +292,7 @@ class RequestInformation extends PureComponent {
                 </span>
                 <div className={styles.formButtons}>
                   <Button onClick={() => this.withDraw(status)}>
-                    {status === 'DRAFTS' ? 'Discard' : 'Withdraw'}
+                    {status === TIMEOFF_STATUS.drafts ? 'Discard' : 'Withdraw'}
                   </Button>
                 </div>
               </div>
@@ -301,7 +302,9 @@ class RequestInformation extends PureComponent {
         <WithdrawModal
           loading={loadingEmployeeWithdrawInProgress}
           visible={showWithdrawModal}
-          onProceed={status === 'IN-PROGRESS' ? this.onProceedInProgress : this.onProceedDrafts}
+          onProceed={
+            status === TIMEOFF_STATUS.inProgress ? this.onProceedInProgress : this.onProceedDrafts
+          }
           onClose={this.setShowWithdrawModal}
           status={status}
         />
@@ -312,7 +315,7 @@ class RequestInformation extends PureComponent {
           onClose={this.setShowWithdraw2Modal}
           status={status}
         />
-        <ViewPolicyModal visible={viewPolicyModal} onClose={this.setViewPolicyModal} />
+        <ViewDocumentModal visible={viewDocumentModal} onClose={this.setViewDocumentModal} />
       </div>
     );
   }

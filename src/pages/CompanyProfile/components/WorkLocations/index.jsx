@@ -2,7 +2,7 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
-import { Form, Divider, Button } from 'antd';
+import { Form, Divider, Button, Skeleton } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { connect } from 'umi';
@@ -13,13 +13,13 @@ import s from './index.less';
   ({
     loading,
     country: { listCountry = [] } = {},
-    user: { currentUser = {} } = {},
     companiesManagement: { locationsList: workLocations = [] } = {},
   }) => ({
     listCountry,
-    currentUser,
     workLocations,
     loading: loading.effects['companiesManagement/upsertLocationsList'],
+    fetchingLocationsList: loading.effects['companiesManagement/fetchLocationsList'],
+    loadingCountry: loading.effects['country/fetchListCountry'],
   }),
 )
 class WorkLocations extends PureComponent {
@@ -29,13 +29,35 @@ class WorkLocations extends PureComponent {
     this.state = {};
   }
 
-  onFinish = ({ workLocations: locations = [] }) => {
-    const { dispatch, currentUser: { company: { _id } = {} } = {} } = this.props;
-    const payload = { locations, company: _id };
+  componentDidMount() {
+    const { dispatch, companyId = '' } = this.props;
+    if (companyId) {
+      dispatch({
+        type: 'companiesManagement/fetchLocationsList',
+        payload: { company: companyId },
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    const { dispatch } = this.props;
     dispatch({
-      type: 'companiesManagement/upsertLocationsList',
-      payload,
+      type: 'companiesManagement/save',
+      payload: { locationsList: [] },
     });
+  }
+
+  onFinish = ({ workLocations: locations = [] }) => {
+    const { dispatch, companyId = '' } = this.props;
+    const payload = { locations, company: companyId };
+    if (companyId) {
+      dispatch({
+        type: 'companiesManagement/upsertLocationsList',
+        payload,
+      });
+    } else {
+      console.log('payload add new company', payload);
+    }
   };
 
   formatListLocation = () => {
@@ -50,16 +72,49 @@ class WorkLocations extends PureComponent {
     return listLocation;
   };
 
+  removeLocation = (id) => {
+    const { dispatch, companyId = '' } = this.props;
+    const payload = { id, company: companyId };
+    dispatch({
+      type: 'companiesManagement/removeLocation',
+      payload,
+    });
+  };
+
   render() {
-    const { listCountry = [], workLocations = [], loading } = this.props;
+    const {
+      listCountry = [],
+      workLocations = [],
+      loading,
+      fetchingLocationsList,
+      loadingCountry,
+    } = this.props;
     const listLocation = this.formatListLocation();
+    const defaultListLocation = listLocation.length === 0 ? [{}] : listLocation;
+    if (fetchingLocationsList || loadingCountry)
+      return (
+        <div className={s.root}>
+          <div className={s.content__viewTop}>
+            <p className={s.title}>Work Locations</p>
+            <p className={s.text}>
+              This information is used to assign the employees to the right office. We will also
+              enable you to assign office specific administrators, filter employees per work
+              location, view Business Intelligence reports, and more. You do not need to add the
+              address of your remote employees here.
+            </p>
+          </div>
+          <div className={s.content__viewBottom}>
+            <Skeleton active />
+          </div>
+        </div>
+      );
 
     return (
       <Form
         ref={this.formRef}
         onFinish={this.onFinish}
         autoComplete="off"
-        initialValues={{ workLocations: listLocation }}
+        initialValues={{ workLocations: defaultListLocation }}
       >
         <div className={s.root}>
           <div className={s.content__viewTop}>
@@ -77,11 +132,13 @@ class WorkLocations extends PureComponent {
                 <>
                   {fields.map((field) => (
                     <FormWorkLocation
-                      {...field}
+                      field={field}
                       key={field.name}
                       formRef={this.formRef}
                       listCountry={listCountry}
                       listLocation={listLocation}
+                      removeLocation={this.removeLocation}
+                      onRemove={() => remove(field.name)}
                     />
                   ))}
                   <div className={s.viewAddWorkLocation} onClick={() => add()}>

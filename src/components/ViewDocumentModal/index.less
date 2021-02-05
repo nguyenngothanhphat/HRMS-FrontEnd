@@ -1,8 +1,10 @@
-.ViewPolicyModal {
+.ViewDocumentModal {
   position: relative;
   :global {
     .ant-modal-body {
       padding: 0;
+      border-radius: 3px;
+      overflow: hidden;
     }
     .ant-modal-close {
       display: none;
@@ -21,6 +23,10 @@
         // transform: rotate(360deg);
         transform: scale(1.2);
       }
+      &:active {
+        transition: 0.3s;
+        transform: scale(1);
+      }
     }
   }
   .container {
@@ -29,10 +35,46 @@
     justify-content: center;
     align-items: left;
     position: relative;
+    .contentViewPDF {
+      .content();
+      height: 75vh;
+      padding: 44px 48px 80px;
+    }
+    .contentViewImage {
+      .content();
+      max-height: 75vh;
+      height: 100%;
+      padding: 20px;
+    }
     .content {
-      padding: 44px 48px 80px 48px;
-      max-height: 500px;
       overflow: auto;
+      .fileName {
+        font-weight: bold;
+        font-size: 16px;
+      }
+      .pdfFrame {
+        // margin: 0 auto;
+        .pdfPage {
+          margin-bottom: 20px;
+          canvas {
+            width: 100% !important;
+            height: auto !important;
+          }
+        }
+      }
+      .imageFrame {
+        max-width: 500px;
+        min-width: 300px;
+        width: 100%;
+        img {
+          width: 100%;
+        }
+      }
+      .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
     }
     .stickyFooter {
       box-shadow: 0px -3px 5px rgba(0, 0, 0, 0.15);
@@ -42,11 +84,9 @@
       padding: 17px 48px;
       width: 100%;
       overflow: hidden;
+      // border-radius: 0 0 3px 3px;
     }
     :global {
-      .ant-modal-body {
-        border-radius: 3px;
-      }
       .ant-btn {
         margin-top: 15px;
         background-color: #ffa100;
@@ -67,7 +107,7 @@
 
   /* width */
   ::-webkit-scrollbar {
-    width: 5px;
+    width: 8px;
   }
 
   /* Track */

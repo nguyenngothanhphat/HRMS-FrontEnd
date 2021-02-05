@@ -3,6 +3,7 @@ import { Table, Avatar, Tooltip, Tag, Spin } from 'antd';
 import { history, connect } from 'umi';
 import moment from 'moment';
 import { LoadingOutlined } from '@ant-design/icons';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
 // loading
 @connect(({ loading }) => ({
@@ -18,7 +19,7 @@ class MyLeaveTable extends PureComponent {
       width: '20%',
       render: (id) => {
         const { ticketID = '', _id = '', updated = false, status = '' } = id;
-        const checkUpdated = status === 'IN-PROGRESS' && updated;
+        const checkUpdated = status === TIMEOFF_STATUS.inProgress && updated;
         return (
           <span className={styles.ID} onClick={() => this.viewRequest(_id)}>
             {ticketID}
@@ -55,7 +56,7 @@ class MyLeaveTable extends PureComponent {
       dataIndex: 'onDate',
       align: 'center',
       // width: '30%',
-      render: (onDate) => <span>{moment(onDate).locale('en').format('DD.MM.YY')}</span>,
+      render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YY')}</span>,
       defaultSortOrder: ['ascend'],
       sorter: {
         compare: (a, b) => moment(a.onDate).isAfter(moment(b.onDate)),
@@ -160,9 +161,9 @@ class MyLeaveTable extends PureComponent {
 
       let leaveTimes = '';
       if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-        leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YY')} - ${moment(toDate)
+        leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YY')} - ${moment(toDate)
           .locale('en')
-          .format('DD.MM.YY')}`;
+          .format('MM.DD.YY')}`;
       }
 
       let employeeFromCC = [];
@@ -189,7 +190,7 @@ class MyLeaveTable extends PureComponent {
   };
 
   render() {
-    const { data = [], loadingFetchLeaveRequests } = this.props;
+    const { data = [], loadingFetchLeaveRequests = false } = this.props;
     const { selectedRowKeys, pageSelected } = this.state;
     const rowSize = 10;
 

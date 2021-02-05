@@ -2,8 +2,10 @@ import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
+import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
 import RequestInformation from './RequestInformation';
 import RightContent from './RightContent';
+
 import styles from './index.less';
 
 @connect(({ timeOff, loading }) => ({
@@ -37,7 +39,7 @@ class CompoffRequestForm extends PureComponent {
       action,
     });
 
-    if (action === 'edit-compoff-request') {
+    if (action === TIMEOFF_LINK_ACTION.editCompoffRequest) {
       dispatch({
         type: 'timeOff/fetchCompoffRequestById',
         id: reId,
@@ -49,15 +51,15 @@ class CompoffRequestForm extends PureComponent {
 
   getColorOfStatus = (status) => {
     switch (status) {
-      case 'IN-PROGRESS':
+      case TIMEOFF_STATUS.inProgress:
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
-      case 'ACCEPTED':
+      case TIMEOFF_STATUS.accepted:
         return `${styles.leaveStatus} ${styles.approvedColor}`;
-      case 'REJECTED':
+      case TIMEOFF_STATUS.rejected:
         return `${styles.leaveStatus} ${styles.rejectedColor}`;
-      case 'DRAFTS':
+      case TIMEOFF_STATUS.drafts:
         return `${styles.leaveStatus} ${styles.draftsColor}`;
-      case 'ON-HOLD':
+      case TIMEOFF_STATUS.onHold:
         return `${styles.leaveStatus} ${styles.onHoldColor}`;
       default:
         return `${styles.leaveStatus}`;
@@ -66,15 +68,15 @@ class CompoffRequestForm extends PureComponent {
 
   getNameOfStatus = (status) => {
     switch (status) {
-      case 'IN-PROGRESS':
+      case TIMEOFF_STATUS.inProgress:
         return 'In Progress';
-      case 'ACCEPTED':
+      case TIMEOFF_STATUS.accepted:
         return 'Approved';
-      case 'REJECTED':
+      case TIMEOFF_STATUS.rejected:
         return 'Rejected';
-      case 'DRAFTS':
+      case TIMEOFF_STATUS.drafts:
         return 'Drafts';
-      case 'ON-HOLD':
+      case TIMEOFF_STATUS.onHold:
         return 'Withdraw';
 
       default:
@@ -97,15 +99,15 @@ class CompoffRequestForm extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.CompoffRequestForm}>
-          <Affix offsetTop={40}>
+          <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text} />
-              {action === 'new-compoff-request' && (
+              {action === TIMEOFF_LINK_ACTION.newCompoffRequest && (
                 <>
                   <p className={styles.titlePage__text}>Request for Compoff</p>
                 </>
               )}
-              {action === 'edit-compoff-request' && (
+              {action === TIMEOFF_LINK_ACTION.editCompoffRequest && (
                 <>
                   <p className={styles.titlePage__text}>[Ticket ID: {ticketID}]</p>
 
@@ -130,9 +132,9 @@ class CompoffRequestForm extends PureComponent {
           )}
 
           {!loadingFetchCompoffRequestById &&
-            action === 'edit-compoff-request' &&
-            status !== 'DRAFTS' &&
-            status !== 'IN-PROGRESS' && (
+            action === TIMEOFF_LINK_ACTION.editCompoffRequest &&
+            status !== TIMEOFF_STATUS.drafts &&
+            status !== TIMEOFF_STATUS.inProgress && (
               <div
                 style={{
                   display: 'flex',
@@ -144,10 +146,10 @@ class CompoffRequestForm extends PureComponent {
               </div>
             )}
 
-          {(action === 'new-compoff-request' ||
-            (action === 'edit-compoff-request' &&
+          {(action === TIMEOFF_LINK_ACTION.newCompoffRequest ||
+            (action === TIMEOFF_LINK_ACTION.editCompoffRequest &&
               !loadingFetchCompoffRequestById &&
-              (status === 'DRAFTS' || status === 'IN-PROGRESS'))) && (
+              (status === TIMEOFF_STATUS.drafts || status === TIMEOFF_STATUS.inProgress))) && (
               <>
                 <Row className={styles.container} gutter={[20, 20]}>
                   <Col xs={24} lg={16}>

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import React, { PureComponent, Fragment } from 'react';
 import { Row, Col, Tooltip, Radio } from 'antd';
 import { connect } from 'umi';
@@ -59,13 +60,22 @@ class View extends PureComponent {
     return null;
   };
 
+  formatAddress = (address, country, state, zipCode) => {
+    const formatAd = {
+      address: address ? `${address}, ` : '',
+      country: country ? `${country}, ` : '',
+      zipCode: zipCode ? `${zipCode}, ` : '',
+      state: state ? `${state}, ` : '',
+    };
+    const renderValue = `${formatAd.address}${formatAd.state}${formatAd.zipCode}${formatAd.country}`;
+    return renderValue.replace(/,\s*$/, ''); // remove the last comma and spaces in string
+  };
+
   render() {
     const { dataAPI, generalData, permissions = {}, profileOwner = false } = this.props;
     const { isShowPersonalNumber, isShowPersonalEmail } = generalData;
 
     const {
-      residentAddress = {},
-      currentAddress = {},
       residentAddress: {
         address: r_Address = '',
         country: { name: r_countryName = '' } = {},
@@ -88,13 +98,11 @@ class View extends PureComponent {
       { label: 'Linkedin', value: dataAPI.linkedIn },
       {
         label: 'Residence Address',
-        // eslint-disable-next-line camelcase
-        value: residentAddress ? `${r_Address}, ${r_state}, ${r_zipCode}, ${r_countryName}` : '',
+        value: this.formatAddress(r_Address, r_countryName, r_state, r_zipCode),
       },
       {
         label: 'Current Address',
-        // eslint-disable-next-line camelcase
-        value: currentAddress ? `${c_Address}, ${c_state}, ${c_zipCode}, ${c_countryName}` : '',
+        value: this.formatAddress(c_Address, c_countryName, c_state, c_zipCode),
       },
     ];
     const content =

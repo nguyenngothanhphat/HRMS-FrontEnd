@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Spin, Progress, Input } from 'antd';
 import TimeOffModal from '@/components/TimeOffModal';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { connect, history } from 'umi';
 import moment from 'moment';
 
@@ -12,6 +13,8 @@ const { TextArea } = Input;
   timeOff,
   currentUserRole,
   loadingFetchCompoffRequestById: loading.effects['timeOff/fetchCompoffRequestById'],
+  loadingApproveRequest: loading.effects['timeOff/approveCompoffRequest'],
+  loadingRejectRequest: loading.effects['timeOff/rejectCompoffRequest'],
 }))
 class RequestInformation extends PureComponent {
   formRef = React.createRef();
@@ -53,9 +56,9 @@ class RequestInformation extends PureComponent {
 
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YY')} - ${moment(toDate)
+      leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YY')} - ${moment(toDate)
         .locale('en')
-        .format('DD.MM.YY')}`;
+        .format('MM.DD.YY')}`;
     }
     return leaveTimes;
   };
@@ -289,7 +292,7 @@ class RequestInformation extends PureComponent {
                               align="center"
                               className={styles.rowContainer}
                             >
-                              <Col span={7}>{moment(date).locale('en').format('DD.MM.YY')}</Col>
+                              <Col span={7}>{moment(date).locale('en').format('MM.DD.YY')}</Col>
                               <Col span={7}>{moment(date).locale('en').format('dddd')}</Col>
                               <Col span={7}>
                                 <Input
@@ -325,7 +328,7 @@ class RequestInformation extends PureComponent {
                     <span>{description}</span>
                   </Col>
                 </Row>
-                {status === 'REJECTED' && currentStep === 2 && (
+                {status === TIMEOFF_STATUS.rejected && currentStep === 2 && (
                   <Row>
                     <Col span={6}>Request Rejection Comments (Project Manager)</Col>
                     <Col span={18} className={styles.detailColumn}>
@@ -333,7 +336,7 @@ class RequestInformation extends PureComponent {
                     </Col>
                   </Row>
                 )}
-                {status === 'REJECTED' && currentStep > 2 && (
+                {status === TIMEOFF_STATUS.rejected && currentStep > 2 && (
                   <Row>
                     <Col span={6}>Request Rejection Comments (Region Head)</Col>
                     <Col span={18} className={styles.detailColumn}>
@@ -362,8 +365,8 @@ class RequestInformation extends PureComponent {
 
         {/* IN PROGRESS */}
         {!isReject &&
-          (status === 'IN-PROGRESS' ||
-            (currentUserRole === 'ADMIN-CLA' && status === 'IN-PROGRESS-NEXT')) && (
+          (status === TIMEOFF_STATUS.inProgress ||
+            (currentUserRole === 'ADMIN-CLA' && status === TIMEOFF_STATUS.inProgressNext)) && (
             <div className={styles.footer}>
               <span className={styles.note}>
                 By default notifications will be sent to HR, the requestee and recursively loop to
@@ -382,9 +385,9 @@ class RequestInformation extends PureComponent {
 
         {/* ACCEPTED OR REJECTED  */}
         {!isReject &&
-          (status === 'ACCEPTED' ||
-            (currentUserRole !== 'ADMIN-CLA' && status === 'IN-PROGRESS-NEXT') ||
-            status === 'REJECTED') && (
+          (status === TIMEOFF_STATUS.accepted ||
+            (currentUserRole !== 'ADMIN-CLA' && status === TIMEOFF_STATUS.inProgressNext) ||
+            status === TIMEOFF_STATUS.rejected) && (
             <div className={styles.footer}>
               <span className={styles.note}>
                 By default notifications will be sent to HR, your manager and recursively loop to
@@ -392,10 +395,11 @@ class RequestInformation extends PureComponent {
               </span>
               <div className={styles.formButtons}>
                 <Button type="link" disabled>
-                  {(status === 'ACCEPTED' ||
-                    (currentUserRole !== 'ADMIN-CLA' && status === 'IN-PROGRESS-NEXT')) &&
+                  {(status === TIMEOFF_STATUS.accepted ||
+                    (currentUserRole !== 'ADMIN-CLA' &&
+                      status === TIMEOFF_STATUS.inProgressNext)) &&
                     'Approved'}
-                  {status === 'REJECTED' && 'Rejected'}
+                  {status === TIMEOFF_STATUS.rejected && 'Rejected'}
                 </Button>
               </div>
             </div>

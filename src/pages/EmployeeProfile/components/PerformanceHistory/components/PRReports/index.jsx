@@ -23,7 +23,7 @@ class PRReports extends PureComponent {
         id: item._id,
         fileName: item.key,
         generatedBy: 'Terralogic',
-        date: moment(date).locale('en').format('MMMM Do, YYYY'),
+        date: moment(date).locale('en').format('MM.DD.YY'),
         source,
       };
     }

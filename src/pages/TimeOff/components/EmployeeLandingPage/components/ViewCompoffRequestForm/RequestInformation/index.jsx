@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Button, Row, Col, Spin, Input } from 'antd';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import { connect, history } from 'umi';
+import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
 import moment from 'moment';
 import WithdrawModal from '../WithdrawModal';
 
@@ -10,7 +11,7 @@ import styles from './index.less';
 @connect(({ timeOff, loading }) => ({
   timeOff,
   loadingFetchCompoffRequestById: loading.effects['timeOff/fetchCompoffRequestById'],
-  loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
+  loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawCompoffRequest'],
 }))
 class RequestInformation extends PureComponent {
   formRef = React.createRef();
@@ -25,7 +26,7 @@ class RequestInformation extends PureComponent {
   // EDIT BUTTON
   handleEdit = (_id) => {
     history.push({
-      pathname: `/time-off/edit-compoff-request/${_id}`,
+      pathname: `/time-off/${TIMEOFF_LINK_ACTION.editCompoffRequest}/${_id}`,
     });
   };
 
@@ -46,9 +47,9 @@ class RequestInformation extends PureComponent {
 
     let leaveTimes = '';
     if (fromDate !== '' && fromDate !== null && toDate !== '' && toDate !== null) {
-      leaveTimes = `${moment(fromDate).locale('en').format('DD.MM.YY')} - ${moment(toDate)
+      leaveTimes = `${moment(fromDate).locale('en').format('MM.DD.YY')} - ${moment(toDate)
         .locale('en')
-        .format('DD.MM.YY')}`;
+        .format('MM.DD.YY')}`;
     }
     return leaveTimes;
   };
@@ -111,7 +112,7 @@ class RequestInformation extends PureComponent {
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
           <span className={styles.title}>{`[Ticket ID: ${ticketID}]`}</span>
-          {(status === 'DRAFTS' || status === 'IN-PROGRESS') && (
+          {(status === TIMEOFF_STATUS.drafts || status === TIMEOFF_STATUS.inProgress) && (
             <div className={styles.editButton} onClick={() => this.handleEdit(_id)}>
               <img src={EditIcon} className={styles.icon} alt="edit-icon" />
               <span className={styles.label}>Edit</span>
@@ -174,7 +175,7 @@ class RequestInformation extends PureComponent {
                             align="center"
                             className={styles.rowContainer}
                           >
-                            <Col span={7}>{moment(date).locale('en').format('DD.MM.YY')}</Col>
+                            <Col span={7}>{moment(date).locale('en').format('MM.DD.YY')}</Col>
                             <Col span={7}>{moment(date).locale('en').format('dddd')}</Col>
                             <Col span={7}>
                               <Input
@@ -210,7 +211,7 @@ class RequestInformation extends PureComponent {
                   <span>{description}</span>
                 </Col>
               </Row>
-              {status === 'REJECTED' && currentStep === 2 && (
+              {status === TIMEOFF_STATUS.rejected && currentStep === 2 && (
                 <Row>
                   <Col span={6}>Request Rejection Comments (Project Manager)</Col>
                   <Col span={18} className={styles.detailColumn}>
@@ -218,7 +219,7 @@ class RequestInformation extends PureComponent {
                   </Col>
                 </Row>
               )}
-              {status === 'REJECTED' && currentStep > 2 && (
+              {status === TIMEOFF_STATUS.rejected && currentStep > 2 && (
                 <Row>
                   <Col span={6}>Request Rejection Comments (Region Head)</Col>
                   <Col span={18} className={styles.detailColumn}>
@@ -227,7 +228,7 @@ class RequestInformation extends PureComponent {
                 </Row>
               )}
             </div>
-            {(status === 'DRAFTS' || status === 'IN-PROGRESS') && (
+            {(status === TIMEOFF_STATUS.drafts || status === TIMEOFF_STATUS.inProgress) && (
               <div className={styles.footer}>
                 <span className={styles.note}>
                   By default notifications will be sent to HR, your manager and recursively loop to

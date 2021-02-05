@@ -5,13 +5,10 @@ import AddAdminForm from './components/AddAdminForm';
 import TableAdministrator from './components/TableAdministrator';
 import s from './index.less';
 
-@connect(
-  ({ user: { currentUser = {} } = {}, employee: { listAdministrator = [] } = {}, loading }) => ({
-    currentUser,
-    listAdministrator,
-    loadingFetchListAdmin: loading.effects['employee/fetchListAdministrator'],
-  }),
-)
+@connect(({ employee: { listAdministrator = [] } = {}, loading }) => ({
+  listAdministrator,
+  loadingFetchListAdmin: loading.effects['employee/fetchListAdministrator'],
+}))
 class UserManagement extends PureComponent {
   constructor(props) {
     super(props);
@@ -22,19 +19,21 @@ class UserManagement extends PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch, currentUser: { company: { _id: id = '' } = {} } = {} } = this.props;
-    dispatch({
-      type: 'employee/fetchListAdministrator',
-      payload: {
-        company: id,
-      },
-    });
-    dispatch({
-      type: 'adminSetting/getRolesByCompany',
-      payload: {
-        company: id,
-      },
-    });
+    const { dispatch, companyId } = this.props;
+    if (companyId) {
+      dispatch({
+        type: 'employee/fetchListAdministrator',
+        payload: {
+          company: companyId,
+        },
+      });
+      dispatch({
+        type: 'adminSetting/getRolesByCompany',
+        payload: {
+          company: companyId,
+        },
+      });
+    }
   }
 
   handleCancel = () => {

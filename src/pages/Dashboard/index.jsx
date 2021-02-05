@@ -1,25 +1,14 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Row, Col } from 'antd';
+import { Row, Col, Affix } from 'antd';
 import { connect } from 'umi';
 import Greeting from './components/Greeting';
 import ActivityLog from './components/ActivityLog';
 import MyApps from './components/MyApps';
 import TabManageTeamWork from './components/TabManageTeamWork';
-// import TimeSheet from './components/TimeSheet';
 import Links from './components/Links';
 import Carousel from './components/Carousel';
-// import SwitchLocation from './components/SwitchLocation';
 import styles from './index.less';
-
-const listLinkFQAs = [
-  { name: 'I cannot access an app?', href: '/faqpage' },
-  { name: 'How do I integrate google calendar with the portal?', href: '/faqpage' },
-  { name: 'I cannot access an app?', href: '/faqpage' },
-  { name: 'How do I integrate google calendar with the portal?', href: '/faqpage' },
-  { name: 'How do I remove an app from the list of apps?', href: '/faqpage' },
-  { name: 'How do I remove an app from the list of apps?', href: '/faqpage' },
-];
 
 const listQuickLinks = [
   {
@@ -56,6 +45,8 @@ const listQuickLinks = [
     user: { currentUser = {}, currentUser: { roles = [] } = {} } = {},
     employee: { listEmployeeMyTeam = [] } = {},
     offboarding: { listProjectByEmployee = [] } = {},
+    frequentlyAskedQuestions: { getListByCompany = {} } = {},
+    locationSelection,
   }) => ({
     fetchMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
     fetchListProject: loading.effects['offboarding/getListProjectByEmployee'],
@@ -63,15 +54,26 @@ const listQuickLinks = [
     roles,
     listEmployeeMyTeam,
     listProjectByEmployee,
+    getListByCompany,
+    locationSelection,
   }),
 )
 class Dashboard extends PureComponent {
-  componentDidMount() {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentLocation: '',
+    };
+  }
+
+  componentDidMount = async () => {
     const {
       dispatch,
       currentUser: {
-        location: { _id: locationId } = {},
+        location: { _id: locationId = '' } = {},
+        company: { _id: companyId = '' } = {},
         employee: { _id: employee = '' } = {},
+        company: { _id: idCompany = '' } = {},
       } = {},
     } = this.props;
     dispatch({
@@ -86,7 +88,28 @@ class Dashboard extends PureComponent {
         employee,
       },
     });
-  }
+    dispatch({
+      type: 'frequentlyAskedQuestions/getListInit',
+    }).then(
+      dispatch({
+        type: 'frequentlyAskedQuestions/getListByCompany',
+        payload: { company: idCompany },
+      }),
+    );
+
+    const locations = await dispatch({
+      type: 'locationSelection/fetchLocationsByCompany',
+      payload: {
+        company: companyId,
+      },
+    });
+
+    const currentLocation = localStorage.getItem('currentLocation');
+    const locationName = locations.find((item) => item._id === currentLocation);
+    this.setState({
+      currentLocation: locationName?.name || '',
+    });
+  };
 
   componentWillUnmount() {
     const { dispatch } = this.props;
@@ -105,20 +128,35 @@ class Dashboard extends PureComponent {
       currentUser = {},
       listProjectByEmployee = [],
       fetchListProject,
+      getListByCompany = {},
     } = this.props;
+    const { faq = [] } = getListByCompany;
+
+    const listQuestion = [];
+    faq.forEach(({ questionAndAnswer, category }) => {
+      const listQAs = questionAndAnswer.map((qa) => ({ ...qa, category }));
+      listQuestion.push(...listQAs);
+      return listQuestion;
+    });
+
+    const { currentLocation } = this.state;
     return (
       <PageContainer>
         <div className={styles.containerDashboard}>
           <Row gutter={[24, 24]} style={{ padding: '20px 20px 0 0' }}>
             <Col span={8}>
-              <Greeting name={currentUser?.generalInfo?.firstName} />
-              <div className={styles.leftContainer}>
-                <ActivityLog />
-              </div>
+              <Affix offsetTop={10}>
+                <Greeting
+                  name={currentUser?.generalInfo?.firstName}
+                  currentLocation={currentLocation}
+                />
+                <div className={styles.leftContainer}>
+                  <ActivityLog />
+                </div>
+              </Affix>
             </Col>
             <Col span={16}>
               <Carousel />
-              {/* {isAdminCSA && <SwitchLocation />} */}
               <MyApps />
               <Row gutter={[12, 12]}>
                 <Col span={24}>
@@ -129,11 +167,8 @@ class Dashboard extends PureComponent {
                     loadingProject={fetchListProject}
                   />
                 </Col>
-                {/* <Col span={10}>
-                  <TimeSheet />
-                </Col> */}
                 <Col span={14}>
-                  <Links title="FAQs" showButton listData={listLinkFQAs} type="link" />
+                  <Links title="FAQs" showButton listData={listQuestion} type="link" />
                 </Col>
                 <Col span={10}>
                   <Links title="Quick Links" listData={listQuickLinks} type="viewPDF" />

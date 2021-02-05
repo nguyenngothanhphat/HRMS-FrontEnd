@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import EmptyIcon from '@/assets/timeOffTableEmptyIcon.svg';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import TeamLeaveTable from '../TeamLeaveTable';
 import TeamCompoffTable from '../TeamCompoffTable';
 import MyLeaveTable from '../../../../../EmployeeLandingPage/components/TimeOffRequestsTable/components/MyLeaveTable';
@@ -28,7 +29,7 @@ class TimeOffRequestTab extends PureComponent {
       approvedLength: 0,
       rejectedLength: 0,
       draftLength: 0,
-      selectedTab: 'IN-PROGRESS',
+      selectedTab: TIMEOFF_STATUS.inProgress,
       onHoldLength: 0,
       handlePackage: {},
     };
@@ -38,19 +39,19 @@ class TimeOffRequestTab extends PureComponent {
     if (key === 1)
       return requests.filter((req) => {
         const { type: { type = '' } = {} } = req;
-        return type === 'A' || type === 'B';
+        return type === 'A';
       });
 
     if (key === 2)
       return requests.filter((req) => {
-        const { type: { type = '', shortType = '' } = {} } = req;
-        return type === 'C' && shortType !== 'LWP';
+        const { type: { type = '' } = {} } = req;
+        return type === 'C';
       });
 
     if (key === 3)
       return requests.filter((req) => {
-        const { type: { type = '', shortType = '' } = {} } = req;
-        return type === 'C' && shortType === 'LWP';
+        const { type: { type = '' } = {} } = req;
+        return type === 'B';
       });
 
     if (key === 4)
@@ -80,40 +81,40 @@ class TimeOffRequestTab extends PureComponent {
     let status = '';
     if (tabType === 1) {
       if (filterTab === '1') {
-        status = 'IN-PROGRESS';
+        status = TIMEOFF_STATUS.inProgress;
       }
       if (filterTab === '2') {
-        status = 'ACCEPTED';
+        status = TIMEOFF_STATUS.accepted;
       }
       if (filterTab === '3') {
-        status = 'REJECTED';
+        status = TIMEOFF_STATUS.rejected;
       }
       if (filterTab === '4') {
-        status = 'DRAFTS';
+        status = TIMEOFF_STATUS.drafts;
       }
       if (filterTab === '5') {
-        status = 'ON-HOLD';
+        status = TIMEOFF_STATUS.onHold;
       }
     } else if (tabType === 2) {
       // compoff
       if (filterTab === '1') {
         if (currentUserRole === 'ADMIN-CLA') {
-          status = ['IN-PROGRESS-NEXT', 'IN-PROGRESS'];
-        } else status = ['IN-PROGRESS'];
+          status = [TIMEOFF_STATUS.inProgressNext, TIMEOFF_STATUS.inProgress];
+        } else status = [TIMEOFF_STATUS.inProgress];
       }
       if (filterTab === '2') {
         if (currentUserRole === 'ADMIN-CLA') {
-          status = ['ACCEPTED'];
-        } else status = ['IN-PROGRESS-NEXT', 'ACCEPTED'];
+          status = [TIMEOFF_STATUS.accepted];
+        } else status = [TIMEOFF_STATUS.inProgressNext, TIMEOFF_STATUS.accepted];
       }
       if (filterTab === '3') {
-        status = ['REJECTED'];
+        status = [TIMEOFF_STATUS.rejected];
       }
       if (filterTab === '4') {
-        status = ['DRAFTS'];
+        status = [TIMEOFF_STATUS.drafts];
       }
       if (filterTab === '5') {
-        status = ['ON-HOLD'];
+        status = [TIMEOFF_STATUS.onHold];
       }
     }
 
@@ -167,11 +168,14 @@ class TimeOffRequestTab extends PureComponent {
         let formatMainTabData = newData;
         if (category === 'TEAM') {
           formatMainTabData = formatMainTabData.filter(
-            (data) => data.status !== 'DELETED' && data.status !== 'DRAFTS',
+            (data) =>
+              data.status !== TIMEOFF_STATUS.deleted && data.status !== TIMEOFF_STATUS.drafts,
           );
         }
         if (category === 'MY') {
-          formatMainTabData = formatMainTabData.filter((data) => data.status !== 'DELETED');
+          formatMainTabData = formatMainTabData.filter(
+            (data) => data.status !== TIMEOFF_STATUS.deleted,
+          );
         }
         this.setState({
           formatMainTabData,
@@ -202,15 +206,15 @@ class TimeOffRequestTab extends PureComponent {
     this.fetchFilteredDataFromServer(id);
     this.saveCurrentTab(id);
 
-    let selectedTab = 'IN-PROGRESS';
+    let selectedTab = TIMEOFF_STATUS.inProgress;
     if (id === '2') {
-      selectedTab = 'ACCEPTED';
+      selectedTab = TIMEOFF_STATUS.accepted;
     } else if (id === '3') {
-      selectedTab = 'REJECTED';
+      selectedTab = TIMEOFF_STATUS.rejected;
     } else if (id === '4') {
-      selectedTab = 'DRAFTS';
+      selectedTab = TIMEOFF_STATUS.drafts;
     } else if (id === '5') {
-      selectedTab = 'ON-HOLD';
+      selectedTab = TIMEOFF_STATUS.onHold;
     }
 
     this.setState({
@@ -230,7 +234,7 @@ class TimeOffRequestTab extends PureComponent {
       const { status = '' } = row;
       if (currentUserRole === 'ADMIN-CLA') {
         switch (status) {
-          case 'IN-PROGRESS-NEXT': {
+          case TIMEOFF_STATUS.inProgressNext: {
             inProgressLength.push(row);
             break;
           }
@@ -239,7 +243,7 @@ class TimeOffRequestTab extends PureComponent {
         }
       } else if (currentUserRole !== 'ADMIN-CLA') {
         switch (status) {
-          case 'IN-PROGRESS-NEXT': {
+          case TIMEOFF_STATUS.inProgressNext: {
             approvedLength.push(row);
             break;
           }
@@ -249,23 +253,23 @@ class TimeOffRequestTab extends PureComponent {
       }
 
       switch (status) {
-        case 'IN-PROGRESS': {
+        case TIMEOFF_STATUS.inProgress: {
           inProgressLength.push(row);
           break;
         }
-        case 'ACCEPTED': {
+        case TIMEOFF_STATUS.accepted: {
           approvedLength.push(row);
           break;
         }
-        case 'REJECTED': {
+        case TIMEOFF_STATUS.rejected: {
           rejectedLength.push(row);
           break;
         }
-        case 'DRAFTS': {
+        case TIMEOFF_STATUS.drafts: {
           draftLength.push(row);
           break;
         }
-        case 'ON-HOLD': {
+        case TIMEOFF_STATUS.onHold: {
           onHoldLength.push(row);
           break;
         }

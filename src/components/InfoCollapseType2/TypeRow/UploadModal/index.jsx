@@ -5,11 +5,14 @@ import { connect } from 'umi';
 import FileUploadIcon from '@/assets/uploadFile_icon.svg';
 import PDFIcon from '@/assets/pdf_icon.png';
 import ImageIcon from '@/assets/image_icon.png';
+import { LogoutOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 const { Dragger } = Upload;
 @connect(({ loading, employeeProfile, user: { currentUser: { employeeId = '' } = {} } } = {}) => ({
   loadingUploadAttachment: loading.effects['upload/uploadFile'],
+  loadingUploadDocument: loading.effects['employeeProfile/uploadDocument'],
+  loadingUpdateDocument: loading.effects['employeeProfile/updateDocument'],
   employeeProfile,
   employeeId,
 }))
@@ -95,20 +98,28 @@ class UploadModal extends Component {
   };
 
   renderHeaderModal = () => {
-    const { titleModal = '' } = this.props;
+    const { actionType = 1 } = this.props;
     return (
       <div className={styles.header}>
-        <p className={styles.header__text}>{titleModal}</p>
+        <p className={styles.header__text}>
+          {actionType === 1 ? 'Upload new document' : 'Replace document'}
+        </p>
       </div>
     );
   };
 
-  handleFileName = (e) => {
+  handleName = (name) => {
+    const { idCurrentEmployee = '' } = this.props;
+    const check = name.includes(idCurrentEmployee.replace(/ /g, ''));
+    const keyFileName = check ? name : `${name}_${idCurrentEmployee}`;
+    return keyFileName.replace(/ /g, '');
+  };
+
+  handleFileNameInput = (e) => {
     const { value } = e.target;
-    const { employeeId = '' } = this.props;
-    const keyFileName = `${value}_${employeeId}`;
+    const keyFileName = this.handleName(value);
     this.setState({
-      keyFileName: keyFileName.replace(/ /g, ''),
+      keyFileName,
     });
   };
 
@@ -144,20 +155,68 @@ class UploadModal extends Component {
       }).then((res) => {
         const { statusCode } = res;
         if (statusCode === 200) {
-          message.success('Uploaded file');
+          // message.success('Uploaded file');
           setTimeout(() => {
             handleCancel();
-          }, 1000);
+          }, 2000);
           refreshData();
         }
       });
     }
   };
 
+  replaceDocument = async () => {
+    const { keyFileName: key, fileId } = this.state;
+    const { currentFileName } = this.props;
+    let finalName = '';
+    if (currentFileName && !key) finalName = this.handleName(currentFileName);
+    else finalName = this.handleName(key);
+
+    const {
+      dispatch,
+      refreshData = () => {},
+      currentDocumentId = '',
+      handleCancel = () => {},
+    } = this.props;
+
+    if (fileId === '') {
+      notification.error({ message: 'Please choose file to upload!' });
+    } else {
+      const payload = {
+        id: currentDocumentId,
+        attachment: fileId,
+      };
+      if (finalName) {
+        payload.key = finalName;
+      }
+      const updateDocument = await dispatch({
+        type: 'employeeProfile/updateDocument',
+        payload,
+      });
+      if (updateDocument?.statusCode === 200) {
+        // message.success('Uploaded file');
+        setTimeout(() => {
+          handleCancel();
+        }, 2000);
+        refreshData();
+      }
+    }
+  };
+
   render() {
-    const { uploadedFileName = '' } = this.state;
-    const { loadingUploadAttachment, employeeGroup = '' } = this.props;
-    const { visible = false, loading = false, handleCancel = () => {} } = this.props;
+    const { uploadedFileName } = this.state;
+    const {
+      loadingUploadAttachment,
+      employeeGroup = '',
+      loadingUploadDocument,
+      loadingUpdateDocument,
+    } = this.props;
+    const {
+      visible = false,
+      handleCancel = () => {},
+      actionType = 1,
+      currentFileName = '',
+    } = this.props;
     const layout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 16 },
@@ -194,9 +253,9 @@ class UploadModal extends Component {
                   type="primary"
                   form="myForm"
                   htmlType="submit"
-                  loading={loading}
+                  loading={loadingUpdateDocument || loadingUploadDocument}
                   className={styles.btnSubmit}
-                  onClick={this.handleRemoveToServer}
+                  onClick={actionType === 1 ? this.handleRemoveToServer : this.replaceDocument}
                 >
                   Upload
                 </Button>
@@ -246,7 +305,7 @@ class UploadModal extends Component {
               </Dragger>
             </div>
             <Form
-              initialValues={{ documentType: employeeGroup }}
+              initialValues={{ documentType: employeeGroup, documentName: currentFileName }}
               ref={this.formRef}
               id="myForm"
               className={styles.fileNameInput}
@@ -259,7 +318,7 @@ class UploadModal extends Component {
                 name="documentName"
                 rules={[{ required: true, message: 'Please input file name!' }]}
               >
-                <Input onChange={this.handleFileName} />
+                <Input onChange={this.handleFileNameInput} />
               </Form.Item>
               <Form.Item label="Document Type" name="documentType" rules={[{ required: true }]}>
                 <Input disabled />

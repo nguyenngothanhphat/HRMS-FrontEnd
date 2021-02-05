@@ -3,8 +3,9 @@ import { Select, DatePicker, Input, Button, Row, Col, Form, message } from 'antd
 import { connect, history } from 'umi';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
-import ViewPolicyModal from '@/components/ViewPolicyModal';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
+import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
 import LeaveTimeRow from './LeaveTimeRow';
 
 import styles from './index.less';
@@ -40,7 +41,7 @@ class RequestInformation extends PureComponent {
       // totalDayOfSelectedType: 0,
       unpaidLeaveActivate: false,
       negativeLeave: 0,
-      viewPolicyModal: false,
+      viewDocumentModal: false,
     };
   }
 
@@ -79,9 +80,9 @@ class RequestInformation extends PureComponent {
   };
 
   // view policy modal
-  setViewPolicyModal = (value) => {
+  setViewDocumentModal = (value) => {
     this.setState({
-      viewPolicyModal: value,
+      viewDocumentModal: value,
     });
   };
 
@@ -117,7 +118,7 @@ class RequestInformation extends PureComponent {
     });
     this.fetchEmailsListByCompany();
 
-    if (action === 'edit-leave-request') {
+    if (action === TIMEOFF_LINK_ACTION.editLeaveRequest) {
       const { viewingLeaveRequest = {} } = this.props;
       // console.log('viewingLeaveRequest', viewingLeaveRequest);
       const {
@@ -132,7 +133,7 @@ class RequestInformation extends PureComponent {
         status = '',
       } = viewingLeaveRequest;
 
-      if (status === 'DRAFTS') {
+      if (status === TIMEOFF_STATUS.drafts) {
         this.setState({
           isEditingDrafts: true,
         });
@@ -599,7 +600,7 @@ class RequestInformation extends PureComponent {
             type: unpaidLeaveActivate
               ? this.getUnpaidLeaveIdOfTypeA(selectedShortType, selectedTypeName)
               : timeOffType,
-            status: 'IN-PROGRESS',
+            status: TIMEOFF_STATUS.inProgress,
             employee: employeeId,
             subject,
             fromDate: durationFrom,
@@ -613,9 +614,9 @@ class RequestInformation extends PureComponent {
           };
 
           let type = '';
-          if (action === 'new-leave-request') {
+          if (action === TIMEOFF_LINK_ACTION.newLeaveRequest) {
             type = 'timeOff/addLeaveRequest';
-          } else if (action === 'edit-leave-request') {
+          } else if (action === TIMEOFF_LINK_ACTION.editLeaveRequest) {
             data._id = viewingLeaveRequestId;
             type = 'timeOff/updateLeaveRequestById';
           }
@@ -1035,7 +1036,7 @@ class RequestInformation extends PureComponent {
     const { selectedTypeName, buttonState, isEditingDrafts } = this.state;
     let content = '';
 
-    if (action === 'edit-leave-request') {
+    if (action === TIMEOFF_LINK_ACTION.editLeaveRequest) {
       if (buttonState === 1) {
         content = `${selectedTypeName} request saved as draft.`;
       } else if (buttonState === 2) {
@@ -1045,7 +1046,7 @@ class RequestInformation extends PureComponent {
       }
     }
 
-    if (action === 'new-leave-request') {
+    if (action === TIMEOFF_LINK_ACTION.newLeaveRequest) {
       if (buttonState === 1) {
         content = `${selectedTypeName} request saved as draft.`;
       } else if (buttonState === 2)
@@ -1056,7 +1057,7 @@ class RequestInformation extends PureComponent {
 
   // on policy link clicked
   onLinkClick = () => {
-    this.setViewPolicyModal(true);
+    this.setViewDocumentModal(true);
   };
 
   // validator
@@ -1079,7 +1080,7 @@ class RequestInformation extends PureComponent {
     };
     const formatListEmail = this.renderEmailsList() || [];
 
-    const dateFormat = 'DD.MM.YY';
+    const dateFormat = 'MM.DD.YY';
 
     const {
       selectedShortType,
@@ -1093,7 +1094,7 @@ class RequestInformation extends PureComponent {
       remainingDayOfSelectedType,
       unpaidLeaveActivate,
       // negativeLeave,
-      viewPolicyModal,
+      viewDocumentModal,
     } = this.state;
 
     const {
@@ -1101,10 +1102,10 @@ class RequestInformation extends PureComponent {
         timeOffTypes = [],
         totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {},
       } = {},
-      loadingAddLeaveRequest,
-      loadingUpdatingLeaveRequest,
-      loadingSaveDraft,
-      loadingUpdateDraft,
+      loadingAddLeaveRequest = false,
+      loadingUpdatingLeaveRequest = false,
+      loadingSaveDraft = false,
+      loadingUpdateDraft = false,
       action = '',
     } = this.props;
     const { timeOffTypes: typesOfCommonLeaves = [] } = commonLeaves;
@@ -1396,6 +1397,9 @@ class RequestInformation extends PureComponent {
                             }}
                             src={avatar}
                             alt="user"
+                            onError={(e) => {
+                              e.target.src = DefaultAvatar;
+                            }}
                           />
                         </div>
                         <span
@@ -1419,7 +1423,7 @@ class RequestInformation extends PureComponent {
             department head.
           </span>
           <div className={styles.formButtons}>
-            {action === 'edit-leave-request' && (
+            {action === TIMEOFF_LINK_ACTION.editLeaveRequest && (
               <Button
                 className={styles.cancelButton}
                 type="link"
@@ -1429,10 +1433,10 @@ class RequestInformation extends PureComponent {
                 <span>Cancel</span>
               </Button>
             )}
-            {(action === 'new-leave-request' ||
-              (action === 'edit-leave-request' && isEditingDrafts)) && (
+            {(action === TIMEOFF_LINK_ACTION.newLeaveRequest ||
+              (action === TIMEOFF_LINK_ACTION.editLeaveRequest && isEditingDrafts)) && (
               <Button
-                loading={loadingUpdatingLeaveRequest || loadingSaveDraft || loadingUpdateDraft}
+                loading={loadingSaveDraft || loadingUpdateDraft}
                 type="link"
                 form="myForm"
                 className={styles.saveDraftButton}
@@ -1446,7 +1450,7 @@ class RequestInformation extends PureComponent {
             )}
 
             <Button
-              loading={loadingAddLeaveRequest}
+              loading={loadingAddLeaveRequest || loadingUpdatingLeaveRequest}
               key="submit"
               type="primary"
               form="myForm"
@@ -1454,7 +1458,7 @@ class RequestInformation extends PureComponent {
                 remainingDayOfSelectedType === 0 &&
                 !unpaidLeaveActivate &&
                 (selectedType === 'A' || selectedType === 'B') &&
-                action === 'new-leave-request'
+                action === TIMEOFF_LINK_ACTION.newLeaveRequest
               }
               htmlType="submit"
               onClick={() => {
@@ -1473,7 +1477,7 @@ class RequestInformation extends PureComponent {
           submitText="OK"
         />
 
-        <ViewPolicyModal visible={viewPolicyModal} onClose={this.setViewPolicyModal} />
+        <ViewDocumentModal visible={viewDocumentModal} onClose={this.setViewDocumentModal} />
       </div>
     );
   }

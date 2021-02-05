@@ -132,9 +132,9 @@ class ChangeHistoryTable extends PureComponent {
         compensation: item.compensationType,
         manager: item.manager?.generalInfo.legalName || item.manager?.generalInfo.firstName,
       },
-      effectiveDate: moment(item.effectiveDate).locale('en').format('Do MMMM YYYY'),
+      effectiveDate: moment(item.effectiveDate).locale('en').format('MM.DD.YY'),
       changedBy: 'HR Admin',
-      changedDate: moment(item.changeDate).locale('en').format('Do MMMM YYYY'),
+      changedDate: moment(item.changeDate).locale('en').format('MM.DD.YY'),
       action: index === 0 ? 'Revoke' : '',
     }));
 

@@ -65,6 +65,7 @@ class InfoCollapseType2 extends PureComponent {
       // employeeGroup = '',
       // parentEmployeeGroup = '',
       showDivider = false,
+      isHR,
     } = this.props;
     const { title = '' } = data;
     return (
@@ -90,7 +91,8 @@ class InfoCollapseType2 extends PureComponent {
               {formatMessage({ id: 'pages.employeeProfile.documents.infoCollapseType2.date' })}
             </Col>
             <Col className={styles.status} span={2}>
-              {formatMessage({ id: 'pages.employeeProfile.documents.infoCollapseType2.status' })}
+              {/* {formatMessage({ id: 'pages.employeeProfile.documents.infoCollapseType2.status' })} */}
+              Action
             </Col>
           </Row>
           <div className={styles.tableOfContents}>
@@ -99,6 +101,7 @@ class InfoCollapseType2 extends PureComponent {
               onFileClick={onFileClick}
               parentEmployeeGroup={title}
               showDivider={showDivider}
+              isHR={isHR}
             />
           </div>
         </div>

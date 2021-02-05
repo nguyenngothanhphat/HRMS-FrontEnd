@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button, Modal, Input } from 'antd';
+// import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -48,6 +49,7 @@ export default class RejectCommentModal extends PureComponent {
                 maxLength={500}
                 placeholder="The reason I am rejecting this request is..."
                 onChange={this.onCommentChange}
+                disabled={loading}
               />
             </div>
           </div>

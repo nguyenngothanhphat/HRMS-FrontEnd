@@ -42,6 +42,14 @@ import {
   // ACCOUNT SETTINGS
   getDefaultTimeoffTypesList,
   getCountryList,
+  // timeoffType
+  getInitEmployeeSchedule,
+  getEmployeeScheduleByLocation,
+  // getCalendarHoliday,
+  getHolidaysListByLocation,
+  getHolidaysByCountry,
+  deleteHoliday,
+  addHoliday,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -51,6 +59,8 @@ const timeOff = {
     currentMineOrTeamTab: '1',
     currentFilterTab: '1',
     holidaysList: [],
+    holidaysListByLocation: {},
+    holidaysListByCountry: {},
     allMyLeaveRequests: {},
     leavingList: [],
     totalLeaveBalance: {},
@@ -71,6 +81,7 @@ const timeOff = {
     allTeamLeaveRequests: {},
     allTeamCompoffRequests: {},
     compoffApprovalFlow: {},
+    employeeSchedule: {},
     currentUserRole: '', // employee, manager, hr-manager
     // account settings
     defaultTimeoffTypesList: [],
@@ -187,10 +198,11 @@ const timeOff = {
       }
       return 0;
     },
-    *fetchHolidaysList({ payload: { year = '', month = '' } = {} }, { call, put }) {
+    // Holiday list
+    *fetchHolidaysList(_, { call, put }) {
       let response;
       try {
-        response = yield call(getHolidaysList, { year, month });
+        response = yield call(getHolidaysList);
         const { statusCode, data: holidaysList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -201,6 +213,36 @@ const timeOff = {
         // dialog(errors);
         // eslint-disable-next-line no-console
         // console.log('errors of holiday list', erros);
+      }
+      return response;
+    },
+    *fetchHolidaysListBylocation({ payload = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getHolidaysListByLocation, payload);
+        const { statusCode, data: holidaysListByLocation = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { holidaysListByLocation },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *fetchHolidaysByCountry({ payload = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getHolidaysByCountry, payload);
+        const { statusCode, data: holidaysListByCountry = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { holidaysListByCountry },
+        });
+      } catch (errors) {
+        dialog(errors);
       }
       return response;
     },
@@ -727,6 +769,66 @@ const timeOff = {
         yield put({
           type: 'save',
           payload: { countryList },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    // timeoff type
+    *getInitEmployeeSchedule(_, { call, put }) {
+      let response;
+      try {
+        response = yield call(getInitEmployeeSchedule);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *getEmployeeScheduleByLocation({ payload = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getEmployeeScheduleByLocation, payload);
+        const { statusCode, data: employeeSchedule = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { employeeSchedule },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *deleteHoliday({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(deleteHoliday, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Delete Holiday Successfully',
+        });
+        yield put({
+          type: 'save',
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *addHoliday({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(addHoliday, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Add Holiday Successfully',
+        });
+        yield put({
+          type: 'save',
         });
       } catch (errors) {
         dialog(errors);

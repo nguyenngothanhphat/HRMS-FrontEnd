@@ -2,7 +2,7 @@ import React, { PureComponent, Fragment } from 'react';
 import { Row, Col } from 'antd';
 import { connect } from 'umi';
 import Moment from 'moment';
-import ModalReviewImage from '@/components/ModalReviewImage';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import iconPDF from '@/assets/pdf-2.svg';
 import ConformIcondata from '../../../confirmIcon';
 import styles from './index.less';
@@ -28,8 +28,12 @@ class View extends PureComponent {
   handleCancel = () => {
     this.setState({
       visible: false,
-      linkImage: '',
     });
+    setTimeout(() => {
+      this.setState({
+        linkImage: '',
+      });
+    }, 500);
   };
 
   handleOpenModalReview = (linkImage) => {
@@ -75,14 +79,14 @@ class View extends PureComponent {
           Issued Country
         </Col>
         <Col span={18} className={styles.textValue}>
-          {item.passportIssuedCountry.name ? item.passportIssuedCountry.name : ''}
+          {item.passportIssuedCountry ? item.passportIssuedCountry.name : ''}
         </Col>
         <Col span={6} className={styles.textLabel}>
           Issued On
         </Col>
         <Col span={18} className={styles.textValue}>
           {item.passportIssuedOn
-            ? Moment(item.passportIssuedOn).locale('en').format('Do MMM YYYY')
+            ? Moment(item.passportIssuedOn).locale('en').format('MM.DD.YY')
             : ''}
         </Col>
         <Col span={6} className={styles.textLabel}>
@@ -90,7 +94,7 @@ class View extends PureComponent {
         </Col>
         <Col span={18} className={styles.textValue}>
           {item.passportValidTill
-            ? Moment(item.passportValidTill).locale('en').format('Do MMM YYYY')
+            ? Moment(item.passportValidTill).locale('en').format('MM.DD.YY')
             : ''}
         </Col>
       </Fragment>
@@ -132,8 +136,7 @@ class View extends PureComponent {
         {passportData.length !== 0
           ? this.handleRenderDataPassport()
           : this.handleRenderDataDummyPassport(dummyData)}
-
-        <ModalReviewImage visible={visible} handleCancel={this.handleCancel} link={linkImage} />
+        <ViewDocumentModal visible={visible} onClose={this.handleCancel} url={linkImage} />
         {/* Custom Col Here */}
       </Row>
     );
