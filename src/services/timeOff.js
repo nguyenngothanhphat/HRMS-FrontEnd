@@ -305,9 +305,10 @@ export async function getCountryList() {
   });
 }
 
-export async function getInitEmployeeSchedule() {
+export async function getInitEmployeeSchedule(payload) {
   return request('/api/employeeschedule/init-default-from-location', {
     method: 'POST',
+    data: payload,
   });
 }
 export async function getEmployeeScheduleByLocation(payload) {
@@ -324,6 +325,12 @@ export async function deleteHoliday(payload) {
 }
 export async function addHoliday(payload) {
   return request('/api/holidaycalendar/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function updateEmployeeSchedule(payload) {
+  return request('/api/employeeschedule/update', {
     method: 'POST',
     data: payload,
   });
