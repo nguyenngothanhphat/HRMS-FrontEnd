@@ -85,6 +85,7 @@ class DirectoryComponent extends PureComponent {
     const { dispatch } = this.props;
     this.initDataTable();
     this.initTabId();
+    this.fetchApprovalFlowList();
     dispatch({
       type: 'employee/fetchLocation',
     });
@@ -119,6 +120,24 @@ class DirectoryComponent extends PureComponent {
       type: 'employee/ClearFilter',
     });
   }
+
+  fetchApprovalFlowList = () => {
+    const {
+      currentUser: {
+        location: { _id: locationID = '' } = {},
+        company: { _id: companyID } = {},
+      } = {},
+      dispatch,
+    } = this.props;
+
+    dispatch({
+      type: 'offboarding/fetchApprovalFlowList',
+      payload: {
+        company: companyID,
+        location: locationID,
+      },
+    });
+  };
 
   // Define tabID to filter
   initTabId = () => {
