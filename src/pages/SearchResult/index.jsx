@@ -8,9 +8,11 @@ import { Affix, Row, Col, Avatar, Spin } from 'antd';
 import { connect, history } from 'umi';
 import styles from './index.less';
 
-@connect(({ loading, searchAdvance: { result = {} } = {} }) => ({
+@connect(({ loading, searchAdvance: { result = {}, resultByCategory = [] } = {} }) => ({
   loading: loading.effects['searchAdvance/search'],
+  loadingCategory: loading.effects['searchAdvance/searchByCategory'],
   result,
+  resultByCategory,
 }))
 class SearchResult extends PureComponent {
   componentDidMount() {
@@ -27,12 +29,20 @@ class SearchResult extends PureComponent {
     }
   }
 
-  handleSearch = (payload) => {
+  handleSearch = (payload = {}) => {
     const { dispatch } = this.props;
-    dispatch({
-      type: 'searchAdvance/search',
-      payload,
-    });
+    const { isSearchByCategory } = payload;
+    if (isSearchByCategory) {
+      dispatch({
+        type: 'searchAdvance/searchByCategory',
+        payload,
+      });
+    } else {
+      dispatch({
+        type: 'searchAdvance/search',
+        payload,
+      });
+    }
   };
 
   renderItemEmployee = (item = {}, index) => {
@@ -86,9 +96,31 @@ class SearchResult extends PureComponent {
     return <div className={styles.viewEmpty}>{text}</div>;
   };
 
+  renderViewSearchByCategory = () => {
+    const { resultByCategory = [] } = this.props;
+    return (
+      <div className={styles.mainContent}>
+        <div className={styles.block} style={{ borderBottom: 'none' }}>
+          {resultByCategory.length > 0 ? (
+            <Row gutter={[16, 16]}>
+              {resultByCategory.map((item, index) => this.renderItemDocument(item, index))}
+            </Row>
+          ) : (
+            this.renderViewEmpty('No Documents Search By Category')
+          )}
+        </div>
+      </div>
+    );
+  };
+
   render() {
-    const { loading = false, result: { employees = [], employeeDoc = [] } = {} } = this.props;
-    if (loading) {
+    const {
+      loading = false,
+      loadingCategory = false,
+      result: { employees = [], employeeDoc = [] } = {},
+      location: { query: { isSearchByCategory = false } = {} } = {},
+    } = this.props;
+    if (loading || loadingCategory) {
       return (
         <div className={styles.viewLoading}>
           <Spin size="large" />
@@ -104,18 +136,30 @@ class SearchResult extends PureComponent {
             </div>
           </Affix>
           <div className={styles.viewContent}>
-            <div className={styles.mainContent}>
-              <Row gutter={[16, 16]} className={styles.block}>
-                {employees.length > 0
-                  ? employees.map((item, index) => this.renderItemEmployee(item, index))
-                  : this.renderViewEmpty('No Employees')}
-              </Row>
-              <Row gutter={[16, 16]} className={styles.block} style={{ borderBottom: 'none' }}>
-                {employeeDoc.length > 0
-                  ? employeeDoc.map((item, index) => this.renderItemDocument(item, index))
-                  : this.renderViewEmpty('No Documents')}
-              </Row>
-            </div>
+            {isSearchByCategory ? (
+              this.renderViewSearchByCategory()
+            ) : (
+              <div className={styles.mainContent}>
+                <div className={styles.block}>
+                  {employees.length > 0 ? (
+                    <Row gutter={[16, 16]}>
+                      {employees.map((item, index) => this.renderItemEmployee(item, index))}
+                    </Row>
+                  ) : (
+                    this.renderViewEmpty('No Employees')
+                  )}
+                </div>
+                <div className={styles.block} style={{ borderBottom: 'none' }}>
+                  {employeeDoc.length > 0 ? (
+                    <Row gutter={[16, 16]}>
+                      {employeeDoc.map((item, index) => this.renderItemDocument(item, index))}
+                    </Row>
+                  ) : (
+                    this.renderViewEmpty('No Documents')
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </PageContainer>
