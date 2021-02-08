@@ -1062,11 +1062,11 @@ class RequestInformation extends PureComponent {
 
   // validator
   typeValidator = (rule, value, callback) => {
+    const {selectedShortType} = this.state;
     const remaining = this.getRemainingDayById(value);
-    if (remaining === 'VALID') callback();
-    else if (remaining > 0) {
-      callback();
-    } else callback('Leave dates reach limit.');
+    if (remaining === 'VALID' || remaining > 0) callback();
+    else if (selectedShortType) callback('Leave dates reach limit.');
+    else callback();
   };
 
   render() {
