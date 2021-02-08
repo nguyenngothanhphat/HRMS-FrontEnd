@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
-import { Tabs, Layout,Select } from 'antd';
+import { Tabs, Layout, Select } from 'antd';
 import DirectoryTable from '@/components/DirectoryTable';
 import { debounce } from 'lodash';
 import AddEmployeeForm from '@/pages_admin/EmployeesManagement/components/TableContainer/components/AddEmployeeForm';
@@ -21,7 +21,6 @@ const { Option } = Select;
   currentUser,
   permissions,
 }))
-
 class DirectoryComponent extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if ('employee' in nextProps) {
@@ -60,7 +59,7 @@ class DirectoryComponent extends PureComponent {
       department: [],
       location: [],
       employeeType: [],
-      locationNew:[],
+      locationNew: [],
       filterName: '',
       tabList: {
         active: 'active',
@@ -83,28 +82,31 @@ class DirectoryComponent extends PureComponent {
   }
 
   componentDidMount() {
-    const {dispatch}=this.props;
+    const { dispatch } = this.props;
     this.initDataTable();
     this.initTabId();
     dispatch({
       type: 'employee/fetchLocation',
     });
+    const currentLocation = localStorage.getItem('currentLocation');
+    this.setState({
+      locationNew: [currentLocation],
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
-
-    const { department,location, employeeType, filterName, tabId,locationNew } = this.state;
+    const { department, location, employeeType, filterName, tabId, locationNew } = this.state;
     const params = {
       name: filterName,
       department,
-      location:locationNew,
+      location: locationNew,
       employeeType,
     };
     if (
       prevState.tabId !== tabId ||
       prevState.department.length !== department.length ||
       prevState.location.length !== location.length ||
-      prevState.locationNew!==locationNew||
+      prevState.locationNew !== locationNew ||
       prevState.employeeType.length !== employeeType.length ||
       prevState.filterName !== filterName
     ) {
@@ -221,8 +223,8 @@ class DirectoryComponent extends PureComponent {
     const { currentUser } = this.props;
     const { roles } = currentUser;
     const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
-    const filterRolesCSA=roles.filter((item) => item._id === 'ADMIN-CSA');
-    if (filterRoles.length > 0||filterRolesCSA.length>0) {
+    const filterRolesCSA = roles.filter((item) => item._id === 'ADMIN-CSA');
+    if (filterRoles.length > 0 || filterRolesCSA.length > 0) {
       return this.renderHrGloBal();
     }
     return this.renderHrTeam();
@@ -301,7 +303,7 @@ class DirectoryComponent extends PureComponent {
     const { roles } = currentUser;
     const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
     const filterRolesCSA = roles.filter((item) => item._id === 'ADMIN-CSA');
-    if (filterRoles.length > 0||filterRolesCSA.length>0) {
+    if (filterRoles.length > 0 || filterRolesCSA.length > 0) {
       return this.ChangeTabHrGloBal(params, tabId);
     }
     return this.ChangeTabHrTeam(params, tabId);
@@ -568,16 +570,16 @@ class DirectoryComponent extends PureComponent {
     this.initDataTable();
   };
 
-  handleChangeGetLocation=(value)=>{
-    const newItem=[value];
-    this.setState({locationNew:newItem});
-  }
+  handleChangeGetLocation = (value) => {
+    const newItem = [value];
+    this.setState({ locationNew: newItem });
+  };
 
-  handleRenderTable=(checkRole,location,collapsed,roles)=>{
-    if(checkRole){
-      if(checkRole._id){
-        if( location.length>0){
-          return(
+  handleRenderTable = (checkRole, location, collapsed, roles) => {
+    if (checkRole) {
+      if (checkRole._id) {
+        if (location.length > 0) {
+          return (
             <div className={styles.contentContainer}>
               <Tabs
                 className={styles.TabComponent}
@@ -587,15 +589,15 @@ class DirectoryComponent extends PureComponent {
                 {this.renderTabPane()}
               </Tabs>
             </div>
-          )
+          );
         }
-        return ""
+        return '';
       }
     }
-    return(
+    return (
       <div className={styles.contentContainer}>
         <Tabs
-        // defaultActiveKey="active"
+          // defaultActiveKey="active"
           className={styles.TabComponent}
           onTabClick={this.handleClickTabPane}
           tabBarExtraContent={this.rightButton(roles, collapsed)}
@@ -603,31 +605,33 @@ class DirectoryComponent extends PureComponent {
           {this.renderTabPane()}
         </Tabs>
       </div>
-    )
-  }
-
+    );
+  };
 
   render() {
     const {
       currentUser: { company, roles = [] },
-      employee: { location = []}
+      employee: { location = [] },
     } = this.props;
-    const { collapsed, visible, visibleImportEmployee,locationNew } = this.state;
-    const getRole=roles.filter(item=>item._id=== "HR-GLOBAL");
-    const getRoleCSA=roles.filter(item=>item._id=== "ADMIN-CSA");
+    const { collapsed, visible, visibleImportEmployee, locationNew } = this.state;
+    const getRole = roles.filter((item) => item._id === 'HR-GLOBAL');
+    const getRoleCSA = roles.filter((item) => item._id === 'ADMIN-CSA');
+
     return (
       <div className={styles.DirectoryComponent}>
-        {getRole[0]||getRoleCSA[0]?._id? 
-          <div>   
-            <Select style={{ width: 120 }} onChange={this.handleChangeGetLocation}>
-              {location.map(item=>
+        {  locationNew.length > 0 && (getRole[0] || getRoleCSA[0]?._id) ? (
+          <div>
+            <Select defaultValue={locationNew.length > 0 ? locationNew[0] : ''} style={{ width: 120 }} onChange={this.handleChangeGetLocation}>
+              {location.map((item) => (
                 <Option value={item._id}>{item.name}</Option>
-              )}
+              ))}
             </Select>
           </div>
-        :''}
-        {this.handleRenderTable(getRole[0]||getRoleCSA[0],locationNew,collapsed,roles)}
-       
+        ) : (
+          ''
+        )}
+        { this.handleRenderTable(getRole[0] || getRoleCSA[0], locationNew, collapsed, roles)}
+
         <AddEmployeeForm
           company={company}
           titleModal="Add Employee"
@@ -641,7 +645,6 @@ class DirectoryComponent extends PureComponent {
           visible={visibleImportEmployee}
           handleCancel={this.handleCancel}
         />
-        
       </div>
     );
   }

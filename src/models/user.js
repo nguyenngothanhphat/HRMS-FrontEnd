@@ -31,6 +31,11 @@ const UserModel = {
           },
         });
 
+        let currentLocation = localStorage.getItem('currentLocation');
+        if (!currentLocation) {
+          currentLocation = localStorage.setItem('currentLocation', response?.data?.location?._id);
+        }
+
         yield put({
           type: 'save',
           payload: {
