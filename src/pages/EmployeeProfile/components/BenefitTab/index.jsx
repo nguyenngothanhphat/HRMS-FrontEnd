@@ -57,15 +57,21 @@ class BenefitTab extends PureComponent {
                 {formatMessage({ id: 'pages.employeeProfile.BenefitTab.dependentDetails' })}
               </h3>
               <div style={{ paddingLeft: '24px', paddingRight: '24px' }}>
-                {dependentDetails.map((item, idx) => {
-                  return (
-                    <DependentTabs
-                      key={Math.random().toString(36).substring(7)}
-                      index={idx}
-                      data={item}
-                    />
-                  );
-                })}
+                {dependentDetails.length === 0 ? (
+                  <div style={{marginBottom: '10px'}}>No data</div>
+                ) : (
+                  <>
+                    {dependentDetails.map((item, idx) => {
+                      return (
+                        <DependentTabs
+                          key={Math.random().toString(36).substring(7)}
+                          index={idx}
+                          data={item}
+                        />
+                      );
+                    })}
+                  </>
+                )}
               </div>
             </div>
           </div>
