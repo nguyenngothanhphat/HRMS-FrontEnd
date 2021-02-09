@@ -202,10 +202,13 @@ class RequestInformation extends PureComponent {
       ) {
         this.setSecondNotice(`${shortType}s gets credited each month.`);
       }
-
-      // set remaining day of selected leave type
-      this.getRemainingDay(shortType);
     }
+  };
+
+  componentDidUpdate = () => {
+    const { selectedShortType } = this.state;
+    // set remaining day of selected leave type
+    this.getRemainingDay(selectedShortType);
   };
 
   // GET REMAINING DAY
@@ -1062,7 +1065,7 @@ class RequestInformation extends PureComponent {
 
   // validator
   typeValidator = (rule, value, callback) => {
-    const {selectedShortType} = this.state;
+    const { selectedShortType } = this.state;
     const remaining = this.getRemainingDayById(value);
     if (remaining === 'VALID' || remaining > 0) callback();
     else if (selectedShortType) callback('Leave dates reach limit.');

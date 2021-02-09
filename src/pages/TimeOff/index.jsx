@@ -84,6 +84,12 @@ class TimeOff extends PureComponent {
           description: `Timeoff request [Ticket id: ${tickedId}] [Type: ${typeName}] was withdrawn & deleted.`,
         });
       }
+      if (category === 'DRAFTS') {
+        notification.success({
+          message: 'Timeoff request',
+          description: `Draft request [Ticket id: ${tickedId}] [Type: ${typeName}] was deleted.`,
+        });
+      }
       if (category === 'COMPOFF') {
         notification.success({
           message: 'Compoff request',

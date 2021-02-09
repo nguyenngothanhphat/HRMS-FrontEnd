@@ -639,10 +639,9 @@ class DirectoryComponent extends PureComponent {
     return (
       <div className={styles.DirectoryComponent}>
         {locationNew.length > 0 && (getRole[0] || getRoleCSA[0]?._id) ? (
-          <div>
+          <div className={styles.selectLocation}>
             <Select
               defaultValue={locationNew.length > 0 ? locationNew[0] : ''}
-              style={{ width: 120 }}
               onChange={this.handleChangeGetLocation}
             >
               {location.map((item) => (
