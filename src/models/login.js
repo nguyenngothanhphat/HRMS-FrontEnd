@@ -52,6 +52,7 @@ const Model = {
       setAuthority('');
       localStorage.removeItem('dataRoles');
       localStorage.removeItem('Rolesname');
+      localStorage.removeItem('currentLocation');
       yield put({
         type: 'user/saveCurrentUser',
         payload: {

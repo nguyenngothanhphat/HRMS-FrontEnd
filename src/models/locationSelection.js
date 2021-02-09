@@ -1,4 +1,4 @@
-import { history } from 'umi';
+// import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 import getLocationListByCompany from '../services/locationSelection';
 

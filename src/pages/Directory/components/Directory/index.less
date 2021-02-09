@@ -7,12 +7,60 @@
   }
   min-width: 1150px;
   margin: 32px 105px;
+
+  .selectLocation {
+    :global {
+      .ant-select-selector {
+        min-width: 120px;
+        height: auto !important;
+        min-height: 42px;
+        padding-top: 4px !important;
+        padding-bottom: 2px !important;
+      }
+      .ant-select-selection-item {
+        align-items: center !important;
+        height: 30px !important;
+      }
+      .ant-select-selection-item-content {
+        img {
+          width: 22px !important;
+          height: 22px !important;
+        }
+      }
+      .ant-input:focus,
+      .ant-picker-focused {
+        border-color: #2c6df9;
+        outline: 0;
+        box-shadow: unset;
+      }
+
+      .ant-select-focused .ant-select-selector,
+      .ant-select-selector:focus,
+      .ant-select-selector:active,
+      .ant-select-open .ant-select-selector {
+        border-color: #2c6df9;
+        outline: 0;
+        box-shadow: unset !important;
+      }
+
+      .ant-select-selection-item {
+        margin-top: 0px;
+      }
+
+      .ant-select-selector {
+        height: 42px !important;
+        padding-top: 5px !important;
+        font-size: 14px;
+        border-radius: 5px !important;
+      }
+    }
+  }
   .TabComponent {
     :global {
       .ant-tabs-tab {
-        font-size: 14px;
-        font-weight: 700;
         margin: 0 30px 0 0 !important ;
+        font-weight: 700;
+        font-size: 14px;
       }
       .ant-layout {
         min-height: 540px;
@@ -38,14 +86,14 @@
     margin-bottom: 5px;
   }
   .buttonAddImport {
-    margin: 25px 32px 22px 0;
     display: flex;
     flex-flow: row nowrap;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     height: 42px;
-    border-radius: 30px;
+    margin: 25px 32px 22px 0;
     background-color: white;
+    border-radius: 30px;
     cursor: pointer;
     img {
       margin-right: 10px;
@@ -56,43 +104,43 @@
     }
     &_text {
       margin-bottom: 0px;
-      font-size: 14px;
+      color: #ffa100;
       font-weight: 500;
-      font-stretch: normal;
+      font-size: 14px;
       font-style: normal;
+      font-stretch: normal;
       line-height: 1.38;
       letter-spacing: normal;
       text-align: left;
-      color: #ffa100;
     }
     .download_icon {
-      color: #ffa100;
-      margin-right: 12px;
       margin-top: 4px;
+      margin-right: 12px;
+      color: #ffa100;
       font-size: 20px;
     }
   }
   .buttonCreate {
-    margin: 25px 32px 22px 0;
     display: flex;
     flex-flow: row nowrap;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     height: 42px;
-    border-radius: 30px;
+    margin: 25px 32px 22px 0;
     background-color: white;
+    border-radius: 30px;
     .NameNewProfile {
-      margin-bottom: 0px;
       width: 145px;
       height: 22px;
-      font-size: 14px;
+      margin-bottom: 0px;
+      color: #ffa100;
       font-weight: 500;
-      font-stretch: normal;
+      font-size: 14px;
       font-style: normal;
+      font-stretch: normal;
       line-height: 1.38;
       letter-spacing: normal;
       text-align: left;
-      color: #ffa100;
     }
     :global {
       .anticon {
@@ -106,39 +154,39 @@
   .boxCreate {
     display: flex;
     flex-flow: row nowrap;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     margin: 20px 24px;
     .Text {
       display: flex;
       flex-flow: row nowrap;
-      text-decoration: underline;
       margin-top: 35px;
       margin-bottom: 26.3px;
+      text-decoration: underline;
       .ViewText {
         width: 130px;
         height: 24px;
         margin-bottom: 0;
-        font-size: 18px;
+        color: #140606;
         font-weight: 500;
-        font-stretch: normal;
+        font-size: 18px;
         font-style: normal;
+        font-stretch: normal;
         line-height: 1.33;
         letter-spacing: normal;
         text-align: left;
-        color: #140606;
       }
       .ViewNumber {
         width: 32px;
         height: 24px;
-        font-size: 18px;
+        color: #de0e0e;
         font-weight: 700;
-        font-stretch: normal;
+        font-size: 18px;
         font-style: normal;
+        font-stretch: normal;
         line-height: 1.33;
         letter-spacing: normal;
         text-align: left;
-        color: #de0e0e;
       }
     }
   }
@@ -149,18 +197,18 @@
   }
   .contentContainer {
     width: 100%;
+    height: 100%;
+    margin: 20px 0;
     overflow-x: auto;
     border: 1px solid #d6dce0;
     border-radius: 8px;
-    margin: 20px 0;
-    height: 100%;
     .directoryLayout {
       position: relative;
       :global {
         .ant-layout-footer {
           height: 70px;
-          border-top: solid 1px #d6dce0;
           background: #ffffff;
+          border-top: solid 1px #d6dce0;
         }
       }
       .directoryLayout_inner {
@@ -176,47 +224,47 @@
       position: absolute;
       top: 25%;
       left: 25%;
-      content: '';
       display: flex;
-      align-items: flex-end;
       flex-flow: row;
+      align-items: flex-end;
+      content: '';
       img {
         padding-right: 10px;
       }
       :global {
         .anticon-filter {
-          font-size: 14px;
-          color: #2c6df9;
-          padding-top: 4px;
           margin-right: 11px;
+          padding-top: 4px;
+          color: #2c6df9;
+          font-size: 14px;
         }
       }
     }
     .textButtonFilter {
-      margin-bottom: 0;
       height: 17px;
-      font-size: 14px;
+      margin-bottom: 0;
+      color: #2c6df9;
       font-weight: 500;
-      font-stretch: normal;
+      font-size: 14px;
       font-style: normal;
+      font-stretch: normal;
       line-height: normal;
       letter-spacing: 0.13px;
-      color: #2c6df9;
     }
     .filterBackgroundButton {
       width: 111px;
       height: 40px;
       object-fit: contain;
-      opacity: 0.07;
-      border-radius: 5px;
       background-color: #568afa;
+      border-radius: 5px;
+      opacity: 0.07;
     }
     .filterBackgroundButton_isCollapsed {
       width: 111px;
       height: 40px;
       object-fit: contain;
-      opacity: 0.07;
       border-radius: 5px;
+      opacity: 0.07;
     }
   }
 }

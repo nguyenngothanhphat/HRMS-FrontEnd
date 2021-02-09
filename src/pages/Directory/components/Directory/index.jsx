@@ -89,6 +89,10 @@ class DirectoryComponent extends PureComponent {
     dispatch({
       type: 'employee/fetchLocation',
     });
+    const currentLocation = localStorage.getItem('currentLocation');
+    this.setState({
+      locationNew: [currentLocation],
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -631,11 +635,15 @@ class DirectoryComponent extends PureComponent {
     const { collapsed, visible, visibleImportEmployee, locationNew } = this.state;
     const getRole = roles.filter((item) => item._id === 'HR-GLOBAL');
     const getRoleCSA = roles.filter((item) => item._id === 'ADMIN-CSA');
+
     return (
       <div className={styles.DirectoryComponent}>
-        {getRole[0] || getRoleCSA[0]?._id ? (
-          <div>
-            <Select style={{ width: 120 }} onChange={this.handleChangeGetLocation}>
+        {locationNew.length > 0 && (getRole[0] || getRoleCSA[0]?._id) ? (
+          <div className={styles.selectLocation}>
+            <Select
+              defaultValue={locationNew.length > 0 ? locationNew[0] : ''}
+              onChange={this.handleChangeGetLocation}
+            >
               {location.map((item) => (
                 <Option value={item._id}>{item.name}</Option>
               ))}
