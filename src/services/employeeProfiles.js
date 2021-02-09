@@ -310,6 +310,27 @@ export async function getDependentsByEmployee(payload) {
   });
 }
 
+export async function addDependentsOfEmployee(payload) {
+  return request('/api/dependent/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateDependentsById(payload) {
+  return request('/api/dependent/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function removeDependentsById(payload) {
+  return request('/api/dependent/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getBenefitPlans() {
   return request('/api/benefit/list-by-company', {
     method: 'POST',

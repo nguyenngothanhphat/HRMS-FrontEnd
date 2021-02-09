@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Collapse } from 'antd';
 import { formatMessage, connect } from 'umi';
+import { EditFilled } from '@ant-design/icons';
 import PlusIcon from '@/assets/plusIcon1.svg';
 import MinusIcon from '@/assets/minusIcon1.svg';
 import styles from './styles.less';
@@ -45,33 +46,66 @@ const data = [
     loading.effects['employeeProfile/getBenefitPlans'],
 }))
 class BenefitTab extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isEditing: false,
+      isAdding: false,
+    };
+  }
+
+  setEditing = (value) => {
+    this.setState({
+      isEditing: value,
+    });
+  };
+
+  setAdding = (value) => {
+    this.setState({
+      isAdding: value,
+    });
+  };
+
+  setAddingOrEditing = () => {
+    const { dependentDetails: { dependents = [] } = {} } = this.props;
+    if (dependents.length === 0) {
+      this.setAdding(true);
+    } else this.setEditing(true);
+  };
+
   render() {
-    const { loading, dependentDetails } = this.props;
+    const { loading, dependentDetails: { dependents = [] } = {} } = this.props;
+    const { isEditing, isAdding } = this.state;
     if (loading) return <div>Loading...</div>;
     return (
       <div style={{ backgroundColor: '#f6f7f9' }}>
         <div className={styles.benefitTab}>
           <div className={styles.sideTab}>
             <div>
-              <h3 className={styles.headings}>
-                {formatMessage({ id: 'pages.employeeProfile.BenefitTab.dependentDetails' })}
-              </h3>
-              <div style={{ paddingLeft: '24px', paddingRight: '24px' }}>
-                {dependentDetails.length === 0 ? (
-                  <div style={{marginBottom: '10px'}}>No data</div>
-                ) : (
-                  <>
-                    {dependentDetails.map((item, idx) => {
-                      return (
-                        <DependentTabs
-                          key={Math.random().toString(36).substring(7)}
-                          index={idx}
-                          data={item}
-                        />
-                      );
-                    })}
-                  </>
+              <div className={styles.header}>
+                <span className={styles.headingText}>
+                  {formatMessage({ id: 'pages.employeeProfile.BenefitTab.dependentDetails' })}
+                </span>
+                {!isEditing && !isAdding && (
+                  <div className={styles.editButton} onClick={this.setAddingOrEditing}>
+                    <EditFilled />
+                    {dependents.length > 0 ? (
+                      <span className={styles.editText}>Edit</span>
+                    ) : (
+                      <span className={styles.editText}>Add new</span>
+                    )}
+                  </div>
                 )}
+              </div>
+              <div>
+                <DependentTabs
+                  key={Math.random().toString(36).substring(7)}
+                  data={dependents}
+                  isEditing={isEditing}
+                  setEditing={this.setEditing}
+                  isAdding={isAdding}
+                  setAdding={this.setAdding}
+                />
               </div>
             </div>
           </div>

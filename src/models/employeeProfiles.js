@@ -47,6 +47,9 @@ import {
   getRevokeHistory,
   shareDocument,
   getDependentsByEmployee,
+  addDependentsOfEmployee,
+  updateDependentsById,
+  removeDependentsById,
   getBenefitPlans,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
@@ -1079,11 +1082,48 @@ const employeeProfile = {
       try {
         const response = yield call(getDependentsByEmployee, payload);
         const { statusCode, data } = response;
-        console.log('response', response);
         if (statusCode !== 200) throw response;
-        yield put({ type: 'saveOrigin', payload: { dependentDetails: data.dependents } });
+        yield put({ type: 'saveOrigin', payload: { dependentDetails: data } });
+        return response;
       } catch (error) {
         dialog(error);
+        return {};
+      }
+    },
+    *addDependentsOfEmployee({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(addDependentsOfEmployee, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { dependentDetails: data } });
+        return response;
+      } catch (error) {
+        dialog(error);
+        return {};
+      }
+    },
+    *updateEmployeeDependentDetails({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(updateDependentsById, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { dependentDetails: data } });
+        return response;
+      } catch (error) {
+        dialog(error);
+        return {};
+      }
+    },
+    *removeEmployeeDependentDetails({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(removeDependentsById, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { dependentDetails: {} } });
+        return response;
+      } catch (error) {
+        dialog(error);
+        return {};
       }
     },
     *getBenefitPlans(_, { call, put }) {

@@ -1,0 +1,72 @@
+import React from 'react';
+import { formatMessage } from 'umi';
+import moment from 'moment';
+import styles from './styles.less';
+
+export default function DependentTabs(props) {
+  const { data: viewData = [] } = props;
+  const name = formatMessage({
+    id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.legalName',
+  });
+  const gender = formatMessage({
+    id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.gender',
+  });
+  const relationship = formatMessage({
+    id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.relationship',
+  });
+  const dob = formatMessage({
+    id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.dob',
+  });
+  return (
+    <div className={styles.tab}>
+      {viewData.length === 0 ? (
+        <div>No data</div>
+      ) : (
+        <>
+          {viewData.map((data, index) => {
+            return (
+              <>
+                {index > 0 && <div className={styles.line} />}
+                <div className={styles.dependent}>
+                  {formatMessage({
+                    id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.dependent',
+                  })}{' '}
+                  {index + 1}
+                </div>
+                <div className={styles.info}>
+                  {[name, gender, relationship, dob].map((item) => {
+                    let foo = '';
+                    switch (item) {
+                      case name:
+                        foo = data.legalName;
+                        break;
+                      case gender:
+                        foo = data.gender;
+                        break;
+                      case relationship:
+                        foo = data.relationship;
+                        break;
+                      case dob:
+                        foo = moment(data.dob).locale('en').format('MM.DD.YY');
+                        break;
+                      default:
+                        return foo;
+                    }
+                    return (
+                      <div key={Math.random().toString(36).substring(7)} className={styles.items}>
+                        <div style={{ fontWeight: '500', width: '50%' }}>{item}</div>
+                        <div style={{ color: '#707177', width: '50%' }}>
+                          <p>{foo}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            );
+          })}
+        </>
+      )}
+    </div>
+  );
+}
