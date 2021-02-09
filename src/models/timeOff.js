@@ -50,6 +50,7 @@ import {
   getHolidaysByCountry,
   deleteHoliday,
   addHoliday,
+  updateEmployeeSchedule,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -77,6 +78,7 @@ const timeOff = {
     teamCompoffRequests: {},
     teamLeaveRequests: {},
     urlExcel: undefined,
+    updateSchedule: {},
     balances: {},
     allTeamLeaveRequests: {},
     allTeamCompoffRequests: {},
@@ -775,17 +777,17 @@ const timeOff = {
       }
     },
     // timeoff type
-    *getInitEmployeeSchedule(_, { call, put }) {
+    *getInitEmployeeSchedule({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getInitEmployeeSchedule);
+        response = yield call(getInitEmployeeSchedule, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
         });
       } catch (errors) {
-        dialog(errors);
+        // dialog(errors);
       }
       return response;
     },
@@ -805,8 +807,9 @@ const timeOff = {
       return response;
     },
     *deleteHoliday({ payload = {} }, { call, put }) {
+      let response;
       try {
-        const response = yield call(deleteHoliday, payload);
+        response = yield call(deleteHoliday, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -818,10 +821,12 @@ const timeOff = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
     *addHoliday({ payload = {} }, { call, put }) {
+      let response;
       try {
-        const response = yield call(addHoliday, payload);
+        response = yield call(addHoliday, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -829,6 +834,23 @@ const timeOff = {
         });
         yield put({
           type: 'save',
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *updateEmployeeSchedule({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(updateEmployeeSchedule, payload);
+        const { statusCode, data: updateSchedule = {} } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Update  Successfully',
+        });
+        yield put({
+          type: 'save',
+          payload: { updateSchedule },
         });
       } catch (errors) {
         dialog(errors);

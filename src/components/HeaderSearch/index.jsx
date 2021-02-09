@@ -45,6 +45,14 @@ class HeaderSearch extends Component {
     });
   };
 
+  resetSearch = () => {
+    this.setState({
+      q: '',
+      mode: 'history',
+      visible: false,
+    });
+  };
+
   renderAdvancedSearch = () => {
     const { mode, q } = this.state;
     return (
@@ -54,6 +62,7 @@ class HeaderSearch extends Component {
             changeMode={this.changeMode}
             closeSearch={this.closeSearch}
             setKeyword={this.setKeyword}
+            resetSearch={this.resetSearch}
           />
         ) : (
           <ViewAdvancedSearch closeSearch={this.closeSearch} keySearch={q} />
@@ -73,7 +82,7 @@ class HeaderSearch extends Component {
   };
 
   onPressEnter = ({ target: { value } }) => {
-    this.closeSearch();
+    this.closeSearch(true);
     history.push({
       pathname: '/search-result',
       query: { keySearch: value },

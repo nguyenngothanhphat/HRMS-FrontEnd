@@ -89,6 +89,7 @@ const MOCK_DATA = [
     timeOff,
     loading: loading.effects['timeOff/fetchHolidaysListBylocation'],
     loadingbyCountry: loading.effects['timeOff/fetchHolidaysListBylocation'],
+    loadingAddHoliday: loading.effects['timeOff/addHoliday'],
     idCompany,
     idLocation,
   }),
@@ -103,6 +104,9 @@ class HollidayCalendar extends Component {
       list: {},
       idCheck: [],
       visible: false,
+      // listCheck: [],
+      // indeterminate: true,
+      // checkAll: false,
     };
   }
 
@@ -199,14 +203,36 @@ class HollidayCalendar extends Component {
     });
   };
 
+  addHoliday = (value) => {
+    const { dispatch } = this.props;
+    const { yearSelect } = this.state;
+    dispatch({
+      type: 'timeOff/addHoliday',
+      payload: value,
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        this.initListHoliday(yearSelect.toString());
+        this.setState({
+          visible: false,
+        });
+      }
+    });
+  };
+
   deleteHoliday = (id) => {
     const { dispatch } = this.props;
-    const { list = [] } = this.state;
+    const { list = [], yearSelect } = this.state;
     const { _id: idObjHolidays } = list;
-    // dispatch({
-    //   type: 'timeOff/deleteHoliday',
-    //   payload: { removeId: id, id: idObjHolidays },
-    // });
+    dispatch({
+      type: 'timeOff/deleteHoliday',
+      payload: { removeId: id, id: idObjHolidays },
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        this.initListHoliday(yearSelect.toString());
+      }
+    });
   };
 
   renderItem = (item) => {
@@ -219,18 +245,24 @@ class HollidayCalendar extends Component {
           <div>
             {children.map((itemChildren, index) => {
               const { date, name, type, _id } = itemChildren;
-              const dateFormat = moment(date).format('MMM Do');
+              const dateFormat = moment(date).format('MM-DD-YYYY');
               const day = moment(date).format('dddd');
               return (
                 <div>
                   <Row gutter={[30, 20]} className={s.textStyles}>
                     <Col>
                       <Checkbox onChange={(e) => this.handleClickDelete(e, _id)} />
+                      {/* <Checkbox.Group
+                        // options={data}
+                        value={listCheck}
+                        onChange={(e) => this.handleClickDelete(e, _id)}
+                      /> */}
                     </Col>
-                    <Col span={8} className={s.textHoliday}>
+
+                    <Col span={7} className={s.textHoliday}>
                       {name}
                     </Col>
-                    <Col span={3} className={s.textHoliday}>
+                    <Col span={4} className={s.textHoliday}>
                       {dateFormat}
                     </Col>
                     <Col span={3}>{day}</Col>
@@ -279,9 +311,16 @@ class HollidayCalendar extends Component {
     });
   };
 
+  onCheckAllChange = () => {
+    // this.setState({
+    //   listCheck: [],
+    // checkAll: e.target,
+    // });
+  };
+
   render() {
     const { data, role, yearSelect, visible = true } = this.state;
-    const { loading = false, loadingbyCountry = false } = this.props;
+    const { loading = false, loadingbyCountry = false, loadingAddHoliday = false } = this.props;
     return (
       <div className={s.root}>
         <div className={s.setUpWrap}>
@@ -305,7 +344,9 @@ class HollidayCalendar extends Component {
         <div className={s.listHoliday}>
           <div span={24} className={s.flex}>
             <div>
-              <Checkbox className={s.select}>Select All</Checkbox>
+              <Checkbox className={s.select} onClick={this.onCheckAllChange}>
+                Select All
+              </Checkbox>
             </div>
             <div>
               <Row gutter={[24, 0]}>
@@ -336,7 +377,7 @@ class HollidayCalendar extends Component {
           </div>
           <div>
             <Row>
-              {loading || loadingbyCountry ? (
+              {loading || loadingbyCountry || loadingAddHoliday ? (
                 <Col span={24} className={s.center}>
                   <Spin />
                 </Col>
@@ -346,7 +387,11 @@ class HollidayCalendar extends Component {
             </Row>
           </div>
         </div>
-        <AddHoliday visible={visible} handleCancel={this.handleCandelSchedule} />
+        <AddHoliday
+          visible={visible}
+          handleCancel={this.handleCandelSchedule}
+          addHoliday={this.addHoliday}
+        />
       </div>
     );
   }

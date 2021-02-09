@@ -85,6 +85,7 @@ class DirectoryComponent extends PureComponent {
     const { dispatch } = this.props;
     this.initDataTable();
     this.initTabId();
+    this.fetchApprovalFlowList();
     dispatch({
       type: 'employee/fetchLocation',
     });
@@ -123,6 +124,24 @@ class DirectoryComponent extends PureComponent {
       type: 'employee/ClearFilter',
     });
   }
+
+  fetchApprovalFlowList = () => {
+    const {
+      currentUser: {
+        location: { _id: locationID = '' } = {},
+        company: { _id: companyID } = {},
+      } = {},
+      dispatch,
+    } = this.props;
+
+    dispatch({
+      type: 'offboarding/fetchApprovalFlowList',
+      payload: {
+        company: companyID,
+        location: locationID,
+      },
+    });
+  };
 
   // Define tabID to filter
   initTabId = () => {
@@ -619,9 +638,13 @@ class DirectoryComponent extends PureComponent {
 
     return (
       <div className={styles.DirectoryComponent}>
-        {  locationNew.length > 0 && (getRole[0] || getRoleCSA[0]?._id) ? (
+        {locationNew.length > 0 && (getRole[0] || getRoleCSA[0]?._id) ? (
           <div>
-            <Select defaultValue={locationNew.length > 0 ? locationNew[0] : ''} style={{ width: 120 }} onChange={this.handleChangeGetLocation}>
+            <Select
+              defaultValue={locationNew.length > 0 ? locationNew[0] : ''}
+              style={{ width: 120 }}
+              onChange={this.handleChangeGetLocation}
+            >
               {location.map((item) => (
                 <Option value={item._id}>{item.name}</Option>
               ))}
@@ -630,7 +653,7 @@ class DirectoryComponent extends PureComponent {
         ) : (
           ''
         )}
-        { this.handleRenderTable(getRole[0] || getRoleCSA[0], locationNew, collapsed, roles)}
+        {this.handleRenderTable(getRole[0] || getRoleCSA[0], locationNew, collapsed, roles)}
 
         <AddEmployeeForm
           company={company}

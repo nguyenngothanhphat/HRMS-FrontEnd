@@ -6,8 +6,9 @@ import { Table, Avatar, Button } from 'antd';
 import styles from './index.less';
 import ModalTerminate from './components/ModalTerminate';
 
-@connect(({ loading }) => ({
+@connect(({ loading, offboarding: { approvalflow = [] } = {} }) => ({
   loadingTerminateReason: loading.effects['offboarding/terminateReason'],
+  approvalflow,
 }))
 class DirectoryTable extends Component {
   constructor(props) {

@@ -15,10 +15,17 @@ const propsUpload = {
   showUploadList: false,
 };
 
-@connect(({ loading, timeOff: { urlExcel = '' } = {} }) => ({
-  urlExcel,
-  loading: loading.effects['timeOff/uploadBalances'],
-}))
+@connect(
+  ({
+    user: { currentUser: { location: { _id: idLocation = '' } = {} } = {} } = {},
+    loading,
+    timeOff: { urlExcel = '' } = {},
+  }) => ({
+    urlExcel,
+    loading: loading.effects['timeOff/uploadBalances'],
+    idLocation,
+  }),
+)
 class ImportExcel extends React.Component {
   constructor(props) {
     super(props);
@@ -55,12 +62,13 @@ class ImportExcel extends React.Component {
   };
 
   handleSubmit = (tab) => {
-    const { dispatch, urlExcel } = this.props;
+    const { dispatch, urlExcel, idLocation } = this.props;
     const { effectiveDate } = this.state;
     const data = {
       attachment: urlExcel,
       type: tab === 1 ? 'SWITCH' : 'IMPORT_DATA',
       effectiveDate,
+      location: idLocation,
     };
     dispatch({
       type: 'timeOff/uploadBalances',

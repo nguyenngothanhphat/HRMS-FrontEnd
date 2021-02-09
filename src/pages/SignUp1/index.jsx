@@ -1,9 +1,7 @@
 /* eslint-disable no-useless-escape */
 import React from 'react';
-
 import { formatMessage, connect } from 'umi';
 import { Form, Input, Button } from 'antd';
-
 import styles from './index.less';
 
 const SignUp1 = (props) => {
@@ -39,10 +37,6 @@ const SignUp1 = (props) => {
     });
   };
 
-  const onFinishFailed = (errorInfo) => {
-    // console.log('Failed :', errorInfo);
-  };
-
   return (
     <div className={styles.wrapper}>
       <h2>
@@ -57,7 +51,6 @@ const SignUp1 = (props) => {
         layout="vertical"
         initialValues={{ remember: true }}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
       >
         <Form.Item
           label={formatMessage({
@@ -105,13 +98,6 @@ const SignUp1 = (props) => {
         >
           <Input />
         </Form.Item>
-
-        {/* <Form.Item name="keep-sign-in">
-          <Checkbox checked={keepSignIn} onChange={onChange}>
-            Keep me signed in
-          </Checkbox>
-        </Form.Item> */}
-
         <Button type="primary" htmlType="submit">
           {formatMessage({
             id: 'page.signUp.getStarted',
