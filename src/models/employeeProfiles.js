@@ -1079,6 +1079,7 @@ const employeeProfile = {
       try {
         const response = yield call(getDependentsByEmployee, payload);
         const { statusCode, data } = response;
+        console.log('response', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { dependentDetails: data.dependents } });
       } catch (error) {

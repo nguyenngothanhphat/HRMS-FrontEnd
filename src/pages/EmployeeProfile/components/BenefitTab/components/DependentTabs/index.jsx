@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatMessage } from 'umi';
+import moment from 'moment';
 import styles from './styles.less';
 
 export default function DependentTabs(props) {
@@ -22,14 +23,14 @@ export default function DependentTabs(props) {
         {formatMessage({
           id: 'pages.employeeProfile.BenefitTab.components.dependentTabs.dependent',
         })}{' '}
-        {index}
+        {index + 1}
       </div>
       <div className={styles.info}>
         {[name, gender, relationship, dob].map((item) => {
           let foo = '';
           switch (item) {
             case name:
-              foo = data.name;
+              foo = data.legalName;
               break;
             case gender:
               foo = data.gender;
@@ -38,7 +39,7 @@ export default function DependentTabs(props) {
               foo = data.relationship;
               break;
             case dob:
-              foo = data.dob;
+              foo = moment(data.dob).locale('en').format('MM.DD.YY');
               break;
             default:
               return foo;

@@ -94,8 +94,8 @@ class EmployeeProfile extends Component {
       payload: { company: employeeProfile.originData.compensationData.company },
     });
     dispatch({ type: 'employeeProfile/fetchEmployees' });
-    dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: employee });
-    dispatch({ type: 'employeeProfile/fetchEmployeeDependentDetails', payload: employee });
+    dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: { employee } });
+    dispatch({ type: 'employeeProfile/fetchEmployeeDependentDetails', payload: { employee } });
     dispatch({ type: 'employeeProfile/getBenefitPlans' });
   };
 
