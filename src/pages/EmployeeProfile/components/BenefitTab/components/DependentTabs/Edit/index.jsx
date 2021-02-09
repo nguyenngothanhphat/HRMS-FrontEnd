@@ -8,9 +8,21 @@ import s from './index.less';
 
 const { Option } = Select;
 
-@connect(({ employeeProfile }) => ({
-  employeeProfile,
-}))
+@connect(
+  ({
+    employeeProfile: {
+      idCurrentEmployee = '',
+      originData: { dependentDetails: { _id: dependentsId = '' } = {} } = {},
+    } = {},
+    loading,
+  }) => ({
+    dependentsId,
+    idCurrentEmployee,
+    loadingUpdate: loading.effects['employeeProfile/updateEmployeeDependentDetails'],
+    loadingAdd: loading.effects['employeeProfile/addDependentsOfEmployee'],
+    loadingRemove: loading.effects['employeeProfile/removeEmployeeDependentDetails'],
+  }),
+)
 class Edit extends PureComponent {
   formRef = React.createRef();
 
@@ -19,21 +31,66 @@ class Edit extends PureComponent {
     this.state = {};
   }
 
-  handleSave = (values) => {
-    // eslint-disable-next-line no-console
-    console.log('Success: ', values);
+  formatData = () => {
+    const { data = [] } = this.props;
+    if (data.length > 0) {
+      return data.map((value) => {
+        const { legalName = '', gender = '', relationship = '', dob = '' } = value;
+        return {
+          legalName,
+          gender,
+          relationship,
+          dob: moment(dob).locale('en'),
+        };
+      });
+    }
+    return [
+      {
+        legalName: '',
+        gender: '',
+        relationship: '',
+        dob: null,
+      },
+    ];
   };
 
-  formatData = (data) => {
-    return data.map((value) => {
-      const { legalName = '', gender = '', relationship = '', dob = '' } = value;
-      return {
-        legalName,
-        gender,
-        relationship,
-        dob: moment(dob).locale('en'),
+  handleSave = async (values) => {
+    let payload = {};
+    const {
+      dispatch,
+      dependentsId = '',
+      setEditing = () => {},
+      setAdding = () => {},
+      data = [],
+      idCurrentEmployee = '',
+    } = this.props;
+
+    const { dependents = [] } = values;
+
+    let type = 'employeeProfile/addDependentsOfEmployee';
+    if (dependents.length === 0) {
+      type = 'employeeProfile/removeEmployeeDependentDetails';
+      payload.id = dependentsId;
+    } else if (data.length > 0) {
+      payload = values;
+      payload.id = dependentsId;
+      type = 'employeeProfile/updateEmployeeDependentDetails';
+    } else {
+      payload = {
+        employee: idCurrentEmployee,
+        dependents,
       };
+    }
+
+    const res = await dispatch({
+      type,
+      payload,
     });
+    const { statusCode = 0 } = res;
+    if (statusCode === 200) {
+      setEditing(false);
+      setAdding(false);
+    }
   };
 
   _renderEditForm = () => {
@@ -47,9 +104,8 @@ class Edit extends PureComponent {
         sm: { span: 12 },
       },
     };
-    const { data = [] } = this.props;
 
-    const formatData = this.formatData(data);
+    const formatData = this.formatData();
 
     return (
       <Form
@@ -69,6 +125,7 @@ class Edit extends PureComponent {
                   {index > 0 && <div className={s.line} />}
                   <div className={s.title}>
                     <span className={s.text}>Dependent {index + 1}</span>
+
                     <img src={RemoveIcon} alt="remove" onClick={() => remove(field.name)} />
                   </div>
 
@@ -139,15 +196,14 @@ class Edit extends PureComponent {
                     ]}
                     // initialValue={item.visaType}
                   >
-                    <DatePicker format="MM.DD.YY" />
+                    <DatePicker className={s.dateForm} format="MM.DD.YY" />
                   </Form.Item>
                 </>
               ))}
-              <Form.Item>
-                <Button onClick={() => add()} icon={<PlusOutlined />}>
-                  Add new
-                </Button>
-              </Form.Item>
+              <div onClick={() => add()} className={s.addNewBtn}>
+                <PlusOutlined />
+                <span className={s.btnTitle}>Add new</span>
+              </div>
             </>
           )}
         </Form.List>
@@ -156,13 +212,24 @@ class Edit extends PureComponent {
   };
 
   _renderButton = () => {
-    const { setEditing = () => {} } = this.props;
+    const {
+      setEditing = () => {},
+      loadingUpdate = false,
+      loadingAdd = false,
+      loadingRemove = false,
+    } = this.props;
     return (
       <div className={s.spaceFooter}>
         <div className={s.cancelFooter} onClick={() => setEditing(false)}>
           Cancel
         </div>
-        <Button type="primary" htmlType="submit" form="myForm" className={s.buttonFooter}>
+        <Button
+          loading={loadingUpdate || loadingAdd || loadingRemove}
+          type="primary"
+          htmlType="submit"
+          form="myForm"
+          className={s.buttonFooter}
+        >
           Save
         </Button>
       </div>
@@ -174,7 +241,6 @@ class Edit extends PureComponent {
       <div className={s.Edit}>
         {this._renderEditForm()}
         {this._renderButton()}
-        <p />
       </div>
     );
   }

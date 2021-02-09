@@ -50,6 +50,7 @@ class BenefitTab extends PureComponent {
     super(props);
     this.state = {
       isEditing: false,
+      isAdding: false,
     };
   }
 
@@ -59,9 +60,22 @@ class BenefitTab extends PureComponent {
     });
   };
 
+  setAdding = (value) => {
+    this.setState({
+      isAdding: value,
+    });
+  };
+
+  setAddingOrEditing = () => {
+    const { dependentDetails: { dependents = [] } = {} } = this.props;
+    if (dependents.length === 0) {
+      this.setAdding(true);
+    } else this.setEditing(true);
+  };
+
   render() {
-    const { loading, dependentDetails } = this.props;
-    const { isEditing } = this.state;
+    const { loading, dependentDetails: { dependents = [] } = {} } = this.props;
+    const { isEditing, isAdding } = this.state;
     if (loading) return <div>Loading...</div>;
     return (
       <div style={{ backgroundColor: '#f6f7f9' }}>
@@ -72,26 +86,26 @@ class BenefitTab extends PureComponent {
                 <span className={styles.headingText}>
                   {formatMessage({ id: 'pages.employeeProfile.BenefitTab.dependentDetails' })}
                 </span>
-                {!isEditing && (
-                  <div className={styles.editButton} onClick={() => this.setEditing(true)}>
+                {!isEditing && !isAdding && (
+                  <div className={styles.editButton} onClick={this.setAddingOrEditing}>
                     <EditFilled />
-                    <span className={styles.editText}>Edit</span>
+                    {dependents.length > 0 ? (
+                      <span className={styles.editText}>Edit</span>
+                    ) : (
+                      <span className={styles.editText}>Add new</span>
+                    )}
                   </div>
                 )}
               </div>
               <div>
-                {dependentDetails.length === 0 ? (
-                  <div style={{ marginBottom: '10px' }}>No data</div>
-                ) : (
-                  <>
-                    <DependentTabs
-                      key={Math.random().toString(36).substring(7)}
-                      data={dependentDetails}
-                      isEditing={isEditing}
-                      setEditing={this.setEditing}
-                    />
-                  </>
-                )}
+                <DependentTabs
+                  key={Math.random().toString(36).substring(7)}
+                  data={dependents}
+                  isEditing={isEditing}
+                  setEditing={this.setEditing}
+                  isAdding={isAdding}
+                  setAdding={this.setAdding}
+                />
               </div>
             </div>
           </div>
