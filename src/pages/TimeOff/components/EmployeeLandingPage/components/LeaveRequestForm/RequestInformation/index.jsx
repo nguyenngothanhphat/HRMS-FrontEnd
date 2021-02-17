@@ -675,16 +675,25 @@ class RequestInformation extends PureComponent {
         typeList.forEach((eachType) => {
           const { shortType = '', time = 0 } = eachType;
           if (selectedShortType === shortType) {
+            if (time !== 0) autoToDate = moment(durationFrom).add(time - 1, 'day');
+            else autoToDate = moment(durationFrom).add(time, 'day');
             if (selectedType === 'D') {
               this.setSecondNotice(`${shortType} applied for: ${time} days`);
+              if (time !== 0) {
+                let tempTime = time;
+                for (let i = 1; i <= time; i += 1) {
+                  if (moment(moment(durationFrom).add(i, 'day')).weekday() === 0) {
+                    tempTime += 2;
+                  }
+                }
+                autoToDate = moment(durationFrom).add(tempTime - 1, 'day');
+              }
             }
             if (selectedType === 'C') {
               this.setSecondNotice(
                 `A 'To date' will be set automatically as per a duration of ${time} days from the selected 'From date'`,
               );
             }
-            if (time !== 0) autoToDate = moment(durationFrom).add(time - 1, 'day');
-            else autoToDate = moment(durationFrom).add(time, 'day');
           }
         });
 
