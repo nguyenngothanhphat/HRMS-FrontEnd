@@ -672,7 +672,7 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchChangeHistories({ payload: employee = '' }, { call, put }) {
+    *fetchChangeHistories({ payload: {employee = ''} = {} }, { call, put }) {
       try {
         const response = yield call(getChangeHistories, { employee });
         const { statusCode, data } = response;
