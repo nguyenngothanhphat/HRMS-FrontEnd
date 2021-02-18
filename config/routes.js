@@ -248,6 +248,13 @@ const routes = [
             authority: ['admin-sa'],
           },
           {
+            path: '/continue-company-profile',
+            component: './BackToCompanyProfile',
+            name: 'Company Profile',
+            icon: '/assets/images/menuIcons/members.svg',
+            authority: ['admin-csa'],
+          },
+          {
             path: '/directory',
             name: 'directory',
             icon: '/assets/images/menuIcons/directory.svg',

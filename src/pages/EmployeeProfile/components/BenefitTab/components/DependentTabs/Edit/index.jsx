@@ -214,13 +214,20 @@ class Edit extends PureComponent {
   _renderButton = () => {
     const {
       setEditing = () => {},
+      setAdding = () => {},
       loadingUpdate = false,
       loadingAdd = false,
       loadingRemove = false,
     } = this.props;
     return (
       <div className={s.spaceFooter}>
-        <div className={s.cancelFooter} onClick={() => setEditing(false)}>
+        <div
+          className={s.cancelFooter}
+          onClick={() => {
+            setAdding(false);
+            setEditing(false);
+          }}
+        >
           Cancel
         </div>
         <Button

@@ -16,7 +16,7 @@ const { TextArea } = Input;
       tempData: { generalData = {}, compensationData = {} } = {},
       originData: {
         generalData: originGeneralData = {},
-        employmentData: { manager = {}, location = {}, department = {} } = {},
+        employmentData: { manager = {}, location = {}, department = {}, joinDate = '' } = {},
       } = {},
     } = {},
     user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
@@ -29,6 +29,7 @@ const { TextArea } = Input;
     manager,
     location,
     department,
+    joinDate,
   }),
 )
 class ViewInformation extends Component {
@@ -174,11 +175,11 @@ class ViewInformation extends Component {
       manager = {},
       location: { name: locationName = '' } = {},
       department: { name: departmentName = '' } = {},
+      joinDate = '',
     } = this.props;
     const {
       firstName = '',
       avatar = '',
-      createdAt = '',
       linkedIn = '',
       workEmail = '',
       workNumber = '',
@@ -186,7 +187,7 @@ class ViewInformation extends Component {
 
     const { tittle: { name: title = '' } = {} } = compensationData;
     const { visible, openEditBio } = this.state;
-    const joinningDate = moment(createdAt).format('MM.DD.YY');
+    const joiningDate = moment(joinDate).format('MM.DD.YY');
     const { generalInfo: { firstName: managerFN = '', lastName: managerLN = '' } = {} } = manager;
     // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
     // const listColors = ['#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0'];
@@ -222,14 +223,16 @@ class ViewInformation extends Component {
         <div className={s.infoEmployee__viewBottom}>
           <p className={s.infoEmployee__viewBottom__description}>{bioInfo}</p>
           <div className={s.viewBtnAction}>
-            <Button onClick={this.handleEditBio} className={s.btnEditBio}>
-              Edit Bio
-            </Button>
+            {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
+              <Button onClick={this.handleEditBio} className={s.btnEditBio}>
+                Edit Bio
+              </Button>
+            )}
           </div>
           <Divider />
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag}>Joining Date</p>
-            <p className={s.infoEmployee__textNameAndTitle__title}>{joinningDate}</p>
+            <p className={s.infoEmployee__textNameAndTitle__title}>{joiningDate}</p>
           </div>
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag}>Location</p>
