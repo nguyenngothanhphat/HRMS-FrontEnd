@@ -12,6 +12,13 @@ export async function getListTitle() {
   });
 }
 
+export async function removeTitle(payload) {
+  return request('/api/title/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getListPermissionOfRole(payload) {
   return request('/api/permission/list', {
     method: 'POST',

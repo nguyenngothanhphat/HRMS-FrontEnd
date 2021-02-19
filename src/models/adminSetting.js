@@ -3,6 +3,7 @@ import { notification } from 'antd';
 import {
   getListRoles,
   getListTitle,
+  removeTitle,
   DepartmentFilter,
   getListPermissionOfRole,
   updateRoleWithPermission,
@@ -63,6 +64,22 @@ const adminSetting = {
       }
       return resp;
     },
+
+    *removeTitle({ payload: { id = '' } }, { call }) {
+      try {
+        const response = yield call(removeTitle, { id });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return 0;
+      }
+    },
+
     *fetchDepartment(_, { call, put }) {
       try {
         const response = yield call(DepartmentFilter);
