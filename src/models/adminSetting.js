@@ -9,6 +9,7 @@ import {
   getPermissionByIdRole,
   addPosition,
   addDepartment,
+  removeDepartment,
   getRolesByCompany,
   setupComplete,
 } from '../services/adminSetting';
@@ -133,6 +134,20 @@ const adminSetting = {
         yield put({ type: 'fetchDepartment' });
       } catch (errors) {
         dialog(errors);
+      }
+    },
+    *removeDepartment({ payload: { id = '' } }, { call }) {
+      try {
+        const response = yield call(removeDepartment, { id });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return 0;
       }
     },
     *getRolesByCompany({ payload: { company = '' } }, { call, put }) {

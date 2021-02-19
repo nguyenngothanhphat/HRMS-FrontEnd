@@ -52,6 +52,13 @@ export async function addDepartment(payload) {
   });
 }
 
+export async function removeDepartment(payload) {
+  return request('/api/department/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getRolesByCompany(payload) {
   return request('/api/role/list', {
     method: 'POST',
