@@ -3,7 +3,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Fragment, Component } from 'react';
 import { Form, Input, Select, Row, Col, Checkbox, Button } from 'antd';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -162,13 +162,40 @@ class Step1 extends Component {
                       and contact you easily.
                     </p>
 
-                    <Form.Item label="Legal Business Name*" name="name">
+                    <Form.Item
+                      label="Legal Business Name*"
+                      name="name"
+                      rules={[
+                        {
+                          required: true,
+                          message: formatMessage({ id: 'page.signUp.step1.lbnError' }),
+                        },
+                      ]}
+                    >
                       <Input />
                     </Form.Item>
-                    <Form.Item label="Doing Business As (DBA)*" name="dba">
+                    <Form.Item
+                      label="Doing Business As (DBA)*"
+                      name="dba"
+                      rules={[
+                        {
+                          required: true,
+                          message: formatMessage({ id: 'page.signUp.step1.dbaError' }),
+                        },
+                      ]}
+                    >
                       <Input />
                     </Form.Item>
-                    <Form.Item label="EIN*" name="ein">
+                    <Form.Item
+                      label="EIN*"
+                      name="ein"
+                      rules={[
+                        {
+                          required: true,
+                          message: formatMessage({ id: 'page.signUp.step1.einError' }),
+                        },
+                      ]}
+                    >
                       <Input />
                     </Form.Item>
                   </Fragment>
@@ -191,10 +218,28 @@ class Step1 extends Component {
                 >
                   <Fragment>
                     <p className={styles.root__form__title}>Headquarter address</p>
-                    <Form.Item label="Address*" name="address">
+                    <Form.Item
+                      label="Address*"
+                      name="address"
+                      rules={[
+                        {
+                          required: true,
+                          message: formatMessage({ id: 'page.signUp.step1.addressError' }),
+                        },
+                      ]}
+                    >
                       <Input />
                     </Form.Item>
-                    <Form.Item label="Country" name="country">
+                    <Form.Item
+                      label="Country"
+                      name="country"
+                      rules={[
+                        {
+                          required: true,
+                          message: formatMessage({ id: 'page.signUp.step1.countryError' }),
+                        },
+                      ]}
+                    >
                       <Select
                         placeholder="Select Country"
                         showArrow
@@ -211,7 +256,16 @@ class Step1 extends Component {
                     </Form.Item>
                     <Row gutter={[30, 0]}>
                       <Col span={12}>
-                        <Form.Item label="State" name="state">
+                        <Form.Item
+                          label="State"
+                          name="state"
+                          rules={[
+                            {
+                              required: true,
+                              message: formatMessage({ id: 'page.signUp.step1.stateError' }),
+                            },
+                          ]}
+                        >
                           <Select
                             placeholder="Select State"
                             showArrow
@@ -228,7 +282,20 @@ class Step1 extends Component {
                         </Form.Item>
                       </Col>
                       <Col span={12}>
-                        <Form.Item label="Zip Code" name="zipCode">
+                        <Form.Item
+                          label="Zip Code"
+                          name="zipCode"
+                          rules={[
+                            {
+                              required: true,
+                              message: formatMessage({ id: 'page.signUp.step1.zipCodeError' }),
+                            },
+                            {
+                              pattern: /^[0-9]{6}$/,
+                              message: formatMessage({ id: 'page.signUp.step1.zipCodeError2' }),
+                            },
+                          ]}
+                        >
                           <Input />
                         </Form.Item>
                       </Col>
@@ -262,10 +329,28 @@ class Step1 extends Component {
                       </Checkbox>
                     </div>
 
-                    <Form.Item label="Address*" name="address">
+                    <Form.Item
+                      label="Address*"
+                      name="address"
+                      rules={[
+                        {
+                          required: true,
+                          message: formatMessage({ id: 'page.signUp.step1.addressError' }),
+                        },
+                      ]}
+                    >
                       <Input disabled={checkLegalSameHeadQuarter} />
                     </Form.Item>
-                    <Form.Item label="Country" name="country">
+                    <Form.Item
+                      label="Country"
+                      name="country"
+                      rules={[
+                        {
+                          required: true,
+                          message: formatMessage({ id: 'page.signUp.step1.countryError' }),
+                        },
+                      ]}
+                    >
                       <Select
                         placeholder="Select Country"
                         showArrow
@@ -283,7 +368,16 @@ class Step1 extends Component {
                     </Form.Item>
                     <Row gutter={[30, 0]}>
                       <Col span={12}>
-                        <Form.Item label="State" name="state">
+                        <Form.Item
+                          label="State"
+                          name="state"
+                          rules={[
+                            {
+                              required: true,
+                              message: formatMessage({ id: 'page.signUp.step1.stateError' }),
+                            },
+                          ]}
+                        >
                           <Select
                             placeholder="Select State"
                             showArrow
@@ -300,7 +394,20 @@ class Step1 extends Component {
                         </Form.Item>
                       </Col>
                       <Col span={12}>
-                        <Form.Item label="Zip Code" name="zipCode">
+                        <Form.Item
+                          label="Zip Code"
+                          name="zipCode"
+                          rules={[
+                            {
+                              required: true,
+                              message: formatMessage({ id: 'page.signUp.step1.zipCodeError' }),
+                            },
+                            {
+                              pattern: /^[0-9]{6}$/,
+                              message: formatMessage({ id: 'page.signUp.step1.zipCodeError2' }),
+                            },
+                          ]}
+                        >
                           <Input disabled={checkLegalSameHeadQuarter} />
                         </Form.Item>
                       </Col>
