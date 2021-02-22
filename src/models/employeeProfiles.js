@@ -672,7 +672,7 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchChangeHistories({ payload: employee = '' }, { call, put }) {
+    *fetchChangeHistories({ payload: { employee = '' } = {} }, { call, put }) {
       try {
         const response = yield call(getChangeHistories, { employee });
         const { statusCode, data } = response;
@@ -1086,7 +1086,7 @@ const employeeProfile = {
         yield put({ type: 'saveOrigin', payload: { dependentDetails: data } });
         return response;
       } catch (error) {
-        dialog(error);
+        // dialog(error);
         return {};
       }
     },
