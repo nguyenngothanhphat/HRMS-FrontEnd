@@ -492,12 +492,11 @@ class DirectoryComponent extends PureComponent {
   renderButtonFilter = (tabId, collapsed) => {
     return (
       <div className={styles.filterSider} onClick={this.handleToggle}>
-        {collapsed ? (
-          <div className={styles.filterBackgroundButton_isCollapsed} />
-        ) : (
-          <div className={styles.filterBackgroundButton} />
-        )}
-        <div className={styles.filterButton}>
+        <div
+          className={`${styles.filterButton} ${
+            collapsed ? '' : `${styles.filterBackgroundButton}`
+          }`}
+        >
           <img src="/assets/images/iconFilter.svg" alt="filter" />
           <p className={styles.textButtonFilter}>Filter</p>
         </div>
