@@ -49,7 +49,10 @@ class ViewHistory extends Component {
   };
 
   render() {
-    const { changeMode = () => {}, historySearch: { key = [], data = [] } = {} } = this.props;
+    const {
+      changeMode = () => {},
+      historySearch: { key = [], dataSearch: { employee = [] } = {} } = {},
+    } = this.props;
     return (
       <div className={s.containerViewHistory}>
         {key.length === 0 ? (
@@ -68,11 +71,11 @@ class ViewHistory extends Component {
             ))}
           </div>
         )}
-        {data.length === 0 ? (
+        {employee.length === 0 ? (
           <div className={`${s.blockRecent} ${s.viewRecent}`}>No recents</div>
         ) : (
           <Row className={s.blockRecent}>
-            {data.map((item, index) => this.renderItem(item, index))}
+            {employee.map((item, index) => this.renderItem(item, index))}
           </Row>
         )}
         <Row className={s.blockRecent}>

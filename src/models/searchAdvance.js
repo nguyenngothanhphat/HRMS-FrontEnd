@@ -1,5 +1,4 @@
 import { dialog } from '@/utils/utils';
-// import { setHistorySearch, getHistorySearch } from '@/utils/historySearch';
 import {
   searchAdvance,
   searchByCategory,
