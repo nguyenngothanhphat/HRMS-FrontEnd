@@ -4,6 +4,7 @@ import SettingLayout from '@/components/SettingLayout';
 import CompanySignatory from './components/CompanySignatory';
 import CustomEmails from './components/CustomEmails';
 import DocsTemplates from './components/DocsTemplates';
+import Forms from './components/Forms';
 
 @connect(({ info: { currentStep = 0, displayComponent = {} } = {} }) => ({
   currentStep,
@@ -22,7 +23,7 @@ class Settings extends PureComponent {
         id: 2,
         name: 'Forms',
         key: 'forms',
-        // component: <NonExtempNotice />,
+        component: <Forms />,
       },
       {
         id: 3,
@@ -31,12 +32,12 @@ class Settings extends PureComponent {
         component: <CompanySignatory />,
       },
       { id: 4, name: 'Custom Emails', key: 'customEmails', component: <CustomEmails /> },
-      {
-        id: 5,
-        name: 'Approval & Permissions',
-        key: 'aoprovalPermissions',
-        // component: <CompanySignatory />,
-      },
+      // {
+      //   id: 5,
+      //   name: 'Approval & Permissions',
+      //   key: 'aoprovalPermissions',
+      //   // component: <CompanySignatory />,
+      // },
     ];
     return (
       <div>
