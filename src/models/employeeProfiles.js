@@ -1020,14 +1020,17 @@ const employeeProfile = {
       }
     },
     *fetchCountryStates({ payload = {} }, { call, put }) {
+      let response;
       try {
-        const response = yield call(getCountryStates, payload);
+        response = yield call(getCountryStates, payload);
         const { statusCode, data: listStates = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listStates } });
+        return listStates;
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
     *revokeHistory({ payload = {} }, { call, put }) {
       try {
