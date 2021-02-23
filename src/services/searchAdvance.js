@@ -13,3 +13,17 @@ export async function searchByCategory(payload) {
     data: payload,
   });
 }
+
+export async function getHistorySearch(payload) {
+  return request('/api/historysearch/get-by-employee', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateSearchHistory(payload) {
+  return request('/api/historysearch/add-and-update', {
+    method: 'POST',
+    data: payload,
+  });
+}
