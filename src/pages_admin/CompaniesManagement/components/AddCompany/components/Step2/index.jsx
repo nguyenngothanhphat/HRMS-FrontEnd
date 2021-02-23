@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react/jsx-fragments */
 /* eslint-disable react/jsx-curly-newline */
 import React, { PureComponent, Fragment } from 'react';
@@ -20,6 +21,7 @@ class Step2 extends PureComponent {
     this.state = {
       currentIndex: props.locations.length,
       addressField: '',
+      countryField: '',
     };
   }
 
@@ -92,7 +94,10 @@ class Step2 extends PureComponent {
 
   render() {
     const { dispatch, locations, listCountry } = this.props;
-    const { addressField } = this.state;
+    const { addressField, countryField } = this.state;
+
+    const itemCountry = listCountry.find((item) => item._id === countryField) || {};
+    const listStateByItemCountry = itemCountry.states || [];
 
     const checkDisableBtnNext = !addressField;
 
@@ -159,7 +164,7 @@ class Step2 extends PureComponent {
                         placeholder="Select Country"
                         showArrow
                         showSearch
-                        onChange={this.onChangeCountryHeadquarter}
+                        onChange={(value) => this.setState({ countryField: value })}
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
@@ -182,9 +187,9 @@ class Step2 extends PureComponent {
                           ]}
                         >
                           <Select>
-                            {/* {listStateHead.map((item) => (
+                            {listStateByItemCountry.map((item) => (
                               <Option key={item}>{item}</Option>
-                            ))} */}
+                            ))}
                           </Select>
                         </Form.Item>
                       </Col>
