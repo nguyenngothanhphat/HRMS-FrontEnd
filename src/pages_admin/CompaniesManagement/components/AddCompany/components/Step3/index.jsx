@@ -5,7 +5,7 @@
 /* eslint-disable no-unused-vars */
 import React, { Fragment, Component } from 'react';
 import { Form, Input, Select, Row, Col, Checkbox, Button } from 'antd';
-import { connect } from 'umi';
+import { connect, formatMessage } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -62,7 +62,20 @@ class Step3 extends Component {
                     <Form.Item label="Email" name="email" rules={[{ type: 'email' }]}>
                       <Input />
                     </Form.Item>
-                    <Form.Item label="Phone Number" name="phoneNumber">
+                    <Form.Item
+                      label="Phone Number"
+                      name="phoneNumber"
+                      rules={[
+                        {
+                          required: true,
+                          message: formatMessage({ id: 'page.signUp.step3.phoneError' }),
+                        },
+                        {
+                          pattern: /^(?:\d*)$/,
+                          message: formatMessage({ id: 'page.signUp.step3.phoneError2' }),
+                        },
+                      ]}
+                    >
                       <Input />
                     </Form.Item>
                   </Fragment>

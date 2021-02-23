@@ -19,6 +19,7 @@ class Step2 extends PureComponent {
     super(props);
     this.state = {
       currentIndex: props.locations.length,
+      addressField: '',
     };
   }
 
@@ -91,6 +92,10 @@ class Step2 extends PureComponent {
 
   render() {
     const { dispatch, locations, listCountry } = this.props;
+    const { addressField } = this.state;
+
+    const checkDisableBtnNext = !addressField;
+
     return (
       <div className={styles.root}>
         <Row justify="center">
@@ -102,23 +107,22 @@ class Step2 extends PureComponent {
                   requiredMark={false}
                   layout="vertical"
                   colon={false}
-                  initialValues={
-                    {
-                      // remember: true,
-                      // address: headQuarterAddress.address,
-                      // country: headQuarterAddress.country,
-                      // state: headQuarterAddress.state,
-                      // zipCode: headQuarterAddress.zipCode,
-                      // locations: [
-                      //   {
-                      //     address: 'a1',
-                      //     country: '',
-                      //     state: '',
-                      //     zipCode: 'z1',
-                      //   },
-                      // ],
-                    }
-                  }
+                  initialValues={{
+                    // remember: true,
+                    // address: headQuarterAddress.address,
+                    // country: headQuarterAddress.country,
+                    // state: headQuarterAddress.state,
+                    // zipCode: headQuarterAddress.zipCode,
+                    // locations: [
+                    //   {
+                    //     address: 'a1',
+                    //     country: '',
+                    //     state: '',
+                    //     zipCode: 'z1',
+                    //   },
+                    // ],
+                    address: addressField,
+                  }}
                   onValuesChange={this.handleFormCompanyChange}
                 >
                   <Fragment>
@@ -129,10 +133,28 @@ class Step2 extends PureComponent {
                       Per Work Location.
                     </p>
                     <p className={styles.root__form__title}>Headquarter address</p>
-                    <Form.Item label="Address*" name="address">
-                      <Input />
+                    <Form.Item
+                      label="Address*"
+                      name="address"
+                      rules={[
+                        {
+                          required: true,
+                          message: formatMessage({ id: 'page.signUp.step2.addressError' }),
+                        },
+                      ]}
+                    >
+                      <Input onChange={(e) => this.setState({ addressField: e.target.value })} />
                     </Form.Item>
-                    <Form.Item label="Country" name="country">
+                    <Form.Item
+                      label="Country"
+                      name="country"
+                      rules={[
+                        {
+                          required: true,
+                          message: formatMessage({ id: 'page.signUp.step2.countryError' }),
+                        },
+                      ]}
+                    >
                       <Select
                         placeholder="Select Country"
                         showArrow
@@ -149,7 +171,16 @@ class Step2 extends PureComponent {
                     </Form.Item>
                     <Row gutter={[30, 0]}>
                       <Col span={12}>
-                        <Form.Item label="State" name="state">
+                        <Form.Item
+                          label="State"
+                          name="state"
+                          rules={[
+                            {
+                              required: true,
+                              message: formatMessage({ id: 'page.signUp.step2.stateError' }),
+                            },
+                          ]}
+                        >
                           <Select>
                             {/* {listStateHead.map((item) => (
                               <Option key={item}>{item}</Option>
@@ -158,7 +189,20 @@ class Step2 extends PureComponent {
                         </Form.Item>
                       </Col>
                       <Col span={12}>
-                        <Form.Item label="Zip Code" name="zipCode">
+                        <Form.Item
+                          label="Zip Code"
+                          name="zipCode"
+                          rules={[
+                            {
+                              required: true,
+                              message: formatMessage({ id: 'page.signUp.step2.zipCodeError' }),
+                            },
+                            {
+                              pattern: /^[0-9]{6}$/,
+                              message: formatMessage({ id: 'page.signUp.step2.zipCodeError2' }),
+                            },
+                          ]}
+                        >
                           <Input />
                         </Form.Item>
                       </Col>
@@ -188,7 +232,12 @@ class Step2 extends PureComponent {
                 <Button className={styles.btn} onClick={() => this.navigateStep('previous')}>
                   {formatMessage({ id: 'page.signUp.step2.back' })}
                 </Button>
-                <Button className={styles.btn} onClick={() => this.navigateStep('next')}>
+                <Button
+                  className={styles.btnNext}
+                  type="primary"
+                  onClick={() => this.navigateStep('next')}
+                  disabled={checkDisableBtnNext}
+                >
                   {formatMessage({ id: 'page.signUp.step2.next' })}
                 </Button>
               </div>
