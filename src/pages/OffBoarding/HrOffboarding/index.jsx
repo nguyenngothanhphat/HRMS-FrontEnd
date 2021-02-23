@@ -3,6 +3,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import { Tabs, Button, Row, Col } from 'antd';
 import HRrequestTable from './component/HrRequestTable';
 import RelievingFormalities from './component/RelievingFormalities';
+import Settings from './component/Settings';
 // import { formatMessage } from 'umi';
 import styles from './index.less';
 
@@ -34,7 +35,9 @@ class HROffboarding extends PureComponent {
               <TabPane tab="Relieving Formalities" key="2">
                 <RelievingFormalities />
               </TabPane>
-              <TabPane tab="Setting" key="3" />
+              <TabPane tab="Setting" key="3">
+                <Settings />
+              </TabPane>
             </Tabs>
 
             <div className={styles.options}>
