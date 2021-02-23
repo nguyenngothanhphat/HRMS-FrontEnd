@@ -104,7 +104,7 @@ class SearchResult extends PureComponent {
           {resultByCategory.length > 0 ? (
             <Row gutter={[16, 16]}>
               {resultByCategory
-                .filter((doc) => doc !== null)
+                .filter((doc) => doc !== null && doc?.attachment && doc?.employee?._id)
                 .map((item, index) => this.renderItemDocument(item, index))}
             </Row>
           ) : (
