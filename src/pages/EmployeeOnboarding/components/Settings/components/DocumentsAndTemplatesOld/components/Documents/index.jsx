@@ -6,29 +6,35 @@ import Template from './components/Template';
 
 import styles from './index.less';
 
-@connect(({ loading, employeeSetting: { defaultTemplateList = [], customTemplateList = [] } }) => ({
-  defaultTemplateList,
-  customTemplateList,
-  loadingDefaultTemplateList: loading.effects['employeeSetting/fetchDefaultTemplateList'],
-  loadingCustomTemplateList: loading.effects['employeeSetting/fetchCustomTemplateList'],
-}))
+@connect(
+  ({
+    loading,
+    employeeSetting: { defaultTemplateListOnboarding = [], customTemplateListOnboarding = [] },
+  }) => ({
+    defaultTemplateListOnboarding,
+    customTemplateListOnboarding,
+    loadingDefaultTemplateList:
+      loading.effects['employeeSetting/fetchDefaultTemplateListOnboarding'],
+    loadingCustomTemplateList: loading.effects['employeeSetting/fetchCustomTemplateListOnboarding'],
+  }),
+)
 class Documents extends PureComponent {
   componentDidMount = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'employeeSetting/fetchDefaultTemplateList',
+      type: 'employeeSetting/fetchDefaultTemplateListOnboarding',
     });
     dispatch({
-      type: 'employeeSetting/fetchCustomTemplateList',
+      type: 'employeeSetting/fetchCustomTemplateListOnboarding',
     });
   };
 
   _renderTemplates = () => {
-    const { defaultTemplateList, loadingDefaultTemplateList } = this.props;
+    const { defaultTemplateListOnboarding, loadingDefaultTemplateList } = this.props;
     if (loadingDefaultTemplateList) {
       return <Skeleton loading={loadingDefaultTemplateList} active />;
     }
-    return defaultTemplateList.map((template) => {
+    return defaultTemplateListOnboarding.map((template) => {
       return (
         <Col span={4} className={template}>
           {/* <Link to={`/template-details/${template._id}`}> */}
@@ -40,11 +46,11 @@ class Documents extends PureComponent {
   };
 
   _renderRecentDocuments = () => {
-    const { customTemplateList, loadingCustomTemplateList } = this.props;
+    const { customTemplateListOnboarding, loadingCustomTemplateList } = this.props;
     if (loadingCustomTemplateList) {
       return <Skeleton loading={loadingCustomTemplateList} active />;
     }
-    return customTemplateList.map((template) => {
+    return customTemplateListOnboarding.map((template) => {
       return (
         <Col span={4} className={template}>
           {/* <Link to={`/template-details/${template._id}`}> */}

@@ -8,10 +8,14 @@ import lectusTinciduntEros from './assets/lectusTinciduntEros.png';
 
 import styles from './index.less';
 
-@connect(({ employeeSetting: { defaultTemplateList = [], customTemplateList = [] } }) => ({
-  defaultTemplateList,
-  customTemplateList,
-}))
+@connect(
+  ({
+    employeeSetting: { defaultTemplateListOnboarding = [], customTemplateListOnboarding = [] },
+  }) => ({
+    defaultTemplateListOnboarding,
+    customTemplateListOnboarding,
+  }),
+)
 class Template extends PureComponent {
   onRemoveTemplate = async (id) => {
     const { dispatch } = this.props;
@@ -23,10 +27,10 @@ class Template extends PureComponent {
     });
     if (statusCode === 200) {
       dispatch({
-        type: 'employeeSetting/fetchDefaultTemplateList',
+        type: 'employeeSetting/fetchDefaultTemplateListOnboarding',
       });
       dispatch({
-        type: 'employeeSetting/fetchCustomTemplateList',
+        type: 'employeeSetting/fetchCustomTemplateListOnboarding',
       });
     }
   };

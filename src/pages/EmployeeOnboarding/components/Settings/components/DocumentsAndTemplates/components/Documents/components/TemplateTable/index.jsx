@@ -88,10 +88,10 @@ class TemplateTable extends Component {
     });
     if (statusCode === 200) {
       dispatch({
-        type: 'employeeSetting/fetchDefaultTemplateList',
+        type: 'employeeSetting/fetchDefaultTemplateListOnboarding',
       });
       dispatch({
-        type: 'employeeSetting/fetchCustomTemplateList',
+        type: 'employeeSetting/fetchCustomTemplateListOnboarding',
       });
     }
   };

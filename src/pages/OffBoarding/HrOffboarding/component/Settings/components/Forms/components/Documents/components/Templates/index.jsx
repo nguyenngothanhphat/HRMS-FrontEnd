@@ -10,20 +10,27 @@ import SearchIcon from './images/search.svg';
 
 const { TabPane } = Tabs;
 
-@connect(({ loading, employeeSetting: { defaultTemplateList = [], customTemplateList = [] } }) => ({
-  defaultTemplateList,
-  customTemplateList,
-  loadingDefaultTemplateList: loading.effects['employeeSetting/fetchDefaultTemplateList'],
-  loadingCustomTemplateList: loading.effects['employeeSetting/fetchCustomTemplateList'],
-}))
+@connect(
+  ({
+    loading,
+    employeeSetting: { defaultTemplateListOffboarding = [], customTemplateListOffboarding = [] },
+  }) => ({
+    defaultTemplateListOffboarding,
+    customTemplateListOffboarding,
+    loadingDefaultTemplateList:
+      loading.effects['employeeSetting/fetchDefaultTemplateListOffboarding'],
+    loadingCustomTemplateList:
+      loading.effects['employeeSetting/fetchCustomTemplateListOffboarding'],
+  }),
+)
 class Templates extends PureComponent {
   fetchData = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'employeeSetting/fetchDefaultTemplateList',
+      type: 'employeeSetting/fetchDefaultTemplateListOffboarding',
     });
     dispatch({
-      type: 'employeeSetting/fetchCustomTemplateList',
+      type: 'employeeSetting/fetchCustomTemplateListOffboarding',
     });
   };
 
@@ -45,9 +52,9 @@ class Templates extends PureComponent {
 
   render() {
     const {
-      defaultTemplateList,
+      defaultTemplateListOffboarding,
       loadingDefaultTemplateList,
-      customTemplateList,
+      customTemplateListOffboarding,
       loadingCustomTemplateList,
     } = this.props;
 
@@ -60,10 +67,13 @@ class Templates extends PureComponent {
             tabBarExtraContent={this.operations()}
           >
             <TabPane tab="System Default Templates" key="1">
-              <SystemDefault list={defaultTemplateList} loading={loadingDefaultTemplateList} />
+              <SystemDefault
+                list={defaultTemplateListOffboarding}
+                loading={loadingDefaultTemplateList}
+              />
             </TabPane>
             <TabPane tab="Custom Documents" key="2">
-              <Custom list={customTemplateList} loading={loadingCustomTemplateList} />
+              <Custom list={customTemplateListOffboarding} loading={loadingCustomTemplateList} />
             </TabPane>
           </Tabs>
         </div>

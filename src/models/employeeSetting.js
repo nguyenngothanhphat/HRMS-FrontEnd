@@ -33,8 +33,10 @@ const employeeSetting = {
     triggerEventList: [],
     optionalQuestions: [],
     isAbleToSubmit: false,
-    defaultTemplateList: [],
-    customTemplateList: [],
+    defaultTemplateListOnboarding: [],
+    customTemplateListOnboarding: [],
+    defaultTemplateListOffboarding: [],
+    customTemplateListOffboarding: [],
     currentTemplate: {},
     tempSettings: [],
     newTemplate: {},
@@ -56,7 +58,7 @@ const employeeSetting = {
     emailCustomData: {},
   },
   effects: {
-    *fetchDefaultTemplateList(_, { call, put }) {
+    *fetchDefaultTemplateListOnboarding(_, { call, put }) {
       try {
         const response = yield call(getDefaultTemplateList);
         const { statusCode, data } = response;
@@ -64,25 +66,71 @@ const employeeSetting = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { defaultTemplateList: data },
+          payload: {
+            defaultTemplateListOnboarding: data.filter((value) =>
+              value.type.includes('ON_BOARDING'),
+            ),
+          },
         });
       } catch (errors) {
         dialog(errors);
       }
     },
-    *fetchCustomTemplateList(_, { call, put }) {
+    *fetchCustomTemplateListOnboarding(_, { call, put }) {
       try {
         const response = yield call(getCustomTemplateList);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { customTemplateList: data, loadingCustomTemplateList: false },
+          payload: {
+            customTemplateListOnboarding: data.filter((value) =>
+              value.type.includes('ON_BOARDING'),
+            ),
+            loadingCustomTemplateList: false,
+          },
         });
       } catch (errors) {
         dialog(errors);
       }
     },
+    *fetchDefaultTemplateListOffboarding(_, { call, put }) {
+      try {
+        const response = yield call(getDefaultTemplateList);
+        const { statusCode, data } = response;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            defaultTemplateListOffboarding: data.filter((value) =>
+              value.type.includes('OFF_BOARDING'),
+            ),
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchCustomTemplateListOffboarding(_, { call, put }) {
+      try {
+        const response = yield call(getCustomTemplateList);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            customTemplateListOffboarding: data.filter((value) =>
+              value.type.includes('OFF_BOARDING'),
+            ),
+            loadingCustomTemplateList: false,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
     *fetchTemplateById({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getTemplateById, payload);

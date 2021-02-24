@@ -3,20 +3,27 @@ import { connect } from 'umi';
 import Templates from './components/Templates';
 import styles from './index.less';
 
-@connect(({ loading, employeeSetting: { defaultTemplateList = [], customTemplateList = [] } }) => ({
-  defaultTemplateList,
-  customTemplateList,
-  loadingDefaultTemplateList: loading.effects['employeeSetting/fetchDefaultTemplateList'],
-  loadingCustomTemplateList: loading.effects['employeeSetting/fetchCustomTemplateList'],
-}))
+@connect(
+  ({
+    loading,
+    employeeSetting: { defaultTemplateListOffboarding = [], customTemplateListOffboarding = [] },
+  }) => ({
+    defaultTemplateListOffboarding,
+    customTemplateListOffboarding,
+    loadingDefaultTemplateList:
+      loading.effects['employeeSetting/fetchDefaultTemplateListOffboarding'],
+    loadingCustomTemplateList:
+      loading.effects['employeeSetting/fetchCustomTemplateListOffboarding'],
+  }),
+)
 class Documents extends PureComponent {
   componentDidMount = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'employeeSetting/fetchDefaultTemplateList',
+      type: 'employeeSetting/fetchDefaultTemplateListOffboarding',
     });
     dispatch({
-      type: 'employeeSetting/fetchCustomTemplateList',
+      type: 'employeeSetting/fetchCustomTemplateListOffboarding',
     });
   };
 
