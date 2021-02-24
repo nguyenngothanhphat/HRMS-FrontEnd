@@ -14,7 +14,7 @@
 
 .TemplateTable {
   padding: 24px;
-  padding-bottom: 0;
+  // padding-bottom: 0;
   background-color: #ffffff;
   border-radius: 8px;
   border: solid 1px @border-color;
@@ -24,7 +24,7 @@
   }
 
   table {
-    border-bottom: 1px solid @border-color;
+    // border-bottom: 1px solid @border-color;
   }
 
   .tableActions {
@@ -110,12 +110,15 @@
       color: #464646;
     }
     .ant-table-tbody {
-      tr:last-child td {
-        border-bottom: solid 1px white;
-      }
+      // tr:last-child td {
+      //   border-bottom: solid 1px white;
+      // }
     }
     .ant-table-tbody > tr > td {
-      .mixin-border-bottom-row();
+      border-bottom: none;
+    }
+    .ant-table-small .ant-table-thead > tr > th {
+      background-color: @blue;
     }
 
     th.ant-table-selection-column {

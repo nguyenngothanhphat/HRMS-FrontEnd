@@ -143,7 +143,7 @@ class TemplateTable extends Component {
             dataSource={list}
             // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
             pagination={{ ...pagination, total: list.length }}
-            scroll={{ x: 1000, y: 'max-content' }}
+            // scroll={{ x: 1000, y: 'max-content' }}
           />
         </div>
       </>
