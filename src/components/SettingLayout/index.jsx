@@ -49,6 +49,16 @@ class SettingLayout extends PureComponent {
     });
   }
 
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        settingStep: 0,
+      },
+    });
+  };
+
   _handlePreviewOffer = () => {
     const { dispatch } = this.props;
     dispatch({
