@@ -3,8 +3,8 @@ import TemplateTable from '../../../TemplateTable';
 
 class SystemDefault extends PureComponent {
   render() {
-    const { list = [] } = this.props;
-    return <TemplateTable list={list} inTab />;
+    const { list = [], loading = false } = this.props;
+    return <TemplateTable list={list} loading={loading} inTab />;
   }
 }
 
