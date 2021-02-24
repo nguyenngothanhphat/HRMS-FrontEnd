@@ -427,6 +427,20 @@ const routes = [
             authority: ['hr-manager'],
           },
           {
+            path: '/offboarding/create-custom-email',
+            name: 'Create custom email',
+            hideInMenu: true,
+            component:
+              './OffBoarding/HrOffboarding/component/Settings/components/CustomEmails/components/CreateCustomEmail',
+          },
+          {
+            path: '/offboarding/edit-email/:reId',
+            name: 'Edit email',
+            hideInMenu: true,
+            component:
+              './OffBoarding/HrOffboarding/component/Settings/components/CustomEmails/components/EditEmail',
+          },
+          {
             path: '/directory/employee-profile/:reId',
             name: 'employeeProfile',
             component: './EmployeeProfile',

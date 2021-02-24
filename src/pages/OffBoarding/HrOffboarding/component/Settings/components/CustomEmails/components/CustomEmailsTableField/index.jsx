@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react';
-import { Table, Spin } from 'antd';
+import { Table, Spin, Tooltip } from 'antd';
 import { formatMessage, connect, Link, history } from 'umi';
 import moment from 'moment';
-import AddIcon from '@/assets/add-symbols.svg';
-import trashIcon from './assets/trashIcon.svg';
+import FileIcon from './images/doc.svg';
+import DeleteIcon from './images/delete.svg';
 
 import styles from './index.less';
 
@@ -70,16 +70,14 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   handleActionDelete = (customEmailId) => {
-    const { dispatch } = this.props;
-
-    if (!dispatch) {
-      return;
-    }
-
-    dispatch({
-      type: 'employeeSetting/deleteCustomEmailItem',
-      payload: customEmailId,
-    });
+    // const { dispatch } = this.props;
+    // if (!dispatch) {
+    //   return;
+    // }
+    // dispatch({
+    //   type: 'employeeSetting/deleteCustomEmailItem',
+    //   payload: customEmailId,
+    // });
   };
 
   _renderColumns = () => {
@@ -88,11 +86,21 @@ class CustomEmailsTableField extends PureComponent {
         title: formatMessage({ id: 'component.customEmailsTableField.emailSubject' }),
         dataIndex: 'emailSubject',
         key: 'emailSubject',
+        width: '30%',
+        render: (emailSubject) => {
+          return (
+            <div className={styles.fileName}>
+              <img src={FileIcon} alt="name" />
+              <span>{emailSubject}</span>
+            </div>
+          );
+        },
       },
       {
         title: formatMessage({ id: 'component.customEmailsTableField.createdOn' }),
         dataIndex: 'createdOn',
         key: 'createdOn',
+        width: '20%',
       },
       {
         title: formatMessage({ id: 'component.customEmailsTableField.triggerEvent' }),
@@ -102,6 +110,7 @@ class CustomEmailsTableField extends PureComponent {
       },
       {
         title: formatMessage({ id: 'component.customEmailsTableField.frequency' }),
+        width: '15%',
         dataIndex: 'frequency',
         key: 'frequency',
       },
@@ -109,14 +118,18 @@ class CustomEmailsTableField extends PureComponent {
         title: formatMessage({ id: 'component.customEmailsTableField.actions' }),
         dataIndex: 'actions',
         key: 'actions',
+        width: '15%',
         render: () => {
           const { currentRecord = {} } = this.state;
           const { idCustomEmail = '' } = currentRecord;
 
           return (
-            <Link to={`/employee-onboarding/edit-email/${idCustomEmail}`}>
-              {formatMessage({ id: 'component.customEmailsTableField.editEmail' })}
-            </Link>
+            <div className={styles.actions}>
+              <Link to={`/offboarding/edit-email/${idCustomEmail}`}>View mail</Link>
+              <Tooltip title="Delete">
+                <img src={DeleteIcon} alt="delete" onClick={() => this.handleActionDelete()} />
+              </Tooltip>
+            </div>
           );
         },
       },
@@ -187,10 +200,10 @@ class CustomEmailsTableField extends PureComponent {
               <span className={styles.title}>
                 {formatMessage({ id: 'component.customEmailsTableField.titleTable' })}
               </span>
-              <div className={styles.addButton} onClick={this.addNewEmailTemplate}>
+              {/* <div className={styles.addButton} onClick={this.addNewEmailTemplate}>
                 <img src={AddIcon} alt="add" />
                 <span>Add new email template</span>
-              </div>
+              </div> */}
             </div>
             <div className={styles.CustomEmailsTableField_table}>
               <Table
@@ -208,6 +221,7 @@ class CustomEmailsTableField extends PureComponent {
                     ? { ...pagination, total: listCustomEmail.length }
                     : false
                 }
+                scroll={{ y: 300 }}
               />
             </div>
           </div>

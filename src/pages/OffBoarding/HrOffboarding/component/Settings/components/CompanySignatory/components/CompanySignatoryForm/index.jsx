@@ -78,7 +78,7 @@ class CompanySignatoryForm extends PureComponent {
     return (
       <div className={styles.CompanySignatoryForm}>
         <div className={styles.CompanySignatoryForm_form}>
-          <Row gutter={[24, 12]} align="middle">
+          <Row gutter={[24, 12]} align="middle" className={styles.tableHeader}>
             <Col className={styles.CompanySignatoryForm_title} span={6}>
               Name of the signatory
             </Col>
@@ -89,7 +89,6 @@ class CompanySignatoryForm extends PureComponent {
               Actions
             </Col>
           </Row>
-          <Divider />
           <Row gutter={[24, 12]} align="middle">
             <Col className={styles.CompanySignatoryForm_content} span={6}>
               SanDeep Meta

@@ -20,7 +20,7 @@ class TemplateTable extends Component {
         title: 'Template Name',
         dataIndex: 'name',
         key: 'name',
-        width: '20%',
+        width: '15%',
         render: (name) => {
           return (
             <div className={styles.fileName}>
@@ -34,13 +34,25 @@ class TemplateTable extends Component {
         title: 'Department',
         dataIndex: 'department',
         key: 'department',
-        width: '20%',
+        width: '15%',
       },
       {
         title: 'Description',
         dataIndex: 'description',
         key: 'description',
-        width: '40%',
+        // width: '40%',
+      },
+      {
+        title: 'Created At',
+        dataIndex: 'createdAt',
+        key: 'createdAt',
+        width: '15%',
+      },
+      {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
+        width: '15%',
       },
       {
         title: 'Actions',
