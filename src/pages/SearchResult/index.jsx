@@ -61,7 +61,7 @@ class SearchResult extends PureComponent {
     );
   };
 
-  renderItemDocument = (item, index) => {
+  renderItemDocument = (item = {}, index) => {
     const {
       employee: { generalInfo: { firstName = '' } = {} } = {},
       attachment: { name: nameDocument = '', type = '' } = {},
@@ -103,7 +103,9 @@ class SearchResult extends PureComponent {
         <div className={styles.block} style={{ borderBottom: 'none' }}>
           {resultByCategory.length > 0 ? (
             <Row gutter={[16, 16]}>
-              {resultByCategory.map((item, index) => this.renderItemDocument(item, index))}
+              {resultByCategory
+                .filter((doc) => doc !== null && doc?.attachment && doc?.employee?._id)
+                .map((item, index) => this.renderItemDocument(item, index))}
             </Row>
           ) : (
             this.renderViewEmpty('No Documents Search By Category')
