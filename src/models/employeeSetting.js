@@ -100,8 +100,10 @@ const employeeSetting = {
         console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { currentTemplate: data } });
+        return statusCode
       } catch (errors) {
         dialog(errors);
+        return 0
       }
     },
     *uploadFile({ payload, isUploadSignature = false }, { call, put }) {

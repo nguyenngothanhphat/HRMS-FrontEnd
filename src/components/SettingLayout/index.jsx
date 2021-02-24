@@ -23,7 +23,7 @@ class SettingLayout extends PureComponent {
   }
 
   static getDerivedStateFromProps(props) {
-    const { listMenu, settingStep } = props;
+    const { listMenu = [], settingStep } = props;
     // const selectedItemId = listMenu[settingStep]
     if (settingStep !== null) {
       return {

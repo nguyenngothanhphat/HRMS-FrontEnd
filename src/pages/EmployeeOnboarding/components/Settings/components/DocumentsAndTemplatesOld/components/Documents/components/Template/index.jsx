@@ -13,20 +13,22 @@ import styles from './index.less';
   customTemplateList,
 }))
 class Template extends PureComponent {
-  onRemoveTemplate = (id) => {
+  onRemoveTemplate = async (id) => {
     const { dispatch } = this.props;
-    dispatch({
+    const statusCode = await dispatch({
       type: 'employeeSetting/removeTemplateById',
       payload: {
         id,
       },
     });
-    dispatch({
-      type: 'employeeSetting/fetchDefaultTemplateList',
-    });
-    dispatch({
-      type: 'employeeSetting/fetchCustomTemplateList',
-    });
+    if (statusCode === 200) {
+      dispatch({
+        type: 'employeeSetting/fetchDefaultTemplateList',
+      });
+      dispatch({
+        type: 'employeeSetting/fetchCustomTemplateList',
+      });
+    }
   };
 
   _renderMenu = () => {

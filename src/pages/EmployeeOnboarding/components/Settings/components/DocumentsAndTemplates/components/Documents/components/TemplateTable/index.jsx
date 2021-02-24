@@ -78,9 +78,22 @@ class TemplateTable extends Component {
     alert('Edit');
   };
 
-  onDelete = () => {
-    // eslint-disable-next-line no-alert
-    alert('Delete');
+  onDelete = async (id) => {
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'employeeSetting/removeTemplateById',
+      payload: {
+        id,
+      },
+    });
+    if (statusCode === 200) {
+      dispatch({
+        type: 'employeeSetting/fetchDefaultTemplateList',
+      });
+      dispatch({
+        type: 'employeeSetting/fetchCustomTemplateList',
+      });
+    }
   };
 
   viewTemplateDetail = (id) => {

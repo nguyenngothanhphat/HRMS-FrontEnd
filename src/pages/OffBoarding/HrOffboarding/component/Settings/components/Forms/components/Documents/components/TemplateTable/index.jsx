@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Table, Empty } from 'antd';
-import { formatMessage, connect } from 'umi';
+import { formatMessage, connect, history } from 'umi';
+import moment from 'moment';
 import DownloadIcon from './images/download.svg';
 import EditIcon from './images/edit.svg';
 import DeleteIcon from './images/delete.svg';
 import DocIcon from './images/doc.svg';
-
 import styles from './index.less';
 
 class TemplateTable extends Component {
@@ -18,52 +18,46 @@ class TemplateTable extends Component {
     const columns = [
       {
         title: 'Template Name',
-        dataIndex: 'name',
-        key: 'name',
-        width: '15%',
-        render: (name) => {
+        dataIndex: 'titleAndId',
+        key: 'titleAndId',
+        width: '20%',
+        render: (titleAndId) => {
           return (
-            <div className={styles.fileName}>
+            <div
+              className={styles.fileName}
+              onClick={() => this.viewTemplateDetail(titleAndId?._id)}
+            >
               <img src={DocIcon} alt="name" />
-              <span>{name}</span>
+              <span>{titleAndId?.title}</span>
             </div>
           );
         },
       },
       {
-        title: 'Department',
-        dataIndex: 'department',
-        key: 'department',
-        width: '15%',
-      },
-      {
-        title: 'Description',
-        dataIndex: 'description',
-        key: 'description',
-        // width: '40%',
+        title: 'Type',
+        dataIndex: 'type',
+        key: 'type',
+        width: '40%',
       },
       {
         title: 'Created At',
         dataIndex: 'createdAt',
         key: 'createdAt',
-        width: '15%',
-      },
-      {
-        title: 'Status',
-        dataIndex: 'status',
-        key: 'status',
-        width: '15%',
+        width: '20%',
+        render: (createdAt) => {
+          return <span>{moment(createdAt).locale('en').format('MM.DD.YY')}</span>;
+        },
       },
       {
         title: 'Actions',
-        dataIndex: 'actions',
+        dataIndex: '_id',
         key: 'actions',
-        render: () => {
+        render: (_id) => {
           return (
             <div className={styles.actionsButton}>
-              <img src={DownloadIcon} onClick={() => this.onDownload()} alt="download" />
-              <img src={EditIcon} onClick={() => this.onEdit()} alt="edit" />
-              <img src={DeleteIcon} onClick={() => this.onDelete()} alt="delete" />
+              <img src={DownloadIcon} onClick={() => this.onDownload(_id)} alt="download" />
+              {/* <img src={EditIcon} onClick={() => this.onEdit(_id)} alt="edit" /> */}
+              <img src={DeleteIcon} onClick={() => this.onDelete(_id)} alt="delete" />
             </div>
           );
         },
@@ -84,9 +78,26 @@ class TemplateTable extends Component {
     alert('Edit');
   };
 
-  onDelete = () => {
-    // eslint-disable-next-line no-alert
-    alert('Delete');
+  onDelete = async (id) => {
+    const { dispatch } = this.props;
+    const statusCode = await dispatch({
+      type: 'employeeSetting/removeTemplateById',
+      payload: {
+        id,
+      },
+    });
+    if (statusCode === 200) {
+      dispatch({
+        type: 'employeeSetting/fetchDefaultTemplateList',
+      });
+      dispatch({
+        type: 'employeeSetting/fetchCustomTemplateList',
+      });
+    }
+  };
+
+  viewTemplateDetail = (id) => {
+    history.push(`/template-details/${id}`);
   };
 
   onChangePagination = (pageNumber) => {
@@ -95,9 +106,22 @@ class TemplateTable extends Component {
     });
   };
 
+  parseList = () => {
+    const { list = [] } = this.props;
+    return list.map((value) => {
+      return {
+        ...value,
+        titleAndId: {
+          title: value.title || '',
+          _id: value._id || '',
+        },
+      };
+    });
+  };
+
   render() {
     const { pageSelected } = this.state;
-    const { list } = this.props;
+    const { list = [], loading = false } = this.props;
     const rowSize = 10;
 
     const rowSelection = {
@@ -152,7 +176,8 @@ class TemplateTable extends Component {
               ),
             }}
             columns={this.generateColumns(columnArr, type)}
-            dataSource={list}
+            dataSource={this.parseList()}
+            loading={loading}
             // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
             pagination={{ ...pagination, total: list.length }}
             // scroll={{ x: 1000, y: 'max-content' }}

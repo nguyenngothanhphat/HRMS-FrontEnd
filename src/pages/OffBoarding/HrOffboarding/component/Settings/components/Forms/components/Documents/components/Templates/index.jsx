@@ -10,7 +10,23 @@ import SearchIcon from './images/search.svg';
 
 const { TabPane } = Tabs;
 
+@connect(({ loading, employeeSetting: { defaultTemplateList = [], customTemplateList = [] } }) => ({
+  defaultTemplateList,
+  customTemplateList,
+  loadingDefaultTemplateList: loading.effects['employeeSetting/fetchDefaultTemplateList'],
+  loadingCustomTemplateList: loading.effects['employeeSetting/fetchCustomTemplateList'],
+}))
 class Templates extends PureComponent {
+  fetchData = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeSetting/fetchDefaultTemplateList',
+    });
+    dispatch({
+      type: 'employeeSetting/fetchCustomTemplateList',
+    });
+  };
+
   operations = () => {
     return (
       <div className={styles.operations}>
@@ -28,18 +44,26 @@ class Templates extends PureComponent {
   };
 
   render() {
-    const { allDrafts = {} } = this.props;
-    const { provisionalOfferDrafts = [], finalOfferDrafts = [] } = allDrafts;
+    const {
+      defaultTemplateList,
+      loadingDefaultTemplateList,
+      customTemplateList,
+      loadingCustomTemplateList,
+    } = this.props;
 
     return (
       <div className={styles.Templates}>
         <div className={styles.tabs}>
-          <Tabs defaultActiveKey="1" tabBarExtraContent={this.operations()}>
+          <Tabs
+            defaultActiveKey="1"
+            onTabClick={this.fetchData}
+            tabBarExtraContent={this.operations()}
+          >
             <TabPane tab="System Default Templates" key="1">
-              <SystemDefault list={provisionalOfferDrafts} />
+              <SystemDefault list={defaultTemplateList} loading={loadingDefaultTemplateList} />
             </TabPane>
-            <TabPane tab="Custom created" key="2">
-              <Custom list={finalOfferDrafts} />
+            <TabPane tab="Custom Documents" key="2">
+              <Custom list={customTemplateList} loading={loadingCustomTemplateList} />
             </TabPane>
           </Tabs>
         </div>
@@ -49,12 +73,4 @@ class Templates extends PureComponent {
 }
 
 // export default FinalOfferDrafts;
-export default connect((state) => {
-  const { onboard = {} } = state;
-  const { onboardingOverview = {} } = onboard;
-  const { finalOfferDrafts = [], allDrafts = {} } = onboardingOverview;
-  return {
-    finalOfferDrafts,
-    allDrafts,
-  };
-})(Templates);
+export default Templates;

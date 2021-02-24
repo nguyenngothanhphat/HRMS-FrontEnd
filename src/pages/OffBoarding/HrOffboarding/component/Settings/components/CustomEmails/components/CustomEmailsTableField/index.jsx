@@ -49,12 +49,12 @@ class CustomEmailsTableField extends PureComponent {
     const newListCustomEmail = [];
 
     cloneListEmail.reverse().forEach((item) => {
-      const formatDate = `${moment(item.createdAt).locale('en').format('Do MMMM, YYYY')}`;
+      const formatDate = `${moment(item.createdAt).locale('en').format('MM.DD.YY')}`;
 
       newListCustomEmail.push({
         idCustomEmail: item._id,
         emailSubject: item.subject !== undefined ? item.subject : 'Onboarding email',
-        createdOn: formatDate !== undefined ? formatDate : '24th August, 2020',
+        createdOn: formatDate !== undefined ? formatDate : '08.24.20',
         triggerEvent:
           item.triggerEvent.name !== undefined ? item.triggerEvent.name : 'Person starts work',
         frequency: 'None',
@@ -88,11 +88,16 @@ class CustomEmailsTableField extends PureComponent {
         key: 'emailSubject',
         width: '30%',
         render: (emailSubject) => {
+          const { currentRecord = {} } = this.state;
+          const { idCustomEmail = '' } = currentRecord;
+
           return (
-            <div className={styles.fileName}>
-              <img src={FileIcon} alt="name" />
-              <span>{emailSubject}</span>
-            </div>
+            <Link to={`/offboarding/edit-email/${idCustomEmail}`}>
+              <div className={styles.fileName}>
+                <img src={FileIcon} alt="name" />
+                <span>{emailSubject}</span>
+              </div>
+            </Link>
           );
         },
       },
@@ -133,32 +138,12 @@ class CustomEmailsTableField extends PureComponent {
           );
         },
       },
-      // {
-      //   title: '',
-      //   dataIndex: 'delete',
-      //   key: 'delete',
-      //   render: () => {
-      //     const { currentRecord = {} } = this.state;
-      //     const { idCustomEmail = '' } = currentRecord;
-      //     const { loading } = this.props;
-
-      //     return (
-      //       <img
-      //         src={trashIcon}
-      //         alt="trash"
-      //         className={styles.trashIcon}
-      //         onClick={() => this.handleActionDelete(idCustomEmail)}
-      //         loading={loading}
-      //       />
-      //     );
-      //   },
-      // },
     ];
     return columns;
   };
 
   addNewEmailTemplate = () => {
-    history.push('/employee-onboarding/create-email-reminder');
+    history.push('/offboarding/create-custom-email');
   };
 
   render() {
