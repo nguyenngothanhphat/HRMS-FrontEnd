@@ -6,11 +6,17 @@ class DocumentsAndTemplatesHeader extends PureComponent {
   render() {
     return (
       <div className={styles.DocumentsAndTemplatesHeader}>
-        <div className={styles.title}>
-          {formatMessage({ id: 'component.documentAndTemplates.title' })}
+        <div className={styles.leftPart}>
+          <div className={styles.title}>Document & Templates</div>
+          <div className={styles.subTitle}>
+            You can manage all of your documents & templates related to off boarding here. The app
+            can generate and send your company’s relieving & experience letters.
+          </div>
         </div>
-        <div className={styles.subTitle}>
-          {formatMessage({ id: 'component.documentAndTemplates.subTitle' })}
+        <div className={styles.rightPart}>
+          <div className={styles.addButton}>
+            <span>Create New Templates</span>
+          </div>
         </div>
       </div>
     );
