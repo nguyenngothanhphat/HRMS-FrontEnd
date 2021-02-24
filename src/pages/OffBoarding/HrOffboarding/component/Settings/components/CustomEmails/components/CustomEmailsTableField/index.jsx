@@ -1,18 +1,20 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react';
-import { Table, Spin, Tooltip } from 'antd';
+import { Table, Spin } from 'antd';
 import { formatMessage, connect, Link, history } from 'umi';
 import moment from 'moment';
 import FileIcon from './images/doc.svg';
-import DeleteIcon from './images/delete.svg';
+// import DeleteIcon from './images/delete.svg';
 
 import styles from './index.less';
 
-@connect(({ employeeSetting: { dataSubmit = {}, listCustomEmail = [] } = {}, loading }) => ({
-  dataSubmit,
-  listCustomEmail,
-  loading: loading.effects['employeeSetting/deleteCustomEmailItem'],
-}))
+@connect(
+  ({ employeeSetting: { dataSubmit = {}, listCustomEmailOffboarding = [] } = {}, loading }) => ({
+    dataSubmit,
+    listCustomEmailOffboarding,
+    loading: loading.effects['employeeSetting/deleteCustomEmailItem'],
+  }),
+)
 class CustomEmailsTableField extends PureComponent {
   constructor(props) {
     super(props);
@@ -38,20 +40,20 @@ class CustomEmailsTableField extends PureComponent {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'employeeSetting/fecthListCustomEmail',
+      type: 'employeeSetting/fetchListCustomEmailOffboarding',
       payload: {},
     });
   };
 
   _renderData = () => {
-    const { listCustomEmail } = this.props;
-    const cloneListEmail = [...listCustomEmail];
-    const newListCustomEmail = [];
+    const { listCustomEmailOffboarding } = this.props;
+    const cloneListEmail = [...listCustomEmailOffboarding];
+    const newlistCustomEmailOffboarding = [];
 
     cloneListEmail.reverse().forEach((item) => {
       const formatDate = `${moment(item.createdAt).locale('en').format('MM.DD.YY')}`;
 
-      newListCustomEmail.push({
+      newlistCustomEmailOffboarding.push({
         idCustomEmail: item._id,
         emailSubject: item.subject !== undefined ? item.subject : 'Onboarding email',
         createdOn: formatDate !== undefined ? formatDate : '08.24.20',
@@ -62,23 +64,23 @@ class CustomEmailsTableField extends PureComponent {
       });
     });
 
-    return newListCustomEmail;
+    return newlistCustomEmailOffboarding;
   };
 
   refreshPage = () => {
     history.go(0);
   };
 
-  handleActionDelete = (customEmailId) => {
-    // const { dispatch } = this.props;
-    // if (!dispatch) {
-    //   return;
-    // }
-    // dispatch({
-    //   type: 'employeeSetting/deleteCustomEmailItem',
-    //   payload: customEmailId,
-    // });
-  };
+  // handleActionDelete = (customEmailId) => {
+  // const { dispatch } = this.props;
+  // if (!dispatch) {
+  //   return;
+  // }
+  // dispatch({
+  //   type: 'employeeSetting/deleteCustomEmailItem',
+  //   payload: customEmailId,
+  // });
+  // };
 
   _renderColumns = () => {
     const columns = [
@@ -131,9 +133,9 @@ class CustomEmailsTableField extends PureComponent {
           return (
             <div className={styles.actions}>
               <Link to={`/offboarding/edit-email/${idCustomEmail}`}>View mail</Link>
-              <Tooltip title="Delete">
+              {/* <Tooltip title="Delete">
                 <img src={DeleteIcon} alt="delete" onClick={() => this.handleActionDelete()} />
-              </Tooltip>
+              </Tooltip> */}
             </div>
           );
         },
@@ -147,7 +149,7 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   render() {
-    const { listCustomEmail, loading } = this.props;
+    const { listCustomEmailOffboarding, loading } = this.props;
     const { pageSelected } = this.state;
     const rowSize = 5;
 
@@ -158,7 +160,7 @@ class CustomEmailsTableField extends PureComponent {
 
     const pagination = {
       position: ['bottomRight'],
-      total: listCustomEmail.length,
+      total: listCustomEmailOffboarding.length,
       showTotal: (total, range) => (
         <span>
           {' '}
@@ -202,8 +204,8 @@ class CustomEmailsTableField extends PureComponent {
                 }}
                 rowKey={(record) => record._id}
                 pagination={
-                  listCustomEmail.length > rowSize
-                    ? { ...pagination, total: listCustomEmail.length }
+                  listCustomEmailOffboarding.length > rowSize
+                    ? { ...pagination, total: listCustomEmailOffboarding.length }
                     : false
                 }
                 scroll={{ y: 300 }}

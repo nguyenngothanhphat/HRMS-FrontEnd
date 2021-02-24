@@ -20,7 +20,8 @@ import {
   getDepartmentListByCompanyId,
   getListAutoField,
   addCustomEmail,
-  getListCustomEmail,
+  getListCustomEmailOnboarding,
+  getListCustomEmailOffboarding,
   getCustomEmailInfo,
   deleteCustomEmailItem,
   updateCustomEmail,
@@ -50,7 +51,8 @@ const employeeSetting = {
     departmentListByCompanyId: [],
     listAutoField: [],
     dataSubmit: {},
-    listCustomEmail: [],
+    listCustomEmailOnboarding: [],
+    listCustomEmailOffboarding: [],
     emailCustomData: {},
   },
   effects: {
@@ -100,10 +102,10 @@ const employeeSetting = {
         console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { currentTemplate: data } });
-        return statusCode
+        return statusCode;
       } catch (errors) {
         dialog(errors);
-        return 0
+        return 0;
       }
     },
     *uploadFile({ payload, isUploadSignature = false }, { call, put }) {
@@ -301,18 +303,32 @@ const employeeSetting = {
       }
       return response;
     },
-    *fecthListCustomEmail(_, { call, put }) {
+    *fetchListCustomEmailOnboarding(_, { call, put }) {
       let response;
       try {
-        response = yield call(getListCustomEmail);
+        response = yield call(getListCustomEmailOnboarding);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listCustomEmail: data } });
+        yield put({ type: 'save', payload: { listCustomEmailOnboarding: data } });
       } catch (errors) {
         dialog(errors);
       }
       return response;
     },
+
+    *fetchListCustomEmailOffboarding(_, { call, put }) {
+      let response;
+      try {
+        response = yield call(getListCustomEmailOffboarding);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listCustomEmailOffboarding: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
     *fetchEmailCustomInfo({ payload: id = '' }, { call, put }) {
       let response;
       try {
@@ -337,7 +353,8 @@ const employeeSetting = {
         response = yield call(deleteCustomEmailItem, req);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'fecthListCustomEmail' });
+        yield put({ type: 'fetchListCustomEmailOnboarding' });
+        yield put({ type: 'fetchListCustomEmailOffboarding' });
         notification.success({
           message: response.status,
           description: response.message,

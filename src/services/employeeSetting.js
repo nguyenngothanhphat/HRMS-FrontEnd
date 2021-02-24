@@ -111,8 +111,14 @@ export async function addCustomEmail(payload) {
   });
 }
 
-export async function getListCustomEmail() {
-  return request('/api/customemail/list-active', {
+export async function getListCustomEmailOnboarding() {
+  return request('/api/customemail/list-active-onboarding', {
+    method: 'POST',
+  });
+}
+
+export async function getListCustomEmailOffboarding() {
+  return request('/api/customemail/list-active-offboarding', {
     method: 'POST',
   });
 }

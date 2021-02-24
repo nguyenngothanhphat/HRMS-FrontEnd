@@ -8,11 +8,13 @@ import trashIcon from './assets/trashIcon.svg';
 
 import styles from './index.less';
 
-@connect(({ employeeSetting: { dataSubmit = {}, listCustomEmail = [] } = {}, loading }) => ({
-  dataSubmit,
-  listCustomEmail,
-  loading: loading.effects['employeeSetting/deleteCustomEmailItem'],
-}))
+@connect(
+  ({ employeeSetting: { dataSubmit = {}, listCustomEmailOnboarding = [] } = {}, loading }) => ({
+    dataSubmit,
+    listCustomEmailOnboarding,
+    loading: loading.effects['employeeSetting/deleteCustomEmailItem'],
+  }),
+)
 class CustomEmailsTableField extends PureComponent {
   constructor(props) {
     super(props);
@@ -38,20 +40,20 @@ class CustomEmailsTableField extends PureComponent {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'employeeSetting/fecthListCustomEmail',
+      type: 'employeeSetting/fetchListCustomEmailOnboarding',
       payload: {},
     });
   };
 
   _renderData = () => {
-    const { listCustomEmail } = this.props;
-    const cloneListEmail = [...listCustomEmail];
-    const newListCustomEmail = [];
+    const { listCustomEmailOnboarding } = this.props;
+    const cloneListEmail = [...listCustomEmailOnboarding];
+    const newlistCustomEmailOnboarding = [];
 
     cloneListEmail.reverse().forEach((item) => {
       const formatDate = `${moment(item.createdAt).locale('en').format('Do MMMM, YYYY')}`;
 
-      newListCustomEmail.push({
+      newlistCustomEmailOnboarding.push({
         idCustomEmail: item._id,
         emailSubject: item.subject !== undefined ? item.subject : 'Onboarding email',
         createdOn: formatDate !== undefined ? formatDate : '24th August, 2020',
@@ -62,7 +64,7 @@ class CustomEmailsTableField extends PureComponent {
       });
     });
 
-    return newListCustomEmail;
+    return newlistCustomEmailOnboarding;
   };
 
   refreshPage = () => {
@@ -149,7 +151,7 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   render() {
-    const { listCustomEmail, loading } = this.props;
+    const { listCustomEmailOnboarding, loading } = this.props;
     const { pageSelected } = this.state;
     const rowSize = 5;
 
@@ -160,7 +162,7 @@ class CustomEmailsTableField extends PureComponent {
 
     const pagination = {
       position: ['bottomRight'],
-      total: listCustomEmail.length,
+      total: listCustomEmailOnboarding.length,
       showTotal: (total, range) => (
         <span>
           {' '}
@@ -204,8 +206,8 @@ class CustomEmailsTableField extends PureComponent {
                 }}
                 rowKey={(record) => record._id}
                 pagination={
-                  listCustomEmail.length > rowSize
-                    ? { ...pagination, total: listCustomEmail.length }
+                  listCustomEmailOnboarding.length > rowSize
+                    ? { ...pagination, total: listCustomEmailOnboarding.length }
                     : false
                 }
               />
