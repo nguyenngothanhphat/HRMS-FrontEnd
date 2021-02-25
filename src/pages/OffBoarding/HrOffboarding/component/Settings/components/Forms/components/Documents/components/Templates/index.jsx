@@ -72,7 +72,7 @@ class Templates extends PureComponent {
                 loading={loadingDefaultTemplateList}
               />
             </TabPane>
-            <TabPane tab="Custom Documents" key="2">
+            <TabPane tab="Custom created" key="2">
               <Custom list={customTemplateListOffboarding} loading={loadingCustomTemplateList} />
             </TabPane>
           </Tabs>

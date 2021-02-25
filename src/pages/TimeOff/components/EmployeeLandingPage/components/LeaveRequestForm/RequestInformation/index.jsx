@@ -108,10 +108,13 @@ class RequestInformation extends PureComponent {
 
   // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
   componentDidMount = () => {
-    const { dispatch, action = '' } = this.props;
+    const { dispatch, action = '', user: {currentUser: {location: {_id} = {}} = {}} = {} } = this.props;
 
     dispatch({
       type: 'timeOff/fetchLeaveBalanceOfUser',
+      payload: {
+        location: _id
+      }
     });
     dispatch({
       type: 'timeOff/fetchTimeOffTypes',

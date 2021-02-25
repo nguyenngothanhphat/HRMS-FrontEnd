@@ -117,9 +117,9 @@ const timeOff = {
         dialog(errors);
       }
     },
-    *fetchLeaveBalanceOfUser(_, { call, put }) {
+    *fetchLeaveBalanceOfUser({ payload }, { call, put }) {
       try {
-        const response = yield call(getLeaveBalanceOfUser);
+        const response = yield call(getLeaveBalanceOfUser, payload);
         const { statusCode, data: totalLeaveBalance = {} } = response;
         // console.log('totalLeaveBalance', totalLeaveBalance);
         if (statusCode !== 200) throw response;

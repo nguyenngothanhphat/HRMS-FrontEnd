@@ -2,58 +2,35 @@
   font-family: 'Roboto';
   width: 100%;
 
-  &_form {
-    background-color: white;
-    height: 100%;
-    padding: 24px;
-    border: 1px solid #d6dce0;
-    box-sizing: border-box;
-    border-radius: 5px;
-
-    .tableHeader {
-      background: #2c6df9;
-      border-radius: 4px;
-      color: white;
-      font-size: 13px;
+  .signatory {
+    img {
+      margin: 10px;
     }
   }
-
-  &_title {
-    font-weight: 700;
-  }
-
-  &_image {
-    // width: 440px;
-    // height: 200px;
-  }
-
-  &_action {
-    position: relative;
-  }
-
   :global {
-    .ant-upload.ant-upload-select-picture-card {
-      border: transparent;
-      background-color: transparent;
-      // position: absolute;
-      // right: -33px;
-      width: 14px;
-      height: 14px;
+    .avatar-uploader > .ant-upload {
+      overflow: hidden;
+      border: 1px dashed #d6dce0;
+      box-sizing: border-box;
+      border-radius: 10px;
+      img {
+        width: 100%;
+      }
     }
-
-    .ant-upload-span {
-      width: 200px;
-      height: 200px;
+    .ant-upload-select-picture-card {
+      width: 100%;
+      max-width: 200px;
+      height: 100%;
+      min-height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 0;
     }
-
-    .ant-upload-list-picture .ant-upload-list-item,
-    .ant-upload-list-picture-card .ant-upload-list-item {
-      height: 200px;
-      width: 440px;
-    }
-
-    .ant-upload-list-item {
-      border: transparent;
+    .ant-upload,
+    .ant-upload-select,
+    .ant-upload-select-picture-card {
+      overflow: hidden;
     }
   }
   .actionsButton {
@@ -63,6 +40,18 @@
     &:hover {
       transition: 0.3s;
       opacity: 0.9;
+    }
+  }
+  .fileName {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    img {
+      margin-right: 10px;
+    }
+    span {
+      font-weight: 700;
+      color: #2c6df9;
     }
   }
 }
