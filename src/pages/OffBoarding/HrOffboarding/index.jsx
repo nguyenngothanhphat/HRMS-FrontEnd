@@ -16,8 +16,7 @@ class HROffboarding extends PureComponent {
   }
 
   componentDidMount = () => {
-    // history.replace();
-    const { location: { state: { defaultActiveKey = '1' } = {} } = {} } = this.props;
+    const { defaultActiveKey = '' } = this.props;
     this.setState({
       tabKey: defaultActiveKey,
     });

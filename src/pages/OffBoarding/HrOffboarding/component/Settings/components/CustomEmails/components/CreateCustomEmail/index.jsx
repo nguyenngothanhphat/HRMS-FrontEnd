@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'antd';
 import PageContainer from '@/layouts/layout/src/PageContainer';
-import EmailReminderHeader from './components/EmailReminderHeader';
+// import EmailReminderHeader from './components/EmailReminderHeader';
 import EmailReminderForm from './components/EmailReminderForm';
 import EmailReminderNote from './components/EmailReminderNote';
 

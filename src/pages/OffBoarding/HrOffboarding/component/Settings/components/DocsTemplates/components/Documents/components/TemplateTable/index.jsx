@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Table, Empty } from 'antd';
+import { Table, Empty, message } from 'antd';
 import { formatMessage, connect, history } from 'umi';
 import moment from 'moment';
+import axios from 'axios';
 import DownloadIcon from './images/download.svg';
-import EditIcon from './images/edit.svg';
+// import EditIcon from './images/edit.svg';
 import DeleteIcon from './images/delete.svg';
 import DocIcon from './images/doc.svg';
 import styles from './index.less';
@@ -18,17 +19,14 @@ class TemplateTable extends Component {
     const columns = [
       {
         title: 'Template Name',
-        dataIndex: 'titleAndId',
-        key: 'titleAndId',
-        width: '20%',
-        render: (titleAndId) => {
+        dataIndex: 'fileInfo',
+        key: 'fileInfo',
+        width: '30%',
+        render: (fileInfo) => {
           return (
-            <div
-              className={styles.fileName}
-              onClick={() => this.viewTemplateDetail(titleAndId?._id)}
-            >
+            <div className={styles.fileName} onClick={() => this.viewTemplateDetail(fileInfo?._id)}>
               <img src={DocIcon} alt="name" />
-              <span>{titleAndId?.title}</span>
+              <span>{fileInfo?.title}</span>
             </div>
           );
         },
@@ -37,7 +35,7 @@ class TemplateTable extends Component {
         title: 'Type',
         dataIndex: 'type',
         key: 'type',
-        width: '40%',
+        width: '30%',
       },
       {
         title: 'Created At',
@@ -50,14 +48,18 @@ class TemplateTable extends Component {
       },
       {
         title: 'Actions',
-        dataIndex: '_id',
+        dataIndex: 'fileInfo',
         key: 'actions',
-        render: (_id) => {
+        render: (fileInfo) => {
           return (
             <div className={styles.actionsButton}>
-              <img src={DownloadIcon} onClick={() => this.onDownload(_id)} alt="download" />
-              {/* <img src={EditIcon} onClick={() => this.onEdit(_id)} alt="edit" /> */}
-              <img src={DeleteIcon} onClick={() => this.onDelete(_id)} alt="delete" />
+              <img
+                src={DownloadIcon}
+                onClick={() => this.onDownload(fileInfo?.url)}
+                alt="download"
+              />
+              {/* <img src={EditIcon} onClick={() => this.onEdit(fileInfo?._id)} alt="edit" /> */}
+              <img src={DeleteIcon} onClick={() => this.onDelete(fileInfo?._id)} alt="delete" />
             </div>
           );
         },
@@ -68,9 +70,22 @@ class TemplateTable extends Component {
   };
 
   // ACTIONS
-  onDownload = () => {
-    // eslint-disable-next-line no-alert
-    alert('Download');
+  onDownload = (url) => {
+    const fileName = url.split('/').pop();
+    message.loading('Downloading file. Please wait...');
+    axios({
+      url,
+      method: 'GET',
+      responseType: 'blob',
+    }).then((resp) => {
+      // eslint-disable-next-line compat/compat
+      const urlDownload = window.URL.createObjectURL(new Blob([resp.data]));
+      const link = document.createElement('a');
+      link.href = urlDownload;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+    });
   };
 
   onEdit = () => {
@@ -97,7 +112,7 @@ class TemplateTable extends Component {
   };
 
   viewTemplateDetail = (id) => {
-    history.push(`/template-details/${id}`);
+    history.push(`/offboarding-template-details/${id}`);
   };
 
   onChangePagination = (pageNumber) => {
@@ -111,9 +126,10 @@ class TemplateTable extends Component {
     return list.map((value) => {
       return {
         ...value,
-        titleAndId: {
+        fileInfo: {
           title: value.title || '',
           _id: value._id || '',
+          url: value.attachment?.url || '',
         },
       };
     });
