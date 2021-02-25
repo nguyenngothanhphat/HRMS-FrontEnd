@@ -1,0 +1,47 @@
+.EditSignatoryModal {
+  font-family: 'Roboto';
+  :global {
+    .ant-modal-body {
+      padding: 0;
+    }
+    .ant-modal-content {
+      border-radius: 10px;
+    }
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 44px 94px;
+    .successIcon {
+      width: 100%;
+    }
+    p {
+      margin: 20px 0;
+      text-align: center;
+      line-height: 22px;
+    }
+
+    :global {
+      .ant-modal-body {
+        border-radius: 10px;
+      }
+      .ant-btn {
+        margin-top: 15px;
+        background-color: #ffa100;
+        border: none;
+        border-radius: 30px;
+        height: 40px;
+        width: 108px;
+        span {
+          color: white;
+          font-weight: 700;
+        }
+        &:hover {
+          background-color: #ffa100cc; // hex with alpha 0.8
+        }
+      }
+    }
+  }
+}

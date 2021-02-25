@@ -1,27 +1,38 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'umi';
 import CompanySignatoryHeader from './components/CompanySignatoryHeader';
 import CompanySignatoryForm from './components/CompanySignatoryForm';
 
 import styles from './index.less';
 
+@connect(
+  ({
+    loading,
+    user: { currentUser: { company: { _id: companyId = '' } = {} } = {} } = {},
+    companiesManagement: { originData: { companyDetails } = {} } = {},
+  }) => ({
+    loading: loading.effects['companiesManagement/updateCompany'],
+    companyDetails,
+    companyId,
+  }),
+)
 class CompanySignatory extends PureComponent {
+  componentDidMount = () => {
+    const { dispatch, companyId = '' } = this.props;
+    dispatch({
+      type: 'companiesManagement/fetchCompanyDetails',
+      payload: {
+        id: companyId,
+      },
+    });
+  };
+
   render() {
-    const mockData = [
-      {
-        _id: '123',
-        name: 'Mokchada Sinha',
-        attachment: '',
-      },
-      {
-        _id: '456',
-        name: 'Mokchada Sinha',
-        attachment: '',
-      },
-    ];
+    const { companyDetails: { companySignature = [] } = {}, companyId = '' } = this.props;
     return (
       <div className={styles.CompanySignatory}>
         <CompanySignatoryHeader />
-        <CompanySignatoryForm list={mockData} />
+        <CompanySignatoryForm companyId={companyId} />
       </div>
     );
   }

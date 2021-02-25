@@ -1,10 +1,13 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react';
 import { Table, Empty, Upload, message } from 'antd';
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { LoadingOutlined } from '@ant-design/icons';
+import axios from 'axios';
+import { connect } from 'umi';
 import EditIcon from './images/edit.svg';
 import DownloadIcon from './images/download.svg';
 import DeleteIcon from './images/delete.svg';
+import EditSignatoryModal from '../EditSignatoryModal';
 
 import styles from './index.less';
 
@@ -26,28 +29,70 @@ function beforeUpload(file) {
   return isJpgOrPng && isLt2M;
 }
 
+@connect(
+  ({
+    companiesManagement: {
+      originData: { companyDetails: { companySignature = [] } = {} } = {},
+    } = {},
+  }) => ({
+    companySignature,
+  }),
+)
 class CompanySignatoryForm extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
       imageUrl: '',
+      editModalVisible: false,
+      editPack: {},
     };
   }
 
-  handleChange = (info) => {
-    if (info.file.status === 'uploading') {
+  handleChange = async ({ file = {} }) => {
+    const { dispatch, companyId = '' } = this.props;
+    if (file.status === 'uploading') {
       this.setState({ loading: true });
       return;
     }
-    if (info.file.status === 'done') {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, (imageUrl) =>
-        this.setState({
-          imageUrl,
-          loading: false,
-        }),
-      );
+    if (file.status === 'done') {
+      const formData = new FormData();
+      formData.append('uri', file.originFileObj);
+      await dispatch({
+        type: 'upload/uploadFile',
+        payload: formData,
+      }).then((resp) => {
+        this.setState({ loading: false });
+        const { statusCode, data = [] } = resp;
+        if (statusCode === 200) {
+          const [first] = data;
+          const link = first?.url || '';
+          const payload = {
+            id: companyId,
+            companySignature: [
+              {
+                name: 'Signature',
+                designation: 'Signature',
+                urlImage: link,
+              },
+            ],
+          };
+          dispatch({
+            type: 'companiesManagement/updateCompany',
+            payload,
+            dataTempKept: {},
+            isAccountSetup: false,
+          });
+
+          // Get this url from response in real world.
+          getBase64(file.originFileObj, (imageUrl) =>
+            this.setState({
+              imageUrl,
+              loading: false,
+            }),
+          );
+        }
+      });
     }
   };
 
@@ -68,34 +113,36 @@ class CompanySignatoryForm extends PureComponent {
       },
       {
         title: 'Signature',
-        dataIndex: 'attachment',
-        key: 'attachment',
+        dataIndex: 'urlImage',
+        key: 'urlImage',
         width: '40%',
-        render: (attachment) => {
-          const { url = '' } = attachment;
+        render: (urlImage) => {
           const { loading, imageUrl } = this.state;
-
           return (
             <div className={styles.signatory}>
               <Upload
                 listType="picture-card"
-                // onPreview={this.handlePreview}
                 onChange={this.handleChange}
                 beforeUpload={beforeUpload}
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                 showUploadList={false}
               >
-                {imageUrl ? (
-                  <img src={imageUrl} alt="avatar" style={{ maxWidth: '200px' }} />
-                ) : (
+                {!urlImage && (
                   <>
-                    {loading ? (
-                      <LoadingOutlined />
+                    {' '}
+                    {imageUrl ? (
+                      <img src={imageUrl} alt="avatar" style={{ maxWidth: '200px' }} />
                     ) : (
-                      <span style={{ fontSize: '12px' }}>Upload</span>
+                      <>
+                        {loading ? (
+                          <LoadingOutlined />
+                        ) : (
+                          <span style={{ fontSize: '12px' }}>Upload</span>
+                        )}
+                      </>
                     )}
                   </>
                 )}
+                {urlImage && <img src={urlImage} alt="avatar" style={{ maxWidth: '200px' }} />}
               </Upload>
             </div>
           );
@@ -113,8 +160,8 @@ class CompanySignatoryForm extends PureComponent {
                 onClick={() => this.onDownload(fileInfo?.url)}
                 alt="download"
               />
-              <img src={EditIcon} onClick={() => this.onEdit(fileInfo?._id)} alt="edit" />
-              <img src={DeleteIcon} onClick={() => this.onDelete(fileInfo?._id)} alt="delete" />
+              <img src={EditIcon} onClick={() => this.onEdit(fileInfo?.url)} alt="edit" />
+              <img src={DeleteIcon} onClick={() => this.onDelete(fileInfo?.url)} alt="delete" />
             </div>
           );
         },
@@ -125,61 +172,104 @@ class CompanySignatoryForm extends PureComponent {
   };
 
   // ACTIONS
-  onDownload = () => {
-    // eslint-disable-next-line no-alert
-    alert('Download');
+  onDownload = (url) => {
+    const fileName = url.split('/').pop();
+    message.loading('Downloading file. Please wait...');
+    axios({
+      url,
+      method: 'GET',
+      responseType: 'blob',
+    }).then((resp) => {
+      // eslint-disable-next-line compat/compat
+      const urlDownload = window.URL.createObjectURL(new Blob([resp.data]));
+      const link = document.createElement('a');
+      link.href = urlDownload;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+    });
   };
 
-  onEdit = () => {
-    // eslint-disable-next-line no-alert
-    alert('Edit');
+  onEdit = (url) => {
+    const { companySignature = [] } = this.props;
+    const editPack = companySignature.find((value) => value.urlImage === url);
+    this.setState({
+      editModalVisible: true,
+      editPack,
+    });
   };
 
-  onDelete = () => {
-    // eslint-disable-next-line no-alert
-    alert('Delete');
+  onDelete = async (url) => {
+    const { companySignature = [], companyId = '', dispatch } = this.props;
+    const newList = companySignature.filter((value) => value.urlImage !== url);
+    const payload = {
+      id: companyId,
+      companySignature: newList,
+    };
+    const res = await dispatch({
+      type: 'companiesManagement/updateCompany',
+      payload,
+      dataTempKept: {},
+      isAccountSetup: false,
+    });
+    if (res?.statusCode === 200) {
+      this.setState({
+        editModalVisible: false,
+      });
+    }
   };
 
   parseList = () => {
-    const { list = [] } = this.props;
-    return list.map((value) => {
+    const { companySignature = [] } = this.props;
+    return companySignature.map((value) => {
       return {
         ...value,
         fileInfo: {
-          title: value.title || '',
+          title: value.name || '',
           _id: value._id || '',
-          url: value.attachment?.url || '',
+          url: value.urlImage || '',
         },
       };
     });
   };
 
+  onSubmitEdit = async ({ name = '', designation = '' }) => {
+    const { editPack } = this.state;
+    const { companySignature = [], companyId = '', dispatch } = this.props;
+    let index = -1;
+    companySignature.forEach((value, idx) => {
+      if (value.urlImage === editPack.urlImage) index = idx;
+    });
+    if (index !== -1) {
+      const newList = companySignature.slice();
+      newList[index].name = name;
+      newList[index].designation = designation;
+      const payload = {
+        id: companyId,
+        companySignature: newList,
+      };
+      const res = await dispatch({
+        type: 'companiesManagement/updateCompany',
+        payload,
+        dataTempKept: {},
+        isAccountSetup: false,
+      });
+      if (res?.statusCode === 200) {
+        this.setState({
+          editModalVisible: false,
+        });
+      }
+    }
+  };
+
   render() {
-    const { pageSelected } = this.state;
-    const { list = [] } = this.props;
-
-    // const uploadButton = (
-    //   <div>
-    //     {loading ? <LoadingOutlined /> : <PlusOutlined />}
-    //   </div>
-    // );
-
+    const { pageSelected, editModalVisible, editPack } = this.state;
+    const { companySignature = [] } = this.props;
     const rowSize = 10;
-
-    // const rowSelection = {
-    //   // onChange: (selectedRowKeys, selectedRows) => {
-    //   // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    //   // },
-    //   getCheckboxProps: (record) => ({
-    //     disabled: record.name === 'Disabled User',
-    //     // Column configuration not to be checked
-    //     name: record.name,
-    //   }),
-    // };
 
     const pagination = {
       position: ['bottomLeft'],
-      total: list.length,
+      total: companySignature.length,
       showTotal: (total, range) => (
         <span>
           Showing{' '}
@@ -205,27 +295,20 @@ class CompanySignatoryForm extends PureComponent {
             columns={this.generateColumns()}
             dataSource={this.parseList()}
             // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-            pagination={{ ...pagination, total: list.length }}
+            pagination={{ ...pagination, total: companySignature.length }}
           />
-          {/* 
-         
-              <Upload
-                listType="picture-card"
-                // fileList={fileList}
-                onPreview={this.handlePreview}
-                onChange={this.handleUpload}
-                beforeUpload={beforeUpload}
-                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                showUploadList={false}
-              >
-                {imageUrl ? (
-                  <img src={imageUrl} alt="avatar" style={{ minWidth: '200px' }} />
-                ) : (
-                  uploadButton
-                )}
-              </Upload>
-
-          */}
+          {Object.keys(editPack).length !== 0 && (
+            <EditSignatoryModal
+              visible={editModalVisible}
+              editPack={editPack}
+              onOk={this.onSubmitEdit}
+              onClose={() => {
+                this.setState({
+                  editModalVisible: false,
+                });
+              }}
+            />
+          )}
         </div>
       </div>
     );
