@@ -132,7 +132,7 @@ class EmployeeProfile extends Component {
     //   listMenu.push({ id: 5, name: 'Time & Scheduling', component: <Test /> });
     // }
     if (permissions.viewTabBenefitPlans !== -1 || profileOwner) {
-      listMenu.push({ id: 6, name: 'Benefit Plans', component: <BenefitTab /> });
+      listMenu.push({ id: 5, name: 'Benefit Plans', component: <BenefitTab /> });
     }
 
     return listMenu;
