@@ -177,7 +177,6 @@ class CompanySignatoryForm extends PureComponent {
   };
 
   onSubmitAdd = async ({ name = '', designation = '', urlImage = '' }) => {
-    console.log('urlImage', urlImage);
     const {
       companySignature = [],
       companyId = '',
