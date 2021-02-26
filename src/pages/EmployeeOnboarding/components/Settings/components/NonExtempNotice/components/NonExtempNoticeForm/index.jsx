@@ -224,7 +224,7 @@ class NonExtempNoticeForm extends Component {
             <hr />
             {loadingFetchListInsurances && (
               <div className={styles.loading}>
-                <Spin size="large" />
+                <Spin size="default" />
               </div>
             )}
             {!loadingFetchListInsurances && this._renderForm()}
