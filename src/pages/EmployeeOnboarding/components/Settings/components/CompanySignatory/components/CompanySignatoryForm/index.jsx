@@ -1,112 +1,269 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react';
-import { Row, Col, Divider, Upload, Modal, message } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
+import { Table, Empty, message } from 'antd';
+import axios from 'axios';
+import { connect } from 'umi';
+import EditIcon from './images/edit.svg';
+import DownloadIcon from './images/download.svg';
+import DeleteIcon from './images/delete.svg';
+import EditSignatoryModal from '../EditSignatoryModal';
 
 import styles from './index.less';
 
-const getBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-};
-
+@connect(
+  ({
+    companiesManagement: {
+      originData: { companyDetails: { companySignature = [] } = {} } = {},
+    } = {},
+  }) => ({
+    companySignature,
+  }),
+)
 class CompanySignatoryForm extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      isLt5M: true,
-      checkValidate: [{}],
-      previewVisible: false,
-      previewImage: '',
-      previewTitle: '',
-      fileList: [
-        {
-          // uid: '-1',
-          // name: 'image.png',
-          // status: 'done',
-          // url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-        },
-      ],
+      imageUrl: '',
+      editModalVisible: false,
+      editPack: {},
     };
   }
 
-  handleCancel = () => this.setState({ previewVisible: false });
+  generateColumns = () => {
+    const columns = [
+      {
+        title: 'Name of the signatory',
+        dataIndex: 'name',
+        key: 'name',
+        width: '30%',
+        render: (name) => {
+          return (
+            <div className={styles.fileName}>
+              <span>{name}</span>
+            </div>
+          );
+        },
+      },
+      {
+        title: 'Signature',
+        dataIndex: 'urlImage',
+        key: 'urlImage',
+        width: '40%',
+        render: (urlImage) => {
+          const { imageUrl } = this.state;
+          return (
+            <div className={styles.signatory}>
+              {!urlImage && imageUrl && (
+                <img src={imageUrl} alt="avatar" style={{ maxWidth: '200px' }} />
+              )}
+              {urlImage && <img src={urlImage} alt="avatar" style={{ maxWidth: '200px' }} />}
+            </div>
+          );
+        },
+      },
+      {
+        title: 'Actions',
+        dataIndex: 'fileInfo',
+        key: 'actions',
+        render: (fileInfo) => {
+          return (
+            <div className={styles.actionsButton}>
+              <img
+                src={DownloadIcon}
+                onClick={() => this.onDownload(fileInfo?.url)}
+                alt="download"
+              />
+              <img src={EditIcon} onClick={() => this.onEdit(fileInfo?._id)} alt="edit" />
+              <img src={DeleteIcon} onClick={() => this.onDelete(fileInfo?._id)} alt="delete" />
+            </div>
+          );
+        },
+      },
+    ];
 
-  handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
+    return columns;
+  };
 
-    this.setState({
-      previewImage: file.url || file.preview,
-      previewVisible: true,
-      previewTitle: file.name || file.url.substring(file.url.lastIndexOf('/') + 1),
+  // ACTIONS
+  onDownload = (url) => {
+    const fileName = url.split('/').pop();
+    message.loading('Downloading file. Please wait...');
+    axios({
+      url,
+      method: 'GET',
+      responseType: 'blob',
+    }).then((resp) => {
+      // eslint-disable-next-line compat/compat
+      const urlDownload = window.URL.createObjectURL(new Blob([resp.data]));
+      const link = document.createElement('a');
+      link.href = urlDownload;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
     });
   };
 
-  handleUpload = (info) => {
-    let _fileList = [...info.fileList];
-
-    _fileList = _fileList.slice(-1);
+  onEdit = (_id) => {
+    const { companySignature = [] } = this.props;
+    const editPack = companySignature.find((value) => value._id === _id);
     this.setState({
-      fileList: _fileList,
+      editModalVisible: true,
+      editPack,
     });
+  };
+
+  onDelete = async (_id) => {
+    const { companySignature = [], companyId = '', dispatch } = this.props;
+    const newList = companySignature.filter((value) => value._id !== _id);
+    const payload = {
+      id: companyId,
+      companySignature: newList,
+    };
+    const res = await dispatch({
+      type: 'companiesManagement/updateCompany',
+      payload,
+      dataTempKept: {},
+      isAccountSetup: false,
+    });
+    if (res?.statusCode === 200) {
+      this.setState({
+        editModalVisible: false,
+      });
+    }
+  };
+
+  parseList = () => {
+    const { companySignature = [] } = this.props;
+    return companySignature.map((value) => {
+      return {
+        ...value,
+        fileInfo: {
+          title: value.name || '',
+          _id: value._id || '',
+          url: value.urlImage || '',
+        },
+      };
+    });
+  };
+
+  onSubmitEdit = async ({ name = '', designation = '', urlImage = '' }) => {
+    const { editPack } = this.state;
+    const { companySignature = [], companyId = '', dispatch } = this.props;
+    let index = -1;
+    companySignature.forEach((value, idx) => {
+      if (value._id === editPack._id) index = idx;
+    });
+    if (index !== -1) {
+      const newList = companySignature.slice();
+      newList[index].name = name;
+      newList[index].designation = designation;
+      newList[index].urlImage = urlImage;
+      const payload = {
+        id: companyId,
+        companySignature: newList,
+      };
+      const res = await dispatch({
+        type: 'companiesManagement/updateCompany',
+        payload,
+        dataTempKept: {},
+        isAccountSetup: false,
+      });
+      if (res?.statusCode === 200) {
+        this.setState({
+          editModalVisible: false,
+        });
+      }
+    }
+  };
+
+  onSubmitAdd = async ({ name = '', designation = '', urlImage = '' }) => {
+    console.log('urlImage', urlImage);
+    const {
+      companySignature = [],
+      companyId = '',
+      dispatch,
+      showAddSignatoryModal = () => {},
+    } = this.props;
+    const newList = companySignature.slice();
+    newList.push({
+      name,
+      designation,
+      urlImage,
+    });
+    const payload = {
+      id: companyId,
+      companySignature: newList,
+    };
+    const res = await dispatch({
+      type: 'companiesManagement/updateCompany',
+      payload,
+      dataTempKept: {},
+      isAccountSetup: false,
+    });
+    if (res?.statusCode === 200) {
+      showAddSignatoryModal(false);
+    }
   };
 
   render() {
-    const { previewVisible, previewImage, fileList, previewTitle } = this.state;
+    const { pageSelected, editModalVisible, editPack } = this.state;
+    const {
+      companySignature = [],
+      showAddSignatoryModal = () => {},
+      addModalVisible = false,
+      companyId = '',
+    } = this.props;
+    const rowSize = 10;
+
+    const pagination = {
+      position: ['bottomLeft'],
+      total: companySignature.length,
+      showTotal: (total, range) => (
+        <span>
+          Showing{' '}
+          <b>
+            {range[0]} - {range[1]}
+          </b>{' '}
+          of {total}{' '}
+        </span>
+      ),
+      pageSize: rowSize,
+      current: pageSelected,
+      onChange: this.onChangePagination,
+    };
 
     return (
       <div className={styles.CompanySignatoryForm}>
         <div className={styles.CompanySignatoryForm_form}>
-          <Row gutter={[24, 12]} align="middle">
-            <Col className={styles.CompanySignatoryForm_title} span={6}>
-              Name of the signatory
-            </Col>
-            <Col className={styles.CompanySignatoryForm_title} span={12}>
-              Signature
-            </Col>
-            <Col className={styles.CompanySignatoryForm_title} span={6}>
-              Actions
-            </Col>
-          </Row>
-          <Divider />
-          <Row gutter={[24, 12]} align="middle">
-            <Col className={styles.CompanySignatoryForm_content} span={6}>
-              SanDeep Meta
-            </Col>
-            <Col className={styles.CompanySignatoryForm_image} span={12}>
-              <Upload
-                listType="picture-card"
-                fileList={fileList}
-                onPreview={this.handlePreview}
-                onChange={this.handleUpload}
-                beforeUpload={() => false}
-              >
-                <UploadOutlined />
-              </Upload>
-            </Col>
-            <Col className={styles.CompanySignatoryForm_action} span={6}>
-              <>
-                <Modal
-                  visible={previewVisible}
-                  title={previewTitle}
-                  footer={null}
-                  onCancel={this.handleCancel}
-                >
-                  <img
-                    alt="example"
-                    style={{ width: '100%', height: '400px' }}
-                    src={previewImage}
-                  />
-                </Modal>
-              </>
-            </Col>
-          </Row>
+          <Table
+            size="large"
+            locale={{
+              emptyText: <Empty description="No signatory" />,
+            }}
+            columns={this.generateColumns()}
+            dataSource={this.parseList()}
+            // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
+            pagination={{ ...pagination, total: companySignature.length }}
+          />
+          {Object.keys(editPack).length !== 0 && (
+            <EditSignatoryModal
+              visible={editModalVisible}
+              editPack={editPack}
+              onOk={this.onSubmitEdit}
+              companyId={companyId}
+              onClose={() => {
+                this.setState({
+                  editModalVisible: false,
+                });
+              }}
+            />
+          )}
+          <EditSignatoryModal
+            visible={addModalVisible}
+            onOk={this.onSubmitAdd}
+            companyId={companyId}
+            onClose={() => showAddSignatoryModal(false)}
+          />
         </div>
       </div>
     );

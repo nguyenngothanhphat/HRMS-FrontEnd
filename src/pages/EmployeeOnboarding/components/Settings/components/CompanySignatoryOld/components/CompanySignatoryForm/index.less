@@ -1,0 +1,53 @@
+.CompanySignatoryForm {
+  height: 70vh;
+
+  font-family: 'Roboto';
+  padding: 0 42px 42px 42px;
+  width: 100%;
+
+  &_form {
+    background-color: white;
+    height: 100%;
+    padding: 20px;
+    border-radius: 5px;
+  }
+
+  &_title {
+    font-weight: 700;
+  }
+
+  &_image {
+    // width: 440px;
+    // height: 200px;
+  }
+
+  &_action {
+    position: relative;
+  }
+
+  :global {
+    .ant-upload.ant-upload-select-picture-card {
+      border: transparent;
+      background-color: transparent;
+      position: absolute;
+      right: -33px;
+      width: 14px;
+      height: 14px;
+    }
+
+    .ant-upload-span {
+      width: 200px;
+      height: 200px;
+    }
+
+    .ant-upload-list-picture .ant-upload-list-item,
+    .ant-upload-list-picture-card .ant-upload-list-item {
+      height: 200px;
+      width: 440px;
+    }
+
+    .ant-upload-list-item {
+      border: transparent;
+    }
+  }
+}
