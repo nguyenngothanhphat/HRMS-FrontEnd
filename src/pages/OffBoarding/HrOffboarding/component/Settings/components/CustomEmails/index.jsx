@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
-import { Link } from 'umi';
+// import { Link } from 'umi';
 import CustomEmailsHeader from './components/CustomEmailsHeader';
 import CustomEmailsTableField from './components/CustomEmailsTableField';
-import addButton from './assets/addButton.svg';
+// import addButton from './assets/addButton.svg';
 
 import styles from './index.less';
 
@@ -11,12 +11,7 @@ class CustomEmails extends PureComponent {
     return (
       <div className={styles.CustomEmails}>
         <CustomEmailsHeader />
-
         <CustomEmailsTableField />
-
-        {/* <Link to="/offboarding/create-email-reminder">
-          <img className={styles.addButton} src={addButton} alt="add button" />
-        </Link> */}
       </div>
     );
   }

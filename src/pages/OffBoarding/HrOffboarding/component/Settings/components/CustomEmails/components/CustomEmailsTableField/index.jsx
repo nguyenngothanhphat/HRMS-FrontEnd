@@ -1,10 +1,11 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react';
-import { Table, Spin } from 'antd';
+import { Table, Spin, Tooltip } from 'antd';
 import { formatMessage, connect, Link, history } from 'umi';
 import moment from 'moment';
+import CustomEmailImage from '@/assets/customEmail.svg';
 import FileIcon from './images/doc.svg';
-// import DeleteIcon from './images/delete.svg';
+import DeleteIcon from './images/delete.svg';
 
 import styles from './index.less';
 
@@ -71,16 +72,16 @@ class CustomEmailsTableField extends PureComponent {
     history.go(0);
   };
 
-  // handleActionDelete = (customEmailId) => {
-  // const { dispatch } = this.props;
-  // if (!dispatch) {
-  //   return;
-  // }
-  // dispatch({
-  //   type: 'employeeSetting/deleteCustomEmailItem',
-  //   payload: customEmailId,
-  // });
-  // };
+  handleActionDelete = (customEmailId) => {
+    const { dispatch } = this.props;
+    if (!dispatch) {
+      return;
+    }
+    dispatch({
+      type: 'employeeSetting/deleteCustomEmailItem',
+      payload: customEmailId,
+    });
+  };
 
   _renderColumns = () => {
     const columns = [
@@ -133,9 +134,13 @@ class CustomEmailsTableField extends PureComponent {
           return (
             <div className={styles.actions}>
               <Link to={`/offboarding/edit-email/${idCustomEmail}`}>View mail</Link>
-              {/* <Tooltip title="Delete">
-                <img src={DeleteIcon} alt="delete" onClick={() => this.handleActionDelete()} />
-              </Tooltip> */}
+              <Tooltip title="Delete">
+                <img
+                  src={DeleteIcon}
+                  alt="delete"
+                  onClick={() => this.handleActionDelete(idCustomEmail)}
+                />
+              </Tooltip>
             </div>
           );
         },
@@ -183,34 +188,48 @@ class CustomEmailsTableField extends PureComponent {
           </div>
         ) : (
           <div>
-            <div className={styles.CustomEmailsTableField_title}>
-              <span className={styles.title}>
-                {formatMessage({ id: 'component.customEmailsTableField.titleTable' })}
-              </span>
-              {/* <div className={styles.addButton} onClick={this.addNewEmailTemplate}>
-                <img src={AddIcon} alt="add" />
-                <span>Add new email template</span>
-              </div> */}
-            </div>
-            <div className={styles.CustomEmailsTableField_table}>
-              <Table
-                dataSource={this._renderData()}
-                columns={this._renderColumns()}
-                size="middle"
-                onRow={(record) => {
-                  return {
-                    onMouseEnter: () => this.handleClickCustomEmail(record), // click row
-                  };
-                }}
-                rowKey={(record) => record._id}
-                pagination={
-                  listCustomEmailOffboarding.length > rowSize
-                    ? { ...pagination, total: listCustomEmailOffboarding.length }
-                    : false
-                }
-                scroll={{ y: 300 }}
-              />
-            </div>
+            {listCustomEmailOffboarding.length === 0 ? (
+              <>
+                <div className={styles.emptyContainer}>
+                  <div className={styles.emptyImage}>
+                    <img src={CustomEmailImage} alt="custom-email" />
+                  </div>
+                  <div className={styles.texts}>
+                    <span className={styles.bigText}>Custom emails</span>
+                    <span className={styles.smallText}>
+                      Custom emails created by you will be shown here
+                    </span>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className={styles.CustomEmailsTableField_title}>
+                  <span className={styles.title}>
+                    {formatMessage({ id: 'component.customEmailsTableField.titleTable' })}
+                  </span>
+                </div>
+                <div className={styles.CustomEmailsTableField_table}>
+                  <Table
+                    dataSource={this._renderData()}
+                    columns={this._renderColumns()}
+                    size="middle"
+                    onRow={(record) => {
+                      return {
+                        onMouseEnter: () => this.handleClickCustomEmail(record), // click row
+                      };
+                    }}
+                    rowKey={(record) => record._id}
+                    pagination={
+                      listCustomEmailOffboarding.length > rowSize
+                        ? { ...pagination, total: listCustomEmailOffboarding.length }
+                        : false
+                    }
+                    scroll={{ y: 300 }}
+                  />
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>

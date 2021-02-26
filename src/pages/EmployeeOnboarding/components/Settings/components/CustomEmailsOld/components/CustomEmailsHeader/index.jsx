@@ -2,20 +2,20 @@ import React, { PureComponent } from 'react';
 import { formatMessage } from 'umi';
 import styles from './index.less';
 
-class CompanySignatoryHeader extends PureComponent {
+class CustomEmailsHeader extends PureComponent {
   render() {
     return (
-      <div className={styles.CompanySignatoryHeader}>
+      <div className={styles.CustomEmailsHeader}>
         <div className={styles.title}>
           {' '}
-          {formatMessage({ id: 'component.companySignatory.title' })}
+          {formatMessage({ id: 'component.customEmailsTableField.title' })}
         </div>
         <div className={styles.subTitle}>
-          {formatMessage({ id: 'component.companySignatory.description' })}
+          {formatMessage({ id: 'component.customEmailsTableField.description' })}
         </div>
       </div>
     );
   }
 }
 
-export default CompanySignatoryHeader;
+export default CustomEmailsHeader;

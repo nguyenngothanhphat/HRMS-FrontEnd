@@ -1,0 +1,79 @@
+.CustomEmailsTableField {
+  height: 70vh;
+
+  font-family: 'Roboto';
+  // position: absolute;
+  padding: 42px;
+  width: 100%;
+  background-color: white;
+  &_title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+
+    .title {
+      font-size: 14px;
+      font-weight: 500;
+      // line-height: 1.14;
+      text-align: left;
+      color: #161c29;
+    }
+    .addButton {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      &:hover {
+        opacity: 0.8;
+      }
+      img {
+        margin-right: 10px;
+      }
+      span {
+        display: inline-block;
+        color: #2c6df9;
+        font-weight: bold;
+      }
+    }
+  }
+
+  &_table {
+    width: 100%;
+  }
+
+  &_loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    p {
+      font-weight: 500;
+    }
+  }
+
+  .trashIcon {
+    cursor: pointer;
+  }
+
+  :global {
+    .ant-table-wrapper {
+      overflow: hidden;
+      border-radius: 8px;
+      border: solid 1px #d6dce0;
+    }
+    .ant-table-thead > tr > th {
+      background-color: white;
+      color: #161c29;
+      border-bottom: solid 2px #d6dce0;
+      border-radius: 0px;
+    }
+
+    .ant-table-tbody > tr > td {
+      color: #707177;
+    }
+
+    .ant-table-pagination.ant-pagination {
+      margin: 24px 28px !important;
+    }
+  }
+}

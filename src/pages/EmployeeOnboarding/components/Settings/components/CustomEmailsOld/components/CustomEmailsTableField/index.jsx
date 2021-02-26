@@ -1,11 +1,10 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react';
-import { Table, Spin, Tooltip } from 'antd';
+import { Table, Spin } from 'antd';
 import { formatMessage, connect, Link, history } from 'umi';
 import moment from 'moment';
-import CustomEmailImage from '@/assets/customEmail.svg';
-import FileIcon from './images/doc.svg';
-import DeleteIcon from './images/delete.svg';
+import AddIcon from '@/assets/add-symbols.svg';
+import trashIcon from './assets/trashIcon.svg';
 
 import styles from './index.less';
 
@@ -52,12 +51,12 @@ class CustomEmailsTableField extends PureComponent {
     const newlistCustomEmailOnboarding = [];
 
     cloneListEmail.reverse().forEach((item) => {
-      const formatDate = `${moment(item.createdAt).locale('en').format('MM.DD.YY')}`;
+      const formatDate = `${moment(item.createdAt).locale('en').format('Do MMMM, YYYY')}`;
 
       newlistCustomEmailOnboarding.push({
         idCustomEmail: item._id,
         emailSubject: item.subject !== undefined ? item.subject : 'Onboarding email',
-        createdOn: formatDate !== undefined ? formatDate : '08.24.20',
+        createdOn: formatDate !== undefined ? formatDate : '24th August, 2020',
         triggerEvent:
           item.triggerEvent.name !== undefined ? item.triggerEvent.name : 'Person starts work',
         frequency: 'None',
@@ -74,9 +73,11 @@ class CustomEmailsTableField extends PureComponent {
 
   handleActionDelete = (customEmailId) => {
     const { dispatch } = this.props;
+
     if (!dispatch) {
       return;
     }
+
     dispatch({
       type: 'employeeSetting/deleteCustomEmailItem',
       payload: customEmailId,
@@ -89,26 +90,11 @@ class CustomEmailsTableField extends PureComponent {
         title: formatMessage({ id: 'component.customEmailsTableField.emailSubject' }),
         dataIndex: 'emailSubject',
         key: 'emailSubject',
-        width: '30%',
-        render: (emailSubject) => {
-          const { currentRecord = {} } = this.state;
-          const { idCustomEmail = '' } = currentRecord;
-
-          return (
-            <Link to={`/employee-onboarding/edit-email/${idCustomEmail}`}>
-              <div className={styles.fileName}>
-                <img src={FileIcon} alt="name" />
-                <span>{emailSubject}</span>
-              </div>
-            </Link>
-          );
-        },
       },
       {
         title: formatMessage({ id: 'component.customEmailsTableField.createdOn' }),
         dataIndex: 'createdOn',
         key: 'createdOn',
-        width: '20%',
       },
       {
         title: formatMessage({ id: 'component.customEmailsTableField.triggerEvent' }),
@@ -118,7 +104,6 @@ class CustomEmailsTableField extends PureComponent {
       },
       {
         title: formatMessage({ id: 'component.customEmailsTableField.frequency' }),
-        width: '15%',
         dataIndex: 'frequency',
         key: 'frequency',
       },
@@ -126,25 +111,37 @@ class CustomEmailsTableField extends PureComponent {
         title: formatMessage({ id: 'component.customEmailsTableField.actions' }),
         dataIndex: 'actions',
         key: 'actions',
-        width: '15%',
         render: () => {
           const { currentRecord = {} } = this.state;
           const { idCustomEmail = '' } = currentRecord;
 
           return (
-            <div className={styles.actions}>
-              <Link to={`/employee-onboarding/edit-email/${idCustomEmail}`}>View mail</Link>
-              <Tooltip title="Delete">
-                <img
-                  src={DeleteIcon}
-                  alt="delete"
-                  onClick={() => this.handleActionDelete(idCustomEmail)}
-                />
-              </Tooltip>
-            </div>
+            <Link to={`/employee-onboarding/edit-email/${idCustomEmail}`}>
+              {formatMessage({ id: 'component.customEmailsTableField.editEmail' })}
+            </Link>
           );
         },
       },
+      // {
+      //   title: '',
+      //   dataIndex: 'delete',
+      //   key: 'delete',
+      //   render: () => {
+      //     const { currentRecord = {} } = this.state;
+      //     const { idCustomEmail = '' } = currentRecord;
+      //     const { loading } = this.props;
+
+      //     return (
+      //       <img
+      //         src={trashIcon}
+      //         alt="trash"
+      //         className={styles.trashIcon}
+      //         onClick={() => this.handleActionDelete(idCustomEmail)}
+      //         loading={loading}
+      //       />
+      //     );
+      //   },
+      // },
     ];
     return columns;
   };
@@ -188,48 +185,33 @@ class CustomEmailsTableField extends PureComponent {
           </div>
         ) : (
           <div>
-            {listCustomEmailOnboarding.length === 0 ? (
-              <>
-                <div className={styles.emptyContainer}>
-                  <div className={styles.emptyImage}>
-                    <img src={CustomEmailImage} alt="custom-email" />
-                  </div>
-                  <div className={styles.texts}>
-                    <span className={styles.bigText}>Custom emails</span>
-                    <span className={styles.smallText}>
-                      Custom emails created by you will be shown here
-                    </span>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className={styles.CustomEmailsTableField_title}>
-                  <span className={styles.title}>
-                    {formatMessage({ id: 'component.customEmailsTableField.titleTable' })}
-                  </span>
-                </div>
-                <div className={styles.CustomEmailsTableField_table}>
-                  <Table
-                    dataSource={this._renderData()}
-                    columns={this._renderColumns()}
-                    size="middle"
-                    onRow={(record) => {
-                      return {
-                        onMouseEnter: () => this.handleClickCustomEmail(record), // click row
-                      };
-                    }}
-                    rowKey={(record) => record._id}
-                    pagination={
-                      listCustomEmailOnboarding.length > rowSize
-                        ? { ...pagination, total: listCustomEmailOnboarding.length }
-                        : false
-                    }
-                    scroll={{ y: 300 }}
-                  />
-                </div>
-              </>
-            )}
+            <div className={styles.CustomEmailsTableField_title}>
+              <span className={styles.title}>
+                {formatMessage({ id: 'component.customEmailsTableField.titleTable' })}
+              </span>
+              <div className={styles.addButton} onClick={this.addNewEmailTemplate}>
+                <img src={AddIcon} alt="add" />
+                <span>Add new email template</span>
+              </div>
+            </div>
+            <div className={styles.CustomEmailsTableField_table}>
+              <Table
+                dataSource={this._renderData()}
+                columns={this._renderColumns()}
+                size="middle"
+                onRow={(record) => {
+                  return {
+                    onMouseEnter: () => this.handleClickCustomEmail(record), // click row
+                  };
+                }}
+                rowKey={(record) => record._id}
+                pagination={
+                  listCustomEmailOnboarding.length > rowSize
+                    ? { ...pagination, total: listCustomEmailOnboarding.length }
+                    : false
+                }
+              />
+            </div>
           </div>
         )}
       </div>
