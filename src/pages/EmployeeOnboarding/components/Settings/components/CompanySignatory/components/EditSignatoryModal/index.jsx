@@ -68,13 +68,14 @@ class EditSignatoryModal extends PureComponent {
       onOk = () => {},
       onClose = () => {},
       loadingUploadFile,
+      action = '', // EDIT/ADD
     } = this.props;
     const { uploadedImageUrl } = this.state;
     const layout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 16 },
     };
-    const isEditing = Object.keys(editPack).length !== 0;
+    const isEditing = action === 'EDIT';
     return (
       <Modal
         className={styles.EditSignatoryModal}
@@ -134,10 +135,15 @@ class EditSignatoryModal extends PureComponent {
                   beforeUpload={beforeUpload}
                   showUploadList={false}
                 >
-                  {!editPack.urlImage && (
+                  {/* ADD NEW SIGNATURE  */}
+                  {!isEditing && (
                     <>
                       {uploadedImageUrl ? (
-                        <img src={uploadedImageUrl} alt="avatar" style={{ maxWidth: '200px' }} />
+                        <img
+                          src={uploadedImageUrl}
+                          alt="avatar-added"
+                          style={{ maxWidth: '200px' }}
+                        />
                       ) : (
                         <>
                           {loadingUploadFile ? (
@@ -149,8 +155,23 @@ class EditSignatoryModal extends PureComponent {
                       )}
                     </>
                   )}
-                  {isEditing && editPack.urlImage && (
-                    <img src={editPack.urlImage} alt="avatar" style={{ maxWidth: '200px' }} />
+                  {/* EDIT SIGNATURE  */}
+                  {isEditing && (
+                    <>
+                      {!uploadedImageUrl ? (
+                        <img src={editPack.urlImage} alt="avatar" style={{ maxWidth: '200px' }} />
+                      ) : (
+                        <>
+                          {uploadedImageUrl && (
+                            <img
+                              src={uploadedImageUrl}
+                              alt="avatar-edited"
+                              style={{ maxWidth: '200px' }}
+                            />
+                          )}
+                        </>
+                      )}
+                    </>
                   )}
                 </Upload>
               </Form.Item>

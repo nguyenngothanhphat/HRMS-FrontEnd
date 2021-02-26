@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react';
-import { Table, Empty, message } from 'antd';
+import { Table, Empty, message, Image } from 'antd';
 import axios from 'axios';
 import { connect } from 'umi';
 import EditIcon from './images/edit.svg';
@@ -53,10 +53,8 @@ class CompanySignatoryForm extends PureComponent {
           const { imageUrl } = this.state;
           return (
             <div className={styles.signatory}>
-              {!urlImage && imageUrl && (
-                <img src={imageUrl} alt="avatar" style={{ maxWidth: '200px' }} />
-              )}
-              {urlImage && <img src={urlImage} alt="avatar" style={{ maxWidth: '200px' }} />}
+              {!urlImage && imageUrl && <Image src={imageUrl} alt="avatar" width={200} />}
+              {urlImage && <Image src={urlImage} alt="avatar" width={200} />}
             </div>
           );
         },
@@ -246,6 +244,7 @@ class CompanySignatoryForm extends PureComponent {
           />
           {Object.keys(editPack).length !== 0 && (
             <EditSignatoryModal
+              action="EDIT"
               visible={editModalVisible}
               editPack={editPack}
               onOk={this.onSubmitEdit}
@@ -258,6 +257,7 @@ class CompanySignatoryForm extends PureComponent {
             />
           )}
           <EditSignatoryModal
+            action="ADD"
             visible={addModalVisible}
             onOk={this.onSubmitAdd}
             companyId={companyId}
