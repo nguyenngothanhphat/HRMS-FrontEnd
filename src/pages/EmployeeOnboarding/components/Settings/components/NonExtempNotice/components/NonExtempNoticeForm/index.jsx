@@ -11,6 +11,8 @@ import styles from './index.less';
   onboardingSettings,
 }))
 class NonExtempNoticeForm extends Component {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = {
@@ -30,19 +32,23 @@ class NonExtempNoticeForm extends Component {
         policyNumber = '',
       } = listInsurances;
       if (carrierName === '' && carrierAddress === '' && phone === '' && policyNumber === '')
-        this.handleEdit(true);
+        this.handleEdit(true, false);
     });
   };
 
-  onFinish = (values) => {
-    // eslint-disable-next-line no-console
-    // console.log('Success:', values);
+  onFinish = async (values) => {
     const { dispatch } = this.props;
-    dispatch({
+    const res = await dispatch({
       type: 'onboardingSettings/addInsurance',
       data: values,
     });
-    this.handleEdit(false);
+    const { statusCode = 0 } = res;
+    if (statusCode === 200) {
+      this.handleEdit(false, true);
+      dispatch({
+        type: 'onboardingSettings/fetchListInsurances',
+      });
+    }
   };
 
   onFinishFailed = (errorInfo) => {
@@ -50,10 +56,31 @@ class NonExtempNoticeForm extends Component {
     console.log('Failed:', errorInfo);
   };
 
-  handleEdit = (status) => {
+  setValueForForm = (data) => {
+    const {
+      selfInsured = '',
+      carrierName = '',
+      carrierAddress = '',
+      phone = '',
+      policyNumber = '',
+    } = data;
+    this.formRef.current.setFieldsValue({
+      selfInsured,
+      carrierName,
+      carrierAddress,
+      phone,
+      policyNumber,
+    });
+  };
+
+  handleEdit = (status, isSubmitting) => {
+    const { onboardingSettings: { listInsurances = {} } = {} } = this.props;
     this.setState({
       isEditing: status,
     });
+    if (!isSubmitting) {
+      this.setValueForForm(listInsurances);
+    }
   };
 
   _renderForm = () => {
@@ -76,6 +103,7 @@ class NonExtempNoticeForm extends Component {
       <Form
         className={styles.NonExtempNoticeForm_form}
         wrapperCol={{ span: 24 }}
+        ref={this.formRef}
         onFinish={this.onFinish}
         onFinishFailed={this.onFinishFailed}
         initialValues={{ selfInsured, carrierName, carrierAddress, phone, policyNumber }}
@@ -121,6 +149,12 @@ class NonExtempNoticeForm extends Component {
               required={false}
               label={formatMessage({ id: 'component.nonExtempNotice.phoneNumber' })}
               name="phone"
+              rules={[
+                {
+                  pattern: /^[+]*[\d]{0,10}$/,
+                  message: 'Wrong phone number format!',
+                },
+              ]}
             >
               <Input disabled={!isEditing} className={styles.formInput} />
             </Form.Item>
@@ -132,6 +166,13 @@ class NonExtempNoticeForm extends Component {
               required={false}
               label={formatMessage({ id: 'component.nonExtempNotice.policyNumber' })}
               name="policyNumber"
+              rules={[
+                { required: true, message: 'Please input policy number' },
+                // {
+                //   pattern: /^[+]*[\d]{0,10}$/,
+                //   message: 'Only number!',
+                // },
+              ]}
             >
               <Input disabled={!isEditing} className={styles.formInput} />
             </Form.Item>
@@ -174,7 +215,7 @@ class NonExtempNoticeForm extends Component {
               <div
                 // style={isEditing ? { color: '#666' } : { color: '#2c6df9' }}
                 className={styles.editButton}
-                onClick={() => this.handleEdit(!isEditing)}
+                onClick={() => this.handleEdit(!isEditing, false)}
               >
                 <EditFilled className={styles.icon} />
                 <p className={styles.label}>{isEditing ? 'Cancel' : 'Edit'}</p>

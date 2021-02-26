@@ -71,7 +71,7 @@ class FormTeamMember extends PureComponent {
         type: 'candidateInfo/fetchDocumentList',
       });
       dispatch({
-        type: 'candidateInfo/fetchTemplate',
+        type: 'candidateInfo/fetchTemplateOnboarding',
       });
     }
   }

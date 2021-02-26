@@ -115,8 +115,9 @@ const CollapseInformation = (props) => {
     </div>
   );
 };
-@connect(({ timeOff }) => ({
+@connect(({ timeOff, user }) => ({
   timeOff,
+  user,
 }))
 class LeaveInformation extends PureComponent {
   constructor(props) {
@@ -129,9 +130,13 @@ class LeaveInformation extends PureComponent {
   }
 
   componentDidMount = async () => {
-    const { dispatch } = this.props;
+    const { dispatch, user: { currentUser: { location: { _id } = {} } = {} } = {} } = this.props;
+
     await dispatch({
       type: 'timeOff/fetchLeaveBalanceOfUser',
+      payload: {
+        location: _id,
+      },
     });
     // dispatch({
     //   type: 'timeOff/fetchLeaveRequestOfEmployee',

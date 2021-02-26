@@ -1,0 +1,94 @@
+.EditSignatoryModal {
+  font-family: 'Roboto';
+  :global {
+    .ant-modal-body {
+      padding: 0;
+    }
+    .ant-modal-content {
+      border-radius: 10px;
+    }
+    .ant-upload {
+      overflow: hidden;
+      border: 1px dashed #d6dce0;
+      box-sizing: border-box;
+      border-radius: 10px;
+      background-color: #fff;
+      img {
+        width: 100%;
+      }
+      width: 100%;
+      max-width: 200px;
+      height: 100%;
+      min-height: 60px;
+    }
+    .ant-upload-select-picture-card {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 0;
+      border: none;
+    }
+    .ant-upload,
+    .ant-upload-select,
+    .ant-upload-select-picture-card {
+      overflow: hidden;
+    }
+  }
+
+  .signatory {
+    img {
+      margin: 10px;
+    }
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .header {
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      span {
+        font-size: 16px;
+        font-weight: 500;
+      }
+    }
+    .form {
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+    }
+    .successIcon {
+      width: 100%;
+    }
+    p {
+      margin: 20px 0;
+      text-align: center;
+      line-height: 22px;
+    }
+
+    :global {
+      .ant-modal-body {
+        border-radius: 10px;
+      }
+      .ant-btn {
+        margin-top: 15px;
+        background-color: #ffa100;
+        border: none;
+        border-radius: 30px;
+        height: 40px;
+        width: 108px;
+        span {
+          color: white;
+          font-weight: 700;
+        }
+        &:hover {
+          background-color: #ffa100cc; // hex with alpha 0.8
+        }
+      }
+    }
+  }
+}

@@ -12,7 +12,7 @@ export default class ItemMenu extends PureComponent {
       <div
         onClick={() => handelClick(item)}
         className={className}
-        style={isTabTopActive ? { borderBottom: 'none' } : {}}
+        style={isTabTopActive ? { borderBottomColor: '#fff' } : {}}
       >
         <p className={s.textName}>{name}</p>
         {isComplete && (

@@ -108,10 +108,13 @@ class RequestInformation extends PureComponent {
 
   // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
   componentDidMount = () => {
-    const { dispatch, action = '' } = this.props;
+    const { dispatch, action = '', user: {currentUser: {location: {_id} = {}} = {}} = {} } = this.props;
 
     dispatch({
       type: 'timeOff/fetchLeaveBalanceOfUser',
+      payload: {
+        location: _id
+      }
     });
     dispatch({
       type: 'timeOff/fetchTimeOffTypes',
@@ -1074,10 +1077,10 @@ class RequestInformation extends PureComponent {
 
   // validator
   typeValidator = (rule, value, callback) => {
-    const { selectedShortType } = this.state;
+    const { selectedShortType, unpaidLeaveActivate } = this.state;
     const remaining = this.getRemainingDayById(value);
     if (remaining === 'VALID' || remaining > 0) callback();
-    else if (selectedShortType) callback('Leave dates reach limit.');
+    else if (selectedShortType && !unpaidLeaveActivate) callback('Leave dates reach limit.');
     else callback();
   };
 

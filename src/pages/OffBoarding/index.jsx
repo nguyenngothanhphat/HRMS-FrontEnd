@@ -13,8 +13,9 @@ class OffBoarding extends PureComponent {
   };
 
   render() {
+    const { location: { state: { defaultActiveKey = '1' } = {} } = {} } = this.props;
     const renderComponent = {
-      'hr-manager': <HrOffboarding />,
+      'hr-manager': <HrOffboarding defaultActiveKey={defaultActiveKey} />,
       manager: <ManagerOffBoading />,
       employee: <EmployeeOffBoading />,
     };

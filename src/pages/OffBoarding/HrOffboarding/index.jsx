@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Tabs, Button, Row, Col } from 'antd';
+import { history } from 'umi';
 import HRrequestTable from './component/HrRequestTable';
 import RelievingFormalities from './component/RelievingFormalities';
-// import { formatMessage } from 'umi';
+import Settings from './component/Settings';
 import styles from './index.less';
 
 class HROffboarding extends PureComponent {
@@ -13,6 +14,13 @@ class HROffboarding extends PureComponent {
       tabKey: '1',
     };
   }
+
+  componentDidMount = () => {
+    const { defaultActiveKey = '' } = this.props;
+    this.setState({
+      tabKey: defaultActiveKey,
+    });
+  };
 
   onChangeTab = (key) => {
     this.setState({ tabKey: key });
@@ -34,7 +42,9 @@ class HROffboarding extends PureComponent {
               <TabPane tab="Relieving Formalities" key="2">
                 <RelievingFormalities />
               </TabPane>
-              <TabPane tab="Setting" key="3" />
+              <TabPane tab="Settings" key="3">
+                <Settings />
+              </TabPane>
             </Tabs>
 
             <div className={styles.options}>

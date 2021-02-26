@@ -1,0 +1,41 @@
+.YourInformation {
+  padding-top: 40px;
+  padding-bottom: 40px;
+
+  &__button {
+    text-align: right;
+    &__disabled {
+      opacity: 0.3;
+    }
+  }
+  :global {
+    .ant-upload-text {
+      font-size: 13px;
+      line-height: 1.15;
+      letter-spacing: 0.12px;
+      text-align: center;
+      color: #707177;
+    }
+    .ant-form-item {
+      display: block;
+    }
+    .ant-form-item-control-input-content {
+      input {
+        height: 42px;
+        border-radius: 5px;
+        border: solid 1px #d6dce4;
+        background-color: #ffffff;
+      }
+    }
+    .ant-form-item-label {
+      padding: 0;
+
+      label {
+        font-size: 13px;
+        line-height: 1.15;
+        text-align: left;
+        color: #707177;
+      }
+    }
+  }
+}

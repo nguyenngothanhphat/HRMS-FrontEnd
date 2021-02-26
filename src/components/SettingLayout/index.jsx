@@ -23,7 +23,7 @@ class SettingLayout extends PureComponent {
   }
 
   static getDerivedStateFromProps(props) {
-    const { listMenu, settingStep } = props;
+    const { listMenu = [], settingStep } = props;
     // const selectedItemId = listMenu[settingStep]
     if (settingStep !== null) {
       return {
@@ -48,6 +48,16 @@ class SettingLayout extends PureComponent {
       displayComponent: listMenu[settingStep].component || <BasicInformation />,
     });
   }
+
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        settingStep: 0,
+      },
+    });
+  };
 
   _handlePreviewOffer = () => {
     const { dispatch } = this.props;

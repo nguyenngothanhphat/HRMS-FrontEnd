@@ -584,10 +584,16 @@ class EmailReminderForm extends PureComponent {
     // const message = messages.replace(/<[^>]+>/g, '');
 
     if (appliesToData === 'any') {
-      dataSubmit = { ...newValue, message: messages, sendToExistingWorker };
+      dataSubmit = { ...newValue, type: 'ON-BOARDING', message: messages, sendToExistingWorker };
     }
     if (appliesToData === 'condition') {
-      dataSubmit = { ...newValue, conditions, message: messages, sendToExistingWorker };
+      dataSubmit = {
+        ...newValue,
+        type: 'ON-BOARDING',
+        conditions,
+        message: messages,
+        sendToExistingWorker,
+      };
     }
 
     dispatch({
