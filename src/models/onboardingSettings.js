@@ -45,10 +45,10 @@ const onboardingSettings = {
           message,
         });
         yield put({ type: 'save', payload: { uploadedInsurance } });
-        return statusCode;
+        return response;
       } catch (errors) {
         dialog(errors);
-        return '';
+        return {};
       }
     },
   },
