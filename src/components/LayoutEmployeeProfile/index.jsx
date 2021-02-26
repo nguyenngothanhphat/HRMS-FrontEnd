@@ -82,7 +82,7 @@ class CommonLayout extends PureComponent {
 
     return (
       <div className={s.root}>
-        <Affix offsetTop={isCompanyProfile ? 0 : 100}>
+        <Affix offsetTop={isCompanyProfile ? 0 : 100} className={s.affix}>
           <div className={s.viewLeft}>
             <div
               className={s.viewLeft__menu}
