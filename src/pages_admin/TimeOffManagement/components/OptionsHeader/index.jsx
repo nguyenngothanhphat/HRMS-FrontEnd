@@ -5,15 +5,31 @@ import styles from './index.less';
 const { Option } = Select;
 export default class OptionsHeader extends PureComponent {
   onFinish = (values) => {
-    // eslint-disable-next-line no-console
-    console.log('values', values);
-    const { reloadData = () => {} } = this.props;
-    reloadData();
+    const { reloadData } = this.props;
+    return reloadData(values);
   };
 
-  render() {
-    const dateFormat = 'MM.DD.YY';
+  // onFromChange = (value) => {
+  //   const newMoment = moment(value).format('MM-DD-YY');
+  //   this.setState({
+  //     from: newMoment,
+  //   });
+  // };
 
+  // onChange = (value) => {
+  //   console.log(value);
+  // };
+
+  render() {
+    const { listEmployee } = this.props;
+    const dateFormat = 'MM-DD-YY';
+    const options = [
+      { value: 'APPROVED', label: 'Approved' },
+      { value: 'IN-PROGRESS', label: 'New' },
+      { value: 'REJECTED', label: 'Rejected' },
+      { value: 'WAITING-FOR-APPROVE', label: 'Waiting for approve' },
+    ];
+    const nameOpt = ['APPROVED', 'IN-PROGRESS', 'REJECTED', 'WAITING-FOR-APPROVE'];
     return (
       <div className={styles.OptionsHeader}>
         <div className={styles.container}>
@@ -22,9 +38,14 @@ export default class OptionsHeader extends PureComponent {
               <Col xs={7}>
                 <span className={styles.itemLabel}>User ID - Name</span>
                 <Form.Item name="userIdName">
-                  <Select placeholder="Select an user" onChange={() => {}}>
-                    <Option value="User A">User A</Option>
-                    <Option value="User B">User B</Option>
+                  <Select placeholder="Select an user">
+                    {listEmployee.map((item = {}) => {
+                      return (
+                        <Option key={item._id} value={item._id}>
+                          {`${item.name}`}
+                        </Option>
+                      );
+                    })}
                   </Select>
                 </Form.Item>
               </Col>
@@ -54,14 +75,16 @@ export default class OptionsHeader extends PureComponent {
               </Col>
             </Row>
             <Row>
-              <Col className={styles.statusFilter}>
-                <Form.Item name="status">
-                  <span className={styles.itemLabel}>Status</span>
-                  <Checkbox.Group>
-                    <Checkbox value="Approved">Approved</Checkbox>
+              <Col xs={1}>
+                <span className={styles.itemStatusLabel}>Status</span>
+              </Col>
+              <Col xs={22} className={styles.statusFilter}>
+                <Form.Item name="status" className={styles.statusRow}>
+                  <Checkbox.Group options={options} onChange={this.onChange} name={nameOpt}>
+                    {/* <Checkbox value="Approved">Approved</Checkbox>
                     <Checkbox value="New">New</Checkbox>
                     <Checkbox value="Rejected">Rejected</Checkbox>
-                    <Checkbox value="Waiting for approve">Waiting for approve</Checkbox>
+                    <Checkbox value="Waiting for approve">Waiting for approve</Checkbox> */}
                   </Checkbox.Group>
                 </Form.Item>
               </Col>

@@ -18,7 +18,7 @@ class TableTimeOff extends PureComponent {
       defaultSortOrder: 'ascend',
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
-        compare: (a, b) => a.employeeId.localeCompare(b.employeeId),
+        compare: (a, b) => a._id.localeCompare(b._id),
       },
     },
     {
@@ -110,7 +110,7 @@ class TableTimeOff extends PureComponent {
   };
 
   render() {
-    const { data = [], loading } = this.props;
+    const { listTimeOff = [], loading } = this.props;
     const { pageSelected, selectedRowKeys } = this.state;
     const rowSize = 10;
     const scroll = {
@@ -119,7 +119,7 @@ class TableTimeOff extends PureComponent {
     };
     const pagination = {
       position: ['bottomLeft'],
-      total: data.length,
+      total: listTimeOff.length,
       showTotal: (total, range) => (
         <span>
           {' '}
@@ -147,9 +147,9 @@ class TableTimeOff extends PureComponent {
           size="small"
           loading={loading}
           rowSelection={rowSelection}
-          pagination={{ ...pagination, total: data.length }}
+          pagination={{ ...pagination, total: listTimeOff.length }}
           columns={this.columns}
-          dataSource={data}
+          dataSource={listTimeOff}
           scroll={scroll}
           rowKey="employeeId"
         />
