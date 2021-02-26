@@ -83,7 +83,12 @@ class EditSignatoryModal extends PureComponent {
         centered
         visible={visible}
         footer={null}
-        onCancel={onClose}
+        onCancel={() => {
+          onClose();
+          setTimeout(() => {
+            this.setState({ uploadedImageUrl: '' });
+          }, 200);
+        }}
       >
         <div className={styles.container}>
           <div className={styles.header}>
