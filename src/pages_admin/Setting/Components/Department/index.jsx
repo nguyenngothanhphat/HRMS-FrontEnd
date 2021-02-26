@@ -18,7 +18,6 @@ class Department extends Component {
       testReord: {},
       data2: [],
       newValue: '',
-      getIndex: '',
     };
   }
 
@@ -51,28 +50,37 @@ class Department extends Component {
     this.setState({ selectedRowKeys });
   };
 
-  handleOk = (e, getIndex) => {
-    const { data2 } = this.state;
-    data2.splice(getIndex, 1);
+  handleOk = () => {
+    const { testReord } = this.state;
+    const { dispatch } = this.props;
+    const { DepartmentID = '' } = testReord;
+    const statusCode = dispatch({
+      type: 'adminSetting/removeDepartment',
+      payload: {
+        id: DepartmentID,
+      },
+    });
+    if (statusCode === 200) {
+      dispatch({
+        type: 'adminSetting/fetchDepartment',
+      });
+    }
+
     this.setState({
       visible: false,
-      data2,
     });
   };
 
   handleCancel = (e) => {
-    console.log(e);
     this.setState({
       visible: false,
     });
   };
 
-  handleClickDelete = (text, record, index) => {
-    console.log('click', 'text: ', text, 'record: ', record, 'index: ', index);
+  handleClickDelete = (text, record) => {
     this.setState({
       visible: true,
       testReord: record,
-      getIndex: index,
     });
   };
 
@@ -92,7 +100,7 @@ class Department extends Component {
   };
 
   render() {
-    const { selectedRowKeys, visible, testReord, data2, newValue, getIndex } = this.state;
+    const { selectedRowKeys, visible, testReord, data2, newValue } = this.state;
     const { loading } = this.props;
     if (loading)
       return (
@@ -121,9 +129,9 @@ class Department extends Component {
         key: 3,
         title: 'Action',
         dataIndex: 'Action',
-        render: (text, record, index) =>
+        render: (text, record) =>
           record.DepartmentID !== '' ? (
-            <DeleteOutlined onClick={() => this.handleClickDelete(text, record, index)} />
+            <DeleteOutlined onClick={() => this.handleClickDelete(text, record)} />
           ) : (
             <PlusCircleFilled onClick={() => this.handleAddNewValue(newValue)} />
           ),
@@ -150,7 +158,7 @@ class Department extends Component {
         <Modal
           title={`Delete ${testReord.Deparmentname}? Are you sure?`}
           visible={visible}
-          onOk={(e) => this.handleOk(e, getIndex)}
+          onOk={this.handleOk}
           onCancel={this.handleCancel}
         />
       </div>

@@ -17,6 +17,14 @@ export default {
   'page.signUp.openGmail': 'open gmail',
   'page.signUp.openOutlook': 'open outlook',
   // SignUpConfiguration
+  //   - Step 1
+  'page.signUp.step1.lbnError': 'Please input your Legal Business Name!',
+  'page.signUp.step1.dbaError': 'Please input your DBA!',
+  'page.signUp.step1.einError': 'Please input your EIN!',
+  'page.signUp.step1.countryError': 'Please input your country!',
+  'page.signUp.step1.stateError': 'Please input your state!',
+  'page.signUp.step1.zipCodeError': 'Please input your Zip code!',
+  'page.signUp.step1.zipCodeError2': 'Zip code must contain 6 digits!',
   //   - Step 2
   'page.signUp.step2.workLocations': 'Work locations',
   'page.signUp.step2.description':
@@ -35,4 +43,7 @@ export default {
   'page.signUp.step2.remove': 'Remove work location',
   'page.signUp.step2.back': 'back',
   'page.signUp.step2.next': 'next',
+  //   - Step 3
+  'page.signUp.step3.phoneError': 'Please input your Phone number',
+  'page.signUp.step3.phoneError2': 'Phone number must be contain digits!',
 };

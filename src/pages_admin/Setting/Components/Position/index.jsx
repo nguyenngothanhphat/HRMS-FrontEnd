@@ -18,7 +18,6 @@ class Position extends PureComponent {
       testReord: {},
       data: [],
       newValue: '',
-      getIndex: '',
     };
   }
 
@@ -57,12 +56,24 @@ class Position extends PureComponent {
     this.setState({ selectedRowKeys });
   };
 
-  handleOk = (e, getIndex) => {
-    const { data } = this.state;
-    data.splice(getIndex, 1);
+  handleOk = () => {
+    const { testReord } = this.state;
+    const { dispatch } = this.props;
+    const { PositionID = '' } = testReord;
+    const statusCode = dispatch({
+      type: 'adminSetting/removeTitle',
+      payload: {
+        id: PositionID,
+      },
+    });
+    if (statusCode === 200) {
+      dispatch({
+        type: 'adminSetting/fetchListTitle',
+      });
+    }
+
     this.setState({
       visible: false,
-      data,
     });
   };
 
@@ -73,12 +84,10 @@ class Position extends PureComponent {
     });
   };
 
-  handleClickDelete = (text, record, index) => {
-    console.log('click', 'text: ', text, 'record: ', record, 'index: ', index);
+  handleClickDelete = (text, record) => {
     this.setState({
       visible: true,
       testReord: record,
-      getIndex: index,
     });
   };
 
@@ -98,7 +107,7 @@ class Position extends PureComponent {
   };
 
   render() {
-    const { selectedRowKeys, visible, testReord, data, newValue, getIndex } = this.state;
+    const { selectedRowKeys, visible, testReord, data, newValue } = this.state;
     const { loading } = this.props;
     if (loading)
       return (
@@ -128,9 +137,9 @@ class Position extends PureComponent {
         key: 3,
         title: 'Action',
         dataIndex: 'Action',
-        render: (text, record, index) =>
+        render: (text, record) =>
           record.PositionID !== '' ? (
-            <DeleteOutlined onClick={() => this.handleClickDelete(text, record, index)} />
+            <DeleteOutlined onClick={() => this.handleClickDelete(text, record)} />
           ) : (
             <PlusCircleFilled onClick={() => this.handleAddNewValue(newValue)} />
           ),
@@ -158,7 +167,7 @@ class Position extends PureComponent {
         <Modal
           title={`Delete ${testReord.PositionName}? Are you sure?`}
           visible={visible}
-          onOk={(e) => this.handleOk(e, getIndex)}
+          onOk={this.handleOk}
           onCancel={this.handleCancel}
         />
       </div>

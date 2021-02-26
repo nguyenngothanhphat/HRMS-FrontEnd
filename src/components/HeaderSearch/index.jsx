@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { Input, Dropdown } from 'antd';
 import { SearchOutlined, CaretDownOutlined, CloseOutlined } from '@ant-design/icons';
-import { history } from 'umi';
+import { history, connect } from 'umi';
 import ViewHistory from './components/ViewHistory';
 import ViewAdvancedSearch from './components/ViewAdvancedSearch';
 import styles from './index.less';
 
+@connect(({ user: { currentUser = {} }, loading }) => ({
+  currentUser,
+  loadingProfile: loading.effects['employeeProfile/fetchGeneralInfo'],
+}))
 class HeaderSearch extends Component {
   constructor(props) {
     super(props);
@@ -14,6 +18,13 @@ class HeaderSearch extends Component {
       mode: 'history',
       visible: false,
     };
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'searchAdvance/getHistorySearch',
+    });
   }
 
   changeMode = (mode) => {

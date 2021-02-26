@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React, { PureComponent } from 'react';
 import { Row, Col, Input, Form, Select, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
@@ -10,7 +11,6 @@ import styles from './index.less';
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
       countryList = [],
-      listStates = [],
     } = {},
   }) => ({
     loadingGeneral: loading.effects['employeeProfile/updateGeneralInfo'],
@@ -18,7 +18,6 @@ import styles from './index.less';
     generalDataOrigin,
     generalData,
     countryList,
-    listStates,
   }),
 )
 class Edit extends PureComponent {
@@ -27,6 +26,8 @@ class Edit extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      reListStates: [],
+      curListStates: [],
       residentAddress: {
         address: '',
         country: {
@@ -111,6 +112,8 @@ class Edit extends PureComponent {
           payload: {
             id: value,
           },
+        }).then((data) => {
+          this.setState({ reListStates: data });
         });
         // eslint-disable-next-line no-case-declarations
         const reCountry = this.getCountryObjData(value);
@@ -152,6 +155,8 @@ class Edit extends PureComponent {
           payload: {
             id: value,
           },
+        }).then((data) => {
+          this.setState({ curListStates: data });
         });
 
         // eslint-disable-next-line no-case-declarations
@@ -225,7 +230,6 @@ class Edit extends PureComponent {
   };
 
   handleSave = () => {
-    console.log('aaaaa');
     const { dispatch } = this.props;
     const payload = this.processDataChanges() || {};
     const dataTempKept = this.processDataKept() || {};
@@ -268,9 +272,12 @@ class Edit extends PureComponent {
       loading,
       handleCancel = () => {},
       countryList,
-      listStates,
+      // listStates,
+
       loadingStates,
     } = this.props;
+
+    const { reListStates, curListStates } = this.state;
 
     const formatCountryList = countryList.map((item) => {
       const { _id: value, name } = item;
@@ -410,7 +417,7 @@ class Edit extends PureComponent {
                   rules={[
                     {
                       required: true,
-                      message: 'Please input address',
+                      message: 'Please choose country',
                       type: 'array',
                     },
                   ]}
@@ -443,7 +450,7 @@ class Edit extends PureComponent {
                     </div>
                   ) : (
                     <>
-                      {listStates.map((item, index) => {
+                      {reListStates.map((item, index) => {
                         return (
                           <Option key={`${index + 1}`} value={item}>
                             {item}
@@ -513,7 +520,7 @@ class Edit extends PureComponent {
                     </div>
                   ) : (
                     <>
-                      {listStates.map((item, index) => {
+                      {curListStates.map((item, index) => {
                         return (
                           <Option key={`${index + 1}`} value={item}>
                             {item}
