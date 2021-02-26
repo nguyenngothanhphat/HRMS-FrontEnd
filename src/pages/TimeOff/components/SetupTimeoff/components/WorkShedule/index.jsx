@@ -21,6 +21,7 @@ class WorkShedule extends Component {
     this.state = {
       value1: 'AM',
       value2: 'PM',
+      check: false,
       array: [
         {
           id: 1,
@@ -88,20 +89,19 @@ class WorkShedule extends Component {
     });
   };
 
-  handleClick = (id) => {
-    const { array } = this.state;
-    const result = array.map((item) => ({
+  handleClick = (id, formatArray) => {
+    const result = formatArray.map((item) => ({
       ...item,
       checked: item.id === id ? !item.checked : item.checked,
     }));
-    this.setState({ array: result });
+    this.setState({ array: result, check: true });
   };
 
-  renderItem = (item = {}) => {
+  renderItem = (item = {}, formatArray = []) => {
     return (
       <div
         className={item.checked ? s.circleActive : s.circle}
-        onClick={() => this.handleClick(item.id)}
+        onClick={() => this.handleClick(item.id, formatArray)}
       >
         <div className={s.padding}>{item.name}</div>
       </div>
@@ -147,7 +147,7 @@ class WorkShedule extends Component {
       { label: 'AM', value: 'AM' },
       { label: 'PM', value: 'PM' },
     ];
-    const { value1, value2, array = [] } = this.state;
+    const { value1, value2, array = [], check } = this.state;
     const { getByLocation, loading } = this.props;
     const {
       endWorkDay: { end: endTime } = {},
@@ -156,16 +156,15 @@ class WorkShedule extends Component {
       totalHour,
     } = getByLocation;
 
-    // console.log(array, workDay);
-
     let formatArray = [...array];
-    workDay.forEach((workDayItem) => {
-      formatArray = formatArray.map((resultItem) => ({
-        ...resultItem,
-        checked: resultItem.text === workDayItem.date ? workDayItem.checked : resultItem.checked,
-      }));
-    });
-    // const arrayFormat = array.map();
+    if (check === false) {
+      workDay.forEach((workDayItem) => {
+        formatArray = formatArray.map((resultItem) => ({
+          ...resultItem,
+          checked: resultItem.text === workDayItem.date ? workDayItem.checked : resultItem.checked,
+        }));
+      });
+    }
 
     return (
       <div className={s.root}>
@@ -195,12 +194,10 @@ class WorkShedule extends Component {
                 <div className={s.straight} />
                 <div className={s.formWorkHour}>
                   <div className={s.workHour}>Work hour</div>
-
                   <div className={`${s.description} ${s.pb17}`}>
                     For each day the employee takes off, the number of hours as per the standard
                     work schedule will be deducted from the total leave balance.
                   </div>
-
                   <Row justify="space-between">
                     <Col span={7} className={s.formInput}>
                       <div className={s.content}>Total Hours in a workday</div>
@@ -273,7 +270,7 @@ class WorkShedule extends Component {
                       work schedule will be deducted from the total leave balance.
                     </div>
                     <div className={s.checkboxWrap}>
-                      {formatArray.map((item) => this.renderItem(item))}
+                      {formatArray.map((item) => this.renderItem(item, formatArray))}
                     </div>
                   </div>
                 </div>
