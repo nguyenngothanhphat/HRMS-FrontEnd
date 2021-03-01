@@ -23,7 +23,7 @@ class TableTimeOff extends PureComponent {
     },
     {
       title: 'Full Name',
-      dataIndex: 'fullName',
+      dataIndex: 'name',
       // sortDirections: ['ascend', 'descend', 'ascend'],
       // sorter: {
       //   compare: (a, b) => a.employeeGroup.localeCompare(b.employeeGroup),
@@ -55,7 +55,7 @@ class TableTimeOff extends PureComponent {
     },
     {
       title: 'Count/Q.ty',
-      dataIndex: 'count',
+      dataIndex: 'country',
       width: '10%',
     },
     {
@@ -71,7 +71,7 @@ class TableTimeOff extends PureComponent {
       dataIndex: 'action',
       align: 'center',
       render: () => (
-        <div className={styles.documentAction}>
+        <div className={styles.documentAction} onClick={this.onClick}>
           <Link>View Request</Link>
         </div>
       ),
@@ -85,6 +85,11 @@ class TableTimeOff extends PureComponent {
       selectedRowKeys: [],
     };
   }
+
+  handleRequestDetail = (id) => {
+    const { handleRequestDetail } = this.props;
+    return handleRequestDetail(id);
+  };
 
   // pagination
   onChangePagination = (pageNumber) => {
@@ -110,13 +115,14 @@ class TableTimeOff extends PureComponent {
   };
 
   render() {
-    const { listTimeOff = [], loading } = this.props;
+    const { listTimeOff = [], loading, requestDetail } = this.props;
     const { pageSelected, selectedRowKeys } = this.state;
     const rowSize = 10;
     const scroll = {
       x: '',
       y: '',
     };
+    console.log('request detail', requestDetail);
     const pagination = {
       position: ['bottomLeft'],
       total: listTimeOff.length,
@@ -152,6 +158,11 @@ class TableTimeOff extends PureComponent {
           dataSource={listTimeOff}
           scroll={scroll}
           rowKey="employeeId"
+          onRow={(item) => {
+            return {
+              onClick: () => this.handleRequestDetail(item._id),
+            };
+          }}
         />
       </div>
     );

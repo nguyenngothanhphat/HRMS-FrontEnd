@@ -1,6 +1,6 @@
 const puppeteer = require('puppeteer-core');
 
-(async () => {
+const test = (async () => {
     const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto('http://localhost:8000/time-off-management');
@@ -8,3 +8,5 @@ const puppeteer = require('puppeteer-core');
   // puppeteer.
   await browser.close();
 })()
+
+test()

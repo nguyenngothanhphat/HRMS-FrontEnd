@@ -34,3 +34,17 @@ export async function getListEmployees(payload) {
     data: payload
   });
 };
+
+export async function getRequestById(payload) {
+  return request('/api/leaverequest/get-by-id',{
+    method: 'POST',
+    data: payload
+  });
+};
+
+export async function generateCSV(payload) {
+  return request('/api/leaverequest/download',{
+    method: 'POST',
+    data: payload
+  });
+};
