@@ -154,7 +154,12 @@ class HollidayCalendar extends Component {
     const { data } = this.state;
     const refComponent = data.find((item) => item.text === value);
     refComponent.ref.current.scrollIntoView(true);
-    window.scrollBy(0, -80);
+    // window.scrollBy(0, -80);
+    window.scrollBy({
+      top: -80,
+      left: 0,
+      behavior: 'smooth',
+    });
   };
 
   onChange = (value) => {
@@ -382,7 +387,7 @@ class HollidayCalendar extends Component {
                   <Spin />
                 </Col>
               ) : (
-                data.map((render) => <Col span={20}>{this.renderItem(render)}</Col>)
+                data.map((render) => <Col span={21}>{this.renderItem(render)}</Col>)
               )}
             </Row>
           </div>
