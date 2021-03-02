@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Button } from 'antd';
+import { Row, Col, Button, Select } from 'antd';
 // import addIcon from '@/assets/addTicket.svg';
 import icon from '@/assets/delete.svg';
 import styles from './index.less';
@@ -46,6 +46,10 @@ class RuleFrom extends Component {
         </div>
       </div>
     );
+  };
+
+  handleChangeSelect = (value) => {
+    console.log('value: ', value);
   };
 
   render() {
@@ -110,8 +114,27 @@ class RuleFrom extends Component {
       },
     ];
 
+    const { Option } = Select;
+
     return (
       <div className={styles.root}>
+        <div className={styles.topHeader}>
+          <Select
+            size="large"
+            placeholder="Please select country"
+            showArrow
+            filterOption={(input, option) =>
+              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            className={styles.selectCountry}
+            defaultValue="India"
+            onChange={(value) => this.handleChangeSelect(value)}
+          >
+            <Option value="India">India</Option>
+            <Option value="USA">USA</Option>
+            <Option value="Viet Nam">Viet Nam</Option>
+          </Select>
+        </div>
         <Row gutter={[30, 25]}>
           {array.map((render) => (
             <Col span={24}>{this.renderItem(render)}</Col>

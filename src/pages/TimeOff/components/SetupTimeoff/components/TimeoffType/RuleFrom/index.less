@@ -1,5 +1,25 @@
 .root {
   padding-top: 20px;
+
+  .topHeader{
+    width: auto;
+
+    :global{
+      .ant-select .ant-select-arrow{
+        transition: transform 0.2s ease-in;
+      }
+      .ant-select-open .ant-select-arrow{
+        transform: rotate(180deg);
+      }
+    }
+
+    .selectCountry{
+      width: 300px;
+      border-radius: 4px;
+    }
+    margin-bottom: 30px;
+  }
+
   .footer {
     width: 100%;
     display: flex;
