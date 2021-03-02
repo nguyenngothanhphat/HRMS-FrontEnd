@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'umi';
 import HollidayCalendar from './components/HollidayCalendar';
 import WorkShedule from './components/WorkShedule';
 import TimeoffType from './components/TimeoffType';
@@ -7,6 +8,7 @@ import AssignPolicy from './components/AssignPolicy';
 import TimeOffLayout from './components/TimeOffLayout';
 import ScreenBegin from './components/ScreenBegin';
 
+@connect()
 class SetupTimeoff extends Component {
   constructor(props) {
     super(props);
@@ -14,6 +16,13 @@ class SetupTimeoff extends Component {
       pageStart: true,
     };
   }
+
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/getCountryList',
+    });
+  };
 
   changePage = () => {
     const { pageStart } = this.state;

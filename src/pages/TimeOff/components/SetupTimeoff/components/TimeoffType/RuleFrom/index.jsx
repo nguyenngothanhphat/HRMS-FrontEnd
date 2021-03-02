@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
+import { connect } from 'umi';
 import { Row, Col, Button, Select } from 'antd';
 // import addIcon from '@/assets/addTicket.svg';
 import icon from '@/assets/delete.svg';
 import styles from './index.less';
 
+const { Option } = Select;
+@connect(({ timeOff: { countryList = [] } = {} }) => ({
+  countryList,
+}))
 class RuleFrom extends Component {
   onChange = () => {};
 
@@ -50,6 +55,69 @@ class RuleFrom extends Component {
 
   handleChangeSelect = (value) => {
     console.log('value: ', value);
+  };
+
+  renderCountry = () => {
+    const { countryList = [] } = this.props;
+    const arrCountry = [
+      {
+        id: 'IN',
+        value: 'India',
+      },
+      {
+        id: 'US',
+        value: 'USA',
+      },
+      {
+        id: 'VN',
+        value: 'Viet Nam',
+      },
+    ];
+
+    let flagUrl = '';
+
+    const flagItem = (id) => {
+      countryList.forEach((item) => {
+        if (item._id === id) {
+          flagUrl = item.flag;
+        }
+        return flagUrl;
+      });
+
+      return (
+        <div
+          style={{
+            maxWidth: '16px',
+            height: '16px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            marginRight: '12px',
+          }}
+        >
+          <img
+            src={flagUrl}
+            alt="flag"
+            style={{
+              width: '100%',
+              borderradius: '50%',
+              height: '100%',
+            }}
+          />
+        </div>
+      );
+    };
+    return (
+      <>
+        {arrCountry.map((item) => (
+          <Option key={item.id} value={item.value} style={{ height: '20px', display: 'flex' }}>
+            <div className={styles.labelText}>
+              {flagItem(item.id)}
+              <span>{item.value}</span>
+            </div>
+          </Option>
+        ))}
+      </>
+    );
   };
 
   render() {
@@ -113,9 +181,6 @@ class RuleFrom extends Component {
         ],
       },
     ];
-
-    const { Option } = Select;
-
     return (
       <div className={styles.root}>
         <div className={styles.topHeader}>
@@ -130,9 +195,7 @@ class RuleFrom extends Component {
             defaultValue="India"
             onChange={(value) => this.handleChangeSelect(value)}
           >
-            <Option value="India">India</Option>
-            <Option value="USA">USA</Option>
-            <Option value="Viet Nam">Viet Nam</Option>
+            {this.renderCountry()}
           </Select>
         </div>
         <Row gutter={[30, 25]}>
