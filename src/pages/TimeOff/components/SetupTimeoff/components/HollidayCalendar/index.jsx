@@ -253,7 +253,7 @@ class HollidayCalendar extends Component {
               const dateFormat = moment(date).format('MM-DD-YYYY');
               const day = moment(date).format('dddd');
               return (
-                <div>
+                <div key={_id}>
                   <Row gutter={[30, 20]} className={s.textStyles}>
                     <Col>
                       <Checkbox onChange={(e) => this.handleClickDelete(e, _id)} />
@@ -387,7 +387,11 @@ class HollidayCalendar extends Component {
                   <Spin />
                 </Col>
               ) : (
-                data.map((render) => <Col span={21}>{this.renderItem(render)}</Col>)
+                data.map((render, index) => (
+                  <Col key={`${index + 1}`} span={21}>
+                    {this.renderItem(render)}
+                  </Col>
+                ))
               )}
             </Row>
           </div>

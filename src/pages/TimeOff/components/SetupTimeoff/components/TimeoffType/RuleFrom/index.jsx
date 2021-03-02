@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
-import { Row, Col, Button, Select } from 'antd';
+import { Row, Col, Button, Select, Spin } from 'antd';
 // import addIcon from '@/assets/addTicket.svg';
 import icon from '@/assets/delete.svg';
 import styles from './index.less';
 
 const { Option } = Select;
-@connect(({ timeOff: { countryList = [] } = {} }) => ({
+@connect(({ timeOff: { countryList = [] } = {}, loading }) => ({
   countryList,
+  loadingListCountry: loading.effects['timeOff/getCountryList'],
 }))
 class RuleFrom extends Component {
   onChange = () => {};
@@ -28,7 +29,7 @@ class RuleFrom extends Component {
             {children.map((item, index) => {
               const { title, name, change } = item;
               return (
-                <div>
+                <div key={`${index + 1}`}>
                   <div className={styles.flexText}>
                     <div className={styles.text}>{title}</div>
 
@@ -181,32 +182,44 @@ class RuleFrom extends Component {
         ],
       },
     ];
+
+    const { loadingListCountry } = this.props;
     return (
-      <div className={styles.root}>
-        <div className={styles.topHeader}>
-          <Select
-            size="large"
-            placeholder="Please select country"
-            showArrow
-            filterOption={(input, option) =>
-              option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-            }
-            className={styles.selectCountry}
-            defaultValue="India"
-            onChange={(value) => this.handleChangeSelect(value)}
-          >
-            {this.renderCountry()}
-          </Select>
-        </div>
-        <Row gutter={[30, 25]}>
-          {array.map((render) => (
-            <Col span={24}>{this.renderItem(render)}</Col>
-          ))}
-        </Row>
-        <div className={styles.footer}>
-          <Button className={styles.btnNext}>Next</Button>
-        </div>
-      </div>
+      <>
+        {loadingListCountry ? (
+          <div className={styles.loadingListCountry}>
+            <Spin size="large" />
+          </div>
+        ) : (
+          <div className={styles.root}>
+            <div className={styles.topHeader}>
+              <Select
+                size="large"
+                placeholder="Please select country"
+                showArrow
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                className={styles.selectCountry}
+                defaultValue="India"
+                onChange={(value) => this.handleChangeSelect(value)}
+              >
+                {this.renderCountry()}
+              </Select>
+            </div>
+            <Row gutter={[30, 25]}>
+              {array.map((render, index) => (
+                <Col key={`${index + 1}`} span={24}>
+                  {this.renderItem(render)}
+                </Col>
+              ))}
+            </Row>
+            <div className={styles.footer}>
+              <Button className={styles.btnNext}>Next</Button>
+            </div>
+          </div>
+        )}
+      </>
     );
   }
 }
