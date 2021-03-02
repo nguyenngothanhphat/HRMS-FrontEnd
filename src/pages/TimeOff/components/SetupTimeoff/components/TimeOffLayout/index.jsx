@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Progress } from 'antd';
+import { Affix, Progress } from 'antd';
 import s from './index.less';
 
 class TimeOffLayout extends Component {
@@ -50,7 +50,14 @@ class TimeOffLayout extends Component {
     const { displayComponent } = this.state;
     return (
       <div className={s.root}>
-        <div className={s.leftMenu}>{listMenu.map((item) => this._renderItemMenu(item))}</div>
+        {/* <div className={s.leftMenu}>{listMenu.map((item) => this._renderItemMenu(item))}</div> */}
+        <Affix className={s.affixTimeOff} offsetTop={42}>
+          <div className={s.leftMenu}>
+            <div className={s.leftMenu__menuItem}>
+              {listMenu.map((item) => this._renderItemMenu(item))}
+            </div>
+          </div>
+        </Affix>
         <div className={s.contentWrap}>{displayComponent}</div>
       </div>
     );
