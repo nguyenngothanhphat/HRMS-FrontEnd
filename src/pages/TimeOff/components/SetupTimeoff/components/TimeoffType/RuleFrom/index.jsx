@@ -15,6 +15,7 @@ class RuleFrom extends Component {
 
   renderItem = (render) => {
     const { children = [] } = render;
+
     return (
       <div className={styles.timeOffRuleFrom}>
         <div className={styles.from}>
@@ -31,6 +32,7 @@ class RuleFrom extends Component {
           <div>
             {children.map((item, index) => {
               const { title, name, change, status } = item;
+              const classNameStatus = status === 100 ? styles.complete : styles.uncomplete;
               return (
                 <div key={`${index + 1}`}>
                   <Row gutter={[24, 12]} className={styles.from__rowItem}>
@@ -38,7 +40,9 @@ class RuleFrom extends Component {
                       <div className={styles.text}>{title}</div>
                     </Col>
                     <Col span={8}>
-                      <div className={styles.status}>{status}</div>
+                      <div className={classNameStatus}>
+                        <span>{status > 0 ? `Completion rate: ${status}%` : null}</span>
+                      </div>
                     </Col>
                     <Col span={8} className={styles.colAction}>
                       {name !== 'true' ? (
@@ -143,16 +147,16 @@ class RuleFrom extends Component {
         children: [
           {
             title: 'Casual Leave (CL)*',
-            status: 'Completion rate: 100%',
+            status: 100,
             change: onChangeCasualLeave,
           },
           {
             title: 'Sick Leave (SL)* ',
-            status: 'Completion rate: 50%',
+            status: 50,
           },
           {
             title: ' Compensation leave (Co) ',
-            status: 'Completion rate: 10%',
+            status: 10,
             name: 'true',
           },
         ],
