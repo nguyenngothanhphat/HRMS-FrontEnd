@@ -147,33 +147,32 @@ class RuleFrom extends Component {
       },
       {
         type: 'Type B: Unpaid Leaves',
-        button: 'Add a new paid leave',
-        children: [
-          {
-            title: 'Leave without Pay (LWP)*',
-          },
-        ],
-      },
-      {
-        type: 'Type C: Paid Leaves',
-        button: 'Add a new paid leave',
+        button: 'Add a new unpaid leave',
         children: [
           {
             title: 'Casual Leave (CL)*',
           },
+        ],
+      },
+      {
+        type: 'Type C: Special Leaves',
+        button: 'Add a new special leave',
+        children: [
           {
-            title: 'Sick Leave (SL)* ',
-            name: 'true',
+            title: 'Maternity Leave (ML)*',
           },
           {
-            title: ' Compensation leave (Co) ',
+            title: 'Bereavement Leave (LWP)',
+          },
+          {
+            title: 'Restricted Holiday (RH)',
             name: 'true',
           },
         ],
       },
       {
-        type: 'Type D: Unpaid Leaves',
-        button: 'Add a new paid leave',
+        type: 'Type D: Working our of office',
+        button: 'Add a new OoO timeoff',
         children: [
           {
             title: 'Work from Client Place (WCP)*',
