@@ -5,15 +5,29 @@
   .titleText {
     font-weight: 700;
     font-size: 16px;
-    line-height: 19px;
-    color: #464646;
+    line-height: 18.75px;
+    color: #161C29;
+
     padding-bottom: 25px;
   }
+
   :global {
     .ant-tabs > .ant-tabs-nav,
     .ant-tabs > div > .ant-tabs-nav {
       background-color: #f8f9fb !important;
       border-bottom: 1px solid #dedfdf;
+      height: 38px;
+      margin-top: 20px;
+    }
+
+    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn, 
+    .ant-tabs-tab-btn {
+      font-size: 14px;
+      // padding-left: 20px;
+    }
+
+    .ant-tabs-ink-bar {
+      display: block !important;
     }
   }
 }
