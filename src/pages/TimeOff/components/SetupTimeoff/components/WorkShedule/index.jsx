@@ -177,10 +177,10 @@ class WorkShedule extends Component {
               endAmPM: 'PM',
             }}
           >
-            <div className={s.title}>Setup the employee work schedule</div>
+            <div className={s.title}>Setup the standard company Holiday Calendar</div>
             <div className={s.description}>
-              How many hours does a regular work day consists of for an employee? How may days does
-              an employee work in a week?
+              Below is a list of holidays celebrated in your region/country. Select the ones for
+              which your company provides holidays. You may add holidays to the list as well.
             </div>
             {loading ? (
               <div className={s.center}>
@@ -200,7 +200,7 @@ class WorkShedule extends Component {
                   </div>
                   <Row justify="space-between">
                     <Col span={7} className={s.formInput}>
-                      <div className={s.content}>Total Hours in a workday</div>
+                      <div className={s.content}>Total hours in a workday</div>
                       <Form.Item name="totalHour">
                         <InputNumber
                           min={0}
@@ -226,13 +226,15 @@ class WorkShedule extends Component {
                         </Col>
                         <Col style={{ padding: '2px' }}>
                           <Form.Item name="startAmPM">
-                            <Radio.Group
-                              options={options}
-                              onChange={this.onChange1}
-                              value={value1}
-                              optionType="button"
-                              buttonStyle="solid"
-                            />
+                            <div className={s.radioTime}>
+                              <Radio.Group
+                                options={options}
+                                onChange={this.onChange1}
+                                value={value1}
+                                optionType="button"
+                                buttonStyle="solid"
+                              />
+                            </div>
                           </Form.Item>
                         </Col>
                       </Row>

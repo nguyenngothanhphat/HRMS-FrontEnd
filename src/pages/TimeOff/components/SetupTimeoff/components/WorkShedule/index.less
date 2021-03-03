@@ -1,4 +1,7 @@
 .root {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
   :global {
     .ant-btn {
       background-color: #ffa100;
@@ -20,16 +23,41 @@
       height: 42px;
       border-radius: 5px;
     }
-    .ant-picker {
+    .ant-picker, .ant-picker-focused {
       width: 83px;
       height: 42px;
+      border-radius: 5px;
     }
+
+    .ant-radio-button-wrapper {
+      padding: 0px 8px;
+      border: none;
+      border-radius: 0px;
+    }
+
+    .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled){
+      border-radius: 5px;
+    }
+
+    .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before,
+    .ant-radio-button-wrapper:not(:first-child)::before 
+    {
+      background: none;
+      display: none;
+    }
+
+    // .ant-radio-button-wrapper:not(:first-child)::before {
+    //   background: none;
+    //   display: none;
+    // }
+
   }
   .formActive {
     background-color: #fff;
     width: auto;
     height: auto;
     border: 1px solid #ebeff2;
+    width: 890px;
     // padding: 27px 24px;
     .straight {
       height: 1px;
@@ -53,6 +81,12 @@
       border-radius: 13px;
       margin-bottom: 20px;
     }
+    .radioTime{
+      padding: 4px;
+      height: fit-content;
+      border: 1px solid #D6DCE4;
+      border-radius: 5px;
+    }
   }
   .center {
     // margin-top: 20px;
@@ -63,48 +97,45 @@
     margin-top: 40px;
   }
   .title {
-    font-style: normal;
     font-weight: 700;
-    font-size: 18px;
-    line-height: 21px;
+    font-size: 16px;
+    line-height: 18.75px;
     color: #161c29;
     padding-bottom: 20px;
   }
   .description {
-    font-style: normal;
-    font-weight: normal;
     font-size: 13px;
-    line-height: 15px;
+    line-height: 20px;
     color: #707177;
     padding-bottom: 14px;
+    width: 584px;
   }
   .activeText {
     padding: 24px;
     span {
-      font-style: normal;
       font-weight: 500;
-      font-size: 16px;
-      line-height: 19px;
+      font-size: 14px;
+      line-height: 16.41px;
       color: #161c29;
     }
     // padding-bottom: 16px;
   }
   .workHour {
-    font-style: normal;
     font-weight: 500;
     font-size: 14px;
-    line-height: 16px;
+    line-height: 16.41px;
     color: #161c29;
     padding-bottom: 17px;
   }
   .pb17 {
     padding-bottom: 17px;
+    width: 530px;
   }
-  .radio {
-    width: 72px;
-    height: 30px;
-    border-radius: 5px !important;
-  }
+  // .radio {
+  //   width: 72px;
+  //   height: 30px;
+  //   border-radius: 5px !important;
+  // }
   // .form {
   //   display: flex;
   //   flex-direction: row;
