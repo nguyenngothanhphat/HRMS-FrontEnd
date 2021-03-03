@@ -267,11 +267,15 @@ class HollidayCalendar extends Component {
                     <Col span={7} className={s.textHoliday}>
                       {name}
                     </Col>
-                    <Col span={4} className={s.textHoliday}>
+                    <Col span={4} className={s.dateHoliday}>
                       {dateFormat}
                     </Col>
-                    <Col span={3}>{day}</Col>
-                    <Col span={3}>{type}</Col>
+                    <Col span={3} className={s.dateHoliday}>
+                      {day}
+                    </Col>
+                    <Col span={3} className={s.dateHoliday}>
+                      {type}
+                    </Col>
                     {idCheck.indexOf(_id) > -1 && (
                       <Col span={3} onClick={() => this.deleteHoliday(_id)}>
                         <Button className={s.deleteHoliday}>Delete</Button>
