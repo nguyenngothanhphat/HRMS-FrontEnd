@@ -224,7 +224,7 @@ class WorkShedule extends Component {
                             />
                           </Form.Item>
                         </Col>
-                        <Col style={{ padding: '2px' }}>
+                        <Col style={{ padding: '2px' }} className={s.radioSection}>
                           <Form.Item name="startAmPM">
                             <div className={s.radioTime}>
                               <Radio.Group
@@ -251,15 +251,17 @@ class WorkShedule extends Component {
                             />
                           </Form.Item>
                         </Col>
-                        <Col style={{ padding: '2px' }}>
+                        <Col style={{ padding: '2px' }} className={s.radioSection}>
                           <Form.Item name="endAmPM">
-                            <Radio.Group
-                              options={options}
-                              onChange={this.onChange2}
-                              value={value2}
-                              optionType="button"
-                              buttonStyle="solid"
-                            />
+                            <div className={s.radioTime}>
+                              <Radio.Group
+                                options={options}
+                                onChange={this.onChange2}
+                                value={value2}
+                                optionType="button"
+                                buttonStyle="solid"
+                              />
+                            </div>
                           </Form.Item>
                         </Col>
                       </Row>
