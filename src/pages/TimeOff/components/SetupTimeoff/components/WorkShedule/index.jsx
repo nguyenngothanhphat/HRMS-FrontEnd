@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { connect } from 'umi';
 import { Form, InputNumber, Row, Col, Radio, Button, TimePicker, Spin } from 'antd';
+import {
+ UpOutlined,
+ DownOutlined
+} from '@ant-design/icons';
+
 import s from './index.less';
 
 @connect(
@@ -140,6 +145,13 @@ class WorkShedule extends Component {
     });
   };
 
+  renderIcons = () => (
+    <div className={s.listIcons}>
+      <UpOutlined className={s.itemIcon} />
+      <DownOutlined className={s.itemIcon} />
+    </div>
+  )
+
   render() {
     const format = 'HH:mm';
 
@@ -221,6 +233,7 @@ class WorkShedule extends Component {
                               format={format}
                               defaultValue={moment(startTime, format)}
                               onChange={this.selectStartTime}
+                              suffixIcon={this.renderIcons()}
                             />
                           </Form.Item>
                         </Col>
@@ -248,6 +261,7 @@ class WorkShedule extends Component {
                               format={format}
                               onChange={this.selectEndTime}
                               defaultValue={moment(endTime, format)}
+                              suffixIcon={this.renderIcons()}
                             />
                           </Form.Item>
                         </Col>
