@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'umi';
 import { Row, Col, Button, Select, Spin } from 'antd';
 // import addIcon from '@/assets/addTicket.svg';
-import icon from '@/assets/delete.svg';
+// import icon from '@/assets/delete.svg';
+import { DeleteOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -53,7 +54,7 @@ class RuleFrom extends Component {
                         <div className={styles.setup}>
                           <span> Setup</span>
                           <div className={styles.deleteIcon}>
-                            <img src={icon} alt="" className={styles.iconImg} />
+                            <DeleteOutlined className={styles.iconImg} />
                           </div>
                           <span />
                         </div>
@@ -116,7 +117,7 @@ class RuleFrom extends Component {
             alt="flag"
             style={{
               width: '100%',
-              borderradius: '50%',
+              borderRadius: '50%',
               height: '100%',
             }}
           />
