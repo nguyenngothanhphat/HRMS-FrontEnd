@@ -159,13 +159,27 @@
   }
   .activeText {
     padding: 24px;
+    display: flex;
+    justify-content: space-between;
     span {
       font-weight: 500;
       font-size: 14px;
       line-height: 16.41px;
       color: #161c29;
     }
-    // padding-bottom: 16px;
+    .editIcon{
+      width: 50px;
+      display: flex;
+      justify-content: space-between;
+      cursor: pointer;
+      .editText{
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 16px;
+
+        color: #2C6DF9;
+      }
+    }
   }
   .workHour {
     font-weight: 500;

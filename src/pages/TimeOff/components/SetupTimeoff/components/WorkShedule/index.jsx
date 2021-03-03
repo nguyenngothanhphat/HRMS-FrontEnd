@@ -202,6 +202,14 @@ class WorkShedule extends Component {
               <div className={s.formActive}>
                 <div className={s.activeText}>
                   <span>Standard work schedule policy</span>
+                  <div className={s.editIcon}>
+                    <img
+                      src="/assets/images/edit.svg"
+                      alt="edit"
+                      className={s.editImg}
+                    />
+                    <span className={s.editText}>Edit</span>
+                  </div>
                 </div>
                 <div className={s.straight} />
                 <div className={s.formWorkHour}>
@@ -229,7 +237,7 @@ class WorkShedule extends Component {
                     </Col>
                     <Col span={7} className={s.formInput}>
                       <div>
-                        <div className={s.content}>Workday start at</div>
+                        <div className={s.content}>Workday starts at</div>
                         <Row gutter={[16, 0]}>
                           <Col>
                             <Form.Item name="startAt">
@@ -259,7 +267,7 @@ class WorkShedule extends Component {
                     </Col>
                     <Col span={7} className={s.formInput}>
                       <div>
-                        <div className={s.content}>Workday end at</div>
+                        <div className={s.content}>Workday ends at</div>
                         <Row gutter={[16, 0]}>
                           <Col>
                             <Form.Item name="endAt">
