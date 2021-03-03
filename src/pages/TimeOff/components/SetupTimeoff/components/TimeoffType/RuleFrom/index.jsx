@@ -16,7 +16,7 @@ class RuleFrom extends Component {
   renderItem = (render) => {
     const { children = [] } = render;
     return (
-      <div className={styles.TimeoffRuleFrom}>
+      <div className={styles.timeOffRuleFrom}>
         <div className={styles.from}>
           <div className={styles.header}>
             <div className={styles.flex}>
@@ -34,13 +34,16 @@ class RuleFrom extends Component {
                     <div className={styles.text}>{title}</div>
 
                     {name !== 'true' ? (
-                      <div className={styles.Configure}>
-                        <span onClick={change}> Configure</span>
+                      <div className={styles.setup}>
+                        <span onClick={change}> Setup</span>
                       </div>
                     ) : (
-                      <div className={styles.Configure}>
-                        <span> Configure</span>
-                        <img src={icon} alt="" />
+                      <div className={styles.setup}>
+                        <span> Setup</span>
+                        <div className={styles.deleteIcon}>
+                          <img src={icon} alt="" className={styles.iconImg} />
+                        </div>
+                        <span />
                       </div>
                     )}
                   </div>
