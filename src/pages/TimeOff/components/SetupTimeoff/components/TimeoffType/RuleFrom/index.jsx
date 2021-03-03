@@ -18,35 +18,44 @@ class RuleFrom extends Component {
     return (
       <div className={styles.timeOffRuleFrom}>
         <div className={styles.from}>
-          <div className={styles.header}>
-            <div className={styles.flex}>
+          <Row gutter={[24, 12]} className={styles.from__rowItem}>
+            <Col span={8}>
               <div className={styles.title}>{render.type}</div>
+            </Col>
+            <Col span={8} />
+            <Col span={8} className={styles.colAction}>
               <Button className={styles.buttonRequest}>{render.button}</Button>
-            </div>
-          </div>
+            </Col>
+          </Row>
           <div className={styles.straightLine} />
           <div>
             {children.map((item, index) => {
-              const { title, name, change } = item;
+              const { title, name, change, status } = item;
               return (
                 <div key={`${index + 1}`}>
-                  <div className={styles.flexText}>
-                    <div className={styles.text}>{title}</div>
-
-                    {name !== 'true' ? (
-                      <div className={styles.setup}>
-                        <span onClick={change}> Setup</span>
-                      </div>
-                    ) : (
-                      <div className={styles.setup}>
-                        <span> Setup</span>
-                        <div className={styles.deleteIcon}>
-                          <img src={icon} alt="" className={styles.iconImg} />
+                  <Row gutter={[24, 12]} className={styles.from__rowItem}>
+                    <Col span={8}>
+                      <div className={styles.text}>{title}</div>
+                    </Col>
+                    <Col span={8}>
+                      <div className={styles.status}>{status}</div>
+                    </Col>
+                    <Col span={8} className={styles.colAction}>
+                      {name !== 'true' ? (
+                        <div className={styles.setup}>
+                          <span onClick={change}> Setup</span>
                         </div>
-                        <span />
-                      </div>
-                    )}
-                  </div>
+                      ) : (
+                        <div className={styles.setup}>
+                          <span> Setup</span>
+                          <div className={styles.deleteIcon}>
+                            <img src={icon} alt="" className={styles.iconImg} />
+                          </div>
+                          <span />
+                        </div>
+                      )}
+                    </Col>
+                  </Row>
                   {index !== children.length - 1 && <div className={styles.borderStyles} />}
                 </div>
               );
@@ -134,13 +143,16 @@ class RuleFrom extends Component {
         children: [
           {
             title: 'Casual Leave (CL)*',
+            status: 'Completion rate: 100%',
             change: onChangeCasualLeave,
           },
           {
             title: 'Sick Leave (SL)* ',
+            status: 'Completion rate: 50%',
           },
           {
             title: ' Compensation leave (Co) ',
+            status: 'Completion rate: 10%',
             name: 'true',
           },
         ],

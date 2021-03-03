@@ -68,16 +68,6 @@
     }
   }
   .timeOffRuleFrom {
-    .flex {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .flexText {
-      display: flex;
-      justify-content: space-between;
-      padding: 27px 37px;
-    }
     .buttonRequest {
       background: rgba(86, 138, 250, 0.12);
       border-radius: 5px;
@@ -96,13 +86,25 @@
       border: 1px solid #d6dce0;
       box-sizing: border-box;
       border-radius: 5px;
+
+      :global {
+        .ant-col.ant-col-8 {
+          display: flex;
+          align-items: center;
+        }
+      }
+
+      &__rowItem{
+        margin: 0px !important;
+        padding: 16px 24px;
+
+        .colAction{
+          display: flex;
+          justify-content: flex-end;
+        }
+      }
     }
-    .header {
-      padding: 21px 24px;
-    }
-    // .body {
-    //   padding: 27px 24px;
-    // }
+
     .straightLine {
       background-color: #d6dce0;
       width: 100%;
