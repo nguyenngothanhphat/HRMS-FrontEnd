@@ -212,73 +212,80 @@ class WorkShedule extends Component {
                   </div>
                   <Row justify="space-between">
                     <Col span={7} className={s.formInput}>
-                      <div className={s.content}>Total hours in a workday</div>
-                      <Form.Item name="totalHour">
-                        <InputNumber
-                          min={0}
-                          max={12}
-                          defaultValue={totalHour}
-                          placeholder="hours/day"
-                          formatter={(value) => `${value} hours/day`}
-                          parser={(value) => value.replace('days', '')}
-                        />
-                      </Form.Item>
+                      <div>
+                        <div className={s.content}>Total hours in a workday</div>
+                        <Form.Item name="totalHour">
+                          <InputNumber
+                            min={0}
+                            max={12}
+                            defaultValue={totalHour}
+                            placeholder="hours/day"
+                            formatter={(value) => `${value} hours/day`}
+                            parser={(value) => value.replace('days', '')}
+                          />
+                        </Form.Item>
+
+                      </div>
                     </Col>
                     <Col span={7} className={s.formInput}>
-                      <div className={s.content}>Workday start at</div>
-                      <Row gutter={[16, 0]}>
-                        <Col>
-                          <Form.Item name="startAt">
-                            <TimePicker
-                              format={format}
-                              defaultValue={moment(startTime, format)}
-                              onChange={this.selectStartTime}
-                              suffixIcon={this.renderIcons()}
-                            />
-                          </Form.Item>
-                        </Col>
-                        <Col style={{ padding: '2px' }} className={s.radioSection}>
-                          <Form.Item name="startAmPM">
-                            <div className={s.radioTime}>
-                              <Radio.Group
-                                options={options}
-                                onChange={this.onChange1}
-                                value={value1}
-                                optionType="button"
-                                buttonStyle="solid"
+                      <div>
+                        <div className={s.content}>Workday start at</div>
+                        <Row gutter={[16, 0]}>
+                          <Col>
+                            <Form.Item name="startAt">
+                              <TimePicker
+                                format={format}
+                                defaultValue={moment(startTime, format)}
+                                onChange={this.selectStartTime}
+                                suffixIcon={this.renderIcons()}
                               />
-                            </div>
-                          </Form.Item>
-                        </Col>
-                      </Row>
+                            </Form.Item>
+                          </Col>
+                          <Col style={{ padding: '2px' }} className={s.radioSection}>
+                            <Form.Item name="startAmPM">
+                              <div className={s.radioTime}>
+                                <Radio.Group
+                                  options={options}
+                                  onChange={this.onChange1}
+                                  value={value1}
+                                  optionType="button"
+                                  buttonStyle="solid"
+                                />
+                              </div>
+                            </Form.Item>
+                          </Col>
+                        </Row>
+                      </div>
                     </Col>
                     <Col span={7} className={s.formInput}>
-                      <div className={s.content}>Workday end at</div>
-                      <Row gutter={[16, 0]}>
-                        <Col>
-                          <Form.Item name="endAt">
-                            <TimePicker
-                              format={format}
-                              onChange={this.selectEndTime}
-                              defaultValue={moment(endTime, format)}
-                              suffixIcon={this.renderIcons()}
-                            />
-                          </Form.Item>
-                        </Col>
-                        <Col style={{ padding: '2px' }} className={s.radioSection}>
-                          <Form.Item name="endAmPM">
-                            <div className={s.radioTime}>
-                              <Radio.Group
-                                options={options}
-                                onChange={this.onChange2}
-                                value={value2}
-                                optionType="button"
-                                buttonStyle="solid"
+                      <div>
+                        <div className={s.content}>Workday end at</div>
+                        <Row gutter={[16, 0]}>
+                          <Col>
+                            <Form.Item name="endAt">
+                              <TimePicker
+                                format={format}
+                                onChange={this.selectEndTime}
+                                defaultValue={moment(endTime, format)}
+                                suffixIcon={this.renderIcons()}
                               />
-                            </div>
-                          </Form.Item>
-                        </Col>
-                      </Row>
+                            </Form.Item>
+                          </Col>
+                          <Col style={{ padding: '2px' }} className={s.radioSection}>
+                            <Form.Item name="endAmPM">
+                              <div className={s.radioTime}>
+                                <Radio.Group
+                                  options={options}
+                                  onChange={this.onChange2}
+                                  value={value2}
+                                  optionType="button"
+                                  buttonStyle="solid"
+                                />
+                              </div>
+                            </Form.Item>
+                          </Col>
+                        </Row>
+                      </div>
                     </Col>
                   </Row>
                   <div className={s.bottom}>
