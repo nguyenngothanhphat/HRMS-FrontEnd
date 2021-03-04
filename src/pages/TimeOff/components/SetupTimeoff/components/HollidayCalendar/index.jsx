@@ -7,11 +7,11 @@ import s from './index.less';
 
 const { Option } = Select;
 
-const listCountry = [
-  { country: 'VN', code: 'vietnamese', label: 'Viet Nam' },
-  { country: 'US', code: 'usa', label: 'US' },
-  { country: 'IN', code: 'indian', label: ' India' },
-];
+// const listCountry = [
+//   { country: 'VN', code: 'vietnamese', label: 'Viet Nam' },
+//   { country: 'US', code: 'usa', label: 'US' },
+//   { country: 'IN', code: 'indian', label: ' India' },
+// ];
 
 const MOCK_DATA = [
   {
@@ -264,16 +264,16 @@ class HollidayCalendar extends Component {
                       /> */}
                     </Col>
 
-                    <Col span={7} className={s.textHoliday}>
+                    <Col span={8} className={s.textHoliday}>
                       {name}
                     </Col>
                     <Col span={4} className={s.dateHoliday}>
                       {dateFormat}
                     </Col>
-                    <Col span={3} className={s.dateHoliday}>
+                    <Col span={4} className={s.dateHoliday}>
                       {day}
                     </Col>
-                    <Col span={3} className={s.dateHoliday}>
+                    <Col span={4} className={s.dateHoliday}>
                       {type}
                     </Col>
                     {idCheck.indexOf(_id) > -1 && (
@@ -397,6 +397,7 @@ class HollidayCalendar extends Component {
   render() {
     const { data, role, yearSelect, visible = true } = this.state;
     const { loading = false, loadingbyCountry = false, loadingAddHoliday = false } = this.props;
+
     return (
       <div className={s.root}>
         <div className={s.setUpWrap}>
@@ -432,55 +433,72 @@ class HollidayCalendar extends Component {
             </Select>
           </div>
         </div>
-        <div className={s.listHoliday}>
-          <div span={24} className={s.flex}>
-            <div>
-              <Checkbox className={s.select} onClick={this.onCheckAllChange}>
-                Select All
-              </Checkbox>
-            </div>
-            <div>
-              <Row gutter={[24, 0]}>
-                <Col>
-                  <Button className={s.btnHoliday} onClick={this.handleClick}>
-                    Add a holiday
-                  </Button>
-                </Col>
-                <Col>
-                  <InputNumber
-                    min={2020}
-                    max={2022}
-                    defaultValue={yearSelect}
-                    onChange={this.onChange}
-                  />
-                </Col>
-                <Col>
-                  <Select style={{ width: 120 }} onChange={this.handleChange}>
-                    {data.map((item) => (
-                      <Option key={item.month} value={item.text}>
-                        {item.text}
-                      </Option>
-                    ))}
-                  </Select>
-                </Col>
-              </Row>
-            </div>
-          </div>
-          <div>
-            <Row>
-              {loading || loadingbyCountry || loadingAddHoliday ? (
-                <Col span={24} className={s.center}>
-                  <Spin />
-                </Col>
-              ) : (
-                data.map((render, index) => (
-                  <Col key={`${index + 1}`} span={21}>
-                    {this.renderItem(render)}
-                  </Col>
-                ))
-              )}
-            </Row>
-          </div>
+
+        <div className={s.container}>
+          <Row gutter={[24, 12]}>
+            <Col span={20}>
+              <div className={s.listHoliday}>
+                <div span={24} className={s.flex}>
+                  <div>
+                    <Checkbox className={s.select} onClick={this.onCheckAllChange}>
+                      Select All
+                    </Checkbox>
+                  </div>
+                  <div>
+                    <Row gutter={[24, 0]}>
+                      <Col>
+                        <Button className={s.btnHoliday} onClick={this.handleClick}>
+                          Add a holiday
+                        </Button>
+                      </Col>
+                      {/* <Col>
+                    <Select style={{ width: 120 }} onChange={this.handleChange}>
+                      {data.map((item) => (
+                        <Option key={item.month} value={item.text}>
+                          {item.text}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Col> */}
+                    </Row>
+                  </div>
+                </div>
+                <div>
+                  <Row>
+                    {loading || loadingbyCountry || loadingAddHoliday ? (
+                      <Col span={24} className={s.center}>
+                        <Spin />
+                      </Col>
+                    ) : (
+                      data.map((render, index) => (
+                        <Col key={`${index + 1}`} span={24}>
+                          {this.renderItem(render)}
+                        </Col>
+                      ))
+                    )}
+                  </Row>
+                </div>
+              </div>
+            </Col>
+            <Col span={4}>
+              <div className={s.rightSection}>
+                <InputNumber
+                  min={2020}
+                  max={2022}
+                  defaultValue={yearSelect}
+                  onChange={this.onChange}
+                  className={s.inputNum}
+                />
+                <div className={s.dateSelect}>
+                  {data.map((item) => (
+                    <div key={item.month} className={s.listDate}>
+                      {item.text}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Col>
+          </Row>
         </div>
         <AddHoliday
           visible={visible}

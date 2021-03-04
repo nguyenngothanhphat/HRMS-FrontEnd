@@ -14,79 +14,168 @@
     display: flex;
     justify-content: center;
   }
-  .listHoliday {
-    width: 100%;
-    min-height: 700px;
-    padding: 33px 24px;
+
+  .container{
+    padding: 24px;
     background: #ffffff;
     border: 1px solid #d6dce0;
-    box-sizing: border-box;
     border-radius: 5px;
-    .select {
-      line-height: 15.23px;
-      color: #464646;
-    }
-    .flex {
-      display: flex;
-      justify-content: space-between;
-      .btnHoliday {
-        width: 109px;
-        height: 34px;
-        background: rgba(86, 138, 250, 0.12);
-        border-radius: 5px;
-        border: none;
-        font-weight: 500;
-        padding: 9px;
-        font-size: 14px;
-        line-height: 16.41px;
-        color: #2c6df9;
-      }
-    }
-    .formTable {
-      margin: 23px 0 23px;
-      .title {
-        font-weight: 700;
-        font-size: 20px;
-        line-height: 23.44px;
-        margin-bottom: 17px;
-        color: #161c29;
-      }
-      .straight {
-        height: 1px;
+    box-sizing: border-box;
+    width: 100%;
+    
+    
+    .rightSection {
+      width: 135px;
+      height: fit-content;
+      border-radius: 5px;
+      border: none;
+      border-bottom: 1px solid #E2E4E8;
+      background-color: #FAFAFA;
+      
+      .inputNum{
         width: 100%;
-        background-color: #e2e4e8;
-        margin: 16px 0 16px;
+        height: 48px;
+        border-radius: 5px 5px 0 0;
+        border: none;
+        border-bottom: 1px solid #E2E4E8;
+        background-color: #FAFAFA;
       }
-      .textStyles {
-        font-weight: normal;
-        font-size: 13px;
-        line-height: 15px;
-        color: #707177;
-      }
-      .textHoliday {
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 16.41px;
-        color: #161c29;
-      }
-      .dateHoliday{
-        font-weight: 400;
-        font-size: 13px;
-        line-height: 15.23px;
-        color: #707177;
 
+      .dateSelect{
+        display: flex;
+        flex-direction: column;
+        padding-bottom: 17px;
+
+        .listDate{
+          cursor: pointer;
+          margin-top: 18px;
+          text-align: center;
+          font-size: 13px;
+          line-height: 35px;
+          font-weight: 500;
+        }
+        
       }
-      .deleteHoliday {
-        width: 90px;
-        height: 34px;
-        background: rgba(86, 138, 250, 0.12);
-        border-radius: 5px;
-        font-weight: 500;
-        padding: 9px;
-        font-size: 14px;
-        line-height: 16px;
-        color: #2c6df9;
-        margin: -10px -15px;
+
+      :global{
+        .ant-input-number {
+          &:focus{
+            box-shadow: none;
+            border: transparent;
+          }
+        }
+
+        .ant-input-number-handler-wrap{
+          border: none;
+          margin-right: 4px;
+        }
+    
+        .ant-input-number-handler-down{
+          border-top: none ;
+        }
+    
+        .ant-input-number {
+          .ant-input-number-handler-wrap {
+            opacity: 1;
+            padding: 12px 0px;
+            position: absolute;
+            left: 56%;
+            background-color: #FAFAFA;
+          }
+        }
+    
+        .ant-input-number-handler-wrap .ant-input-number-handler .ant-input-number-handler-up-inner, 
+        .ant-input-number-handler-wrap .ant-input-number-handler .ant-input-number-handler-down-inner {
+          font-size: 10px;
+          color: #000;
+          opacity: 0.58;
+        }
+  
+        .ant-input-number-input {
+          width: 50%;
+          padding: 0;
+          text-align: right;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 16.41px;
+          position: absolute;
+          top: 50%;
+          left: 30%;
+          transform: translate(-50%, -50%);
+        }
+      }
+    }
+
+    .listHoliday {
+      width: 100%;
+      min-height: 700px;
+      background: #ffffff;
+      .select {
+        line-height: 15.23px;
+        color: #464646;
+      }
+      .flex {
+        display: flex;
+        justify-content: space-between;
+        .btnHoliday {
+          width: 109px;
+          height: 34px;
+          background: rgba(86, 138, 250, 0.12);
+          border-radius: 5px;
+          border: none;
+          font-weight: 500;
+          padding: 9px;
+          font-size: 14px;
+          line-height: 16.41px;
+          color: #2c6df9;
+        }
+      }
+      .formTable {
+        margin: 23px 0 23px;
+        .title {
+          font-weight: 700;
+          font-size: 20px;
+          line-height: 23.44px;
+          margin-bottom: 17px;
+          color: #161c29;
+        }
+        .straight {
+          height: 1px;
+          width: 100%;
+          background-color: #e2e4e8;
+          margin: 16px 0 16px;
+        }
+        .textStyles {
+          font-weight: normal;
+          font-size: 13px;
+          line-height: 15px;
+          color: #707177;
+        }
+        .textHoliday {
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 16.41px;
+          color: #161c29;
+        }
+        .dateHoliday{
+          font-weight: 400;
+          font-size: 13px;
+          line-height: 15.23px;
+          color: #707177;
+  
+        }
+        .deleteHoliday {
+          width: 90px;
+          height: 34px;
+          background: rgba(86, 138, 250, 0.12);
+          border-radius: 5px;
+          font-weight: 500;
+          padding: 9px;
+          font-size: 14px;
+          line-height: 16px;
+          color: #2c6df9;
+          margin: -10px -15px;
+        }
       }
     }
   }
@@ -136,7 +225,6 @@
   
         .labelText {
           display: flex;
-          // flex-direction: row-reverse;
           align-items: center;
         }
       }
