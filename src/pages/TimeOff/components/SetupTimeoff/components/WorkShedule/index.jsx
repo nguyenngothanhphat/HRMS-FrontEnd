@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { connect } from 'umi';
 import { Form, InputNumber, Row, Col, Radio, Button, TimePicker, Spin } from 'antd';
-import {
- UpOutlined,
- DownOutlined
-} from '@ant-design/icons';
+import { UpOutlined, DownOutlined } from '@ant-design/icons';
 
 import s from './index.less';
 
@@ -24,8 +21,6 @@ class WorkShedule extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value1: 'AM',
-      value2: 'PM',
       check: false,
       array: [
         {
@@ -71,6 +66,7 @@ class WorkShedule extends Component {
 
   componentDidMount() {
     const { dispatch, idLocation } = this.props;
+
     dispatch({
       type: 'timeOff/getInitEmployeeSchedule',
       payload: { location: idLocation },
@@ -81,18 +77,6 @@ class WorkShedule extends Component {
       }),
     );
   }
-
-  onChange1 = (e) => {
-    this.setState({
-      value1: e.target.value,
-    });
-  };
-
-  onChange2 = (e) => {
-    this.setState({
-      value2: e.target.value,
-    });
-  };
 
   handleClick = (id, formatArray) => {
     const result = formatArray.map((item) => ({
@@ -132,6 +116,7 @@ class WorkShedule extends Component {
     const arrayActive = formatArray.filter((item) => item.checked === true);
     const arrayFiler = arrayActive.map((item) => ({ checked: item.checked, date: item.text }));
     const { endAmPM, startAmPM, totalHour } = values;
+
     const payload = {
       startWorkDay: { start: startTime || '8:00', amPM: startAmPM },
       endWorkDay: { end: endTime || '17:00', amPM: endAmPM },
@@ -150,7 +135,7 @@ class WorkShedule extends Component {
       <UpOutlined className={s.itemIcon} />
       <DownOutlined className={s.itemIcon} />
     </div>
-  )
+  );
 
   render() {
     const format = 'HH:mm';
@@ -159,11 +144,11 @@ class WorkShedule extends Component {
       { label: 'AM', value: 'AM' },
       { label: 'PM', value: 'PM' },
     ];
-    const { value1, value2, array = [], check } = this.state;
+    const { array = [], check } = this.state;
     const { getByLocation, loading } = this.props;
     const {
-      endWorkDay: { end: endTime } = {},
-      startWorkDay: { start: startTime } = {},
+      endWorkDay: { end: endTime, amPM: afternoon } = {},
+      startWorkDay: { start: startTime, amPM: beforenoon } = {},
       workDay = [],
       totalHour,
     } = getByLocation;
@@ -203,11 +188,7 @@ class WorkShedule extends Component {
                 <div className={s.activeText}>
                   <span>Standard work schedule policy</span>
                   <div className={s.editIcon}>
-                    <img
-                      src="/assets/images/edit.svg"
-                      alt="edit"
-                      className={s.editImg}
-                    />
+                    <img src="/assets/images/edit.svg" alt="edit" className={s.editImg} />
                     <span className={s.editText}>Edit</span>
                   </div>
                 </div>
@@ -232,10 +213,9 @@ class WorkShedule extends Component {
                             parser={(value) => value.replace('days', '')}
                           />
                         </Form.Item>
-
                       </div>
                     </Col>
-                    <Col span={7} className={s.formInput}>
+                    <Col span={8} className={s.formInput}>
                       <div>
                         <div className={s.content}>Workday starts at</div>
                         <Row gutter={[16, 0]}>
@@ -254,18 +234,21 @@ class WorkShedule extends Component {
                               <div className={s.radioTime}>
                                 <Radio.Group
                                   options={options}
-                                  onChange={this.onChange1}
-                                  value={value1}
+                                  // onChange={this.onChange1}
+                                  defaultValue={beforenoon}
                                   optionType="button"
                                   buttonStyle="solid"
-                                />
+                                >
+                                  <Radio.Button value="AM">AM</Radio.Button>
+                                  <Radio.Button value="PM">PM</Radio.Button>
+                                </Radio.Group>
                               </div>
                             </Form.Item>
                           </Col>
                         </Row>
                       </div>
                     </Col>
-                    <Col span={7} className={s.formInput}>
+                    <Col span={8} className={s.formInput}>
                       <div>
                         <div className={s.content}>Workday ends at</div>
                         <Row gutter={[16, 0]}>
@@ -284,11 +267,14 @@ class WorkShedule extends Component {
                               <div className={s.radioTime}>
                                 <Radio.Group
                                   options={options}
-                                  onChange={this.onChange2}
-                                  value={value2}
+                                  // onChange={this.onChange2}
+                                  defaultValue={afternoon}
                                   optionType="button"
                                   buttonStyle="solid"
-                                />
+                                >
+                                  <Radio.Button value="AM">AM</Radio.Button>
+                                  <Radio.Button value="PM">PM</Radio.Button>
+                                </Radio.Group>
                               </div>
                             </Form.Item>
                           </Col>
@@ -299,8 +285,8 @@ class WorkShedule extends Component {
                   <div className={s.bottom}>
                     <div className={s.workHour}>Work days</div>
                     <div className={`${s.description} ${s.pb17}`}>
-                      For each day the employee takes off, the number of hours as per the standard
-                      work schedule will be deducted from the total leave balance.
+                      Only for the days selected below, timeoff hours will be deducted from the
+                      total leave balance
                     </div>
                     <div className={s.checkboxWrap}>
                       {formatArray.map((item) => this.renderItem(item, formatArray))}
