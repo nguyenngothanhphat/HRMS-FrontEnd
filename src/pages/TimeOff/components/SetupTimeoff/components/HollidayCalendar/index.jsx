@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Checkbox, Select, Row, Col, Spin, InputNumber } from 'antd';
+import { Button, Checkbox, Select, Row, Col, Spin, InputNumber, Affix } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import AddHoliday from './AddHoliday';
@@ -475,30 +475,32 @@ class HollidayCalendar extends Component {
               </div>
             </Col>
             <Col span={4}>
-              <div className={s.rightSection}>
-                <InputNumber
-                  min={2020}
-                  max={2022}
-                  defaultValue={yearSelect}
-                  onChange={this.onChange}
-                  className={s.inputNum}
-                />
-                <div className={s.dateSelect}>
-                  {data.map((item) => (
-                    <div
-                      key={item.month}
-                      className={s.listDate}
-                      onClick={(e) => this.handleChange(e, item.text)}
-                    >
-                      {isActive === item.text ? (
-                        <span className={s.listDate__active}>{item.text}</span>
-                      ) : (
-                        <span className={s.listDate__nonActive}>{item.text}</span>
-                      )}
-                    </div>
-                  ))}
+              <Affix offsetTop={42} className={s.affix}>
+                <div className={s.rightSection}>
+                  <InputNumber
+                    min={2020}
+                    max={2022}
+                    defaultValue={yearSelect}
+                    onChange={this.onChange}
+                    className={s.inputNum}
+                  />
+                  <div className={s.dateSelect}>
+                    {data.map((item) => (
+                      <div
+                        key={item.month}
+                        className={s.listDate}
+                        onClick={(e) => this.handleChange(e, item.text)}
+                      >
+                        {isActive === item.text ? (
+                          <span className={s.listDate__active}>{item.text}</span>
+                        ) : (
+                          <span className={s.listDate__nonActive}>{item.text}</span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              </Affix>
             </Col>
           </Row>
         </div>
