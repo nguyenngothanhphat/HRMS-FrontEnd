@@ -104,6 +104,7 @@ class HollidayCalendar extends Component {
       list: {},
       idCheck: [],
       visible: false,
+      isActive: '',
       // listCheck: [],
       // indeterminate: true,
       // checkAll: false,
@@ -150,16 +151,18 @@ class HollidayCalendar extends Component {
     });
   };
 
-  handleChange = (value) => {
+  handleChange = (e, value) => {
+    e.preventDefault();
     const { data } = this.state;
     const refComponent = data.find((item) => item.text === value);
     refComponent.ref.current.scrollIntoView(true);
-    // window.scrollBy(0, -80);
     window.scrollBy({
-      top: -80,
+      top: -60,
       left: 0,
       behavior: 'smooth',
     });
+
+    this.setState({ isActive: value });
   };
 
   onChange = (value) => {
@@ -395,9 +398,9 @@ class HollidayCalendar extends Component {
   };
 
   render() {
-    const { data, role, yearSelect, visible = true } = this.state;
+    const { data, role, yearSelect, visible = true, isActive } = this.state;
     const { loading = false, loadingbyCountry = false, loadingAddHoliday = false } = this.props;
-
+    // const classNameListDate = isActive ? s.listDateActive : s.listDate;
     return (
       <div className={s.root}>
         <div className={s.setUpWrap}>
@@ -451,15 +454,6 @@ class HollidayCalendar extends Component {
                           Add a holiday
                         </Button>
                       </Col>
-                      {/* <Col>
-                    <Select style={{ width: 120 }} onChange={this.handleChange}>
-                      {data.map((item) => (
-                        <Option key={item.month} value={item.text}>
-                          {item.text}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Col> */}
                     </Row>
                   </div>
                 </div>
@@ -491,8 +485,16 @@ class HollidayCalendar extends Component {
                 />
                 <div className={s.dateSelect}>
                   {data.map((item) => (
-                    <div key={item.month} className={s.listDate}>
-                      {item.text}
+                    <div
+                      key={item.month}
+                      className={s.listDate}
+                      onClick={(e) => this.handleChange(e, item.text)}
+                    >
+                      {isActive === item.text ? (
+                        <span className={s.listDate__active}>{item.text}</span>
+                      ) : (
+                        <span className={s.listDate__nonActive}>{item.text}</span>
+                      )}
                     </div>
                   ))}
                 </div>
