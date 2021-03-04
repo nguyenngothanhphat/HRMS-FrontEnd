@@ -77,7 +77,7 @@ const MOCK_DATA = [
 ];
 @connect(
   ({
-    timeOff,
+    timeOff: { countryList = [] } = {},
     loading,
     user: {
       currentUser: {
@@ -86,7 +86,7 @@ const MOCK_DATA = [
       } = {},
     } = {},
   }) => ({
-    timeOff,
+    countryList,
     loading: loading.effects['timeOff/fetchHolidaysListBylocation'],
     loadingbyCountry: loading.effects['timeOff/fetchHolidaysListBylocation'],
     loadingAddHoliday: loading.effects['timeOff/addHoliday'],
@@ -327,6 +327,73 @@ class HollidayCalendar extends Component {
     // });
   };
 
+  renderCountry = () => {
+    const { countryList = [] } = this.props;
+    const arrCountry = [
+      {
+        id: 'IN',
+        value: 'India',
+      },
+      {
+        id: 'US',
+        value: 'USA',
+      },
+      {
+        id: 'VN',
+        value: 'Viet Nam',
+      },
+    ];
+
+    let flagUrl = '';
+
+    const flagItem = (id) => {
+      countryList.forEach((item) => {
+        if (item._id === id) {
+          flagUrl = item.flag;
+        }
+        return flagUrl;
+      });
+
+      return (
+        <div
+          style={{
+            maxWidth: '16px',
+            height: '16px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            marginRight: '12px',
+          }}
+        >
+          <img
+            src={flagUrl}
+            alt="flag"
+            style={{
+              width: '100%',
+              borderRadius: '50%',
+              height: '100%',
+            }}
+          />
+        </div>
+      );
+    };
+    return (
+      <>
+        {arrCountry.map((item) => (
+          <Option key={item.id} value={item.value} style={{ height: '20px', display: 'flex' }}>
+            <div className={s.labelText}>
+              {flagItem(item.id)}
+              <span>{item.value}</span>
+            </div>
+          </Option>
+        ))}
+      </>
+    );
+  };
+
+  handleChangeSelect = (value) => {
+    console.log('value: ', value);
+  };
+
   render() {
     const { data, role, yearSelect, visible = true } = this.state;
     const { loading = false, loadingbyCountry = false, loadingAddHoliday = false } = this.props;
@@ -340,7 +407,7 @@ class HollidayCalendar extends Component {
             <p> provides holidays. You may add holidays to the list as well.</p>
           </div>
 
-          {role === 'hr-global' && (
+          {/* {role === 'hr-global' && (
             <Select style={{ width: 250 }} onChange={this.changeCountry}>
               {listCountry.map((item) => (
                 <Option key={item.code} value={item.country}>
@@ -348,7 +415,22 @@ class HollidayCalendar extends Component {
                 </Option>
               ))}
             </Select>
-          )}
+          )} */}
+          <div className={s.topHeader}>
+            <Select
+              size="large"
+              placeholder="Please select country"
+              showArrow
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              className={s.selectCountry}
+              defaultValue="India"
+              onChange={(value) => this.handleChangeSelect(value)}
+            >
+              {this.renderCountry()}
+            </Select>
+          </div>
         </div>
         <div className={s.listHoliday}>
           <div span={24} className={s.flex}>
