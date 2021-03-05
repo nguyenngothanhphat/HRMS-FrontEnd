@@ -72,7 +72,9 @@ class TenuaAccrua extends Component {
         <div className={styles.form}>
           <div className={styles.effectForm}>
             <Row gutter={[30, 20]}>
-              <Col span={10}>During the employee’s</Col>
+              <Col span={10} className={styles.effectForm__firstContent}>
+                During the employee’s
+              </Col>
               <Col span={10}>
                 <InputNumber
                   min={0}
@@ -84,7 +86,9 @@ class TenuaAccrua extends Component {
               </Col>
             </Row>
             <Row gutter={[30, 20]}>
-              <Col span={10}>year of employment, additional casual leaves accrued per year is</Col>
+              <Col span={10} className={styles.effectForm__secondContent}>
+                year of employment, additional casual leaves accrued per year is
+              </Col>
               <Col span={10}>
                 <Row gutter={[24, 0]}>
                   <Col>
@@ -113,9 +117,12 @@ class TenuaAccrua extends Component {
                 </Row>
               </Col>
             </Row>
-            <Row gutter={[30, 0]}>
-              <Col span={10}>effectiveFrom from</Col>
-              <Col xs={24} sm={24} md={24} lg={24} xl={10}>
+            <Row gutter={[24, 12]}>
+              <Col span={10} className={styles.effectForm__lastContent}>
+                effectiveFrom from
+              </Col>
+              {/* <Col span={10} xs={24} sm={24} md={24} lg={24} xl={10}> */}
+              <Col span={10}>
                 <Select className={styles.date} placeholder="their anniversary date" />
               </Col>
             </Row>
