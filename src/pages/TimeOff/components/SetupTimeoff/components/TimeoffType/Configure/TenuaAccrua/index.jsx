@@ -75,9 +75,9 @@ class TenuaAccrua extends Component {
               <Col span={10}>During the employee’s</Col>
               <Col span={10}>
                 <InputNumber
-                  min={1}
-                  max={10}
-                  formatter={(value) => `${value}days`}
+                  min={0}
+                  max={365}
+                  formatter={(value) => `${value} days`}
                   parser={(value) => value.replace('days', '')}
                   onChange={this.onChange}
                 />
@@ -90,11 +90,11 @@ class TenuaAccrua extends Component {
                   <Col>
                     <InputNumber
                       min={0}
-                      max={10}
+                      max={date === 'days' ? 365 : 12}
                       placeholder={date === 'days' ? 'days' : 'hours'}
                       formatter={(value) => (date === 'days' ? `${value} days` : `${value} hours`)}
                       parser={(value) =>
-                        date === 'day' ? value.replace('days', '') : value.replace('hours', '')
+                        date === 'days' ? value.replace('days', '') : value.replace('hours', '')
                       }
                       onChange={this.onChangeYear}
                     />

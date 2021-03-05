@@ -78,7 +78,7 @@ class BaseAccual extends Component {
                 <Col>
                   <InputNumber
                     min={0}
-                    max={12}
+                    max={date === 'day' ? 365 : 12}
                     defaultValue={0}
                     placeholder={date === 'day' ? 'days' : 'hours'}
                     formatter={(value) => (date === 'day' ? `${value} days` : `${value} hours`)}
