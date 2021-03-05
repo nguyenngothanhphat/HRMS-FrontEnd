@@ -231,18 +231,19 @@ class WorkShedule extends Component {
                           </Col>
                           <Col style={{ padding: '2px' }} className={s.radioSection}>
                             <Form.Item name="startAmPM">
-                              <div className={s.radioTime}>
-                                <Radio.Group
-                                  options={options}
+                              {/* <div className={s.radioTime}> */}
+                              <Radio.Group
+                                  // options={options}
                                   // onChange={this.onChange1}
-                                  defaultValue={beforenoon}
-                                  optionType="button"
-                                  buttonStyle="solid"
-                                >
-                                  <Radio.Button value="AM">AM</Radio.Button>
-                                  <Radio.Button value="PM">PM</Radio.Button>
-                                </Radio.Group>
-                              </div>
+                                defaultValue={beforenoon}
+                                optionType="button"
+                                buttonStyle="solid"
+                                className={s.radioGroup}
+                              >
+                                <Radio.Button value="AM">AM</Radio.Button>
+                                <Radio.Button value="PM">PM</Radio.Button>
+                              </Radio.Group>
+                              {/* </div> */}
                             </Form.Item>
                           </Col>
                         </Row>
@@ -266,11 +267,12 @@ class WorkShedule extends Component {
                             <Form.Item name="endAmPM">
                               <div className={s.radioTime}>
                                 <Radio.Group
-                                  options={options}
+                                  // options={options}
                                   // onChange={this.onChange2}
                                   defaultValue={afternoon}
                                   optionType="button"
                                   buttonStyle="solid"
+                                  className={s.radioGroup}
                                 >
                                   <Radio.Button value="AM">AM</Radio.Button>
                                   <Radio.Button value="PM">PM</Radio.Button>
