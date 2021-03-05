@@ -1,15 +1,16 @@
+/* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import { Affix, Button, Row, Col } from 'antd';
 import BaseAccual from './BaseAccual';
 import TenuaAccrua from './TenuaAccrua';
 import AccrualSchedule from './AccrualSchedule';
 import Balance from './Balance';
-import NegativeBalances from './NegativeBalances';
+// import NegativeBalances from './NegativeBalances';
 import AnnualReset from './AnnualReset';
 import CarryoverCap from './CarryoverCap';
-import WaitingPeriod from './WaitingPeriod';
-import Increaments from './Increaments';
-import HireProbation from './HireProbation';
+// import WaitingPeriod from './WaitingPeriod';
+// import Increaments from './Increaments';
+// import HireProbation from './HireProbation';
 import styles from './index.less';
 
 // const { TabPane } = Tabs;
@@ -19,6 +20,7 @@ class Configure extends Component {
     super(props);
     this.state = {
       select: 'baseAccrual',
+      isActive: 'baseAccrual',
       step: 1,
       baseAccual: {},
       tenuaAccrua: {},
@@ -32,21 +34,21 @@ class Configure extends Component {
         {
           key: 1,
           id: 'baseAccrual',
-          title: 'Base  accrual',
+          title: 'Base accrual rate',
           ref: React.createRef(),
           componnet: <BaseAccual onChangeValue={this.onChangeBaseAccual} />,
         },
         {
           key: 2,
           id: 'tenuaAccrua',
-          title: 'Tenua Accrua',
+          title: 'Tenure accrual rate',
           ref: React.createRef(),
           componnet: <TenuaAccrua onChangeValue={this.onChangetenuaAccrua} />,
         },
         {
           key: 3,
           id: 'accrualSchedule',
-          title: 'Accrual Schedule',
+          title: 'Accrual schedule',
           ref: React.createRef(),
           componnet: <AccrualSchedule onChangeValue={this.onChangetenuaAccrua} />,
         },
@@ -60,45 +62,45 @@ class Configure extends Component {
         {
           key: 5,
           id: 'annualReset',
-          title: 'Annual Reset',
+          title: 'Annual reset',
           ref: React.createRef(),
           componnet: <AnnualReset onChangeValue={this.onChangeBalance} />,
         },
+        // {
+        //   key: 6,
+        //   id: 'negativeBalances',
+        //   title: 'Negative balances',
+        //   ref: React.createRef(),
+        //   componnet: <NegativeBalances onChangeValue={this.onChangeNegative} />,
+        // },
         {
           key: 6,
-          id: 'negativeBalances',
-          title: 'Negative balances',
-          ref: React.createRef(),
-          componnet: <NegativeBalances onChangeValue={this.onChangeNegative} />,
-        },
-        {
-          key: 7,
           id: 'carryoverCap',
-          title: 'Carryover Cap',
+          title: 'Carryover cap',
           ref: React.createRef(),
           componnet: <CarryoverCap onChangeValue={this.onChangeCarryover} />,
         },
-        {
-          key: 8,
-          id: 'minimumIncrements',
-          title: 'Minimum Increments',
-          ref: React.createRef(),
-          componnet: <Increaments onChangeValue={this.onChangeIncrements} />,
-        },
-        {
-          key: 9,
-          id: 'waitingPeriods',
-          title: 'Waiting periods',
-          ref: React.createRef(),
-          componnet: <WaitingPeriod onChangeValue={this.onChangeWaiting} />,
-        },
-        {
-          key: 10,
-          id: 'hireProbation',
-          title: 'New Hire proration',
-          ref: React.createRef(),
-          componnet: <HireProbation onChangeValue={this.onChangeHireProbation} />,
-        },
+        // {
+        //   key: 8,
+        //   id: 'minimumIncrements',
+        //   title: 'Minimum Increments',
+        //   ref: React.createRef(),
+        //   componnet: <Increaments onChangeValue={this.onChangeIncrements} />,
+        // },
+        // {
+        //   key: 9,
+        //   id: 'waitingPeriods',
+        //   title: 'Waiting periods',
+        //   ref: React.createRef(),
+        //   componnet: <WaitingPeriod onChangeValue={this.onChangeWaiting} />,
+        // },
+        // {
+        //   key: 10,
+        //   id: 'hireProbation',
+        //   title: 'New Hire proration',
+        //   ref: React.createRef(),
+        //   componnet: <HireProbation onChangeValue={this.onChangeHireProbation} />,
+        // },
       ],
     };
   }
@@ -123,34 +125,39 @@ class Configure extends Component {
       this.setState({ select: 'balance' });
     } else if (position > 1300 && position < 1600) {
       this.setState({ select: 'annualReset' });
+      // } else if (position > 1600 && position < 1800) {
+      //   this.setState({ select: 'negativeBalances' });
     } else if (position > 1600 && position < 1800) {
-      this.setState({ select: 'negativeBalances' });
-    } else if (position > 1800 && position < 2000) {
       this.setState({ select: 'carryoverCap' });
-    } else if (position > 2000 && position < 2200) {
-      this.setState({ select: 'minimumIncrements' });
-    } else if (position > 2220 && position < 2400) {
-      this.setState({ select: 'waitingPeriods' });
-    } else if (position > 2400 && position < 2600) {
-      this.setState({ select: 'hireProbation' });
+      // } else if (position > 2000 && position < 2200) {
+      //   this.setState({ select: 'minimumIncrements' });
+      // } else if (position > 2220 && position < 2400) {
+      //   this.setState({ select: 'waitingPeriods' });
+      // } else if (position > 2400 && position < 2600) {
+      //   this.setState({ select: 'hireProbation' });
     }
   };
 
   handleClick = (item) => {
     const { id, ref } = item;
-    this.setState({ select: id });
+    this.setState({ select: id, isActive: id });
     ref.current.scrollIntoView(true);
-    window.scrollBy(0, -150);
+    // window.scrollBy(0, -150);
+    window.scrollBy({
+      top: -100,
+      left: 0,
+      behavior: 'smooth',
+    });
   };
 
   onChange = () => {};
 
   renderItem = (item) => {
-    const { select } = this.state;
+    const { isActive } = this.state;
 
     return (
       <div
-        className={select === item.id ? styles.itemMenuActive : styles.itemMenu}
+        className={isActive === item.id ? styles.itemMenuActive : styles.itemMenu}
         onClick={() => this.handleClick(item)}
       >
         {item.title}
@@ -219,7 +226,7 @@ class Configure extends Component {
   render() {
     // const { tabKey = '' } = this.props;
     const { select, list, waitingPeriod, hireProbation } = this.state;
-    console.log(hireProbation);
+    // console.log(hireProbation);
     const selectStep = list.find((item) => item.id === select).key;
 
     return (
@@ -239,18 +246,27 @@ class Configure extends Component {
                   &lt; Prev
                 </Button>
               </Col>
-              <Col>{`${selectStep}/10 Steps `}</Col>
+              <Col style={{ display: 'flex', alignItems: 'center' }}>
+                <div className={styles.detailStep}>
+                  <span>{`${selectStep}/5`}</span> Steps
+                </div>
+              </Col>
               <Col>
                 <Button
-                  disabled={selectStep === 10}
+                  disabled={selectStep === 5}
                   onClick={() => this.nextStep(selectStep)}
-                  className={styles.nextStep}
+                  className={selectStep === 5 ? styles.prevStep : styles.nextStep}
                 >
                   Next &gt;
                 </Button>
               </Col>
             </Row>
-            <Button className={styles.btnSave}>Save</Button>
+            <Button
+              disabled={!(selectStep > 1)}
+              className={selectStep > 1 ? styles.btnSave : styles.disableBtnSave}
+            >
+              Save
+            </Button>
           </div>
         </Affix>
       </div>

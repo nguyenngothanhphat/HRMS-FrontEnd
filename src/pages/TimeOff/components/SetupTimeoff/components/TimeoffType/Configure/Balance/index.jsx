@@ -56,7 +56,7 @@ class Balance extends Component {
 
   render() {
     const { accrualRate, date } = this.state;
-    console.log(accrualRate);
+    // console.log(accrualRate);
     return (
       <div className={styles.contentbalance}>
         <div className={styles.title}>Maximum balance</div>
