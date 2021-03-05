@@ -117,9 +117,13 @@ class ImportExcel extends React.Component {
               </span>
             </Dragger>
           </div>
-          <Row gutter={[50, 0]}>
-            <Col span={10}>As per any assigned new policies, their accrual will begin on:</Col>
-            <Col span={7}>
+          <Row gutter={[24, 12]}>
+            <Col span={6}>
+              <div className={styles.textBottom}>
+                As per any assigned new policies, their accrual will begin on:
+              </div>
+            </Col>
+            <Col span={8}>
               <DatePicker
                 className={styles.datePicker}
                 placeholder="Balances effective date"

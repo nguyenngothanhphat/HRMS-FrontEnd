@@ -1,4 +1,7 @@
 .root {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
   :global {
     .ant-btn {
       background-color: #ffa100;
@@ -20,16 +23,61 @@
       height: 42px;
       border-radius: 5px;
     }
-    .ant-picker {
+    .ant-picker, .ant-picker-focused {
       width: 83px;
       height: 42px;
+      border-radius: 5px;
     }
+
+    .ant-radio-button-wrapper {
+      padding: 0px 8px;
+      height: 26px;
+      border: none;
+      border-radius: 0px;
+    }
+
+    .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled){
+      border-radius: 5px;
+    }
+
+    .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before,
+    .ant-radio-button-wrapper:not(:first-child)::before 
+    {
+      background: none;
+      display: none;
+    }
+
+    .ant-input-number-handler-wrap{
+      border: none;
+      margin-right: 4px;
+    }
+
+    .ant-input-number-handler-down{
+      border-top: none ;
+    }
+
+    .ant-input-number {
+      .ant-input-number-handler-wrap {
+        opacity: 1;
+        padding: 8px 0px;
+      }
+    }
+
+    .ant-input-number-handler-wrap .ant-input-number-handler .ant-input-number-handler-up-inner, 
+    .ant-input-number-handler-wrap .ant-input-number-handler .ant-input-number-handler-down-inner {
+      font-size: 10px;
+      color: #000;
+      opacity: 0.58;
+    }
+  }
+
   }
   .formActive {
     background-color: #fff;
     width: auto;
     height: auto;
     border: 1px solid #ebeff2;
+    width: 890px;
     // padding: 27px 24px;
     .straight {
       height: 1px;
@@ -38,6 +86,7 @@
     }
     .formWorkHour {
       padding: 24px;
+      padding-right: 227px;
     }
     .content {
       font-weight: normal;
@@ -52,6 +101,39 @@
       background: #fafafa;
       border-radius: 13px;
       margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      :global {
+        .ant-form-item {
+          margin-bottom: 9px;
+        }
+      }
+    }
+
+    .listIcons{
+      display: flex;
+      flex-direction: column;
+
+      .itemIcon{
+        font-size: 10px;
+        color: #000;
+        opacity: 0.58;
+      }
+    }
+
+    .radioSection{
+      display: flex;
+      align-items: center;
+
+      .radioTime{
+        padding: 2px;
+        height: fit-content;
+        border: 1px solid #D6DCE4;
+        border-radius: 5px;
+      }
     }
   }
   .center {
@@ -63,48 +145,59 @@
     margin-top: 40px;
   }
   .title {
-    font-style: normal;
     font-weight: 700;
-    font-size: 18px;
-    line-height: 21px;
+    font-size: 16px;
+    line-height: 18.75px;
     color: #161c29;
     padding-bottom: 20px;
   }
   .description {
-    font-style: normal;
-    font-weight: normal;
     font-size: 13px;
-    line-height: 15px;
+    line-height: 20px;
     color: #707177;
-    padding-bottom: 14px;
+    padding-bottom: 16px;
+    width: 584px;
   }
   .activeText {
     padding: 24px;
+    display: flex;
+    justify-content: space-between;
     span {
-      font-style: normal;
       font-weight: 500;
-      font-size: 16px;
-      line-height: 19px;
+      font-size: 14px;
+      line-height: 16.41px;
       color: #161c29;
     }
-    // padding-bottom: 16px;
+    .editIcon{
+      width: 50px;
+      display: flex;
+      justify-content: space-between;
+      cursor: pointer;
+      .editText{
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 16px;
+
+        color: #2C6DF9;
+      }
+    }
   }
   .workHour {
-    font-style: normal;
     font-weight: 500;
     font-size: 14px;
-    line-height: 16px;
+    line-height: 16.41px;
     color: #161c29;
     padding-bottom: 17px;
   }
   .pb17 {
     padding-bottom: 17px;
+    width: 530px;
   }
-  .radio {
-    width: 72px;
-    height: 30px;
-    border-radius: 5px !important;
-  }
+  // .radio {
+  //   width: 72px;
+  //   height: 30px;
+  //   border-radius: 5px !important;
+  // }
   // .form {
   //   display: flex;
   //   flex-direction: row;
@@ -161,4 +254,4 @@
     justify-content: flex-end;
     align-items: center;
   }
-}
+

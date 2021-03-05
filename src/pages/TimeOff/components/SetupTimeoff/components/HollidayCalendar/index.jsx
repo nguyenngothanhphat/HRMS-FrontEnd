@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Checkbox, Select, Row, Col, Spin, InputNumber } from 'antd';
+import { Button, Checkbox, Select, Row, Col, Spin, InputNumber, Affix } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import AddHoliday from './AddHoliday';
@@ -7,11 +7,11 @@ import s from './index.less';
 
 const { Option } = Select;
 
-const listCountry = [
-  { country: 'VN', code: 'vietnamese', label: 'Viet Nam' },
-  { country: 'US', code: 'usa', label: 'US' },
-  { country: 'IN', code: 'indian', label: ' India' },
-];
+// const listCountry = [
+//   { country: 'VN', code: 'vietnamese', label: 'Viet Nam' },
+//   { country: 'US', code: 'usa', label: 'US' },
+//   { country: 'IN', code: 'indian', label: ' India' },
+// ];
 
 const MOCK_DATA = [
   {
@@ -77,7 +77,7 @@ const MOCK_DATA = [
 ];
 @connect(
   ({
-    timeOff,
+    timeOff: { countryList = [] } = {},
     loading,
     user: {
       currentUser: {
@@ -86,7 +86,7 @@ const MOCK_DATA = [
       } = {},
     } = {},
   }) => ({
-    timeOff,
+    countryList,
     loading: loading.effects['timeOff/fetchHolidaysListBylocation'],
     loadingbyCountry: loading.effects['timeOff/fetchHolidaysListBylocation'],
     loadingAddHoliday: loading.effects['timeOff/addHoliday'],
@@ -104,17 +104,12 @@ class HollidayCalendar extends Component {
       list: {},
       idCheck: [],
       visible: false,
+      isActive: '',
       // listCheck: [],
       // indeterminate: true,
       // checkAll: false,
     };
   }
-
-  findRole = (roles) => {
-    const hrGlobal = roles.find((item) => item === 'hr-global');
-    const role = hrGlobal || 'employee';
-    return role;
-  };
 
   componentDidMount = () => {
     const listRole = localStorage.getItem('antd-pro-authority');
@@ -126,6 +121,12 @@ class HollidayCalendar extends Component {
     const year = d.getFullYear();
     const formatYear = year.toString();
     this.initListHoliday(formatYear);
+  };
+
+  findRole = (roles) => {
+    const hrGlobal = roles.find((item) => item === 'hr-global');
+    const role = hrGlobal || 'employee';
+    return role;
   };
 
   initListHoliday = (year) => {
@@ -150,11 +151,18 @@ class HollidayCalendar extends Component {
     });
   };
 
-  handleChange = (value) => {
+  handleChange = (e, value) => {
+    e.preventDefault();
     const { data } = this.state;
     const refComponent = data.find((item) => item.text === value);
     refComponent.ref.current.scrollIntoView(true);
-    window.scrollBy(0, -80);
+    window.scrollBy({
+      top: -40,
+      left: 0,
+      behavior: 'smooth',
+    });
+
+    this.setState({ isActive: value });
   };
 
   onChange = (value) => {
@@ -239,47 +247,51 @@ class HollidayCalendar extends Component {
     const { children = [] } = item;
     const { idCheck = [] } = this.state;
     return (
-      <div ref={item.ref}>
-        <div key={item.text} className={s.formTable}>
-          <div className={s.title}>{item.month}</div>
-          <div>
-            {children.map((itemChildren, index) => {
-              const { date, name, type, _id } = itemChildren;
-              const dateFormat = moment(date).format('MM-DD-YYYY');
-              const day = moment(date).format('dddd');
-              return (
-                <div>
-                  <Row gutter={[30, 20]} className={s.textStyles}>
-                    <Col>
-                      <Checkbox onChange={(e) => this.handleClickDelete(e, _id)} />
-                      {/* <Checkbox.Group
+      // <div ref={item.ref}>
+      <div key={item.text} className={s.formTable}>
+        <div className={s.title}>{item.month}</div>
+        <div>
+          {children.map((itemChildren, index) => {
+            const { date, name, type, _id } = itemChildren;
+            const dateFormat = moment(date).format('MM-DD-YYYY');
+            const day = moment(date).format('dddd');
+            return (
+              <div key={_id}>
+                <Row gutter={[30, 20]} className={s.textStyles}>
+                  <Col>
+                    <Checkbox onChange={(e) => this.handleClickDelete(e, _id)} />
+                    {/* <Checkbox.Group
                         // options={data}
                         value={listCheck}
                         onChange={(e) => this.handleClickDelete(e, _id)}
                       /> */}
-                    </Col>
+                  </Col>
 
-                    <Col span={7} className={s.textHoliday}>
-                      {name}
+                  <Col span={8} className={s.textHoliday}>
+                    {name}
+                  </Col>
+                  <Col span={4} className={s.dateHoliday}>
+                    {dateFormat}
+                  </Col>
+                  <Col span={4} className={s.dateHoliday}>
+                    {day}
+                  </Col>
+                  <Col span={4} className={s.dateHoliday}>
+                    {type}
+                  </Col>
+                  {idCheck.indexOf(_id) > -1 && (
+                    <Col span={3} onClick={() => this.deleteHoliday(_id)}>
+                      <Button className={s.deleteHoliday}>Delete</Button>
                     </Col>
-                    <Col span={4} className={s.textHoliday}>
-                      {dateFormat}
-                    </Col>
-                    <Col span={3}>{day}</Col>
-                    <Col span={3}>{type}</Col>
-                    {idCheck.indexOf(_id) > -1 && (
-                      <Col span={3} onClick={() => this.deleteHoliday(_id)}>
-                        <Button className={s.deleteHoliday}>Delete</Button>
-                      </Col>
-                    )}
-                  </Row>
-                  {index !== children.length - 1 ? <div className={s.straight} /> : ''}
-                </div>
-              );
-            })}
-          </div>
+                  )}
+                </Row>
+                {index !== children.length - 1 ? <div className={s.straight} /> : ''}
+              </div>
+            );
+          })}
         </div>
       </div>
+      // </div>
     );
   };
 
@@ -318,9 +330,77 @@ class HollidayCalendar extends Component {
     // });
   };
 
+  renderCountry = () => {
+    const { countryList = [] } = this.props;
+    const arrCountry = [
+      {
+        id: 'IN',
+        value: 'India',
+      },
+      {
+        id: 'US',
+        value: 'USA',
+      },
+      {
+        id: 'VN',
+        value: 'Viet Nam',
+      },
+    ];
+
+    let flagUrl = '';
+
+    const flagItem = (id) => {
+      countryList.forEach((item) => {
+        if (item._id === id) {
+          flagUrl = item.flag;
+        }
+        return flagUrl;
+      });
+
+      return (
+        <div
+          style={{
+            maxWidth: '16px',
+            height: '16px',
+            display: 'inline-flex',
+            alignItems: 'center',
+            marginRight: '12px',
+          }}
+        >
+          <img
+            src={flagUrl}
+            alt="flag"
+            style={{
+              width: '100%',
+              borderRadius: '50%',
+              height: '100%',
+            }}
+          />
+        </div>
+      );
+    };
+    return (
+      <>
+        {arrCountry.map((item) => (
+          <Option key={item.id} value={item.value} style={{ height: '20px', display: 'flex' }}>
+            <div className={s.labelText}>
+              {flagItem(item.id)}
+              <span>{item.value}</span>
+            </div>
+          </Option>
+        ))}
+      </>
+    );
+  };
+
+  handleChangeSelect = (value) => {
+    console.log('value: ', value);
+  };
+
   render() {
-    const { data, role, yearSelect, visible = true } = this.state;
+    const { data, role, yearSelect, visible = true, isActive } = this.state;
     const { loading = false, loadingbyCountry = false, loadingAddHoliday = false } = this.props;
+    // const classNameListDate = isActive ? s.listDateActive : s.listDate;
     return (
       <div className={s.root}>
         <div className={s.setUpWrap}>
@@ -331,7 +411,7 @@ class HollidayCalendar extends Component {
             <p> provides holidays. You may add holidays to the list as well.</p>
           </div>
 
-          {role === 'hr-global' && (
+          {/* {role === 'hr-global' && (
             <Select style={{ width: 250 }} onChange={this.changeCountry}>
               {listCountry.map((item) => (
                 <Option key={item.code} value={item.country}>
@@ -339,53 +419,90 @@ class HollidayCalendar extends Component {
                 </Option>
               ))}
             </Select>
-          )}
+          )} */}
+          <div className={s.topHeader}>
+            <Select
+              size="large"
+              placeholder="Please select country"
+              showArrow
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              className={s.selectCountry}
+              defaultValue="India"
+              onChange={(value) => this.handleChangeSelect(value)}
+            >
+              {this.renderCountry()}
+            </Select>
+          </div>
         </div>
-        <div className={s.listHoliday}>
-          <div span={24} className={s.flex}>
-            <div>
-              <Checkbox className={s.select} onClick={this.onCheckAllChange}>
-                Select All
-              </Checkbox>
-            </div>
-            <div>
-              <Row gutter={[24, 0]}>
-                <Col>
-                  <Button className={s.btnHoliday} onClick={this.handleClick}>
-                    Add a holiday
-                  </Button>
-                </Col>
-                <Col>
+
+        <div className={s.container}>
+          <Row gutter={[24, 12]}>
+            <Col span={20}>
+              <div className={s.listHoliday}>
+                <div span={24} className={s.flex}>
+                  <div>
+                    <Checkbox className={s.select} onClick={this.onCheckAllChange}>
+                      Select All
+                    </Checkbox>
+                  </div>
+                  <div>
+                    <Row gutter={[24, 0]}>
+                      <Col>
+                        <Button className={s.btnHoliday} onClick={this.handleClick}>
+                          Add a holiday
+                        </Button>
+                      </Col>
+                    </Row>
+                  </div>
+                </div>
+                <div>
+                  {loading || loadingbyCountry || loadingAddHoliday ? (
+                    <Row>
+                      <Col span={24} className={s.center}>
+                        <Spin />
+                      </Col>
+                    </Row>
+                  ) : (
+                    data.map((render, index) => (
+                      <Row ref={render.ref} key={`${index + 1}`}>
+                        <Col span={24}>{this.renderItem(render)}</Col>
+                      </Row>
+                    ))
+                  )}
+                </div>
+              </div>
+            </Col>
+            <Col span={4}>
+              <Affix offsetTop={42} className={s.affix}>
+                <div className={s.rightSection}>
                   <InputNumber
                     min={2020}
                     max={2022}
                     defaultValue={yearSelect}
                     onChange={this.onChange}
+                    className={s.inputNum}
                   />
-                </Col>
-                <Col>
-                  <Select style={{ width: 120 }} onChange={this.handleChange}>
+                  <div className={s.dateSelect}>
                     {data.map((item) => (
-                      <Option key={item.month} value={item.text}>
-                        {item.text}
-                      </Option>
+                      <div
+                        key={item.month}
+                        className={s.listDate}
+                        onClick={(e) => this.handleChange(e, item.text)}
+                      >
+                        {isActive === item.text ? (
+                          <span className={s.listDate__active}>{item.text}</span>
+                        ) : (
+                          <span className={s.listDate__nonActive}>{item.text}</span>
+                        )}
+                      </div>
                     ))}
-                  </Select>
-                </Col>
-              </Row>
-            </div>
-          </div>
-          <div>
-            <Row>
-              {loading || loadingbyCountry || loadingAddHoliday ? (
-                <Col span={24} className={s.center}>
-                  <Spin />
-                </Col>
-              ) : (
-                data.map((render) => <Col span={20}>{this.renderItem(render)}</Col>)
-              )}
-            </Row>
-          </div>
+                  </div>
+                </div>
+              </Affix>
+            </Col>
+          </Row>
         </div>
         <AddHoliday
           visible={visible}

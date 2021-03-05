@@ -15,6 +15,7 @@ class BaseAccual extends Component {
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
     const { time, unlimited } = this.state;
+    console.log(e);
     this.setState({
       date: e.target.value,
     });
@@ -61,29 +62,33 @@ class BaseAccual extends Component {
         <div className={styles.title}>Base accrual rate</div>
         <div className={styles.borderStyles} />
         <div className={styles.formBody}>
-          <Row gutter={[20, 0]}>
+          <Row gutter={[24, 12]}>
             <Col span={10}>
-              <div className={styles.titleText}>
-                During the employee’s 1st year of employment, total casual leave accrued
+              <div className={styles.leftSection}>
+                <div className={styles.titleText}>
+                  During the employee’s 1st year of employment, total casual leave accrued
+                </div>
+                <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
+                  Unlimited causal leave
+                </Checkbox>
               </div>
-              <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
-                Unlimited causal leave
-              </Checkbox>
             </Col>
-            <Col span={12}>
+            <Col span={14} className={styles.rightSection}>
               <Row className={styles.inputText} gutter={[24, 0]}>
                 <Col>
                   <InputNumber
                     min={0}
-                    max={12}
+                    max={date === 'day' ? 365 : 12}
                     defaultValue={0}
-                    placeholder="days"
-                    formatter={(value) => `${value} day`}
-                    parser={(value) => value.replace('days', '')}
+                    placeholder={date === 'day' ? 'days' : 'hours'}
+                    formatter={(value) => (date === 'day' ? `${value} days` : `${value} hours`)}
+                    parser={(value) =>
+                      date === 'day' ? value.replace('days', '') : value.replace('hours', '')
+                    }
                     onChange={this.onChange}
                   />
                 </Col>
-                <Col>
+                <Col style={{ paddingLeft: '1px !important' }}>
                   <Radio.Group
                     onChange={this.onChangeRadio}
                     value={date}
