@@ -1,4 +1,5 @@
 /* eslint-disable react/no-unused-state */
+
 import React, { Component } from 'react';
 import { Affix, Button, Row, Col } from 'antd';
 import BaseAccual from './BaseAccual';
@@ -20,16 +21,15 @@ class Configure extends Component {
     super(props);
     this.state = {
       select: 'baseAccrual',
-      isActive: 'baseAccrual',
       step: 1,
       baseAccual: {},
       tenuaAccrua: {},
       balance: {},
       negativeBalance: {},
       carryoverCap: {},
-      waitingPeriod: {},
+      // waitingPeriod: {},
       minIncrements: {},
-      hireProbation: {},
+      // hireProbation: {},
       list: [
         {
           key: 1,
@@ -140,7 +140,7 @@ class Configure extends Component {
 
   handleClick = (item) => {
     const { id, ref } = item;
-    this.setState({ select: id, isActive: id });
+    this.setState({ select: id });
     ref.current.scrollIntoView(true);
     // window.scrollBy(0, -150);
     window.scrollBy({
@@ -153,20 +153,16 @@ class Configure extends Component {
   onChange = () => {};
 
   renderItem = (item) => {
-    const { isActive } = this.state;
+    const { select } = this.state;
 
     return (
       <div
-        className={isActive === item.id ? styles.itemMenuActive : styles.itemMenu}
+        className={select === item.id ? styles.itemMenuActive : styles.itemMenu}
         onClick={() => this.handleClick(item)}
       >
         {item.title}
       </div>
     );
-  };
-
-  renderComponent = (item) => {
-    return <div ref={item.ref}>{item.componnet}</div>;
   };
 
   onChangeBaseAccual = (value = {}) => {
@@ -193,13 +189,13 @@ class Configure extends Component {
     this.setState({ minIncrements: value });
   };
 
-  onChangeWaiting = (value = {}) => {
-    this.setState({ waitingPeriod: value });
-  };
+  // onChangeWaiting = (value = {}) => {
+  //   this.setState({ : value });
+  // };
 
-  onChangeHireProbation = (value = {}) => {
-    this.setState({ hireProbation: value });
-  };
+  // onChangeHireProbation = (value = {}) => {
+  //   this.setState({ hireProbation: value });
+  // };
 
   prevStep = (data) => {
     if (data > 1) {
@@ -233,15 +229,16 @@ class Configure extends Component {
 
   render() {
     // const { tabKey = '' } = this.props;
-    const { select, list, waitingPeriod, hireProbation } = this.state;
-    // console.log(hireProbation);
+    const { select, list } = this.state;
     const selectStep = list.find((item) => item.id === select).key;
 
     return (
       <div className={styles.contentConfigure}>
         <div className={styles.tabSelect}>{list.map((item) => this.renderItem(item))}</div>
         <div className={styles.borderStyles} />
-        <div>{list.map((item) => this.renderComponent(item))}</div>
+        {list.map((item) => (
+          <div ref={item.ref}>{item.componnet}</div>
+        ))}
         <Affix offsetBottom={0} style={{ bottom: '0px' }}>
           <div className={styles.bottom}>
             <Row className={styles.stepNode} gutter={[60, 0]}>

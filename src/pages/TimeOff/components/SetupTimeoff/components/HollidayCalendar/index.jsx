@@ -111,12 +111,6 @@ class HollidayCalendar extends Component {
     };
   }
 
-  findRole = (roles) => {
-    const hrGlobal = roles.find((item) => item === 'hr-global');
-    const role = hrGlobal || 'employee';
-    return role;
-  };
-
   componentDidMount = () => {
     const listRole = localStorage.getItem('antd-pro-authority');
     const role = this.findRole(JSON.parse(listRole));
@@ -127,6 +121,12 @@ class HollidayCalendar extends Component {
     const year = d.getFullYear();
     const formatYear = year.toString();
     this.initListHoliday(formatYear);
+  };
+
+  findRole = (roles) => {
+    const hrGlobal = roles.find((item) => item === 'hr-global');
+    const role = hrGlobal || 'employee';
+    return role;
   };
 
   initListHoliday = (year) => {
@@ -157,7 +157,7 @@ class HollidayCalendar extends Component {
     const refComponent = data.find((item) => item.text === value);
     refComponent.ref.current.scrollIntoView(true);
     window.scrollBy({
-      top: -60,
+      top: -40,
       left: 0,
       behavior: 'smooth',
     });
@@ -247,51 +247,51 @@ class HollidayCalendar extends Component {
     const { children = [] } = item;
     const { idCheck = [] } = this.state;
     return (
-      <div ref={item.ref}>
-        <div key={item.text} className={s.formTable}>
-          <div className={s.title}>{item.month}</div>
-          <div>
-            {children.map((itemChildren, index) => {
-              const { date, name, type, _id } = itemChildren;
-              const dateFormat = moment(date).format('MM-DD-YYYY');
-              const day = moment(date).format('dddd');
-              return (
-                <div key={_id}>
-                  <Row gutter={[30, 20]} className={s.textStyles}>
-                    <Col>
-                      <Checkbox onChange={(e) => this.handleClickDelete(e, _id)} />
-                      {/* <Checkbox.Group
+      // <div ref={item.ref}>
+      <div key={item.text} className={s.formTable}>
+        <div className={s.title}>{item.month}</div>
+        <div>
+          {children.map((itemChildren, index) => {
+            const { date, name, type, _id } = itemChildren;
+            const dateFormat = moment(date).format('MM-DD-YYYY');
+            const day = moment(date).format('dddd');
+            return (
+              <div key={_id}>
+                <Row gutter={[30, 20]} className={s.textStyles}>
+                  <Col>
+                    <Checkbox onChange={(e) => this.handleClickDelete(e, _id)} />
+                    {/* <Checkbox.Group
                         // options={data}
                         value={listCheck}
                         onChange={(e) => this.handleClickDelete(e, _id)}
                       /> */}
-                    </Col>
+                  </Col>
 
-                    <Col span={8} className={s.textHoliday}>
-                      {name}
+                  <Col span={8} className={s.textHoliday}>
+                    {name}
+                  </Col>
+                  <Col span={4} className={s.dateHoliday}>
+                    {dateFormat}
+                  </Col>
+                  <Col span={4} className={s.dateHoliday}>
+                    {day}
+                  </Col>
+                  <Col span={4} className={s.dateHoliday}>
+                    {type}
+                  </Col>
+                  {idCheck.indexOf(_id) > -1 && (
+                    <Col span={3} onClick={() => this.deleteHoliday(_id)}>
+                      <Button className={s.deleteHoliday}>Delete</Button>
                     </Col>
-                    <Col span={4} className={s.dateHoliday}>
-                      {dateFormat}
-                    </Col>
-                    <Col span={4} className={s.dateHoliday}>
-                      {day}
-                    </Col>
-                    <Col span={4} className={s.dateHoliday}>
-                      {type}
-                    </Col>
-                    {idCheck.indexOf(_id) > -1 && (
-                      <Col span={3} onClick={() => this.deleteHoliday(_id)}>
-                        <Button className={s.deleteHoliday}>Delete</Button>
-                      </Col>
-                    )}
-                  </Row>
-                  {index !== children.length - 1 ? <div className={s.straight} /> : ''}
-                </div>
-              );
-            })}
-          </div>
+                  )}
+                </Row>
+                {index !== children.length - 1 ? <div className={s.straight} /> : ''}
+              </div>
+            );
+          })}
         </div>
       </div>
+      // </div>
     );
   };
 
@@ -458,19 +458,19 @@ class HollidayCalendar extends Component {
                   </div>
                 </div>
                 <div>
-                  <Row>
-                    {loading || loadingbyCountry || loadingAddHoliday ? (
+                  {loading || loadingbyCountry || loadingAddHoliday ? (
+                    <Row>
                       <Col span={24} className={s.center}>
                         <Spin />
                       </Col>
-                    ) : (
-                      data.map((render, index) => (
-                        <Col key={`${index + 1}`} span={24}>
-                          {this.renderItem(render)}
-                        </Col>
-                      ))
-                    )}
-                  </Row>
+                    </Row>
+                  ) : (
+                    data.map((render, index) => (
+                      <Row ref={render.ref} key={`${index + 1}`}>
+                        <Col span={24}>{this.renderItem(render)}</Col>
+                      </Row>
+                    ))
+                  )}
                 </div>
               </div>
             </Col>
