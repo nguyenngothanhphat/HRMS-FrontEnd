@@ -15,6 +15,7 @@ class BaseAccual extends Component {
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
     const { time, unlimited } = this.state;
+    console.log(e);
     this.setState({
       date: e.target.value,
     });
@@ -79,9 +80,11 @@ class BaseAccual extends Component {
                     min={0}
                     max={12}
                     defaultValue={0}
-                    placeholder="days"
-                    formatter={(value) => `${value} day`}
-                    parser={(value) => value.replace('days', '')}
+                    placeholder={date === 'day' ? 'days' : 'hours'}
+                    formatter={(value) => (date === 'day' ? `${value} days` : `${value} hours`)}
+                    parser={(value) =>
+                      date === 'day' ? value.replace('days', '') : value.replace('hours', '')
+                    }
                     onChange={this.onChange}
                   />
                 </Col>

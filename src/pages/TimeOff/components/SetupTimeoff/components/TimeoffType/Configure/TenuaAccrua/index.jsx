@@ -91,8 +91,11 @@ class TenuaAccrua extends Component {
                     <InputNumber
                       min={0}
                       max={10}
-                      formatter={(value) => `${value}days`}
-                      parser={(value) => value.replace('days', '')}
+                      placeholder={date === 'days' ? 'days' : 'hours'}
+                      formatter={(value) => (date === 'days' ? `${value} days` : `${value} hours`)}
+                      parser={(value) =>
+                        date === 'day' ? value.replace('days', '') : value.replace('hours', '')
+                      }
                       onChange={this.onChangeYear}
                     />
                   </Col>
@@ -103,7 +106,7 @@ class TenuaAccrua extends Component {
                       className={styles.radioGroup}
                       onChange={this.onChangeRadio}
                     >
-                      <Radio.Button value="days">Day</Radio.Button>
+                      <Radio.Button value="days">Days</Radio.Button>
                       <Radio.Button value="hour">Hours</Radio.Button>
                     </Radio.Group>
                   </Col>

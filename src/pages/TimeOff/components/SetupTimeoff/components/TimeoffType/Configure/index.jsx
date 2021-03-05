@@ -208,7 +208,11 @@ class Configure extends Component {
       const renderStep = list.find((item) => item.key === dataPrev);
       const { ref } = renderStep;
       ref.current.scrollIntoView(true);
-      window.scrollBy(0, -150);
+      window.scrollBy({
+        top: -150,
+        left: 0,
+        behavior: 'smooth',
+      });
     }
   };
 
@@ -219,7 +223,11 @@ class Configure extends Component {
       const renderStep = list.find((item) => item.key === dataAdd);
       const { ref } = renderStep;
       ref.current.scrollIntoView(true);
-      window.scrollBy(0, -150);
+      window.scrollBy({
+        top: -150,
+        left: 0,
+        behavior: 'smooth',
+      });
     }
   };
 
