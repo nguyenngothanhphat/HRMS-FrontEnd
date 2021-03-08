@@ -9,21 +9,36 @@
     line-height: 19px;
   }
 
-  .previewAccrual {
-    margin: 0 !important;
-    padding: 10px 24px;
-    color: #fff;
-    background-color: #2c6df9;
-    border-radius: 4px;
+  .accrualScheduleTbl {
+    :global {
+      .ant-table-thead > tr > th {
+        padding: 10px 24px;
+        background-color: #2c6df9;
+      }
 
-    &__col {
-      padding: 0px !important;
-      font-size: 13px;
-      line-height: 15px;
+      .ant-table-tbody > tr > td {
+        padding: 10px 24px !important;
+      }
+
+      .ant-table-thead > tr:first-child > th:first-child {
+        border-top-left-radius: 4px !important;
+        border-bottom-left-radius: 4px;
+      }
+      .ant-table-thead > tr:first-child > th:last-child {
+        border-top-right-radius: 5px !important;
+        border-bottom-right-radius: 5px;
+      }
+
+      .ant-table-row {
+        color: #161c29;
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 15px;
+      }
+
+      .ant-pagination {
+        display: none;
+      }
     }
-  }
-
-  .item {
-    border-bottom: 1px solid #d6dce0;
   }
 }
