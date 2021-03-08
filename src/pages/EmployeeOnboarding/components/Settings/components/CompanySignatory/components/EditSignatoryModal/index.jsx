@@ -5,12 +5,6 @@ import { connect } from 'umi';
 
 import styles from './index.less';
 
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener('load', () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
-
 function beforeUpload(file) {
   const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
   if (!isJpgOrPng) {
@@ -46,10 +40,6 @@ class EditSignatoryModal extends PureComponent {
 
   handleChange = async ({ file = {} }) => {
     const { dispatch } = this.props;
-    // if (file.status === 'uploading') {
-    //   this.setState({ loading: true });
-    //   return;
-    // }
     if (file.status === 'done') {
       const formData = new FormData();
       formData.append('uri', file.originFileObj);
@@ -57,7 +47,6 @@ class EditSignatoryModal extends PureComponent {
         type: 'upload/uploadFile',
         payload: formData,
       }).then((resp) => {
-        this.setState({ loading: false });
         const { statusCode, data = [] } = resp;
         if (statusCode === 200) {
           const [first] = data;
@@ -66,13 +55,6 @@ class EditSignatoryModal extends PureComponent {
           this.formRef.current.setFieldsValue({
             urlImage: link,
           });
-
-          // Get this url from response in real world.
-          // getBase64(file.originFileObj, () =>
-          //   this.setState({
-          //     loading: false,
-          //   }),
-          // );
         }
       });
     }
@@ -86,12 +68,14 @@ class EditSignatoryModal extends PureComponent {
       onOk = () => {},
       onClose = () => {},
       loadingUploadFile,
+      action = '', // EDIT/ADD
     } = this.props;
     const { uploadedImageUrl } = this.state;
     const layout = {
       labelCol: { span: 8 },
       wrapperCol: { span: 16 },
     };
+    const isEditing = action === 'EDIT';
     return (
       <Modal
         className={styles.EditSignatoryModal}
@@ -99,13 +83,16 @@ class EditSignatoryModal extends PureComponent {
         centered
         visible={visible}
         footer={null}
-        onCancel={onClose}
+        onCancel={() => {
+          onClose();
+          setTimeout(() => {
+            this.setState({ uploadedImageUrl: '' });
+          }, 200);
+        }}
       >
         <div className={styles.container}>
           <div className={styles.header}>
-            <span>
-              {Object.keys(editPack).length !== 0 ? 'Edit signature' : 'Add new signature'}
-            </span>
+            <span>{isEditing ? 'Edit signature' : 'Add new signature'}</span>
           </div>
           <div className={styles.form}>
             <Form
@@ -115,9 +102,14 @@ class EditSignatoryModal extends PureComponent {
               initialValues={{
                 name: editPack.name,
                 designation: editPack.designation,
-                urlImage: editPack.urlImage,
+                urlImage: isEditing ? editPack.urlImage : null,
               }}
-              onFinish={onOk}
+              onFinish={(values) => {
+                onOk(values);
+                setTimeout(() => {
+                  this.setState({ uploadedImageUrl: '' });
+                }, 500);
+              }}
               ref={this.formRef}
               id="myForm"
             >
@@ -148,10 +140,15 @@ class EditSignatoryModal extends PureComponent {
                   beforeUpload={beforeUpload}
                   showUploadList={false}
                 >
-                  {!editPack.urlImage && (
+                  {/* ADD NEW SIGNATURE  */}
+                  {!isEditing && (
                     <>
                       {uploadedImageUrl ? (
-                        <img src={uploadedImageUrl} alt="avatar" style={{ maxWidth: '200px' }} />
+                        <img
+                          src={uploadedImageUrl}
+                          alt="avatar-added"
+                          style={{ maxWidth: '200px' }}
+                        />
                       ) : (
                         <>
                           {loadingUploadFile ? (
@@ -163,8 +160,23 @@ class EditSignatoryModal extends PureComponent {
                       )}
                     </>
                   )}
-                  {editPack.urlImage && (
-                    <img src={editPack.urlImage} alt="avatar" style={{ maxWidth: '200px' }} />
+                  {/* EDIT SIGNATURE  */}
+                  {isEditing && (
+                    <>
+                      {!uploadedImageUrl ? (
+                        <img src={editPack.urlImage} alt="avatar" style={{ maxWidth: '200px' }} />
+                      ) : (
+                        <>
+                          {uploadedImageUrl && (
+                            <img
+                              src={uploadedImageUrl}
+                              alt="avatar-edited"
+                              style={{ maxWidth: '200px' }}
+                            />
+                          )}
+                        </>
+                      )}
+                    </>
                   )}
                 </Upload>
               </Form.Item>

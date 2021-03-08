@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
+import { connect } from 'umi';
 import HollidayCalendar from './components/HollidayCalendar';
 import WorkShedule from './components/WorkShedule';
 import TimeoffType from './components/TimeoffType';
 import ManageBalance from './components/ManageBalance';
-import AssignPolicy from './components/AssignPolicy';
+import AssignPolicies from './components/AssignPolicy';
 import TimeOffLayout from './components/TimeOffLayout';
 import ScreenBegin from './components/ScreenBegin';
 
+@connect()
 class SetupTimeoff extends Component {
   constructor(props) {
     super(props);
@@ -14,6 +16,13 @@ class SetupTimeoff extends Component {
       pageStart: true,
     };
   }
+
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/getCountryList',
+    });
+  };
 
   changePage = () => {
     const { pageStart } = this.state;
@@ -48,16 +57,16 @@ class SetupTimeoff extends Component {
       },
       {
         id: 4,
-        name: 'Manage Balance',
-        key: 'manageBalance',
+        name: 'Manage Balances',
+        key: 'manageBalances',
         component: <ManageBalance />,
         progress: 100,
       },
       {
         id: 5,
-        name: 'Assign Policy',
-        key: 'assignPolicy',
-        component: <AssignPolicy />,
+        name: 'Assign policies',
+        key: 'assignPolicies',
+        component: <AssignPolicies />,
         progress: 100,
       },
     ];

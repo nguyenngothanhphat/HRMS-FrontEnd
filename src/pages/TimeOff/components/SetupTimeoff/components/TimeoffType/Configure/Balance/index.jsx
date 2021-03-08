@@ -56,7 +56,7 @@ class Balance extends Component {
 
   render() {
     const { accrualRate, date } = this.state;
-    console.log(accrualRate);
+    // console.log(accrualRate);
     return (
       <div className={styles.contentbalance}>
         <div className={styles.title}>Maximum balance</div>
@@ -76,11 +76,13 @@ class Balance extends Component {
                 <Col>
                   <InputNumber
                     min={0}
-                    max={12}
+                    max={date === 'day' ? 365 : 12}
                     defaultValue={0}
-                    placeholder="day"
-                    formatter={(value) => `${value} day`}
-                    parser={(value) => value.replace('days', '')}
+                    placeholder={date === 'day' ? 'days' : 'hours'}
+                    formatter={(value) => (date === 'day' ? `${value} days` : `${value} hours`)}
+                    parser={(value) =>
+                      date === 'day' ? value.replace('days', '') : value.replace('hours', '')
+                    }
                     onChange={this.onChange}
                   />
                 </Col>

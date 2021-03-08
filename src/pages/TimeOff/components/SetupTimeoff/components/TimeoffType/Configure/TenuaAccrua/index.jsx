@@ -72,27 +72,34 @@ class TenuaAccrua extends Component {
         <div className={styles.form}>
           <div className={styles.effectForm}>
             <Row gutter={[30, 20]}>
-              <Col span={10}>During the employee’s</Col>
+              <Col span={10} className={styles.effectForm__firstContent}>
+                During the employee’s
+              </Col>
               <Col span={10}>
                 <InputNumber
-                  min={1}
-                  max={10}
-                  formatter={(value) => `${value}days`}
+                  min={0}
+                  max={365}
+                  formatter={(value) => `${value} days`}
                   parser={(value) => value.replace('days', '')}
                   onChange={this.onChange}
                 />
               </Col>
             </Row>
             <Row gutter={[30, 20]}>
-              <Col span={10}>year of employment, additional casual leaves accrued per year is</Col>
+              <Col span={10} className={styles.effectForm__secondContent}>
+                year of employment, additional casual leaves accrued per year is
+              </Col>
               <Col span={10}>
                 <Row gutter={[24, 0]}>
                   <Col>
                     <InputNumber
                       min={0}
-                      max={10}
-                      formatter={(value) => `${value}days`}
-                      parser={(value) => value.replace('days', '')}
+                      max={date === 'days' ? 365 : 12}
+                      placeholder={date === 'days' ? 'days' : 'hours'}
+                      formatter={(value) => (date === 'days' ? `${value} days` : `${value} hours`)}
+                      parser={(value) =>
+                        date === 'days' ? value.replace('days', '') : value.replace('hours', '')
+                      }
                       onChange={this.onChangeYear}
                     />
                   </Col>
@@ -103,16 +110,19 @@ class TenuaAccrua extends Component {
                       className={styles.radioGroup}
                       onChange={this.onChangeRadio}
                     >
-                      <Radio.Button value="days">Day</Radio.Button>
+                      <Radio.Button value="days">Days</Radio.Button>
                       <Radio.Button value="hour">Hours</Radio.Button>
                     </Radio.Group>
                   </Col>
                 </Row>
               </Col>
             </Row>
-            <Row gutter={[30, 0]}>
-              <Col span={10}>effectiveFrom from</Col>
-              <Col xs={24} sm={24} md={24} lg={24} xl={10}>
+            <Row gutter={[24, 12]}>
+              <Col span={10} className={styles.effectForm__lastContent}>
+                effectiveFrom from
+              </Col>
+              {/* <Col span={10} xs={24} sm={24} md={24} lg={24} xl={10}> */}
+              <Col span={10}>
                 <Select className={styles.date} placeholder="their anniversary date" />
               </Col>
             </Row>

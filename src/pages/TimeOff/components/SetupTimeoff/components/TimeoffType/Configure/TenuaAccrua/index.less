@@ -1,16 +1,16 @@
 .contentTenua {
   :global {
     .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+      width: 445px;
       height: 42px;
       padding: 5px 20px;
-      width: 445px;
     }
     .ant-input-number {
-      width: 83px;
-      padding: 3px;
-      height: 42px;
-      border: 1px solid #d6dce4;
       box-sizing: border-box;
+      width: 83px;
+      height: 42px;
+      padding: 3px;
+      border: 1px solid #d6dce4;
       border-radius: 5px;
     }
     .ant-picker {
@@ -19,8 +19,8 @@
     }
     .ant-radio-group {
       padding: 2px;
-      border-radius: 5px;
       border: 1px solid #d6dce4;
+      border-radius: 5px;
     }
     .ant-radio-button-wrapper:first-child {
       border-radius: 10px;
@@ -40,78 +40,108 @@
     .ant-radio-button-wrapper:not(:first-child)::before {
       background-color: #fff;
     }
+
+    .ant-select-selector {
+      background: #ffffff;
+      border: 1px solid #d6dce4;
+      border-radius: 5px;
+    }
   }
-  background-color: #fff;
   height: auto;
+  background-color: #fff;
+  border: 1px solid #d6dce0;
+  border-radius: 5px;
   .flex {
-    padding: 30px 24px;
     display: flex;
     justify-content: space-between;
+    padding: 30px 24px;
     .titleText {
+      color: #161c29;
       font-weight: 500;
       font-size: 16px;
       line-height: 19px;
-      color: #161c29;
     }
     .btnAdd {
       width: 211px;
       height: 34px;
-      background: rgba(86, 138, 250, 0.12);
-      border-radius: 5px;
+      padding: 9px;
+      color: #2c6df9;
       font-weight: 500;
       font-size: 14px;
-      padding: 9px;
       line-height: 16px;
-      color: #2c6df9;
+      background: rgba(86, 138, 250, 0.12);
+      border-radius: 5px;
     }
   }
   .form {
     padding: 24px;
     .effectForm {
+      box-sizing: border-box;
       padding: 24px;
+      font-weight: normal;
+      font-style: normal;
       background-color: #fafafa;
       border: 1px solid #d6dce0;
-      box-sizing: border-box;
       border-radius: 12px;
+
+      &__firstContent,
+      &__lastContent {
+        color: #707177;
+        font-size: 13px;
+        line-height: 15.23px;
+      }
+      &__secondContent {
+        color: #707177;
+        font-size: 13px;
+        line-height: 20px;
+      }
+
+      :global {
+        .ant-select-selector {
+          background: #ffffff;
+          border: 1px solid #d6dce4;
+          border-radius: 5px;
+        }
+      }
     }
   }
   .effectFrom {
     .text {
+      padding-bottom: 5px;
+      color: #464646;
       font-weight: normal;
       font-size: 13px;
       line-height: 24px;
-      color: #464646;
-      padding-bottom: 5px;
     }
     margin-top: 20px;
     padding-bottom: 31px;
   }
   .select {
-    border: 1px solid #d6dce0;
     box-sizing: border-box;
-    border-radius: 5px;
+    color: #161c29;
     font-weight: normal;
     font-size: 14px;
     line-height: 16px;
-    color: #161c29;
+    border: 1px solid #d6dce0;
+    border-radius: 5px;
   }
   .btnAdd {
     width: 259px;
     height: 40px;
+    color: #fff;
     font-weight: 500;
     font-size: 14px;
     line-height: 16px;
-    color: #fff;
     background: #ffa100;
     border-radius: 25px;
   }
   .radioGroup {
-    font-style: normal;
-    font-weight: normal;
-    font-size: 13px;
-    line-height: 15px;
     padding: 3px;
     color: #707177;
+    font-weight: normal;
+    font-size: 13px;
+    font-style: normal;
+    line-height: 15px;
   }
   .borderStyles {
     width: 100%;

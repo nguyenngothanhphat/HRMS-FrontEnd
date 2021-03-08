@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import { connect } from 'umi';
 import { Form, InputNumber, Row, Col, Radio, Button, TimePicker, Spin } from 'antd';
+import { UpOutlined, DownOutlined } from '@ant-design/icons';
+
 import s from './index.less';
 
 @connect(
@@ -19,8 +21,6 @@ class WorkShedule extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value1: 'AM',
-      value2: 'PM',
       check: false,
       array: [
         {
@@ -66,6 +66,7 @@ class WorkShedule extends Component {
 
   componentDidMount() {
     const { dispatch, idLocation } = this.props;
+
     dispatch({
       type: 'timeOff/getInitEmployeeSchedule',
       payload: { location: idLocation },
@@ -76,18 +77,6 @@ class WorkShedule extends Component {
       }),
     );
   }
-
-  onChange1 = (e) => {
-    this.setState({
-      value1: e.target.value,
-    });
-  };
-
-  onChange2 = (e) => {
-    this.setState({
-      value2: e.target.value,
-    });
-  };
 
   handleClick = (id, formatArray) => {
     const result = formatArray.map((item) => ({
@@ -127,6 +116,7 @@ class WorkShedule extends Component {
     const arrayActive = formatArray.filter((item) => item.checked === true);
     const arrayFiler = arrayActive.map((item) => ({ checked: item.checked, date: item.text }));
     const { endAmPM, startAmPM, totalHour } = values;
+
     const payload = {
       startWorkDay: { start: startTime || '8:00', amPM: startAmPM },
       endWorkDay: { end: endTime || '17:00', amPM: endAmPM },
@@ -140,6 +130,13 @@ class WorkShedule extends Component {
     });
   };
 
+  renderIcons = () => (
+    <div className={s.listIcons}>
+      <UpOutlined className={s.itemIcon} />
+      <DownOutlined className={s.itemIcon} />
+    </div>
+  );
+
   render() {
     const format = 'HH:mm';
 
@@ -147,11 +144,11 @@ class WorkShedule extends Component {
       { label: 'AM', value: 'AM' },
       { label: 'PM', value: 'PM' },
     ];
-    const { value1, value2, array = [], check } = this.state;
+    const { array = [], check } = this.state;
     const { getByLocation, loading } = this.props;
     const {
-      endWorkDay: { end: endTime } = {},
-      startWorkDay: { start: startTime } = {},
+      endWorkDay: { end: endTime, amPM: afternoon } = {},
+      startWorkDay: { start: startTime, amPM: beforenoon } = {},
       workDay = [],
       totalHour,
     } = getByLocation;
@@ -177,10 +174,10 @@ class WorkShedule extends Component {
               endAmPM: 'PM',
             }}
           >
-            <div className={s.title}>Setup the employee work schedule</div>
+            <div className={s.title}>Setup the standard company Holiday Calendar</div>
             <div className={s.description}>
-              How many hours does a regular work day consists of for an employee? How may days does
-              an employee work in a week?
+              Below is a list of holidays celebrated in your region/country. Select the ones for
+              which your company provides holidays. You may add holidays to the list as well.
             </div>
             {loading ? (
               <div className={s.center}>
@@ -190,6 +187,10 @@ class WorkShedule extends Component {
               <div className={s.formActive}>
                 <div className={s.activeText}>
                   <span>Standard work schedule policy</span>
+                  <div className={s.editIcon}>
+                    <img src="/assets/images/edit.svg" alt="edit" className={s.editImg} />
+                    <span className={s.editText}>Edit</span>
+                  </div>
                 </div>
                 <div className={s.straight} />
                 <div className={s.formWorkHour}>
@@ -200,74 +201,92 @@ class WorkShedule extends Component {
                   </div>
                   <Row justify="space-between">
                     <Col span={7} className={s.formInput}>
-                      <div className={s.content}>Total Hours in a workday</div>
-                      <Form.Item name="totalHour">
-                        <InputNumber
-                          min={0}
-                          max={12}
-                          defaultValue={totalHour}
-                          placeholder="hours/day"
-                          formatter={(value) => `${value} hours/day`}
-                          parser={(value) => value.replace('days', '')}
-                        />
-                      </Form.Item>
+                      <div>
+                        <div className={s.content}>Total hours in a workday</div>
+                        <Form.Item name="totalHour">
+                          <InputNumber
+                            min={0}
+                            max={12}
+                            defaultValue={totalHour}
+                            placeholder="hours/day"
+                            formatter={(value) => `${value} hours/day`}
+                            parser={(value) => value.replace('days', '')}
+                          />
+                        </Form.Item>
+                      </div>
                     </Col>
-                    <Col span={7} className={s.formInput}>
-                      <div className={s.content}>Workday start at</div>
-                      <Row gutter={[16, 0]}>
-                        <Col>
-                          <Form.Item name="startAt">
-                            <TimePicker
-                              format={format}
-                              defaultValue={moment(startTime, format)}
-                              onChange={this.selectStartTime}
-                            />
-                          </Form.Item>
-                        </Col>
-                        <Col style={{ padding: '2px' }}>
-                          <Form.Item name="startAmPM">
-                            <Radio.Group
-                              options={options}
-                              onChange={this.onChange1}
-                              value={value1}
-                              optionType="button"
-                              buttonStyle="solid"
-                            />
-                          </Form.Item>
-                        </Col>
-                      </Row>
+                    <Col span={8} className={s.formInput}>
+                      <div>
+                        <div className={s.content}>Workday starts at</div>
+                        <Row gutter={[16, 0]}>
+                          <Col>
+                            <Form.Item name="startAt">
+                              <TimePicker
+                                format={format}
+                                defaultValue={moment(startTime, format)}
+                                onChange={this.selectStartTime}
+                                suffixIcon={this.renderIcons()}
+                              />
+                            </Form.Item>
+                          </Col>
+                          <Col style={{ padding: '2px' }} className={s.radioSection}>
+                            <Form.Item name="startAmPM">
+                              <div className={s.radioTime}>
+                                <Radio.Group
+                                  options={options}
+                                  // onChange={this.onChange1}
+                                  defaultValue={beforenoon}
+                                  optionType="button"
+                                  buttonStyle="solid"
+                                >
+                                  <Radio.Button value="AM">AM</Radio.Button>
+                                  <Radio.Button value="PM">PM</Radio.Button>
+                                </Radio.Group>
+                              </div>
+                            </Form.Item>
+                          </Col>
+                        </Row>
+                      </div>
                     </Col>
-                    <Col span={7} className={s.formInput}>
-                      <div className={s.content}>Workday end at</div>
-                      <Row gutter={[16, 0]}>
-                        <Col>
-                          <Form.Item name="endAt">
-                            <TimePicker
-                              format={format}
-                              onChange={this.selectEndTime}
-                              defaultValue={moment(endTime, format)}
-                            />
-                          </Form.Item>
-                        </Col>
-                        <Col style={{ padding: '2px' }}>
-                          <Form.Item name="endAmPM">
-                            <Radio.Group
-                              options={options}
-                              onChange={this.onChange2}
-                              value={value2}
-                              optionType="button"
-                              buttonStyle="solid"
-                            />
-                          </Form.Item>
-                        </Col>
-                      </Row>
+                    <Col span={8} className={s.formInput}>
+                      <div>
+                        <div className={s.content}>Workday ends at</div>
+                        <Row gutter={[16, 0]}>
+                          <Col>
+                            <Form.Item name="endAt">
+                              <TimePicker
+                                format={format}
+                                onChange={this.selectEndTime}
+                                defaultValue={moment(endTime, format)}
+                                suffixIcon={this.renderIcons()}
+                              />
+                            </Form.Item>
+                          </Col>
+                          <Col style={{ padding: '2px' }} className={s.radioSection}>
+                            <Form.Item name="endAmPM">
+                              <div className={s.radioTime}>
+                                <Radio.Group
+                                  options={options}
+                                  // onChange={this.onChange2}
+                                  defaultValue={afternoon}
+                                  optionType="button"
+                                  buttonStyle="solid"
+                                >
+                                  <Radio.Button value="AM">AM</Radio.Button>
+                                  <Radio.Button value="PM">PM</Radio.Button>
+                                </Radio.Group>
+                              </div>
+                            </Form.Item>
+                          </Col>
+                        </Row>
+                      </div>
                     </Col>
                   </Row>
                   <div className={s.bottom}>
                     <div className={s.workHour}>Work days</div>
                     <div className={`${s.description} ${s.pb17}`}>
-                      For each day the employee takes off, the number of hours as per the standard
-                      work schedule will be deducted from the total leave balance.
+                      Only for the days selected below, timeoff hours will be deducted from the
+                      total leave balance
                     </div>
                     <div className={s.checkboxWrap}>
                       {formatArray.map((item) => this.renderItem(item, formatArray))}
