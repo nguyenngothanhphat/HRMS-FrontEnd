@@ -226,7 +226,7 @@ class RuleFrom extends Component {
                 {this.renderCountry()}
               </Select>
             </div>
-            <Row gutter={[30, 25]}>
+            <Row gutter={[24, 12]}>
               {array.map((render, index) => (
                 <Col key={`${index + 1}`} span={24}>
                   {this.renderItem(render)}
