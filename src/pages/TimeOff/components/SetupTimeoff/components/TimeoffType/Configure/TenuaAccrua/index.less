@@ -97,6 +97,32 @@
         line-height: 20px;
       }
 
+      &__deleteSection{
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      &__deleteIcon{
+        position: relative;
+        width: 30px;
+        height: 30px;
+        background-color: #FFF4F4;
+        border-radius: 20px;
+        cursor: pointer;
+        .iconImg{
+          color: red;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+        }
+      }
+
+      .inputText {
+        display: flex;
+        align-items: center;
+      }
+
       :global {
         .ant-select-selector {
           background: #ffffff;

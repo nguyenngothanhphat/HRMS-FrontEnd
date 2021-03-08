@@ -8,13 +8,13 @@ class ListSpentTime extends Component {
   renderItem = (render) => {
     return (
       <Row gutter={[10, 17]} className={styles.item}>
-        <Col span={8}>
+        <Col span={8} style={{ textAlign: 'left' }}>
           <div>{render.period} </div>
         </Col>
-        <Col span={8}>
+        <Col span={8} style={{ textAlign: 'center' }}>
           <div>{render.date} </div>
         </Col>
-        <Col span={7}>
+        <Col span={7} style={{ textAlign: 'right' }}>
           <div>{render.amount} </div>
         </Col>
       </Row>
@@ -32,18 +32,22 @@ class ListSpentTime extends Component {
 
     return (
       <div className={styles.root}>
-        <Row gutter={[10, 17]} className={styles.backgroundStyles}>
-          <Col span={8}>
+        <div className={styles.previewTitle}>Accrual schedule preview</div>
+        <Row gutter={[24, 12]} className={styles.previewAccrual}>
+          <Col span={8} className={styles.previewAccrual__col} style={{ textAlign: 'left' }}>
             <div>Schedule period</div>
           </Col>
-          <Col span={8}>
+          <Col span={8} className={styles.previewAccrual__col} style={{ textAlign: 'center' }}>
             <div>Accrual date </div>
           </Col>
-          <Col span={7}>
+          <Col span={8} className={styles.previewAccrual__col} style={{ textAlign: 'right' }}>
             <div>Accrual amount </div>
           </Col>
         </Row>
-        {array.map((render) => this.renderItem(render))}
+
+        <div className={styles.schedulePreview}>
+          {array.map((render) => this.renderItem(render))}
+        </div>
       </div>
     );
   }
