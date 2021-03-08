@@ -140,10 +140,10 @@ class WorkShedule extends Component {
   render() {
     const format = 'HH:mm';
 
-    const options = [
-      { label: 'AM', value: 'AM' },
-      { label: 'PM', value: 'PM' },
-    ];
+    // const options = [
+    //   { label: 'AM', value: 'AM' },
+    //   { label: 'PM', value: 'PM' },
+    // ];
     const { array = [], check } = this.state;
     const { getByLocation, loading } = this.props;
     const {
@@ -233,8 +233,8 @@ class WorkShedule extends Component {
                             <Form.Item name="startAmPM">
                               {/* <div className={s.radioTime}> */}
                               <Radio.Group
-                                  // options={options}
-                                  // onChange={this.onChange1}
+                                // options={options}
+                                // onChange={this.onChange1}
                                 defaultValue={beforenoon}
                                 optionType="button"
                                 buttonStyle="solid"

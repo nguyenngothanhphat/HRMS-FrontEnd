@@ -13,14 +13,14 @@ class AccrualSchedule extends Component {
         <div className={styles.borderStyles} />
         <div className={styles.accrualContent}>
           <div className={styles.form}>
-            <Row gutter={[24, 24]} justify="space-between">
-              <Col xs={24} sm={24} md={24} lg={7} xl={7} span={8}>
+            <Row gutter={[24, 12]} justify="space-between">
+              <Col xs={24} sm={24} md={24} lg={7} xl={7} span={7}>
                 <Select className={styles.select} defaultValue="Accrual frequency" />
               </Col>
-              <Col xs={24} sm={24} md={24} lg={7} xl={7} span={8}>
+              <Col xs={24} sm={24} md={24} lg={7} xl={7} span={7}>
                 <Select className={styles.select} defaultValue="Accrual frequency" />
               </Col>
-              <Col xs={24} sm={24} md={24} lg={7} xl={7} span={8}>
+              <Col xs={24} sm={24} md={24} lg={7} xl={7} span={7}>
                 <Select className={styles.select} defaultValue="Accrual frequency" />
               </Col>
             </Row>
