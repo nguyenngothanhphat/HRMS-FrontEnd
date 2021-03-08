@@ -29,7 +29,8 @@ const timeOffManagement = {
     *fetchListTimeOff({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getListTimeOff, payload);
-        let { statusCode, data: listTimeOff = [] } = response;
+        let { data: listTimeOff = [] } = response;
+        const { statusCode } = response;
         listTimeOff = listTimeOff.map((item = {}) => {
           const fullName = `${item.employee.generalInfo.firstName  } ${  item.employee.generalInfo.lastName}`;
           let newStatus = '';

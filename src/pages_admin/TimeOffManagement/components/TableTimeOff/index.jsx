@@ -122,7 +122,7 @@ class TableTimeOff extends PureComponent {
       x: '',
       y: '',
     };
-    console.log('request detail', requestDetail);
+    // console.log('request detail', requestDetail);
     const pagination = {
       position: ['bottomLeft'],
       total: listTimeOff.length,

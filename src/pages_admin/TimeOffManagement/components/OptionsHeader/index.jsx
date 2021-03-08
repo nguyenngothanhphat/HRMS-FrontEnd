@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Form, Select, DatePicker, Button, Checkbox } from 'antd';
+import exportToCsv from '@/utils/exportToCsv';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -7,6 +8,41 @@ export default class OptionsHeader extends PureComponent {
   onFinish = (values) => {
     const { reloadData } = this.props;
     return reloadData(values);
+  };
+
+  downloadCSVFile = () => {
+    const { listTimeOff } = this.props;
+
+    exportToCsv(`TimeOff-Report-${Date.now()}.csv`, this.processData(listTimeOff));
+  };
+
+  processData = (array) => {
+    // Uppercase first letter
+    let capsPopulations = [];
+    capsPopulations = array.map((item, key) => {
+      return {
+        N0: key + 1,
+        'Employee Id': item.employeeId,
+        'Full Name': item.name,
+        'From Date': item.fromDate,
+        'To Date': item.toDate,
+        'Count/Q.ty': item.country,
+        'Leave type': item.type,
+        Status: item.status,
+      };
+    });
+
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('_')}`.split('_');
+      dataExport.push(value);
+    });
+    return dataExport;
   };
 
   // onFromChange = (value) => {
@@ -71,7 +107,9 @@ export default class OptionsHeader extends PureComponent {
                 <Button className={styles.submitBtn} htmlType="submit">
                   Get data
                 </Button>
-                <Button className={styles.downloadCSVBtn}>Download as CSV</Button>
+                <Button className={styles.downloadCSVBtn} onClick={this.downloadCSVFile}>
+                  Download as CSV
+                </Button>
               </Col>
             </Row>
             <Row>

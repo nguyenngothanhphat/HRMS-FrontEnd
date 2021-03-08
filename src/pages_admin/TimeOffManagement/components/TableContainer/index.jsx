@@ -41,7 +41,6 @@ class TableContainer extends PureComponent {
   }
 
   handleRequestDetail = (id) => {
-    console.log('test', id);
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOffManagement/fetchRequestById',
@@ -56,11 +55,11 @@ class TableContainer extends PureComponent {
     dispatch({
       type: 'timeOffManagement/fetchListTimeOff',
       payload: {
-        employeeId: '5f57544e899f4743e8fdb3f2',
+        employeeId: values.userIName,
         duration: {
           // from: moment(values.durationFrom).format('MM-DD-YYYY'),
-          from: '01-01-2020',
-          to: '12-31-2020',
+          from: values.durationFrom,
+          to: values.durationTo,
           // to: moment(values.durationTo).format('MM-DD-YYYY'),
         },
         status: values.status,
@@ -85,7 +84,11 @@ class TableContainer extends PureComponent {
     return (
       <div className={styles.TimeOffTableContainer}>
         <div className={styles.optionsHeader}>
-          <OptionsHeader reloadData={this.getDataTable} listEmployee={listEmployee} />
+          <OptionsHeader
+            reloadData={this.getDataTable}
+            listEmployee={listEmployee}
+            listTimeOff={listTimeOff}
+          />
         </div>
         <div className={styles.contentContainer}>
           <TableTimeOff
