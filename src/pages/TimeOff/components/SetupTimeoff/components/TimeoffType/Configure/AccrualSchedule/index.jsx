@@ -13,7 +13,7 @@ class AccrualSchedule extends Component {
         <div className={styles.borderStyles} />
         <div className={styles.accrualContent}>
           <div className={styles.form}>
-            <Row gutter={[24, 12]} justify="space-between">
+            {/* <Row gutter={[24, 12]} className={styles.accrualList}>
               <Col xs={24} sm={24} md={24} lg={7} xl={7} span={7}>
                 <Select className={styles.select} defaultValue="Accrual frequency" />
               </Col>
@@ -24,6 +24,18 @@ class AccrualSchedule extends Component {
                 <Select className={styles.select} defaultValue="Accrual frequency" />
               </Col>
             </Row>
+            <Checkbox className={styles.checkbox}>Use hire date anniveraries</Checkbox> */}
+            <div className={styles.accrualList}>
+              <div>
+                <Select className={styles.select} defaultValue="Accrual frequency" />
+              </div>
+              <Col span={7}>
+                <Select className={styles.select} defaultValue="Accrual frequency" />
+              </Col>
+              <div>
+                <Select className={styles.select} defaultValue="Accrual frequency" />
+              </div>
+            </div>
             <Checkbox className={styles.checkbox}>Use hire date anniveraries</Checkbox>
           </div>
 
