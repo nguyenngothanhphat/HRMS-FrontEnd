@@ -104,7 +104,7 @@ class HollidayCalendar extends Component {
       list: {},
       idCheck: [],
       visible: false,
-      isActive: '',
+      isActive: 'Jan',
       // listCheck: [],
       // indeterminate: true,
       // checkAll: false,
