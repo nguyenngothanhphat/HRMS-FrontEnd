@@ -107,7 +107,8 @@ class HollidayCalendar extends Component {
       isActive: 'Jan',
       // listCheck: [],
       // indeterminate: true,
-      // checkAll: false,
+      checkAll: false,
+      checkItem: false,
     };
   }
 
@@ -243,9 +244,14 @@ class HollidayCalendar extends Component {
     });
   };
 
+  handleCheckBox = (e, index) => {
+    this.setState({ checkItem: e.target.checked });
+  };
+
   renderItem = (item) => {
     const { children = [] } = item;
-    const { idCheck = [] } = this.state;
+    const { idCheck = [], checkAll, checkItem } = this.state;
+    console.log('check Item: ', checkItem);
     return (
       // <div ref={item.ref}>
       <div key={item.text} className={s.formTable}>
@@ -259,7 +265,12 @@ class HollidayCalendar extends Component {
               <div key={_id}>
                 <Row gutter={[30, 20]} className={s.textStyles}>
                   <Col>
-                    <Checkbox onChange={(e) => this.handleClickDelete(e, _id)} />
+                    <Checkbox
+                      onChange={(e) => this.handleClickDelete(e, _id)}
+                      onClick={(e) => this.handleCheckBox(e, index)}
+                      checked={checkAll}
+                    />
+
                     {/* <Checkbox.Group
                         // options={data}
                         value={listCheck}
@@ -323,11 +334,11 @@ class HollidayCalendar extends Component {
     });
   };
 
-  onCheckAllChange = () => {
-    // this.setState({
-    //   listCheck: [],
-    // checkAll: e.target,
-    // });
+  onCheckAllChange = (e) => {
+    this.setState({
+      // listCheck: [],
+      checkAll: e.target.checked,
+    });
   };
 
   renderCountry = () => {
@@ -443,7 +454,14 @@ class HollidayCalendar extends Component {
               <div className={s.listHoliday}>
                 <div span={24} className={s.flex}>
                   <div>
-                    <Checkbox className={s.select} onClick={this.onCheckAllChange}>
+                    <Checkbox
+                      className={s.select}
+                      onClick={(e) => {
+                        this.setState({
+                          checkAll: e.target.checked,
+                        });
+                      }}
+                    >
                       Select All
                     </Checkbox>
                   </div>
