@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Checkbox, Select, Row, Col, Spin, InputNumber, Affix } from 'antd';
+import { Button, Checkbox, Select, Row, Col, Spin, InputNumber, Affix, Divider } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import AddHoliday from './AddHoliday';
@@ -257,69 +257,8 @@ class HollidayCalendar extends Component {
   };
 
   handleCheckBox = (e) => {
-    const { plainOptions = [] } = this.state;
     const chkBoxVal = e.target.value;
     console.log('chkBoxVal: ', chkBoxVal);
-  };
-
-  renderItem = (item) => {
-    const { children = [] } = item;
-    const { idCheck = [], checkedList } = this.state;
-
-    return (
-      <div key={item.text} className={s.formTable}>
-        <div className={s.title}>{item.month}</div>
-        <div>
-          {children.map((itemChildren, index) => {
-            const { date, name, type, _id } = itemChildren;
-            const dateFormat = moment(date).format('MM-DD-YYYY');
-            const day = moment(date).format('dddd');
-
-            return (
-              <div key={_id}>
-                <Row gutter={[30, 20]} className={s.textStyles}>
-                  <Col>
-                    <CheckboxGroup value={checkedList} onChange={this.onChangeChkBoxGroup}>
-                      <Checkbox
-                        // onClick={(e) => this.handleClickDelete(e, _id)}
-                        onChange={this.handleCheckBox}
-                        value={_id}
-                      />
-                    </CheckboxGroup>
-
-                    {/* </Col> <Checkbox.Group
-                        // options={data}
-                       // value={listCheck}
-                        //onChange={(e) => this.handleClickDelete(e, _id)}
-                      ///> */}
-                  </Col>
-
-                  <Col span={8} className={s.textHoliday}>
-                    {name}
-                  </Col>
-                  <Col span={4} className={s.dateHoliday}>
-                    {dateFormat}
-                  </Col>
-                  <Col span={4} className={s.dateHoliday}>
-                    {day}
-                  </Col>
-                  <Col span={4} className={s.dateHoliday}>
-                    {type}
-                  </Col>
-                  {idCheck.indexOf(_id) > -1 && (
-                    <Col span={3} onClick={() => this.deleteHoliday(_id)}>
-                      <Button className={s.deleteHoliday}>Delete</Button>
-                    </Col>
-                  )}
-                </Row>
-                {index !== children.length - 1 ? <div className={s.straight} /> : ''}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      // </div>
-    );
   };
 
   fomatDate = (holidaysList = []) => {
@@ -427,38 +366,45 @@ class HollidayCalendar extends Component {
   };
 
   renderHoliday = (id, dataItem) => {
-    // const { data } = this.state;
-    // const newData = [...data];
-    console.log(dataItem);
     const { children } = dataItem;
+    const { idCheck = [] } = this.state;
+
     return (
-      <div>
-        {children.map((subChild, index) => {
+      <>
+        {children.map((subChild) => {
+          const { date, name, type, _id } = subChild;
+          const dateFormat = moment(date).format('MM-DD-YYYY');
+          const day = moment(date).format('dddd');
+
           return (
-            <div key={`${index + 1}`}>
-              {subChild._id === id ? <div>{subChild.name}</div> : null}
+            <div key={_id}>
+              {subChild._id === id ? (
+                <>
+                  <Row className={s.holiday}>
+                    <Col span={9}>
+                      <div className={s.holiday__text}>{name}</div>
+                    </Col>
+                    <Col span={5}>
+                      <div className={s.holiday__date}>{dateFormat}</div>
+                    </Col>
+                    <Col span={5}>
+                      <div className={s.holiday__date}>{day}</div>
+                    </Col>
+                    <Col span={4}>
+                      <div className={s.holiday__date}>{type}</div>
+                    </Col>
+                    {idCheck.indexOf(_id) > -1 && (
+                      <Col span={3} onClick={() => this.deleteHoliday(_id)}>
+                        <Button className={s.deleteHoliday}>Delete</Button>
+                      </Col>
+                    )}
+                  </Row>
+                </>
+              ) : null}
             </div>
           );
         })}
-        {/* {newData.map((itemData, index) => {
-          const { children = [] } = itemData;
-          return (
-            <div ref={itemData.ref} key={`${index + 1}`}>
-              {children.map((item, idx) => {
-                return (
-                  <div key={`${idx + 1}`}>
-                    {item._id === id ? (
-                      <div>
-                        <div>{item.name}</div>
-                      </div>
-                    ) : null}
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })} */}
-      </div>
+      </>
     );
   };
 
@@ -472,34 +418,37 @@ class HollidayCalendar extends Component {
           const { children = [] } = itemData;
           return (
             <Row ref={itemData.ref} key={`${index + 1}`}>
-              <Col span={24} className={s.title}>
+              <Col span={24} className={s.dateTitle}>
                 {itemData.month}
               </Col>
-              <Col span={24}>
-                {/* {children.map((subChild, idx) => {
-                  return (
-                    <div> */}
+              <Col span={24} className={s.holidayList}>
                 {plainOptions.map((id) => (
-                  <Row>
-                    <Col span={2}>
-                      {children.map((item, idx) => (
-                        <div key={`${idx + 1}`}>
-                          {item._id === id ? (
-                            <Checkbox
-                              // onClick={(e) => this.handleClickDelete(e, _id)}
-                              onChange={this.handleCheckBox}
-                              value={id}
-                            />
-                          ) : null}
-                        </div>
-                      ))}
-                    </Col>
-                    <Col span={20}>{this.renderHoliday(id, itemData)}</Col>
-                  </Row>
+                  <>
+                    {children.map((item, idx) => (
+                      <>
+                        {item._id === id ? (
+                          <Row>
+                            <Col span={1}>
+                              <div span={1} key={`${idx + 1}`}>
+                                <Checkbox
+                                  onClick={(e) => this.handleClickDelete(e, item._id)}
+                                  onChange={this.handleCheckBox}
+                                  value={id}
+                                />
+                              </div>
+                            </Col>
+                            <Col span={23}>{this.renderHoliday(id, itemData)}</Col>
+                            {idx !== children.length - 1 ? (
+                              <Divider />
+                            ) : (
+                              <div style={{ marginBottom: '43px' }} />
+                            )}
+                          </Row>
+                        ) : null}
+                      </>
+                    ))}
+                  </>
                 ))}
-                {/* </div>
-                  );
-                })} */}
               </Col>
             </Row>
           );
@@ -558,9 +507,9 @@ class HollidayCalendar extends Component {
         </div>
 
         <div className={s.container}>
-          <Row gutter={[24, 12]}>
-            <Col span={20}>
-              <div className={s.listHoliday}>
+          <Row>
+            <Col span={20} className={s.listHoliday}>
+              <div>
                 <div span={24} className={s.flex}>
                   <div>
                     <Checkbox
@@ -596,48 +545,17 @@ class HollidayCalendar extends Component {
                       </Col>
                     </Row>
                   ) : (
-                    // data.map((render, index) => (
-                    //   <Row ref={render.ref} key={`${index + 1}`}>
-                    //     <Col span={24}>{this.renderItem(render)}</Col>
-                    //   </Row>
-                    // ))
-                    <CheckboxGroup value={checkedList} onChange={this.onChangeChkBoxGroup}>
-                      <Col span={24}>{this.renderInfo()}</Col>
-                      {/* <Row>
-                        {plainOptions.map((id) => {
-                          return (
-                            <Col span={24}>
-                              <Row>
-                                {data.map((itemData, index) => {
-                                  const { children = [] } = itemData;
-                                  return (
-                                    <div key={`${index + 1}`}>
-                                      {children.map((item, idx) => (
-                                        <div key={`${idx + 1}`}>
-                                          {item._id === id ? (
-                                            <div className={s.title}>{itemData.month}</div>
-                                          ) : null}
-                                        </div>
-                                      ))}
-                                    </div>
-                                  );
-                                })}
-                              </Row>
-                              <Row style={{ display: 'flex', alignItems: 'center' }}>
-                                <Col span={1}>
-                                  <Checkbox
-                                    // onClick={(e) => this.handleClickDelete(e, _id)}
-                                    onChange={this.handleCheckBox}
-                                    value={id}
-                                  />
-                                </Col>
-                                <Col span={8}>{this.renderHoliday(id)}</Col>
-                              </Row>
-                            </Col>
-                          );
-                        })}
-                      </Row> */}
-                    </CheckboxGroup>
+                    <Row>
+                      <Col span={24}>
+                        <CheckboxGroup
+                          className={s.chkBoxGroup}
+                          value={checkedList}
+                          onChange={this.onChangeChkBoxGroup}
+                        >
+                          <div>{this.renderInfo()}</div>
+                        </CheckboxGroup>
+                      </Col>
+                    </Row>
                   )}
                 </div>
               </div>
