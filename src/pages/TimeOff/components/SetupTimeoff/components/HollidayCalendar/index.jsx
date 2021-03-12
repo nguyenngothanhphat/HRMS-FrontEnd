@@ -417,7 +417,7 @@ class HollidayCalendar extends Component {
         {newData.map((itemData, index) => {
           const { children = [] } = itemData;
           return (
-            <Row ref={itemData.ref} key={`${index + 1}`}>
+            <Row ref={itemData.ref} key={`${index + 1}`} className={s.holidayInfo}>
               <Col span={24} className={s.dateTitle}>
                 {itemData.month}
               </Col>
@@ -438,11 +438,7 @@ class HollidayCalendar extends Component {
                               </div>
                             </Col>
                             <Col span={23}>{this.renderHoliday(id, itemData)}</Col>
-                            {idx !== children.length - 1 ? (
-                              <Divider />
-                            ) : (
-                              <div style={{ marginBottom: '43px' }} />
-                            )}
+                            {idx !== children.length - 1 ? <Divider /> : null}
                           </Row>
                         ) : null}
                       </>
