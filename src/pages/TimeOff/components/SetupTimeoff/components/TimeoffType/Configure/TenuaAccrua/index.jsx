@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Radio, Select, Button, InputNumber, Row, Col } from 'antd';
+import { DeleteOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 class TenuaAccrua extends Component {
@@ -84,13 +85,18 @@ class TenuaAccrua extends Component {
                   onChange={this.onChange}
                 />
               </Col>
+              <Col span={4} className={styles.effectForm__deleteSection}>
+                <div className={styles.effectForm__deleteIcon}>
+                  <DeleteOutlined className={styles.iconImg} />
+                </div>
+              </Col>
             </Row>
             <Row gutter={[30, 20]}>
               <Col span={10} className={styles.effectForm__secondContent}>
                 year of employment, additional casual leaves accrued per year is
               </Col>
               <Col span={10}>
-                <Row gutter={[24, 0]}>
+                <Row gutter={[24, 0]} className={styles.inputText}>
                   <Col>
                     <InputNumber
                       min={0}
@@ -119,11 +125,15 @@ class TenuaAccrua extends Component {
             </Row>
             <Row gutter={[24, 12]}>
               <Col span={10} className={styles.effectForm__lastContent}>
-                effectiveFrom from
+                effective from
               </Col>
               {/* <Col span={10} xs={24} sm={24} md={24} lg={24} xl={10}> */}
               <Col span={10}>
-                <Select className={styles.date} placeholder="their anniversary date" />
+                <Select
+                  className={styles.date}
+                  defaultValue="their anniversary date"
+                  placeholder="their anniversary date"
+                />
               </Col>
             </Row>
           </div>

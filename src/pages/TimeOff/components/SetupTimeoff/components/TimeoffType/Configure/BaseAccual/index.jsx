@@ -83,12 +83,12 @@ class BaseAccual extends Component {
                     placeholder={date === 'day' ? 'days' : 'hours'}
                     formatter={(value) => (date === 'day' ? `${value} days` : `${value} hours`)}
                     parser={(value) =>
-                      date === 'day' ? value.replace('days', '') : value.replace('hours', '')
-                    }
+                      date === 'day' ? value.replace('days', '') : value.replace('hours', '')}
                     onChange={this.onChange}
                   />
                 </Col>
                 <Col style={{ paddingLeft: '1px !important' }}>
+                  {/* <div className={styles.radioTime}> */}
                   <Radio.Group
                     onChange={this.onChangeRadio}
                     value={date}
@@ -98,6 +98,7 @@ class BaseAccual extends Component {
                     <Radio.Button value="day">Days</Radio.Button>
                     <Radio.Button value="hour">Hours</Radio.Button>
                   </Radio.Group>
+                  {/* </div> */}
                 </Col>
               </Row>
             </Col>

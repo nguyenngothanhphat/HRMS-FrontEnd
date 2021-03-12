@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { Button, Checkbox, Select, Row, Col, Spin, InputNumber, Affix } from 'antd';
+import { Button, Checkbox, Select, Row, Col, Spin, InputNumber, Affix, Divider } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import AddHoliday from './AddHoliday';
 import s from './index.less';
 
 const { Option } = Select;
+const CheckboxGroup = Checkbox.Group;
 
 // const listCountry = [
 //   { country: 'VN', code: 'vietnamese', label: 'Viet Nam' },
@@ -104,10 +105,11 @@ class HollidayCalendar extends Component {
       list: {},
       idCheck: [],
       visible: false,
-      isActive: '',
-      // listCheck: [],
-      // indeterminate: true,
-      // checkAll: false,
+      isActive: 'Jan',
+      checkAll: false,
+      plainOptions: [],
+      checkedList: [],
+      indeterminate: true,
     };
   }
 
@@ -157,7 +159,7 @@ class HollidayCalendar extends Component {
     const refComponent = data.find((item) => item.text === value);
     refComponent.ref.current.scrollIntoView(true);
     window.scrollBy({
-      top: -40,
+      top: -60,
       left: 0,
       behavior: 'smooth',
     });
@@ -243,60 +245,25 @@ class HollidayCalendar extends Component {
     });
   };
 
-  renderItem = (item) => {
-    const { children = [] } = item;
-    const { idCheck = [] } = this.state;
-    return (
-      // <div ref={item.ref}>
-      <div key={item.text} className={s.formTable}>
-        <div className={s.title}>{item.month}</div>
-        <div>
-          {children.map((itemChildren, index) => {
-            const { date, name, type, _id } = itemChildren;
-            const dateFormat = moment(date).format('MM-DD-YYYY');
-            const day = moment(date).format('dddd');
-            return (
-              <div key={_id}>
-                <Row gutter={[30, 20]} className={s.textStyles}>
-                  <Col>
-                    <Checkbox onChange={(e) => this.handleClickDelete(e, _id)} />
-                    {/* <Checkbox.Group
-                        // options={data}
-                        value={listCheck}
-                        onChange={(e) => this.handleClickDelete(e, _id)}
-                      /> */}
-                  </Col>
+  onChangeChkBoxGroup = (list) => {
+    const { plainOptions = [] } = this.state;
+    console.log('list: ', list);
 
-                  <Col span={8} className={s.textHoliday}>
-                    {name}
-                  </Col>
-                  <Col span={4} className={s.dateHoliday}>
-                    {dateFormat}
-                  </Col>
-                  <Col span={4} className={s.dateHoliday}>
-                    {day}
-                  </Col>
-                  <Col span={4} className={s.dateHoliday}>
-                    {type}
-                  </Col>
-                  {idCheck.indexOf(_id) > -1 && (
-                    <Col span={3} onClick={() => this.deleteHoliday(_id)}>
-                      <Button className={s.deleteHoliday}>Delete</Button>
-                    </Col>
-                  )}
-                </Row>
-                {index !== children.length - 1 ? <div className={s.straight} /> : ''}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      // </div>
-    );
+    this.setState({
+      checkedList: list,
+      indeterminate: !!list.length && list.length < plainOptions.length,
+      checkAll: list.length === plainOptions.length,
+    });
+  };
+
+  handleCheckBox = (e) => {
+    const chkBoxVal = e.target.value;
+    console.log('chkBoxVal: ', chkBoxVal);
   };
 
   fomatDate = (holidaysList = []) => {
     let result = MOCK_DATA;
+    const listID = [];
     holidaysList.forEach((item) => {
       const monthItem = moment(item.date).format('MMM');
       const fomatDataItem = moment(item.date).format('MMM , YYYY');
@@ -308,7 +275,15 @@ class HollidayCalendar extends Component {
       }));
     });
     result = result.filter((resultItem) => resultItem.children.length > 0);
-    this.setState({ data: result });
+
+    // get id of each children
+    result.forEach((item) => {
+      const { children = [] } = item;
+      const arrID = children.map((subChild) => subChild._id);
+      listID.push(...arrID);
+    });
+
+    this.setState({ data: result, plainOptions: listID });
   };
 
   handleCandelSchedule = () => {
@@ -321,13 +296,6 @@ class HollidayCalendar extends Component {
     this.setState({
       visible: true,
     });
-  };
-
-  onCheckAllChange = () => {
-    // this.setState({
-    //   listCheck: [],
-    // checkAll: e.target,
-    // });
   };
 
   renderCountry = () => {
@@ -397,10 +365,107 @@ class HollidayCalendar extends Component {
     console.log('value: ', value);
   };
 
+  renderHoliday = (id, dataItem) => {
+    const { children } = dataItem;
+    const { idCheck = [] } = this.state;
+
+    return (
+      <>
+        {children.map((subChild) => {
+          const { date, name, type, _id } = subChild;
+          const dateFormat = moment(date).format('Do MMM');
+          const day = moment(date).format('dddd');
+
+          return (
+            <>
+              {subChild._id === id ? (
+                <div key={_id}>
+                  <Row className={s.holiday}>
+                    <Col span={9}>
+                      <div className={s.holiday__text}>{name}</div>
+                    </Col>
+                    <Col span={5}>
+                      <div className={s.holiday__date}>{dateFormat}</div>
+                    </Col>
+                    <Col span={5}>
+                      <div className={s.holiday__date}>{day}</div>
+                    </Col>
+                    <Col span={4}>
+                      <div className={s.holiday__date}>{type}</div>
+                    </Col>
+                    {idCheck.indexOf(_id) > -1 && (
+                      <Col span={3} onClick={() => this.deleteHoliday(_id)}>
+                        <Button className={s.deleteHoliday}>Delete</Button>
+                      </Col>
+                    )}
+                  </Row>
+                </div>
+              ) : null}
+            </>
+          );
+        })}
+      </>
+    );
+  };
+
+  renderInfo = () => {
+    const { data, plainOptions } = this.state;
+    const newData = [...data];
+
+    return (
+      <div>
+        {newData.map((itemData, index) => {
+          const { children = [] } = itemData;
+          return (
+            <Row ref={itemData.ref} key={`${index + 1}`} className={s.holidayInfo}>
+              <Col span={24} className={s.dateTitle}>
+                {itemData.month}
+              </Col>
+              <Col span={24} className={s.holidayList}>
+                {plainOptions.map((id) => (
+                  <>
+                    {children.map((item, idx) => (
+                      <>
+                        {item._id === id ? (
+                          <Row>
+                            <Col span={1}>
+                              <div span={1} key={`${idx + 1}`}>
+                                <Checkbox
+                                  onClick={(e) => this.handleClickDelete(e, item._id)}
+                                  onChange={this.handleCheckBox}
+                                  value={id}
+                                />
+                              </div>
+                            </Col>
+                            <Col span={23}>{this.renderHoliday(id, itemData)}</Col>
+                            {idx !== children.length - 1 ? <Divider /> : null}
+                          </Row>
+                        ) : null}
+                      </>
+                    ))}
+                  </>
+                ))}
+              </Col>
+            </Row>
+          );
+        })}
+      </div>
+    );
+  };
+
   render() {
-    const { data, role, yearSelect, visible = true, isActive } = this.state;
+    const {
+      data,
+      role,
+      yearSelect,
+      visible = true,
+      isActive,
+      checkAll,
+      indeterminate,
+      plainOptions,
+      checkedList,
+    } = this.state;
     const { loading = false, loadingbyCountry = false, loadingAddHoliday = false } = this.props;
-    // const classNameListDate = isActive ? s.listDateActive : s.listDate;
     return (
       <div className={s.root}>
         <div className={s.setUpWrap}>
@@ -438,12 +503,23 @@ class HollidayCalendar extends Component {
         </div>
 
         <div className={s.container}>
-          <Row gutter={[24, 12]}>
-            <Col span={20}>
-              <div className={s.listHoliday}>
+          <Row>
+            <Col span={20} className={s.listHoliday}>
+              <div>
                 <div span={24} className={s.flex}>
                   <div>
-                    <Checkbox className={s.select} onClick={this.onCheckAllChange}>
+                    <Checkbox
+                      className={s.select}
+                      onChange={(e) => {
+                        this.setState({
+                          checkedList: e.target.checked ? plainOptions : [],
+                          indeterminate: false,
+                          checkAll: e.target.checked,
+                        });
+                      }}
+                      checked={checkAll}
+                      indeterminate={indeterminate}
+                    >
                       Select All
                     </Checkbox>
                   </div>
@@ -465,11 +541,17 @@ class HollidayCalendar extends Component {
                       </Col>
                     </Row>
                   ) : (
-                    data.map((render, index) => (
-                      <Row ref={render.ref} key={`${index + 1}`}>
-                        <Col span={24}>{this.renderItem(render)}</Col>
-                      </Row>
-                    ))
+                    <Row>
+                      <Col span={24}>
+                        <CheckboxGroup
+                          className={s.chkBoxGroup}
+                          value={checkedList}
+                          onChange={this.onChangeChkBoxGroup}
+                        >
+                          <div>{this.renderInfo()}</div>
+                        </CheckboxGroup>
+                      </Col>
+                    </Row>
                   )}
                 </div>
               </div>

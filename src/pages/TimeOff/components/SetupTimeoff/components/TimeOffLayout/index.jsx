@@ -37,7 +37,9 @@ class TimeOffLayout extends Component {
       >
         {item.name}{' '}
         <Progress
-          strokeColor={item.progress < 100 ? '#FFA100' : 'green'}
+          strokeColor={item.progress < 100 ? '#FFA100' : '#00C598'}
+          strokeWidth={6}
+          width={item.progress < 100 ? 30 : 20}
           type="circle"
           percent={item.progress}
         />

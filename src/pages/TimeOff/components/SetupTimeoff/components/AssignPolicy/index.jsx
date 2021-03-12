@@ -30,7 +30,7 @@ class AssignPolicies extends Component {
     return (
       <div>
         <div className={styles.titleHeader}>Assign Policies</div>
-        <Row className={styles.balance} span={24}>
+        <div className={styles.balance}>
           <div className={styles.balanceFrom}>
             <div className={styles.header}>Standard Holiday calendar</div>
             <Divider />
@@ -142,7 +142,7 @@ class AssignPolicies extends Component {
             handleCancel={this.handleCandelSchedule}
           /> */}
           </div>
-        </Row>
+        </div>
       </div>
     );
   }
