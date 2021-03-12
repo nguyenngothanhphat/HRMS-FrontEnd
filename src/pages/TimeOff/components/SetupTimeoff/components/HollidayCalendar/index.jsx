@@ -377,9 +377,9 @@ class HollidayCalendar extends Component {
           const day = moment(date).format('dddd');
 
           return (
-            <div key={_id}>
+            <>
               {subChild._id === id ? (
-                <>
+                <div key={_id}>
                   <Row className={s.holiday}>
                     <Col span={9}>
                       <div className={s.holiday__text}>{name}</div>
@@ -399,9 +399,9 @@ class HollidayCalendar extends Component {
                       </Col>
                     )}
                   </Row>
-                </>
+                </div>
               ) : null}
-            </div>
+            </>
           );
         })}
       </>
