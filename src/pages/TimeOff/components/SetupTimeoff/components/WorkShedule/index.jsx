@@ -61,6 +61,7 @@ class WorkShedule extends Component {
       ],
       startTime: '',
       endTime: '',
+      edit: true,
     };
   }
 
@@ -91,6 +92,7 @@ class WorkShedule extends Component {
       <div
         className={item.checked ? s.circleActive : s.circle}
         onClick={() => this.handleClick(item.id, formatArray)}
+        onChange={this.onChangeEdit}
       >
         <div className={s.padding}>{item.name}</div>
       </div>
@@ -100,12 +102,20 @@ class WorkShedule extends Component {
   selectStartTime = (time, timeString) => {
     this.setState({
       startTime: timeString,
+      edit: false,
     });
   };
 
   selectEndTime = (time, timeString) => {
     this.setState({
       endTime: timeString,
+      edit: false,
+    });
+  };
+
+  onChangeEdit = () => {
+    this.setState({
+      edit: false,
     });
   };
 
@@ -137,6 +147,22 @@ class WorkShedule extends Component {
     </div>
   );
 
+  handleCancel = () => {
+    this.setState({ edit: true });
+    const { getByLocation, dispatch } = this.props;
+    // const {
+    //   endWorkDay: { end: endTime, amPM: afternoon } = {},
+    //   startWorkDay: { start: startTime, amPM: beforenoon } = {},
+    //   workDay = [],
+    //   totalHour,
+    // } = getByLocation;
+
+    dispatch({
+      type: 'timeOff/save',
+      payload: { employeeSchedule: getByLocation },
+    });
+  };
+
   render() {
     const format = 'HH:mm';
 
@@ -144,7 +170,7 @@ class WorkShedule extends Component {
     //   { label: 'AM', value: 'AM' },
     //   { label: 'PM', value: 'PM' },
     // ];
-    const { array = [], check } = this.state;
+    const { array = [], check, edit } = this.state;
     const { getByLocation, loading } = this.props;
     const {
       endWorkDay: { end: endTime, amPM: afternoon } = {},
@@ -211,6 +237,7 @@ class WorkShedule extends Component {
                             placeholder="hours/day"
                             formatter={(value) => `${value} hours/day`}
                             parser={(value) => value.replace('days', '')}
+                            onChange={this.onChangeEdit}
                           />
                         </Form.Item>
                       </div>
@@ -235,6 +262,7 @@ class WorkShedule extends Component {
                               <Radio.Group
                                 // options={options}
                                 // onChange={this.onChange1}
+                                onChange={this.onChangeEdit}
                                 defaultValue={beforenoon}
                                 optionType="button"
                                 buttonStyle="solid"
@@ -269,6 +297,7 @@ class WorkShedule extends Component {
                                 <Radio.Group
                                   // options={options}
                                   // onChange={this.onChange2}
+                                  onChange={this.onChangeEdit}
                                   defaultValue={afternoon}
                                   optionType="button"
                                   buttonStyle="solid"
@@ -297,7 +326,10 @@ class WorkShedule extends Component {
                 </div>
                 <div className={s.straight} />
                 <div className={s.flex}>
-                  <Button htmlType="submit">Save</Button>
+                  {edit ? null : <Button onClick={this.handleCancel}>Cancel</Button>}
+                  <Button htmlType="submit" disabled={edit}>
+                    Save
+                  </Button>
                 </div>
               </div>
             )}
