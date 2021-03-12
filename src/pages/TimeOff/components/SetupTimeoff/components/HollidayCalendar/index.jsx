@@ -159,7 +159,7 @@ class HollidayCalendar extends Component {
     const refComponent = data.find((item) => item.text === value);
     refComponent.ref.current.scrollIntoView(true);
     window.scrollBy({
-      top: -40,
+      top: -60,
       left: 0,
       behavior: 'smooth',
     });
