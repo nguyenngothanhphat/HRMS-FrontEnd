@@ -13,6 +13,10 @@
       height: 14px;
       border-radius: 3px;
       border: 1.4px solid #B9BAC2;
+
+      &::after{
+        left: 15%;
+      }
     }
 
     .ant-divider{
@@ -92,11 +96,17 @@
         }
   
         :global{
-          .ant-input-number {
-            &:focus{
-              box-shadow: none;
-              border: transparent;
-            }
+          // .ant-input-number {
+          //   &:focus{
+          //     box-shadow: none;
+          //     border: transparent;
+          //   }
+          // }
+
+          .ant-input-number-focused {
+              box-shadow: none !important;
+              border: transparent !important;
+              border-bottom: 1px solid #E2E4E8 !important;
           }
   
           .ant-input-number-handler-wrap{
@@ -156,6 +166,15 @@
         justify-content: space-between;
         margin-bottom: 12px;
         align-items: center;
+
+        :global{
+          .ant-checkbox-indeterminate .ant-checkbox-inner::after{
+            width: 6px;
+            height: 6px;
+            left: 50%;
+          }
+        }
+
         .btnHoliday {
           width: 109px;
           height: 34px;

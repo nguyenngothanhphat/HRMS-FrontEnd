@@ -373,7 +373,7 @@ class HollidayCalendar extends Component {
       <>
         {children.map((subChild) => {
           const { date, name, type, _id } = subChild;
-          const dateFormat = moment(date).format('MM-DD-YYYY');
+          const dateFormat = moment(date).format('Do MMM');
           const day = moment(date).format('dddd');
 
           return (
