@@ -1,37 +1,42 @@
 // import React, { Component } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Divider, Button } from 'antd';
 import React, { PureComponent } from 'react';
-import icon from '@/assets/offboarding-schedule.svg';
-import righticon1 from '@/assets/offboarding-1.svg';
-import righticon2 from '@/assets/offboarding-2.svg';
-import righticon3 from '@/assets/offboarding-3.svg';
+// import icon from '@/assets/offboarding-schedule.svg';
+import icon1 from '@/assets/offboadingIcon1.svg';
+import icon2 from '@/assets/offboadingIcon2.svg';
+import icon3 from '@/assets/offboadingIcon3.svg';
 import styles from './index.less';
 
 const array = [
   {
-    icon: righticon1,
+    icon: icon1,
     decription: (
       <p>
-        Make sure your report is done with his current project to have this discussion continued. If
-        not, please
-        <span style={{ color: 'blue' }}> schedule a meeting </span>
+        Discuss your decision with a 
+        <span style={{ color: 'blue', fontWeight: '500', borderBottom: '1px solid blue' }}> supervisor </span> and 
+        not your reporting manager
+      </p>
+    ),
+  },
+  {
+    icon: icon2,
+    decription: (
+      <p>
+        Make sure you are done with your current project to have this discussion continued. 
+        If not, please <span style={{ color: 'blue', fontWeight: '500', borderBottom: '1px solid blue' }}> schedule a meeting </span>
         with project manager now.
       </p>
     ),
   },
   {
-    icon: righticon2,
+    icon: icon3,
     decription: (
       <p>
-        This page is just a meeting away
-        <span style={{ color: 'blue' }}> schedule a meeting </span>
-        with HR to review this request.
+        We have prepared an 
+        <span style={{ color: 'blue', fontWeight: '500', borderBottom: '1px solid blue' }}> exit checklist, </span> which you might want to see before 
+        applying for a relationship termination
       </p>
     ),
-  },
-  {
-    icon: righticon3,
-    decription: '0 Reportees under Aditya. He is currently not leading any team',
   },
 ];
 
@@ -43,9 +48,11 @@ export default class ViewRight extends PureComponent {
 
   renderItem = (render) => {
     return (
-      <Row>
+      <Row justify='space-between'>
         <Col span={4}>
-          <img src={render.icon} alt="iconCheck" />
+          <div className={styles.icon}>
+            <img src={render.icon} alt="iconCheck" />
+          </div>
         </Col>
         <Col span={19}>
           <div className={styles.description}>{render.decription} </div>
@@ -57,8 +64,19 @@ export default class ViewRight extends PureComponent {
   render() {
     return (
       <div className={styles.ViewRight}>
-        <div className={styles.boxRight}>
-          <img alt="icontop" className={styles.icon} src={icon} />
+        <div className={styles.twoRight}>
+          <div className={styles.headerTitle}>
+            Few thing to consider
+          </div>
+          <Divider className={styles.divider} />
+          <div className={styles.twoRight__bottom}>{array.map((render) => this.renderItem(render))}</div>
+          <div className={styles.bottom}>
+            <div className={styles.btnBottom} />
+            <Button className={styles.btnBottom__btn}>
+              Speak to manager
+            </Button>
+          </div>
+          {/* <img alt="icontop" className={styles.icon} src={icon} />
           <div className={styles.text_Title}> Did you know?</div>
           <div className={styles.text_Body}>
             <p>
@@ -66,11 +84,7 @@ export default class ViewRight extends PureComponent {
               8/10 employees have changed their mind!
             </p>
           </div>
-          <div className={styles.text_Schedule}>Schedule 1-on-1 Now!</div>
-          <div className={styles.twoRight}>
-            <p className={styles.text_twoRight}>Few thing to consider</p>
-            <div>{array.map((render) => this.renderItem(render))}</div>
-          </div>
+          <div className={styles.text_Schedule}>Schedule 1-on-1 Now!</div> */}
         </div>
       </div>
     );
