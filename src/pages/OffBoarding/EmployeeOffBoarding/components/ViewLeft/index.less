@@ -80,6 +80,99 @@
     }
   }
 
+  .titleProcess{
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 18.75px;
+    color: #161C29;
+    margin-bottom: 24px;
+  }
+
+  .offboardingProcess{
+    font-style: normal;
+    font-weight: normal;
+
+    padding: 25px 22px;
+    margin-bottom: 32px;
+
+    background: #FFFFFF;
+    border: 1px solid #D6DCE0;
+    border-radius: 5px;
+
+    :global{
+
+      .ant-steps-item-icon{
+        width: 36px;
+        height: 36px;
+      }
+
+      .ant-steps-item-icon .ant-steps-icon{
+        font-size: 13px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 17px;
+        top: 0;
+      }
+
+      .ant-steps-item-description{
+        font-size: 9px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: 11px;
+        text-align: center;
+      }
+
+      .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-description{
+        color: #2C6DF9;
+      }
+
+      .ant-steps-item-tail::after{
+        height: 0;
+        border-top: 3px solid #D6DCE0;
+      }
+    }
+
+    &__subtitle{
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 18.75px;
+      color: #161C29;
+      margin-bottom: 24px;
+    }
+  }
+
+  .stepAction{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 32px;
+
+    font-style: normal;
+    font-weight: normal;
+
+    &__text{
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 17px;
+      text-decoration-line: underline;
+
+      color: #2058D1;
+    }
+
+    &__btn{
+      height: 40px;
+      background: #FFA100;
+      border-radius: 25px;
+      padding: 12px 35px;
+
+      span{
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 16px;
+        color: #FFFFFF;
+      }
+    }
+  }
+
 
   // .title_Box {
   //   border-radius: 5px;

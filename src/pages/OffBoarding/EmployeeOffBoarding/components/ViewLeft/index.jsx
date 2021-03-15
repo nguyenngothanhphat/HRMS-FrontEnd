@@ -1,11 +1,52 @@
-import React, { Component, Fragment } from 'react';
-import { Button, Tabs } from 'antd';
-import { Link, connect } from 'umi';
+import React, { Component } from 'react';
+import { Button, Tabs, Steps } from 'antd';
+import { connect } from 'umi';
 // import icon from '@/assets/offboarding-flow.svg';
 import TableAssigned from '@/components/TableAssigned';
 import ViewTable from './ViewTable';
 import TabDrafts from './TableEmployee';
 import styles from './index.less';
+
+const { Step } = Steps;
+
+const steps = [
+  {
+    step: 1,
+    description: 'Begin the process',
+  },
+  {
+    step: 2,
+    description: 'Submit request',
+  },
+  {
+    step: 3,
+    description: '1-1 with your manager & their approval',
+  },
+  {
+    step: 4,
+    description: 'HR Approval',
+  },
+  {
+    step: 5,
+    description: '1-1 with your manager & their approval',
+  },
+  {
+    step: 6,
+    description: '2 days before LWD, Relieving formalities initiated',
+  },
+  {
+    step: 7,
+    description: 'Exit Interview & profile closure',
+  },
+  {
+    step: 8,
+    description: 'Send relieving documents',
+  },
+  {
+    step: 9,
+    description: 'Termination Complete',
+  },
+];
 
 @connect()
 class ViewLeft extends Component {
@@ -13,6 +54,7 @@ class ViewLeft extends Component {
     super(props);
     this.state = {
       tabId: 1,
+      current: 0
     };
   }
 
@@ -55,9 +97,14 @@ class ViewLeft extends Component {
     });
   };
 
+  onChangeSteps = (values) => {
+    console.log(values)
+  }
+
   render() {
     const { TabPane } = Tabs;
     const { data = [], countdata = [], hrManager = {} } = this.props;
+    const {current = 0} = this.state;
     // const checkInprogress = countdata.find(({ _id }) => _id === 'IN-PROGRESS') || {};
     // const checkAccepted = countdata.find(({ _id }) => _id === 'ACCEPTED') || {};
 
@@ -99,6 +146,36 @@ class ViewLeft extends Component {
           <div className={styles.rightSection}>
             <div className={styles.rightSection__bg} />
           </div>
+        </div>
+
+        <div className={styles.titleProcess}>
+          However, if you have made your mind. We respect that as well.
+        </div>
+        <div className={styles.offboardingProcess}>
+          <div className={styles.offboardingProcess__subtitle}>
+            Our offboarding process at a glance
+          </div>
+          <div className={styles.offboardingProcess__process}>
+            <Steps 
+              current={current} 
+              onChange={this.onChangeSteps} 
+              labelPlacement='vertical'
+            >
+              {steps.map(item => (
+                <Step key={item.step} description={item.description} />
+              ))}
+            </Steps>
+          </div>
+        </div>
+        
+        <div className={styles.stepAction}>
+          <div className={styles.stepAction__text}>Learn more about offboarding policy</div>
+          <Button 
+            onClick={() => this.setState({current: current + 1})}
+            className={styles.stepAction__btn}
+          >
+            Initiate resignation request
+          </Button>
         </div>
 
         <div>
