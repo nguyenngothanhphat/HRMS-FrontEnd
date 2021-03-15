@@ -96,7 +96,9 @@ class ViewLeft extends Component {
             </div>
             <a href='#' className={styles.leftSection__linkRequest}>Request for feedback?</a>
           </div>
-          <div className={styles.rightSection} />
+          <div className={styles.rightSection}>
+            <div className={styles.rightSection__bg} />
+          </div>
         </div>
 
         <div>
