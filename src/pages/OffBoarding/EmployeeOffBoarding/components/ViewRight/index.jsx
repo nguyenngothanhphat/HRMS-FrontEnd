@@ -13,7 +13,7 @@ const array = [
     decription: (
       <p>
         Discuss your decision with a 
-        <span style={{ color: 'blue', fontWeight: '500', borderBottom: '1px solid blue' }}> supervisor </span> and 
+        <span style={{ color: '#2C6DF9', fontWeight: '500', borderBottom: '1px solid #2C6DF9' }}> supervisor </span> and 
         not your reporting manager
       </p>
     ),
@@ -23,7 +23,7 @@ const array = [
     decription: (
       <p>
         Make sure you are done with your current project to have this discussion continued. 
-        If not, please <span style={{ color: 'blue', fontWeight: '500', borderBottom: '1px solid blue' }}> schedule a meeting </span>
+        If not, please <span style={{ color: '#2C6DF9', fontWeight: '500', borderBottom: '1px solid #2C6DF9' }}> schedule a meeting </span>
         with project manager now.
       </p>
     ),
@@ -33,7 +33,7 @@ const array = [
     decription: (
       <p>
         We have prepared an 
-        <span style={{ color: 'blue', fontWeight: '500', borderBottom: '1px solid blue' }}> exit checklist, </span> which you might want to see before 
+        <span style={{ color: '#2C6DF9', fontWeight: '500', borderBottom: '1px solid #2C6DF9' }}> exit checklist, </span> which you might want to see before 
         applying for a relationship termination
       </p>
     ),

@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Button, Tabs } from 'antd';
 import { Link, connect } from 'umi';
-import icon from '@/assets/offboarding-flow.svg';
+// import icon from '@/assets/offboarding-flow.svg';
 import TableAssigned from '@/components/TableAssigned';
 import ViewTable from './ViewTable';
 import TabDrafts from './TableEmployee';
@@ -58,13 +58,13 @@ class ViewLeft extends Component {
   render() {
     const { TabPane } = Tabs;
     const { data = [], countdata = [], hrManager = {} } = this.props;
-    const checkInprogress = countdata.find(({ _id }) => _id === 'IN-PROGRESS') || {};
-    const checkAccepted = countdata.find(({ _id }) => _id === 'ACCEPTED') || {};
+    // const checkInprogress = countdata.find(({ _id }) => _id === 'IN-PROGRESS') || {};
+    // const checkAccepted = countdata.find(({ _id }) => _id === 'ACCEPTED') || {};
 
-    const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
+    // const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
     return (
       <div className={styles.Container}>
-        <div className={styles.title_Box}>
+        {/* <div className={styles.title_Box}>
           <img src={icon} alt="iconCheck" className={styles.icon} />
           <span className={styles.title_Text}>
             Super six years with us. Thank you. We are indebted by your contribution to our company
@@ -84,7 +84,20 @@ class ViewLeft extends Component {
               <Link to="/offboarding/resignation-request">Set a resignation request</Link>
             </Button>
           </>
-        )}
+        )} */}
+
+        <div className={styles.headerTerminate}> 
+          <div className={styles.leftSection}>
+            <div className={styles.leftSection__title}> 
+              Super six years with us. Thank you.
+            </div>
+            <div className={styles.leftSection__content}> 
+              We are indebted by your contribution to our company and clients all this while. This is not the end we like to see.
+            </div>
+            <a href='#' className={styles.leftSection__linkRequest}>Request for feedback?</a>
+          </div>
+          <div className={styles.rightSection} />
+        </div>
 
         <div>
           <Tabs defaultActiveKey="1" className={styles.tabComponent} onTabClick={this.callback}>

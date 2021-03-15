@@ -22,54 +22,109 @@
   .marrinTop {
     margin-top: 10px;
   }
-  .title_Box {
-    border-radius: 5px;
+
+  .headerTerminate{
     width: 100%;
-    padding: 19px;
-    background: #fffdf7;
-    border: 1px solid #ffc65a;
+    height: 180px;
+    margin-bottom: 24px;
+
+    background: #FFFFFF;
+    border: 1px solid #D6DCE0;
+    border-radius: 5px;
+
     display: flex;
-    margin-bottom: 20px;
-  }
+    justify-content: space-between;
 
-  .icon {
-    margin-left: 2px;
-    margin-right: 21px;
-  }
+    font-style: normal;
+    font-weight: normal;
 
-  .title_Text {
-    font-weight: 700;
-    font-size: 13px;
-    line-height: 17px;
-  }
+    .leftSection{
+      width: 100%;
+      height: 100%;
+      padding: 24px;
+      &__title{
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 18.75px;
+        color: #161C29;
+        margin-bottom: 14px;
+      }
 
-  .subTitle_Text {
-    font-weight: 700;
-    font-size: 14px;
-    line-height: 16px;
-    font-family: 'Roboto';
-    margin: 14px 0px 16px;
-  }
+      &__content{
+        font-size: 13px;
+        line-height: 20px;
+        color: #707177;
+        margin-bottom: 44px;
+      }
 
-  .submitButton {
-    padding: 0 30px;
-    height: 40px;
-    border-radius: 30px;
-    margin-bottom: 30px;
-    background-color: #ffa100;
-    color: #fff;
-    font-weight: 700;
-    border: none;
-    &:hover,
-    &:active,
-    &:focus {
-      border: none;
+      &__linkRequest{
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 15px;
+        text-decoration-line: underline;
+        color: #FFA100;
+      }
     }
-    &:hover {
-      background-color: #ee9803;
-      transition: 0.3s;
+
+    .rightSection{
+      width: 100%;
+      height: 100%;
+      background-image: url('../../../../../assets/offboardingMan.svg');
+      background-repeat: no-repeat;
+      background-size: 210px auto;
+      background-position: 90% 100%;
     }
   }
+
+
+  // .title_Box {
+  //   border-radius: 5px;
+  //   width: 100%;
+  //   padding: 19px;
+  //   background: #fffdf7;
+  //   border: 1px solid #ffc65a;
+  //   display: flex;
+  //   margin-bottom: 20px;
+  // }
+
+  // .icon {
+  //   margin-left: 2px;
+  //   margin-right: 21px;
+  // }
+
+  // .title_Text {
+  //   font-weight: 700;
+  //   font-size: 13px;
+  //   line-height: 17px;
+  // }
+
+  // .subTitle_Text {
+  //   font-weight: 700;
+  //   font-size: 14px;
+  //   line-height: 16px;
+  //   font-family: 'Roboto';
+  //   margin: 14px 0px 16px;
+  // }
+
+  // .submitButton {
+  //   padding: 0 30px;
+  //   height: 40px;
+  //   border-radius: 30px;
+  //   margin-bottom: 30px;
+  //   background-color: #ffa100;
+  //   color: #fff;
+  //   font-weight: 700;
+  //   border: none;
+  //   &:hover,
+  //   &:active,
+  //   &:focus {
+  //     border: none;
+  //   }
+  //   &:hover {
+  //     background-color: #ee9803;
+  //     transition: 0.3s;
+  //   }
+  // }
 
   .titleContainer {
     height: 35px;
