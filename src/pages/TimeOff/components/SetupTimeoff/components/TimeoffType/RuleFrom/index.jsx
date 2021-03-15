@@ -48,11 +48,11 @@ class RuleFrom extends Component {
                     <Col span={8} className={styles.colAction}>
                       {name !== 'true' ? (
                         <div className={styles.setup}>
-                          <span onClick={change}> Setup</span>
+                          <span onClick={change}>{status > 0 ? 'Configure' : 'Setup'}</span>
                         </div>
                       ) : (
                         <div className={styles.setup}>
-                          <span> Setup</span>
+                          <span>{status > 0 ? 'Configure' : 'Setup'}</span>
                           <div className={styles.deleteIcon}>
                             <DeleteOutlined className={styles.iconImg} />
                           </div>
@@ -157,7 +157,7 @@ class RuleFrom extends Component {
           },
           {
             title: ' Compensation leave (Co) ',
-            status: 10,
+            status: 0,
             name: 'true',
           },
         ],
@@ -226,7 +226,7 @@ class RuleFrom extends Component {
                 {this.renderCountry()}
               </Select>
             </div>
-            <Row gutter={[30, 25]}>
+            <Row gutter={[24, 12]}>
               {array.map((render, index) => (
                 <Col key={`${index + 1}`} span={24}>
                   {this.renderItem(render)}

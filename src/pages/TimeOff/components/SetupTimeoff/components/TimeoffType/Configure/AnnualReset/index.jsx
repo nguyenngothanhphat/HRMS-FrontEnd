@@ -33,11 +33,9 @@ class AnnualReset extends Component {
         <div className={styles.formBody}>
           <Row gutter={[20, 0]}>
             <Col span={10}>
-              <div className={styles.titleText}>
-                During the employee’s 1st year of employment, total casual leave accrued
-              </div>
+              <div className={styles.titleText}>Employees Casual leave balance resets to 0 on</div>
               <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
-                Unlimited causal leave
+                Reset annually
               </Checkbox>
             </Col>
             <Col span={12}>

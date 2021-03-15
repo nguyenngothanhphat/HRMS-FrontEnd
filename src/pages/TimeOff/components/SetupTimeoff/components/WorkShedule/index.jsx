@@ -18,6 +18,8 @@ import s from './index.less';
   }),
 )
 class WorkShedule extends Component {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = {
@@ -61,6 +63,7 @@ class WorkShedule extends Component {
       ],
       startTime: '',
       endTime: '',
+      edit: true,
     };
   }
 
@@ -91,6 +94,7 @@ class WorkShedule extends Component {
       <div
         className={item.checked ? s.circleActive : s.circle}
         onClick={() => this.handleClick(item.id, formatArray)}
+        onChange={this.onChangeEdit}
       >
         <div className={s.padding}>{item.name}</div>
       </div>
@@ -100,12 +104,20 @@ class WorkShedule extends Component {
   selectStartTime = (time, timeString) => {
     this.setState({
       startTime: timeString,
+      edit: false,
     });
   };
 
   selectEndTime = (time, timeString) => {
     this.setState({
       endTime: timeString,
+      edit: false,
+    });
+  };
+
+  onChangeEdit = () => {
+    this.setState({
+      edit: false,
     });
   };
 
@@ -137,15 +149,42 @@ class WorkShedule extends Component {
     </div>
   );
 
+  handleCancel = () => {
+    this.setState({ edit: true });
+    const { getByLocation, dispatch } = this.props;
+    const {
+      endWorkDay: { end: endTime, amPM: afternoon } = {},
+      startWorkDay: { start: startTime, amPM: beforenoon } = {},
+      // workDay = [],
+      totalHour,
+    } = getByLocation;
+
+    const format = 'HH:mm';
+
+    this.formRef.current.setFieldsValue({
+      startAmPM: beforenoon,
+      endAmPM: afternoon,
+      totalHour,
+      startAt: moment(startTime, format),
+      endAt: moment(endTime, format),
+    });
+
+    dispatch({
+      type: 'timeOff/save',
+      payload: { employeeSchedule: getByLocation },
+    });
+  };
+
   render() {
     const format = 'HH:mm';
 
-    const options = [
-      { label: 'AM', value: 'AM' },
-      { label: 'PM', value: 'PM' },
-    ];
-    const { array = [], check } = this.state;
+    // const options = [
+    //   { label: 'AM', value: 'AM' },
+    //   { label: 'PM', value: 'PM' },
+    // ];
+    const { array = [], check, edit } = this.state;
     const { getByLocation, loading } = this.props;
+
     const {
       endWorkDay: { end: endTime, amPM: afternoon } = {},
       startWorkDay: { start: startTime, amPM: beforenoon } = {},
@@ -165,25 +204,29 @@ class WorkShedule extends Component {
 
     return (
       <div className={s.root}>
-        <Row>
-          <Form
-            onFinish={(values) => this.onFinish(values, formatArray)}
-            requiredMark={false}
-            initialValues={{
-              startAmPM: 'AM',
-              endAmPM: 'PM',
-            }}
-          >
-            <div className={s.title}>Setup the standard company Holiday Calendar</div>
-            <div className={s.description}>
-              Below is a list of holidays celebrated in your region/country. Select the ones for
-              which your company provides holidays. You may add holidays to the list as well.
-            </div>
-            {loading ? (
-              <div className={s.center}>
-                <Spin />
-              </div>
-            ) : (
+        <div className={s.title}>Setup the standard company Holiday Calendar</div>
+        <div className={s.description}>
+          Below is a list of holidays celebrated in your region/country. Select the ones for which
+          your company provides holidays. You may add holidays to the list as well.
+        </div>
+        {loading ? (
+          <div className={s.center}>
+            <Spin />
+          </div>
+        ) : (
+          <Row>
+            <Form
+              ref={this.formRef}
+              onFinish={(values) => this.onFinish(values, formatArray)}
+              requiredMark={false}
+              initialValues={{
+                startAmPM: beforenoon,
+                endAmPM: afternoon,
+                totalHour,
+                startAt: moment(startTime, format),
+                endAt: moment(endTime, format),
+              }}
+            >
               <div className={s.formActive}>
                 <div className={s.activeText}>
                   <span>Standard work schedule policy</span>
@@ -207,10 +250,11 @@ class WorkShedule extends Component {
                           <InputNumber
                             min={0}
                             max={12}
-                            defaultValue={totalHour}
+                            // defaultValue={totalHour}
                             placeholder="hours/day"
                             formatter={(value) => `${value} hours/day`}
                             parser={(value) => value.replace('days', '')}
+                            onChange={this.onChangeEdit}
                           />
                         </Form.Item>
                       </div>
@@ -223,7 +267,7 @@ class WorkShedule extends Component {
                             <Form.Item name="startAt">
                               <TimePicker
                                 format={format}
-                                defaultValue={moment(startTime, format)}
+                                // defaultValue={moment(startTime, format)}
                                 onChange={this.selectStartTime}
                                 suffixIcon={this.renderIcons()}
                               />
@@ -231,18 +275,19 @@ class WorkShedule extends Component {
                           </Col>
                           <Col style={{ padding: '2px' }} className={s.radioSection}>
                             <Form.Item name="startAmPM">
-                              <div className={s.radioTime}>
-                                <Radio.Group
-                                  options={options}
-                                  // onChange={this.onChange1}
-                                  defaultValue={beforenoon}
-                                  optionType="button"
-                                  buttonStyle="solid"
-                                >
-                                  <Radio.Button value="AM">AM</Radio.Button>
-                                  <Radio.Button value="PM">PM</Radio.Button>
-                                </Radio.Group>
-                              </div>
+                              {/* <div className={s.radioTime}> */}
+                              <Radio.Group
+                                // options={options}
+                                // onChange={this.onChange1}
+                                onChange={this.onChangeEdit}
+                                optionType="button"
+                                buttonStyle="solid"
+                                className={s.radioGroup}
+                              >
+                                <Radio.Button value="AM">AM</Radio.Button>
+                                <Radio.Button value="PM">PM</Radio.Button>
+                              </Radio.Group>
+                              {/* </div> */}
                             </Form.Item>
                           </Col>
                         </Row>
@@ -257,25 +302,26 @@ class WorkShedule extends Component {
                               <TimePicker
                                 format={format}
                                 onChange={this.selectEndTime}
-                                defaultValue={moment(endTime, format)}
+                                value={moment(endTime, format)}
                                 suffixIcon={this.renderIcons()}
                               />
                             </Form.Item>
                           </Col>
                           <Col style={{ padding: '2px' }} className={s.radioSection}>
                             <Form.Item name="endAmPM">
-                              <div className={s.radioTime}>
-                                <Radio.Group
-                                  options={options}
-                                  // onChange={this.onChange2}
-                                  defaultValue={afternoon}
-                                  optionType="button"
-                                  buttonStyle="solid"
-                                >
-                                  <Radio.Button value="AM">AM</Radio.Button>
-                                  <Radio.Button value="PM">PM</Radio.Button>
-                                </Radio.Group>
-                              </div>
+                              {/* <div className={s.radioTime}> */}
+                              <Radio.Group
+                                // options={options}
+                                // onChange={this.onChange2}
+                                onChange={this.onChangeEdit}
+                                optionType="button"
+                                buttonStyle="solid"
+                                className={s.radioGroup}
+                              >
+                                <Radio.Button value="AM">AM</Radio.Button>
+                                <Radio.Button value="PM">PM</Radio.Button>
+                              </Radio.Group>
+                              {/* </div> */}
                             </Form.Item>
                           </Col>
                         </Row>
@@ -295,12 +341,19 @@ class WorkShedule extends Component {
                 </div>
                 <div className={s.straight} />
                 <div className={s.flex}>
-                  <Button htmlType="submit">Save</Button>
+                  {edit ? null : (
+                    <Button onClick={this.handleCancel} className={s.cancelBtn}>
+                      Cancel
+                    </Button>
+                  )}
+                  <Button htmlType="submit" disabled={edit}>
+                    Save
+                  </Button>
                 </div>
               </div>
-            )}
-          </Form>
-        </Row>
+            </Form>
+          </Row>
+        )}
       </div>
     );
   }

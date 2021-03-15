@@ -253,14 +253,14 @@ class Configure extends Component {
               </Col>
               <Col style={{ display: 'flex', alignItems: 'center' }}>
                 <div className={styles.detailStep}>
-                  <span>{`${selectStep}/5`}</span> Steps
+                  <span>{`${selectStep}/6`}</span> Steps
                 </div>
               </Col>
               <Col>
                 <Button
-                  disabled={selectStep === 5}
+                  disabled={selectStep === 6}
                   onClick={() => this.nextStep(selectStep)}
-                  className={selectStep === 5 ? styles.prevStep : styles.nextStep}
+                  className={selectStep === 6 ? styles.prevStep : styles.nextStep}
                 >
                   Next &gt;
                 </Button>

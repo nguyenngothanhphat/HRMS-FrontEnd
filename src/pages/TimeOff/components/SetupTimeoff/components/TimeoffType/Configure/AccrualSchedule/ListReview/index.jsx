@@ -1,49 +1,69 @@
 import React, { Component } from 'react';
-import { Row, Col } from 'antd';
+import { Table } from 'antd';
+import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import styles from './index.less';
 
 class ListSpentTime extends Component {
   onChange = () => {};
 
-  renderItem = (render) => {
-    return (
-      <Row gutter={[10, 17]} className={styles.item}>
-        <Col span={8}>
-          <div>{render.period} </div>
-        </Col>
-        <Col span={8}>
-          <div>{render.date} </div>
-        </Col>
-        <Col span={7}>
-          <div>{render.amount} </div>
-        </Col>
-      </Row>
-    );
-  };
-
   render() {
-    const array = [
+    const data = [
       {
-        period: '01/01/2020 - 31/12/2020',
-        date: '31/12/2020',
-        amount: '10 days',
+        key: '1',
+        schedulePeriod: '01/01/2020 - 31/12/2020',
+        accrualDate: '31/12/2020',
+        accrualAmount: '10 days',
+      },
+    ];
+
+    const columns = [
+      {
+        title: <span className={styles.scheduleTitle}>Schedule Period</span>,
+        key: 'schedulePeriod',
+        dataIndex: 'schedulePeriod',
+        align: 'left',
+        // render: (schedulePeriod) => {
+        //   return <p>{schedulePeriod}</p>;
+        // },
+      },
+      {
+        title: <span className={styles.scheduleTitle}>Accrual date</span>,
+        key: 'accrualDate',
+        dataIndex: 'accrualDate',
+        align: 'left',
+        // render: (accrualDate) => {
+        //   return <p>{accrualDate}</p>;
+        // },
+      },
+      {
+        title: <span className={styles.scheduleTitle}>Accrual amount</span>,
+        key: 'accrualAmount',
+        dataIndex: 'accrualAmount',
+        align: 'right',
+        // render: (accrualAmount) => {
+        //   return <p>{accrualAmount}</p>;
+        // },
       },
     ];
 
     return (
       <div className={styles.root}>
-        <Row gutter={[10, 17]} className={styles.backgroundStyles}>
-          <Col span={8}>
-            <div>Schedule period</div>
-          </Col>
-          <Col span={8}>
-            <div>Accrual date </div>
-          </Col>
-          <Col span={7}>
-            <div>Accrual amount </div>
-          </Col>
-        </Row>
-        {array.map((render) => this.renderItem(render))}
+        <div className={styles.previewTitle}>Accrual schedule preview</div>
+        <div className={styles.accrualScheduleTbl}>
+          <Table
+            locale={{
+              emptyText: (
+                <div className={styles.viewEmpty}>
+                  <img src={empty} alt="empty data" />
+                  <p className={styles.textEmpty}>Empty Data</p>
+                </div>
+              ),
+            }}
+            columns={columns}
+            dataSource={data}
+            hideOnSinglePage
+          />
+        </div>
       </div>
     );
   }
