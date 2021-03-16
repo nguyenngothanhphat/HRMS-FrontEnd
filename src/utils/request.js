@@ -65,6 +65,10 @@ const request = (url, options = {}, noAuth) => {
       ...headers,
     };
   }
+  headers = {
+    tenantId: 'hvvty',
+    ...headers,
+  };
   return extend({
     errorHandler, // 默认错误处理
     credentials: 'include', // 默认请求是否带上cookie

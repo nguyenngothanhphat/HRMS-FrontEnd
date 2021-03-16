@@ -1,0 +1,63 @@
+.EmailExistModal {
+  font-family: 'Roboto';
+  :global {
+    .ant-modal-body {
+      padding: 0;
+    }
+    .ant-modal-close {
+      display: none;
+    }
+    .ant-modal-content {
+      border-radius: 10px;
+    }
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    .successIcon {
+      width: 100%;
+    }
+    .alert {
+      font-weight: 700;
+    }
+    p {
+      margin: 5px 0;
+      text-align: center;
+      line-height: 22px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-evenly;
+      flex-direction: row;
+      align-items: center;
+      .continueBtn {
+        margin-right: 20px;
+      }
+    }
+
+    :global {
+      .ant-modal-body {
+        border-radius: 10px;
+      }
+      .ant-btn {
+        margin-top: 15px;
+        background-color: #ffa100;
+        border: none;
+        border-radius: 30px;
+        height: 40px;
+        padding: 0 30px;
+        span {
+          color: white;
+          font-weight: 700;
+        }
+        &:hover {
+          background-color: #ffa100cc; // hex with alpha 0.8
+        }
+      }
+    }
+  }
+}

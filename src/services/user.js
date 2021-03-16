@@ -14,7 +14,7 @@ export async function queryNotices() {
 
 export async function getUserInfo(data) {
   return request(
-    '/api/security-register',
+    '/api/security-register-tenant',
     {
       method: 'POST',
       data, // {firstName, email}
@@ -25,7 +25,7 @@ export async function getUserInfo(data) {
 
 export async function getSecurityCode(data) {
   return request(
-    '/api/resend-security-register',
+    '/api/check-security-register-tenant',
     {
       method: 'POST',
       data, // codeNumber
@@ -36,7 +36,7 @@ export async function getSecurityCode(data) {
 
 export async function signupAdmin(data) {
   return request(
-    '/api/sign-up-admin',
+    '/api/sign-up-admin-tenant',
     {
       method: 'POST',
       data,

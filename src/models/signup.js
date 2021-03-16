@@ -44,12 +44,17 @@ const signup = {
       try {
         const response = yield call(getUserInfo, payload);
         const { statusCode, data: userInfo = [] } = response;
-        if (statusCode !== 200) throw response;
+        if (statusCode === 400)
+          return response;
+        if (statusCode !== 200 && statusCode !== 400) {
+          throw response
+        }
         yield put({ type: 'save', payload: { user: userInfo } });
         history.replace('/signup-verify');
       } catch (errors) {
         dialog(errors);
       }
+      return {}
     },
 
     *fetchSecurityCode({ payload }, { call, put }) {

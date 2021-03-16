@@ -1,11 +1,13 @@
 /* eslint-disable no-useless-escape */
-import React from 'react';
-import { formatMessage, connect } from 'umi';
+import React, {useState} from 'react';
+import { formatMessage, connect, history } from 'umi';
 import { Form, Input, Button } from 'antd';
+import EmailExistModal from './EmailExistModal';
 import styles from './index.less';
 
 const SignUp1 = (props) => {
   const { dispatch } = props;
+  const [isVisible, setIsVisible] = useState(false);
 
   const storeData = (user) => {
     if (dispatch) {
@@ -22,13 +24,17 @@ const SignUp1 = (props) => {
     const { email, fullname } = values;
 
     if (dispatch) {
-      await dispatch({
+      const res = await dispatch({
         type: 'signup/fetchUserInfo',
         payload: {
           firstName: fullname,
           email,
         },
       });
+      const {statusCode} = res;
+      if (statusCode === 400) {
+        setIsVisible(true)
+      }
     }
 
     storeData({
@@ -37,6 +43,16 @@ const SignUp1 = (props) => {
     });
   };
 
+  const onContinue = () => {
+    setIsVisible(false);
+  }
+
+
+  const onLogin = () => {
+    history.push('/login')
+  }
+
+
   return (
     <div className={styles.wrapper}>
       <h2>
@@ -44,6 +60,8 @@ const SignUp1 = (props) => {
           id: 'page.signUp.signUpHeader',
         })}
       </h2>
+
+      <EmailExistModal visible={isVisible} onContinue={onContinue} onLogin={onLogin} />
 
       <Form
         className={styles.form}

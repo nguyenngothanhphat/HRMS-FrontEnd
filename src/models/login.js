@@ -22,9 +22,9 @@ const Model = {
         if (response.statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { messageError: '' } });
         setToken(response.data.token);
-        const arrayRoles = response.data.user.roles;
+        const arrayRoles = response?.data?.user?.roles;
         let formatArrRoles = [];
-        arrayRoles.forEach((e) => {
+        arrayRoles?.forEach((e) => {
           formatArrRoles = [...formatArrRoles, e._id.toLowerCase(), ...e.permissions];
         });
         setAuthority(formatArrRoles);
