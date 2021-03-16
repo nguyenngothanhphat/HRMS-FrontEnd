@@ -4,7 +4,7 @@ import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import ViewLeft from './components/ViewLeft';
 import ViewRight from './components/ViewRight';
-import RightDataTable from './components/RightContent';
+// import RightDataTable from './components/RightContent';
 import ViewLeftInitial from './components/ViewLeftInitial';
 
 import RelievingFormalities from './RelievingFormalities';
@@ -43,6 +43,7 @@ class EmployeeOffBoading extends Component {
     super(props);
     this.state = {
       relievingInQueue: false,
+      dataDraft: []
     };
   }
 
@@ -56,6 +57,18 @@ class EmployeeOffBoading extends Component {
       payload: {
         status: 'IN-PROGRESS',
       },
+    });
+    dispatch({
+      type: 'offboarding/fetchList',
+      payload: {
+        status: 'DRAFT',
+      },
+    }).then(data => {
+      if(data){
+        this.setState({
+          dataDraft: data
+        })
+      }
     });
     dispatch({
       type: 'offboarding/fetchAcceptedRequest',
@@ -103,8 +116,7 @@ class EmployeeOffBoading extends Component {
 
   render() {
     const { listOffboarding = [], totalList = [], hrManager = {} } = this.props;
-    const { relievingInQueue } = this.state;
-    console.log('listOffboarding: ', listOffboarding)
+    const { relievingInQueue, dataDraft = [] } = this.state;
 
     return (
       <PageContainer>
@@ -116,12 +128,17 @@ class EmployeeOffBoading extends Component {
                   <div className={styles.root}>
                     <Row className={styles.content} gutter={[20, 20]}>
                       <Col span={18}>
-                        {/* <ViewLeft
-                          data={listOffboarding}
-                          countdata={totalList}
-                          hrManager={hrManager}
-                        /> */}
-                        <ViewLeftInitial />
+                        {
+                          dataDraft.length > 0 || listOffboarding.length > 0
+                          ? (
+                            <ViewLeft
+                              data={listOffboarding}
+                              countdata={totalList}
+                              hrManager={hrManager}
+                            />
+                          )
+                          : (<ViewLeftInitial />)
+                        }
                       </Col>
                       <Col span={6}>
                         {/* {listOffboarding.length > 0 ? <RightDataTable /> : <ViewRight />} */}
