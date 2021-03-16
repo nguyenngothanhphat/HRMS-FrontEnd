@@ -28,22 +28,18 @@ const steps = [
   },
   {
     step: 5,
-    description: '1-1 with your manager & their approval',
-  },
-  {
-    step: 6,
     description: '2 days before LWD, Relieving formalities initiated',
   },
   {
-    step: 7,
+    step: 6,
     description: 'Exit Interview & profile closure',
   },
   {
-    step: 8,
+    step: 7,
     description: 'Send relieving documents',
   },
   {
-    step: 9,
+    step: 8,
     description: 'Termination Complete',
   },
 ];

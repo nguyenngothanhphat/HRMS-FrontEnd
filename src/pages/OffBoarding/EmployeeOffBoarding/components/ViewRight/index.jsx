@@ -48,16 +48,20 @@ export default class ViewRight extends PureComponent {
 
   renderItem = (render) => {
     return (
-      <Row justify='space-between'>
-        <Col span={4}>
-          <div className={styles.icon}>
-            <img src={render.icon} alt="iconCheck" />
-          </div>
-        </Col>
-        <Col span={19}>
-          <div className={styles.description}>{render.decription} </div>
-        </Col>
-      </Row>
+      <div className={styles.rowInfo}>
+        <Row 
+          justify='space-between'
+        >
+          <Col span={5}>
+            <div className={styles.icon}>
+              <img src={render.icon} alt="iconCheck" />
+            </div>
+          </Col>
+          <Col span={18}>
+            <div className={styles.description}>{render.decription} </div>
+          </Col>
+        </Row>
+      </div>
     );
   };
 

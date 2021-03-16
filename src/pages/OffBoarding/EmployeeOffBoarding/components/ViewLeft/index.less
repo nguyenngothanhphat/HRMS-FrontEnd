@@ -101,6 +101,10 @@
 
     :global{
 
+      .ant-steps-item-container{
+        width: 96px;
+      }
+
       .ant-steps-item-icon{
         width: 36px;
         height: 36px;
@@ -114,12 +118,16 @@
         top: 0;
       }
 
+      .ant-steps-label-vertical .ant-steps-item-content{
+        width: auto;
+      }
+
       .ant-steps-item-description{
         font-size: 9px;
         font-style: normal;
         font-weight: 500;
         line-height: 11px;
-        text-align: center;
+        text-align: left;
       }
 
       .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-description{
@@ -129,6 +137,13 @@
       .ant-steps-item-tail::after{
         height: 0;
         border-top: 3px solid #D6DCE0;
+      }
+
+      .ant-steps-label-vertical .ant-steps-item-icon {
+        margin-left: 0;
+      }
+      .ant-steps-label-vertical .ant-steps-item-tail {
+        margin-left: 16px;
       }
     }
 
