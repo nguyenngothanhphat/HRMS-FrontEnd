@@ -50,7 +50,7 @@ class ViewLeft extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tabId: 1,
+      tabId: '1',
       current: 0,
     };
   }
@@ -98,14 +98,26 @@ class ViewLeft extends Component {
     console.log(values)
   }
 
+  operations = () => (
+    <div className={styles.status}>
+      <div className={styles.status__text}>Status: </div>
+      <div className={styles.action}>
+        <div className={styles.action__dot} /> 
+        <div className={styles.action__text}>In Progress</div>
+      </div>
+    </div>
+  );
+
+
   render() {
     const { TabPane } = Tabs;
     const { data = [], countdata = [], hrManager = {} } = this.props;
-    const {current = 0 } = this.state;
+    const {current = 0, tabId } = this.state;
     // const checkInprogress = countdata.find(({ _id }) => _id === 'IN-PROGRESS') || {};
     // const checkAccepted = countdata.find(({ _id }) => _id === 'ACCEPTED') || {};
 
     // const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
+  
     return (
       <div className={styles.Container}>
         {/* <div className={styles.title_Box}>
@@ -166,7 +178,7 @@ class ViewLeft extends Component {
         </div>
 
         <div>
-          <Tabs defaultActiveKey="1" className={styles.tabComponent} onTabClick={this.callback}>
+          <Tabs defaultActiveKey="1" className={styles.tabComponent} onTabClick={this.callback} tabBarExtraContent={tabId === '1' ? this.operations() : null}>
             <TabPane tab="Your Request" key="1">
               <div className={styles.marrinTop}>
                 <ViewTable data={data} countTable={countdata} hrManager={hrManager} />

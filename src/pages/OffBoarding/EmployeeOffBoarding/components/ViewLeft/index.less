@@ -18,6 +18,10 @@
       color: #000000;
       opacity: 1;
     }
+
+    .ant-tabs-extra-content{
+      margin-right: 24px;
+    }
   }
   .marrinTop {
     margin-top: 10px;
@@ -258,5 +262,39 @@
     border-radius: 5px;
     background-color: #fff;
     border: 1px solid #d6dce0;
+  }
+
+  .status{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 15px;
+
+    &__text{
+      color: #161C29;
+    }
+
+    .action{
+      color: #FFA100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-left: 9px;
+
+      &__dot{
+        width: 8px;
+        height: 8px;
+        background: #FFA100;
+        border-radius: 50%;
+      }
+
+      &__text{
+        margin-left: 6px;
+      }
+    }
   }
 }
