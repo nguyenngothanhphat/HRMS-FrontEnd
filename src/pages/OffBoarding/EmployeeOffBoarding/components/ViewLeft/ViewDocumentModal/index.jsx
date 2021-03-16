@@ -4,9 +4,9 @@ import { Modal, Spin, message } from 'antd';
 import axios from 'axios';
 import DownloadIcon from '@/assets/downloadIconTimeOff.svg';
 import PrintIcon from '@/assets/printIconTimeOff.svg';
-import CloseIcon from '@/assets/closeIconTimeOff.svg';
+
 import { LoadingOutlined } from '@ant-design/icons';
-import { Document, Page, pdfjs } from 'react-pdf';
+import { pdfjs } from 'react-pdf';
 import ReactToPrint from 'react-to-print';
 import styles from './index.less';
 
@@ -77,17 +77,15 @@ class ViewDocumentModal extends PureComponent {
 
   _renderHandleButtons = () => {
     const {
-      onClose = () => {},
       url = 'http://api-stghrms.paxanimi.ai/api/attachments/5f744ecfd44f6745847c0eea/Payslip_Apr20.pdf',
     } = this.props;
     return (
       <div className={styles.handleButtons}>
-        <img src={DownloadIcon} alt="download" onClick={() => this.onDownload(url)} />
         <ReactToPrint
           trigger={() => <img src={PrintIcon} alt="print" />}
           content={() => this.componentRef}
         />
-        <img src={CloseIcon} alt="close" onClick={() => onClose(false)} />
+        <img src={DownloadIcon} alt="download" onClick={() => this.onDownload(url)} />
       </div>
     );
   };
@@ -216,8 +214,8 @@ class ViewDocumentModal extends PureComponent {
         visible={visible}
         footer={null}
         onCancel={onClose}
-        centered
-        maskClosable
+        // centered
+        // maskClosable
       >
         {this._renderHandleButtons()}
         <div className={styles.container}>

@@ -100,14 +100,16 @@ class ViewLeft extends Component {
     console.log(values)
   }
 
-  setViewDocumentModal = (value) => {
+  onCancel = () => {
     this.setState({
-      viewDocumentModal: value,
+      viewDocumentModal: false,
     });
-  };
+  }
 
   onLinkClick = () => {
-    this.setViewDocumentModal(true);
+    this.setState({
+      viewDocumentModal: true,
+    });
   };
 
   render() {
@@ -210,7 +212,7 @@ class ViewLeft extends Component {
               </div>
             </TabPane> */}
           </Tabs>
-          <ViewDocumentModal visible={viewDocumentModal} onClose={this.setViewDocumentModal} />
+          <ViewDocumentModal visible={viewDocumentModal} onClose={this.onCancel} />
         </div>
       </div>
     );
