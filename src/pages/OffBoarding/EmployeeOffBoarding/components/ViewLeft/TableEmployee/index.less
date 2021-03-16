@@ -20,7 +20,7 @@
     }
     .ant-table-tbody > tr > td {
       // border-bottom: solid 1px #d6dce0;
-      color: #464646;
+      // color: #464646;
       font-size: 13px;
       padding: 16px 16px;
     }
@@ -39,13 +39,53 @@
     color: #464646;
   }
   .rowAction {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 15px;
     color: #2c6df9;
     cursor: pointer;
+    margin-right: 18px;
+
+    display: flex;
+    justify-content: space-between;
+    
+    &__action{
+      text-decoration-line:underline;
+      color: #FD4546;
+    }
+    &__view{
+      text-decoration-line:underline;
+    }
   }
   .reason {
+    // width: 190px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 15px;
+
+    color: #464646
+  }
+
+  .lastEdited{
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 15px;
+    color: #2C6DF9;
+  }
+
+  .update {
     width: 190px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 }
+
+// border: 1px solid #D6DCE0;
+// border-radius: 5px;

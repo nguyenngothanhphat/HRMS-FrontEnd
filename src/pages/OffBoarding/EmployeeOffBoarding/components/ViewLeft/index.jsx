@@ -181,12 +181,12 @@ class ViewLeft extends Component {
           <Tabs defaultActiveKey="1" className={styles.tabComponent} onTabClick={this.callback} tabBarExtraContent={tabId === '1' ? this.operations() : null}>
             <TabPane tab="Your Request" key="1">
               <div className={styles.marrinTop}>
-                <ViewTable data={data} countTable={countdata} hrManager={hrManager} />
+                <ViewTable data={data} countTable={countdata} hrManager={hrManager} tabId={tabId} />
               </div>
             </TabPane>
             <TabPane tab="Drafts" key="2">
               <div className={styles.marrinTop}>
-                <TabDrafts data={data} textEmpty="No draft saved" />
+                <TabDrafts data={data} textEmpty="No draft saved" tabId={tabId} />
               </div>
             </TabPane>
             {/* <TabPane tab="Assigned" key="3">

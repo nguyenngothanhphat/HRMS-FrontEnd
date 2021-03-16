@@ -76,11 +76,11 @@ class ViewTable extends Component {
   };
 
   render() {
-    const { data = [], countTable = [], hrManager = {} } = this.props;
+    const { data = [], countTable = [], hrManager = {}, tabId } = this.props;
     return (
       <>
         {/* <Summary setSelectedTab={this.setSelectedTab} totallist={countTable} /> */}
-        <TableEmployee data={data} hrManager={hrManager} />
+        <TableEmployee data={data} hrManager={hrManager} tabId={tabId} />
       </>
     );
   }
