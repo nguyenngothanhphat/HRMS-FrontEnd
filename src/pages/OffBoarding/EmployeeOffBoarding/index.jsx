@@ -121,7 +121,8 @@ class EmployeeOffBoading extends Component {
                         />
                       </Col>
                       <Col span={6}>
-                        {listOffboarding.length > 0 ? <RightDataTable /> : <ViewRight />}
+                        {/* {listOffboarding.length > 0 ? <RightDataTable /> : <ViewRight />} */}
+                        <ViewRight />
                       </Col>
                     </Row>
                   </div>

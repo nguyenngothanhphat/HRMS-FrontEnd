@@ -80,7 +80,7 @@ class ViewTable extends Component {
 
     return (
       <>
-        <Summary setSelectedTab={this.setSelectedTab} totallist={countTable} />
+        {/* <Summary setSelectedTab={this.setSelectedTab} totallist={countTable} /> */}
         <TableEmployee data={data} hrManager={hrManager} />
       </>
     );
