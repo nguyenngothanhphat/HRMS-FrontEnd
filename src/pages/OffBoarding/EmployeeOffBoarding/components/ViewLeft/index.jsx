@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Tabs, Steps } from 'antd';
 import { connect } from 'umi';
 // import icon from '@/assets/offboarding-flow.svg';
-import TableAssigned from '@/components/TableAssigned';
+// import TableAssigned from '@/components/TableAssigned';
 import ViewTable from './ViewTable';
 import TabDrafts from './TableEmployee';
 import ViewDocumentModal from './ViewDocumentModal';

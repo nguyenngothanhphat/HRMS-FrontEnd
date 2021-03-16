@@ -77,7 +77,6 @@ class ViewTable extends Component {
 
   render() {
     const { data = [], countTable = [], hrManager = {} } = this.props;
-
     return (
       <>
         {/* <Summary setSelectedTab={this.setSelectedTab} totallist={countTable} /> */}

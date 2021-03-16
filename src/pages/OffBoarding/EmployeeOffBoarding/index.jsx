@@ -5,6 +5,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import ViewLeft from './components/ViewLeft';
 import ViewRight from './components/ViewRight';
 import RightDataTable from './components/RightContent';
+import ViewLeftInitial from './components/ViewLeftInitial';
 
 import RelievingFormalities from './RelievingFormalities';
 import styles from './index.less';
@@ -103,6 +104,7 @@ class EmployeeOffBoading extends Component {
   render() {
     const { listOffboarding = [], totalList = [], hrManager = {} } = this.props;
     const { relievingInQueue } = this.state;
+    console.log('listOffboarding: ', listOffboarding)
 
     return (
       <PageContainer>
@@ -114,15 +116,16 @@ class EmployeeOffBoading extends Component {
                   <div className={styles.root}>
                     <Row className={styles.content} gutter={[20, 20]}>
                       <Col span={18}>
-                        <ViewLeft
+                        {/* <ViewLeft
                           data={listOffboarding}
                           countdata={totalList}
                           hrManager={hrManager}
-                        />
+                        /> */}
+                        <ViewLeftInitial />
                       </Col>
                       <Col span={6}>
                         {/* {listOffboarding.length > 0 ? <RightDataTable /> : <ViewRight />} */}
-                        <RightDataTable />
+                        <ViewRight />
                       </Col>
                     </Row>
                   </div>
