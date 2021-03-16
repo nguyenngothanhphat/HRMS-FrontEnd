@@ -5,6 +5,8 @@ import { connect } from 'umi';
 import TableAssigned from '@/components/TableAssigned';
 import ViewTable from './ViewTable';
 import TabDrafts from './TableEmployee';
+import ViewDocumentModal from './ViewDocumentModal';
+
 import styles from './index.less';
 
 const { Step } = Steps;
@@ -50,7 +52,8 @@ class ViewLeft extends Component {
     super(props);
     this.state = {
       tabId: 1,
-      current: 0
+      current: 0,
+      viewDocumentModal: false,
     };
   }
 
@@ -97,10 +100,20 @@ class ViewLeft extends Component {
     console.log(values)
   }
 
+  setViewDocumentModal = (value) => {
+    this.setState({
+      viewDocumentModal: value,
+    });
+  };
+
+  onLinkClick = () => {
+    this.setViewDocumentModal(true);
+  };
+
   render() {
     const { TabPane } = Tabs;
     const { data = [], countdata = [], hrManager = {} } = this.props;
-    const {current = 0} = this.state;
+    const {current = 0, viewDocumentModal } = this.state;
     // const checkInprogress = countdata.find(({ _id }) => _id === 'IN-PROGRESS') || {};
     // const checkAccepted = countdata.find(({ _id }) => _id === 'ACCEPTED') || {};
 
@@ -165,7 +178,12 @@ class ViewLeft extends Component {
         </div>
         
         <div className={styles.stepAction}>
-          <div className={styles.stepAction__text}>Learn more about offboarding policy</div>
+          <div 
+            className={styles.stepAction__text}
+            onClick={this.onLinkClick}
+          >
+            Learn more about offboarding policy
+          </div>
           <Button 
             onClick={() => this.setState({current: current + 1})}
             className={styles.stepAction__btn}
@@ -192,6 +210,7 @@ class ViewLeft extends Component {
               </div>
             </TabPane> */}
           </Tabs>
+          <ViewDocumentModal visible={viewDocumentModal} onClose={this.setViewDocumentModal} />
         </div>
       </div>
     );
