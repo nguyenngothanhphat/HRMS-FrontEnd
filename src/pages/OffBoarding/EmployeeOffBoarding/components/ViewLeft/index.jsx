@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Button, Tabs, Steps } from 'antd';
+import { Tabs, Steps } from 'antd';
 import { connect } from 'umi';
 // import icon from '@/assets/offboarding-flow.svg';
 // import TableAssigned from '@/components/TableAssigned';
 import ViewTable from './ViewTable';
 import TabDrafts from './TableEmployee';
-import ViewDocumentModal from './ViewDocumentModal';
 
 import styles from './index.less';
 
@@ -53,7 +52,6 @@ class ViewLeft extends Component {
     this.state = {
       tabId: 1,
       current: 0,
-      viewDocumentModal: false,
     };
   }
 
@@ -100,22 +98,10 @@ class ViewLeft extends Component {
     console.log(values)
   }
 
-  onCancel = () => {
-    this.setState({
-      viewDocumentModal: false,
-    });
-  }
-
-  onLinkClick = () => {
-    this.setState({
-      viewDocumentModal: true,
-    });
-  };
-
   render() {
     const { TabPane } = Tabs;
     const { data = [], countdata = [], hrManager = {} } = this.props;
-    const {current = 0, viewDocumentModal } = this.state;
+    const {current = 0 } = this.state;
     // const checkInprogress = countdata.find(({ _id }) => _id === 'IN-PROGRESS') || {};
     // const checkAccepted = countdata.find(({ _id }) => _id === 'ACCEPTED') || {};
 
@@ -178,21 +164,6 @@ class ViewLeft extends Component {
             </Steps>
           </div>
         </div>
-        
-        <div className={styles.stepAction}>
-          <div 
-            className={styles.stepAction__text}
-            onClick={this.onLinkClick}
-          >
-            Learn more about offboarding policy
-          </div>
-          <Button 
-            onClick={() => this.setState({current: current + 1})}
-            className={styles.stepAction__btn}
-          >
-            Initiate resignation request
-          </Button>
-        </div>
 
         <div>
           <Tabs defaultActiveKey="1" className={styles.tabComponent} onTabClick={this.callback}>
@@ -212,7 +183,6 @@ class ViewLeft extends Component {
               </div>
             </TabPane> */}
           </Tabs>
-          <ViewDocumentModal visible={viewDocumentModal} onClose={this.onCancel} />
         </div>
       </div>
     );

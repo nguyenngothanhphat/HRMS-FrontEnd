@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Steps, Row, Col } from 'antd';
+
+import ViewDocumentModal from '../ViewDocumentModal';
+
 import styles from './index.less';
 
 const { Step } = Steps;
@@ -37,13 +40,14 @@ const steps = [
       step: 8,
       description: 'Termination Complete',
     },
-  ];
+];
 
 class ViewLeftInitial extends Component {
   constructor(props) {
     super(props);
     this.state = {
       current: 0,
+      viewDocumentModal: false,
     };
   }
 
@@ -51,12 +55,23 @@ class ViewLeftInitial extends Component {
     console.log(values)
   }
 
+  onCancel = () => {
+    this.setState({
+      viewDocumentModal: false,
+    });
+  }
+
+  onLinkClick = () => {
+    this.setState({
+      viewDocumentModal: true,
+    });
+  };
+
   render() {
-    const {current = 0 } = this.state;
+    const {current = 0, viewDocumentModal } = this.state;
       return (
         <div className={styles.Container}>
           <Row className={styles.header} justify='space-between'>
-            {/* <Col span={13}> */}
             <Col span={13} className={styles.headerTerminate}> 
               <div className={styles.leftSection}>
                 <div className={styles.leftSection__title}> 
@@ -70,11 +85,8 @@ class ViewLeftInitial extends Component {
               <div className={styles.rightSection}>
                 <div className={styles.rightSection__bg} />
               </div>
-              {/* </> */}
-            
             </Col>
 
-            {/* <Col span={10}> */}
             <Col span={10} className={styles.headerSchedule}>
               <div className={styles.headerSchedule__title}>
                 Did you know?
@@ -87,8 +99,6 @@ class ViewLeftInitial extends Component {
               </div>
               <a href='#' className={styles.links}>Schedule 1-on-1</a>
             </Col>
-
-            {/* </Col> */}
           </Row>
 
           <div className={styles.titleProcess}>
@@ -125,6 +135,7 @@ class ViewLeftInitial extends Component {
               Initiate resignation request
             </Button>
           </div>
+          <ViewDocumentModal visible={viewDocumentModal} onClose={this.onCancel} />
         </div>
       )
     }
