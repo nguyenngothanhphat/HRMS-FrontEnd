@@ -47,7 +47,7 @@ export async function signupAdmin(data) {
 
 export async function activeAdmin(data) {
   return request(
-    '/api/active-user-security-register',
+    '/api/active-user-security-register-tenant',
     {
       method: 'POST',
       data,

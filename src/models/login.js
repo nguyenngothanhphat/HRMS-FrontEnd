@@ -56,16 +56,16 @@ const Model = {
         if (isAdminOrOwner) {
           formatArrRoles.push('admin-csa');
           setAuthority(formatArrRoles);
-          if (listAllCompany.length > 1) {
-            history.replace('/account-setup');
-          }
+          history.replace('/account-setup');
         } else {
           const selectedTenant = manageTenant[0];
           const selectedCompany = selectedTenant.company[0]?._id;
           const { tenant: tenantId = '' } = selectedTenant;
           setTenantId(tenantId);
           setCurrentCompany(selectedCompany);
-          history.replace('/');
+          if (listAllCompany.length > 1) {
+            history.replace('/');
+          }
         }
       } catch (errors) {
         const { data = [] } = errors;
