@@ -33,3 +33,13 @@ export function setAuthority(authority) {
   localStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority)); // auto reload
   reloadAuthorized();
 }
+
+export function setTenantId(tenantId) {
+  localStorage.setItem('tenantId', tenantId);
+  reloadAuthorized();
+}
+
+export function setCurrentCompany(companyId) {
+  localStorage.setItem('currentCompanyId', companyId);
+  reloadAuthorized();
+}

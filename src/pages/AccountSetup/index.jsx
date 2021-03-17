@@ -6,12 +6,19 @@ import { connect, history } from 'umi';
 import ItemCompany from './components/ItemCompany';
 import s from './index.less';
 
-@connect(({ user: { currentUser = {} } = {} }) => ({
+@connect(({ user: { currentUser = {}, currentUser: { manageTenant = [] } = {} } = {} }) => ({
   currentUser,
+  manageTenant,
 }))
 class AccountSetup extends Component {
   componentDidMount() {
-    // fetch list company
+    const { dispatch, currentUser: { email = '' } = {} } = this.props;
+    dispatch({
+      type: 'user/fetchUserMapByEmail',
+      payload: {
+        email,
+      },
+    });
   }
 
   handleLogout = () => {
@@ -23,10 +30,25 @@ class AccountSetup extends Component {
     }
   };
 
+  renderCompanies = () => {
+    const { manageTenant = [] } = this.props;
+
+    const companies = [];
+    manageTenant.forEach((eachTenant) => {
+      const { company = [], tenant = '' } = eachTenant;
+      company.forEach((comp) => {
+        companies.push({ company: comp, tenant });
+      });
+    });
+
+    return companies.map((comp) => {
+      const { company = {}, tenant = '' } = comp;
+      return <ItemCompany company={company} tenantId={tenant} />;
+    });
+  };
+
   render() {
-    const {
-      currentUser: { generalInfo: { avatar = '' } = {}, company = {}, email = '' } = {},
-    } = this.props;
+    const { currentUser: { generalInfo: { avatar = '' } = {}, email = '' } = {} } = this.props;
     return (
       <div className={s.root}>
         <div style={{ width: '629px' }}>
@@ -49,7 +71,7 @@ class AccountSetup extends Component {
               />
             </div>
           </div>
-          <ItemCompany company={company} />
+          {this.renderCompanies()}
           <Button
             className={s.btnAddNew}
             onClick={() => history.push('/account-setup/add-company')}
