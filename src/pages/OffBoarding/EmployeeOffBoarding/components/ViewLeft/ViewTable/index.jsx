@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'umi';
 import TableEmployee from '../TableEmployee';
-import Summary from '../Summary';
+// import Summary from '../Summary';
 
 @connect()
 class ViewTable extends Component {

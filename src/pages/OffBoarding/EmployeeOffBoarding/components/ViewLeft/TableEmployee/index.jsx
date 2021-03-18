@@ -29,7 +29,12 @@ class TableEmployee extends Component {
   };
 
   render() {
-    const { data = [], textEmpty = 'No resignation request is submitted', loading, tabId } = this.props;
+    const {
+      data = [],
+      textEmpty = 'No resignation request is submitted',
+      loading,
+      tabId,
+    } = this.props;
     const { pageNavigation } = this.state;
     const rowSize = 10;
     const pagination = {
@@ -60,10 +65,10 @@ class TableEmployee extends Component {
       },
       {
         title: <span className={t.title}>Requested on</span>,
-        dataIndex: 'createdAt',
+        dataIndex: 'requestDate',
         width: 150,
-        render: (createdAt) => {
-          return <p>{moment(createdAt).format('YYYY/MM/DD')}</p>;
+        render: (requestDate) => {
+          return <p>{moment(requestDate).format('DD.MM.YYYY')}</p>;
         },
       },
       {
@@ -95,7 +100,7 @@ class TableEmployee extends Component {
         dataIndex: 'lastWorkingDate',
         width: 100,
         render: (lastWorkingDate) => {
-          return <p>{lastWorkingDate && moment(lastWorkingDate).format('YYYY/MM/DD')} </p>;
+          return <p>{lastWorkingDate && moment(lastWorkingDate).format('DD.MM.YYYY')} </p>;
         },
       },
       // {
@@ -117,7 +122,9 @@ class TableEmployee extends Component {
         render: (_id) => (
           <div className={t.rowAction}>
             <span className={t.rowAction__action}>Withdraw</span>
-            <span className={t.rowAction__view} onClick={() => this.push(_id)}>View</span>
+            <span className={t.rowAction__view} onClick={() => this.push(_id)}>
+              View
+            </span>
           </div>
         ),
       },
@@ -126,14 +133,14 @@ class TableEmployee extends Component {
     const columnsDraft = [
       {
         title: <span className={t.title}>Last Edited</span>,
-        dataIndex: 'createdAt',
+        dataIndex: 'requestDate',
         // width: 150,
-        render: (createdAt) => {
+        render: (requestDate) => {
           // return <p>{moment(createdAt).format('YYYY/MM/DD')}</p>;
-          return  <div className={t.lastEdited}>12-01-2021</div>;
+          return <div className={t.lastEdited}>{moment(requestDate).format('DD-MM-YYYY')}</div>;
         },
       },
-       {
+      {
         title: <span className={t.title}>Reason</span>,
         // width: 150,
         dataIndex: 'reasonForLeaving',
@@ -146,11 +153,15 @@ class TableEmployee extends Component {
         render: (_id) => (
           <div className={t.rowAction}>
             <span className={t.rowAction__action}>Delete</span>
-            <span className={t.rowAction__view} onClick={() => this.push(_id)}>View</span>
+            <span className={t.rowAction__view} onClick={() => this.push(_id)}>
+              View
+            </span>
           </div>
         ),
       },
     ];
+
+    console.log(data);
 
     return (
       <div className={t.employeeTable}>

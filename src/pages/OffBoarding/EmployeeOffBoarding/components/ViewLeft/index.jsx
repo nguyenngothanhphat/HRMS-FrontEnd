@@ -95,29 +95,28 @@ class ViewLeft extends Component {
   };
 
   onChangeSteps = (values) => {
-    console.log(values)
-  }
+    console.log(values);
+  };
 
   operations = () => (
     <div className={styles.status}>
       <div className={styles.status__text}>Status: </div>
       <div className={styles.action}>
-        <div className={styles.action__dot} /> 
+        <div className={styles.action__dot} />
         <div className={styles.action__text}>In Progress</div>
       </div>
     </div>
   );
 
-
   render() {
     const { TabPane } = Tabs;
     const { data = [], countdata = [], hrManager = {} } = this.props;
-    const {current = 0, tabId } = this.state;
+    const { current = 0, tabId } = this.state;
     // const checkInprogress = countdata.find(({ _id }) => _id === 'IN-PROGRESS') || {};
     // const checkAccepted = countdata.find(({ _id }) => _id === 'ACCEPTED') || {};
 
     // const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
-  
+
     return (
       <div className={styles.Container}>
         {/* <div className={styles.title_Box}>
@@ -142,15 +141,16 @@ class ViewLeft extends Component {
           </>
         )} */}
 
-        <div className={styles.headerTerminate}> 
+        <div className={styles.headerTerminate}>
           <div className={styles.leftSection}>
-            <div className={styles.leftSection__title}> 
-              Super six years with us. Thank you.
+            <div className={styles.leftSection__title}>Super six years with us. Thank you.</div>
+            <div className={styles.leftSection__content}>
+              We are indebted by your contribution to our company and clients all this while. This
+              is not the end we like to see.
             </div>
-            <div className={styles.leftSection__content}> 
-              We are indebted by your contribution to our company and clients all this while. This is not the end we like to see.
-            </div>
-            <a href='#' className={styles.leftSection__linkRequest}>Request for feedback?</a>
+            <a href="#" className={styles.leftSection__linkRequest}>
+              Request for feedback?
+            </a>
           </div>
           <div className={styles.rightSection}>
             <div className={styles.rightSection__bg} />
@@ -165,12 +165,8 @@ class ViewLeft extends Component {
             Our offboarding process at a glance
           </div>
           <div className={styles.offboardingProcess__process}>
-            <Steps 
-              current={current} 
-              onChange={this.onChangeSteps} 
-              labelPlacement='vertical'
-            >
-              {steps.map(item => (
+            <Steps current={current} onChange={this.onChangeSteps} labelPlacement="vertical">
+              {steps.map((item) => (
                 <Step key={item.step} description={item.description} />
               ))}
             </Steps>
@@ -178,13 +174,18 @@ class ViewLeft extends Component {
         </div>
 
         <div>
-          <Tabs defaultActiveKey="1" className={styles.tabComponent} onTabClick={this.callback} tabBarExtraContent={tabId === '1' ? this.operations() : null}>
+          <Tabs
+            defaultActiveKey="1"
+            className={styles.tabComponent}
+            onTabClick={this.callback}
+            tabBarExtraContent={tabId === '1' ? this.operations() : null}
+          >
             <TabPane tab="Your Request" key="1">
               <div className={styles.marrinTop}>
                 <ViewTable data={data} countTable={countdata} hrManager={hrManager} tabId={tabId} />
               </div>
             </TabPane>
-            <TabPane tab="Drafts" key="2">
+            <TabPane tab="Saved Draft" key="2">
               <div className={styles.marrinTop}>
                 <TabDrafts data={data} textEmpty="No draft saved" tabId={tabId} />
               </div>
