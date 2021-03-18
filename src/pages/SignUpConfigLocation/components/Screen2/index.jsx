@@ -36,7 +36,8 @@ const Screen2 = (props) => {
             ...locations,
             {
               name: '',
-              address: '',
+              addressLine1: '',
+              addressLine2: '',
               country: '',
               state: '',
               zipCode: '',
@@ -87,13 +88,15 @@ const Screen2 = (props) => {
         name="headquarter"
         initialValues={{
           remember: true,
-          address: headQuarterAddress.address,
+          addressLine1: headQuarterAddress.addressLine1,
+          addressLine2: headQuarterAddress.addressLine2,
           country: headQuarterAddress.country,
           state: headQuarterAddress.state,
           zipCode: headQuarterAddress.zipCode,
           locations: [
             {
-              address: '',
+              addressLine1: '',
+              addressLine2: '',
               country: '',
               state: '',
               zipCode: '',
@@ -118,8 +121,22 @@ const Screen2 = (props) => {
           </h2>
 
           <Form.Item
-            label={useIntl().formatMessage({ id: 'page.signUp.step2.address' })}
-            name="address"
+            label="Address Line 1"
+            name="addressLine1"
+            rules={[
+              {
+                required: true,
+                message: useIntl().formatMessage({ id: 'page.signUp.step2.addressError' }),
+              },
+            ]}
+            className={styles.vertical}
+          >
+            <Input disabled />
+          </Form.Item>
+
+          <Form.Item
+            label="Address Line 2"
+            name="addressLine2"
             rules={[
               {
                 required: true,

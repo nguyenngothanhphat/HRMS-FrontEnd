@@ -12,8 +12,30 @@ export default class ItemCompany extends PureComponent {
     history.push(`/account-setup/company-profile/${id}`);
   };
 
+  handleGoToDashboard = (tenantId, id) => {
+    setTenantId(tenantId);
+    setCurrentCompany(id);
+    history.push(`/dashboard`);
+  };
+
+  renderAddress = (address) => {
+    const { addressLine1 = '', addressLine2 = '', state = '', country = '' } = address;
+    let result = '';
+    if (addressLine1) result += `${addressLine1}, `;
+    if (addressLine2) result += `${addressLine2}, `;
+    if (state) result += `${state}, `;
+    if (country) result += `${country}`;
+    return result;
+  };
+
   render() {
-    const { company: { _id: id = '', tenant = '', name = '', logoUrl = '' } = {} } = this.props;
+    const {
+      isOwnerAdmin = false,
+      company: { _id: id = '', tenant = '', name = '', logoUrl = '', headQuarterAddress = {} } = {},
+    } = this.props;
+
+    const address = this.renderAddress(headQuarterAddress);
+
     return (
       <div className={s.root}>
         <div className={s.logoCompany}>
@@ -27,12 +49,18 @@ export default class ItemCompany extends PureComponent {
 
         <div className={s.viewInfo}>
           <p className={s.viewInfo__name}>{name}</p>
-          {/* <p className={s.viewInfo__location}>{headQuarterAddress?.country?.name}</p> */}
+          <p className={s.viewInfo__location}>{address}</p>
         </div>
         <div className={s.viewAction}>
-          <Button className={s.btnOutline} onClick={() => this.handleGetStarted(tenant, id)}>
-            Get Started
-          </Button>
+          {isOwnerAdmin ? (
+            <Button className={s.btnOutline} onClick={() => this.handleGetStarted(tenant, id)}>
+              Get Started
+            </Button>
+          ) : (
+            <Button className={s.btnOutline} onClick={() => this.handleGoToDashboard(tenant, id)}>
+              Go to dashboard
+            </Button>
+          )}
         </div>
       </div>
     );

@@ -39,9 +39,8 @@ const Model = {
           return;
         }
 
-        // const {listCompany = []} = response?.data;
-        formatArrRoles.push('admin-csa');
-        setAuthority(formatArrRoles);
+        // formatArrRoles.push('admin-csa');
+        // setAuthority(formatArrRoles);
 
         history.replace('/account-setup');
 

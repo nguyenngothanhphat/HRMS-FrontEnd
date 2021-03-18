@@ -29,14 +29,24 @@ class AccountSetup extends Component {
 
   renderCompanies = () => {
     const { companiesOfUser = [] } = this.props;
+    const isOwnerAdmin = this.checkIsOwnerAdmin();
 
     return companiesOfUser.map((comp) => {
-      return <ItemCompany company={comp} />;
+      return <ItemCompany company={comp} isOwnerAdmin={isOwnerAdmin} />;
     });
   };
 
+  checkIsOwnerAdmin = () => {
+    const { currentUser: { signInRole = [] } = {} } = this.props;
+    const formatRole = signInRole.map((role) => role.toLowerCase());
+    if (formatRole.includes('admin') || formatRole.includes('owner')) return true;
+    return false;
+  };
+
   render() {
-    const { currentUser: { generalInfo: { avatar = '' } = {}, email = '' } = {} } = this.props;
+    const { currentUser: { avatar = '', email = '' } = {} } = this.props;
+    const isOwnerAdmin = this.checkIsOwnerAdmin();
+
     return (
       <div className={s.root}>
         <div style={{ width: '629px' }}>
@@ -48,7 +58,9 @@ class AccountSetup extends Component {
               <p>
                 You are logged in as <span className={s.blockUserLogin__info__email}>{email}</span>
               </p>
-              <p style={{ marginTop: '8px' }}>You have administrative privileges.</p>
+              {isOwnerAdmin && (
+                <p style={{ marginTop: '8px' }}>You have administrative privileges.</p>
+              )}
             </div>
             <div className={s.blockUserLogin__action}>
               <SettingOutlined className={s.blockUserLogin__action__icon} />
@@ -60,12 +72,14 @@ class AccountSetup extends Component {
             </div>
           </div>
           {this.renderCompanies()}
-          <Button
-            className={s.btnAddNew}
-            onClick={() => history.push('/account-setup/add-company')}
-          >
-            Add new company
-          </Button>
+          {isOwnerAdmin && (
+            <Button
+              className={s.btnAddNew}
+              onClick={() => history.push('/account-setup/add-company')}
+            >
+              Add new company
+            </Button>
+          )}
         </div>
       </div>
     );

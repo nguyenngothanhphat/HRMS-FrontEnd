@@ -29,7 +29,8 @@ const LocationForm = (props) => {
     const formValues = form.getFieldsValue();
     const {
       name = '',
-      address = '',
+      addressLine1 = '',
+      addressLine2 = '',
       zipCode = '',
       country: countryValue = '',
       state = '',
@@ -37,7 +38,8 @@ const LocationForm = (props) => {
 
     const data = {
       name,
-      address,
+      addressLine1,
+      addressLine2,
       country: countryValue,
       state,
       zipCode,
@@ -125,8 +127,22 @@ const LocationForm = (props) => {
         </Form.Item>
 
         <Form.Item
-          name="address"
-          label={useIntl().formatMessage({ id: 'page.signUp.step2.address' })}
+          name="addressLine1"
+          label="Address Line 1"
+          className={styles.vertical}
+          rules={[
+            {
+              required: true,
+              message: useIntl().formatMessage({ id: 'page.signUp.step2.addressError' }),
+            },
+          ]}
+        >
+          <Input onChange={() => handleOnChange()} />
+        </Form.Item>
+
+        <Form.Item
+          name="addressLine2"
+          label="Address Line 2"
           className={styles.vertical}
           rules={[
             {
