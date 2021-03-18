@@ -1,6 +1,6 @@
 import { history } from 'umi';
 import { accountLogin, signInThirdParty } from '@/services/login';
-import { setAuthority, setTenantId, setCurrentCompany } from '@/utils/authority';
+import { setAuthority } from '@/utils/authority';
 import { setToken } from '@/utils/token';
 import { dialog } from '@/utils/utils';
 
@@ -39,34 +39,23 @@ const Model = {
           return;
         }
 
-        let isAdminOrOwner = false;
-        const manageTenant = response?.data?.user?.manageTenant || [];
-        const listAllCompany = [];
-        manageTenant.forEach((tenant) => {
-          const { company = [] } = tenant;
-          company.forEach((comp) => {
-            listAllCompany.push(comp);
-            const { role = [] } = comp;
-            if (role.includes('ADMIN-CSA') || role.includes('admin-csa')) {
-              isAdminOrOwner = true;
-            }
-          });
-        });
+        // const {listCompany = []} = response?.data;
+        formatArrRoles.push('admin-csa');
+        setAuthority(formatArrRoles);
 
-        if (isAdminOrOwner) {
-          formatArrRoles.push('admin-csa');
-          setAuthority(formatArrRoles);
-          history.replace('/account-setup');
-        } else {
-          const selectedTenant = manageTenant[0];
-          const selectedCompany = selectedTenant.company[0]?._id;
-          const { tenant: tenantId = '' } = selectedTenant;
-          setTenantId(tenantId);
-          setCurrentCompany(selectedCompany);
-          if (listAllCompany.length > 1) {
-            history.replace('/');
-          }
-        }
+        history.replace('/account-setup');
+
+        // if (isAdminOrOwner) {
+        // } else {
+        //   const selectedTenant = manageTenant[0];
+        //   const selectedCompany = selectedTenant.company[0]?._id;
+        //   const { tenant: tenantId = '' } = selectedTenant;
+        //   setTenantId(tenantId);
+        //   setCurrentCompany(selectedCompany);
+        //   if (listAllCompany.length > 1) {
+        //     history.replace('/');
+        //   }
+        // }
       } catch (errors) {
         const { data = [] } = errors;
         if (data.length > 0) {

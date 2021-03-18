@@ -1,4 +1,4 @@
-import { queryCurrent, query as queryUsers } from '@/services/user';
+import { queryCurrent, query as queryUsers, fetchCompanyOfUser } from '@/services/user';
 import { checkPermissions } from '@/utils/permissions';
 
 const UserModel = {
@@ -6,6 +6,7 @@ const UserModel = {
   state: {
     currentUser: {},
     permissions: {},
+    companiesOfUser: [],
   },
   effects: {
     *fetch(_, { call, put }) {
@@ -40,6 +41,22 @@ const UserModel = {
           type: 'save',
           payload: {
             permissions: checkPermissions(response.data.roles),
+          },
+        });
+      } catch (errors) {
+        // error
+      }
+    },
+
+    *fetchCompanyOfUser(_, { call, put }) {
+      try {
+        const response = yield call(fetchCompanyOfUser);
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            companiesOfUser: data?.listCompany,
           },
         });
       } catch (errors) {

@@ -55,3 +55,10 @@ export async function activeAdmin(data) {
     true,
   );
 }
+
+export async function fetchCompanyOfUser(data) {
+  return request('/api/companytenant/list-of-user', {
+    method: 'POST',
+    data,
+  });
+}

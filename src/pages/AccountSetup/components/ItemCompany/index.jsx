@@ -13,10 +13,7 @@ export default class ItemCompany extends PureComponent {
   };
 
   render() {
-    const {
-      company: { logoUrl = '', name = '', headQuarterAddress = {}, _id: id = '' } = {},
-      tenantId = '',
-    } = this.props;
+    const { company: { _id: id = '', tenant = '', name = '', logoUrl = '' } = {} } = this.props;
     return (
       <div className={s.root}>
         <div className={s.logoCompany}>
@@ -30,10 +27,10 @@ export default class ItemCompany extends PureComponent {
 
         <div className={s.viewInfo}>
           <p className={s.viewInfo__name}>{name}</p>
-          <p className={s.viewInfo__location}>{headQuarterAddress?.country?.name}</p>
+          {/* <p className={s.viewInfo__location}>{headQuarterAddress?.country?.name}</p> */}
         </div>
         <div className={s.viewAction}>
-          <Button className={s.btnOutline} onClick={() => this.handleGetStarted(tenantId, id)}>
+          <Button className={s.btnOutline} onClick={() => this.handleGetStarted(tenant, id)}>
             Get Started
           </Button>
         </div>

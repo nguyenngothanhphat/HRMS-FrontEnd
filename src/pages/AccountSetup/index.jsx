@@ -6,18 +6,15 @@ import { connect, history } from 'umi';
 import ItemCompany from './components/ItemCompany';
 import s from './index.less';
 
-@connect(({ user: { currentUser = {}, currentUser: { manageTenant = [] } = {} } = {} }) => ({
+@connect(({ user: { currentUser = {}, companiesOfUser = [] } = {} }) => ({
   currentUser,
-  manageTenant,
+  companiesOfUser,
 }))
 class AccountSetup extends Component {
   componentDidMount() {
-    const { dispatch, currentUser: { email = '' } = {} } = this.props;
+    const { dispatch } = this.props;
     dispatch({
-      type: 'user/fetchUserMapByEmail',
-      payload: {
-        email,
-      },
+      type: 'user/fetchCompanyOfUser',
     });
   }
 
@@ -31,19 +28,10 @@ class AccountSetup extends Component {
   };
 
   renderCompanies = () => {
-    const { manageTenant = [] } = this.props;
+    const { companiesOfUser = [] } = this.props;
 
-    const companies = [];
-    manageTenant.forEach((eachTenant) => {
-      const { company = [], tenant = '' } = eachTenant;
-      company.forEach((comp) => {
-        companies.push({ company: comp, tenant });
-      });
-    });
-
-    return companies.map((comp) => {
-      const { company = {}, tenant = '' } = comp;
-      return <ItemCompany company={company} tenantId={tenant} />;
+    return companiesOfUser.map((comp) => {
+      return <ItemCompany company={comp} />;
     });
   };
 
