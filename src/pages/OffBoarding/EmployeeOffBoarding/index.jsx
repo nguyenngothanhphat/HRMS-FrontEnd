@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Tabs, Button } from 'antd';
+import { Row, Col, Tabs, Button, Spin } from 'antd';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import ViewLeft from './components/ViewLeft';
@@ -33,7 +33,7 @@ const { TabPane } = Tabs;
     locationID,
     companyID,
     listOffboarding,
-    loadingFetchList: loading.effects['offboarding/fetchList'],
+    // loadingFetchList: loading.effects['offboarding/fetchList'],
     loadingAcceptedRequest: loading.effects['offboarding/fetchAcceptedRequest'],
     hrManager,
   }),
@@ -43,7 +43,9 @@ class EmployeeOffBoading extends Component {
     super(props);
     this.state = {
       relievingInQueue: false,
-      dataDraft: []
+      dataDraft: [],
+      dataRequest: [],
+      loadingFetchList: true,
     };
   }
 
@@ -57,17 +59,29 @@ class EmployeeOffBoading extends Component {
       payload: {
         status: 'IN-PROGRESS',
       },
+    }).then((data) => {
+      if (data) {
+        this.setState({
+          dataRequest: data,
+          loadingFetchList: false,
+        });
+      } else {
+        this.setState({ loadingFetchList: true });
+      }
     });
     dispatch({
       type: 'offboarding/fetchList',
       payload: {
         status: 'DRAFT',
       },
-    }).then(data => {
-      if(data){
+    }).then((data) => {
+      if (data) {
         this.setState({
-          dataDraft: data
-        })
+          dataDraft: data,
+          loadingFetchList: false,
+        });
+      } else {
+        this.setState({ loadingFetchList: true });
       }
     });
     dispatch({
@@ -116,7 +130,7 @@ class EmployeeOffBoading extends Component {
 
   render() {
     const { listOffboarding = [], totalList = [], hrManager = {} } = this.props;
-    const { relievingInQueue, dataDraft = [] } = this.state;
+    const { relievingInQueue, dataDraft = [], dataRequest = [], loadingFetchList } = this.state;
 
     return (
       <PageContainer>
@@ -128,17 +142,21 @@ class EmployeeOffBoading extends Component {
                   <div className={styles.root}>
                     <Row className={styles.content} gutter={[20, 20]}>
                       <Col span={18}>
-                        {
-                          dataDraft.length > 0 || listOffboarding.length > 0
-                          ? (
-                            <ViewLeft
-                              data={listOffboarding}
-                              countdata={totalList}
-                              hrManager={hrManager}
-                            />
-                          )
-                          : (<ViewLeftInitial />)
-                        }
+                        {loadingFetchList ? (
+                          <Spin />
+                        ) : (
+                          <>
+                            {dataDraft.length > 0 || dataRequest.length > 0 ? (
+                              <ViewLeft
+                                data={listOffboarding}
+                                countdata={totalList}
+                                hrManager={hrManager}
+                              />
+                            ) : (
+                              <ViewLeftInitial />
+                            )}
+                          </>
+                        )}
                       </Col>
                       <Col span={6}>
                         {/* {listOffboarding.length > 0 ? <RightDataTable /> : <ViewRight />} */}
