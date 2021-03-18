@@ -65,8 +65,6 @@ class EmployeeOffBoading extends Component {
           dataRequest: data,
           loadingFetchList: false,
         });
-      } else {
-        this.setState({ loadingFetchList: true });
       }
     });
     dispatch({
@@ -80,8 +78,6 @@ class EmployeeOffBoading extends Component {
           dataDraft: data,
           loadingFetchList: false,
         });
-      } else {
-        this.setState({ loadingFetchList: true });
       }
     });
     dispatch({
@@ -143,7 +139,7 @@ class EmployeeOffBoading extends Component {
                     <Row className={styles.content} gutter={[20, 20]}>
                       <Col span={18}>
                         {loadingFetchList ? (
-                          <Spin />
+                          <Spin className={styles.spinLoading} />
                         ) : (
                           <>
                             {dataDraft.length > 0 || dataRequest.length > 0 ? (
