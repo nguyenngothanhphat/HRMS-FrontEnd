@@ -25,6 +25,27 @@
     }
   }
 
+  .headerPage{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 24px 8px;
+
+    &__title{
+      font-style: normal;
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 19px;
+      color: #161C29;
+    }
+
+    &__status{
+      padding-right: 24px;
+    }
+
+    // margin-bottom: 32px;
+  }
+
   .content {
     padding: 24px 41px 0 24px;
 
@@ -37,8 +58,10 @@
       font-style: normal;
       font-weight: 500;
       font-size: 14px;
-      line-height: 16px;
       color: #707177;
+
+      display: flex;
+      align-items: center;
 
       &__text{
         color: #2C6DF9;
@@ -49,11 +72,15 @@
       }
       &__action{
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: flex-end;
 
         img{
           cursor: pointer;
+        }
+
+        &_close{
+          margin-left: 24px;
         }
       }
     }

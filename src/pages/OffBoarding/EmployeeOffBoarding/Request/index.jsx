@@ -97,6 +97,7 @@ class ResignationRequest extends Component {
       } = {},
       status = '',
       employee: { generalInfo: { firstName: nameEmployee = '', employeeId = '' } = {} } = {},
+      ticketID = '',
     } = myRequest;
     if (loadingGetById) {
       return (
@@ -112,9 +113,21 @@ class ResignationRequest extends Component {
           <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Terminate work relations with the company</p>
-              <StatusRequest status={status} />
             </div>
           </Affix>
+          <Row>
+            <Col span={17}>
+              <div className={styles.headerPage}>
+                <div className={styles.headerPage__title}>
+                  [Ticket id: {ticketID} ] Terminate work relations with the company
+                </div>
+
+                <div className={styles.headerPage__status}>
+                  <StatusRequest status={status} />
+                </div>
+              </div>
+            </Col>
+          </Row>
           <Row className={styles.content} gutter={[24, 12]}>
             <Col span={17}>
               <Reason />
@@ -152,8 +165,8 @@ class ResignationRequest extends Component {
                 </Col>
                 <Col span={2}>
                   <div className={styles.setPlan__action}>
-                    <img src={icon1} alt="meeting" />
-                    <img src={icon2} alt="meeting" />
+                    <img src={icon1} alt="meeting" className={styles.setPlan__action_share} />
+                    <img src={icon2} alt="meeting" className={styles.setPlan__action_close} />
                   </div>
                 </Col>
               </Row>
