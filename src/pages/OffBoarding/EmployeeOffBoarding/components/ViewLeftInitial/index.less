@@ -212,6 +212,15 @@
   
       font-style: normal;
       font-weight: normal;
+
+      :global{
+        .ant-btn{
+
+          &:hover{
+            border-color: transparent;
+          }
+        }
+      }
   
       &__text{
         font-weight: 500;
@@ -228,13 +237,15 @@
         background: #FFA100;
         border-radius: 25px;
         padding: 0 35px;
-  
-        span{
-          font-weight: 500;
-          font-size: 14px;
-          line-height: 16px;
-          color: #FFFFFF;
-        }
+
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 16px;
+        color: #FFFFFF;
+
+        // &:hover{
+        //   border: none;
+        // }
       }
     }
   }
