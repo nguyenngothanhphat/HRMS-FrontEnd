@@ -5,6 +5,7 @@ import {
   updateCompany,
   getLocationsList,
   addLocation,
+  addLocationTenant,
   updateLocation,
   upsertLocationsList,
   removeLocation,
@@ -123,6 +124,26 @@ const companiesManagement = {
       let resp = '';
       try {
         const response = yield call(addLocation, payload);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchLocationsList',
+          payload: { company: payload.company },
+        });
+        resp = response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return resp;
+    },
+
+    *addLocationTenant({ payload = {} }, { call, put }) {
+      let resp = '';
+      try {
+        const response = yield call(addLocationTenant, payload);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({

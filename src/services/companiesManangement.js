@@ -55,3 +55,10 @@ export async function removeLocation(payload) {
     data: payload,
   });
 }
+
+export async function addLocationTenant(payload) {
+  return request('/api/companytenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
