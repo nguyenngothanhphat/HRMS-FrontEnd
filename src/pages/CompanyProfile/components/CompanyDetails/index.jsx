@@ -100,6 +100,10 @@ class CompanyDetails extends Component {
       website,
       zipHeadquarter,
       zipLegal,
+      ownerEmail,
+      hrName,
+      hrEmail,
+      hrPhone,
     } = values;
     const payload = {
       id: companyId,
@@ -118,6 +122,12 @@ class CompanyDetails extends Component {
         country: countryLegal,
         state: stateLegal,
         zipCode: zipLegal,
+      },
+      contactInformation: {
+        contactEmail: ownerEmail,
+        hrContactName: hrName,
+        hrContactEmail: hrEmail,
+        hrContactPhone: hrPhone,
       },
     };
     if (companyId) {
@@ -155,6 +165,29 @@ class CompanyDetails extends Component {
       { label: 'Employer Identification Number (EIN)', name: 'ein' },
       { label: 'Compay Website', name: 'website' },
     ];
+
+    const fieldContactInformation = [
+      {
+        label: 'Primary contact',
+        name: 'ownerEmail',
+        placeholder: "Company owner's email",
+      },
+      {
+        label: 'HR contact',
+        name: 'hrName',
+        placeholder: "HR Manager's name",
+      },
+      {
+        label: '',
+        name: 'hrEmail',
+        placeholder: "HR Manager's email",
+      },
+      {
+        label: '',
+        name: 'hrPhone',
+        placeholder: "HR Manager's phone",
+      },
+    ];
     const listStateHead = this.findListState(countryHeadquarter) || [];
     const listStateLegal = this.findListState(countryLegal) || [];
     const {
@@ -174,6 +207,7 @@ class CompanyDetails extends Component {
         state: stateLegal,
         zipCode: zipLegal,
       } = {},
+      contactInformation: { ownerEmail, hrEmail, hrName, hrPhone },
     } = companyDetails;
     return (
       <Form
@@ -194,6 +228,10 @@ class CompanyDetails extends Component {
           countryLegal: countryLegalProps,
           stateLegal,
           zipLegal,
+          ownerEmail,
+          hrName,
+          hrEmail,
+          hrPhone,
         }}
       >
         <div className={s.blockContent}>
@@ -446,6 +484,31 @@ class CompanyDetails extends Component {
                 </Form.Item>
               </div>
             </div>
+          </div>
+        </div>
+        <div className={s.blockContent} style={{ marginTop: '24px' }}>
+          <div className={s.content__viewTop}>
+            <p className={s.title}>Contact information</p>
+          </div>
+          <div className={s.content__viewBottom}>
+            {fieldContactInformation.map(
+              ({ label, name: nameField, required = false, message, placeholder }) => (
+                <div key={nameField} className={s.content__viewBottom__row}>
+                  <p className={s.content__viewBottom__row__textLabel}>{label}</p>
+                  <Form.Item
+                    name={nameField}
+                    rules={[
+                      {
+                        required,
+                        message,
+                      },
+                    ]}
+                  >
+                    <Input placeholder={placeholder} />
+                  </Form.Item>
+                </div>
+              ),
+            )}
           </div>
         </div>
         <div className={s.viewBtn}>

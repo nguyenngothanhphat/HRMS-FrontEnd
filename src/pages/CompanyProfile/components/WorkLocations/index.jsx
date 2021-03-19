@@ -2,7 +2,7 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
-import { Form, Divider, Button, Skeleton } from 'antd';
+import { Form, Divider, Button, Skeleton, Input } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { connect } from 'umi';
@@ -127,6 +127,17 @@ class WorkLocations extends PureComponent {
             </p>
           </div>
           <div className={s.content__viewBottom}>
+            <FormWorkLocation
+              isHidden
+              name="Headquarter"
+              formRef={this.formRef}
+              listCountry={listCountry}
+              listLocation={listLocation}
+            />
+          </div>
+        </div>
+        <div className={s.root} style={{ marginTop: '24px' }}>
+          <div className={s.content__viewBottom}>
             <Form.List name="workLocations">
               {(fields, { add, remove }) => (
                 <>
@@ -134,6 +145,8 @@ class WorkLocations extends PureComponent {
                     <FormWorkLocation
                       field={field}
                       key={field.name}
+                      isHidden={false}
+                      name="New work location"
                       formRef={this.formRef}
                       listCountry={listCountry}
                       listLocation={listLocation}

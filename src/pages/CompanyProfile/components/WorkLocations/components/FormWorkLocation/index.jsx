@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import { Form, Input, Select, Divider, Modal } from 'antd';
 import { ExclamationCircleOutlined, DeleteOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
+import { bool } from 'prop-types';
 import s from './index.less';
 
 const { Option } = Select;
@@ -73,22 +74,31 @@ class FormWorkLocation extends Component {
 
   render() {
     const { country = '' } = this.state;
-    const { listCountry = [], listLocation = [], field = {} } = this.props;
+    const {
+      listCountry = [],
+      listLocation = [],
+      isHidden = bool,
+      field = {},
+      name = '',
+    } = this.props;
     const listState = this.findListState(country) || [];
     const itemLocation = listLocation[field.name] || {};
     return (
       <div className={s.content} style={field.name > 0 ? { marginTop: '24px' } : {}}>
         <div className={s.content__viewBottom}>
           <div className={s.content__viewBottom__viewTitle}>
-            <p className={s.title}>{itemLocation?.name || 'New work location'}</p>
-            <div className={s.action} onClick={this.handleRemove}>
+            <p className={s.title}>{itemLocation?.name || name}</p>
+            <div
+              className={isHidden ? `${s.action} ${s.hide}` : `${s.action}`}
+              onClick={this.handleRemove}
+            >
               <DeleteOutlined className={s.action__icon} />
               <span>Delete</span>
             </div>
           </div>
 
           <div className={s.content__viewBottom__row}>
-            <p className={s.content__viewBottom__row__textLabel}>Name</p>
+            <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
             <Form.Item
               {...field}
               label={false}
@@ -116,7 +126,7 @@ class FormWorkLocation extends Component {
             </Form.Item>
           </div>
           <div className={s.content__viewBottom__row}>
-            <p className={s.content__viewBottom__row__textLabel}>Address</p>
+            <p className={s.content__viewBottom__row__textLabel}>Address Line 2</p>
             <Form.Item
               {...field}
               label={false}
