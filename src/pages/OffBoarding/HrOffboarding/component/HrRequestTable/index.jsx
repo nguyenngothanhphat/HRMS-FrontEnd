@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col, Tabs, Row } from 'antd';
+import { Col, Tabs, Row, Button } from 'antd';
 // import { PageContainer } from '@/layouts/layout/src';
 // import Icon from '@ant-design/icons';
 import { Link, connect } from 'umi';
@@ -71,22 +71,34 @@ class HRrequestTable extends Component {
       locationID = '',
     } = this.props;
 
-    const resignationRequest = (
-      <div style={{ padding: '17px' }}>
-        <img src={addIcon} alt="" style={{ marginRight: '5px' }} />
-        <Link to="offboarding/resignation-request">
-          <span className={styles.buttonRequest}>Initiate Resignation Request</span>
-        </Link>
-      </div>
-    );
+    // const resignationRequest = (
+    //   <div style={{ padding: '17px' }}>
+    //     <img src={addIcon} alt="" style={{ marginRight: '5px' }} />
+    //     <Link to="offboarding/resignation-request">
+    //       <span className={styles.buttonRequest}>Initiate Resignation Request</span>
+    //     </Link>
+    //   </div>
+    // );
 
     return (
       <Row className={styles.hrContent} gutter={[40, 0]}>
         <Col span={24}>
+          <div className={styles.header}>
+            <div className={styles.header__left}>Team Requests</div>
+            <div className={styles.header__right}>
+              <Button className={styles.buttonRequest}>
+                <Link to="offboarding/resignation-request">
+                  <span className={styles.buttonRequest__text}>Initiate resignation request</span>
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </Col>
+        <Col span={24}>
           <Tabs
             defaultActiveKey="1"
             className={styles.tabComponent}
-            tabBarExtraContent={resignationRequest}
+            // tabBarExtraContent={resignationRequest}
           >
             <TabPane tab="Team Requests" key="1">
               <div className={styles.tableTab}>

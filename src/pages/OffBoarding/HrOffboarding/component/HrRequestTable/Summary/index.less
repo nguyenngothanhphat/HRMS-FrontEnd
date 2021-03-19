@@ -1,7 +1,11 @@
 .tabTable {
   :global {
     .ant-tabs-tab-btn {
-      font-size: 14px;
+      font-weight: 500 !important;
+      opacity: 0.5 !important;
+    }
+    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+      opacity: 1 !important;
     }
     .ant-tabs-ink-bar {
       display: none;
@@ -10,10 +14,10 @@
       padding: 0 !important;
     }
     .ant-tabs-nav {
+      height: 35px !important;
+      margin: 10px 0;
       background-color: #568afa12;
       border-radius: 4px;
-      margin: 10px 0;
-      height: 35px !important;
     }
     .ant-tabs-tab,
     .ant-tabs-tab-active {
