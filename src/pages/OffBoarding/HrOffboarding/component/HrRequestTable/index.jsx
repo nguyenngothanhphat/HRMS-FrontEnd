@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Col, Tabs, Row, Button } from 'antd';
+import { Col, Tabs, Row, Button, Input } from 'antd';
+import { SearchOutlined, CaretDownOutlined, CloseOutlined } from '@ant-design/icons';
 // import { PageContainer } from '@/layouts/layout/src';
 // import Icon from '@ant-design/icons';
 import { Link, connect } from 'umi';
-import addIcon from '@/assets/addTicket.svg';
+import filterIcon from '@/assets/offboarding-filter.svg';
 import TeamRequest from './TeamRequest';
 import MyRequestContent from '../../../components/TabMyRequest';
 import styles from './index.less';
@@ -36,7 +37,9 @@ import styles from './index.less';
 class HRrequestTable extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      q: '',
+    };
   }
 
   componentDidMount() {
@@ -60,6 +63,17 @@ class HRrequestTable extends Component {
     });
   }
 
+  onPressEnter = ({ target: { value } }) => {
+    console.log('enter value: ', value);
+  };
+
+  onChangeInput = ({ target: { value } }) => {
+    console.log('onChange Input: ', value);
+    this.setState({
+      q: value,
+    });
+  };
+
   render() {
     const { TabPane } = Tabs;
     const {
@@ -70,15 +84,22 @@ class HRrequestTable extends Component {
       hrManager = {},
       locationID = '',
     } = this.props;
+    const { q = '' } = this.state;
 
-    // const resignationRequest = (
-    //   <div style={{ padding: '17px' }}>
-    //     <img src={addIcon} alt="" style={{ marginRight: '5px' }} />
-    //     <Link to="offboarding/resignation-request">
-    //       <span className={styles.buttonRequest}>Initiate Resignation Request</span>
-    //     </Link>
-    //   </div>
-    // );
+    const resignationRequest = (
+      <div className={styles.searchFilter}>
+        <img src={filterIcon} alt="" className={styles.searchFilter__icon} />
+        <Input
+          value={q}
+          size="large"
+          placeholder="Search for Ticket numer, resignee, request ..."
+          onChange={this.onChangeInput}
+          prefix={<SearchOutlined />}
+          onPressEnter={this.onPressEnter}
+          className={styles.searchFilter__input}
+        />
+      </div>
+    );
 
     return (
       <Row className={styles.hrContent} gutter={[40, 0]}>
@@ -98,7 +119,7 @@ class HRrequestTable extends Component {
           <Tabs
             defaultActiveKey="1"
             className={styles.tabComponent}
-            // tabBarExtraContent={resignationRequest}
+            tabBarExtraContent={resignationRequest}
           >
             <TabPane tab="Team Requests" key="1">
               <div className={styles.tableTab}>
