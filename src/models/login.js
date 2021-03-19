@@ -39,9 +39,9 @@ const Model = {
           return;
         }
 
-        const { signInRole = [], listCompany = [] } = response?.data;
-
+        const { user: { signInRole = [] } = {}, listCompany = [] } = response?.data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
+
         let isAdminOrOwner = false;
         if (formatRole.includes('owner') || signInRole.includes('admin')) {
           isAdminOrOwner = true;
