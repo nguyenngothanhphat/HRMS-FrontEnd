@@ -12,6 +12,7 @@ class HrTable extends PureComponent {
     super(props);
     this.state = {
       pageNavigation: 1,
+      selectedRowKeys: [],
     };
   }
 
@@ -55,8 +56,13 @@ class HrTable extends PureComponent {
     });
   };
 
+  onSelectChange = (selectedRowKeys) => {
+    console.log('selectedRowKeys changed: ', selectedRowKeys);
+    this.setState({ selectedRowKeys });
+  };
+
   render() {
-    const { pageNavigation } = this.state;
+    const { pageNavigation, selectedRowKeys = [] } = this.state;
     const {
       data = [],
       loading,
@@ -65,6 +71,13 @@ class HrTable extends PureComponent {
     } = this.props;
     // const dateFormat = 'YYYY/MM/DD';
     const rowSize = 10;
+    const newData = data.map((item) => {
+      return {
+        key: item._id,
+        ...item,
+      };
+    });
+
     const pagination = {
       position: ['bottomLeft'],
       total: data.length,
@@ -177,6 +190,11 @@ class HrTable extends PureComponent {
       },
     ];
 
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.onSelectChange,
+    };
+
     return (
       <div className={styles.HRtableStyles}>
         <Table
@@ -188,11 +206,12 @@ class HrTable extends PureComponent {
               </div>
             ),
           }}
+          rowSelection={rowSelection}
           columns={columns}
-          dataSource={data}
+          dataSource={newData}
           hideOnSinglePage
           pagination={{ ...pagination, total: data.length }}
-          rowKey="id"
+          rowKey={(record) => record._id}
           scroll={{ x: 'max-content' }}
           loading={loading}
         />
