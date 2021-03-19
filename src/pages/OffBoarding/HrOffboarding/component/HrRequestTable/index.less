@@ -2,18 +2,18 @@
   :global {
     .ant-tabs > .ant-tabs-nav,
     .ant-tabs > div > .ant-tabs-nav {
-      height: 50px;
+      height: fit-content;
+      padding-left: 24px;
+      padding-top: 24px;
     }
-    // .ant-tabs-tab-btn {
-    //   color: rgb(44, 109, 249);
-    //   font-size: 14px;
-    //   opacity: 0.9;
-    // }
+
     .ant-tabs-tab {
       color: #000000;
       font-weight: 700;
       font-size: 14px;
       opacity: 1;
+
+      padding: 0;
     }
 
     .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
@@ -26,11 +26,19 @@
     }
 
     .ant-tabs-tab .ant-tabs-tab-btn {
-      font-style: normal;
+      color: #464646;
       font-weight: bold;
       font-size: 14px;
+      font-style: normal;
       line-height: 16px;
-      color: #464646;
+    }
+
+    .ant-tabs-ink-bar {
+      display: none;
+    }
+
+    .ant-tabs-top > .ant-tabs-nav::before {
+      border-bottom: none;
     }
   }
 
@@ -91,7 +99,7 @@
     border: 1px solid #d6dce0;
     border-radius: 5px;
   }
-  .tableTab {
-    padding: 0px 18px;
-  }
+  // .tableTab {
+  //   padding: 0px 18px;
+  // }
 }
