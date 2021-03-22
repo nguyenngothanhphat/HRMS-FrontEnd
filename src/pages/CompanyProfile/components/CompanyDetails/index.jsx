@@ -16,7 +16,7 @@ const { Option } = Select;
     listCountry,
     companyDetails,
     loadingUpdate: loading.effects['companiesManagement/updateCompany'],
-    loadingAdd: loading.effects['companiesManagement/addLocationTenant'],
+    loadingAdd: loading.effects['companiesManagement/addCompanyReducer'],
   }),
 )
 class CompanyDetails extends Component {
@@ -62,20 +62,23 @@ class CompanyDetails extends Component {
   onChangeCheckbox = ({ target: { checked } = {} }) => {
     if (checked) {
       const {
-        headquarterAddress,
+        headquarterAddressLine1,
+        headquarterAddressLine2,
         countryHeadquarter,
         stateHeadquarter,
         zipHeadquarter,
       } = this.formRef.current.getFieldsValue();
       this.formRef.current.setFieldsValue({
-        legalAddress: headquarterAddress,
+        legalAddressLine1: headquarterAddressLine1,
+        legalAddressLine2: headquarterAddressLine2,
         countryLegal: countryHeadquarter,
         stateLegal: stateHeadquarter,
         zipLegal: zipHeadquarter,
       });
     } else {
       this.formRef.current.setFieldsValue({
-        legalAddress: undefined,
+        legalAddressLine1: undefined,
+        legalAddressLine2: undefined,
         countryLegal: undefined,
         stateLegal: undefined,
         zipLegal: undefined,
@@ -101,7 +104,7 @@ class CompanyDetails extends Component {
       name,
       stateHeadquarter,
       stateLegal,
-      // website,
+      website,
       zipHeadquarter,
       zipLegal,
       ownerEmail,
@@ -110,21 +113,22 @@ class CompanyDetails extends Component {
       hrPhone,
     } = values;
     const payload = {
-      id: companyId || '',
+      // id: companyId || '',
       company: {
         name,
         dba,
         ein,
+        website,
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
-          addressLine2: headquarterAddressLine2,
+          addressLine2: headquarterAddressLine2 || '',
           country: countryHeadquarter,
           state: stateHeadquarter,
           zipCode: zipHeadquarter,
         },
         legalAddress: {
           addressLine1: legalAddressLine1,
-          addressLine2: legalAddressLine2,
+          addressLine2: legalAddressLine2 || '',
           country: countryLegal,
           state: stateLegal,
           zipCode: zipLegal,
@@ -133,6 +137,7 @@ class CompanyDetails extends Component {
         hrContactName: hrName,
         hrContactEmail: hrEmail,
         hrContactPhone: hrPhone,
+        // isHeadquarter: true,
       },
       locations: [
         {
@@ -154,6 +159,7 @@ class CompanyDetails extends Component {
           isHeadquarter: true,
         },
       ],
+      isNewTenant: false,
     };
     if (companyId) {
       dispatch({
@@ -165,7 +171,7 @@ class CompanyDetails extends Component {
     } else {
       console.log('payload add new company', payload);
       dispatch({
-        type: 'companiesManagement/addLocationTenant',
+        type: 'companiesManagement/addCompanyReducer',
         payload,
         dataTempKept: {},
         isAccountSetup: true,
@@ -228,49 +234,50 @@ class CompanyDetails extends Component {
     const listStateHead = this.findListState(countryHeadquarter) || [];
     const listStateLegal = this.findListState(countryLegal) || [];
     const {
-      company: {
-        name,
-        dba,
-        ein,
-        headQuarterAddress: {
-          addressLine1: headquarterAddressLine1,
-          addressLine2: headquarterAddressLine2,
-          country: { _id: countryHeadquarterProps } = {},
-          state: stateHeadquarter,
-          zipCode: zipHeadquarter,
-        } = {},
-        legalAddress: {
-          addressLine1: legalAddressLine1,
-          addressLine2: legalAddressLine2,
-          country: { _id: countryLegalProps } = {},
-          state: stateLegal,
-          zipCode: zipLegal,
-        } = {},
-        contactEmail: ownerEmail,
-        hrContactEmail: hrEmail,
-        hrContactName: hrName,
-        hrContactPhone: hrPhone,
-        isHeadquarter,
-      },
-      locations: [
-        {
-          headQuarterAddress: {
-            addressLine1: headquarterAddressLine1,
-            addressLine2: headquarterAddressLine2,
-            country: { _id: countryHeadquarterProps } = {},
-            state: stateHeadquarter,
-            zipCode: zipHeadquarter,
-          } = {},
-          legalAddress: {
-            addressLine1: legalAddressLine1,
-            addressLine2: legalAddressLine2,
-            country: { _id: countryLegalProps } = {},
-            state: stateLegal,
-            zipCode: zipLegal,
-          } = {},
-        },
-      ],
-      isNewTenant,
+      // company: {
+      name,
+      dba,
+      ein,
+      website,
+      headQuarterAddress: {
+        addressLine1: headquarterAddressLine1,
+        addressLine2: headquarterAddressLine2,
+        country: { _id: countryHeadquarterProps } = {},
+        state: stateHeadquarter,
+        zipCode: zipHeadquarter,
+      } = {},
+      legalAddress: {
+        addressLine1: legalAddressLine1,
+        addressLine2: legalAddressLine2,
+        country: { _id: countryLegalProps } = {},
+        state: stateLegal,
+        zipCode: zipLegal,
+      } = {},
+      contactEmail: ownerEmail,
+      hrContactEmail: hrEmail,
+      hrContactName: hrName,
+      hrContactPhone: hrPhone,
+      // isHeadquarter,
+      // },
+      // locations: [
+      //   {
+      //     headQuarterAddress: {
+      //       addressLine1,
+      //       addressLine2,
+      //       country: { _id } = {},
+      //       state,
+      //       zipCode,
+      //     } = {},
+      //     legalAddress: {
+      //       addressLine1,
+      //       addressLine2,
+      //       country: { _id } = {},
+      //       state,
+      //       zipCode,
+      //     } = {},
+      //   },
+      // ],
+      // isNewTenant,
     } = companyDetails;
     return (
       <Form
@@ -282,7 +289,7 @@ class CompanyDetails extends Component {
           name,
           dba,
           ein,
-          // website,
+          website,
           headquarterAddressLine1,
           headquarterAddressLine2,
           countryHeadquarter: countryHeadquarterProps,
@@ -297,6 +304,8 @@ class CompanyDetails extends Component {
           hrName,
           hrEmail,
           hrPhone,
+          isNewTenant: false,
+          isHeadquarter: true,
         }}
       >
         <div className={s.blockContent}>

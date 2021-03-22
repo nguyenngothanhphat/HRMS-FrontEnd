@@ -5,11 +5,13 @@ import {
   updateCompany,
   getLocationsList,
   addLocation,
-  addLocationTenant,
+  addCompanyTenant,
   updateLocation,
   upsertLocationsList,
   removeLocation,
+  getLocationsListTenant,
 } from '@/services/companiesManangement';
+import { history } from 'umi';
 import { notification } from 'antd';
 
 const companiesManagement = {
@@ -85,6 +87,17 @@ const companiesManagement = {
       }
     },
 
+    *fetchLocationsListTenant({ payload: { company = '' } }, { call, put }) {
+      try {
+        const response = yield call(getLocationsListTenant, { company });
+        const { statusCode, data: locationsList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { locationsList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
     *updateCompany(
       { payload = {}, dataTempKept = {}, isAccountSetup = false },
       { put, call, select },
@@ -140,24 +153,42 @@ const companiesManagement = {
       return resp;
     },
 
-    *addLocationTenant({ payload = {} }, { call, put }) {
-      let resp = '';
+    *addCompanyTenant({ payload = {} }, { call, put }) {
+      let response = '';
       try {
-        const response = yield call(addLocationTenant, payload);
+        response = yield call(addCompanyTenant, payload);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
           message,
         });
+        console.log(response);
         yield put({
           type: 'fetchLocationsList',
-          payload: { company: payload.company },
+          payload: { company: payload },
         });
-        resp = response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { originData: { companyDetails: payload } },
+        });
+        history.push('/account-setup');
       } catch (errors) {
         dialog(errors);
       }
-      return resp;
+      return response;
+    },
+    *addCompanyReducer({ payload = {} }, { put }) {
+      try {
+        notification.success({
+          message: 'Save basic information successfully',
+        });
+        yield put({
+          type: 'saveOrigin',
+          payload: { companyDetails: payload },
+        });
+      } catch (error) {
+        dialog(error);
+      }
     },
 
     *updateLocation({ payload = {} }, { call, put }) {
