@@ -63,17 +63,20 @@ const offboarding = {
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
+      let response;
       try {
-        const response = yield call(getOffboardingList, payload);
+        response = yield call(getOffboardingList, payload);
         const {
           statusCode,
           data: { items: listOffboarding = [], total: totalList = [], hrManager = {} } = {},
         } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listOffboarding, totalList, hrManager } });
+        return listOffboarding;
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
     *fetchListTeamRequest({ payload }, { call, put }) {
       try {

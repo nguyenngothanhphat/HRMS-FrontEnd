@@ -1,0 +1,177 @@
+.ViewDocumentModal {
+    position: relative;
+    :global {
+      .ant-modal-body {
+        padding: 0;
+        border-radius: 3px;
+        overflow: hidden;
+      }
+
+      .ant-modal-close-x {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 28px;
+        color: #fff;
+        background-color: #2c6df9;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+        &:active {
+          opacity: 0.5;
+        }
+      }
+    }
+    .handleButtons {
+      position: absolute;
+      right: 0;
+      margin-top: -40px;
+      img {
+        margin-left: 11px;
+        cursor: pointer;
+        &:hover {
+          // opacity: 0.8;
+          transition: 0.3s;
+          // transform: rotate(360deg);
+          transform: scale(1.2);
+        }
+        &:active {
+          transition: 0.3s;
+          transform: scale(1);
+        }
+      }
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: left;
+      position: relative;
+      .contentViewPDF {
+        .content();
+        height: 75vh;
+        padding: 44px 48px 80px;
+
+        .bodyInfo{
+            text-align: left;
+            font-style: normal;
+            font-weight: normal;
+            .modalText {
+                font-weight: bold;
+                font-size: 20px;
+                line-height: 23.44px;
+                color: #161C29;
+                margin-bottom: 27px;
+            }
+
+            .modalTitle {
+                font-weight: 500;
+                font-size: 14px;
+                line-height: 16.41px;
+                color: #161C29;
+                margin-bottom: 16px;
+            }
+
+            .modalContent {
+                font-size: 14px;
+                line-height: 20px;
+                color: #707177;
+                margin-bottom: 32px;
+            }
+
+            .subText {
+                font-size: 13px;
+                line-height: 17px;
+                padding: 12px;
+            }
+        }
+      }
+      .contentViewImage {
+        .content();
+        max-height: 75vh;
+        height: 100%;
+        padding: 20px;
+      }
+      .content {
+        overflow: auto;
+        .fileName {
+          font-weight: bold;
+          font-size: 16px;
+        }
+        .pdfFrame {
+          // margin: 0 auto;
+          border: none !important;
+          overflow-y: auto;
+          .pdfPage {
+            margin-bottom: 20px;
+            canvas {
+              width: 100% !important;
+              height: auto !important;
+            }
+          }
+        }
+        .imageFrame {
+          max-width: 500px;
+          min-width: 300px;
+          width: 100%;
+          img {
+            width: 100%;
+          }
+        }
+        .loading {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+      .stickyFooter {
+        box-shadow: 0px -3px 5px rgba(0, 0, 0, 0.15);
+        position: absolute;
+        bottom: 0;
+        background: white;
+        padding: 17px 48px;
+        width: 100%;
+        overflow: hidden;
+        // border-radius: 0 0 3px 3px;
+      }
+      :global {
+        .ant-btn {
+          margin-top: 15px;
+          background-color: #ffa100;
+          border: none;
+          border-radius: 30px;
+          height: 40px;
+          width: 108px;
+          span {
+            color: white;
+            font-weight: 700;
+          }
+          &:hover {
+            background-color: #ffa100cc; // hex with alpha 0.8
+          }
+        }
+      }
+    }
+  
+    /* width */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+  
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+  
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+    }
+  
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  }
+  

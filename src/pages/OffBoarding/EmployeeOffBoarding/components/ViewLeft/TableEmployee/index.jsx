@@ -29,7 +29,12 @@ class TableEmployee extends Component {
   };
 
   render() {
-    const { data = [], textEmpty = 'No resignation request is submitted', loading } = this.props;
+    const {
+      data = [],
+      textEmpty = 'No resignation request is submitted',
+      loading,
+      tabId,
+    } = this.props;
     const { pageNavigation } = this.state;
     const rowSize = 10;
     const pagination = {
@@ -49,31 +54,27 @@ class TableEmployee extends Component {
       onChange: this.onChangePagination,
     };
 
-    const columns = [
+    const columnsRequest = [
       {
         title: <span className={t.title}>Ticket ID</span>,
         dataIndex: 'ticketID',
+        width: 100,
         render: (ticketID) => {
-          return <p>{ticketID}</p>;
+          return <p className={t.lastEdited}>{ticketID}</p>;
         },
       },
       {
         title: <span className={t.title}>Requested on</span>,
-        dataIndex: 'createdAt',
-        render: (createdAt) => {
-          return <p>{moment(createdAt).format('YYYY/MM/DD')}</p>;
-        },
-      },
-      {
-        title: <span className={t.title}>LWD</span>,
-        dataIndex: 'lastWorkingDate',
-        render: (lastWorkingDate) => {
-          return <p>{lastWorkingDate && moment(lastWorkingDate).format('YYYY/MM/DD')} </p>;
+        dataIndex: 'requestDate',
+        width: 150,
+        render: (requestDate) => {
+          return <p>{moment(requestDate).format('DD.MM.YYYY')}</p>;
         },
       },
       {
         title: <span className={t.title}>Assigned </span>,
         dataIndex: 'Assigned',
+        width: 100,
         render: (_, row) => {
           const {
             hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {},
@@ -95,21 +96,72 @@ class TableEmployee extends Component {
         },
       },
       {
-        title: <span className={t.title}>Reason of leaving</span>,
+        title: <span className={t.title}>LWD</span>,
+        dataIndex: 'lastWorkingDate',
+        width: 100,
+        render: (lastWorkingDate) => {
+          return <p>{lastWorkingDate && moment(lastWorkingDate).format('DD.MM.YYYY')} </p>;
+        },
+      },
+      // {
+      //   title: <span className={t.title}>Reason of leaving</span>,
 
-        dataIndex: 'reasonForLeaving',
-        render: (reasonForLeaving) => <div className={t.reason}>{reasonForLeaving}</div>,
+      //   dataIndex: 'reasonForLeaving',
+      //   render: (reasonForLeaving) => <div className={t.reason}>{reasonForLeaving}</div>,
+      // },
+      {
+        title: <span className={t.title}>Update</span>,
+        width: 150,
+        dataIndex: 'update',
+        render: (update) => <div className={t.update}>{update}</div>,
       },
       {
-        title: <span className={t.title}>Action</span>,
+        title: <span className={t.title} />,
         dataIndex: '_id',
+        width: 180,
         render: (_id) => (
           <div className={t.rowAction}>
-            <span onClick={() => this.push(_id)}>View Request</span>
+            <span className={t.rowAction__action}>Withdraw</span>
+            <span className={t.rowAction__view} onClick={() => this.push(_id)}>
+              View
+            </span>
           </div>
         ),
       },
     ];
+
+    const columnsDraft = [
+      {
+        title: <span className={t.title}>Last Edited</span>,
+        dataIndex: 'requestDate',
+        // width: 150,
+        render: (requestDate) => {
+          // return <p>{moment(createdAt).format('YYYY/MM/DD')}</p>;
+          return <div className={t.lastEdited}>{moment(requestDate).format('DD-MM-YYYY')}</div>;
+        },
+      },
+      {
+        title: <span className={t.title}>Reason</span>,
+        // width: 150,
+        dataIndex: 'reasonForLeaving',
+        render: (reasonForLeaving) => <div className={t.reason}>{reasonForLeaving}</div>,
+      },
+      {
+        title: <span className={t.title} />,
+        dataIndex: '_id',
+        width: 150,
+        render: (_id) => (
+          <div className={t.rowAction}>
+            <span className={t.rowAction__action}>Delete</span>
+            <span className={t.rowAction__view} onClick={() => this.push(_id)}>
+              View
+            </span>
+          </div>
+        ),
+      },
+    ];
+
+    console.log(data);
 
     return (
       <div className={t.employeeTable}>
@@ -123,7 +175,7 @@ class TableEmployee extends Component {
             ),
           }}
           loading={loading}
-          columns={columns}
+          columns={tabId === '1' ? columnsRequest : columnsDraft}
           dataSource={data}
           hideOnSinglePage
           pagination={{

@@ -1,0 +1,252 @@
+.Container {
+    :global {
+      .ant-tabs-content-holder {
+        padding: 0px 20px 0px;
+      }
+      .ant-tabs > .ant-tabs-nav,
+      .ant-tabs > div > .ant-tabs-nav {
+        height: 50px;
+      }
+      .ant-tabs-tab-btn {
+        font-size: 14px;
+        color: #000000;
+        opacity: 0.9;
+      }
+      .ant-tabs-tab {
+        font-size: 14px;
+        font-weight: 700;
+        color: #000000;
+        opacity: 1;
+      }
+
+      // .ant-col{
+      //   height: 180px;
+      // }
+    }
+    .marrinTop {
+      margin-top: 10px;
+    }
+
+    .header{
+      width: 100%;
+      height: 180px;
+      margin-bottom: 24px;
+      // display: fl;
+
+      font-style: normal;
+      font-weight: normal;
+
+      .links{
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 15px;
+        text-decoration-line: underline;
+        color: #FFA100;
+      }
+
+      .headerTerminate{
+        width: 100%;
+        height: 100%;
+    
+        background: #FFFFFF;
+        border: 1px solid #D6DCE0;
+        border-radius: 5px;
+    
+        display: flex;
+        justify-content: space-between;
+    
+        .leftSection{
+          width: 100%;
+          height: 100%;
+          padding: 24px;
+          &__title{
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 18.75px;
+            color: #161C29;
+            margin-bottom: 14px;
+          }
+    
+          &__content{
+            font-size: 13px;
+            line-height: 20px;
+            color: #707177;
+            margin-bottom: 24px;
+          }
+        }
+    
+        .rightSection{
+          // padding: 0 24px;
+          width: 60%;
+          
+          &__bg{
+            height: 100%;
+            background-image: url('../../../../../assets/offboardingMan.svg');
+            background-repeat: no-repeat;
+            background-size: 210px auto;
+            background-position: 0% 104%;
+          }
+        }
+      }
+
+      .headerSchedule{
+        background: #FFFFFF;
+        border: 1px solid #D6DCE0;
+        border-radius: 5px;
+        width: 100%;
+        height: 100%;
+        padding: 24px;
+        &__title{
+          font-weight: bold;
+          font-size: 16px;
+          line-height: 18.75px;
+          color: #161C29;
+          margin-bottom: 14px;
+        }
+  
+        &__content{
+          font-size: 13px;
+          line-height: 20px;
+          color: #707177;
+          margin-bottom: 24px;
+        }
+      }
+    }
+  
+  
+    .titleProcess{
+      font-weight: bold;
+      font-size: 16px;
+      line-height: 18.75px;
+      color: #161C29;
+      margin-bottom: 24px;
+    }
+  
+    .offboardingProcess{
+      font-style: normal;
+      font-weight: normal;
+  
+      padding: 25px 22px;
+      margin-bottom: 32px;
+  
+      background: #FFFFFF;
+      border: 1px solid #D6DCE0;
+      border-radius: 5px;
+  
+      :global{
+
+        .ant-steps {
+          display: flex;
+          justify-content: center;
+        }
+  
+        .ant-steps-item-icon{
+          width: 36px;
+          height: 36px;
+        }
+  
+        .ant-steps-item-icon .ant-steps-icon{
+          font-size: 13px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 17px;
+          top: 0;
+        }
+  
+        .ant-steps-item-description{
+          font-size: 9px;
+          font-style: normal;
+          font-weight: 500;
+          line-height: 11px;
+          text-align: center;
+        }
+  
+        .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-description{
+          color: #2C6DF9;
+        }
+  
+        .ant-steps-item-tail::after{
+          height: 0;
+          border-top: 3px solid #D6DCE0;
+        }
+  
+        .ant-steps-label-vertical .ant-steps-item-tail {
+          margin-left: 78px;
+          padding: 3.5px 0px;
+        }
+  
+        .ant-steps-item-wait .ant-steps-item-icon{
+          background: #D6DCE0;
+          border: 1px solid #D6DCE0;
+        }
+        
+        .ant-steps-item-wait .ant-steps-icon{
+          color: #707177;
+          font-weight: 500;
+          font-size: 13px;
+        }
+        .ant-steps-item-wait .ant-steps-item-description{
+          font-style: normal;
+          font-weight: 500;
+          font-size: 9px;
+          line-height: 11px;
+          text-align: center;
+          color: #707177;
+        }
+      }
+  
+      &__subtitle{
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 18.75px;
+        color: #161C29;
+        margin-bottom: 24px;
+      }
+    }
+  
+    .stepAction{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+  
+      font-style: normal;
+      font-weight: normal;
+
+      :global{
+        .ant-btn{
+
+          &:hover{
+            border-color: transparent;
+          }
+        }
+      }
+  
+      &__text{
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 17px;
+        cursor: pointer;
+        text-decoration-line: underline;
+  
+        color: #2058D1;
+      }
+  
+      &__btn{
+        height: 40px;
+        background: #FFA100;
+        border-radius: 25px;
+        padding: 0 35px;
+
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 16px;
+        color: #FFFFFF;
+
+        // &:hover{
+        //   border: none;
+        // }
+      }
+    }
+  }
+  

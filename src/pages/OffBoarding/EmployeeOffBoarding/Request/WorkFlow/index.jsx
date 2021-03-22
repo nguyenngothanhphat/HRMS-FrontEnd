@@ -54,7 +54,7 @@ export class Step3 extends Component {
 
     return (
       <div className={styles.root}>
-        <p className={styles.title}>Termination Workflow</p>
+        <p className={styles.title}>Chain of approval</p>
         <div className={styles.flex}>
           {arr1.map((item, index) => this.renderNode(item, index, arr1))}
         </div>

@@ -6,51 +6,51 @@
   }
 
   .titleBody {
-    background-color: #fff;
-    padding: 29px 40px;
     height: auto;
-    border-radius: 5px;
+    padding: 24px 32px;
+    background-color: #fff;
     border: 1px solid #d6dce0;
+    border-radius: 5px;
     .viewChangeLastWorkingDay {
       &__title {
         margin-bottom: 17px;
+        color: #000;
         font-weight: 700;
         font-size: 16px;
         line-height: 19px;
-        color: #000;
       }
       &__label {
         margin-bottom: 17px;
+        color: #000;
         font-weight: normal;
         font-size: 16px;
         line-height: 19px;
-        color: #000;
       }
       &__viewDateApproved {
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        justify-content: space-between;
         margin-bottom: 23px;
         &__datePicker {
+          box-sizing: border-box;
           width: 100%;
           height: 56px;
-          box-sizing: border-box;
           border-radius: 5px;
         }
         &__description {
-          background: #fff4d1;
           padding: 17px 32px;
+          background: #fff4d1;
           border-radius: 5px;
           &__text1 {
+            color: #464646;
             font-size: 13px;
             line-height: 17px;
-            color: #464646;
           }
           &__text2 {
+            color: #464646;
             font-weight: 700;
             font-size: 13px;
             line-height: 17px;
-            color: #464646;
             text-decoration: underline;
             cursor: pointer;
           }
@@ -60,35 +60,35 @@
   }
 
   .textTime {
+    color: #464646;
     font-weight: 400;
     font-size: 14px;
     line-height: 16.41px;
-    color: #464646;
   }
 
   .textBox {
-    font-weight: 700;
+    color: #161c29;
+    font-weight: bold;
     font-size: 16px;
-    line-height: 18.75px;
-    color: #000000;
+    font-style: normal;
+    line-height: 19px;
   }
 
   .title_Box {
-    border-radius: 5px;
-    width: 100%;
-    padding: 17px;
-    background-color: #fff4d1;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    width: 100%;
   }
 
   .boxReason {
-    border: 1px solid #d6dce0;
-    color: rgba(70, 70, 70, 0.5);
-    height: 141px;
     box-sizing: border-box;
+    height: 141px;
+    padding: 18px 31px 0 21px;
+    color: rgba(70, 70, 70, 0.5);
+    border: 1px solid #2c6df9;
+    border-radius: 5px;
     resize: none;
-    padding: 13px 40px 20px;
     &:focus {
       box-shadow: none;
     }
@@ -101,58 +101,63 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-top: 60px;
   }
 
   .icon {
-    margin-left: 5px;
-    margin-right: 21px;
   }
 
   .title_Text {
-    font-weight: 400;
+    padding: 0 73px 0 11px;
+    color: #707177;
+    font-weight: normal;
     font-size: 13px;
-    color: #464646;
-    line-height: 17px;
+    font-style: normal;
+    line-height: 20px;
+    span {
+      color: #2c6df9;
+      text-decoration: underline;
+    }
   }
 
   .subTitle_Text {
+    margin: 14px 0px 16px;
     font-weight: 700;
     font-size: 14px;
-    line-height: 16px;
     font-family: 'Roboto';
-    margin: 14px 0px 16px;
+    line-height: 16px;
   }
 
   .submitButton {
     width: 220px;
     height: 40px;
-    border-radius: 5px;
     margin-bottom: 30px;
-    background-color: #2c6df9;
     color: #fff;
+    background-color: #2c6df9;
+    border-radius: 5px;
   }
 
   .titelContainer {
     height: 35px;
+    margin-bottom: 10px;
+    padding: 8px;
+    text-align: center;
     background: rgba(86, 138, 250, 0.07);
     border-radius: 5px 5px 0px 0px;
-    margin-bottom: 10px;
-    text-align: center;
-    padding: 8px;
   }
 
   .requestHRForm {
+    height: 173px;
     margin-top: 30px;
     padding: 25px 40px 0px;
-    height: 173px;
     background: #ffffff;
     border-radius: 5px;
     .boxHRReason {
-      border: 1px solid #d6dce0;
-      height: 65px;
       box-sizing: border-box;
-      color: #464646 !important;
+      height: 65px;
       padding: 13px 40px 8px;
+      color: #464646 !important;
+      border: 1px solid #d6dce0;
     }
   }
 }

@@ -28,7 +28,7 @@ export default class Summary extends PureComponent {
     const data = [
       {
         value: '1',
-        title: 'In-progress',
+        title: 'In Progress',
         count: this.getCount('IN-PROGRESS'),
         renderTab: this.renderTab('DRAFT'),
       },
