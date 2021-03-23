@@ -150,12 +150,12 @@ class Screen1 extends Component {
       !dba.trim() ||
       !ein.trim() ||
       !addressLine1Head.trim() ||
-      !addressLine2Head.trim() ||
+      // !addressLine2Head.trim() ||
       !countryHead.trim() ||
       !stateHead.trim() ||
       !zipCodeHead.trim() ||
       !addressLine1Legal ||
-      !addressLine2Legal ||
+      // !addressLine2Legal ||
       !country.trim() ||
       !stateLegal.trim() ||
       !zipCodeLegal.trim();
@@ -191,7 +191,16 @@ class Screen1 extends Component {
               <Form.Item label="Doing Business As (DBA)*" name="dba">
                 <Input />
               </Form.Item>
-              <Form.Item label="EIN*" name="ein">
+              <Form.Item
+                label="EIN*"
+                name="ein"
+                rules={[
+                  {
+                    pattern: /^[0-9]*$/,
+                    message: 'Please input number only!',
+                  },
+                ]}
+              >
                 <Input />
               </Form.Item>
             </>
@@ -221,7 +230,7 @@ class Screen1 extends Component {
               <Form.Item label="Address Line 2" name="addressLine2">
                 <Input />
               </Form.Item>
-              <Form.Item label="Country" name="country">
+              <Form.Item label="Country*" name="country">
                 <Select
                   placeholder="Select Country"
                   showArrow
@@ -237,7 +246,7 @@ class Screen1 extends Component {
               </Form.Item>
               <Row gutter={[30, 0]}>
                 <Col span={12}>
-                  <Form.Item label="State" name="state">
+                  <Form.Item label="State*" name="state">
                     <Select
                       placeholder="Select State"
                       showArrow
@@ -253,7 +262,7 @@ class Screen1 extends Component {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Zip Code" name="zipCode">
+                  <Form.Item label="Zip Code*" name="zipCode">
                     <Input />
                   </Form.Item>
                 </Col>
@@ -295,7 +304,7 @@ class Screen1 extends Component {
                 <Input disabled={checkLegalSameHeadQuarter} />
               </Form.Item>
 
-              <Form.Item label="Country" name="country">
+              <Form.Item label="Country*" name="country">
                 <Select
                   placeholder="Select Country"
                   showArrow
@@ -312,7 +321,7 @@ class Screen1 extends Component {
               </Form.Item>
               <Row gutter={[30, 0]}>
                 <Col span={12}>
-                  <Form.Item label="State" name="state">
+                  <Form.Item label="State*" name="state">
                     <Select
                       placeholder="Select State"
                       showArrow
@@ -328,7 +337,7 @@ class Screen1 extends Component {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Zip Code" name="zipCode">
+                  <Form.Item label="Zip Code*" name="zipCode">
                     <Input disabled={checkLegalSameHeadQuarter} />
                   </Form.Item>
                 </Col>

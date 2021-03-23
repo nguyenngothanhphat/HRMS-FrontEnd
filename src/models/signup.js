@@ -44,17 +44,16 @@ const signup = {
       try {
         const response = yield call(getUserInfo, payload);
         const { statusCode, data: userInfo = [] } = response;
-        if (statusCode === 400)
-          return response;
+        if (statusCode === 400) return response;
         if (statusCode !== 200 && statusCode !== 400) {
-          throw response
+          throw response;
         }
         yield put({ type: 'save', payload: { user: userInfo } });
         history.replace('/signup-verify');
       } catch (errors) {
         dialog(errors);
       }
-      return {}
+      return {};
     },
 
     *fetchSecurityCode({ payload }, { call, put }) {
@@ -63,6 +62,9 @@ const signup = {
         const { statusCode, data: { securityCode: { codeNumber } = {} } = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { codeNumber } });
+        yield put({
+          type: 'clearStateLastSignUp',
+        });
         history.replace('/signup-configlocation');
       } catch (errors) {
         dialog(errors);
@@ -72,6 +74,7 @@ const signup = {
     *signupAdmin({ payload }, { call, put }) {
       try {
         yield call(delay, 2000);
+
         const response = yield call(signupAdmin, payload);
         const { statusCode, message, data: { id = '' } = {} } = response;
         const payloadAutoLogin = {
@@ -112,6 +115,31 @@ const signup = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    clearStateLastSignUp(state) {
+      return {
+        ...state,
+        currentStep: 0,
+        checkLegalSameHeadQuarter: false,
+        company: {
+          name: '',
+          dba: '',
+          ein: '',
+        },
+        headQuarterAddress: {
+          address: '',
+          country: '',
+          state: '',
+          zipCode: '',
+        },
+        legalAddress: {
+          address: '',
+          country: '',
+          state: '',
+          zipCode: '',
+        },
+        locations: [],
       };
     },
     saveCompany(state, action) {
