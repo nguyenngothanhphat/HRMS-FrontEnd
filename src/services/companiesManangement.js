@@ -21,6 +21,13 @@ export async function getLocationsList(payload) {
   });
 }
 
+export async function getLocationsListTenant(payload) {
+  return request('/api/locationtenant/get-by-company-tenant', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function updateCompany(payload) {
   return request('/api/company/update', {
     method: 'POST',
@@ -51,6 +58,13 @@ export async function upsertLocationsList(payload) {
 
 export async function removeLocation(payload) {
   return request('/api/location/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function addCompanyTenant(payload) {
+  return request('/api/companytenant/add', {
     method: 'POST',
     data: payload,
   });

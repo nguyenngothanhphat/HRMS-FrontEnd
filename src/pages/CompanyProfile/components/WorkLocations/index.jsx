@@ -2,24 +2,31 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
-import { Form, Divider, Button, Skeleton } from 'antd';
+import { Form, Divider, Button, Skeleton, Input, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { connect } from 'umi';
+import classnames from 'classnames';
 import FormWorkLocation from './components/FormWorkLocation';
+import FormWorkLocationTenant from './components/FormWorkLocation-Tenant';
 import s from './index.less';
 
 @connect(
   ({
     loading,
     country: { listCountry = [] } = {},
-    companiesManagement: { locationsList: workLocations = [] } = {},
+    companiesManagement: {
+      locationsList: workLocations = [],
+      originData: { companyDetails = {} } = {},
+    } = {},
   }) => ({
     listCountry,
     workLocations,
     loading: loading.effects['companiesManagement/upsertLocationsList'],
     fetchingLocationsList: loading.effects['companiesManagement/fetchLocationsList'],
     loadingCountry: loading.effects['country/fetchListCountry'],
+    companyDetails,
+    loadingAddCompany: loading.effects['companiesManagement/addCompanyTenant'],
   }),
 )
 class WorkLocations extends PureComponent {
@@ -31,6 +38,7 @@ class WorkLocations extends PureComponent {
 
   componentDidMount() {
     const { dispatch, companyId = '' } = this.props;
+    console.log('companyId', companyId);
     if (companyId) {
       dispatch({
         type: 'companiesManagement/fetchLocationsList',
@@ -48,7 +56,7 @@ class WorkLocations extends PureComponent {
   }
 
   onFinish = ({ workLocations: locations = [] }) => {
-    const { dispatch, companyId = '' } = this.props;
+    const { dispatch, companyId = '', companyDetails } = this.props;
     const payload = { locations, company: companyId };
     if (companyId) {
       dispatch({
@@ -57,6 +65,13 @@ class WorkLocations extends PureComponent {
       });
     } else {
       console.log('payload add new company', payload);
+      companyDetails.locations = [...locations];
+      dispatch({
+        type: 'companiesManagement/addCompanyTenant',
+        payload: companyDetails,
+        dataTempKept: {},
+        isAccountSetup: true,
+      });
     }
   };
 
@@ -88,9 +103,22 @@ class WorkLocations extends PureComponent {
       loading,
       fetchingLocationsList,
       loadingCountry,
+      companyDetails,
     } = this.props;
     const listLocation = this.formatListLocation();
+
     const defaultListLocation = listLocation.length === 0 ? [{}] : listLocation;
+    const {
+      company: {
+        headQuarterAddress: {
+          addressLine1 = '',
+          addressLine2 = '',
+          country = '',
+          state = '',
+          zipCode = '',
+        } = {},
+      },
+    } = companyDetails;
     if (fetchingLocationsList || loadingCountry)
       return (
         <div className={s.root}>
@@ -114,7 +142,9 @@ class WorkLocations extends PureComponent {
         ref={this.formRef}
         onFinish={this.onFinish}
         autoComplete="off"
-        initialValues={{ workLocations: defaultListLocation }}
+        initialValues={{
+          workLocations: defaultListLocation,
+        }}
       >
         <div className={s.root}>
           <div className={s.content__viewTop}>
@@ -128,12 +158,36 @@ class WorkLocations extends PureComponent {
           </div>
           <div className={s.content__viewBottom}>
             <Form.List name="workLocations">
+              {(fields) => (
+                <>
+                  {fields.map((field) => (
+                    <FormWorkLocationTenant
+                      field={field}
+                      key={field.name}
+                      isRequired={false}
+                      name="Headquarter"
+                      companyDetails={companyDetails}
+                      formRef={this.formRef}
+                      listCountry={listCountry}
+                      listLocation={listLocation}
+                    />
+                  ))}
+                </>
+              )}
+            </Form.List>
+          </div>
+        </div>
+        <div className={s.root} style={{ marginTop: '24px' }}>
+          <div className={s.content__viewBottom}>
+            <Form.List name="workLocations">
               {(fields, { add, remove }) => (
                 <>
                   {fields.map((field) => (
                     <FormWorkLocation
                       field={field}
                       key={field.name}
+                      isHidden={false}
+                      name="New work location"
                       formRef={this.formRef}
                       listCountry={listCountry}
                       listLocation={listLocation}
