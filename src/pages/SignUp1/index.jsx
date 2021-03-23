@@ -1,13 +1,22 @@
 /* eslint-disable no-useless-escape */
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { formatMessage, connect, history } from 'umi';
 import { Form, Input, Button } from 'antd';
 import EmailExistModal from './EmailExistModal';
 import styles from './index.less';
 
 const SignUp1 = (props) => {
+  const [form] = Form.useForm();
+
   const { dispatch } = props;
   const [isVisible, setIsVisible] = useState(false);
+  const [isContinue, setIsContinue] = useState(false);
+
+  React.useEffect(() => {
+    if (isContinue) {
+      form.validateFields();
+    }
+  }, [isContinue]);
 
   const storeData = (user) => {
     if (dispatch) {
@@ -31,9 +40,9 @@ const SignUp1 = (props) => {
           email,
         },
       });
-      const {statusCode} = res;
+      const { statusCode } = res;
       if (statusCode === 400) {
-        setIsVisible(true)
+        setIsVisible(true);
       }
     }
 
@@ -43,15 +52,23 @@ const SignUp1 = (props) => {
     });
   };
 
-  const onContinue = () => {
-    setIsVisible(false);
-  }
+  const emailValidator = (rule, value, callback) => {
+    if (isContinue) callback('Please input new email');
+    else callback();
+  };
 
+  const onContinue = () => {
+    setIsContinue(true);
+    setIsVisible(false);
+  };
 
   const onLogin = () => {
-    history.push('/login')
-  }
+    history.push('/login');
+  };
 
+  const onEmailChange = () => {
+    setIsContinue(false);
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -66,6 +83,7 @@ const SignUp1 = (props) => {
       <Form
         className={styles.form}
         name="sign-up"
+        form={form}
         layout="vertical"
         initialValues={{ remember: true }}
         onFinish={onFinish}
@@ -76,6 +94,7 @@ const SignUp1 = (props) => {
           })}
           name="email"
           rules={[
+            { validator: emailValidator },
             {
               required: true,
               message: formatMessage({
@@ -90,7 +109,7 @@ const SignUp1 = (props) => {
             },
           ]}
         >
-          <Input />
+          <Input onChange={onEmailChange} />
         </Form.Item>
 
         <Form.Item
