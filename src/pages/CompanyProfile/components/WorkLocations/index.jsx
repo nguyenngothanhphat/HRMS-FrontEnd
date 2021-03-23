@@ -8,6 +8,7 @@ import moment from 'moment';
 import { connect } from 'umi';
 import classnames from 'classnames';
 import FormWorkLocation from './components/FormWorkLocation';
+import FormWorkLocationTenant from './components/FormWorkLocation-Tenant';
 import s from './index.less';
 
 @connect(
@@ -105,6 +106,7 @@ class WorkLocations extends PureComponent {
       companyDetails,
     } = this.props;
     const listLocation = this.formatListLocation();
+
     const defaultListLocation = listLocation.length === 0 ? [{}] : listLocation;
     const {
       company: {
@@ -117,8 +119,6 @@ class WorkLocations extends PureComponent {
         } = {},
       },
     } = companyDetails;
-    const itemLocation = listCountry.find((item) => country === item._id);
-    console.log('dfdaf', itemLocation);
     if (fetchingLocationsList || loadingCountry)
       return (
         <div className={s.root}>
@@ -143,11 +143,6 @@ class WorkLocations extends PureComponent {
         onFinish={this.onFinish}
         autoComplete="off"
         initialValues={{
-          addressLine1,
-          addressLine2,
-          country: itemLocation?.name,
-          state,
-          zipCode,
           workLocations: defaultListLocation,
         }}
       >
@@ -162,85 +157,24 @@ class WorkLocations extends PureComponent {
             </p>
           </div>
           <div className={s.content__viewBottom}>
-            {/* <FormWorkLocation
-              isHidden
-              name="Headquarter"
-              // field={headQuarterAddress}
-              formRef={this.formRef}
-              listCountry={listCountry}
-              listLocation={listLocation}
-            /> */}
-
-            <div className={s.content} style={{ marginTop: '24px' }}>
-              <div className={s.content__viewBottom}>
-                <div className={s.content__viewBottom__viewTitle}>
-                  <p className={s.title}>Headquarter</p>
-                </div>
-              </div>
-              <div className={s.content__viewBottom__row}>
-                <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
-                <Form.Item label={false} name="addressLine1">
-                  <Input placeholder="Name Location" />
-                </Form.Item>
-              </div>
-              <div className={s.content__viewBottom__row}>
-                <p className={s.content__viewBottom__row__textLabel}>Address Line 2</p>
-                <Form.Item label={false} name="addressLine2">
-                  <Input placeholder="Address" />
-                </Form.Item>
-              </div>
-              <div className={s.content__viewBottom__row}>
-                <div className={s.viewFormVertical}>
-                  <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>
-                    Country
-                  </p>
-                  <Form.Item label={false} name="country">
-                    {/* <Input /> */}
-                    <Select
-                      placeholder="Select Country"
-                      showArrow
-                      showSearch
-                      onChange={this.onChangeCountry}
-                      // filterOption={(input, option) =>
-                      //   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      // }
-                    >
-                      <Select.Option defaultValue={country}>{country}</Select.Option>
-                      {/* {listCountry.map((item) => (
-                        <Option key={item._id}>{item.name}</Option>
-                      ))} */}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className={s.viewFormVertical}>
-                  <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>
-                    State
-                  </p>
-                  <Form.Item name="state">
-                    {/* <Input /> */}
-                    <Select
-                      placeholder="Select State"
-                      showArrow
-                      showSearch
-                      disabled={!country}
-                      // filterOption={(input, option) =>
-                      //   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      // }
-                    >
-                      {/* <Option name="state"></Option> */}
-                      <Select.Option defaultValue={state}>{state}</Select.Option>
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className={s.viewFormVertical}>
-                  <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>Zip</p>
-                  <Form.Item name="zipCode">
-                    <Input />
-                  </Form.Item>
-                </div>
-              </div>
-            </div>
-            <Divider className={s.divider} />
+            <Form.List name="workLocations">
+              {(fields) => (
+                <>
+                  {fields.map((field) => (
+                    <FormWorkLocationTenant
+                      field={field}
+                      key={field.name}
+                      isRequired={false}
+                      name="Headquarter"
+                      companyDetails={companyDetails}
+                      formRef={this.formRef}
+                      listCountry={listCountry}
+                      listLocation={listLocation}
+                    />
+                  ))}
+                </>
+              )}
+            </Form.List>
           </div>
         </div>
         <div className={s.root} style={{ marginTop: '24px' }}>
