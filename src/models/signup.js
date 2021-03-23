@@ -22,13 +22,15 @@ const signup = {
       ein: '',
     },
     headQuarterAddress: {
-      address: '',
+      addressLine1: '',
+      addressLine2: '',
       country: '',
       state: '',
       zipCode: '',
     },
     legalAddress: {
-      address: '',
+      addressLine1: '',
+      addressLine2: '',
       country: '',
       state: '',
       zipCode: '',

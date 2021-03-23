@@ -4,7 +4,7 @@ import { Form, Input, Button } from 'antd';
 import { EyeFilled } from '@ant-design/icons';
 import logoGoogle from '@/assets/logo_google.png';
 import GoogleLogin from 'react-google-login';
-import { Link, connect, formatMessage } from 'umi';
+import { Link, connect, formatMessage, history } from 'umi';
 import styles from './index.less';
 
 @connect(({ loading, login: { messageError = '' } = {} }) => ({
@@ -13,6 +13,16 @@ import styles from './index.less';
   messageError,
 }))
 class FormLogin extends Component {
+  formRef = React.createRef();
+
+  componentDidMount = () => {
+    const { location: { state: { autoFillEmail = '' } = {} } = {} } = this.props;
+    this.formRef.current.setFieldsValue({
+      email: autoFillEmail,
+    });
+    history.replace();
+  };
+
   onFinish = ({ email, password }) => {
     const payload = { email, password };
     this.handleSubmit(payload);
