@@ -1,6 +1,6 @@
 import { history } from 'umi';
 import { accountLogin, signInThirdParty } from '@/services/login';
-import { setAuthority } from '@/utils/authority';
+import { setAuthority, setTenantId, setCurrentCompany } from '@/utils/authority';
 import { setToken } from '@/utils/token';
 import { dialog } from '@/utils/utils';
 
@@ -39,23 +39,22 @@ const Model = {
           return;
         }
 
-        // const {listCompany = []} = response?.data;
-        formatArrRoles.push('admin-csa');
-        setAuthority(formatArrRoles);
+        const { user: { signInRole = [] } = {}, listCompany = [] } = response?.data;
+        const formatRole = signInRole.map((role) => role.toLowerCase());
 
-        history.replace('/account-setup');
+        let isAdminOrOwner = false;
+        if (formatRole.includes('owner') || signInRole.includes('admin')) {
+          isAdminOrOwner = true;
+        }
 
-        // if (isAdminOrOwner) {
-        // } else {
-        //   const selectedTenant = manageTenant[0];
-        //   const selectedCompany = selectedTenant.company[0]?._id;
-        //   const { tenant: tenantId = '' } = selectedTenant;
-        //   setTenantId(tenantId);
-        //   setCurrentCompany(selectedCompany);
-        //   if (listAllCompany.length > 1) {
-        //     history.replace('/');
-        //   }
-        // }
+        if (isAdminOrOwner || listCompany.length > 1) {
+          history.replace('/account-setup');
+        } else if (listCompany.length === 1) {
+          const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
+          setTenantId(tenantId);
+          setCurrentCompany(selectedCompany);
+          history.replace('/');
+        }
       } catch (errors) {
         const { data = [] } = errors;
         if (data.length > 0) {

@@ -79,38 +79,38 @@ const routes = [
       {
         path: '/select-location',
         component: '../layouts/AccountSetupLayout',
-        authority: ['admin-csa'],
+        // authority: ['admin-csa'],
         routes: [
           {
             path: '/select-location',
             component: './LocationSelection',
             name: 'Location Selection',
-            authority: ['admin-csa'],
+            // authority: ['admin-csa'],
           },
         ],
       },
       {
         path: '/account-setup',
         component: '../layouts/AccountSetupLayout',
-        authority: ['admin-csa'],
+        // authority: ['admin-csa'],
         routes: [
           {
             path: '/account-setup',
             component: './AccountSetup',
             name: 'Account Setup',
-            authority: ['admin-csa'],
+            // authority: ['admin-csa'],
           },
           {
             path: '/account-setup/company-profile/:id',
             component: './CompanyProfile',
             name: 'Company Profile',
-            authority: ['admin-csa'],
+            // authority: ['admin-csa'],
           },
           {
             path: '/account-setup/add-company',
             component: './CompanyProfile',
             name: 'Company Profile',
-            authority: ['admin-csa'],
+            // authority: ['admin-csa'],
           },
           {
             component: './404',

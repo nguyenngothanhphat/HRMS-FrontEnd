@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Layout, Button, Result } from 'antd';
-import RightContent from '@/components/GlobalHeader/RightContent';
+// import RightContent from '@/components/GlobalHeader/RightContent';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { Link } from 'umi';
@@ -41,8 +41,7 @@ class AccountSetup extends PureComponent {
             alt="logo"
             style={{ width: '150px', objectFit: 'contain', marginLeft: '20px' }}
           />
-
-          <RightContent />
+          {/* <RightContent /> */}
         </Header>
         <Authorized authority={authorized.authority} noMatch={noMatch}>
           <Content className={styles.content}>{children}</Content>
