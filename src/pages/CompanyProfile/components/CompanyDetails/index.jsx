@@ -16,6 +16,7 @@ const { Option } = Select;
     listCountry,
     companyDetails,
     loadingUpdate: loading.effects['companiesManagement/updateCompany'],
+    loadingAdd: loading.effects['companiesManagement/addCompanyReducer'],
   }),
 )
 class CompanyDetails extends Component {
@@ -61,20 +62,23 @@ class CompanyDetails extends Component {
   onChangeCheckbox = ({ target: { checked } = {} }) => {
     if (checked) {
       const {
-        headquarterAddress,
+        headquarterAddressLine1,
+        headquarterAddressLine2,
         countryHeadquarter,
         stateHeadquarter,
         zipHeadquarter,
       } = this.formRef.current.getFieldsValue();
       this.formRef.current.setFieldsValue({
-        legalAddress: headquarterAddress,
+        legalAddressLine1: headquarterAddressLine1,
+        legalAddressLine2: headquarterAddressLine2,
         countryLegal: countryHeadquarter,
         stateLegal: stateHeadquarter,
         zipLegal: zipHeadquarter,
       });
     } else {
       this.formRef.current.setFieldsValue({
-        legalAddress: undefined,
+        legalAddressLine1: undefined,
+        legalAddressLine2: undefined,
         countryLegal: undefined,
         stateLegal: undefined,
         zipLegal: undefined,
@@ -87,38 +91,75 @@ class CompanyDetails extends Component {
 
   onFinish = (values) => {
     const { dispatch, companyId } = this.props;
+    console.log(companyId);
     const {
       countryHeadquarter,
       countryLegal,
       dba,
       ein,
-      headquarterAddress,
-      legalAddress,
+      headquarterAddressLine1,
+      headquarterAddressLine2,
+      legalAddressLine1,
+      legalAddressLine2,
       name,
       stateHeadquarter,
       stateLegal,
       website,
       zipHeadquarter,
       zipLegal,
+      ownerEmail,
+      hrName,
+      hrEmail,
+      hrPhone,
     } = values;
     const payload = {
-      id: companyId,
-      dba,
-      ein,
-      name,
-      website,
-      headQuarterAddress: {
-        address: headquarterAddress,
-        country: countryHeadquarter,
-        state: stateHeadquarter,
-        zipCode: zipHeadquarter,
+      // id: companyId || '',
+      company: {
+        name,
+        dba,
+        ein,
+        website,
+        headQuarterAddress: {
+          addressLine1: headquarterAddressLine1,
+          addressLine2: headquarterAddressLine2 || '',
+          country: countryHeadquarter,
+          state: stateHeadquarter,
+          zipCode: zipHeadquarter,
+        },
+        legalAddress: {
+          addressLine1: legalAddressLine1,
+          addressLine2: legalAddressLine2 || '',
+          country: countryLegal,
+          state: stateLegal,
+          zipCode: zipLegal,
+        },
+        contactEmail: ownerEmail,
+        hrContactName: hrName,
+        hrContactEmail: hrEmail,
+        hrContactPhone: hrPhone,
+        // isHeadquarter: true,
       },
-      legalAddress: {
-        address: legalAddress,
-        country: countryLegal,
-        state: stateLegal,
-        zipCode: zipLegal,
-      },
+      locations: [
+        {
+          name,
+          headQuarterAddress: {
+            addressLine1: headquarterAddressLine1,
+            addressLine2: headquarterAddressLine2,
+            country: countryHeadquarter,
+            state: stateHeadquarter,
+            zipCode: zipHeadquarter,
+          },
+          legalAddress: {
+            addressLine1: headquarterAddressLine1,
+            addressLine2: headquarterAddressLine2,
+            country: countryLegal,
+            state: stateLegal,
+            zipCode: zipLegal,
+          },
+          isHeadquarter: true,
+        },
+      ],
+      isNewTenant: false,
     };
     if (companyId) {
       dispatch({
@@ -129,6 +170,12 @@ class CompanyDetails extends Component {
       });
     } else {
       console.log('payload add new company', payload);
+      dispatch({
+        type: 'companiesManagement/addCompanyReducer',
+        payload,
+        dataTempKept: {},
+        isAccountSetup: true,
+      });
     }
   };
 
@@ -138,7 +185,13 @@ class CompanyDetails extends Component {
       countryLegal = '',
       checkLegalSameHeadQuarter = false,
     } = this.state;
-    const { listCountry = [], companyDetails = {}, loadingUpdate } = this.props;
+    const {
+      listCountry = [],
+      companyDetails = {},
+      loadingUpdate,
+      loadingAdd,
+      companyId,
+    } = this.props;
     const fieldCompanyDetail = [
       {
         label: 'Legal Business Name*',
@@ -155,25 +208,76 @@ class CompanyDetails extends Component {
       { label: 'Employer Identification Number (EIN)', name: 'ein' },
       { label: 'Compay Website', name: 'website' },
     ];
+
+    const fieldContactInformation = [
+      {
+        label: 'Primary contact',
+        name: 'ownerEmail',
+        placeholder: "Company owner's email",
+      },
+      {
+        label: 'HR contact',
+        name: 'hrName',
+        placeholder: "HR Manager's name",
+      },
+      {
+        label: '',
+        name: 'hrEmail',
+        placeholder: "HR Manager's email",
+      },
+      {
+        label: '',
+        name: 'hrPhone',
+        placeholder: "HR Manager's phone",
+      },
+    ];
     const listStateHead = this.findListState(countryHeadquarter) || [];
     const listStateLegal = this.findListState(countryLegal) || [];
     const {
+      // company: {
       name,
       dba,
       ein,
       website,
       headQuarterAddress: {
-        address: headquarterAddress,
+        addressLine1: headquarterAddressLine1,
+        addressLine2: headquarterAddressLine2,
         country: { _id: countryHeadquarterProps } = {},
         state: stateHeadquarter,
         zipCode: zipHeadquarter,
       } = {},
       legalAddress: {
-        address: legalAddress,
+        addressLine1: legalAddressLine1,
+        addressLine2: legalAddressLine2,
         country: { _id: countryLegalProps } = {},
         state: stateLegal,
         zipCode: zipLegal,
       } = {},
+      contactEmail: ownerEmail,
+      hrContactEmail: hrEmail,
+      hrContactName: hrName,
+      hrContactPhone: hrPhone,
+      // isHeadquarter,
+      // },
+      // locations: [
+      //   {
+      //     headQuarterAddress: {
+      //       addressLine1,
+      //       addressLine2,
+      //       country: { _id } = {},
+      //       state,
+      //       zipCode,
+      //     } = {},
+      //     legalAddress: {
+      //       addressLine1,
+      //       addressLine2,
+      //       country: { _id } = {},
+      //       state,
+      //       zipCode,
+      //     } = {},
+      //   },
+      // ],
+      // isNewTenant,
     } = companyDetails;
     return (
       <Form
@@ -186,14 +290,22 @@ class CompanyDetails extends Component {
           dba,
           ein,
           website,
-          headquarterAddress,
+          headquarterAddressLine1,
+          headquarterAddressLine2,
           countryHeadquarter: countryHeadquarterProps,
           stateHeadquarter,
           zipHeadquarter,
-          legalAddress,
+          legalAddressLine1,
+          legalAddressLine2,
           countryLegal: countryLegalProps,
           stateLegal,
           zipLegal,
+          ownerEmail,
+          hrName,
+          hrEmail,
+          hrPhone,
+          isNewTenant: false,
+          isHeadquarter: true,
         }}
       >
         <div className={s.blockContent}>
@@ -225,9 +337,9 @@ class CompanyDetails extends Component {
           </div>
           <div className={s.content__viewBottom}>
             <div className={s.content__viewBottom__row}>
-              <p className={s.content__viewBottom__row__textLabel}>Address</p>
+              <p className={s.content__viewBottom__row__textLabel}>Address line 1*</p>
               <Form.Item
-                name="headquarterAddress"
+                name="headquarterAddressLine1"
                 label={false}
                 rules={[
                   {
@@ -236,7 +348,22 @@ class CompanyDetails extends Component {
                   },
                 ]}
               >
-                <Input placeholder="Headquarter Address" />
+                <Input placeholder="Address Line 1" />
+              </Form.Item>
+            </div>
+            <div className={s.content__viewBottom__row}>
+              <p className={s.content__viewBottom__row__textLabel}>Address Line 2</p>
+              <Form.Item
+                name="headquarterAddressLine2"
+                label={false}
+                rules={[
+                  {
+                    required: false,
+                    message: 'Please enter Address!',
+                  },
+                ]}
+              >
+                <Input placeholder="Address Line 2" />
               </Form.Item>
             </div>
             <div className={s.content__viewBottom__row}>
@@ -340,9 +467,9 @@ class CompanyDetails extends Component {
             className={classnames(s.content__viewBottom, { [s.hidden]: checkLegalSameHeadQuarter })}
           >
             <div className={s.content__viewBottom__row}>
-              <p className={s.content__viewBottom__row__textLabel}>Address</p>
+              <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
               <Form.Item
-                name="legalAddress"
+                name="legalAddressLine1"
                 label={false}
                 rules={[
                   {
@@ -351,7 +478,22 @@ class CompanyDetails extends Component {
                   },
                 ]}
               >
-                <Input placeholder="Legal Address" />
+                <Input placeholder="Address Line 1" />
+              </Form.Item>
+            </div>
+            <div className={s.content__viewBottom__row}>
+              <p className={s.content__viewBottom__row__textLabel}>Address Line 2</p>
+              <Form.Item
+                name="legalAddressLine2"
+                label={false}
+                rules={[
+                  {
+                    required: false,
+                    message: 'Please enter Address!',
+                  },
+                ]}
+              >
+                <Input placeholder="Address Line 2" />
               </Form.Item>
             </div>
             <div className={s.content__viewBottom__row}>
@@ -448,8 +590,38 @@ class CompanyDetails extends Component {
             </div>
           </div>
         </div>
+        <div className={s.blockContent} style={{ marginTop: '24px' }}>
+          <div className={s.content__viewTop}>
+            <p className={s.title}>Contact information</p>
+          </div>
+          <div className={s.content__viewBottom}>
+            {fieldContactInformation.map(
+              ({ label, name: nameField, required = false, message, placeholder }) => (
+                <div key={nameField} className={s.content__viewBottom__row}>
+                  <p className={s.content__viewBottom__row__textLabel}>{label}</p>
+                  <Form.Item
+                    name={nameField}
+                    rules={[
+                      {
+                        required,
+                        message,
+                      },
+                    ]}
+                  >
+                    <Input placeholder={placeholder} />
+                  </Form.Item>
+                </div>
+              ),
+            )}
+          </div>
+        </div>
         <div className={s.viewBtn}>
-          <Button className={s.btnSubmit} htmlType="submit" loading={loadingUpdate}>
+          <Button
+            className={s.btnSubmit}
+            htmlType="submit"
+            loading={companyId ? loadingUpdate : loadingAdd}
+            onClick={this.handleClick}
+          >
             Save
           </Button>
         </div>
