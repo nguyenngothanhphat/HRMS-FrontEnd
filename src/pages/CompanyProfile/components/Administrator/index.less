@@ -2,6 +2,7 @@
   box-sizing: border-box;
   width: 100%;
   height: fit-content;
+  color: #161c29;
 
   font-style: normal;
   background: #ffffff;
@@ -29,6 +30,33 @@
       font-size: 14px;
       line-height: 16px;
       text-decoration-line: underline;
+    }
+  }
+
+  .primaryList {
+    padding: 23px 17px 20px 34px;
+    &__right {
+      .name {
+        margin-bottom: 14px;
+        font-weight: bold;
+        font-size: 16px;
+        line-height: 18.75px;
+      }
+
+      .email {
+        font-weight: normal;
+        font-size: 13px;
+        line-height: 15px;
+      }
+    }
+
+    &__left {
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 15px;
+      .company {
+        margin-bottom: 14px;
+      }
     }
   }
 }
