@@ -104,8 +104,9 @@ class WorkLocations extends PureComponent {
       loading,
       fetchingLocationsList,
       loadingCountry,
-      companyDetails,
+      companyDetails = {},
     } = this.props;
+
     const listLocation = this.formatListLocation();
 
     const defaultListLocation = listLocation.length === 0 ? [{}] : listLocation;
@@ -120,6 +121,7 @@ class WorkLocations extends PureComponent {
         } = {},
       },
     } = companyDetails;
+
     if (fetchingLocationsList || loadingCountry)
       return (
         <div className={s.root}>

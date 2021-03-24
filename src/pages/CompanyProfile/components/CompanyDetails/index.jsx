@@ -180,7 +180,7 @@ class CompanyDetails extends Component {
   };
 
   // COMPANY DETAILS REGEX
-  getRegexPattern = (index) => {
+  getRegexPatternCompanyDetails = (index) => {
     switch (index) {
       case 2:
         return /^[0-9]*$/;
@@ -192,7 +192,7 @@ class CompanyDetails extends Component {
     }
   };
 
-  getRegexMessage = (index) => {
+  getRegexMessageCompanyDetails = (index) => {
     switch (index) {
       case 2:
         return 'Number only';
@@ -394,8 +394,8 @@ class CompanyDetails extends Component {
                         message,
                       },
                       {
-                        pattern: this.getRegexPattern(index),
-                        message: this.getRegexMessage(index),
+                        pattern: this.getRegexPatternCompanyDetails(index),
+                        message: this.getRegexMessageCompanyDetails(index),
                       },
                     ]}
                   >
