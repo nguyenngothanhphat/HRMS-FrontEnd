@@ -424,12 +424,21 @@ class CompanyDetails extends Component {
                   placeholder="Select Parent Company"
                   showArrow
                   showSearch
+                  allowClear
+                  defaultValue=""
                   className={s.parentCompanySelect}
                   // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
                   filterOption={(input, option) =>
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   }
                 >
+                  <Option
+                    key=""
+                    value=""
+                    style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                  >
+                    None
+                  </Option>
                   {listCompany.map((item) => (
                     <Option key={item._id}>{item.name}</Option>
                   ))}
