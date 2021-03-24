@@ -179,6 +179,61 @@ class CompanyDetails extends Component {
     }
   };
 
+  // COMPANY DETAILS REGEX
+  getRegexPattern = (index) => {
+    switch (index) {
+      case 2:
+        return /^[0-9]*$/;
+      // eslint-disable-next-line no-useless-escape
+      case 3:
+        return /(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,63}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?/;
+      default:
+        return '';
+    }
+  };
+
+  getRegexMessage = (index) => {
+    switch (index) {
+      case 2:
+        return 'Number only';
+      case 3:
+        return 'Wrong format. Example: www.hrms.com or https://www.hrms.com/...';
+      default:
+        return '';
+    }
+  };
+
+  // CONTACT INFORMATION REGEX
+  getRegexPatternContact = (index) => {
+    switch (index) {
+      case 3:
+        // eslint-disable-next-line no-useless-escape
+        return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+      default:
+        return '';
+    }
+  };
+
+  getRegexMessageContact = (index) => {
+    switch (index) {
+      case 3:
+        // eslint-disable-next-line no-useless-escape
+        return 'Wrong phone number format.';
+      default:
+        return '';
+    }
+  };
+
+  getTypeContact = (index) => {
+    switch (index) {
+      case 0:
+      case 2:
+        return 'email';
+      default:
+        return '';
+    }
+  };
+
   render() {
     const {
       countryHeadquarter = '',
@@ -205,8 +260,13 @@ class CompanyDetails extends Component {
         required: true,
         message: 'Please enter DBA!',
       },
-      { label: 'Employer Identification Number (EIN)', name: 'ein' },
-      { label: 'Compay Website', name: 'website' },
+      {
+        label: 'Employer Identification Number (EIN)*',
+        name: 'ein',
+        required: true,
+        message: 'Please enter EIN!',
+      },
+      { label: 'Company Website', name: 'website' },
     ];
 
     const fieldContactInformation = [
@@ -279,12 +339,21 @@ class CompanyDetails extends Component {
       // ],
       // isNewTenant,
     } = companyDetails;
+
+    const validateMessages = {
+      types: {
+        // eslint-disable-next-line no-template-curly-in-string
+        email: 'Wrong email format!',
+      },
+    };
+
     return (
       <Form
         className={s.root}
         ref={this.formRef}
         onFinish={this.onFinish}
         autoComplete="off"
+        validateMessages={validateMessages}
         initialValues={{
           name,
           dba,
@@ -313,22 +382,28 @@ class CompanyDetails extends Component {
             <p className={s.title}>Company Details</p>
           </div>
           <div className={s.content__viewBottom}>
-            {fieldCompanyDetail.map(({ label, name: nameField, required = false, message }) => (
-              <div key={nameField} className={s.content__viewBottom__row}>
-                <p className={s.content__viewBottom__row__textLabel}>{label}</p>
-                <Form.Item
-                  name={nameField}
-                  rules={[
-                    {
-                      required,
-                      message,
-                    },
-                  ]}
-                >
-                  <Input placeholder={label} />
-                </Form.Item>
-              </div>
-            ))}
+            {fieldCompanyDetail.map(
+              ({ label, name: nameField, required = false, message }, index) => (
+                <div key={nameField} className={s.content__viewBottom__row}>
+                  <p className={s.content__viewBottom__row__textLabel}>{label}</p>
+                  <Form.Item
+                    name={nameField}
+                    rules={[
+                      {
+                        required,
+                        message,
+                      },
+                      {
+                        pattern: this.getRegexPattern(index),
+                        message: this.getRegexMessage(index),
+                      },
+                    ]}
+                  >
+                    <Input placeholder={label} />
+                  </Form.Item>
+                </div>
+              ),
+            )}
           </div>
         </div>
         <div className={s.blockContent} style={{ marginTop: '24px' }}>
@@ -337,7 +412,7 @@ class CompanyDetails extends Component {
           </div>
           <div className={s.content__viewBottom}>
             <div className={s.content__viewBottom__row}>
-              <p className={s.content__viewBottom__row__textLabel}>Address line 1*</p>
+              <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
               <Form.Item
                 name="headquarterAddressLine1"
                 label={false}
@@ -596,7 +671,7 @@ class CompanyDetails extends Component {
           </div>
           <div className={s.content__viewBottom}>
             {fieldContactInformation.map(
-              ({ label, name: nameField, required = false, message, placeholder }) => (
+              ({ label, name: nameField, required = false, message, placeholder }, index) => (
                 <div key={nameField} className={s.content__viewBottom__row}>
                   <p className={s.content__viewBottom__row__textLabel}>{label}</p>
                   <Form.Item
@@ -605,6 +680,13 @@ class CompanyDetails extends Component {
                       {
                         required,
                         message,
+                      },
+                      {
+                        pattern: this.getRegexPatternContact(index),
+                        message: this.getRegexMessageContact(index),
+                      },
+                      {
+                        type: this.getTypeContact(index),
                       },
                     ]}
                   >

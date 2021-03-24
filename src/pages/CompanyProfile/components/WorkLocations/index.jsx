@@ -66,6 +66,7 @@ class WorkLocations extends PureComponent {
     } else {
       console.log('payload add new company', payload);
       companyDetails.locations = [...locations];
+      companyDetails.isNewTenant = true;
       dispatch({
         type: 'companiesManagement/addCompanyTenant',
         payload: companyDetails,

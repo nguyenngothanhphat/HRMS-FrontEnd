@@ -163,10 +163,10 @@ const companiesManagement = {
           message,
         });
         console.log(response);
-        yield put({
-          type: 'fetchLocationsList',
-          payload: { company: payload },
-        });
+        // yield put({
+        //   type: 'fetchLocationsList',
+        //   payload: { company: payload },
+        // });
         yield put({
           type: 'saveOrigin',
           payload: { originData: { companyDetails: payload } },

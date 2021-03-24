@@ -133,12 +133,12 @@ class FormWorkLocation extends Component {
               label={false}
               name={[field.name, 'address']}
               fieldKey={[field.fieldKey, 'address']}
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter Address!',
-                },
-              ]}
+              // rules={[
+              //   {
+              //     required: true,
+              //     message: 'Please enter Address!',
+              //   },
+              // ]}
             >
               <Input placeholder="Address" />
             </Form.Item>
