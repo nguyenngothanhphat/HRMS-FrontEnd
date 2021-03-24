@@ -118,8 +118,8 @@ class CompanyDetails extends Component {
 
     const { listCompany = [] } = this.props;
 
-    let parentCompanyTenant = listCompany.find((company) => company?._id === parentCompany);
-    parentCompanyTenant = parentCompanyTenant?.tenant;
+    let parentTenantId = listCompany.find((company) => company?._id === parentCompany);
+    parentTenantId = parentTenantId?.tenant;
 
     const payload = {
       // id: companyId || '',
@@ -170,7 +170,7 @@ class CompanyDetails extends Component {
       ],
       isNewTenant: false,
       childOfCompany: parentCompany,
-      tenantId: parentCompanyTenant,
+      parentTenantId,
     };
     if (companyId) {
       dispatch({
