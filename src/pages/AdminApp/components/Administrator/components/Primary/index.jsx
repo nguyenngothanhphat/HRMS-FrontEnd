@@ -3,7 +3,7 @@ import ViewPrimary from './View';
 import EditPrimary from './Edit';
 import styles from './index.less';
 
-class PrimaryAdminstrator extends Component {
+class PrimaryAdministrator extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -14,6 +14,10 @@ class PrimaryAdminstrator extends Component {
   onClickChange = () => {
     this.setState({ isChange: true });
   };
+
+  onCancel = () => {
+    this.setState({ isChange: false });
+  }
 
   render() {
     const { isChange } = this.state;
@@ -27,10 +31,10 @@ class PrimaryAdminstrator extends Component {
           </div>
         </div>
 
-        <div className={styles.primary}>{isChange ? <EditPrimary /> : <ViewPrimary />}</div>
+        <div className={styles.primary}>{isChange ? <EditPrimary onCancel={this.onCancel} /> : <ViewPrimary />}</div>
       </div>
     );
   }
 }
 
-export default PrimaryAdminstrator;
+export default PrimaryAdministrator;

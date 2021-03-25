@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Menu, Dropdown } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
+import icon from '@/assets/primary-administrator.svg';
 
 import styles from './index.less';
 
@@ -10,6 +12,19 @@ class ViewPrimary extends Component {
   }
 
   render() {
+
+    const menu = (
+      <Menu>
+        <Menu.Item key="0">
+          1st menu item
+        </Menu.Item>
+        <Menu.Item key="1">
+          2nd menu item
+        </Menu.Item>
+        <Menu.Divider />
+        <Menu.Item key="3">3rd menu item</Menu.Item>
+      </Menu>
+    );
     return (
       <div className={styles.primaryView}>
         <Row gutter={[0, 16]}>
@@ -40,10 +55,17 @@ class ViewPrimary extends Component {
           </Col>
           <Col span={16}>
             <div className={styles.primaryView__right}>
+              <img src={icon} alt='primary-administrator' />
               <div className={styles.email}>
                 renil@terralogic.comRenil’s permission apply to everyone in the company
               </div>
             </div>
+          </Col>
+          <Col span={8} />
+          <Col span={16}>
+            <Dropdown overlay={menu} trigger={['click']}>
+              Click me <DownOutlined />
+            </Dropdown>
           </Col>
         </Row>
       </div>
