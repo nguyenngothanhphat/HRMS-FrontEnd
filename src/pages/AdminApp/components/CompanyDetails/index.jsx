@@ -419,7 +419,7 @@ class CompanyDetails extends Component {
                       },
                     ]}
                   >
-                    <Input placeholder={label} />
+                    <Input disabled placeholder={label} />
                   </Form.Item>
                 </div>
               ),
@@ -432,6 +432,7 @@ class CompanyDetails extends Component {
                   showArrow
                   showSearch
                   allowClear
+                  disabled
                   defaultValue=""
                   className={s.parentCompanySelect}
                   // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
@@ -442,6 +443,7 @@ class CompanyDetails extends Component {
                   <Option
                     key=""
                     value=""
+                    disabled
                     style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
                   >
                     None
@@ -471,7 +473,7 @@ class CompanyDetails extends Component {
                   },
                 ]}
               >
-                <Input placeholder="Address Line 1" />
+                <Input disabled placeholder="Address Line 1" />
               </Form.Item>
             </div>
             <div className={s.content__viewBottom__row}>
@@ -486,7 +488,7 @@ class CompanyDetails extends Component {
                   },
                 ]}
               >
-                <Input placeholder="Address Line 2" />
+                <Input disabled placeholder="Address Line 2" />
               </Form.Item>
             </div>
             <div className={s.content__viewBottom__row}>
@@ -513,6 +515,7 @@ class CompanyDetails extends Component {
                     placeholder="Select Country"
                     showArrow
                     showSearch
+                    disabled
                     onChange={(value) => this.onChangeCountry(value, 'countryHeadquarter')}
                     filterOption={(input, option) =>
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -547,6 +550,7 @@ class CompanyDetails extends Component {
                     placeholder="Select State"
                     showArrow
                     showSearch
+                    disabled
                     disabled={!countryHeadquarter}
                     filterOption={(input, option) =>
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -577,14 +581,16 @@ class CompanyDetails extends Component {
                     },
                   ]}
                 >
-                  <Input placeholder="Zip Code" />
+                  <Input disabled placeholder="Zip Code" />
                 </Form.Item>
               </div>
             </div>
           </div>
           <div className={classnames(s.content__viewTop, s.content__viewTop__legalAddress)}>
             <p className={s.title}>Legal Address</p>
-            <Checkbox onChange={this.onChangeCheckbox}>Same as Headquarters address</Checkbox>
+            <Checkbox disabled onChange={this.onChangeCheckbox}>
+              Same as Headquarters address
+            </Checkbox>
           </div>
           <div
             className={classnames(s.content__viewBottom, { [s.hidden]: checkLegalSameHeadQuarter })}
@@ -601,7 +607,7 @@ class CompanyDetails extends Component {
                   },
                 ]}
               >
-                <Input placeholder="Address Line 1" />
+                <Input disabled placeholder="Address Line 1" />
               </Form.Item>
             </div>
             <div className={s.content__viewBottom__row}>
@@ -616,7 +622,7 @@ class CompanyDetails extends Component {
                   },
                 ]}
               >
-                <Input placeholder="Address Line 2" />
+                <Input disabled placeholder="Address Line 2" />
               </Form.Item>
             </div>
             <div className={s.content__viewBottom__row}>
@@ -643,6 +649,7 @@ class CompanyDetails extends Component {
                     placeholder="Select Country"
                     showArrow
                     showSearch
+                    disabled
                     onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
                     filterOption={(input, option) =>
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -677,6 +684,7 @@ class CompanyDetails extends Component {
                     placeholder="Select State"
                     showArrow
                     showSearch
+                    disabled
                     disabled={!countryLegal}
                     filterOption={(input, option) =>
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -707,7 +715,7 @@ class CompanyDetails extends Component {
                     },
                   ]}
                 >
-                  <Input placeholder="Zip Code" />
+                  <Input disabled placeholder="Zip Code" />
                 </Form.Item>
               </div>
             </div>
@@ -741,7 +749,7 @@ class CompanyDetails extends Component {
                       },
                     ]}
                   >
-                    <Input placeholder={placeholder} defaultValue={defaultValue} />
+                    <Input disabled placeholder={placeholder} defaultValue={defaultValue} />
                   </Form.Item>
                 </div>
               ),
@@ -754,6 +762,7 @@ class CompanyDetails extends Component {
             htmlType="submit"
             loading={companyId ? loadingUpdate : loadingAdd}
             onClick={this.handleClick}
+            disabled
           >
             Save
           </Button>

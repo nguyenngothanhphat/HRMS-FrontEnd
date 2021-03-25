@@ -138,12 +138,7 @@ class AvatarDropdown extends React.Component {
     //   generalInfo: { avatar = '', employeeId = '' } = {},
     //   title = {},
     // } = currentUser;
-    const {
-      firstName: name = '',
-      avatar = '',
-      employeeId = '',
-      // title = {},
-    } = currentUser;
+    const { firstName: name = '', avatar = '', employeeId = '', title = {} } = currentUser;
     const { selectLocationAbility } = this.state;
 
     const { LOGOUT, CHANGEPASSWORD } = this.state;
@@ -162,7 +157,7 @@ class AvatarDropdown extends React.Component {
             <p>{name}</p>
             {employeeId && (
               <p>
-                {title.name} - {employeeId}
+                {title?.name} - {employeeId}
               </p>
             )}
           </div>
