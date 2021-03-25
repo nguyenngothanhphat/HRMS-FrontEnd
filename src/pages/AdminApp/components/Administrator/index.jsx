@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 // import { Row, Col } from 'antd';
-import PrimaryAdministrator from './components/Primary';
+import AdditionalAdminstrator from './components/Additional';
+import PrimaryAdminstrator from './components/Primary';
 
 import styles from './index.less';
 
-class Administrator extends Component {
+class Adminstrator extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -14,12 +15,14 @@ class Administrator extends Component {
     return (
       <div className={styles.root}>
         <div className={styles.root__top}>
-          <PrimaryAdministrator />
+          <PrimaryAdminstrator />
         </div>
-        <div className={styles.root__bottom} />
+        <div className={styles.root__bottom}>
+          <AdditionalAdminstrator />
+        </div>
       </div>
     );
   }
 }
 
-export default Administrator;
+export default Adminstrator;

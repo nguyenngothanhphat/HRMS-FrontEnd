@@ -3,7 +3,7 @@ import ViewPrimary from './View';
 import EditPrimary from './Edit';
 import styles from './index.less';
 
-class PrimaryAdministrator extends Component {
+class PrimaryAdminstrator extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -23,9 +23,9 @@ class PrimaryAdministrator extends Component {
     const { isChange } = this.state;
 
     return (
-      <div className={styles.administrator}>
+      <div className={styles.adminstrator}>
         <div className={styles.header}>
-          <div className={styles.header__title}>Primary administrator</div>
+          <div className={styles.header__title}>Primary Adminstrator</div>
           <div className={styles.header__action} onClick={this.onClickChange}>
             Change
           </div>
@@ -37,4 +37,4 @@ class PrimaryAdministrator extends Component {
   }
 }
 
-export default PrimaryAdministrator;
+export default PrimaryAdminstrator;
