@@ -11,35 +11,35 @@ class ViewPrimary extends Component {
 
   render() {
     return (
-      <div className={styles.primaryContent}>
+      <div className={styles.primaryView}>
         <Row gutter={[0, 16]}>
           <Col span={8}>
-            <div className={styles.primaryContent__left}>
+            <div className={styles.primaryView__left}>
               <div>Employee Name</div>
             </div>
           </Col>
           <Col span={16}>
-            <div className={styles.primaryContent__right}>
+            <div className={styles.primaryView__right}>
               <div className={styles.name}>Renil Komitla</div>
             </div>
           </Col>
           <Col span={8}>
-            <div className={styles.primaryContent__left}>
+            <div className={styles.primaryView__left}>
               <div>Email</div>
             </div>
           </Col>
           <Col span={16}>
-            <div className={styles.primaryContent__right}>
+            <div className={styles.primaryView__right}>
               <div className={styles.email}>renil@terralogic.com</div>
             </div>
           </Col>
           <Col span={8}>
-            <div className={styles.primaryContent__left}>
+            <div className={styles.primaryView__left}>
               <div>Position</div>
             </div>
           </Col>
           <Col span={16}>
-            <div className={styles.primaryContent__right}>
+            <div className={styles.primaryView__right}>
               <div className={styles.email}>
                 renil@terralogic.comRenil’s permission apply to everyone in the company
               </div>

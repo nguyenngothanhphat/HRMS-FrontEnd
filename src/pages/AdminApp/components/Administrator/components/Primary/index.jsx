@@ -19,7 +19,7 @@ class PrimaryAdminstrator extends Component {
     const { isChange } = this.state;
 
     return (
-      <div className={styles.root}>
+      <div className={styles.administrator}>
         <div className={styles.header}>
           <div className={styles.header__title}>Primary administrator</div>
           <div className={styles.header__action} onClick={this.onClickChange}>

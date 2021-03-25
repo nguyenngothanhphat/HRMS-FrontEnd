@@ -1,10 +1,10 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 // import { Row, Col } from 'antd';
 import PrimaryAdminstrator from './components/Primary';
 
 import styles from './index.less';
 
-class Administrator extends PureComponent {
+class Administrator extends Component {
   constructor(props) {
     super(props);
     this.state = {};
