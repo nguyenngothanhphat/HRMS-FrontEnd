@@ -24,10 +24,14 @@ const companiesManagement = {
     locationsOfDetail: [],
     locationsList: [],
     originData: {
-      companyDetails: {},
+      companyDetails: {
+        company: {}
+      },
     },
     tempData: {
-      companyDetails: {},
+      companyDetails: {
+        company: {}
+      },
     },
     idCurrentCompany: '',
     isOpenEditWorkLocation: false,
@@ -35,33 +39,10 @@ const companiesManagement = {
   effects: {
     *fetchCompanyDetails({ payload: { id = '' }, dataTempKept = {} }, { call, put }) {
       try {
-        // const response = yield call(getCompanyDetails, { id });
-        // const { statusCode, data: companyDetails1 = {} } = response;
-        const companyDetails = {
-          _id : "60541831a415043c1f09a63c",
-          status : "ACTIVE",
-          name : "TERRAL",
-          dba : "AA",
-          ein : "AA",
-          headQuarterAddress : {
-              country : "AL",
-              state : "Delvine",
-              zipCode : "674565",
-              addressLine1 : "SDS",
-              addressLine: "S"
-          },
-          legalAddress : {
-              country : "AL",
-              state : "Delvine",
-              zipCode : "674565",
-              addressLine1 : "SDS",
-              addressLine2 : "S"
-          },
-          code : "TERR-062",
-        tenant : "_tl8qz",
-          companySignature : [],
-      }
-        // if (statusCode !== 200) throw response;
+        const response = yield call(getCompanyDetails, { id });
+        const { statusCode, data: company = {} } = response;
+        if (statusCode !== 200) throw response;
+        const companyDetails = {company}
         const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
         let companyDetailsTemp = { ...companyDetails };
         if (!checkDataTempKept) {
@@ -221,8 +202,8 @@ const companiesManagement = {
           message: 'Upload logo successfully',
         });
         yield put({
-          type: 'saveOrigin',
-          payload: { companyDetails: { logoUrl: payload } },
+          type: 'saveCompanyDetails',
+          payload: { logoUrl: payload },
         });
       } catch (error) {
         dialog(error);
@@ -325,6 +306,21 @@ const companiesManagement = {
         legalAddress: {
           ...legalAddress,
           ...action.payload,
+        },
+      };
+    },
+
+    saveCompanyDetails(state, action) {
+      const { company } = state;
+      return {
+        ...state,
+        originData: {
+          companyDetails: {
+            company: {
+              ...company,
+              ...action.payload,
+            },
+          },
         },
       };
     },

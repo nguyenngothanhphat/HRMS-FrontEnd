@@ -110,17 +110,17 @@ class WorkLocations extends PureComponent {
     const listLocation = this.formatListLocation();
 
     const defaultListLocation = listLocation.length === 0 ? [{}] : listLocation;
-    const {
-      company: {
-        headQuarterAddress: {
-          addressLine1 = '',
-          addressLine2 = '',
-          country = '',
-          state = '',
-          zipCode = '',
-        } = {},
-      },
-    } = companyDetails;
+    // const {
+    //   company: {
+    //     headQuarterAddress: {
+    //       addressLine1 = '',
+    //       addressLine2 = '',
+    //       country = '',
+    //       state = '',
+    //       zipCode = '',
+    //     } = {},
+    //   },
+    // } = companyDetails;
 
     if (fetchingLocationsList || loadingCountry)
       return (

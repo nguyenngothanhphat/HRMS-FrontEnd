@@ -3,8 +3,8 @@ import { Affix, Col, Row } from 'antd';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import UploadLogoCompany from '@/components/LayoutEmployeeProfile/components/UploadLogoCompany';
 import ItemMenu from './components/ItemMenu';
-import UploadLogoCompany from './components/UploadLogoCompany';
 import s from './index.less';
 
 @connect(({ employeeProfile: { isModified } = {}, user: { currentUser } = {} }) => ({

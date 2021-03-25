@@ -119,7 +119,7 @@ class FormWorkLocationTenant extends Component {
                 {...field}
                 label={false}
                 name="addressLine1"
-                value={companyDetails.company.headQuarterAddress.addressLine1}
+                // value={companyDetails.company.headQuarterAddress.addressLine1}
                 fieldKey={[field.fieldKey, 'name']}
                 rules={[
                   {

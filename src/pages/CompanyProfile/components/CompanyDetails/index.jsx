@@ -12,11 +12,13 @@ const { Option } = Select;
     loading,
     country: { listCountry = [] } = {},
     user: { currentUser: { email = '' } = {}, companiesOfUser: listCompany = [] } = {},
+    upload: { urlImage = '' } = {},
     companiesManagement: { originData: { companyDetails } = {} } = {},
   }) => ({
     listCountry,
     listCompany,
     companyDetails,
+    urlImage,
     loadingUpdate: loading.effects['companiesManagement/updateCompany'],
     loadingAdd: loading.effects['companiesManagement/addCompanyReducer'],
     email,
@@ -36,8 +38,10 @@ class CompanyDetails extends Component {
   componentDidMount() {
     const { companyDetails = {} } = this.props;
     const {
-      headQuarterAddress: { country: { _id: countryHeadquarter } = {} } = {},
-      legalAddress: { country: { _id: countryLegal } = {} } = {},
+      company: {
+        headQuarterAddress: { country: { _id: countryHeadquarter } = {} } = {},
+        legalAddress: { country: { _id: countryLegal } = {} } = {},
+      } = {},
     } = companyDetails;
     this.setState({
       countryHeadquarter,
@@ -93,11 +97,7 @@ class CompanyDetails extends Component {
   };
 
   onFinish = (values) => {
-    const {
-      dispatch,
-      companyId,
-      companyDetails: { logoUrl },
-    } = this.props;
+    const { dispatch, companyId, urlImage } = this.props;
     const {
       countryHeadquarter,
       countryLegal,
@@ -132,7 +132,7 @@ class CompanyDetails extends Component {
         dba,
         ein,
         website,
-        logoUrl,
+        logoUrl: urlImage,
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
           addressLine2: headquarterAddressLine2 || '',
@@ -314,31 +314,31 @@ class CompanyDetails extends Component {
     const listStateHead = this.findListState(countryHeadquarter) || [];
     const listStateLegal = this.findListState(countryLegal) || [];
     const {
-      // company: {
-      name,
-      dba,
-      ein,
-      website,
-      headQuarterAddress: {
-        addressLine1: headquarterAddressLine1,
-        addressLine2: headquarterAddressLine2,
-        country: { _id: countryHeadquarterProps } = {},
-        state: stateHeadquarter,
-        zipCode: zipHeadquarter,
+      company: {
+        name,
+        dba,
+        ein,
+        website,
+        headQuarterAddress: {
+          addressLine1: headquarterAddressLine1,
+          addressLine2: headquarterAddressLine2,
+          country: { _id: countryHeadquarterProps } = {},
+          state: stateHeadquarter,
+          zipCode: zipHeadquarter,
+        } = {},
+        legalAddress: {
+          addressLine1: legalAddressLine1,
+          addressLine2: legalAddressLine2,
+          country: { _id: countryLegalProps } = {},
+          state: stateLegal,
+          zipCode: zipLegal,
+        } = {},
+        contactEmail: ownerEmail,
+        hrContactEmail: hrEmail,
+        hrContactName: hrName,
+        hrContactPhone: hrPhone,
+        // isHeadquarter,
       } = {},
-      legalAddress: {
-        addressLine1: legalAddressLine1,
-        addressLine2: legalAddressLine2,
-        country: { _id: countryLegalProps } = {},
-        state: stateLegal,
-        zipCode: zipLegal,
-      } = {},
-      contactEmail: ownerEmail,
-      hrContactEmail: hrEmail,
-      hrContactName: hrName,
-      hrContactPhone: hrPhone,
-      // isHeadquarter,
-      // },
       // locations: [
       //   {
       //     headQuarterAddress: {
