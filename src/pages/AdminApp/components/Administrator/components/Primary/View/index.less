@@ -1,64 +1,28 @@
-.root {
-  box-sizing: border-box;
+.primaryContent {
   width: 100%;
   height: fit-content;
   color: #161c29;
+  font-weight: normal;
+  font-size: 13px;
   font-style: normal;
+  line-height: 15.23px;
 
-  background: #ffffff;
-  border: 1px solid #d6dce0;
-
-  border-radius: 5px;
-
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 26px 28px 24px;
-    border-bottom: 1px solid rgba(226, 228, 232, 0.54);
-
-    &__title {
-      font-weight: bold;
-      font-size: 16px;
-      line-height: 18.75px;
+  &__right {
+    .name {
+      color: #2c6df9;
     }
 
-    &__action {
-      padding-right: 17px;
-      color: #ffa100;
-      font-weight: 500;
-      font-size: 12px;
-      line-height: 14px;
-      text-align: right;
-      cursor: pointer;
-      text-decoration-line: underline;
+    .email {
+      color: #707177;
     }
   }
 
-  .primaryList {
-    padding: 26px 28px 19px;
+  &__left {
     font-weight: normal;
     font-size: 13px;
     line-height: 15.23px;
-
-    &__right {
-      .name {
-        color: #2c6df9;
-      }
-
-      .email {
-        color: #707177;
-      }
-    }
-
-    &__left {
-      font-weight: normal;
-      font-size: 13px;
-      line-height: 15.23px;
-      .company {
-        margin-bottom: 14px;
-      }
+    .company {
+      margin-bottom: 14px;
     }
   }
 }

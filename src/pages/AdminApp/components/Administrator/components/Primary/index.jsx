@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import ViewPrimary from './View';
+import EditPrimary from './Edit';
+import styles from './index.less';
 
 class PrimaryAdminstrator extends Component {
   constructor(props) {
@@ -9,7 +11,7 @@ class PrimaryAdminstrator extends Component {
     };
   }
 
-  handleChange = () => {
+  onClickChange = () => {
     this.setState({ isChange: true });
   };
 
@@ -17,8 +19,15 @@ class PrimaryAdminstrator extends Component {
     const { isChange } = this.state;
 
     return (
-      <div>
-        <ViewPrimary isChange={isChange} handleChange={this.handleChange} />
+      <div className={styles.root}>
+        <div className={styles.header}>
+          <div className={styles.header__title}>Primary administrator</div>
+          <div className={styles.header__action} onClick={this.onClickChange}>
+            Change
+          </div>
+        </div>
+
+        <div className={styles.primary}>{isChange ? <EditPrimary /> : <ViewPrimary />}</div>
       </div>
     );
   }
