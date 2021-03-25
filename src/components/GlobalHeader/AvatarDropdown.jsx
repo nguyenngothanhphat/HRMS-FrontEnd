@@ -34,13 +34,16 @@ class AvatarDropdown extends React.Component {
   }
 
   componentDidMount = () => {
-    const { dispatch, companyId = '', roles = [] } = this.props;
-    dispatch({
-      type: 'locationSelection/fetchLocationsByCompany',
-      payload: {
-        company: companyId,
-      },
-    });
+    const {
+      // dispatch, companyId = '',
+      roles = [],
+    } = this.props;
+    // dispatch({
+    //   type: 'locationSelection/fetchLocationsByCompany',
+    //   payload: {
+    //     company: companyId,
+    //   },
+    // });
     roles.forEach((role) => {
       const { _id = '' } = role;
       if (['ADMIN-CSA', 'HR-GLOBAL'].includes(_id)) {
