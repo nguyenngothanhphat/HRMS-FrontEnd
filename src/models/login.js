@@ -45,6 +45,8 @@ const Model = {
         let isAdminOrOwner = false;
         if (formatRole.includes('owner') || signInRole.includes('admin')) {
           isAdminOrOwner = true;
+          formatArrRoles.push('admin-csa');
+          setAuthority(formatArrRoles);
         }
 
         if (isAdminOrOwner || listCompany.length > 1) {

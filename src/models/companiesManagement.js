@@ -191,6 +191,20 @@ const companiesManagement = {
       }
     },
 
+    *addLogoReducer({ payload = {} }, { put }) {
+      try {
+        notification.success({
+          message: 'Upload logo successfully',
+        });
+        yield put({
+          type: 'saveOrigin',
+          payload: { companyDetails: { logoUrl: payload } },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
     *updateLocation({ payload = {} }, { call, put }) {
       let resp = '';
       try {
