@@ -255,7 +255,7 @@ export async function getTitleByDepartment(payload) {
 }
 
 export async function getLocationsByCompany(payload) {
-  return request('/api/location/get-by-company', {
+  return request('/api/locationtenant/get-by-company', {
     method: 'POST',
     data: payload,
   });

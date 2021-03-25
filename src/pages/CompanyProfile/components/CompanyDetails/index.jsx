@@ -39,8 +39,10 @@ class CompanyDetails extends Component {
   componentDidMount() {
     const { companyDetails = {} } = this.props;
     const {
-      headQuarterAddress: { country: { _id: countryHeadquarter } = {} } = {},
-      legalAddress: { country: { _id: countryLegal } = {} } = {},
+      company: {
+        headQuarterAddress: { country: { _id: countryHeadquarter } = {} } = {},
+        legalAddress: { country: { _id: countryLegal } = {} } = {},
+      } = {},
     } = companyDetails;
     this.setState({
       countryHeadquarter,
@@ -313,31 +315,31 @@ class CompanyDetails extends Component {
     const listStateHead = this.findListState(countryHeadquarter) || [];
     const listStateLegal = this.findListState(countryLegal) || [];
     const {
-      // company: {
-      name,
-      dba,
-      ein,
-      website,
-      headQuarterAddress: {
-        addressLine1: headquarterAddressLine1,
-        addressLine2: headquarterAddressLine2,
-        country: { _id: countryHeadquarterProps } = {},
-        state: stateHeadquarter,
-        zipCode: zipHeadquarter,
+      company: {
+        name,
+        dba,
+        ein,
+        website,
+        headQuarterAddress: {
+          addressLine1: headquarterAddressLine1,
+          addressLine2: headquarterAddressLine2,
+          country: { _id: countryHeadquarterProps } = {},
+          state: stateHeadquarter,
+          zipCode: zipHeadquarter,
+        } = {},
+        legalAddress: {
+          addressLine1: legalAddressLine1,
+          addressLine2: legalAddressLine2,
+          country: { _id: countryLegalProps } = {},
+          state: stateLegal,
+          zipCode: zipLegal,
+        } = {},
+        contactEmail: ownerEmail,
+        hrContactEmail: hrEmail,
+        hrContactName: hrName,
+        hrContactPhone: hrPhone,
+        // isHeadquarter,
       } = {},
-      legalAddress: {
-        addressLine1: legalAddressLine1,
-        addressLine2: legalAddressLine2,
-        country: { _id: countryLegalProps } = {},
-        state: stateLegal,
-        zipCode: zipLegal,
-      } = {},
-      contactEmail: ownerEmail,
-      hrContactEmail: hrEmail,
-      hrContactName: hrName,
-      hrContactPhone: hrPhone,
-      // isHeadquarter,
-      // },
       // locations: [
       //   {
       //     headQuarterAddress: {

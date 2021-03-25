@@ -37,7 +37,8 @@ class WorkLocations extends PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch, companyId = '' } = this.props;
+    const companyId = localStorage.getItem('currentCompanyId');
+    const { dispatch } = this.props;
 
     if (companyId) {
       dispatch({
@@ -56,7 +57,8 @@ class WorkLocations extends PureComponent {
   }
 
   onFinish = ({ workLocations: locations = [] }) => {
-    const { dispatch, companyId = '', companyDetails } = this.props;
+    const { dispatch, companyDetails } = this.props;
+    const companyId = localStorage.getItem('currentCompanyId');
     const payload = { locations, company: companyId };
     if (companyId) {
       dispatch({
@@ -107,20 +109,21 @@ class WorkLocations extends PureComponent {
       companyDetails = {},
     } = this.props;
 
+    console.log('companyDetails', companyDetails);
     const listLocation = this.formatListLocation();
 
     const defaultListLocation = listLocation.length === 0 ? [{}] : listLocation;
-    const {
-      company: {
-        headQuarterAddress: {
-          addressLine1 = '',
-          addressLine2 = '',
-          country = '',
-          state = '',
-          zipCode = '',
-        } = {},
-      },
-    } = companyDetails;
+    // const {
+    //   company: {
+    //     headQuarterAddress: {
+    //       addressLine1 = '',
+    //       addressLine2 = '',
+    //       country = '',
+    //       state = '',
+    //       zipCode = '',
+    //     } = {},
+    //   },
+    // } = companyDetails;
 
     if (fetchingLocationsList || loadingCountry)
       return (
@@ -210,7 +213,7 @@ class WorkLocations extends PureComponent {
           </div>
         </div>
         <div className={s.viewBtn}>
-          <Button className={s.btnSubmit} htmlType="submit" loading={loading}>
+          <Button disabled className={s.btnSubmit} htmlType="submit" loading={loading}>
             Save
           </Button>
         </div>

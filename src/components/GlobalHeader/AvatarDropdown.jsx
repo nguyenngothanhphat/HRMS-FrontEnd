@@ -9,14 +9,10 @@ import styles from './index.less';
 @connect(
   ({
     locationSelection: { listLocationsByCompany = [] } = {},
-    user: {
-      currentUser: { roles = [], company: { _id: companyId = '', logoUrl = '' } = {} } = {},
-    } = {},
+    user: { currentUser: { roles = [] } = {} } = {},
     loading,
   }) => ({
     listLocationsByCompany,
-    companyId,
-    logoUrl,
     roles,
     loadingFetchLocation: loading.effects['locationSelection/fetchLocationsByCompany'],
   }),
@@ -34,21 +30,30 @@ class AvatarDropdown extends React.Component {
   }
 
   componentDidMount = () => {
-    const { dispatch, companyId = '', roles = [] } = this.props;
+    const {
+      dispatch,
+      // , roles = []
+    } = this.props;
+    const companyId = localStorage.getItem('currentCompanyId');
     dispatch({
       type: 'locationSelection/fetchLocationsByCompany',
       payload: {
         company: companyId,
       },
     });
-    roles.forEach((role) => {
-      const { _id = '' } = role;
-      if (['ADMIN-CSA', 'HR-GLOBAL'].includes(_id)) {
-        this.setState({
-          selectLocationAbility: true,
-        });
-      }
+
+    this.setState({
+      selectLocationAbility: true,
     });
+
+    // roles.forEach((role) => {
+    //   const { _id = '' } = role;
+    //   if (['ADMIN-CSA', 'HR-GLOBAL'].includes(_id)) {
+    //     this.setState({
+    //       selectLocationAbility: true,
+    //     });
+    //   }
+    // });
   };
 
   onFinish = () => {
