@@ -25,12 +25,12 @@ const companiesManagement = {
     locationsList: [],
     originData: {
       companyDetails: {
-        company: {}
+        company: {},
       },
     },
     tempData: {
       companyDetails: {
-        company: {}
+        company: {},
       },
     },
     idCurrentCompany: '',
@@ -42,7 +42,7 @@ const companiesManagement = {
         const response = yield call(getCompanyDetails, { id });
         const { statusCode, data: company = {} } = response;
         if (statusCode !== 200) throw response;
-        const companyDetails = {company}
+        const companyDetails = { company };
         const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
         let companyDetailsTemp = { ...companyDetails };
         if (!checkDataTempKept) {
@@ -314,14 +314,14 @@ const companiesManagement = {
       const { company } = state;
       return {
         ...state,
-        originData: {
-          companyDetails: {
-            company: {
-              ...company,
-              ...action.payload,
-            },
-          },
+        // originData: {
+        //   companyDetails: {
+        company: {
+          ...company,
+          ...action.payload,
         },
+        // },
+        // },
       };
     },
   },
