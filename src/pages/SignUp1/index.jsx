@@ -11,6 +11,7 @@ const SignUp1 = (props) => {
   const { dispatch } = props;
   const [isVisible, setIsVisible] = useState(false);
   const [isContinue, setIsContinue] = useState(false);
+  const [currentEmail, setCurrentEmail] = useState('');
 
   React.useEffect(() => {
     if (isContinue) {
@@ -63,10 +64,14 @@ const SignUp1 = (props) => {
   };
 
   const onLogin = () => {
-    history.push('/login');
+    history.push({
+      pathname: `/login`,
+      state: { autoFillEmail: currentEmail },
+    });
   };
 
-  const onEmailChange = () => {
+  const onEmailChange = (e) => {
+    setCurrentEmail(e.target.value);
     setIsContinue(false);
   };
 

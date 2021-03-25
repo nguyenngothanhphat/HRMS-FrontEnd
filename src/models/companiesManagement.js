@@ -162,10 +162,11 @@ const companiesManagement = {
         notification.success({
           message,
         });
-        yield put({
-          type: 'fetchLocationsList',
-          payload: { company: payload },
-        });
+        console.log(response);
+        // yield put({
+        //   type: 'fetchLocationsList',
+        //   payload: { company: payload },
+        // });
         yield put({
           type: 'saveOrigin',
           payload: { originData: { companyDetails: payload } },

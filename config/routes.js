@@ -1,5 +1,9 @@
 const routes = [
   {
+    path: '/',
+    redirect: '/account-setup',
+  },
+  {
     path: '/login',
     component: '../layouts/AuthLayout',
     routes: [
@@ -118,7 +122,7 @@ const routes = [
         ],
       },
       {
-        path: '/',
+        // path: '/',
         component: '../layouts/BasicLayout',
         authority: [
           'admin-sa',
@@ -132,10 +136,6 @@ const routes = [
           'leader',
         ],
         routes: [
-          {
-            path: '/',
-            redirect: '/dashboard',
-          },
           {
             path: '/dashboard',
             name: 'dashboard',

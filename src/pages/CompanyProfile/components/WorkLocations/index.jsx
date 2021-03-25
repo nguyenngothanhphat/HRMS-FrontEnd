@@ -66,6 +66,7 @@ class WorkLocations extends PureComponent {
     } else {
       // console.log('payload add new company', payload);
       companyDetails.locations = [...locations];
+      companyDetails.isNewTenant = true;
       dispatch({
         type: 'companiesManagement/addCompanyTenant',
         payload: companyDetails,
@@ -103,8 +104,9 @@ class WorkLocations extends PureComponent {
       loading,
       fetchingLocationsList,
       loadingCountry,
-      companyDetails,
+      companyDetails = {},
     } = this.props;
+
     const listLocation = this.formatListLocation();
 
     const defaultListLocation = listLocation.length === 0 ? [{}] : listLocation;
@@ -119,6 +121,7 @@ class WorkLocations extends PureComponent {
         } = {},
       },
     } = companyDetails;
+
     if (fetchingLocationsList || loadingCountry)
       return (
         <div className={s.root}>
