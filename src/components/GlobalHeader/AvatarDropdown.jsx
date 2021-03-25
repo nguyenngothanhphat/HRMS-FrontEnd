@@ -26,7 +26,7 @@ class AvatarDropdown extends React.Component {
     super(props);
     this.state = {
       LOGOUT: 'logout',
-      VIEWPROFILE: 'viewProfile',
+      // VIEWPROFILE: 'viewProfile',
       CHANGEPASSWORD: 'changePassword',
       SETTINGS: 'settings',
       selectLocationAbility: false,
@@ -133,10 +133,16 @@ class AvatarDropdown extends React.Component {
 
   render() {
     const { currentUser = {} } = this.props;
+    // const {
+    //   name = '',
+    //   generalInfo: { avatar = '', employeeId = '' } = {},
+    //   title = {},
+    // } = currentUser;
     const {
-      name = '',
-      generalInfo: { avatar = '', employeeId = '' } = {},
-      title = {},
+      firstName: name = '',
+      avatar = '',
+      employeeId = '',
+      // title = {},
     } = currentUser;
     const { selectLocationAbility } = this.state;
 

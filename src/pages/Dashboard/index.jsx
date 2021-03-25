@@ -67,48 +67,46 @@ class Dashboard extends PureComponent {
   }
 
   componentDidMount = async () => {
-    const {
-      dispatch,
-      currentUser: {
-        location: { _id: locationId = '' } = {},
-        company: { _id: companyId = '' } = {},
-        employee: { _id: employee = '' } = {},
-        company: { _id: idCompany = '' } = {},
-      } = {},
-    } = this.props;
-    dispatch({
-      type: 'employee/fetchListEmployeeMyTeam',
-      payload: {
-        location: [locationId],
-      },
-    });
-    dispatch({
-      type: 'offboarding/getListProjectByEmployee',
-      payload: {
-        employee,
-      },
-    });
-    dispatch({
-      type: 'frequentlyAskedQuestions/getListInit',
-    }).then(
-      dispatch({
-        type: 'frequentlyAskedQuestions/getListByCompany',
-        payload: { company: idCompany },
-      }),
-    );
-
-    const locations = await dispatch({
-      type: 'locationSelection/fetchLocationsByCompany',
-      payload: {
-        company: companyId,
-      },
-    });
-
-    const currentLocation = localStorage.getItem('currentLocation');
-    const locationName = locations.find((item) => item._id === currentLocation);
-    this.setState({
-      currentLocation: locationName?.name || '',
-    });
+    // const {
+    //   dispatch,
+    //   currentUser: {
+    //     location: { _id: locationId = '' } = {},
+    //     company: { _id: companyId = '' } = {},
+    //     employee: { _id: employee = '' } = {},
+    //     company: { _id: idCompany = '' } = {},
+    //   } = {},
+    // } = this.props;
+    // dispatch({
+    //   type: 'employee/fetchListEmployeeMyTeam',
+    //   payload: {
+    //     location: [locationId],
+    //   },
+    // });
+    // dispatch({
+    //   type: 'offboarding/getListProjectByEmployee',
+    //   payload: {
+    //     employee,
+    //   },
+    // });
+    // dispatch({
+    //   type: 'frequentlyAskedQuestions/getListInit',
+    // }).then(
+    //   dispatch({
+    //     type: 'frequentlyAskedQuestions/getListByCompany',
+    //     payload: { company: idCompany },
+    //   }),
+    // );
+    // const locations = await dispatch({
+    //   type: 'locationSelection/fetchLocationsByCompany',
+    //   payload: {
+    //     company: companyId,
+    //   },
+    // });
+    // const currentLocation = localStorage.getItem('currentLocation');
+    // const locationName = locations.find((item) => item._id === currentLocation);
+    // this.setState({
+    //   currentLocation: locationName?.name || '',
+    // });
   };
 
   componentWillUnmount() {
@@ -155,10 +153,7 @@ class Dashboard extends PureComponent {
           <Row gutter={[24, 24]} style={{ padding: '20px 20px 0 0' }}>
             <Col span={8}>
               <Affix offsetTop={10}>
-                <Greeting
-                  name={currentUser?.generalInfo?.firstName}
-                  currentLocation={currentLocation}
-                />
+                <Greeting name={currentUser?.firstName} currentLocation={currentLocation} />
                 <div className={styles.leftContainer}>
                   <ActivityLog />
                 </div>

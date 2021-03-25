@@ -143,6 +143,12 @@ const routes = [
             component: './Dashboard',
           },
           {
+            path: '/admin-app',
+            name: 'adminApp',
+            icon: '/assets/images/menuIcons/adminApp.svg',
+            component: './AdminApp',
+          },
+          {
             path: '/users',
             name: 'users',
             icon: '/assets/images/menuIcons/user.svg',
@@ -247,13 +253,13 @@ const routes = [
             hideInMenu: true,
             authority: ['admin-sa'],
           },
-          {
-            path: '/continue-company-profile',
-            component: './BackToCompanyProfile',
-            name: 'Company Profile',
-            icon: '/assets/images/menuIcons/members.svg',
-            authority: ['admin-csa'],
-          },
+          // {
+          //   path: '/continue-company-profile',
+          //   component: './BackToCompanyProfile',
+          //   name: 'Company Profile',
+          //   icon: '/assets/images/menuIcons/members.svg',
+          //   authority: ['admin-csa'],
+          // },
           {
             path: '/directory',
             name: 'directory',

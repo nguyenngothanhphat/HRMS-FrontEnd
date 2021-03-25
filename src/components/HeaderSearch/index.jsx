@@ -22,9 +22,9 @@ class HeaderSearch extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch({
-      type: 'searchAdvance/getHistorySearch',
-    });
+    // dispatch({
+    //   type: 'searchAdvance/getHistorySearch',
+    // });
   }
 
   changeMode = (mode) => {
