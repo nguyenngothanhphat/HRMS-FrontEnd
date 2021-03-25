@@ -121,6 +121,13 @@ class Dashboard extends PureComponent {
     });
   }
 
+  checkIsOwnerAdmin = () => {
+    const { currentUser: { signInRole = [] } = {} } = this.props;
+    const formatRole = signInRole.map((role) => role.toLowerCase());
+    if (formatRole.includes('admin') || formatRole.includes('owner')) return true;
+    return false;
+  };
+
   render() {
     const {
       listEmployeeMyTeam = [],
@@ -140,6 +147,8 @@ class Dashboard extends PureComponent {
     });
 
     const { currentLocation } = this.state;
+    const isOwnerAdmin = this.checkIsOwnerAdmin();
+
     return (
       <PageContainer>
         <div className={styles.containerDashboard}>
@@ -158,22 +167,25 @@ class Dashboard extends PureComponent {
             <Col span={16}>
               <Carousel />
               <MyApps />
-              <Row gutter={[12, 12]}>
-                <Col span={24}>
-                  <TabManageTeamWork
-                    listMyTeam={listEmployeeMyTeam}
-                    loadingMyTeam={fetchMyTeam}
-                    listProject={listProjectByEmployee}
-                    loadingProject={fetchListProject}
-                  />
-                </Col>
-                <Col span={14}>
-                  <Links title="FAQs" showButton listData={listQuestion} type="link" />
-                </Col>
-                <Col span={10}>
-                  <Links title="Quick Links" listData={listQuickLinks} type="viewPDF" />
-                </Col>
-              </Row>
+
+              {!isOwnerAdmin && (
+                <Row gutter={[12, 12]}>
+                  <Col span={24}>
+                    <TabManageTeamWork
+                      listMyTeam={listEmployeeMyTeam}
+                      loadingMyTeam={fetchMyTeam}
+                      listProject={listProjectByEmployee}
+                      loadingProject={fetchListProject}
+                    />
+                  </Col>
+                  <Col span={14}>
+                    <Links title="FAQs" showButton listData={listQuestion} type="link" />
+                  </Col>
+                  <Col span={10}>
+                    <Links title="Quick Links" listData={listQuickLinks} type="viewPDF" />
+                  </Col>
+                </Row>
+              )}
             </Col>
           </Row>
         </div>
