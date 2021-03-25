@@ -54,6 +54,12 @@ class UploadLogoCompany extends Component {
         });
       } else {
         console.log('payload add new company', first?.url);
+        dispatch({
+          type: 'companiesManagement/addLogoReducer',
+          payload: first?.url,
+          dataTempKept: {},
+          isAccountSetup: true,
+        });
         this.handleCancel();
       }
     }
@@ -62,6 +68,7 @@ class UploadLogoCompany extends Component {
   render() {
     const { visible } = this.state;
     const { companyDetails: { logoUrl = '' } = {} } = this.props;
+    console.log('logo', logoUrl);
     return (
       <>
         <div className={s.root}>

@@ -11,12 +11,14 @@ const { Option } = Select;
   ({
     loading,
     country: { listCountry = [] } = {},
+    user: { currentUser: { email = '' } = {} } = {},
     companiesManagement: { originData: { companyDetails } = {} } = {},
   }) => ({
     listCountry,
     companyDetails,
     loadingUpdate: loading.effects['companiesManagement/updateCompany'],
     loadingAdd: loading.effects['companiesManagement/addCompanyReducer'],
+    email,
   }),
 )
 class CompanyDetails extends Component {
@@ -90,8 +92,11 @@ class CompanyDetails extends Component {
   };
 
   onFinish = (values) => {
-    const { dispatch, companyId } = this.props;
-    console.log(companyId);
+    const {
+      dispatch,
+      companyId,
+      companyDetails: { logoUrl },
+    } = this.props;
     const {
       countryHeadquarter,
       countryLegal,
@@ -119,6 +124,7 @@ class CompanyDetails extends Component {
         dba,
         ein,
         website,
+        logoUrl,
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
           addressLine2: headquarterAddressLine2 || '',
@@ -169,7 +175,7 @@ class CompanyDetails extends Component {
         isAccountSetup: true,
       });
     } else {
-      console.log('payload add new company', payload);
+      // console.log('payload add new company', payload);
       dispatch({
         type: 'companiesManagement/addCompanyReducer',
         payload,
@@ -191,6 +197,7 @@ class CompanyDetails extends Component {
       loadingUpdate,
       loadingAdd,
       companyId,
+      email,
     } = this.props;
     const fieldCompanyDetail = [
       {
@@ -214,6 +221,7 @@ class CompanyDetails extends Component {
         label: 'Primary contact',
         name: 'ownerEmail',
         placeholder: "Company owner's email",
+        defaultValue: email,
       },
       {
         label: 'HR contact',
@@ -596,7 +604,14 @@ class CompanyDetails extends Component {
           </div>
           <div className={s.content__viewBottom}>
             {fieldContactInformation.map(
-              ({ label, name: nameField, required = false, message, placeholder }) => (
+              ({
+                label,
+                name: nameField,
+                required = false,
+                message,
+                placeholder,
+                defaultValue,
+              }) => (
                 <div key={nameField} className={s.content__viewBottom__row}>
                   <p className={s.content__viewBottom__row__textLabel}>{label}</p>
                   <Form.Item
@@ -608,7 +623,7 @@ class CompanyDetails extends Component {
                       },
                     ]}
                   >
-                    <Input placeholder={placeholder} />
+                    <Input placeholder={placeholder} defaultValue={defaultValue} />
                   </Form.Item>
                 </div>
               ),

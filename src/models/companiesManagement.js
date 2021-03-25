@@ -162,7 +162,6 @@ const companiesManagement = {
         notification.success({
           message,
         });
-        console.log(response);
         yield put({
           type: 'fetchLocationsList',
           payload: { company: payload },
@@ -185,6 +184,20 @@ const companiesManagement = {
         yield put({
           type: 'saveOrigin',
           payload: { companyDetails: payload },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    *addLogoReducer({ payload = {} }, { put }) {
+      try {
+        notification.success({
+          message: 'Upload logo successfully',
+        });
+        yield put({
+          type: 'saveOrigin',
+          payload: { companyDetails: { logoUrl: payload } },
         });
       } catch (error) {
         dialog(error);
