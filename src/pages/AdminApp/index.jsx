@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import Breadcrumb from '@/components/Breadcrumb';
+import { PageContainer } from '@/layouts/layout/src';
 import Layout from '@/components/LayoutAdminApp';
 import { connect } from 'umi';
 import CompanyDetails from './components/CompanyDetails';
 import WorkLocations from './components/WorkLocations';
-import Departments from './components/Departments';
-import CompanySignatory from './components/CompanySignatory';
+import PlanInfo from './components/PlanInfo';
+import BillingPayments from './components/BillingPayments';
+import Integrations from './components/Integrations';
 import styles from './index.less';
 
 @connect(
@@ -22,10 +23,8 @@ import styles from './index.less';
 )
 class AdminApp extends Component {
   componentDidMount() {
-    const {
-      dispatch,
-      match: { params: { id = '' } = {} },
-    } = this.props;
+    const { dispatch } = this.props;
+    const id = localStorage.getItem('currentCompanyId');
     dispatch({
       type: 'country/fetchListCountry',
     });
@@ -56,15 +55,7 @@ class AdminApp extends Component {
   }
 
   render() {
-    const {
-      match: { params: { id = '' } = {} },
-    } = this.props;
-    const routes = [
-      { name: 'Home', path: '/dashboard' },
-      {
-        name: 'Admin App',
-      },
-    ];
+    const id = localStorage.getItem('currentCompanyId');
 
     let listMenu = [
       {
@@ -84,24 +75,39 @@ class AdminApp extends Component {
         ...listMenu,
         {
           id: 3,
-          name: 'Departments',
-          component: <Departments companyId={id} />,
+          name: 'Administrator',
+          // component: <Departments companyId={id} />,
         },
         {
           id: 4,
-          name: 'Company Signatory',
-          component: <CompanySignatory companyId={id} />,
+          name: 'Plan info',
+          component: <PlanInfo companyId={id} />,
+        },
+        {
+          id: 5,
+          name: 'Billing & Payments',
+          component: <BillingPayments companyId={id} />,
+        },
+        {
+          id: 6,
+          name: 'Permission',
+          // component: <CompanySignatory companyId={id} />,
+        },
+        {
+          id: 7,
+          name: 'Integrations',
+          component: <Integrations companyId={id} />,
         },
       ];
     }
 
     return (
-      <>
-        <Breadcrumb routes={routes} />
+      <PageContainer>
         <div className={styles.root}>
-          <Layout listMenu={listMenu} isCompanyProfile />
+          <div className={styles.titlePage}>Admin App</div>
+          <Layout listMenu={listMenu} />
         </div>
-      </>
+      </PageContainer>
     );
   }
 }

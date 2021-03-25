@@ -107,6 +107,12 @@ class Dashboard extends PureComponent {
     // this.setState({
     //   currentLocation: locationName?.name || '',
     // });
+
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
   };
 
   componentWillUnmount() {

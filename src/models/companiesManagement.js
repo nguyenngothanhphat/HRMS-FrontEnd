@@ -24,10 +24,14 @@ const companiesManagement = {
     locationsOfDetail: [],
     locationsList: [],
     originData: {
-      companyDetails: {},
+      companyDetails: {
+        company: {}
+      },
     },
     tempData: {
-      companyDetails: {},
+      companyDetails: {
+        company: {}
+      },
     },
     idCurrentCompany: '',
     isOpenEditWorkLocation: false,
@@ -36,8 +40,9 @@ const companiesManagement = {
     *fetchCompanyDetails({ payload: { id = '' }, dataTempKept = {} }, { call, put }) {
       try {
         const response = yield call(getCompanyDetails, { id });
-        const { statusCode, data: companyDetails = {} } = response;
+        const { statusCode, data: company = {} } = response;
         if (statusCode !== 200) throw response;
+        const companyDetails = {company}
         const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
         let companyDetailsTemp = { ...companyDetails };
         if (!checkDataTempKept) {
@@ -197,8 +202,8 @@ const companiesManagement = {
           message: 'Upload logo successfully',
         });
         yield put({
-          type: 'saveOrigin',
-          payload: { companyDetails: { logoUrl: payload } },
+          type: 'saveCompanyDetails',
+          payload: { logoUrl: payload },
         });
       } catch (error) {
         dialog(error);
@@ -301,6 +306,21 @@ const companiesManagement = {
         legalAddress: {
           ...legalAddress,
           ...action.payload,
+        },
+      };
+    },
+
+    saveCompanyDetails(state, action) {
+      const { company } = state;
+      return {
+        ...state,
+        originData: {
+          companyDetails: {
+            company: {
+              ...company,
+              ...action.payload,
+            },
+          },
         },
       };
     },

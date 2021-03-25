@@ -3,9 +3,8 @@ import { Affix, Col, Row } from 'antd';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import UploadLogoCompany from '@/components/LayoutEmployeeProfile/components/UploadLogoCompany';
 import ItemMenu from './components/ItemMenu';
-import UploadLogoCompany from './components/UploadLogoCompany';
-import ViewInformation from './components/ViewInformation';
 import s from './index.less';
 
 @connect(({ employeeProfile: { isModified } = {}, user: { currentUser } = {} }) => ({
@@ -71,23 +70,14 @@ class CommonLayout extends PureComponent {
   };
 
   render() {
-    const {
-      listMenu = [],
-      employeeLocation = '',
-      permissions = {},
-      profileOwner = false,
-      isCompanyProfile = false,
-    } = this.props;
+    const { listMenu = [] } = this.props;
     const { displayComponent, selectedItemId } = this.state;
 
     return (
       <div className={s.root}>
-        <Affix offsetTop={isCompanyProfile ? 0 : 100} className={s.affix}>
+        <Affix offsetTop={45} className={s.affix}>
           <div className={s.viewLeft}>
-            <div
-              className={s.viewLeft__menu}
-              style={isCompanyProfile ? { padding: '24px 0 24px 40px' } : {}}
-            >
+            <div className={s.viewLeft__menu}>
               {listMenu.map((item) => (
                 <ItemMenu
                   key={item.id}
@@ -96,34 +86,13 @@ class CommonLayout extends PureComponent {
                   selectedItemId={selectedItemId}
                 />
               ))}
-              {/* {isCompanyProfile && (
-                <Button
-                  className={s.viewLeft__menu__btn}
-                  disabled={currentUser?.firstCreated}
-                  onClick={() =>
-                    history.push({
-                      pathname: '/',
-                    })
-                  }
-                >
-                  Go to dashboard
-                </Button>
-              )} */}
             </div>
           </div>
         </Affix>
         <Row className={s.viewRight} gutter={[24, 0]}>
-          <Col span={isCompanyProfile ? 16 : 18}>{displayComponent}</Col>
-          <Col span={isCompanyProfile ? 8 : 6}>
-            {isCompanyProfile ? (
-              <UploadLogoCompany />
-            ) : (
-              <ViewInformation
-                permissions={permissions}
-                profileOwner={profileOwner}
-                employeeLocation={employeeLocation}
-              />
-            )}
+          <Col span={16}>{displayComponent}</Col>
+          <Col span={8}>
+            <UploadLogoCompany />
           </Col>
         </Row>
       </div>

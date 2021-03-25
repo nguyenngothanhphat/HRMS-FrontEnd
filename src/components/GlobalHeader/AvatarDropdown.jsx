@@ -9,14 +9,10 @@ import styles from './index.less';
 @connect(
   ({
     locationSelection: { listLocationsByCompany = [] } = {},
-    user: {
-      currentUser: { roles = [], company: { _id: companyId = '', logoUrl = '' } = {} } = {},
-    } = {},
+    user: { currentUser: { roles = [] } = {} } = {},
     loading,
   }) => ({
     listLocationsByCompany,
-    companyId,
-    logoUrl,
     roles,
     loadingFetchLocation: loading.effects['locationSelection/fetchLocationsByCompany'],
   }),
@@ -35,23 +31,29 @@ class AvatarDropdown extends React.Component {
 
   componentDidMount = () => {
     const {
-      // dispatch, companyId = '',
-      roles = [],
+      dispatch,
+      // , roles = []
     } = this.props;
-    // dispatch({
-    //   type: 'locationSelection/fetchLocationsByCompany',
-    //   payload: {
-    //     company: companyId,
-    //   },
-    // });
-    roles.forEach((role) => {
-      const { _id = '' } = role;
-      if (['ADMIN-CSA', 'HR-GLOBAL'].includes(_id)) {
-        this.setState({
-          selectLocationAbility: true,
-        });
-      }
+    const companyId = localStorage.getItem('currentCompanyId');
+    dispatch({
+      type: 'locationSelection/fetchLocationsByCompany',
+      payload: {
+        company: companyId,
+      },
     });
+
+    this.setState({
+      selectLocationAbility: true,
+    });
+
+    // roles.forEach((role) => {
+    //   const { _id = '' } = role;
+    //   if (['ADMIN-CSA', 'HR-GLOBAL'].includes(_id)) {
+    //     this.setState({
+    //       selectLocationAbility: true,
+    //     });
+    //   }
+    // });
   };
 
   onFinish = () => {
@@ -141,12 +143,7 @@ class AvatarDropdown extends React.Component {
     //   generalInfo: { avatar = '', employeeId = '' } = {},
     //   title = {},
     // } = currentUser;
-    const {
-      firstName: name = '',
-      avatar = '',
-      employeeId = '',
-      // title = {},
-    } = currentUser;
+    const { firstName: name = '', avatar = '', employeeId = '', title = {} } = currentUser;
     const { selectLocationAbility } = this.state;
 
     const { LOGOUT, CHANGEPASSWORD } = this.state;
@@ -165,7 +162,7 @@ class AvatarDropdown extends React.Component {
             <p>{name}</p>
             {employeeId && (
               <p>
-                {title.name} - {employeeId}
+                {title?.name} - {employeeId}
               </p>
             )}
           </div>

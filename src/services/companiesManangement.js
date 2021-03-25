@@ -8,7 +8,7 @@ export async function getCompaniesList(payload) {
 }
 
 export async function getCompanyDetails(payload) {
-  return request('/api/company/get-by-id', {
+  return request('/api/companytenant/get-by-id', {
     method: 'POST',
     data: payload,
   });
