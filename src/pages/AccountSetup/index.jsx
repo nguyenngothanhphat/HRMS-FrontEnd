@@ -71,7 +71,10 @@ class AccountSetup extends Component {
               />
             </div>
           </div>
+
+          {/* RENDER COMPANIES */}
           {this.renderCompanies()}
+
           {isOwnerAdmin && (
             <Button
               className={s.btnAddNew}

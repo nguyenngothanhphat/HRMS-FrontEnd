@@ -38,6 +38,9 @@ class CompanyProfile extends Component {
     dispatch({
       type: 'departmentManagement/fetchListDefaultDepartment',
     });
+    dispatch({
+      type: 'user/fetchCompanyOfUser',
+    });
     if (id) {
       dispatch({
         type: 'companiesManagement/fetchCompanyDetails',

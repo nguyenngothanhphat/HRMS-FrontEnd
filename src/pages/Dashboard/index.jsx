@@ -67,47 +67,51 @@ class Dashboard extends PureComponent {
   }
 
   componentDidMount = async () => {
-    const {
-      dispatch,
-      currentUser: {
-        location: { _id: locationId = '' } = {},
-        company: { _id: companyId = '' } = {},
-        employee: { _id: employee = '' } = {},
-        company: { _id: idCompany = '' } = {},
-      } = {},
-    } = this.props;
-    dispatch({
-      type: 'employee/fetchListEmployeeMyTeam',
-      payload: {
-        location: [locationId],
-      },
-    });
-    dispatch({
-      type: 'offboarding/getListProjectByEmployee',
-      payload: {
-        employee,
-      },
-    });
-    dispatch({
-      type: 'frequentlyAskedQuestions/getListInit',
-    }).then(
-      dispatch({
-        type: 'frequentlyAskedQuestions/getListByCompany',
-        payload: { company: idCompany },
-      }),
-    );
+    // const {
+    //   dispatch,
+    //   currentUser: {
+    //     location: { _id: locationId = '' } = {},
+    //     company: { _id: companyId = '' } = {},
+    //     employee: { _id: employee = '' } = {},
+    //     company: { _id: idCompany = '' } = {},
+    //   } = {},
+    // } = this.props;
+    // dispatch({
+    //   type: 'employee/fetchListEmployeeMyTeam',
+    //   payload: {
+    //     location: [locationId],
+    //   },
+    // });
+    // dispatch({
+    //   type: 'offboarding/getListProjectByEmployee',
+    //   payload: {
+    //     employee,
+    //   },
+    // });
+    // dispatch({
+    //   type: 'frequentlyAskedQuestions/getListInit',
+    // }).then(
+    //   dispatch({
+    //     type: 'frequentlyAskedQuestions/getListByCompany',
+    //     payload: { company: idCompany },
+    //   }),
+    // );
+    // const locations = await dispatch({
+    //   type: 'locationSelection/fetchLocationsByCompany',
+    //   payload: {
+    //     company: companyId,
+    //   },
+    // });
+    // const currentLocation = localStorage.getItem('currentLocation');
+    // const locationName = locations.find((item) => item._id === currentLocation);
+    // this.setState({
+    //   currentLocation: locationName?.name || '',
+    // });
 
-    const locations = await dispatch({
-      type: 'locationSelection/fetchLocationsByCompany',
-      payload: {
-        company: companyId,
-      },
-    });
-
-    const currentLocation = localStorage.getItem('currentLocation');
-    const locationName = locations.find((item) => item._id === currentLocation);
-    this.setState({
-      currentLocation: locationName?.name || '',
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
     });
   };
 
@@ -120,6 +124,13 @@ class Dashboard extends PureComponent {
       },
     });
   }
+
+  checkIsOwnerAdmin = () => {
+    const { currentUser: { signInRole = [] } = {} } = this.props;
+    const formatRole = signInRole.map((role) => role.toLowerCase());
+    if (formatRole.includes('admin') || formatRole.includes('owner')) return true;
+    return false;
+  };
 
   render() {
     const {
@@ -140,16 +151,15 @@ class Dashboard extends PureComponent {
     });
 
     const { currentLocation } = this.state;
+    const isOwnerAdmin = this.checkIsOwnerAdmin();
+
     return (
       <PageContainer>
         <div className={styles.containerDashboard}>
           <Row gutter={[24, 24]} style={{ padding: '20px 20px 0 0' }}>
             <Col span={8}>
               <Affix offsetTop={10}>
-                <Greeting
-                  name={currentUser?.generalInfo?.firstName}
-                  currentLocation={currentLocation}
-                />
+                <Greeting name={currentUser?.firstName} currentLocation={currentLocation} />
                 <div className={styles.leftContainer}>
                   <ActivityLog />
                 </div>
@@ -158,22 +168,25 @@ class Dashboard extends PureComponent {
             <Col span={16}>
               <Carousel />
               <MyApps />
-              <Row gutter={[12, 12]}>
-                <Col span={24}>
-                  <TabManageTeamWork
-                    listMyTeam={listEmployeeMyTeam}
-                    loadingMyTeam={fetchMyTeam}
-                    listProject={listProjectByEmployee}
-                    loadingProject={fetchListProject}
-                  />
-                </Col>
-                <Col span={14}>
-                  <Links title="FAQs" showButton listData={listQuestion} type="link" />
-                </Col>
-                <Col span={10}>
-                  <Links title="Quick Links" listData={listQuickLinks} type="viewPDF" />
-                </Col>
-              </Row>
+
+              {!isOwnerAdmin && (
+                <Row gutter={[12, 12]}>
+                  <Col span={24}>
+                    <TabManageTeamWork
+                      listMyTeam={listEmployeeMyTeam}
+                      loadingMyTeam={fetchMyTeam}
+                      listProject={listProjectByEmployee}
+                      loadingProject={fetchListProject}
+                    />
+                  </Col>
+                  <Col span={14}>
+                    <Links title="FAQs" showButton listData={listQuestion} type="link" />
+                  </Col>
+                  <Col span={10}>
+                    <Links title="Quick Links" listData={listQuickLinks} type="viewPDF" />
+                  </Col>
+                </Row>
+              )}
             </Col>
           </Row>
         </div>

@@ -1,5 +1,9 @@
 const routes = [
   {
+    path: '/',
+    redirect: '/account-setup',
+  },
+  {
     path: '/login',
     component: '../layouts/AuthLayout',
     routes: [
@@ -118,7 +122,7 @@ const routes = [
         ],
       },
       {
-        path: '/',
+        // path: '/',
         component: '../layouts/BasicLayout',
         authority: [
           'admin-sa',
@@ -133,14 +137,16 @@ const routes = [
         ],
         routes: [
           {
-            path: '/',
-            redirect: '/dashboard',
-          },
-          {
             path: '/dashboard',
             name: 'dashboard',
             icon: '/assets/images/menuIcons/dashboard.svg',
             component: './Dashboard',
+          },
+          {
+            path: '/admin-app',
+            name: 'adminApp',
+            icon: '/assets/images/menuIcons/adminApp.svg',
+            component: './AdminApp',
           },
           {
             path: '/users',
@@ -247,13 +253,13 @@ const routes = [
             hideInMenu: true,
             authority: ['admin-sa'],
           },
-          {
-            path: '/continue-company-profile',
-            component: './BackToCompanyProfile',
-            name: 'Company Profile',
-            icon: '/assets/images/menuIcons/members.svg',
-            authority: ['admin-csa'],
-          },
+          // {
+          //   path: '/continue-company-profile',
+          //   component: './BackToCompanyProfile',
+          //   name: 'Company Profile',
+          //   icon: '/assets/images/menuIcons/members.svg',
+          //   authority: ['admin-csa'],
+          // },
           {
             path: '/directory',
             name: 'directory',
