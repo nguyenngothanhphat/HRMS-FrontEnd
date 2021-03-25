@@ -9,10 +9,12 @@ import s from './index.less';
   ({
     loading,
     user: { currentUser = {} } = {},
-    companiesManagement: { originData: { companyDetails } = {} } = {},
+    companiesManagement: {
+      originData: { companyDetails: { company: { logoUrl = '' } = {} } } = {},
+    } = {},
   }) => ({
     currentUser,
-    companyDetails,
+    logoUrl,
     loadingUpdate: loading.effects['companiesManagement/updateCompany'],
   }),
 )
@@ -67,7 +69,7 @@ class UploadLogoCompany extends Component {
 
   render() {
     const { visible } = this.state;
-    const { companyDetails: { logoUrl = '' } = {} } = this.props;
+    const { logoUrl = '' } = this.props;
     console.log('logo', logoUrl);
     return (
       <>

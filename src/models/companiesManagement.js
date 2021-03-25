@@ -196,8 +196,8 @@ const companiesManagement = {
           message: 'Upload logo successfully',
         });
         yield put({
-          type: 'saveOrigin',
-          payload: { companyDetails: { logoUrl: payload } },
+          type: 'saveCompanyDetails',
+          payload: { logoUrl: payload },
         });
       } catch (error) {
         dialog(error);
@@ -300,6 +300,21 @@ const companiesManagement = {
         legalAddress: {
           ...legalAddress,
           ...action.payload,
+        },
+      };
+    },
+
+    saveCompanyDetails(state, action) {
+      const { company } = state;
+      return {
+        ...state,
+        originData: {
+          companyDetails: {
+            company: {
+              ...company,
+              ...action.payload,
+            },
+          },
         },
       };
     },

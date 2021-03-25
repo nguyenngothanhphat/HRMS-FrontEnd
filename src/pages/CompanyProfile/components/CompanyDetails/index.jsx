@@ -12,10 +12,12 @@ const { Option } = Select;
     loading,
     country: { listCountry = [] } = {},
     user: { currentUser: { email = '' } = {} } = {},
+    upload: { urlImage = '' } = {},
     companiesManagement: { originData: { companyDetails } = {} } = {},
   }) => ({
     listCountry,
     companyDetails,
+    urlImage,
     loadingUpdate: loading.effects['companiesManagement/updateCompany'],
     loadingAdd: loading.effects['companiesManagement/addCompanyReducer'],
     email,
@@ -92,11 +94,7 @@ class CompanyDetails extends Component {
   };
 
   onFinish = (values) => {
-    const {
-      dispatch,
-      companyId,
-      companyDetails: { logoUrl },
-    } = this.props;
+    const { dispatch, companyId, urlImage } = this.props;
     const {
       countryHeadquarter,
       countryLegal,
@@ -124,7 +122,7 @@ class CompanyDetails extends Component {
         dba,
         ein,
         website,
-        logoUrl,
+        logoUrl: urlImage,
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
           addressLine2: headquarterAddressLine2 || '',
