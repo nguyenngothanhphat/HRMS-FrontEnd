@@ -11,9 +11,8 @@ const { Option } = Select;
   ({
     loading,
     country: { listCountry = [] } = {},
-    user: { currentUser: { email = '' } = {} } = {},
+    user: { currentUser: { email = '' } = {}, companiesOfUser: listCompany = [] } = {},
     upload: { urlImage = '' } = {},
-    companiesOfUser: { listCompany = [] } = {},
     companiesManagement: { originData: { companyDetails } = {} } = {},
   }) => ({
     listCountry,
