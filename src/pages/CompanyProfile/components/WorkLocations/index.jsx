@@ -38,7 +38,7 @@ class WorkLocations extends PureComponent {
 
   componentDidMount() {
     const { dispatch, companyId = '' } = this.props;
-    console.log('companyId', companyId);
+
     if (companyId) {
       dispatch({
         type: 'companiesManagement/fetchLocationsList',
@@ -64,7 +64,7 @@ class WorkLocations extends PureComponent {
         payload,
       });
     } else {
-      console.log('payload add new company', payload);
+      // console.log('payload add new company', payload);
       companyDetails.locations = [...locations];
       dispatch({
         type: 'companiesManagement/addCompanyTenant',
