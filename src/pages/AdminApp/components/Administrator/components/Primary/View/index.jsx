@@ -15,14 +15,13 @@ class ViewPrimary extends Component {
 
     const menu = (
       <Menu>
-        <Menu.Item key="0">
+        <Menu.Item key='0'>
           1st menu item
         </Menu.Item>
-        <Menu.Item key="1">
+        <Menu.Item key='1'>
           2nd menu item
         </Menu.Item>
-        <Menu.Divider />
-        <Menu.Item key="3">3rd menu item</Menu.Item>
+        <Menu.Item key='3'>3rd menu item</Menu.Item>
       </Menu>
     );
     return (
@@ -64,7 +63,9 @@ class ViewPrimary extends Component {
           <Col span={8} />
           <Col span={16}>
             <Dropdown overlay={menu} trigger={['click']}>
-              Click me <DownOutlined />
+              <a className={styles.permissionsDropdown} onClick={e => e.preventDefault()}>
+                Show Permissions <DownOutlined className={styles.permissionsDropdown__icon} />
+              </a>
             </Dropdown>
           </Col>
         </Row>
