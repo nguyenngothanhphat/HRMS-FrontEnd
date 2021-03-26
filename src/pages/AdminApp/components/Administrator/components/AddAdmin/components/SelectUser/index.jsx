@@ -46,7 +46,7 @@ export default class SelectUser extends PureComponent {
           ref={this.formRef}
           id="myForm"
           initialValues={{
-            remember: true,
+            isCompanyWorker,
           }}
           onFinish={this.onFinish}
         >
@@ -56,7 +56,7 @@ export default class SelectUser extends PureComponent {
             </Col>
             <Col span={16}>
               <Form.Item name="isCompanyWorker">
-                <Radio.Group onChange={this.isCompanyWorkerChange} value={isCompanyWorker}>
+                <Radio.Group onChange={this.isCompanyWorkerChange}>
                   <Radio value>Yes</Radio>
                   <Radio value={false}>No</Radio>
                 </Radio.Group>
