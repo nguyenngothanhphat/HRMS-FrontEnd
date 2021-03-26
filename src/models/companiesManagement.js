@@ -13,6 +13,7 @@ import {
 } from '@/services/companiesManangement';
 import { history } from 'umi';
 import { notification } from 'antd';
+import { ConsoleSqlOutlined, PauseOutlined } from '@ant-design/icons';
 
 const companiesManagement = {
   namespace: 'companiesManagement',
@@ -25,12 +26,12 @@ const companiesManagement = {
     locationsList: [],
     originData: {
       companyDetails: {
-        company: {}
+        company: {},
       },
     },
     tempData: {
       companyDetails: {
-        company: {}
+        company: {},
       },
     },
     idCurrentCompany: '',
@@ -42,7 +43,7 @@ const companiesManagement = {
         const response = yield call(getCompanyDetails, { id });
         const { statusCode, data: company = {} } = response;
         if (statusCode !== 200) throw response;
-        const companyDetails = {company}
+        const companyDetails = { company };
         const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
         let companyDetailsTemp = { ...companyDetails };
         if (!checkDataTempKept) {
@@ -174,7 +175,7 @@ const companiesManagement = {
         // });
         yield put({
           type: 'saveOrigin',
-          payload: { originData: { companyDetails: payload } },
+          payload: { companyDetails: { ...payload } },
         });
         history.push('/account-setup');
       } catch (errors) {
@@ -190,20 +191,6 @@ const companiesManagement = {
         yield put({
           type: 'saveOrigin',
           payload: { companyDetails: payload },
-        });
-      } catch (error) {
-        dialog(error);
-      }
-    },
-
-    *addLogoReducer({ payload = {} }, { put }) {
-      try {
-        notification.success({
-          message: 'Upload logo successfully',
-        });
-        yield put({
-          type: 'saveCompanyDetails',
-          payload: { logoUrl: payload },
         });
       } catch (error) {
         dialog(error);
@@ -311,10 +298,15 @@ const companiesManagement = {
     },
 
     saveCompanyDetails(state, action) {
-      const { company } = state;
+      const {
+        originData: {
+          companyDetails: { company },
+        },
+      } = state;
       return {
         ...state,
         originData: {
+          // ...originData,
           companyDetails: {
             company: {
               ...company,

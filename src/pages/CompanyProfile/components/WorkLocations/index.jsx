@@ -56,20 +56,20 @@ class WorkLocations extends PureComponent {
   }
 
   onFinish = ({ workLocations: locations = [] }) => {
-    const { dispatch, companyId = '', companyDetails } = this.props;
-    const payload = { locations, company: companyId };
+    const { dispatch, companyId = '', companyDetails = {} } = this.props;
+    const { company, isNewTenant, locations: originLocations = [] } = companyDetails;
+    const listLocation = [...originLocations, ...locations];
+    const payload = { locations, company, isNewTenant };
     if (companyId) {
       dispatch({
         type: 'companiesManagement/upsertLocationsList',
         payload,
       });
     } else {
-      // console.log('payload add new company', payload);
-      companyDetails.locations = [...locations];
-      companyDetails.isNewTenant = true;
+      const payloadAddCompanyTenant = { ...companyDetails, locations: [...listLocation] };
       dispatch({
         type: 'companiesManagement/addCompanyTenant',
-        payload: companyDetails,
+        payload: payloadAddCompanyTenant,
         dataTempKept: {},
         isAccountSetup: true,
       });
@@ -110,17 +110,17 @@ class WorkLocations extends PureComponent {
     const listLocation = this.formatListLocation();
 
     const defaultListLocation = listLocation.length === 0 ? [{}] : listLocation;
-    // const {
-    //   company: {
-    //     headQuarterAddress: {
-    //       addressLine1 = '',
-    //       addressLine2 = '',
-    //       country = '',
-    //       state = '',
-    //       zipCode = '',
-    //     } = {},
-    //   },
-    // } = companyDetails;
+    const {
+      company: {
+        headQuarterAddress: {
+          addressLine1 = '',
+          addressLine2 = '',
+          country = '',
+          state = '',
+          zipCode = '',
+        } = {},
+      } = {},
+    } = companyDetails;
 
     if (fetchingLocationsList || loadingCountry)
       return (
@@ -146,6 +146,11 @@ class WorkLocations extends PureComponent {
         onFinish={this.onFinish}
         autoComplete="off"
         initialValues={{
+          addressLine2,
+          zipCode,
+          country,
+          state,
+          addressLine1,
           workLocations: defaultListLocation,
         }}
       >
@@ -160,24 +165,25 @@ class WorkLocations extends PureComponent {
             </p>
           </div>
           <div className={s.content__viewBottom}>
-            <Form.List name="workLocations">
+            {/* <Form.List name="workLocations">
               {(fields) => (
                 <>
-                  {fields.map((field) => (
-                    <FormWorkLocationTenant
-                      field={field}
-                      key={field.name}
-                      isRequired={false}
-                      name="Headquarter"
-                      companyDetails={companyDetails}
-                      formRef={this.formRef}
-                      listCountry={listCountry}
-                      listLocation={listLocation}
-                    />
-                  ))}
+                 {fields.map((field) => ( */}
+            {/* <Form.Item name="companyDetails"> */}
+            <FormWorkLocationTenant
+              isRequired={false}
+              name="Headquarter"
+              companyDetails={companyDetails}
+              formRef={this.formRef}
+              listCountry={listCountry}
+              listLocation={listLocation}
+              defaultCountry="AF"
+            />
+            {/* </Form.Item> */}
+            {/* ))}
                 </>
-              )}
-            </Form.List>
+              )} */}
+            {/* </Form.List> */}
           </div>
         </div>
         <div className={s.root} style={{ marginTop: '24px' }}>

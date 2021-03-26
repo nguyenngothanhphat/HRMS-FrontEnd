@@ -39,8 +39,8 @@ class CompanyDetails extends Component {
     const { companyDetails = {} } = this.props;
     const {
       company: {
-        headQuarterAddress: { country: { _id: countryHeadquarter } = {} } = {},
-        legalAddress: { country: { _id: countryLegal } = {} } = {},
+        headQuarterAddress: { country: countryHeadquarter } = {},
+        legalAddress: { country: countryLegal } = {},
       } = {},
     } = companyDetails;
     this.setState({
@@ -50,12 +50,14 @@ class CompanyDetails extends Component {
   }
 
   onChangeCountry = (value, name) => {
+    const stateName = name === 'countryHeadquarterProps' ? 'countryHeadquarter' : 'countryLegal';
+    console.log('name', stateName);
     this.setState({
-      [name]: value,
+      [stateName]: value,
     });
-    const fieldStateChange = name === 'countryHeadquarter' ? 'stateHeadquarter' : 'stateLegal';
+    const countryName = name === 'countryHeadquarterProps' ? 'stateHeadquarter' : 'stateLegal';
     this.formRef.current.setFieldsValue({
-      [fieldStateChange]: undefined,
+      [countryName]: undefined,
     });
   };
 
@@ -71,22 +73,23 @@ class CompanyDetails extends Component {
       const {
         headquarterAddressLine1,
         headquarterAddressLine2,
-        countryHeadquarter,
+        countryHeadquarterProps,
         stateHeadquarter,
         zipHeadquarter,
       } = this.formRef.current.getFieldsValue();
       this.formRef.current.setFieldsValue({
         legalAddressLine1: headquarterAddressLine1,
         legalAddressLine2: headquarterAddressLine2,
-        countryLegal: countryHeadquarter,
+        countryLegalProps: countryHeadquarterProps,
         stateLegal: stateHeadquarter,
         zipLegal: zipHeadquarter,
       });
+      // console.log('ref', this.formRef.current.getFieldsValue());
     } else {
       this.formRef.current.setFieldsValue({
         legalAddressLine1: undefined,
         legalAddressLine2: undefined,
-        countryLegal: undefined,
+        countryLegalProps: undefined,
         stateLegal: undefined,
         zipLegal: undefined,
       });
@@ -97,10 +100,14 @@ class CompanyDetails extends Component {
   };
 
   onFinish = (values) => {
-    const { dispatch, companyId, urlImage } = this.props;
     const {
-      countryHeadquarter,
-      countryLegal,
+      dispatch,
+      companyId,
+      companyDetails: { company: { logoUrl: newLogo } = {} },
+    } = this.props;
+    const {
+      countryHeadquarterProps,
+      countryLegalProps,
       dba,
       ein,
       headquarterAddressLine1,
@@ -118,10 +125,10 @@ class CompanyDetails extends Component {
       hrEmail,
       hrPhone,
       parentCompany,
+      // logoUrl,
     } = values;
 
     const { listCompany = [] } = this.props;
-
     let parentTenantId = listCompany.find((company) => company?._id === parentCompany);
     parentTenantId = parentTenantId?.tenant;
 
@@ -132,18 +139,18 @@ class CompanyDetails extends Component {
         dba,
         ein,
         website,
-        logoUrl: urlImage,
+        logoUrl: newLogo,
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
           addressLine2: headquarterAddressLine2 || '',
-          country: countryHeadquarter,
+          country: countryHeadquarterProps,
           state: stateHeadquarter,
           zipCode: zipHeadquarter,
         },
         legalAddress: {
           addressLine1: legalAddressLine1,
           addressLine2: legalAddressLine2 || '',
-          country: countryLegal,
+          country: countryLegalProps,
           state: stateLegal,
           zipCode: zipLegal,
         },
@@ -159,14 +166,14 @@ class CompanyDetails extends Component {
           headQuarterAddress: {
             addressLine1: headquarterAddressLine1,
             addressLine2: headquarterAddressLine2,
-            country: countryHeadquarter,
+            country: countryHeadquarterProps,
             state: stateHeadquarter,
             zipCode: zipHeadquarter,
           },
           legalAddress: {
             addressLine1: headquarterAddressLine1,
             addressLine2: headquarterAddressLine2,
-            country: countryLegal,
+            country: countryLegalProps,
             state: stateLegal,
             zipCode: zipLegal,
           },
@@ -185,7 +192,6 @@ class CompanyDetails extends Component {
         isAccountSetup: true,
       });
     } else {
-      // console.log('payload add new company', payload);
       dispatch({
         type: 'companiesManagement/addCompanyReducer',
         payload,
@@ -293,7 +299,7 @@ class CompanyDetails extends Component {
         label: 'Primary contact',
         name: 'ownerEmail',
         placeholder: "Company owner's email",
-        defaultValue: email,
+        // defaultValue: email,
       },
       {
         label: 'HR contact',
@@ -319,21 +325,21 @@ class CompanyDetails extends Component {
         dba,
         ein,
         website,
+        // logoUrl,
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
           addressLine2: headquarterAddressLine2,
-          country: { _id: countryHeadquarterProps } = {},
+          country: countryHeadquarterProps,
           state: stateHeadquarter,
           zipCode: zipHeadquarter,
         } = {},
         legalAddress: {
           addressLine1: legalAddressLine1,
           addressLine2: legalAddressLine2,
-          country: { _id: countryLegalProps } = {},
+          country: countryLegalProps,
           state: stateLegal,
           zipCode: zipLegal,
         } = {},
-        contactEmail: ownerEmail,
         hrContactEmail: hrEmail,
         hrContactName: hrName,
         hrContactPhone: hrPhone,
@@ -359,7 +365,6 @@ class CompanyDetails extends Component {
       // ],
       // isNewTenant,
     } = companyDetails;
-
     const validateMessages = {
       types: {
         // eslint-disable-next-line no-template-curly-in-string
@@ -372,6 +377,7 @@ class CompanyDetails extends Component {
         className={s.root}
         ref={this.formRef}
         onFinish={this.onFinish}
+        // onFinish={(values) => console.log('values', values)}
         autoComplete="off"
         validateMessages={validateMessages}
         initialValues={{
@@ -381,20 +387,21 @@ class CompanyDetails extends Component {
           website,
           headquarterAddressLine1,
           headquarterAddressLine2,
-          countryHeadquarter: countryHeadquarterProps,
+          countryHeadquarterProps,
           stateHeadquarter,
           zipHeadquarter,
           legalAddressLine1,
           legalAddressLine2,
-          countryLegal: countryLegalProps,
+          countryLegalProps,
           stateLegal,
           zipLegal,
-          ownerEmail,
+          ownerEmail: email,
           hrName,
           hrEmail,
           hrPhone,
           isNewTenant: false,
           isHeadquarter: true,
+          // logoUrl,
         }}
       >
         <div className={s.blockContent}>
@@ -500,7 +507,7 @@ class CompanyDetails extends Component {
                   Country
                 </p>
                 <Form.Item
-                  name="countryHeadquarter"
+                  name="countryHeadquarterProps"
                   label={false}
                   rules={[
                     {
@@ -513,7 +520,7 @@ class CompanyDetails extends Component {
                     placeholder="Select Country"
                     showArrow
                     showSearch
-                    onChange={(value) => this.onChangeCountry(value, 'countryHeadquarter')}
+                    onChange={(value) => this.onChangeCountry(value, 'countryHeadquarterProps')}
                     filterOption={(input, option) =>
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
@@ -630,7 +637,7 @@ class CompanyDetails extends Component {
                   Country
                 </p>
                 <Form.Item
-                  name="countryLegal"
+                  name="countryLegalProps"
                   label={false}
                   rules={[
                     {
@@ -643,7 +650,7 @@ class CompanyDetails extends Component {
                     placeholder="Select Country"
                     showArrow
                     showSearch
-                    onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
+                    onChange={(value) => this.onChangeCountry(value, 'countryLegalProps')}
                     filterOption={(input, option) =>
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
@@ -753,7 +760,6 @@ class CompanyDetails extends Component {
             className={s.btnSubmit}
             htmlType="submit"
             loading={companyId ? loadingUpdate : loadingAdd}
-            onClick={this.handleClick}
           >
             Save
           </Button>
