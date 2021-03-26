@@ -41,80 +41,95 @@ class ViewAdministrator extends Component {
   }
 
   render() {
+    const { listAdminstrator = [] } = this.props;
+
     const { Panel } = Collapse;
     const expandIcon = ({ isActive }) => <DownOutlined rotate={isActive ? 180 : 0} />;
     return (
-      <div className={styles.addAdminstrator}>
-        <Row gutter={[0, 16]}>
-          <Col span={8} />
-          <Col span={16}>
-            <div className={styles.addAdminstrator__header}>
-              <div className={styles.listRole}>
-                <div className={styles.role}>Payroll</div>
-                <div className={styles.role}>Benefit</div>
-              </div>
-              <div className={styles.actions}>
-                <div className={styles.actions__edit}>
-                  <img src={editIcon} alt="edit-administrator" />
-                  <span>Edit</span>
-                </div>
-                <div className={styles.actions__delete}>
-                  <img src={deleteIcon} alt="delete-administrator" />
-                  <span>Delete</span>
-                </div>
-              </div>
-            </div>
-          </Col>
-          <Col span={8}>
-            <div className={styles.addAdminstrator__left}>
-              <div>Employee Name</div>
-            </div>
-          </Col>
-          <Col span={16}>
-            <div className={styles.addAdminstrator__right}>
-              <div className={styles.name}>Renil Komitla</div>
-            </div>
-          </Col>
-          <Col span={8}>
-            <div className={styles.addAdminstrator__left}>
-              <div>Email</div>
-            </div>
-          </Col>
-          <Col span={16}>
-            <div className={styles.addAdminstrator__right}>
-              <div className={styles.email}>renil@terralogic.com</div>
-            </div>
-          </Col>
-          <Col span={8}>
-            <div className={styles.addAdminstrator__left}>
-              <div>Position</div>
-            </div>
-          </Col>
-          <Col span={16}>
-            <div className={styles.addAdminstrator__right}>
-              <img src={icon} alt="primary-administrator" />
-              <div className={styles.position}>
-                renil@terralogic.comRenil’s permission apply to everyone in the company
-              </div>
-            </div>
-          </Col>
-          <Col span={8} />
-          <Col span={16}>
-            <Collapse
-              ghost
-              expandIconPosition="right"
-              className={styles.permissionCollapse}
-              expandIcon={expandIcon}
+      <>
+        {listAdminstrator.map((adminstrator, index) => {
+          const { listRole = [], employeeName = '', email = '', position = '' } = adminstrator;
+
+          return (
+            <div
+              className={styles.addAdminstrator}
+              key={`${index + 1}`}
+              style={index > 0 ? { paddingTop: '30px' } : null}
             >
-              <Panel header="Show permissions" className={styles.permissionPanel}>
-                {listPermissions.map((item) => (
-                  <p key={item.id}>{item.permission}</p>
-                ))}
-              </Panel>
-            </Collapse>
-          </Col>
-        </Row>
-      </div>
+              <Row gutter={[0, 16]}>
+                <Col span={8} />
+                <Col span={16}>
+                  <div className={styles.addAdminstrator__header}>
+                    <>
+                      {listRole.map((item) => (
+                        <div className={styles.listRole} key={item.id}>
+                          <div className={styles.role}>{item.role}</div>
+                        </div>
+                      ))}
+                    </>
+                    <div className={styles.actions}>
+                      <div className={styles.actions__edit}>
+                        <img src={editIcon} alt="edit-administrator" />
+                        <span>Edit</span>
+                      </div>
+                      <div className={styles.actions__delete}>
+                        <img src={deleteIcon} alt="delete-administrator" />
+                        <span>Delete</span>
+                      </div>
+                    </div>
+                  </div>
+                </Col>
+                <Col span={8}>
+                  <div className={styles.addAdminstrator__left}>
+                    <div>Employee Name</div>
+                  </div>
+                </Col>
+                <Col span={16}>
+                  <div className={styles.addAdminstrator__right}>
+                    <div className={styles.name}>{employeeName}</div>
+                  </div>
+                </Col>
+                <Col span={8}>
+                  <div className={styles.addAdminstrator__left}>
+                    <div>Email</div>
+                  </div>
+                </Col>
+                <Col span={16}>
+                  <div className={styles.addAdminstrator__right}>
+                    <div className={styles.email}>{email}</div>
+                  </div>
+                </Col>
+                <Col span={8}>
+                  <div className={styles.addAdminstrator__left}>
+                    <div>Position</div>
+                  </div>
+                </Col>
+                <Col span={16}>
+                  <div className={styles.addAdminstrator__right}>
+                    <img src={icon} alt="primary-administrator" />
+                    <div className={styles.position}>{position}</div>
+                  </div>
+                </Col>
+                <Col span={8} />
+                <Col span={16}>
+                  <Collapse
+                    ghost
+                    expandIconPosition="right"
+                    className={styles.permissionCollapse}
+                    expandIcon={expandIcon}
+                  >
+                    <Panel header="Show permissions" className={styles.permissionPanel}>
+                      {listPermissions.map((item) => (
+                        <p key={item.id}>{item.permission}</p>
+                      ))}
+                    </Panel>
+                  </Collapse>
+                </Col>
+              </Row>
+            </div>
+          );
+        })}
+      </>
     );
   }
 }

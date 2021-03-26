@@ -10,6 +10,34 @@ class AdditionalAdminstrator extends Component {
   }
 
   render() {
+    const listAdminstrator = [
+      {
+        listRole: [
+          {
+            id: 'payroll',
+            role: 'Payroll',
+          },
+          {
+            id: 'benefit',
+            role: 'Benefit',
+          },
+        ],
+        employeeName: 'Jenny',
+        email: 'jenny@terralogic.com',
+        position: 'Jenny’s permission apply to everyone in the company',
+      },
+      {
+        listRole: [
+          {
+            id: 'company',
+            role: 'Company',
+          },
+        ],
+        employeeName: 'Renil Komitla',
+        email: 'renil@terralogic.com',
+        position: 'Renil’s permission apply to everyone in the company',
+      },
+    ];
     return (
       <div className={styles.additional}>
         <div className={styles.header}>
@@ -20,7 +48,7 @@ class AdditionalAdminstrator extends Component {
           </div>
         </div>
         <div className={styles.listAdminstrator}>
-          <ViewAdministrator />
+          <ViewAdministrator listAdminstrator={listAdminstrator} />
         </div>
       </div>
     );
