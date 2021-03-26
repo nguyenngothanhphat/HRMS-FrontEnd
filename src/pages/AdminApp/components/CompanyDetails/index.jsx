@@ -40,6 +40,8 @@ class CompanyDetails extends Component {
   }
 
   componentDidMount() {
+    this.fetchData();
+
     const { companyDetails = {} } = this.props;
     const {
       company: {
@@ -51,9 +53,14 @@ class CompanyDetails extends Component {
       countryHeadquarter,
       countryLegal,
     });
+    this.compareHeadquaterLegalAddress();
   }
 
   componentWillUnmount = () => {
+    this.fetchData();
+  };
+
+  fetchData = () => {
     const { dispatch, companyId } = this.props;
     dispatch({
       type: 'companiesManagement/fetchCompanyDetails',
@@ -209,6 +216,11 @@ class CompanyDetails extends Component {
         dispatch({
           type: 'companiesManagement/save',
           payload: { companyDetails: data },
+        });
+        this.setState({
+          isEditAddresses: false,
+          isEditCompanyDetails: false,
+          isEditContactInfomation: false,
         });
       }
     } else {
