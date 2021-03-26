@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Select, Button, Checkbox, Spin } from 'antd';
+import { Form, Input, Spin, Select, Button, Checkbox } from 'antd';
 import classnames from 'classnames';
 import { connect } from 'umi';
 import s from './index.less';
@@ -12,11 +12,13 @@ const { Option } = Select;
     loading,
     country: { listCountry = [] } = {},
     user: { currentUser: { email = '' } = {}, companiesOfUser: listCompany = [] } = {},
+    upload: { urlImage = '' } = {},
     companiesManagement: { originData: { companyDetails } = {} } = {},
   }) => ({
     listCountry,
     listCompany,
     companyDetails,
+    urlImage,
     loadingUpdate: loading.effects['companiesManagement/updateCompany'],
     loadingAdd: loading.effects['companiesManagement/addCompanyReducer'],
     loadingGetCompanyDetails: loading.effects['companiesManagement/fetchCompanyDetails'],
@@ -37,8 +39,10 @@ class CompanyDetails extends Component {
   componentDidMount() {
     const { companyDetails = {} } = this.props;
     const {
-      headQuarterAddress: { country: { _id: countryHeadquarter } = {} } = {},
-      legalAddress: { country: { _id: countryLegal } = {} } = {},
+      company: {
+        headQuarterAddress: { country: countryHeadquarter } = {},
+        legalAddress: { country: countryLegal } = {},
+      } = {},
     } = companyDetails;
     this.setState({
       countryHeadquarter,
@@ -47,12 +51,14 @@ class CompanyDetails extends Component {
   }
 
   onChangeCountry = (value, name) => {
+    const stateName = name === 'countryHeadquarterProps' ? 'countryHeadquarter' : 'countryLegal';
+    console.log('name', stateName);
     this.setState({
-      [name]: value,
+      [stateName]: value,
     });
-    const fieldStateChange = name === 'countryHeadquarter' ? 'stateHeadquarter' : 'stateLegal';
+    const countryName = name === 'countryHeadquarterProps' ? 'stateHeadquarter' : 'stateLegal';
     this.formRef.current.setFieldsValue({
-      [fieldStateChange]: undefined,
+      [countryName]: undefined,
     });
   };
 
@@ -68,22 +74,23 @@ class CompanyDetails extends Component {
       const {
         headquarterAddressLine1,
         headquarterAddressLine2,
-        countryHeadquarter,
+        countryHeadquarterProps,
         stateHeadquarter,
         zipHeadquarter,
       } = this.formRef.current.getFieldsValue();
       this.formRef.current.setFieldsValue({
         legalAddressLine1: headquarterAddressLine1,
         legalAddressLine2: headquarterAddressLine2,
-        countryLegal: countryHeadquarter,
+        countryLegalProps: countryHeadquarterProps,
         stateLegal: stateHeadquarter,
         zipLegal: zipHeadquarter,
       });
+      // console.log('ref', this.formRef.current.getFieldsValue());
     } else {
       this.formRef.current.setFieldsValue({
         legalAddressLine1: undefined,
         legalAddressLine2: undefined,
-        countryLegal: undefined,
+        countryLegalProps: undefined,
         stateLegal: undefined,
         zipLegal: undefined,
       });
@@ -97,11 +104,11 @@ class CompanyDetails extends Component {
     const {
       dispatch,
       companyId,
-      companyDetails: { logoUrl },
+      companyDetails: { company: { logoUrl: newLogo } = {} },
     } = this.props;
     const {
-      countryHeadquarter,
-      countryLegal,
+      countryHeadquarterProps,
+      countryLegalProps,
       dba,
       ein,
       headquarterAddressLine1,
@@ -119,10 +126,10 @@ class CompanyDetails extends Component {
       hrEmail,
       hrPhone,
       parentCompany,
+      // logoUrl,
     } = values;
 
     const { listCompany = [] } = this.props;
-
     let parentTenantId = listCompany.find((company) => company?._id === parentCompany);
     parentTenantId = parentTenantId?.tenant;
 
@@ -133,18 +140,18 @@ class CompanyDetails extends Component {
         dba,
         ein,
         website,
-        logoUrl,
+        logoUrl: newLogo,
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
           addressLine2: headquarterAddressLine2 || '',
-          country: countryHeadquarter,
+          country: countryHeadquarterProps,
           state: stateHeadquarter,
           zipCode: zipHeadquarter,
         },
         legalAddress: {
           addressLine1: legalAddressLine1,
           addressLine2: legalAddressLine2 || '',
-          country: countryLegal,
+          country: countryLegalProps,
           state: stateLegal,
           zipCode: zipLegal,
         },
@@ -160,14 +167,14 @@ class CompanyDetails extends Component {
           headQuarterAddress: {
             addressLine1: headquarterAddressLine1,
             addressLine2: headquarterAddressLine2,
-            country: countryHeadquarter,
+            country: countryHeadquarterProps,
             state: stateHeadquarter,
             zipCode: zipHeadquarter,
           },
           legalAddress: {
             addressLine1: headquarterAddressLine1,
             addressLine2: headquarterAddressLine2,
-            country: countryLegal,
+            country: countryLegalProps,
             state: stateLegal,
             zipCode: zipLegal,
           },
@@ -186,7 +193,6 @@ class CompanyDetails extends Component {
         isAccountSetup: true,
       });
     } else {
-      // console.log('payload add new company', payload);
       dispatch({
         type: 'companiesManagement/addCompanyReducer',
         payload,
@@ -294,7 +300,7 @@ class CompanyDetails extends Component {
         label: 'Primary contact',
         name: 'ownerEmail',
         placeholder: "Company owner's email",
-        defaultValue: email,
+        // defaultValue: email,
       },
       {
         label: 'HR contact',
@@ -314,28 +320,27 @@ class CompanyDetails extends Component {
     ];
     const listStateHead = this.findListState(countryHeadquarter) || [];
     const listStateLegal = this.findListState(countryLegal) || [];
-
     const {
       company: {
         name,
         dba,
         ein,
         website,
+        // logoUrl,
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
           addressLine2: headquarterAddressLine2,
-          country: { _id: countryHeadquarterProps } = {},
+          country: countryHeadquarterProps,
           state: stateHeadquarter,
           zipCode: zipHeadquarter,
         } = {},
         legalAddress: {
           addressLine1: legalAddressLine1,
           addressLine2: legalAddressLine2,
-          country: { _id: countryLegalProps } = {},
+          country: countryLegalProps,
           state: stateLegal,
           zipCode: zipLegal,
         } = {},
-        contactEmail: ownerEmail,
         hrContactEmail: hrEmail,
         hrContactName: hrName,
         hrContactPhone: hrPhone,
@@ -361,7 +366,6 @@ class CompanyDetails extends Component {
       // ],
       // isNewTenant,
     } = companyDetails;
-
     const validateMessages = {
       types: {
         // eslint-disable-next-line no-template-curly-in-string
@@ -370,6 +374,7 @@ class CompanyDetails extends Component {
     };
 
     const { loadingGetCompanyDetails = false } = this.props;
+
     return (
       <>
         {!loadingGetCompanyDetails ? (
@@ -377,6 +382,7 @@ class CompanyDetails extends Component {
             className={s.root}
             ref={this.formRef}
             onFinish={this.onFinish}
+            // onFinish={(values) => console.log('values', values)}
             autoComplete="off"
             validateMessages={validateMessages}
             initialValues={{
@@ -386,20 +392,21 @@ class CompanyDetails extends Component {
               website,
               headquarterAddressLine1,
               headquarterAddressLine2,
-              countryHeadquarter: countryHeadquarterProps,
+              countryHeadquarterProps,
               stateHeadquarter,
               zipHeadquarter,
               legalAddressLine1,
               legalAddressLine2,
-              countryLegal: countryLegalProps,
+              countryLegalProps,
               stateLegal,
               zipLegal,
-              ownerEmail,
+              ownerEmail: email,
               hrName,
               hrEmail,
               hrPhone,
               isNewTenant: false,
               isHeadquarter: true,
+              // logoUrl,
             }}
           >
             <div className={s.blockContent}>
@@ -424,7 +431,7 @@ class CompanyDetails extends Component {
                           },
                         ]}
                       >
-                        <Input disabled placeholder={label} />
+                        <Input placeholder={label} />
                       </Form.Item>
                     </div>
                   ),
@@ -437,7 +444,6 @@ class CompanyDetails extends Component {
                       showArrow
                       showSearch
                       allowClear
-                      disabled
                       defaultValue=""
                       className={s.parentCompanySelect}
                       // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
@@ -448,7 +454,6 @@ class CompanyDetails extends Component {
                       <Option
                         key=""
                         value=""
-                        disabled
                         style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
                       >
                         None
@@ -478,7 +483,7 @@ class CompanyDetails extends Component {
                       },
                     ]}
                   >
-                    <Input disabled placeholder="Address Line 1" />
+                    <Input placeholder="Address Line 1" />
                   </Form.Item>
                 </div>
                 <div className={s.content__viewBottom__row}>
@@ -493,7 +498,7 @@ class CompanyDetails extends Component {
                       },
                     ]}
                   >
-                    <Input disabled placeholder="Address Line 2" />
+                    <Input placeholder="Address Line 2" />
                   </Form.Item>
                 </div>
                 <div className={s.content__viewBottom__row}>
@@ -507,7 +512,7 @@ class CompanyDetails extends Component {
                       Country
                     </p>
                     <Form.Item
-                      name="countryHeadquarter"
+                      name="countryHeadquarterProps"
                       label={false}
                       rules={[
                         {
@@ -520,8 +525,7 @@ class CompanyDetails extends Component {
                         placeholder="Select Country"
                         showArrow
                         showSearch
-                        disabled
-                        onChange={(value) => this.onChangeCountry(value, 'countryHeadquarter')}
+                        onChange={(value) => this.onChangeCountry(value, 'countryHeadquarterProps')}
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
@@ -555,7 +559,6 @@ class CompanyDetails extends Component {
                         placeholder="Select State"
                         showArrow
                         showSearch
-                        disabled
                         disabled={!countryHeadquarter}
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -586,16 +589,14 @@ class CompanyDetails extends Component {
                         },
                       ]}
                     >
-                      <Input disabled placeholder="Zip Code" />
+                      <Input placeholder="Zip Code" />
                     </Form.Item>
                   </div>
                 </div>
               </div>
               <div className={classnames(s.content__viewTop, s.content__viewTop__legalAddress)}>
                 <p className={s.title}>Legal Address</p>
-                <Checkbox disabled onChange={this.onChangeCheckbox}>
-                  Same as Headquarters address
-                </Checkbox>
+                <Checkbox onChange={this.onChangeCheckbox}>Same as Headquarters address</Checkbox>
               </div>
               <div
                 className={classnames(s.content__viewBottom, {
@@ -614,7 +615,7 @@ class CompanyDetails extends Component {
                       },
                     ]}
                   >
-                    <Input disabled placeholder="Address Line 1" />
+                    <Input placeholder="Address Line 1" />
                   </Form.Item>
                 </div>
                 <div className={s.content__viewBottom__row}>
@@ -629,7 +630,7 @@ class CompanyDetails extends Component {
                       },
                     ]}
                   >
-                    <Input disabled placeholder="Address Line 2" />
+                    <Input placeholder="Address Line 2" />
                   </Form.Item>
                 </div>
                 <div className={s.content__viewBottom__row}>
@@ -643,7 +644,7 @@ class CompanyDetails extends Component {
                       Country
                     </p>
                     <Form.Item
-                      name="countryLegal"
+                      name="countryLegalProps"
                       label={false}
                       rules={[
                         {
@@ -656,8 +657,7 @@ class CompanyDetails extends Component {
                         placeholder="Select Country"
                         showArrow
                         showSearch
-                        disabled
-                        onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
+                        onChange={(value) => this.onChangeCountry(value, 'countryLegalProps')}
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
@@ -691,7 +691,6 @@ class CompanyDetails extends Component {
                         placeholder="Select State"
                         showArrow
                         showSearch
-                        disabled
                         disabled={!countryLegal}
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -722,7 +721,7 @@ class CompanyDetails extends Component {
                         },
                       ]}
                     >
-                      <Input disabled placeholder="Zip Code" />
+                      <Input placeholder="Zip Code" />
                     </Form.Item>
                   </div>
                 </div>
@@ -763,7 +762,7 @@ class CompanyDetails extends Component {
                           },
                         ]}
                       >
-                        <Input disabled placeholder={placeholder} defaultValue={defaultValue} />
+                        <Input placeholder={placeholder} defaultValue={defaultValue} />
                       </Form.Item>
                     </div>
                   ),
@@ -775,8 +774,6 @@ class CompanyDetails extends Component {
                 className={s.btnSubmit}
                 htmlType="submit"
                 loading={companyId ? loadingUpdate : loadingAdd}
-                onClick={this.handleClick}
-                disabled
               >
                 Save
               </Button>
