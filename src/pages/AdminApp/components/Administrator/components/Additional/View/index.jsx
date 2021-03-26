@@ -37,17 +37,34 @@ const listPermissions = [
 class ViewAdministrator extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      list: [],
+    };
   }
 
-  render() {
+  componentDidMount() {
     const { listAdminstrator = [] } = this.props;
+    this.setState({ list: listAdminstrator });
+  }
+
+  handleDelete = (index) => {
+    const { list = [] } = this.state;
+    // const newList = [...list];
+    if (index > -1) {
+      list.splice(index, 1);
+    }
+    this.setState({ list });
+  };
+
+  render() {
+    // const { listAdminstrator = [] } = this.props;
+    const { list = [] } = this.state;
 
     const { Panel } = Collapse;
     const expandIcon = ({ isActive }) => <DownOutlined rotate={isActive ? 180 : 0} />;
     return (
       <>
-        {listAdminstrator.map((adminstrator, index) => {
+        {list.map((adminstrator, index) => {
           const { listRole = [], employeeName = '', email = '', position = '' } = adminstrator;
 
           return (
@@ -72,7 +89,10 @@ class ViewAdministrator extends Component {
                         <img src={editIcon} alt="edit-administrator" />
                         <span>Edit</span>
                       </div>
-                      <div className={styles.actions__delete}>
+                      <div
+                        className={styles.actions__delete}
+                        onClick={() => this.handleDelete(index)}
+                      >
                         <img src={deleteIcon} alt="delete-administrator" />
                         <span>Delete</span>
                       </div>
