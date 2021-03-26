@@ -39,6 +39,7 @@ class ViewPrimary extends Component {
   }
 
   render() {
+    const { listAdminstrator: { employeeName = '', email = '', position = '' } = {} } = this.props;
     const { Panel } = Collapse;
     const expandIcon = ({ isActive }) => <DownOutlined rotate={isActive ? 180 : 0} />;
 
@@ -52,7 +53,7 @@ class ViewPrimary extends Component {
           </Col>
           <Col span={16}>
             <div className={styles.primaryView__right}>
-              <div className={styles.name}>Renil Komitla</div>
+              <div className={styles.name}>{employeeName}</div>
             </div>
           </Col>
           <Col span={8}>
@@ -62,7 +63,7 @@ class ViewPrimary extends Component {
           </Col>
           <Col span={16}>
             <div className={styles.primaryView__right}>
-              <div className={styles.email}>renil@terralogic.com</div>
+              <div className={styles.email}>{email}</div>
             </div>
           </Col>
           <Col span={8}>
@@ -73,9 +74,7 @@ class ViewPrimary extends Component {
           <Col span={16}>
             <div className={styles.primaryView__right}>
               <img src={icon} alt="primary-administrator" />
-              <div className={styles.position}>
-                renil@terralogic.comRenil’s permission apply to everyone in the company
-              </div>
+              <div className={styles.position}>{position}</div>
             </div>
           </Col>
           <Col span={8} />
@@ -87,8 +86,8 @@ class ViewPrimary extends Component {
               expandIcon={expandIcon}
             >
               <Panel header="Show permissions" className={styles.permissionPanel}>
-                {listPermissions.map((item) => (
-                  <p key={item.id}>{item.permission}</p>
+                {listPermissions.map((itemPermission) => (
+                  <p key={itemPermission.id}>{itemPermission.permission}</p>
                 ))}
               </Panel>
             </Collapse>

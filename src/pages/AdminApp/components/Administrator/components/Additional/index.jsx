@@ -49,7 +49,7 @@ class AdditionalAdminstrator extends Component {
           </div>
         </div>
         <div className={styles.listAdminstrator}>
-          <ViewAdministrator listAdminstrator={listAdminstrator} />
+          <ViewAdministrator listAdminstrator={listAdminstrator} handleAddAdmin={handleAddAdmin} />
         </div>
       </div>
     );
