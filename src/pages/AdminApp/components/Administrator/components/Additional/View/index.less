@@ -1,0 +1,117 @@
+.addAdminstrator {
+  width: 100%;
+  padding-bottom: 18px;
+  color: #161c29;
+  font-weight: normal;
+  font-style: normal;
+
+  border-bottom: 1px solid #e2e4e8;
+
+  :global {
+    .ant-collapse-header {
+      color: #2c6df9 !important;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 14px;
+      text-align: right;
+      text-decoration-line: underline;
+    }
+
+    .ant-collapse-icon-position-right
+      > .ant-collapse-item
+      > .ant-collapse-header
+      .ant-collapse-arrow {
+      font-size: 14px;
+    }
+    .ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
+      top: 2px;
+    }
+    .ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header {
+      padding: 12px 0;
+      padding-right: 40px;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .listRole {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .role {
+        margin-right: 15px;
+        padding: 2px 14px;
+
+        color: #ffffff;
+
+        font-size: 10px;
+        line-height: 12px;
+        text-align: center;
+
+        background: #2c6df9;
+        border-radius: 13px;
+      }
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-right: 18px;
+
+      &__edit,
+      &__delete {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        span {
+          margin-left: 8px;
+          color: #707177;
+          font-weight: 500;
+          font-size: 13px;
+          line-height: 15px;
+          text-decoration-line: underline;
+        }
+      }
+
+      &__delete {
+        margin-left: 21.22px;
+      }
+    }
+  }
+
+  &__left {
+    font-size: 13px;
+    line-height: 15px;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    line-height: 15px;
+
+    .name {
+      color: #2c6df9;
+    }
+
+    img {
+      margin-right: 11px;
+    }
+
+    .email,
+    .position {
+      color: #707177;
+    }
+  }
+
+  .permissionCollapse {
+    width: fit-content;
+  }
+}

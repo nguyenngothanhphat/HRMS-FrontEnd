@@ -1,0 +1,52 @@
+.primaryEdit{
+    width: 100%;
+
+    .formAdminstrator{
+
+        :global{
+            .ant-form-item-label{
+                margin-right: 24px;
+            }
+        }
+
+        &__left{
+            font-weight: normal;
+        }
+
+        &__right{
+
+            .inputForm{
+                border-radius: 5px;
+            }
+        }
+    }
+
+    &__bottom{
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding-top: 24px;
+        border-top: 1px solid rgba(226, 228, 232, 0.54);
+
+        .btn{
+            border-radius: 25px;
+            height: 40px;
+            width: 150px;
+            font-weight: 500;
+            font-size: 14px;
+            line-height: 16px;
+            text-align: center;
+            color: #ffffff;
+            border: none;
+        }
+
+        .cancelBtn{
+            color: #707177;
+            box-shadow: none;
+        }
+
+        .saveBtn{
+            background: #ffa100;
+        }
+    }
+}
