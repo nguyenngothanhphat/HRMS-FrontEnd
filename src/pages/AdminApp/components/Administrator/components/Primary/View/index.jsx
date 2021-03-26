@@ -74,7 +74,7 @@ class ViewPrimary extends Component {
             <div className={styles.primaryView__right}>
               <img src={icon} alt="primary-administrator" />
               <div className={styles.position}>
-                renil@terralogic.comRenil’s permission apply to everyone in the company
+                Renil’s permission apply to everyone in the company
               </div>
             </div>
           </Col>

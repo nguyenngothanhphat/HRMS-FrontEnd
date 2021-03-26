@@ -77,13 +77,13 @@ class ViewAdministrator extends Component {
                 <Col span={8} />
                 <Col span={16}>
                   <div className={styles.addAdminstrator__header}>
-                    <>
+                    <div className={styles.listRole}>
                       {listRole.map((item) => (
-                        <div className={styles.listRole} key={item.id}>
-                          <div className={styles.role}>{item.role}</div>
+                        <div className={styles.role} key={item.id}>
+                          {item.role}
                         </div>
                       ))}
-                    </>
+                    </div>
                     <div className={styles.actions}>
                       <div className={styles.actions__edit}>
                         <img src={editIcon} alt="edit-administrator" />
