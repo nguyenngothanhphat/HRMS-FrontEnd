@@ -80,6 +80,7 @@ export default class SelectRoles extends PureComponent {
 
   renderMainForm = () => {
     const { onContinue = () => {} } = this.props;
+    const { selectedList } = this.state;
     return (
       <div className={styles.mainForm}>
         <div className={styles.header}>
@@ -87,7 +88,7 @@ export default class SelectRoles extends PureComponent {
         </div>
         <div className={styles.content}>{this.renderList()}</div>
         <div className={styles.nextBtn}>
-          <Button className={styles.proceedBtn} onClick={onContinue}>
+          <Button className={styles.proceedBtn} onClick={() => onContinue(1, selectedList)}>
             Continue
           </Button>
         </div>
