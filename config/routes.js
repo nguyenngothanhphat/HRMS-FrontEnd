@@ -567,6 +567,48 @@ const routes = [
             component: './SearchResult',
           },
           {
+            path: '/example1',
+            name: 'Example 1',
+            icon: '/assets/images/menuIcons/icon1.svg',
+            component: './ExamplePage',
+          },
+          {
+            path: '/example2',
+            name: 'Example 2',
+            icon: '/assets/images/menuIcons/icon2.svg',
+            component: './ExamplePage',
+          },
+          {
+            path: '/example3',
+            name: 'Example 3',
+            icon: '/assets/images/menuIcons/icon3.svg',
+            component: './ExamplePage',
+          },
+          {
+            path: '/example4',
+            name: 'Example 4',
+            icon: '/assets/images/menuIcons/icon4.svg',
+            component: './ExamplePage',
+          },
+          {
+            path: '/example5',
+            name: 'Example 5',
+            icon: '/assets/images/menuIcons/icon5.svg',
+            component: './ExamplePage',
+          },
+          {
+            path: '/example6',
+            name: 'Example 6',
+            icon: '/assets/images/menuIcons/icon6.svg',
+            component: './ExamplePage',
+          },
+          {
+            path: '/example7',
+            name: 'Example 7',
+            icon: '/assets/images/menuIcons/icon7.svg',
+            component: './ExamplePage',
+          },
+          {
             component: './404',
           },
         ],
