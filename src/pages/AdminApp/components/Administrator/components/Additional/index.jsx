@@ -38,11 +38,12 @@ class AdditionalAdminstrator extends Component {
         position: 'Renil’s permission apply to everyone in the company',
       },
     ];
+    const { handleAddAdmin = () => {} } = this.props;
     return (
       <div className={styles.additional}>
         <div className={styles.header}>
           <div className={styles.header__title}>Additional Adminstrators</div>
-          <div className={styles.header__action}>
+          <div className={styles.header__action} onClick={() => handleAddAdmin(true)}>
             <img src={icon} alt="add-adminstrator" />
             <div className={styles.addBtn}>Add Adminstrator</div>
           </div>
