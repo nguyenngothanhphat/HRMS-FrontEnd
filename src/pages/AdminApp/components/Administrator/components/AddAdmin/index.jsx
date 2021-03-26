@@ -14,6 +14,14 @@ export default class AddAdmin extends PureComponent {
     };
   }
 
+  componentDidMount = () => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+  };
+
   onContinue = (step, values) => {
     const { handleAddAdmin = () => {} } = this.props;
 

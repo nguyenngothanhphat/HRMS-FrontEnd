@@ -33,6 +33,9 @@ class CompanyDetails extends Component {
       countryHeadquarter: '',
       countryLegal: '',
       checkLegalSameHeadQuarter: false,
+      isEditCompanyDetails: false,
+      isEditAddresses: false,
+      isEditContactInfomation: false,
     };
   }
 
@@ -49,6 +52,14 @@ class CompanyDetails extends Component {
       countryLegal,
     });
   }
+
+  componentWillUnmount = () => {
+    const { dispatch, companyId } = this.props;
+    dispatch({
+      type: 'companiesManagement/fetchCompanyDetails',
+      payload: { id: companyId },
+    });
+  };
 
   onChangeCountry = (value, name) => {
     const stateName = name === 'countryHeadquarterProps' ? 'countryHeadquarter' : 'countryLegal';
@@ -100,7 +111,7 @@ class CompanyDetails extends Component {
     });
   };
 
-  onFinish = (values) => {
+  onFinish = async (values) => {
     const {
       dispatch,
       companyId,
@@ -133,7 +144,7 @@ class CompanyDetails extends Component {
     let parentTenantId = listCompany.find((company) => company?._id === parentCompany);
     parentTenantId = parentTenantId?.tenant;
 
-    const payload = {
+    let payload = {
       // id: companyId || '',
       company: {
         name,
@@ -186,12 +197,20 @@ class CompanyDetails extends Component {
       parentTenantId,
     };
     if (companyId) {
-      dispatch({
+      payload = { ...payload?.company, id: companyId };
+      const res = await dispatch({
         type: 'companiesManagement/updateCompany',
         payload,
         dataTempKept: {},
         isAccountSetup: true,
       });
+      const { statusCode = 0, data = {} } = res;
+      if (statusCode === 200) {
+        dispatch({
+          type: 'companiesManagement/save',
+          payload: { companyDetails: data },
+        });
+      }
     } else {
       dispatch({
         type: 'companiesManagement/addCompanyReducer',
@@ -257,11 +276,78 @@ class CompanyDetails extends Component {
     }
   };
 
+  compareHeadquaterLegalAddress = () => {
+    const { companyDetails = {} } = this.props;
+    const {
+      company: {
+        headQuarterAddress: {
+          addressLine1: headquarterAddressLine1,
+          addressLine2: headquarterAddressLine2,
+          country: countryHeadquarterProps,
+          state: stateHeadquarter,
+          zipCode: zipHeadquarter,
+        } = {},
+        legalAddress: {
+          addressLine1: legalAddressLine1,
+          addressLine2: legalAddressLine2,
+          country: countryLegalProps,
+          state: stateLegal,
+          zipCode: zipLegal,
+        } = {},
+        // isHeadquarter,
+      } = {},
+    } = companyDetails;
+
+    const check =
+      headquarterAddressLine1 === legalAddressLine1 &&
+      headquarterAddressLine2 === legalAddressLine2 &&
+      countryHeadquarterProps === countryLegalProps &&
+      stateHeadquarter === stateLegal &&
+      zipHeadquarter === zipLegal;
+
+    this.setState({
+      checkLegalSameHeadQuarter: check,
+    });
+  };
+
+  componentDidUpdate = (prevProps) => {
+    const { companyDetails = {} } = this.props;
+    if (JSON.stringify(prevProps.companyDetails) !== JSON.stringify(companyDetails)) {
+      this.compareHeadquaterLegalAddress();
+    }
+  };
+
+  handleEdit = (key) => {
+    const { isEditContactInfomation, isEditCompanyDetails, isEditAddresses } = this.state;
+    switch (key) {
+      case 1:
+        this.setState({
+          isEditCompanyDetails: !isEditCompanyDetails,
+        });
+        break;
+      case 2:
+        this.setState({
+          isEditAddresses: !isEditAddresses,
+        });
+        break;
+      case 3:
+        this.setState({
+          isEditContactInfomation: !isEditContactInfomation,
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
   render() {
     const {
       countryHeadquarter = '',
       countryLegal = '',
       checkLegalSameHeadQuarter = false,
+      isEditContactInfomation,
+      isEditCompanyDetails,
+      isEditAddresses,
     } = this.state;
     const {
       listCountry = [],
@@ -374,6 +460,7 @@ class CompanyDetails extends Component {
     };
 
     const { loadingGetCompanyDetails = false } = this.props;
+    // const checkAddresses = this.compareHeadquaterLegalAddress();
 
     return (
       <>
@@ -412,6 +499,9 @@ class CompanyDetails extends Component {
             <div className={s.blockContent}>
               <div className={s.content__viewTop}>
                 <p className={s.title}>Company Details</p>
+                <div className={s.editBtn} onClick={() => this.handleEdit(1)}>
+                  <span>{isEditCompanyDetails ? 'Cancel' : 'Edit'}</span>
+                </div>
               </div>
               <div className={s.content__viewBottom}>
                 {fieldCompanyDetail.map(
@@ -431,7 +521,7 @@ class CompanyDetails extends Component {
                           },
                         ]}
                       >
-                        <Input placeholder={label} />
+                        <Input disabled={!isEditCompanyDetails} placeholder={label} />
                       </Form.Item>
                     </div>
                   ),
@@ -445,6 +535,7 @@ class CompanyDetails extends Component {
                       showSearch
                       allowClear
                       defaultValue=""
+                      disabled={!isEditCompanyDetails}
                       className={s.parentCompanySelect}
                       // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
                       filterOption={(input, option) =>
@@ -469,6 +560,9 @@ class CompanyDetails extends Component {
             <div className={s.blockContent} style={{ marginTop: '24px' }}>
               <div className={s.content__viewTop}>
                 <p className={s.title}>Headquarter Address</p>
+                <div className={s.editBtn} onClick={() => this.handleEdit(2)}>
+                  <span>{isEditAddresses ? 'Cancel' : 'Edit'}</span>
+                </div>
               </div>
               <div className={s.content__viewBottom}>
                 <div className={s.content__viewBottom__row}>
@@ -483,7 +577,7 @@ class CompanyDetails extends Component {
                       },
                     ]}
                   >
-                    <Input placeholder="Address Line 1" />
+                    <Input disabled={!isEditAddresses} placeholder="Address Line 1" />
                   </Form.Item>
                 </div>
                 <div className={s.content__viewBottom__row}>
@@ -498,7 +592,7 @@ class CompanyDetails extends Component {
                       },
                     ]}
                   >
-                    <Input placeholder="Address Line 2" />
+                    <Input disabled={!isEditAddresses} placeholder="Address Line 2" />
                   </Form.Item>
                 </div>
                 <div className={s.content__viewBottom__row}>
@@ -525,6 +619,7 @@ class CompanyDetails extends Component {
                         placeholder="Select Country"
                         showArrow
                         showSearch
+                        disabled={!isEditAddresses}
                         onChange={(value) => this.onChangeCountry(value, 'countryHeadquarterProps')}
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -559,7 +654,7 @@ class CompanyDetails extends Component {
                         placeholder="Select State"
                         showArrow
                         showSearch
-                        disabled={!countryHeadquarter}
+                        disabled={!countryHeadquarter || !isEditAddresses}
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
@@ -589,14 +684,20 @@ class CompanyDetails extends Component {
                         },
                       ]}
                     >
-                      <Input placeholder="Zip Code" />
+                      <Input disabled={!isEditAddresses} placeholder="Zip Code" />
                     </Form.Item>
                   </div>
                 </div>
               </div>
               <div className={classnames(s.content__viewTop, s.content__viewTop__legalAddress)}>
                 <p className={s.title}>Legal Address</p>
-                <Checkbox onChange={this.onChangeCheckbox}>Same as Headquarters address</Checkbox>
+                <Checkbox
+                  defaultChecked={checkLegalSameHeadQuarter}
+                  disabled={!isEditAddresses}
+                  onChange={this.onChangeCheckbox}
+                >
+                  Same as Headquarters address
+                </Checkbox>
               </div>
               <div
                 className={classnames(s.content__viewBottom, {
@@ -615,7 +716,7 @@ class CompanyDetails extends Component {
                       },
                     ]}
                   >
-                    <Input placeholder="Address Line 1" />
+                    <Input disabled={!isEditAddresses} placeholder="Address Line 1" />
                   </Form.Item>
                 </div>
                 <div className={s.content__viewBottom__row}>
@@ -630,7 +731,7 @@ class CompanyDetails extends Component {
                       },
                     ]}
                   >
-                    <Input placeholder="Address Line 2" />
+                    <Input disabled={!isEditAddresses} placeholder="Address Line 2" />
                   </Form.Item>
                 </div>
                 <div className={s.content__viewBottom__row}>
@@ -657,6 +758,7 @@ class CompanyDetails extends Component {
                         placeholder="Select Country"
                         showArrow
                         showSearch
+                        disabled={!isEditAddresses}
                         onChange={(value) => this.onChangeCountry(value, 'countryLegalProps')}
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -691,7 +793,7 @@ class CompanyDetails extends Component {
                         placeholder="Select State"
                         showArrow
                         showSearch
-                        disabled={!countryLegal}
+                        disabled={!isEditAddresses || !countryLegal}
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
@@ -721,7 +823,7 @@ class CompanyDetails extends Component {
                         },
                       ]}
                     >
-                      <Input placeholder="Zip Code" />
+                      <Input disabled={!isEditAddresses} placeholder="Zip Code" />
                     </Form.Item>
                   </div>
                 </div>
@@ -730,6 +832,9 @@ class CompanyDetails extends Component {
             <div className={s.blockContent} style={{ marginTop: '24px' }}>
               <div className={s.content__viewTop}>
                 <p className={s.title}>Contact information</p>
+                <div className={s.editBtn} onClick={() => this.handleEdit(3)}>
+                  <span>{isEditContactInfomation ? 'Cancel' : 'Edit'}</span>
+                </div>
               </div>
               <div className={s.content__viewBottom}>
                 {fieldContactInformation.map(
@@ -762,7 +867,11 @@ class CompanyDetails extends Component {
                           },
                         ]}
                       >
-                        <Input placeholder={placeholder} defaultValue={defaultValue} />
+                        <Input
+                          disabled={!isEditContactInfomation}
+                          placeholder={placeholder}
+                          defaultValue={defaultValue}
+                        />
                       </Form.Item>
                     </div>
                   ),
@@ -774,6 +883,7 @@ class CompanyDetails extends Component {
                 className={s.btnSubmit}
                 htmlType="submit"
                 loading={companyId ? loadingUpdate : loadingAdd}
+                disabled={!isEditAddresses && !isEditCompanyDetails && !isEditContactInfomation}
               >
                 Save
               </Button>
