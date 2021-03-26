@@ -13,6 +13,7 @@ import {
 } from '@/services/companiesManangement';
 import { history } from 'umi';
 import { notification } from 'antd';
+import { ConsoleSqlOutlined, PauseOutlined } from '@ant-design/icons';
 
 const companiesManagement = {
   namespace: 'companiesManagement',
@@ -174,7 +175,7 @@ const companiesManagement = {
         // });
         yield put({
           type: 'saveOrigin',
-          payload: { originData: { companyDetails: payload } },
+          payload: { companyDetails: { ...payload } },
         });
         history.push('/account-setup');
       } catch (errors) {
@@ -190,20 +191,6 @@ const companiesManagement = {
         yield put({
           type: 'saveOrigin',
           payload: { companyDetails: payload },
-        });
-      } catch (error) {
-        dialog(error);
-      }
-    },
-
-    *addLogoReducer({ payload = {} }, { put }) {
-      try {
-        notification.success({
-          message: 'Upload logo successfully',
-        });
-        yield put({
-          type: 'saveCompanyDetails',
-          payload: { logoUrl: payload },
         });
       } catch (error) {
         dialog(error);
@@ -311,17 +298,22 @@ const companiesManagement = {
     },
 
     saveCompanyDetails(state, action) {
-      const { company } = state;
+      const {
+        originData: {
+          companyDetails: { company },
+        },
+      } = state;
       return {
         ...state,
-        // originData: {
-        //   companyDetails: {
-        company: {
-          ...company,
-          ...action.payload,
+        originData: {
+          // ...originData,
+          companyDetails: {
+            company: {
+              ...company,
+              ...action.payload,
+            },
+          },
         },
-        // },
-        // },
       };
     },
   },

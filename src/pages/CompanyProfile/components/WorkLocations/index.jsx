@@ -55,21 +55,21 @@ class WorkLocations extends PureComponent {
     });
   }
 
-  onFinish = (values) => {
-    const { dispatch, companyId = '', companyDetails } = this.props;
-    const payload = { values, company: companyId };
+  onFinish = ({ workLocations: locations = [] }) => {
+    const { dispatch, companyId = '', companyDetails = {} } = this.props;
+    const { company, isNewTenant, locations: originLocations = [] } = companyDetails;
+    const listLocation = [...originLocations, ...locations];
+    const payload = { locations, company, isNewTenant };
     if (companyId) {
       dispatch({
         type: 'companiesManagement/upsertLocationsList',
         payload,
       });
     } else {
-      // console.log('payload add new company', payload);
-      companyDetails.locations = [...companyDetails.locations, ...values.workLocation];
-      companyDetails.isNewTenant = true;
+      const payloadAddCompanyTenant = { ...companyDetails, locations: [...listLocation] };
       dispatch({
         type: 'companiesManagement/addCompanyTenant',
-        payload: companyDetails,
+        payload: payloadAddCompanyTenant,
         dataTempKept: {},
         isAccountSetup: true,
       });

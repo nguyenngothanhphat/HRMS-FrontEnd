@@ -55,12 +55,12 @@ class UploadLogoCompany extends Component {
           }
         });
       } else {
-        console.log('payload add new company', first?.url);
+        // console.log('payload add new company', first?.url);
         dispatch({
-          type: 'companiesManagement/addLogoReducer',
-          payload: first?.url,
-          dataTempKept: {},
-          isAccountSetup: true,
+          type: 'companiesManagement/saveCompanyDetails',
+          payload: { logoUrl: first?.url },
+          // dataTempKept: {},
+          // isAccountSetup: true,
         });
         this.handleCancel();
       }

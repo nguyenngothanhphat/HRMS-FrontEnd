@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { Form, Input, Select, Divider, Modal } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
-import { bool } from 'prop-types';
+// import { bool } from 'prop-types';
 import s from './index.less';
 
 const { Option } = Select;
@@ -78,8 +78,8 @@ class FormWorkLocationTenant extends Component {
       listLocation = [],
       field = {},
       name = '',
-      isRequired = bool,
-      companyDetails = {},
+      // isRequired = bool,
+      // companyDetails = {},
     } = this.props;
     const listState = this.findListState(newCountry) || [];
     const itemLocation = listLocation[field.name] || {};
@@ -97,23 +97,23 @@ class FormWorkLocationTenant extends Component {
               name="addressLine1"
               // value={companyDetails.company.headQuarterAddress.addressLine1}
               // fieldKey={[field.fieldKey, 'name']}
-              rules={[
-                {
-                  required: { isRequired },
-                  message: 'Please enter name!',
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    const checkUnique = getFieldValue('workLocations').filter(
-                      (item) => item?.name && item?.name === value,
-                    );
-                    if (checkUnique.length <= 1) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject('This name has already been used!');
-                  },
-                }),
-              ]}
+              // rules={[
+              //   {
+              //     required: { isRequired },
+              //     message: 'Please enter name!',
+              //   },
+              //   ({ getFieldValue }) => ({
+              //     validator(_, value) {
+              //       const checkUnique = getFieldValue('workLocations').filter(
+              //         (item) => item?.name && item?.name === value,
+              //       );
+              //       if (checkUnique.length <= 1) {
+              //         return Promise.resolve();
+              //       }
+              //       return Promise.reject('This name has already been used!');
+              //     },
+              //   }),
+              // ]}
             >
               <Input placeholder="Name Location" />
             </Form.Item>
@@ -125,12 +125,12 @@ class FormWorkLocationTenant extends Component {
               // label={false}
               name="addressLine2"
               // fieldKey={[field.fieldKey, 'address']}
-              rules={[
-                {
-                  required: { isRequired },
-                  message: 'Please enter Address!',
-                },
-              ]}
+              // rules={[
+              //   {
+              //     required: { isRequired },
+              //     message: 'Please enter Address!',
+              //   },
+              // ]}
             >
               <Input placeholder="Address" />
             </Form.Item>
@@ -143,12 +143,12 @@ class FormWorkLocationTenant extends Component {
                 // label={false}
                 name="country"
                 // fieldKey={[field.fieldKey, 'country']}
-                rules={[
-                  {
-                    required: { isRequired },
-                    message: 'Please enter Country!',
-                  },
-                ]}
+                // rules={[
+                //   {
+                //     required: { isRequired },
+                //     message: 'Please enter Country!',
+                //   },
+                // ]}
               >
                 <Select
                   placeholder="Select Country"
@@ -172,12 +172,12 @@ class FormWorkLocationTenant extends Component {
                 // label={false}
                 name="state"
                 // fieldKey={[field.fieldKey, 'state']}
-                rules={[
-                  {
-                    required: { isRequired },
-                    message: 'Please enter State!',
-                  },
-                ]}
+                // rules={[
+                //   {
+                //     required: { isRequired },
+                //     message: 'Please enter State!',
+                //   },
+                // ]}
               >
                 <Select
                   placeholder="Select State"
@@ -201,12 +201,12 @@ class FormWorkLocationTenant extends Component {
                 // label={false}
                 name="zipCode"
                 // fieldKey={[field.fieldKey, 'zipCode']}
-                rules={[
-                  {
-                    required: { isRequired },
-                    message: 'Please enter Zip Code!',
-                  },
-                ]}
+                // rules={[
+                //   {
+                //     required: { isRequired },
+                //     message: 'Please enter Zip Code!',
+                //   },
+                // ]}
               >
                 <Input placeholder="Zip Code" />
               </Form.Item>
