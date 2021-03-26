@@ -41,78 +41,82 @@ class EditPrimary extends Component {
             position,
           }}
         >
-          <Row gutter={[0, 16]}>
-            <Col span={8}>
-              <div className={styles.formAdminstrator__left}>
-                <div>Employee Name</div>
-              </div>
+          <Row>
+            <Col span={24} className={styles.rowItem}>
+              <Col span={8}>
+                <div className={styles.formAdminstrator__left}>
+                  <div>Employee Name</div>
+                </div>
+              </Col>
+              <Col span={16}>
+                <Form.Item
+                  name="employeeName"
+                  className={styles.formAdminstrator__right}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input value',
+                    },
+                  ]}
+                >
+                  <Input
+                    className={styles.inputForm}
+                    onChange={(e) => this.handleChangeField(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
             </Col>
-            <Col span={16}>
-              <Form.Item
-                name="employeeName"
-                className={styles.formAdminstrator__right}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input value',
-                  },
-                ]}
-              >
-                <Input
-                  className={styles.inputForm}
-                  onChange={(e) => this.handleChangeField(e.target.value)}
-                />
-              </Form.Item>
+            <Col span={24} className={styles.rowItem}>
+              <Col span={8}>
+                <div className={styles.formAdminstrator__left}>
+                  <div>Email</div>
+                </div>
+              </Col>
+              <Col span={16}>
+                <Form.Item
+                  name="email"
+                  className={styles.formAdminstrator__right}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input value',
+                    },
+                    {
+                      type: 'email',
+                      message: 'Invalid email !',
+                    },
+                  ]}
+                >
+                  <Input
+                    className={styles.inputForm}
+                    onChange={(e) => this.handleChangeField(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
             </Col>
-
-            <Col span={8}>
-              <div className={styles.formAdminstrator__left}>
-                <div>Email</div>
-              </div>
-            </Col>
-            <Col span={16}>
-              <Form.Item
-                name="email"
-                className={styles.formAdminstrator__right}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input value',
-                  },
-                  {
-                    type: 'email',
-                    message: 'Invalid email !',
-                  },
-                ]}
-              >
-                <Input
-                  className={styles.inputForm}
-                  onChange={(e) => this.handleChangeField(e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <div className={styles.formAdminstrator__left}>
-                <div>Position</div>
-              </div>
-            </Col>
-            <Col span={16}>
-              <Form.Item
-                name="position"
-                className={styles.formAdminstrator__right}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input value',
-                  },
-                ]}
-              >
-                <Input
-                  className={styles.inputForm}
-                  onChange={(e) => this.handleChangeField(e.target.value)}
-                />
-              </Form.Item>
+            <Col span={24} className={styles.rowItem}>
+              <Col span={8}>
+                <div className={styles.formAdminstrator__left}>
+                  <div>Position</div>
+                </div>
+              </Col>
+              <Col span={16}>
+                <Form.Item
+                  name="position"
+                  className={styles.formAdminstrator__right}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input value',
+                    },
+                  ]}
+                >
+                  <Input
+                    className={styles.inputForm}
+                    onChange={(e) => this.handleChangeField(e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
             </Col>
           </Row>
 

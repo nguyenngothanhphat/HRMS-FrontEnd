@@ -2,18 +2,41 @@
   width: 100%;
 
   .formAdminstrator {
+    color: #161c29;
+    font-weight: normal;
+    font-size: 13px;
+    font-style: normal;
+    line-height: 15.23px;
+
     :global {
       .ant-form-item-label {
         margin-right: 24px;
       }
+      .ant-input {
+        color: #161c29;
+        font-weight: normal;
+        font-size: 13px;
+        font-style: normal;
+        line-height: 15.23px;
+      }
+
+      .ant-form-item {
+        margin-bottom: 0%;
+      }
+    }
+
+    .rowItem {
+      display: flex;
+      align-items: center;
+      margin-bottom: 24px;
     }
 
     &__left {
-      font-weight: normal;
     }
 
     &__right {
       .inputForm {
+        min-height: 32px;
         border-radius: 5px;
       }
     }
