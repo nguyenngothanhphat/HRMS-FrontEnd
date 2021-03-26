@@ -11,6 +11,7 @@ import Departments from './components/Departments';
 import CompanySignatory from './components/CompanySignatory';
 import CompanyDocuments from './components/CompanyDocuments';
 import ImportEmployees from './components/ImportEmployees';
+import Administrator from './components/Administrator';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -93,11 +94,16 @@ class CompanyProfile extends Component {
         ...listMenu,
         {
           id: 3,
+          name: 'Administrator',
+          component: <Administrator companyId={id} />,
+        },
+        {
+          id: 4,
           name: 'Departments',
           component: <Departments companyId={id} />,
         },
         {
-          id: 4,
+          id: 5,
           name: 'Company Signatory',
           component: <CompanySignatory companyId={id} />,
         },

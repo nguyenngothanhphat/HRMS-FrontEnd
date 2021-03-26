@@ -8,6 +8,7 @@ import WorkLocations from './components/WorkLocations';
 import PlanInfo from './components/PlanInfo';
 import BillingPayments from './components/BillingPayments';
 import Integrations from './components/Integrations';
+import Administrator from './components/Administrator';
 import styles from './index.less';
 
 @connect(
@@ -76,7 +77,7 @@ class AdminApp extends Component {
         {
           id: 3,
           name: 'Administrator',
-          // component: <Departments companyId={id} />,
+          component: <Administrator companyId={id} />,
         },
         {
           id: 4,

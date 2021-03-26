@@ -1,0 +1,65 @@
+.primaryView {
+  width: 100%;
+  height: fit-content;
+  color: #161c29;
+  font-weight: normal;
+  font-size: 13px;
+  font-style: normal;
+  line-height: 15.23px;
+
+  :global {
+    .ant-collapse-header {
+      color: #2c6df9 !important;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 14px;
+      text-align: right;
+      text-decoration-line: underline;
+    }
+
+    .ant-collapse-icon-position-right
+      > .ant-collapse-item
+      > .ant-collapse-header
+      .ant-collapse-arrow {
+      font-size: 14px;
+    }
+    .ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
+      top: 2px;
+    }
+    .ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header {
+      padding: 12px 0;
+      padding-right: 40px;
+    }
+  }
+
+  &__right {
+    .name {
+      color: #2c6df9;
+    }
+
+    .email {
+      color: #707177;
+    }
+    display: flex;
+
+    img {
+      margin-right: 11px;
+    }
+  }
+
+  &__left {
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 15.23px;
+    .company {
+      margin-bottom: 14px;
+    }
+  }
+
+  .permissionCollapse {
+    width: fit-content;
+
+    .permissionPanel {
+    }
+  }
+}

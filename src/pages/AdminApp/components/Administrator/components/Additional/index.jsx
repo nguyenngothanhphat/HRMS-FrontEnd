@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import icon from '@/assets/add-adminstrator.svg';
+import ViewAdministrator from './View';
 import styles from './index.less';
 
 class AdditionalAdminstrator extends Component {
@@ -19,7 +20,9 @@ class AdditionalAdminstrator extends Component {
             <div className={styles.addBtn}>Add Adminstrator</div>
           </div>
         </div>
-        <div>hello</div>
+        <div className={styles.listAdminstrator}>
+          <ViewAdministrator />
+        </div>
       </div>
     );
   }
