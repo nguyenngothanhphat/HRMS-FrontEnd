@@ -119,7 +119,7 @@ class WorkLocations extends PureComponent {
           state = '',
           zipCode = '',
         } = {},
-      },
+      } = {},
     } = companyDetails;
 
     if (fetchingLocationsList || loadingCountry)
