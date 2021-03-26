@@ -1,9 +1,36 @@
 import React, { Component } from 'react';
-import { Row, Col, Menu, Dropdown } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { Row, Col, Collapse } from 'antd';
 import icon from '@/assets/primary-administrator.svg';
+import { DownOutlined } from '@ant-design/icons';
 
 import styles from './index.less';
+
+const listPermissions = [
+  {
+    id: 1,
+    permission: 'User',
+  },
+  {
+    id: 2,
+    permission: 'Employees',
+  },
+  {
+    id: 3,
+    permission: 'Profile',
+  },
+  {
+    id: 4,
+    permission: 'Directory',
+  },
+  {
+    id: 5,
+    permission: 'Onboarding',
+  },
+  {
+    id: 6,
+    permission: 'Setting',
+  },
+];
 
 class ViewPrimary extends Component {
   constructor(props) {
@@ -12,18 +39,9 @@ class ViewPrimary extends Component {
   }
 
   render() {
+    const { Panel } = Collapse;
+    const expandIcon = ({ isActive }) => <DownOutlined rotate={isActive ? 180 : 0} />;
 
-    const menu = (
-      <Menu>
-        <Menu.Item key='0'>
-          1st menu item
-        </Menu.Item>
-        <Menu.Item key='1'>
-          2nd menu item
-        </Menu.Item>
-        <Menu.Item key='3'>3rd menu item</Menu.Item>
-      </Menu>
-    );
     return (
       <div className={styles.primaryView}>
         <Row gutter={[0, 16]}>
@@ -54,7 +72,7 @@ class ViewPrimary extends Component {
           </Col>
           <Col span={16}>
             <div className={styles.primaryView__right}>
-              <img src={icon} alt='primary-administrator' />
+              <img src={icon} alt="primary-administrator" />
               <div className={styles.email}>
                 renil@terralogic.comRenil’s permission apply to everyone in the company
               </div>
@@ -62,11 +80,18 @@ class ViewPrimary extends Component {
           </Col>
           <Col span={8} />
           <Col span={16}>
-            <Dropdown overlay={menu} trigger={['click']}>
-              <a className={styles.permissionsDropdown} onClick={e => e.preventDefault()}>
-                Show Permissions <DownOutlined className={styles.permissionsDropdown__icon} />
-              </a>
-            </Dropdown>
+            <Collapse
+              ghost
+              expandIconPosition="right"
+              className={styles.permissionCollapse}
+              expandIcon={expandIcon}
+            >
+              <Panel header="Show permissions" className={styles.permissionPanel}>
+                {listPermissions.map((item) => (
+                  <p key={item.id}>{item.permission}</p>
+                ))}
+              </Panel>
+            </Collapse>
           </Col>
         </Row>
       </div>
