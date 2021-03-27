@@ -38,7 +38,7 @@ class AdditionalAdminstrator extends Component {
         position: 'Renil’s permission apply to everyone in the company',
       },
     ];
-    const { handleAddAdmin = () => {} } = this.props;
+    const { handleAddAdmin = () => {}, handleEditAdmin = () => {} } = this.props;
     return (
       <div className={styles.additional}>
         <div className={styles.header}>
@@ -49,7 +49,10 @@ class AdditionalAdminstrator extends Component {
           </div>
         </div>
         <div className={styles.listAdminstrator}>
-          <ViewAdministrator listAdminstrator={listAdminstrator} handleAddAdmin={handleAddAdmin} />
+          <ViewAdministrator
+            listAdminstrator={listAdminstrator}
+            handleEditAdmin={handleEditAdmin}
+          />
         </div>
       </div>
     );

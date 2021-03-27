@@ -49,7 +49,6 @@ class ViewAdministrator extends Component {
 
   handleDelete = (index) => {
     const { list = [] } = this.state;
-    // const newList = [...list];
     if (index > -1) {
       list.splice(index, 1);
     }
@@ -57,7 +56,7 @@ class ViewAdministrator extends Component {
   };
 
   render() {
-    const { handleAddAdmin = () => {} } = this.props;
+    const { handleEditAdmin = () => {} } = this.props;
     const { list = [] } = this.state;
 
     const { Panel } = Collapse;
@@ -87,7 +86,7 @@ class ViewAdministrator extends Component {
                       ))}
                     </div>
                     <div className={styles.actions}>
-                      <div className={styles.actions__edit} onClick={() => handleAddAdmin(true)}>
+                      <div className={styles.actions__edit} onClick={() => handleEditAdmin(true)}>
                         <img src={editIcon} alt="edit-administrator" />
                         <span>Edit</span>
                       </div>

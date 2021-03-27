@@ -5,12 +5,14 @@ import PrimaryAdminstrator from './components/Primary';
 import AddAdmin from './components/AddAdmin';
 
 import styles from './index.less';
+import EditAdmin from './components/EditAdmin';
 
 class Adminstrator extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isAddAdmin: false,
+      isEditAdmin: false,
     };
   }
 
@@ -20,19 +22,28 @@ class Adminstrator extends Component {
     });
   };
 
+  handleEditAdmin = (value) => {
+    this.setState({
+      isEditAdmin: value,
+    });
+  };
+
   render() {
-    const { isAddAdmin } = this.state;
+    const { isAddAdmin, isEditAdmin } = this.state;
     return (
       <div className={styles.root}>
-        {isAddAdmin ? (
-          <AddAdmin handleAddAdmin={this.handleAddAdmin} />
+        {isAddAdmin || isEditAdmin ? (
+          <>{isEditAdmin ? <EditAdmin /> : <AddAdmin handleAddAdmin={this.handleAddAdmin} />}</>
         ) : (
           <>
             <div className={styles.root__top}>
               <PrimaryAdminstrator />
             </div>
             <div className={styles.root__bottom}>
-              <AdditionalAdminstrator handleAddAdmin={this.handleAddAdmin} />
+              <AdditionalAdminstrator
+                handleAddAdmin={this.handleAddAdmin}
+                handleEditAdmin={this.handleEditAdmin}
+              />
             </div>
           </>
         )}
