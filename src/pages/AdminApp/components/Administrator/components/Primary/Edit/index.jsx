@@ -28,7 +28,7 @@ class EditPrimary extends Component {
   };
 
   render() {
-    const { listAdminstrator: { employeeName = '', email = '', position = '' } = {} } = this.props;
+    const { listAdministrator: { employeeName = '', email = '', position = '' } = {} } = this.props;
     return (
       <div className={styles.primaryEdit}>
         <Form

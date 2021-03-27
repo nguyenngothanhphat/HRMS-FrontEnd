@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 // import { Row, Col } from 'antd';
-import AdditionalAdminstrator from './components/Additional';
+import AdditionalAdministrator from './components/Additional';
 import PrimaryAdminstrator from './components/Primary';
 import AddAdmin from './components/AddAdmin';
 
 import styles from './index.less';
 import EditAdmin from './components/EditAdmin';
 
-const listAdminstrator = [
+const listAdministrator = [
   {
     listRole: [
       {
@@ -53,7 +53,7 @@ class Adminstrator extends Component {
   };
 
   handleEditAdmin = (value, index) => {
-    const dataAdmin = listAdminstrator[index];
+    const dataAdmin = listAdministrator[index];
 
     this.setState({
       isEditAdmin: value,
@@ -80,8 +80,8 @@ class Adminstrator extends Component {
               <PrimaryAdminstrator />
             </div>
             <div className={styles.root__bottom}>
-              <AdditionalAdminstrator
-                listAdminstrator={listAdminstrator}
+              <AdditionalAdministrator
+                listAdministrator={listAdministrator}
                 handleAddAdmin={this.handleAddAdmin}
                 handleEditAdmin={this.handleEditAdmin}
               />

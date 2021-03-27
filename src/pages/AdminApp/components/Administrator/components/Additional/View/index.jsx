@@ -43,8 +43,8 @@ class ViewAdministrator extends Component {
   }
 
   componentDidMount() {
-    const { listAdminstrator = [] } = this.props;
-    this.setState({ list: listAdminstrator });
+    const { listAdministrator = [] } = this.props;
+    this.setState({ list: listAdministrator });
   }
 
   handleDelete = (index) => {

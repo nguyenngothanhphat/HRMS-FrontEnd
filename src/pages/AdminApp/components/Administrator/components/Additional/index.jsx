@@ -3,7 +3,7 @@ import icon from '@/assets/add-adminstrator.svg';
 import ViewAdministrator from './View';
 import styles from './index.less';
 
-class AdditionalAdminstrator extends Component {
+class AdditionalAdministrator extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -13,20 +13,20 @@ class AdditionalAdminstrator extends Component {
     const {
       handleAddAdmin = () => {},
       handleEditAdmin = () => {},
-      listAdminstrator = [],
+      listAdministrator = [],
     } = this.props;
     return (
       <div className={styles.additional}>
         <div className={styles.header}>
-          <div className={styles.header__title}>Additional Adminstrators</div>
+          <div className={styles.header__title}>Additional Administrators</div>
           <div className={styles.header__action} onClick={() => handleAddAdmin(true)}>
-            <img src={icon} alt="add-adminstrator" />
-            <div className={styles.addBtn}>Add Adminstrator</div>
+            <img src={icon} alt="add-administrator" />
+            <div className={styles.addBtn}>Add Administrator</div>
           </div>
         </div>
-        <div className={styles.listAdminstrator}>
+        <div className={styles.listAdministrator}>
           <ViewAdministrator
-            listAdminstrator={listAdminstrator}
+            listAdministrator={listAdministrator}
             handleEditAdmin={handleEditAdmin}
           />
         </div>
@@ -35,4 +35,4 @@ class AdditionalAdminstrator extends Component {
   }
 }
 
-export default AdditionalAdminstrator;
+export default AdditionalAdministrator;
