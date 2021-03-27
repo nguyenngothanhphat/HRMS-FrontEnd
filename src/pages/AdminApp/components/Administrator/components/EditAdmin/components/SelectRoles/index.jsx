@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Checkbox } from 'antd';
+import { Button, Row, Col, Checkbox, Form } from 'antd';
 
 import styles from './index.less';
 
@@ -12,10 +12,11 @@ export default class SelectRoles extends PureComponent {
   }
 
   renderTitle = () => {
-    const { handleEditAdmin = () => {} } = this.props;
+    const { handleEditAdmin = () => {}, dataAdmin = {} } = this.props;
+    const { employeeName = '' } = dataAdmin;
     return (
       <div className={styles.titleContainer}>
-        <span className={styles.title}>Edit Rena’s role as admin</span>
+        <span className={styles.title}>{`Edit ${employeeName}’s role as admin`}</span>
         <div className={styles.cancelBtn} onClick={() => handleEditAdmin(false)}>
           <span>Cancel</span>
         </div>
@@ -37,36 +38,81 @@ export default class SelectRoles extends PureComponent {
     });
   };
 
+  checkBoxValue = (name) => {
+    const { dataAdmin = {} } = this.props;
+    const { listRole = [] } = dataAdmin;
+    let checkValue = '';
+
+    listRole.forEach((item) => {
+      if (item.id === name) {
+        checkValue = 'checked';
+      }
+    });
+
+    return checkValue;
+  };
+
   renderList = () => {
     const data = [
       {
         id: 1,
-        name: 'Company',
+        name: 'company',
+        role: 'Company',
         description: 'Has full permissions and can manage all aspects of your account.',
       },
       {
         id: 2,
-        name: 'Payroll',
-        description: 'Has full permissions and can manage all aspects of your account.',
+        name: 'payroll',
+        role: 'Payroll',
+        description: 'Runs your company’s payroll.',
       },
       {
         id: 3,
-        name: 'Company',
-        description: 'Has full permissions and can manage all aspects of your account.',
+        name: 'benefits',
+        role: 'Benefits',
+        description: 'Manages your company’s health benefits and employee’s enrollment info.',
+      },
+      {
+        id: 4,
+        name: 'hr',
+        role: 'HR',
+        description: 'Oversees employes’s HR records, and handles hiring and terminations.',
+      },
+      {
+        id: 5,
+        name: 'intergrations',
+        role: 'Intergrations',
+        description: 'Add apps and custom intergrations, and manages employee’s integrated apps.',
+      },
+      {
+        id: 6,
+        name: 'contractors',
+        role: 'Contractors',
+        description: 'Hires and terminates contractors, and manages contractor payments.',
+      },
+      {
+        id: 7,
+        name: 'time',
+        role: 'Time',
+        description: 'Regulates employee hours and time-off policies.',
       },
     ];
 
     return (
       <div className={styles.roleList}>
-        {data.map((role) => {
-          const { id = '', name = '', description = '' } = role;
+        {data.map((item) => {
+          const { id = '', role = '', description = '', name = '' } = item;
           return (
             <Row gutter={[24, 24]} key={id} align="middle">
               <Col span={2}>
-                <Checkbox onChange={() => this.setList(id)} />
+                <Form name="roleAdmin" initialValues={{ check: true }}>
+                  <Form.Item name="check" valuePropName={this.checkBoxValue(name)}>
+                    <Checkbox onChange={() => this.setList(id)} />
+                  </Form.Item>
+                </Form>
               </Col>
               <Col span={6}>
-                <span className={styles.roleName}>{name}</span>
+                <span className={styles.roleName}>{role}</span>
               </Col>
               <Col span={16}>
                 <span className={styles.roleDescription}>{description}</span>

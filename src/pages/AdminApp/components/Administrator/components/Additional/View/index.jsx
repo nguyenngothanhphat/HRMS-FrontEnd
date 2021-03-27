@@ -86,7 +86,10 @@ class ViewAdministrator extends Component {
                       ))}
                     </div>
                     <div className={styles.actions}>
-                      <div className={styles.actions__edit} onClick={() => handleEditAdmin(true)}>
+                      <div
+                        className={styles.actions__edit}
+                        onClick={() => handleEditAdmin(true, index)}
+                      >
                         <img src={editIcon} alt="edit-administrator" />
                         <span>Edit</span>
                       </div>

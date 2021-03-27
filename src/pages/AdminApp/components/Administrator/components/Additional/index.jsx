@@ -10,35 +10,11 @@ class AdditionalAdminstrator extends Component {
   }
 
   render() {
-    const listAdminstrator = [
-      {
-        listRole: [
-          {
-            id: 'payroll',
-            role: 'Payroll',
-          },
-          {
-            id: 'benefit',
-            role: 'Benefit',
-          },
-        ],
-        employeeName: 'Jenny',
-        email: 'jenny@terralogic.com',
-        position: 'Jenny’s permission apply to everyone in the company',
-      },
-      {
-        listRole: [
-          {
-            id: 'company',
-            role: 'Company',
-          },
-        ],
-        employeeName: 'Renil Komitla',
-        email: 'renil@terralogic.com',
-        position: 'Renil’s permission apply to everyone in the company',
-      },
-    ];
-    const { handleAddAdmin = () => {}, handleEditAdmin = () => {} } = this.props;
+    const {
+      handleAddAdmin = () => {},
+      handleEditAdmin = () => {},
+      listAdminstrator = [],
+    } = this.props;
     return (
       <div className={styles.additional}>
         <div className={styles.header}>

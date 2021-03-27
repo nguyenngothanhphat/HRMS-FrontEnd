@@ -41,16 +41,24 @@ export default class EditAdmin extends PureComponent {
   };
 
   render() {
-    const { handleEditAdmin = () => {} } = this.props;
+    const { handleEditAdmin = () => {}, dataAdmin = {} } = this.props;
     const { currentStep, adminRoles, adminInfo } = this.state;
-    console.log('admin', adminRoles, adminInfo);
+    // console.log('admin', adminRoles, adminInfo);
     return (
       <div className={styles.EditAdmin}>
         {currentStep === 1 && (
-          <SelectRoles handleEditAdmin={handleEditAdmin} onContinue={this.onContinue} />
+          <SelectRoles
+            dataAdmin={dataAdmin}
+            handleEditAdmin={handleEditAdmin}
+            onContinue={this.onContinue}
+          />
         )}
         {currentStep === 2 && (
-          <SelectUser handleEditAdmin={handleEditAdmin} onContinue={this.onContinue} />
+          <SelectUser
+            dataAdmin={dataAdmin}
+            handleEditAdmin={handleEditAdmin}
+            onContinue={this.onContinue}
+          />
         )}
       </div>
     );

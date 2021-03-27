@@ -7,12 +7,42 @@ import AddAdmin from './components/AddAdmin';
 import styles from './index.less';
 import EditAdmin from './components/EditAdmin';
 
+const listAdminstrator = [
+  {
+    listRole: [
+      {
+        id: 'payroll',
+        role: 'Payroll',
+      },
+      {
+        id: 'benefits',
+        role: 'Benefits',
+      },
+    ],
+    employeeName: 'Jenny',
+    email: 'jenny@terralogic.com',
+    position: 'Jenny’s permission apply to everyone in the company',
+  },
+  {
+    listRole: [
+      {
+        id: 'company',
+        role: 'Company',
+      },
+    ],
+    employeeName: 'Renil Komitla',
+    email: 'renil@terralogic.com',
+    position: 'Renil’s permission apply to everyone in the company',
+  },
+];
+
 class Adminstrator extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isAddAdmin: false,
       isEditAdmin: false,
+      dataAdmin: {},
     };
   }
 
@@ -22,18 +52,28 @@ class Adminstrator extends Component {
     });
   };
 
-  handleEditAdmin = (value) => {
+  handleEditAdmin = (value, index) => {
+    const dataAdmin = listAdminstrator[index];
+
     this.setState({
       isEditAdmin: value,
+      dataAdmin,
     });
   };
 
   render() {
-    const { isAddAdmin, isEditAdmin } = this.state;
+    const { isAddAdmin, isEditAdmin, dataAdmin = {} } = this.state;
+
     return (
       <div className={styles.root}>
         {isAddAdmin || isEditAdmin ? (
-          <>{isEditAdmin ? <EditAdmin /> : <AddAdmin handleAddAdmin={this.handleAddAdmin} />}</>
+          <>
+            {isEditAdmin ? (
+              <EditAdmin dataAdmin={dataAdmin} handleEditAdmin={this.handleEditAdmin} />
+            ) : (
+              <AddAdmin handleAddAdmin={this.handleAddAdmin} />
+            )}
+          </>
         ) : (
           <>
             <div className={styles.root__top}>
@@ -41,6 +81,7 @@ class Adminstrator extends Component {
             </div>
             <div className={styles.root__bottom}>
               <AdditionalAdminstrator
+                listAdminstrator={listAdminstrator}
                 handleAddAdmin={this.handleAddAdmin}
                 handleEditAdmin={this.handleEditAdmin}
               />
