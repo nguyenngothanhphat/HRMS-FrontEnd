@@ -61,7 +61,9 @@ class ViewAdministrator extends Component {
     const { list = [] } = this.state;
 
     const { Panel } = Collapse;
-    const expandIcon = ({ isActive }) => <DownOutlined rotate={isActive ? 180 : 0} />;
+    const expandIcon = ({ isActive }) => (
+      <DownOutlined className={styles.expandIcon} rotate={isActive ? 180 : 0} />
+    );
     return (
       <>
         {list.map((adminstrator, index) => {
