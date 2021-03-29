@@ -1,16 +1,23 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'umi';
 import SelectRoles from './components/SelectRoles';
 import SelectUser from './components/SelectUser';
 
 import styles from './index.less';
 
-export default class AddAdmin extends PureComponent {
+@connect(
+  ({ adminApp, companiesManagement: { originData: { companyDetails = {} } = {} } = {} }) => ({
+    adminApp,
+    companyDetails,
+  }),
+)
+class AddAdmin extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       currentStep: 1,
       adminRoles: [],
-      adminInfo: {},
+      // adminInfo: {},
     };
   }
 
@@ -22,7 +29,7 @@ export default class AddAdmin extends PureComponent {
     });
   };
 
-  onContinue = (step, values) => {
+  onContinue = async (step, values) => {
     const { handleAddAdmin = () => {} } = this.props;
 
     if (step === 1) {
@@ -33,26 +40,50 @@ export default class AddAdmin extends PureComponent {
     }
 
     if (step === 2) {
-      this.setState({
-        adminInfo: values,
+      // this.setState({
+      //   adminInfo: values,
+      // });
+      const { dispatch } = this.props;
+      const { firstName = '', email = '' } = values;
+      const { adminRoles = [] } = this.state;
+      const tenantId = localStorage.getItem('tenantId');
+      const company = localStorage.getItem('currentCompanyId');
+      const payload = {
+        firstName,
+        email,
+        company,
+        tenantId,
+        permissionModule: adminRoles,
+      };
+
+      const res = await dispatch({
+        type: 'adminApp/addNewAdmin',
+        payload,
       });
-      handleAddAdmin(false);
+      const { statusCode = 0 } = res;
+      if (statusCode === 200) handleAddAdmin(false);
     }
   };
 
   render() {
-    const { handleAddAdmin = () => {} } = this.props;
-    const { currentStep, adminRoles, adminInfo } = this.state;
-    console.log('admin', adminRoles, adminInfo);
+    const { handleAddAdmin = () => {}, companyDetails = {} } = this.props;
+    const companyName = companyDetails?.company?.name;
+    const { currentStep } = this.state;
+
     return (
       <div className={styles.AddAdmin}>
         {currentStep === 1 && (
           <SelectRoles handleAddAdmin={handleAddAdmin} onContinue={this.onContinue} />
         )}
         {currentStep === 2 && (
-          <SelectUser handleAddAdmin={handleAddAdmin} onContinue={this.onContinue} />
+          <SelectUser
+            handleAddAdmin={handleAddAdmin}
+            onContinue={this.onContinue}
+            companyName={companyName}
+          />
         )}
       </div>
     );
   }
 }
+export default AddAdmin;
