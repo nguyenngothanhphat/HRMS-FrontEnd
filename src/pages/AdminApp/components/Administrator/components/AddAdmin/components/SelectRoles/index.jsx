@@ -80,7 +80,7 @@ class SelectRoles extends PureComponent {
       <div className={styles.roleList}>
         <Tree
           checkable
-          defaultExpandAll
+          defaultExpandAll={false}
           // onSelect={onSelect}
           onCheck={onCheck}
           treeData={treeData}

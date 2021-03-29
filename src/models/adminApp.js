@@ -1,4 +1,5 @@
 import { dialog } from '@/utils/utils';
+import { notification } from 'antd';
 import { getPermissionList, addNewAdmin } from '../services/adminApp';
 
 const country = {
@@ -23,6 +24,9 @@ const country = {
           const response = yield call(addNewAdmin, payload);
           const { statusCode, data: newAdmin = {} } = response;
           if (statusCode !== 200) throw response;
+          notification.success({
+            message: 'Add new additional administrator successfully',
+          });
           yield put({ type: 'save', payload: { newAdmin } });
           return response
         } catch (errors) {
