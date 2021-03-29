@@ -1,15 +1,29 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Checkbox } from 'antd';
-
+import { Button, Tree } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 
-export default class SelectRoles extends PureComponent {
+@connect(({ adminApp: { permissionList = [] } = {}, loading }) => ({
+  permissionList,
+  loadingFetchPermissionList: loading.effects['adminApp/fetchPermissionList'],
+}))
+class SelectRoles extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       selectedList: [],
     };
   }
+
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'adminApp/fetchPermissionList',
+      payload: {
+        type: 'ADMIN',
+      },
+    });
+  };
 
   renderTitle = () => {
     const { handleAddAdmin = () => {} } = this.props;
@@ -23,57 +37,53 @@ export default class SelectRoles extends PureComponent {
     );
   };
 
-  setList = (id) => {
-    const { selectedList } = this.state;
-    const isExist = selectedList.findIndex((value) => value === id) === -1;
-    let newList;
-    if (isExist) {
-      newList = [...selectedList, id];
-    } else {
-      newList = selectedList.filter((value) => value !== id);
-    }
+  setList = (list) => {
     this.setState({
-      selectedList: newList,
+      selectedList: list,
     });
   };
 
   renderList = () => {
-    const data = [
-      {
-        id: 1,
-        name: 'Company',
-        description: 'Has full permissions and can manage all aspects of your account.',
-      },
-      {
-        id: 2,
-        name: 'Payroll',
-        description: 'Has full permissions and can manage all aspects of your account.',
-      },
-      {
-        id: 3,
-        name: 'Company',
-        description: 'Has full permissions and can manage all aspects of your account.',
-      },
-    ];
+    const { permissionList = [] } = this.props;
+    let formatList = permissionList.map((per) => per?.module);
+    formatList = formatList.filter(
+      (value) => value !== undefined && value !== '' && value !== null,
+    );
+    formatList = [...new Set(formatList)];
+
+    const treeData = formatList.map((moduleName, index) => {
+      let result = permissionList.map((per) => {
+        const { _id = '', name = '', module = '' } = per;
+        if (moduleName === module) {
+          return {
+            title: name,
+            key: _id,
+          };
+        }
+        return 0;
+      });
+      result = result.filter((val) => val !== 0);
+
+      return {
+        key: index,
+        title: moduleName,
+        children: result,
+      };
+    });
+
+    const onCheck = (checkedKeys) => {
+      this.setList(checkedKeys);
+    };
 
     return (
       <div className={styles.roleList}>
-        {data.map((role) => {
-          const { id = '', name = '', description = '' } = role;
-          return (
-            <Row gutter={[24, 24]} key={id} align="middle">
-              <Col span={2}>
-                <Checkbox onChange={() => this.setList(id)} />
-              </Col>
-              <Col span={6}>
-                <span className={styles.roleName}>{name}</span>
-              </Col>
-              <Col span={16}>
-                <span className={styles.roleDescription}>{description}</span>
-              </Col>
-            </Row>
-          );
-        })}
+        <Tree
+          checkable
+          defaultExpandAll
+          // onSelect={onSelect}
+          onCheck={onCheck}
+          treeData={treeData}
+        />
       </div>
     );
   };
@@ -105,3 +115,4 @@ export default class SelectRoles extends PureComponent {
     );
   }
 }
+export default SelectRoles;

@@ -39,6 +39,7 @@ export default class SelectUser extends PureComponent {
 
   renderContent = () => {
     const { isCompanyWorker } = this.state;
+    const { companyName = '' } = this.props;
     return (
       <div className={styles.assignUser}>
         <Form
@@ -52,7 +53,7 @@ export default class SelectUser extends PureComponent {
         >
           <Row gutter={[24, 24]}>
             <Col span={8}>
-              <span>Terralogic Information Systems Service, Inc. Worker?</span>
+              <span>{companyName} Worker?</span>
             </Col>
             <Col span={16}>
               <Form.Item name="isCompanyWorker">
@@ -68,7 +69,10 @@ export default class SelectUser extends PureComponent {
             <Row align="middle" gutter={[24, 24]}>
               <Col span={8}>Name</Col>
               <Col span={12}>
-                <Form.Item name="name">
+                <Form.Item
+                  name="name1"
+                  rules={[{ required: true, message: 'Please select a person' }]}
+                >
                   <Select
                     allowClear
                     placeholder="Search by name or select a person"
@@ -84,15 +88,32 @@ export default class SelectUser extends PureComponent {
           )}
 
           {!isCompanyWorker && (
-            <Row align="middle" gutter={[24, 24]}>
-              <Col span={8}>Email</Col>
-              <Col span={12}>
-                <Form.Item name="email">
-                  <Input placeholder="Type email" />
-                </Form.Item>
-              </Col>
-              <Col span={4} />
-            </Row>
+            <>
+              <Row align="middle" gutter={[24, 24]}>
+                <Col span={8}>Name</Col>
+                <Col span={12}>
+                  <Form.Item
+                    name="firstName"
+                    rules={[{ required: true, message: 'Please input name' }]}
+                  >
+                    <Input placeholder="Type name" />
+                  </Form.Item>
+                </Col>
+                <Col span={4} />
+              </Row>
+              <Row align="middle" gutter={[24, 24]}>
+                <Col span={8}>Email</Col>
+                <Col span={12}>
+                  <Form.Item
+                    name="email"
+                    rules={[{ required: true, message: 'Please input email' }]}
+                  >
+                    <Input placeholder="Type email" />
+                  </Form.Item>
+                </Col>
+                <Col span={4} />
+              </Row>
+            </>
           )}
         </Form>
       </div>
@@ -108,7 +129,7 @@ export default class SelectUser extends PureComponent {
         <div className={styles.content}>{this.renderContent()}</div>
         <div className={styles.nextBtn}>
           <Button key="submit" type="primary" form="myForm" htmlType="submit">
-            Continue
+            Save
           </Button>
         </div>
       </div>
