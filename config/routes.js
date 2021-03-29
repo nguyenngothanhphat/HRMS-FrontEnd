@@ -1,7 +1,7 @@
 const routes = [
   {
     path: '/',
-    redirect: '/account-setup',
+    redirect: '/dashboard',
   },
   {
     path: '/login',

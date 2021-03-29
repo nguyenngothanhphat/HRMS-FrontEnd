@@ -12,10 +12,14 @@ export default class ItemCompany extends PureComponent {
     history.push(`/account-setup/company-profile/${id}`);
   };
 
-  handleGoToDashboard = (tenantId, id) => {
+  handleGoToDashboard = (tenantId, id, isAdmin) => {
     setTenantId(tenantId);
     setCurrentCompany(id);
-    history.push(`/dashboard`);
+    if (isAdmin) {
+      history.push(`/admin-app`);
+    } else {
+      history.push(`/dashboard`);
+    }
   };
 
   renderAddress = (address) => {
@@ -30,7 +34,7 @@ export default class ItemCompany extends PureComponent {
 
   render() {
     const {
-      // isOwnerAdmin = false,
+      isOwnerAdmin = false,
       company: { _id: id = '', tenant = '', name = '', logoUrl = '', headQuarterAddress = {} } = {},
     } = this.props;
 
@@ -57,8 +61,11 @@ export default class ItemCompany extends PureComponent {
               Get Started
             </Button>
           ) : ( */}
-          <Button className={s.btnOutline} onClick={() => this.handleGoToDashboard(tenant, id)}>
-            Go to dashboard
+          <Button
+            className={s.btnOutline}
+            onClick={() => this.handleGoToDashboard(tenant, id, isOwnerAdmin)}
+          >
+            Get Started
           </Button>
           {/* )} */}
         </div>
