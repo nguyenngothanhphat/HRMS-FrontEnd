@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'umi';
 import { Row, Col, Collapse, Tree } from 'antd';
 import icon from '@/assets/primary-administrator.svg';
 import { DownOutlined } from '@ant-design/icons';
@@ -62,23 +63,79 @@ const listPermissions = [
   },
 ];
 
+@connect(({ loading, adminSetting: { tempData: { newListPermission = [] } = {} } = {} }) => ({
+  loading: loading.effects['adminSetting/fetchListPermission'],
+  newListPermission,
+}))
 class ViewPrimary extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
+  componentDidMount() {
+    this.getListPermissions();
+  }
+
+  getListPermissions = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'adminSetting/fetchListPermission',
+      payload: {
+        type: 'ADMIN',
+      },
+    });
+  };
+
   onSelect = (selectedKeys, info) => {
     console.log('selected', selectedKeys, info);
   };
 
+  renderDataPermission = () => {
+    const { newListPermission = [] } = this.props;
+    // const data = [...newListPermission];
+    // const { _id = '', name = '', module = '' } = newListPermission;
+    const abc = [
+      {
+        title: 'User Management',
+        key: 'userManagement',
+        children: [
+          {
+            title: 'leaf',
+            key: 'user1',
+          },
+          {
+            title: 'leaf',
+            key: 'user2',
+          },
+          {
+            title: 'leaf',
+            key: 'user3',
+          },
+        ],
+      },
+    ];
+
+    const group = newListPermission.reduce((r, a) => {
+      console.log('a', a);
+      console.log('r', r);
+      r[a.make] = [...(r[a.make] || []), a];
+      return r;
+    }, {});
+    console.log('group', group);
+  };
+
   render() {
-    const { listAdministrator: { employeeName = '', email = '', position = '' } = {} } = this.props;
+    const {
+      listAdministrator: { employeeName = '', email = '', position = '' } = {},
+      loading,
+    } = this.props;
     const { Panel } = Collapse;
     const expandIcon = ({ isActive }) => (
       <DownOutlined className={styles.expandIcon} rotate={isActive ? 180 : 0} />
     );
 
+    this.renderDataPermission();
     return (
       <div className={styles.primaryView}>
         <Row gutter={[0, 16]}>
@@ -124,6 +181,7 @@ class ViewPrimary extends Component {
               <Panel header="Show permissions" className={styles.permissionPanel}>
                 <Tree
                   showLine
+                  loadData={loading}
                   switcherIcon={<DownOutlined />}
                   onSelect={this.onSelect}
                   treeData={listPermissions}
