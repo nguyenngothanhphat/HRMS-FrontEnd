@@ -63,9 +63,9 @@ const listPermissions = [
   },
 ];
 
-@connect(({ loading, adminSetting: { tempData: { newListPermission = [] } = {} } = {} }) => ({
-  loading: loading.effects['adminSetting/fetchListPermission'],
-  newListPermission,
+@connect(({ adminApp: { permissionList = [] } = {}, loading }) => ({
+  permissionList,
+  loadingFetchPermissionList: loading.effects['adminApp/fetchPermissionList'],
 }))
 class ViewPrimary extends Component {
   constructor(props) {
@@ -80,7 +80,7 @@ class ViewPrimary extends Component {
   getListPermissions = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'adminSetting/fetchListPermission',
+      type: 'adminApp/fetchPermissionList',
       payload: {
         type: 'ADMIN',
       },
@@ -91,51 +91,51 @@ class ViewPrimary extends Component {
     console.log('selected', selectedKeys, info);
   };
 
-  renderDataPermission = () => {
-    const { newListPermission = [] } = this.props;
-    // const data = [...newListPermission];
-    // const { _id = '', name = '', module = '' } = newListPermission;
-    const abc = [
-      {
-        title: 'User Management',
-        key: 'userManagement',
-        children: [
-          {
-            title: 'leaf',
-            key: 'user1',
-          },
-          {
-            title: 'leaf',
-            key: 'user2',
-          },
-          {
-            title: 'leaf',
-            key: 'user3',
-          },
-        ],
-      },
-    ];
+  renderListPermission = () => {
+    const { permissionList = [], loading } = this.props;
+    let formatList = permissionList.map((per) => per?.module);
+    formatList = formatList.filter(
+      (value) => value !== undefined && value !== '' && value !== null,
+    );
+    formatList = [...new Set(formatList)];
+    const treeData = formatList.map((moduleName, index) => {
+      let result = permissionList.map((per) => {
+        const { _id = '', name = '', module = '' } = per;
+        if (moduleName === module) {
+          return {
+            title: name,
+            key: _id,
+          };
+        }
+        return 0;
+      });
+      result = result.filter((val) => val !== 0);
 
-    const group = newListPermission.reduce((r, a) => {
-      console.log('a', a);
-      console.log('r', r);
-      r[a.make] = [...(r[a.make] || []), a];
-      return r;
-    }, {});
-    console.log('group', group);
+      return {
+        key: index,
+        title: moduleName,
+        children: result,
+      };
+    });
+
+    return (
+      <Tree
+        showLine
+        loadData={loading}
+        switcherIcon={<DownOutlined />}
+        onSelect={this.onSelect}
+        treeData={treeData}
+      />
+    );
   };
 
   render() {
-    const {
-      listAdministrator: { employeeName = '', email = '', position = '' } = {},
-      loading,
-    } = this.props;
+    const { listAdministrator: { employeeName = '', email = '', position = '' } = {} } = this.props;
     const { Panel } = Collapse;
     const expandIcon = ({ isActive }) => (
       <DownOutlined className={styles.expandIcon} rotate={isActive ? 180 : 0} />
     );
 
-    this.renderDataPermission();
     return (
       <div className={styles.primaryView}>
         <Row gutter={[0, 16]}>
@@ -179,13 +179,7 @@ class ViewPrimary extends Component {
               expandIcon={expandIcon}
             >
               <Panel header="Show permissions" className={styles.permissionPanel}>
-                <Tree
-                  showLine
-                  loadData={loading}
-                  switcherIcon={<DownOutlined />}
-                  onSelect={this.onSelect}
-                  treeData={listPermissions}
-                />
+                {this.renderListPermission()}
               </Panel>
             </Collapse>
           </Col>
