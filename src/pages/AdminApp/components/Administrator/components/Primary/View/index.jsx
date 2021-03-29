@@ -39,9 +39,11 @@ class ViewPrimary extends Component {
   }
 
   render() {
-    const { listAdminstrator: { employeeName = '', email = '', position = '' } = {} } = this.props;
+    const { listAdministrator: { employeeName = '', email = '', position = '' } = {} } = this.props;
     const { Panel } = Collapse;
-    const expandIcon = ({ isActive }) => <DownOutlined rotate={isActive ? 180 : 0} />;
+    const expandIcon = ({ isActive }) => (
+      <DownOutlined className={styles.expandIcon} rotate={isActive ? 180 : 0} />
+    );
 
     return (
       <div className={styles.primaryView}>
