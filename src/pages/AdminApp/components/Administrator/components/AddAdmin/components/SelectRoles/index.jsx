@@ -1,13 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Button, Tree } from 'antd';
 // import { PlusSquareOutlined, MinusSquareOutlined } from '@ant-design/icons';
-import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ adminApp: { permissionList = [] } = {}, loading }) => ({
-  permissionList,
-  loadingFetchPermissionList: loading.effects['adminApp/fetchPermissionList'],
-}))
 class SelectRoles extends PureComponent {
   constructor(props) {
     super(props);
@@ -15,16 +10,6 @@ class SelectRoles extends PureComponent {
       selectedList: [],
     };
   }
-
-  componentDidMount = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'adminApp/fetchPermissionList',
-      payload: {
-        type: 'ADMIN',
-      },
-    });
-  };
 
   renderTitle = () => {
     const { handleAddAdmin = () => {} } = this.props;

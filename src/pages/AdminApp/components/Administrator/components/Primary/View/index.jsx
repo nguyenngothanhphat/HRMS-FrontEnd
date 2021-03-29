@@ -1,42 +1,56 @@
 import React, { Component } from 'react';
-import { Row, Col, Collapse } from 'antd';
+import { Row, Col, Collapse, Tree } from 'antd';
 import icon from '@/assets/primary-administrator.svg';
 import { DownOutlined } from '@ant-design/icons';
 
 import styles from './index.less';
-
-const listPermissions = [
-  {
-    id: 1,
-    permission: 'User',
-  },
-  {
-    id: 2,
-    permission: 'Employees',
-  },
-  {
-    id: 3,
-    permission: 'Profile',
-  },
-  {
-    id: 4,
-    permission: 'Directory',
-  },
-  {
-    id: 5,
-    permission: 'Onboarding',
-  },
-  {
-    id: 6,
-    permission: 'Setting',
-  },
-];
 
 class ViewPrimary extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
+
+  onSelect = (selectedKeys, info) => {
+    console.log('selected', selectedKeys, info);
+  };
+
+  renderListPermission = () => {
+    const { permissionList = [], loading } = this.props;
+    let formatList = permissionList.map((per) => per?.module);
+    formatList = formatList.filter(
+      (value) => value !== undefined && value !== '' && value !== null,
+    );
+    formatList = [...new Set(formatList)];
+    const treeData = formatList.map((moduleName, index) => {
+      let result = permissionList.map((per) => {
+        const { _id = '', name = '', module = '' } = per;
+        if (moduleName === module) {
+          return {
+            title: name,
+            key: _id,
+          };
+        }
+        return 0;
+      });
+      result = result.filter((val) => val !== 0);
+      return {
+        key: index,
+        title: moduleName,
+        children: result,
+      };
+    });
+
+    return (
+      <Tree
+        showLine
+        loadData={loading}
+        switcherIcon={<DownOutlined />}
+        onSelect={this.onSelect}
+        treeData={treeData}
+      />
+    );
+  };
 
   render() {
     const { listAdministrator: { employeeName = '', email = '', position = '' } = {} } = this.props;
@@ -88,9 +102,7 @@ class ViewPrimary extends Component {
               expandIcon={expandIcon}
             >
               <Panel header="Show permissions" className={styles.permissionPanel}>
-                {listPermissions.map((itemPermission) => (
-                  <p key={itemPermission.id}>{itemPermission.permission}</p>
-                ))}
+                {this.renderListPermission()}
               </Panel>
             </Collapse>
           </Col>

@@ -10,7 +10,7 @@ export default class EditAdmin extends PureComponent {
     this.state = {
       currentStep: 1,
       adminRoles: [],
-      adminInfo: {},
+      // adminInfo: {},
     };
   }
 
@@ -33,22 +33,22 @@ export default class EditAdmin extends PureComponent {
     }
 
     if (step === 2) {
-      this.setState({
-        adminInfo: values,
-      });
+      // this.setState({
+      //   adminInfo: values,
+      // });
       handleEditAdmin(false);
     }
   };
 
   render() {
-    const { handleEditAdmin = () => {}, dataAdmin = {} } = this.props;
-    const { currentStep, adminRoles, adminInfo } = this.state;
-    // console.log('admin', adminRoles, adminInfo);
+    const { handleEditAdmin = () => {}, dataAdmin = {}, permissionList = [] } = this.props;
+    const { currentStep } = this.state;
     return (
       <div className={styles.EditAdmin}>
         {currentStep === 1 && (
           <SelectRoles
             dataAdmin={dataAdmin}
+            permissionList={permissionList}
             handleEditAdmin={handleEditAdmin}
             onContinue={this.onContinue}
           />

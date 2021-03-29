@@ -21,6 +21,7 @@ class PrimaryAdminstrator extends Component {
 
   render() {
     const { isChange } = this.state;
+    const { permissionList = [] } = this.props;
 
     const listAdministrator = {
       employeeName: 'Renil Komitla',
@@ -41,7 +42,7 @@ class PrimaryAdminstrator extends Component {
           {isChange ? (
             <EditPrimary onCancel={this.onCancel} listAdministrator={listAdministrator} />
           ) : (
-            <ViewPrimary listAdministrator={listAdministrator} />
+            <ViewPrimary listAdministrator={listAdministrator} permissionList={permissionList} />
           )}
         </div>
       </div>

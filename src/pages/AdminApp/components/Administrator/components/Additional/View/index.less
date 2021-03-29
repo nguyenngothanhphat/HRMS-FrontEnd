@@ -13,7 +13,7 @@
       font-weight: 500;
       font-size: 12px;
       line-height: 14px;
-      text-align: right;
+      text-align: left;
       text-decoration-line: underline;
     }
 
@@ -25,10 +25,19 @@
     }
     .ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
       // top: 2px;
+      left: 106px;
+      right: auto;
     }
     .ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header {
       padding: 12px 0;
-      padding-right: 40px;
+      // padding-right: 40px;
+    }
+    .ant-collapse-content > .ant-collapse-content-box{
+      padding: 0;
+    }
+
+    .ant-tree-switcher-noop{
+      display: none;
     }
   }
 
@@ -112,7 +121,6 @@
   }
 
   .permissionCollapse {
-    width: fit-content;
     .permissionPanel {
 
       .expandIcon{
