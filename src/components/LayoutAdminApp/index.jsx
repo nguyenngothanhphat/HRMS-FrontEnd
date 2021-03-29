@@ -74,27 +74,32 @@ class CommonLayout extends PureComponent {
     const { displayComponent, selectedItemId } = this.state;
 
     return (
-      <div className={s.root}>
-        <Affix offsetTop={45} className={s.affix}>
-          <div className={s.viewLeft}>
-            <div className={s.viewLeft__menu}>
-              {listMenu.map((item) => (
-                <ItemMenu
-                  key={item.id}
-                  item={item}
-                  handleClick={this.handleCLickItemMenu}
-                  selectedItemId={selectedItemId}
-                />
-              ))}
-            </div>
-          </div>
+      <div className={s.LayoutAdminApp}>
+        <Affix offsetTop={42}>
+          <div className={s.titlePage}>Admin App</div>
         </Affix>
-        <Row className={s.viewRight} gutter={[24, 0]}>
-          <Col span={16}>{displayComponent}</Col>
-          <Col span={8}>
-            <UploadLogoCompany />
-          </Col>
-        </Row>
+        <div className={s.root}>
+          <Affix offsetTop={91} className={s.affix}>
+            <div className={s.viewLeft}>
+              <div className={s.viewLeft__menu}>
+                {listMenu.map((item) => (
+                  <ItemMenu
+                    key={item.id}
+                    item={item}
+                    handleClick={this.handleCLickItemMenu}
+                    selectedItemId={selectedItemId}
+                  />
+                ))}
+              </div>
+            </div>
+          </Affix>
+          <Row className={s.viewRight} gutter={[24, 0]}>
+            <Col span={16}>{displayComponent}</Col>
+            <Col span={8}>
+              <UploadLogoCompany />
+            </Col>
+          </Row>
+        </div>
       </div>
     );
   }

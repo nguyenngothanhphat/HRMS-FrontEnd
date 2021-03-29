@@ -214,8 +214,8 @@ class CompanyDetails extends Component {
       const { statusCode = 0, data = {} } = res;
       if (statusCode === 200) {
         dispatch({
-          type: 'companiesManagement/save',
-          payload: { companyDetails: data },
+          type: 'companiesManagement/saveOrigin',
+          payload: { companyDetails: { company: data } },
         });
         this.setState({
           isEditAddresses: false,
@@ -329,20 +329,90 @@ class CompanyDetails extends Component {
     }
   };
 
+  handleCancel = (key) => {
+    const { companyDetails = {}, email = '' } = this.props;
+    const {
+      company: {
+        name,
+        dba,
+        ein,
+        website,
+        // logoUrl,
+        headQuarterAddress: {
+          addressLine1: headquarterAddressLine1,
+          addressLine2: headquarterAddressLine2,
+          country: countryHeadquarterProps,
+          state: stateHeadquarter,
+          zipCode: zipHeadquarter,
+        } = {},
+        legalAddress: {
+          addressLine1: legalAddressLine1,
+          addressLine2: legalAddressLine2,
+          country: countryLegalProps,
+          state: stateLegal,
+          zipCode: zipLegal,
+        } = {},
+        hrContactEmail: hrEmail,
+        hrContactName: hrName,
+        hrContactPhone: hrPhone,
+        // isHeadquarter,
+      } = {},
+    } = companyDetails;
+
+    switch (key) {
+      case 1:
+        this.formRef.current.setFieldsValue({
+          name,
+          dba,
+          ein,
+          website,
+        });
+        break;
+      case 2:
+        this.formRef.current.setFieldsValue({
+          headquarterAddressLine1,
+          headquarterAddressLine2,
+          countryHeadquarterProps,
+          stateHeadquarter,
+          zipHeadquarter,
+          legalAddressLine1,
+          legalAddressLine2,
+          countryLegalProps,
+          stateLegal,
+          zipLegal,
+        });
+        this.compareHeadquaterLegalAddress();
+        break;
+      case 3:
+        this.formRef.current.setFieldsValue({
+          ownerEmail: email,
+          hrName,
+          hrEmail,
+          hrPhone,
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
   handleEdit = (key) => {
     const { isEditContactInfomation, isEditCompanyDetails, isEditAddresses } = this.state;
     switch (key) {
       case 1:
+        if (isEditCompanyDetails) this.handleCancel(1);
         this.setState({
           isEditCompanyDetails: !isEditCompanyDetails,
         });
         break;
       case 2:
+        if (isEditAddresses) this.handleCancel(2);
         this.setState({
           isEditAddresses: !isEditAddresses,
         });
         break;
       case 3:
+        if (isEditContactInfomation) this.handleCancel(3);
         this.setState({
           isEditContactInfomation: !isEditContactInfomation,
         });
