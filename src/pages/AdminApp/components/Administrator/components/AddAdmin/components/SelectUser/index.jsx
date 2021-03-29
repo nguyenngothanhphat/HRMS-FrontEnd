@@ -79,7 +79,7 @@ export default class SelectUser extends PureComponent {
                     showArrow
                     showSearch
                   >
-                    <Option value="ABC">Lewis Nguyen</Option>
+                    <Option value="Lewis Nguyen">Lewis Nguyen</Option>
                   </Select>
                 </Form.Item>
               </Col>

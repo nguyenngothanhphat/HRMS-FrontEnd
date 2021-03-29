@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button, Tree } from 'antd';
+// import { PlusSquareOutlined, MinusSquareOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import styles from './index.less';
 
@@ -83,6 +84,8 @@ class SelectRoles extends PureComponent {
           // onSelect={onSelect}
           onCheck={onCheck}
           treeData={treeData}
+          showLine={{ showLeafIcon: false }}
+          showIcon={false}
         />
       </div>
     );

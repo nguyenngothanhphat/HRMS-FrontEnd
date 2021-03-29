@@ -40,16 +40,13 @@ class AddAdmin extends PureComponent {
     }
 
     if (step === 2) {
-      // this.setState({
-      //   adminInfo: values,
-      // });
       const { dispatch } = this.props;
-      const { firstName = '', email = '' } = values;
+      const { firstName = '', email = '', name1 = '' } = values;
       const { adminRoles = [] } = this.state;
       const tenantId = localStorage.getItem('tenantId');
       const company = localStorage.getItem('currentCompanyId');
       const payload = {
-        firstName,
+        firstName: firstName || name1,
         email,
         company,
         tenantId,
