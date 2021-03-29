@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'umi';
 // import { Row, Col } from 'antd';
 import AdditionalAdministrator from './components/Additional';
 import PrimaryAdminstrator from './components/Primary';
@@ -36,6 +37,10 @@ const listAdministrator = [
   },
 ];
 
+@connect(({ adminApp: { permissionList = [] } = {}, loading }) => ({
+  permissionList,
+  loadingFetchPermissionList: loading.effects['adminApp/fetchPermissionList'],
+}))
 class Adminstrator extends Component {
   constructor(props) {
     super(props);
@@ -45,6 +50,16 @@ class Adminstrator extends Component {
       dataAdmin: {},
     };
   }
+
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'adminApp/fetchPermissionList',
+      payload: {
+        type: 'ADMIN',
+      },
+    });
+  };
 
   handleAddAdmin = (value) => {
     this.setState({
@@ -63,6 +78,7 @@ class Adminstrator extends Component {
 
   render() {
     const { isAddAdmin, isEditAdmin, dataAdmin = {} } = this.state;
+    const { permissionList = [] } = this.props;
 
     return (
       <div className={styles.root}>
@@ -71,16 +87,17 @@ class Adminstrator extends Component {
             {isEditAdmin ? (
               <EditAdmin dataAdmin={dataAdmin} handleEditAdmin={this.handleEditAdmin} />
             ) : (
-              <AddAdmin handleAddAdmin={this.handleAddAdmin} />
+              <AddAdmin handleAddAdmin={this.handleAddAdmin} permissionList={permissionList} />
             )}
           </>
         ) : (
           <>
             <div className={styles.root__top}>
-              <PrimaryAdminstrator />
+              <PrimaryAdminstrator permissionList={permissionList} />
             </div>
             <div className={styles.root__bottom}>
               <AdditionalAdministrator
+                permissionList={permissionList}
                 listAdministrator={listAdministrator}
                 handleAddAdmin={this.handleAddAdmin}
                 handleEditAdmin={this.handleEditAdmin}

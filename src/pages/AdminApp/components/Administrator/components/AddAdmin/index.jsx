@@ -66,14 +66,18 @@ class AddAdmin extends PureComponent {
   };
 
   render() {
-    const { handleAddAdmin = () => {}, companyDetails = {} } = this.props;
+    const { handleAddAdmin = () => {}, companyDetails = {}, permissionList = [] } = this.props;
     const companyName = companyDetails?.company?.name;
     const { currentStep } = this.state;
 
     return (
       <div className={styles.AddAdmin}>
         {currentStep === 1 && (
-          <SelectRoles handleAddAdmin={handleAddAdmin} onContinue={this.onContinue} />
+          <SelectRoles
+            permissionList={permissionList}
+            handleAddAdmin={handleAddAdmin}
+            onContinue={this.onContinue}
+          />
         )}
         {currentStep === 2 && (
           <SelectUser

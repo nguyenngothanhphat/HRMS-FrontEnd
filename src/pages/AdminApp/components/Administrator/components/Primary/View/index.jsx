@@ -1,91 +1,15 @@
 import React, { Component } from 'react';
-import { connect } from 'umi';
 import { Row, Col, Collapse, Tree } from 'antd';
 import icon from '@/assets/primary-administrator.svg';
 import { DownOutlined } from '@ant-design/icons';
 
 import styles from './index.less';
 
-const listPermissions = [
-  {
-    title: 'User Management',
-    key: 'userManagement',
-    children: [
-      {
-        title: 'leaf',
-        key: 'user1',
-      },
-      {
-        title: 'leaf',
-        key: 'user2',
-      },
-      {
-        title: 'leaf',
-        key: 'user3',
-      },
-    ],
-  },
-  {
-    title: 'Employees Management',
-    key: 'employeeManagement',
-    children: [
-      {
-        title: 'leaf',
-        key: 'employee1',
-      },
-      {
-        title: 'leaf',
-        key: 'employee2',
-      },
-      {
-        title: 'leaf',
-        key: 'employee3',
-      },
-    ],
-  },
-  {
-    title: 'Profile',
-    key: 'profile',
-    children: [
-      {
-        title: 'leaf',
-        key: 'profile1',
-      },
-      {
-        title: 'leaf',
-        key: 'profile2',
-      },
-      {
-        title: 'leaf',
-        key: 'profile3',
-      },
-    ],
-  },
-];
-
-@connect(({ adminApp: { permissionList = [] } = {}, loading }) => ({
-  permissionList,
-  loadingFetchPermissionList: loading.effects['adminApp/fetchPermissionList'],
-}))
 class ViewPrimary extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
-
-  componentDidMount() {
-    this.getListPermissions();
-  }
-
-  getListPermissions = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'adminApp/fetchPermissionList',
-      payload: {
-        type: 'ADMIN',
-      },
-    });
-  };
 
   onSelect = (selectedKeys, info) => {
     console.log('selected', selectedKeys, info);

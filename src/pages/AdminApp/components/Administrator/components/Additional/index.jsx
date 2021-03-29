@@ -14,6 +14,7 @@ class AdditionalAdministrator extends Component {
       handleAddAdmin = () => {},
       handleEditAdmin = () => {},
       listAdministrator = [],
+      permissionList = [],
     } = this.props;
     return (
       <div className={styles.additional}>
@@ -26,6 +27,7 @@ class AdditionalAdministrator extends Component {
         </div>
         <div className={styles.listAdministrator}>
           <ViewAdministrator
+            permissionList={permissionList}
             listAdministrator={listAdministrator}
             handleEditAdmin={handleEditAdmin}
           />
