@@ -85,7 +85,11 @@ class Adminstrator extends Component {
         {isAddAdmin || isEditAdmin ? (
           <>
             {isEditAdmin ? (
-              <EditAdmin dataAdmin={dataAdmin} handleEditAdmin={this.handleEditAdmin} />
+              <EditAdmin
+                permissionList={permissionList}
+                dataAdmin={dataAdmin}
+                handleEditAdmin={this.handleEditAdmin}
+              />
             ) : (
               <AddAdmin handleAddAdmin={this.handleAddAdmin} permissionList={permissionList} />
             )}
