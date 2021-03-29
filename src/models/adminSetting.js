@@ -24,14 +24,12 @@ const adminSetting = {
       listTitle: [],
       listRoles: [],
       listPermission: [],
-      newListPermission: [],
       department: [],
     },
     tempData: {
       listTitle: [],
       formatData: [],
       listPermission: [],
-      newListPermission: [],
       department: [],
     },
   },
@@ -101,19 +99,6 @@ const adminSetting = {
         yield put({ type: 'save', payload: { idRoles } });
         yield put({ type: 'saveOrigin', payload: { listPermission } });
         yield put({ type: 'saveTemp', payload: { listPermission } });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-    *fetchListPermission({ payload }, { call, put }) {
-      try {
-        const response = yield call(getListPermissionOfRole, payload);
-        const { statusCode, data: newListPermission = [] } = response;
-        if (statusCode !== 200) throw response;
-
-        // yield put({ type: 'save', payload: { newListPermission } });
-        yield put({ type: 'saveOrigin', payload: { newListPermission } });
-        yield put({ type: 'saveTemp', payload: { newListPermission } });
       } catch (errors) {
         dialog(errors);
       }

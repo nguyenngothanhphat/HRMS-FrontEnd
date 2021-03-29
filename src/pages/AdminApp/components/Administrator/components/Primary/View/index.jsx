@@ -110,7 +110,6 @@ class ViewPrimary extends Component {
         return 0;
       });
       result = result.filter((val) => val !== 0);
-
       return {
         key: index,
         title: moduleName,
