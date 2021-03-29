@@ -4,7 +4,7 @@ import SelectUser from './components/SelectUser';
 
 import styles from './index.less';
 
-export default class AddAdmin extends PureComponent {
+export default class EditAdmin extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -23,7 +23,7 @@ export default class AddAdmin extends PureComponent {
   };
 
   onContinue = (step, values) => {
-    const { handleAddAdmin = () => {} } = this.props;
+    const { handleEditAdmin = () => {} } = this.props;
 
     if (step === 1) {
       this.setState({
@@ -36,21 +36,29 @@ export default class AddAdmin extends PureComponent {
       this.setState({
         adminInfo: values,
       });
-      handleAddAdmin(false);
+      handleEditAdmin(false);
     }
   };
 
   render() {
-    const { handleAddAdmin = () => {} } = this.props;
+    const { handleEditAdmin = () => {}, dataAdmin = {} } = this.props;
     const { currentStep, adminRoles, adminInfo } = this.state;
-    console.log('admin', adminRoles, adminInfo);
+    // console.log('admin', adminRoles, adminInfo);
     return (
-      <div className={styles.AddAdmin}>
+      <div className={styles.EditAdmin}>
         {currentStep === 1 && (
-          <SelectRoles handleAddAdmin={handleAddAdmin} onContinue={this.onContinue} />
+          <SelectRoles
+            dataAdmin={dataAdmin}
+            handleEditAdmin={handleEditAdmin}
+            onContinue={this.onContinue}
+          />
         )}
         {currentStep === 2 && (
-          <SelectUser handleAddAdmin={handleAddAdmin} onContinue={this.onContinue} />
+          <SelectUser
+            dataAdmin={dataAdmin}
+            handleEditAdmin={handleEditAdmin}
+            onContinue={this.onContinue}
+          />
         )}
       </div>
     );

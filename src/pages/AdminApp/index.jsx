@@ -58,7 +58,7 @@ class AdminApp extends Component {
   render() {
     const id = localStorage.getItem('currentCompanyId');
 
-    let listMenu = [
+    const listMenu = [
       {
         id: 1,
         name: 'Company Details',
@@ -69,38 +69,32 @@ class AdminApp extends Component {
         name: 'Work Locations',
         component: <WorkLocations companyId={id} />,
       },
+      {
+        id: 3,
+        name: 'Administrator',
+        component: <Administrator companyId={id} />,
+      },
+      {
+        id: 4,
+        name: 'Plan info',
+        component: <PlanInfo companyId={id} />,
+      },
+      {
+        id: 5,
+        name: 'Billing & Payments',
+        component: <BillingPayments companyId={id} />,
+      },
+      {
+        id: 6,
+        name: 'Permission',
+        // component: <CompanySignatory companyId={id} />,
+      },
+      {
+        id: 7,
+        name: 'Integrations',
+        component: <Integrations companyId={id} />,
+      },
     ];
-
-    if (id) {
-      listMenu = [
-        ...listMenu,
-        {
-          id: 3,
-          name: 'Administrator',
-          component: <Administrator companyId={id} />,
-        },
-        {
-          id: 4,
-          name: 'Plan info',
-          component: <PlanInfo companyId={id} />,
-        },
-        {
-          id: 5,
-          name: 'Billing & Payments',
-          component: <BillingPayments companyId={id} />,
-        },
-        {
-          id: 6,
-          name: 'Permission',
-          // component: <CompanySignatory companyId={id} />,
-        },
-        {
-          id: 7,
-          name: 'Integrations',
-          component: <Integrations companyId={id} />,
-        },
-      ];
-    }
 
     return (
       <PageContainer>

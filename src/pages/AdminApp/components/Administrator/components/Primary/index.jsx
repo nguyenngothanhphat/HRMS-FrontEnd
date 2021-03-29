@@ -17,21 +17,33 @@ class PrimaryAdminstrator extends Component {
 
   onCancel = () => {
     this.setState({ isChange: false });
-  }
+  };
 
   render() {
     const { isChange } = this.state;
 
+    const listAdministrator = {
+      employeeName: 'Renil Komitla',
+      email: 'renil@terralogic.com',
+      position: 'Renil’s permission apply to everyone in the company',
+    };
+
     return (
-      <div className={styles.adminstrator}>
+      <div className={styles.administrator}>
         <div className={styles.header}>
-          <div className={styles.header__title}>Primary Adminstrator</div>
+          <div className={styles.header__title}>Primary Administrator</div>
           <div className={styles.header__action} onClick={this.onClickChange}>
             Change
           </div>
         </div>
 
-        <div className={styles.primary}>{isChange ? <EditPrimary onCancel={this.onCancel} /> : <ViewPrimary />}</div>
+        <div className={styles.primary}>
+          {isChange ? (
+            <EditPrimary onCancel={this.onCancel} listAdministrator={listAdministrator} />
+          ) : (
+            <ViewPrimary listAdministrator={listAdministrator} />
+          )}
+        </div>
       </div>
     );
   }

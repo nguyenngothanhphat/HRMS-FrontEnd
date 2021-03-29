@@ -29,7 +29,7 @@ export async function getLocationsListTenant(payload) {
 }
 
 export async function updateCompany(payload) {
-  return request('/api/company/update', {
+  return request('/api/companytenant/update', {
     method: 'POST',
     data: payload,
   });

@@ -43,9 +43,9 @@ const Model = {
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
         let isAdminOrOwner = false;
-        if (formatRole.includes('owner') || signInRole.includes('admin')) {
+        if (formatRole.includes('owner') || formatRole.includes('admin')) {
           isAdminOrOwner = true;
-          formatArrRoles.push('admin-csa');
+          formatArrRoles = [...formatArrRoles, 'admin-csa'];
           setAuthority(formatArrRoles);
         }
 

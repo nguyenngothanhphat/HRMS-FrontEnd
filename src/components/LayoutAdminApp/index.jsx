@@ -3,7 +3,7 @@ import { Affix, Col, Row } from 'antd';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import UploadLogoCompany from '@/components/LayoutEmployeeProfile/components/UploadLogoCompany';
+import UploadLogoCompany from './components/UploadLogoCompany';
 import ItemMenu from './components/ItemMenu';
 import s from './index.less';
 

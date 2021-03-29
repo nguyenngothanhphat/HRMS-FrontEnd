@@ -15,11 +15,11 @@ export default class SelectUser extends PureComponent {
   }
 
   renderTitle = () => {
-    const { handleAddAdmin = () => {} } = this.props;
+    const { handleEditAdmin = () => {} } = this.props;
     return (
       <div className={styles.titleContainer}>
         <span className={styles.title}>Who’s your new admin?</span>
-        <div className={styles.cancelBtn} onClick={() => handleAddAdmin(false)}>
+        <div className={styles.cancelBtn} onClick={() => handleEditAdmin(false)}>
           <span>Cancel</span>
         </div>
       </div>
@@ -75,7 +75,7 @@ export default class SelectUser extends PureComponent {
                     showArrow
                     showSearch
                   >
-                    <Option value="ABC">Lewis Nguyen</Option>
+                    <Option value="ABC">Trung Nguyen</Option>
                   </Select>
                 </Form.Item>
               </Col>

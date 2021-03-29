@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Select, Button, Checkbox, Spin } from 'antd';
+import { Form, Input, Spin, Select, Button, Checkbox } from 'antd';
 import classnames from 'classnames';
 import { connect } from 'umi';
 import s from './index.less';
@@ -12,11 +12,13 @@ const { Option } = Select;
     loading,
     country: { listCountry = [] } = {},
     user: { currentUser: { email = '' } = {}, companiesOfUser: listCompany = [] } = {},
+    upload: { urlImage = '' } = {},
     companiesManagement: { originData: { companyDetails } = {} } = {},
   }) => ({
     listCountry,
     listCompany,
     companyDetails,
+    urlImage,
     loadingUpdate: loading.effects['companiesManagement/updateCompany'],
     loadingAdd: loading.effects['companiesManagement/addCompanyReducer'],
     loadingGetCompanyDetails: loading.effects['companiesManagement/fetchCompanyDetails'],
@@ -31,28 +33,50 @@ class CompanyDetails extends Component {
       countryHeadquarter: '',
       countryLegal: '',
       checkLegalSameHeadQuarter: false,
+      isEditCompanyDetails: false,
+      isEditAddresses: false,
+      isEditContactInfomation: false,
     };
   }
 
   componentDidMount() {
+    this.fetchData();
+
     const { companyDetails = {} } = this.props;
     const {
-      headQuarterAddress: { country: { _id: countryHeadquarter } = {} } = {},
-      legalAddress: { country: { _id: countryLegal } = {} } = {},
+      company: {
+        headQuarterAddress: { country: countryHeadquarter } = {},
+        legalAddress: { country: countryLegal } = {},
+      } = {},
     } = companyDetails;
     this.setState({
       countryHeadquarter,
       countryLegal,
     });
+    this.compareHeadquaterLegalAddress();
   }
 
-  onChangeCountry = (value, name) => {
-    this.setState({
-      [name]: value,
+  componentWillUnmount = () => {
+    this.fetchData();
+  };
+
+  fetchData = () => {
+    const { dispatch, companyId } = this.props;
+    dispatch({
+      type: 'companiesManagement/fetchCompanyDetails',
+      payload: { id: companyId },
     });
-    const fieldStateChange = name === 'countryHeadquarter' ? 'stateHeadquarter' : 'stateLegal';
+  };
+
+  onChangeCountry = (value, name) => {
+    const stateName = name === 'countryHeadquarterProps' ? 'countryHeadquarter' : 'countryLegal';
+    console.log('name', stateName);
+    this.setState({
+      [stateName]: value,
+    });
+    const countryName = name === 'countryHeadquarterProps' ? 'stateHeadquarter' : 'stateLegal';
     this.formRef.current.setFieldsValue({
-      [fieldStateChange]: undefined,
+      [countryName]: undefined,
     });
   };
 
@@ -68,22 +92,23 @@ class CompanyDetails extends Component {
       const {
         headquarterAddressLine1,
         headquarterAddressLine2,
-        countryHeadquarter,
+        countryHeadquarterProps,
         stateHeadquarter,
         zipHeadquarter,
       } = this.formRef.current.getFieldsValue();
       this.formRef.current.setFieldsValue({
         legalAddressLine1: headquarterAddressLine1,
         legalAddressLine2: headquarterAddressLine2,
-        countryLegal: countryHeadquarter,
+        countryLegalProps: countryHeadquarterProps,
         stateLegal: stateHeadquarter,
         zipLegal: zipHeadquarter,
       });
+      // console.log('ref', this.formRef.current.getFieldsValue());
     } else {
       this.formRef.current.setFieldsValue({
         legalAddressLine1: undefined,
         legalAddressLine2: undefined,
-        countryLegal: undefined,
+        countryLegalProps: undefined,
         stateLegal: undefined,
         zipLegal: undefined,
       });
@@ -93,15 +118,15 @@ class CompanyDetails extends Component {
     });
   };
 
-  onFinish = (values) => {
+  onFinish = async (values) => {
     const {
       dispatch,
       companyId,
-      companyDetails: { logoUrl },
+      companyDetails: { company: { logoUrl: newLogo } = {} },
     } = this.props;
     const {
-      countryHeadquarter,
-      countryLegal,
+      countryHeadquarterProps,
+      countryLegalProps,
       dba,
       ein,
       headquarterAddressLine1,
@@ -119,32 +144,32 @@ class CompanyDetails extends Component {
       hrEmail,
       hrPhone,
       parentCompany,
+      // logoUrl,
     } = values;
 
     const { listCompany = [] } = this.props;
-
     let parentTenantId = listCompany.find((company) => company?._id === parentCompany);
     parentTenantId = parentTenantId?.tenant;
 
-    const payload = {
+    let payload = {
       // id: companyId || '',
       company: {
         name,
         dba,
         ein,
         website,
-        logoUrl,
+        logoUrl: newLogo,
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
           addressLine2: headquarterAddressLine2 || '',
-          country: countryHeadquarter,
+          country: countryHeadquarterProps,
           state: stateHeadquarter,
           zipCode: zipHeadquarter,
         },
         legalAddress: {
           addressLine1: legalAddressLine1,
           addressLine2: legalAddressLine2 || '',
-          country: countryLegal,
+          country: countryLegalProps,
           state: stateLegal,
           zipCode: zipLegal,
         },
@@ -160,14 +185,14 @@ class CompanyDetails extends Component {
           headQuarterAddress: {
             addressLine1: headquarterAddressLine1,
             addressLine2: headquarterAddressLine2,
-            country: countryHeadquarter,
+            country: countryHeadquarterProps,
             state: stateHeadquarter,
             zipCode: zipHeadquarter,
           },
           legalAddress: {
             addressLine1: headquarterAddressLine1,
             addressLine2: headquarterAddressLine2,
-            country: countryLegal,
+            country: countryLegalProps,
             state: stateLegal,
             zipCode: zipLegal,
           },
@@ -179,14 +204,26 @@ class CompanyDetails extends Component {
       parentTenantId,
     };
     if (companyId) {
-      dispatch({
+      payload = { ...payload?.company, id: companyId };
+      const res = await dispatch({
         type: 'companiesManagement/updateCompany',
         payload,
         dataTempKept: {},
         isAccountSetup: true,
       });
+      const { statusCode = 0, data = {} } = res;
+      if (statusCode === 200) {
+        dispatch({
+          type: 'companiesManagement/save',
+          payload: { companyDetails: data },
+        });
+        this.setState({
+          isEditAddresses: false,
+          isEditCompanyDetails: false,
+          isEditContactInfomation: false,
+        });
+      }
     } else {
-      // console.log('payload add new company', payload);
       dispatch({
         type: 'companiesManagement/addCompanyReducer',
         payload,
@@ -251,11 +288,78 @@ class CompanyDetails extends Component {
     }
   };
 
+  compareHeadquaterLegalAddress = () => {
+    const { companyDetails = {} } = this.props;
+    const {
+      company: {
+        headQuarterAddress: {
+          addressLine1: headquarterAddressLine1,
+          addressLine2: headquarterAddressLine2,
+          country: countryHeadquarterProps,
+          state: stateHeadquarter,
+          zipCode: zipHeadquarter,
+        } = {},
+        legalAddress: {
+          addressLine1: legalAddressLine1,
+          addressLine2: legalAddressLine2,
+          country: countryLegalProps,
+          state: stateLegal,
+          zipCode: zipLegal,
+        } = {},
+        // isHeadquarter,
+      } = {},
+    } = companyDetails;
+
+    const check =
+      headquarterAddressLine1 === legalAddressLine1 &&
+      headquarterAddressLine2 === legalAddressLine2 &&
+      countryHeadquarterProps === countryLegalProps &&
+      stateHeadquarter === stateLegal &&
+      zipHeadquarter === zipLegal;
+
+    this.setState({
+      checkLegalSameHeadQuarter: check,
+    });
+  };
+
+  componentDidUpdate = (prevProps) => {
+    const { companyDetails = {} } = this.props;
+    if (JSON.stringify(prevProps.companyDetails) !== JSON.stringify(companyDetails)) {
+      this.compareHeadquaterLegalAddress();
+    }
+  };
+
+  handleEdit = (key) => {
+    const { isEditContactInfomation, isEditCompanyDetails, isEditAddresses } = this.state;
+    switch (key) {
+      case 1:
+        this.setState({
+          isEditCompanyDetails: !isEditCompanyDetails,
+        });
+        break;
+      case 2:
+        this.setState({
+          isEditAddresses: !isEditAddresses,
+        });
+        break;
+      case 3:
+        this.setState({
+          isEditContactInfomation: !isEditContactInfomation,
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
   render() {
     const {
       countryHeadquarter = '',
       countryLegal = '',
       checkLegalSameHeadQuarter = false,
+      isEditContactInfomation,
+      isEditCompanyDetails,
+      isEditAddresses,
     } = this.state;
     const {
       listCountry = [],
@@ -294,7 +398,7 @@ class CompanyDetails extends Component {
         label: 'Primary contact',
         name: 'ownerEmail',
         placeholder: "Company owner's email",
-        defaultValue: email,
+        // defaultValue: email,
       },
       {
         label: 'HR contact',
@@ -314,28 +418,27 @@ class CompanyDetails extends Component {
     ];
     const listStateHead = this.findListState(countryHeadquarter) || [];
     const listStateLegal = this.findListState(countryLegal) || [];
-
     const {
       company: {
         name,
         dba,
         ein,
         website,
+        // logoUrl,
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
           addressLine2: headquarterAddressLine2,
-          country: { _id: countryHeadquarterProps } = {},
+          country: countryHeadquarterProps,
           state: stateHeadquarter,
           zipCode: zipHeadquarter,
         } = {},
         legalAddress: {
           addressLine1: legalAddressLine1,
           addressLine2: legalAddressLine2,
-          country: { _id: countryLegalProps } = {},
+          country: countryLegalProps,
           state: stateLegal,
           zipCode: zipLegal,
         } = {},
-        contactEmail: ownerEmail,
         hrContactEmail: hrEmail,
         hrContactName: hrName,
         hrContactPhone: hrPhone,
@@ -361,7 +464,6 @@ class CompanyDetails extends Component {
       // ],
       // isNewTenant,
     } = companyDetails;
-
     const validateMessages = {
       types: {
         // eslint-disable-next-line no-template-curly-in-string
@@ -370,6 +472,8 @@ class CompanyDetails extends Component {
     };
 
     const { loadingGetCompanyDetails = false } = this.props;
+    // const checkAddresses = this.compareHeadquaterLegalAddress();
+
     return (
       <>
         {!loadingGetCompanyDetails ? (
@@ -377,6 +481,7 @@ class CompanyDetails extends Component {
             className={s.root}
             ref={this.formRef}
             onFinish={this.onFinish}
+            // onFinish={(values) => console.log('values', values)}
             autoComplete="off"
             validateMessages={validateMessages}
             initialValues={{
@@ -386,25 +491,29 @@ class CompanyDetails extends Component {
               website,
               headquarterAddressLine1,
               headquarterAddressLine2,
-              countryHeadquarter: countryHeadquarterProps,
+              countryHeadquarterProps,
               stateHeadquarter,
               zipHeadquarter,
               legalAddressLine1,
               legalAddressLine2,
-              countryLegal: countryLegalProps,
+              countryLegalProps,
               stateLegal,
               zipLegal,
-              ownerEmail,
+              ownerEmail: email,
               hrName,
               hrEmail,
               hrPhone,
               isNewTenant: false,
               isHeadquarter: true,
+              // logoUrl,
             }}
           >
             <div className={s.blockContent}>
               <div className={s.content__viewTop}>
                 <p className={s.title}>Company Details</p>
+                <div className={s.editBtn} onClick={() => this.handleEdit(1)}>
+                  <span>{isEditCompanyDetails ? 'Cancel' : 'Edit'}</span>
+                </div>
               </div>
               <div className={s.content__viewBottom}>
                 {fieldCompanyDetail.map(
@@ -424,7 +533,7 @@ class CompanyDetails extends Component {
                           },
                         ]}
                       >
-                        <Input disabled placeholder={label} />
+                        <Input disabled={!isEditCompanyDetails} placeholder={label} />
                       </Form.Item>
                     </div>
                   ),
@@ -437,8 +546,8 @@ class CompanyDetails extends Component {
                       showArrow
                       showSearch
                       allowClear
-                      disabled
                       defaultValue=""
+                      disabled={!isEditCompanyDetails}
                       className={s.parentCompanySelect}
                       // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
                       filterOption={(input, option) =>
@@ -448,7 +557,6 @@ class CompanyDetails extends Component {
                       <Option
                         key=""
                         value=""
-                        disabled
                         style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
                       >
                         None
@@ -464,6 +572,9 @@ class CompanyDetails extends Component {
             <div className={s.blockContent} style={{ marginTop: '24px' }}>
               <div className={s.content__viewTop}>
                 <p className={s.title}>Headquarter Address</p>
+                <div className={s.editBtn} onClick={() => this.handleEdit(2)}>
+                  <span>{isEditAddresses ? 'Cancel' : 'Edit'}</span>
+                </div>
               </div>
               <div className={s.content__viewBottom}>
                 <div className={s.content__viewBottom__row}>
@@ -478,7 +589,7 @@ class CompanyDetails extends Component {
                       },
                     ]}
                   >
-                    <Input disabled placeholder="Address Line 1" />
+                    <Input disabled={!isEditAddresses} placeholder="Address Line 1" />
                   </Form.Item>
                 </div>
                 <div className={s.content__viewBottom__row}>
@@ -493,7 +604,7 @@ class CompanyDetails extends Component {
                       },
                     ]}
                   >
-                    <Input disabled placeholder="Address Line 2" />
+                    <Input disabled={!isEditAddresses} placeholder="Address Line 2" />
                   </Form.Item>
                 </div>
                 <div className={s.content__viewBottom__row}>
@@ -507,7 +618,7 @@ class CompanyDetails extends Component {
                       Country
                     </p>
                     <Form.Item
-                      name="countryHeadquarter"
+                      name="countryHeadquarterProps"
                       label={false}
                       rules={[
                         {
@@ -520,8 +631,8 @@ class CompanyDetails extends Component {
                         placeholder="Select Country"
                         showArrow
                         showSearch
-                        disabled
-                        onChange={(value) => this.onChangeCountry(value, 'countryHeadquarter')}
+                        disabled={!isEditAddresses}
+                        onChange={(value) => this.onChangeCountry(value, 'countryHeadquarterProps')}
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
@@ -555,8 +666,7 @@ class CompanyDetails extends Component {
                         placeholder="Select State"
                         showArrow
                         showSearch
-                        disabled
-                        disabled={!countryHeadquarter}
+                        disabled={!countryHeadquarter || !isEditAddresses}
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
@@ -586,14 +696,18 @@ class CompanyDetails extends Component {
                         },
                       ]}
                     >
-                      <Input disabled placeholder="Zip Code" />
+                      <Input disabled={!isEditAddresses} placeholder="Zip Code" />
                     </Form.Item>
                   </div>
                 </div>
               </div>
               <div className={classnames(s.content__viewTop, s.content__viewTop__legalAddress)}>
                 <p className={s.title}>Legal Address</p>
-                <Checkbox disabled onChange={this.onChangeCheckbox}>
+                <Checkbox
+                  defaultChecked={checkLegalSameHeadQuarter}
+                  disabled={!isEditAddresses}
+                  onChange={this.onChangeCheckbox}
+                >
                   Same as Headquarters address
                 </Checkbox>
               </div>
@@ -614,7 +728,7 @@ class CompanyDetails extends Component {
                       },
                     ]}
                   >
-                    <Input disabled placeholder="Address Line 1" />
+                    <Input disabled={!isEditAddresses} placeholder="Address Line 1" />
                   </Form.Item>
                 </div>
                 <div className={s.content__viewBottom__row}>
@@ -629,7 +743,7 @@ class CompanyDetails extends Component {
                       },
                     ]}
                   >
-                    <Input disabled placeholder="Address Line 2" />
+                    <Input disabled={!isEditAddresses} placeholder="Address Line 2" />
                   </Form.Item>
                 </div>
                 <div className={s.content__viewBottom__row}>
@@ -643,7 +757,7 @@ class CompanyDetails extends Component {
                       Country
                     </p>
                     <Form.Item
-                      name="countryLegal"
+                      name="countryLegalProps"
                       label={false}
                       rules={[
                         {
@@ -656,8 +770,8 @@ class CompanyDetails extends Component {
                         placeholder="Select Country"
                         showArrow
                         showSearch
-                        disabled
-                        onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
+                        disabled={!isEditAddresses}
+                        onChange={(value) => this.onChangeCountry(value, 'countryLegalProps')}
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
@@ -691,8 +805,7 @@ class CompanyDetails extends Component {
                         placeholder="Select State"
                         showArrow
                         showSearch
-                        disabled
-                        disabled={!countryLegal}
+                        disabled={!isEditAddresses || !countryLegal}
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
@@ -722,7 +835,7 @@ class CompanyDetails extends Component {
                         },
                       ]}
                     >
-                      <Input disabled placeholder="Zip Code" />
+                      <Input disabled={!isEditAddresses} placeholder="Zip Code" />
                     </Form.Item>
                   </div>
                 </div>
@@ -731,6 +844,9 @@ class CompanyDetails extends Component {
             <div className={s.blockContent} style={{ marginTop: '24px' }}>
               <div className={s.content__viewTop}>
                 <p className={s.title}>Contact information</p>
+                <div className={s.editBtn} onClick={() => this.handleEdit(3)}>
+                  <span>{isEditContactInfomation ? 'Cancel' : 'Edit'}</span>
+                </div>
               </div>
               <div className={s.content__viewBottom}>
                 {fieldContactInformation.map(
@@ -763,7 +879,11 @@ class CompanyDetails extends Component {
                           },
                         ]}
                       >
-                        <Input disabled placeholder={placeholder} defaultValue={defaultValue} />
+                        <Input
+                          disabled={!isEditContactInfomation}
+                          placeholder={placeholder}
+                          defaultValue={defaultValue}
+                        />
                       </Form.Item>
                     </div>
                   ),
@@ -775,8 +895,7 @@ class CompanyDetails extends Component {
                 className={s.btnSubmit}
                 htmlType="submit"
                 loading={companyId ? loadingUpdate : loadingAdd}
-                onClick={this.handleClick}
-                disabled
+                disabled={!isEditAddresses && !isEditCompanyDetails && !isEditContactInfomation}
               >
                 Save
               </Button>
