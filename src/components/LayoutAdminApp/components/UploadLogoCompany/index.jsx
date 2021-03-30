@@ -75,7 +75,7 @@ class UploadLogoCompany extends Component {
   render() {
     const { visible } = this.state;
     const { logoUrl = '' } = this.props;
-    console.log('logo', logoUrl);
+
     return (
       <>
         <div className={s.root}>

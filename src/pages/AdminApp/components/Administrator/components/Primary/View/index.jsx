@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col, Collapse, Tree } from 'antd';
 import icon from '@/assets/primary-administrator.svg';
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, CarryOutOutlined } from '@ant-design/icons';
 
 import styles from './index.less';
 
@@ -29,6 +29,7 @@ class ViewPrimary extends Component {
           return {
             title: name,
             key: _id,
+            icon: <CarryOutOutlined />,
           };
         }
         return 0;
@@ -37,23 +38,24 @@ class ViewPrimary extends Component {
       return {
         key: index,
         title: moduleName,
+        icon: <CarryOutOutlined />,
         children: result,
       };
     });
 
     return (
       <Tree
-        showLine
+        showIcon={false}
         loadData={loading}
-        switcherIcon={<DownOutlined />}
-        onSelect={this.onSelect}
         treeData={treeData}
+        onSelect={this.onSelect}
+        showLine={{ showLeafIcon: false }}
       />
     );
   };
 
   render() {
-    const { listAdministrator: { employeeName = '', email = '', position = '' } = {} } = this.props;
+    const { listAdministrator: { firstName = '', email = '', position = '' } = {} } = this.props;
     const { Panel } = Collapse;
     const expandIcon = ({ isActive }) => (
       <DownOutlined className={styles.expandIcon} rotate={isActive ? 180 : 0} />
@@ -69,7 +71,7 @@ class ViewPrimary extends Component {
           </Col>
           <Col span={16}>
             <div className={styles.primaryView__right}>
-              <div className={styles.name}>{employeeName}</div>
+              <div className={styles.name}>{firstName}</div>
             </div>
           </Col>
           <Col span={8}>

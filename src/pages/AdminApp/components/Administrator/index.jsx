@@ -10,28 +10,18 @@ import EditAdmin from './components/EditAdmin';
 
 const listAdministrator = [
   {
-    listRole: [
-      {
-        id: 'payroll',
-        role: 'Payroll',
-      },
-      {
-        id: 'benefits',
-        role: 'Benefits',
-      },
+    permissionModule: [
+      'M_USER_MANAGEMENT_LIST_USER_B_DEACTIVE_USER_VIEW',
+      'M_ONBOARDING_T_ONBOARDING_OVERVIEW_VIEW',
+      'M_USER_MANAGEMENT_LIST_USER_ALL',
     ],
-    employeeName: 'Jenny',
+    firstName: 'Jenny',
     email: 'jenny@terralogic.com',
     position: 'Jenny’s permission apply to everyone in the company',
   },
   {
-    listRole: [
-      {
-        id: 'company',
-        role: 'Company',
-      },
-    ],
-    employeeName: 'Renil Komitla',
+    permissionModule: ['M_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW'],
+    firstName: 'Renil Komitla',
     email: 'renil@terralogic.com',
     position: 'Renil’s permission apply to everyone in the company',
   },
@@ -122,7 +112,7 @@ class Adminstrator extends Component {
 
   render() {
     const { isAddAdmin, isEditAdmin, dataAdmin = {} } = this.state;
-    const { permissionList = [], loadingFetchAdminList = false } = this.props;
+    const { permissionList = [], loadingFetchAdminList = false, listAdmin = [] } = this.props;
 
     return (
       <div className={styles.root}>
@@ -147,7 +137,7 @@ class Adminstrator extends Component {
               {!loadingFetchAdminList && (
                 <AdditionalAdministrator
                   permissionList={permissionList}
-                  listAdministrator={this.listAdmin()}
+                  listAdministrator={listAdmin}
                   handleAddAdmin={this.handleAddAdmin}
                   handleEditAdmin={this.handleEditAdmin}
                 />

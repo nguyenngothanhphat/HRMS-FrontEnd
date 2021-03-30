@@ -1,17 +1,12 @@
 import React, { Component } from 'react';
 import { Row, Col, Collapse, Tree } from 'antd';
-import { connect } from 'umi';
 import icon from '@/assets/primary-administrator.svg';
 import editIcon from '@/assets/edit-administrator.svg';
 import deleteIcon from '@/assets/delete-administrator.svg';
-import { DownOutlined } from '@ant-design/icons';
+import { CarryOutOutlined, DownOutlined } from '@ant-design/icons';
 
 import styles from './index.less';
 
-@connect(({ adminApp: { permissionList = [] } = {}, loading }) => ({
-  permissionList,
-  loadingFetchPermissionList: loading.effects['adminApp/fetchPermissionList'],
-}))
 class ViewAdministrator extends Component {
   constructor(props) {
     super(props);
@@ -22,7 +17,9 @@ class ViewAdministrator extends Component {
 
   componentDidMount() {
     const { listAdministrator = [] } = this.props;
-    this.setState({ list: listAdministrator });
+    this.setState({
+      list: listAdministrator,
+    });
   }
 
   handleDelete = (index) => {
@@ -47,6 +44,7 @@ class ViewAdministrator extends Component {
           return {
             title: name,
             key: _id,
+            icon: <CarryOutOutlined />,
           };
         }
         return 0;
@@ -55,34 +53,54 @@ class ViewAdministrator extends Component {
       return {
         key: index,
         title: moduleName,
+        icon: <CarryOutOutlined />,
         children: result,
       };
     });
 
     return (
       <Tree
-        showLine
+        showIcon={false}
         loadData={loading}
-        switcherIcon={<DownOutlined />}
-        onSelect={this.onSelect}
         treeData={treeData}
+        onSelect={this.onSelect}
+        showLine={{ showLeafIcon: false }}
       />
     );
   };
 
+  renderListModule = (idList, permissionList) => {
+    let result = [];
+    idList.forEach((id) => {
+      const data = permissionList.map((per) => {
+        if (id === per._id) {
+          result.push(per?.module);
+        }
+        return 0;
+      });
+    });
+    result = result.filter((module) => module !== 0);
+    result = [...new Set(result)];
+    return result;
+  };
+
   render() {
-    const { handleEditAdmin = () => {} } = this.props;
+    const { handleEditAdmin = () => {}, permissionList = [] } = this.props;
     const { list = [] } = this.state;
 
     const { Panel } = Collapse;
     const expandIcon = ({ isActive }) => (
       <DownOutlined className={styles.expandIcon} rotate={isActive ? 180 : 0} />
     );
+
     return (
       <>
         {list.map((adminstrator, index) => {
-          const { listRole = [], employeeName = '', email = '', position = '' } = adminstrator;
-
+          const {
+            permissionAdmin = [],
+            usermap: { firstName = '', email = '', position = '' } = {},
+          } = adminstrator;
+          const moduleList = this.renderListModule(permissionAdmin, permissionList);
           return (
             <div
               className={styles.addAdminstrator}
@@ -94,14 +112,11 @@ class ViewAdministrator extends Component {
                 <Col span={16}>
                   <div className={styles.addAdminstrator__header}>
                     <div className={styles.listRole}>
-                      {listRole.map((item) => {
-                        const listModuleName = [...new Set(item.role)];
-                        return (
-                          <div className={styles.role} key={item.id}>
-                            {listModuleName}
-                          </div>
-                        );
-                      })}
+                      {moduleList.map((module) => (
+                        <div className={styles.role} key={module}>
+                          {module}
+                        </div>
+                      ))}
                     </div>
                     <div className={styles.actions}>
                       <div
@@ -128,7 +143,7 @@ class ViewAdministrator extends Component {
                 </Col>
                 <Col span={16}>
                   <div className={styles.addAdminstrator__right}>
-                    <div className={styles.name}>{employeeName}</div>
+                    <div className={styles.name}>{firstName}</div>
                   </div>
                 </Col>
                 <Col span={8}>
