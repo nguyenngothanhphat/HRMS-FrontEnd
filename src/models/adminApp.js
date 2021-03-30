@@ -58,6 +58,10 @@ const country = {
         const response = yield call(updateAdminService, payload);
         const { statusCode, data: updateAdmin = {} } = response;
         if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Notification Title',
+          description: 'Update additional administrator successfully',
+        });
         yield put({ type: 'save', payload: { updateAdmin } });
         return response;
       } catch (errors) {

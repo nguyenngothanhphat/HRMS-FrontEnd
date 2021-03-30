@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col, Collapse, Tree } from 'antd';
 import icon from '@/assets/primary-administrator.svg';
 import editIcon from '@/assets/edit-administrator.svg';
-import deleteIcon from '@/assets/delete-administrator.svg';
+import deleteIcon from '@/assets/deleteIcon-Administator.svg';
 import arrowIcon from '@/assets/arrowDownCollapseIcon.svg';
 
 import styles from './index.less';
@@ -107,7 +107,11 @@ class ViewAdministrator extends Component {
         {list.map((adminstrator, index) => {
           const {
             permissionAdmin = [],
-            usermap: { firstName = '', email = '', position = `${firstName}’s permission apply to everyone in the company` } = {},
+            usermap: {
+              firstName = '',
+              email = '',
+              position = `${firstName}’s permission apply to everyone in the company`,
+            } = {},
           } = adminstrator;
           const moduleList = this.renderListModule(permissionAdmin, permissionList);
           return (

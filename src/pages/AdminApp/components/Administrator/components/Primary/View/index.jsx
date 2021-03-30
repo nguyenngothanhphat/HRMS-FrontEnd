@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col, Collapse, Tree } from 'antd';
 import icon from '@/assets/primary-administrator.svg';
-import { DownOutlined, CarryOutOutlined } from '@ant-design/icons';
+import { CarryOutOutlined } from '@ant-design/icons';
 import arrowIcon from '@/assets/arrowDownCollapseIcon.svg';
 
 import styles from './index.less';
@@ -56,7 +56,13 @@ class ViewPrimary extends Component {
   };
 
   render() {
-    const { primaryAdmin: { firstName = '', email = '', position = '' } = {} } = this.props;
+    const {
+      primaryAdmin: {
+        firstName = '',
+        email = '',
+        position = `${firstName}’s permission apply to everyone in the company`,
+      } = {},
+    } = this.props;
     const { Panel } = Collapse;
     const expandIcon = ({ isActive }) => (
       <div className={styles.icon}>
