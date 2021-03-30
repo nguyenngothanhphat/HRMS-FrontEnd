@@ -72,7 +72,7 @@ class ViewAdministrator extends Component {
   renderListModule = (idList, permissionList) => {
     let result = [];
     idList.forEach((id) => {
-      const data = permissionList.map((per) => {
+      permissionList.map((per) => {
         if (id === per._id) {
           result.push(per?.module);
         }

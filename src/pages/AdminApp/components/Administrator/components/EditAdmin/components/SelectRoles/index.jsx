@@ -78,8 +78,8 @@ class SelectRoles extends PureComponent {
   };
 
   defaultCheckBox = () => {
-    const { dataAdmin: { permissionModule = [] } = {} } = this.props;
-    return permissionModule;
+    const { dataAdmin: { permissionAdmin = [] } = {} } = this.props;
+    return permissionAdmin;
   };
 
   renderMainForm = () => {

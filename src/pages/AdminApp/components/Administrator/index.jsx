@@ -77,7 +77,9 @@ class Adminstrator extends Component {
   };
 
   handleEditAdmin = (value, index) => {
-    const dataAdmin = listAdministrator[index];
+    const { listAdmin = [] } = this.props;
+    // const dataAdmin = listAdministrator[index];
+    const dataAdmin = listAdmin[index];
 
     this.setState({
       isEditAdmin: value,
