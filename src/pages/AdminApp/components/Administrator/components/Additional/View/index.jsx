@@ -38,10 +38,10 @@ class ViewAdministrator extends Component {
     );
     formatList = [...new Set(formatList)];
 
-    const treeData = formatList.map((moduleName, index) => {
+    let treeData = formatList.map((moduleName, index) => {
       let result = permissionList.map((per) => {
         const { _id = '', name = '', module = '' } = per;
-        if (moduleName === module) {
+        if (moduleName === module && idList.includes(_id)) {
           return {
             title: name,
             key: _id,
@@ -50,12 +50,16 @@ class ViewAdministrator extends Component {
         return 0;
       });
       result = result.filter((val) => val !== 0);
-      return {
-        key: index,
-        title: moduleName,
-        children: result,
-      };
+      if (result.length > 0) {
+        return {
+          key: index,
+          title: moduleName,
+          children: result,
+        };
+      }
+      return 0;
     });
+    treeData = treeData.filter((val) => val !== 0);
 
     return (
       <Tree
