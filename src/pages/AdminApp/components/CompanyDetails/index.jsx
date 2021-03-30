@@ -124,6 +124,8 @@ class CompanyDetails extends Component {
       companyId,
       companyDetails: { company: { logoUrl: newLogo } = {} },
     } = this.props;
+    const { checkLegalSameHeadQuarter } = this.state;
+
     const {
       countryHeadquarterProps,
       countryLegalProps,
@@ -151,6 +153,7 @@ class CompanyDetails extends Component {
     let parentTenantId = listCompany.find((company) => company?._id === parentCompany);
     parentTenantId = parentTenantId?.tenant;
 
+    const tenantId = localStorage.getItem('tenantId');
     let payload = {
       // id: companyId || '',
       company: {
@@ -167,11 +170,13 @@ class CompanyDetails extends Component {
           zipCode: zipHeadquarter,
         },
         legalAddress: {
-          addressLine1: legalAddressLine1,
-          addressLine2: legalAddressLine2 || '',
-          country: countryLegalProps,
-          state: stateLegal,
-          zipCode: zipLegal,
+          addressLine1: checkLegalSameHeadQuarter ? headquarterAddressLine1 : legalAddressLine1,
+          addressLine2: checkLegalSameHeadQuarter
+            ? headquarterAddressLine2 || ''
+            : legalAddressLine2 || '',
+          country: checkLegalSameHeadQuarter ? countryHeadquarterProps : countryLegalProps,
+          state: checkLegalSameHeadQuarter ? stateHeadquarter : stateLegal,
+          zipCode: checkLegalSameHeadQuarter ? zipHeadquarter : zipLegal,
         },
         contactEmail: ownerEmail,
         hrContactName: hrName,
@@ -204,7 +209,7 @@ class CompanyDetails extends Component {
       parentTenantId,
     };
     if (companyId) {
-      payload = { ...payload?.company, id: companyId };
+      payload = { ...payload?.company, id: companyId, tenantId };
       const res = await dispatch({
         type: 'companiesManagement/updateCompany',
         payload,

@@ -76,6 +76,9 @@ const Model = {
       setAuthority('');
       localStorage.removeItem('dataRoles');
       localStorage.removeItem('Rolesname');
+      localStorage.removeItem('currentCompanyId');
+      localStorage.removeItem('tenantId');
+      localStorage.removeItem('currentLocation');
       localStorage.removeItem('currentLocation');
       yield put({
         type: 'user/saveCurrentUser',

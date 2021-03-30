@@ -102,19 +102,19 @@ const routes = [
             path: '/account-setup',
             component: './AccountSetup',
             name: 'Account Setup',
+            authority: ['admin', 'owner', 'employee'],
           },
           {
             path: '/account-setup/company-profile/:id',
             component: './CompanyProfile',
             name: 'Company Profile',
-            authority: ['admin', 'owner'],
-
+            authority: ['owner'],
           },
           {
             path: '/account-setup/add-company',
             component: './CompanyProfile',
             name: 'Company Profile',
-            authority: ['admin', 'owner'],
+            authority: ['owner'],
           },
           {
             component: './404',
@@ -134,6 +134,9 @@ const routes = [
           'admin-cla',
           'admin-cda',
           'leader',
+          'admin',
+          'owner',
+          'employee',
         ],
         routes: [
           {
@@ -354,7 +357,7 @@ const routes = [
             name: 'timeOff',
             icon: '/assets/images/menuIcons/timeoff.svg',
             component: './TimeOff',
-            // authority: ['P_TIMEOFF_VIEW'],
+            authority: ['P_TIMEOFF_VIEW'],
             authority: [
               'employee',
               'hr-manager',

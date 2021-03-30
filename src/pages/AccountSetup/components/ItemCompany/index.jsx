@@ -1,23 +1,46 @@
 import logoDefault from '@/assets/companyDefault.png';
 import { Button } from 'antd';
 import React, { PureComponent } from 'react';
-import { history } from 'umi';
-import { setTenantId, setCurrentCompany } from '@/utils/authority';
+import { history, connect } from 'umi';
+import { setAuthority, setTenantId, setCurrentCompany } from '@/utils/authority';
+
 import s from './index.less';
 
-export default class ItemCompany extends PureComponent {
+@connect(({ user: { currentUser: { email = '' } = {} } = {} }) => ({ email }))
+class ItemCompany extends PureComponent {
   handleGetStarted = (tenantId, id) => {
     setTenantId(tenantId);
     setCurrentCompany(id);
     history.push(`/account-setup/company-profile/${id}`);
   };
 
-  handleGoToDashboard = (tenantId, id, isOwner) => {
+  handleGoToDashboard = async (tenantId, id, isOwner) => {
     setTenantId(tenantId);
     setCurrentCompany(id);
+    const { dispatch, email = '' } = this.props;
+    const res = await dispatch({
+      type: 'adminApp/getListAdmin',
+      payload: {
+        tenantId,
+        company: id,
+      },
+    });
+
     if (isOwner) {
       history.push(`/admin-app`);
     } else {
+      const { statusCode, data = {} } = res;
+      let formatArrRoles = JSON.parse(localStorage.getItem('antd-pro-authority'));
+      if (statusCode === 200) {
+        const currentUser = data?.users.find((user) => user?.usermap.email === email);
+        currentUser?.permissionAdmin.forEach((e) => {
+          formatArrRoles = [...formatArrRoles, e];
+        });
+        currentUser?.permissionEmployee.forEach((e) => {
+          formatArrRoles = [...formatArrRoles, e];
+        });
+        setAuthority(formatArrRoles);
+      }
       history.push(`/dashboard`);
     }
   };
@@ -68,3 +91,4 @@ export default class ItemCompany extends PureComponent {
     );
   }
 }
+export default ItemCompany;
