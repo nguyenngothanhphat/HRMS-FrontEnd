@@ -8,8 +8,15 @@ export function getPermissionList(payload) {
 }
 
 export function addNewAdmin(payload) {
-    return request('/api/usermap/register-admin', {
-      method: 'POST',
-      data: payload,
-    });
-  }
+  return request('/api/usermap/register-admin', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export function getListAdmin(payload) {
+  return request('/api/usermap/list-admin', {
+    method: 'POST',
+    data: payload,
+  });
+}

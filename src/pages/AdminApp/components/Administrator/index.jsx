@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
 // import { Row, Col } from 'antd';
+import { Spin } from 'antd';
 import AdditionalAdministrator from './components/Additional';
 import PrimaryAdminstrator from './components/Primary';
 import AddAdmin from './components/AddAdmin';
@@ -27,9 +28,11 @@ const listAdministrator = [
   },
 ];
 
-@connect(({ adminApp: { permissionList = [] } = {}, loading }) => ({
+@connect(({ adminApp: { permissionList = [], listAdmin = [] }, loading }) => ({
   permissionList,
+  listAdmin,
   loadingFetchPermissionList: loading.effects['adminApp/fetchPermissionList'],
+  loadingFetchAdminList: loading.effects['adminApp/getListAdmin'],
 }))
 class Adminstrator extends Component {
   constructor(props) {
@@ -43,6 +46,13 @@ class Adminstrator extends Component {
 
   componentDidMount = () => {
     const { dispatch } = this.props;
+    const tenantId = localStorage.getItem('tenantId');
+    dispatch({
+      type: 'adminApp/getListAdmin',
+      payload: {
+        tenantId,
+      },
+    });
     dispatch({
       type: 'adminApp/fetchPermissionList',
       payload: {
@@ -66,9 +76,33 @@ class Adminstrator extends Component {
     });
   };
 
+  listAdmin = () => {
+    const { permissionList = [], listAdmin = [] } = this.props;
+    return listAdmin.map((ad) => {
+      const { permissionModule = [], email = '', firstName = '' } = ad;
+      const listModuleName = [];
+      permissionList.forEach((per) => {
+        const { _id = '', module = '' } = per;
+        permissionModule.forEach((mol) => {
+          if (mol === _id)
+            listModuleName.push({
+              id: _id,
+              role: module,
+            });
+        });
+      });
+      return {
+        listRole: listModuleName,
+        employeeName: firstName,
+        email,
+        position: 'Renil’s permission apply to everyone in the company',
+      };
+    });
+  };
+
   render() {
     const { isAddAdmin, isEditAdmin, dataAdmin = {} } = this.state;
-    const { permissionList = [] } = this.props;
+    const { permissionList = [], loadingFetchAdminList = false } = this.props;
 
     return (
       <div className={styles.root}>
@@ -90,12 +124,14 @@ class Adminstrator extends Component {
               <PrimaryAdminstrator permissionList={permissionList} />
             </div>
             <div className={styles.root__bottom}>
-              <AdditionalAdministrator
-                permissionList={permissionList}
-                listAdministrator={listAdministrator}
-                handleAddAdmin={this.handleAddAdmin}
-                handleEditAdmin={this.handleEditAdmin}
-              />
+              {!loadingFetchAdminList && (
+                <AdditionalAdministrator
+                  permissionList={permissionList}
+                  listAdministrator={this.listAdmin()}
+                  handleAddAdmin={this.handleAddAdmin}
+                  handleEditAdmin={this.handleEditAdmin}
+                />
+              )}
             </div>
           </>
         )}

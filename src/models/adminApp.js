@@ -1,12 +1,13 @@
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
-import { getPermissionList, addNewAdmin } from '../services/adminApp';
+import { getPermissionList, addNewAdmin, getListAdmin } from '../services/adminApp';
 
 const country = {
   namespace: 'adminApp',
   state: {
     permissionList: [],
-    newAdmin: {}
+    newAdmin: {},
+    listAdmin: []
   },
   effects: {
     *fetchPermissionList({payload = {}}, { call, put }) {
@@ -28,6 +29,18 @@ const country = {
             message: 'Add new additional administrator successfully',
           });
           yield put({ type: 'save', payload: { newAdmin } });
+          return response
+        } catch (errors) {
+          dialog(errors);
+          return {}
+        }
+      },
+      *getListAdmin({payload = {}}, { call, put }) {
+        try {
+          const response = yield call(getListAdmin, payload);
+          const { statusCode, data = {} } = response;
+          if (statusCode !== 200) throw response;
+          yield put({ type: 'save', payload: { listAdmin: data?.userMap || [] } });
           return response
         } catch (errors) {
           dialog(errors);
