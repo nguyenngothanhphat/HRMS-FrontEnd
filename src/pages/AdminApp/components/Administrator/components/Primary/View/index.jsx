@@ -55,7 +55,7 @@ class ViewPrimary extends Component {
   };
 
   render() {
-    const { listAdministrator: { employeeName = '', email = '', position = '' } = {} } = this.props;
+    const { listAdministrator: { firstName = '', email = '', position = '' } = {} } = this.props;
     const { Panel } = Collapse;
     const expandIcon = ({ isActive }) => (
       <DownOutlined className={styles.expandIcon} rotate={isActive ? 180 : 0} />
@@ -71,7 +71,7 @@ class ViewPrimary extends Component {
           </Col>
           <Col span={16}>
             <div className={styles.primaryView__right}>
-              <div className={styles.name}>{employeeName}</div>
+              <div className={styles.name}>{firstName}</div>
             </div>
           </Col>
           <Col span={8}>

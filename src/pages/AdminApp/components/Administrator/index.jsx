@@ -10,28 +10,17 @@ import EditAdmin from './components/EditAdmin';
 
 const listAdministrator = [
   {
-    listRole: [
-      {
-        id: 'payroll',
-        role: 'Payroll',
-      },
-      {
-        id: 'benefits',
-        role: 'Benefits',
-      },
+    permissionModule: [
+      'M_USER_MANAGEMENT_LIST_USER_B_DEACTIVE_USER_VIEW',
+      'M_ONBOARDING_T_ONBOARDING_OVERVIEW_VIEW',
     ],
-    employeeName: 'Jenny',
+    firstName: 'Jenny',
     email: 'jenny@terralogic.com',
     position: 'Jenny’s permission apply to everyone in the company',
   },
   {
-    listRole: [
-      {
-        id: 'company',
-        role: 'Company',
-      },
-    ],
-    employeeName: 'Renil Komitla',
+    permissionModule: ['M_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW'],
+    firstName: 'Renil Komitla',
     email: 'renil@terralogic.com',
     position: 'Renil’s permission apply to everyone in the company',
   },

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Row, Col, Collapse, Tree } from 'antd';
-import { connect } from 'umi';
 import icon from '@/assets/primary-administrator.svg';
 import editIcon from '@/assets/edit-administrator.svg';
 import deleteIcon from '@/assets/delete-administrator.svg';
@@ -8,10 +7,6 @@ import { CarryOutOutlined, DownOutlined } from '@ant-design/icons';
 
 import styles from './index.less';
 
-@connect(({ adminApp: { permissionList = [] } = {}, loading }) => ({
-  permissionList,
-  loadingFetchPermissionList: loading.effects['adminApp/fetchPermissionList'],
-}))
 class ViewAdministrator extends Component {
   constructor(props) {
     super(props);
@@ -75,7 +70,7 @@ class ViewAdministrator extends Component {
   };
 
   render() {
-    const { handleEditAdmin = () => {} } = this.props;
+    const { handleEditAdmin = () => {}, permissionList = [] } = this.props;
     const { list = [] } = this.state;
 
     const { Panel } = Collapse;
@@ -85,7 +80,7 @@ class ViewAdministrator extends Component {
     return (
       <>
         {list.map((adminstrator, index) => {
-          const { listRole = [], employeeName = '', email = '', position = '' } = adminstrator;
+          const { permissionModule = [], firstName = '', email = '', position = '' } = adminstrator;
 
           return (
             <div
@@ -98,11 +93,24 @@ class ViewAdministrator extends Component {
                 <Col span={16}>
                   <div className={styles.addAdminstrator__header}>
                     <div className={styles.listRole}>
-                      {listRole.map((item) => (
-                        <div className={styles.role} key={item.id}>
-                          {item.role}
-                        </div>
-                      ))}
+                      {permissionModule.map((item) => {
+                        let data = permissionList.map((per) => {
+                          if (item === per._id) {
+                            return per.module;
+                          }
+                          return 0;
+                        });
+                        data = data.filter((module) => module !== 0);
+                        return (
+                          <>
+                            {data.map((itemData) => (
+                              <div className={styles.role} key={item.id}>
+                                {itemData}
+                              </div>
+                            ))}
+                          </>
+                        );
+                      })}
                     </div>
                     <div className={styles.actions}>
                       <div
@@ -129,7 +137,7 @@ class ViewAdministrator extends Component {
                 </Col>
                 <Col span={16}>
                   <div className={styles.addAdminstrator__right}>
-                    <div className={styles.name}>{employeeName}</div>
+                    <div className={styles.name}>{firstName}</div>
                   </div>
                 </Col>
                 <Col span={8}>

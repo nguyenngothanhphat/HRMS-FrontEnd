@@ -9,7 +9,7 @@ export default class EditAdmin extends PureComponent {
     super(props);
     this.state = {
       currentStep: 1,
-      adminRoles: [],
+      // adminRoles: [],
       // adminInfo: {},
     };
   }
@@ -28,7 +28,7 @@ export default class EditAdmin extends PureComponent {
     if (step === 1) {
       this.setState({
         currentStep: step + 1,
-        adminRoles: values,
+        // adminRoles: values,
       });
     }
 
