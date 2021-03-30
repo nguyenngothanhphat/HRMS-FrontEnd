@@ -94,11 +94,14 @@ class ViewAdministrator extends Component {
                 <Col span={16}>
                   <div className={styles.addAdminstrator__header}>
                     <div className={styles.listRole}>
-                      {listRole.map((item) => (
-                        <div className={styles.role} key={item.id}>
-                          {item.role}
-                        </div>
-                      ))}
+                      {listRole.map((item) => {
+                        const listModuleName = [...new Set(item.role)];
+                        return (
+                          <div className={styles.role} key={item.id}>
+                            {listModuleName}
+                          </div>
+                        );
+                      })}
                     </div>
                     <div className={styles.actions}>
                       <div

@@ -40,7 +40,7 @@ const country = {
           const response = yield call(getListAdmin, payload);
           const { statusCode, data = {} } = response;
           if (statusCode !== 200) throw response;
-          yield put({ type: 'save', payload: { listAdmin: data?.userMap || [] } });
+          yield put({ type: 'save', payload: { listAdmin: data?.users || [] } });
           return response
         } catch (errors) {
           dialog(errors);

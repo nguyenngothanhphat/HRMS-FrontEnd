@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
 // import { Row, Col } from 'antd';
-import { Spin } from 'antd';
 import AdditionalAdministrator from './components/Additional';
 import PrimaryAdminstrator from './components/Primary';
 import AddAdmin from './components/AddAdmin';
@@ -54,15 +53,22 @@ class Adminstrator extends Component {
     };
   }
 
-  componentDidMount = () => {
+  fetchListAdmin = () => {
     const { dispatch } = this.props;
     const tenantId = localStorage.getItem('tenantId');
+    const companyId = localStorage.getItem('currentCompanyId');
     dispatch({
       type: 'adminApp/getListAdmin',
       payload: {
         tenantId,
+        company: companyId,
       },
     });
+  };
+
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    this.fetchListAdmin();
     dispatch({
       type: 'adminApp/fetchPermissionList',
       payload: {
@@ -72,6 +78,9 @@ class Adminstrator extends Component {
   };
 
   handleAddAdmin = (value) => {
+    if (!value) {
+      this.fetchListAdmin();
+    }
     this.setState({
       isAddAdmin: value,
     });
@@ -89,11 +98,11 @@ class Adminstrator extends Component {
   listAdmin = () => {
     const { permissionList = [], listAdmin = [] } = this.props;
     return listAdmin.map((ad) => {
-      const { permissionModule = [], email = '', firstName = '' } = ad;
+      const { permissionAdmin = [], usermap: { email = '', firstName = '' } = {} } = ad;
       const listModuleName = [];
       permissionList.forEach((per) => {
         const { _id = '', module = '' } = per;
-        permissionModule.forEach((mol) => {
+        permissionAdmin.forEach((mol) => {
           if (mol === _id)
             listModuleName.push({
               id: _id,
@@ -101,6 +110,7 @@ class Adminstrator extends Component {
             });
         });
       });
+
       return {
         listRole: listModuleName,
         employeeName: firstName,

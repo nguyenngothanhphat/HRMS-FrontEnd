@@ -50,7 +50,7 @@ class AddAdmin extends PureComponent {
         email,
         company,
         tenantId,
-        permissionModule: adminRoles,
+        permissionAdmin: adminRoles,
       };
 
       const res = await dispatch({
