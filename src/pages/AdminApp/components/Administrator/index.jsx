@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
 // import { Row, Col } from 'antd';
-import { Spin } from 'antd';
+import { Skeleton } from 'antd';
 import AdditionalAdministrator from './components/Additional';
 import PrimaryAdminstrator from './components/Primary';
 import AddAdmin from './components/AddAdmin';
@@ -144,8 +144,8 @@ class Adminstrator extends Component {
               </>
             )}
             {loadingFetchAdminList && (
-              <div className={styles.loadingSpin}>
-                <Spin size="large" />
+              <div>
+                <Skeleton active />
               </div>
             )}
           </>
