@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Spin, Select, Button, Checkbox } from 'antd';
+import { Form, Input, Skeleton, Select, Button, Checkbox } from 'antd';
 import classnames from 'classnames';
 import { connect } from 'umi';
 import s from './index.less';
@@ -977,8 +977,8 @@ class CompanyDetails extends Component {
             </div>
           </Form>
         ) : (
-          <div className={s.loadingSpin}>
-            <Spin size="large" />
+          <div>
+            <Skeleton active />
           </div>
         )}
       </>

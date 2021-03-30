@@ -43,6 +43,8 @@ class AddAdmin extends PureComponent {
       const { dispatch } = this.props;
       const { firstName = '', email = '', name1 = '' } = values;
       const { adminRoles = [] } = this.state;
+      // eslint-disable-next-line no-restricted-globals
+      const formatAdminRoles = adminRoles.filter((x) => isNaN(x));
       const tenantId = localStorage.getItem('tenantId');
       const company = localStorage.getItem('currentCompanyId');
       const payload = {
@@ -50,7 +52,7 @@ class AddAdmin extends PureComponent {
         email,
         company,
         tenantId,
-        permissionAdmin: adminRoles,
+        permissionAdmin: formatAdminRoles,
       };
 
       const res = await dispatch({
