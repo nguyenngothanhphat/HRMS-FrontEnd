@@ -96,25 +96,25 @@ const routes = [
       {
         path: '/account-setup',
         component: '../layouts/AccountSetupLayout',
-        // authority: ['admin-csa'],
+        authority: ['admin', 'owner', 'employee'],
         routes: [
           {
             path: '/account-setup',
             component: './AccountSetup',
             name: 'Account Setup',
-            // authority: ['admin-csa'],
           },
           {
             path: '/account-setup/company-profile/:id',
             component: './CompanyProfile',
             name: 'Company Profile',
-            // authority: ['admin-csa'],
+            authority: ['admin', 'owner'],
+
           },
           {
             path: '/account-setup/add-company',
             component: './CompanyProfile',
             name: 'Company Profile',
-            // authority: ['admin-csa'],
+            authority: ['admin', 'owner'],
           },
           {
             component: './404',
@@ -147,6 +147,7 @@ const routes = [
             name: 'adminApp',
             icon: '/assets/images/menuIcons/adminApp.svg',
             component: './AdminApp',
+            authority: ['owner'],
           },
           {
             path: '/users',

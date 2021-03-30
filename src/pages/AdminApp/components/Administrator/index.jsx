@@ -79,30 +79,30 @@ class Adminstrator extends Component {
     });
   };
 
-  listAdmin = () => {
-    const { permissionList = [], listAdmin = [] } = this.props;
-    return listAdmin.map((ad) => {
-      const { permissionAdmin = [], usermap: { email = '', firstName = '' } = {} } = ad;
-      const listModuleName = [];
-      permissionList.forEach((per) => {
-        const { _id = '', module = '' } = per;
-        permissionAdmin.forEach((mol) => {
-          if (mol === _id)
-            listModuleName.push({
-              id: _id,
-              role: module,
-            });
-        });
-      });
+  // dataListAdmin = () => {
+  //   const { permissionList = [], listAdmin = [] } = this.props;
+  //   return listAdmin.map((ad) => {
+  //     const { permissionAdmin = [], usermap: { email = '', firstName = '' } = {} } = ad;
+  //     const listModuleName = [];
+  //     permissionList.forEach((per) => {
+  //       const { _id = '', module = '' } = per;
+  //       permissionAdmin.forEach((mol) => {
+  //         if (mol === _id)
+  //           listModuleName.push({
+  //             id: _id,
+  //             role: module,
+  //           });
+  //       });
+  //     });
 
-      return {
-        listRole: listModuleName,
-        employeeName: firstName,
-        email,
-        position: 'Renil’s permission apply to everyone in the company',
-      };
-    });
-  };
+  //     return {
+  //       listRole: listModuleName,
+  //       employeeName: firstName,
+  //       email,
+  //       position: `${firstName}’s permission apply to everyone in the company`,
+  //     };
+  //   });
+  // };
 
   render() {
     const { isAddAdmin, isEditAdmin, dataAdmin = {} } = this.state;

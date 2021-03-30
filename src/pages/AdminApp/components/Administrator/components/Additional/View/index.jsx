@@ -107,7 +107,7 @@ class ViewAdministrator extends Component {
         {list.map((adminstrator, index) => {
           const {
             permissionAdmin = [],
-            usermap: { firstName = '', email = '', position = '' } = {},
+            usermap: { firstName = '', email = '', position = `${firstName}’s permission apply to everyone in the company` } = {},
           } = adminstrator;
           const moduleList = this.renderListModule(permissionAdmin, permissionList);
           return (
