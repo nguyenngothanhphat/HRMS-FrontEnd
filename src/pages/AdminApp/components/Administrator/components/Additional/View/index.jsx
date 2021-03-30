@@ -4,7 +4,7 @@ import { connect } from 'umi';
 import icon from '@/assets/primary-administrator.svg';
 import editIcon from '@/assets/edit-administrator.svg';
 import deleteIcon from '@/assets/delete-administrator.svg';
-import { DownOutlined } from '@ant-design/icons';
+import { CarryOutOutlined, DownOutlined } from '@ant-design/icons';
 
 import styles from './index.less';
 
@@ -22,7 +22,9 @@ class ViewAdministrator extends Component {
 
   componentDidMount() {
     const { listAdministrator = [] } = this.props;
-    this.setState({ list: listAdministrator });
+    this.setState({
+      list: listAdministrator,
+    });
   }
 
   handleDelete = (index) => {
@@ -47,6 +49,7 @@ class ViewAdministrator extends Component {
           return {
             title: name,
             key: _id,
+            icon: <CarryOutOutlined />,
           };
         }
         return 0;
@@ -55,17 +58,18 @@ class ViewAdministrator extends Component {
       return {
         key: index,
         title: moduleName,
+        icon: <CarryOutOutlined />,
         children: result,
       };
     });
 
     return (
       <Tree
-        showLine
+        showIcon={false}
         loadData={loading}
-        switcherIcon={<DownOutlined />}
-        onSelect={this.onSelect}
         treeData={treeData}
+        onSelect={this.onSelect}
+        showLine={{ showLeafIcon: false }}
       />
     );
   };
