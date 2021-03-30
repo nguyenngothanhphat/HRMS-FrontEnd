@@ -43,12 +43,16 @@ const Model = {
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
         let isAdminOrOwner = false;
-        if (formatRole.includes('owner') || formatRole.includes('admin')) {
+        if (formatRole.includes('owner')) {
           isAdminOrOwner = true;
-          formatArrRoles = [...formatArrRoles, 'admin-csa'];
-          setAuthority(formatArrRoles);
+          formatArrRoles = [...formatArrRoles, 'owner'];
         }
-
+        if (formatRole.includes('admin')) {
+          isAdminOrOwner = true;
+          formatArrRoles = [...formatArrRoles, 'admin'];
+        }
+        setAuthority(formatArrRoles);
+        
         if (isAdminOrOwner || listCompany.length > 1) {
           history.replace('/account-setup');
         } else if (listCompany.length === 1) {

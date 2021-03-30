@@ -12,10 +12,10 @@ export default class ItemCompany extends PureComponent {
     history.push(`/account-setup/company-profile/${id}`);
   };
 
-  handleGoToDashboard = (tenantId, id, isAdmin) => {
+  handleGoToDashboard = (tenantId, id, isOwner) => {
     setTenantId(tenantId);
     setCurrentCompany(id);
-    if (isAdmin) {
+    if (isOwner) {
       history.push(`/admin-app`);
     } else {
       history.push(`/dashboard`);
