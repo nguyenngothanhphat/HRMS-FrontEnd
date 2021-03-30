@@ -28,13 +28,7 @@ class EditPrimary extends Component {
   };
 
   render() {
-    const {
-      primaryAdmin: {
-        firstName = '',
-        email = '',
-        position = `${firstName}’s permission apply to everyone in the company`,
-      } = {},
-    } = this.props;
+    const { primaryAdmin: { firstName = '', email = '', position = '' } = {} } = this.props;
     return (
       <div className={styles.primaryEdit}>
         <Form
