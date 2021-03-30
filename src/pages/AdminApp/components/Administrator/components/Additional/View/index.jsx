@@ -190,6 +190,7 @@ class ViewAdministrator extends Component {
                   </Collapse>
                 </Col>
               </Row>
+              {list.length > index + 1 && <div className={styles.divider} />}
             </div>
           );
         })}

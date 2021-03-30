@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col, Collapse, Tree } from 'antd';
 import icon from '@/assets/primary-administrator.svg';
 import { DownOutlined, CarryOutOutlined } from '@ant-design/icons';
+import arrowIcon from '@/assets/arrowDownCollapseIcon.svg';
 
 import styles from './index.less';
 
@@ -55,10 +56,16 @@ class ViewPrimary extends Component {
   };
 
   render() {
-    const { listAdministrator: { firstName = '', email = '', position = '' } = {} } = this.props;
+    const { primaryAdmin: { firstName = '', email = '', position = '' } = {} } = this.props;
     const { Panel } = Collapse;
     const expandIcon = ({ isActive }) => (
-      <DownOutlined className={styles.expandIcon} rotate={isActive ? 180 : 0} />
+      <div className={styles.icon}>
+        <img
+          src={arrowIcon}
+          alt="arrow"
+          className={isActive ? styles.upsideDownArrow : styles.normalArrow}
+        />
+      </div>
     );
 
     return (
