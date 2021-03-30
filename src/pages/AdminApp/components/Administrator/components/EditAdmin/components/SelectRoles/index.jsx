@@ -67,11 +67,19 @@ class SelectRoles extends PureComponent {
           checkable
           defaultExpandAll
           // onSelect={onSelect}
+          defaultCheckedKeys={this.defaultCheckBox()}
           onCheck={onCheck}
           treeData={treeData}
+          showLine={{ showLeafIcon: false }}
+          showIcon={false}
         />
       </div>
     );
+  };
+
+  defaultCheckBox = () => {
+    const { dataAdmin: { permissionModule = [] } = {} } = this.props;
+    return permissionModule;
   };
 
   renderMainForm = () => {
@@ -93,6 +101,7 @@ class SelectRoles extends PureComponent {
   };
 
   render() {
+    // this.handleDefaultChkB();
     return (
       <div className={styles.SelectRoles}>
         {this.renderTitle()}

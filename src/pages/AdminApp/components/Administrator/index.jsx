@@ -13,6 +13,7 @@ const listAdministrator = [
     permissionModule: [
       'M_USER_MANAGEMENT_LIST_USER_B_DEACTIVE_USER_VIEW',
       'M_ONBOARDING_T_ONBOARDING_OVERVIEW_VIEW',
+      'M_USER_MANAGEMENT_LIST_USER_ALL',
     ],
     firstName: 'Jenny',
     email: 'jenny@terralogic.com',
