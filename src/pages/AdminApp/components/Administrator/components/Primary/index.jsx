@@ -33,9 +33,11 @@ class PrimaryAdminstrator extends Component {
       <div className={styles.administrator}>
         <div className={styles.header}>
           <div className={styles.header__title}>Primary Administrator</div>
-          <div className={styles.header__action} onClick={this.onClickChange}>
-            Change
-          </div>
+          {!isChange && (
+            <div className={styles.header__action} onClick={this.onClickChange}>
+              Change
+            </div>
+          )}
         </div>
 
         <div className={styles.primary}>

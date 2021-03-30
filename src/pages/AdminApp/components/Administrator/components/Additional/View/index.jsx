@@ -3,7 +3,7 @@ import { Row, Col, Collapse, Tree } from 'antd';
 import icon from '@/assets/primary-administrator.svg';
 import editIcon from '@/assets/edit-administrator.svg';
 import deleteIcon from '@/assets/delete-administrator.svg';
-import { CarryOutOutlined, DownOutlined } from '@ant-design/icons';
+import arrowIcon from '@/assets/arrowDownCollapseIcon.svg';
 
 import styles from './index.less';
 
@@ -93,7 +93,12 @@ class ViewAdministrator extends Component {
 
     const { Panel } = Collapse;
     const expandIcon = ({ isActive }) => (
-      <DownOutlined className={styles.expandIcon} rotate={isActive ? 180 : 0} />
+      // <DownOutlined className={styles.expandIcon} rotate={isActive ? 180 : 0} />
+      <img
+        src={arrowIcon}
+        alt="arrow"
+        className={isActive ? styles.upsideDownArrow : styles.normalArrow}
+      />
     );
 
     return (
@@ -179,9 +184,6 @@ class ViewAdministrator extends Component {
                     expandIcon={expandIcon}
                   >
                     <Panel header="Show permissions" className={styles.permissionPanel}>
-                      {/* {listPermissions.map((item) => (
-                        <p key={item.id}>{item.permission}</p>
-                      ))} */}
                       {this.renderListPermission(permissionAdmin)}
                     </Panel>
                   </Collapse>

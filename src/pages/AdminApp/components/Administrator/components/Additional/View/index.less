@@ -7,6 +7,16 @@
 
   border-bottom: 1px solid #e2e4e8;
 
+  .normalArrow {
+    transform: rotate(0deg) !important;
+    margin-top: -3px;
+    transition: 0.3s;
+  }
+  .upsideDownArrow {
+    transform: rotate(180deg) !important;
+    transition: 0.3s;
+    margin-top: -3px;
+  }
   :global {
     .ant-collapse-header {
       color: #2c6df9 !important;
@@ -32,7 +42,7 @@
       padding: 12px 0;
       // padding-right: 40px;
     }
-    .ant-collapse-content > .ant-collapse-content-box{
+    .ant-collapse-content > .ant-collapse-content-box {
       padding: 0;
     }
   }
@@ -120,9 +130,8 @@
 
   .permissionCollapse {
     .permissionPanel {
-
-      .expandIcon{
-        margin-top: -2px;
+      .expandIcon {
+        margin-left: 5px;
       }
     }
   }
