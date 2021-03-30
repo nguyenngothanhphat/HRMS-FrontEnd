@@ -67,8 +67,16 @@
 
   .permissionCollapse {
     .permissionPanel {
-      .expandIcon {
-        margin-top: -2px;
+      .icon {
+        height: fit-content;
+        .normalArrow {
+          transform: rotate(0deg) !important;
+          transition: 0.3s;
+        }
+        .upsideDownArrow {
+          transform: rotate(180deg) !important;
+          transition: 0.3s;
+        }
       }
     }
   }
