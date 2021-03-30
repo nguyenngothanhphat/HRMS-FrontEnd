@@ -7,16 +7,7 @@
 
   border-bottom: 1px solid #e2e4e8;
 
-  .normalArrow {
-    transform: rotate(0deg) !important;
-    margin-top: -3px;
-    transition: 0.3s;
-  }
-  .upsideDownArrow {
-    transform: rotate(180deg) !important;
-    transition: 0.3s;
-    margin-top: -3px;
-  }
+  
   :global {
     .ant-tree-title {
       font-size: 13px;
@@ -133,9 +124,20 @@
 
   .permissionCollapse {
     .permissionPanel {
-      .expandIcon {
-        margin-left: 5px;
+      .icon{
+        height: fit-content;
+        .normalArrow {
+          transform: rotate(0deg) !important;
+          transition: 0.3s;
+        }
+        .upsideDownArrow {
+          transform: rotate(180deg) !important;
+          transition: 0.3s;
+        }
       }
     }
   }
+
+  
+
 }
