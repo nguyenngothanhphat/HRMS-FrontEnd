@@ -10,6 +10,13 @@ class SelectRoles extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    const { dataAdmin: { permissionAdmin = [] } = {} } = this.props;
+    this.setState({
+      selectedList: permissionAdmin,
+    });
+  }
+
   renderTitle = () => {
     const { handleEditAdmin = () => {}, dataAdmin = {} } = this.props;
     const { firstName = '' } = dataAdmin;
@@ -31,6 +38,7 @@ class SelectRoles extends PureComponent {
 
   renderList = () => {
     const { permissionList = [] } = this.props;
+    const { selectedList = [] } = this.state;
     let formatList = permissionList.map((per) => per?.module);
     formatList = formatList.filter(
       (value) => value !== undefined && value !== '' && value !== null,
@@ -57,8 +65,8 @@ class SelectRoles extends PureComponent {
       };
     });
 
-    const onCheck = (checkedKeys) => {
-      this.setList(checkedKeys);
+    const onCheck = (value) => {
+      this.setList(value);
     };
 
     return (
@@ -66,9 +74,8 @@ class SelectRoles extends PureComponent {
         <Tree
           checkable
           defaultExpandAll
-          // onSelect={onSelect}
-          defaultCheckedKeys={this.defaultCheckBox()}
           onCheck={onCheck}
+          checkedKeys={selectedList}
           treeData={treeData}
           showLine={{ showLeafIcon: false }}
           showIcon={false}
@@ -101,7 +108,7 @@ class SelectRoles extends PureComponent {
   };
 
   render() {
-    // this.handleDefaultChkB();
+    const { selectedList = [] } = this.state;
     return (
       <div className={styles.SelectRoles}>
         {this.renderTitle()}

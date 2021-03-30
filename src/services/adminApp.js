@@ -20,3 +20,9 @@ export function getListAdmin(payload) {
     data: payload,
   });
 }
+export function updateAdminService(payload) {
+  return request('/api/usermap/update', {
+    method: 'POST',
+    data: payload,
+  });
+}

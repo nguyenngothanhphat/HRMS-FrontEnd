@@ -30,13 +30,14 @@ class ViewAdministrator extends Component {
     this.setState({ list });
   };
 
-  renderListPermission = () => {
+  renderListPermission = (idList) => {
     const { permissionList = [], loading } = this.props;
     let formatList = permissionList.map((per) => per?.module);
     formatList = formatList.filter(
       (value) => value !== undefined && value !== '' && value !== null,
     );
     formatList = [...new Set(formatList)];
+
     const treeData = formatList.map((moduleName, index) => {
       let result = permissionList.map((per) => {
         const { _id = '', name = '', module = '' } = per;
@@ -44,7 +45,6 @@ class ViewAdministrator extends Component {
           return {
             title: name,
             key: _id,
-            icon: <CarryOutOutlined />,
           };
         }
         return 0;
@@ -53,7 +53,6 @@ class ViewAdministrator extends Component {
       return {
         key: index,
         title: moduleName,
-        icon: <CarryOutOutlined />,
         children: result,
       };
     });
@@ -179,7 +178,7 @@ class ViewAdministrator extends Component {
                       {/* {listPermissions.map((item) => (
                         <p key={item.id}>{item.permission}</p>
                       ))} */}
-                      {this.renderListPermission()}
+                      {this.renderListPermission(permissionAdmin)}
                     </Panel>
                   </Collapse>
                 </Col>

@@ -1,15 +1,17 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'umi';
 import SelectRoles from './components/SelectRoles';
 import SelectUser from './components/SelectUser';
 
 import styles from './index.less';
 
-export default class EditAdmin extends PureComponent {
+@connect()
+class EditAdmin extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       currentStep: 1,
-      // adminRoles: [],
+      adminRoles: [],
       // adminInfo: {},
     };
   }
@@ -23,12 +25,12 @@ export default class EditAdmin extends PureComponent {
   };
 
   onContinue = (step, values) => {
-    const { handleEditAdmin = () => {} } = this.props;
-
+    const { handleEditAdmin = () => {}, dispatch, dataAdmin: { _id = '' } = {} } = this.props;
+    const { adminRoles } = this.state;
     if (step === 1) {
       this.setState({
         currentStep: step + 1,
-        // adminRoles: values,
+        adminRoles: values,
       });
     }
 
@@ -36,7 +38,17 @@ export default class EditAdmin extends PureComponent {
       // this.setState({
       //   adminInfo: values,
       // });
-      handleEditAdmin(false);
+      // handleEditAdmin(false);
+
+      dispatch({
+        type: 'adminApp/updateAdmins',
+        payload: {
+          managePermissionId: _id,
+          permissionAdmin: adminRoles,
+        },
+      }).then(() => {
+        handleEditAdmin(false);
+      });
     }
   };
 
@@ -64,3 +76,5 @@ export default class EditAdmin extends PureComponent {
     );
   }
 }
+
+export default EditAdmin;

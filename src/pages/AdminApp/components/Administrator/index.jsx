@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
 // import { Row, Col } from 'antd';
+import { Spin } from 'antd';
 import AdditionalAdministrator from './components/Additional';
 import PrimaryAdminstrator from './components/Primary';
 import AddAdmin from './components/AddAdmin';
@@ -77,6 +78,9 @@ class Adminstrator extends Component {
   };
 
   handleEditAdmin = (value, index) => {
+    if (!value) {
+      this.fetchListAdmin();
+    }
     const { listAdmin = [] } = this.props;
     // const dataAdmin = listAdministrator[index];
     const dataAdmin = listAdmin[index];
@@ -132,19 +136,26 @@ class Adminstrator extends Component {
           </>
         ) : (
           <>
-            <div className={styles.root__top}>
-              <PrimaryAdminstrator permissionList={permissionList} />
-            </div>
-            <div className={styles.root__bottom}>
-              {!loadingFetchAdminList && (
-                <AdditionalAdministrator
-                  permissionList={permissionList}
-                  listAdministrator={listAdmin}
-                  handleAddAdmin={this.handleAddAdmin}
-                  handleEditAdmin={this.handleEditAdmin}
-                />
-              )}
-            </div>
+            {!loadingFetchAdminList && (
+              <>
+                <div className={styles.root__top}>
+                  <PrimaryAdminstrator permissionList={permissionList} />
+                </div>
+                <div className={styles.root__bottom}>
+                  <AdditionalAdministrator
+                    permissionList={permissionList}
+                    listAdministrator={listAdmin}
+                    handleAddAdmin={this.handleAddAdmin}
+                    handleEditAdmin={this.handleEditAdmin}
+                  />
+                </div>
+              </>
+            )}
+            {loadingFetchAdminList && (
+              <div className={styles.loadingSpin}>
+                <Spin size="large" />
+              </div>
+            )}
           </>
         )}
       </div>
