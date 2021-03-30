@@ -20,6 +20,7 @@ class SelectRoles extends PureComponent {
   renderTitle = () => {
     const { handleEditAdmin = () => {}, dataAdmin = {} } = this.props;
     const { firstName = '' } = dataAdmin;
+    console.log(dataAdmin);
     return (
       <div className={styles.titleContainer}>
         <span className={styles.title}>{`Choose ${firstName}’s role as admin`}</span>

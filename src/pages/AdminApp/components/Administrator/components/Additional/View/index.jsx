@@ -93,12 +93,13 @@ class ViewAdministrator extends Component {
 
     const { Panel } = Collapse;
     const expandIcon = ({ isActive }) => (
-      // <DownOutlined className={styles.expandIcon} rotate={isActive ? 180 : 0} />
-      <img
-        src={arrowIcon}
-        alt="arrow"
-        className={isActive ? styles.upsideDownArrow : styles.normalArrow}
-      />
+      <div className={styles.icon}>
+        <img
+          src={arrowIcon}
+          alt="arrow"
+          className={isActive ? styles.upsideDownArrow : styles.normalArrow}
+        />
+      </div>
     );
 
     return (
