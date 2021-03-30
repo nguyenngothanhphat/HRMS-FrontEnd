@@ -34,7 +34,8 @@ export default class ItemCompany extends PureComponent {
 
   render() {
     const {
-      isOwnerAdmin = false,
+      isOwner = false,
+      // isAdmin = false,
       company: { _id: id = '', tenant = '', name = '', logoUrl = '', headQuarterAddress = {} } = {},
     } = this.props;
 
@@ -56,18 +57,12 @@ export default class ItemCompany extends PureComponent {
           <p className={s.viewInfo__location}>{address}</p>
         </div>
         <div className={s.viewAction}>
-          {/* {isOwnerAdmin ? (
-            <Button className={s.btnOutline} onClick={() => this.handleGetStarted(tenant, id)}>
-              Get Started
-            </Button>
-          ) : ( */}
           <Button
             className={s.btnOutline}
-            onClick={() => this.handleGoToDashboard(tenant, id, isOwnerAdmin)}
+            onClick={() => this.handleGoToDashboard(tenant, id, isOwner)}
           >
             Get Started
           </Button>
-          {/* )} */}
         </div>
       </div>
     );

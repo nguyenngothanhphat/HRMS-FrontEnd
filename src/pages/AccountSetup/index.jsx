@@ -27,25 +27,25 @@ class AccountSetup extends Component {
     }
   };
 
-  renderCompanies = () => {
+  renderCompanies = (isOwner, isAdmin) => {
     const { companiesOfUser = [] } = this.props;
-    const isOwnerAdmin = this.checkIsOwnerAdmin();
 
     return companiesOfUser.map((comp) => {
-      return <ItemCompany company={comp} isOwnerAdmin={isOwnerAdmin} />;
+      return <ItemCompany company={comp} isOwner={isOwner} isAdmin={isAdmin} />;
     });
   };
 
-  checkIsOwnerAdmin = () => {
+  checkRole = (roleName) => {
     const { currentUser: { signInRole = [] } = {} } = this.props;
     const formatRole = signInRole.map((role) => role.toLowerCase());
-    if (formatRole.includes('admin') || formatRole.includes('owner')) return true;
+    if (formatRole.includes(roleName)) return true;
     return false;
   };
 
   render() {
     const { currentUser: { avatar = '', email = '' } = {} } = this.props;
-    const isOwnerAdmin = this.checkIsOwnerAdmin();
+    const isOwner = this.checkRole('owner');
+    const isAdmin = this.checkRole('admin');
 
     return (
       <div className={s.root}>
@@ -58,7 +58,7 @@ class AccountSetup extends Component {
               <p>
                 You are logged in as <span className={s.blockUserLogin__info__email}>{email}</span>
               </p>
-              {isOwnerAdmin && (
+              {(isOwner || isAdmin) && (
                 <p style={{ marginTop: '8px' }}>You have administrative privileges.</p>
               )}
             </div>
@@ -73,9 +73,9 @@ class AccountSetup extends Component {
           </div>
 
           {/* RENDER COMPANIES */}
-          {this.renderCompanies()}
+          {this.renderCompanies(isOwner, isAdmin)}
 
-          {isOwnerAdmin && (
+          {(isOwner || isAdmin) && (
             <Button
               className={s.btnAddNew}
               onClick={() => history.push('/account-setup/add-company')}

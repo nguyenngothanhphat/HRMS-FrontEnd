@@ -26,11 +26,15 @@ class AdditionalAdministrator extends Component {
           </div>
         </div>
         <div className={styles.listAdministrator}>
-          <ViewAdministrator
-            permissionList={permissionList}
-            listAdministrator={listAdministrator}
-            handleEditAdmin={handleEditAdmin}
-          />
+          {listAdministrator.length === 0 ? (
+            <span>No data</span>
+          ) : (
+            <ViewAdministrator
+              permissionList={permissionList}
+              listAdministrator={listAdministrator}
+              handleEditAdmin={handleEditAdmin}
+            />
+          )}
         </div>
       </div>
     );
