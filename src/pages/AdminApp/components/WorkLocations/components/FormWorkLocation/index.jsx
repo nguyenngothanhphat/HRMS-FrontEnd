@@ -72,6 +72,10 @@ class FormWorkLocation extends Component {
     } else onRemove();
   };
 
+  handleSubmit = (values) => {
+    console.log('afgasdfa', values);
+  };
+
   render() {
     const { country = '' } = this.state;
     const {
@@ -89,16 +93,16 @@ class FormWorkLocation extends Component {
         <div className={s.content__viewBottom}>
           <div className={s.content__viewBottom__viewTitle}>
             <p className={s.title}>{itemLocation?.name || name}</p>
-            <div
-              className={isHidden ? `${s.action} ${s.hide}` : `${s.action}`}
-              onClick={this.handleRemove}
-            >
+            <div className={isHidden ? `${s.action} ${s.hide}` : `${s.action}`}>
               <div className={s.action__actionDelete}>
-                <DeleteOutlined className={s.action__actionDelete__icon} />
-                <span>Delete</span>
+                <DeleteOutlined
+                  className={s.action__actionDelete__icon}
+                  onClick={this.handleRemove}
+                />
+                <span onClick={this.handleRemove}>Delete</span>
               </div>
               <div className={s.viewBtn}>
-                <Button className={s.btnSubmit} htmlType="submit">
+                <Button className={s.btnSubmit} htmlType="submit" onClick={this.handleSubmit}>
                   Save
                 </Button>
               </div>
@@ -110,8 +114,8 @@ class FormWorkLocation extends Component {
             <Form.Item
               {...field}
               label={false}
-              name={[field.name, 'name']}
-              fieldKey={[field.fieldKey, 'name']}
+              name={[field.name, 'addressLine1']}
+              fieldKey={[field.fieldKey, 'addressLine1']}
               rules={[
                 {
                   required: true,
@@ -130,7 +134,7 @@ class FormWorkLocation extends Component {
                 }),
               ]}
             >
-              <Input placeholder="Name Location" />
+              <Input placeholder="Address line 1" />
             </Form.Item>
           </div>
           <div className={s.content__viewBottom__row}>
@@ -138,8 +142,8 @@ class FormWorkLocation extends Component {
             <Form.Item
               {...field}
               label={false}
-              name={[field.name, 'address']}
-              fieldKey={[field.fieldKey, 'address']}
+              name={[field.name, 'addressLine2']}
+              fieldKey={[field.fieldKey, 'addressLine2']}
               // rules={[
               //   {
               //     required: true,
@@ -147,7 +151,7 @@ class FormWorkLocation extends Component {
               //   },
               // ]}
             >
-              <Input placeholder="Address" />
+              <Input placeholder="Address line 2" />
             </Form.Item>
           </div>
           <div className={s.content__viewBottom__row}>
