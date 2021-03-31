@@ -17,6 +17,15 @@ class AccountSetup extends Component {
     dispatch({
       type: 'user/fetchCompanyOfUser',
     });
+    // clear company details
+    dispatch({
+      type: 'companiesManagement/saveOrigin',
+      payload: { companyDetails: {} },
+    });
+    dispatch({
+      type: 'companiesManagement/saveTemp',
+      payload: { companyDetails: {} },
+    });
     localStorage.removeItem('currentCompanyId');
     localStorage.removeItem('tenantId');
     localStorage.removeItem('currentLocation');
