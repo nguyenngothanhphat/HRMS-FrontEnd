@@ -16,6 +16,9 @@ class AccountSetup extends Component {
     dispatch({
       type: 'user/fetchCompanyOfUser',
     });
+    localStorage.removeItem('currentCompanyId');
+    localStorage.removeItem('tenantId');
+    localStorage.removeItem('currentLocation');
   }
 
   handleLogout = () => {
@@ -78,7 +81,7 @@ class AccountSetup extends Component {
           {(isOwner || isAdmin) && (
             <Button
               className={s.btnAddNew}
-              onClick={() => history.push('/account-setup/add-company')}
+              onClick={() => history.push('/control-panel/add-company')}
             >
               Add new company
             </Button>

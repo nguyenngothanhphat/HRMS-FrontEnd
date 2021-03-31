@@ -11,7 +11,7 @@ class ItemCompany extends PureComponent {
   handleGetStarted = (tenantId, id) => {
     setTenantId(tenantId);
     setCurrentCompany(id);
-    history.push(`/account-setup/company-profile/${id}`);
+    history.push(`/control-panel/company-profile/${id}`);
   };
 
   handleGoToDashboard = async (tenantId, id, isOwner) => {

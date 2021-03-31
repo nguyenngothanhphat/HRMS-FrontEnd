@@ -73,7 +73,7 @@ const BasicLayout = (props) => {
     const isAdmin = checkRole('admin');
 
     return (
-      <Link to={isOwner || isAdmin ? '/account-setup' : '/'}>
+      <Link to={isOwner || isAdmin ? '/control-panel' : '/'}>
         <img
           src="/assets/images/terralogic-logo.png"
           alt="logo"
@@ -92,7 +92,7 @@ const BasicLayout = (props) => {
   const classNameBreadCrumb = pathname === '/dashboard' ? styles.breadCrumbA : styles.breadCrumbB;
 
   if (currentUser?.firstCreated) {
-    return <Redirect to="/account-setup" />;
+    return <Redirect to="/control-panel" />;
   }
 
   return (

@@ -94,24 +94,24 @@ const routes = [
         ],
       },
       {
-        path: '/account-setup',
+        path: '/control-panel',
         component: '../layouts/AccountSetupLayout',
         authority: ['admin', 'owner', 'employee'],
         routes: [
           {
-            path: '/account-setup',
+            path: '/control-panel',
             component: './AccountSetup',
             name: 'Account Setup',
             authority: ['admin', 'owner', 'employee'],
           },
           {
-            path: '/account-setup/company-profile/:id',
+            path: '/control-panel/company-profile/:id',
             component: './CompanyProfile',
             name: 'Company Profile',
             authority: ['owner'],
           },
           {
-            path: '/account-setup/add-company',
+            path: '/control-panel/add-company',
             component: './CompanyProfile',
             name: 'Company Profile',
             authority: ['owner'],

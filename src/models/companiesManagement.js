@@ -177,7 +177,7 @@ const companiesManagement = {
           type: 'saveOrigin',
           payload: { companyDetails: { ...payload } },
         });
-        history.push('/account-setup');
+        history.push('/control-panel');
       } catch (errors) {
         dialog(errors);
       }
