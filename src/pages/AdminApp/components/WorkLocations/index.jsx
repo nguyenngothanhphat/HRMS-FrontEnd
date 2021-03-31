@@ -53,38 +53,61 @@ class WorkLocations extends PureComponent {
   }
 
   onFinish = ({
-    workLocations: locations = [],
-    addressLine1,
-    addressLine2,
-    country,
-    state,
-    zipCode,
+    workLocations: [{ addressLine1, addressLine2, country, state, zipCode }] = [],
+    workLocations = [],
   }) => {
     const tenantId = localStorage.getItem('tenantId');
     const { dispatch, companyId = '', companyDetails = {} } = this.props;
     const { company, isNewTenant, locations: originLocations = [] } = companyDetails;
-    const listLocation = [...originLocations, ...locations];
-    const payload = {
-      headQuarterAddress: {
-        addressLine1,
-        addressLine2,
-        country,
-        state,
-        zipCode,
+    console.log('worklocation', workLocations);
+    const listLocation = [...originLocations, ...workLocations];
+    let payload = [
+      {
+        headQuarterAddress: {
+          addressLine1,
+          addressLine2,
+          country,
+          state,
+          zipCode,
+        },
+        legalAddress: {
+          addressLine1,
+          addressLine2,
+          country,
+          state,
+          zipCode,
+        },
+        isHeadQuarter: false,
+        name: company.name + state,
+        company: companyId,
+        tenant: tenantId,
       },
-      legalAddress: {
-        addressLine1,
-        addressLine2,
-        country,
-        state,
-        zipCode,
-      },
-      isHeadQuarter: false,
-      name: company.name + state,
-      company: companyId,
-      tenant: tenantId,
-    };
-    console.log('payload', locations);
+    ];
+    const newWorkLocation = workLocations.map((item) => {
+      // return {
+      //   headQuarterAddress: {
+      //     addressLine1: item.addressLine1,
+      //     addressLine2: item.addressLine2,
+      //     country: item.country,
+      //     state: item.state,
+      //     zipCode: item.zipCode,
+      //   },
+      //   legalAddress: {
+      //     addressLine1: item.addressLine1,
+      //     addressLine2: item.addressLine2,
+      //     country: item.country,
+      //     state: item.state,
+      //     zipCode: item.zipCode,
+      //   },
+      //   isHeadQuarter: false,
+      //   name: `${company.name}_${state}`,
+      //   company: companyId,
+      //   tenant: tenantId,
+      // };
+      return item;
+    });
+    payload = [...payload, ...newWorkLocation];
+    console.log('payload', newWorkLocation);
     // if (companyId) {
     //   dispatch({
     //     type: 'companiesManagement/addLocation',
@@ -180,7 +203,7 @@ class WorkLocations extends PureComponent {
     return (
       <Form
         ref={this.formRef}
-        onFinish={(values) => console.log(values)}
+        onFinish={this.onFinish}
         autoComplete="off"
         initialValues={{
           addressLine1,
@@ -258,11 +281,11 @@ class WorkLocations extends PureComponent {
             </Form.List>
           </div>
         </div>
-        {/* <div className={s.viewBtn}>
+        <div className={s.viewBtn}>
           <Button className={s.btnSubmit} htmlType="submit" loading={loading}>
             Save
           </Button>
-        </div> */}
+        </div>
       </Form>
     );
   }

@@ -3,7 +3,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Select, Divider, Modal, Button } from 'antd';
+import { Form, Input, Select, Divider, Modal } from 'antd';
 import { ExclamationCircleOutlined, DeleteOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
 import { bool } from 'prop-types';
@@ -72,10 +72,6 @@ class FormWorkLocation extends Component {
     } else onRemove();
   };
 
-  handleSubmit = (values) => {
-    console.log('afgasdfa', values);
-  };
-
   render() {
     const { country = '' } = this.state;
     const {
@@ -100,11 +96,6 @@ class FormWorkLocation extends Component {
                   onClick={this.handleRemove}
                 />
                 <span onClick={this.handleRemove}>Delete</span>
-              </div>
-              <div className={s.viewBtn}>
-                <Button className={s.btnSubmit} htmlType="submit" onClick={this.handleSubmit}>
-                  Save
-                </Button>
               </div>
             </div>
           </div>
