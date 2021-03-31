@@ -127,6 +127,7 @@ class ViewAdministrator extends Component {
                       <div className={styles.name}>{firstName}</div>
                     </div>
                   </Col>
+                  <Col span={1} />
                   <Col span={13}>
                     <div className={styles.addAdminstrator__header}>
                       <div className={styles.listRole}>
@@ -138,19 +139,21 @@ class ViewAdministrator extends Component {
                       </div>
                     </div>
                   </Col>
-                  <Col span={3}>
+                  <Col span={2}>
                     <div className={styles.btnActions}>
                       <div
                         className={styles.btnActions__edit}
                         onClick={() => handleEditAdmin(true, index)}
                       >
                         <img src={editIcon} alt="edit-administrator" />
+                        {/* <span>Edit</span> */}
                       </div>
                       <div
                         className={styles.btnActions__delete}
                         onClick={() => this.handleDelete(index)}
                       >
                         <img src={deleteIcon} alt="delete-administrator" />
+                        {/* <span>Delete</span> */}
                       </div>
                     </div>
                   </Col>
@@ -161,16 +164,18 @@ class ViewAdministrator extends Component {
                       <div className={styles.email}>{email}</div>
                     </div>
                   </Col>
+                  <Col span={1} />
                   <Col span={13}>
                     <div className={styles.addAdminstrator__admin}>
                       <img src={icon} alt="primary-administrator" />
                       <div className={styles.position}>{position}</div>
                     </div>
                   </Col>
-                  <Col span={3} />
+                  <Col span={2} />
                 </Row>
                 <Row className={styles.addAdminstrator__row}>
                   <Col span={8} />
+                  <Col span={1} />
                   <Col span={13}>
                     <Collapse
                       ghost
@@ -183,7 +188,7 @@ class ViewAdministrator extends Component {
                       </Panel>
                     </Collapse>
                   </Col>
-                  <Col span={3} />
+                  <Col span={2} />
                 </Row>
                 {/* <Col span={8} />
                 <Col span={16}>
