@@ -1,6 +1,6 @@
 .addAdminstrator {
   width: 100%;
-  padding-bottom: 10px;
+  // padding-bottom: 10px;
   color: #161c29;
   font-weight: normal;
   font-style: normal;
@@ -10,6 +10,10 @@
   }
 
   :global {
+    .ant-row{
+      margin-bottom: 0;
+    }
+
     .ant-tree-title {
       font-size: 13px;
     }
@@ -41,6 +45,111 @@
       padding: 0;
     }
   }
+
+  /////////////////////// NEW UI ///////////////////////
+  &__row{
+    width: 100%;
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    .listRole {
+      display: flex;
+      // align-items: center;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+
+      .role {
+        margin-right: 15px;
+        margin-bottom: 15px;
+        padding: 2px 14px;
+
+        color: #ffffff;
+
+        font-size: 10px;
+        line-height: 12px;
+        text-align: center;
+
+        background: #2c6df9;
+        border-radius: 13px;
+      }
+    }
+  }
+
+  .btnActions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    // padding-right: 18px;
+
+    &__edit,
+    &__delete {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+
+      span {
+        margin-left: 8px;
+        color: #707177;
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 15px;
+        text-decoration-line: underline;
+      }
+    }
+
+    &__delete {
+      margin-left: 21.22px;
+    }
+  }
+
+  &__admin {
+    display: flex;
+    align-items: flex-start;
+    font-size: 13px;
+    line-height: 15px;
+
+    .name {
+      color: #2c6df9;
+      font-weight: 500;
+    }
+
+    img {
+      margin-right: 11px;
+    }
+
+    .email,
+    .position {
+      color: #707177;
+    }
+  }
+
+  .permissionCollapse {
+    width: fit-content;
+    .permissionPanel {
+      .icon {
+        height: fit-content;
+        .normalArrow {
+          transform: rotate(0deg) !important;
+          transition: 0.3s;
+        }
+        .upsideDownArrow {
+          transform: rotate(180deg) !important;
+          transition: 0.3s;
+        }
+      }
+    }
+  }
+
+
+
+
+
+  /////////////////////// OLD UI ///////////////////////
 
   &__header {
     display: flex;
@@ -120,23 +229,6 @@
     .email,
     .position {
       color: #707177;
-    }
-  }
-
-  .permissionCollapse {
-    width: fit-content;
-    .permissionPanel {
-      .icon {
-        height: fit-content;
-        .normalArrow {
-          transform: rotate(0deg) !important;
-          transition: 0.3s;
-        }
-        .upsideDownArrow {
-          transform: rotate(180deg) !important;
-          transition: 0.3s;
-        }
-      }
     }
   }
 }

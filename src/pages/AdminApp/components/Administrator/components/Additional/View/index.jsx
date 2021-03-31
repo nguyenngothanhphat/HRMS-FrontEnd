@@ -121,7 +121,71 @@ class ViewAdministrator extends Component {
               style={index > 0 ? { paddingTop: '30px' } : null}
             >
               <Row gutter={[0, 16]}>
-                <Col span={8} />
+                <Row className={styles.addAdminstrator__row}>
+                  <Col span={8}>
+                    <div className={styles.addAdminstrator__right}>
+                      <div className={styles.name}>{firstName}</div>
+                    </div>
+                  </Col>
+                  <Col span={13}>
+                    <div className={styles.addAdminstrator__header}>
+                      <div className={styles.listRole}>
+                        {moduleList.map((module) => (
+                          <div className={styles.role} key={module}>
+                            {module}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </Col>
+                  <Col span={3}>
+                    <div className={styles.btnActions}>
+                      <div
+                        className={styles.btnActions__edit}
+                        onClick={() => handleEditAdmin(true, index)}
+                      >
+                        <img src={editIcon} alt="edit-administrator" />
+                      </div>
+                      <div
+                        className={styles.btnActions__delete}
+                        onClick={() => this.handleDelete(index)}
+                      >
+                        <img src={deleteIcon} alt="delete-administrator" />
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+                <Row className={styles.addAdminstrator__row}>
+                  <Col span={8}>
+                    <div className={styles.addAdminstrator__admin}>
+                      <div className={styles.email}>{email}</div>
+                    </div>
+                  </Col>
+                  <Col span={13}>
+                    <div className={styles.addAdminstrator__admin}>
+                      <img src={icon} alt="primary-administrator" />
+                      <div className={styles.position}>{position}</div>
+                    </div>
+                  </Col>
+                  <Col span={3} />
+                </Row>
+                <Row className={styles.addAdminstrator__row}>
+                  <Col span={8} />
+                  <Col span={13}>
+                    <Collapse
+                      ghost
+                      expandIconPosition="right"
+                      className={styles.permissionCollapse}
+                      expandIcon={expandIcon}
+                    >
+                      <Panel header="Show permissions" className={styles.permissionPanel}>
+                        {this.renderListPermission(permissionAdmin)}
+                      </Panel>
+                    </Collapse>
+                  </Col>
+                  <Col span={3} />
+                </Row>
+                {/* <Col span={8} />
                 <Col span={16}>
                   <div className={styles.addAdminstrator__header}>
                     <div className={styles.listRole}>
@@ -192,7 +256,7 @@ class ViewAdministrator extends Component {
                       {this.renderListPermission(permissionAdmin)}
                     </Panel>
                   </Collapse>
-                </Col>
+                </Col> */}
               </Row>
               {list.length > index + 1 && <div className={styles.divider} />}
             </div>
