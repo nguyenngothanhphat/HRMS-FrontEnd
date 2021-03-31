@@ -14,6 +14,18 @@ export default class SelectUser extends PureComponent {
     };
   }
 
+  componentDidMount = () => {
+    const { onBackValues: { firstName = '' } = {} } = this.props;
+    if (firstName) {
+      this.setState({
+        isCompanyWorker: false,
+      });
+      this.formRef.current.setFieldsValue({
+        isCompanyWorker: false,
+      });
+    }
+  };
+
   renderTitle = () => {
     const { handleAddAdmin = () => {} } = this.props;
     return (
@@ -41,15 +53,8 @@ export default class SelectUser extends PureComponent {
     const { isCompanyWorker } = this.state;
     const {
       companyName = '',
-      onBackValues: {
-        isCompanyWorker: isCompanyWorker1,
-        firstName = '',
-        email = '',
-        name1 = '',
-      } = {},
+      onBackValues: { firstName = '', email = '', name1 = '' } = {},
     } = this.props;
-
-    const currentIsCompanyWorker = isCompanyWorker;
 
     return (
       <div className={styles.assignUser}>
@@ -58,7 +63,7 @@ export default class SelectUser extends PureComponent {
           ref={this.formRef}
           id="myForm"
           initialValues={{
-            isCompanyWorker: currentIsCompanyWorker,
+            isCompanyWorker,
             firstName,
             email,
             name1,
@@ -79,7 +84,7 @@ export default class SelectUser extends PureComponent {
             </Col>
           </Row>
 
-          {currentIsCompanyWorker && (
+          {isCompanyWorker && (
             <Row align="middle" gutter={[24, 24]}>
               <Col span={8}>Name</Col>
               <Col span={14}>
@@ -101,7 +106,7 @@ export default class SelectUser extends PureComponent {
             </Row>
           )}
 
-          {!currentIsCompanyWorker && (
+          {!isCompanyWorker && (
             <>
               <Row align="middle" gutter={[24, 24]}>
                 <Col span={8}>Name</Col>

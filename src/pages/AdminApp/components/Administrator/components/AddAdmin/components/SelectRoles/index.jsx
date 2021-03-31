@@ -86,9 +86,9 @@ class SelectRoles extends PureComponent {
         </div>
         <div className={styles.content}>{this.renderList()}</div>
         <div className={styles.nextBtn}>
-          {/* <div className={styles.goBackBtn} onClick={() => onBack()}>
+          <div className={styles.goBackBtn} onClick={() => onBack()}>
             <span>Back</span>
-          </div> */}
+          </div>
           <Button
             loading={loadingAddAdmin}
             className={styles.proceedBtn}
