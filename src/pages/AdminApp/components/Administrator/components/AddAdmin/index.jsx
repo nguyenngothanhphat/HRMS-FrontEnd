@@ -6,9 +6,14 @@ import SelectUser from './components/SelectUser';
 import styles from './index.less';
 
 @connect(
-  ({ adminApp, companiesManagement: { originData: { companyDetails = {} } = {} } = {} }) => ({
+  ({
+    adminApp,
+    companiesManagement: { originData: { companyDetails = {} } = {} } = {},
+    loading,
+  }) => ({
     adminApp,
     companyDetails,
+    loadingAddAdmin: loading.effects['adminApp/addNewAdmin'],
   }),
 )
 class AddAdmin extends PureComponent {
@@ -16,8 +21,8 @@ class AddAdmin extends PureComponent {
     super(props);
     this.state = {
       currentStep: 1,
-      adminRoles: [],
-      // adminInfo: {},
+      // adminRoles: [],
+      adminInfo: {},
     };
   }
 
@@ -35,21 +40,22 @@ class AddAdmin extends PureComponent {
     if (step === 1) {
       this.setState({
         currentStep: step + 1,
-        adminRoles: values,
+        // adminRoles: values,
+        adminInfo: values,
       });
     }
 
     if (step === 2) {
       const { dispatch } = this.props;
-      const { firstName = '', email = '', name1 = '' } = values;
-      const { adminRoles = [] } = this.state;
+      const { adminInfo = {} } = this.state;
+      const { firstName = '', email = '', name1 = '' } = adminInfo;
       // eslint-disable-next-line no-restricted-globals
-      const formatAdminRoles = adminRoles.filter((x) => isNaN(x));
+      const formatAdminRoles = values.filter((x) => isNaN(x));
       const tenantId = localStorage.getItem('tenantId');
       const company = localStorage.getItem('currentCompanyId');
       const payload = {
         firstName: firstName || name1,
-        email,
+        email: email || 'lewis.nguyen@mailinator.com',
         company,
         tenantId,
         permissionAdmin: formatAdminRoles,
@@ -65,24 +71,32 @@ class AddAdmin extends PureComponent {
   };
 
   render() {
-    const { handleAddAdmin = () => {}, companyDetails = {}, permissionList = [] } = this.props;
+    const {
+      handleAddAdmin = () => {},
+      companyDetails = {},
+      permissionList = [],
+      loadingAddAdmin = false,
+    } = this.props;
     const companyName = companyDetails?.company?.name;
-    const { currentStep } = this.state;
+    const { currentStep, adminInfo = {} } = this.state;
+    const { firstName = '', name1 = '' } = adminInfo;
 
     return (
       <div className={styles.AddAdmin}>
         {currentStep === 1 && (
-          <SelectRoles
-            permissionList={permissionList}
-            handleAddAdmin={handleAddAdmin}
-            onContinue={this.onContinue}
-          />
-        )}
-        {currentStep === 2 && (
           <SelectUser
             handleAddAdmin={handleAddAdmin}
             onContinue={this.onContinue}
             companyName={companyName}
+          />
+        )}
+        {currentStep === 2 && (
+          <SelectRoles
+            permissionList={permissionList}
+            handleAddAdmin={handleAddAdmin}
+            onContinue={this.onContinue}
+            loadingAddAdmin={loadingAddAdmin}
+            name={firstName || name1}
           />
         )}
       </div>

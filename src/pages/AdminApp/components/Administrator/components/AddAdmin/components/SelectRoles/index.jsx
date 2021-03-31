@@ -12,10 +12,10 @@ class SelectRoles extends PureComponent {
   }
 
   renderTitle = () => {
-    const { handleAddAdmin = () => {} } = this.props;
+    const { handleAddAdmin = () => {}, name = '' } = this.props;
     return (
       <div className={styles.titleContainer}>
-        <span className={styles.title}>Choose Rena’s role as admin</span>
+        <span className={styles.title}>Choose {name}’s role as admin</span>
         <div className={styles.cancelBtn} onClick={() => handleAddAdmin(false)}>
           <span>Cancel</span>
         </div>
@@ -77,7 +77,7 @@ class SelectRoles extends PureComponent {
   };
 
   renderMainForm = () => {
-    const { onContinue = () => {} } = this.props;
+    const { onContinue = () => {}, loadingAddAdmin = false } = this.props;
     const { selectedList } = this.state;
     return (
       <div className={styles.mainForm}>
@@ -86,8 +86,12 @@ class SelectRoles extends PureComponent {
         </div>
         <div className={styles.content}>{this.renderList()}</div>
         <div className={styles.nextBtn}>
-          <Button className={styles.proceedBtn} onClick={() => onContinue(1, selectedList)}>
-            Continue
+          <Button
+            loading={loadingAddAdmin}
+            className={styles.proceedBtn}
+            onClick={() => onContinue(2, selectedList)}
+          >
+            Save
           </Button>
         </div>
       </div>

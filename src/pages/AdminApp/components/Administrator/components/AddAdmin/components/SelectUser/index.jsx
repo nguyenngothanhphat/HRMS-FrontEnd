@@ -34,7 +34,7 @@ export default class SelectUser extends PureComponent {
 
   onFinish = (values) => {
     const { onContinue = () => {} } = this.props;
-    onContinue(2, values);
+    onContinue(1, values);
   };
 
   renderContent = () => {
@@ -68,7 +68,7 @@ export default class SelectUser extends PureComponent {
           {isCompanyWorker && (
             <Row align="middle" gutter={[24, 24]}>
               <Col span={8}>Name</Col>
-              <Col span={12}>
+              <Col span={14}>
                 <Form.Item
                   name="name1"
                   rules={[{ required: true, message: 'Please select a person' }]}
@@ -79,11 +79,11 @@ export default class SelectUser extends PureComponent {
                     showArrow
                     showSearch
                   >
-                    <Option value="Lewis Nguyen">Lewis Nguyen</Option>
+                    <Option value="Lewis Nguyen">Lewis Nguyen (lewis.nguyen@mailinator.com)</Option>
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={4} />
+              <Col span={2} />
             </Row>
           )}
 
@@ -94,7 +94,7 @@ export default class SelectUser extends PureComponent {
                 <Col span={12}>
                   <Form.Item
                     name="firstName"
-                    rules={[{ required: true, message: 'Please input name' }]}
+                    rules={[{ required: true, message: 'Please enter name' }]}
                   >
                     <Input placeholder="Type name" />
                   </Form.Item>
@@ -106,7 +106,9 @@ export default class SelectUser extends PureComponent {
                 <Col span={12}>
                   <Form.Item
                     name="email"
-                    rules={[{ required: true, message: 'Please input email' }]}
+                    rules={[
+                      { type: 'email', required: true, message: 'Please enter a valid email' },
+                    ]}
                   >
                     <Input placeholder="Type email" />
                   </Form.Item>
@@ -129,7 +131,7 @@ export default class SelectUser extends PureComponent {
         <div className={styles.content}>{this.renderContent()}</div>
         <div className={styles.nextBtn}>
           <Button key="submit" type="primary" form="myForm" htmlType="submit">
-            Save
+            Continue
           </Button>
         </div>
       </div>
