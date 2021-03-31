@@ -11,7 +11,7 @@ import { getAuthorityFromRouter } from '@/utils/utils';
 import { Button, Result } from 'antd';
 import { connect, Link, useIntl, Redirect } from 'umi';
 import classnames from 'classnames';
-import logo from '../assets/logo.svg';
+// import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
 
@@ -47,10 +47,17 @@ const BasicLayout = (props) => {
     },
     route: { routes } = {},
     currentUser,
+    companies = {},
   } = props;
   /**
    * init variables
    */
+
+  const getCurrentLogo = () => {
+    const currentCompanyId = localStorage.getItem('currentCompanyId');
+    const currentComp = companies.find((cp) => cp._id === currentCompanyId);
+    return currentComp?.logoUrl;
+  };
 
   const handleMenuCollapse = (payload) => {
     if (dispatch) {
@@ -72,12 +79,19 @@ const BasicLayout = (props) => {
     const isOwner = checkRole('owner');
     const isAdmin = checkRole('admin');
 
+    const logoUrl = getCurrentLogo();
     return (
       <Link to={isOwner || isAdmin ? '/control-panel' : '/'}>
         <img
-          src="/assets/images/terralogic-logo.png"
+          src={logoUrl}
           alt="logo"
-          style={{ width: '120px', objectFit: 'contain', marginBottom: '4px' }}
+          style={{
+            objectFit: 'contain',
+            marginBottom: '4px',
+            height: '100%',
+            padding: '12px 0',
+            // marginLeft: '-9px',
+          }}
         />
       </Link>
     );
@@ -102,7 +116,7 @@ const BasicLayout = (props) => {
       })}
     >
       <ProLayout
-        logo={logo}
+        logo={getCurrentLogo()}
         headerHeight={76}
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
@@ -159,4 +173,5 @@ export default connect(({ global, settings, user }) => ({
   collapsed: global.collapsed,
   settings,
   currentUser: user.currentUser,
+  companies: user.companiesOfUser,
 }))(BasicLayout);

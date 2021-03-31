@@ -59,6 +59,9 @@ const Model = {
           const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
           setTenantId(tenantId);
           setCurrentCompany(selectedCompany);
+          yield put({
+            type: 'user/fetchCompanyOfUser',
+          });
           history.replace('/');
         }
       } catch (errors) {
