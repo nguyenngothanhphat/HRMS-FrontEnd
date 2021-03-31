@@ -11,7 +11,7 @@ import { getAuthorityFromRouter } from '@/utils/utils';
 import { Button, Result } from 'antd';
 import { connect, Link, useIntl, Redirect } from 'umi';
 import classnames from 'classnames';
-// import logo from '../assets/logo.svg';
+import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
 
@@ -83,7 +83,7 @@ const BasicLayout = (props) => {
     return (
       <Link to={isOwner || isAdmin ? '/control-panel' : '/'}>
         <img
-          src={logoUrl}
+          src={logoUrl || logo}
           alt="logo"
           style={{
             objectFit: 'contain',
@@ -116,7 +116,7 @@ const BasicLayout = (props) => {
       })}
     >
       <ProLayout
-        logo={getCurrentLogo()}
+        logo={getCurrentLogo() || logo}
         headerHeight={76}
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
