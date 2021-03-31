@@ -1,14 +1,15 @@
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import avtDefault from '@/assets/avtDefault.jpg';
-import { Avatar, Button } from 'antd';
+import { Avatar, Button, Skeleton } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import ItemCompany from './components/ItemCompany';
 import s from './index.less';
 
-@connect(({ user: { currentUser = {}, companiesOfUser = [] } = {} }) => ({
+@connect(({ user: { currentUser = {}, companiesOfUser = [] } = {}, loading }) => ({
   currentUser,
   companiesOfUser,
+  loadingCompaniesOfUser: loading.effects['user/fetchCompanyOfUser'],
 }))
 class AccountSetup extends Component {
   componentDidMount() {
@@ -31,8 +32,15 @@ class AccountSetup extends Component {
   };
 
   renderCompanies = (isOwner, isAdmin) => {
-    const { companiesOfUser = [] } = this.props;
+    const { companiesOfUser = [], loadingCompaniesOfUser = false } = this.props;
 
+    if (loadingCompaniesOfUser) {
+      return (
+        <div>
+          <Skeleton active />
+        </div>
+      );
+    }
     return companiesOfUser.map((comp) => {
       return <ItemCompany company={comp} isOwner={isOwner} isAdmin={isAdmin} />;
     });
