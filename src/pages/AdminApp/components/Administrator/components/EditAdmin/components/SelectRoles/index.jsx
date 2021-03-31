@@ -99,7 +99,7 @@ class SelectRoles extends PureComponent {
         </div>
         <div className={styles.content}>{this.renderList()}</div>
         <div className={styles.nextBtn}>
-          <Button className={styles.proceedBtn} onClick={() => onContinue(1, selectedList)}>
+          <Button className={styles.proceedBtn} onClick={() => onContinue(2, selectedList)}>
             Continue
           </Button>
         </div>

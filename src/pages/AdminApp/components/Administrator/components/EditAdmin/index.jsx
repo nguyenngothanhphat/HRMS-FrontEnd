@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import SelectRoles from './components/SelectRoles';
-// import SelectUser from './components/SelectUser';
+import SelectUser from './components/SelectUser';
 
 import styles from './index.less';
 
@@ -11,8 +11,9 @@ class EditAdmin extends PureComponent {
     super(props);
     this.state = {
       currentStep: 1,
+      // eslint-disable-next-line react/no-unused-state
       adminRoles: [],
-      // adminInfo: {},
+      adminInfo: {},
     };
   }
 
@@ -25,48 +26,54 @@ class EditAdmin extends PureComponent {
   };
 
   onContinue = (step, values) => {
-    const { handleEditAdmin = () => {}, dispatch, dataAdmin: { _id = '' } = {} } = this.props;
-    // const { adminRoles } = this.state;
+    const {
+      handleEditAdmin = () => {},
+      dispatch,
+      dataAdmin: { _id: permissionID = '', usermap: { _id: userID = '' } = {} } = {},
+    } = this.props;
+    const { adminInfo } = this.state;
     if (step === 1) {
-      // this.setState({
-      //    currentStep: step + 1,
-      //    adminRoles: values,
-      // });
-
-      dispatch({
-        type: 'adminApp/updateAdmins',
-        payload: {
-          managePermissionId: _id,
-          permissionAdmin: values,
-        },
-      }).then(() => {
-        handleEditAdmin(false);
+      this.setState({
+        currentStep: step + 1,
+        adminInfo: values,
       });
     }
 
     if (step === 2) {
-      // this.setState({
-      //   adminInfo: values,
-      // });
-      // handleEditAdmin(false);
-      // dispatch({
-      //   type: 'adminApp/updateAdmins',
-      //   payload: {
-      //     managePermissionId: _id,
-      //     permissionAdmin: adminRoles,
-      //   },
-      // }).then(() => {
-      //   handleEditAdmin(false);
-      // });
+      this.setState({
+        // eslint-disable-next-line react/no-unused-state
+        adminRoles: values,
+      });
+
+      handleEditAdmin(false);
+      dispatch({
+        type: 'adminApp/updateAdmins',
+        payload: {
+          managePermissionId: permissionID,
+          permissionAdmin: values,
+          firstName: adminInfo.name,
+          id: userID,
+        },
+      }).then(() => {
+        handleEditAdmin(false);
+      });
     }
   };
 
   render() {
     const { handleEditAdmin = () => {}, dataAdmin = {}, permissionList = [] } = this.props;
     const { currentStep } = this.state;
+
     return (
       <div className={styles.EditAdmin}>
         {currentStep === 1 && (
+          <SelectUser
+            dataAdmin={dataAdmin}
+            handleEditAdmin={handleEditAdmin}
+            onContinue={this.onContinue}
+          />
+        )}
+        {currentStep === 2 && (
           <SelectRoles
             dataAdmin={dataAdmin}
             permissionList={permissionList}
@@ -74,13 +81,6 @@ class EditAdmin extends PureComponent {
             onContinue={this.onContinue}
           />
         )}
-        {/* {currentStep === 2 && (
-          <SelectUser
-            dataAdmin={dataAdmin}
-            handleEditAdmin={handleEditAdmin}
-            onContinue={this.onContinue}
-          />
-        )} */}
       </div>
     );
   }

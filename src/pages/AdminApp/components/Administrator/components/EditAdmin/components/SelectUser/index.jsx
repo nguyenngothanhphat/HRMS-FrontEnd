@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Radio, Select, Input, Form } from 'antd';
+import { Button, Row, Col, Input, Form } from 'antd';
 import styles from './index.less';
-
-const { Option } = Select;
 
 export default class SelectUser extends PureComponent {
   formRef = React.createRef();
@@ -34,7 +32,7 @@ export default class SelectUser extends PureComponent {
 
   onFinish = (values) => {
     const { onContinue = () => {} } = this.props;
-    onContinue(2, values);
+    onContinue(1, values);
   };
 
   renderContent = () => {
@@ -50,50 +48,23 @@ export default class SelectUser extends PureComponent {
           }}
           onFinish={this.onFinish}
         >
-          <Row gutter={[24, 24]}>
-            <Col span={8}>
-              <span>Terralogic Information Systems Service, Inc. Worker?</span>
-            </Col>
-            <Col span={16}>
-              <Form.Item name="isCompanyWorker">
-                <Radio.Group onChange={this.isCompanyWorkerChange}>
-                  <Radio value>Yes</Radio>
-                  <Radio value={false}>No</Radio>
-                </Radio.Group>
+          <Row align="middle" gutter={[24, 24]}>
+            <Col span={8}>Administrator Name</Col>
+            <Col span={12}>
+              <Form.Item
+                name="name"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input your name !',
+                  },
+                ]}
+              >
+                <Input placeholder="Type name" />
               </Form.Item>
             </Col>
+            <Col span={4} />
           </Row>
-
-          {isCompanyWorker && (
-            <Row align="middle" gutter={[24, 24]}>
-              <Col span={8}>Name</Col>
-              <Col span={12}>
-                <Form.Item name="name">
-                  <Select
-                    allowClear
-                    placeholder="Search by name or select a person"
-                    showArrow
-                    showSearch
-                  >
-                    <Option value="ABC">Trung Nguyen</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-              <Col span={4} />
-            </Row>
-          )}
-
-          {!isCompanyWorker && (
-            <Row align="middle" gutter={[24, 24]}>
-              <Col span={8}>Email</Col>
-              <Col span={12}>
-                <Form.Item name="email">
-                  <Input placeholder="Type email" />
-                </Form.Item>
-              </Col>
-              <Col span={4} />
-            </Row>
-          )}
         </Form>
       </div>
     );
@@ -103,7 +74,7 @@ export default class SelectUser extends PureComponent {
     return (
       <div className={styles.mainForm}>
         <div className={styles.header}>
-          <span>New Admin</span>
+          <span>Edit Admin</span>
         </div>
         <div className={styles.content}>{this.renderContent()}</div>
         <div className={styles.nextBtn}>
