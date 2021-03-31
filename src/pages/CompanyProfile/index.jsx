@@ -51,6 +51,10 @@ class CompanyProfile extends Component {
   }
 
   componentWillUnmount() {
+    this.clearState();
+  }
+
+  clearState = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'companiesManagement/saveOrigin',
@@ -60,7 +64,7 @@ class CompanyProfile extends Component {
       type: 'companiesManagement/saveTemp',
       payload: { companyDetails: {} },
     });
-  }
+  };
 
   render() {
     const {
