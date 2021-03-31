@@ -91,7 +91,7 @@ export default class SelectUser extends PureComponent {
             <>
               <Row align="middle" gutter={[24, 24]}>
                 <Col span={8}>Name</Col>
-                <Col span={12}>
+                <Col span={14}>
                   <Form.Item
                     name="firstName"
                     rules={[{ required: true, message: 'Please enter name' }]}
@@ -99,11 +99,11 @@ export default class SelectUser extends PureComponent {
                     <Input placeholder="Type name" />
                   </Form.Item>
                 </Col>
-                <Col span={4} />
+                <Col span={2} />
               </Row>
               <Row align="middle" gutter={[24, 24]}>
                 <Col span={8}>Email</Col>
-                <Col span={12}>
+                <Col span={14}>
                   <Form.Item
                     name="email"
                     rules={[
@@ -113,7 +113,7 @@ export default class SelectUser extends PureComponent {
                     <Input placeholder="Type email" />
                   </Form.Item>
                 </Col>
-                <Col span={4} />
+                <Col span={2} />
               </Row>
             </>
           )}

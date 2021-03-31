@@ -13,7 +13,6 @@ import {
 } from '@/services/companiesManangement';
 import { history } from 'umi';
 import { notification } from 'antd';
-import { ConsoleSqlOutlined, PauseOutlined } from '@ant-design/icons';
 
 const companiesManagement = {
   namespace: 'companiesManagement',
