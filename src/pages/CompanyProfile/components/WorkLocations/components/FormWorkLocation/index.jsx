@@ -103,12 +103,12 @@ class FormWorkLocation extends Component {
             <Form.Item
               {...field}
               label={false}
-              name={[field.name, 'name']}
-              fieldKey={[field.fieldKey, 'name']}
+              name={[field.name, 'addressLine1']}
+              fieldKey={[field.fieldKey, 'addressLine1']}
               rules={[
                 {
                   required: true,
-                  message: 'Please enter name!',
+                  message: 'Please enter address line 1!',
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
@@ -123,7 +123,7 @@ class FormWorkLocation extends Component {
                 }),
               ]}
             >
-              <Input placeholder="Name Location" />
+              <Input placeholder="Address line 1" />
             </Form.Item>
           </div>
           <div className={s.content__viewBottom__row}>
@@ -131,8 +131,8 @@ class FormWorkLocation extends Component {
             <Form.Item
               {...field}
               label={false}
-              name={[field.name, 'address']}
-              fieldKey={[field.fieldKey, 'address']}
+              name={[field.name, 'addressLine2']}
+              fieldKey={[field.fieldKey, 'addressLine2']}
               // rules={[
               //   {
               //     required: true,
@@ -140,7 +140,7 @@ class FormWorkLocation extends Component {
               //   },
               // ]}
             >
-              <Input placeholder="Address" />
+              <Input placeholder="Address line 2" />
             </Form.Item>
           </div>
           <div className={s.content__viewBottom__row}>
