@@ -39,7 +39,18 @@ export default class SelectUser extends PureComponent {
 
   renderContent = () => {
     const { isCompanyWorker } = this.state;
-    const { companyName = '' } = this.props;
+    const {
+      companyName = '',
+      onBackValues: {
+        isCompanyWorker: isCompanyWorker1,
+        firstName = '',
+        email = '',
+        name1 = '',
+      } = {},
+    } = this.props;
+
+    const currentIsCompanyWorker = isCompanyWorker;
+
     return (
       <div className={styles.assignUser}>
         <Form
@@ -47,7 +58,10 @@ export default class SelectUser extends PureComponent {
           ref={this.formRef}
           id="myForm"
           initialValues={{
-            isCompanyWorker,
+            isCompanyWorker: currentIsCompanyWorker,
+            firstName,
+            email,
+            name1,
           }}
           onFinish={this.onFinish}
         >
@@ -65,7 +79,7 @@ export default class SelectUser extends PureComponent {
             </Col>
           </Row>
 
-          {isCompanyWorker && (
+          {currentIsCompanyWorker && (
             <Row align="middle" gutter={[24, 24]}>
               <Col span={8}>Name</Col>
               <Col span={14}>
@@ -87,7 +101,7 @@ export default class SelectUser extends PureComponent {
             </Row>
           )}
 
-          {!isCompanyWorker && (
+          {!currentIsCompanyWorker && (
             <>
               <Row align="middle" gutter={[24, 24]}>
                 <Col span={8}>Name</Col>

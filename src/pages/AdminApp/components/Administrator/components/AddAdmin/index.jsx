@@ -70,6 +70,12 @@ class AddAdmin extends PureComponent {
     }
   };
 
+  onGoBack = () => {
+    this.setState({
+      currentStep: 1,
+    });
+  };
+
   render() {
     const {
       handleAddAdmin = () => {},
@@ -78,7 +84,7 @@ class AddAdmin extends PureComponent {
       loadingAddAdmin = false,
     } = this.props;
     const companyName = companyDetails?.company?.name;
-    const { currentStep, adminInfo = {} } = this.state;
+    const { currentStep, adminInfo } = this.state;
     const { firstName = '', name1 = '' } = adminInfo;
 
     return (
@@ -88,6 +94,7 @@ class AddAdmin extends PureComponent {
             handleAddAdmin={handleAddAdmin}
             onContinue={this.onContinue}
             companyName={companyName}
+            onBackValues={adminInfo}
           />
         )}
         {currentStep === 2 && (
@@ -97,6 +104,7 @@ class AddAdmin extends PureComponent {
             onContinue={this.onContinue}
             loadingAddAdmin={loadingAddAdmin}
             name={firstName || name1}
+            onBack={this.onGoBack}
           />
         )}
       </div>

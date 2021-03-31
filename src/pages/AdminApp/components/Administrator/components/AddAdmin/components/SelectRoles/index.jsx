@@ -77,7 +77,7 @@ class SelectRoles extends PureComponent {
   };
 
   renderMainForm = () => {
-    const { onContinue = () => {}, loadingAddAdmin = false } = this.props;
+    const { onContinue = () => {}, onBack = () => {}, loadingAddAdmin = false } = this.props;
     const { selectedList } = this.state;
     return (
       <div className={styles.mainForm}>
@@ -86,6 +86,9 @@ class SelectRoles extends PureComponent {
         </div>
         <div className={styles.content}>{this.renderList()}</div>
         <div className={styles.nextBtn}>
+          {/* <div className={styles.goBackBtn} onClick={() => onBack()}>
+            <span>Back</span>
+          </div> */}
           <Button
             loading={loadingAddAdmin}
             className={styles.proceedBtn}
