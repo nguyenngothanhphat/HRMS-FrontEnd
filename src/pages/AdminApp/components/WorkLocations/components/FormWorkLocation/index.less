@@ -26,6 +26,7 @@
     font-size: 16px;
     line-height: 19px;
   }
+  
   &__viewBottom {
     height: fit-content;
     color: #161c29;
@@ -88,12 +89,17 @@
 
 .action {
   cursor: pointer;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
   &:active {
     transform: translateY(-1px);
   }
-  &__icon {
-    margin: 2px 7px 0 0;
-    color: #2c6df9 !important;
+  &__actionDelete {
+    &__icon {
+      margin: 2px 7px 0 0;
+      color: #2c6df9 !important;
+    }
   }
   span {
     color: #707177;
@@ -101,6 +107,32 @@
     font-size: 13px;
     line-height: 15px;
     text-decoration-line: underline;
+  }
+  .viewBtn {
+    width: 41%;
+    height: fit-content;
+    // margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    .btnSubmit {
+      background: #ffa100;
+      border-radius: 25px;
+      text-decoration: none;
+      height: 40px;
+      width: 150px;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 16px;
+      text-align: center;
+      color: #ffffff;
+      border: none;
+      span{
+        color: #fff;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
   }
 }
 
