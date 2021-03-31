@@ -3,7 +3,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Select, Divider, Modal } from 'antd';
+import { Form, Input, Select, Divider, Modal, Button } from 'antd';
 import { ExclamationCircleOutlined, DeleteOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
 import { bool } from 'prop-types';
@@ -93,8 +93,15 @@ class FormWorkLocation extends Component {
               className={isHidden ? `${s.action} ${s.hide}` : `${s.action}`}
               onClick={this.handleRemove}
             >
-              <DeleteOutlined className={s.action__icon} />
-              <span>Delete</span>
+              <div className={s.action__actionDelete}>
+                <DeleteOutlined className={s.action__actionDelete__icon} />
+                <span>Delete</span>
+              </div>
+              <div className={s.viewBtn}>
+                <Button className={s.btnSubmit} htmlType="submit">
+                  Save
+                </Button>
+              </div>
             </div>
           </div>
 

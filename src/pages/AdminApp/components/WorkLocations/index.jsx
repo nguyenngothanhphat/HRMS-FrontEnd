@@ -3,7 +3,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { Form, Divider, Button, Skeleton, Input, Select } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import { ConsoleSqlOutlined, PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { connect } from 'umi';
 import classnames from 'classnames';
@@ -15,13 +15,10 @@ import s from './index.less';
   ({
     loading,
     country: { listCountry = [] } = {},
-    companiesManagement: {
-      locationsList: workLocations = [],
-      originData: { companyDetails = {} } = {},
-    } = {},
+    companiesManagement: { locationsList, originData: { companyDetails = {} } = {} } = {},
   }) => ({
     listCountry,
-    workLocations,
+    locationsList,
     loading: loading.effects['companiesManagement/upsertLocationsList'],
     fetchingLocationsList: loading.effects['companiesManagement/fetchLocationsList'],
     loadingCountry: loading.effects['country/fetchListCountry'],
@@ -55,25 +52,53 @@ class WorkLocations extends PureComponent {
     });
   }
 
-  onFinish = ({ workLocations: locations = [] }) => {
+  onFinish = ({
+    workLocations: locations = [],
+    addressLine1,
+    addressLine2,
+    country,
+    state,
+    zipCode,
+  }) => {
+    const tenantId = localStorage.getItem('tenantId');
     const { dispatch, companyId = '', companyDetails = {} } = this.props;
     const { company, isNewTenant, locations: originLocations = [] } = companyDetails;
     const listLocation = [...originLocations, ...locations];
-    const payload = { locations, company, isNewTenant };
-    if (companyId) {
-      dispatch({
-        type: 'companiesManagement/upsertLocationsList',
-        payload,
-      });
-    } else {
-      const payloadAddCompanyTenant = { ...companyDetails, locations: [...listLocation] };
-      dispatch({
-        type: 'companiesManagement/addCompanyTenant',
-        payload: payloadAddCompanyTenant,
-        dataTempKept: {},
-        isAccountSetup: true,
-      });
-    }
+    const payload = {
+      headQuarterAddress: {
+        addressLine1,
+        addressLine2,
+        country,
+        state,
+        zipCode,
+      },
+      legalAddress: {
+        addressLine1,
+        addressLine2,
+        country,
+        state,
+        zipCode,
+      },
+      isHeadQuarter: false,
+      name: company.name + state,
+      company: companyId,
+      tenant: tenantId,
+    };
+    console.log('payload', locations);
+    // if (companyId) {
+    //   dispatch({
+    //     type: 'companiesManagement/addLocation',
+    //     payload,
+    //   });
+    // } else {
+    //   const payloadAddCompanyTenant = { ...companyDetails, locations: [...listLocation] };
+    //   dispatch({
+    //     type: 'companiesManagement/addCompanyTenant',
+    //     payload: payloadAddCompanyTenant,
+    //     dataTempKept: {},
+    //     isAccountSetup: true,
+    //   });
+    // }
   };
 
   formatListLocation = () => {
@@ -100,7 +125,7 @@ class WorkLocations extends PureComponent {
   render() {
     const {
       listCountry = [],
-      workLocations = [],
+      locationsList = [],
       loading,
       fetchingLocationsList,
       loadingCountry,
@@ -146,11 +171,11 @@ class WorkLocations extends PureComponent {
         onFinish={this.onFinish}
         autoComplete="off"
         initialValues={{
+          addressLine1,
           addressLine2,
           zipCode,
           country,
           state,
-          addressLine1,
           workLocations: defaultListLocation,
         }}
       >
@@ -165,28 +190,34 @@ class WorkLocations extends PureComponent {
             </p>
           </div>
           <div className={s.content__viewBottom}>
-            {/* <Form.List name="workLocations">
-              {(fields) => (
-                <>
-                 {fields.map((field) => ( */}
-            {/* <Form.Item name="companyDetails"> */}
-            <FormWorkLocationTenant
+            {locationsList.map((item) => {
+              return (
+                <FormWorkLocationTenant
+                  isRequired={false}
+                  name={item.isHeadQuarter ? 'Headquarter' : 'Child company'}
+                  locationsList={locationsList}
+                  formRef={this.formRef}
+                  listCountry={listCountry}
+                  listLocation={listLocation}
+                />
+              );
+            })}
+            {/* <FormWorkLocationTenant
               isRequired={false}
               name="Headquarter"
               companyDetails={companyDetails}
               formRef={this.formRef}
               listCountry={listCountry}
               listLocation={listLocation}
-              defaultCountry="AF"
-            />
-            {/* </Form.Item> */}
-            {/* ))}
-                </>
-              )} */}
-            {/* </Form.List> */}
+            /> */}
           </div>
         </div>
         <div className={s.root} style={{ marginTop: '24px' }}>
+          {/* <div className={s.viewBtn}>
+            <Button className={s.btnSubmit} htmlType="submit" loading={loading}>
+              Save
+            </Button>
+          </div> */}
           <div className={s.content__viewBottom}>
             <Form.List name="workLocations">
               {(fields, { add, remove }) => (
@@ -215,11 +246,11 @@ class WorkLocations extends PureComponent {
             </Form.List>
           </div>
         </div>
-        <div className={s.viewBtn}>
+        {/* <div className={s.viewBtn}>
           <Button className={s.btnSubmit} htmlType="submit" loading={loading}>
             Save
           </Button>
-        </div>
+        </div> */}
       </Form>
     );
   }
