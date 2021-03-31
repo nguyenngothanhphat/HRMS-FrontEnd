@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import SelectRoles from './components/SelectRoles';
-import SelectUser from './components/SelectUser';
+// import SelectUser from './components/SelectUser';
 
 import styles from './index.less';
 
@@ -26,11 +26,21 @@ class EditAdmin extends PureComponent {
 
   onContinue = (step, values) => {
     const { handleEditAdmin = () => {}, dispatch, dataAdmin: { _id = '' } = {} } = this.props;
-    const { adminRoles } = this.state;
+    // const { adminRoles } = this.state;
     if (step === 1) {
-      this.setState({
-        currentStep: step + 1,
-        adminRoles: values,
+      // this.setState({
+      //    currentStep: step + 1,
+      //    adminRoles: values,
+      // });
+
+      dispatch({
+        type: 'adminApp/updateAdmins',
+        payload: {
+          managePermissionId: _id,
+          permissionAdmin: values,
+        },
+      }).then(() => {
+        handleEditAdmin(false);
       });
     }
 
@@ -39,16 +49,15 @@ class EditAdmin extends PureComponent {
       //   adminInfo: values,
       // });
       // handleEditAdmin(false);
-
-      dispatch({
-        type: 'adminApp/updateAdmins',
-        payload: {
-          managePermissionId: _id,
-          permissionAdmin: adminRoles,
-        },
-      }).then(() => {
-        handleEditAdmin(false);
-      });
+      // dispatch({
+      //   type: 'adminApp/updateAdmins',
+      //   payload: {
+      //     managePermissionId: _id,
+      //     permissionAdmin: adminRoles,
+      //   },
+      // }).then(() => {
+      //   handleEditAdmin(false);
+      // });
     }
   };
 
@@ -65,13 +74,13 @@ class EditAdmin extends PureComponent {
             onContinue={this.onContinue}
           />
         )}
-        {currentStep === 2 && (
+        {/* {currentStep === 2 && (
           <SelectUser
             dataAdmin={dataAdmin}
             handleEditAdmin={handleEditAdmin}
             onContinue={this.onContinue}
           />
-        )}
+        )} */}
       </div>
     );
   }
