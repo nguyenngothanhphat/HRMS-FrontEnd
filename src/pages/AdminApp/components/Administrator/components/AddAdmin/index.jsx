@@ -1,15 +1,27 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'umi';
 import SelectRoles from './components/SelectRoles';
 import SelectUser from './components/SelectUser';
 
 import styles from './index.less';
 
-export default class AddAdmin extends PureComponent {
+@connect(
+  ({
+    adminApp,
+    companiesManagement: { originData: { companyDetails = {} } = {} } = {},
+    loading,
+  }) => ({
+    adminApp,
+    companyDetails,
+    loadingAddAdmin: loading.effects['adminApp/addNewAdmin'],
+  }),
+)
+class AddAdmin extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       currentStep: 1,
-      adminRoles: [],
+      // adminRoles: [],
       adminInfo: {},
     };
   }
@@ -22,37 +34,73 @@ export default class AddAdmin extends PureComponent {
     });
   };
 
-  onContinue = (step, values) => {
+  onContinue = async (step, values) => {
     const { handleAddAdmin = () => {} } = this.props;
 
     if (step === 1) {
       this.setState({
         currentStep: step + 1,
-        adminRoles: values,
+        // adminRoles: values,
+        adminInfo: values,
       });
     }
 
     if (step === 2) {
-      this.setState({
-        adminInfo: values,
+      const { dispatch } = this.props;
+      const { adminInfo = {} } = this.state;
+      const { firstName = '', email = '', name1 = '' } = adminInfo;
+      // eslint-disable-next-line no-restricted-globals
+      const formatAdminRoles = values.filter((x) => isNaN(x));
+      const tenantId = localStorage.getItem('tenantId');
+      const company = localStorage.getItem('currentCompanyId');
+      const payload = {
+        firstName: firstName || name1,
+        email: email || 'lewis.nguyen@mailinator.com',
+        company,
+        tenantId,
+        permissionAdmin: formatAdminRoles,
+      };
+
+      const res = await dispatch({
+        type: 'adminApp/addNewAdmin',
+        payload,
       });
-      handleAddAdmin(false);
+      const { statusCode = 0 } = res;
+      if (statusCode === 200) handleAddAdmin(false);
     }
   };
 
   render() {
-    const { handleAddAdmin = () => {} } = this.props;
-    const { currentStep, adminRoles, adminInfo } = this.state;
-    console.log('admin', adminRoles, adminInfo);
+    const {
+      handleAddAdmin = () => {},
+      companyDetails = {},
+      permissionList = [],
+      loadingAddAdmin = false,
+    } = this.props;
+    const companyName = companyDetails?.company?.name;
+    const { currentStep, adminInfo = {} } = this.state;
+    const { firstName = '', name1 = '' } = adminInfo;
+
     return (
       <div className={styles.AddAdmin}>
         {currentStep === 1 && (
-          <SelectRoles handleAddAdmin={handleAddAdmin} onContinue={this.onContinue} />
+          <SelectUser
+            handleAddAdmin={handleAddAdmin}
+            onContinue={this.onContinue}
+            companyName={companyName}
+          />
         )}
         {currentStep === 2 && (
-          <SelectUser handleAddAdmin={handleAddAdmin} onContinue={this.onContinue} />
+          <SelectRoles
+            permissionList={permissionList}
+            handleAddAdmin={handleAddAdmin}
+            onContinue={this.onContinue}
+            loadingAddAdmin={loadingAddAdmin}
+            name={firstName || name1}
+          />
         )}
       </div>
     );
   }
 }
+export default AddAdmin;

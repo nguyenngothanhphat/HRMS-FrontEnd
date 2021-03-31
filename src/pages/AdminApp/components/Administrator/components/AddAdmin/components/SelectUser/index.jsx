@@ -34,11 +34,12 @@ export default class SelectUser extends PureComponent {
 
   onFinish = (values) => {
     const { onContinue = () => {} } = this.props;
-    onContinue(2, values);
+    onContinue(1, values);
   };
 
   renderContent = () => {
     const { isCompanyWorker } = this.state;
+    const { companyName = '' } = this.props;
     return (
       <div className={styles.assignUser}>
         <Form
@@ -52,7 +53,7 @@ export default class SelectUser extends PureComponent {
         >
           <Row gutter={[24, 24]}>
             <Col span={8}>
-              <span>Terralogic Information Systems Service, Inc. Worker?</span>
+              <span>{companyName} Worker?</span>
             </Col>
             <Col span={16}>
               <Form.Item name="isCompanyWorker">
@@ -67,32 +68,54 @@ export default class SelectUser extends PureComponent {
           {isCompanyWorker && (
             <Row align="middle" gutter={[24, 24]}>
               <Col span={8}>Name</Col>
-              <Col span={12}>
-                <Form.Item name="name">
+              <Col span={14}>
+                <Form.Item
+                  name="name1"
+                  rules={[{ required: true, message: 'Please select a person' }]}
+                >
                   <Select
                     allowClear
                     placeholder="Search by name or select a person"
                     showArrow
                     showSearch
                   >
-                    <Option value="ABC">Lewis Nguyen</Option>
+                    <Option value="Lewis Nguyen">Lewis Nguyen (lewis.nguyen@mailinator.com)</Option>
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={4} />
+              <Col span={2} />
             </Row>
           )}
 
           {!isCompanyWorker && (
-            <Row align="middle" gutter={[24, 24]}>
-              <Col span={8}>Email</Col>
-              <Col span={12}>
-                <Form.Item name="email">
-                  <Input placeholder="Type email" />
-                </Form.Item>
-              </Col>
-              <Col span={4} />
-            </Row>
+            <>
+              <Row align="middle" gutter={[24, 24]}>
+                <Col span={8}>Name</Col>
+                <Col span={12}>
+                  <Form.Item
+                    name="firstName"
+                    rules={[{ required: true, message: 'Please enter name' }]}
+                  >
+                    <Input placeholder="Type name" />
+                  </Form.Item>
+                </Col>
+                <Col span={4} />
+              </Row>
+              <Row align="middle" gutter={[24, 24]}>
+                <Col span={8}>Email</Col>
+                <Col span={12}>
+                  <Form.Item
+                    name="email"
+                    rules={[
+                      { type: 'email', required: true, message: 'Please enter a valid email' },
+                    ]}
+                  >
+                    <Input placeholder="Type email" />
+                  </Form.Item>
+                </Col>
+                <Col span={4} />
+              </Row>
+            </>
           )}
         </Form>
       </div>

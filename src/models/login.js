@@ -43,14 +43,18 @@ const Model = {
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
         let isAdminOrOwner = false;
-        if (formatRole.includes('owner') || formatRole.includes('admin')) {
+        if (formatRole.includes('owner')) {
           isAdminOrOwner = true;
-          formatArrRoles = [...formatArrRoles, 'admin-csa'];
-          setAuthority(formatArrRoles);
+          formatArrRoles = [...formatArrRoles, 'owner'];
         }
-
+        if (formatRole.includes('admin')) {
+          isAdminOrOwner = true;
+          formatArrRoles = [...formatArrRoles, 'admin'];
+        }
+        setAuthority(formatArrRoles);
+        
         if (isAdminOrOwner || listCompany.length > 1) {
-          history.replace('/account-setup');
+          history.replace('/control-panel');
         } else if (listCompany.length === 1) {
           const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
           setTenantId(tenantId);
@@ -72,6 +76,8 @@ const Model = {
       setAuthority('');
       localStorage.removeItem('dataRoles');
       localStorage.removeItem('Rolesname');
+      localStorage.removeItem('currentCompanyId');
+      localStorage.removeItem('tenantId');
       localStorage.removeItem('currentLocation');
       yield put({
         type: 'user/saveCurrentUser',

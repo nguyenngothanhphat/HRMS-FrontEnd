@@ -94,27 +94,27 @@ const routes = [
         ],
       },
       {
-        path: '/account-setup',
+        path: '/control-panel',
         component: '../layouts/AccountSetupLayout',
-        // authority: ['admin-csa'],
+        authority: ['admin', 'owner', 'employee'],
         routes: [
           {
-            path: '/account-setup',
+            path: '/control-panel',
             component: './AccountSetup',
             name: 'Account Setup',
-            // authority: ['admin-csa'],
+            authority: ['admin', 'owner', 'employee'],
           },
           {
-            path: '/account-setup/company-profile/:id',
+            path: '/control-panel/company-profile/:id',
             component: './CompanyProfile',
             name: 'Company Profile',
-            // authority: ['admin-csa'],
+            authority: ['owner'],
           },
           {
-            path: '/account-setup/add-company',
+            path: '/control-panel/add-company',
             component: './CompanyProfile',
             name: 'Company Profile',
-            // authority: ['admin-csa'],
+            authority: ['owner'],
           },
           {
             component: './404',
@@ -134,6 +134,9 @@ const routes = [
           'admin-cla',
           'admin-cda',
           'leader',
+          'admin',
+          'owner',
+          'employee',
         ],
         routes: [
           {
@@ -147,6 +150,7 @@ const routes = [
             name: 'adminApp',
             icon: '/assets/images/menuIcons/adminApp.svg',
             component: './AdminApp',
+            authority: ['owner'],
           },
           {
             path: '/users',
@@ -353,7 +357,7 @@ const routes = [
             name: 'timeOff',
             icon: '/assets/images/menuIcons/timeoff.svg',
             component: './TimeOff',
-            // authority: ['P_TIMEOFF_VIEW'],
+            authority: ['P_TIMEOFF_VIEW'],
             authority: [
               'employee',
               'hr-manager',
@@ -568,45 +572,53 @@ const routes = [
           },
           {
             path: '/example1',
-            name: 'Example 1',
+            name: 'User Management',
             icon: '/assets/images/menuIcons/icon1.svg',
             component: './ExamplePage',
+            authority: ['M_USER_MANAGEMENT_VIEW', 'owner'],
           },
           {
             path: '/example2',
-            name: 'Example 2',
+            name: 'Directory',
             icon: '/assets/images/menuIcons/icon2.svg',
             component: './ExamplePage',
+            authority: ['M_DIRECTORY_VIEW', 'owner'],
+
           },
           {
             path: '/example3',
-            name: 'Example 3',
+            name: 'Document Management',
             icon: '/assets/images/menuIcons/icon3.svg',
             component: './ExamplePage',
+            authority: ['M_DOCUMENT_MANAGEMENT_VIEW', 'owner'],
           },
           {
             path: '/example4',
-            name: 'Example 4',
+            name: 'Onboarding',
             icon: '/assets/images/menuIcons/icon4.svg',
             component: './ExamplePage',
+            authority: ['M_ONBOARDING_VIEW', 'owner'],
           },
           {
             path: '/example5',
-            name: 'Example 5',
+            name: 'Offboarding',
             icon: '/assets/images/menuIcons/icon5.svg',
             component: './ExamplePage',
+            authority: ['M_OFFBOARDING_VIEW', 'owner'],
           },
           {
             path: '/example6',
-            name: 'Example 6',
+            name: 'Timeoff',
             icon: '/assets/images/menuIcons/icon6.svg',
             component: './ExamplePage',
+            authority: ['M_TIMEOFF_VIEW', 'owner'],
           },
           {
             path: '/example7',
-            name: 'Example 7',
+            name: 'Project Management',
             icon: '/assets/images/menuIcons/icon7.svg',
             component: './ExamplePage',
+            authority: ['M_PROJECT_MANAGEMENT_VIEW', 'owner'],
           },
           {
             component: './404',

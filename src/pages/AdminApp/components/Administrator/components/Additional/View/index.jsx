@@ -1,38 +1,11 @@
 import React, { Component } from 'react';
-import { Row, Col, Collapse } from 'antd';
+import { Row, Col, Collapse, Tree } from 'antd';
 import icon from '@/assets/primary-administrator.svg';
 import editIcon from '@/assets/edit-administrator.svg';
-import deleteIcon from '@/assets/delete-administrator.svg';
-import { DownOutlined } from '@ant-design/icons';
+import deleteIcon from '@/assets/deleteIcon-Administator.svg';
+import arrowIcon from '@/assets/arrowDownCollapseIcon.svg';
 
 import styles from './index.less';
-
-const listPermissions = [
-  {
-    id: 1,
-    permission: 'User',
-  },
-  {
-    id: 2,
-    permission: 'Employees',
-  },
-  {
-    id: 3,
-    permission: 'Profile',
-  },
-  {
-    id: 4,
-    permission: 'Directory',
-  },
-  {
-    id: 5,
-    permission: 'Onboarding',
-  },
-  {
-    id: 6,
-    permission: 'Setting',
-  },
-];
 
 class ViewAdministrator extends Component {
   constructor(props) {
@@ -44,7 +17,9 @@ class ViewAdministrator extends Component {
 
   componentDidMount() {
     const { listAdministrator = [] } = this.props;
-    this.setState({ list: listAdministrator });
+    this.setState({
+      list: listAdministrator,
+    });
   }
 
   handleDelete = (index) => {
@@ -55,19 +30,90 @@ class ViewAdministrator extends Component {
     this.setState({ list });
   };
 
+  renderListPermission = (idList) => {
+    const { permissionList = [], loading } = this.props;
+    let formatList = permissionList.map((per) => per?.module);
+    formatList = formatList.filter(
+      (value) => value !== undefined && value !== '' && value !== null,
+    );
+    formatList = [...new Set(formatList)];
+
+    let treeData = formatList.map((moduleName, index) => {
+      let result = permissionList.map((per) => {
+        const { _id = '', name = '', module = '' } = per;
+        if (moduleName === module && idList.includes(_id)) {
+          return {
+            title: name,
+            key: _id,
+          };
+        }
+        return 0;
+      });
+      result = result.filter((val) => val !== 0);
+      if (result.length > 0) {
+        return {
+          key: index,
+          title: moduleName,
+          children: result,
+        };
+      }
+      return 0;
+    });
+    treeData = treeData.filter((val) => val !== 0);
+
+    return (
+      <Tree
+        showIcon={false}
+        loadData={loading}
+        treeData={treeData}
+        onSelect={this.onSelect}
+        showLine={{ showLeafIcon: false }}
+      />
+    );
+  };
+
+  renderListModule = (idList, permissionList) => {
+    let result = [];
+    idList.forEach((id) => {
+      permissionList.map((per) => {
+        if (id === per._id) {
+          result.push(per?.module);
+        }
+        return 0;
+      });
+    });
+    result = result.filter((module) => module !== 0);
+    result = [...new Set(result)];
+    return result;
+  };
+
   render() {
-    const { handleEditAdmin = () => {} } = this.props;
+    const { handleEditAdmin = () => {}, permissionList = [] } = this.props;
     const { list = [] } = this.state;
 
     const { Panel } = Collapse;
     const expandIcon = ({ isActive }) => (
-      <DownOutlined className={styles.expandIcon} rotate={isActive ? 180 : 0} />
+      <div className={styles.icon}>
+        <img
+          src={arrowIcon}
+          alt="arrow"
+          className={isActive ? styles.upsideDownArrow : styles.normalArrow}
+        />
+      </div>
     );
+
     return (
       <>
         {list.map((adminstrator, index) => {
-          const { listRole = [], employeeName = '', email = '', position = '' } = adminstrator;
-
+          const {
+            permissionAdmin = [],
+            usermap: {
+              firstName = '',
+              email = '',
+              position = `${firstName}’s permission apply to everyone in the company`,
+            } = {},
+          } = adminstrator;
+          const moduleList = this.renderListModule(permissionAdmin, permissionList);
           return (
             <div
               className={styles.addAdminstrator}
@@ -79,9 +125,9 @@ class ViewAdministrator extends Component {
                 <Col span={16}>
                   <div className={styles.addAdminstrator__header}>
                     <div className={styles.listRole}>
-                      {listRole.map((item) => (
-                        <div className={styles.role} key={item.id}>
-                          {item.role}
+                      {moduleList.map((module) => (
+                        <div className={styles.role} key={module}>
+                          {module}
                         </div>
                       ))}
                     </div>
@@ -110,7 +156,7 @@ class ViewAdministrator extends Component {
                 </Col>
                 <Col span={16}>
                   <div className={styles.addAdminstrator__right}>
-                    <div className={styles.name}>{employeeName}</div>
+                    <div className={styles.name}>{firstName}</div>
                   </div>
                 </Col>
                 <Col span={8}>
@@ -143,13 +189,12 @@ class ViewAdministrator extends Component {
                     expandIcon={expandIcon}
                   >
                     <Panel header="Show permissions" className={styles.permissionPanel}>
-                      {listPermissions.map((item) => (
-                        <p key={item.id}>{item.permission}</p>
-                      ))}
+                      {this.renderListPermission(permissionAdmin)}
                     </Panel>
                   </Collapse>
                 </Col>
               </Row>
+              {list.length > index + 1 && <div className={styles.divider} />}
             </div>
           );
         })}

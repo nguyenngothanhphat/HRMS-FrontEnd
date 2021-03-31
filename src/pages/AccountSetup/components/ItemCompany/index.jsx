@@ -1,23 +1,46 @@
 import logoDefault from '@/assets/companyDefault.png';
 import { Button } from 'antd';
 import React, { PureComponent } from 'react';
-import { history } from 'umi';
-import { setTenantId, setCurrentCompany } from '@/utils/authority';
+import { history, connect } from 'umi';
+import { setAuthority, setTenantId, setCurrentCompany } from '@/utils/authority';
+
 import s from './index.less';
 
-export default class ItemCompany extends PureComponent {
+@connect(({ user: { currentUser: { email = '' } = {} } = {} }) => ({ email }))
+class ItemCompany extends PureComponent {
   handleGetStarted = (tenantId, id) => {
     setTenantId(tenantId);
     setCurrentCompany(id);
-    history.push(`/account-setup/company-profile/${id}`);
+    history.push(`/control-panel/company-profile/${id}`);
   };
 
-  handleGoToDashboard = (tenantId, id, isAdmin) => {
+  handleGoToDashboard = async (tenantId, id, isOwner) => {
     setTenantId(tenantId);
     setCurrentCompany(id);
-    if (isAdmin) {
+    const { dispatch, email = '' } = this.props;
+    const res = await dispatch({
+      type: 'adminApp/getListAdmin',
+      payload: {
+        tenantId,
+        company: id,
+      },
+    });
+
+    if (isOwner) {
       history.push(`/admin-app`);
     } else {
+      const { statusCode, data = {} } = res;
+      let formatArrRoles = JSON.parse(localStorage.getItem('antd-pro-authority'));
+      if (statusCode === 200) {
+        const currentUser = data?.users.find((user) => user?.usermap.email === email);
+        currentUser?.permissionAdmin.forEach((e) => {
+          formatArrRoles = [...formatArrRoles, e];
+        });
+        currentUser?.permissionEmployee.forEach((e) => {
+          formatArrRoles = [...formatArrRoles, e];
+        });
+        setAuthority(formatArrRoles);
+      }
       history.push(`/dashboard`);
     }
   };
@@ -34,7 +57,8 @@ export default class ItemCompany extends PureComponent {
 
   render() {
     const {
-      isOwnerAdmin = false,
+      isOwner = false,
+      // isAdmin = false,
       company: { _id: id = '', tenant = '', name = '', logoUrl = '', headQuarterAddress = {} } = {},
     } = this.props;
 
@@ -56,20 +80,15 @@ export default class ItemCompany extends PureComponent {
           <p className={s.viewInfo__location}>{address}</p>
         </div>
         <div className={s.viewAction}>
-          {/* {isOwnerAdmin ? (
-            <Button className={s.btnOutline} onClick={() => this.handleGetStarted(tenant, id)}>
-              Get Started
-            </Button>
-          ) : ( */}
           <Button
             className={s.btnOutline}
-            onClick={() => this.handleGoToDashboard(tenant, id, isOwnerAdmin)}
+            onClick={() => this.handleGoToDashboard(tenant, id, isOwner)}
           >
             Get Started
           </Button>
-          {/* )} */}
         </div>
       </div>
     );
   }
 }
+export default ItemCompany;

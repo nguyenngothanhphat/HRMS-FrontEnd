@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Spin, Select, Button, Checkbox } from 'antd';
+import { Form, Input, Skeleton, Select, Button, Checkbox } from 'antd';
 import classnames from 'classnames';
 import { connect } from 'umi';
 import s from './index.less';
@@ -124,6 +124,8 @@ class CompanyDetails extends Component {
       companyId,
       companyDetails: { company: { logoUrl: newLogo } = {} },
     } = this.props;
+    const { checkLegalSameHeadQuarter } = this.state;
+
     const {
       countryHeadquarterProps,
       countryLegalProps,
@@ -151,6 +153,7 @@ class CompanyDetails extends Component {
     let parentTenantId = listCompany.find((company) => company?._id === parentCompany);
     parentTenantId = parentTenantId?.tenant;
 
+    const tenantId = localStorage.getItem('tenantId');
     let payload = {
       // id: companyId || '',
       company: {
@@ -167,11 +170,13 @@ class CompanyDetails extends Component {
           zipCode: zipHeadquarter,
         },
         legalAddress: {
-          addressLine1: legalAddressLine1,
-          addressLine2: legalAddressLine2 || '',
-          country: countryLegalProps,
-          state: stateLegal,
-          zipCode: zipLegal,
+          addressLine1: checkLegalSameHeadQuarter ? headquarterAddressLine1 : legalAddressLine1,
+          addressLine2: checkLegalSameHeadQuarter
+            ? headquarterAddressLine2 || ''
+            : legalAddressLine2 || '',
+          country: checkLegalSameHeadQuarter ? countryHeadquarterProps : countryLegalProps,
+          state: checkLegalSameHeadQuarter ? stateHeadquarter : stateLegal,
+          zipCode: checkLegalSameHeadQuarter ? zipHeadquarter : zipLegal,
         },
         contactEmail: ownerEmail,
         hrContactName: hrName,
@@ -204,7 +209,7 @@ class CompanyDetails extends Component {
       parentTenantId,
     };
     if (companyId) {
-      payload = { ...payload?.company, id: companyId };
+      payload = { ...payload?.company, id: companyId, tenantId };
       const res = await dispatch({
         type: 'companiesManagement/updateCompany',
         payload,
@@ -214,8 +219,8 @@ class CompanyDetails extends Component {
       const { statusCode = 0, data = {} } = res;
       if (statusCode === 200) {
         dispatch({
-          type: 'companiesManagement/save',
-          payload: { companyDetails: data },
+          type: 'companiesManagement/saveOrigin',
+          payload: { companyDetails: { company: data } },
         });
         this.setState({
           isEditAddresses: false,
@@ -329,20 +334,90 @@ class CompanyDetails extends Component {
     }
   };
 
+  handleCancel = (key) => {
+    const { companyDetails = {}, email = '' } = this.props;
+    const {
+      company: {
+        name,
+        dba,
+        ein,
+        website,
+        // logoUrl,
+        headQuarterAddress: {
+          addressLine1: headquarterAddressLine1,
+          addressLine2: headquarterAddressLine2,
+          country: countryHeadquarterProps,
+          state: stateHeadquarter,
+          zipCode: zipHeadquarter,
+        } = {},
+        legalAddress: {
+          addressLine1: legalAddressLine1,
+          addressLine2: legalAddressLine2,
+          country: countryLegalProps,
+          state: stateLegal,
+          zipCode: zipLegal,
+        } = {},
+        hrContactEmail: hrEmail,
+        hrContactName: hrName,
+        hrContactPhone: hrPhone,
+        // isHeadquarter,
+      } = {},
+    } = companyDetails;
+
+    switch (key) {
+      case 1:
+        this.formRef.current.setFieldsValue({
+          name,
+          dba,
+          ein,
+          website,
+        });
+        break;
+      case 2:
+        this.formRef.current.setFieldsValue({
+          headquarterAddressLine1,
+          headquarterAddressLine2,
+          countryHeadquarterProps,
+          stateHeadquarter,
+          zipHeadquarter,
+          legalAddressLine1,
+          legalAddressLine2,
+          countryLegalProps,
+          stateLegal,
+          zipLegal,
+        });
+        this.compareHeadquaterLegalAddress();
+        break;
+      case 3:
+        this.formRef.current.setFieldsValue({
+          ownerEmail: email,
+          hrName,
+          hrEmail,
+          hrPhone,
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
   handleEdit = (key) => {
     const { isEditContactInfomation, isEditCompanyDetails, isEditAddresses } = this.state;
     switch (key) {
       case 1:
+        if (isEditCompanyDetails) this.handleCancel(1);
         this.setState({
           isEditCompanyDetails: !isEditCompanyDetails,
         });
         break;
       case 2:
+        if (isEditAddresses) this.handleCancel(2);
         this.setState({
           isEditAddresses: !isEditAddresses,
         });
         break;
       case 3:
+        if (isEditContactInfomation) this.handleCancel(3);
         this.setState({
           isEditContactInfomation: !isEditContactInfomation,
         });
@@ -890,20 +965,22 @@ class CompanyDetails extends Component {
                 )}
               </div>
             </div>
-            <div className={s.viewBtn}>
-              <Button
-                className={s.btnSubmit}
-                htmlType="submit"
-                loading={companyId ? loadingUpdate : loadingAdd}
-                disabled={!isEditAddresses && !isEditCompanyDetails && !isEditContactInfomation}
-              >
-                Save
-              </Button>
-            </div>
+            {(isEditAddresses || isEditCompanyDetails || isEditContactInfomation) && (
+              <div className={s.viewBtn}>
+                <Button
+                  className={s.btnSubmit}
+                  htmlType="submit"
+                  loading={companyId ? loadingUpdate : loadingAdd}
+                  // disabled={!isEditAddresses && !isEditCompanyDetails && !isEditContactInfomation}
+                >
+                  Save
+                </Button>
+              </div>
+            )}
           </Form>
         ) : (
-          <div className={s.loadingSpin}>
-            <Spin size="large" />
+          <div>
+            <Skeleton active />
           </div>
         )}
       </>

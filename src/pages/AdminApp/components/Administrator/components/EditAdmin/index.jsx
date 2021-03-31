@@ -1,16 +1,18 @@
 import React, { PureComponent } from 'react';
+import { connect } from 'umi';
 import SelectRoles from './components/SelectRoles';
 import SelectUser from './components/SelectUser';
 
 import styles from './index.less';
 
-export default class EditAdmin extends PureComponent {
+@connect()
+class EditAdmin extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       currentStep: 1,
       adminRoles: [],
-      adminInfo: {},
+      // adminInfo: {},
     };
   }
 
@@ -23,8 +25,8 @@ export default class EditAdmin extends PureComponent {
   };
 
   onContinue = (step, values) => {
-    const { handleEditAdmin = () => {} } = this.props;
-
+    const { handleEditAdmin = () => {}, dispatch, dataAdmin: { _id = '' } = {} } = this.props;
+    const { adminRoles } = this.state;
     if (step === 1) {
       this.setState({
         currentStep: step + 1,
@@ -33,22 +35,32 @@ export default class EditAdmin extends PureComponent {
     }
 
     if (step === 2) {
-      this.setState({
-        adminInfo: values,
+      // this.setState({
+      //   adminInfo: values,
+      // });
+      // handleEditAdmin(false);
+
+      dispatch({
+        type: 'adminApp/updateAdmins',
+        payload: {
+          managePermissionId: _id,
+          permissionAdmin: adminRoles,
+        },
+      }).then(() => {
+        handleEditAdmin(false);
       });
-      handleEditAdmin(false);
     }
   };
 
   render() {
-    const { handleEditAdmin = () => {}, dataAdmin = {} } = this.props;
-    const { currentStep, adminRoles, adminInfo } = this.state;
-    // console.log('admin', adminRoles, adminInfo);
+    const { handleEditAdmin = () => {}, dataAdmin = {}, permissionList = [] } = this.props;
+    const { currentStep } = this.state;
     return (
       <div className={styles.EditAdmin}>
         {currentStep === 1 && (
           <SelectRoles
             dataAdmin={dataAdmin}
+            permissionList={permissionList}
             handleEditAdmin={handleEditAdmin}
             onContinue={this.onContinue}
           />
@@ -64,3 +76,5 @@ export default class EditAdmin extends PureComponent {
     );
   }
 }
+
+export default EditAdmin;

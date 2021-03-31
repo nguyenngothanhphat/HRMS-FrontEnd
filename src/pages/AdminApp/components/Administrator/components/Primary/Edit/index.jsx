@@ -28,7 +28,7 @@ class EditPrimary extends Component {
   };
 
   render() {
-    const { listAdministrator: { employeeName = '', email = '', position = '' } = {} } = this.props;
+    const { primaryAdmin: { firstName = '', email = '', position = '' } = {} } = this.props;
     return (
       <div className={styles.primaryEdit}>
         <Form
@@ -36,7 +36,7 @@ class EditPrimary extends Component {
           onValuesChange={this.handleChange}
           onFinish={this.onFinish}
           initialValues={{
-            employeeName,
+            firstName,
             email,
             position,
           }}
@@ -50,7 +50,7 @@ class EditPrimary extends Component {
               </Col>
               <Col span={16}>
                 <Form.Item
-                  name="employeeName"
+                  name="firstName"
                   className={styles.formAdminstrator__right}
                   rules={[
                     {

@@ -8,11 +8,11 @@ import s from './index.less';
 export default class ItemCompany extends Component {
   handleStartSetup = (id) => {
     if (id === '1') {
-      history.push(`/account-setup/get-started/company-profile`);
+      history.push(`/control-panel/get-started/company-profile`);
     } else if (id === '2') {
-      history.push(`/account-setup/get-started/setup-employee-directory`);
+      history.push(`/control-panel/get-started/setup-employee-directory`);
     } else if (id === '3') {
-      history.push(`/account-setup/get-started/setup-timeoff`);
+      history.push(`/control-panel/get-started/setup-timeoff`);
     }
   };
 

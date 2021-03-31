@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Checkbox } from 'antd';
-
+import { Button, Tree } from 'antd';
+// import { PlusSquareOutlined, MinusSquareOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
-export default class SelectRoles extends PureComponent {
+class SelectRoles extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -12,10 +12,10 @@ export default class SelectRoles extends PureComponent {
   }
 
   renderTitle = () => {
-    const { handleAddAdmin = () => {} } = this.props;
+    const { handleAddAdmin = () => {}, name = '' } = this.props;
     return (
       <div className={styles.titleContainer}>
-        <span className={styles.title}>Choose Rena’s role as admin</span>
+        <span className={styles.title}>Choose {name}’s role as admin</span>
         <div className={styles.cancelBtn} onClick={() => handleAddAdmin(false)}>
           <span>Cancel</span>
         </div>
@@ -23,63 +23,61 @@ export default class SelectRoles extends PureComponent {
     );
   };
 
-  setList = (id) => {
-    const { selectedList } = this.state;
-    const isExist = selectedList.findIndex((value) => value === id) === -1;
-    let newList;
-    if (isExist) {
-      newList = [...selectedList, id];
-    } else {
-      newList = selectedList.filter((value) => value !== id);
-    }
+  setList = (list) => {
     this.setState({
-      selectedList: newList,
+      selectedList: list,
     });
   };
 
   renderList = () => {
-    const data = [
-      {
-        id: 1,
-        name: 'Company',
-        description: 'Has full permissions and can manage all aspects of your account.',
-      },
-      {
-        id: 2,
-        name: 'Payroll',
-        description: 'Has full permissions and can manage all aspects of your account.',
-      },
-      {
-        id: 3,
-        name: 'Company',
-        description: 'Has full permissions and can manage all aspects of your account.',
-      },
-    ];
+    const { permissionList = [] } = this.props;
+    let formatList = permissionList.map((per) => per?.module);
+    formatList = formatList.filter(
+      (value) => value !== undefined && value !== '' && value !== null,
+    );
+    formatList = [...new Set(formatList)];
+
+    const treeData = formatList.map((moduleName, index) => {
+      let result = permissionList.map((per) => {
+        const { _id = '', name = '', module = '' } = per;
+        if (moduleName === module) {
+          return {
+            title: name,
+            key: _id,
+          };
+        }
+        return 0;
+      });
+      result = result.filter((val) => val !== 0);
+
+      return {
+        key: index,
+        title: moduleName,
+        children: result,
+      };
+    });
+
+    const onCheck = (checkedKeys) => {
+      this.setList(checkedKeys);
+    };
 
     return (
       <div className={styles.roleList}>
-        {data.map((role) => {
-          const { id = '', name = '', description = '' } = role;
-          return (
-            <Row gutter={[24, 24]} key={id} align="middle">
-              <Col span={2}>
-                <Checkbox onChange={() => this.setList(id)} />
-              </Col>
-              <Col span={6}>
-                <span className={styles.roleName}>{name}</span>
-              </Col>
-              <Col span={16}>
-                <span className={styles.roleDescription}>{description}</span>
-              </Col>
-            </Row>
-          );
-        })}
+        <Tree
+          checkable
+          defaultExpandAll={false}
+          // onSelect={onSelect}
+          onCheck={onCheck}
+          treeData={treeData}
+          showLine={{ showLeafIcon: false }}
+          showIcon={false}
+        />
       </div>
     );
   };
 
   renderMainForm = () => {
-    const { onContinue = () => {} } = this.props;
+    const { onContinue = () => {}, loadingAddAdmin = false } = this.props;
     const { selectedList } = this.state;
     return (
       <div className={styles.mainForm}>
@@ -88,8 +86,12 @@ export default class SelectRoles extends PureComponent {
         </div>
         <div className={styles.content}>{this.renderList()}</div>
         <div className={styles.nextBtn}>
-          <Button className={styles.proceedBtn} onClick={() => onContinue(1, selectedList)}>
-            Continue
+          <Button
+            loading={loadingAddAdmin}
+            className={styles.proceedBtn}
+            onClick={() => onContinue(2, selectedList)}
+          >
+            Save
           </Button>
         </div>
       </div>
@@ -105,3 +107,4 @@ export default class SelectRoles extends PureComponent {
     );
   }
 }
+export default SelectRoles;

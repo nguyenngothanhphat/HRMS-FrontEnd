@@ -1,36 +1,10 @@
 import React, { Component } from 'react';
-import { Row, Col, Collapse } from 'antd';
+import { Row, Col, Collapse, Tree } from 'antd';
 import icon from '@/assets/primary-administrator.svg';
-import { DownOutlined } from '@ant-design/icons';
+import { CarryOutOutlined } from '@ant-design/icons';
+import arrowIcon from '@/assets/arrowDownCollapseIcon.svg';
 
 import styles from './index.less';
-
-const listPermissions = [
-  {
-    id: 1,
-    permission: 'User',
-  },
-  {
-    id: 2,
-    permission: 'Employees',
-  },
-  {
-    id: 3,
-    permission: 'Profile',
-  },
-  {
-    id: 4,
-    permission: 'Directory',
-  },
-  {
-    id: 5,
-    permission: 'Onboarding',
-  },
-  {
-    id: 6,
-    permission: 'Setting',
-  },
-];
 
 class ViewPrimary extends Component {
   constructor(props) {
@@ -38,11 +12,66 @@ class ViewPrimary extends Component {
     this.state = {};
   }
 
+  onSelect = (selectedKeys, info) => {
+    console.log('selected', selectedKeys, info);
+  };
+
+  renderListPermission = () => {
+    const { permissionList = [], loading } = this.props;
+    let formatList = permissionList.map((per) => per?.module);
+    formatList = formatList.filter(
+      (value) => value !== undefined && value !== '' && value !== null,
+    );
+    formatList = [...new Set(formatList)];
+    const treeData = formatList.map((moduleName, index) => {
+      let result = permissionList.map((per) => {
+        const { _id = '', name = '', module = '' } = per;
+        if (moduleName === module) {
+          return {
+            title: name,
+            key: _id,
+            icon: <CarryOutOutlined />,
+          };
+        }
+        return 0;
+      });
+      result = result.filter((val) => val !== 0);
+      return {
+        key: index,
+        title: moduleName,
+        icon: <CarryOutOutlined />,
+        children: result,
+      };
+    });
+
+    return (
+      <Tree
+        showIcon={false}
+        loadData={loading}
+        treeData={treeData}
+        onSelect={this.onSelect}
+        showLine={{ showLeafIcon: false }}
+      />
+    );
+  };
+
   render() {
-    const { listAdministrator: { employeeName = '', email = '', position = '' } = {} } = this.props;
+    const {
+      primaryAdmin: {
+        firstName = '',
+        email = '',
+        position = `${firstName}’s permission apply to everyone in the company`,
+      } = {},
+    } = this.props;
     const { Panel } = Collapse;
     const expandIcon = ({ isActive }) => (
-      <DownOutlined className={styles.expandIcon} rotate={isActive ? 180 : 0} />
+      <div className={styles.icon}>
+        <img
+          src={arrowIcon}
+          alt="arrow"
+          className={isActive ? styles.upsideDownArrow : styles.normalArrow}
+        />
+      </div>
     );
 
     return (
@@ -55,7 +84,7 @@ class ViewPrimary extends Component {
           </Col>
           <Col span={16}>
             <div className={styles.primaryView__right}>
-              <div className={styles.name}>{employeeName}</div>
+              <div className={styles.name}>{firstName}</div>
             </div>
           </Col>
           <Col span={8}>
@@ -88,9 +117,7 @@ class ViewPrimary extends Component {
               expandIcon={expandIcon}
             >
               <Panel header="Show permissions" className={styles.permissionPanel}>
-                {listPermissions.map((itemPermission) => (
-                  <p key={itemPermission.id}>{itemPermission.permission}</p>
-                ))}
+                {this.renderListPermission()}
               </Panel>
             </Collapse>
           </Col>
