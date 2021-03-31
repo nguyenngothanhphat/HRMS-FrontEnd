@@ -66,7 +66,7 @@ export default class SelectUser extends PureComponent {
             isCompanyWorker,
             firstName,
             email,
-            name1,
+            name1: name1 === '' ? null : name1,
           }}
           onFinish={this.onFinish}
         >
