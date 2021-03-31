@@ -61,15 +61,27 @@ const BasicLayout = (props) => {
     }
   };
 
-  const _renderLogo = (
-    <Link to="/">
-      <img
-        src="/assets/images/terralogic-logo.png"
-        alt="logo"
-        style={{ width: '120px', objectFit: 'contain', marginBottom: '4px' }}
-      />
-    </Link>
-  );
+  const _renderLogo = () => {
+    const checkRole = (roleName) => {
+      const { signInRole = [] } = currentUser;
+      const formatRole = signInRole.map((role) => role.toLowerCase());
+      if (formatRole.includes(roleName)) return true;
+      return false;
+    };
+
+    const isOwner = checkRole('owner');
+    const isAdmin = checkRole('admin');
+
+    return (
+      <Link to={isOwner || isAdmin ? '/account-setup' : '/'}>
+        <img
+          src="/assets/images/terralogic-logo.png"
+          alt="logo"
+          style={{ width: '120px', objectFit: 'contain', marginBottom: '4px' }}
+        />
+      </Link>
+    );
+  };
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
@@ -95,7 +107,7 @@ const BasicLayout = (props) => {
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
         headerTitleRender={() => <div style={{ display: 'none' }} />}
-        headerContentRender={() => _renderLogo}
+        headerContentRender={() => _renderLogo()}
         menuHeaderRender={false}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || !menuItemProps.path) {

@@ -46,12 +46,14 @@ class UploadLogoCompany extends Component {
       companyDetails = {},
       companyDetails: { company: { _id: id = '' } = {} } = {},
     } = this.props;
+    const tenantId = localStorage.getItem('tenantId');
+
     if (statusCode === 200) {
       const [first] = data;
       if (id) {
         dispatch({
           type: 'companiesManagement/updateCompany',
-          payload: { id, logoUrl: first?.url },
+          payload: { id, logoUrl: first?.url, tenantId },
           // dataTempKept: {},
           // isAccountSetup: true,
         }).then(({ statusCode: check }) => {

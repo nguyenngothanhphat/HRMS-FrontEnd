@@ -965,16 +965,18 @@ class CompanyDetails extends Component {
                 )}
               </div>
             </div>
-            <div className={s.viewBtn}>
-              <Button
-                className={s.btnSubmit}
-                htmlType="submit"
-                loading={companyId ? loadingUpdate : loadingAdd}
-                disabled={!isEditAddresses && !isEditCompanyDetails && !isEditContactInfomation}
-              >
-                Save
-              </Button>
-            </div>
+            {(isEditAddresses || isEditCompanyDetails || isEditContactInfomation) && (
+              <div className={s.viewBtn}>
+                <Button
+                  className={s.btnSubmit}
+                  htmlType="submit"
+                  loading={companyId ? loadingUpdate : loadingAdd}
+                  // disabled={!isEditAddresses && !isEditCompanyDetails && !isEditContactInfomation}
+                >
+                  Save
+                </Button>
+              </div>
+            )}
           </Form>
         ) : (
           <div>
