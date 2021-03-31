@@ -54,7 +54,7 @@ const Model = {
         setAuthority(formatArrRoles);
         
         if (isAdminOrOwner || listCompany.length > 1) {
-          history.replace('/account-setup');
+          history.replace('/control-panel');
         } else if (listCompany.length === 1) {
           const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
           setTenantId(tenantId);
@@ -78,7 +78,6 @@ const Model = {
       localStorage.removeItem('Rolesname');
       localStorage.removeItem('currentCompanyId');
       localStorage.removeItem('tenantId');
-      localStorage.removeItem('currentLocation');
       localStorage.removeItem('currentLocation');
       yield put({
         type: 'user/saveCurrentUser',

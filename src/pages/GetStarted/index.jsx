@@ -41,7 +41,7 @@ class GetStarted extends PureComponent {
         description: 'Setup timeoff types',
       },
     ];
-    const routes = [{ name: 'Getting Started', path: '/account-setup/get-started' }];
+    const routes = [{ name: 'Getting Started', path: '/control-panel/get-started' }];
     if (loading)
       return (
         <div className={s.viewLoading}>

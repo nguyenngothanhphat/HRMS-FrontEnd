@@ -69,10 +69,10 @@ class CompanyProfile extends Component {
       loading = false,
     } = this.props;
     const routes = [
-      { name: 'Getting Started', path: '/account-setup' },
+      { name: 'Getting Started', path: '/control-panel' },
       {
         name: id ? 'Account Setup' : 'Add new company',
-        path: id ? `/account-setup/company-profile/${id}` : '/account-setup/add-company',
+        path: id ? `/control-panel/company-profile/${id}` : '/control-panel/add-company',
       },
     ];
 

@@ -9,10 +9,10 @@ import Table from './Components/TableListActive';
 import s from './index.less';
 
 const routes = [
-  { name: 'Getting Started', path: '/account-setup/get-started' },
+  { name: 'Getting Started', path: '/control-panel/get-started' },
   {
     name: 'Setup Employee Directory',
-    path: '/account-setup/get-started/setup-employee-directory',
+    path: '/control-panel/get-started/setup-employee-directory',
   },
 ];
 
@@ -51,7 +51,7 @@ class SetupEmployeeDirectory extends React.PureComponent {
             className={s.btnUserManagement}
             onClick={() =>
               history.push({
-                pathname: '/account-setup/get-started/company-profile',
+                pathname: '/control-panel/get-started/company-profile',
                 state: { activeTag: '2' },
               })
             }
