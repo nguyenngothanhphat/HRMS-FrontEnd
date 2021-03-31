@@ -36,7 +36,7 @@ export default class SelectUser extends PureComponent {
   };
 
   renderContent = () => {
-    const { isCompanyWorker } = this.state;
+    const { dataAdmin: { usermap: { firstName = '' } = {} } = {} } = this.props;
     return (
       <div className={styles.assignUser}>
         <Form
@@ -44,7 +44,7 @@ export default class SelectUser extends PureComponent {
           ref={this.formRef}
           id="myForm"
           initialValues={{
-            isCompanyWorker,
+            name: firstName,
           }}
           onFinish={this.onFinish}
         >
