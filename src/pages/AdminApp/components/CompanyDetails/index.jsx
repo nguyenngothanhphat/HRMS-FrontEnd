@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Skeleton, Select, Button, Checkbox } from 'antd';
+import { Form, Input, Skeleton, Select, Button, Checkbox, Row, Col } from 'antd';
 import classnames from 'classnames';
 import { connect } from 'umi';
 import s from './index.less';
@@ -209,7 +209,13 @@ class CompanyDetails extends Component {
       parentTenantId,
     };
     if (companyId) {
-      payload = { ...payload?.company, id: companyId, tenantId };
+      payload = {
+        ...payload?.company,
+        id: companyId,
+        tenantId,
+        childOfCompany: parentCompany,
+        tenant: parentTenantId,
+      };
       const res = await dispatch({
         type: 'companiesManagement/updateCompany',
         payload,
@@ -517,6 +523,7 @@ class CompanyDetails extends Component {
         hrContactEmail: hrEmail,
         hrContactName: hrName,
         hrContactPhone: hrPhone,
+        childOfCompany = '',
         // isHeadquarter,
       } = {},
       // locations: [
@@ -539,6 +546,7 @@ class CompanyDetails extends Component {
       // ],
       // isNewTenant,
     } = companyDetails;
+
     const validateMessages = {
       types: {
         // eslint-disable-next-line no-template-curly-in-string
@@ -580,6 +588,7 @@ class CompanyDetails extends Component {
               hrPhone,
               isNewTenant: false,
               isHeadquarter: true,
+              parentCompany: childOfCompany || null,
               // logoUrl,
             }}
           >
@@ -593,55 +602,60 @@ class CompanyDetails extends Component {
               <div className={s.content__viewBottom}>
                 {fieldCompanyDetail.map(
                   ({ label, name: nameField, required = false, message }, index) => (
-                    <div key={nameField} className={s.content__viewBottom__row}>
-                      <p className={s.content__viewBottom__row__textLabel}>{label}</p>
-                      <Form.Item
-                        name={nameField}
-                        rules={[
-                          {
-                            required,
-                            message,
-                          },
-                          {
-                            pattern: this.getRegexPatternCompanyDetails(index),
-                            message: this.getRegexMessageCompanyDetails(index),
-                          },
-                        ]}
-                      >
-                        <Input disabled={!isEditCompanyDetails} placeholder={label} />
-                      </Form.Item>
-                    </div>
+                    <Row key={nameField} className={s.content__viewBottom__row}>
+                      <Col span={8}>
+                        <p className={s.content__viewBottom__row__textLabel}>{label}</p>
+                      </Col>
+                      <Col span={16}>
+                        <Form.Item
+                          name={nameField}
+                          rules={[
+                            {
+                              required,
+                              message,
+                            },
+                            {
+                              pattern: this.getRegexPatternCompanyDetails(index),
+                              message: this.getRegexMessageCompanyDetails(index),
+                            },
+                          ]}
+                        >
+                          <Input disabled={!isEditCompanyDetails} placeholder={label} />
+                        </Form.Item>
+                      </Col>
+                    </Row>
                   ),
                 )}
-                <div className={s.content__viewBottom__row}>
-                  <p className={s.content__viewBottom__row__textLabel}>Parent Company</p>
-                  <Form.Item name="parentCompany">
-                    <Select
-                      placeholder="Select Parent Company"
-                      showArrow
-                      showSearch
-                      allowClear
-                      defaultValue=""
-                      disabled={!isEditCompanyDetails}
-                      className={s.parentCompanySelect}
-                      // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
-                      filterOption={(input, option) =>
-                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      }
-                    >
-                      <Option
-                        key=""
-                        value=""
-                        style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                <Row className={s.content__viewBottom__row}>
+                  <Col span={8}>
+                    <p className={s.content__viewBottom__row__textLabel}>Parent Company</p>
+                  </Col>
+                  <Col span={16}>
+                    <Form.Item name="parentCompany">
+                      <Select
+                        placeholder="Select Parent Company"
+                        showArrow
+                        showSearch
+                        allowClear
+                        disabled={!isEditCompanyDetails}
+                        className={s.parentCompanySelect}
+                        // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                       >
-                        None
-                      </Option>
-                      {listCompany.map((item) => (
-                        <Option key={item._id}>{item.name}</Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </div>
+                        <Option style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}>
+                          None
+                        </Option>
+                        {listCompany.map((item) => (
+                          <Option disabled={item._id === childOfCompany} key={item._id}>
+                            {item.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                </Row>
               </div>
             </div>
             <div className={s.blockContent} style={{ marginTop: '24px' }}>
@@ -652,38 +666,46 @@ class CompanyDetails extends Component {
                 </div>
               </div>
               <div className={s.content__viewBottom}>
-                <div className={s.content__viewBottom__row}>
-                  <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
-                  <Form.Item
-                    name="headquarterAddressLine1"
-                    label={false}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please enter Address!',
-                      },
-                    ]}
-                  >
-                    <Input disabled={!isEditAddresses} placeholder="Address Line 1" />
-                  </Form.Item>
-                </div>
-                <div className={s.content__viewBottom__row}>
-                  <p className={s.content__viewBottom__row__textLabel}>Address Line 2</p>
-                  <Form.Item
-                    name="headquarterAddressLine2"
-                    label={false}
-                    rules={[
-                      {
-                        required: false,
-                        message: 'Please enter Address!',
-                      },
-                    ]}
-                  >
-                    <Input disabled={!isEditAddresses} placeholder="Address Line 2" />
-                  </Form.Item>
-                </div>
-                <div className={s.content__viewBottom__row}>
-                  <div className={s.viewFormVertical}>
+                <Row className={s.content__viewBottom__row}>
+                  <Col span={8}>
+                    <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
+                  </Col>
+                  <Col span={16}>
+                    <Form.Item
+                      name="headquarterAddressLine1"
+                      label={false}
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Please enter Address!',
+                        },
+                      ]}
+                    >
+                      <Input disabled={!isEditAddresses} placeholder="Address Line 1" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row className={s.content__viewBottom__row}>
+                  <Col span={8}>
+                    <p className={s.content__viewBottom__row__textLabel}>Address Line 2</p>
+                  </Col>
+                  <Col span={16}>
+                    <Form.Item
+                      name="headquarterAddressLine2"
+                      label={false}
+                      rules={[
+                        {
+                          required: false,
+                          message: 'Please enter Address!',
+                        },
+                      ]}
+                    >
+                      <Input disabled={!isEditAddresses} placeholder="Address Line 2" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={[24, 24]} className={s.content__viewBottom__row}>
+                  <Col span={8} className={s.viewFormVertical}>
                     <p
                       className={classnames(
                         s.content__viewBottom__row__textLabel,
@@ -717,8 +739,8 @@ class CompanyDetails extends Component {
                         ))}
                       </Select>
                     </Form.Item>
-                  </div>
-                  <div className={s.viewFormVertical}>
+                  </Col>
+                  <Col span={8} className={s.viewFormVertical}>
                     <p
                       className={classnames(
                         s.content__viewBottom__row__textLabel,
@@ -751,8 +773,8 @@ class CompanyDetails extends Component {
                         ))}
                       </Select>
                     </Form.Item>
-                  </div>
-                  <div className={s.viewFormVertical}>
+                  </Col>
+                  <Col span={8} className={s.viewFormVertical}>
                     <p
                       className={classnames(
                         s.content__viewBottom__row__textLabel,
@@ -773,8 +795,8 @@ class CompanyDetails extends Component {
                     >
                       <Input disabled={!isEditAddresses} placeholder="Zip Code" />
                     </Form.Item>
-                  </div>
-                </div>
+                  </Col>
+                </Row>
               </div>
               <div className={classnames(s.content__viewTop, s.content__viewTop__legalAddress)}>
                 <p className={s.title}>Legal Address</p>
@@ -791,38 +813,46 @@ class CompanyDetails extends Component {
                   [s.hidden]: checkLegalSameHeadQuarter,
                 })}
               >
-                <div className={s.content__viewBottom__row}>
-                  <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
-                  <Form.Item
-                    name="legalAddressLine1"
-                    label={false}
-                    rules={[
-                      {
-                        required: true,
-                        message: 'Please enter Address!',
-                      },
-                    ]}
-                  >
-                    <Input disabled={!isEditAddresses} placeholder="Address Line 1" />
-                  </Form.Item>
-                </div>
-                <div className={s.content__viewBottom__row}>
-                  <p className={s.content__viewBottom__row__textLabel}>Address Line 2</p>
-                  <Form.Item
-                    name="legalAddressLine2"
-                    label={false}
-                    rules={[
-                      {
-                        required: false,
-                        message: 'Please enter Address!',
-                      },
-                    ]}
-                  >
-                    <Input disabled={!isEditAddresses} placeholder="Address Line 2" />
-                  </Form.Item>
-                </div>
-                <div className={s.content__viewBottom__row}>
-                  <div className={s.viewFormVertical}>
+                <Row className={s.content__viewBottom__row}>
+                  <Col span={8}>
+                    <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
+                  </Col>
+                  <Col span={16}>
+                    <Form.Item
+                      name="legalAddressLine1"
+                      label={false}
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Please enter Address!',
+                        },
+                      ]}
+                    >
+                      <Input disabled={!isEditAddresses} placeholder="Address Line 1" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row className={s.content__viewBottom__row}>
+                  <Col span={8}>
+                    <p className={s.content__viewBottom__row__textLabel}>Address Line 2</p>
+                  </Col>
+                  <Col span={16}>
+                    <Form.Item
+                      name="legalAddressLine2"
+                      label={false}
+                      rules={[
+                        {
+                          required: false,
+                          message: 'Please enter Address!',
+                        },
+                      ]}
+                    >
+                      <Input disabled={!isEditAddresses} placeholder="Address Line 2" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row gutter={[24, 24]} className={s.content__viewBottom__row}>
+                  <Col span={8} className={s.viewFormVertical}>
                     <p
                       className={classnames(
                         s.content__viewBottom__row__textLabel,
@@ -856,8 +886,8 @@ class CompanyDetails extends Component {
                         ))}
                       </Select>
                     </Form.Item>
-                  </div>
-                  <div className={s.viewFormVertical}>
+                  </Col>
+                  <Col span={8} className={s.viewFormVertical}>
                     <p
                       className={classnames(
                         s.content__viewBottom__row__textLabel,
@@ -890,8 +920,8 @@ class CompanyDetails extends Component {
                         ))}
                       </Select>
                     </Form.Item>
-                  </div>
-                  <div className={s.viewFormVertical}>
+                  </Col>
+                  <Col span={8} className={s.viewFormVertical}>
                     <p
                       className={classnames(
                         s.content__viewBottom__row__textLabel,
@@ -912,8 +942,8 @@ class CompanyDetails extends Component {
                     >
                       <Input disabled={!isEditAddresses} placeholder="Zip Code" />
                     </Form.Item>
-                  </div>
-                </div>
+                  </Col>
+                </Row>
               </div>
             </div>
             <div className={s.blockContent} style={{ marginTop: '24px' }}>
@@ -936,31 +966,35 @@ class CompanyDetails extends Component {
                     },
                     index,
                   ) => (
-                    <div key={nameField} className={s.content__viewBottom__row}>
-                      <p className={s.content__viewBottom__row__textLabel}>{label}</p>
-                      <Form.Item
-                        name={nameField}
-                        rules={[
-                          {
-                            required,
-                            message,
-                          },
-                          {
-                            pattern: this.getRegexPatternContact(index),
-                            message: this.getRegexMessageContact(index),
-                          },
-                          {
-                            type: this.getTypeContact(index),
-                          },
-                        ]}
-                      >
-                        <Input
-                          disabled={!isEditContactInfomation}
-                          placeholder={placeholder}
-                          defaultValue={defaultValue}
-                        />
-                      </Form.Item>
-                    </div>
+                    <Row key={nameField} className={s.content__viewBottom__row}>
+                      <Col span={8}>
+                        <p className={s.content__viewBottom__row__textLabel}>{label}</p>
+                      </Col>
+                      <Col span={16}>
+                        <Form.Item
+                          name={nameField}
+                          rules={[
+                            {
+                              required,
+                              message,
+                            },
+                            {
+                              pattern: this.getRegexPatternContact(index),
+                              message: this.getRegexMessageContact(index),
+                            },
+                            {
+                              type: this.getTypeContact(index),
+                            },
+                          ]}
+                        >
+                          <Input
+                            disabled={!isEditContactInfomation}
+                            placeholder={placeholder}
+                            defaultValue={defaultValue}
+                          />
+                        </Form.Item>
+                      </Col>
+                    </Row>
                   ),
                 )}
               </div>

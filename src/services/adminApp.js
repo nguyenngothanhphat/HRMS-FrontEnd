@@ -26,3 +26,25 @@ export function updateAdminService(payload) {
     data: payload,
   });
 }
+
+export function getLocationList(payload) {
+  return request('/api/locationtenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export function updateLocation(payload) {
+  return request('/api/locationtenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+
+export function removeLocation(payload) {
+  return request('/api/locationtenant/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}

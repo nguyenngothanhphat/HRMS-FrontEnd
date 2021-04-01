@@ -1,12 +1,8 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
-import { Form, Divider, Button, Skeleton, Input, Select } from 'antd';
+import { Form, Button, Skeleton, notification } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import { connect } from 'umi';
-import classnames from 'classnames';
+import { connect, history } from 'umi';
 import FormWorkLocation from './components/FormWorkLocation';
 import FormWorkLocationTenant from './components/FormWorkLocation-Tenant';
 import s from './index.less';
@@ -55,24 +51,66 @@ class WorkLocations extends PureComponent {
     });
   }
 
-  onFinish = ({ workLocations: locations = [] }) => {
-    const { dispatch, companyId = '', companyDetails = {} } = this.props;
-    const { company, isNewTenant, locations: originLocations = [] } = companyDetails;
-    const listLocation = [...originLocations, ...locations];
-    const payload = { locations, company, isNewTenant };
-    if (companyId) {
-      dispatch({
-        type: 'companiesManagement/upsertLocationsList',
+  onFinish = async ({ workLocations = [] }) => {
+    const { dispatch, companyDetails = {} } = this.props;
+    const {
+      company: {
+        _id: newCompanyId = '',
+        tenant: newCompanyTenantId = '',
+        // name: newCompanyName = '',
+        // headQuarterAddress = {},
+        // legalQuarterAddress = {},
+      } = {},
+      // isNewTenant,
+    } = companyDetails;
+
+    const formatListLocation = workLocations.map((location) => {
+      const {
+        name = '',
+        addressLine1 = '',
+        addressLine2 = '',
+        country = '',
+        state = '',
+        zipCode = '',
+        isHeadQuarter = false,
+      } = location;
+      return {
+        name,
+        headQuarterAddress: {
+          addressLine1,
+          addressLine2,
+          country,
+          state,
+          zipCode,
+        },
+        legalAddress: {
+          addressLine1,
+          addressLine2,
+          country,
+          state,
+          zipCode,
+        },
+        isHeadQuarter,
+      };
+    });
+    const payload = {
+      locations: formatListLocation,
+      company: newCompanyId,
+      tenantId: newCompanyTenantId,
+    };
+
+    if (newCompanyId) {
+      const res = await dispatch({
+        type: 'companiesManagement/addMultiLocation',
         payload,
       });
-    } else {
-      const payloadAddCompanyTenant = { ...companyDetails, locations: [...listLocation] };
-      dispatch({
-        type: 'companiesManagement/addCompanyTenant',
-        payload: payloadAddCompanyTenant,
-        dataTempKept: {},
-        isAccountSetup: true,
-      });
+      const { statusCode } = res;
+      if (statusCode === 200) {
+        notification.success({
+          message: 'Add new locations successfully.',
+        });
+        history.push('/control-panel');
+      }
     }
   };
 

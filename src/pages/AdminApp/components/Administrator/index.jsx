@@ -112,6 +112,7 @@ class Adminstrator extends Component {
       listAdmin = [],
       currentUser = {},
     } = this.props;
+
     return (
       <div className={styles.root}>
         {isAddAdmin || isEditAdmin ? (

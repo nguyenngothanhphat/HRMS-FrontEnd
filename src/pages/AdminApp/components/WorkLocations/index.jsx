@@ -1,12 +1,9 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
-import { Form, Divider, Button, Skeleton, Input, Select } from 'antd';
-import { ConsoleSqlOutlined, PlusOutlined } from '@ant-design/icons';
+import { Form, Button, Skeleton, notification } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { connect } from 'umi';
-import classnames from 'classnames';
+// import ThirdStep from '@/pages/EmployeeProfile/components/EmploymentTab/components/HandleChanges/components/ThirdStep';
 import FormWorkLocation from './components/FormWorkLocation';
 import FormWorkLocationTenant from './components/FormWorkLocation-Tenant';
 import s from './index.less';
@@ -15,31 +12,33 @@ import s from './index.less';
   ({
     loading,
     country: { listCountry = [] } = {},
-    companiesManagement: { locationsList, originData: { companyDetails = {} } = {} } = {},
+    companiesManagement: { originData: { companyDetails = {} } = {} } = {},
+    adminApp: { locationsList = [] },
   }) => ({
     listCountry,
     locationsList,
-    loading: loading.effects['companiesManagement/upsertLocationsList'],
-    fetchingLocationsList: loading.effects['companiesManagement/fetchLocationsList'],
+    fetchingLocationsList: loading.effects['adminApp/fetchLocationList'],
     loadingCountry: loading.effects['country/fetchListCountry'],
     companyDetails,
-    loadingAddCompany: loading.effects['companiesManagement/addCompanyTenant'],
   }),
 )
 class WorkLocations extends PureComponent {
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
-    this.state = {};
+    this.state = {
+      countLocation: 0,
+      countEditBlock: 0,
+    };
   }
 
   componentDidMount() {
     const { dispatch, companyId = '' } = this.props;
-
+    const tenantId = localStorage.getItem('tenantId');
     if (companyId) {
       dispatch({
-        type: 'companiesManagement/fetchLocationsList',
-        payload: { company: companyId },
+        type: 'adminApp/fetchLocationList',
+        payload: { company: companyId, tenantId },
       });
     }
   }
@@ -52,17 +51,38 @@ class WorkLocations extends PureComponent {
     });
   }
 
-  onFinish = ({
-    workLocations: [{ addressLine1, addressLine2, country, state, zipCode }] = [],
-    workLocations = [],
-  }) => {
+  handleEditLocation = (value) => {
+    const { countEditBlock } = this.state;
+    let count = countEditBlock;
+    if (value) {
+      count = countEditBlock + 1;
+    } else {
+      count = countEditBlock - 1;
+    }
+    this.setState({
+      countEditBlock: count,
+    });
+  };
+
+  addLocationAPI = async (values) => {
     const tenantId = localStorage.getItem('tenantId');
-    const { dispatch, companyId = '', companyDetails = {} } = this.props;
-    const { company, isNewTenant, locations: originLocations = [] } = companyDetails;
-    console.log('worklocation', workLocations);
-    const listLocation = [...originLocations, ...workLocations];
-    let payload = [
-      {
+    const companyId = localStorage.getItem('currentCompanyId');
+
+    const { dispatch } = this.props;
+    // const { company, isNewTenant, locations: originLocations = [] } = companyDetails;
+    // const listLocation = [...originLocations, ...locations];
+    const { workLocations = [] } = values;
+    const formatListLocation = workLocations.map((location) => {
+      const {
+        name = '',
+        addressLine1 = '',
+        addressLine2 = '',
+        country = '',
+        state = '',
+        zipCode = '',
+      } = location;
+      return {
+        name,
         headQuarterAddress: {
           addressLine1,
           addressLine2,
@@ -78,50 +98,47 @@ class WorkLocations extends PureComponent {
           zipCode,
         },
         isHeadQuarter: false,
-        name: company.name + state,
-        company: companyId,
-        tenant: tenantId,
-      },
-    ];
-    const newWorkLocation = workLocations.map((item) => {
-      // return {
-      //   headQuarterAddress: {
-      //     addressLine1: item.addressLine1,
-      //     addressLine2: item.addressLine2,
-      //     country: item.country,
-      //     state: item.state,
-      //     zipCode: item.zipCode,
-      //   },
-      //   legalAddress: {
-      //     addressLine1: item.addressLine1,
-      //     addressLine2: item.addressLine2,
-      //     country: item.country,
-      //     state: item.state,
-      //     zipCode: item.zipCode,
-      //   },
-      //   isHeadQuarter: false,
-      //   name: `${company.name}_${state}`,
-      //   company: companyId,
-      //   tenant: tenantId,
-      // };
-      return item;
+      };
     });
-    payload = [...payload, ...newWorkLocation];
-    console.log('payload', newWorkLocation);
-    // if (companyId) {
-    //   dispatch({
-    //     type: 'companiesManagement/addLocation',
-    //     payload,
-    //   });
-    // } else {
-    //   const payloadAddCompanyTenant = { ...companyDetails, locations: [...listLocation] };
-    //   dispatch({
-    //     type: 'companiesManagement/addCompanyTenant',
-    //     payload: payloadAddCompanyTenant,
-    //     dataTempKept: {},
-    //     isAccountSetup: true,
-    //   });
-    // }
+
+    const payload = {
+      locations: formatListLocation,
+      company: companyId,
+      tenantId,
+    };
+
+    const res = await dispatch({
+      type: 'companiesManagement/addMultiLocation',
+      payload,
+    });
+    const { statusCode } = res;
+    if (statusCode === 200) {
+      notification.success({
+        message: 'Add new locations successfully.',
+      });
+      dispatch({
+        type: 'adminApp/fetchLocationList',
+        payload: { company: companyId, tenantId },
+      });
+    }
+  };
+
+  editLocationAPI = () => {
+    console.log('EDIT LOCATION');
+  };
+
+  onFinish = async (values) => {
+    const { countEditBlock, countLocation } = this.state;
+    if (countLocation !== 0) {
+      this.addLocationAPI(values);
+    }
+    if (countEditBlock !== 0) {
+      this.editLocationAPI();
+    }
+    this.setState({
+      countEditBlock: 0,
+      countLocation: 0,
+    });
   };
 
   formatListLocation = () => {
@@ -136,27 +153,30 @@ class WorkLocations extends PureComponent {
     return listLocation;
   };
 
-  removeLocation = (id) => {
-    const { dispatch, companyId = '' } = this.props;
-    const payload = { id, company: companyId };
-    dispatch({
-      type: 'companiesManagement/removeLocation',
+  removeLocation = async (id) => {
+    const tenantId = localStorage.getItem('tenantId');
+    const companyId = localStorage.getItem('currentCompanyId');
+
+    const { dispatch } = this.props;
+    const payload = { id, tenantId };
+    const res = await dispatch({
+      type: 'adminApp/removeLocation',
       payload,
     });
+    const { statusCode } = res;
+    if (statusCode === 200) {
+      dispatch({
+        type: 'adminApp/fetchLocationList',
+        payload: { company: companyId, tenantId },
+      });
+    }
   };
 
-  render() {
-    const {
-      listCountry = [],
-      locationsList = [],
-      loading,
-      fetchingLocationsList,
-      loadingCountry,
-      companyDetails = {},
-    } = this.props;
-
-    const [
-      {
+  formatCurrentLocationList = (locationsList) => {
+    let list = locationsList.map((location) => {
+      const {
+        _id = '',
+        name = '',
         headQuarterAddress: {
           addressLine1 = '',
           addressLine2 = '',
@@ -164,56 +184,62 @@ class WorkLocations extends PureComponent {
           state = '',
           zipCode = '',
         } = {},
-      } = {},
-    ] = locationsList;
+        isHeadQuarter = false,
+      } = location;
+      return {
+        _id,
+        name,
+        addressLine1,
+        addressLine2,
+        country,
+        state,
+        zipCode,
+        isHeadQuarter,
+      };
+    });
+
+    // these lines to move the headquarter to top of array
+    const headQuarter = list.find((item) => item.isHeadQuarter);
+    list = list.filter((item) => !item.isHeadQuarter);
+    list.unshift(headQuarter);
+    return list;
+  };
+
+  render() {
+    const { countEditBlock, countLocation } = this.state;
+    const {
+      listCountry = [],
+      locationsList = [],
+      fetchingLocationsList,
+      loadingCountry,
+    } = this.props;
 
     const listLocation = this.formatListLocation();
 
-    const defaultListLocation = listLocation.length === 0 ? [{}] : listLocation;
-    // const {
-    //   company: {
-    //     headQuarterAddress: {
-    //       addressLine1 = '',
-    //       addressLine2 = '',
-    //       country = '',
-    //       state = '',
-    //       zipCode = '',
-    //     } = {},
-    //   } = {},
-    // } = companyDetails;
-
     if (fetchingLocationsList || loadingCountry)
       return (
-        <div className={s.root}>
-          <div className={s.content__viewTop}>
-            <p className={s.title}>Work Locations</p>
-            <p className={s.text}>
-              This information is used to assign the employees to the right office. We will also
-              enable you to assign office specific administrators, filter employees per work
-              location, view Business Intelligence reports, and more. You do not need to add the
-              address of your remote employees here.
-            </p>
-          </div>
-          <div className={s.content__viewBottom}>
-            <Skeleton active />
+        <div className={s.WorkLocations}>
+          <div className={s.root}>
+            <div className={s.content__viewTop}>
+              <p className={s.title}>Work Locations</p>
+              <p className={s.text}>
+                This information is used to assign the employees to the right office. We will also
+                enable you to assign office specific administrators, filter employees per work
+                location, view Business Intelligence reports, and more. You do not need to add the
+                address of your remote employees here.
+              </p>
+            </div>
+            <div className={s.content__viewBottom}>
+              <Skeleton active />
+            </div>
           </div>
         </div>
       );
 
+    const formatCurrentLocationsList = this.formatCurrentLocationList(locationsList);
+
     return (
-      <Form
-        ref={this.formRef}
-        onFinish={this.onFinish}
-        autoComplete="off"
-        initialValues={{
-          addressLine1,
-          addressLine2,
-          zipCode,
-          country,
-          state,
-          workLocations: defaultListLocation,
-        }}
-      >
+      <div className={s.WorkLocations}>
         <div className={s.root}>
           <div className={s.content__viewTop}>
             <p className={s.title}>Work Locations</p>
@@ -225,68 +251,89 @@ class WorkLocations extends PureComponent {
             </p>
           </div>
           <div className={s.content__viewBottom}>
-            {locationsList.map((item) => {
+            {/* <FormWorkLocationTenant
+              listCountry={listCountry}
+              listLocation={listLocation}
+              locationInfo={locationHeadquarter}
+              isHeadQuarter
+            /> */}
+            {formatCurrentLocationsList.map((location, index) => {
               return (
                 <FormWorkLocationTenant
                   isRequired={false}
-                  name={item.isHeadQuarter ? 'Headquarter' : 'Child company'}
-                  locationsList={locationsList}
-                  formRef={this.formRef}
                   listCountry={listCountry}
                   listLocation={listLocation}
+                  locationInfo={location}
+                  removeLocation={this.removeLocation}
+                  listLength={formatCurrentLocationsList.length}
+                  index={index}
+                  handleEditLocation={this.handleEditLocation}
                 />
               );
             })}
-            {/* <FormWorkLocationTenant
-              isRequired={false}
-              name="Headquarter"
-              companyDetails={companyDetails}
-              formRef={this.formRef}
-              listCountry={listCountry}
-              listLocation={listLocation}
-            /> */}
           </div>
         </div>
-        <div className={s.root} style={{ marginTop: '24px' }}>
-          {/* <div className={s.viewBtn}>
-            <Button className={s.btnSubmit} htmlType="submit" loading={loading}>
-              Save
-            </Button>
-          </div> */}
-          <div className={s.content__viewBottom}>
-            <Form.List name="workLocations">
-              {(fields, { add, remove }) => (
-                <>
-                  {fields.map((field) => (
-                    <FormWorkLocation
-                      field={field}
-                      key={field.name}
-                      isHidden={false}
-                      name="New work location"
-                      formRef={this.formRef}
-                      listCountry={listCountry}
-                      listLocation={listLocation}
-                      removeLocation={this.removeLocation}
-                      onRemove={() => remove(field.name)}
-                    />
-                  ))}
-                  <div className={s.viewAddWorkLocation} onClick={() => add()}>
-                    <p className={s.viewAddWorkLocation__icon}>
-                      <PlusOutlined />
-                    </p>
-                    <p className={s.viewAddWorkLocation__text}>Add work location</p>
-                  </div>
-                </>
-              )}
-            </Form.List>
+
+        <Form
+          ref={this.formRef}
+          onFinish={this.onFinish}
+          autoComplete="off"
+          initialValues={
+            {
+              // workLocations: defaultListLocation,
+            }
+          }
+        >
+          <div className={s.root} style={{ marginTop: '24px' }}>
+            <div className={s.content__viewBottom}>
+              <Form.List name="workLocations">
+                {(fields, { add, remove }) => (
+                  <>
+                    {fields.map((field) => (
+                      <FormWorkLocation
+                        field={field}
+                        key={field.name}
+                        isHidden={false}
+                        name="New work location"
+                        formRef={this.formRef}
+                        listCountry={listCountry}
+                        listLocation={listLocation}
+                        removeLocation={this.removeLocation}
+                        onRemove={() => {
+                          this.setState({ countLocation: countLocation - 1 });
+                          remove(field.name);
+                        }}
+                      />
+                    ))}
+                    <div className={s.actions}>
+                      <div
+                        className={s.viewAddWorkLocation}
+                        onClick={() => {
+                          this.setState({ countLocation: countLocation + 1 });
+                          add();
+                        }}
+                      >
+                        <p className={s.viewAddWorkLocation__icon}>
+                          <PlusOutlined />
+                        </p>
+                        <p className={s.viewAddWorkLocation__text}>Add work location</p>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </Form.List>
+            </div>
           </div>
-        </div>
-        <div className={s.viewBtn}>
-          <Button className={s.btnSubmit} htmlType="submit" loading={loading}>
-            Save
-          </Button>
-        </div>
-      </Form>
+
+          {(countEditBlock !== 0 || countLocation !== 0) && (
+            <div className={s.viewBtn}>
+              <Button className={s.btnSubmit} htmlType="submit">
+                Save
+              </Button>
+            </div>
+          )}
+        </Form>
+      </div>
     );
   }
 }

@@ -14,8 +14,18 @@ import s from './index.less';
 class AccountSetup extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
+    // clear company details
+    dispatch({
+      type: 'companiesManagement/clearCompanyDetails',
+    });
+    // fetch list companies
     dispatch({
       type: 'user/fetchCompanyOfUser',
+    });
+    // set default tab to 1
+    dispatch({
+      type: 'companiesManagement/save',
+      payload: { selectedNewCompanyTab: 1 },
     });
     localStorage.removeItem('currentCompanyId');
     localStorage.removeItem('tenantId');
@@ -33,7 +43,7 @@ class AccountSetup extends Component {
 
   renderCompanies = (isOwner, isAdmin) => {
     const { companiesOfUser = [], loadingCompaniesOfUser = false } = this.props;
-
+    const sortedCompanyList = companiesOfUser.sort((a, b) => a.name.localeCompare(b.name));
     if (loadingCompaniesOfUser) {
       return (
         <div>
@@ -41,7 +51,7 @@ class AccountSetup extends Component {
         </div>
       );
     }
-    return companiesOfUser.map((comp) => {
+    return sortedCompanyList.map((comp) => {
       return <ItemCompany company={comp} isOwner={isOwner} isAdmin={isAdmin} />;
     });
   };

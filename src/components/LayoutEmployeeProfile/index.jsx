@@ -8,10 +8,17 @@ import UploadLogoCompany from './components/UploadLogoCompany';
 import ViewInformation from './components/ViewInformation';
 import s from './index.less';
 
-@connect(({ employeeProfile: { isModified } = {}, user: { currentUser } = {} }) => ({
-  isModified,
-  currentUser,
-}))
+@connect(
+  ({
+    companiesManagement: { selectedNewCompanyTab = 1 },
+    employeeProfile: { isModified } = {},
+    user: { currentUser } = {},
+  }) => ({
+    isModified,
+    currentUser,
+    selectedNewCompanyTab,
+  }),
+)
 class CommonLayout extends PureComponent {
   constructor(props) {
     super(props);
@@ -22,15 +29,20 @@ class CommonLayout extends PureComponent {
   }
 
   componentDidMount() {
-    const { listMenu } = this.props;
+    const { listMenu, selectedNewCompanyTab } = this.props;
     this.setState({
-      selectedItemId: listMenu[0].id,
+      selectedItemId: selectedNewCompanyTab || listMenu[0].id,
       displayComponent: listMenu[0].component,
     });
   }
 
   componentDidUpdate(prevProps) {
-    const { listMenu } = this.props;
+    const { listMenu, selectedNewCompanyTab } = this.props;
+
+    // auto direct from company details to work locations
+    if (prevProps.selectedNewCompanyTab !== selectedNewCompanyTab && selectedNewCompanyTab === 2) {
+      this.handleCLickItemMenu(listMenu[selectedNewCompanyTab - 1]);
+    }
 
     const prevListMenu = prevProps.listMenu.map((item) => {
       return {

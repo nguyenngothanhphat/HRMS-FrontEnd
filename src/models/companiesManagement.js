@@ -6,14 +6,14 @@ import {
   getLocationsList,
   addLocation,
   addCompanyTenant,
+  addMultiLocation,
   updateLocation,
   upsertLocationsList,
   removeLocation,
   getLocationsListTenant,
 } from '@/services/companiesManangement';
-import { history } from 'umi';
+// import { history } from 'umi';
 import { notification } from 'antd';
-import { ConsoleSqlOutlined, PauseOutlined } from '@ant-design/icons';
 
 const companiesManagement = {
   namespace: 'companiesManagement',
@@ -36,6 +36,7 @@ const companiesManagement = {
     },
     idCurrentCompany: '',
     isOpenEditWorkLocation: false,
+    selectedNewCompanyTab: 1
   },
   effects: {
     *fetchCompanyDetails({ payload: { id = '' }, dataTempKept = {} }, { call, put }) {
@@ -159,25 +160,46 @@ const companiesManagement = {
       return resp;
     },
 
+    *addMultiLocation({ payload = {} }, { call }) {
+      let resp = '';
+      try {
+        const response = yield call(addMultiLocation, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put({
+        //   type: 'fetchLocationsList',
+        //   payload: { company: payload.company },
+        // });
+        resp = response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return resp;
+    },
+
     *addCompanyTenant({ payload = {} }, { call, put }) {
       let response = '';
       try {
         response = yield call(addCompanyTenant, payload);
-        const { statusCode, message } = response;
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message,
+          message: 'New company created.',
         });
-        console.log(response);
+
         // yield put({
         //   type: 'fetchLocationsList',
         //   payload: { company: payload },
         // });
         yield put({
           type: 'saveOrigin',
-          payload: { companyDetails: { ...payload } },
+          payload: {
+            companyDetails: {
+              company: data?.company
+            },
+          },
         });
-        history.push('/control-panel');
+        // history.push('/control-panel');
       } catch (errors) {
         dialog(errors);
       }
@@ -185,12 +207,15 @@ const companiesManagement = {
     },
     *addCompanyReducer({ payload = {} }, { put }) {
       try {
-        notification.success({
-          message: 'Save basic information successfully',
-        });
         yield put({
           type: 'saveOrigin',
           payload: { companyDetails: payload },
+        });
+        yield put({
+          type: 'save',
+          payload: {
+            selectedNewCompanyTab: 2,
+          },
         });
       } catch (error) {
         dialog(error);
@@ -273,6 +298,17 @@ const companiesManagement = {
         tempData: {
           ...tempData,
           ...action.payload,
+        },
+      };
+    },
+    clearCompanyDetails(state) {
+      return {
+        ...state,
+        originData: {
+          companyDetails: {},
+        },
+        tempData: {
+          companyDetails: {},
         },
       };
     },

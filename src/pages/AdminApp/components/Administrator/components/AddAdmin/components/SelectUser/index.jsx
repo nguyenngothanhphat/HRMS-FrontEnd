@@ -14,6 +14,18 @@ export default class SelectUser extends PureComponent {
     };
   }
 
+  componentDidMount = () => {
+    const { onBackValues: { firstName = '' } = {} } = this.props;
+    if (firstName) {
+      this.setState({
+        isCompanyWorker: false,
+      });
+      this.formRef.current.setFieldsValue({
+        isCompanyWorker: false,
+      });
+    }
+  };
+
   renderTitle = () => {
     const { handleAddAdmin = () => {} } = this.props;
     return (
@@ -39,7 +51,11 @@ export default class SelectUser extends PureComponent {
 
   renderContent = () => {
     const { isCompanyWorker } = this.state;
-    const { companyName = '' } = this.props;
+    const {
+      companyName = '',
+      onBackValues: { firstName = '', email = '', name1 = '' } = {},
+    } = this.props;
+
     return (
       <div className={styles.assignUser}>
         <Form
@@ -48,6 +64,9 @@ export default class SelectUser extends PureComponent {
           id="myForm"
           initialValues={{
             isCompanyWorker,
+            firstName,
+            email,
+            name1: name1 === '' ? null : name1,
           }}
           onFinish={this.onFinish}
         >
@@ -91,7 +110,7 @@ export default class SelectUser extends PureComponent {
             <>
               <Row align="middle" gutter={[24, 24]}>
                 <Col span={8}>Name</Col>
-                <Col span={12}>
+                <Col span={14}>
                   <Form.Item
                     name="firstName"
                     rules={[{ required: true, message: 'Please enter name' }]}
@@ -99,11 +118,11 @@ export default class SelectUser extends PureComponent {
                     <Input placeholder="Type name" />
                   </Form.Item>
                 </Col>
-                <Col span={4} />
+                <Col span={2} />
               </Row>
               <Row align="middle" gutter={[24, 24]}>
                 <Col span={8}>Email</Col>
-                <Col span={12}>
+                <Col span={14}>
                   <Form.Item
                     name="email"
                     rules={[
@@ -113,7 +132,7 @@ export default class SelectUser extends PureComponent {
                     <Input placeholder="Type email" />
                   </Form.Item>
                 </Col>
-                <Col span={4} />
+                <Col span={2} />
               </Row>
             </>
           )}

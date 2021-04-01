@@ -99,16 +99,16 @@ class FormWorkLocation extends Component {
           </div>
 
           <div className={s.content__viewBottom__row}>
-            <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
+            <p className={s.content__viewBottom__row__textLabel}>Location Name*</p>
             <Form.Item
               {...field}
               label={false}
-              name={[field.name, 'addressLine1']}
-              fieldKey={[field.fieldKey, 'addressLine1']}
+              name={[field.name, 'name']}
+              fieldKey={[field.fieldKey, 'name']}
               rules={[
                 {
                   required: true,
-                  message: 'Please enter address line 1!',
+                  message: 'Please enter location name',
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
@@ -123,9 +123,28 @@ class FormWorkLocation extends Component {
                 }),
               ]}
             >
-              <Input placeholder="Address line 1" />
+              <Input placeholder="Location Name" />
             </Form.Item>
           </div>
+
+          <div className={s.content__viewBottom__row}>
+            <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
+            <Form.Item
+              {...field}
+              label={false}
+              name={[field.name, 'addressLine1']}
+              fieldKey={[field.fieldKey, 'addressLine1']}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter address line 1',
+                },
+              ]}
+            >
+              <Input placeholder="Address Line 1" />
+            </Form.Item>
+          </div>
+
           <div className={s.content__viewBottom__row}>
             <p className={s.content__viewBottom__row__textLabel}>Address Line 2</p>
             <Form.Item
@@ -140,7 +159,7 @@ class FormWorkLocation extends Component {
               //   },
               // ]}
             >
-              <Input placeholder="Address line 2" />
+              <Input placeholder="Address Line 2" />
             </Form.Item>
           </div>
           <div className={s.content__viewBottom__row}>

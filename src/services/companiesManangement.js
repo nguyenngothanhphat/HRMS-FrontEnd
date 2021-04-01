@@ -35,6 +35,14 @@ export async function updateCompany(payload) {
   });
 }
 
+export async function addMultiLocation(payload) {
+  return request('/api/locationtenant/add-multi', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+
 export async function addLocation(payload) {
   return request('/api/locationtenant/add', {
     method: 'POST',
