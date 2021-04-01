@@ -63,6 +63,7 @@ class SelectRoles extends PureComponent {
     const { permissionList = [] } = this.props;
     const { selectedList = [] } = this.state;
     const root = [];
+
     let formatList = permissionList.map((per) => per?.module);
     formatList = formatList.filter(
       (value) => value !== undefined && value !== '' && value !== null,
@@ -82,6 +83,7 @@ class SelectRoles extends PureComponent {
       });
       result = result.filter((val) => val !== 0);
 
+      // remove a result that its Title contains keyword 'root view'
       let filterResult = result.map((res) => {
         const { title = '' } = res;
         if (!title.includes('root view')) {
@@ -99,7 +101,10 @@ class SelectRoles extends PureComponent {
       };
     });
 
+    console.log(treeData);
+
     const onCheck = (valueCheckBox) => {
+      console.log(valueCheckBox);
       // Filter value IDs that include a part of rootID string in function filterID()
       let arrayValueID = [];
       valueCheckBox.forEach((item) => {
@@ -122,6 +127,7 @@ class SelectRoles extends PureComponent {
 
       const formatPermission = valueCheckBox.filter((item) => isNaN(item));
       const listPermission = [...formatPermission, ...filterRootID];
+
       this.setList(listPermission);
     };
 
