@@ -26,6 +26,10 @@ class AccountSetup extends Component {
       type: 'companiesManagement/saveTemp',
       payload: { companyDetails: {} },
     });
+    dispatch({
+      type: 'companiesManagement/save',
+      payload: { selectedNewCompanyTab: 1 },
+    });
     localStorage.removeItem('currentCompanyId');
     localStorage.removeItem('tenantId');
     localStorage.removeItem('currentLocation');
