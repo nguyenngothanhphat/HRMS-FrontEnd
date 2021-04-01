@@ -192,6 +192,13 @@ class CompanyDetails extends Component {
         isAccountSetup: true,
       });
     } else {
+      const payloadAddCompanyTenant = { ...payload };
+      dispatch({
+        type: 'companiesManagement/addCompanyTenant',
+        payload: payloadAddCompanyTenant,
+        dataTempKept: {},
+        isAccountSetup: true,
+      });
       dispatch({
         type: 'companiesManagement/addCompanyReducer',
         payload,

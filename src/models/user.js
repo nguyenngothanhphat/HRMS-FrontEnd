@@ -44,6 +44,7 @@ const UserModel = {
             permissions: checkPermissions(response.data.roles),
           },
         });
+        
       } catch (errors) {
         // error
       } finally {
