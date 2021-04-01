@@ -46,7 +46,6 @@ class EditAdmin extends PureComponent {
       });
 
       handleEditAdmin(false);
-      console.log('edit : ', values);
       dispatch({
         type: 'adminApp/updateAdmins',
         payload: {

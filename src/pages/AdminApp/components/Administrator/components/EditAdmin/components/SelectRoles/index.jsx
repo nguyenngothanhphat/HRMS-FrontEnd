@@ -100,7 +100,7 @@ class SelectRoles extends PureComponent {
     });
 
     const onCheck = (valueCheckBox) => {
-      // Filter value ID that includes a part of rootID string
+      // Filter value IDs that include a part of rootID string in function filterID()
       let arrayValueID = [];
       valueCheckBox.forEach((item) => {
         if (this.filterID(item)) {
@@ -122,7 +122,6 @@ class SelectRoles extends PureComponent {
 
       const formatPermission = valueCheckBox.filter((item) => isNaN(item));
       const listPermission = [...formatPermission, ...filterRootID];
-
       this.setList(listPermission);
     };
 
