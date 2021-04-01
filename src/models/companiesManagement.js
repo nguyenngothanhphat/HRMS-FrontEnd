@@ -12,7 +12,7 @@ import {
   removeLocation,
   getLocationsListTenant,
 } from '@/services/companiesManangement';
-import { history } from 'umi';
+// import { history } from 'umi';
 import { notification } from 'antd';
 
 const companiesManagement = {
@@ -36,6 +36,7 @@ const companiesManagement = {
     },
     idCurrentCompany: '',
     isOpenEditWorkLocation: false,
+    selectedNewCompanyTab: 1
   },
   effects: {
     *fetchCompanyDetails({ payload: { id = '' }, dataTempKept = {} }, { call, put }) {
@@ -212,12 +213,15 @@ const companiesManagement = {
     },
     *addCompanyReducer({ payload = {} }, { put }) {
       try {
-        // notification.success({
-        //   message: 'Save basic information successfully',
-        // });
         yield put({
           type: 'saveOrigin',
           payload: { companyDetails: payload },
+        });
+        yield put({
+          type: 'save',
+          payload: {
+            selectedNewCompanyTab: 2,
+          },
         });
       } catch (error) {
         dialog(error);

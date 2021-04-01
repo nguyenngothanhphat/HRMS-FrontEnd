@@ -796,7 +796,7 @@ class CompanyDetails extends Component {
             htmlType="submit"
             loading={companyId ? loadingUpdate : loadingAdd}
           >
-            Save
+            Next
           </Button>
         </div>
       </Form>
