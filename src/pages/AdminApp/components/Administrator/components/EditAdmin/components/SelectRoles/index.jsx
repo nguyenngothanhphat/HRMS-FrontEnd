@@ -101,10 +101,7 @@ class SelectRoles extends PureComponent {
       };
     });
 
-    console.log(treeData);
-
     const onCheck = (valueCheckBox) => {
-      console.log(valueCheckBox);
       // Filter value IDs that include a part of rootID string in function filterID()
       let arrayValueID = [];
       valueCheckBox.forEach((item) => {
