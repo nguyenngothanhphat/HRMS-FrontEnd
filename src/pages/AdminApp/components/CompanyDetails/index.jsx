@@ -209,7 +209,13 @@ class CompanyDetails extends Component {
       parentTenantId,
     };
     if (companyId) {
-      payload = { ...payload?.company, id: companyId, tenantId };
+      payload = {
+        ...payload?.company,
+        id: companyId,
+        tenantId,
+        childOfCompany: parentCompany,
+        tenant: parentTenantId,
+      };
       const res = await dispatch({
         type: 'companiesManagement/updateCompany',
         payload,
@@ -517,6 +523,7 @@ class CompanyDetails extends Component {
         hrContactEmail: hrEmail,
         hrContactName: hrName,
         hrContactPhone: hrPhone,
+        childOfCompany = '',
         // isHeadquarter,
       } = {},
       // locations: [
@@ -539,6 +546,7 @@ class CompanyDetails extends Component {
       // ],
       // isNewTenant,
     } = companyDetails;
+
     const validateMessages = {
       types: {
         // eslint-disable-next-line no-template-curly-in-string
@@ -580,6 +588,7 @@ class CompanyDetails extends Component {
               hrPhone,
               isNewTenant: false,
               isHeadquarter: true,
+              parentCompany: childOfCompany,
               // logoUrl,
             }}
           >
@@ -628,7 +637,6 @@ class CompanyDetails extends Component {
                         showArrow
                         showSearch
                         allowClear
-                        defaultValue=""
                         disabled={!isEditCompanyDetails}
                         className={s.parentCompanySelect}
                         // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
@@ -636,15 +644,13 @@ class CompanyDetails extends Component {
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
                       >
-                        <Option
-                          key=""
-                          value=""
-                          style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
-                        >
+                        <Option style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}>
                           None
                         </Option>
                         {listCompany.map((item) => (
-                          <Option key={item._id}>{item.name}</Option>
+                          <Option disabled={item._id === childOfCompany} key={item._id}>
+                            {item.name}
+                          </Option>
                         ))}
                       </Select>
                     </Form.Item>
