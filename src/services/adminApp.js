@@ -34,6 +34,13 @@ export function getLocationList(payload) {
   });
 }
 
+export function updateLocation(payload) {
+  return request('/api/locationtenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 
 export function removeLocation(payload) {
   return request('/api/locationtenant/remove', {

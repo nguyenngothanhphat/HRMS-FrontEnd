@@ -36,6 +36,10 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 16px;
+      .actionBtn {
+        display: flex;
+        align-items: center;
+      }
       .actionDelete {
         cursor: pointer;
         &__icon {
@@ -49,6 +53,10 @@
           line-height: 15px;
           text-decoration: underline;
         }
+      }
+      .actionEdit {
+        .actionDelete();
+        margin-right: 20px;
       }
     }
     &__row {

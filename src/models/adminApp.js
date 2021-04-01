@@ -6,7 +6,8 @@ import {
   getListAdmin,
   updateAdminService,
   getLocationList,
-  removeLocation
+  removeLocation,
+  updateLocation
 } from '../services/adminApp';
 
 const country = {
@@ -87,6 +88,20 @@ const country = {
     *removeLocation({ payload = {} }, { call }) {
       try {
         const response = yield call(removeLocation, payload);
+        const { statusCode, message = '' } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message
+        })
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *updateLocation({ payload = {} }, { call }) {
+      try {
+        const response = yield call(updateLocation, payload);
         const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
         notification.success({

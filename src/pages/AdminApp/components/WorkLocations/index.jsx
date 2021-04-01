@@ -3,6 +3,7 @@ import { Form, Button, Skeleton, notification } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { connect } from 'umi';
+// import ThirdStep from '@/pages/EmployeeProfile/components/EmploymentTab/components/HandleChanges/components/ThirdStep';
 import FormWorkLocation from './components/FormWorkLocation';
 import FormWorkLocationTenant from './components/FormWorkLocation-Tenant';
 import s from './index.less';
@@ -25,7 +26,10 @@ class WorkLocations extends PureComponent {
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
-    this.state = {};
+    this.state = {
+      countLocation: 0,
+      countEditBlock: 0,
+    };
   }
 
   componentDidMount() {
@@ -47,7 +51,20 @@ class WorkLocations extends PureComponent {
     });
   }
 
-  onFinish = async (values) => {
+  handleEditLocation = (value) => {
+    const { countEditBlock } = this.state;
+    let count = countEditBlock;
+    if (value) {
+      count = countEditBlock + 1;
+    } else {
+      count = countEditBlock - 1;
+    }
+    this.setState({
+      countEditBlock: count,
+    });
+  };
+
+  addLocationAPI = async (values) => {
     const tenantId = localStorage.getItem('tenantId');
     const companyId = localStorage.getItem('currentCompanyId');
 
@@ -104,6 +121,24 @@ class WorkLocations extends PureComponent {
         payload: { company: companyId, tenantId },
       });
     }
+  };
+
+  editLocationAPI = () => {
+    console.log('EDIT LOCATION');
+  };
+
+  onFinish = async (values) => {
+    const { countEditBlock, countLocation } = this.state;
+    if (countLocation !== 0) {
+      this.addLocationAPI(values);
+    }
+    if (countEditBlock !== 0) {
+      this.editLocationAPI();
+    }
+    this.setState({
+      countEditBlock: 0,
+      countLocation: 0,
+    });
   };
 
   formatListLocation = () => {
@@ -171,6 +206,7 @@ class WorkLocations extends PureComponent {
   };
 
   render() {
+    const { countEditBlock, countLocation } = this.state;
     const {
       listCountry = [],
       locationsList = [],
@@ -231,6 +267,7 @@ class WorkLocations extends PureComponent {
                   removeLocation={this.removeLocation}
                   listLength={formatCurrentLocationsList.length}
                   index={index}
+                  handleEditLocation={this.handleEditLocation}
                 />
               );
             })}
@@ -262,29 +299,39 @@ class WorkLocations extends PureComponent {
                         listCountry={listCountry}
                         listLocation={listLocation}
                         removeLocation={this.removeLocation}
-                        onRemove={() => remove(field.name)}
+                        onRemove={() => {
+                          this.setState({ countLocation: countLocation - 1 });
+                          remove(field.name);
+                        }}
                       />
                     ))}
                     <div className={s.actions}>
-                      <div className={s.viewAddWorkLocation} onClick={() => add()}>
+                      <div
+                        className={s.viewAddWorkLocation}
+                        onClick={() => {
+                          this.setState({ countLocation: countLocation + 1 });
+                          add();
+                        }}
+                      >
                         <p className={s.viewAddWorkLocation__icon}>
                           <PlusOutlined />
                         </p>
                         <p className={s.viewAddWorkLocation__text}>Add work location</p>
                       </div>
-                      {fields.length > 0 && (
-                        <div className={s.viewBtn}>
-                          <Button className={s.btnSubmit} htmlType="submit">
-                            Save
-                          </Button>
-                        </div>
-                      )}
                     </div>
                   </>
                 )}
               </Form.List>
             </div>
           </div>
+
+          {(countEditBlock !== 0 || countLocation !== 0) && (
+            <div className={s.viewBtn}>
+              <Button className={s.btnSubmit} htmlType="submit">
+                Save
+              </Button>
+            </div>
+          )}
         </Form>
       </div>
     );

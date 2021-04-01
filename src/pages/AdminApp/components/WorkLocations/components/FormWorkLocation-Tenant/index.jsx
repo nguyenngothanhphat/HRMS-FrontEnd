@@ -15,6 +15,7 @@ class FormWorkLocationTenant extends Component {
     super(props);
     this.state = {
       newCountry: '',
+      isEditing: false,
     };
   }
 
@@ -24,6 +25,15 @@ class FormWorkLocationTenant extends Component {
       newCountry: defaultCountry,
     });
   }
+
+  handleEdit = () => {
+    const { handleEditLocation = () => {} } = this.props;
+    const { isEditing } = this.state;
+    handleEditLocation(!isEditing);
+    this.setState({
+      isEditing: !isEditing,
+    });
+  };
 
   onChangeCountry = (newCountry) => {
     this.setState({
@@ -61,7 +71,7 @@ class FormWorkLocationTenant extends Component {
   };
 
   render() {
-    const { newCountry = '' } = this.state;
+    const { newCountry = '', isEditing } = this.state;
     const {
       listCountry = [],
       field = {},
@@ -78,7 +88,9 @@ class FormWorkLocationTenant extends Component {
       listLength = 0,
       index = 0,
     } = this.props;
+
     const listState = this.findListState(newCountry) || [];
+    const disableInput = !isEditing;
 
     return (
       <div className={s.content} style={field.name > 0 ? { marginTop: '24px' } : {}}>
@@ -99,12 +111,23 @@ class FormWorkLocationTenant extends Component {
             <Row className={s.content__viewBottom__viewTitle}>
               <p className={s.title}>{isHeadQuarter ? 'Headquater' : name}</p>
 
-              {!isHeadQuarter && (
-                <div className={s.actionDelete} onClick={() => this.handleRemove(_id)}>
-                  <DeleteOutlined className={s.actionDelete__icon} />
-                  <span>Delete</span>
-                </div>
-              )}
+              <div className={s.actionBtn}>
+                {!isEditing ? (
+                  <div className={s.actionEdit} onClick={this.handleEdit}>
+                    <span>Edit</span>
+                  </div>
+                ) : (
+                  <div className={s.actionEdit} onClick={this.handleEdit}>
+                    <span style={{ color: '#f00000' }}>Cancel</span>
+                  </div>
+                )}
+                {!isHeadQuarter && (
+                  <div className={s.actionDelete} onClick={() => this.handleRemove(_id)}>
+                    <DeleteOutlined className={s.actionDelete__icon} />
+                    <span>Delete</span>
+                  </div>
+                )}
+              </div>
             </Row>
             <Row className={s.content__viewBottom__row}>
               <Col span={8}>
@@ -112,7 +135,7 @@ class FormWorkLocationTenant extends Component {
               </Col>
               <Col span={16}>
                 <Form.Item name="addressLine1">
-                  <Input placeholder="Location Name" />
+                  <Input disabled={disableInput} placeholder="Location Name" />
                 </Form.Item>
               </Col>
             </Row>
@@ -122,7 +145,7 @@ class FormWorkLocationTenant extends Component {
               </Col>
               <Col span={16}>
                 <Form.Item name="addressLine2">
-                  <Input placeholder="Address" />
+                  <Input disabled={disableInput} placeholder="Address" />
                 </Form.Item>
               </Col>
             </Row>
@@ -136,6 +159,7 @@ class FormWorkLocationTenant extends Component {
                     placeholder="Select Country"
                     showArrow
                     showSearch
+                    disabled={disableInput}
                     onChange={this.onChangeCountry}
                     filterOption={(input, option) =>
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -153,7 +177,7 @@ class FormWorkLocationTenant extends Component {
                     placeholder="Select State"
                     showArrow
                     showSearch
-                    disabled={!newCountry}
+                    disabled={disableInput || !newCountry}
                     filterOption={(input, option) =>
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
@@ -166,7 +190,7 @@ class FormWorkLocationTenant extends Component {
               <Col span={8} className={s.viewFormVertical}>
                 <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>Zip*</p>
                 <Form.Item name="zipCode">
-                  <Input placeholder="Zip Code" />
+                  <Input disabled={disableInput} placeholder="Zip Code" />
                 </Form.Item>
               </Col>
             </Row>
