@@ -138,7 +138,7 @@ class WorkLocations extends PureComponent {
   };
 
   formatCurrentLocationList = (locationsList) => {
-    return locationsList.map((location) => {
+    let list = locationsList.map((location) => {
       const {
         _id = '',
         name = '',
@@ -162,6 +162,12 @@ class WorkLocations extends PureComponent {
         isHeadQuarter,
       };
     });
+
+    // these lines to move the headquarter to top of array
+    const headQuarter = list.find((item) => item.isHeadQuarter);
+    list = list.filter((item) => !item.isHeadQuarter);
+    list.unshift(headQuarter);
+    return list;
   };
 
   render() {

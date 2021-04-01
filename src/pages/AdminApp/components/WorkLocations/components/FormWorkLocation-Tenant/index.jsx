@@ -1,7 +1,3 @@
-/* eslint-disable compat/compat */
-/* eslint-disable prefer-promise-reject-errors */
-/* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
 import { Form, Input, Select, Divider, Modal, Row, Col } from 'antd';
 import { ExclamationCircleOutlined, DeleteOutlined } from '@ant-design/icons';
@@ -68,7 +64,6 @@ class FormWorkLocationTenant extends Component {
     const { newCountry = '' } = this.state;
     const {
       listCountry = [],
-      listLocation = [],
       field = {},
       locationInfo: {
         _id = '',
@@ -84,7 +79,6 @@ class FormWorkLocationTenant extends Component {
       index = 0,
     } = this.props;
     const listState = this.findListState(newCountry) || [];
-    const itemLocation = listLocation[field.name] || {};
 
     return (
       <div className={s.content} style={field.name > 0 ? { marginTop: '24px' } : {}}>
@@ -144,8 +138,7 @@ class FormWorkLocationTenant extends Component {
                     showSearch
                     onChange={this.onChangeCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {listCountry.map((item) => (
                       <Option key={item._id}>{item.name}</Option>
@@ -162,8 +155,7 @@ class FormWorkLocationTenant extends Component {
                     showSearch
                     disabled={!newCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {listState.map((item) => (
                       <Option key={item}>{item}</Option>
