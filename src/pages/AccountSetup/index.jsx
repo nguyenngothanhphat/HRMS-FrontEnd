@@ -14,18 +14,15 @@ import s from './index.less';
 class AccountSetup extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
+    // clear company details
+    dispatch({
+      type: 'companiesManagement/clearCompanyDetails',
+    });
+    // fetch list companies
     dispatch({
       type: 'user/fetchCompanyOfUser',
     });
-    // clear company details
-    dispatch({
-      type: 'companiesManagement/saveOrigin',
-      payload: { companyDetails: {} },
-    });
-    dispatch({
-      type: 'companiesManagement/saveTemp',
-      payload: { companyDetails: {} },
-    });
+    // set default tab to 1
     dispatch({
       type: 'companiesManagement/save',
       payload: { selectedNewCompanyTab: 1 },

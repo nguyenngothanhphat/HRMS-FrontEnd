@@ -307,6 +307,17 @@ const companiesManagement = {
         },
       };
     },
+    clearCompanyDetails(state) {
+      return {
+        ...state,
+        originData: {
+          companyDetails: {},
+        },
+        tempData: {
+          companyDetails: {},
+        },
+      };
+    },
     saveHeadQuarterAddress(state, action) {
       const { headQuarterAddress } = state;
       return {
