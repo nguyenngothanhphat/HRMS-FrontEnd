@@ -95,9 +95,10 @@ class SelectRoles extends PureComponent {
     });
 
     const onCheck = (checkedKeys) => {
+      const formatPermission = checkedKeys.filter((item) => isNaN(item));
       // Filter value IDs that include a part of rootID string in function filterID()
       let arrayValueID = [];
-      checkedKeys.forEach((item) => {
+      formatPermission.forEach((item) => {
         if (this.filterID(item)) {
           arrayValueID.push(...this.filterID(item));
         }
@@ -115,7 +116,7 @@ class SelectRoles extends PureComponent {
         return 0;
       });
 
-      const formatPermission = checkedKeys.filter((item) => isNaN(item));
+      // const formatPermission = formatPermission.filter((item) => isNaN(item));
       const listPermission = [...formatPermission, ...filterRootID];
       this.setList(listPermission);
     };
