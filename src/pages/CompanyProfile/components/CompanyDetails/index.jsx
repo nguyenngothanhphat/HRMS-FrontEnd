@@ -182,7 +182,7 @@ class CompanyDetails extends Component {
             state: stateLegal,
             zipCode: zipLegal,
           },
-          isHeadquarter: true,
+          isHeadQuarter: true,
         },
       ],
       isNewTenant: !parentCompany,
@@ -412,7 +412,7 @@ class CompanyDetails extends Component {
           hrEmail,
           hrPhone,
           isNewTenant: false,
-          isHeadquarter: true,
+          isHeadQuarter: true,
           // logoUrl,
         }}
       >

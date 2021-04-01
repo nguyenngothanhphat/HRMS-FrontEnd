@@ -103,7 +103,7 @@ class FormWorkLocationTenant extends Component {
             }}
           >
             <Row className={s.content__viewBottom__viewTitle}>
-              <p className={s.title}>{itemLocation?.name || name}</p>
+              <p className={s.title}>{isHeadQuarter ? 'Headquater' : name}</p>
 
               {!isHeadQuarter && (
                 <div className={s.actionDelete} onClick={() => this.handleRemove(_id)}>

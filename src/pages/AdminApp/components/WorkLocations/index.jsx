@@ -1,12 +1,8 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
-import { Form, Divider, Button, Skeleton, Input, Select, notification } from 'antd';
-import { ConsoleSqlOutlined, PlusOutlined } from '@ant-design/icons';
+import { Form, Button, Skeleton, notification } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { connect } from 'umi';
-import classnames from 'classnames';
 import FormWorkLocation from './components/FormWorkLocation';
 import FormWorkLocationTenant from './components/FormWorkLocation-Tenant';
 import s from './index.less';
@@ -55,7 +51,7 @@ class WorkLocations extends PureComponent {
     const tenantId = localStorage.getItem('tenantId');
     const companyId = localStorage.getItem('currentCompanyId');
 
-    const { dispatch, companyDetails = {} } = this.props;
+    const { dispatch } = this.props;
     // const { company, isNewTenant, locations: originLocations = [] } = companyDetails;
     // const listLocation = [...originLocations, ...locations];
     const { workLocations = [] } = values;
@@ -153,6 +149,7 @@ class WorkLocations extends PureComponent {
           state = '',
           zipCode = '',
         } = {},
+        isHeadQuarter = false,
       } = location;
       return {
         _id,
@@ -162,6 +159,7 @@ class WorkLocations extends PureComponent {
         country,
         state,
         zipCode,
+        isHeadQuarter,
       };
     });
   };
@@ -170,15 +168,11 @@ class WorkLocations extends PureComponent {
     const {
       listCountry = [],
       locationsList = [],
-      loading,
       fetchingLocationsList,
       loadingCountry,
-      companyDetails = {},
     } = this.props;
 
     const listLocation = this.formatListLocation();
-
-    const defaultListLocation = [{}];
 
     if (fetchingLocationsList || loadingCountry)
       return (
