@@ -96,7 +96,7 @@ class AccountSetup extends Component {
           {/* RENDER COMPANIES */}
           {this.renderCompanies(isOwner, isAdmin)}
 
-          {(isOwner || isAdmin) && (
+          {isOwner && (
             <Button
               className={s.btnAddNew}
               onClick={() => history.push('/control-panel/add-company')}
