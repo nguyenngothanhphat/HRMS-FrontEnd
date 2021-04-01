@@ -58,10 +58,20 @@ class SelectRoles extends PureComponent {
       });
       result = result.filter((val) => val !== 0);
 
+      let filterResult = result.map((res) => {
+        const { title = '' } = res;
+        if (!title.includes('root view')) {
+          return res;
+        }
+        return 0;
+      });
+
+      filterResult = filterResult.filter((val) => val !== 0);
+
       return {
         key: index,
         title: moduleName,
-        children: result,
+        children: filterResult,
       };
     });
 
@@ -108,7 +118,7 @@ class SelectRoles extends PureComponent {
   };
 
   render() {
-    const { selectedList = [] } = this.state;
+    // const { selectedList = [] } = this.state;
     return (
       <div className={styles.SelectRoles}>
         {this.renderTitle()}
