@@ -7,6 +7,7 @@ class SelectRoles extends PureComponent {
     super(props);
     this.state = {
       selectedList: [],
+      rootID: [],
     };
   }
 
@@ -57,17 +58,19 @@ class SelectRoles extends PureComponent {
         return 0;
       });
       result = result.filter((val) => val !== 0);
+      const root = [];
 
       let filterResult = result.map((res) => {
         const { title = '' } = res;
         if (!title.includes('root view')) {
           return res;
         }
+        root.push(res);
         return 0;
       });
 
       filterResult = filterResult.filter((val) => val !== 0);
-
+      console.log(root);
       return {
         key: index,
         title: moduleName,
@@ -76,6 +79,9 @@ class SelectRoles extends PureComponent {
     });
 
     const onCheck = (value) => {
+      // const { rootID = [] } = this.state;
+      // console.log(rootID);
+      console.log(value);
       this.setList(value);
     };
 
