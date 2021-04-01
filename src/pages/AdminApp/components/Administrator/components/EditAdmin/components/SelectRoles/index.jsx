@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import React, { PureComponent } from 'react';
 import { Button, Tree } from 'antd';
 import styles from './index.less';
@@ -36,9 +37,33 @@ class SelectRoles extends PureComponent {
     });
   };
 
+  filterID = (value) => {
+    const idArray = [
+      'M_USER_MANAGEMENT',
+      'M_DIRECTORY',
+      'M_ONBOARDING',
+      'M_TIMEOFF',
+      'M_OFFBOARDING',
+      'M_PROJECT_MANAGEMENT',
+      'M_DOCUMENT_MANAGEMENT',
+    ];
+
+    let data = idArray.map((item) => {
+      if (value.includes(item)) {
+        return item;
+      }
+      return 0;
+    });
+
+    data = data.filter((item) => item !== 0);
+    return data;
+  };
+
   renderList = () => {
     const { permissionList = [] } = this.props;
     const { selectedList = [] } = this.state;
+    const root = [];
+
     let formatList = permissionList.map((per) => per?.module);
     formatList = formatList.filter(
       (value) => value !== undefined && value !== '' && value !== null,
@@ -58,15 +83,49 @@ class SelectRoles extends PureComponent {
       });
       result = result.filter((val) => val !== 0);
 
+      // remove a result that its Title contains keyword 'root view'
+      let filterResult = result.map((res) => {
+        const { title = '' } = res;
+        if (!title.includes('root view')) {
+          return res;
+        }
+        root.push(res);
+        return 0;
+      });
+
+      filterResult = filterResult.filter((val) => val !== 0);
       return {
         key: index,
         title: moduleName,
-        children: result,
+        children: filterResult,
       };
     });
 
-    const onCheck = (value) => {
-      this.setList(value);
+    const onCheck = (valueCheckBox) => {
+      // Filter value IDs that include a part of rootID string in function filterID()
+      let arrayValueID = [];
+      valueCheckBox.forEach((item) => {
+        if (this.filterID(item)) {
+          arrayValueID.push(...this.filterID(item));
+        }
+      });
+      arrayValueID = [...new Set(arrayValueID)];
+
+      // then, return root id from root list
+      const filterRootID = [];
+      arrayValueID.map((id) => {
+        root.forEach((r) => {
+          if (r.key.includes(id)) {
+            filterRootID.push(r.key);
+          }
+        });
+        return 0;
+      });
+
+      const formatPermission = valueCheckBox.filter((item) => isNaN(item));
+      const listPermission = [...formatPermission, ...filterRootID];
+
+      this.setList(listPermission);
     };
 
     return (
@@ -108,7 +167,7 @@ class SelectRoles extends PureComponent {
   };
 
   render() {
-    const { selectedList = [] } = this.state;
+    // const { selectedList = [] } = this.state;
     return (
       <div className={styles.SelectRoles}>
         {this.renderTitle()}
