@@ -46,13 +46,12 @@ class EditAdmin extends PureComponent {
       });
 
       handleEditAdmin(false);
-      // eslint-disable-next-line no-restricted-globals
-      const formatPermission = values.filter((item) => isNaN(item));
+      console.log('edit : ', values);
       dispatch({
         type: 'adminApp/updateAdmins',
         payload: {
           managePermissionId: permissionID,
-          permissionAdmin: formatPermission,
+          permissionAdmin: values,
           firstName: adminInfo.name,
           id: userID,
         },
