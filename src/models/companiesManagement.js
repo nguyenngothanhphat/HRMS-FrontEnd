@@ -160,15 +160,12 @@ const companiesManagement = {
       return resp;
     },
 
-    *addMultiLocation({ payload = {} }, { call, put }) {
+    *addMultiLocation({ payload = {} }, { call }) {
       let resp = '';
       try {
         const response = yield call(addMultiLocation, payload);
-        const { statusCode, message } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        // notification.success({
-        //   message,
-        // });
         // yield put({
         //   type: 'fetchLocationsList',
         //   payload: { company: payload.company },
@@ -198,10 +195,7 @@ const companiesManagement = {
           type: 'saveOrigin',
           payload: {
             companyDetails: {
-              ...payload,
-              newCompanyId: data?.company?._id,
-              newCompanyTenantId: data?.company?.tenant,
-              newCompanyName: data?.company?.name
+              company: data?.company
             },
           },
         });

@@ -43,7 +43,7 @@ class AccountSetup extends Component {
 
   renderCompanies = (isOwner, isAdmin) => {
     const { companiesOfUser = [], loadingCompaniesOfUser = false } = this.props;
-
+    const sortedCompanyList = companiesOfUser.sort((a, b) => a.name.localeCompare(b.name));
     if (loadingCompaniesOfUser) {
       return (
         <div>
@@ -51,7 +51,7 @@ class AccountSetup extends Component {
         </div>
       );
     }
-    return companiesOfUser.map((comp) => {
+    return sortedCompanyList.map((comp) => {
       return <ItemCompany company={comp} isOwner={isOwner} isAdmin={isAdmin} />;
     });
   };

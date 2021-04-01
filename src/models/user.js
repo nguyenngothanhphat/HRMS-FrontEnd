@@ -19,7 +19,6 @@ const UserModel = {
 
     *fetchCurrent(_, { call, put }) {
       try {
-        console.log('-fetch');
         const response = yield call(queryCurrent);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
@@ -56,7 +55,6 @@ const UserModel = {
 
     *fetchCompanyOfUser(_, { call, put }) {
       try {
-        console.log('-asdasdasdasd');
         const response = yield call(fetchCompanyOfUser);
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;

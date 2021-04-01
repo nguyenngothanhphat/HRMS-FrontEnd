@@ -3,7 +3,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Select, Divider, Modal, Button } from 'antd';
+import { Form, Input, Select, Divider, Modal, Row, Col } from 'antd';
 import { ExclamationCircleOutlined, DeleteOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
 import { bool } from 'prop-types';
@@ -85,13 +85,13 @@ class FormWorkLocation extends Component {
       field = {},
       name = '',
     } = this.props;
-    console.log('filed', field);
+
     const listState = this.findListState(country) || [];
     const itemLocation = listLocation[field.name] || {};
     return (
-      <div className={s.content} style={field.name > 0 ? { marginTop: '24px' } : {}}>
-        <div className={s.content__viewBottom}>
-          <div className={s.content__viewBottom__viewTitle}>
+      <div className={s.FormWorkLocation} style={field.name > 0 ? { marginTop: '24px' } : {}}>
+        <div className={s.FormWorkLocation__viewBottom}>
+          <div className={s.FormWorkLocation__viewBottom__viewTitle}>
             <p className={s.title}>{itemLocation?.name || name}</p>
             <div className={isHidden ? `${s.action} ${s.hide}` : `${s.action}`}>
               <div className={s.action__actionDelete}>
@@ -101,62 +101,81 @@ class FormWorkLocation extends Component {
                 />
                 <span onClick={this.handleRemove}>Delete</span>
               </div>
-              <div className={s.viewBtn}>
-                <Button className={s.btnSubmit} htmlType="submit" onClick={this.handleSubmit}>
-                  Save
-                </Button>
-              </div>
             </div>
           </div>
 
-          <div className={s.content__viewBottom__row}>
-            <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
-            <Form.Item
-              {...field}
-              label={false}
-              name={[field.name, 'addressLine1']}
-              fieldKey={[field.fieldKey, 'addressLine1']}
-              rules={[
-                {
-                  required: true,
-                  message: 'Please enter name!',
-                },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    const checkUnique = getFieldValue('workLocations').filter(
-                      (item) => item?.name && item?.name === value,
-                    );
-                    if (checkUnique.length <= 1) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject('This name has already been used!');
+          <Row className={s.FormWorkLocation__viewBottom__row}>
+            <Col span={8}>
+              <p className={s.FormWorkLocation__viewBottom__row__textLabel}>Location Name*</p>
+            </Col>
+            <Col span={16}>
+              <Form.Item
+                {...field}
+                label={false}
+                name={[field.name, 'name']}
+                fieldKey={[field.fieldKey, 'name']}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter location name',
                   },
-                }),
-              ]}
-            >
-              <Input placeholder="Address line 1" />
-            </Form.Item>
+                  ({ getFieldValue }) => ({
+                    validator(_, value) {
+                      const checkUnique = getFieldValue('workLocations').filter(
+                        (item) => item?.name && item?.name === value,
+                      );
+                      if (checkUnique.length <= 1) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject('This name has already been used!');
+                    },
+                  }),
+                ]}
+              >
+                <Input placeholder="Location Name" />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <div className={s.FormWorkLocation__viewBottom__row}>
+            <Col span={8}>
+              <p className={s.FormWorkLocation__viewBottom__row__textLabel}>Address Line 1*</p>
+            </Col>
+            <Col span={16}>
+              <Form.Item
+                {...field}
+                label={false}
+                name={[field.name, 'addressLine1']}
+                fieldKey={[field.fieldKey, 'addressLine1']}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter address line 1!',
+                  },
+                ]}
+              >
+                <Input placeholder="Address Line 1" />
+              </Form.Item>
+            </Col>
           </div>
-          <div className={s.content__viewBottom__row}>
-            <p className={s.content__viewBottom__row__textLabel}>Address Line 2</p>
-            <Form.Item
-              {...field}
-              label={false}
-              name={[field.name, 'addressLine2']}
-              fieldKey={[field.fieldKey, 'addressLine2']}
-              // rules={[
-              //   {
-              //     required: true,
-              //     message: 'Please enter Address!',
-              //   },
-              // ]}
-            >
-              <Input placeholder="Address line 2" />
-            </Form.Item>
+          <div className={s.FormWorkLocation__viewBottom__row}>
+            <Col span={8}>
+              <p className={s.FormWorkLocation__viewBottom__row__textLabel}>Address Line 2</p>
+            </Col>
+            <Col span={16}>
+              <Form.Item
+                {...field}
+                label={false}
+                name={[field.name, 'addressLine2']}
+                fieldKey={[field.fieldKey, 'addressLine2']}
+              >
+                <Input placeholder="Address Line 2" />
+              </Form.Item>
+            </Col>
           </div>
-          <div className={s.content__viewBottom__row}>
-            <div className={s.viewFormVertical}>
-              <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>Country</p>
+          <Row gutter={[24, 24]} className={s.FormWorkLocation__viewBottom__row}>
+            <Col span={8} className={s.viewFormVertical}>
+              <p className={classnames(s.FormWorkLocation__viewBottom__row__textLabel, s.mgb10)}>Country*</p>
               <Form.Item
                 {...field}
                 label={false}
@@ -183,9 +202,9 @@ class FormWorkLocation extends Component {
                   ))}
                 </Select>
               </Form.Item>
-            </div>
-            <div className={s.viewFormVertical}>
-              <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>State</p>
+            </Col>
+            <Col span={8} className={s.viewFormVertical}>
+              <p className={classnames(s.FormWorkLocation__viewBottom__row__textLabel, s.mgb10)}>State*</p>
               <Form.Item
                 {...field}
                 label={false}
@@ -212,9 +231,9 @@ class FormWorkLocation extends Component {
                   ))}
                 </Select>
               </Form.Item>
-            </div>
-            <div className={s.viewFormVertical}>
-              <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>Zip</p>
+            </Col>
+            <Col span={8} className={s.viewFormVertical}>
+              <p className={classnames(s.FormWorkLocation__viewBottom__row__textLabel, s.mgb10)}>Zip*</p>
               <Form.Item
                 {...field}
                 label={false}
@@ -229,8 +248,8 @@ class FormWorkLocation extends Component {
               >
                 <Input placeholder="Zip Code" />
               </Form.Item>
-            </div>
-          </div>
+            </Col>
+          </Row>
         </div>
         <Divider className={s.divider} />
       </div>

@@ -5,6 +5,8 @@ import {
   addNewAdmin,
   getListAdmin,
   updateAdminService,
+  getLocationList,
+  removeLocation
 } from '../services/adminApp';
 
 const country = {
@@ -14,6 +16,7 @@ const country = {
     newAdmin: {},
     listAdmin: [],
     updateAdmin: {},
+    locationsList: []
   },
   effects: {
     *fetchPermissionList({ payload = {} }, { call, put }) {
@@ -63,6 +66,32 @@ const country = {
           description: 'Update additional administrator successfully',
         });
         yield put({ type: 'save', payload: { updateAdmin } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *fetchLocationList({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getLocationList, payload);
+        const { statusCode, data: locationsList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { locationsList } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *removeLocation({ payload = {} }, { call }) {
+      try {
+        const response = yield call(removeLocation, payload);
+        const { statusCode, message = '' } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message
+        })
         return response;
       } catch (errors) {
         dialog(errors);

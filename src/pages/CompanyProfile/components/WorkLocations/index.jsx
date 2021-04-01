@@ -1,12 +1,8 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
-import { Form, Divider, Button, Skeleton, Input, Select, notification } from 'antd';
+import { Form, Button, Skeleton, notification } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { connect, history } from 'umi';
-import classnames from 'classnames';
 import FormWorkLocation from './components/FormWorkLocation';
 import FormWorkLocationTenant from './components/FormWorkLocation-Tenant';
 import s from './index.less';
@@ -58,11 +54,14 @@ class WorkLocations extends PureComponent {
   onFinish = async ({ workLocations = [] }) => {
     const { dispatch, companyDetails = {} } = this.props;
     const {
-      company,
-      isNewTenant,
-      newCompanyId = '',
-      newCompanyTenantId = '',
-      newCompanyName = '',
+      company: {
+        _id: newCompanyId = '',
+        tenant: newCompanyTenantId = '',
+        // name: newCompanyName = '',
+        // headQuarterAddress = {},
+        // legalQuarterAddress = {},
+      } = {},
+      // isNewTenant,
     } = companyDetails;
 
     const formatListLocation = workLocations.map((location) => {
@@ -73,6 +72,7 @@ class WorkLocations extends PureComponent {
         country = '',
         state = '',
         zipCode = '',
+        isHeadQuarter = false,
       } = location;
       return {
         name,
@@ -90,7 +90,7 @@ class WorkLocations extends PureComponent {
           state,
           zipCode,
         },
-        isheadQuarte: false,
+        isHeadQuarter,
       };
     });
     const payload = {

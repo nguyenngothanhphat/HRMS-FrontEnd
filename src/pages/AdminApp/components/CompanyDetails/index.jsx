@@ -588,7 +588,7 @@ class CompanyDetails extends Component {
               hrPhone,
               isNewTenant: false,
               isHeadquarter: true,
-              parentCompany: childOfCompany,
+              parentCompany: childOfCompany || null,
               // logoUrl,
             }}
           >
