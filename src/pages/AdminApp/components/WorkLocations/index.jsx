@@ -132,11 +132,8 @@ class WorkLocations extends PureComponent {
       companyDetails = {},
     } = this.props;
 
-    const listLocation = this.formatListLocation();
-
-    const defaultListLocation = listLocation.length === 0 ? [{}] : listLocation;
-    const {
-      company: {
+    const [
+      {
         headQuarterAddress: {
           addressLine1 = '',
           addressLine2 = '',
@@ -145,7 +142,22 @@ class WorkLocations extends PureComponent {
           zipCode = '',
         } = {},
       } = {},
-    } = companyDetails;
+    ] = locationsList;
+
+    const listLocation = this.formatListLocation();
+
+    const defaultListLocation = listLocation.length === 0 ? [{}] : listLocation;
+    // const {
+    //   company: {
+    //     headQuarterAddress: {
+    //       addressLine1 = '',
+    //       addressLine2 = '',
+    //       country = '',
+    //       state = '',
+    //       zipCode = '',
+    //     } = {},
+    //   } = {},
+    // } = companyDetails;
 
     if (fetchingLocationsList || loadingCountry)
       return (
@@ -168,7 +180,7 @@ class WorkLocations extends PureComponent {
     return (
       <Form
         ref={this.formRef}
-        onFinish={this.onFinish}
+        onFinish={(values) => console.log(values)}
         autoComplete="off"
         initialValues={{
           addressLine1,

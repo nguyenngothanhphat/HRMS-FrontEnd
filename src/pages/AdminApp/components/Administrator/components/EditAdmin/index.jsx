@@ -11,8 +11,9 @@ class EditAdmin extends PureComponent {
     super(props);
     this.state = {
       currentStep: 1,
+      // eslint-disable-next-line react/no-unused-state
       adminRoles: [],
-      // adminInfo: {},
+      adminInfo: {},
     };
   }
 
@@ -25,26 +26,33 @@ class EditAdmin extends PureComponent {
   };
 
   onContinue = (step, values) => {
-    const { handleEditAdmin = () => {}, dispatch, dataAdmin: { _id = '' } = {} } = this.props;
-    const { adminRoles } = this.state;
+    const {
+      handleEditAdmin = () => {},
+      dispatch,
+      dataAdmin: { _id: permissionID = '', usermap: { _id: userID = '' } = {} } = {},
+    } = this.props;
+    const { adminInfo } = this.state;
     if (step === 1) {
       this.setState({
         currentStep: step + 1,
-        adminRoles: values,
+        adminInfo: values,
       });
     }
 
     if (step === 2) {
-      // this.setState({
-      //   adminInfo: values,
-      // });
-      // handleEditAdmin(false);
+      this.setState({
+        // eslint-disable-next-line react/no-unused-state
+        adminRoles: values,
+      });
 
+      handleEditAdmin(false);
       dispatch({
         type: 'adminApp/updateAdmins',
         payload: {
-          managePermissionId: _id,
-          permissionAdmin: adminRoles,
+          managePermissionId: permissionID,
+          permissionAdmin: values,
+          firstName: adminInfo.name,
+          id: userID,
         },
       }).then(() => {
         handleEditAdmin(false);
@@ -55,19 +63,20 @@ class EditAdmin extends PureComponent {
   render() {
     const { handleEditAdmin = () => {}, dataAdmin = {}, permissionList = [] } = this.props;
     const { currentStep } = this.state;
+
     return (
       <div className={styles.EditAdmin}>
         {currentStep === 1 && (
-          <SelectRoles
+          <SelectUser
             dataAdmin={dataAdmin}
-            permissionList={permissionList}
             handleEditAdmin={handleEditAdmin}
             onContinue={this.onContinue}
           />
         )}
         {currentStep === 2 && (
-          <SelectUser
+          <SelectRoles
             dataAdmin={dataAdmin}
+            permissionList={permissionList}
             handleEditAdmin={handleEditAdmin}
             onContinue={this.onContinue}
           />

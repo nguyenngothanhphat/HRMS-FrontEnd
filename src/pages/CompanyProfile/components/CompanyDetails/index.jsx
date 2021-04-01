@@ -180,7 +180,7 @@ class CompanyDetails extends Component {
           isHeadquarter: true,
         },
       ],
-      isNewTenant: false,
+      isNewTenant: !parentCompany,
       childOfCompany: parentCompany,
       parentTenantId,
     };
