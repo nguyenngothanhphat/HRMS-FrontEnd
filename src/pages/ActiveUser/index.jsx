@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button } from 'antd';
-import { LoadingOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { LoadingOutlined, InfoCircleOutlined, CheckCircleOutlined } from '@ant-design/icons';
 import { connect, history } from 'umi';
 import styles from './index.less';
 
@@ -52,7 +52,7 @@ class ActiveUser extends PureComponent {
             <div className={styles.ActiveUser}>
               {isActivated ? (
                 <div className={styles.loadingText}>
-                  <LoadingOutlined className={styles.loadingIcon} />
+                  <CheckCircleOutlined className={styles.loadingIcon} />
                   <span className={styles.activatingText}>Your account has been activated.</span>
                 </div>
               ) : (
