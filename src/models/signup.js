@@ -107,8 +107,10 @@ const signup = {
             payload: payloadAutoLogin,
           });
         }
+        return response
       } catch (errors) {
         dialog(errors);
+        return {}
       }
     },
   },

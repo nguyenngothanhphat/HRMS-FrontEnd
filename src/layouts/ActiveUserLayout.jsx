@@ -15,4 +15,4 @@ class ActiveUserLayout extends React.Component {
   }
 }
 
-export default connect(({ user, loading }) => ({}))(ActiveUserLayout);
+export default connect()(ActiveUserLayout);

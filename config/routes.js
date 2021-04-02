@@ -63,16 +63,16 @@ const routes = [
       },
     ],
   },
-  // {
-  //   path: '/active-user/:id',
-  //   component: '../layouts/ActiveUserLayout',
-  //   routes: [
-  //     {
-  //       path: '/active-user/:id',
-  //       component: './ActiveUser',
-  //     },
-  //   ],
-  // },
+  {
+    path: '/active-user/:id',
+    component: '../layouts/ActiveUserLayout',
+    routes: [
+      {
+        path: '/active-user/:id',
+        component: './ActiveUser',
+      },
+    ],
+  },
   {
     path: '/',
     component: '../layouts/SecurityLayout',
