@@ -19,6 +19,7 @@ import s from './index.less';
     locationsList,
     fetchingLocationsList: loading.effects['adminApp/fetchLocationList'],
     loadingCountry: loading.effects['country/fetchListCountry'],
+    loadingAddMultiLocation: loading.effects['companiesManagement/addMultiLocation'],
     companyDetails,
   }),
 )
@@ -181,6 +182,7 @@ class WorkLocations extends PureComponent {
       locationsList = [],
       fetchingLocationsList,
       loadingCountry,
+      loadingAddMultiLocation = false,
     } = this.props;
 
     const listLocation = this.formatListLocation();
@@ -224,6 +226,7 @@ class WorkLocations extends PureComponent {
               return (
                 <FormWorkLocationTenant
                   isRequired={false}
+                  defaultCountry={location?.country}
                   listCountry={listCountry}
                   listLocation={listLocation}
                   locationInfo={location}
@@ -281,7 +284,11 @@ class WorkLocations extends PureComponent {
                       </div>
                       {fields.length !== 0 && (
                         <div className={s.viewBtn}>
-                          <Button className={s.btnSubmit} htmlType="submit">
+                          <Button
+                            loading={loadingAddMultiLocation}
+                            className={s.btnSubmit}
+                            htmlType="submit"
+                          >
                             Save
                           </Button>
                         </div>
