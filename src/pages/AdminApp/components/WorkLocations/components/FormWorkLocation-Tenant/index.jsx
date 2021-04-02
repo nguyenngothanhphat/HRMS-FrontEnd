@@ -5,7 +5,6 @@ import {
   DeleteOutlined,
   EditOutlined,
   SaveOutlined,
-  CheckOutlined,
   CloseOutlined,
   LoadingOutlined,
 } from '@ant-design/icons';
@@ -30,12 +29,14 @@ class FormWorkLocationTenant extends Component {
       newCountry: '',
       isEditing: false,
       isSaved: false,
+      locationName: '',
     };
   }
 
   componentDidMount() {
-    const { defaultCountry } = this.props;
+    const { locationInfo: { name = '' } = {}, defaultCountry } = this.props;
     this.setState({
+      locationName: name,
       newCountry: defaultCountry,
     });
   }
@@ -112,28 +113,37 @@ class FormWorkLocationTenant extends Component {
     const { dispatch } = this.props;
     const tenantId = localStorage.getItem('tenantId');
 
-    const { addressLine1 = '', addressLine2 = '', country = '', state = '', zipCode = '' } = values;
+    const {
+      name,
+      addressLine1 = '',
+      addressLine2 = '',
+      country = '',
+      state = '',
+      zipCode = '',
+    } = values;
 
+    const payload = {
+      tenantId,
+      id: locationId,
+      name,
+      headQuarterAddress: {
+        addressLine1,
+        addressLine2,
+        country,
+        state,
+        zipCode,
+      },
+      // legalAddress: {
+      //   addressLine1,
+      //   addressLine2,
+      //   country,
+      //   state,
+      //   zipCode,
+      // },
+    };
     const res = await dispatch({
       type: 'adminApp/updateLocation',
-      payload: {
-        tenantId,
-        id: locationId,
-        headQuarterAddress: {
-          addressLine1,
-          addressLine2,
-          country,
-          state,
-          zipCode,
-        },
-        // legalAddress: {
-        //   addressLine1,
-        //   addressLine2,
-        //   country,
-        //   state,
-        //   zipCode,
-        // },
-      },
+      payload,
     });
 
     const { statusCode } = res;
@@ -141,6 +151,7 @@ class FormWorkLocationTenant extends Component {
       this.setState({
         isSaved: true,
         isEditing: false,
+        locationName: name,
       });
       setTimeout(() => {
         this.setState({
@@ -151,13 +162,13 @@ class FormWorkLocationTenant extends Component {
   };
 
   render() {
-    const { newCountry = '', isEditing, isSaved } = this.state;
+    const { newCountry = '', isEditing, isSaved, locationName } = this.state;
     const {
       listCountry = [],
       field = {},
       locationInfo: {
-        _id = '',
         name = '',
+        _id = '',
         addressLine1 = '',
         addressLine2 = '',
         country = '',
@@ -181,7 +192,7 @@ class FormWorkLocationTenant extends Component {
             onFinish={(values) => this.saveLocationAPI(values, _id)}
             autoComplete="off"
             initialValues={{
-              name,
+              name: name || locationName,
               addressLine1,
               addressLine2,
               country,
@@ -195,7 +206,7 @@ class FormWorkLocationTenant extends Component {
               </div>
             )}
             <Row className={s.content__viewBottom__viewTitle}>
-              <p className={s.title}>{isHeadQuarter ? 'Headquater' : name}</p>
+              <p className={s.title}>{isHeadQuarter ? 'Headquater' : locationName}</p>
 
               <div className={s.actionBtn}>
                 {!isEditing ? (
@@ -239,13 +250,25 @@ class FormWorkLocationTenant extends Component {
                 )}
               </div>
             </Row>
+            {isEditing && !isHeadQuarter && (
+              <Row className={s.content__viewBottom__row}>
+                <Col span={8}>
+                  <p className={s.content__viewBottom__row__textLabel}>Location Name*</p>
+                </Col>
+                <Col span={16}>
+                  <Form.Item name="name">
+                    <Input disabled={disableInput} placeholder="Location Name" />
+                  </Form.Item>
+                </Col>
+              </Row>
+            )}
             <Row className={s.content__viewBottom__row}>
               <Col span={8}>
                 <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
               </Col>
               <Col span={16}>
                 <Form.Item name="addressLine1">
-                  <Input disabled={disableInput} placeholder="Location Name" />
+                  <Input disabled={disableInput} placeholder="Address Line 1" />
                 </Form.Item>
               </Col>
             </Row>
@@ -255,7 +278,7 @@ class FormWorkLocationTenant extends Component {
               </Col>
               <Col span={16}>
                 <Form.Item name="addressLine2">
-                  <Input disabled={disableInput} placeholder="Address" />
+                  <Input disabled={disableInput} placeholder="Address Line 2" />
                 </Form.Item>
               </Col>
             </Row>

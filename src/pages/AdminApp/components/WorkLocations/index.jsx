@@ -26,9 +26,7 @@ class WorkLocations extends PureComponent {
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
-    this.state = {
-      countLocation: 0,
-    };
+    this.state = {};
   }
 
   componentDidMount() {
@@ -109,18 +107,8 @@ class WorkLocations extends PureComponent {
     }
   };
 
-  editLocationAPI = () => {
-    console.log('EDIT LOCATION');
-  };
-
   onFinish = async (values) => {
-    const { countLocation } = this.state;
-    if (countLocation !== 0) {
-      this.addLocationAPI(values);
-    }
-    this.setState({
-      countLocation: 0,
-    });
+    this.addLocationAPI(values);
   };
 
   formatListLocation = () => {
@@ -188,7 +176,6 @@ class WorkLocations extends PureComponent {
   };
 
   render() {
-    const { countLocation } = this.state;
     const {
       listCountry = [],
       locationsList = [],
@@ -276,7 +263,6 @@ class WorkLocations extends PureComponent {
                         listLocation={listLocation}
                         removeLocation={this.removeLocation}
                         onRemove={() => {
-                          this.setState({ countLocation: countLocation - 1 });
                           remove(field.name);
                         }}
                       />
@@ -285,7 +271,6 @@ class WorkLocations extends PureComponent {
                       <div
                         className={s.viewAddWorkLocation}
                         onClick={() => {
-                          this.setState({ countLocation: countLocation + 1 });
                           add();
                         }}
                       >
