@@ -1,11 +1,22 @@
 import React, { Component } from 'react';
 import { Row, Col, Collapse, Tree } from 'antd';
+import { connect } from 'umi';
+
 import icon from '@/assets/primary-administrator.svg';
 import { CarryOutOutlined } from '@ant-design/icons';
 import arrowIcon from '@/assets/arrowDownCollapseIcon.svg';
 
 import styles from './index.less';
 
+@connect(
+  ({
+    companiesManagement: {
+      tempData: { companyDetails: { company: { name: companyName = '' } = {} } = {} } = {},
+    } = {},
+  }) => ({
+    companyName,
+  }),
+)
 class ViewPrimary extends Component {
   constructor(props) {
     super(props);
@@ -62,6 +73,7 @@ class ViewPrimary extends Component {
         email = '',
         position = `${firstName}’s permission apply to everyone in the company`,
       } = {},
+      companyName = '',
     } = this.props;
     const { Panel } = Collapse;
     const expandIcon = ({ isActive }) => (
@@ -79,37 +91,30 @@ class ViewPrimary extends Component {
         <Row gutter={[0, 16]}>
           <Col span={8}>
             <div className={styles.primaryView__left}>
-              <div>Employee Name</div>
-            </div>
-          </Col>
-          <Col span={16}>
-            <div className={styles.primaryView__right}>
               <div className={styles.name}>{firstName}</div>
             </div>
           </Col>
-          <Col span={8}>
-            <div className={styles.primaryView__left}>
-              <div>Email</div>
+          <Col span={1} />
+          <Col span={13}>
+            <div className={styles.primaryView__right}>
+              <div className={styles.company}>{companyName}</div>
             </div>
           </Col>
-          <Col span={16}>
-            <div className={styles.primaryView__right}>
+          <Col span={8}>
+            <div className={styles.primaryView__left}>
               <div className={styles.email}>{email}</div>
             </div>
           </Col>
-          <Col span={8}>
-            <div className={styles.primaryView__left}>
-              <div>Position</div>
-            </div>
-          </Col>
-          <Col span={16}>
+          <Col span={1} />
+          <Col span={13}>
             <div className={styles.primaryView__right}>
               <img src={icon} alt="primary-administrator" />
               <div className={styles.position}>{position}</div>
             </div>
           </Col>
           <Col span={8} />
-          <Col span={16}>
+          <Col span={1} />
+          <Col span={13}>
             <Collapse
               ghost
               expandIconPosition="right"
