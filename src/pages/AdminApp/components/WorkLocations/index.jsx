@@ -28,7 +28,6 @@ class WorkLocations extends PureComponent {
     this.formRef = React.createRef();
     this.state = {
       countLocation: 0,
-      countEditBlock: 0,
     };
   }
 
@@ -50,19 +49,6 @@ class WorkLocations extends PureComponent {
       payload: { locationsList: [] },
     });
   }
-
-  handleEditLocation = (value) => {
-    const { countEditBlock } = this.state;
-    let count = countEditBlock;
-    if (value) {
-      count = countEditBlock + 1;
-    } else {
-      count = countEditBlock - 1;
-    }
-    this.setState({
-      countEditBlock: count,
-    });
-  };
 
   addLocationAPI = async (values) => {
     const tenantId = localStorage.getItem('tenantId');
@@ -128,15 +114,11 @@ class WorkLocations extends PureComponent {
   };
 
   onFinish = async (values) => {
-    const { countEditBlock, countLocation } = this.state;
+    const { countLocation } = this.state;
     if (countLocation !== 0) {
       this.addLocationAPI(values);
     }
-    if (countEditBlock !== 0) {
-      this.editLocationAPI();
-    }
     this.setState({
-      countEditBlock: 0,
       countLocation: 0,
     });
   };
@@ -206,7 +188,7 @@ class WorkLocations extends PureComponent {
   };
 
   render() {
-    const { countEditBlock, countLocation } = this.state;
+    const { countLocation } = this.state;
     const {
       listCountry = [],
       locationsList = [],
@@ -251,12 +233,6 @@ class WorkLocations extends PureComponent {
             </p>
           </div>
           <div className={s.content__viewBottom}>
-            {/* <FormWorkLocationTenant
-              listCountry={listCountry}
-              listLocation={listLocation}
-              locationInfo={locationHeadquarter}
-              isHeadQuarter
-            /> */}
             {formatCurrentLocationsList.map((location, index) => {
               return (
                 <FormWorkLocationTenant
@@ -318,20 +294,19 @@ class WorkLocations extends PureComponent {
                         </p>
                         <p className={s.viewAddWorkLocation__text}>Add work location</p>
                       </div>
+                      {fields.length !== 0 && (
+                        <div className={s.viewBtn}>
+                          <Button className={s.btnSubmit} htmlType="submit">
+                            Save
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </>
                 )}
               </Form.List>
             </div>
           </div>
-
-          {(countEditBlock !== 0 || countLocation !== 0) && (
-            <div className={s.viewBtn}>
-              <Button className={s.btnSubmit} htmlType="submit">
-                Save
-              </Button>
-            </div>
-          )}
         </Form>
       </div>
     );

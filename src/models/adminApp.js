@@ -102,11 +102,8 @@ const country = {
     *updateLocation({ payload = {} }, { call }) {
       try {
         const response = yield call(updateLocation, payload);
-        const { statusCode, message = '' } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message
-        })
         return response;
       } catch (errors) {
         dialog(errors);

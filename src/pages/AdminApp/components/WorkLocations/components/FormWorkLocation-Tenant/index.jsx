@@ -1,13 +1,26 @@
 import React, { Component } from 'react';
-import { Form, Input, Select, Divider, Modal, Row, Col } from 'antd';
-import { ExclamationCircleOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Select, Divider, Modal, Row, Col } from 'antd';
+import {
+  ExclamationCircleOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  SaveOutlined,
+  CheckOutlined,
+  CloseOutlined,
+  LoadingOutlined,
+} from '@ant-design/icons';
 import classnames from 'classnames';
+import { connect } from 'umi';
 // import { bool } from 'prop-types';
 import s from './index.less';
 
 const { Option } = Select;
 const { confirm } = Modal;
 
+@connect(({ adminApp, loading }) => ({
+  adminApp,
+  loadingUpdateLocation: loading.effects['adminApp/updateLocation'],
+}))
 class FormWorkLocationTenant extends Component {
   formRef = React.createRef();
 
@@ -16,6 +29,7 @@ class FormWorkLocationTenant extends Component {
     this.state = {
       newCountry: '',
       isEditing: false,
+      isSaved: false,
     };
   }
 
@@ -27,11 +41,35 @@ class FormWorkLocationTenant extends Component {
   }
 
   handleEdit = () => {
-    const { handleEditLocation = () => {} } = this.props;
     const { isEditing } = this.state;
-    handleEditLocation(!isEditing);
     this.setState({
       isEditing: !isEditing,
+    });
+  };
+
+  handleCancel = () => {
+    const { isEditing } = this.state;
+    this.setState({
+      isEditing: !isEditing,
+    });
+
+    const {
+      locationInfo: {
+        name = '',
+        addressLine1 = '',
+        addressLine2 = '',
+        country = '',
+        state = '',
+        zipCode = '',
+      } = {},
+    } = this.props;
+    this.formRef.current.setFieldsValue({
+      name,
+      addressLine1,
+      addressLine2,
+      country,
+      state,
+      zipCode,
     });
   };
 
@@ -70,8 +108,50 @@ class FormWorkLocationTenant extends Component {
     }
   };
 
+  saveLocationAPI = async (values, locationId) => {
+    const { dispatch } = this.props;
+    const tenantId = localStorage.getItem('tenantId');
+
+    const { addressLine1 = '', addressLine2 = '', country = '', state = '', zipCode = '' } = values;
+
+    const res = await dispatch({
+      type: 'adminApp/updateLocation',
+      payload: {
+        tenantId,
+        id: locationId,
+        headQuarterAddress: {
+          addressLine1,
+          addressLine2,
+          country,
+          state,
+          zipCode,
+        },
+        // legalAddress: {
+        //   addressLine1,
+        //   addressLine2,
+        //   country,
+        //   state,
+        //   zipCode,
+        // },
+      },
+    });
+
+    const { statusCode } = res;
+    if (statusCode === 200) {
+      this.setState({
+        isSaved: true,
+        isEditing: false,
+      });
+      setTimeout(() => {
+        this.setState({
+          isSaved: false,
+        });
+      }, 2500);
+    }
+  };
+
   render() {
-    const { newCountry = '', isEditing } = this.state;
+    const { newCountry = '', isEditing, isSaved } = this.state;
     const {
       listCountry = [],
       field = {},
@@ -87,6 +167,7 @@ class FormWorkLocationTenant extends Component {
       } = {},
       listLength = 0,
       index = 0,
+      loadingUpdateLocation = false,
     } = this.props;
 
     const listState = this.findListState(newCountry) || [];
@@ -97,7 +178,7 @@ class FormWorkLocationTenant extends Component {
         <div className={s.content__viewBottom}>
           <Form
             ref={this.formRef}
-            onFinish={this.onFinish}
+            onFinish={(values) => this.saveLocationAPI(values, _id)}
             autoComplete="off"
             initialValues={{
               name,
@@ -108,24 +189,53 @@ class FormWorkLocationTenant extends Component {
               zipCode,
             }}
           >
+            {isSaved && (
+              <div className={s.savedBanner}>
+                <span>This location is updated successfully.</span>
+              </div>
+            )}
             <Row className={s.content__viewBottom__viewTitle}>
               <p className={s.title}>{isHeadQuarter ? 'Headquater' : name}</p>
 
               <div className={s.actionBtn}>
                 {!isEditing ? (
-                  <div className={s.actionEdit} onClick={this.handleEdit}>
+                  <Button type="link" className={s.actionEdit} onClick={this.handleEdit}>
+                    <EditOutlined className={s.buttonIcon} />
                     <span>Edit</span>
-                  </div>
+                  </Button>
                 ) : (
-                  <div className={s.actionEdit} onClick={this.handleEdit}>
-                    <span style={{ color: '#f00000' }}>Cancel</span>
-                  </div>
+                  <>
+                    {loadingUpdateLocation && (
+                      <Button type="link" className={s.actionUpdating}>
+                        <LoadingOutlined className={s.buttonIcon} />
+                        <span>Updating...</span>
+                      </Button>
+                    )}
+
+                    {!loadingUpdateLocation && (
+                      <>
+                        <Button type="link" className={s.actionSave} htmlType="submit">
+                          <SaveOutlined className={s.buttonIcon} />
+                          <span>Save</span>
+                        </Button>
+
+                        <Button type="link" className={s.actionCancel} onClick={this.handleCancel}>
+                          <CloseOutlined className={s.buttonIcon} />
+                          <span>Cancel</span>
+                        </Button>
+                      </>
+                    )}
+                  </>
                 )}
                 {!isHeadQuarter && (
-                  <div className={s.actionDelete} onClick={() => this.handleRemove(_id)}>
-                    <DeleteOutlined className={s.actionDelete__icon} />
+                  <Button
+                    type="link"
+                    className={s.actionDelete}
+                    onClick={() => this.handleRemove(_id)}
+                  >
+                    <DeleteOutlined className={s.buttonIcon} />
                     <span>Delete</span>
-                  </div>
+                  </Button>
                 )}
               </div>
             </Row>
