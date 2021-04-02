@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Form, Input, Skeleton, Select, Button, Checkbox, Row, Col } from 'antd';
 import classnames from 'classnames';
 import { connect } from 'umi';
+import EditIcon from '@/assets/editBtnBlue.svg';
 import s from './index.less';
 
 const { Option } = Select;
@@ -56,7 +57,6 @@ class CompanyDetails extends Component {
         countryLegal,
       });
     }
-
     this.compareHeadquaterLegalAddress();
   };
 
@@ -324,9 +324,11 @@ class CompanyDetails extends Component {
       stateHeadquarter === stateLegal &&
       zipHeadquarter === zipLegal;
 
-    this.setState({
-      checkLegalSameHeadQuarter: check,
-    });
+    if (check) {
+      this.setState({
+        checkLegalSameHeadQuarter: check,
+      });
+    }
   };
 
   componentDidUpdate = (prevProps) => {
@@ -592,7 +594,16 @@ class CompanyDetails extends Component {
               <div className={s.content__viewTop}>
                 <p className={s.title}>Company Details</p>
                 <div className={s.editBtn} onClick={() => this.handleEdit(1)}>
-                  <span>{isEditCompanyDetails ? 'Cancel' : 'Edit'}</span>
+                  {isEditCompanyDetails ? (
+                    <div className={s.wrapBtn}>
+                      <span className={s.cancelText}>Cancel</span>
+                    </div>
+                  ) : (
+                    <div className={s.wrapBtn}>
+                      <img src={EditIcon} alt="edit" />
+                      <span>Edit</span>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className={s.content__viewBottom}>
@@ -658,7 +669,16 @@ class CompanyDetails extends Component {
               <div className={s.content__viewTop}>
                 <p className={s.title}>Headquarter Address</p>
                 <div className={s.editBtn} onClick={() => this.handleEdit(2)}>
-                  <span>{isEditAddresses ? 'Cancel' : 'Edit'}</span>
+                  {isEditAddresses ? (
+                    <div className={s.wrapBtn}>
+                      <span className={s.cancelText}>Cancel</span>
+                    </div>
+                  ) : (
+                    <div className={s.wrapBtn}>
+                      <img src={EditIcon} alt="edit" />
+                      <span>Edit</span>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className={s.content__viewBottom}>
@@ -820,7 +840,7 @@ class CompanyDetails extends Component {
                       rules={[
                         {
                           required: true,
-                          message: 'Please enter Address!',
+                          message: 'Please enter Address Line 1!',
                         },
                       ]}
                     >
@@ -839,7 +859,7 @@ class CompanyDetails extends Component {
                       rules={[
                         {
                           required: false,
-                          message: 'Please enter Address!',
+                          message: 'Please enter Address Line 2!',
                         },
                       ]}
                     >
@@ -946,7 +966,16 @@ class CompanyDetails extends Component {
               <div className={s.content__viewTop}>
                 <p className={s.title}>Contact information</p>
                 <div className={s.editBtn} onClick={() => this.handleEdit(3)}>
-                  <span>{isEditContactInfomation ? 'Cancel' : 'Edit'}</span>
+                  {isEditContactInfomation ? (
+                    <div className={s.wrapBtn}>
+                      <span className={s.cancelText}>Cancel</span>
+                    </div>
+                  ) : (
+                    <div className={s.wrapBtn}>
+                      <img src={EditIcon} alt="edit" />
+                      <span>Edit</span>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className={s.content__viewBottom}>
