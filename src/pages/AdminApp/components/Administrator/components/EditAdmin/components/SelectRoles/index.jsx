@@ -12,9 +12,9 @@ class SelectRoles extends PureComponent {
   }
 
   componentDidMount() {
-    const { dataAdmin: { permissionAdmin = [] } = {} } = this.props;
+    const { dataAdmin: { permissionAdmin = [] } = {}, onBackValues = [] } = this.props;
     this.setState({
-      selectedList: permissionAdmin,
+      selectedList: onBackValues.length > 0 ? onBackValues : permissionAdmin,
     });
   }
 
@@ -143,11 +143,6 @@ class SelectRoles extends PureComponent {
     );
   };
 
-  // defaultCheckBox = () => {
-  //   const { dataAdmin: { permissionAdmin = [] } = {} } = this.props;
-  //   return permissionAdmin;
-  // };
-
   renderMainForm = () => {
     const { onContinue = () => {}, onBack = () => {} } = this.props;
     const { selectedList } = this.state;
@@ -158,7 +153,7 @@ class SelectRoles extends PureComponent {
         </div>
         <div className={styles.content}>{this.renderList()}</div>
         <div className={styles.nextBtn}>
-          <div className={styles.goBackBtn} onClick={() => onBack()}>
+          <div className={styles.goBackBtn} onClick={() => onBack(selectedList)}>
             <span>Back</span>
           </div>
           <Button className={styles.proceedBtn} onClick={() => onContinue(2, selectedList)}>
@@ -170,7 +165,6 @@ class SelectRoles extends PureComponent {
   };
 
   render() {
-    // const { selectedList = [] } = this.state;
     return (
       <div className={styles.SelectRoles}>
         {this.renderTitle()}

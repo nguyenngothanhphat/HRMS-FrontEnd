@@ -12,6 +12,13 @@ class SelectRoles extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    const { onBackValues = [] } = this.props;
+    this.setState({
+      selectedList: onBackValues.length > 0 ? onBackValues : [],
+    });
+  }
+
   renderTitle = () => {
     const { handleAddAdmin = () => {}, name = '' } = this.props;
     return (
@@ -54,6 +61,7 @@ class SelectRoles extends PureComponent {
 
   renderList = () => {
     const { permissionList = [] } = this.props;
+    const { selectedList = [] } = this.state;
     const root = [];
 
     let formatList = permissionList.map((per) => per?.module);
@@ -127,6 +135,7 @@ class SelectRoles extends PureComponent {
           checkable
           defaultExpandAll={false}
           // onSelect={onSelect}
+          checkedKeys={selectedList}
           onCheck={onCheck}
           treeData={treeData}
           showLine={{ showLeafIcon: false }}
@@ -146,7 +155,7 @@ class SelectRoles extends PureComponent {
         </div>
         <div className={styles.content}>{this.renderList()}</div>
         <div className={styles.nextBtn}>
-          <div className={styles.goBackBtn} onClick={() => onBack()}>
+          <div className={styles.goBackBtn} onClick={() => onBack(selectedList)}>
             <span>Back</span>
           </div>
           <Button
