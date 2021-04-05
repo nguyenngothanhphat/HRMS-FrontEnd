@@ -37,8 +37,8 @@ export default class SelectUser extends PureComponent {
 
   renderContent = () => {
     const {
-      dataAdmin: { usermap: { firstName = '' } = {} } = {},
-      onBackValues: { name: newName = '' } = {},
+      dataAdmin: { usermap: { firstName = '', email: email1 = '' } = {} } = {},
+      onBackValues: { name: newName = '', email: email2 = '' } = {},
     } = this.props;
 
     return (
@@ -49,9 +49,19 @@ export default class SelectUser extends PureComponent {
           id="myForm"
           initialValues={{
             name: newName === '' ? firstName : newName,
+            email: email1 || email2,
           }}
           onFinish={this.onFinish}
         >
+          <Row align="middle" gutter={[24, 24]}>
+            <Col span={8}>Email</Col>
+            <Col span={12}>
+              <Form.Item name="email">
+                <Input disabled placeholder="Email" />
+              </Form.Item>
+            </Col>
+            <Col span={4} />
+          </Row>
           <Row align="middle" gutter={[24, 24]}>
             <Col span={8}>Administrator Name</Col>
             <Col span={12}>
