@@ -324,11 +324,9 @@ class CompanyDetails extends Component {
       stateHeadquarter === stateLegal &&
       zipHeadquarter === zipLegal;
 
-    if (check) {
-      this.setState({
-        checkLegalSameHeadQuarter: check,
-      });
-    }
+    this.setState({
+      checkLegalSameHeadQuarter: check,
+    });
   };
 
   componentDidUpdate = (prevProps) => {
@@ -817,12 +815,19 @@ class CompanyDetails extends Component {
                   </Col>
                 </Row>
               </div>
-              <div className={classnames(s.content__viewTop, s.content__viewTop__legalAddress)}>
+              <div
+                className={classnames(
+                  s.content__viewTop,
+                  s.content__viewTop__legalAddress,
+                  checkLegalSameHeadQuarter ? s.content__viewTopWithoutBorder : '',
+                )}
+              >
                 <p className={s.title}>Legal Address</p>
                 <Checkbox
-                  defaultChecked={checkLegalSameHeadQuarter}
+                  // defaultChecked={checkLegalSameHeadQuarter}
                   disabled={!isEditAddresses}
                   onChange={this.onChangeCheckbox}
+                  checked={checkLegalSameHeadQuarter}
                 >
                   Same as Headquarters address
                 </Checkbox>
