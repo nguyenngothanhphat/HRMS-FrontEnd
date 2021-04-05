@@ -58,7 +58,7 @@ class AddAdmin extends PureComponent {
         email,
         company,
         tenantId,
-        usermapId,
+        usermap: usermapId,
         permissionAdmin: formatAdminRoles,
       };
 

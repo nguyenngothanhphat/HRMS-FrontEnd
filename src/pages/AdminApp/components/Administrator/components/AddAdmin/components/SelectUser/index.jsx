@@ -62,10 +62,6 @@ class SelectUser extends PureComponent {
     this.setState({
       isCompanyWorker: e?.target?.value,
     });
-    this.formRef.current.setFieldsValue({
-      email: null,
-      firstName: null,
-    });
   };
 
   onFinish = (values) => {
@@ -104,7 +100,7 @@ class SelectUser extends PureComponent {
           initialValues={{
             isCompanyWorker,
             firstName,
-            email,
+            email: usermapId ? null : email,
             usermapId: usermapId === '' ? null : usermapId,
           }}
           onFinish={this.onFinish}
