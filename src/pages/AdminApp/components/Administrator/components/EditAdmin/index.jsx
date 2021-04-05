@@ -45,7 +45,6 @@ class EditAdmin extends PureComponent {
         adminRoles: values,
       });
 
-      handleEditAdmin(false);
       dispatch({
         type: 'adminApp/updateAdmins',
         payload: {
@@ -60,9 +59,15 @@ class EditAdmin extends PureComponent {
     }
   };
 
+  onGoBack = () => {
+    this.setState({
+      currentStep: 1,
+    });
+  };
+
   render() {
     const { handleEditAdmin = () => {}, dataAdmin = {}, permissionList = [] } = this.props;
-    const { currentStep } = this.state;
+    const { currentStep, adminInfo } = this.state;
 
     return (
       <div className={styles.EditAdmin}>
@@ -71,6 +76,7 @@ class EditAdmin extends PureComponent {
             dataAdmin={dataAdmin}
             handleEditAdmin={handleEditAdmin}
             onContinue={this.onContinue}
+            onBackValues={adminInfo}
           />
         )}
         {currentStep === 2 && (
@@ -79,6 +85,7 @@ class EditAdmin extends PureComponent {
             permissionList={permissionList}
             handleEditAdmin={handleEditAdmin}
             onContinue={this.onContinue}
+            onBack={this.onGoBack}
           />
         )}
       </div>

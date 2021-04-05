@@ -8,7 +8,7 @@ export default class SelectUser extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      isCompanyWorker: true,
+      // isCompanyWorker: true,
     };
   }
 
@@ -24,11 +24,11 @@ export default class SelectUser extends PureComponent {
     );
   };
 
-  isCompanyWorkerChange = (e) => {
-    this.setState({
-      isCompanyWorker: e?.target?.value,
-    });
-  };
+  // isCompanyWorkerChange = (e) => {
+  //   this.setState({
+  //     isCompanyWorker: e?.target?.value,
+  //   });
+  // };
 
   onFinish = (values) => {
     const { onContinue = () => {} } = this.props;
@@ -36,7 +36,11 @@ export default class SelectUser extends PureComponent {
   };
 
   renderContent = () => {
-    const { dataAdmin: { usermap: { firstName = '', email = '' } = {} } = {} } = this.props;
+    const {
+      dataAdmin: { usermap: { firstName = '', email: email1 = '' } = {} } = {},
+      onBackValues: { name: newName = '', email: email2 = '' } = {},
+    } = this.props;
+
     return (
       <div className={styles.assignUser}>
         <Form
@@ -44,8 +48,8 @@ export default class SelectUser extends PureComponent {
           ref={this.formRef}
           id="myForm"
           initialValues={{
-            name: firstName,
-            email,
+            name: newName === '' ? firstName : newName,
+            email: email1 || email2,
           }}
           onFinish={this.onFinish}
         >

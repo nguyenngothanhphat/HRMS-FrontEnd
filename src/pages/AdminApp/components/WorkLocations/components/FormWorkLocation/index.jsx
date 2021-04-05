@@ -72,10 +72,6 @@ class FormWorkLocation extends Component {
     } else onRemove();
   };
 
-  handleSubmit = (values) => {
-    console.log('afgasdfa', values);
-  };
-
   render() {
     const { country = '' } = this.state;
     const {
