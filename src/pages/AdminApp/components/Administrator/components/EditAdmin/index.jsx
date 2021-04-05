@@ -11,7 +11,6 @@ class EditAdmin extends PureComponent {
     super(props);
     this.state = {
       currentStep: 1,
-      // eslint-disable-next-line react/no-unused-state
       adminRoles: [],
       adminInfo: {},
     };
@@ -41,7 +40,6 @@ class EditAdmin extends PureComponent {
 
     if (step === 2) {
       this.setState({
-        // eslint-disable-next-line react/no-unused-state
         adminRoles: values,
       });
 
@@ -59,15 +57,16 @@ class EditAdmin extends PureComponent {
     }
   };
 
-  onGoBack = () => {
+  onGoBack = (value) => {
     this.setState({
       currentStep: 1,
+      adminRoles: value,
     });
   };
 
   render() {
     const { handleEditAdmin = () => {}, dataAdmin = {}, permissionList = [] } = this.props;
-    const { currentStep, adminInfo } = this.state;
+    const { currentStep, adminInfo = {}, adminRoles = [] } = this.state;
 
     return (
       <div className={styles.EditAdmin}>
@@ -86,6 +85,7 @@ class EditAdmin extends PureComponent {
             handleEditAdmin={handleEditAdmin}
             onContinue={this.onContinue}
             onBack={this.onGoBack}
+            onBackValues={adminRoles}
           />
         )}
       </div>

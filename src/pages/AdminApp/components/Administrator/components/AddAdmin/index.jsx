@@ -21,7 +21,7 @@ class AddAdmin extends PureComponent {
     super(props);
     this.state = {
       currentStep: 1,
-      // adminRoles: [],
+      adminRoles: [],
       adminInfo: {},
     };
   }
@@ -70,9 +70,10 @@ class AddAdmin extends PureComponent {
     }
   };
 
-  onGoBack = () => {
+  onGoBack = (value) => {
     this.setState({
       currentStep: 1,
+      adminRoles: value,
     });
   };
 
@@ -84,7 +85,7 @@ class AddAdmin extends PureComponent {
       loadingAddAdmin = false,
     } = this.props;
     const companyName = companyDetails?.company?.name;
-    const { currentStep, adminInfo } = this.state;
+    const { currentStep, adminInfo = {}, adminRoles = [] } = this.state;
     const { firstName = '', name1 = '' } = adminInfo;
 
     return (
@@ -105,6 +106,7 @@ class AddAdmin extends PureComponent {
             loadingAddAdmin={loadingAddAdmin}
             name={firstName || name1}
             onBack={this.onGoBack}
+            onBackValues={adminRoles}
           />
         )}
       </div>
