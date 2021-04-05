@@ -67,15 +67,15 @@ class Dashboard extends PureComponent {
   }
 
   componentDidMount = async () => {
-    // const {
-    //   dispatch,
-    //   currentUser: {
-    //     location: { _id: locationId = '' } = {},
-    //     company: { _id: companyId = '' } = {},
-    //     employee: { _id: employee = '' } = {},
-    //     company: { _id: idCompany = '' } = {},
-    //   } = {},
-    // } = this.props;
+    const {
+      dispatch,
+      //   currentUser: {
+      //     location: { _id: locationId = '' } = {},
+      //     company: { _id: companyId = '' } = {},
+      //     employee: { _id: employee = '' } = {},
+      //     company: { _id: idCompany = '' } = {},
+      //   } = {},
+    } = this.props;
     // dispatch({
     //   type: 'employee/fetchListEmployeeMyTeam',
     //   payload: {
@@ -88,25 +88,30 @@ class Dashboard extends PureComponent {
     //     employee,
     //   },
     // });
+
+    const companyId = localStorage.getItem('currentCompanyId');
+    const tenantId = localStorage.getItem('tenantId');
+
     // dispatch({
     //   type: 'frequentlyAskedQuestions/getListInit',
     // }).then(
     //   dispatch({
     //     type: 'frequentlyAskedQuestions/getListByCompany',
-    //     payload: { company: idCompany },
+    //     payload: { company: companyId },
     //   }),
     // );
-    // const locations = await dispatch({
-    //   type: 'locationSelection/fetchLocationsByCompany',
-    //   payload: {
-    //     company: companyId,
-    //   },
-    // });
-    // const currentLocation = localStorage.getItem('currentLocation');
-    // const locationName = locations.find((item) => item._id === currentLocation);
-    // this.setState({
-    //   currentLocation: locationName?.name || '',
-    // });
+    const locations = await dispatch({
+      type: 'locationSelection/fetchLocationsByCompany',
+      payload: {
+        company: companyId,
+        tenantId,
+      },
+    });
+    const currentLocation = localStorage.getItem('currentLocationId');
+    const locationName = locations.find((item) => item._id === currentLocation);
+    this.setState({
+      currentLocation: locationName?.name || '',
+    });
 
     window.scrollTo({
       top: 0,
@@ -156,7 +161,7 @@ class Dashboard extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.containerDashboard}>
-          <Row gutter={[24, 24]} style={{ padding: '20px 20px 0 0' }}>
+          <Row gutter={[24, 24]} style={{ padding: '10px 20px 0 0' }}>
             <Col span={8}>
               <Affix offsetTop={10}>
                 <Greeting name={currentUser?.firstName} currentLocation={currentLocation} />

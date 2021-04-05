@@ -29,7 +29,7 @@ class AccountSetup extends Component {
     });
     localStorage.removeItem('currentCompanyId');
     localStorage.removeItem('tenantId');
-    localStorage.removeItem('currentLocation');
+    localStorage.removeItem('currentLocationId');
   }
 
   handleLogout = () => {

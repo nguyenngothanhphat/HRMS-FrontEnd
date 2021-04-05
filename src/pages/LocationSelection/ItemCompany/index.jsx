@@ -29,7 +29,7 @@ class ItemCompany extends PureComponent {
   };
 
   handleGetStarted = (locationId) => {
-    localStorage.setItem('currentLocation', locationId);
+    localStorage.setItem('currentLocationId', locationId);
     history.push('/');
   };
 

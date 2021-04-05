@@ -89,7 +89,7 @@ class DirectoryComponent extends PureComponent {
     dispatch({
       type: 'employee/fetchLocation',
     });
-    const currentLocation = localStorage.getItem('currentLocation');
+    const currentLocation = localStorage.getItem('currentLocationId');
     this.setState({
       locationNew: [currentLocation],
     });
