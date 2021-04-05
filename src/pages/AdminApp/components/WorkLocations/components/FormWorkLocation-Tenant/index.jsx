@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Form, Input, Select, Divider, Modal, Row, Col } from 'antd';
 import {
-  ExclamationCircleOutlined,
   DeleteOutlined,
   EditOutlined,
   SaveOutlined,
@@ -10,15 +9,17 @@ import {
 } from '@ant-design/icons';
 import classnames from 'classnames';
 import { connect } from 'umi';
+import { flattenDepth } from 'lodash';
+import RemoveLocationModal from '../RemoveLocationModal';
 // import { bool } from 'prop-types';
 import s from './index.less';
 
 const { Option } = Select;
-const { confirm } = Modal;
 
 @connect(({ adminApp, loading }) => ({
   adminApp,
   loadingUpdateLocation: loading.effects['adminApp/updateLocation'],
+  loadingRemoveLocation: loading.effects['adminApp/removeLocation'],
 }))
 class FormWorkLocationTenant extends Component {
   formRef = React.createRef();
@@ -30,6 +31,7 @@ class FormWorkLocationTenant extends Component {
       isEditing: false,
       isSaved: false,
       locationName: '',
+      removeModalVisible: false,
     };
   }
 
@@ -96,21 +98,27 @@ class FormWorkLocationTenant extends Component {
     return listState;
   };
 
-  showConfirm = (id) => {
-    const { removeLocation = () => {} } = this.props;
-    confirm({
-      title: 'Do you want to delete this location?',
-      icon: <ExclamationCircleOutlined />,
-      onOk() {
-        removeLocation(id);
-      },
-      onCancel() {},
+  hideConfirm = () => {
+    this.setState({
+      removeModalVisible: false,
     });
+  };
+
+  showConfirm = () => {
+    this.setState({
+      removeModalVisible: true,
+    });
+  };
+
+  onRemove = () => {
+    const { removeLocation = () => {} } = this.props;
+    const { locationInfo: { _id = '' } = {} } = this.props;
+    removeLocation(_id);
   };
 
   handleRemove = (_id) => {
     if (_id) {
-      this.showConfirm(_id);
+      this.showConfirm();
     }
   };
 
@@ -167,7 +175,7 @@ class FormWorkLocationTenant extends Component {
   };
 
   render() {
-    const { newCountry = '', isEditing, isSaved, locationName } = this.state;
+    const { newCountry = '', isEditing, isSaved, locationName, removeModalVisible } = this.state;
     const {
       listCountry = [],
       field = {},
@@ -184,6 +192,7 @@ class FormWorkLocationTenant extends Component {
       listLength = 0,
       index = 0,
       loadingUpdateLocation = false,
+      loadingRemoveLocation = false,
     } = this.props;
 
     const listState = this.findListState(newCountry) || [];
@@ -335,6 +344,12 @@ class FormWorkLocationTenant extends Component {
           </Form>
         </div>
         {listLength !== index + 1 && <Divider className={s.divider} />}
+        <RemoveLocationModal
+          onProceed={this.onRemove}
+          onClose={this.hideConfirm}
+          visible={removeModalVisible}
+          loading={loadingRemoveLocation}
+        />
       </div>
     );
   }
