@@ -143,13 +143,13 @@ class SelectRoles extends PureComponent {
     );
   };
 
-  defaultCheckBox = () => {
-    const { dataAdmin: { permissionAdmin = [] } = {} } = this.props;
-    return permissionAdmin;
-  };
+  // defaultCheckBox = () => {
+  //   const { dataAdmin: { permissionAdmin = [] } = {} } = this.props;
+  //   return permissionAdmin;
+  // };
 
   renderMainForm = () => {
-    const { onContinue = () => {} } = this.props;
+    const { onContinue = () => {}, onBack = () => {} } = this.props;
     const { selectedList } = this.state;
     return (
       <div className={styles.mainForm}>
@@ -158,6 +158,9 @@ class SelectRoles extends PureComponent {
         </div>
         <div className={styles.content}>{this.renderList()}</div>
         <div className={styles.nextBtn}>
+          <div className={styles.goBackBtn} onClick={() => onBack()}>
+            <span>Back</span>
+          </div>
           <Button className={styles.proceedBtn} onClick={() => onContinue(2, selectedList)}>
             Continue
           </Button>
