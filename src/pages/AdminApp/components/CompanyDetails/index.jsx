@@ -655,7 +655,10 @@ class CompanyDetails extends Component {
                           None
                         </Option>
                         {listCompany.map((item) => (
-                          <Option disabled={item._id === childOfCompany} key={item._id}>
+                          <Option
+                            disabled={item._id === childOfCompany || item._id === companyId}
+                            key={item._id}
+                          >
                             {item.name}
                           </Option>
                         ))}
