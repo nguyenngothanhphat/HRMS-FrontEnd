@@ -35,10 +35,12 @@ class AvatarDropdown extends React.Component {
       // , roles = []
     } = this.props;
     const companyId = localStorage.getItem('currentCompanyId');
+    const tenantId = localStorage.getItem('tenantId');
     dispatch({
       type: 'locationSelection/fetchLocationsByCompany',
       payload: {
         company: companyId,
+        tenantId,
       },
     });
 
@@ -94,7 +96,7 @@ class AvatarDropdown extends React.Component {
       return;
     }
 
-    localStorage.setItem('currentLocation', key);
+    localStorage.setItem('currentLocationId', key);
     let selectLocation = '';
 
     listLocationsByCompany.forEach((value) => {
@@ -115,7 +117,7 @@ class AvatarDropdown extends React.Component {
 
   renderLocationList = () => {
     const { listLocationsByCompany = [] } = this.props;
-    const currentLocation = localStorage.getItem('currentLocation');
+    const currentLocation = localStorage.getItem('currentLocationId');
 
     return (
       <>

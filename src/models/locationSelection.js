@@ -18,12 +18,17 @@ const LocationSelection = {
           type: 'save',
           payload: { listLocationsByCompany: data },
         });
-        let currentLocation = localStorage.getItem('currentLocation');
+        let currentLocation = localStorage.getItem('currentLocationId');
         if (!currentLocation) {
-          currentLocation = localStorage.setItem(
-            'currentLocation',
-            data.length > 0 ? data[0]?._id : '',
-          );
+          const hasHeadQuarter = data.find((value) => value?.isHeadQuarter);
+          if (hasHeadQuarter) {
+            currentLocation = localStorage.setItem('currentLocationId', hasHeadQuarter._id);
+          } else {
+            currentLocation = localStorage.setItem(
+              'currentLocationId',
+              data.length > 0 ? data[0]?._id : '',
+            );
+          }
         }
 
         return data;
