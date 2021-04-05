@@ -39,34 +39,30 @@ class CompanyDetails extends Component {
     };
   }
 
-  componentDidMount() {
-    this.fetchData();
-
-    const { companyDetails = {} } = this.props;
-    const {
-      company: {
-        headQuarterAddress: { country: countryHeadquarter } = {},
-        legalAddress: { country: countryLegal } = {},
-      } = {},
-    } = companyDetails;
-    this.setState({
-      countryHeadquarter,
-      countryLegal,
-    });
-    this.compareHeadquaterLegalAddress();
-  }
-
-  componentWillUnmount = () => {
-    this.fetchData();
-  };
-
-  fetchData = () => {
+  componentDidMount = async () => {
     const { dispatch, companyId } = this.props;
-    dispatch({
+    const res = await dispatch({
       type: 'companiesManagement/fetchCompanyDetails',
       payload: { id: companyId },
     });
+    const { statusCode, data: company = {} } = res;
+    if (statusCode === 200) {
+      const {
+        headQuarterAddress: { country: countryHeadquarter } = {},
+        legalAddress: { country: countryLegal } = {},
+      } = company;
+      this.setState({
+        countryHeadquarter,
+        countryLegal,
+      });
+    }
+
+    this.compareHeadquaterLegalAddress();
   };
+
+  // componentWillUnmount = () => {
+  //   this.fetchData();
+  // };
 
   onChangeCountry = (value, name) => {
     const stateName = name === 'countryHeadquarterProps' ? 'countryHeadquarter' : 'countryLegal';

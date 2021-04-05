@@ -67,8 +67,10 @@ const companiesManagement = {
           type: 'saveTemp',
           payload: { companyDetails: companyDetailsTemp },
         });
+        return response
       } catch (errors) {
         dialog(errors);
+        return {}
       }
     },
 

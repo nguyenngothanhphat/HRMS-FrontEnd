@@ -42,7 +42,12 @@ class FormWorkLocationTenant extends Component {
   }
 
   handleEdit = () => {
-    const { isEditing } = this.state;
+    const { isEditing, locationName } = this.state;
+    if (!isEditing) {
+      this.formRef.current.setFieldsValue({
+        name: locationName,
+      });
+    }
     this.setState({
       isEditing: !isEditing,
     });
