@@ -1,13 +1,18 @@
 import React, { PureComponent } from 'react';
+import BillingHistory from './components/BillingHistory';
+import PaymentMethods from './components/PaymentMethods';
+import PayrollBankAccount from './components/PayrollBankAccount';
+// import FlexbenBankAccount from './components/FlexbenBankAccount';
 import s from './index.less';
 
 export default class BillingPayments extends PureComponent {
   render() {
     return (
       <div className={s.root}>
-        <div className={s.content}>
-          <p className={s.title}>Billing & Payments</p>
-        </div>
+        <BillingHistory />
+        <PayrollBankAccount />
+        <PaymentMethods />
+        {/* <FlexbenBankAccount /> */}
       </div>
     );
   }

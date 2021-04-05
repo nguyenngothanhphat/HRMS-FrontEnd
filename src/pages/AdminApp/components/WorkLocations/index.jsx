@@ -123,22 +123,8 @@ class WorkLocations extends PureComponent {
     }
   };
 
-  editLocationAPI = () => {
-    console.log('EDIT LOCATION');
-  };
-
   onFinish = async (values) => {
-    const { countEditBlock, countLocation } = this.state;
-    if (countLocation !== 0) {
-      this.addLocationAPI(values);
-    }
-    if (countEditBlock !== 0) {
-      this.editLocationAPI();
-    }
-    this.setState({
-      countEditBlock: 0,
-      countLocation: 0,
-    });
+    this.addLocationAPI(values);
   };
 
   formatListLocation = () => {
@@ -212,6 +198,7 @@ class WorkLocations extends PureComponent {
       locationsList = [],
       fetchingLocationsList,
       loadingCountry,
+      loadingAddMultiLocation = false,
     } = this.props;
 
     const listLocation = this.formatListLocation();
@@ -309,7 +296,7 @@ class WorkLocations extends PureComponent {
                       <div
                         className={s.viewAddWorkLocation}
                         onClick={() => {
-                          this.setState({ countLocation: countLocation + 1 });
+                          // this.setState({ countLocation: countLocation + 1 });
                           add();
                         }}
                       >
@@ -318,6 +305,15 @@ class WorkLocations extends PureComponent {
                         </p>
                         <p className={s.viewAddWorkLocation__text}>Add work location</p>
                       </div>
+                      {fields.length !== 0 && (
+                        <div className={s.viewBtn}>
+                          <Button
+                            loading={loadingAddMultiLocation}
+                            className={s.btnSubmit}
+                            htmType="submit"
+                          />
+                        </div>
+                      )}
                     </div>
                   </>
                 )}

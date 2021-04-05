@@ -1,0 +1,83 @@
+.root{
+    width: 100%;
+  height: fit-content;
+  background: #ffffff;
+  border: 1px solid #d6dce0;
+  box-sizing: border-box;
+  border-radius: 5px;
+  margin-top: 24px;
+  .blockContent {
+    border-bottom: 1px solid #f0f0f0;
+    &__header{
+    border-bottom: 1px solid #f0f0f0;
+    padding: 24px;
+      .title {
+        margin: 0;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 19px;
+      }
+      p{
+        margin-top: 1em;
+        margin-bottom: 1em;
+      }
+      }
+      &__bottom{
+        height: fit-content;
+        color: #161c29;
+        font-size: 13px;
+        line-height: 15px;
+        padding: 24px;
+          &__row{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            &__textLabel{
+                font-size: 13px;
+            }
+            input{
+              padding: 10px;
+            }
+            .column{
+              position: relative;
+              .action{
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                cursor: pointer;
+                color: #FFA100;
+                font-weight: bold;
+              }
+              .afterAction {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+                cursor: pointer;
+                // span {
+                  .save{
+                    margin-right: 15px;
+                    color: green;
+                    font-weight: bold;
+                    cursor: pointer;
+                  }
+                  .cancel{
+                    color: red;
+                    font-weight: bold;
+                    cursor: pointer;
+                    
+                  }
+                // }
+              }
+              
+            }
+          }
+      }
+  }
+  .hide{
+    visibility: hidden;
+  }
+  .unhide{
+    visibility: visible;
+  }
+}

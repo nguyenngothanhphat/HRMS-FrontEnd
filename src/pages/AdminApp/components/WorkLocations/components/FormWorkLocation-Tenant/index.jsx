@@ -2,12 +2,17 @@ import React, { Component } from 'react';
 import { Form, Input, Select, Divider, Modal, Row, Col } from 'antd';
 import { ExclamationCircleOutlined, DeleteOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
+import { connect } from 'umi';
 // import { bool } from 'prop-types';
 import s from './index.less';
 
 const { Option } = Select;
 const { confirm } = Modal;
 
+@connect(({ adminApp, loading }) => ({
+  adminApp,
+  loadingUpdateLocation: loading.effects['adminApp/updateLocation'],
+}))
 class FormWorkLocationTenant extends Component {
   formRef = React.createRef();
 
@@ -16,22 +21,54 @@ class FormWorkLocationTenant extends Component {
     this.state = {
       newCountry: '',
       isEditing: false,
+      isSaved: false,
+      locationName: '',
     };
   }
 
   componentDidMount() {
-    const { defaultCountry } = this.props;
+    const { locationInfo: { name = '' } = {}, defaultCountry } = this.props;
     this.setState({
+      locationName: name,
       newCountry: defaultCountry,
     });
   }
 
   handleEdit = () => {
-    const { handleEditLocation = () => {} } = this.props;
-    const { isEditing } = this.state;
-    handleEditLocation(!isEditing);
+    const { isEditing, locationName } = this.state;
+    if (!isEditing) {
+      this.formRef.current.setFieldsValue({
+        name: locationName,
+      });
+    }
     this.setState({
       isEditing: !isEditing,
+    });
+  };
+
+  handleCancel = () => {
+    const { isEditing } = this.state;
+    this.setState({
+      isEditing: !isEditing,
+    });
+
+    const {
+      locationInfo: {
+        name = '',
+        addressLine1 = '',
+        addressLine2 = '',
+        country = '',
+        state = '',
+        zipCode = '',
+      } = {},
+    } = this.props;
+    this.formRef.current.setFieldsValue({
+      name,
+      addressLine1,
+      addressLine2,
+      country,
+      state,
+      zipCode,
     });
   };
 
@@ -70,8 +107,60 @@ class FormWorkLocationTenant extends Component {
     }
   };
 
+  saveLocationAPI = async (values, locationId) => {
+    const { dispatch } = this.props;
+    const tenantId = localStorage.getItem('tenantId');
+
+    const {
+      name,
+      addressLine1 = '',
+      addressLine2 = '',
+      country = '',
+      state = '',
+      zipCode = '',
+    } = values;
+
+    const payload = {
+      tenantId,
+      id: locationId,
+      name,
+      headQuarterAddress: {
+        addressLine1,
+        addressLine2,
+        country,
+        state,
+        zipCode,
+      },
+      // legalAddress: {
+      //   addressLine1,
+      //   addressLine2,
+      //   country,
+      //   state,
+      //   zipCode,
+      // },
+    };
+    const res = await dispatch({
+      type: 'adminApp/updateLocation',
+      payload,
+    });
+
+    const { statusCode } = res;
+    if (statusCode === 200) {
+      this.setState({
+        isSaved: true,
+        isEditing: false,
+        locationName: name,
+      });
+      setTimeout(() => {
+        this.setState({
+          isSaved: false,
+        });
+      }, 2500);
+    }
+  };
+
   render() {
-    const { newCountry = '', isEditing } = this.state;
+    const { newCountry = '', isEditing, isSaved, locationName } = this.state;
     const {
       listCountry = [],
       field = {},
@@ -87,6 +176,7 @@ class FormWorkLocationTenant extends Component {
       } = {},
       listLength = 0,
       index = 0,
+      loadingUpdateLocation = false,
     } = this.props;
 
     const listState = this.findListState(newCountry) || [];
@@ -162,7 +252,8 @@ class FormWorkLocationTenant extends Component {
                     disabled={disableInput}
                     onChange={this.onChangeCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     {listCountry.map((item) => (
                       <Option key={item._id}>{item.name}</Option>
@@ -179,7 +270,8 @@ class FormWorkLocationTenant extends Component {
                     showSearch
                     disabled={disableInput || !newCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     {listState.map((item) => (
                       <Option key={item}>{item}</Option>

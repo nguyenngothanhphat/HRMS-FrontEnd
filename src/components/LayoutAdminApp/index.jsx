@@ -23,8 +23,8 @@ class CommonLayout extends PureComponent {
   componentDidMount() {
     const { listMenu } = this.props;
     this.setState({
-      selectedItemId: listMenu[0].id,
-      displayComponent: listMenu[0].component,
+      selectedItemId: listMenu[4].id,
+      displayComponent: listMenu[4].component,
     });
   }
 
