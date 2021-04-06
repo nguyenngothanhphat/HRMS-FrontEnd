@@ -6,6 +6,7 @@ import { connect } from 'umi';
 import HeaderSearch from '../HeaderSearch';
 import Avatar from './AvatarDropdown';
 import GlobalEmployeeSearch from './components/GlobalEmployeeSearch';
+import SelectCompanyModal from './components/SelectCompanyModal';
 import styles from './index.less';
 
 const GlobalHeaderRight = (props) => {
@@ -17,6 +18,7 @@ const GlobalHeaderRight = (props) => {
     loadingList,
   } = props;
   const [visible, setVisible] = useState(false);
+  const [isSwitchCompanyVisible, setIsSwitchCompanyVisible] = useState(false);
   let className = styles.right;
 
   const handleCancel = () => {
@@ -53,7 +55,10 @@ const GlobalHeaderRight = (props) => {
         <BellOutlined />
       </div>
       <Tooltip title="Switch company">
-        <div className={`${styles.action} ${styles.notify}`}>
+        <div
+          className={`${styles.action} ${styles.notify}`}
+          onClick={() => setIsSwitchCompanyVisible(true)}
+        >
           <BuildOutlined />
         </div>
       </Tooltip>
@@ -65,6 +70,7 @@ const GlobalHeaderRight = (props) => {
         employeesList={searchEmployeesList}
         loading={loadingList}
       />
+      <SelectCompanyModal visible={isSwitchCompanyVisible} onClose={setIsSwitchCompanyVisible} />
     </div>
   );
 };
