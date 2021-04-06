@@ -2,12 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
 import { Tabs, Layout, Select } from 'antd';
 import DirectoryTable from '@/components/DirectoryTable';
-import {
-  getCurrentTenant,
-  getCurrentCompany,
-  getCurrentLocation,
-  isOwner,
-} from '@/utils/authority';
+import { getCurrentTenant, getCurrentCompany, getCurrentLocation } from '@/utils/authority';
 
 import { debounce } from 'lodash';
 import AddEmployeeForm from '@/pages_admin/EmployeesManagement/components/TableContainer/components/AddEmployeeForm';
@@ -19,7 +14,6 @@ import TableFilter from '../TableFilter';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
-const { Option } = Select;
 @connect(({ loading, employee, user: { currentUser = {}, permissions = {} } }) => ({
   loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
   loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
@@ -651,7 +645,6 @@ class DirectoryComponent extends PureComponent {
   render() {
     const {
       currentUser: { company, roles = [] },
-      employee: { location = [] },
     } = this.props;
     const { collapsed, visible, visibleImportEmployee, locationNew } = this.state;
     const getRole = roles.filter((item) => item._id === 'HR-GLOBAL');
@@ -659,20 +652,6 @@ class DirectoryComponent extends PureComponent {
 
     return (
       <div className={styles.DirectoryComponent}>
-        {locationNew.length > 0 && (getRole[0] || getRoleCSA[0]?._id || isOwner()) ? (
-          <div className={styles.selectLocation}>
-            <Select
-              defaultValue={locationNew.length > 0 ? locationNew[0] : ''}
-              onChange={this.handleChangeGetLocation}
-            >
-              {location.map((item) => (
-                <Option value={item._id}>{item.name}</Option>
-              ))}
-            </Select>
-          </div>
-        ) : (
-          ''
-        )}
         {this.handleRenderTable(getRole[0] || getRoleCSA[0], locationNew, collapsed, roles)}
 
         <AddEmployeeForm

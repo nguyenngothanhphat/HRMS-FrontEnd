@@ -1,5 +1,6 @@
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
+import {getCurrentTenant} from '@/utils/authority'
 import {
   LocationFilter,
   DepartmentFilter,
@@ -100,6 +101,7 @@ const employee = {
     ) {
       try {
         const response = yield call(getListEmployeeActive, {
+          tenantId: getCurrentTenant(),
           company,
           department,
           location,
@@ -130,6 +132,7 @@ const employee = {
     ) {
       try {
         const response = yield call(getListEmployeeInActive, {
+          tenantId: getCurrentTenant(),
           company,
           department,
           location,

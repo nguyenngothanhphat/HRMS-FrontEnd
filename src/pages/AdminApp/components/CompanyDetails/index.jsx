@@ -211,7 +211,7 @@ class CompanyDetails extends Component {
         id: companyId,
         tenantId,
         childOfCompany: parentCompany,
-        tenant: parentTenantId,
+        // tenant: parentTenantId,
       };
       const res = await dispatch({
         type: 'companiesManagement/updateCompany',
