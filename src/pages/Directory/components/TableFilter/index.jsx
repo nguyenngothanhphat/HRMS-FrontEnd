@@ -43,9 +43,9 @@ class TableFilter extends PureComponent {
     dispatch({
       type: 'employee/fetchDepartment',
     });
-    dispatch({
-      type: 'employee/fetchListEmployeeMyTeam',
-    });
+    // dispatch({
+    //   type: 'employee/fetchListEmployeeMyTeam',
+    // });
   }
 
   toggle = () => {
