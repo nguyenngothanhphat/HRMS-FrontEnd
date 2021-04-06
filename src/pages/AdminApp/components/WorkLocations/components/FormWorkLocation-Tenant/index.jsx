@@ -265,7 +265,7 @@ class FormWorkLocationTenant extends Component {
                 )}
               </div>
             </Row>
-            {isEditing && !isHeadQuarter && (
+            {(isHeadQuarter || isEditing) && (
               <Row className={s.content__viewBottom__row}>
                 <Col span={8}>
                   <p className={s.content__viewBottom__row__textLabel}>Location Name*</p>

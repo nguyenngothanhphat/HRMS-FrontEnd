@@ -35,14 +35,14 @@ class AvatarDropdown extends React.Component {
     };
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     const {
       dispatch,
       // , roles = []
     } = this.props;
     const companyId = getCurrentCompany();
     const tenantId = getCurrentTenant();
-    dispatch({
+    await dispatch({
       type: 'locationSelection/fetchLocationsByCompany',
       payload: {
         company: companyId,
@@ -101,7 +101,7 @@ class AvatarDropdown extends React.Component {
 
       return;
     }
-
+    console.log('key', key);
     setCurrentLocation(key);
     let selectLocation = '';
 

@@ -1,5 +1,5 @@
 import { queryCurrent, query as queryUsers, fetchCompanyOfUser } from '@/services/user';
-import { getCurrentCompany, setCurrentLocation, getCurrentLocation } from '@/utils/authority';
+import { getCurrentCompany, setCurrentLocation, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 
 import { history } from 'umi';
 import { checkPermissions } from '@/utils/permissions';
@@ -27,7 +27,7 @@ const UserModel = {
         if (statusCode !== 200) throw response;
 
         // if there's no tenantId and companyId, return to dashboard
-        const tenantId = localStorage.getItem('tenantId');
+        const tenantId = getCurrentTenant();
         const currentCompanyId = getCurrentCompany();
         if (!tenantId || !currentCompanyId) {
           history.replace('/control-panel');
@@ -45,6 +45,7 @@ const UserModel = {
         });
 
         const currentLocation = getCurrentLocation();
+
         if (!currentLocation) {
           setCurrentLocation(response?.data?.location?._id);
         }

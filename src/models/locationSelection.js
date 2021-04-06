@@ -19,16 +19,13 @@ const LocationSelection = {
           type: 'save',
           payload: { listLocationsByCompany: data },
         });
-        let currentLocation = getCurrentLocation();
-        if (!currentLocation) {
+        const currentLocation = getCurrentLocation();
+        if (!currentLocation || currentLocation === 'undefined') {
           const hasHeadQuarter = data.find((value) => value?.isHeadQuarter);
           if (hasHeadQuarter) {
             setCurrentLocation(hasHeadQuarter._id);
           } else {
-            currentLocation = localStorage.setItem(
-              'currentLocationId',
-              data.length > 0 ? data[0]?._id : '',
-            );
+            setCurrentLocation( data.length > 0 ? data[0]?._id : '');
           }
         }
 
