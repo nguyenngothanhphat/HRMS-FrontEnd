@@ -1,6 +1,7 @@
 import logoDefault from '@/assets/companyDefault.png';
 import { Button } from 'antd';
 import React, { PureComponent } from 'react';
+import { setCurrentLocation } from '@/utils/authority';
 import { history, connect } from 'umi';
 import s from './index.less';
 
@@ -29,7 +30,7 @@ class ItemCompany extends PureComponent {
   };
 
   handleGetStarted = (locationId) => {
-    localStorage.setItem('currentLocation', locationId);
+    setCurrentLocation(locationId);
     history.push('/');
   };
 

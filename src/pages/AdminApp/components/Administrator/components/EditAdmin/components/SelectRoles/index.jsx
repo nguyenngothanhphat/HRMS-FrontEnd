@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-globals */
 import React, { PureComponent } from 'react';
 import { Button, Tree } from 'antd';
 import styles from './index.less';
@@ -11,9 +12,9 @@ class SelectRoles extends PureComponent {
   }
 
   componentDidMount() {
-    const { dataAdmin: { permissionAdmin = [] } = {} } = this.props;
+    const { dataAdmin: { permissionAdmin = [] } = {}, onBackValues = [] } = this.props;
     this.setState({
-      selectedList: permissionAdmin,
+      selectedList: onBackValues.length > 0 ? onBackValues : permissionAdmin,
     });
   }
 
@@ -36,9 +37,33 @@ class SelectRoles extends PureComponent {
     });
   };
 
+  filterID = (value) => {
+    const idArray = [
+      'M_USER_MANAGEMENT',
+      'M_DIRECTORY',
+      'M_ONBOARDING',
+      'M_TIMEOFF',
+      'M_OFFBOARDING',
+      'M_PROJECT_MANAGEMENT',
+      'M_DOCUMENT_MANAGEMENT',
+    ];
+
+    let data = idArray.map((item) => {
+      if (value.includes(item)) {
+        return item;
+      }
+      return 0;
+    });
+
+    data = data.filter((item) => item !== 0);
+    return data;
+  };
+
   renderList = () => {
     const { permissionList = [] } = this.props;
     const { selectedList = [] } = this.state;
+    const root = [];
+
     let formatList = permissionList.map((per) => per?.module);
     formatList = formatList.filter(
       (value) => value !== undefined && value !== '' && value !== null,
@@ -58,15 +83,49 @@ class SelectRoles extends PureComponent {
       });
       result = result.filter((val) => val !== 0);
 
+      // remove a result that its Title contains keyword 'root view'
+      let filterResult = result.map((res) => {
+        const { title = '' } = res;
+        if (!title.includes('root view')) {
+          return res;
+        }
+        root.push(res);
+        return 0;
+      });
+
+      filterResult = filterResult.filter((val) => val !== 0);
       return {
         key: index,
         title: moduleName,
-        children: result,
+        children: filterResult,
       };
     });
 
-    const onCheck = (value) => {
-      this.setList(value);
+    const onCheck = (valueCheckBox) => {
+      const formatPermission = valueCheckBox.filter((item) => isNaN(item));
+      // Filter value IDs that include a part of rootID string in function filterID()
+      let arrayValueID = [];
+      formatPermission.forEach((item) => {
+        if (this.filterID(item)) {
+          arrayValueID.push(...this.filterID(item));
+        }
+      });
+      arrayValueID = [...new Set(arrayValueID)];
+
+      // then, return root id from root list
+      const filterRootID = [];
+      arrayValueID.map((id) => {
+        root.forEach((r) => {
+          if (r.key.includes(id)) {
+            filterRootID.push(r.key);
+          }
+        });
+        return 0;
+      });
+
+      const listPermission = [...formatPermission, ...filterRootID];
+
+      this.setList(listPermission);
     };
 
     return (
@@ -84,13 +143,8 @@ class SelectRoles extends PureComponent {
     );
   };
 
-  defaultCheckBox = () => {
-    const { dataAdmin: { permissionAdmin = [] } = {} } = this.props;
-    return permissionAdmin;
-  };
-
   renderMainForm = () => {
-    const { onContinue = () => {} } = this.props;
+    const { onContinue = () => {}, onBack = () => {} } = this.props;
     const { selectedList } = this.state;
     return (
       <div className={styles.mainForm}>
@@ -99,6 +153,9 @@ class SelectRoles extends PureComponent {
         </div>
         <div className={styles.content}>{this.renderList()}</div>
         <div className={styles.nextBtn}>
+          <div className={styles.goBackBtn} onClick={() => onBack(selectedList)}>
+            <span>Back</span>
+          </div>
           <Button className={styles.proceedBtn} onClick={() => onContinue(2, selectedList)}>
             Continue
           </Button>
@@ -108,7 +165,6 @@ class SelectRoles extends PureComponent {
   };
 
   render() {
-    const { selectedList = [] } = this.state;
     return (
       <div className={styles.SelectRoles}>
         {this.renderTitle()}

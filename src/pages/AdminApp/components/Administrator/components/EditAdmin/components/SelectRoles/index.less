@@ -28,7 +28,7 @@
 
   .mainForm {
     background-color: white;
-    border: 1px solid #ebeff2;
+    border: 1px solid #d6dce0;
     border-radius: 5px;
     .header {
       display: flex;
@@ -57,6 +57,21 @@
       padding: 24px;
       display: flex;
       justify-content: flex-end;
+
+      .goBackBtn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 24px;
+        cursor: pointer;
+        span {
+          color: #2c6df9;
+          font-weight: 500;
+        }
+        &:hover {
+          opacity: 0.8;
+        }
+      }
     }
   }
   :global {

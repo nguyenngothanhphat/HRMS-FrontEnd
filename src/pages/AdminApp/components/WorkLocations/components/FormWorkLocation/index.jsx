@@ -133,7 +133,7 @@ class FormWorkLocation extends Component {
             </Col>
           </Row>
 
-          <div className={s.FormWorkLocation__viewBottom__row}>
+          <Row className={s.FormWorkLocation__viewBottom__row}>
             <Col span={8}>
               <p className={s.FormWorkLocation__viewBottom__row__textLabel}>Address Line 1*</p>
             </Col>
@@ -153,8 +153,8 @@ class FormWorkLocation extends Component {
                 <Input placeholder="Address Line 1" />
               </Form.Item>
             </Col>
-          </div>
-          <div className={s.FormWorkLocation__viewBottom__row}>
+          </Row>
+          <Row className={s.FormWorkLocation__viewBottom__row}>
             <Col span={8}>
               <p className={s.FormWorkLocation__viewBottom__row__textLabel}>Address Line 2</p>
             </Col>
@@ -168,7 +168,7 @@ class FormWorkLocation extends Component {
                 <Input placeholder="Address Line 2" />
               </Form.Item>
             </Col>
-          </div>
+          </Row>
           <Row gutter={[24, 24]} className={s.FormWorkLocation__viewBottom__row}>
             <Col span={8} className={s.viewFormVertical}>
               <p className={classnames(s.FormWorkLocation__viewBottom__row__textLabel, s.mgb10)}>

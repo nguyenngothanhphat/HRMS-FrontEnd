@@ -7,7 +7,8 @@ import {
   updateAdminService,
   getLocationList,
   removeLocation,
-  updateLocation
+  updateLocation,
+  getListUsersOfOwner
 } from '../services/adminApp';
 
 const country = {
@@ -17,7 +18,8 @@ const country = {
     newAdmin: {},
     listAdmin: [],
     updateAdmin: {},
-    locationsList: []
+    locationsList: [],
+    userListOfOwner: []
   },
   effects: {
     *fetchPermissionList({ payload = {} }, { call, put }) {
@@ -63,8 +65,8 @@ const country = {
         const { statusCode, data: updateAdmin = {} } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message: 'Notification Title',
-          description: 'Update additional administrator successfully',
+          message: 'Update additional administrator successfully',
+          // description: 'Update additional administrator successfully',
         });
         yield put({ type: 'save', payload: { updateAdmin } });
         return response;
@@ -91,8 +93,8 @@ const country = {
         const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message
-        })
+          message,
+        });
         return response;
       } catch (errors) {
         dialog(errors);
@@ -102,11 +104,20 @@ const country = {
     *updateLocation({ payload = {} }, { call }) {
       try {
         const response = yield call(updateLocation, payload);
-        const { statusCode, message = '' } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message
-        })
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *fetchUsersListOfOwner({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getListUsersOfOwner, payload);
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { userListOfOwner: data?.listUser || [] } });
         return response;
       } catch (errors) {
         dialog(errors);

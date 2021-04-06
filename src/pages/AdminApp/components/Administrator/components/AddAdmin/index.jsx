@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
 import SelectRoles from './components/SelectRoles';
 import SelectUser from './components/SelectUser';
 
@@ -21,7 +22,7 @@ class AddAdmin extends PureComponent {
     super(props);
     this.state = {
       currentStep: 1,
-      // adminRoles: [],
+      adminRoles: [],
       adminInfo: {},
     };
   }
@@ -48,16 +49,17 @@ class AddAdmin extends PureComponent {
     if (step === 2) {
       const { dispatch } = this.props;
       const { adminInfo = {} } = this.state;
-      const { firstName = '', email = '', name1 = '' } = adminInfo;
+      const { firstName = '', email = '', name1 = '', usermapId = '' } = adminInfo;
       // eslint-disable-next-line no-restricted-globals
       const formatAdminRoles = values.filter((x) => isNaN(x));
-      const tenantId = localStorage.getItem('tenantId');
-      const company = localStorage.getItem('currentCompanyId');
+      const tenantId = getCurrentTenant();
+      const company = getCurrentCompany();
       const payload = {
         firstName: firstName || name1,
-        email: email || 'lewis.nguyen@mailinator.com',
+        email,
         company,
         tenantId,
+        usermap: usermapId,
         permissionAdmin: formatAdminRoles,
       };
 
@@ -70,9 +72,10 @@ class AddAdmin extends PureComponent {
     }
   };
 
-  onGoBack = () => {
+  onGoBack = (value) => {
     this.setState({
       currentStep: 1,
+      adminRoles: value,
     });
   };
 
@@ -84,7 +87,7 @@ class AddAdmin extends PureComponent {
       loadingAddAdmin = false,
     } = this.props;
     const companyName = companyDetails?.company?.name;
-    const { currentStep, adminInfo } = this.state;
+    const { currentStep, adminInfo = {}, adminRoles = [] } = this.state;
     const { firstName = '', name1 = '' } = adminInfo;
 
     return (
@@ -105,6 +108,7 @@ class AddAdmin extends PureComponent {
             loadingAddAdmin={loadingAddAdmin}
             name={firstName || name1}
             onBack={this.onGoBack}
+            onBackValues={adminRoles}
           />
         )}
       </div>

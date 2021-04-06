@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import { Modal, Button, Form, Select } from 'antd';
 import { connect } from 'umi';
 import _ from 'lodash';
+import { getCurrentCompany } from '@/utils/authority';
 import moment from 'moment';
 import ImportCSV from '@/components/ImportCSV';
 import exportToCsv from '@/utils/exportToCsv';
@@ -39,7 +40,7 @@ class ModalImportEmployee extends Component {
     super(props);
     this.state = {
       employees: [],
-      company: props.company._id,
+      company: '',
       // objectEmployee: {
       //   location: 'Location',
       //   department: 'Department',
@@ -55,6 +56,13 @@ class ModalImportEmployee extends Component {
     };
     this.formRef = React.createRef();
   }
+
+  componentDidMount = () => {
+    const company = getCurrentCompany();
+    this.setState({
+      company,
+    });
+  };
 
   componentDidUpdate() {
     const { statusImportEmployees, dispatch } = this.props;

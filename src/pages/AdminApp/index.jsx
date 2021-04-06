@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import Layout from '@/components/LayoutAdminApp';
 import { connect } from 'umi';
+import { getCurrentCompany } from '@/utils/authority';
 import CompanyDetails from './components/CompanyDetails';
 import WorkLocations from './components/WorkLocations';
 import PlanInfo from './components/PlanInfo';
@@ -25,7 +26,7 @@ import styles from './index.less';
 class AdminApp extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
-    const id = localStorage.getItem('currentCompanyId');
+    const id = getCurrentCompany();
     dispatch({
       type: 'country/fetchListCountry',
     });
@@ -61,7 +62,7 @@ class AdminApp extends Component {
   }
 
   render() {
-    const id = localStorage.getItem('currentCompanyId');
+    const id = getCurrentCompany();
 
     const listMenu = [
       {

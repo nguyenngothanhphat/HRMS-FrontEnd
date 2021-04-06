@@ -1,12 +1,12 @@
 .FormWorkLocation {
-  // :global {
-  //   .ant-col {
-  //     padding-left: 0 !important;
-  //     padding-right: 0 !important;
-  //   }
-  // }
+  :global {
+    .ant-input-disabled,
+    .ant-select-disabled span {
+      color: rgb(77, 77, 77) !important;
+    }
+  }
   .mgb10 {
-    margin-bottom: 10px;
+    margin-bottom: 10px !important;
   }
   .textInput {
     box-sizing: border-box;
@@ -91,49 +91,49 @@
 }
 
 .action {
-  cursor: pointer;
   display: flex;
-  justify-content: space-around;
   align-items: center;
-  &:active {
-    transform: translateY(-1px);
-  }
+  justify-content: space-around;
+  cursor: pointer;
+  // &:active {
+  //   transform: translateY(-1px);
+  // }
   &__actionDelete {
     &__icon {
       margin: 2px 7px 0 0;
-      color: #2c6df9 !important;
+      color: #f10000 !important;
     }
   }
   span {
-    color: #707177;
+    color: #f10000;
     font-weight: 500;
     font-size: 13px;
     line-height: 15px;
     text-decoration-line: underline;
   }
   .viewBtn {
-    width: 41%;
-    height: fit-content;
     // margin-top: 20px;
     display: flex;
     justify-content: flex-end;
+    width: 41%;
+    height: fit-content;
     .btnSubmit {
-      background: #ffa100;
-      border-radius: 25px;
-      text-decoration: none;
-      height: 40px;
       width: 150px;
+      height: 40px;
+      color: #ffffff;
       font-weight: 500;
       font-size: 14px;
       line-height: 16px;
       text-align: center;
-      color: #ffffff;
+      text-decoration: none;
+      background: #ffa100;
       border: none;
+      border-radius: 25px;
       span {
         color: #fff;
-        text-decoration: none;
         font-weight: 500;
         font-size: 14px;
+        text-decoration: none;
       }
     }
   }

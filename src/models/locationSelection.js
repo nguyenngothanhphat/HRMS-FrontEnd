@@ -1,4 +1,5 @@
 // import { history } from 'umi';
+import { setCurrentLocation, getCurrentLocation } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import getLocationListByCompany from '../services/locationSelection';
 
@@ -18,12 +19,17 @@ const LocationSelection = {
           type: 'save',
           payload: { listLocationsByCompany: data },
         });
-        let currentLocation = localStorage.getItem('currentLocation');
+        let currentLocation = getCurrentLocation();
         if (!currentLocation) {
-          currentLocation = localStorage.setItem(
-            'currentLocation',
-            data.length > 0 ? data[0]?._id : '',
-          );
+          const hasHeadQuarter = data.find((value) => value?.isHeadQuarter);
+          if (hasHeadQuarter) {
+            setCurrentLocation(hasHeadQuarter._id);
+          } else {
+            currentLocation = localStorage.setItem(
+              'currentLocationId',
+              data.length > 0 ? data[0]?._id : '',
+            );
+          }
         }
 
         return data;

@@ -1,9 +1,39 @@
 .content {
+  :global {
+    .ant-btn-link {
+      padding: 0 !important;
+      margin-left: 20px !important;
+    }
+    .ant-input-disabled,
+    .ant-select-disabled span {
+      color: rgb(77, 77, 77) !important;
+    }
+  }
+  .savedBanner {
+    background-color: #00c598;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    .icon {
+      margin-right: 15px;
+    }
+    span {
+      display: inline-block;
+      color: white;
+      font-weight: 500;
+      font-size: 13px;
+    }
+  }
+  .buttonIcon {
+    margin: 2px 0px 0 0;
+  }
   p {
     margin: 0;
   }
   .mgb10 {
-    margin-bottom: 10px;
+    margin-bottom: 10px !important;
   }
   .textInput {
     box-sizing: border-box;
@@ -40,23 +70,58 @@
         display: flex;
         align-items: center;
       }
-      .actionDelete {
-        margin-left: 20px;
-        cursor: pointer;
-        &__icon {
-          margin: 2px 7px 0 0;
-          color: #2c6df9 !important;
-        }
+      .saveBtn {
         span {
-          color: #707177;
+          color: #ffa100;
+        }
+      }
+      .actionDelete,
+      .actionSave,
+      .actionEdit,
+      .actionCancel,
+      .actionUpdating {
+        // margin-left: 20px;
+        cursor: pointer;
+        span {
           font-weight: 500;
           font-size: 13px;
           line-height: 15px;
           text-decoration: underline;
         }
       }
+      .actionDelete {
+        .buttonIcon {
+          color: #f10000;
+        }
+        span {
+          color: #f10000;
+        }
+      }
+      .actionCancel {
+        .buttonIcon {
+          color: #666;
+        }
+        span {
+          color: #666;
+        }
+      }
       .actionEdit {
-        .actionDelete();
+        span {
+        }
+      }
+      .actionSave,
+      .actionUpdating {
+        .buttonIcon {
+          color: #ffa100;
+        }
+        span {
+          color: #ffa100;
+        }
+      }
+      .actionUpdating {
+        span {
+          text-decoration: none;
+        }
       }
     }
     &__row {

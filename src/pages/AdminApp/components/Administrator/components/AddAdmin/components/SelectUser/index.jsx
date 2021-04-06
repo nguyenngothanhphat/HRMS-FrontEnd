@@ -1,20 +1,41 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Radio, Select, Input, Form } from 'antd';
+import { getCurrentCompany } from '@/utils/authority';
+import { connect } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
-
-export default class SelectUser extends PureComponent {
+@connect()
+class SelectUser extends PureComponent {
   formRef = React.createRef();
 
   constructor(props) {
     super(props);
     this.state = {
       isCompanyWorker: true,
+      listUsers: [],
     };
   }
 
+  fetchUsers = async () => {
+    const { dispatch } = this.props;
+    const company = getCurrentCompany();
+    const res = await dispatch({
+      type: 'adminApp/fetchUsersListOfOwner',
+      payload: {
+        company,
+      },
+    });
+    const { statusCode = 0, data = {} } = res;
+    if (statusCode === 200) {
+      this.setState({
+        listUsers: data?.listUser || [],
+      });
+    }
+  };
+
   componentDidMount = () => {
+    this.fetchUsers();
     const { onBackValues: { firstName = '' } = {} } = this.props;
     if (firstName) {
       this.setState({
@@ -46,14 +67,29 @@ export default class SelectUser extends PureComponent {
 
   onFinish = (values) => {
     const { onContinue = () => {} } = this.props;
-    onContinue(1, values);
+    let payload = {};
+    const { isCompanyWorker, usermapId } = values;
+    if (isCompanyWorker) {
+      const { listUsers } = this.state;
+      const userObj = listUsers.find((user) => user?._id === usermapId);
+
+      payload = {
+        isCompanyWorker,
+        name1: userObj?.usermap.firstName,
+        email: userObj?.usermap.email,
+        usermapId,
+      };
+    } else {
+      payload = { ...values };
+    }
+    onContinue(1, payload);
   };
 
   renderContent = () => {
-    const { isCompanyWorker } = this.state;
+    const { isCompanyWorker, listUsers } = this.state;
     const {
       companyName = '',
-      onBackValues: { firstName = '', email = '', name1 = '' } = {},
+      onBackValues: { firstName = '', email = '', usermapId = '' } = {},
     } = this.props;
 
     return (
@@ -65,8 +101,8 @@ export default class SelectUser extends PureComponent {
           initialValues={{
             isCompanyWorker,
             firstName,
-            email,
-            name1: name1 === '' ? null : name1,
+            email: usermapId ? null : email,
+            usermapId: usermapId === '' ? null : usermapId,
           }}
           onFinish={this.onFinish}
         >
@@ -89,7 +125,7 @@ export default class SelectUser extends PureComponent {
               <Col span={8}>Name</Col>
               <Col span={14}>
                 <Form.Item
-                  name="name1"
+                  name="usermapId"
                   rules={[{ required: true, message: 'Please select a person' }]}
                 >
                   <Select
@@ -97,8 +133,19 @@ export default class SelectUser extends PureComponent {
                     placeholder="Search by name or select a person"
                     showArrow
                     showSearch
+                    onSearch={this.fetchUsers}
                   >
-                    <Option value="Lewis Nguyen">Lewis Nguyen (lewis.nguyen@mailinator.com)</Option>
+                    {listUsers.map((user) => {
+                      const {
+                        usermap: { email: email1 = '', firstName: fn1 = '' },
+                        _id = '',
+                      } = user;
+                      return (
+                        <Option key={_id}>
+                          {fn1} {email1 ? `(${email1})` : ''}
+                        </Option>
+                      );
+                    })}
                   </Select>
                 </Form.Item>
               </Col>
@@ -166,3 +213,4 @@ export default class SelectUser extends PureComponent {
     );
   }
 }
+export default SelectUser;

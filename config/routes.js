@@ -63,7 +63,16 @@ const routes = [
       },
     ],
   },
-
+  {
+    path: '/active-user/:id',
+    component: '../layouts/ActiveUserLayout',
+    routes: [
+      {
+        path: '/active-user/:id',
+        component: './ActiveUser',
+      },
+    ],
+  },
   {
     path: '/',
     component: '../layouts/SecurityLayout',
@@ -269,7 +278,7 @@ const routes = [
             name: 'directory',
             icon: '/assets/images/menuIcons/directory.svg',
             component: './Directory',
-            authority: ['P_DIRECTORY_VIEW'],
+            authority: ['P_DIRECTORY_VIEW','M_DIRECTORY_VIEW','owner'],
           },
           {
             // path: '/time-off/new-leave-request',
@@ -343,6 +352,8 @@ const routes = [
               'admin-cla',
               'admin-cda',
               'leader',
+              'admin',
+              'owner'
             ],
           },
           {
@@ -577,14 +588,14 @@ const routes = [
             component: './ExamplePage',
             authority: ['M_USER_MANAGEMENT_VIEW', 'owner'],
           },
-          {
-            path: '/example2',
-            name: 'Directory',
-            icon: '/assets/images/menuIcons/icon2.svg',
-            component: './ExamplePage',
-            authority: ['M_DIRECTORY_VIEW', 'owner'],
+          // {
+          //   path: '/example2',
+          //   name: 'Directory',
+          //   icon: '/assets/images/menuIcons/icon2.svg',
+          //   component: './ExamplePage',
+          //   authority: ['M_DIRECTORY_VIEW', 'owner'],
 
-          },
+          // },
           {
             path: '/example3',
             name: 'Document Management',

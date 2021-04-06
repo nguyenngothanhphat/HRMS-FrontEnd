@@ -10,6 +10,7 @@ import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { Button, Result } from 'antd';
 import { connect, Link, useIntl, Redirect } from 'umi';
+import { getCurrentCompany } from '@/utils/authority';
 import classnames from 'classnames';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
@@ -54,7 +55,7 @@ const BasicLayout = (props) => {
    */
 
   const getCurrentLogo = () => {
-    const currentCompanyId = localStorage.getItem('currentCompanyId');
+    const currentCompanyId = getCurrentCompany();
     const currentComp = companies.find((cp) => cp._id === currentCompanyId);
     return currentComp?.logoUrl;
   };
@@ -69,19 +70,19 @@ const BasicLayout = (props) => {
   };
 
   const _renderLogo = () => {
-    const checkRole = (roleName) => {
-      const { signInRole = [] } = currentUser;
-      const formatRole = signInRole.map((role) => role.toLowerCase());
-      if (formatRole.includes(roleName)) return true;
-      return false;
-    };
+    // const checkRole = (roleName) => {
+    //   const { signInRole = [] } = currentUser;
+    //   const formatRole = signInRole.map((role) => role.toLowerCase());
+    //   if (formatRole.includes(roleName)) return true;
+    //   return false;
+    // };
 
-    const isOwner = checkRole('owner');
-    const isAdmin = checkRole('admin');
+    // const isOwner = checkRole('owner');
+    // const isAdmin = checkRole('admin');
 
     const logoUrl = getCurrentLogo();
     return (
-      <Link to={isOwner || isAdmin ? '/control-panel' : '/'}>
+      <Link to="/">
         <img
           src={logoUrl || logo}
           alt="logo"

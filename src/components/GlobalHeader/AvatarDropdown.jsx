@@ -3,6 +3,12 @@ import { Avatar, Button, Menu, Spin } from 'antd';
 import avtDefault from '@/assets/avtDefault.jpg';
 import React from 'react';
 import { connect, formatMessage, history } from 'umi';
+import {
+  setCurrentLocation,
+  getCurrentTenant,
+  getCurrentCompany,
+  getCurrentLocation,
+} from '@/utils/authority';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
@@ -34,11 +40,13 @@ class AvatarDropdown extends React.Component {
       dispatch,
       // , roles = []
     } = this.props;
-    const companyId = localStorage.getItem('currentCompanyId');
+    const companyId = getCurrentCompany();
+    const tenantId = getCurrentTenant();
     dispatch({
       type: 'locationSelection/fetchLocationsByCompany',
       payload: {
         company: companyId,
+        tenantId,
       },
     });
 
@@ -94,7 +102,7 @@ class AvatarDropdown extends React.Component {
       return;
     }
 
-    localStorage.setItem('currentLocation', key);
+    setCurrentLocation(key);
     let selectLocation = '';
 
     listLocationsByCompany.forEach((value) => {
@@ -115,7 +123,7 @@ class AvatarDropdown extends React.Component {
 
   renderLocationList = () => {
     const { listLocationsByCompany = [] } = this.props;
-    const currentLocation = localStorage.getItem('currentLocation');
+    const currentLocation = getCurrentLocation();
 
     return (
       <>

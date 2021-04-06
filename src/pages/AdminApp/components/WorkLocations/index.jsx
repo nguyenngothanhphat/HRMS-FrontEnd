@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Form, Button, Skeleton, notification } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import moment from 'moment';
+
 import { connect } from 'umi';
 // import ThirdStep from '@/pages/EmployeeProfile/components/EmploymentTab/components/HandleChanges/components/ThirdStep';
 import FormWorkLocation from './components/FormWorkLocation';
@@ -19,6 +21,7 @@ import s from './index.less';
     locationsList,
     fetchingLocationsList: loading.effects['adminApp/fetchLocationList'],
     loadingCountry: loading.effects['country/fetchListCountry'],
+    loadingAddMultiLocation: loading.effects['companiesManagement/addMultiLocation'],
     companyDetails,
   }),
 )
@@ -26,15 +29,12 @@ class WorkLocations extends PureComponent {
   constructor(props) {
     super(props);
     this.formRef = React.createRef();
-    this.state = {
-      countLocation: 0,
-      countEditBlock: 0,
-    };
+    this.state = {};
   }
 
   componentDidMount() {
     const { dispatch, companyId = '' } = this.props;
-    const tenantId = localStorage.getItem('tenantId');
+    const tenantId = getCurrentTenant();
     if (companyId) {
       dispatch({
         type: 'adminApp/fetchLocationList',
@@ -51,22 +51,9 @@ class WorkLocations extends PureComponent {
     });
   }
 
-  handleEditLocation = (value) => {
-    const { countEditBlock } = this.state;
-    let count = countEditBlock;
-    if (value) {
-      count = countEditBlock + 1;
-    } else {
-      count = countEditBlock - 1;
-    }
-    this.setState({
-      countEditBlock: count,
-    });
-  };
-
   addLocationAPI = async (values) => {
-    const tenantId = localStorage.getItem('tenantId');
-    const companyId = localStorage.getItem('currentCompanyId');
+    const tenantId = getCurrentTenant();
+    const companyId = getCurrentCompany();
 
     const { dispatch } = this.props;
     // const { company, isNewTenant, locations: originLocations = [] } = companyDetails;
@@ -140,8 +127,8 @@ class WorkLocations extends PureComponent {
   };
 
   removeLocation = async (id) => {
-    const tenantId = localStorage.getItem('tenantId');
-    const companyId = localStorage.getItem('currentCompanyId');
+    const tenantId = getCurrentTenant();
+    const companyId = getCurrentCompany();
 
     const { dispatch } = this.props;
     const payload = { id, tenantId };
@@ -192,7 +179,6 @@ class WorkLocations extends PureComponent {
   };
 
   render() {
-    const { countEditBlock, countLocation } = this.state;
     const {
       listCountry = [],
       locationsList = [],
@@ -238,16 +224,11 @@ class WorkLocations extends PureComponent {
             </p>
           </div>
           <div className={s.content__viewBottom}>
-            {/* <FormWorkLocationTenant
-              listCountry={listCountry}
-              listLocation={listLocation}
-              locationInfo={locationHeadquarter}
-              isHeadQuarter
-            /> */}
             {formatCurrentLocationsList.map((location, index) => {
               return (
                 <FormWorkLocationTenant
                   isRequired={false}
+                  defaultCountry={location?.country}
                   listCountry={listCountry}
                   listLocation={listLocation}
                   locationInfo={location}
@@ -287,7 +268,6 @@ class WorkLocations extends PureComponent {
                         listLocation={listLocation}
                         removeLocation={this.removeLocation}
                         onRemove={() => {
-                          this.setState({ countLocation: countLocation - 1 });
                           remove(field.name);
                         }}
                       />
@@ -296,7 +276,6 @@ class WorkLocations extends PureComponent {
                       <div
                         className={s.viewAddWorkLocation}
                         onClick={() => {
-                          // this.setState({ countLocation: countLocation + 1 });
                           add();
                         }}
                       >
@@ -310,8 +289,10 @@ class WorkLocations extends PureComponent {
                           <Button
                             loading={loadingAddMultiLocation}
                             className={s.btnSubmit}
-                            htmType="submit"
-                          />
+                            htmlType="submit"
+                          >
+                            Save
+                          </Button>
                         </div>
                       )}
                     </div>
@@ -320,14 +301,6 @@ class WorkLocations extends PureComponent {
               </Form.List>
             </div>
           </div>
-
-          {(countEditBlock !== 0 || countLocation !== 0) && (
-            <div className={s.viewBtn}>
-              <Button className={s.btnSubmit} htmlType="submit">
-                Save
-              </Button>
-            </div>
-          )}
         </Form>
       </div>
     );

@@ -1,5 +1,6 @@
 // import { Tooltip, Tag } from 'antd';
-import { BellOutlined } from '@ant-design/icons';
+import { BellOutlined, BuildOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import HeaderSearch from '../HeaderSearch';
@@ -51,6 +52,11 @@ const GlobalHeaderRight = (props) => {
       <div className={`${styles.action} ${styles.notify}`}>
         <BellOutlined />
       </div>
+      <Tooltip title="Switch company">
+        <div className={`${styles.action} ${styles.notify}`}>
+          <BuildOutlined />
+        </div>
+      </Tooltip>
       <Avatar />
       <GlobalEmployeeSearch
         titleModal="GLOBAL EMPLOYEE SEARCH"

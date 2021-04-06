@@ -1,17 +1,26 @@
 import React, { Component } from 'react';
-import { Form, Input, Select, Divider, Modal, Row, Col } from 'antd';
-import { ExclamationCircleOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Select, Divider, Modal, Row, Col } from 'antd';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  SaveOutlined,
+  CloseOutlined,
+  LoadingOutlined,
+} from '@ant-design/icons';
 import classnames from 'classnames';
 import { connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
+import { flattenDepth } from 'lodash';
+import RemoveLocationModal from '../RemoveLocationModal';
 // import { bool } from 'prop-types';
 import s from './index.less';
 
 const { Option } = Select;
-const { confirm } = Modal;
 
 @connect(({ adminApp, loading }) => ({
   adminApp,
   loadingUpdateLocation: loading.effects['adminApp/updateLocation'],
+  loadingRemoveLocation: loading.effects['adminApp/removeLocation'],
 }))
 class FormWorkLocationTenant extends Component {
   formRef = React.createRef();
@@ -23,6 +32,7 @@ class FormWorkLocationTenant extends Component {
       isEditing: false,
       isSaved: false,
       locationName: '',
+      removeModalVisible: false,
     };
   }
 
@@ -89,21 +99,79 @@ class FormWorkLocationTenant extends Component {
     return listState;
   };
 
-  showConfirm = (id) => {
-    const { removeLocation = () => {} } = this.props;
-    confirm({
-      title: 'Do you want to delete this location?',
-      icon: <ExclamationCircleOutlined />,
-      onOk() {
-        removeLocation(id);
-      },
-      onCancel() {},
+  hideConfirm = () => {
+    this.setState({
+      removeModalVisible: false,
     });
+  };
+
+  showConfirm = () => {
+    this.setState({
+      removeModalVisible: true,
+    });
+  };
+
+  onRemove = () => {
+    const { removeLocation = () => {} } = this.props;
+    const { locationInfo: { _id = '' } = {} } = this.props;
+    removeLocation(_id);
   };
 
   handleRemove = (_id) => {
     if (_id) {
-      this.showConfirm(_id);
+      this.showConfirm();
+    }
+  };
+
+  saveLocationAPI = async (values, locationId) => {
+    const { dispatch } = this.props;
+    const tenantId = getCurrentTenant();
+
+    const {
+      name,
+      addressLine1 = '',
+      addressLine2 = '',
+      country = '',
+      state = '',
+      zipCode = '',
+    } = values;
+
+    const payload = {
+      tenantId,
+      id: locationId,
+      name,
+      headQuarterAddress: {
+        addressLine1,
+        addressLine2,
+        country,
+        state,
+        zipCode,
+      },
+      // legalAddress: {
+      //   addressLine1,
+      //   addressLine2,
+      //   country,
+      //   state,
+      //   zipCode,
+      // },
+    };
+    const res = await dispatch({
+      type: 'adminApp/updateLocation',
+      payload,
+    });
+
+    const { statusCode } = res;
+    if (statusCode === 200) {
+      this.setState({
+        isSaved: true,
+        isEditing: false,
+        locationName: name,
+      });
+      setTimeout(() => {
+        this.setState({
+          isSaved: false,
+        });
+      }, 2500);
     }
   };
 
@@ -160,13 +228,13 @@ class FormWorkLocationTenant extends Component {
   };
 
   render() {
-    const { newCountry = '', isEditing, isSaved, locationName } = this.state;
+    const { newCountry = '', isEditing, isSaved, locationName, removeModalVisible } = this.state;
     const {
       listCountry = [],
       field = {},
       locationInfo: {
-        _id = '',
         name = '',
+        _id = '',
         addressLine1 = '',
         addressLine2 = '',
         country = '',
@@ -177,6 +245,7 @@ class FormWorkLocationTenant extends Component {
       listLength = 0,
       index = 0,
       loadingUpdateLocation = false,
+      loadingRemoveLocation = false,
     } = this.props;
 
     const listState = this.findListState(newCountry) || [];
@@ -187,10 +256,10 @@ class FormWorkLocationTenant extends Component {
         <div className={s.content__viewBottom}>
           <Form
             ref={this.formRef}
-            onFinish={this.onFinish}
+            onFinish={(values) => this.saveLocationAPI(values, _id)}
             autoComplete="off"
             initialValues={{
-              name,
+              name: name || locationName,
               addressLine1,
               addressLine2,
               country,
@@ -198,34 +267,75 @@ class FormWorkLocationTenant extends Component {
               zipCode,
             }}
           >
+            {isSaved && (
+              <div className={s.savedBanner}>
+                <span>This location is updated successfully.</span>
+              </div>
+            )}
             <Row className={s.content__viewBottom__viewTitle}>
-              <p className={s.title}>{isHeadQuarter ? 'Headquater' : name}</p>
+              <p className={s.title}>{isHeadQuarter ? 'Headquater' : locationName}</p>
 
               <div className={s.actionBtn}>
                 {!isEditing ? (
-                  <div className={s.actionEdit} onClick={this.handleEdit}>
+                  <Button type="link" className={s.actionEdit} onClick={this.handleEdit}>
+                    <EditOutlined className={s.buttonIcon} />
                     <span>Edit</span>
-                  </div>
+                  </Button>
                 ) : (
-                  <div className={s.actionEdit} onClick={this.handleEdit}>
-                    <span style={{ color: '#f00000' }}>Cancel</span>
-                  </div>
+                  <>
+                    {loadingUpdateLocation && (
+                      <Button type="link" className={s.actionUpdating}>
+                        <LoadingOutlined className={s.buttonIcon} />
+                        <span>Updating...</span>
+                      </Button>
+                    )}
+
+                    {!loadingUpdateLocation && (
+                      <>
+                        <Button type="link" className={s.actionSave} htmlType="submit">
+                          <SaveOutlined className={s.buttonIcon} />
+                          <span>Save</span>
+                        </Button>
+
+                        <Button type="link" className={s.actionCancel} onClick={this.handleCancel}>
+                          <CloseOutlined className={s.buttonIcon} />
+                          <span>Cancel</span>
+                        </Button>
+                      </>
+                    )}
+                  </>
                 )}
                 {!isHeadQuarter && (
-                  <div className={s.actionDelete} onClick={() => this.handleRemove(_id)}>
-                    <DeleteOutlined className={s.actionDelete__icon} />
+                  <Button
+                    type="link"
+                    className={s.actionDelete}
+                    onClick={() => this.handleRemove(_id)}
+                  >
+                    <DeleteOutlined className={s.buttonIcon} />
                     <span>Delete</span>
-                  </div>
+                  </Button>
                 )}
               </div>
             </Row>
+            {isEditing && !isHeadQuarter && (
+              <Row className={s.content__viewBottom__row}>
+                <Col span={8}>
+                  <p className={s.content__viewBottom__row__textLabel}>Location Name*</p>
+                </Col>
+                <Col span={16}>
+                  <Form.Item name="name">
+                    <Input disabled={disableInput} placeholder="Location Name" />
+                  </Form.Item>
+                </Col>
+              </Row>
+            )}
             <Row className={s.content__viewBottom__row}>
               <Col span={8}>
                 <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
               </Col>
               <Col span={16}>
                 <Form.Item name="addressLine1">
-                  <Input disabled={disableInput} placeholder="Location Name" />
+                  <Input disabled={disableInput} placeholder="Address Line 1" />
                 </Form.Item>
               </Col>
             </Row>
@@ -235,7 +345,7 @@ class FormWorkLocationTenant extends Component {
               </Col>
               <Col span={16}>
                 <Form.Item name="addressLine2">
-                  <Input disabled={disableInput} placeholder="Address" />
+                  <Input disabled={disableInput} placeholder="Address Line 2" />
                 </Form.Item>
               </Col>
             </Row>
@@ -289,6 +399,12 @@ class FormWorkLocationTenant extends Component {
           </Form>
         </div>
         {listLength !== index + 1 && <Divider className={s.divider} />}
+        <RemoveLocationModal
+          onProceed={this.onRemove}
+          onClose={this.hideConfirm}
+          visible={removeModalVisible}
+          loading={loadingRemoveLocation}
+        />
       </div>
     );
   }

@@ -2,7 +2,9 @@
 import React, { Component } from 'react';
 import { Form, Input, Skeleton, Select, Button, Checkbox, Row, Col } from 'antd';
 import classnames from 'classnames';
+import { getCurrentTenant } from '@/utils/authority';
 import { connect } from 'umi';
+import EditIcon from '@/assets/editBtnBlue.svg';
 import s from './index.less';
 
 const { Option } = Select;
@@ -39,34 +41,29 @@ class CompanyDetails extends Component {
     };
   }
 
-  componentDidMount() {
-    this.fetchData();
-
-    const { companyDetails = {} } = this.props;
-    const {
-      company: {
-        headQuarterAddress: { country: countryHeadquarter } = {},
-        legalAddress: { country: countryLegal } = {},
-      } = {},
-    } = companyDetails;
-    this.setState({
-      countryHeadquarter,
-      countryLegal,
-    });
-    this.compareHeadquaterLegalAddress();
-  }
-
-  componentWillUnmount = () => {
-    this.fetchData();
-  };
-
-  fetchData = () => {
+  componentDidMount = async () => {
     const { dispatch, companyId } = this.props;
-    dispatch({
+    const res = await dispatch({
       type: 'companiesManagement/fetchCompanyDetails',
       payload: { id: companyId },
     });
+    const { statusCode, data: company = {} } = res;
+    if (statusCode === 200) {
+      const {
+        headQuarterAddress: { country: countryHeadquarter } = {},
+        legalAddress: { country: countryLegal } = {},
+      } = company;
+      this.setState({
+        countryHeadquarter,
+        countryLegal,
+      });
+    }
+    this.compareHeadquaterLegalAddress();
   };
+
+  // componentWillUnmount = () => {
+  //   this.fetchData();
+  // };
 
   onChangeCountry = (value, name) => {
     const stateName = name === 'countryHeadquarterProps' ? 'countryHeadquarter' : 'countryLegal';
@@ -153,7 +150,7 @@ class CompanyDetails extends Component {
     let parentTenantId = listCompany.find((company) => company?._id === parentCompany);
     parentTenantId = parentTenantId?.tenant;
 
-    const tenantId = localStorage.getItem('tenantId');
+    const tenantId = getCurrentTenant();
     let payload = {
       // id: companyId || '',
       company: {
@@ -214,7 +211,7 @@ class CompanyDetails extends Component {
         id: companyId,
         tenantId,
         childOfCompany: parentCompany,
-        tenant: parentTenantId,
+        // tenant: parentTenantId,
       };
       const res = await dispatch({
         type: 'companiesManagement/updateCompany',
@@ -596,7 +593,16 @@ class CompanyDetails extends Component {
               <div className={s.content__viewTop}>
                 <p className={s.title}>Company Details</p>
                 <div className={s.editBtn} onClick={() => this.handleEdit(1)}>
-                  <span>{isEditCompanyDetails ? 'Cancel' : 'Edit'}</span>
+                  {isEditCompanyDetails ? (
+                    <div className={s.wrapBtn}>
+                      <span className={s.cancelText}>Cancel</span>
+                    </div>
+                  ) : (
+                    <div className={s.wrapBtn}>
+                      <img src={EditIcon} alt="edit" />
+                      <span>Edit</span>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className={s.content__viewBottom}>
@@ -648,7 +654,10 @@ class CompanyDetails extends Component {
                           None
                         </Option>
                         {listCompany.map((item) => (
-                          <Option disabled={item._id === childOfCompany} key={item._id}>
+                          <Option
+                            disabled={item._id === childOfCompany || item._id === companyId}
+                            key={item._id}
+                          >
                             {item.name}
                           </Option>
                         ))}
@@ -662,7 +671,16 @@ class CompanyDetails extends Component {
               <div className={s.content__viewTop}>
                 <p className={s.title}>Headquarter Address</p>
                 <div className={s.editBtn} onClick={() => this.handleEdit(2)}>
-                  <span>{isEditAddresses ? 'Cancel' : 'Edit'}</span>
+                  {isEditAddresses ? (
+                    <div className={s.wrapBtn}>
+                      <span className={s.cancelText}>Cancel</span>
+                    </div>
+                  ) : (
+                    <div className={s.wrapBtn}>
+                      <img src={EditIcon} alt="edit" />
+                      <span>Edit</span>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className={s.content__viewBottom}>
@@ -798,12 +816,19 @@ class CompanyDetails extends Component {
                   </Col>
                 </Row>
               </div>
-              <div className={classnames(s.content__viewTop, s.content__viewTop__legalAddress)}>
+              <div
+                className={classnames(
+                  s.content__viewTop,
+                  s.content__viewTop__legalAddress,
+                  checkLegalSameHeadQuarter ? s.content__viewTopWithoutBorder : '',
+                )}
+              >
                 <p className={s.title}>Legal Address</p>
                 <Checkbox
-                  defaultChecked={checkLegalSameHeadQuarter}
+                  // defaultChecked={checkLegalSameHeadQuarter}
                   disabled={!isEditAddresses}
                   onChange={this.onChangeCheckbox}
+                  checked={checkLegalSameHeadQuarter}
                 >
                   Same as Headquarters address
                 </Checkbox>
@@ -824,7 +849,7 @@ class CompanyDetails extends Component {
                       rules={[
                         {
                           required: true,
-                          message: 'Please enter Address!',
+                          message: 'Please enter Address Line 1!',
                         },
                       ]}
                     >
@@ -843,7 +868,7 @@ class CompanyDetails extends Component {
                       rules={[
                         {
                           required: false,
-                          message: 'Please enter Address!',
+                          message: 'Please enter Address Line 2!',
                         },
                       ]}
                     >
@@ -950,7 +975,16 @@ class CompanyDetails extends Component {
               <div className={s.content__viewTop}>
                 <p className={s.title}>Contact information</p>
                 <div className={s.editBtn} onClick={() => this.handleEdit(3)}>
-                  <span>{isEditContactInfomation ? 'Cancel' : 'Edit'}</span>
+                  {isEditContactInfomation ? (
+                    <div className={s.wrapBtn}>
+                      <span className={s.cancelText}>Cancel</span>
+                    </div>
+                  ) : (
+                    <div className={s.wrapBtn}>
+                      <img src={EditIcon} alt="edit" />
+                      <span>Edit</span>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className={s.content__viewBottom}>

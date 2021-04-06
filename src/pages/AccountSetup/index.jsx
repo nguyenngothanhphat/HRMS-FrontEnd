@@ -1,6 +1,6 @@
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import avtDefault from '@/assets/avtDefault.jpg';
-import { Avatar, Button, Skeleton } from 'antd';
+import { Avatar, Button, notification, Skeleton } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import ItemCompany from './components/ItemCompany';
@@ -29,7 +29,7 @@ class AccountSetup extends Component {
     });
     localStorage.removeItem('currentCompanyId');
     localStorage.removeItem('tenantId');
-    localStorage.removeItem('currentLocation');
+    localStorage.removeItem('currentLocationId');
   }
 
   handleLogout = () => {
@@ -96,7 +96,7 @@ class AccountSetup extends Component {
           {/* RENDER COMPANIES */}
           {this.renderCompanies(isOwner, isAdmin)}
 
-          {(isOwner || isAdmin) && (
+          {isOwner && (
             <Button
               className={s.btnAddNew}
               onClick={() => history.push('/control-panel/add-company')}

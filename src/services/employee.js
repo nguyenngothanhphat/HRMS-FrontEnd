@@ -1,7 +1,14 @@
 import request from '@/utils/request';
 
+// export async function LocationFilter(payload) {
+//   return request('/api/location/list', {
+//     method: 'POST',
+//     data: payload,
+//   });
+// }
+
 export async function LocationFilter(payload) {
-  return request('/api/location/list', {
+  return request('/api/locationtenant/list', {
     method: 'POST',
     data: payload,
   });
@@ -28,13 +35,13 @@ export async function getListEmployeeMyTeam(payload) {
 }
 
 export async function getListEmployeeActive(payload) {
-  return request('/api/employee/list-active', {
+  return request('/api/employeetenant/list-active', {
     method: 'POST',
     data: payload,
   });
 }
 export async function getListEmployeeInActive(payload) {
-  return request('/api/employee/list-inactive', {
+  return request('/api/employeetenant/list-inactive', {
     method: 'POST',
     data: payload,
   });

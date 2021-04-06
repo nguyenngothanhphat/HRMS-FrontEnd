@@ -4,6 +4,7 @@
  */
 import { extend } from 'umi-request';
 import { notification } from 'antd';
+import { getCurrentTenant } from '@/utils/authority';
 import { getToken } from './token';
 
 const codeMessage = {
@@ -57,7 +58,7 @@ const errorHandler = (error) => {
  * 配置request请求时的默认参数
  */
 const request = (url, options = {}, noAuth) => {
-  const tenantId = localStorage.getItem('tenantId');
+  const tenantId = getCurrentTenant();
   let headers = options.headers || {};
   if (!noAuth) {
     const token = getToken();

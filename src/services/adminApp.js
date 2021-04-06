@@ -48,3 +48,10 @@ export function removeLocation(payload) {
     data: payload,
   });
 }
+
+export function getListUsersOfOwner(payload) {
+  return request('/api/usermap/list-users-of-owner', {
+    method: 'POST',
+    data: payload,
+  });
+}
