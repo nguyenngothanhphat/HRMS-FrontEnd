@@ -9,6 +9,7 @@ import {
 } from '@ant-design/icons';
 import classnames from 'classnames';
 import { connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import { flattenDepth } from 'lodash';
 import RemoveLocationModal from '../RemoveLocationModal';
 // import { bool } from 'prop-types';
@@ -124,7 +125,7 @@ class FormWorkLocationTenant extends Component {
 
   saveLocationAPI = async (values, locationId) => {
     const { dispatch } = this.props;
-    const tenantId = localStorage.getItem('tenantId');
+    const tenantId = getCurrentTenant();
 
     const {
       name,

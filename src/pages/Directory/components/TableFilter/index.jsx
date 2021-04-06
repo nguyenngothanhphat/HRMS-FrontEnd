@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Layout, Input } from 'antd';
 import { connect, formatMessage } from 'umi';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { filteredArr } from '@/utils/utils';
+
 import styles from './index.less';
 import CheckBoxForms from '../CheckboxForm';
 
@@ -28,9 +30,16 @@ class TableFilter extends PureComponent {
     dispatch({
       type: 'employee/fetchEmployeeType',
     });
-    dispatch({
-      type: 'employee/fetchLocation',
-    });
+    const tenantId = getCurrentTenant();
+    const company = getCurrentCompany();
+
+    if (company) {
+      dispatch({
+        type: 'employee/fetchLocation',
+        payload: { company, tenantId },
+      });
+    }
+
     dispatch({
       type: 'employee/fetchDepartment',
     });
@@ -87,9 +96,9 @@ class TableFilter extends PureComponent {
 
   render() {
     const { Sider } = Layout;
-    const {  departmentState, all, EmploymentState, text, reset } = this.state;
+    const { departmentState, all, EmploymentState, text, reset } = this.state;
     const {
-      employee: {  department = [], employeetype = [], clearName = false },
+      employee: { department = [], employeetype = [], clearName = false },
       collapsed,
       changeTab,
       tabName,

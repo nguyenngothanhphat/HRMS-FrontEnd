@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Row, Col, Affix } from 'antd';
+import { getCurrentTenant, getCurrentCompany, getCurrentLocation } from '@/utils/authority';
+
 import { connect } from 'umi';
 import Greeting from './components/Greeting';
 import ActivityLog from './components/ActivityLog';
@@ -89,8 +91,8 @@ class Dashboard extends PureComponent {
     //   },
     // });
 
-    const companyId = localStorage.getItem('currentCompanyId');
-    const tenantId = localStorage.getItem('tenantId');
+    const companyId = getCurrentCompany();
+    const tenantId = getCurrentTenant();
 
     // dispatch({
     //   type: 'frequentlyAskedQuestions/getListInit',
@@ -107,7 +109,7 @@ class Dashboard extends PureComponent {
         tenantId,
       },
     });
-    const currentLocation = localStorage.getItem('currentLocationId');
+    const currentLocation = getCurrentLocation();
     const locationName = locations.find((item) => item._id === currentLocation);
     this.setState({
       currentLocation: locationName?.name || '',

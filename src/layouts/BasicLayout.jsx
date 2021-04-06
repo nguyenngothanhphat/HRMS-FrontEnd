@@ -10,6 +10,7 @@ import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { Button, Result } from 'antd';
 import { connect, Link, useIntl, Redirect } from 'umi';
+import { getCurrentCompany } from '@/utils/authority';
 import classnames from 'classnames';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
@@ -54,7 +55,7 @@ const BasicLayout = (props) => {
    */
 
   const getCurrentLogo = () => {
-    const currentCompanyId = localStorage.getItem('currentCompanyId');
+    const currentCompanyId = getCurrentCompany();
     const currentComp = companies.find((cp) => cp._id === currentCompanyId);
     return currentComp?.logoUrl;
   };
