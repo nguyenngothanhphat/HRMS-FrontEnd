@@ -70,19 +70,19 @@ const BasicLayout = (props) => {
   };
 
   const _renderLogo = () => {
-    const checkRole = (roleName) => {
-      const { signInRole = [] } = currentUser;
-      const formatRole = signInRole.map((role) => role.toLowerCase());
-      if (formatRole.includes(roleName)) return true;
-      return false;
-    };
+    // const checkRole = (roleName) => {
+    //   const { signInRole = [] } = currentUser;
+    //   const formatRole = signInRole.map((role) => role.toLowerCase());
+    //   if (formatRole.includes(roleName)) return true;
+    //   return false;
+    // };
 
-    const isOwner = checkRole('owner');
-    const isAdmin = checkRole('admin');
+    // const isOwner = checkRole('owner');
+    // const isAdmin = checkRole('admin');
 
     const logoUrl = getCurrentLogo();
     return (
-      <Link to={isOwner || isAdmin ? '/control-panel' : '/'}>
+      <Link to="/">
         <img
           src={logoUrl || logo}
           alt="logo"
