@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Skeleton, Select, Button, Checkbox, Row, Col } from 'antd';
 import classnames from 'classnames';
+import { getCurrentTenant } from '@/utils/authority';
 import { connect } from 'umi';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import s from './index.less';
@@ -149,7 +150,7 @@ class CompanyDetails extends Component {
     let parentTenantId = listCompany.find((company) => company?._id === parentCompany);
     parentTenantId = parentTenantId?.tenant;
 
-    const tenantId = localStorage.getItem('tenantId');
+    const tenantId = getCurrentTenant();
     let payload = {
       // id: companyId || '',
       company: {

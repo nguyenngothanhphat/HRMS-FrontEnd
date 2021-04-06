@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Radio, Select, Input, Form } from 'antd';
+import { getCurrentCompany } from '@/utils/authority';
 import { connect } from 'umi';
 import styles from './index.less';
 
@@ -18,7 +19,7 @@ class SelectUser extends PureComponent {
 
   fetchUsers = async () => {
     const { dispatch } = this.props;
-    const company = localStorage.getItem('currentCompanyId');
+    const company = getCurrentCompany();
     const res = await dispatch({
       type: 'adminApp/fetchUsersListOfOwner',
       payload: {

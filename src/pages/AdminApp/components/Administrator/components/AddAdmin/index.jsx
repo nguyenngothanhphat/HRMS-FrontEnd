@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
 import SelectRoles from './components/SelectRoles';
 import SelectUser from './components/SelectUser';
 
@@ -51,8 +52,8 @@ class AddAdmin extends PureComponent {
       const { firstName = '', email = '', name1 = '', usermapId = '' } = adminInfo;
       // eslint-disable-next-line no-restricted-globals
       const formatAdminRoles = values.filter((x) => isNaN(x));
-      const tenantId = localStorage.getItem('tenantId');
-      const company = localStorage.getItem('currentCompanyId');
+      const tenantId = getCurrentTenant();
+      const company = getCurrentCompany();
       const payload = {
         firstName: firstName || name1,
         email,

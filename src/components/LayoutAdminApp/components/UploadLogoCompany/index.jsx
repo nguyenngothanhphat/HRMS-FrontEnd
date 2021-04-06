@@ -3,6 +3,7 @@ import logoDefault from '@/assets/companyDefault.png';
 import { Button, Image } from 'antd';
 import { connect } from 'umi';
 import ModalUpload from '@/components/ModalUpload';
+import { getCurrentTenant } from '@/utils/authority';
 import s from './index.less';
 
 @connect(
@@ -46,7 +47,7 @@ class UploadLogoCompany extends Component {
       companyDetails = {},
       companyDetails: { company: { _id: id = '' } = {} } = {},
     } = this.props;
-    const tenantId = localStorage.getItem('tenantId');
+    const tenantId = getCurrentTenant();
 
     if (statusCode === 200) {
       const [first] = data;

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'umi';
 // import { Row, Col } from 'antd';
 import { Skeleton } from 'antd';
+import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
 import AdditionalAdministrator from './components/Additional';
 import PrimaryAdminstrator from './components/Primary';
 import AddAdmin from './components/AddAdmin';
@@ -34,8 +35,8 @@ class Adminstrator extends Component {
 
   fetchListAdmin = () => {
     const { dispatch } = this.props;
-    const tenantId = localStorage.getItem('tenantId');
-    const companyId = localStorage.getItem('currentCompanyId');
+    const tenantId = getCurrentTenant();
+    const companyId = getCurrentCompany();
     dispatch({
       type: 'adminApp/getListAdmin',
       payload: {

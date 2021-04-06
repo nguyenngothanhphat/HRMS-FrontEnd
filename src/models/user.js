@@ -1,5 +1,7 @@
 import { queryCurrent, query as queryUsers, fetchCompanyOfUser } from '@/services/user';
-import {history} from 'umi'
+import { getCurrentCompany, setCurrentLocation, getCurrentLocation } from '@/utils/authority';
+
+import { history } from 'umi';
 import { checkPermissions } from '@/utils/permissions';
 
 const UserModel = {
@@ -25,26 +27,26 @@ const UserModel = {
         if (statusCode !== 200) throw response;
 
         // if there's no tenantId and companyId, return to dashboard
-        const tenantId = localStorage.getItem('tenantId')
-        const currentCompanyId = localStorage.getItem('currentCompanyId')
+        const tenantId = localStorage.getItem('tenantId');
+        const currentCompanyId = getCurrentCompany();
         if (!tenantId || !currentCompanyId) {
-          history.replace('/control-panel')
+          history.replace('/control-panel');
         }
 
         yield put({
           type: 'saveCurrentUser',
           payload: {
             ...response.data,
-            name: response.data?.firstName
+            name: response.data?.firstName,
             // name: [response.data?.generalInfo?.firstName, response.data?.generalInfo?.lastName]
             //   .filter(Boolean)
             //   .join(' '),
           },
         });
 
-        let currentLocation = localStorage.getItem('currentLocationId');
+        const currentLocation = getCurrentLocation();
         if (!currentLocation) {
-          currentLocation = localStorage.setItem('currentLocationId', response?.data?.location?._id);
+          setCurrentLocation(response?.data?.location?._id);
         }
 
         yield put({

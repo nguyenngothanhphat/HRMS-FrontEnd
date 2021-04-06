@@ -1,7 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Form, Button, Skeleton, notification } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import moment from 'moment';
+
 import { connect } from 'umi';
 // import ThirdStep from '@/pages/EmployeeProfile/components/EmploymentTab/components/HandleChanges/components/ThirdStep';
 import FormWorkLocation from './components/FormWorkLocation';
@@ -32,7 +34,7 @@ class WorkLocations extends PureComponent {
 
   componentDidMount() {
     const { dispatch, companyId = '' } = this.props;
-    const tenantId = localStorage.getItem('tenantId');
+    const tenantId = getCurrentTenant();
     if (companyId) {
       dispatch({
         type: 'adminApp/fetchLocationList',
@@ -50,8 +52,8 @@ class WorkLocations extends PureComponent {
   }
 
   addLocationAPI = async (values) => {
-    const tenantId = localStorage.getItem('tenantId');
-    const companyId = localStorage.getItem('currentCompanyId');
+    const tenantId = getCurrentTenant();
+    const companyId = getCurrentCompany();
 
     const { dispatch } = this.props;
     // const { company, isNewTenant, locations: originLocations = [] } = companyDetails;
@@ -125,8 +127,8 @@ class WorkLocations extends PureComponent {
   };
 
   removeLocation = async (id) => {
-    const tenantId = localStorage.getItem('tenantId');
-    const companyId = localStorage.getItem('currentCompanyId');
+    const tenantId = getCurrentTenant();
+    const companyId = getCurrentCompany();
 
     const { dispatch } = this.props;
     const payload = { id, tenantId };

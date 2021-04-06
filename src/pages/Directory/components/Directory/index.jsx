@@ -2,6 +2,13 @@ import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
 import { Tabs, Layout, Select } from 'antd';
 import DirectoryTable from '@/components/DirectoryTable';
+import {
+  getCurrentTenant,
+  getCurrentCompany,
+  getCurrentLocation,
+  isOwner,
+} from '@/utils/authority';
+
 import { debounce } from 'lodash';
 import AddEmployeeForm from '@/pages_admin/EmployeesManagement/components/TableContainer/components/AddEmployeeForm';
 import ModalImportEmployee from '@/pages_admin/EmployeesManagement/components/TableContainer/components/ModalImportEmployee';
@@ -85,11 +92,20 @@ class DirectoryComponent extends PureComponent {
     const { dispatch } = this.props;
     this.initDataTable();
     this.initTabId();
-    this.fetchApprovalFlowList();
-    dispatch({
-      type: 'employee/fetchLocation',
-    });
-    const currentLocation = localStorage.getItem('currentLocationId');
+    // *: error tenant
+    // this.fetchApprovalFlowList();
+
+    const tenantId = getCurrentTenant();
+    const company = getCurrentCompany();
+
+    if (company) {
+      dispatch({
+        type: 'employee/fetchLocation',
+        payload: { company, tenantId },
+      });
+    }
+
+    const currentLocation = getCurrentLocation();
     this.setState({
       locationNew: [currentLocation],
     });
@@ -165,21 +181,22 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderHrGloBal = () => {
-    const { dispatch, currentUser, permissions = {} } = this.props;
-    const { company } = currentUser;
+    const { dispatch, permissions = {} } = this.props;
+    // const { company } = currentUser;
+    const company = getCurrentCompany();
     const viewTabActive = permissions.viewTabActive !== -1;
     const viewTabInActive = permissions.viewTabInActive !== -1;
     dispatch({
       type: 'employee/fetchListEmployeeMyTeam',
       payload: {
-        company: company._id,
+        company: [company],
       },
     });
     if (viewTabActive) {
       dispatch({
         type: 'employee/fetchListEmployeeActive',
         payload: {
-          company: company._id,
+          company: [company],
         },
       });
     }
@@ -187,7 +204,7 @@ class DirectoryComponent extends PureComponent {
       dispatch({
         type: 'employee/fetchListEmployeeInActive',
         payload: {
-          company: company._id,
+          company: [company],
         },
       });
     }
@@ -201,23 +218,25 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderHrTeam = () => {
-    const { dispatch, currentUser, permissions = {} } = this.props;
-    const { company, location } = currentUser;
+    const { dispatch, permissions = {} } = this.props;
+    const company = getCurrentCompany();
+    const location = getCurrentLocation();
+
     const viewTabActive = permissions.viewTabActive !== -1;
     const viewTabInActive = permissions.viewTabInActive !== -1;
     dispatch({
       type: 'employee/fetchListEmployeeMyTeam',
       payload: {
-        company: company._id,
-        location: [location._id],
+        company: [company],
+        location: [location],
       },
     });
     if (viewTabActive) {
       dispatch({
         type: 'employee/fetchListEmployeeActive',
         payload: {
-          company: company._id,
-          location: [location._id],
+          company: [company],
+          location: [location],
         },
       });
     }
@@ -225,8 +244,8 @@ class DirectoryComponent extends PureComponent {
       dispatch({
         type: 'employee/fetchListEmployeeInActive',
         payload: {
-          company: company._id,
-          location: [location._id],
+          company: [company],
+          location: [location],
         },
       });
     }
@@ -240,7 +259,7 @@ class DirectoryComponent extends PureComponent {
 
   initDataTable = () => {
     const { currentUser } = this.props;
-    const { roles } = currentUser;
+    const { roles = [] } = currentUser;
     const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
     const filterRolesCSA = roles.filter((item) => item._id === 'ADMIN-CSA');
     if (filterRoles.length > 0 || filterRolesCSA.length > 0) {
@@ -253,11 +272,12 @@ class DirectoryComponent extends PureComponent {
     const {
       tabList: { active, myTeam, inActive },
     } = this.state;
-    const { dispatch, currentUser } = this.props;
-    const { company } = currentUser;
+    const { dispatch } = this.props;
+    const company = getCurrentCompany();
+
     const { name, department, location, employeeType } = params;
     const payload = {
-      company: company._id,
+      company: [company],
       name,
       department,
       location,
@@ -287,14 +307,16 @@ class DirectoryComponent extends PureComponent {
     const {
       tabList: { active, myTeam, inActive },
     } = this.state;
-    const { dispatch, currentUser } = this.props;
-    const { company, location } = currentUser;
-    const { name, department, employeeType } = params;
+    const { dispatch } = this.props;
+    const company = getCurrentCompany();
+    // const location = getCurrentLocation();
+
+    const { name, department, employeeType, location } = params;
     const payload = {
-      company: company._id,
+      company: [company],
       name,
       department,
-      location: [location._id],
+      location,
       employeeType,
     };
     if (tabId === active) {
@@ -319,7 +341,7 @@ class DirectoryComponent extends PureComponent {
 
   getDataTable = (params, tabId) => {
     const { currentUser } = this.props;
-    const { roles } = currentUser;
+    const { roles = [] } = currentUser;
     const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
     const filterRolesCSA = roles.filter((item) => item._id === 'ADMIN-CSA');
     if (filterRoles.length > 0 || filterRolesCSA.length > 0) {
@@ -637,7 +659,7 @@ class DirectoryComponent extends PureComponent {
 
     return (
       <div className={styles.DirectoryComponent}>
-        {locationNew.length > 0 && (getRole[0] || getRoleCSA[0]?._id) ? (
+        {locationNew.length > 0 && (getRole[0] || getRoleCSA[0]?._id || isOwner()) ? (
           <div className={styles.selectLocation}>
             <Select
               defaultValue={locationNew.length > 0 ? locationNew[0] : ''}

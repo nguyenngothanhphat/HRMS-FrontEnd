@@ -66,7 +66,8 @@ class AddEmployeeForm extends Component {
       this.setState({
         isDisabled: false,
       });
-      this.fetchData(company._id);
+      // * : error tenant
+      // this.fetchData(company._id);
     }
   }
 

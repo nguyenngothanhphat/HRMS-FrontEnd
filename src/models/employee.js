@@ -39,9 +39,9 @@ const employee = {
         dialog(errors);
       }
     },
-    *fetchLocation(_, { call, put }) {
+    *fetchLocation({ payload }, { call, put }) {
       try {
-        const response = yield call(LocationFilter);
+        const response = yield call(LocationFilter, payload);
         const { statusCode, data: location = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveLocation', payload: { location } });
@@ -89,7 +89,7 @@ const employee = {
     *fetchListEmployeeActive(
       {
         payload: {
-          company = '',
+          company = [],
           department = [],
           location = [],
           employeeType = [],
@@ -119,7 +119,7 @@ const employee = {
     *fetchListEmployeeInActive(
       {
         payload: {
-          company = '',
+          company = [],
           department = [],
           location = [],
           employeeType = [],
