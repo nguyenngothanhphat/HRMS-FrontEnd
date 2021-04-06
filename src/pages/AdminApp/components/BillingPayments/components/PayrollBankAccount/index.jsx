@@ -24,13 +24,19 @@ export default class PayrollBankAccount extends PureComponent {
             <p className={s.title}>Payroll Bank Account</p>
           </div>
           <div className={s.blockContent__bottom}>
-            <Form>
+            {/* <Form> */}
+            <Form.Item name="routingNumber">
               <Row className={s.blockContent__bottom__row}>
                 <Col span={8}>
                   <p className={s.blockContent__bottom__row__textLabel}>Routing Number</p>
                 </Col>
                 <Col className={s.column} span={16}>
-                  <Input className={s.input} />
+                  <Input
+                    className={s.input}
+                    // formatter={(value) => `${value}`.replace(/.(?=.{4})/g, '*')}
+                    disabled={!isClicked}
+                    value={'12345678'.replace(/.(?=.{4})/g, '*')}
+                  />
                   <span
                     className={isClicked ? `${s.hide} ${s.action}` : `${s.action}`}
                     onClick={this.onClick}
@@ -42,13 +48,17 @@ export default class PayrollBankAccount extends PureComponent {
                       isClicked ? `${s.afterAction} ${s.unhide}` : `${s.afterAction} ${s.hide}`
                     }
                   >
-                    <span className={s.save}>Save</span>
+                    <span className={s.save} onClick={this.onClick}>
+                      Save
+                    </span>
                     <span onClick={this.onClick} className={s.cancel}>
                       Cancel
                     </span>
                   </div>
                 </Col>
               </Row>
+            </Form.Item>
+            <Form.Item name="accountNumber">
               <Row className={s.blockContent__bottom__row}>
                 <Col span={8}>
                   <p className={s.blockContent__bottom__row__textLabel}>Account Number</p>
@@ -57,7 +67,8 @@ export default class PayrollBankAccount extends PureComponent {
                   <Input placeholder="Please fill your account number" />
                 </Col>
               </Row>
-            </Form>
+            </Form.Item>
+            {/* </Form> */}
           </div>
         </div>
       </div>
