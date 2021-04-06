@@ -6,6 +6,7 @@ import {
   setAuthority,
   isOwner,
   getCurrentCompany,
+  setCurrentLocation,
 } from '@/utils/authority';
 import { connect, history } from 'umi';
 import styles from './index.less';
@@ -61,6 +62,7 @@ class SelectCompanyModal extends PureComponent {
     } else {
       setTenantId(activeTenant);
       setCurrentCompany(activeCompany);
+      localStorage.removeItem('currentLocationId');
       const { dispatch, email = '' } = this.props;
       const res = await dispatch({
         type: 'adminApp/getListAdmin',
@@ -116,7 +118,7 @@ class SelectCompanyModal extends PureComponent {
             >
               Switch
             </Button>
-            <Button className={styles.cancelBtn} onClick={() => history.push('control-panel')}>
+            <Button className={styles.cancelBtn} onClick={() => history.push('/control-panel')}>
               Go to Control Panel
             </Button>
             <Button className={styles.cancelBtn} onClick={() => onClose(false)}>
