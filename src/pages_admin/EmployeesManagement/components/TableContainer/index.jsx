@@ -116,15 +116,15 @@ class TableContainer extends PureComponent {
     dispatch({
       type: 'employeesManagement/fetchActiveEmployeesList',
     });
-    dispatch({
-      type: 'employeesManagement/fetchInActiveEmployeesList',
-    });
-    dispatch({
-      type: 'employeesManagement/fetchRolesList',
-    });
-    dispatch({
-      type: 'employeesManagement/fetchCompanyList',
-    });
+    // dispatch({
+    //   type: 'employeesManagement/fetchInActiveEmployeesList',
+    // });
+    // dispatch({
+    //   type: 'employeesManagement/fetchRolesList',
+    // });
+    // dispatch({
+    //   type: 'employeesManagement/fetchCompanyList',
+    // });
   };
 
   getDataTable = (params, tabId) => {
@@ -306,7 +306,7 @@ class TableContainer extends PureComponent {
     const { TabPane } = Tabs;
     const { tabs, collapsed, changeTab, visible, visibleImportEmployee } = this.state;
     const { loadingActiveList, loadingInActiveList } = this.props;
-
+    const obj = {};
     return (
       <div className={styles.tableContainer}>
         <div className={styles.tableContent}>
@@ -344,7 +344,7 @@ class TableContainer extends PureComponent {
             getResponse={this.getResponse}
           />
           <ModalImportEmployee
-            company=""
+            company={obj}
             titleModal="Import Employees"
             visible={visibleImportEmployee}
             handleCancel={this.handleCancel}
