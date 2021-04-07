@@ -55,7 +55,7 @@ const employee = {
         const response = yield call(DepartmentFilter);
         const { statusCode, data: department = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'saveDeparment', payload: { department } });
+        yield put({ type: 'saveDepartment', payload: { department } });
       } catch (errors) {
         dialog(errors);
       }
@@ -245,7 +245,7 @@ const employee = {
         ...action.payload,
       };
     },
-    saveDeparment(state, action) {
+    saveDepartment(state, action) {
       return {
         ...state,
         ...action.payload,
