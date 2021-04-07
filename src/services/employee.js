@@ -22,7 +22,7 @@ export async function EmployeeTypeFilter(payload) {
 }
 
 export async function DepartmentFilter() {
-  return request('/api/department/list', {
+  return request('/api/departmenttenant/list', {
     method: 'POST',
   });
 }

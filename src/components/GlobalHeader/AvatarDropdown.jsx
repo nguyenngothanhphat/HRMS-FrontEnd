@@ -64,10 +64,6 @@ class AvatarDropdown extends React.Component {
     // });
   };
 
-  onFinish = () => {
-    history.push('/');
-  };
-
   viewProfile = () => {
     const { currentUser: { employee: { _id = '' } = {} } = {} } = this.props;
     history.push(`/employees/employee-profile/${_id}`);
@@ -101,7 +97,7 @@ class AvatarDropdown extends React.Component {
 
       return;
     }
-    console.log('key', key);
+
     setCurrentLocation(key);
     let selectLocation = '';
 

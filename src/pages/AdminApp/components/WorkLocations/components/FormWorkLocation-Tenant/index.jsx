@@ -221,7 +221,7 @@ class FormWorkLocationTenant extends Component {
               </div>
             )}
             <Row className={s.content__viewBottom__viewTitle}>
-              <p className={s.title}>{isHeadQuarter ? 'Headquater' : locationName}</p>
+              <p className={s.title}>{isHeadQuarter ? 'Headquarter' : locationName}</p>
 
               <div className={s.actionBtn}>
                 {!isEditing ? (
