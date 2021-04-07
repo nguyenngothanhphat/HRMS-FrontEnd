@@ -37,7 +37,7 @@ class ModalImportEmployee extends Component {
   //   if ('statusImportEmployees' in props && props.statusImportEmployees) {
   //     if (props.company !== '') {
   //       console.log('props.company: ', props.company);
-  //       return { company: props.company._id };
+  //       return { company: props.company?._id };
   //     }
   //     return { company: '' };
   //   }
@@ -83,24 +83,8 @@ class ModalImportEmployee extends Component {
         },
       });
     }
-    // const { returnEmployeesList } = this.props;
-    // if (
-    //   statusImportEmployees &&
-    //   !_.isEmpty(returnEmployeesList) &&
-    //   (!_.isEmpty(returnEmployeesList.newList) || !_.isEmpty(returnEmployeesList.existList))
-    // ) {
-    //   const existList = returnEmployeesList.existList.map((item) => {
-    //     return {
-    //       ...item,
-    //       isAdded: false,
-    //       status: '[FAILED] - Work Email existed!',
-    //     };
-    //   });
-    //   const exportData = [...returnEmployeesList.newList, ...existList];
-    //   exportToCsv('Result_Import_Employees.csv', this.processData(exportData));
-    // }
-    const { listEmployeesTenant } = this.props;
 
+    const { listEmployeesTenant } = this.props;
     if (
       statusImportEmployees &&
       !_.isEmpty(listEmployeesTenant) &&
