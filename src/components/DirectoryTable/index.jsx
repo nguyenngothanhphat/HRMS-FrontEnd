@@ -158,7 +158,7 @@ class DirectoryTable extends Component {
             {department ? department.name : ''}
           </span>
         ),
-        width: '10%',
+        width: '14%',
         align: 'left',
       },
       {
@@ -166,7 +166,7 @@ class DirectoryTable extends Component {
         dataIndex: 'location',
         key: 'location',
         render: (location) => <span>{location ? location.name : ''}</span>,
-        width: '8%',
+        width: '14%',
         align: 'left',
       },
       {
