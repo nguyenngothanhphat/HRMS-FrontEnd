@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import { Button, Modal, notification } from 'antd';
+import { RightOutlined } from '@ant-design/icons';
 import {
   setCurrentCompany,
   setTenantId,
   setAuthority,
   isOwner,
   getCurrentCompany,
-  setCurrentLocation,
 } from '@/utils/authority';
 import { connect, history } from 'umi';
 import styles from './index.less';
@@ -51,17 +51,16 @@ class SelectCompanyModal extends PureComponent {
               className={`${className} ${className1}`}
               onClick={currentCompany === _id ? '' : () => this.setActiveCompany(_id, tenant)}
             >
-              <div className={styles.logo}>
-                <img src={logoUrl} alt="logo" />
+              <div className={styles.leftPart}>
+                <div className={styles.logo}>
+                  <img src={logoUrl} alt="logo" />
+                </div>
+                <span className={styles.name}>
+                  {name} {country ? `(${country})` : ''}{' '}
+                  {currentCompany === _id && <span className={styles.currentText}>(Current)</span>}
+                </span>
               </div>
-              <span className={styles.name}>
-                {name} {country ? `(${country})` : ''}{' '}
-                {currentCompany === _id ? (
-                  <span className={styles.currentText}>(Current)</span>
-                ) : (
-                  ''
-                )}
-              </span>
+              <div className={styles.rightPart}>{activeCompany === _id && <RightOutlined />}</div>
             </div>
           );
         })}

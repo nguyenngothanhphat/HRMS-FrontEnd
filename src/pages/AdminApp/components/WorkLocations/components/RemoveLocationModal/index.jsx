@@ -12,6 +12,7 @@ export default class RemoveLocationModal extends PureComponent {
         centered
         visible={visible}
         footer={null}
+        onCancel={() => onClose(false)}
       >
         <div className={styles.container}>
           <span className={styles.title}>Are you sure to delete this location?</span>
