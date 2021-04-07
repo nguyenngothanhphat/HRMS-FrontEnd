@@ -83,20 +83,37 @@ class ModalImportEmployee extends Component {
         },
       });
     }
-    const { returnEmployeesList } = this.props;
+    // const { returnEmployeesList } = this.props;
+    // if (
+    //   statusImportEmployees &&
+    //   !_.isEmpty(returnEmployeesList) &&
+    //   (!_.isEmpty(returnEmployeesList.newList) || !_.isEmpty(returnEmployeesList.existList))
+    // ) {
+    //   const existList = returnEmployeesList.existList.map((item) => {
+    //     return {
+    //       ...item,
+    //       isAdded: false,
+    //       status: '[FAILED] - Work Email existed!',
+    //     };
+    //   });
+    //   const exportData = [...returnEmployeesList.newList, ...existList];
+    //   exportToCsv('Result_Import_Employees.csv', this.processData(exportData));
+    // }
+    const { listEmployeesTenant } = this.props;
+
     if (
       statusImportEmployees &&
-      !_.isEmpty(returnEmployeesList) &&
-      (!_.isEmpty(returnEmployeesList.newList) || !_.isEmpty(returnEmployeesList.existList))
+      !_.isEmpty(listEmployeesTenant) &&
+      (!_.isEmpty(listEmployeesTenant.newList) || !_.isEmpty(listEmployeesTenant.existList))
     ) {
-      const existList = returnEmployeesList.existList.map((item) => {
+      const existList = listEmployeesTenant.existList.map((item) => {
         return {
           ...item,
           isAdded: false,
           status: '[FAILED] - Work Email existed!',
         };
       });
-      const exportData = [...returnEmployeesList.newList, ...existList];
+      const exportData = [...listEmployeesTenant.newList, ...existList];
       exportToCsv('Result_Import_Employees.csv', this.processData(exportData));
     }
   }
@@ -143,7 +160,8 @@ class ModalImportEmployee extends Component {
       type: 'employeesManagement/save',
       payload: {
         statusImportEmployees: false,
-        returnEmployeesList: {},
+        // returnEmployeesList: {},
+        listEmployeesTenant: {},
       },
     });
   };
