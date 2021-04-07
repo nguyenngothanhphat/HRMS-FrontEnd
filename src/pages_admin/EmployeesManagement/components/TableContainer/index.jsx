@@ -116,15 +116,15 @@ class TableContainer extends PureComponent {
     dispatch({
       type: 'employeesManagement/fetchActiveEmployeesList',
     });
-    dispatch({
-      type: 'employeesManagement/fetchInActiveEmployeesList',
-    });
-    dispatch({
-      type: 'employeesManagement/fetchRolesList',
-    });
-    dispatch({
-      type: 'employeesManagement/fetchCompanyList',
-    });
+    // dispatch({
+    //   type: 'employeesManagement/fetchInActiveEmployeesList',
+    // });
+    // dispatch({
+    //   type: 'employeesManagement/fetchRolesList',
+    // });
+    // dispatch({
+    //   type: 'employeesManagement/fetchCompanyList',
+    // });
   };
 
   getDataTable = (params, tabId) => {

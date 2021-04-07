@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import { Modal, Button, Form, Select } from 'antd';
 import { connect } from 'umi';
 import _ from 'lodash';
-import { getCurrentCompany } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import moment from 'moment';
 import ImportCSV from '@/components/ImportCSV';
 import exportToCsv from '@/utils/exportToCsv';
@@ -17,24 +17,32 @@ const { Option } = Select;
 @connect(
   ({
     loading,
-    employeesManagement: { companyList = [], statusImportEmployees, returnEmployeesList },
+    employeesManagement: {
+      companyList = [],
+      statusImportEmployees,
+      returnEmployeesList,
+      listEmployeesTenant = {},
+    },
   }) => ({
-    loading: loading.effects['employeesManagement/importEmployees'],
+    // loading: loading.effects['employeesManagement/importEmployees'],
+    loading: loading.effects['employeesManagement/importEmployeesTenant'],
     companyList,
     statusImportEmployees,
     returnEmployeesList,
+    listEmployeesTenant,
   }),
 )
 class ModalImportEmployee extends Component {
-  static getDerivedStateFromProps(props) {
-    if ('statusImportEmployees' in props && props.statusImportEmployees) {
-      if (props.company !== '') {
-        return { company: props.company._id };
-      }
-      return { company: '' };
-    }
-    return null;
-  }
+  // static getDerivedStateFromProps(props) {
+  //   if ('statusImportEmployees' in props && props.statusImportEmployees) {
+  //     if (props.company !== '') {
+  //       console.log('props.company: ', props.company);
+  //       return { company: props.company._id };
+  //     }
+  //     return { company: '' };
+  //   }
+  //   return null;
+  // }
 
   constructor(props) {
     super(props);
@@ -129,8 +137,8 @@ class ModalImportEmployee extends Component {
   };
 
   handleCancel = () => {
-    const { handleCancel, dispatch, company } = this.props;
-    this.setState({ company: company._id, employees: [] }, () => handleCancel());
+    const { handleCancel, dispatch } = this.props;
+    this.setState({ employees: [] }, () => handleCancel());
     dispatch({
       type: 'employeesManagement/save',
       payload: {
@@ -178,16 +186,21 @@ class ModalImportEmployee extends Component {
 
   callAPIImportCSV = () => {
     const { employees, company } = this.state;
+    const { handleCancel = () => {} } = this.props;
+    const tenantId = getCurrentTenant();
 
     const payload = {
       company,
+      tenantId,
       employees,
     };
 
     const { dispatch } = this.props;
     dispatch({
-      type: 'employeesManagement/importEmployees',
+      type: 'employeesManagement/importEmployeesTenant',
       payload,
+    }).then(() => {
+      handleCancel();
     });
   };
 
