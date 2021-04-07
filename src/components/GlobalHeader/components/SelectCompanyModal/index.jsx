@@ -22,7 +22,10 @@ class SelectCompanyModal extends PureComponent {
   }
 
   setActiveCompany = (id, tenant) => {
-    this.setState({ activeCompany: id, activeTenant: tenant });
+    const { activeCompany } = this.state;
+    let selectedId = id;
+    if (id === activeCompany) selectedId = '';
+    this.setState({ activeCompany: selectedId, activeTenant: tenant });
   };
 
   renderCompanyLists = () => {
@@ -34,17 +37,30 @@ class SelectCompanyModal extends PureComponent {
     return (
       <div className={styles.companyList}>
         {sortedCompanyList.map((comp) => {
-          const { name = '', logoUrl = '', _id = '', tenant = '' } = comp;
+          const {
+            name = '',
+            logoUrl = '',
+            _id = '',
+            tenant = '',
+            headQuarterAddress: { country = '' } = {},
+          } = comp;
+          const className = activeCompany === _id ? styles.active : styles.eachCompany;
+          const className1 = currentCompany === _id ? styles.currentCompany : '';
           return (
             <div
-              className={activeCompany === _id ? styles.active : styles.eachCompany}
+              className={`${className} ${className1}`}
               onClick={currentCompany === _id ? '' : () => this.setActiveCompany(_id, tenant)}
             >
               <div className={styles.logo}>
                 <img src={logoUrl} alt="logo" />
               </div>
               <span className={styles.name}>
-                {name} {currentCompany === _id ? '(Current)' : ''}
+                {name} {country ? `(${country})` : ''}{' '}
+                {currentCompany === _id ? (
+                  <span className={styles.currentText}>(Current)</span>
+                ) : (
+                  ''
+                )}
               </span>
             </div>
           );
@@ -103,6 +119,7 @@ class SelectCompanyModal extends PureComponent {
         centered
         visible={visible}
         footer={null}
+        onCancel={() => onClose(false)}
       >
         <div className={styles.container}>
           <span className={styles.title}>Switch Company</span>
