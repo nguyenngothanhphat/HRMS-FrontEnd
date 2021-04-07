@@ -57,7 +57,7 @@ export default class PaymentMethods extends PureComponent {
                       <span>Card Number</span>
                     </Col>
                     <Col span={16}>
-                      <Input value={`1234656799423`.replace(/\B(?=(\d{5})+(?!\d))/g, ' ')} />
+                      <Input value={`1234656799423`.replace(/\d{5}(?=.)/g, '$& ')} />
                     </Col>
                   </Row>
                 </Form.Item>
