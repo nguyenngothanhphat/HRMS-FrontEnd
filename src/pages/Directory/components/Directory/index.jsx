@@ -1,8 +1,13 @@
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
-import { Tabs, Layout, Select } from 'antd';
+import { Tabs, Layout } from 'antd';
 import DirectoryTable from '@/components/DirectoryTable';
-import { getCurrentTenant, getCurrentCompany, getCurrentLocation } from '@/utils/authority';
+import {
+  getCurrentTenant,
+  getCurrentCompany,
+  getCurrentLocation,
+  isOwner,
+} from '@/utils/authority';
 
 import { debounce } from 'lodash';
 import AddEmployeeForm from '@/pages_admin/EmployeesManagement/components/TableContainer/components/AddEmployeeForm';
@@ -60,7 +65,6 @@ class DirectoryComponent extends PureComponent {
       department: [],
       location: [],
       employeeType: [],
-      locationNew: [],
       filterName: '',
       tabList: {
         active: 'active',
@@ -100,24 +104,29 @@ class DirectoryComponent extends PureComponent {
     }
 
     const currentLocation = getCurrentLocation();
-    this.setState({
-      locationNew: [currentLocation],
-    });
+    if (currentLocation && currentLocation !== 'undefined') {
+      this.setState({
+        location: [currentLocation],
+      });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { department, location, employeeType, filterName, tabId, locationNew } = this.state;
+    const { department, location, employeeType, filterName, tabId } = this.state;
+    // const isOwnerCheck = isOwner();
+    // const currentLocation = getCurrentLocation();
+
     const params = {
       name: filterName,
       department,
-      location: locationNew,
+      location,
       employeeType,
     };
     if (
       prevState.tabId !== tabId ||
       prevState.department.length !== department.length ||
       prevState.location.length !== location.length ||
-      prevState.locationNew !== locationNew ||
+      // prevState.locationNew !== locationNew ||
       prevState.employeeType.length !== employeeType.length ||
       prevState.filterName !== filterName
     ) {
@@ -214,35 +223,42 @@ class DirectoryComponent extends PureComponent {
   renderHrTeam = () => {
     const { dispatch, permissions = {} } = this.props;
     const company = getCurrentCompany();
-    const location = getCurrentLocation();
+
+    const isOwnerCheck = isOwner();
+    let location = getCurrentLocation();
+    if (isOwnerCheck) {
+      if (!location || location === 'undefined') {
+        location = null;
+      }
+    }
 
     const viewTabActive = permissions.viewTabActive !== -1;
     const viewTabInActive = permissions.viewTabInActive !== -1;
+    // dispatch({
+    //   type: 'employee/fetchListEmployeeMyTeam',
+    //   payload: {
+    //     company: [company],
+    //     location: location ? [location] : [],
+    //   },
+    // });
+    // if (viewTabActive) {
     dispatch({
-      type: 'employee/fetchListEmployeeMyTeam',
+      type: 'employee/fetchListEmployeeActive',
       payload: {
         company: [company],
-        location: [location],
+        location: location ? [location] : [],
       },
     });
-    if (viewTabActive) {
-      dispatch({
-        type: 'employee/fetchListEmployeeActive',
-        payload: {
-          company: [company],
-          location: [location],
-        },
-      });
-    }
-    if (viewTabInActive) {
-      dispatch({
-        type: 'employee/fetchListEmployeeInActive',
-        payload: {
-          company: [company],
-          location: [location],
-        },
-      });
-    }
+    // }
+    // if (viewTabInActive) {
+    //   dispatch({
+    //     type: 'employee/fetchListEmployeeInActive',
+    //     payload: {
+    //       company: [company],
+    //       location: location ? [location] : [],
+    //     },
+    //   });
+    // }
     dispatch({
       type: 'employeesManagement/fetchRolesList',
     });
@@ -606,7 +622,7 @@ class DirectoryComponent extends PureComponent {
 
   handleChangeGetLocation = (value) => {
     const newItem = [value];
-    this.setState({ locationNew: newItem });
+    this.setState({ location: newItem });
   };
 
   handleRenderTable = (checkRole, location, collapsed, roles) => {
@@ -646,13 +662,13 @@ class DirectoryComponent extends PureComponent {
     const {
       currentUser: { company, roles = [] },
     } = this.props;
-    const { collapsed, visible, visibleImportEmployee, locationNew } = this.state;
+    const { collapsed, visible, visibleImportEmployee, location } = this.state;
     const getRole = roles.filter((item) => item._id === 'HR-GLOBAL');
     const getRoleCSA = roles.filter((item) => item._id === 'ADMIN-CSA');
 
     return (
       <div className={styles.DirectoryComponent}>
-        {this.handleRenderTable(getRole[0] || getRoleCSA[0], locationNew, collapsed, roles)}
+        {this.handleRenderTable(getRole[0] || getRoleCSA[0], location, collapsed, roles)}
 
         <AddEmployeeForm
           company={company}

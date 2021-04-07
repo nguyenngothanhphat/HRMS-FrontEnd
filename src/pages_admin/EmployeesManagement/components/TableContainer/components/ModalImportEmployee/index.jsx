@@ -129,8 +129,8 @@ class ModalImportEmployee extends Component {
   };
 
   handleCancel = () => {
-    const { handleCancel, dispatch, company } = this.props;
-    this.setState({ company: company._id, employees: [] }, () => handleCancel());
+    const { handleCancel = () => {}, dispatch, company = {} } = this.props;
+    this.setState({ company: company?._id, employees: [] }, () => handleCancel());
     dispatch({
       type: 'employeesManagement/save',
       payload: {
