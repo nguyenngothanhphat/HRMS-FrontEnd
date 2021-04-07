@@ -105,7 +105,7 @@ class AdminApp extends Component {
     return (
       <PageContainer>
         <div className={styles.root}>
-          <div className={styles.titlePage}>Admin App</div>
+          {/* <div className={styles.titlePage}>Admin App</div> */}
           <Layout listMenu={listMenu} />
         </div>
       </PageContainer>
