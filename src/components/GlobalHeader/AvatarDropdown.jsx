@@ -154,7 +154,7 @@ class AvatarDropdown extends React.Component {
     if (newCompId) {
       setCurrentCompany(newCompId);
       notification.success({
-        message: `Switching to ${newCompName} company.`,
+        message: `Switching to ${newCompName} company...`,
       });
       await this.wait(1500).then(() => window.location.reload());
     }

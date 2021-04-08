@@ -8,7 +8,7 @@ export async function getEmployeesList(payload) {
 }
 
 export async function getCompanyList(payload) {
-  return request('/api/companytenant/list', {
+  return request('/api/companytenant/list-of-user', {
     method: 'POST',
     data: payload,
   });
@@ -28,13 +28,13 @@ export async function getLocationListByParentCompany(payload) {
 }
 
 export async function getRoleList() {
-  return request('/api/role/list', {
+  return request('/api/roletenant/list', {
     method: 'POST',
   });
 }
 
 export async function getEmployeeDetailById(payload) {
-  return request('/api/employee/get-by-id', {
+  return request('/api/employeetenant/get-by-id', {
     method: 'POST',
     data: payload,
   });

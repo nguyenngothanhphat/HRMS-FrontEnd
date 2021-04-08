@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Skeleton, Select, Button, Checkbox, Row, Col } from 'antd';
 import classnames from 'classnames';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { connect } from 'umi';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import s from './index.less';
@@ -554,6 +554,7 @@ class CompanyDetails extends Component {
     const { loadingGetCompanyDetails = false } = this.props;
     // const checkAddresses = this.compareHeadquarterLegalAddress();
 
+    const currentCompany = getCurrentCompany();
     return (
       <>
         {!loadingGetCompanyDetails ? (
@@ -655,7 +656,9 @@ class CompanyDetails extends Component {
                         </Option>
                         {listCompany.map((item) => (
                           <Option
-                            disabled={item._id === childOfCompany || item._id === companyId}
+                            disabled={
+                              currentCompany === item?.childOfCompany || item._id === companyId
+                            }
                             key={item._id}
                           >
                             {item.name}

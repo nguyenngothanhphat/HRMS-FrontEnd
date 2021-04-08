@@ -1,14 +1,13 @@
 import React, { PureComponent } from 'react';
 import { Layout, Input } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant, isOwner } from '@/utils/authority';
 import { filteredArr } from '@/utils/utils';
 import styles from './index.less';
 import CheckList from '../CheckList';
 
-@connect(({ usersManagement, locationSelection: { listLocationsByCompany = [] } = {} }) => ({
+@connect(({ usersManagement }) => ({
   usersManagement,
-  listLocationsByCompany,
 }))
 class TableFilter extends PureComponent {
   constructor(props) {
@@ -26,18 +25,28 @@ class TableFilter extends PureComponent {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    // location list is already fetched
-    // const tenantId = getCurrentTenant();
-    // const companyId = getCurrentCompany();
-    // dispatch({
-    //   type: 'usersManagement/fetchLocationList',
-    //   payload: { company: companyId, tenantId },
-    // });
+    dispatch({
+      type: 'employee/fetchEmployeeType',
+    });
+    const tenantId = getCurrentTenant();
+    const company = getCurrentCompany();
+    const checkIsOwner = isOwner();
+
+    if (company) {
+      dispatch({
+        type: checkIsOwner
+          ? 'usersManagement/fetchOwnerLocationList'
+          : 'usersManagement/fetchLocationList',
+        // type: 'employee/fetchLocation',
+        payload: { company, tenantId },
+      });
+    }
     dispatch({
       type: 'usersManagement/fetchRoleList',
     });
     dispatch({
       type: 'usersManagement/fetchCompanyList',
+      payload: { company, tenantId },
     });
   }
 
@@ -69,15 +78,21 @@ class TableFilter extends PureComponent {
     const { locationState, companyState, all, roleState, text, reset } = this.state;
     const {
       usersManagement: { location = [], company = [], roles = [], clearName = false },
-      listLocationsByCompany,
       collapsed,
       changeTab,
     } = this.props;
 
-    const formatDataLocation = listLocationsByCompany.map((item) => {
-      const { name: label, _id: value } = item;
+    const currentCompany = getCurrentCompany();
+    const formatDataLocation = location.map((item) => {
+      const {
+        name: label = '',
+        _id: value = '',
+        company: { _id: parentCompId = '', name: parentCompName = '' } = {},
+      } = item;
       return {
-        label,
+        label:
+          parentCompId && currentCompany !== parentCompId ? `${parentCompName} - ${label}` : label,
+        // label,
         value,
       };
     });
