@@ -1,5 +1,5 @@
 import { UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Menu, Spin } from 'antd';
+import { Avatar, Button, Menu, Spin, notification } from 'antd';
 import avtDefault from '@/assets/avtDefault.jpg';
 import React from 'react';
 import { connect, formatMessage, history } from 'umi';
@@ -88,6 +88,13 @@ class AvatarDropdown extends React.Component {
     history.push(`/employees/employee-profile/${_id}`);
   };
 
+  wait = (delay, ...args) => {
+    // eslint-disable-next-line compat/compat
+    return new Promise((resolve) => {
+      setTimeout(resolve, delay, ...args);
+    });
+  };
+
   onMenuClick = async (event) => {
     const { key } = event;
     const { LOGOUT, CHANGEPASSWORD, SETTINGS } = this.state;
@@ -127,21 +134,29 @@ class AvatarDropdown extends React.Component {
     setCurrentLocation(key);
     const currentCompany = getCurrentCompany();
     let newCompId = '';
+    let newCompName = '';
     listLocationsByCompany.forEach((value) => {
-      const { _id = '', company: { _id: parentCompId = '' } = {} } = value;
+      const {
+        _id = '',
+        company: { _id: parentCompId = '', name: parentCompName = '' } = {},
+      } = value;
       if (key === _id) {
         selectLocation = _id;
       }
       // ONLY OWNER
       if (_id === key && currentCompany !== parentCompId) {
         newCompId = parentCompId;
+        newCompName = parentCompName;
       }
     });
 
     // ONLY OWNER
     if (newCompId) {
       setCurrentCompany(newCompId);
-      window.location.reload();
+      notification.success({
+        message: `Switching to ${newCompName} company.`,
+      });
+      await this.wait(1500).then(() => window.location.reload());
     }
 
     if (selectLocation) {

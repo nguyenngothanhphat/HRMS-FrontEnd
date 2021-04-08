@@ -101,22 +101,23 @@ class DirectoryComponent extends PureComponent {
     // *: error tenant
     // this.fetchApprovalFlowList();
 
-    // const tenantId = getCurrentTenant();
-    // const company = getCurrentCompany();
+    const tenantId = getCurrentTenant();
+    const company = getCurrentCompany();
+    const isOwnerCheck = isOwner();
 
-    // if (company) {
-    //   dispatch({
-    //     type: 'employee/fetchLocation',
-    //     payload: { company, tenantId },
-    //   });
-    // }
+    if (company) {
+      dispatch({
+        type: isOwnerCheck ? 'employee/fetchOwnerLocation' : 'employee/fetchLocation',
+        payload: { company, tenantId },
+      });
+    }
 
-    // const currentLocation = getCurrentLocation();
-    // if (currentLocation && currentLocation !== 'undefined') {
-    //   this.setState({
-    //     location: [currentLocation],
-    //   });
-    // }
+    const currentLocation = getCurrentLocation();
+    if (currentLocation && currentLocation !== 'undefined') {
+      this.setState({
+        location: [currentLocation],
+      });
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -237,7 +238,7 @@ class DirectoryComponent extends PureComponent {
 
     // For owners to display all locations (includes child companies)
     if (isOwnerCheck) {
-      if (!location || location.includes('undefined')) {
+      if (location.length === 0 || location.includes('undefined') || location.includes(null)) {
         location = listLocationsByCompany.map((lo) => lo?._id);
       }
       company = listLocationsByCompany.map((lo) => lo?.company?._id);
@@ -246,6 +247,7 @@ class DirectoryComponent extends PureComponent {
 
     const viewTabActive = permissions.viewTabActive !== -1;
     const viewTabInActive = permissions.viewTabInActive !== -1;
+
     // dispatch({
     //   type: 'employee/fetchListEmployeeMyTeam',
     //   payload: {
@@ -307,8 +309,8 @@ class DirectoryComponent extends PureComponent {
       }
     });
 
-    company = [...new Set(company.map((s) => s))];
     // For owners to display all locations (includes child companies)
+    company = [...new Set(company.map((s) => s))];
     const isOwnerCheck = isOwner();
     if (location.length === 0 && isOwnerCheck) {
       newLocations = listLocationsByCompany.map((lo) => lo?._id);

@@ -97,18 +97,20 @@ class ItemCompany extends PureComponent {
 
     return (
       <div className={s.root}>
-        <div className={s.logoCompany}>
-          <img
-            className={s.logoCompany__img}
-            src={logoUrl || logoDefault}
-            alt="logo"
-            style={logoUrl ? {} : { opacity: 0.8 }}
-          />
-        </div>
+        <div className={s.leftPart}>
+          <div className={s.logoCompany}>
+            <img
+              className={s.logoCompany__img}
+              src={logoUrl || logoDefault}
+              alt="logo"
+              style={logoUrl ? {} : { opacity: 0.8 }}
+            />
+          </div>
 
-        <div className={s.viewInfo}>
-          <p className={s.viewInfo__name}>{name}</p>
-          <p className={s.viewInfo__location}>{address}</p>
+          <div className={s.viewInfo}>
+            <p className={s.viewInfo__name}>{name}</p>
+            <p className={s.viewInfo__location}>{address}</p>
+          </div>
         </div>
         <div className={s.viewAction}>
           <Button
