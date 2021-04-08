@@ -265,18 +265,18 @@ class FormWorkLocationTenant extends Component {
                 )}
               </div>
             </Row>
-            {(isHeadQuarter || isEditing) && (
-              <Row className={s.content__viewBottom__row}>
-                <Col span={8}>
-                  <p className={s.content__viewBottom__row__textLabel}>Location Name*</p>
-                </Col>
-                <Col span={16}>
-                  <Form.Item name="name">
-                    <Input disabled={disableInput} placeholder="Location Name" />
-                  </Form.Item>
-                </Col>
-              </Row>
-            )}
+            {/* {(isHeadQuarter || isEditing) && ( */}
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>Location Name*</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item name="name">
+                  <Input disabled={disableInput} placeholder="Location Name" />
+                </Form.Item>
+              </Col>
+            </Row>
+            {/* )} */}
             <Row className={s.content__viewBottom__row}>
               <Col span={8}>
                 <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>

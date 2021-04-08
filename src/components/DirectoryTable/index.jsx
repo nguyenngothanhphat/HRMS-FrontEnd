@@ -289,11 +289,11 @@ class DirectoryTable extends Component {
           <Table
             size="small"
             columns={this.generateColumns(sortedName, keyTab)}
-            onRow={(record) => {
-              return {
-                onClick: () => this.handleProfileEmployee(record), // click row
-              };
-            }}
+            // onRow={(record) => {
+            //   return {
+            //     onClick: () => this.handleProfileEmployee(record), // click row
+            //   };
+            // }}
             dataSource={list}
             rowKey={(record) => record._id}
             // pagination={{ ...pagination, total: list.length }}
