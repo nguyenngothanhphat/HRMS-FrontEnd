@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
-import { Modal, Button, Form, Select, message, Result } from 'antd';
+import { Modal, Button, Form, Select, Result } from 'antd';
 import { connect } from 'umi';
 import _ from 'lodash';
 import { getCurrentTenant } from '@/utils/authority';
@@ -65,13 +65,6 @@ class ModalImportEmployee extends Component {
     this.formRef = React.createRef();
   }
 
-  // componentDidMount = () => {
-  //   const company = getCurrentCompany();
-  //   this.setState({
-  //     company,
-  //   });
-  // };
-
   componentDidUpdate() {
     const { statusImportEmployees, dispatch } = this.props;
     if (statusImportEmployees) {
@@ -98,63 +91,6 @@ class ModalImportEmployee extends Component {
         };
       });
       const exportData = [...listEmployeesTenant.newList, ...existList];
-      let arrName = [];
-
-      if (!_.isEmpty(existList)) {
-        message.error({
-          icon: <div style={{ display: 'none' }} />,
-          content: (
-            <Result
-              status="error"
-              title="Added employees failed !"
-              subTitle="[FAILED] - Work Email existed!"
-              extra="Please check Result_Import_Employees.csv below !"
-            />
-          ),
-          style: {
-            marginTop: '20vh',
-          },
-          duration: 3,
-        });
-      } else {
-        listEmployeesTenant.newList.map((item) => {
-          const { isAdded, status = '', firstName = '' } = item;
-          if (!isAdded && status.includes('[FAILED]')) {
-            return arrName.push({ firstName, status });
-          }
-
-          return message.success({
-            icon: <div style={{ display: 'none' }} />,
-            content: <Result status="success" title="Added employees successfully !" />,
-            style: {
-              marginTop: '20vh',
-              marginBottom: '100vh',
-            },
-            duration: 2,
-          });
-        });
-      }
-
-      if (arrName.length > 0) {
-        const status = [...new Set(arrName.map((item) => item?.status))];
-        message.error({
-          icon: <div style={{ display: 'none' }} />,
-          content: (
-            <Result
-              status="error"
-              title={`Added ${arrName.map((item) => item?.firstName)} failed !`}
-              subTitle={`${status}`}
-              extra="Please check Result_Import_Employees.csv below !"
-            />
-          ),
-          style: {
-            marginTop: '20vh',
-          },
-          duration: 4,
-        });
-        arrName = [];
-      }
-
       exportToCsv('Result_Import_Employees.csv', this.processData(exportData));
     }
   }
@@ -261,7 +197,72 @@ class ModalImportEmployee extends Component {
     }).then(() => {
       this.setState({ company: '' });
       handleCancel();
+      this.modalNotification();
     });
+  };
+
+  modalNotification = () => {
+    const { listEmployeesTenant } = this.props;
+    const { newList = [], existList = [] } = listEmployeesTenant;
+    if (!_.isEmpty(existList)) {
+      Modal.error({
+        icon: <div style={{ display: 'none' }} />,
+        content: (
+          <Result
+            status="error"
+            style={{ padding: 0, height: '200px' }}
+            title="Added employees failed !"
+            subTitle="[FAILED] - Work Email existed!"
+            extra="Please check Result_Import_Employees.csv below !"
+          />
+        ),
+      });
+    }
+
+    let notiErr = [];
+    let notiSuccess = [];
+
+    newList.forEach((item) => {
+      const { isAdded, status = '' } = item;
+      if (!isAdded && status.includes('[FAILED]')) {
+        notiErr.push(status);
+      }
+
+      if (isAdded && status.includes('[SUCCESS]')) {
+        notiSuccess.push('[SUCCESS]');
+      }
+    });
+
+    notiErr = [...new Set(notiErr)];
+    notiSuccess = [...new Set(notiSuccess)];
+
+    if (notiSuccess.length > 0) {
+      Modal.success({
+        icon: <div style={{ display: 'none' }} />,
+        content: (
+          <Result
+            style={{ padding: 0, height: '200px' }}
+            status="success"
+            title="Added employees successfully !"
+          />
+        ),
+      });
+    }
+
+    if (notiErr.length > 0) {
+      Modal.error({
+        icon: <div style={{ display: 'none' }} />,
+        content: (
+          <Result
+            status="error"
+            style={{ padding: 0, height: '200px' }}
+            title="Added employees failed !"
+            subTitle={notiErr.map((item) => item)}
+            extra="Please check Result_Import_Employees.csv below !"
+          />
+        ),
+      });
+    }
   };
 
   renderFormImport = (companyProps) => {

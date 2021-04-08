@@ -240,7 +240,7 @@ class DirectoryComponent extends PureComponent {
     const { dispatch, permissions = {} } = this.props;
     const { listLocationsByCompany } = this.state;
     let company = [getCurrentCompany()];
-    console.log('listLocationsByCompany', listLocationsByCompany);
+
     const isOwnerCheck = isOwner();
     let location = [getCurrentLocation()];
 
