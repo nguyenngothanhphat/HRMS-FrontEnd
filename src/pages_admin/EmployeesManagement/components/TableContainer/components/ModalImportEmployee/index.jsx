@@ -65,12 +65,12 @@ class ModalImportEmployee extends Component {
     this.formRef = React.createRef();
   }
 
-  componentDidMount = () => {
-    const company = getCurrentCompany();
-    this.setState({
-      company,
-    });
-  };
+  // componentDidMount = () => {
+  //   const company = getCurrentCompany();
+  //   this.setState({
+  //     company,
+  //   });
+  // };
 
   componentDidUpdate() {
     const { statusImportEmployees, dispatch } = this.props;
@@ -114,6 +114,7 @@ class ModalImportEmployee extends Component {
           style: {
             marginTop: '20vh',
           },
+          duration: 2,
         });
       } else {
         listEmployeesTenant.newList.map((item) => {
@@ -129,7 +130,7 @@ class ModalImportEmployee extends Component {
               marginTop: '20vh',
               marginBottom: '100vh',
             },
-            duration: 4,
+            duration: 2,
           });
         });
       }
@@ -149,7 +150,7 @@ class ModalImportEmployee extends Component {
           style: {
             marginTop: '20vh',
           },
-          duration: 8,
+          duration: 4,
         });
         arrName = [];
       }
@@ -264,7 +265,11 @@ class ModalImportEmployee extends Component {
 
   renderFormImport = (companyProps) => {
     const { companyList } = this.props;
-    const currentCompany = getCurrentCompany();
+    const currentTenant = getCurrentTenant();
+
+    const renderList = () => {
+      return companyProps.filter((item) => item.tenant === currentTenant);
+    };
 
     if (companyProps) {
       return (
@@ -284,8 +289,8 @@ class ModalImportEmployee extends Component {
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
             >
-              {companyProps.map((item) => (
-                <Option key={item._id} value={item._id} disabled={item._id !== currentCompany}>
+              {renderList().map((item) => (
+                <Option key={item._id} value={item._id}>
                   {item.name}
                 </Option>
               ))}
