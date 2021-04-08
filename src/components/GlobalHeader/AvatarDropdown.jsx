@@ -8,6 +8,7 @@ import {
   getCurrentTenant,
   getCurrentCompany,
   getCurrentLocation,
+  isOwner,
 } from '@/utils/authority';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
@@ -15,12 +16,13 @@ import styles from './index.less';
 @connect(
   ({
     locationSelection: { listLocationsByCompany = [] } = {},
-    user: { currentUser: { roles = [] } = {} } = {},
+    user: { companiesOfUser = [], currentUser: { roles = [] } = {} } = {},
     loading,
   }) => ({
     listLocationsByCompany,
     roles,
     loadingFetchLocation: loading.effects['locationSelection/fetchLocationsByCompany'],
+    companiesOfUser,
   }),
 )
 class AvatarDropdown extends React.Component {
@@ -64,6 +66,10 @@ class AvatarDropdown extends React.Component {
     // });
   };
 
+  onFinish = () => {
+    history.push('/');
+  };
+
   viewProfile = () => {
     const { currentUser: { employee: { _id = '' } = {} } = {} } = this.props;
     history.push(`/employees/employee-profile/${_id}`);
@@ -94,7 +100,13 @@ class AvatarDropdown extends React.Component {
     if (key === SETTINGS) {
       // eslint-disable-next-line no-alert
       alert('Settings');
+      return;
+    }
 
+    if (key === 'ALL') {
+      // eslint-disable-next-line no-alert
+      localStorage.removeItem('currentLocationId');
+      window.location.reload();
       return;
     }
 
@@ -109,22 +121,73 @@ class AvatarDropdown extends React.Component {
     });
 
     if (selectLocation) {
-      // window.location.reload();
-      history.push(`/`);
+      window.location.reload();
+      // history.push(`/`);
       return;
     }
 
     this.viewProfile();
   };
 
+  getLocationsOfChildCompany = (resultList) => {
+    const { dispatch } = this.props;
+
+    resultList.forEach(async (company) => {
+      const { _id = '', tenant = '' } = company;
+      // const res = await dispatch({
+      //   type: 'locationSelection/fetchLocationsOfChildCompany',
+      //   payload: {
+      //     company: _id,
+      //     tenantId: tenant,
+      //   },
+      // });
+      // const { statusCode = 0, data = [] } = res;
+      // if (statusCode === 200) {
+      //   return data.map((location) => {
+      //     return {
+      //       _id: location?._id,
+      //       name: location?.name,
+      //     };
+      //   });
+      // }
+      return {};
+    });
+  };
+
+  getChildCompanies = async () => {
+    const { companiesOfUser = [] } = this.props;
+    const currentCompanyId = getCurrentCompany();
+    const resultList = companiesOfUser.map(
+      (company) => company?.childOfCompany === currentCompanyId,
+    );
+    // eslint-disable-next-line compat/compat
+    const list = await Promise.all(this.getLocationsOfChildCompany(resultList));
+    return list;
+  };
+
   renderLocationList = () => {
     const { listLocationsByCompany = [] } = this.props;
     const currentLocation = getCurrentLocation();
 
+    const checkIsOwner = isOwner();
+    // const listOfChildCompanies = this.getChildCompanies();
+    // console.log('listOfChildCompanies', listOfChildCompanies);
     return (
       <>
         <Menu.Divider className={styles.secondDivider} />
         <Menu.Item className={styles.selectLocation}>Location</Menu.Item>
+        {checkIsOwner && (
+          <Menu.Item
+            key="ALL"
+            className={
+              currentLocation && currentLocation !== 'undefined'
+                ? styles.menuItemLink
+                : styles.menuItemLink2
+            }
+          >
+            All
+          </Menu.Item>
+        )}
         {listLocationsByCompany.map((value) => {
           const { _id = '', name: locationName = '' } = value;
           return (
@@ -136,6 +199,17 @@ class AvatarDropdown extends React.Component {
             </Menu.Item>
           );
         })}
+        {/* {listOfChildCompanies.map((value) => {
+          const { _id = '', name: locationName = '' } = value;
+          return (
+            <Menu.Item
+              key={_id}
+              className={currentLocation !== _id ? styles.menuItemLink : styles.menuItemLink2}
+            >
+              {locationName}
+            </Menu.Item>
+          );
+        })} */}
       </>
     );
   };
