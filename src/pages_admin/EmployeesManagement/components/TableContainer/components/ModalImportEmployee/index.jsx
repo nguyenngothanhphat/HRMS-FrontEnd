@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
-import { Modal, Button, Form, Select } from 'antd';
+import { Modal, Button, Form, Select, message, Result } from 'antd';
 import { connect } from 'umi';
 import _ from 'lodash';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -98,6 +98,62 @@ class ModalImportEmployee extends Component {
         };
       });
       const exportData = [...listEmployeesTenant.newList, ...existList];
+      let arrName = [];
+
+      if (!_.isEmpty(existList)) {
+        message.error({
+          icon: <div style={{ display: 'none' }} />,
+          content: (
+            <Result
+              status="error"
+              title="Added employees failed !"
+              subTitle="[FAILED] - Work Email existed!"
+              extra="Please check Result_Import_Employees.csv below !"
+            />
+          ),
+          style: {
+            marginTop: '20vh',
+          },
+        });
+      } else {
+        listEmployeesTenant.newList.map((item) => {
+          const { isAdded, status = '', firstName = '' } = item;
+          if (!isAdded && status.includes('[FAILED]')) {
+            return arrName.push({ firstName, status });
+          }
+
+          return message.success({
+            icon: <div style={{ display: 'none' }} />,
+            content: <Result status="success" title="Added employees successfully !" />,
+            style: {
+              marginTop: '20vh',
+              marginBottom: '100vh',
+            },
+            duration: 4,
+          });
+        });
+      }
+
+      if (arrName.length > 0) {
+        const status = [...new Set(arrName.map((item) => item?.status))];
+        message.error({
+          icon: <div style={{ display: 'none' }} />,
+          content: (
+            <Result
+              status="error"
+              title={`Added ${arrName.map((item) => item?.firstName)} failed !`}
+              subTitle={`${status}`}
+              extra="Please check Result_Import_Employees.csv below !"
+            />
+          ),
+          style: {
+            marginTop: '20vh',
+          },
+          duration: 8,
+        });
+        arrName = [];
+      }
+
       exportToCsv('Result_Import_Employees.csv', this.processData(exportData));
     }
   }
@@ -208,6 +264,8 @@ class ModalImportEmployee extends Component {
 
   renderFormImport = (companyProps) => {
     const { companyList } = this.props;
+    const currentCompany = getCurrentCompany();
+
     if (companyProps) {
       return (
         <Form
@@ -217,8 +275,20 @@ class ModalImportEmployee extends Component {
           }}
         >
           <Form.Item label="Company" name="company" rules={[{ required: true }]}>
-            <Select disabled>
-              <Option value={companyProps._id}>{companyProps.name}</Option>
+            <Select
+              placeholder="Select Current Company"
+              showArrow
+              showSearch
+              onChange={(value) => this.onChangeSelect(value)}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {companyProps.map((item) => (
+                <Option key={item._id} value={item._id} disabled={item._id !== currentCompany}>
+                  {item.name}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
         </Form>
@@ -248,6 +318,7 @@ class ModalImportEmployee extends Component {
   render() {
     const { visible = false, loading, company: companyProps } = this.props;
     const { company = '', employees } = this.state;
+
     return (
       <div>
         <Modal

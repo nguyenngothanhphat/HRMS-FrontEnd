@@ -24,7 +24,7 @@ const { TabPane } = Tabs;
     loading,
     locationSelection: { listLocationsByCompany = [] } = {},
     employee,
-    user: { currentUser = {}, permissions = {} },
+    user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
   }) => ({
     loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
     loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
@@ -33,6 +33,7 @@ const { TabPane } = Tabs;
     currentUser,
     permissions,
     listLocationsByCompany,
+    companiesOfUser,
   }),
 )
 class DirectoryComponent extends PureComponent {
@@ -245,8 +246,8 @@ class DirectoryComponent extends PureComponent {
       company = [...new Set(company.map((s) => s))];
     }
 
-    const viewTabActive = permissions.viewTabActive !== -1;
-    const viewTabInActive = permissions.viewTabInActive !== -1;
+    // const viewTabActive = permissions.viewTabActive !== -1;
+    // const viewTabInActive = permissions.viewTabInActive !== -1;
 
     // dispatch({
     //   type: 'employee/fetchListEmployeeMyTeam',
@@ -709,6 +710,7 @@ class DirectoryComponent extends PureComponent {
   render() {
     const {
       currentUser: { company, roles = [] },
+      companiesOfUser = [],
     } = this.props;
     const { collapsed, visible, visibleImportEmployee, location } = this.state;
     const getRole = roles.filter((item) => item._id === 'HR-GLOBAL');
@@ -726,7 +728,7 @@ class DirectoryComponent extends PureComponent {
           getResponse={this.getResponse}
         />
         <ModalImportEmployee
-          company={company}
+          company={companiesOfUser}
           titleModal="Import Employees"
           visible={visibleImportEmployee}
           handleCancel={this.handleCancel}
