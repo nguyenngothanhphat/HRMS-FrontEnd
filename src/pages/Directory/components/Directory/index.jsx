@@ -21,8 +21,7 @@ const { Content } = Layout;
 const { TabPane } = Tabs;
 @connect(
   ({
-    loading,
-    locationSelection: { listLocationsByCompany = [] } = {},
+    loading, // locationSelection: { listLocationsByCompany = [] } = {},
     employee,
     user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
   }) => ({
@@ -32,7 +31,7 @@ const { TabPane } = Tabs;
     employee,
     currentUser,
     permissions,
-    listLocationsByCompany,
+    // listLocationsByCompany,
     companiesOfUser,
   }),
 )
@@ -87,6 +86,7 @@ class DirectoryComponent extends PureComponent {
       bottabs: [],
       visible: false,
       visibleImportEmployee: false,
+      listLocationsByCompany: [],
     };
     this.setDebounce = debounce((query) => {
       this.setState({
@@ -95,10 +95,8 @@ class DirectoryComponent extends PureComponent {
     }, 500);
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     const { dispatch } = this.props;
-    this.initDataTable();
-    this.initTabId();
     // *: error tenant
     // this.fetchApprovalFlowList();
 
@@ -107,10 +105,16 @@ class DirectoryComponent extends PureComponent {
     const isOwnerCheck = isOwner();
 
     if (company) {
-      dispatch({
+      const res = await dispatch({
         type: isOwnerCheck ? 'employee/fetchOwnerLocation' : 'employee/fetchLocation',
         payload: { company, tenantId },
       });
+      const { statusCode = 0, data = [] } = res;
+      if (statusCode === 200) {
+        this.setState({
+          listLocationsByCompany: data,
+        });
+      }
     }
 
     const currentLocation = getCurrentLocation();
@@ -119,7 +123,9 @@ class DirectoryComponent extends PureComponent {
         location: [currentLocation],
       });
     }
-  }
+    this.initDataTable();
+    this.initTabId();
+  };
 
   componentDidUpdate(prevProps, prevState) {
     const { department, location, employeeType, filterName, tabId } = this.state;
@@ -231,9 +237,10 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderHrTeam = () => {
-    const { dispatch, permissions = {}, listLocationsByCompany = [] } = this.props;
+    const { dispatch, permissions = {} } = this.props;
+    const { listLocationsByCompany } = this.state;
     let company = [getCurrentCompany()];
-
+    console.log('listLocationsByCompany', listLocationsByCompany);
     const isOwnerCheck = isOwner();
     let location = [getCurrentLocation()];
 
@@ -245,7 +252,6 @@ class DirectoryComponent extends PureComponent {
       company = listLocationsByCompany.map((lo) => lo?.company?._id);
       company = [...new Set(company.map((s) => s))];
     }
-
     // const viewTabActive = permissions.viewTabActive !== -1;
     // const viewTabInActive = permissions.viewTabInActive !== -1;
 
@@ -297,7 +303,8 @@ class DirectoryComponent extends PureComponent {
     const {
       tabList: { active, myTeam, inActive },
     } = this.state;
-    const { dispatch, listLocationsByCompany = [] } = this.props;
+    const { dispatch } = this.props;
+    const { listLocationsByCompany } = this.state;
 
     const { name, department, location, employeeType } = params;
     let newLocations = [...location];
@@ -350,7 +357,8 @@ class DirectoryComponent extends PureComponent {
     const {
       tabList: { active, myTeam, inActive },
     } = this.state;
-    const { dispatch, listLocationsByCompany = [] } = this.props;
+    const { dispatch } = this.props;
+    const { listLocationsByCompany } = this.state;
     const { name, department, location, employeeType } = params;
     let newLocations = [...location];
     let company = [];
