@@ -98,23 +98,60 @@ class ModalImportEmployee extends Component {
         };
       });
       const exportData = [...listEmployeesTenant.newList, ...existList];
+      let arrName = [];
 
       if (!_.isEmpty(existList)) {
         message.error({
           icon: <div style={{ display: 'none' }} />,
-          content: <Result status="error" title="Added employees failure !" />,
+          content: (
+            <Result
+              status="error"
+              title="Added employees failed !"
+              subTitle="[FAILED] - Work Email existed!"
+              extra="Please check Result_Import_Employees.csv below !"
+            />
+          ),
           style: {
             marginTop: '20vh',
           },
         });
       } else {
-        message.success({
+        listEmployeesTenant.newList.map((item) => {
+          const { isAdded, status = '', firstName = '' } = item;
+          if (!isAdded && status.includes('[FAILED]')) {
+            return arrName.push({ firstName, status });
+          }
+
+          return message.success({
+            icon: <div style={{ display: 'none' }} />,
+            content: <Result status="success" title="Added employees successfully !" />,
+            style: {
+              marginTop: '20vh',
+              marginBottom: '100vh',
+            },
+            duration: 4,
+          });
+        });
+      }
+
+      if (arrName.length > 0) {
+        const status = [...new Set(arrName.map((item) => item?.status))];
+        message.error({
           icon: <div style={{ display: 'none' }} />,
-          content: <Result status="success" title="Added employees successfully !" />,
+          content: (
+            <Result
+              status="error"
+              title={`Added ${arrName.map((item) => item?.firstName)} failed !`}
+              subTitle={`${status}`}
+              extra="Please check Result_Import_Employees.csv below !"
+            />
+          ),
           style: {
             marginTop: '20vh',
           },
+          duration: 8,
         });
+        arrName = [];
       }
 
       exportToCsv('Result_Import_Employees.csv', this.processData(exportData));
