@@ -30,6 +30,7 @@ const { Option } = Select;
     jobTitleList,
     reportingManagerList,
     statusAddEmployee,
+    loadingCompanyList: loading.effects['employeesManagement/fetchCompanyList'],
     loadingDepartment: loading.effects['employeesManagement/fetchDepartmentList'],
     loadingLocation: loading.effects['employeesManagement/fetchLocationList'],
     loadingTitle: loading.effects['employeesManagement/fetchJobTitleList'],
@@ -86,21 +87,25 @@ class AddEmployeeForm extends Component {
 
   fetchData = (_id) => {
     const { dispatch } = this.props;
+    const tenantId = localStorage.getItem('tenantId');
     dispatch({
       type: 'employeesManagement/fetchReportingManagerList',
       payload: {
+        tenantId,
         company: _id,
       },
     });
     dispatch({
       type: 'employeesManagement/fetchLocationList',
       payload: {
+        tenantId,
         company: _id,
       },
     });
     dispatch({
       type: 'employeesManagement/fetchDepartmentList',
       payload: {
+        tenantId,
         company: _id,
       },
     });
@@ -149,7 +154,7 @@ class AddEmployeeForm extends Component {
     const { handleCancel, dispatch, company } = this.props;
     let isDisabled = true;
     let payload = {
-      companyList: [],
+      listCompany: [],
       departmentList: [],
       locationList: [],
       jobTitleList: [],
@@ -159,7 +164,7 @@ class AddEmployeeForm extends Component {
     if (company !== '') {
       isDisabled = false;
       payload = {
-        companyList: [],
+        listCompany: [],
         statusAddEmployee: false,
       };
     }
@@ -179,9 +184,11 @@ class AddEmployeeForm extends Component {
   handleChangeAddEmployee = () => {};
 
   handleSubmitEmployee = (values) => {
+    const tenantId = localStorage.getItem('tenantId');
     const { dispatch } = this.props;
     const payload = {
       ...values,
+      tenantId,
       joinDate: moment(values.joinDate).format('MM.DD.YY'),
     };
     dispatch({
@@ -423,7 +430,7 @@ class AddEmployeeForm extends Component {
             className={styles.reportingManager}
             label={formatMessage({ id: 'addEmployee.manager' })}
             name="manager"
-            rules={[{ required: true }]}
+            rules={[{ required: false }]}
           >
             <Select
               autoComplete="dontshow"

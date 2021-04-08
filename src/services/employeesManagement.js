@@ -8,14 +8,14 @@ export async function getEmployeesList(payload) {
 }
 
 export async function getCompanyList(payload) {
-  return request('/api/company/list', {
+  return request('/api/companytenant/list-of-user', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getLocationList(payload) {
-  return request('/api/location/get-by-company', {
+  return request('/api/locationtenant/list', {
     method: 'POST',
     data: payload,
   });
@@ -28,16 +28,15 @@ export async function getRoleList() {
 }
 
 export async function getDepartmentList(payload) {
-  return request('/api/department/list', {
+  return request('/api/departmenttenant/list', {
     method: 'POST',
     data: payload,
   });
 }
 
-export async function getJobTitleList(payload) {
+export async function getJobTitleList() {
   return request('/api/title/list', {
     method: 'POST',
-    data: payload,
   });
 }
 
@@ -49,7 +48,7 @@ export async function getReportingManagerList(params) {
 }
 
 export async function addEmployee(payload) {
-  return request('/api/user/add-employee', {
+  return request('/api/employeetenant/add', {
     method: 'POST',
     data: payload,
   });
