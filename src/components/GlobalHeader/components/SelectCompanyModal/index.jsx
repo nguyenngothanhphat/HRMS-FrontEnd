@@ -18,6 +18,7 @@ class SelectCompanyModal extends PureComponent {
     this.state = {
       activeCompany: '',
       activeTenant: '',
+      loadingSwitch: false,
     };
   }
 
@@ -68,8 +69,18 @@ class SelectCompanyModal extends PureComponent {
     );
   };
 
+  wait = (delay, ...args) => {
+    // eslint-disable-next-line compat/compat
+    return new Promise((resolve) => {
+      setTimeout(resolve, delay, ...args);
+    });
+  };
+
   onProceed = async () => {
     const { activeCompany, activeTenant } = this.state;
+    this.setState({
+      loadingSwitch: true,
+    });
     if (!activeCompany && !activeTenant) {
       notification.error({
         message: 'Please select a company.',
@@ -88,7 +99,12 @@ class SelectCompanyModal extends PureComponent {
       });
 
       if (isOwner()) {
-        history.replace(`/admin-app`);
+        await this.wait(1000).then(() =>
+          this.setState({
+            loadingSwitch: false,
+          }),
+        );
+        history.push(`/admin-app`);
       } else {
         const { statusCode, data = {} } = res;
         let formatArrRoles = JSON.parse(localStorage.getItem('antd-pro-authority'));
@@ -102,6 +118,11 @@ class SelectCompanyModal extends PureComponent {
           });
           setAuthority(formatArrRoles);
         }
+        await this.wait(1000).then(() =>
+          this.setState({
+            loadingSwitch: false,
+          }),
+        );
         history.push(`/dashboard`);
       }
       window.location.reload();
@@ -109,8 +130,8 @@ class SelectCompanyModal extends PureComponent {
   };
 
   render() {
-    const { visible, onClose = () => {}, loading = false } = this.props;
-    const { activeCompany } = this.state;
+    const { visible, onClose = () => {} } = this.props;
+    const { activeCompany, loadingSwitch } = this.state;
     return (
       <Modal
         className={styles.SelectCompanyModal}
@@ -128,7 +149,7 @@ class SelectCompanyModal extends PureComponent {
           <div className={styles.operationButtons}>
             <Button
               disabled={!activeCompany}
-              loading={loading}
+              loading={loadingSwitch}
               className={styles.proceedBtn}
               onClick={this.onProceed}
             >

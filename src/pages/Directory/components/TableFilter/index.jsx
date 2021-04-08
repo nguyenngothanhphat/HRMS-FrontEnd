@@ -37,10 +37,12 @@ class TableFilter extends PureComponent {
     });
     const tenantId = getCurrentTenant();
     const company = getCurrentCompany();
+    const checkIsOwner = isOwner();
 
     if (company) {
       dispatch({
-        type: 'employee/fetchLocation',
+        type: checkIsOwner ? 'employee/fetchOwnerLocation' : 'employee/fetchLocation',
+        // type: 'employee/fetchLocation',
         payload: { company, tenantId },
       });
     }
@@ -113,10 +115,18 @@ class TableFilter extends PureComponent {
       tabName,
     } = this.props;
 
+    const currentCompany = getCurrentCompany();
+
     const formatDataLocation = location.map((item) => {
-      const { name: label = '', _id: value = '' } = item;
+      const {
+        name: label = '',
+        _id: value = '',
+        company: { _id: parentCompId = '', name: parentCompName = '' } = {},
+      } = item;
       return {
-        label,
+        label:
+          parentCompId && currentCompany !== parentCompId ? `${parentCompName} - ${label}` : label,
+        // label,
         value,
       };
     });

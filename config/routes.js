@@ -166,7 +166,7 @@ const routes = [
             name: 'users',
             icon: '/assets/images/menuIcons/user.svg',
             component: '../pages_admin/UsersManagement',
-            authority: ['admin-sa'],
+            authority: ['admin-sa', 'M_USER_MANAGEMENT_VIEW', 'owner'],
           },
           {
             path: '/employees',
@@ -581,13 +581,13 @@ const routes = [
             hideInMenu: true,
             component: './SearchResult',
           },
-          {
-            path: '/example1',
-            name: 'User Management',
-            icon: '/assets/images/menuIcons/icon1.svg',
-            component: './ExamplePage',
-            authority: ['M_USER_MANAGEMENT_VIEW', 'owner'],
-          },
+          // {
+          //   path: '/example1',
+          //   name: 'User Management',
+          //   icon: '/assets/images/menuIcons/icon1.svg',
+          //   component: './ExamplePage',
+          //   authority: ['M_USER_MANAGEMENT_VIEW', 'owner'],
+          // },
           // {
           //   path: '/example2',
           //   name: 'Directory',

@@ -20,13 +20,19 @@ import TableFilter from '../TableFilter';
 const { Content } = Layout;
 const { TabPane } = Tabs;
 @connect(
-  ({ loading, employee, user: { currentUser = {}, permissions = {}, companiesOfUser = [] } }) => ({
+  ({
+    loading,
+    locationSelection: { listLocationsByCompany = [] } = {},
+    employee,
+    user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
+  }) => ({
     loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
     loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
     loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
     employee,
     currentUser,
     permissions,
+    listLocationsByCompany,
     companiesOfUser,
   }),
 )
@@ -98,10 +104,11 @@ class DirectoryComponent extends PureComponent {
 
     const tenantId = getCurrentTenant();
     const company = getCurrentCompany();
+    const isOwnerCheck = isOwner();
 
     if (company) {
       dispatch({
-        type: 'employee/fetchLocation',
+        type: isOwnerCheck ? 'employee/fetchOwnerLocation' : 'employee/fetchLocation',
         payload: { company, tenantId },
       });
     }
@@ -224,19 +231,24 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderHrTeam = () => {
-    const { dispatch, permissions = {} } = this.props;
-    const company = getCurrentCompany();
+    const { dispatch, permissions = {}, listLocationsByCompany = [] } = this.props;
+    let company = [getCurrentCompany()];
 
     const isOwnerCheck = isOwner();
-    let location = getCurrentLocation();
+    let location = [getCurrentLocation()];
+
+    // For owners to display all locations (includes child companies)
     if (isOwnerCheck) {
-      if (!location || location === 'undefined') {
-        location = null;
+      if (location.length === 0 || location.includes('undefined') || location.includes(null)) {
+        location = listLocationsByCompany.map((lo) => lo?._id);
       }
+      company = listLocationsByCompany.map((lo) => lo?.company?._id);
+      company = [...new Set(company.map((s) => s))];
     }
 
-    const viewTabActive = permissions.viewTabActive !== -1;
-    const viewTabInActive = permissions.viewTabInActive !== -1;
+    // const viewTabActive = permissions.viewTabActive !== -1;
+    // const viewTabInActive = permissions.viewTabInActive !== -1;
+
     // dispatch({
     //   type: 'employee/fetchListEmployeeMyTeam',
     //   payload: {
@@ -248,8 +260,8 @@ class DirectoryComponent extends PureComponent {
     dispatch({
       type: 'employee/fetchListEmployeeActive',
       payload: {
-        company: [company],
-        location: location ? [location] : [],
+        company,
+        location,
       },
     });
     // }
@@ -285,12 +297,30 @@ class DirectoryComponent extends PureComponent {
     const {
       tabList: { active, myTeam, inActive },
     } = this.state;
-    const { dispatch } = this.props;
-    const company = getCurrentCompany();
+    const { dispatch, listLocationsByCompany = [] } = this.props;
 
     const { name, department, location, employeeType } = params;
+    let newLocations = [...location];
+    let company = [];
+
+    listLocationsByCompany.forEach((loc) => {
+      const { _id = '', company: { _id: parentId = '' } = {} } = loc;
+      if (newLocations.includes(_id)) {
+        company = [...company, parentId];
+      }
+    });
+
+    // For owners to display all locations (includes child companies)
+    company = [...new Set(company.map((s) => s))];
+    const isOwnerCheck = isOwner();
+    if (location.length === 0 && isOwnerCheck) {
+      newLocations = listLocationsByCompany.map((lo) => lo?._id);
+      company = listLocationsByCompany.map((lo) => lo?.company?._id);
+      company = [...new Set(company.map((s) => s))];
+    }
+
     const payload = {
-      company: [company],
+      company,
       name,
       department,
       location,
@@ -320,16 +350,32 @@ class DirectoryComponent extends PureComponent {
     const {
       tabList: { active, myTeam, inActive },
     } = this.state;
-    const { dispatch } = this.props;
-    const company = getCurrentCompany();
-    // const location = getCurrentLocation();
+    const { dispatch, listLocationsByCompany = [] } = this.props;
+    const { name, department, location, employeeType } = params;
+    let newLocations = [...location];
+    let company = [];
 
-    const { name, department, employeeType, location } = params;
+    listLocationsByCompany.forEach((loc) => {
+      const { _id = '', company: { _id: parentId = '' } = {} } = loc;
+      if (newLocations.includes(_id)) {
+        company = [...company, parentId];
+      }
+    });
+
+    company = [...new Set(company.map((s) => s))];
+    // For owners to display all locations (includes child companies)
+    const isOwnerCheck = isOwner();
+    if (location.length === 0 && isOwnerCheck) {
+      newLocations = listLocationsByCompany.map((lo) => lo?._id);
+      company = listLocationsByCompany.map((lo) => lo?.company?._id);
+      company = [...new Set(company.map((s) => s))];
+    }
+
     const payload = {
-      company: [company],
+      company,
       name,
       department,
-      location,
+      location: newLocations,
       employeeType,
     };
     if (tabId === active) {

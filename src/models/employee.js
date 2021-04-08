@@ -1,8 +1,9 @@
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
-import {getCurrentTenant} from '@/utils/authority'
+import { getCurrentTenant } from '@/utils/authority';
 import {
   LocationFilter,
+  LocationOwnerFilter,
   DepartmentFilter,
   EmployeeTypeFilter,
   getListEmployeeMyTeam,
@@ -43,6 +44,16 @@ const employee = {
     *fetchLocation({ payload }, { call, put }) {
       try {
         const response = yield call(LocationFilter, payload);
+        const { statusCode, data: location = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveLocation', payload: { location } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchOwnerLocation({ payload }, { call, put }) {
+      try {
+        const response = yield call(LocationOwnerFilter, payload);
         const { statusCode, data: location = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveLocation', payload: { location } });

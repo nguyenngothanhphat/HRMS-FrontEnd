@@ -78,9 +78,9 @@ const usersManagement = {
         dialog(errors);
       }
     },
-    *fetchLocationList(_, { call, put }) {
+    *fetchLocationList({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getLocationList, {});
+        const response = yield call(getLocationList, payload);
         const { statusCode, data: location = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { location } });
