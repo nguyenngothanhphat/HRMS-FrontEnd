@@ -1,12 +1,13 @@
 .tableContainer {
   min-width: 1150px;
   margin: 32px 105px;
+
   .tabComponent {
     :global {
       .ant-tabs-tab {
-        font-size: 14px;
-        font-weight: 700;
         margin: 0 30px 0 0 !important;
+        font-weight: 700;
+        font-size: 14px;
       }
       .ant-layout {
         min-height: 540px;
@@ -15,14 +16,14 @@
     }
   }
   .buttonAddImport {
-    margin: 25px 32px 22px 0;
     display: flex;
     flex-flow: row nowrap;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     height: 42px;
-    border-radius: 30px;
+    margin: 25px 32px 22px 0;
     background-color: white;
+    border-radius: 30px;
     cursor: pointer;
     img {
       margin-right: 10px;
@@ -33,14 +34,14 @@
     }
     &_text {
       margin-bottom: 0px;
-      font-size: 14px;
+      color: #ffa100;
       font-weight: 500;
-      font-stretch: normal;
+      font-size: 14px;
       font-style: normal;
+      font-stretch: normal;
       line-height: 1.38;
       letter-spacing: normal;
       text-align: left;
-      color: #ffa100;
     }
     :global {
       .anticon {
@@ -58,11 +59,11 @@
   }
   .tableContent {
     width: 100%;
+    height: 100%;
+    margin: 20px 0;
     overflow-x: auto;
     border: 1px solid #d6dce0;
     border-radius: 8px;
-    margin: 20px 0;
-    height: 100%;
   }
   .tabBarExtra {
     display: flex;
@@ -79,26 +80,26 @@
       }
       :global {
         .anticon-filter {
-          font-size: 14px;
-          color: #2c6df9;
-          padding-top: 4px;
           margin-right: 5px;
+          padding-top: 4px;
+          color: #2c6df9;
+          font-size: 14px;
         }
       }
     }
     .textButtonFilter {
       margin-bottom: 0;
-      font-size: 14px;
+      color: #2c6df9;
       font-weight: 500;
-      font-stretch: normal;
+      font-size: 14px;
       font-style: normal;
+      font-stretch: normal;
       line-height: normal;
       letter-spacing: 0.13px;
-      color: #2c6df9;
     }
     .filterBackgroundButton {
-      border-radius: 5px;
       background-color: #f4f7ff;
+      border-radius: 5px;
     }
   }
 }
