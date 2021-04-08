@@ -19,14 +19,17 @@ import TableFilter from '../TableFilter';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
-@connect(({ loading, employee, user: { currentUser = {}, permissions = {} } }) => ({
-  loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
-  loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
-  loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
-  employee,
-  currentUser,
-  permissions,
-}))
+@connect(
+  ({ loading, employee, user: { currentUser = {}, permissions = {}, companiesOfUser = [] } }) => ({
+    loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
+    loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
+    loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
+    employee,
+    currentUser,
+    permissions,
+    companiesOfUser,
+  }),
+)
 class DirectoryComponent extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if ('employee' in nextProps) {
@@ -661,6 +664,7 @@ class DirectoryComponent extends PureComponent {
   render() {
     const {
       currentUser: { company, roles = [] },
+      companiesOfUser = [],
     } = this.props;
     const { collapsed, visible, visibleImportEmployee, location } = this.state;
     const getRole = roles.filter((item) => item._id === 'HR-GLOBAL');
@@ -678,7 +682,7 @@ class DirectoryComponent extends PureComponent {
           getResponse={this.getResponse}
         />
         <ModalImportEmployee
-          company={company}
+          company={companiesOfUser}
           titleModal="Import Employees"
           visible={visibleImportEmployee}
           handleCancel={this.handleCancel}

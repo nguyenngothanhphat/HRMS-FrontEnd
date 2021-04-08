@@ -264,6 +264,8 @@ class ModalImportEmployee extends Component {
 
   renderFormImport = (companyProps) => {
     const { companyList } = this.props;
+    const currentCompany = getCurrentCompany();
+
     if (companyProps) {
       return (
         <Form
@@ -273,8 +275,20 @@ class ModalImportEmployee extends Component {
           }}
         >
           <Form.Item label="Company" name="company" rules={[{ required: true }]}>
-            <Select disabled>
-              <Option value={companyProps._id}>{companyProps.name}</Option>
+            <Select
+              placeholder="Select Current Company"
+              showArrow
+              showSearch
+              onChange={(value) => this.onChangeSelect(value)}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {companyProps.map((item) => (
+                <Option key={item._id} value={item._id} disabled={item._id !== currentCompany}>
+                  {item.name}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
         </Form>
@@ -304,6 +318,7 @@ class ModalImportEmployee extends Component {
   render() {
     const { visible = false, loading, company: companyProps } = this.props;
     const { company = '', employees } = this.state;
+
     return (
       <div>
         <Modal
