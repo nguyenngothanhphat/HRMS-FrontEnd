@@ -207,6 +207,7 @@ class ModalImportEmployee extends Component {
     if (!_.isEmpty(existList)) {
       Modal.error({
         icon: <div style={{ display: 'none' }} />,
+        className: styles.modalResult,
         content: (
           <Result
             status="error"
@@ -239,11 +240,13 @@ class ModalImportEmployee extends Component {
     if (notiSuccess.length > 0) {
       Modal.success({
         icon: <div style={{ display: 'none' }} />,
+        className: styles.modalResult,
         content: (
           <Result
             style={{ padding: 0, height: '200px' }}
             status="success"
             title="Added employees successfully !"
+            subTitle="Please check Result_Import_Employees.csv below !"
           />
         ),
       });
@@ -252,6 +255,7 @@ class ModalImportEmployee extends Component {
     if (notiErr.length > 0) {
       Modal.error({
         icon: <div style={{ display: 'none' }} />,
+        className: styles.modalResult,
         content: (
           <Result
             status="error"
