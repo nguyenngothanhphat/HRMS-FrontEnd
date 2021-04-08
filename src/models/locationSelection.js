@@ -19,17 +19,12 @@ const LocationSelection = {
           type: 'save',
           payload: { listLocationsByCompany: data },
         });
-        if (!isOwner) {
-          const currentLocation = getCurrentLocation();
-          if (!currentLocation || currentLocation === 'undefined') {
-            const hasHeadQuarter = data.find((value) => value?.isHeadQuarter);
-            if (hasHeadQuarter) {
-              setCurrentLocation(hasHeadQuarter._id);
-            } else {
-              setCurrentLocation(data.length > 0 ? data[0]?._id : '');
-            }
-          }
+
+        const currentLocation = getCurrentLocation();
+        if (!currentLocation || currentLocation === 'undefined') {
+          setCurrentLocation(data.length > 0 ? data[0]?._id : '');
         }
+
 
         return data;
       } catch (errors) {
@@ -47,17 +42,17 @@ const LocationSelection = {
           type: 'save',
           payload: { listLocationsByCompany: data },
         });
-        if (!isOwner) {
-          const currentLocation = getCurrentLocation();
-          if (!currentLocation || currentLocation === 'undefined') {
-            const hasHeadQuarter = data.find((value) => value?.isHeadQuarter);
-            if (hasHeadQuarter) {
-              setCurrentLocation(hasHeadQuarter._id);
-            } else {
-              setCurrentLocation(data.length > 0 ? data[0]?._id : '');
-            }
-          }
-        }
+        // if (!isOwner()) {
+        //   const currentLocation = getCurrentLocation();
+        //   if (!currentLocation || currentLocation === 'undefined') {
+        //     const hasHeadQuarter = data.find((value) => value?.isHeadQuarter);
+        //     if (hasHeadQuarter) {
+        //       setCurrentLocation(hasHeadQuarter._id);
+        //     } else {
+        //       setCurrentLocation(data.length > 0 ? data[0]?._id : '');
+        //     }
+        //   }
+        // }
 
         return data;
       } catch (errors) {

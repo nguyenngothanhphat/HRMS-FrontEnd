@@ -47,10 +47,10 @@ const employee = {
         const { statusCode, data: location = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveLocation', payload: { location } });
-        return response
+        return response;
       } catch (errors) {
         dialog(errors);
-        return {}
+        return {};
       }
     },
     *fetchOwnerLocation({ payload }, { call, put }) {
@@ -59,15 +59,15 @@ const employee = {
         const { statusCode, data: location = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveLocation', payload: { location } });
-        return response
+        return response;
       } catch (errors) {
         dialog(errors);
-        return {}
+        return {};
       }
     },
-    *fetchDepartment(_, { call, put }) {
+    *fetchDepartment({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(DepartmentFilter);
+        const response = yield call(DepartmentFilter, payload);
         const { statusCode, data: department = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveDepartment', payload: { department } });

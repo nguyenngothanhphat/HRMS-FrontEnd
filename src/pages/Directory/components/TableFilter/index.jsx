@@ -49,6 +49,7 @@ class TableFilter extends PureComponent {
 
     dispatch({
       type: 'employee/fetchDepartment',
+      payload: { company, tenantId },
     });
     // dispatch({
     //   type: 'employee/fetchListEmployeeMyTeam',

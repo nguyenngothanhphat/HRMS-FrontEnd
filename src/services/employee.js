@@ -28,9 +28,10 @@ export async function EmployeeTypeFilter(payload) {
   });
 }
 
-export async function DepartmentFilter() {
+export async function DepartmentFilter(payload) {
   return request('/api/departmenttenant/list', {
     method: 'POST',
+    data: payload,
   });
 }
 

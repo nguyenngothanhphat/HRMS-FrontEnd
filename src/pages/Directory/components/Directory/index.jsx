@@ -240,7 +240,7 @@ class DirectoryComponent extends PureComponent {
     const { dispatch, permissions = {} } = this.props;
     const { listLocationsByCompany } = this.state;
     let company = [getCurrentCompany()];
-    console.log('listLocationsByCompany', listLocationsByCompany);
+
     const isOwnerCheck = isOwner();
     let location = [getCurrentLocation()];
 
@@ -303,25 +303,35 @@ class DirectoryComponent extends PureComponent {
     const {
       tabList: { active, myTeam, inActive },
     } = this.state;
+
+    const locationIsSelected = [getCurrentLocation()];
     const { dispatch } = this.props;
     const { listLocationsByCompany } = this.state;
-
     const { name, department, location, employeeType } = params;
-    let newLocations = [...location];
     let company = [];
-
-    listLocationsByCompany.forEach((loc) => {
-      const { _id = '', company: { _id: parentId = '' } = {} } = loc;
-      if (newLocations.includes(_id)) {
-        company = [...company, parentId];
-      }
-    });
-
-    // For owners to display all locations (includes child companies)
-    company = [...new Set(company.map((s) => s))];
+    let newLocations = [...location];
     const isOwnerCheck = isOwner();
+
+    if (
+      locationIsSelected.length === 0 ||
+      locationIsSelected.includes('undefined') ||
+      locationIsSelected.includes(null)
+    ) {
+      listLocationsByCompany.forEach((loc) => {
+        const { _id = '', company: { _id: parentId = '' } = {} } = loc;
+        if (newLocations.includes(_id)) {
+          company = [...company, parentId];
+        }
+      });
+      if (location.length === 0 && isOwnerCheck) {
+        newLocations = listLocationsByCompany.map((lo) => lo?._id);
+      }
+    } else {
+      newLocations = locationIsSelected;
+    }
+    company = [...new Set(company.map((s) => s))];
+    // For owners to display all locations (includes child companies)
     if (location.length === 0 && isOwnerCheck) {
-      newLocations = listLocationsByCompany.map((lo) => lo?._id);
       company = listLocationsByCompany.map((lo) => lo?.company?._id);
       company = [...new Set(company.map((s) => s))];
     }
@@ -357,24 +367,35 @@ class DirectoryComponent extends PureComponent {
     const {
       tabList: { active, myTeam, inActive },
     } = this.state;
+
+    const locationIsSelected = [getCurrentLocation()];
     const { dispatch } = this.props;
     const { listLocationsByCompany } = this.state;
     const { name, department, location, employeeType } = params;
-    let newLocations = [...location];
     let company = [];
+    let newLocations = [...location];
+    const isOwnerCheck = isOwner();
 
-    listLocationsByCompany.forEach((loc) => {
-      const { _id = '', company: { _id: parentId = '' } = {} } = loc;
-      if (newLocations.includes(_id)) {
-        company = [...company, parentId];
+    if (
+      locationIsSelected.length === 0 ||
+      locationIsSelected.includes('undefined') ||
+      locationIsSelected.includes(null)
+    ) {
+      listLocationsByCompany.forEach((loc) => {
+        const { _id = '', company: { _id: parentId = '' } = {} } = loc;
+        if (newLocations.includes(_id)) {
+          company = [...company, parentId];
+        }
+      });
+      if (location.length === 0 && isOwnerCheck) {
+        newLocations = listLocationsByCompany.map((lo) => lo?._id);
       }
-    });
-
+    } else {
+      newLocations = locationIsSelected;
+    }
     company = [...new Set(company.map((s) => s))];
     // For owners to display all locations (includes child companies)
-    const isOwnerCheck = isOwner();
     if (location.length === 0 && isOwnerCheck) {
-      newLocations = listLocationsByCompany.map((lo) => lo?._id);
       company = listLocationsByCompany.map((lo) => lo?.company?._id);
       company = [...new Set(company.map((s) => s))];
     }
@@ -386,6 +407,7 @@ class DirectoryComponent extends PureComponent {
       location: newLocations,
       employeeType,
     };
+
     if (tabId === active) {
       dispatch({
         type: 'employee/fetchListEmployeeActive',
