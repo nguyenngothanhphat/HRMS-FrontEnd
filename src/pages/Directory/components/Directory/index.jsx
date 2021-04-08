@@ -19,14 +19,22 @@ import TableFilter from '../TableFilter';
 
 const { Content } = Layout;
 const { TabPane } = Tabs;
-@connect(({ loading, employee, user: { currentUser = {}, permissions = {} } }) => ({
-  loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
-  loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
-  loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
-  employee,
-  currentUser,
-  permissions,
-}))
+@connect(
+  ({
+    loading,
+    locationSelection: { listLocationsByCompany = [] } = {},
+    employee,
+    user: { currentUser = {}, permissions = {} },
+  }) => ({
+    loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
+    loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
+    loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
+    employee,
+    currentUser,
+    permissions,
+    listLocationsByCompany,
+  }),
+)
 class DirectoryComponent extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if ('employee' in nextProps) {
@@ -93,22 +101,22 @@ class DirectoryComponent extends PureComponent {
     // *: error tenant
     // this.fetchApprovalFlowList();
 
-    const tenantId = getCurrentTenant();
-    const company = getCurrentCompany();
+    // const tenantId = getCurrentTenant();
+    // const company = getCurrentCompany();
 
-    if (company) {
-      dispatch({
-        type: 'employee/fetchLocation',
-        payload: { company, tenantId },
-      });
-    }
+    // if (company) {
+    //   dispatch({
+    //     type: 'employee/fetchLocation',
+    //     payload: { company, tenantId },
+    //   });
+    // }
 
-    const currentLocation = getCurrentLocation();
-    if (currentLocation && currentLocation !== 'undefined') {
-      this.setState({
-        location: [currentLocation],
-      });
-    }
+    // const currentLocation = getCurrentLocation();
+    // if (currentLocation && currentLocation !== 'undefined') {
+    //   this.setState({
+    //     location: [currentLocation],
+    //   });
+    // }
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -221,15 +229,19 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderHrTeam = () => {
-    const { dispatch, permissions = {} } = this.props;
-    const company = getCurrentCompany();
+    const { dispatch, permissions = {}, listLocationsByCompany = [] } = this.props;
+    let company = [getCurrentCompany()];
 
     const isOwnerCheck = isOwner();
-    let location = getCurrentLocation();
+    let location = [getCurrentLocation()];
+
+    // For owners to display all locations (includes child companies)
     if (isOwnerCheck) {
-      if (!location || location === 'undefined') {
-        location = null;
+      if (!location || location.includes('undefined')) {
+        location = listLocationsByCompany.map((lo) => lo?._id);
       }
+      company = listLocationsByCompany.map((lo) => lo?.company?._id);
+      company = [...new Set(company.map((s) => s))];
     }
 
     const viewTabActive = permissions.viewTabActive !== -1;
@@ -245,8 +257,8 @@ class DirectoryComponent extends PureComponent {
     dispatch({
       type: 'employee/fetchListEmployeeActive',
       payload: {
-        company: [company],
-        location: location ? [location] : [],
+        company,
+        location,
       },
     });
     // }
@@ -282,12 +294,30 @@ class DirectoryComponent extends PureComponent {
     const {
       tabList: { active, myTeam, inActive },
     } = this.state;
-    const { dispatch } = this.props;
-    const company = getCurrentCompany();
+    const { dispatch, listLocationsByCompany = [] } = this.props;
 
     const { name, department, location, employeeType } = params;
+    let newLocations = [...location];
+    let company = [];
+
+    listLocationsByCompany.forEach((loc) => {
+      const { _id = '', company: { _id: parentId = '' } = {} } = loc;
+      if (newLocations.includes(_id)) {
+        company = [...company, parentId];
+      }
+    });
+
+    company = [...new Set(company.map((s) => s))];
+    // For owners to display all locations (includes child companies)
+    const isOwnerCheck = isOwner();
+    if (location.length === 0 && isOwnerCheck) {
+      newLocations = listLocationsByCompany.map((lo) => lo?._id);
+      company = listLocationsByCompany.map((lo) => lo?.company?._id);
+      company = [...new Set(company.map((s) => s))];
+    }
+
     const payload = {
-      company: [company],
+      company,
       name,
       department,
       location,
@@ -317,16 +347,32 @@ class DirectoryComponent extends PureComponent {
     const {
       tabList: { active, myTeam, inActive },
     } = this.state;
-    const { dispatch } = this.props;
-    const company = getCurrentCompany();
-    // const location = getCurrentLocation();
+    const { dispatch, listLocationsByCompany = [] } = this.props;
+    const { name, department, location, employeeType } = params;
+    let newLocations = [...location];
+    let company = [];
 
-    const { name, department, employeeType, location } = params;
+    listLocationsByCompany.forEach((loc) => {
+      const { _id = '', company: { _id: parentId = '' } = {} } = loc;
+      if (newLocations.includes(_id)) {
+        company = [...company, parentId];
+      }
+    });
+
+    company = [...new Set(company.map((s) => s))];
+    // For owners to display all locations (includes child companies)
+    const isOwnerCheck = isOwner();
+    if (location.length === 0 && isOwnerCheck) {
+      newLocations = listLocationsByCompany.map((lo) => lo?._id);
+      company = listLocationsByCompany.map((lo) => lo?.company?._id);
+      company = [...new Set(company.map((s) => s))];
+    }
+
     const payload = {
-      company: [company],
+      company,
       name,
       department,
-      location,
+      location: newLocations,
       employeeType,
     };
     if (tabId === active) {

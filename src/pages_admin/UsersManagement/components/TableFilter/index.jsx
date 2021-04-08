@@ -1,12 +1,14 @@
 import React, { PureComponent } from 'react';
 import { Layout, Input } from 'antd';
 import { connect, formatMessage } from 'umi';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { filteredArr } from '@/utils/utils';
 import styles from './index.less';
 import CheckList from '../CheckList';
 
-@connect(({ usersManagement }) => ({
+@connect(({ usersManagement, locationSelection: { listLocationsByCompany = [] } = {} }) => ({
   usersManagement,
+  listLocationsByCompany,
 }))
 class TableFilter extends PureComponent {
   constructor(props) {
@@ -24,9 +26,13 @@ class TableFilter extends PureComponent {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch({
-      type: 'usersManagement/fetchLocationList',
-    });
+    // location list is already fetched
+    // const tenantId = getCurrentTenant();
+    // const companyId = getCurrentCompany();
+    // dispatch({
+    //   type: 'usersManagement/fetchLocationList',
+    //   payload: { company: companyId, tenantId },
+    // });
     dispatch({
       type: 'usersManagement/fetchRoleList',
     });
@@ -63,12 +69,13 @@ class TableFilter extends PureComponent {
     const { locationState, companyState, all, roleState, text, reset } = this.state;
     const {
       usersManagement: { location = [], company = [], roles = [], clearName = false },
+      listLocationsByCompany,
       collapsed,
       changeTab,
     } = this.props;
 
-    const formatDataLocation = location.map((item) => {
-      const { name: label, id: value } = item;
+    const formatDataLocation = listLocationsByCompany.map((item) => {
+      const { name: label, _id: value } = item;
       return {
         label,
         value,
@@ -144,7 +151,7 @@ class TableFilter extends PureComponent {
                 key={locationState}
                 name={locationState}
                 all={all}
-                data={formatDataLocation}
+                data={filteredArr(formatDataLocation)}
               />
             )}
           </div>

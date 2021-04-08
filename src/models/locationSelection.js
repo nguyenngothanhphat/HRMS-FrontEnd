@@ -1,7 +1,7 @@
 // import { history } from 'umi';
 import { setCurrentLocation, getCurrentLocation, isOwner } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
-import getLocationListByCompany from '../services/locationSelection';
+import {getLocationListByCompany,getLocationListByParentCompany} from '../services/locationSelection';
 
 const LocationSelection = {
   namespace: 'locationSelection',
@@ -37,11 +37,28 @@ const LocationSelection = {
         return [];
       }
     },
-    *fetchLocationsOfChildCompany({ payload }, { call }) {
+    *fetchLocationListByParentCompany({ payload }, { call, put }) {
       try {
-        const res = yield call(getLocationListByCompany, payload);
+        const res = yield call(getLocationListByParentCompany, payload);
         const { statusCode, data = [] } = res;
+
         if (statusCode !== 200) throw res;
+        yield put({
+          type: 'save',
+          payload: { listLocationsByCompany: data },
+        });
+        if (!isOwner) {
+          const currentLocation = getCurrentLocation();
+          if (!currentLocation || currentLocation === 'undefined') {
+            const hasHeadQuarter = data.find((value) => value?.isHeadQuarter);
+            if (hasHeadQuarter) {
+              setCurrentLocation(hasHeadQuarter._id);
+            } else {
+              setCurrentLocation(data.length > 0 ? data[0]?._id : '');
+            }
+          }
+        }
+
         return data;
       } catch (errors) {
         dialog(errors);

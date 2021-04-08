@@ -14,6 +14,13 @@ export async function LocationFilter(payload) {
   });
 }
 
+export async function LocationOwnerFilter(payload) {
+  return request('/api/locationtenant/list-by-company-parent', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function EmployeeTypeFilter(payload) {
   return request('/api/employeetype/list', {
     method: 'POST',
