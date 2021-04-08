@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import { Modal, Button, Form, Select, message, Result } from 'antd';
 import { connect } from 'umi';
 import _ from 'lodash';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentTenant } from '@/utils/authority';
 import moment from 'moment';
 import ImportCSV from '@/components/ImportCSV';
 import exportToCsv from '@/utils/exportToCsv';
@@ -114,7 +114,7 @@ class ModalImportEmployee extends Component {
           style: {
             marginTop: '20vh',
           },
-          duration: 2,
+          duration: 3,
         });
       } else {
         listEmployeesTenant.newList.map((item) => {
@@ -259,6 +259,7 @@ class ModalImportEmployee extends Component {
       type: 'employeesManagement/importEmployeesTenant',
       payload,
     }).then(() => {
+      this.setState({ company: '' });
       handleCancel();
     });
   };
