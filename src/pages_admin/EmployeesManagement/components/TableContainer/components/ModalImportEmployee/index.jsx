@@ -2,7 +2,7 @@
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
-import { Modal, Button, Form, Select } from 'antd';
+import { Modal, Button, Form, Select, message, Result } from 'antd';
 import { connect } from 'umi';
 import _ from 'lodash';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -98,6 +98,25 @@ class ModalImportEmployee extends Component {
         };
       });
       const exportData = [...listEmployeesTenant.newList, ...existList];
+
+      if (!_.isEmpty(existList)) {
+        message.error({
+          icon: <div style={{ display: 'none' }} />,
+          content: <Result status="error" title="Added employees failure !" />,
+          style: {
+            marginTop: '20vh',
+          },
+        });
+      } else {
+        message.success({
+          icon: <div style={{ display: 'none' }} />,
+          content: <Result status="success" title="Added employees successfully !" />,
+          style: {
+            marginTop: '20vh',
+          },
+        });
+      }
+
       exportToCsv('Result_Import_Employees.csv', this.processData(exportData));
     }
   }
