@@ -42,14 +42,8 @@ export async function getListEmployeeMyTeam(payload) {
   });
 }
 
-export async function getListEmployeeActive(payload) {
-  return request('/api/employeetenant/list-active', {
-    method: 'POST',
-    data: payload,
-  });
-}
-export async function getListEmployeeInActive(payload) {
-  return request('/api/employeetenant/list-inactive', {
+export async function getListEmployee(payload) {
+  return request('/api/employeetenant/list', {
     method: 'POST',
     data: payload,
   });
