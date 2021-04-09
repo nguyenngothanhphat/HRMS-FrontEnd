@@ -107,6 +107,13 @@ class WorkLocations extends PureComponent {
         type: 'adminApp/fetchLocationList',
         payload: { company: companyId, tenantId },
       });
+      dispatch({
+        type: 'locationSelection/fetchLocationListByParentCompany',
+        payload: {
+          company: companyId,
+          tenantId,
+        },
+      });
     }
   };
 

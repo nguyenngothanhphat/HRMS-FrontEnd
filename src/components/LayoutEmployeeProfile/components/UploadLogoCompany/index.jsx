@@ -10,11 +10,12 @@ import s from './index.less';
     loading,
     user: { currentUser = {} } = {},
     companiesManagement: {
-      originData: { companyDetails: { company: { logoUrl = '' } = {} } } = {},
+      originData: { companyDetails = {}, companyDetails: { company: { logoUrl = '' } = {} } } = {},
     } = {},
   }) => ({
     currentUser,
     logoUrl,
+    companyDetails,
     loadingUpdate: loading.effects['companiesManagement/updateCompany'],
   }),
 )
@@ -40,13 +41,16 @@ class UploadLogoCompany extends Component {
 
   getResponse = (resp) => {
     const { statusCode, data = [] } = resp;
-    const { dispatch, companyDetails: { _id: id = '' } = {} } = this.props;
+    const {
+      dispatch,
+      companyDetails: { company: { _id: id = '', tenant = '' } = {} } = {},
+    } = this.props;
     if (statusCode === 200) {
       const [first] = data;
       if (id) {
         dispatch({
           type: 'companiesManagement/updateCompany',
-          payload: { id, logoUrl: first?.url },
+          payload: { id, tenantId: tenant, logoUrl: first?.url },
           dataTempKept: {},
           isAccountSetup: true,
         }).then(({ statusCode: check }) => {
