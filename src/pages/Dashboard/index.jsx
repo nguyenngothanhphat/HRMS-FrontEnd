@@ -49,6 +49,7 @@ const listQuickLinks = [
     offboarding: { listProjectByEmployee = [] } = {},
     frequentlyAskedQuestions: { getListByCompany = {} } = {},
     locationSelection,
+    locationSelection: { listLocationsByCompany = [] } = {},
   }) => ({
     fetchMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
     fetchListProject: loading.effects['offboarding/getListProjectByEmployee'],
@@ -58,6 +59,7 @@ const listQuickLinks = [
     listProjectByEmployee,
     getListByCompany,
     locationSelection,
+    listLocationsByCompany,
   }),
 )
 class Dashboard extends PureComponent {
@@ -70,13 +72,14 @@ class Dashboard extends PureComponent {
 
   componentDidMount = async () => {
     const {
-      dispatch,
+      // dispatch,
       //   currentUser: {
       //     location: { _id: locationId = '' } = {},
       //     company: { _id: companyId = '' } = {},
       //     employee: { _id: employee = '' } = {},
       //     company: { _id: idCompany = '' } = {},
       //   } = {},
+      listLocationsByCompany = [],
     } = this.props;
     // dispatch({
     //   type: 'employee/fetchListEmployeeMyTeam',
@@ -91,9 +94,6 @@ class Dashboard extends PureComponent {
     //   },
     // });
 
-    const companyId = getCurrentCompany();
-    const tenantId = getCurrentTenant();
-
     // dispatch({
     //   type: 'frequentlyAskedQuestions/getListInit',
     // }).then(
@@ -102,15 +102,8 @@ class Dashboard extends PureComponent {
     //     payload: { company: companyId },
     //   }),
     // );
-    const locations = await dispatch({
-      type: 'locationSelection/fetchLocationsByCompany',
-      payload: {
-        company: companyId,
-        tenantId,
-      },
-    });
     const currentLocation = getCurrentLocation();
-    const locationName = locations.find((item) => item._id === currentLocation);
+    const locationName = listLocationsByCompany.find((item) => item._id === currentLocation);
     this.setState({
       currentLocation: locationName?.name || '',
     });
