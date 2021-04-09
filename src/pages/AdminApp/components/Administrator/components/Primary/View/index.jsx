@@ -11,7 +11,7 @@ import styles from './index.less';
 @connect(
   ({
     companiesManagement: {
-      tempData: { companyDetails: { company: { name: companyName = '' } = {} } = {} } = {},
+      originData: { companyDetails: { company: { name: companyName = '' } = {} } = {} } = {},
     } = {},
   }) => ({
     companyName,
