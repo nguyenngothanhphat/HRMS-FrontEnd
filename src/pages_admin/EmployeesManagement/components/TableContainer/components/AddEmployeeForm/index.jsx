@@ -22,6 +22,7 @@ const { Option } = Select;
       reportingManagerList = [],
       statusAddEmployee,
     },
+    user: { companiesOfUser = [] } = {},
   }) => ({
     rolesList,
     companyList,
@@ -30,6 +31,7 @@ const { Option } = Select;
     jobTitleList,
     reportingManagerList,
     statusAddEmployee,
+    companiesOfUser,
     loadingCompanyList: loading.effects['employeesManagement/fetchCompanyList'],
     loadingDepartment: loading.effects['employeesManagement/fetchDepartmentList'],
     loadingLocation: loading.effects['employeesManagement/fetchLocationList'],
@@ -86,26 +88,29 @@ class AddEmployeeForm extends Component {
   }
 
   fetchData = (_id) => {
-    const { dispatch } = this.props;
-    const tenantId = localStorage.getItem('tenantId');
+    const { dispatch, companiesOfUser = [] } = this.props;
+
+    const companyMatch = companiesOfUser.find((item) => item._id === _id);
+    const tenantLocation = companyMatch.tenant;
+
     dispatch({
       type: 'employeesManagement/fetchReportingManagerList',
       payload: {
-        tenantId,
-        company: _id,
+        tenantId: tenantLocation,
+        company: [_id],
       },
     });
     dispatch({
       type: 'employeesManagement/fetchLocationList',
       payload: {
-        tenantId,
+        tenantId: tenantLocation,
         company: _id,
       },
     });
     dispatch({
       type: 'employeesManagement/fetchDepartmentList',
       payload: {
-        tenantId,
+        tenantId: tenantLocation,
         company: _id,
       },
     });
@@ -430,7 +435,7 @@ class AddEmployeeForm extends Component {
             className={styles.reportingManager}
             label={formatMessage({ id: 'addEmployee.manager' })}
             name="manager"
-            rules={[{ required: false }]}
+            rules={[{ required: true }]}
           >
             <Select
               autoComplete="dontshow"
