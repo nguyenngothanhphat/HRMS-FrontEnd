@@ -22,6 +22,7 @@ const { Option } = Select;
       reportingManagerList = [],
       statusAddEmployee,
     },
+    user: { companiesOfUser = [] } = {},
   }) => ({
     rolesList,
     companyList,
@@ -30,6 +31,8 @@ const { Option } = Select;
     jobTitleList,
     reportingManagerList,
     statusAddEmployee,
+    companiesOfUser,
+    loadingCompanyList: loading.effects['employeesManagement/fetchCompanyList'],
     loadingDepartment: loading.effects['employeesManagement/fetchDepartmentList'],
     loadingLocation: loading.effects['employeesManagement/fetchLocationList'],
     loadingTitle: loading.effects['employeesManagement/fetchJobTitleList'],
@@ -85,22 +88,29 @@ class AddEmployeeForm extends Component {
   }
 
   fetchData = (_id) => {
-    const { dispatch } = this.props;
+    const { dispatch, companiesOfUser = [] } = this.props;
+
+    const companyMatch = companiesOfUser.find((item) => item._id === _id);
+    const tenantLocation = companyMatch.tenant;
+
     dispatch({
       type: 'employeesManagement/fetchReportingManagerList',
       payload: {
-        company: _id,
+        tenantId: tenantLocation,
+        company: [_id],
       },
     });
     dispatch({
       type: 'employeesManagement/fetchLocationList',
       payload: {
+        tenantId: tenantLocation,
         company: _id,
       },
     });
     dispatch({
       type: 'employeesManagement/fetchDepartmentList',
       payload: {
+        tenantId: tenantLocation,
         company: _id,
       },
     });
@@ -149,7 +159,7 @@ class AddEmployeeForm extends Component {
     const { handleCancel, dispatch, company } = this.props;
     let isDisabled = true;
     let payload = {
-      companyList: [],
+      listCompany: [],
       departmentList: [],
       locationList: [],
       jobTitleList: [],
@@ -159,7 +169,7 @@ class AddEmployeeForm extends Component {
     if (company !== '') {
       isDisabled = false;
       payload = {
-        companyList: [],
+        listCompany: [],
         statusAddEmployee: false,
       };
     }
@@ -179,9 +189,11 @@ class AddEmployeeForm extends Component {
   handleChangeAddEmployee = () => {};
 
   handleSubmitEmployee = (values) => {
+    const tenantId = localStorage.getItem('tenantId');
     const { dispatch } = this.props;
     const payload = {
       ...values,
+      tenantId,
       joinDate: moment(values.joinDate).format('MM.DD.YY'),
     };
     dispatch({
