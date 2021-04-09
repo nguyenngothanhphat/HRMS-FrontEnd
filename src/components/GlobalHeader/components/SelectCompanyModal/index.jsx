@@ -58,10 +58,12 @@ class SelectCompanyModal extends PureComponent {
                 </div>
                 <span className={styles.name}>
                   {name} {country ? `(${country})` : ''}{' '}
-                  {currentCompany === _id && <span className={styles.currentText}>(Current)</span>}
                 </span>
               </div>
-              <div className={styles.rightPart}>{activeCompany === _id && <RightOutlined />}</div>
+              <div className={styles.rightPart}>
+                {activeCompany === _id && currentCompany !== _id && <RightOutlined />}
+                {currentCompany === _id && <span className={styles.currentText}>Current</span>}
+              </div>
             </div>
           );
         })}
@@ -99,7 +101,7 @@ class SelectCompanyModal extends PureComponent {
       });
 
       if (isOwner()) {
-        await this.wait(1000).then(() =>
+        await this.wait(500).then(() =>
           this.setState({
             loadingSwitch: false,
           }),
@@ -118,7 +120,7 @@ class SelectCompanyModal extends PureComponent {
           });
           setAuthority(formatArrRoles);
         }
-        await this.wait(1000).then(() =>
+        await this.wait(500).then(() =>
           this.setState({
             loadingSwitch: false,
           }),
@@ -155,10 +157,18 @@ class SelectCompanyModal extends PureComponent {
             >
               Switch
             </Button>
-            <Button className={styles.cancelBtn} onClick={() => history.push('/control-panel')}>
-              Go to Control Panel
+            <Button
+              disabled={loadingSwitch}
+              className={styles.cancelBtn}
+              onClick={() => history.push('/control-panel')}
+            >
+              Control Panel
             </Button>
-            <Button className={styles.cancelBtn} onClick={() => onClose(false)}>
+            <Button
+              disabled={loadingSwitch}
+              className={styles.cancelBtn}
+              onClick={() => onClose(false)}
+            >
               Cancel
             </Button>
           </div>

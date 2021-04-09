@@ -44,7 +44,7 @@ class ItemCompany extends PureComponent {
     });
 
     if (isOwner) {
-      await this.wait(1000).then(() =>
+      await this.wait(500).then(() =>
         this.setState({
           loadingGoToDashboard: false,
         }),
@@ -63,7 +63,7 @@ class ItemCompany extends PureComponent {
         });
         setAuthority(formatArrRoles);
       }
-      await this.wait(1000, false).then(() =>
+      await this.wait(500, false).then(() =>
         this.setState({
           loadingGoToDashboard: false,
         }),

@@ -167,7 +167,7 @@ class CompanyDetails extends Component {
       },
       locations: [
         {
-          name,
+          name: 'Headquarter',
           headQuarterAddress: {
             addressLine1: headquarterAddressLine1,
             addressLine2: headquarterAddressLine2,

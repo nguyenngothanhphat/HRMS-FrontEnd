@@ -57,6 +57,36 @@
       }
     }
   }
+  .companiesContainer {
+    .searchBox {
+      margin-bottom: 14px;
+      .searchText {
+        font-weight: 700;
+        font-size: 16px;
+        display: block;
+        color: #161c29;
+        margin-bottom: 10px;
+      }
+      .searchInput {
+        width: 60%;
+      }
+      :global {
+        .ant-input:focus {
+          border-color: #2c6df9;
+          outline: 0;
+          box-shadow: unset;
+        }
+        .ant-input {
+          border-radius: 5px !important;
+          // min-height: 42px !important;
+          font-size: 13px;
+        }
+        .ant-input {
+          padding: 10px;
+        }
+      }
+    }
+  }
   .text {
     margin: 40px 0 14px 0;
     color: #161c29;

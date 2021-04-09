@@ -39,7 +39,7 @@ class TableFilter extends PureComponent {
     const company = getCurrentCompany();
     const checkIsOwner = isOwner();
 
-    if (company) {
+    if (company && company !== 'undefined') {
       dispatch({
         type: checkIsOwner ? 'employee/fetchOwnerLocation' : 'employee/fetchLocation',
         // type: 'employee/fetchLocation',
@@ -104,6 +104,28 @@ class TableFilter extends PureComponent {
       );
     }
     return '';
+  };
+
+  handleCheckShowDepartment = (formatDataDepartment, departmentState, all) => {
+    const { tabName } = this.props;
+    const checkIsOwner = isOwner();
+    const currentLocation = getCurrentLocation();
+
+    if (
+      checkIsOwner &&
+      (!currentLocation || currentLocation === 'undefined') &&
+      (tabName === 'active' || tabName === 'inActive')
+    ) {
+      return '';
+    }
+    return (
+      <CheckBoxForms
+        key={departmentState}
+        name={departmentState}
+        all={all}
+        data={filteredArr(formatDataDepartment)}
+      />
+    );
   };
 
   render() {
@@ -189,20 +211,20 @@ class TableFilter extends PureComponent {
                     data={filteredArr(formatDataEmployeeType)}
                   />
                 )}
-                {reset || changeTab ? (
-                  ''
-                ) : (
-                  <CheckBoxForms
-                    key={departmentState}
-                    name={departmentState}
-                    all={all}
-                    data={filteredArr(formatDataDepartment)}
-                  />
-                )}
-                {/* {reset || changeTab
+                {reset || changeTab
                   ? ''
-                  : this.handleCheckShowLocation(formatDataLocation, locationState, all)} */}
-                {this.handleCheckShowLocation(formatDataLocation, locationState, all)}
+                  : // <CheckBoxForms
+                    //   key={departmentState}
+                    //   name={departmentState}
+                    //   all={all}
+                    //   data={filteredArr(formatDataDepartment)}
+                    // />
+                    this.handleCheckShowDepartment(formatDataDepartment, departmentState, all)}
+
+                {reset || changeTab
+                  ? ''
+                  : this.handleCheckShowLocation(formatDataLocation, locationState, all)}
+                {/* {this.handleCheckShowLocation(formatDataLocation, locationState, all)} */}
               </>
             )}
           </div>
