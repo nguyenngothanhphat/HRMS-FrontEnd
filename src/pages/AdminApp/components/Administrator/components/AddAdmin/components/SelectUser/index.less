@@ -70,7 +70,7 @@
           }
           .ant-select-selection-item {
             align-items: center !important;
-            height: 30px !important;
+            // height: 30px !important;
           }
           .ant-input:focus,
           .ant-picker-focused {
@@ -93,7 +93,7 @@
           }
 
           .ant-select-selector {
-            height: 42px !important;
+            min-height: 42px !important;
             padding-top: 5px !important;
             font-size: 14px;
             border-radius: 5px !important;
@@ -101,6 +101,11 @@
 
           .ant-select-selection-search-input {
             padding-top: 10px !important;
+          }
+          .ant-select-multiple {
+            .ant-select-selection-search-input {
+              padding-top: 0 !important;
+            }
           }
         }
       }

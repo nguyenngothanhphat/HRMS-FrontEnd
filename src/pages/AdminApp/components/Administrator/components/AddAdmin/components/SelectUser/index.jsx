@@ -5,7 +5,9 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
-@connect()
+@connect(({ locationSelection: { listLocationsByCompany = [] } }) => ({
+  listLocationsByCompany,
+}))
 class SelectUser extends PureComponent {
   formRef = React.createRef();
 
@@ -68,7 +70,7 @@ class SelectUser extends PureComponent {
   onFinish = (values) => {
     const { onContinue = () => {} } = this.props;
     let payload = {};
-    const { isCompanyWorker, usermapId } = values;
+    const { isCompanyWorker, usermapId, location = [] } = values;
     if (isCompanyWorker) {
       const { listUsers } = this.state;
       const userObj = listUsers.find((user) => user?._id === usermapId);
@@ -77,6 +79,7 @@ class SelectUser extends PureComponent {
         isCompanyWorker,
         name1: userObj?.usermap.firstName,
         email: userObj?.usermap.email,
+        location,
         usermapId,
       };
     } else {
@@ -89,9 +92,14 @@ class SelectUser extends PureComponent {
     const { isCompanyWorker, listUsers } = this.state;
     const {
       companyName = '',
-      onBackValues: { firstName = '', email = '', usermapId = '' } = {},
+      onBackValues: { firstName = '', email = '', usermapId = '', location = [] } = {},
+      listLocationsByCompany = [],
     } = this.props;
 
+    const formatListLocation = listLocationsByCompany.filter((loc) => {
+      const { company: { _id = '' } = {} } = loc;
+      return _id === getCurrentCompany();
+    });
     return (
       <div className={styles.assignUser}>
         <Form
@@ -103,11 +111,12 @@ class SelectUser extends PureComponent {
             firstName,
             email: usermapId ? null : email,
             usermapId: usermapId === '' ? null : usermapId,
+            location,
           }}
           onFinish={this.onFinish}
         >
           <Row gutter={[24, 24]}>
-            <Col span={8}>
+            <Col span={8} style={{ marginTop: '3px' }}>
               <span>{companyName} Worker?</span>
             </Col>
             <Col span={16}>
@@ -183,6 +192,30 @@ class SelectUser extends PureComponent {
               </Row>
             </>
           )}
+          <Row align="top" gutter={[24, 24]}>
+            <Col span={8} style={{ marginTop: '8px' }}>
+              Manage location
+            </Col>
+            <Col span={14}>
+              <Form.Item
+                name="location"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please select locations',
+                  },
+                ]}
+              >
+                <Select allowClear mode="multiple" showArrow placeholder="Select locations">
+                  {formatListLocation.map((location1) => {
+                    const { name = '', _id = '' } = location1;
+                    return <Option value={_id}>{name}</Option>;
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={2} />
+          </Row>
         </Form>
       </div>
     );
