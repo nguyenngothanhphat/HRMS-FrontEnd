@@ -1,8 +1,10 @@
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined, SettingOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
 import avtDefault from '@/assets/avtDefault.jpg';
-import { Avatar, Button, notification, Skeleton } from 'antd';
+import { Avatar, Button, Skeleton, Input } from 'antd';
+
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
+import { debounce } from 'lodash';
 import ItemCompany from './components/ItemCompany';
 import s from './index.less';
 
@@ -12,6 +14,18 @@ import s from './index.less';
   loadingCompaniesOfUser: loading.effects['user/fetchCompanyOfUser'],
 }))
 class AccountSetup extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      companySearch: '',
+    };
+    this.setDebounce = debounce((companySearch) => {
+      this.setState({
+        companySearch,
+      });
+    }, 500);
+  }
+
   componentDidMount() {
     const { dispatch } = this.props;
     // clear company details
@@ -41,9 +55,24 @@ class AccountSetup extends Component {
     }
   };
 
+  onCompanySearch = (e) => {
+    // console.log('value', e);
+    const { target: { value = '' } = {} } = e;
+    this.setDebounce(value);
+  };
+
   renderCompanies = (isOwner, isAdmin) => {
+    const { companySearch: text } = this.state;
     const { companiesOfUser = [], loadingCompaniesOfUser = false } = this.props;
-    const sortedCompanyList = companiesOfUser.sort((a, b) => a.name.localeCompare(b.name));
+
+    let searchCompany = [...companiesOfUser];
+    if (text) {
+      searchCompany = companiesOfUser.filter((company) =>
+        company?.name.toLowerCase().includes(text.toLowerCase()),
+      );
+    }
+
+    const sortedCompanyList = searchCompany.sort((a, b) => a.name.localeCompare(b.name));
     if (loadingCompaniesOfUser) {
       return (
         <div>
@@ -51,9 +80,25 @@ class AccountSetup extends Component {
         </div>
       );
     }
-    return sortedCompanyList.map((comp) => {
-      return <ItemCompany company={comp} isOwner={isOwner} isAdmin={isAdmin} />;
-    });
+    return (
+      <div className={s.companiesContainer}>
+        <div className={s.searchBox}>
+          <span className={s.searchText}>Please select a company profile to proceed</span>
+          <div className={s.searchInput}>
+            <Input
+              placeholder="Search for company"
+              size="large"
+              suffix={<SearchOutlined />}
+              onChange={(e) => this.onCompanySearch(e)}
+              // onSearch={onSearch}
+            />
+          </div>
+        </div>
+        {sortedCompanyList.map((comp) => {
+          return <ItemCompany company={comp} isOwner={isOwner} isAdmin={isAdmin} />;
+        })}
+      </div>
+    );
   };
 
   checkRole = (roleName) => {
@@ -70,7 +115,7 @@ class AccountSetup extends Component {
 
     return (
       <div className={s.root}>
-        <div style={{ width: '629px' }}>
+        <div>
           <div className={s.blockUserLogin}>
             <div className={s.blockUserLogin__avt}>
               <Avatar size={56} icon={<UserOutlined />} src={avatar || avtDefault} />

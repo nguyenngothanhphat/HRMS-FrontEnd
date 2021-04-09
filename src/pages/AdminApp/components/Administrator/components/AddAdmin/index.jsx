@@ -49,7 +49,7 @@ class AddAdmin extends PureComponent {
     if (step === 2) {
       const { dispatch } = this.props;
       const { adminInfo = {} } = this.state;
-      const { firstName = '', email = '', name1 = '', usermapId = '' } = adminInfo;
+      const { firstName = '', email = '', name1 = '', usermapId = '', location = [] } = adminInfo;
       // eslint-disable-next-line no-restricted-globals
       const formatAdminRoles = values.filter((x) => isNaN(x));
       const tenantId = getCurrentTenant();
@@ -59,6 +59,7 @@ class AddAdmin extends PureComponent {
         email,
         company,
         tenantId,
+        managelocation: location,
         usermap: usermapId,
         permissionAdmin: formatAdminRoles,
       };
