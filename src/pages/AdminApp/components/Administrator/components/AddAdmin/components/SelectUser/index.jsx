@@ -209,7 +209,11 @@ class SelectUser extends PureComponent {
                 <Select allowClear mode="multiple" showArrow placeholder="Select locations">
                   {formatListLocation.map((location1) => {
                     const { name = '', _id = '' } = location1;
-                    return <Option value={_id}>{name}</Option>;
+                    return (
+                      <Option key={_id} value={_id}>
+                        {name}
+                      </Option>
+                    );
                   })}
                 </Select>
               </Form.Item>
