@@ -1,9 +1,6 @@
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
-import {
-  getCurrentTenant,
-  getCurrentCompany,
-} from '@/utils/authority';
+import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
 import {
   getPermissionList,
   addNewAdmin,
@@ -12,7 +9,7 @@ import {
   getLocationList,
   removeLocation,
   updateLocation,
-  getListUsersOfOwner
+  getListUsersOfOwner,
 } from '../services/adminApp';
 
 const country = {
@@ -23,7 +20,7 @@ const country = {
     listAdmin: [],
     updateAdmin: {},
     locationsList: [],
-    userListOfOwner: []
+    userListOfOwner: [],
   },
   effects: {
     *fetchPermissionList({ payload = {} }, { call, put }) {
@@ -91,13 +88,22 @@ const country = {
         return {};
       }
     },
-    *removeLocation({ payload = {} }, { call }) {
+    *removeLocation({ payload = {} }, { call, put }) {
       try {
         const response = yield call(removeLocation, payload);
         const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
         notification.success({
           message,
+        });
+        const companyId = getCurrentCompany();
+        const tenantId = getCurrentTenant();
+        yield put({
+          type: 'locationSelection/fetchLocationListByParentCompany',
+          payload: {
+            company: companyId,
+            tenantId,
+          },
         });
         return response;
       } catch (errors) {
@@ -118,7 +124,7 @@ const country = {
             company: companyId,
             tenantId,
           },
-        })
+        });
         return response;
       } catch (errors) {
         dialog(errors);

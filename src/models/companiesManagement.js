@@ -36,7 +36,7 @@ const companiesManagement = {
     },
     idCurrentCompany: '',
     isOpenEditWorkLocation: false,
-    selectedNewCompanyTab: 1
+    selectedNewCompanyTab: 1,
   },
   effects: {
     *fetchCompanyDetails({ payload: { id = '' }, dataTempKept = {} }, { call, put }) {
@@ -67,10 +67,10 @@ const companiesManagement = {
           type: 'saveTemp',
           payload: { companyDetails: companyDetailsTemp },
         });
-        return response
+        return response;
       } catch (errors) {
         dialog(errors);
-        return {}
+        return {};
       }
     },
 
@@ -131,9 +131,9 @@ const companiesManagement = {
             payload: { idCurrentCompany },
           });
         } else {
-          yield put({
-            type: 'user/fetchCurrent',
-          });
+          // yield put({
+          //   type: 'user/fetchCurrent',
+          // });
         }
         resp = response;
       } catch (errors) {
@@ -197,7 +197,7 @@ const companiesManagement = {
           type: 'saveOrigin',
           payload: {
             companyDetails: {
-              company: data?.company
+              company: data?.company,
             },
           },
         });
