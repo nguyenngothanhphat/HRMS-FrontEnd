@@ -1,6 +1,6 @@
 import { LogoutOutlined, SettingOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
 import avtDefault from '@/assets/avtDefault.jpg';
-import { Avatar, Button, Skeleton, Input } from 'antd';
+import { Avatar, Button, Skeleton, Input, Tooltip } from 'antd';
 
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
@@ -115,7 +115,7 @@ class AccountSetup extends Component {
 
     return (
       <div className={s.root}>
-        <div>
+        <div className={s.container}>
           <div className={s.blockUserLogin}>
             <div className={s.blockUserLogin__avt}>
               <Avatar size={56} icon={<UserOutlined />} src={avatar || avtDefault} />
@@ -129,12 +129,16 @@ class AccountSetup extends Component {
               )}
             </div>
             <div className={s.blockUserLogin__action}>
-              <SettingOutlined className={s.blockUserLogin__action__icon} />
-              <LogoutOutlined
-                onClick={this.handleLogout}
-                className={s.blockUserLogin__action__icon}
-                style={{ marginLeft: '24px' }}
-              />
+              <Tooltip title="Settings">
+                <SettingOutlined className={s.blockUserLogin__action__icon} />
+              </Tooltip>
+              <Tooltip title="Logout">
+                <LogoutOutlined
+                  onClick={this.handleLogout}
+                  className={s.blockUserLogin__action__icon}
+                  style={{ marginLeft: '24px' }}
+                />
+              </Tooltip>
             </div>
           </div>
 

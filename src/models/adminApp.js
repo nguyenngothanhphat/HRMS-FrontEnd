@@ -1,6 +1,10 @@
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import {
+  getCurrentTenant,
+  getCurrentCompany,
+} from '@/utils/authority';
+import {
   getPermissionList,
   addNewAdmin,
   getListAdmin,
@@ -101,11 +105,20 @@ const country = {
         return {};
       }
     },
-    *updateLocation({ payload = {} }, { call }) {
+    *updateLocation({ payload = {} }, { call, put }) {
       try {
         const response = yield call(updateLocation, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
+        const companyId = getCurrentCompany();
+        const tenantId = getCurrentTenant();
+        yield put({
+          type: 'locationSelection/fetchLocationListByParentCompany',
+          payload: {
+            company: companyId,
+            tenantId,
+          },
+        })
         return response;
       } catch (errors) {
         dialog(errors);

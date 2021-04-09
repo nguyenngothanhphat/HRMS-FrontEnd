@@ -322,7 +322,10 @@ class FormWorkLocationTenant extends Component {
                 <p className={s.content__viewBottom__row__textLabel}>Location Name*</p>
               </Col>
               <Col span={16}>
-                <Form.Item name="name">
+                <Form.Item
+                  rules={[{ required: true, message: 'Please input Location Name' }]}
+                  name="name"
+                >
                   <Input disabled={disableInput} placeholder="Location Name" />
                 </Form.Item>
               </Col>
@@ -333,7 +336,10 @@ class FormWorkLocationTenant extends Component {
                 <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
               </Col>
               <Col span={16}>
-                <Form.Item name="addressLine1">
+                <Form.Item
+                  rules={[{ required: true, message: 'Please input Address Line 1' }]}
+                  name="addressLine1"
+                >
                   <Input disabled={disableInput} placeholder="Address Line 1" />
                 </Form.Item>
               </Col>
@@ -353,7 +359,10 @@ class FormWorkLocationTenant extends Component {
                 <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>
                   Country*
                 </p>
-                <Form.Item name="country">
+                <Form.Item
+                  rules={[{ required: true, message: 'Please select Country' }]}
+                  name="country"
+                >
                   <Select
                     placeholder="Select Country"
                     showArrow
@@ -371,7 +380,10 @@ class FormWorkLocationTenant extends Component {
               </Col>
               <Col span={8} className={s.viewFormVertical}>
                 <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>State*</p>
-                <Form.Item name="state">
+                <Form.Item
+                  rules={[{ required: true, message: 'Please select State' }]}
+                  name="state"
+                >
                   <Select
                     placeholder="Select State"
                     showArrow
@@ -388,7 +400,10 @@ class FormWorkLocationTenant extends Component {
               </Col>
               <Col span={8} className={s.viewFormVertical}>
                 <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>Zip*</p>
-                <Form.Item name="zipCode">
+                <Form.Item
+                  rules={[{ required: true, message: 'Please input Zip Code' }]}
+                  name="zipCode"
+                >
                   <Input disabled={disableInput} placeholder="Zip Code" />
                 </Form.Item>
               </Col>

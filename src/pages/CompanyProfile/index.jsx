@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Tabs, Button, Spin } from 'antd';
+import { Tabs, Button, Spin, Affix } from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import Layout from '@/components/LayoutEmployeeProfile';
 import { connect, history } from 'umi';
@@ -88,7 +88,7 @@ class CompanyProfile extends Component {
     ];
 
     return (
-      <>
+      <div className={styles.CompanyProfile}>
         <Breadcrumb routes={routes} />
         <div className={styles.root}>
           <Tabs defaultActiveKey="1">
@@ -103,7 +103,7 @@ class CompanyProfile extends Component {
             </TabPane>
           </Tabs>
         </div>
-      </>
+      </div>
     );
   }
 }

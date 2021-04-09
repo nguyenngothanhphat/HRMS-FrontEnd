@@ -30,6 +30,18 @@ class Directory extends PureComponent {
     });
   }
 
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employee/save',
+      payload: {
+        listEmployeeMyTeam: [],
+        listEmployeeActive: [],
+        listEmployeeInActive: [],
+      },
+    });
+  };
+
   checkRoleEmployee = (roles) => {
     let flag = false;
     const { roles: rolesConst } = this.state;

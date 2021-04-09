@@ -24,7 +24,7 @@ class SelectUser extends PureComponent {
     const { handleEditAdmin = () => {} } = this.props;
     return (
       <div className={styles.titleContainer}>
-        <span className={styles.title}>Who’s your new admin?</span>
+        <span className={styles.title}>Edit Administrator</span>
         <div className={styles.cancelBtn} onClick={() => handleEditAdmin(false)}>
           <span>Cancel</span>
         </div>
@@ -63,16 +63,16 @@ class SelectUser extends PureComponent {
         >
           <Row align="middle" gutter={[24, 24]}>
             <Col span={8}>Email</Col>
-            <Col span={12}>
+            <Col span={14}>
               <Form.Item name="email">
                 <Input disabled placeholder="Administrator Email" />
               </Form.Item>
             </Col>
-            <Col span={4} />
+            <Col span={2} />
           </Row>
           <Row align="middle" gutter={[24, 24]}>
             <Col span={8}>Administrator Name</Col>
-            <Col span={12}>
+            <Col span={14}>
               <Form.Item
                 name="name"
                 rules={[
@@ -85,11 +85,11 @@ class SelectUser extends PureComponent {
                 <Input placeholder="Type name" />
               </Form.Item>
             </Col>
-            <Col span={4} />
+            <Col span={2} />
           </Row>
           <Row align="middle" gutter={[24, 24]}>
             <Col span={8}>Manage Location</Col>
-            <Col span={12}>
+            <Col span={14}>
               <Form.Item
                 name="location"
                 rules={[
@@ -123,7 +123,7 @@ class SelectUser extends PureComponent {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={4} />
+            <Col span={2} />
           </Row>
         </Form>
       </div>

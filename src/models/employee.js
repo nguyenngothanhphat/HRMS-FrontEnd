@@ -87,7 +87,7 @@ const employee = {
       { call, put },
     ) {
       try {
-        const response = yield call(getListEmployee, {
+        const response = yield call(getListEmployeeMyTeam, {
           company,
           department,
           location,

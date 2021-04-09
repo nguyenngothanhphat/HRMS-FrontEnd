@@ -194,7 +194,7 @@ class SelectUser extends PureComponent {
           )}
           <Row align="top" gutter={[24, 24]}>
             <Col span={8} style={{ marginTop: '8px' }}>
-              Manage location
+              Manage Location
             </Col>
             <Col span={14}>
               <Form.Item
@@ -206,7 +206,14 @@ class SelectUser extends PureComponent {
                   },
                 ]}
               >
-                <Select allowClear mode="multiple" showArrow placeholder="Select locations">
+                <Select
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  allowClear
+                  mode="multiple"
+                  showArrow
+                  placeholder="Select locations"
+                >
                   {formatListLocation.map((location1) => {
                     const { name = '', _id = '' } = location1;
                     return (
