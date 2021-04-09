@@ -61,8 +61,13 @@
         .leftPart,
         .rightPart {
           display: flex;
-          flex-direction: row;
+          // flex-direction: row;
+          justify-content: flex-start;
           align-items: center;
+          flex-wrap: nowrap;
+        }
+        .leftPart {
+          // max-width: 300px;
         }
         .rightPart {
           .currentText {
@@ -74,12 +79,12 @@
           background-color: #eeeeee;
         }
         .logo {
-          display: flex;
+          display: inline-flex;
           flex-direction: row;
           justify-content: center;
           align-items: center;
           background-color: white;
-          width: 30px;
+          width: 30px !important;
           height: 30px;
           overflow: hidden;
           border-radius: 50%;
@@ -88,9 +93,18 @@
           }
         }
         .name {
-          display: block;
+          max-width: 270px;
+          display: inline-block;
           margin-left: 20px;
           font-weight: 500;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .countryName {
+          display: inline-block;
+          font-weight: 500;
+          margin-left: 3px;
         }
       }
     }
