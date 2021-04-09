@@ -8,13 +8,30 @@ import s from './index.less';
 
 @connect(({ user: { currentUser: { email = '' } = {} } = {} }) => ({ email }))
 class ItemCompany extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loadingGoToDashboard: false,
+    };
+  }
+
   handleGetStarted = (tenantId, id) => {
     setTenantId(tenantId);
     setCurrentCompany(id);
     history.push(`/control-panel/company-profile/${id}`);
   };
 
+  wait = (delay, ...args) => {
+    // eslint-disable-next-line compat/compat
+    return new Promise((resolve) => {
+      setTimeout(resolve, delay, ...args);
+    });
+  };
+
   handleGoToDashboard = async (tenantId, id, isOwner) => {
+    this.setState({
+      loadingGoToDashboard: true,
+    });
     setTenantId(tenantId);
     setCurrentCompany(id);
     const { dispatch, email = '' } = this.props;
@@ -27,6 +44,11 @@ class ItemCompany extends PureComponent {
     });
 
     if (isOwner) {
+      await this.wait(1000).then(() =>
+        this.setState({
+          loadingGoToDashboard: false,
+        }),
+      );
       history.push(`/admin-app`);
     } else {
       const { statusCode, data = {} } = res;
@@ -41,6 +63,11 @@ class ItemCompany extends PureComponent {
         });
         setAuthority(formatArrRoles);
       }
+      await this.wait(1000, false).then(() =>
+        this.setState({
+          loadingGoToDashboard: false,
+        }),
+      );
       history.push(`/dashboard`);
     }
   };
@@ -65,28 +92,31 @@ class ItemCompany extends PureComponent {
       // isAdmin = false,
       company: { _id: id = '', tenant = '', name = '', logoUrl = '', headQuarterAddress = {} } = {},
     } = this.props;
-
+    const { loadingGoToDashboard } = this.state;
     const address = this.renderAddress(headQuarterAddress);
 
     return (
       <div className={s.root}>
-        <div className={s.logoCompany}>
-          <img
-            className={s.logoCompany__img}
-            src={logoUrl || logoDefault}
-            alt="logo"
-            style={logoUrl ? {} : { opacity: 0.8 }}
-          />
-        </div>
+        <div className={s.leftPart}>
+          <div className={s.logoCompany}>
+            <img
+              className={s.logoCompany__img}
+              src={logoUrl || logoDefault}
+              alt="logo"
+              style={logoUrl ? {} : { opacity: 0.8 }}
+            />
+          </div>
 
-        <div className={s.viewInfo}>
-          <p className={s.viewInfo__name}>{name}</p>
-          <p className={s.viewInfo__location}>{address}</p>
+          <div className={s.viewInfo}>
+            <p className={s.viewInfo__name}>{name}</p>
+            <p className={s.viewInfo__location}>{address}</p>
+          </div>
         </div>
         <div className={s.viewAction}>
           <Button
             className={s.btnOutline}
             onClick={() => this.handleGoToDashboard(tenant, id, isOwner)}
+            loading={loadingGoToDashboard}
           >
             Get Started
           </Button>

@@ -1,8 +1,9 @@
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
-import {getCurrentTenant} from '@/utils/authority'
+import { getCurrentTenant } from '@/utils/authority';
 import {
   LocationFilter,
+  LocationOwnerFilter,
   DepartmentFilter,
   EmployeeTypeFilter,
   getListEmployeeMyTeam,
@@ -46,16 +47,30 @@ const employee = {
         const { statusCode, data: location = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveLocation', payload: { location } });
+        return response;
       } catch (errors) {
         dialog(errors);
+        return {};
       }
     },
-    *fetchDepartment(_, { call, put }) {
+    *fetchOwnerLocation({ payload }, { call, put }) {
       try {
-        const response = yield call(DepartmentFilter);
+        const response = yield call(LocationOwnerFilter, payload);
+        const { statusCode, data: location = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveLocation', payload: { location } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *fetchDepartment({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(DepartmentFilter, payload);
         const { statusCode, data: department = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'saveDeparment', payload: { department } });
+        yield put({ type: 'saveDepartment', payload: { department } });
       } catch (errors) {
         dialog(errors);
       }
@@ -245,7 +260,7 @@ const employee = {
         ...action.payload,
       };
     },
-    saveDeparment(state, action) {
+    saveDepartment(state, action) {
       return {
         ...state,
         ...action.payload,

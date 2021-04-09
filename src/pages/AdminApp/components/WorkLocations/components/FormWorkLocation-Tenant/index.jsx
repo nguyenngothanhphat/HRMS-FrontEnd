@@ -273,7 +273,7 @@ class FormWorkLocationTenant extends Component {
               </div>
             )}
             <Row className={s.content__viewBottom__viewTitle}>
-              <p className={s.title}>{isHeadQuarter ? 'Headquater' : locationName}</p>
+              <p className={s.title}>{isHeadQuarter ? 'Headquarter' : locationName}</p>
 
               <div className={s.actionBtn}>
                 {!isEditing ? (
@@ -317,18 +317,18 @@ class FormWorkLocationTenant extends Component {
                 )}
               </div>
             </Row>
-            {isEditing && !isHeadQuarter && (
-              <Row className={s.content__viewBottom__row}>
-                <Col span={8}>
-                  <p className={s.content__viewBottom__row__textLabel}>Location Name*</p>
-                </Col>
-                <Col span={16}>
-                  <Form.Item name="name">
-                    <Input disabled={disableInput} placeholder="Location Name" />
-                  </Form.Item>
-                </Col>
-              </Row>
-            )}
+            {/* {(isHeadQuarter || isEditing) && ( */}
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>Location Name*</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item name="name">
+                  <Input disabled={disableInput} placeholder="Location Name" />
+                </Form.Item>
+              </Col>
+            </Row>
+            {/* )} */}
             <Row className={s.content__viewBottom__row}>
               <Col span={8}>
                 <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>

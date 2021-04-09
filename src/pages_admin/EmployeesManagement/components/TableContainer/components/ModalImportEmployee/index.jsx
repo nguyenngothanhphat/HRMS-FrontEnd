@@ -2,10 +2,10 @@
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
-import { Modal, Button, Form, Select } from 'antd';
+import { Modal, Button, Form, Select, Result } from 'antd';
 import { connect } from 'umi';
 import _ from 'lodash';
-import { getCurrentCompany } from '@/utils/authority';
+import { getCurrentTenant } from '@/utils/authority';
 import moment from 'moment';
 import ImportCSV from '@/components/ImportCSV';
 import exportToCsv from '@/utils/exportToCsv';
@@ -17,24 +17,32 @@ const { Option } = Select;
 @connect(
   ({
     loading,
-    employeesManagement: { companyList = [], statusImportEmployees, returnEmployeesList },
+    employeesManagement: {
+      companyList = [],
+      statusImportEmployees,
+      returnEmployeesList,
+      listEmployeesTenant = {},
+    },
   }) => ({
-    loading: loading.effects['employeesManagement/importEmployees'],
+    // loading: loading.effects['employeesManagement/importEmployees'],
+    loading: loading.effects['employeesManagement/importEmployeesTenant'],
     companyList,
     statusImportEmployees,
     returnEmployeesList,
+    listEmployeesTenant,
   }),
 )
 class ModalImportEmployee extends Component {
-  static getDerivedStateFromProps(props) {
-    if ('statusImportEmployees' in props && props.statusImportEmployees) {
-      if (props.company !== '') {
-        return { company: props.company._id };
-      }
-      return { company: '' };
-    }
-    return null;
-  }
+  // static getDerivedStateFromProps(props) {
+  //   if ('statusImportEmployees' in props && props.statusImportEmployees) {
+  //     if (props.company !== '') {
+  //       console.log('props.company: ', props.company);
+  //       return { company: props.company?._id };
+  //     }
+  //     return { company: '' };
+  //   }
+  //   return null;
+  // }
 
   constructor(props) {
     super(props);
@@ -57,13 +65,6 @@ class ModalImportEmployee extends Component {
     this.formRef = React.createRef();
   }
 
-  componentDidMount = () => {
-    const company = getCurrentCompany();
-    this.setState({
-      company,
-    });
-  };
-
   componentDidUpdate() {
     const { statusImportEmployees, dispatch } = this.props;
     if (statusImportEmployees) {
@@ -75,20 +76,21 @@ class ModalImportEmployee extends Component {
         },
       });
     }
-    const { returnEmployeesList } = this.props;
+
+    const { listEmployeesTenant } = this.props;
     if (
       statusImportEmployees &&
-      !_.isEmpty(returnEmployeesList) &&
-      (!_.isEmpty(returnEmployeesList.newList) || !_.isEmpty(returnEmployeesList.existList))
+      !_.isEmpty(listEmployeesTenant) &&
+      (!_.isEmpty(listEmployeesTenant.newList) || !_.isEmpty(listEmployeesTenant.existList))
     ) {
-      const existList = returnEmployeesList.existList.map((item) => {
+      const existList = listEmployeesTenant.existList.map((item) => {
         return {
           ...item,
           isAdded: false,
           status: '[FAILED] - Work Email existed!',
         };
       });
-      const exportData = [...returnEmployeesList.newList, ...existList];
+      const exportData = [...listEmployeesTenant.newList, ...existList];
       exportToCsv('Result_Import_Employees.csv', this.processData(exportData));
     }
   }
@@ -129,13 +131,14 @@ class ModalImportEmployee extends Component {
   };
 
   handleCancel = () => {
-    const { handleCancel, dispatch, company } = this.props;
-    this.setState({ company: company._id, employees: [] }, () => handleCancel());
+    const { handleCancel, dispatch } = this.props;
+    this.setState({ employees: [] }, () => handleCancel());
     dispatch({
       type: 'employeesManagement/save',
       payload: {
         statusImportEmployees: false,
-        returnEmployeesList: {},
+        // returnEmployeesList: {},
+        listEmployeesTenant: {},
       },
     });
   };
@@ -178,21 +181,102 @@ class ModalImportEmployee extends Component {
 
   callAPIImportCSV = () => {
     const { employees, company } = this.state;
+    const { handleCancel = () => {} } = this.props;
+    const tenantId = getCurrentTenant();
 
     const payload = {
       company,
+      tenantId,
       employees,
     };
 
     const { dispatch } = this.props;
     dispatch({
-      type: 'employeesManagement/importEmployees',
+      type: 'employeesManagement/importEmployeesTenant',
       payload,
+    }).then(() => {
+      this.setState({ company: '', employees: [] });
+      handleCancel();
+      this.modalNotification();
     });
+  };
+
+  modalNotification = () => {
+    const { listEmployeesTenant } = this.props;
+    const { newList = [], existList = [] } = listEmployeesTenant;
+    if (!_.isEmpty(existList)) {
+      Modal.error({
+        icon: <div style={{ display: 'none' }} />,
+        className: styles.modalResult,
+        content: (
+          <Result
+            status="error"
+            style={{ padding: 0, height: '200px' }}
+            title="Added employees failed !"
+            subTitle="[FAILED] - Work Email existed!"
+            extra="Please check Result_Import_Employees.csv below !"
+          />
+        ),
+      });
+    }
+
+    let notiErr = [];
+    let notiSuccess = [];
+
+    newList.forEach((item) => {
+      const { isAdded, status = '' } = item;
+      if (!isAdded && status.includes('[FAILED]')) {
+        notiErr.push(status);
+      }
+
+      if (isAdded && status.includes('[SUCCESS]')) {
+        notiSuccess.push('[SUCCESS]');
+      }
+    });
+
+    notiErr = [...new Set(notiErr)];
+    notiSuccess = [...new Set(notiSuccess)];
+
+    if (notiSuccess.length > 0) {
+      Modal.success({
+        icon: <div style={{ display: 'none' }} />,
+        className: styles.modalResult,
+        content: (
+          <Result
+            style={{ padding: 0, height: '200px' }}
+            status="success"
+            title="Added employees successfully !"
+            subTitle="Please check Result_Import_Employees.csv below !"
+          />
+        ),
+      });
+    }
+
+    if (notiErr.length > 0) {
+      Modal.error({
+        icon: <div style={{ display: 'none' }} />,
+        className: styles.modalResult,
+        content: (
+          <Result
+            status="error"
+            style={{ padding: 0, height: '200px' }}
+            title="Added employees failed !"
+            subTitle={notiErr.map((item) => item)}
+            extra="Please check Result_Import_Employees.csv below !"
+          />
+        ),
+      });
+    }
   };
 
   renderFormImport = (companyProps) => {
     const { companyList } = this.props;
+    const currentTenant = getCurrentTenant();
+
+    const renderList = () => {
+      return companyProps.filter((item) => item.tenant === currentTenant);
+    };
+
     if (companyProps) {
       return (
         <Form
@@ -202,8 +286,20 @@ class ModalImportEmployee extends Component {
           }}
         >
           <Form.Item label="Company" name="company" rules={[{ required: true }]}>
-            <Select disabled>
-              <Option value={companyProps._id}>{companyProps.name}</Option>
+            <Select
+              placeholder="Select Current Company"
+              showArrow
+              showSearch
+              onChange={(value) => this.onChangeSelect(value)}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {renderList().map((item) => (
+                <Option key={item._id} value={item._id}>
+                  {item.name}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
         </Form>
@@ -233,6 +329,7 @@ class ModalImportEmployee extends Component {
   render() {
     const { visible = false, loading, company: companyProps } = this.props;
     const { company = '', employees } = this.state;
+    console.log(employees);
     return (
       <div>
         <Modal

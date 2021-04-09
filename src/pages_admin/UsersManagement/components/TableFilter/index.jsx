@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Layout, Input } from 'antd';
 import { connect, formatMessage } from 'umi';
+import { getCurrentCompany, getCurrentTenant, isOwner } from '@/utils/authority';
 import { filteredArr } from '@/utils/utils';
 import styles from './index.less';
 import CheckList from '../CheckList';
@@ -25,13 +26,27 @@ class TableFilter extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'usersManagement/fetchLocationList',
+      type: 'employee/fetchEmployeeType',
     });
+    const tenantId = getCurrentTenant();
+    const company = getCurrentCompany();
+    const checkIsOwner = isOwner();
+
+    if (company) {
+      dispatch({
+        type: checkIsOwner
+          ? 'usersManagement/fetchOwnerLocationList'
+          : 'usersManagement/fetchLocationList',
+        // type: 'employee/fetchLocation',
+        payload: { company, tenantId },
+      });
+    }
     dispatch({
       type: 'usersManagement/fetchRoleList',
     });
     dispatch({
       type: 'usersManagement/fetchCompanyList',
+      payload: { company, tenantId },
     });
   }
 
@@ -67,10 +82,17 @@ class TableFilter extends PureComponent {
       changeTab,
     } = this.props;
 
+    const currentCompany = getCurrentCompany();
     const formatDataLocation = location.map((item) => {
-      const { name: label, id: value } = item;
+      const {
+        name: label = '',
+        _id: value = '',
+        company: { _id: parentCompId = '', name: parentCompName = '' } = {},
+      } = item;
       return {
-        label,
+        label:
+          parentCompId && currentCompany !== parentCompId ? `${parentCompName} - ${label}` : label,
+        // label,
         value,
       };
     });
@@ -144,7 +166,7 @@ class TableFilter extends PureComponent {
                 key={locationState}
                 name={locationState}
                 all={all}
-                data={formatDataLocation}
+                data={filteredArr(formatDataLocation)}
               />
             )}
           </div>

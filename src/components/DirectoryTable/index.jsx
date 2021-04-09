@@ -158,7 +158,7 @@ class DirectoryTable extends Component {
             {department ? department.name : ''}
           </span>
         ),
-        width: '10%',
+        width: '14%',
         align: 'left',
       },
       {
@@ -166,7 +166,7 @@ class DirectoryTable extends Component {
         dataIndex: 'location',
         key: 'location',
         render: (location) => <span>{location ? location.name : ''}</span>,
-        width: '8%',
+        width: '14%',
         align: 'left',
       },
       {
@@ -289,11 +289,11 @@ class DirectoryTable extends Component {
           <Table
             size="small"
             columns={this.generateColumns(sortedName, keyTab)}
-            onRow={(record) => {
-              return {
-                onClick: () => this.handleProfileEmployee(record), // click row
-              };
-            }}
+            // onRow={(record) => {
+            //   return {
+            //     onClick: () => this.handleProfileEmployee(record), // click row
+            //   };
+            // }}
             dataSource={list}
             rowKey={(record) => record._id}
             // pagination={{ ...pagination, total: list.length }}

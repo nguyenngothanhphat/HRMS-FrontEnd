@@ -61,6 +61,13 @@ export async function importEmployees(payload) {
   });
 }
 
+export async function importEmployeeTenant(payload) {
+  return request('/api/employeetenant/import', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function searchEmployees(payload) {
   return request('/api/employee/employee-list', {
     method: 'POST',

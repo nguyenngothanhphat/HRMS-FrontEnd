@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Skeleton, Select, Button, Checkbox, Row, Col } from 'antd';
 import classnames from 'classnames';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { connect } from 'umi';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import s from './index.less';
@@ -58,7 +58,7 @@ class CompanyDetails extends Component {
         countryLegal,
       });
     }
-    this.compareHeadquaterLegalAddress();
+    this.compareHeadquarterLegalAddress();
   };
 
   // componentWillUnmount = () => {
@@ -296,23 +296,23 @@ class CompanyDetails extends Component {
     }
   };
 
-  compareHeadquaterLegalAddress = () => {
+  compareHeadquarterLegalAddress = () => {
     const { companyDetails = {} } = this.props;
     const {
       company: {
         headQuarterAddress: {
-          addressLine1: headquarterAddressLine1,
-          addressLine2: headquarterAddressLine2,
-          country: countryHeadquarterProps,
-          state: stateHeadquarter,
-          zipCode: zipHeadquarter,
+          addressLine1: headquarterAddressLine1 = '',
+          addressLine2: headquarterAddressLine2 = '',
+          country: countryHeadquarterProps = '',
+          state: stateHeadquarter = '',
+          zipCode: zipHeadquarter = '',
         } = {},
         legalAddress: {
-          addressLine1: legalAddressLine1,
-          addressLine2: legalAddressLine2,
-          country: countryLegalProps,
-          state: stateLegal,
-          zipCode: zipLegal,
+          addressLine1: legalAddressLine1 = '',
+          addressLine2: legalAddressLine2 = '',
+          country: countryLegalProps = '',
+          state: stateLegal = '',
+          zipCode: zipLegal = '',
         } = {},
         // isHeadquarter,
       } = {},
@@ -333,7 +333,7 @@ class CompanyDetails extends Component {
   componentDidUpdate = (prevProps) => {
     const { companyDetails = {} } = this.props;
     if (JSON.stringify(prevProps.companyDetails) !== JSON.stringify(companyDetails)) {
-      this.compareHeadquaterLegalAddress();
+      this.compareHeadquarterLegalAddress();
     }
   };
 
@@ -389,7 +389,7 @@ class CompanyDetails extends Component {
           stateLegal,
           zipLegal,
         });
-        this.compareHeadquaterLegalAddress();
+        this.compareHeadquarterLegalAddress();
         break;
       case 3:
         this.formRef.current.setFieldsValue({
@@ -552,8 +552,9 @@ class CompanyDetails extends Component {
     };
 
     const { loadingGetCompanyDetails = false } = this.props;
-    // const checkAddresses = this.compareHeadquaterLegalAddress();
+    // const checkAddresses = this.compareHeadquarterLegalAddress();
 
+    const currentCompany = getCurrentCompany();
     return (
       <>
         {!loadingGetCompanyDetails ? (
@@ -655,7 +656,9 @@ class CompanyDetails extends Component {
                         </Option>
                         {listCompany.map((item) => (
                           <Option
-                            disabled={item._id === childOfCompany || item._id === companyId}
+                            disabled={
+                              currentCompany === item?.childOfCompany || item._id === companyId
+                            }
                             key={item._id}
                           >
                             {item.name}

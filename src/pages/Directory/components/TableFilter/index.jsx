@@ -1,7 +1,12 @@
 import React, { PureComponent } from 'react';
 import { Layout, Input } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import {
+  getCurrentCompany,
+  getCurrentLocation,
+  getCurrentTenant,
+  isOwner,
+} from '@/utils/authority';
 import { filteredArr } from '@/utils/utils';
 
 import styles from './index.less';
@@ -16,7 +21,7 @@ class TableFilter extends PureComponent {
     super(props);
     this.state = {
       EmploymentState: 'Employment Type',
-      // locationState: 'Location',
+      locationState: 'Location',
       departmentState: 'Department',
       all: 'All',
       text: '',
@@ -32,16 +37,19 @@ class TableFilter extends PureComponent {
     });
     const tenantId = getCurrentTenant();
     const company = getCurrentCompany();
+    const checkIsOwner = isOwner();
 
     if (company) {
       dispatch({
-        type: 'employee/fetchLocation',
+        type: checkIsOwner ? 'employee/fetchOwnerLocation' : 'employee/fetchLocation',
+        // type: 'employee/fetchLocation',
         payload: { company, tenantId },
       });
     }
 
     dispatch({
       type: 'employee/fetchDepartment',
+      payload: { company, tenantId },
     });
     // dispatch({
     //   type: 'employee/fetchListEmployeeMyTeam',
@@ -78,16 +86,20 @@ class TableFilter extends PureComponent {
 
   handleCheckShowLocation = (formatDataLocation, locationState, all) => {
     const { tabName, checkLocation } = this.props;
+    const checkIsOwner = isOwner();
+    const currentLocation = getCurrentLocation();
+
     if (
-      (tabName === 'active' && checkLocation > -1) ||
-      (tabName === 'inActive' && checkLocation > -1)
+      checkIsOwner &&
+      (!currentLocation || currentLocation === 'undefined') &&
+      (tabName === 'active' || tabName === 'inActive')
     ) {
       return (
         <CheckBoxForms
           key={locationState}
           name={locationState}
           all={all}
-          data={formatDataLocation}
+          data={filteredArr(formatDataLocation)}
         />
       );
     }
@@ -96,20 +108,29 @@ class TableFilter extends PureComponent {
 
   render() {
     const { Sider } = Layout;
-    const { departmentState, all, EmploymentState, text, reset } = this.state;
+    const { departmentState, all, EmploymentState, text, reset, locationState } = this.state;
     const {
-      employee: { department = [], employeetype = [], clearName = false },
+      employee: { department = [], employeetype = [], location = [], clearName = false },
       collapsed,
       changeTab,
       tabName,
     } = this.props;
-    // const formatDataLocation = location.map((item) => {
-    //   const { name: label, id: value } = item;
-    //   return {
-    //     label,
-    //     value,
-    //   };
-    // });
+
+    const currentCompany = getCurrentCompany();
+
+    const formatDataLocation = location.map((item) => {
+      const {
+        name: label = '',
+        _id: value = '',
+        company: { _id: parentCompId = '', name: parentCompName = '' } = {},
+      } = item;
+      return {
+        label:
+          parentCompId && currentCompany !== parentCompId ? `${parentCompName} - ${label}` : label,
+        // label,
+        value,
+      };
+    });
     const formatDataEmployeeType = employeetype.map((item) => {
       const { name: label, _id: value } = item;
       return {
@@ -181,6 +202,7 @@ class TableFilter extends PureComponent {
                 {/* {reset || changeTab
                   ? ''
                   : this.handleCheckShowLocation(formatDataLocation, locationState, all)} */}
+                {this.handleCheckShowLocation(formatDataLocation, locationState, all)}
               </>
             )}
           </div>

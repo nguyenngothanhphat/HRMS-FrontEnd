@@ -11,6 +11,7 @@ import {
   getRolesByEmployee,
   updateGeneralInfo,
   resetPasswordByEmail,
+  getLocationListByParentCompany
 } from '../services/usersManagement';
 
 const usersManagement = {
@@ -68,19 +69,19 @@ const usersManagement = {
         dialog(errors);
       }
     },
-    *fetchCompanyList(_, { call, put }) {
+    *fetchCompanyList({payload = {}}, { call, put }) {
       try {
-        const response = yield call(getCompanyList);
-        const { statusCode, data: company = [] } = response;
+        const response = yield call(getCompanyList, payload);
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { company } });
+        yield put({ type: 'save', payload: { company: data?.listCompany || [] } });
       } catch (errors) {
         dialog(errors);
       }
     },
-    *fetchLocationList(_, { call, put }) {
+    *fetchLocationList({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getLocationList, {});
+        const response = yield call(getLocationList, payload);
         const { statusCode, data: location = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { location } });
@@ -88,6 +89,17 @@ const usersManagement = {
         dialog(errors);
       }
     },
+    *fetchOwnerLocationList({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getLocationListByParentCompany, payload);
+        const { statusCode, data: location = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { location } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
     *fetchRoleList(_, { call, put }) {
       try {
         const response = yield call(getRoleList, {});
