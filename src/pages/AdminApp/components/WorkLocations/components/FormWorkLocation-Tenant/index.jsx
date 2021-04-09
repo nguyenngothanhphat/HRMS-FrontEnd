@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, Input, Select, Divider, Modal, Row, Col } from 'antd';
+import { Button, Form, Input, Select, Divider, Row, Col } from 'antd';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -10,7 +10,6 @@ import {
 import classnames from 'classnames';
 import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
-import { flattenDepth } from 'lodash';
 import RemoveLocationModal from '../RemoveLocationModal';
 // import { bool } from 'prop-types';
 import s from './index.less';
@@ -57,7 +56,7 @@ class FormWorkLocationTenant extends Component {
   };
 
   handleCancel = () => {
-    const { isEditing } = this.state;
+    const { isEditing, locationName } = this.state;
     this.setState({
       isEditing: !isEditing,
     });
@@ -73,7 +72,7 @@ class FormWorkLocationTenant extends Component {
       } = {},
     } = this.props;
     this.formRef.current.setFieldsValue({
-      name,
+      name: locationName || name,
       addressLine1,
       addressLine2,
       country,
@@ -362,8 +361,7 @@ class FormWorkLocationTenant extends Component {
                     disabled={disableInput}
                     onChange={this.onChangeCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {listCountry.map((item) => (
                       <Option key={item._id}>{item.name}</Option>
@@ -380,8 +378,7 @@ class FormWorkLocationTenant extends Component {
                     showSearch
                     disabled={disableInput || !newCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {listState.map((item) => (
                       <Option key={item}>{item}</Option>

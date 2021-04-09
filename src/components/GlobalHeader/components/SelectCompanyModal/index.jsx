@@ -56,9 +56,8 @@ class SelectCompanyModal extends PureComponent {
                 <div className={styles.logo}>
                   <img src={logoUrl} alt="logo" />
                 </div>
-                <span className={styles.name}>
-                  {name} {country ? `(${country})` : ''}{' '}
-                </span>
+                <span className={styles.name}>{name}</span>
+                <span className={styles.countryName}> {country && `(${country})`}</span>
               </div>
               <div className={styles.rightPart}>
                 {activeCompany === _id && currentCompany !== _id && <RightOutlined />}
