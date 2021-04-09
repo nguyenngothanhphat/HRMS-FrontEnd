@@ -10,7 +10,6 @@ import {
   getReportingManagerList,
   addEmployee,
   importEmployees,
-  importEmployeeTenant,
   searchEmployees,
   getEmployeeDetailById,
   updateEmployee,
@@ -31,7 +30,6 @@ const employeesManagement = {
     statusImportEmployees: false,
     statusAddEmployee: false,
     returnEmployeesList: {},
-    listEmployeesTenant: {},
     filter: [],
     employeeDetail: {},
     clearFilter: false,
@@ -165,6 +163,8 @@ const employeesManagement = {
       try {
         const response = yield call(getReportingManagerList, payload);
         const { statusCode, data: reportingManagerList = [] } = response;
+        console.log('payload', payload);
+        console.log('response', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { reportingManagerList } });
       } catch (errors) {
@@ -232,30 +232,6 @@ const employeesManagement = {
         dialog(errors);
         return null;
       }
-    },
-
-    // tenant
-    *importEmployeesTenant({ payload, isAccountSetup = false }, { call, put }) {
-      let statusImportEmployees = false;
-      try {
-        const response = yield call(importEmployeeTenant, payload);
-        const { statusCode, message, data: listEmployeesTenant = {} } = response;
-        if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
-        statusImportEmployees = true;
-        yield put({ type: 'save', payload: { listEmployeesTenant } });
-        if (isAccountSetup) {
-          yield put({
-            type: 'employee/fetchListEmployeeActive',
-            payload: { company: payload?.company },
-          });
-        }
-      } catch (errors) {
-        dialog(errors);
-      }
-      yield put({ type: 'save', payload: { statusImportEmployees } });
     },
   },
   reducers: {
