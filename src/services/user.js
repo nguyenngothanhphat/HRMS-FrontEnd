@@ -4,7 +4,7 @@ export async function query() {
   return request('/api/users');
 }
 export async function queryCurrent() {
-  return request('/api/employee/get-current-user', {
+  return request('/api/employeetenant/get-current-user', {
     method: 'POST',
   });
 }

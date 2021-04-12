@@ -98,6 +98,7 @@ class AddEmployeeForm extends Component {
       payload: {
         tenantId: tenantLocation,
         company: [_id],
+        status: ['ACTIVE'],
       },
     });
     dispatch({

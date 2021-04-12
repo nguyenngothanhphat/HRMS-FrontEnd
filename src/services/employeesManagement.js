@@ -41,7 +41,7 @@ export async function getJobTitleList() {
 }
 
 export async function getReportingManagerList(params) {
-  return request('/api/employeetenant/list-active', {
+  return request('/api/employeetenant/list', {
     method: 'POST',
     data: params,
   });
