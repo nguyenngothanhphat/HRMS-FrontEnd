@@ -50,6 +50,7 @@ class EditAdmin extends PureComponent {
           permissionAdmin: values,
           firstName: adminInfo.name,
           id: userID,
+          manageLocation: adminInfo.location,
         },
       }).then(() => {
         handleEditAdmin(false);
