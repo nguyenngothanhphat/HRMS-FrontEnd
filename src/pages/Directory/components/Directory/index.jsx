@@ -546,6 +546,7 @@ class DirectoryComponent extends PureComponent {
         joinDate: '11/30/2020',
         location: 'Vietnam',
         department: 'Develop',
+        employeeType: 'Full Time',
         title: 'Junior Frontend',
         workEmail: 'template@terralogic.com',
         personalEmail: 'template@gmail.com',
