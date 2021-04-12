@@ -17,13 +17,14 @@ import styles from './index.less';
 @connect(
   ({
     locationSelection: { listLocationsByCompany = [] } = {},
-    user: { companiesOfUser = [], currentUser: { roles = [] } = {} } = {},
+    user: { companiesOfUser = [], currentUser: { roles = [], manageLocation = [] } = {} } = {},
     loading,
   }) => ({
     listLocationsByCompany,
     roles,
     loadingFetchLocation: loading.effects['locationSelection/fetchLocationsByCompany'],
     companiesOfUser,
+    manageLocation,
   }),
 )
 class AvatarDropdown extends React.Component {
@@ -184,6 +185,11 @@ class AvatarDropdown extends React.Component {
     const currentLocation = getCurrentLocation();
     const currentCompany = getCurrentCompany();
     const checkIsOwner = isOwner();
+
+    // const filteredList = [...listLocationsByCompany];
+    // if (manageLocation.length !== 0) {
+    //   filteredList = filteredList.filter((location) => manageLocation.includes(location?._id));
+    // }
 
     return (
       <>
