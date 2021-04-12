@@ -1,5 +1,10 @@
 import { queryCurrent, query as queryUsers, fetchCompanyOfUser } from '@/services/user';
-import { getCurrentCompany, setCurrentLocation, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
+import {
+  getCurrentCompany,
+  setCurrentLocation,
+  getCurrentLocation,
+  getCurrentTenant,
+} from '@/utils/authority';
 
 import { history } from 'umi';
 import { checkPermissions } from '@/utils/permissions';
@@ -20,19 +25,22 @@ const UserModel = {
       });
     },
 
-    *fetchCurrent(_, { call, put }) {
+    *fetchCurrent({ refreshCompanyList = true }, { call, put }) {
       try {
-        const response = yield call(queryCurrent);
+        const company = getCurrentCompany();
+        const tenantId = getCurrentTenant();
+        const payload = {
+          company: company && company !== 'undefined' ? company : null,
+          tenantId: tenantId && tenantId !== 'undefined' ? tenantId : null,
+        };
+        const response = yield call(queryCurrent, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
 
         // if there's no tenantId and companyId, return to dashboard
-        const tenantId = getCurrentTenant();
-        const currentCompanyId = getCurrentCompany();
-        if (!tenantId || !currentCompanyId) {
+        if (!tenantId || !company) {
           history.replace('/control-panel');
         }
-
         yield put({
           type: 'saveCurrentUser',
           payload: {
@@ -53,15 +61,23 @@ const UserModel = {
         yield put({
           type: 'save',
           payload: {
-            permissions: checkPermissions(response.data.roles),
+            permissions: {
+              ...checkPermissions(response.data.permissionAdmin),
+              ...checkPermissions(response.data.permissionEmployee),
+            },
           },
         });
+
+        return response;
       } catch (errors) {
         // error
+        return {};
       } finally {
-        yield put({
-          type: 'fetchCompanyOfUser',
-        });
+        if (refreshCompanyList) {
+          yield put({
+            type: 'fetchCompanyOfUser',
+          });
+        }
       }
     },
 

@@ -3,9 +3,10 @@ import request from '@/utils/request';
 export async function query() {
   return request('/api/users');
 }
-export async function queryCurrent() {
-  return request('/api/employeetenant/get-current-user', {
+export async function queryCurrent(payload) {
+  return request('/api/usermap/get-current-user', {
     method: 'POST',
+    data: payload
   });
 }
 export async function queryNotices() {

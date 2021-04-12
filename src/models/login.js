@@ -52,7 +52,7 @@ const Model = {
           formatArrRoles = [...formatArrRoles, 'admin'];
         }
         setAuthority(formatArrRoles);
-        
+
         if (isAdminOrOwner || listCompany.length > 1) {
           history.replace('/control-panel');
         } else if (listCompany.length === 1) {
