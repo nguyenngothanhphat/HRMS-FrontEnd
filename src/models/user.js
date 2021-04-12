@@ -61,14 +61,17 @@ const UserModel = {
         yield put({
           type: 'save',
           payload: {
-            permissions: checkPermissions(response.data.roles),
+            permissions: {
+              ...checkPermissions(response.data.permissionAdmin),
+              ...checkPermissions(response.data.permissionEmployee),
+            },
           },
         });
 
-        return response
+        return response;
       } catch (errors) {
         // error
-        return {}
+        return {};
       } finally {
         if (refreshCompanyList) {
           yield put({
