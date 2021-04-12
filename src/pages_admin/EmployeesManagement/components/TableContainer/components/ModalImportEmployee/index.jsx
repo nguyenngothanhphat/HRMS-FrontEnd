@@ -206,23 +206,6 @@ class ModalImportEmployee extends Component {
   modalNotification = () => {
     const { listEmployeesTenant } = this.props;
     const { newList = [], existList = [] } = listEmployeesTenant;
-    console.log(listEmployeesTenant);
-    if (!_.isEmpty(existList) && !_.isEmpty(listEmployeesTenant)) {
-      Modal.error({
-        icon: <div style={{ display: 'none' }} />,
-        className: styles.modalResult,
-        content: (
-          <Result
-            status="error"
-            style={{ padding: 0, height: '200px' }}
-            title="Added employees failed !"
-            subTitle="[FAILED] - Work Email existed!"
-            extra="Please check Result_Import_Employees.csv below !"
-          />
-        ),
-      });
-    }
-
     let notiErr = [];
     let notiSuccess = [];
 
@@ -240,7 +223,7 @@ class ModalImportEmployee extends Component {
     notiErr = [...new Set(notiErr)];
     notiSuccess = [...new Set(notiSuccess)];
 
-    if (notiSuccess.length > 0) {
+    if (notiSuccess.length > 0 && notiErr.length === 0) {
       Modal.success({
         icon: <div style={{ display: 'none' }} />,
         className: styles.modalResult,
@@ -248,14 +231,46 @@ class ModalImportEmployee extends Component {
           <Result
             style={{ padding: 0, height: '200px' }}
             status="success"
-            title="Added employees successfully !"
+            title="Import successfully !"
             subTitle="Please check Result_Import_Employees.csv below !"
           />
         ),
       });
     }
 
-    if (notiErr.length > 0) {
+    if (notiErr.length > 0 && notiSuccess.length === 0) {
+      Modal.error({
+        icon: <div style={{ display: 'none' }} />,
+        className: styles.modalResult,
+        content: (
+          <Result
+            status="error"
+            style={{ padding: 0, height: '200px' }}
+            title="Import failed !"
+            subTitle={notiErr.map((item) => item)}
+            extra="Please check Result_Import_Employees.csv below !"
+          />
+        ),
+      });
+    }
+
+    if (notiErr.length > 0 && notiSuccess.length > 0) {
+      Modal.error({
+        icon: <div style={{ display: 'none' }} />,
+        className: styles.modalResult,
+        content: (
+          <Result
+            status="warning"
+            style={{ padding: 0, height: '200px' }}
+            title="Import not successfully !"
+            subTitle={notiErr.map((item) => item)}
+            extra="Please check Result_Import_Employees.csv below !"
+          />
+        ),
+      });
+    }
+
+    if (!_.isEmpty(existList) && !_.isEmpty(listEmployeesTenant) && notiSuccess.length === 0) {
       Modal.error({
         icon: <div style={{ display: 'none' }} />,
         className: styles.modalResult,
@@ -264,7 +279,7 @@ class ModalImportEmployee extends Component {
             status="error"
             style={{ padding: 0, height: '200px' }}
             title="Added employees failed !"
-            subTitle={notiErr.map((item) => item)}
+            subTitle="[FAILED] - Work Email existed!"
             extra="Please check Result_Import_Employees.csv below !"
           />
         ),
