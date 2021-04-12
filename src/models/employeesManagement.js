@@ -13,6 +13,7 @@ import {
   searchEmployees,
   getEmployeeDetailById,
   updateEmployee,
+  importEmployeeTenant
 } from '../services/employeesManagement';
 
 const employeesManagement = {
@@ -232,6 +233,29 @@ const employeesManagement = {
         dialog(errors);
         return null;
       }
+    },
+     // tenant
+     *importEmployeesTenant({ payload, isAccountSetup = false }, { call, put }) {
+      let statusImportEmployees = false;
+      try {
+        const response = yield call(importEmployeeTenant, payload);
+        const { statusCode, message, data: listEmployeesTenant = {} } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        statusImportEmployees = true;
+        yield put({ type: 'save', payload: { listEmployeesTenant } });
+        if (isAccountSetup) {
+          yield put({
+            type: 'employee/fetchListEmployeeActive',
+            payload: { company: payload?.company },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+      yield put({ type: 'save', payload: { statusImportEmployees } });
     },
   },
   reducers: {

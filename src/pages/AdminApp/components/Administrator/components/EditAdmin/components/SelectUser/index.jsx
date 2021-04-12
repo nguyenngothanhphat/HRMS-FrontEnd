@@ -39,8 +39,8 @@ class SelectUser extends PureComponent {
 
   renderContent = () => {
     const {
-      dataAdmin: { usermap: { firstName = '', email: email1 = '' } = {} } = {},
-      onBackValues: { name: newName = '', email: email2 = '' } = {},
+      dataAdmin: { manageLocation = [], usermap: { firstName = '', email: email1 = '' } = {} } = {},
+      onBackValues: { name: newName = '', email: email2 = '', location = [] } = {},
       listLocationsByCompany = [],
     } = this.props;
 
@@ -58,6 +58,7 @@ class SelectUser extends PureComponent {
           initialValues={{
             name: newName === '' ? firstName : newName,
             email: email1 || email2,
+            location: location.length === 0 ? manageLocation : location,
           }}
           onFinish={this.onFinish}
         >
