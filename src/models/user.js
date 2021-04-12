@@ -4,6 +4,7 @@ import {
   setCurrentLocation,
   getCurrentLocation,
   getCurrentTenant,
+  isOwner,
 } from '@/utils/authority';
 
 import { history } from 'umi';
@@ -57,13 +58,13 @@ const UserModel = {
         if (!currentLocation) {
           setCurrentLocation(response?.data?.location?._id);
         }
-
+        const checkIsOwner = isOwner();
         yield put({
           type: 'save',
           payload: {
             permissions: {
-              ...checkPermissions(response.data.permissionAdmin),
-              ...checkPermissions(response.data.permissionEmployee),
+              ...checkPermissions(response.data.permissionAdmin, checkIsOwner),
+              ...checkPermissions(response.data.permissionEmployee, checkIsOwner),
             },
           },
         });

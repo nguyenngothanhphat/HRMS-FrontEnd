@@ -14,7 +14,42 @@ export function groupPermissions(roles) {
   return permissionsUnique;
 }
 
-export function checkPermissions(roles) {
+export function checkPermissions(roles, isOwner) {
+  if (isOwner) {
+    return {
+      // Directory Page
+      viewTabActive: 1,
+      viewTabMyTeam: 1,
+      viewTabInActive: 1,
+      importEmployees: 1,
+      addEmployee: 1,
+      // Directory Page - Filter - Display location
+      filterLocationActive: 1,
+      filterLocationInActive: 1,
+      // Directory Page - Tab general info - Public/Private Personal phone/email
+      viewPersonalNumber: 1,
+      viewPersonalEmail: 1,
+      // Profile employee
+      editWorkEmail: 1,
+      editEmployeeID: 1,
+      editEmployeeInfo: 1,
+      editPersonalInfo: 1,
+      editPassportAndVisa: 1,
+      editEmergencyContact: 1,
+      editProfessionalAcademic: 1,
+      editEmployment: 1,
+      makeChangesHistory: 1,
+      viewPassportAndVisa: 1,
+      viewTabEmployment: 1,
+      viewTabPerformance: 1,
+      viewTabAccountPaychecks: 1,
+      viewTabDocument: 1,
+      viewTabTimeSchedule: 1,
+      viewTabBenefitPlans: 1,
+      // Update avatar employee
+      updateAvatarEmployee: 1,
+    };
+  }
   const permissionList = groupPermissions(roles);
   // Directory Page
   const tabActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
