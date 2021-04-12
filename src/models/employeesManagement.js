@@ -13,7 +13,7 @@ import {
   searchEmployees,
   getEmployeeDetailById,
   updateEmployee,
-  importEmployeeTenant
+  importEmployeeTenant,
 } from '../services/employeesManagement';
 
 const employeesManagement = {
@@ -234,8 +234,8 @@ const employeesManagement = {
         return null;
       }
     },
-     // tenant
-     *importEmployeesTenant({ payload, isAccountSetup = false }, { call, put }) {
+    // tenant
+    *importEmployeesTenant({ payload, isAccountSetup = false }, { call, put }) {
       let statusImportEmployees = false;
       try {
         const response = yield call(importEmployeeTenant, payload);
