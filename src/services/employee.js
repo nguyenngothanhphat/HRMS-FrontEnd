@@ -43,7 +43,7 @@ export async function getListEmployeeMyTeam(payload) {
 }
 
 export async function getListEmployeeActive(payload) {
-  return request('/api/employeetenant/list-active', {
+  return request('/api/employeetenant/list', {
     method: 'POST',
     data: payload,
   });
