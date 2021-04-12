@@ -182,8 +182,8 @@ class DirectoryComponent extends PureComponent {
   initTabId = () => {
     const { permissions = {} } = this.props;
     let tabId = 'active';
-    const viewTabActive = permissions.viewTabActive === -1 || isOwner();
-    const viewTabInActive = permissions.viewTabInActive === -1 || isOwner();
+    const viewTabActive = permissions.viewTabActive === -1;
+    const viewTabInActive = permissions.viewTabInActive === -1;
 
     if (viewTabActive) {
       tabId = 'inActive';
@@ -203,8 +203,8 @@ class DirectoryComponent extends PureComponent {
     const { dispatch, permissions = {} } = this.props;
     // const { company } = currentUser;
     const company = getCurrentCompany();
-    const viewTabActive = permissions.viewTabActive !== -1 || isOwner();
-    const viewTabInActive = permissions.viewTabInActive !== -1 || isOwner();
+    const viewTabActive = permissions.viewTabActive !== -1;
+    const viewTabInActive = permissions.viewTabInActive !== -1;
     dispatch({
       type: 'employee/fetchListEmployeeMyTeam',
       payload: {
@@ -560,8 +560,8 @@ class DirectoryComponent extends PureComponent {
     const { tabId } = this.state;
     const { permissions = {} } = this.props;
 
-    const findIndexImport = permissions.importEmployees !== -1 || isOwner();
-    const findIndexAdd = permissions.addEmployee !== -1 || isOwner();
+    const findIndexImport = permissions.importEmployees !== -1;
+    const findIndexAdd = permissions.addEmployee !== -1;
 
     return (
       <div className={styles.tabBarExtra}>
@@ -635,20 +635,21 @@ class DirectoryComponent extends PureComponent {
 
     return (
       <>
-        {(findIndexActive !== -1 || isOwner()) &&
+        {findIndexActive !== -1 &&
           this.renderTab(
             formatMessage({ id: 'pages.directory.directory.activeEmployeesTab' }),
             active,
             loadingListActive,
             findIndexShowLocationActive,
           )}
-        {((findIndexMyTeam !== -1 && !checkRoleEmployee) || isOwner()) &&
+        {findIndexMyTeam !== -1 &&
+          !checkRoleEmployee &&
           this.renderTab(
             formatMessage({ id: 'pages.directory.directory.myTeamTab' }),
             myTeam,
             loadingListMyTeam,
           )}
-        {((findIndexMyTeam !== -1 && checkRoleEmployee) || isOwner()) && (
+        {findIndexMyTeam !== -1 && checkRoleEmployee && (
           <>
             {this.renderTab(
               formatMessage({ id: 'pages.directory.directory.myTeamTab' }),
@@ -657,7 +658,7 @@ class DirectoryComponent extends PureComponent {
             )}
           </>
         )}
-        {(findIndexInActive !== -1 || isOwner()) &&
+        {findIndexInActive !== -1 &&
           this.renderTab(
             formatMessage({ id: 'pages.directory.directory.inactiveEmployeesTab' }),
             inActive,
@@ -680,6 +681,7 @@ class DirectoryComponent extends PureComponent {
             onToggle={this.handleToggle}
             collapsed={collapsed}
             onHandleChange={this.handleChange}
+            FormBox={this.handleFormBox}
             changeTab={changeTab}
             tabName={tabId}
             checkLocation={indexShowLocation}
