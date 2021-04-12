@@ -7,8 +7,7 @@ import {
   DepartmentFilter,
   EmployeeTypeFilter,
   getListEmployeeMyTeam,
-  getListEmployeeActive,
-  getListEmployeeInActive,
+  getListEmployee,
   getDataOrgChart,
   getListAdministrator,
 } from '../services/employee';
@@ -115,8 +114,9 @@ const employee = {
       { call, put },
     ) {
       try {
-        const response = yield call(getListEmployeeActive, {
+        const response = yield call(getListEmployee, {
           tenantId: getCurrentTenant(),
+          status: ['ACTIVE'],
           company,
           department,
           location,
@@ -146,8 +146,9 @@ const employee = {
       { call, put },
     ) {
       try {
-        const response = yield call(getListEmployeeInActive, {
+        const response = yield call(getListEmployee, {
           tenantId: getCurrentTenant(),
+          status: ['INACTIVE'],
           company,
           department,
           location,

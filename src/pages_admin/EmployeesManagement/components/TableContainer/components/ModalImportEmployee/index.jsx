@@ -329,7 +329,6 @@ class ModalImportEmployee extends Component {
   render() {
     const { visible = false, loading, company: companyProps } = this.props;
     const { company = '', employees } = this.state;
-    console.log(employees);
     return (
       <div>
         <Modal

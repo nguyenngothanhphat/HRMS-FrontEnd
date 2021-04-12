@@ -188,7 +188,7 @@ class AvatarDropdown extends React.Component {
     return (
       <>
         <Menu.Divider className={styles.secondDivider} />
-        <Menu.Item className={styles.selectLocation}>Location</Menu.Item>
+        <Menu.Item className={styles.selectLocation}>Locations</Menu.Item>
         {checkIsOwner && (
           <Menu.Item
             key="ALL"

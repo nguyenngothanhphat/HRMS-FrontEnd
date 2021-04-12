@@ -5,7 +5,7 @@ import {
   listProjectRole,
 } from '../services/projectManagement';
 import { getRoleList } from '../services/usersManagement';
-import { getListEmployeeActive } from '../services/employee';
+import { getListEmployee } from '../services/employee';
 
 const PROJECT_STATUS = {
   ACTIVE: 'ACTIVE',
@@ -161,7 +161,8 @@ const projectManagement = {
       let response;
       let response2;
       try {
-        response = yield call(getListEmployeeActive, payload);
+        // REMEMBER TO ADD ACTIVE STATUS TO PAYLOAD
+        response = yield call(getListEmployee, payload);
         response2 = yield call(listProjectRole);
         const { data: dataEmployee = [] } = response;
         const { data: dataRole = [] } = response2;

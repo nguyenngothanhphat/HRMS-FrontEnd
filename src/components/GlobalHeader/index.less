@@ -70,10 +70,15 @@
     margin-top: 18px;
   }
 
-  // .menuItemLink {
-  // }
+  .menuItemLink {
+    // if the location name is too long, I solve this issue by three lines of css
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   .menuItemLink2 {
+    .menuItemLink();
     pointer-events: none;
     color: #2c6df9;
   }

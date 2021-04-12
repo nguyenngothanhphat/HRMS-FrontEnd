@@ -242,11 +242,13 @@ class WorkLocations extends PureComponent {
                       onRemove={() => remove(field.name)}
                     />
                   ))}
-                  <div className={s.viewAddWorkLocation} onClick={() => add()}>
-                    <p className={s.viewAddWorkLocation__icon}>
-                      <PlusOutlined />
-                    </p>
-                    <p className={s.viewAddWorkLocation__text}>Add work location</p>
+                  <div className={fields.length === 0 ? s.actions : s.actionsWithMargin}>
+                    <div className={s.viewAddWorkLocation} onClick={() => add()}>
+                      <p className={s.viewAddWorkLocation__icon}>
+                        <PlusOutlined />
+                      </p>
+                      <p className={s.viewAddWorkLocation__text}>Add work location</p>
+                    </div>
                   </div>
                 </>
               )}

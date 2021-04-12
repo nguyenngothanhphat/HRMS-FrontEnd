@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Form, Input, Select, Divider, Modal, Row, Col } from 'antd';
+import { Button, Form, Input, Select, Divider, Row, Col } from 'antd';
 import {
   DeleteOutlined,
   EditOutlined,
@@ -10,7 +10,6 @@ import {
 import classnames from 'classnames';
 import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
-import { flattenDepth } from 'lodash';
 import RemoveLocationModal from '../RemoveLocationModal';
 // import { bool } from 'prop-types';
 import s from './index.less';
@@ -57,7 +56,7 @@ class FormWorkLocationTenant extends Component {
   };
 
   handleCancel = () => {
-    const { isEditing } = this.state;
+    const { isEditing, locationName } = this.state;
     this.setState({
       isEditing: !isEditing,
     });
@@ -73,7 +72,7 @@ class FormWorkLocationTenant extends Component {
       } = {},
     } = this.props;
     this.formRef.current.setFieldsValue({
-      name,
+      name: locationName || name,
       addressLine1,
       addressLine2,
       country,
@@ -323,7 +322,10 @@ class FormWorkLocationTenant extends Component {
                 <p className={s.content__viewBottom__row__textLabel}>Location Name*</p>
               </Col>
               <Col span={16}>
-                <Form.Item name="name">
+                <Form.Item
+                  rules={[{ required: true, message: 'Please input Location Name' }]}
+                  name="name"
+                >
                   <Input disabled={disableInput} placeholder="Location Name" />
                 </Form.Item>
               </Col>
@@ -334,7 +336,10 @@ class FormWorkLocationTenant extends Component {
                 <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
               </Col>
               <Col span={16}>
-                <Form.Item name="addressLine1">
+                <Form.Item
+                  rules={[{ required: true, message: 'Please input Address Line 1' }]}
+                  name="addressLine1"
+                >
                   <Input disabled={disableInput} placeholder="Address Line 1" />
                 </Form.Item>
               </Col>
@@ -354,7 +359,10 @@ class FormWorkLocationTenant extends Component {
                 <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>
                   Country*
                 </p>
-                <Form.Item name="country">
+                <Form.Item
+                  rules={[{ required: true, message: 'Please select Country' }]}
+                  name="country"
+                >
                   <Select
                     placeholder="Select Country"
                     showArrow
@@ -362,8 +370,7 @@ class FormWorkLocationTenant extends Component {
                     disabled={disableInput}
                     onChange={this.onChangeCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {listCountry.map((item) => (
                       <Option key={item._id}>{item.name}</Option>
@@ -373,15 +380,17 @@ class FormWorkLocationTenant extends Component {
               </Col>
               <Col span={8} className={s.viewFormVertical}>
                 <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>State*</p>
-                <Form.Item name="state">
+                <Form.Item
+                  rules={[{ required: true, message: 'Please select State' }]}
+                  name="state"
+                >
                   <Select
                     placeholder="Select State"
                     showArrow
                     showSearch
                     disabled={disableInput || !newCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {listState.map((item) => (
                       <Option key={item}>{item}</Option>
@@ -391,7 +400,10 @@ class FormWorkLocationTenant extends Component {
               </Col>
               <Col span={8} className={s.viewFormVertical}>
                 <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>Zip*</p>
-                <Form.Item name="zipCode">
+                <Form.Item
+                  rules={[{ required: true, message: 'Please input Zip Code' }]}
+                  name="zipCode"
+                >
                   <Input disabled={disableInput} placeholder="Zip Code" />
                 </Form.Item>
               </Col>

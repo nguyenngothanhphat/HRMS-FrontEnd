@@ -213,7 +213,7 @@ class FormWorkLocationTenant extends Component {
             </div>
           </div>
         </div>
-        <Divider className={s.divider} />
+        {/* <Divider className={s.divider} /> */}
       </div>
     );
   }

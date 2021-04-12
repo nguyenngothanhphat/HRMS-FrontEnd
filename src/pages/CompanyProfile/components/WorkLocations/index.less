@@ -15,7 +15,7 @@
     display: flex;
     align-items: center;
     width: fit-content;
-    margin-top: 24px;
+    // margin-top: 24px;
     color: #2c6df9;
     cursor: pointer;
     &__icon {
@@ -146,6 +146,15 @@
   }
 }
 
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.actionsWithMargin {
+  .actions();
+  margin-top: 24px;
+}
 .viewSkeleton {
   display: flex;
   align-items: center;

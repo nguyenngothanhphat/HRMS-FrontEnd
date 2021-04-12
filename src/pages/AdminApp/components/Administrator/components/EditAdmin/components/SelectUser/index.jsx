@@ -1,8 +1,16 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Input, Form } from 'antd';
+import { Button, Row, Col, Input, Form, Select } from 'antd';
+import { getCurrentCompany } from '@/utils/authority';
+import { connect } from 'umi';
+
 import styles from './index.less';
 
-export default class SelectUser extends PureComponent {
+const Option = { Select };
+
+@connect(({ locationSelection: { listLocationsByCompany = [] } = {} }) => ({
+  listLocationsByCompany,
+}))
+class SelectUser extends PureComponent {
   formRef = React.createRef();
 
   constructor(props) {
@@ -16,19 +24,13 @@ export default class SelectUser extends PureComponent {
     const { handleEditAdmin = () => {} } = this.props;
     return (
       <div className={styles.titleContainer}>
-        <span className={styles.title}>Who’s your new admin?</span>
+        <span className={styles.title}>Edit Administrator</span>
         <div className={styles.cancelBtn} onClick={() => handleEditAdmin(false)}>
           <span>Cancel</span>
         </div>
       </div>
     );
   };
-
-  // isCompanyWorkerChange = (e) => {
-  //   this.setState({
-  //     isCompanyWorker: e?.target?.value,
-  //   });
-  // };
 
   onFinish = (values) => {
     const { onContinue = () => {} } = this.props;
@@ -39,7 +41,13 @@ export default class SelectUser extends PureComponent {
     const {
       dataAdmin: { usermap: { firstName = '', email: email1 = '' } = {} } = {},
       onBackValues: { name: newName = '', email: email2 = '' } = {},
+      listLocationsByCompany = [],
     } = this.props;
+
+    const currentCompany = getCurrentCompany();
+    const filterListLocation = listLocationsByCompany.filter(
+      (item) => item.company._id === currentCompany,
+    );
 
     return (
       <div className={styles.assignUser}>
@@ -55,16 +63,16 @@ export default class SelectUser extends PureComponent {
         >
           <Row align="middle" gutter={[24, 24]}>
             <Col span={8}>Email</Col>
-            <Col span={12}>
+            <Col span={14}>
               <Form.Item name="email">
                 <Input disabled placeholder="Administrator Email" />
               </Form.Item>
             </Col>
-            <Col span={4} />
+            <Col span={2} />
           </Row>
           <Row align="middle" gutter={[24, 24]}>
             <Col span={8}>Administrator Name</Col>
-            <Col span={12}>
+            <Col span={14}>
               <Form.Item
                 name="name"
                 rules={[
@@ -77,7 +85,45 @@ export default class SelectUser extends PureComponent {
                 <Input placeholder="Type name" />
               </Form.Item>
             </Col>
-            <Col span={4} />
+            <Col span={2} />
+          </Row>
+          <Row align="middle" gutter={[24, 24]}>
+            <Col span={8}>Manage Location</Col>
+            <Col span={14}>
+              <Form.Item
+                name="location"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please select location !',
+                  },
+                ]}
+              >
+                <Select
+                  placeholder="Select location"
+                  showArrow
+                  showSearch
+                  allowClear
+                  mode="multiple"
+                  // onChange={(value) => this.onChangeSelect(value)}
+                  filterOption={
+                    (input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    // eslint-disable-next-line react/jsx-curly-newline
+                  }
+                >
+                  {filterListLocation.map((item) => {
+                    const { name = '', _id = '' } = item;
+                    return (
+                      <Option key={_id} value={_id}>
+                        {name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={2} />
           </Row>
         </Form>
       </div>
@@ -109,3 +155,5 @@ export default class SelectUser extends PureComponent {
     );
   }
 }
+
+export default SelectUser;
