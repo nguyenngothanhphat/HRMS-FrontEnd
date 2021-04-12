@@ -22,6 +22,7 @@ const { Option } = Select;
       reportingManagerList = [],
       statusAddEmployee,
     },
+    employee: { employeetype = [] },
     user: { companiesOfUser = [] } = {},
   }) => ({
     rolesList,
@@ -29,6 +30,7 @@ const { Option } = Select;
     locationList,
     departmentList,
     jobTitleList,
+    employeetype,
     reportingManagerList,
     statusAddEmployee,
     companiesOfUser,
@@ -217,6 +219,9 @@ class AddEmployeeForm extends Component {
       labelCol: { span: 8 },
       wrapperCol: { span: 16 },
     };
+
+    const { employeetype } = this.props;
+
     const validateMessages = {
       required: '${label} is required!',
       types: {
@@ -264,7 +269,7 @@ class AddEmployeeForm extends Component {
               },
             ]}
           >
-            <Input />
+            <Input placeholder={formatMessage({ id: 'addEmployee.placeholder.employeeID' })} />
           </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'addEmployee.name' })}
@@ -277,7 +282,7 @@ class AddEmployeeForm extends Component {
               },
             ]}
           >
-            <Input />
+            <Input placeholder={formatMessage({ id: 'addEmployee.placeholder.name' })} />
           </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'pages_admin.employees.table.joinedDate' })}
@@ -294,15 +299,39 @@ class AddEmployeeForm extends Component {
             name="personalEmail"
             rules={[{ required: true, type: 'email' }]}
           >
-            <Input />
+            <Input placeholder={formatMessage({ id: 'addEmployee.placeholder.personalEmail' })} />
           </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'addEmployee.workEmail' })}
             name="workEmail"
             rules={[{ required: true, type: 'email' }]}
           >
-            <Input />
+            <Input placeholder={formatMessage({ id: 'addEmployee.placeholder.workEmail' })} />
           </Form.Item>
+
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.employeeType' })}
+            name="employeeType"
+            rules={[{ required: true }]}
+          >
+            <Select
+              autoComplete="dontshow"
+              placeholder={formatMessage({ id: 'addEmployee.placeholder.employeeType' })}
+              showArrow
+              showSearch
+              // disabled={isDisabledTitle || loadingTitle}
+              loading={loadingTitle}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {employeetype.map((item) => (
+                <Option key={item._id}>{item.name}</Option>
+              ))}
+            </Select>
+          </Form.Item>
+
           <Form.Item
             label={formatMessage({ id: 'addEmployee.roles' })}
             name="roles"
