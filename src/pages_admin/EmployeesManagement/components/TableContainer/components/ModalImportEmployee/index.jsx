@@ -206,7 +206,8 @@ class ModalImportEmployee extends Component {
   modalNotification = () => {
     const { listEmployeesTenant } = this.props;
     const { newList = [], existList = [] } = listEmployeesTenant;
-    if (!_.isEmpty(existList)) {
+    console.log(listEmployeesTenant);
+    if (!_.isEmpty(existList) && !_.isEmpty(listEmployeesTenant)) {
       Modal.error({
         icon: <div style={{ display: 'none' }} />,
         className: styles.modalResult,
