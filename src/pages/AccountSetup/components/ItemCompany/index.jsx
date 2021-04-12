@@ -34,15 +34,12 @@ class ItemCompany extends PureComponent {
     });
     setTenantId(tenantId);
     setCurrentCompany(id);
-    const { dispatch, email = '' } = this.props;
+    const { dispatch } = this.props;
     const res = await dispatch({
-      type: 'adminApp/getListAdmin',
-      payload: {
-        tenantId,
-        company: id,
-      },
+      type: 'user/fetchCurrent',
+      refreshCompanyList: false,
     });
-
+    console.log('res', res);
     if (isOwner) {
       await this.wait(500).then(() =>
         this.setState({
@@ -51,14 +48,13 @@ class ItemCompany extends PureComponent {
       );
       history.push(`/admin-app`);
     } else {
-      const { statusCode, data = {} } = res;
+      const { statusCode = 0, data = {} } = res;
       let formatArrRoles = JSON.parse(localStorage.getItem('antd-pro-authority'));
       if (statusCode === 200) {
-        const currentUser = data?.users.find((user) => user?.usermap.email === email);
-        currentUser?.permissionAdmin.forEach((e) => {
+        data?.permissionAdmin.forEach((e) => {
           formatArrRoles = [...formatArrRoles, e];
         });
-        currentUser?.permissionEmployee.forEach((e) => {
+        data?.permissionEmployee.forEach((e) => {
           formatArrRoles = [...formatArrRoles, e];
         });
         setAuthority(formatArrRoles);
