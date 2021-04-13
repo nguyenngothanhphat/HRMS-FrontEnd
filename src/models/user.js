@@ -66,7 +66,6 @@ const UserModel = {
         data?.permissionEmployee.forEach((e) => {
           formatArrRoles = [...formatArrRoles, e];
         });
-
         yield put({
           type: 'save',
           payload: {
