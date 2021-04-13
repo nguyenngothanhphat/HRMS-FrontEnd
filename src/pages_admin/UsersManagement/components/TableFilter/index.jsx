@@ -6,8 +6,9 @@ import { filteredArr } from '@/utils/utils';
 import styles from './index.less';
 import CheckList from '../CheckList';
 
-@connect(({ usersManagement }) => ({
+@connect(({ usersManagement, locationSelection: { listLocationsByCompany = [] } = {} }) => ({
   usersManagement,
+  listLocationsByCompany,
 }))
 class TableFilter extends PureComponent {
   constructor(props) {
@@ -30,17 +31,17 @@ class TableFilter extends PureComponent {
     });
     const tenantId = getCurrentTenant();
     const company = getCurrentCompany();
-    const checkIsOwner = isOwner();
+    // const checkIsOwner = isOwner();
 
-    if (company) {
-      dispatch({
-        type: checkIsOwner
-          ? 'usersManagement/fetchOwnerLocationList'
-          : 'usersManagement/fetchLocationList',
-        // type: 'employee/fetchLocation',
-        payload: { company, tenantId },
-      });
-    }
+    // if (company) {
+    //   dispatch({
+    //     type: checkIsOwner
+    //       ? 'usersManagement/fetchOwnerLocationList'
+    //       : 'usersManagement/fetchLocationList',
+    //     // type: 'employee/fetchLocation',
+    //     payload: { company, tenantId },
+    //   });
+    // }
     dispatch({
       type: 'usersManagement/fetchRoleList',
     });
@@ -77,9 +78,15 @@ class TableFilter extends PureComponent {
     const { Sider } = Layout;
     const { locationState, companyState, all, roleState, text, reset } = this.state;
     const {
-      usersManagement: { location = [], company = [], roles = [], clearName = false },
+      usersManagement: {
+        // location = [],
+        company = [],
+        roles = [],
+        clearName = false,
+      },
       collapsed,
       changeTab,
+      listLocationsByCompany: location = [],
     } = this.props;
 
     const currentCompany = getCurrentCompany();

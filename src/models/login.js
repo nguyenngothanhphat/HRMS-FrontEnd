@@ -53,9 +53,13 @@ const Model = {
         }
         setAuthority(formatArrRoles);
 
-        if (isAdminOrOwner || listCompany.length > 1) {
+        // redirect
+        if (isAdminOrOwner) {
           history.replace('/control-panel');
-        } else if (listCompany.length === 1) {
+        }
+        if (listCompany.length !== 1) {
+          history.replace('/control-panel');
+        } else {
           const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
           setTenantId(tenantId);
           setCurrentCompany(selectedCompany);
