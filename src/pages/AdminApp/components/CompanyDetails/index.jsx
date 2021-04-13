@@ -363,6 +363,7 @@ class CompanyDetails extends Component {
         hrContactEmail: hrEmail,
         hrContactName: hrName,
         hrContactPhone: hrPhone,
+        childOfCompany = '',
         // isHeadquarter,
       } = {},
     } = companyDetails;
@@ -374,6 +375,7 @@ class CompanyDetails extends Component {
           dba,
           ein,
           website,
+          parentCompany: childOfCompany,
         });
         break;
       case 2:

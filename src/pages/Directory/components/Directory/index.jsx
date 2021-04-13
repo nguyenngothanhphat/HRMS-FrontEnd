@@ -21,7 +21,8 @@ const { Content } = Layout;
 const { TabPane } = Tabs;
 @connect(
   ({
-    loading, // locationSelection: { listLocationsByCompany = [] } = {},
+    loading,
+    locationSelection: { listLocationsByCompany = [] } = {},
     employee,
     user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
   }) => ({
@@ -31,7 +32,7 @@ const { TabPane } = Tabs;
     employee,
     currentUser,
     permissions,
-    // listLocationsByCompany,
+    listLocationsByCompany,
     companiesOfUser,
   }),
 )
@@ -96,26 +97,26 @@ class DirectoryComponent extends PureComponent {
   }
 
   componentDidMount = async () => {
-    const { dispatch } = this.props;
+    // const { dispatch } = this.props;
     // *: error tenant
     // this.fetchApprovalFlowList();
 
-    const tenantId = getCurrentTenant();
-    const company = getCurrentCompany();
-    const isOwnerCheck = isOwner();
+    // const tenantId = getCurrentTenant();
+    // const company = getCurrentCompany();
+    // const isOwnerCheck = isOwner();
 
-    if (company) {
-      const res = await dispatch({
-        type: isOwnerCheck ? 'employee/fetchOwnerLocation' : 'employee/fetchLocation',
-        payload: { company, tenantId },
-      });
-      const { statusCode = 0, data = [] } = res;
-      if (statusCode === 200) {
-        this.setState({
-          listLocationsByCompany: data,
-        });
-      }
-    }
+    // if (company) {
+    //   const res = await dispatch({
+    //     type: isOwnerCheck ? 'employee/fetchOwnerLocation' : 'employee/fetchLocation',
+    //     payload: { company, tenantId },
+    //   });
+    //   const { statusCode = 0, data = [] } = res;
+    //   if (statusCode === 200) {
+    //     this.setState({
+    //       listLocationsByCompany: data,
+    //     });
+    //   }
+    // }
 
     const currentLocation = getCurrentLocation();
     if (currentLocation && currentLocation !== 'undefined') {
@@ -238,7 +239,7 @@ class DirectoryComponent extends PureComponent {
 
   renderHrTeam = () => {
     const { dispatch, permissions = {} } = this.props;
-    const { listLocationsByCompany } = this.state;
+    const { listLocationsByCompany = [] } = this.props;
     let company = [getCurrentCompany()];
 
     const isOwnerCheck = isOwner();
@@ -254,14 +255,17 @@ class DirectoryComponent extends PureComponent {
     }
     const viewTabActive = permissions.viewTabActive !== -1;
     const viewTabInActive = permissions.viewTabInActive !== -1;
+    const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
 
-    dispatch({
-      type: 'employee/fetchListEmployeeMyTeam',
-      payload: {
-        company,
-        location,
-      },
-    });
+    if (viewTabMyTeam) {
+      dispatch({
+        type: 'employee/fetchListEmployeeMyTeam',
+        payload: {
+          company,
+          location,
+        },
+      });
+    }
     if (viewTabActive) {
       dispatch({
         type: 'employee/fetchListEmployeeActive',
@@ -306,7 +310,7 @@ class DirectoryComponent extends PureComponent {
 
     const locationIsSelected = [getCurrentLocation()];
     const { dispatch } = this.props;
-    const { listLocationsByCompany } = this.state;
+    const { listLocationsByCompany = [] } = this.props;
     const { name, department, location, employeeType } = params;
     let company = [];
     let newLocations = [...location];
@@ -370,7 +374,7 @@ class DirectoryComponent extends PureComponent {
 
     const locationIsSelected = [getCurrentLocation()];
     const { dispatch } = this.props;
-    const { listLocationsByCompany } = this.state;
+    const { listLocationsByCompany = [] } = this.props;
     const { name, department, location, employeeType } = params;
     let company = [];
     let newLocations = [...location];

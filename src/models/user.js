@@ -35,7 +35,7 @@ const UserModel = {
           tenantId: tenantId && tenantId !== 'undefined' ? tenantId : null,
         };
         const response = yield call(queryCurrent, payload);
-        const { statusCode } = response;
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
 
         // if there's no tenantId and companyId, return to dashboard
@@ -45,26 +45,33 @@ const UserModel = {
         yield put({
           type: 'saveCurrentUser',
           payload: {
-            ...response.data,
-            name: response.data?.firstName,
-            // name: [response.data?.generalInfo?.firstName, response.data?.generalInfo?.lastName]
-            //   .filter(Boolean)
-            //   .join(' '),
+            ...data,
+            name: data?.firstName,
           },
         });
-
-        const currentLocation = getCurrentLocation();
-
-        if (!currentLocation) {
-          setCurrentLocation(response?.data?.location?._id);
-        }
+        
         const checkIsOwner = isOwner();
+        if (!checkIsOwner) {
+          // for admin, auto set location
+          // setCurrentLocation(response?.data?.manageLocation[0]?._id);
+          const currentLocation = getCurrentLocation();
+          if (!currentLocation || currentLocation === 'undefined') {
+            setCurrentLocation(response?.data?.manageLocation[0]?._id);
+          }
+        }
+        let formatArrRoles = []
+        data?.permissionAdmin.forEach((e) => {
+          formatArrRoles = [...formatArrRoles, e];
+        });
+        data?.permissionEmployee.forEach((e) => {
+          formatArrRoles = [...formatArrRoles, e];
+        });
+
         yield put({
           type: 'save',
           payload: {
             permissions: {
-              ...checkPermissions(response.data.permissionAdmin, checkIsOwner),
-              ...checkPermissions(response.data.permissionEmployee, checkIsOwner),
+              ...checkPermissions(formatArrRoles, checkIsOwner),
             },
           },
         });

@@ -42,7 +42,9 @@ class AccountSetup extends PureComponent {
             alt="logo"
             style={{ width: '150px', objectFit: 'contain', marginLeft: '20px' }}
           /> */}
-            <span className={styles.logoText}>HRMS</span>
+            <Link to="/control-panel" className={styles.logoText}>
+              HRMS
+            </Link>
             {/* <RightContent /> */}
           </Header>
         </Affix>

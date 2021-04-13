@@ -268,7 +268,7 @@ class HandleChanges extends PureComponent {
         dispatch({
           type: 'employeeProfile/fetchTitleByDepartment',
           payload: {
-            company: employeeProfile.originData.compensationData.company,
+            company: employeeProfile?.originData?.compensationData?.company,
             department: value,
           },
         });
