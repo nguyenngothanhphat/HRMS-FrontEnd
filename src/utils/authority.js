@@ -66,3 +66,10 @@ export function isOwner() {
   const owner = roleList.filter(role => role.toLowerCase().includes('owner'))
   return owner.length > 0;
 }
+
+export function isAdmin() {
+  const roleList = JSON.parse(localStorage.getItem('antd-pro-authority'));
+  const owner = roleList.filter(role => role.toLowerCase().includes('admin'))
+  return owner.length > 0;
+}
+

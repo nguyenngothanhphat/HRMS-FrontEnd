@@ -10,6 +10,7 @@ import {
   getCurrentCompany,
   getCurrentLocation,
   isOwner,
+  isAdmin,
   setCurrentCompany,
 } from '@/utils/authority';
 import HeaderDropdown from '../HeaderDropdown';
@@ -18,10 +19,14 @@ import styles from './index.less';
 @connect(
   ({
     locationSelection: { listLocationsByCompany = [] } = {},
-    user: { companiesOfUser = [], currentUser: { roles = [], manageTenant = [] } = {} } = {},
+    user: {
+      companiesOfUser = [],
+      currentUser: { roles = [], manageTenant = [], manageLocation = [] } = {},
+    } = {},
     loading,
   }) => ({
-    listLocationsByCompany,
+    listLocationsByCompany, // for owner
+    manageLocation, // for admin
     roles,
     loadingFetchLocation: loading.effects['locationSelection/fetchLocationsByCompany'],
     companiesOfUser,
@@ -101,7 +106,7 @@ class AvatarDropdown extends React.Component {
   onMenuClick = async (event) => {
     const { key } = event;
     const { LOGOUT, CHANGEPASSWORD, SETTINGS } = this.state;
-    const { listLocationsByCompany = [] } = this.props;
+    const { listLocationsByCompany = [], manageLocation = [] } = this.props;
 
     if (key === LOGOUT) {
       const { dispatch } = this.props;
@@ -139,6 +144,7 @@ class AvatarDropdown extends React.Component {
     let newCompId = '';
     let newCompName = '';
     let newCompTenant = '';
+
     listLocationsByCompany.forEach((value) => {
       const {
         _id = '',
@@ -190,16 +196,18 @@ class AvatarDropdown extends React.Component {
   };
 
   renderLocationList = () => {
-    const { listLocationsByCompany = [] } = this.props;
+    const { listLocationsByCompany = [], manageLocation = [] } = this.props;
     const currentLocation = getCurrentLocation();
     const currentCompany = getCurrentCompany();
     const checkIsOwner = isOwner();
+    const checkIsAdmin = isAdmin();
 
-    // const filteredList = [...listLocationsByCompany];
-    // if (manageLocation.length !== 0) {
-    //   filteredList = filteredList.filter((location) => manageLocation.includes(location?._id));
-    // }
-
+    let commonLocationsList = [];
+    if (checkIsOwner) {
+      commonLocationsList = [...listLocationsByCompany];
+    } else if (checkIsAdmin) {
+      commonLocationsList = [...manageLocation];
+    }
     return (
       <>
         <Menu.Divider className={styles.secondDivider} />
@@ -216,7 +224,7 @@ class AvatarDropdown extends React.Component {
             All
           </Menu.Item>
         )}
-        {listLocationsByCompany.map((value) => {
+        {commonLocationsList.map((value) => {
           const {
             _id = '',
             name: locationName = '',
