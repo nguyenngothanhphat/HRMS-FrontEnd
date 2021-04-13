@@ -5,6 +5,7 @@ import React from 'react';
 import { connect, formatMessage, history } from 'umi';
 import {
   setCurrentLocation,
+  setTenantId,
   getCurrentTenant,
   getCurrentCompany,
   getCurrentLocation,
@@ -17,14 +18,14 @@ import styles from './index.less';
 @connect(
   ({
     locationSelection: { listLocationsByCompany = [] } = {},
-    user: { companiesOfUser = [], currentUser: { roles = [], manageLocation = [] } = {} } = {},
+    user: { companiesOfUser = [], currentUser: { roles = [], manageTenant = [] } = {} } = {},
     loading,
   }) => ({
     listLocationsByCompany,
     roles,
     loadingFetchLocation: loading.effects['locationSelection/fetchLocationsByCompany'],
     companiesOfUser,
-    manageLocation,
+    manageTenant,
   }),
 )
 class AvatarDropdown extends React.Component {
@@ -42,6 +43,7 @@ class AvatarDropdown extends React.Component {
   componentDidMount = async () => {
     const {
       dispatch,
+      manageTenant = [],
       // , roles = []
     } = this.props;
     const companyId = getCurrentCompany();
@@ -53,7 +55,7 @@ class AvatarDropdown extends React.Component {
         type: 'locationSelection/fetchLocationListByParentCompany',
         payload: {
           company: companyId,
-          tenantId,
+          tenantIds: manageTenant,
         },
       });
     } else {
@@ -136,10 +138,15 @@ class AvatarDropdown extends React.Component {
     const currentCompany = getCurrentCompany();
     let newCompId = '';
     let newCompName = '';
+    let newCompTenant = '';
     listLocationsByCompany.forEach((value) => {
       const {
         _id = '',
-        company: { _id: parentCompId = '', name: parentCompName = '' } = {},
+        company: {
+          _id: parentCompId = '',
+          name: parentCompName = '',
+          tenant: parentTenant = '',
+        } = {},
       } = value;
       if (key === _id) {
         selectLocation = _id;
@@ -148,12 +155,14 @@ class AvatarDropdown extends React.Component {
       if (_id === key && currentCompany !== parentCompId) {
         newCompId = parentCompId;
         newCompName = parentCompName;
+        newCompTenant = parentTenant;
       }
     });
 
     // ONLY OWNER
     if (newCompId) {
       setCurrentCompany(newCompId);
+      setTenantId(newCompTenant);
       notification.success({
         message: `Switching to ${newCompName} company...`,
       });

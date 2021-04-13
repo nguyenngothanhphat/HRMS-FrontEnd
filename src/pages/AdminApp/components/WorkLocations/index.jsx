@@ -16,6 +16,7 @@ import s from './index.less';
     country: { listCountry = [] } = {},
     companiesManagement: { originData: { companyDetails = {} } = {} } = {},
     adminApp: { locationsList = [] },
+    user: { currentUser: { manageTenant = [] } = {} } = {},
   }) => ({
     listCountry,
     locationsList,
@@ -23,6 +24,7 @@ import s from './index.less';
     loadingCountry: loading.effects['country/fetchListCountry'],
     loadingAddMultiLocation: loading.effects['companiesManagement/addMultiLocation'],
     companyDetails,
+    manageTenant,
   }),
 )
 class WorkLocations extends PureComponent {
@@ -55,7 +57,7 @@ class WorkLocations extends PureComponent {
     const tenantId = getCurrentTenant();
     const companyId = getCurrentCompany();
 
-    const { dispatch } = this.props;
+    const { dispatch, manageTenant = [] } = this.props;
     // const { company, isNewTenant, locations: originLocations = [] } = companyDetails;
     // const listLocation = [...originLocations, ...locations];
     const { workLocations = [] } = values;
@@ -111,7 +113,7 @@ class WorkLocations extends PureComponent {
         type: 'locationSelection/fetchLocationListByParentCompany',
         payload: {
           company: companyId,
-          tenantId,
+          tenantIds: manageTenant,
         },
       });
     }
