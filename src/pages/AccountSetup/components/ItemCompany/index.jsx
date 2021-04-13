@@ -39,7 +39,7 @@ class ItemCompany extends PureComponent {
       type: 'user/fetchCurrent',
       refreshCompanyList: false,
     });
-    console.log('res', res);
+
     if (isOwner) {
       await this.wait(500).then(() =>
         this.setState({

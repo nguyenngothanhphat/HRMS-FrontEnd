@@ -5,6 +5,7 @@ import React from 'react';
 import { connect, formatMessage, history } from 'umi';
 import {
   setCurrentLocation,
+  setTenantId,
   getCurrentTenant,
   getCurrentCompany,
   getCurrentLocation,
@@ -17,13 +18,14 @@ import styles from './index.less';
 @connect(
   ({
     locationSelection: { listLocationsByCompany = [] } = {},
-    user: { companiesOfUser = [], currentUser: { roles = [] } = {} } = {},
+    user: { companiesOfUser = [], currentUser: { roles = [], manageTenant = [] } = {} } = {},
     loading,
   }) => ({
     listLocationsByCompany,
     roles,
     loadingFetchLocation: loading.effects['locationSelection/fetchLocationsByCompany'],
     companiesOfUser,
+    manageTenant,
   }),
 )
 class AvatarDropdown extends React.Component {
@@ -41,6 +43,7 @@ class AvatarDropdown extends React.Component {
   componentDidMount = async () => {
     const {
       dispatch,
+      manageTenant = [],
       // , roles = []
     } = this.props;
     const companyId = getCurrentCompany();
@@ -52,7 +55,7 @@ class AvatarDropdown extends React.Component {
         type: 'locationSelection/fetchLocationListByParentCompany',
         payload: {
           company: companyId,
-          tenantId,
+          tenantIds: manageTenant,
         },
       });
     } else {
@@ -135,10 +138,15 @@ class AvatarDropdown extends React.Component {
     const currentCompany = getCurrentCompany();
     let newCompId = '';
     let newCompName = '';
+    let newCompTenant = '';
     listLocationsByCompany.forEach((value) => {
       const {
         _id = '',
-        company: { _id: parentCompId = '', name: parentCompName = '' } = {},
+        company: {
+          _id: parentCompId = '',
+          name: parentCompName = '',
+          tenant: parentTenant = '',
+        } = {},
       } = value;
       if (key === _id) {
         selectLocation = _id;
@@ -147,12 +155,14 @@ class AvatarDropdown extends React.Component {
       if (_id === key && currentCompany !== parentCompId) {
         newCompId = parentCompId;
         newCompName = parentCompName;
+        newCompTenant = parentTenant;
       }
     });
 
     // ONLY OWNER
     if (newCompId) {
       setCurrentCompany(newCompId);
+      setTenantId(newCompTenant);
       notification.success({
         message: `Switching to ${newCompName} company...`,
       });
@@ -184,6 +194,11 @@ class AvatarDropdown extends React.Component {
     const currentLocation = getCurrentLocation();
     const currentCompany = getCurrentCompany();
     const checkIsOwner = isOwner();
+
+    // const filteredList = [...listLocationsByCompany];
+    // if (manageLocation.length !== 0) {
+    //   filteredList = filteredList.filter((location) => manageLocation.includes(location?._id));
+    // }
 
     return (
       <>

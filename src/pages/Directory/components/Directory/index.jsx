@@ -252,34 +252,34 @@ class DirectoryComponent extends PureComponent {
       company = listLocationsByCompany.map((lo) => lo?.company?._id);
       company = [...new Set(company.map((s) => s))];
     }
-    // const viewTabActive = permissions.viewTabActive !== -1;
-    // const viewTabInActive = permissions.viewTabInActive !== -1;
+    const viewTabActive = permissions.viewTabActive !== -1;
+    const viewTabInActive = permissions.viewTabInActive !== -1;
 
-    // dispatch({
-    //   type: 'employee/fetchListEmployeeMyTeam',
-    //   payload: {
-    //     company: [company],
-    //     location: location ? [location] : [],
-    //   },
-    // });
-    // if (viewTabActive) {
     dispatch({
-      type: 'employee/fetchListEmployeeActive',
+      type: 'employee/fetchListEmployeeMyTeam',
       payload: {
         company,
         location,
       },
     });
-    // }
-    // if (viewTabInActive) {
-    //   dispatch({
-    //     type: 'employee/fetchListEmployeeInActive',
-    //     payload: {
-    //       company: [company],
-    //       location: location ? [location] : [],
-    //     },
-    //   });
-    // }
+    if (viewTabActive) {
+      dispatch({
+        type: 'employee/fetchListEmployeeActive',
+        payload: {
+          company,
+          location,
+        },
+      });
+    }
+    if (viewTabInActive) {
+      dispatch({
+        type: 'employee/fetchListEmployeeInActive',
+        payload: {
+          company,
+          location,
+        },
+      });
+    }
     dispatch({
       type: 'employeesManagement/fetchRolesList',
     });
@@ -546,6 +546,7 @@ class DirectoryComponent extends PureComponent {
         joinDate: '11/30/2020',
         location: 'Vietnam',
         department: 'Develop',
+        employeeType: 'Full Time',
         title: 'Junior Frontend',
         workEmail: 'template@terralogic.com',
         personalEmail: 'template@gmail.com',

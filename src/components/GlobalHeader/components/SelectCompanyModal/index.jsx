@@ -90,13 +90,10 @@ class SelectCompanyModal extends PureComponent {
       setTenantId(activeTenant);
       setCurrentCompany(activeCompany);
       localStorage.removeItem('currentLocationId');
-      const { dispatch, email = '' } = this.props;
+      const { dispatch } = this.props;
       const res = await dispatch({
-        type: 'adminApp/getListAdmin',
-        payload: {
-          tenantId: activeTenant,
-          company: activeCompany,
-        },
+        type: 'user/fetchCurrent',
+        refreshCompanyList: false,
       });
 
       if (isOwner()) {
@@ -110,11 +107,10 @@ class SelectCompanyModal extends PureComponent {
         const { statusCode, data = {} } = res;
         let formatArrRoles = JSON.parse(localStorage.getItem('antd-pro-authority'));
         if (statusCode === 200) {
-          const currentUser = data?.users.find((user) => user?.usermap.email === email);
-          currentUser?.permissionAdmin.forEach((e) => {
+          data?.permissionAdmin.forEach((e) => {
             formatArrRoles = [...formatArrRoles, e];
           });
-          currentUser?.permissionEmployee.forEach((e) => {
+          data?.permissionEmployee.forEach((e) => {
             formatArrRoles = [...formatArrRoles, e];
           });
           setAuthority(formatArrRoles);
