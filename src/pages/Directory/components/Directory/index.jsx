@@ -206,12 +206,12 @@ class DirectoryComponent extends PureComponent {
     const company = getCurrentCompany();
     const viewTabActive = permissions.viewTabActive !== -1;
     const viewTabInActive = permissions.viewTabInActive !== -1;
-    dispatch({
-      type: 'employee/fetchListEmployeeMyTeam',
-      payload: {
-        company: [company],
-      },
-    });
+    // dispatch({
+    //   type: 'employee/fetchListEmployeeMyTeam',
+    //   payload: {
+    //     company: [company],
+    //   },
+    // });
     if (viewTabActive) {
       dispatch({
         type: 'employee/fetchListEmployeeActive',
@@ -255,17 +255,17 @@ class DirectoryComponent extends PureComponent {
     }
     const viewTabActive = permissions.viewTabActive !== -1;
     const viewTabInActive = permissions.viewTabInActive !== -1;
-    const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
+    // const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
 
-    if (viewTabMyTeam) {
-      dispatch({
-        type: 'employee/fetchListEmployeeMyTeam',
-        payload: {
-          company,
-          location,
-        },
-      });
-    }
+    // if (viewTabMyTeam) {
+    //   dispatch({
+    //     type: 'employee/fetchListEmployeeMyTeam',
+    //     payload: {
+    //       company,
+    //       location,
+    //     },
+    //   });
+    // }
     if (viewTabActive) {
       dispatch({
         type: 'employee/fetchListEmployeeActive',
