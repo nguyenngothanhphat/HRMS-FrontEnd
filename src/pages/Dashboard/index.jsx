@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Row, Col, Affix } from 'antd';
-import { getCurrentLocation } from '@/utils/authority';
 
 import { connect } from 'umi';
 import Greeting from './components/Greeting';
@@ -67,9 +66,7 @@ const listQuickLinks = [
 class Dashboard extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {
-      currentLocation: '',
-    };
+    this.state = {};
   }
 
   componentDidMount = async () => {
@@ -104,8 +101,6 @@ class Dashboard extends PureComponent {
     //   }),
     // );
 
-    this.setLocation();
-
     window.scrollTo({
       top: 0,
       left: 0,
@@ -130,15 +125,6 @@ class Dashboard extends PureComponent {
       },
     });
   }
-
-  setLocation = () => {
-    const { listLocationsByCompany = [] } = this.props;
-    const currentLocation = getCurrentLocation();
-    const locationName = listLocationsByCompany.find((item) => item._id === currentLocation);
-    this.setState({
-      currentLocation: locationName?.name || '',
-    });
-  };
 
   checkIsOwnerAdmin = () => {
     const { currentUser: { signInRole = [] } = {} } = this.props;
@@ -165,7 +151,6 @@ class Dashboard extends PureComponent {
       return listQuestion;
     });
 
-    const { currentLocation } = this.state;
     const isOwnerAdmin = this.checkIsOwnerAdmin();
 
     return (
@@ -174,7 +159,7 @@ class Dashboard extends PureComponent {
           <Row gutter={[24, 24]} style={{ padding: '10px 20px 0 0' }}>
             <Col span={8}>
               <Affix offsetTop={10}>
-                <Greeting name={currentUser?.firstName} currentLocation={currentLocation} />
+                <Greeting name={currentUser?.firstName} />
                 <div className={styles.leftContainer}>
                   <ActivityLog />
                 </div>

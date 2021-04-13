@@ -255,14 +255,17 @@ class DirectoryComponent extends PureComponent {
     }
     const viewTabActive = permissions.viewTabActive !== -1;
     const viewTabInActive = permissions.viewTabInActive !== -1;
+    const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
 
-    dispatch({
-      type: 'employee/fetchListEmployeeMyTeam',
-      payload: {
-        company,
-        location,
-      },
-    });
+    if (viewTabMyTeam) {
+      dispatch({
+        type: 'employee/fetchListEmployeeMyTeam',
+        payload: {
+          company,
+          location,
+        },
+      });
+    }
     if (viewTabActive) {
       dispatch({
         type: 'employee/fetchListEmployeeActive',
