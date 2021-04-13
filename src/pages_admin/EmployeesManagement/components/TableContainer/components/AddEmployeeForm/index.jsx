@@ -6,6 +6,7 @@ import { Modal, Button, Form, Input, Select, DatePicker } from 'antd';
 import { connect, formatMessage } from 'umi';
 import _ from 'lodash';
 import moment from 'moment';
+import { getCurrentCompany, isAdmin, isOwner } from '@/utils/authority';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -22,7 +23,7 @@ const { Option } = Select;
       reportingManagerList = [],
       statusAddEmployee,
     },
-    user: { companiesOfUser = [] } = {},
+    user: { companiesOfUser = [], currentUser: { manageLocation = [] } = {} } = {},
   }) => ({
     rolesList,
     companyList,
@@ -32,6 +33,7 @@ const { Option } = Select;
     reportingManagerList,
     statusAddEmployee,
     companiesOfUser,
+    manageLocation, // locations of admin
     loadingCompanyList: loading.effects['employeesManagement/fetchCompanyList'],
     loadingDepartment: loading.effects['employeesManagement/fetchDepartmentList'],
     loadingLocation: loading.effects['employeesManagement/fetchLocationList'],
@@ -65,7 +67,7 @@ class AddEmployeeForm extends Component {
 
   componentDidMount() {
     const { company } = this.props;
-    if (company !== '') {
+    if (company) {
       this.setState({
         isDisabled: false,
       });
@@ -212,6 +214,20 @@ class AddEmployeeForm extends Component {
     );
   };
 
+  getUserCompanyList = (companyList) => {
+    const checkIsAdmin = isAdmin();
+    const checkIsOwner = isOwner();
+    const currentCompany = getCurrentCompany();
+    if (checkIsOwner) {
+      return companyList;
+    }
+    if (checkIsAdmin) {
+      return companyList.filter((company) => company?._id === currentCompany);
+    }
+
+    return [];
+  };
+
   renderAddEmployeeForm = () => {
     const formLayout = {
       labelCol: { span: 8 },
@@ -237,7 +253,11 @@ class AddEmployeeForm extends Component {
       loadingManager,
       company,
     } = this.props;
+
     const { isDisabled, isDisabledTitle } = this.state;
+
+    const formatCompanyList = this.getUserCompanyList(companyList);
+
     return (
       <div className={styles.addEmployee__form} id="addEmployee__form">
         <Form
@@ -355,7 +375,7 @@ class AddEmployeeForm extends Component {
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
               >
-                {companyList.map((item) => (
+                {formatCompanyList.map((item) => (
                   <Option key={item._id}>{item.name}</Option>
                 ))}
               </Select>
@@ -451,8 +471,8 @@ class AddEmployeeForm extends Component {
               }
             >
               {reportingManagerList.map((item) => (
-                <Option key={item._id}>
-                  {`${item.generalInfo.firstName} ${item.generalInfo.lastName}`}
+                <Option key={item?._id}>
+                  {`${item?.generalInfo?.firstName} ${item?.generalInfo?.lastName}`}
                 </Option>
               ))}
             </Select>
