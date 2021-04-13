@@ -96,15 +96,15 @@ const country = {
         notification.success({
           message,
         });
-        const companyId = getCurrentCompany();
-        const tenantId = getCurrentTenant();
-        yield put({
-          type: 'locationSelection/fetchLocationListByParentCompany',
-          payload: {
-            company: companyId,
-            tenantId,
-          },
-        });
+        // const companyId = getCurrentCompany();
+        // const tenantId = getCurrentTenant();
+        // yield put({
+        //   type: 'locationSelection/fetchLocationListByParentCompany',
+        //   payload: {
+        //     company: companyId,
+        //     tenantId,
+        //   },
+        // });
         return response;
       } catch (errors) {
         dialog(errors);
@@ -116,15 +116,16 @@ const country = {
         const response = yield call(updateLocation, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        const companyId = getCurrentCompany();
-        const tenantId = getCurrentTenant();
-        yield put({
-          type: 'locationSelection/fetchLocationListByParentCompany',
-          payload: {
-            company: companyId,
-            tenantId,
-          },
-        });
+
+        // const companyId = getCurrentCompany();
+        // const tenantId = getCurrentTenant();
+        // yield put({
+        //   type: 'locationSelection/fetchLocationListByParentCompany',
+        //   payload: {
+        //     company: companyId,
+        //     tenantId,
+        //   },
+        // });
         return response;
       } catch (errors) {
         dialog(errors);

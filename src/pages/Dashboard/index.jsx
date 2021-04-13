@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Row, Col, Affix } from 'antd';
-import { getCurrentTenant, getCurrentCompany, getCurrentLocation } from '@/utils/authority';
+import { getCurrentLocation } from '@/utils/authority';
 
 import { connect } from 'umi';
 import Greeting from './components/Greeting';
@@ -53,6 +53,8 @@ const listQuickLinks = [
   }) => ({
     fetchMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
     fetchListProject: loading.effects['offboarding/getListProjectByEmployee'],
+    fetchLocationList: loading.effects['locationSelection/fetchLocationsByCompany'],
+    fetchLocationListParent: loading.effects['locationSelection/fetchLocationListByParentCompany'],
     currentUser,
     roles,
     listEmployeeMyTeam,
@@ -71,16 +73,15 @@ class Dashboard extends PureComponent {
   }
 
   componentDidMount = async () => {
-    const {
-      // dispatch,
-      //   currentUser: {
-      //     location: { _id: locationId = '' } = {},
-      //     company: { _id: companyId = '' } = {},
-      //     employee: { _id: employee = '' } = {},
-      //     company: { _id: idCompany = '' } = {},
-      //   } = {},
-      listLocationsByCompany = [],
-    } = this.props;
+    // const {
+    // dispatch,
+    //   currentUser: {
+    //     location: { _id: locationId = '' } = {},
+    //     company: { _id: companyId = '' } = {},
+    //     employee: { _id: employee = '' } = {},
+    //     company: { _id: idCompany = '' } = {},
+    //   } = {},
+    // } = this.props;
     // dispatch({
     //   type: 'employee/fetchListEmployeeMyTeam',
     //   payload: {
@@ -102,11 +103,8 @@ class Dashboard extends PureComponent {
     //     payload: { company: companyId },
     //   }),
     // );
-    const currentLocation = getCurrentLocation();
-    const locationName = listLocationsByCompany.find((item) => item._id === currentLocation);
-    this.setState({
-      currentLocation: locationName?.name || '',
-    });
+
+    this.setLocation();
 
     window.scrollTo({
       top: 0,
@@ -114,6 +112,14 @@ class Dashboard extends PureComponent {
       behavior: 'smooth',
     });
   };
+
+  // componentDidUpdate(prevProps) {
+  //   const { listLocationsByCompany = [] } = this.props;
+  //   const {currentLocation}
+  //   if (JSON.stringify(listLocationsByCompany) !== JSON.stringify(prevProps.fetchLocationList)) {
+  //     this.setLocation();
+  //   }
+  // }
 
   componentWillUnmount() {
     const { dispatch } = this.props;
@@ -124,6 +130,15 @@ class Dashboard extends PureComponent {
       },
     });
   }
+
+  setLocation = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    const currentLocation = getCurrentLocation();
+    const locationName = listLocationsByCompany.find((item) => item._id === currentLocation);
+    this.setState({
+      currentLocation: locationName?.name || '',
+    });
+  };
 
   checkIsOwnerAdmin = () => {
     const { currentUser: { signInRole = [] } = {} } = this.props;

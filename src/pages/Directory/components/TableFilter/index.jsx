@@ -12,9 +12,10 @@ import { filteredArr } from '@/utils/utils';
 import styles from './index.less';
 import CheckBoxForms from '../CheckboxForm';
 
-@connect(({ loading, employee }) => ({
+@connect(({ loading, employee, locationSelection: { listLocationsByCompany = [] } = {} }) => ({
   loading: loading.effects['login/login'],
   employee,
+  listLocationsByCompany,
 }))
 class TableFilter extends PureComponent {
   constructor(props) {
@@ -37,15 +38,15 @@ class TableFilter extends PureComponent {
     });
     const tenantId = getCurrentTenant();
     const company = getCurrentCompany();
-    const checkIsOwner = isOwner();
+    // const checkIsOwner = isOwner();
 
-    if (company && company !== 'undefined') {
-      dispatch({
-        type: checkIsOwner ? 'employee/fetchOwnerLocation' : 'employee/fetchLocation',
-        // type: 'employee/fetchLocation',
-        payload: { company, tenantId },
-      });
-    }
+    // if (company && company !== 'undefined') {
+    //   dispatch({
+    //     type: checkIsOwner ? 'employee/fetchOwnerLocation' : 'employee/fetchLocation',
+    //     // type: 'employee/fetchLocation',
+    //     payload: { company, tenantId },
+    //   });
+    // }
 
     dispatch({
       type: 'employee/fetchDepartment',
@@ -132,10 +133,16 @@ class TableFilter extends PureComponent {
     const { Sider } = Layout;
     const { departmentState, all, EmploymentState, text, reset, locationState } = this.state;
     const {
-      employee: { department = [], employeetype = [], location = [], clearName = false },
+      employee: {
+        department = [],
+        employeetype = [],
+        //  location = [],
+        clearName = false,
+      },
       collapsed,
       changeTab,
       tabName,
+      listLocationsByCompany: location = [],
     } = this.props;
 
     const currentCompany = getCurrentCompany();

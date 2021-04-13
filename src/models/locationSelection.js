@@ -1,5 +1,5 @@
 // import { history } from 'umi';
-import { setCurrentLocation, getCurrentLocation, isOwner } from '@/utils/authority';
+import { setCurrentLocation, getCurrentLocation } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {getLocationListByCompany,getLocationListByParentCompany} from '../services/locationSelection';
 
