@@ -89,6 +89,7 @@ class CommonLayout extends PureComponent {
       permissions = {},
       profileOwner = false,
       isCompanyProfile = false,
+      isAddingCompany = false,
     } = this.props;
     const { displayComponent, selectedItemId } = this.state;
 
@@ -110,6 +111,7 @@ class CommonLayout extends PureComponent {
                   item={item}
                   handleClick={this.handleCLickItemMenu}
                   selectedItemId={selectedItemId}
+                  isAddingCompany={isAddingCompany}
                 />
               ))}
               {/* {isCompanyProfile && (

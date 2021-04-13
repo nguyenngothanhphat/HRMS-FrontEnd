@@ -98,7 +98,7 @@ class CompanyProfile extends Component {
                   <Spin size="large" />
                 </div>
               ) : (
-                <Layout listMenu={listMenu} isCompanyProfile />
+                <Layout listMenu={listMenu} isCompanyProfile isAddingCompany />
               )}
             </TabPane>
           </Tabs>
