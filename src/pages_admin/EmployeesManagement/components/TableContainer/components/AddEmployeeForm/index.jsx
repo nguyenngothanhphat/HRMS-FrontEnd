@@ -169,8 +169,8 @@ class AddEmployeeForm extends Component {
       reportingManagerList: [],
       statusAddEmployee: false,
     };
-    if (company !== '') {
-      isDisabled = false;
+    if (company) {
+      isDisabled = true;
       payload = {
         listCompany: [],
         statusAddEmployee: false,
