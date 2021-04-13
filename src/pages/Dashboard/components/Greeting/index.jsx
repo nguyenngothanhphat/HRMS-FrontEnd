@@ -1,17 +1,54 @@
-import React from 'react';
-import { formatMessage } from 'umi';
+import React, { PureComponent } from 'react';
+import { formatMessage, connect } from 'umi';
+import { getCurrentLocation } from '@/utils/authority';
 import s from './index.less';
 
-const Greeting = (props) => {
-  const { name = '', currentLocation = '' } = props;
-  return (
-    <div className={s.container}>
-      <h1>
-        {formatMessage({ id: 'pages.dashboard.greeting.hello' })} {name}!
-      </h1>
-      {currentLocation && <p>Current location: {currentLocation}</p>}
-    </div>
-  );
-};
+@connect(({ locationSelection: { listLocationsByCompany = [] } = {}, loading }) => ({
+  listLocationsByCompany,
+  loadingFetchLocationParent: loading.effects['locationSelection/fetchLocationListByParentCompany'],
+  loadingFetchLocation: loading.effects['locationSelection/fetchLocationsByCompany'],
+}))
+class Greeting extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentLocation: '',
+    };
+  }
+
+  componentDidUpdate = (prevProps) => {
+    const { listLocationsByCompany = [] } = this.props;
+    if (
+      JSON.stringify(listLocationsByCompany) !== JSON.stringify(prevProps.listLocationsByCompany)
+    ) {
+      this.setLocation();
+    }
+  };
+
+  setLocation = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    const currentLocation = getCurrentLocation();
+
+    const locationName = listLocationsByCompany.find((item) => item._id === currentLocation);
+    this.setState({
+      currentLocation: locationName?.name || '',
+    });
+  };
+
+  render() {
+    const { name = '' } = this.props;
+    const { currentLocation, loadingGetCurrentLocation } = this.state;
+    return (
+      <div className={s.container}>
+        <h1>
+          {formatMessage({ id: 'pages.dashboard.greeting.hello' })} {name}!
+        </h1>
+        {currentLocation && !loadingGetCurrentLocation && (
+          <p>Current location: {currentLocation}</p>
+        )}
+      </div>
+    );
+  }
+}
 
 export default Greeting;

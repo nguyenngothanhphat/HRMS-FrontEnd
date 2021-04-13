@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import { Modal, Button, Form, Select, Result } from 'antd';
 import { connect } from 'umi';
 import _ from 'lodash';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant, isAdmin, isOwner } from '@/utils/authority';
 import moment from 'moment';
 import ImportCSV from '@/components/ImportCSV';
 import exportToCsv from '@/utils/exportToCsv';
@@ -289,11 +289,17 @@ class ModalImportEmployee extends Component {
 
   renderFormImport = (companyProps) => {
     const { companyList } = this.props;
-    const currentTenant = getCurrentTenant();
+    const currentCompany = getCurrentCompany();
+    const checkIsOwner = isOwner();
 
-    const renderList = () => {
-      return companyProps.filter((item) => item.tenant === currentTenant);
-    };
+    let renderList = [];
+
+    if (checkIsOwner) {
+      renderList = [...companyProps];
+    } else {
+      const list = companyProps.filter((item) => item._id === currentCompany);
+      renderList = [...list];
+    }
 
     if (companyProps) {
       return (
@@ -305,7 +311,7 @@ class ModalImportEmployee extends Component {
         >
           <Form.Item label="Company" name="company" rules={[{ required: true }]}>
             <Select
-              placeholder="Select Current Company"
+              placeholder="Select Company"
               showArrow
               showSearch
               onChange={(value) => this.onChangeSelect(value)}
@@ -313,7 +319,7 @@ class ModalImportEmployee extends Component {
                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
             >
-              {renderList().map((item) => (
+              {renderList.map((item) => (
                 <Option key={item._id} value={item._id}>
                   {item.name}
                 </Option>
