@@ -6,7 +6,7 @@ export default class ItemMenu extends PureComponent {
     const { item = {}, handleClick = () => {}, selectedItemId } = this.props;
     const { id = '', name = '' } = item;
     const isActive = selectedItemId === id;
-    const className = isActive ? s.itemMenuActive : `${s.itemMenu} ${s.disableTab}`;
+    const className = isActive ? s.itemMenuActive : `${s.itemMenu}`;
     const isTabTopActive = id === selectedItemId - 1;
     return (
       <div
