@@ -5,7 +5,13 @@ import React, { Component } from 'react';
 import { Modal, Button, Form, Select, Result } from 'antd';
 import { connect } from 'umi';
 import _ from 'lodash';
-import { getCurrentCompany, getCurrentTenant, isAdmin, isOwner } from '@/utils/authority';
+import {
+  getCurrentCompany,
+  getCurrentLocation,
+  getCurrentTenant,
+  isAdmin,
+  isOwner,
+} from '@/utils/authority';
 import moment from 'moment';
 import ImportCSV from '@/components/ImportCSV';
 import exportToCsv from '@/utils/exportToCsv';
@@ -288,49 +294,27 @@ class ModalImportEmployee extends Component {
   };
 
   renderFormImport = (companyProps) => {
-    const { companyList } = this.props;
     const currentCompany = getCurrentCompany();
-    const checkIsOwner = isOwner();
-
+    const currentLocation = getCurrentLocation();
     let renderList = [];
+    const childCompanyList = companyProps.filter(
+      (comp) => comp?.childOfCompany === currentCompany || comp?._id === currentCompany,
+    );
 
-    if (checkIsOwner) {
-      renderList = [...companyProps];
+    if (!currentLocation) {
+      renderList = [...childCompanyList];
     } else {
-      const list = companyProps.filter((item) => item._id === currentCompany);
+      const list = childCompanyList.filter((item) => item._id === currentCompany);
       renderList = [...list];
     }
 
-    if (companyProps) {
-      return (
-        <Form
-          ref={this.formRef}
-          initialValues={{
-            company: companyProps._id,
-          }}
-        >
-          <Form.Item label="Company" name="company" rules={[{ required: true }]}>
-            <Select
-              placeholder="Select Company"
-              showArrow
-              showSearch
-              onChange={(value) => this.onChangeSelect(value)}
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {renderList.map((item) => (
-                <Option key={item._id} value={item._id}>
-                  {item.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </Form>
-      );
-    }
     return (
-      <Form ref={this.formRef}>
+      <Form
+        ref={this.formRef}
+        // initialValues={{
+        //   company: companyProps._id,
+        // }}
+      >
         <Form.Item label="Company" name="company" rules={[{ required: true }]}>
           <Select
             placeholder="Select Company"
@@ -341,8 +325,10 @@ class ModalImportEmployee extends Component {
               option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
           >
-            {companyList.map((item) => (
-              <Option key={item._id}>{item.name}</Option>
+            {renderList.map((item) => (
+              <Option key={item._id} value={item._id}>
+                {item.name}
+              </Option>
             ))}
           </Select>
         </Form.Item>
