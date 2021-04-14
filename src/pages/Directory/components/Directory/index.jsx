@@ -257,6 +257,11 @@ class DirectoryComponent extends PureComponent {
     const viewTabInActive = permissions.viewTabInActive !== -1;
     // const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
 
+    // format location
+    location = location.map((loc) => {
+      return { id: loc, tenantId: getCurrentTenant() };
+    });
+
     // if (viewTabMyTeam) {
     //   dispatch({
     //     type: 'employee/fetchListEmployeeMyTeam',
@@ -397,6 +402,12 @@ class DirectoryComponent extends PureComponent {
     } else {
       newLocations = locationIsSelected;
     }
+
+    // format locations
+    newLocations = newLocations.map((loc) => {
+      return { id: loc, tenantId: getCurrentTenant() };
+    });
+
     company = [...new Set(company.map((s) => s))];
     // For owners to display all locations (includes child companies)
     if (location.length === 0 && isOwnerCheck) {
