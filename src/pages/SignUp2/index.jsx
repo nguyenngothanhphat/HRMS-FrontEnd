@@ -13,7 +13,6 @@ const SignUp2 = (props) => {
 
   const inputRefs = [];
   const [inputVals, setInputVals] = useState(['', '', '', '', '', '']);
-
   const checkEmpty = (arr) => {
     for (let i = 0; i < arr.length; i += 1) {
       if (arr[i] === '') return true;
@@ -66,11 +65,9 @@ const SignUp2 = (props) => {
     } else {
       inputRefs[index].blur();
     }
-    setInputVals((prevState) => {
-      const vals = prevState.filter((inputValue, valueIndex) => index !== valueIndex);
-      vals.splice(index, 0, value);
-      return vals;
-    });
+    const newArr = [...inputVals];
+    newArr.splice(index, 1, value);
+    setInputVals(newArr);
   };
 
   return (
@@ -102,7 +99,6 @@ const SignUp2 = (props) => {
           className={styles.input}
           min={0}
           max={9}
-          value={inputVals[0]}
           onChange={(e) => onChange(e, 0)}
         />
         <InputNumber
@@ -112,7 +108,6 @@ const SignUp2 = (props) => {
           className={styles.input}
           min={0}
           max={9}
-          value={inputVals[1]}
           onChange={(e) => onChange(e, 1)}
         />
         <InputNumber
@@ -122,14 +117,12 @@ const SignUp2 = (props) => {
           className={styles.input}
           min={0}
           max={9}
-          value={inputVals[2]}
           onChange={(e) => onChange(e, 2)}
         />
         <InputNumber
           ref={(ref) => {
             inputRefs.push(ref);
           }}
-          value={inputVals[3]}
           className={styles.input}
           min={0}
           max={9}
@@ -139,7 +132,6 @@ const SignUp2 = (props) => {
           ref={(ref) => {
             inputRefs.push(ref);
           }}
-          value={inputVals[4]}
           className={styles.input}
           min={0}
           max={9}
@@ -149,7 +141,6 @@ const SignUp2 = (props) => {
           ref={(ref) => {
             inputRefs.push(ref);
           }}
-          value={inputVals[5]}
           className={styles.input}
           min={0}
           max={9}
