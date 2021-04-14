@@ -6,7 +6,7 @@ import { Modal, Button, Form, Input, Select, DatePicker } from 'antd';
 import { connect, formatMessage } from 'umi';
 import _ from 'lodash';
 import moment from 'moment';
-import { getCurrentCompany, isAdmin, isOwner } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -218,17 +218,15 @@ class AddEmployeeForm extends Component {
   };
 
   getUserCompanyList = (companyList) => {
-    const checkIsAdmin = isAdmin();
-    const checkIsOwner = isOwner();
+    const currentLocation = getCurrentLocation();
     const currentCompany = getCurrentCompany();
-    if (checkIsOwner) {
-      return companyList;
+    const childCompanyList = companyList.filter(
+      (comp) => comp?.childOfCompany === currentCompany || comp?._id === currentCompany,
+    );
+    if (!currentLocation) {
+      return childCompanyList;
     }
-    if (checkIsAdmin) {
-      return companyList.filter((company) => company?._id === currentCompany);
-    }
-
-    return [];
+    return childCompanyList.filter((company) => company?._id === currentCompany);
   };
 
   renderAddEmployeeForm = () => {

@@ -1,11 +1,11 @@
 import request from '@/utils/request';
 
-// export async function LocationFilter(payload) {
-//   return request('/api/location/list', {
-//     method: 'POST',
-//     data: payload,
-//   });
-// }
+export async function getFilterList(payload) {
+  return request('/api/companytenant/list-filter-parent', {
+    method: 'POST',
+    data: payload,
+  });
+}
 
 export async function LocationFilter(payload) {
   return request('/api/locationtenant/list', {

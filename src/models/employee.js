@@ -6,6 +6,7 @@ import {
   LocationOwnerFilter,
   DepartmentFilter,
   EmployeeTypeFilter,
+  getFilterList,
   getListEmployeeMyTeam,
   getListEmployee,
   getDataOrgChart,
@@ -28,6 +29,7 @@ const employee = {
     clearName: false,
     dataOrgChart: {},
     listAdministrator: [],
+    filterList: {},
   },
   effects: {
     *fetchEmployeeType(_, { call, put }) {
@@ -74,12 +76,25 @@ const employee = {
         dialog(errors);
       }
     },
+    *fetchFilterList({ payload }, { call, put }) {
+      try {
+        const response = yield call(getFilterList, payload);
+        const { statusCode, data: filterList = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { filterList } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
     *fetchListEmployeeMyTeam(
       {
         payload: {
           company = '',
           department = [],
-          location = [],
+          country = [],
+          state = [],
           employeeType = [],
           name = '',
         } = {},
@@ -90,7 +105,8 @@ const employee = {
         const response = yield call(getListEmployeeMyTeam, {
           company,
           department,
-          location,
+          country,
+          state,
           employeeType,
           name,
         });
@@ -106,7 +122,8 @@ const employee = {
         payload: {
           company = [],
           department = [],
-          location = [],
+          country = [],
+          state = [],
           employeeType = [],
           name = '',
         } = {},
@@ -119,7 +136,8 @@ const employee = {
           status: ['ACTIVE'],
           company,
           department,
-          location,
+          country,
+          state,
           employeeType,
           name,
         });
@@ -138,7 +156,8 @@ const employee = {
         payload: {
           company = [],
           department = [],
-          location = [],
+          country = [],
+          state = [],
           employeeType = [],
           name = '',
         } = {},
@@ -151,7 +170,8 @@ const employee = {
           status: ['INACTIVE'],
           company,
           department,
-          location,
+          country,
+          state,
           employeeType,
           name,
         });
@@ -221,7 +241,12 @@ const employee = {
       const actionFilter = action.payload;
       const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
       if (findIndex < 0) {
-        const item = { actionFilter };
+        const item = {
+          actionFilter: {
+            name: actionFilter?.name,
+          },
+        };
+        item.checkedList = actionFilter?.checkedList;
         data.push(item);
       } else {
         data[findIndex] = {

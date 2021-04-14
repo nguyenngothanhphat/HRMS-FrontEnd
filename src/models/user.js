@@ -5,6 +5,9 @@ import {
   getCurrentLocation,
   getCurrentTenant,
   isOwner,
+  setAuthority,
+  getAuthority,
+  isAdmin,
 } from '@/utils/authority';
 
 import { history } from 'umi';
@@ -31,8 +34,8 @@ const UserModel = {
         const company = getCurrentCompany();
         const tenantId = getCurrentTenant();
         const payload = {
-          company: company && company !== 'undefined' ? company : null,
-          tenantId: tenantId && tenantId !== 'undefined' ? tenantId : null,
+          company,
+          tenantId,
         };
         const response = yield call(queryCurrent, payload);
         const { statusCode, data = {} } = response;
@@ -49,7 +52,7 @@ const UserModel = {
             name: data?.firstName,
           },
         });
-        
+
         const checkIsOwner = isOwner();
         if (!checkIsOwner) {
           // for admin, auto set location
@@ -59,13 +62,26 @@ const UserModel = {
             setCurrentLocation(response?.data?.manageLocation[0]?._id);
           }
         }
-        let formatArrRoles = []
+
+        let formatArrRoles = [];
+        const { signInRole = [] } = data;
+        const formatRole = signInRole.map((role) => role.toLowerCase());
+
+        if (formatRole.includes('owner')) {
+          formatArrRoles = [...formatArrRoles, 'owner'];
+        }
+        if (formatRole.includes('admin')) {
+          formatArrRoles = [...formatArrRoles, 'admin'];
+        }
         data?.permissionAdmin.forEach((e) => {
           formatArrRoles = [...formatArrRoles, e];
         });
         data?.permissionEmployee.forEach((e) => {
           formatArrRoles = [...formatArrRoles, e];
         });
+
+        setAuthority(formatArrRoles);
+
         yield put({
           type: 'save',
           payload: {
