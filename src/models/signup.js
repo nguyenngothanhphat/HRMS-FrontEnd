@@ -61,13 +61,19 @@ const signup = {
     *fetchSecurityCode({ payload }, { call, put }) {
       try {
         const response = yield call(getSecurityCode, payload);
-        const { statusCode, data: { securityCode: { codeNumber } = {} } = {} } = response;
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { codeNumber } });
-        yield put({
-          type: 'clearStateLastSignUp',
-        });
-        history.replace('/signup-configlocation');
+        if (!data?.result) {
+          notification.error({
+            message: 'Wrong code number',
+          });
+        } else {
+          yield put({ type: 'save', payload: { codeNumber: data?.securityCode?.codeNumber } });
+          yield put({
+            type: 'clearStateLastSignUp',
+          });
+          history.replace('/signup-configlocation');
+        }
       } catch (errors) {
         dialog(errors);
       }
@@ -107,10 +113,10 @@ const signup = {
             payload: payloadAutoLogin,
           });
         }
-        return response
+        return response;
       } catch (errors) {
         dialog(errors);
-        return {}
+        return {};
       }
     },
   },
