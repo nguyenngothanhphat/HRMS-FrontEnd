@@ -1,12 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Layout, Input } from 'antd';
 import { connect, formatMessage } from 'umi';
-import {
-  getCurrentCompany,
-  getCurrentLocation,
-  getCurrentTenant,
-  isOwner,
-} from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { filteredArr } from '@/utils/utils';
 
 import styles from './index.less';
@@ -144,7 +139,9 @@ class TableFilter extends PureComponent {
       tabName,
       filterList: { listCountry = [], listDepartmentName = [], listCompany = [] } = {},
     } = this.props;
+
     const currentLocation = getCurrentLocation();
+
     let formatDataCountry = listCountry.map((item) => {
       const { country = '' } = item;
       return {
@@ -170,7 +167,8 @@ class TableFilter extends PureComponent {
       };
     });
 
-    const formatDataDepartment = listDepartmentName.map((item) => {
+    const listDepartmentNameNew = listDepartmentName.filter((department) => department !== null);
+    const formatDataDepartment = listDepartmentNameNew.map((item) => {
       return {
         label: item,
         value: item,
@@ -254,7 +252,6 @@ class TableFilter extends PureComponent {
                     data={filteredArr(formatDataCountry)}
                   />
                 )}
-
                 {reset || changeTab ? (
                   ''
                 ) : (
