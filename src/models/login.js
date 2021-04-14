@@ -19,27 +19,22 @@ const Model = {
           type: 'changeLoginStatus',
           payload: response,
         });
-
-        if (response.statusCode !== 200) throw response;
+        const { statusCode, data  ={} } = response;
+        if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { messageError: '' } });
         setToken(response.data.token);
 
-        const arrayRoles = response?.data?.user?.roles;
-        let formatArrRoles = [];
-        arrayRoles?.forEach((e) => {
-          formatArrRoles = [...formatArrRoles, e._id.toLowerCase(), ...e.permissions];
-        });
-        setAuthority(formatArrRoles);
-        if (formatArrRoles.indexOf('candidate') > -1) {
-          history.replace('/candidate');
-          yield put({
-            type: 'saveCandidateId',
-            payload: response,
-          });
-          return;
-        }
+        // if (formatArrRoles.indexOf('candidate') > -1) {
+        //   history.replace('/candidate');
+        //   yield put({
+        //     type: 'saveCandidateId',
+        //     payload: response,
+        //   });
+        //   return;
+        // }
 
-        const { user: { signInRole = [] } = {}, listCompany = [] } = response?.data;
+        let formatArrRoles = [];
+        const { user: { signInRole = [] } = {}, listCompany = [] } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
         let isAdminOrOwner = false;
@@ -53,19 +48,23 @@ const Model = {
         }
         setAuthority(formatArrRoles);
 
-        // redirect 
-        if (isAdminOrOwner || listCompany.length > 1) {
+        // redirect
+        if (isAdminOrOwner) {
           history.replace('/control-panel');
         } else 
         if (listCompany.length === 1) {
-          const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
-          setTenantId(tenantId);
-          setCurrentCompany(selectedCompany);
-          yield put({
-            type: 'user/fetchCompanyOfUser',
-          });
-          history.replace('/');
-        }
+            const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
+            setTenantId(tenantId);
+            setCurrentCompany(selectedCompany);
+            yield put({
+              type: 'user/fetchCurrent',
+              refreshCompanyList: false,
+            });
+            history.push('/');
+          }
+          else {
+            history.replace('/control-panel');
+          }
       } catch (errors) {
         const { data = [] } = errors;
         if (data.length > 0) {
