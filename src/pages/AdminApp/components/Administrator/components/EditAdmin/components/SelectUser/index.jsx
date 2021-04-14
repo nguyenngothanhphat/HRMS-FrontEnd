@@ -62,7 +62,7 @@ class SelectUser extends PureComponent {
           }}
           onFinish={this.onFinish}
         >
-          <Row align="middle" gutter={[24, 24]}>
+          <Row className={styles.eachRow} align="middle">
             <Col span={8}>Email</Col>
             <Col span={14}>
               <Form.Item name="email">
@@ -71,7 +71,7 @@ class SelectUser extends PureComponent {
             </Col>
             <Col span={2} />
           </Row>
-          <Row align="middle" gutter={[24, 24]}>
+          <Row className={styles.eachRow} align="middle">
             <Col span={8}>Administrator Name</Col>
             <Col span={14}>
               <Form.Item
@@ -88,7 +88,7 @@ class SelectUser extends PureComponent {
             </Col>
             <Col span={2} />
           </Row>
-          <Row align="middle" gutter={[24, 24]}>
+          <Row className={styles.eachRow} align="middle">
             <Col span={8}>Manage Location</Col>
             <Col span={14}>
               <Form.Item
