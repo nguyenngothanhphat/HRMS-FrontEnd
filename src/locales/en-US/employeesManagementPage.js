@@ -21,6 +21,7 @@ export default {
   'addEmployee.placeholder.location': 'Select Location',
   'addEmployee.department': 'Department',
   'addEmployee.roles': 'Roles',
+  'addEmployee.employeeType': 'Employment Type',
   'addEmployee.placeholder.department': 'Select Department',
   'addEmployee.jobTitle': 'Job Title',
   'addEmployee.placeholder.jobTitle': 'Select Job Title',
