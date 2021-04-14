@@ -92,66 +92,19 @@ const SignUp2 = (props) => {
       </p>
 
       <div className={styles.code}>
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          value={inputRefs[0]}
-          className={styles.input}
-          min={0}
-          max={9}
-          onChange={(e) => onChange(e, 0)}
-        />
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          value={inputRefs[1]}
-          className={styles.input}
-          min={0}
-          max={9}
-          onChange={(e) => onChange(e, 1)}
-        />
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          value={inputRefs[2]}
-          className={styles.input}
-          min={0}
-          max={9}
-          onChange={(e) => onChange(e, 2)}
-        />
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          value={inputRefs[3]}
-          className={styles.input}
-          min={0}
-          max={9}
-          onChange={(e) => onChange(e, 3)}
-        />
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          value={inputRefs[4]}
-          className={styles.input}
-          min={0}
-          max={9}
-          onChange={(e) => onChange(e, 4)}
-        />
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          value={inputRefs[5]}
-          className={styles.input}
-          min={0}
-          max={9}
-          onChange={(e) => onChange(e, 5)}
-        />
+        {inputVals.map((value, index) => {
+          return (
+            <InputNumber
+              ref={(ref) => {
+                inputRefs.push(ref);
+              }}
+              className={styles.input}
+              min={0}
+              max={9}
+              onChange={(e) => onChange(e, index)}
+            />
+          );
+        })}
       </div>
 
       <div className={styles.send}>
