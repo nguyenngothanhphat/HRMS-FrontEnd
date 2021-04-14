@@ -176,10 +176,10 @@ const employeesManagement = {
       let statusAddEmployee = false;
       try {
         const response = yield call(addEmployee, payload);
-        const { statusCode, message } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message,
+          message:'Add employee successfully!',
         });
         statusAddEmployee = true;
       } catch (errors) {

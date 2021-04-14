@@ -162,13 +162,6 @@ const routes = [
             authority: ['owner'],
           },
           {
-            path: '/directory',
-            name: 'directory',
-            icon: '/assets/images/menuIcons/directory.svg',
-            component: './Directory',
-            authority: ['P_DIRECTORY_VIEW','M_DIRECTORY_VIEW','owner'],
-          },
-          {
             path: '/users',
             name: 'users',
             icon: '/assets/images/menuIcons/user.svg',
@@ -281,6 +274,13 @@ const routes = [
           //   authority: ['admin-csa'],
           // },
           {
+            path: '/directory',
+            name: 'directory',
+            icon: '/assets/images/menuIcons/directory.svg',
+            component: './Directory',
+            authority: ['P_DIRECTORY_VIEW', 'M_DIRECTORY_VIEW', 'owner'],
+          },
+          {
             // path: '/time-off/new-leave-request',
             path: '/time-off/:action(new-compoff-request)',
             name: 'Request for Compoff',
@@ -353,7 +353,7 @@ const routes = [
               'admin-cda',
               'leader',
               'admin',
-              'owner'
+              'owner',
             ],
           },
           {
