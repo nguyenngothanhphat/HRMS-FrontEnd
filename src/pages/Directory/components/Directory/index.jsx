@@ -241,14 +241,30 @@ class DirectoryComponent extends PureComponent {
     const { dispatch, permissions = {} } = this.props;
     const { listLocationsByCompany = [] } = this.props;
     let company = [getCurrentCompany()];
+    const currentLocation = [getCurrentLocation()];
 
     const isOwnerCheck = isOwner();
-    let location = [getCurrentLocation()];
+    let location = [
+      {
+        id: getCurrentLocation(),
+        tenantId: getCurrentTenant(),
+      },
+    ];
 
     // For owners to display all locations (includes child companies)
     if (isOwnerCheck) {
-      if (location.length === 0 || location.includes('undefined') || location.includes(null)) {
-        location = listLocationsByCompany.map((lo) => lo?._id);
+      if (
+        currentLocation.length === 0 ||
+        currentLocation.includes('undefined') ||
+        currentLocation.includes(null)
+      ) {
+        location = listLocationsByCompany.map((lo) => {
+          const { _id = '', company: { tenant = '' } = {} } = lo;
+          return {
+            id: _id,
+            tenantId: tenant,
+          };
+        });
       }
       company = listLocationsByCompany.map((lo) => lo?.company?._id);
       company = [...new Set(company.map((s) => s))];
@@ -376,6 +392,8 @@ class DirectoryComponent extends PureComponent {
     const { dispatch } = this.props;
     const { listLocationsByCompany = [] } = this.props;
     const { name, department, location, employeeType } = params;
+
+    // MULTI COMPANY & LOCATION PAYLOAD
     let company = [];
     let newLocations = [...location];
     const isOwnerCheck = isOwner();
@@ -397,6 +415,19 @@ class DirectoryComponent extends PureComponent {
     } else {
       newLocations = locationIsSelected;
     }
+
+    newLocations = listLocationsByCompany.map((lo) => {
+      const { _id = '', company: { tenant = '' } = {} } = lo;
+      if (newLocations.includes(_id)) {
+        return {
+          id: _id,
+          tenantId: tenant,
+        };
+      }
+      return null;
+    });
+    newLocations = newLocations.filter((lo) => lo !== null);
+
     company = [...new Set(company.map((s) => s))];
     // For owners to display all locations (includes child companies)
     if (location.length === 0 && isOwnerCheck) {

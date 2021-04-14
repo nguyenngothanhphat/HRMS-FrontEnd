@@ -13,7 +13,6 @@ const SignUp2 = (props) => {
 
   const inputRefs = [];
   const [inputVals, setInputVals] = useState(['', '', '', '', '', '']);
-
   const checkEmpty = (arr) => {
     for (let i = 0; i < arr.length; i += 1) {
       if (arr[i] === '') return true;
@@ -66,11 +65,9 @@ const SignUp2 = (props) => {
     } else {
       inputRefs[index].blur();
     }
-    setInputVals((prevState) => {
-      const vals = prevState.filter((inputValue, valueIndex) => index !== valueIndex);
-      vals.splice(index, 0, value);
-      return vals;
-    });
+    const newArr = [...inputVals];
+    newArr.splice(index, 1, value);
+    setInputVals(newArr);
   };
 
   return (
@@ -95,66 +92,19 @@ const SignUp2 = (props) => {
       </p>
 
       <div className={styles.code}>
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          className={styles.input}
-          min={0}
-          max={9}
-          value={inputVals[0]}
-          onChange={(e) => onChange(e, 0)}
-        />
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          className={styles.input}
-          min={0}
-          max={9}
-          value={inputVals[1]}
-          onChange={(e) => onChange(e, 1)}
-        />
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          className={styles.input}
-          min={0}
-          max={9}
-          value={inputVals[2]}
-          onChange={(e) => onChange(e, 2)}
-        />
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          value={inputVals[3]}
-          className={styles.input}
-          min={0}
-          max={9}
-          onChange={(e) => onChange(e, 3)}
-        />
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          value={inputVals[4]}
-          className={styles.input}
-          min={0}
-          max={9}
-          onChange={(e) => onChange(e, 4)}
-        />
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          value={inputVals[5]}
-          className={styles.input}
-          min={0}
-          max={9}
-          onChange={(e) => onChange(e, 5)}
-        />
+        {inputVals.map((value, index) => {
+          return (
+            <InputNumber
+              ref={(ref) => {
+                inputRefs.push(ref);
+              }}
+              className={styles.input}
+              min={0}
+              max={9}
+              onChange={(e) => onChange(e, index)}
+            />
+          );
+        })}
       </div>
 
       <div className={styles.send}>

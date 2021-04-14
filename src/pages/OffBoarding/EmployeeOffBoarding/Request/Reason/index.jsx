@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Input, Row, Col, DatePicker } from 'antd';
 import { connect } from 'umi';
-import icon from '@/assets/offboarding-schedule.svg';
+import icon from '@/assets/offboarding-bulb.svg';
 import moment from 'moment';
 import styles from './index.less';
 
@@ -21,7 +21,7 @@ class Reason extends PureComponent {
     const dateValue = moment(lastWorkingDate).format('YYYY/MM/DD');
     return (
       <div className={styles.stepContain}>
-        {!lastWorkingDate && (
+        {/* {!lastWorkingDate && (
           <div className={styles.title_Box}>
             <img src={icon} alt="iconCheck" className={styles.icon} />
             <span className={styles.title_Text}>
@@ -32,9 +32,9 @@ class Reason extends PureComponent {
               </div>
             </span>
           </div>
-        )}
+        )} */}
 
-        <div className={styles.titleBody} style={{ marginTop }}>
+        <div className={styles.titleBody}>
           {lastWorkingDate && (
             <div className={styles.viewChangeLastWorkingDay}>
               <p className={styles.viewChangeLastWorkingDay__title}>Resignation request details</p>
@@ -73,11 +73,22 @@ class Reason extends PureComponent {
               </Row>
             </div>
           )}
+          {!lastWorkingDate && (
+            <div className={styles.title_Box}>
+              <img src={icon} alt="iconBulb" className={styles.icon} />
+              <div className={styles.title_Text}>
+                Your Last Working Day (LWD) will be 90 day from the submission of this request.
+                Check our <span className={styles.title_Text_span}>Offboarding policy</span> to
+                learn more. The LWD is system generated. Any change request has to be approved by
+                the HR manager to come into effect.
+              </div>
+            </div>
+          )}
           <div className={styles.center}>
             <p className={styles.textBox}>Reason for leaving us?</p>
-            <p className={styles.textTime}>
+            {/* <p className={styles.textTime}>
               {requestDate && moment(requestDate).format('DD.MM.YY | h:mm A')}
-            </p>
+            </p> */}
           </div>
           <TextArea className={styles.boxReason} value={reason} disabled />
         </div>
