@@ -1,7 +1,21 @@
 import request from '@/utils/request';
 
+// export async function LocationFilter(payload) {
+//   return request('/api/location/list', {
+//     method: 'POST',
+//     data: payload,
+//   });
+// }
+
 export async function LocationFilter(payload) {
-  return request('/api/location/list', {
+  return request('/api/locationtenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function LocationOwnerFilter(payload) {
+  return request('/api/locationtenant/list-by-company-parent', {
     method: 'POST',
     data: payload,
   });
@@ -14,9 +28,10 @@ export async function EmployeeTypeFilter(payload) {
   });
 }
 
-export async function DepartmentFilter() {
-  return request('/api/department/list', {
+export async function DepartmentFilter(payload) {
+  return request('/api/departmenttenant/list', {
     method: 'POST',
+    data: payload,
   });
 }
 
@@ -27,14 +42,8 @@ export async function getListEmployeeMyTeam(payload) {
   });
 }
 
-export async function getListEmployeeActive(payload) {
-  return request('/api/employee/list-active', {
-    method: 'POST',
-    data: payload,
-  });
-}
-export async function getListEmployeeInActive(payload) {
-  return request('/api/employee/list-inactive', {
+export async function getListEmployee(payload) {
+  return request('/api/employeetenant/list', {
     method: 'POST',
     data: payload,
   });

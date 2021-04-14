@@ -333,7 +333,7 @@ class TableUsers extends PureComponent {
           handleCancel={this.closeResetPasswordModal}
         />
         <Table
-          size="small"
+          size="middle"
           loading={loading}
           rowSelection={rowSelection}
           pagination={{ ...pagination, total: data.length }}

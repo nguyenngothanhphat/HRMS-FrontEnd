@@ -1,6 +1,6 @@
 import { history } from 'umi';
 import { accountLogin, signInThirdParty } from '@/services/login';
-import { setAuthority } from '@/utils/authority';
+import { setAuthority, setTenantId, setCurrentCompany } from '@/utils/authority';
 import { setToken } from '@/utils/token';
 import { dialog } from '@/utils/utils';
 
@@ -19,12 +19,14 @@ const Model = {
           type: 'changeLoginStatus',
           payload: response,
         });
+
         if (response.statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { messageError: '' } });
         setToken(response.data.token);
-        const arrayRoles = response.data.user.roles;
+
+        const arrayRoles = response?.data?.user?.roles;
         let formatArrRoles = [];
-        arrayRoles.forEach((e) => {
+        arrayRoles?.forEach((e) => {
           formatArrRoles = [...formatArrRoles, e._id.toLowerCase(), ...e.permissions];
         });
         setAuthority(formatArrRoles);
@@ -36,7 +38,34 @@ const Model = {
           });
           return;
         }
-        history.replace('/');
+
+        const { user: { signInRole = [] } = {}, listCompany = [] } = response?.data;
+        const formatRole = signInRole.map((role) => role.toLowerCase());
+
+        let isAdminOrOwner = false;
+        if (formatRole.includes('owner')) {
+          isAdminOrOwner = true;
+          formatArrRoles = [...formatArrRoles, 'owner'];
+        }
+        if (formatRole.includes('admin')) {
+          isAdminOrOwner = true;
+          formatArrRoles = [...formatArrRoles, 'admin'];
+        }
+        setAuthority(formatArrRoles);
+
+        // redirect 
+        if (isAdminOrOwner || listCompany.length > 1) {
+          history.replace('/control-panel');
+        } else 
+        if (listCompany.length === 1) {
+          const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
+          setTenantId(tenantId);
+          setCurrentCompany(selectedCompany);
+          yield put({
+            type: 'user/fetchCompanyOfUser',
+          });
+          history.replace('/');
+        }
       } catch (errors) {
         const { data = [] } = errors;
         if (data.length > 0) {
@@ -52,6 +81,8 @@ const Model = {
       setAuthority('');
       localStorage.removeItem('dataRoles');
       localStorage.removeItem('Rolesname');
+      localStorage.removeItem('currentCompanyId');
+      localStorage.removeItem('tenantId');
       localStorage.removeItem('currentLocation');
       yield put({
         type: 'user/saveCurrentUser',

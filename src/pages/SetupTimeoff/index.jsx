@@ -6,10 +6,10 @@ import s from './index.less';
 class SetupTimeoff extends PureComponent {
   render() {
     const routes = [
-      { name: 'Getting Started', path: '/account-setup/get-started' },
+      { name: 'Getting Started', path: '/control-panel/get-started' },
       {
         name: 'Setup Employee Directory',
-        path: '/account-setup/get-started/setup-employee-directory',
+        path: '/control-panel/get-started/setup-employee-directory',
       },
     ];
     return (

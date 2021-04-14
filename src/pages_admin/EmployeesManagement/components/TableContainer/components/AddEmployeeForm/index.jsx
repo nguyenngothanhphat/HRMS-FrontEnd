@@ -6,6 +6,7 @@ import { Modal, Button, Form, Input, Select, DatePicker } from 'antd';
 import { connect, formatMessage } from 'umi';
 import _ from 'lodash';
 import moment from 'moment';
+import { getCurrentCompany, isAdmin, isOwner } from '@/utils/authority';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -22,6 +23,7 @@ const { Option } = Select;
       reportingManagerList = [],
       statusAddEmployee,
     },
+    user: { companiesOfUser = [], currentUser: { manageLocation = [] } = {} } = {},
   }) => ({
     rolesList,
     companyList,
@@ -30,6 +32,9 @@ const { Option } = Select;
     jobTitleList,
     reportingManagerList,
     statusAddEmployee,
+    companiesOfUser,
+    manageLocation, // locations of admin
+    loadingCompanyList: loading.effects['employeesManagement/fetchCompanyList'],
     loadingDepartment: loading.effects['employeesManagement/fetchDepartmentList'],
     loadingLocation: loading.effects['employeesManagement/fetchLocationList'],
     loadingTitle: loading.effects['employeesManagement/fetchJobTitleList'],
@@ -62,11 +67,12 @@ class AddEmployeeForm extends Component {
 
   componentDidMount() {
     const { company } = this.props;
-    if (company !== '') {
+    if (company) {
       this.setState({
         isDisabled: false,
       });
-      this.fetchData(company._id);
+      // * : error tenant
+      // this.fetchData(company._id);
     }
   }
 
@@ -84,22 +90,30 @@ class AddEmployeeForm extends Component {
   }
 
   fetchData = (_id) => {
-    const { dispatch } = this.props;
+    const { dispatch, companiesOfUser = [] } = this.props;
+
+    const companyMatch = companiesOfUser.find((item) => item._id === _id);
+    const tenantLocation = companyMatch.tenant;
+
     dispatch({
       type: 'employeesManagement/fetchReportingManagerList',
       payload: {
-        company: _id,
+        tenantId: tenantLocation,
+        company: [_id],
+        status: ['ACTIVE'],
       },
     });
     dispatch({
       type: 'employeesManagement/fetchLocationList',
       payload: {
+        tenantId: tenantLocation,
         company: _id,
       },
     });
     dispatch({
       type: 'employeesManagement/fetchDepartmentList',
       payload: {
+        tenantId: tenantLocation,
         company: _id,
       },
     });
@@ -148,17 +162,17 @@ class AddEmployeeForm extends Component {
     const { handleCancel, dispatch, company } = this.props;
     let isDisabled = true;
     let payload = {
-      companyList: [],
+      listCompany: [],
       departmentList: [],
       locationList: [],
       jobTitleList: [],
       reportingManagerList: [],
       statusAddEmployee: false,
     };
-    if (company !== '') {
-      isDisabled = false;
+    if (company) {
+      isDisabled = true;
       payload = {
-        companyList: [],
+        listCompany: [],
         statusAddEmployee: false,
       };
     }
@@ -178,14 +192,19 @@ class AddEmployeeForm extends Component {
   handleChangeAddEmployee = () => {};
 
   handleSubmitEmployee = (values) => {
-    const { dispatch } = this.props;
+    const tenantId = localStorage.getItem('tenantId');
+    const { dispatch, handleCancel = () => {} } = this.props;
     const payload = {
       ...values,
+      tenantId,
       joinDate: moment(values.joinDate).format('MM.DD.YY'),
     };
     dispatch({
       type: 'employeesManagement/addEmployee',
       payload,
+    }).then(() => {
+      this.setState({ isDisabled: true });
+      handleCancel();
     });
   };
 
@@ -196,6 +215,20 @@ class AddEmployeeForm extends Component {
         <p className={styles.header__text}>{titleModal}</p>
       </div>
     );
+  };
+
+  getUserCompanyList = (companyList) => {
+    const checkIsAdmin = isAdmin();
+    const checkIsOwner = isOwner();
+    const currentCompany = getCurrentCompany();
+    if (checkIsOwner) {
+      return companyList;
+    }
+    if (checkIsAdmin) {
+      return companyList.filter((company) => company?._id === currentCompany);
+    }
+
+    return [];
   };
 
   renderAddEmployeeForm = () => {
@@ -223,7 +256,11 @@ class AddEmployeeForm extends Component {
       loadingManager,
       company,
     } = this.props;
+
     const { isDisabled, isDisabledTitle } = this.state;
+
+    const formatCompanyList = this.getUserCompanyList(companyList);
+
     return (
       <div className={styles.addEmployee__form} id="addEmployee__form">
         <Form
@@ -341,7 +378,7 @@ class AddEmployeeForm extends Component {
                   option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
               >
-                {companyList.map((item) => (
+                {formatCompanyList.map((item) => (
                   <Option key={item._id}>{item.name}</Option>
                 ))}
               </Select>
@@ -437,8 +474,8 @@ class AddEmployeeForm extends Component {
               }
             >
               {reportingManagerList.map((item) => (
-                <Option key={item._id}>
-                  {`${item.generalInfo.firstName} ${item.generalInfo.lastName}`}
+                <Option key={item?._id}>
+                  {`${item?.generalInfo?.firstName} ${item?.generalInfo?.lastName}`}
                 </Option>
               ))}
             </Select>

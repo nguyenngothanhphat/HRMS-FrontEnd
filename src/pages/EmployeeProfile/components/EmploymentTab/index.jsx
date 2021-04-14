@@ -30,7 +30,7 @@ class EmploymentTab extends Component {
 
     const { title, location } = employeeProfile.originData.employmentData;
     const { firstName, legalName } = employeeProfile.originData.generalData;
-    const { compensationType } = employeeProfile.originData.compensationData;
+    // const { compensationType } = employeeProfile.originData.compensationData;
     this.state = {
       isChanging: false,
       isEdit: false,
@@ -39,7 +39,7 @@ class EmploymentTab extends Component {
       currentData: {
         name: legalName || firstName || null,
         title: title?.name || null,
-        compensationType: compensationType || null,
+        // compensationType: compensationType || null,
         location: location?.name || null,
       },
     };
@@ -89,9 +89,9 @@ class EmploymentTab extends Component {
         location: data.stepTwo.wLocation || null,
         employeeType: data.stepTwo.employment || null,
         department: data.stepThree.department || null,
-        compensationType: `${data.stepTwo.compensation || null} - ${
-          data.stepTwo.compensationType || null
-        }`,
+        // compensationType: `${data.stepTwo.compensation || null} - ${
+        //   data.stepTwo.compensationType || null
+        // }`,
         effectiveDate: data.stepOne === 'Now' ? new Date() : data.stepOne,
         changeDate: new Date(),
         takeEffect,

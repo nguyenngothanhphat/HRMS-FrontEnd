@@ -29,7 +29,8 @@ const LocationForm = (props) => {
     const formValues = form.getFieldsValue();
     const {
       name = '',
-      address = '',
+      addressLine1 = '',
+      addressLine2 = '',
       zipCode = '',
       country: countryValue = '',
       state = '',
@@ -37,7 +38,8 @@ const LocationForm = (props) => {
 
     const data = {
       name,
-      address,
+      addressLine1,
+      addressLine2,
       country: countryValue,
       state,
       zipCode,
@@ -57,7 +59,7 @@ const LocationForm = (props) => {
     dispatch({
       type: 'signup/save',
       payload: {
-        locations: returnedLocations,
+        locations: [...returnedLocations],
       },
     });
   };
@@ -93,8 +95,21 @@ const LocationForm = (props) => {
         label={useIntl().formatMessage({ id: 'page.signUp.step2.state' })}
         name="state"
         className={styles.vertical}
+        rules={[
+          {
+            required: true,
+            message: 'Please input your state!',
+          },
+        ]}
       >
-        <Select value={locations[index].state}>
+        <Select
+          showArrow
+          placeholder="Select State"
+          showSearch
+          value={locations[index].state}
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        >
           {listStateByItemCountry.map((state, itemIndex) => (
             <Select.Option key={`${itemIndex + 1}`} value={state}>
               {state}
@@ -112,7 +127,7 @@ const LocationForm = (props) => {
 
         <Form.Item
           name="name"
-          label="Name"
+          label="Name*"
           className={styles.vertical}
           rules={[
             {
@@ -125,8 +140,8 @@ const LocationForm = (props) => {
         </Form.Item>
 
         <Form.Item
-          name="address"
-          label={useIntl().formatMessage({ id: 'page.signUp.step2.address' })}
+          name="addressLine1"
+          label="Address Line 1*"
           className={styles.vertical}
           rules={[
             {
@@ -134,6 +149,20 @@ const LocationForm = (props) => {
               message: useIntl().formatMessage({ id: 'page.signUp.step2.addressError' }),
             },
           ]}
+        >
+          <Input onChange={() => handleOnChange()} />
+        </Form.Item>
+
+        <Form.Item
+          name="addressLine2"
+          label="Address Line 2"
+          className={styles.vertical}
+          // rules={[
+          //   {
+          //     required: true,
+          //     message: useIntl().formatMessage({ id: 'page.signUp.step2.addressError' }),
+          //   },
+          // ]}
         >
           <Input onChange={() => handleOnChange()} />
         </Form.Item>
@@ -183,10 +212,10 @@ const LocationForm = (props) => {
                   required: true,
                   message: useIntl().formatMessage({ id: 'page.signUp.step2.zipCodeError' }),
                 },
-                {
-                  pattern: /^[0-9]{6}$/,
-                  message: useIntl().formatMessage({ id: 'page.signUp.step2.zipCodeError2' }),
-                },
+                // {
+                //   pattern: /^[0-9]*$/,
+                //   message: 'Zip code is only numbers',
+                // },
               ]}
             >
               <InputNumber onChange={() => handleOnChange()} />

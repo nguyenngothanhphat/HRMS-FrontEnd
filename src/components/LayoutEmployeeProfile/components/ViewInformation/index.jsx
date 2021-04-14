@@ -166,7 +166,7 @@ class ViewInformation extends Component {
   render() {
     const {
       generalData,
-      compensationData,
+      // compensationData,
       loading,
       originGeneralData: { bioInfo = '' } = {},
       // employeeLocation = '',
@@ -185,7 +185,7 @@ class ViewInformation extends Component {
       workNumber = '',
     } = generalData;
 
-    const { tittle: { name: title = '' } = {} } = compensationData;
+    // const { tittle: { name: title = '' } = {} } = compensationData;
     const { visible, openEditBio } = this.state;
     const joiningDate = joinDate ? moment(joinDate).format('MM.DD.YY') : '-';
     const { generalInfo: { firstName: managerFN = '', lastName: managerLN = '' } = {} } = manager;
@@ -217,7 +217,7 @@ class ViewInformation extends Component {
         )}
         <div className={s.infoEmployee__textNameAndTitle}>
           <p className={s.infoEmployee__textNameAndTitle__name}>{firstName}</p>
-          <p className={s.infoEmployee__textNameAndTitle__title}>{title}</p>
+          {/* <p className={s.infoEmployee__textNameAndTitle__title}>{title}</p> */}
         </div>
 
         <div className={s.infoEmployee__viewBottom}>

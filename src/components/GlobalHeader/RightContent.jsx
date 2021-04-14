@@ -1,10 +1,12 @@
 // import { Tooltip, Tag } from 'antd';
-import { BellOutlined } from '@ant-design/icons';
+import { BellOutlined, BuildOutlined } from '@ant-design/icons';
+import { Tooltip } from 'antd';
 import React, { useState } from 'react';
 import { connect } from 'umi';
 import HeaderSearch from '../HeaderSearch';
 import Avatar from './AvatarDropdown';
 import GlobalEmployeeSearch from './components/GlobalEmployeeSearch';
+import SelectCompanyModal from './components/SelectCompanyModal';
 import styles from './index.less';
 
 const GlobalHeaderRight = (props) => {
@@ -16,6 +18,7 @@ const GlobalHeaderRight = (props) => {
     loadingList,
   } = props;
   const [visible, setVisible] = useState(false);
+  const [isSwitchCompanyVisible, setIsSwitchCompanyVisible] = useState(false);
   let className = styles.right;
 
   const handleCancel = () => {
@@ -51,6 +54,14 @@ const GlobalHeaderRight = (props) => {
       <div className={`${styles.action} ${styles.notify}`}>
         <BellOutlined />
       </div>
+      <Tooltip title="Switch company">
+        <div
+          className={`${styles.action} ${styles.notify}`}
+          onClick={() => setIsSwitchCompanyVisible(true)}
+        >
+          <BuildOutlined />
+        </div>
+      </Tooltip>
       <Avatar />
       <GlobalEmployeeSearch
         titleModal="GLOBAL EMPLOYEE SEARCH"
@@ -59,6 +70,7 @@ const GlobalHeaderRight = (props) => {
         employeesList={searchEmployeesList}
         loading={loadingList}
       />
+      <SelectCompanyModal visible={isSwitchCompanyVisible} onClose={setIsSwitchCompanyVisible} />
     </div>
   );
 };

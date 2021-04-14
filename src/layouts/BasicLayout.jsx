@@ -10,6 +10,7 @@ import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { Button, Result } from 'antd';
 import { connect, Link, useIntl, Redirect } from 'umi';
+import { getCurrentCompany } from '@/utils/authority';
 import classnames from 'classnames';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
@@ -47,10 +48,17 @@ const BasicLayout = (props) => {
     },
     route: { routes } = {},
     currentUser,
+    companies = {},
   } = props;
   /**
    * init variables
    */
+
+  const getCurrentLogo = () => {
+    const currentCompanyId = getCurrentCompany();
+    const currentComp = companies.find((cp) => cp._id === currentCompanyId);
+    return currentComp?.logoUrl;
+  };
 
   const handleMenuCollapse = (payload) => {
     if (dispatch) {
@@ -61,15 +69,34 @@ const BasicLayout = (props) => {
     }
   };
 
-  const _renderLogo = (
-    <Link to="/">
-      <img
-        src="/assets/images/terralogic-logo.png"
-        alt="logo"
-        style={{ width: '120px', objectFit: 'contain', marginBottom: '4px' }}
-      />
-    </Link>
-  );
+  const _renderLogo = () => {
+    // const checkRole = (roleName) => {
+    //   const { signInRole = [] } = currentUser;
+    //   const formatRole = signInRole.map((role) => role.toLowerCase());
+    //   if (formatRole.includes(roleName)) return true;
+    //   return false;
+    // };
+
+    // const isOwner = checkRole('owner');
+    // const isAdmin = checkRole('admin');
+
+    const logoUrl = getCurrentLogo();
+    return (
+      <Link to="/">
+        <img
+          src={logoUrl || logo}
+          alt="logo"
+          style={{
+            objectFit: 'contain',
+            marginBottom: '4px',
+            height: '100%',
+            padding: '12px 0',
+            // marginLeft: '-9px',
+          }}
+        />
+      </Link>
+    );
+  };
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
@@ -80,7 +107,7 @@ const BasicLayout = (props) => {
   const classNameBreadCrumb = pathname === '/dashboard' ? styles.breadCrumbA : styles.breadCrumbB;
 
   if (currentUser?.firstCreated) {
-    return <Redirect to="/account-setup" />;
+    return <Redirect to="/control-panel" />;
   }
 
   return (
@@ -90,12 +117,12 @@ const BasicLayout = (props) => {
       })}
     >
       <ProLayout
-        logo={logo}
+        logo={getCurrentLogo() || logo}
         headerHeight={76}
         formatMessage={formatMessage}
         onCollapse={handleMenuCollapse}
         headerTitleRender={() => <div style={{ display: 'none' }} />}
-        headerContentRender={() => _renderLogo}
+        headerContentRender={() => _renderLogo()}
         menuHeaderRender={false}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || !menuItemProps.path) {
@@ -147,4 +174,5 @@ export default connect(({ global, settings, user }) => ({
   collapsed: global.collapsed,
   settings,
   currentUser: user.currentUser,
+  companies: user.companiesOfUser,
 }))(BasicLayout);

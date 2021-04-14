@@ -1,4 +1,13 @@
-import { queryCurrent, query as queryUsers } from '@/services/user';
+import { queryCurrent, query as queryUsers, fetchCompanyOfUser } from '@/services/user';
+import {
+  getCurrentCompany,
+  setCurrentLocation,
+  getCurrentLocation,
+  getCurrentTenant,
+  isOwner,
+} from '@/utils/authority';
+
+import { history } from 'umi';
 import { checkPermissions } from '@/utils/permissions';
 
 const UserModel = {
@@ -6,6 +15,7 @@ const UserModel = {
   state: {
     currentUser: {},
     permissions: {},
+    companiesOfUser: [],
   },
   effects: {
     *fetch(_, { call, put }) {
@@ -16,30 +26,77 @@ const UserModel = {
       });
     },
 
-    *fetchCurrent(_, { call, put }) {
+    *fetchCurrent({ refreshCompanyList = true }, { call, put }) {
       try {
-        const response = yield call(queryCurrent);
-        const { statusCode } = response;
+        const company = getCurrentCompany();
+        const tenantId = getCurrentTenant();
+        const payload = {
+          company: company && company !== 'undefined' ? company : null,
+          tenantId: tenantId && tenantId !== 'undefined' ? tenantId : null,
+        };
+        const response = yield call(queryCurrent, payload);
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
+
+        // if there's no tenantId and companyId, return to dashboard
+        if (!tenantId || !company) {
+          history.replace('/control-panel');
+        }
         yield put({
           type: 'saveCurrentUser',
           payload: {
-            ...response.data,
-            name: [response.data?.generalInfo?.firstName, response.data?.generalInfo?.lastName]
-              .filter(Boolean)
-              .join(' '),
+            ...data,
+            name: data?.firstName,
           },
         });
-
-        let currentLocation = localStorage.getItem('currentLocation');
-        if (!currentLocation) {
-          currentLocation = localStorage.setItem('currentLocation', response?.data?.location?._id);
+        
+        const checkIsOwner = isOwner();
+        if (!checkIsOwner) {
+          // for admin, auto set location
+          // setCurrentLocation(response?.data?.manageLocation[0]?._id);
+          const currentLocation = getCurrentLocation();
+          if (!currentLocation || currentLocation === 'undefined') {
+            setCurrentLocation(response?.data?.manageLocation[0]?._id);
+          }
         }
-
+        let formatArrRoles = []
+        data?.permissionAdmin.forEach((e) => {
+          formatArrRoles = [...formatArrRoles, e];
+        });
+        data?.permissionEmployee.forEach((e) => {
+          formatArrRoles = [...formatArrRoles, e];
+        });
         yield put({
           type: 'save',
           payload: {
-            permissions: checkPermissions(response.data.roles),
+            permissions: {
+              ...checkPermissions(formatArrRoles, checkIsOwner),
+            },
+          },
+        });
+
+        return response;
+      } catch (errors) {
+        // error
+        return {};
+      } finally {
+        if (refreshCompanyList) {
+          yield put({
+            type: 'fetchCompanyOfUser',
+          });
+        }
+      }
+    },
+
+    *fetchCompanyOfUser(_, { call, put }) {
+      try {
+        const response = yield call(fetchCompanyOfUser);
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            companiesOfUser: data?.listCompany,
           },
         });
       } catch (errors) {

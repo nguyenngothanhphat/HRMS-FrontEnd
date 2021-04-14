@@ -5,10 +5,14 @@ import {
   updateCompany,
   getLocationsList,
   addLocation,
+  addCompanyTenant,
+  addMultiLocation,
   updateLocation,
   upsertLocationsList,
   removeLocation,
+  getLocationsListTenant,
 } from '@/services/companiesManangement';
+// import { history } from 'umi';
 import { notification } from 'antd';
 
 const companiesManagement = {
@@ -21,20 +25,26 @@ const companiesManagement = {
     locationsOfDetail: [],
     locationsList: [],
     originData: {
-      companyDetails: {},
+      companyDetails: {
+        company: {},
+      },
     },
     tempData: {
-      companyDetails: {},
+      companyDetails: {
+        company: {},
+      },
     },
     idCurrentCompany: '',
     isOpenEditWorkLocation: false,
+    selectedNewCompanyTab: 1,
   },
   effects: {
     *fetchCompanyDetails({ payload: { id = '' }, dataTempKept = {} }, { call, put }) {
       try {
         const response = yield call(getCompanyDetails, { id });
-        const { statusCode, data: companyDetails = {} } = response;
+        const { statusCode, data: company = {} } = response;
         if (statusCode !== 200) throw response;
+        const companyDetails = { company };
         const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
         let companyDetailsTemp = { ...companyDetails };
         if (!checkDataTempKept) {
@@ -57,8 +67,10 @@ const companiesManagement = {
           type: 'saveTemp',
           payload: { companyDetails: companyDetailsTemp },
         });
+        return response;
       } catch (errors) {
         dialog(errors);
+        return {};
       }
     },
 
@@ -76,6 +88,17 @@ const companiesManagement = {
     *fetchLocationsList({ payload: { company = '' } }, { call, put }) {
       try {
         const response = yield call(getLocationsList, { company });
+        const { statusCode, data: locationsList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { locationsList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchLocationsListTenant({ payload: { company = '' } }, { call, put }) {
+      try {
+        const response = yield call(getLocationsListTenant, { company });
         const { statusCode, data: locationsList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { locationsList } });
@@ -108,9 +131,9 @@ const companiesManagement = {
             payload: { idCurrentCompany },
           });
         } else {
-          yield put({
-            type: 'user/fetchCurrent',
-          });
+          // yield put({
+          //   type: 'user/fetchCurrent',
+          // });
         }
         resp = response;
       } catch (errors) {
@@ -137,6 +160,68 @@ const companiesManagement = {
         dialog(errors);
       }
       return resp;
+    },
+
+    *addMultiLocation({ payload = {} }, { call }) {
+      let resp = '';
+      try {
+        const response = yield call(addMultiLocation, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put({
+        //   type: 'fetchLocationsList',
+        //   payload: { company: payload.company },
+        // });
+        resp = response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return resp;
+    },
+
+    *addCompanyTenant({ payload = {} }, { call, put }) {
+      let response = '';
+      try {
+        response = yield call(addCompanyTenant, payload);
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'New company created.',
+        });
+
+        // yield put({
+        //   type: 'fetchLocationsList',
+        //   payload: { company: payload },
+        // });
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            companyDetails: {
+              company: data?.company,
+            },
+          },
+        });
+        // history.push('/control-panel');
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *addCompanyReducer({ payload = {} }, { put }) {
+      try {
+        yield put({
+          type: 'saveOrigin',
+          payload: { companyDetails: payload },
+        });
+        yield put({
+          type: 'save',
+          payload: {
+            selectedNewCompanyTab: 2,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
     },
 
     *updateLocation({ payload = {} }, { call, put }) {
@@ -218,6 +303,17 @@ const companiesManagement = {
         },
       };
     },
+    clearCompanyDetails(state) {
+      return {
+        ...state,
+        originData: {
+          companyDetails: {},
+        },
+        tempData: {
+          companyDetails: {},
+        },
+      };
+    },
     saveHeadQuarterAddress(state, action) {
       const { headQuarterAddress } = state;
       return {
@@ -235,6 +331,26 @@ const companiesManagement = {
         legalAddress: {
           ...legalAddress,
           ...action.payload,
+        },
+      };
+    },
+
+    saveCompanyDetails(state, action) {
+      const {
+        originData: {
+          companyDetails: { company },
+        },
+      } = state;
+      return {
+        ...state,
+        originData: {
+          // ...originData,
+          companyDetails: {
+            company: {
+              ...company,
+              ...action.payload,
+            },
+          },
         },
       };
     },

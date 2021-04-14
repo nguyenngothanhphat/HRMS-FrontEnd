@@ -41,11 +41,32 @@ class Screen3 extends Component {
       locations = [],
       user = {},
     } = signup;
-    const defaultLocation = { name: 'Headquarter', ...headQuarterAddress, isHeadQuarter: true };
+    const defaultLocation = { name: 'Headquarter', headQuarterAddress, isHeadQuarter: true };
+    const formatLocation = locations.map((location) => {
+      const {
+        name = '',
+        addressLine1 = '',
+        addressLine2,
+        state = '',
+        country = '',
+        zipCode = '',
+      } = location;
+      return {
+        name,
+        headQuarterAddress: {
+          addressLine1,
+          addressLine2,
+          state,
+          country,
+          zipCode,
+        },
+        isHeadQuarter: false,
+      };
+    });
     const payload = {
       codeNumber,
       company: { ...company, headQuarterAddress, legalAddress },
-      locations: [defaultLocation, ...locations],
+      locations: [defaultLocation, ...formatLocation],
       user: { ...user, password: psw },
     };
     return payload;

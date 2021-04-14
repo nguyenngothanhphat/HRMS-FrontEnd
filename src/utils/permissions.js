@@ -14,19 +14,79 @@ export function groupPermissions(roles) {
   return permissionsUnique;
 }
 
-export function checkPermissions(roles) {
-  const permissionList = groupPermissions(roles);
+export function checkPermissions(roles, isOwner) {
+  if (isOwner) {
+    return {
+      // Directory Page
+      viewTabActive: 1,
+      viewTabMyTeam: -1,
+      viewTabInActive: 1,
+      importEmployees: 1,
+      addEmployee: 1,
+      // Directory Page - Filter - Display location
+      filterLocationActive: 1,
+      filterLocationInActive: 1,
+      // Directory Page - Tab general info - Public/Private Personal phone/email
+      viewPersonalNumber: 1,
+      viewPersonalEmail: 1,
+      // Profile employee
+      editWorkEmail: 1,
+      editEmployeeID: 1,
+      editEmployeeInfo: 1,
+      editPersonalInfo: 1,
+      editPassportAndVisa: 1,
+      editEmergencyContact: 1,
+      editProfessionalAcademic: 1,
+      editEmployment: 1,
+      makeChangesHistory: 1,
+      viewPassportAndVisa: 1,
+      viewTabEmployment: 1,
+      viewTabPerformance: 1,
+      viewTabAccountPaychecks: 1,
+      viewTabDocument: 1,
+      viewTabTimeSchedule: 1,
+      viewTabBenefitPlans: 1,
+      // Update avatar employee
+      updateAvatarEmployee: 1,
+    };
+  }
+  // const permissionList = groupPermissions(roles);
+  const permissionList = [...roles];
+
   // Directory Page
+  // employee
   const tabActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
-  const tabMyTeam = 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_VIEW';
+  const tabMyTeam = 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_EMPLOYEE_VIEW';
   const tabInActive = 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW';
   const importEmployees = 'P_DIRECTORY_T_DIRECTORY_B_IMPORT_EMPLOYEES_VIEW';
   const addEmployee = 'P_DIRECTORY_T_DIRECTORY_B_ADD_EMPLOYEE_VIEW';
-  const findIndexActive = permissionList.indexOf(tabActive);
-  const findIndexMyTeam = permissionList.indexOf(tabMyTeam);
-  const findIndexInActive = permissionList.indexOf(tabInActive);
-  const findIndexImport = permissionList.indexOf(importEmployees);
-  const findIndexAdd = permissionList.indexOf(addEmployee);
+  // admin
+  const tabActive1 = 'M_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
+  const tabMyTeam1 = 'M_DIRECTORY_T_DIRECTORY_T_MY_TEAM_EMPLOYEE_VIEW';
+  const tabInActive1 = 'M_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW';
+  const importEmployees1 = 'M_DIRECTORY_T_DIRECTORY_B_IMPORT_EMPLOYEES_VIEW';
+  const addEmployee1 = 'M_DIRECTORY_T_DIRECTORY_B_ADD_EMPLOYEE_VIEW';
+
+  const findIndexActive =
+    permissionList.indexOf(tabActive) === -1
+      ? permissionList.indexOf(tabActive1)
+      : permissionList.indexOf(tabActive);
+      const findIndexMyTeam =
+    permissionList.indexOf(tabMyTeam) === -1
+      ? permissionList.indexOf(tabMyTeam1)
+      : permissionList.indexOf(tabMyTeam);
+  const findIndexInActive =
+    permissionList.indexOf(tabInActive) === -1
+      ? permissionList.indexOf(tabInActive1)
+      : permissionList.indexOf(tabInActive);
+  const findIndexImport =
+    permissionList.indexOf(importEmployees) === -1
+      ? permissionList.indexOf(importEmployees1)
+      : permissionList.indexOf(importEmployees);
+  const findIndexAdd =
+    permissionList.indexOf(addEmployee) === -1
+      ? permissionList.indexOf(addEmployee1)
+      : permissionList.indexOf(addEmployee);
 
   // Directory Page - Tab general info - Public/Private Personal phone/email
   const editPersonalInfo = 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EDIT';

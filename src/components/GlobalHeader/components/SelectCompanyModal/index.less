@@ -1,0 +1,147 @@
+.SelectCompanyModal {
+  :global {
+    .ant-modal-content {
+      border-radius: 10px;
+    }
+    .ant-modal-body {
+      padding: 0;
+    }
+    .ant-modal-close {
+      display: none;
+    }
+  }
+  .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 32px;
+    .title {
+      font-weight: 700;
+      font-size: 18px;
+      color: #161c29;
+    }
+    .subtitle1 {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #707177;
+      // color: #161c29;
+    }
+    .subtitle2 {
+      color: #707177;
+      font-size: 13px;
+    }
+    .companyList {
+      max-height: 300px;
+      overflow: auto;
+      border-radius: 2px;
+      .active {
+        .eachCompany();
+        background-color: #00c598 !important;
+        border: 1px solid #00b68b;
+        span {
+          color: #fff !important;
+        }
+      }
+      .currentCompany {
+        .eachCompany();
+        background-color: #cef8f5 !important;
+        pointer-events: none;
+      }
+      .eachCompany {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        background-color: #f5f5f5;
+        margin-bottom: 10px;
+        padding: 12px 15px;
+        cursor: pointer;
+        border-radius: 2px;
+        border: 1px solid #ffffff00;
+        .leftPart,
+        .rightPart {
+          display: flex;
+          // flex-direction: row;
+          justify-content: flex-start;
+          align-items: center;
+          flex-wrap: nowrap;
+        }
+        .leftPart {
+          // max-width: 300px;
+        }
+        .rightPart {
+          .currentText {
+            color: #00c598;
+            font-weight: 500;
+          }
+        }
+        &:hover {
+          background-color: #eeeeee;
+        }
+        .logo {
+          display: inline-flex;
+          flex-direction: row;
+          justify-content: center;
+          align-items: center;
+          background-color: white;
+          width: 30px !important;
+          height: 30px;
+          overflow: hidden;
+          border-radius: 50%;
+          img {
+            width: 100%;
+          }
+        }
+        .name {
+          max-width: 270px;
+          display: inline-block;
+          margin-left: 20px;
+          font-weight: 500;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .countryName {
+          display: inline-block;
+          font-weight: 500;
+          margin-left: 3px;
+        }
+      }
+    }
+    .operationButtons {
+      display: flex;
+      justify-content: flex-start;
+      .proceedBtn {
+      }
+      .cancelBtn {
+        margin-left: 20px;
+        span {
+          color: #161c29 !important;
+        }
+        background-color: #ffa1001a !important;
+      }
+    }
+
+    :global {
+      .ant-modal-body {
+        border-radius: 10px;
+      }
+      .ant-btn {
+        margin-top: 15px;
+        background-color: #ffa100;
+        border: none;
+        border-radius: 30px;
+        height: 40px;
+        padding: 0 30px;
+        // width: 108px;
+        span {
+          color: white;
+          font-weight: 700;
+        }
+        &:hover {
+          background-color: #ffa100cc; // hex with alpha 0.8
+        }
+      }
+    }
+  }
+}

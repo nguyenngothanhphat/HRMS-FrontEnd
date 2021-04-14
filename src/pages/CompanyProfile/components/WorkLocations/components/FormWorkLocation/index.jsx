@@ -6,6 +6,7 @@ import React, { Component } from 'react';
 import { Form, Input, Select, Divider, Modal } from 'antd';
 import { ExclamationCircleOutlined, DeleteOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
+import { bool } from 'prop-types';
 import s from './index.less';
 
 const { Option } = Select;
@@ -73,22 +74,32 @@ class FormWorkLocation extends Component {
 
   render() {
     const { country = '' } = this.state;
-    const { listCountry = [], listLocation = [], field = {} } = this.props;
+    const {
+      listCountry = [],
+      listLocation = [],
+      isHidden = bool,
+      field = {},
+      name = '',
+    } = this.props;
+    console.log('filed', field);
     const listState = this.findListState(country) || [];
     const itemLocation = listLocation[field.name] || {};
     return (
       <div className={s.content} style={field.name > 0 ? { marginTop: '24px' } : {}}>
         <div className={s.content__viewBottom}>
           <div className={s.content__viewBottom__viewTitle}>
-            <p className={s.title}>{itemLocation?.name || 'New work location'}</p>
-            <div className={s.action} onClick={this.handleRemove}>
+            <p className={s.title}>{itemLocation?.name || name}</p>
+            <div
+              className={isHidden ? `${s.action} ${s.hide}` : `${s.action}`}
+              onClick={this.handleRemove}
+            >
               <DeleteOutlined className={s.action__icon} />
               <span>Delete</span>
             </div>
           </div>
 
           <div className={s.content__viewBottom__row}>
-            <p className={s.content__viewBottom__row__textLabel}>Name</p>
+            <p className={s.content__viewBottom__row__textLabel}>Location Name*</p>
             <Form.Item
               {...field}
               label={false}
@@ -97,7 +108,7 @@ class FormWorkLocation extends Component {
               rules={[
                 {
                   required: true,
-                  message: 'Please enter name!',
+                  message: 'Please enter location name',
                 },
                 ({ getFieldValue }) => ({
                   validator(_, value) {
@@ -112,24 +123,43 @@ class FormWorkLocation extends Component {
                 }),
               ]}
             >
-              <Input placeholder="Name Location" />
+              <Input placeholder="Location Name" />
             </Form.Item>
           </div>
+
           <div className={s.content__viewBottom__row}>
-            <p className={s.content__viewBottom__row__textLabel}>Address</p>
+            <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
             <Form.Item
               {...field}
               label={false}
-              name={[field.name, 'address']}
-              fieldKey={[field.fieldKey, 'address']}
+              name={[field.name, 'addressLine1']}
+              fieldKey={[field.fieldKey, 'addressLine1']}
               rules={[
                 {
                   required: true,
-                  message: 'Please enter Address!',
+                  message: 'Please enter address line 1',
                 },
               ]}
             >
-              <Input placeholder="Address" />
+              <Input placeholder="Address Line 1" />
+            </Form.Item>
+          </div>
+
+          <div className={s.content__viewBottom__row}>
+            <p className={s.content__viewBottom__row__textLabel}>Address Line 2</p>
+            <Form.Item
+              {...field}
+              label={false}
+              name={[field.name, 'addressLine2']}
+              fieldKey={[field.fieldKey, 'addressLine2']}
+              // rules={[
+              //   {
+              //     required: true,
+              //     message: 'Please enter Address!',
+              //   },
+              // ]}
+            >
+              <Input placeholder="Address Line 2" />
             </Form.Item>
           </div>
           <div className={s.content__viewBottom__row}>

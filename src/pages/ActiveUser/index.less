@@ -1,0 +1,46 @@
+.ActiveUser {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  align-items: center;
+  padding: 20px;
+  .loadingText {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .loadingIcon {
+    font-size: 25px;
+    margin-right: 13px;
+  }
+  .activatingText {
+    display: block;
+    font-size: 16px;
+    letter-spacing: 1.1;
+    color: #2c6df9;
+    font-weight: 500;
+  }
+  .activatedText {
+    .activatingText();
+    color: #666 !important;
+  }
+  :global {
+    .ant-btn {
+      margin-top: 15px;
+      background-color: #ffa100;
+      border: none;
+      border-radius: 30px;
+      height: 35px;
+      padding: 0 40px;
+      span {
+        color: white;
+        font-weight: 700;
+      }
+      &:hover {
+        background-color: #ffa100cc; // hex with alpha 0.8
+      }
+    }
+  }
+}

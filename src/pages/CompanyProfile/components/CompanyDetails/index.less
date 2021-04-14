@@ -3,13 +3,28 @@
     margin: 0;
   }
   .textInput {
-    width: 430px;
+    width: 100%;
     height: 42px;
     background: #ffffff;
     box-sizing: border-box;
     border-radius: 5px;
     &:focus {
       box-shadow: none;
+    }
+  }
+  .parentCompanySelect {
+    .textInput();
+    :global {
+      .ant-select-selector {
+        height: 42px !important;
+        padding: 5px 11px 0;
+        background: #ffffff;
+        box-sizing: border-box;
+        border-radius: 5px;
+      }
+      .ant-select-selection-search-input {
+        padding-top: 10px !important;
+      }
     }
   }
   .blockContent {
@@ -52,7 +67,7 @@
             :global {
               .ant-input {
                 .textInput();
-                width: 187px !important;
+                // width: 187px !important;
               }
               .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
                 .ant-select-selector {
@@ -60,7 +75,7 @@
               }
               .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
                 padding: 5px 11px 0;
-                width: 187px;
+                width: 100%;
                 height: 42px;
                 background: #ffffff;
                 box-sizing: border-box;
@@ -73,9 +88,9 @@
               }
             }
           }
-          &__textLabel {
-            width: 151px;
-          }
+          // &__textLabel {
+          //   width: 151px;
+          // }
           &__textLabelVertical {
             margin-bottom: 10px;
           }

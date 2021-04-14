@@ -129,13 +129,15 @@ class Screen1 extends Component {
     const {
       company: { name = '', dba = '', ein = '' } = {},
       headQuarterAddress: {
-        address: addressHead = '',
+        addressLine1: addressLine1Head = '',
+        addressLine2: addressLine2Head = '',
         country: countryHead = '',
         state: stateHead = '',
         zipCode: zipCodeHead = '',
       } = {},
       legalAddress: {
-        address: addressLegal = '',
+        addressLine1: addressLine1Legal = '',
+        addressLine2: addressLine2Legal = '',
         country = '',
         state: stateLegal = '',
         zipCode: zipCodeLegal = '',
@@ -147,11 +149,13 @@ class Screen1 extends Component {
       !name.trim() ||
       !dba.trim() ||
       !ein.trim() ||
-      !addressHead.trim() ||
+      !addressLine1Head.trim() ||
+      // !addressLine2Head.trim() ||
       !countryHead.trim() ||
       !stateHead.trim() ||
       !zipCodeHead.trim() ||
-      !addressLegal.trim() ||
+      !addressLine1Legal ||
+      // !addressLine2Legal ||
       !country.trim() ||
       !stateLegal.trim() ||
       !zipCodeLegal.trim();
@@ -187,7 +191,16 @@ class Screen1 extends Component {
               <Form.Item label="Doing Business As (DBA)*" name="dba">
                 <Input />
               </Form.Item>
-              <Form.Item label="EIN*" name="ein">
+              <Form.Item
+                label="EIN*"
+                name="ein"
+                rules={[
+                  {
+                    pattern: /^[0-9]*$/,
+                    message: 'Please input number only!',
+                  },
+                ]}
+              >
                 <Input />
               </Form.Item>
             </>
@@ -201,7 +214,8 @@ class Screen1 extends Component {
             colon={false}
             ref={this.formRef}
             initialValues={{
-              address: addressHead,
+              addressLine1: addressLine1Head,
+              addressLine2: addressLine2Head,
               country: countryHead,
               state: stateHead,
               zipCode: zipCodeHead,
@@ -210,10 +224,13 @@ class Screen1 extends Component {
           >
             <>
               <p className={s.root__form__title}>Headquarter address</p>
-              <Form.Item label="Address*" name="address">
+              <Form.Item label="Address Line 1*" name="addressLine1">
                 <Input />
               </Form.Item>
-              <Form.Item label="Country" name="country">
+              <Form.Item label="Address Line 2" name="addressLine2">
+                <Input />
+              </Form.Item>
+              <Form.Item label="Country*" name="country">
                 <Select
                   placeholder="Select Country"
                   showArrow
@@ -229,7 +246,7 @@ class Screen1 extends Component {
               </Form.Item>
               <Row gutter={[30, 0]}>
                 <Col span={12}>
-                  <Form.Item label="State" name="state">
+                  <Form.Item label="State*" name="state">
                     <Select
                       placeholder="Select State"
                       showArrow
@@ -245,7 +262,7 @@ class Screen1 extends Component {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Zip Code" name="zipCode">
+                  <Form.Item label="Zip Code*" name="zipCode">
                     <Input />
                   </Form.Item>
                 </Col>
@@ -261,7 +278,8 @@ class Screen1 extends Component {
             colon={false}
             ref={this.formRefLegal}
             initialValues={{
-              address: addressLegal,
+              addressLine1: addressLine1Legal,
+              addressLine2: addressLine2Legal,
               country,
               state: stateLegal,
               zipCode: zipCodeLegal,
@@ -279,10 +297,14 @@ class Screen1 extends Component {
                 </Checkbox>
               </div>
 
-              <Form.Item label="Address*" name="address">
+              <Form.Item label="Address Line 1*" name="addressLine1">
                 <Input disabled={checkLegalSameHeadQuarter} />
               </Form.Item>
-              <Form.Item label="Country" name="country">
+              <Form.Item label="Address Line 2" name="addressLine2">
+                <Input disabled={checkLegalSameHeadQuarter} />
+              </Form.Item>
+
+              <Form.Item label="Country*" name="country">
                 <Select
                   placeholder="Select Country"
                   showArrow
@@ -299,7 +321,7 @@ class Screen1 extends Component {
               </Form.Item>
               <Row gutter={[30, 0]}>
                 <Col span={12}>
-                  <Form.Item label="State" name="state">
+                  <Form.Item label="State*" name="state">
                     <Select
                       placeholder="Select State"
                       showArrow
@@ -315,7 +337,7 @@ class Screen1 extends Component {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Zip Code" name="zipCode">
+                  <Form.Item label="Zip Code*" name="zipCode">
                     <Input disabled={checkLegalSameHeadQuarter} />
                   </Form.Item>
                 </Col>

@@ -33,3 +33,43 @@ export function setAuthority(authority) {
   localStorage.setItem('antd-pro-authority', JSON.stringify(proAuthority)); // auto reload
   reloadAuthorized();
 }
+
+export function setTenantId(tenantId) {
+  localStorage.setItem('tenantId', tenantId);
+  reloadAuthorized();
+}
+
+export function getCurrentTenant() {
+  return localStorage.getItem('tenantId');
+}
+
+export function setCurrentCompany(companyId) {
+  localStorage.setItem('currentCompanyId', companyId);
+  reloadAuthorized();
+}
+
+export function getCurrentCompany() {
+  return localStorage.getItem('currentCompanyId');
+}
+
+export function setCurrentLocation(locationId) {
+  localStorage.setItem('currentLocationId', locationId);
+  reloadAuthorized();
+}
+
+export function getCurrentLocation() {
+  return localStorage.getItem('currentLocationId');
+}
+
+export function isOwner() {
+  const roleList = JSON.parse(localStorage.getItem('antd-pro-authority'));
+  const owner = roleList.filter(role => role.toLowerCase().includes('owner'))
+  return owner.length > 0;
+}
+
+export function isAdmin() {
+  const roleList = JSON.parse(localStorage.getItem('antd-pro-authority'));
+  const owner = roleList.filter(role => role.toLowerCase().includes('admin'))
+  return owner.length > 0;
+}
+

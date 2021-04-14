@@ -4,7 +4,7 @@ import { Form, Input, Button } from 'antd';
 import { EyeFilled } from '@ant-design/icons';
 import logoGoogle from '@/assets/logo_google.png';
 import GoogleLogin from 'react-google-login';
-import { Link, connect, formatMessage } from 'umi';
+import { Link, connect, formatMessage, history } from 'umi';
 import styles from './index.less';
 
 @connect(({ loading, login: { messageError = '' } = {} }) => ({
@@ -13,6 +13,16 @@ import styles from './index.less';
   messageError,
 }))
 class FormLogin extends Component {
+  formRef = React.createRef();
+
+  componentDidMount = () => {
+    const { location: { state: { autoFillEmail = '' } = {} } = {} } = this.props;
+    this.formRef.current.setFieldsValue({
+      email: autoFillEmail,
+    });
+    history.replace();
+  };
+
   onFinish = ({ email, password }) => {
     const payload = { email, password };
     this.handleSubmit(payload);
@@ -51,11 +61,20 @@ class FormLogin extends Component {
     });
   };
 
+  returnMessageValidationEmail = (messageError) => {
+    if (messageError === 'User not found') return 'User does not exist';
+    if (messageError === 'Invalid user') return 'Invalid user';
+    return undefined;
+  };
+
   render() {
     const { loadingLoginThirdParty, messageError = '' } = this.props;
-    const checkValidationEmail = messageError === 'User not found' ? 'error' : undefined;
-    const messageValidationEmail =
-      messageError === 'User not found' ? 'User does not exist' : undefined;
+
+    const checkValidationEmail =
+      messageError === 'User not found' || messageError === 'Invalid user' ? 'error' : undefined;
+
+    const messageValidationEmail = this.returnMessageValidationEmail(messageError);
+
     const checkValidationPsw = messageError === 'Invalid password' ? 'error' : undefined;
     const messageValidationPsw =
       messageError === 'Invalid password' ? 'Incorrect password. Try again' : undefined;

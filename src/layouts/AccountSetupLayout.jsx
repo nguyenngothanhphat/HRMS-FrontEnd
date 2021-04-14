@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
-import { Layout, Button, Result } from 'antd';
-import RightContent from '@/components/GlobalHeader/RightContent';
+import { Layout, Button, Result, Affix } from 'antd';
+// import RightContent from '@/components/GlobalHeader/RightContent';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { Link } from 'umi';
@@ -35,15 +35,19 @@ class AccountSetup extends PureComponent {
     };
     return (
       <Layout className={styles.root}>
-        <Header>
-          <img
+        <Affix>
+          <Header>
+            {/* <img
             src="/assets/images/terralogic-logo.png"
             alt="logo"
             style={{ width: '150px', objectFit: 'contain', marginLeft: '20px' }}
-          />
-
-          <RightContent />
-        </Header>
+          /> */}
+            <Link to="/control-panel" className={styles.logoText}>
+              HRMS
+            </Link>
+            {/* <RightContent /> */}
+          </Header>
+        </Affix>
         <Authorized authority={authorized.authority} noMatch={noMatch}>
           <Content className={styles.content}>{children}</Content>
         </Authorized>

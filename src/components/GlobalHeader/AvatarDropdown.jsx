@@ -1,8 +1,18 @@
 import { UserOutlined } from '@ant-design/icons';
-import { Avatar, Button, Menu, Spin } from 'antd';
+import { Avatar, Button, Menu, Spin, notification } from 'antd';
 import avtDefault from '@/assets/avtDefault.jpg';
 import React from 'react';
 import { connect, formatMessage, history } from 'umi';
+import {
+  setCurrentLocation,
+  setTenantId,
+  getCurrentTenant,
+  getCurrentCompany,
+  getCurrentLocation,
+  isOwner,
+  isAdmin,
+  setCurrentCompany,
+} from '@/utils/authority';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
@@ -10,15 +20,17 @@ import styles from './index.less';
   ({
     locationSelection: { listLocationsByCompany = [] } = {},
     user: {
-      currentUser: { roles = [], company: { _id: companyId = '', logoUrl = '' } = {} } = {},
+      companiesOfUser = [],
+      currentUser: { roles = [], manageTenant = [], manageLocation = [] } = {},
     } = {},
     loading,
   }) => ({
-    listLocationsByCompany,
-    companyId,
-    logoUrl,
+    listLocationsByCompany, // for owner
+    manageLocation, // for admin
     roles,
     loadingFetchLocation: loading.effects['locationSelection/fetchLocationsByCompany'],
+    companiesOfUser,
+    manageTenant,
   }),
 )
 class AvatarDropdown extends React.Component {
@@ -26,29 +38,53 @@ class AvatarDropdown extends React.Component {
     super(props);
     this.state = {
       LOGOUT: 'logout',
-      VIEWPROFILE: 'viewProfile',
+      // VIEWPROFILE: 'viewProfile',
       CHANGEPASSWORD: 'changePassword',
       SETTINGS: 'settings',
       selectLocationAbility: false,
     };
   }
 
-  componentDidMount = () => {
-    const { dispatch, companyId = '', roles = [] } = this.props;
-    dispatch({
-      type: 'locationSelection/fetchLocationsByCompany',
-      payload: {
-        company: companyId,
-      },
+  componentDidMount = async () => {
+    const {
+      dispatch,
+      manageTenant = [],
+      // , roles = []
+    } = this.props;
+    const companyId = getCurrentCompany();
+    const tenantId = getCurrentTenant();
+    const checkIsOwner = isOwner();
+
+    if (checkIsOwner) {
+      await dispatch({
+        type: 'locationSelection/fetchLocationListByParentCompany',
+        payload: {
+          company: companyId,
+          tenantIds: manageTenant,
+        },
+      });
+    } else {
+      await dispatch({
+        type: 'locationSelection/fetchLocationsByCompany',
+        payload: {
+          company: companyId,
+          tenantId,
+        },
+      });
+    }
+
+    this.setState({
+      selectLocationAbility: true,
     });
-    roles.forEach((role) => {
-      const { _id = '' } = role;
-      if (['ADMIN-CSA', 'HR-GLOBAL'].includes(_id)) {
-        this.setState({
-          selectLocationAbility: true,
-        });
-      }
-    });
+
+    // roles.forEach((role) => {
+    //   const { _id = '' } = role;
+    //   if (['ADMIN-CSA', 'HR-GLOBAL'].includes(_id)) {
+    //     this.setState({
+    //       selectLocationAbility: true,
+    //     });
+    //   }
+    // });
   };
 
   onFinish = () => {
@@ -60,10 +96,17 @@ class AvatarDropdown extends React.Component {
     history.push(`/employees/employee-profile/${_id}`);
   };
 
-  onMenuClick = (event) => {
+  wait = (delay, ...args) => {
+    // eslint-disable-next-line compat/compat
+    return new Promise((resolve) => {
+      setTimeout(resolve, delay, ...args);
+    });
+  };
+
+  onMenuClick = async (event) => {
     const { key } = event;
     const { LOGOUT, CHANGEPASSWORD, SETTINGS } = this.state;
-    const { listLocationsByCompany = [] } = this.props;
+    const { listLocationsByCompany = [], manageLocation = [] } = this.props;
 
     if (key === LOGOUT) {
       const { dispatch } = this.props;
@@ -85,38 +128,119 @@ class AvatarDropdown extends React.Component {
     if (key === SETTINGS) {
       // eslint-disable-next-line no-alert
       alert('Settings');
-
       return;
     }
 
-    localStorage.setItem('currentLocation', key);
+    if (key === 'ALL') {
+      // eslint-disable-next-line no-alert
+      localStorage.removeItem('currentLocationId');
+      window.location.reload();
+      return;
+    }
+
     let selectLocation = '';
+    setCurrentLocation(key);
+    const currentCompany = getCurrentCompany();
+    let newCompId = '';
+    let newCompName = '';
+    let newCompTenant = '';
 
     listLocationsByCompany.forEach((value) => {
-      const { _id = '' } = value;
+      const {
+        _id = '',
+        company: {
+          _id: parentCompId = '',
+          name: parentCompName = '',
+          tenant: parentTenant = '',
+        } = {},
+      } = value;
       if (key === _id) {
         selectLocation = _id;
       }
+      // ONLY OWNER
+      if (_id === key && currentCompany !== parentCompId) {
+        newCompId = parentCompId;
+        newCompName = parentCompName;
+        newCompTenant = parentTenant;
+      }
     });
 
+    // ONLY OWNER
+    if (newCompId) {
+      setCurrentCompany(newCompId);
+      setTenantId(newCompTenant);
+      notification.success({
+        message: `Switching to ${newCompName} company...`,
+      });
+      await this.wait(1500).then(() => window.location.reload());
+    }
+
     if (selectLocation) {
-      // window.location.reload();
-      history.push(`/`);
+      window.location.reload();
+      // history.push(`/`);
       return;
     }
 
     this.viewProfile();
   };
 
-  renderLocationList = () => {
-    const { listLocationsByCompany = [] } = this.props;
-    const currentLocation = localStorage.getItem('currentLocation');
+  getChildCompanies = async () => {
+    const { companiesOfUser = [] } = this.props;
+    const currentCompanyId = getCurrentCompany();
+    const resultList = companiesOfUser.map(
+      (company) => company?.childOfCompany === currentCompanyId,
+    );
+    // eslint-disable-next-line compat/compat
+    const list = await Promise.all(this.getLocationsOfChildCompany(resultList));
+    return list;
+  };
 
+  renderLocationList = () => {
+    const { listLocationsByCompany = [], manageLocation = [] } = this.props;
+    const currentLocation = getCurrentLocation();
+    const currentCompany = getCurrentCompany();
+    const checkIsOwner = isOwner();
+    const checkIsAdmin = isAdmin();
+
+    let commonLocationsList = [];
+    if (checkIsOwner) {
+      commonLocationsList = [...listLocationsByCompany];
+    } else if (checkIsAdmin) {
+      commonLocationsList = [...manageLocation];
+    }
     return (
       <>
         <Menu.Divider className={styles.secondDivider} />
-        <Menu.Item className={styles.selectLocation}>Location</Menu.Item>
-        {listLocationsByCompany.map((value) => {
+        <Menu.Item className={styles.selectLocation}>Locations</Menu.Item>
+        {checkIsOwner && (
+          <Menu.Item
+            key="ALL"
+            className={
+              currentLocation && currentLocation !== 'undefined'
+                ? styles.menuItemLink
+                : styles.menuItemLink2
+            }
+          >
+            All
+          </Menu.Item>
+        )}
+        {commonLocationsList.map((value) => {
+          const {
+            _id = '',
+            name: locationName = '',
+            company: { _id: parentCompId = '', name: parentCompName = '' } = {},
+          } = value;
+          return (
+            <Menu.Item
+              key={_id}
+              className={currentLocation !== _id ? styles.menuItemLink : styles.menuItemLink2}
+            >
+              {parentCompId && currentCompany !== parentCompId && `${parentCompName} - `}{' '}
+              {locationName}
+            </Menu.Item>
+          );
+        })}
+        {/* {listOfChildCompanies.map((value) => {
           const { _id = '', name: locationName = '' } = value;
           return (
             <Menu.Item
@@ -126,18 +250,19 @@ class AvatarDropdown extends React.Component {
               {locationName}
             </Menu.Item>
           );
-        })}
+        })} */}
       </>
     );
   };
 
   render() {
     const { currentUser = {} } = this.props;
-    const {
-      name = '',
-      generalInfo: { avatar = '', employeeId = '' } = {},
-      title = {},
-    } = currentUser;
+    // const {
+    //   name = '',
+    //   generalInfo: { avatar = '', employeeId = '' } = {},
+    //   title = {},
+    // } = currentUser;
+    const { firstName: name = '', avatar = '', employeeId = '', title = {} } = currentUser;
     const { selectLocationAbility } = this.state;
 
     const { LOGOUT, CHANGEPASSWORD } = this.state;
@@ -156,7 +281,7 @@ class AvatarDropdown extends React.Component {
             <p>{name}</p>
             {employeeId && (
               <p>
-                {title.name} - {employeeId}
+                {title?.name} - {employeeId}
               </p>
             )}
           </div>

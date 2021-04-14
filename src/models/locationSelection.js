@@ -1,6 +1,7 @@
 // import { history } from 'umi';
+import { setCurrentLocation, getCurrentLocation } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
-import getLocationListByCompany from '../services/locationSelection';
+import {getLocationListByCompany,getLocationListByParentCompany} from '../services/locationSelection';
 
 const LocationSelection = {
   namespace: 'locationSelection',
@@ -18,13 +19,40 @@ const LocationSelection = {
           type: 'save',
           payload: { listLocationsByCompany: data },
         });
-        let currentLocation = localStorage.getItem('currentLocation');
-        if (!currentLocation) {
-          currentLocation = localStorage.setItem(
-            'currentLocation',
-            data.length > 0 ? data[0]?._id : '',
-          );
+
+        const currentLocation = getCurrentLocation();
+        if (!currentLocation || currentLocation === 'undefined') {
+          setCurrentLocation(data.length > 0 ? data[0]?._id : '');
         }
+
+
+        return data;
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
+    },
+    *fetchLocationListByParentCompany({ payload }, { call, put }) {
+      try {
+        const res = yield call(getLocationListByParentCompany, payload);
+        const { statusCode, data = [] } = res;
+
+        if (statusCode !== 200) throw res;
+        yield put({
+          type: 'save',
+          payload: { listLocationsByCompany: data },
+        });
+        // if (!isOwner()) {
+        //   const currentLocation = getCurrentLocation();
+        //   if (!currentLocation || currentLocation === 'undefined') {
+        //     const hasHeadQuarter = data.find((value) => value?.isHeadQuarter);
+        //     if (hasHeadQuarter) {
+        //       setCurrentLocation(hasHeadQuarter._id);
+        //     } else {
+        //       setCurrentLocation(data.length > 0 ? data[0]?._id : '');
+        //     }
+        //   }
+        // }
 
         return data;
       } catch (errors) {

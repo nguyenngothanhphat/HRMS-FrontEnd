@@ -1,0 +1,78 @@
+.root{
+    width: 100%;
+    height: fit-content;
+    background: #ffffff;
+    border-bottom: 1px solid #d6dce0;
+    box-sizing: border-box;
+    border-radius: 5px;
+    margin-top: 24px;
+    .container{
+        &__header{
+            padding: 24px;
+            border-bottom: 1px solid #f0f0f0;
+            &__title{
+                font-size: 16px;
+                font-weight: bold;
+                margin: 0;
+            }
+        }
+        &__body{
+            padding: 24px;
+            input{
+                padding: 10px;
+            }
+            p{
+                margin: 1em 0;
+            }
+            :global{
+                .ant-col-1{
+                    text-align: center;
+                    cursor: pointer;
+                    color: #fc0505;
+                }
+            }
+            .actions{
+                width: 50%;
+                margin-left: 50%;
+                margin-right: 0;
+                text-align: right;
+                // display: flex;
+                // justify-content: flex-end;
+                .viewAddNewField{
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: center;
+                    cursor: pointer;
+                    &__icon{
+                        color: #2C6DF9;
+                        font-weight: bold;
+                        margin-right: 10px;
+                    }
+                    &__text{
+                        color: #707177;
+                        font-weight: bold;
+                        text-decoration: underline;
+                        margin: 0;
+                    }
+                }
+                .viewRemoveNewField{
+                    display: flex;
+                    justify-content: space-around;
+                    align-items: right;
+                    cursor: pointer;
+                    &__icon{
+                        color: #2C6DF9;
+                        font-weight: bold;
+                        margin-right: 10px;
+                    }
+                    &__text{
+                        color: #707177;
+                        font-weight: bold;
+                        text-decoration: underline;
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -8,8 +8,28 @@ import styles from './index.less';
 
 const Screen2 = (props) => {
   const [form] = Form.useForm();
+  const [goNext, setGoNext] = useState(true);
   const { headQuarterAddress, listCountry, locations, dispatch } = props;
   const [currentIndex, setCurrentIndex] = useState(locations.length);
+
+  const checkGoNext = () => {
+    let check = true;
+    locations.forEach((data) => {
+      const {
+        name = '',
+        addressLine1 = '',
+        zipCode = '',
+        country: country1 = '',
+        state = '',
+      } = data;
+      if (!name || !addressLine1 || !zipCode || !country1 || !state) check = false;
+    });
+    setGoNext(check);
+  };
+
+  useEffect(() => {
+    checkGoNext();
+  }, [JSON.stringify(locations)]);
 
   useEffect(() => {
     if (locations.length > 0) {
@@ -36,7 +56,8 @@ const Screen2 = (props) => {
             ...locations,
             {
               name: '',
-              address: '',
+              addressLine1: '',
+              addressLine2: '',
               country: '',
               state: '',
               zipCode: '',
@@ -87,13 +108,15 @@ const Screen2 = (props) => {
         name="headquarter"
         initialValues={{
           remember: true,
-          address: headQuarterAddress.address,
+          addressLine1: headQuarterAddress.addressLine1,
+          addressLine2: headQuarterAddress.addressLine2,
           country: headQuarterAddress.country,
           state: headQuarterAddress.state,
           zipCode: headQuarterAddress.zipCode,
           locations: [
             {
-              address: '',
+              addressLine1: '',
+              addressLine2: '',
               country: '',
               state: '',
               zipCode: '',
@@ -118,14 +141,28 @@ const Screen2 = (props) => {
           </h2>
 
           <Form.Item
-            label={useIntl().formatMessage({ id: 'page.signUp.step2.address' })}
-            name="address"
+            label="Address Line 1"
+            name="addressLine1"
             rules={[
               {
                 required: true,
                 message: useIntl().formatMessage({ id: 'page.signUp.step2.addressError' }),
               },
             ]}
+            className={styles.vertical}
+          >
+            <Input disabled />
+          </Form.Item>
+
+          <Form.Item
+            label="Address Line 2"
+            name="addressLine2"
+            // rules={[
+            //   {
+            //     required: true,
+            //     message: useIntl().formatMessage({ id: 'page.signUp.step2.addressError' }),
+            //   },
+            // ]}
             className={styles.vertical}
           >
             <Input disabled />
@@ -212,7 +249,12 @@ const Screen2 = (props) => {
         <Button className={styles.btn} onClick={() => navigate('previous')}>
           {useIntl().formatMessage({ id: 'page.signUp.step2.back' })}
         </Button>
-        <Button className={styles.btn} htmlType="submit" onClick={() => navigate('next')}>
+        <Button
+          disabled={!goNext}
+          className={styles.btn}
+          htmlType="submit"
+          onClick={() => navigate('next')}
+        >
           {useIntl().formatMessage({ id: 'page.signUp.step2.next' })}
         </Button>
       </div>

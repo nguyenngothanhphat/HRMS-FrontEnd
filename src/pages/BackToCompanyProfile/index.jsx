@@ -10,7 +10,7 @@ class BackToCompanyProfile extends PureComponent {
     const { companyId = '' } = this.props;
     return (
       <PageContainer>
-        <Redirect to={`/account-setup/company-profile/${companyId}`} />
+        <Redirect to={`/control-panel/company-profile/${companyId}`} />
       </PageContainer>
     );
   }

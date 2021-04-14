@@ -13,6 +13,7 @@ import {
   searchEmployees,
   getEmployeeDetailById,
   updateEmployee,
+  importEmployeeTenant,
 } from '../services/employeesManagement';
 
 const employeesManagement = {
@@ -117,16 +118,21 @@ const employeesManagement = {
     *fetchCompanyList(_, { call, put }) {
       try {
         const response = yield call(getCompanyList);
-        const { statusCode, data: companyList = [] } = response;
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { companyList } });
+        yield put({
+          type: 'save',
+          payload: {
+            companyList: data?.listCompany,
+          },
+        });
       } catch (errors) {
         dialog(errors);
       }
     },
-    *fetchLocationList({ payload: { company = '' } }, { call, put }) {
+    *fetchLocationList({ payload: { company = '', tenantId = '' } }, { call, put }) {
       try {
-        const response = yield call(getLocationList, { company });
+        const response = yield call(getLocationList, { tenantId, company });
         const { statusCode, data: locationList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { locationList } });
@@ -134,9 +140,9 @@ const employeesManagement = {
         dialog(errors);
       }
     },
-    *fetchDepartmentList({ payload: { company = '', location = '' } }, { call, put }) {
+    *fetchDepartmentList({ payload: { company = '', tenantId = '' } }, { call, put }) {
       try {
-        const response = yield call(getDepartmentList, { company, location });
+        const response = yield call(getDepartmentList, { company, tenantId });
         const { statusCode, data: departmentList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { departmentList } });
@@ -144,12 +150,12 @@ const employeesManagement = {
         dialog(errors);
       }
     },
-    *fetchJobTitleList({ payload: { company = '', department = '' } }, { call, put }) {
+    *fetchJobTitleList(_, { call, put }) {
       try {
-        const response = yield call(getJobTitleList, { company, department });
-        const { statusCode, data: jobTitleList = [] } = response;
+        const response = yield call(getJobTitleList);
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { jobTitleList } });
+        yield put({ type: 'save', payload: { jobTitleList: data } });
       } catch (errors) {
         dialog(errors);
       }
@@ -158,6 +164,8 @@ const employeesManagement = {
       try {
         const response = yield call(getReportingManagerList, payload);
         const { statusCode, data: reportingManagerList = [] } = response;
+        console.log('payload', payload);
+        console.log('response', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { reportingManagerList } });
       } catch (errors) {
@@ -168,10 +176,10 @@ const employeesManagement = {
       let statusAddEmployee = false;
       try {
         const response = yield call(addEmployee, payload);
-        const { statusCode, message } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message,
+          message:'Add employee successfully!',
         });
         statusAddEmployee = true;
       } catch (errors) {
@@ -225,6 +233,29 @@ const employeesManagement = {
         dialog(errors);
         return null;
       }
+    },
+    // tenant
+    *importEmployeesTenant({ payload, isAccountSetup = false }, { call, put }) {
+      let statusImportEmployees = false;
+      try {
+        const response = yield call(importEmployeeTenant, payload);
+        const { statusCode, message, data: listEmployeesTenant = {} } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        statusImportEmployees = true;
+        yield put({ type: 'save', payload: { listEmployeesTenant } });
+        if (isAccountSetup) {
+          yield put({
+            type: 'employee/fetchListEmployeeActive',
+            payload: { company: payload?.company },
+          });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+      yield put({ type: 'save', payload: { statusImportEmployees } });
     },
   },
   reducers: {

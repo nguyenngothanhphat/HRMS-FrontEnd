@@ -1,20 +1,28 @@
 import React, { PureComponent } from 'react';
 import { Layout, Input } from 'antd';
 import { connect, formatMessage } from 'umi';
+import {
+  getCurrentCompany,
+  getCurrentLocation,
+  getCurrentTenant,
+  isOwner,
+} from '@/utils/authority';
 import { filteredArr } from '@/utils/utils';
+
 import styles from './index.less';
 import CheckBoxForms from '../CheckboxForm';
 
-@connect(({ loading, employee }) => ({
+@connect(({ loading, employee, locationSelection: { listLocationsByCompany = [] } = {} }) => ({
   loading: loading.effects['login/login'],
   employee,
+  listLocationsByCompany,
 }))
 class TableFilter extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       EmploymentState: 'Employment Type',
-      // locationState: 'Location',
+      locationState: 'Location',
       departmentState: 'Department',
       all: 'All',
       text: '',
@@ -28,15 +36,25 @@ class TableFilter extends PureComponent {
     dispatch({
       type: 'employee/fetchEmployeeType',
     });
-    dispatch({
-      type: 'employee/fetchLocation',
-    });
+    const tenantId = getCurrentTenant();
+    const company = getCurrentCompany();
+    // const checkIsOwner = isOwner();
+
+    // if (company && company !== 'undefined') {
+    //   dispatch({
+    //     type: checkIsOwner ? 'employee/fetchOwnerLocation' : 'employee/fetchLocation',
+    //     // type: 'employee/fetchLocation',
+    //     payload: { company, tenantId },
+    //   });
+    // }
+
     dispatch({
       type: 'employee/fetchDepartment',
+      payload: { company, tenantId },
     });
-    dispatch({
-      type: 'employee/fetchListEmployeeMyTeam',
-    });
+    // dispatch({
+    //   type: 'employee/fetchListEmployeeMyTeam',
+    // });
   }
 
   toggle = () => {
@@ -69,38 +87,79 @@ class TableFilter extends PureComponent {
 
   handleCheckShowLocation = (formatDataLocation, locationState, all) => {
     const { tabName, checkLocation } = this.props;
+    const checkIsOwner = isOwner();
+    const currentLocation = getCurrentLocation();
+
     if (
-      (tabName === 'active' && checkLocation > -1) ||
-      (tabName === 'inActive' && checkLocation > -1)
+      checkIsOwner &&
+      (!currentLocation || currentLocation === 'undefined') &&
+      (tabName === 'active' || tabName === 'inActive')
     ) {
       return (
         <CheckBoxForms
           key={locationState}
           name={locationState}
           all={all}
-          data={formatDataLocation}
+          data={filteredArr(formatDataLocation)}
         />
       );
     }
     return '';
   };
 
+  handleCheckShowDepartment = (formatDataDepartment, departmentState, all) => {
+    const { tabName } = this.props;
+    const checkIsOwner = isOwner();
+    const currentLocation = getCurrentLocation();
+
+    if (
+      checkIsOwner &&
+      (!currentLocation || currentLocation === 'undefined') &&
+      (tabName === 'active' || tabName === 'inActive')
+    ) {
+      return '';
+    }
+    return (
+      <CheckBoxForms
+        key={departmentState}
+        name={departmentState}
+        all={all}
+        data={filteredArr(formatDataDepartment)}
+      />
+    );
+  };
+
   render() {
     const { Sider } = Layout;
-    const {  departmentState, all, EmploymentState, text, reset } = this.state;
+    const { departmentState, all, EmploymentState, text, reset, locationState } = this.state;
     const {
-      employee: {  department = [], employeetype = [], clearName = false },
+      employee: {
+        department = [],
+        employeetype = [],
+        //  location = [],
+        clearName = false,
+      },
       collapsed,
       changeTab,
       tabName,
+      listLocationsByCompany: location = [],
     } = this.props;
-    // const formatDataLocation = location.map((item) => {
-    //   const { name: label, id: value } = item;
-    //   return {
-    //     label,
-    //     value,
-    //   };
-    // });
+
+    const currentCompany = getCurrentCompany();
+
+    const formatDataLocation = location.map((item) => {
+      const {
+        name: label = '',
+        _id: value = '',
+        company: { _id: parentCompId = '', name: parentCompName = '' } = {},
+      } = item;
+      return {
+        label:
+          parentCompId && currentCompany !== parentCompId ? `${parentCompName} - ${label}` : label,
+        // label,
+        value,
+      };
+    });
     const formatDataEmployeeType = employeetype.map((item) => {
       const { name: label, _id: value } = item;
       return {
@@ -159,19 +218,20 @@ class TableFilter extends PureComponent {
                     data={filteredArr(formatDataEmployeeType)}
                   />
                 )}
-                {reset || changeTab ? (
-                  ''
-                ) : (
-                  <CheckBoxForms
-                    key={departmentState}
-                    name={departmentState}
-                    all={all}
-                    data={filteredArr(formatDataDepartment)}
-                  />
-                )}
-                {/* {reset || changeTab
+                {reset || changeTab
                   ? ''
-                  : this.handleCheckShowLocation(formatDataLocation, locationState, all)} */}
+                  : // <CheckBoxForms
+                    //   key={departmentState}
+                    //   name={departmentState}
+                    //   all={all}
+                    //   data={filteredArr(formatDataDepartment)}
+                    // />
+                    this.handleCheckShowDepartment(formatDataDepartment, departmentState, all)}
+
+                {reset || changeTab
+                  ? ''
+                  : this.handleCheckShowLocation(formatDataLocation, locationState, all)}
+                {/* {this.handleCheckShowLocation(formatDataLocation, locationState, all)} */}
               </>
             )}
           </div>

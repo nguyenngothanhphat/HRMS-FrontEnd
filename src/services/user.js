@@ -3,9 +3,10 @@ import request from '@/utils/request';
 export async function query() {
   return request('/api/users');
 }
-export async function queryCurrent() {
-  return request('/api/employee/get-current-user', {
+export async function queryCurrent(payload) {
+  return request('/api/usermap/get-current-user', {
     method: 'POST',
+    data: payload
   });
 }
 export async function queryNotices() {
@@ -14,7 +15,7 @@ export async function queryNotices() {
 
 export async function getUserInfo(data) {
   return request(
-    '/api/security-register',
+    '/api/security-register-tenant',
     {
       method: 'POST',
       data, // {firstName, email}
@@ -25,7 +26,7 @@ export async function getUserInfo(data) {
 
 export async function getSecurityCode(data) {
   return request(
-    '/api/resend-security-register',
+    '/api/check-security-register-tenant',
     {
       method: 'POST',
       data, // codeNumber
@@ -36,7 +37,7 @@ export async function getSecurityCode(data) {
 
 export async function signupAdmin(data) {
   return request(
-    '/api/sign-up-admin',
+    '/api/sign-up-admin-tenant',
     {
       method: 'POST',
       data,
@@ -47,11 +48,18 @@ export async function signupAdmin(data) {
 
 export async function activeAdmin(data) {
   return request(
-    '/api/active-user-security-register',
+    '/api/active-user-security-register-tenant',
     {
       method: 'POST',
       data,
     },
     true,
   );
+}
+
+export async function fetchCompanyOfUser(data) {
+  return request('/api/companytenant/list-of-user', {
+    method: 'POST',
+    data,
+  });
 }

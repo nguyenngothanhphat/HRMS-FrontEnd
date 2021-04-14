@@ -1,11 +1,23 @@
 /* eslint-disable no-useless-escape */
-import React from 'react';
-import { formatMessage, connect } from 'umi';
+import React, { useState } from 'react';
+import { formatMessage, connect, history } from 'umi';
 import { Form, Input, Button } from 'antd';
+import EmailExistModal from './EmailExistModal';
 import styles from './index.less';
 
 const SignUp1 = (props) => {
+  const [form] = Form.useForm();
+
   const { dispatch } = props;
+  const [isVisible, setIsVisible] = useState(false);
+  const [isContinue, setIsContinue] = useState(false);
+  const [currentEmail, setCurrentEmail] = useState('');
+
+  React.useEffect(() => {
+    if (isContinue) {
+      form.validateFields();
+    }
+  }, [isContinue]);
 
   const storeData = (user) => {
     if (dispatch) {
@@ -22,19 +34,45 @@ const SignUp1 = (props) => {
     const { email, fullname } = values;
 
     if (dispatch) {
-      await dispatch({
+      const res = await dispatch({
         type: 'signup/fetchUserInfo',
         payload: {
           firstName: fullname,
           email,
         },
       });
+      const { statusCode } = res;
+      if (statusCode === 400) {
+        setIsVisible(true);
+      }
     }
 
     storeData({
       firstName: fullname,
       email,
     });
+  };
+
+  const emailValidator = (rule, value, callback) => {
+    if (isContinue) callback('Please input new email');
+    else callback();
+  };
+
+  const onContinue = () => {
+    setIsContinue(true);
+    setIsVisible(false);
+  };
+
+  const onLogin = () => {
+    history.push({
+      pathname: `/login`,
+      state: { autoFillEmail: currentEmail },
+    });
+  };
+
+  const onEmailChange = (e) => {
+    setCurrentEmail(e.target.value);
+    setIsContinue(false);
   };
 
   return (
@@ -45,9 +83,12 @@ const SignUp1 = (props) => {
         })}
       </h2>
 
+      <EmailExistModal visible={isVisible} onContinue={onContinue} onLogin={onLogin} />
+
       <Form
         className={styles.form}
         name="sign-up"
+        form={form}
         layout="vertical"
         initialValues={{ remember: true }}
         onFinish={onFinish}
@@ -58,6 +99,7 @@ const SignUp1 = (props) => {
           })}
           name="email"
           rules={[
+            { validator: emailValidator },
             {
               required: true,
               message: formatMessage({
@@ -72,7 +114,7 @@ const SignUp1 = (props) => {
             },
           ]}
         >
-          <Input />
+          <Input onChange={onEmailChange} />
         </Form.Item>
 
         <Form.Item

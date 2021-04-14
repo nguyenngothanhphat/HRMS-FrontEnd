@@ -1,16 +1,11 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Tabs, Button, Spin } from 'antd';
+import { Tabs, Button, Spin, Affix } from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import Layout from '@/components/LayoutEmployeeProfile';
 import { connect, history } from 'umi';
-import UserManagement from './components/UserManagement';
 import CompanyDetails from './components/CompanyDetails';
 import WorkLocations from './components/WorkLocations';
-import Departments from './components/Departments';
-import CompanySignatory from './components/CompanySignatory';
-import CompanyDocuments from './components/CompanyDocuments';
-import ImportEmployees from './components/ImportEmployees';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -38,6 +33,9 @@ class CompanyProfile extends Component {
     dispatch({
       type: 'departmentManagement/fetchListDefaultDepartment',
     });
+    dispatch({
+      type: 'user/fetchCompanyOfUser',
+    });
     if (id) {
       dispatch({
         type: 'companiesManagement/fetchCompanyDetails',
@@ -47,6 +45,10 @@ class CompanyProfile extends Component {
   }
 
   componentWillUnmount() {
+    this.clearState();
+  }
+
+  clearState = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'companiesManagement/saveOrigin',
@@ -56,23 +58,23 @@ class CompanyProfile extends Component {
       type: 'companiesManagement/saveTemp',
       payload: { companyDetails: {} },
     });
-  }
+  };
 
   render() {
     const {
-      currentUser,
+      // currentUser,
       match: { params: { id = '' } = {} },
       loading = false,
     } = this.props;
     const routes = [
-      { name: 'Getting Started', path: '/account-setup' },
+      { name: 'Control Panel', path: '/control-panel' },
       {
         name: id ? 'Account Setup' : 'Add new company',
-        path: id ? `/account-setup/company-profile/${id}` : '/account-setup/add-company',
+        path: id ? `/control-panel/company-profile/${id}` : '/control-panel/add-company',
       },
     ];
 
-    let listMenu = [
+    const listMenu = [
       {
         id: 1,
         name: 'Company Details',
@@ -85,69 +87,23 @@ class CompanyProfile extends Component {
       },
     ];
 
-    if (id) {
-      listMenu = [
-        ...listMenu,
-        {
-          id: 3,
-          name: 'Departments',
-          component: <Departments companyId={id} />,
-        },
-        {
-          id: 4,
-          name: 'Company Signatory',
-          component: <CompanySignatory companyId={id} />,
-        },
-      ];
-    }
-
     return (
-      <>
+      <div className={styles.CompanyProfile}>
         <Breadcrumb routes={routes} />
         <div className={styles.root}>
-          <Tabs
-            defaultActiveKey="1"
-            tabBarExtraContent={
-              id && (
-                <Button
-                  className={styles.btn}
-                  disabled={currentUser?.firstCreated}
-                  onClick={() =>
-                    history.push({
-                      pathname: '/select-location',
-                    })
-                  }
-                >
-                  Finish Setup
-                </Button>
-              )
-            }
-          >
+          <Tabs defaultActiveKey="1">
             <TabPane tab="Profile Information" key="1">
               {loading ? (
                 <div className={styles.viewLoading}>
                   <Spin size="large" />
                 </div>
               ) : (
-                <Layout listMenu={listMenu} isCompanyProfile />
+                <Layout listMenu={listMenu} isCompanyProfile isAddingCompany />
               )}
             </TabPane>
-            {id && (
-              <>
-                <TabPane tab="User Management" key="2" disabled={currentUser?.firstCreated}>
-                  <UserManagement companyId={id} />
-                </TabPane>
-                <TabPane tab="Company Documents" key="3">
-                  <CompanyDocuments companyId={id} />
-                </TabPane>
-                <TabPane tab="Import Employees" key="4" disabled={currentUser?.firstCreated}>
-                  <ImportEmployees companyId={id} />
-                </TabPane>
-              </>
-            )}
           </Tabs>
         </div>
-      </>
+      </div>
     );
   }
 }

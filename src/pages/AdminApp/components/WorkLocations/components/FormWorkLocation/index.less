@@ -1,0 +1,147 @@
+.FormWorkLocation {
+  :global {
+    .ant-input-disabled,
+    .ant-select-disabled span {
+      color: rgb(77, 77, 77) !important;
+    }
+  }
+  .mgb10 {
+    margin-bottom: 10px !important;
+  }
+  .textInput {
+    box-sizing: border-box;
+    width: 100%;
+    height: 42px;
+    background: #ffffff;
+    border-radius: 5px;
+    &:focus {
+      box-shadow: none;
+    }
+  }
+  .viewRemoveField {
+    display: flex;
+    justify-content: flex-end;
+    margin: 15px 0;
+    color: red;
+  }
+  .title {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 19px;
+  }
+
+  &__viewBottom {
+    height: fit-content;
+    color: #161c29;
+    font-size: 13px;
+    line-height: 15px;
+    &__viewTitle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    &__row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      .viewFormVertical {
+        width: fit-content;
+        :global {
+          .ant-input {
+            .textInput();
+            // width: 187px !important;
+          }
+          .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input)
+            .ant-select-selector {
+            box-shadow: none;
+          }
+          .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+            box-sizing: border-box;
+            width: 100%;
+            height: 42px;
+            padding: 5px 11px 0;
+            background: #ffffff;
+            border-radius: 5px;
+          }
+          .ant-select-single:not(.ant-select-customize-input)
+            .ant-select-selector
+            .ant-select-selection-search-input {
+            height: 36px;
+          }
+        }
+      }
+      &__textLabel {
+        // width: 151px;
+      }
+      :global {
+        .ant-form-item {
+          margin-bottom: 0px;
+        }
+        .ant-input {
+          .textInput();
+        }
+      }
+    }
+    // div:last-child {
+    //   margin-bottom: 0;
+    // }
+  }
+}
+
+.action {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  cursor: pointer;
+  // &:active {
+  //   transform: translateY(-1px);
+  // }
+  &__actionDelete {
+    &__icon {
+      margin: 2px 7px 0 0;
+      color: #f10000 !important;
+    }
+  }
+  span {
+    color: #f10000;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 15px;
+    text-decoration-line: underline;
+  }
+  .viewBtn {
+    // margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+    width: 41%;
+    height: fit-content;
+    .btnSubmit {
+      width: 150px;
+      height: 40px;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 16px;
+      text-align: center;
+      text-decoration: none;
+      background: #ffa100;
+      border: none;
+      border-radius: 25px;
+      span {
+        color: #fff;
+        font-weight: 500;
+        font-size: 14px;
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+.hide {
+  visibility: hidden;
+}
+.nonHide {
+  visibility: visible;
+}

@@ -1,0 +1,91 @@
+.primaryView {
+  width: 100%;
+  height: fit-content;
+  color: #161c29;
+  font-weight: normal;
+  font-size: 13px;
+  font-style: normal;
+  line-height: 15.23px;
+
+  :global {
+    .ant-tree-title {
+      font-size: 13px;
+    }
+    .ant-collapse-header {
+      color: #2c6df9 !important;
+      font-weight: 500;
+      font-size: 12px;
+      line-height: 14px;
+      text-align: left;
+      text-decoration-line: underline;
+    }
+
+    .ant-collapse-icon-position-right
+      > .ant-collapse-item
+      > .ant-collapse-header
+      .ant-collapse-arrow {
+      font-size: 14px;
+    }
+    .ant-collapse > .ant-collapse-item > .ant-collapse-header .ant-collapse-arrow {
+      // top: 2px;
+      left: 106px;
+      right: auto;
+    }
+    .ant-collapse-icon-position-right > .ant-collapse-item > .ant-collapse-header {
+      padding: 12px 0;
+      // padding-right: 40px;
+    }
+    .ant-collapse-content > .ant-collapse-content-box {
+      padding: 0;
+    }
+  }
+
+  &__right {
+    
+    display: flex;
+    align-items: flex-start;
+    img {
+      margin-right: 11px;
+    }
+
+    .position, .company {
+      color: #707177;
+    }
+    
+  }
+
+  &__left {
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 15.23px;
+    
+    .company {
+      margin-bottom: 14px;
+    }
+
+    .email {
+      color: #707177;
+    }
+
+    .name {
+      color: #2c6df9;
+    }
+  }
+
+  .permissionCollapse {
+    width: fit-content;
+    .permissionPanel {
+      .icon {
+        height: fit-content;
+        .normalArrow {
+          transform: rotate(0deg) !important;
+          transition: 0.3s;
+        }
+        .upsideDownArrow {
+          transform: rotate(180deg) !important;
+          transition: 0.3s;
+        }
+      }
+    }
+  }
+}
