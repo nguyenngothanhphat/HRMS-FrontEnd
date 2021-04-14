@@ -96,7 +96,7 @@ const SignUp2 = (props) => {
           ref={(ref) => {
             inputRefs.push(ref);
           }}
-          defaultValue={inputRefs[0]}
+          value={inputRefs[0]}
           className={styles.input}
           min={0}
           max={9}
@@ -106,7 +106,7 @@ const SignUp2 = (props) => {
           ref={(ref) => {
             inputRefs.push(ref);
           }}
-          defaultValue={inputRefs[1]}
+          value={inputRefs[1]}
           className={styles.input}
           min={0}
           max={9}
@@ -116,7 +116,7 @@ const SignUp2 = (props) => {
           ref={(ref) => {
             inputRefs.push(ref);
           }}
-          defaultValue={inputRefs[2]}
+          value={inputRefs[2]}
           className={styles.input}
           min={0}
           max={9}
@@ -126,7 +126,7 @@ const SignUp2 = (props) => {
           ref={(ref) => {
             inputRefs.push(ref);
           }}
-          defaultValue={inputRefs[3]}
+          value={inputRefs[3]}
           className={styles.input}
           min={0}
           max={9}
@@ -136,7 +136,7 @@ const SignUp2 = (props) => {
           ref={(ref) => {
             inputRefs.push(ref);
           }}
-          defaultValue={inputRefs[4]}
+          value={inputRefs[4]}
           className={styles.input}
           min={0}
           max={9}
@@ -146,7 +146,7 @@ const SignUp2 = (props) => {
           ref={(ref) => {
             inputRefs.push(ref);
           }}
-          defaultValue={inputRefs[5]}
+          value={inputRefs[5]}
           className={styles.input}
           min={0}
           max={9}
