@@ -24,6 +24,7 @@ const { Option } = Select;
       statusAddEmployee,
     },
     user: { companiesOfUser = [], currentUser: { manageLocation = [] } = {} } = {},
+    employee: { employeetype = {} } = {},
   }) => ({
     rolesList,
     companyList,
@@ -34,6 +35,7 @@ const { Option } = Select;
     statusAddEmployee,
     companiesOfUser,
     manageLocation, // locations of admin
+    employeetype,
     loadingCompanyList: loading.effects['employeesManagement/fetchCompanyList'],
     loadingDepartment: loading.effects['employeesManagement/fetchDepartmentList'],
     loadingLocation: loading.effects['employeesManagement/fetchLocationList'],
@@ -243,6 +245,7 @@ class AddEmployeeForm extends Component {
     };
     const {
       rolesList,
+      employeetype,
       companyList,
       locationList,
       departmentList,
@@ -339,6 +342,27 @@ class AddEmployeeForm extends Component {
               placeholder="Select Roles"
             >
               {rolesList.map((item) => (
+                <Option key={item._id} value={item._id}>
+                  {item.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.employeeType' })}
+            name="employeeType"
+            rules={[{ required: true }]}
+          >
+            <Select
+              autoComplete="dontshow"
+              mode="multiple"
+              allowClear
+              showArrow
+              style={{ width: '100%' }}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
+              placeholder="Select Employment Type"
+            >
+              {employeetype.map((item) => (
                 <Option key={item._id} value={item._id}>
                   {item.name}
                 </Option>

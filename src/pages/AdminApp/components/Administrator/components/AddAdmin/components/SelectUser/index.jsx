@@ -65,6 +65,7 @@ class SelectUser extends PureComponent {
     this.setState({
       isCompanyWorker: e?.target?.value,
     });
+    this.formRef.current.resetFields(['location']);
   };
 
   onFinish = (values) => {
@@ -208,7 +209,8 @@ class SelectUser extends PureComponent {
               >
                 <Select
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                   allowClear
                   mode="multiple"
                   showArrow
