@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, formatMessage, connect } from 'umi';
-import { InputNumber, Button } from 'antd';
+import { Button } from 'antd';
 
 import gmail from '@/assets/gmail-icon.png';
 import outlook from '@/assets/outlook-icon.png';
@@ -10,8 +10,6 @@ import styles from './index.less';
 
 const SignUp2 = (props) => {
   const { email, dispatch } = props;
-
-  const inputRefs = [];
   const [inputVals, setInputVals] = useState(['', '', '', '', '', '']);
   const checkEmpty = (arr) => {
     for (let i = 0; i < arr.length; i += 1) {
@@ -43,31 +41,21 @@ const SignUp2 = (props) => {
             },
           });
 
-          setInputVals(['', '', '', '', '', '']); // Reset to default
+          setInputVals(new Array(6).fill('')); // Reset to default
         }
       }
     };
-
     fetchSecurityCode();
   }, [inputVals]);
 
-  const onChange = (value, index) => {
-    if (value !== 0) {
-      if (!value) {
-        return;
-      }
-    }
-    const { length } = value.toString();
-    if (index !== inputRefs.length - 1) {
-      if (length >= 1) {
-        inputRefs[index + 1].focus();
-      }
-    } else {
-      inputRefs[index].blur();
-    }
+  const onChange = async (e, index) => {
+    // if (isNaN(e.target.value)) return;
     const newArr = [...inputVals];
-    newArr.splice(index, 1, value);
+    newArr.splice(index, 1, e.target.value);
     setInputVals(newArr);
+    if (e.target.nextSibling) {
+      e.target.nextSibling.focus();
+    }
   };
 
   return (
@@ -92,60 +80,18 @@ const SignUp2 = (props) => {
       </p>
 
       <div className={styles.code}>
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          className={styles.input}
-          min={0}
-          max={9}
-          onChange={(e) => onChange(e, 0)}
-        />
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          className={styles.input}
-          min={0}
-          max={9}
-          onChange={(e) => onChange(e, 1)}
-        />
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          className={styles.input}
-          min={0}
-          max={9}
-          onChange={(e) => onChange(e, 2)}
-        />
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          className={styles.input}
-          min={0}
-          max={9}
-          onChange={(e) => onChange(e, 3)}
-        />
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          className={styles.input}
-          min={0}
-          max={9}
-          onChange={(e) => onChange(e, 4)}
-        />
-        <InputNumber
-          ref={(ref) => {
-            inputRefs.push(ref);
-          }}
-          className={styles.input}
-          min={0}
-          max={9}
-          onChange={(e) => onChange(e, 5)}
-        />
+        {inputVals.map((value, index) => {
+          return (
+            <input
+              key={`Number${index + 1}`}
+              className={styles.input2}
+              maxLength="1"
+              value={value}
+              onChange={(e) => onChange(e, index)}
+              onFocus={(e) => e.target.select()}
+            />
+          );
+        })}
       </div>
 
       <div className={styles.send}>
