@@ -8,7 +8,7 @@ import React from 'react';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import { Button, Result } from 'antd';
+import { Button, Result, Affix } from 'antd';
 import { connect, Link, useIntl, Redirect } from 'umi';
 import { getCurrentCompany } from '@/utils/authority';
 import classnames from 'classnames';
@@ -155,6 +155,11 @@ const BasicLayout = (props) => {
           }
           return listPath;
         }}
+        footerRender={() => (
+          <Affix className={styles.footerButton}>
+            <Button>ABC</Button>
+          </Affix>
+        )}
         menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
         collapsedButtonRender={false}
