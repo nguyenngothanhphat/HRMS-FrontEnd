@@ -499,6 +499,7 @@ class DirectoryComponent extends PureComponent {
         'Joined Date': item.joinDate,
         Location: item.location,
         Department: item.department,
+        'Employment Type': item.employeeType,
         Title: item.title,
         'Work Email': item.workEmail,
         'Personal Email': item.personalEmail,
