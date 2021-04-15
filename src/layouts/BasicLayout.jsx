@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import { Button, Result, Affix, Tooltip, Switch } from 'antd';
+import { Button, Result, Affix, Tooltip, Switch, message } from 'antd';
 import { UserSwitchOutlined } from '@ant-design/icons';
 import { connect, Link, useIntl, Redirect, useHistory } from 'umi';
 import { getCurrentCompany, setAuthority } from '@/utils/authority';
@@ -148,14 +148,17 @@ const BasicLayout = (props) => {
         if (isOwner) {
           const arr = authority.filter((item) => item !== 'employee');
           newAuthority = ['owner', ...arr];
+          message.success('Switch to Owner successfully');
         } else {
           const arr = authority.filter((item) => item !== 'employee');
           newAuthority = ['admin', ...arr];
+          message.success('Switch to Admin successfully');
         }
       } else {
         // else: OFF
         const arr = authority.filter((item) => item !== 'owner' && item !== 'admin');
         newAuthority = ['employee', ...arr];
+        message.success('Switch to Employee successfully');
       }
       setAuthority(newAuthority);
       setIsCheck(!isCheck);
