@@ -25,6 +25,7 @@ const { Option } = Select;
     },
     user: { companiesOfUser = [], currentUser: { manageLocation = [] } = {} } = {},
     employee: { employeetype = {} } = {},
+    locationSelection: { listLocationsByCompany = [] } = {},
   }) => ({
     rolesList,
     companyList,
@@ -36,6 +37,7 @@ const { Option } = Select;
     companiesOfUser,
     manageLocation, // locations of admin
     employeetype,
+    listLocationsByCompany,
     loadingCompanyList: loading.effects['employeesManagement/fetchCompanyList'],
     loadingDepartment: loading.effects['employeesManagement/fetchDepartmentList'],
     loadingLocation: loading.effects['employeesManagement/fetchLocationList'],
@@ -92,16 +94,33 @@ class AddEmployeeForm extends Component {
   }
 
   fetchData = (_id) => {
-    const { dispatch, companiesOfUser = [] } = this.props;
+    const { dispatch, companiesOfUser = [], listLocationsByCompany = [] } = this.props;
 
     const companyMatch = companiesOfUser.find((item) => item._id === _id);
     const tenantLocation = companyMatch.tenant;
 
+    const locationPayload = listLocationsByCompany.map(
+      ({ headQuarterAddress: { country: countryItem1 = '' } = {} }) => {
+        let stateList = [];
+        listLocationsByCompany.forEach(
+          ({ headQuarterAddress: { country: countryItem2 = '', state: stateItem2 = '' } = {} }) => {
+            if (countryItem1 === countryItem2) {
+              stateList = [...stateList, stateItem2];
+            }
+          },
+        );
+        return {
+          country: countryItem1,
+          state: stateList,
+        };
+      },
+    );
+
     dispatch({
       type: 'employeesManagement/fetchReportingManagerList',
       payload: {
-        tenantId: tenantLocation,
-        company: [_id],
+        company: [companyMatch],
+        location: locationPayload,
         status: ['ACTIVE'],
       },
     });
