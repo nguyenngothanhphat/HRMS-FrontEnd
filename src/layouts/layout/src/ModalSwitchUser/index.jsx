@@ -17,7 +17,9 @@ class SwitchUser extends Component {
         footer={null}
         onCancel={() => onClose(false)}
       >
-        <div>ABC</div>
+        <div>Owner</div>
+        <div>Admin</div>
+        <div>Employee</div>
       </Modal>
     );
   }

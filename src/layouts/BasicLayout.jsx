@@ -8,15 +8,15 @@ import React, { useState } from 'react';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import { Button, Result, Affix, Tooltip } from 'antd';
+import { Button, Result, Affix, Tooltip, Switch } from 'antd';
 import { UserSwitchOutlined } from '@ant-design/icons';
 import { connect, Link, useIntl, Redirect } from 'umi';
-import { getCurrentCompany } from '@/utils/authority';
+import { getCurrentCompany, setAuthority } from '@/utils/authority';
 import classnames from 'classnames';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
-import SwitchUser from './layout/src/ModalSwitchUser';
+// import SwitchUser from './layout/src/ModalSwitchUser';
 
 const noMatch = (
   <Result
@@ -56,8 +56,8 @@ const BasicLayout = (props) => {
    * init variables
    */
 
-  const [visible, setVisible] = useState(false);
-  const [isSwitch, setIsSwitch] = useState(false);
+  const [isCheck, setIsCheck] = useState(false);
+  // const [isSwitch, setIsSwitch] = useState(false);
 
   const getCurrentLogo = () => {
     const currentCompanyId = getCurrentCompany();
@@ -104,15 +104,6 @@ const BasicLayout = (props) => {
   };
 
   const buttonSwitch = () => {
-    // const authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
-    // let checkAuth = false;
-    // authority.map((item) => {
-    //   if (item.includes('owner') || item.includes('admin') || item.includes('employee')) {
-    //     checkAuth = true;
-    //   }
-    //   return checkAuth;
-    // });
-
     const { signInRole = [] } = currentUser;
     let checkAuth = false;
 
@@ -123,18 +114,50 @@ const BasicLayout = (props) => {
       return checkAuth;
     });
 
+    const handleSwitch = () => {
+      let isOwner = false;
+      let newAuthority = [];
+      const empl = 'employee';
+      const authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
+
+      signInRole.map((item) => {
+        if (item.includes('Owner')) {
+          isOwner = true;
+        }
+        return isOwner;
+      });
+
+      if (isCheck) {
+        if (isOwner) {
+          const arr = authority.filter((item) => item !== empl);
+          newAuthority = ['owner', ...arr];
+        } else {
+          const arr = authority.filter((item) => item !== empl);
+          newAuthority = ['admin', ...arr];
+        }
+      } else {
+        const arr = authority.filter((item) => item !== 'owner' && item !== 'admin');
+        newAuthority = [empl, ...arr];
+      }
+      setAuthority(newAuthority);
+      setIsCheck(!isCheck);
+      window.location.reload();
+    };
+
     return (
       <>
         {checkAuth ? (
           <Affix className={styles.footerButton}>
             <Tooltip title="Switch User">
-              <Button onClick={() => setIsSwitch(true)}>
-                <UserSwitchOutlined />
-              </Button>
+              <Switch
+                checked={isCheck}
+                checkedChildren={<UserSwitchOutlined />}
+                onClick={handleSwitch}
+              />
             </Tooltip>
           </Affix>
         ) : null}
-        <SwitchUser visible={isSwitch} onClose={setIsSwitch} />
+        {/* <SwitchUser visible={isSwitch} onClose={setIsSwitch} /> */}
       </>
     );
   };
