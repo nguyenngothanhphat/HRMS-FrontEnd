@@ -7,6 +7,7 @@ import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { checkPermissions } from '@/utils/permissions';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(
@@ -60,6 +61,7 @@ class Edit extends PureComponent {
 
   processDataChanges = () => {
     const { generalData: generalDataTemp } = this.props;
+    const tenantId = getCurrentTenant();
     const {
       urlFile = '',
       legalGender = '',
@@ -84,6 +86,7 @@ class Edit extends PureComponent {
       workNumber,
       adhaarCardNumber,
       uanNumber,
+      tenantId,
     };
     return payloadChanges;
   };
@@ -144,7 +147,7 @@ class Edit extends PureComponent {
           type: 'employeeProfile/fetchDocumentAdd',
           payload: {
             key: 'Adhaar Card',
-            attachment: file.id,
+            attachment: file?.id,
             employeeGroup: 'Identity',
             parentEmployeeGroup: 'Indentification Documents',
             employee: idCurrentEmployee,
@@ -154,8 +157,8 @@ class Edit extends PureComponent {
       dispatch({
         type: 'employeeProfile/fetchDocumentUpdate',
         payload: {
-          attachment: file.id,
-          id: AdhaarCard.document._id,
+          attachment: file?.id,
+          id: AdhaarCard?.document?._id,
         },
       }).then((doc) => this.handleUpdate(doc));
     }
