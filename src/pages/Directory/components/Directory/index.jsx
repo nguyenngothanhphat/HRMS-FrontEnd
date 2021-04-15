@@ -230,7 +230,11 @@ class DirectoryComponent extends PureComponent {
 
   renderData = () => {
     const { dispatch, permissions = {} } = this.props;
-    const { companiesOfUser = [], filterList: { listCountry = [] } = {} } = this.props;
+    const {
+      companiesOfUser = [],
+      filterList: { listCountry = [] } = {},
+      listLocationsByCompany = [],
+    } = this.props;
 
     const currentCompany = getCurrentCompany();
     const currentLocation = getCurrentLocation();
@@ -247,32 +251,52 @@ class DirectoryComponent extends PureComponent {
       companyPayload = [...companyList];
     } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
 
-    const locationPayload = listCountry.map(({ country: countryItem1 = '' }) => {
-      let stateList = [];
-      listCountry.forEach(({ country: countryItem2 = '', state: stateItem2 = '' }) => {
-        if (countryItem1 === countryItem2) {
-          stateList = [...stateList, stateItem2];
-        }
+    let locationPayload = [];
+
+    if (!currentLocation) {
+      locationPayload = listCountry.map(({ country: countryItem1 = '' }) => {
+        let stateList = [];
+        listCountry.forEach(({ country: countryItem2 = '', state: stateItem2 = '' }) => {
+          if (countryItem1 === countryItem2) {
+            stateList = [...stateList, stateItem2];
+          }
+        });
+        return {
+          country: countryItem1,
+          state: stateList,
+        };
       });
-      return {
-        country: countryItem1,
-        state: stateList,
-      };
-    });
+    } else {
+      const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
+      const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country;
+
+      locationPayload = listCountry.map(({ country: countryItem1 = '' }) => {
+        let stateList = [];
+        listCountry.forEach(({ country: countryItem2 = '', state: stateItem2 = '' }) => {
+          if (countryItem1 === countryItem2 && currentLocationCountry === countryItem2) {
+            stateList = [...stateList, stateItem2];
+          }
+        });
+        return {
+          country: countryItem1,
+          state: stateList,
+        };
+      });
+    }
 
     const viewTabActive = permissions.viewTabActive !== -1;
     const viewTabInActive = permissions.viewTabInActive !== -1;
-    const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
+    // const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
 
-    if (viewTabMyTeam) {
-      dispatch({
-        type: 'employee/fetchListEmployeeMyTeam',
-        payload: {
-          company: companyPayload,
-          location: locationPayload,
-        },
-      });
-    }
+    // if (viewTabMyTeam) {
+    //   dispatch({
+    //     type: 'employee/fetchListEmployeeMyTeam',
+    //     payload: {
+    //       company: companyPayload,
+    //       location: locationPayload,
+    //     },
+    //   });
+    // }
 
     if (viewTabActive) {
       dispatch({
@@ -321,7 +345,11 @@ class DirectoryComponent extends PureComponent {
     const currentCompany = getCurrentCompany();
 
     const { dispatch } = this.props;
-    const { companiesOfUser = [], filterList: { listCountry = [] } = {} } = this.props;
+    const {
+      companiesOfUser = [],
+      filterList: { listCountry = [] } = {},
+      listLocationsByCompany = [],
+    } = this.props;
     const { name, department, country, state, employeeType, company } = params;
 
     // MULTI COMPANY & LOCATION PAYLOAD
@@ -343,43 +371,61 @@ class DirectoryComponent extends PureComponent {
     let locationPayload = [];
 
     // if country is not selected, select all
-    if (country.length === 0) {
+    if (!currentLocation) {
+      if (country.length === 0) {
+        locationPayload = listCountry.map(({ country: countryItem1 = '' }) => {
+          let stateList = [];
+          listCountry.forEach(({ country: countryItem2 = '', state: stateItem2 = '' }) => {
+            if (countryItem1 === countryItem2) {
+              if (state.length !== 0) {
+                if (state.includes(stateItem2)) {
+                  stateList = [...stateList, stateItem2];
+                }
+              } else {
+                stateList = [...stateList, stateItem2];
+              }
+            }
+          });
+          return {
+            country: countryItem1,
+            state: stateList,
+          };
+        });
+      } else {
+        locationPayload = country.map((item) => {
+          let stateList = [];
+
+          listCountry.forEach(({ country: countryItem = '', state: stateItem = '' }) => {
+            if (item === countryItem) {
+              if (state.length !== 0) {
+                if (state.includes(stateItem)) {
+                  stateList = [...stateList, stateItem];
+                }
+              } else {
+                stateList = [...stateList, stateItem];
+              }
+            }
+          });
+
+          return {
+            country: item,
+            state: stateList,
+          };
+        });
+      }
+    } else {
+      const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
+      const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country;
+
       locationPayload = listCountry.map(({ country: countryItem1 = '' }) => {
         let stateList = [];
         listCountry.forEach(({ country: countryItem2 = '', state: stateItem2 = '' }) => {
-          if (countryItem1 === countryItem2) {
-            if (state.length !== 0) {
-              if (state.includes(stateItem2)) {
-                stateList = [...stateList, stateItem2];
-              }
-            } else {
-              stateList = [...stateList, stateItem2];
-            }
+          if (countryItem1 === countryItem2 && currentLocationCountry === countryItem2) {
+            stateList = [...stateList, stateItem2];
           }
         });
         return {
           country: countryItem1,
-          state: stateList,
-        };
-      });
-    } else {
-      locationPayload = country.map((item) => {
-        let stateList = [];
-
-        listCountry.forEach(({ country: countryItem = '', state: stateItem = '' }) => {
-          if (item === countryItem) {
-            if (state.length !== 0) {
-              if (state.includes(stateItem)) {
-                stateList = [...stateList, stateItem];
-              }
-            } else {
-              stateList = [...stateList, stateItem];
-            }
-          }
-        });
-
-        return {
-          country: item,
           state: stateList,
         };
       });

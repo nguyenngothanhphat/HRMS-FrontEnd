@@ -245,22 +245,30 @@ class TableFilter extends PureComponent {
                 {reset || changeTab ? (
                   ''
                 ) : (
-                  <CheckBoxForms
-                    key={CountryState}
-                    name={CountryState}
-                    all={all}
-                    data={filteredArr(formatDataCountry)}
-                  />
+                  <>
+                    {!currentLocation && (
+                      <CheckBoxForms
+                        key={CountryState}
+                        name={CountryState}
+                        all={all}
+                        data={filteredArr(formatDataCountry)}
+                      />
+                    )}
+                  </>
                 )}
                 {reset || changeTab ? (
                   ''
                 ) : (
-                  <CheckBoxForms
-                    key={StateState}
-                    name={StateState}
-                    all={all}
-                    data={filteredArr(formatDataState)}
-                  />
+                  <>
+                    {!currentLocation && (
+                      <CheckBoxForms
+                        key={StateState}
+                        name={StateState}
+                        all={all}
+                        data={filteredArr(formatDataState)}
+                      />
+                    )}
+                  </>
                 )}
               </>
             )}
