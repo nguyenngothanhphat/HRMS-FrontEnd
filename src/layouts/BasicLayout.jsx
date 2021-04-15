@@ -99,10 +99,20 @@ const BasicLayout = (props) => {
   };
 
   const buttonSwitch = () => {
-    const authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
+    // const authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
+    // let checkAuth = false;
+    // authority.map((item) => {
+    //   if (item.includes('owner') || item.includes('admin') || item.includes('employee')) {
+    //     checkAuth = true;
+    //   }
+    //   return checkAuth;
+    // });
+
+    const { signInRole = [] } = currentUser;
     let checkAuth = false;
-    authority.map((item) => {
-      if (item.includes('owner') || item.includes('admin') || item.includes('employee')) {
+
+    signInRole.map((item) => {
+      if (item.includes('Owner') || item.includes('Admin') || item.includes('Employee')) {
         checkAuth = true;
       }
       return checkAuth;
