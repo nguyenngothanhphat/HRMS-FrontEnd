@@ -4,7 +4,7 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
@@ -102,6 +102,23 @@ const BasicLayout = (props) => {
       </Link>
     );
   };
+
+  useEffect(() => {
+    let authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
+    authority = authority.filter(
+      (item) => item === 'owner' || item === 'admin' || item === 'employee',
+    );
+
+    authority.forEach((item) => {
+      if (item.includes('owner')) {
+        setIsCheck(false);
+      } else if (item === 'admin') {
+        setIsCheck(false);
+      } else {
+        setIsCheck(true);
+      }
+    });
+  }, [setIsCheck]);
 
   const buttonSwitch = () => {
     const { signInRole = [] } = currentUser;
