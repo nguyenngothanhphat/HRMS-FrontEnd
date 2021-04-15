@@ -4,13 +4,14 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import { Button, Result } from 'antd';
-import { connect, Link, useIntl, Redirect } from 'umi';
-import { getCurrentCompany } from '@/utils/authority';
+import { Button, Result, Affix, Tooltip, Switch, message } from 'antd';
+import { UserSwitchOutlined } from '@ant-design/icons';
+import { connect, Link, useIntl, Redirect, useHistory } from 'umi';
+import { getCurrentCompany, setAuthority } from '@/utils/authority';
 import classnames from 'classnames';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
@@ -53,6 +54,9 @@ const BasicLayout = (props) => {
   /**
    * init variables
    */
+
+  const [isCheck, setIsCheck] = useState(false);
+  const history = useHistory();
 
   const getCurrentLogo = () => {
     const currentCompanyId = getCurrentCompany();
@@ -97,6 +101,88 @@ const BasicLayout = (props) => {
       </Link>
     );
   };
+
+  useEffect(() => {
+    let authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
+    authority = authority.filter(
+      (item) => item === 'owner' || item === 'admin' || item === 'employee',
+    );
+
+    authority.forEach((item) => {
+      if (item.includes('owner')) {
+        setIsCheck(false);
+      } else if (item === 'admin') {
+        setIsCheck(false);
+      } else {
+        setIsCheck(true);
+      }
+    });
+  }, [setIsCheck]);
+
+  function buttonSwitch() {
+    let checkAuth = false;
+    const { signInRole = [] } = currentUser;
+
+    const formatRole = signInRole.map((role) => role.toLowerCase());
+    formatRole.map((item) => {
+      if (item.includes('owner') || item.includes('admin') || item.includes('employee')) {
+        checkAuth = true;
+      }
+      return checkAuth;
+    });
+
+    const handleSwitch = () => {
+      let isOwner = false;
+      let newAuthority = [];
+      const authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
+
+      formatRole.map((item) => {
+        if (item.includes('owner')) {
+          isOwner = true;
+        }
+        return isOwner;
+      });
+
+      // if press Switch button is ON
+      if (isCheck) {
+        if (isOwner) {
+          const arr = authority.filter((item) => item !== 'employee');
+          newAuthority = ['owner', ...arr];
+          message.success('Switch to Owner successfully');
+        } else {
+          const arr = authority.filter((item) => item !== 'employee');
+          newAuthority = ['admin', ...arr];
+          message.success('Switch to Admin successfully');
+        }
+      } else {
+        // else: OFF
+        const arr = authority.filter((item) => item !== 'owner' && item !== 'admin');
+        newAuthority = ['employee', ...arr];
+        message.success('Switch to Employee successfully');
+      }
+      setAuthority(newAuthority);
+      setIsCheck(!isCheck);
+      newAuthority = [];
+
+      history.push('/dashboard');
+    };
+
+    return (
+      <>
+        {checkAuth ? (
+          <Affix className={styles.footerButton}>
+            <Tooltip title={isCheck ? 'Switch Owner|Admin' : 'Switch Employee'}>
+              <Switch
+                checked={isCheck}
+                checkedChildren={<UserSwitchOutlined />}
+                onClick={handleSwitch}
+              />
+            </Tooltip>
+          </Affix>
+        ) : null}
+      </>
+    );
+  }
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
@@ -155,6 +241,7 @@ const BasicLayout = (props) => {
           }
           return listPath;
         }}
+        footerRender={pathname === '/dashboard' ? null : buttonSwitch}
         menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
         collapsedButtonRender={false}

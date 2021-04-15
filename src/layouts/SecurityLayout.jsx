@@ -20,6 +20,7 @@ class SecurityLayout extends React.Component {
     if (dispatch && token) {
       dispatch({
         type: 'user/fetchCurrent',
+        isSwitchingRole: true,
       });
     }
   }

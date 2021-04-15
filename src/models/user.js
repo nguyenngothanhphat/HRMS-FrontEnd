@@ -29,7 +29,7 @@ const UserModel = {
       });
     },
 
-    *fetchCurrent({ refreshCompanyList = true }, { call, put }) {
+    *fetchCurrent({ refreshCompanyList = true, isSwitchingRole = false }, { call, put }) {
       try {
         const company = getCurrentCompany();
         const tenantId = getCurrentTenant();
@@ -63,33 +63,34 @@ const UserModel = {
           }
         }
 
-        let formatArrRoles = [];
-        const { signInRole = [] } = data;
-        const formatRole = signInRole.map((role) => role.toLowerCase());
+        if (!isSwitchingRole) {
+          let formatArrRoles = [];
+          const { signInRole = [] } = data;
+          const formatRole = signInRole.map((role) => role.toLowerCase());
 
-        if (formatRole.includes('owner')) {
-          formatArrRoles = [...formatArrRoles, 'owner'];
-        }
-        if (formatRole.includes('admin')) {
-          formatArrRoles = [...formatArrRoles, 'admin'];
-        }
-        data?.permissionAdmin.forEach((e) => {
-          formatArrRoles = [...formatArrRoles, e];
-        });
-        data?.permissionEmployee.forEach((e) => {
-          formatArrRoles = [...formatArrRoles, e];
-        });
+          if (formatRole.includes('owner')) {
+            formatArrRoles = [...formatArrRoles, 'owner'];
+          }
+          if (formatRole.includes('admin')) {
+            formatArrRoles = [...formatArrRoles, 'admin'];
+          }
+          data?.permissionAdmin.forEach((e) => {
+            formatArrRoles = [...formatArrRoles, e];
+          });
+          data?.permissionEmployee.forEach((e) => {
+            formatArrRoles = [...formatArrRoles, e];
+          });
 
-        setAuthority(formatArrRoles);
-
-        yield put({
-          type: 'save',
-          payload: {
-            permissions: {
-              ...checkPermissions(formatArrRoles, checkIsOwner),
+          setAuthority(formatArrRoles);
+          yield put({
+            type: 'save',
+            payload: {
+              permissions: {
+                ...checkPermissions(formatArrRoles, checkIsOwner),
+              },
             },
-          },
-        });
+          });
+        }
 
         return response;
       } catch (errors) {
