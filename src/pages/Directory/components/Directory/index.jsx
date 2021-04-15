@@ -234,9 +234,12 @@ class DirectoryComponent extends PureComponent {
     // if location selected, render data of current company
     // else, multiple companies
     let companyPayload = [];
+    const companyList = companiesOfUser.filter(
+      (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
+    );
     if (!currentLocation && isOwnerCheck) {
-      companyPayload = [...companiesOfUser];
-    } else companyPayload = companiesOfUser.filter((lo) => lo?._id === currentCompany);
+      companyPayload = [...companyList];
+    } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
 
     const locationPayload = listCountry.map(({ country: countryItem1 = '' }) => {
       let stateList = [];
@@ -317,16 +320,19 @@ class DirectoryComponent extends PureComponent {
 
     // MULTI COMPANY & LOCATION PAYLOAD
     let companyPayload = [];
+    const companyList = companiesOfUser.filter(
+      (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
+    );
     const isOwnerCheck = isOwner();
 
     // OWNER
     if (!currentLocation && isOwnerCheck) {
       if (company.length !== 0) {
-        companyPayload = companiesOfUser.filter((lo) => company.includes(lo?._id));
+        companyPayload = companyList.filter((lo) => company.includes(lo?._id));
       } else {
-        companyPayload = [...companiesOfUser];
+        companyPayload = [...companyList];
       }
-    } else companyPayload = companiesOfUser.filter((lo) => lo?._id === currentCompany);
+    } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
 
     let locationPayload = [];
 
