@@ -57,7 +57,6 @@ const BasicLayout = (props) => {
 
   const [isCheck, setIsCheck] = useState(false);
   const history = useHistory();
-  // const [isSwitch, setIsSwitch] = useState(false);
 
   const getCurrentLogo = () => {
     const currentCompanyId = getCurrentCompany();
@@ -120,12 +119,11 @@ const BasicLayout = (props) => {
     });
   }, [setIsCheck]);
 
-  const buttonSwitch = () => {
-    const { signInRole = [] } = currentUser;
+  function buttonSwitch() {
     let checkAuth = false;
+    const { signInRole = [] } = currentUser;
 
     const formatRole = signInRole.map((role) => role.toLowerCase());
-
     formatRole.map((item) => {
       if (item.includes('owner') || item.includes('admin') || item.includes('employee')) {
         checkAuth = true;
@@ -136,7 +134,6 @@ const BasicLayout = (props) => {
     const handleSwitch = () => {
       let isOwner = false;
       let newAuthority = [];
-      const empl = 'employee';
       const authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
 
       formatRole.map((item) => {
@@ -146,22 +143,24 @@ const BasicLayout = (props) => {
         return isOwner;
       });
 
+      // if press Switch button is ON
       if (isCheck) {
         if (isOwner) {
-          const arr = authority.filter((item) => item !== empl);
+          const arr = authority.filter((item) => item !== 'employee');
           newAuthority = ['owner', ...arr];
         } else {
-          const arr = authority.filter((item) => item !== empl);
+          const arr = authority.filter((item) => item !== 'employee');
           newAuthority = ['admin', ...arr];
         }
       } else {
+        // else: OFF
         const arr = authority.filter((item) => item !== 'owner' && item !== 'admin');
-        newAuthority = [empl, ...arr];
+        newAuthority = ['employee', ...arr];
       }
       setAuthority(newAuthority);
       setIsCheck(!isCheck);
       newAuthority = [];
-      // window.location.reload();
+
       history.push('/dashboard');
     };
 
@@ -169,7 +168,7 @@ const BasicLayout = (props) => {
       <>
         {checkAuth ? (
           <Affix className={styles.footerButton}>
-            <Tooltip title="Switch User">
+            <Tooltip title={isCheck ? 'Switch Owner|Admin' : 'Switch Employee'}>
               <Switch
                 checked={isCheck}
                 checkedChildren={<UserSwitchOutlined />}
@@ -178,10 +177,9 @@ const BasicLayout = (props) => {
             </Tooltip>
           </Affix>
         ) : null}
-        {/* <SwitchUser visible={isSwitch} onClose={setIsSwitch} /> */}
       </>
     );
-  };
+  }
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
