@@ -10,7 +10,7 @@ import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { Button, Result, Affix, Tooltip, Switch } from 'antd';
 import { UserSwitchOutlined } from '@ant-design/icons';
-import { connect, Link, useIntl, Redirect } from 'umi';
+import { connect, Link, useIntl, Redirect, useHistory } from 'umi';
 import { getCurrentCompany, setAuthority } from '@/utils/authority';
 import classnames from 'classnames';
 import logo from '../assets/logo.svg';
@@ -56,6 +56,7 @@ const BasicLayout = (props) => {
    */
 
   const [isCheck, setIsCheck] = useState(false);
+  const history = useHistory();
   // const [isSwitch, setIsSwitch] = useState(false);
 
   const getCurrentLogo = () => {
@@ -106,8 +107,10 @@ const BasicLayout = (props) => {
     const { signInRole = [] } = currentUser;
     let checkAuth = false;
 
-    signInRole.map((item) => {
-      if (item.includes('Owner') || item.includes('Admin') || item.includes('Employee')) {
+    const formatRole = signInRole.map((role) => role.toLowerCase());
+
+    formatRole.map((item) => {
+      if (item.includes('owner') || item.includes('admin') || item.includes('employee')) {
         checkAuth = true;
       }
       return checkAuth;
@@ -119,8 +122,8 @@ const BasicLayout = (props) => {
       const empl = 'employee';
       const authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
 
-      signInRole.map((item) => {
-        if (item.includes('Owner')) {
+      formatRole.map((item) => {
+        if (item.includes('owner')) {
           isOwner = true;
         }
         return isOwner;
@@ -140,7 +143,9 @@ const BasicLayout = (props) => {
       }
       setAuthority(newAuthority);
       setIsCheck(!isCheck);
-      window.location.reload();
+      newAuthority = [];
+      // window.location.reload();
+      history.push('/dashboard');
     };
 
     return (
