@@ -135,7 +135,7 @@ class DirectoryComponent extends PureComponent {
         location: [currentLocation],
       });
     }
-    this.initDataTable();
+    // this.initDataTable();
     this.initTabId();
   };
 
@@ -180,6 +180,12 @@ class DirectoryComponent extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'employee/ClearFilter',
+    });
+    dispatch({
+      type: 'employee/save',
+      payload: {
+        filterList: {},
+      },
     });
   }
 

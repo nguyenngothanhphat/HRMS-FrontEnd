@@ -6,8 +6,6 @@ import {
   getCurrentTenant,
   isOwner,
   setAuthority,
-  getAuthority,
-  isAdmin,
 } from '@/utils/authority';
 
 import { history } from 'umi';

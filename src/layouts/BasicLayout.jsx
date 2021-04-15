@@ -8,11 +8,12 @@ import React, { useEffect, useState } from 'react';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import { Button, Result, Affix, Tooltip, Switch, message } from 'antd';
+import { Button, Result, Affix, Tooltip, Switch, notification } from 'antd';
 import { UserSwitchOutlined } from '@ant-design/icons';
 import { connect, Link, useIntl, Redirect, useHistory } from 'umi';
 import { getCurrentCompany, setAuthority } from '@/utils/authority';
 import classnames from 'classnames';
+import { checkPermissions } from '@/utils/permissions';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
@@ -121,7 +122,7 @@ const BasicLayout = (props) => {
 
   function buttonSwitch() {
     let checkAuth = false;
-    const { signInRole = [] } = currentUser;
+    const { signInRole = [], permissionEmployee = [], permissionAdmin = [] } = currentUser;
 
     const formatRole = signInRole.map((role) => role.toLowerCase());
     formatRole.map((item) => {
@@ -134,7 +135,6 @@ const BasicLayout = (props) => {
     const handleSwitch = () => {
       let isOwner = false;
       let newAuthority = [];
-      const authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
 
       formatRole.map((item) => {
         if (item.includes('owner')) {
@@ -145,24 +145,35 @@ const BasicLayout = (props) => {
 
       // if press Switch button is ON
       if (isCheck) {
+        newAuthority = [...permissionAdmin];
         if (isOwner) {
-          const arr = authority.filter((item) => item !== 'employee');
-          newAuthority = ['owner', ...arr];
-          message.success('Switch to Owner successfully');
+          newAuthority = ['owner', ...newAuthority];
+          notification.success({ message: 'Switch to Owner successfully' });
         } else {
-          const arr = authority.filter((item) => item !== 'employee');
-          newAuthority = ['admin', ...arr];
-          message.success('Switch to Admin successfully');
+          newAuthority = ['admin', ...newAuthority];
+          notification.success({ message: 'Switch to Admin successfully' });
         }
       } else {
         // else: OFF
-        const arr = authority.filter((item) => item !== 'owner' && item !== 'admin');
-        newAuthority = ['employee', ...arr];
-        message.success('Switch to Employee successfully');
+        newAuthority = ['employee', ...permissionEmployee];
+        notification.success({ message: 'Switch to Employee successfully' });
       }
       setAuthority(newAuthority);
       setIsCheck(!isCheck);
-      newAuthority = [];
+
+      dispatch({
+        type: 'user/fetchCurrent',
+        isSwitchingRole: true,
+      });
+
+      dispatch({
+        type: 'user/save',
+        payload: {
+          permissions: {
+            ...checkPermissions(newAuthority, isCheck),
+          },
+        },
+      });
 
       history.push('/dashboard');
     };
