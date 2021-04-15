@@ -16,7 +16,6 @@ import classnames from 'classnames';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
-// import SwitchUser from './layout/src/ModalSwitchUser';
 
 const noMatch = (
   <Result
