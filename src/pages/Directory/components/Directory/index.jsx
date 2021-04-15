@@ -2,12 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
 import { Tabs, Layout } from 'antd';
 import DirectoryTable from '@/components/DirectoryTable';
-import {
-  getCurrentTenant,
-  getCurrentCompany,
-  getCurrentLocation,
-  isOwner,
-} from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
 
 import { debounce } from 'lodash';
 import AddEmployeeForm from '@/pages_admin/EmployeesManagement/components/TableContainer/components/AddEmployeeForm';
@@ -217,57 +212,37 @@ class DirectoryComponent extends PureComponent {
     });
   };
 
-  renderHrTeam = () => {
+  renderData = () => {
     const { dispatch, permissions = {} } = this.props;
     const { listLocationsByCompany = [] } = this.props;
     let company = [getCurrentCompany()];
-    const currentLocation = [getCurrentLocation()];
-
+    const currentLocation = getCurrentLocation();
     const isOwnerCheck = isOwner();
-    let location = [
-      {
-        id: getCurrentLocation(),
-        tenantId: getCurrentTenant(),
-      },
-    ];
 
-    // For owners to display all locations (includes child companies)
-    if (isOwnerCheck) {
-      if (
-        currentLocation.length === 0 ||
-        currentLocation.includes('undefined') ||
-        currentLocation.includes(null)
-      ) {
-        location = listLocationsByCompany.map((lo) => {
-          const { _id = '', company: { tenant = '' } = {} } = lo;
-          return {
-            id: _id,
-            tenantId: tenant,
-          };
-        });
-      }
+    // if location selected, render data of current company
+    // else, multiple companies
+    if (!currentLocation && isOwnerCheck) {
       company = listLocationsByCompany.map((lo) => lo?.company?._id);
       company = [...new Set(company.map((s) => s))];
     }
     const viewTabActive = permissions.viewTabActive !== -1;
     const viewTabInActive = permissions.viewTabInActive !== -1;
-    // const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
+    const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
 
-    // if (viewTabMyTeam) {
-    //   dispatch({
-    //     type: 'employee/fetchListEmployeeMyTeam',
-    //     payload: {
-    //       company,
-    //       location,
-    //     },
-    //   });
-    // }
+    if (viewTabMyTeam) {
+      dispatch({
+        type: 'employee/fetchListEmployeeMyTeam',
+        payload: {
+          company,
+        },
+      });
+    }
+
     if (viewTabActive) {
       dispatch({
         type: 'employee/fetchListEmployeeActive',
         payload: {
           company,
-          location,
         },
       });
     }
@@ -276,7 +251,6 @@ class DirectoryComponent extends PureComponent {
         type: 'employee/fetchListEmployeeInActive',
         payload: {
           company,
-          location,
         },
       });
     }
@@ -296,7 +270,7 @@ class DirectoryComponent extends PureComponent {
     // if (filterRoles.length > 0 || filterRolesCSA.length > 0) {
     //   return this.renderHrGloBal();
     // }
-    return this.renderHrTeam();
+    return this.renderData();
   };
 
   ChangeTab = (params, tabId) => {
