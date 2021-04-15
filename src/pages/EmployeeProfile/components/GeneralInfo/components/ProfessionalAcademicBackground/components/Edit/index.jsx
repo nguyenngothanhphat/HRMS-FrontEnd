@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 import { Button, Form, Input, Select, Tag } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import FormCertification from './components/FormCertification';
 import s from './index.less';
 
@@ -95,6 +96,7 @@ class Edit extends PureComponent {
       totalExp,
       qualification,
       certification,
+      tenantId: getCurrentTenant(),
     };
     return payloadChanges;
   };

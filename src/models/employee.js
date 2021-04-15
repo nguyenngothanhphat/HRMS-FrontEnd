@@ -93,8 +93,7 @@ const employee = {
         payload: {
           company = '',
           department = [],
-          country = [],
-          state = [],
+          location = [],
           employeeType = [],
           name = '',
         } = {},
@@ -105,8 +104,7 @@ const employee = {
         const response = yield call(getListEmployeeMyTeam, {
           company,
           department,
-          country,
-          state,
+          location,
           employeeType,
           name,
         });
@@ -122,8 +120,7 @@ const employee = {
         payload: {
           company = [],
           department = [],
-          country = [],
-          state = [],
+          location = [],
           employeeType = [],
           name = '',
         } = {},
@@ -132,12 +129,10 @@ const employee = {
     ) {
       try {
         const response = yield call(getListEmployee, {
-          tenantId: getCurrentTenant(),
           status: ['ACTIVE'],
           company,
           department,
-          country,
-          state,
+          location,
           employeeType,
           name,
         });
@@ -156,8 +151,7 @@ const employee = {
         payload: {
           company = [],
           department = [],
-          country = [],
-          state = [],
+          location = [],
           employeeType = [],
           name = '',
         } = {},
@@ -166,12 +160,10 @@ const employee = {
     ) {
       try {
         const response = yield call(getListEmployee, {
-          tenantId: getCurrentTenant(),
           status: ['INACTIVE'],
           company,
           department,
-          country,
-          state,
+          location,
           employeeType,
           name,
         });
