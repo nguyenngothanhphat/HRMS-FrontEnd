@@ -205,93 +205,93 @@ class ModalImportEmployee extends Component {
     }).then(() => {
       this.setState({ company: '', employees: [] });
       handleCancel();
-      this.modalNotification();
+      // this.modalNotification();
     });
   };
 
-  modalNotification = () => {
-    const { listEmployeesTenant } = this.props;
-    const { newList = [], existList = [] } = listEmployeesTenant;
-    let notiErr = [];
-    let notiSuccess = [];
+  // modalNotification = () => {
+  //   const { listEmployeesTenant } = this.props;
+  //   const { newList = [], existList = [] } = listEmployeesTenant;
+  //   let notiErr = [];
+  //   let notiSuccess = [];
 
-    newList.forEach((item) => {
-      const { isAdded, status = '' } = item;
-      if (!isAdded && status.includes('[FAILED]')) {
-        notiErr.push(status);
-      }
+  //   newList.forEach((item) => {
+  //     const { isAdded, status = '' } = item;
+  //     if (!isAdded && status.includes('[FAILED]')) {
+  //       notiErr.push(status);
+  //     }
 
-      if (isAdded && status.includes('[SUCCESS]')) {
-        notiSuccess.push('[SUCCESS]');
-      }
-    });
+  //     if (isAdded && status.includes('[SUCCESS]')) {
+  //       notiSuccess.push('[SUCCESS]');
+  //     }
+  //   });
 
-    notiErr = [...new Set(notiErr)];
-    notiSuccess = [...new Set(notiSuccess)];
+  //   notiErr = [...new Set(notiErr)];
+  //   notiSuccess = [...new Set(notiSuccess)];
 
-    if (notiSuccess.length > 0 && notiErr.length === 0) {
-      Modal.success({
-        icon: <div style={{ display: 'none' }} />,
-        className: styles.modalResult,
-        content: (
-          <Result
-            style={{ padding: 0, height: '200px' }}
-            status="success"
-            title="Import successfully !"
-            subTitle="Please check Result_Import_Employees.csv below !"
-          />
-        ),
-      });
-    }
+  //   if (notiSuccess.length > 0 && notiErr.length === 0) {
+  //     Modal.success({
+  //       icon: <div style={{ display: 'none' }} />,
+  //       className: styles.modalResult,
+  //       content: (
+  //         <Result
+  //           style={{ padding: 0, height: '200px' }}
+  //           status="success"
+  //           title="Import successfully !"
+  //           subTitle="Please check Result_Import_Employees.csv below !"
+  //         />
+  //       ),
+  //     });
+  //   }
 
-    if (notiErr.length > 0 && notiSuccess.length === 0) {
-      Modal.error({
-        icon: <div style={{ display: 'none' }} />,
-        className: styles.modalResult,
-        content: (
-          <Result
-            status="error"
-            style={{ padding: 0, height: '200px' }}
-            title="Import failed !"
-            subTitle={notiErr.map((item) => item)}
-            extra="Please check Result_Import_Employees.csv below !"
-          />
-        ),
-      });
-    }
+  //   if (notiErr.length > 0 && notiSuccess.length === 0) {
+  //     Modal.error({
+  //       icon: <div style={{ display: 'none' }} />,
+  //       className: styles.modalResult,
+  //       content: (
+  //         <Result
+  //           status="error"
+  //           style={{ padding: 0, height: '200px' }}
+  //           title="Import failed !"
+  //           subTitle={notiErr.map((item) => item)}
+  //           extra="Please check Result_Import_Employees.csv below !"
+  //         />
+  //       ),
+  //     });
+  //   }
 
-    if (notiErr.length > 0 && notiSuccess.length > 0) {
-      Modal.error({
-        icon: <div style={{ display: 'none' }} />,
-        className: styles.modalResult,
-        content: (
-          <Result
-            status="warning"
-            style={{ padding: 0, height: '200px' }}
-            title="Import not successfully !"
-            subTitle={notiErr.map((item) => item)}
-            extra="Please check Result_Import_Employees.csv below !"
-          />
-        ),
-      });
-    }
+  //   if (notiErr.length > 0 && notiSuccess.length > 0) {
+  //     Modal.error({
+  //       icon: <div style={{ display: 'none' }} />,
+  //       className: styles.modalResult,
+  //       content: (
+  //         <Result
+  //           status="warning"
+  //           style={{ padding: 0, height: '200px' }}
+  //           title="Import not successfully !"
+  //           subTitle={notiErr.map((item) => item)}
+  //           extra="Please check Result_Import_Employees.csv below !"
+  //         />
+  //       ),
+  //     });
+  //   }
 
-    if (!_.isEmpty(existList) && !_.isEmpty(listEmployeesTenant) && notiSuccess.length === 0) {
-      Modal.error({
-        icon: <div style={{ display: 'none' }} />,
-        className: styles.modalResult,
-        content: (
-          <Result
-            status="error"
-            style={{ padding: 0, height: '200px' }}
-            title="Added employees failed !"
-            subTitle="[FAILED] - Work Email existed!"
-            extra="Please check Result_Import_Employees.csv below !"
-          />
-        ),
-      });
-    }
-  };
+  //   if (!_.isEmpty(existList) && !_.isEmpty(listEmployeesTenant) && notiSuccess.length === 0) {
+  //     Modal.error({
+  //       icon: <div style={{ display: 'none' }} />,
+  //       className: styles.modalResult,
+  //       content: (
+  //         <Result
+  //           status="error"
+  //           style={{ padding: 0, height: '200px' }}
+  //           title="Added employees failed !"
+  //           subTitle="[FAILED] - Work Email existed!"
+  //           extra="Please check Result_Import_Employees.csv below !"
+  //         />
+  //       ),
+  //     });
+  //   }
+  // };
 
   renderFormImport = (companyProps) => {
     const currentCompany = getCurrentCompany();
