@@ -1,13 +1,13 @@
 import request from '@/utils/request';
 
 export async function getGeneralInfo(payload) {
-  return request('/api/generalinfo/get-by-employee', {
+  return request('/api/generalinfotenant/get-by-employee', {
     method: 'POST',
     data: payload,
   });
 }
 export async function getEmploymentInfo(payload) {
-  return request('/api/employee/get-by-id', {
+  return request('/api/employeetenant/get-by-employee-id', {
     method: 'POST',
     data: payload,
   });
@@ -25,7 +25,7 @@ export async function getListSkill() {
   });
 }
 export async function getDepartmentList(payload) {
-  return request('/api/department/list', {
+  return request('/api/departmenttenant/list', {
     method: 'POST',
     data: payload,
   });
@@ -41,12 +41,12 @@ export async function getLocationList() {
   });
 }
 export async function getEmployeeList() {
-  return request('/api/employee/list-active', {
+  return request('/api/employeetenant/list', {
     method: 'POST',
   });
 }
 export async function updateGeneralInfo(payload) {
-  return request('/api/generalinfo/update', {
+  return request('/api/generalinfotenant/update', {
     method: 'POST',
     data: payload,
   });
@@ -262,21 +262,21 @@ export async function getLocationsByCompany(payload) {
 }
 
 export async function updateEmployment(payload) {
-  return request('/api/employee/update', {
+  return request('/api/employeetenant/update', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function updatePrivate(payload) {
-  return request('/api/generalinfo/update', {
+  return request('/api/generalinfotenant/update', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getListRelation() {
-  return request('/api/generalinfo/list-relation', {
+  return request('/api/generalinfotenant/list-relation', {
     method: 'POST',
   });
 }

@@ -15,7 +15,7 @@ import styles from './index.less';
     employeeProfile: {
       AdhaarCard = {},
       idCurrentEmployee = '',
-      originData: { generalData: generalDataOrigin = {} } = {},
+      originData: { generalData: generalDataOrigin = {}, employmentData = {} } = {},
       tempData: { generalData = {} } = {},
     } = {},
     upload: { employeeInformationURL = '' },
@@ -27,6 +27,7 @@ import styles from './index.less';
     generalData,
     employeeInformationURL,
     idCurrentEmployee,
+    employmentData,
     AdhaarCard,
     currentUser,
   }),
@@ -59,7 +60,8 @@ class Edit extends PureComponent {
   };
 
   processDataChanges = () => {
-    const { generalData: generalDataTemp } = this.props;
+    const { employmentData: generalDataTemp } = this.props;
+    const tenantId = localStorage.getItem('tenantId');
     const {
       urlFile = '',
       legalGender = '',
@@ -72,7 +74,21 @@ class Edit extends PureComponent {
       uanNumber = '',
       _id: id = '',
     } = generalDataTemp;
-    const payloadChanges = {
+    // const payloadChanges = {
+    //   id,
+    //   urlFile,
+    //   legalGender,
+    //   legalName,
+    //   firstName: legalName,
+    //   DOB,
+    //   employeeId,
+    //   workEmail,
+    //   workNumber,
+    //   adhaarCardNumber,
+    //   uanNumber,
+    // };
+    return {
+      tenantId,
       id,
       urlFile,
       legalGender,
@@ -85,7 +101,6 @@ class Edit extends PureComponent {
       adhaarCardNumber,
       uanNumber,
     };
-    return payloadChanges;
   };
 
   processDataKept = () => {
@@ -110,6 +125,7 @@ class Edit extends PureComponent {
   handleSave = () => {
     const { dispatch } = this.props;
     const payload = this.processDataChanges() || {};
+    // const tenantId = localStorage.getItem('tenantId');
     const dataTempKept = this.processDataKept() || {};
     this.handleUpLoadAdhaarCard();
     dispatch({
@@ -263,7 +279,7 @@ class Edit extends PureComponent {
   render() {
     const { isLt5M, visible, linkImage } = this.state;
     const {
-      generalData,
+      employmentData,
       loading,
       handleCancel = () => {},
       loadingAdhaarCard,
@@ -279,7 +295,7 @@ class Edit extends PureComponent {
       workNumber = '',
       adhaarCardNumber = '',
       uanNumber = '',
-    } = generalData;
+    } = employmentData;
     const nameFile = urlFile ? urlFile.url.split('/') : '';
     const splitURL = nameFile[nameFile.length - 1];
     const formItemLayout = {

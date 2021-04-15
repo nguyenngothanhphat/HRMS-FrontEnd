@@ -40,9 +40,10 @@ class EmployeeProfile extends Component {
       match: { params: { reId: employee = '' } = {} },
       dispatch,
     } = this.props;
+    const tenantId = localStorage.getItem('tenantId');
     dispatch({
       type: 'employeeProfile/fetchGeneralInfo',
-      payload: { employee },
+      payload: { employee, tenantId },
     });
     dispatch({
       type: 'employeeProfile/fetchCompensation',
@@ -65,7 +66,7 @@ class EmployeeProfile extends Component {
     });
     dispatch({
       type: 'employeeProfile/fetchEmploymentInfo',
-      payload: employee,
+      payload: { tenantId, employee },
     });
     dispatch({
       type: 'employeeProfile/fetchPRReport',

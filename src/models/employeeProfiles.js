@@ -551,9 +551,9 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchEmploymentInfo({ payload: id = '' }, { call, put }) {
+    *fetchEmploymentInfo({ payload: { tenantId = '', employee = '' } }, { call, put }) {
       try {
-        const response = yield call(getEmploymentInfo, { id });
+        const response = yield call(getEmploymentInfo, { tenantId, employee });
         const { data, statusCode } = response;
         yield put({ type: 'saveOrigin', payload: { employmentData: data } });
         if (statusCode !== 200) throw response;
