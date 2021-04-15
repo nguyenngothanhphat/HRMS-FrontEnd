@@ -4,17 +4,19 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import React from 'react';
+import React, { useState } from 'react';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import { Button, Result, Affix } from 'antd';
+import { Button, Result, Affix, Tooltip } from 'antd';
+import { UserSwitchOutlined } from '@ant-design/icons';
 import { connect, Link, useIntl, Redirect } from 'umi';
 import { getCurrentCompany } from '@/utils/authority';
 import classnames from 'classnames';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
+import SwitchUser from './layout/src/ModalSwitchUser';
 
 const noMatch = (
   <Result
@@ -53,6 +55,9 @@ const BasicLayout = (props) => {
   /**
    * init variables
    */
+
+  const [visible, setVisible] = useState(false);
+  const [isSwitch, setIsSwitch] = useState(false);
 
   const getCurrentLogo = () => {
     const currentCompanyId = getCurrentCompany();
@@ -122,9 +127,14 @@ const BasicLayout = (props) => {
       <>
         {checkAuth ? (
           <Affix className={styles.footerButton}>
-            <Button>ABC</Button>
+            <Tooltip title="Switch User">
+              <Button onClick={() => setIsSwitch(true)}>
+                <UserSwitchOutlined />
+              </Button>
+            </Tooltip>
           </Affix>
         ) : null}
+        <SwitchUser visible={isSwitch} onClose={setIsSwitch} />
       </>
     );
   };
