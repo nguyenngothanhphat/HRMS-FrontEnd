@@ -241,7 +241,7 @@ const BasicLayout = (props) => {
           }
           return listPath;
         }}
-        footerRender={buttonSwitch}
+        footerRender={pathname === '/dashboard' ? null : buttonSwitch}
         menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
         collapsedButtonRender={false}
