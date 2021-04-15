@@ -98,6 +98,27 @@ const BasicLayout = (props) => {
     );
   };
 
+  const buttonSwitch = () => {
+    const authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
+    let checkAuth = false;
+    authority.map((item) => {
+      if (item.includes('owner') || item.includes('admin') || item.includes('employee')) {
+        checkAuth = true;
+      }
+      return checkAuth;
+    });
+
+    return (
+      <>
+        {checkAuth ? (
+          <Affix className={styles.footerButton}>
+            <Button>ABC</Button>
+          </Affix>
+        ) : null}
+      </>
+    );
+  };
+
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
   };
@@ -155,11 +176,7 @@ const BasicLayout = (props) => {
           }
           return listPath;
         }}
-        footerRender={() => (
-          <Affix className={styles.footerButton}>
-            <Button>ABC</Button>
-          </Affix>
-        )}
+        footerRender={buttonSwitch}
         menuDataRender={menuDataRender}
         rightContentRender={() => <RightContent />}
         collapsedButtonRender={false}
