@@ -6,6 +6,7 @@ import {
   getCurrentTenant,
   isOwner,
   setAuthority,
+  setIsSwitchingRole,
 } from '@/utils/authority';
 
 import { history } from 'umi';
@@ -43,6 +44,7 @@ const UserModel = {
         if (!tenantId || !company) {
           history.replace('/control-panel');
         }
+        setIsSwitchingRole(isSwitchingRole);
         yield put({
           type: 'saveCurrentUser',
           payload: {
@@ -60,6 +62,8 @@ const UserModel = {
             setCurrentLocation(response?.data?.manageLocation[0]?._id);
           }
         }
+
+        console.log(isSwitchingRole);
 
         if (!isSwitchingRole) {
           let formatArrRoles = [];
@@ -80,6 +84,7 @@ const UserModel = {
           });
 
           setAuthority(formatArrRoles);
+          setIsSwitchingRole(isSwitchingRole);
           yield put({
             type: 'save',
             payload: {

@@ -78,3 +78,14 @@ export function isAdmin() {
   const owner = roleList.filter((role) => role.toLowerCase().includes('admin'));
   return owner.length > 0;
 }
+
+export function setIsSwitchingRole(switchingRole) {
+  localStorage.setItem('isSwitchingRole', switchingRole);
+  reloadAuthorized();
+}
+
+export function getIsSwitchingRole() {
+  const isSwitch = localStorage.getItem('isSwitchingRole');
+  if (isSwitch === 'undefined') return null;
+  return isSwitch;
+}
