@@ -53,6 +53,7 @@ import {
   getBenefitPlans,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
+import { getCurrentTenant } from '@/utils/authority';
 
 const documentCategories = [
   { employeeGroup: 'Agreement', parentEmployeeGroup: ' Qualifications/Certification' },
@@ -471,7 +472,7 @@ const employeeProfile = {
         });
         yield put({
           type: 'fetchGeneralInfo',
-          payload: { employee: idCurrentEmployee },
+          payload: { employee: idCurrentEmployee, tenantId: getCurrentTenant() },
           dataTempKept,
         });
         switch (key) {
@@ -1006,7 +1007,7 @@ const employeeProfile = {
         });
         yield put({
           type: 'fetchGeneralInfo',
-          payload: { employee: idCurrentEmployee },
+          payload: { employee: idCurrentEmployee, tenantId: getCurrentTenant() },
         });
       } catch (errors) {
         dialog(errors);
