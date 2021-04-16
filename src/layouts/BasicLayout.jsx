@@ -57,6 +57,7 @@ const BasicLayout = (props) => {
    */
 
   const [isCheck, setIsCheck] = useState(false);
+  const [loading, setLoading] = useState(false);
   const history = useHistory();
 
   const getCurrentLogo = () => {
@@ -118,6 +119,7 @@ const BasicLayout = (props) => {
         setIsCheck(true);
       }
     });
+    setLoading(false);
   }, [setIsCheck]);
 
   function buttonSwitch() {
@@ -164,6 +166,7 @@ const BasicLayout = (props) => {
       }
       setAuthority(newAuthority);
       setIsCheck(!isCheck);
+      setLoading(true);
 
       await dispatch({
         type: 'user/fetchCurrent',
@@ -192,6 +195,7 @@ const BasicLayout = (props) => {
                 checked={isCheck}
                 checkedChildren={<UserSwitchOutlined />}
                 onClick={handleSwitch}
+                loading={loading}
               />
             </Tooltip>
           </Affix>
