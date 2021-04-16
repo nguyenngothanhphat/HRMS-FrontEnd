@@ -20,7 +20,7 @@ export async function getCompensation(payload) {
 }
 
 export async function getListSkill() {
-  return request('/api/skilltypetenant/list', {
+  return request('/api/skilltype/list', {
     method: 'POST',
   });
 }
@@ -31,7 +31,7 @@ export async function getDepartmentList(payload) {
   });
 }
 export async function getEmployeeTypeList() {
-  return request('/api/employeetypetenant/list', {
+  return request('/api/employeetype/list', {
     method: 'POST',
   });
 }
@@ -53,7 +53,7 @@ export async function updateGeneralInfo(payload) {
 }
 
 export async function getListTitle() {
-  return request('/api/titletenant/list', {
+  return request('/api/title/list', {
     method: 'POST',
   });
 }
@@ -88,7 +88,7 @@ export async function getCountryList() {
 }
 
 export async function getPayslip(payload) {
-  return request('/api/documenttenant/employee-group', {
+  return request('/api/document/employee-group', {
     method: 'POST',
     data: payload,
   });
@@ -135,14 +135,14 @@ export async function getAddVisa(payload) {
 }
 
 export async function getDocumentAdd(payload) {
-  return request('/api/documenttenant/add', {
+  return request('/api/document/add', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getDocumentUpdate(payload) {
-  return request('/api/documenttenant/update', {
+  return request('/api/document/update', {
     method: 'POST',
     data: payload,
   });
@@ -170,21 +170,21 @@ export async function getAdhaarcardUpdate(payload) {
 }
 
 export async function getPRReport(payload) {
-  return request('/api/documenttenant/list', {
+  return request('/api/document/list', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getDocuments(payload) {
-  return request('/api/documenttenant/list', {
+  return request('/api/document/list', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getDocumentById(payload) {
-  return request('/api/documenttenant/get-by-id', {
+  return request('/api/document/get-by-id', {
     method: 'POST',
     data: payload,
   });
@@ -254,7 +254,7 @@ export async function updateTax(payload) {
 }
 
 export async function getTitleByDepartment(payload) {
-  return request('/api/titletenant/list', {
+  return request('/api/title/list', {
     method: 'POST',
     data: payload,
   });
@@ -303,7 +303,7 @@ export async function getRevokeHistory(payload) {
 
 export async function shareDocument(payload) {
   // payload: {shareWith: [""], fileName: "", url: ""}
-  return request('/api/documenttenant/share', {
+  return request('/api/document/share', {
     method: 'POST',
     data: payload,
   });

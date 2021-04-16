@@ -6,7 +6,7 @@ import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 // import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 // import Test from './components/test';
@@ -79,7 +79,7 @@ class EmployeeProfile extends Component {
     // });
     dispatch({
       type: 'employeeProfile/fetchPayslips',
-      payload: { employee, employeeGroup: 'Payslip' },
+      payload: { employee, employeeGroup: 'Payslip', tenantId },
     });
     dispatch({
       type: 'employeeProfile/fetchBank',
@@ -98,7 +98,13 @@ class EmployeeProfile extends Component {
     dispatch({ type: 'employeeProfile/fetchEmployees' });
     dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: { employee } });
     dispatch({ type: 'employeeProfile/fetchEmployeeDependentDetails', payload: { employee } });
-    dispatch({ type: 'employeeProfile/getBenefitPlans' });
+    dispatch({
+      type: 'employeeProfile/getBenefitPlans',
+      payload: {
+        tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
+      },
+    });
   };
 
   checkProfileOwner = (currentUserID, employeeID) => {
