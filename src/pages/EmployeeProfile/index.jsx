@@ -48,19 +48,19 @@ class EmployeeProfile extends Component {
     });
     dispatch({
       type: 'employeeProfile/fetchCompensation',
-      payload: { employee },
+      payload: { employee, tenantId },
     });
     dispatch({
       type: 'employeeProfile/fetchPassPort',
-      payload: { employee },
+      payload: { employee, tenantId },
     });
     dispatch({
       type: 'employeeProfile/fetchVisa',
-      payload: { employee },
+      payload: { employee, tenantId },
     });
     dispatch({
       type: 'employeeProfile/fetchAdhaardCard',
-      payload: { employee },
+      payload: { employee, tenantId },
     });
     dispatch({
       type: 'employeeProfile/fetchCountryList',

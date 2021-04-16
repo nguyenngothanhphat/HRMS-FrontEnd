@@ -5,6 +5,7 @@ import { connect } from 'umi';
 import { PlusOutlined } from '@ant-design/icons';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import moment from 'moment';
+import { getCurrentTenant } from '@/utils/authority';
 import PassportItem from './PassportItem';
 import styles from './index.less';
 
@@ -185,6 +186,7 @@ class Edit extends Component {
       passportIssuedOn,
       passportValidTill,
       _id,
+      tenantId: getCurrentTenant(),
     };
 
     return payloadChanges;

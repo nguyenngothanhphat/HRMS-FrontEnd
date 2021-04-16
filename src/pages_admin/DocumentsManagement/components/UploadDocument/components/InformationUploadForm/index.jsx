@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Form, Select, Input, Button, Row, Col, notification } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
+import { getCurrentTenant } from '@/utils/authority';
 import AdhaarCardForm from './components/AdhaarCardForm';
 import VisaForm from './components/VisaForm';
 import PassportForm from './components/PassportForm';
@@ -217,6 +218,7 @@ class InformationUploadForm extends PureComponent {
       visaEntryType: entryType,
       document: documentId,
       employee,
+      tenantId: getCurrentTenant(),
     };
 
     dispatch({
