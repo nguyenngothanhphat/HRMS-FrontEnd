@@ -209,6 +209,7 @@ class Edit extends Component {
       passportValidTill,
       document: id,
       employee,
+      tenantId: getCurrentTenant(),
     };
 
     return payloadChanges;
