@@ -40,7 +40,9 @@ export function setTenantId(tenantId) {
 }
 
 export function getCurrentTenant() {
-  return localStorage.getItem('tenantId');
+  const tenantId = localStorage.getItem('tenantId');
+  if (tenantId === 'undefined') return null;
+  return tenantId;
 }
 
 export function setCurrentCompany(companyId) {
@@ -49,7 +51,9 @@ export function setCurrentCompany(companyId) {
 }
 
 export function getCurrentCompany() {
-  return localStorage.getItem('currentCompanyId');
+  const currentCompanyId = localStorage.getItem('currentCompanyId');
+  if (currentCompanyId === 'undefined') return null;
+  return currentCompanyId;
 }
 
 export function setCurrentLocation(locationId) {
@@ -58,18 +62,30 @@ export function setCurrentLocation(locationId) {
 }
 
 export function getCurrentLocation() {
-  return localStorage.getItem('currentLocationId');
+  const currentLocationId = localStorage.getItem('currentLocationId');
+  if (currentLocationId === 'undefined') return null;
+  return currentLocationId;
 }
 
 export function isOwner() {
   const roleList = JSON.parse(localStorage.getItem('antd-pro-authority'));
-  const owner = roleList.filter(role => role.toLowerCase().includes('owner'))
+  const owner = roleList.filter((role) => role.toLowerCase().includes('owner'));
   return owner.length > 0;
 }
 
 export function isAdmin() {
   const roleList = JSON.parse(localStorage.getItem('antd-pro-authority'));
-  const owner = roleList.filter(role => role.toLowerCase().includes('admin'))
+  const owner = roleList.filter((role) => role.toLowerCase().includes('admin'));
   return owner.length > 0;
 }
 
+export function setIsSwitchingRole(switchingRole) {
+  localStorage.setItem('isSwitchingRole', switchingRole);
+  reloadAuthorized();
+}
+
+export function getIsSwitchingRole() {
+  const isSwitch = localStorage.getItem('isSwitchingRole');
+  if (isSwitch === 'undefined') return null;
+  return isSwitch;
+}

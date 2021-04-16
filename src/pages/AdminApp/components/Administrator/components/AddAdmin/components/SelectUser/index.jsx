@@ -65,6 +65,7 @@ class SelectUser extends PureComponent {
     this.setState({
       isCompanyWorker: e?.target?.value,
     });
+    this.formRef.current.resetFields(['location']);
   };
 
   onFinish = (values) => {
@@ -115,7 +116,7 @@ class SelectUser extends PureComponent {
           }}
           onFinish={this.onFinish}
         >
-          <Row gutter={[24, 24]}>
+          <Row className={styles.eachRow}>
             <Col span={8} style={{ marginTop: '3px' }}>
               <span>{companyName} Worker?</span>
             </Col>
@@ -130,7 +131,7 @@ class SelectUser extends PureComponent {
           </Row>
 
           {isCompanyWorker && (
-            <Row align="middle" gutter={[24, 24]}>
+            <Row className={styles.eachRow} align="middle">
               <Col span={8}>Name</Col>
               <Col span={14}>
                 <Form.Item
@@ -164,7 +165,7 @@ class SelectUser extends PureComponent {
 
           {!isCompanyWorker && (
             <>
-              <Row align="middle" gutter={[24, 24]}>
+              <Row className={styles.eachRow} align="middle">
                 <Col span={8}>Name</Col>
                 <Col span={14}>
                   <Form.Item
@@ -176,7 +177,7 @@ class SelectUser extends PureComponent {
                 </Col>
                 <Col span={2} />
               </Row>
-              <Row align="middle" gutter={[24, 24]}>
+              <Row className={styles.eachRow} align="middle">
                 <Col span={8}>Email</Col>
                 <Col span={14}>
                   <Form.Item
@@ -192,7 +193,7 @@ class SelectUser extends PureComponent {
               </Row>
             </>
           )}
-          <Row align="top" gutter={[24, 24]}>
+          <Row className={styles.eachRow} align="top">
             <Col span={8} style={{ marginTop: '8px' }}>
               Manage Location
             </Col>
@@ -208,7 +209,8 @@ class SelectUser extends PureComponent {
               >
                 <Select
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                   allowClear
                   mode="multiple"
                   showArrow

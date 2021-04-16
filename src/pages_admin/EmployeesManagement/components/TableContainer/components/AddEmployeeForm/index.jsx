@@ -6,7 +6,7 @@ import { Modal, Button, Form, Input, Select, DatePicker } from 'antd';
 import { connect, formatMessage } from 'umi';
 import _ from 'lodash';
 import moment from 'moment';
-import { getCurrentCompany, isAdmin, isOwner } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -25,6 +25,8 @@ const { Option } = Select;
     },
     employee: { employeetype = [] },
     user: { companiesOfUser = [], currentUser: { manageLocation = [] } = {} } = {},
+    employee: { employeetype = {} } = {},
+    locationSelection: { listLocationsByCompany = [] } = {},
   }) => ({
     rolesList,
     companyList,
@@ -36,6 +38,8 @@ const { Option } = Select;
     statusAddEmployee,
     companiesOfUser,
     manageLocation, // locations of admin
+    employeetype,
+    listLocationsByCompany,
     loadingCompanyList: loading.effects['employeesManagement/fetchCompanyList'],
     loadingDepartment: loading.effects['employeesManagement/fetchDepartmentList'],
     loadingLocation: loading.effects['employeesManagement/fetchLocationList'],
@@ -92,16 +96,33 @@ class AddEmployeeForm extends Component {
   }
 
   fetchData = (_id) => {
-    const { dispatch, companiesOfUser = [] } = this.props;
+    const { dispatch, companiesOfUser = [], listLocationsByCompany = [] } = this.props;
 
     const companyMatch = companiesOfUser.find((item) => item._id === _id);
     const tenantLocation = companyMatch.tenant;
 
+    const locationPayload = listLocationsByCompany.map(
+      ({ headQuarterAddress: { country: countryItem1 = '' } = {} }) => {
+        let stateList = [];
+        listLocationsByCompany.forEach(
+          ({ headQuarterAddress: { country: countryItem2 = '', state: stateItem2 = '' } = {} }) => {
+            if (countryItem1 === countryItem2) {
+              stateList = [...stateList, stateItem2];
+            }
+          },
+        );
+        return {
+          country: countryItem1,
+          state: stateList,
+        };
+      },
+    );
+
     dispatch({
       type: 'employeesManagement/fetchReportingManagerList',
       payload: {
-        tenantId: tenantLocation,
-        company: [_id],
+        company: [companyMatch],
+        location: locationPayload,
         status: ['ACTIVE'],
       },
     });
@@ -220,17 +241,15 @@ class AddEmployeeForm extends Component {
   };
 
   getUserCompanyList = (companyList) => {
-    const checkIsAdmin = isAdmin();
-    const checkIsOwner = isOwner();
+    const currentLocation = getCurrentLocation();
     const currentCompany = getCurrentCompany();
-    if (checkIsOwner) {
-      return companyList;
+    const childCompanyList = companyList.filter(
+      (comp) => comp?.childOfCompany === currentCompany || comp?._id === currentCompany,
+    );
+    if (!currentLocation) {
+      return childCompanyList;
     }
-    if (checkIsAdmin) {
-      return companyList.filter((company) => company?._id === currentCompany);
-    }
-
-    return [];
+    return childCompanyList.filter((company) => company?._id === currentCompany);
   };
 
   renderAddEmployeeForm = () => {
@@ -250,6 +269,7 @@ class AddEmployeeForm extends Component {
     };
     const {
       rolesList,
+      employeetype,
       companyList,
       locationList,
       departmentList,
@@ -370,6 +390,27 @@ class AddEmployeeForm extends Component {
               placeholder="Select Roles"
             >
               {rolesList.map((item) => (
+                <Option key={item._id} value={item._id}>
+                  {item.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.employeeType' })}
+            name="employeeType"
+            rules={[{ required: true }]}
+          >
+            <Select
+              autoComplete="dontshow"
+              mode="multiple"
+              allowClear
+              showArrow
+              style={{ width: '100%' }}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
+              placeholder="Select Employment Type"
+            >
+              {employeetype.map((item) => (
                 <Option key={item._id} value={item._id}>
                   {item.name}
                 </Option>

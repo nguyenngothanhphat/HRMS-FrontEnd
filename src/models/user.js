@@ -5,6 +5,8 @@ import {
   getCurrentLocation,
   getCurrentTenant,
   isOwner,
+  setAuthority,
+  setIsSwitchingRole,
 } from '@/utils/authority';
 
 import { history } from 'umi';
@@ -26,13 +28,13 @@ const UserModel = {
       });
     },
 
-    *fetchCurrent({ refreshCompanyList = true }, { call, put }) {
+    *fetchCurrent({ refreshCompanyList = true, isSwitchingRole = false }, { call, put }) {
       try {
         const company = getCurrentCompany();
         const tenantId = getCurrentTenant();
         const payload = {
-          company: company && company !== 'undefined' ? company : null,
-          tenantId: tenantId && tenantId !== 'undefined' ? tenantId : null,
+          company,
+          tenantId,
         };
         const response = yield call(queryCurrent, payload);
         const { statusCode, data = {} } = response;
@@ -42,6 +44,7 @@ const UserModel = {
         if (!tenantId || !company) {
           history.replace('/control-panel');
         }
+        setIsSwitchingRole(isSwitchingRole);
         yield put({
           type: 'saveCurrentUser',
           payload: {
@@ -49,7 +52,7 @@ const UserModel = {
             name: data?.firstName,
           },
         });
-        
+
         const checkIsOwner = isOwner();
         if (!checkIsOwner) {
           // for admin, auto set location
@@ -59,21 +62,38 @@ const UserModel = {
             setCurrentLocation(response?.data?.manageLocation[0]?._id);
           }
         }
-        let formatArrRoles = []
-        data?.permissionAdmin.forEach((e) => {
-          formatArrRoles = [...formatArrRoles, e];
-        });
-        data?.permissionEmployee.forEach((e) => {
-          formatArrRoles = [...formatArrRoles, e];
-        });
-        yield put({
-          type: 'save',
-          payload: {
-            permissions: {
-              ...checkPermissions(formatArrRoles, checkIsOwner),
+
+        console.log(isSwitchingRole);
+
+        if (!isSwitchingRole) {
+          let formatArrRoles = [];
+          const { signInRole = [] } = data;
+          const formatRole = signInRole.map((role) => role.toLowerCase());
+
+          if (formatRole.includes('owner')) {
+            formatArrRoles = [...formatArrRoles, 'owner'];
+          }
+          if (formatRole.includes('admin')) {
+            formatArrRoles = [...formatArrRoles, 'admin'];
+          }
+          data?.permissionAdmin.forEach((e) => {
+            formatArrRoles = [...formatArrRoles, e];
+          });
+          data?.permissionEmployee.forEach((e) => {
+            formatArrRoles = [...formatArrRoles, e];
+          });
+
+          setAuthority(formatArrRoles);
+          setIsSwitchingRole(isSwitchingRole);
+          yield put({
+            type: 'save',
+            payload: {
+              permissions: {
+                ...checkPermissions(formatArrRoles, checkIsOwner),
+              },
             },
-          },
-        });
+          });
+        }
 
         return response;
       } catch (errors) {

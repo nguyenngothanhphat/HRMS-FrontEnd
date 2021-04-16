@@ -5,7 +5,13 @@ import React, { Component } from 'react';
 import { Modal, Button, Form, Select, Result } from 'antd';
 import { connect } from 'umi';
 import _ from 'lodash';
-import { getCurrentCompany, getCurrentTenant, isAdmin, isOwner } from '@/utils/authority';
+import {
+  getCurrentCompany,
+  getCurrentLocation,
+  getCurrentTenant,
+  isAdmin,
+  isOwner,
+} from '@/utils/authority';
 import moment from 'moment';
 import ImportCSV from '@/components/ImportCSV';
 import exportToCsv from '@/utils/exportToCsv';
@@ -199,138 +205,116 @@ class ModalImportEmployee extends Component {
     }).then(() => {
       this.setState({ company: '', employees: [] });
       handleCancel();
-      this.modalNotification();
+      // this.modalNotification();
     });
   };
 
-  modalNotification = () => {
-    const { listEmployeesTenant } = this.props;
-    const { newList = [], existList = [] } = listEmployeesTenant;
-    let notiErr = [];
-    let notiSuccess = [];
+  // modalNotification = () => {
+  //   const { listEmployeesTenant } = this.props;
+  //   const { newList = [], existList = [] } = listEmployeesTenant;
+  //   let notiErr = [];
+  //   let notiSuccess = [];
 
-    newList.forEach((item) => {
-      const { isAdded, status = '' } = item;
-      if (!isAdded && status.includes('[FAILED]')) {
-        notiErr.push(status);
-      }
+  //   newList.forEach((item) => {
+  //     const { isAdded, status = '' } = item;
+  //     if (!isAdded && status.includes('[FAILED]')) {
+  //       notiErr.push(status);
+  //     }
 
-      if (isAdded && status.includes('[SUCCESS]')) {
-        notiSuccess.push('[SUCCESS]');
-      }
-    });
+  //     if (isAdded && status.includes('[SUCCESS]')) {
+  //       notiSuccess.push('[SUCCESS]');
+  //     }
+  //   });
 
-    notiErr = [...new Set(notiErr)];
-    notiSuccess = [...new Set(notiSuccess)];
+  //   notiErr = [...new Set(notiErr)];
+  //   notiSuccess = [...new Set(notiSuccess)];
 
-    if (notiSuccess.length > 0 && notiErr.length === 0) {
-      Modal.success({
-        icon: <div style={{ display: 'none' }} />,
-        className: styles.modalResult,
-        content: (
-          <Result
-            style={{ padding: 0, height: '200px' }}
-            status="success"
-            title="Import successfully !"
-            subTitle="Please check Result_Import_Employees.csv below !"
-          />
-        ),
-      });
-    }
+  //   if (notiSuccess.length > 0 && notiErr.length === 0) {
+  //     Modal.success({
+  //       icon: <div style={{ display: 'none' }} />,
+  //       className: styles.modalResult,
+  //       content: (
+  //         <Result
+  //           style={{ padding: 0, height: '200px' }}
+  //           status="success"
+  //           title="Import successfully !"
+  //           subTitle="Please check Result_Import_Employees.csv below !"
+  //         />
+  //       ),
+  //     });
+  //   }
 
-    if (notiErr.length > 0 && notiSuccess.length === 0) {
-      Modal.error({
-        icon: <div style={{ display: 'none' }} />,
-        className: styles.modalResult,
-        content: (
-          <Result
-            status="error"
-            style={{ padding: 0, height: '200px' }}
-            title="Import failed !"
-            subTitle={notiErr.map((item) => item)}
-            extra="Please check Result_Import_Employees.csv below !"
-          />
-        ),
-      });
-    }
+  //   if (notiErr.length > 0 && notiSuccess.length === 0) {
+  //     Modal.error({
+  //       icon: <div style={{ display: 'none' }} />,
+  //       className: styles.modalResult,
+  //       content: (
+  //         <Result
+  //           status="error"
+  //           style={{ padding: 0, height: '200px' }}
+  //           title="Import failed !"
+  //           subTitle={notiErr.map((item) => item)}
+  //           extra="Please check Result_Import_Employees.csv below !"
+  //         />
+  //       ),
+  //     });
+  //   }
 
-    if (notiErr.length > 0 && notiSuccess.length > 0) {
-      Modal.error({
-        icon: <div style={{ display: 'none' }} />,
-        className: styles.modalResult,
-        content: (
-          <Result
-            status="warning"
-            style={{ padding: 0, height: '200px' }}
-            title="Import not successfully !"
-            subTitle={notiErr.map((item) => item)}
-            extra="Please check Result_Import_Employees.csv below !"
-          />
-        ),
-      });
-    }
+  //   if (notiErr.length > 0 && notiSuccess.length > 0) {
+  //     Modal.error({
+  //       icon: <div style={{ display: 'none' }} />,
+  //       className: styles.modalResult,
+  //       content: (
+  //         <Result
+  //           status="warning"
+  //           style={{ padding: 0, height: '200px' }}
+  //           title="Import not successfully !"
+  //           subTitle={notiErr.map((item) => item)}
+  //           extra="Please check Result_Import_Employees.csv below !"
+  //         />
+  //       ),
+  //     });
+  //   }
 
-    if (!_.isEmpty(existList) && !_.isEmpty(listEmployeesTenant) && notiSuccess.length === 0) {
-      Modal.error({
-        icon: <div style={{ display: 'none' }} />,
-        className: styles.modalResult,
-        content: (
-          <Result
-            status="error"
-            style={{ padding: 0, height: '200px' }}
-            title="Added employees failed !"
-            subTitle="[FAILED] - Work Email existed!"
-            extra="Please check Result_Import_Employees.csv below !"
-          />
-        ),
-      });
-    }
-  };
+  //   if (!_.isEmpty(existList) && !_.isEmpty(listEmployeesTenant) && notiSuccess.length === 0) {
+  //     Modal.error({
+  //       icon: <div style={{ display: 'none' }} />,
+  //       className: styles.modalResult,
+  //       content: (
+  //         <Result
+  //           status="error"
+  //           style={{ padding: 0, height: '200px' }}
+  //           title="Added employees failed !"
+  //           subTitle="[FAILED] - Work Email existed!"
+  //           extra="Please check Result_Import_Employees.csv below !"
+  //         />
+  //       ),
+  //     });
+  //   }
+  // };
 
   renderFormImport = (companyProps) => {
-    const { companyList } = this.props;
     const currentCompany = getCurrentCompany();
-    const checkIsOwner = isOwner();
-
+    const currentLocation = getCurrentLocation();
     let renderList = [];
+    const childCompanyList = companyProps.filter(
+      (comp) => comp?.childOfCompany === currentCompany || comp?._id === currentCompany,
+    );
 
-    if (checkIsOwner) {
-      renderList = [...companyProps];
+    if (!currentLocation) {
+      renderList = [...childCompanyList];
     } else {
-      const list = companyProps.filter((item) => item._id === currentCompany);
+      const list = childCompanyList.filter((item) => item._id === currentCompany);
       renderList = [...list];
     }
 
-    if (companyProps) {
-      return (
-        <Form
-          ref={this.formRef}
-          initialValues={{
-            company: companyProps._id,
-          }}
-        >
-          <Form.Item label="Company" name="company" rules={[{ required: true }]}>
-            <Select
-              placeholder="Select Company"
-              showArrow
-              showSearch
-              onChange={(value) => this.onChangeSelect(value)}
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {renderList.map((item) => (
-                <Option key={item._id} value={item._id}>
-                  {item.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </Form>
-      );
-    }
     return (
-      <Form ref={this.formRef}>
+      <Form
+        ref={this.formRef}
+        // initialValues={{
+        //   company: companyProps._id,
+        // }}
+      >
         <Form.Item label="Company" name="company" rules={[{ required: true }]}>
           <Select
             placeholder="Select Company"
@@ -341,8 +325,10 @@ class ModalImportEmployee extends Component {
               option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
           >
-            {companyList.map((item) => (
-              <Option key={item._id}>{item.name}</Option>
+            {renderList.map((item) => (
+              <Option key={item._id} value={item._id}>
+                {item.name}
+              </Option>
             ))}
           </Select>
         </Form.Item>

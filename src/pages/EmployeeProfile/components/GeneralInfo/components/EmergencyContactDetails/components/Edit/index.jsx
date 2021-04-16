@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Form, Input, Button, Col, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(
@@ -131,6 +132,7 @@ class Edit extends Component {
     const payloadChanges = {
       emergencyContactDetails: newData,
       id: _id,
+      tenantId: getCurrentTenant(),
     };
 
     return payloadChanges;

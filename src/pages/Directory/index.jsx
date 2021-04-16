@@ -2,6 +2,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import DirectoryComponent from './components/Directory';
 import styles from './index.less';
 
@@ -27,6 +28,18 @@ class Directory extends PureComponent {
     const checkRoleEmployee = this.checkRoleEmployee(roles);
     this.setState({
       checkRoleEmployee,
+    });
+
+    const { dispatch } = this.props;
+    const tenantId = getCurrentTenant();
+    const company = getCurrentCompany();
+    // const checkIsOwner = isOwner();
+    dispatch({
+      type: 'employee/fetchFilterList',
+      payload: {
+        id: company,
+        tenantId,
+      },
     });
   }
 

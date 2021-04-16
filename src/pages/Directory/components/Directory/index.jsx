@@ -2,12 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
 import { Tabs, Layout } from 'antd';
 import DirectoryTable from '@/components/DirectoryTable';
-import {
-  getCurrentTenant,
-  getCurrentCompany,
-  getCurrentLocation,
-  isOwner,
-} from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
 
 import { debounce } from 'lodash';
 import AddEmployeeForm from '@/pages_admin/EmployeesManagement/components/TableContainer/components/AddEmployeeForm';
@@ -25,6 +20,7 @@ const { TabPane } = Tabs;
     locationSelection: { listLocationsByCompany = [] } = {},
     employee,
     user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
+    employee: { filterList = {} } = {},
   }) => ({
     loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
     loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
@@ -34,6 +30,7 @@ const { TabPane } = Tabs;
     permissions,
     listLocationsByCompany,
     companiesOfUser,
+    filterList,
   }),
 )
 class DirectoryComponent extends PureComponent {
@@ -42,10 +39,14 @@ class DirectoryComponent extends PureComponent {
       const { employee: { filter = [] } = {} } = nextProps;
       let employeeType = [];
       let department = [];
-      let location = [];
+      let country = [];
+      let state = [];
+      let company = [];
       const employeeTypeConst = 'Employment Type';
       const departmentConst = 'Department';
-      const locationConst = 'Location';
+      const countryConst = 'Country';
+      const stateConst = 'State';
+      const companyConst = 'Company';
       filter.map((item) => {
         if (item.actionFilter.name === employeeTypeConst) {
           employeeType = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
@@ -53,16 +54,24 @@ class DirectoryComponent extends PureComponent {
         if (item.actionFilter.name === departmentConst) {
           department = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.actionFilter.name === locationConst) {
-          location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        if (item.actionFilter.name === countryConst) {
+          country = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        return { employeeType, department, location };
+        if (item.actionFilter.name === stateConst) {
+          state = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        }
+        if (item.actionFilter.name === companyConst) {
+          company = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        }
+        return { employeeType, department, countryConst, company };
       });
       return {
         ...prevState,
         department,
-        location,
+        country,
+        state,
         employeeType,
+        company,
       };
     }
     return null;
@@ -72,7 +81,9 @@ class DirectoryComponent extends PureComponent {
     super(props);
     this.state = {
       department: [],
-      location: [],
+      country: [],
+      state: [],
+      company: [],
       employeeType: [],
       filterName: '',
       tabList: {
@@ -124,30 +135,41 @@ class DirectoryComponent extends PureComponent {
         location: [currentLocation],
       });
     }
-    this.initDataTable();
+    // this.initDataTable();
     this.initTabId();
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { department, location, employeeType, filterName, tabId } = this.state;
+    const { department, country, state, employeeType, company, filterName, tabId } = this.state;
     // const isOwnerCheck = isOwner();
     // const currentLocation = getCurrentLocation();
 
     const params = {
       name: filterName,
       department,
-      location,
+      country,
+      state,
       employeeType,
+      company,
     };
     if (
       prevState.tabId !== tabId ||
       prevState.department.length !== department.length ||
-      prevState.location.length !== location.length ||
-      // prevState.locationNew !== locationNew ||
+      prevState.country.length !== country.length ||
+      prevState.state.length !== state.length ||
       prevState.employeeType.length !== employeeType.length ||
-      prevState.filterName !== filterName
+      prevState.filterName !== filterName ||
+      prevState.company.length !== company.length
     ) {
       this.getDataTable(params, tabId);
+    }
+
+    const { companiesOfUser = [], filterList: { listCountry = [] } = {} } = this.props;
+    if (
+      prevProps?.companiesOfUser.length !== companiesOfUser.length ||
+      prevProps?.filterList?.listCountry?.length !== listCountry.length
+    ) {
+      this.renderData();
     }
   }
 
@@ -158,6 +180,12 @@ class DirectoryComponent extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'employee/ClearFilter',
+    });
+    dispatch({
+      type: 'employee/save',
+      payload: {
+        filterList: {},
+      },
     });
   }
 
@@ -200,75 +228,62 @@ class DirectoryComponent extends PureComponent {
     });
   };
 
-  renderHrGloBal = () => {
+  renderData = () => {
     const { dispatch, permissions = {} } = this.props;
-    // const { company } = currentUser;
-    const company = getCurrentCompany();
-    const viewTabActive = permissions.viewTabActive !== -1;
-    const viewTabInActive = permissions.viewTabInActive !== -1;
-    // dispatch({
-    //   type: 'employee/fetchListEmployeeMyTeam',
-    //   payload: {
-    //     company: [company],
-    //   },
-    // });
-    if (viewTabActive) {
-      dispatch({
-        type: 'employee/fetchListEmployeeActive',
-        payload: {
-          company: [company],
-        },
-      });
-    }
-    if (viewTabInActive) {
-      dispatch({
-        type: 'employee/fetchListEmployeeInActive',
-        payload: {
-          company: [company],
-        },
-      });
-    }
+    const {
+      companiesOfUser = [],
+      filterList: { listCountry = [] } = {},
+      listLocationsByCompany = [],
+    } = this.props;
 
-    dispatch({
-      type: 'employeesManagement/fetchRolesList',
-    });
-    dispatch({
-      type: 'employeesManagement/fetchCompanyList',
-    });
-  };
-
-  renderHrTeam = () => {
-    const { dispatch, permissions = {} } = this.props;
-    const { listLocationsByCompany = [] } = this.props;
-    let company = [getCurrentCompany()];
-    const currentLocation = [getCurrentLocation()];
-
+    const currentCompany = getCurrentCompany();
+    const currentLocation = getCurrentLocation();
     const isOwnerCheck = isOwner();
-    let location = [
-      {
-        id: getCurrentLocation(),
-        tenantId: getCurrentTenant(),
-      },
-    ];
 
-    // For owners to display all locations (includes child companies)
-    if (isOwnerCheck) {
-      if (
-        currentLocation.length === 0 ||
-        currentLocation.includes('undefined') ||
-        currentLocation.includes(null)
-      ) {
-        location = listLocationsByCompany.map((lo) => {
-          const { _id = '', company: { tenant = '' } = {} } = lo;
-          return {
-            id: _id,
-            tenantId: tenant,
-          };
+    // OWNER
+    // if location selected, render data of current company
+    // else, multiple companies
+    let companyPayload = [];
+    const companyList = companiesOfUser.filter(
+      (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
+    );
+    if (!currentLocation && isOwnerCheck) {
+      companyPayload = [...companyList];
+    } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
+
+    let locationPayload = [];
+
+    if (!currentLocation) {
+      locationPayload = listCountry.map(({ country: countryItem1 = '' }) => {
+        let stateList = [];
+        listCountry.forEach(({ country: countryItem2 = '', state: stateItem2 = '' }) => {
+          if (countryItem1 === countryItem2) {
+            stateList = [...stateList, stateItem2];
+          }
         });
-      }
-      company = listLocationsByCompany.map((lo) => lo?.company?._id);
-      company = [...new Set(company.map((s) => s))];
+        return {
+          country: countryItem1,
+          state: stateList,
+        };
+      });
+    } else {
+      const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
+      const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country;
+
+      locationPayload = listCountry.map(({ country: countryItem1 = '' }) => {
+        let stateList = [];
+        listCountry.forEach(({ country: countryItem2 = '', state: stateItem2 = '' }) => {
+          if (countryItem1 === countryItem2 && currentLocationCountry === countryItem2) {
+            stateList = [...stateList, stateItem2];
+          }
+        });
+        return {
+          country: countryItem1,
+          state: stateList,
+        };
+      });
     }
+
     const viewTabActive = permissions.viewTabActive !== -1;
     const viewTabInActive = permissions.viewTabInActive !== -1;
     // const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
@@ -277,17 +292,18 @@ class DirectoryComponent extends PureComponent {
     //   dispatch({
     //     type: 'employee/fetchListEmployeeMyTeam',
     //     payload: {
-    //       company,
-    //       location,
+    //       company: companyPayload,
+    //       location: locationPayload,
     //     },
     //   });
     // }
+
     if (viewTabActive) {
       dispatch({
         type: 'employee/fetchListEmployeeActive',
         payload: {
-          company,
-          location,
+          company: companyPayload,
+          location: locationPayload,
         },
       });
     }
@@ -295,8 +311,9 @@ class DirectoryComponent extends PureComponent {
       dispatch({
         type: 'employee/fetchListEmployeeInActive',
         payload: {
-          company,
-          location,
+          company: companyPayload,
+
+          location: locationPayload,
         },
       });
     }
@@ -309,137 +326,116 @@ class DirectoryComponent extends PureComponent {
   };
 
   initDataTable = () => {
-    const { currentUser } = this.props;
-    const { roles = [] } = currentUser;
-    const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
-    const filterRolesCSA = roles.filter((item) => item._id === 'ADMIN-CSA');
-    if (filterRoles.length > 0 || filterRolesCSA.length > 0) {
-      return this.renderHrGloBal();
-    }
-    return this.renderHrTeam();
+    // const { currentUser } = this.props;
+    // const { roles = [] } = currentUser;
+    // const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
+    // const filterRolesCSA = roles.filter((item) => item._id === 'ADMIN-CSA');
+    // if (filterRoles.length > 0 || filterRolesCSA.length > 0) {
+    //   return this.renderHrGloBal();
+    // }
+    return this.renderData();
   };
 
-  ChangeTabHrGloBal = (params, tabId) => {
+  ChangeTab = (params, tabId) => {
     const {
       tabList: { active, myTeam, inActive },
     } = this.state;
 
-    const locationIsSelected = [getCurrentLocation()];
+    const currentLocation = getCurrentLocation();
+    const currentCompany = getCurrentCompany();
+
     const { dispatch } = this.props;
-    const { listLocationsByCompany = [] } = this.props;
-    const { name, department, location, employeeType } = params;
-    let company = [];
-    let newLocations = [...location];
-    const isOwnerCheck = isOwner();
-
-    if (
-      locationIsSelected.length === 0 ||
-      locationIsSelected.includes('undefined') ||
-      locationIsSelected.includes(null)
-    ) {
-      listLocationsByCompany.forEach((loc) => {
-        const { _id = '', company: { _id: parentId = '' } = {} } = loc;
-        if (newLocations.includes(_id)) {
-          company = [...company, parentId];
-        }
-      });
-      if (location.length === 0 && isOwnerCheck) {
-        newLocations = listLocationsByCompany.map((lo) => lo?._id);
-      }
-    } else {
-      newLocations = locationIsSelected;
-    }
-    company = [...new Set(company.map((s) => s))];
-    // For owners to display all locations (includes child companies)
-    if (location.length === 0 && isOwnerCheck) {
-      company = listLocationsByCompany.map((lo) => lo?.company?._id);
-      company = [...new Set(company.map((s) => s))];
-    }
-
-    const payload = {
-      company,
-      name,
-      department,
-      location,
-      employeeType,
-    };
-    if (tabId === active) {
-      dispatch({
-        type: 'employee/fetchListEmployeeActive',
-        payload,
-      });
-    }
-    if (tabId === myTeam) {
-      dispatch({
-        type: 'employee/fetchListEmployeeMyTeam',
-        payload,
-      });
-    }
-    if (tabId === inActive) {
-      dispatch({
-        type: 'employee/fetchListEmployeeInActive',
-        payload,
-      });
-    }
-  };
-
-  ChangeTabHrTeam = (params, tabId) => {
     const {
-      tabList: { active, myTeam, inActive },
-    } = this.state;
-
-    const locationIsSelected = [getCurrentLocation()];
-    const { dispatch } = this.props;
-    const { listLocationsByCompany = [] } = this.props;
-    const { name, department, location, employeeType } = params;
+      companiesOfUser = [],
+      filterList: { listCountry = [] } = {},
+      listLocationsByCompany = [],
+    } = this.props;
+    const { name, department, country, state, employeeType, company } = params;
 
     // MULTI COMPANY & LOCATION PAYLOAD
-    let company = [];
-    let newLocations = [...location];
+    let companyPayload = [];
+    const companyList = companiesOfUser.filter(
+      (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
+    );
     const isOwnerCheck = isOwner();
 
-    if (
-      locationIsSelected.length === 0 ||
-      locationIsSelected.includes('undefined') ||
-      locationIsSelected.includes(null)
-    ) {
-      listLocationsByCompany.forEach((loc) => {
-        const { _id = '', company: { _id: parentId = '' } = {} } = loc;
-        if (newLocations.includes(_id)) {
-          company = [...company, parentId];
-        }
-      });
-      if (location.length === 0 && isOwnerCheck) {
-        newLocations = listLocationsByCompany.map((lo) => lo?._id);
+    // OWNER
+    if (!currentLocation && isOwnerCheck) {
+      if (company.length !== 0) {
+        companyPayload = companyList.filter((lo) => company.includes(lo?._id));
+      } else {
+        companyPayload = [...companyList];
+      }
+    } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
+
+    let locationPayload = [];
+
+    // if country is not selected, select all
+    if (!currentLocation) {
+      if (country.length === 0) {
+        locationPayload = listCountry.map(({ country: countryItem1 = '' }) => {
+          let stateList = [];
+          listCountry.forEach(({ country: countryItem2 = '', state: stateItem2 = '' }) => {
+            if (countryItem1 === countryItem2) {
+              if (state.length !== 0) {
+                if (state.includes(stateItem2)) {
+                  stateList = [...stateList, stateItem2];
+                }
+              } else {
+                stateList = [...stateList, stateItem2];
+              }
+            }
+          });
+          return {
+            country: countryItem1,
+            state: stateList,
+          };
+        });
+      } else {
+        locationPayload = country.map((item) => {
+          let stateList = [];
+
+          listCountry.forEach(({ country: countryItem = '', state: stateItem = '' }) => {
+            if (item === countryItem) {
+              if (state.length !== 0) {
+                if (state.includes(stateItem)) {
+                  stateList = [...stateList, stateItem];
+                }
+              } else {
+                stateList = [...stateList, stateItem];
+              }
+            }
+          });
+
+          return {
+            country: item,
+            state: stateList,
+          };
+        });
       }
     } else {
-      newLocations = locationIsSelected;
-    }
+      const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
+      const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country;
 
-    newLocations = listLocationsByCompany.map((lo) => {
-      const { _id = '', company: { tenant = '' } = {} } = lo;
-      if (newLocations.includes(_id)) {
+      locationPayload = listCountry.map(({ country: countryItem1 = '' }) => {
+        let stateList = [];
+        listCountry.forEach(({ country: countryItem2 = '', state: stateItem2 = '' }) => {
+          if (countryItem1 === countryItem2 && currentLocationCountry === countryItem2) {
+            stateList = [...stateList, stateItem2];
+          }
+        });
         return {
-          id: _id,
-          tenantId: tenant,
+          country: countryItem1,
+          state: stateList,
         };
-      }
-      return null;
-    });
-    newLocations = newLocations.filter((lo) => lo !== null);
-
-    company = [...new Set(company.map((s) => s))];
-    // For owners to display all locations (includes child companies)
-    if (location.length === 0 && isOwnerCheck) {
-      company = listLocationsByCompany.map((lo) => lo?.company?._id);
-      company = [...new Set(company.map((s) => s))];
+      });
     }
 
     const payload = {
-      company,
+      company: companyPayload,
       name,
       department,
-      location: newLocations,
+      location: locationPayload,
       employeeType,
     };
 
@@ -464,14 +460,14 @@ class DirectoryComponent extends PureComponent {
   };
 
   getDataTable = (params, tabId) => {
-    const { currentUser } = this.props;
-    const { roles = [] } = currentUser;
-    const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
-    const filterRolesCSA = roles.filter((item) => item._id === 'ADMIN-CSA');
-    if (filterRoles.length > 0 || filterRolesCSA.length > 0) {
-      return this.ChangeTabHrGloBal(params, tabId);
-    }
-    return this.ChangeTabHrTeam(params, tabId);
+    // const { currentUser } = this.props;
+    // const { roles = [] } = currentUser;
+    // const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
+    // const filterRolesCSA = roles.filter((item) => item._id === 'ADMIN-CSA');
+    // if (filterRoles.length > 0 || filterRolesCSA.length > 0) {
+    //   return this.ChangeTabHrGloBal(params, tabId);
+    // }
+    return this.ChangeTab(params, tabId);
   };
 
   renderListEmployee = (tabId) => {
@@ -549,6 +545,7 @@ class DirectoryComponent extends PureComponent {
         'Joined Date': item.joinDate,
         Location: item.location,
         Department: item.department,
+        'Employment Type': item.employeeType,
         Title: item.title,
         'Work Email': item.workEmail,
         'Personal Email': item.personalEmail,

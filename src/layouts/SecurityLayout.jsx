@@ -2,6 +2,7 @@ import React from 'react';
 import { PageLoading } from '@/layouts/layout/src';
 import { Redirect, connect } from 'umi';
 import { getToken } from '../utils/token';
+import { getIsSwitchingRole } from '../utils/authority';
 
 class SecurityLayout extends React.Component {
   constructor(props) {
@@ -16,10 +17,22 @@ class SecurityLayout extends React.Component {
       isReady: true,
     });
     const token = getToken();
+    const isSwitchingRole = getIsSwitchingRole();
+
     const { dispatch } = this.props;
-    if (dispatch && token) {
+
+    if (isSwitchingRole) {
+      if (dispatch && token) {
+        dispatch({
+          type: 'user/fetchCurrent',
+          isSwitchingRole: true,
+        });
+      }
+    }
+    if (dispatch && token && !isSwitchingRole) {
       dispatch({
         type: 'user/fetchCurrent',
+        isSwitchingRole: false,
       });
     }
   }

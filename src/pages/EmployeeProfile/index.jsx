@@ -6,6 +6,7 @@ import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 // import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
+import { getCurrentTenant } from '@/utils/authority';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 // import Test from './components/test';
@@ -40,7 +41,7 @@ class EmployeeProfile extends Component {
       match: { params: { reId: employee = '' } = {} },
       dispatch,
     } = this.props;
-    const tenantId = localStorage.getItem('tenantId');
+    const tenantId = getCurrentTenant();
     dispatch({
       type: 'employeeProfile/fetchGeneralInfo',
       payload: { employee, tenantId },
@@ -66,7 +67,7 @@ class EmployeeProfile extends Component {
     });
     dispatch({
       type: 'employeeProfile/fetchEmploymentInfo',
-      payload: { tenantId, employee },
+      payload: { employee, tenantId },
     });
     dispatch({
       type: 'employeeProfile/fetchPRReport',

@@ -61,8 +61,8 @@ class Edit extends Component {
   componentDidMount() {
     const { passportData = [] } = this.props;
     const checkValidatePassPort = [...passportData];
-    const valueFalse = [passportData[0].employee];
-    const result = checkValidatePassPort.map((item) => valueFalse.includes(item.employee));
+    const valueFalse = passportData.length > 0 ? [passportData[0].employee] : [];
+    const result = checkValidatePassPort.map((item) => valueFalse.includes(item?.employee));
     this.setState({ validatePassPort: result });
   }
 

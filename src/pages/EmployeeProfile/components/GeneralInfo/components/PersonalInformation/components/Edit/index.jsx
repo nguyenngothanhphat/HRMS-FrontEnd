@@ -2,6 +2,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Input, Form, Select, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(
@@ -209,6 +210,7 @@ class Edit extends PureComponent {
       linkedIn,
       residentAddress,
       currentAddress,
+      tenantId: getCurrentTenant(),
     };
     return payloadChanges;
   };

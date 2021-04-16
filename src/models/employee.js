@@ -6,6 +6,7 @@ import {
   LocationOwnerFilter,
   DepartmentFilter,
   EmployeeTypeFilter,
+  getFilterList,
   getListEmployeeMyTeam,
   getListEmployee,
   getDataOrgChart,
@@ -28,6 +29,7 @@ const employee = {
     clearName: false,
     dataOrgChart: {},
     listAdministrator: [],
+    filterList: {},
   },
   effects: {
     *fetchEmployeeType(_, { call, put }) {
@@ -74,6 +76,18 @@ const employee = {
         dialog(errors);
       }
     },
+    *fetchFilterList({ payload }, { call, put }) {
+      try {
+        const response = yield call(getFilterList, payload);
+        const { statusCode, data: filterList = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { filterList } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
     *fetchListEmployeeMyTeam(
       {
         payload: {
@@ -115,7 +129,6 @@ const employee = {
     ) {
       try {
         const response = yield call(getListEmployee, {
-          tenantId: getCurrentTenant(),
           status: ['ACTIVE'],
           company,
           department,
@@ -147,7 +160,6 @@ const employee = {
     ) {
       try {
         const response = yield call(getListEmployee, {
-          tenantId: getCurrentTenant(),
           status: ['INACTIVE'],
           company,
           department,
@@ -221,7 +233,12 @@ const employee = {
       const actionFilter = action.payload;
       const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
       if (findIndex < 0) {
-        const item = { actionFilter };
+        const item = {
+          actionFilter: {
+            name: actionFilter?.name,
+          },
+        };
+        item.checkedList = actionFilter?.checkedList;
         data.push(item);
       } else {
         data[findIndex] = {
