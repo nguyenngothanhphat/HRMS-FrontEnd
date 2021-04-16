@@ -164,11 +164,8 @@ class DirectoryComponent extends PureComponent {
       this.getDataTable(params, tabId);
     }
 
-    const { companiesOfUser = [], filterList: { listCountry = [] } = {} } = this.props;
-    if (
-      prevProps?.companiesOfUser.length !== companiesOfUser.length ||
-      prevProps?.filterList?.listCountry?.length !== listCountry.length
-    ) {
+    const { filterList: { listCountry = [] } = {} } = this.props;
+    if (JSON.stringify(prevProps?.filterList?.listCountry || []) !== JSON.stringify(listCountry)) {
       this.renderData();
     }
   }
