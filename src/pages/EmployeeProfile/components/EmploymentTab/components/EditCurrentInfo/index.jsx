@@ -48,29 +48,18 @@ class EditCurrentInfo extends PureComponent {
   }
 
   handleSave = (values, id) => {
-    const { dispatch, employeeProfile } = this.props;
-    const { company = '' } = employeeProfile.originData.employmentData;
+    const { dispatch } = this.props;
     const { title, joinDate, location, employeeType } = values;
-    // const payload = {
-    //   id,
-    //   title,
-    //   joinDate,
-    //   location,
-    //   employeeType,
-    //   company: company._id,
-    // };
-    console.log('tenantId', company.tenant);
+    const payload = {
+      id,
+      title,
+      joinDate,
+      location,
+      employeeType,
+    };
     dispatch({
       type: 'employeeProfile/updateEmployment',
-      payload: {
-        id,
-        title,
-        joinDate,
-        location,
-        employeeType,
-        company: company._id,
-        tenantId: company.tenant,
-      },
+      payload,
     });
   };
 
@@ -95,13 +84,11 @@ class EditCurrentInfo extends PureComponent {
       employeeType = '',
       manager = '',
     } = employeeProfile.originData.employmentData;
-    // const {
-    //   compensationData: {
-    //     compensationType = '',
-    //     currentAnnualCTC = '',
-    //     // timeOffPolicy = ''
-    //   } = {},
-    // } = employeeProfile.originData;
+    const {
+      compensationType = '',
+      currentAnnualCTC = '',
+      // timeOffPolicy = ''
+    } = employeeProfile.originData.compensationData;
 
     const dateFormat = 'MM.DD.YY';
 
@@ -128,8 +115,8 @@ class EditCurrentInfo extends PureComponent {
             location: location._id,
             employeeType: employeeType._id,
             manager: (manager && manager._id) || null,
-            // compensationType,
-            // currentAnnualCTC,
+            compensationType,
+            currentAnnualCTC,
             // timeOffPolicy,
           }}
           onFinish={(values) => this.handleSave(values, _id)}
@@ -188,7 +175,7 @@ class EditCurrentInfo extends PureComponent {
               ]
             </Select>
           </Form.Item>
-          {/* <Form.Item label="Compensation Type" name="compensationType">
+          <Form.Item label="Compensation Type" name="compensationType">
             <Select
               showSearch
               placeholder="Select an compensation type"
@@ -207,8 +194,8 @@ class EditCurrentInfo extends PureComponent {
               })}
               ]
             </Select>
-          </Form.Item> */}
-          {/* <Form.Item
+          </Form.Item>
+          <Form.Item
             label="Current Annual CTC"
             name="currentAnnualCTC"
             rules={[
@@ -226,7 +213,7 @@ class EditCurrentInfo extends PureComponent {
               parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
               placeholder="Enter an amount"
             />
-          </Form.Item> */}
+          </Form.Item>
           <Form.Item label="Manager" name="manager">
             <Select
               disabled

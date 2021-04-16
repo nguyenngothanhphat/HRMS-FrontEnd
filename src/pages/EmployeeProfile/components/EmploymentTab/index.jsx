@@ -19,9 +19,8 @@ const steps = [
   { title: 'Review Changes', content: 'Review Changes' },
 ];
 
-@connect(({ employeeProfile, user: { currentUser = {}, permissions = {} } }) => ({
+@connect(({ employeeProfile, user: { currentUser = {} } }) => ({
   employeeProfile,
-  permissions,
   currentUser,
 }))
 class EmploymentTab extends Component {
@@ -29,8 +28,8 @@ class EmploymentTab extends Component {
     super(props);
     const { employeeProfile } = this.props;
 
-    const { title = '', location = '' } = employeeProfile.originData.employmentData;
-    const { firstName = '', legalName = '' } = employeeProfile.originData.generalData;
+    const { title, location } = employeeProfile.originData.employmentData;
+    const { firstName, legalName } = employeeProfile.originData.generalData;
     // const { compensationType } = employeeProfile.originData.compensationData;
     this.state = {
       isChanging: false,
@@ -129,11 +128,9 @@ class EmploymentTab extends Component {
     const { isChanging, current, currentData, isEdit } = this.state;
     const {
       dispatch,
-      currentUser: { roles = [], signInRole = [] },
-      permissions = {},
+      currentUser: { roles = [] },
     } = this.props;
-    const permissionsCheck = checkPermissions(signInRole);
-    console.log('permission', permissionsCheck);
+    const permissions = checkPermissions(roles);
     return (
       <div>
         <div className={styles.employmentTab}>
