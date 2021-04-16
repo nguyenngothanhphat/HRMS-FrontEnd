@@ -18,7 +18,6 @@ class SecurityLayout extends React.Component {
     });
     const token = getToken();
     const isSwitchingRole = getIsSwitchingRole();
-    console.log('isSwitchingRole', isSwitchingRole);
     const { dispatch } = this.props;
 
     if (isSwitchingRole && dispatch && token) {
