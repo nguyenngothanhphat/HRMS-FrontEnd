@@ -9,7 +9,7 @@ import RightContent from '@/components/GlobalHeader/RightContent';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { Button, Result, Affix, Tooltip, Switch, notification } from 'antd';
-import { UserSwitchOutlined } from '@ant-design/icons';
+import { UserSwitchOutlined, UserOutlined } from '@ant-design/icons';
 import { connect, Link, useIntl, Redirect, useHistory } from 'umi';
 import { getCurrentCompany, setAuthority } from '@/utils/authority';
 import classnames from 'classnames';
@@ -194,6 +194,7 @@ const BasicLayout = (props) => {
               <Switch
                 checked={isCheck}
                 checkedChildren={<UserSwitchOutlined />}
+                unCheckedChildren={<UserOutlined />}
                 onClick={handleSwitch}
                 loading={loading}
               />
