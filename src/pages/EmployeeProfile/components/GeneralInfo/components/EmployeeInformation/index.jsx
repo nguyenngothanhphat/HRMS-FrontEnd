@@ -82,8 +82,8 @@ class EmployeeInformation extends PureComponent {
 
   render() {
     const {
-      employmentData,
-      // generalData,
+      // employmentData,
+      generalData,
       openEmployeeInfor,
       permissions = {},
       profileOwner = false,
@@ -91,7 +91,7 @@ class EmployeeInformation extends PureComponent {
     const renderComponent = openEmployeeInfor ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
-      <View dataAPI={employmentData} />
+      <View dataAPI={generalData} />
     );
     return (
       <div className={styles.EmployeeInformation}>

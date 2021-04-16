@@ -127,9 +127,12 @@ const employeeProfile = {
     revoke: [],
   },
   effects: {
-    *fetchGeneralInfo({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
+    *fetchGeneralInfo(
+      { payload: { employee = '', tenantId = '' }, dataTempKept = {} },
+      { call, put },
+    ) {
       try {
-        const response = yield call(getGeneralInfo, { employee });
+        const response = yield call(getGeneralInfo, { employee, tenantId });
         const { statusCode, data: generalData = {} } = response;
         if (statusCode !== 200) throw response;
         const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});

@@ -7,7 +7,7 @@ export async function getGeneralInfo(payload) {
   });
 }
 export async function getEmploymentInfo(payload) {
-  return request('/api/employeetenant/get-by-employee-id', {
+  return request('/api/employeetenant/get-by-id', {
     method: 'POST',
     data: payload,
   });
