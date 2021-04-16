@@ -6,6 +6,7 @@ import moment from 'moment';
 import ModalUpload from '@/components/ModalUpload';
 import CustomModal from '@/components/CustomModal';
 import s from '@/components/LayoutEmployeeProfile/index.less';
+import { getCurrentTenant } from '@/utils/authority';
 
 const { TextArea } = Input;
 
@@ -104,6 +105,7 @@ class ViewInformation extends Component {
         payload: {
           id,
           avatar: first.url,
+          tenantId: getCurrentTenant(),
         },
         dataTempKept: {},
         key: 'noKey',
@@ -120,6 +122,7 @@ class ViewInformation extends Component {
       payload: {
         id,
         bioInfo: bio,
+        tenantId: getCurrentTenant(),
       },
     });
     this.handleEditBio();

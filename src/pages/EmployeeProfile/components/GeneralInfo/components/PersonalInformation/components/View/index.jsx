@@ -3,6 +3,7 @@ import React, { PureComponent, Fragment } from 'react';
 import { Row, Col, Tooltip, Radio } from 'antd';
 import { connect } from 'umi';
 import Icon, { LockFilled, UserOutlined } from '@ant-design/icons';
+import { getCurrentTenant } from '@/utils/authority';
 import iconQuestTion from '../../../Icon/icon';
 import styles from './index.less';
 
@@ -15,13 +16,21 @@ class View extends PureComponent {
     if (label === 'Personal Number') {
       dispatch({
         type: 'employeeProfile/setPrivate',
-        payload: { id: generalData._id, isShowPersonalNumber: e.target.value },
+        payload: {
+          id: generalData._id,
+          isShowPersonalNumber: e.target.value,
+          tenantId: getCurrentTenant(),
+        },
       });
     }
     if (label === 'Personal Email') {
       dispatch({
         type: 'employeeProfile/setPrivate',
-        payload: { id: generalData._id, isShowPersonalEmail: e.target.value },
+        payload: {
+          id: generalData._id,
+          isShowPersonalEmail: e.target.value,
+          tenantId: getCurrentTenant(),
+        },
       });
     }
   };
