@@ -86,6 +86,6 @@ export function setIsSwitchingRole(switchingRole) {
 
 export function getIsSwitchingRole() {
   const isSwitch = localStorage.getItem('isSwitchingRole');
-  if (isSwitch === 'undefined') return null;
-  return isSwitch;
+  if (isSwitch === 'true') return true;
+  return false;
 }

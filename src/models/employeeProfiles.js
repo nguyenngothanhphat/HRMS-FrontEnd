@@ -243,9 +243,12 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchPassPort({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
+    *fetchPassPort(
+      { payload: { employee = '', tenantId = '' }, dataTempKept = {} },
+      { call, put },
+    ) {
       try {
-        const response = yield call(getPassPort, { employee });
+        const response = yield call(getPassPort, { employee, tenantId });
         const { statusCode, data: passportData = [] } = response;
         if (statusCode !== 200) throw response;
         const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
@@ -279,9 +282,9 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchVisa({ payload: { employee = '' } }, { call, put }) {
+    *fetchVisa({ payload: { employee = '', tenantId = '' } }, { call, put }) {
       try {
-        const response = yield call(getVisa, { employee });
+        const response = yield call(getVisa, { employee, tenantId });
         const { statusCode, data: visaData = [] } = response;
         if (statusCode !== 200) throw response;
         const visaDataTemp = [...visaData];
@@ -370,7 +373,7 @@ const employeeProfile = {
         });
         yield put({
           type: 'fetchPassPort',
-          payload: { employee: idCurrentEmployee },
+          payload: { employee: idCurrentEmployee, tenantId: payload?.tenantId },
           dataTempKept,
         });
         if (key === 'openPassport') {
@@ -394,7 +397,7 @@ const employeeProfile = {
         });
         yield put({
           type: 'fetchVisa',
-          payload: { employee: idCurrentEmployee },
+          payload: { employee: idCurrentEmployee, tenantId: payload?.tenantId },
           dataTempKept,
         });
         if (key === 'openVisa') {
@@ -419,7 +422,7 @@ const employeeProfile = {
         });
         yield put({
           type: 'fetchPassPort',
-          payload: { employee: idCurrentEmployee },
+          payload: { employee: idCurrentEmployee, tenantId: payload?.tenantId },
           dataTempKept,
         });
         if (key === 'openPassport') {
@@ -444,7 +447,7 @@ const employeeProfile = {
         });
         yield put({
           type: 'fetchVisa',
-          payload: { employee: idCurrentEmployee },
+          payload: { employee: idCurrentEmployee, tenantId: payload?.tenantId },
           dataTempKept,
         });
         if (key === 'openVisa') {

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Row, Form, Button } from 'antd';
 import { connect } from 'umi';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
+import { getCurrentTenant } from '@/utils/authority';
 import VisaGeneral from './components/Visa';
 import styles from './index.less';
 
@@ -69,6 +70,7 @@ class Edit extends Component {
       visaType,
       visaValidTill,
       visaEntryType,
+      tenantId: getCurrentTenant(),
     };
 
     return formVisa;
@@ -133,6 +135,7 @@ class Edit extends Component {
       visaType,
       visaValidTill,
       visaEntryType,
+      tenantId: getCurrentTenant(),
     };
     return formVisa;
   };

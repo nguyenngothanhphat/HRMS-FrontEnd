@@ -44,12 +44,12 @@ const UserModel = {
         if (!tenantId || !company) {
           history.replace('/control-panel');
         }
-        setIsSwitchingRole(isSwitchingRole);
         yield put({
           type: 'saveCurrentUser',
           payload: {
             ...data,
             name: data?.firstName,
+            isSwitchingRole,
           },
         });
 
@@ -62,8 +62,6 @@ const UserModel = {
             setCurrentLocation(response?.data?.manageLocation[0]?._id);
           }
         }
-
-        console.log(isSwitchingRole);
 
         if (!isSwitchingRole) {
           let formatArrRoles = [];
@@ -84,7 +82,6 @@ const UserModel = {
           });
 
           setAuthority(formatArrRoles);
-          setIsSwitchingRole(isSwitchingRole);
           yield put({
             type: 'save',
             payload: {
@@ -133,6 +130,7 @@ const UserModel = {
     },
 
     saveCurrentUser(state, action) {
+      setIsSwitchingRole(action.payload.isSwitchingRole);
       return { ...state, currentUser: action.payload || {} };
     },
 

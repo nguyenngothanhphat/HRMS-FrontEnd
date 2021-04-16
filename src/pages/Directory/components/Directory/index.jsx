@@ -269,11 +269,16 @@ class DirectoryComponent extends PureComponent {
     } else {
       const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
       const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country;
+      const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
 
       locationPayload = listCountry.map(({ country: countryItem1 = '' }) => {
         let stateList = [];
         listCountry.forEach(({ country: countryItem2 = '', state: stateItem2 = '' }) => {
-          if (countryItem1 === countryItem2 && currentLocationCountry === countryItem2) {
+          if (
+            countryItem1 === countryItem2 &&
+            currentLocationCountry === countryItem2 &&
+            currentLocationState === stateItem2
+          ) {
             stateList = [...stateList, stateItem2];
           }
         });
@@ -416,11 +421,16 @@ class DirectoryComponent extends PureComponent {
     } else {
       const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
       const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country;
+      const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
 
       locationPayload = listCountry.map(({ country: countryItem1 = '' }) => {
         let stateList = [];
         listCountry.forEach(({ country: countryItem2 = '', state: stateItem2 = '' }) => {
-          if (countryItem1 === countryItem2 && currentLocationCountry === countryItem2) {
+          if (
+            countryItem1 === countryItem2 &&
+            currentLocationCountry === countryItem2 &&
+            currentLocationState === stateItem2
+          ) {
             stateList = [...stateList, stateItem2];
           }
         });

@@ -132,8 +132,9 @@ const BasicLayout = (props) => {
       return checkAuth;
     });
 
-    const handleSwitch = () => {
+    const handleSwitch = async () => {
       let isOwner = false;
+      let isSwitch = false;
       let newAuthority = [];
 
       formatRole.map((item) => {
@@ -149,24 +150,27 @@ const BasicLayout = (props) => {
         if (isOwner) {
           newAuthority = ['owner', ...newAuthority];
           notification.success({ message: 'Switch to Owner successfully' });
+          isSwitch = false;
         } else {
           newAuthority = ['admin', ...newAuthority];
           notification.success({ message: 'Switch to Admin successfully' });
+          isSwitch = false;
         }
       } else {
         // else: OFF
         newAuthority = ['employee', ...permissionEmployee];
         notification.success({ message: 'Switch to Employee successfully' });
+        isSwitch = true;
       }
       setAuthority(newAuthority);
       setIsCheck(!isCheck);
 
-      dispatch({
+      await dispatch({
         type: 'user/fetchCurrent',
-        isSwitchingRole: true,
+        isSwitchingRole: isSwitch,
       });
 
-      dispatch({
+      await dispatch({
         type: 'user/save',
         payload: {
           permissions: {
@@ -175,7 +179,8 @@ const BasicLayout = (props) => {
         },
       });
 
-      history.push('/dashboard');
+      // history.push('/dashboard');
+      window.location.reload();
     };
 
     return (

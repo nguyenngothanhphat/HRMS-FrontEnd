@@ -18,18 +18,15 @@ class SecurityLayout extends React.Component {
     });
     const token = getToken();
     const isSwitchingRole = getIsSwitchingRole();
-
+    console.log('isSwitchingRole', isSwitchingRole);
     const { dispatch } = this.props;
 
-    if (isSwitchingRole) {
-      if (dispatch && token) {
-        dispatch({
-          type: 'user/fetchCurrent',
-          isSwitchingRole: true,
-        });
-      }
-    }
-    if (dispatch && token && !isSwitchingRole) {
+    if (isSwitchingRole && dispatch && token) {
+      dispatch({
+        type: 'user/fetchCurrent',
+        isSwitchingRole: true,
+      });
+    } else {
       dispatch({
         type: 'user/fetchCurrent',
         isSwitchingRole: false,
