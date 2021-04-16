@@ -21,13 +21,14 @@ import styles from './index.less';
     locationSelection: { listLocationsByCompany = [] } = {},
     user: {
       companiesOfUser = [],
-      currentUser: { roles = [], manageTenant = [], manageLocation = [] } = {},
+      currentUser: { roles = [], manageTenant = [], manageLocation = [], signInRole = [] } = {},
     } = {},
     loading,
   }) => ({
     listLocationsByCompany, // for owner
     manageLocation, // for admin
     roles,
+    signInRole,
     loadingFetchLocation: loading.effects['locationSelection/fetchLocationsByCompany'],
     companiesOfUser,
     manageTenant,
@@ -50,12 +51,14 @@ class AvatarDropdown extends React.Component {
       dispatch,
       manageTenant = [],
       // , roles = []
+      signInRole = [],
     } = this.props;
     const companyId = getCurrentCompany();
     const tenantId = getCurrentTenant();
     const checkIsOwner = isOwner();
 
-    if (checkIsOwner) {
+    const formatSignInRole = signInRole.map((role) => role.toLowerCase());
+    if (checkIsOwner || formatSignInRole.includes('owner')) {
       await dispatch({
         type: 'locationSelection/fetchLocationListByParentCompany',
         payload: {
@@ -106,7 +109,7 @@ class AvatarDropdown extends React.Component {
   onMenuClick = async (event) => {
     const { key } = event;
     const { LOGOUT, CHANGEPASSWORD, SETTINGS } = this.state;
-    const { listLocationsByCompany = [], manageLocation = [] } = this.props;
+    const { listLocationsByCompany = [] } = this.props;
 
     if (key === LOGOUT) {
       const { dispatch } = this.props;
@@ -196,17 +199,21 @@ class AvatarDropdown extends React.Component {
   };
 
   renderLocationList = () => {
-    const { listLocationsByCompany = [], manageLocation = [] } = this.props;
+    const { listLocationsByCompany = [], manageLocation = [], signInRole = [] } = this.props;
     const currentLocation = getCurrentLocation();
     const currentCompany = getCurrentCompany();
     const checkIsOwner = isOwner();
     const checkIsAdmin = isAdmin();
+
+    const formatSignInRole = signInRole.map((role) => role.toLowerCase());
 
     let commonLocationsList = [];
     if (checkIsOwner) {
       commonLocationsList = [...listLocationsByCompany];
     } else if (checkIsAdmin) {
       commonLocationsList = [...manageLocation];
+    } else if (formatSignInRole.includes('owner')) {
+      commonLocationsList = [...listLocationsByCompany];
     }
     return (
       <>
