@@ -132,7 +132,7 @@ const BasicLayout = (props) => {
       return checkAuth;
     });
 
-    const handleSwitch = () => {
+    const handleSwitch = async () => {
       let isOwner = false;
       let isSwitch = false;
       let newAuthority = [];
@@ -165,12 +165,12 @@ const BasicLayout = (props) => {
       setAuthority(newAuthority);
       setIsCheck(!isCheck);
 
-      dispatch({
+      await dispatch({
         type: 'user/fetchCurrent',
         isSwitchingRole: isSwitch,
       });
 
-      dispatch({
+      await dispatch({
         type: 'user/save',
         payload: {
           permissions: {
@@ -179,7 +179,8 @@ const BasicLayout = (props) => {
         },
       });
 
-      history.push('/dashboard');
+      // history.push('/dashboard');
+      window.location.reload();
     };
 
     return (
