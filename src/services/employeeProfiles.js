@@ -7,7 +7,7 @@ export async function getGeneralInfo(payload) {
   });
 }
 export async function getEmploymentInfo(payload) {
-  return request('/api/employeetenant/get-by-employee-id', {
+  return request('/api/employeetenant/get-by-id', {
     method: 'POST',
     data: payload,
   });
@@ -30,9 +30,10 @@ export async function getDepartmentList(payload) {
     data: payload,
   });
 }
-export async function getEmployeeTypeList() {
-  return request('/api/employeetypetenant/list', {
+export async function getEmployeeTypeList(payload) {
+  return request('/api/employeetype/list', {
     method: 'POST',
+    data: payload,
   });
 }
 export async function getLocationList() {

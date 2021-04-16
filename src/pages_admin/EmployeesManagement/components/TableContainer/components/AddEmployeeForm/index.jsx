@@ -25,7 +25,6 @@ const { Option } = Select;
     },
     employee: { employeetype = [] },
     user: { companiesOfUser = [], currentUser: { manageLocation = [] } = {} } = {},
-    employee: { employeetype = {} } = {},
     locationSelection: { listLocationsByCompany = [] } = {},
   }) => ({
     rolesList,
@@ -38,7 +37,6 @@ const { Option } = Select;
     statusAddEmployee,
     companiesOfUser,
     manageLocation, // locations of admin
-    employeetype,
     listLocationsByCompany,
     loadingCompanyList: loading.effects['employeesManagement/fetchCompanyList'],
     loadingDepartment: loading.effects['employeesManagement/fetchDepartmentList'],
@@ -258,8 +256,6 @@ class AddEmployeeForm extends Component {
       wrapperCol: { span: 16 },
     };
 
-    const { employeetype } = this.props;
-
     const validateMessages = {
       required: '${label} is required!',
       types: {
@@ -396,27 +392,6 @@ class AddEmployeeForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item
-            label={formatMessage({ id: 'addEmployee.employeeType' })}
-            name="employeeType"
-            rules={[{ required: true }]}
-          >
-            <Select
-              autoComplete="dontshow"
-              mode="multiple"
-              allowClear
-              showArrow
-              style={{ width: '100%' }}
-              getPopupContainer={() => document.getElementById('addEmployee__form')}
-              placeholder="Select Employment Type"
-            >
-              {employeetype.map((item) => (
-                <Option key={item._id} value={item._id}>
-                  {item.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
 
           {company ? (
             <Form.Item
@@ -529,7 +504,7 @@ class AddEmployeeForm extends Component {
             className={styles.reportingManager}
             label={formatMessage({ id: 'addEmployee.manager' })}
             name="manager"
-            rules={[{ required: true }]}
+            // rules={[{ required: true }]}
           >
             <Select
               autoComplete="dontshow"

@@ -11,12 +11,11 @@ import styles from './index.less';
     upload: { employeeInformationURL = '' } = {},
     employeeProfile: {
       editGeneral: { openEmployeeInfor = false },
-      originData: { generalData: generalDataOrigin = {}, employmentData = {} } = {},
+      originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
     } = {},
   }) => ({
     openEmployeeInfor,
-    employmentData,
     generalDataOrigin,
     generalData,
     employeeInformationURL,
@@ -82,8 +81,8 @@ class EmployeeInformation extends PureComponent {
 
   render() {
     const {
-      employmentData,
-      // generalData,
+      // employmentData,
+      generalData,
       openEmployeeInfor,
       permissions = {},
       profileOwner = false,
@@ -91,7 +90,7 @@ class EmployeeInformation extends PureComponent {
     const renderComponent = openEmployeeInfor ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
-      <View dataAPI={employmentData} />
+      <View dataAPI={generalData} />
     );
     return (
       <div className={styles.EmployeeInformation}>

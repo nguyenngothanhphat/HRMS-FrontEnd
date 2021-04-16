@@ -128,9 +128,12 @@ const employeeProfile = {
     revoke: [],
   },
   effects: {
-    *fetchGeneralInfo({ payload: { employee = '' }, dataTempKept = {} }, { call, put }) {
+    *fetchGeneralInfo(
+      { payload: { employee = '', tenantId = '' }, dataTempKept = {} },
+      { call, put },
+    ) {
       try {
-        const response = yield call(getGeneralInfo, { employee });
+        const response = yield call(getGeneralInfo, { employee, tenantId });
         const { statusCode, data: generalData = {} } = response;
         if (statusCode !== 200) throw response;
         const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
@@ -323,9 +326,9 @@ const employeeProfile = {
         dialog(error);
       }
     },
-    *fetchEmployeeTypes(_, { call, put }) {
+    *fetchEmployeeTypes({ payload: { tenantId = '' } }, { call, put }) {
       try {
-        const response = yield call(getEmployeeTypeList);
+        const response = yield call(getEmployeeTypeList, { tenantId });
         const { statusCode, data } = response;
         const temp = data.map((item) => item);
         const employeeTypes = temp.filter((item, index) => temp.indexOf(item) === index);
@@ -951,6 +954,7 @@ const employeeProfile = {
     *updateEmployment({ payload = {} }, { call, put }) {
       let isUpdateEmployment = false;
       try {
+        console.log('payload', payload);
         const response = yield call(updateEmployment, payload);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;

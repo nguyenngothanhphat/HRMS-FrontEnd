@@ -90,7 +90,10 @@ class EmployeeProfile extends Component {
       payload: { employee },
     });
     dispatch({ type: 'employeeProfile/fetchLocations' });
-    dispatch({ type: 'employeeProfile/fetchEmployeeTypes' });
+    dispatch({
+      type: 'employeeProfile/fetchEmployeeTypes',
+      payload: { tenantId: getCurrentTenant() },
+    });
     dispatch({
       type: 'employeeProfile/fetchDepartments',
       payload: { company: employeeProfile?.originData?.compensationData?.company },

@@ -128,9 +128,9 @@ class EmploymentTab extends Component {
     const { isChanging, current, currentData, isEdit } = this.state;
     const {
       dispatch,
-      currentUser: { roles = [] },
+      currentUser: { roles = [], permissions = {} },
     } = this.props;
-    const permissions = checkPermissions(roles);
+    // const permissions = checkPermissions(roles);
     return (
       <div>
         <div className={styles.employmentTab}>
