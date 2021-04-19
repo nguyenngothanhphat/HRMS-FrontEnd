@@ -7,19 +7,24 @@ import { getCurrentTenant } from '@/utils/authority';
 import iconQuestTion from '../../../Icon/icon';
 import styles from './index.less';
 
-@connect(({ employeeProfile: { tempData: { generalData = {} } = {} } = {} }) => ({
-  generalData,
-}))
+@connect(
+  ({
+    employeeProfile: { tempData: { generalData = {} } = {}, tenantCurrentEmployee = '' } = {},
+  }) => ({
+    generalData,
+    tenantCurrentEmployee,
+  }),
+)
 class View extends PureComponent {
   handleChangesPrivate = (e, label) => {
-    const { dispatch, generalData } = this.props;
+    const { dispatch, generalData, tenantCurrentEmployee = '' } = this.props;
     if (label === 'Personal Number') {
       dispatch({
         type: 'employeeProfile/setPrivate',
         payload: {
           id: generalData._id,
           isShowPersonalNumber: e.target.value,
-          tenantId: getCurrentTenant(),
+          tenantId: tenantCurrentEmployee,
         },
       });
     }
@@ -29,7 +34,7 @@ class View extends PureComponent {
         payload: {
           id: generalData._id,
           isShowPersonalEmail: e.target.value,
-          tenantId: getCurrentTenant(),
+          tenantId: tenantCurrentEmployee,
         },
       });
     }

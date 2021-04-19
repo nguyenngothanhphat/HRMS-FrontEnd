@@ -7,7 +7,6 @@ import moment from 'moment';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { checkPermissions } from '@/utils/permissions';
-import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(
@@ -18,6 +17,7 @@ import styles from './index.less';
       idCurrentEmployee = '',
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
+      tenantCurrentEmployee = '',
     } = {},
     upload: { employeeInformationURL = '' },
     user: { currentUser = [] },
@@ -30,6 +30,7 @@ import styles from './index.less';
     idCurrentEmployee,
     AdhaarCard,
     currentUser,
+    tenantCurrentEmployee,
   }),
 )
 class Edit extends PureComponent {
@@ -60,7 +61,7 @@ class Edit extends PureComponent {
   };
 
   processDataChanges = () => {
-    const { generalData: generalDataTemp } = this.props;
+    const { generalData: generalDataTemp, tenantCurrentEmployee = '' } = this.props;
     const {
       urlFile = '',
       legalGender = '',
@@ -85,7 +86,7 @@ class Edit extends PureComponent {
       workNumber,
       adhaarCardNumber,
       uanNumber,
-      tenantId: getCurrentTenant(),
+      tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
   };
@@ -123,7 +124,13 @@ class Edit extends PureComponent {
   };
 
   handleUpLoadAdhaarCard = () => {
-    const { dispatch, idCurrentEmployee, AdhaarCard, generalData } = this.props;
+    const {
+      dispatch,
+      idCurrentEmployee,
+      AdhaarCard,
+      generalData,
+      tenantCurrentEmployee = '',
+    } = this.props;
     let file = '';
     const { urlFile } = generalData;
     if (urlFile) {
@@ -150,7 +157,7 @@ class Edit extends PureComponent {
             employeeGroup: 'Identity',
             parentEmployeeGroup: 'Indentification Documents',
             employee: idCurrentEmployee,
-            tenantId: getCurrentTenant(),
+            tenantId: tenantCurrentEmployee,
           },
         }).then((id) => this.handleAddDocument(id));
       }
@@ -159,14 +166,20 @@ class Edit extends PureComponent {
         payload: {
           attachment: file?.id,
           id: AdhaarCard?.document?._id,
-          tenantId: getCurrentTenant(),
+          tenantId: tenantCurrentEmployee,
         },
       }).then((doc) => this.handleUpdate(doc));
     }
   };
 
   handleAddDocument = (id) => {
-    const { dispatch, AdhaarCard, generalDataOrigin, generalData } = this.props;
+    const {
+      dispatch,
+      AdhaarCard,
+      generalDataOrigin,
+      generalData,
+      tenantCurrentEmployee = '',
+    } = this.props;
     const { adhaarCardNumber: adhaarCardNumberOrigin } = generalDataOrigin;
     const { adhaarCardNumber: adhaarCardNumberTemp } = generalData;
     const getNewAdhaarCard =
@@ -179,7 +192,7 @@ class Edit extends PureComponent {
         document: id,
         id: AdhaarCard._id,
         adhaarNumber: getNewAdhaarCard,
-        tenantId: getCurrentTenant(),
+        tenantId: tenantCurrentEmployee,
       },
     });
   };
@@ -193,7 +206,13 @@ class Edit extends PureComponent {
   };
 
   handleUpdate = (doc) => {
-    const { dispatch, AdhaarCard, generalDataOrigin, generalData } = this.props;
+    const {
+      dispatch,
+      AdhaarCard,
+      generalDataOrigin,
+      generalData,
+      tenantCurrentEmployee = '',
+    } = this.props;
     const { adhaarCardNumber: adhaarCardNumberOrigin } = generalDataOrigin;
     const { adhaarCardNumber: adhaarCardNumberTemp } = generalData;
     const getNewAdhaarCard =
@@ -206,13 +225,13 @@ class Edit extends PureComponent {
         document: doc._id,
         id: AdhaarCard._id,
         adhaarNumber: getNewAdhaarCard,
-        tenantId: getCurrentTenant(),
+        tenantId: tenantCurrentEmployee,
       },
     });
   };
 
   handleAdd = (id) => {
-    const { dispatch, generalData, idCurrentEmployee } = this.props;
+    const { dispatch, generalData, idCurrentEmployee, tenantCurrentEmployee } = this.props;
     if (!generalData.adhaarCardNumber) return;
     const { adhaarCardNumber } = generalData;
     dispatch({
@@ -221,7 +240,7 @@ class Edit extends PureComponent {
         document: id,
         employee: idCurrentEmployee,
         adhaarNumber: adhaarCardNumber,
-        tenantId: getCurrentTenant(),
+        tenantId: tenantCurrentEmployee,
       },
     });
   };

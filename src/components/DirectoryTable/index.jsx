@@ -242,12 +242,22 @@ class DirectoryTable extends Component {
     });
   };
 
-  handleProfileEmployee = (row) => {
-    const { _id = '', location: { name = '' } = {} } = row;
-    history.push({
-      pathname: `/directory/employee-profile/${_id}`,
-      state: { location: name },
+  handleProfileEmployee = async (row) => {
+    const { _id = '', location: { name = '' } = {}, tenant = '', company = {} } = row;
+    const { dispatch } = this.props;
+    await dispatch({
+      type: 'employeeProfile/save',
+      payload: {
+        tenantCurrentEmployee: tenant,
+        companyCurrentEmployee: company?._id,
+      },
     });
+    setTimeout(() => {
+      history.push({
+        pathname: `/directory/employee-profile/${_id}`,
+        state: { location: name },
+      });
+    }, 200);
   };
 
   checkPermissionViewProfile = (permissions) => {

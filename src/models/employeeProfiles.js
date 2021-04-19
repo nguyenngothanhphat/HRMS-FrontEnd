@@ -53,7 +53,6 @@ import {
   getBenefitPlans,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
-import { getCurrentTenant } from '@/utils/authority';
 
 const documentCategories = [
   { employeeGroup: 'Agreement', parentEmployeeGroup: ' Qualifications/Certification' },
@@ -84,6 +83,8 @@ const employeeProfile = {
     paySlip: [],
     countryList: [],
     idCurrentEmployee: '',
+    tenantCurrentEmployee: '',
+    companyCurrentEmployee: '',
     listSkill: [],
     listTitle: [],
     listTitleByDepartment: [],
@@ -476,9 +477,10 @@ const employeeProfile = {
         notification.success({
           message,
         });
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
         yield put({
           type: 'fetchGeneralInfo',
-          payload: { employee: idCurrentEmployee, tenantId: getCurrentTenant() },
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
           dataTempKept,
         });
         switch (key) {
@@ -1011,9 +1013,10 @@ const employeeProfile = {
         notification.success({
           message,
         });
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
         yield put({
           type: 'fetchGeneralInfo',
-          payload: { employee: idCurrentEmployee, tenantId: getCurrentTenant() },
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
         });
       } catch (errors) {
         dialog(errors);
