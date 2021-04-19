@@ -4,6 +4,7 @@ import React, { PureComponent } from 'react';
 import { Form, Select, Button, DatePicker, InputNumber, Skeleton } from 'antd';
 import { formatMessage, connect } from 'umi';
 import moment from 'moment';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -12,6 +13,7 @@ const { Option } = Select;
   employeeProfile,
   loadingLocationsList: loading.effects['employeeProfile/fetchLocationsByCompany'],
   loadingTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
+  // loadingEmployeeTypes: loading.effects['employeeProfile/fetchEmployeeTypes'],
 }))
 class EditCurrentInfo extends PureComponent {
   componentDidMount() {
@@ -21,6 +23,14 @@ class EditCurrentInfo extends PureComponent {
       company: company._id,
       department: department._id,
     };
+    // const tenantId = getCurrentTenant();
+
+    dispatch({
+      type: 'employeeProfile/fetchEmployeeTypes',
+      payload: {
+        tenantId: getCurrentTenant(),
+      },
+    });
 
     dispatch({
       type: 'employeeProfile/fetchTitleByDepartment',
@@ -48,7 +58,8 @@ class EditCurrentInfo extends PureComponent {
   }
 
   handleSave = (values, id) => {
-    const { dispatch } = this.props;
+    const { dispatch, employeeProfile } = this.props;
+    const { company = '' } = employeeProfile.originData.employmentData;
     const { title, joinDate, location, employeeType } = values;
     const payload = {
       id,
@@ -56,6 +67,8 @@ class EditCurrentInfo extends PureComponent {
       joinDate,
       location,
       employeeType,
+      company: company._id,
+      tenantId: getCurrentTenant(),
     };
     dispatch({
       type: 'employeeProfile/updateEmployment',
