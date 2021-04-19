@@ -15,7 +15,7 @@ import styles from './index.less';
     employeeProfile: {
       AdhaarCard = {},
       idCurrentEmployee = '',
-      originData: { generalData: generalDataOrigin = {}, employmentData = {} } = {},
+      originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
       tenantCurrentEmployee = '',
     } = {},
@@ -28,7 +28,6 @@ import styles from './index.less';
     generalData,
     employeeInformationURL,
     idCurrentEmployee,
-    employmentData,
     AdhaarCard,
     currentUser,
     tenantCurrentEmployee,
@@ -303,7 +302,7 @@ class Edit extends PureComponent {
   render() {
     const { isLt5M, visible, linkImage } = this.state;
     const {
-      employmentData,
+      generalData,
       loading,
       handleCancel = () => {},
       loadingAdhaarCard,
@@ -319,7 +318,7 @@ class Edit extends PureComponent {
       workNumber = '',
       adhaarCardNumber = '',
       uanNumber = '',
-    } = employmentData;
+    } = generalData;
     const nameFile = urlFile ? urlFile.url.split('/') : '';
     const splitURL = nameFile[nameFile.length - 1];
     const formItemLayout = {
