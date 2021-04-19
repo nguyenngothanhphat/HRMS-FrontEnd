@@ -15,6 +15,9 @@
   }
 
   :global {
+    .ant-affix{
+      z-index: 1 !important;
+    }
     .ant-breadcrumb-link {
       display: inline-flex;
       // align-items: center;
@@ -289,23 +292,33 @@
   }
 }
 
-.footerButton{
-  position: absolute;
-  right: 20px;
-  width: fit-content;
-  height: fit-content;
 
-  :global{
-    .ant-switch{
-      margin-top: 10px;
-    }
-    
-    .ant-switch-checked{
-      background-color: #568afa;
-    }
+.rightContent{
 
-    .anticon-user-switch{
-      font-size: 16px;
+  .btnSwitch{
+    // display: flex;
+    // flex-direction: row-reverse;
+    line-height: 0 !important;
+    width: fit-content;
+    height: fit-content;
+    position: absolute;
+    right: 20px;
+  
+    :global{
+      .ant-switch{
+        margin-top: 10px;
+      }
+      
+      .ant-switch-checked{
+        background-color: #568afa;
+      }
+  
+      .anticon-user-switch{
+        font-size: 16px;
+      }
     }
   }
+
 }
+
+

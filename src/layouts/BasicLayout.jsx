@@ -189,7 +189,7 @@ const BasicLayout = (props) => {
     return (
       <>
         {checkAuth ? (
-          <Affix className={styles.footerButton}>
+          <Affix className={styles.btnSwitch}>
             <Tooltip title={isCheck ? 'Switch Owner|Admin' : 'Switch Employee'}>
               <Switch
                 checked={isCheck}
@@ -202,6 +202,15 @@ const BasicLayout = (props) => {
           </Affix>
         ) : null}
       </>
+    );
+  }
+
+  function rightContent() {
+    return (
+      <div className={styles.rightContent}>
+        <RightContent />
+        {buttonSwitch()}
+      </div>
     );
   }
 
@@ -262,9 +271,9 @@ const BasicLayout = (props) => {
           }
           return listPath;
         }}
-        footerRender={pathname === '/dashboard' ? null : buttonSwitch}
+        // footerRender={pathname === '/dashboard' ? null : buttonSwitch}
         menuDataRender={menuDataRender}
-        rightContentRender={() => <RightContent />}
+        rightContentRender={rightContent}
         collapsedButtonRender={false}
         disableMobile
         {...props}
