@@ -120,7 +120,7 @@ const BasicLayout = (props) => {
       }
     });
     setLoading(false);
-  }, [setIsCheck]);
+  }, [setIsCheck, setLoading]);
 
   function buttonSwitch() {
     let checkAuth = false;

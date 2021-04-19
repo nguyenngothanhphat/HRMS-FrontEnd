@@ -28,9 +28,9 @@ class EmploymentTab extends Component {
     super(props);
     const { employeeProfile } = this.props;
 
-    const { title, location } = employeeProfile.originData.employmentData;
-    const { firstName, legalName } = employeeProfile.originData.generalData;
-    // const { compensationType } = employeeProfile.originData.compensationData;
+    const { title = {}, location = {} } = employeeProfile.originData.employmentData;
+    const { firstName = '', legalName = '' } = employeeProfile.originData.generalData;
+    const { compensationType = null } = employeeProfile.originData.compensationData;
     this.state = {
       isChanging: false,
       isEdit: false,
@@ -39,7 +39,7 @@ class EmploymentTab extends Component {
       currentData: {
         name: legalName || firstName || null,
         title: title?.name || null,
-        // compensationType: compensationType || null,
+        compensationType: compensationType || null,
         location: location?.name || null,
       },
     };

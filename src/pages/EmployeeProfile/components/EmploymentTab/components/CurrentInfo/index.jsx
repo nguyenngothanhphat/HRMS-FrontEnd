@@ -5,18 +5,17 @@ import styles from './styles.less';
 
 function CurrentInfo(props) {
   const { employeeProfile } = props;
-
   const {
-    title,
-    joinDate,
-    location,
-    employeeType,
-    manager,
+    title = {},
+    joinDate = '',
+    location = {},
+    employeeType = {},
+    manager = {},
   } = employeeProfile.originData.employmentData;
   const {
-    compensationType,
-    currentAnnualCTC,
-    timeOffPolicy,
+    compensationType = '',
+    currentAnnualCTC = '',
+    timeOffPolicy = '',
   } = employeeProfile.originData.compensationData;
 
   const data = {
