@@ -237,6 +237,7 @@ class Edit extends Component {
     const dataTempKeptPassport = this.processDataKeptPassPort(item) || {};
 
     this.handleAddPassPortAllField(item, index);
+
     dispatch({
       type: 'employeeProfile/updatePassPort',
       payload: payloadUpdatePassPort,

@@ -252,6 +252,10 @@ class DirectoryTable extends Component {
         companyCurrentEmployee: company?._id,
       },
     });
+    localStorage.setItem('tenantCurrentEmployee', tenant);
+    localStorage.setItem('companyCurrentEmployee', company?._id);
+    localStorage.setItem('idCurrentEmployee', _id);
+
     setTimeout(() => {
       history.push({
         pathname: `/directory/employee-profile/${_id}`,

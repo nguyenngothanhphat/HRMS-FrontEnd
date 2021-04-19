@@ -3,7 +3,6 @@ import React, { PureComponent, Fragment } from 'react';
 import { Row, Col, Tooltip, Radio } from 'antd';
 import { connect } from 'umi';
 import Icon, { LockFilled, UserOutlined } from '@ant-design/icons';
-import { getCurrentTenant } from '@/utils/authority';
 import iconQuestTion from '../../../Icon/icon';
 import styles from './index.less';
 

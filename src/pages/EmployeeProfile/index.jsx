@@ -23,9 +23,22 @@ class EmployeeProfile extends Component {
     this.state = {};
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
+    const { dispatch } = this.props;
+    const tenantCurrentEmployee = localStorage.getItem('tenantCurrentEmployee');
+    const companyCurrentEmployee = localStorage.getItem('companyCurrentEmployee');
+    const idCurrentEmployee = localStorage.getItem('idCurrentEmployee');
+
+    await dispatch({
+      type: 'employeeProfile/save',
+      payload: {
+        tenantCurrentEmployee,
+        companyCurrentEmployee,
+        idCurrentEmployee,
+      },
+    });
     this.fetchData();
-  }
+  };
 
   componentDidUpdate(prevProps) {
     const { location } = this.props;
@@ -42,6 +55,7 @@ class EmployeeProfile extends Component {
       employeeProfile: { tenantCurrentEmployee = '', companyCurrentEmployee = '' } = {},
     } = this.props;
     const tenantId = tenantCurrentEmployee;
+
     dispatch({
       type: 'employeeProfile/fetchGeneralInfo',
       payload: { employee, tenantId },

@@ -742,6 +742,8 @@ const employeeProfile = {
       try {
         const response = yield call(getAdhaarcardAdd, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+
         const {
           statusCode,
           data: { _id: id },
@@ -750,7 +752,7 @@ const employeeProfile = {
         idAdhaarcard = id;
         yield put({
           type: 'fetchAdhaardCard',
-          payload: { employee: idCurrentEmployee },
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
         });
       } catch (errors) {
         dialog(errors);
@@ -762,13 +764,14 @@ const employeeProfile = {
       try {
         const response = yield call(getAdhaarcardUpdate, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveTemp', payload: { document: data } });
         doc = data;
         yield put({
           type: 'fetchAdhaardCard',
-          payload: { employee: idCurrentEmployee },
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
         });
       } catch (errors) {
         dialog(errors);
