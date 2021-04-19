@@ -4,20 +4,20 @@ import React, { PureComponent } from 'react';
 import { Form, Select, Button, DatePicker, InputNumber, Skeleton } from 'antd';
 import { formatMessage, connect } from 'umi';
 import moment from 'moment';
-import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 const { Option } = Select;
 
-@connect(({ employeeProfile, loading }) => ({
+@connect(({ employeeProfile, loading, employeeProfile: { tenantCurrentEmployee = '' } = {} }) => ({
   employeeProfile,
+  tenantCurrentEmployee,
   loadingLocationsList: loading.effects['employeeProfile/fetchLocationsByCompany'],
   loadingTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
   // loadingEmployeeTypes: loading.effects['employeeProfile/fetchEmployeeTypes'],
 }))
 class EditCurrentInfo extends PureComponent {
   componentDidMount() {
-    const { employeeProfile, dispatch } = this.props;
+    const { employeeProfile, dispatch, tenantCurrentEmployee = '' } = this.props;
     const { department = '', company = '' } = employeeProfile.originData.employmentData;
     const payload = {
       company: company._id,
@@ -28,7 +28,7 @@ class EditCurrentInfo extends PureComponent {
     dispatch({
       type: 'employeeProfile/fetchEmployeeTypes',
       payload: {
-        tenantId: getCurrentTenant(),
+        tenantId: tenantCurrentEmployee,
       },
     });
 
@@ -58,7 +58,7 @@ class EditCurrentInfo extends PureComponent {
   }
 
   handleSave = (values, id) => {
-    const { dispatch, employeeProfile } = this.props;
+    const { dispatch, employeeProfile, tenantCurrentEmployee = '' } = this.props;
     const { company = '' } = employeeProfile.originData.employmentData;
     const { title, joinDate, location, employeeType } = values;
     const payload = {
@@ -68,7 +68,7 @@ class EditCurrentInfo extends PureComponent {
       location,
       employeeType,
       company: company._id,
-      tenantId: getCurrentTenant(),
+      tenantId: tenantCurrentEmployee,
     };
     dispatch({
       type: 'employeeProfile/updateEmployment',

@@ -129,8 +129,10 @@ class Edit extends PureComponent {
   };
 
   handleUpdateCertification = (list) => {
-    const { dispatch, compensationData } = this.props;
+    const { dispatch, compensationData, tenantCurrentEmployee = '' } = this.props;
     const { employee, company } = compensationData;
+    const tenantId = tenantCurrentEmployee;
+
     list.forEach((element) => {
       if (element._id) {
         dispatch({
@@ -144,10 +146,11 @@ class Edit extends PureComponent {
         dispatch({
           type: 'employeeProfile/addCertification',
           payload: {
-            name: element.name,
+            name: element.name || '',
             urlFile: element.urlFile,
             employee,
             company,
+            tenantId,
           },
         });
       }

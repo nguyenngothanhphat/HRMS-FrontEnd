@@ -5,18 +5,17 @@ import styles from './styles.less';
 
 function CurrentInfo(props) {
   const { employeeProfile } = props;
-
   const {
-    title,
-    joinDate,
-    location,
-    employeeType,
-    manager,
+    title = {},
+    joinDate = '',
+    location = {},
+    employeeType = {},
+    manager = {},
   } = employeeProfile.originData.employmentData;
   const {
-    compensationType,
-    currentAnnualCTC,
-    timeOffPolicy,
+    compensationType = '',
+    currentAnnualCTC = '',
+    timeOffPolicy = '',
   } = employeeProfile.originData.compensationData;
 
   const data = {
@@ -28,7 +27,7 @@ function CurrentInfo(props) {
     employType: employeeType?.name || 'Missing employment type',
     compenType: compensationType || 'This person is missing payment method',
     annualSalary: String(currentAnnualCTC || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
-    manager: manager?.generalInfo.firstName || 'Missing reporting manager',
+    manager: manager?.generalInfo?.firstName || 'Missing reporting manager',
     timeOff: timeOffPolicy || 'This person is not allowed to take time off',
   };
   return (
