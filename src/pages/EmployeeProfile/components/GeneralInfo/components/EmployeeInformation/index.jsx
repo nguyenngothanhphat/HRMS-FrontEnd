@@ -80,7 +80,13 @@ class EmployeeInformation extends PureComponent {
   };
 
   render() {
-    const { generalData, openEmployeeInfor, permissions = {}, profileOwner = false } = this.props;
+    const {
+      // employmentData,
+      generalData,
+      openEmployeeInfor,
+      permissions = {},
+      profileOwner = false,
+    } = this.props;
     const renderComponent = openEmployeeInfor ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (

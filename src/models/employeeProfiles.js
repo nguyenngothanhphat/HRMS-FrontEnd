@@ -53,7 +53,6 @@ import {
   getBenefitPlans,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
-import { getCurrentTenant } from '@/utils/authority';
 
 const documentCategories = [
   { employeeGroup: 'Agreement', parentEmployeeGroup: ' Qualifications/Certification' },
@@ -84,6 +83,8 @@ const employeeProfile = {
     paySlip: [],
     countryList: [],
     idCurrentEmployee: '',
+    tenantCurrentEmployee: '',
+    companyCurrentEmployee: '',
     listSkill: [],
     listTitle: [],
     listTitleByDepartment: [],
@@ -329,9 +330,9 @@ const employeeProfile = {
         dialog(error);
       }
     },
-    *fetchEmployeeTypes(_, { call, put }) {
+    *fetchEmployeeTypes({ payload: { tenantId = '' } }, { call, put }) {
       try {
-        const response = yield call(getEmployeeTypeList);
+        const response = yield call(getEmployeeTypeList, { tenantId });
         const { statusCode, data } = response;
         const temp = data.map((item) => item);
         const employeeTypes = temp.filter((item, index) => temp.indexOf(item) === index);
@@ -476,9 +477,10 @@ const employeeProfile = {
         notification.success({
           message,
         });
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
         yield put({
           type: 'fetchGeneralInfo',
-          payload: { employee: idCurrentEmployee, tenantId: getCurrentTenant() },
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
           dataTempKept,
         });
         switch (key) {
@@ -561,9 +563,9 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchEmploymentInfo({ payload: { tenantId = '', employee = '' } }, { call, put }) {
+    *fetchEmploymentInfo({ payload: { tenantId = '', id = '' } }, { call, put }) {
       try {
-        const response = yield call(getEmploymentInfo, { tenantId, employee });
+        const response = yield call(getEmploymentInfo, { tenantId, id });
         const { data, statusCode } = response;
         yield put({ type: 'saveOrigin', payload: { employmentData: data } });
         if (statusCode !== 200) throw response;
@@ -740,6 +742,8 @@ const employeeProfile = {
       try {
         const response = yield call(getAdhaarcardAdd, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+
         const {
           statusCode,
           data: { _id: id },
@@ -748,7 +752,7 @@ const employeeProfile = {
         idAdhaarcard = id;
         yield put({
           type: 'fetchAdhaardCard',
-          payload: { employee: idCurrentEmployee },
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
         });
       } catch (errors) {
         dialog(errors);
@@ -760,13 +764,14 @@ const employeeProfile = {
       try {
         const response = yield call(getAdhaarcardUpdate, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveTemp', payload: { document: data } });
         doc = data;
         yield put({
           type: 'fetchAdhaardCard',
-          payload: { employee: idCurrentEmployee },
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
         });
       } catch (errors) {
         dialog(errors);
@@ -963,7 +968,10 @@ const employeeProfile = {
         notification.success({
           message,
         });
-        const employment = yield call(getEmploymentInfo, { id: payload.id });
+        const employment = yield call(getEmploymentInfo, {
+          id: payload.id,
+          tenantId: payload.tenantId,
+        });
         yield put({ type: 'saveOrigin', payload: { employmentData: employment.data } });
         isUpdateEmployment = true;
       } catch (errors) {
@@ -1011,9 +1019,10 @@ const employeeProfile = {
         notification.success({
           message,
         });
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
         yield put({
           type: 'fetchGeneralInfo',
-          payload: { employee: idCurrentEmployee, tenantId: getCurrentTenant() },
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
         });
       } catch (errors) {
         dialog(errors);

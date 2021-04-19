@@ -67,13 +67,8 @@ const UserModel = {
           let formatArrRoles = [];
           const { signInRole = [] } = data;
           const formatRole = signInRole.map((role) => role.toLowerCase());
+          formatArrRoles = [...formatArrRoles, ...formatRole];
 
-          if (formatRole.includes('owner')) {
-            formatArrRoles = [...formatArrRoles, 'owner'];
-          }
-          if (formatRole.includes('admin')) {
-            formatArrRoles = [...formatArrRoles, 'admin'];
-          }
           data?.permissionAdmin.forEach((e) => {
             formatArrRoles = [...formatArrRoles, e];
           });

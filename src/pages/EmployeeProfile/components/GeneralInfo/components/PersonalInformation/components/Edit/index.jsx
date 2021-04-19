@@ -2,7 +2,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Input, Form, Select, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(
@@ -12,6 +11,7 @@ import styles from './index.less';
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
       countryList = [],
+      tenantCurrentEmployee = '',
     } = {},
   }) => ({
     loadingGeneral: loading.effects['employeeProfile/updateGeneralInfo'],
@@ -19,6 +19,7 @@ import styles from './index.less';
     generalDataOrigin,
     generalData,
     countryList,
+    tenantCurrentEmployee,
   }),
 )
 class Edit extends PureComponent {
@@ -190,7 +191,7 @@ class Edit extends PureComponent {
   };
 
   processDataChanges = () => {
-    const { generalData: generalDataTemp } = this.props;
+    const { generalData: generalDataTemp, tenantCurrentEmployee = '' } = this.props;
     const { currentAddress, residentAddress } = this.state;
 
     const {
@@ -210,7 +211,7 @@ class Edit extends PureComponent {
       linkedIn,
       residentAddress,
       currentAddress,
-      tenantId: getCurrentTenant(),
+      tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
   };

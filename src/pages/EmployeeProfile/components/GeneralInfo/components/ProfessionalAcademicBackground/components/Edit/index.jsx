@@ -3,7 +3,6 @@ import React, { PureComponent } from 'react';
 import { Button, Form, Input, Select, Tag } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
-import { getCurrentTenant } from '@/utils/authority';
 import FormCertification from './components/FormCertification';
 import s from './index.less';
 
@@ -22,6 +21,7 @@ const { Option } = Select;
       tempData: { generalData = {} } = {},
       listSkill = [],
       listTitle = [],
+      tenantCurrentEmployee = '',
     } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
@@ -30,6 +30,7 @@ const { Option } = Select;
     listSkill,
     listTitle,
     compensationData,
+    tenantCurrentEmployee,
   }),
 )
 class Edit extends PureComponent {
@@ -76,7 +77,7 @@ class Edit extends PureComponent {
   };
 
   processDataChanges = () => {
-    const { generalData: generalDataTemp } = this.props;
+    const { generalData: generalDataTemp, tenantCurrentEmployee = '' } = this.props;
     const {
       preJobTitle = '',
       skills = [],
@@ -96,7 +97,7 @@ class Edit extends PureComponent {
       totalExp,
       qualification,
       certification,
-      tenantId: getCurrentTenant(),
+      tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
   };
@@ -128,8 +129,10 @@ class Edit extends PureComponent {
   };
 
   handleUpdateCertification = (list) => {
-    const { dispatch, compensationData } = this.props;
+    const { dispatch, compensationData, tenantCurrentEmployee = '' } = this.props;
     const { employee, company } = compensationData;
+    const tenantId = tenantCurrentEmployee;
+
     list.forEach((element) => {
       if (element._id) {
         dispatch({
@@ -143,10 +146,11 @@ class Edit extends PureComponent {
         dispatch({
           type: 'employeeProfile/addCertification',
           payload: {
-            name: element.name,
+            name: element.name || '',
             urlFile: element.urlFile,
             employee,
             company,
+            tenantId,
           },
         });
       }

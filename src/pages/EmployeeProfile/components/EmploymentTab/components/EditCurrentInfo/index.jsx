@@ -8,19 +8,29 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-@connect(({ employeeProfile, loading }) => ({
+@connect(({ employeeProfile, loading, employeeProfile: { tenantCurrentEmployee = '' } = {} }) => ({
   employeeProfile,
+  tenantCurrentEmployee,
   loadingLocationsList: loading.effects['employeeProfile/fetchLocationsByCompany'],
   loadingTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
+  // loadingEmployeeTypes: loading.effects['employeeProfile/fetchEmployeeTypes'],
 }))
 class EditCurrentInfo extends PureComponent {
   componentDidMount() {
-    const { employeeProfile, dispatch } = this.props;
+    const { employeeProfile, dispatch, tenantCurrentEmployee = '' } = this.props;
     const { department = '', company = '' } = employeeProfile.originData.employmentData;
     const payload = {
       company: company._id,
       department: department._id,
     };
+    // const tenantId = getCurrentTenant();
+
+    dispatch({
+      type: 'employeeProfile/fetchEmployeeTypes',
+      payload: {
+        tenantId: tenantCurrentEmployee,
+      },
+    });
 
     dispatch({
       type: 'employeeProfile/fetchTitleByDepartment',
@@ -48,7 +58,8 @@ class EditCurrentInfo extends PureComponent {
   }
 
   handleSave = (values, id) => {
-    const { dispatch } = this.props;
+    const { dispatch, employeeProfile, tenantCurrentEmployee = '' } = this.props;
+    const { company = '' } = employeeProfile.originData.employmentData;
     const { title, joinDate, location, employeeType } = values;
     const payload = {
       id,
@@ -56,6 +67,8 @@ class EditCurrentInfo extends PureComponent {
       joinDate,
       location,
       employeeType,
+      company: company._id,
+      tenantId: tenantCurrentEmployee,
     };
     dispatch({
       type: 'employeeProfile/updateEmployment',

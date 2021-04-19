@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Row, Form, Input, Button, Col, Select } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { connect, formatMessage } from 'umi';
-import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(
@@ -12,12 +11,14 @@ import styles from './index.less';
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
       listRelation = [],
+      tenantCurrentEmployee = '',
     } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
     generalDataOrigin,
     generalData,
     listRelation,
+    tenantCurrentEmployee,
   }),
 )
 class Edit extends Component {
@@ -124,7 +125,7 @@ class Edit extends Component {
   };
 
   processDataChanges = () => {
-    const { generalData, generalDataOrigin } = this.props;
+    const { generalData, generalDataOrigin, tenantCurrentEmployee = '' } = this.props;
 
     const { _id } = generalDataOrigin;
     const { emergencyContactDetails: newData = [] } = generalData;
@@ -132,7 +133,7 @@ class Edit extends Component {
     const payloadChanges = {
       emergencyContactDetails: newData,
       id: _id,
-      tenantId: getCurrentTenant(),
+      tenantId: tenantCurrentEmployee,
     };
 
     return payloadChanges;

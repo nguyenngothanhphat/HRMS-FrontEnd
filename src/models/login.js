@@ -19,7 +19,7 @@ const Model = {
           type: 'changeLoginStatus',
           payload: response,
         });
-        const { statusCode, data  ={} } = response;
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { messageError: '' } });
         setToken(response.data.token);
@@ -40,31 +40,28 @@ const Model = {
         let isAdminOrOwner = false;
         if (formatRole.includes('owner')) {
           isAdminOrOwner = true;
-          formatArrRoles = [...formatArrRoles, 'owner'];
         }
         if (formatRole.includes('admin')) {
           isAdminOrOwner = true;
-          formatArrRoles = [...formatArrRoles, 'admin'];
         }
+        formatArrRoles = [...formatArrRoles, ...formatRole];
         setAuthority(formatArrRoles);
 
         // redirect
         if (isAdminOrOwner) {
           history.replace('/control-panel');
-        } else 
-        if (listCompany.length === 1) {
-            const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
-            setTenantId(tenantId);
-            setCurrentCompany(selectedCompany);
-            yield put({
-              type: 'user/fetchCurrent',
-              refreshCompanyList: false,
-            });
-            history.push('/');
-          }
-          else {
-            history.replace('/control-panel');
-          }
+        } else if (listCompany.length === 1) {
+          const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
+          setTenantId(tenantId);
+          setCurrentCompany(selectedCompany);
+          yield put({
+            type: 'user/fetchCurrent',
+            refreshCompanyList: false,
+          });
+          history.push('/');
+        } else {
+          history.replace('/control-panel');
+        }
       } catch (errors) {
         const { data = [] } = errors;
         if (data.length > 0) {
