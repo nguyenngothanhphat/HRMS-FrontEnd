@@ -288,17 +288,19 @@ class DirectoryComponent extends PureComponent {
 
     const viewTabActive = permissions.viewTabActive !== -1;
     const viewTabInActive = permissions.viewTabInActive !== -1;
-    // const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
+    const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
 
-    // if (viewTabMyTeam) {
-    //   dispatch({
-    //     type: 'employee/fetchListEmployeeMyTeam',
-    //     payload: {
-    //       company: companyPayload,
-    //       location: locationPayload,
-    //     },
-    //   });
-    // }
+    if (viewTabMyTeam) {
+      dispatch({
+        type: 'employee/fetchListEmployeeMyTeam',
+        payload: {
+          // company: companyPayload,
+          // location: locationPayload,
+          department: ['Develop'],
+          location: [{ country: 'US', state: ['Washington'] }],
+        },
+      });
+    }
 
     if (viewTabActive) {
       dispatch({
@@ -455,7 +457,12 @@ class DirectoryComponent extends PureComponent {
     if (tabId === myTeam) {
       dispatch({
         type: 'employee/fetchListEmployeeMyTeam',
-        payload,
+        payload: {
+          company: companyPayload,
+          // location: locationPayload,
+          department: ['Develop'],
+          location: [{ country: 'VN', state: ['Thanh Pho Ho Chi Minh'] }],
+        },
       });
     }
     if (tabId === inActive) {
