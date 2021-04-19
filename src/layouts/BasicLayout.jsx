@@ -206,10 +206,11 @@ const BasicLayout = (props) => {
   }
 
   function rightContent() {
+    const { pathname } = window.location;
     return (
       <div className={styles.rightContent}>
         <RightContent />
-        {buttonSwitch()}
+        {pathname === '/dashboard' ? null : buttonSwitch()}
       </div>
     );
   }
