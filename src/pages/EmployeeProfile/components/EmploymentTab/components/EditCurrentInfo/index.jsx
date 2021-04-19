@@ -58,7 +58,8 @@ class EditCurrentInfo extends PureComponent {
   }
 
   handleSave = (values, id) => {
-    const { dispatch, company } = this.props;
+    const { dispatch, employeeProfile } = this.props;
+    const { company = '' } = employeeProfile.originData.employmentData;
     const { title, joinDate, location, employeeType } = values;
     const payload = {
       id,
@@ -69,8 +70,6 @@ class EditCurrentInfo extends PureComponent {
       company: company._id,
       tenantId: getCurrentTenant(),
     };
-    console.log('values', id);
-    console.log(payload);
     dispatch({
       type: 'employeeProfile/updateEmployment',
       payload,

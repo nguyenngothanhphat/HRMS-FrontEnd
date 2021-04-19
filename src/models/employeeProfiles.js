@@ -561,9 +561,9 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchEmploymentInfo({ payload: { tenantId = '', employee = '' } }, { call, put }) {
+    *fetchEmploymentInfo({ payload: { tenantId = '', id = '' } }, { call, put }) {
       try {
-        const response = yield call(getEmploymentInfo, { tenantId, employee });
+        const response = yield call(getEmploymentInfo, { tenantId, id });
         const { data, statusCode } = response;
         yield put({ type: 'saveOrigin', payload: { employmentData: data } });
         if (statusCode !== 200) throw response;
@@ -957,14 +957,16 @@ const employeeProfile = {
     *updateEmployment({ payload = {} }, { call, put }) {
       let isUpdateEmployment = false;
       try {
-        console.log('payload', payload);
         const response = yield call(updateEmployment, payload);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
           message,
         });
-        const employment = yield call(getEmploymentInfo, { id: payload.id });
+        const employment = yield call(getEmploymentInfo, {
+          id: payload.id,
+          tenantId: payload.tenantId,
+        });
         yield put({ type: 'saveOrigin', payload: { employmentData: employment.data } });
         isUpdateEmployment = true;
       } catch (errors) {

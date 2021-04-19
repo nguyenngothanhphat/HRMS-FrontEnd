@@ -67,7 +67,7 @@ class EmployeeProfile extends Component {
     });
     dispatch({
       type: 'employeeProfile/fetchEmploymentInfo',
-      payload: { employee, tenantId },
+      payload: { id: employee, tenantId },
     });
     dispatch({
       type: 'employeeProfile/fetchPRReport',
