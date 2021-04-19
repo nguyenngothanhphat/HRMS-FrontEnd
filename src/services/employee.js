@@ -35,13 +35,6 @@ export async function DepartmentFilter(payload) {
   });
 }
 
-export async function getListEmployeeMyTeam(payload) {
-  return request('/api/employee/list-my-team', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
 export async function getListEmployee(payload) {
   return request('/api/employeetenant/list', {
     method: 'POST',
