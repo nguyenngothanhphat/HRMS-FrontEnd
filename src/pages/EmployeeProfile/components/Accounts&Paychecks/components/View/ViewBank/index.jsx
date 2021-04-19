@@ -3,7 +3,7 @@ import { Col } from 'antd';
 import { connect } from 'umi';
 import styles from '../../../index.less';
 
-@connect(({ employeeProfile: { tempData: { bankData = {} } = {} } = {} }) => ({
+@connect(({ employeeProfile: { tempData: { bankData = [] } = {} } = {} }) => ({
   bankData,
 }))
 class ViewBank extends PureComponent {

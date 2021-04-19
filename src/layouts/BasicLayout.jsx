@@ -120,7 +120,7 @@ const BasicLayout = (props) => {
       }
     });
     setLoading(false);
-  }, [setIsCheck]);
+  }, [setIsCheck, setLoading]);
 
   function buttonSwitch() {
     let checkAuth = false;
@@ -189,7 +189,7 @@ const BasicLayout = (props) => {
     return (
       <>
         {checkAuth ? (
-          <Affix className={styles.footerButton}>
+          <Affix className={styles.btnSwitch}>
             <Tooltip title={isCheck ? 'Switch Owner|Admin' : 'Switch Employee'}>
               <Switch
                 checked={isCheck}
@@ -202,6 +202,16 @@ const BasicLayout = (props) => {
           </Affix>
         ) : null}
       </>
+    );
+  }
+
+  function rightContent() {
+    const { pathname } = window.location;
+    return (
+      <div className={styles.rightContent}>
+        <RightContent />
+        {pathname === '/dashboard' ? null : buttonSwitch()}
+      </div>
     );
   }
 
@@ -262,9 +272,9 @@ const BasicLayout = (props) => {
           }
           return listPath;
         }}
-        footerRender={pathname === '/dashboard' ? null : buttonSwitch}
+        // footerRender={pathname === '/dashboard' ? null : buttonSwitch}
         menuDataRender={menuDataRender}
-        rightContentRender={() => <RightContent />}
+        rightContentRender={rightContent}
         collapsedButtonRender={false}
         disableMobile
         {...props}
