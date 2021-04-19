@@ -6,7 +6,6 @@ import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 // import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 // import Test from './components/test';
@@ -24,9 +23,22 @@ class EmployeeProfile extends Component {
     this.state = {};
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
+    const { dispatch } = this.props;
+    const tenantCurrentEmployee = localStorage.getItem('tenantCurrentEmployee');
+    const companyCurrentEmployee = localStorage.getItem('companyCurrentEmployee');
+    const idCurrentEmployee = localStorage.getItem('idCurrentEmployee');
+
+    await dispatch({
+      type: 'employeeProfile/save',
+      payload: {
+        tenantCurrentEmployee,
+        companyCurrentEmployee,
+        idCurrentEmployee,
+      },
+    });
     this.fetchData();
-  }
+  };
 
   componentDidUpdate(prevProps) {
     const { location } = this.props;
@@ -40,8 +52,10 @@ class EmployeeProfile extends Component {
       employeeProfile,
       match: { params: { reId: employee = '' } = {} },
       dispatch,
+      employeeProfile: { tenantCurrentEmployee = '', companyCurrentEmployee = '' } = {},
     } = this.props;
-    const tenantId = getCurrentTenant();
+    const tenantId = tenantCurrentEmployee;
+
     dispatch({
       type: 'employeeProfile/fetchGeneralInfo',
       payload: { employee, tenantId },
@@ -107,8 +121,8 @@ class EmployeeProfile extends Component {
     dispatch({
       type: 'employeeProfile/getBenefitPlans',
       payload: {
-        tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
+        tenantId,
+        company: companyCurrentEmployee,
       },
     });
   };

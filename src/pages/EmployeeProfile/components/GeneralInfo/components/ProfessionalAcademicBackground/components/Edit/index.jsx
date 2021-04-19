@@ -3,7 +3,6 @@ import React, { PureComponent } from 'react';
 import { Button, Form, Input, Select, Tag } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
-import { getCurrentTenant } from '@/utils/authority';
 import FormCertification from './components/FormCertification';
 import s from './index.less';
 
@@ -22,6 +21,7 @@ const { Option } = Select;
       tempData: { generalData = {} } = {},
       listSkill = [],
       listTitle = [],
+      tenantCurrentEmployee = '',
     } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
@@ -30,6 +30,7 @@ const { Option } = Select;
     listSkill,
     listTitle,
     compensationData,
+    tenantCurrentEmployee,
   }),
 )
 class Edit extends PureComponent {
@@ -76,7 +77,7 @@ class Edit extends PureComponent {
   };
 
   processDataChanges = () => {
-    const { generalData: generalDataTemp } = this.props;
+    const { generalData: generalDataTemp, tenantCurrentEmployee = '' } = this.props;
     const {
       preJobTitle = '',
       skills = [],
@@ -96,7 +97,7 @@ class Edit extends PureComponent {
       totalExp,
       qualification,
       certification,
-      tenantId: getCurrentTenant(),
+      tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
   };

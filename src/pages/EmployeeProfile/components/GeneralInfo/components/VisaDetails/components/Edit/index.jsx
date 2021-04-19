@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { Row, Form, Button } from 'antd';
 import { connect } from 'umi';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
-import { getCurrentTenant } from '@/utils/authority';
 import VisaGeneral from './components/Visa';
 import styles from './index.less';
 
@@ -16,6 +15,7 @@ import styles from './index.less';
       idCurrentEmployee,
       originData: { visaData: visaDataOrigin = [] } = {},
       tempData: { generalData = {}, visaData = [], document = {} } = {},
+      tenantCurrentEmployee = '',
     } = {},
   }) => ({
     loading: loading.effects['upload/uploadFile'],
@@ -30,6 +30,7 @@ import styles from './index.less';
 
     document,
     idCurrentEmployee,
+    tenantCurrentEmployee,
 
     urlImage,
   }),
@@ -48,7 +49,7 @@ class Edit extends Component {
   }
 
   processDataChangesVisa = (item) => {
-    const { generalData } = this.props;
+    const { generalData, tenantCurrentEmployee = '' } = this.props;
     const { employee = '' } = generalData;
     const {
       _id: id,
@@ -70,7 +71,7 @@ class Edit extends Component {
       visaType,
       visaValidTill,
       visaEntryType,
-      tenantId: getCurrentTenant(),
+      tenantId: tenantCurrentEmployee,
     };
 
     return formVisa;
@@ -116,7 +117,7 @@ class Edit extends Component {
   };
 
   processDataAddVisa = (id, item) => {
-    const { generalData } = this.props;
+    const { generalData, tenantCurrentEmployee = '' } = this.props;
     const { employee = '' } = generalData;
     const {
       visaNumber,
@@ -135,7 +136,7 @@ class Edit extends Component {
       visaType,
       visaValidTill,
       visaEntryType,
-      tenantId: getCurrentTenant(),
+      tenantId: tenantCurrentEmployee,
     };
     return formVisa;
   };
