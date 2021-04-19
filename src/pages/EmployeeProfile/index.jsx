@@ -71,7 +71,7 @@ class EmployeeProfile extends Component {
     });
     dispatch({
       type: 'employeeProfile/fetchPRReport',
-      payload: { employee },
+      payload: { employee, tenantId },
     });
     // dispatch({
     //   type: 'employeeProfile/fetchDocuments',
@@ -79,7 +79,7 @@ class EmployeeProfile extends Component {
     // });
     dispatch({
       type: 'employeeProfile/fetchPayslips',
-      payload: { employee, employeeGroup: 'Payslip' },
+      payload: { employee, employeeGroup: 'Payslip', tenantId },
     });
     dispatch({
       type: 'employeeProfile/fetchBank',
@@ -92,15 +92,18 @@ class EmployeeProfile extends Component {
     dispatch({ type: 'employeeProfile/fetchLocations' });
     dispatch({
       type: 'employeeProfile/fetchEmployeeTypes',
-      payload: { tenantId: getCurrentTenant() },
+      payload: { tenantId },
     });
     dispatch({
       type: 'employeeProfile/fetchDepartments',
       payload: { company: employeeProfile?.originData?.compensationData?.company },
     });
     dispatch({ type: 'employeeProfile/fetchEmployees' });
-    dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: { employee } });
-    dispatch({ type: 'employeeProfile/fetchEmployeeDependentDetails', payload: { employee } });
+    dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: { employee, tenantId } });
+    dispatch({
+      type: 'employeeProfile/fetchEmployeeDependentDetails',
+      payload: { employee, tenantId },
+    });
     dispatch({ type: 'employeeProfile/getBenefitPlans' });
   };
 

@@ -229,9 +229,12 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchPayslips({ payload: { employee = '', employeeGroup = '' } }, { call, put }) {
+    *fetchPayslips(
+      { payload: { employee = '', employeeGroup = '', tenantId = '' } },
+      { call, put },
+    ) {
       try {
-        const response = yield call(getPayslip, { employee, employeeGroup });
+        const response = yield call(getPayslip, { employee, employeeGroup, tenantId });
         const { statusCode, data: paySlip = [] } = response;
         if (statusCode !== 200) throw response;
         const reversePayslip = paySlip.reverse();
