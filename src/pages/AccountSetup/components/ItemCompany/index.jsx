@@ -2,7 +2,7 @@ import logoDefault from '@/assets/companyDefault.png';
 import { Button } from 'antd';
 import React, { PureComponent } from 'react';
 import { history, connect } from 'umi';
-import { setAuthority, setTenantId, setCurrentCompany } from '@/utils/authority';
+import { setTenantId, setCurrentCompany } from '@/utils/authority';
 
 import s from './index.less';
 
