@@ -374,7 +374,6 @@ class AddEmployeeForm extends Component {
           >
             <Select
               autoComplete="dontshow"
-              mode="multiple"
               allowClear
               showArrow
               style={{ width: '100%' }}
