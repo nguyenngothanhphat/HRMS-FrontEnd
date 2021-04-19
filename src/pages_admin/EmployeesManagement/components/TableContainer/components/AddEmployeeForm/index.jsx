@@ -500,7 +500,7 @@ class AddEmployeeForm extends Component {
             className={styles.reportingManager}
             label={formatMessage({ id: 'addEmployee.manager' })}
             name="manager"
-            rules={[{ required: true }]}
+            // rules={[{ required: true }]}
           >
             <Select
               autoComplete="dontshow"
