@@ -62,7 +62,6 @@ class Edit extends PureComponent {
 
   processDataChanges = () => {
     const { generalData: generalDataTemp } = this.props;
-    const tenantId = getCurrentTenant();
     const {
       urlFile = '',
       legalGender = '',
@@ -100,7 +99,7 @@ class Edit extends PureComponent {
       workNumber,
       adhaarCardNumber,
       uanNumber,
-      tenantId,
+      tenantId: getCurrentTenant(),
     };
   };
 
@@ -144,7 +143,7 @@ class Edit extends PureComponent {
     if (urlFile) {
       file = urlFile;
     }
-    if (AdhaarCard === null) {
+    if (!AdhaarCard || Object.keys(AdhaarCard).length === 0) {
       dispatch({
         type: 'employeeProfile/fetchDocumentAdd',
         payload: {
@@ -165,6 +164,7 @@ class Edit extends PureComponent {
             employeeGroup: 'Identity',
             parentEmployeeGroup: 'Indentification Documents',
             employee: idCurrentEmployee,
+            tenantId: getCurrentTenant(),
           },
         }).then((id) => this.handleAddDocument(id));
       }
@@ -173,6 +173,7 @@ class Edit extends PureComponent {
         payload: {
           attachment: file?.id,
           id: AdhaarCard?.document?._id,
+          tenantId: getCurrentTenant(),
         },
       }).then((doc) => this.handleUpdate(doc));
     }
@@ -192,6 +193,7 @@ class Edit extends PureComponent {
         document: id,
         id: AdhaarCard._id,
         adhaarNumber: getNewAdhaarCard,
+        tenantId: getCurrentTenant(),
       },
     });
   };
@@ -218,6 +220,7 @@ class Edit extends PureComponent {
         document: doc._id,
         id: AdhaarCard._id,
         adhaarNumber: getNewAdhaarCard,
+        tenantId: getCurrentTenant(),
       },
     });
   };
@@ -232,6 +235,7 @@ class Edit extends PureComponent {
         document: id,
         employee: idCurrentEmployee,
         adhaarNumber: adhaarCardNumber,
+        tenantId: getCurrentTenant(),
       },
     });
   };

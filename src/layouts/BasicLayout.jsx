@@ -9,7 +9,7 @@ import RightContent from '@/components/GlobalHeader/RightContent';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { Button, Result, Affix, Tooltip, Switch, notification } from 'antd';
-import { UserSwitchOutlined } from '@ant-design/icons';
+import { UserSwitchOutlined, UserOutlined } from '@ant-design/icons';
 import { connect, Link, useIntl, Redirect, useHistory } from 'umi';
 import { getCurrentCompany, setAuthority } from '@/utils/authority';
 import classnames from 'classnames';
@@ -57,6 +57,7 @@ const BasicLayout = (props) => {
    */
 
   const [isCheck, setIsCheck] = useState(false);
+  const [loading, setLoading] = useState(false);
   const history = useHistory();
 
   const getCurrentLogo = () => {
@@ -118,6 +119,7 @@ const BasicLayout = (props) => {
         setIsCheck(true);
       }
     });
+    setLoading(false);
   }, [setIsCheck]);
 
   function buttonSwitch() {
@@ -164,6 +166,7 @@ const BasicLayout = (props) => {
       }
       setAuthority(newAuthority);
       setIsCheck(!isCheck);
+      setLoading(true);
 
       await dispatch({
         type: 'user/fetchCurrent',
@@ -191,7 +194,9 @@ const BasicLayout = (props) => {
               <Switch
                 checked={isCheck}
                 checkedChildren={<UserSwitchOutlined />}
+                unCheckedChildren={<UserOutlined />}
                 onClick={handleSwitch}
+                loading={loading}
               />
             </Tooltip>
           </Affix>

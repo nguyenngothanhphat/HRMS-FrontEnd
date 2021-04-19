@@ -67,7 +67,7 @@ class View extends PureComponent {
       { label: 'Legal Name', value: dataAPI.legalName },
       {
         label: 'Date of Birth',
-        value: dataAPI.DOB ? Moment(dataAPI.DOB).locale('en').format('MM.DD.YY') : '',
+        value: dataAPI.DOB ? Moment(dataAPI.DOB).locale('en').format('Do MMMM YYYY') : '',
       },
       { label: 'Legal Gender', value: dataAPI.legalGender },
       { label: 'Employee ID', value: dataAPI.employeeId },

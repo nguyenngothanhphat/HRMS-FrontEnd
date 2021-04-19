@@ -13,11 +13,11 @@ function CurrentInfo(props) {
     employeeType,
     manager,
   } = employeeProfile.originData.employmentData;
-  // const {
-  //   compensationType,
-  //   currentAnnualCTC,
-  //   timeOffPolicy,
-  // } = employeeProfile.originData.compensationData;
+  const {
+    compensationType,
+    currentAnnualCTC,
+    timeOffPolicy,
+  } = employeeProfile.originData.compensationData;
 
   const data = {
     title: title?.name || 'Missing title',
@@ -26,10 +26,10 @@ function CurrentInfo(props) {
       : 'Missing joined date',
     location: location?.name || 'Missing location',
     employType: employeeType?.name || 'Missing employment type',
-    // compenType: compensationType || 'This person is missing payment method',
-    // annualSalary: String(currentAnnualCTC || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+    compenType: compensationType || 'This person is missing payment method',
+    annualSalary: String(currentAnnualCTC || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
     manager: manager?.generalInfo.firstName || 'Missing reporting manager',
-    // timeOff: timeOffPolicy || 'This person is not allowed to take time off',
+    timeOff: timeOffPolicy || 'This person is not allowed to take time off',
   };
   return (
     <div style={{ margin: '24px' }}>

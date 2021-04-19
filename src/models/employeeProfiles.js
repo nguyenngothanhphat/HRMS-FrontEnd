@@ -722,9 +722,9 @@ const employeeProfile = {
       }
       return doc;
     },
-    *fetchAdhaardCard({ payload: { employee = '' } }, { call, put }) {
+    *fetchAdhaardCard({ payload: { employee = '', tenantId = '' } }, { call, put }) {
       try {
-        const response = yield call(getAdhaardCard, { employee });
+        const response = yield call(getAdhaardCard, { employee, tenantId });
         const { statusCode, data: AdhaarCard = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -1140,9 +1140,9 @@ const employeeProfile = {
         return {};
       }
     },
-    *getBenefitPlans(_, { call, put }) {
+    *getBenefitPlans({ payload }, { call, put }) {
       try {
-        const response = yield call(getBenefitPlans);
+        const response = yield call(getBenefitPlans, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { benefitPlans: data } });
