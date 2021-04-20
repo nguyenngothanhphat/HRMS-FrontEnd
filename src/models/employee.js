@@ -168,7 +168,6 @@ const employee = {
           employeeType,
           name,
         });
-        console.log(response);
         const { statusCode, data: listEmployeeInActive = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'listEmployeeInActive', payload: { listEmployeeInActive } });

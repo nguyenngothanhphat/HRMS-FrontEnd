@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
 import { Tabs, Layout } from 'antd';
 import DirectoryTable from '@/components/DirectoryTable';
-import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, isOwner, isEmployee } from '@/utils/authority';
 
 import { debounce } from 'lodash';
 import AddEmployeeForm from '@/pages_admin/EmployeesManagement/components/TableContainer/components/AddEmployeeForm';
@@ -231,6 +231,7 @@ class DirectoryComponent extends PureComponent {
       companiesOfUser = [],
       filterList: { listCountry = [] } = {},
       listLocationsByCompany = [],
+      currentUser: { employee: { department: { name: departmentName = '' } = {} } = {} } = {},
     } = this.props;
 
     const currentCompany = getCurrentCompany();
@@ -294,10 +295,9 @@ class DirectoryComponent extends PureComponent {
       dispatch({
         type: 'employee/fetchListEmployeeMyTeam',
         payload: {
-          // company: companyPayload,
-          // location: locationPayload,
-          department: ['Develop'],
-          location: [{ country: 'US', state: ['Washington'] }],
+          company: companyPayload,
+          department: [departmentName],
+          location: locationPayload,
         },
       });
     }
@@ -347,12 +347,14 @@ class DirectoryComponent extends PureComponent {
 
     const currentLocation = getCurrentLocation();
     const currentCompany = getCurrentCompany();
+    const checkIsEmployee = isEmployee();
 
     const { dispatch } = this.props;
     const {
       companiesOfUser = [],
       filterList: { listCountry = [] } = {},
       listLocationsByCompany = [],
+      currentUser: { employee: { department: { name: departmentName = '' } = {} } = {} } = {},
     } = this.props;
     const { name, department, country, state, employeeType, company } = params;
 
@@ -455,15 +457,15 @@ class DirectoryComponent extends PureComponent {
       });
     }
     if (tabId === myTeam) {
-      dispatch({
-        type: 'employee/fetchListEmployeeMyTeam',
-        payload: {
-          company: companyPayload,
-          // location: locationPayload,
-          department: ['Develop'],
-          location: [{ country: 'VN', state: ['Thanh Pho Ho Chi Minh'] }],
-        },
-      });
+      if (checkIsEmployee) {
+        dispatch({
+          type: 'employee/fetchListEmployeeMyTeam',
+          payload: {
+            ...payload,
+            department: [departmentName],
+          },
+        });
+      }
     }
     if (tabId === inActive) {
       dispatch({
