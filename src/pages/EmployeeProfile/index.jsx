@@ -127,6 +127,13 @@ class EmployeeProfile extends Component {
     });
   };
 
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/clearState',
+    });
+  };
+
   checkProfileOwner = (currentUserID, employeeID) => {
     if (currentUserID === employeeID) {
       return true;
@@ -174,9 +181,9 @@ class EmployeeProfile extends Component {
       location: { state: { location = '' } = {} } = {},
     } = this.props;
 
-    const listMenu = this.renderListMenu(employee, currentEmployee._id);
+    const listMenu = this.renderListMenu(employee, currentEmployee?._id);
 
-    const profileOwner = this.checkProfileOwner(currentEmployee._id, employee);
+    const profileOwner = this.checkProfileOwner(currentEmployee?._id, employee);
 
     return (
       <PageContainer>

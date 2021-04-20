@@ -38,7 +38,6 @@ import {
   getTax,
   getAddTax,
   updateTax,
-  getTitleByDepartment,
   getLocationsByCompany,
   updateEmployment,
   updatePrivate,
@@ -935,7 +934,7 @@ const employeeProfile = {
 
     *fetchTitleByDepartment({ payload }, { call, put }) {
       try {
-        const res = yield call(getTitleByDepartment, payload);
+        const res = yield call(getListTitle, payload);
         const { statusCode, data } = res;
         if (statusCode !== 200) throw res;
         yield put({
@@ -1220,6 +1219,34 @@ const employeeProfile = {
           openTax: false,
           openBank: false,
         },
+      };
+    },
+    clearState(state) {
+      return {
+        ...state,
+        paySlip: [],
+        countryList: [],
+        idCurrentEmployee: '',
+        tenantCurrentEmployee: '',
+        companyCurrentEmployee: '',
+        listSkill: [],
+        listTitle: [],
+        listTitleByDepartment: [],
+        listLocationsByCompany: [],
+        locations: [],
+        employeeTypes: [],
+        departments: [],
+        compensationTypes: [],
+        employees: [],
+        jobTitleList: [],
+        originData: {},
+        tempData: {},
+        listPRReport: [],
+        AdhaarCard: {},
+        isUpdateEmployment: false,
+        listRelation: [],
+        listStates: [],
+        revoke: [],
       };
     },
   },

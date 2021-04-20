@@ -133,8 +133,8 @@ class Edit extends Component {
 
     if (documentPassPort) {
       const dataPassport = {
-        id: documentPassPort._id,
-        attachment: getFile.id,
+        id: documentPassPort?._id,
+        attachment: getFile?.id,
         key: `Passport${index + 1}`,
       };
 
@@ -147,7 +147,7 @@ class Edit extends Component {
         type: 'employeeProfile/fetchDocumentAdd',
         payload: {
           key: `PassPort${index + 1}`,
-          attachment: getFile.id,
+          attachment: getFile?.id,
           employeeGroup: 'Identity',
           parentEmployeeGroup: 'Indentification Documents',
           employee: idCurrentEmployee,
