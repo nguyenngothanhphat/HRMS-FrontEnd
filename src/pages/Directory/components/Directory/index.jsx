@@ -231,6 +231,7 @@ class DirectoryComponent extends PureComponent {
       companiesOfUser = [],
       filterList: { listCountry = [] } = {},
       listLocationsByCompany = [],
+      currentUser: { employee: { department: { name: departmentName = '' } = {} } = {} } = {},
     } = this.props;
 
     const currentCompany = getCurrentCompany();
@@ -288,19 +289,18 @@ class DirectoryComponent extends PureComponent {
 
     const viewTabActive = permissions.viewTabActive !== -1;
     const viewTabInActive = permissions.viewTabInActive !== -1;
-    // const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
+    const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
 
-    // if (viewTabMyTeam) {
-    //   dispatch({
-    //     type: 'employee/fetchListEmployeeMyTeam',
-    //     payload: {
-    //       // company: companyPayload,
-    //       // location: locationPayload,
-    //       department: ['Develop'],
-    //       location: [{ country: 'US', state: ['Washington'] }],
-    //     },
-    //   });
-    // }
+    if (viewTabMyTeam) {
+      dispatch({
+        type: 'employee/fetchListEmployeeMyTeam',
+        payload: {
+          company: companyPayload,
+          department: [departmentName],
+          location: locationPayload,
+        },
+      });
+    }
 
     if (viewTabActive) {
       dispatch({
@@ -354,13 +354,7 @@ class DirectoryComponent extends PureComponent {
       companiesOfUser = [],
       filterList: { listCountry = [] } = {},
       listLocationsByCompany = [],
-      currentUser: {
-        employee: {
-          location: locationMyTeam = '',
-          department: departmentMyTeam = '',
-          company: companyMyTeam = '',
-        } = {},
-      } = {},
+      currentUser: { employee: { department: { name: departmentName = '' } = {} } = {} } = {},
     } = this.props;
     const { name, department, country, state, employeeType, company } = params;
 
@@ -467,9 +461,8 @@ class DirectoryComponent extends PureComponent {
         dispatch({
           type: 'employee/fetchListEmployeeMyTeam',
           payload: {
-            company: companyMyTeam,
-            department: departmentMyTeam,
-            location: locationMyTeam,
+            ...payload,
+            department: [departmentName],
           },
         });
       }
