@@ -71,7 +71,7 @@ export function checkPermissions(roles, isOwner) {
     permissionList.indexOf(tabActive) === -1
       ? permissionList.indexOf(tabActive1)
       : permissionList.indexOf(tabActive);
-      const findIndexMyTeam =
+  const findIndexMyTeam =
     permissionList.indexOf(tabMyTeam) === -1
       ? permissionList.indexOf(tabMyTeam1)
       : permissionList.indexOf(tabMyTeam);
