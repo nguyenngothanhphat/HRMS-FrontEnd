@@ -789,9 +789,9 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchBank({ payload: { employee = '' } }, { call, put }) {
+    *fetchBank({ payload: { employee = '', tenantId = '' } }, { call, put }) {
       try {
-        const response = yield call(getBank, { employee });
+        const response = yield call(getBank, { employee, tenantId });
         const { statusCode, data: bankData = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -810,6 +810,7 @@ const employeeProfile = {
       try {
         const response = yield call(getAddBank, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -817,7 +818,7 @@ const employeeProfile = {
         });
         yield put({
           type: 'fetchBank',
-          payload: { employee: idCurrentEmployee },
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
           dataTempKept,
         });
         if (key === 'openBank') {
@@ -834,6 +835,7 @@ const employeeProfile = {
       try {
         const response = yield call(updateBank, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -841,7 +843,7 @@ const employeeProfile = {
         });
         yield put({
           type: 'fetchBank',
-          payload: { employee: idCurrentEmployee },
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
           dataTempKept,
         });
         if (key === 'openBank') {

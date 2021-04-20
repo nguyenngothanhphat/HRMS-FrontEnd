@@ -97,7 +97,7 @@ class EmployeeProfile extends Component {
     });
     dispatch({
       type: 'employeeProfile/fetchBank',
-      payload: { employee },
+      payload: { employee, tenantId },
     });
     dispatch({
       type: 'employeeProfile/fetchTax',
