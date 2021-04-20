@@ -150,9 +150,9 @@ const employeesManagement = {
         dialog(errors);
       }
     },
-    *fetchJobTitleList(_, { call, put }) {
+    *fetchJobTitleList({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getJobTitleList);
+        const response = yield call(getJobTitleList, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { jobTitleList: data } });
@@ -179,7 +179,7 @@ const employeesManagement = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message:'Add employee successfully!',
+          message: 'Add employee successfully!',
         });
         statusAddEmployee = true;
       } catch (errors) {

@@ -54,7 +54,7 @@ export async function updateGeneralInfo(payload) {
 }
 
 export async function getListTitle(payload) {
-  return request('/api/title/list', {
+  return request('/api/titletenant/list', {
     method: 'POST',
     data: payload,
   });

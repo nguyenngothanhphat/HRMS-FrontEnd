@@ -534,9 +534,9 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchListTitle(_, { call, put }) {
+    *fetchListTitle({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getListTitle);
+        const response = yield call(getListTitle, payload);
         const { statusCode, data: listTitle = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listTitle } });

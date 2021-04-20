@@ -53,6 +53,7 @@ class AddEmployeeForm extends Component {
     this.state = {
       isDisabled: true,
       isDisabledTitle: true,
+      tenantCurrentEmployee: '',
     };
   }
 
@@ -99,6 +100,10 @@ class AddEmployeeForm extends Component {
     const companyMatch = companiesOfUser.find((item) => item._id === _id);
     const tenantLocation = companyMatch.tenant;
 
+    this.setState({
+      tenantCurrentEmployee: companyMatch.tenant,
+    });
+
     const locationPayload = listLocationsByCompany.map(
       ({ headQuarterAddress: { country: countryItem1 = '' } = {} }) => {
         let stateList = [];
@@ -142,7 +147,7 @@ class AddEmployeeForm extends Component {
 
   onChangeSelect = (type, value) => {
     const { dispatch } = this.props;
-    const { company } = this.state;
+    const { company, tenantCurrentEmployee } = this.state;
 
     switch (type) {
       case 'company':
@@ -171,6 +176,7 @@ class AddEmployeeForm extends Component {
           payload: {
             company,
             department: value,
+            tenantId: tenantCurrentEmployee,
           },
         });
         break;
