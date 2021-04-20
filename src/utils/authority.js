@@ -79,6 +79,12 @@ export function isAdmin() {
   return owner.length > 0;
 }
 
+export function isEmployee() {
+  const roleList = JSON.parse(localStorage.getItem('antd-pro-authority'));
+  const owner = roleList.filter((role) => role.toLowerCase().includes('employee'));
+  return owner.length > 0;
+}
+
 export function setIsSwitchingRole(switchingRole) {
   localStorage.setItem('isSwitchingRole', switchingRole);
   reloadAuthorized();
