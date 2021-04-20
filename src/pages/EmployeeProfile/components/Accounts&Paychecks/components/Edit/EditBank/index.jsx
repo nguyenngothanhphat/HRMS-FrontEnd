@@ -10,12 +10,14 @@ import styles from './index.less';
       idCurrentEmployee = '',
       originData: { bankData: bankDataOrigin = [] } = {},
       tempData: { bankData = [] } = {},
+      tenantCurrentEmployee = '',
     } = {},
   }) => ({
     loading: loading.effects['employeeProfile/updateGeneralInfo'],
     idCurrentEmployee,
     bankDataOrigin,
     bankData,
+    tenantCurrentEmployee,
   }),
 )
 class EditBank extends Component {
@@ -39,7 +41,7 @@ class EditBank extends Component {
   };
 
   processDataChangesHaveId = () => {
-    const { bankData: bankDataTemp } = this.props;
+    const { bankData: bankDataTemp, tenantCurrentEmployee = '' } = this.props;
     const {
       bankName = '',
       accountNumber = '',
@@ -57,12 +59,13 @@ class EditBank extends Component {
       ifscCode,
       micrcCode,
       uanNumber,
+      tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
   };
 
   processDataChangesNoId = () => {
-    const { bankData: bankDataTemp, idCurrentEmployee } = this.props;
+    const { bankData: bankDataTemp, idCurrentEmployee, tenantCurrentEmployee = '' } = this.props;
     const {
       bankName = '',
       accountNumber = '',
@@ -79,6 +82,7 @@ class EditBank extends Component {
       ifscCode,
       micrcCode,
       uanNumber,
+      tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
   };

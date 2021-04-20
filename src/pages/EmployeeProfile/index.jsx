@@ -97,7 +97,7 @@ class EmployeeProfile extends Component {
     });
     dispatch({
       type: 'employeeProfile/fetchBank',
-      payload: { employee },
+      payload: { employee, tenantId },
     });
     dispatch({
       type: 'employeeProfile/fetchTax',
@@ -124,6 +124,13 @@ class EmployeeProfile extends Component {
         tenantId,
         company: companyCurrentEmployee,
       },
+    });
+  };
+
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/clearState',
     });
   };
 
@@ -174,9 +181,9 @@ class EmployeeProfile extends Component {
       location: { state: { location = '' } = {} } = {},
     } = this.props;
 
-    const listMenu = this.renderListMenu(employee, currentEmployee._id);
+    const listMenu = this.renderListMenu(employee, currentEmployee?._id);
 
-    const profileOwner = this.checkProfileOwner(currentEmployee._id, employee);
+    const profileOwner = this.checkProfileOwner(currentEmployee?._id, employee);
 
     return (
       <PageContainer>
