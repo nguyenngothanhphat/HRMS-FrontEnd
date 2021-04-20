@@ -856,9 +856,9 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchTax({ payload: { employee = '' } }, { call, put }) {
+    *fetchTax({ payload: { employee = '', tenantId = '' } }, { call, put }) {
       try {
-        const response = yield call(getTax, { employee });
+        const response = yield call(getTax, { employee, tenantId });
         const { statusCode, data: taxData = {} } = response;
         if (statusCode !== 200) throw response;
         // const checkDataTempKept = JSON.stringify(dataTempKept) === JSON.stringify({});
@@ -889,6 +889,8 @@ const employeeProfile = {
       try {
         const response = yield call(getAddTax, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -896,7 +898,7 @@ const employeeProfile = {
         });
         yield put({
           type: 'fetchTax',
-          payload: { employee: idCurrentEmployee },
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
           dataTempKept,
         });
         if (key === 'openTax') {
@@ -913,6 +915,8 @@ const employeeProfile = {
       try {
         const response = yield call(updateTax, payload);
         const { idCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -920,7 +924,7 @@ const employeeProfile = {
         });
         yield put({
           type: 'fetchTax',
-          payload: { employee: idCurrentEmployee },
+          payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
           dataTempKept,
         });
         if (key === 'openTax') {
@@ -989,6 +993,7 @@ const employeeProfile = {
           attachment = '',
           employee = '',
           company = '',
+          tenantId = '',
         } = data;
 
         const response = yield call(getDocumentAdd, {
@@ -998,6 +1003,7 @@ const employeeProfile = {
           attachment,
           employee,
           company,
+          tenantId,
         });
 
         const { statusCode, data: uploadedDocument = [] } = response;

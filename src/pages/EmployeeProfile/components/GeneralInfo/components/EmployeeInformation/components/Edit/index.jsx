@@ -153,6 +153,7 @@ class Edit extends PureComponent {
       dispatch({
         type: 'employeeProfile/fetchDocumentAdd',
         payload: {
+          tenantId: tenantCurrentEmployee,
           key: 'Adhaar Card',
           attachment: file.id,
           employeeGroup: 'Identity',
@@ -161,7 +162,7 @@ class Edit extends PureComponent {
         },
       }).then((id) => this.handleAdd(id));
     } else {
-      if (AdhaarCard.document === null) {
+      if (!AdhaarCard.document || Object.keys(AdhaarCard.document).length === 0) {
         dispatch({
           type: 'employeeProfile/fetchDocumentAdd',
           payload: {

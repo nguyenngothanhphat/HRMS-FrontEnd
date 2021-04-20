@@ -119,10 +119,11 @@ class Edit extends PureComponent {
   };
 
   handleRemoveCertification = ({ _id: id }) => {
-    const { dispatch } = this.props;
+    const { dispatch, currentTenantEmployee = '' } = this.props;
     dispatch({
       type: 'employeeProfile/removeCertification',
       payload: {
+        tenantId: currentTenantEmployee,
         id,
       },
     });
@@ -140,6 +141,7 @@ class Edit extends PureComponent {
           payload: {
             id: element._id,
             urlFile: element.urlFile,
+            tenantId,
           },
         });
       } else if (element.name || element.urlFile) {
