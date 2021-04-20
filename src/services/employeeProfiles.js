@@ -53,9 +53,10 @@ export async function updateGeneralInfo(payload) {
   });
 }
 
-export async function getListTitle() {
+export async function getListTitle(payload) {
   return request('/api/title/list', {
     method: 'POST',
+    data: payload,
   });
 }
 
@@ -249,13 +250,6 @@ export async function getAddTax(payload) {
 
 export async function updateTax(payload) {
   return request('/api/taxtenant/update', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
-export async function getTitleByDepartment(payload) {
-  return request('/api/title/list', {
     method: 'POST',
     data: payload,
   });

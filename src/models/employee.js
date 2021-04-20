@@ -1,6 +1,5 @@
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
-import { getCurrentTenant } from '@/utils/authority';
 import {
   LocationFilter,
   LocationOwnerFilter,
