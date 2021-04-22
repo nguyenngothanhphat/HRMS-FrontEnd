@@ -35,7 +35,7 @@ export async function getDepartmentList(payload) {
 }
 
 export async function getJobTitleList(payload) {
-  return request('/api/titletenant/list', {
+  return request('/api/title/list', {
     method: 'POST',
     data: payload,
   });
