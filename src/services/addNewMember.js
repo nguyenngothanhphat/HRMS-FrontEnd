@@ -25,7 +25,7 @@ export function getTitleList(params) {
   //   method: 'POST',
   //   data: params,
   // });
-  return request('/api/title/list-by-department', {
+  return request('/api/titletenant/list-by-department', {
     method: 'POST',
     data: params,
   });

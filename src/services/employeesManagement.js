@@ -34,9 +34,10 @@ export async function getDepartmentList(payload) {
   });
 }
 
-export async function getJobTitleList() {
-  return request('/api/title/list', {
+export async function getJobTitleList(payload) {
+  return request('/api/titletenant/list-by-department', {
     method: 'POST',
+    data: payload,
   });
 }
 
