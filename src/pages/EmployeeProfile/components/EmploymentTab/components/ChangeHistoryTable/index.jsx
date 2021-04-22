@@ -120,9 +120,9 @@ class ChangeHistoryTable extends PureComponent {
   };
 
   render() {
-    const { employeeProfile } = this.props;
+    const { employeeProfile: { originData: { changeHistories = [] } = {} } = {} } = this.props;
 
-    const newData = employeeProfile.originData.changeHistories.map((item, index) => ({
+    const newData = changeHistories.map((item, index) => ({
       key: `${index + 1}`,
       changedInfomation: {
         promotedPosition: item.title?.name,

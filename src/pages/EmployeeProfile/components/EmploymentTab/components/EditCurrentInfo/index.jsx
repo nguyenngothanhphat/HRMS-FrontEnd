@@ -22,6 +22,7 @@ class EditCurrentInfo extends PureComponent {
     const payload = {
       company: company._id,
       department: department._id,
+      tenantId: tenantCurrentEmployee,
     };
     // const tenantId = getCurrentTenant();
 
