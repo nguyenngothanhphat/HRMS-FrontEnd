@@ -2,7 +2,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant, getAuthority } from '@/utils/authority';
 import DirectoryComponent from './components/Directory';
 import styles from './index.less';
 
@@ -23,9 +23,9 @@ class Directory extends PureComponent {
 
   componentDidMount() {
     const {
-      currentUser: { roles = [] },
+      currentUser: { roles = [], signInRole = [] },
     } = this.props;
-    const checkRoleEmployee = this.checkRoleEmployee(roles);
+    const checkRoleEmployee = this.checkRoleEmployee(roles, signInRole);
 
     this.setState({
       checkRoleEmployee,
@@ -56,11 +56,18 @@ class Directory extends PureComponent {
     });
   };
 
-  checkRoleEmployee = (roles) => {
+  checkRoleEmployee = (roles = [], signInRole = []) => {
     let flag = false;
+    const getAuth = getAuthority();
+    const isEmployee = getAuth[0] === 'employee';
+
     const { roles: rolesConst } = this.state;
     const checkRole = (obj) => obj === rolesConst.employee;
     if (roles.length === 1 && roles.some(checkRole)) {
+      flag = true;
+    }
+
+    if (signInRole[0] === 'ADMIN' && isEmployee) {
       flag = true;
     }
     return flag;
