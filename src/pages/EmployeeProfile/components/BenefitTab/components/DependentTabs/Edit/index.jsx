@@ -12,12 +12,14 @@ const { Option } = Select;
   ({
     employeeProfile: {
       idCurrentEmployee = '',
+      tenantCurrentEmployee = '',
       originData: { dependentDetails: { _id: dependentsId = '' } = {} } = {},
     } = {},
     loading,
   }) => ({
     dependentsId,
     idCurrentEmployee,
+    tenantCurrentEmployee,
     loadingUpdate: loading.effects['employeeProfile/updateEmployeeDependentDetails'],
     loadingAdd: loading.effects['employeeProfile/addDependentsOfEmployee'],
     loadingRemove: loading.effects['employeeProfile/removeEmployeeDependentDetails'],
@@ -63,6 +65,7 @@ class Edit extends PureComponent {
       setAdding = () => {},
       data = [],
       idCurrentEmployee = '',
+      tenantCurrentEmployee = '',
     } = this.props;
 
     const { dependents = [] } = values;
@@ -71,16 +74,20 @@ class Edit extends PureComponent {
     if (dependents.length === 0) {
       type = 'employeeProfile/removeEmployeeDependentDetails';
       payload.id = dependentsId;
+      payload.tenantId = tenantCurrentEmployee;
     } else if (data.length > 0) {
       payload = values;
       payload.id = dependentsId;
+      payload.tenantId = tenantCurrentEmployee;
       type = 'employeeProfile/updateEmployeeDependentDetails';
     } else {
       payload = {
         employee: idCurrentEmployee,
         dependents,
+        tenantId: tenantCurrentEmployee,
       };
     }
+    console.log(payload);
 
     const res = await dispatch({
       type,

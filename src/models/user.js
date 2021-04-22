@@ -90,7 +90,7 @@ const UserModel = {
             type: 'save',
             payload: {
               permissions: {
-                ...checkPermissions(formatArrRoles, checkIsOwner),
+                ...checkPermissions(formatArrRoles, checkIsOwner, checkIsAdmin, checkIsEmployee),
               },
             },
           });

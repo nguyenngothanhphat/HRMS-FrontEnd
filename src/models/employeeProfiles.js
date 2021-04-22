@@ -199,9 +199,9 @@ const employeeProfile = {
         dialog(error);
       }
     },
-    *fetchCompensation({ payload: { employee = '' } }, { call, put }) {
+    *fetchCompensation({ payload: { employee = '', tenantId = '' } }, { call, put }) {
       try {
-        const response = yield call(getCompensation, { employee });
+        const response = yield call(getCompensation, { employee, tenantId });
         const { statusCode, data: compensationData = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -534,9 +534,9 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchListTitle(_, { call, put }) {
+    *fetchListTitle({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getListTitle);
+        const response = yield call(getListTitle, payload);
         const { statusCode, data: listTitle = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listTitle } });
@@ -588,11 +588,9 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchDocuments({ payload: { employee = '' } = {} }, { call, put }) {
+    *fetchDocuments({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getDocuments, {
-          employee,
-        });
+        const response = yield call(getDocuments, payload);
         const { statusCode, data: saveDocuments = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -615,11 +613,9 @@ const employeeProfile = {
       }
     },
 
-    *fetchViewingDocumentDetail({ payload: { id = '' } = {} }, { call, put }) {
+    *fetchViewingDocumentDetail({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getDocumentById, {
-          id,
-        });
+        const response = yield call(getDocumentById, payload);
         const { statusCode, data: documentDetail = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({

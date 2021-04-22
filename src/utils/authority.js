@@ -69,20 +69,20 @@ export function getCurrentLocation() {
 
 export function isOwner() {
   const roleList = JSON.parse(localStorage.getItem('antd-pro-authority'));
-  const owner = roleList.filter((role) => role.toLowerCase().includes('owner'));
+  const owner = roleList.filter((role) => role.toLowerCase() === 'owner');
   return owner.length > 0;
 }
 
 export function isAdmin() {
   const roleList = JSON.parse(localStorage.getItem('antd-pro-authority'));
-  const owner = roleList.filter((role) => role.toLowerCase().includes('admin'));
+  const owner = roleList.filter((role) => role.toLowerCase() === 'admin');
   return owner.length > 0;
 }
 
 export function isEmployee() {
   const roleList = JSON.parse(localStorage.getItem('antd-pro-authority'));
-  const owner = roleList.filter((role) => role.toLowerCase().includes('employee'));
-  return owner.length > 0;
+  const employee = roleList.filter((role) => role.toLowerCase() === 'employee');
+  return employee.length > 0;
 }
 
 export function setIsSwitchingRole(switchingRole) {

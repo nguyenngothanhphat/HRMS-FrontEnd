@@ -55,6 +55,10 @@ class UploadLogoCompany extends Component {
           isAccountSetup: true,
         }).then(({ statusCode: check }) => {
           if (check === 200) {
+            dispatch({
+              type: 'companiesManagement/saveCompanyDetails',
+              payload: { logoUrl: first?.url },
+            });
             this.handleCancel();
           }
         });

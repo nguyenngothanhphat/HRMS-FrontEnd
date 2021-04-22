@@ -130,8 +130,8 @@ class Edit extends PureComponent {
   };
 
   handleUpdateCertification = (list) => {
-    const { dispatch, compensationData, tenantCurrentEmployee = '' } = this.props;
-    const { employee, company } = compensationData;
+    const { dispatch, compensationData = {}, tenantCurrentEmployee = '' } = this.props;
+    const { employee = {}, company = {} } = compensationData;
     const tenantId = tenantCurrentEmployee;
 
     list.forEach((element) => {
@@ -139,8 +139,8 @@ class Edit extends PureComponent {
         dispatch({
           type: 'employeeProfile/updateCertification',
           payload: {
-            id: element._id,
-            urlFile: element.urlFile,
+            id: element?._id,
+            urlFile: element?.urlFile,
             tenantId,
           },
         });
@@ -148,8 +148,8 @@ class Edit extends PureComponent {
         dispatch({
           type: 'employeeProfile/addCertification',
           payload: {
-            name: element.name || '',
-            urlFile: element.urlFile,
+            name: element?.name || '',
+            urlFile: element?.urlFile,
             employee,
             company,
             tenantId,

@@ -54,6 +54,7 @@ export async function updateGeneralInfo(payload) {
 }
 
 export async function getListTitle(payload) {
+  // return request('/api/titletenant/list', {
   return request('/api/title/list', {
     method: 'POST',
     data: payload,
@@ -214,7 +215,7 @@ export async function removeCertification(payload) {
 }
 
 export async function getBank(payload) {
-  return request('/api/bankacctenant/list', {
+  return request('/api/bankacctenant/get-by-employee', {
     method: 'POST',
     data: payload,
   });

@@ -277,10 +277,10 @@ const employeeSetting = {
       }
       return response;
     },
-    *fetchTitleList(_, { call, put }) {
+    *fetchTitleList({ payload }, { call, put }) {
       let response;
       try {
-        response = yield call(getTitleList);
+        response = yield call(getTitleList, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { titleList: data } });

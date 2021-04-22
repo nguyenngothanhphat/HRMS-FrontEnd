@@ -52,9 +52,8 @@ class EmployeeProfile extends Component {
       // employeeProfile,
       match: { params: { reId: employee = '' } = {} },
       dispatch,
-      employeeProfile: { tenantCurrentEmployee = '', companyCurrentEmployee = '' } = {},
+      employeeProfile: { tenantCurrentEmployee: tenantId = '', companyCurrentEmployee = '' } = {},
     } = this.props;
-    const tenantId = tenantCurrentEmployee;
 
     dispatch({
       type: 'employeeProfile/fetchGeneralInfo',
