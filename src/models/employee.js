@@ -6,7 +6,6 @@ import {
   DepartmentFilter,
   EmployeeTypeFilter,
   getFilterList,
-  getListEmployeeMyTeam,
   getListEmployee,
   getDataOrgChart,
   getListAdministrator,
@@ -100,7 +99,8 @@ const employee = {
       { call, put },
     ) {
       try {
-        const response = yield call(getListEmployeeMyTeam, {
+        const response = yield call(getListEmployee, {
+          status: ['ACTIVE'],
           company,
           department,
           location,
@@ -110,8 +110,10 @@ const employee = {
         const { statusCode, data: listEmployeeMyTeam = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'listEmployeeMyTeam', payload: { listEmployeeMyTeam } });
+        return listEmployeeMyTeam;
       } catch (errors) {
         dialog(errors);
+        return 0;
       }
     },
     *fetchListEmployeeActive(

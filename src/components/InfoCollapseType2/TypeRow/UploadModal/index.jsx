@@ -5,7 +5,7 @@ import { connect } from 'umi';
 import FileUploadIcon from '@/assets/uploadFile_icon.svg';
 import PDFIcon from '@/assets/pdf_icon.png';
 import ImageIcon from '@/assets/image_icon.png';
-import { LogoutOutlined } from '@ant-design/icons';
+// import { LogoutOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 const { Dragger } = Upload;
@@ -131,6 +131,7 @@ class UploadModal extends Component {
       employeeProfile: {
         idCurrentEmployee = '',
         originData: { compensationData: { company = '' } = {} } = {},
+        tenantCurrentEmployee = '',
       } = {},
       dispatch,
       handleCancel = () => {},
@@ -147,6 +148,7 @@ class UploadModal extends Component {
         attachment: fileId,
         employee: idCurrentEmployee,
         company,
+        tenantId: tenantCurrentEmployee,
       };
 
       dispatch({
@@ -167,7 +169,7 @@ class UploadModal extends Component {
 
   replaceDocument = async () => {
     const { keyFileName: key, fileId } = this.state;
-    const { currentFileName } = this.props;
+    const { currentFileName, employeeProfile: { tenantCurrentEmployee = '' } = {} } = this.props;
     let finalName = '';
     if (currentFileName && !key) finalName = this.handleName(currentFileName);
     else finalName = this.handleName(key);
@@ -185,6 +187,7 @@ class UploadModal extends Component {
       const payload = {
         id: currentDocumentId,
         attachment: fileId,
+        tenantId: tenantCurrentEmployee,
       };
       if (finalName) {
         payload.key = finalName;

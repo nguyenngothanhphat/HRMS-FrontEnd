@@ -128,7 +128,7 @@ const BasicLayout = (props) => {
 
     const formatRole = signInRole.map((role) => role.toLowerCase());
     formatRole.map((item) => {
-      if (item.includes('owner') || item.includes('admin') || item.includes('employee')) {
+      if (item.includes('owner') || item.includes('admin')) {
         checkAuth = true;
       }
       return checkAuth;

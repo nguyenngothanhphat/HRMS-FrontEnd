@@ -78,14 +78,19 @@ class Edit extends Component {
   };
 
   handleAddVisaAllField = (item, index) => {
-    const { dispatch, idCurrentEmployee } = this.props;
+    const { dispatch, idCurrentEmployee, tenantCurrentEmployee = '' } = this.props;
     const { urlFile, document: documentVisa } = item;
     let getFile = '';
     if (urlFile) {
       getFile = urlFile;
     }
     if (documentVisa) {
-      const dataVisa = { id: documentVisa._id, attachment: getFile.id, key: `Visa${index + 1}` };
+      const dataVisa = {
+        id: documentVisa._id,
+        attachment: getFile.id,
+        key: `Visa${index + 1}`,
+        tenantId: tenantCurrentEmployee,
+      };
       dispatch({
         type: 'employeeProfile/fetchDocumentUpdate',
         payload: dataVisa,
@@ -99,6 +104,7 @@ class Edit extends Component {
           employeeGroup: 'Identity',
           parentEmployeeGroup: 'Indentification Documents',
           employee: idCurrentEmployee,
+          tenantId: tenantCurrentEmployee,
         },
       }).then((id) => this.handleAddVisa(id, index, item));
     }

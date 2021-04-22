@@ -18,12 +18,15 @@ class View extends Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, tenantCurrentEmployee = '' } = this.props;
     dispatch({
       type: 'employeeProfile/fetchListSkill',
     });
     dispatch({
       type: 'employeeProfile/fetchListTitle',
+      payload: {
+        tenantId: tenantCurrentEmployee,
+      },
     });
   }
 

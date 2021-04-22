@@ -123,7 +123,7 @@ class Edit extends Component {
   };
 
   handleAddPassPortAllField = (item, index) => {
-    const { dispatch, idCurrentEmployee } = this.props;
+    const { dispatch, idCurrentEmployee, tenantCurrentEmployee = '' } = this.props;
     const { document: documentPassPort, urlFile } = item;
 
     let getFile = '';
@@ -136,6 +136,7 @@ class Edit extends Component {
         id: documentPassPort?._id,
         attachment: getFile?.id,
         key: `Passport${index + 1}`,
+        tenantId: tenantCurrentEmployee,
       };
 
       dispatch({
@@ -151,6 +152,7 @@ class Edit extends Component {
           employeeGroup: 'Identity',
           parentEmployeeGroup: 'Indentification Documents',
           employee: idCurrentEmployee,
+          tenantId: tenantCurrentEmployee,
         },
       }).then((id) => this.handleAddPassPort(id, index, item));
     }

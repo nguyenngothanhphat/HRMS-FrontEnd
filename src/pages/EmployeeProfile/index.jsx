@@ -49,7 +49,7 @@ class EmployeeProfile extends Component {
 
   fetchData = () => {
     const {
-      employeeProfile,
+      // employeeProfile,
       match: { params: { reId: employee = '' } = {} },
       dispatch,
       employeeProfile: { tenantCurrentEmployee = '', companyCurrentEmployee = '' } = {},
@@ -97,11 +97,11 @@ class EmployeeProfile extends Component {
     });
     dispatch({
       type: 'employeeProfile/fetchBank',
-      payload: { employee },
+      payload: { employee, tenantId },
     });
     dispatch({
       type: 'employeeProfile/fetchTax',
-      payload: { employee },
+      payload: { employee, tenantId },
     });
     dispatch({ type: 'employeeProfile/fetchLocations' });
     dispatch({
@@ -110,10 +110,10 @@ class EmployeeProfile extends Component {
     });
     dispatch({
       type: 'employeeProfile/fetchDepartments',
-      payload: { company: employeeProfile?.originData?.compensationData?.company },
+      payload: { company: companyCurrentEmployee, tenantId },
     });
     dispatch({ type: 'employeeProfile/fetchEmployees' });
-    dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: { employee } });
+    dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: { employee, tenantId } });
     dispatch({
       type: 'employeeProfile/fetchEmployeeDependentDetails',
       payload: { employee, tenantId },

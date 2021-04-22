@@ -25,7 +25,7 @@ class Documents extends Component {
   componentDidMount = () => {
     const {
       roles = [],
-      employeeProfile: { idCurrentEmployee = '' },
+      employeeProfile: { idCurrentEmployee = '', tenantCurrentEmployee = '' },
       dispatch,
     } = this.props;
     const findHRGlobal =
@@ -41,7 +41,7 @@ class Documents extends Component {
     }
     dispatch({
       type: 'employeeProfile/fetchDocuments',
-      payload: { employee: idCurrentEmployee },
+      payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
     });
   };
 
