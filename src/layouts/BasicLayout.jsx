@@ -148,9 +148,7 @@ const BasicLayout = (props) => {
         }
       } else {
         // else: OFF
-        const newPermissionEmployee =
-          permissionEmployee.length > 0 ? [...permissionEmployee] : [...permissionAdmin];
-        newAuthority = ['employee', ...newPermissionEmployee];
+        newAuthority = ['employee', ...permissionEmployee];
         notification.success({ message: 'Switch to Employee successfully' });
         isSwitch = true;
       }
@@ -187,6 +185,7 @@ const BasicLayout = (props) => {
                 unCheckedChildren={<UserOutlined />}
                 onClick={handleSwitch}
                 loading={loading}
+                disabled={permissionEmployee.length === 0}
               />
             </Tooltip>
           </Affix>
