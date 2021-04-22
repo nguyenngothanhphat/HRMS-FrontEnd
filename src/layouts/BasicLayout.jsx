@@ -180,7 +180,7 @@ const BasicLayout = (props) => {
       <>
         {checkAdmin ? (
           <Affix className={styles.btnSwitch}>
-            <Tooltip title={isCheck ? 'Switch Owner|Admin' : 'Switch Employee'}>
+            <Tooltip title={isCheck ? 'Switch Admin' : 'Switch Employee'}>
               <Switch
                 checked={isCheck}
                 checkedChildren={<UserSwitchOutlined />}
