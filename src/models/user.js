@@ -5,8 +5,10 @@ import {
   getCurrentLocation,
   getCurrentTenant,
   isOwner,
+  isEmployee,
   setAuthority,
   setIsSwitchingRole,
+  isAdmin,
 } from '@/utils/authority';
 
 import { history } from 'umi';
@@ -54,13 +56,20 @@ const UserModel = {
         });
 
         const checkIsOwner = isOwner();
-        if (!checkIsOwner) {
+        const checkIsAdmin = isAdmin();
+        const checkIsEmployee = isEmployee();
+
+        if (checkIsAdmin) {
           // for admin, auto set location
           // setCurrentLocation(response?.data?.manageLocation[0]?._id);
           const currentLocation = getCurrentLocation();
           if (!currentLocation || currentLocation === 'undefined') {
             setCurrentLocation(response?.data?.manageLocation[0]?._id);
           }
+        }
+
+        if (checkIsEmployee) {
+          setCurrentLocation(response?.data?.location?._id);
         }
 
         if (!isSwitchingRole) {
