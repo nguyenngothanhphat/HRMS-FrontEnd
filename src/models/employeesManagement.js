@@ -150,7 +150,7 @@ const employeesManagement = {
         dialog(errors);
       }
     },
-    *fetchJobTitleList({ payload = {} }, { call, put }) {
+    *fetchJobTitleList({ payload }, { call, put }) {
       try {
         const response = yield call(getJobTitleList, payload);
         const { statusCode, data } = response;
@@ -164,8 +164,6 @@ const employeesManagement = {
       try {
         const response = yield call(getReportingManagerList, payload);
         const { statusCode, data: reportingManagerList = [] } = response;
-        console.log('payload', payload);
-        console.log('response', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { reportingManagerList } });
       } catch (errors) {
