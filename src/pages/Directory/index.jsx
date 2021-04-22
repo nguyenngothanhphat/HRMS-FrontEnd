@@ -127,7 +127,7 @@ class Directory extends PureComponent {
             // tabBarExtraContent={checkRoleEmployee ? '' : this.operations()}
           >
             <TabPane tab={formatMessage({ id: 'pages.directory.directoryTab' })} key="1">
-              <DirectoryComponent />
+              <DirectoryComponent checkRoleEmployee={checkRoleEmployee} />
             </TabPane>
             {/* <TabPane tab={formatMessage({ id: 'pages.directory.organisationChartTab' })} key="2">
               <OrganChart />
