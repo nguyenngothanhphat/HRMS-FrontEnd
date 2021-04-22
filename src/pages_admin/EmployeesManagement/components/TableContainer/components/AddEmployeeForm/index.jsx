@@ -6,7 +6,7 @@ import { Modal, Button, Form, Input, Select, DatePicker } from 'antd';
 import { connect, formatMessage } from 'umi';
 import _ from 'lodash';
 import moment from 'moment';
-import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -174,9 +174,8 @@ class AddEmployeeForm extends Component {
         dispatch({
           type: 'employeesManagement/fetchJobTitleList',
           payload: {
-            // company,
-            // department: value,
-            // tenantId: tenantCurrentEmployee,
+            department: value,
+            tenantId: getCurrentTenant(),
           },
         });
         break;
@@ -322,7 +321,7 @@ class AddEmployeeForm extends Component {
             rules={[
               { required: true },
               {
-                pattern: /^([A-Za-z]+ )+[A-Za-z]+$|^[A-Za-z]+$/,
+                pattern: /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/,
                 message: 'Name is not a validate name!',
               },
             ]}

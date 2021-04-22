@@ -142,7 +142,8 @@ class BenefitTab extends PureComponent {
                   <img src={MinusIcon} alt="collapse" />
                 ) : (
                   <img src={PlusIcon} alt="expand" />
-                )}
+                )
+              }
               className="site-collapse-custom-collapse"
               expandIconPosition="right"
             >
