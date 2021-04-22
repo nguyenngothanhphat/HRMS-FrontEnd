@@ -55,7 +55,7 @@ class CollapseRow extends PureComponent {
 
   refreshData = () => {
     const {
-      employeeProfile: { idCurrentEmployee = '' },
+      employeeProfile: { idCurrentEmployee = '', tenantCurrentEmployee = '' },
       dispatch,
     } = this.props;
     dispatch({
@@ -64,7 +64,7 @@ class CollapseRow extends PureComponent {
     setTimeout(() => {
       dispatch({
         type: 'employeeProfile/fetchDocuments',
-        payload: { employee: idCurrentEmployee },
+        payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
       });
     }, 1000);
   };

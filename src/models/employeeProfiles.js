@@ -588,11 +588,9 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchDocuments({ payload: { employee = '' } = {} }, { call, put }) {
+    *fetchDocuments({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getDocuments, {
-          employee,
-        });
+        const response = yield call(getDocuments, payload);
         const { statusCode, data: saveDocuments = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -615,11 +613,9 @@ const employeeProfile = {
       }
     },
 
-    *fetchViewingDocumentDetail({ payload: { id = '' } = {} }, { call, put }) {
+    *fetchViewingDocumentDetail({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getDocumentById, {
-          id,
-        });
+        const response = yield call(getDocumentById, payload);
         const { statusCode, data: documentDetail = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({

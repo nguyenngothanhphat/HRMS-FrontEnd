@@ -214,7 +214,7 @@ export async function removeCertification(payload) {
 }
 
 export async function getBank(payload) {
-  return request('/api/bankacctenant/list', {
+  return request('/api/bankacctenant/get-by-employee', {
     method: 'POST',
     data: payload,
   });

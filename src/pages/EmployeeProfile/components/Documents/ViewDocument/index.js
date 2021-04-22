@@ -81,7 +81,11 @@ class ViewDocument extends PureComponent {
   // get document details
   fetchDocumentDetails = (selectedFile) => {
     const {
-      employeeProfile: { groupViewingDocuments = [] },
+      employeeProfile: {
+        groupViewingDocuments = [],
+        tenantCurrentEmployee = '',
+        idCurrentEmployee = '',
+      },
       dispatch,
     } = this.props;
     const { currentViewingFile } = this.state;
@@ -90,7 +94,11 @@ class ViewDocument extends PureComponent {
       if (i === currentViewingFile) {
         dispatch({
           type: 'employeeProfile/fetchViewingDocumentDetail',
-          payload: { id: groupViewingDocuments[selectedFile - 1].id },
+          payload: {
+            id: groupViewingDocuments[selectedFile - 1].id,
+            tenantId: tenantCurrentEmployee,
+            employee: idCurrentEmployee,
+          },
         });
       }
     }
@@ -186,12 +194,16 @@ class ViewDocument extends PureComponent {
       return;
     }
 
-    const { employeeProfile: { documentDetail: { _id } = {} } = {}, dispatch } = this.props;
+    const {
+      employeeProfile: { tenantCurrentEmployee = '', documentDetail: { _id } = {} } = {},
+      dispatch,
+    } = this.props;
     const res = await dispatch({
       type: 'employeeProfile/shareDocumentEffect',
       payload: {
         shareWith,
         id: _id,
+        tenantId: tenantCurrentEmployee,
       },
     });
 
@@ -291,7 +303,7 @@ class ViewDocument extends PureComponent {
       },
     } = this.props;
     const { key = '', employeeGroup = '', attachment: { url = '' } = {} } = documentDetail;
- 
+
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
