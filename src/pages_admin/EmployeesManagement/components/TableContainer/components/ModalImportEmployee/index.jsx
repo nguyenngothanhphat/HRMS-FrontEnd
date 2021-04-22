@@ -2,15 +2,15 @@
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
-import { Modal, Button, Form, Select, Result } from 'antd';
+import { Modal, Button, Form, Select, notification } from 'antd';
 import { connect } from 'umi';
 import _ from 'lodash';
 import {
   getCurrentCompany,
   getCurrentLocation,
   getCurrentTenant,
-  isAdmin,
-  isOwner,
+  // isAdmin,
+  // isOwner,
 } from '@/utils/authority';
 import moment from 'moment';
 import ImportCSV from '@/components/ImportCSV';
@@ -55,6 +55,7 @@ class ModalImportEmployee extends Component {
     this.state = {
       employees: [],
       company: '',
+      isValidateFile: false,
       // objectEmployee: {
       //   location: 'Location',
       //   department: 'Department',
@@ -130,7 +131,7 @@ class ModalImportEmployee extends Component {
 
     // Add the rows
     capsPopulations.forEach((obj) => {
-      const value = `${keys.map((k) => obj[k]).join('_')}`.split('_');
+      const value = `${keys.map((k) => obj[k]).join('~')}`.split('~');
       dataExport.push(value);
     });
 
@@ -182,13 +183,27 @@ class ModalImportEmployee extends Component {
         personalNumber: item['Personal Number'],
       };
     });
+
+    let isEmpty = false;
+    employees.map((item) => {
+      if (
+        item.joinDate === '' ||
+        item.title === '' ||
+        item.personalEmail === '' ||
+        item.employeeType === ''
+      ) {
+        isEmpty = true;
+      }
+      return isEmpty;
+    });
     this.setState({
       employees,
+      isValidateFile: isEmpty,
     });
   };
 
   callAPIImportCSV = () => {
-    const { employees, company } = this.state;
+    const { employees, company, isValidateFile } = this.state;
     const { handleCancel = () => {} } = this.props;
     const tenantId = getCurrentTenant();
 
@@ -199,14 +214,18 @@ class ModalImportEmployee extends Component {
     };
 
     const { dispatch } = this.props;
-    dispatch({
-      type: 'employeesManagement/importEmployeesTenant',
-      payload,
-    }).then(() => {
-      this.setState({ company: '', employees: [] });
-      handleCancel();
-      // this.modalNotification();
-    });
+
+    if (!isValidateFile) {
+      dispatch({
+        type: 'employeesManagement/importEmployeesTenant',
+        payload,
+      }).then(() => {
+        this.setState({ company: '', employees: [] });
+        handleCancel();
+      });
+    } else {
+      notification.error({ message: 'Submit failed. Please make sure your file is validated !' });
+    }
   };
 
   // modalNotification = () => {

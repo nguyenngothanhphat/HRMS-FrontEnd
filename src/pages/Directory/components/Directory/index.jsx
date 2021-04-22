@@ -685,19 +685,20 @@ class DirectoryComponent extends PureComponent {
     return (
       <>
         {findIndexActive !== -1 &&
+          !checkRoleEmployee &&
           this.renderTab(
             formatMessage({ id: 'pages.directory.directory.activeEmployeesTab' }),
             active,
             loadingListActive,
             findIndexShowLocationActive,
           )}
-        {findIndexMyTeam !== -1 &&
+        {/* {findIndexMyTeam !== -1 &&
           !checkRoleEmployee &&
           this.renderTab(
             formatMessage({ id: 'pages.directory.directory.myTeamTab' }),
             myTeam,
             loadingListMyTeam,
-          )}
+          )} */}
         {findIndexMyTeam !== -1 && checkRoleEmployee && (
           <>
             {this.renderTab(
@@ -708,6 +709,7 @@ class DirectoryComponent extends PureComponent {
           </>
         )}
         {findIndexInActive !== -1 &&
+          !checkRoleEmployee &&
           this.renderTab(
             formatMessage({ id: 'pages.directory.directory.inactiveEmployeesTab' }),
             inActive,

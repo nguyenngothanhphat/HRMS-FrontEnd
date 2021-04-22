@@ -123,37 +123,25 @@ const BasicLayout = (props) => {
   }, [setIsCheck, setLoading]);
 
   function buttonSwitch() {
-    let checkAuth = false;
+    let checkAdmin = false;
     const { signInRole = [], permissionEmployee = [], permissionAdmin = [] } = currentUser;
 
     const formatRole = signInRole.map((role) => role.toLowerCase());
     formatRole.map((item) => {
-      if (item.includes('owner') || item.includes('admin')) {
-        checkAuth = true;
+      if (item.includes('admin')) {
+        checkAdmin = true;
       }
-      return checkAuth;
+      return checkAdmin;
     });
 
     const handleSwitch = async () => {
-      let isOwner = false;
       let isSwitch = false;
       let newAuthority = [];
-
-      formatRole.map((item) => {
-        if (item.includes('owner')) {
-          isOwner = true;
-        }
-        return isOwner;
-      });
 
       // if press Switch button is ON
       if (isCheck) {
         newAuthority = [...permissionAdmin];
-        if (isOwner) {
-          newAuthority = ['owner', ...newAuthority];
-          notification.success({ message: 'Switch to Owner successfully' });
-          isSwitch = false;
-        } else {
+        if (checkAdmin) {
           newAuthority = ['admin', ...newAuthority];
           notification.success({ message: 'Switch to Admin successfully' });
           isSwitch = false;
@@ -188,15 +176,16 @@ const BasicLayout = (props) => {
 
     return (
       <>
-        {checkAuth ? (
+        {checkAdmin ? (
           <Affix className={styles.btnSwitch}>
-            <Tooltip title={isCheck ? 'Switch Owner|Admin' : 'Switch Employee'}>
+            <Tooltip title={isCheck ? 'Switch Admin' : 'Switch Employee'}>
               <Switch
                 checked={isCheck}
                 checkedChildren={<UserSwitchOutlined />}
                 unCheckedChildren={<UserOutlined />}
                 onClick={handleSwitch}
                 loading={loading}
+                disabled={permissionEmployee.length === 0}
               />
             </Tooltip>
           </Affix>
