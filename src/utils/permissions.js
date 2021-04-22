@@ -19,12 +19,12 @@ const getIndex = (permissionList, index1, index2) => {
     ? permissionList.indexOf(index2)
     : permissionList.indexOf(index1);
 };
-export function checkPermissions(roles, isOwner) {
-  if (isOwner) {
+export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
+  if (isOwner || isAdmin) {
     return {
       // Directory Page
       viewTabActive: 1,
-      viewTabMyTeam: -1,
+      viewTabMyTeam: isEmployee ? 1 : -1,
       viewTabInActive: 1,
       importEmployees: 1,
       addEmployee: 1,
@@ -72,11 +72,11 @@ export function checkPermissions(roles, isOwner) {
   const importEmployees1 = 'M_DIRECTORY_T_DIRECTORY_B_IMPORT_EMPLOYEES_VIEW';
   const addEmployee1 = 'M_DIRECTORY_T_DIRECTORY_B_ADD_EMPLOYEE_VIEW';
 
-  const findIndexActive = getIndex(tabActive, tabActive1);
-  const findIndexMyTeam = getIndex(tabMyTeam, tabMyTeam1);
-  const findIndexInActive = getIndex(tabInActive, tabInActive1);
-  const findIndexImport = getIndex(importEmployees, importEmployees1);
-  const findIndexAdd = getIndex(addEmployee, addEmployee1);
+  const findIndexActive = getIndex(permissionList, tabActive, tabActive1);
+  const findIndexMyTeam = getIndex(permissionList, tabMyTeam, tabMyTeam1);
+  const findIndexInActive = getIndex(permissionList, tabInActive, tabInActive1);
+  const findIndexImport = getIndex(permissionList, importEmployees, importEmployees1);
+  const findIndexAdd = getIndex(permissionList, addEmployee, addEmployee1);
 
   // Directory Page - Tab general info - Public/Private Personal phone/email
   // employee
