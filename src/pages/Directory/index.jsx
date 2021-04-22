@@ -26,6 +26,7 @@ class Directory extends PureComponent {
       currentUser: { roles = [] },
     } = this.props;
     const checkRoleEmployee = this.checkRoleEmployee(roles);
+
     this.setState({
       checkRoleEmployee,
     });
@@ -58,7 +59,7 @@ class Directory extends PureComponent {
   checkRoleEmployee = (roles) => {
     let flag = false;
     const { roles: rolesConst } = this.state;
-    const checkRole = (obj) => obj._id === rolesConst.employee;
+    const checkRole = (obj) => obj === rolesConst.employee;
     if (roles.length === 1 && roles.some(checkRole)) {
       flag = true;
     }
