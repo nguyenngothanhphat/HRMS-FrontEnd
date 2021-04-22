@@ -691,13 +691,13 @@ class DirectoryComponent extends PureComponent {
             loadingListActive,
             findIndexShowLocationActive,
           )}
-        {findIndexMyTeam !== -1 &&
+        {/* {findIndexMyTeam !== -1 &&
           !checkRoleEmployee &&
           this.renderTab(
             formatMessage({ id: 'pages.directory.directory.myTeamTab' }),
             myTeam,
             loadingListMyTeam,
-          )}
+          )} */}
         {findIndexMyTeam !== -1 && checkRoleEmployee && (
           <>
             {this.renderTab(
