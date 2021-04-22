@@ -169,7 +169,7 @@ class UploadModal extends Component {
 
   replaceDocument = async () => {
     const { keyFileName: key, fileId } = this.state;
-    const { currentFileName } = this.props;
+    const { currentFileName, employeeProfile: { tenantCurrentEmployee = '' } = {} } = this.props;
     let finalName = '';
     if (currentFileName && !key) finalName = this.handleName(currentFileName);
     else finalName = this.handleName(key);
@@ -187,6 +187,7 @@ class UploadModal extends Component {
       const payload = {
         id: currentDocumentId,
         attachment: fileId,
+        tenantId: tenantCurrentEmployee,
       };
       if (finalName) {
         payload.key = finalName;

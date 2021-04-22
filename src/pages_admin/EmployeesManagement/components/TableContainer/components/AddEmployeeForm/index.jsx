@@ -174,9 +174,9 @@ class AddEmployeeForm extends Component {
         dispatch({
           type: 'employeesManagement/fetchJobTitleList',
           payload: {
-            company,
-            department: value,
-            tenantId: tenantCurrentEmployee,
+            // company,
+            // department: value,
+            // tenantId: tenantCurrentEmployee,
           },
         });
         break;
