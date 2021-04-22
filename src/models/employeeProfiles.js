@@ -199,9 +199,9 @@ const employeeProfile = {
         dialog(error);
       }
     },
-    *fetchCompensation({ payload: { employee = '' } }, { call, put }) {
+    *fetchCompensation({ payload: { employee = '', tenantId = '' } }, { call, put }) {
       try {
-        const response = yield call(getCompensation, { employee });
+        const response = yield call(getCompensation, { employee, tenantId });
         const { statusCode, data: compensationData = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
