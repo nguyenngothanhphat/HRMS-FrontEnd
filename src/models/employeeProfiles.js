@@ -320,6 +320,7 @@ const employeeProfile = {
     *fetchLocations(_, { call, put }) {
       try {
         const response = yield call(getLocationList);
+        console.log(response);
         const { statusCode, data } = response;
         const temp = data.map((item) => item);
         const locations = temp.filter((item, index) => temp.indexOf(item) === index);
@@ -353,9 +354,9 @@ const employeeProfile = {
         dialog(error);
       }
     },
-    *fetchEmployees(_, { call, put }) {
+    *fetchEmployees({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getEmployeeList);
+        const response = yield call(getEmployeeList, payload);
         const { statusCode, data } = response;
         const employees = data.filter((item) => item.generalInfo);
         if (statusCode !== 200) throw response;
@@ -562,12 +563,31 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchEmploymentInfo({ payload: { tenantId = '', id = '' } }, { call, put }) {
+    *fetchEmploymentInfo({ payload: { tenantId = '', id = '' } }, { call, put, select }) {
       try {
         const response = yield call(getEmploymentInfo, { tenantId, id });
         const { data, statusCode } = response;
-        yield put({ type: 'saveOrigin', payload: { employmentData: data } });
         if (statusCode !== 200) throw response;
+        yield put({ type: 'saveOrigin', payload: { employmentData: data } });
+        const { location = {}, department = {} } = data;
+        const { companyCurrentEmployee } = yield select((state) => state.employeeProfile);
+        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+
+        // fetch employees to show in "select manager" of employee
+        yield put({
+          type: 'fetchEmployees',
+          payload: {
+            company: [{ _id: companyCurrentEmployee, tenant: tenantCurrentEmployee }],
+            location: [
+              {
+                state: [location?.headQuarterAddress?.state],
+                country: location?.headQuarterAddress?.country,
+              },
+            ],
+            status: ['ACTIVE'],
+            department: [department?.name],
+          },
+        });
       } catch (error) {
         dialog(error.message);
       }
@@ -664,11 +684,9 @@ const employeeProfile = {
         return {};
       }
     },
-    *fetchEmailsListByCompany({ payload: { company = [] } = {} }, { call, put }) {
+    *fetchEmailsListByCompany({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getEmailsListByCompany, {
-          company,
-        });
+        const response = yield call(getEmailsListByCompany, payload);
         const { statusCode, data: emailsList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({

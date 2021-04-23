@@ -107,11 +107,14 @@ class ViewDocument extends PureComponent {
   fetchEmailsListByCompany = () => {
     const {
       dispatch,
-      employeeProfile: { tempData: { compensationData: { company = '' } = {} } = {} } = {},
+      employeeProfile: {
+        tenantCurrentEmployee = '',
+        tempData: { compensationData: { company = '' } = {} } = {},
+      } = {},
     } = this.props;
     dispatch({
       type: 'employeeProfile/fetchEmailsListByCompany',
-      payload: [company],
+      payload: { company: [company], tenantId: tenantCurrentEmployee },
     });
   };
 

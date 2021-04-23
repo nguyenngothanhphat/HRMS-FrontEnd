@@ -4,15 +4,9 @@
 import React, { Component } from 'react';
 import { Modal, Button, Form, Select, notification } from 'antd';
 import { connect } from 'umi';
-import _ from 'lodash';
-import {
-  getCurrentCompany,
-  getCurrentLocation,
-  getCurrentTenant,
-  // isAdmin,
-  // isOwner,
-} from '@/utils/authority';
 import moment from 'moment';
+import _ from 'lodash';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import ImportCSV from '@/components/ImportCSV';
 import exportToCsv from '@/utils/exportToCsv';
 
@@ -39,16 +33,20 @@ const { Option } = Select;
   }),
 )
 class ModalImportEmployee extends Component {
-  // static getDerivedStateFromProps(props) {
-  //   if ('statusImportEmployees' in props && props.statusImportEmployees) {
-  //     if (props.company !== '') {
-  //       console.log('props.company: ', props.company);
-  //       return { company: props.company?._id };
-  //     }
-  //     return { company: '' };
-  //   }
-  //   return null;
-  // }
+  static getDerivedStateFromProps(props) {
+    const { company = [] } = props;
+    if ('statusImportEmployees' in props && props.statusImportEmployees) {
+      if (company.length > 0) {
+        const companyIDs = company.map((item) => {
+          return { company: item?._id };
+        });
+
+        return companyIDs;
+      }
+      return { company: '' };
+    }
+    return null;
+  }
 
   constructor(props) {
     super(props);
@@ -56,20 +54,15 @@ class ModalImportEmployee extends Component {
       employees: [],
       company: '',
       isValidateFile: false,
-      // objectEmployee: {
-      //   location: 'Location',
-      //   department: 'Department',
-      //   employeeId: 'Employee Id',
-      //   workEmail: 'Work Email',
-      //   personalEmail: 'Personal Email',
-      //   managerWorkEmail: 'Manager Work Email',
-      //   firstName: 'First Name',
-      //   lastName: 'Last Name',
-      //   title: 'Job Title',
-      //   personalNumber: 'Personal Number',
-      // },
     };
     this.formRef = React.createRef();
+  }
+
+  componentDidMount() {
+    const currentCompany = getCurrentCompany();
+    const { company = [] } = this.props;
+    const currentFirm = company.filter((comp) => comp?._id === currentCompany);
+    this.setState({ company: currentFirm[0]._id });
   }
 
   componentDidUpdate() {
@@ -207,6 +200,8 @@ class ModalImportEmployee extends Component {
     const { handleCancel = () => {} } = this.props;
     const tenantId = getCurrentTenant();
 
+    console.log(company);
+
     const payload = {
       company,
       tenantId,
@@ -228,90 +223,6 @@ class ModalImportEmployee extends Component {
     }
   };
 
-  // modalNotification = () => {
-  //   const { listEmployeesTenant } = this.props;
-  //   const { newList = [], existList = [] } = listEmployeesTenant;
-  //   let notiErr = [];
-  //   let notiSuccess = [];
-
-  //   newList.forEach((item) => {
-  //     const { isAdded, status = '' } = item;
-  //     if (!isAdded && status.includes('[FAILED]')) {
-  //       notiErr.push(status);
-  //     }
-
-  //     if (isAdded && status.includes('[SUCCESS]')) {
-  //       notiSuccess.push('[SUCCESS]');
-  //     }
-  //   });
-
-  //   notiErr = [...new Set(notiErr)];
-  //   notiSuccess = [...new Set(notiSuccess)];
-
-  //   if (notiSuccess.length > 0 && notiErr.length === 0) {
-  //     Modal.success({
-  //       icon: <div style={{ display: 'none' }} />,
-  //       className: styles.modalResult,
-  //       content: (
-  //         <Result
-  //           style={{ padding: 0, height: '200px' }}
-  //           status="success"
-  //           title="Import successfully !"
-  //           subTitle="Please check Result_Import_Employees.csv below !"
-  //         />
-  //       ),
-  //     });
-  //   }
-
-  //   if (notiErr.length > 0 && notiSuccess.length === 0) {
-  //     Modal.error({
-  //       icon: <div style={{ display: 'none' }} />,
-  //       className: styles.modalResult,
-  //       content: (
-  //         <Result
-  //           status="error"
-  //           style={{ padding: 0, height: '200px' }}
-  //           title="Import failed !"
-  //           subTitle={notiErr.map((item) => item)}
-  //           extra="Please check Result_Import_Employees.csv below !"
-  //         />
-  //       ),
-  //     });
-  //   }
-
-  //   if (notiErr.length > 0 && notiSuccess.length > 0) {
-  //     Modal.error({
-  //       icon: <div style={{ display: 'none' }} />,
-  //       className: styles.modalResult,
-  //       content: (
-  //         <Result
-  //           status="warning"
-  //           style={{ padding: 0, height: '200px' }}
-  //           title="Import not successfully !"
-  //           subTitle={notiErr.map((item) => item)}
-  //           extra="Please check Result_Import_Employees.csv below !"
-  //         />
-  //       ),
-  //     });
-  //   }
-
-  //   if (!_.isEmpty(existList) && !_.isEmpty(listEmployeesTenant) && notiSuccess.length === 0) {
-  //     Modal.error({
-  //       icon: <div style={{ display: 'none' }} />,
-  //       className: styles.modalResult,
-  //       content: (
-  //         <Result
-  //           status="error"
-  //           style={{ padding: 0, height: '200px' }}
-  //           title="Added employees failed !"
-  //           subTitle="[FAILED] - Work Email existed!"
-  //           extra="Please check Result_Import_Employees.csv below !"
-  //         />
-  //       ),
-  //     });
-  //   }
-  // };
-
   renderFormImport = (companyProps) => {
     const currentCompany = getCurrentCompany();
     const currentLocation = getCurrentLocation();
@@ -319,6 +230,8 @@ class ModalImportEmployee extends Component {
     const childCompanyList = companyProps.filter(
       (comp) => comp?.childOfCompany === currentCompany || comp?._id === currentCompany,
     );
+
+    const currentFirm = companyProps.filter((comp) => comp?._id === currentCompany);
 
     if (!currentLocation) {
       renderList = [...childCompanyList];
@@ -339,6 +252,7 @@ class ModalImportEmployee extends Component {
             placeholder="Select Company"
             showArrow
             showSearch
+            defaultValue={currentFirm[0]?.name}
             onChange={(value) => this.onChangeSelect(value)}
             filterOption={(input, option) =>
               option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -377,7 +291,7 @@ class ModalImportEmployee extends Component {
               htmlType="submit"
               type="primary"
               form="addEmployeeForm"
-              disabled={employees.length === 0 || company === ''}
+              disabled={employees.length === 0}
               loading={loading}
               className={styles.btnSubmit}
               onClick={this.callAPIImportCSV}
@@ -389,7 +303,7 @@ class ModalImportEmployee extends Component {
           {this.renderFormImport(companyProps)}
           <div className={styles.FileUploadForm}>
             <ImportCSV
-              disabled={company === ''}
+              // disabled={company === ''}
               onDrop={(result) => {
                 this.handleDataUpload(result);
               }}

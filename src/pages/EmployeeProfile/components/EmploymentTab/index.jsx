@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { Button, div } from 'antd';
 import { connect } from 'umi';
-import { checkPermissions } from '@/utils/permissions';
 import { getCurrentTenant } from '@/utils/authority';
+// import { checkPermissions } from '@/utils/permissions';
 import edit from './asset/edit.svg';
 import path from './asset/path.svg';
 import CurrentInfo from './components/CurrentInfo';
@@ -27,24 +27,31 @@ const steps = [
 class EmploymentTab extends Component {
   constructor(props) {
     super(props);
-    const { employeeProfile } = this.props;
 
-    const { title = {}, location = {} } = employeeProfile.originData.employmentData;
-    const { firstName = '', legalName = '' } = employeeProfile.originData.generalData;
-    const { compensationType = null } = employeeProfile.originData.compensationData;
     this.state = {
       isChanging: false,
       isEdit: false,
       submitted: false,
       current: 0,
+      currentData: {},
+    };
+  }
+
+  componentDidMount = () => {
+    const { employeeProfile = {} } = this.props;
+
+    const { title = {}, location = {} } = employeeProfile?.originData?.employmentData;
+    const { firstName = '', legalName = '' } = employeeProfile?.originData?.generalData;
+    const { compensationType = null } = employeeProfile?.originData?.compensationData;
+    this.setState({
       currentData: {
         name: legalName || firstName || null,
         title: title?.name || null,
         compensationType: compensationType || null,
         location: location?.name || null,
       },
-    };
-  }
+    });
+  };
 
   static getDerivedStateFromProps(props) {
     const {
@@ -170,7 +177,7 @@ class EmploymentTab extends Component {
                 : 'Change History'}
             </div>
             {isChanging ? (
-              <div onClick={this.handleMakeChanges} style={{ display: 'flex' }}>
+              <div onClick={this.handleMakeChanges} className={styles.cancelButton}>
                 <img alt="" src={path} />
                 <div>Cancel & Return</div>
               </div>

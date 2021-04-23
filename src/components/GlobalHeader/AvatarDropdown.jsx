@@ -214,7 +214,13 @@ class AvatarDropdown extends React.Component {
       commonLocationsList = [...manageLocation];
     } else if (formatSignInRole.includes('owner')) {
       commonLocationsList = [...listLocationsByCompany];
+    } else {
+      const employeeLocation = listLocationsByCompany.filter(
+        (location) => location?._id === currentLocation,
+      );
+      commonLocationsList = [...employeeLocation];
     }
+
     return (
       <>
         <Menu.Divider className={styles.secondDivider} />

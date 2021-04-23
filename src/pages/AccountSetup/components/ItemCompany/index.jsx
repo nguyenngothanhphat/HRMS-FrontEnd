@@ -60,14 +60,14 @@ class ItemCompany extends PureComponent {
   renderAddress = (address) => {
     const {
       // addressLine1 = '', addressLine2 = '', state = '',
-      country = '',
+      country: { name = '', _id = '' } = {},
     } = address;
 
     let result = '';
     // if (addressLine1) result += `${addressLine1}, `;
     // if (addressLine2) result += `${addressLine2}, `;
     // if (state) result += `${state}, `;
-    if (country) result += `${country}`;
+    if (name) result += `${name} (${_id})`;
     return result;
   };
 
