@@ -60,11 +60,11 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
 
   // Directory Page
   // employee
-  const tabActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
-  const tabMyTeam = 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_EMPLOYEE_VIEW';
-  const tabInActive = 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW';
-  const importEmployees = 'P_DIRECTORY_T_DIRECTORY_B_IMPORT_EMPLOYEES_VIEW';
-  const addEmployee = 'P_DIRECTORY_T_DIRECTORY_B_ADD_EMPLOYEE_VIEW';
+  const tabActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_VIEW';
+  const tabMyTeam = 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_VIEW';
+  const tabInActive = 'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_VIEW';
+  const importEmployees = 'P_DIRECTORY_T_DIRECTORY_B_IMPORTS_VIEW';
+  const addEmployee = 'P_DIRECTORY_T_DIRECTORY_B_ADD_VIEW';
   // admin
   const tabActive1 = 'M_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW';
   const tabMyTeam1 = 'M_DIRECTORY_T_DIRECTORY_T_MY_TEAM_EMPLOYEE_VIEW';
@@ -84,9 +84,15 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const viewPersonalNumber = 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_NUMBER_VIEW';
   const viewPersonalEmail = 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL_VIEW';
 
-  const indexEditPersonalInfo = permissionList.indexOf(editPersonalInfo);
-  const indexViewPersonalNumber = permissionList.indexOf(viewPersonalNumber);
-  const indexViewPersonalEmail = permissionList.indexOf(viewPersonalEmail);
+  // admin
+  const editPersonalInfo1 = 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EDIT';
+  const viewPersonalNumber1 =
+    'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_NUMBER_VIEW';
+  const viewPersonalEmail1 = 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL_VIEW';
+
+  const indexEditPersonalInfo = getIndex(permissionList, editPersonalInfo, editPersonalInfo1);
+  const indexViewPersonalNumber = getIndex(permissionList, viewPersonalNumber, viewPersonalNumber1);
+  const indexViewPersonalEmail = getIndex(permissionList, viewPersonalEmail, viewPersonalEmail1);
 
   // Directory Page - Filter - Display location
   const showLocationActive = 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW';

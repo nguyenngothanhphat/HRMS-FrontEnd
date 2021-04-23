@@ -289,7 +289,7 @@ class AvatarDropdown extends React.Component {
     //   generalInfo: { avatar = '', employeeId = '' } = {},
     //   title = {},
     // } = currentUser;
-    const { firstName: name = '', avatar = '', employeeId = '', title = {} } = currentUser;
+    const { firstName: name = '', avatar = '' } = currentUser;
     const { selectLocationAbility } = this.state;
 
     const { LOGOUT, CHANGEPASSWORD } = this.state;
@@ -301,14 +301,15 @@ class AvatarDropdown extends React.Component {
               size={50}
               className={styles.avatar}
               icon={<UserOutlined />}
-              src={avatar || avtDefault}
+              src={currentUser?.employee?.generalInfo?.avatar || avatar || avtDefault}
             />
           </div>
           <div className={styles.viewProfileInfo}>
             <p>{name}</p>
-            {employeeId && (
+            {currentUser?.employee?.generalInfo?.employeeId && (
               <p>
-                {title?.name} - {employeeId}
+                {currentUser?.employee?.title?.name} -{' '}
+                {currentUser?.employee?.generalInfo?.employeeId}
               </p>
             )}
           </div>
@@ -348,7 +349,7 @@ class AvatarDropdown extends React.Component {
             size={44}
             icon={<UserOutlined />}
             className={styles.avatar}
-            src={avatar || avtDefault}
+            src={currentUser?.employee?.generalInfo?.avatar || avatar || avtDefault}
           />
         </span>
       </HeaderDropdown>
