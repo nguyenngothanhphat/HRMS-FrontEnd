@@ -175,7 +175,7 @@ class EmploymentTab extends Component {
                 : 'Change History'}
             </div>
             {isChanging ? (
-              <div onClick={this.handleMakeChanges} style={{ display: 'flex' }}>
+              <div onClick={this.handleMakeChanges} className={styles.cancelButton}>
                 <img alt="" src={path} />
                 <div>Cancel & Return</div>
               </div>

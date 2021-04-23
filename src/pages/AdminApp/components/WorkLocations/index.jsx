@@ -66,7 +66,7 @@ class WorkLocations extends PureComponent {
         name = '',
         addressLine1 = '',
         addressLine2 = '',
-        country = '',
+        country: { _id: countryId = '' } = '',
         state = '',
         zipCode = '',
       } = location;
@@ -75,14 +75,14 @@ class WorkLocations extends PureComponent {
         headQuarterAddress: {
           addressLine1,
           addressLine2,
-          country,
+          country: countryId,
           state,
           zipCode,
         },
         legalAddress: {
           addressLine1,
           addressLine2,
-          country,
+          country: countryId,
           state,
           zipCode,
         },
@@ -167,7 +167,7 @@ class WorkLocations extends PureComponent {
         headQuarterAddress: {
           addressLine1 = '',
           addressLine2 = '',
-          country = '',
+          country: { _id: countryId = '' } = '',
           state = '',
           zipCode = '',
         } = {},
@@ -178,7 +178,7 @@ class WorkLocations extends PureComponent {
         name,
         addressLine1,
         addressLine2,
-        country,
+        country: countryId,
         state,
         zipCode,
         isHeadQuarter,

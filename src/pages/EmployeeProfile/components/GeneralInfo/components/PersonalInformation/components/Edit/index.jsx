@@ -32,13 +32,19 @@ class Edit extends PureComponent {
       curListStates: [],
       residentAddress: {
         address: '',
-        country: '',
+        country: {
+          _id: '',
+          name: '',
+        },
         state: '',
         zipCode: '',
       },
       currentAddress: {
         address: '',
-        country: '',
+        country: {
+          _id: '',
+          name: '',
+        },
         state: '',
         zipCode: '',
       },
@@ -84,7 +90,10 @@ class Edit extends PureComponent {
       }
     });
 
-    return _name;
+    return {
+      _id: idCountry,
+      name: _name,
+    };
   };
 
   handleChangeAddress = (name, value) => {
@@ -289,13 +298,13 @@ class Edit extends PureComponent {
       linkedIn = '',
       residentAddress: {
         address: r_Address = '',
-        country: r_countryName = '',
+        country: { name: r_countryName = '' } = {},
         state: r_state = '',
         zipCode: r_zipCode = '',
       } = {},
       currentAddress: {
         address: c_Address = '',
-        country: c_countryName = '',
+        country: { name: c_countryName = '' } = {},
         state: c_state = '',
         zipCode: c_zipCode = '',
       } = {},
