@@ -237,10 +237,10 @@ class EditCurrentInfo extends PureComponent {
                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
             >
-              {employeeProfile.employees.map((item, index) => {
+              {employeeProfile?.employees.map((item, index) => {
                 return (
                   <Option key={`${index + 1}`} value={item._id}>
-                    {item.generalInfo.firstName || item.generalInfo.legalName || null}
+                    {item?.generalInfo?.firstName || item?.generalInfo?.legalName || null}
                   </Option>
                 );
               })}

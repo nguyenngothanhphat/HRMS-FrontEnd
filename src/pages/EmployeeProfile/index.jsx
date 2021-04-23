@@ -111,7 +111,7 @@ class EmployeeProfile extends Component {
       type: 'employeeProfile/fetchDepartments',
       payload: { company: companyCurrentEmployee, tenantId },
     });
-    dispatch({ type: 'employeeProfile/fetchEmployees' });
+    // dispatch({ type: 'employeeProfile/fetchEmployees'});
     dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: { employee, tenantId } });
     dispatch({
       type: 'employeeProfile/fetchEmployeeDependentDetails',
