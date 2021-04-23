@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Button, div } from 'antd';
 import { connect } from 'umi';
 import { checkPermissions } from '@/utils/permissions';
+import { getCurrentTenant } from '@/utils/authority';
 import edit from './asset/edit.svg';
 import path from './asset/path.svg';
 import CurrentInfo from './components/CurrentInfo';
@@ -97,6 +98,7 @@ class EmploymentTab extends Component {
         takeEffect,
         employee: data.employee,
         changedBy: data.changedBy,
+        tenantId: getCurrentTenant(),
       };
       const array = Object.keys(payload);
       for (let i = 0; i < array.length; i += 1) {
