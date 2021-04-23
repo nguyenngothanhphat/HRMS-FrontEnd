@@ -143,7 +143,11 @@ class SelectUser extends PureComponent {
                     placeholder="Search by name or select a person"
                     showArrow
                     showSearch
-                    onSearch={this.fetchUsers}
+                    // onSearch={this.fetchUsers}
+                    filterOption={(input, option) => {
+                      const values = option.props.children.map((val) => val.toLowerCase());
+                      return JSON.stringify(values).indexOf(input.toLowerCase()) >= 0;
+                    }}
                   >
                     {listUsers.map((user) => {
                       const {
@@ -208,9 +212,9 @@ class SelectUser extends PureComponent {
                 ]}
               >
                 <Select
-                  filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
+                  filterOption={(input, option) => {
+                    return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                  }}
                   allowClear
                   mode="multiple"
                   showArrow

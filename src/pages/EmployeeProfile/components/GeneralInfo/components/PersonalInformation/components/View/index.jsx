@@ -91,13 +91,13 @@ class View extends PureComponent {
     const {
       residentAddress: {
         address: r_Address = '',
-        country: { name: r_countryName = '' } = {},
+        country: r_countryName = '',
         state: r_state = '',
         zipCode: r_zipCode = '',
       } = {},
       currentAddress: {
         address: c_Address = '',
-        country: { name: c_countryName = '' } = {},
+        country: c_countryName = '',
         state: c_state = '',
         zipCode: c_zipCode = '',
       } = {},

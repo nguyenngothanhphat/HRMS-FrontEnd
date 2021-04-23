@@ -683,11 +683,9 @@ const employeeProfile = {
         return {};
       }
     },
-    *fetchEmailsListByCompany({ payload: { company = [] } = {} }, { call, put }) {
+    *fetchEmailsListByCompany({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getEmailsListByCompany, {
-          company,
-        });
+        const response = yield call(getEmailsListByCompany, payload);
         const { statusCode, data: emailsList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({

@@ -105,10 +105,12 @@ class WorkLocations extends PureComponent {
       notification.success({
         message: 'Add new locations successfully.',
       });
+      // refresh work locations list
       dispatch({
         type: 'adminApp/fetchLocationList',
         payload: { company: companyId, tenantId },
       });
+      // refresh locations in dropdown menu (owner)
       dispatch({
         type: 'locationSelection/fetchLocationListByParentCompany',
         payload: {
@@ -117,10 +119,6 @@ class WorkLocations extends PureComponent {
         },
       });
     }
-  };
-
-  onFinish = async (values) => {
-    this.addLocationAPI(values);
   };
 
   formatListLocation = () => {
@@ -139,7 +137,7 @@ class WorkLocations extends PureComponent {
     const tenantId = getCurrentTenant();
     const companyId = getCurrentCompany();
 
-    const { dispatch } = this.props;
+    const { dispatch, manageTenant = [] } = this.props;
     const payload = { id, tenantId };
     const res = await dispatch({
       type: 'adminApp/removeLocation',
@@ -150,6 +148,13 @@ class WorkLocations extends PureComponent {
       dispatch({
         type: 'adminApp/fetchLocationList',
         payload: { company: companyId, tenantId },
+      });
+      dispatch({
+        type: 'locationSelection/fetchLocationListByParentCompany',
+        payload: {
+          company: companyId,
+          tenantIds: manageTenant,
+        },
       });
     }
   };
@@ -253,7 +258,7 @@ class WorkLocations extends PureComponent {
 
         <Form
           ref={this.formRef}
-          onFinish={this.onFinish}
+          onFinish={this.addLocationAPI}
           autoComplete="off"
           initialValues={
             {
