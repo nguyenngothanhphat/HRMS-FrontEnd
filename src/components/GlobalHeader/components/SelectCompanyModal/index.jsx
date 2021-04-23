@@ -43,7 +43,9 @@ class SelectCompanyModal extends PureComponent {
             logoUrl = '',
             _id = '',
             tenant = '',
-            headQuarterAddress: { country: { name: countryName = '' } = '' } = {},
+            headQuarterAddress: {
+              country: { name: countryName = '', _id: countryId = '' } = '',
+            } = {},
           } = comp;
           const className = activeCompany === _id ? styles.active : styles.eachCompany;
           const className1 = currentCompany === _id ? styles.currentCompany : '';
@@ -57,7 +59,7 @@ class SelectCompanyModal extends PureComponent {
                   <img src={logoUrl} alt="logo" />
                 </div>
                 <span className={styles.name}>{name}</span>
-                <span className={styles.countryName}> {countryName && `(${countryName})`}</span>
+                <span className={styles.countryName}> {countryName && `(${countryId})`}</span>
               </div>
               <div className={styles.rightPart}>
                 {activeCompany === _id && currentCompany !== _id && <RightOutlined />}

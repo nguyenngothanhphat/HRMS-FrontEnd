@@ -623,10 +623,9 @@ const employeeProfile = {
     },
     *clearSaveDocuments(_, { put }) {
       try {
-        const saveDocuments = documentCategories;
         yield put({
           type: 'save',
-          payload: { saveDocuments },
+          payload: { saveDocuments: [...documentCategories] },
         });
       } catch (errors) {
         dialog(errors);
