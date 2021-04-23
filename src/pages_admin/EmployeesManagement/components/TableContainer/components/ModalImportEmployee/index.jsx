@@ -200,8 +200,6 @@ class ModalImportEmployee extends Component {
     const { handleCancel = () => {} } = this.props;
     const tenantId = getCurrentTenant();
 
-    console.log(company);
-
     const payload = {
       company,
       tenantId,
