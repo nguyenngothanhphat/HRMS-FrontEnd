@@ -320,6 +320,7 @@ const employeeProfile = {
     *fetchLocations(_, { call, put }) {
       try {
         const response = yield call(getLocationList);
+        console.log(response);
         const { statusCode, data } = response;
         const temp = data.map((item) => item);
         const locations = temp.filter((item, index) => temp.indexOf(item) === index);

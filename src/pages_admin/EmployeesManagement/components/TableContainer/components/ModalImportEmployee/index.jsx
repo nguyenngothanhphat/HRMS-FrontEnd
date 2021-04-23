@@ -4,19 +4,12 @@
 import React, { Component } from 'react';
 import { Modal, Button, Form, Select, notification } from 'antd';
 import { connect } from 'umi';
-import _ from 'lodash';
-import {
-  getCurrentCompany,
-  getCurrentLocation,
-  getCurrentTenant,
-  // isAdmin,
-  // isOwner,
-} from '@/utils/authority';
 import moment from 'moment';
+import _ from 'lodash';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import ImportCSV from '@/components/ImportCSV';
 import exportToCsv from '@/utils/exportToCsv';
 
-import { ConsoleSqlOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -61,18 +54,6 @@ class ModalImportEmployee extends Component {
       employees: [],
       company: '',
       isValidateFile: false,
-      // objectEmployee: {
-      //   location: 'Location',
-      //   department: 'Department',
-      //   employeeId: 'Employee Id',
-      //   workEmail: 'Work Email',
-      //   personalEmail: 'Personal Email',
-      //   managerWorkEmail: 'Manager Work Email',
-      //   firstName: 'First Name',
-      //   lastName: 'Last Name',
-      //   title: 'Job Title',
-      //   personalNumber: 'Personal Number',
-      // },
     };
     this.formRef = React.createRef();
   }

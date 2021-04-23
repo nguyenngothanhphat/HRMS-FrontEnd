@@ -143,6 +143,9 @@ class SelectUser extends PureComponent {
                     placeholder="Search by name or select a person"
                     showArrow
                     showSearch
+                    filterOption={(input, option) =>
+                      option.props.children[0].toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                     onSearch={this.fetchUsers}
                   >
                     {listUsers.map((user) => {
