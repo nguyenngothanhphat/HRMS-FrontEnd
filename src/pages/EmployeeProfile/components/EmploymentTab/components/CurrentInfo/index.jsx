@@ -11,12 +11,12 @@ function CurrentInfo(props) {
     location = {},
     employeeType = {},
     manager = {},
-  } = employeeProfile.originData.employmentData;
+  } = employeeProfile?.originData?.employmentData;
   const {
     compensationType = '',
     currentAnnualCTC = '',
     timeOffPolicy = '',
-  } = employeeProfile.originData.compensationData;
+  } = employeeProfile?.originData?.compensationData;
 
   const data = {
     title: title?.name || 'Missing title',

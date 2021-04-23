@@ -252,13 +252,15 @@ class DirectoryComponent extends PureComponent {
     let locationPayload = [];
 
     if (!currentLocation) {
-      locationPayload = listCountry.map(({ country: countryItem1 = '' }) => {
+      locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
         let stateList = [];
-        listCountry.forEach(({ country: countryItem2 = '', state: stateItem2 = '' }) => {
-          if (countryItem1 === countryItem2) {
-            stateList = [...stateList, stateItem2];
-          }
-        });
+        listCountry.forEach(
+          ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
+            if (countryItem1 === countryItem2) {
+              stateList = [...stateList, stateItem2];
+            }
+          },
+        );
         return {
           country: countryItem1,
           state: stateList,
@@ -269,17 +271,19 @@ class DirectoryComponent extends PureComponent {
       const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country;
       const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
 
-      locationPayload = listCountry.map(({ country: countryItem1 = '' }) => {
+      locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
         let stateList = [];
-        listCountry.forEach(({ country: countryItem2 = '', state: stateItem2 = '' }) => {
-          if (
-            countryItem1 === countryItem2 &&
-            currentLocationCountry === countryItem2 &&
-            currentLocationState === stateItem2
-          ) {
-            stateList = [...stateList, stateItem2];
-          }
-        });
+        listCountry.forEach(
+          ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
+            if (
+              countryItem1 === countryItem2 &&
+              currentLocationCountry === countryItem2 &&
+              currentLocationState === stateItem2
+            ) {
+              stateList = [...stateList, stateItem2];
+            }
+          },
+        );
         return {
           country: countryItem1,
           state: stateList,
@@ -379,19 +383,21 @@ class DirectoryComponent extends PureComponent {
     // if country is not selected, select all
     if (!currentLocation) {
       if (country.length === 0) {
-        locationPayload = listCountry.map(({ country: countryItem1 = '' }) => {
+        locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
           let stateList = [];
-          listCountry.forEach(({ country: countryItem2 = '', state: stateItem2 = '' }) => {
-            if (countryItem1 === countryItem2) {
-              if (state.length !== 0) {
-                if (state.includes(stateItem2)) {
+          listCountry.forEach(
+            ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
+              if (countryItem1 === countryItem2) {
+                if (state.length !== 0) {
+                  if (state.includes(stateItem2)) {
+                    stateList = [...stateList, stateItem2];
+                  }
+                } else {
                   stateList = [...stateList, stateItem2];
                 }
-              } else {
-                stateList = [...stateList, stateItem2];
               }
-            }
-          });
+            },
+          );
           return {
             country: countryItem1,
             state: stateList,
@@ -401,17 +407,19 @@ class DirectoryComponent extends PureComponent {
         locationPayload = country.map((item) => {
           let stateList = [];
 
-          listCountry.forEach(({ country: countryItem = '', state: stateItem = '' }) => {
-            if (item === countryItem) {
-              if (state.length !== 0) {
-                if (state.includes(stateItem)) {
+          listCountry.forEach(
+            ({ country: { _id: countryItem = '' } = {}, state: stateItem = '' }) => {
+              if (item === countryItem) {
+                if (state.length !== 0) {
+                  if (state.includes(stateItem)) {
+                    stateList = [...stateList, stateItem];
+                  }
+                } else {
                   stateList = [...stateList, stateItem];
                 }
-              } else {
-                stateList = [...stateList, stateItem];
               }
-            }
-          });
+            },
+          );
 
           return {
             country: item,
@@ -424,17 +432,19 @@ class DirectoryComponent extends PureComponent {
       const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country;
       const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
 
-      locationPayload = listCountry.map(({ country: countryItem1 = '' }) => {
+      locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
         let stateList = [];
-        listCountry.forEach(({ country: countryItem2 = '', state: stateItem2 = '' }) => {
-          if (
-            countryItem1 === countryItem2 &&
-            currentLocationCountry === countryItem2 &&
-            currentLocationState === stateItem2
-          ) {
-            stateList = [...stateList, stateItem2];
-          }
-        });
+        listCountry.forEach(
+          ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
+            if (
+              countryItem1 === countryItem2 &&
+              currentLocationCountry === countryItem2 &&
+              currentLocationState === stateItem2
+            ) {
+              stateList = [...stateList, stateItem2];
+            }
+          },
+        );
         return {
           country: countryItem1,
           state: stateList,

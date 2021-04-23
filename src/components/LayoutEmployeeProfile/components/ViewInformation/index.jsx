@@ -276,11 +276,7 @@ class ViewInformation extends Component {
           <Divider />
           <div className={s.infoEmployee__socialMedia}>
             <Tooltip title="LinkedIn">
-              <a
-                href={linkedIn || 'https://www.linkedin.com/company/terralogic/'}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
                 <img
                   src="/assets/images/iconLinkedin.svg"
                   alt="img-arrow"
