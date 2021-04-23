@@ -268,7 +268,7 @@ class DirectoryComponent extends PureComponent {
       });
     } else {
       const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
-      const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country;
+      const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
       const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
 
       locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
@@ -429,7 +429,7 @@ class DirectoryComponent extends PureComponent {
       }
     } else {
       const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
-      const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country;
+      const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
       const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
 
       locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
