@@ -94,8 +94,22 @@ class AvatarDropdown extends React.Component {
     history.push('/');
   };
 
-  viewProfile = () => {
+  viewProfile = async () => {
     const { currentUser: { employee: { _id = '' } = {} } = {} } = this.props;
+    const { dispatch } = this.props;
+    const tenantId = getCurrentTenant();
+    const companyId = getCurrentCompany();
+    await dispatch({
+      type: 'employeeProfile/save',
+      payload: {
+        tenantCurrentEmployee: tenantId,
+        companyCurrentEmployee: companyId,
+      },
+    });
+    localStorage.setItem('tenantCurrentEmployee', tenantId);
+    localStorage.setItem('companyCurrentEmployee', companyId);
+    localStorage.setItem('idCurrentEmployee', _id);
+
     history.push(`/employees/employee-profile/${_id}`);
   };
 
