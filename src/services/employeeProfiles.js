@@ -41,9 +41,10 @@ export async function getLocationList() {
     method: 'POST',
   });
 }
-export async function getEmployeeList() {
+export async function getEmployeeList(payload) {
   return request('/api/employeetenant/list', {
     method: 'POST',
+    data: payload,
   });
 }
 export async function updateGeneralInfo(payload) {
