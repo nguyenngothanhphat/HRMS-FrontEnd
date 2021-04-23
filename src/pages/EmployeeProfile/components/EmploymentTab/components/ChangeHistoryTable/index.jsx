@@ -20,7 +20,7 @@ class ChangeHistoryTable extends PureComponent {
     const { employee } = this.state;
     const columns = [
       {
-        title: 'Changed Infomation',
+        title: 'Changed Information',
         dataIndex: 'changedInfomation',
         key: 'changedInfomation',
         render: (changedInfomation) => {

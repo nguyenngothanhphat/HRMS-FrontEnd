@@ -9,15 +9,16 @@ import {
 } from '@ant-design/icons';
 import classnames from 'classnames';
 import { connect } from 'umi';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import RemoveLocationModal from '../RemoveLocationModal';
 // import { bool } from 'prop-types';
 import s from './index.less';
 
 const { Option } = Select;
 
-@connect(({ adminApp, loading }) => ({
+@connect(({ adminApp, loading, user: { currentUser: { manageTenant = [] } = {} } = {} }) => ({
   adminApp,
+  manageTenant,
   loadingUpdateLocation: loading.effects['adminApp/updateLocation'],
   loadingRemoveLocation: loading.effects['adminApp/removeLocation'],
 }))
@@ -123,8 +124,9 @@ class FormWorkLocationTenant extends Component {
   };
 
   saveLocationAPI = async (values, locationId) => {
-    const { dispatch } = this.props;
+    const { dispatch, manageTenant = [] } = this.props;
     const tenantId = getCurrentTenant();
+    const companyId = getCurrentCompany();
 
     const {
       name,
@@ -166,57 +168,13 @@ class FormWorkLocationTenant extends Component {
         isEditing: false,
         locationName: name,
       });
-      setTimeout(() => {
-        this.setState({
-          isSaved: false,
-        });
-      }, 2500);
-    }
-  };
-
-  saveLocationAPI = async (values, locationId) => {
-    const { dispatch } = this.props;
-    const tenantId = localStorage.getItem('tenantId');
-
-    const {
-      name,
-      addressLine1 = '',
-      addressLine2 = '',
-      country = '',
-      state = '',
-      zipCode = '',
-    } = values;
-
-    const payload = {
-      tenantId,
-      id: locationId,
-      name,
-      headQuarterAddress: {
-        addressLine1,
-        addressLine2,
-        country,
-        state,
-        zipCode,
-      },
-      // legalAddress: {
-      //   addressLine1,
-      //   addressLine2,
-      //   country,
-      //   state,
-      //   zipCode,
-      // },
-    };
-    const res = await dispatch({
-      type: 'adminApp/updateLocation',
-      payload,
-    });
-
-    const { statusCode } = res;
-    if (statusCode === 200) {
-      this.setState({
-        isSaved: true,
-        isEditing: false,
-        locationName: name,
+      // refresh locations in dropdown menu (owner)
+      dispatch({
+        type: 'locationSelection/fetchLocationListByParentCompany',
+        payload: {
+          company: companyId,
+          tenantIds: manageTenant,
+        },
       });
       setTimeout(() => {
         this.setState({
@@ -370,7 +328,8 @@ class FormWorkLocationTenant extends Component {
                     disabled={disableInput}
                     onChange={this.onChangeCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     {listCountry.map((item) => (
                       <Option key={item._id}>{item.name}</Option>
@@ -390,7 +349,8 @@ class FormWorkLocationTenant extends Component {
                     showSearch
                     disabled={disableInput || !newCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     {listState.map((item) => (
                       <Option key={item}>{item}</Option>

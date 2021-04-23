@@ -143,10 +143,10 @@ class TableFilter extends PureComponent {
     const currentLocation = getCurrentLocation();
 
     let formatDataCountry = listCountry.map((item) => {
-      const { country = '' } = item;
+      const { country: { _id: countryId = '', name: countryName = '' } = '' } = item;
       return {
-        label: country,
-        value: country,
+        label: countryName,
+        value: countryId,
       };
     });
     formatDataCountry = [...new Set(formatDataCountry)];
