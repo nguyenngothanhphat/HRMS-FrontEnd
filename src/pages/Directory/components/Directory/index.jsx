@@ -808,12 +808,14 @@ class DirectoryComponent extends PureComponent {
           handleCancel={this.handleCancel}
           getResponse={this.getResponse}
         />
-        <ModalImportEmployee
-          company={companiesOfUser}
-          titleModal="Import Employees"
-          visible={visibleImportEmployee}
-          handleCancel={this.handleCancel}
-        />
+        {visibleImportEmployee && (
+          <ModalImportEmployee
+            company={companiesOfUser}
+            titleModal="Import Employees"
+            visible={visibleImportEmployee}
+            handleCancel={this.handleCancel}
+          />
+        )}
       </div>
     );
   }
