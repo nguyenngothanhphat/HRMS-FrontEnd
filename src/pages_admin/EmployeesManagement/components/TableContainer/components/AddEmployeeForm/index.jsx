@@ -512,6 +512,7 @@ class AddEmployeeForm extends Component {
           >
             <Select
               autoComplete="dontshow"
+              allowClear
               placeholder={formatMessage({ id: 'addEmployee.placeholder.manager' })}
               showArrow
               showSearch
