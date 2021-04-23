@@ -58,6 +58,13 @@ class ModalImportEmployee extends Component {
     this.formRef = React.createRef();
   }
 
+  componentDidMount() {
+    const currentCompany = getCurrentCompany();
+    const { company = [] } = this.props;
+    const currentFirm = company.filter((comp) => comp?._id === currentCompany);
+    this.setState({ company: currentFirm[0]._id });
+  }
+
   componentDidUpdate() {
     const { statusImportEmployees, dispatch } = this.props;
     if (statusImportEmployees) {
@@ -193,6 +200,8 @@ class ModalImportEmployee extends Component {
     const { handleCancel = () => {} } = this.props;
     const tenantId = getCurrentTenant();
 
+    console.log(company);
+
     const payload = {
       company,
       tenantId,
@@ -222,6 +231,8 @@ class ModalImportEmployee extends Component {
       (comp) => comp?.childOfCompany === currentCompany || comp?._id === currentCompany,
     );
 
+    const currentFirm = companyProps.filter((comp) => comp?._id === currentCompany);
+
     if (!currentLocation) {
       renderList = [...childCompanyList];
     } else {
@@ -241,6 +252,7 @@ class ModalImportEmployee extends Component {
             placeholder="Select Company"
             showArrow
             showSearch
+            defaultValue={currentFirm[0]?.name}
             onChange={(value) => this.onChangeSelect(value)}
             filterOption={(input, option) =>
               option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -279,7 +291,7 @@ class ModalImportEmployee extends Component {
               htmlType="submit"
               type="primary"
               form="addEmployeeForm"
-              disabled={employees.length === 0 || company === ''}
+              disabled={employees.length === 0}
               loading={loading}
               className={styles.btnSubmit}
               onClick={this.callAPIImportCSV}
@@ -291,7 +303,7 @@ class ModalImportEmployee extends Component {
           {this.renderFormImport(companyProps)}
           <div className={styles.FileUploadForm}>
             <ImportCSV
-              disabled={company === ''}
+              // disabled={company === ''}
               onDrop={(result) => {
                 this.handleDataUpload(result);
               }}
