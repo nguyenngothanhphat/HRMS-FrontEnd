@@ -10,8 +10,8 @@ class ViewTax extends PureComponent {
   render() {
     const { taxData } = this.props;
     const dataTaxDetails = [
-      { id: 1, name: 'Income Tax Rule', text: taxData[0] ? taxData[0].incomeTaxRule : '' },
-      { id: 2, name: 'PAN Number', text: taxData[0] ? taxData[0].panNum : '' },
+      { id: 1, name: 'Income Tax Rule', text: taxData[0] ? taxData[0].incomeTaxRule : '-' },
+      { id: 2, name: 'PAN Number', text: taxData[0] ? taxData[0].panNum : '-' },
     ];
     return (
       <div className={styles.spaceDetails}>

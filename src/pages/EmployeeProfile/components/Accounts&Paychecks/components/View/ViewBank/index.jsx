@@ -10,12 +10,12 @@ class ViewBank extends PureComponent {
   render() {
     const { bankData } = this.props;
     const dataBankDetails = [
-      { id: 1, name: 'Bank Name', text: bankData[0] ? bankData[0].bankName : ' ' },
-      { id: 2, name: 'Account Number', text: bankData[0] ? bankData[0].accountNumber : ' ' },
-      { id: 3, name: 'Account Type', text: bankData[0] ? bankData[0].accountType : '' },
-      { id: 4, name: 'IFSC Code', text: bankData[0] ? bankData[0].ifscCode : '' },
-      { id: 5, name: 'MICR Code', text: bankData[0] ? bankData[0].micrcCode : '' },
-      { id: 6, name: 'UAN Number', text: bankData[0] ? bankData[0].uanNumber : '' },
+      { id: 1, name: 'Bank Name', text: bankData[0] ? bankData[0].bankName : '-' },
+      { id: 2, name: 'Account Number', text: bankData[0] ? bankData[0].accountNumber : '-' },
+      { id: 3, name: 'Account Type', text: bankData[0] ? bankData[0].accountType : '-' },
+      { id: 4, name: 'IFSC Code', text: bankData[0] ? bankData[0].ifscCode : '-' },
+      { id: 5, name: 'MICR Code', text: bankData[0] ? bankData[0].micrcCode : '-' },
+      { id: 6, name: 'UAN Number', text: bankData[0] ? bankData[0].uanNumber : '-' },
     ];
     return (
       <div className={styles.spaceDetails}>

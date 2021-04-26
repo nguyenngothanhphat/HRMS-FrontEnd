@@ -99,6 +99,11 @@ class AvatarDropdown extends React.Component {
     const { dispatch } = this.props;
     const tenantId = getCurrentTenant();
     const companyId = getCurrentCompany();
+
+    localStorage.setItem('tenantCurrentEmployee', tenantId);
+    localStorage.setItem('companyCurrentEmployee', companyId);
+    localStorage.setItem('idCurrentEmployee', _id);
+
     await dispatch({
       type: 'employeeProfile/save',
       payload: {
@@ -106,11 +111,8 @@ class AvatarDropdown extends React.Component {
         companyCurrentEmployee: companyId,
       },
     });
-    localStorage.setItem('tenantCurrentEmployee', tenantId);
-    localStorage.setItem('companyCurrentEmployee', companyId);
-    localStorage.setItem('idCurrentEmployee', _id);
 
-    history.push(`/employees/employee-profile/${_id}`);
+    history.replace(`/employees/employee-profile/${_id}`);
   };
 
   wait = (delay, ...args) => {
