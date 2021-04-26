@@ -43,6 +43,7 @@ const UserModel = {
         if (statusCode !== 200) throw response;
 
         let formatArrRoles = [];
+        let switchRoleAbility = false;
         const { signInRole = [] } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
@@ -85,12 +86,11 @@ const UserModel = {
               checkIsEmployee = true;
             }
             if (perAdminExist && perEmployeeExist) {
-              localStorage.setItem('switchRoleAbility', true);
+              switchRoleAbility = true;
               if (!isSwitchingRole) {
                 formatArrRoles = ['admin'];
                 formatArrRoles = [...formatArrRoles, ...permissionAdmin, ...permissionEmployee];
                 checkIsAdmin = true;
-                checkIsEmployee = true;
               } else {
                 formatArrRoles = ['employee'];
                 formatArrRoles = [...formatArrRoles, ...permissionEmployee];
@@ -113,6 +113,8 @@ const UserModel = {
           }
           // DONE
           setAuthority(formatArrRoles);
+          localStorage.setItem('switchRoleAbility', switchRoleAbility);
+
           // LOCATION PROCESSING
           // set work locations of admin
           if (checkIsAdmin) {
