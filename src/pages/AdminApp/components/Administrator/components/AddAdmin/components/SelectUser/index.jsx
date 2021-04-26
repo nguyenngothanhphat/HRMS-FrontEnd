@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Radio, Select, Input, Form } from 'antd';
-import { getCurrentCompany } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { connect } from 'umi';
 import styles from './index.less';
 
@@ -22,16 +22,37 @@ class SelectUser extends PureComponent {
   fetchUsers = async () => {
     const { dispatch } = this.props;
     const company = getCurrentCompany();
+    const tenantId = getCurrentTenant();
     const res = await dispatch({
       type: 'adminApp/fetchUsersListOfOwner',
       payload: {
         company,
       },
     });
-    const { statusCode = 0, data = {} } = res;
-    if (statusCode === 200) {
+    const resFilterList = await dispatch({
+      type: 'employee/fetchFilterList',
+      payload: {
+        id: company,
+        tenantId,
+      },
+    });
+
+    const { statusCode = 0, data: { listUser = [] } = {} } = res;
+    const { statusCode: statusCodeFilter = 0, data: { listCompany = {} } = {} } = resFilterList;
+    const newList = [];
+
+    if (statusCodeFilter === 200 && statusCode === 200) {
+      listCompany.map((item) => {
+        listUser.forEach((user) => {
+          if (user?.company === item?.compID) {
+            newList.push(user);
+          }
+        });
+        return newList;
+      });
+
       this.setState({
-        listUsers: data?.listUser || [],
+        listUsers: newList || [],
       });
     }
   };
