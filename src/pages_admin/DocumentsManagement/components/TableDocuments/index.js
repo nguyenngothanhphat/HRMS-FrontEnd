@@ -233,7 +233,7 @@ class TableDocuments extends PureComponent {
           onClose={this.onCloseViewDocument}
         />
         <Table
-          size="small"
+          size="middle"
           loading={loading}
           onRow={(record) => {
             return {

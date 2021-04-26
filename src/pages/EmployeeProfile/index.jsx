@@ -131,6 +131,9 @@ class EmployeeProfile extends Component {
     dispatch({
       type: 'employeeProfile/clearState',
     });
+    localStorage.removeItem('tenantCurrentEmployee');
+    localStorage.removeItem('companyCurrentEmployee');
+    localStorage.removeItem('idCurrentEmployee');
   };
 
   checkProfileOwner = (currentUserID, employeeID) => {

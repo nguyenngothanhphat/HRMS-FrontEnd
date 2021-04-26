@@ -208,14 +208,14 @@ const routes = [
           //   ],
           // },
           {
-            path: '/users',
+            path: '/users-management',
             name: 'users',
             icon: '/assets/images/menuIcons/user.svg',
             component: '../pages_admin/UsersManagement',
             authority: ['admin-sa', 'M_USER_MANAGEMENT_VIEW', 'owner'],
           },
           {
-            path: '/employees',
+            path: '/employees-management',
             name: 'employees',
             icon: '/assets/images/menuIcons/members.svg',
             component: '../pages_admin/EmployeesManagement',
@@ -229,7 +229,7 @@ const routes = [
             // authority: ['admin-sa'],
           },
           {
-            path: '/companies',
+            path: '/companies-management',
             name: 'companies',
             icon: '/assets/images/menuIcons/company.svg',
             component: '../pages_admin/CompaniesManagement',
@@ -264,18 +264,20 @@ const routes = [
             authority: ['admin-sa'],
           },
           {
-            path: '/candidates',
+            path: '/candidates-management',
             name: 'candidates',
             icon: '/assets/images/menuIcons/candidate.svg',
             component: '../pages_admin/CandidatesManagement',
             authority: ['admin-sa'],
           },
           {
-            path: '/documents',
+            path: '/documents-management',
             name: 'documents',
-            icon: '/assets/images/menuIcons/documents.svg',
+            // icon: '/assets/images/menuIcons/documents.svg',
+            icon: '/assets/images/menuIcons/icon3.svg',
             component: '../pages_admin/DocumentsManagement',
-            authority: ['admin-sa'],
+            // authority: ['admin-sa'],
+            authority: ['M_DOCUMENT_MANAGEMENT_VIEW', 'owner'],
           },
           {
             path: '/time-off-management',
@@ -296,7 +298,8 @@ const routes = [
             name: 'uploadDocument',
             hideInMenu: true,
             component: '../pages_admin/DocumentsManagement/components/UploadDocument',
-            authority: ['admin-sa'],
+            // authority: ['admin-sa'],
+            authority: ['M_DOCUMENT_MANAGEMENT_VIEW', 'owner'],
           },
           {
             path: '/settings',
@@ -606,13 +609,13 @@ const routes = [
           //   authority: ['M_DIRECTORY_VIEW', 'owner'],
 
           // },
-          {
-            path: '/example3',
-            name: 'Document Management',
-            icon: '/assets/images/menuIcons/icon3.svg',
-            component: './ExamplePage',
-            authority: ['M_DOCUMENT_MANAGEMENT_VIEW', 'owner'],
-          },
+          // {
+          //   path: '/example3',
+          //   name: 'Document Management',
+          //   icon: '/assets/images/menuIcons/icon3.svg',
+          //   component: './ExamplePage',
+          //   authority: ['M_DOCUMENT_MANAGEMENT_VIEW', 'owner'],
+          // },
           {
             path: '/example4',
             name: 'Onboarding',
