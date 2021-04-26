@@ -42,9 +42,10 @@ class SelectUser extends PureComponent {
     const newList = [];
 
     if (statusCodeFilter === 200 && statusCode === 200) {
+      // Filter list by parent comp + child comp
       listCompany.map((item) => {
         listUser.forEach((user) => {
-          if (user?.company === item?.compID) {
+          if (user?.company === item?._id) {
             newList.push(user);
           }
         });
