@@ -107,3 +107,9 @@ export function getIsSwitchingRole() {
   if (isSwitch === 'true') return true;
   return false;
 }
+
+export function getSwitchRoleAbility() {
+  const isSwitch = localStorage.getItem('switchRoleAbility');
+  if (isSwitch === 'true') return true;
+  return false;
+}
