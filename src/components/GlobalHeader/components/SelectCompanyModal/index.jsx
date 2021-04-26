@@ -1,13 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Button, Modal, notification } from 'antd';
 import { RightOutlined } from '@ant-design/icons';
-import {
-  setCurrentCompany,
-  setTenantId,
-  setAuthority,
-  isOwner,
-  getCurrentCompany,
-} from '@/utils/authority';
+import { setCurrentCompany, setTenantId, isOwner, getCurrentCompany } from '@/utils/authority';
 import { connect, history } from 'umi';
 import styles from './index.less';
 
@@ -93,7 +87,7 @@ class SelectCompanyModal extends PureComponent {
       setCurrentCompany(activeCompany);
       localStorage.removeItem('currentLocationId');
       const { dispatch } = this.props;
-      const res = await dispatch({
+      await dispatch({
         type: 'user/fetchCurrent',
         refreshCompanyList: false,
       });
@@ -106,17 +100,6 @@ class SelectCompanyModal extends PureComponent {
         );
         history.push(`/admin-app`);
       } else {
-        const { statusCode, data = {} } = res;
-        let formatArrRoles = JSON.parse(localStorage.getItem('antd-pro-authority'));
-        if (statusCode === 200) {
-          data?.permissionAdmin.forEach((e) => {
-            formatArrRoles = [...formatArrRoles, e];
-          });
-          data?.permissionEmployee.forEach((e) => {
-            formatArrRoles = [...formatArrRoles, e];
-          });
-          setAuthority(formatArrRoles);
-        }
         await this.wait(500).then(() =>
           this.setState({
             loadingSwitch: false,

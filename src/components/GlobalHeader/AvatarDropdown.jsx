@@ -269,28 +269,12 @@ class AvatarDropdown extends React.Component {
             </Menu.Item>
           );
         })}
-        {/* {listOfChildCompanies.map((value) => {
-          const { _id = '', name: locationName = '' } = value;
-          return (
-            <Menu.Item
-              key={_id}
-              className={currentLocation !== _id ? styles.menuItemLink : styles.menuItemLink2}
-            >
-              {locationName}
-            </Menu.Item>
-          );
-        })} */}
       </>
     );
   };
 
   render() {
     const { currentUser = {} } = this.props;
-    // const {
-    //   name = '',
-    //   generalInfo: { avatar = '', employeeId = '' } = {},
-    //   title = {},
-    // } = currentUser;
     const { firstName: name = '', avatar = '' } = currentUser;
     const { selectLocationAbility } = this.state;
 
@@ -316,12 +300,13 @@ class AvatarDropdown extends React.Component {
             )}
           </div>
         </div>
-        {/* <Menu.Item key={VIEWPROFILE} className={styles.menuItemViewProfile}> */}
-        <div className={styles.viewProfileBtn}>
-          <Button onClick={this.viewProfile} className={styles.buttonLink}>
-            {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
-          </Button>
-        </div>
+        {currentUser?.employee?._id && (
+          <div className={styles.viewProfileBtn}>
+            <Button onClick={this.viewProfile} className={styles.buttonLink}>
+              {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
+            </Button>
+          </div>
+        )}
         {/* </Menu.Item> */}
         <Menu.Divider className={styles.firstDivider} />
         <Menu.Item key={CHANGEPASSWORD} className={styles.menuItemLink}>

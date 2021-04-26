@@ -1,6 +1,11 @@
 import { history } from 'umi';
 import { accountLogin, signInThirdParty } from '@/services/login';
-import { setAuthority, setTenantId, setCurrentCompany } from '@/utils/authority';
+import {
+  setAuthority,
+  setTenantId,
+  setCurrentCompany,
+  removeLocalStorage,
+} from '@/utils/authority';
 import { setToken } from '@/utils/token';
 import { dialog } from '@/utils/utils';
 
@@ -75,11 +80,7 @@ const Model = {
     *logout(_, { put }) {
       setToken('');
       setAuthority('');
-      localStorage.removeItem('dataRoles');
-      localStorage.removeItem('Rolesname');
-      localStorage.removeItem('currentCompanyId');
-      localStorage.removeItem('tenantId');
-      localStorage.removeItem('currentLocation');
+      removeLocalStorage();
       yield put({
         type: 'user/saveCurrentUser',
         payload: {
