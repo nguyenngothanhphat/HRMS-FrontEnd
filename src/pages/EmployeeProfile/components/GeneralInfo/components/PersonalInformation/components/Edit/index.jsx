@@ -328,224 +328,214 @@ class Edit extends PureComponent {
           onValuesChange={(changedValues) => this.handleChange(changedValues)}
           onFinish={this.handleSave}
         >
-          <Form.Item
-            label="Personal Number"
-            name="personalNumber"
-            rules={[
-              {
-                pattern: /^[+]*[\d]{0,10}$/,
-                message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
-              },
-            ]}
-          >
-            <Input className={styles.inputForm} />
-          </Form.Item>
-          <Form.Item
-            label="Personal Email"
-            name="personalEmail"
-            rules={[
-              {
-                type: 'email',
-                message: formatMessage({ id: 'pages.employeeProfile.validateEmail' }),
-              },
-            ]}
-          >
-            <Input className={styles.inputForm} />
-          </Form.Item>
-          <Form.Item label="Blood Group" name="Blood">
-            <Select
-              showArrow
-              className={styles.selectForm}
-              // suffixIcon={<DownOutlined className={styles.arrowUP} />}
-            >
-              <Option value="O-">O-</Option>
-              <Option value="O+">O+</Option>
-              <Option value="A-">A-</Option>
-              <Option value="A+">A+</Option>
-              <Option value="B+">B+</Option>
-              <Option value="B-">B-</Option>
-              <Option value="AB+">AB+</Option>
-              <Option value="AB-">AB-</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item label="Marital Status" name="maritalStatus">
-            <Select
-              showArrow
-              className={styles.selectForm}
-              // suffixIcon={<DownOutlined className={styles.arrowUP} />}
-            >
-              <Option value="Single">Single</Option>
-              <Option value="Married">Married</Option>
-              <Option value="Rather not mention">Rather not mention</Option>
-            </Select>
-          </Form.Item>
-          <Form.Item
-            label="Linkedin"
-            name="linkedIn"
-            rules={[
-              {
-                type: 'url',
-                message: formatMessage({ id: 'pages.employeeProfile.validatelinkedIn' }),
-              },
-            ]}
-          >
-            <Input className={styles.inputForm} />
-          </Form.Item>
-          <Form.Item label="Residence Address">
-            <TextArea
-              autoSize={{ minRows: 2, maxRows: 6 }}
-              className={styles.areaForm}
-              // eslint-disable-next-line camelcase
-              defaultValue={r_Address}
-              onChange={(e) => this.handleChangeAddress('r_Address', e.target.value)}
+          <div className={styles.fieldsContainer}>
+            <Form.Item
+              label="Personal Number"
+              name="personalNumber"
               rules={[
                 {
-                  required: true,
-                  message: 'Please input address',
+                  pattern: /^[+]*[\d]{0,10}$/,
+                  message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
                 },
               ]}
-            />
-          </Form.Item>
+            >
+              <Input className={styles.inputForm} />
+            </Form.Item>
+            <Form.Item
+              label="Personal Email"
+              name="personalEmail"
+              rules={[
+                {
+                  type: 'email',
+                  message: formatMessage({ id: 'pages.employeeProfile.validateEmail' }),
+                },
+              ]}
+            >
+              <Input className={styles.inputForm} />
+            </Form.Item>
+            <Form.Item label="Blood Group" name="Blood">
+              <Select showArrow className={styles.selectForm}>
+                <Option value="O-">O-</Option>
+                <Option value="O+">O+</Option>
+                <Option value="A-">A-</Option>
+                <Option value="A+">A+</Option>
+                <Option value="B+">B+</Option>
+                <Option value="B-">B-</Option>
+                <Option value="AB+">AB+</Option>
+                <Option value="AB-">AB-</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item label="Marital Status" name="maritalStatus">
+              <Select showArrow className={styles.selectForm}>
+                <Option value="Single">Single</Option>
+                <Option value="Married">Married</Option>
+                <Option value="Rather not mention">Rather not mention</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              label="Linkedin"
+              name="linkedIn"
+              rules={[
+                {
+                  type: 'url',
+                  message: formatMessage({ id: 'pages.employeeProfile.validatelinkedIn' }),
+                },
+              ]}
+            >
+              <Input className={styles.inputForm} />
+            </Form.Item>
+            <Form.Item label="Residence Address">
+              <TextArea
+                autoSize={{ minRows: 2, maxRows: 6 }}
+                className={styles.areaForm}
+                // eslint-disable-next-line camelcase
+                defaultValue={r_Address}
+                onChange={(e) => this.handleChangeAddress('r_Address', e.target.value)}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input address',
+                  },
+                ]}
+              />
+            </Form.Item>
 
-          <Row gutter={[12, 24]} align="left">
-            <Col span={8} className={styles.address}>
-              <Form.Item label="Country" className={styles.addressSection}>
-                <Select
-                  className={styles.selectForm}
-                  // eslint-disable-next-line camelcase
-                  defaultValue={r_countryName}
-                  onChange={(value) => {
-                    this.handleChangeAddress('r_countryName', value);
-                  }}
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please choose country',
-                      type: 'array',
-                    },
-                  ]}
-                  showArrow
-                  // suffixIcon={<DownOutlined className={styles.arrowUP} />}
-                >
-                  {formatCountryList.map((itemCountry) => {
-                    return (
-                      <Option key={itemCountry.value} value={itemCountry.value}>
-                        {itemCountry.name}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={8} className={styles.address}>
-              <Form.Item label="State" className={styles.addressSection}>
-                <Select
-                  showArrow
-                  className={styles.selectForm}
-                  // eslint-disable-next-line camelcase
-                  defaultValue={r_state}
-                  onChange={(e) => this.handleChangeAddress('r_state', e)}
-                  // suffixIcon={<DownOutlined className={styles.arrowUP} />}
-                >
-                  {loadingStates ? (
-                    <div className={styles.selectForm_loading}>
-                      <Spin size="large" />
-                    </div>
-                  ) : (
-                    <>
-                      {reListStates.map((item, index) => {
-                        return (
-                          <Option key={`${index + 1}`} value={item}>
-                            {item}
-                          </Option>
-                        );
-                      })}
-                    </>
-                  )}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={8} className={styles.address}>
-              <Form.Item label="Zip Code" className={styles.addressSection}>
-                <Input
-                  className={styles.selectForm}
-                  // eslint-disable-next-line camelcase
-                  defaultValue={r_zipCode}
-                  onChange={(e) => this.handleChangeAddress('r_zipCode', e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+            <Row gutter={[12, 24]} align="left">
+              <Col span={8} className={styles.address}>
+                <Form.Item label="Country" className={styles.addressSection}>
+                  <Select
+                    className={styles.selectForm}
+                    // eslint-disable-next-line camelcase
+                    defaultValue={r_countryName}
+                    onChange={(value) => {
+                      this.handleChangeAddress('r_countryName', value);
+                    }}
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please choose country',
+                        type: 'array',
+                      },
+                    ]}
+                    showArrow
+                  >
+                    {formatCountryList.map((itemCountry) => {
+                      return (
+                        <Option key={itemCountry.value} value={itemCountry.value}>
+                          {itemCountry.name}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={8} className={styles.address}>
+                <Form.Item label="State" className={styles.addressSection}>
+                  <Select
+                    showArrow
+                    className={styles.selectForm}
+                    // eslint-disable-next-line camelcase
+                    defaultValue={r_state}
+                    onChange={(e) => this.handleChangeAddress('r_state', e)}
+                  >
+                    {loadingStates ? (
+                      <div className={styles.selectForm_loading}>
+                        <Spin size="large" />
+                      </div>
+                    ) : (
+                      <>
+                        {reListStates.map((item, index) => {
+                          return (
+                            <Option key={`${index + 1}`} value={item}>
+                              {item}
+                            </Option>
+                          );
+                        })}
+                      </>
+                    )}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={8} className={styles.address}>
+                <Form.Item label="Zip Code" className={styles.addressSection}>
+                  <Input
+                    className={styles.selectForm}
+                    // eslint-disable-next-line camelcase
+                    defaultValue={r_zipCode}
+                    onChange={(e) => this.handleChangeAddress('r_zipCode', e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
 
-          <Form.Item label="Current Address">
-            <TextArea
-              autoSize={{ minRows: 2, maxRows: 6 }}
-              className={styles.areaForm}
-              // eslint-disable-next-line camelcase
-              defaultValue={c_Address}
-              onChange={(e) => this.handleChangeAddress('c_Address', e.target.value)}
-            />
-          </Form.Item>
-          <Row gutter={[12, 24]} align="left">
-            <Col span={8} className={styles.address}>
-              <Form.Item label="Country" className={styles.addressSection}>
-                <Select
-                  showArrow
-                  className={styles.selectForm}
-                  // eslint-disable-next-line camelcase
-                  defaultValue={c_countryName}
-                  onChange={(value) => this.handleChangeAddress('c_countryName', value)}
-                  // suffixIcon={<DownOutlined className={styles.arrowUP} />}
-                >
-                  {formatCountryList.map((itemCountry) => {
-                    return (
-                      <Option key={itemCountry.value} value={itemCountry.value}>
-                        {itemCountry.name}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={8} className={styles.address}>
-              <Form.Item label="State" className={styles.addressSection}>
-                <Select
-                  showArrow
-                  className={styles.selectForm}
-                  // eslint-disable-next-line camelcase
-                  defaultValue={c_state}
-                  onChange={(value) => this.handleChangeAddress('c_state', value)}
-                  // suffixIcon={<DownOutlined className={styles.arrowUP} />}
-                >
-                  {loadingStates ? (
-                    <div className={styles.selectForm_loading}>
-                      <Spin size="large" />
-                    </div>
-                  ) : (
-                    <>
-                      {curListStates.map((item, index) => {
-                        return (
-                          <Option key={`${index + 1}`} value={item}>
-                            {item}
-                          </Option>
-                        );
-                      })}
-                    </>
-                  )}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={8} className={styles.address}>
-              <Form.Item label="Zip Code" className={styles.addressSection}>
-                <Input
-                  className={styles.selectForm}
-                  // eslint-disable-next-line camelcase
-                  defaultValue={c_zipCode}
-                  onChange={(e) => this.handleChangeAddress('c_zipCode', e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+            <Form.Item label="Current Address">
+              <TextArea
+                autoSize={{ minRows: 2, maxRows: 6 }}
+                className={styles.areaForm}
+                // eslint-disable-next-line camelcase
+                defaultValue={c_Address}
+                onChange={(e) => this.handleChangeAddress('c_Address', e.target.value)}
+              />
+            </Form.Item>
+            <Row gutter={[12, 24]} align="left">
+              <Col span={8} className={styles.address}>
+                <Form.Item label="Country" className={styles.addressSection}>
+                  <Select
+                    showArrow
+                    className={styles.selectForm}
+                    // eslint-disable-next-line camelcase
+                    defaultValue={c_countryName}
+                    onChange={(value) => this.handleChangeAddress('c_countryName', value)}
+                  >
+                    {formatCountryList.map((itemCountry) => {
+                      return (
+                        <Option key={itemCountry.value} value={itemCountry.value}>
+                          {itemCountry.name}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={8} className={styles.address}>
+                <Form.Item label="State" className={styles.addressSection}>
+                  <Select
+                    showArrow
+                    className={styles.selectForm}
+                    // eslint-disable-next-line camelcase
+                    defaultValue={c_state}
+                    onChange={(value) => this.handleChangeAddress('c_state', value)}
+                  >
+                    {loadingStates ? (
+                      <div className={styles.selectForm_loading}>
+                        <Spin size="large" />
+                      </div>
+                    ) : (
+                      <>
+                        {curListStates.map((item, index) => {
+                          return (
+                            <Option key={`${index + 1}`} value={item}>
+                              {item}
+                            </Option>
+                          );
+                        })}
+                      </>
+                    )}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={8} className={styles.address}>
+                <Form.Item label="Zip Code" className={styles.addressSection}>
+                  <Input
+                    className={styles.selectForm}
+                    // eslint-disable-next-line camelcase
+                    defaultValue={c_zipCode}
+                    onChange={(e) => this.handleChangeAddress('c_zipCode', e.target.value)}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </div>
           <div className={styles.spaceFooter}>
             <div className={styles.cancelFooter} onClick={handleCancel}>
               Cancel
