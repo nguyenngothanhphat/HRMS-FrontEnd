@@ -34,6 +34,18 @@ export function setAuthority(authority) {
   reloadAuthorized();
 }
 
+export function removeLocalStorage() {
+  localStorage.clear();
+  // localStorage.removeItem('dataRoles');
+  // localStorage.removeItem('Rolesname');
+  // localStorage.removeItem('currentCompanyId');
+  // localStorage.removeItem('tenantId');
+  // localStorage.removeItem('currentLocation');
+  // localStorage.removeItem('tenantCurrentEmployee');
+  // localStorage.removeItem('companyCurrentEmployee');
+  // localStorage.removeItem('idCurrentEmployee');
+}
+
 export function setTenantId(tenantId) {
   localStorage.setItem('tenantId', tenantId);
   reloadAuthorized();
@@ -68,19 +80,19 @@ export function getCurrentLocation() {
 }
 
 export function isOwner() {
-  const roleList = JSON.parse(localStorage.getItem('antd-pro-authority'));
+  const roleList = JSON.parse(localStorage.getItem('antd-pro-authority')) || [];
   const owner = roleList.filter((role) => role.toLowerCase() === 'owner');
   return owner.length > 0;
 }
 
 export function isAdmin() {
-  const roleList = JSON.parse(localStorage.getItem('antd-pro-authority'));
+  const roleList = JSON.parse(localStorage.getItem('antd-pro-authority')) || [];
   const owner = roleList.filter((role) => role.toLowerCase() === 'admin');
   return owner.length > 0;
 }
 
 export function isEmployee() {
-  const roleList = JSON.parse(localStorage.getItem('antd-pro-authority'));
+  const roleList = JSON.parse(localStorage.getItem('antd-pro-authority')) || [];
   const employee = roleList.filter((role) => role.toLowerCase() === 'employee');
   return employee.length > 0;
 }

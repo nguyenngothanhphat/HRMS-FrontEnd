@@ -682,7 +682,6 @@ class DirectoryComponent extends PureComponent {
       loadingListActive,
       loadingListMyTeam,
       loadingListInActive,
-      checkRoleEmployee,
       permissions = {},
     } = this.props;
 
@@ -695,7 +694,6 @@ class DirectoryComponent extends PureComponent {
     return (
       <>
         {findIndexActive !== -1 &&
-          !checkRoleEmployee &&
           this.renderTab(
             formatMessage({ id: 'pages.directory.directory.activeEmployeesTab' }),
             active,
@@ -709,7 +707,7 @@ class DirectoryComponent extends PureComponent {
             myTeam,
             loadingListMyTeam,
           )} */}
-        {findIndexMyTeam !== -1 && checkRoleEmployee && (
+        {findIndexMyTeam !== -1 && (
           <>
             {this.renderTab(
               formatMessage({ id: 'pages.directory.directory.myTeamTab' }),
@@ -719,7 +717,6 @@ class DirectoryComponent extends PureComponent {
           </>
         )}
         {findIndexInActive !== -1 &&
-          !checkRoleEmployee &&
           this.renderTab(
             formatMessage({ id: 'pages.directory.directory.inactiveEmployeesTab' }),
             inActive,

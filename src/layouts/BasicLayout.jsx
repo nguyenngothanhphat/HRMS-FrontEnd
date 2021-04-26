@@ -127,11 +127,11 @@ const BasicLayout = (props) => {
     const { signInRole = [], permissionEmployee = [], permissionAdmin = [] } = currentUser;
 
     const formatRole = signInRole.map((role) => role.toLowerCase());
-    formatRole.map((item) => {
+
+    formatRole.forEach((item) => {
       if (item.includes('admin')) {
         checkAdmin = true;
       }
-      return checkAdmin;
     });
 
     const handleSwitch = async () => {
@@ -176,7 +176,7 @@ const BasicLayout = (props) => {
 
     return (
       <>
-        {checkAdmin ? (
+        {permissionAdmin.length === 0 && permissionEmployee.length === 0 ? (
           <Affix className={styles.btnSwitch}>
             <Tooltip title={isCheck ? 'Switch Admin' : 'Switch Employee'}>
               <Switch
@@ -185,7 +185,6 @@ const BasicLayout = (props) => {
                 unCheckedChildren={<UserOutlined />}
                 onClick={handleSwitch}
                 loading={loading}
-                disabled={permissionEmployee.length === 0}
               />
             </Tooltip>
           </Affix>
