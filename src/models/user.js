@@ -85,11 +85,17 @@ const UserModel = {
               checkIsEmployee = true;
             }
             if (perAdminExist && perEmployeeExist) {
-              formatArrRoles = ['admin'];
               localStorage.setItem('switchRoleAbility', true);
-              formatArrRoles = [...formatArrRoles, ...permissionAdmin, ...permissionEmployee];
-              checkIsAdmin = true;
-              checkIsEmployee = true;
+              if (!isSwitchingRole) {
+                formatArrRoles = ['admin'];
+                formatArrRoles = [...formatArrRoles, ...permissionAdmin, ...permissionEmployee];
+                checkIsAdmin = true;
+                checkIsEmployee = true;
+              } else {
+                formatArrRoles = ['employee'];
+                formatArrRoles = [...formatArrRoles, ...permissionEmployee];
+                checkIsEmployee = true;
+              }
             }
           } else {
             // IS ONLY ADMIN
