@@ -176,14 +176,23 @@ const employeeProfile = {
           const { statusCode } = response;
           if (statusCode !== 200) throw response;
           if (payload.takeEffect === 'UPDATED' && statusCode === 200) {
-            const updates = yield call(getChangeHistories, { employee: payload.employee });
+            const updates = yield call(getChangeHistories, {
+              employee: payload.employee,
+              tenantId: payload.tenantId,
+            });
             if (updates.statusCode !== 200) throw updates;
             yield put({ type: 'saveOrigin', payload: { changeHistories: updates.data } });
-            const employment = yield call(getEmploymentInfo, { id: payload.employee });
+            const employment = yield call(getEmploymentInfo, {
+              id: payload.employee,
+              tenantId: payload.tenantId,
+            });
 
             yield put({ type: 'saveOrigin', payload: { employmentData: employment.data } });
             if (employment.statusCode !== 200) throw response;
-            const compensation = yield call(getCompensation, { employee: payload.employee });
+            const compensation = yield call(getCompensation, {
+              employee: payload.employee,
+              tenantId: payload?.tenantId,
+            });
             if (compensation.statusCode !== 200) throw response;
             yield put({
               type: 'saveOrigin',
@@ -696,9 +705,9 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchChangeHistories({ payload: { employee = '' } = {} }, { call, put }) {
+    *fetchChangeHistories({ payload: { employee = '', tenantId = '' } = {} }, { call, put }) {
       try {
-        const response = yield call(getChangeHistories, { employee });
+        const response = yield call(getChangeHistories, { employee, tenantId });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { changeHistories: data } });

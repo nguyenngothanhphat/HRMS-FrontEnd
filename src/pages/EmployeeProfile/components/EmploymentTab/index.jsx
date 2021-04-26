@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Button, div } from 'antd';
 import { connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 // import { checkPermissions } from '@/utils/permissions';
 import edit from './asset/edit.svg';
 import path from './asset/path.svg';
@@ -91,7 +92,7 @@ class EmploymentTab extends Component {
         takeEffect = 'UPDATED';
       } else takeEffect = 'WILL_UPDATE';
       const payload = {
-        title: data.stepTwo.title || null,
+        title: data.stepThree.title || null,
         manager: data.stepThree.reportTo || null,
         location: data.stepTwo.wLocation || null,
         employeeType: data.stepTwo.employment || null,
@@ -104,6 +105,7 @@ class EmploymentTab extends Component {
         takeEffect,
         employee: data.employee,
         changedBy: data.changedBy,
+        tenantId: getCurrentTenant(),
       };
       const array = Object.keys(payload);
       for (let i = 0; i < array.length; i += 1) {
