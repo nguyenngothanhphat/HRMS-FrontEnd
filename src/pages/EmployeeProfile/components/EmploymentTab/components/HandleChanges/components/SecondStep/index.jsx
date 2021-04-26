@@ -28,8 +28,7 @@ export default function SecondStep(props) {
           onChange={(value) => onChange(value, 'wLocation')}
           onSearch={onSearch}
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {fetchedState.locations.map((item) => {
             return (
@@ -51,8 +50,7 @@ export default function SecondStep(props) {
           onChange={(value) => onChange(value, 'employment')}
           onSearch={onSearch}
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {fetchedState.employeeTypes.map((item) => {
             return (
@@ -74,8 +72,7 @@ export default function SecondStep(props) {
           onChange={(value) => onChange(value, 'compensation')}
           onSearch={onSearch}
           filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
           {compenTypes.map((item) => {
             return (

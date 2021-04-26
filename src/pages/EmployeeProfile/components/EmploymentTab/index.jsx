@@ -92,7 +92,7 @@ class EmploymentTab extends Component {
         takeEffect = 'UPDATED';
       } else takeEffect = 'WILL_UPDATE';
       const payload = {
-        title: data.stepTwo.title || null,
+        title: data.stepThree.title || null,
         manager: data.stepThree.reportTo || null,
         location: data.stepTwo.wLocation || null,
         employeeType: data.stepTwo.employment || null,
