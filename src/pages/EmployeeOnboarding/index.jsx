@@ -54,53 +54,50 @@ class EmployeeOnboarding extends PureComponent {
     const isHrManager = rolesList.indexOf(ROLE.HRMANAGER) > -1;
     return (
       <PageContainer>
-        {data.indexOf('P_ONBOARDING_VIEW') > -1 && rolesList.length > 0 ? (
-          <div className={styles.containerEmployeeOnboarding}>
-            <div className={styles.tabs}>
-              <Tabs defaultActiveKey={defaultActiveKey}>
-                <TabPane
-                  tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
-                  key="1"
-                >
-                  <div className={styles.options}>
-                    <Row gutter={[24, 0]}>
-                      <Col>
-                        <Button className={styles.generate} type="text">
-                          {formatMessage({ id: 'component.employeeOnboarding.generate' })}
-                        </Button>
-                      </Col>
-                      <Col>
-                        <Button className={styles.view} type="link">
-                          {formatMessage({ id: 'component.employeeOnboarding.viewActivityLogs' })}{' '}
-                          (15)
-                        </Button>
-                      </Col>
-                    </Row>
-                  </div>
-                  <OnboardingOverview />
-                </TabPane>
-                {isHrManager === true ? (
-                  <>
-                    <TabPane
-                      tab={formatMessage({ id: 'component.employeeOnboarding.settings' })}
-                      key="2"
-                    >
-                      <Settings />
-                    </TabPane>
-                    {/* <TabPane
+        {/* {data.indexOf('P_ONBOARDING_VIEW') > -1 && rolesList.length > 0 ? ( */}
+        <div className={styles.containerEmployeeOnboarding}>
+          <div className={styles.tabs}>
+            <Tabs defaultActiveKey={defaultActiveKey}>
+              <TabPane
+                tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
+                key="1"
+              >
+                <div className={styles.options}>
+                  <Row gutter={[24, 0]}>
+                    <Col>
+                      <Button className={styles.generate} type="text">
+                        {formatMessage({ id: 'component.employeeOnboarding.generate' })}
+                      </Button>
+                    </Col>
+                    <Col>
+                      <Button className={styles.view} type="link">
+                        {formatMessage({ id: 'component.employeeOnboarding.viewActivityLogs' })}{' '}
+                        (15)
+                      </Button>
+                    </Col>
+                  </Row>
+                </div>
+                <OnboardingOverview />
+              </TabPane>
+              {/* {isHrManager === true ? (
+                <> */}
+              <TabPane tab={formatMessage({ id: 'component.employeeOnboarding.settings' })} key="2">
+                <Settings />
+              </TabPane>
+              {/* <TabPane
                       tab={formatMessage({ id: 'component.employeeOnboarding.customFields' })}
                       key="3"
                     >
                       <CustomFields />
                     </TabPane> */}
-                  </>
-                ) : null}
-              </Tabs>
-            </div>
+              {/* </>
+              ) : null} */}
+            </Tabs>
           </div>
-        ) : (
+        </div>
+        {/* ) : (
           ''
-        )}
+        )} */}
       </PageContainer>
     );
   }
