@@ -33,7 +33,7 @@ class Documents extends Component {
     super(props);
     this.state = {
       isViewingDocument: false,
-      selectedFile: 0,
+      selectedFileId: 0,
       isHR: false,
       documentStructure: [],
     };
@@ -188,19 +188,20 @@ class Documents extends Component {
 
   onFileClick = (id) => {
     const { listDocuments = [], dispatch } = this.props;
-
     const data = this.generateArrayDocument(listDocuments);
 
     data.forEach((x) => {
-      x.body.forEach((y) => {
+      const { children = [] } = x;
+      children.forEach((y) => {
+        const { files = [] } = y;
         let count = 0;
-        y.files.forEach((z) => {
-          if (z.id !== '') count += 1;
-          if (z.id === id) {
-            const groupViewingFiles = y.files.filter((value) => value.id !== '');
+        files.forEach((z) => {
+          if (z._id) count += 1;
+          if (z._id === id) {
+            const groupViewingFiles = y.files.filter((value) => value._id);
             this.setState({
               isViewingDocument: true,
-              selectedFile: count,
+              selectedFileId: count,
             });
             dispatch({
               type: 'employeeProfile/saveGroupViewingDocuments',
@@ -213,7 +214,7 @@ class Documents extends Component {
   };
 
   render() {
-    const { isViewingDocument, selectedFile, isHR } = this.state;
+    const { isViewingDocument, selectedFileId, isHR } = this.state;
     const { listDocuments = [], groupViewingDocuments = [], loading, loading2 } = this.props;
 
     const finalDocuments = this.generateArrayDocument(listDocuments);
@@ -241,7 +242,7 @@ class Documents extends Component {
               <div>
                 {isViewingDocument && groupViewingDocuments.length !== 0 ? (
                   <ViewDocument
-                    selectedFile={selectedFile}
+                    selectedFileId={selectedFileId}
                     onBackClick={this.onBackClick}
                     loading2={loading2}
                   />

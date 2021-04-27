@@ -67,10 +67,10 @@ const ModalContent = ({ closeModal = () => {} }) => {
 class ViewDocument extends PureComponent {
   constructor(props) {
     super(props);
-    const { selectedFile } = this.props;
+    const { selectedFileId } = this.props;
     this.state = {
       numPages: null,
-      currentViewingFile: selectedFile,
+      currentViewingFile: selectedFileId,
       shareWith: [],
       openModal: false,
       selectedStr: undefined,
@@ -79,7 +79,7 @@ class ViewDocument extends PureComponent {
   }
 
   // get document details
-  fetchDocumentDetails = (selectedFile) => {
+  fetchDocumentDetails = (selectedFileId) => {
     const {
       employeeProfile: {
         groupViewingDocuments = [],
@@ -95,7 +95,7 @@ class ViewDocument extends PureComponent {
         dispatch({
           type: 'employeeProfile/fetchViewingDocumentDetail',
           payload: {
-            id: groupViewingDocuments[selectedFile - 1].id,
+            id: groupViewingDocuments[selectedFileId - 1]._id,
             tenantId: tenantCurrentEmployee,
             employee: idCurrentEmployee,
           },
@@ -130,8 +130,8 @@ class ViewDocument extends PureComponent {
   };
 
   componentDidMount = () => {
-    const { selectedFile } = this.props;
-    this.fetchDocumentDetails(selectedFile);
+    const { selectedFileId } = this.props;
+    this.fetchDocumentDetails(selectedFileId);
     this.fetchEmailsListByCompany();
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   };
@@ -233,8 +233,8 @@ class ViewDocument extends PureComponent {
       dispatch({
         type: 'employeeProfile/updateDocument',
         payload: {
-          id: groupViewingDocuments[currentViewingFile - 1].id,
-          attachment: attachment.id,
+          id: groupViewingDocuments[currentViewingFile - 1]._id,
+          attachment: attachment._id,
         },
       });
     }
@@ -272,7 +272,7 @@ class ViewDocument extends PureComponent {
       const { document, visaNumber } = visa;
       const { _id } = document;
       files.forEach((file, index) => {
-        if (_id === file.id && visaNumber !== undefined && currentViewingFile === index) {
+        if (_id === file._id && visaNumber !== undefined && currentViewingFile === index) {
           visaNumberFinal = visaNumber;
         }
       });
@@ -287,7 +287,7 @@ class ViewDocument extends PureComponent {
       const { document, passportNumber } = passport;
       const { _id } = document;
       files.forEach((file, index) => {
-        if (_id === file.id && passportNumber !== undefined && currentViewingFile === index) {
+        if (_id === file._id && passportNumber !== undefined && currentViewingFile === index) {
           passportNumberFinal = passportNumber;
         }
       });
@@ -305,7 +305,11 @@ class ViewDocument extends PureComponent {
         documentDetail,
       },
     } = this.props;
-    const { key = '', employeeGroup = '', attachment: { url = '' } = {} } = documentDetail;
+    const {
+      key = '',
+      category: { name: childCategoryName = '' } = {},
+      attachment: { url = '' } = {},
+    } = documentDetail;
 
     return (
       <div className={styles.ViewDocument}>
@@ -373,7 +377,7 @@ class ViewDocument extends PureComponent {
                 {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.documentType' })}
               </Col>
               <Col className={styles.infoCol2} span={17}>
-                {employeeGroup}
+                {childCategoryName}
               </Col>
             </Row>
 
@@ -386,28 +390,26 @@ class ViewDocument extends PureComponent {
               </Col>
             </Row>
 
-            {this.includeString(employeeGroup, 'identity') ? (
+            {this.includeString(childCategoryName, 'identity') ? (
               <Row className={styles.infoRow}>
                 <Col className={styles.infoCol1} span={7}>
                   {key} Number
                 </Col>
                 <Col className={styles.infoCol2} span={17}>
-                  {this.includeString(key, 'passport')
-                    ? this.getPassportInformation(
-                        passportData,
-                        groupViewingDocuments,
-                        currentViewingFile - 1,
-                      )
-                    : ''}
-                  {this.includeString(key, 'visa')
-                    ? this.getVisaInformation(
-                        visaData,
-                        groupViewingDocuments,
-                        currentViewingFile - 1,
-                      )
-                    : ''}
+                  {this.includeString(key, 'passport') &&
+                    this.getPassportInformation(
+                      passportData,
+                      groupViewingDocuments,
+                      currentViewingFile - 1,
+                    )}
+                  {this.includeString(key, 'visa') &&
+                    this.getVisaInformation(
+                      visaData,
+                      groupViewingDocuments,
+                      currentViewingFile - 1,
+                    )}
 
-                  {this.includeString(key, 'adhaar') ? adhaarCardNumber : ''}
+                  {this.includeString(key, 'adhaar') && adhaarCardNumber}
                 </Col>
               </Row>
             ) : (
