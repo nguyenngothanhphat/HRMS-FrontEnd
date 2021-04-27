@@ -47,14 +47,25 @@
     display: flex;
     justify-content: space-between;
     padding: 24px;
-    color: #161c29;
-    font-weight: 700;
-    font-size: 16px;
+    // color: #161c29;
+    // font-weight: 700;
+    // font-size: 16px;
     border-bottom: solid 1px #d6dce0;
-
+    .title {
+      margin-bottom: 0;
+      color: #161c29;
+      font-weight: 700;
+      font-size: 16px;
+      font-style: normal;
+      font-stretch: normal;
+      line-height: normal;
+      letter-spacing: normal;
+    }
     .cancelButton {
       display: flex;
+      align-items: center;
       cursor: pointer;
+
       &:hover {
         opacity: 0.8;
       }
@@ -63,15 +74,17 @@
       margin-right: 16px;
     }
 
-    .employmentTab__action {
+    .editBtn {
       color: #2c6df9;
       font-weight: 500;
       font-size: 14px;
       font-style: normal;
       font-stretch: normal;
-      line-height: 2;
+      line-height: normal !important;
       letter-spacing: 0.13px;
       text-decoration: none;
+    }
+    .employmentTab__action {
       cursor: pointer;
     }
 

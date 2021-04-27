@@ -147,7 +147,7 @@ class EmploymentTab extends Component {
       <div>
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab__title}>
-            <div>Employment & Compensation</div>
+            <span className={styles.title}>Employment & Compensation</span>
             {isEdit ? (
               <div style={{ display: 'flex' }} />
             ) : (
@@ -158,7 +158,7 @@ class EmploymentTab extends Component {
                   style={{ display: 'flex' }}
                 >
                   <img alt="" src={edit} />
-                  <div>Edit</div>
+                  <span className={styles.editBtn}>Edit</span>
                 </div>
               )
             )}
@@ -171,25 +171,25 @@ class EmploymentTab extends Component {
         </div>
         <div className={styles.employmentTab}>
           <div className={styles.employmentTab__title} align="middle">
-            <div>
+            <span className={styles.title}>
               {isChanging
                 ? `Employment & Compensation - ${steps[current].title}`
                 : 'Change History'}
-            </div>
+            </span>
             {isChanging ? (
               <div onClick={this.handleMakeChanges} className={styles.cancelButton}>
                 <img alt="" src={path} />
-                <div>Cancel & Return</div>
+                <span className={styles.editBtn}>Cancel & Return</span>
               </div>
             ) : (
               permissions.makeChangesHistory !== -1 && (
                 <div
                   className={styles.employmentTab__action}
                   onClick={this.handleMakeChanges}
-                  style={{ display: 'flex' }}
+                  style={{ display: 'flex', alignItems: 'center' }}
                 >
                   <img alt="" src={edit} />
-                  <div>Make changes</div>
+                  <span className={styles.editBtn}>Make changes</span>
                 </div>
               )
             )}
