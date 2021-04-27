@@ -336,7 +336,7 @@ class AvatarDropdown extends React.Component {
             size={44}
             icon={<UserOutlined />}
             className={styles.avatar}
-            src={currentUser?.employee?.generalInfo?.avatar || avatar || avtDefault}
+            src={currentUser?.employee?.generalInfo?.avatar || avatar?.url || avtDefault}
           />
         </span>
       </HeaderDropdown>
