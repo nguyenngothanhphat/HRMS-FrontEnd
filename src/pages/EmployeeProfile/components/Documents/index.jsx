@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
-import { Button, Spin } from 'antd';
+import { Button, Skeleton } from 'antd';
 import ViewDocument from './ViewDocument';
 import InfoCollapseType2 from '../../../../components/InfoCollapseType2';
 import styles from './index.less';
@@ -182,8 +182,7 @@ class Documents extends Component {
       <div className={styles.Documents}>
         {loading ? (
           <div className={styles.loadingDocuments}>
-            {/* <p>Loading documents</p> */}
-            <Spin size="large" />
+            <Skeleton />
           </div>
         ) : (
           <div>
