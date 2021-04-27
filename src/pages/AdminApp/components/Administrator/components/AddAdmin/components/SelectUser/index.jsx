@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Radio, Select, Input, Form } from 'antd';
+import { Button, Row, Col, Radio, Select, Input, Form, Spin } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -22,6 +22,7 @@ class SelectUser extends PureComponent {
     this.state = {
       isCompanyWorker: true,
       listUsers: [],
+      isLoaded: false,
     };
   }
 
@@ -62,6 +63,7 @@ class SelectUser extends PureComponent {
 
       this.setState({
         listUsers: newListEmployee || [],
+        isLoaded: true,
       });
     }
   };
@@ -130,7 +132,7 @@ class SelectUser extends PureComponent {
   };
 
   renderContent = () => {
-    const { isCompanyWorker, listUsers } = this.state;
+    const { isCompanyWorker, listUsers, isLoaded } = this.state;
     const {
       companyName = '',
       onBackValues: { firstName = '', email = '', usermapId = '', location = [] } = {},
@@ -183,7 +185,18 @@ class SelectUser extends PureComponent {
                     placeholder="Search by name or select a person"
                     showArrow
                     showSearch
-                    // onSearch={this.fetchUsers}
+                    notFoundContent={
+                      isLoaded ? null : (
+                        <Spin
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            padding: '30px',
+                          }}
+                        />
+                      )
+                    }
                     filterOption={(input, option) => {
                       const values = option.props.children.map((val) => val.toLowerCase());
                       return JSON.stringify(values).indexOf(input.toLowerCase()) >= 0;
