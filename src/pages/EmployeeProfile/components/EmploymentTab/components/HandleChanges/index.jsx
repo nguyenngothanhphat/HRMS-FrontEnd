@@ -8,8 +8,9 @@ import ThirdStep from './components/ThirdStep';
 import FourthStep from './components/FourthStep';
 import FifthStep from './components/FifthStep';
 
-@connect(({ employeeProfile, user }) => ({
+@connect(({ employeeProfile, user, locationSelection: { listLocationsByCompany = [] } = {} }) => ({
   employeeProfile,
+  listLocationsByCompany,
   user,
 }))
 class HandleChanges extends PureComponent {
@@ -285,7 +286,7 @@ class HandleChanges extends PureComponent {
   };
 
   render() {
-    const { current, data, employeeProfile } = this.props;
+    const { current, data, employeeProfile, listLocationsByCompany } = this.props;
     const { radio, changeData } = this.state;
     return (
       <div className={styles.handleChanges}>
@@ -300,6 +301,7 @@ class HandleChanges extends PureComponent {
         {current === 1 ? (
           <SecondStep
             fetchedState={employeeProfile}
+            listLocationsByCompany={listLocationsByCompany}
             changeData={changeData}
             onChange={this.onChange}
             onRadioChange={this.onRadioChange}
