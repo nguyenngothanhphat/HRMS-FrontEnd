@@ -351,7 +351,6 @@ class DirectoryComponent extends PureComponent {
 
     const currentLocation = getCurrentLocation();
     const currentCompany = getCurrentCompany();
-    const checkIsEmployee = isEmployee();
 
     const { dispatch } = this.props;
     const {
@@ -467,15 +466,13 @@ class DirectoryComponent extends PureComponent {
       });
     }
     if (tabId === myTeam) {
-      if (checkIsEmployee) {
-        dispatch({
-          type: 'employee/fetchListEmployeeMyTeam',
-          payload: {
-            ...payload,
-            department: [departmentName],
-          },
-        });
-      }
+      dispatch({
+        type: 'employee/fetchListEmployeeMyTeam',
+        payload: {
+          ...payload,
+          department: [departmentName],
+        },
+      });
     }
     if (tabId === inActive) {
       dispatch({
