@@ -4,11 +4,8 @@ import {
   setCurrentLocation,
   getCurrentLocation,
   getCurrentTenant,
-  isOwner,
-  isEmployee,
   setAuthority,
   setIsSwitchingRole,
-  isAdmin,
 } from '@/utils/authority';
 
 import { history } from 'umi';
@@ -190,6 +187,20 @@ const UserModel = {
     saveCurrentUser(state, action) {
       setIsSwitchingRole(action.payload.isSwitchingRole);
       return { ...state, currentUser: action.payload || {} };
+    },
+
+    clearDataInACompany(state) {
+      return {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          employee: {},
+          permissionAdmin: [],
+          permissionEmployee: [],
+          location: null,
+        },
+        permissions: [],
+      };
     },
 
     changeNotifyCount(

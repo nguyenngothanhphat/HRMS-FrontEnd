@@ -8,7 +8,14 @@ const compenTypes = ['Salaried', 'Stock options', 'Other non-cash benefits'];
 export default function SecondStep(props) {
   const { Option } = Select;
   const { TextArea } = Input;
-  const { onChange, onSearch, changeData, fetchedState, onRadioChange } = props;
+  const {
+    onChange,
+    onSearch,
+    changeData,
+    fetchedState,
+    onRadioChange,
+    listLocationsByCompany,
+  } = props;
 
   const makeKey = () => {
     return Math.random().toString(36).substring(7);
@@ -30,7 +37,7 @@ export default function SecondStep(props) {
           filterOption={(input, option) =>
             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
-          {fetchedState.locations.map((item) => {
+          {listLocationsByCompany.map((item) => {
             return (
               <Option key={makeKey()} value={[item.name, item.id]}>
                 {item.name}

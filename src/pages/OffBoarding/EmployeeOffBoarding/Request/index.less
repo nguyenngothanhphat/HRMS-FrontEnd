@@ -25,21 +25,21 @@
     }
   }
 
-  .headerPage{
+  .headerPage {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 24px 24px 8px;
+    justify-content: space-between;
+    padding: 24px;
 
-    &__title{
-      font-style: normal;
+    &__title {
+      color: #161c29;
       font-weight: bold;
       font-size: 16px;
+      font-style: normal;
       line-height: 19px;
-      color: #161C29;
     }
 
-    &__status{
+    &__status {
       padding-right: 24px;
     }
 
@@ -49,37 +49,36 @@
   .content {
     padding: 24px 41px 0 24px;
 
-    .setPlan{
-      background: #FFFFFF;
-      border: 1px solid #D6DCE0;
-      border-radius: 5px;
-      padding: 32px 24px;
-
-      font-style: normal;
-      font-weight: 500;
-      font-size: 14px;
-      color: #707177;
-
+    .setPlan {
       display: flex;
       align-items: center;
+      padding: 32px 24px;
+      color: #707177;
+      font-weight: 500;
+      font-size: 14px;
 
-      &__text{
-        color: #2C6DF9;
+      font-style: normal;
+      background: #ffffff;
+      border: 1px solid #d6dce0;
+      border-radius: 5px;
+
+      &__text {
+        color: #2c6df9;
         text-decoration: underline;
         cursor: pointer;
       }
-      &__schedule{
+      &__schedule {
       }
-      &__action{
+      &__action {
         display: flex;
         align-items: center;
         justify-content: flex-end;
 
-        img{
+        img {
           cursor: pointer;
         }
 
-        &_close{
+        &_close {
           margin-left: 24px;
         }
       }
@@ -103,17 +102,16 @@
       transform: translateY(-1px);
     }
     &__request {
-      font-style: normal;
+      color: #707177;
       font-weight: normal;
       font-size: 13px;
+      font-style: normal;
       line-height: 15px;
-
-      color: #707177;
-      &__text{
-        font-style: normal;
+      &__text {
         color: #2c6df9;
         font-weight: 500;
         font-size: 14px;
+        font-style: normal;
         line-height: 16.41px;
         cursor: pointer;
         text-decoration-line: underline;

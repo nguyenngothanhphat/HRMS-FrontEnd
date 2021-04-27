@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Collapse } from 'antd';
+import { Collapse, Skeleton } from 'antd';
 import { formatMessage, connect } from 'umi';
 import { EditFilled } from '@ant-design/icons';
 import PlusIcon from '@/assets/plusIcon1.svg';
@@ -38,13 +38,24 @@ const data = [
 //   },
 // ];
 
-@connect(({ employeeProfile: { originData: { dependentDetails, benefitPlans } }, loading }) => ({
-  dependentDetails,
-  benefitPlans,
-  loading:
-    loading.effects['employeeProfile/fetchEmployeeDependentDetails'] ||
-    loading.effects['employeeProfile/getBenefitPlans'],
-}))
+@connect(
+  ({
+    employeeProfile: {
+      tenantCurrentEmployee = '',
+      idCurrentEmployee = '',
+      originData: { dependentDetails, benefitPlans },
+    },
+    loading,
+  }) => ({
+    dependentDetails,
+    benefitPlans,
+    tenantCurrentEmployee,
+    idCurrentEmployee,
+    loading:
+      loading.effects['employeeProfile/fetchEmployeeDependentDetails'] ||
+      loading.effects['employeeProfile/getBenefitPlans'],
+  }),
+)
 class BenefitTab extends PureComponent {
   constructor(props) {
     super(props);
@@ -53,6 +64,14 @@ class BenefitTab extends PureComponent {
       isAdding: false,
     };
   }
+
+  componentDidMount = () => {
+    const { dispatch, tenantCurrentEmployee = '', idCurrentEmployee = '' } = this.props;
+    dispatch({
+      type: 'employeeProfile/fetchEmployeeDependentDetails',
+      payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
+    });
+  };
 
   setEditing = (value) => {
     this.setState({
@@ -76,7 +95,7 @@ class BenefitTab extends PureComponent {
   render() {
     const { loading, dependentDetails: { dependents = [] } = {} } = this.props;
     const { isEditing, isAdding } = this.state;
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <Skeleton />;
     return (
       <div style={{ backgroundColor: '#f6f7f9' }}>
         <div className={styles.benefitTab}>
@@ -111,9 +130,9 @@ class BenefitTab extends PureComponent {
           </div>
           <div className={styles.sideTab}>
             <div>
-              <h3 className={styles.headings}>
+              <span className={styles.headings}>
                 {formatMessage({ id: 'pages.employeeProfile.BenefitTab.kycDetails' })}
-              </h3>
+              </span>
               <KYC
                 kycStat="Complete"
                 walletStat="Active"

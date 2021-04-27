@@ -1,6 +1,6 @@
 import { LogoutOutlined, SettingOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
 import avtDefault from '@/assets/avtDefault.jpg';
-import { Avatar, Button, Skeleton, Input, Tooltip } from 'antd';
+import { Avatar, Button, Skeleton, Input, Tooltip, Upload, message } from 'antd';
 
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
@@ -13,11 +13,12 @@ import s from './index.less';
   companiesOfUser,
   loadingCompaniesOfUser: loading.effects['user/fetchCompanyOfUser'],
 }))
-class AccountSetup extends Component {
+class ControlPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
       companySearch: '',
+      newAvatar: '',
     };
     this.setDebounce = debounce((companySearch) => {
       this.setState({
@@ -28,6 +29,10 @@ class AccountSetup extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
+    // fetch list companies
+    dispatch({
+      type: 'user/clearDataInACompany',
+    });
     // clear company details
     dispatch({
       type: 'companiesManagement/clearCompanyDetails',
@@ -108,8 +113,53 @@ class AccountSetup extends Component {
     return false;
   };
 
+  beforeUpload = (file) => {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+    if (!isJpgOrPng) {
+      message.error('You can only upload JPG/PNG file!');
+    }
+    const isLt2M = file.size / 1024 / 1024 < 2;
+    if (!isLt2M) {
+      message.error('Image must smaller than 2MB!');
+    }
+    return isJpgOrPng && isLt2M;
+  };
+
+  getBase64 = (img, callback) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
+  };
+
+  handleUpload = async (file) => {
+    const { dispatch, currentUser: { _id: currentUserId = '', firstName = '' } = {} } = this.props;
+    const formData = new FormData();
+    formData.append('uri', file);
+    const res = await dispatch({
+      type: 'upload/uploadFile',
+      payload: formData,
+      isUploadAvatar: true,
+    });
+    const { statusCode, data = [] } = res;
+    if (statusCode === 200 && data.length > 0) {
+      dispatch({
+        type: 'adminApp/updateAdmins',
+        payload: {
+          id: currentUserId,
+          firstName,
+          avatar: data[0].id, // id of attachment
+        },
+        isUpdateAvatar: true,
+      });
+      this.setState({
+        newAvatar: data[0].url,
+      });
+    }
+  };
+
   render() {
-    const { currentUser: { avatar = '', email = '' } = {}, currentUser = {} } = this.props;
+    const { currentUser: { avatar: { url = '' } = {}, email = '' } = {} } = this.props;
+    const { newAvatar } = this.state;
     const isOwner = this.checkRole('owner');
     const isAdmin = this.checkRole('admin');
 
@@ -118,11 +168,13 @@ class AccountSetup extends Component {
         <div className={s.container}>
           <div className={s.blockUserLogin}>
             <div className={s.blockUserLogin__avt}>
-              <Avatar
-                size={56}
-                icon={<UserOutlined />}
-                src={currentUser?.employee?.generalInfo?.avatar || avatar || avtDefault}
-              />
+              <Upload
+                showUploadList={false}
+                action={(file) => this.handleUpload(file)}
+                beforeUpload={this.beforeUpload}
+              >
+                <Avatar size={56} icon={<UserOutlined />} src={newAvatar || url || avtDefault} />
+              </Upload>
             </div>
             <div className={s.blockUserLogin__info}>
               <p>
@@ -163,4 +215,4 @@ class AccountSetup extends Component {
   }
 }
 
-export default AccountSetup;
+export default ControlPanel;

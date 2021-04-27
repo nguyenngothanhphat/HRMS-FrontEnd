@@ -109,8 +109,8 @@ const routes = [
         routes: [
           {
             path: '/control-panel',
-            component: './AccountSetup',
-            name: 'Account Setup',
+            component: './ControlPanel',
+            name: 'Control Panel',
             authority: ['admin', 'owner', 'employee'],
           },
           {
