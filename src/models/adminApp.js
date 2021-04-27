@@ -1,6 +1,6 @@
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
-import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
+// import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
 import {
   getPermissionList,
   addNewAdmin,
@@ -60,16 +60,22 @@ const country = {
         return {};
       }
     },
-    *updateAdmins({ payload = {} }, { call, put }) {
+    *updateAdmins({ payload = {}, isUpdateAvatar = false }, { call, put }) {
       try {
         const response = yield call(updateAdminService, payload);
         const { statusCode, data: updateAdmin = {} } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message: 'Update additional administrator successfully',
-          // description: 'Update additional administrator successfully',
-        });
-        yield put({ type: 'save', payload: { updateAdmin } });
+        if (!isUpdateAvatar) {
+          notification.success({
+            message: 'Update additional administrator successfully',
+            // description: 'Update additional administrator successfully',
+          });
+          yield put({ type: 'save', payload: { updateAdmin } });
+        } else {
+          notification.success({
+            message: 'Update your avatar successfully',
+          });
+        }
         return response;
       } catch (errors) {
         dialog(errors);

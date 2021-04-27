@@ -149,13 +149,13 @@ class EmploymentTab extends Component {
           <div className={styles.employmentTab__title}>
             <span className={styles.title}>Employment & Compensation</span>
             {isEdit ? (
-              <div style={{ display: 'flex' }} />
+              <div style={{ display: 'flex', alignItems: 'center' }} />
             ) : (
               permissions.editEmployment !== -1 && (
                 <div
                   className={styles.employmentTab__action}
                   onClick={this.handleEditCurrentInfo}
-                  style={{ display: 'flex' }}
+                  style={{ display: 'flex', alignItems: 'center' }}
                 >
                   <img alt="" src={edit} />
                   <span className={styles.editBtn}>Edit</span>

@@ -10,7 +10,10 @@ export default function GroupInfoType2(props) {
       {data.plans.map((item) => {
         const temp = Object.entries(item);
         return (
-          <div key={Math.random().toString(36).substring(7)} style={{ display: 'flex' }}>
+          <div
+            key={Math.random().toString(36).substring(7)}
+            style={{ display: 'flex', alignItems: 'center' }}
+          >
             <div className={styles.subTitle}>
               <p>{formatMessage({ id: 'component.GroupInfoType2.plan' })}</p>
               <p>{formatMessage({ id: 'component.GroupInfoType2.active' })}</p>
