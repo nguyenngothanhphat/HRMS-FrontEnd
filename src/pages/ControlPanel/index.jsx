@@ -29,6 +29,10 @@ class ControlPanel extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
+    // fetch list companies
+    dispatch({
+      type: 'user/clearDataInACompany',
+    });
     // clear company details
     dispatch({
       type: 'companiesManagement/clearCompanyDetails',
@@ -154,10 +158,7 @@ class ControlPanel extends Component {
   };
 
   render() {
-    const {
-      currentUser: { avatar: { url = '' } = {}, email = '' } = {},
-      currentUser = {},
-    } = this.props;
+    const { currentUser: { avatar: { url = '' } = {}, email = '' } = {} } = this.props;
     const { newAvatar } = this.state;
     const isOwner = this.checkRole('owner');
     const isAdmin = this.checkRole('admin');
@@ -172,11 +173,7 @@ class ControlPanel extends Component {
                 action={(file) => this.handleUpload(file)}
                 beforeUpload={this.beforeUpload}
               >
-                <Avatar
-                  size={56}
-                  icon={<UserOutlined />}
-                  src={newAvatar || url || currentUser?.employee?.generalInfo?.avatar || avtDefault}
-                />
+                <Avatar size={56} icon={<UserOutlined />} src={newAvatar || url || avtDefault} />
               </Upload>
             </div>
             <div className={s.blockUserLogin__info}>

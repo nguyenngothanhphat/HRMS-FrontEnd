@@ -275,10 +275,7 @@ class AvatarDropdown extends React.Component {
 
   render() {
     const { currentUser = {} } = this.props;
-    const {
-      firstName: name = '',
-      avatar: { url = '' },
-    } = currentUser;
+    const { firstName: name = '', avatar = {} } = currentUser;
     const { selectLocationAbility } = this.state;
 
     const { LOGOUT, CHANGEPASSWORD } = this.state;
@@ -290,7 +287,7 @@ class AvatarDropdown extends React.Component {
               size={50}
               className={styles.avatar}
               icon={<UserOutlined />}
-              src={currentUser?.employee?.generalInfo?.avatar || url || avtDefault}
+              src={currentUser?.employee?.generalInfo?.avatar || avatar?.url || avtDefault}
             />
           </div>
           <div className={styles.viewProfileInfo}>
