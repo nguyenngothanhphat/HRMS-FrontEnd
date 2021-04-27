@@ -71,9 +71,12 @@ class CollapseRow extends PureComponent {
   };
 
   checkShowUploadBtn = () => {
-    const { data: row = [], parentEmployeeGroup = '', isHR } = this.props;
+    const { data: row = [] } = this.props;
     const { name = '' } = row;
-    return (!isHR && parentEmployeeGroup !== 'PR Reports' && name !== 'Identity') || isHR;
+    return (
+      // !isHR &&
+      name !== 'Indentity'
+    );
   };
 
   statusAndButtons = () => {
@@ -138,23 +141,21 @@ class CollapseRow extends PureComponent {
     const {
       data: row = {},
       onFileClick = () => {},
-      parentEmployeeGroup = '',
       employeeProfile: {
         originData: { generalData: { employeeId: idCurrentEmployee = '' } = {} } = {},
       },
     } = this.props;
-    const { name = '', files = [] } = row;
+    const { name = '', _id: categoryId = '', files = [] } = row;
     const processData = this.processData(files);
     const showUpload = this.checkShowUploadBtn();
-
     return (
       <div>
         <UploadModal
           actionType={actionType}
           visible={uploadModalVisible}
           handleCancel={this.handleCancel}
-          employeeGroup={name}
-          parentEmployeeGroup={parentEmployeeGroup}
+          childCategory={name}
+          categoryId={categoryId}
           refreshData={this.refreshData}
           currentDocumentId={currentDocumentId}
           currentFileName={currentFileName}

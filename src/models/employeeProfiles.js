@@ -1025,27 +1025,9 @@ const employeeProfile = {
       }
       yield put({ type: 'save', payload: { isUpdateEmployment } });
     },
-    *uploadDocument({ data }, { call, put }) {
+    *uploadDocument({ data = {} }, { call, put }) {
       try {
-        const {
-          key = '',
-          employeeGroup = '',
-          parentEmployeeGroup = '',
-          attachment = '',
-          employee = '',
-          company = '',
-          tenantId = '',
-        } = data;
-
-        const response = yield call(getDocumentAdd, {
-          key, // file name
-          employeeGroup,
-          parentEmployeeGroup,
-          attachment,
-          employee,
-          company,
-          tenantId,
-        });
+        const response = yield call(getDocumentAdd, data);
 
         const { statusCode, data: uploadedDocument = [] } = response;
         // console.log('upload document res', response);

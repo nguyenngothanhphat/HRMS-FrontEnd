@@ -6,23 +6,13 @@ import styles from './index.less';
 
 class InfoCollapseType2 extends PureComponent {
   _renderChildren = () => {
-    const {
-      category: { children = [], name = '' } = {},
-      onFileClick = () => {},
-      isHR,
-    } = this.props;
-
-    // children: {
-    //   name,
-    //   _id,
-    //   files : []
-    // }
+    const { category: { children = [] } = {}, onFileClick = () => {}, isHR } = this.props;
 
     return children.map((child, index) => {
       return (
         <>
           <CollapseRow
-            parentEmployeeGroup={name}
+            categoryId={child?._id}
             key={`${index + 1}`}
             onFileClick={onFileClick}
             data={child}
@@ -47,7 +37,7 @@ class InfoCollapseType2 extends PureComponent {
             <Col span={8}>
               {formatMessage({ id: 'pages.employeeProfile.documents.infoCollapseType2.type' })}
             </Col>
-            <Col span={7}> Uploaded by</Col>
+            <Col span={7}>Uploaded by</Col>
             <Col span={7}>
               {formatMessage({ id: 'pages.employeeProfile.documents.infoCollapseType2.date' })}
             </Col>
