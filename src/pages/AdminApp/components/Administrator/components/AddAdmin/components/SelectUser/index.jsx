@@ -5,9 +5,15 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
-@connect(({ locationSelection: { listLocationsByCompany = [] } }) => ({
-  listLocationsByCompany,
-}))
+@connect(
+  ({
+    locationSelection: { listLocationsByCompany = [] } = {},
+    adminApp: { listAdmin = [] } = {},
+  }) => ({
+    listLocationsByCompany,
+    listAdmin,
+  }),
+)
 class SelectUser extends PureComponent {
   formRef = React.createRef();
 
@@ -39,21 +45,23 @@ class SelectUser extends PureComponent {
 
     const { statusCode = 0, data: { listUser = [] } = {} } = res;
     const { statusCode: statusCodeFilter = 0, data: { listCompany = {} } = {} } = resFilterList;
-    const newList = [];
+    const newListEmployee = [];
 
     if (statusCodeFilter === 200 && statusCode === 200) {
       // Filter list by parent comp + child comp
       listCompany.map((item) => {
         listUser.forEach((user) => {
           if (user?.company === item?._id) {
-            newList.push(user);
+            newListEmployee.push(user);
           }
         });
-        return newList;
+        return newListEmployee;
       });
 
+      this.filterAdmin(newListEmployee);
+
       this.setState({
-        listUsers: newList || [],
+        listUsers: newListEmployee || [],
       });
     }
   };
@@ -109,6 +117,16 @@ class SelectUser extends PureComponent {
       payload = { ...values };
     }
     onContinue(1, payload);
+  };
+
+  filterAdmin = (emplID = '') => {
+    const { listAdmin = [] } = this.props;
+    let isExist = false;
+    listAdmin.forEach((admin) => {
+      if (admin._id === emplID) isExist = true;
+    });
+
+    return isExist;
   };
 
   renderContent = () => {
@@ -177,7 +195,7 @@ class SelectUser extends PureComponent {
                         _id = '',
                       } = user;
                       return (
-                        <Option key={_id}>
+                        <Option key={_id} disabled={this.filterAdmin(_id)}>
                           {fn1} {email1 ? `(${email1})` : ''}
                         </Option>
                       );
