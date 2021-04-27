@@ -351,7 +351,6 @@ class DirectoryComponent extends PureComponent {
 
     const currentLocation = getCurrentLocation();
     const currentCompany = getCurrentCompany();
-    const checkIsEmployee = isEmployee();
 
     const { dispatch } = this.props;
     const {
@@ -467,15 +466,13 @@ class DirectoryComponent extends PureComponent {
       });
     }
     if (tabId === myTeam) {
-      if (checkIsEmployee) {
-        dispatch({
-          type: 'employee/fetchListEmployeeMyTeam',
-          payload: {
-            ...payload,
-            department: [departmentName],
-          },
-        });
-      }
+      dispatch({
+        type: 'employee/fetchListEmployeeMyTeam',
+        payload: {
+          ...payload,
+          department: [departmentName],
+        },
+      });
     }
     if (tabId === inActive) {
       dispatch({
@@ -682,7 +679,6 @@ class DirectoryComponent extends PureComponent {
       loadingListActive,
       loadingListMyTeam,
       loadingListInActive,
-      checkRoleEmployee,
       permissions = {},
     } = this.props;
 
@@ -695,7 +691,6 @@ class DirectoryComponent extends PureComponent {
     return (
       <>
         {findIndexActive !== -1 &&
-          !checkRoleEmployee &&
           this.renderTab(
             formatMessage({ id: 'pages.directory.directory.activeEmployeesTab' }),
             active,
@@ -709,7 +704,7 @@ class DirectoryComponent extends PureComponent {
             myTeam,
             loadingListMyTeam,
           )} */}
-        {findIndexMyTeam !== -1 && checkRoleEmployee && (
+        {findIndexMyTeam !== -1 && (
           <>
             {this.renderTab(
               formatMessage({ id: 'pages.directory.directory.myTeamTab' }),
@@ -719,7 +714,6 @@ class DirectoryComponent extends PureComponent {
           </>
         )}
         {findIndexInActive !== -1 &&
-          !checkRoleEmployee &&
           this.renderTab(
             formatMessage({ id: 'pages.directory.directory.inactiveEmployeesTab' }),
             inActive,

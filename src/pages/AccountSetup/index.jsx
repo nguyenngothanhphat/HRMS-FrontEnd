@@ -109,7 +109,7 @@ class AccountSetup extends Component {
   };
 
   render() {
-    const { currentUser: { avatar = '', email = '' } = {} } = this.props;
+    const { currentUser: { avatar = '', email = '' } = {}, currentUser = {} } = this.props;
     const isOwner = this.checkRole('owner');
     const isAdmin = this.checkRole('admin');
 
@@ -118,7 +118,11 @@ class AccountSetup extends Component {
         <div className={s.container}>
           <div className={s.blockUserLogin}>
             <div className={s.blockUserLogin__avt}>
-              <Avatar size={56} icon={<UserOutlined />} src={avatar || avtDefault} />
+              <Avatar
+                size={56}
+                icon={<UserOutlined />}
+                src={currentUser?.employee?.generalInfo?.avatar || avatar || avtDefault}
+              />
             </div>
             <div className={s.blockUserLogin__info}>
               <p>

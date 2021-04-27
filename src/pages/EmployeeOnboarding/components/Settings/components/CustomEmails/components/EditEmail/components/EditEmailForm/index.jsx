@@ -710,7 +710,7 @@ class EditEmailForm extends PureComponent {
                             disabled={this.checkOptionKey(unit.value)}
                             key={`${_index + 1}`}
                           >
-                            {unit.name}
+                            {unit?.name}
                           </Option>
                         );
                       })}
@@ -729,7 +729,7 @@ class EditEmailForm extends PureComponent {
                       {toBeVerbs.map((toBeVerb, _index) => {
                         return (
                           <Option value={toBeVerb.value} key={`${_index + 1}`}>
-                            {toBeVerb.name}
+                            {toBeVerb?.name}
                           </Option>
                         );
                       })}
@@ -748,7 +748,8 @@ class EditEmailForm extends PureComponent {
                         mode={valueToBeVerb === 'is' ? '' : 'multiple'}
                         showArrow
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                         placeholder="Please select a choice"
                         onChange={(value) => this.onChangeCondition(index, 'value', value)}
                         onClick={() => this.onClickCondition(index)}
@@ -760,9 +761,9 @@ class EditEmailForm extends PureComponent {
                                 <Option
                                   value={department._id}
                                   key={department._id}
-                                  disabled={this.checkOptionDepartment(department.name)}
+                                  disabled={this.checkOptionDepartment(department?.name)}
                                 >
-                                  {department.name}
+                                  {department?.name}
                                 </Option>
                               );
                             })}
@@ -828,7 +829,7 @@ class EditEmailForm extends PureComponent {
                 {recipients.map((option) => {
                   return (
                     <Option value={option.value} key={option._id}>
-                      {option.name}
+                      {option?.name}
                     </Option>
                   );
                 })}
@@ -884,14 +885,14 @@ class EditEmailForm extends PureComponent {
                 <Form.Item label="Trigger event" name="triggerEvent">
                   <Select
                     size="large"
-                    defaultValue={triggerEvent.name}
+                    defaultValue={triggerEvent?.name}
                     disabled={_isDefault}
                     onChange={(value) => this.onChangeTriggerEvent(value)}
                   >
                     {triggerEventList.map((option, _index) => {
                       return (
                         <Option value={option.value} key={`${_index + 1}`}>
-                          {option.name}
+                          {option?.name}
                         </Option>
                       );
                     })}
@@ -921,7 +922,7 @@ class EditEmailForm extends PureComponent {
                     {sendingDate.map((option, _index) => {
                       return (
                         <Radio value={option.value} key={`${_index + 1}`}>
-                          {option.name}
+                          {option?.name}
                         </Radio>
                       );
                     })}
@@ -938,14 +939,14 @@ class EditEmailForm extends PureComponent {
                         <Select
                           size="large"
                           key={`${_index + 1}`}
-                          value={option.name}
+                          value={option?.name}
                           onChange={this.handleChangeApply}
                           disabled={_isDefault}
                         >
                           {applyTo.map((item, _indexItem) => {
                             return (
                               <Option value={item.value} key={`${_indexItem + 1}`}>
-                                {item.name}
+                                {item?.name}
                               </Option>
                             );
                           })}
@@ -972,7 +973,7 @@ class EditEmailForm extends PureComponent {
                         key={`${_index + 1}`}
                         onChange={(value) => this.handleChangeChckBox(value)}
                       >
-                        {option.name}
+                        {option?.name}
                       </Checkbox>
                     );
                   })}

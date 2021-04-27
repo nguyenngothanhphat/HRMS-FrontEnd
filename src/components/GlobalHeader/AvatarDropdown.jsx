@@ -94,9 +94,25 @@ class AvatarDropdown extends React.Component {
     history.push('/');
   };
 
-  viewProfile = () => {
+  viewProfile = async () => {
     const { currentUser: { employee: { _id = '' } = {} } = {} } = this.props;
-    history.push(`/employees/employee-profile/${_id}`);
+    const { dispatch } = this.props;
+    const tenantId = getCurrentTenant();
+    const companyId = getCurrentCompany();
+
+    localStorage.setItem('tenantCurrentEmployee', tenantId);
+    localStorage.setItem('companyCurrentEmployee', companyId);
+    localStorage.setItem('idCurrentEmployee', _id);
+
+    await dispatch({
+      type: 'employeeProfile/save',
+      payload: {
+        tenantCurrentEmployee: tenantId,
+        companyCurrentEmployee: companyId,
+      },
+    });
+
+    history.replace(`/employees/employee-profile/${_id}`);
   };
 
   wait = (delay, ...args) => {
@@ -253,29 +269,13 @@ class AvatarDropdown extends React.Component {
             </Menu.Item>
           );
         })}
-        {/* {listOfChildCompanies.map((value) => {
-          const { _id = '', name: locationName = '' } = value;
-          return (
-            <Menu.Item
-              key={_id}
-              className={currentLocation !== _id ? styles.menuItemLink : styles.menuItemLink2}
-            >
-              {locationName}
-            </Menu.Item>
-          );
-        })} */}
       </>
     );
   };
 
   render() {
     const { currentUser = {} } = this.props;
-    // const {
-    //   name = '',
-    //   generalInfo: { avatar = '', employeeId = '' } = {},
-    //   title = {},
-    // } = currentUser;
-    const { firstName: name = '', avatar = '', employeeId = '', title = {} } = currentUser;
+    const { firstName: name = '', avatar = '' } = currentUser;
     const { selectLocationAbility } = this.state;
 
     const { LOGOUT, CHANGEPASSWORD } = this.state;
@@ -287,24 +287,26 @@ class AvatarDropdown extends React.Component {
               size={50}
               className={styles.avatar}
               icon={<UserOutlined />}
-              src={avatar || avtDefault}
+              src={currentUser?.employee?.generalInfo?.avatar || avatar || avtDefault}
             />
           </div>
           <div className={styles.viewProfileInfo}>
             <p>{name}</p>
-            {employeeId && (
+            {currentUser?.employee?.generalInfo?.employeeId && (
               <p>
-                {title?.name} - {employeeId}
+                {currentUser?.employee?.title?.name} -{' '}
+                {currentUser?.employee?.generalInfo?.employeeId}
               </p>
             )}
           </div>
         </div>
-        {/* <Menu.Item key={VIEWPROFILE} className={styles.menuItemViewProfile}> */}
-        <div className={styles.viewProfileBtn}>
-          <Button onClick={this.viewProfile} className={styles.buttonLink}>
-            {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
-          </Button>
-        </div>
+        {currentUser?.employee?._id && (
+          <div className={styles.viewProfileBtn}>
+            <Button onClick={this.viewProfile} className={styles.buttonLink}>
+              {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
+            </Button>
+          </div>
+        )}
         {/* </Menu.Item> */}
         <Menu.Divider className={styles.firstDivider} />
         <Menu.Item key={CHANGEPASSWORD} className={styles.menuItemLink}>
@@ -334,7 +336,7 @@ class AvatarDropdown extends React.Component {
             size={44}
             icon={<UserOutlined />}
             className={styles.avatar}
-            src={avatar || avtDefault}
+            src={currentUser?.employee?.generalInfo?.avatar || avatar || avtDefault}
           />
         </span>
       </HeaderDropdown>

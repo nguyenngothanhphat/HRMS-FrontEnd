@@ -102,8 +102,8 @@ class TableFilter extends PureComponent {
       })?.checkedList || [];
 
     let formatDataState = listCountry.map((item) => {
-      const { state = '', country = '' } = item;
-      if (checkedList.length === 0 || checkedList.includes(country)) {
+      const { state = '', country: { _id: countryId = '' } = {} } = item;
+      if (checkedList.length === 0 || checkedList.includes(countryId)) {
         return {
           label: state,
           value: state,

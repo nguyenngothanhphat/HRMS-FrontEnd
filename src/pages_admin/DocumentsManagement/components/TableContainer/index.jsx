@@ -79,6 +79,11 @@ class TableContainer extends PureComponent {
   rightButton = () => {
     return (
       <div className={styles.tabBarExtra}>
+        <NavLink to="/documents/create-template" className={styles.buttonAdd}>
+          <img src={importDocuments} alt="create-template" />
+          <span className={styles.NameNewProfile}>Create new template</span>
+        </NavLink>
+
         <NavLink to="/#" className={styles.buttonAdd}>
           <img src={importDocuments} alt="import-documents" />
           <span className={styles.NameNewProfile}>

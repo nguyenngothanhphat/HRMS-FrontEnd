@@ -194,7 +194,7 @@ const employeeProfile = {
             if (employment.statusCode !== 200) throw response;
             const compensation = yield call(getCompensation, {
               employee: payload.employee,
-              tenantId: payload.tenantId,
+              tenantId: payload?.tenantId,
             });
             if (compensation.statusCode !== 200) throw response;
             yield put({
@@ -332,7 +332,6 @@ const employeeProfile = {
     *fetchLocations(_, { call, put }) {
       try {
         const response = yield call(getLocationList);
-        console.log(response);
         const { statusCode, data } = response;
         const temp = data.map((item) => item);
         const locations = temp.filter((item, index) => temp.indexOf(item) === index);
@@ -635,10 +634,9 @@ const employeeProfile = {
     },
     *clearSaveDocuments(_, { put }) {
       try {
-        const saveDocuments = documentCategories;
         yield put({
           type: 'save',
-          payload: { saveDocuments },
+          payload: { saveDocuments: [...documentCategories] },
         });
       } catch (errors) {
         dialog(errors);

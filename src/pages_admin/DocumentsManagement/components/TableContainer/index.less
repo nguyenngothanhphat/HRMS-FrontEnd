@@ -1,11 +1,17 @@
 .DocumentTableContainer {
   min-width: 1150px;
   margin: 32px 105px;
+  :global {
+    .ant-tabs > .ant-tabs-nav,
+    .ant-tabs > div > .ant-tabs-nav {
+      height: 50px !important;
+    }
+  }
   .TabComponent {
     :global {
       .ant-tabs-tab {
-        font-size: 14px;
         font-weight: 700;
+        font-size: 14px;
       }
       .ant-layout {
         min-height: 540px;
@@ -18,20 +24,20 @@
     margin-bottom: 5px;
   }
   .buttonAdd {
-    margin: 25px 26px 22px 0;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     // width: 100%;
     height: 42px;
-    border-radius: 30px;
+    margin: 25px 26px 22px 0;
     background-color: white;
+    border-radius: 30px;
     .NameNewProfile {
-      margin-left: 7px;
       margin-bottom: 0px;
-      font-size: 14px;
-      font-weight: 500;
+      margin-left: 7px;
       color: #ffa100;
+      font-weight: 500;
+      font-size: 14px;
     }
     :global {
       .anticon {
@@ -45,32 +51,32 @@
   .boxCreate {
     display: flex;
     flex-flow: row nowrap;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     margin: 20px 24px;
     .Text {
       display: flex;
       flex-flow: row nowrap;
-      text-decoration: underline;
       margin-top: 35px;
       margin-bottom: 26.3px;
+      text-decoration: underline;
       .ViewText {
         width: 130px;
         height: 24px;
         margin-bottom: 0;
-        font-size: 18px;
+        color: #140606;
         font-weight: 500;
+        font-size: 18px;
         line-height: 1.33;
         text-align: left;
-        color: #140606;
       }
       .ViewNumber {
         width: 32px;
         height: 24px;
-        font-size: 18px;
-        font-weight: 700;
-        text-align: left;
         color: #de0e0e;
+        font-weight: 700;
+        font-size: 18px;
+        text-align: left;
       }
     }
   }
@@ -81,18 +87,18 @@
   }
   .contentContainer {
     width: 100%;
+    height: 100%;
+    margin: 20px 0;
     overflow-x: auto;
     border: 1px solid #d6dce0;
     border-radius: 8px;
-    margin: 20px 0;
-    height: 100%;
     .directoryLayout {
       position: relative;
       :global {
         .ant-layout-footer {
           height: 70px;
-          border-top: solid 1px #d6dce0;
           background: #ffffff;
+          border-top: solid 1px #d6dce0;
         }
       }
       .directoryLayout_inner {
@@ -109,26 +115,26 @@
       align-items: center;
       justify-content: center;
       width: 111px;
-      height: 40px;
+      height: 20px;
       :global {
         .anticon-filter {
-          font-size: 14px;
-          color: #2c6df9;
-          padding-top: 4px;
           margin-right: 5px;
+          padding-top: 4px;
+          color: #2c6df9;
+          font-size: 14px;
         }
       }
     }
     .textButtonFilter {
       margin-bottom: 0;
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: 0.13px;
       color: #2c6df9;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.13px;
     }
     .filterBackgroundButton {
-      border-radius: 5px;
       background-color: #f4f7ff;
+      border-radius: 5px;
     }
   }
 }

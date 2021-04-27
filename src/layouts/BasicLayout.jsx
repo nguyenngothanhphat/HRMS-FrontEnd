@@ -11,7 +11,7 @@ import { getAuthorityFromRouter } from '@/utils/utils';
 import { Button, Result, Affix, Tooltip, Switch, notification } from 'antd';
 import { UserSwitchOutlined, UserOutlined } from '@ant-design/icons';
 import { connect, Link, useIntl, Redirect, useHistory } from 'umi';
-import { getCurrentCompany, setAuthority } from '@/utils/authority';
+import { getCurrentCompany, getSwitchRoleAbility } from '@/utils/authority';
 import classnames from 'classnames';
 import { checkPermissions } from '@/utils/permissions';
 import logo from '../assets/logo.svg';
@@ -58,7 +58,6 @@ const BasicLayout = (props) => {
 
   const [isCheck, setIsCheck] = useState(false);
   const [loading, setLoading] = useState(false);
-  const history = useHistory();
 
   const getCurrentLogo = () => {
     const currentCompanyId = getCurrentCompany();
@@ -124,35 +123,29 @@ const BasicLayout = (props) => {
 
   function buttonSwitch() {
     let checkAdmin = false;
-    const { signInRole = [], permissionEmployee = [], permissionAdmin = [] } = currentUser;
+    const { signInRole = [] } = currentUser;
 
     const formatRole = signInRole.map((role) => role.toLowerCase());
-    formatRole.map((item) => {
+
+    formatRole.forEach((item) => {
       if (item.includes('admin')) {
         checkAdmin = true;
       }
-      return checkAdmin;
     });
 
     const handleSwitch = async () => {
       let isSwitch = false;
-      let newAuthority = [];
 
       // if press Switch button is ON
       if (isCheck) {
-        newAuthority = [...permissionAdmin];
         if (checkAdmin) {
-          newAuthority = ['admin', ...newAuthority];
           notification.success({ message: 'Switch to Admin successfully' });
           isSwitch = false;
         }
       } else {
-        // else: OFF
-        newAuthority = ['employee', ...permissionEmployee];
         notification.success({ message: 'Switch to Employee successfully' });
         isSwitch = true;
       }
-      setAuthority(newAuthority);
       setIsCheck(!isCheck);
       setLoading(true);
 
@@ -161,22 +154,14 @@ const BasicLayout = (props) => {
         isSwitchingRole: isSwitch,
       });
 
-      await dispatch({
-        type: 'user/save',
-        payload: {
-          permissions: {
-            ...checkPermissions(newAuthority, isCheck),
-          },
-        },
-      });
-
       // history.push('/dashboard');
       window.location.reload();
     };
 
+    const switchRoleAbility = getSwitchRoleAbility();
     return (
       <>
-        {checkAdmin ? (
+        {switchRoleAbility ? (
           <Affix className={styles.btnSwitch}>
             <Tooltip title={isCheck ? 'Switch Admin' : 'Switch Employee'}>
               <Switch
@@ -185,7 +170,6 @@ const BasicLayout = (props) => {
                 unCheckedChildren={<UserOutlined />}
                 onClick={handleSwitch}
                 loading={loading}
-                disabled={permissionEmployee.length === 0}
               />
             </Tooltip>
           </Affix>

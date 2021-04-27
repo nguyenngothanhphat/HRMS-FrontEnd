@@ -4,7 +4,7 @@ import { connect } from 'umi';
 import styles from './styles.less';
 
 function CurrentInfo(props) {
-  const { employeeProfile } = props;
+  const { employeeProfile = {} } = props;
   const {
     title = {},
     joinDate = '',

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Affix } from 'antd';
+import { Affix, Skeleton } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import { connect } from 'umi';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
@@ -128,6 +128,9 @@ class EmployeeProfile extends Component {
 
   componentWillUnmount = () => {
     const { dispatch } = this.props;
+    // localStorage.removeItem('tenantCurrentEmployee');
+    // localStorage.removeItem('companyCurrentEmployee');
+    // localStorage.removeItem('idCurrentEmployee');
     dispatch({
       type: 'employeeProfile/clearState',
     });
@@ -184,6 +187,10 @@ class EmployeeProfile extends Component {
 
     const profileOwner = this.checkProfileOwner(currentEmployee?._id, employee);
 
+    const tenant = localStorage.getItem('tenantCurrentEmployee');
+    const company = localStorage.getItem('companyCurrentEmployee');
+    const id = localStorage.getItem('idCurrentEmployee');
+
     return (
       <PageContainer>
         <div className={styles.containerEmployeeProfile}>
@@ -192,12 +199,18 @@ class EmployeeProfile extends Component {
               <p className={styles.titlePage__text}>Employee Profile</p>
             </div>
           </Affix>
-          <LayoutEmployeeProfile
-            listMenu={listMenu}
-            employeeLocation={location}
-            permissions={permissions}
-            profileOwner={profileOwner}
-          />
+          {tenant && company && id ? (
+            <LayoutEmployeeProfile
+              listMenu={listMenu}
+              employeeLocation={location}
+              permissions={permissions}
+              profileOwner={profileOwner}
+            />
+          ) : (
+            <div style={{ padding: '24px' }}>
+              <Skeleton />
+            </div>
+          )}
         </div>
       </PageContainer>
     );

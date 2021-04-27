@@ -54,12 +54,12 @@ class AccountsPaychecks extends PureComponent {
     if (name === 'bank') {
       const { bankDataOrigin, bankData, dispatch } = this.props;
       const reverseFields = {
-        bankName: bankDataOrigin[0] ? bankDataOrigin[0].bankName : '',
-        accountNumber: bankDataOrigin[0] ? bankDataOrigin[0].accountNumber : '',
-        accountType: bankDataOrigin[0] ? bankDataOrigin[0].accountType : '',
-        ifscCode: bankDataOrigin[0] ? bankDataOrigin[0].ifscCode : '',
-        micrcCode: bankDataOrigin[0] ? bankDataOrigin[0].micrcCode : '',
-        uanNumber: bankDataOrigin[0] ? bankDataOrigin[0].uanNumber : '',
+        bankName: bankDataOrigin[0] ? bankDataOrigin[0].bankName : '-',
+        accountNumber: bankDataOrigin[0] ? bankDataOrigin[0].accountNumber : '-',
+        accountType: bankDataOrigin[0] ? bankDataOrigin[0].accountType : '-',
+        ifscCode: bankDataOrigin[0] ? bankDataOrigin[0].ifscCode : '-',
+        micrcCode: bankDataOrigin[0] ? bankDataOrigin[0].micrcCode : '-',
+        uanNumber: bankDataOrigin[0] ? bankDataOrigin[0].uanNumber : '-',
       };
       const bankList = [...bankData];
       const payload = { ...bankList[0], ...reverseFields };
@@ -81,8 +81,8 @@ class AccountsPaychecks extends PureComponent {
     if (name === 'tax') {
       const { taxDataOrigin, taxData, dispatch } = this.props;
       const reverseFields = {
-        incomeTaxRule: taxDataOrigin[0] ? taxDataOrigin[0].incomeTaxRule : '',
-        panNum: taxDataOrigin[0] ? taxDataOrigin[0].panNum : '',
+        incomeTaxRule: taxDataOrigin[0] ? taxDataOrigin[0].incomeTaxRule : '-',
+        panNum: taxDataOrigin[0] ? taxDataOrigin[0].panNum : '-',
       };
       const taxList = [...taxData];
       const payload = { ...taxData[0], ...reverseFields };
