@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
-import { Tabs, Layout } from 'antd';
+import { Tabs, Layout, Skeleton } from 'antd';
 import DirectoryTable from '@/components/DirectoryTable';
-import { getCurrentCompany, getCurrentLocation, isOwner, isEmployee } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
 
 import { debounce } from 'lodash';
 import AddEmployeeForm from '@/pages_admin/EmployeesManagement/components/TableContainer/components/AddEmployeeForm';
@@ -25,6 +25,10 @@ const { TabPane } = Tabs;
     loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
     loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
     loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
+    loadingCompaniesOfUser: loading.effects['user/fetchCompanyOfUser'],
+    loadingFetchLocations:
+      loading.effects['locationSelection/fetchLocationsByCompany'] ||
+      loading.effects['locationSelection/fetchLocationListByParentCompany'],
     employee,
     currentUser,
     permissions,
@@ -108,34 +112,10 @@ class DirectoryComponent extends PureComponent {
   }
 
   componentDidMount = async () => {
-    // const { dispatch } = this.props;
     // *: error tenant
     // this.fetchApprovalFlowList();
 
-    // const tenantId = getCurrentTenant();
-    // const company = getCurrentCompany();
-    // const isOwnerCheck = isOwner();
-
-    // if (company) {
-    //   const res = await dispatch({
-    //     type: isOwnerCheck ? 'employee/fetchOwnerLocation' : 'employee/fetchLocation',
-    //     payload: { company, tenantId },
-    //   });
-    //   const { statusCode = 0, data = [] } = res;
-    //   if (statusCode === 200) {
-    //     this.setState({
-    //       listLocationsByCompany: data,
-    //     });
-    //   }
-    // }
-
-    const currentLocation = getCurrentLocation();
-    if (currentLocation && currentLocation !== 'undefined') {
-      this.setState({
-        location: [currentLocation],
-      });
-    }
-    // this.initDataTable();
+    // this.renderData();
     this.initTabId();
   };
 
@@ -161,17 +141,13 @@ class DirectoryComponent extends PureComponent {
       prevState.filterName !== filterName ||
       prevState.company.length !== company.length
     ) {
-      this.getDataTable(params, tabId);
+      this.onChangeTab(params, tabId);
     }
 
-    const { filterList = {}, listLocationsByCompany = [], companiesOfUser = [] } = this.props;
+    const { filterList = {}, listLocationsByCompany = [] } = this.props;
     if (
       JSON.stringify(prevProps?.filterList || []) !== JSON.stringify(filterList) ||
-      (JSON.stringify(prevProps?.listLocationsByCompany) !==
-        JSON.stringify(listLocationsByCompany) &&
-        JSON.stringify(prevProps?.listLocationsByCompany) !==
-          JSON.stringify(listLocationsByCompany) &&
-        JSON.stringify(prevProps?.companiesOfUser) !== JSON.stringify(companiesOfUser))
+      JSON.stringify(prevProps?.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {
       this.renderData();
     }
@@ -340,18 +316,7 @@ class DirectoryComponent extends PureComponent {
     });
   };
 
-  initDataTable = () => {
-    // const { currentUser } = this.props;
-    // const { roles = [] } = currentUser;
-    // const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
-    // const filterRolesCSA = roles.filter((item) => item._id === 'ADMIN-CSA');
-    // if (filterRoles.length > 0 || filterRolesCSA.length > 0) {
-    //   return this.renderHrGloBal();
-    // }
-    return this.renderData();
-  };
-
-  ChangeTab = (params, tabId) => {
+  onChangeTab = (params, tabId) => {
     const {
       tabList: { active, myTeam, inActive },
     } = this.state;
@@ -487,17 +452,6 @@ class DirectoryComponent extends PureComponent {
         payload,
       });
     }
-  };
-
-  getDataTable = (params, tabId) => {
-    // const { currentUser } = this.props;
-    // const { roles = [] } = currentUser;
-    // const filterRoles = roles.filter((item) => item._id === 'HR-GLOBAL');
-    // const filterRolesCSA = roles.filter((item) => item._id === 'ADMIN-CSA');
-    // if (filterRoles.length > 0 || filterRolesCSA.length > 0) {
-    //   return this.ChangeTabHrGloBal(params, tabId);
-    // }
-    return this.ChangeTab(params, tabId);
   };
 
   renderListEmployee = (tabId) => {
@@ -704,13 +658,6 @@ class DirectoryComponent extends PureComponent {
             loadingListActive,
             findIndexShowLocationActive,
           )}
-        {/* {findIndexMyTeam !== -1 &&
-          !checkRoleEmployee &&
-          this.renderTab(
-            formatMessage({ id: 'pages.directory.directory.myTeamTab' }),
-            myTeam,
-            loadingListMyTeam,
-          )} */}
         {findIndexMyTeam !== -1 && (
           <>
             {this.renderTab(
@@ -758,59 +705,34 @@ class DirectoryComponent extends PureComponent {
       visible: false,
       visibleImportEmployee: false,
     });
-    this.initDataTable();
-  };
-
-  handleChangeGetLocation = (value) => {
-    const newItem = [value];
-    this.setState({ location: newItem });
-  };
-
-  handleRenderTable = (checkRole, location, collapsed, roles) => {
-    if (checkRole) {
-      if (checkRole._id) {
-        if (location.length > 0) {
-          return (
-            <div className={styles.contentContainer}>
-              <Tabs
-                className={styles.TabComponent}
-                onTabClick={this.handleClickTabPane}
-                tabBarExtraContent={this.rightButton(roles, collapsed)}
-              >
-                {this.renderTabPane()}
-              </Tabs>
-            </div>
-          );
-        }
-        return '';
-      }
-    }
-    return (
-      <div className={styles.contentContainer}>
-        <Tabs
-          // defaultActiveKey="active"
-          className={styles.TabComponent}
-          onTabClick={this.handleClickTabPane}
-          tabBarExtraContent={this.rightButton(roles, collapsed)}
-        >
-          {this.renderTabPane()}
-        </Tabs>
-      </div>
-    );
+    this.renderData();
   };
 
   render() {
     const {
       currentUser: { company, roles = [] },
       companiesOfUser = [],
+      loadingFetchLocations = false,
+      loadingCompaniesOfUser = false,
     } = this.props;
-    const { collapsed, visible, visibleImportEmployee, location } = this.state;
-    const getRole = roles.filter((item) => item._id === 'HR-GLOBAL');
-    const getRoleCSA = roles.filter((item) => item._id === 'ADMIN-CSA');
+    const { collapsed, visible, visibleImportEmployee } = this.state;
 
     return (
       <div className={styles.DirectoryComponent}>
-        {this.handleRenderTable(getRole[0] || getRoleCSA[0], location, collapsed, roles)}
+        {loadingFetchLocations || loadingCompaniesOfUser ? (
+          <Skeleton />
+        ) : (
+          <div className={styles.contentContainer}>
+            <Tabs
+              // defaultActiveKey="active"
+              className={styles.TabComponent}
+              onTabClick={this.handleClickTabPane}
+              tabBarExtraContent={this.rightButton(roles, collapsed)}
+            >
+              {this.renderTabPane()}
+            </Tabs>
+          </div>
+        )}
 
         <AddEmployeeForm
           company={company}

@@ -2,7 +2,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
-import { getCurrentCompany, getCurrentTenant, getAuthority } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant, getAuthority, isOwner } from '@/utils/authority';
 import DirectoryComponent from './components/Directory';
 import styles from './index.less';
 
@@ -43,6 +43,37 @@ class Directory extends PureComponent {
       },
     });
   }
+
+  fetchData = async () => {
+    const {
+      dispatch,
+      manageTenant = [],
+      // , roles = []
+      signInRole = [],
+    } = this.props;
+    const companyId = getCurrentCompany();
+    const tenantId = getCurrentTenant();
+    const checkIsOwner = isOwner();
+
+    const formatSignInRole = signInRole.map((role) => role.toLowerCase());
+    if (checkIsOwner || formatSignInRole.includes('owner')) {
+      await dispatch({
+        type: 'locationSelection/fetchLocationListByParentCompany',
+        payload: {
+          company: companyId,
+          tenantIds: manageTenant,
+        },
+      });
+    } else {
+      await dispatch({
+        type: 'locationSelection/fetchLocationsByCompany',
+        payload: {
+          company: companyId,
+          tenantId,
+        },
+      });
+    }
+  };
 
   componentWillUnmount = () => {
     const { dispatch } = this.props;
