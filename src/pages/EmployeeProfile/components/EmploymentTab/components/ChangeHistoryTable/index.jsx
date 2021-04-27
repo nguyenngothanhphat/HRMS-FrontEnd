@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import moment from 'moment';
 import { connect } from 'umi';
 import { Table } from 'antd';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(({ employeeProfile }) => ({ employeeProfile }))
@@ -89,8 +90,11 @@ class ChangeHistoryTable extends PureComponent {
         dataIndex: 'action',
         key: 'action',
         align: 'left',
-        render: (action) => (
-          <span className={styles.changeHistoryTable_action} onClick={this.handleClick}>
+        render: (action, item) => (
+          <span
+            className={styles.changeHistoryTable_action}
+            onClick={() => this.handleClick(item.id)}
+          >
             {action}
           </span>
         ),
@@ -103,7 +107,7 @@ class ChangeHistoryTable extends PureComponent {
     }));
   };
 
-  handleClick = () => {
+  handleClick = (id) => {
     const {
       dispatch,
       employeeProfile: { originData: { generalData: { employee: employeeId = '' } = {} } = {} },
@@ -115,13 +119,14 @@ class ChangeHistoryTable extends PureComponent {
       type: 'employeeProfile/revokeHistory',
       payload: {
         employee: employeeId,
+        id,
+        tenantId: getCurrentTenant(),
       },
     });
   };
 
   render() {
     const { employeeProfile: { originData: { changeHistories = [] } = {} } = {} } = this.props;
-
     const newData = changeHistories.map((item, index) => ({
       key: `${index + 1}`,
       changedInfomation: {
@@ -135,7 +140,8 @@ class ChangeHistoryTable extends PureComponent {
       effectiveDate: moment(item.effectiveDate).locale('en').format('MM.DD.YY'),
       changedBy: 'HR Admin',
       changedDate: moment(item.changeDate).locale('en').format('MM.DD.YY'),
-      action: index === 0 ? 'Revoke' : '',
+      action: item.takeEffect === 'WILL_UPDATE' ? 'Revoke' : '',
+      id: item._id,
     }));
 
     return (

@@ -175,12 +175,15 @@ const employeeProfile = {
           const response = yield call(addChangeHistory, payload);
           const { statusCode } = response;
           if (statusCode !== 200) throw response;
-          if (payload.takeEffect === 'UPDATED' && statusCode === 200) {
+          if (
+            // payload.takeEffect === 'UPDATED' &&
+            statusCode === 200
+          ) {
             const updates = yield call(getChangeHistories, {
               employee: payload.employee,
               tenantId: payload.tenantId,
             });
-            if (updates.statusCode !== 200) throw updates;
+            // if (updates.statusCode !== 200) throw updates;
             yield put({ type: 'saveOrigin', payload: { changeHistories: updates.data } });
             const employment = yield call(getEmploymentInfo, {
               id: payload.employee,
@@ -329,7 +332,6 @@ const employeeProfile = {
     *fetchLocations(_, { call, put }) {
       try {
         const response = yield call(getLocationList);
-        console.log(response);
         const { statusCode, data } = response;
         const temp = data.map((item) => item);
         const locations = temp.filter((item, index) => temp.indexOf(item) === index);
@@ -1098,13 +1100,19 @@ const employeeProfile = {
 
         /// /////////////////////
         if (statusCode === 200) {
-          const employment = yield call(getEmploymentInfo, { id: payload.employee });
+          const employment = yield call(getEmploymentInfo, {
+            id: payload.employee,
+            tenantId: payload.tenantId,
+          });
           yield put({
             type: 'saveOrigin',
             payload: { employmentData: employment.data },
           });
           if (employment.statusCode !== 200) throw response;
-          const compensation = yield call(getCompensation, { employee: payload.employee });
+          const compensation = yield call(getCompensation, {
+            employee: payload.employee,
+            tenantId: payload.tenantId,
+          });
           if (compensation.statusCode !== 200) throw response;
           yield put({
             type: 'saveOrigin',
