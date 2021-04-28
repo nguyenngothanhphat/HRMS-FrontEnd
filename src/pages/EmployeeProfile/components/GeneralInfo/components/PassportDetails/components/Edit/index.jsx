@@ -26,6 +26,7 @@ import styles from './index.less';
       originData: { passportData: passportDataOrigin = [] } = {},
       tempData: { passportData = [], generalData = {}, document = {} } = {},
       tenantCurrentEmployee = '',
+      documentCategories = [],
     } = {},
   }) => ({
     loading: loading.effects['upload/uploadFile'],
@@ -43,6 +44,7 @@ import styles from './index.less';
     urlImage,
     loadingPassportTest,
     tenantCurrentEmployee,
+    documentCategories,
   }),
 )
 class Edit extends Component {
@@ -61,11 +63,17 @@ class Edit extends Component {
   }
 
   componentDidMount() {
-    const { passportData = [] } = this.props;
+    const { dispatch, passportData = [] } = this.props;
     const checkValidatePassPort = [...passportData];
     const valueFalse = passportData.length > 0 ? [passportData[0].employee] : [];
     const result = checkValidatePassPort.map((item) => valueFalse.includes(item?.employee));
     this.setState({ validatePassPort: result });
+    dispatch({
+      type: 'employeeProfile/fetchDocumentCategories',
+      payload: {
+        page: 'Document Employee',
+      },
+    });
   }
 
   validateDate = (getPassportData, index) => {
@@ -123,7 +131,12 @@ class Edit extends Component {
   };
 
   handleAddPassPortAllField = (item, index) => {
-    const { dispatch, idCurrentEmployee, tenantCurrentEmployee = '' } = this.props;
+    const {
+      dispatch,
+      idCurrentEmployee,
+      tenantCurrentEmployee = '',
+      documentCategories = [],
+    } = this.props;
     const { document: documentPassPort, urlFile } = item;
 
     let getFile = '';
@@ -131,12 +144,15 @@ class Edit extends Component {
       getFile = urlFile;
     }
 
+    const indentityCategory = documentCategories.find((child) => child.name === 'Indentity');
+
     if (documentPassPort) {
       const dataPassport = {
         id: documentPassPort?._id,
         attachment: getFile?.id,
-        key: `Passport${index + 1}`,
+        key: `Passport_${index + 1}`,
         tenantId: tenantCurrentEmployee,
+        category: indentityCategory?._id,
       };
 
       dispatch({
@@ -147,10 +163,9 @@ class Edit extends Component {
       dispatch({
         type: 'employeeProfile/fetchDocumentAdd',
         payload: {
-          key: `PassPort${index + 1}`,
+          key: `Passport_${index + 1}`,
           attachment: getFile?.id,
-          employeeGroup: 'Identity',
-          parentEmployeeGroup: 'Indentification Documents',
+          category: indentityCategory?._id,
           employee: idCurrentEmployee,
           tenantId: tenantCurrentEmployee,
         },

@@ -400,7 +400,7 @@ class ViewDocument extends PureComponent {
               </Col>
             </Row>
 
-            {this.includeString(childCategoryName, 'identity') && (
+            {this.includeString(childCategoryName, 'indentity') && (
               <Row className={styles.infoRow}>
                 <Col className={styles.infoCol1} span={7}>
                   {key} Number

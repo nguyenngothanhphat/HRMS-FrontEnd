@@ -16,6 +16,7 @@ import styles from './index.less';
       originData: { visaData: visaDataOrigin = [] } = {},
       tempData: { generalData = {}, visaData = [], document = {} } = {},
       tenantCurrentEmployee = '',
+      documentCategories = [],
     } = {},
   }) => ({
     loading: loading.effects['upload/uploadFile'],
@@ -33,6 +34,7 @@ import styles from './index.less';
     tenantCurrentEmployee,
 
     urlImage,
+    documentCategories,
   }),
 )
 class Edit extends Component {
@@ -46,6 +48,16 @@ class Edit extends Component {
       visible: false,
       linkImage: '',
     };
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/fetchDocumentCategories',
+      payload: {
+        page: 'Document Employee',
+      },
+    });
   }
 
   processDataChangesVisa = (item) => {
@@ -78,18 +90,26 @@ class Edit extends Component {
   };
 
   handleAddVisaAllField = (item, index) => {
-    const { dispatch, idCurrentEmployee, tenantCurrentEmployee = '' } = this.props;
+    const {
+      dispatch,
+      idCurrentEmployee,
+      tenantCurrentEmployee = '',
+      documentCategories = [],
+    } = this.props;
     const { urlFile, document: documentVisa } = item;
     let getFile = '';
     if (urlFile) {
       getFile = urlFile;
     }
+    const indentityCategory = documentCategories.find((child) => child.name === 'Indentity');
+
     if (documentVisa) {
       const dataVisa = {
         id: documentVisa._id,
         attachment: getFile.id,
-        key: `Visa${index + 1}`,
+        key: `Visa_${index + 1}`,
         tenantId: tenantCurrentEmployee,
+        category: indentityCategory?._id,
       };
       dispatch({
         type: 'employeeProfile/fetchDocumentUpdate',
@@ -99,10 +119,9 @@ class Edit extends Component {
       dispatch({
         type: 'employeeProfile/fetchDocumentAdd',
         payload: {
-          key: `Visa${index + 1}`,
+          key: `Visa_${index + 1}`,
           attachment: getFile.id,
-          employeeGroup: 'Identity',
-          parentEmployeeGroup: 'Indentification Documents',
+          category: indentityCategory?._id,
           employee: idCurrentEmployee,
           tenantId: tenantCurrentEmployee,
         },
