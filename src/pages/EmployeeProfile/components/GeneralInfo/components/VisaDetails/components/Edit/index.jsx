@@ -13,6 +13,7 @@ import styles from './index.less';
     employeeProfile: {
       countryList,
       idCurrentEmployee,
+      companyCurrentEmployee,
       originData: { visaData: visaDataOrigin = [] } = {},
       tempData: { generalData = {}, visaData = [], document = {} } = {},
       tenantCurrentEmployee = '',
@@ -32,6 +33,7 @@ import styles from './index.less';
     document,
     idCurrentEmployee,
     tenantCurrentEmployee,
+    companyCurrentEmployee,
 
     urlImage,
     documentCategories,
@@ -93,6 +95,7 @@ class Edit extends Component {
     const {
       dispatch,
       idCurrentEmployee,
+      companyCurrentEmployee = '',
       tenantCurrentEmployee = '',
       documentCategories = [],
     } = this.props;
@@ -124,6 +127,7 @@ class Edit extends Component {
           category: indentityCategory?._id,
           employee: idCurrentEmployee,
           tenantId: tenantCurrentEmployee,
+          company: companyCurrentEmployee,
         },
       }).then((id) => this.handleAddVisa(id, index, item));
     }

@@ -26,6 +26,7 @@ import styles from './index.less';
       originData: { passportData: passportDataOrigin = [] } = {},
       tempData: { passportData = [], generalData = {}, document = {} } = {},
       tenantCurrentEmployee = '',
+      companyCurrentEmployee = '',
       documentCategories = [],
     } = {},
   }) => ({
@@ -45,6 +46,7 @@ import styles from './index.less';
     loadingPassportTest,
     tenantCurrentEmployee,
     documentCategories,
+    companyCurrentEmployee,
   }),
 )
 class Edit extends Component {
@@ -135,6 +137,7 @@ class Edit extends Component {
       dispatch,
       idCurrentEmployee,
       tenantCurrentEmployee = '',
+      companyCurrentEmployee = '',
       documentCategories = [],
     } = this.props;
     const { document: documentPassPort, urlFile } = item;
@@ -168,6 +171,7 @@ class Edit extends Component {
           category: indentityCategory?._id,
           employee: idCurrentEmployee,
           tenantId: tenantCurrentEmployee,
+          company: companyCurrentEmployee,
         },
       }).then((id) => this.handleAddPassPort(id, index, item));
     }
