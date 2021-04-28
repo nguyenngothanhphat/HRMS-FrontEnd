@@ -758,7 +758,6 @@ class DirectoryComponent extends PureComponent {
       visible: false,
       visibleImportEmployee: false,
     });
-    this.initDataTable();
   };
 
   handleChangeGetLocation = (value) => {
