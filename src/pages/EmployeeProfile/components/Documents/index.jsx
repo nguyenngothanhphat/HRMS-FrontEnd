@@ -53,10 +53,19 @@ class Documents extends Component {
     });
   };
 
+  fetchDocumentList = () => {
+    const { dispatch, idCurrentEmployee = '', tenantCurrentEmployee = '' } = this.props;
+    dispatch({
+      type: 'employeeProfile/fetchDocuments',
+      payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
+    });
+  };
+
   componentDidMount = () => {
     this.fetchDocumentCategories();
+    this.fetchDocumentList();
 
-    const { roles = [], idCurrentEmployee = '', tenantCurrentEmployee = '', dispatch } = this.props;
+    const { roles = [] } = this.props;
     const findHRGlobal =
       roles.find((role) => {
         const { _id = '' } = role;
@@ -68,10 +77,6 @@ class Documents extends Component {
         isHR: true,
       });
     }
-    dispatch({
-      type: 'employeeProfile/fetchDocuments',
-      payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
-    });
   };
 
   componentWillUnmount = () => {
@@ -83,9 +88,14 @@ class Documents extends Component {
   };
 
   onBackClick = () => {
-    this.setState({
-      isViewingDocument: false,
-    });
+    this.setState(
+      {
+        isViewingDocument: false,
+      },
+      () => {
+        this.fetchDocumentList();
+      },
+    );
   };
 
   getFiles = (item) => {

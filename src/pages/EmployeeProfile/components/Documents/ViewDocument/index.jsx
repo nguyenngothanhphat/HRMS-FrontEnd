@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Select, Spin } from 'antd';
+import { Button, Row, Col, Select, Spin, Image, Skeleton } from 'antd';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { formatMessage, connect } from 'umi';
 import UploadImage from '@/components/UploadImage';
@@ -10,6 +10,7 @@ import CustomModal from '@/components/CustomModal';
 import ArrowLeftIcon from '@/assets/arrow-left_icon.svg';
 import ArrowRightIcon from '@/assets/arrow-right_icon.svg';
 import ModalImg from '@/assets/modal_img_1.png';
+import NoImage from '@/assets/no-photo-available-icon.jpg';
 import styles from './index.less';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -320,7 +321,6 @@ class ViewDocument extends PureComponent {
       category: { name: childCategoryName = '' } = {},
       attachment: { url = '' } = {},
     } = documentDetail;
-
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
@@ -336,16 +336,28 @@ class ViewDocument extends PureComponent {
         <div className={styles.tableContent}>
           {/* DOCUMENT VIEWER FRAME */}
           <div className={styles.documentPreviewFrame}>
-            {identifyImageOrPdf(url) === 0 ? (
+            {identifyImageOrPdf(url) === 0 && !loadingFileDetail && (
               <div className={styles.imageFrame}>
-                <img alt="preview" src={url} />
+                <Image
+                  alt="preview"
+                  src={url}
+                  onError={(e) => {
+                    e.target.src = NoImage;
+                  }}
+                />
               </div>
-            ) : (
+            )}
+
+            {identifyImageOrPdf(url) !== 0 && !loadingFileDetail && (
               <Document
                 className={styles.pdfFrame}
                 onLoadSuccess={this.onDocumentLoadSuccess}
                 file={url}
-                loading={this.documentWarning('Loading document. Please wait...')}
+                loading={
+                  <div style={{ padding: '24px' }}>
+                    <Skeleton />
+                  </div>
+                }
                 noData={this.documentWarning('URL is not available.')}
               >
                 {Array.from(new Array(numPages), (el, index) => (
@@ -466,7 +478,7 @@ class ViewDocument extends PureComponent {
           />
 
           <Button
-            disabled={!selectedStr}
+            disabled={selectedStr ? selectedStr.length === 0 : true}
             loading={loading2}
             onClick={this.onSaveClick}
             className={styles.saveButton}
