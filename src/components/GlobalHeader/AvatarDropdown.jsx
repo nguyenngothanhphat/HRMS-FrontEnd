@@ -96,8 +96,8 @@ class AvatarDropdown extends React.Component {
 
   viewProfile = async () => {
     const {
-      currentUser: { employee: { _id = '' } = {} } = {},
-      currentUser: { _id: idAdminOwner = '' } = {},
+      currentUser: { employee: { _id: employeeID = '' } = {} } = {},
+      currentUser: { _id: adminOwnerID = '' } = {},
     } = this.props;
     const { dispatch } = this.props;
     const tenantId = getCurrentTenant();
@@ -105,7 +105,7 @@ class AvatarDropdown extends React.Component {
 
     localStorage.setItem('tenantCurrentEmployee', tenantId);
     localStorage.setItem('companyCurrentEmployee', companyId);
-    localStorage.setItem('idCurrentEmployee', _id);
+    localStorage.setItem('idCurrentEmployee', employeeID);
 
     await dispatch({
       type: 'employeeProfile/save',
@@ -115,10 +115,10 @@ class AvatarDropdown extends React.Component {
       },
     });
 
-    if (idAdminOwner) {
-      history.replace(`/user-profile/${idAdminOwner}`);
+    if (!employeeID) {
+      history.replace(`/user-profile/${adminOwnerID}`);
     } else {
-      history.replace(`/employees/employee-profile/${_id}`);
+      history.replace(`/employees/employee-profile/${employeeID}`);
     }
   };
 
