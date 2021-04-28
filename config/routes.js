@@ -223,7 +223,7 @@ const routes = [
           },
           {
             path: '/user-profile/:reId',
-            name: 'userProfile',
+            name: 'User Profile',
             component: './UserProfile',
             hideInMenu: true,
             // authority: ['admin-sa'],
