@@ -6,9 +6,13 @@ import { getCurrentCompany, getCurrentTenant, getAuthority, isOwner } from '@/ut
 import DirectoryComponent from './components/Directory';
 import styles from './index.less';
 
-@connect(({ user: { currentUser = {} } }) => ({
-  currentUser,
-}))
+@connect(
+  ({ user: { currentUser: { roles = [], signInRole = [], manageTenant = [] } = {} } = {} }) => ({
+    roles,
+    signInRole,
+    manageTenant,
+  }),
+)
 class Directory extends PureComponent {
   constructor(props) {
     super(props);
@@ -22,9 +26,7 @@ class Directory extends PureComponent {
   }
 
   componentDidMount() {
-    const {
-      currentUser: { roles = [], signInRole = [] },
-    } = this.props;
+    const { roles = [], signInRole = [] } = this.props;
     const checkRoleEmployee = this.checkRoleEmployee(roles, signInRole);
 
     this.setState({
@@ -42,21 +44,17 @@ class Directory extends PureComponent {
         tenantId,
       },
     });
+
+    this.fetchData();
   }
 
   fetchData = async () => {
-    const {
-      dispatch,
-      manageTenant = [],
-      // , roles = []
-      signInRole = [],
-    } = this.props;
+    const { dispatch, manageTenant = [] } = this.props;
     const companyId = getCurrentCompany();
     const tenantId = getCurrentTenant();
     const checkIsOwner = isOwner();
 
-    const formatSignInRole = signInRole.map((role) => role.toLowerCase());
-    if (checkIsOwner || formatSignInRole.includes('owner')) {
+    if (checkIsOwner) {
       await dispatch({
         type: 'locationSelection/fetchLocationListByParentCompany',
         payload: {
