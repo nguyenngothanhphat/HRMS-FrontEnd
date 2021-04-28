@@ -95,7 +95,10 @@ class AvatarDropdown extends React.Component {
   };
 
   viewProfile = async () => {
-    const { currentUser: { employee: { _id = '' } = {} } = {} } = this.props;
+    const {
+      currentUser: { employee: { _id = '' } = {} } = {},
+      currentUser: { _id: idAdminOwner = '' } = {},
+    } = this.props;
     const { dispatch } = this.props;
     const tenantId = getCurrentTenant();
     const companyId = getCurrentCompany();
@@ -112,6 +115,9 @@ class AvatarDropdown extends React.Component {
       },
     });
 
+    if (idAdminOwner) {
+      history.replace(`/employees/employee-profile/${idAdminOwner}`);
+    }
     history.replace(`/employees/employee-profile/${_id}`);
   };
 
@@ -300,7 +306,7 @@ class AvatarDropdown extends React.Component {
             )}
           </div>
         </div>
-        {currentUser?.employee?._id && (
+        {currentUser && (
           <div className={styles.viewProfileBtn}>
             <Button onClick={this.viewProfile} className={styles.buttonLink}>
               {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
