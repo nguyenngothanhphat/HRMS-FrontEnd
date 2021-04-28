@@ -126,11 +126,10 @@ class UploadModal extends Component {
   handleRemoveToServer = () => {
     const { keyFileName: key, fileId } = this.state;
     const {
-      employeeGroup = '',
-      parentEmployeeGroup = '',
+      categoryId = '',
       employeeProfile: {
         idCurrentEmployee = '',
-        originData: { compensationData: { company = '' } = {} } = {},
+        companyCurrentEmployee = '',
         tenantCurrentEmployee = '',
       } = {},
       dispatch,
@@ -143,11 +142,10 @@ class UploadModal extends Component {
     } else if (key !== '') {
       const data = {
         key, // file name
-        employeeGroup,
-        parentEmployeeGroup,
         attachment: fileId,
+        category: categoryId,
         employee: idCurrentEmployee,
-        company,
+        company: companyCurrentEmployee,
         tenantId: tenantCurrentEmployee,
       };
 
@@ -210,7 +208,7 @@ class UploadModal extends Component {
     const { uploadedFileName } = this.state;
     const {
       loadingUploadAttachment,
-      employeeGroup = '',
+      childCategory = '',
       loadingUploadDocument,
       loadingUpdateDocument,
     } = this.props;
@@ -236,7 +234,7 @@ class UploadModal extends Component {
           onCancel={handleCancel}
           destroyOnClose
           footer={[
-            employeeGroup === 'Identity' ? (
+            childCategory === 'Identity' ? (
               <Button
                 key="cancel"
                 type="primary"
@@ -308,7 +306,7 @@ class UploadModal extends Component {
               </Dragger>
             </div>
             <Form
-              initialValues={{ documentType: employeeGroup, documentName: currentFileName }}
+              initialValues={{ documentType: childCategory, documentName: currentFileName }}
               ref={this.formRef}
               id="myForm"
               className={styles.fileNameInput}

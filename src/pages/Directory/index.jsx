@@ -2,13 +2,17 @@ import { PageContainer } from '@/layouts/layout/src';
 import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
-import { getCurrentCompany, getCurrentTenant, getAuthority } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant, getAuthority, isOwner } from '@/utils/authority';
 import DirectoryComponent from './components/Directory';
 import styles from './index.less';
 
-@connect(({ user: { currentUser = {} } }) => ({
-  currentUser,
-}))
+@connect(
+  ({ user: { currentUser: { roles = [], signInRole = [], manageTenant = [] } = {} } = {} }) => ({
+    roles,
+    signInRole,
+    manageTenant,
+  }),
+)
 class Directory extends PureComponent {
   constructor(props) {
     super(props);
@@ -22,9 +26,7 @@ class Directory extends PureComponent {
   }
 
   componentDidMount() {
-    const {
-      currentUser: { roles = [], signInRole = [] },
-    } = this.props;
+    const { roles = [], signInRole = [] } = this.props;
     const checkRoleEmployee = this.checkRoleEmployee(roles, signInRole);
 
     this.setState({
@@ -42,7 +44,34 @@ class Directory extends PureComponent {
         tenantId,
       },
     });
+
+    this.fetchData();
   }
+
+  fetchData = async () => {
+    const { dispatch, manageTenant = [] } = this.props;
+    const companyId = getCurrentCompany();
+    const tenantId = getCurrentTenant();
+    const checkIsOwner = isOwner();
+
+    if (checkIsOwner) {
+      await dispatch({
+        type: 'locationSelection/fetchLocationListByParentCompany',
+        payload: {
+          company: companyId,
+          tenantIds: manageTenant,
+        },
+      });
+    } else {
+      await dispatch({
+        type: 'locationSelection/fetchLocationsByCompany',
+        payload: {
+          company: companyId,
+          tenantId,
+        },
+      });
+    }
+  };
 
   componentWillUnmount = () => {
     const { dispatch } = this.props;

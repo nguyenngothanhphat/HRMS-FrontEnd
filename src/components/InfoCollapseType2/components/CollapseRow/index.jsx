@@ -9,6 +9,7 @@ import UpArrowIcon from '@/assets/upArrow.svg';
 import DownloadFile from '@/components/DownloadFile';
 import { connect } from 'umi';
 // import UploadIcon from '../../../../../public/assets/images/iconUpload.svg';
+import moment from 'moment';
 import UploadModal from '../UploadModal';
 
 import styles from './index.less';
@@ -37,11 +38,11 @@ class CollapseRow extends PureComponent {
     });
   };
 
-  handleUploadClick = (value, id, fileName) => {
+  handleUploadClick = (value, _id, fileName) => {
     this.setState({
       uploadModalVisible: true,
       actionType: value,
-      currentDocumentId: id || '',
+      currentDocumentId: _id || '',
       currentFileName: fileName || '',
     });
   };
@@ -70,9 +71,12 @@ class CollapseRow extends PureComponent {
   };
 
   checkShowUploadBtn = () => {
-    const { data: row = [], parentEmployeeGroup = '', isHR } = this.props;
-    const { kind = '' } = row;
-    return (!isHR && parentEmployeeGroup !== 'PR Reports' && kind !== 'Identity') || isHR;
+    const { data: row = [] } = this.props;
+    const { name = '' } = row;
+    return (
+      // !isHR &&
+      name !== 'Indentity'
+    );
   };
 
   statusAndButtons = () => {
@@ -127,8 +131,8 @@ class CollapseRow extends PureComponent {
 
   processData = (files) => {
     return files.filter((file) => {
-      const { id = '' } = file;
-      return id !== null && id !== '';
+      const { _id = '' } = file;
+      return _id !== null && _id !== '';
     });
   };
 
@@ -137,23 +141,21 @@ class CollapseRow extends PureComponent {
     const {
       data: row = {},
       onFileClick = () => {},
-      parentEmployeeGroup = '',
       employeeProfile: {
         originData: { generalData: { employeeId: idCurrentEmployee = '' } = {} } = {},
       },
     } = this.props;
-    const { kind = '', files = [] } = row;
+    const { name = '', _id: categoryId = '', files = [] } = row;
     const processData = this.processData(files);
     const showUpload = this.checkShowUploadBtn();
-
     return (
       <div>
         <UploadModal
           actionType={actionType}
           visible={uploadModalVisible}
           handleCancel={this.handleCancel}
-          employeeGroup={kind}
-          parentEmployeeGroup={parentEmployeeGroup}
+          childCategory={name}
+          categoryId={categoryId}
           refreshData={this.refreshData}
           currentDocumentId={currentDocumentId}
           currentFileName={currentFileName}
@@ -169,15 +171,21 @@ class CollapseRow extends PureComponent {
             className={styles.eachPanel}
             key="1"
             showArrow={false}
-            header={this.headerWithArrowIcon(open, kind)}
+            header={this.headerWithArrowIcon(open, name)}
             extra={this.statusAndButtons()}
           >
             {processData.map((file) => {
-              const { id = '', fileName = '', source = '', generatedBy = '', date = '' } = file;
+              const {
+                _id = '',
+                key: fileName = '',
+                attachment: { url: source = '' } = {},
+                generatedBy = 'Terralogic',
+                createdAt = '',
+              } = file;
               return (
-                <Row key={id} className={styles.eachRow}>
+                <Row key={_id} className={styles.eachRow}>
                   <Col span={8} className={styles.fileName}>
-                    <div onClick={() => onFileClick(id)}>
+                    <div onClick={() => onFileClick(_id)}>
                       {this.identifyImageOrPdf(source) === 1 ? (
                         <img src={PDFIcon} alt="file" className={styles.fileIcon} />
                       ) : (
@@ -187,7 +195,7 @@ class CollapseRow extends PureComponent {
                     </div>
                   </Col>
                   <Col span={7}>{generatedBy}</Col>
-                  <Col span={7}>{date}</Col>
+                  <Col span={7}>{moment(createdAt).locale('en').format('MM.DD.YY')}</Col>
                   <Col span={2}>
                     <div className={styles.downloadFile}>
                       {showUpload && (
@@ -195,7 +203,7 @@ class CollapseRow extends PureComponent {
                           <img
                             alt="upload"
                             src={DownloadIcon}
-                            onClick={() => this.handleUploadClick(2, id, fileName)}
+                            onClick={() => this.handleUploadClick(2, _id, fileName)}
                             className={styles.downloadButton}
                           />
                         </div>

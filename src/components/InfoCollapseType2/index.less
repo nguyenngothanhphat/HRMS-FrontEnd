@@ -1,19 +1,23 @@
 .InfoCollapseType2 {
   // margin: 20px 10px 0 10px;
   margin-bottom: 20px;
-  border-radius: 5px;
   background-color: white;
   border: solid 1px #d6dce0;
+  border-radius: 5px;
+  .divider {
+    margin: 0 24px;
+    border-bottom: 1px solid #d6dce0;
+  }
   .tableTitle {
     display: flex;
     align-items: center;
+    height: 67px;
+    padding: 0 24px;
+    border-bottom: solid 1px #d6dce0;
     span {
       font-weight: 700;
       font-size: 16px;
     }
-    border-bottom: solid 1px #d6dce0;
-    padding: 0 24px;
-    height: 67px;
   }
   .tableContent {
     padding: 23px 23px 6px 23px;
@@ -21,15 +25,15 @@
   .columnName {
     display: flex;
     justify-content: space-between;
-    background-color: #568afa;
-    border-radius: 5px;
     padding: 9px 24px;
     // height: 35px;
     font-size: 13px;
+    background-color: #568afa;
+    border-radius: 5px;
     :global {
       .ant-col {
-        font-weight: 700;
         color: white;
+        font-weight: 700;
       }
     }
     .status {
