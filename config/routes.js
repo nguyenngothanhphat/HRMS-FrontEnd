@@ -222,6 +222,13 @@ const routes = [
             // authority: ['admin-sa'],
           },
           {
+            path: '/user-profile/:reId',
+            name: 'userProfile',
+            component: './UserProfile',
+            hideInMenu: true,
+            // authority: ['admin-sa'],
+          },
+          {
             path: '/companies-management',
             name: 'companies',
             icon: '/assets/images/menuIcons/company.svg',

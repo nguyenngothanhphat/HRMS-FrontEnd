@@ -116,9 +116,10 @@ class AvatarDropdown extends React.Component {
     });
 
     if (idAdminOwner) {
-      history.replace(`/employees/employee-profile/${idAdminOwner}`);
+      history.replace(`/user-profile/${idAdminOwner}`);
+    } else {
+      history.replace(`/employees/employee-profile/${_id}`);
     }
-    history.replace(`/employees/employee-profile/${_id}`);
   };
 
   wait = (delay, ...args) => {
