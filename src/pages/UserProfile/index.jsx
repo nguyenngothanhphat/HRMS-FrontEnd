@@ -3,6 +3,7 @@ import { Affix, Skeleton } from 'antd';
 
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
 import { PageContainer } from '@/layouts/layout/src';
+import ViewProfile from './View';
 import UserProfileLayout from '../../components/LayoutUserProfile';
 
 import styles from './index.less';
@@ -12,10 +13,6 @@ class UserProfile extends Component {
     super(props);
     this.state = {};
   }
-
-  renderHello = () => {
-    return <div>Hello</div>;
-  };
 
   render() {
     const tenant = getCurrentTenant();
@@ -30,7 +27,9 @@ class UserProfile extends Component {
             </div>
           </Affix>
           {tenant && company ? (
-            <UserProfileLayout>{this.renderHello()}</UserProfileLayout>
+            <UserProfileLayout>
+              <ViewProfile />
+            </UserProfileLayout>
           ) : (
             <div style={{ padding: '24px' }}>
               <Skeleton />
