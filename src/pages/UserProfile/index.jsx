@@ -4,6 +4,7 @@ import { Affix, Skeleton } from 'antd';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
 import { PageContainer } from '@/layouts/layout/src';
 import ViewProfile from './View';
+import EditProfile from './Edit';
 import UserProfileLayout from '../../components/LayoutUserProfile';
 
 import styles from './index.less';
@@ -11,10 +12,19 @@ import styles from './index.less';
 class UserProfile extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isEdit: false,
+    };
   }
 
+  handleClickEdit = (value) => {
+    this.setState({
+      isEdit: value,
+    });
+  };
+
   render() {
+    const { isEdit } = this.state;
     const tenant = getCurrentTenant();
     const company = getCurrentCompany();
 
@@ -28,7 +38,11 @@ class UserProfile extends Component {
           </Affix>
           {tenant && company ? (
             <UserProfileLayout>
-              <ViewProfile />
+              {isEdit ? (
+                <EditProfile handleCancel={this.handleClickEdit} />
+              ) : (
+                <ViewProfile handleClickEdit={this.handleClickEdit} />
+              )}
             </UserProfileLayout>
           ) : (
             <div style={{ padding: '24px' }}>
