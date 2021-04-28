@@ -224,21 +224,31 @@ class ViewDocument extends PureComponent {
 
     const {
       dispatch,
-      employeeProfile: { groupViewingDocuments = [] },
+      employeeProfile: { groupViewingDocuments = [], tenantCurrentEmployee = '' },
     } = this.props;
     const { currentViewingFile } = this.state;
+    const documentId = groupViewingDocuments[currentViewingFile - 1]._id;
 
     if (statusCode === 200) {
       const [attachment] = data;
       dispatch({
         type: 'employeeProfile/updateDocument',
         payload: {
-          id: groupViewingDocuments[currentViewingFile - 1]._id,
-          attachment: attachment._id,
+          id: documentId,
+          attachment: attachment.id,
+          tenantId: tenantCurrentEmployee,
         },
       });
     }
-    this.fetchDocumentDetails(currentViewingFile);
+    // this.fetchDocumentDetails(currentViewingFile);
+    dispatch({
+      type: 'employeeProfile/fetchViewingDocumentDetail',
+      payload: {
+        id: documentId,
+        tenantId: tenantCurrentEmployee,
+        // employee: idCurrentEmployee,
+      },
+    });
   };
 
   handleChange = (value) => {
@@ -390,7 +400,7 @@ class ViewDocument extends PureComponent {
               </Col>
             </Row>
 
-            {this.includeString(childCategoryName, 'identity') ? (
+            {this.includeString(childCategoryName, 'identity') && (
               <Row className={styles.infoRow}>
                 <Col className={styles.infoCol1} span={7}>
                   {key} Number
@@ -412,8 +422,6 @@ class ViewDocument extends PureComponent {
                   {this.includeString(key, 'adhaar') && adhaarCardNumber}
                 </Col>
               </Row>
-            ) : (
-              ''
             )}
 
             <Row className={styles.infoRow}>
@@ -457,7 +465,12 @@ class ViewDocument extends PureComponent {
             getResponse={this.uploadNew}
           />
 
-          <Button loading={loading2} onClick={this.onSaveClick} className={styles.saveButton}>
+          <Button
+            disabled={!selectedStr}
+            loading={loading2}
+            onClick={this.onSaveClick}
+            className={styles.saveButton}
+          >
             {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.saveBtn' })}
           </Button>
         </div>
