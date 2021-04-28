@@ -1,3 +1,4 @@
+import { getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import {
@@ -11,7 +12,7 @@ import {
   getRolesByEmployee,
   updateGeneralInfo,
   resetPasswordByEmail,
-  getLocationListByParentCompany
+  getLocationListByParentCompany,
 } from '../services/usersManagement';
 
 const usersManagement = {
@@ -31,45 +32,27 @@ const usersManagement = {
     clearName: false,
   },
   effects: {
-    *fetchActiveEmployeesList(
-      { payload: { status = 'ACTIVE', location = [], roles = [], company = [], name = '' } = {} },
-      { call, put },
-    ) {
+    *fetchEmployeesList({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getEmployeesList, {
-          status,
-          location,
-          roles,
-          company,
-          name,
-        });
-        const { statusCode, data: activeEmployeesList = [] } = response;
+        const response = yield call(getEmployeesList, payload);
+        const { statusCode, data: listEmployee = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { activeEmployeesList } });
+
+        const { status = [] } = payload;
+        if (status.includes('ACTIVE')) {
+          yield put({ type: 'save', payload: { activeEmployeesList: listEmployee } });
+        }
+        if (status.includes('INACTIVE')) {
+          yield put({ type: 'save', payload: { inActiveEmployeesList: listEmployee } });
+        }
+        return listEmployee;
       } catch (errors) {
         dialog(errors);
+        return [];
       }
     },
-    *fetchInActiveEmployeesList(
-      { payload: { status = 'INACTIVE', location = [], roles = [], company = [], name = '' } = {} },
-      { call, put },
-    ) {
-      try {
-        const response = yield call(getEmployeesList, {
-          status,
-          location,
-          roles,
-          company,
-          name,
-        });
-        const { statusCode, data: inActiveEmployeesList = [] } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { inActiveEmployeesList } });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-    *fetchCompanyList({payload = {}}, { call, put }) {
+
+    *fetchCompanyList({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getCompanyList, payload);
         const { statusCode, data = {} } = response;

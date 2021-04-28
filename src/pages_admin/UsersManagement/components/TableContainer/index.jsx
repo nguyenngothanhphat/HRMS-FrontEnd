@@ -2,15 +2,39 @@ import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
 import { Tabs, Layout } from 'antd';
 import { debounce } from 'lodash';
+import {
+  getCurrentCompany,
+  getCurrentLocation,
+  getCurrentTenant,
+  isOwner,
+} from '@/utils/authority';
 import TableUsers from '../TableUsers';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
-@connect(({ loading, usersManagement }) => ({
-  loadingActiveList: loading.effects['usersManagement/fetchActiveEmployeesList'],
-  loadingInActiveList: loading.effects['usersManagement/fetchInActiveEmployeesList'],
-  usersManagement,
-}))
+@connect(
+  ({
+    loading,
+    usersManagement,
+    locationSelection: { listLocationsByCompany = [] } = {},
+    employee,
+    user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
+    employee: { filterList = {} } = {},
+  }) => ({
+    loadingCompaniesOfUser: loading.effects['user/fetchCompanyOfUser'],
+    loadingFetchLocations:
+      loading.effects['locationSelection/fetchLocationsByCompany'] ||
+      loading.effects['locationSelection/fetchLocationListByParentCompany'],
+    employee,
+    currentUser,
+    permissions,
+    listLocationsByCompany,
+    companiesOfUser,
+    filterList,
+    loadingList: loading.effects['usersManagement/fetchEmployeesList'],
+    usersManagement,
+  }),
+)
 class TableContainer extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if ('usersManagement' in nextProps) {
@@ -46,7 +70,7 @@ class TableContainer extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      tabId: 1,
+      tabId: 'active',
       changeTab: false,
       collapsed: true,
       roles: [],
@@ -66,7 +90,7 @@ class TableContainer extends PureComponent {
   }
 
   componentDidMount() {
-    this.initDataTable();
+    this.getTableData({}, 1);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -85,32 +109,137 @@ class TableContainer extends PureComponent {
       prevState.company.length !== company.length ||
       prevState.filterName !== filterName
     ) {
-      this.getDataTable(params, tabId);
+      this.getTableData(params, tabId);
     }
   }
 
-  initDataTable = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'usersManagement/fetchActiveEmployeesList',
-    });
-    dispatch({
-      type: 'usersManagement/fetchInActiveEmployeesList',
-    });
-  };
+  getTableData = (params, tabId) => {
+    const currentLocation = getCurrentLocation();
+    const currentCompany = getCurrentCompany();
 
-  getDataTable = (params, tabId) => {
     const { dispatch } = this.props;
+    const {
+      companiesOfUser = [],
+      filterList: { listCountry = [] } = {},
+      listLocationsByCompany = [],
+    } = this.props;
+    const {
+      name = '',
+      department = [],
+      country = [],
+      state = [],
+      employeeType = [],
+      company = [],
+    } = params;
+
+    // MULTI COMPANY & LOCATION PAYLOAD
+    let companyPayload = [];
+    const companyList = companiesOfUser.filter(
+      (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
+    );
+    const isOwnerCheck = isOwner();
+
+    // OWNER
+    if (!currentLocation && isOwnerCheck) {
+      if (company.length !== 0) {
+        companyPayload = companyList.filter((lo) => company.includes(lo?._id));
+      } else {
+        companyPayload = [...companyList];
+      }
+    } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
+
+    let locationPayload = [];
+
+    // if country is not selected, select all
+    if (!currentLocation) {
+      if (country.length === 0) {
+        locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
+          let stateList = [];
+          listCountry.forEach(
+            ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
+              if (countryItem1 === countryItem2) {
+                if (state.length !== 0) {
+                  if (state.includes(stateItem2)) {
+                    stateList = [...stateList, stateItem2];
+                  }
+                } else {
+                  stateList = [...stateList, stateItem2];
+                }
+              }
+            },
+          );
+          return {
+            country: countryItem1,
+            state: stateList,
+          };
+        });
+      } else {
+        locationPayload = country.map((item) => {
+          let stateList = [];
+
+          listCountry.forEach(
+            ({ country: { _id: countryItem = '' } = {}, state: stateItem = '' }) => {
+              if (item === countryItem) {
+                if (state.length !== 0) {
+                  if (state.includes(stateItem)) {
+                    stateList = [...stateList, stateItem];
+                  }
+                } else {
+                  stateList = [...stateList, stateItem];
+                }
+              }
+            },
+          );
+
+          return {
+            country: item,
+            state: stateList,
+          };
+        });
+      }
+    } else {
+      const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
+      const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
+      const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
+
+      locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
+        let stateList = [];
+        listCountry.forEach(
+          ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
+            if (
+              countryItem1 === countryItem2 &&
+              currentLocationCountry === countryItem2 &&
+              currentLocationState === stateItem2
+            ) {
+              stateList = [...stateList, stateItem2];
+            }
+          },
+        );
+        return {
+          country: countryItem1,
+          state: stateList,
+        };
+      });
+    }
+
+    const payload = {
+      company: companyPayload,
+      name,
+      department,
+      location: locationPayload,
+      employeeType,
+    };
+
     if (tabId === 1) {
       dispatch({
-        type: 'usersManagement/fetchActiveEmployeesList',
-        payload: params,
+        type: 'usersManagement/fetchEmployeesList',
+        payload: { ...payload, status: ['ACTIVE'] },
       });
     }
     if (tabId === 2) {
       dispatch({
-        type: 'usersManagement/fetchInActiveEmployeesList',
-        payload: params,
+        type: 'usersManagement/fetchEmployeesList',
+        payload: { ...payload, status: ['INACTIVE'] },
       });
     }
   };
@@ -173,8 +302,8 @@ class TableContainer extends PureComponent {
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { bottabs, collapsed, changeTab } = this.state;
-    const { loadingActiveList, loadingInActiveList } = this.props;
+    const { bottabs, collapsed } = this.state;
+    const { loadingList } = this.props;
     return (
       <div className={styles.UsersTableContainer}>
         <div className={styles.contentContainer}>
@@ -188,18 +317,15 @@ class TableContainer extends PureComponent {
               <TabPane tab={tab.name} key={tab.id}>
                 <Layout className={styles.directoryLayout_inner}>
                   <Content className="site-layout-background">
-                    <TableUsers
-                      loading={loadingActiveList || loadingInActiveList}
-                      data={this.renderListUsers(tab.id)}
-                    />
+                    <TableUsers loading={loadingList} data={this.renderListUsers(tab.id)} />
                   </Content>
-                  <TableFilter
+                  {/* <TableFilter
                     onToggle={this.handleToggle}
                     collapsed={collapsed}
                     onHandleChange={this.handleChange}
                     FormBox={this.handleFormBox}
                     changeTab={changeTab}
-                  />
+                  /> */}
                 </Layout>
               </TabPane>
             ))}

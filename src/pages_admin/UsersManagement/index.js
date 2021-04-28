@@ -1,10 +1,59 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
+import { getCurrentCompany, getCurrentTenant, isOwner } from '@/utils/authority';
 import styles from './index.less';
 import TableContainer from './components/TableContainer';
 
-export default class UsersManagement extends PureComponent {
+@connect(
+  ({ user: { currentUser: { roles = [], signInRole = [], manageTenant = [] } = {} } = {} }) => ({
+    roles,
+    signInRole,
+    manageTenant,
+  }),
+)
+class UsersManagement extends PureComponent {
+  componentDidMount() {
+    const { dispatch } = this.props;
+    const tenantId = getCurrentTenant();
+    const company = getCurrentCompany();
+    // const checkIsOwner = isOwner();
+    dispatch({
+      type: 'employee/fetchFilterList',
+      payload: {
+        id: company,
+        tenantId,
+      },
+    });
+
+    this.fetchData();
+  }
+
+  fetchData = async () => {
+    const { dispatch, manageTenant = [] } = this.props;
+    const companyId = getCurrentCompany();
+    const tenantId = getCurrentTenant();
+    const checkIsOwner = isOwner();
+
+    if (checkIsOwner) {
+      await dispatch({
+        type: 'locationSelection/fetchLocationListByParentCompany',
+        payload: {
+          company: companyId,
+          tenantIds: manageTenant,
+        },
+      });
+    } else {
+      await dispatch({
+        type: 'locationSelection/fetchLocationsByCompany',
+        payload: {
+          company: companyId,
+          tenantId,
+        },
+      });
+    }
+  };
+
   operations = () => {
     return <div />;
   };
@@ -22,3 +71,4 @@ export default class UsersManagement extends PureComponent {
     );
   }
 }
+export default UsersManagement;

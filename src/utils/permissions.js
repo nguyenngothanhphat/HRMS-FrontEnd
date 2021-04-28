@@ -20,7 +20,9 @@ const getIndex = (permissionList, index1, index2) => {
     : permissionList.indexOf(index1);
 };
 export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
-  if (isOwner || isAdmin) {
+  const isHaveFullPermissions = isOwner || isAdmin;
+
+  if (isHaveFullPermissions) {
     return {
       // Directory Page
       viewTabActive: 1,

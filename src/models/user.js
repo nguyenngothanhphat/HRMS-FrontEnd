@@ -108,6 +108,8 @@ const UserModel = {
               checkIsEmployee = true;
             }
           }
+
+          formatArrRoles = [...formatArrRoles, 'hr-manager'];
           // DONE
           setAuthority(formatArrRoles);
           localStorage.setItem('switchRoleAbility', switchRoleAbility);
@@ -144,6 +146,7 @@ const UserModel = {
             ...data,
             name: data?.firstName,
             isSwitchingRole,
+            roles: [...data?.roles, 'hr-manager'],
           },
         });
 
