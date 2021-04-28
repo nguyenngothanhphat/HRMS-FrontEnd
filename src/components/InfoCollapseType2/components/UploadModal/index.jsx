@@ -129,7 +129,7 @@ class UploadModal extends Component {
       categoryId = '',
       employeeProfile: {
         idCurrentEmployee = '',
-        originData: { compensationData: { company = '' } = {} } = {},
+        companyCurrentEmployee = '',
         tenantCurrentEmployee = '',
       } = {},
       dispatch,
@@ -145,7 +145,7 @@ class UploadModal extends Component {
         attachment: fileId,
         category: categoryId,
         employee: idCurrentEmployee,
-        company,
+        company: companyCurrentEmployee,
         tenantId: tenantCurrentEmployee,
       };
 

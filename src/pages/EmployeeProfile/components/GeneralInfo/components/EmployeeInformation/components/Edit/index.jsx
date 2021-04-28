@@ -155,6 +155,7 @@ class Edit extends PureComponent {
       AdhaarCard = {},
       generalData = {},
       tenantCurrentEmployee = '',
+      companyCurrentEmployee = '',
       documentCategories = [],
     } = this.props;
     let file = '';
@@ -173,6 +174,7 @@ class Edit extends PureComponent {
           attachment: file.id,
           category: indentityCategory?._id,
           employee: idCurrentEmployee,
+          company: companyCurrentEmployee,
         },
       }).then((id) => this.handleAdd(id));
     } else {
@@ -185,6 +187,7 @@ class Edit extends PureComponent {
             category: indentityCategory?._id,
             employee: idCurrentEmployee,
             tenantId: tenantCurrentEmployee,
+            company: companyCurrentEmployee,
           },
         }).then((id) => this.handleAddDocument(id));
       }
