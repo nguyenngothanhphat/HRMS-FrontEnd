@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Affix, Skeleton } from 'antd';
 
-import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
+import { PageContainer } from '@/layouts/layout/src';
+import UserProfileLayout from '../../components/LayoutUserProfile';
 
 import styles from './index.less';
 
@@ -11,6 +12,10 @@ class UserProfile extends Component {
     super(props);
     this.state = {};
   }
+
+  renderHello = () => {
+    return <div>Hello</div>;
+  };
 
   render() {
     const tenant = getCurrentTenant();
@@ -25,7 +30,7 @@ class UserProfile extends Component {
             </div>
           </Affix>
           {tenant && company ? (
-            <div>User profile</div>
+            <UserProfileLayout>{this.renderHello()}</UserProfileLayout>
           ) : (
             <div style={{ padding: '24px' }}>
               <Skeleton />
