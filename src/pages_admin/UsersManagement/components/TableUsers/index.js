@@ -22,7 +22,7 @@ class TableUsers extends PureComponent {
       editModalVisible: false,
       deleteConfirmModalVisible: false,
       resetPasswordModalVisible: false,
-      selectedUserId: null,
+      selectedUserId: '',
     };
   }
 
@@ -127,13 +127,13 @@ class TableUsers extends PureComponent {
       },
       {
         title: 'Password',
-        dataIndex: '_id',
+        dataIndex: 'userIndentity',
         width: '10%',
         align: 'left',
-        render: (_id) => (
+        render: (userIndentity) => (
           <div className={styles.userPasswordReset}>
             {/* <span className={styles.userPassword}>*******</span> */}
-            <div onClick={(e) => this.resetPassword(_id, e)}>
+            <div onClick={(e) => this.resetPassword(userIndentity, e)}>
               <span>RESET</span>
             </div>
           </div>
@@ -147,21 +147,21 @@ class TableUsers extends PureComponent {
       // },
       {
         title: 'Action',
-        dataIndex: '_id',
+        dataIndex: 'userIndentity',
         width: '6%',
         align: 'center',
-        render: (_id) => (
+        render: (userIndentity) => (
           <div className={styles.userAction}>
             <img
               src={EditUserIcon}
               alt="edit-user"
-              onClick={(e) => this.editUser(_id, e)}
+              onClick={(e) => this.editUser(userIndentity, e)}
               className={styles.editUserBtn}
             />
             <img
               src={DeleteUserIcon}
               alt="delete-user"
-              onClick={(e) => this.deleteUser(_id, e)}
+              onClick={(e) => this.deleteUser(userIndentity, e)}
               className={styles.editUserBtn}
             />
           </div>
@@ -175,14 +175,18 @@ class TableUsers extends PureComponent {
   };
 
   editUser = (record) => {
+    console.log('record', record);
     const { dispatch } = this.props;
     dispatch({
       type: 'usersManagement/fetchEmployeeDetail',
-      id: record,
+      payload: {
+        id: record._id,
+        tenantId: record.tenant,
+      },
     }).then(() => {
       this.setState({
         editModalVisible: true,
-        selectedUserId: record,
+        selectedUserId: record._id,
       });
     });
   };
@@ -193,7 +197,7 @@ class TableUsers extends PureComponent {
     });
     setTimeout(() => {
       this.setState({
-        selectedUserId: null,
+        selectedUserId: '',
       });
     }, 500);
   };
@@ -203,10 +207,13 @@ class TableUsers extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'usersManagement/fetchEmployeeDetail',
-      id: record,
+      payload: {
+        id: record._id,
+        tenantId: record.tenant,
+      },
     }).then(() => {
       this.setState({
-        selectedUserId: record,
+        selectedUserId: record._id,
         deleteConfirmModalVisible: true,
       });
     });
@@ -214,7 +221,7 @@ class TableUsers extends PureComponent {
 
   closeConfirmRemoveModal = () => {
     this.setState({
-      selectedUserId: null,
+      selectedUserId: '',
       deleteConfirmModalVisible: false,
     });
   };
@@ -223,10 +230,13 @@ class TableUsers extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'usersManagement/fetchEmployeeDetail',
-      id: record,
+      payload: {
+        id: record._id,
+        tenantId: record.tenant,
+      },
     }).then(() => {
       this.setState({
-        selectedUserId: record,
+        selectedUserId: record._id,
         resetPasswordModalVisible: true,
       });
     });
@@ -234,7 +244,7 @@ class TableUsers extends PureComponent {
 
   closeResetPasswordModal = () => {
     this.setState({
-      selectedUserId: null,
+      selectedUserId: '',
       resetPasswordModalVisible: false,
     });
   };
@@ -262,9 +272,22 @@ class TableUsers extends PureComponent {
     this.setState({ selectedRowKeys });
   };
 
+  formatData = (data) => {
+    return data.map((value) => {
+      return {
+        ...value,
+        userIndentity: {
+          _id: value._id,
+          tenant: value.tenant,
+        },
+      };
+    });
+  };
+
   render() {
     const { data = [], loading, loadingUserProfile } = this.props;
-    // console.log('data', data);
+    const newData = this.formatData(data);
+
     const {
       pageSelected,
       selectedRowKeys,
@@ -336,9 +359,14 @@ class TableUsers extends PureComponent {
           size="middle"
           loading={loading}
           rowSelection={rowSelection}
-          pagination={{ ...pagination, total: data.length }}
+          onRow={(record) => {
+            return {
+              onClick: () => this.editUser(record.userIndentity), // click row
+            };
+          }}
+          pagination={{ ...pagination, total: newData.length }}
           columns={this.generateColumns()}
-          dataSource={data}
+          dataSource={newData}
           scroll={scroll}
           rowKey={(record) => record._id}
           // onChange={this.onSortChange}

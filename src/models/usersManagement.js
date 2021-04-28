@@ -1,4 +1,3 @@
-import { getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import {
@@ -93,10 +92,11 @@ const usersManagement = {
         dialog(errors);
       }
     },
-    *fetchEmployeeDetail({ id = '' }, { call, put }) {
+
+    *fetchEmployeeDetail({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getEmployeeDetailById, { id });
-        const { statusCode, data: employeeDetail = [] } = response;
+        const response = yield call(getEmployeeDetailById, payload);
+        const { statusCode, data: employeeDetail = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { employeeDetail } });
       } catch (errors) {
@@ -105,14 +105,11 @@ const usersManagement = {
     },
 
     // update employee
-    *updateEmployee({ id = '', location = '', company = '', status = '' }, { call }) {
+    *updateEmployee({ payload = {} }, { call }) {
       try {
-        const response = yield call(updateEmployee, { id, location, company, status });
-        const { statusCode, message = '' } = response;
+        const response = yield call(updateEmployee, payload);
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -136,12 +133,12 @@ const usersManagement = {
     },
 
     // update role by employee
-    *getRolesByEmployee({ employee = '' }, { call, put }) {
+    *getRolesByEmployee({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getRolesByEmployee, { employee });
-        const { statusCode, data: rolesByEmployee = [] } = response;
+        const response = yield call(getRolesByEmployee, payload);
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { rolesByEmployee } });
+        yield put({ type: 'save', payload: { rolesByEmployee: data?.roles || [] } });
         return response;
       } catch (errors) {
         dialog(errors);
@@ -150,26 +147,20 @@ const usersManagement = {
     },
 
     // update role by employee
-    *updateRolesByEmployee({ employee = '', roles = [] }, { call }) {
+    *updateRolesByEmployee({ payload = {} }, { call }) {
       try {
-        const response = yield call(updateRolesByEmployee, { employee, roles });
-        const { statusCode, message = '' } = response;
+        const response = yield call(updateRolesByEmployee, payload);
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
       } catch (errors) {
         dialog(errors);
       }
     },
-    *updateGeneralInfo({ id = '', workEmail = '', firstName = '', lastName = '' }, { call }) {
+    *updateGeneralInfo({ payload = {} }, { call }) {
       try {
-        const response = yield call(updateGeneralInfo, { id, workEmail, firstName, lastName });
-        const { statusCode, message = '' } = response;
+        const response = yield call(updateGeneralInfo, payload);
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
       } catch (errors) {
         dialog(errors);
       }

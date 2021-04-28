@@ -35,6 +35,10 @@ class UsersManagement extends PureComponent {
     const tenantId = getCurrentTenant();
     const checkIsOwner = isOwner();
 
+    dispatch({
+      type: 'usersManagement/fetchRoleList',
+    });
+
     if (checkIsOwner) {
       await dispatch({
         type: 'locationSelection/fetchLocationListByParentCompany',

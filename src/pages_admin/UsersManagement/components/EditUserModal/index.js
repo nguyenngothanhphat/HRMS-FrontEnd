@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Modal, Form, Input, DatePicker, Button, Select } from 'antd';
+import { Modal, Form, Input, DatePicker, Button, Select, notification } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -12,8 +12,11 @@ const layout = {
   wrapperCol: { span: 18 },
 };
 
-@connect(({ usersManagement }) => ({
+@connect(({ usersManagement, loading }) => ({
   usersManagement,
+  loadingUpdateEmployee: loading.effects['usersManagement/updateEmployee'],
+  loadingUpdateGeneralInfo: loading.effects['usersManagement/updateGeneralInfo'],
+  loadingUpdateRoles: loading.effects['usersManagement/updateRolesByEmployee'],
 }))
 class EditUserModal extends PureComponent {
   formRef = React.createRef();
@@ -28,11 +31,7 @@ class EditUserModal extends PureComponent {
 
   getRoleOfEmployee = (rolesByEmployee) => {
     const { roles = [] } = rolesByEmployee;
-    const roleList = roles.map((role) => {
-      const { _id = '' } = role;
-      return _id;
-    });
-    return roleList;
+    return roles;
   };
 
   componentDidMount = () => {
@@ -42,11 +41,15 @@ class EditUserModal extends PureComponent {
       location: { _id: locationId = '' } = {},
       company: { _id: companyId = '' } = {},
       _id = '',
+      tenant = '',
     } = user;
 
     dispatch({
       type: 'usersManagement/getRolesByEmployee',
-      employee: _id,
+      payload: {
+        employee: _id,
+        tenantId: tenant,
+      },
     }).then((res) => {
       const { statusCode, data = [] } = res;
       if (statusCode === 200) {
@@ -77,7 +80,7 @@ class EditUserModal extends PureComponent {
 
   onFinish = (values) => {
     const { dispatch, user = {} } = this.props;
-    const { _id = '', generalInfo: { _id: generalInfoId = '' } = {} } = user;
+    const { _id = '', tenant = '', generalInfo: { _id: generalInfoId = '' } = {} } = user;
     const { companyId, locationId } = this.state;
     const { workEmail = '', firstName = '', lastName = '', roles = [], status = '' } = values;
     const submitValues = { workEmail, firstName, lastName, roles, locationId, companyId };
@@ -85,26 +88,38 @@ class EditUserModal extends PureComponent {
     console.log('Success:', submitValues);
     dispatch({
       type: 'usersManagement/updateRolesByEmployee',
-      employee: _id,
-      roles,
+      payload: {
+        employee: _id,
+        roles,
+        tenantId: tenant,
+      },
     });
 
     dispatch({
       type: 'usersManagement/updateGeneralInfo',
-      id: generalInfoId,
-      workEmail,
-      firstName,
-      lastName,
+      payload: {
+        id: generalInfoId,
+        workEmail,
+        firstName,
+        lastName,
+        tenantId: tenant,
+      },
     });
 
     dispatch({
       type: 'usersManagement/updateEmployee',
-      id: _id,
-      location: locationId,
-      company: companyId,
-      status,
+      payload: {
+        id: _id,
+        location: locationId,
+        company: companyId,
+        status,
+        tenantId: tenant,
+      },
     }).then((statusCode) => {
       if (statusCode === 200) {
+        notification.success({
+          message: 'Update user successfully',
+        });
         const { closeEditModal = () => {} } = this.props;
         closeEditModal();
         this.refreshUsersList();
@@ -128,17 +143,22 @@ class EditUserModal extends PureComponent {
 
   render() {
     const {
-      usersManagement: { roles: roleList = [], location = [], company = [] },
+      usersManagement: { roles = [], location = [], company = [] },
       editModalVisible = () => {},
       closeEditModal = () => {},
       user = {},
+      loadingUpdateEmployee = false,
+      loadingUpdateGeneralInfo = false,
+      loadingUpdateRoles = false,
     } = this.props;
 
+    const roleList = roles.map((role) => role._id);
     const {
       joinDate = '',
       location: { _id: locationName = '' } = {},
       company: { _id: companyName = '' } = {},
-      generalInfo: { employeeId = '', workEmail = '', firstName = '', lastName = '' } = {},
+      generalInfo: { workEmail = '', firstName = '', lastName = '' } = {},
+      employeeId = '',
       status = '',
     } = user;
 
@@ -157,6 +177,7 @@ class EditUserModal extends PureComponent {
               form="myForm"
               key="submit"
               htmlType="submit"
+              loading={loadingUpdateEmployee || loadingUpdateGeneralInfo || loadingUpdateRoles}
             >
               Save
             </Button>,
@@ -222,10 +243,9 @@ class EditUserModal extends PureComponent {
             >
               <Select mode="multiple" allowClear showArrow style={{ width: '100%' }}>
                 {roleList.map((item) => {
-                  const { _id = '' } = item;
                   return (
-                    <Option key={_id} value={_id}>
-                      {_id}
+                    <Option key={item} value={item}>
+                      {item}
                     </Option>
                   );
                 })}
