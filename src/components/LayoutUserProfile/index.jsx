@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Col, Row } from 'antd';
 
+import AvatarProfile from './components/AvatarProfile';
+
 import styles from './index.less';
 
 class UserProfileLayout extends Component {
@@ -18,7 +20,9 @@ class UserProfileLayout extends Component {
             <div className={styles.profile}>{children}</div>
           </Col>
           <Col span={6}>
-            <div className={styles.avatar}>hello</div>
+            <div className={styles.avatar}>
+              <AvatarProfile />
+            </div>
           </Col>
         </Row>
       </div>
