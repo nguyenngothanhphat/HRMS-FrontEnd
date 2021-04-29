@@ -705,7 +705,6 @@ class DirectoryComponent extends PureComponent {
       visible: false,
       visibleImportEmployee: false,
     });
-    this.renderData();
   };
 
   render() {

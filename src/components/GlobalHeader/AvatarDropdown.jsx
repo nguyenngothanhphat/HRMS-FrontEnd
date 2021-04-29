@@ -95,14 +95,17 @@ class AvatarDropdown extends React.Component {
   };
 
   viewProfile = async () => {
-    const { currentUser: { employee: { _id = '' } = {} } = {} } = this.props;
+    const {
+      currentUser: { employee: { _id: employeeID = '' } = {} } = {},
+      currentUser: { _id: adminOwnerID = '' } = {},
+    } = this.props;
     const { dispatch } = this.props;
     const tenantId = getCurrentTenant();
     const companyId = getCurrentCompany();
 
     localStorage.setItem('tenantCurrentEmployee', tenantId);
     localStorage.setItem('companyCurrentEmployee', companyId);
-    localStorage.setItem('idCurrentEmployee', _id);
+    localStorage.setItem('idCurrentEmployee', employeeID);
 
     await dispatch({
       type: 'employeeProfile/save',
@@ -112,7 +115,11 @@ class AvatarDropdown extends React.Component {
       },
     });
 
-    history.replace(`/employees/employee-profile/${_id}`);
+    if (!employeeID) {
+      history.replace(`/user-profile/${adminOwnerID}`);
+    } else {
+      history.replace(`/employees/employee-profile/${employeeID}`);
+    }
   };
 
   wait = (delay, ...args) => {
@@ -300,7 +307,7 @@ class AvatarDropdown extends React.Component {
             )}
           </div>
         </div>
-        {currentUser?.employee?._id && (
+        {currentUser && (
           <div className={styles.viewProfileBtn}>
             <Button onClick={this.viewProfile} className={styles.buttonLink}>
               {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
