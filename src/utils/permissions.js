@@ -26,9 +26,7 @@ const isAuthorized = (permissionList, arrTextToCheck) => {
 };
 
 export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
-  const isHaveFullPermissions = isOwner || isAdmin;
-
-  if (isHaveFullPermissions) {
+  if (isOwner) {
     return {
       // Directory Page
       viewTabActive: 1,
@@ -67,40 +65,55 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   const permissionList = [...roles];
 
   // Directory Page
-  const findIndexActive = isAuthorized(permissionList, ['T_ACTIVE']);
-  const findIndexMyTeam = isAuthorized(permissionList, ['T_MY_TEAM']);
-  const findIndexInActive = isAuthorized(permissionList, ['T_INACTIVE']);
-  const findIndexImport = isAuthorized(permissionList, ['B_IMPORT']);
-  const findIndexAdd = isAuthorized(permissionList, ['B_ADD_EMPLOYEE']);
+  const findIndexActive = isAuthorized(permissionList, [
+    'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_VIEW',
+    'M_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW',
+  ]);
+  const findIndexMyTeam = isAuthorized(permissionList, [
+    'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_VIEW',
+    'M_DIRECTORY_T_DIRECTORY_T_MY_TEAM_EMPLOYEE_VIEW',
+  ]);
+  const findIndexInActive = isAuthorized(permissionList, [
+    'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_VIEW',
+    'M_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_VIEW',
+  ]);
+  const findIndexImport = isAuthorized(permissionList, [
+    'P_DIRECTORY_T_DIRECTORY_B_IMPORTS_VIEW',
+    'M_DIRECTORY_T_DIRECTORY_B_IMPORT_EMPLOYEES_VIEW',
+  ]);
+  const findIndexAdd = isAuthorized(permissionList, [
+    'P_DIRECTORY_T_DIRECTORY_B_ADD_VIEW',
+    'M_DIRECTORY_T_DIRECTORY_B_ADD_EMPLOYEE_VIEW',
+  ]);
 
   // Directory Page - Tab general info - Public/Private Personal phone/email
   const indexEditPersonalInfo = isAuthorized(permissionList, [
-    'T_GENERAL_INFO_T_PERSONAL_INFORMATION_EDIT',
-    'PERSONAL_INFORMATION_EDIT',
+    'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EDIT',
+    'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EMPLOYEE_EDIT',
   ]);
   const indexViewPersonalNumber = isAuthorized(permissionList, [
-    'T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_NUMBER_VIEW',
-    'PERSONAL_NUMBER_VIEW',
+    'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_NUMBER_VIEW',
+    'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_NUMBER_EMPLOYEE_VIEW',
   ]);
   const indexViewPersonalEmail = isAuthorized(permissionList, [
-    'T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL_VIEW',
-    'PERSONAL_EMAIL_VIEW',
+    'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL_VIEW',
+    'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL_EMPLOYEE_VIEW',
   ]);
 
   // Directory Page - Filter - Display location
   const findIndexShowLocationActive = isAuthorized(permissionList, [
-    'T_ACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW',
-    'T_ACTIVE_EMPLOYEE_S_FILTER_LOCATION_EMPLOYEE_VIEW',
+    'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW',
+    'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_S_FILTER_LOCATION_EMPLOYEE_VIEW',
   ]);
   const findIndexShowLocationInActive = isAuthorized(permissionList, [
-    'T_INACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW',
-    'T_INACTIVE_EMPLOYEE_S_FILTER_LOCATION_EMPLOYEE_VIEW',
+    'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_S_FILTER_LOCATION_VIEW',
+    'P_DIRECTORY_T_DIRECTORY_T_INACTIVE_EMPLOYEE_S_FILTER_LOCATION_EMPLOYEE_VIEW',
   ]);
 
   // Edit profile tab general info
   const findIndexWorkEmail = isAuthorized(permissionList, [
-    'T_GENERAL_INFO_WORK_EMAIL_EDIT',
-    'T_GENERAL_INFO_WORK_EMAIL_EMPLOYEE_EDIT',
+    'P_PROFILE_T_GENERAL_INFO_WORK_EMAIL_EDIT',
+    'P_PROFILE_T_GENERAL_INFO_WORK_EMAIL_EMPLOYEE_EDIT',
   ]);
 
   const findIndexEmployeeID = isAuthorized(permissionList, [
