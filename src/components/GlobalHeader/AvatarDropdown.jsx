@@ -13,6 +13,7 @@ import {
   isOwner,
   isAdmin,
   setCurrentCompany,
+  getIsSwitchingRole,
 } from '@/utils/authority';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
@@ -103,14 +104,14 @@ class AvatarDropdown extends React.Component {
     const { dispatch } = this.props;
     const tenantId = getCurrentTenant();
     const companyId = getCurrentCompany();
-    const getAuth = getAuthority();
-    let isOwnerOrAdmin = false;
-    getAuth.map((item) => {
-      if (item.toLowerCase().includes('owner') || item.toLowerCase().includes('admin')) {
-        isOwnerOrAdmin = true;
-      }
-      return isOwnerOrAdmin;
-    });
+    // const getAuth = getAuthority();
+    // let isOwnerOrAdmin = false;
+    // getAuth.map((item) => {
+    //   if (item.toLowerCase().includes('owner') || item.toLowerCase().includes('admin')) {
+    //     isOwnerOrAdmin = true;
+    //   }
+    //   return isOwnerOrAdmin;
+    // });
 
     localStorage.setItem('tenantCurrentEmployee', tenantId);
     localStorage.setItem('companyCurrentEmployee', companyId);
@@ -124,10 +125,12 @@ class AvatarDropdown extends React.Component {
       },
     });
 
-    if (isOwnerOrAdmin) {
+    const checkIsAdmin = isAdmin();
+    const checkIsOwner = isOwner();
+    if (checkIsAdmin || checkIsOwner) {
       history.replace(`/user-profile/${adminOwnerID}`);
     } else {
-      history.replace(`/employees/employee-profile/${employeeID}`);
+      history.replace(`/directory/employee-profile/${employeeID}`);
     }
   };
 

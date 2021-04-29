@@ -218,7 +218,16 @@ const routes = [
             name: 'employeeProfile',
             component: './EmployeeProfile',
             hideInMenu: true,
-            // authority: ['admin-sa'],
+            authority: [
+              'employee',
+              'hr-manager',
+              'hr',
+              'hr-global',
+              'admin-csa',
+              'admin-cla',
+              'admin-cda',
+              'leader',
+            ],
           },
           {
             path: '/user-profile/:reId',
