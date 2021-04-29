@@ -1,17 +1,48 @@
 /* eslint-disable compat/compat */
 import React, { Component } from 'react';
-import { Modal, Button } from 'antd';
+import { Modal, Button, Skeleton } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ usersManagement }) => ({
-  usersManagement,
-}))
+@connect(
+  ({
+    usersManagement,
+    usersManagement: { selectedUserId = '', selectedUserTenant = '', employeeDetail = {} } = {},
+    loading,
+  }) => ({
+    usersManagement,
+    selectedUserTenant,
+    selectedUserId,
+    employeeDetail,
+    loadingEmployeeProfile: loading.effects['usersManagement/fetchEmployeeDetail'],
+  }),
+)
 class ConfirmRemoveModal extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
+
+  getEmployeeDetail = async () => {
+    const { dispatch, selectedUserId = '', selectedUserTenant = '' } = this.props;
+
+    if (selectedUserId && selectedUserTenant) {
+      await dispatch({
+        type: 'usersManagement/fetchEmployeeDetail',
+        payload: {
+          id: selectedUserId,
+          tenantId: selectedUserTenant,
+        },
+      });
+    }
+  };
+
+  componentDidUpdate = (prevProps) => {
+    const { selectedUserId = '' } = this.props;
+    if (prevProps.selectedUserId !== selectedUserId) {
+      this.getEmployeeDetail();
+    }
+  };
 
   handleCancel = () => {
     const { handleCancel } = this.props;
@@ -27,33 +58,31 @@ class ConfirmRemoveModal extends Component {
     );
   };
 
-  refreshUsersList = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'usersManagement/fetchActiveEmployeesList',
-    });
-    dispatch({
-      type: 'usersManagement/fetchInActiveEmployeesList',
-    });
-  };
-
   handleRemoveToServer = () => {
-    const { dispatch, user = {} } = this.props;
-    const { _id = '' } = user;
+    const { dispatch, employeeDetail = {} } = this.props;
+    const { _id = '', tenant } = employeeDetail;
     dispatch({
       type: 'usersManagement/removeEmployee',
-      id: _id,
+      payload: {
+        id: _id,
+        tenantId: tenant,
+        status: 'INACTIVE',
+      },
     }).then((statusCode) => {
       if (statusCode === 200) {
         this.handleCancel();
-        this.refreshUsersList();
       }
     });
   };
 
   render() {
-    const { visible = false, loading = false, user = {} } = this.props;
-    const { generalInfo: { firstName = '', lastName = '', employeeId = '' } = {} } = user;
+    const {
+      visible = false,
+      loading = false,
+      employeeDetail = {},
+      loadingEmployeeProfile = false,
+    } = this.props;
+    const { employeeId = '', generalInfo: { firstName = '', lastName = '' } = {} } = employeeDetail;
     return (
       <div>
         <Modal
@@ -78,7 +107,15 @@ class ConfirmRemoveModal extends Component {
             </Button>,
           ]}
         >
-          Are you sure to remove &quot;{employeeId} - {firstName} {lastName}&quot;?
+          {loadingEmployeeProfile ? (
+            <Skeleton />
+          ) : (
+            <>
+              <span>
+                Are you sure to remove &quot;{employeeId} - {firstName} {lastName}&quot;?
+              </span>
+            </>
+          )}
         </Modal>
       </div>
     );

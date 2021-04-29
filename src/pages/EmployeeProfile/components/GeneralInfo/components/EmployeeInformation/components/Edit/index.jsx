@@ -399,7 +399,7 @@ class Edit extends PureComponent {
             </Radio.Group>
           </Form.Item>
           <Form.Item label="Employee ID" name="employeeId">
-            <Input className={styles.inputForm} disabled={!(permissions.editEmployeeID !== -1)} />
+            <Input className={styles.inputForm} disabled={permissions.editEmployeeID === -1} />
           </Form.Item>
           <Form.Item
             label="Work Email"

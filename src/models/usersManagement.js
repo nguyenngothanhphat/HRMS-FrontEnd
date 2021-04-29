@@ -11,7 +11,8 @@ import {
   getRolesByEmployee,
   updateGeneralInfo,
   resetPasswordByEmail,
-  getLocationListByParentCompany
+  getLocationListByParentCompany,
+  getFilterList,
 } from '../services/usersManagement';
 
 const usersManagement = {
@@ -29,47 +30,43 @@ const usersManagement = {
     rolesByEmployee: [],
     clearFilter: false,
     clearName: false,
+    filterList: {},
+    selectedUserId: '',
+    selectedUserTenant: '',
   },
   effects: {
-    *fetchActiveEmployeesList(
-      { payload: { status = 'ACTIVE', location = [], roles = [], company = [], name = '' } = {} },
-      { call, put },
-    ) {
+    *fetchEmployeesList({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getEmployeesList, {
-          status,
-          location,
-          roles,
-          company,
-          name,
-        });
-        const { statusCode, data: activeEmployeesList = [] } = response;
+        const response = yield call(getEmployeesList, payload);
+        const { statusCode, data: listEmployee = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { activeEmployeesList } });
+
+        const { status = [] } = payload;
+        if (status.includes('ACTIVE')) {
+          yield put({ type: 'save', payload: { activeEmployeesList: listEmployee } });
+        }
+        if (status.includes('INACTIVE')) {
+          yield put({ type: 'save', payload: { inActiveEmployeesList: listEmployee } });
+        }
+        return listEmployee;
       } catch (errors) {
         dialog(errors);
+        return [];
       }
     },
-    *fetchInActiveEmployeesList(
-      { payload: { status = 'INACTIVE', location = [], roles = [], company = [], name = '' } = {} },
-      { call, put },
-    ) {
+    *fetchFilterList({ payload }, { call, put }) {
       try {
-        const response = yield call(getEmployeesList, {
-          status,
-          location,
-          roles,
-          company,
-          name,
-        });
-        const { statusCode, data: inActiveEmployeesList = [] } = response;
+        const response = yield call(getFilterList, payload);
+        const { statusCode, data: filterList = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { inActiveEmployeesList } });
+        yield put({ type: 'save', payload: { filterList } });
+        return response;
       } catch (errors) {
         dialog(errors);
+        return {};
       }
     },
-    *fetchCompanyList({payload = {}}, { call, put }) {
+    *fetchCompanyList({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getCompanyList, payload);
         const { statusCode, data = {} } = response;
@@ -110,26 +107,26 @@ const usersManagement = {
         dialog(errors);
       }
     },
-    *fetchEmployeeDetail({ id = '' }, { call, put }) {
+
+    *fetchEmployeeDetail({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getEmployeeDetailById, { id });
-        const { statusCode, data: employeeDetail = [] } = response;
+        const response = yield call(getEmployeeDetailById, payload);
+        const { statusCode, data: employeeDetail = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { employeeDetail } });
+        return response;
       } catch (errors) {
         dialog(errors);
+        return {};
       }
     },
 
     // update employee
-    *updateEmployee({ id = '', location = '', company = '', status = '' }, { call }) {
+    *updateEmployee({ payload = {} }, { call }) {
       try {
-        const response = yield call(updateEmployee, { id, location, company, status });
-        const { statusCode, message = '' } = response;
+        const response = yield call(updateEmployee, payload);
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -137,9 +134,9 @@ const usersManagement = {
       }
     },
 
-    *removeEmployee({ id = '' }, { call }) {
+    *removeEmployee({ payload = {} }, { call }) {
       try {
-        const response = yield call(updateEmployee, { id, status: 'INACTIVE' });
+        const response = yield call(updateEmployee, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -153,12 +150,12 @@ const usersManagement = {
     },
 
     // update role by employee
-    *getRolesByEmployee({ employee = '' }, { call, put }) {
+    *getRolesByEmployee({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getRolesByEmployee, { employee });
-        const { statusCode, data: rolesByEmployee = [] } = response;
+        const response = yield call(getRolesByEmployee, payload);
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { rolesByEmployee } });
+        yield put({ type: 'save', payload: { rolesByEmployee: data?.roles || [] } });
         return response;
       } catch (errors) {
         dialog(errors);
@@ -167,26 +164,20 @@ const usersManagement = {
     },
 
     // update role by employee
-    *updateRolesByEmployee({ employee = '', roles = [] }, { call }) {
+    *updateRolesByEmployee({ payload = {} }, { call }) {
       try {
-        const response = yield call(updateRolesByEmployee, { employee, roles });
-        const { statusCode, message = '' } = response;
+        const response = yield call(updateRolesByEmployee, payload);
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
       } catch (errors) {
         dialog(errors);
       }
     },
-    *updateGeneralInfo({ id = '', workEmail = '', firstName = '', lastName = '' }, { call }) {
+    *updateGeneralInfo({ payload = {} }, { call }) {
       try {
-        const response = yield call(updateGeneralInfo, { id, workEmail, firstName, lastName });
-        const { statusCode, message = '' } = response;
+        const response = yield call(updateGeneralInfo, payload);
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
       } catch (errors) {
         dialog(errors);
       }
@@ -217,7 +208,12 @@ const usersManagement = {
       const actionFilter = action.payload;
       const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
       if (findIndex < 0) {
-        const item = { actionFilter };
+        const item = {
+          actionFilter: {
+            name: actionFilter?.name,
+          },
+        };
+        item.checkedList = actionFilter?.checkedList;
         data.push(item);
       } else {
         data[findIndex] = {

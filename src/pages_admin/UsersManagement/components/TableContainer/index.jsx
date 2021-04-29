@@ -2,25 +2,42 @@ import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
 import { Tabs, Layout } from 'antd';
 import { debounce } from 'lodash';
+import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
 import TableUsers from '../TableUsers';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
 
-@connect(({ loading, usersManagement }) => ({
-  loadingActiveList: loading.effects['usersManagement/fetchActiveEmployeesList'],
-  loadingInActiveList: loading.effects['usersManagement/fetchInActiveEmployeesList'],
-  usersManagement,
-}))
+@connect(
+  ({
+    loading,
+    usersManagement,
+    locationSelection: { listLocationsByCompany = [] } = {},
+    employee,
+    user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
+    usersManagement: { filterList = {} } = {},
+  }) => ({
+    employee,
+    currentUser,
+    permissions,
+    listLocationsByCompany,
+    companiesOfUser,
+    filterList,
+    loadingList: loading.effects['usersManagement/fetchEmployeesList'],
+    usersManagement,
+  }),
+)
 class TableContainer extends PureComponent {
   static getDerivedStateFromProps(nextProps, prevState) {
     if ('usersManagement' in nextProps) {
       const { usersManagement: { filter = [] } = {} } = nextProps;
       let roles = [];
       let company = [];
-      let location = [];
+      let country = [];
+      let state = [];
       const roleConst = 'Role';
       const companyConst = 'Company';
-      const locationConst = 'Location';
+      const countryConst = 'Country';
+      const stateConst = 'State';
       filter.map((item) => {
         if (item.actionFilter.name === roleConst) {
           roles = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
@@ -28,16 +45,20 @@ class TableContainer extends PureComponent {
         if (item.actionFilter.name === companyConst) {
           company = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.actionFilter.name === locationConst) {
-          location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        if (item.actionFilter.name === countryConst) {
+          country = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        return { roles, company, location };
+        if (item.actionFilter.name === stateConst) {
+          state = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        }
+        return { roles, company, country, state };
       });
       return {
         ...prevState,
         roles,
         company,
-        location,
+        country,
+        state,
       };
     }
     return null;
@@ -48,7 +69,7 @@ class TableContainer extends PureComponent {
     this.state = {
       tabId: 1,
       changeTab: false,
-      collapsed: true,
+      collapsed: false,
       roles: [],
       location: [],
       company: [],
@@ -66,51 +87,158 @@ class TableContainer extends PureComponent {
   }
 
   componentDidMount() {
-    this.initDataTable();
+    // this.getTableData({}, 1);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { roles, location, company, filterName, tabId } = this.state;
+    const { roles, department, country, state, company, filterName, tabId } = this.state;
     const params = {
       name: filterName,
       roles,
-      location,
       company,
+      department,
+      country,
+      state,
     };
 
     if (
       prevState.tabId !== tabId ||
       prevState.roles.length !== roles.length ||
-      prevState.location.length !== location.length ||
       prevState.company.length !== company.length ||
+      prevState.country.length !== country.length ||
+      prevState.state.length !== state.length ||
       prevState.filterName !== filterName
     ) {
-      this.getDataTable(params, tabId);
+      this.getTableData(params, tabId);
+    }
+
+    const { filterList = {}, listLocationsByCompany = [] } = this.props;
+    if (
+      JSON.stringify(prevProps?.filterList || []) !== JSON.stringify(filterList) ||
+      JSON.stringify(prevProps?.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+    ) {
+      this.getTableData({}, 1);
     }
   }
 
-  initDataTable = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'usersManagement/fetchActiveEmployeesList',
-    });
-    dispatch({
-      type: 'usersManagement/fetchInActiveEmployeesList',
-    });
-  };
+  getTableData = async (params, tabId) => {
+    const currentLocation = getCurrentLocation();
+    const currentCompany = getCurrentCompany();
 
-  getDataTable = (params, tabId) => {
     const { dispatch } = this.props;
+    const {
+      companiesOfUser = [],
+      filterList: { listCountry = [] } = {},
+      listLocationsByCompany = [],
+    } = this.props;
+    const { name = '', department = [], country = [], state = [], company = [] } = params;
+
+    // MULTI COMPANY & LOCATION PAYLOAD
+    let companyPayload = [];
+    const companyList = companiesOfUser.filter(
+      (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
+    );
+    const isOwnerCheck = isOwner();
+    // OWNER
+    if (!currentLocation && isOwnerCheck) {
+      if (company.length !== 0) {
+        companyPayload = companyList.filter((lo) => company.includes(lo?._id));
+      } else {
+        companyPayload = [...companyList];
+      }
+    } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
+
+    let locationPayload = [];
+
+    // if country is not selected, select all
+    if (!currentLocation) {
+      if (country.length === 0) {
+        locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
+          let stateList = [];
+          listCountry.forEach(
+            ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
+              if (countryItem1 === countryItem2) {
+                if (state.length !== 0) {
+                  if (state.includes(stateItem2)) {
+                    stateList = [...stateList, stateItem2];
+                  }
+                } else {
+                  stateList = [...stateList, stateItem2];
+                }
+              }
+            },
+          );
+          return {
+            country: countryItem1,
+            state: stateList,
+          };
+        });
+      } else {
+        locationPayload = country.map((item) => {
+          let stateList = [];
+
+          listCountry.forEach(
+            ({ country: { _id: countryItem = '' } = {}, state: stateItem = '' }) => {
+              if (item === countryItem) {
+                if (state.length !== 0) {
+                  if (state.includes(stateItem)) {
+                    stateList = [...stateList, stateItem];
+                  }
+                } else {
+                  stateList = [...stateList, stateItem];
+                }
+              }
+            },
+          );
+
+          return {
+            country: item,
+            state: stateList,
+          };
+        });
+      }
+    } else {
+      const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
+      const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
+      const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
+
+      locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
+        let stateList = [];
+        listCountry.forEach(
+          ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
+            if (
+              countryItem1 === countryItem2 &&
+              currentLocationCountry === countryItem2 &&
+              currentLocationState === stateItem2
+            ) {
+              stateList = [...stateList, stateItem2];
+            }
+          },
+        );
+        return {
+          country: countryItem1,
+          state: stateList,
+        };
+      });
+    }
+
+    const payload = {
+      company: companyPayload,
+      name,
+      department,
+      location: locationPayload,
+    };
+
     if (tabId === 1) {
-      dispatch({
-        type: 'usersManagement/fetchActiveEmployeesList',
-        payload: params,
+      await dispatch({
+        type: 'usersManagement/fetchEmployeesList',
+        payload: { ...payload, status: ['ACTIVE'] },
       });
     }
     if (tabId === 2) {
-      dispatch({
-        type: 'usersManagement/fetchInActiveEmployeesList',
-        payload: params,
+      await dispatch({
+        type: 'usersManagement/fetchEmployeesList',
+        payload: { ...payload, status: ['INACTIVE'] },
       });
     }
   };
@@ -173,8 +301,8 @@ class TableContainer extends PureComponent {
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { bottabs, collapsed, changeTab } = this.state;
-    const { loadingActiveList, loadingInActiveList } = this.props;
+    const { bottabs, collapsed, changeTab, tabId } = this.state;
+    const { loadingList } = this.props;
     return (
       <div className={styles.UsersTableContainer}>
         <div className={styles.contentContainer}>
@@ -189,8 +317,10 @@ class TableContainer extends PureComponent {
                 <Layout className={styles.directoryLayout_inner}>
                   <Content className="site-layout-background">
                     <TableUsers
-                      loading={loadingActiveList || loadingInActiveList}
+                      getTableData={this.getTableData}
+                      loading={loadingList}
                       data={this.renderListUsers(tab.id)}
+                      tabId={tabId}
                     />
                   </Content>
                   <TableFilter

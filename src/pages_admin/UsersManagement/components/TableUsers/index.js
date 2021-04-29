@@ -9,8 +9,7 @@ import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import ResetPasswordModal from '../ResetPasswordModal';
 import styles from './index.less';
 
-@connect(({ loading, usersManagement }) => ({
-  loadingUserProfile: loading.effects['employeesManagement/fetchEmployeeDetail'],
+@connect(({ usersManagement }) => ({
   usersManagement,
 }))
 class TableUsers extends PureComponent {
@@ -22,7 +21,6 @@ class TableUsers extends PureComponent {
       editModalVisible: false,
       deleteConfirmModalVisible: false,
       resetPasswordModalVisible: false,
-      selectedUserId: null,
     };
   }
 
@@ -76,7 +74,7 @@ class TableUsers extends PureComponent {
       {
         title: 'Created date',
         dataIndex: 'joinDate',
-        // width: '8%',
+        width: '9%',
         align: 'left',
         render: (joinDate) =>
           joinDate ? <span>{moment(joinDate).locale('en').format('MM.DD.YY')}</span> : '',
@@ -98,10 +96,9 @@ class TableUsers extends PureComponent {
       },
       {
         title: 'Role',
-        dataIndex: 'user',
+        dataIndex: 'roles',
         align: 'left',
-        render: (user = {}) => {
-          const { roles = [] } = user;
+        render: (roles = []) => {
           return roles.map((role) => {
             const color = 'geekblue';
             return (
@@ -127,13 +124,13 @@ class TableUsers extends PureComponent {
       },
       {
         title: 'Password',
-        dataIndex: '_id',
+        dataIndex: 'userIndentity',
         width: '10%',
         align: 'left',
-        render: (_id) => (
+        render: (userIndentity) => (
           <div className={styles.userPasswordReset}>
             {/* <span className={styles.userPassword}>*******</span> */}
-            <div onClick={(e) => this.resetPassword(_id, e)}>
+            <div onClick={(e) => this.resetPassword(userIndentity, e)}>
               <span>RESET</span>
             </div>
           </div>
@@ -147,21 +144,21 @@ class TableUsers extends PureComponent {
       // },
       {
         title: 'Action',
-        dataIndex: '_id',
+        dataIndex: 'userIndentity',
         width: '6%',
         align: 'center',
-        render: (_id) => (
+        render: (userIndentity) => (
           <div className={styles.userAction}>
             <img
               src={EditUserIcon}
               alt="edit-user"
-              onClick={(e) => this.editUser(_id, e)}
+              onClick={(e) => this.editUser(userIndentity, e)}
               className={styles.editUserBtn}
             />
             <img
               src={DeleteUserIcon}
               alt="delete-user"
-              onClick={(e) => this.deleteUser(_id, e)}
+              onClick={(e) => this.deleteUser(userIndentity, e)}
               className={styles.editUserBtn}
             />
           </div>
@@ -175,67 +172,70 @@ class TableUsers extends PureComponent {
   };
 
   editUser = (record) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'usersManagement/fetchEmployeeDetail',
-      id: record,
-    }).then(() => {
-      this.setState({
-        editModalVisible: true,
-        selectedUserId: record,
-      });
+    this.setState({
+      editModalVisible: true,
     });
+    this.saveSelectedUserState(record._id, record.tenant);
   };
 
   closeEditModal = () => {
     this.setState({
       editModalVisible: false,
     });
-    setTimeout(() => {
-      this.setState({
-        selectedUserId: null,
-      });
-    }, 500);
+    this.clearSelectedUserState();
+    this.refreshList();
   };
 
   // delete user
   deleteUser = (record) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'usersManagement/fetchEmployeeDetail',
-      id: record,
-    }).then(() => {
-      this.setState({
-        selectedUserId: record,
-        deleteConfirmModalVisible: true,
-      });
+    this.setState({
+      deleteConfirmModalVisible: true,
     });
+    this.saveSelectedUserState(record._id, record.tenant);
   };
 
   closeConfirmRemoveModal = () => {
     this.setState({
-      selectedUserId: null,
       deleteConfirmModalVisible: false,
     });
+    this.clearSelectedUserState();
+    this.refreshList();
   };
 
   resetPassword = (record) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'usersManagement/fetchEmployeeDetail',
-      id: record,
-    }).then(() => {
-      this.setState({
-        selectedUserId: record,
-        resetPasswordModalVisible: true,
-      });
+    this.setState({
+      resetPasswordModalVisible: true,
     });
+    this.saveSelectedUserState(record._id, record.tenant);
   };
 
   closeResetPasswordModal = () => {
     this.setState({
-      selectedUserId: null,
       resetPasswordModalVisible: false,
+    });
+    this.clearSelectedUserState();
+    this.refreshList();
+  };
+
+  saveSelectedUserState = async (id, tenant) => {
+    const { dispatch } = this.props;
+    await dispatch({
+      type: 'usersManagement/save',
+      payload: {
+        selectedUserId: id,
+        selectedUserTenant: tenant,
+      },
+    });
+  };
+
+  clearSelectedUserState = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'usersManagement/save',
+      payload: {
+        selectedUserId: '',
+        selectedUserTenant: '',
+      },
     });
   };
 
@@ -262,16 +262,34 @@ class TableUsers extends PureComponent {
     this.setState({ selectedRowKeys });
   };
 
+  formatData = (data) => {
+    return data.map((value) => {
+      return {
+        ...value,
+        userIndentity: {
+          _id: value._id,
+          tenant: value.tenant,
+        },
+        roles: value.managePermission?.roles || [],
+      };
+    });
+  };
+
+  refreshList = () => {
+    const { getTableData = () => {}, tabId = 1 } = this.props;
+    getTableData({}, tabId);
+  };
+
   render() {
-    const { data = [], loading, loadingUserProfile } = this.props;
-    // console.log('data', data);
+    const { data = [], loading } = this.props;
+    const newData = this.formatData(data);
+
     const {
       pageSelected,
       selectedRowKeys,
       editModalVisible,
       deleteConfirmModalVisible,
       resetPasswordModalVisible,
-      selectedUserId,
     } = this.state;
     const rowSize = 10;
     const scroll = {
@@ -303,29 +321,19 @@ class TableUsers extends PureComponent {
     };
 
     const {
-      usersManagement: {
-        employeeDetail = [],
-        employeeDetail: { generalInfo: { workEmail = '' } = {} } = {},
-      },
+      usersManagement: { employeeDetail: { generalInfo: { workEmail = '' } = {} } = {} },
     } = this.props;
 
     return (
       <div className={styles.tableUsers}>
-        {!loadingUserProfile && selectedUserId && (
-          <EditUserModal
-            user={employeeDetail}
-            editModalVisible={editModalVisible}
-            closeEditModal={this.closeEditModal}
-          />
-        )}
-        {!loadingUserProfile && selectedUserId && (
-          <ConfirmRemoveModal
-            user={employeeDetail}
-            titleModal="Remove User Confirm"
-            visible={deleteConfirmModalVisible}
-            handleCancel={this.closeConfirmRemoveModal}
-          />
-        )}
+        <EditUserModal editModalVisible={editModalVisible} closeEditModal={this.closeEditModal} />
+
+        <ConfirmRemoveModal
+          titleModal="Remove User Confirm"
+          visible={deleteConfirmModalVisible}
+          handleCancel={this.closeConfirmRemoveModal}
+        />
+
         <ResetPasswordModal
           workEmail={workEmail}
           titleModal="Reset Password"
@@ -336,9 +344,14 @@ class TableUsers extends PureComponent {
           size="middle"
           loading={loading}
           rowSelection={rowSelection}
-          pagination={{ ...pagination, total: data.length }}
+          // onRow={(record) => {
+          //   return {
+          //     onClick: () => this.editUser(record.userIndentity), // click row
+          //   };
+          // }}
+          pagination={{ ...pagination, total: newData.length }}
           columns={this.generateColumns()}
-          dataSource={data}
+          dataSource={newData}
           scroll={scroll}
           rowKey={(record) => record._id}
           // onChange={this.onSortChange}
