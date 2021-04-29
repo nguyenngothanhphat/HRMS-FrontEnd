@@ -14,7 +14,7 @@ class ViewProfile extends PureComponent {
     return (
       <div className={styles.root}>
         <div className={styles.header}>
-          <div className={styles.header__title}>User Infomation</div>
+          <div className={styles.header__title}>User Information</div>
           <div className={styles.header__icon} onClick={() => handleClickEdit(true)}>
             <EditFilled /> <span>Edit</span>
           </div>
