@@ -41,7 +41,7 @@ const UserModel = {
 
         let formatArrRoles = [];
         let switchRoleAbility = false;
-        const { signInRole = [] } = data;
+        const { signInRole = [], roles = [] } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
         // if there's no tenantId and companyId, return to control panel
@@ -109,7 +109,12 @@ const UserModel = {
             }
           }
 
-          formatArrRoles = [...formatArrRoles, 'hr-manager'];
+          const employeeRoles = roles.map((role) => role.toLowerCase());
+          const otherEmployeeRoles = employeeRoles.filter((role) => role !== 'employee');
+          if (checkIsEmployee && otherEmployeeRoles.length > 0) {
+            formatArrRoles = [...formatArrRoles, ...otherEmployeeRoles];
+          }
+
           // DONE
           setAuthority(formatArrRoles);
           localStorage.setItem('switchRoleAbility', switchRoleAbility);
@@ -146,7 +151,6 @@ const UserModel = {
             ...data,
             name: data?.firstName,
             isSwitchingRole,
-            roles: [...data?.roles, 'hr-manager'],
           },
         });
 
