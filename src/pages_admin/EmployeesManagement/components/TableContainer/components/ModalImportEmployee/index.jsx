@@ -184,6 +184,7 @@ class ModalImportEmployee extends Component {
         item.title === '' ||
         item.personalEmail === '' ||
         item.employeeType === '' ||
+        item.location === '' ||
         item.department === ''
       ) {
         isEmpty = true;
@@ -270,7 +271,7 @@ class ModalImportEmployee extends Component {
 
   render() {
     const { visible = false, loading, company: companyProps } = this.props;
-    const { company = '', employees } = this.state;
+    const { employees } = this.state;
     return (
       <div>
         <Modal
