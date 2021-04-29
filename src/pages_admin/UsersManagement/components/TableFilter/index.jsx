@@ -1,22 +1,33 @@
 import React, { PureComponent } from 'react';
 import { Layout, Input } from 'antd';
 import { connect, formatMessage } from 'umi';
-import { getCurrentCompany, getCurrentTenant, isOwner } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { filteredArr } from '@/utils/utils';
 import styles from './index.less';
 import CheckList from '../CheckList';
 
-@connect(({ usersManagement, locationSelection: { listLocationsByCompany = [] } = {} }) => ({
-  usersManagement,
-  listLocationsByCompany,
-}))
+@connect(
+  ({
+    usersManagement,
+    locationSelection: { listLocationsByCompany = [] } = {},
+    usersManagement: { filterList = {}, filter: checkedFilterList = {} } = {},
+  }) => ({
+    usersManagement,
+    listLocationsByCompany,
+    filterList,
+    checkedFilterList,
+  }),
+)
 class TableFilter extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       roleState: 'Role',
-      locationState: 'Location',
       companyState: 'Company',
+      // employmentState: 'Employment Type',
+      stateState: 'State',
+      countryState: 'Country',
+      formatDataState: [], // dynamic state on country
       all: 'All',
       text: '',
       clearText: '',
@@ -25,31 +36,32 @@ class TableFilter extends PureComponent {
   }
 
   componentDidMount() {
+    // const checkIsOwner = isOwner();
     const { dispatch } = this.props;
+    const tenantId = getCurrentTenant();
+    const company = getCurrentCompany();
+    dispatch({
+      type: 'employee/fetchFilterList',
+      payload: {
+        id: company,
+        tenantId,
+      },
+    }).then((res) => {
+      if (res?.statusCode === 200) {
+        this.getStateByCheckedCountry(res?.data?.listCountry);
+      }
+    });
     dispatch({
       type: 'employee/fetchEmployeeType',
     });
-    const tenantId = getCurrentTenant();
-    const company = getCurrentCompany();
-    // const checkIsOwner = isOwner();
-
-    // if (company) {
-    //   dispatch({
-    //     type: checkIsOwner
-    //       ? 'usersManagement/fetchOwnerLocationList'
-    //       : 'usersManagement/fetchLocationList',
-    //     // type: 'employee/fetchLocation',
-    //     payload: { company, tenantId },
-    //   });
-    // }
-    dispatch({
-      type: 'usersManagement/fetchRoleList',
-    });
-    dispatch({
-      type: 'usersManagement/fetchCompanyList',
-      payload: { company, tenantId },
-    });
   }
+
+  componentDidUpdate = (prevProps) => {
+    const { checkedFilterList = [], filterList: { listCountry = [] } = {} } = this.props;
+    if (JSON.stringify(checkedFilterList) !== JSON.stringify(prevProps.checkedFilterList)) {
+      this.getStateByCheckedCountry(listCountry);
+    }
+  };
 
   handleChange = (e) => {
     const { onHandleChange, dispatch } = this.props;
@@ -74,35 +86,68 @@ class TableFilter extends PureComponent {
     }, 5);
   };
 
+  getStateByCheckedCountry = (listCountry) => {
+    const { checkedFilterList = [] } = this.props;
+    const checkedList =
+      checkedFilterList.find((filter) => {
+        return filter?.actionFilter?.name === 'Country';
+      })?.checkedList || [];
+
+    let formatDataState = listCountry.map((item) => {
+      const { state = '', country: { _id: countryId = '' } = {} } = item;
+      if (checkedList.length === 0 || checkedList.includes(countryId)) {
+        return {
+          label: state,
+          value: state,
+        };
+      }
+      return null;
+    });
+
+    formatDataState = formatDataState.filter((val) => val !== null);
+    formatDataState = [...new Set(formatDataState)];
+    this.setState({
+      formatDataState,
+    });
+  };
+
   render() {
     const { Sider } = Layout;
-    const { locationState, companyState, all, roleState, text, reset } = this.state;
+    const {
+      companyState,
+      all,
+      roleState,
+      stateState,
+      countryState,
+      text,
+      reset,
+      formatDataState,
+    } = this.state;
     const {
       usersManagement: {
         // location = [],
-        company = [],
         roles = [],
         clearName = false,
       },
       collapsed,
       changeTab,
-      listLocationsByCompany: location = [],
+      filterList: { listCountry = [], listCompany: company = [] } = {},
     } = this.props;
 
-    const currentCompany = getCurrentCompany();
-    const formatDataLocation = location.map((item) => {
-      const {
-        name: label = '',
-        _id: value = '',
-        company: { _id: parentCompId = '', name: parentCompName = '' } = {},
-      } = item;
-      return {
-        label:
-          parentCompId && currentCompany !== parentCompId ? `${parentCompName} - ${label}` : label,
-        // label,
-        value,
-      };
-    });
+    // const currentCompany = getCurrentCompany();
+    // const formatDataLocation = location.map((item) => {
+    //   const {
+    //     name: label = '',
+    //     _id: value = '',
+    //     company: { _id: parentCompId = '', name: parentCompName = '' } = {},
+    //   } = item;
+    //   return {
+    //     label:
+    //       parentCompId && currentCompany !== parentCompId ? `${parentCompName} - ${label}` : label,
+    //     // label,
+    //     value,
+    //   };
+    // });
     const formatDataRole = roles.map((item) => {
       const { _id: label } = item;
       return {
@@ -110,6 +155,15 @@ class TableFilter extends PureComponent {
         value: label,
       };
     });
+
+    let formatDataCountry = listCountry.map((item) => {
+      const { country: { _id: countryId = '', name: countryName = '' } = '' } = item;
+      return {
+        label: countryName,
+        value: countryId,
+      };
+    });
+    formatDataCountry = [...new Set(formatDataCountry)];
 
     const formatDataCompany = company.map((item) => {
       const { name: label, _id: value } = item;
@@ -169,12 +223,26 @@ class TableFilter extends PureComponent {
             {reset || changeTab ? (
               ''
             ) : (
-              <CheckList
-                key={locationState}
-                name={locationState}
-                all={all}
-                data={filteredArr(formatDataLocation)}
-              />
+              <>
+                <CheckList
+                  key={countryState}
+                  name={countryState}
+                  all={all}
+                  data={filteredArr(formatDataCountry)}
+                />
+              </>
+            )}
+            {reset || changeTab ? (
+              ''
+            ) : (
+              <>
+                <CheckList
+                  key={stateState}
+                  name={stateState}
+                  all={all}
+                  data={filteredArr(formatDataState)}
+                />
+              </>
             )}
           </div>
         </Sider>

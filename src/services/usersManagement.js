@@ -8,6 +8,13 @@ export async function getEmployeesList(payload) {
   });
 }
 
+export async function getFilterList(payload) {
+  return request('/api/companytenant/list-filter-parent', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getCompanyList(payload) {
   return request('/api/companytenant/list-of-user', {
     method: 'POST',

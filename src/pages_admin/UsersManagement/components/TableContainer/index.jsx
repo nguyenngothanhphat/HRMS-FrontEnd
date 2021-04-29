@@ -2,12 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
 import { Tabs, Layout } from 'antd';
 import { debounce } from 'lodash';
-import {
-  getCurrentCompany,
-  getCurrentLocation,
-  getCurrentTenant,
-  isOwner,
-} from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
 import TableUsers from '../TableUsers';
 import styles from './index.less';
 import TableFilter from '../TableFilter';
@@ -19,12 +14,8 @@ import TableFilter from '../TableFilter';
     locationSelection: { listLocationsByCompany = [] } = {},
     employee,
     user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
-    employee: { filterList = {} } = {},
+    usersManagement: { filterList = {} } = {},
   }) => ({
-    loadingCompaniesOfUser: loading.effects['user/fetchCompanyOfUser'],
-    loadingFetchLocations:
-      loading.effects['locationSelection/fetchLocationsByCompany'] ||
-      loading.effects['locationSelection/fetchLocationListByParentCompany'],
     employee,
     currentUser,
     permissions,
@@ -41,10 +32,12 @@ class TableContainer extends PureComponent {
       const { usersManagement: { filter = [] } = {} } = nextProps;
       let roles = [];
       let company = [];
-      let location = [];
+      let country = [];
+      let state = [];
       const roleConst = 'Role';
       const companyConst = 'Company';
-      const locationConst = 'Location';
+      const countryConst = 'Country';
+      const stateConst = 'State';
       filter.map((item) => {
         if (item.actionFilter.name === roleConst) {
           roles = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
@@ -52,16 +45,20 @@ class TableContainer extends PureComponent {
         if (item.actionFilter.name === companyConst) {
           company = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        if (item.actionFilter.name === locationConst) {
-          location = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        if (item.actionFilter.name === countryConst) {
+          country = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        return { roles, company, location };
+        if (item.actionFilter.name === stateConst) {
+          state = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        }
+        return { roles, company, country, state };
       });
       return {
         ...prevState,
         roles,
         company,
-        location,
+        country,
+        state,
       };
     }
     return null;
@@ -70,9 +67,9 @@ class TableContainer extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      tabId: 'active',
+      tabId: 1,
       changeTab: false,
-      collapsed: true,
+      collapsed: false,
       roles: [],
       location: [],
       company: [],
@@ -90,30 +87,41 @@ class TableContainer extends PureComponent {
   }
 
   componentDidMount() {
-    this.getTableData({}, 1);
+    // this.getTableData({}, 1);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { roles, location, company, filterName, tabId } = this.state;
+    const { roles, department, country, state, company, filterName, tabId } = this.state;
     const params = {
       name: filterName,
       roles,
-      location,
       company,
+      department,
+      country,
+      state,
     };
 
     if (
       prevState.tabId !== tabId ||
       prevState.roles.length !== roles.length ||
-      prevState.location.length !== location.length ||
       prevState.company.length !== company.length ||
+      prevState.country.length !== country.length ||
+      prevState.state.length !== state.length ||
       prevState.filterName !== filterName
     ) {
       this.getTableData(params, tabId);
     }
+
+    const { filterList = {}, listLocationsByCompany = [] } = this.props;
+    if (
+      JSON.stringify(prevProps?.filterList || []) !== JSON.stringify(filterList) ||
+      JSON.stringify(prevProps?.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+    ) {
+      this.getTableData({}, 1);
+    }
   }
 
-  getTableData = (params, tabId) => {
+  getTableData = async (params, tabId) => {
     const currentLocation = getCurrentLocation();
     const currentCompany = getCurrentCompany();
 
@@ -123,14 +131,7 @@ class TableContainer extends PureComponent {
       filterList: { listCountry = [] } = {},
       listLocationsByCompany = [],
     } = this.props;
-    const {
-      name = '',
-      department = [],
-      country = [],
-      state = [],
-      employeeType = [],
-      company = [],
-    } = params;
+    const { name = '', department = [], country = [], state = [], company = [] } = params;
 
     // MULTI COMPANY & LOCATION PAYLOAD
     let companyPayload = [];
@@ -138,7 +139,6 @@ class TableContainer extends PureComponent {
       (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
     );
     const isOwnerCheck = isOwner();
-
     // OWNER
     if (!currentLocation && isOwnerCheck) {
       if (company.length !== 0) {
@@ -227,17 +227,16 @@ class TableContainer extends PureComponent {
       name,
       department,
       location: locationPayload,
-      employeeType,
     };
 
     if (tabId === 1) {
-      dispatch({
+      await dispatch({
         type: 'usersManagement/fetchEmployeesList',
         payload: { ...payload, status: ['ACTIVE'] },
       });
     }
     if (tabId === 2) {
-      dispatch({
+      await dispatch({
         type: 'usersManagement/fetchEmployeesList',
         payload: { ...payload, status: ['INACTIVE'] },
       });
@@ -302,7 +301,7 @@ class TableContainer extends PureComponent {
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { bottabs, collapsed } = this.state;
+    const { bottabs, collapsed, changeTab, tabId } = this.state;
     const { loadingList } = this.props;
     return (
       <div className={styles.UsersTableContainer}>
@@ -317,15 +316,20 @@ class TableContainer extends PureComponent {
               <TabPane tab={tab.name} key={tab.id}>
                 <Layout className={styles.directoryLayout_inner}>
                   <Content className="site-layout-background">
-                    <TableUsers loading={loadingList} data={this.renderListUsers(tab.id)} />
+                    <TableUsers
+                      getTableData={this.getTableData}
+                      loading={loadingList}
+                      data={this.renderListUsers(tab.id)}
+                      tabId={tabId}
+                    />
                   </Content>
-                  {/* <TableFilter
+                  <TableFilter
                     onToggle={this.handleToggle}
                     collapsed={collapsed}
                     onHandleChange={this.handleChange}
                     FormBox={this.handleFormBox}
                     changeTab={changeTab}
-                  /> */}
+                  />
                 </Layout>
               </TabPane>
             ))}

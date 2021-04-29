@@ -12,6 +12,7 @@ import {
   updateGeneralInfo,
   resetPasswordByEmail,
   getLocationListByParentCompany,
+  getFilterList,
 } from '../services/usersManagement';
 
 const usersManagement = {
@@ -29,6 +30,9 @@ const usersManagement = {
     rolesByEmployee: [],
     clearFilter: false,
     clearName: false,
+    filterList: {},
+    selectedUserId: '',
+    selectedUserTenant: '',
   },
   effects: {
     *fetchEmployeesList({ payload = {} }, { call, put }) {
@@ -50,7 +54,18 @@ const usersManagement = {
         return [];
       }
     },
-
+    *fetchFilterList({ payload }, { call, put }) {
+      try {
+        const response = yield call(getFilterList, payload);
+        const { statusCode, data: filterList = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { filterList } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
     *fetchCompanyList({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getCompanyList, payload);
@@ -99,8 +114,10 @@ const usersManagement = {
         const { statusCode, data: employeeDetail = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { employeeDetail } });
+        return response;
       } catch (errors) {
         dialog(errors);
+        return {};
       }
     },
 
@@ -117,9 +134,9 @@ const usersManagement = {
       }
     },
 
-    *removeEmployee({ id = '' }, { call }) {
+    *removeEmployee({ payload = {} }, { call }) {
       try {
-        const response = yield call(updateEmployee, { id, status: 'INACTIVE' });
+        const response = yield call(updateEmployee, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -191,7 +208,12 @@ const usersManagement = {
       const actionFilter = action.payload;
       const findIndex = data.findIndex((item) => item.actionFilter.name === actionFilter.name);
       if (findIndex < 0) {
-        const item = { actionFilter };
+        const item = {
+          actionFilter: {
+            name: actionFilter?.name,
+          },
+        };
+        item.checkedList = actionFilter?.checkedList;
         data.push(item);
       } else {
         data[findIndex] = {
