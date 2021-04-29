@@ -183,7 +183,8 @@ class ModalImportEmployee extends Component {
         item.joinDate === '' ||
         item.title === '' ||
         item.personalEmail === '' ||
-        item.employeeType === ''
+        item.employeeType === '' ||
+        item.department === ''
       ) {
         isEmpty = true;
       }
