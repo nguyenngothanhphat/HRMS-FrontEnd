@@ -3,7 +3,6 @@ import { Image, Button } from 'antd';
 import { connect } from 'umi';
 
 import ModalUpload from '@/components/ModalUpload';
-import { getCurrentTenant } from '@/utils/authority';
 import logoDefault from '@/assets/companyDefault.png';
 
 import styles from './index.less';
@@ -16,6 +15,7 @@ class AvatarProfile extends Component {
     super(props);
     this.state = {
       visible: false,
+      newAvatar: '',
     };
   }
 
@@ -32,57 +32,47 @@ class AvatarProfile extends Component {
   };
 
   getResponse = (resp) => {
+    const { dispatch, currentUser: { _id: currentUserId = '', firstName = '' } = {} } = this.props;
     const { statusCode, data = [] } = resp;
-    const {
-      dispatch,
-      companyDetails = {},
-      companyDetails: { company: { _id: id = '' } = {} } = {},
-    } = this.props;
-    const tenantId = getCurrentTenant();
-
     if (statusCode === 200) {
-      const [first] = data;
-      if (id) {
+      if (statusCode === 200 && data.length > 0) {
         dispatch({
-          type: 'companiesManagement/updateCompany',
-          payload: { id, logoUrl: first?.url, tenantId },
-          // dataTempKept: {},
-          // isAccountSetup: true,
-        }).then(({ statusCode: check }) => {
-          if (check === 200) {
-            this.handleCancel();
-          }
+          type: 'adminApp/updateAdmins',
+          payload: {
+            id: currentUserId,
+            firstName,
+            avatar: data[0].id, // id of attachment
+          },
+          isUpdateAvatar: true,
         });
-      } else {
-        // console.log('payload add new company', first?.url);
-        dispatch({
-          type: 'companiesManagement/saveCompanyDetails',
-          payload: { ...companyDetails?.company, logoUrl: first?.url },
-          // dataTempKept: {},
-          // isAccountSetup: true,
+        this.setState({
+          newAvatar: data[0].url,
+          visible: false,
         });
-        this.handleCancel();
       }
+    } else {
+      // console.log('payload add new company', first?.url);
+      this.handleCancel();
     }
   };
 
   render() {
-    const { visible } = this.state;
+    const { visible, newAvatar } = this.state;
     const { currentUser: { avatar: { url = '' } = {} } = {} } = this.props;
     return (
       <div className={styles.root}>
         {!url ? (
           <div className={styles.logoDefault}>
             <div className={styles.logoDefault__bg}>
-              <img src={logoDefault} alt="logo" className={s.logoDefault__img} />
+              <img src={logoDefault} alt="logo" className={styles.logoDefault__img} />
             </div>
           </div>
         ) : (
-          <Image width={150} src={url} className={styles.avatar} />
+          <Image width={150} src={newAvatar || url} className={styles.avatar} />
         )}
         <div className={styles.uploadAvatar}>
           <Button className={styles.btnUpload} onClick={this.openModalUpload}>
-            Upload company logo
+            Upload avatar
           </Button>
         </div>
         <ModalUpload
@@ -90,7 +80,7 @@ class AvatarProfile extends Component {
           visible={visible}
           handleCancel={this.handleCancel}
           widthImage="40%"
-          //   getResponse={this.getResponse}
+          getResponse={this.getResponse}
         />
       </div>
     );
