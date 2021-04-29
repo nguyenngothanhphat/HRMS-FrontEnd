@@ -218,11 +218,18 @@ const routes = [
             name: 'employeeProfile',
             component: './EmployeeProfile',
             hideInMenu: true,
-            // authority: ['admin-sa'],
+            authority: [
+              'employee',
+              'hr-manager',
+              'hr',
+              'hr-global',
+              'admin-csa',
+              'admin-cla',
+              'admin-cda',
+              'leader',
+            ],
           },
           {
-<<<<<<< Updated upstream
-=======
             path: '/user-profile/:reId',
             name: 'User Profile',
             component: './UserProfile',
@@ -230,7 +237,6 @@ const routes = [
             authority: ['owner', 'admin'],
           },
           {
->>>>>>> Stashed changes
             path: '/companies-management',
             name: 'companies',
             icon: '/assets/images/menuIcons/company.svg',
