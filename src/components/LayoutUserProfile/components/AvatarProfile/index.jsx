@@ -31,12 +31,12 @@ class AvatarProfile extends Component {
     });
   };
 
-  getResponse = (resp) => {
+  getResponse = async (resp) => {
     const { dispatch, currentUser: { _id: currentUserId = '', firstName = '' } = {} } = this.props;
     const { statusCode, data = [] } = resp;
     if (statusCode === 200) {
       if (statusCode === 200 && data.length > 0) {
-        dispatch({
+        await dispatch({
           type: 'adminApp/updateAdmins',
           payload: {
             id: currentUserId,
@@ -44,10 +44,20 @@ class AvatarProfile extends Component {
             avatar: data[0].id, // id of attachment
           },
           isUpdateAvatar: true,
-        });
-        this.setState({
-          newAvatar: data[0].url,
-          visible: false,
+        }).then((res) => {
+          if (res.statusCode === 200) {
+            this.setState(
+              {
+                newAvatar: data[0].url,
+                visible: false,
+              },
+              () => {
+                setTimeout(() => {
+                  window.location.reload();
+                }, 500);
+              },
+            );
+          }
         });
       }
     } else {
