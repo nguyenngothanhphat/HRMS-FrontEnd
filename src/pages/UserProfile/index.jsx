@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Affix, Skeleton } from 'antd';
+import { connect } from 'umi';
 
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
 import { PageContainer } from '@/layouts/layout/src';
@@ -9,6 +10,9 @@ import UserProfileLayout from '../../components/LayoutUserProfile';
 
 import styles from './index.less';
 
+@connect(({ user: { currentUser = {} } = {} }) => ({
+  currentUser,
+}))
 class UserProfile extends Component {
   constructor(props) {
     super(props);
@@ -25,6 +29,7 @@ class UserProfile extends Component {
 
   render() {
     const { isEdit } = this.state;
+    const { currentUser = {} } = this.props;
     const tenant = getCurrentTenant();
     const company = getCurrentCompany();
 
@@ -39,9 +44,9 @@ class UserProfile extends Component {
           {tenant && company ? (
             <UserProfileLayout>
               {isEdit ? (
-                <EditProfile handleCancel={this.handleClickEdit} />
+                <EditProfile handleCancel={this.handleClickEdit} currentUser={currentUser} />
               ) : (
-                <ViewProfile handleClickEdit={this.handleClickEdit} />
+                <ViewProfile handleClickEdit={this.handleClickEdit} currentUser={currentUser} />
               )}
             </UserProfileLayout>
           ) : (
