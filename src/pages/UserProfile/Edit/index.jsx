@@ -8,6 +8,14 @@ class EditProfile extends Component {
     this.state = {};
   }
 
+  handleChange = (value) => {
+    console.log(value);
+  };
+
+  handleSave = (value) => {
+    console.log(value);
+  };
+
   render() {
     const {
       handleCancel = () => {},
@@ -29,18 +37,22 @@ class EditProfile extends Component {
       {
         label: 'Name',
         name: 'firstName',
+        disabled: false,
       },
       {
         label: 'Email',
         name: 'email',
+        disabled: true,
       },
       {
         label: 'Password',
         name: 'password',
+        disabled: false,
       },
       {
         label: 'Role',
         name: 'signInRole',
+        disabled: true,
       },
     ];
 
@@ -64,20 +76,28 @@ class EditProfile extends Component {
               signInRole,
             }}
           >
-            {data.map(({ label, name: nameField }) => (
+            {data.map(({ label, name: nameField, disabled }) => (
               <Row className={styles.formItem} key={nameField}>
                 <Col span={6}>
-                  <div className={styles.label}>{label}</div>
+                  <div className={styles.textLabel}>{label}</div>
                 </Col>
                 <Col span={18}>
                   <Form.Item name={nameField}>
-                    <Input className={styles.inputField} placeholder={label} />
+                    <Input disabled={disabled} className={styles.inputField} placeholder={label} />
                   </Form.Item>
                 </Col>
               </Row>
             ))}
+
+            <div className={styles.btnActions}>
+              <Button className={styles.btnCancel} onClick={() => handleCancel(false)}>
+                Cancel
+              </Button>
+              <Button className={styles.btnSave} htmlType="submit">
+                Save
+              </Button>
+            </div>
           </Form>
-          <Button onClick={() => handleCancel(false)}>Cancel</Button>
         </div>
       </div>
     );
