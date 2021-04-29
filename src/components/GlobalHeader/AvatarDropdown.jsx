@@ -9,6 +9,7 @@ import {
   getCurrentTenant,
   getCurrentCompany,
   getCurrentLocation,
+  getAuthority,
   isOwner,
   isAdmin,
   setCurrentCompany,
@@ -102,6 +103,14 @@ class AvatarDropdown extends React.Component {
     const { dispatch } = this.props;
     const tenantId = getCurrentTenant();
     const companyId = getCurrentCompany();
+    const getAuth = getAuthority();
+    let isOwnerOrAdmin = false;
+    getAuth.map((item) => {
+      if (item.toLowerCase().includes('owner') || item.toLowerCase().includes('admin')) {
+        isOwnerOrAdmin = true;
+      }
+      return isOwnerOrAdmin;
+    });
 
     localStorage.setItem('tenantCurrentEmployee', tenantId);
     localStorage.setItem('companyCurrentEmployee', companyId);
@@ -115,7 +124,7 @@ class AvatarDropdown extends React.Component {
       },
     });
 
-    if (!employeeID) {
+    if (isOwnerOrAdmin) {
       history.replace(`/user-profile/${adminOwnerID}`);
     } else {
       history.replace(`/employees/employee-profile/${employeeID}`);

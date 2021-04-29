@@ -225,7 +225,7 @@ const routes = [
             name: 'User Profile',
             component: './UserProfile',
             hideInMenu: true,
-            // authority: ['admin-sa'],
+            authority: ['owner', 'admin'],
           },
           {
             path: '/companies-management',
