@@ -87,7 +87,7 @@ const MENU_DATA = [
   },
 ];
 
-const PROCESS_STATUS = {
+export const PROCESS_STATUS = {
   PROVISIONAL_OFFER_DRAFT: 'DRAFT',
   FINAL_OFFERS_DRAFT: 'FINAL-OFFER-DRAFT',
 
@@ -458,6 +458,7 @@ const onboard = {
         } = PROCESS_STATUS;
 
         const { processStatus = '' } = payload;
+        console.log(payload.processStatus);
         let req;
         if (processStatus === FINAL_OFFERS) {
           req = {
@@ -479,6 +480,7 @@ const onboard = {
         // Fetch data
         switch (processStatus) {
           case PROVISIONAL_OFFER_DRAFT: {
+            console.log('ABCCCC');
             yield put({
               type: 'saveProvisionalOfferDrafts',
               payload: returnedData,

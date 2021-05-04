@@ -8,16 +8,16 @@ import OnboardingEmpty from './components/OnboardingEmpty';
   loading: loading.effects['onboard/fetchOnboardList'],
 }))
 class OnboardingOverview extends Component {
-  componentDidMount() {
-    const { dispatch } = this.props;
-    if (!dispatch) {
-      return;
-    }
-    dispatch({
-      type: 'onboard/fetchAllOnboardList',
-      payload: {},
-    });
-  }
+  // componentDidMount() {
+  //   const { dispatch } = this.props;
+  //   if (!dispatch) {
+  //     return;
+  //   }
+  //   dispatch({
+  //     type: 'onboard/fetchAllOnboardList',
+  //     payload: {},
+  //   });
+  // }
 
   render() {
     const {

@@ -2,21 +2,52 @@ import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { Tabs } from 'antd';
 
-import {
-  COLUMN_NAME,
-  TABLE_TYPE,
-} from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
-import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
+// import {
+//   COLUMN_NAME,
+//   TABLE_TYPE,
+// } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
+// import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
+import { PROCESS_STATUS } from '@/models/onboard';
 import styles from './index.less';
 import ProvisionalOfferDrafts from './components/ProvisionalOfferDrafts';
 import FinalOfferDrafts from './components/FinalOfferDrafts';
 
 const { TabPane } = Tabs;
 
-const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
-const { FINAL_OFFERS_DRAFTS } = TABLE_TYPE;
+// const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
+// const { FINAL_OFFERS_DRAFTS } = TABLE_TYPE;
 
 class AllDrafts extends PureComponent {
+  componentDidMount() {
+    const { dispatch } = this.props;
+    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT } = PROCESS_STATUS;
+
+    if (dispatch) {
+      this.fetchProvisionOfferDraft(PROVISIONAL_OFFER_DRAFT);
+      this.fetchFinalOffersDraft(FINAL_OFFERS_DRAFT);
+    }
+  }
+
+  fetchProvisionOfferDraft = (status) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'onboard/fetchOnboardList',
+      payload: {
+        processStatus: status,
+      },
+    });
+  };
+
+  fetchFinalOffersDraft = (status) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'onboard/fetchOnboardList',
+      payload: {
+        processStatus: status,
+      },
+    });
+  };
+
   render() {
     const { allDrafts = {} } = this.props;
     // console.log(allDrafts);
