@@ -23,21 +23,11 @@ class AllDrafts extends PureComponent {
     const { PROVISIONAL_OFFER_DRAFT } = PROCESS_STATUS;
 
     if (dispatch) {
-      this.fetchProvisionOfferDraft(PROVISIONAL_OFFER_DRAFT);
+      this.fetchOfferDraft(PROVISIONAL_OFFER_DRAFT);
     }
   }
 
-  fetchProvisionOfferDraft = (status) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: status,
-      },
-    });
-  };
-
-  fetchFinalOffersDraft = (status) => {
+  fetchOfferDraft = (status) => {
     const { dispatch } = this.props;
     dispatch({
       type: 'onboard/fetchOnboardList',
@@ -50,9 +40,9 @@ class AllDrafts extends PureComponent {
   onChangeTab = (key) => {
     const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT } = PROCESS_STATUS;
     if (key === '1') {
-      this.fetchProvisionOfferDraft(PROVISIONAL_OFFER_DRAFT);
+      this.fetchOfferDraft(PROVISIONAL_OFFER_DRAFT);
     }
-    this.fetchFinalOffersDraft(FINAL_OFFERS_DRAFT);
+    this.fetchOfferDraft(FINAL_OFFERS_DRAFT);
   };
 
   render() {
