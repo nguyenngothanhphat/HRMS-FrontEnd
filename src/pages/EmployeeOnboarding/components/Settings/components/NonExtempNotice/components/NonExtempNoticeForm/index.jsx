@@ -3,6 +3,7 @@ import { EditFilled } from '@ant-design/icons';
 import { Col, Row, Form, Input, Radio, Button, Spin } from 'antd';
 import { formatMessage, connect } from 'umi';
 
+import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(({ loading, onboardingSettings }) => ({
@@ -24,6 +25,9 @@ class NonExtempNoticeForm extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'onboardingSettings/fetchListInsurances',
+      payload: {
+        tenantId: getCurrentTenant(),
+      },
     }).then((listInsurances) => {
       const {
         carrierName = '',
@@ -38,15 +42,19 @@ class NonExtempNoticeForm extends Component {
 
   onFinish = async (values) => {
     const { dispatch } = this.props;
+    const tenantId = getCurrentTenant();
     const res = await dispatch({
       type: 'onboardingSettings/addInsurance',
-      data: values,
+      data: { ...values, tenantId },
     });
     const { statusCode = 0 } = res;
     if (statusCode === 200) {
       this.handleEdit(false, true);
       dispatch({
         type: 'onboardingSettings/fetchListInsurances',
+        payload: {
+          tenantId,
+        },
       });
     }
   };

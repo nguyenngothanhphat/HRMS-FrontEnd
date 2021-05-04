@@ -4,20 +4,27 @@ import { Form, Input, Row, Col, Button, Skeleton } from 'antd';
 import { formatMessage, connect } from 'umi';
 import CustomModal from '@/components/CustomModal/index';
 
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import EditForm from '../EditForm';
 import ModalContent from '../ModalContent';
 
-import brandLogo from './assets/brand-logo.svg';
 import formOutlined from './assets/form-outlined.svg';
 
 import styles from './index.less';
 
-@connect(({ loading, employeeSetting: { currentTemplate = {} } }) => ({
-  currentTemplate,
-  loadingTemplate:
-    loading.effects['employeeSetting/fetchTemplateById'] ||
-    loading.effects['employeeSetting/addCustomTemplate'],
-}))
+@connect(
+  ({
+    loading,
+    user: { companiesOfUser = [] } = {},
+    employeeSetting: { currentTemplate = {} },
+  }) => ({
+    currentTemplate,
+    companiesOfUser,
+    loadingTemplate:
+      loading.effects['employeeSetting/fetchTemplateById'] ||
+      loading.effects['employeeSetting/addCustomTemplate'],
+  }),
+)
 class TemplateDetailsForm extends PureComponent {
   constructor(props) {
     super(props);
@@ -29,10 +36,12 @@ class TemplateDetailsForm extends PureComponent {
 
   componentDidMount = () => {
     const { dispatch, templateId } = this.props;
+    const tenantId = getCurrentTenant();
     dispatch({
       type: 'employeeSetting/fetchTemplateById',
       payload: {
         id: templateId,
+        tenantId,
       },
     });
   };
@@ -117,10 +126,17 @@ class TemplateDetailsForm extends PureComponent {
     return <Skeleton loading={loadingTemplate} active />;
   };
 
+  getCompanyLogo = () => {
+    const { companiesOfUser = [] } = this.props;
+    const currentCompany = companiesOfUser.find((company) => company._id === getCurrentCompany());
+    return currentCompany?.logoUrl;
+  };
+
   render() {
     const { currentTemplate, loadingTemplate } = this.props;
     const { title = '', htmlContent = '', updatedAt = '' } = currentTemplate;
     const date = new Date(updatedAt);
+    const companyLogo = this.getCompanyLogo();
     return (
       <div className={styles.TemplateDetailsForm}>
         {currentTemplate !== undefined && (
@@ -138,7 +154,7 @@ class TemplateDetailsForm extends PureComponent {
                       <Input value={title} onChange={this.handleChangeInput} />
                     </Col>
                     <Col span={8}>
-                      <Input defaultValue="Terralogic.png" />
+                      <Input disabled defaultValue="companyLogo.png" />
                     </Col>
                   </Row>
                 </Form.Item>
@@ -146,7 +162,7 @@ class TemplateDetailsForm extends PureComponent {
             </div>
             <div className={styles.TemplateDetailsForm_template}>
               <div className={styles.TemplateDetailsForm_template_header}>
-                <img src={brandLogo} alt="brand-logo" />
+                <img src={companyLogo} alt="brand-logo" />
                 <p>{date.toLocaleDateString()}</p>
               </div>
               <hr />

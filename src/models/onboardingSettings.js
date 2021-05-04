@@ -9,9 +9,9 @@ const onboardingSettings = {
     uploadedInsurance: {},
   },
   effects: {
-    *fetchListInsurances(_, { call, put }) {
+    *fetchListInsurances({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getInsuranceList);
+        const response = yield call(getInsuranceList, payload);
         const { statusCode, data: listInsurances = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listInsurances } });
@@ -30,6 +30,7 @@ const onboardingSettings = {
           carrierAddress = '', // "Ho Chi Minh",
           phone = '', // "12345678900",
           policyNumber = '', // "123-6546-789"
+          tenantId,
         } = data;
         // console.log('data add passport', data);
         const response = yield call(addInsurance, {
@@ -38,6 +39,7 @@ const onboardingSettings = {
           carrierAddress,
           phone,
           policyNumber,
+          tenantId,
         });
         const { statusCode, message = '', data: uploadedInsurance = {} } = response;
         if (statusCode !== 200) throw response;

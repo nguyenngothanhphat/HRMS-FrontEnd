@@ -1,3 +1,4 @@
+import { getCurrentTenant } from '@/utils/authority';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import Templates from './components/Templates';
@@ -18,11 +19,20 @@ import styles from './index.less';
 class Documents extends PureComponent {
   fetchData = () => {
     const { dispatch } = this.props;
+    const currentTenantId = getCurrentTenant();
     dispatch({
       type: 'employeeSetting/fetchDefaultTemplateListOnboarding',
+      payload: {
+        tenantId: currentTenantId,
+        type: 'ON_BOARDING',
+      },
     });
     dispatch({
       type: 'employeeSetting/fetchCustomTemplateListOnboarding',
+      payload: {
+        tenantId: currentTenantId,
+        type: 'ON_BOARDING',
+      },
     });
   };
 
@@ -33,7 +43,7 @@ class Documents extends PureComponent {
   render() {
     return (
       <div className={styles.Documents}>
-        <Templates />
+        <Templates fetchData={this.fetchData} />
       </div>
     );
   }
