@@ -572,6 +572,12 @@ const routes = [
             component: './TemplateDetails',
           },
           {
+            path: '/create-new-template/',
+            name: 'createNewTemplate',
+            hideInMenu: true,
+            component: './CreateNewTemplate',
+          },
+          {
             path: '/change-password',
             name: 'change-password',
             hideInMenu: true,

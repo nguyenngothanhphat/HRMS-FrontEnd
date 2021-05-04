@@ -58,35 +58,34 @@ const employeeSetting = {
     emailCustomData: {},
   },
   effects: {
-    *fetchDefaultTemplateListOnboarding(_, { call, put }) {
+    *fetchDefaultTemplateListOnboarding({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getDefaultTemplateList);
+        const response = yield call(getDefaultTemplateList, payload);
         const { statusCode, data } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
           payload: {
-            defaultTemplateListOnboarding: data.filter((value) =>
-              value.type.includes('ON_BOARDING'),
-            ),
+            // defaultTemplateListOnboarding: data.filter((value) =>
+            //   value.type.includes('ON_BOARDING'),
+            // ),
+            defaultTemplateListOnboarding: data,
           },
         });
       } catch (errors) {
         dialog(errors);
       }
     },
-    *fetchCustomTemplateListOnboarding(_, { call, put }) {
+    *fetchCustomTemplateListOnboarding({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getCustomTemplateList);
+        const response = yield call(getCustomTemplateList, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
           payload: {
-            customTemplateListOnboarding: data.filter((value) =>
-              value.type.includes('ON_BOARDING'),
-            ),
+            customTemplateListOnboarding: data,
             loadingCustomTemplateList: false,
           },
         });
@@ -94,9 +93,9 @@ const employeeSetting = {
         dialog(errors);
       }
     },
-    *fetchDefaultTemplateListOffboarding(_, { call, put }) {
+    *fetchDefaultTemplateListOffboarding({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getDefaultTemplateList);
+        const response = yield call(getDefaultTemplateList, payload);
         const { statusCode, data } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
@@ -112,9 +111,9 @@ const employeeSetting = {
         dialog(errors);
       }
     },
-    *fetchCustomTemplateListOffboarding(_, { call, put }) {
+    *fetchCustomTemplateListOffboarding({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getCustomTemplateList);
+        const response = yield call(getCustomTemplateList, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({

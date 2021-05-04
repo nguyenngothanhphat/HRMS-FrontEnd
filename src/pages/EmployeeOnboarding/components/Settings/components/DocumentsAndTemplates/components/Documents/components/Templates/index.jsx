@@ -23,16 +23,6 @@ const { TabPane } = Tabs;
   }),
 )
 class Templates extends PureComponent {
-  fetchData = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'employeeSetting/fetchDefaultTemplateListOnboarding',
-    });
-    dispatch({
-      type: 'employeeSetting/fetchCustomTemplateListOnboarding',
-    });
-  };
-
   operations = () => {
     return (
       <div className={styles.operations}>
@@ -55,16 +45,13 @@ class Templates extends PureComponent {
       loadingDefaultTemplateList,
       customTemplateListOnboarding,
       loadingCustomTemplateList,
+      fetchData = () => {},
     } = this.props;
 
     return (
       <div className={styles.Templates}>
         <div className={styles.tabs}>
-          <Tabs
-            defaultActiveKey="1"
-            onTabClick={this.fetchData}
-            tabBarExtraContent={this.operations()}
-          >
+          <Tabs defaultActiveKey="1" onTabClick={fetchData} tabBarExtraContent={this.operations()}>
             <TabPane tab="System Default Templates" key="1">
               <SystemDefault
                 list={defaultTemplateListOnboarding}

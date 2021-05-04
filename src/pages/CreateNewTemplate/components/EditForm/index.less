@@ -1,0 +1,23 @@
+.EditForm {
+  font-family: 'Roboto';
+  // max-height: 500px;
+
+  &::-webkit-scrollbar {
+    width: 0px; /* Remove scrollbar space */
+    background: transparent; /* Optional: just make scrollbar invisible */
+  }
+  /* Optional: show position indicator in red */
+  // &::-webkit-scrollbar-thumb {
+  //   background: #ff0000;
+  // }
+
+  :global {
+    .tox {
+      min-height: 430px;
+    }
+  }
+  .buttonArea {
+    display: flex;
+    justify-content: flex-end;
+  }
+}

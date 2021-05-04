@@ -1,33 +1,35 @@
 import request from '@/utils/request';
 
-export async function getDefaultTemplateList() {
-  return request('/api/template/get-default', {
+export async function getDefaultTemplateList(payload) {
+  return request('/api/templatetenant/get-default', {
     method: 'POST',
+    data: payload,
   });
 }
 
-export async function getCustomTemplateList() {
-  return request('/api/template/get-custom', {
+export async function getCustomTemplateList(payload) {
+  return request('/api/templatetenant/get-custom', {
     method: 'POST',
+    data: payload,
   });
 }
 
 export async function getTemplateById(payload) {
-  return request('/api/template/get-by-id', {
+  return request('/api/templatetenant/get-by-id', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function addCustomTemplate(payload) {
-  return request('/api/template/add', {
+  return request('/api/templatetenant/add', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function removeTemplate(data) {
-  return request('/api/template/remove', {
+  return request('/api/templatetenant/remove', {
     method: 'POST',
     data,
   });

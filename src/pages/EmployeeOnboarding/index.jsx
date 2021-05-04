@@ -57,7 +57,10 @@ class EmployeeOnboarding extends PureComponent {
         {/* {data.indexOf('P_ONBOARDING_VIEW') > -1 && rolesList.length > 0 ? ( */}
         <div className={styles.containerEmployeeOnboarding}>
           <div className={styles.tabs}>
-            <Tabs defaultActiveKey={defaultActiveKey}>
+            <Tabs
+              // defaultActiveKey={defaultActiveKey}
+              defaultActiveKey="2"
+            >
               <TabPane
                 tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
                 key="1"

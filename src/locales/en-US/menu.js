@@ -56,6 +56,7 @@ export default {
   'menu.employeeProfile': 'Employee Profile',
   'menu.employeeOnboarding': 'Employee Onboarding',
   'menu.templateDetails': 'Template Details',
+  'menu.createNewTemplate': 'Create New Template',
   'menu.addTeamMember': 'Add team member',
   'menu.reviewTeamMember': 'Review team member',
   'menu.users': 'Users Management',
