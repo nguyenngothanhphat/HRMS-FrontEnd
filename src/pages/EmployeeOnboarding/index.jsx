@@ -32,7 +32,6 @@ class EmployeeOnboarding extends PureComponent {
     const { location: { state: { defaultActiveKey = '1' } = {} } = {}, roles } = this.props;
 
     const arrRole = roles.map((itemRole) => itemRole._id);
-
     this.setState({
       rolesList: arrRole,
       defaultActiveKey,

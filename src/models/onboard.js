@@ -458,7 +458,6 @@ const onboard = {
         } = PROCESS_STATUS;
 
         const { processStatus = '' } = payload;
-        console.log(payload.processStatus);
         let req;
         if (processStatus === FINAL_OFFERS) {
           req = {
@@ -480,7 +479,6 @@ const onboard = {
         // Fetch data
         switch (processStatus) {
           case PROVISIONAL_OFFER_DRAFT: {
-            console.log('ABCCCC');
             yield put({
               type: 'saveProvisionalOfferDrafts',
               payload: returnedData,

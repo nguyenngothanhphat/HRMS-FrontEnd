@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { Tabs } from 'antd';
+import { Spin, Tabs } from 'antd';
 
 // import {
 //   COLUMN_NAME,
@@ -20,11 +20,10 @@ const { TabPane } = Tabs;
 class AllDrafts extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
-    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT } = PROCESS_STATUS;
+    const { PROVISIONAL_OFFER_DRAFT } = PROCESS_STATUS;
 
     if (dispatch) {
       this.fetchProvisionOfferDraft(PROVISIONAL_OFFER_DRAFT);
-      this.fetchFinalOffersDraft(FINAL_OFFERS_DRAFT);
     }
   }
 
@@ -48,8 +47,16 @@ class AllDrafts extends PureComponent {
     });
   };
 
+  onChangeTab = (key) => {
+    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT } = PROCESS_STATUS;
+    if (key === '1') {
+      this.fetchProvisionOfferDraft(PROVISIONAL_OFFER_DRAFT);
+    }
+    this.fetchFinalOffersDraft(FINAL_OFFERS_DRAFT);
+  };
+
   render() {
-    const { allDrafts = {} } = this.props;
+    const { allDrafts = {}, loading } = this.props;
     // console.log(allDrafts);
     const { provisionalOfferDrafts = [], finalOfferDrafts = [] } = allDrafts;
     // console.log(provisionalOfferDrafts);
@@ -62,20 +69,20 @@ class AllDrafts extends PureComponent {
       // />
       <div className={styles.AllDrafts}>
         <div className={styles.tabs}>
-          <Tabs defaultActiveKey="1">
+          <Tabs defaultActiveKey="1" onChange={this.onChangeTab}>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
               tab="provisional offer drafts"
               key="1"
             >
-              <ProvisionalOfferDrafts list={provisionalOfferDrafts} />
+              {loading ? <Spin /> : <ProvisionalOfferDrafts list={provisionalOfferDrafts} />}
             </TabPane>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
               tab="final offers draft"
               key="2"
             >
-              <FinalOfferDrafts list={finalOfferDrafts} />
+              {loading ? <Spin /> : <FinalOfferDrafts list={finalOfferDrafts} />}
             </TabPane>
           </Tabs>
         </div>
@@ -86,11 +93,12 @@ class AllDrafts extends PureComponent {
 
 // export default FinalOfferDrafts;
 export default connect((state) => {
-  const { onboard = {} } = state;
+  const { onboard = {}, loading } = state;
   const { onboardingOverview = {} } = onboard;
   const { finalOfferDrafts = [], allDrafts = {} } = onboardingOverview;
   return {
     finalOfferDrafts,
     allDrafts,
+    loading: loading.effects['onboard/fetchOnboardList'],
   };
-})(AllDrafts);
+})(React.memo(AllDrafts));
