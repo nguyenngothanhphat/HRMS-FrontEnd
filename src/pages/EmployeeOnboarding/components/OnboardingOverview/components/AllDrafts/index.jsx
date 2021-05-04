@@ -75,14 +75,22 @@ class AllDrafts extends PureComponent {
               tab="provisional offer drafts"
               key="1"
             >
-              {loading ? <Spin /> : <ProvisionalOfferDrafts list={provisionalOfferDrafts} />}
+              {loading ? (
+                <Spin className={styles.spin} />
+              ) : (
+                <ProvisionalOfferDrafts list={provisionalOfferDrafts} />
+              )}
             </TabPane>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
               tab="final offers draft"
               key="2"
             >
-              {loading ? <Spin /> : <FinalOfferDrafts list={finalOfferDrafts} />}
+              {loading ? (
+                <Spin className={styles.spin} />
+              ) : (
+                <FinalOfferDrafts list={finalOfferDrafts} />
+              )}
             </TabPane>
           </Tabs>
         </div>
