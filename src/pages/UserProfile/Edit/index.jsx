@@ -85,19 +85,22 @@ class EditProfile extends Component {
                 </Col>
                 <Col span={18}>
                   {nameField === 'password' ? (
-                    <Input.Password
-                      disabled={disabled}
-                      className={styles.passwordField}
-                      placeholder={label}
-                      // autoComplete="off"
-                    />
+                    <Form.Item name={nameField} className={styles.formItem__form}>
+                      <Input.Password
+                        disabled={disabled}
+                        className={styles.passwordField}
+                        placeholder={label}
+                        autoComplete="off"
+                      />
+                    </Form.Item>
                   ) : (
-                    <Input
-                      disabled={disabled}
-                      className={styles.inputField}
-                      placeholder={label}
-                      // autoComplete="off"
-                    />
+                    <Form.Item name={nameField}>
+                      <Input
+                        disabled={disabled}
+                        className={styles.inputField}
+                        placeholder={label}
+                      />
+                    </Form.Item>
                   )}
                   <Form.Item name={nameField} />
                 </Col>
