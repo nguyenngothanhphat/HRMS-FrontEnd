@@ -4,7 +4,7 @@ import { Tabs, Button, Row, Col } from 'antd';
 import { connect, formatMessage, history } from 'umi';
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
-import CustomFields from './components/CustomFields';
+// import CustomFields from './components/CustomFields';
 import styles from './index.less';
 
 const ROLE = {
@@ -39,6 +39,25 @@ class EmployeeOnboarding extends PureComponent {
     });
   };
 
+  renderActionButton = () => {
+    return (
+      <div className={styles.options}>
+        <Row gutter={[24, 0]}>
+          <Col>
+            <Button className={styles.generate} type="text">
+              {formatMessage({ id: 'component.employeeOnboarding.generate' })}
+            </Button>
+          </Col>
+          <Col>
+            <Button className={styles.view} type="link">
+              {formatMessage({ id: 'component.employeeOnboarding.viewActivityLogs' })} (15)
+            </Button>
+          </Col>
+        </Row>
+      </div>
+    );
+  };
+
   render() {
     const { rolesList, defaultActiveKey } = this.state;
     const { roles } = this.props;
@@ -57,26 +76,14 @@ class EmployeeOnboarding extends PureComponent {
         {/* {data.indexOf('P_ONBOARDING_VIEW') > -1 && rolesList.length > 0 ? ( */}
         <div className={styles.containerEmployeeOnboarding}>
           <div className={styles.tabs}>
-            <Tabs defaultActiveKey={defaultActiveKey}>
+            <Tabs
+              defaultActiveKey={defaultActiveKey}
+              tabBarExtraContent={this.renderActionButton()}
+            >
               <TabPane
                 tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
                 key="1"
               >
-                <div className={styles.options}>
-                  <Row gutter={[24, 0]}>
-                    <Col>
-                      <Button className={styles.generate} type="text">
-                        {formatMessage({ id: 'component.employeeOnboarding.generate' })}
-                      </Button>
-                    </Col>
-                    <Col>
-                      <Button className={styles.view} type="link">
-                        {formatMessage({ id: 'component.employeeOnboarding.viewActivityLogs' })}{' '}
-                        (15)
-                      </Button>
-                    </Col>
-                  </Row>
-                </div>
                 <OnboardingOverview />
               </TabPane>
               {/* {isHrManager === true ? (
