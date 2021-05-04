@@ -57,11 +57,7 @@ class CreateNewTemplateForm extends PureComponent {
 
   handleSubmit = () => {
     const { content } = this.state;
-    const {
-      currentTemplate: { title, settings = [] } = {},
-      dispatch,
-      location: { state: { type = '' } = {} } = {},
-    } = this.props;
+    const { currentTemplate: { title, settings = [] } = {}, type = '', dispatch } = this.props;
     const tenantId = getCurrentTenant();
     dispatch({
       type: 'employeeSetting/addCustomTemplate',

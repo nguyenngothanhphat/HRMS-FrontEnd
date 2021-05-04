@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Checkbox, Button, notification } from 'antd';
 import { formatMessage, connect } from 'umi';
 import CustomModal from '@/components/CustomModal';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import Option from './components/Option';
 import CustomFieldsContent from './components/CustomFieldsContent';
 import OrderSavedContent from './components/OrderSavedContent';
@@ -56,7 +57,10 @@ class OptionalOnboardingQuestions extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'employeeSetting/fetchOptionalQuestions',
-      payload: {},
+      payload: {
+        tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
+      },
     });
   };
 
@@ -92,6 +96,8 @@ class OptionalOnboardingQuestions extends PureComponent {
       type: 'employeeSetting/saveOptionalQuestions',
       payload: {
         onboardingQuestions: optionalQuestions,
+        tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {

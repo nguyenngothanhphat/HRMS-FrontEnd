@@ -8,6 +8,7 @@ import styles from './index.less';
 
 class CreateNewTemplate extends PureComponent {
   render() {
+    const { location: { state: { type = '' } = {} } = {} } = this.props;
     return (
       <PageContainer>
         <div className={styles.CreateNewTemplate}>
@@ -15,7 +16,7 @@ class CreateNewTemplate extends PureComponent {
           <div className={styles.CreateNewTemplate_content}>
             <Row gutter={[24, 24]}>
               <Col xs={24} sm={24} md={24} lg={17} xl={17}>
-                <CreateNewTemplateForm />
+                <CreateNewTemplateForm type={type} />
               </Col>
               <Col xs={24} sm={24} md={24} lg={7} xl={7}>
                 <CreateNewTemplateNote />
