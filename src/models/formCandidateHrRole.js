@@ -1,10 +1,10 @@
 import {
   getDocumentList,
-  getDepartmentList,
-  getTitleList,
-  getLocation,
+  fetchDepartmentList,
+  getJobTitleList,
+  getLocationList,
   getEmployeeTypeList,
-  getManagerList,
+  getReportingManagerList,
   submitBasicInfo,
   getTableDataByTitle,
   getTitleListByCompany,
@@ -441,9 +441,10 @@ const candidateInfo = {
       }
     },
 
-    *fetchDepartmentList({ payload: { company = '' } }, { call, put }) {
+    *fetchDepartmentList({ payload: { company = '', tenantId = '' } }, { call, put }) {
       try {
-        const response = yield call(getDepartmentList, { company });
+        // const response = yield call(getDepartmentList, { company });
+        const response = yield call(fetchDepartmentList, { company, tenantId });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -458,7 +459,7 @@ const candidateInfo = {
     *fetchTitleList({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getTitleList, payload);
+        response = yield call(getJobTitleList, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -471,9 +472,9 @@ const candidateInfo = {
       return response;
     },
 
-    *fetchLocationList(_, { call, put }) {
+    *fetchLocationList({ payload: { company = '', tenantId = '' } }, { call, put }) {
       try {
-        const response = yield call(getLocation);
+        const response = yield call(getLocationList, { tenantId, company });
         const { statusCode, data: locationList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -519,7 +520,8 @@ const candidateInfo = {
 
     *fetchManagerList({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getManagerList, payload);
+        const response = yield call(getReportingManagerList, payload);
+        console.log(response.data);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({

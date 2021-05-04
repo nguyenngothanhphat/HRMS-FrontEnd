@@ -20,6 +20,13 @@ export function getDepartmentList(params) {
   });
 }
 
+export async function fetchDepartmentList(payload) {
+  return request('/api/departmenttenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export function getTitleList(params) {
   // return request('/api/title/list-by-company', {
   //   method: 'POST',
@@ -31,9 +38,23 @@ export function getTitleList(params) {
   });
 }
 
+export async function getJobTitleList(payload) {
+  return request('/api/titletenant/list-by-department', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export function getLocation() {
   return request('/api/location/list-all', {
     method: 'POST',
+  });
+}
+
+export async function getLocationList(payload) {
+  return request('/api/locationtenant/list', {
+    method: 'POST',
+    data: payload,
   });
 }
 
@@ -52,6 +73,13 @@ export function getManagerList(params) {
   //   method: 'POST',
   //   data: params,
   // });
+}
+
+export async function getReportingManagerList(params) {
+  return request('/api/employeetenant/list', {
+    method: 'POST',
+    data: params,
+  });
 }
 
 export function getCandidateManagerList(params) {

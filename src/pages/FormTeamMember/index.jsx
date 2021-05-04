@@ -56,14 +56,14 @@ class FormTeamMember extends PureComponent {
           });
         }
       });
-      if (company._id.length > 0) {
-        dispatch({
-          type: 'candidateInfo/fetchLocationListByCompany',
-          payload: {
-            company: company._id,
-          },
-        });
-      }
+      // if (company._id.length > 0) {
+      //   dispatch({
+      //     type: 'candidateInfo/fetchLocationListByCompany',
+      //     payload: {
+      //       company: company._id,
+      //     },
+      //   });
+      // }
       dispatch({
         type: 'candidateInfo/fetchEmployeeTypeList',
       });
