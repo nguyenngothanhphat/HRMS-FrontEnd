@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { Spin, Tabs } from 'antd';
+import { Tabs } from 'antd';
 
 // import {
 //   COLUMN_NAME,
@@ -47,7 +47,7 @@ class AllDrafts extends PureComponent {
   };
 
   render() {
-    const { allDrafts = {}, loading } = this.props;
+    const { allDrafts = {} } = this.props;
     // console.log(allDrafts);
     const { provisionalOfferDrafts = [], finalOfferDrafts = [] } = allDrafts;
     // console.log(provisionalOfferDrafts);
@@ -66,22 +66,14 @@ class AllDrafts extends PureComponent {
               tab="provisional offer drafts"
               key="1"
             >
-              {loading ? (
-                <Spin className={styles.spin} />
-              ) : (
-                <ProvisionalOfferDrafts list={provisionalOfferDrafts} />
-              )}
+              <ProvisionalOfferDrafts list={provisionalOfferDrafts} />
             </TabPane>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
               tab="final offers draft"
               key="2"
             >
-              {loading ? (
-                <Spin className={styles.spin} />
-              ) : (
-                <FinalOfferDrafts list={finalOfferDrafts} />
-              )}
+              <FinalOfferDrafts list={finalOfferDrafts} />
             </TabPane>
           </Tabs>
         </div>
@@ -92,12 +84,11 @@ class AllDrafts extends PureComponent {
 
 // export default FinalOfferDrafts;
 export default connect((state) => {
-  const { onboard = {}, loading } = state;
+  const { onboard = {} } = state;
   const { onboardingOverview = {} } = onboard;
   const { finalOfferDrafts = [], allDrafts = {} } = onboardingOverview;
   return {
     finalOfferDrafts,
     allDrafts,
-    loading: loading.effects['onboard/fetchOnboardList'],
   };
 })(React.memo(AllDrafts));
