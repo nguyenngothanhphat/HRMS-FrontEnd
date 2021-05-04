@@ -41,8 +41,9 @@ class AllDrafts extends PureComponent {
     const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT } = PROCESS_STATUS;
     if (key === '1') {
       this.fetchOfferDraft(PROVISIONAL_OFFER_DRAFT);
+    } else {
+      this.fetchOfferDraft(FINAL_OFFERS_DRAFT);
     }
-    this.fetchOfferDraft(FINAL_OFFERS_DRAFT);
   };
 
   render() {
