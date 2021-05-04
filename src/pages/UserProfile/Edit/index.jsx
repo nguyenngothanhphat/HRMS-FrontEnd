@@ -22,6 +22,8 @@ class EditProfile extends Component {
       currentUser: { email = '', firstName = '', signInRole = [], password = '' } = {},
     } = this.props;
 
+    const formatRole = signInRole.join();
+
     const formItemLayout = {
       labelCol: {
         xs: { span: 6 },
@@ -51,7 +53,7 @@ class EditProfile extends Component {
       },
       {
         label: 'Role',
-        name: 'signInRole',
+        name: 'formatRole',
         disabled: true,
       },
     ];
@@ -59,7 +61,7 @@ class EditProfile extends Component {
     return (
       <div className={styles.root}>
         <div className={styles.header}>
-          <div className={styles.header__title}>User Infomation</div>
+          <div className={styles.header__title}>User Information</div>
         </div>
         <div className={styles.userInfo}>
           <Form
@@ -73,7 +75,7 @@ class EditProfile extends Component {
               firstName,
               email,
               password,
-              signInRole,
+              formatRole,
             }}
           >
             {data.map(({ label, name: nameField, disabled }) => (
@@ -82,9 +84,16 @@ class EditProfile extends Component {
                   <div className={styles.textLabel}>{label}</div>
                 </Col>
                 <Col span={18}>
-                  <Form.Item name={nameField}>
+                  {nameField === 'password' ? (
+                    <Input.Password
+                      disabled={disabled}
+                      className={styles.inputField}
+                      placeholder={label}
+                    />
+                  ) : (
                     <Input disabled={disabled} className={styles.inputField} placeholder={label} />
-                  </Form.Item>
+                  )}
+                  <Form.Item name={nameField} />
                 </Col>
               </Row>
             ))}
