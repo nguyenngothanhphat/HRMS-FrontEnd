@@ -1,21 +1,15 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import CompanySignatoryHeader from './components/CompanySignatoryHeader';
 import CompanySignatoryForm from './components/CompanySignatoryForm';
 
 import styles from './index.less';
 
-@connect(
-  ({
-    loading,
-    user: { currentUser: { company: { _id: companyId = '' } = {} } = {} } = {},
-    companiesManagement: { originData: { companyDetails } = {} } = {},
-  }) => ({
-    loading: loading.effects['companiesManagement/updateCompany'],
-    companyDetails,
-    companyId,
-  }),
-)
+@connect(({ loading, companiesManagement: { originData: { companyDetails } = {} } = {} }) => ({
+  loading: loading.effects['companiesManagement/updateCompany'],
+  companyDetails,
+}))
 class CompanySignatory extends PureComponent {
   constructor(props) {
     super(props);
@@ -25,11 +19,12 @@ class CompanySignatory extends PureComponent {
   }
 
   componentDidMount = () => {
-    const { dispatch, companyId = '' } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'companiesManagement/fetchCompanyDetails',
       payload: {
-        id: companyId,
+        id: getCurrentCompany(),
+        tenantId: getCurrentTenant(),
       },
     });
   };
@@ -41,7 +36,7 @@ class CompanySignatory extends PureComponent {
   };
 
   render() {
-    const { companyId = '' } = this.props;
+    const companyId = getCurrentCompany();
     const { addModalVisible } = this.state;
     return (
       <div className={styles.CompanySignatory}>

@@ -176,7 +176,7 @@ const routes = [
           },
           {
             path: '/offboarding',
-            name: 'OffBoarding',
+            name: 'Offboarding',
             icon: '/assets/images/menuIcons/offboarding.svg',
             component: './OffBoarding',
             authority: ['owner', 'M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],

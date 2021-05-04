@@ -4,6 +4,7 @@ import { Table, Spin, Tooltip } from 'antd';
 import { formatMessage, connect, Link, history } from 'umi';
 import moment from 'moment';
 import CustomEmailImage from '@/assets/customEmail.svg';
+import { getCurrentTenant } from '@/utils/authority';
 import FileIcon from './images/doc.svg';
 import DeleteIcon from './images/delete.svg';
 
@@ -42,7 +43,9 @@ class CustomEmailsTableField extends PureComponent {
 
     dispatch({
       type: 'employeeSetting/fetchListCustomEmailOnboarding',
-      payload: {},
+      payload: {
+        tenantId: getCurrentTenant(),
+      },
     });
   };
 
@@ -79,7 +82,10 @@ class CustomEmailsTableField extends PureComponent {
     }
     dispatch({
       type: 'employeeSetting/deleteCustomEmailItem',
-      payload: customEmailId,
+      payload: {
+        id: customEmailId,
+        tenantId: getCurrentTenant(),
+      },
     });
   };
 
