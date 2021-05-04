@@ -87,11 +87,17 @@ class EditProfile extends Component {
                   {nameField === 'password' ? (
                     <Input.Password
                       disabled={disabled}
-                      className={styles.inputField}
+                      className={styles.passwordField}
                       placeholder={label}
+                      // autoComplete="off"
                     />
                   ) : (
-                    <Input disabled={disabled} className={styles.inputField} placeholder={label} />
+                    <Input
+                      disabled={disabled}
+                      className={styles.inputField}
+                      placeholder={label}
+                      // autoComplete="off"
+                    />
                   )}
                   <Form.Item name={nameField} />
                 </Col>

@@ -50,6 +50,10 @@
         border-radius: 5px;
       }
 
+      .ant-input-affix-wrapper {
+        padding: 0;
+      }
+
       .ant-btn {
         width: 95px;
         height: 40px;
@@ -73,6 +77,21 @@
         .inputField {
           width: 100%;
         }
+
+        .passwordField {
+          padding: 4px 11px;
+
+          input:-webkit-autofill,
+          input:-webkit-autofill:hover,
+          input:-webkit-autofill:focus,
+          input:-webkit-autofill:active {
+            height: auto;
+            border: none;
+            // -webkit-box-shadow: 0 0 0px 1000px #fff inset !important;
+            // box-shadow: 0 0 0 1000px #fff inset !important;
+            // transition: background-color 5000s ease-in-out;
+          }
+        }
       }
 
       .btnActions {
@@ -95,4 +114,15 @@
       }
     }
   }
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  height: auto;
+  border: none;
+  -webkit-box-shadow: 0 0 0px 1000px #fff inset !important;
+  box-shadow: 0 0 0 1000px #fff inset !important;
+  transition: background-color 5000s ease-in-out;
 }
