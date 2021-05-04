@@ -2,9 +2,10 @@ import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Tabs, Button, Row, Col } from 'antd';
 import { connect, formatMessage, history } from 'umi';
+import { isAdmin, isOwner } from '@/utils/authority';
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
-import CustomFields from './components/CustomFields';
+// import CustomFields from './components/CustomFields';
 import styles from './index.less';
 
 const ROLE = {
@@ -51,16 +52,17 @@ class EmployeeOnboarding extends PureComponent {
       .filter((values, index, self) => self.indexOf(values) === index);
     const { TabPane } = Tabs;
 
-    const isHrManager = rolesList.indexOf(ROLE.HRMANAGER) > -1;
+    const checkPermission =
+      rolesList.indexOf(ROLE.HRMANAGER) > -1 ||
+      rolesList.indexOf(ROLE.HRGLOBAL) > -1 ||
+      isAdmin() ||
+      isOwner();
     return (
       <PageContainer>
         {/* {data.indexOf('P_ONBOARDING_VIEW') > -1 && rolesList.length > 0 ? ( */}
         <div className={styles.containerEmployeeOnboarding}>
           <div className={styles.tabs}>
-            <Tabs
-              // defaultActiveKey={defaultActiveKey}
-              defaultActiveKey="2"
-            >
+            <Tabs defaultActiveKey={`${defaultActiveKey}`}>
               <TabPane
                 tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
                 key="1"
@@ -82,19 +84,22 @@ class EmployeeOnboarding extends PureComponent {
                 </div>
                 <OnboardingOverview />
               </TabPane>
-              {/* {isHrManager === true ? (
-                <> */}
-              <TabPane tab={formatMessage({ id: 'component.employeeOnboarding.settings' })} key="2">
-                <Settings />
-              </TabPane>
-              {/* <TabPane
-                      tab={formatMessage({ id: 'component.employeeOnboarding.customFields' })}
-                      key="3"
-                    >
-                      <CustomFields />
-                    </TabPane> */}
-              {/* </>
-              ) : null} */}
+              {checkPermission ? (
+                <>
+                  <TabPane
+                    tab={formatMessage({ id: 'component.employeeOnboarding.settings' })}
+                    key="2"
+                  >
+                    <Settings />
+                  </TabPane>
+                  {/* <TabPane
+                    tab={formatMessage({ id: 'component.employeeOnboarding.customFields' })}
+                    key="3"
+                  >
+                    <CustomFields />
+                  </TabPane> */}
+                </>
+              ) : null}
             </Tabs>
           </div>
         </div>

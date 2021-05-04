@@ -525,6 +525,7 @@ class EditEmailForm extends PureComponent {
     newConditions.splice(index, 1);
 
     newConditionsData.forEach((item, itemIndex) => {
+      // eslint-disable-next-line no-param-reassign
       item.id = itemIndex;
     });
 
@@ -827,7 +828,7 @@ class EditEmailForm extends PureComponent {
         // recipients
         <>
           <Col span={12}>
-            <Form.Item label="recipients" name="recipients">
+            <Form.Item label="Recipients" name="recipients">
               <Select
                 size="large"
                 placeholder="Please select a choice"
@@ -969,7 +970,7 @@ class EditEmailForm extends PureComponent {
 
               <Col span={12} />
 
-              {this._renderApplyToOptions()}
+              {_applyTo && this._renderApplyToOptions()}
 
               {/* Send to existing workers */}
               <Col span={12}>
