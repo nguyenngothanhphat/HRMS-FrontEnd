@@ -148,6 +148,9 @@ const employeeSetting = {
         const { statusCode, data } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Remove template successfully',
+        });
         yield put({ type: 'save', payload: { currentTemplate: data } });
         return statusCode;
       } catch (errors) {

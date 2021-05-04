@@ -931,7 +931,6 @@ class EmailReminderForm extends PureComponent {
               onClick={() => {
                 history.push({
                   pathname: `/employee-onboarding`,
-                  state: { defaultActiveKey: '2' },
                 });
               }}
             >

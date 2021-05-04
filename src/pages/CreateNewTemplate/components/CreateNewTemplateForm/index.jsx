@@ -122,7 +122,7 @@ class CreateNewTemplateForm extends PureComponent {
             loading={loadingAddTemplate}
             className={styles.CreateNewTemplateForm_button_primary}
           >
-            <img src={formOutlined} alt="form-outline" />
+            {/* <img src={formOutlined} alt="form-outline" /> */}
             Save
           </Button>
         </div>
