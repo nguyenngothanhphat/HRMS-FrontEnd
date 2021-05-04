@@ -28,7 +28,7 @@ class FirstFieldsComponent extends PureComponent {
       disabled,
     } = this.props;
 
-    console.log(managerList);
+    console.log(locationList);
 
     return (
       <>
@@ -88,7 +88,7 @@ class FirstFieldsComponent extends PureComponent {
                     {item.title === 'workLocation'
                       ? locationList.map((data, index) => (
                           <Option value={data._id} key={index}>
-                            <Typography.Text>{data.legalAddress.address}</Typography.Text>
+                            <Typography.Text>{data.legalAddress.addressLine1}</Typography.Text>
                           </Option>
                         ))
                       : item.title === 'department' && departmentList.length > 0

@@ -8,28 +8,28 @@ export function getCandidate(payload) {
 }
 
 export function getDocumentByCandidate(payload) {
-  return request('/api/document/get-by-candidate', {
+  return request('/api/documenttenant/get-by-candidate', {
     method: 'POST',
     data: payload,
   });
 }
 
 export function getById(params) {
-  return request('/api/candidate/get-by-id', {
+  return request('/api/candidatetenant/get-by-id', {
     method: 'POST',
     data: params,
   });
 }
 
 export function updateByCandidate(params) {
-  return request('/api/candidate/update-by-candidate', {
+  return request('/api/candidatetenant/update-by-candidate', {
     method: 'POST',
     data: params,
   });
 }
 
 export function addAttachmentService(params) {
-  return request('/api/candidate/add-attachment-candidate', {
+  return request('/api/candidatetenant/add-attachment-candidate', {
     method: 'POST',
     data: params,
   });
@@ -43,14 +43,14 @@ export function getWorkHistory(params) {
 }
 
 export function sendEmailByCandidateModel(params) {
-  return request('/api/candidate/phase-one-candidate', {
+  return request('/api/candidatetenant/phase-one-candidate', {
     method: 'POST',
     data: params,
   });
 }
 
 export function candidateFinalOffer(payload) {
-  return request('/api/candidate/candidate-final-offer', {
+  return request('/api/candidatetenant/candidate-final-offer', {
     method: 'POST',
     data: payload,
   });

@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { Tabs, Layout } from 'antd';
+import { getCurrentTenant } from '@/utils/authority';
 import TableCandidates from '../TableCandidates';
 import TableFilter from '../TableFilter';
 import styles from './index.less';
@@ -57,6 +58,9 @@ class TableContainer extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'candidatesManagement/fetchCandidatesList',
+      payload: {
+        tenantId: getCurrentTenant(),
+      },
     });
   };
 
@@ -66,7 +70,10 @@ class TableContainer extends PureComponent {
     if (tabId === 1) {
       dispatch({
         type: 'candidatesManagement/fetchCandidatesList',
-        processStatus,
+        payload: {
+          processStatus,
+          tenantId: getCurrentTenant(),
+        },
       });
     }
   };

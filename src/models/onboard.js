@@ -7,6 +7,7 @@ import {
 import _ from 'lodash';
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
+import { getCurrentTenant } from '@/utils/authority';
 
 // const employeeList = rookieList.filter(
 //   (rookie) => rookie.isNew === undefined || rookie.isNew === null,
@@ -456,18 +457,20 @@ const onboard = {
           FINAL_OFFERS_HR,
           FINAL_OFFERS_CANDIDATE,
         } = PROCESS_STATUS;
-
         const { processStatus = '' } = payload;
+        const tenantId = getCurrentTenant();
         let req;
         if (processStatus === FINAL_OFFERS) {
           req = {
             processStatus: [FINAL_OFFERS_HR, FINAL_OFFERS_CANDIDATE],
             page: 1,
+            tenantId,
           };
         } else {
           req = {
             processStatus: [processStatus],
             page: 1,
+            tenantId,
           };
         }
         const response = yield call(getOnboardingList, req);

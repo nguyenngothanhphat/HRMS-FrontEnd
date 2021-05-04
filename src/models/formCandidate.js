@@ -315,9 +315,9 @@ const info = {
       }
     },
 
-    *fetchCandidateInfo(_, { call, put }) {
+    *fetchCandidateInfo({ payload }, { call, put }) {
       try {
-        const response = yield call(addTeamMember);
+        const response = yield call(addTeamMember, payload);
         const { data } = response;
         const { ticketID = '', _id = '' } = data;
         console.log(response);

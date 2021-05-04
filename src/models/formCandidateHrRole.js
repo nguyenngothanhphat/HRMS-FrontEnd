@@ -592,10 +592,10 @@ const candidateInfo = {
       return response;
     },
 
-    *fetchCandidateInfo(_, { call, put }) {
+    *fetchCandidateInfo({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(addTeamMember);
+        response = yield call(addTeamMember, payload);
         const { data, statusCode } = response;
         const { ticketID = '', _id } = data;
         if (statusCode !== 200) throw response;
@@ -855,6 +855,7 @@ const candidateInfo = {
             type: 'fetchDocumentByCandidateID',
             payload: {
               candidate: _id,
+              tenantId: payload.tenantId,
             },
           });
         }
@@ -941,6 +942,8 @@ const candidateInfo = {
       let response = {};
       try {
         response = yield call(getDocumentByCandidate, payload);
+        console.log('bb ', payload);
+
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -1047,9 +1050,8 @@ const candidateInfo = {
       let response = {};
       try {
         response = yield call(getAdditionalQuestion, payload);
-        const { statusCode, data } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        console.log(response);
         // put({
         //   type: 'updateAdditionalQuestion',
         //   payload: data
@@ -1089,7 +1091,7 @@ const candidateInfo = {
       };
     },
     saveFilledSalaryStructure(state, action) {
-      const { data, checkMandatory } = state;
+      const { checkMandatory } = state;
       return {
         ...state,
         checkMandatory: {

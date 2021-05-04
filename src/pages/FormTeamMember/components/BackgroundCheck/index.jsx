@@ -4,6 +4,7 @@ import { Row, Col, Typography, Spin, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { map } from 'lodash';
+import { getCurrentTenant } from '@/utils/authority';
 import ModalContentComponent from './components/ModalContentComponent';
 import Warning from './components/Warning';
 import Title from './components/Title';
@@ -78,6 +79,7 @@ class BackgroundCheck extends Component {
           payload: {
             candidate,
             currentStep: 3,
+            tenantId: getCurrentTenant(),
           },
         });
       }
@@ -211,6 +213,7 @@ class BackgroundCheck extends Component {
         candidate: _id,
         documentChecklistSetting: documentList,
         currentStep,
+        tenantId: getCurrentTenant(),
       },
     });
   };

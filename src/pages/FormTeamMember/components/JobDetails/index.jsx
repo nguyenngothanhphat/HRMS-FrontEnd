@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { isEmpty, isObject } from 'lodash';
+import { getCurrentTenant } from '@/utils/authority';
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
@@ -51,6 +52,7 @@ class JobDetails extends PureComponent {
           payload: {
             candidate,
             currentStep: 1,
+            tenantId: getCurrentTenant(),
           },
         });
       }
@@ -100,6 +102,8 @@ class JobDetails extends PureComponent {
         employeeType: isObject(employeeType) ? employeeType._id : employeeType,
         position,
         candidate: _id,
+        tenantId: getCurrentTenant(),
+
         // currentStep,
       },
     });
@@ -109,6 +113,7 @@ class JobDetails extends PureComponent {
         type: 'candidateInfo/updateByHR',
         payload: {
           candidate: _id,
+          tenantId: getCurrentTenant(),
           currentStep,
         },
       });
@@ -171,15 +176,13 @@ class JobDetails extends PureComponent {
     if (name === 'workLocation') {
       const changedWorkLocation = JSON.parse(JSON.stringify(locationList));
       const selectedWorkLocation = changedWorkLocation.find((data) => data._id === value);
-      const {
-        company: { _id },
-      } = selectedWorkLocation;
+      const { company } = selectedWorkLocation;
       dispatch({
         type: 'candidateInfo/save',
         payload: {
           tempData: {
             ...tempData,
-            company: _id,
+            company,
             location: selectedWorkLocation,
             workLocation: selectedWorkLocation,
           },
@@ -190,7 +193,8 @@ class JobDetails extends PureComponent {
         dispatch({
           type: 'candidateInfo/fetchDepartmentList',
           payload: {
-            company: _id,
+            company,
+            tenantId: getCurrentTenant(),
           },
         });
 
@@ -240,12 +244,15 @@ class JobDetails extends PureComponent {
       });
 
       if (!isEmpty(department)) {
-        const departmentTemp = [department];
-        const locationTemp = [location._id];
+        // const departmentTemp = [department];
+        // const locationTemp = [location._id];
+        const locationObj = { ...location };
         dispatch({
           type: 'candidateInfo/fetchManagerList',
           payload: {
-            department: departmentTemp,
+            company: locationObj.company,
+            status: ['ACTIVE'],
+            tenantId: getCurrentTenant(),
             // locationTemp,
           },
         });
@@ -253,6 +260,7 @@ class JobDetails extends PureComponent {
           type: 'candidateInfo/fetchTitleList',
           payload: {
             department,
+            tenantId: getCurrentTenant(),
           },
         });
       }
@@ -295,6 +303,7 @@ class JobDetails extends PureComponent {
         reportingManager: reportingManager ? reportingManager._id : '',
         candidate: _id,
         currentStep: currentStep + 1,
+        tenantId: getCurrentTenant(),
       },
     }).then(({ data, statusCode }) => {
       if (statusCode === 200) {

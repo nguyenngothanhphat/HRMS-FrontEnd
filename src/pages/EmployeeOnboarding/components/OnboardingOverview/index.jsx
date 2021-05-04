@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
 import OnboardingLayout from '@/components/OnboardingLayout';
+import { getCurrentTenant } from '@/utils/authority';
 import OnboardingEmpty from './components/OnboardingEmpty';
 
 @connect(({ onboard: { menu = {} } = {}, loading }) => ({

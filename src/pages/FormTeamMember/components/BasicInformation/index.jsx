@@ -3,6 +3,7 @@
 import React, { Component } from 'react';
 import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import BasicInformationHeader from './components/BasicInformationHeader';
 import BasicInformationReminder from './components/BasicInformationReminder';
 import NoteComponent from '../NoteComponent';
@@ -56,6 +57,7 @@ class BasicInformation extends Component {
           payload: {
             candidate,
             currentStep: 0,
+            tenantId: getCurrentTenant(),
           },
         });
       }
@@ -123,6 +125,7 @@ class BasicInformation extends Component {
         previousExperience,
         candidate: _id,
         currentStep,
+        tenantId: getCurrentTenant(),
       },
     });
   };
@@ -191,6 +194,7 @@ class BasicInformation extends Component {
           previousExperience: values.previousExperience,
           candidate: _id,
           currentStep: currentStep + 1,
+          tenantId: getCurrentTenant(),
         },
       }).then(({ data: data1, statusCode }) => {
         if (statusCode === 200) {

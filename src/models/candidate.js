@@ -196,6 +196,7 @@ const candidateProfile = {
     *fetchDocumentByCandidate({ payload }, { call, put }) {
       try {
         const response = yield call(getDocumentByCandidate, payload);
+        console.log('aa ', payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
