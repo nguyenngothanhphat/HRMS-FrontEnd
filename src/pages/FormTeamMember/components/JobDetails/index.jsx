@@ -16,12 +16,14 @@ import styles from './index.less';
     candidateInfo: { data, checkMandatory, currentStep, tempData } = {},
     loading,
     locationSelection: { listLocationsByCompany = [] } = {},
+    user: { companiesOfUser = [] } = {},
   }) => ({
     data,
     checkMandatory,
     currentStep,
     tempData,
     listLocationsByCompany,
+    companiesOfUser,
     loading1: loading.effects['candidateInfo/fetchDepartmentList'],
     loading2: loading.effects['candidateInfo/fetchTitleList'],
     loading3: loading.effects['candidateInfo/fetchManagerList'],
@@ -184,29 +186,12 @@ class JobDetails extends PureComponent {
   };
 
   _handleSelect = (value, name) => {
-    const { dispatch, locationList, listLocationsByCompany = [] } = this.props;
+    const { dispatch, locationList } = this.props;
     const { tempData = {} } = this.state;
     tempData[name] = value;
     const { department, workLocation, title } = tempData;
-    const companyId = getCurrentCompany(getCurrentTenant);
+    const companyId = getCurrentCompany();
     const tenantId = getCurrentTenant();
-
-    const locationPayload = listLocationsByCompany.map(
-      ({ headQuarterAddress: { country: countryItem1 = '' } = {} }) => {
-        let stateList = [];
-        listLocationsByCompany.forEach(
-          ({ headQuarterAddress: { country: countryItem2 = '', state: stateItem2 = '' } = {} }) => {
-            if (countryItem1 === countryItem2) {
-              stateList = [...stateList, stateItem2];
-            }
-          },
-        );
-        return {
-          country: countryItem1,
-          state: stateList,
-        };
-      },
-    );
 
     if (name === 'workLocation') {
       const changedWorkLocation = JSON.parse(JSON.stringify(locationList));
@@ -257,7 +242,7 @@ class JobDetails extends PureComponent {
           payload: {
             company: companyId,
             status: ['ACTIVE'],
-            location: locationPayload,
+            tenantId: getCurrentTenant(),
           },
         });
       }

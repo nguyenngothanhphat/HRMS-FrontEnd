@@ -107,8 +107,6 @@ class SalaryStructureTemplate extends PureComponent {
 
     this.state = {
       salaryTitle: '',
-      error: '',
-      errorInfo: '',
       isEditted: false,
       footerData: [
         {
@@ -123,27 +121,6 @@ class SalaryStructureTemplate extends PureComponent {
     };
   }
 
-  componentWillUnmount = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'candidateInfo/saveOrigin',
-      payload: {
-        listTitle: [],
-      },
-    });
-  };
-
-  onFocusSelect = () => {
-    // const { dispatch, _id, processStatus } = this.props;
-    // // const tempTableData = [...settings];
-    // if (processStatus === 'DRAFT') {
-    //   dispatch({
-    //     type: 'candidateInfo/fetchTitleListByCompany',
-    //     payload: { company: _id },
-    //   });
-    // }
-  };
-
   componentDidUpdate(prevProps) {
     const { listTitle = [], salaryTitle: salaryTitleId } = this.props;
     const { salaryTitle = '' } = this.state;
@@ -154,6 +131,7 @@ class SalaryStructureTemplate extends PureComponent {
     }
     const titleName = listTitle.find((item) => item._id === salaryTitleId);
     if (titleName && !salaryTitle) {
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         salaryTitle: titleName.name,
       });
@@ -166,6 +144,16 @@ class SalaryStructureTemplate extends PureComponent {
     console.log(errorInfo);
     // You can also log error messages to an error reporting service here
   }
+
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/saveOrigin',
+      payload: {
+        listTitle: [],
+      },
+    });
+  };
 
   componentDidMount = () => {
     const { dispatch, settings, listTitle = [] } = this.props;
@@ -391,7 +379,7 @@ class SalaryStructureTemplate extends PureComponent {
     //     },
     //   },
     // });
-    console.log('id', this.props.salaryTitleId === null);
+    // console.log('id', this.props.salaryTitleId === null);
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
@@ -660,13 +648,12 @@ class SalaryStructureTemplate extends PureComponent {
     const { salaryTitle = '' } = this.state;
 
     // const defaultValue = listTitle.length > 0 ? listTitle[0].name : [];
-    console.log('render ', salaryTitle);
+    // console.log('render ', salaryTitle);
     return (
       <div className={styles.salaryStructureTemplate}>
         {/* {(salaryTitle !== '' || salaryTitle === null) && ( */}
         {(salaryTitle !== '' || salaryTitleId === null) && (
           <Form onFinish={this.onFinish}>
-            {' '}
             <div className={styles.salaryStructureTemplate_select}>
               <Form.Item label="Select a salary structure template" name="salaryTemplate">
                 {/* {listTitle.length > 0 && (

@@ -16,8 +16,10 @@ import styles from './index.less';
     companiesManagement: {
       originData: { companyDetails: { company: { companySignature = [] } = {} } = {} } = {},
     } = {},
+    loading,
   }) => ({
     companySignature,
+    loadingSignatoryList: loading.effects['companiesManagement/fetchCompanyDetails'],
   }),
 )
 class CompanySignatoryForm extends PureComponent {
@@ -222,6 +224,7 @@ class CompanySignatoryForm extends PureComponent {
       showAddSignatoryModal = () => {},
       addModalVisible = false,
       companyId = '',
+      loadingSignatoryList,
     } = this.props;
     const rowSize = 10;
 
@@ -250,6 +253,7 @@ class CompanySignatoryForm extends PureComponent {
             locale={{
               emptyText: <Empty description="No signatory" />,
             }}
+            loading={loadingSignatoryList}
             columns={this.generateColumns()}
             dataSource={this.parseList()}
             // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
