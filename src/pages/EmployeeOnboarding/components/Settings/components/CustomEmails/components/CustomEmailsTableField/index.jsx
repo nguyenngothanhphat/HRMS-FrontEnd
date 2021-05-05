@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react';
-import { Table, Spin, Tooltip } from 'antd';
+import { Table, Spin, Tooltip, Skeleton } from 'antd';
 import { formatMessage, connect, Link, history } from 'umi';
 import moment from 'moment';
 import CustomEmailImage from '@/assets/customEmail.svg';
@@ -15,6 +15,7 @@ import styles from './index.less';
     dataSubmit,
     listCustomEmailOnboarding,
     loading: loading.effects['employeeSetting/deleteCustomEmailItem'],
+    loadingFetchList: loading.effects['employeeSetting/fetchListCustomEmailOnboarding'],
   }),
 )
 class CustomEmailsTableField extends PureComponent {
@@ -160,7 +161,7 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   render() {
-    const { listCustomEmailOnboarding, loading } = this.props;
+    const { listCustomEmailOnboarding, loadingFetchList } = this.props;
     const { pageSelected } = this.state;
     const rowSize = 5;
 
@@ -187,58 +188,58 @@ class CustomEmailsTableField extends PureComponent {
       onChange: this.onChangePagination,
     };
     return (
-      <div className={styles.CustomEmailsTableField}>
-        {loading ? (
-          <div className={styles.CustomEmailsTableField_loading}>
-            <Spin size="large" />
-          </div>
+      <>
+        {loadingFetchList ? (
+          <Skeleton />
         ) : (
-          <div>
-            {listCustomEmailOnboarding.length === 0 ? (
-              <>
-                <div className={styles.emptyContainer}>
-                  <div className={styles.emptyImage}>
-                    <img src={CustomEmailImage} alt="custom-email" />
+          <>
+            <div className={styles.CustomEmailsTableField}>
+              {listCustomEmailOnboarding.length === 0 ? (
+                <>
+                  <div className={styles.emptyContainer}>
+                    <div className={styles.emptyImage}>
+                      <img src={CustomEmailImage} alt="custom-email" />
+                    </div>
+                    <div className={styles.texts}>
+                      <span className={styles.bigText}>Custom emails</span>
+                      <span className={styles.smallText}>
+                        Custom emails created by you will be shown here
+                      </span>
+                    </div>
                   </div>
-                  <div className={styles.texts}>
-                    <span className={styles.bigText}>Custom emails</span>
-                    <span className={styles.smallText}>
-                      Custom emails created by you will be shown here
+                </>
+              ) : (
+                <>
+                  <div className={styles.CustomEmailsTableField_title}>
+                    <span className={styles.title}>
+                      {formatMessage({ id: 'component.customEmailsTableField.titleTable' })}
                     </span>
                   </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className={styles.CustomEmailsTableField_title}>
-                  <span className={styles.title}>
-                    {formatMessage({ id: 'component.customEmailsTableField.titleTable' })}
-                  </span>
-                </div>
-                <div className={styles.CustomEmailsTableField_table}>
-                  <Table
-                    dataSource={this._renderData()}
-                    columns={this._renderColumns()}
-                    size="middle"
-                    onRow={(record) => {
-                      return {
-                        onMouseEnter: () => this.handleClickCustomEmail(record), // click row
-                      };
-                    }}
-                    rowKey={(record) => record._id}
-                    pagination={
-                      listCustomEmailOnboarding.length > rowSize
-                        ? { ...pagination, total: listCustomEmailOnboarding.length }
-                        : false
-                    }
-                    scroll={{ y: 300 }}
-                  />
-                </div>
-              </>
-            )}
-          </div>
+                  <div className={styles.CustomEmailsTableField_table}>
+                    <Table
+                      dataSource={this._renderData()}
+                      columns={this._renderColumns()}
+                      size="middle"
+                      onRow={(record) => {
+                        return {
+                          onMouseEnter: () => this.handleClickCustomEmail(record), // click row
+                        };
+                      }}
+                      rowKey={(record) => record._id}
+                      pagination={
+                        listCustomEmailOnboarding.length > rowSize
+                          ? { ...pagination, total: listCustomEmailOnboarding.length }
+                          : false
+                      }
+                      scroll={{ y: 300 }}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+          </>
         )}
-      </div>
+      </>
     );
   }
 }

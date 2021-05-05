@@ -20,11 +20,11 @@ class DocumentsAndTemplatesHeader extends PureComponent {
             can generate and send your company’s relieving & experience letters.
           </div>
         </div>
-        <div className={styles.rightPart}>
+        {/* <div className={styles.rightPart}>
           <div className={styles.addButton} onClick={this.createNewTemplate}>
             <span>Create New Template</span>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }

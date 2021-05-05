@@ -7,7 +7,6 @@ import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(({ loading, onboardingSettings }) => ({
-  loadingFetchListInsurances: loading.effects['onboardingSettings/fetchListInsurances'],
   loadingFetchAddInsurance: loading.effects['onboardingSettings/addInsurance'],
   onboardingSettings,
 }))
@@ -22,22 +21,11 @@ class NonExtempNoticeForm extends Component {
   }
 
   componentDidMount = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'onboardingSettings/fetchListInsurances',
-      payload: {
-        tenantId: getCurrentTenant(),
-      },
-    }).then((listInsurances) => {
-      const {
-        carrierName = '',
-        carrierAddress = '',
-        phone = '',
-        policyNumber = '',
-      } = listInsurances;
-      if (carrierName === '' && carrierAddress === '' && phone === '' && policyNumber === '')
-        this.handleEdit(true, false);
-    });
+    const { onboardingSettings: { listInsurances = {} } = {} } = this.props;
+
+    const { carrierName = '', carrierAddress = '', phone = '', policyNumber = '' } = listInsurances;
+    if (carrierName === '' && carrierAddress === '' && phone === '' && policyNumber === '')
+      this.handleEdit(true, false);
   };
 
   onFinish = async (values) => {
@@ -186,21 +174,23 @@ class NonExtempNoticeForm extends Component {
             </Form.Item>
           </Col>
           <Col xs={4} sm={4} md={4} lg={4} xl={4} offset={20}>
-            <Form.Item>
-              <Button
-                loading={loadingFetchAddInsurance}
-                disabled={!isEditing}
-                type="primary"
-                htmlType="submit"
-                style={
-                  isEditing
-                    ? { backgroundColor: '#ffa100', borderColor: '#ffa100' }
-                    : { backgroundColor: '#666', borderColor: '#666' }
-                }
-              >
-                {formatMessage({ id: 'component.nonExtempNotice.save' })}
-              </Button>
-            </Form.Item>
+            {isEditing && (
+              <Form.Item>
+                <Button
+                  loading={loadingFetchAddInsurance}
+                  // disabled={!isEditing}
+                  type="primary"
+                  htmlType="submit"
+                  style={
+                    isEditing
+                      ? { backgroundColor: '#ffa100', borderColor: '#ffa100' }
+                      : { backgroundColor: '#666', borderColor: '#666' }
+                  }
+                >
+                  {formatMessage({ id: 'component.nonExtempNotice.save' })}
+                </Button>
+              </Form.Item>
+            )}
           </Col>
         </Row>
         {/* <Row gutter={12}> */}
@@ -211,7 +201,6 @@ class NonExtempNoticeForm extends Component {
   };
 
   render() {
-    const { loadingFetchListInsurances = false } = this.props;
     const { isEditing } = this.state;
 
     return (
@@ -230,12 +219,8 @@ class NonExtempNoticeForm extends Component {
               </div>
             </div>
             <hr />
-            {loadingFetchListInsurances && (
-              <div className={styles.loading}>
-                <Spin size="default" />
-              </div>
-            )}
-            {!loadingFetchListInsurances && this._renderForm()}
+
+            {this._renderForm()}
           </div>
         </Col>
       </Row>

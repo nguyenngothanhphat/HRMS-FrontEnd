@@ -596,10 +596,10 @@ const candidateInfo = {
       return response;
     },
 
-    *fetchCandidateInfo(_, { call, put }) {
+    *fetchCandidateInfo({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(addTeamMember);
+        response = yield call(addTeamMember, payload);
         const { data, statusCode } = response;
         const { ticketID = '', _id } = data;
         if (statusCode !== 200) throw response;
@@ -859,6 +859,7 @@ const candidateInfo = {
             type: 'fetchDocumentByCandidateID',
             payload: {
               candidate: _id,
+              tenantId: payload.tenantId,
             },
           });
         }

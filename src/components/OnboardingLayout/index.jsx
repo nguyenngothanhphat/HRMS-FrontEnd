@@ -49,7 +49,11 @@ const getComponent = (name) => {
   }
 };
 
-@connect()
+@connect(({ loading }) => ({
+  loadingAddTeamMember:
+    loading.effects['info/fetchCandidateInfo'] ||
+    loading.effects['candidateInfo/fetchCandidateInfo'],
+}))
 class OnboardingLayout extends PureComponent {
   constructor(props) {
     super(props);
@@ -111,18 +115,23 @@ class OnboardingLayout extends PureComponent {
   };
 
   render() {
-    const { listMenu = [] } = this.props;
+    const { listMenu = [], loadingAddTeamMember = false } = this.props;
     const { displayComponent = null, pageTitle = '' } = this.state;
 
     return (
       <div className={styles.overviewContainer}>
         <div className={styles.viewLeft}>
           {/* <Link to="/employee-onboarding/add"> */}
-          <Button className={styles.addMember} type="primary" onClick={this.handleAddBtn}>
-            <div className={styles.icon}>
-              <img src="/assets/images/addMemberIcon.svg" alt="add member icon" />
-              <span>{formatMessage({ id: 'component.onboardingOverview.addTeamMember' })}</span>
-            </div>
+          <Button
+            icon={<img src="/assets/images/addMemberIcon.svg" alt="add member icon" />}
+            className={styles.addMember}
+            type="primary"
+            loading={loadingAddTeamMember}
+            onClick={this.handleAddBtn}
+          >
+            <span className={styles.title}>
+              {formatMessage({ id: 'component.onboardingOverview.addTeamMember' })}
+            </span>
           </Button>
           {/* </Link> */}
 

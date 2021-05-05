@@ -260,6 +260,7 @@ class SalaryStructureTemplate extends PureComponent {
         },
         candidate: _id,
         currentStep: currentStep + 1,
+        tenantId: getCurrentTenant(),
       },
     }).then(({ data: data1, statusCode }) => {
       if (statusCode === 200) {
