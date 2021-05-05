@@ -31,7 +31,7 @@ class RadioComponent extends PureComponent {
             >
               <Row gutter={[24, 0]}>
                 {Tab.positionTab.arr.map((data) => (
-                  <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+                  <Col>
                     <Radio
                       className={styles.paddingRightRadio}
                       value={data.value}
@@ -55,7 +55,7 @@ class RadioComponent extends PureComponent {
               name={Tab.classificationTab.name}
             >
               <Row gutter={[24, 0]}>
-                <Col xs={24} sm={24} md={24} lg={24} xl={24}>
+                <Col>
                   {employeeTypeList.map((data) => (
                     <Radio className={styles.Radio} value={data._id} disabled={disabled}>
                       <Typography.Text>{data.name}</Typography.Text>

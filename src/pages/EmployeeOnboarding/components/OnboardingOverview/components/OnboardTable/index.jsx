@@ -37,7 +37,7 @@ class OnboardTable extends Component {
       type: 'onboard/deleteTicketDraft',
       payload: {
         id,
-        tenantId: getCurrentTenant()
+        tenantId: getCurrentTenant(),
       },
     });
   };
