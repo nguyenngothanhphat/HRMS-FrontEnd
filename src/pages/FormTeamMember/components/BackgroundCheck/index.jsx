@@ -321,6 +321,7 @@ class BackgroundCheck extends Component {
           documentChecklistSetting: newArrToAdjust,
           action: 'submit',
           options: 1,
+          tenantId: getCurrentTenant(),
         },
       }).then(({ statusCode }) => {
         if (statusCode === 200) {
@@ -417,6 +418,7 @@ class BackgroundCheck extends Component {
         action: 'submit',
         options: 2,
         generatedLink: window.location.href,
+        tenantId: getCurrentTenant(),
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
