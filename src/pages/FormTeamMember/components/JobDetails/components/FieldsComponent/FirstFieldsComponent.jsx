@@ -55,11 +55,11 @@ class FirstFieldsComponent extends PureComponent {
                     className={styles}
                     onChange={(value) => _handleSelect(value, item.title)}
                     disabled={
-                      // !!(item.title === 'reportingManager' && managerList.length <= 0) ||
+                      !!(item.title === 'reportingManager' && managerList.length <= 0) ||
                       (item.title === 'department' && departmentList.length <= 0) ||
                       (item.title === 'title' && titleList.length <= 0) ||
                       (item.title === 'workLocation' && disabled) ||
-                      // (item.title === 'reportingManager' && disabled) ||
+                      (item.title === 'reportingManager' && disabled) ||
                       (item.title === 'department' && disabled) ||
                       (item.title === 'title' && disabled)
                     }
