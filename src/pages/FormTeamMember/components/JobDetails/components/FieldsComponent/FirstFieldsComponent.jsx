@@ -73,7 +73,7 @@ class FirstFieldsComponent extends PureComponent {
                       })}
                     {...(item.title === 'workLocation' &&
                       !isNull(workLocation) && {
-                        defaultValue: workLocation.legalAddress.address,
+                        defaultValue: workLocation.name,
                       })}
                     {...(item.title === 'reportingManager' &&
                       !isEmpty(reportingManager) && {

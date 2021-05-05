@@ -64,8 +64,7 @@ class BasicInformation extends Component {
   }
 
   componentWillUnmount() {
-    const { currentStep, tempData: { cancelCandidate = false } = {} } = this.props;
-    console.log('current', currentStep);
+    const { tempData: { cancelCandidate = false } = {} } = this.props;
     // const {
     //   data,
     //   tempData: { fullName, privateEmail, workEmail, previousExperience },
@@ -94,7 +93,7 @@ class BasicInformation extends Component {
     const {
       data: { processStatus = '' },
     } = this.props;
-    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
+    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT } = PROCESS_STATUS;
     if (processStatus === PROVISIONAL_OFFER_DRAFT || processStatus === FINAL_OFFERS_DRAFT) {
       return false;
     }
@@ -221,7 +220,6 @@ class BasicInformation extends Component {
     const { isOpenReminder = {} } = this.state;
     const { data } = this.props;
     const { processStatus } = data;
-    console.log(processStatus);
     if (processStatus === 'ACCEPT-FINAL-OFFER') {
       return (
         <Col xs={24} sm={24} md={24} lg={12} xl={12}>
