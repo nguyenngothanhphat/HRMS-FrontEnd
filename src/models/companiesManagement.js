@@ -39,9 +39,9 @@ const companiesManagement = {
     selectedNewCompanyTab: 1,
   },
   effects: {
-    *fetchCompanyDetails({ payload: { id = '' }, dataTempKept = {} }, { call, put }) {
+    *fetchCompanyDetails({ payload = {}, dataTempKept = {} }, { call, put }) {
       try {
-        const response = yield call(getCompanyDetails, { id });
+        const response = yield call(getCompanyDetails, payload);
         const { statusCode, data: company = {} } = response;
         if (statusCode !== 200) throw response;
         const companyDetails = { company };
@@ -57,7 +57,7 @@ const companiesManagement = {
         }
         yield put({
           type: 'save',
-          payload: { idCurrentCompany: id },
+          payload: { idCurrentCompany: payload.id },
         });
         yield put({
           type: 'saveOrigin',
@@ -115,15 +115,15 @@ const companiesManagement = {
       try {
         const response = yield call(updateCompany, payload);
         const { idCurrentCompany } = yield select((state) => state.employeeProfile);
-        const { statusCode, message } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
+        // notification.success({
+        //   message,
+        // });
         if (!isAccountSetup) {
           yield put({
             type: 'fetchCompanyDetails',
-            payload: { id: payload.id },
+            payload: { id: payload.id, tenantId: payload.tenantId },
             dataTempKept,
           });
           yield put({

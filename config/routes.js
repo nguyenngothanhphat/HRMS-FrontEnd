@@ -176,7 +176,7 @@ const routes = [
           },
           {
             path: '/offboarding',
-            name: 'OffBoarding',
+            name: 'Offboarding',
             icon: '/assets/images/menuIcons/offboarding.svg',
             component: './OffBoarding',
             authority: ['owner', 'M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
@@ -570,6 +570,12 @@ const routes = [
             name: 'templateDetails',
             hideInMenu: true,
             component: './TemplateDetails',
+          },
+          {
+            path: '/create-new-template/',
+            name: 'createNewTemplate',
+            hideInMenu: true,
+            component: './CreateNewTemplate',
           },
           {
             path: '/change-password',

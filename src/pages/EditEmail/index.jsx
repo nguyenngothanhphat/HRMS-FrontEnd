@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
 import PageContainer from '@/layouts/layout/src/PageContainer';
+import { getCurrentTenant } from '@/utils/authority';
 import EditEmailHeader from './components/EditEmailHeader';
 import EditEmailForm from './components/EditEmailForm';
 import EditEmailNote from './components/EditEmailNote';
@@ -27,7 +28,10 @@ class EditEmail extends Component {
 
     dispatch({
       type: 'employeeSetting/fetchEmailCustomInfo',
-      payload: id,
+      payload: {
+        id,
+        tenantId: getCurrentTenant(),
+      },
     });
   };
 
@@ -39,22 +43,20 @@ class EditEmail extends Component {
         <div className={styles.EditEmail}>
           <EditEmailHeader />
           <div className={styles.EditEmail_content}>
-            {
-              loadingfetchEmailCustomInfo ? (
-                <div className={styles.EditEmailForm_loading}>
-                  <Spin size="large" />
-                </div>
-              ) : (
-                <Row gutter={[24, 24]}>
-                  <Col xs={24} sm={24} md={24} lg={17} xl={17}>
-                    <EditEmailForm emailCustomData={emailCustomData} />
-                  </Col>
-                  <Col xs={24} sm={24} md={24} lg={7} xl={7}>
-                    <EditEmailNote />
-                  </Col>
-                </Row>
-              )
-            }
+            {loadingfetchEmailCustomInfo ? (
+              <div className={styles.EditEmailForm_loading}>
+                <Spin size="large" />
+              </div>
+            ) : (
+              <Row gutter={[24, 24]}>
+                <Col xs={24} sm={24} md={24} lg={17} xl={17}>
+                  <EditEmailForm emailCustomData={emailCustomData} />
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={7} xl={7}>
+                  <EditEmailNote />
+                </Col>
+              </Row>
+            )}
           </div>
         </div>
       </PageContainer>

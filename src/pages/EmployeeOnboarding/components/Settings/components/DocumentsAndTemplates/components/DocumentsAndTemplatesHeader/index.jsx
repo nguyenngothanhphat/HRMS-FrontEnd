@@ -1,8 +1,15 @@
 import React, { PureComponent } from 'react';
-import { formatMessage } from 'umi';
+import { history } from 'umi';
 import styles from './index.less';
 
 class DocumentsAndTemplatesHeader extends PureComponent {
+  createNewTemplate = () => {
+    history.push({
+      pathname: `/create-new-template`,
+      state: { type: 'ON_BOARDING' },
+    });
+  };
+
   render() {
     return (
       <div className={styles.DocumentsAndTemplatesHeader}>
@@ -14,8 +21,8 @@ class DocumentsAndTemplatesHeader extends PureComponent {
           </div>
         </div>
         <div className={styles.rightPart}>
-          <div className={styles.addButton}>
-            <span>Create New Templates</span>
+          <div className={styles.addButton} onClick={this.createNewTemplate}>
+            <span>Create New Template</span>
           </div>
         </div>
       </div>

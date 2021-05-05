@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col, Spin } from 'antd';
 import { connect } from 'umi';
 import PageContainer from '@/layouts/layout/src/PageContainer';
+import { getCurrentTenant } from '@/utils/authority';
 import EditEmailHeader from './components/EditEmailHeader';
 import EditEmailForm from './components/EditEmailForm';
 import EditEmailNote from './components/EditEmailNote';
@@ -27,7 +28,10 @@ class EditEmail extends Component {
 
     dispatch({
       type: 'employeeSetting/fetchEmailCustomInfo',
-      payload: id,
+      payload: {
+        id,
+        tenantId: getCurrentTenant(),
+      },
     });
   };
 
