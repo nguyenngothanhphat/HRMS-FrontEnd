@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
 import { connect } from 'umi';
 
+import { PROCESS_STATUS } from '@/models/onboard';
 import ApprovedFinalOffers from './components/ApprovedFinalOffers/index';
 import SentForApprovals from './components/SentForApprovals/index';
 
@@ -10,6 +11,36 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 
 class AwaitingApprovals extends PureComponent {
+  componentDidMount() {
+    const { dispatch } = this.props;
+    const { PENDING } = PROCESS_STATUS;
+
+    if (dispatch) {
+      this.fetchAwaitingApprovals(PENDING);
+    }
+  }
+
+  fetchAwaitingApprovals = (status) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'onboard/fetchOnboardList',
+      payload: {
+        processStatus: status,
+      },
+    });
+  };
+
+  onChangeTab = (key) => {
+    const { PENDING, ELIGIBLE_CANDIDATES, INELIGIBLE_CANDIDATES } = PROCESS_STATUS;
+    if (key === '1') {
+      this.fetchAwaitingApprovals(PENDING);
+    } else if (key === '2') {
+      this.fetchAwaitingApprovals(ELIGIBLE_CANDIDATES);
+    } else {
+      this.fetchAwaitingApprovals(INELIGIBLE_CANDIDATES);
+    }
+  };
+
   render() {
     const { awaitingApprovals = {} } = this.props;
     const {
@@ -21,7 +52,7 @@ class AwaitingApprovals extends PureComponent {
     return (
       <div className={styles.AwaitingApprovals}>
         <div className={styles.tabs}>
-          <Tabs defaultActiveKey="1">
+          <Tabs defaultActiveKey="1" onChange={this.onChangeTab}>
             <TabPane tab="sent for approval" key="1">
               {/* <PendingApprovals list={pendingApprovals} /> */}
               <SentForApprovals list={sentForApprovals} />

@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { isEmpty, isObject } from 'lodash';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
@@ -11,16 +11,23 @@ import NoteComponent from '../NoteComponent';
 import PROCESS_STATUS from '../utils';
 import styles from './index.less';
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
-@connect(({ candidateInfo: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
-  data,
-  checkMandatory,
-  currentStep,
-  tempData,
-  loading1: loading.effects['candidateInfo/fetchDepartmentList'],
-  loading2: loading.effects['candidateInfo/fetchTitleList'],
-  loading3: loading.effects['candidateInfo/fetchManagerList'],
-  loading4: loading.effects['candidateInfo/fetchCandidateByRookie'],
-}))
+@connect(
+  ({
+    candidateInfo: { data, checkMandatory, currentStep, tempData } = {},
+    loading,
+    locationSelection: { listLocationsByCompany = [] } = {},
+  }) => ({
+    data,
+    checkMandatory,
+    currentStep,
+    tempData,
+    listLocationsByCompany,
+    loading1: loading.effects['candidateInfo/fetchDepartmentList'],
+    loading2: loading.effects['candidateInfo/fetchTitleList'],
+    loading3: loading.effects['candidateInfo/fetchManagerList'],
+    loading4: loading.effects['candidateInfo/fetchCandidateByRookie'],
+  }),
+)
 class JobDetails extends PureComponent {
   static getDerivedStateFromProps(props) {
     if ('data' in props) {
@@ -38,12 +45,22 @@ class JobDetails extends PureComponent {
     const {
       dispatch,
       data: { candidate, processStatus },
-      currentStep,
     } = this.props;
+    const companyId = getCurrentCompany(getCurrentTenant);
+    const tenantId = getCurrentTenant();
 
     window.scrollTo(0, 70); // Back to top of the page
 
     this.checkBottomBar();
+
+    // get work location list
+    dispatch({
+      type: 'candidateInfo/fetchLocationList',
+      payload: {
+        company: companyId,
+        tenantId,
+      },
+    });
 
     if (processStatus === 'DRAFT') {
       if (candidate) {
@@ -78,7 +95,7 @@ class JobDetails extends PureComponent {
     const {
       data: { processStatus = '' },
     } = this.props;
-    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
+    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT } = PROCESS_STATUS;
     if (processStatus === PROVISIONAL_OFFER_DRAFT || processStatus === FINAL_OFFERS_DRAFT) {
       return false;
     }
@@ -152,7 +169,6 @@ class JobDetails extends PureComponent {
     const { name, value } = target;
     const { dispatch } = this.props;
     const { tempData = {} } = this.state;
-    console.log(name, value);
     tempData[name] = {
       _id: value,
     };
@@ -168,21 +184,42 @@ class JobDetails extends PureComponent {
   };
 
   _handleSelect = (value, name) => {
-    const { dispatch, locationList } = this.props;
+    const { dispatch, locationList, listLocationsByCompany = [] } = this.props;
     const { tempData = {} } = this.state;
     tempData[name] = value;
-    const { department, workLocation } = tempData;
+    const { department, workLocation, title } = tempData;
+    const companyId = getCurrentCompany(getCurrentTenant);
+    const tenantId = getCurrentTenant();
+
+    const locationPayload = listLocationsByCompany.map(
+      ({ headQuarterAddress: { country: countryItem1 = '' } = {} }) => {
+        let stateList = [];
+        listLocationsByCompany.forEach(
+          ({ headQuarterAddress: { country: countryItem2 = '', state: stateItem2 = '' } = {} }) => {
+            if (countryItem1 === countryItem2) {
+              stateList = [...stateList, stateItem2];
+            }
+          },
+        );
+        return {
+          country: countryItem1,
+          state: stateList,
+        };
+      },
+    );
 
     if (name === 'workLocation') {
       const changedWorkLocation = JSON.parse(JSON.stringify(locationList));
       const selectedWorkLocation = changedWorkLocation.find((data) => data._id === value);
-      const { company } = selectedWorkLocation;
+      // const {
+      //   company: { _id },
+      // } = selectedWorkLocation;
       dispatch({
         type: 'candidateInfo/save',
         payload: {
           tempData: {
             ...tempData,
-            company,
+            company: companyId,
             location: selectedWorkLocation,
             workLocation: selectedWorkLocation,
           },
@@ -193,26 +230,10 @@ class JobDetails extends PureComponent {
         dispatch({
           type: 'candidateInfo/fetchDepartmentList',
           payload: {
-            company,
-            tenantId: getCurrentTenant(),
+            company: companyId,
+            tenantId,
           },
         });
-
-        // dispatch({
-        //   type: 'candidateInfo/fetchTitleList',
-        //   payload: {
-        //     company: _id,
-        //   },
-        // });
-
-        // if (!isEmpty(department)) {
-        //   dispatch({
-        //     type: 'candidateInfo/fetchTitleList',
-        //     payload: {
-        //       department: department._id,
-        //     },
-        //   });
-        // }
       }
     } else if (name === 'title') {
       const {
@@ -229,8 +250,19 @@ class JobDetails extends PureComponent {
           },
         },
       });
+
+      if (!isEmpty(title)) {
+        dispatch({
+          type: 'candidateInfo/fetchManagerList',
+          payload: {
+            company: companyId,
+            status: ['ACTIVE'],
+            location: locationPayload,
+          },
+        });
+      }
     } else if (name === 'department') {
-      const { location, departmentList } = tempData;
+      const { departmentList } = tempData;
       const changedDepartmentList = JSON.parse(JSON.stringify(departmentList));
       const selectedDepartment = changedDepartmentList.find((data) => data._id === value);
       dispatch({
@@ -238,6 +270,7 @@ class JobDetails extends PureComponent {
         payload: {
           tempData: {
             ...tempData,
+            company: companyId,
             department: selectedDepartment,
           },
         },
@@ -246,21 +279,11 @@ class JobDetails extends PureComponent {
       if (!isEmpty(department)) {
         // const departmentTemp = [department];
         // const locationTemp = [location._id];
-        const locationObj = { ...location };
-        dispatch({
-          type: 'candidateInfo/fetchManagerList',
-          payload: {
-            company: locationObj.company,
-            status: ['ACTIVE'],
-            tenantId: getCurrentTenant(),
-            // locationTemp,
-          },
-        });
         dispatch({
           type: 'candidateInfo/fetchTitleList',
           payload: {
             department,
-            tenantId: getCurrentTenant(),
+            tenantId,
           },
         });
       }

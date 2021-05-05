@@ -386,9 +386,8 @@ class OnboardTable extends Component {
         dataIndex: 'actions',
         key: 'actions',
         width: getColumnWidth('actions', type),
-        render: () => {
-          const { currentRecord = {} } = this.state;
-          const { rookieId = '' } = currentRecord;
+        render: (_, row) => {
+          const { rookieId = '' } = row;
           const id = rookieId.replace('#', '') || '';
           return this.renderAction(id, type, actionText);
         },
@@ -442,7 +441,7 @@ class OnboardTable extends Component {
       onChange: this.onChangePagination,
     };
 
-    const { columnArr, type, inTab, hasCheckbox } = this.props;
+    const { columnArr, type, inTab, hasCheckbox, loading } = this.props;
     const { openModal } = this.state;
     return (
       <>
@@ -467,6 +466,7 @@ class OnboardTable extends Component {
             }}
             columns={this.generateColumns(columnArr, type)}
             dataSource={list}
+            loading={loading}
             // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
             pagination={{ ...pagination, total: list.length }}
             onRow={(record) => {
@@ -493,6 +493,7 @@ class OnboardTable extends Component {
 }
 
 // export default OnboardTable;
-export default connect(({ candidateInfo }) => ({
+export default connect(({ candidateInfo, loading }) => ({
   isAddNewMember: candidateInfo.isAddNewMember,
+  loading: loading.effects['onboard/fetchOnboardList'],
 }))(OnboardTable);

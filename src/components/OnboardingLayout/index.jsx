@@ -81,7 +81,6 @@ class OnboardingLayout extends PureComponent {
   componentDidUpdate(prevProps) {
     const { dispatch } = this.props;
     if (prevProps.data._id) {
-      console.log('Clear here');
       dispatch({
         type: 'candidateInfo/save',
         payload: {

@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Button } from 'antd';
 import { formatMessage, connect } from 'umi';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import s from './index.less';
 
 @connect(({ loading }) => ({
@@ -14,6 +14,7 @@ class Empty extends Component {
       type: 'candidateInfo/fetchCandidateInfo',
       payload: {
         tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
       },
     });
   };

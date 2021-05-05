@@ -109,9 +109,6 @@ const OfferDetail = (props) => {
 
   useEffect(() => {
     const { includeOffer = 1 } = form.getFieldsValue();
-    console.log(includeOffer);
-    console.log(uploadedOffer);
-    console.log(allFieldsFilled);
     if (includeOffer === 2) {
       if (!uploadedOffer.url) {
         setAllFieldsFilled(false);

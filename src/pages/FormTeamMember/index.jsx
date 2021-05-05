@@ -11,7 +11,8 @@ import OfferDetail from './components/OfferDetail';
 import Benefit from './components/Benefit';
 import styles from './index.less';
 import SalaryStructure from './components/SalaryStructure';
-import BackgroundCheck from './components/BackgroundCheck';
+// import BackgroundCheck from './components/BackgroundCheck';
+import BackgroundCheck from './components/BackgroundCheckNew';
 import BackgroundRecheck from './components/BackgroundRecheck';
 import Payroll from './components/Payroll';
 // import AdditionalQuestion from './components/AdditionalQuestion';
@@ -56,15 +57,14 @@ class FormTeamMember extends PureComponent {
           });
         }
       });
-      if (companiesOfUser[0]._id.length > 0) {
-        dispatch({
-          type: 'candidateInfo/fetchLocationListByCompany',
-          payload: {
-            company: companiesOfUser[0]._id,
-            tenantId: getCurrentTenant(),
-          },
-        });
-      }
+      // if (company._id.length > 0) {
+      //   dispatch({
+      //     type: 'candidateInfo/fetchLocationListByCompany',
+      //     payload: {
+      //       company: company._id,
+      //     },
+      //   });
+      // }
       dispatch({
         type: 'candidateInfo/fetchEmployeeTypeList',
       });

@@ -11,10 +11,22 @@ class ViewProfile extends PureComponent {
       currentUser: { email = '', firstName = '', signInRole = [], password = '' } = {},
     } = this.props;
 
+    const formatPassword = () => {
+      const arr = password.split('');
+      const string = [];
+      arr.map((item) => {
+        string.push('*');
+      });
+      const newPassword = string.join().replace(/,/g, '');
+      return newPassword;
+    };
+
+    formatPassword();
+
     return (
       <div className={styles.root}>
         <div className={styles.header}>
-          <div className={styles.header__title}>User Infomation</div>
+          <div className={styles.header__title}>User Information</div>
           <div className={styles.header__icon} onClick={() => handleClickEdit(true)}>
             <EditFilled /> <span>Edit</span>
           </div>
@@ -37,7 +49,7 @@ class ViewProfile extends PureComponent {
               Password
             </Col>
             <Col span={18} className={styles.textValue}>
-              {password}
+              {formatPassword()}
             </Col>
             <Col span={6} className={styles.textLabel}>
               Role
