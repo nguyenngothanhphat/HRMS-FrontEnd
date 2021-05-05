@@ -386,9 +386,8 @@ class OnboardTable extends Component {
         dataIndex: 'actions',
         key: 'actions',
         width: getColumnWidth('actions', type),
-        render: () => {
-          const { currentRecord = {} } = this.state;
-          const { rookieId = '' } = currentRecord;
+        render: (_, row) => {
+          const { rookieId = '' } = row;
           const id = rookieId.replace('#', '') || '';
           return this.renderAction(id, type, actionText);
         },
