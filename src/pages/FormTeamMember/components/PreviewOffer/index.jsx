@@ -5,6 +5,7 @@ import { Button, Input, Form } from 'antd';
 import { EditOutlined, SendOutlined } from '@ant-design/icons';
 // import logo from './components/images/brand-logo.png';
 import CustomModal from '@/components/CustomModal';
+import { getCurrentTenant } from '@/utils/authority';
 import whiteImg from './components/images/whiteImg.png';
 
 import CancelIcon from './components/CancelIcon';
@@ -244,6 +245,7 @@ const PreviewOffer = (props) => {
         candidate: _id,
         hrSignature: hrSignatureProp.id,
         currentStep: 7,
+        tenantId: getCurrentTenant(),
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
@@ -286,6 +288,7 @@ const PreviewOffer = (props) => {
       payload: {
         candidate: _id,
         currentStep: 7,
+        tenantId: getCurrentTenant(),
       },
     });
   }, []);

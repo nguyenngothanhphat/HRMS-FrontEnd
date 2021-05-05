@@ -3,6 +3,7 @@ import React, { Component, Fragment } from 'react';
 import { Row, Col, Typography, Skeleton } from 'antd';
 import { formatMessage, connect } from 'umi';
 import CustomModal from '@/components/CustomModal';
+import { getCurrentTenant } from '@/utils/authority';
 import NoteComponent from '../NoteComponent';
 import Feedback from './components/Feedback';
 import CollapseField from './components/CollapseField';
@@ -62,6 +63,7 @@ class BackgroundRecheck extends Component {
         payload: {
           candidate,
           currentStep: 3,
+          tenantId: getCurrentTenant(),
         },
       });
     }

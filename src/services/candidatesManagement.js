@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 const getCandidatesList = async (payload) => {
-  return request('/api/candidate/list', {
+  return request('/api/candidatetenant/list', {
     method: 'POST',
     data: payload,
   });

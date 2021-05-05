@@ -15,6 +15,7 @@ import DiscardedFinalOffers from '@/pages/EmployeeOnboarding/components/Onboardi
 import BackgroundCheck from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/BackgroundCheck';
 import DiscardedOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedOffers';
 
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import MenuItem from './components/MenuItem';
 
 import styles from './index.less';
@@ -102,6 +103,10 @@ class OnboardingLayout extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'candidateInfo/fetchCandidateInfo',
+      payload: {
+        tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
+      },
     });
   };
 

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Select, Form, Table, Button, Input, Row, Col, InputNumber } from 'antd';
 import { formatMessage, connect } from 'umi';
 // import { dialog } from '@/utils/utils';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import doneIcon from './assets/doneIcon.png';
 import editIcon from './assets/editIcon.png';
 import styles from './index.less';
@@ -191,7 +192,7 @@ class SalaryStructureTemplate extends PureComponent {
     if (processStatus === 'DRAFT') {
       dispatch({
         type: 'candidateInfo/fetchTitleListByCompany',
-        payload: { company: _id },
+        payload: { company: getCurrentCompany(), tenantId: getCurrentTenant() },
       });
     }
 
@@ -400,7 +401,7 @@ class SalaryStructureTemplate extends PureComponent {
 
     dispatch({
       type: 'candidateInfo/fetchTableData',
-      payload: { title: value },
+      payload: { title: value, tenantId: getCurrentTenant() },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         dispatch({

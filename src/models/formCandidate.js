@@ -225,9 +225,9 @@ const info = {
       }
     },
 
-    *fetchDepartmentList({ payload: { company = '' } }, { call, put }) {
+    *fetchDepartmentList({ payload: { company = '', tenantId = '' } }, { call, put }) {
       try {
-        const response = yield call(getDepartmentList, { company });
+        const response = yield call(getDepartmentList, { company, tenantId });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -315,9 +315,9 @@ const info = {
       }
     },
 
-    *fetchCandidateInfo(_, { call, put }) {
+    *fetchCandidateInfo({ payload }, { call, put }) {
       try {
-        const response = yield call(addTeamMember);
+        const response = yield call(addTeamMember, payload);
         const { data } = response;
         const { ticketID = '', _id = '' } = data;
         console.log(response);

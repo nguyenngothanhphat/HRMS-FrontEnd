@@ -6,6 +6,7 @@ import { Radio, Select, Checkbox, Form, Row, Col, Button, Typography } from 'ant
 import { connect, formatMessage } from 'umi';
 // import UploadImage from '@/pages/Candidate/components/EligibilityDocs/components/UploadImage';
 import UploadImage from '@/components/UploadImage';
+import { getCurrentTenant } from '@/utils/authority';
 import { currencyArr, timeoffArr } from './mockData';
 
 import styles from './index.less';
@@ -177,6 +178,7 @@ const OfferDetail = (props) => {
       payload: {
         candidate,
         currentStep,
+        tenantId: getCurrentTenant(),
       },
     });
   }, [data.candidate]);
@@ -263,6 +265,8 @@ const OfferDetail = (props) => {
         companyHandbook: handbook,
         candidate: _id,
         currentStep: nextStep,
+        tenantId: getCurrentTenant(),
+
         // offerLetter: templateId,
       },
     });
@@ -289,6 +293,7 @@ const OfferDetail = (props) => {
         payload: {
           candidate,
           currentStep: nextStep,
+          tenantId: getCurrentTenant(),
         },
       });
 
@@ -310,6 +315,7 @@ const OfferDetail = (props) => {
           candidate,
           currentStep: nextStep,
           staticOfferLetter: offerId,
+          tenantId: getCurrentTenant(),
         },
       }).then((res) => {
         const { statusCode = 1 } = res;
@@ -322,6 +328,7 @@ const OfferDetail = (props) => {
           payload: {
             candidate,
             currentStep: nextStep,
+            tenantId: getCurrentTenant(),
           },
         });
 
@@ -379,6 +386,8 @@ const OfferDetail = (props) => {
             candidate,
             currentStep: nextStep,
             offerLetter: templateID,
+            tenantId: getCurrentTenant(),
+
             // offerTemplate: templateId,
           },
         });

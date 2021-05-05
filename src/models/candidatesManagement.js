@@ -28,9 +28,9 @@ const candidatesManagement = {
     ],
   },
   effects: {
-    *fetchCandidatesList({ processStatus = [] }, { call, put }) {
+    *fetchCandidatesList({ processStatus = [], tenantId = '' }, { call, put }) {
       try {
-        const response = yield call(getCandidatesList, { processStatus });
+        const response = yield call(getCandidatesList, { processStatus, tenantId });
         const { statusCode, data: candidatesList } = response;
         if (statusCode !== 200) throw response;
         yield put({

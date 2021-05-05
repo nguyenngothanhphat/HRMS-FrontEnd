@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Typography, Button } from 'antd';
 import { connect } from 'umi';
 
+import { getCurrentTenant } from '@/utils/authority';
 import PayrollSettingsHeader from './components/PayrollSettingsHeader';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
@@ -37,6 +38,7 @@ class PayrollSetting extends PureComponent {
           payload: {
             candidate,
             currentStep,
+            tenantId: getCurrentTenant(),
           },
         });
       }

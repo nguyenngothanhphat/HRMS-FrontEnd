@@ -518,10 +518,10 @@ const candidateInfo = {
       return response;
     },
 
-    *fetchCandidateInfo(_, { call, put }) {
+    *fetchCandidateInfo({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(addTeamMember);
+        response = yield call(addTeamMember, payload);
         const { data, statusCode } = response;
         const { ticketID = '', _id } = data;
         if (statusCode !== 200) throw response;
@@ -750,6 +750,7 @@ const candidateInfo = {
             type: 'fetchDocumentByCandidateID',
             payload: {
               candidate: _id,
+              tenantId: payload.tenantId,
             },
           });
         }
@@ -832,6 +833,8 @@ const candidateInfo = {
       let response = {};
       try {
         response = yield call(getDocumentByCandidate, payload);
+        console.log('bb ', payload);
+
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -922,6 +925,33 @@ const candidateInfo = {
         dialog(error);
       }
     },
+
+    *redirectToOnboardList() {
+      try {
+        history.push({
+          pathname: `/employee-onboarding`,
+        });
+        yield null;
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    // *fetchAdditionalQuestion({ payload }, { call }) {
+    //   let response = {};
+    //   try {
+    //     response = yield call(getAdditionalQuestion, payload);
+    //     const { statusCode } = response;
+    //     if (statusCode !== 200) throw response;
+    //     // put({
+    //     //   type: 'updateAdditionalQuestion',
+    //     //   payload: data
+    //     // })
+    //   } catch (error) {
+    //     dialog(error);
+    //   }
+    //   return response;
+    // },
   },
 
   reducers: {
@@ -948,6 +978,29 @@ const candidateInfo = {
         data: {
           ...data,
           ...action.payload,
+        },
+      };
+    },
+    saveFilledSalaryStructure(state, action) {
+      const { checkMandatory } = state;
+      return {
+        ...state,
+        checkMandatory: {
+          ...checkMandatory,
+          ...action.payload,
+        },
+      };
+    },
+    saveSalaryStructure(state, action) {
+      const { data, salaryStructure } = state;
+      return {
+        ...state,
+        data: {
+          ...data,
+          salaryStructure: {
+            ...salaryStructure,
+            ...action.payload,
+          },
         },
       };
     },

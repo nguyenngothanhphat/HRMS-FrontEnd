@@ -69,6 +69,7 @@ class JobDetails extends PureComponent {
           payload: {
             candidate,
             currentStep: 1,
+            tenantId: getCurrentTenant(),
           },
         });
       }
@@ -118,6 +119,8 @@ class JobDetails extends PureComponent {
         employeeType: isObject(employeeType) ? employeeType._id : employeeType,
         position,
         candidate: _id,
+        tenantId: getCurrentTenant(),
+
         // currentStep,
       },
     });
@@ -127,6 +130,7 @@ class JobDetails extends PureComponent {
         type: 'candidateInfo/updateByHR',
         payload: {
           candidate: _id,
+          tenantId: getCurrentTenant(),
           currentStep,
         },
       });
@@ -322,6 +326,7 @@ class JobDetails extends PureComponent {
         reportingManager: reportingManager ? reportingManager._id : '',
         candidate: _id,
         currentStep: currentStep + 1,
+        tenantId: getCurrentTenant(),
       },
     }).then(({ data, statusCode }) => {
       if (statusCode === 200) {

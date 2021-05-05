@@ -1,20 +1,21 @@
 import request from '@/utils/request';
 
-export async function addTeamMember() {
-  return request('/api/candidate/add-new-member', {
+export async function addTeamMember(payload) {
+  return request('/api/candidatetenant/add-new-member', {
     method: 'POST',
+    data: payload,
   });
 }
 
 export async function sentForApproval(payload) {
-  return request('/api/candidate/sent-for-approval', {
+  return request('/api/candidatetenant/sent-for-approval', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function approveFinalOffer(payload) {
-  return request('/api/candidate/approve-final-offer', {
+  return request('/api/candidatetenant/approve-final-offer', {
     method: 'POST',
     data: payload,
   });
@@ -41,14 +42,14 @@ export async function createFinalOffer(payload) {
 }
 
 export async function checkDocument(payload) {
-  return request('/api/candidate/document-check', {
+  return request('/api/candidatetenant/document-check', {
     method: 'POST',
     data: payload, // {candidate: id, document: id, candidateDocumentStatus: 1}
   });
 }
 
 export async function sendDocumentStatus(payload) {
-  return request('/api/candidate/background-check', {
+  return request('/api/candidatetenant/background-check', {
     method: 'POST',
     data: payload, // {candidate: id, options: 1, comments: ''}
   });

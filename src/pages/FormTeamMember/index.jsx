@@ -3,6 +3,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import { Button, Affix, Spin } from 'antd';
 import CommonLayout from '@/components/CommonLayout';
 import { connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import BasicInformation from './components/BasicInformation';
 import JobDetails from './components/JobDetails';
 import OfferDetail from './components/OfferDetail';
@@ -29,9 +30,7 @@ class FormTeamMember extends PureComponent {
     const {
       match: { params: { action = '', reId } = {} },
       dispatch,
-      user: {
-        currentUser: { company },
-      },
+      user: { companiesOfUser = [] },
       // candidateInfo,
     } = this.props;
     // check action is add or review. If isReview fetch candidate by reID
@@ -41,6 +40,7 @@ class FormTeamMember extends PureComponent {
         type: 'candidateInfo/fetchCandidateByRookie',
         payload: {
           rookieID: reId,
+          tenantId: getCurrentTenant(),
         },
       }).then(({ data }) => {
         if (!data) {
@@ -221,7 +221,7 @@ class FormTeamMember extends PureComponent {
           },
         ],
         salaryPosition: '',
-        listTitle: [],
+        // listTitle: [],
         candidateSignature: {},
         hrManagerSignature: {},
         hrSignature: {},
@@ -281,6 +281,7 @@ class FormTeamMember extends PureComponent {
       type: 'candidateInfo/updateByHR',
       payload: {
         ...data,
+        tenantId: getCurrentTenant(),
         // candidate: data.id
       },
     });
@@ -295,11 +296,16 @@ class FormTeamMember extends PureComponent {
       match: { params: { action = '', reId = '' } = {} },
       candidateInfo,
       loading1 = false,
-      candidateInfo: { data: { _id: candidateId = '', documentsByCandidate = [] } } = {},
+      candidateInfo: {
+        data: {
+          _id: candidateId = '',
+          // documentsByCandidate = []
+        },
+      } = {},
       location: { state: { isAddNew = false } = {} } = {},
     } = this.props;
     const check = !loading1 && candidateId !== '';
-    const checkDocument = !loading1 && documentsByCandidate.length > 0;
+    // const checkDocument = !loading1 && documentsByCandidate.length > 0;
     const {
       tempData: { locationList, employeeTypeList, documentList, valueToFinalOffer = 0 } = {},
       data: { processStatus = '' } = {},

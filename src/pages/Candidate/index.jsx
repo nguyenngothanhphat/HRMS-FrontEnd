@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'umi';
 
+import { getCurrentTenant } from '@/utils/authority';
 import BasicInfomation from './components/BasicInfomation';
 import EligibilityDocs from './components/EligibilityDocs';
 import OfferDetails from './components/OfferDetails';
@@ -48,6 +49,7 @@ const Candidate = (props) => {
       type: 'candidateProfile/fetchCandidateById',
       payload: {
         candidate,
+        tenantId: getCurrentTenant(),
       },
     }).then(({ data, statusCode }) => {
       if (statusCode === 200) {
@@ -57,6 +59,7 @@ const Candidate = (props) => {
           type: 'candidateProfile/fetchDocumentByCandidate',
           payload: {
             candidate: _id,
+            tenantId: getCurrentTenant(),
           },
         });
         if (employer !== undefined && employer.length > 0) {
@@ -64,6 +67,7 @@ const Candidate = (props) => {
             type: 'candidateProfile/fetchEmployer',
             payload: {
               candidate: _id,
+              tenantId: getCurrentTenant(),
             },
           });
         }

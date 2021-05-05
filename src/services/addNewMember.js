@@ -14,7 +14,7 @@ export function getDocumentList() {
 }
 
 export function getDepartmentList(params) {
-  return request('/api/department/list-by-company', {
+  return request('/api/departmenttenant/list-by-company', {
     method: 'POST',
     data: params,
   });
@@ -46,7 +46,7 @@ export async function getJobTitleList(payload) {
 }
 
 export function getLocation() {
-  return request('/api/location/list-all', {
+  return request('/api/locationtenant/list-all', {
     method: 'POST',
   });
 }
@@ -65,7 +65,7 @@ export function getEmployeeTypeList() {
 }
 
 export function getManagerList(params) {
-  return request('/api/employee/list-active', {
+  return request('/api/employeetenant/list-manager', {
     method: 'POST',
     data: params,
   });
@@ -83,56 +83,56 @@ export async function getReportingManagerList(params) {
 }
 
 export function getCandidateManagerList(params) {
-  return request('/api/candidate/get-candidate-manager', {
+  return request('/api/candidatetenant/get-candidate-manager', {
     method: 'POST',
     data: params,
   });
 }
 
 export function addCandidate(params) {
-  return request('/api/candidate/add-new-member', {
+  return request('/api/candidatetenant/add-new-member', {
     method: 'POST',
     data: params,
   });
 }
 
 export function updateByHR(params) {
-  return request('/api/candidate/update-by-hr', {
+  return request('/api/candidatetenant/update-by-hr', {
     method: 'POST',
     data: params,
   });
 }
 
 export function submitBasicInfo(params) {
-  return request('/api/candidate/basic-info', {
+  return request('/api/candidatetenant/basic-info', {
     method: 'POST',
     data: params,
   });
 }
 
 export function getById(params) {
-  return request('/api/candidate/get-by-id', {
+  return request('/api/candidatetenant/get-by-id', {
     method: 'POST',
     data: params,
   });
 }
 
 export function getDocumentByCandidate(params) {
-  return request('/api/document/get-by-candidate', {
+  return request('/api/documenttenant/get-by-candidate', {
     method: 'POST',
     data: params,
   });
 }
 
 export function submitPhase1(payload) {
-  return request('/api/candidate/phase-one-hr', {
+  return request('/api/candidatetenant/phase-one-hr', {
     method: 'POST',
     data: payload,
   });
 }
 
 export function getLocationListByCompany(params) {
-  return request('/api/location/get-by-company', {
+  return request('/api/locationtenant/get-by-company', {
     method: 'POST',
     data: params,
   });
@@ -145,7 +145,7 @@ export function getSalaryStructureList() {
 }
 
 export function getTitleListByCompany(params) {
-  return request('/api/title/list-by-company', {
+  return request('/api/titletenant/list-by-company', {
     method: 'POST',
     data: params,
   });
@@ -153,7 +153,7 @@ export function getTitleListByCompany(params) {
 
 export function getTableDataByTitle(params) {
   // console.log(params);
-  return request('/api/salarystructure/get-by-title', {
+  return request('/api/salarystructuretenant/get-by-title', {
     method: 'POST',
     data: params,
   });

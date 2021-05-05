@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 export async function getOnboardingList(payload) {
-  return request('/api/candidate/list', {
+  return request('/api/candidatetenant/list', {
     method: 'POST',
     data: payload,
   });
