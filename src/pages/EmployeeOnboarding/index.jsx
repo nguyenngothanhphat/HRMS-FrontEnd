@@ -9,19 +9,15 @@ import Settings from './components/Settings';
 import styles from './index.less';
 
 const ROLE = {
-  HRMANAGER: 'HR-MANAGER',
-  HR: 'HR',
-  HRGLOBAL: 'HR-GLOBAL',
+  HRMANAGER: 'hr-manager',
+  HR: 'hr',
+  HRGLOBAL: 'hr-global',
 };
 
 @connect(
-  ({
-    loading,
-    onboard: { mainTabActiveKey = '1' } = {},
-    user: { currentUser: { roles = [] } = {} } = {},
-  }) => ({
+  ({ loading, onboard: { mainTabActiveKey = '1' } = {}, user: { permissions = [] } = {} }) => ({
     loading: loading.effects['login/login'],
-    roles,
+    permissions,
     mainTabActiveKey,
   }),
 )
@@ -29,24 +25,10 @@ class EmployeeOnboarding extends PureComponent {
   constructor(props) {
     super(props);
 
-    this.state = {
-      rolesList: '',
-    };
+    this.state = {};
   }
 
-  componentDidMount = () => {
-    history.replace();
-    const {
-      // location: { state: { defaultActiveKey = '1' } = {} } = {},
-      roles,
-    } = this.props;
-
-    const arrRole = roles.map((itemRole) => itemRole._id);
-
-    this.setState({
-      rolesList: arrRole,
-    });
-  };
+  componentDidMount = () => {};
 
   onChangeTab = (activeKey) => {
     const { dispatch } = this.props;
@@ -58,48 +40,45 @@ class EmployeeOnboarding extends PureComponent {
     });
   };
 
+  renderActionButton = () => {
+    return (
+      <div className={styles.options}>
+        <Row gutter={[24, 0]}>
+          <Col>
+            <Button className={styles.generate} type="text">
+              {formatMessage({ id: 'component.employeeOnboarding.generate' })}
+            </Button>
+          </Col>
+          <Col>
+            <Button className={styles.view} type="link">
+              {formatMessage({ id: 'component.employeeOnboarding.viewActivityLogs' })} (15)
+            </Button>
+          </Col>
+        </Row>
+      </div>
+    );
+  };
+
   render() {
-    const { rolesList } = this.state;
-    const { roles, mainTabActiveKey = '1' } = this.props;
-    const getPermission = roles.map((item) => {
-      const { permissions = [] } = item;
-      return permissions;
-    });
-    const data = getPermission
-      .flat()
-      .filter((values, index, self) => self.indexOf(values) === index);
+    const { mainTabActiveKey = '1', permissions = [] } = this.props;
     const { TabPane } = Tabs;
 
-    const checkPermission =
-      rolesList.indexOf(ROLE.HRMANAGER) > -1 ||
-      rolesList.indexOf(ROLE.HRGLOBAL) > -1 ||
-      isAdmin() ||
-      isOwner();
+    const checkPermission = permissions.viewOnboardingSettingTab !== -1;
+
     return (
       <PageContainer>
         {/* {data.indexOf('P_ONBOARDING_VIEW') > -1 && rolesList.length > 0 ? ( */}
         <div className={styles.containerEmployeeOnboarding}>
           <div className={styles.tabs}>
-            <Tabs activeKey={mainTabActiveKey} onTabClick={this.onChangeTab}>
+            <Tabs
+              activeKey={mainTabActiveKey}
+              onTabClick={this.onChangeTab}
+              tabBarExtraContent={this.renderActionButton()}
+            >
               <TabPane
                 tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
                 key="1"
               >
-                <div className={styles.options}>
-                  <Row gutter={[24, 0]}>
-                    <Col>
-                      <Button className={styles.generate} type="text">
-                        {formatMessage({ id: 'component.employeeOnboarding.generate' })}
-                      </Button>
-                    </Col>
-                    <Col>
-                      <Button className={styles.view} type="link">
-                        {formatMessage({ id: 'component.employeeOnboarding.viewActivityLogs' })}{' '}
-                        (15)
-                      </Button>
-                    </Col>
-                  </Row>
-                </div>
                 <OnboardingOverview />
               </TabPane>
               {checkPermission ? (

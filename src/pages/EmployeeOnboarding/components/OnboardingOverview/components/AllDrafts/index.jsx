@@ -2,21 +2,50 @@ import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { Tabs } from 'antd';
 
-import {
-  COLUMN_NAME,
-  TABLE_TYPE,
-} from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
-import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
+// import {
+//   COLUMN_NAME,
+//   TABLE_TYPE,
+// } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
+// import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
+import { PROCESS_STATUS } from '@/models/onboard';
 import styles from './index.less';
 import ProvisionalOfferDrafts from './components/ProvisionalOfferDrafts';
 import FinalOfferDrafts from './components/FinalOfferDrafts';
 
 const { TabPane } = Tabs;
 
-const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
-const { FINAL_OFFERS_DRAFTS } = TABLE_TYPE;
+// const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
+// const { FINAL_OFFERS_DRAFTS } = TABLE_TYPE;
 
 class AllDrafts extends PureComponent {
+  componentDidMount() {
+    const { dispatch } = this.props;
+    const { PROVISIONAL_OFFER_DRAFT } = PROCESS_STATUS;
+
+    if (dispatch) {
+      this.fetchOfferDraft(PROVISIONAL_OFFER_DRAFT);
+    }
+  }
+
+  fetchOfferDraft = (status) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'onboard/fetchOnboardList',
+      payload: {
+        processStatus: status,
+      },
+    });
+  };
+
+  onChangeTab = (key) => {
+    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT } = PROCESS_STATUS;
+    if (key === '1') {
+      this.fetchOfferDraft(PROVISIONAL_OFFER_DRAFT);
+    } else {
+      this.fetchOfferDraft(FINAL_OFFERS_DRAFT);
+    }
+  };
+
   render() {
     const { allDrafts = {} } = this.props;
     // console.log(allDrafts);
@@ -31,7 +60,7 @@ class AllDrafts extends PureComponent {
       // />
       <div className={styles.AllDrafts}>
         <div className={styles.tabs}>
-          <Tabs defaultActiveKey="1">
+          <Tabs defaultActiveKey="1" onChange={this.onChangeTab}>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
               tab="provisional offer drafts"
@@ -62,4 +91,4 @@ export default connect((state) => {
     finalOfferDrafts,
     allDrafts,
   };
-})(AllDrafts);
+})(React.memo(AllDrafts));

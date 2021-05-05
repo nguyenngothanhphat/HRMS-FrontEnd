@@ -179,7 +179,14 @@ const routes = [
             name: 'Offboarding',
             icon: '/assets/images/menuIcons/offboarding.svg',
             component: './OffBoarding',
-            authority: ['owner', 'M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW'],
+            authority: [
+              'owner',
+              'M_OFFBOARDING_VIEW',
+              'P_OFFBOARDING_VIEW',
+              'employee',
+              'hr',
+              'hr-manager',
+            ],
           },
           // {
           //   path: '/time-off',
@@ -534,6 +541,7 @@ const routes = [
               'admin-cda',
               'leader',
               'owner',
+              'admin',
             ],
           },
           {
@@ -551,6 +559,7 @@ const routes = [
               'admin-cda',
               'leader',
               'owner',
+              'admin',
             ],
           },
           {

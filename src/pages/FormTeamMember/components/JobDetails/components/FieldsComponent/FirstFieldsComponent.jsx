@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
@@ -28,8 +29,6 @@ class FirstFieldsComponent extends PureComponent {
       disabled,
     } = this.props;
 
-    console.log(managerList);
-
     return (
       <>
         <div>
@@ -56,11 +55,11 @@ class FirstFieldsComponent extends PureComponent {
                     className={styles}
                     onChange={(value) => _handleSelect(value, item.title)}
                     disabled={
-                      !!(item.title === 'reportingManager' && managerList.length <= 0) ||
+                      // !!(item.title === 'reportingManager' && managerList.length <= 0) ||
                       (item.title === 'department' && departmentList.length <= 0) ||
                       (item.title === 'title' && titleList.length <= 0) ||
                       (item.title === 'workLocation' && disabled) ||
-                      (item.title === 'reportingManager' && disabled) ||
+                      // (item.title === 'reportingManager' && disabled) ||
                       (item.title === 'department' && disabled) ||
                       (item.title === 'title' && disabled)
                     }
@@ -88,7 +87,7 @@ class FirstFieldsComponent extends PureComponent {
                     {item.title === 'workLocation'
                       ? locationList.map((data, index) => (
                           <Option value={data._id} key={index}>
-                            <Typography.Text>{data.legalAddress.address}</Typography.Text>
+                            <Typography.Text>{data.name}</Typography.Text>
                           </Option>
                         ))
                       : item.title === 'department' && departmentList.length > 0
