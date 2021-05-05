@@ -343,7 +343,7 @@ class BackgroundCheck extends Component {
 
   // HANDLE CHANGE WHEN CLICK ALL CHECKBOXES OF BLOCK A,B,C
   handleCheckAll = (e, checkedList, item) => {
-    const { tempData } = this.state;
+    const { tempData, newPoe } = this.state;
     const { dispatch } = this.props;
     const { identityProof, addressProof, educational } = tempData;
     const { data: arr = [], type = '' } = item;
@@ -357,36 +357,50 @@ class BackgroundCheck extends Component {
       });
     }
 
+    const {
+      candidateInfo: {
+        tempData: {
+          identityProof: { checkedList: checkedListA = [] } = {},
+          addressProof: { checkedList: checkedListB = [] } = {},
+          educational: { checkedList: checkedListC = [] } = {},
+        },
+      } = {},
+    } = this.props;
+
+    const checkedListNew = e.target.checked ? arr.map((data) => data.alias) : [];
     if (type === 'A') {
       dispatch({
         type: 'candidateInfo/saveTemp',
         payload: {
           identityProof: {
             ...identityProof,
-            checkedList: e.target.checked ? arr.map((data) => data.alias) : [],
+            checkedList: checkedListNew,
           },
         },
       });
+      this.handleUpdateByHR(newPoe, checkedListNew, checkedListB, checkedListC);
     } else if (type === 'B') {
       dispatch({
         type: 'candidateInfo/saveTemp',
         payload: {
           addressProof: {
             ...addressProof,
-            checkedList: e.target.checked ? arr.map((data) => data.alias) : [],
+            checkedList: checkedListNew,
           },
         },
       });
+      this.handleUpdateByHR(newPoe, checkedListA, checkedListNew, checkedListC);
     } else if (type === 'C') {
       dispatch({
         type: 'candidateInfo/saveTemp',
         payload: {
           educational: {
             ...educational,
-            checkedList: e.target.checked ? arr.map((data) => data.alias) : [],
+            checkedList: checkedListNew,
           },
         },
       });
+      this.handleUpdateByHR(newPoe, checkedListA, checkedListB, checkedListNew);
     }
   };
 
