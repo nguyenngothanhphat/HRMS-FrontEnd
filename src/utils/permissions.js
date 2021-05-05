@@ -59,6 +59,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
       viewTabBenefitPlans: 1,
       // Update avatar employee
       updateAvatarEmployee: 1,
+
+      // onboarding
+      viewOnboardingSettingTab: 1,
     };
   }
   // const permissionList = groupPermissions(roles);
@@ -230,6 +233,10 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'T_GENERAL_INFO_B_UPLOAD_AVATAR_EMPLOYEE_VIEW',
   ]);
 
+  // ONBOARDING
+  const indexOnboardingSettings =
+    isAuthorized(permissionList, ['hr-manager', 'hr-global']) || isAdmin ? 1 : -1;
+
   return {
     // Directory Page
     viewTabActive: findIndexActive,
@@ -262,5 +269,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewTabBenefitPlans: indexBenefitPlans,
     // Update avatar employee
     updateAvatarEmployee: indexUpdateAvatar,
+
+    // onboarding
+    viewOnboardingSettingTab: indexOnboardingSettings,
   };
 }
