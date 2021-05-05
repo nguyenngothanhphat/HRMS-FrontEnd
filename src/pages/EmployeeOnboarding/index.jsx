@@ -1,18 +1,12 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Tabs, Button, Row, Col } from 'antd';
-import { connect, formatMessage, history } from 'umi';
-import { isAdmin, isOwner } from '@/utils/authority';
+import { connect, formatMessage } from 'umi';
+// import { isAdmin, isOwner } from '@/utils/authority';
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
 // import CustomFields from './components/CustomFields';
 import styles from './index.less';
-
-const ROLE = {
-  HRMANAGER: 'hr-manager',
-  HR: 'hr',
-  HRGLOBAL: 'hr-global',
-};
 
 @connect(
   ({ loading, onboard: { mainTabActiveKey = '1' } = {}, user: { permissions = [] } = {} }) => ({

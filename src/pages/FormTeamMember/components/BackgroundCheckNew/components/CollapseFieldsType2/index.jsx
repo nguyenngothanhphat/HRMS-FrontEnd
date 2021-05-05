@@ -43,6 +43,7 @@ class CollapseFieldsType2 extends PureComponent {
 
     const checkedList = poe.map((value) => value.checkedList);
     const employerName = poe.map((value) => value.employer);
+    const workDuration = poe.map((value) => value.workDuration);
 
     const { length } = checkedList;
 
@@ -56,6 +57,7 @@ class CollapseFieldsType2 extends PureComponent {
           checkBoxesData={checkBoxesData}
           checkedList={checkedList[number - 1]}
           employerName={employerName[number - 1]}
+          workDuration={workDuration[number - 1]}
           getDataFromFields={this.getDataFromFields}
           deleteComponent={this.deleteComponent}
           processStatus={processStatus}
@@ -111,7 +113,7 @@ class CollapseFieldsType2 extends PureComponent {
   // eslint-disable-next-line no-unused-vars
   getDataFromFields = (orderNumber, employerName, workDuration, checkedList) => {
     const { handleChange = () => {} } = this.props;
-    handleChange(checkedList, orderNumber, employerName);
+    handleChange(checkedList, orderNumber, employerName, workDuration);
   };
 
   renderHeader = () => {

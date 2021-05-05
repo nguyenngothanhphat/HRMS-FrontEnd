@@ -21,7 +21,7 @@ import {
   getDocumentByCandidate,
 } from '@/services/addNewMember';
 import { history } from 'umi';
-import { dialog, formatAdditionalQuestion } from '@/utils/utils';
+import { dialog } from '@/utils/utils';
 
 import {
   addTeamMember,
@@ -32,12 +32,12 @@ import {
   createFinalOffer,
   checkDocument,
   sendDocumentStatus,
-  getAdditionalQuestion,
 } from '@/services/formCandidate';
 
 const candidateInfo = {
   namespace: 'candidateInfo',
   state: {
+    a: 1,
     rookieId: '',
     checkMandatory: {
       filledBasicInformation: false,
@@ -46,9 +46,7 @@ const candidateInfo = {
       filledBackgroundCheck: false,
       filledOfferDetail: false,
       filledSalaryStructure: false,
-      filledAdditionalQuestion: false,
       salaryStatus: 2,
-      calledListTitle: false,
     },
     currentStep: 0,
     settingStep: 0,
@@ -61,7 +59,7 @@ const candidateInfo = {
         filledBackgroundCheck: false,
       },
       position: 'EMPLOYEE',
-      employeeType: {},
+      employeeType: '5f50c2541513a742582206f9',
       previousExperience: null,
       candidatesNoticePeriod: '',
       prefferedDateOfJoining: '',
@@ -77,7 +75,6 @@ const candidateInfo = {
       title: null,
       reportingManager: null,
       valueToFinalOffer: 0,
-      skip: 0,
       // Background Recheck
       backgroundRecheck: {
         documentList: [],
@@ -85,7 +82,7 @@ const candidateInfo = {
       },
       // Offer details
       template: '',
-      includeOffer: 1,
+      includeOffer: false,
       compensationType: '',
       amountIn: '',
       timeOffPolicy: '',
@@ -93,46 +90,49 @@ const candidateInfo = {
       companyHandbook: true,
       documentList: [],
       isSentEmail: false,
-      isMarkAsDone: true,
+      isMarkAsDone: false,
       generateLink: '',
       newArrToAdjust: [],
       company: '',
       email: '',
       identityProof: {
-        aadharCard: true,
-        PAN: true,
-        passport: false,
-        drivingLicense: false,
-        voterCard: false,
+        // aadharCard: true,
+        // PAN: true,
+        // passport: false,
+        // drivingLicense: false,
+        // voterCard: false,
         checkedList: [],
-        isChecked: false,
+        // isChecked: false,
       },
       addressProof: {
-        rentalAgreement: false,
-        electricityBill: false,
-        telephoneBill: false,
+        // rentalAgreement: false,
+        // electricityBill: false,
+        // telephoneBill: false,
         checkedList: [],
-        isChecked: false,
+        // isChecked: false,
       },
       educational: {
-        sslc: true,
-        diploma: true,
-        graduation: true,
-        postGraduate: false,
-        phd: false,
+        // sslc: true,
+        // diploma: true,
+        // graduation: true,
+        // postGraduate: false,
+        // phd: false,
         checkedList: [],
-        isChecked: false,
+        // isChecked: false,
       },
       technicalCertification: {
-        poe: {
-          offerLetter: false,
-          appraisalLetter: false,
-          paystubs: false,
-          form16: false,
-          relievingLetter: false,
-          checkedList: [],
-          isChecked: false,
-        },
+        poe: [
+          // {
+          //   employer: '',
+          //   offerLetter: false,
+          //   appraisalLetter: false,
+          //   paystubs: false,
+          //   form16: false,
+          //   relievingLetter: false,
+          //   checkedList: [],
+          //   isChecked: false,
+          // },
+        ],
         addSchedule,
       },
 
@@ -167,48 +167,6 @@ const candidateInfo = {
         name: '',
         url: '',
       },
-      staticOfferLetter: {
-        id: '',
-        name: '',
-        url: '',
-      },
-      hidePreviewOffer: false,
-      disablePreviewOffer: true,
-      additionalQuestion: {
-        opportunity: '',
-        payment: '',
-        shirt: '',
-        dietary: '',
-      },
-      additionalQuestions: [
-        {
-          type: 'text',
-          name: 'opportunity',
-          question: 'Equal employee opportunity',
-          answer: '',
-        },
-        {
-          type: 'text',
-          name: 'payment',
-          question: 'Preferred payment method',
-          answer: '',
-        },
-        {
-          type: 'text',
-          name: 'shirt',
-          question: 'T-shirt size',
-          answer: '',
-        },
-        {
-          type: 'text',
-          name: 'dietary',
-          question: 'Dietary restriction',
-          answer: '',
-        },
-      ],
-
-      cancelCandidate: false,
-      salaryTitle: null,
     },
     data: {
       fullName: null,
@@ -321,12 +279,12 @@ const candidateInfo = {
         {
           type: 'D',
           name: 'Technical Certifications',
-          employer: 'Kyle Pham',
+          employer: '',
           data: [
             {
               key: 'offerLetter',
               alias: 'Offer letter',
-              value: true,
+              value: false,
             },
             {
               key: 'appraisalLetter',
@@ -336,49 +294,17 @@ const candidateInfo = {
             {
               key: 'paysTubs',
               alias: 'Paystubs',
-              value: true,
+              value: false,
             },
             {
               key: 'form16',
               alias: 'Form 16',
-              value: true,
+              value: false,
             },
             {
               key: 'relievingLetter',
               alias: 'Relieving Letter',
-              value: true,
-            },
-          ],
-        },
-        {
-          type: 'D',
-          name: 'Technical Certifications',
-          employer: 'Kyle Hung',
-          data: [
-            {
-              key: 'offerLetter',
-              alias: 'Offer letter',
-              value: true,
-            },
-            {
-              key: 'appraisalLetter',
-              alias: 'Appraisal letter',
-              value: true,
-            },
-            {
-              key: 'paysTubs',
-              alias: 'Paystubs',
-              value: true,
-            },
-            {
-              key: 'form16',
-              alias: 'Form 16',
-              value: true,
-            },
-            {
-              key: 'relievingLetter',
-              alias: 'Relieving Letter',
-              value: true,
+              value: false,
             },
           ],
         },
@@ -387,6 +313,7 @@ const candidateInfo = {
       documentsByCandidateRD: [],
       managerList: [],
       listTitle: [],
+      tableData: [],
       hrManagerSignature: {
         url: '',
         fileName: '',
@@ -424,6 +351,7 @@ const candidateInfo = {
       createdAt: '',
       updatedAt: '',
     },
+    componentsNumberCount: [],
   },
 
   effects: {
@@ -431,6 +359,7 @@ const candidateInfo = {
       try {
         const response = yield call(getDocumentList);
         const { statusCode, data } = response;
+        // console.log('getDocumentList', data);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveTemp',
@@ -508,10 +437,6 @@ const candidateInfo = {
         yield put({
           type: 'saveTemp',
           payload: { employeeTypeList },
-        });
-        yield put({
-          type: 'updateEmployeeType',
-          payload: employeeTypeList[0],
         });
       } catch (errors) {
         dialog(errors);
@@ -603,17 +528,14 @@ const candidateInfo = {
         if (statusCode !== 200) throw response;
         const rookieId = ticketID;
         yield put({ type: 'save', payload: { rookieId, data: { ...data, _id } } });
-
         yield put({
           type: 'updateSignature',
           payload: data,
         });
-
         yield put({
           type: 'saveTemp',
           payload: { ...data },
         });
-
         history.push({
           pathname: `/employee-onboarding/add/${rookieId}`,
           state: { isAddNew: true },
@@ -668,14 +590,12 @@ const candidateInfo = {
 
     *fetchTitleListByCompany({ payload }, { call, put }) {
       let response = {};
-
       try {
         response = yield call(getTitleListByCompany, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'saveOrigin',
-          // payload: { ...data, listTitle: data },
+          type: 'save',
           payload: { listTitle: data },
         });
       } catch (error) {
@@ -685,20 +605,18 @@ const candidateInfo = {
     },
 
     *fetchTableData({ payload }, { call, put }) {
-      let response = {};
       try {
-        response = yield call(getTableDataByTitle, payload);
+        const response = yield call(getTableDataByTitle, payload);
         const { statusCode, data } = response;
         const { setting } = data;
         if (statusCode !== 200) throw response;
         yield put({
-          type: 'saveSalaryStructure',
-          payload: { settings: setting },
+          type: 'save',
+          payload: { tableData: setting },
         });
       } catch (errors) {
         dialog(errors);
       }
-      return response;
     },
 
     *closeCandidate({ payload }, { call, put }) {
@@ -777,7 +695,8 @@ const candidateInfo = {
       try {
         response = yield call(getById, payload);
         const { data, statusCode } = response;
-
+        // console.log('data', data);
+        // console.log('currentStep', data.currentStep);
         if (statusCode !== 200) throw response;
         const { _id } = data;
         yield put({
@@ -812,7 +731,7 @@ const candidateInfo = {
             },
           },
         });
-
+        console.log(data);
         yield put({
           type: 'saveTemp',
           payload: {
@@ -821,33 +740,8 @@ const candidateInfo = {
             offerLetter: data.offerLetter,
             candidate: data._id,
             candidateSignature: data.candidateSignature || {},
-            amountIn: data.amountIn || '',
-            timeOffPolicy: data.timeOffPolicy || '',
-            compensationType: data.compensationType || '',
-            // hidePreviewOffer: !!(data.staticOfferLetter && data.staticOfferLetter.url), // Hide preview offer screen if there's already static offer
-            // disablePreviewOffer:
-            //   (data.offerLetter && data.offerLetter.attachment) ||
-            //   (data.staticOfferLetter && data.staticOfferLetter.url),
-            additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
           },
         });
-
-        if (
-          (data.offerLetter && data.offerLetter.attachment) ||
-          (data.staticOfferLetter && data.staticOfferLetter.url)
-        ) {
-          yield put({
-            type: 'saveTemp',
-            payload: {
-              disablePreviewOffer: false,
-            },
-          });
-        }
-
-        // yield put({
-        //   type: 'upadateAdditionalQuestion',
-        //   payload: formatAdditionalQuestion(data.additionalQuestions),
-        // });
         yield put({
           type: 'updateSignature',
           payload: data,
@@ -867,18 +761,13 @@ const candidateInfo = {
     },
 
     *fetchTemplate(_, { call, put }) {
-      const OFFBOARD_TEMPLATE_TYPE = 'OFF_BOARDING-EXIT_PACKAGE';
       try {
         const response = yield call(getTemplates);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
-        const templateList = data;
-        const onboardTemplates = templateList.filter(
-          (template) => template.type !== OFFBOARD_TEMPLATE_TYPE,
-        );
         yield put({
           type: 'updateTemplate',
-          payload: onboardTemplates,
+          payload: data,
         });
       } catch (error) {
         dialog(error);
@@ -916,6 +805,7 @@ const candidateInfo = {
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         const { data: { attachment: { name = '', url = '' } = {} } = {} } = response;
+        console.log(response);
         yield put({
           type: 'updateOfferLetter',
           payload: {
@@ -1033,34 +923,6 @@ const candidateInfo = {
         dialog(error);
       }
     },
-
-    *redirectToOnboardList() {
-      try {
-        history.push({
-          pathname: `/employee-onboarding`,
-        });
-        yield null;
-      } catch (error) {
-        dialog(error);
-      }
-    },
-
-    *fetchAdditionalQuestion({ payload }, { call }) {
-      let response = {};
-      try {
-        response = yield call(getAdditionalQuestion, payload);
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-        console.log(response);
-        // put({
-        //   type: 'updateAdditionalQuestion',
-        //   payload: data
-        // })
-      } catch (error) {
-        dialog(error);
-      }
-      return response;
-    },
   },
 
   reducers: {
@@ -1087,29 +949,6 @@ const candidateInfo = {
         data: {
           ...data,
           ...action.payload,
-        },
-      };
-    },
-    saveFilledSalaryStructure(state, action) {
-      const { data, checkMandatory } = state;
-      return {
-        ...state,
-        checkMandatory: {
-          ...checkMandatory,
-          ...action.payload,
-        },
-      };
-    },
-    saveSalaryStructure(state, action) {
-      const { data, salaryStructure } = state;
-      return {
-        ...state,
-        data: {
-          ...data,
-          salaryStructure: {
-            ...salaryStructure,
-            ...action.payload,
-          },
         },
       };
     },
@@ -1276,51 +1115,9 @@ const candidateInfo = {
         ...state,
         tempData: {
           ...tempData,
-          hidePreviewOffer: false,
           offerLetter: action.payload,
         },
       };
-    },
-
-    // DRAFT
-    updateAdditionalQuestion(state, action) {
-      const { tempData } = state;
-
-      return {
-        ...state,
-        tempData: {
-          ...tempData,
-          additionalQuestion: action.payload,
-        },
-      };
-    },
-
-    updateAdditionalQuestions(state, action) {
-      const { tempData } = state;
-
-      return {
-        ...state,
-        tempData: {
-          ...tempData,
-          additionalQuestions: action.payload,
-        },
-      };
-    },
-
-    updateEmployeeType(state, action) {
-      const { tempData = {} } = state;
-      const { employeeType = '' } = tempData;
-
-      if (Object.keys(employeeType).length === 0) {
-        return {
-          ...state,
-          tempData: {
-            ...tempData,
-            employeeType: action.payload,
-          },
-        };
-      }
-      return state;
     },
   },
 };

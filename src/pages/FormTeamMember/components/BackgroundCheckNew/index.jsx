@@ -391,7 +391,7 @@ class BackgroundCheck extends Component {
   };
 
   // HANDLE CHANGE WHEN CLICK CHECKBOXES OF BLOCK D
-  handleChangeForD = (checkedList, orderNumber, employerName) => {
+  handleChangeForD = (checkedList, orderNumber, employerName, workDuration) => {
     // console.log('employerName', employerName);
     const { dispatch } = this.props;
     const { newPoe: newPoeState } = this.state;
@@ -400,6 +400,7 @@ class BackgroundCheck extends Component {
       const newPoe1 = newPoeState;
       const addPoe = {
         employer: employerName,
+        workDuration,
         checkedList,
       };
       newPoe1.push(addPoe);
@@ -411,6 +412,7 @@ class BackgroundCheck extends Component {
               ...value,
               employer: employerName,
               checkedList,
+              workDuration,
             }
           : value,
       );

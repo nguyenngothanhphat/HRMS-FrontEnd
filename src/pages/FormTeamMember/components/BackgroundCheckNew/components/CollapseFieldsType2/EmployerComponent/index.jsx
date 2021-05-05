@@ -69,6 +69,9 @@ class EmployerComponent extends PureComponent {
 
   workDurationHandle = (value) => {
     this.setWorkDuration(value);
+    const { getDataFromFields = () => {}, orderNumber } = this.props;
+    const { employerName, checkedList } = this.state;
+    getDataFromFields(orderNumber, employerName, value, checkedList);
   };
 
   render() {
@@ -76,6 +79,7 @@ class EmployerComponent extends PureComponent {
       checkBoxesData = [],
       orderNumber = 0,
       employerName: employerNameFromServer = '',
+      workDuration = '',
       deleteComponent = () => {},
       processStatus = '',
       candidateInfo: { componentsNumberCount = [] } = {},
@@ -92,7 +96,7 @@ class EmployerComponent extends PureComponent {
             onClick={() => deleteComponent(orderNumber)}
           />
         </div>
-        <Form initialValues={{ employerName: employerNameFromServer }}>
+        <Form initialValues={{ employerName: employerNameFromServer, workDuration }}>
           <Row gutter={['20', '20']}>
             <Col span={12}>
               <Form.Item label="Name of the employer*" name="employerName">
@@ -106,8 +110,8 @@ class EmployerComponent extends PureComponent {
             <Col span={12}>
               <Form.Item label="Work Duration (In year, months, days)" name="workDuration">
                 <DatePicker
-                  disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
-                  // disabled
+                  // disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
+                  disabled
                   onChange={this.workDurationHandle}
                   format="MM.DD.YY"
                 />
