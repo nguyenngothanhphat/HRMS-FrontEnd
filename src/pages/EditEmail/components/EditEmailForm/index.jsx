@@ -11,6 +11,7 @@ import EditorQuill from '@/components/EditorQuill';
 
 // import removeIcon from './assets/removeIcon.svg';
 import 'react-quill/dist/quill.snow.css';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 Quill.register('modules/mentions', QuillMention);
@@ -27,9 +28,9 @@ Quill.register('modules/mentions', QuillMention);
     } = {},
     user: {
       currentUser: {
-        company: { _id = '' } = {},
+        //     company: { _id = '' } = {},
         roles = [],
-        location: { name: locationName = '' } = {},
+        //     location: { name: locationName = '' } = {},
       } = {},
     } = {},
     loading,
@@ -40,9 +41,9 @@ Quill.register('modules/mentions', QuillMention);
     titleList,
     employeeTypeList,
     departmentListByCompanyId,
-    _id,
+    // _id,
     listAutoField,
-    locationName,
+    // locationName,
     roles,
     loadingfetchEmailCustomInfo: loading.effects['employeeSetting/fetchEmailCustomInfo'],
     loadingUpdateCustomEmail: loading.effects['employeeSetting/updateCustomEmail'],
@@ -161,7 +162,6 @@ class EditEmailForm extends PureComponent {
 
     dispatch({
       type: 'employeeSetting/fetchListAutoField',
-      payload: {},
     });
 
     const { conditionsData } = this.state;
@@ -296,7 +296,7 @@ class EditEmailForm extends PureComponent {
   };
 
   handleChangeApply = (value) => {
-    const { dispatch, _id } = this.props;
+    const { dispatch } = this.props;
 
     // this.setState({
     //   appliesToData: value,
@@ -306,7 +306,8 @@ class EditEmailForm extends PureComponent {
       dispatch({
         type: 'employeeSetting/fetchDepartmentListByCompanyId',
         payload: {
-          company: _id,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
         },
       }).then((data) => {
         this.setState({
@@ -376,7 +377,10 @@ class EditEmailForm extends PureComponent {
               this.setState({ load: false });
               dispatch({
                 type: 'employeeSetting/fetchLocationList',
-                payload: {},
+                payload: {
+                  tenantId: getCurrentTenant(),
+                  company: getCurrentCompany(),
+                },
               }).then((data) => {
                 this.setState((prevState) => ({
                   conditionsTrigger: {
@@ -392,7 +396,9 @@ class EditEmailForm extends PureComponent {
               this.setState({ load: false });
               dispatch({
                 type: 'employeeSetting/fetchTitleList',
-                payload: {},
+                payload: {
+                  tenantId: getCurrentTenant(),
+                },
               }).then((data) => {
                 this.setState((prevState) => ({
                   conditionsTrigger: {
@@ -451,7 +457,10 @@ class EditEmailForm extends PureComponent {
         this.setState({ isLocation: true });
         dispatch({
           type: 'employeeSetting/fetchLocationList',
-          payload: {},
+          payload: {
+            tenantId: getCurrentTenant(),
+            company: getCurrentCompany(),
+          },
         }).then((data) => {
           this.setState((prevState) => ({
             conditionsTrigger: {
@@ -465,7 +474,7 @@ class EditEmailForm extends PureComponent {
         this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchTitleList',
-          payload: {},
+          payload: { tenantId: getCurrentTenant() },
         }).then((data) => {
           this.setState((prevState) => ({
             conditionsTrigger: {
@@ -516,6 +525,7 @@ class EditEmailForm extends PureComponent {
     newConditions.splice(index, 1);
 
     newConditionsData.forEach((item, itemIndex) => {
+      // eslint-disable-next-line no-param-reassign
       item.id = itemIndex;
     });
 
@@ -610,27 +620,28 @@ class EditEmailForm extends PureComponent {
     // const { triggerEventList, dispatch } = this.props;
     // const { messages = '', appliesToData = '', conditions = [], sendToExistingWorker } = this.state;
     const { dispatch } = this.props;
-    const { messages = '' } = this.state;
+    const { messages, emailSubject } = this.state;
     const { emailCustomData: { _id = '' } = {} } = this.props;
     let dataSubmit = {};
 
-    const newValue = { ...values };
-    const { subject } = newValue;
+    // const newValue = { ...values };
+    // const { subject } = newValue;
 
     // const message = messages.replace(/<[^>]+>/g, '');
 
     dataSubmit = {
       _id,
-      subject,
+      subject: emailSubject,
       message: messages,
+      tenantId: getCurrentTenant(),
     };
 
     console.log('dataSubmit: ', dataSubmit);
     // console.log('success: ', dataSubmit);
-    // dispatch({
-    //   type: 'employeeSetting/updateCustomEmail',
-    //   payload: dataSubmit,
-    // });
+    dispatch({
+      type: 'employeeSetting/updateCustomEmail',
+      payload: dataSubmit,
+    });
 
     // delete newValue.sendToWorker;
     // delete newValue.frequency;
@@ -817,7 +828,7 @@ class EditEmailForm extends PureComponent {
         // recipients
         <>
           <Col span={12}>
-            <Form.Item label="recipients" name="recipients">
+            <Form.Item label="Recipients" name="recipients">
               <Select
                 size="large"
                 placeholder="Please select a choice"
@@ -959,7 +970,7 @@ class EditEmailForm extends PureComponent {
 
               <Col span={12} />
 
-              {this._renderApplyToOptions()}
+              {_applyTo && this._renderApplyToOptions()}
 
               {/* Send to existing workers */}
               <Col span={12}>

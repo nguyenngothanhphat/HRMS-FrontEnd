@@ -180,6 +180,13 @@ export async function getPRReport(payload) {
   });
 }
 
+export async function getDocumentCategories(payload) {
+  return request('/api/categorychildren/get-by-page', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getDocuments(payload) {
   return request('/api/documenttenant/list', {
     method: 'POST',

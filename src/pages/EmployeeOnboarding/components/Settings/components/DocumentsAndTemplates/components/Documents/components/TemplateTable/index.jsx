@@ -3,8 +3,9 @@ import { Table, Empty, message } from 'antd';
 import { formatMessage, connect, history } from 'umi';
 import moment from 'moment';
 import axios from 'axios';
+import { getCurrentTenant } from '@/utils/authority';
 import DownloadIcon from './images/download.svg';
-// import EditIcon from './images/edit.svg';
+import EditIcon from './images/edit.svg';
 import DeleteIcon from './images/delete.svg';
 import DocIcon from './images/doc.svg';
 import styles from './index.less';
@@ -58,7 +59,7 @@ class TemplateTable extends Component {
                 onClick={() => this.onDownload(fileInfo?.url)}
                 alt="download"
               />
-              {/* <img src={EditIcon} onClick={() => this.onEdit(fileInfo?._id)} alt="edit" /> */}
+              <img src={EditIcon} onClick={() => this.onEdit(fileInfo?._id)} alt="edit" />
               <img src={DeleteIcon} onClick={() => this.onDelete(fileInfo?._id)} alt="delete" />
             </div>
           );
@@ -88,25 +89,34 @@ class TemplateTable extends Component {
     });
   };
 
-  onEdit = () => {
-    // eslint-disable-next-line no-alert
-    alert('Edit');
+  onEdit = (id) => {
+    history.push(`/template-details/${id}`);
   };
 
   onDelete = async (id) => {
     const { dispatch } = this.props;
+    const tenantId = getCurrentTenant();
     const statusCode = await dispatch({
       type: 'employeeSetting/removeTemplateById',
       payload: {
         id,
+        tenantId,
       },
     });
     if (statusCode === 200) {
       dispatch({
         type: 'employeeSetting/fetchDefaultTemplateListOnboarding',
+        payload: {
+          tenantId,
+          type: 'ON_BOARDING',
+        },
       });
       dispatch({
         type: 'employeeSetting/fetchCustomTemplateListOnboarding',
+        payload: {
+          tenantId,
+          type: 'ON_BOARDING',
+        },
       });
     }
   };

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Select, Spin } from 'antd';
+import { Button, Row, Col, Select, Spin, Image, Skeleton } from 'antd';
 import { Document, Page, pdfjs } from 'react-pdf';
 import { formatMessage, connect } from 'umi';
 import UploadImage from '@/components/UploadImage';
@@ -10,6 +10,7 @@ import CustomModal from '@/components/CustomModal';
 import ArrowLeftIcon from '@/assets/arrow-left_icon.svg';
 import ArrowRightIcon from '@/assets/arrow-right_icon.svg';
 import ModalImg from '@/assets/modal_img_1.png';
+import NoImage from '@/assets/no-photo-available-icon.jpg';
 import styles from './index.less';
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -67,10 +68,10 @@ const ModalContent = ({ closeModal = () => {} }) => {
 class ViewDocument extends PureComponent {
   constructor(props) {
     super(props);
-    const { selectedFile } = this.props;
+    const { selectedFileId } = this.props;
     this.state = {
       numPages: null,
-      currentViewingFile: selectedFile,
+      currentViewingFile: selectedFileId,
       shareWith: [],
       openModal: false,
       selectedStr: undefined,
@@ -79,7 +80,7 @@ class ViewDocument extends PureComponent {
   }
 
   // get document details
-  fetchDocumentDetails = (selectedFile) => {
+  fetchDocumentDetails = (selectedFileId) => {
     const {
       employeeProfile: {
         groupViewingDocuments = [],
@@ -95,7 +96,7 @@ class ViewDocument extends PureComponent {
         dispatch({
           type: 'employeeProfile/fetchViewingDocumentDetail',
           payload: {
-            id: groupViewingDocuments[selectedFile - 1].id,
+            id: groupViewingDocuments[selectedFileId - 1]._id,
             tenantId: tenantCurrentEmployee,
             employee: idCurrentEmployee,
           },
@@ -130,8 +131,8 @@ class ViewDocument extends PureComponent {
   };
 
   componentDidMount = () => {
-    const { selectedFile } = this.props;
-    this.fetchDocumentDetails(selectedFile);
+    const { selectedFileId } = this.props;
+    this.fetchDocumentDetails(selectedFileId);
     this.fetchEmailsListByCompany();
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   };
@@ -224,21 +225,31 @@ class ViewDocument extends PureComponent {
 
     const {
       dispatch,
-      employeeProfile: { groupViewingDocuments = [] },
+      employeeProfile: { groupViewingDocuments = [], tenantCurrentEmployee = '' },
     } = this.props;
     const { currentViewingFile } = this.state;
+    const documentId = groupViewingDocuments[currentViewingFile - 1]._id;
 
     if (statusCode === 200) {
       const [attachment] = data;
       dispatch({
         type: 'employeeProfile/updateDocument',
         payload: {
-          id: groupViewingDocuments[currentViewingFile - 1].id,
+          id: documentId,
           attachment: attachment.id,
+          tenantId: tenantCurrentEmployee,
         },
       });
     }
-    this.fetchDocumentDetails(currentViewingFile);
+    // this.fetchDocumentDetails(currentViewingFile);
+    dispatch({
+      type: 'employeeProfile/fetchViewingDocumentDetail',
+      payload: {
+        id: documentId,
+        tenantId: tenantCurrentEmployee,
+        // employee: idCurrentEmployee,
+      },
+    });
   };
 
   handleChange = (value) => {
@@ -272,7 +283,7 @@ class ViewDocument extends PureComponent {
       const { document, visaNumber } = visa;
       const { _id } = document;
       files.forEach((file, index) => {
-        if (_id === file.id && visaNumber !== undefined && currentViewingFile === index) {
+        if (_id === file._id && visaNumber !== undefined && currentViewingFile === index) {
           visaNumberFinal = visaNumber;
         }
       });
@@ -287,7 +298,7 @@ class ViewDocument extends PureComponent {
       const { document, passportNumber } = passport;
       const { _id } = document;
       files.forEach((file, index) => {
-        if (_id === file.id && passportNumber !== undefined && currentViewingFile === index) {
+        if (_id === file._id && passportNumber !== undefined && currentViewingFile === index) {
           passportNumberFinal = passportNumber;
         }
       });
@@ -305,8 +316,11 @@ class ViewDocument extends PureComponent {
         documentDetail,
       },
     } = this.props;
-    const { key = '', employeeGroup = '', attachment: { url = '' } = {} } = documentDetail;
-
+    const {
+      key = '',
+      category: { name: childCategoryName = '' } = {},
+      attachment: { url = '' } = {},
+    } = documentDetail;
     return (
       <div className={styles.ViewDocument}>
         <div className={styles.tableTitle}>
@@ -322,16 +336,28 @@ class ViewDocument extends PureComponent {
         <div className={styles.tableContent}>
           {/* DOCUMENT VIEWER FRAME */}
           <div className={styles.documentPreviewFrame}>
-            {identifyImageOrPdf(url) === 0 ? (
+            {identifyImageOrPdf(url) === 0 && !loadingFileDetail && (
               <div className={styles.imageFrame}>
-                <img alt="preview" src={url} />
+                <Image
+                  alt="preview"
+                  src={url}
+                  onError={(e) => {
+                    e.target.src = NoImage;
+                  }}
+                />
               </div>
-            ) : (
+            )}
+
+            {identifyImageOrPdf(url) !== 0 && !loadingFileDetail && (
               <Document
                 className={styles.pdfFrame}
                 onLoadSuccess={this.onDocumentLoadSuccess}
                 file={url}
-                loading={this.documentWarning('Loading document. Please wait...')}
+                loading={
+                  <div style={{ padding: '24px' }}>
+                    <Skeleton />
+                  </div>
+                }
                 noData={this.documentWarning('URL is not available.')}
               >
                 {Array.from(new Array(numPages), (el, index) => (
@@ -373,7 +399,7 @@ class ViewDocument extends PureComponent {
                 {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.documentType' })}
               </Col>
               <Col className={styles.infoCol2} span={17}>
-                {employeeGroup}
+                {childCategoryName}
               </Col>
             </Row>
 
@@ -386,32 +412,28 @@ class ViewDocument extends PureComponent {
               </Col>
             </Row>
 
-            {this.includeString(employeeGroup, 'identity') ? (
+            {this.includeString(childCategoryName, 'indentity') && (
               <Row className={styles.infoRow}>
                 <Col className={styles.infoCol1} span={7}>
                   {key} Number
                 </Col>
                 <Col className={styles.infoCol2} span={17}>
-                  {this.includeString(key, 'passport')
-                    ? this.getPassportInformation(
-                        passportData,
-                        groupViewingDocuments,
-                        currentViewingFile - 1,
-                      )
-                    : ''}
-                  {this.includeString(key, 'visa')
-                    ? this.getVisaInformation(
-                        visaData,
-                        groupViewingDocuments,
-                        currentViewingFile - 1,
-                      )
-                    : ''}
+                  {this.includeString(key, 'passport') &&
+                    this.getPassportInformation(
+                      passportData,
+                      groupViewingDocuments,
+                      currentViewingFile - 1,
+                    )}
+                  {this.includeString(key, 'visa') &&
+                    this.getVisaInformation(
+                      visaData,
+                      groupViewingDocuments,
+                      currentViewingFile - 1,
+                    )}
 
-                  {this.includeString(key, 'adhaar') ? adhaarCardNumber : ''}
+                  {this.includeString(key, 'adhaar') && adhaarCardNumber}
                 </Col>
               </Row>
-            ) : (
-              ''
             )}
 
             <Row className={styles.infoRow}>
@@ -455,7 +477,12 @@ class ViewDocument extends PureComponent {
             getResponse={this.uploadNew}
           />
 
-          <Button loading={loading2} onClick={this.onSaveClick} className={styles.saveButton}>
+          <Button
+            disabled={selectedStr ? selectedStr.length === 0 : true}
+            loading={loading2}
+            onClick={this.onSaveClick}
+            className={styles.saveButton}
+          >
             {formatMessage({ id: 'pages.employeeProfile.documents.viewDocument.saveBtn' })}
           </Button>
         </div>

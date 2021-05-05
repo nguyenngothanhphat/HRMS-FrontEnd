@@ -1,33 +1,35 @@
 import request from '@/utils/request';
 
-export async function getDefaultTemplateList() {
-  return request('/api/template/get-default', {
+export async function getDefaultTemplateList(payload) {
+  return request('/api/templatetenant/get-default', {
     method: 'POST',
+    data: payload,
   });
 }
 
-export async function getCustomTemplateList() {
-  return request('/api/template/get-custom', {
+export async function getCustomTemplateList(payload) {
+  return request('/api/templatetenant/get-custom', {
     method: 'POST',
+    data: payload,
   });
 }
 
 export async function getTemplateById(payload) {
-  return request('/api/template/get-by-id', {
+  return request('/api/templatetenant/get-by-id', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function addCustomTemplate(payload) {
-  return request('/api/template/add', {
+  return request('/api/templatetenant/add', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function removeTemplate(data) {
-  return request('/api/template/remove', {
+  return request('/api/templatetenant/remove', {
     method: 'POST',
     data,
   });
@@ -41,47 +43,50 @@ export async function uploadSignature(data) {
 }
 
 export async function getOptionalQuestions(data) {
-  return request('/api/onboardingquestion/list', {
+  return request('/api/onboardingquestiontenant/list', {
     method: 'POST',
     data,
   });
 }
 
 export async function saveOptionalQuestions(payload) {
-  return request('/api/onboardingquestion/save-setting', {
+  return request('/api/onboardingquestiontenant/save-setting', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function updateOptionalQuestions(payload) {
-  return request('/api/onboardingquestion/update', {
+  return request('/api/onboardingquestiontenant/update', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getTriggerEventList() {
-  return request('/api/customemail/list-trigger-event', {
+  return request('/api/customemailtenant/list-trigger-event', {
     method: 'POST',
   });
 }
 
-export async function getLocationList() {
-  return request('/api/location/list', {
+export async function getLocationList(payload) {
+  return request('/api/locationtenant/list', {
     method: 'POST',
+    data: payload,
   });
 }
 
-export async function getDepartmentList() {
-  return request('/api/department/list', {
+export async function getDepartmentList(payload) {
+  return request('/api/departmenttenant/list', {
     method: 'POST',
+    data: payload,
   });
 }
 
-export async function getTitleList() {
-  return request('/api/title/list', {
+export async function getTitleList(payload) {
+  return request('/api/titletenant/list', {
     method: 'POST',
+    data: payload,
   });
 }
 
@@ -91,54 +96,49 @@ export async function getEmployeeTypeList() {
   });
 }
 
-export async function getDepartmentListByCompanyId(payload) {
-  return request('/api/department/list-by-company', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
 export async function getListAutoField() {
-  return request('/api/customemail/list-auto-field', {
+  return request('/api/customemailtenant/list-auto-field', {
     method: 'POST',
   });
 }
 
 export async function addCustomEmail(payload) {
-  return request('/api/customemail/add', {
+  return request('/api/customemailtenant/add', {
     method: 'POST',
     data: payload,
   });
 }
 
-export async function getListCustomEmailOnboarding() {
-  return request('/api/customemail/list-active-onboarding', {
+export async function getListCustomEmailOnboarding(payload) {
+  return request('/api/customemailtenant/list-active', {
     method: 'POST',
+    data: payload,
   });
 }
 
-export async function getListCustomEmailOffboarding() {
-  return request('/api/customemail/list-active-offboarding', {
+export async function getListCustomEmailOffboarding(payload) {
+  return request('/api/customemailtenant/list-active', {
     method: 'POST',
+    data: payload,
   });
 }
 
 export async function getCustomEmailInfo(payload) {
-  return request('/api/customemail/get-by-id', {
+  return request('/api/customemailtenant/get-by-id', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function deleteCustomEmailItem(payload) {
-  return request('/api/customemail/remove', {
+  return request('/api/customemailtenant/remove', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function updateCustomEmail(payload) {
-  return request('/api/customemail/update', {
+  return request('/api/customemailtenant/update', {
     method: 'POST',
     data: payload,
   });

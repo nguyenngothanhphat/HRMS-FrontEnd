@@ -18,6 +18,7 @@ import styles from './index.less';
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
       tenantCurrentEmployee = '',
+      documentCategories = [],
     } = {},
     upload: { employeeInformationURL = '' },
     user: { currentUser = [] },
@@ -31,6 +32,7 @@ import styles from './index.less';
     AdhaarCard,
     currentUser,
     tenantCurrentEmployee,
+    documentCategories,
   }),
 )
 class Edit extends PureComponent {
@@ -42,6 +44,16 @@ class Edit extends PureComponent {
       linkImage: '',
     };
   }
+
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/fetchDocumentCategories',
+      payload: {
+        page: 'Document Employee',
+      },
+    });
+  };
 
   handleChange = (changedValues) => {
     const { dispatch, generalData, generalDataOrigin } = this.props;
@@ -139,16 +151,20 @@ class Edit extends PureComponent {
   handleUpLoadAdhaarCard = () => {
     const {
       dispatch,
-      idCurrentEmployee,
-      AdhaarCard,
-      generalData,
+      idCurrentEmployee = '',
+      AdhaarCard = {},
+      generalData = {},
       tenantCurrentEmployee = '',
+      companyCurrentEmployee = '',
+      documentCategories = [],
     } = this.props;
     let file = '';
     const { urlFile } = generalData;
     if (urlFile) {
       file = urlFile;
     }
+    const indentityCategory = documentCategories.find((child) => child.name === 'Indentity');
+
     if (!AdhaarCard || Object.keys(AdhaarCard).length === 0) {
       dispatch({
         type: 'employeeProfile/fetchDocumentAdd',
@@ -156,9 +172,9 @@ class Edit extends PureComponent {
           tenantId: tenantCurrentEmployee,
           key: 'Adhaar Card',
           attachment: file.id,
-          employeeGroup: 'Identity',
-          parentEmployeeGroup: 'Indentification Documents',
+          category: indentityCategory?._id,
           employee: idCurrentEmployee,
+          company: companyCurrentEmployee,
         },
       }).then((id) => this.handleAdd(id));
     } else {
@@ -168,10 +184,10 @@ class Edit extends PureComponent {
           payload: {
             key: 'Adhaar Card',
             attachment: file?.id,
-            employeeGroup: 'Identity',
-            parentEmployeeGroup: 'Indentification Documents',
+            category: indentityCategory?._id,
             employee: idCurrentEmployee,
             tenantId: tenantCurrentEmployee,
+            company: companyCurrentEmployee,
           },
         }).then((id) => this.handleAddDocument(id));
       }
@@ -181,6 +197,7 @@ class Edit extends PureComponent {
           attachment: file?.id,
           id: AdhaarCard?.document?._id,
           tenantId: tenantCurrentEmployee,
+          category: indentityCategory?._id,
         },
       }).then((doc) => this.handleUpdate(doc));
     }
@@ -382,7 +399,7 @@ class Edit extends PureComponent {
             </Radio.Group>
           </Form.Item>
           <Form.Item label="Employee ID" name="employeeId">
-            <Input className={styles.inputForm} disabled={!(permissions.editEmployeeID !== -1)} />
+            <Input className={styles.inputForm} disabled={permissions.editEmployeeID === -1} />
           </Form.Item>
           <Form.Item
             label="Work Email"

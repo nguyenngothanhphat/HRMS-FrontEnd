@@ -2,9 +2,10 @@ import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Tabs, Button, Row, Col } from 'antd';
 import { connect, formatMessage, history } from 'umi';
+import { isAdmin, isOwner } from '@/utils/authority';
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
-import CustomFields from './components/CustomFields';
+// import CustomFields from './components/CustomFields';
 import styles from './index.less';
 
 const ROLE = {
@@ -13,35 +14,53 @@ const ROLE = {
   HRGLOBAL: 'HR-GLOBAL',
 };
 
-@connect(({ loading, user: { currentUser: { roles = [] } = {} } = {} }) => ({
-  loading: loading.effects['login/login'],
-  roles,
-}))
+@connect(
+  ({
+    loading,
+    onboard: { mainTabActiveKey = '1' } = {},
+    user: { currentUser: { roles = [] } = {} } = {},
+  }) => ({
+    loading: loading.effects['login/login'],
+    roles,
+    mainTabActiveKey,
+  }),
+)
 class EmployeeOnboarding extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
       rolesList: '',
-      defaultActiveKey: '1',
     };
   }
 
   componentDidMount = () => {
     history.replace();
-    const { location: { state: { defaultActiveKey = '1' } = {} } = {}, roles } = this.props;
+    const {
+      // location: { state: { defaultActiveKey = '1' } = {} } = {},
+      roles,
+    } = this.props;
 
     const arrRole = roles.map((itemRole) => itemRole._id);
 
     this.setState({
       rolesList: arrRole,
-      defaultActiveKey,
+    });
+  };
+
+  onChangeTab = (activeKey) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'onboard/save',
+      payload: {
+        mainTabActiveKey: activeKey,
+      },
     });
   };
 
   render() {
-    const { rolesList, defaultActiveKey } = this.state;
-    const { roles } = this.props;
+    const { rolesList } = this.state;
+    const { roles, mainTabActiveKey = '1' } = this.props;
     const getPermission = roles.map((item) => {
       const { permissions = [] } = item;
       return permissions;
@@ -51,13 +70,17 @@ class EmployeeOnboarding extends PureComponent {
       .filter((values, index, self) => self.indexOf(values) === index);
     const { TabPane } = Tabs;
 
-    const isHrManager = rolesList.indexOf(ROLE.HRMANAGER) > -1;
+    const checkPermission =
+      rolesList.indexOf(ROLE.HRMANAGER) > -1 ||
+      rolesList.indexOf(ROLE.HRGLOBAL) > -1 ||
+      isAdmin() ||
+      isOwner();
     return (
       <PageContainer>
         {/* {data.indexOf('P_ONBOARDING_VIEW') > -1 && rolesList.length > 0 ? ( */}
         <div className={styles.containerEmployeeOnboarding}>
           <div className={styles.tabs}>
-            <Tabs defaultActiveKey={defaultActiveKey}>
+            <Tabs activeKey={mainTabActiveKey} onTabClick={this.onChangeTab}>
               <TabPane
                 tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
                 key="1"
@@ -79,19 +102,22 @@ class EmployeeOnboarding extends PureComponent {
                 </div>
                 <OnboardingOverview />
               </TabPane>
-              {/* {isHrManager === true ? (
-                <> */}
-              <TabPane tab={formatMessage({ id: 'component.employeeOnboarding.settings' })} key="2">
-                <Settings />
-              </TabPane>
-              {/* <TabPane
-                      tab={formatMessage({ id: 'component.employeeOnboarding.customFields' })}
-                      key="3"
-                    >
-                      <CustomFields />
-                    </TabPane> */}
-              {/* </>
-              ) : null} */}
+              {checkPermission ? (
+                <>
+                  <TabPane
+                    tab={formatMessage({ id: 'component.employeeOnboarding.settings' })}
+                    key="2"
+                  >
+                    <Settings />
+                  </TabPane>
+                  {/* <TabPane
+                    tab={formatMessage({ id: 'component.employeeOnboarding.customFields' })}
+                    key="3"
+                  >
+                    <CustomFields />
+                  </TabPane> */}
+                </>
+              ) : null}
             </Tabs>
           </div>
         </div>

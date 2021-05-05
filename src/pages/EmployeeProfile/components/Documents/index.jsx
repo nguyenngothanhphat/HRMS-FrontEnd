@@ -1,33 +1,71 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
-import { Button, Spin } from 'antd';
+import { Skeleton } from 'antd';
 import ViewDocument from './ViewDocument';
 import InfoCollapseType2 from '../../../../components/InfoCollapseType2';
 import styles from './index.less';
 
-@connect(({ employeeProfile, loading, user: { currentUser: { roles = [] } = {} } = {} }) => ({
-  loading: loading.effects['employeeProfile/fetchDocuments'],
-  loading2: loading.effects['employeeProfile/shareDocumentEffect'],
-  employeeProfile,
-  roles,
-}))
+@connect(
+  ({
+    employeeProfile: {
+      documentCategories = [],
+      idCurrentEmployee = '',
+      tenantCurrentEmployee = '',
+      listDocuments = [],
+      groupViewingDocuments = [],
+    } = {},
+    loading,
+    user: { currentUser: { roles = [] } = {} } = {},
+  }) => ({
+    loading: loading.effects['employeeProfile/fetchDocuments'],
+    loading2: loading.effects['employeeProfile/shareDocumentEffect'],
+    documentCategories,
+    idCurrentEmployee,
+    tenantCurrentEmployee,
+    listDocuments,
+    groupViewingDocuments,
+    roles,
+  }),
+)
 class Documents extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isViewingDocument: false,
-      selectedFile: 0,
+      selectedFileId: 0,
       isHR: false,
+      documentStructure: [],
     };
   }
 
+  fetchDocumentCategories = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeProfile/fetchDocumentCategories',
+      payload: {
+        page: 'Document Employee',
+      },
+    }).then((resp) => {
+      if (resp?.statusCode === 200) {
+        this.generateStructure(resp.data);
+      }
+    });
+  };
+
+  fetchDocumentList = () => {
+    const { dispatch, idCurrentEmployee = '', tenantCurrentEmployee = '' } = this.props;
+    dispatch({
+      type: 'employeeProfile/fetchDocuments',
+      payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
+    });
+  };
+
   componentDidMount = () => {
-    const {
-      roles = [],
-      employeeProfile: { idCurrentEmployee = '', tenantCurrentEmployee = '' },
-      dispatch,
-    } = this.props;
+    this.fetchDocumentCategories();
+    this.fetchDocumentList();
+
+    const { roles = [] } = this.props;
     const findHRGlobal =
       roles.find((role) => {
         const { _id = '' } = role;
@@ -39,24 +77,25 @@ class Documents extends Component {
         isHR: true,
       });
     }
-    dispatch({
-      type: 'employeeProfile/fetchDocuments',
-      payload: { employee: idCurrentEmployee, tenantId: tenantCurrentEmployee },
-    });
   };
 
   componentWillUnmount = () => {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'employeeProfile/clearSaveDocuments',
+      type: 'employeeProfile/clearListDocuments',
     });
   };
 
   onBackClick = () => {
-    this.setState({
-      isViewingDocument: false,
-    });
+    this.setState(
+      {
+        isViewingDocument: false,
+      },
+      () => {
+        this.fetchDocumentList();
+      },
+    );
   };
 
   getFiles = (item) => {
@@ -80,76 +119,99 @@ class Documents extends Component {
     };
   };
 
-  generateArrayDocument = (filesList) => {
-    // PARENT EMPLOYEE GROUP
-    const list1 = filesList.filter((value) => {
-      return value.parentEmployeeGroup !== undefined;
-    });
-    const parentList = [...new Set(list1.map((value) => value.parentEmployeeGroup))];
+  generateArrayDocument = (documentList) => {
+    const { documentStructure } = this.state;
 
-    // EMPLOYEE GROUP
-    const list2 = filesList.filter((value) => {
-      return value.employeeGroup !== undefined;
-    });
-
-    const typeList = list2.filter(
-      (v, i, a) =>
-        a.findIndex(
-          (t) =>
-            t.parentEmployeeGroup === v.parentEmployeeGroup && t.employeeGroup === v.employeeGroup,
-        ) === i,
-    );
-
-    const data = [];
-    parentList.forEach((parent) => {
-      const body = [];
-      typeList.forEach((value) => {
-        if (value.parentEmployeeGroup === parent) {
-          const files = [];
-          filesList.forEach((file) => {
-            if (
-              file.parentEmployeeGroup === value.parentEmployeeGroup &&
-              file.employeeGroup === value.employeeGroup
-            ) {
-              files.push(this.getFiles(file));
+    const finalDocuments = JSON.parse(JSON.stringify(documentStructure));
+    documentList.forEach((document) => {
+      const { category: { _id: categoryId = '', categoryParent = '' } = {} } = document;
+      finalDocuments.forEach((parent) => {
+        const { children = {} } = parent;
+        if (parent._id === categoryParent) {
+          children.forEach((child) => {
+            if (child._id === categoryId) {
+              // eslint-disable-next-line no-param-reassign
+              child.files = [...(child.files || []), document];
             }
           });
-          const bodyElement = {
-            kind: value.employeeGroup,
-            files,
-          };
-          body.push(bodyElement);
         }
       });
-      const dataElement = {
-        title: parent,
-        type: 2, // uploaded by
-        body,
-      };
-      data.push(dataElement);
     });
 
-    return data.reverse();
+    // finalDocuments: array of
+    // _id, name, and array of {_id, name, files: []}
+
+    // const bodyElement = {
+    //   kind: value.employeeGroup,
+    //   files,
+    // };
+
+    // const dataElement = {
+    //   title: parent,
+    //   type: 2, // uploaded by
+    //   body,
+    // };
+    // data.push(dataElement);
+
+    return finalDocuments;
+  };
+
+  generateStructure = (documentCategories) => {
+    // PARENT EMPLOYEE GROUP
+    let list1 = [];
+    documentCategories.forEach((value) => {
+      list1 = [
+        ...list1,
+        {
+          name: value.categoryParent?.name,
+          _id: value.categoryParent?._id,
+        },
+      ];
+    });
+    // remove duplicate objects
+    const parentList = [...new Map(list1.map((item) => [item._id, item])).values()];
+
+    // EMPLOYEE GROUP
+    const list2 = parentList.map((parent) => {
+      let childList = [];
+      documentCategories.forEach((child) => {
+        if (child?.categoryParent?._id === parent?._id) {
+          childList = [
+            ...childList,
+            {
+              name: child?.name,
+              _id: child?._id,
+            },
+          ];
+        }
+      });
+      return {
+        ...parent,
+        children: childList,
+      };
+    });
+
+    this.setState({
+      documentStructure: list2,
+    });
   };
 
   onFileClick = (id) => {
-    const {
-      employeeProfile: { saveDocuments = [] },
-      dispatch,
-    } = this.props;
-
-    const data = this.generateArrayDocument(saveDocuments);
+    const { listDocuments = [], dispatch } = this.props;
+    const data = this.generateArrayDocument(listDocuments);
 
     data.forEach((x) => {
-      x.body.forEach((y) => {
+      const { children = [] } = x;
+      children.forEach((y) => {
+        const { files = [] } = y;
         let count = 0;
-        y.files.forEach((z) => {
-          if (z.id !== '') count += 1;
-          if (z.id === id) {
-            const groupViewingFiles = y.files.filter((value) => value.id !== '');
+        files.forEach((z) => {
+          if (z._id) count += 1;
+          if (z._id === id) {
+            const groupViewingFiles = y.files.filter((value) => value._id);
             this.setState({
               isViewingDocument: true,
-              selectedFile: count,
+              selectedFileId: count,
             });
             dispatch({
               type: 'employeeProfile/saveGroupViewingDocuments',
@@ -162,15 +224,11 @@ class Documents extends Component {
   };
 
   render() {
-    const { isViewingDocument, selectedFile, isHR } = this.state;
+    const { isViewingDocument, selectedFileId, isHR } = this.state;
+    const { listDocuments = [], groupViewingDocuments = [], loading, loading2 } = this.props;
 
-    const {
-      employeeProfile: { saveDocuments = [], groupViewingDocuments = [] },
-      loading,
-      loading2,
-    } = this.props;
-
-    const data = this.generateArrayDocument(saveDocuments);
+    const finalDocuments = this.generateArrayDocument(listDocuments);
+    // const data = [];
 
     const emptyData = {
       title: 'There is no any documents',
@@ -182,34 +240,28 @@ class Documents extends Component {
       <div className={styles.Documents}>
         {loading ? (
           <div className={styles.loadingDocuments}>
-            {/* <p>Loading documents</p> */}
-            <Spin size="large" />
+            <Skeleton />
           </div>
         ) : (
           <div>
-            {data.length === 0 ? (
+            {finalDocuments.length === 0 ? (
               <div className={styles.noDocumentContainer}>
                 <InfoCollapseType2 onFileClick={this.onFileClick} data={emptyData} />
-                <div className={styles.buttonContainer}>
-                  <Button className={styles.uploadNewBtn} type="primary">
-                    Upload new
-                  </Button>
-                </div>
               </div>
             ) : (
               <div>
                 {isViewingDocument && groupViewingDocuments.length !== 0 ? (
                   <ViewDocument
-                    selectedFile={selectedFile}
+                    selectedFileId={selectedFileId}
                     onBackClick={this.onBackClick}
                     loading2={loading2}
                   />
                 ) : (
-                  data.map((value, index) => (
+                  finalDocuments.map((eachCategory, index) => (
                     <InfoCollapseType2
                       key={`${index + 1}`}
                       onFileClick={this.onFileClick}
-                      data={value}
+                      category={eachCategory}
                       isHR={isHR}
                     />
                   ))

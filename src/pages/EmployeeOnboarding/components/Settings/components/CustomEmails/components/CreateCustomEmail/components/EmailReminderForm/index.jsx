@@ -13,6 +13,7 @@ import { Quill } from 'react-quill';
 import QuillMention from 'quill-mention';
 import EditorQuill from '@/components/EditorQuill';
 
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import removeIcon from './assets/removeIcon.svg';
 import 'react-quill/dist/quill.snow.css';
 import styles from './index.less';
@@ -32,9 +33,9 @@ Quill.register('modules/mentions', QuillMention);
     } = {},
     user: {
       currentUser: {
-        company: { _id = '' } = {},
+        //   company: { _id = '' } = {},
         roles = [],
-        location: { name: locationName = '' } = {},
+        //   location: { name: locationName = '' } = {},
       } = {},
     } = {},
     loading,
@@ -45,9 +46,9 @@ Quill.register('modules/mentions', QuillMention);
     titleList,
     employeeTypeList,
     departmentListByCompanyId,
-    _id,
+    // _id,
     listAutoField,
-    locationName,
+    // locationName,
     roles,
     loadingAddCustomEmail: loading.effects['employeeSetting/addCustomEmail'],
     loadingFetchListAutoField: loading.effects['employeeSetting/fetchListAutoField'],
@@ -262,7 +263,7 @@ class EmailReminderForm extends PureComponent {
   };
 
   handleChangeApply = (value) => {
-    const { dispatch, _id } = this.props;
+    const { dispatch } = this.props;
 
     this.setState({
       appliesToData: value,
@@ -272,7 +273,8 @@ class EmailReminderForm extends PureComponent {
       dispatch({
         type: 'employeeSetting/fetchDepartmentListByCompanyId',
         payload: {
-          company: _id,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
         },
       }).then((data) => {
         this.setState({
@@ -337,7 +339,10 @@ class EmailReminderForm extends PureComponent {
               this.setState({ load: false });
               dispatch({
                 type: 'employeeSetting/fetchLocationList',
-                payload: {},
+                payload: {
+                  tenantId: getCurrentTenant(),
+                  company: getCurrentCompany(),
+                },
               }).then((data) => {
                 this.setState((prevState) => ({
                   conditionsTrigger: {
@@ -353,7 +358,7 @@ class EmailReminderForm extends PureComponent {
               this.setState({ load: false });
               dispatch({
                 type: 'employeeSetting/fetchTitleList',
-                payload: {},
+                payload: { tenantId: getCurrentTenant() },
               }).then((data) => {
                 this.setState((prevState) => ({
                   conditionsTrigger: {
@@ -412,7 +417,10 @@ class EmailReminderForm extends PureComponent {
         this.setState({ isLocation: true });
         dispatch({
           type: 'employeeSetting/fetchLocationList',
-          payload: {},
+          payload: {
+            tenantId: getCurrentTenant(),
+            company: getCurrentCompany(),
+          },
         }).then((data) => {
           this.setState((prevState) => ({
             conditionsTrigger: {
@@ -426,7 +434,7 @@ class EmailReminderForm extends PureComponent {
         this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchTitleList',
-          payload: {},
+          payload: { tenantId: getCurrentTenant() },
         }).then((data) => {
           this.setState((prevState) => ({
             conditionsTrigger: {
@@ -584,7 +592,13 @@ class EmailReminderForm extends PureComponent {
     // const message = messages.replace(/<[^>]+>/g, '');
 
     if (appliesToData === 'any') {
-      dataSubmit = { ...newValue, type: 'ON-BOARDING', message: messages, sendToExistingWorker };
+      dataSubmit = {
+        ...newValue,
+        type: 'ON-BOARDING',
+        message: messages,
+        sendToExistingWorker,
+        tenantId: getCurrentTenant(),
+      };
     }
     if (appliesToData === 'condition') {
       dataSubmit = {
@@ -593,6 +607,7 @@ class EmailReminderForm extends PureComponent {
         conditions,
         message: messages,
         sendToExistingWorker,
+        tenantId: getCurrentTenant(),
       };
     }
 
@@ -916,7 +931,6 @@ class EmailReminderForm extends PureComponent {
               onClick={() => {
                 history.push({
                   pathname: `/employee-onboarding`,
-                  state: { defaultActiveKey: '2' },
                 });
               }}
             >

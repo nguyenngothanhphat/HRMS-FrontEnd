@@ -1,13 +1,19 @@
 import React, { PureComponent } from 'react';
-import { Button, Row, Col, Radio, Select, Input, Form } from 'antd';
-import { getCurrentCompany } from '@/utils/authority';
+import { Button, Row, Col, Radio, Select, Input, Form, Spin } from 'antd';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { connect } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
-@connect(({ locationSelection: { listLocationsByCompany = [] } }) => ({
-  listLocationsByCompany,
-}))
+@connect(
+  ({
+    locationSelection: { listLocationsByCompany = [] } = {},
+    adminApp: { listAdmin = [] } = {},
+  }) => ({
+    listLocationsByCompany,
+    listAdmin,
+  }),
+)
 class SelectUser extends PureComponent {
   formRef = React.createRef();
 
@@ -16,22 +22,48 @@ class SelectUser extends PureComponent {
     this.state = {
       isCompanyWorker: true,
       listUsers: [],
+      isLoaded: false,
     };
   }
 
   fetchUsers = async () => {
     const { dispatch } = this.props;
     const company = getCurrentCompany();
+    const tenantId = getCurrentTenant();
     const res = await dispatch({
       type: 'adminApp/fetchUsersListOfOwner',
       payload: {
         company,
       },
     });
-    const { statusCode = 0, data = {} } = res;
-    if (statusCode === 200) {
+    const resFilterList = await dispatch({
+      type: 'employee/fetchFilterList',
+      payload: {
+        id: company,
+        tenantId,
+      },
+    });
+
+    const { statusCode = 0, data: { listUser = [] } = {} } = res;
+    const { statusCode: statusCodeFilter = 0, data: { listCompany = {} } = {} } = resFilterList;
+    const newListEmployee = [];
+
+    if (statusCodeFilter === 200 && statusCode === 200) {
+      // Filter list by parent comp + child comp
+      listCompany.map((item) => {
+        listUser.forEach((user) => {
+          if (user?.company === item?._id) {
+            newListEmployee.push(user);
+          }
+        });
+        return newListEmployee;
+      });
+
+      this.filterAdmin(newListEmployee);
+
       this.setState({
-        listUsers: data?.listUser || [],
+        listUsers: newListEmployee || [],
+        isLoaded: true,
       });
     }
   };
@@ -89,8 +121,18 @@ class SelectUser extends PureComponent {
     onContinue(1, payload);
   };
 
+  filterAdmin = (emplID = '') => {
+    const { listAdmin = [] } = this.props;
+    let isExist = false;
+    listAdmin.forEach((admin) => {
+      if (admin._id === emplID) isExist = true;
+    });
+
+    return isExist;
+  };
+
   renderContent = () => {
-    const { isCompanyWorker, listUsers } = this.state;
+    const { isCompanyWorker, listUsers, isLoaded } = this.state;
     const {
       companyName = '',
       onBackValues: { firstName = '', email = '', usermapId = '', location = [] } = {},
@@ -143,7 +185,18 @@ class SelectUser extends PureComponent {
                     placeholder="Search by name or select a person"
                     showArrow
                     showSearch
-                    // onSearch={this.fetchUsers}
+                    notFoundContent={
+                      isLoaded ? null : (
+                        <Spin
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            padding: '30px',
+                          }}
+                        />
+                      )
+                    }
                     filterOption={(input, option) => {
                       const values = option.props.children.map((val) => val.toLowerCase());
                       return JSON.stringify(values).indexOf(input.toLowerCase()) >= 0;
@@ -155,7 +208,7 @@ class SelectUser extends PureComponent {
                         _id = '',
                       } = user;
                       return (
-                        <Option key={_id}>
+                        <Option key={_id} disabled={this.filterAdmin(_id)}>
                           {fn1} {email1 ? `(${email1})` : ''}
                         </Option>
                       );

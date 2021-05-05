@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link, formatMessage, connect } from 'umi';
 import { Button } from 'antd';
+import { getCurrentTenant } from '@/utils/authority';
 import offerIcon from './assets/offer-icon.svg';
 import sentIcon from './assets/sent-icon.svg';
 import styles from './index.less';
@@ -77,7 +78,7 @@ class ModalContent extends Component {
       thumbnail,
     } = this.props;
     const newSetting = settings.filter((item) => item !== null && item !== undefined);
-
+    const tenantId = getCurrentTenant();
     dispatch({
       type: 'employeeSetting/addCustomTemplate',
       payload: {
@@ -87,6 +88,7 @@ class ModalContent extends Component {
         fullname,
         signature,
         thumbnail,
+        tenantId,
       },
     }).then(() => {
       onNext();

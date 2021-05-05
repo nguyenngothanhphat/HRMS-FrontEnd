@@ -1,0 +1,97 @@
+.root {
+  width: 100%;
+
+  .header,
+  .userInfo {
+    width: 100%;
+    padding: 24px;
+
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bolder;
+    font-size: 16px;
+    border-bottom: 1px solid #d6dce0;
+
+    &__title {
+      color: #161c29;
+    }
+
+    &__icon {
+      color: #2c6df9;
+      cursor: pointer;
+      span {
+        margin-left: 10px;
+      }
+    }
+  }
+
+  .userInfo {
+    :global {
+      .ant-form-item {
+        margin-bottom: 0;
+      }
+
+      .ant-col {
+        max-width: 70%;
+      }
+
+      .ant-input {
+        height: 42px;
+        font-size: 14px;
+        border: 1px solid #d9d9d9;
+        border-radius: 5px;
+      }
+
+      .ant-btn {
+        width: 95px;
+        height: 40px;
+        font-weight: 500;
+        font-size: 14px;
+        border-radius: 25px;
+      }
+    }
+    .rootForm {
+      .formItem {
+        display: flex;
+        align-items: center;
+        margin-bottom: 24px;
+
+        .textLabel {
+          color: #161c29;
+          font-weight: 500;
+          font-size: 14px;
+        }
+
+        .inputField {
+          width: 100%;
+        }
+      }
+
+      .btnActions {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+
+        .btnSave {
+          margin-left: 8px;
+          color: #fff;
+          background-color: #ffa100;
+          border: solid 1px #ffa100;
+        }
+
+        .btnCancel {
+          color: #ffa100;
+          background: transparent;
+          border: transparent;
+        }
+      }
+    }
+  }
+}

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { history, connect } from 'umi';
 import { Button, notification } from 'antd';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(({ employeeSetting, loading }) => ({
@@ -28,6 +29,7 @@ class EditForm extends Component {
       dispatch,
       onClose = () => {},
     } = this.props;
+    const tenantId = getCurrentTenant();
     dispatch({
       type: 'employeeSetting/addCustomTemplate',
       payload: {
@@ -35,6 +37,7 @@ class EditForm extends Component {
         settings,
         type: 'ON_BOARDING',
         title,
+        tenantId,
       },
     }).then((statusCode) => {
       if (statusCode === 200) {
@@ -115,7 +118,7 @@ class EditForm extends Component {
         />
         <div className={styles.buttonArea}>
           <Button variant="contained" onClick={this.handleSubmit} loading={loading}>
-            Save
+            Save as new template
           </Button>
         </div>
       </div>

@@ -12,8 +12,8 @@ class ChangeHistoryTable extends PureComponent {
     const { employeeProfile } = this.props;
     this.state = {
       employee:
-        employeeProfile.originData.generalData.legalName ||
-        employeeProfile.originData.generalData.firstName,
+        employeeProfile?.originData?.generalData?.legalName ||
+        employeeProfile?.originData?.generalData?.firstName,
     };
   }
 
@@ -130,18 +130,18 @@ class ChangeHistoryTable extends PureComponent {
     const newData = changeHistories.map((item, index) => ({
       key: `${index + 1}`,
       changedInfomation: {
-        promotedPosition: item.title?.name,
-        location: item.location?.name,
-        department: item.department?.name,
-        employment: item.employeeType?.name,
-        compensation: item.compensationType,
-        manager: item.manager?.generalInfo.legalName || item.manager?.generalInfo.firstName,
+        promotedPosition: item?.title?.name,
+        location: item?.location?.name,
+        department: item?.department?.name,
+        employment: item?.employeeType?.name,
+        compensation: item?.compensationType,
+        manager: item?.manager?.generalInfo?.legalName || item?.manager?.generalInfo?.firstName,
       },
-      effectiveDate: moment(item.effectiveDate).locale('en').format('MM.DD.YY'),
+      effectiveDate: moment(item?.effectiveDate).locale('en').format('MM.DD.YY'),
       changedBy: 'HR Admin',
-      changedDate: moment(item.changeDate).locale('en').format('MM.DD.YY'),
-      action: item.takeEffect === 'WILL_UPDATE' ? 'Revoke' : '',
-      id: item._id,
+      changedDate: moment(item?.changeDate).locale('en').format('MM.DD.YY'),
+      action: item?.takeEffect === 'WILL_UPDATE' ? 'Revoke' : '',
+      id: item?._id,
     }));
 
     return (

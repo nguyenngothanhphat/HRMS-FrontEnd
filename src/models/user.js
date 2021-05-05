@@ -4,11 +4,8 @@ import {
   setCurrentLocation,
   getCurrentLocation,
   getCurrentTenant,
-  isOwner,
-  isEmployee,
   setAuthority,
   setIsSwitchingRole,
-  isAdmin,
 } from '@/utils/authority';
 
 import { history } from 'umi';
@@ -44,7 +41,7 @@ const UserModel = {
 
         let formatArrRoles = [];
         let switchRoleAbility = false;
-        const { signInRole = [] } = data;
+        const { signInRole = [], roles = [] } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
         // if there's no tenantId and companyId, return to control panel
@@ -111,6 +108,13 @@ const UserModel = {
               checkIsEmployee = true;
             }
           }
+
+          const employeeRoles = roles.map((role) => role.toLowerCase());
+          const otherEmployeeRoles = employeeRoles.filter((role) => role !== 'employee');
+          if (checkIsEmployee && otherEmployeeRoles.length > 0) {
+            formatArrRoles = [...formatArrRoles, ...otherEmployeeRoles];
+          }
+
           // DONE
           setAuthority(formatArrRoles);
           localStorage.setItem('switchRoleAbility', switchRoleAbility);
@@ -190,6 +194,20 @@ const UserModel = {
     saveCurrentUser(state, action) {
       setIsSwitchingRole(action.payload.isSwitchingRole);
       return { ...state, currentUser: action.payload || {} };
+    },
+
+    clearDataInACompany(state) {
+      return {
+        ...state,
+        currentUser: {
+          ...state.currentUser,
+          employee: {},
+          permissionAdmin: [],
+          permissionEmployee: [],
+          location: null,
+        },
+        permissions: [],
+      };
     },
 
     changeNotifyCount(

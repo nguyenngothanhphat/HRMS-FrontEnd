@@ -232,6 +232,7 @@ const onboard = {
   namespace: 'onboard',
 
   state: {
+    mainTabActiveKey: '1',
     onboardingOverview: {
       pendingEligibilityChecks: {
         sentEligibilityForms: sentEligibilityFormsData,

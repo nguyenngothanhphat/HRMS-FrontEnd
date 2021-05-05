@@ -1,8 +1,9 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react';
-import { Table, Empty, message, Image } from 'antd';
+import { Table, Empty, message, Image, notification } from 'antd';
 import axios from 'axios';
 import { connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import EditIcon from './images/edit.svg';
 import DownloadIcon from './images/download.svg';
 import DeleteIcon from './images/delete.svg';
@@ -13,7 +14,7 @@ import styles from './index.less';
 @connect(
   ({
     companiesManagement: {
-      originData: { companyDetails: { companySignature = [] } = {} } = {},
+      originData: { companyDetails: { company: { companySignature = [] } = {} } = {} } = {},
     } = {},
   }) => ({
     companySignature,
@@ -116,6 +117,7 @@ class CompanySignatoryForm extends PureComponent {
     const payload = {
       id: companyId,
       companySignature: newList,
+      tenantId: getCurrentTenant(),
     };
     const res = await dispatch({
       type: 'companiesManagement/updateCompany',
@@ -124,6 +126,9 @@ class CompanySignatoryForm extends PureComponent {
       isAccountSetup: false,
     });
     if (res?.statusCode === 200) {
+      notification.success({
+        message: 'Delete signatory successfully',
+      });
       this.setState({
         editModalVisible: false,
       });
@@ -159,6 +164,7 @@ class CompanySignatoryForm extends PureComponent {
       const payload = {
         id: companyId,
         companySignature: newList,
+        tenantId: getCurrentTenant(),
       };
       const res = await dispatch({
         type: 'companiesManagement/updateCompany',
@@ -167,6 +173,9 @@ class CompanySignatoryForm extends PureComponent {
         isAccountSetup: false,
       });
       if (res?.statusCode === 200) {
+        notification.success({
+          message: 'Edit signatory successfully',
+        });
         this.setState({
           editModalVisible: false,
         });
@@ -190,6 +199,7 @@ class CompanySignatoryForm extends PureComponent {
     const payload = {
       id: companyId,
       companySignature: newList,
+      tenantId: getCurrentTenant(),
     };
     const res = await dispatch({
       type: 'companiesManagement/updateCompany',
@@ -198,6 +208,9 @@ class CompanySignatoryForm extends PureComponent {
       isAccountSetup: false,
     });
     if (res?.statusCode === 200) {
+      notification.success({
+        message: 'Add new signatory successfully',
+      });
       showAddSignatoryModal(false);
     }
   };
