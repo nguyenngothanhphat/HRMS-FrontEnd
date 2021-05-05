@@ -521,7 +521,6 @@ const candidateInfo = {
     *fetchManagerList({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getReportingManagerList, payload);
-        console.log(response.data);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
