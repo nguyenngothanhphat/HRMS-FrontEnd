@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
@@ -28,6 +27,7 @@ class FirstFieldsComponent extends PureComponent {
       loading3,
       disabled,
     } = this.props;
+    console.log(locationList);
     return (
       <>
         <div>
@@ -72,7 +72,7 @@ class FirstFieldsComponent extends PureComponent {
                       })}
                     {...(item.title === 'workLocation' &&
                       !isNull(workLocation) && {
-                        defaultValue: workLocation.name,
+                        defaultValue: workLocation.legalAddress.addressLine1,
                       })}
                     {...(item.title === 'reportingManager' &&
                       !isEmpty(reportingManager) && {
@@ -86,7 +86,7 @@ class FirstFieldsComponent extends PureComponent {
                     {item.title === 'workLocation'
                       ? locationList.map((data, index) => (
                           <Option value={data._id} key={index}>
-                            <Typography.Text>{data.name}</Typography.Text>
+                            <Typography.Text>{data.legalAddress.addressLine1}</Typography.Text>
                           </Option>
                         ))
                       : item.title === 'department' && departmentList.length > 0

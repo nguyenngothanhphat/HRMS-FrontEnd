@@ -77,13 +77,13 @@ class JobDetails extends PureComponent {
     // window.addEventListener('unload', this.handleUnload, false);
   }
 
-  componentWillUnmount() {
-    const { tempData: { cancelCandidate = false } = {} } = this.props;
-    if (!cancelCandidate) {
-      this.handleUpdateByHR();
-    }
-    // window.removeEventListener('unload', this.handleUnload, false);
-  }
+  // componentWillUnmount() {
+  //   const { tempData: { cancelCandidate = false } = {} } = this.props;
+  //   if (!cancelCandidate) {
+  //     this.handleUpdateByHR();
+  //   }
+  //   // window.removeEventListener('unload', this.handleUnload, false);
+  // }
 
   // handleUnload = () => {
   //   // this.handleUpdateByHR();
@@ -131,7 +131,7 @@ class JobDetails extends PureComponent {
         payload: {
           candidate: _id,
           tenantId: getCurrentTenant(),
-          currentStep,
+          currentStep: currentStep + 1,
         },
       });
     }
@@ -184,29 +184,29 @@ class JobDetails extends PureComponent {
   };
 
   _handleSelect = (value, name) => {
-    const { dispatch, locationList, listLocationsByCompany = [] } = this.props;
+    const { dispatch, locationList } = this.props;
     const { tempData = {} } = this.state;
     tempData[name] = value;
     const { department, workLocation, title } = tempData;
     const companyId = getCurrentCompany(getCurrentTenant);
     const tenantId = getCurrentTenant();
 
-    const locationPayload = listLocationsByCompany.map(
-      ({ headQuarterAddress: { country: countryItem1 = '' } = {} }) => {
-        let stateList = [];
-        listLocationsByCompany.forEach(
-          ({ headQuarterAddress: { country: countryItem2 = '', state: stateItem2 = '' } = {} }) => {
-            if (countryItem1 === countryItem2) {
-              stateList = [...stateList, stateItem2];
-            }
-          },
-        );
-        return {
-          country: countryItem1,
-          state: stateList,
-        };
-      },
-    );
+    // const locationPayload = listLocationsByCompany.map(
+    //   ({ headQuarterAddress: { country: countryItem1 = '' } = {} }) => {
+    //     let stateList = [];
+    //     listLocationsByCompany.forEach(
+    //       ({ headQuarterAddress: { country: countryItem2 = '', state: stateItem2 = '' } = {} }) => {
+    //         if (countryItem1 === countryItem2) {
+    //           stateList = [...stateList, stateItem2];
+    //         }
+    //       },
+    //     );
+    //     return {
+    //       country: countryItem1,
+    //       state: stateList,
+    //     };
+    //   },
+    // );
 
     if (name === 'workLocation') {
       const changedWorkLocation = JSON.parse(JSON.stringify(locationList));
@@ -257,7 +257,8 @@ class JobDetails extends PureComponent {
           payload: {
             company: companyId,
             status: ['ACTIVE'],
-            location: locationPayload,
+            // location: locationPayload,
+            tenantId: getCurrentTenant(),
           },
         });
       }

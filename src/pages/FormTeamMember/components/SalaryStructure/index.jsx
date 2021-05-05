@@ -17,6 +17,7 @@ import styles from './index.less';
 
 @connect(
   ({
+    loading,
     candidateInfo: {
       data: { processStatus = '', candidate = '' },
       tempData: { salaryTitle = '' } = {},
@@ -31,6 +32,7 @@ import styles from './index.less';
     candidate,
     currentStep,
     salaryTitle,
+    loading2: loading.effects['candidateInfo/fetchTitleList'],
   }),
 )
 class SalaryStructure extends PureComponent {
@@ -49,17 +51,17 @@ class SalaryStructure extends PureComponent {
   //   }
   // }
 
-  componentDidMount() {
-    window.scrollTo(0, 70); // Back to top of the page
-  }
+  // componentDidMount() {
+  //   window.scrollTo(0, 70); // Back to top of the page
+  // }
 
-  _renderTable = () => {
-    return (
-      <div className={styles.tableWrapper}>
-        <p>{formatMessage({ id: 'component.salaryStructure.tableWrapper' })}</p>
-      </div>
-    );
-  };
+  // _renderTable = () => {
+  //   return (
+  //     <div className={styles.tableWrapper}>
+  //       <p>{formatMessage({ id: 'component.salaryStructure.tableWrapper' })}</p>
+  //     </div>
+  //   );
+  // };
 
   render() {
     const { processStatus, salaryTitle = '' } = this.props;

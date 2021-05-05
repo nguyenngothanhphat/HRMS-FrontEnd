@@ -107,8 +107,8 @@ class SalaryStructureTemplate extends PureComponent {
 
     this.state = {
       salaryTitle: '',
-      error: '',
-      errorInfo: '',
+      // error: '',
+      // errorInfo: '',
       isEditted: false,
       footerData: [
         {
@@ -272,6 +272,7 @@ class SalaryStructureTemplate extends PureComponent {
         },
         candidate: _id,
         currentStep: currentStep + 1,
+        tenantId: getCurrentTenant(),
       },
     }).then(({ data: data1, statusCode }) => {
       if (statusCode === 200) {
@@ -283,10 +284,6 @@ class SalaryStructureTemplate extends PureComponent {
         });
       }
     });
-  };
-
-  onFinish = (values) => {
-    console.log('hi', values);
   };
 
   onClickEdit = () => {
@@ -391,7 +388,7 @@ class SalaryStructureTemplate extends PureComponent {
     //     },
     //   },
     // });
-    console.log('id', this.props.salaryTitleId === null);
+    // console.log('id', this.props.salaryTitleId === null);
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
@@ -656,20 +653,16 @@ class SalaryStructureTemplate extends PureComponent {
     const { Option } = Select;
     const { settings = [], loadingTable, salaryTitle: salaryTitleId } = this.props;
     const { processStatus, listTitle = [] } = this.props;
-    // const idTitle = title?._id;
     const { salaryTitle = '' } = this.state;
 
-    // const defaultValue = listTitle.length > 0 ? listTitle[0].name : [];
-    console.log('render ', salaryTitle);
     return (
       <div className={styles.salaryStructureTemplate}>
         {/* {(salaryTitle !== '' || salaryTitle === null) && ( */}
-        {(salaryTitle !== '' || salaryTitleId === null) && (
-          <Form onFinish={this.onFinish}>
-            {' '}
-            <div className={styles.salaryStructureTemplate_select}>
-              <Form.Item label="Select a salary structure template" name="salaryTemplate">
-                {/* {listTitle.length > 0 && (
+        {/* {(salaryTitle !== '' || salaryTitleId === null) && ( */}
+        <Form onFinish={this.onFinish}>
+          <div className={styles.salaryStructureTemplate_select}>
+            <Form.Item label="Select a salary structure template" name="salaryTemplate">
+              {/* {listTitle.length > 0 && (
                 <Select
                   onChange={this.handleChangeSelect}
                   defaultValue={listTitle[0].name}
@@ -685,41 +678,41 @@ class SalaryStructureTemplate extends PureComponent {
                   })}
                 </Select>
               )} */}
-                <Select
-                  defaultValue={salaryTitle}
-                  onChange={this.handleChangeSelect}
-                  onFocus={this.onFocusSelect}
-                  placeholder="Please select a choice!"
-                  size="large"
-                  style={{ width: 280 }}
-                  disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
-                >
-                  {listTitle.map((template) => {
-                    return (
-                      <Option key={template._id} value={template._id}>
-                        {template.name}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
-            </div>
-            {this._renderButtons()}
-            <div className={styles.salaryStructureTemplate_table}>
-              <Table
-                loading={loadingTable}
-                dataSource={settings}
-                columns={this._renderColumns()}
-                // size="large"
-                pagination={false}
-              />
-            </div>
-            {this._renderFooter()}
-            {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
-              ? this._renderBottomBar()
-              : null}
-          </Form>
-        )}
+              <Select
+                defaultValue={salaryTitle}
+                onChange={this.handleChangeSelect}
+                onFocus={this.onFocusSelect}
+                placeholder="Please select a choice!"
+                size="large"
+                style={{ width: 280 }}
+                disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
+              >
+                {listTitle.map((template) => {
+                  return (
+                    <Option key={template._id} value={template._id}>
+                      {template.name}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+          </div>
+          {this._renderButtons()}
+          <div className={styles.salaryStructureTemplate_table}>
+            <Table
+              loading={loadingTable}
+              dataSource={settings}
+              columns={this._renderColumns()}
+              // size="large"
+              pagination={false}
+            />
+          </div>
+          {this._renderFooter()}
+          {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
+            ? this._renderBottomBar()
+            : null}
+        </Form>
+        {/* )} */}
       </div>
     );
   }

@@ -76,7 +76,7 @@ export function getManagerList(params) {
 }
 
 export async function getReportingManagerList(params) {
-  return request('/api/employeetenant/list', {
+  return request('/api/employeetenant/list-manager', {
     method: 'POST',
     data: params,
   });
