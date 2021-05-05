@@ -441,9 +441,9 @@ const candidateInfo = {
       }
     },
 
-    *fetchDepartmentList({ payload: { company = '' } }, { call, put }) {
+    *fetchDepartmentList({ payload: { company = '', tenantId = '' } }, { call, put }) {
       try {
-        const response = yield call(getDepartmentList, { company });
+        const response = yield call(getDepartmentList, { company, tenantId });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({

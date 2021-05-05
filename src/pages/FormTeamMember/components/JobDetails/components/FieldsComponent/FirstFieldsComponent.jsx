@@ -27,9 +27,7 @@ class FirstFieldsComponent extends PureComponent {
       loading3,
       disabled,
     } = this.props;
-
     console.log(locationList);
-
     return (
       <>
         <div>
@@ -74,7 +72,7 @@ class FirstFieldsComponent extends PureComponent {
                       })}
                     {...(item.title === 'workLocation' &&
                       !isNull(workLocation) && {
-                        defaultValue: workLocation.legalAddress.address,
+                        defaultValue: workLocation.legalAddress.addressLine1,
                       })}
                     {...(item.title === 'reportingManager' &&
                       !isEmpty(reportingManager) && {

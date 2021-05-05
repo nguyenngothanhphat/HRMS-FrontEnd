@@ -117,7 +117,7 @@ export function getSalaryStructureList() {
 }
 
 export function getTitleListByCompany(params) {
-  return request('/api/title/list-by-company', {
+  return request('/api/titletenant/list-by-company', {
     method: 'POST',
     data: params,
   });
@@ -125,7 +125,7 @@ export function getTitleListByCompany(params) {
 
 export function getTableDataByTitle(params) {
   // console.log(params);
-  return request('/api/salarystructure/get-by-title', {
+  return request('/api/salarystructuretenant/get-by-title', {
     method: 'POST',
     data: params,
   });
