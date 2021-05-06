@@ -29,19 +29,20 @@ const Model = {
         yield put({ type: 'save', payload: { messageError: '' } });
         setToken(response.data.token);
 
-        // if (formatArrRoles.indexOf('candidate') > -1) {
-        //   history.replace('/candidate');
-        //   yield put({
-        //     type: 'saveCandidateId',
-        //     payload: response,
-        //   });
-        //   return;
-        // }
-
         let formatArrRoles = [];
         const { user: { signInRole = [] } = {}, listCompany = [] } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
+        // CANDIDATE
+        if (formatRole.indexOf('candidate') > -1) {
+          yield put({
+            type: 'saveCandidateId',
+            payload: response,
+          });
+          history.replace('/candidate');
+          return;
+        }
+        // ELSE
         let isAdminOrOwner = false;
         if (formatRole.includes('owner')) {
           isAdminOrOwner = true;
@@ -129,7 +130,7 @@ const Model = {
       return { ...state, status: payload.status, type: payload.type };
     },
     saveCandidateId(state, { payload }) {
-      return { ...state, candidate: payload.data.user.candidate };
+      return { ...state, candidate: payload.data.user._id };
     },
     save(state, action) {
       return {

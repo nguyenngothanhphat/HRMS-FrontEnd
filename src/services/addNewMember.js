@@ -138,9 +138,10 @@ export function getLocationListByCompany(params) {
   });
 }
 
-export function getSalaryStructureList() {
-  return request('/api/salarystructure/list', {
+export function getSalaryStructureList(payload) {
+  return request('/api/salarystructuretenant/get-by-title', {
     method: 'POST',
+    data: payload,
   });
 }
 

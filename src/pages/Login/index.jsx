@@ -5,6 +5,7 @@ import { EyeFilled } from '@ant-design/icons';
 import logoGoogle from '@/assets/logo_google.png';
 import GoogleLogin from 'react-google-login';
 import { Link, connect, formatMessage, history } from 'umi';
+import { removeLocalStorage } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(({ loading, login: { messageError = '' } = {} }) => ({
@@ -17,6 +18,7 @@ class FormLogin extends Component {
 
   componentDidMount = () => {
     const { location: { state: { autoFillEmail = '' } = {} } = {} } = this.props;
+    removeLocalStorage();
     this.formRef.current.setFieldsValue({
       email: autoFillEmail,
     });

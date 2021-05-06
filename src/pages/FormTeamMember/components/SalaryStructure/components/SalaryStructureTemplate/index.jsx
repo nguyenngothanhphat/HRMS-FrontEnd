@@ -86,6 +86,7 @@ import PROCESS_STATUS from '../../../utils';
         } = {},
       } = {},
       data,
+      tempData = {},
     },
     user: { currentUser: { company: { _id = '' } = {} } = {} },
   }) => ({
@@ -99,6 +100,7 @@ import PROCESS_STATUS from '../../../utils';
     data,
     settings,
     title,
+    tempData,
   }),
 )
 class SalaryStructureTemplate extends PureComponent {
@@ -368,7 +370,10 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   handleChangeSelect = (value) => {
-    const { dispatch } = this.props;
+    const {
+      dispatch,
+      tempData: { workLocation: { headQuarterAddress: { country = '' } = {} } = {} } = {},
+    } = this.props;
     // const tempTableData = [];
     // const check = tempTableData.map((data) => data.value !== '').every((data) => data === true);
 
@@ -390,7 +395,7 @@ class SalaryStructureTemplate extends PureComponent {
 
     dispatch({
       type: 'candidateInfo/fetchTableData',
-      payload: { title: value, tenantId: getCurrentTenant() },
+      payload: { title: value, tenantId: getCurrentTenant(), country: country || country._id },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         dispatch({

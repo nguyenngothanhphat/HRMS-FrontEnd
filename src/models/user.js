@@ -6,6 +6,8 @@ import {
   getCurrentTenant,
   setAuthority,
   setIsSwitchingRole,
+  setTenantId,
+  setCurrentCompany,
 } from '@/utils/authority';
 
 import { history } from 'umi';
@@ -41,8 +43,25 @@ const UserModel = {
 
         let formatArrRoles = [];
         let switchRoleAbility = false;
-        const { signInRole = [], roles = [] } = data;
+        const { signInRole = [], roles = [], candidate = {} } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
+
+        if (formatRole.indexOf('candidate') > -1) {
+          setAuthority(...formatRole);
+          setTenantId(candidate.tenant);
+          setCurrentCompany(candidate.company);
+          setCurrentLocation(candidate.location);
+          history.replace('/candidate');
+          yield put({
+            type: 'saveCurrentUser',
+            payload: {
+              ...data,
+              name: data?.firstName,
+              isSwitchingRole,
+            },
+          });
+          return {};
+        }
 
         // if there's no tenantId and companyId, return to control panel
         if (!tenantId || !company) {

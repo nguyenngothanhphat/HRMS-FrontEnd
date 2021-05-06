@@ -4,7 +4,7 @@ import { Row, Col, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { map } from 'lodash';
 import CustomModal from '@/components/CustomModal';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import SendEmail from './components/SendEmail';
 import Warning from './components/Warning';
 import NoteComponent from '../NoteComponent';
@@ -720,10 +720,9 @@ class BackgroundCheck extends Component {
         workEmail,
         previousExperience,
         salaryStructure,
-      },
-      newPoe,
-    } = this.state;
-
+      } = {},
+    } = this.props;
+    const { newPoe } = this.state;
     const {
       candidateInfo: {
         tempData: {
@@ -752,18 +751,20 @@ class BackgroundCheck extends Component {
       candidate: _id,
       fullName,
       position,
-      employeeType: employeeType._id,
-      department: department._id,
-      title: title._id,
-      workLocation: workLocation._id,
-      reportingManager: reportingManager._id,
+      employeeType,
+      department,
+      title,
+      workLocation,
+      reportingManager,
       privateEmail,
       workEmail,
+      company: getCurrentCompany(),
       previousExperience,
       salaryStructure,
       documentChecklistSetting,
       action: 'submit',
       options: 1,
+      tenantId: getCurrentTenant(),
     };
 
     this.setState({
