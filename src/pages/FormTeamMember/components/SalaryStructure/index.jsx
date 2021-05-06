@@ -1,6 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography, Form } from 'antd';
-import { connect, formatMessage } from 'umi';
+import {
+  connect,
+  // formatMessage
+} from 'umi';
 
 import SalaryStructureHeader from './components/SalaryStructureHeader';
 import SalaryStructureTemplate from './components/SalaryStructureTemplate';
@@ -51,9 +54,9 @@ class SalaryStructure extends PureComponent {
   //   }
   // }
 
-  // componentDidMount() {
-  //   window.scrollTo(0, 70); // Back to top of the page
-  // }
+  componentDidMount() {
+    window.scrollTo(0, 70); // Back to top of the page
+  }
 
   // _renderTable = () => {
   //   return (

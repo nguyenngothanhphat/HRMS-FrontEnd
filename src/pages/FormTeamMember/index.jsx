@@ -261,6 +261,7 @@ class FormTeamMember extends PureComponent {
       type: 'onboard/deleteTicketDraft',
       payload: {
         id: ticketID,
+        tenantId: getCurrentTenant(),
       },
     });
     const { statusCode = 1 } = response;

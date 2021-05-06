@@ -4,6 +4,7 @@ import { EllipsisOutlined, DeleteOutlined } from '@ant-design/icons';
 import { formatMessage, Link, connect } from 'umi';
 
 import CustomModal from '@/components/CustomModal/index';
+import { getCurrentTenant } from '@/utils/authority';
 import ModalContent from '../FinalOffers/components/ModalContent/index';
 import ProfileModalContent from '../FinalOffers/components/ProfileModalContent';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
@@ -36,6 +37,7 @@ class OnboardTable extends Component {
       type: 'onboard/deleteTicketDraft',
       payload: {
         id,
+        tenantId: getCurrentTenant(),
       },
     });
   };

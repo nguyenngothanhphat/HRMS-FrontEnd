@@ -687,9 +687,10 @@ const onboard = {
     *deleteTicketDraft({ payload }, { call, put }) {
       let response;
       try {
-        const { id = '' } = payload;
+        const { id = '', tenantId = '' } = payload;
         const req = {
           rookieID: id,
+          tenantId,
         };
         response = yield call(deleteDraft, req);
         const { statusCode } = response;

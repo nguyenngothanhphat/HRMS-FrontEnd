@@ -741,6 +741,7 @@ const candidateInfo = {
     *submitPhase1Effect({ payload }, { call, put }) {
       let response = {};
       try {
+        console.log(payload);
         response = yield call(submitPhase1, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;

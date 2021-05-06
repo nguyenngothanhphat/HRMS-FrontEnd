@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
 import { Form, Modal, Button, DatePicker, Select } from 'antd';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -22,6 +23,7 @@ class ScheduleModal extends Component {
       type: 'candidateInfo/getCandidateManagerList',
       payload: {
         candidate: _id,
+        tenantId: getCurrentTenant(),
       },
     });
   };

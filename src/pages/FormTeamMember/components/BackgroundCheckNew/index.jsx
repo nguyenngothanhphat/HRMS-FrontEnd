@@ -707,7 +707,7 @@ class BackgroundCheck extends Component {
   handleSendEmail = () => {
     const { dispatch } = this.props;
     const {
-      data: {
+      tempData: {
         department,
         workLocation,
         reportingManager,
@@ -720,10 +720,11 @@ class BackgroundCheck extends Component {
         workEmail,
         previousExperience,
         salaryStructure,
+        company,
       },
       newPoe,
     } = this.state;
-
+    console.log(this.state);
     const {
       candidateInfo: {
         tempData: {
@@ -764,6 +765,7 @@ class BackgroundCheck extends Component {
       documentChecklistSetting,
       action: 'submit',
       options: 1,
+      company,
       tenantId: getCurrentTenant(),
     };
 

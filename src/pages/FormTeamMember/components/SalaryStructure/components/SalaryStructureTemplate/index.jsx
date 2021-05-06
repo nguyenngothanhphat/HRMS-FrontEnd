@@ -87,11 +87,12 @@ import PROCESS_STATUS from '../../../utils';
       } = {},
       data,
     },
-    user: { currentUser: { company: { _id = '' } = {} } = {} },
+    user: { currentUser: { company: { _id = '' } = {} } = {}, currentUser: { location = {} } = {} },
   }) => ({
     loadingTable: loading.effects['candidateInfo/saveSalaryStructure'],
     listTitle,
     cancelCandidate,
+    location,
     checkMandatory,
     currentStep,
     processStatus,
@@ -376,7 +377,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   handleChangeSelect = (value) => {
-    const { dispatch } = this.props;
+    const { dispatch, location: { legalAddress: { country = {} } = {} } = {} } = this.props;
     // const tempTableData = [];
     // const check = tempTableData.map((data) => data.value !== '').every((data) => data === true);
 
@@ -398,7 +399,7 @@ class SalaryStructureTemplate extends PureComponent {
 
     dispatch({
       type: 'candidateInfo/fetchTableData',
-      payload: { title: value, tenantId: getCurrentTenant() },
+      payload: { title: value, tenantId: getCurrentTenant(), country: country._id },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         dispatch({

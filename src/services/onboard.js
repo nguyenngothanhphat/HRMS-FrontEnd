@@ -8,21 +8,21 @@ export async function getOnboardingList(payload) {
 }
 
 export async function deleteDraft(payload) {
-  return request('/api/candidate/delete-draft', {
+  return request('/api/candidatetenant/delete-draft', {
     method: 'POST',
     data: payload, // candidate: id
   });
 }
 
 export async function inititateBackgroundCheck(payload) {
-  return request('/api/candidate/initiate-background-check', {
+  return request('/api/candidatetenant/initiate-background-check', {
     method: 'POST',
     data: payload, // candidate: id
   });
 }
 
 export async function createProfile(payload) {
-  return request('/api/candidate/create-profile', {
+  return request('/api/candidatetenant/create-profile', {
     method: 'POST',
     data: payload, // rookieID: id, employeeId: id
   });
