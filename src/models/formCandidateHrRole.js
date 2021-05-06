@@ -604,7 +604,10 @@ const candidateInfo = {
         const { ticketID = '', _id } = data;
         if (statusCode !== 200) throw response;
         const rookieId = ticketID;
-        yield put({ type: 'save', payload: { rookieId, data: { ...data, _id } } });
+        yield put({
+          type: 'save',
+          payload: { rookieId, data: { ...data, _id } },
+        });
 
         yield put({
           type: 'updateSignature',
@@ -738,6 +741,7 @@ const candidateInfo = {
     *submitPhase1Effect({ payload }, { call, put }) {
       let response = {};
       try {
+        console.log(payload);
         response = yield call(submitPhase1, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
@@ -988,7 +992,10 @@ const candidateInfo = {
 
         yield put({
           type: 'saveTemp',
-          payload: { documentsByCandidate: data, documentsByCandidateRD: documentsCandidateList },
+          payload: {
+            documentsByCandidate: data,
+            documentsByCandidateRD: documentsCandidateList,
+          },
         });
         yield put({
           type: 'updateBackgroundRecheck',

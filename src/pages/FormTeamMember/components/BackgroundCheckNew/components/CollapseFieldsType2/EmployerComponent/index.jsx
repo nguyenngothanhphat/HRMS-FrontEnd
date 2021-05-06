@@ -23,11 +23,19 @@ class EmployerComponent extends PureComponent {
   }
 
   componentDidMount = () => {
-    const { checkedList = [], employerName = '' } = this.props;
+    const { checkedList = [], employerName = '', dispatch } = this.props;
     this.setState({
       checkedList,
       employerName,
     });
+    if (employerName) {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          checkValidation: true,
+        },
+      });
+    }
   };
 
   handleInputThrottled = (value) => {

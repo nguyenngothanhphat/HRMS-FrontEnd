@@ -48,8 +48,9 @@ const Candidate = (props) => {
     dispatch({
       type: 'candidateProfile/fetchCandidateById',
       payload: {
-        candidate,
+        candidate: candidate._id,
         tenantId: getCurrentTenant(),
+        rookieID: candidate.ticketID,
       },
     }).then(({ data, statusCode }) => {
       if (statusCode === 200) {

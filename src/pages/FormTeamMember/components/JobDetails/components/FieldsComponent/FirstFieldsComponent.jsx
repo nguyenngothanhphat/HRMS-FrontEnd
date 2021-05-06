@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-indent */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
@@ -28,6 +27,7 @@ class FirstFieldsComponent extends PureComponent {
       loading3,
       disabled,
     } = this.props;
+    console.log(locationList);
     return (
       <>
         <div>
@@ -62,18 +62,22 @@ class FirstFieldsComponent extends PureComponent {
                       (item.title === 'department' && disabled) ||
                       (item.title === 'title' && disabled)
                     }
+                    // eslint-disable-next-line react/jsx-props-no-spreading
                     {...(item.title === 'department' &&
                       !isNull(department) && {
                         defaultValue: department.name,
                       })}
+                    // eslint-disable-next-line react/jsx-props-no-spreading
                     {...(item.title === 'title' &&
                       !isNull(title) && {
                         defaultValue: title.name,
                       })}
+                    // eslint-disable-next-line react/jsx-props-no-spreading
                     {...(item.title === 'workLocation' &&
                       !isNull(workLocation) && {
                         defaultValue: workLocation.name,
                       })}
+                    // eslint-disable-next-line react/jsx-props-no-spreading
                     {...(item.title === 'reportingManager' &&
                       !isEmpty(reportingManager) && {
                         defaultValue: reportingManager.generalInfo.firstName,
