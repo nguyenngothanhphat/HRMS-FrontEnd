@@ -79,13 +79,13 @@ class JobDetails extends PureComponent {
     // window.addEventListener('unload', this.handleUnload, false);
   }
 
-  componentWillUnmount() {
-    const { tempData: { cancelCandidate = false } = {} } = this.props;
-    if (!cancelCandidate) {
-      this.handleUpdateByHR();
-    }
-    // window.removeEventListener('unload', this.handleUnload, false);
-  }
+  // componentWillUnmount() {
+  //   const { tempData: { cancelCandidate = false } = {} } = this.props;
+  //   if (!cancelCandidate) {
+  //     this.handleUpdateByHR();
+  //   }
+  //   // window.removeEventListener('unload', this.handleUnload, false);
+  // }
 
   // handleUnload = () => {
   //   // this.handleUpdateByHR();
@@ -133,7 +133,7 @@ class JobDetails extends PureComponent {
         payload: {
           candidate: _id,
           tenantId: getCurrentTenant(),
-          currentStep,
+          currentStep: currentStep + 1,
         },
       });
     }
@@ -193,6 +193,23 @@ class JobDetails extends PureComponent {
     const companyId = getCurrentCompany();
     const tenantId = getCurrentTenant();
 
+    // const locationPayload = listLocationsByCompany.map(
+    //   ({ headQuarterAddress: { country: countryItem1 = '' } = {} }) => {
+    //     let stateList = [];
+    //     listLocationsByCompany.forEach(
+    //       ({ headQuarterAddress: { country: countryItem2 = '', state: stateItem2 = '' } = {} }) => {
+    //         if (countryItem1 === countryItem2) {
+    //           stateList = [...stateList, stateItem2];
+    //         }
+    //       },
+    //     );
+    //     return {
+    //       country: countryItem1,
+    //       state: stateList,
+    //     };
+    //   },
+    // );
+
     if (name === 'workLocation') {
       const changedWorkLocation = JSON.parse(JSON.stringify(locationList));
       const selectedWorkLocation = changedWorkLocation.find((data) => data._id === value);
@@ -242,6 +259,7 @@ class JobDetails extends PureComponent {
           payload: {
             company: companyId,
             status: ['ACTIVE'],
+            // location: locationPayload,
             tenantId: getCurrentTenant(),
           },
         });
@@ -280,6 +298,7 @@ class JobDetails extends PureComponent {
       const selectedManager = changedManagerList.find(
         (data) => data.generalInfo.firstName === value,
       );
+      console.log('reportingManager', selectedManager);
       dispatch({
         type: 'candidateInfo/save',
         payload: {
