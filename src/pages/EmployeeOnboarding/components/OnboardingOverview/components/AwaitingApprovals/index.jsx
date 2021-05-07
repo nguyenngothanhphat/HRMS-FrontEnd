@@ -13,10 +13,10 @@ const { TabPane } = Tabs;
 class AwaitingApprovals extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
-    const { PENDING } = PROCESS_STATUS;
+    const { SENT_FOR_APPROVAL } = PROCESS_STATUS;
 
     if (dispatch) {
-      this.fetchAwaitingApprovals(PENDING);
+      this.fetchAwaitingApprovals(SENT_FOR_APPROVAL);
     }
   }
 
@@ -31,13 +31,11 @@ class AwaitingApprovals extends PureComponent {
   };
 
   onChangeTab = (key) => {
-    const { PENDING, ELIGIBLE_CANDIDATES, INELIGIBLE_CANDIDATES } = PROCESS_STATUS;
+    const { SENT_FOR_APPROVAL, APPROVED_OFFERS } = PROCESS_STATUS;
     if (key === '1') {
-      this.fetchAwaitingApprovals(PENDING);
+      this.fetchAwaitingApprovals(SENT_FOR_APPROVAL);
     } else if (key === '2') {
-      this.fetchAwaitingApprovals(ELIGIBLE_CANDIDATES);
-    } else {
-      this.fetchAwaitingApprovals(INELIGIBLE_CANDIDATES);
+      this.fetchAwaitingApprovals(APPROVED_OFFERS);
     }
   };
 

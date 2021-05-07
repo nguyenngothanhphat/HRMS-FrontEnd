@@ -202,7 +202,7 @@ const PreviewOffer = (props) => {
     // call API
     dispatch({
       type: 'candidateInfo/sentForApprovalEffect',
-      payload: { hrSignature: id, candidate, options: skip },
+      payload: { hrSignature: id, candidate, options: skip, tenantId: getCurrentTenant() },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         setOpenModal2(true);
@@ -219,7 +219,7 @@ const PreviewOffer = (props) => {
     // call API
     dispatch({
       type: 'candidateInfo/approveFinalOfferEffect',
-      payload: { hrManagerSignature: id, candidate, options: 1 },
+      payload: { hrManagerSignature: id, candidate, options: 1, tenantId: getCurrentTenant() },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         setOpenModal(true);
@@ -229,8 +229,7 @@ const PreviewOffer = (props) => {
 
   const getUserRole = () => {
     const { roles } = currentUser;
-    const arrRole = roles.map((itemRole) => itemRole._id);
-    setRole(arrRole);
+    setRole(roles);
   };
 
   const handleHrSignatureSubmit = () => {
@@ -345,8 +344,8 @@ const PreviewOffer = (props) => {
   //   });
   // }, [offerLetterProp]);
 
-  const isHr = role.indexOf(ROLE.HR) > -1;
-  const isHrManager = role.indexOf(ROLE.HRMANAGER) > -1;
+  const isHr = role.indexOf('HR') > -1 || role.indexOf('hr') > -1;
+  const isHrManager = role.indexOf('HR-MANAGER') > -1 || role.indexOf('hr-manager') > -1;
 
   const renderCandidateSignature = () => {
     return candidateSignature && candidateSignature.url;
@@ -445,7 +444,7 @@ const PreviewOffer = (props) => {
           </div>
         </div>
 
-        {isHr &&
+        {(isHr || isHrManager) &&
           processStatus !== PROCESS_STATUS.SENT_FOR_APPROVAL &&
           processStatus !== PROCESS_STATUS.ACCEPTED_FINAL_OFFERS && (
             <div className={styles.send}>
