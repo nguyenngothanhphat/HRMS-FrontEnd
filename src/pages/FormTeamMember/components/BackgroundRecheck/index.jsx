@@ -156,6 +156,7 @@ class BackgroundRecheck extends Component {
         candidate,
         document: _id,
         candidateDocumentStatus: newCandidateDocumentStatus,
+        tenantId: getCurrentTenant(),
       },
     });
   };
@@ -170,6 +171,7 @@ class BackgroundRecheck extends Component {
       payload: {
         candidate,
         options: 2,
+        tenantId: getCurrentTenant(),
       },
     });
 
