@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 import { connect, formatMessage } from 'umi';
 import { Row, Col, Button, Form, Typography, Input, Select } from 'antd';
+import { getCurrentTenant } from '@/utils/authority';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
 
@@ -86,6 +87,7 @@ const AdditionalQuestion = (props) => {
       payload: {
         additionalQuestions: dataToSend,
         candidate,
+        tenantId: getCurrentTenant(),
       },
     });
 

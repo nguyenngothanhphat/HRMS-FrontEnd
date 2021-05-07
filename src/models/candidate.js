@@ -208,11 +208,12 @@ const candidateProfile = {
       }
     },
 
-    *updateByCandidateEffect({ payload }, { call }) {
+    *updateByCandidateEffect({ payload }, { call, select }) {
       console.log(payload);
       let response;
       try {
-        response = yield call(updateByCandidate, payload);
+        const { candidate } = yield select((state) => state.candidateProfile);
+        response = yield call(updateByCandidate, { ...payload, candidate });
 
         const { statusCode } = response;
         if (statusCode !== 200) throw response;

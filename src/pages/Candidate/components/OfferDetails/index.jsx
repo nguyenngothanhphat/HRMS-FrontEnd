@@ -7,6 +7,7 @@ import CustomModal from '@/components/CustomModal/index';
 import CancelIcon from '@/pages/FormTeamMember/components/PreviewOffer/components/CancelIcon';
 import whiteImg from '@/pages/FormTeamMember/components/PreviewOffer/components/images/whiteImg.png';
 import ModalUpload from '@/components/ModalUpload';
+import { getCurrentTenant } from '@/utils/authority';
 import FileContent from '../FileContent';
 import NoteComponent from '../NoteComponent';
 import Alert from './components/Alert';
@@ -209,6 +210,7 @@ const OfferDetails = (props) => {
       payload: {
         candidateSignature: id,
         candidate,
+        tenantId: getCurrentTenant(),
       },
     });
     const { statusCode = 1 } = res;

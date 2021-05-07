@@ -6,6 +6,7 @@ import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
 
 import s from './index.less';
+import { getCurrentTenant } from '@/utils/authority';
 
 const Note = {
   title: 'Note',
@@ -86,6 +87,7 @@ const AdditionalQuestion = (props) => {
       payload: {
         additionalQuestions: dataToSend,
         candidate,
+        tenantId: getCurrentTenant(),
       },
     });
 

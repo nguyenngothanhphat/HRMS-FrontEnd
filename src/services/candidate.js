@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 export function getCandidate(payload) {
-  return request('/api/candidate/get-by-ticket', {
+  return request('/api/candidatetenant/get-by-ticket', {
     method: 'POST',
     data: payload,
   });
@@ -36,7 +36,7 @@ export function addAttachmentService(params) {
 }
 
 export function getWorkHistory(params) {
-  return request('/api/workhistory/get-by-candidate', {
+  return request('/api/workhistorytenant/get-by-candidate', {
     method: 'POST',
     data: params,
   });

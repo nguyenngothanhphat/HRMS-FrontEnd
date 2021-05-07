@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Form, Table, Button, Input, Row, Col, InputNumber } from 'antd';
 import { formatMessage, connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(
@@ -62,6 +63,7 @@ class SalaryStructureTemplate extends PureComponent {
       type: 'candidateProfile/updateByCandidateEffect',
       payload: {
         options,
+        tenantId: getCurrentTenant(),
       },
     });
     dispatch({
