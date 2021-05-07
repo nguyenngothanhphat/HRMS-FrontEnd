@@ -153,6 +153,7 @@ const PreviewOffer = (props) => {
         candidate,
         candidateFinalSignature: candidateSignature.id,
         options: 1,
+        tenantId: getCurrentTenant(),
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {

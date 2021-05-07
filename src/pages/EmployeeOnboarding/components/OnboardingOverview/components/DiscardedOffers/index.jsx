@@ -16,10 +16,10 @@ const { TabPane } = Tabs;
 class DiscardedOffers extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
-    const { PENDING } = PROCESS_STATUS;
+    const { PROVISIONAL_OFFERS } = PROCESS_STATUS;
 
     if (dispatch) {
-      this.fetchBackgroundCheck(PENDING);
+      this.fetchBackgroundCheck(PROVISIONAL_OFFERS);
     }
   }
 
@@ -34,13 +34,11 @@ class DiscardedOffers extends PureComponent {
   };
 
   onChangeTab = (key) => {
-    const { PENDING, ELIGIBLE_CANDIDATES, INELIGIBLE_CANDIDATES } = PROCESS_STATUS;
+    const { PROVISIONAL_OFFERS, FINAL_OFFERS } = PROCESS_STATUS;
     if (key === '1') {
-      this.fetchBackgroundCheck(PENDING);
+      this.fetchBackgroundCheck(PROVISIONAL_OFFERS);
     } else if (key === '2') {
-      this.fetchBackgroundCheck(ELIGIBLE_CANDIDATES);
-    } else {
-      this.fetchBackgroundCheck(INELIGIBLE_CANDIDATES);
+      this.fetchBackgroundCheck(FINAL_OFFERS);
     }
   };
 

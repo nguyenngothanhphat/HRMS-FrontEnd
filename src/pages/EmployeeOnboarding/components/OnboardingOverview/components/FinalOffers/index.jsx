@@ -14,10 +14,10 @@ const { TabPane } = Tabs;
 class FinalOffers extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
-    const { PENDING } = PROCESS_STATUS;
+    const { SENT_FINAL_OFFERS } = PROCESS_STATUS;
 
     if (dispatch) {
-      this.fetchFinalOffer(PENDING);
+      this.fetchFinalOffer(SENT_FINAL_OFFERS);
     }
   }
 
@@ -32,13 +32,13 @@ class FinalOffers extends PureComponent {
   };
 
   onChangeTab = (key) => {
-    const { PENDING, ELIGIBLE_CANDIDATES, INELIGIBLE_CANDIDATES } = PROCESS_STATUS;
+    const { SENT_FINAL_OFFERS, ACCEPTED_FINAL_OFFERS, RENEGOTIATE_FINAL_OFFERS } = PROCESS_STATUS;
     if (key === '1') {
-      this.fetchFinalOffer(PENDING);
+      this.fetchFinalOffer(SENT_FINAL_OFFERS);
     } else if (key === '2') {
-      this.fetchFinalOffer(ELIGIBLE_CANDIDATES);
+      this.fetchFinalOffer(ACCEPTED_FINAL_OFFERS);
     } else {
-      this.fetchFinalOffer(INELIGIBLE_CANDIDATES);
+      this.fetchFinalOffer(RENEGOTIATE_FINAL_OFFERS);
     }
   };
 

@@ -1,23 +1,17 @@
 // /* eslint-disable react/prefer-stateless-function */
 // /* eslint-disable react/jsx-no-undef */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
 import { connect } from 'umi';
 
 import ReceivedSubmittedDocuments from './components/ReceivedSubmittedDocuments/index';
 import SentEligibilityForms from './components/SentEligibilityForms/index';
-import { PROCESS_STATUS } from '../utils';
 
 import styles from './index.less';
 
 const { TabPane } = Tabs;
 
-class PendingEligibilityChecks extends Component {
-  constructor() {
-    super();
-    // const { dispatch } = this.props;
-  }
-
+class PendingEligibilityChecks extends PureComponent {
   render() {
     const { pendingEligibilityChecks = {} } = this.props;
     const { sentEligibilityForms = [], receivedSubmittedDocuments = [] } = pendingEligibilityChecks;

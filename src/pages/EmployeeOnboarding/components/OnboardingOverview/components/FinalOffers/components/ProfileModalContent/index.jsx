@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
+import { getCurrentTenant } from '@/utils/authority';
 import img1 from './images/modal_img_1.png';
 import img2 from './images/img_2.png';
 
@@ -33,6 +34,7 @@ const ProfileModalContent = (props) => {
       payload: {
         rookieID: rookieIdValue,
         employeeId,
+        tenantId: getCurrentTenant(),
       },
     });
     const { statusCode = 1 } = response;
