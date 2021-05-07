@@ -7,7 +7,7 @@ import ItemMenu from './components/ItemMenu';
 import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
 import BasicInformation from '../../pages/FormTeamMember/components/BasicInformation';
 import BackgroundRecheck from '../../pages/FormTeamMember/components/BackgroundRecheck';
-import BackgroundCheck from '../../pages/FormTeamMember/components/BackgroundCheck';
+import BackgroundCheck from '../../pages/FormTeamMember/components/BackgroundCheckNew';
 // import BottomBar from '../BottomBar';
 
 import s from './index.less';

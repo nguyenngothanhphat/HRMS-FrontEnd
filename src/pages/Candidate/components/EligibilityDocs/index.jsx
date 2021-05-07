@@ -4,6 +4,7 @@ import { Typography, Row, Col } from 'antd';
 import { connect } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { isUndefined } from 'lodash';
+import { getCurrentTenant } from '@/utils/authority';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
 import StepsComponent from '../StepsComponent';
@@ -98,6 +99,7 @@ class EligibilityDocs extends PureComponent {
           payload: {
             attachment: attachment1.id,
             document: documentId,
+            tenantId: getCurrentTenant(),
           },
         }).then(({ data: { attachment } = {} }) => {
           if (attachment) {
@@ -167,6 +169,7 @@ class EligibilityDocs extends PureComponent {
             workDuration,
           },
         ],
+        tenantId: getCurrentTenant(),
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {

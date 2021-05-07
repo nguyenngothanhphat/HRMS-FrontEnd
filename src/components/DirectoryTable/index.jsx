@@ -176,7 +176,7 @@ class DirectoryTable extends Component {
         render: (manager) => (
           <span>
             {manager.generalInfo
-              ? `${manager.generalInfo.firstName} ${manager.generalInfo.lastName}`
+              ? `${manager?.generalInfo?.firstName} ${manager?.generalInfo?.lastName}`
               : ''}
           </span>
         ),

@@ -209,7 +209,6 @@ const candidateProfile = {
     },
 
     *updateByCandidateEffect({ payload }, { call, select }) {
-      console.log(payload);
       let response;
       try {
         const { candidate } = yield select((state) => state.candidateProfile);
@@ -223,10 +222,12 @@ const candidateProfile = {
       return response;
     },
 
-    *addAttachmentCandidate({ payload }, { call, put }) {
+    *addAttachmentCandidate({ payload }, { call, put, select }) {
       let response = {};
       try {
-        response = yield call(addAttachmentService, payload);
+        const { candidate } = yield select((state) => state.candidateProfile);
+
+        response = yield call(addAttachmentService, { ...payload, candidate });
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -253,10 +254,11 @@ const candidateProfile = {
       }
       return response;
     },
-    *sendEmailByCandidate({ payload }, { call }) {
+    *sendEmailByCandidate({ payload }, { call, select }) {
       let response = {};
       try {
-        response = yield call(sendEmailByCandidateModel, payload);
+        const { candidate } = yield select((state) => state.candidateProfile);
+        response = yield call(sendEmailByCandidateModel, { ...payload, candidate });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
       } catch (error) {

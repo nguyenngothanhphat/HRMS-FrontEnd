@@ -41,7 +41,7 @@ class FilledByHR extends PureComponent {
                       : item.title === 'workLocation'
                       ? workLocation.name
                       : item.title === 'reportingManager'
-                      ? reportingManager.generalInfo.firstName
+                      ? reportingManager?.generalInfo?.firstName
                       : null
                   }
                 />

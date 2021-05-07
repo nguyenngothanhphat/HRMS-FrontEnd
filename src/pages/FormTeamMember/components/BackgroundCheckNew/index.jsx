@@ -706,6 +706,8 @@ class BackgroundCheck extends Component {
   // EMAILS
   handleSendEmail = () => {
     const { dispatch } = this.props;
+    const { newPoe } = this.state;
+
     const {
       tempData: {
         department,
@@ -721,9 +723,8 @@ class BackgroundCheck extends Component {
         previousExperience,
         salaryStructure,
         company,
-      },
-      newPoe,
-    } = this.state;
+      } = {},
+    } = this.props;
 
     const {
       candidateInfo: {
@@ -975,6 +976,7 @@ class BackgroundCheck extends Component {
                         handleCheckAll={this.handleCheckAll}
                         processStatus={processStatus}
                         loadingUpdateByHR={loadingUpdateByHR}
+                        disabled={this.disableEdit()}
                       />
                     );
                   }
@@ -995,6 +997,7 @@ class BackgroundCheck extends Component {
                         handleEmployerName={this.handleEmployerName}
                         deleteBlockD={this.deleteBlockD}
                         addBlockD={this.addBlockD}
+                        disabled={this.disableEdit()}
                       />
                     );
                   }
