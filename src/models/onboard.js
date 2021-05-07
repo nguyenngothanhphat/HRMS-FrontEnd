@@ -720,9 +720,10 @@ const onboard = {
     *inititateBackgroundCheckEffect({ payload }, { call, put }) {
       try {
         const { ACCEPTED_PROVISIONAL_OFFERS, PENDING } = PROCESS_STATUS;
-        const { rookieID = '' } = payload;
+        const { rookieID = '', tenantId = '' } = payload;
         const req = {
           rookieID,
+          tenantId,
         };
         const response = yield call(inititateBackgroundCheck, req);
         const { statusCode } = response;

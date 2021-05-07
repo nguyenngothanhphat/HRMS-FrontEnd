@@ -101,6 +101,7 @@ class OnboardTable extends Component {
       type: 'onboard/inititateBackgroundCheckEffect',
       payload: {
         rookieID: id,
+        tenantId: getCurrentTenant(),
       },
     });
   };

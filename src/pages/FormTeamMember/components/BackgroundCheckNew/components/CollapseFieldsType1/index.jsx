@@ -92,7 +92,7 @@ class CollapseFieldsType1 extends PureComponent {
   };
 
   renderHeader = () => {
-    const { title = '', processStatus = '' } = this.props;
+    const { title = '', disabled = false } = this.props;
 
     const { indeterminate, checkAll } = this.state;
     return (
@@ -100,7 +100,7 @@ class CollapseFieldsType1 extends PureComponent {
         <Checkbox
           checked={checkAll}
           indeterminate={indeterminate}
-          disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
+          disabled={disabled}
           onClick={(event) => this.onCheckAllChange(event)}
         />
         <span className={styles.titleText}>{title}</span>
@@ -113,7 +113,7 @@ class CollapseFieldsType1 extends PureComponent {
 
   render() {
     const { checkedList } = this.state;
-    const { checkBoxesData = [], processStatus = '' } = this.props;
+    const { checkBoxesData = [], disabled = false } = this.props;
     const checkBoxes1 = checkBoxesData.filter(
       (data) => data.alias.substr(data.alias.length - 1) === '*',
     );
@@ -140,7 +140,7 @@ class CollapseFieldsType1 extends PureComponent {
               direction="vertical"
               onChange={this.onChange}
               value={checkedList}
-              disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
+              disabled={disabled}
               className={styles.checkBoxesGroup}
             >
               {checkBoxes1.map((data) => (
