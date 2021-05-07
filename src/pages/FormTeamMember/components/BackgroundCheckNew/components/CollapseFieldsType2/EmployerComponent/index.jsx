@@ -89,8 +89,9 @@ class EmployerComponent extends PureComponent {
       employerName: employerNameFromServer = '',
       workDuration = '',
       deleteComponent = () => {},
-      processStatus = '',
+      // processStatus = '',
       candidateInfo: { componentsNumberCount = [] } = {},
+      disabled = false,
     } = this.props;
     const { checkedList } = this.state;
 
@@ -109,7 +110,7 @@ class EmployerComponent extends PureComponent {
             <Col span={12}>
               <Form.Item label="Name of the employer*" name="employerName">
                 <Input
-                  disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
+                  disabled={disabled}
                   onChange={this.employerNameHandle}
                   className={styles.input}
                 />
@@ -134,7 +135,7 @@ class EmployerComponent extends PureComponent {
               onChange={this.onChange}
               // options={checkBoxesData.map((data) => data.alias)}
               value={checkedList}
-              disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
+              disabled={disabled}
               className={styles.checkBoxesGroup}
             >
               {checkBoxesData.map((data) => (

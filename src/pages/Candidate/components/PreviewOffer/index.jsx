@@ -6,6 +6,7 @@ import { EditOutlined } from '@ant-design/icons';
 // import logo from './components/images/brand-logo.png';
 import CustomModal from '@/components/CustomModal';
 // import SendEmail from '@/pages/FormTeamMember/components/BackgroundCheck/components/SendEmail';
+import { getCurrentTenant } from '@/utils/authority';
 import whiteImg from './components/images/whiteImg.png';
 
 import CancelIcon from './components/CancelIcon';
@@ -136,6 +137,7 @@ const PreviewOffer = (props) => {
       payload: {
         candidateSignature: id,
         candidate,
+        tenantId: getCurrentTenant(),
       },
     });
   };

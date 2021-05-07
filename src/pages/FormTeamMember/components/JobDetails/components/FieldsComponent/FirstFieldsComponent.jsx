@@ -80,9 +80,10 @@ class FirstFieldsComponent extends PureComponent {
                     // eslint-disable-next-line react/jsx-props-no-spreading
                     {...(item.title === 'reportingManager' &&
                       !isEmpty(reportingManager) && {
-                        defaultValue: reportingManager.generalInfo.firstName,
+                        defaultValue: reportingManager?.generalInfo?.firstName,
                       })}
                     showSearch={item.title === 'reportingManager'}
+                    allowClear
                     filterOption={(input, option) => {
                       return option.value.toLowerCase().indexOf(input) > -1;
                     }}

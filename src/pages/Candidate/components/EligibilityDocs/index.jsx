@@ -4,6 +4,7 @@ import { Typography, Row, Col } from 'antd';
 import { connect } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { isUndefined } from 'lodash';
+import { getCurrentTenant } from '@/utils/authority';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
 import StepsComponent from '../StepsComponent';
@@ -98,8 +99,9 @@ class EligibilityDocs extends PureComponent {
           payload: {
             attachment: attachment1.id,
             document: documentId,
+            tenantId: getCurrentTenant(),
           },
-        }).then(({ data: { attachment } }) => {
+        }).then(({ data: { attachment } = {} }) => {
           if (attachment) {
             arrToAdjust[typeIndex].data.splice(nestedIndex, 1, {
               ...Obj,
@@ -145,7 +147,7 @@ class EligibilityDocs extends PureComponent {
       data: { dateOfJoining, noticePeriod, fullName, workDuration, employerId, generatedBy },
       dispatch,
     } = this.props;
-    const { user } = generatedBy;
+    const { user = {} } = generatedBy;
     const { email } = user;
 
     // this.setState({
@@ -167,6 +169,7 @@ class EligibilityDocs extends PureComponent {
             workDuration,
           },
         ],
+        tenantId: getCurrentTenant(),
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
@@ -199,7 +202,7 @@ class EligibilityDocs extends PureComponent {
       data: { generatedBy },
       dispatch,
     } = this.props;
-    const { user } = generatedBy;
+    const { user = {} } = generatedBy;
     dispatch({
       type: 'candidateProfile/saveOrigin',
       payload: {
@@ -245,10 +248,10 @@ class EligibilityDocs extends PureComponent {
         employerName,
         workDuration,
         processStatus,
-      },
+      } = {},
     } = this.props;
     const { openModal, isSentEmail } = this.state;
-    const { user } = generatedBy;
+    const { user = {} } = generatedBy;
     const { email } = user;
     // console.log(processStatus);
     return (
@@ -282,11 +285,11 @@ class EligibilityDocs extends PureComponent {
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={Note} />
             {documentListToRender.length > 0 &&
-            documentListToRender[0].data[0].attachment &&
-            documentListToRender[0].data[1].attachment &&
-            documentListToRender[2].data[0].attachment &&
-            documentListToRender[2].data[1].attachment &&
-            documentListToRender[2].data[2].attachment &&
+            documentListToRender[0].data[0]?.attachment &&
+            documentListToRender[0].data[1]?.attachment &&
+            documentListToRender[2].data[0]?.attachment &&
+            documentListToRender[2].data[1]?.attachment &&
+            documentListToRender[2].data[2]?.attachment &&
             workDuration !== 0 &&
             !isUndefined(workDuration) ? (
               <SendEmail

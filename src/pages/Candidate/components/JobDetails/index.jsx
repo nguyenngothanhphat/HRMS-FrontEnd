@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import Header from './components/Header';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
@@ -128,6 +129,7 @@ class JobDetails extends PureComponent {
         noticePeriod: candidatesNoticePeriod,
         dateOfJoining: converted,
         candidate: _id,
+        tenantId: getCurrentTenant()
       },
     });
     dispatch({

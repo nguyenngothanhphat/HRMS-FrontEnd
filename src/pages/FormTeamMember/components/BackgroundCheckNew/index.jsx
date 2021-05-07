@@ -275,19 +275,12 @@ class BackgroundCheck extends Component {
     const {
       data: { processStatus = '' },
     } = this.props;
-    // eslint-disable-next-line no-console
-    console.log(processStatus);
-    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
-    if (
-      processStatus === PROVISIONAL_OFFER_DRAFT ||
-      processStatus === FINAL_OFFERS_DRAFT ||
-      processStatus === SENT_PROVISIONAL_OFFERS
-    ) {
-      // eslint-disable-next-line no-console
-      console.log('false');
-      return false;
+    // PROVISIONAL_OFFER_DRAFT
+    const { FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
+    if (processStatus === FINAL_OFFERS_DRAFT || processStatus === SENT_PROVISIONAL_OFFERS) {
+      return true;
     }
-    return true;
+    return false;
   };
 
   // HANDLE CHANGE WHEN CLICK CHECKBOXES OF BLOCK A,B,C
@@ -706,6 +699,8 @@ class BackgroundCheck extends Component {
   // EMAILS
   handleSendEmail = () => {
     const { dispatch } = this.props;
+    const { newPoe } = this.state;
+
     const {
       tempData: {
         department,
@@ -721,9 +716,8 @@ class BackgroundCheck extends Component {
         previousExperience,
         salaryStructure,
         company,
-      },
-      newPoe,
-    } = this.state;
+      } = {},
+    } = this.props;
 
     const {
       candidateInfo: {
@@ -776,7 +770,16 @@ class BackgroundCheck extends Component {
       if (statusCode === 200) {
         this.setState({
           openModal: true,
+          refreshBlockD: true,
         });
+        this.getDataFromServer();
+        // refresh block D (IMPORTANT)
+        setTimeout(() => {
+          this.setState({
+            refreshBlockD: false,
+          });
+        }, 100);
+
         dispatch({
           type: 'candidateInfo/saveTemp',
           payload: {
@@ -975,6 +978,7 @@ class BackgroundCheck extends Component {
                         handleCheckAll={this.handleCheckAll}
                         processStatus={processStatus}
                         loadingUpdateByHR={loadingUpdateByHR}
+                        disabled={this.disableEdit()}
                       />
                     );
                   }
@@ -995,6 +999,7 @@ class BackgroundCheck extends Component {
                         handleEmployerName={this.handleEmployerName}
                         deleteBlockD={this.deleteBlockD}
                         addBlockD={this.addBlockD}
+                        disabled={this.disableEdit()}
                       />
                     );
                   }

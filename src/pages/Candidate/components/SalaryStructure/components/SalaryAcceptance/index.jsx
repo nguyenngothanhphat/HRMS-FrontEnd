@@ -4,6 +4,7 @@ import { connect, formatMessage } from 'umi';
 
 import CustomModal from '@/components/CustomModal';
 import NoteComponent from '@/pages/FormTeamMember/components/NoteComponent';
+import { getCurrentTenant } from '@/utils/authority';
 import ModalContentComponent from '../ModalContentComponent';
 
 import styles from './index.less';
@@ -143,6 +144,7 @@ class SalaryAcceptance extends PureComponent {
       payload: {
         options,
         hrEmail: email,
+        tenantId: getCurrentTenant(),
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {

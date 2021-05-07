@@ -104,7 +104,7 @@ class ScheduleModal extends Component {
                     {managerList.map((manager) => {
                       return (
                         <Option value={manager._id}>
-                          {`${manager.generalInfo.firstName} ${manager.generalInfo.lastName}`}
+                          {`${manager?.generalInfo?.firstName} ${manager?.generalInfo?.lastName}`}
                         </Option>
                       );
                     })}

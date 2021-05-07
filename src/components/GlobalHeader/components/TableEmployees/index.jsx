@@ -100,7 +100,7 @@ class TableEmployees extends Component {
         render: (manager) => (
           <span>
             {manager && manager.generalInfo
-              ? `${manager.generalInfo.firstName} ${manager.generalInfo.lastName}`
+              ? `${manager?.generalInfo?.firstName} ${manager?.generalInfo?.lastName}`
               : ''}
           </span>
         ),

@@ -48,7 +48,12 @@ class CollapseFieldsType2 extends PureComponent {
     const { length } = checkedList;
 
     const { children, orderNumber } = this.state;
-    const { checkBoxesData = [], processStatus = '', handleEmployerName = () => {} } = this.props; // , item = {}
+    const {
+      checkBoxesData = [],
+      processStatus = '',
+      handleEmployerName = () => {},
+      disabled = false,
+    } = this.props; // , item = {}
 
     const eachComponent = (number) => (
       <div>
@@ -62,6 +67,7 @@ class CollapseFieldsType2 extends PureComponent {
           deleteComponent={this.deleteComponent}
           processStatus={processStatus}
           handleEmployerName={handleEmployerName}
+          disabled={disabled}
         />
         <hr className={styles.divider} />
       </div>
@@ -117,7 +123,7 @@ class CollapseFieldsType2 extends PureComponent {
   };
 
   renderHeader = () => {
-    const { title = '', processStatus = '' } = this.props;
+    const { title = '', disabled = false } = this.props;
     const { indeterminate, checkAll } = this.state;
     return (
       <div className={styles.header}>
@@ -125,7 +131,7 @@ class CollapseFieldsType2 extends PureComponent {
           checked={checkAll}
           indeterminate={indeterminate}
           onClick={(e) => this.onCheckAllChange(e)}
-          disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
+          disabled={disabled}
         />
         <span className={styles.titleText}>{title}</span>
         <span className={styles.noteText}>
@@ -193,6 +199,7 @@ class CollapseFieldsType2 extends PureComponent {
       handleEmployerName = () => {},
       dispatch,
       candidateInfo: { componentsNumberCount = [] } = {},
+      disabled = false,
     } = this.props;
     const { data = [] } = item;
 
@@ -208,6 +215,7 @@ class CollapseFieldsType2 extends PureComponent {
           deleteComponent={this.deleteComponent}
           processStatus={processStatus}
           handleEmployerName={handleEmployerName}
+          disabled={disabled}
         />
         <hr className={styles.divider} />
       </div>,
@@ -230,7 +238,7 @@ class CollapseFieldsType2 extends PureComponent {
 
   render() {
     const { children } = this.state;
-    const { processStatus = '' } = this.props;
+    const { disabled = false } = this.props;
     return (
       <div className={styles.CollapseFieldsType2}>
         <Collapse
@@ -249,11 +257,11 @@ class CollapseFieldsType2 extends PureComponent {
             <div>{children.map((child) => child)}</div>
             <div
               className={
-                processStatus === 'SENT-PROVISIONAL-OFFER'
+                disabled
                   ? `${styles.disableButton} ${styles.addEmployerDetailBtn}`
                   : styles.addEmployerDetailBtn
               }
-              onClick={processStatus === 'SENT-PROVISIONAL-OFFER' ? () => {} : this.addComponent}
+              onClick={disabled ? () => {} : this.addComponent}
             >
               <PlusOutlined className={styles.plusIcon} />
               <span className={styles.title}>Add Employer Detail</span>

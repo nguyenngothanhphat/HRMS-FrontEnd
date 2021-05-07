@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import BasicInformationHeader from './components/BasicInformationHeader';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
@@ -73,6 +74,7 @@ class BasicInformation extends PureComponent {
       payload: {
         fullName: values.fullName,
         candidate: _id,
+        tenantId: getCurrentTenant(),
       },
     });
     dispatch({
