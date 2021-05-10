@@ -131,7 +131,7 @@ class SalaryStructureTemplate extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { listTitle = [], salaryTitle: salaryTitleId } = this.props;
+    const { listTitle = [], salaryTitle: salaryTitleId, settings } = this.props;
     const { salaryTitle = '' } = this.state;
     if (!salaryTitleId) {
       return;
@@ -143,6 +143,11 @@ class SalaryStructureTemplate extends PureComponent {
         salaryTitle: titleName.name,
       });
     }
+
+    // eslint-disable-next-line react/no-did-update-set-state
+    this.setState({
+      dataSettings: settings,
+    });
   }
 
   // componentDidCatch(error, errorInfo) {
@@ -456,10 +461,18 @@ class SalaryStructureTemplate extends PureComponent {
     const { isEditted } = this.state;
     const { settings = [] } = this.props;
     const data = settings?.find((item) => item.order === order);
-    const { value = '', key, edit = false, number = {} } = data;
+    const { value = '', key, number = {} } = data;
     const isNumber = Object.keys(number).length > 0;
 
-    if (edit && isEditted) {
+    const valueKey = () => {
+      if (key === 'basic' || key === 'hra' || key === 'employeesPF' || key === 'employeesESI') {
+        return true;
+      }
+
+      return false;
+    };
+
+    if (isEditted) {
       if (isNumber) {
         const { current = '', max = '' } = number;
         return (
@@ -475,9 +488,15 @@ class SalaryStructureTemplate extends PureComponent {
         );
       }
       return (
-        <Form.Item name={key} className={styles.formInput}>
-          <Input onChange={(e) => this.handleChange(e)} defaultValue={value} name={key} />
-        </Form.Item>
+        <>
+          {valueKey() ? (
+            <Form.Item name={key} className={styles.formInput}>
+              <Input onChange={(e) => this.handleChange(e)} defaultValue={value} name={key} />
+            </Form.Item>
+          ) : (
+            <span>{value}</span>
+          )}
+        </>
       );
     }
 
@@ -729,11 +748,11 @@ class SalaryStructureTemplate extends PureComponent {
                     loading={loadingTable}
                     dataSource={dataSettings}
                     columns={this._renderColumns()}
-                    components={{
-                      body: {
-                        cell: this.EditableCell,
-                      },
-                    }}
+                    // components={{
+                    //   body: {
+                    //     cell: this.EditableCell,
+                    //   },
+                    // }}
                     pagination={false}
                   />
                 </Form>
