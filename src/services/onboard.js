@@ -7,6 +7,13 @@ export async function getOnboardingList(payload) {
   });
 }
 
+export async function getTotalNumberOnboardingList(payload) {
+  return request('/api/candidatetenant/get-status-summary', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function deleteDraft(payload) {
   return request('/api/candidatetenant/delete-draft', {
     method: 'POST',

@@ -3,11 +3,12 @@ import {
   deleteDraft,
   inititateBackgroundCheck,
   createProfile,
+  getTotalNumberOnboardingList,
 } from '@/services/onboard';
 import _ from 'lodash';
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 // const employeeList = rookieList.filter(
 //   (rookie) => rookie.isNew === undefined || rookie.isNew === null,
@@ -295,6 +296,7 @@ const onboard = {
     menu: {
       onboardingOverviewTab: {
         listMenu: MENU_DATA,
+        totalNumber: [],
       },
     },
   },
@@ -480,6 +482,10 @@ const onboard = {
         // const returnedData = formatData(response.data[0].paginatedResults);
         const returnedData = formatData(response.data);
 
+        yield put({
+          type: 'fetchTotalNumberOfOnboardingListEffect',
+        });
+
         // Fetch data
         switch (processStatus) {
           case PROVISIONAL_OFFER_DRAFT: {
@@ -487,11 +493,7 @@ const onboard = {
               type: 'saveProvisionalOfferDrafts',
               payload: returnedData,
             });
-            // Update menu
-            yield put({
-              type: 'updateMenuQuantity',
-              payload: {},
-            });
+
             return;
           }
           case FINAL_OFFERS_DRAFT: {
@@ -499,11 +501,7 @@ const onboard = {
               type: 'saveFinalOfferDrafts',
               payload: returnedData,
             });
-            // Update menu
-            yield put({
-              type: 'updateMenuQuantity',
-              payload: {},
-            });
+
             return;
           }
 
@@ -512,11 +510,7 @@ const onboard = {
               type: 'saveSentProvisionalOffers',
               payload: returnedData,
             });
-            // Update menu
-            yield put({
-              type: 'updateMenuQuantity',
-              payload: {},
-            });
+
             return;
           }
 
@@ -525,11 +519,7 @@ const onboard = {
               type: 'saveAcceptedProvisionalOffers',
               payload: returnedData,
             });
-            // Update menu
-            yield put({
-              type: 'updateMenuQuantity',
-              payload: {},
-            });
+
             return;
           }
 
@@ -538,11 +528,7 @@ const onboard = {
               type: 'saveRenegotiateProvisionalOffers',
               payload: returnedData,
             });
-            // Update menu
-            yield put({
-              type: 'updateMenuQuantity',
-              payload: {},
-            });
+
             return;
           }
 
@@ -551,11 +537,7 @@ const onboard = {
               type: 'savePending',
               payload: returnedData,
             });
-            // Update menu
-            yield put({
-              type: 'updateMenuQuantity',
-              payload: {},
-            });
+
             return;
           }
 
@@ -564,11 +546,7 @@ const onboard = {
               type: 'saveEligibleCandidates',
               payload: returnedData,
             });
-            // Update menu
-            yield put({
-              type: 'updateMenuQuantity',
-              payload: {},
-            });
+
             return;
           }
 
@@ -577,11 +555,7 @@ const onboard = {
               type: 'saveIneligibleCandidates',
               payload: returnedData,
             });
-            // Update menu
-            yield put({
-              type: 'updateMenuQuantity',
-              payload: {},
-            });
+
             return;
           }
 
@@ -590,11 +564,7 @@ const onboard = {
               type: 'saveSentForApproval',
               payload: returnedData,
             });
-            // Update menu
-            yield put({
-              type: 'updateMenuQuantity',
-              payload: {},
-            });
+
             return;
           }
 
@@ -603,11 +573,7 @@ const onboard = {
               type: 'saveApprovedOffers',
               payload: returnedData,
             });
-            // Update menu
-            yield put({
-              type: 'updateMenuQuantity',
-              payload: {},
-            });
+
             return;
           }
 
@@ -616,11 +582,7 @@ const onboard = {
               type: 'saveSentFinalOffers',
               payload: returnedData,
             });
-            // Update menu
-            yield put({
-              type: 'updateMenuQuantity',
-              payload: {},
-            });
+
             return;
           }
 
@@ -629,11 +591,7 @@ const onboard = {
               type: 'saveAcceptedFinalOffers',
               payload: returnedData,
             });
-            // Update menu
-            yield put({
-              type: 'updateMenuQuantity',
-              payload: {},
-            });
+
             return;
           }
 
@@ -642,11 +600,7 @@ const onboard = {
               type: 'saveRenegotiateFinalOffers',
               payload: returnedData,
             });
-            // Update menu
-            yield put({
-              type: 'updateMenuQuantity',
-              payload: {},
-            });
+
             return;
           }
 
@@ -655,11 +609,7 @@ const onboard = {
               type: 'saveProvisionalOffers',
               payload: returnedData,
             });
-            // Update menu
-            yield put({
-              type: 'updateMenuQuantity',
-              payload: {},
-            });
+
             return;
           }
 
@@ -668,11 +618,7 @@ const onboard = {
               type: 'saveFinalOffers',
               payload: returnedData,
             });
-            // Update menu
-            yield put({
-              type: 'updateMenuQuantity',
-              payload: {},
-            });
+
             return;
           }
 
@@ -702,8 +648,7 @@ const onboard = {
           payload: id,
         });
         yield put({
-          type: 'updateMenuQuantity',
-          payload: {},
+          type: 'fetchTotalNumberOfOnboardingListEffect',
         });
         // yield put({
         //   type: 'fetchOnboardList',
@@ -770,6 +715,28 @@ const onboard = {
       }
       return response;
     },
+
+    // eslint-disable-next-line no-shadow
+    *fetchTotalNumberOfOnboardingListEffect(_, { call, put }) {
+      let response;
+      try {
+        const payload = {
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        };
+        response = yield call(getTotalNumberOnboardingList, payload);
+        const { statusCode, data: totalNumber = [] } = response;
+        if (statusCode !== 200) throw response;
+        // Update menu
+        yield put({
+          type: 'updateMenuQuantity',
+          payload: { totalNumber },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
   },
   reducers: {
     save(state, action) {
@@ -778,6 +745,19 @@ const onboard = {
         ...action.payload,
       };
     },
+
+    // saveTotalNumber(state, action) {
+    //   return {
+    //     ...state,
+    //     menu: {
+    //       ...state.menu,
+    //       onboardingOverviewTab: {
+    //         ...state.menu.onboardingOverviewTab,
+    //         ...action.payload,
+    //       },
+    //     },
+    //   };
+    // },
 
     // 1
     saveProvisionalOfferDrafts(state, action) {
@@ -980,45 +960,122 @@ const onboard = {
       };
     },
 
-    updateMenuQuantity(state) {
+    updateMenuQuantity(state, action) {
       const { listMenu } = state.menu.onboardingOverviewTab;
+      const { totalNumber } = action.payload;
+      const newTotalNumber = {
+        allDrafts: 0,
+        provisionalOffers: 0,
+        backgroundChecks: 0,
+        awaitingApprovals: 0,
+        finalOffers: 0,
+        discardedOffers: 0,
+      };
+
+      totalNumber.forEach((status) => {
+        const { _id = '', count = 0 } = status;
+        switch (_id) {
+          case 'DRAFT':
+            newTotalNumber.allDrafts += count;
+            break;
+          case 'FINAL-OFFER-DRAFT':
+            newTotalNumber.allDrafts += count;
+            break;
+
+          case 'SENT-PROVISIONAL-OFFER':
+            newTotalNumber.provisionalOffers += count;
+            break;
+          case 'ACCEPT-PROVISIONAL-OFFER':
+            newTotalNumber.provisionalOffers += count;
+            break;
+          case 'RENEGOTIATE-PROVISONAL-OFFER':
+            newTotalNumber.provisionalOffers += count;
+            break;
+
+          case 'PENDING-BACKGROUND-CHECK':
+            newTotalNumber.backgroundChecks += count;
+            break;
+          case 'ELIGIBLE-CANDIDATE':
+            newTotalNumber.backgroundChecks += count;
+            break;
+          case 'INELIGIBLE-CANDIDATE':
+            newTotalNumber.backgroundChecks += count;
+            break;
+
+          case 'PENDING-APPROVAL-FINAL-OFFER':
+            newTotalNumber.awaitingApprovals += count;
+            break;
+          case 'APPROVED-FINAL-OFFER':
+            newTotalNumber.awaitingApprovals += count;
+            break;
+
+          case 'SENT-FINAL-OFFER':
+            newTotalNumber.finalOffers += count;
+            break;
+          case 'ACCEPT-FINAL-OFFER':
+            newTotalNumber.finalOffers += count;
+            break;
+          case 'RENEGOTIATE-FINAL-OFFERS':
+            newTotalNumber.finalOffers += count;
+            break;
+
+          case 'DISCARDED-PROVISONAL-OFFER':
+            newTotalNumber.discardedOffers += count;
+            break;
+          case 'FINAL-OFFERS':
+            newTotalNumber.discardedOffers += count;
+            break;
+          case 'REJECT-FINAL-OFFER-HR':
+            newTotalNumber.discardedOffers += count;
+            break;
+          case 'REJECT-FINAL-OFFER-CANDIDATE':
+            newTotalNumber.discardedOffers += count;
+            break;
+          default:
+            break;
+        }
+      });
+
       const newListMenu = listMenu.map((item) => {
         const { key = '' } = item;
         let newItem = item;
         let newQuantity = item.quantity;
         let dataLength = 0;
         if (key === 'allDrafts') {
-          dataLength =
-            state.onboardingOverview.allDrafts.provisionalOfferDrafts.length +
-            state.onboardingOverview.allDrafts.finalOfferDrafts.length;
+          dataLength = newTotalNumber.allDrafts;
+          // state.onboardingOverview.allDrafts.provisionalOfferDrafts.length +
+          // state.onboardingOverview.allDrafts.finalOfferDrafts.length;
         }
         if (key === 'provisionalOffers') {
-          dataLength =
-            state.onboardingOverview.provisionalOffers.sentProvisionalOffers.length +
-            state.onboardingOverview.provisionalOffers.acceptedProvisionalOffers.length +
-            state.onboardingOverview.provisionalOffers.renegotiateProvisionalOffers.length;
+          dataLength = newTotalNumber.provisionalOffers;
+          // state.onboardingOverview.provisionalOffers.sentProvisionalOffers.length +
+          // state.onboardingOverview.provisionalOffers.acceptedProvisionalOffers.length +
+          // state.onboardingOverview.provisionalOffers.renegotiateProvisionalOffers.length;
         }
         if (key === 'backgroundChecks') {
-          dataLength =
-            state.onboardingOverview.backgroundCheck.pending.length +
-            state.onboardingOverview.backgroundCheck.eligibleCandidates.length +
-            state.onboardingOverview.backgroundCheck.ineligibleCandidates.length;
+          dataLength = newTotalNumber.backgroundChecks;
+          // state.onboardingOverview.backgroundCheck.pending.length +
+          // state.onboardingOverview.backgroundCheck.eligibleCandidates.length +
+          // state.onboardingOverview.backgroundCheck.ineligibleCandidates.length;
         }
         if (key === 'awaitingApprovals') {
-          dataLength =
-            state.onboardingOverview.awaitingApprovals.sentForApprovals.length +
-            state.onboardingOverview.awaitingApprovals.approvedOffers.length;
+          dataLength = newTotalNumber.awaitingApprovals;
+
+          // state.onboardingOverview.awaitingApprovals.sentForApprovals.length +
+          // state.onboardingOverview.awaitingApprovals.approvedOffers.length;
         }
         if (key === 'finalOffers') {
-          dataLength =
-            state.onboardingOverview.finalOffers.acceptedFinalOffers.length +
-            state.onboardingOverview.finalOffers.sentFinalOffers.length +
-            state.onboardingOverview.finalOffers.renegotiateFinalOffers.length;
+          dataLength = newTotalNumber.finalOffers;
+
+          // state.onboardingOverview.finalOffers.acceptedFinalOffers.length +
+          // state.onboardingOverview.finalOffers.sentFinalOffers.length +
+          // state.onboardingOverview.finalOffers.renegotiateFinalOffers.length;
         }
         if (key === 'discardedOffers') {
-          dataLength =
-            state.onboardingOverview.discardedOffers.provisionalOffers.length +
-            state.onboardingOverview.discardedOffers.finalOffers.length;
+          dataLength = newTotalNumber.discardedOffers;
+
+          // state.onboardingOverview.discardedOffers.provisionalOffers.length +
+          // state.onboardingOverview.discardedOffers.finalOffers.length;
         }
         newQuantity = dataLength;
         newItem = { ...newItem, quantity: newQuantity };
@@ -1050,9 +1107,8 @@ const onboard = {
 
     deleteTicket(state, action) {
       const { payload } = action;
-      const {
-        onboardingOverview: { allDrafts: { provisionalOfferDrafts = [] } = {} } = {},
-      } = state;
+      const { onboardingOverview: { allDrafts: { provisionalOfferDrafts = [] } = {} } = {} } =
+        state;
       const newList = provisionalOfferDrafts.filter((item) => {
         const { rookieId } = item;
         return rookieId !== `#${payload}`;
