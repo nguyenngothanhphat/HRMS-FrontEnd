@@ -1,10 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
 import { Radio, Typography, Row, Col } from 'antd';
-import { isObject } from 'lodash';
 import styles from './index.less';
-
-const INTERN_TYPE = '5f50c2541513a742582206f9';
 
 class RadioComponent extends PureComponent {
   render() {
@@ -50,7 +47,7 @@ class RadioComponent extends PureComponent {
             <Radio.Group
               className={styles.paddingRadio}
               // defaultValue={isObject(employeeType) ? employeeType._id : INTERN_TYPE}
-              defaultValue={employeeType ? employeeType._id : employeeTypeList[0]._id}
+              // defaultValue={employeeType ? employeeType._id : employeeTypeList[0]._id}
               onChange={(e) => handleRadio(e)}
               name={Tab.classificationTab.name}
             >

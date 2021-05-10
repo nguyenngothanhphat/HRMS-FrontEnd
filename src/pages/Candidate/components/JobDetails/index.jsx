@@ -57,6 +57,8 @@ class JobDetails extends PureComponent {
 
     const { dateOfJoining = '', noticePeriod = '' } = data;
     let valid = false;
+    console.log('noticePeriod', noticePeriod);
+    console.log('dateOfJoining', dateOfJoining);
     if (dateOfJoining && noticePeriod) {
       valid = true;
     } else {
@@ -110,7 +112,7 @@ class JobDetails extends PureComponent {
     const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetails;
     const {
       dispatch,
-      data: { _id },
+      data: { _id, dateOfJoining = '', noticePeriod = '' },
       data,
       localStep,
     } = this.props;
@@ -122,14 +124,15 @@ class JobDetails extends PureComponent {
       return [mnth, day, date.getFullYear()].join('/');
     };
 
-    const converted = prefferedDateOfJoining._d.toLocaleDateString();
+    const converted = prefferedDateOfJoining?._d?.toLocaleDateString() || dateOfJoining;
+
     dispatch({
       type: 'candidateProfile/updateByCandidateEffect',
       payload: {
-        noticePeriod: candidatesNoticePeriod,
+        noticePeriod: candidatesNoticePeriod || noticePeriod,
         dateOfJoining: converted,
         candidate: _id,
-        tenantId: getCurrentTenant()
+        tenantId: getCurrentTenant(),
       },
     });
     dispatch({
@@ -138,7 +141,7 @@ class JobDetails extends PureComponent {
         localStep: localStep + 1,
         data: {
           ...data,
-          noticePeriod: candidatesNoticePeriod,
+          noticePeriod: candidatesNoticePeriod || noticePeriod,
           dateOfJoining: converted,
         },
       },

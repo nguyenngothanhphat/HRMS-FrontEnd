@@ -115,24 +115,27 @@ class OnboardingLayout extends PureComponent {
   };
 
   render() {
-    const { listMenu = [], loadingAddTeamMember = false } = this.props;
+    const { listMenu = [], loadingAddTeamMember = false, permissions = {} } = this.props;
     const { displayComponent = null, pageTitle = '' } = this.state;
+    const checkPermissionAddTeamMember = permissions.addTeamMemberOnboarding !== -1;
 
     return (
       <div className={styles.overviewContainer}>
         <div className={styles.viewLeft}>
           {/* <Link to="/employee-onboarding/add"> */}
-          <Button
-            icon={<img src="/assets/images/addMemberIcon.svg" alt="add member icon" />}
-            className={styles.addMember}
-            type="primary"
-            loading={loadingAddTeamMember}
-            onClick={this.handleAddBtn}
-          >
-            <span className={styles.title}>
-              {formatMessage({ id: 'component.onboardingOverview.addTeamMember' })}
-            </span>
-          </Button>
+          {checkPermissionAddTeamMember && (
+            <Button
+              icon={<img src="/assets/images/addMemberIcon.svg" alt="add member icon" />}
+              className={styles.addMember}
+              type="primary"
+              loading={loadingAddTeamMember}
+              onClick={this.handleAddBtn}
+            >
+              <span className={styles.title}>
+                {formatMessage({ id: 'component.onboardingOverview.addTeamMember' })}
+              </span>
+            </Button>
+          )}
           {/* </Link> */}
 
           <div className={styles.divider} />
@@ -167,7 +170,10 @@ class OnboardingLayout extends PureComponent {
 }
 
 // export default OnboardingLayout;
-export default connect(({ info, candidateInfo: { data = {} } = {} }) => ({
-  info,
-  data,
-}))(OnboardingLayout);
+export default connect(
+  ({ info, user: { permissions = {} } = {}, candidateInfo: { data = {} } = {} }) => ({
+    info,
+    data,
+    permissions,
+  }),
+)(OnboardingLayout);

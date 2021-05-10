@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
 import OnboardingLayout from '@/components/OnboardingLayout';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import OnboardingEmpty from './components/OnboardingEmpty';
 
 @connect(({ onboard: { menu = {} } = {}, loading }) => ({
@@ -18,6 +18,13 @@ class OnboardingOverview extends Component {
       type: 'onboard/fetchOnboardList',
       payload: {
         processStatus: 'DRAFT',
+      },
+    });
+    dispatch({
+      type: 'onboard/fetchTotalNumberOfOnboardingListEffect',
+      payload: {
+        tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
       },
     });
   }

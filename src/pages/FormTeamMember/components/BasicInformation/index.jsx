@@ -41,9 +41,13 @@ class BasicInformation extends Component {
   componentDidMount() {
     const {
       dispatch,
-      data: { candidate, processStatus },
+      data: { candidate, processStatus, workEmail = '' },
     } = this.props;
-
+    if (workEmail) {
+      this.setState({
+        isOpenReminder: true,
+      });
+    }
     window.scrollTo(0, 70);
 
     this.checkBottomBar();
