@@ -27,7 +27,7 @@ const PreviewOffer = (props) => {
     candidateSignature: candidateSignatureProp = {},
     privateEmail: candidateEmailProp = '',
     fullName: candidateName = '',
-    offerLetter: offerLetterProp = {},
+    staticOfferLetter: offerLetterProp = {},
   } = data;
 
   // const inputRefs = [];
@@ -38,10 +38,13 @@ const PreviewOffer = (props) => {
   const [hrManagerSignature, setHrManagerSignature] = useState(hrManagerSignatureProp || '');
   // eslint-disable-next-line no-unused-vars
   const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
+  // const [offerLetter, setOfferLetter] = useState(
+  //   offerLetterProp && offerLetterProp.attachment && offerLetterProp.attachment.url
+  //     ? offerLetterProp.attachment.url
+  //     : '',
+  // );
   const [offerLetter, setOfferLetter] = useState(
-    offerLetterProp && offerLetterProp.attachment && offerLetterProp.attachment.url
-      ? offerLetterProp.attachment.url
-      : '',
+    offerLetterProp && offerLetterProp.url ? offerLetterProp.url : '',
   );
 
   const [uploadVisible1, setUploadVisible1] = useState(false);

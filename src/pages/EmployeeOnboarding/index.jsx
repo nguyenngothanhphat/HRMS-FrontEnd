@@ -34,6 +34,16 @@ class EmployeeOnboarding extends PureComponent {
     });
   };
 
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'onboard/save',
+      payload: {
+        mainTabActiveKey: '1',
+      },
+    });
+  };
+
   renderActionButton = () => {
     return (
       <div className={styles.options}>
