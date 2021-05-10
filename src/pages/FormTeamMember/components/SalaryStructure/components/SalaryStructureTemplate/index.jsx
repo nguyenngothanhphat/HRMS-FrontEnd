@@ -491,7 +491,12 @@ class SalaryStructureTemplate extends PureComponent {
         <>
           {valueKey() ? (
             <Form.Item name={key} className={styles.formInput}>
-              <Input onChange={(e) => this.handleChange(e)} defaultValue={value} name={key} />
+              <Input
+                className={styles.formInput__field}
+                onChange={(e) => this.handleChange(e)}
+                defaultValue={value}
+                name={key}
+              />
             </Form.Item>
           ) : (
             <span>{value}</span>
