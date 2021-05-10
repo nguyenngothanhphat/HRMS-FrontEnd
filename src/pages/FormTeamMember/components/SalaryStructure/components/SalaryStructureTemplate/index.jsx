@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { Select, Form, Table, Button, Input, Row, Col, InputNumber } from 'antd';
 import { formatMessage, connect } from 'umi';
@@ -105,11 +106,14 @@ import PROCESS_STATUS from '../../../utils';
   }),
 )
 class SalaryStructureTemplate extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
 
     this.state = {
       salaryTitle: '',
+      dataSettings: [],
       // error: '',
       // errorInfo: '',
       isEditted: false,
@@ -129,8 +133,6 @@ class SalaryStructureTemplate extends PureComponent {
   componentDidUpdate(prevProps) {
     const { listTitle = [], salaryTitle: salaryTitleId } = this.props;
     const { salaryTitle = '' } = this.state;
-    console.log('DID UPDATE');
-    console.log('id', salaryTitleId === null);
     if (!salaryTitleId) {
       return;
     }
@@ -143,12 +145,12 @@ class SalaryStructureTemplate extends PureComponent {
     }
   }
 
-  componentDidCatch(error, errorInfo) {
-    // Catch errors in any components below and re-render with error message
-    console.log(error);
-    console.log(errorInfo);
-    // You can also log error messages to an error reporting service here
-  }
+  // componentDidCatch(error, errorInfo) {
+  //   // Catch errors in any components below and re-render with error message
+  //   console.log(error);
+  //   console.log(errorInfo);
+  //   // You can also log error messages to an error reporting service here
+  // }
 
   componentWillUnmount = () => {
     const { dispatch } = this.props;
@@ -161,7 +163,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   componentDidMount = () => {
-    const { dispatch, settings, listTitle = [] } = this.props;
+    const { dispatch, settings } = this.props;
     const tempTableData = [...settings];
     const isFilled = tempTableData.filter((item) => item.value === '');
 
@@ -178,8 +180,11 @@ class SalaryStructureTemplate extends PureComponent {
     //     salaryTitle: '',
     //   },
     // });
+    this.setState({
+      dataSettings: settings,
+    });
 
-    const { _id, processStatus } = this.props;
+    const { processStatus } = this.props;
     // const tempTableData = [...settings];
 
     if (processStatus === 'DRAFT') {
@@ -456,7 +461,6 @@ class SalaryStructureTemplate extends PureComponent {
 
     if (edit && isEditted) {
       if (isNumber) {
-        console.log(data);
         const { current = '', max = '' } = number;
         return (
           <Form.Item name={key} className={styles.formNumber}>
@@ -646,10 +650,46 @@ class SalaryStructureTemplate extends PureComponent {
     );
   };
 
+  EditableCell = ({
+    editing,
+    dataIndex,
+    title,
+    inputType,
+    record,
+    index,
+    children,
+    ...restProps
+  }) => {
+    const inputNode = <Input />;
+    return (
+      <td {...restProps}>
+        {editing ? (
+          <Form.Item
+            name={dataIndex}
+            style={{
+              margin: 0,
+            }}
+            rules={[
+              {
+                required: true,
+                message: `Please Input ${title}!`,
+              },
+            ]}
+          >
+            {inputNode}
+          </Form.Item>
+        ) : (
+          children
+        )}
+      </td>
+    );
+  };
+
   render() {
     const { Option } = Select;
-    const { settings = [], loadingTable, salaryTitle: salaryTitleId } = this.props;
+    const { loadingTable, salaryTitle: salaryTitleId } = this.props;
     const { processStatus, listTitle = [] } = this.props;
+    const { dataSettings } = this.state;
 
     return (
       <div className={styles.salaryStructureTemplate}>
@@ -684,13 +724,19 @@ class SalaryStructureTemplate extends PureComponent {
             <>
               {this._renderButtons()}
               <div className={styles.salaryStructureTemplate_table}>
-                <Table
-                  loading={loadingTable}
-                  dataSource={settings}
-                  columns={this._renderColumns()}
-                  // size="large"
-                  pagination={false}
-                />
+                <Form ref={this.formRef} component={false}>
+                  <Table
+                    loading={loadingTable}
+                    dataSource={dataSettings}
+                    columns={this._renderColumns()}
+                    components={{
+                      body: {
+                        cell: this.EditableCell,
+                      },
+                    }}
+                    pagination={false}
+                  />
+                </Form>
               </div>
               {this._renderFooter()}
               {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
