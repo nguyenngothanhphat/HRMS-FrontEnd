@@ -1,17 +1,45 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, InputNumber, DatePicker, Typography } from 'antd';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
 import moment from 'moment';
 import InternalStyle from './FilledByCandidate.less';
 
 const dateFormat = 'MM/DD/YYYY';
+@connect(({ candidateProfile: { data } = {} }) => ({
+  data,
+}))
 class FilledByCandidate extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       isHidden: false,
+      newDate: moment(new Date()).locale('en').format(dateFormat),
     };
   }
+
+  componentDidMount = () => {
+    const { dateOfJoining = '', dispatch, data = {} } = this.props;
+    const { newDate } = this.state;
+    let newDateTemp = newDate;
+
+    if (dateOfJoining) {
+      newDateTemp = moment(dateOfJoining).locale('en').format(dateFormat);
+      this.setState({
+        newDate: newDateTemp,
+      });
+    }
+
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        // jobDetails,
+        data: {
+          ...data,
+          dateOfJoining: newDateTemp,
+        },
+      },
+    });
+  };
 
   handleClick = () => {
     this.setState((prevState) => ({
@@ -30,12 +58,11 @@ class FilledByCandidate extends PureComponent {
       candidateField,
       _handleSelect = () => {},
       noticePeriod = '',
-      dateOfJoining = '',
+      // dateOfJoining = '',
     } = this.props;
 
-    const dateJoin = dateOfJoining
-      ? moment(dateOfJoining).locale('en').format(dateFormat)
-      : moment(new Date());
+    const { newDate } = this.state;
+
     // console.log(dateOfJoining);
     // console.log(moment('12/23/2020', dateFormat));
     // console.log(dateJoin);
@@ -66,9 +93,9 @@ class FilledByCandidate extends PureComponent {
               disabledDate={this.disabledDate}
               placeholder=""
               picker="date"
-              format="MM/DD/YYYY"
+              format={dateFormat}
               onChange={(value) => _handleSelect(value, candidateField[1].title)}
-              defaultValue={moment(dateJoin, dateFormat)}
+              defaultValue={moment(newDate, dateFormat)}
             />
           </Col>
           <Col xs={16} sm={16} md={14} lg={10} xl={10}>
