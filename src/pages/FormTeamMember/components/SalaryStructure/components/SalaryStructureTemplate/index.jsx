@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
-import { Select, Form, Table, Button, Input, Row, Col, InputNumber } from 'antd';
+import { Select, Form, Table, Button, Input, Row, Col, InputNumber, Spin } from 'antd';
 import { formatMessage, connect } from 'umi';
 // import { dialog } from '@/utils/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -92,6 +92,7 @@ import PROCESS_STATUS from '../../../utils';
     user: { currentUser: { company: { _id = '' } = {} } = {}, currentUser: { location = {} } = {} },
   }) => ({
     loadingTable: loading.effects['candidateInfo/saveSalaryStructure'],
+    loadingFetchTable: loading.effects['candidateInfo/fetchTableData'],
     listTitle,
     cancelCandidate,
     location,
@@ -711,7 +712,7 @@ class SalaryStructureTemplate extends PureComponent {
 
   render() {
     const { Option } = Select;
-    const { loadingTable, salaryTitle: salaryTitleId } = this.props;
+    const { loadingTable, salaryTitle: salaryTitleId, loadingFetchTable } = this.props;
     const { processStatus, listTitle = [] } = this.props;
     const { dataSettings } = this.state;
 
@@ -744,28 +745,34 @@ class SalaryStructureTemplate extends PureComponent {
               </Select>
             </Form.Item>
           </div>
-          {salaryTitleId && (
+          {loadingFetchTable ? (
+            <Spin className={styles.spin} />
+          ) : (
             <>
-              {this._renderButtons()}
-              <div className={styles.salaryStructureTemplate_table}>
-                <Form ref={this.formRef} component={false}>
-                  <Table
-                    loading={loadingTable}
-                    dataSource={dataSettings}
-                    columns={this._renderColumns()}
-                    // components={{
-                    //   body: {
-                    //     cell: this.EditableCell,
-                    //   },
-                    // }}
-                    pagination={false}
-                  />
-                </Form>
-              </div>
-              {this._renderFooter()}
-              {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
-                ? this._renderBottomBar()
-                : null}
+              {salaryTitleId && (
+                <>
+                  {this._renderButtons()}
+                  <div className={styles.salaryStructureTemplate_table}>
+                    <Form ref={this.formRef} component={false}>
+                      <Table
+                        loading={loadingTable}
+                        dataSource={dataSettings}
+                        columns={this._renderColumns()}
+                        // components={{
+                        //   body: {
+                        //     cell: this.EditableCell,
+                        //   },
+                        // }}
+                        pagination={false}
+                      />
+                    </Form>
+                  </div>
+                  {this._renderFooter()}
+                  {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
+                    ? this._renderBottomBar()
+                    : null}
+                </>
+              )}
             </>
           )}
         </Form>
