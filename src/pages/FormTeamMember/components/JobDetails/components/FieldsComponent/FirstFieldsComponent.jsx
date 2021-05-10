@@ -12,12 +12,12 @@ class FirstFieldsComponent extends PureComponent {
   render() {
     const {
       styles,
-      dropdownField,
+      dropdownField = [],
       departmentList,
       locationList,
       titleList,
       managerList,
-      _handleSelect,
+      _handleSelect = () => {},
       department,
       title,
       workLocation,
@@ -27,7 +27,7 @@ class FirstFieldsComponent extends PureComponent {
       loading3,
       disabled,
     } = this.props;
-    console.log(locationList);
+
     return (
       <>
         <div>

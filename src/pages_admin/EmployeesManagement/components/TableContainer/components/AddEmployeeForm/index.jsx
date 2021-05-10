@@ -219,7 +219,7 @@ class AddEmployeeForm extends Component {
 
   handleSubmitEmployee = (values) => {
     const tenantId = localStorage.getItem('tenantId');
-    const { dispatch, handleCancel = () => {} } = this.props;
+    const { dispatch, handleCancel = () => {}, handleRefresh = () => {} } = this.props;
     const payload = {
       ...values,
       tenantId,
@@ -231,6 +231,7 @@ class AddEmployeeForm extends Component {
     }).then(() => {
       this.setState({ isDisabled: true });
       handleCancel();
+      handleRefresh()
     });
   };
 

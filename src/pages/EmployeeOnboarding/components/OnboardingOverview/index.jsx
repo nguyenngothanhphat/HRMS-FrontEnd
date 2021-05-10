@@ -31,17 +31,13 @@ class OnboardingOverview extends Component {
 
   render() {
     const {
-      menu: { onboardingOverviewTab: { listMenu = [], totalNumber = {} } = {} } = {},
+      menu: { onboardingOverviewTab: { listMenu = [] } = {} } = {},
       // loading = true,
     } = this.props;
     // const checkEmpty = !loading && listMenu.map((item) => item.quantity).reduce((a, b) => a + b, 0);\
     const checkEmpty = false;
 
-    return checkEmpty === 0 ? (
-      <OnboardingEmpty />
-    ) : (
-      <OnboardingLayout listMenu={listMenu} totalNumber={totalNumber} />
-    );
+    return checkEmpty === 0 ? <OnboardingEmpty /> : <OnboardingLayout listMenu={listMenu} />;
   }
 }
 
