@@ -78,7 +78,7 @@ class OnboardTable extends Component {
         </p>
       );
     }
-    return <p>{name}</p>;
+    return <p>{name || '-'}</p>;
   };
 
   fetchData = () => {
@@ -298,6 +298,7 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.position' }),
         dataIndex: 'position',
         key: 'position',
+        render: (position) => <span>{position || '-'}</span>,
         columnName: POSITION,
         width: getColumnWidth('position', type),
       },
@@ -306,6 +307,7 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.location' }),
         dataIndex: 'location',
         key: 'location',
+        render: (location) => <span>{location || '-'}</span>,
         columnName: LOCATION,
         width: getColumnWidth('location', type),
       },
@@ -314,6 +316,7 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.dateSent' }),
         dataIndex: 'dateSent',
         key: 'dateSent',
+        render: (dateSent) => <span>{dateSent || '-'}</span>,
         columnName: DATE_SENT,
         width: getColumnWidth('dateSent', type),
       },
@@ -322,6 +325,7 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.dateReceived' }),
         dataIndex: 'dateReceived',
         key: 'dateReceived',
+        render: (dateReceived) => <span>{dateReceived || '-'}</span>,
         columnName: DATE_RECEIVED,
         width: getColumnWidth('dateReceived', type),
       },
@@ -330,6 +334,7 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
         dataIndex: 'dateJoin',
         key: 'dateJoin',
+        render: (dateJoin) => <span>{dateJoin || '-'}</span>,
         columnName: DATE_JOIN,
         width: getColumnWidth('dateJoin', type),
       },
@@ -338,6 +343,7 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.documentVerified' }),
         dataIndex: 'documentVerified',
         key: 'document',
+        render: (documentVerified) => <span>{documentVerified || '-'}</span>,
         columnName: DOCUMENT,
         width: getColumnWidth('document', type),
         align: 'center',
@@ -347,6 +353,7 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.resubmit' }),
         dataIndex: 'resubmit',
         key: 'resubmit',
+        render: (resubmit) => <span>{resubmit || '-'}</span>,
         columnName: RESUBMIT,
         width: getColumnWidth('resubmit', type),
         align: 'center',
@@ -356,6 +363,7 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.expire' }),
         dataIndex: 'expire',
         key: 'expire',
+        render: (expire) => <span>{expire || '-'}</span>,
         columnName: EXPIRE,
         width: getColumnWidth('expire', type),
       },
@@ -364,6 +372,7 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.changeRequest' }),
         dataIndex: 'changeRequest',
         key: 'changeRequest',
+        render: (changeRequest) => <span>{changeRequest || '-'}</span>,
         columnName: CHANGE_REQUEST,
         width: getColumnWidth('changeRequest', type),
       },
@@ -372,6 +381,7 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.requestDate' }),
         dataIndex: 'dateRequest',
         key: 'dateRequest',
+        render: (dateRequest) => <span>{dateRequest || '-'}</span>,
         columnName: DATE_REQUEST,
         width: getColumnWidth('dateRequest', type),
       },
@@ -380,6 +390,7 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.comments' }),
         dataIndex: 'comments',
         key: 'comments',
+        render: (comments) => <span>{comments || '-'}</span>,
         width: getColumnWidth('comments', type),
         columnName: COMMENT,
       },
@@ -481,7 +492,7 @@ class OnboardTable extends Component {
                 }, // Hover mouse on row
               };
             }}
-            scroll={{ x: 1000, y: 'max-content' }}
+            scroll={list.length > 0 ? { x: '80vw', y: 'max-content' } : {}}
           />
         </div>
         <CustomModal
