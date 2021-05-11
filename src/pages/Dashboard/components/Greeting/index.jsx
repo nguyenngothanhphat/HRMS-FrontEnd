@@ -16,6 +16,10 @@ class Greeting extends PureComponent {
     };
   }
 
+  componentDidMount = () => {
+    this.setLocation();
+  };
+
   componentDidUpdate = (prevProps) => {
     const { listLocationsByCompany = [] } = this.props;
     if (
@@ -37,13 +41,13 @@ class Greeting extends PureComponent {
 
   render() {
     const { name = '' } = this.props;
-    const { currentLocation, loadingGetCurrentLocation } = this.state;
+    const { currentLocation, loadingFetchLocationParent, loadingFetchLocation } = this.state;
     return (
       <div className={s.container}>
         <h1>
           {formatMessage({ id: 'pages.dashboard.greeting.hello' })} {name}!
         </h1>
-        {currentLocation && !loadingGetCurrentLocation && (
+        {currentLocation && !loadingFetchLocationParent && !loadingFetchLocation && (
           <p>Current location: {currentLocation}</p>
         )}
       </div>
