@@ -107,8 +107,6 @@ import PROCESS_STATUS from '../../../utils';
   }),
 )
 class SalaryStructureTemplate extends PureComponent {
-  formRef = React.createRef();
-
   constructor(props) {
     super(props);
 
@@ -169,9 +167,42 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   componentDidMount = () => {
-    const { dispatch, settings } = this.props;
+    const {
+      dispatch,
+      settings,
+      salaryTitle: salaryTitleId,
+      location: { headQuarterAddress: { country = {} } = {} } = {},
+    } = this.props;
     const tempTableData = [...settings];
     const isFilled = tempTableData.filter((item) => item.value === '');
+
+    // Fetch Salary structure table when user click other tab (Ex: Job Details, Basic Information,...) then click Salary structure
+    if (salaryTitleId) {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          salaryTitle: salaryTitleId,
+        },
+      });
+
+      dispatch({
+        type: 'candidateInfo/fetchTableData',
+        payload: {
+          title: salaryTitleId,
+          tenantId: getCurrentTenant(),
+          country: country._id || country,
+        },
+      }).then(({ statusCode }) => {
+        if (statusCode === 200) {
+          dispatch({
+            type: 'candidateInfo/saveFilledSalaryStructure',
+            payload: {
+              filledSalaryStructure: true,
+            },
+          });
+        }
+      });
+    }
 
     // if (processStatus !== 'DRAFT') {
     //   dispatch({
@@ -577,9 +608,9 @@ class SalaryStructureTemplate extends PureComponent {
     const { footerData } = this.state;
     return (
       <div className={styles.salaryStructureTemplate_footer}>
-        {footerData.map((data) => {
+        {footerData.map((data, index) => {
           return (
-            <div className={styles.salaryStructureTemplate_footer_info}>
+            <div key={`${index + 1}`} className={styles.salaryStructureTemplate_footer_info}>
               <p className={styles.title}>{data.name}</p>
               <p className={styles.value}>{data.value}</p>
             </div>
@@ -675,41 +706,6 @@ class SalaryStructureTemplate extends PureComponent {
     );
   };
 
-  EditableCell = ({
-    editing,
-    dataIndex,
-    title,
-    inputType,
-    record,
-    index,
-    children,
-    ...restProps
-  }) => {
-    const inputNode = <Input />;
-    return (
-      <td {...restProps}>
-        {editing ? (
-          <Form.Item
-            name={dataIndex}
-            style={{
-              margin: 0,
-            }}
-            rules={[
-              {
-                required: true,
-                message: `Please Input ${title}!`,
-              },
-            ]}
-          >
-            {inputNode}
-          </Form.Item>
-        ) : (
-          children
-        )}
-      </td>
-    );
-  };
-
   render() {
     const { Option } = Select;
     const { loadingTable, salaryTitle: salaryTitleId, loadingFetchTable } = this.props;
@@ -753,19 +749,12 @@ class SalaryStructureTemplate extends PureComponent {
                 <>
                   {this._renderButtons()}
                   <div className={styles.salaryStructureTemplate_table}>
-                    <Form ref={this.formRef} component={false}>
-                      <Table
-                        loading={loadingTable}
-                        dataSource={dataSettings}
-                        columns={this._renderColumns()}
-                        // components={{
-                        //   body: {
-                        //     cell: this.EditableCell,
-                        //   },
-                        // }}
-                        pagination={false}
-                      />
-                    </Form>
+                    <Table
+                      loading={loadingTable}
+                      dataSource={dataSettings}
+                      columns={this._renderColumns()}
+                      pagination={false}
+                    />
                   </div>
                   {this._renderFooter()}
                   {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
