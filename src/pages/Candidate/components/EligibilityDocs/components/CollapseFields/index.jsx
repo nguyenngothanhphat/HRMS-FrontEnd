@@ -107,7 +107,7 @@ class CollapseField extends Component {
                   className={styles.checkbox}
                   onClick={(e) => e.stopPropagation()}
                   // onChange={(e) => handleCheckAll(e, defaultArr, item)}
-                  checked="true"
+                  checked
                 >
                   Type {item.type}: {item.name}
                 </Checkbox>

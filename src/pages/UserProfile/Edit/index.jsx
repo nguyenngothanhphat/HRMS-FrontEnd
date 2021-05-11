@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import { Row, Form, Input, Button, Col } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 
+@connect(({ user: { currentUser = {} } = {} }) => ({
+  currentUser,
+}))
 class EditProfile extends Component {
   constructor(props) {
     super(props);
@@ -13,7 +17,14 @@ class EditProfile extends Component {
   };
 
   handleSave = (value) => {
-    console.log(value);
+    const { dispatch, currentUser: { _id: currentUserId = '' } = {} } = this.props;
+    dispatch({
+      type: 'adminApp/updateAdmins',
+      payload: {
+        ...value,
+        id: currentUserId,
+      },
+    });
   };
 
   render() {
@@ -49,7 +60,7 @@ class EditProfile extends Component {
       {
         label: 'Password',
         name: 'password',
-        disabled: false,
+        disabled: true,
       },
       {
         label: 'Role',

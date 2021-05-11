@@ -2,6 +2,14 @@
 .firstColumn {
   padding-left: 62px;
 }
+
+.spin{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 50px;
+}
+
 .salaryStructureTemplate {
   :global {
     .ant-btn.ant-btn-primary {
@@ -108,12 +116,31 @@
         }
       }
     }
+
+    .ant-form-item-label > label {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 19px;
+      color: #464646
+    }
   }
   &_select {
     // margin-bottom: 30px;
     :global {
       .ant-form-item {
         display: block;
+      }
+
+      .ant-select:not(.ant-select-customize-input) .ant-select-selector{
+        background: #FFFFFF;
+        border: 1px solid #D6DCE0;
+        box-sizing: border-box;
+        border-radius: 5px;
+      }
+
+      .ant-select-arrow{
+        color: #464646;
       }
     }
     p {
@@ -161,6 +188,14 @@
         text-align: center;
         width: 100%;
         outline: 0;
+      }
+    }
+
+    .formInput{
+      
+      &__field{
+        height: 32px;
+        width: 162px;
       }
     }
   }

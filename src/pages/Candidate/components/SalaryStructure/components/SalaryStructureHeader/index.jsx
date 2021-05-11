@@ -5,11 +5,12 @@ import styles from './index.less';
 
 export default class SalaryStructureHeader extends PureComponent {
   render() {
+    const { titleName = '' } = this.props;
     return (
       <div className={styles.salaryStructureHeader}>
         <p className={styles.salaryStructureHeader__title}>
           {/* {formatMessage({ id: 'component.salaryStructureHeader.title' })} */}
-          Offered Salary Structure for the position of UX Designer
+          Offered Salary Structure for the position of {titleName}
         </p>
         {/* <p className={styles.salaryStructureHeader__subtitle}>
           {formatMessage({ id: 'component.salaryStructureHeader.subTitle' })}

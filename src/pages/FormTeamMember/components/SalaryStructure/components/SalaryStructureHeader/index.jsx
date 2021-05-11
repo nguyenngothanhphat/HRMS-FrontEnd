@@ -11,7 +11,11 @@ export default class SalaryStructureHeader extends PureComponent {
           {formatMessage({ id: 'component.salaryStructureHeader.title' })}
         </p>
         <p className={styles.salaryStructureHeader__subtitle}>
-          {formatMessage({ id: 'component.salaryStructureHeader.subTitle' })}
+          {formatMessage({ id: 'component.salaryStructureHeader.subTitle1' })}
+          <span className={styles.salaryStructureHeader__subtitle__span}>
+            {formatMessage({ id: 'component.salaryStructureHeader.subTitle2' })}
+          </span>
+          {formatMessage({ id: 'component.salaryStructureHeader.subTitle3' })}
         </p>
       </div>
     );
