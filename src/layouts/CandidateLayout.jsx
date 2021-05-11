@@ -93,6 +93,7 @@ const CandidateLayout = (props) => {
     },
     route: { routes } = {},
     ticketId,
+    titleName = '',
     dispatch,
     processStatus = '',
   } = props;
@@ -195,11 +196,11 @@ const CandidateLayout = (props) => {
 
           <RightOutlined className={s.icon} />
 
-          <span className={s.description}>Candidature for UX designer </span>
+          <span className={s.description}>Candidature for {titleName}</span>
         </div>
 
         <div className={s.headerRight}>
-          <span className={s.id}>Rookie ID : {ticketId}</span>
+          <span className={s.id}>Rookie ID: {ticketId}</span>
 
           <Button type="link" block onClick={handleCancel}>
             Cancel
@@ -246,11 +247,18 @@ const CandidateLayout = (props) => {
 // export default CandidateLayout;
 export default connect(
   ({
-    candidateProfile: { localStep, ticketId, checkCandidateMandatory, processStatus = '' } = {},
+    candidateProfile: {
+      localStep,
+      title: { name: titleName = '' } = {},
+      ticketId,
+      checkCandidateMandatory,
+      processStatus = '',
+    } = {},
   }) => ({
     localStep,
     checkCandidateMandatory,
     ticketId,
     processStatus,
+    titleName,
   }),
 )(CandidateLayout);

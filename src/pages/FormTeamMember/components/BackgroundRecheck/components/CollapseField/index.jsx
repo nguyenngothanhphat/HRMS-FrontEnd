@@ -80,10 +80,10 @@ class CollapseField extends Component {
                   const { fileName = '' } = attachment;
                   return (
                     <Row gutter={[16, 0]} className={styles.collapseField__row} key={index}>
-                      <Col span={7}>
+                      <Col span={6}>
                         <Typography.Text>{document.displayName}</Typography.Text>
                       </Col>
-                      <Col span={8} className={styles.collapseField__row__file}>
+                      <Col span={7} className={styles.collapseField__row__file}>
                         <div
                           onClick={() => {
                             if (!fileName) {
@@ -96,7 +96,7 @@ class CollapseField extends Component {
                           <span>{fileName}</span>
                         </div>
                       </Col>
-                      <Col span={9} className={styles.collapseField__row__radio}>
+                      <Col span={11} className={styles.collapseField__row__radio}>
                         {fileName && (
                           <Radio.Group
                             name="radiogroup"

@@ -103,7 +103,7 @@ class FilledByCandidate extends PureComponent {
               <div className={InternalStyle.warning}>
                 <button
                   type="button"
-                  className={`ant-alert-close-icon ${InternalStyle.DismissButton}`}
+                  className={`ant-alert-close-icon ${InternalStyle.closeIcon}`}
                   tabIndex="0"
                   onClick={this.handleClick}
                 >
@@ -123,28 +123,30 @@ class FilledByCandidate extends PureComponent {
                   </span>
                 </button>
                 <div className={InternalStyle.contentWrapper}>
-                  <svg
-                    viewBox="64 64 896 896"
-                    focusable="false"
-                    className=""
-                    data-icon="exclamation-circle"
-                    width="14px"
-                    height="14px"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm-32 232c0-4.4 3.6-8 8-8h48c4.4 0 8 3.6 8 8v272c0 4.4-3.6 8-8 8h-48c-4.4 0-8-3.6-8-8V296zm32 440a48.01 48.01 0 010-96 48.01 48.01 0 010 96z" />
-                  </svg>
-                  <Typography.Title className={InternalStyle.TitleText} level={5}>
-                    {formatMessage({ id: 'component.reminder.title' })}
-                  </Typography.Title>
+                  <div className={InternalStyle.s}>
+                    <svg
+                      viewBox="64 64 896 896"
+                      focusable="false"
+                      className=""
+                      data-icon="exclamation-circle"
+                      width="14px"
+                      height="14px"
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm-32 232c0-4.4 3.6-8 8-8h48c4.4 0 8 3.6 8 8v272c0 4.4-3.6 8-8 8h-48c-4.4 0-8-3.6-8-8V296zm32 440a48.01 48.01 0 010-96 48.01 48.01 0 010 96z" />
+                    </svg>
+                    <Typography.Title className={InternalStyle.TitleText} level={5}>
+                      {formatMessage({ id: 'component.reminder.title' })}
+                    </Typography.Title>
+                  </div>
+                  <Typography.Text className={InternalStyle.ContentText}>
+                    {formatMessage({ id: 'component.jobDetail.reminder.content' })}
+                    <p className={InternalStyle.BoldText}>
+                      {formatMessage({ id: 'component.jobDetail.reminder.content2' })}
+                    </p>
+                  </Typography.Text>
                 </div>
-                <Typography.Text className={InternalStyle.ContentText}>
-                  {formatMessage({ id: 'component.jobDetail.reminder.content' })}
-                  <p className={InternalStyle.BoldText}>
-                    {formatMessage({ id: 'component.jobDetail.reminder.content2' })}
-                  </p>
-                </Typography.Text>
               </div>
             ) : null}
           </Col>
