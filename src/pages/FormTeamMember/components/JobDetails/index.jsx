@@ -453,7 +453,7 @@ class JobDetails extends PureComponent {
         placeholder: 'Select a department',
       },
       {
-        title: 'title',
+        title: 'jobTitle',
         name: 'Job Title*',
         id: 3,
         placeholder: 'Select a job title',
