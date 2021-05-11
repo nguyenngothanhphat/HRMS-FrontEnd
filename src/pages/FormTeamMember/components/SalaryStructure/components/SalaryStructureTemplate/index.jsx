@@ -475,16 +475,15 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   _renderTableTitle = (order) => {
-    const { settings } = this.props;
-    const data = settings?.find((item) => item.order === order);
-    const { title = '' } = data;
+    const { settings = [] } = this.props;
+    const data = settings.find((item) => item.order === order) || {};
     return (
       <span
         className={`${this.isBlueText(data.order) === true ? `blue-text` : null} ${
           data.order === ' ' ? `big-text` : null
         }`}
       >
-        {title}
+        {data?.title}
       </span>
     );
   };
@@ -492,7 +491,7 @@ class SalaryStructureTemplate extends PureComponent {
   _renderTableValue = (order) => {
     const { isEditted } = this.state;
     const { settings = [] } = this.props;
-    const data = settings?.find((item) => item.order === order);
+    const data = settings.find((item) => item.order === order) || {};
     const { value = '', key, number = {} } = data;
     const isNumber = Object.keys(number).length > 0;
 
