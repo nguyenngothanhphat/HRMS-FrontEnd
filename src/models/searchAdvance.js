@@ -1,3 +1,4 @@
+import { getCurrentCompany } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
   searchAdvance,
@@ -16,33 +17,36 @@ export default {
   effects: {
     *search({ payload = {} }, { call, put, select }) {
       const { historySearch = {} } = yield select((state) => state.searchAdvance);
-      const { currentUser: { employee: { _id } = {} } = {} } = yield select((state) => state.user);
+      // const { user: { currentUser: { _id = '' } = {} } = {} } = yield select((state) => state.user);
       try {
         const response = yield call(searchAdvance, payload);
         const { statusCode, data: result = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { result } });
         // handle history search:
-        const { keySearch = '' } = payload;
+        const { keySearch = '', tenantId, _id } = payload;
         const { employees = [] } = result;
         const { key = [] } = historySearch;
         const newListHistoryKeyword = [keySearch, ...key];
         const listFilterKeyword = newListHistoryKeyword
           .filter((value, index, self) => self.findIndex((s) => s === value) === index)
           .slice(0, 3);
+        console.log(listFilterKeyword);
         const history = {
-          employee: _id,
+          user: _id,
           key: listFilterKeyword,
           dataSearch: { employee: employees.slice(0, 4), employeeDoc: [] },
+          tenantId,
+          company: getCurrentCompany(),
         };
         yield put({ type: 'updateSearchHistory', payload: history });
       } catch (errors) {
         dialog(errors);
       }
     },
-    *searchByCategory(_, { call, put }) {
+    *searchByCategory({ payload }, { call, put }) {
       try {
-        const response = yield call(searchByCategory);
+        const response = yield call(searchByCategory, payload);
         const { statusCode, data: resultByCategory = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { resultByCategory } });
@@ -50,13 +54,19 @@ export default {
         dialog(errors);
       }
     },
-    *getHistorySearch(_, { call, put, select }) {
-      const { currentUser: { employee: { _id } = {} } = {} } = yield select((state) => state.user);
+    *getHistorySearch({ payload }, { call, put, select }) {
+      const {
+        currentUser: { _id = '' },
+      } = yield select((state) => state.user);
       try {
-        const response = yield call(getHistorySearch, { employee: _id });
-        const { statusCode, data: historySearch = {} } = response;
+        const response = yield call(getHistorySearch, {
+          user: _id,
+          tenantId: payload.tenantId,
+          company: payload.company,
+        });
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { historySearch } });
+        yield put({ type: 'save', payload: { historySearch: data } });
       } catch (errors) {
         dialog(errors);
       }
@@ -66,7 +76,7 @@ export default {
         const response = yield call(updateSearchHistory, payload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'getHistorySearch' });
+        yield put({ type: 'getHistorySearch', payload });
       } catch (errors) {
         dialog(errors);
       }
