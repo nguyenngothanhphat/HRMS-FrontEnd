@@ -4,10 +4,14 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Select, Typography, Spin, Form } from 'antd';
 import { isNull, isEmpty } from 'lodash';
+import { connect } from 'umi';
 import InternalStyle from './FirstFieldsComponent.less';
 
 const { Option } = Select;
 
+@connect(({ loading }) => ({
+  loadingTitle: loading.effects['candidateInfo/fetchTitleList'],
+}))
 class FirstFieldsComponent extends PureComponent {
   formRef = React.createRef();
 
@@ -29,7 +33,6 @@ class FirstFieldsComponent extends PureComponent {
       locationList,
       titleList,
       managerList,
-      // _handleSelect = () => {},
       department,
       title,
       workLocation,
@@ -38,6 +41,7 @@ class FirstFieldsComponent extends PureComponent {
       loading2,
       loading3,
       disabled,
+      loadingTitle,
     } = this.props;
 
     return (
@@ -55,6 +59,7 @@ class FirstFieldsComponent extends PureComponent {
                     >
                       {/* <Typography.Title level={5}>{item.name}</Typography.Title> */}
                       <Select
+                        loading={item.title === 'jobTitle' ? loadingTitle : null}
                         placeholder={
                           (loading1 && item.name === 'Department') ||
                           (loading2 && item.name === 'Job Title') ||
@@ -104,35 +109,45 @@ class FirstFieldsComponent extends PureComponent {
                           return option.value.toLowerCase().indexOf(input) > -1;
                         }}
                       >
-                        {item.title === 'workLocation'
-                          ? locationList.map((data, index) => (
-                              <Option value={data._id} key={index}>
-                                <Typography.Text>{data.name}</Typography.Text>
+                        {item.title === 'workLocation' ? (
+                          locationList.map((data, index) => (
+                            <Option value={data._id} key={index}>
+                              <Typography.Text>{data.name}</Typography.Text>
+                            </Option>
+                          ))
+                        ) : item.title === 'department' && departmentList.length > 0 ? (
+                          departmentList.map((data, index) => (
+                            <Option value={data._id} key={index}>
+                              <Typography.Text>{data.name}</Typography.Text>
+                            </Option>
+                          ))
+                        ) : item.title === 'jobTitle' && titleList.length > 0 ? (
+                          <>
+                            {loadingTitle ? (
+                              <Option value="error">
+                                <Spin className={InternalStyle.spin} />
                               </Option>
-                            ))
-                          : item.title === 'department' && departmentList.length > 0
-                          ? departmentList.map((data, index) => (
-                              <Option value={data._id} key={index}>
-                                <Typography.Text>{data.name}</Typography.Text>
-                              </Option>
-                            ))
-                          : item.title === 'jobTitle' && titleList.length > 0
-                          ? titleList.map((data, index) => (
-                              <Option value={data._id} key={index}>
-                                <Typography.Text>{data.name}</Typography.Text>
-                              </Option>
-                            ))
-                          : item.title === 'reportingManager' && managerList.length > 0
-                          ? managerList.map((data, index) => (
-                              <Option value={data.generalInfo.firstName} key={index}>
-                                <Typography.Text>
-                                  {data.generalInfo && data.generalInfo.firstName
-                                    ? `${data.generalInfo.firstName} (${data.generalInfo.workEmail})`
-                                    : ''}
-                                </Typography.Text>
-                              </Option>
-                            ))
-                          : null}
+                            ) : (
+                              <>
+                                {titleList.map((data, index) => (
+                                  <Option value={data._id} key={index}>
+                                    <Typography.Text>{data.name}</Typography.Text>
+                                  </Option>
+                                ))}
+                              </>
+                            )}
+                          </>
+                        ) : item.title === 'reportingManager' && managerList.length > 0 ? (
+                          managerList.map((data, index) => (
+                            <Option value={data.generalInfo.firstName} key={index}>
+                              <Typography.Text>
+                                {data.generalInfo && data.generalInfo.firstName
+                                  ? `${data.generalInfo.firstName} (${data.generalInfo.workEmail})`
+                                  : ''}
+                              </Typography.Text>
+                            </Option>
+                          ))
+                        ) : null}
                       </Select>
                     </Form.Item>
                   </Col>
