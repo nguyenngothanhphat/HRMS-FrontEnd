@@ -82,7 +82,10 @@ const UserModel = {
 
           // IS OWNER
           if (isOwnerRole) {
-            formatArrRoles = ['owner', ...permissionAdmin, ...permissionEmployee];
+            formatArrRoles = [
+              'owner',
+              // ...permissionAdmin, ...permissionEmployee
+            ];
             checkIsOwner = true;
           }
 
@@ -105,7 +108,11 @@ const UserModel = {
               switchRoleAbility = true;
               if (!isSwitchingRole) {
                 formatArrRoles = ['admin'];
-                formatArrRoles = [...formatArrRoles, ...permissionAdmin, ...permissionEmployee];
+                formatArrRoles = [
+                  ...formatArrRoles,
+                  ...permissionAdmin,
+                  // , ...permissionEmployee
+                ];
                 checkIsAdmin = true;
               } else {
                 formatArrRoles = ['employee'];

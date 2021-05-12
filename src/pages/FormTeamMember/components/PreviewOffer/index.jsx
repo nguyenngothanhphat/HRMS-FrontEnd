@@ -264,6 +264,7 @@ const PreviewOffer = (props) => {
       payload: {
         candidate: _id,
         hrManagerSignature: hrManagerSignatureProp.id,
+        tenantId: getCurrentTenant(),
         // currentStep: 6,
       },
     }).then(({ statusCode }) => {

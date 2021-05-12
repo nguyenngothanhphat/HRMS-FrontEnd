@@ -5,15 +5,23 @@ import iconPNG from '@/assets/group-14-copy.svg';
 import iconJPEG from '@/assets/icon-JPEG.png';
 import avtDefault from '@/assets/avtDefault.jpg';
 import { Affix, Row, Col, Avatar, Spin } from 'antd';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { connect, history } from 'umi';
 import styles from './index.less';
 
-@connect(({ loading, searchAdvance: { result = {}, resultByCategory = [] } = {} }) => ({
-  loading: loading.effects['searchAdvance/search'],
-  loadingCategory: loading.effects['searchAdvance/searchByCategory'],
-  result,
-  resultByCategory,
-}))
+@connect(
+  ({
+    loading,
+    searchAdvance: { result = {}, resultByCategory = [] } = {},
+    user: { currentUser: { _id = '' } = {} } = {},
+  }) => ({
+    loading: loading.effects['searchAdvance/search'],
+    loadingCategory: loading.effects['searchAdvance/searchByCategory'],
+    result,
+    _id,
+    resultByCategory,
+  }),
+)
 class SearchResult extends PureComponent {
   componentDidMount() {
     const { location: { query } = {} } = this.props;
@@ -30,17 +38,26 @@ class SearchResult extends PureComponent {
   }
 
   handleSearch = (payload = {}) => {
-    const { dispatch } = this.props;
+    const { dispatch, _id } = this.props;
     const { isSearchByCategory } = payload;
     if (isSearchByCategory) {
       dispatch({
         type: 'searchAdvance/searchByCategory',
-        payload,
+        payload: {
+          // _id,
+          isSearchByCategory,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        },
       });
     } else {
       dispatch({
         type: 'searchAdvance/search',
-        payload,
+        payload: {
+          _id,
+          keySearch: payload.keySearch,
+          tenantId: getCurrentTenant(),
+        },
       });
     }
   };

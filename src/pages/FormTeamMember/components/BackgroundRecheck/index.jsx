@@ -12,15 +12,27 @@ import SendEmail from '../PreviewOffer/components/SendEmail';
 import CloseCandidateModal from './components/CloseCandidateModal';
 import PROCESS_STATUS from '../utils';
 
-@connect(({ candidateInfo: { tempData, data: { // documentsByCandidate = [],
-      // documentsByCandidateRD = [],
-      privateEmail = '', candidate = '', processStatus } }, loading }) => ({
-  tempData,
-  privateEmail,
-  candidate,
-  processStatus,
-  loading1: loading.effects['candidateInfo/sendDocumentStatusEffect'],
-}))
+@connect(
+  ({
+    candidateInfo: {
+      tempData,
+      data: {
+        // documentsByCandidate = [],
+        // documentsByCandidateRD = [],
+        privateEmail = '',
+        candidate = '',
+        processStatus,
+      },
+    },
+    loading,
+  }) => ({
+    tempData,
+    privateEmail,
+    candidate,
+    processStatus,
+    loading1: loading.effects['candidateInfo/sendDocumentStatusEffect'],
+  }),
+)
 class BackgroundRecheck extends Component {
   constructor(props) {
     super(props);
@@ -41,16 +53,14 @@ class BackgroundRecheck extends Component {
   componentDidMount() {
     const { dispatch, candidate, processStatus = '' } = this.props;
     const { PROVISIONAL_OFFER_DRAFT, SENT_PROVISIONAL_OFFERS, PENDING } = PROCESS_STATUS;
-    const {
-      tempData: { backgroundRecheck: { documentList: docsListProp = [] } = {} } = {},
-    } = this.props;
+    const { tempData: { backgroundRecheck: { documentList: docsListProp = [] } = {} } = {} } =
+      this.props;
 
     window.scrollTo(0, 70); // Back to top of the page
 
     this.setState({
       docsList: docsListProp,
     });
-
     // this.processDocumentData(docsListProp);
 
     if (
@@ -70,13 +80,46 @@ class BackgroundRecheck extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    const { docsList } = this.state;
+    const { tempData: { documentsByCandidateRD = '' } = {} } = this.props;
     // if (!prevProps.tempData.documentsByCandidateRD && this.props.tempData.documentsByCandidateRD) {
-    if (this.state.docsList.length === 0 && this.props.tempData.documentsByCandidateRD) {
+    if (docsList.length === 0 && documentsByCandidateRD) {
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
-        docsList: this.props.tempData.documentsByCandidateRD,
+        docsList: documentsByCandidateRD,
       });
     }
+
+    if (
+      JSON.stringify(prevProps.tempData.documentsByCandidateRD) !==
+      JSON.stringify(documentsByCandidateRD)
+    ) {
+      this.checkVerifyStatus();
+    }
   }
+
+  checkVerifyStatus = () => {
+    const { dispatch, tempData: { documentsByCandidateRD = [] } = {} } = this.props;
+
+    let list = [];
+    documentsByCandidateRD.forEach((category) => {
+      if (category.data.length > 0) {
+        list = [...list, ...category.data];
+      }
+    });
+    let check = true;
+    list.forEach((document) => {
+      if (document.candidateDocumentStatus !== 'VERIFIED') {
+        check = false;
+      }
+    });
+
+    if (list.length > 0)
+      dispatch({
+        type: 'candidateInfo/updateAllDocumentVerified',
+        payload: check,
+      });
+  };
 
   processDocumentData = (documentArr) => {
     const { dispatch } = this.props;
@@ -361,7 +404,7 @@ class BackgroundRecheck extends Component {
                 <div className={styles.closeWrapper}>
                   <h3>Acceptance of background check by HR</h3>
                   <p>The background check has been rejected by HR</p>
-                  <button className={styles.close} onClick={this.closeCandidate}>
+                  <button type="button" className={styles.close} onClick={this.closeCandidate}>
                     close candidature
                   </button>
                 </div>
