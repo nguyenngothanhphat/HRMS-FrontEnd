@@ -289,9 +289,7 @@ class EligibilityDocs extends PureComponent {
             documentListToRender[0].data[1]?.attachment &&
             documentListToRender[2].data[0]?.attachment &&
             documentListToRender[2].data[1]?.attachment &&
-            documentListToRender[2].data[2]?.attachment &&
-            workDuration !== 0 &&
-            !isUndefined(workDuration) ? (
+            documentListToRender[2].data[2]?.attachment ? (
               <SendEmail
                 loading={loading1}
                 handleSendEmail={this.handleSendEmail}
@@ -299,6 +297,7 @@ class EligibilityDocs extends PureComponent {
                 onValuesChangeEmail={this.onValuesChangeEmail}
                 isSentEmail={isSentEmail}
                 handleSubmitAgain={this.handleSubmitAgain}
+                disabled={!(workDuration !== 0 && !isUndefined(workDuration))}
               />
             ) : (
               <StepsComponent />

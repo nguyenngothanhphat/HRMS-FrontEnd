@@ -6,6 +6,7 @@ import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 
 import { RightOutlined } from '@ant-design/icons';
+import { getCurrentCompany } from '@/utils/authority';
 import logo from '../../public/assets/images/terralogic-logo.png';
 // import BottomBar from '../components/BottomBar';
 import s from './CandidateLayout.less';
@@ -96,6 +97,7 @@ const CandidateLayout = (props) => {
     titleName = '',
     dispatch,
     processStatus = '',
+    companiesOfUser = [],
   } = props;
 
   const [current, setCurrent] = useState(1);
@@ -172,7 +174,9 @@ const CandidateLayout = (props) => {
       processStatus === 'SENT-PROVISIONAL-OFFER' ||
       processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
       processStatus === 'DISCARDED-PROVISONAL-OFFER' ||
-      processStatus === 'PENDING-BACKGROUND-CHECK'
+      processStatus === 'PENDING-BACKGROUND-CHECK' ||
+      processStatus === 'ACCEPT-PROVISIONAL-OFFER' ||
+      processStatus === 'PENDING-APPROVAL-FINAL-OFFER'
     ) {
       return steps.slice(0, 4);
     }
@@ -185,13 +189,19 @@ const CandidateLayout = (props) => {
 
   const newSteps = getSteps();
 
+  const companyLogo = () => {
+    const currentCompany =
+      companiesOfUser.find((company) => company?._id === getCurrentCompany()) || {};
+    return currentCompany.logoUrl;
+  };
+
   return (
     <div className={s.candidate}>
       {/* <Header className={`${s.header} ${s.one}`}> */}
       <Header className={`${s.header} ${getLineWidth(current - 1)}`}>
         <div className={s.headerLeft}>
           <div className={s.imgContainer}>
-            <img src={logo} alt="terralogic logo" />
+            <img src={companyLogo()} alt="terralogic logo" />
           </div>
 
           <RightOutlined className={s.icon} />
@@ -254,11 +264,13 @@ export default connect(
       checkCandidateMandatory,
       processStatus = '',
     } = {},
+    user: { companiesOfUser = [] } = {},
   }) => ({
     localStep,
     checkCandidateMandatory,
     ticketId,
     processStatus,
     titleName,
+    companiesOfUser,
   }),
 )(CandidateLayout);
