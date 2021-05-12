@@ -7,7 +7,7 @@ import { getAuthorityFromRouter } from '@/utils/utils';
 
 import { RightOutlined } from '@ant-design/icons';
 import { getCurrentCompany } from '@/utils/authority';
-import logo from '../../public/assets/images/terralogic-logo.png';
+import avtDefault from '@/assets/avtDefault.jpg';
 // import BottomBar from '../components/BottomBar';
 import s from './CandidateLayout.less';
 
@@ -104,15 +104,35 @@ const CandidateLayout = (props) => {
 
   useEffect(() => {
     setCurrent(localStep);
-  }, [localStep]);
+  }, [localStep, processStatus]);
 
   useEffect(() => {
-    console.log('candidate layout');
+    if (
+      [
+        'APPROVED-FINAL-OFFER',
+        'SENT-FINAL-OFFERS',
+        'ACCEPT-FINAL-OFFER',
+        'RENEGOTIATE-FINAL-OFFERS',
+        'DISCARDED-PROVISONAL-OFFER',
+        'REJECT-FINAL-OFFER-HR',
+        'REJECT-FINAL-OFFER-CANDIDATE',
+      ].includes(processStatus)
+    ) {
+      dispatch({
+        type: 'candidateProfile/save',
+        payload: {
+          localStep: 5,
+        },
+      });
+      setCurrent(5);
+    }
+  }, [processStatus]);
+
+  useEffect(() => {
     return () => {
       dispatch({
         type: 'candidateProfile/clearAll',
       });
-      console.log('OUT');
     };
   }, []);
 
@@ -192,7 +212,7 @@ const CandidateLayout = (props) => {
   const companyLogo = () => {
     const currentCompany =
       companiesOfUser.find((company) => company?._id === getCurrentCompany()) || {};
-    return currentCompany.logoUrl;
+    return currentCompany.logoUrl || avtDefault;
   };
 
   return (
@@ -201,12 +221,12 @@ const CandidateLayout = (props) => {
       <Header className={`${s.header} ${getLineWidth(current - 1)}`}>
         <div className={s.headerLeft}>
           <div className={s.imgContainer}>
-            <img src={companyLogo()} alt="terralogic logo" />
+            <img src={companyLogo()} alt="logo" />
           </div>
 
           <RightOutlined className={s.icon} />
 
-          <span className={s.description}>Candidature for {titleName}</span>
+          {titleName && <span className={s.description}>Candidature for {titleName}</span>}
         </div>
 
         <div className={s.headerRight}>
