@@ -54,7 +54,6 @@ class JobDetails extends PureComponent {
     window.scrollTo(0, 70); // Back to top of the page
 
     this.checkBottomBar();
-    console.log('OK');
 
     // get work location list
     dispatch({

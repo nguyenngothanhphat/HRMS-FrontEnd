@@ -86,17 +86,17 @@ class FirstFieldsComponent extends PureComponent {
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'department' &&
                           !isNull(department) && {
-                            defaultValue: department.name,
+                            defaultValue: department?.name,
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'title' &&
                           !isNull(title) && {
-                            defaultValue: title.name,
+                            defaultValue: title?.name,
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'workLocation' &&
                           !isNull(workLocation) && {
-                            defaultValue: workLocation.name,
+                            defaultValue: workLocation?.name,
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'reportingManager' &&
