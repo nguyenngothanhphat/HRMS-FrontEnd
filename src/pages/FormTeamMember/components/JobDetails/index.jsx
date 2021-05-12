@@ -143,12 +143,10 @@ class JobDetails extends PureComponent {
   checkBottomBar = () => {
     const {
       tempData: { department, workLocation, title, reportingManager, checkStatus },
-      tempData = {},
       checkMandatory,
       dispatch,
     } = this.props;
-    console.log(tempData);
-    console.log(title);
+
     if (
       department !== null &&
       workLocation !== null &&
