@@ -298,7 +298,6 @@ class JobDetails extends PureComponent {
       const selectedManager = changedManagerList.find(
         (data) => data.generalInfo.firstName === value,
       );
-      console.log('reportingManager', selectedManager);
       dispatch({
         type: 'candidateInfo/save',
         payload: {
@@ -453,7 +452,7 @@ class JobDetails extends PureComponent {
         placeholder: 'Select a department',
       },
       {
-        title: 'jobTitle',
+        title: 'title',
         name: 'Job Title*',
         id: 3,
         placeholder: 'Select a job title',

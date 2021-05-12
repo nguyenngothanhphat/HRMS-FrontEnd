@@ -19,7 +19,7 @@ class FirstFieldsComponent extends PureComponent {
     const { _handleSelect = () => {} } = this.props;
     if (fieldName === 'department') {
       this.formRef.current.setFieldsValue({
-        jobTitle: null,
+        title: null,
       });
     }
     _handleSelect(value, fieldName);
@@ -59,7 +59,7 @@ class FirstFieldsComponent extends PureComponent {
                     >
                       {/* <Typography.Title level={5}>{item.name}</Typography.Title> */}
                       <Select
-                        loading={item.title === 'jobTitle' ? loadingTitle : null}
+                        loading={item.title === 'title' ? loadingTitle : null}
                         placeholder={
                           (loading1 && item.name === 'Department') ||
                           (loading2 && item.name === 'Job Title') ||
@@ -77,11 +77,11 @@ class FirstFieldsComponent extends PureComponent {
                         disabled={
                           !!(item.title === 'reportingManager' && managerList.length <= 0) ||
                           (item.title === 'department' && departmentList.length <= 0) ||
-                          (item.title === 'jobTitle' && titleList.length <= 0) ||
+                          (item.title === 'title' && titleList.length <= 0) ||
                           (item.title === 'workLocation' && disabled) ||
                           (item.title === 'reportingManager' && disabled) ||
                           (item.title === 'department' && disabled) ||
-                          (item.title === 'jobTitle' && disabled)
+                          (item.title === 'title' && disabled)
                         }
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'department' &&
@@ -89,7 +89,7 @@ class FirstFieldsComponent extends PureComponent {
                             defaultValue: department.name,
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
-                        {...(item.title === 'jobTitle' &&
+                        {...(item.title === 'title' &&
                           !isNull(title) && {
                             defaultValue: title.name,
                           })}
@@ -121,7 +121,7 @@ class FirstFieldsComponent extends PureComponent {
                               <Typography.Text>{data.name}</Typography.Text>
                             </Option>
                           ))
-                        ) : item.title === 'jobTitle' && titleList.length > 0 ? (
+                        ) : item.title === 'title' && titleList.length > 0 ? (
                           <>
                             {loadingTitle ? (
                               <Option value="error">
