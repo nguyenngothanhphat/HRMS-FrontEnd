@@ -54,6 +54,7 @@ class JobDetails extends PureComponent {
     window.scrollTo(0, 70); // Back to top of the page
 
     this.checkBottomBar();
+    console.log('OK');
 
     // get work location list
     dispatch({
@@ -142,9 +143,12 @@ class JobDetails extends PureComponent {
   checkBottomBar = () => {
     const {
       tempData: { department, workLocation, title, reportingManager, checkStatus },
+      tempData = {},
       checkMandatory,
       dispatch,
     } = this.props;
+    console.log(tempData);
+    console.log(title);
     if (
       department !== null &&
       workLocation !== null &&
@@ -185,7 +189,7 @@ class JobDetails extends PureComponent {
     });
   };
 
-  _handleSelect = (value, name) => {
+  _handleSelect = async (value, name) => {
     const { dispatch, locationList } = this.props;
     const { tempData = {} } = this.state;
     tempData[name] = value;
@@ -243,6 +247,7 @@ class JobDetails extends PureComponent {
       } = this.props;
       const changedtitleList = JSON.parse(JSON.stringify(titleList));
       const selectedTitle = changedtitleList.find((data) => data._id === value);
+
       dispatch({
         type: 'candidateInfo/save',
         payload: {
@@ -287,6 +292,15 @@ class JobDetails extends PureComponent {
           payload: {
             department,
             tenantId,
+          },
+        });
+        await dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            tempData: {
+              ...tempData,
+              title: null,
+            },
           },
         });
       }
