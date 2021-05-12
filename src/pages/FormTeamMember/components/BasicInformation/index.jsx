@@ -19,6 +19,8 @@ import styles from './index.less';
   tempData,
 }))
 class BasicInformation extends Component {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
 
@@ -260,6 +262,14 @@ class BasicInformation extends Component {
     );
   };
 
+  testValidate = () => {
+    const email1 = this.formRef.current.getFieldValue('privateEmail');
+    const email2 = this.formRef.current.getFieldValue('workEmail');
+    if (email2 && email1) {
+      this.formRef.current.validateFields();
+    }
+  };
+
   _renderForm = () => {
     return (
       <div className={styles.basicInformation__form}>
@@ -318,6 +328,7 @@ class BasicInformation extends Component {
                 className={styles.formInput}
                 name="privateEmail"
                 disabled={this.disableEdit()}
+                onChange={this.testValidate}
                 // defaultValue={privateEmail}
               />
             </Form.Item>
@@ -354,6 +365,7 @@ class BasicInformation extends Component {
                 className={styles.formInput}
                 name="workEmail"
                 disabled={this.disableEdit()}
+                onChange={this.testValidate}
                 // suffix="@terralogic.com"
                 // defaultValue={workEmail}
               />
@@ -469,6 +481,7 @@ class BasicInformation extends Component {
                     previousExperience,
                     employeeId,
                   }}
+                  ref={this.formRef}
                   onFocus={this.onFocus}
                   onValuesChange={this.handleChange}
                   onFinish={this.onFinish}
