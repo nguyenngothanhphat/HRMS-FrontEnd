@@ -172,21 +172,14 @@ const routes = [
             name: 'employeeOnboarding',
             icon: '/assets/images/menuIcons/onboarding.svg',
             component: './EmployeeOnboarding',
-            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'owner'],
+            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW'],
           },
           {
             path: '/offboarding',
             name: 'Offboarding',
             icon: '/assets/images/menuIcons/offboarding.svg',
             component: './OffBoarding',
-            authority: [
-              'owner',
-              'M_OFFBOARDING_VIEW',
-              'P_OFFBOARDING_VIEW',
-              'employee',
-              'hr',
-              'hr-manager',
-            ],
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW', 'employee', 'hr', 'hr-manager'],
           },
           // {
           //   path: '/time-off',
@@ -292,14 +285,14 @@ const routes = [
             name: 'timeOffManagement',
             icon: '/assets/images/timeOff.svg',
             component: '../pages_admin/TimeOffManagement',
-            authority: ['M_TIMEOFF_MANAGEMENT_VIEW', 'owner'],
+            authority: ['M_TIMEOFF_MANAGEMENT_VIEW'],
           },
           {
             path: '/offboarding-management',
             name: 'offBoardingManagement',
             icon: '/assets/images/iconOffboarding.svg',
             component: '../pages_admin/OffBoardingManagement',
-            authority: ['M_OFFBOARDING_MANAGEMENT_VIEW', 'owner'],
+            authority: ['M_OFFBOARDING_MANAGEMENT_VIEW'],
           },
 
           {
