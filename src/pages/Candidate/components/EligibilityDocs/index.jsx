@@ -251,8 +251,10 @@ class EligibilityDocs extends PureComponent {
       } = {},
     } = this.props;
     const { openModal, isSentEmail } = this.state;
-    const { user = {} } = generatedBy;
-    const { email } = user;
+    const {
+      generalInfo: { workEmail },
+    } = generatedBy;
+    // const {  } = user;
     // console.log(processStatus);
     return (
       <div className={styles.EligibilityDocs}>
@@ -295,7 +297,7 @@ class EligibilityDocs extends PureComponent {
               <SendEmail
                 loading={loading1}
                 handleSendEmail={this.handleSendEmail}
-                email={email}
+                email={workEmail}
                 onValuesChangeEmail={this.onValuesChangeEmail}
                 isSentEmail={isSentEmail}
                 handleSubmitAgain={this.handleSubmitAgain}
