@@ -56,6 +56,7 @@ class FirstFieldsComponent extends PureComponent {
                       name={item.title}
                       className={InternalStyle.formItem}
                       label={item.name}
+                      rules={[{ required: true, message: `Please select the ${item.name}` }]}
                     >
                       {/* <Typography.Title level={5}>{item.name}</Typography.Title> */}
                       <Select
