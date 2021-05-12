@@ -214,9 +214,6 @@ class JobDetails extends PureComponent {
     if (name === 'workLocation') {
       const changedWorkLocation = JSON.parse(JSON.stringify(locationList));
       const selectedWorkLocation = changedWorkLocation.find((data) => data._id === value);
-      // const {
-      //   company: { _id },
-      // } = selectedWorkLocation;
 
       if (value === undefined) {
         await dispatch({
@@ -294,7 +291,7 @@ class JobDetails extends PureComponent {
     } else if (name === 'department') {
       const { departmentList } = tempData;
       const changedDepartmentList = JSON.parse(JSON.stringify(departmentList));
-      const selectedDepartment = changedDepartmentList.find((data) => data._id === value);
+      const selectedDepartment = changedDepartmentList.find((data) => data._id === value) || {};
 
       if (value === undefined) {
         await dispatch({
@@ -313,7 +310,7 @@ class JobDetails extends PureComponent {
             tempData: {
               ...tempData,
               company: companyId,
-              department: selectedDepartment,
+              department: selectedDepartment, // {}
             },
           },
         });
@@ -334,6 +331,7 @@ class JobDetails extends PureComponent {
               tempData: {
                 ...tempData,
                 title: null,
+                department: selectedDepartment,
               },
             },
           });
