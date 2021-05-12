@@ -162,14 +162,14 @@ export function getTableDataByTitle(params) {
 
 export function closeCandidate(params) {
   // console.log(params);
-  return request('/api/candidate/close-candidate', {
+  return request('/api/candidatetenant/close-candidate', {
     method: 'POST',
     data: params,
   });
 }
 
 export function editSalaryStructure(params) {
-  return request('/api/candidate/edit-salarystructure', {
+  return request('/api/candidatetenant/edit-salarystructure', {
     method: 'POST',
     data: params,
   });
@@ -177,7 +177,7 @@ export function editSalaryStructure(params) {
 
 export function addManagerSignature(params) {
   // console.log(params);
-  return request('/api/candidate/add-manager-signature', {
+  return request('/api/candidatetenant/add-manager-signature', {
     method: 'POST',
     data: params,
   });
@@ -185,7 +185,7 @@ export function addManagerSignature(params) {
 
 export function addSchedule(params) {
   // console.log(params);
-  return request('/api/candidate/schedule', {
+  return request('/api/candidatetenant/schedule', {
     method: 'POST',
     data: params,
   });

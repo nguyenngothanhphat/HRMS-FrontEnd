@@ -6,7 +6,8 @@ import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 
 import { RightOutlined } from '@ant-design/icons';
-import logo from '../../public/assets/images/terralogic-logo.png';
+import { getCurrentCompany } from '@/utils/authority';
+import avtDefault from '@/assets/avtDefault.jpg';
 // import BottomBar from '../components/BottomBar';
 import s from './CandidateLayout.less';
 
@@ -96,21 +97,42 @@ const CandidateLayout = (props) => {
     titleName = '',
     dispatch,
     processStatus = '',
+    companiesOfUser = [],
   } = props;
 
   const [current, setCurrent] = useState(1);
 
   useEffect(() => {
     setCurrent(localStep);
-  }, [localStep]);
+  }, [localStep, processStatus]);
 
   useEffect(() => {
-    console.log('candidate layout');
+    if (
+      [
+        'APPROVED-FINAL-OFFER',
+        'SENT-FINAL-OFFERS',
+        'ACCEPT-FINAL-OFFER',
+        'RENEGOTIATE-FINAL-OFFERS',
+        'DISCARDED-PROVISONAL-OFFER',
+        'REJECT-FINAL-OFFER-HR',
+        'REJECT-FINAL-OFFER-CANDIDATE',
+      ].includes(processStatus)
+    ) {
+      dispatch({
+        type: 'candidateProfile/save',
+        payload: {
+          localStep: 5,
+        },
+      });
+      setCurrent(5);
+    }
+  }, [processStatus]);
+
+  useEffect(() => {
     return () => {
       dispatch({
         type: 'candidateProfile/clearAll',
       });
-      console.log('OUT');
     };
   }, []);
 
@@ -172,7 +194,9 @@ const CandidateLayout = (props) => {
       processStatus === 'SENT-PROVISIONAL-OFFER' ||
       processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
       processStatus === 'DISCARDED-PROVISONAL-OFFER' ||
-      processStatus === 'PENDING-BACKGROUND-CHECK'
+      processStatus === 'PENDING-BACKGROUND-CHECK' ||
+      processStatus === 'ACCEPT-PROVISIONAL-OFFER' ||
+      processStatus === 'PENDING-APPROVAL-FINAL-OFFER'
     ) {
       return steps.slice(0, 4);
     }
@@ -185,18 +209,24 @@ const CandidateLayout = (props) => {
 
   const newSteps = getSteps();
 
+  const companyLogo = () => {
+    const currentCompany =
+      companiesOfUser.find((company) => company?._id === getCurrentCompany()) || {};
+    return currentCompany.logoUrl || avtDefault;
+  };
+
   return (
     <div className={s.candidate}>
       {/* <Header className={`${s.header} ${s.one}`}> */}
       <Header className={`${s.header} ${getLineWidth(current - 1)}`}>
         <div className={s.headerLeft}>
           <div className={s.imgContainer}>
-            <img src={logo} alt="terralogic logo" />
+            <img src={companyLogo()} alt="logo" />
           </div>
 
           <RightOutlined className={s.icon} />
 
-          <span className={s.description}>Candidature for {titleName}</span>
+          {titleName && <span className={s.description}>Candidature for {titleName}</span>}
         </div>
 
         <div className={s.headerRight}>
@@ -254,11 +284,13 @@ export default connect(
       checkCandidateMandatory,
       processStatus = '',
     } = {},
+    user: { companiesOfUser = [] } = {},
   }) => ({
     localStep,
     checkCandidateMandatory,
     ticketId,
     processStatus,
     titleName,
+    companiesOfUser,
   }),
 )(CandidateLayout);
