@@ -40,7 +40,6 @@ class SearchResult extends PureComponent {
   handleSearch = (payload = {}) => {
     const { dispatch, _id } = this.props;
     const { isSearchByCategory } = payload;
-    // console.log(payload);
     if (isSearchByCategory) {
       dispatch({
         type: 'searchAdvance/searchByCategory',
