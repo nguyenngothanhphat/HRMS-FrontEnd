@@ -82,7 +82,10 @@ const UserModel = {
 
           // IS OWNER
           if (isOwnerRole) {
-            formatArrRoles = ['owner', ...permissionAdmin, ...permissionEmployee];
+            formatArrRoles = [
+              'owner',
+              // ...permissionAdmin, ...permissionEmployee
+            ];
             checkIsOwner = true;
           }
 

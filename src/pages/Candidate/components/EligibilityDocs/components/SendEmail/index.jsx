@@ -11,6 +11,7 @@ const index = ({
   isSentEmail,
   handleSubmitAgain,
   loading,
+  disabled = false,
 }) => {
   return (
     <div className={style.SendEmail}>
@@ -71,7 +72,7 @@ const index = ({
                 <Input disabled="true" />
               </Form.Item>
               <Form.Item>
-                <Button htmlType="submit" loading={loading}>
+                <Button disabled={disabled} htmlType="submit" loading={loading}>
                   Send Email
                 </Button>
               </Form.Item>
