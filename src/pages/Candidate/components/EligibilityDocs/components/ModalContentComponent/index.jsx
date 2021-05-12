@@ -21,8 +21,7 @@ class ModalContentComponent extends PureComponent {
     this.setState({
       content: {
         header: `Thank you!`,
-        body:
-          'Your response has been noted. The HR will take 1-2 days to rewview the documents and get back to you',
+        body: 'Your response has been noted. The HR will take 1-2 days to review the documents and get back to you',
         image: img1,
         button: 'Ok',
         buttonType: 'sendEmail',
