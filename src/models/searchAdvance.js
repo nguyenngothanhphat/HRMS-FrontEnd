@@ -31,7 +31,6 @@ export default {
         const listFilterKeyword = newListHistoryKeyword
           .filter((value, index, self) => self.findIndex((s) => s === value) === index)
           .slice(0, 3);
-        console.log(listFilterKeyword);
         const history = {
           user: _id,
           key: listFilterKeyword,
