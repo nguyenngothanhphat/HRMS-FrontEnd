@@ -30,7 +30,7 @@ class FormTeamMember extends PureComponent {
     const {
       match: { params: { action = '', reId } = {} },
       dispatch,
-      user: { companiesOfUser = [] },
+      // user: { companiesOfUser = [] },
       // candidateInfo,
     } = this.props;
     // check action is add or review. If isReview fetch candidate by reID
@@ -78,7 +78,12 @@ class FormTeamMember extends PureComponent {
   }
 
   componentWillUnmount() {
-    const { dispatch, candidateInfo } = this.props;
+    this.resetFormMember();
+    this.resetFirstField();
+  }
+
+  resetFormMember = () => {
+    const { dispatch, candidateInfo = {} } = this.props;
     const { listTitle } = candidateInfo;
     dispatch({
       type: 'candidateInfo/saveOrigin',
@@ -238,10 +243,27 @@ class FormTeamMember extends PureComponent {
       },
     });
 
+    // dispatch({
+    //   type: 'candidateInfo/save',
+    //   payload: {
+    //     checkMandatory: {
+    //       ...checkMandatory,
+    //       filledJobDetail: false,
+    //     },
+    //     tempData: {
+    //       checkStatus: {
+    //         filledBasicInformation: false,
+    //         filledJobDetail: false,
+    //         filledBackgroundCheck: false,
+    //       },
+    //     },
+    //   },
+    // });
+
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
-        salaryTitle: '',
+        salaryTitle: null,
       },
     });
 
@@ -249,7 +271,25 @@ class FormTeamMember extends PureComponent {
       type: 'candidateInfo/updateBackgroundRecheck',
       payload: [],
     });
-  }
+  };
+
+  resetFirstField = () => {
+    const { dispatch, candidateInfo: { tempData = {} } = {} } = this.props;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        tempData: {
+          ...tempData,
+          locationList: [],
+          departmentList: [],
+          titleList: [],
+          managerList: [],
+          salaryTitle: null,
+          workLocation: null,
+        },
+      },
+    });
+  };
 
   handleCancel = async () => {
     const { dispatch, history, candidateInfo: { data: { ticketID = '' } = {} } = {} } = this.props;
@@ -272,6 +312,10 @@ class FormTeamMember extends PureComponent {
           cancelCandidate: true,
         },
       });
+
+      this.resetFirstField();
+
+      // this.resetFormMember();
       history.push('/employee-onboarding');
     }
   };
