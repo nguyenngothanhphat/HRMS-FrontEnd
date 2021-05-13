@@ -1,189 +1,189 @@
 import request from '@/utils/request';
 
 export async function getOffboardingHRList(payload) {
-  return request('/api/offboardingrequest/list', {
+  return request('/api/offboardingrequesttenant/list', {
     method: 'POST',
     data: payload,
   });
 }
 export async function getOffboardingList(payload) {
-  return request('/api/offboardingrequest/list-my-request', {
+  return request('/api/offboardingrequesttenant/list-my-request', {
     method: 'POST',
     data: payload,
   });
 }
 export async function getapprovalflowList(payload) {
-  return request('/api/approvalflow/list', {
+  return request('/api/approvalflowtenant/list', {
     method: 'POST',
     data: payload,
   });
 }
 export async function sendRequest(payload) {
-  return request('/api/offboardingrequest/add', {
+  return request('/api/offboardingrequesttenant/add', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getList1On1(payload) {
-  return request('/api/offboardingrequest/get-1-on-1-by-off-boarding-id', {
+  return request('/api/offboardingrequesttenant/get-1-on-1-by-off-boarding-id', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getRequestById(payload) {
-  return request('/api/offboardingrequest/get-by-id', {
+  return request('/api/offboardingrequesttenant/get-by-id', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getMeetingTime() {
-  return request('/api/offboardingrequest/get-meeting-time', {
+  return request('/api/offboardingrequesttenant/get-meeting-time', {
     method: 'POST',
   });
 }
 
 export async function create1On1(payload) {
-  return request('/api/offboardingrequest/add-1-on-1', {
+  return request('/api/offboardingrequesttenant/add-1-on-1', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function teamRequestList(payload) {
-  return request('/api/offboardingrequest/list-team-request', {
+  return request('/api/offboardingrequesttenant/list-team-request', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getListProjectByEmployee(payload) {
-  return request('/api/project/get-by-employee', {
+  return request('/api/projecttenant/get-by-employee', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function complete1On1(payload) {
-  return request('/api/offboardingrequest/complete-1-on-1', {
+  return request('/api/offboardingrequesttenant/complete-1-on-1', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function reviewRequest(payload) {
-  return request('/api/offboardingrequest/review', {
+  return request('/api/offboardingrequesttenant/review', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getOffBoardingPackages(payload) {
-  return request('/api/templaterelieving/list', {
+  return request('/api/templaterelievingtenant/list', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getTemplateById(payload) {
-  return request('/api/templaterelieving/get-by-id', {
+  return request('/api/templaterelievingtenant/get-by-id', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function addCustomTemplate(payload) {
-  return request('/api/templaterelieving/add', {
+  return request('/api/templaterelievingtenant/add', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getListRelieving(payload) {
-  return request('/api/offboardingrequest/list-relieving', {
+  return request('/api/offboardingrequesttenant/list-relieving', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function sendMailExitPackage(payload) {
-  return request('/api/offboardingrequest/send-package', {
+  return request('/api/offboardingrequesttenant/send-package', {
     method: 'POST',
     data: payload,
   });
 }
 export async function getListAssigned() {
-  return request('/api/offboardingrequest/list-assigned', {
+  return request('/api/offboardingrequesttenant/list-assigned', {
     method: 'POST',
   });
 }
 
 export async function getListAssignee(payload) {
-  return request('/api/employee/list-active', {
+  return request('/api/employeetenant/list', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function searchListRelieving(payload) {
-  return request('/api/offboardingrequest/search-request', {
+  return request('/api/offboardingrequesttenant/search-request', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function requestChangeLWD(payload) {
-  return request('/api/offboardingrequest/request-lwd', {
+  return request('/api/offboardingrequesttenant/request-lwd', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function handleRequestChangeLWD(payload) {
-  return request('/api/offboardingrequest/approval-lwd', {
+  return request('/api/offboardingrequesttenant/approval-lwd', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function handleWithdraw(payload) {
-  return request('/api/offboardingrequest/withdraw', {
+  return request('/api/offboardingrequesttenant/withdraw', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function handleRelievingTemplateDraft(payload) {
-  return request('/api/offboardingrequest/save-package-draft', {
+  return request('/api/offboardingrequesttenant/save-package-draft', {
     method: 'POST',
     data: payload,
   });
 }
 export async function updateRelieving(payload) {
-  return request('/api/offboardingrequest/update-relieving', {
+  return request('/api/offboardingrequesttenant/update-relieving', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function sendOffBoardingPackage(payload) {
-  return request('/api/offboardingrequest/send-package', {
+  return request('/api/offboardingrequesttenant/send-package', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function removeOffBoardingPackage(payload) {
-  return request('/api/offboardingrequest/remove-package', {
+  return request('/api/offboardingrequesttenant/remove-package', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function terminateReason(payload) {
-  return request('/api/offboardingrequest/terminate-hr', {
+  return request('/api/offboardingrequesttenant/terminate-hr', {
     method: 'POST',
     data: payload,
   });
