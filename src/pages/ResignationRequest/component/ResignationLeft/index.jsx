@@ -1,4 +1,5 @@
 import icon from '@/assets/offboarding-schedule.svg';
+import { getCurrentTenant } from '@/utils/authority';
 import { Button, Input, Spin } from 'antd';
 import moment from 'moment';
 import React, { Component } from 'react';
@@ -45,6 +46,7 @@ class ResigationLeft extends Component {
         reasonForLeaving,
         action,
         approvalFlow: fiterActive._id,
+        tenantId: getCurrentTenant(),
       },
     }).then((response) => {
       const { statusCode } = response;
@@ -56,6 +58,7 @@ class ResigationLeft extends Component {
           type: 'offboarding/fetchList',
           payload: {
             status: 'IN-PROGRESS',
+            tenantId: getCurrentTenant(),
           },
         });
       }

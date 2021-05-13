@@ -41,7 +41,7 @@ class TableFilter extends PureComponent {
     const tenantId = getCurrentTenant();
     const company = getCurrentCompany();
     dispatch({
-      type: 'employee/fetchFilterList',
+      type: 'usersManagement/fetchFilterList',
       payload: {
         id: company,
         tenantId,
@@ -113,16 +113,8 @@ class TableFilter extends PureComponent {
 
   render() {
     const { Sider } = Layout;
-    const {
-      companyState,
-      all,
-      roleState,
-      stateState,
-      countryState,
-      text,
-      reset,
-      formatDataState,
-    } = this.state;
+    const { companyState, all, roleState, stateState, countryState, text, reset, formatDataState } =
+      this.state;
     const {
       usersManagement: {
         // location = [],

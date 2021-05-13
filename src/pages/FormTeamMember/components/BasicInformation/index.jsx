@@ -383,8 +383,12 @@ class BasicInformation extends Component {
               name="previousExperience"
               rules={[
                 {
-                  pattern: /^[0-9](\.[0-9]+)?$/,
+                  pattern: /\b([1-9]|[12][0-9]|3[0])\b(^[^<>]+$)?$/,
                   message: 'Year of experience invalid!',
+                },
+                {
+                  pattern: /^\d+$/,
+                  message: 'Only digit !',
                 },
               ]}
             >
