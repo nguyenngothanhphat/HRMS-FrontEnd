@@ -132,107 +132,139 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   ]);
 
   // Edit profile tab general info
-  const findIndexWorkEmail = isAuthorized(permissionList, [
-    // 'P_PROFILE_T_GENERAL_INFO_WORK_EMAIL_EDIT',
-    // 'P_PROFILE_T_GENERAL_INFO_WORK_EMAIL_EMPLOYEE_EDIT',
-    'T_GENERAL_INFO_WORK_EMAIL_EDIT',
-    'T_GENERAL_INFO_WORK_EMAIL_EMPLOYEE_EDIT',
-  ]);
+  const findIndexWorkEmail = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        // 'P_PROFILE_T_GENERAL_INFO_WORK_EMAIL_EDIT',
+        // 'P_PROFILE_T_GENERAL_INFO_WORK_EMAIL_EMPLOYEE_EDIT',
+        'T_GENERAL_INFO_WORK_EMAIL_EDIT',
+        'T_GENERAL_INFO_WORK_EMAIL_EMPLOYEE_EDIT',
+      ]);
 
-  const findIndexEmployeeID = isAuthorized(permissionList, [
-    // 'P_PROFILE_T_GENERAL_INFO_EMPLOYEE_ID_EDIT',
-    // 'P_PROFILE_T_GENERAL_INFO_EMPLOYEE_ID_EMPLOYEE_EDIT',
-    'T_GENERAL_INFO_EMPLOYEE_ID_EDIT',
-    'T_GENERAL_INFO_EMPLOYEE_ID_EMPLOYEE_EDIT',
-  ]);
+  const findIndexEmployeeID = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        // 'P_PROFILE_T_GENERAL_INFO_EMPLOYEE_ID_EDIT',
+        // 'P_PROFILE_T_GENERAL_INFO_EMPLOYEE_ID_EMPLOYEE_EDIT',
+        'T_GENERAL_INFO_EMPLOYEE_ID_EDIT',
+        'T_GENERAL_INFO_EMPLOYEE_ID_EMPLOYEE_EDIT',
+      ]);
 
   // Edit profile tab employment and compensation
-  const findIndexEditEmp = isAuthorized(permissionList, [
-    // 'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_VIEW',
-    // 'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_EMPLOYEE_VIEW',
-    'T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_VIEW',
-    'T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_EMPLOYEE_VIEW',
-  ]);
-  const findIndexMakeChanges = isAuthorized(permissionList, [
-    'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_B_MAKE_CHANGES_VIEW',
-    'M_DIRECTORY_SELECT_PROFILE_EMPLOYEE_T_EMPLOYMENT_&_COMPENSATION_VIEW_B_MAKE_CHANGES_VIEW',
-  ]);
+  const findIndexEditEmp = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        // 'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_VIEW',
+        // 'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_EMPLOYEE_VIEW',
+        'T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_VIEW',
+        'T_EMPLOYMENT_AND_COMPENSATION_B_EDIT_EMPLOYEE_VIEW',
+      ]);
+  const findIndexMakeChanges = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_B_MAKE_CHANGES_VIEW',
+        'M_DIRECTORY_SELECT_PROFILE_EMPLOYEE_T_EMPLOYMENT_&_COMPENSATION_VIEW_B_MAKE_CHANGES_VIEW',
+      ]);
 
   // View tabs employee profile
-  const indexEmployment = isAuthorized(permissionList, [
-    // 'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_VIEW',
-    // 'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_EMPLOYEE_VIEW',
-    'T_EMPLOYMENT_AND_COMPENSATION',
-    'T_EMPLOYMENT_AND_COMPENSATION_EMPLOYEE',
-  ]);
-  const indexPerformance = isAuthorized(permissionList, [
-    // 'P_PROFILE_T_PERFORMENT_HISTORY_VIEW',
-    // 'P_PROFILE_T_PERFORMENT_HISTORY_EMPLOYEE_VIEW',
-    'T_PERFORMENT_HISTORY',
-    'T_PERFORMENT_HISTORY_EMPLOYEE',
-  ]);
-  const indexAccountAndPaychecks = isAuthorized(permissionList, [
-    // 'P_PROFILE_T_PERFORMENT_HISTORY_VIEW',
-    // 'P_PROFILE_T_PERFORMENT_HISTORY_EMPLOYEE_VIEW',
-    'T_PERFORMENT_HISTORY_VIEW',
-    'T_PERFORMENT_HISTORY_EMPLOYEE_VIEW',
-  ]);
-  const indexDocument = isAuthorized(permissionList, [
-    // 'P_PROFILE_T_DOCUMENT_VIEW',
-    // 'P_PROFILE_T_DOCUMENT_EMPLOYEE_VIEW',
-    'T_DOCUMENT_VIEW',
-    'T_DOCUMENT_EMPLOYEE_VIEW',
-  ]);
-  const indexTimeAndSchedule = isAuthorized(permissionList, [
-    // 'P_PROFILE_T_TIME_AND_SCHEDULING_VIEW',
-    // 'P_PROFILE_T_TIME_AND_SCHEDULING_EMPLOYEE_VIEW',
-    'T_TIME_AND_SCHEDULING_VIEW',
-    'T_TIME_AND_SCHEDULING_EMPLOYEE_VIEW',
-  ]);
-  const indexBenefitPlans = isAuthorized(permissionList, [
-    'T_BENEFIT_PLANS_VIEW',
-    'T_BENEFIT_PLANS_EMPLOYEE_VIEW',
-    // 'P_PROFILE_T_BENEFIT_PLANS_VIEW',
-    // 'P_PROFILE_T_BENEFIT_PLANS_EMPLOYEE_VIEW',
-  ]);
+  const indexEmployment = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        // 'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_VIEW',
+        // 'P_PROFILE_T_EMPLOYMENT_AND_COMPENSATION_EMPLOYEE_VIEW',
+        'T_EMPLOYMENT_AND_COMPENSATION',
+        'T_EMPLOYMENT_AND_COMPENSATION_EMPLOYEE',
+      ]);
+  const indexPerformance = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        // 'P_PROFILE_T_PERFORMENT_HISTORY_VIEW',
+        // 'P_PROFILE_T_PERFORMENT_HISTORY_EMPLOYEE_VIEW',
+        'T_PERFORMENT_HISTORY',
+        'T_PERFORMENT_HISTORY_EMPLOYEE',
+      ]);
+  const indexAccountAndPaychecks = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        // 'P_PROFILE_T_PERFORMENT_HISTORY_VIEW',
+        // 'P_PROFILE_T_PERFORMENT_HISTORY_EMPLOYEE_VIEW',
+        'T_PERFORMENT_HISTORY_VIEW',
+        'T_PERFORMENT_HISTORY_EMPLOYEE_VIEW',
+      ]);
+  const indexDocument = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        // 'P_PROFILE_T_DOCUMENT_VIEW',
+        // 'P_PROFILE_T_DOCUMENT_EMPLOYEE_VIEW',
+        'T_DOCUMENT_VIEW',
+        'T_DOCUMENT_EMPLOYEE_VIEW',
+      ]);
+  const indexTimeAndSchedule = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        // 'P_PROFILE_T_TIME_AND_SCHEDULING_VIEW',
+        // 'P_PROFILE_T_TIME_AND_SCHEDULING_EMPLOYEE_VIEW',
+        'T_TIME_AND_SCHEDULING_VIEW',
+        'T_TIME_AND_SCHEDULING_EMPLOYEE_VIEW',
+      ]);
+  const indexBenefitPlans = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        'T_BENEFIT_PLANS_VIEW',
+        'T_BENEFIT_PLANS_EMPLOYEE_VIEW',
+        // 'P_PROFILE_T_BENEFIT_PLANS_VIEW',
+        // 'P_PROFILE_T_BENEFIT_PLANS_EMPLOYEE_VIEW',
+      ]);
 
   // View and edit info of general info tab
-  const indexViewPPAndVisa = isAuthorized(permissionList, [
-    // 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_VIEW',
-    // 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_VIEW',
-    'T_GENERAL_INFO_T_PASSPORT_AND_VISA_VIEW',
-    'T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_VIEW',
-  ]);
-  const indexEditEmployeeInfo = isAuthorized(permissionList, [
-    // 'P_PROFILE_T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EDIT',
-    // 'P_PROFILE_T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EMPLOYEE_EDIT',
-    'T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EDIT',
-    'T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EMPLOYEE_EDIT',
-  ]);
-  const indexEditPPAndVisa = isAuthorized(permissionList, [
-    // 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_EDIT',
-    // 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_EDIT',
-    'T_GENERAL_INFO_T_PASSPORT_AND_VISA_EDIT',
-    'T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_EDIT',
-  ]);
-  const indexEditContact = isAuthorized(permissionList, [
-    'P_PROFILE_T_GENERAL_INFO_T_EMERGENCY_CONTACT_EDIT',
-    'M_DIRECTORY_SELECT_PROFILE_EMPLOYEE_T_GENERAL_INFO_VIEW_EMERGENCY_CONTACT_DETAILS_EDIT_VIEW',
-  ]);
-  const indexEditProfessionalAcademic = isAuthorized(permissionList, [
-    // 'P_PROFILE_T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EDIT',
-    // 'P_PROFILE_T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EMPLOYEE_EDIT',
-    'T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EDIT',
-    'T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EMPLOYEE_EDIT',
-  ]);
+  const indexViewPPAndVisa = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        // 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_VIEW',
+        // 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_VIEW',
+        'T_GENERAL_INFO_T_PASSPORT_AND_VISA_VIEW',
+        'T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_VIEW',
+      ]);
+  const indexEditEmployeeInfo = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        // 'P_PROFILE_T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EDIT',
+        // 'P_PROFILE_T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EMPLOYEE_EDIT',
+        'T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EDIT',
+        'T_GENERAL_INFO_T_EMPLOYEE_INFORMATION_EMPLOYEE_EDIT',
+      ]);
+  const indexEditPPAndVisa = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        // 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_EDIT',
+        // 'P_PROFILE_T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_EDIT',
+        'T_GENERAL_INFO_T_PASSPORT_AND_VISA_EDIT',
+        'T_GENERAL_INFO_T_PASSPORT_AND_VISA_EMPLOYEE_EDIT',
+      ]);
+  const indexEditContact = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        'P_PROFILE_T_GENERAL_INFO_T_EMERGENCY_CONTACT_EDIT',
+        'M_DIRECTORY_SELECT_PROFILE_EMPLOYEE_T_GENERAL_INFO_VIEW_EMERGENCY_CONTACT_DETAILS_EDIT_VIEW',
+      ]);
+  const indexEditProfessionalAcademic = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        // 'P_PROFILE_T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EDIT',
+        // 'P_PROFILE_T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EMPLOYEE_EDIT',
+        'T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EDIT',
+        'T_GENERAL_INFO_T_PROFESSIONAL_AND_ACADEMIC_EMPLOYEE_EDIT',
+      ]);
 
   // Update avatar employee
-  const indexUpdateAvatar = isAuthorized(permissionList, [
-    // 'P_PROFILE_T_GENERAL_INFO_B_UPLOAD_AVATAR_VIEW',
-    // 'P_PROFILE_T_GENERAL_INFO_B_UPLOAD_AVATAR_EMPLOYEE_VIEW',
-    'T_GENERAL_INFO_B_UPLOAD_AVATAR_VIEW',
-    'T_GENERAL_INFO_B_UPLOAD_AVATAR_EMPLOYEE_VIEW',
-  ]);
+  const indexUpdateAvatar = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        // 'P_PROFILE_T_GENERAL_INFO_B_UPLOAD_AVATAR_VIEW',
+        // 'P_PROFILE_T_GENERAL_INFO_B_UPLOAD_AVATAR_EMPLOYEE_VIEW',
+        'T_GENERAL_INFO_B_UPLOAD_AVATAR_VIEW',
+        'T_GENERAL_INFO_B_UPLOAD_AVATAR_EMPLOYEE_VIEW',
+      ]);
 
   // ONBOARDING
   const indexOnboardingSettings =
