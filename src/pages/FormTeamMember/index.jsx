@@ -285,6 +285,7 @@ class FormTeamMember extends PureComponent {
           titleList: [],
           managerList: [],
           salaryTitle: null,
+          workLocation: null,
         },
       },
     });
