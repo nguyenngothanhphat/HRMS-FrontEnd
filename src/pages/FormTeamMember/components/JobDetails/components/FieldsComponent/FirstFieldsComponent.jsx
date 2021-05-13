@@ -56,6 +56,12 @@ class FirstFieldsComponent extends PureComponent {
                       name={item.title}
                       className={InternalStyle.formItem}
                       label={item.name}
+                      rules={[
+                        {
+                          required: item.title !== 'reportingManager',
+                          message: `Please select the ${item.name}`,
+                        },
+                      ]}
                     >
                       {/* <Typography.Title level={5}>{item.name}</Typography.Title> */}
                       <Select
@@ -86,17 +92,17 @@ class FirstFieldsComponent extends PureComponent {
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'department' &&
                           !isNull(department) && {
-                            defaultValue: department.name,
+                            defaultValue: department?.name,
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'title' &&
                           !isNull(title) && {
-                            defaultValue: title.name,
+                            defaultValue: title?.name,
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'workLocation' &&
                           !isNull(workLocation) && {
-                            defaultValue: workLocation.name,
+                            defaultValue: workLocation?.name,
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'reportingManager' &&

@@ -145,6 +145,7 @@ class JobDetails extends PureComponent {
       checkMandatory,
       dispatch,
     } = this.props;
+
     if (
       department !== null &&
       workLocation !== null &&
@@ -185,7 +186,7 @@ class JobDetails extends PureComponent {
     });
   };
 
-  _handleSelect = (value, name) => {
+  _handleSelect = async (value, name) => {
     const { dispatch, locationList } = this.props;
     const { tempData = {} } = this.state;
     tempData[name] = value;
@@ -213,29 +214,39 @@ class JobDetails extends PureComponent {
     if (name === 'workLocation') {
       const changedWorkLocation = JSON.parse(JSON.stringify(locationList));
       const selectedWorkLocation = changedWorkLocation.find((data) => data._id === value);
-      // const {
-      //   company: { _id },
-      // } = selectedWorkLocation;
-      dispatch({
-        type: 'candidateInfo/save',
-        payload: {
-          tempData: {
-            ...tempData,
-            company: companyId,
-            location: selectedWorkLocation,
-            workLocation: selectedWorkLocation,
-          },
-        },
-      });
 
-      if (!isEmpty(workLocation)) {
-        dispatch({
-          type: 'candidateInfo/fetchDepartmentList',
+      if (value === undefined) {
+        await dispatch({
+          type: 'candidateInfo/save',
           payload: {
-            company: companyId,
-            tenantId,
+            tempData: {
+              ...tempData,
+              workLocation: null,
+            },
           },
         });
+      } else {
+        dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            tempData: {
+              ...tempData,
+              company: companyId,
+              location: selectedWorkLocation,
+              workLocation: selectedWorkLocation,
+            },
+          },
+        });
+
+        if (!isEmpty(workLocation)) {
+          dispatch({
+            type: 'candidateInfo/fetchDepartmentList',
+            payload: {
+              company: companyId,
+              tenantId,
+            },
+          });
+        }
       }
     } else if (name === 'title') {
       const {
@@ -243,52 +254,88 @@ class JobDetails extends PureComponent {
       } = this.props;
       const changedtitleList = JSON.parse(JSON.stringify(titleList));
       const selectedTitle = changedtitleList.find((data) => data._id === value);
-      dispatch({
-        type: 'candidateInfo/save',
-        payload: {
-          tempData: {
-            ...tempData,
-            title: selectedTitle,
-          },
-        },
-      });
 
-      if (!isEmpty(title)) {
-        dispatch({
-          type: 'candidateInfo/fetchManagerList',
+      if (value === undefined) {
+        await dispatch({
+          type: 'candidateInfo/save',
           payload: {
-            company: companyId,
-            status: ['ACTIVE'],
-            // location: locationPayload,
-            tenantId: getCurrentTenant(),
+            tempData: {
+              ...tempData,
+              title: null,
+            },
           },
         });
+      } else {
+        dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            tempData: {
+              ...tempData,
+              title: selectedTitle,
+            },
+          },
+        });
+
+        if (!isEmpty(title)) {
+          dispatch({
+            type: 'candidateInfo/fetchManagerList',
+            payload: {
+              company: companyId,
+              status: ['ACTIVE'],
+              // location: locationPayload,
+              tenantId: getCurrentTenant(),
+            },
+          });
+        }
       }
     } else if (name === 'department') {
       const { departmentList } = tempData;
       const changedDepartmentList = JSON.parse(JSON.stringify(departmentList));
-      const selectedDepartment = changedDepartmentList.find((data) => data._id === value);
-      dispatch({
-        type: 'candidateInfo/save',
-        payload: {
-          tempData: {
-            ...tempData,
-            company: companyId,
-            department: selectedDepartment,
-          },
-        },
-      });
+      const selectedDepartment = changedDepartmentList.find((data) => data._id === value) || {};
 
-      if (!isEmpty(department)) {
-        // const departmentTemp = [department];
-        // const locationTemp = [location._id];
-        dispatch({
-          type: 'candidateInfo/fetchTitleList',
+      if (value === undefined) {
+        await dispatch({
+          type: 'candidateInfo/save',
           payload: {
-            department,
-            tenantId,
+            tempData: {
+              ...tempData,
+              department: null,
+            },
           },
         });
+      } else {
+        dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            tempData: {
+              ...tempData,
+              company: companyId,
+              department: selectedDepartment, // {}
+            },
+          },
+        });
+
+        if (!isEmpty(department)) {
+          // const departmentTemp = [department];
+          // const locationTemp = [location._id];
+          dispatch({
+            type: 'candidateInfo/fetchTitleList',
+            payload: {
+              department,
+              tenantId,
+            },
+          });
+          await dispatch({
+            type: 'candidateInfo/save',
+            payload: {
+              tempData: {
+                ...tempData,
+                title: null,
+                department: selectedDepartment,
+              },
+            },
+          });
+        }
       }
     }
     if (name === 'reportingManager') {
@@ -298,6 +345,7 @@ class JobDetails extends PureComponent {
       const selectedManager = changedManagerList.find(
         (data) => data.generalInfo.firstName === value,
       );
+
       dispatch({
         type: 'candidateInfo/save',
         payload: {
