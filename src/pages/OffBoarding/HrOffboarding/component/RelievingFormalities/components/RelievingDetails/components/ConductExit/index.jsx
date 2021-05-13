@@ -64,9 +64,8 @@ class ConductExit extends Component {
 
   renderFeedbackForm = () => {
     const { isOpenFeedbackForm } = this.state;
-    const {
-      relievingDetails: { exitInterviewFeedbacks: { waitList = [] } = {} } = {},
-    } = this.props;
+    const { relievingDetails: { exitInterviewFeedbacks: { waitList = [] } = {} } = {} } =
+      this.props;
     let itemFeedBack = {};
     if (waitList.length > 0) {
       [itemFeedBack] = waitList;
@@ -178,9 +177,8 @@ class ConductExit extends Component {
 
   renderModalEditTemplate = () => {
     const { isOpenModalEdit, mode } = this.state;
-    const {
-      relievingDetails: { exitInterviewFeedbacks: { waitList = [] } = {} } = {},
-    } = this.props;
+    const { relievingDetails: { exitInterviewFeedbacks: { waitList = [] } = {} } = {} } =
+      this.props;
     let itemFeedBack = {};
     if (waitList.length > 0) {
       [itemFeedBack] = waitList;
@@ -286,7 +284,7 @@ class ConductExit extends Component {
             </div>
             <div>
               <span className={styles.conductExit__schedule}>
-                Scheduled on : {moment(meetingDate).format('YYYY/MM/DD')} &nbsp; | &nbsp;{' '}
+                Scheduled on: {moment(meetingDate).format('YYYY/MM/DD')} &nbsp; | &nbsp;{' '}
                 <span>{meetingTime}</span>
               </span>
             </div>

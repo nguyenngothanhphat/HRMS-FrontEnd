@@ -39,9 +39,10 @@ export async function getRequestById(payload) {
   });
 }
 
-export async function getMeetingTime() {
+export async function getMeetingTime(payload) {
   return request('/api/offboardingrequesttenant/get-meeting-time', {
     method: 'POST',
+    data: payload,
   });
 }
 
@@ -114,9 +115,10 @@ export async function sendMailExitPackage(payload) {
     data: payload,
   });
 }
-export async function getListAssigned() {
+export async function getListAssigned(payload) {
   return request('/api/offboardingrequesttenant/list-assigned', {
     method: 'POST',
+    data: payload,
   });
 }
 

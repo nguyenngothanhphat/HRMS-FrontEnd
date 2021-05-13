@@ -1,4 +1,5 @@
 .resignationLeft {
+  
   :global {
     .ant-tabs-content-holder {
       padding: 10px 20px 0px;
@@ -9,46 +10,48 @@
   }
 
   .titleBody {
-    border-radius: 5px;
-    margin-top: 60px;
+    // height: 261px;
+    margin-top: 24px;
+    padding: 24px;
     background-color: #fff;
-    padding: 29px 40px 0px;
-    height: 261px;
+    border-radius: 5px;
+    border: 1px solid #ebeff2;
     &:focus {
       box-shadow: none;
     }
   }
 
   .textTime {
+    color: #464646;
     font-weight: 400;
     font-size: 14px;
     line-height: 16.41px;
-    color: #464646;
   }
 
   .textBox {
+    color: #000000;
     font-weight: 700;
     font-size: 16px;
     line-height: 18.75px;
-    color: #000000;
   }
 
   .title_Box {
-    border-radius: 5px;
-    width: 100%;
-    padding: 17px;
     display: flex;
     align-items: center;
+    width: 100%;
+    padding: 17px;
     background: #fffdf7;
     border: 1px solid #ffc65a;
+    border-radius: 5px;
   }
 
   .boxReason {
-    border: 1px solid #d6dce0;
-    height: 141px;
     box-sizing: border-box;
+    min-height: 141px;
+    padding: 14px;
+    // padding: 13px 40px 20px;
     color: #646464;
-    padding: 13px 40px 20px;
+    border: 1px solid #ebeff2;
     resize: none;
     &:focus {
       box-shadow: none;
@@ -62,65 +65,69 @@
   }
 
   .icon {
-    margin-left: 5px;
     margin-right: 21px;
+    margin-left: 5px;
   }
 
   .title_Text {
+    color: #464646;
     font-weight: 400;
     font-size: 13px;
-    color: #464646;
     line-height: 17px;
   }
 
   .subTitle_Text {
+    margin: 14px 0px 16px;
     font-weight: 700;
     font-size: 14px;
-    line-height: 16px;
     font-family: 'Roboto';
-    margin: 14px 0px 16px;
+    line-height: 16px;
   }
 
   .submitButton {
     width: 220px;
     height: 40px;
-    border-radius: 5px;
     margin-bottom: 30px;
-    background-color: #2c6df9;
     color: #fff;
+    background-color: #2c6df9;
+    border-radius: 5px;
   }
 
   .titelContainer {
     height: 35px;
+    margin-bottom: 10px;
+    padding: 8px;
+    text-align: center;
     background: rgba(86, 138, 250, 0.07);
     border-radius: 5px 5px 0px 0px;
-    margin-bottom: 10px;
-    text-align: center;
-    padding: 8px;
   }
 
   .subbmitForm {
-    margin-top: 143px;
     display: flex;
     align-items: center;
-    height: 70px;
     justify-content: space-around;
-    border-radius: 5px;
-    background-color: #fff;
+    height: 70px;
+    margin-top: 40px;
     padding: 16px;
-
+    background-color: #fff;
+    border-radius: 5px;
+    border: 1px solid #ebeff2;
     .subbmiText {
-      font-weight: 400;
-      line-height: 19px;
-      font-size: 11px;
       color: #707177;
+      font-weight: 400;
+      font-size: 11px;
+      line-height: 19px;
     }
-
+    .buttonSaveToDraft {
+      font-weight: 500;
+    }
     .buttonSubmit {
       width: 140px;
       height: 40px;
-      background-color: #ffa100;
       color: #fff;
+      font-weight: 500;
+      border:none;
+      background-color: #ffa100;
       border-radius: 40px;
       &:disabled {
         opacity: 0.5;
@@ -136,7 +143,7 @@
 
 .viewLoading {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   height: 200px;
 }

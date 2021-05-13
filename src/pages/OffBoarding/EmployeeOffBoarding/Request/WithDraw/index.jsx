@@ -14,9 +14,9 @@ class WithDraw extends PureComponent {
   showConfirm = () => {
     const _this = this;
     confirm({
-      title: 'Do you want withdraw?',
+      title: 'Are you sure to withdraw this offboarding ticket?',
       icon: <ExclamationCircleOutlined />,
-      content: 'Some descriptions',
+      // content: 'Some descriptions',
       onOk() {
         _this.handleWithdraw();
       },
