@@ -263,7 +263,7 @@ class FormTeamMember extends PureComponent {
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
-        salaryTitle: '',
+        salaryTitle: null,
       },
     });
 
@@ -284,6 +284,7 @@ class FormTeamMember extends PureComponent {
           departmentList: [],
           titleList: [],
           managerList: [],
+          salaryTitle: null,
         },
       },
     });
