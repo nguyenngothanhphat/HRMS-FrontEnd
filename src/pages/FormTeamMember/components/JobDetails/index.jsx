@@ -173,6 +173,7 @@ class JobDetails extends PureComponent {
     const { dispatch } = this.props;
     const { tempData = {} } = this.state;
     tempData[name] = {
+      ...tempData[name],
       _id: value,
     };
 
