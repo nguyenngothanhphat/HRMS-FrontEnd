@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import React, { PureComponent } from 'react';
-import { Table, notification } from 'antd';
+import { Table, notification, Popover } from 'antd';
 // import { Table, Popover, notification, Avatar } from 'antd';
 import moment from 'moment';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
@@ -68,7 +68,7 @@ class HrTable extends PureComponent {
       data = [],
       loading,
       textEmpty = 'No resignation request is submitted',
-      // isTabAccept = false,
+      isTabAccept = false,
     } = this.props;
     // const dateFormat = 'YYYY/MM/DD';
     const rowSize = 10;
@@ -191,32 +191,32 @@ class HrTable extends PureComponent {
       //     return <p>{lastWorkingDate && moment(lastWorkingDate).format('YYYY/MM/DD')} </p>;
       //   },
       // },
-      // {
-      //   title: <span className={styles.title}>Action</span>,
-      //   dataIndex: '_id',
-      //   align: 'left',
-      //   render: (_id, row) => {
-      //     return (
-      //       <div className={styles.viewAction}>
-      //         <p className={styles.viewAction__text} onClick={() => this.push(_id)}>
-      //           View Request
-      //         </p>
-      //         {isTabAccept && (
-      //           <div className={styles.viewAction__popOver}>
-      //             <Popover
-      //               content={this.renderContent(row)}
-      //               title={false}
-      //               trigger="hover"
-      //               placement="bottomRight"
-      //             >
-      //               <span className={styles.viewAction__popOver__dots}>&#8285;</span>
-      //             </Popover>
-      //           </div>
-      //         )}
-      //       </div>
-      //     );
-      //   },
-      // },
+      {
+        title: <span className={styles.title}>Action</span>,
+        dataIndex: '_id',
+        align: 'left',
+        render: (_id, row) => {
+          return (
+            <div className={styles.viewAction}>
+              <p className={styles.viewAction__text} onClick={() => this.push(_id)}>
+                View Request
+              </p>
+              {isTabAccept && (
+                <div className={styles.viewAction__popOver}>
+                  <Popover
+                    content={this.renderContent(row)}
+                    title={false}
+                    trigger="hover"
+                    placement="bottomRight"
+                  >
+                    <span className={styles.viewAction__popOver__dots}>&#8285;</span>
+                  </Popover>
+                </div>
+              )}
+            </div>
+          );
+        },
+      },
     ];
 
     const rowSelection = {

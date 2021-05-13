@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Affix, Spin } from 'antd';
+import { Row, Col, Affix, Spin, Skeleton } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import ModalSet1On1 from '@/components/ModalSet1On1';
 import StatusRequest from '@/components/StatusRequest';
@@ -93,7 +93,11 @@ class ResignationRequest extends Component {
     const {
       approvalStep = '',
       manager: {
-        generalInfo: { employeeId: idManager = '', firstName: nameManager = '' } = {},
+        generalInfo: {
+          employeeId: idManager = '',
+          firstName: nameManager = '',
+          avatar: avatarManager = '',
+        } = {},
       } = {},
       status = '',
       employee: { generalInfo: { firstName: nameEmployee = '', employeeId = '' } = {} } = {},
@@ -101,8 +105,8 @@ class ResignationRequest extends Component {
     } = myRequest;
     if (loadingGetById) {
       return (
-        <div className={styles.viewLoading}>
-          <Spin size="large" />
+        <div>
+          <Skeleton />
         </div>
       );
     }
@@ -119,7 +123,7 @@ class ResignationRequest extends Component {
             <Col span={17}>
               <div className={styles.headerPage}>
                 <div className={styles.headerPage__title}>
-                  [Ticket id: {ticketID} ] Terminate work relations with the company
+                  [Ticket ID: {ticketID}] Terminate work relations with the company
                 </div>
 
                 <div className={styles.headerPage__status}>
@@ -138,7 +142,11 @@ class ResignationRequest extends Component {
               )}
             </Col>
             <Col span={7}>
-              <WorkFlow approvalStep={approvalStep} nameManager={nameManager} />
+              <WorkFlow
+                approvalStep={approvalStep}
+                nameManager={nameManager}
+                avatarManager={avatarManager}
+              />
               <div className={styles.viewSet1On1}>
                 <div className={styles.viewSet1On1__request}>
                   <span

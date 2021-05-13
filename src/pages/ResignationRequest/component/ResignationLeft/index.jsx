@@ -1,4 +1,5 @@
 import icon from '@/assets/offboarding-schedule.svg';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { Button, Input, Spin } from 'antd';
 import moment from 'moment';
 import React, { Component } from 'react';
@@ -45,6 +46,8 @@ class ResigationLeft extends Component {
         reasonForLeaving,
         action,
         approvalFlow: fiterActive._id,
+        tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
       },
     }).then((response) => {
       const { statusCode } = response;
@@ -56,6 +59,7 @@ class ResigationLeft extends Component {
           type: 'offboarding/fetchList',
           payload: {
             status: 'IN-PROGRESS',
+            tenantId: getCurrentTenant(),
           },
         });
       }
@@ -97,7 +101,7 @@ class ResigationLeft extends Component {
           <div className={styles.center}>
             <p className={styles.textBox}>Reason for leaving us?</p>
             <p className={styles.textTime}>
-              <span style={{ color: 'black' }}>{date}</span>
+              <span style={{ color: 'black', fontSize: '13px' }}>{date}</span>
             </p>
           </div>
           <TextArea
@@ -114,6 +118,7 @@ class ResigationLeft extends Component {
               department head.
             </div>
             <Button
+              className={styles.buttonSaveToDraft}
               disabled={!reasonForLeaving}
               onClick={() => this.submitForm('saveDraft')}
               type="link"

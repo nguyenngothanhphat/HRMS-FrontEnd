@@ -5,7 +5,7 @@ import moment from 'moment';
 // import editIcon from '@/assets/edit-off-boarding.svg';
 import styles from './index.less';
 
-const dateFormat = 'YYYY/MM/DD';
+const dateFormat = 'MM.DD.YY';
 const { TextArea } = Input;
 
 @connect(({ offboarding: { myRequest = {} } = {}, loading }) => ({
@@ -87,7 +87,7 @@ class RequestChangeLWD extends Component {
       myRequest: { requestLastDate = '', commentRequestLastDate = '', statusLastDate = '' } = {},
     } = this.props;
     const { lastDate = '', isEdit } = this.state;
-    const dateValue = moment(lastDate).format('YYYY/MM/DD');
+    const dateValue = lastDate ? moment(lastDate).locale('en').format('MM.DD.YY') : null;
     const checkDisable = statusLastDate !== 'REQUESTED';
     const disableButtonSubmit = this.checkDisableButtonSubmit();
     return (
@@ -111,7 +111,7 @@ class RequestChangeLWD extends Component {
         <Row className={styles.viewChangeLastWorkingDay__viewDateApproved} gutter={[50, 0]}>
           <Col span={8}>
             <DatePicker
-              value={dateValue && moment(dateValue, dateFormat)}
+              value={dateValue ? moment(dateValue) : null}
               format={dateFormat}
               className={styles.viewChangeLastWorkingDay__viewDateApproved__datePicker}
               onChange={this.changeDate}

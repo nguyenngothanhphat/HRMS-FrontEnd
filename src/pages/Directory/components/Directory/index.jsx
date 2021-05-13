@@ -153,7 +153,7 @@ class DirectoryComponent extends PureComponent {
     }
   }
 
-  componentWillUnmount() {
+  componentWillUnmount = async () => {
     this.setState = () => {
       return { tabId: 'active', changeTab: false };
     };
@@ -161,13 +161,13 @@ class DirectoryComponent extends PureComponent {
     dispatch({
       type: 'employee/ClearFilter',
     });
-    dispatch({
+    await dispatch({
       type: 'employee/save',
       payload: {
         filterList: {},
       },
     });
-  }
+  };
 
   fetchApprovalFlowList = () => {
     const {
