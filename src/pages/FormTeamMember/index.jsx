@@ -311,6 +311,8 @@ class FormTeamMember extends PureComponent {
         },
       });
 
+      this.resetFirstField();
+
       // this.resetFormMember();
       history.push('/employee-onboarding');
     }
