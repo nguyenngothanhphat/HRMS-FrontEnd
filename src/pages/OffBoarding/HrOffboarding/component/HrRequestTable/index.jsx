@@ -43,7 +43,7 @@ class HRrequestTable extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, locationID, companyID } = this.props;
+    const { dispatch, locationID } = this.props;
     if (!dispatch) {
       return;
     }
@@ -52,13 +52,6 @@ class HRrequestTable extends Component {
       payload: {
         status: 'IN-PROGRESS',
         location: [locationID],
-      },
-    });
-    dispatch({
-      type: 'offboarding/fetchApprovalFlowList',
-      payload: {
-        company: companyID,
-        location: locationID,
       },
     });
   }
