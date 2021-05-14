@@ -127,9 +127,6 @@ class BackgroundCheck extends Component {
       dispatch,
     } = this.props;
 
-    // eslint-disable-next-line no-console
-    console.log('CANDIDATE ID', candidateId);
-
     // save step
     const { candidate = '', processStatus } = data;
     const { PROVISIONAL_OFFER_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
