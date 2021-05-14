@@ -306,8 +306,9 @@ const offboarding = {
         }
 
         response = yield call(getRequestById, { ...payload, ...commonPayload });
-        const { statusCode, data: relievingDetails = {} } = response;
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
+        const { item: relievingDetails = {} } = data;
         yield put({ type: 'save', payload: { relievingDetails } });
         return response;
       } catch (errors) {
@@ -573,8 +574,9 @@ const offboarding = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
-        const { statusCode: newRequestStat, data: relievingDetails = {} } = newRequest;
+        const { statusCode: newRequestStat, data = {} } = newRequest;
         if (newRequestStat !== 200) throw newRequest;
+        const { item: relievingDetails = {} } = data;
         yield put({ type: 'save', payload: { relievingDetails } });
       } catch (error) {
         dialog(error);
@@ -594,8 +596,9 @@ const offboarding = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
-        const { statusCode: newRequestStat, data: relievingDetails = {} } = newRequest;
+        const { statusCode: newRequestStat, data = {} } = newRequest;
         if (newRequestStat !== 200) throw newRequest;
+        const { item: relievingDetails = {} } = data;
         yield put({ type: 'save', payload: { relievingDetails } });
       } catch (error) {
         dialog(error);
