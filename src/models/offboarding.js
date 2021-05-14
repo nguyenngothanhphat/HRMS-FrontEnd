@@ -146,14 +146,14 @@ const offboarding = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, data: myRequest = {} } = response;
-        const { employee: { _id: employee } = {} } = myRequest;
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
+        const { item: { employee: { _id: employee } = {} } = {}, item: myRequest = {} } = data;
+        yield put({ type: 'save', payload: { myRequest } });
         yield put({
           type: 'getListProjectByEmployee',
           payload: { employee, company: getCurrentCompany(), tenantId: getCurrentTenant() },
         });
-        yield put({ type: 'save', payload: { myRequest } });
       } catch (errors) {
         dialog(errors);
       }
@@ -268,34 +268,35 @@ const offboarding = {
     // Relieving Formalities
     *fetchRelievingDetailsById({ payload }, { call, put }) {
       let response = {};
+      const commonPayload = {
+        company: getCurrentCompany(),
+        tenantId: getCurrentTenant(),
+      };
       try {
         if (!payload.packageType || payload.packageType === '') {
           yield call(getOffBoardingPackages, {
+            ...commonPayload,
             offBoardingId: payload.id,
-            company: getCurrentCompany(),
-            tenantId: getCurrentTenant(),
+
             templateType: 'DEFAULT',
             packageType: 'EXIT-PACKAGE',
           });
           yield call(getOffBoardingPackages, {
             offBoardingId: payload.id,
-            company: getCurrentCompany(),
-            tenantId: getCurrentTenant(),
+            ...commonPayload,
             templateType: 'DEFAULT',
             packageType: 'CLOSING-PACKAGE',
           });
           yield call(getOffBoardingPackages, {
             offBoardingId: payload.id,
-            company: getCurrentCompany(),
-            tenantId: getCurrentTenant(),
+            ...commonPayload,
             templateType: 'DEFAULT',
             packageType: 'EXIT-INTERVIEW-FEEDBACKS',
           });
         } else {
           const templateRes = yield call(getOffBoardingPackages, {
             offBoardingId: payload.id,
-            company: getCurrentCompany(),
-            tenantId: getCurrentTenant(),
+            ...commonPayload,
             templateType: 'DEFAULT',
             packageType: payload.packageType,
           });
@@ -304,7 +305,7 @@ const offboarding = {
           return templateRes;
         }
 
-        response = yield call(getRequestById, payload);
+        response = yield call(getRequestById, { ...payload, ...commonPayload });
         const { statusCode, data: relievingDetails = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { relievingDetails } });

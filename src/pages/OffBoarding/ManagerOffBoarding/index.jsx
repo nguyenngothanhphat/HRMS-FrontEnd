@@ -40,7 +40,7 @@ class ManagerOffBoading extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, locationID, companyID } = this.props;
+    const { dispatch } = this.props;
     if (!dispatch) {
       return;
     }
@@ -54,13 +54,6 @@ class ManagerOffBoading extends Component {
       type: 'offboarding/fetchList',
       payload: {
         status: 'IN-PROGRESS',
-      },
-    });
-    dispatch({
-      type: 'offboarding/fetchApprovalFlowList',
-      payload: {
-        company: companyID,
-        location: locationID,
       },
     });
   }
