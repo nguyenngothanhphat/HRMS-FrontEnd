@@ -279,9 +279,10 @@ class SalaryStructureTemplate extends PureComponent {
       dispatch,
       settingsTempData: settings = [],
       candidate,
-      salaryStructureTitle,
+      salaryTitleTempData,
     } = this.props;
     const tenantId = getCurrentTenant();
+
     if (key === 'done') {
       dispatch({
         type: 'candidateInfo/updateByHR',
@@ -289,7 +290,7 @@ class SalaryStructureTemplate extends PureComponent {
           tenantId,
           candidate,
           salaryStructure: {
-            title: salaryStructureTitle,
+            title: salaryTitleTempData,
             settings,
           },
         },
@@ -304,6 +305,8 @@ class SalaryStructureTemplate extends PureComponent {
   onCancel = async () => {
     const { dispatch, salaryTitle: salaryTitleId, settingsOriginData: settings = [] } = this.props;
 
+    console.log(salaryTitleId);
+    console.log(settings);
     await dispatch({
       type: 'candidateInfo/saveSalaryStructure',
       payload: { title: salaryTitleId, settings },
@@ -332,7 +335,11 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   handleChange = (e, current) => {
-    const { dispatch, settingsTempData: settings = [] } = this.props;
+    const {
+      dispatch,
+      settingsTempData: settings = [],
+      settingsOriginData: settingOrigin = [],
+    } = this.props;
 
     const { target } = e;
     const { name, value } = target;
@@ -340,6 +347,8 @@ class SalaryStructureTemplate extends PureComponent {
     const isNumber = !!current;
 
     const tempTableData = [...settings];
+    console.log('tempTableData: ', tempTableData);
+    console.log('settingOrigin: ', settingOrigin);
 
     const index = tempTableData.findIndex((data) => data.key === name);
 
@@ -700,7 +709,12 @@ class SalaryStructureTemplate extends PureComponent {
 
   render() {
     const { Option } = Select;
-    const { loadingTable, salaryTitle: salaryTitleId, loadingFetchTable } = this.props;
+    const {
+      loadingTable,
+      salaryTitle: salaryTitleId,
+      loadingFetchTable,
+      settingsTempData: settings,
+    } = this.props;
     const { processStatus, listTitle = [] } = this.props;
     const { dataSettings } = this.state;
 

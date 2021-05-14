@@ -701,6 +701,13 @@ const candidateInfo = {
           type: 'saveSalaryStructure',
           payload: { title: payload.title, settings: setting },
         });
+
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            salaryStructure: { title: payload.title, settings: setting },
+          },
+        });
       } catch (errors) {
         dialog(errors);
       }
