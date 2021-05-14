@@ -22,6 +22,7 @@ import PROCESS_STATUS from '../../../utils';
         title = {},
         processStatus = '',
         salaryStructure: { settings = [], title: salaryStructureTitle = {} } = {},
+        candidate,
       } = {},
       data,
       tempData = {},
@@ -42,6 +43,7 @@ import PROCESS_STATUS from '../../../utils';
     title,
     salaryStructureTitle,
     tempData,
+    candidate,
   }),
 )
 class SalaryStructureTemplate extends PureComponent {
@@ -114,23 +116,32 @@ class SalaryStructureTemplate extends PureComponent {
         },
       });
 
-      dispatch({
-        type: 'candidateInfo/fetchTableData',
-        payload: {
-          title: salaryTitleId,
-          tenantId: getCurrentTenant(),
-          country: country._id || country,
-        },
-      }).then(({ statusCode }) => {
-        if (statusCode === 200) {
-          dispatch({
-            type: 'candidateInfo/saveFilledSalaryStructure',
-            payload: {
-              filledSalaryStructure: true,
-            },
-          });
-        }
-      });
+      if (settings.length === 0) {
+        dispatch({
+          type: 'candidateInfo/fetchTableData',
+          payload: {
+            title: salaryTitleId,
+            tenantId: getCurrentTenant(),
+            country: country._id || country,
+          },
+        }).then(({ statusCode }) => {
+          if (statusCode === 200) {
+            dispatch({
+              type: 'candidateInfo/saveFilledSalaryStructure',
+              payload: {
+                filledSalaryStructure: true,
+              },
+            });
+          }
+        });
+      } else {
+        dispatch({
+          type: 'candidateInfo/saveFilledSalaryStructure',
+          payload: {
+            filledSalaryStructure: true,
+          },
+        });
+      }
     }
 
     // if (processStatus !== 'DRAFT') {
@@ -253,10 +264,34 @@ class SalaryStructureTemplate extends PureComponent {
     });
   };
 
-  onClickEdit = () => {
+  onClickEdit = (key) => {
     const { isEditted } = this.state;
+    const { dispatch, settings, candidate } = this.props;
+    const tenantId = getCurrentTenant();
+
+    if (key === 'done') {
+      dispatch({
+        type: 'candidateInfo/editSalaryStructure',
+        payload: {
+          tenantId,
+          candidate,
+          settings,
+        },
+      }).then(() => {
+        this.setState({
+          isEditted: !isEditted,
+        });
+      });
+    } else {
+      this.setState({
+        isEditted: !isEditted,
+      });
+    }
+  };
+
+  onCancel = () => {
     this.setState({
-      isEditted: !isEditted,
+      isEditted: false,
     });
   };
 
@@ -286,6 +321,7 @@ class SalaryStructureTemplate extends PureComponent {
     const isNumber = !!current;
 
     const tempTableData = [...settings];
+
     const index = tempTableData.findIndex((data) => data.key === name);
 
     if (isNumber) {
@@ -563,12 +599,17 @@ class SalaryStructureTemplate extends PureComponent {
       return (
         <Form.Item className={styles.buttons}>
           {isEditted === true ? (
-            <Button type="primary" onClick={this.onClickEdit}>
-              <img src={doneIcon} alt="icon" />
-              {formatMessage({ id: 'component.salaryStructureTemplate.done' })}
-            </Button>
+            <div>
+              <Button type="primary" onClick={() => this.onClickEdit('done')}>
+                <img src={doneIcon} alt="icon" />
+                {formatMessage({ id: 'component.salaryStructureTemplate.done' })}
+              </Button>
+              <Button type="primary" onClick={this.onCancel} style={{ marginRight: '200px' }}>
+                Cancel
+              </Button>
+            </div>
           ) : (
-            <Button type="primary" onClick={this.onClickEdit}>
+            <Button type="primary" onClick={() => this.onClickEdit('edit')}>
               <img src={editIcon} alt="icon" />{' '}
               {formatMessage({ id: 'component.salaryStructureTemplate.edit' })}
             </Button>
