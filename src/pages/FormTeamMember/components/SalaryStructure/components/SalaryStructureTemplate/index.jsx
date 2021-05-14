@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { Select, Form, Table, Button, Input, Row, Col, InputNumber, Spin } from 'antd';
+import { CloseCircleOutlined } from '@ant-design/icons';
 import { formatMessage, connect } from 'umi';
 // import { dialog } from '@/utils/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -599,13 +600,14 @@ class SalaryStructureTemplate extends PureComponent {
       return (
         <Form.Item className={styles.buttons}>
           {isEditted === true ? (
-            <div>
+            <div className={styles.actionBtn}>
               <Button type="primary" onClick={() => this.onClickEdit('done')}>
                 <img src={doneIcon} alt="icon" />
                 {formatMessage({ id: 'component.salaryStructureTemplate.done' })}
               </Button>
-              <Button type="primary" onClick={this.onCancel} style={{ marginRight: '200px' }}>
-                Cancel
+              <Button className={styles.cancelBtn} type="primary" onClick={this.onCancel}>
+                <CloseCircleOutlined />
+                <span>Cancel</span>
               </Button>
             </div>
           ) : (
