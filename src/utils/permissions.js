@@ -103,21 +103,27 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
   ]);
 
   // Directory Page - Tab general info - Public/Private Personal phone/email
-  const indexEditPersonalInfo = isAuthorized(permissionList, [
-    // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EDIT',
-    // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EMPLOYEE_EDIT',
-    'T_GENERAL_INFO_T_PERSONAL_INFORMATION',
-  ]);
-  const indexViewPersonalNumber = isAuthorized(permissionList, [
-    // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_NUMBER_VIEW',
-    // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_NUMBER_EMPLOYEE_VIEW',
-    'T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_NUMBER',
-  ]);
-  const indexViewPersonalEmail = isAuthorized(permissionList, [
-    // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL_VIEW',
-    // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL_EMPLOYEE_VIEW',
-    'T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL',
-  ]);
+  const indexEditPersonalInfo = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EDIT',
+        // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_EMPLOYEE_EDIT',
+        'T_GENERAL_INFO_T_PERSONAL_INFORMATION',
+      ]);
+  const indexViewPersonalNumber = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_NUMBER_VIEW',
+        // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_NUMBER_EMPLOYEE_VIEW',
+        'T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_NUMBER',
+      ]);
+  const indexViewPersonalEmail = isAdmin
+    ? 1
+    : isAuthorized(permissionList, [
+        // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL_VIEW',
+        // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL_EMPLOYEE_VIEW',
+        'T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL',
+      ]);
 
   // Directory Page - Filter - Display location
   const findIndexShowLocationActive = isAuthorized(permissionList, [

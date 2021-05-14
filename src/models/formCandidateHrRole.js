@@ -1,7 +1,7 @@
 import {
   getDocumentList,
+  getTitleListByDepartment,
   fetchDepartmentList,
-  getJobTitleList,
   getLocationList,
   getEmployeeTypeList,
   getManagerList,
@@ -462,7 +462,7 @@ const candidateInfo = {
     *fetchTitleList({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getJobTitleList, payload);
+        response = yield call(getTitleListByDepartment, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
