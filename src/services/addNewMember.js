@@ -27,18 +27,7 @@ export async function fetchDepartmentList(payload) {
   });
 }
 
-export function getTitleList(params) {
-  // return request('/api/title/list-by-company', {
-  //   method: 'POST',
-  //   data: params,
-  // });
-  return request('/api/titletenant/list-by-department', {
-    method: 'POST',
-    data: params,
-  });
-}
-
-export async function getJobTitleList(payload) {
+export async function getTitleListByDepartment(payload) {
   return request('/api/titletenant/list-by-department', {
     method: 'POST',
     data: payload,

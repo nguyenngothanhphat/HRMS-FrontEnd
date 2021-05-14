@@ -21,70 +21,7 @@ import PROCESS_STATUS from '../../../utils';
         listTitle = [],
         title = {},
         processStatus = '',
-        salaryStructure: {
-          settings = [
-            // {
-            //   key: 'basic',
-            //   title: 'Basic',
-            //   value: '',
-            //   order: 'A',
-            // },
-            // {
-            //   key: 'hra',
-            //   title: 'HRA',
-            //   value: '',
-            //   order: 'B',
-            // },
-            // {
-            //   title: 'Other allowances',
-            //   key: 'otherAllowances',
-            //   value: 'Balance amount',
-            //   order: 'C',
-            // },
-            // {
-            //   key: 'totalEarning',
-            //   title: 'Total earning (Gross)',
-            //   order: 'D',
-            //   value: 'A + B + C',
-            // },
-            // {
-            //   key: 'deduction',
-            //   title: 'Deduction',
-            //   order: 'E',
-            //   value: ' ',
-            // },
-            // {
-            //   key: 'employeesPF',
-            //   title: "Employee's PF",
-            //   value: '',
-            //   order: 'G',
-            // },
-            // {
-            //   key: 'employeesESI',
-            //   title: "Employee's ESI",
-            //   value: '',
-            //   order: 'H',
-            // },
-            // {
-            //   key: 'professionalTax',
-            //   title: 'Professional Tax',
-            //   value: 'Rs.200',
-            //   order: 'I',
-            // },
-            // {
-            //   key: 'tds',
-            //   title: 'TDS',
-            //   value: 'As per IT rules',
-            //   order: 'J',
-            // },
-            // {
-            //   key: 'netPayment',
-            //   title: 'Net Payment',
-            //   value: 'F - (G + H + I + J)',
-            //   order: ' ',
-            // },
-          ],
-        } = {},
+        salaryStructure: { settings = [], title: salaryStructureTitle = {} } = {},
       } = {},
       data,
       tempData = {},
@@ -103,6 +40,7 @@ import PROCESS_STATUS from '../../../utils';
     data,
     settings,
     title,
+    salaryStructureTitle,
     tempData,
   }),
 )
@@ -111,7 +49,6 @@ class SalaryStructureTemplate extends PureComponent {
     super(props);
 
     this.state = {
-      salaryTitle: '',
       dataSettings: [],
       // error: '',
       // errorInfo: '',
@@ -129,20 +66,12 @@ class SalaryStructureTemplate extends PureComponent {
     };
   }
 
+  // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps) {
-    const { listTitle = [], salaryTitle: salaryTitleId, settings } = this.props;
-    const { salaryTitle = '' } = this.state;
+    const { salaryTitle: salaryTitleId, settings } = this.props;
     if (!salaryTitleId) {
       return;
     }
-    const titleName = listTitle.find((item) => item._id === salaryTitleId);
-    if (titleName && !salaryTitle) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({
-        salaryTitle: titleName.name,
-      });
-    }
-
     // eslint-disable-next-line react/no-did-update-set-state
     this.setState({
       dataSettings: settings,
@@ -221,15 +150,15 @@ class SalaryStructureTemplate extends PureComponent {
       dataSettings: settings,
     });
 
-    const { processStatus } = this.props;
+    // const { processStatus } = this.props;
     // const tempTableData = [...settings];
 
-    if (processStatus === 'DRAFT') {
-      dispatch({
-        type: 'candidateInfo/fetchTitleListByCompany',
-        payload: { company: getCurrentCompany(), tenantId: getCurrentTenant() },
-      });
-    }
+    // if (processStatus === 'DRAFT') {
+    dispatch({
+      type: 'candidateInfo/fetchTitleListByCompany',
+      payload: { company: getCurrentCompany(), tenantId: getCurrentTenant() },
+    });
+    // }
 
     if (isFilled.length === 0 && tempTableData.length > 0) {
       dispatch({
@@ -298,12 +227,15 @@ class SalaryStructureTemplate extends PureComponent {
       settings,
       // salaryPosition,
       data: { _id },
+      tempData: { salaryTitle = '' } = {},
     } = this.props;
+
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
         salaryStructure: {
           settings,
+          title: salaryTitle,
         },
         candidate: _id,
         currentStep: currentStep + 1,

@@ -189,11 +189,8 @@ class JobDetails extends PureComponent {
     const { dispatch } = this.props;
     const { tempData = {} } = this.state;
 
-    if (tempData[name] === 'employeeType') {
-      tempData[name] = {
-        ...tempData[name],
-        _id: value,
-      };
+    if (name === 'position') {
+      tempData[name] = value;
     } else {
       tempData[name] = {
         _id: value,

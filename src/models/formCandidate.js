@@ -9,7 +9,7 @@
 import {
   getDocumentList,
   getDepartmentList,
-  getTitleList,
+  getTitleListByDepartment,
   getLocation,
   getEmployeeTypeList,
   getManagerList,
@@ -245,7 +245,7 @@ const info = {
 
     *fetchTitleList({ payload: { company = '' } }, { call, put }) {
       try {
-        const response = yield call(getTitleList, { company });
+        const response = yield call(getTitleListByDepartment, { company });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { titleList: data, loadingB: false } });

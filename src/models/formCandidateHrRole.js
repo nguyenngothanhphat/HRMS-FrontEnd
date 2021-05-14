@@ -1,7 +1,7 @@
 import {
   getDocumentList,
+  getTitleListByDepartment,
   fetchDepartmentList,
-  getJobTitleList,
   getLocationList,
   getEmployeeTypeList,
   getManagerList,
@@ -462,7 +462,7 @@ const candidateInfo = {
     *fetchTitleList({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getJobTitleList, payload);
+        response = yield call(getTitleListByDepartment, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -698,7 +698,7 @@ const candidateInfo = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveSalaryStructure',
-          payload: { settings: setting },
+          payload: { title: payload.title, settings: setting },
         });
       } catch (errors) {
         dialog(errors);
@@ -830,6 +830,7 @@ const candidateInfo = {
             amountIn: data.amountIn || '',
             timeOffPolicy: data.timeOffPolicy || '',
             compensationType: data.compensationType || '',
+            salaryTitle: data.salaryStructure?.title?._id,
             // hidePreviewOffer: !!(data.staticOfferLetter && data.staticOfferLetter.url), // Hide preview offer screen if there's already static offer
             // disablePreviewOffer:
             //   (data.offerLetter && data.offerLetter.attachment) ||
@@ -1111,13 +1112,13 @@ const candidateInfo = {
       };
     },
     saveSalaryStructure(state, action) {
-      const { data, salaryStructure } = state;
+      const { data } = state;
       return {
         ...state,
         data: {
           ...data,
           salaryStructure: {
-            ...salaryStructure,
+            ...data.salaryStructure,
             ...action.payload,
           },
         },

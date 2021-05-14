@@ -289,6 +289,7 @@ class BackgroundCheck extends Component {
     } = this.state;
     const newArrToAdjust = JSON.parse(JSON.stringify(documentList));
     newArrToAdjust[3].employer = employer;
+
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
