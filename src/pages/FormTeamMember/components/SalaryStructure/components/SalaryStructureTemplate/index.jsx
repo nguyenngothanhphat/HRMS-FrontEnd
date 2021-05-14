@@ -22,11 +22,17 @@ import PROCESS_STATUS from '../../../utils';
         listTitle = [],
         title = {},
         processStatus = '',
-        salaryStructure: { settings = [], title: salaryStructureTitle = {} } = {},
+        salaryStructure: {
+          settings: settingsOriginData = [],
+          title: salaryTitleOriginData = {},
+        } = {},
         candidate,
       } = {},
       data,
       tempData = {},
+      tempData: {
+        salaryStructure: { settings: settingsTempData = [], title: salaryTitleTempData = {} } = {},
+      } = {},
     },
     user: { currentUser: { company: { _id = '' } = {} } = {}, currentUser: { location = {} } = {} },
   }) => ({
@@ -40,9 +46,11 @@ import PROCESS_STATUS from '../../../utils';
     processStatus,
     _id,
     data,
-    settings,
+    settingsOriginData,
+    settingsTempData,
     title,
-    salaryStructureTitle,
+    salaryTitleOriginData,
+    salaryTitleTempData,
     tempData,
     candidate,
   }),
@@ -71,7 +79,7 @@ class SalaryStructureTemplate extends PureComponent {
 
   // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps) {
-    const { salaryTitle: salaryTitleId, settings } = this.props;
+    const { salaryTitle: salaryTitleId, settingsTempData: settings = [] } = this.props;
     if (!salaryTitleId) {
       return;
     }
@@ -101,7 +109,7 @@ class SalaryStructureTemplate extends PureComponent {
   componentDidMount = () => {
     const {
       dispatch,
-      settings,
+      settingsTempData: settings = [],
       salaryTitle: salaryTitleId,
       location: { headQuarterAddress: { country = {} } = {} } = {},
     } = this.props;
@@ -236,7 +244,7 @@ class SalaryStructureTemplate extends PureComponent {
     const {
       dispatch,
       currentStep,
-      settings,
+      settingsOriginData: settings = [],
       // salaryPosition,
       data: { _id },
       tempData: { salaryTitle = '' } = {},
@@ -267,30 +275,40 @@ class SalaryStructureTemplate extends PureComponent {
 
   onClickEdit = (key) => {
     const { isEditted } = this.state;
-    const { dispatch, settings, candidate } = this.props;
+    const {
+      dispatch,
+      settingsTempData: settings = [],
+      candidate,
+      salaryStructureTitle,
+    } = this.props;
     const tenantId = getCurrentTenant();
-
     if (key === 'done') {
       dispatch({
-        type: 'candidateInfo/editSalaryStructure',
+        type: 'candidateInfo/updateByHR',
         payload: {
           tenantId,
           candidate,
-          settings,
+          salaryStructure: {
+            title: salaryStructureTitle,
+            settings,
+          },
         },
-      }).then(() => {
-        this.setState({
-          isEditted: !isEditted,
-        });
-      });
-    } else {
-      this.setState({
-        isEditted: !isEditted,
       });
     }
+
+    this.setState({
+      isEditted: !isEditted,
+    });
   };
 
-  onCancel = () => {
+  onCancel = async () => {
+    const { dispatch, salaryTitle: salaryTitleId, settingsOriginData: settings = [] } = this.props;
+
+    await dispatch({
+      type: 'candidateInfo/saveSalaryStructure',
+      payload: { title: salaryTitleId, settings },
+    });
+
     this.setState({
       isEditted: false,
     });
@@ -314,7 +332,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   handleChange = (e, current) => {
-    const { dispatch, settings } = this.props;
+    const { dispatch, settingsTempData: settings = [] } = this.props;
 
     const { target } = e;
     const { name, value } = target;
@@ -355,7 +373,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   handleNumberChange = (name, current, value) => {
-    const { dispatch, settings } = this.props;
+    const { dispatch, settingsTempData: settings = [] } = this.props;
     const tempTableData = [...settings];
     const index = tempTableData.findIndex((data) => data.key === name);
 
@@ -444,7 +462,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   _renderTableTitle = (order) => {
-    const { settings = [] } = this.props;
+    const { settingsTempData: settings = [] } = this.props;
     const data = settings.find((item) => item.order === order) || {};
     return (
       <span
@@ -459,7 +477,7 @@ class SalaryStructureTemplate extends PureComponent {
 
   _renderTableValue = (order) => {
     const { isEditted } = this.state;
-    const { settings = [] } = this.props;
+    const { settingsTempData: settings = [] } = this.props;
     const data = settings.find((item) => item.order === order) || {};
     const { value = '', key, number = {} } = data;
     const isNumber = Object.keys(number).length > 0;
@@ -590,7 +608,7 @@ class SalaryStructureTemplate extends PureComponent {
 
   _renderButtons = () => {
     const { isEditted } = this.state;
-    const { processStatus, settings } = this.props;
+    const { processStatus, settingsTempData: settings = [] } = this.props;
     if (
       (processStatus === 'DRAFT' ||
         processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
@@ -603,7 +621,7 @@ class SalaryStructureTemplate extends PureComponent {
             <div className={styles.actionBtn}>
               <Button type="primary" onClick={() => this.onClickEdit('done')}>
                 <img src={doneIcon} alt="icon" />
-                {formatMessage({ id: 'component.salaryStructureTemplate.done' })}
+                Done
               </Button>
               <Button className={styles.cancelBtn} type="primary" onClick={this.onCancel}>
                 <CloseCircleOutlined />

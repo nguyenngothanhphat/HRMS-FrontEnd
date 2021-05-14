@@ -1117,13 +1117,14 @@ const candidateInfo = {
       };
     },
     saveSalaryStructure(state, action) {
-      const { data } = state;
+      const { tempData } = state;
+
       return {
         ...state,
-        data: {
-          ...data,
+        tempData: {
+          ...tempData,
           salaryStructure: {
-            ...data.salaryStructure,
+            ...tempData.salaryStructure,
             ...action.payload,
           },
         },
