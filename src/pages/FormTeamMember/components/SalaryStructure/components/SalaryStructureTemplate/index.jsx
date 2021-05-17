@@ -738,26 +738,23 @@ class SalaryStructureTemplate extends PureComponent {
         >
           {listTitle.length === 0 && loadingFetchTable ? null : (
             <div className={styles.salaryStructureTemplate_select}>
-              <Form.Item label="Select a salary structure template" name="salaryTemplate">
-                <Select
-                  value={salaryTitleId}
-                  onChange={this.handleChangeSelect}
-                  onFocus={this.onFocusSelect}
-                  placeholder="Please select a choice!"
-                  loading={loadingTable || loadingFetchTable}
-                  size="large"
-                  style={{ width: 280 }}
-                  disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
-                >
-                  {listTitle.map(({ _id = '', name = '' }) => {
-                    return (
-                      <Option key={_id} value={_id}>
-                        {name}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </Form.Item>
+              <Select
+                value={salaryTitleId || null}
+                onChange={this.handleChangeSelect}
+                placeholder="Please select a choice!"
+                loading={loadingTable || loadingFetchTable}
+                size="large"
+                style={{ width: 280 }}
+                disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
+              >
+                {listTitle.map(({ _id = '', name = '' }) => {
+                  return (
+                    <Option key={_id} value={_id}>
+                      {name}
+                    </Option>
+                  );
+                })}
+              </Select>
             </div>
           )}
           {loadingFetchTable ? (
