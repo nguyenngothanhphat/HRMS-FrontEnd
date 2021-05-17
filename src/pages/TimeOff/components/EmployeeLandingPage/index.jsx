@@ -74,7 +74,7 @@ export default class EmployeeLandingPage extends PureComponent {
             </Col>
 
             <Col xs={24} md={18}>
-              <Row gutter={[20, 20]}>
+              <Row gutter={[20, 20]} style={{ marginBottom: '20px' }}>
                 <Col xs={24} lg={15}>
                   <ApplyRequest
                     title="Apply for Timeoff from Office"
@@ -94,7 +94,7 @@ export default class EmployeeLandingPage extends PureComponent {
                   />
                 </Col>
               </Row>
-              <Row gutter={[20, 20]}>
+              <Row gutter={[20, 20]} style={{ marginBottom: '20px' }}>
                 <Col span={24}>
                   <TimeOffRequestsTable />
                 </Col>

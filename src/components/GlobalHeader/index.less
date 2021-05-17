@@ -207,19 +207,45 @@
   }
 
   .notify {
-    width: 50px;
+    width: 44px;
     height: 44px;
     margin: 0 12px;
-    padding-left: 13px;
+    // padding-left: 13px;
     color: #161c29;
     font-size: 17px;
     background-color: #f3f6fc;
     border-radius: 50%;
     cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid rgba(255, 255, 255, 0);
+
     &:hover {
-      background: transparent;
+      // background: transparent;
+      border: 1px solid #00c598;
     }
   }
+
+  .switchRole {
+    background-color: #f3f6fc;
+    border-radius: 5px;
+    margin: 0 12px;
+    cursor: pointer;
+    height: 44px;
+    padding: 0 10px;
+    border: 1px solid rgba(255, 255, 255, 0);
+    // max-width: 100px;
+    &:hover {
+      // background: transparent;
+      border: 1px solid #00c598;
+    }
+    .roleTitle {
+      font-size: 13px;
+      font-weight: 500;
+    }
+  }
+
 
   .account {
     .avatar {

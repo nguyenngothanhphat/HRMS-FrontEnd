@@ -34,7 +34,7 @@ class HrTable extends PureComponent {
   checkFunction = (id, nodeStep, relievingStatus) => {
     const { moveToRelieving = () => {} } = this.props;
     const payload = { id, relievingStatus: 'IN-QUEUES' };
-    if (!relievingStatus && nodeStep === 1) {
+    if (!relievingStatus && nodeStep === 4) {
       moveToRelieving(payload);
     } else {
       this.openNotificationWithIcon(nodeStep);
@@ -42,7 +42,7 @@ class HrTable extends PureComponent {
   };
 
   openNotificationWithIcon = (nodeStep) => {
-    const description = nodeStep < 2 ? 'Please submit LWD' : 'Moved to relieving formalities';
+    const description = nodeStep !== 4 ? 'Please submit LWD' : 'Moved to relieving formalities';
     notification.warning({
       message: 'Notification',
       description,

@@ -4,16 +4,15 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import React, { useEffect, useState } from 'react';
 import RightContent from '@/components/GlobalHeader/RightContent';
+import { getCurrentCompany, getSwitchRoleAbility } from '@/utils/authority';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import { Button, Result, Affix, Tooltip, Switch, notification } from 'antd';
-import { UserSwitchOutlined, UserOutlined } from '@ant-design/icons';
-import { connect, Link, useIntl, Redirect, useHistory } from 'umi';
-import { getCurrentCompany, getSwitchRoleAbility } from '@/utils/authority';
+import { UserOutlined, UserSwitchOutlined } from '@ant-design/icons';
+import { Affix, Button, notification, Result, Switch, Tooltip } from 'antd';
 import classnames from 'classnames';
-import { checkPermissions } from '@/utils/permissions';
+import React, { useEffect, useState } from 'react';
+import { connect, Link, Redirect, useIntl } from 'umi';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
@@ -179,11 +178,11 @@ const BasicLayout = (props) => {
   }
 
   function rightContent() {
-    const { pathname } = window.location;
+    // const { pathname } = window.location;
     return (
       <div className={styles.rightContent}>
         <RightContent />
-        {pathname === '/dashboard' ? null : buttonSwitch()}
+        {/* {pathname === '/dashboard' ? null : buttonSwitch()} */}
       </div>
     );
   }
