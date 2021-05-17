@@ -717,7 +717,6 @@ class SalaryStructureTemplate extends PureComponent {
       settingsTempData: settings,
     } = this.props;
     const { processStatus, listTitle = [] } = this.props;
-    const { dataSettings } = this.state;
 
     return (
       <div className={styles.salaryStructureTemplate}>
