@@ -6,6 +6,7 @@ import EditComment from '@/components/EditComment';
 import StatusRequest from '@/components/StatusRequest';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
+import StatusDetail from './components/StatusDetail';
 import ScheduleMeeting from '../../../../ManagerOffBoarding/component/DetailTicket/components/ScheduleMeeting';
 import LastWorkingDate from './components/LWD';
 import ButtonSet1On1 from './components/ButtonSet1On1';
@@ -150,10 +151,16 @@ class HRDetailTicket extends Component {
       reasonForLeaving = '',
       requestDate = '',
       status = '',
+      ticketID = '',
       employee: {
         employeeId,
         generalInfo: { firstName: nameFrist = '', avatar = '' } = {},
         title: { name: jobTitle = '' } = {},
+        department: { name: department = '' } = {},
+        joinDate,
+      } = {},
+      manager: {
+        generalInfo: { firstName: firstNameManager = '', lastName: lastNameManager = '' } = {},
       } = {},
     } = myRequest;
     if (loadingGetById) {
@@ -178,20 +185,26 @@ class HRDetailTicket extends Component {
             <Affix offsetTop={42}>
               <div className={styles.titlePage}>
                 <p className={styles.titlePage__text}>
-                  Terminate work relationship with {nameFrist} [{employeeId}]
+                  [Ticket ID: {ticketID}] Terminate work relationship with {nameFrist} [{employeeId}
+                  ]
                 </p>
-                <StatusRequest status={status} />
+                {/* <StatusRequest status={status} /> */}
               </div>
             </Affix>
             <Row className={styles.detailTicket__content} gutter={[30, 30]}>
               <Col span={17}>
+                <StatusDetail status={status} />
+
                 <RequesteeDetail
                   id={employeeId}
-                  avatar={avatar}
                   name={nameFrist}
                   jobTitle={jobTitle}
+                  department={department}
+                  nameOfManager={`${firstNameManager} ${lastNameManager}`}
                   listProject={listProjectByEmployee}
+                  joinDate={joinDate}
                 />
+
                 <ResignationRequestDetail
                   reason={reasonForLeaving}
                   date={requestDate}

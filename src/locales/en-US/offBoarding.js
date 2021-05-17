@@ -1,16 +1,21 @@
 export default {
+  'pages.offBoarding.requestStatus': 'This request is still under review by the reporting manager',
   // BO, Manager, Lead Off Boarding
   'pages.offBoarding.requesteeTitle': 'Requestee Detail',
   'pages.offBoarding.requestee.employeeID': 'Employee ID',
   'pages.offBoarding.requestee.employeeName': 'Employee Name',
   'pages.offBoarding.requestee.jobTitle': 'Job Title',
+  'pages.offBoarding.requestee.position': 'Position',
+  'pages.offBoarding.requestee.department': 'Department',
   'pages.offBoarding.requestee.currentProject': 'Current Project',
   'pages.offBoarding.requestee.projectManager': 'Project Manager',
+  'pages.offBoarding.requestee.joinDate': 'DOJ',
   'pages.offBoarding.requestee.projectHealth': 'Project Health',
   'pages.offBoarding.requestee.viewReport': 'View report',
 
   'pages.offBoarding.resignationTitle': 'Resignation request detail',
   'pages.offBoarding.resignation.date': 'Date of Request',
+  'pages.offBoarding.resignation.reason': 'Reason for leaving us?',
   'pages.offBoarding.resignation.employeeName': 'Employee Name',
 
   'pages.offBoarding.1on1Meeting': '1-on-1 meeting',

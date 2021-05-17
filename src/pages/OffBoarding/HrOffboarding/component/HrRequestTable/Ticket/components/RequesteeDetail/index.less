@@ -1,36 +1,41 @@
 .requesteeDetail {
-  background-color: #fff;
-  padding: 30px 40px;
-  color: #464646;
   margin-bottom: 20px;
+  padding: 30px 0;
+  color: #464646;
   font-size: 13px;
-  border-radius: 5px;
+  background-color: #fff;
   border: 1px solid #d6dce0;
+  border-radius: 5px;
   .textNoProject {
+    color: #000;
     font-weight: 700;
     font-size: 16px;
     line-height: 19px;
-    color: #000;
+  }
+  & > div {
+    padding: 0px 40px;
   }
   &__title {
+    margin-bottom: 30px;
+    padding-bottom: 30px !important;
+    color: #000;
     font-weight: 700;
     font-size: 16px;
     line-height: 19px;
-    color: #000;
-    margin-bottom: 30px;
+    border-bottom: 1px solid #d6dce0;
   }
-  &__text {
-    font-size: 14px;
-    font-weight: 500;
-  }
-  &__center {
-    text-align: center;
-  }
-  &__avatar {
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
-    margin-right: 10px;
+  &__item {
+    display: flex;
+    margin-top: 1.5rem;
+    font-size: 13px;
+    line-height: 15px;
+    & > div:first-child {
+      min-width: 200px;
+      color: #161c29;
+    }
+    & > div:last-child {
+      color: #707177;
+    }
   }
   :global {
     .ant-progress-outer {
@@ -40,15 +45,15 @@
       width: 90%;
       height: 5px;
       background-color: #fff;
-      border-radius: unset;
       border: 1px solid #707177;
+      border-radius: unset;
     }
     .ant-progress-success-bg,
     .ant-progress-bg {
       height: 5px !important;
       background-color: #2aee19;
-      border-radius: unset;
       border: 1px solid #2aee19;
+      border-radius: unset;
     }
     .ant-progress-text {
       color: #000;
