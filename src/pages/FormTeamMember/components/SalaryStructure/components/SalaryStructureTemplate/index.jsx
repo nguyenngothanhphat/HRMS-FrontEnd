@@ -56,6 +56,8 @@ import PROCESS_STATUS from '../../../utils';
   }),
 )
 class SalaryStructureTemplate extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
 
@@ -305,12 +307,12 @@ class SalaryStructureTemplate extends PureComponent {
   onCancel = async () => {
     const { dispatch, salaryTitle: salaryTitleId, settingsOriginData: settings = [] } = this.props;
 
-    console.log(salaryTitleId);
-    console.log(settings);
     await dispatch({
       type: 'candidateInfo/saveSalaryStructure',
       payload: { title: salaryTitleId, settings },
     });
+
+    this.formRef.current.resetFields();
 
     this.setState({
       isEditted: false,
@@ -335,11 +337,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   handleChange = (e, current) => {
-    const {
-      dispatch,
-      settingsTempData: settings = [],
-      settingsOriginData: settingOrigin = [],
-    } = this.props;
+    const { dispatch, settingsTempData: settings = [] } = this.props;
 
     const { target } = e;
     const { name, value } = target;
@@ -347,16 +345,19 @@ class SalaryStructureTemplate extends PureComponent {
     const isNumber = !!current;
 
     const tempTableData = [...settings];
-    console.log('tempTableData: ', tempTableData);
-    console.log('settingOrigin: ', settingOrigin);
 
     const index = tempTableData.findIndex((data) => data.key === name);
 
     if (isNumber) {
       tempTableData[index].value = `${current} ${value}`;
     } else {
-      tempTableData[index].value = value;
+      // tempTableData[index].value = value;
+      tempTableData[index] = {
+        ...tempTableData[index],
+        value,
+      };
     }
+
     const isFilled = tempTableData.filter((item) => item.value === '');
     if (isFilled.length === 0 && tempTableData.length > 0) {
       dispatch({
@@ -373,12 +374,12 @@ class SalaryStructureTemplate extends PureComponent {
         },
       });
     }
-    // dispatch({
-    //   type: 'candidateInfo/saveSalaryStructure',
-    //   payload: {
-    //     settings: tempTableData,
-    //   },
-    // });
+    dispatch({
+      type: 'candidateInfo/saveSalaryStructure',
+      payload: {
+        settings: tempTableData,
+      },
+    });
   };
 
   handleNumberChange = (name, current, value) => {
@@ -725,6 +726,7 @@ class SalaryStructureTemplate extends PureComponent {
             salaryTemplate: salaryTitleId,
           }}
           onFinish={this.onFinish}
+          ref={this.formRef}
         >
           {listTitle.length === 0 && loadingFetchTable ? null : (
             <div className={styles.salaryStructureTemplate_select}>
@@ -760,7 +762,7 @@ class SalaryStructureTemplate extends PureComponent {
                   <div className={styles.salaryStructureTemplate_table}>
                     <Table
                       loading={loadingTable}
-                      dataSource={dataSettings}
+                      dataSource={settings}
                       columns={this._renderColumns()}
                       pagination={false}
                     />
