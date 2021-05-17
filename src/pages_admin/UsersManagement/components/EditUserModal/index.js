@@ -193,7 +193,7 @@ class EditUserModal extends PureComponent {
 
     const { companyId } = this.state;
     const listLocationByCurrentCompany = listLocationsByCompany.filter((location) => {
-      return location.company?._id === companyId;
+      return location.company?._id === companyId || location.company === companyId;
     });
 
     const roleList = roles.map((role) => role._id);

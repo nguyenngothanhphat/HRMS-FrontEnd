@@ -12,9 +12,12 @@ const array = [
     icon: icon1,
     decription: (
       <p>
-        Discuss your decision with a 
-        <span style={{ color: '#2C6DF9', fontWeight: '500', borderBottom: '1px solid #2C6DF9' }}> supervisor </span> and 
-        not your reporting manager
+        Discuss your decision with a
+        <span style={{ color: '#2C6DF9', fontWeight: '500', borderBottom: '1px solid #2C6DF9' }}>
+          {' '}
+          supervisor{' '}
+        </span>{' '}
+        and not your reporting manager
       </p>
     ),
   },
@@ -22,8 +25,12 @@ const array = [
     icon: icon2,
     decription: (
       <p>
-        Make sure you are done with your current project to have this discussion continued. 
-        If not, please <span style={{ color: '#2C6DF9', fontWeight: '500', borderBottom: '1px solid #2C6DF9' }}> schedule a meeting </span>
+        Make sure you are done with your current project to have this discussion continued. If not,
+        please{' '}
+        <span style={{ color: '#2C6DF9', fontWeight: '500', borderBottom: '1px solid #2C6DF9' }}>
+          {' '}
+          schedule a meeting{' '}
+        </span>
         with project manager now.
       </p>
     ),
@@ -32,9 +39,12 @@ const array = [
     icon: icon3,
     decription: (
       <p>
-        We have prepared an 
-        <span style={{ color: '#2C6DF9', fontWeight: '500', borderBottom: '1px solid #2C6DF9' }}> exit checklist, </span> which you might want to see before 
-        applying for a relationship termination
+        We have prepared an
+        <span style={{ color: '#2C6DF9', fontWeight: '500', borderBottom: '1px solid #2C6DF9' }}>
+          {' '}
+          exit checklist,{' '}
+        </span>{' '}
+        which you might want to see before applying for a relationship termination
       </p>
     ),
   },
@@ -49,15 +59,13 @@ export default class ViewRight extends PureComponent {
   renderItem = (render) => {
     return (
       <div className={styles.rowInfo}>
-        <Row 
-          justify='space-between'
-        >
-          <Col span={5}>
+        <Row justify="space-between">
+          <Col span={4}>
             <div className={styles.icon}>
               <img src={render.icon} alt="iconCheck" />
             </div>
           </Col>
-          <Col span={18}>
+          <Col span={19}>
             <div className={styles.description}>{render.decription} </div>
           </Col>
         </Row>
@@ -69,16 +77,14 @@ export default class ViewRight extends PureComponent {
     return (
       <div className={styles.ViewRight}>
         <div className={styles.twoRight}>
-          <div className={styles.headerTitle}>
-            Few thing to consider
-          </div>
+          <div className={styles.headerTitle}>Few thing to consider</div>
           <Divider className={styles.divider} />
-          <div className={styles.twoRight__bottom}>{array.map((render) => this.renderItem(render))}</div>
+          <div className={styles.twoRight__bottom}>
+            {array.map((render) => this.renderItem(render))}
+          </div>
           <div className={styles.bottom}>
             <div className={styles.btnBottom} />
-            <Button className={styles.btnBottom__btn}>
-              Speak to manager
-            </Button>
+            <Button className={styles.btnBottom__btn}>Speak to manager</Button>
           </div>
           {/* <img alt="icontop" className={styles.icon} src={icon} />
           <div className={styles.text_Title}> Did you know?</div>

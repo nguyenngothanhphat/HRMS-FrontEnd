@@ -189,7 +189,11 @@ const employeeSetting = {
     },
     *addCustomTemplate({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(addCustomTemplate, payload);
+        const response = yield call(addCustomTemplate, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
