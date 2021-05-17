@@ -18,9 +18,9 @@ class RelievingTemplates extends PureComponent {
 
   _renderExitInterview = () => {
     const { exitPackageTemplates } = this.props;
-    if (exitPackageTemplates.length === 0) {
-      return null;
-    }
+    // if (exitPackageTemplates.length === 0) {
+    //   return null;
+    // }
     return (
       <div className={styles.templateList} style={{ paddingTop: '30px' }}>
         <div className={styles.title}>
@@ -69,9 +69,9 @@ class RelievingTemplates extends PureComponent {
 
   _renderClosingPackage = () => {
     const { closingPackageTemplates } = this.props;
-    if (closingPackageTemplates.length === 0) {
-      return null;
-    }
+    // if (closingPackageTemplates.length === 0) {
+    //   return null;
+    // }
     return (
       <>
         <hr />
@@ -122,10 +122,10 @@ class RelievingTemplates extends PureComponent {
   };
 
   render() {
-    const { listTitle, exitPackageTemplates, closingPackageTemplates } = this.props;
-    if (exitPackageTemplates.length === 0 && closingPackageTemplates.length === 0) {
-      return null;
-    }
+    const { listTitle } = this.props;
+    // if (exitPackageTemplates.length === 0 && closingPackageTemplates.length === 0) {
+    //   return null;
+    // }
     return (
       <div className={styles.relievingTemplates}>
         <div className={styles.header}>

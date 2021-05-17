@@ -6,6 +6,8 @@ import moment from 'moment';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 // import { UserOutlined } from '@ant-design/icons';
 import { history } from 'umi';
+import Avatar from 'antd/lib/avatar/avatar';
+import { UserOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 class HrTable extends PureComponent {
@@ -18,29 +20,29 @@ class HrTable extends PureComponent {
   }
 
   renderContent = (row) => {
-    const { _id = '', approvalStep = 1, relievingStatus = '' } = row;
+    const { _id = '', nodeStep = 1, relievingStatus = '' } = row;
     return (
       <div
         style={{ textDecoration: 'underline', cursor: 'pointer', color: '#2C6DF9' }}
-        onClick={() => this.checkFunction(_id, approvalStep, relievingStatus)}
+        onClick={() => this.checkFunction(_id, nodeStep, relievingStatus)}
       >
         Move to relieving formalities
       </div>
     );
   };
 
-  checkFunction = (id, approvalStep, relievingStatus) => {
+  checkFunction = (id, nodeStep, relievingStatus) => {
     const { moveToRelieving = () => {} } = this.props;
     const payload = { id, relievingStatus: 'IN-QUEUES' };
-    if (approvalStep === 2 && !relievingStatus) {
+    if (!relievingStatus && nodeStep === 4) {
       moveToRelieving(payload);
     } else {
-      this.openNotificationWithIcon(approvalStep);
+      this.openNotificationWithIcon(nodeStep);
     }
   };
 
-  openNotificationWithIcon = (approvalStep) => {
-    const description = approvalStep === 1 ? 'Please submit LWD' : 'Moved to relieving formalities';
+  openNotificationWithIcon = (nodeStep) => {
+    const description = nodeStep !== 4 ? 'Please submit LWD' : 'Moved to relieving formalities';
     notification.warning({
       message: 'Notification',
       description,
@@ -154,43 +156,42 @@ class HrTable extends PureComponent {
           return <p>{Object.keys(manager).length === 0 ? '' : manager}</p>;
         },
       },
-      // {
-      //   title: <span className={styles.title}>Assigned </span>,
-      //   dataIndex: 'Assigned',
-      //   render: (_, row) => {
-      //     const {
-      //       hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {},
-      //     } = this.props;
-      //     const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
-      //     const arrAvt = [avtManager, avtHrManager];
-      //     return (
-      //       <div className={styles.rowAction}>
-      //         {arrAvt.map(
-      //           (item, index) =>
-      //             item && (
-      //               <div key={index} style={{ marginRight: '13px', display: 'inline-block' }}>
-      //                 <Avatar src={item} size={20} icon={<UserOutlined />} />
-      //               </div>
-      //             ),
-      //         )}
-      //       </div>
-      //     );
-      //   },
-      // },
-      // {
-      //   title: <span className={styles.title}>Department</span>,
-      //   dataIndex: 'department',
-      //   render: (department) => {
-      //     return <p>{department?.name}</p>;
-      //   },
-      // },
-      // {
-      //   title: <span className={styles.title}>LWD</span>,
-      //   dataIndex: 'lastWorkingDate',
-      //   render: (lastWorkingDate) => {
-      //     return <p>{lastWorkingDate && moment(lastWorkingDate).format('YYYY/MM/DD')} </p>;
-      //   },
-      // },
+      {
+        title: <span className={styles.title}>Assigned </span>,
+        dataIndex: 'Assigned',
+        render: (_, row) => {
+          const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
+            this.props;
+          const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
+          const arrAvt = [avtManager, avtHrManager];
+          return (
+            <div className={styles.rowAction}>
+              {arrAvt.map(
+                (item, index) =>
+                  item && (
+                    <div key={index} style={{ marginRight: '13px', display: 'inline-block' }}>
+                      <Avatar src={item} size={20} icon={<UserOutlined />} />
+                    </div>
+                  ),
+              )}
+            </div>
+          );
+        },
+      },
+      {
+        title: <span className={styles.title}>Department</span>,
+        dataIndex: 'department',
+        render: (department) => {
+          return <p>{department?.name}</p>;
+        },
+      },
+      {
+        title: <span className={styles.title}>LWD</span>,
+        dataIndex: 'lastWorkingDate',
+        render: (lastWorkingDate) => {
+          return <p>{lastWorkingDate && moment(lastWorkingDate).format('YYYY/MM/DD')} </p>;
+        },
+      },
       {
         title: <span className={styles.title}>Action</span>,
         dataIndex: '_id',

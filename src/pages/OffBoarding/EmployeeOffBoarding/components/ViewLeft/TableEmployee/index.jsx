@@ -76,9 +76,8 @@ class TableEmployee extends Component {
         dataIndex: 'Assigned',
         width: 100,
         render: (_, row) => {
-          const {
-            hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {},
-          } = this.props;
+          const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
+            this.props;
           const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
           const arrAvt = [avtManager, avtHrManager];
           return (
@@ -161,8 +160,6 @@ class TableEmployee extends Component {
       },
     ];
 
-    console.log(data);
-
     return (
       <div className={t.employeeTable}>
         <Table
@@ -178,10 +175,10 @@ class TableEmployee extends Component {
           columns={tabId === '1' ? columnsRequest : columnsDraft}
           dataSource={data}
           hideOnSinglePage
-          pagination={{
-            ...pagination,
-            total: data.length,
-          }}
+          // pagination={{
+          //   ...pagination,
+          //   total: data.length,
+          // }}
           rowKey="id"
           scroll={{ x: 'max-content' }}
           onChange={this.handleChangeTable}

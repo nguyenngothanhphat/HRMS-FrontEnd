@@ -114,7 +114,7 @@ class EmployeeOffBoading extends Component {
         },
       }).then((res) => {
         const { data = {} } = res;
-        const { relievingStatus = '' } = data;
+        const { item: { relievingStatus = '' } = {} } = data;
         if (relievingStatus === 'IN-QUEUES') {
           this.setState({
             relievingInQueue: true,
