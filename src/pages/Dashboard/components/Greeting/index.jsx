@@ -48,7 +48,7 @@ class Greeting extends PureComponent {
           {formatMessage({ id: 'pages.dashboard.greeting.hello' })} {name}!
         </h1>
         {currentLocation && !loadingFetchLocationParent && !loadingFetchLocation && (
-          <p>Current location: {currentLocation}</p>
+          <p className={s.location}>Current location: {currentLocation}</p>
         )}
       </div>
     );

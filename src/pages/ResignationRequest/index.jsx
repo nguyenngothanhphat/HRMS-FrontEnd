@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Affix } from 'antd';
+import { Row, Col, Affix, Button } from 'antd';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import ResignationLeft from './component/ResignationLeft';
@@ -9,23 +9,17 @@ import styles from './index.less';
 
 class ResignationRequest extends PureComponent {
   render() {
-    const {
-      sendrequest,
-      currentUser: { employeeId = '', generalInfo: { firstName = '' } = {} } = {},
-    } = this.props;
+    const { sendrequest } = this.props;
     return (
       <PageContainer>
         <div className={styles.root}>
           <Affix offsetTop={42}>
             <div className={styles.titlePage}>
-              <p className={styles.titlePage__text}>
-                Terminate work relationship with {firstName} [{employeeId}]
-              </p>
+              <p className={styles.titlePage__text}>Terminate work relationship with the company</p>
               <div>
-                <span className={styles.textActivity}>View Activity Log</span>
-                <span className={styles.textActivity} style={{ color: 'red', padding: '5px' }}>
-                  (00)
-                </span>
+                <div className={styles.viewActivityLogs}>
+                  <span>View Activity log (15)</span>
+                </div>
               </div>
             </div>
           </Affix>
@@ -33,7 +27,14 @@ class ResignationRequest extends PureComponent {
             <Col span={17}>
               <ResignationLeft />
             </Col>
-            <Col span={7}>{sendrequest ? <Workflow /> : <Sidebar />}</Col>
+            <Col span={7}>
+              {sendrequest ? (
+                <Workflow />
+              ) : (
+                // <Sidebar />
+                <div />
+              )}
+            </Col>
           </Row>
         </div>
       </PageContainer>

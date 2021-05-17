@@ -1,6 +1,7 @@
-import icon from '@/assets/offboarding-schedule.svg';
+import icon from '@/assets/lightIcon.svg';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { Button, Input, Spin } from 'antd';
+import { Button, DatePicker, Input, Spin } from 'antd';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
 import moment from 'moment';
 import React, { Component } from 'react';
 import { connect } from 'umi';
@@ -78,7 +79,6 @@ class ResigationLeft extends Component {
     const checkInprogress = totalList.find(({ _id }) => _id === 'IN-PROGRESS') || {};
     const checkAccepted = totalList.find(({ _id }) => _id === 'ACCEPTED') || {};
     const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
-    const date = moment().format('DD.MM.YY | h:mm A');
     if (loadingFetchListRequest)
       return (
         <div className={styles.viewLoading}>
@@ -90,26 +90,41 @@ class ResigationLeft extends Component {
         <div className={styles.title_Box}>
           <img src={icon} alt="iconCheck" className={styles.icon} />
           <span className={styles.title_Text}>
-            A last working date (LWD) will generated after your request is approved by your manager
-            and the HR.
-            <div>
-              The Last Working Day (LWD) will be generated as per our Standard Offboarding Policy.
-            </div>
+            Your Last Working Day (LWD) will be 90 day from the submission of this request. Check
+            our <span className={styles.offboardingPolicy}>Offboarding policy</span> to learn more.
+            The LWD is system generated. Any change request has to be approved by the HR manager to
+            come into effect.
           </span>
         </div>
         <div className={styles.titleBody}>
           <div className={styles.center}>
             <p className={styles.textBox}>Reason for leaving us?</p>
-            <p className={styles.textTime}>
+            {/* <p className={styles.textTime}>
               <span style={{ color: 'black', fontSize: '13px' }}>{date}</span>
-            </p>
+            </p> */}
           </div>
           <TextArea
             className={styles.boxReason}
             value={reasonForLeaving}
             onChange={this.handleChange}
+            placeholder="The reason I have decided to end my journey with Lollypop here is because…"
             disabled={sendleaveRequest || checkSendRequest}
           />
+        </div>
+        <div className={styles.lastWorkingDay}>
+          <span className={styles.title}>Last working date (System generated)</span>
+          <div className={styles.datePicker}>
+            <DatePicker format="MM.DD.YY" />
+            <div className={styles.notice}>
+              <span className={styles.content}>
+                The LWD is generated as per a 90 days period according to our{' '}
+                <span className={styles.link}>Standard Offboarding Policy</span>
+              </span>
+            </div>
+          </div>
+          <div className={styles.requestToChange}>
+            <Checkbox>Request to change</Checkbox>
+          </div>
         </div>
         {!sendleaveRequest && !checkSendRequest && (
           <div className={styles.subbmitForm}>

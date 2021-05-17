@@ -98,23 +98,27 @@ class ViewLeft extends Component {
     console.log(values);
   };
 
-  operations = () => (
-    <div className={styles.status}>
-      <div className={styles.status__text}>Status: </div>
-      <div className={styles.action}>
-        <div className={styles.action__dot} />
-        <div className={styles.action__text}>In Progress</div>
-      </div>
-    </div>
-  );
+  operations = (countdata = []) => {
+    if (countdata.length > 0) {
+      return (
+        <div className={styles.status}>
+          <div className={styles.status__text}>Status: </div>
+          <div className={styles.action}>
+            <div className={styles.action__dot} />
+            <div className={styles.action__text}>{countdata[0]._id}</div>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  };
 
   render() {
     const { TabPane } = Tabs;
     const { data = [], countdata = [], hrManager = {} } = this.props;
     const { current = 0, tabId } = this.state;
-    // const checkInprogress = countdata.find(({ _id }) => _id === 'IN-PROGRESS') || {};
+    const checkDraft = countdata.filter(({ _id }) => _id === 'DRAFT').length > 0;
     // const checkAccepted = countdata.find(({ _id }) => _id === 'ACCEPTED') || {};
-
     // const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
 
     return (
@@ -178,18 +182,26 @@ class ViewLeft extends Component {
             defaultActiveKey="1"
             className={styles.tabComponent}
             onTabClick={this.callback}
-            tabBarExtraContent={tabId === '1' ? this.operations() : null}
+            tabBarExtraContent={tabId === '1' ? this.operations(countdata) : null}
           >
-            <TabPane tab="Your Request" key="1">
-              <div className={styles.marrinTop}>
-                <ViewTable data={data} countTable={countdata} hrManager={hrManager} tabId={tabId} />
-              </div>
-            </TabPane>
-            <TabPane tab="Saved Draft" key="2">
-              <div className={styles.marrinTop}>
-                <TabDrafts data={data} textEmpty="No draft saved" tabId={tabId} />
-              </div>
-            </TabPane>
+            {!checkDraft ? (
+              <TabPane tab="Your Request" key="1">
+                <div className={styles.marrinTop}>
+                  <ViewTable
+                    data={data}
+                    countTable={countdata}
+                    hrManager={hrManager}
+                    tabId={tabId}
+                  />
+                </div>
+              </TabPane>
+            ) : (
+              <TabPane tab="Saved Draft" key="2">
+                <div className={styles.marrinTop}>
+                  <TabDrafts data={data} textEmpty="No draft saved" tabId={tabId} />
+                </div>
+              </TabPane>
+            )}
             {/* <TabPane tab="Assigned" key="3">
               <div className={styles.marrinTop}>
                 <TableAssigned />
