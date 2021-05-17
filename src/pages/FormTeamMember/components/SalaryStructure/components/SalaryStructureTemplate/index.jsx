@@ -38,6 +38,7 @@ import PROCESS_STATUS from '../../../utils';
   }) => ({
     loadingTable: loading.effects['candidateInfo/saveSalaryStructure'],
     loadingFetchTable: loading.effects['candidateInfo/fetchTableData'],
+    loadingEditSalary: loading.effects['candidateInfo/updateByHR'],
     listTitle,
     cancelCandidate,
     location,
@@ -296,12 +297,16 @@ class SalaryStructureTemplate extends PureComponent {
             settings,
           },
         },
+      }).then(() => {
+        this.setState({
+          isEditted: !isEditted,
+        });
+      });
+    } else {
+      this.setState({
+        isEditted: !isEditted,
       });
     }
-
-    this.setState({
-      isEditted: !isEditted,
-    });
   };
 
   onCancel = async () => {
@@ -618,7 +623,7 @@ class SalaryStructureTemplate extends PureComponent {
 
   _renderButtons = () => {
     const { isEditted } = this.state;
-    const { processStatus, settingsTempData: settings = [] } = this.props;
+    const { processStatus, settingsTempData: settings = [], loadingEditSalary } = this.props;
     if (
       (processStatus === 'DRAFT' ||
         processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
@@ -629,7 +634,11 @@ class SalaryStructureTemplate extends PureComponent {
         <Form.Item className={styles.buttons}>
           {isEditted === true ? (
             <div className={styles.actionBtn}>
-              <Button type="primary" onClick={() => this.onClickEdit('done')}>
+              <Button
+                loading={loadingEditSalary}
+                type="primary"
+                onClick={() => this.onClickEdit('done')}
+              >
                 <img src={doneIcon} alt="icon" />
                 Done
               </Button>
