@@ -736,46 +736,50 @@ class SalaryStructureTemplate extends PureComponent {
           onFinish={this.onFinish}
           ref={this.formRef}
         >
-          {listTitle.length === 0 && loadingFetchTable ? null : (
-            <div className={styles.salaryStructureTemplate_select}>
-              <Select
-                value={salaryTitleId || null}
-                onChange={this.handleChangeSelect}
-                placeholder="Please select a choice!"
-                loading={loadingTable || loadingFetchTable}
-                size="large"
-                style={{ width: 280 }}
-                disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
-              >
-                {listTitle.map(({ _id = '', name = '' }) => {
-                  return (
-                    <Option key={_id} value={_id}>
-                      {name}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </div>
-          )}
-          {loadingFetchTable ? (
+          {listTitle.length === 0 ? (
             <Spin className={styles.spin} />
           ) : (
             <>
-              {salaryTitleId && (
+              <div className={styles.salaryStructureTemplate_select}>
+                <Select
+                  value={salaryTitleId || null}
+                  onChange={this.handleChangeSelect}
+                  placeholder="Please select a choice!"
+                  loading={loadingTable || loadingFetchTable}
+                  size="large"
+                  style={{ width: 280 }}
+                  disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
+                >
+                  {listTitle.map(({ _id = '', name = '' }) => {
+                    return (
+                      <Option key={_id} value={_id}>
+                        {name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </div>
+              {loadingFetchTable ? (
+                <Spin className={styles.spin} />
+              ) : (
                 <>
-                  {this._renderButtons()}
-                  <div className={styles.salaryStructureTemplate_table}>
-                    <Table
-                      loading={loadingTable}
-                      dataSource={settings}
-                      columns={this._renderColumns()}
-                      pagination={false}
-                    />
-                  </div>
-                  {this._renderFooter()}
-                  {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
-                    ? this._renderBottomBar()
-                    : null}
+                  {salaryTitleId && (
+                    <>
+                      {this._renderButtons()}
+                      <div className={styles.salaryStructureTemplate_table}>
+                        <Table
+                          loading={loadingTable}
+                          dataSource={settings}
+                          columns={this._renderColumns()}
+                          pagination={false}
+                        />
+                      </div>
+                      {this._renderFooter()}
+                      {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
+                        ? this._renderBottomBar()
+                        : null}
+                    </>
+                  )}
                 </>
               )}
             </>
