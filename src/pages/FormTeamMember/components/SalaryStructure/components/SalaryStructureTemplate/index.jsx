@@ -430,6 +430,7 @@ class SalaryStructureTemplate extends PureComponent {
     //   },
     // });
     // console.log('id', this.props.salaryTitleId === null);
+    this.formRef.current.resetFields();
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
