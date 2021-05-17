@@ -277,7 +277,6 @@ const offboarding = {
           yield call(getOffBoardingPackages, {
             ...commonPayload,
             offBoardingId: payload.id,
-
             templateType: 'DEFAULT',
             packageType: 'EXIT-PACKAGE',
           });
