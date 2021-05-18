@@ -18,17 +18,17 @@ class ResigationLeft extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, locationID, companyID } = this.props;
+    const { dispatch } = this.props;
     if (!dispatch) {
       return;
     }
-    dispatch({
-      type: 'offboarding/fetchApprovalFlowList',
-      payload: {
-        company: companyID,
-        location: locationID,
-      },
-    });
+    // dispatch({
+    //   type: 'offboarding/fetchApprovalFlowList',
+    //   payload: {
+    //     company: companyID,
+    //     location: locationID,
+    //   },
+    // });
     dispatch({
       type: 'offboarding/fetchList',
       payload: {

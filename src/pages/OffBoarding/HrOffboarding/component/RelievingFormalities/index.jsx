@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col } from 'antd';
 import { connect } from 'umi';
 import CustomModal from '@/components/CustomModal/index';
+import { getCurrentCompany } from '@/utils/authority';
 import RelievingTables from './components/RelievingTables';
 import RelievingTemplates from './components/RelievingTemplates';
 import ModalContent from './components/ModalContent';
@@ -31,16 +32,16 @@ class RelievingFormalities extends Component {
     super(props);
     this.state = {
       templateId: '',
+      isDefault: false,
       isOpenModal: false,
     };
   }
 
   componentDidMount = () => {
-    const { dispatch, _id } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: 'offboarding/getOffBoardingPackages',
       payload: {
-        company: _id,
         packageType: 'CLOSING-PACKAGE',
         templateType: 'DEFAULT',
       },
@@ -48,7 +49,6 @@ class RelievingFormalities extends Component {
     dispatch({
       type: 'offboarding/getOffBoardingPackages',
       payload: {
-        company: _id,
         packageType: 'EXIT-PACKAGE',
         templateType: 'DEFAULT',
       },
@@ -56,7 +56,7 @@ class RelievingFormalities extends Component {
     dispatch({
       type: 'offboarding/getOffBoardingPackages',
       payload: {
-        company: _id,
+        company: getCurrentCompany(),
         packageType: 'EXIT-PACKAGE',
         templateType: 'CUSTOM',
       },
@@ -64,17 +64,18 @@ class RelievingFormalities extends Component {
     dispatch({
       type: 'offboarding/getOffBoardingPackages',
       payload: {
-        company: _id,
+        company: getCurrentCompany(),
         packageType: 'CLOSING-PACKAGE',
         templateType: 'CUSTOM',
       },
     });
   };
 
-  onOpenModal = (id) => {
+  onOpenModal = (id, isDefault) => {
     this.setState({
       isOpenModal: true,
       templateId: id,
+      isDefault,
     });
   };
 
@@ -85,7 +86,7 @@ class RelievingFormalities extends Component {
   };
 
   onReload = (type) => {
-    const { dispatch, _id } = this.props;
+    const { dispatch } = this.props;
     const exitPackageType = 'OFF_BOARDING-EXIT_PACKAGE';
     const customPackageType = 'OFF_BOARDING-CUSTOM_PACKAGE';
     switch (type) {
@@ -93,7 +94,7 @@ class RelievingFormalities extends Component {
         dispatch({
           type: 'offboarding/getCustomExitPackage',
           payload: {
-            company: _id,
+            company: getCurrentCompany(),
             type: 'OFF_BOARDING-EXIT_PACKAGE',
           },
         });
@@ -102,7 +103,7 @@ class RelievingFormalities extends Component {
         dispatch({
           type: 'offboarding/getCustomExitPackage',
           payload: {
-            company: _id,
+            company: getCurrentCompany(),
             type: 'OFF_BOARDING-EXIT_PACKAGE',
           },
         });
@@ -113,7 +114,7 @@ class RelievingFormalities extends Component {
   };
 
   _renderModal = () => {
-    const { isOpenModal, templateId } = this.state;
+    const { isOpenModal, templateId, isDefault } = this.state;
     return (
       <CustomModal
         open={isOpenModal}
@@ -123,6 +124,7 @@ class RelievingFormalities extends Component {
             onReload={this.onReload}
             closeModal={this.onCloseModal}
             templateId={templateId}
+            isDefault={isDefault}
           />
         }
       />
@@ -130,12 +132,8 @@ class RelievingFormalities extends Component {
   };
 
   render() {
-    const {
-      defaultExitPackage,
-      defaultClosingPackage,
-      customExitPackage,
-      customClosingPackage,
-    } = this.props;
+    const { defaultExitPackage, defaultClosingPackage, customExitPackage, customClosingPackage } =
+      this.props;
     return (
       <div className={styles.relievingFormalities}>
         {this._renderModal()}
