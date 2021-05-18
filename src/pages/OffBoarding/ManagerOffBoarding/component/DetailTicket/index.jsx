@@ -2,17 +2,18 @@ import React, { Component, Fragment } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Spin } from 'antd';
 import { formatMessage, connect } from 'umi';
-import EditComment from '@/components/EditComment';
-import StatusRequest from '@/components/StatusRequest';
+import EditComment from './components/EditComment';
+import StatusComponent from './components/StatusComponent';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
-import ButtonSet1On1 from './components/ButtonSet1On1';
+// import ButtonSet1On1 from './components/ButtonSet1On1';
 import ScheduleMeeting from './components/ScheduleMeeting';
 import RightContent from './components/RightContent';
 import ModalNotice from './components/ModalNotice';
 import ReasonPutOnHold from './components/ReasonPutOnHold';
 import RequestChangeLWD from './components/RequestChangeLWD';
 import ClosingComment from './components/ClosingComment';
+import WhatNext from './components/WhatNext';
 import styles from './index.less';
 
 @connect(
@@ -113,10 +114,10 @@ class DetailTicket extends Component {
     });
   };
 
-  handleReviewRequest = (action) => {
+  handleReviewRequest = (action, id) => {
     const {
       dispatch,
-      match: { params: { id = '' } = {} },
+      // match: { params: { id = '' } = {} },
     } = this.props;
     this.setState({ selectButton: action });
     dispatch({
@@ -193,12 +194,16 @@ class DetailTicket extends Component {
   render() {
     const { selectButton } = this.state;
     const {
+      match: { params: { id = '' } = {} },
+    } = this.props;
+    const {
       loading,
       myRequest = {},
       list1On1 = [],
       listProjectByEmployee: listProject = [],
       showModalSuccessfully,
       listAssignee = [],
+      loadingReview,
     } = this.props;
     const {
       status = '',
@@ -234,25 +239,34 @@ class DetailTicket extends Component {
                 <p className={styles.titlePage__text}>
                   Terminate work relationship with {nameEmployee} [{employeeId}]
                 </p>
-                <StatusRequest status={status} />
               </div>
             </Affix>
-            <Row className={styles.detailTicket__content} gutter={[40, 0]}>
-              <Col span={18}>
+            <Row className={styles.detailTicket__content} gutter={[24, 0]}>
+              <Col span={14}>
+                <StatusComponent status={status} />
                 <RequesteeDetail employeeInfo={employeeInfo} listProject={listProject} />
                 <ResignationRequestDetail itemRequest={myRequest} />            
-                {listComment.length !== 0 && (
-                  <div className={styles.viewListComment}>
-                    {listComment.map((item) => {
-                      const { _id } = item;
-                      return (
-                        <Fragment key={_id}>
-                          <EditComment itemComment={item} />
-                        </Fragment>
-                      );
-                    })}
-                  </div>
-                )}
+                {checkShowNotification &&
+                  status === 'IN-PROGRESS' &&
+                  selectButton !== 'ON-HOLD' &&
+                  listComment.length !== 0 && (
+                    <div className={styles.viewListComment}>
+                      {listComment.map((item) => {
+                        const { _id } = item;
+                        return (
+                          <Fragment key={_id}>
+                            <EditComment
+                              handleReviewRequest={this.handleReviewRequest}
+                              openFormReason={this.openFormReason}
+                              itemComment={item}
+                              loadingReview={loadingReview}
+                              id={id}
+                            />
+                          </Fragment>
+                        );
+                      })}
+                    </div>
+                  )}
                 {listScheduleMeeting.map((item) => {
                   return (
                     <Fragment key={item._id}>
@@ -260,19 +274,22 @@ class DetailTicket extends Component {
                     </Fragment>
                   );
                 })}
-                <ButtonSet1On1 itemRequest={myRequest} listAssignee={filterListAssignee} />
+                {listComment.length === 0 && (
+                  <WhatNext itemRequest={myRequest} listAssignee={filterListAssignee} />
+                )}
+                {/* <ButtonSet1On1 itemRequest={myRequest} listAssignee={filterListAssignee} /> */}
                 {selectButton === 'ON-HOLD' && <ReasonPutOnHold hideForm={this.hideFormOnHold} />}
                 {checkClosingComment?._id && <ClosingComment data={checkClosingComment} />}
                 {status === 'ACCEPTED' && <RequestChangeLWD />}
               </Col>
-              <Col span={6}>
+              <Col span={10}>
                 <RightContent />
               </Col>
             </Row>
-            {checkShowNotification &&
+            {/* {checkShowNotification &&
               status === 'IN-PROGRESS' &&
               selectButton !== 'ON-HOLD' &&
-              this.renderBlockNotifications()}
+              this.renderBlockNotifications()} */}
           </div>
         </PageContainer>
         <ModalNotice

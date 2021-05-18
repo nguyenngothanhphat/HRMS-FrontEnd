@@ -28,6 +28,25 @@
       width: 100%;
       height: 20px !important;
     }
+
+    .ant-checkbox-inner{
+      border: 1.4px solid #B9BAC2;
+      box-sizing: border-box;
+      border-radius: 3px;
+    }
+
+    .ant-table-thead > tr > th:first-child > div > label > span > .ant-checkbox-inner {
+      border: 1.4px solid #FFFFFF;
+    }
+
+    //Box-shadow first column
+    td.ant-table-cell.ant-table-cell-fix-left.ant-table-cell-fix-left-last {
+      box-shadow: 4px 0 5px 0 rgba(0, 0, 0, 0.15);
+    }
+
+    .ant-table-thead > tr > th:nth-child(2){
+      box-shadow: 4px 0 5px 0 rgba(0, 0, 0, 0.15);
+    }
   }
   .textEmpty {
     font-weight: 400;
@@ -39,8 +58,19 @@
   .title {
     color: #fff;
     font-size: 13px;
+    font-style: normal;
     line-height: 15.23px;
-    font-weight: 400;
+    font-weight: 500;
+
+    &__value{
+      color: #2C6DF9;
+      font-weight: 500;
+    }
+
+    &__requteeName{
+      text-decoration: underline;
+      // font-weight: 500;
+    }
   }
 
   .tableText {

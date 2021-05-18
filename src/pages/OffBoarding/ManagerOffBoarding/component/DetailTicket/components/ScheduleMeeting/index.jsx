@@ -56,33 +56,43 @@ class ScheduleMeeting extends Component {
       <div className={styles.actionDetailTicket__schedule} style={{ marginBottom: '15px' }}>
         <div className={styles.schedule__content}>
           <span className={styles.actionDetailTicket__title}>
-            {formatMessage({ id: 'pages.offBoarding.1on1Meeting' })}
+            {formatMessage({ id: 'pages.offBoarding.1on1Meeting' })} with{' '}
+            <span className={styles.name}>{firstName}</span>
           </span>
           <div className={styles.actionDetailTicket__dateTime}>
-            <span>
+            {/* <span>
               {formatMessage({ id: 'pages.offBoarding.scheduledOn' })}:{' '}
               {moment(meetingDate).format('YYYY/MM/DD')} &nbsp; | &nbsp; <span>{meetingTime}</span>
-            </span>
+            </span> */}
             {checkOwner && (
-              <img
-                className={styles.icon__external__link}
-                src={externalLinkIcon}
-                alt="external-link-icon"
+              <div
+                className={styles.addCommentBtn}
                 onClick={check ? this.handleAddComment : this.modalWarning}
-              />
+              >
+                <span className={styles.text}>Enter Closing Comments</span>
+                <img
+                  className={styles.icon__external__link}
+                  src={externalLinkIcon}
+                  alt="external-link-icon"
+                />
+              </div>
             )}
           </div>
         </div>
-        <div>
+        <div className={styles.scheduleTime}>
+          Schedule on: {moment(meetingDate).format('MM.DD.YY')} &nbsp; | &nbsp;{' '}
+          <span>{meetingTime}</span>
+        </div>
+        {/* <div>
           <span style={{ fontWeight: 'bold', fontSize: '13px' }}>Created by:</span> {firstName} (
           {email})
-        </div>
-        {assigneeId && (
+        </div> */}
+        {/* {assigneeId && (
           <div>
             <span style={{ fontWeight: 'bold', fontSize: '13px' }}>Assignee:</span> {nameAssignee} (
             {emailAssignee})
           </div>
-        )}
+        )} */}
       </div>
     );
   }

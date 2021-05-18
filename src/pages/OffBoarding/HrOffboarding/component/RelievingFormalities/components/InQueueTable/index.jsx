@@ -41,25 +41,6 @@ class InQueueTable extends PureComponent {
 
     return (
       <div className={styles.inQueueTable}>
-        <div className={styles.toolbar}>
-          <div className={styles.filter}>
-            <Button
-              type="link"
-              shape="round"
-              icon={<img src={filterIcon} alt="icon" />}
-              size="small"
-            >
-              Filter
-            </Button>
-          </div>
-          <div className={styles.searchBar}>
-            <Input
-              onChange={this.onChange}
-              placeholder="Search for ticket ID, resignee, requests …"
-              prefix={<SearchOutlined />}
-            />
-          </div>
-        </div>
         <TableComponent loading={loadingList} data={inQueuesList} />
       </div>
     );

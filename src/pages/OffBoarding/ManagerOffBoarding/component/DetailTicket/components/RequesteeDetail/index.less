@@ -1,55 +1,57 @@
 .requesteeDetail {
-  background-color: #fff;
-  padding: 30px 40px;
-  color: #464646;
+  width: 100%;
   margin-bottom: 20px;
-  font-size: 13px;
-  border-radius: 5px;
+  background-color: white;
   border: 1px solid #d6dce0;
-  .textNoProject {
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 19px;
-    color: #000;
-  }
-  &__title {
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 19px;
-    color: #000;
-  }
-  &__text {
-    font-size: 14px;
-    font-weight: 500;
-  }
-  &__center {
-    text-align: center;
-  }
-  &__avatar {
-    width: 35px;
-    height: 35px;
-    margin-right: 10px;
-  }
-  :global {
-    .ant-progress-outer {
-      width: 70%;
+  border-radius: 5px;
+
+  .formTitle {
+    display: flex;
+    align-items: center;
+    padding: 24px;
+    color: #161c29;
+    border-bottom: 1px solid #e2e4e8;
+    .title {
+      color: #161c29;
+      font-weight: 700;
+      font-size: 16px;
     }
-    .ant-progress-inner {
-      width: 90%;
-      height: 5px;
-      background-color: #fff;
-      border-radius: unset;
-      border: 1px solid #707177;
+  }
+
+  .formContent {
+    padding: 24px 24px 15px 24px;
+    font-size: 13px;
+    .detailColumn {
+      color: #707177;
+      .fieldValue {
+        margin-right: 10px;
+      }
+      .employeeLink {
+        color: #2c6df9;
+        cursor: pointer;
+      }
     }
-    .ant-progress-success-bg,
-    .ant-progress-bg {
-      background-color: #2aee19;
-      border-radius: unset;
-      border: 1px solid #2aee19;
+    .projectList {
+      margin-top: 5px;
+      padding-top: 17px;
+      border-top: 1px solid #e2e4e8;
+      .title {
+        display: block;
+        margin-top: 18px;
+        margin-bottom: 15px;
+        color: #161c29;
+        font-weight: 700;
+        font-size: 14px;
+      }
+      .divider {
+        margin-bottom: 18px;
+        border-bottom: 1px solid #e2e4e8;
+      }
     }
-    .ant-progress-text {
-      color: #000;
-      font-size: 13px;
+    :global {
+      .ant-row {
+        padding-bottom: 15px;
+      }
     }
   }
 }
