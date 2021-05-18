@@ -27,7 +27,7 @@ export default {
   'pages.offBoarding.reasonPutOnHold': 'Reason put on hold',
 
   // Relieving Formalities
-  'pages.relieving.employeeDetail': 'Employee Detail',
+  'pages.relieving.employeeDetail': 'Employee details',
   'pages.relieving.employeeID': 'Employee ID',
   'pages.relieving.employeeName': 'Employee Name',
   'pages.relieving.employee.joinedDate': 'Joined Date',
