@@ -89,9 +89,8 @@ class TableManager extends PureComponent {
         title: <span className={styles.title}>Assigned </span>,
         dataIndex: 'Assigned',
         render: (_, row) => {
-          const {
-            hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {},
-          } = this.props;
+          const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
+            this.props;
           const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
           const arrAvt = [avtManager, avtHrManager];
           return (

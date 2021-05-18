@@ -8,7 +8,7 @@ import styles from './index.less';
 
 class RelievingTemplates extends PureComponent {
   onClickEdit = (id) => {
-    const { isOpenModal } = this.props;
+    const { isOpenModal = () => {} } = this.props;
     isOpenModal(id);
   };
 
@@ -17,7 +17,7 @@ class RelievingTemplates extends PureComponent {
   };
 
   _renderExitInterview = () => {
-    const { exitPackageTemplates } = this.props;
+    const { exitPackageTemplates = [] } = this.props;
     // if (exitPackageTemplates.length === 0) {
     //   return null;
     // }
@@ -35,7 +35,7 @@ class RelievingTemplates extends PureComponent {
         <div className={styles.list}>
           <Row gutter={24} justify="center">
             <Col span={22} offset={2}>
-              {exitPackageTemplates?.map((template) => {
+              {exitPackageTemplates.map((template) => {
                 return (
                   <div key={template._id} className={styles.template}>
                     <Row justify="space-between">
@@ -68,7 +68,7 @@ class RelievingTemplates extends PureComponent {
   };
 
   _renderClosingPackage = () => {
-    const { closingPackageTemplates } = this.props;
+    const { closingPackageTemplates = [] } = this.props;
     // if (closingPackageTemplates.length === 0) {
     //   return null;
     // }
@@ -88,7 +88,7 @@ class RelievingTemplates extends PureComponent {
           <div className={styles.list}>
             <Row gutter={24} justify="center">
               <Col span={22} offset={2}>
-                {closingPackageTemplates?.map((template) => {
+                {closingPackageTemplates.map((template) => {
                   return (
                     <div key={template._id} className={styles.template}>
                       <Row justify="space-between">

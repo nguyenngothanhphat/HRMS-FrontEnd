@@ -319,7 +319,7 @@ const offboarding = {
       try {
         const response = yield call(getOffBoardingPackages, {
           ...payload,
-          company: getCurrentCompany(),
+          // company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
         const { statusCode, data } = response;
