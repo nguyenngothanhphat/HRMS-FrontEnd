@@ -38,9 +38,14 @@ export default class LastWorkingDate extends PureComponent {
               disabled={!isEdit}
             />
           </Col>
-          <Col span={12} className={styles.viewChangeLastWorkingDay__viewDateApproved__description}>
-            {children}
-          </Col>
+          {children && (
+            <Col
+              span={12}
+              className={styles.viewChangeLastWorkingDay__viewDateApproved__description}
+            >
+              {children}
+            </Col>
+          )}
         </Row>
       </>
     );

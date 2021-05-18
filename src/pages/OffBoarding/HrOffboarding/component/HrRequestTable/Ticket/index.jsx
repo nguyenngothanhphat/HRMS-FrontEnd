@@ -7,6 +7,7 @@ import ClosingComment from '../../../../ManagerOffBoarding/component/DetailTicke
 import ModalNotice from '../../../../ManagerOffBoarding/component/DetailTicket/components/ModalNotice';
 import ScheduleMeeting from '../../../../ManagerOffBoarding/component/DetailTicket/components/ScheduleMeeting';
 import Assignee from './components/Assignee';
+import HrApproved from './components/HrApproved';
 import RequesteeDetail from './components/RequesteeDetail';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import InfoEmployee from './components/RightContent';
@@ -228,6 +229,7 @@ class HRDetailTicket extends Component {
                 })}
                 {checkClosingComment?._id && <ClosingComment data={checkClosingComment} />}
                 {/* {status !== 'REJECTED' && <LastWorkingDate />} */}
+                <HrApproved />
               </Col>
               <Col span={8}>
                 <Assignee />

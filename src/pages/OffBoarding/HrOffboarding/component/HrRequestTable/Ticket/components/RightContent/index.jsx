@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import CheckIcon from '@/assets/check-true2.svg';
+import LaunchIcon from '@/assets/launch.svg';
 import styles from './index.less';
 
 const array = [
@@ -33,7 +34,10 @@ export default class InfoEmployee extends PureComponent {
               <span>{info}</span>
             </div>
           ))}
-          <div className={styles.viewDetail}>View Aditya’s Career graph</div>
+          <div className={styles.viewDetail}>
+            View Aditya’s Career graph
+            <img style={{ marginLeft: '5px' }} src={LaunchIcon} alt="launch icon" />
+          </div>
         </div>
       </div>
     );
