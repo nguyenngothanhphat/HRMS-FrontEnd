@@ -6,7 +6,7 @@ export default class index extends PureComponent {
     const { status = '' } = this.props;
     const type = {
       'IN-PROGRESS': {
-        color: '#2C6DF9',
+        color: '#FFA100',
         text: 'In-progress',
       },
       ACCEPTED: {
@@ -38,7 +38,7 @@ export default class index extends PureComponent {
           <span className={s.dot} style={{ color: type[status].color }}>
             &#8226;
           </span>
-          <span>{type[status].text}</span>
+          <span style={{ color: type[status].color }}>{type[status].text}</span>
         </div>
       )
     );
