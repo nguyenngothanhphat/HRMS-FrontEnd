@@ -10,6 +10,10 @@
       opacity: 1;
       color: #464646;
     }
+
+    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn{
+      opacity: 1;
+    }
   }
 
   .titlePage {
@@ -42,6 +46,20 @@
   }
   .content {
     padding: 24px;
+
+    :global{
+      .ant-tabs-top > .ant-tabs-nav::before, .ant-tabs-top > div > .ant-tabs-nav::before{
+        display: none;
+      }
+  
+      .ant-tabs-ink-bar {
+        display: none;
+      }
+  
+      .ant-tabs-nav{
+        height: fit-content;
+      }
+    }
 
     &__top{
       display: flex;
@@ -99,6 +117,8 @@
     background: #ffffff;
     border-radius: 5px;
     border: 1px solid #ebeff2;
+    padding-top: 24px;
+
 
     .searchFilter{
       display: flex;
@@ -142,6 +162,6 @@
     }
   }
   .tableTab {
-    padding: 10px 18px;
+    padding: 0 18px;
   }
 }
