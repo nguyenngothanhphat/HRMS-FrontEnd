@@ -196,18 +196,29 @@ class HrTable extends PureComponent {
         title: <span className={styles.title}>Action</span>,
         dataIndex: '_id',
         align: 'left',
-        render: (_id, row) => {
+        render: (_id) => {
           return (
             <div className={styles.viewAction}>
               <p className={styles.viewAction__text} onClick={() => this.push(_id)}>
                 View Request
               </p>
+            </div>
+          );
+        },
+      },
+      {
+        title: '',
+        dataIndex: '_id',
+        align: 'left',
+        render: (_id, row) => {
+          return (
+            <div className={styles.viewAction}>
               {isTabAccept && (
                 <div className={styles.viewAction__popOver}>
                   <Popover
                     content={this.renderContent(row)}
                     title={false}
-                    trigger="hover"
+                    trigger="click"
                     placement="bottomRight"
                   >
                     <span className={styles.viewAction__popOver__dots}>&#8285;</span>

@@ -53,9 +53,8 @@ class RelievingDetails extends PureComponent {
       currentUser = {},
       loading,
     } = this.props;
-    const {
-      employee: { employeeId = '', generalInfo: { firstName = '' } = {} } = {},
-    } = relievingDetails;
+    const { employee: { employeeId = '', generalInfo: { firstName = '' } = {} } = {} } =
+      relievingDetails;
     const itemScheduleIsRelieving = list1On1.find(({ isRelieving }) => isRelieving) || {};
     const checkStatusSchedule = itemScheduleIsRelieving.status === 'COMPLETED';
     if (loading) return <Spin size="large" className={styles.loading} />;

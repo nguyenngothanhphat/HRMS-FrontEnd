@@ -169,23 +169,23 @@ class DirectoryComponent extends PureComponent {
     });
   };
 
-  fetchApprovalFlowList = () => {
-    const {
-      currentUser: {
-        location: { _id: locationID = '' } = {},
-        company: { _id: companyID } = {},
-      } = {},
-      dispatch,
-    } = this.props;
+  // fetchApprovalFlowList = () => {
+  //   const {
+  //     currentUser: {
+  //       location: { _id: locationID = '' } = {},
+  //       company: { _id: companyID } = {},
+  //     } = {},
+  //     dispatch,
+  //   } = this.props;
 
-    dispatch({
-      type: 'offboarding/fetchApprovalFlowList',
-      payload: {
-        company: companyID,
-        location: locationID,
-      },
-    });
-  };
+  //   dispatch({
+  //     type: 'offboarding/fetchApprovalFlowList',
+  //     payload: {
+  //       company: companyID,
+  //       location: locationID,
+  //     },
+  //   });
+  // };
 
   // Define tabID to filter
   initTabId = () => {

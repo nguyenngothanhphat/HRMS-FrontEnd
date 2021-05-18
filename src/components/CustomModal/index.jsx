@@ -30,6 +30,7 @@ const CustomModal = (props) => {
         width={width}
         centered
         onCancel={handleCancel}
+        destroyOnClose
         footer={null}
       >
         <div className={styles.body}>{visible && content}</div>

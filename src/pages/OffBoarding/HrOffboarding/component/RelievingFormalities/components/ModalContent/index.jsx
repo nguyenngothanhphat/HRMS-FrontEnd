@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { formatMessage, connect } from 'umi';
 import { Form, Input, Button, Skeleton, notification } from 'antd';
+import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(({ loading, offboarding: { currentTemplate = {} } }) => ({
@@ -54,26 +55,27 @@ class ModalContent extends Component {
 
   onNext = () => {
     const { dispatch, currentTemplate, closeModal, onReload } = this.props;
-    const { settings, type, title, htmlContent } = currentTemplate;
-
+    const { settings, packageType, name } = currentTemplate;
+    // console.log('settings', settings);
     dispatch({
-      type: 'employeeSetting/addCustomTemplate',
+      type: 'offboarding/addCustomTemplate',
       payload: {
-        title,
-        type,
-        html: htmlContent,
+        name,
+        packageType,
+        // html: htmlContent,
         settings,
+        company: getCurrentCompany(),
       },
     }).then(() => {
       notification.success({ message: `Upload file successfully!` });
       closeModal();
-      onReload(type);
+      onReload(packageType);
     });
   };
 
   _renderModal = () => {
     const { currentTemplate, loadingAddTemplate } = this.props;
-    const { settings, title } = currentTemplate;
+    const { settings, name } = currentTemplate;
     const { TextArea } = Input;
     return (
       <>
@@ -82,15 +84,15 @@ class ModalContent extends Component {
           initialValues={{
             remember: true,
           }}
-          onFinish={this.onFinish}
+          onFinish={this.onNext}
         >
-          <h2>{`Questions for ${title}`}</h2>
+          <h2>{`Questions for ${name}`}</h2>
 
           {settings?.map((template, index) => {
             return (
               <Form.Item
                 label={`Question ${index + 1}`}
-                // name={template.key}
+                name={template.key}
                 rules={[
                   {
                     required: true,
@@ -107,7 +109,7 @@ class ModalContent extends Component {
             );
           })}
           <Form.Item>
-            <Button loading={loadingAddTemplate} onClick={this.onNext} type="primary">
+            <Button loading={loadingAddTemplate} htmlType="submit" type="primary">
               Save
             </Button>
           </Form.Item>
