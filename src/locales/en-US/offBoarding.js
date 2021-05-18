@@ -35,8 +35,8 @@ export default {
   'pages.relieving.employee.reporting': 'Reporting Manager',
   'pages.relieving.employee.department': 'Department',
   'pages.relieving.resignation': 'Resignation Overview',
-  'pages.relieving.resignation.lastWorkingDay': 'Last Working Day',
-  'pages.relieving.resignation.reason': 'Reson for leaving us?',
+  'pages.relieving.resignation.lastWorkingDay': 'Last working day (HR approved)',
+  'pages.relieving.resignation.reason': 'Reason for leaving us?',
   'pages.relieving.mailExit': 'Mail exit interview package',
   'pages.relieving.conductExitInterview': 'Conduct the exit interview',
   'pages.relieving.conductExitParagraph':
