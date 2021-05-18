@@ -15,6 +15,7 @@ class RequesteeDetail extends PureComponent {
         <p className={styles.requesteeDetail__title}>
           {formatMessage({ id: 'pages.offBoarding.requesteeTitle' })}
         </p>
+        <Divider className={styles.divider} />
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
           <Col span={5}>
             <p className={styles.requesteeDetail__text}>
