@@ -18,12 +18,22 @@ class ModalContent extends Component {
   }
 
   componentDidMount = () => {
-    const { dispatch, templateId } = this.props;
+    const { dispatch, templateId, isDefault } = this.props;
+    let payload = null;
+    if (isDefault) {
+      payload = {
+        id: templateId,
+      };
+    } else {
+      payload = {
+        id: templateId,
+        company: getCurrentCompany(),
+      };
+    }
+
     dispatch({
       type: 'offboarding/fetchTemplateById',
-      payload: {
-        id: templateId,
-      },
+      payload,
     });
   };
 

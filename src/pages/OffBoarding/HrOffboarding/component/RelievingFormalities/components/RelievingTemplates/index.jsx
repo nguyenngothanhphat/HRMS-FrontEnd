@@ -7,9 +7,9 @@ import editIcon from './assets/editIcon.png';
 import styles from './index.less';
 
 class RelievingTemplates extends PureComponent {
-  onClickEdit = (id) => {
+  onClickEdit = (id, isDefault) => {
     const { isOpenModal = () => {} } = this.props;
-    isOpenModal(id);
+    isOpenModal(id, isDefault);
   };
 
   _renderPagination = () => {
@@ -53,7 +53,8 @@ class RelievingTemplates extends PureComponent {
                         <img
                           src={editIcon}
                           alt="icon"
-                          onClick={() => this.onClickEdit(template._id)}
+                          onClick={() =>
+                            this.onClickEdit(template._id, template.templateType === 'DEFAULT')}
                         />
                       </Col>
                     </Row>
@@ -106,7 +107,8 @@ class RelievingTemplates extends PureComponent {
                           <img
                             src={editIcon}
                             alt="icon"
-                            onClick={() => this.onClickEdit(template._id)}
+                            onClick={() =>
+                              this.onClickEdit(template._id, template.templateType === 'DEFAULT')}
                           />
                         </Col>
                       </Row>

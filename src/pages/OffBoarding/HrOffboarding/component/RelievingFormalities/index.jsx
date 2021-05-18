@@ -32,6 +32,7 @@ class RelievingFormalities extends Component {
     super(props);
     this.state = {
       templateId: '',
+      isDefault: false,
       isOpenModal: false,
     };
   }
@@ -70,10 +71,11 @@ class RelievingFormalities extends Component {
     });
   };
 
-  onOpenModal = (id) => {
+  onOpenModal = (id, isDefault) => {
     this.setState({
       isOpenModal: true,
       templateId: id,
+      isDefault,
     });
   };
 
@@ -112,7 +114,7 @@ class RelievingFormalities extends Component {
   };
 
   _renderModal = () => {
-    const { isOpenModal, templateId } = this.state;
+    const { isOpenModal, templateId, isDefault } = this.state;
     return (
       <CustomModal
         open={isOpenModal}
@@ -122,6 +124,7 @@ class RelievingFormalities extends Component {
             onReload={this.onReload}
             closeModal={this.onCloseModal}
             templateId={templateId}
+            isDefault={isDefault}
           />
         }
       />
