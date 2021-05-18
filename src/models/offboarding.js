@@ -357,7 +357,7 @@ const offboarding = {
       try {
         const response = yield call(getTemplateById, {
           ...payload,
-          company: getCurrentCompany(),
+          // company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
         const { statusCode, data } = response;

@@ -82,21 +82,21 @@ export async function reviewRequest(payload) {
 }
 
 export async function getOffBoardingPackages(payload) {
-  return request('/api/templaterelieving/list', {
+  return request('/api/templaterelievingtenant/list', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getTemplateById(payload) {
-  return request('/api/templaterelieving/get-by-id', {
+  return request('/api/templaterelievingtenant/get-by-id', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function addCustomTemplate(payload) {
-  return request('/api/templaterelieving/add', {
+  return request('/api/templaterelievingtenant/add', {
     method: 'POST',
     data: payload,
   });
