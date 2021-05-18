@@ -47,7 +47,7 @@ class RequesteeDetail extends PureComponent {
             <div style={{ color: '#2C6DF9' }}>{nameOfManager}</div>
           </div>
         </div>
-        {listProject.length === 0 ? (
+        {/* {listProject.length === 0 ? (
           <>
             <Divider />
             <div className={styles.textNoProject}>No Project</div>
@@ -106,7 +106,7 @@ class RequesteeDetail extends PureComponent {
               </Fragment>
             );
           })
-        )}
+        )} */}
       </div>
     );
   }

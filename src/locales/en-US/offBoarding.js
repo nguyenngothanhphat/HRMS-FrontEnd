@@ -20,7 +20,7 @@ export default {
 
   'pages.offBoarding.1on1Meeting': '1-on-1 meeting',
   'pages.offBoarding.scheduledOn': 'Scheduled on',
-
+  'pages.offBoarding.resignation.lwd': 'Last working date (System generated)',
   'pages.offBoarding.closingComments': 'Closing comments from 1-on-1',
 
   'pages.offBoarding.textConsider': 'Few thing to consider',

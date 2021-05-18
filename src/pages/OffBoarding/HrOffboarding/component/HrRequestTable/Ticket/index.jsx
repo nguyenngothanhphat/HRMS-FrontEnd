@@ -1,18 +1,16 @@
-import React, { Component, Fragment } from 'react';
-import { PageContainer } from '@/layouts/layout/src';
-import { Affix, Row, Col, Spin } from 'antd';
-import { connect } from 'umi';
 import EditComment from '@/components/EditComment';
-import StatusRequest from '@/components/StatusRequest';
-import ResignationRequestDetail from './components/ResignationRequestDetail';
-import RequesteeDetail from './components/RequesteeDetail';
-import StatusDetail from './components/StatusDetail';
-import ScheduleMeeting from '../../../../ManagerOffBoarding/component/DetailTicket/components/ScheduleMeeting';
-import LastWorkingDate from './components/LWD';
-import ButtonSet1On1 from './components/ButtonSet1On1';
-import InfoEmployee from './components/RightContent';
-import ModalNotice from '../../../../ManagerOffBoarding/component/DetailTicket/components/ModalNotice';
+import { PageContainer } from '@/layouts/layout/src';
+import { Affix, Col, Row, Spin } from 'antd';
+import React, { Component, Fragment } from 'react';
+import { connect } from 'umi';
 import ClosingComment from '../../../../ManagerOffBoarding/component/DetailTicket/components/ClosingComment';
+import ModalNotice from '../../../../ManagerOffBoarding/component/DetailTicket/components/ModalNotice';
+import ScheduleMeeting from '../../../../ManagerOffBoarding/component/DetailTicket/components/ScheduleMeeting';
+import Assignee from './components/Assignee';
+import RequesteeDetail from './components/RequesteeDetail';
+import ResignationRequestDetail from './components/ResignationRequestDetail';
+import InfoEmployee from './components/RightContent';
+import StatusDetail from './components/StatusDetail';
 import styles from './index.less';
 
 @connect(
@@ -154,7 +152,7 @@ class HRDetailTicket extends Component {
       ticketID = '',
       employee: {
         employeeId,
-        generalInfo: { firstName: nameFrist = '', avatar = '' } = {},
+        generalInfo: { firstName: nameFrist = '' } = {},
         title: { name: jobTitle = '' } = {},
         department: { name: department = '' } = {},
         joinDate,
@@ -192,9 +190,11 @@ class HRDetailTicket extends Component {
               </div>
             </Affix>
             <Row className={styles.detailTicket__content} gutter={[30, 30]}>
-              <Col span={17}>
+              <Col span={16}>
+                {/* status  */}
                 <StatusDetail status={status} />
 
+                {/* Requestee Detail */}
                 <RequesteeDetail
                   id={employeeId}
                   name={nameFrist}
@@ -205,11 +205,8 @@ class HRDetailTicket extends Component {
                   joinDate={joinDate}
                 />
 
-                <ResignationRequestDetail
-                  reason={reasonForLeaving}
-                  date={requestDate}
-                  name={nameFrist}
-                />
+                {/* Resignation request detail */}
+                <ResignationRequestDetail reason={reasonForLeaving} date={requestDate} />
                 {listComment.length !== 0 && (
                   <div className={styles.viewListComment}>
                     {listComment.map((item) => {
@@ -230,11 +227,12 @@ class HRDetailTicket extends Component {
                   );
                 })}
                 {checkClosingComment?._id && <ClosingComment data={checkClosingComment} />}
-                {status !== 'REJECTED' && <LastWorkingDate />}
+                {/* {status !== 'REJECTED' && <LastWorkingDate />} */}
               </Col>
-              <Col span={7}>
+              <Col span={8}>
+                <Assignee />
                 <InfoEmployee />
-                <ButtonSet1On1
+                {/* <ButtonSet1On1
                   loading={loading}
                   visible={openModal}
                   handleclick={this.handleclick}
@@ -242,7 +240,7 @@ class HRDetailTicket extends Component {
                   listMeetingTime={listMeetingTime}
                   handleCandelSchedule={this.handleCandelSchedule}
                   keyModal={keyModal}
-                />
+                /> */}
               </Col>
             </Row>
           </div>
