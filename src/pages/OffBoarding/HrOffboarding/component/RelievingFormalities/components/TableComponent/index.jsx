@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
+import moment from 'moment';
 // import empty from '@/assets/empty.svg';
 // import persion from '@/assets/people.svg';
 import { Link } from 'umi';
 // import persion from '@/assets/people.svg';
-import classNames from 'classnames';
 import styles from './index.less';
 
 class TableComponent extends PureComponent {
@@ -44,8 +44,8 @@ class TableComponent extends PureComponent {
   _renderLastWorkingDate = (id) => {
     const { data = [] } = this.props;
     const newItem = data?.filter((item) => item._id === id);
-    const date = newItem[0].lastWorkingDate?.slice(0, 10);
-    return date;
+    const formatDate = moment(newItem[0].lastWorkingDate).format('DD.MM.YYYY');
+    return formatDate;
   };
 
   render() {
