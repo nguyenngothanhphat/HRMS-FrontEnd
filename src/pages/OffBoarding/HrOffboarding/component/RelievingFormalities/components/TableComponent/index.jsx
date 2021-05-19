@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
+import moment from 'moment';
 // import empty from '@/assets/empty.svg';
 // import persion from '@/assets/people.svg';
 import { Link } from 'umi';
@@ -15,7 +16,9 @@ class TableComponent extends PureComponent {
   renderAction = (id) => {
     return (
       <div className={styles.rowAction}>
-        <Link to={`/offboarding/relieving-detail/${id}`}>Start Relieving Formalities</Link>
+        <Link className={styles.rowAction__link} to={`/offboarding/relieving-detail/${id}`}>
+          Start Relieving Formalities
+        </Link>
       </div>
     );
   };
@@ -29,7 +32,7 @@ class TableComponent extends PureComponent {
   _renderEmployeeName = (id) => {
     const { data = [] } = this.props;
     const newItem = data?.filter((item) => item._id === id);
-    return `${newItem[0].employee.generalInfo.legalName}`;
+    return <span className={styles.requteeName}>{newItem[0].employee.generalInfo.legalName}</span>;
   };
 
   _renderDepartment = (id) => {
@@ -41,8 +44,8 @@ class TableComponent extends PureComponent {
   _renderLastWorkingDate = (id) => {
     const { data = [] } = this.props;
     const newItem = data?.filter((item) => item._id === id);
-    const date = newItem[0].lastWorkingDate?.slice(0, 10);
-    return date;
+    const formatDate = moment(newItem[0].lastWorkingDate).format('DD.MM.YYYY');
+    return formatDate;
   };
 
   render() {
@@ -68,6 +71,9 @@ class TableComponent extends PureComponent {
       {
         title: <span className={styles.title}>Ticket ID </span>,
         dataIndex: 'ticketID',
+        fixed: 'left',
+        width: 150,
+        render: (ticketID) => <span className={styles.ticketId}>{ticketID}</span>,
       },
       {
         title: <span className={styles.title}>Employee ID </span>,
@@ -78,37 +84,47 @@ class TableComponent extends PureComponent {
         title: <span className={styles.title}>Requ’tee Name </span>,
         dataIndex: '_id',
         render: (_id) => this._renderEmployeeName(_id),
+        width: 180,
       },
       {
         title: <span className={styles.title}>Department </span>,
         dataIndex: '_id',
         render: (_id) => this._renderDepartment(_id),
+        width: 150,
       },
       {
-        title: <span className={styles.title}>LWD </span>,
+        title: <span className={styles.title}>Approved LWD</span>,
         dataIndex: '_id',
         render: (_id) => this._renderLastWorkingDate(_id),
+        width: 150,
       },
       {
         title: !isClosedTable ? <span className={styles.title}>Action </span> : null,
         dataIndex: '_id',
         align: 'left',
         render: (_id) => (!isClosedTable ? this.renderAction(_id) : null),
+        width: 250,
       },
     ];
+
+    const rowSelection = {
+      onChange: (selectedRowKeys, selectedRows) => {
+        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      },
+      getCheckboxProps: (record) => ({
+        disabled: record.name === 'Disabled User',
+        // Column configuration not to be checked
+        name: record.name,
+      }),
+    };
 
     return (
       <div className={styles.tableComponent}>
         <Table
           loading={loading}
-          // locale={{
-          //   emptyText: (
-          //     <span>
-          //       {/* <img src={empty} alt="" /> */}
-          //       <p className={styles.textEmpty}>No data</p>
-          //     </span>
-          //   ),
-          // }}
+          rowSelection={{
+            ...rowSelection,
+          }}
           columns={columns}
           dataSource={data}
           pagination={{ ...pagination, total: data.length }}

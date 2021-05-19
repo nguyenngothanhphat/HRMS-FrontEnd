@@ -1,10 +1,14 @@
 import React, { PureComponent } from 'react';
-import { Card } from 'antd';
+import { Card, Checkbox } from 'antd';
 import { formatMessage } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
 
 class ResignationOverview extends PureComponent {
+  onCheckBox = (value) => {
+    console.log(value);
+  };
+
   render() {
     const {
       relievingDetails: { lastWorkingDate = '', reasonForLeaving = '' },
@@ -15,14 +19,21 @@ class ResignationOverview extends PureComponent {
           className={styles.resignationOverview__card}
           title={formatMessage({ id: 'pages.relieving.resignation' })}
         >
-          <p>{formatMessage({ id: 'pages.relieving.resignation.lastWorkingDay' })}</p>
           <p>
-            {lastWorkingDate
-              ? moment(lastWorkingDate).locale('en').format('DD.MM.YYYY')
-              : 'No data'}
+            {formatMessage({ id: 'pages.relieving.resignation.lastWorkingDay' })}
+            <span className={styles.resignationOverview__card__lwd}>
+              {lastWorkingDate
+                ? moment(lastWorkingDate).locale('en').format('DD.MM.YYYY')
+                : 'No data'}
+            </span>
           </p>
           <p>{formatMessage({ id: 'pages.relieving.resignation.reason' })}</p>
           <p>{reasonForLeaving}</p>
+          <div>
+            <Checkbox disabled checked onChange={this.onCheckBox}>
+              Can be rehired
+            </Checkbox>
+          </div>
         </Card>
       </div>
     );

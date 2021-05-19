@@ -53,8 +53,10 @@ class RelievingDetails extends PureComponent {
       currentUser = {},
       loading,
     } = this.props;
-    const { employee: { employeeId = '', generalInfo: { firstName = '' } = {} } = {} } =
-      relievingDetails;
+    const {
+      employee: { employeeId = '', generalInfo: { firstName = '' } = {} } = {},
+      ticketID = '',
+    } = relievingDetails;
     const itemScheduleIsRelieving = list1On1.find(({ isRelieving }) => isRelieving) || {};
     const checkStatusSchedule = itemScheduleIsRelieving.status === 'COMPLETED';
     if (loading) return <Spin size="large" className={styles.loading} />;
@@ -64,16 +66,16 @@ class RelievingDetails extends PureComponent {
           <Affix offsetTop={42}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>
-                Terminate work relationship with {firstName} [{employeeId}]
+                [Ticket id: {ticketID}] Terminate work relationship with {firstName} [{employeeId}]
               </p>
             </div>
           </Affix>
           <Row className={styles.relievingDetail__container} gutter={[30, 0]}>
-            <Col md={24} lg={10}>
+            <Col md={24} lg={12}>
               <EmployeeDetail relievingDetails={relievingDetails} />
               <ResignationOverview relievingDetails={relievingDetails} />
             </Col>
-            <Col md={24} lg={14}>
+            <Col md={24} lg={12}>
               <MailExit />
               {checkStatusSchedule ? (
                 <Feedback itemSchedule={itemScheduleIsRelieving} />
