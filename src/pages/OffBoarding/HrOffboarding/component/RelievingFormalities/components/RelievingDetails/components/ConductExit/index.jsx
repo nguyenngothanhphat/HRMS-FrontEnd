@@ -3,9 +3,9 @@ import { Button, Modal, Row, Col } from 'antd';
 import { formatMessage, connect } from 'umi';
 import templateIcon from '@/assets/templateIcon.svg';
 import editIcon from '@/assets/editMailExit.svg';
-import viewTemplateIcon from '@/assets/view-template-icon.svg';
-import externalLinkIcon from '@/assets/external-link.svg';
-import removeIcon from '@/assets/remove-off-boarding.svg';
+import viewTemplateIcon from '@/assets/viewTemplateIcon.svg';
+import externalLinkIcon from '@/assets/externalLinkIcon.svg';
+import removeIcon from '@/assets/removeIcon.svg';
 import ModalSet1On1 from '@/components/ModalSet1On1';
 import moment from 'moment';
 import { checkTime } from '@/utils/utils';
@@ -234,11 +234,11 @@ class ConductExit extends Component {
             {formatMessage({ id: 'pages.relieving.conductExitInterview' })}
           </div>
 
-          <div className={styles.conductExit__bottom}>
+          <div className={styles.conductExit__header}>
             <p className={styles.paragraph}>
               {formatMessage({ id: 'pages.relieving.conductExitParagraph' })}
             </p>
-            <Row gutter={[21, 12]} className={styles.conductExit__bottom__action}>
+            <Row gutter={[21, 12]} className={styles.conductExit__header__action}>
               <Col span={12}>
                 <div className={styles.template}>
                   <div className={styles.template__content}>
@@ -266,39 +266,67 @@ class ConductExit extends Component {
               </Col>
             </Row>
           </div>
+
+          {idSchedule && (
+            <div className={styles.conductExit__bottom}>
+              <Row gutter={[21, 12]}>
+                <Col span={18}>
+                  <div className={styles.conductExit__bottom__header}>
+                    <span className={styles.conductExit__bottom__title}>
+                      {formatMessage({ id: 'pages.relieving.exitInterviewScheduledWith' })}{' '}
+                      {firstName}
+                    </span>
+                  </div>
+                  <div>
+                    <span className={styles.conductExit__bottom__schedule}>
+                      Scheduled on: {moment(meetingDate).format('DD.MM.YYYY')} &nbsp; | &nbsp;{' '}
+                      <span>{meetingTime}</span>
+                    </span>
+                  </div>
+                </Col>
+                <Col span={6}>
+                  {checkOwner && (
+                    <div className={styles.conductExit__bottom__action}>
+                      <img
+                        src={viewTemplateIcon}
+                        alt="view-template-icon"
+                        onClick={
+                          check ? this.handleOpenFeedbackForm : () => this.modalWarning('Feedback')
+                        }
+                      />
+                      <img
+                        src={externalLinkIcon}
+                        alt="external-link-icon"
+                        onClick={check ? this.handleAddComment : () => this.modalWarning('Comment')}
+                      />
+                      <img src={removeIcon} alt="view-template-icon" />
+                    </div>
+                  )}
+                </Col>
+              </Row>
+              {/* <span className={styles.conductExit__bottom__title}>
+                  {formatMessage({ id: 'pages.relieving.exitInterviewScheduledWith' })} {firstName}
+                </span>
+                {checkOwner && (
+                  <div className={styles.conductExit__bottom__action}>
+                    <img
+                      src={viewTemplateIcon}
+                      alt="view-template-icon"
+                      onClick={
+                        check ? this.handleOpenFeedbackForm : () => this.modalWarning('Feedback')
+                      }
+                    />
+                    <img
+                      src={externalLinkIcon}
+                      alt="external-link-icon"
+                      onClick={check ? this.handleAddComment : () => this.modalWarning('Comment')}
+                    />
+                    <img src={removeIcon} alt="view-template-icon" />
+                  </div>
+                )} */}
+            </div>
+          )}
         </div>
-        {idSchedule && (
-          <div className={styles.conductExit}>
-            <div className={styles.conductExit__head}>
-              <span className={styles.conductExit__head__title}>
-                {formatMessage({ id: 'pages.relieving.exitInterviewScheduledWith' })} {firstName}
-              </span>
-              {checkOwner && (
-                <div className={styles.conductExit__head__action}>
-                  <img
-                    src={viewTemplateIcon}
-                    alt="view-template-icon"
-                    onClick={
-                      check ? this.handleOpenFeedbackForm : () => this.modalWarning('Feedback')
-                    }
-                  />
-                  <img
-                    src={externalLinkIcon}
-                    alt="external-link-icon"
-                    onClick={check ? this.handleAddComment : () => this.modalWarning('Comment')}
-                  />
-                  <img src={removeIcon} alt="view-template-icon" />
-                </div>
-              )}
-            </div>
-            <div>
-              <span className={styles.conductExit__schedule}>
-                Scheduled on: {moment(meetingDate).format('YYYY/MM/DD')} &nbsp; | &nbsp;{' '}
-                <span>{meetingTime}</span>
-              </span>
-            </div>
-          </div>
-        )}
 
         {this.renderFeedbackForm()}
         <ModalSet1On1
