@@ -56,14 +56,15 @@ class ResignationRequestDetail extends PureComponent {
                 <DatePicker
                   defaultValue={requestLastDate ? moment(requestLastDate) : null}
                   format="MM.DD.YY"
+                  disabled
                   // disabled={status === 'ACCEPTED'}
                 />
-                <div className={styles.notice}>
+                {/* <div className={styles.notice}>
                   <span className={styles.content}>
                     Preferred LWD must be vetted by your reporting manager & approved by the HR
                     manager to come into effect.
                   </span>
-                </div>
+                </div> */}
               </div>
             </div>
           </>

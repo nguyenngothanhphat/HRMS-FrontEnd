@@ -128,7 +128,7 @@ class ResigationLeft extends Component {
             disabled={sendleaveRequest || checkSendRequest}
           />
         </div>
-        <div className={styles.lastWorkingDay}>
+        {/* <div className={styles.lastWorkingDay}>
           <span className={styles.title}>Last working date (System generated)</span>
           <div className={styles.datePicker}>
             <DatePicker format="MM.DD.YY" disabled defaultValue={moment().add('90', 'days')} />
@@ -153,7 +153,7 @@ class ResigationLeft extends Component {
               </div>
             </div>
           )}
-        </div>
+        </div> */}
         {!sendleaveRequest && !checkSendRequest && (
           <div className={styles.subbmitForm}>
             <div className={styles.subbmiText}>

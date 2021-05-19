@@ -11,7 +11,7 @@ import ScheduleMeeting from './components/ScheduleMeeting';
 import Assignee from './components/Assignee';
 import ModalNotice from './components/ModalNotice';
 import ReasonPutOnHold from './components/ReasonPutOnHold';
-// import RequestChangeLWD from './components/RequestChangeLWD';
+import RequestChangeLWD from './components/RequestChangeLWD';
 import ClosingComment from './components/ClosingComment';
 import WhatNext from './components/WhatNext';
 import styles from './index.less';
@@ -285,7 +285,7 @@ class DetailTicket extends Component {
                 {/* <ButtonSet1On1 itemRequest={myRequest} listAssignee={filterListAssignee} /> */}
                 {selectButton === 'ON-HOLD' && <ReasonPutOnHold hideForm={this.hideFormOnHold} />}
                 {checkClosingComment?._id && <ClosingComment data={checkClosingComment} />}
-                {/* {status === 'ACCEPTED' && <RequestChangeLWD />} */}
+                {status === 'ACCEPTED' && <RequestChangeLWD />}
               </Col>
               <Col span={9}>
                 <Assignee myRequest={myRequest} />

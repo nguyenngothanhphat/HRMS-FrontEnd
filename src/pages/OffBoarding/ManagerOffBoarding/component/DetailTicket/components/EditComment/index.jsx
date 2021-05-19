@@ -27,7 +27,7 @@ class EditComment extends Component {
       q: props.itemComment.content,
       isEdit: false,
       selectButton: '',
-      canBeRehired: false,
+      canBeRehired: props.itemComment.canBeRehired,
     };
   }
 
@@ -47,13 +47,14 @@ class EditComment extends Component {
   };
 
   handleSubmit = () => {
-    const { q, itemComment: { _id: id } = {} } = this.state;
+    const { q, itemComment: { _id: id } = {}, canBeRehired } = this.state;
     const { dispatch } = this.props;
     dispatch({
       type: 'offboarding/complete1On1',
       payload: {
         id,
         content: q,
+        canBeRehired,
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
@@ -81,7 +82,10 @@ class EditComment extends Component {
 
   handleCanBeRehired = (e) => {
     const { target: { checked = false } = {} } = e;
-    const { itemComment: { _id: id } = {} } = this.state;
+    this.setState({
+      canBeRehired: checked,
+    });
+    const { q, itemComment: { _id: id } = {} } = this.state;
 
     const { dispatch } = this.props;
     dispatch({
@@ -89,6 +93,7 @@ class EditComment extends Component {
       payload: {
         id,
         canBeRehired: checked,
+        content: q,
       },
     });
   };
@@ -107,6 +112,7 @@ class EditComment extends Component {
     const {
       updatedAt,
       ownerComment: { _id: ownerCommentId = '', generalInfo: { firstName = '' } = {} } = {},
+      canBeRehired: originCanBeRehired = false,
     } = itemComment;
     const time = moment(updatedAt).format('DD.MM.YY | h:mm A');
     const isOwner = myId === ownerCommentId;
@@ -145,7 +151,9 @@ class EditComment extends Component {
               disabled={!isEdit}
             />
             <div className={s.canBeRehired}>
-              <Checkbox onChange={this.handleCanBeRehired}>Can be rehired</Checkbox>{' '}
+              <Checkbox defaultChecked={originCanBeRehired} onChange={this.handleCanBeRehired}>
+                Can be rehired
+              </Checkbox>{' '}
               <span>(This will remain private to yourself and the HR)</span>
             </div>
           </div>

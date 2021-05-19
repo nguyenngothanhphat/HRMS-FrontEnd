@@ -88,7 +88,7 @@ class Reason extends PureComponent {
             </p> */}
           </div>
           <TextArea className={styles.boxReason} defaultValue={reasonForLeaving} disabled />
-          <div className={styles.lastWorkingDay}>
+          {/* <div className={styles.lastWorkingDay}>
             <span className={styles.title}>Last working date (System generated)</span>
             <div className={styles.datePicker}>
               <DatePicker
@@ -124,7 +124,7 @@ class Reason extends PureComponent {
                 </div>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
     );
