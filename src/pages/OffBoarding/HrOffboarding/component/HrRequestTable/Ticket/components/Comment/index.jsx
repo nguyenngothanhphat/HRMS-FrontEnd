@@ -3,7 +3,7 @@ import moment from 'moment';
 import { Input, Button } from 'antd';
 import { connect } from 'umi';
 import editIcon from '@/assets/edit-off-boarding.svg';
-import Checkbox from 'antd/lib/checkbox/Checkbox';
+import BlueLikeIcon from '@/assets/blueLikeIcon.svg';
 import s from './index.less';
 
 const { TextArea } = Input;
@@ -27,7 +27,6 @@ class EditComment extends Component {
       q: props.itemComment.content,
       isEdit: false,
       selectButton: '',
-      canBeRehired: false,
     };
   }
 
@@ -79,20 +78,6 @@ class EditComment extends Component {
     });
   };
 
-  handleCanBeRehired = (e) => {
-    const { target: { checked = false } = {} } = e;
-    const { itemComment: { _id: id } = {} } = this.state;
-
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'offboarding/complete1On1',
-      payload: {
-        id,
-        canBeRehired: checked,
-      },
-    });
-  };
-
   render() {
     const { itemComment = {}, q, isEdit, selectButton } = this.state;
     const {
@@ -107,6 +92,7 @@ class EditComment extends Component {
     const {
       updatedAt,
       ownerComment: { _id: ownerCommentId = '', generalInfo: { firstName = '' } = {} } = {},
+      canBeRehired = false,
     } = itemComment;
     const time = moment(updatedAt).format('DD.MM.YY | h:mm A');
     const isOwner = myId === ownerCommentId;
@@ -121,16 +107,7 @@ class EditComment extends Component {
                 <span>Edit</span>
               </div>
             )}
-            {isEdit && (
-              <>
-                <div className={s.handleCloseEdit} onClick={this.handleCloseEdit}>
-                  <span>Cancel</span>
-                </div>
-                <div className={s.handleSave} onClick={this.handleSubmit}>
-                  <span>Save</span>
-                </div>
-              </>
-            )}
+
             <span className={s.time}>{time}</span>
           </div>
         </div>
@@ -144,43 +121,40 @@ class EditComment extends Component {
               onChange={this.handleChange}
               disabled={!isEdit}
             />
-            <div className={s.canBeRehired}>
-              <Checkbox onChange={this.handleCanBeRehired}>Can be rehired</Checkbox>{' '}
-              <span>(This will remain private to yourself and the HR)</span>
-            </div>
+            {!isOwner && canBeRehired && (
+              <div className={s.canBeRehired}>
+                <span className={s.text1}>* This candidate can be rehired</span>
+              </div>
+            )}
+            {isOwner && (
+              // && canBeRehired
+              <div className={s.canBeRehired}>
+                <img src={BlueLikeIcon} alt="like" />
+                <span className={s.text2}>
+                  Your comment for the 1-on-1 with Venkat has been recorded. Venkat and the HR
+                  manager will be able to view this comment.
+                </span>
+              </div>
+            )}
           </div>
         </div>
-        {!isOnHold && (
+        {!isOnHold && isEdit && (
           <div className={s.buttonArea}>
             <span className={s.description}>
               By default notifications will be sent to HR, your manager and recursively loop to your
               department head.
             </span>
             <div className={s.buttons}>
-              <Button type="link" className={s.putOnHoldBtn} onClick={openFormReason}>
-                Put-on-Hold
-              </Button>
-              <Button
-                type="link"
-                loading={loadingReview && selectButton === 'REJECTED'}
-                className={s.rejectBtn}
-                onClick={() => {
-                  this.setState({ selectButton: 'REJECTED' });
-                  handleReviewRequest('REJECTED', id);
-                }}
-              >
-                Reject
+              <Button type="link" className={s.putOnHoldBtn} onClick={this.handleCloseEdit}>
+                Cancel
               </Button>
               <Button
                 type="primary"
-                loading={loadingReview && selectButton === 'ACCEPTED'}
-                onClick={() => {
-                  this.setState({ selectButton: 'ACCEPTED' });
-                  handleReviewRequest('ACCEPTED', id);
-                }}
+                className={s.rejectBtn}
+                onClick={this.handleSubmit}
                 disabled={!q}
               >
-                Accept
+                Submit
               </Button>
             </div>
           </div>

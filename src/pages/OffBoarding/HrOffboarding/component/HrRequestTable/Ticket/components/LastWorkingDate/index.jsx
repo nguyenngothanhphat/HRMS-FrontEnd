@@ -3,7 +3,7 @@ import moment from 'moment';
 import React, { PureComponent } from 'react';
 import styles from './index.less';
 
-const dateFormat = 'MM.DD.YYYY';
+const dateFormat = 'MM.DD.YY';
 
 export default class LastWorkingDate extends PureComponent {
   constructor(props) {
@@ -12,6 +12,11 @@ export default class LastWorkingDate extends PureComponent {
       lastDate: '',
       isEdit: true,
     };
+  }
+
+  componentDidMount() {
+    const { myRequest: { lastWorkingDate = '' } = {} } = this.props;
+    this.setState({ lastDate: lastWorkingDate });
   }
 
   changeDate = (_, lastDate) => {
@@ -23,9 +28,12 @@ export default class LastWorkingDate extends PureComponent {
   render() {
     const { lastDate = '', isEdit } = this.state;
     const { children } = this.props;
-    const dateValue = lastDate
-      ? moment(lastDate).locale('en').format('MM.DD.YY')
-      : moment().locale('en').format('MM.DD.YY');
+    const { myRequest: { requestLastDate = '', statusLastDay = '' } = {} } = this.props;
+
+    const dateValue =
+      requestLastDate && statusLastDay === 'ACCEPTED'
+        ? moment(requestLastDate).locale('en').format('MM.DD.YY')
+        : moment(lastDate).locale('en').format('MM.DD.YY');
     return (
       <>
         <Row className={styles.viewChangeLastWorkingDay__viewDateApproved} gutter={[50, 0]}>

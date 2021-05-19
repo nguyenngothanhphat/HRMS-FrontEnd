@@ -5,21 +5,26 @@ import styles from './index.less';
 
 export default class HrApproved extends PureComponent {
   render() {
+    const { myRequest = {} } = this.props;
     return (
       <div className={styles.hrApproved}>
         <div>Last working day (HR Approved)</div>
         <div>
-          <div className={styles.hrApproved__tileDate}>Last working date</div>
-          <LastWorkingDate />
+          <div className={styles.hrApproved__titleDate}>Last working date</div>
+          <LastWorkingDate myRequest={myRequest} />
         </div>
         <div className={styles.hrApproved__footer}>
           <div className={styles.hrApproved__footer__text}>
             By default notifications will be sent to the request, his reporting manager and
             recursively loop to your department head.
           </div>
-          <div style={{ display: 'flex' }}>
-            <Button className={styles.btnCancel}>Cancel</Button>
-            <Button className={styles.btnSubmit}>Submit</Button>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Button type="link" className={styles.btnCancel}>
+              Cancel
+            </Button>
+            <Button type="primary" className={styles.btnSubmit}>
+              Submit
+            </Button>
           </div>
         </div>
       </div>

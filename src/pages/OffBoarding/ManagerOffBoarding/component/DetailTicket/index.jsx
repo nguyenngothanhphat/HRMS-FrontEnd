@@ -8,10 +8,10 @@ import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
 // import ButtonSet1On1 from './components/ButtonSet1On1';
 import ScheduleMeeting from './components/ScheduleMeeting';
-import RightContent from './components/RightContent';
+import Assignee from './components/Assignee';
 import ModalNotice from './components/ModalNotice';
 import ReasonPutOnHold from './components/ReasonPutOnHold';
-import RequestChangeLWD from './components/RequestChangeLWD';
+// import RequestChangeLWD from './components/RequestChangeLWD';
 import ClosingComment from './components/ClosingComment';
 import WhatNext from './components/WhatNext';
 import styles from './index.less';
@@ -28,11 +28,14 @@ import styles from './index.less';
       showModalSuccessfully = false,
       listAssignee = [],
     } = {},
-    user: { currentUser: { company: { _id: company } = {} } = {} } = {},
+    user: {
+      currentUser: { employee: { _id: myId = '' } = {}, company: { _id: company } = {} } = {},
+    } = {},
   }) => ({
     myRequest,
     list1On1,
     listMeetingTime,
+    myId,
     listProjectByEmployee,
     loading: loading.effects['offboarding/fetchRequestById'],
     loadingReview: loading.effects['offboarding/reviewRequest'],
@@ -204,6 +207,7 @@ class DetailTicket extends Component {
       showModalSuccessfully,
       listAssignee = [],
       loadingReview,
+      myId = '',
     } = this.props;
     const {
       status = '',
@@ -230,6 +234,9 @@ class DetailTicket extends Component {
           isRelieving && statusRelieving === 'COMPLETED',
       ) || {};
 
+    const checkMyComment =
+      list1On1.filter((comment) => comment.ownerComment._id === myId).length > 0;
+
     return (
       <>
         <PageContainer>
@@ -242,7 +249,7 @@ class DetailTicket extends Component {
               </div>
             </Affix>
             <Row className={styles.detailTicket__content} gutter={[24, 0]}>
-              <Col span={14}>
+              <Col span={15}>
                 <StatusComponent status={status} />
                 <RequesteeDetail employeeInfo={employeeInfo} listProject={listProject} />
                 <ResignationRequestDetail itemRequest={myRequest} />            
@@ -272,7 +279,7 @@ class DetailTicket extends Component {
                     </Fragment>
                   );
                 })}
-                {list1On1.length === 0 && (
+                {!checkMyComment && (
                   <WhatNext itemRequest={myRequest} listAssignee={filterListAssignee} />
                 )}
                 {/* <ButtonSet1On1 itemRequest={myRequest} listAssignee={filterListAssignee} /> */}
@@ -280,8 +287,8 @@ class DetailTicket extends Component {
                 {checkClosingComment?._id && <ClosingComment data={checkClosingComment} />}
                 {/* {status === 'ACCEPTED' && <RequestChangeLWD />} */}
               </Col>
-              <Col span={10}>
-                <RightContent />
+              <Col span={9}>
+                <Assignee myRequest={myRequest} />
               </Col>
             </Row>
             {/* {checkShowNotification &&

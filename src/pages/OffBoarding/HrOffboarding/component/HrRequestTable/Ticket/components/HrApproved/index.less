@@ -1,6 +1,6 @@
 .hrApproved {
   margin-bottom: 20px;
-  color: #464646;
+  color: #161c29;
   font-size: 13px;
   background-color: #fff;
   border: 1px solid #d6dce0;
@@ -24,6 +24,7 @@
   }
 
   &__titleDate {
+    margin-bottom: 15px;
     color: #707177;
     font-weight: 500;
     font-size: 13px;
@@ -43,21 +44,48 @@
   }
 
   .btnCancel {
-    box-sizing: border-box;
-    width: 100px;
-    height: 35px;
-    margin-right: 12px;
+    margin-right: 10px;
     color: #de0e0e;
-    border: 1px solid #de0e0e;
-    border-radius: 25px;
+    font-weight: 700;
   }
-  .btnSubmit {
-    width: 100px;
-    height: 35px;
-    color: #ffffff;
-    font-weight: 500;
-    background: #ffa100;
-    border: none;
-    border-radius: 25px;
+  :global {
+    .ant-input:focus,
+    .ant-picker-focused {
+      border-color: #2c6df9;
+      outline: 0;
+      box-shadow: unset;
+    }
+
+    .ant-input,
+    .ant-picker-input {
+      font-size: 13px;
+      input {
+        font-size: 13px;
+      }
+    }
+
+    .ant-select-selection-search {
+      align-content: center;
+    }
+    .ant-picker {
+      min-width: 240px;
+      min-height: 42px !important;
+      font-size: 13px;
+      border-radius: 5px !important;
+    }
+    .ant-btn-primary {
+      height: 40px;
+      padding: 0 30px;
+      background-color: #ffa100;
+      border: none;
+      border-radius: 30px;
+      span {
+        color: white;
+        font-weight: 700;
+      }
+      &:hover {
+        background-color: #ffa100cc;
+      }
+    }
   }
 }

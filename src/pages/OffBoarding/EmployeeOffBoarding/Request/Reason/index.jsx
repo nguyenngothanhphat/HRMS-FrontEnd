@@ -28,7 +28,7 @@ class Reason extends PureComponent {
     } = this.props;
     const marginTop = lastWorkingDate ? '0px' : '60px';
     const dateValue = moment(lastWorkingDate).format('MM.DD.YY');
-    console.log('dateValue', dateValue);
+
     return (
       <div className={styles.stepContain}>
         <div className={styles.titleBody}>
@@ -105,14 +105,14 @@ class Reason extends PureComponent {
             </div>
 
             <div className={styles.requestToChange}>
-              <Checkbox checked={requestLastDate} onClick={handleRequestToChange}>
+              <Checkbox defaultChecked={requestLastDate} onClick={handleRequestToChange}>
                 Request to change
               </Checkbox>
             </div>
             {(changeLWD || requestLastDate) && (
               <div className={styles.datePicker}>
                 <DatePicker
-                  defaultValue={moment(requestLastDate)}
+                  defaultValue={requestLastDate ? moment(requestLastDate) : null}
                   onChange={handleLWD}
                   format="MM.DD.YY"
                 />

@@ -1,8 +1,8 @@
-import EditComment from '@/components/EditComment';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Col, Row, Spin } from 'antd';
 import React, { Component, Fragment } from 'react';
 import { connect } from 'umi';
+import Comment from './components/Comment';
 import ClosingComment from '../../../../ManagerOffBoarding/component/DetailTicket/components/ClosingComment';
 import ModalNotice from '../../../../ManagerOffBoarding/component/DetailTicket/components/ModalNotice';
 import ScheduleMeeting from '../../../../ManagerOffBoarding/component/DetailTicket/components/ScheduleMeeting';
@@ -10,6 +10,7 @@ import Assignee from './components/Assignee';
 import HrApproved from './components/HrApproved';
 import RequesteeDetail from './components/RequesteeDetail';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
+import WhatNext from './components/WhatNext';
 import InfoEmployee from './components/RightContent';
 import StatusDetail from './components/StatusDetail';
 import styles from './index.less';
@@ -23,6 +24,7 @@ import styles from './index.less';
       listProjectByEmployee = [],
       listMeetingTime = [],
       showModalSuccessfully = false,
+      listAssignee = [],
     } = {},
     user: { currentUser: { employee: { _id: myId = '' } = {} } = {} } = {},
   }) => ({
@@ -34,6 +36,7 @@ import styles from './index.less';
     listMeetingTime,
     myId,
     showModalSuccessfully,
+    listAssignee,
   }),
 )
 class HRDetailTicket extends Component {
@@ -145,6 +148,8 @@ class HRDetailTicket extends Component {
       listMeetingTime,
       loadingGetById,
       showModalSuccessfully,
+      listAssignee = [],
+      myId = '',
     } = this.props;
     const {
       reasonForLeaving = '',
@@ -153,7 +158,7 @@ class HRDetailTicket extends Component {
       ticketID = '',
       employee: {
         employeeId,
-        generalInfo: { firstName: nameFrist = '' } = {},
+        generalInfo: { firstName: firstNameEmp = '' } = {},
         title: { name: jobTitle = '' } = {},
         department: { name: department = '' } = {},
         joinDate,
@@ -177,6 +182,9 @@ class HRDetailTicket extends Component {
         ({ isRelieving, status: statusRelieving }) =>
           isRelieving && statusRelieving === 'COMPLETED',
       ) || {};
+
+    const checkMyComment =
+      list1On1.filter((comment) => comment.ownerComment._id === myId).length > 0;
     return (
       <>
         <PageContainer>
@@ -184,21 +192,21 @@ class HRDetailTicket extends Component {
             <Affix offsetTop={42}>
               <div className={styles.titlePage}>
                 <p className={styles.titlePage__text}>
-                  [Ticket ID: {ticketID}] Terminate work relationship with {nameFrist} [{employeeId}
-                  ]
+                  [Ticket ID: {ticketID}] Terminate work relationship with {firstNameEmp} [
+                  {employeeId}]
                 </p>
                 {/* <StatusRequest status={status} /> */}
               </div>
             </Affix>
             <Row className={styles.detailTicket__content} gutter={[30, 30]}>
-              <Col span={16}>
+              <Col span={15}>
                 {/* status  */}
                 <StatusDetail status={status} />
 
                 {/* Requestee Detail */}
                 <RequesteeDetail
                   id={employeeId}
-                  name={nameFrist}
+                  name={firstNameEmp}
                   jobTitle={jobTitle}
                   department={department}
                   nameOfManager={`${firstNameManager} ${lastNameManager}`}
@@ -207,14 +215,14 @@ class HRDetailTicket extends Component {
                 />
 
                 {/* Resignation request detail */}
-                <ResignationRequestDetail reason={reasonForLeaving} date={requestDate} />
+                <ResignationRequestDetail itemRequest={myRequest} />
                 {listComment.length !== 0 && (
                   <div className={styles.viewListComment}>
                     {listComment.map((item) => {
                       const { _id } = item;
                       return (
                         <Fragment key={_id}>
-                          <EditComment itemComment={item} />
+                          <Comment itemComment={item} />
                         </Fragment>
                       );
                     })}
@@ -227,12 +235,16 @@ class HRDetailTicket extends Component {
                     </Fragment>
                   );
                 })}
+
                 {checkClosingComment?._id && <ClosingComment data={checkClosingComment} />}
                 {/* {status !== 'REJECTED' && <LastWorkingDate />} */}
-                <HrApproved />
+                <HrApproved myRequest={myRequest} />
+                {!checkMyComment && (
+                  <WhatNext itemRequest={myRequest} listAssignee={listAssignee} />
+                )}
               </Col>
-              <Col span={8}>
-                <Assignee />
+              <Col span={9}>
+                <Assignee myRequest={myRequest} />
                 <InfoEmployee />
                 {/* <ButtonSet1On1
                   loading={loading}
