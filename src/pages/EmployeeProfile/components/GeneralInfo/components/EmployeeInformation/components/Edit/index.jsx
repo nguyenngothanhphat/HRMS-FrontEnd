@@ -19,6 +19,7 @@ import styles from './index.less';
       tempData: { generalData = {} } = {},
       tenantCurrentEmployee = '',
       documentCategories = [],
+      companyCurrentEmployee = '',
     } = {},
     upload: { employeeInformationURL = '' },
     user: { currentUser = [] },
@@ -33,6 +34,7 @@ import styles from './index.less';
     currentUser,
     tenantCurrentEmployee,
     documentCategories,
+    companyCurrentEmployee,
   }),
 )
 class Edit extends PureComponent {
@@ -158,6 +160,7 @@ class Edit extends PureComponent {
       companyCurrentEmployee = '',
       documentCategories = [],
     } = this.props;
+
     let file = '';
     const { urlFile } = generalData;
     if (urlFile) {
@@ -377,7 +380,8 @@ class Edit extends PureComponent {
             name="legalName"
             rules={[
               {
-                pattern: /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/,
+                pattern:
+                  /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/,
                 message: formatMessage({ id: 'pages.employeeProfile.validateName' }),
               },
             ]}

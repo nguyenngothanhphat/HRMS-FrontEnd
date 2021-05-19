@@ -47,7 +47,7 @@ class RadioComponent extends PureComponent {
             <Radio.Group
               className={styles.paddingRadio}
               // defaultValue={isObject(employeeType) ? employeeType._id : INTERN_TYPE}
-              // defaultValue={employeeType ? employeeType._id : employeeTypeList[0]._id}
+              defaultValue={employeeType ? employeeType._id : employeeTypeList[0]._id}
               onChange={(e) => handleRadio(e)}
               name={Tab.classificationTab.name}
             >

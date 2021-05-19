@@ -3,7 +3,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Spin } from 'antd';
 import { formatMessage, connect } from 'umi';
 import EditComment from '@/components/EditComment';
-import StatusRequest from '@/components/StatusRequest';
+import StatusComponent from './components/StatusComponent';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import RequesteeDetail from './components/RequesteeDetail';
 import ButtonSet1On1 from './components/ButtonSet1On1';
@@ -234,11 +234,11 @@ class DetailTicket extends Component {
                 <p className={styles.titlePage__text}>
                   Terminate work relationship with {nameEmployee} [{employeeId}]
                 </p>
-                <StatusRequest status={status} />
               </div>
             </Affix>
-            <Row className={styles.detailTicket__content} gutter={[40, 0]}>
-              <Col span={18}>
+            <Row className={styles.detailTicket__content} gutter={[24, 0]}>
+              <Col span={14}>
+                <StatusComponent status={status} />
                 <RequesteeDetail employeeInfo={employeeInfo} listProject={listProject} />
                 <ResignationRequestDetail itemRequest={myRequest} />            
                 {listComment.length !== 0 && (
@@ -265,7 +265,7 @@ class DetailTicket extends Component {
                 {checkClosingComment?._id && <ClosingComment data={checkClosingComment} />}
                 {status === 'ACCEPTED' && <RequestChangeLWD />}
               </Col>
-              <Col span={6}>
+              <Col span={10}>
                 <RightContent />
               </Col>
             </Row>

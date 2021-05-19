@@ -60,7 +60,7 @@ class ScheduleMeeting extends Component {
           </span>
           <div className={styles.actionDetailTicket__dateTime}>
             <span>
-              {formatMessage({ id: 'pages.offBoarding.scheduledOn' })} :{' '}
+              {formatMessage({ id: 'pages.offBoarding.scheduledOn' })}:{' '}
               {moment(meetingDate).format('YYYY/MM/DD')} &nbsp; | &nbsp; <span>{meetingTime}</span>
             </span>
             {checkOwner && (

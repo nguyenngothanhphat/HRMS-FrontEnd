@@ -1,7 +1,7 @@
 import {
   getDocumentList,
+  getTitleListByDepartment,
   fetchDepartmentList,
-  getJobTitleList,
   getLocationList,
   getEmployeeTypeList,
   getManagerList,
@@ -21,6 +21,7 @@ import {
   getDocumentByCandidate,
 } from '@/services/addNewMember';
 import { history } from 'umi';
+import { notification } from 'antd';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 
 import {
@@ -462,7 +463,7 @@ const candidateInfo = {
     *fetchTitleList({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getJobTitleList, payload);
+        response = yield call(getTitleListByDepartment, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -698,7 +699,14 @@ const candidateInfo = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveSalaryStructure',
-          payload: { settings: setting },
+          payload: { title: payload.title, settings: setting },
+        });
+
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            salaryStructure: { title: payload.title, settings: setting },
+          },
         });
       } catch (errors) {
         dialog(errors);
@@ -726,12 +734,16 @@ const candidateInfo = {
     *editSalaryStructure({ payload }, { call, put }) {
       try {
         const response = yield call(editSalaryStructure, payload);
-        const { statusCode } = response;
+        const { statusCode, message } = response;
         const candidate = payload._id;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
           payload: { candidate },
+        });
+
+        notification.success({
+          message,
         });
       } catch (errors) {
         dialog(errors);
@@ -741,7 +753,6 @@ const candidateInfo = {
     *submitPhase1Effect({ payload }, { call, put }) {
       let response = {};
       try {
-        console.log(payload);
         response = yield call(submitPhase1, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
@@ -830,6 +841,8 @@ const candidateInfo = {
             amountIn: data.amountIn || '',
             timeOffPolicy: data.timeOffPolicy || '',
             compensationType: data.compensationType || '',
+            salaryTitle: data.salaryStructure?.title?._id,
+            salaryStructure: data.salaryStructure,
             // hidePreviewOffer: !!(data.staticOfferLetter && data.staticOfferLetter.url), // Hide preview offer screen if there's already static offer
             // disablePreviewOffer:
             //   (data.offerLetter && data.offerLetter.attachment) ||
@@ -1111,13 +1124,14 @@ const candidateInfo = {
       };
     },
     saveSalaryStructure(state, action) {
-      const { data, salaryStructure } = state;
+      const { tempData } = state;
+
       return {
         ...state,
-        data: {
-          ...data,
+        tempData: {
+          ...tempData,
           salaryStructure: {
-            ...salaryStructure,
+            ...tempData.salaryStructure,
             ...action.payload,
           },
         },

@@ -14,25 +14,91 @@
       padding: 0 !important;
       font-weight: 700;
     }
+
+    .ant-checkbox-inner{
+      border-radius: 3px;
+      width: 14px;
+      height: 14px;
+    }
+
+    // .ant-checkbox-checked .ant-checkbox-inner{
+    //   background-color: #2C6DF9;      
+    // }
+
+    // .ant-checkbox-disabled.ant-checkbox-checked .ant-checkbox-inner::after{
+    //   border-color: #fff;
+    // }
+
+    .ant-checkbox + span {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 15px;
+
+      color: #000000;
+    }
+
+    .ant-checkbox-disabled + span {
+      color: rgba(0, 0, 0, 0.25);
+      cursor: not-allowed;
+    }
+
+    .ant-checkbox-disabled .ant-checkbox-inner {
+      background-color: #2C6DF9;     
+      border-color: #fff !important;
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .ant-checkbox-disabled.ant-checkbox-checked .ant-checkbox-inner::after{
+      border-color: #fff;
+    }
   }
 
   &__card {
     border-radius: 5px;
+
+    &__lwd{
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 15px;
+      padding-left: 20px;
+  
+      color: #707177;
+    }
   }
 
   p:not(:last-child) {
     font-size: 14px;
   }
 
-  p:last-child {
-    font-size: 13px;
-  }
-
   p:nth-child(odd) {
+    font-style: normal;
     font-weight: 500;
+    font-size: 13px;
+    line-height: 15px;
+    margin-bottom: 30px;
+
+    color: #161C29;
   }
 
   p:nth-child(2) {
-    margin-bottom: 32px;
+    margin-bottom: 16px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 15px;
+
+    color: #161C29;
+  }
+
+  p:last-child {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 20px;
+
+    color: #707177;
   }
 }

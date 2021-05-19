@@ -7,9 +7,9 @@ import editIcon from './assets/editIcon.png';
 import styles from './index.less';
 
 class RelievingTemplates extends PureComponent {
-  onClickEdit = (id) => {
-    const { isOpenModal } = this.props;
-    isOpenModal(id);
+  onClickEdit = (id, isDefault) => {
+    const { isOpenModal = () => {} } = this.props;
+    isOpenModal(id, isDefault);
   };
 
   _renderPagination = () => {
@@ -17,10 +17,10 @@ class RelievingTemplates extends PureComponent {
   };
 
   _renderExitInterview = () => {
-    const { exitPackageTemplates } = this.props;
-    if (exitPackageTemplates.length === 0) {
-      return null;
-    }
+    const { exitPackageTemplates = [] } = this.props;
+    // if (exitPackageTemplates.length === 0) {
+    //   return null;
+    // }
     return (
       <div className={styles.templateList} style={{ paddingTop: '30px' }}>
         <div className={styles.title}>
@@ -35,7 +35,7 @@ class RelievingTemplates extends PureComponent {
         <div className={styles.list}>
           <Row gutter={24} justify="center">
             <Col span={22} offset={2}>
-              {exitPackageTemplates?.map((template) => {
+              {exitPackageTemplates.map((template) => {
                 return (
                   <div key={template._id} className={styles.template}>
                     <Row justify="space-between">
@@ -53,7 +53,8 @@ class RelievingTemplates extends PureComponent {
                         <img
                           src={editIcon}
                           alt="icon"
-                          onClick={() => this.onClickEdit(template._id)}
+                          onClick={() =>
+                            this.onClickEdit(template._id, template.templateType === 'DEFAULT')}
                         />
                       </Col>
                     </Row>
@@ -68,10 +69,10 @@ class RelievingTemplates extends PureComponent {
   };
 
   _renderClosingPackage = () => {
-    const { closingPackageTemplates } = this.props;
-    if (closingPackageTemplates.length === 0) {
-      return null;
-    }
+    const { closingPackageTemplates = [] } = this.props;
+    // if (closingPackageTemplates.length === 0) {
+    //   return null;
+    // }
     return (
       <>
         <hr />
@@ -88,7 +89,7 @@ class RelievingTemplates extends PureComponent {
           <div className={styles.list}>
             <Row gutter={24} justify="center">
               <Col span={22} offset={2}>
-                {closingPackageTemplates?.map((template) => {
+                {closingPackageTemplates.map((template) => {
                   return (
                     <div key={template._id} className={styles.template}>
                       <Row justify="space-between">
@@ -106,7 +107,8 @@ class RelievingTemplates extends PureComponent {
                           <img
                             src={editIcon}
                             alt="icon"
-                            onClick={() => this.onClickEdit(template._id)}
+                            onClick={() =>
+                              this.onClickEdit(template._id, template.templateType === 'DEFAULT')}
                           />
                         </Col>
                       </Row>
@@ -122,10 +124,10 @@ class RelievingTemplates extends PureComponent {
   };
 
   render() {
-    const { listTitle, exitPackageTemplates, closingPackageTemplates } = this.props;
-    if (exitPackageTemplates.length === 0 && closingPackageTemplates.length === 0) {
-      return null;
-    }
+    const { listTitle } = this.props;
+    // if (exitPackageTemplates.length === 0 && closingPackageTemplates.length === 0) {
+    //   return null;
+    // }
     return (
       <div className={styles.relievingTemplates}>
         <div className={styles.header}>

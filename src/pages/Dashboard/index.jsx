@@ -3,6 +3,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import { Row, Col, Affix } from 'antd';
 
 import { connect } from 'umi';
+import { isAdmin, isOwner } from '@/utils/authority';
 import Greeting from './components/Greeting';
 import ActivityLog from './components/ActivityLog';
 import MyApps from './components/MyApps';
@@ -126,13 +127,6 @@ class Dashboard extends PureComponent {
     });
   }
 
-  checkIsOwnerAdmin = () => {
-    const { currentUser: { signInRole = [] } = {} } = this.props;
-    const formatRole = signInRole.map((role) => role.toLowerCase());
-    if (formatRole.includes('admin') || formatRole.includes('owner')) return true;
-    return false;
-  };
-
   render() {
     const {
       listEmployeeMyTeam = [],
@@ -151,12 +145,10 @@ class Dashboard extends PureComponent {
       return listQuestion;
     });
 
-    const isOwnerAdmin = this.checkIsOwnerAdmin();
-
     return (
       <PageContainer>
         <div className={styles.containerDashboard}>
-          <Row gutter={[24, 24]} style={{ padding: '10px 20px 0 0' }}>
+          <Row gutter={[24, 24]} style={{ padding: '24px 20px 0 0' }}>
             <Col span={8}>
               <Affix offsetTop={10}>
                 <Greeting name={currentUser?.firstName} />
@@ -169,7 +161,7 @@ class Dashboard extends PureComponent {
               <Carousel />
               <MyApps />
 
-              {!isOwnerAdmin && (
+              {!isOwner() && !isAdmin() && (
                 <Row gutter={[12, 12]}>
                   <Col span={24}>
                     <TabManageTeamWork

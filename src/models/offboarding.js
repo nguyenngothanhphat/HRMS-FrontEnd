@@ -1,3 +1,4 @@
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import {
@@ -65,7 +66,11 @@ const offboarding = {
     *fetchList({ payload }, { call, put }) {
       let response;
       try {
-        response = yield call(getOffboardingList, payload);
+        response = yield call(getOffboardingList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const {
           statusCode,
           data: { items: listOffboarding = [], total: totalList = [], hrManager = {} } = {},
@@ -80,7 +85,11 @@ const offboarding = {
     },
     *fetchListTeamRequest({ payload }, { call, put }) {
       try {
-        const response = yield call(teamRequestList, payload);
+        const response = yield call(teamRequestList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const {
           statusCode,
           data: {
@@ -97,7 +106,11 @@ const offboarding = {
     },
     *fetchAcceptedRequest({ payload }, { call, put }) {
       try {
-        const response = yield call(getOffboardingList, payload);
+        const response = yield call(getOffboardingList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data: { items: acceptedRequest = [] } = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { acceptedRequest } });
@@ -110,7 +123,11 @@ const offboarding = {
     *sendRequest({ payload }, { call, put }) {
       let response;
       try {
-        response = yield call(sendRequest, payload);
+        response = yield call(sendRequest, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data: request = [] } = response;
 
         if (statusCode !== 200) throw response;
@@ -124,19 +141,30 @@ const offboarding = {
     },
     *fetchRequestById({ payload }, { call, put }) {
       try {
-        const response = yield call(getRequestById, payload);
-        const { statusCode, data: myRequest = {} } = response;
-        const { employee: { _id: employee } = {} } = myRequest;
+        const response = yield call(getRequestById, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'getListProjectByEmployee', payload: { employee } });
+        const { item: { employee: { _id: employee } = {} } = {}, item: myRequest = {} } = data;
         yield put({ type: 'save', payload: { myRequest } });
+        yield put({
+          type: 'getListProjectByEmployee',
+          payload: { employee, company: getCurrentCompany(), tenantId: getCurrentTenant() },
+        });
       } catch (errors) {
         dialog(errors);
       }
     },
     *getList1On1({ payload }, { call, put }) {
       try {
-        const response = yield call(getList1On1, payload);
+        const response = yield call(getList1On1, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data: list1On1 = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { list1On1 } });
@@ -146,7 +174,11 @@ const offboarding = {
     },
     *fetchApprovalFlowList({ payload }, { call, put }) {
       try {
-        const response = yield call(getapprovalflowList, payload);
+        const response = yield call(getapprovalflowList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data: approvalflow = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { approvalflow } });
@@ -167,7 +199,11 @@ const offboarding = {
     *create1On1({ payload, isEmployee = false }, { call, put }) {
       let response = {};
       try {
-        response = yield call(create1On1, payload);
+        response = yield call(create1On1, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data: itemNewCreate1On1 = {} } = response;
         if (statusCode !== 200) throw response;
         if (isEmployee) {
@@ -181,7 +217,11 @@ const offboarding = {
     },
     *getListProjectByEmployee({ payload }, { call, put }) {
       try {
-        const response = yield call(getListProjectByEmployee, payload);
+        const response = yield call(getListProjectByEmployee, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data: listProjectByEmployee = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listProjectByEmployee } });
@@ -192,7 +232,11 @@ const offboarding = {
     *complete1On1({ payload }, { call }) {
       let response = {};
       try {
-        response = yield call(complete1On1, payload);
+        response = yield call(complete1On1, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
       } catch (errors) {
@@ -203,11 +247,18 @@ const offboarding = {
     *reviewRequest({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(reviewRequest, payload);
+        response = yield call(reviewRequest, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         const { id } = payload;
-        yield put({ type: 'fetchRequestById', payload: { id } });
+        yield put({
+          type: 'fetchRequestById',
+          payload: { id, company: getCurrentCompany(), tenantId: getCurrentTenant() },
+        });
         yield put({ type: 'save', payload: { showModalSuccessfully: true } });
       } catch (errors) {
         dialog(errors);
@@ -217,30 +268,34 @@ const offboarding = {
     // Relieving Formalities
     *fetchRelievingDetailsById({ payload }, { call, put }) {
       let response = {};
+      const commonPayload = {
+        company: getCurrentCompany(),
+        tenantId: getCurrentTenant(),
+      };
       try {
         if (!payload.packageType || payload.packageType === '') {
           yield call(getOffBoardingPackages, {
+            ...commonPayload,
             offBoardingId: payload.id,
-            company: payload.company._id,
             templateType: 'DEFAULT',
             packageType: 'EXIT-PACKAGE',
           });
           yield call(getOffBoardingPackages, {
             offBoardingId: payload.id,
-            company: payload.company._id,
+            ...commonPayload,
             templateType: 'DEFAULT',
             packageType: 'CLOSING-PACKAGE',
           });
           yield call(getOffBoardingPackages, {
             offBoardingId: payload.id,
-            company: payload.company._id,
+            ...commonPayload,
             templateType: 'DEFAULT',
             packageType: 'EXIT-INTERVIEW-FEEDBACKS',
           });
         } else {
           const templateRes = yield call(getOffBoardingPackages, {
             offBoardingId: payload.id,
-            company: payload.company._id,
+            ...commonPayload,
             templateType: 'DEFAULT',
             packageType: payload.packageType,
           });
@@ -249,9 +304,10 @@ const offboarding = {
           return templateRes;
         }
 
-        response = yield call(getRequestById, payload);
-        const { statusCode, data: relievingDetails = {} } = response;
+        response = yield call(getRequestById, { ...payload, ...commonPayload });
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
+        const { item: relievingDetails = {} } = data;
         yield put({ type: 'save', payload: { relievingDetails } });
         return response;
       } catch (errors) {
@@ -261,7 +317,11 @@ const offboarding = {
     },
     *getOffBoardingPackages({ payload }, { call, put }) {
       try {
-        const response = yield call(getOffBoardingPackages, payload);
+        const response = yield call(getOffBoardingPackages, {
+          ...payload,
+          // company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         switch (payload.packageType) {
@@ -295,7 +355,11 @@ const offboarding = {
     },
     *fetchTemplateById({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getTemplateById, payload);
+        const response = yield call(getTemplateById, {
+          ...payload,
+          // company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { currentTemplate: data } });
@@ -306,7 +370,11 @@ const offboarding = {
     *addCustomTemplate({ payload = {} }, { call, put }) {
       let response = {};
       try {
-        response = yield call(addCustomTemplate, payload);
+        response = yield call(addCustomTemplate, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { newTemplate: data } });
@@ -318,7 +386,11 @@ const offboarding = {
     *searchListRelieving({ payload = {} }, { call, put }) {
       let response = {};
       try {
-        response = yield call(searchListRelieving, payload);
+        response = yield call(searchListRelieving, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { relievingStatus } = payload;
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
@@ -340,7 +412,11 @@ const offboarding = {
     *getListRelieving({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getListRelieving, payload);
+        response = yield call(getListRelieving, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { relievingStatus } = payload;
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
@@ -361,7 +437,10 @@ const offboarding = {
     },
     *getListAssigned(_, { call, put }) {
       try {
-        const response = yield call(getListAssigned);
+        const response = yield call(getListAssigned, {
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data: { items: listAssigned = [] } = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listAssigned } });
@@ -371,7 +450,11 @@ const offboarding = {
     },
     *getListAssignee({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getListAssignee, payload);
+        const response = yield call(getListAssignee, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data = [] } = response;
         const listAssignee = data.map((item = {}) => {
           const { _id = '', generalInfo: { firstName = '', workEmail = '' } = {} } = item;
@@ -392,11 +475,18 @@ const offboarding = {
       let response = {};
       const message = !isUpdate ? 'Request Change LWD Successfully' : 'Edit Comment Successfully';
       try {
-        response = yield call(requestChangeLWD, payload);
+        response = yield call(requestChangeLWD, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message });
-        yield put({ type: 'fetchRequestById', payload: { id } });
+        yield put({
+          type: 'fetchRequestById',
+          payload: { id, company: getCurrentCompany(), tenantId: getCurrentTenant() },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -405,7 +495,11 @@ const offboarding = {
     *handleRequestChangeLWD({ payload = {} }, { call }) {
       let response = {};
       try {
-        response = yield call(handleRequestChangeLWD, payload);
+        response = yield call(handleRequestChangeLWD, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
       } catch (errors) {
@@ -414,13 +508,18 @@ const offboarding = {
       return response;
     },
     *handleWithdraw({ payload, isNotStatusAccepted = false }, { call, put }) {
+      const newPayload = {
+        ...payload,
+        company: getCurrentCompany(),
+        tenantId: getCurrentTenant(),
+      };
       try {
-        const response = yield call(handleWithdraw, payload);
+        const response = yield call(handleWithdraw, newPayload);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message: 'Withdraw Successfully' });
         if (isNotStatusAccepted) {
-          yield put({ type: 'fetchRequestById', payload });
+          yield put({ type: 'fetchRequestById', payload: newPayload });
         }
       } catch (errors) {
         dialog(errors);
@@ -428,7 +527,11 @@ const offboarding = {
     },
     *saveOffBoardingPackage({ payload }, { call, put }) {
       try {
-        const response = yield call(handleRelievingTemplateDraft, payload);
+        const response = yield call(handleRelievingTemplateDraft, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { relievingDetails: data } });
@@ -440,7 +543,11 @@ const offboarding = {
     },
     *updateRelieving({ payload }, { call, put }) {
       try {
-        const response = yield call(updateRelieving, payload);
+        const response = yield call(updateRelieving, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message: `Move to relieving formalities successfully!` });
@@ -451,15 +558,24 @@ const offboarding = {
     },
     *sendOffBoardingPackage({ payload }, { call, put }) {
       try {
-        const response = yield call(sendOffBoardingPackage, payload);
+        const response = yield call(sendOffBoardingPackage, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
           message,
         });
-        const newRequest = yield call(getRequestById, { id: payload.ticketId });
-        const { statusCode: newRequestStat, data: relievingDetails = {} } = newRequest;
+        const newRequest = yield call(getRequestById, {
+          id: payload.ticketId,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode: newRequestStat, data = {} } = newRequest;
         if (newRequestStat !== 200) throw newRequest;
+        const { item: relievingDetails = {} } = data;
         yield put({ type: 'save', payload: { relievingDetails } });
       } catch (error) {
         dialog(error);
@@ -467,12 +583,21 @@ const offboarding = {
     },
     *removeOffBoardingPackage({ payload }, { call, put }) {
       try {
-        const response = yield call(removeOffBoardingPackage, payload);
+        const response = yield call(removeOffBoardingPackage, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        const newRequest = yield call(getRequestById, { id: payload.offboardRequest });
-        const { statusCode: newRequestStat, data: relievingDetails = {} } = newRequest;
+        const newRequest = yield call(getRequestById, {
+          id: payload.offboardRequest,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode: newRequestStat, data = {} } = newRequest;
         if (newRequestStat !== 200) throw newRequest;
+        const { item: relievingDetails = {} } = data;
         yield put({ type: 'save', payload: { relievingDetails } });
       } catch (error) {
         dialog(error);
@@ -480,7 +605,11 @@ const offboarding = {
     },
     *terminateReason({ payload }, { call, put }) {
       try {
-        const response = yield call(terminateReason, payload);
+        const response = yield call(terminateReason, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, message, data } = response;
         if (statusCode !== 200) throw response;
         notification.success({

@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { Select, Form, Table, Button, Input, Row, Col, InputNumber, Spin } from 'antd';
+import { CloseCircleOutlined } from '@ant-design/icons';
 import { formatMessage, connect } from 'umi';
 // import { dialog } from '@/utils/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -22,77 +23,22 @@ import PROCESS_STATUS from '../../../utils';
         title = {},
         processStatus = '',
         salaryStructure: {
-          settings = [
-            // {
-            //   key: 'basic',
-            //   title: 'Basic',
-            //   value: '',
-            //   order: 'A',
-            // },
-            // {
-            //   key: 'hra',
-            //   title: 'HRA',
-            //   value: '',
-            //   order: 'B',
-            // },
-            // {
-            //   title: 'Other allowances',
-            //   key: 'otherAllowances',
-            //   value: 'Balance amount',
-            //   order: 'C',
-            // },
-            // {
-            //   key: 'totalEarning',
-            //   title: 'Total earning (Gross)',
-            //   order: 'D',
-            //   value: 'A + B + C',
-            // },
-            // {
-            //   key: 'deduction',
-            //   title: 'Deduction',
-            //   order: 'E',
-            //   value: ' ',
-            // },
-            // {
-            //   key: 'employeesPF',
-            //   title: "Employee's PF",
-            //   value: '',
-            //   order: 'G',
-            // },
-            // {
-            //   key: 'employeesESI',
-            //   title: "Employee's ESI",
-            //   value: '',
-            //   order: 'H',
-            // },
-            // {
-            //   key: 'professionalTax',
-            //   title: 'Professional Tax',
-            //   value: 'Rs.200',
-            //   order: 'I',
-            // },
-            // {
-            //   key: 'tds',
-            //   title: 'TDS',
-            //   value: 'As per IT rules',
-            //   order: 'J',
-            // },
-            // {
-            //   key: 'netPayment',
-            //   title: 'Net Payment',
-            //   value: 'F - (G + H + I + J)',
-            //   order: ' ',
-            // },
-          ],
+          settings: settingsOriginData = [],
+          title: salaryTitleOriginData = {},
         } = {},
+        candidate,
       } = {},
       data,
       tempData = {},
+      tempData: {
+        salaryStructure: { settings: settingsTempData = [], title: salaryTitleTempData = {} } = {},
+      } = {},
     },
     user: { currentUser: { company: { _id = '' } = {} } = {}, currentUser: { location = {} } = {} },
   }) => ({
     loadingTable: loading.effects['candidateInfo/saveSalaryStructure'],
     loadingFetchTable: loading.effects['candidateInfo/fetchTableData'],
+    loadingEditSalary: loading.effects['candidateInfo/updateByHR'],
     listTitle,
     cancelCandidate,
     location,
@@ -101,17 +47,22 @@ import PROCESS_STATUS from '../../../utils';
     processStatus,
     _id,
     data,
-    settings,
+    settingsOriginData,
+    settingsTempData,
     title,
+    salaryTitleOriginData,
+    salaryTitleTempData,
     tempData,
+    candidate,
   }),
 )
 class SalaryStructureTemplate extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
 
     this.state = {
-      salaryTitle: '',
       dataSettings: [],
       // error: '',
       // errorInfo: '',
@@ -129,20 +80,12 @@ class SalaryStructureTemplate extends PureComponent {
     };
   }
 
+  // eslint-disable-next-line no-unused-vars
   componentDidUpdate(prevProps) {
-    const { listTitle = [], salaryTitle: salaryTitleId, settings } = this.props;
-    const { salaryTitle = '' } = this.state;
+    const { salaryTitle: salaryTitleId, settingsTempData: settings = [] } = this.props;
     if (!salaryTitleId) {
       return;
     }
-    const titleName = listTitle.find((item) => item._id === salaryTitleId);
-    if (titleName && !salaryTitle) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({
-        salaryTitle: titleName.name,
-      });
-    }
-
     // eslint-disable-next-line react/no-did-update-set-state
     this.setState({
       dataSettings: settings,
@@ -169,7 +112,7 @@ class SalaryStructureTemplate extends PureComponent {
   componentDidMount = () => {
     const {
       dispatch,
-      settings,
+      settingsTempData: settings = [],
       salaryTitle: salaryTitleId,
       location: { headQuarterAddress: { country = {} } = {} } = {},
     } = this.props;
@@ -185,23 +128,32 @@ class SalaryStructureTemplate extends PureComponent {
         },
       });
 
-      dispatch({
-        type: 'candidateInfo/fetchTableData',
-        payload: {
-          title: salaryTitleId,
-          tenantId: getCurrentTenant(),
-          country: country._id || country,
-        },
-      }).then(({ statusCode }) => {
-        if (statusCode === 200) {
-          dispatch({
-            type: 'candidateInfo/saveFilledSalaryStructure',
-            payload: {
-              filledSalaryStructure: true,
-            },
-          });
-        }
-      });
+      if (settings.length === 0) {
+        dispatch({
+          type: 'candidateInfo/fetchTableData',
+          payload: {
+            title: salaryTitleId,
+            tenantId: getCurrentTenant(),
+            country: country._id || country,
+          },
+        }).then(({ statusCode }) => {
+          if (statusCode === 200) {
+            dispatch({
+              type: 'candidateInfo/saveFilledSalaryStructure',
+              payload: {
+                filledSalaryStructure: true,
+              },
+            });
+          }
+        });
+      } else {
+        dispatch({
+          type: 'candidateInfo/saveFilledSalaryStructure',
+          payload: {
+            filledSalaryStructure: true,
+          },
+        });
+      }
     }
 
     // if (processStatus !== 'DRAFT') {
@@ -221,15 +173,15 @@ class SalaryStructureTemplate extends PureComponent {
       dataSettings: settings,
     });
 
-    const { processStatus } = this.props;
+    // const { processStatus } = this.props;
     // const tempTableData = [...settings];
 
-    if (processStatus === 'DRAFT') {
-      dispatch({
-        type: 'candidateInfo/fetchTitleListByCompany',
-        payload: { company: getCurrentCompany(), tenantId: getCurrentTenant() },
-      });
-    }
+    // if (processStatus === 'DRAFT') {
+    dispatch({
+      type: 'candidateInfo/fetchTitleListByCompany',
+      payload: { company: getCurrentCompany(), tenantId: getCurrentTenant() },
+    });
+    // }
 
     if (isFilled.length === 0 && tempTableData.length > 0) {
       dispatch({
@@ -295,15 +247,18 @@ class SalaryStructureTemplate extends PureComponent {
     const {
       dispatch,
       currentStep,
-      settings,
+      settingsOriginData: settings = [],
       // salaryPosition,
       data: { _id },
+      tempData: { salaryTitle = '' } = {},
     } = this.props;
+
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
         salaryStructure: {
           settings,
+          title: salaryTitle,
         },
         candidate: _id,
         currentStep: currentStep + 1,
@@ -321,10 +276,51 @@ class SalaryStructureTemplate extends PureComponent {
     });
   };
 
-  onClickEdit = () => {
+  onClickEdit = (key) => {
     const { isEditted } = this.state;
+    const {
+      dispatch,
+      settingsTempData: settings = [],
+      candidate,
+      salaryTitleTempData,
+    } = this.props;
+    const tenantId = getCurrentTenant();
+
+    if (key === 'done') {
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          tenantId,
+          candidate,
+          salaryStructure: {
+            title: salaryTitleTempData,
+            settings,
+          },
+        },
+      }).then(() => {
+        this.setState({
+          isEditted: !isEditted,
+        });
+      });
+    } else {
+      this.setState({
+        isEditted: !isEditted,
+      });
+    }
+  };
+
+  onCancel = async () => {
+    const { dispatch, salaryTitle: salaryTitleId, settingsOriginData: settings = [] } = this.props;
+
+    await dispatch({
+      type: 'candidateInfo/saveSalaryStructure',
+      payload: { title: salaryTitleId, settings },
+    });
+
+    this.formRef.current.resetFields();
+
     this.setState({
-      isEditted: !isEditted,
+      isEditted: false,
     });
   };
 
@@ -346,7 +342,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   handleChange = (e, current) => {
-    const { dispatch, settings } = this.props;
+    const { dispatch, settingsTempData: settings = [] } = this.props;
 
     const { target } = e;
     const { name, value } = target;
@@ -354,13 +350,19 @@ class SalaryStructureTemplate extends PureComponent {
     const isNumber = !!current;
 
     const tempTableData = [...settings];
+
     const index = tempTableData.findIndex((data) => data.key === name);
 
     if (isNumber) {
       tempTableData[index].value = `${current} ${value}`;
     } else {
-      tempTableData[index].value = value;
+      // tempTableData[index].value = value;
+      tempTableData[index] = {
+        ...tempTableData[index],
+        value,
+      };
     }
+
     const isFilled = tempTableData.filter((item) => item.value === '');
     if (isFilled.length === 0 && tempTableData.length > 0) {
       dispatch({
@@ -377,16 +379,16 @@ class SalaryStructureTemplate extends PureComponent {
         },
       });
     }
-    // dispatch({
-    //   type: 'candidateInfo/saveSalaryStructure',
-    //   payload: {
-    //     settings: tempTableData,
-    //   },
-    // });
+    dispatch({
+      type: 'candidateInfo/saveSalaryStructure',
+      payload: {
+        settings: tempTableData,
+      },
+    });
   };
 
   handleNumberChange = (name, current, value) => {
-    const { dispatch, settings } = this.props;
+    const { dispatch, settingsTempData: settings = [] } = this.props;
     const tempTableData = [...settings];
     const index = tempTableData.findIndex((data) => data.key === name);
 
@@ -428,6 +430,7 @@ class SalaryStructureTemplate extends PureComponent {
     //   },
     // });
     // console.log('id', this.props.salaryTitleId === null);
+    this.formRef.current.resetFields();
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
@@ -475,7 +478,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   _renderTableTitle = (order) => {
-    const { settings = [] } = this.props;
+    const { settingsTempData: settings = [] } = this.props;
     const data = settings.find((item) => item.order === order) || {};
     return (
       <span
@@ -490,7 +493,7 @@ class SalaryStructureTemplate extends PureComponent {
 
   _renderTableValue = (order) => {
     const { isEditted } = this.state;
-    const { settings = [] } = this.props;
+    const { settingsTempData: settings = [] } = this.props;
     const data = settings.find((item) => item.order === order) || {};
     const { value = '', key, number = {} } = data;
     const isNumber = Object.keys(number).length > 0;
@@ -621,7 +624,7 @@ class SalaryStructureTemplate extends PureComponent {
 
   _renderButtons = () => {
     const { isEditted } = this.state;
-    const { processStatus, settings } = this.props;
+    const { processStatus, settingsTempData: settings = [], loadingEditSalary } = this.props;
     if (
       (processStatus === 'DRAFT' ||
         processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ||
@@ -631,12 +634,22 @@ class SalaryStructureTemplate extends PureComponent {
       return (
         <Form.Item className={styles.buttons}>
           {isEditted === true ? (
-            <Button type="primary" onClick={this.onClickEdit}>
-              <img src={doneIcon} alt="icon" />
-              {formatMessage({ id: 'component.salaryStructureTemplate.done' })}
-            </Button>
+            <div className={styles.actionBtn}>
+              <Button
+                loading={loadingEditSalary}
+                type="primary"
+                onClick={() => this.onClickEdit('done')}
+              >
+                <img src={doneIcon} alt="icon" />
+                Done
+              </Button>
+              <Button className={styles.cancelBtn} type="primary" onClick={this.onCancel}>
+                <CloseCircleOutlined />
+                <span>Cancel</span>
+              </Button>
+            </div>
           ) : (
-            <Button type="primary" onClick={this.onClickEdit}>
+            <Button type="primary" onClick={() => this.onClickEdit('edit')}>
               <img src={editIcon} alt="icon" />{' '}
               {formatMessage({ id: 'component.salaryStructureTemplate.edit' })}
             </Button>
@@ -707,9 +720,13 @@ class SalaryStructureTemplate extends PureComponent {
 
   render() {
     const { Option } = Select;
-    const { loadingTable, salaryTitle: salaryTitleId, loadingFetchTable } = this.props;
+    const {
+      loadingTable,
+      salaryTitle: salaryTitleId,
+      loadingFetchTable,
+      settingsTempData: settings,
+    } = this.props;
     const { processStatus, listTitle = [] } = this.props;
-    const { dataSettings } = this.state;
 
     return (
       <div className={styles.salaryStructureTemplate}>
@@ -718,14 +735,16 @@ class SalaryStructureTemplate extends PureComponent {
             salaryTemplate: salaryTitleId,
           }}
           onFinish={this.onFinish}
+          ref={this.formRef}
         >
-          {listTitle.length === 0 && loadingFetchTable ? null : (
-            <div className={styles.salaryStructureTemplate_select}>
-              <Form.Item label="Select a salary structure template" name="salaryTemplate">
+          {listTitle.length === 0 ? (
+            <Spin className={styles.spin} />
+          ) : (
+            <>
+              <div className={styles.salaryStructureTemplate_select}>
                 <Select
-                  value={salaryTitleId}
+                  value={salaryTitleId || null}
                   onChange={this.handleChangeSelect}
-                  onFocus={this.onFocusSelect}
                   placeholder="Please select a choice!"
                   loading={loadingTable || loadingFetchTable}
                   size="large"
@@ -740,28 +759,28 @@ class SalaryStructureTemplate extends PureComponent {
                     );
                   })}
                 </Select>
-              </Form.Item>
-            </div>
-          )}
-          {loadingFetchTable ? (
-            <Spin className={styles.spin} />
-          ) : (
-            <>
-              {salaryTitleId && (
+              </div>
+              {loadingFetchTable ? (
+                <Spin className={styles.spin} />
+              ) : (
                 <>
-                  {this._renderButtons()}
-                  <div className={styles.salaryStructureTemplate_table}>
-                    <Table
-                      loading={loadingTable}
-                      dataSource={dataSettings}
-                      columns={this._renderColumns()}
-                      pagination={false}
-                    />
-                  </div>
-                  {this._renderFooter()}
-                  {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
-                    ? this._renderBottomBar()
-                    : null}
+                  {salaryTitleId && (
+                    <>
+                      {this._renderButtons()}
+                      <div className={styles.salaryStructureTemplate_table}>
+                        <Table
+                          loading={loadingTable}
+                          dataSource={settings}
+                          columns={this._renderColumns()}
+                          pagination={false}
+                        />
+                      </div>
+                      {this._renderFooter()}
+                      {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
+                        ? this._renderBottomBar()
+                        : null}
+                    </>
+                  )}
                 </>
               )}
             </>

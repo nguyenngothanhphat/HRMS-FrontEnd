@@ -1,7 +1,8 @@
 // import { Tooltip, Tag } from 'antd';
-import { BellOutlined, BuildOutlined } from '@ant-design/icons';
+import { getSwitchRoleAbility } from '@/utils/authority';
+import { BellOutlined, BuildOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import HeaderSearch from '../HeaderSearch';
 import Avatar from './AvatarDropdown';
@@ -14,11 +15,84 @@ const GlobalHeaderRight = (props) => {
     theme,
     layout,
     dispatch,
+    currentUser,
     employeesManagement: { searchEmployeesList = [] },
     loadingList,
   } = props;
   const [visible, setVisible] = useState(false);
+
+  const [isCheck, setIsCheck] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const [isSwitchCompanyVisible, setIsSwitchCompanyVisible] = useState(false);
+
+  useEffect(() => {
+    let authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
+    authority = authority.filter(
+      (item) => item === 'owner' || item === 'admin' || item === 'employee',
+    );
+
+    authority.forEach((item) => {
+      if (item.includes('owner')) {
+        setIsCheck(false);
+      } else if (item === 'admin') {
+        setIsCheck(false);
+      } else {
+        setIsCheck(true);
+      }
+    });
+    setLoading(false);
+  }, [setIsCheck, setLoading]);
+
+  function buttonSwitch() {
+    let checkAdmin = false;
+    const { signInRole = [] } = currentUser;
+
+    const formatRole = signInRole.map((role) => role.toLowerCase());
+
+    formatRole.forEach((item) => {
+      if (item.includes('admin')) {
+        checkAdmin = true;
+      }
+    });
+
+    const handleSwitch = async () => {
+      let isSwitch = false;
+
+      // if press Switch button is ON
+      if (isCheck) {
+        if (checkAdmin) {
+          isSwitch = false;
+        }
+      } else {
+        isSwitch = true;
+      }
+      setIsCheck(!isCheck);
+      setLoading(true);
+
+      await dispatch({
+        type: 'user/fetchCurrent',
+        isSwitchingRole: isSwitch,
+      });
+
+      // history.push('/dashboard');
+      window.location.reload();
+    };
+
+    const switchRoleAbility = getSwitchRoleAbility();
+    return (
+      <>
+        {switchRoleAbility ? (
+          <div className={`${styles.action} ${styles.switchRole}`} onClick={handleSwitch}>
+            <span className={styles.roleTitle}>
+              {loading ? <LoadingOutlined /> : <>Switch to {!isCheck ? 'EMPLOYEE' : 'ADMIN'}</>}
+            </span>
+          </div>
+        ) : null}
+      </>
+    );
+  }
+
   let className = styles.right;
 
   const handleCancel = () => {
@@ -62,6 +136,7 @@ const GlobalHeaderRight = (props) => {
           <BuildOutlined />
         </div>
       </Tooltip>
+      {buttonSwitch()}
       <Avatar />
       <GlobalEmployeeSearch
         titleModal="GLOBAL EMPLOYEE SEARCH"
@@ -75,9 +150,10 @@ const GlobalHeaderRight = (props) => {
   );
 };
 
-export default connect(({ settings, employeesManagement, loading }) => ({
+export default connect(({ settings, user, employeesManagement, loading }) => ({
   theme: settings.navTheme,
   layout: settings.layout,
   employeesManagement,
+  currentUser: user.currentUser,
   loadingList: loading.effects['employeesManagement/fetchSearchEmployeesList'],
 }))(GlobalHeaderRight);

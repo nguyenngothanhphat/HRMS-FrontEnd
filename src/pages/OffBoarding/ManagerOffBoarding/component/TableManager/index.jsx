@@ -52,38 +52,49 @@ class TableManager extends PureComponent {
         title: <span className={styles.title}>Ticket ID </span>,
         dataIndex: 'ticketID',
         render: (ticketID) => {
-          return <p>{ticketID}</p>;
+          return <span className={styles.title__value}>{ticketID}</span>;
         },
+        fixed: 'left',
+        width: 200,
       },
       {
         title: <span className={styles.title}>Employee ID </span>,
         dataIndex: 'employee',
         render: (employee) => {
-          return <p>{employee.employeeId}</p>;
+          return <span>{employee.employeeId}</span>;
         },
+        width: 200,
       },
       {
         title: <span className={styles.title}>Created date </span>,
         dataIndex: 'requestDate',
         render: (requestDate) => {
-          return <p>{moment(requestDate).format('YYYY/MM/DD')}</p>;
+          return <span>{moment(requestDate).format('YYYY/MM/DD')}</span>;
         },
+        width: 200,
       },
       {
         title: <span className={styles.title}>Requ’tee Name </span>,
         dataIndex: 'employee',
         render: (employee) => {
           const { generalInfo: { firstName = '' } = {} } = employee;
-          return <p>{firstName}</p>;
+          return (
+            <span className={`${styles.title__value} ${styles.title__requteeName}`}>
+              {firstName}
+            </span>
+          );
         },
+        width: 200,
       },
       {
         title: <span className={styles.title}>Current Project </span>,
         dataIndex: 'currentProject',
+        width: 200,
       },
       {
         title: <span className={styles.title}>Project Manager </span>,
         dataIndex: 'projectManager',
+        width: 200,
       },
       {
         title: <span className={styles.title}>Assigned </span>,
@@ -119,6 +130,17 @@ class TableManager extends PureComponent {
       },
     ];
 
+    const rowSelection = {
+      onChange: (selectedRowKeys, selectedRows) => {
+        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      },
+      getCheckboxProps: (record) => ({
+        disabled: record.name === 'Disabled User',
+        // Column configuration not to be checked
+        name: record.name,
+      }),
+    };
+
     return (
       <div className={styles.tableStyles}>
         <Table
@@ -129,6 +151,9 @@ class TableManager extends PureComponent {
                 <p className={styles.textEmpty}>{textEmpty}</p>
               </div>
             ),
+          }}
+          rowSelection={{
+            ...rowSelection,
           }}
           loading={loading}
           columns={columns}

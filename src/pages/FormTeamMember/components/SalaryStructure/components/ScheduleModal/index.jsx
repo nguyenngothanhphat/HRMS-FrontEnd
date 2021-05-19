@@ -103,7 +103,7 @@ class ScheduleModal extends Component {
                   <Select className={styles.datePicker} placeHolder="Select one">
                     {managerList.map((manager) => {
                       return (
-                        <Option value={manager._id}>
+                        <Option value={manager?._id || ''}>
                           {`${manager?.generalInfo?.firstName} ${manager?.generalInfo?.lastName}`}
                         </Option>
                       );

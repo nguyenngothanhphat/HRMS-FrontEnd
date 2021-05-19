@@ -153,7 +153,7 @@ class DirectoryComponent extends PureComponent {
     }
   }
 
-  componentWillUnmount() {
+  componentWillUnmount = async () => {
     this.setState = () => {
       return { tabId: 'active', changeTab: false };
     };
@@ -161,31 +161,31 @@ class DirectoryComponent extends PureComponent {
     dispatch({
       type: 'employee/ClearFilter',
     });
-    dispatch({
+    await dispatch({
       type: 'employee/save',
       payload: {
         filterList: {},
       },
     });
-  }
-
-  fetchApprovalFlowList = () => {
-    const {
-      currentUser: {
-        location: { _id: locationID = '' } = {},
-        company: { _id: companyID } = {},
-      } = {},
-      dispatch,
-    } = this.props;
-
-    dispatch({
-      type: 'offboarding/fetchApprovalFlowList',
-      payload: {
-        company: companyID,
-        location: locationID,
-      },
-    });
   };
+
+  // fetchApprovalFlowList = () => {
+  //   const {
+  //     currentUser: {
+  //       location: { _id: locationID = '' } = {},
+  //       company: { _id: companyID } = {},
+  //     } = {},
+  //     dispatch,
+  //   } = this.props;
+
+  //   dispatch({
+  //     type: 'offboarding/fetchApprovalFlowList',
+  //     payload: {
+  //       company: companyID,
+  //       location: locationID,
+  //     },
+  //   });
+  // };
 
   // Define tabID to filter
   initTabId = () => {

@@ -81,6 +81,7 @@ class Directory extends PureComponent {
         listEmployeeMyTeam: [],
         listEmployeeActive: [],
         listEmployeeInActive: [],
+        filterList: {},
       },
     });
   };
