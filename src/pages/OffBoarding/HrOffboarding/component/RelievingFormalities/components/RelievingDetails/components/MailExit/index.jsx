@@ -4,7 +4,8 @@ import { connect, formatMessage } from 'umi';
 import templateIcon from '@/assets/template-icon.svg';
 import editIcon from '@/assets/edit-template-icon.svg';
 import removeIcon from '@/assets/remove-template-icon.svg';
-import sendTemplateIcon from '@/assets/send-template-icon.svg';
+import sendMailIcon from '@/assets/sendMailOffboarding.svg';
+import addMailIcon from '@/assets/addMailOffboarding.svg';
 // import addTemplateIcon from '@/assets/add-template-icon.svg';
 import checkTemplateIcon from '@/assets/check-template-icon.svg';
 import { dialog } from '@/utils/utils';
@@ -42,17 +43,17 @@ class MailExit extends Component {
 
   renderExtraContent = () => {
     return (
-      <div>
-        {/* <img
+      <div className={styles.icons}>
+        <img
           className={styles.mailExit__card__iconExtra}
-          style={{ paddingRight: '20px' }}
-          src={addTemplateIcon}
+          style={{ paddingRight: '16px' }}
+          src={addMailIcon}
           alt="add-template-icon"
-        /> */}
+        />
         <img
           onClick={this.sendMailPackage}
           className={styles.mailExit__card__iconExtra}
-          src={sendTemplateIcon}
+          src={sendMailIcon}
           alt="send-template-icon"
         />
       </div>
