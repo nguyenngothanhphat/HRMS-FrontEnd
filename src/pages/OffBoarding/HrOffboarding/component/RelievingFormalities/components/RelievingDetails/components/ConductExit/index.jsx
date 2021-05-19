@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Row, Col } from 'antd';
 import { formatMessage, connect } from 'umi';
-import templateIcon from '@/assets/template-icon.svg';
-import editIcon from '@/assets/edit-template-icon.svg';
+import templateIcon from '@/assets/templateIcon.svg';
+import editIcon from '@/assets/editMailExit.svg';
 import viewTemplateIcon from '@/assets/view-template-icon.svg';
 import externalLinkIcon from '@/assets/external-link.svg';
 import removeIcon from '@/assets/remove-off-boarding.svg';
@@ -230,33 +230,41 @@ class ConductExit extends Component {
     return (
       <>
         <div className={styles.conductExit}>
-          <p className={styles.conductExit__title}>
+          <div className={styles.conductExit__title}>
             {formatMessage({ id: 'pages.relieving.conductExitInterview' })}
-          </p>
-          <p>{formatMessage({ id: 'pages.relieving.conductExitParagraph' })}</p>
-          <div className={styles.conductExit__action}>
-            <div className={styles.template}>
-              <div className={styles.template__content}>
-                <img src={templateIcon} alt="template-icon" />
-                <span style={{ cursor: 'pointer' }} onClick={() => this.handleClickEdit('View')}>
-                  {itemFeedBack?.packageName}
-                </span>
-              </div>
-              <div
-                className={styles.template__action}
-                style={{ cursor: 'pointer' }}
-                onClick={() => this.handleClickEdit('Edit')}
-              >
-                <img className={styles.edit__icon} src={editIcon} alt="edit-icon" />
-              </div>
-            </div>
-            <Button
-              className={styles.conductExit__btnSchedule}
-              onClick={this.handleOpenModalSet1On1}
-              // disabled={idSchedule}
-            >
-              {formatMessage({ id: 'pages.relieving.scheduleInterview' })}
-            </Button>
+          </div>
+
+          <div className={styles.conductExit__bottom}>
+            <p className={styles.paragraph}>
+              {formatMessage({ id: 'pages.relieving.conductExitParagraph' })}
+            </p>
+            <Row gutter={[21, 12]} className={styles.conductExit__bottom__action}>
+              <Col span={12}>
+                <div className={styles.template}>
+                  <div className={styles.template__content}>
+                    <img src={templateIcon} alt="template-icon" />
+                    <span
+                      style={{ cursor: 'pointer' }}
+                      onClick={() => this.handleClickEdit('View')}
+                    >
+                      {itemFeedBack?.packageName}
+                    </span>
+                  </div>
+                  <div
+                    className={styles.template__action}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => this.handleClickEdit('Edit')}
+                  >
+                    <img className={styles.edit__icon} src={editIcon} alt="edit-icon" />
+                  </div>
+                </div>
+              </Col>
+              <Col span={12} className={styles.buttonAction}>
+                <Button className={styles.btnSchedule} onClick={this.handleOpenModalSet1On1}>
+                  <div>{formatMessage({ id: 'pages.relieving.scheduleInterview' })}</div>
+                </Button>
+              </Col>
+            </Row>
           </div>
         </div>
         {idSchedule && (

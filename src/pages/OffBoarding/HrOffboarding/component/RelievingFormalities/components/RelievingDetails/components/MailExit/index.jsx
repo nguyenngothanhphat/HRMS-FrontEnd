@@ -159,7 +159,7 @@ class MailExit extends Component {
 
   renderBeforeSendMail = () => {
     const { isSent = false, exitPackageTemplates, customDocuments } = this.state;
-    console.log(exitPackageTemplates);
+
     return (
       <Row gutter={[21, 12]}>
         {exitPackageTemplates?.map((template, index) => {

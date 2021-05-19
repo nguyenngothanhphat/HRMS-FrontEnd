@@ -1,58 +1,101 @@
 .title {
+  font-style: normal;
+  font-weight: bold;
   font-size: 16px;
-  font-weight: 700;
+  line-height: 19px;
+  color: #161C29;
 }
 .conductExit {
   margin-bottom: 24px;
-  padding: 24px;
+  // padding: 24px;
   border: 1px solid #d6dce0;
   background-color: #fff;
   border-radius: 5px;
   &__title {
     .title;
+    padding: 24px;
+    border-bottom: 1px solid #E2E4E8;
   }
 
-  &__action {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    .template {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 235px;
-      height: 42px;
-      border-radius: 5px;
-      border: 1px solid rgba(214, 220, 224, 1);
-      padding: 0 14px;
-      &__content {
+  &__bottom{
+    padding: 24px;
+
+    .paragraph {
+      font-style: normal;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 18px;
+      color: #707177;
+    }
+
+    &__action {
+      margin-top: 2em; // 1em = 16px
+      // display: flex;
+      // align-items: center;
+      // justify-content: space-between;
+      .template {
         display: flex;
-      }
-      span {
-        margin-left: 10px;
-      }
-      .edit__icon {
-        margin-right: 10px;
+        justify-content: space-between;
+        align-items: center;
+        min-width: 210px;
+        background: #FFFFFF;
+        padding: 16px;
+        border-radius: 8px;
+        border: 1px solid #D6DCE0;
+        &__content {
+          display: flex;
+        }
+        span {
+          margin-left: 10px;
+          font-style: normal;
+          font-weight: 500;
+          font-size: 13px;
+          line-height: 15px;
+          color: #707177;
+        }
+        .edit__icon {
+          // margin-right: 10px;
+        }
       }
     }
+  
   }
 
   .btn {
     color: #fff;
-    background-color: rgba(44, 109, 249, 1);
+    background-color: #FFA100;;
   }
 
-  &__btnSchedule {
-    .btn;
-    border-radius: 5px;
-    width: 220px;
-    height: 42px;
-    &:hover,
-    &:focus {
+  .buttonAction{
+
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+
+    :global{
+
+      .ant-btn{
+        padding: 12px 31px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+      }
+
+    }
+
+    .btnSchedule {
       .btn;
+      border-radius: 25px;
+      // width: 220px;
+      // height: 42px;
+      &:hover,
+      &:focus {
+        .btn;
+      }
     }
   }
+
 
   &__head {
     display: flex;
