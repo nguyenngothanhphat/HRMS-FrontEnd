@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Card, Row, Col, Popconfirm } from 'antd';
 import { connect, formatMessage } from 'umi';
-import templateIcon from '@/assets/template-icon.svg';
-import editIcon from '@/assets/edit-template-icon.svg';
-import removeIcon from '@/assets/remove-template-icon.svg';
+import templateIcon from '@/assets/templateIcon.svg';
+import editIcon from '@/assets/editMailExit.svg';
+import removeIcon from '@/assets/deleteMailExist.svg';
 import sendMailIcon from '@/assets/sendMailOffboarding.svg';
 import addMailIcon from '@/assets/addMailOffboarding.svg';
 // import addTemplateIcon from '@/assets/add-template-icon.svg';
@@ -159,12 +159,13 @@ class MailExit extends Component {
 
   renderBeforeSendMail = () => {
     const { isSent = false, exitPackageTemplates, customDocuments } = this.state;
+    console.log(exitPackageTemplates);
     return (
-      <Row gutter={[10, 20]}>
+      <Row gutter={[21, 12]}>
         {exitPackageTemplates?.map((template, index) => {
           const { packageName } = template;
           return (
-            <Col key={`${index + 1}`}>
+            <Col span={12} key={`${index + 1}`}>
               <div className={styles.template}>
                 <div
                   className={styles.template__content}

@@ -64,8 +64,9 @@ class ConductExit extends Component {
 
   renderFeedbackForm = () => {
     const { isOpenFeedbackForm } = this.state;
-    const { relievingDetails: { exitInterviewFeedbacks: { waitList = [] } = {} } = {} } =
-      this.props;
+    const {
+      relievingDetails: { exitInterviewFeedbacks: { waitList = [] } = {} } = {},
+    } = this.props;
     let itemFeedBack = {};
     if (waitList.length > 0) {
       [itemFeedBack] = waitList;
@@ -177,8 +178,9 @@ class ConductExit extends Component {
 
   renderModalEditTemplate = () => {
     const { isOpenModalEdit, mode } = this.state;
-    const { relievingDetails: { exitInterviewFeedbacks: { waitList = [] } = {} } = {} } =
-      this.props;
+    const {
+      relievingDetails: { exitInterviewFeedbacks: { waitList = [] } = {} } = {},
+    } = this.props;
     let itemFeedBack = {};
     if (waitList.length > 0) {
       [itemFeedBack] = waitList;
@@ -203,7 +205,6 @@ class ConductExit extends Component {
 
   render() {
     const { visible, keyModal, keyModalAddComment, openModalAddComment } = this.state;
-    console.log('visible render', visible);
     const {
       listMeetingTime = [],
       loading,
