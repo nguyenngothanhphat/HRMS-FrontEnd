@@ -1,4 +1,6 @@
 import React, { PureComponent } from 'react';
+import CheckIcon from '@/assets/check-true2.svg';
+import LaunchIcon from '@/assets/launch.svg';
 import styles from './index.less';
 
 const array = [
@@ -27,9 +29,15 @@ export default class InfoEmployee extends PureComponent {
         <div className={styles.straightLine} />
         <div className={styles.bodyContent}>
           {array.map(({ info }) => (
-            <div className={styles.textData}>{info}</div>
+            <div className={styles.textData}>
+              <img className={styles.icon} src={CheckIcon} alt="check-true icon" /> &nbsp;
+              <span>{info}</span>
+            </div>
           ))}
-          <div className={styles.viewDetail}>View Aditya’s Career graph</div>
+          <div className={styles.viewDetail}>
+            View Aditya’s Career graph
+            <img style={{ marginLeft: '5px' }} src={LaunchIcon} alt="launch icon" />
+          </div>
         </div>
       </div>
     );

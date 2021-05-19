@@ -1,17 +1,17 @@
-import React, { Component, Fragment } from 'react';
-import { PageContainer } from '@/layouts/layout/src';
-import { Affix, Row, Col, Spin } from 'antd';
-import { connect } from 'umi';
 import EditComment from '@/components/EditComment';
-import StatusRequest from '@/components/StatusRequest';
-import ResignationRequestDetail from './components/ResignationRequestDetail';
-import RequesteeDetail from './components/RequesteeDetail';
-import ScheduleMeeting from '../../../../ManagerOffBoarding/component/DetailTicket/components/ScheduleMeeting';
-import LastWorkingDate from './components/LWD';
-import ButtonSet1On1 from './components/ButtonSet1On1';
-import InfoEmployee from './components/RightContent';
-import ModalNotice from '../../../../ManagerOffBoarding/component/DetailTicket/components/ModalNotice';
+import { PageContainer } from '@/layouts/layout/src';
+import { Affix, Col, Row, Spin } from 'antd';
+import React, { Component, Fragment } from 'react';
+import { connect } from 'umi';
 import ClosingComment from '../../../../ManagerOffBoarding/component/DetailTicket/components/ClosingComment';
+import ModalNotice from '../../../../ManagerOffBoarding/component/DetailTicket/components/ModalNotice';
+import ScheduleMeeting from '../../../../ManagerOffBoarding/component/DetailTicket/components/ScheduleMeeting';
+import Assignee from './components/Assignee';
+import HrApproved from './components/HrApproved';
+import RequesteeDetail from './components/RequesteeDetail';
+import ResignationRequestDetail from './components/ResignationRequestDetail';
+import InfoEmployee from './components/RightContent';
+import StatusDetail from './components/StatusDetail';
 import styles from './index.less';
 
 @connect(
@@ -150,10 +150,16 @@ class HRDetailTicket extends Component {
       reasonForLeaving = '',
       requestDate = '',
       status = '',
+      ticketID = '',
       employee: {
         employeeId,
-        generalInfo: { firstName: nameFrist = '', avatar = '' } = {},
+        generalInfo: { firstName: nameFrist = '' } = {},
         title: { name: jobTitle = '' } = {},
+        department: { name: department = '' } = {},
+        joinDate,
+      } = {},
+      manager: {
+        generalInfo: { firstName: firstNameManager = '', lastName: lastNameManager = '' } = {},
       } = {},
     } = myRequest;
     if (loadingGetById) {
@@ -178,25 +184,30 @@ class HRDetailTicket extends Component {
             <Affix offsetTop={42}>
               <div className={styles.titlePage}>
                 <p className={styles.titlePage__text}>
-                  Terminate work relationship with {nameFrist} [{employeeId}]
+                  [Ticket ID: {ticketID}] Terminate work relationship with {nameFrist} [{employeeId}
+                  ]
                 </p>
-                <StatusRequest status={status} />
+                {/* <StatusRequest status={status} /> */}
               </div>
             </Affix>
             <Row className={styles.detailTicket__content} gutter={[30, 30]}>
-              <Col span={17}>
+              <Col span={16}>
+                {/* status  */}
+                <StatusDetail status={status} />
+
+                {/* Requestee Detail */}
                 <RequesteeDetail
                   id={employeeId}
-                  avatar={avatar}
                   name={nameFrist}
                   jobTitle={jobTitle}
+                  department={department}
+                  nameOfManager={`${firstNameManager} ${lastNameManager}`}
                   listProject={listProjectByEmployee}
+                  joinDate={joinDate}
                 />
-                <ResignationRequestDetail
-                  reason={reasonForLeaving}
-                  date={requestDate}
-                  name={nameFrist}
-                />
+
+                {/* Resignation request detail */}
+                <ResignationRequestDetail reason={reasonForLeaving} date={requestDate} />
                 {listComment.length !== 0 && (
                   <div className={styles.viewListComment}>
                     {listComment.map((item) => {
@@ -217,11 +228,13 @@ class HRDetailTicket extends Component {
                   );
                 })}
                 {checkClosingComment?._id && <ClosingComment data={checkClosingComment} />}
-                {status !== 'REJECTED' && <LastWorkingDate />}
+                {/* {status !== 'REJECTED' && <LastWorkingDate />} */}
+                <HrApproved />
               </Col>
-              <Col span={7}>
+              <Col span={8}>
+                <Assignee />
                 <InfoEmployee />
-                <ButtonSet1On1
+                {/* <ButtonSet1On1
                   loading={loading}
                   visible={openModal}
                   handleclick={this.handleclick}
@@ -229,7 +242,7 @@ class HRDetailTicket extends Component {
                   listMeetingTime={listMeetingTime}
                   handleCandelSchedule={this.handleCandelSchedule}
                   keyModal={keyModal}
-                />
+                /> */}
               </Col>
             </Row>
           </div>
