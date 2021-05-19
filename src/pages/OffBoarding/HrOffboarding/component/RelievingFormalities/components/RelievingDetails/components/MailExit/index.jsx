@@ -5,7 +5,7 @@ import templateIcon from '@/assets/templateIcon.svg';
 import editIcon from '@/assets/editMailExit.svg';
 import removeIcon from '@/assets/deleteMailExist.svg';
 import sendMailIcon from '@/assets/sendMailOffboarding.svg';
-import addMailIcon from '@/assets/addMailOffboarding.svg';
+
 // import addTemplateIcon from '@/assets/add-template-icon.svg';
 import checkTemplateIcon from '@/assets/check-template-icon.svg';
 import { dialog } from '@/utils/utils';
@@ -44,12 +44,6 @@ class MailExit extends Component {
   renderExtraContent = () => {
     return (
       <div className={styles.icons}>
-        <img
-          className={styles.mailExit__card__iconExtra}
-          style={{ paddingRight: '16px' }}
-          src={addMailIcon}
-          alt="add-template-icon"
-        />
         <img
           onClick={this.sendMailPackage}
           className={styles.mailExit__card__iconExtra}
