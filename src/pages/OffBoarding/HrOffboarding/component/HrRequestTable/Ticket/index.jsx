@@ -7,12 +7,15 @@ import ClosingComment from '../../../../ManagerOffBoarding/component/DetailTicke
 import ModalNotice from '../../../../ManagerOffBoarding/component/DetailTicket/components/ModalNotice';
 import ScheduleMeeting from '../../../../ManagerOffBoarding/component/DetailTicket/components/ScheduleMeeting';
 import Assignee from './components/Assignee';
-import HrApproved from './components/HrApproved';
+// import HrApproved from './components/HrApproved';
 import RequesteeDetail from './components/RequesteeDetail';
 import ResignationRequestDetail from './components/ResignationRequestDetail';
 import WhatNext from './components/WhatNext';
 import InfoEmployee from './components/RightContent';
 import StatusDetail from './components/StatusDetail';
+// import LWD from './components/LWD';
+import LastWorkingDay from './components/RequestChangeLWD';
+
 import styles from './index.less';
 
 @connect(
@@ -166,6 +169,7 @@ class HRDetailTicket extends Component {
       manager: {
         generalInfo: { firstName: firstNameManager = '', lastName: lastNameManager = '' } = {},
       } = {},
+      requestLastDate = '',
     } = myRequest;
     if (loadingGetById) {
       return (
@@ -238,7 +242,9 @@ class HRDetailTicket extends Component {
 
                 {checkClosingComment?._id && <ClosingComment data={checkClosingComment} />}
                 {/* {status !== 'REJECTED' && <LastWorkingDate />} */}
-                <HrApproved myRequest={myRequest} />
+                {/* <HrApproved myRequest={myRequest} /> */}
+                {/* <LWD myRequest={myRequest} /> */}
+                {requestLastDate && <LastWorkingDay myRequest={myRequest} />}
                 {!checkMyComment && (
                   <WhatNext itemRequest={myRequest} listAssignee={listAssignee} />
                 )}
