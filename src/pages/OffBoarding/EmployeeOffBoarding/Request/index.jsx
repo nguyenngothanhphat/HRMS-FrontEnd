@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Affix, Spin, Skeleton } from 'antd';
+import { Row, Col, Affix, Spin, Skeleton, DatePicker } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import ModalSet1On1 from '@/components/ModalSet1On1';
 import StatusRequest from '@/components/StatusRequest';
@@ -8,6 +8,8 @@ import { connect } from 'umi';
 import icon1 from '@/assets/offboarding-meeting.svg';
 import icon2 from '@/assets/offboarding-close.svg';
 
+import moment from 'moment';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
 import Reason from './Reason';
 import WorkFlow from './WorkFlow';
 import WithDraw from './WithDraw';
@@ -29,6 +31,8 @@ class ResignationRequest extends Component {
     this.state = {
       visible: false,
       keyModal: '',
+      changeLWD: '',
+      lastWorkingDay: '',
     };
   }
 
@@ -87,9 +91,28 @@ class ResignationRequest extends Component {
     });
   };
 
+  handleRequestToChange = (e) => {
+    const { target: { checked = '' } = {} } = e;
+    this.setState({
+      changeLWD: checked,
+    });
+  };
+
+  handleLWD = (value) => {
+    this.setState({
+      lastLWD: value,
+    });
+  };
+
   render() {
-    const { myRequest = {}, listMeetingTime = [], loading, loadingGetById } = this.props;
-    const { visible, keyModal } = this.state;
+    const {
+      myRequest = {},
+      listMeetingTime = [],
+      loading,
+      loadingGetById,
+      list1On1 = [],
+    } = this.props;
+    const { visible, keyModal, changeLWD } = this.state;
     const {
       approvalStep = '',
       manager: {
@@ -111,6 +134,8 @@ class ResignationRequest extends Component {
       );
     }
     const arrStatus = ['IN-PROGRESS', 'ACCEPTED', 'ON-HOLD'];
+    const listScheduleMeeting = list1On1.filter((item) => item.content === '');
+
     return (
       <PageContainer>
         <div className={styles.request}>
@@ -134,7 +159,12 @@ class ResignationRequest extends Component {
           </Row>
           <Row className={styles.content} gutter={[24, 12]}>
             <Col span={17}>
-              <Reason />
+              <Reason
+                myRequest={myRequest}
+                handleRequestToChange={this.handleRequestToChange}
+                changeLWD={changeLWD}
+                handleLWD={this.handleLWD}
+              />
               {arrStatus.indexOf(status) > -1 && (
                 <div className={styles.viewWithDraw}>
                   <WithDraw />
@@ -160,26 +190,35 @@ class ResignationRequest extends Component {
               </div>
             </Col>
           </Row>
-          <Row className={styles.content} gutter={[24, 12]}>
-            <Col span={17}>
-              <Row className={styles.setPlan}>
-                <Col span={12}>
-                  <div>
-                    1-on-1 meeting with <span className={styles.setPlan__text}>{nameManager}</span>
-                  </div>
-                </Col>
-                <Col span={10}>
-                  <div className={styles.setPlan__schedule}>Scheduled on: 22.05.20 | 12 PM</div>
-                </Col>
-                <Col span={2}>
-                  <div className={styles.setPlan__action}>
-                    <img src={icon1} alt="meeting" className={styles.setPlan__action_share} />
-                    <img src={icon2} alt="meeting" className={styles.setPlan__action_close} />
-                  </div>
+
+          {listScheduleMeeting.map((meeting) => {
+            const { meetingDate = '', meetingTime = '' } = meeting;
+            const time = moment(meetingDate).format('DD.MM.YY | ') + meetingTime;
+
+            return (
+              <Row className={styles.content} gutter={[24, 12]}>
+                <Col span={17}>
+                  <Row className={styles.setPlan}>
+                    <Col span={12}>
+                      <div>
+                        1-on-1 meeting with{' '}
+                        <span className={styles.setPlan__text}>{nameManager}</span>
+                      </div>
+                    </Col>
+                    <Col span={10}>
+                      <div className={styles.setPlan__schedule}>Scheduled on: {time}</div>
+                    </Col>
+                    <Col span={2}>
+                      <div className={styles.setPlan__action}>
+                        <img src={icon1} alt="meeting" className={styles.setPlan__action_share} />
+                        <img src={icon2} alt="meeting" className={styles.setPlan__action_close} />
+                      </div>
+                    </Col>
+                  </Row>
                 </Col>
               </Row>
-            </Col>
-          </Row>
+            );
+          })}
         </div>
         <ModalSet1On1
           visible={visible}

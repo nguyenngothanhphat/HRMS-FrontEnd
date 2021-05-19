@@ -246,27 +246,25 @@ class DetailTicket extends Component {
                 <StatusComponent status={status} />
                 <RequesteeDetail employeeInfo={employeeInfo} listProject={listProject} />
                 <ResignationRequestDetail itemRequest={myRequest} />            
-                {checkShowNotification &&
-                  status === 'IN-PROGRESS' &&
-                  selectButton !== 'ON-HOLD' &&
-                  listComment.length !== 0 && (
-                    <div className={styles.viewListComment}>
-                      {listComment.map((item) => {
-                        const { _id } = item;
-                        return (
-                          <Fragment key={_id}>
-                            <EditComment
-                              handleReviewRequest={this.handleReviewRequest}
-                              openFormReason={this.openFormReason}
-                              itemComment={item}
-                              loadingReview={loadingReview}
-                              id={id}
-                            />
-                          </Fragment>
-                        );
-                      })}
-                    </div>
-                  )}
+                {checkShowNotification && status === 'IN-PROGRESS' && listComment.length !== 0 && (
+                  <div className={styles.viewListComment}>
+                    {listComment.map((item) => {
+                      const { _id } = item;
+                      return (
+                        <Fragment key={_id}>
+                          <EditComment
+                            handleReviewRequest={this.handleReviewRequest}
+                            openFormReason={this.openFormReason}
+                            itemComment={item}
+                            loadingReview={loadingReview}
+                            isOnHold={selectButton === 'ON-HOLD'}
+                            id={id}
+                          />
+                        </Fragment>
+                      );
+                    })}
+                  </div>
+                )}
                 {listScheduleMeeting.map((item) => {
                   return (
                     <Fragment key={item._id}>
@@ -274,13 +272,13 @@ class DetailTicket extends Component {
                     </Fragment>
                   );
                 })}
-                {listComment.length === 0 && (
+                {list1On1.length === 0 && (
                   <WhatNext itemRequest={myRequest} listAssignee={filterListAssignee} />
                 )}
                 {/* <ButtonSet1On1 itemRequest={myRequest} listAssignee={filterListAssignee} /> */}
                 {selectButton === 'ON-HOLD' && <ReasonPutOnHold hideForm={this.hideFormOnHold} />}
                 {checkClosingComment?._id && <ClosingComment data={checkClosingComment} />}
-                {status === 'ACCEPTED' && <RequestChangeLWD />}
+                {/* {status === 'ACCEPTED' && <RequestChangeLWD />} */}
               </Col>
               <Col span={10}>
                 <RightContent />

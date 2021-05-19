@@ -79,7 +79,7 @@ class EditComment extends Component {
   };
 
   render() {
-    const { itemComment = {}, q, isEdit } = this.state;
+    const { itemComment = {}, q, isEdit, selectButton } = this.state;
     const {
       // loading,
       myId,
@@ -87,6 +87,7 @@ class EditComment extends Component {
       openFormReason = () => {},
       loadingReview,
       id = '',
+      isOnHold = false,
     } = this.props;
     const {
       updatedAt,
@@ -98,23 +99,25 @@ class EditComment extends Component {
       <div className={s.root}>
         <div className={s.header}>
           <span className={s.title}>{firstName} comments from 1-on-1</span>
-          {!isEdit && isOwner && (
-            <div className={s.editBtn} onClick={this.handleOpenEdit}>
-              <img style={{ margin: '0 2px 2px 0' }} src={editIcon} alt="edit-icon" />
-              <span>Edit</span>
-            </div>
-          )}
-          {isEdit && (
-            <>
-              <div className={s.handleCloseEdit} onClick={this.handleSubmit}>
-                <span>Cancel</span>
+          <div className={s.rightPart}>
+            {!isEdit && isOwner && (
+              <div className={s.editBtn} onClick={this.handleOpenEdit}>
+                <img style={{ margin: '0 2px 2px 0' }} src={editIcon} alt="edit-icon" />
+                <span>Edit</span>
               </div>
-              <div className={s.editBtn} onClick={this.handleSubmit}>
-                <span>Save</span>
-              </div>
-            </>
-          )}
-          <span className={s.time}>{time}</span>
+            )}
+            {isEdit && (
+              <>
+                <div className={s.handleCloseEdit} onClick={this.handleCloseEdit}>
+                  <span>Cancel</span>
+                </div>
+                <div className={s.handleSave} onClick={this.handleSubmit}>
+                  <span>Save</span>
+                </div>
+              </>
+            )}
+            <span className={s.time}>{time}</span>
+          </div>
         </div>
 
         <div className={s.content}>
@@ -132,27 +135,41 @@ class EditComment extends Component {
             </div>
           </div>
         </div>
-        <div className={s.buttonArea}>
-          <span className={s.description}>
-            By default notifications will be sent to HR, your manager and recursively loop to your
-            department head.
-          </span>
-          <div className={s.buttons}>
-            <span className={s.putOnHoldBtn} onClick={openFormReason}>
-              Put-on-Hold
+        {!isOnHold && (
+          <div className={s.buttonArea}>
+            <span className={s.description}>
+              By default notifications will be sent to HR, your manager and recursively loop to your
+              department head.
             </span>
-            <span className={s.rejectBtn} onClick={() => handleReviewRequest('REJECTED', id)}>
-              Reject
-            </span>
-            <Button
-              loading={loadingReview}
-              onClick={() => handleReviewRequest('ACCEPTED', id)}
-              disabled={!q}
-            >
-              Accept
-            </Button>
+            <div className={s.buttons}>
+              <Button type="link" className={s.putOnHoldBtn} onClick={openFormReason}>
+                Put-on-Hold
+              </Button>
+              <Button
+                type="link"
+                loading={loadingReview && selectButton === 'REJECTED'}
+                className={s.rejectBtn}
+                onClick={() => {
+                  this.setState({ selectButton: 'REJECTED' });
+                  handleReviewRequest('REJECTED', id);
+                }}
+              >
+                Reject
+              </Button>
+              <Button
+                type="primary"
+                loading={loadingReview && selectButton === 'ACCEPTED'}
+                onClick={() => {
+                  this.setState({ selectButton: 'ACCEPTED' });
+                  handleReviewRequest('ACCEPTED', id);
+                }}
+                disabled={!q}
+              >
+                Accept
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }

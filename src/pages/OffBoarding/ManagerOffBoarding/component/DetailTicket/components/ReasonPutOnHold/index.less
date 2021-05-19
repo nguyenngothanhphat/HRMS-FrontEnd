@@ -1,83 +1,129 @@
 .reasonPutOnHold {
-  background-color: #ffffff;
-  min-height: 220px;
-  padding: 30px;
-  margin-top: 20px;
-  border-radius: 5px;
+  width: 100%;
+  margin-bottom: 20px;
+  background-color: white;
   border: 1px solid #d6dce0;
-  &__title {
-    font-weight: 700;
-    font-size: 16px;
-  }
-  &__action {
-    margin-top: 20px;
-    display: flex;
-    justify-content: space-between;
-    &__text {
-      font-size: 11px;
-      color: #707177;
-    }
-    &__btn {
-      .btn {
-        width: 100px;
-        height: 35px;
-        border-radius: 25px;
-        font-weight: 500;
-        border: none;
-      }
-      .btn__cancel {
-        .btn;
-        margin-right: 30px;
-        border: 1px solid #de0e0e;
-        box-sizing: border-box;
-        border-radius: 25px;
-        width: 100px;
-        height: 35px;
-        color: #de0e0e;
-      }
-      .btn__submit {
-        .btn;
-        color: #ffffff;
-        background: #ffa100;
-      }
-    }
-  }
+  border-radius: 5px;
 
-  &__dateTime {
-    span {
-      font-weight: 500;
-      color: #464646;
+  :global {
+    .ant-checkbox-wrapper {
       span {
-        font-weight: normal;
+        font-size: 13px;
+      }
+    }
+
+    .ant-input:focus {
+      border-color: #2c6df9;
+      outline: 0;
+      box-shadow: unset;
+    }
+
+    .ant-input {
+      font-size: 13px;
+      input {
+        font-size: 13px;
       }
     }
   }
-  &__content {
-    &__text {
-      font-size: 14px;
-      min-height: 66px;
-      border: 1px solid #d6dce0;
-      padding: 14px 10px;
-      color: #464646;
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px;
+    color: #161c29;
+    border-bottom: 1px solid #e2e4e8;
+    .title {
+      color: #161c29;
+      font-weight: 700;
+      font-size: 16px;
     }
-    &__note {
-      margin-left: 4px;
-      margin-top: 6px;
-      font-size: 11px;
+    .time {
       color: #707177;
+      font-weight: 500;
+      font-size: 12px;
+      text-decoration: none;
     }
   }
-  :global {
-    .ant-input {
-      border: 1px solid #d6dce0;
-      padding-right: 140px;
+  .content {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    .textArea {
+      width: 100%;
+      .box {
+        box-sizing: border-box;
+        min-height: 110px;
+        margin-bottom: 10px;
+        padding: 14px;
+        color: #646464;
+        border: 1px solid #ebeff2;
+        border-radius: 5px;
+        resize: none;
+        &:focus {
+          border: 1px solid #2c6df9;
+          box-shadow: none;
+        }
+      }
+      .canBeRehired {
+        color: #707177;
+        font-weight: normal;
+        font-size: 12px;
+        font-style: normal;
+        line-height: 14px;
+      }
     }
-    textarea.ant-input {
-      min-height: 66px;
+  }
+  .buttonArea {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px;
+    border-top: 1px solid #e2e4e8;
+    :global {
+      .ant-btn-primary {
+        height: 40px;
+        padding: 0 30px;
+        background-color: #ffa100;
+        border: none;
+        border-radius: 30px;
+        span {
+          color: white;
+          font-weight: 700;
+        }
+        &:hover {
+          background-color: #ffa100cc;
+        }
+      }
     }
-    .ant-input:placeholder-shown {
-      text-overflow: ellipsis;
-      font-style: italic;
+    .description {
+      color: #161c29;
+      font-weight: normal;
+      font-size: 12px;
+      line-height: 18px;
+      opacity: 0.5;
+      max-width: 50%;
+    }
+    .buttons {
+      display: flex;
+      align-items: center;
+      .btn {
+        margin-right: 24px;
+        display: inline-block;
+        font-weight: 500;
+        font-size: 14px;
+        &:hover {
+          cursor: pointer;
+          opacity: 0.8;
+        }
+      }
+      .rejectBtn {
+        .btn();
+        color: #fd4546;
+      }
+      .putOnHoldBtn {
+        .btn();
+        color: #2c6df9;
+      }
     }
   }
 }

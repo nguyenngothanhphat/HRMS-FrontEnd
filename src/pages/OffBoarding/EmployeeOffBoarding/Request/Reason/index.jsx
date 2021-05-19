@@ -3,11 +3,12 @@ import { Input, Row, Col, DatePicker } from 'antd';
 import { connect } from 'umi';
 import icon from '@/assets/offboarding-bulb.svg';
 import moment from 'moment';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
 import styles from './index.less';
 
 const { TextArea } = Input;
 
-const dateFormat = 'YYYY/MM/DD';
+const dateFormat = 'MM.DD.YY';
 
 @connect(({ offboarding: { myRequest = {} } = {} }) => ({
   myRequest,
@@ -15,25 +16,21 @@ const dateFormat = 'YYYY/MM/DD';
 class Reason extends PureComponent {
   render() {
     const {
-      myRequest: { reasonForLeaving: reason = '', requestDate = '', lastWorkingDate = '' } = {},
+      myRequest: {
+        requestDate = '',
+        reasonForLeaving = '',
+        requestLastDate = '',
+        lastWorkingDate = '',
+      } = {},
+      changeLWD = false,
+      handleLWD = () => {},
+      handleRequestToChange = () => {},
     } = this.props;
     const marginTop = lastWorkingDate ? '0px' : '60px';
-    const dateValue = moment(lastWorkingDate).format('YYYY/MM/DD');
+    const dateValue = moment(lastWorkingDate).format('MM.DD.YY');
+    console.log('dateValue', dateValue);
     return (
       <div className={styles.stepContain}>
-        {/* {!lastWorkingDate && (
-          <div className={styles.title_Box}>
-            <img src={icon} alt="iconCheck" className={styles.icon} />
-            <span className={styles.title_Text}>
-              A last working date (LWD) will generated after your request is approved by your
-              manager and the HR.
-              <div>
-                The Last Working Day (LWD) will be generated as per our Standard Offboarding Policy.
-              </div>
-            </span>
-          </div>
-        )} */}
-
         <div className={styles.titleBody}>
           {lastWorkingDate && (
             <div className={styles.viewChangeLastWorkingDay}>
@@ -44,7 +41,7 @@ class Reason extends PureComponent {
               <Row className={styles.viewChangeLastWorkingDay__viewDateApproved} gutter={[50, 0]}>
                 <Col span={8}>
                   <DatePicker
-                    value={dateValue && moment(dateValue, dateFormat)}
+                    value={dateValue ? moment(dateValue) : null}
                     format={dateFormat}
                     className={styles.viewChangeLastWorkingDay__viewDateApproved__datePicker}
                     disabled
@@ -90,7 +87,44 @@ class Reason extends PureComponent {
               {requestDate && moment(requestDate).format('DD.MM.YY | h:mm A')}
             </p> */}
           </div>
-          <TextArea className={styles.boxReason} value={reason} disabled />
+          <TextArea className={styles.boxReason} defaultValue={reasonForLeaving} disabled />
+          <div className={styles.lastWorkingDay}>
+            <span className={styles.title}>Last working date (System generated)</span>
+            <div className={styles.datePicker}>
+              <DatePicker
+                format="MM.DD.YY"
+                disabled
+                defaultValue={moment(requestDate).add('90', 'days')}
+              />
+              <div className={styles.notice}>
+                <span className={styles.content}>
+                  The LWD is generated as per a 90 days period according to our{' '}
+                  <span className={styles.link}>Standard Offboarding Policy</span>
+                </span>
+              </div>
+            </div>
+
+            <div className={styles.requestToChange}>
+              <Checkbox checked={requestLastDate} onClick={handleRequestToChange}>
+                Request to change
+              </Checkbox>
+            </div>
+            {(changeLWD || requestLastDate) && (
+              <div className={styles.datePicker}>
+                <DatePicker
+                  defaultValue={moment(requestLastDate)}
+                  onChange={handleLWD}
+                  format="MM.DD.YY"
+                />
+                <div className={styles.notice}>
+                  <span className={styles.content}>
+                    Preferred LWD must be vetted by your reporting manager & approved by the HR
+                    manager to come into effect.
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );

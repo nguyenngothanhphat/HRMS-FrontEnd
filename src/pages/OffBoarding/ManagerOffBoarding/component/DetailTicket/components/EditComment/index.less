@@ -6,20 +6,6 @@
   border-radius: 5px;
 
   :global {
-    .ant-btn {
-      height: 40px;
-      padding: 0 30px;
-      background-color: #ffa100;
-      border: none;
-      border-radius: 30px;
-      span {
-        color: white;
-        font-weight: 700;
-      }
-      &:hover {
-        background-color: #ffa100cc;
-      }
-    }
     .ant-checkbox-wrapper {
       span {
         font-size: 13px;
@@ -51,10 +37,45 @@
       font-weight: 700;
       font-size: 16px;
     }
-    .time {
-      color: #707177;
-      font-weight: 500;
-      font-size: 12px;
+    .rightPart {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      
+      div {
+        margin-right: 15px;
+        cursor: pointer;
+      }
+      span {
+        font-weight: 500;
+        text-decoration: underline;
+        font-size: 13px;
+        color: #ffa100;
+      }
+      .handleCloseEdit {
+        span {
+          color: #161c29;
+        }
+      }
+      .handleSave {
+        span {
+          color: #ffa100;
+        }
+      }
+      .editBtn {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        img {
+          margin-right: 5px;
+        }
+      }
+      .time {
+        color: #707177;
+        font-weight: 500;
+        font-size: 12px;
+        text-decoration: none;
+      }
     }
   }
   .content {
@@ -92,6 +113,22 @@
     justify-content: space-between;
     padding: 24px;
     border-top: 1px solid #e2e4e8;
+    :global {
+      .ant-btn-primary {
+        height: 40px;
+        padding: 0 30px;
+        background-color: #ffa100;
+        border: none;
+        border-radius: 30px;
+        span {
+          color: white;
+          font-weight: 700;
+        }
+        &:hover {
+          background-color: #ffa100cc;
+        }
+      }
+    }
     .description {
       color: #161c29;
       font-weight: normal;
