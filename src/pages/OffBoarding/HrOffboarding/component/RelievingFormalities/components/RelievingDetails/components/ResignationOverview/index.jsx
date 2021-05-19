@@ -19,7 +19,7 @@ class ResignationOverview extends PureComponent {
           className={styles.resignationOverview__card}
           title={formatMessage({ id: 'pages.relieving.resignation' })}
         >
-          <p>
+          <p className={styles.text}>
             {formatMessage({ id: 'pages.relieving.resignation.lastWorkingDay' })}
             <span className={styles.resignationOverview__card__lwd}>
               {lastWorkingDate
@@ -27,8 +27,10 @@ class ResignationOverview extends PureComponent {
                 : 'No data'}
             </span>
           </p>
-          <p>{formatMessage({ id: 'pages.relieving.resignation.reason' })}</p>
-          <p>{reasonForLeaving}</p>
+          <p className={styles.text}>
+            {formatMessage({ id: 'pages.relieving.resignation.reason' })}
+          </p>
+          <p className={styles.textValue}>{reasonForLeaving}</p>
           <div>
             <Checkbox disabled checked onChange={this.onCheckBox}>
               Can be rehired
