@@ -1,9 +1,30 @@
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
 import { Radio, Typography, Row, Col } from 'antd';
+import { connect } from 'umi';
 import styles from './index.less';
 
+@connect()
 class RadioComponent extends PureComponent {
+  componentDidMount() {
+    const { employeeType = '', dispatch, employeeTypeList = [], tempData = {} } = this.props;
+
+    if (!employeeType) {
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          tempData: {
+            ...tempData,
+            employeeType: {
+              _id: employeeTypeList[0]?._id,
+              name: employeeTypeList[0]?.name,
+            },
+          },
+        },
+      });
+    }
+  }
+
   render() {
     const {
       Tab,
@@ -12,9 +33,13 @@ class RadioComponent extends PureComponent {
       employeeType,
       position,
       data: test,
-      processStatus,
+      // processStatus,
       disabled,
     } = this.props;
+
+    console.log(employeeType);
+    console.log(position);
+
     return (
       <div className={styles.RadioComponent}>
         {test.employeeType && test.position === null ? null : (

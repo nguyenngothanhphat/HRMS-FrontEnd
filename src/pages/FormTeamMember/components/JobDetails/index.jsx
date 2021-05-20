@@ -67,18 +67,18 @@ class JobDetails extends PureComponent {
       },
     });
 
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        tempData: {
-          ...tempData,
-          employeeType: {
-            _id: employeeTypeList[0]?._id,
-            name: employeeTypeList[0]?.name,
-          },
-        },
-      },
-    });
+    // dispatch({
+    //   type: 'candidateInfo/save',
+    //   payload: {
+    //     tempData: {
+    //       ...tempData,
+    //       employeeType: {
+    //         _id: employeeTypeList[0]?._id,
+    //         name: employeeTypeList[0]?.name,
+    //       },
+    //     },
+    //   },
+    // });
 
     if (processStatus === 'DRAFT') {
       if (candidate) {
@@ -196,6 +196,13 @@ class JobDetails extends PureComponent {
         _id: value,
       };
     }
+
+    console.log(`${name}]: ${value}`);
+    console.log(tempData[name]);
+
+    console.log({
+      ...tempData,
+    });
 
     dispatch({
       type: 'candidateInfo/save',
@@ -603,7 +610,7 @@ class JobDetails extends PureComponent {
                     employeeType={employeeType}
                     position={position}
                     data={data}
-                    processStatus={processStatus}
+                    // processStatus={processStatus}
                     disabled={this.disableEdit()}
                   />
                   <FieldsComponent
