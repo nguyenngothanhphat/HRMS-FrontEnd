@@ -29,6 +29,8 @@ import {
   sentForApproval,
   approveFinalOffer,
   getTemplates,
+  getDefaultTemplateList,
+  getCustomTemplateList,
   removeTemplate,
   createFinalOffer,
   checkDocument,
@@ -843,6 +845,7 @@ const candidateInfo = {
             compensationType: data.compensationType || '',
             salaryTitle: data.salaryStructure?.title?._id,
             salaryStructure: data.salaryStructure,
+            includeOffer: data.includeOffer || 1,
             // hidePreviewOffer: !!(data.staticOfferLetter && data.staticOfferLetter.url), // Hide preview offer screen if there's already static offer
             // disablePreviewOffer:
             //   (data.offerLetter && data.offerLetter.attachment) ||
@@ -905,14 +908,54 @@ const candidateInfo = {
       }
     },
 
+    *fetchDefaultTemplateList({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getDefaultTemplateList, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveTemp',
+          payload: {
+            defaultTemplates: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchCustomTemplateList({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getCustomTemplateList, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveTemp',
+          payload: {
+            customTemplates: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
     *removeTemplateEffect({ payload }, { call, put }) {
       try {
         // const { id = '' } = payload;
         const response = yield call(removeTemplate, payload); // payload: id
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
+        const newPayload = {
+          tenantId: payload.tenantId,
+          type: 'ON_BOARDING',
+        };
         yield put({
-          type: 'fetchTemplate',
+          type: 'fetchDefaultTemplateList',
+          payload: newPayload,
+        });
+        yield put({
+          type: 'fetchCustomTemplateList',
+          payload: newPayload,
         });
       } catch (error) {
         dialog(error);
