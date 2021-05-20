@@ -54,5 +54,5 @@ export default {
   'pages.relieving.closePackage': 'Close Package',
   'pages.relieving.closePackage.notification': 'The closing package has been sent to',
   'pages.relieving.placeholder.sendMail': 'Enter mail id to send package',
-  'pages.relieving.btn.sendMail': 'Send Mail',
+  'pages.relieving.btn.sendMail': 'Send',
 };
