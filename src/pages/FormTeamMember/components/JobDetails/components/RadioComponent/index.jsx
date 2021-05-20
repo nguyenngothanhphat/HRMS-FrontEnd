@@ -37,9 +37,6 @@ class RadioComponent extends PureComponent {
       disabled,
     } = this.props;
 
-    console.log(employeeType);
-    console.log(position);
-
     return (
       <div className={styles.RadioComponent}>
         {test.employeeType && test.position === null ? null : (
