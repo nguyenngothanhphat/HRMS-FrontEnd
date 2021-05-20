@@ -1,3 +1,4 @@
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import {
@@ -103,9 +104,9 @@ const timeOff = {
     ],
   },
   effects: {
-    *fetchTimeOffTypes(_, { call, put }) {
+    *fetchTimeOffTypes({ payload }, { call, put }) {
       try {
-        const response = yield call(getTimeOffTypes);
+        const response = yield call(getTimeOffTypes, payload);
         const { statusCode, data: timeOffTypes = {} } = response;
         // console.log('timeOffTypes', timeOffTypes);
         if (statusCode !== 200) throw response;
@@ -119,7 +120,11 @@ const timeOff = {
     },
     *fetchLeaveBalanceOfUser({ payload }, { call, put }) {
       try {
-        const response = yield call(getLeaveBalanceOfUser, payload);
+        const response = yield call(getLeaveBalanceOfUser, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data: totalLeaveBalance = {} } = response;
         // console.log('totalLeaveBalance', totalLeaveBalance);
         if (statusCode !== 200) throw response;
@@ -133,8 +138,10 @@ const timeOff = {
     },
     *fetchLeaveRequestOfEmployee({ employee = '', status = '' }, { call, put }) {
       try {
+        console.log(employee);
+        const tenantId = getCurrentTenant();
         if (status !== '') {
-          const response = yield call(getLeaveRequestOfEmployee, { employee, status });
+          const response = yield call(getLeaveRequestOfEmployee, { employee, status, tenantId });
           const { statusCode, data: leaveRequests = [] } = response;
           if (statusCode !== 200) throw response;
 
@@ -145,7 +152,7 @@ const timeOff = {
           return response;
         }
         if (status === '') {
-          const response = yield call(getLeaveRequestOfEmployee, { employee });
+          const response = yield call(getLeaveRequestOfEmployee, { employee, tenantId });
           const { statusCode, data: allMyLeaveRequests = [] } = response;
           if (statusCode !== 200) throw response;
           yield put({
@@ -162,7 +169,8 @@ const timeOff = {
 
     *fetchLeaveHistory({ employee = '', status = '' }, { call, put }) {
       try {
-        const response = yield call(getLeaveRequestOfEmployee, { employee, status });
+        const tenantId = getCurrentTenant();
+        const response = yield call(getLeaveRequestOfEmployee, { employee, status, tenantId });
         const { statusCode, data: allMyLeaveRequests = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -176,8 +184,9 @@ const timeOff = {
 
     *fetchLeaveRequestById({ id = '' }, { call, put }) {
       try {
+        const tenantId = getCurrentTenant();
         if (id !== '') {
-          const response = yield call(getLeaveRequestById, { id });
+          const response = yield call(getLeaveRequestById, { id, tenantId });
           const { statusCode, data: viewingLeaveRequest = [] } = response;
           if (statusCode !== 200) throw response;
           yield put({
@@ -550,7 +559,8 @@ const timeOff = {
     // REPORTING MANAGER
     *reportingManagerApprove({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(reportingManagerApprove, payload);
+        const data = { ...payload, tenantId: getCurrentTenant() };
+        const response = yield call(reportingManagerApprove, data);
         const { statusCode, data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -568,7 +578,8 @@ const timeOff = {
     },
     *reportingManagerReject({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(reportingManagerReject, payload);
+        const data = { ...payload, tenantId: getCurrentTenant() };
+        const response = yield call(reportingManagerReject, data);
         const { statusCode, data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -587,7 +598,8 @@ const timeOff = {
 
     *approveMultipleTimeoffRequest({ payload = {} }, { call }) {
       try {
-        const response = yield call(approveMultipleTimeoffRequest, payload);
+        const data = { ...payload, tenantId: getCurrentTenant() };
+        const response = yield call(approveMultipleTimeoffRequest, data);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         return statusCode;
@@ -598,7 +610,8 @@ const timeOff = {
     },
     *rejectMultipleTimeoffRequest({ payload = {} }, { call }) {
       try {
-        const response = yield call(rejectMultipleTimeoffRequest, payload);
+        const data = { ...payload, tenantId: getCurrentTenant() };
+        const response = yield call(rejectMultipleTimeoffRequest, data);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         return statusCode;
@@ -611,7 +624,8 @@ const timeOff = {
     // WITHDRAW (INCLUDING SEND EMAILs)
     *employeeWithdrawInProgress({ payload = {} }, { call }) {
       try {
-        const response = yield call(employeeWithdrawInProgress, payload);
+        const data = { ...payload, tenantId: getCurrentTenant() };
+        const response = yield call(employeeWithdrawInProgress, data);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         return statusCode;
@@ -622,7 +636,8 @@ const timeOff = {
     },
     *employeeWithdrawApproved({ payload = {} }, { call }) {
       try {
-        const response = yield call(employeeWithdrawApproved, payload);
+        const data = { ...payload, tenantId: getCurrentTenant() };
+        const response = yield call(employeeWithdrawApproved, data);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         return statusCode;
@@ -633,7 +648,8 @@ const timeOff = {
     },
     *managerApproveWithdrawRequest({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(managerApproveWithdrawRequest, payload);
+        const data = { ...payload, tenantId: getCurrentTenant() };
+        const response = yield call(managerApproveWithdrawRequest, data);
         const { statusCode, data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -651,7 +667,8 @@ const timeOff = {
     },
     *managerRejectWithdrawRequest({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(managerRejectWithdrawRequest, payload);
+        const data = { ...payload, tenantId: getCurrentTenant() };
+        const response = yield call(managerRejectWithdrawRequest, data);
         const { statusCode, data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -752,7 +769,8 @@ const timeOff = {
     // ACCOUNT SETTING
     *getDefaultTimeoffTypesList(_, { call, put }) {
       try {
-        const response = yield call(getDefaultTimeoffTypesList);
+        const tenantId = getCurrentTenant();
+        const response = yield call(getDefaultTimeoffTypesList, tenantId);
         const { statusCode, data: defaultTimeoffTypesList = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({

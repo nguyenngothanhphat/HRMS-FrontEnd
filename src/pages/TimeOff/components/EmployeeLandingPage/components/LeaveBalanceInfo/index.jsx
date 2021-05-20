@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Collapse, Tooltip, Modal } from 'antd';
 import { CloseOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -18,6 +19,9 @@ class LeaveBalanceInfo extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/fetchTimeOffTypes',
+      payload: {
+        tenantId: getCurrentTenant(),
+      }
     });
   };
 

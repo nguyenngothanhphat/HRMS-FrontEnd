@@ -1,56 +1,56 @@
 import request from '@/utils/request';
 
 export function getLeaveBalanceOfUser(payload) {
-  return request('/api/leavebalance/get-by-user', {
+  return request('/api/leavebalancetenant/get-by-user', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getTimeOffTypes(payload) {
-  return request('/api/timeofftype/list', {
+  return request('/api/timeofftypetenant/list', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getLeaveRequestOfEmployee(payload) {
-  return request('/api/leaverequest/get-my-request', {
+  return request('/api/leaverequesttenant/get-my-request', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getLeaveRequestById(payload) {
-  return request('/api/leaverequest/get-by-id', {
+  return request('/api/leaverequesttenant/get-by-id', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function updateLeaveRequestById(payload) {
-  return request('/api/leaverequest/update', {
+  return request('/api/leaverequesttenant/update', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function addLeaveRequest(payload) {
-  return request('/api/leaverequest/add', {
+  return request('/api/leaverequesttenant/add', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function saveDraftLeaveRequest(payload) {
-  return request('/api/leaverequest/save-draft', {
+  return request('/api/leaverequesttenant/save-draft', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function updateDraftLeaveRequest(payload) {
-  return request('/api/leaverequest/update-draft', {
+  return request('/api/leaverequesttenant/update-draft', {
     method: 'POST',
     data: payload,
   });
@@ -85,7 +85,7 @@ export async function getCompoffRequestById(payload) {
 }
 
 export async function removeLeaveRequestOnDatabase(payload) {
-  return request('/api/leaverequest/remove', {
+  return request('/api/leaverequesttenant/remove', {
     method: 'POST',
     data: payload,
   });
@@ -139,7 +139,7 @@ export async function getTeamCompoffRequests(payload) {
 }
 
 export async function getTeamLeaveRequests(payload) {
-  return request('/api/leaverequest/get-team-request', {
+  return request('/api/leaverequesttenant/get-team-request', {
     method: 'POST',
     data: payload,
   });
@@ -151,7 +151,7 @@ export async function uploadFile(data) {
   });
 }
 export async function uploadBalances(data) {
-  return request('/api/managebalances/upload-file', {
+  return request('/api/managebalancestenant/upload-file', {
     method: 'POST',
     data,
   });
@@ -159,28 +159,28 @@ export async function uploadBalances(data) {
 
 // reporting manager
 export async function reportingManagerApprove(data) {
-  return request('/api/leaverequest/reporting-manager-approve', {
+  return request('/api/leaverequesttenant/reporting-manager-approve', {
     method: 'POST',
     data,
   });
 }
 
 export async function reportingManagerReject(data) {
-  return request('/api/leaverequest/reporting-manager-reject', {
+  return request('/api/leaverequesttenant/reporting-manager-reject', {
     method: 'POST',
     data,
   });
 }
 
 export async function approveMultipleTimeoffRequest(data) {
-  return request('/api/leaverequest/rm-approve-multiple-tickets', {
+  return request('/api/leaverequesttenant/rm-approve-multiple-tickets', {
     method: 'POST',
     data,
   });
 }
 
 export async function rejectMultipleTimeoffRequest(data) {
-  return request('/api/leaverequest/rm-reject-multiple-tickets', {
+  return request('/api/leaverequesttenant/rm-reject-multiple-tickets', {
     method: 'POST',
     data,
   });
@@ -189,14 +189,14 @@ export async function rejectMultipleTimeoffRequest(data) {
 // WITHDRAW (INCLUDING SEND EMAIL)
 // for employee
 export async function employeeWithdrawInProgress(data) {
-  return request('/api/leaverequest/withdraw-progress', {
+  return request('/api/leaverequesttenant/withdraw-progress', {
     method: 'POST',
     data,
   });
 }
 
 export async function employeeWithdrawApproved(data) {
-  return request('/api/leaverequest/withdraw-submit', {
+  return request('/api/leaverequesttenant/withdraw-submit', {
     method: 'POST',
     data,
   });
@@ -204,14 +204,14 @@ export async function employeeWithdrawApproved(data) {
 
 // for hr manager
 export async function managerApproveWithdrawRequest(data) {
-  return request('/api/leaverequest/withdraw-approve', {
+  return request('/api/leaverequesttenant/withdraw-approve', {
     method: 'POST',
     data,
   });
 }
 
 export async function managerRejectWithdrawRequest(data) {
-  return request('/api/leaverequest/withdraw-reject', {
+  return request('/api/leaverequesttenant/withdraw-reject', {
     method: 'POST',
     data,
   });
