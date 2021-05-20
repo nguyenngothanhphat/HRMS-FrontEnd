@@ -101,7 +101,7 @@ class RequestChangeLWD extends Component {
       <>
         <div className={styles.viewChangeLastWorkingDay}>
           <div className={styles.viewChangeLastWorkingDay__title}>
-            <span className={styles.textTitle}>Resignation request details</span>
+            <span className={styles.textTitle}>Last working day</span>
             {!isEdit ? (
               <div className={styles.editBtn} onClick={this.openEdit}>
                 <span>Edit</span>
@@ -138,20 +138,24 @@ class RequestChangeLWD extends Component {
                 </div>
               </Col>
             </Row>
-            <div className={styles.comments}>
-              <div className={styles.viewChangeLastWorkingDay__label}>
-                <span>Reporting manager’s comments extend or shorten LWD</span>
-              </div>
 
-              <div className={styles.textArea}>
-                <TextArea
-                  className={styles.boxComment}
-                  value={q}
-                  // onChange={this.handleChange}
-                  disabled
-                />
+            {!checkDisable && (
+              <div className={styles.comments}>
+                <div className={styles.viewChangeLastWorkingDay__label}>
+                  <span>Reporting manager’s comments extend or shorten LWD</span>
+                </div>
+
+                <div className={styles.textArea}>
+                  <TextArea
+                    className={styles.boxComment}
+                    value={q}
+                    // onChange={this.handleChange}
+                    disabled
+                  />
+                </div>
               </div>
-            </div>
+            )}
+
             {requestLastDate && (
               <div className={styles.viewChangeLastWorkingDay__textMessage}>
                 <span

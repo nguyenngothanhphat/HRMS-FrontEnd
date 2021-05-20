@@ -108,7 +108,9 @@ class EditComment extends Component {
       loadingReview,
       id = '',
       isOnHold = false,
+      status = '',
     } = this.props;
+
     const {
       updatedAt,
       ownerComment: { _id: ownerCommentId = '', generalInfo: { firstName = '' } = {} } = {},
@@ -116,12 +118,14 @@ class EditComment extends Component {
     } = itemComment;
     const time = moment(updatedAt).format('DD.MM.YY | h:mm A');
     const isOwner = myId === ownerCommentId;
+    const checkDisable = status !== 'IN-PROGRESS';
+
     return (
       <div className={s.root}>
         <div className={s.header}>
           <span className={s.title}>{firstName} comments from 1-on-1</span>
           <div className={s.rightPart}>
-            {!isEdit && isOwner && (
+            {!isEdit && isOwner && !checkDisable && (
               <div className={s.editBtn} onClick={this.handleOpenEdit}>
                 <img style={{ margin: '0 2px 2px 0' }} src={editIcon} alt="edit-icon" />
                 <span>Edit</span>
@@ -151,14 +155,18 @@ class EditComment extends Component {
               disabled={!isEdit}
             />
             <div className={s.canBeRehired}>
-              <Checkbox defaultChecked={originCanBeRehired} onChange={this.handleCanBeRehired}>
+              <Checkbox
+                disabled={checkDisable}
+                defaultChecked={originCanBeRehired}
+                onChange={this.handleCanBeRehired}
+              >
                 Can be rehired
               </Checkbox>{' '}
               <span>(This will remain private to yourself and the HR)</span>
             </div>
           </div>
         </div>
-        {!isOnHold && (
+        {!isOnHold && !checkDisable && (
           <div className={s.buttonArea}>
             <span className={s.description}>
               By default notifications will be sent to HR, your manager and recursively loop to your

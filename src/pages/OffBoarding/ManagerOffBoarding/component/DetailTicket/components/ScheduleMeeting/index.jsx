@@ -53,7 +53,7 @@ class ScheduleMeeting extends Component {
     }
     const check = checkTime(meetingDate, meetingTime);
     return (
-      <div className={styles.actionDetailTicket__schedule} style={{ marginBottom: '15px' }}>
+      <div className={styles.actionDetailTicket__schedule}>
         <div className={styles.schedule__content}>
           <span className={styles.actionDetailTicket__title}>
             {formatMessage({ id: 'pages.offBoarding.1on1Meeting' })} with{' '}

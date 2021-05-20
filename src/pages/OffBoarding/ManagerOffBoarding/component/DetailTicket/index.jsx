@@ -226,7 +226,9 @@ class DetailTicket extends Component {
       );
     const employeeInfo = { nameEmployee, employeeId, avatar, title };
     const listScheduleMeeting = list1On1.filter((item) => item.content === '');
-    const listComment = list1On1.filter((item) => item.content !== '');
+    const listComment = list1On1.filter(
+      (item) => item.content !== '' && myId === item.ownerComment?._id,
+    );
     const checkShowNotification = this.checkShowNotification();
     const checkClosingComment =
       list1On1.find(
@@ -252,8 +254,8 @@ class DetailTicket extends Component {
               <Col span={15}>
                 <StatusComponent status={status} />
                 <RequesteeDetail employeeInfo={employeeInfo} listProject={listProject} />
-                <ResignationRequestDetail itemRequest={myRequest} />            
-                {checkShowNotification && status === 'IN-PROGRESS' && listComment.length !== 0 && (
+                <ResignationRequestDetail itemRequest={myRequest} />
+                {checkShowNotification && listComment.length !== 0 && (
                   <div className={styles.viewListComment}>
                     {listComment.map((item) => {
                       const { _id } = item;
@@ -266,6 +268,7 @@ class DetailTicket extends Component {
                             loadingReview={loadingReview}
                             isOnHold={selectButton === 'ON-HOLD'}
                             id={id}
+                            status={status}
                           />
                         </Fragment>
                       );

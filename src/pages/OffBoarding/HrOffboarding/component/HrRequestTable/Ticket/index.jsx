@@ -144,19 +144,19 @@ class HRDetailTicket extends Component {
   render() {
     const { openModal, keyModal = '' } = this.state;
     const {
-      loading,
+      // loading,
       myRequest,
       list1On1 = [],
       listProjectByEmployee = [],
-      listMeetingTime,
+      // listMeetingTime,
       loadingGetById,
       showModalSuccessfully,
       listAssignee = [],
       myId = '',
     } = this.props;
     const {
-      reasonForLeaving = '',
-      requestDate = '',
+      // reasonForLeaving = '',
+      // requestDate = '',
       status = '',
       ticketID = '',
       employee: {
@@ -169,7 +169,7 @@ class HRDetailTicket extends Component {
       manager: {
         generalInfo: { firstName: firstNameManager = '', lastName: lastNameManager = '' } = {},
       } = {},
-      requestLastDate = '',
+      // requestLastDate = '',
     } = myRequest;
     if (loadingGetById) {
       return (
@@ -244,7 +244,7 @@ class HRDetailTicket extends Component {
                 {/* {status !== 'REJECTED' && <LastWorkingDate />} */}
                 {/* <HrApproved myRequest={myRequest} /> */}
                 {/* <LWD myRequest={myRequest} /> */}
-                {requestLastDate && <LastWorkingDay myRequest={myRequest} />}
+                <LastWorkingDay myRequest={myRequest} />
                 {!checkMyComment && (
                   <WhatNext itemRequest={myRequest} listAssignee={listAssignee} />
                 )}

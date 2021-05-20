@@ -6,7 +6,7 @@ import moment from 'moment';
 import editIcon from '@/assets/edit-off-boarding.svg';
 import styles from './index.less';
 
-const dateFormat = 'YYYY/MM/DD';
+const dateFormat = 'MM.DD.YY';
 const { TextArea } = Input;
 
 @connect(({ offboarding: { myRequest = {} } = {}, loading }) => ({
@@ -86,7 +86,6 @@ class RequestChangeLWD extends Component {
       <>
         <div className={styles.viewChangeLastWorkingDay}>
           <div className={styles.viewChangeLastWorkingDay__title}>
-            {' '}
             <span>Resignation request details</span>
           </div>
           <div className={styles.contentContainer}>
@@ -96,7 +95,7 @@ class RequestChangeLWD extends Component {
             <Row className={styles.viewChangeLastWorkingDay__viewDateApproved} gutter={[50, 0]}>
               <Col span={8}>
                 <DatePicker
-                  value={dateValue && moment(dateValue, dateFormat)}
+                  value={dateValue ? moment(dateValue) : null}
                   format={dateFormat}
                   className={styles.viewChangeLastWorkingDay__viewDateApproved__datePicker}
                   disabled

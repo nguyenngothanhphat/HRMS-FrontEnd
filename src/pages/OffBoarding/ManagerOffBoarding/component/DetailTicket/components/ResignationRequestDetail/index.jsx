@@ -10,8 +10,8 @@ class ResignationRequestDetail extends PureComponent {
     const {
       requestDate: date = '',
       reasonForLeaving: reason = '',
-      lastWorkingDate,
-      status = '',
+      // lastWorkingDate,
+      // status = '',
       requestLastDate,
     } = itemRequest;
 
@@ -31,44 +31,39 @@ class ResignationRequestDetail extends PureComponent {
             <p className={styles.content}>{reason}</p>
           </div>
 
-          {/* {status === 'ACCEPTED' && ( */}
-          <>
-            <div className={styles.lastWorkingDay}>
-              <span className={styles.title}>Last working date (System generated)</span>
-              <div className={styles.datePicker}>
-                <DatePicker
-                  defaultValue={date ? moment(date).add('90', 'days') : null}
-                  format="MM.DD.YY"
-                  disabled
-                />
-                <div className={styles.notice}>
-                  <span className={styles.content}>
-                    The LWD is generated as per a 90 days period according to our{' '}
-                    <span className={styles.link}>Standard Offboarding Policy</span>
-                  </span>
-                </div>
+          <div className={styles.lastWorkingDay}>
+            <span className={styles.title}>Last working date (System generated)</span>
+            <div className={styles.datePicker}>
+              <DatePicker
+                defaultValue={date ? moment(date).add('90', 'days') : null}
+                format="MM.DD.YY"
+                disabled
+              />
+              <div className={styles.notice}>
+                <span className={styles.content}>
+                  The LWD is generated as per a 90 days period according to our{' '}
+                  <span className={styles.link}>Standard Offboarding Policy</span>
+                </span>
               </div>
             </div>
+          </div>
 
-            <div className={styles.lastWorkingDay}>
-              <span className={styles.title}>Preferred last working date</span>
-              <div className={styles.datePicker}>
-                <DatePicker
-                  defaultValue={requestLastDate ? moment(requestLastDate) : null}
-                  format="MM.DD.YY"
-                  disabled
-                  // disabled={status === 'ACCEPTED'}
-                />
-                {/* <div className={styles.notice}>
+          <div className={styles.lastWorkingDay}>
+            <span className={styles.title}>Preferred last working date</span>
+            <div className={styles.datePicker}>
+              <DatePicker
+                defaultValue={requestLastDate ? moment(requestLastDate) : null}
+                format="MM.DD.YY"
+                disabled
+              />
+              {/* <div className={styles.notice}>
                   <span className={styles.content}>
                     Preferred LWD must be vetted by your reporting manager & approved by the HR
                     manager to come into effect.
                   </span>
                 </div> */}
-              </div>
             </div>
-          </>
-          {/* )} */}
+          </div>
         </div>
       </div>
     );
