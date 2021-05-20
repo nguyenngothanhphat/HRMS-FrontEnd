@@ -7,7 +7,7 @@ class ModalNotice extends PureComponent {
   render() {
     const { visible = false, type = '', handleCancel = () => {} } = this.props;
     const renderText = {
-      'ON-HOLD': 'Your decision to put this project On hold has been recorded.',
+      'ON-HOLD': 'Your decision to put this request On hold has been recorded.',
       REJECTED: 'Your rejection of the request has been recorded and all parties will be notified',
       ACCEPTED: 'Your acceptance of the request has been recorded and all parties will be notified',
     };

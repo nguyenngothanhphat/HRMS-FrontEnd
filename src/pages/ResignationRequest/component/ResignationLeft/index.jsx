@@ -3,8 +3,9 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { Button, DatePicker, Input, Spin } from 'antd';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import moment from 'moment';
+// import moment from 'moment';
 import React, { Component } from 'react';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -14,6 +15,7 @@ class ResigationLeft extends Component {
     this.state = {
       reasonForLeaving: '',
       sendleaveRequest: false,
+      changeLWD: '',
     };
   }
 
@@ -39,7 +41,7 @@ class ResigationLeft extends Component {
 
   submitForm = (action) => {
     const { dispatch, approvalflow = [] } = this.props;
-    const { reasonForLeaving } = this.state;
+    const { reasonForLeaving, lastLWD } = this.state;
     const fiterActive = approvalflow.find((item) => item.status === 'ACTIVE') || {};
     dispatch({
       type: 'offboarding/sendRequest',
@@ -47,6 +49,7 @@ class ResigationLeft extends Component {
         reasonForLeaving,
         action,
         approvalFlow: fiterActive._id,
+        requestLastDate: lastLWD,
         tenantId: getCurrentTenant(),
         company: getCurrentCompany(),
       },
@@ -63,6 +66,7 @@ class ResigationLeft extends Component {
             tenantId: getCurrentTenant(),
           },
         });
+        history.push('/offboarding');
       }
     });
   };
@@ -73,8 +77,21 @@ class ResigationLeft extends Component {
     });
   };
 
+  handleRequestToChange = (e) => {
+    const { target: { checked = '' } = {} } = e;
+    this.setState({
+      changeLWD: checked,
+    });
+  };
+
+  handleLWD = (value) => {
+    this.setState({
+      lastLWD: value,
+    });
+  };
+
   render() {
-    const { reasonForLeaving = '', sendleaveRequest } = this.state;
+    const { reasonForLeaving = '', sendleaveRequest, changeLWD } = this.state;
     const { loading, totalList = [], loadingFetchListRequest } = this.props;
     const checkInprogress = totalList.find(({ _id }) => _id === 'IN-PROGRESS') || {};
     const checkAccepted = totalList.find(({ _id }) => _id === 'ACCEPTED') || {};
@@ -111,10 +128,10 @@ class ResigationLeft extends Component {
             disabled={sendleaveRequest || checkSendRequest}
           />
         </div>
-        <div className={styles.lastWorkingDay}>
+        {/* <div className={styles.lastWorkingDay}>
           <span className={styles.title}>Last working date (System generated)</span>
           <div className={styles.datePicker}>
-            <DatePicker format="MM.DD.YY" />
+            <DatePicker format="MM.DD.YY" disabled defaultValue={moment().add('90', 'days')} />
             <div className={styles.notice}>
               <span className={styles.content}>
                 The LWD is generated as per a 90 days period according to our{' '}
@@ -123,9 +140,20 @@ class ResigationLeft extends Component {
             </div>
           </div>
           <div className={styles.requestToChange}>
-            <Checkbox>Request to change</Checkbox>
+            <Checkbox onClick={this.handleRequestToChange}>Request to change</Checkbox>
           </div>
-        </div>
+          {changeLWD && (
+            <div className={styles.datePicker}>
+              <DatePicker onChange={this.handleLWD} format="MM.DD.YY" />
+              <div className={styles.notice}>
+                <span className={styles.content}>
+                  Preferred LWD must be vetted by your reporting manager & approved by the HR
+                  manager to come into effect.
+                </span>
+              </div>
+            </div>
+          )}
+        </div> */}
         {!sendleaveRequest && !checkSendRequest && (
           <div className={styles.subbmitForm}>
             <div className={styles.subbmiText}>

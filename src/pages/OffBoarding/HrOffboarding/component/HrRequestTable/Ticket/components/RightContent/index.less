@@ -1,7 +1,7 @@
 .rightContent {
   background-color: #fff;
-  border-radius: 5px;
   border: 1px solid #d6dce0;
+  border-radius: 5px;
 
   .straightLine {
     width: 100%;
@@ -9,28 +9,41 @@
     background-color: #d6dce0;
   }
   .textTitle {
+    color: #161C29;
     font-weight: 700;
     font-size: 16px;
     line-height: 19px;
-    color: #464646;
   }
 
   .header {
-    padding: 27px 30px 20px;
+    padding: 24px;
   }
+
   .bodyContent {
-    padding: 30px;
+    padding: 24px;
     .textData {
-      font-weight: 500;
-      font-size: 13px;
-      line-height: 17px;
-      color: #464646;
-      margin-bottom: 25px;
+      display: flex;
+      align-items: flex-start;
+      span {
+        margin-top: -3px;
+        margin-left: 10px;
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #464646;
+        font-weight: normal;
+        font-size: 13px;
+        line-height: 24px;
+      }
     }
     .viewDetail {
       .textData();
-      text-decoration: underline;
-      color: #2058d1;
+
+      margin-left: 30px;
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 15px;
+      text-decoration-line: underline;
     }
   }
 }

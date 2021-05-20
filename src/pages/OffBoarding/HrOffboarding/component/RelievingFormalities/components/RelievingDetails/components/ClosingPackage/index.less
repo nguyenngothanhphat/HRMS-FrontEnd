@@ -40,22 +40,49 @@
     }
   }
 
+  &__inputSection{
+    position: relative;
+  }
+
+  &__btnSection{
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+
+    :global{
+      .ant-btn[disabled], .ant-btn[disabled]:hover, .ant-btn[disabled]:focus, .ant-btn[disabled]:active{
+        background: #FFA100;
+        opacity: 0.5;
+        color: #fff;
+      }
+    }
+  }
+
   &__input {
-    padding: 8px 0 8px 14px;
-    border-radius: 5px;
+    padding: 16px 0 16px 24px;
+    border-radius: 24px;
+    border: 1px solid #D6DCE0;
+    // position: relative;
+    height: 48px;
+    background: #FFFFFF;
   }
 
   .btn {
     color: #fff;
     background-color: rgba(255, 161, 0, 1);
+    // position: absolute;
+    // right: 4px;
+    // bottom: 4px;
+    height: 40px;
+    padding: 12px 31px;
   }
 
   &__btn {
     .btn;
-    width: 130px;
-    height: 42px;
+    display: flex;
+    align-items: center;
     border: none;
-    border-radius: 30px;
+    border-radius: 25px;
     font-weight: 500;
     &:hover,
     &:focus {

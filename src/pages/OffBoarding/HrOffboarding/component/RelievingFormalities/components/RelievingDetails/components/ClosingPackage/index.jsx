@@ -35,6 +35,7 @@ class ClosingPackage extends PureComponent {
       isOpenModalEdit: false,
       template: {},
       mode: '',
+      emailInput: '',
     };
   }
 
@@ -64,6 +65,12 @@ class ClosingPackage extends PureComponent {
         ticketId,
         toEmail,
       },
+    });
+  };
+
+  onValueChange = (value) => {
+    this.setState({
+      emailInput: value.toEmail,
     });
   };
 
@@ -141,7 +148,8 @@ class ClosingPackage extends PureComponent {
   };
 
   renderBeforeSendMail = () => {
-    const { closingPackage, customDocuments } = this.state;
+    const { closingPackage, customDocuments, emailInput } = this.state;
+
     return (
       <>
         <Row gutter={[40, 15]}>
@@ -226,9 +234,14 @@ class ClosingPackage extends PureComponent {
             );
           })}
         </Row>
-        <Form id="packageToEmail" name="packageToEmail" onFinish={this.handleSendMail}>
-          <Row gutter={[40, 15]}>
-            <Col span={14}>
+        <Form
+          id="packageToEmail"
+          name="packageToEmail"
+          onFinish={this.handleSendMail}
+          onValuesChange={this.onValueChange}
+        >
+          <Row gutter={[40, 15]} className={styles.closingPackage__inputSection}>
+            <Col span={24}>
               <Form.Item
                 name="toEmail"
                 rules={[
@@ -244,18 +257,19 @@ class ClosingPackage extends PureComponent {
                 />
               </Form.Item>
             </Col>
-            <Form.Item>
-              <Col span={7}>
+            <Col span={24} className={styles.closingPackage__btnSection}>
+              <Form.Item>
                 <Button
                   type="default"
                   htmlType="submit"
                   className={styles.closingPackage__btn}
                   form="packageToEmail"
+                  disabled={emailInput === ''}
                 >
                   {formatMessage({ id: 'pages.relieving.btn.sendMail' })}
                 </Button>
-              </Col>
-            </Form.Item>
+              </Form.Item>
+            </Col>
           </Row>
         </Form>
       </>

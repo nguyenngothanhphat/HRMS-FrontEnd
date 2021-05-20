@@ -105,7 +105,7 @@ class HrTable extends PureComponent {
         fixed: 'left',
         width: 150,
         render: (ticketID) => {
-          return <p>{ticketID}</p>;
+          return <p className={styles.ticketId}>{ticketID}</p>;
         },
       },
       {
@@ -119,7 +119,7 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>Created date </span>,
         dataIndex: 'createDate',
-        width: 200,
+        width: 120,
         render: (createDate) => {
           return <p>{moment(createDate).format('YYYY/MM/DD')}</p>;
         },
@@ -127,7 +127,7 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>Requ’tee Name </span>,
         dataIndex: 'employee',
-        // width: 150,
+        width: 140,
         ellipsis: true,
         render: (employee) => {
           const { generalInfo = {} } = employee;
@@ -138,30 +138,32 @@ class HrTable extends PureComponent {
           );
         },
       },
-      {
-        title: <span className={styles.title}>Current Project</span>,
-        dataIndex: 'project',
-        width: 200,
-        render: (project) => {
-          const { manager = '' } = project[0];
-          return <p>{Object.keys(manager).length === 0 ? '' : manager}</p>;
-        },
-      },
-      {
-        title: <span className={styles.title}>Project Manager</span>,
-        dataIndex: 'project',
-        width: 200,
-        render: (project) => {
-          const { manager = '' } = project[0];
-          return <p>{Object.keys(manager).length === 0 ? '' : manager}</p>;
-        },
-      },
+      // {
+      //   title: <span className={styles.title}>Current Project</span>,
+      //   dataIndex: 'project',
+      //   width: 200,
+      //   render: (project) => {
+      //     const { manager = '' } = project[0];
+      //     return <p>{Object.keys(manager).length === 0 ? '' : manager}</p>;
+      //   },
+      // },
+      // {
+      //   title: <span className={styles.title}>Project Manager</span>,
+      //   dataIndex: 'project',
+      //   width: 200,
+      //   render: (project) => {
+      //     const { manager = '' } = project[0];
+      //     return <p>{Object.keys(manager).length === 0 ? '' : manager}</p>;
+      //   },
+      // },
       {
         title: <span className={styles.title}>Assigned </span>,
         dataIndex: 'Assigned',
+        width: 140,
         render: (_, row) => {
-          const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
-            this.props;
+          const {
+            hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {},
+          } = this.props;
           const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
           const arrAvt = [avtManager, avtHrManager];
           return (

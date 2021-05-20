@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
-import { Row, Col, Input, Button, Space } from 'antd';
-import warningNoteIcon from '@/assets/warning-icon.svg';
-import { formatMessage, connect } from 'umi';
+import { Button, Input } from 'antd';
 import moment from 'moment';
+import React, { Component } from 'react';
+import { connect } from 'umi';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -42,45 +41,37 @@ class ReasonPutOnHold extends Component {
 
     return (
       <div className={styles.reasonPutOnHold}>
-        <Row gutter={[0, 20]} justify="space-between">
-          <Col className={styles.reasonPutOnHold__title}>
-            {formatMessage({ id: 'pages.offBoarding.reasonPutOnHold' })}
-          </Col>
-          <Col>
-            <Row>
-              <div className={styles.reasonPutOnHold__dateTime}>{date}</div>
-            </Row>
-          </Col>
-        </Row>
-        <div className={styles.reasonPutOnHold__textArea}>
-          <TextArea
-            allowClear
-            placeholder="The reason I have decided to end out this request on-hold is because …"
-            value={q}
-            onChange={this.handleChange}
-          />
-          <div className={styles.reasonPutOnHold__action}>
-            <Space>
-              <img src={warningNoteIcon} alt="warning-note-icon" />
-              <span className={styles.reasonPutOnHold__action__text}>
-                By default notifications will be sent to HR, the requestee and recursively loop to
-                your department head.
-              </span>
-            </Space>
+        <div className={styles.header}>
+          <span className={styles.title}>Reason for putting On-hold</span>
+          <div className={styles.rightPart}>
+            <span className={styles.time}>{date}</span>
+          </div>
+        </div>
 
-            <div className={styles.reasonPutOnHold__action__btn}>
-              <Button className={styles.btn__cancel} onClick={hideForm}>
-                Cancel
-              </Button>
-              <Button
-                disabled={!q}
-                className={styles.btn__submit}
-                onClick={this.handleSubmitReason}
-                loading={loadingReview}
-              >
-                Submit
-              </Button>
-            </div>
+        <div className={styles.content}>
+          <div className={styles.textArea}>
+            <TextArea
+              className={styles.box}
+              allowClear
+              placeholder="The reason I have decided to end out this request on-hold is because …"
+              value={q}
+              disabled={loadingReview}
+              onChange={this.handleChange}
+            />
+          </div>
+        </div>
+        <div className={styles.buttonArea}>
+          <span className={styles.description}>
+            By default notifications will be sent to HR, your manager and recursively loop to your
+            department head.
+          </span>
+          <div className={styles.buttons}>
+            <Button type="link" className={styles.putOnHoldBtn} onClick={hideForm}>
+              Cancel
+            </Button>
+            <Button type="primary" onClick={this.handleSubmitReason} loading={loadingReview}>
+              Submit
+            </Button>
           </div>
         </div>
       </div>

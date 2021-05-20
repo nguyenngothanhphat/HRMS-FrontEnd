@@ -1,21 +1,26 @@
 export default {
+  'pages.offBoarding.requestStatus': 'This request is still under review by the reporting manager',
   // BO, Manager, Lead Off Boarding
   'pages.offBoarding.requesteeTitle': 'Requestee Detail',
   'pages.offBoarding.requestee.employeeID': 'Employee ID',
   'pages.offBoarding.requestee.employeeName': 'Employee Name',
   'pages.offBoarding.requestee.jobTitle': 'Job Title',
+  'pages.offBoarding.requestee.position': 'Position',
+  'pages.offBoarding.requestee.department': 'Department',
   'pages.offBoarding.requestee.currentProject': 'Current Project',
   'pages.offBoarding.requestee.projectManager': 'Project Manager',
+  'pages.offBoarding.requestee.joinDate': 'DOJ',
   'pages.offBoarding.requestee.projectHealth': 'Project Health',
   'pages.offBoarding.requestee.viewReport': 'View report',
 
   'pages.offBoarding.resignationTitle': 'Resignation request detail',
   'pages.offBoarding.resignation.date': 'Date of Request',
+  'pages.offBoarding.resignation.reason': 'Reason for leaving us?',
   'pages.offBoarding.resignation.employeeName': 'Employee Name',
 
   'pages.offBoarding.1on1Meeting': '1-on-1 meeting',
   'pages.offBoarding.scheduledOn': 'Scheduled on',
-
+  'pages.offBoarding.resignation.lwd': 'Last working date (System generated)',
   'pages.offBoarding.closingComments': 'Closing comments from 1-on-1',
 
   'pages.offBoarding.textConsider': 'Few thing to consider',
@@ -49,5 +54,5 @@ export default {
   'pages.relieving.closePackage': 'Close Package',
   'pages.relieving.closePackage.notification': 'The closing package has been sent to',
   'pages.relieving.placeholder.sendMail': 'Enter mail id to send package',
-  'pages.relieving.btn.sendMail': 'Send Mail',
+  'pages.relieving.btn.sendMail': 'Send',
 };

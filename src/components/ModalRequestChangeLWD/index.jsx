@@ -69,7 +69,7 @@ class ModalRequestChangeLWD extends Component {
           </div>
           <div className={styles.subText}>Change date</div>
           <DatePicker
-            format="YYYY-MM-DD"
+            format="MM.DD.YY"
             className={styles.datePicker}
             onChange={this.changeDate}
             disabledDate={this.disabledDate}

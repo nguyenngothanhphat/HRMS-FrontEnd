@@ -1,43 +1,43 @@
 .root {
-  background-color: #fff;
+  margin-bottom: 24px;
   padding: 40px;
-  margin-top: 20px;
-  border-radius: 5px;
+  background-color: #fff;
   border: 1px solid #d6dce0;
+  border-radius: 5px;
   .viewTop {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     &__title {
+      color: #000000;
       font-weight: 700;
       font-size: 16px;
       line-height: 19px;
-      color: #000000;
     }
     &__info {
       max-width: 55%;
+      overflow: hidden;
+      color: #464646;
       font-weight: 500;
       font-size: 14px;
       line-height: 19px;
-      color: #464646;
       white-space: nowrap;
-      overflow: hidden;
       text-overflow: ellipsis;
     }
   }
 
   .boxComment {
-    resize: none;
+    box-sizing: border-box;
     min-height: 66px;
     margin: 15px 0;
     border: 1px solid #d6dce0;
-    box-sizing: border-box;
+    resize: none;
     &:focus {
       box-shadow: none;
     }
     &:disabled {
-      background: #ffffff;
       color: #464646;
+      background: #ffffff;
     }
   }
 
@@ -45,14 +45,14 @@
     padding-left: 10px;
     &__text1 {
       margin: 0 6px 0 10px;
+      color: rgba(44, 109, 249, 0.7);
       font-size: 13px;
       line-height: 19px;
-      color: rgba(44, 109, 249, 0.7);
     }
     &__text2 {
+      color: #707177;
       font-size: 11px;
       line-height: 19px;
-      color: #707177;
     }
   }
 }

@@ -57,12 +57,12 @@ class EmployeeOffBoading extends Component {
     dispatch({
       type: 'offboarding/fetchList',
       payload: {
-        status: 'IN-PROGRESS',
+        // status: 'IN-PROGRESS',
       },
     }).then((data) => {
       if (data) {
         this.setState({
-          dataRequest: data,
+          dataRequest: data.filter((value) => value.status !== 'DRAFT'),
           loadingFetchList: false,
         });
       }
@@ -87,7 +87,7 @@ class EmployeeOffBoading extends Component {
       },
     }).then((data) => {
       if (data !== null) {
-        this.checkIfExistingInprogressRequest();
+        this.checkIfExistingRequest();
       }
     });
   }
@@ -100,7 +100,7 @@ class EmployeeOffBoading extends Component {
     );
   };
 
-  checkIfExistingInprogressRequest = () => {
+  checkIfExistingRequest = () => {
     const { acceptedRequest = [], companyID = '', dispatch } = this.props;
     if (acceptedRequest.length > 0) {
       const accepted = acceptedRequest[0]; // only one offboarding request
@@ -125,7 +125,12 @@ class EmployeeOffBoading extends Component {
   };
 
   render() {
-    const { listOffboarding = [], totalList = [], hrManager = {} } = this.props;
+    const {
+      listOffboarding = [],
+      totalList = [],
+      hrManager = {},
+      acceptedRequest = [],
+    } = this.props;
     const { relievingInQueue, dataDraft = [], dataRequest = [], loadingFetchList } = this.state;
 
     return (
@@ -144,7 +149,9 @@ class EmployeeOffBoading extends Component {
                           <>
                             {dataDraft.length > 0 || dataRequest.length > 0 ? (
                               <ViewLeft
-                                data={listOffboarding}
+                                data={
+                                  listOffboarding.length > 0 ? listOffboarding : acceptedRequest
+                                }
                                 countdata={totalList}
                                 hrManager={hrManager}
                               />
