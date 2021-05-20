@@ -160,4 +160,79 @@
       border: 1px solid #d6dce0;
     }
   }
+  .lastWorkingDay {
+    padding: 24px 0 0;
+    .title {
+      color: #161c29;
+      font-weight: normal;
+      font-size: 13px;
+      font-family: Roboto;
+      font-style: normal;
+      line-height: 15px;
+    }
+    .datePicker {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      margin: 24px 0;
+
+      .notice {
+        margin-left: 24px;
+        padding: 12px;
+        background: #ffa2001c;
+        border-radius: 4px;
+        .content {
+          color: #707177;
+          font-weight: normal;
+          font-size: 10px;
+          font-style: normal;
+          line-height: 12px;
+          .link {
+            font-weight: 500;
+            text-decoration: underline;
+          }
+        }
+      }
+      .requestToChange {
+        span {
+          color: #000000;
+          font-size: 13px;
+          line-height: 15px;
+        }
+      }
+    }
+  }
+  :global {
+    .ant-checkbox-wrapper {
+      span {
+        font-size: 13px;
+      }
+    }
+
+    .ant-input:focus,
+    .ant-picker-focused {
+      border-color: #2c6df9;
+      outline: 0;
+      box-shadow: unset;
+    }
+
+    .ant-input,
+    .ant-picker-input {
+      font-size: 13px;
+      input {
+        font-size: 13px;
+      }
+    }
+
+    .ant-select-selection-search {
+      align-content: center;
+    }
+    .ant-picker {
+      min-width: 240px;
+      min-height: 42px !important;
+      font-size: 13px;
+      border-radius: 5px !important;
+    }
+  }
 }

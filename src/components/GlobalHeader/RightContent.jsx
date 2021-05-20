@@ -85,7 +85,7 @@ const GlobalHeaderRight = (props) => {
         {switchRoleAbility ? (
           <div className={`${styles.action} ${styles.switchRole}`} onClick={handleSwitch}>
             <span className={styles.roleTitle}>
-              {loading ? <LoadingOutlined /> : <>Switch to {!isCheck ? 'EMPLOYEE' : 'ADMIN'}</>}
+              {loading ? <LoadingOutlined /> : <>{!isCheck ? 'EMPLOYEE' : 'ADMIN'}</>}
             </span>
           </div>
         ) : null}

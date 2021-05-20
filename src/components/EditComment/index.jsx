@@ -88,7 +88,7 @@ class EditComment extends Component {
     return (
       <div className={s.root}>
         <div className={s.viewTop}>
-          <div className={s.viewTop__name}>{firstName}</div>
+          <div className={s.viewTop__name}>{firstName} Closing Comments from 1-on-1</div>
           <div className={s.viewTop__right}>
             {!isEdit && isOwner && (
               <div className={s.viewTop__right__edit} onClick={this.handleOpenEdit}>
@@ -105,6 +105,7 @@ class EditComment extends Component {
           onChange={this.handleChange}
           disabled={!isEdit}
         />
+        <span style={{ color: '#FD4546' }}>* This candidate can be rehired</span>
         {isEdit && (
           <div className={s.viewBottom}>
             <Button className={s.btnCancel} onClick={this.handleCloseEdit}>

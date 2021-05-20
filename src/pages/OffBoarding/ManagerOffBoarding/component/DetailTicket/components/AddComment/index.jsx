@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Row, Col, Input } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -58,24 +59,25 @@ class AddComment extends Component {
     return (
       <>
         <div className={styles.closingComments}>
-          <Row gutter={[0, 20]} justify="space-between">
-            <Col className={styles.closingComments__title}>{nameOwner} comments from 1-on-1</Col>
-            <Col>
-              <Row>
-                <div className={styles.closingComments__dateTime}>{date}</div>
-              </Row>
-            </Col>
-          </Row>
-          <div className={styles.closingComments__textArea}>
-            <TextArea allowClear value={q} onChange={this.handleChange} />
-            <Button
-              className={styles.btn__submit}
-              onClick={this.handleSubmitComments}
-              disabled={!q}
-              loading={loading}
-            >
-              Submit
-            </Button>
+          <div className={styles.header}>
+            <span className={styles.title}>{nameOwner} comments from 1-on-1</span>
+            <span className={styles.time}>{date}</span>
+          </div>
+
+          <div className={styles.content}>
+            <div className={styles.textArea}>
+              <TextArea className={styles.box} allowClear value={q} onChange={this.handleChange} />
+              <div className={styles.canBeRehired}>
+                <Checkbox>Can be rehired</Checkbox>{' '}
+                <span>(This will remain private to yourself and the HR)</span>
+              </div>
+            </div>
+
+            <div className={styles.buttonArea}>
+              <Button onClick={this.handleSubmitComments} disabled={!q} loading={loading}>
+                Submit
+              </Button>
+            </div>
           </div>
         </div>
       </>
