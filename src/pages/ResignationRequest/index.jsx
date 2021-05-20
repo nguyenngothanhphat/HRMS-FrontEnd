@@ -28,12 +28,11 @@ class ResignationRequest extends PureComponent {
               <ResignationLeft />
             </Col>
             <Col span={7}>
-              {sendrequest ? (
+              {/* {sendrequest ? (
                 <Workflow />
               ) : (
-                // <Sidebar />
-                <div />
-              )}
+                <Sidebar />
+              )} */}
             </Col>
           </Row>
         </div>
