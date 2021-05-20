@@ -21,21 +21,36 @@ export async function approveFinalOffer(payload) {
   });
 }
 
-export async function getTemplates() {
-  return request('/api/template/list', {
+export async function getTemplates(payload) {
+  return request('/api/templatetenant/list', {
     method: 'POST',
+    data: payload,
   });
 }
 
 export async function removeTemplate(payload) {
-  return request('/api/template/remove', {
+  return request('/api/templatetenant/remove', {
     method: 'POST',
     data: payload, // _id
   });
 }
 
+export async function getDefaultTemplateList(payload) {
+  return request('/api/templatetenant/get-default', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getCustomTemplateList(payload) {
+  return request('/api/templatetenant/get-custom', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function createFinalOffer(payload) {
-  return request('/api/template/offer-letter', {
+  return request('/api/templatetenant/offer-letter', {
     method: 'POST',
     data: payload, // offer data
   });

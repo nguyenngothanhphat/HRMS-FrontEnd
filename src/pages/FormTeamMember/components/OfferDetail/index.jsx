@@ -34,6 +34,7 @@ const OfferDetail = (props) => {
     defaultTemplates: defaultTemplatesProp,
     customTemplates: customTemplatesProp,
     staticOfferLetter: staticOfferLetterProp,
+    offerLetter: offerLetterProp,
   } = tempData;
 
   const [defaultTemplates, setDefaultTemplates] = useState(defaultTemplatesProp || []);
@@ -265,6 +266,7 @@ const OfferDetail = (props) => {
         companyHandbook: handbook,
         candidate: _id,
         currentStep: nextStep,
+        includeOffer,
         tenantId: getCurrentTenant(),
 
         // offerLetter: templateId,
@@ -282,6 +284,7 @@ const OfferDetail = (props) => {
           hiringAgreements: agreement,
           companyHandbook: handbook,
           candidate: _id,
+          includeOffer,
         },
       },
     });
@@ -316,6 +319,7 @@ const OfferDetail = (props) => {
           currentStep: nextStep,
           staticOfferLetter: offerId,
           tenantId: getCurrentTenant(),
+          includeOffer,
         },
       }).then((res) => {
         const { statusCode = 1 } = res;
@@ -369,13 +373,15 @@ const OfferDetail = (props) => {
         department: departmentName,
         jobTitle,
         reportManager: `${firstName} ${lastName}`,
+        includeOffer,
+        tenantId: getCurrentTenant(),
       };
 
       dispatch({
         type: 'candidateInfo/createFinalOfferEffect',
         payload: offerData,
       }).then((res) => {
-        const { statusCode, data: { _id: templateID = '' } = {} } = res;
+        const { statusCode, data: { _id: templateID = '', attachment = {} } = {} } = res;
         if (statusCode !== 200) {
           return;
         }
@@ -398,6 +404,20 @@ const OfferDetail = (props) => {
           payload: {
             currentStep: nextStep,
           },
+        });
+
+        // Enable preview offer
+        dispatch({
+          type: 'candidateInfo/saveTemp',
+          payload: {
+            disablePreviewOffer: false,
+          },
+        });
+
+        // Save offer letter
+        dispatch({
+          type: 'candidateInfo/updateOfferLetter',
+          payload: attachment,
         });
       });
     }
@@ -580,11 +600,11 @@ const OfferDetail = (props) => {
                   disabled={disableAll}
                 >
                   {templateList.map((fileItem) => {
-                    const { _id = '123', attachment: { name = '' } = {} } = fileItem;
+                    const { _id = '123', attachment = {} } = fileItem;
                     return (
-                      <Option value={name} key={_id}>
+                      <Option value={attachment?.name} key={_id}>
                         <div className={styles.iconWrapper}>
-                          <span>{name}</span>
+                          <span>{attachment?.name}</span>
                         </div>
                       </Option>
                     );
