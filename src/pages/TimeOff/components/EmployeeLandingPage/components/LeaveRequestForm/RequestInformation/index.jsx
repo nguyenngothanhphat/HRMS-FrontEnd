@@ -639,9 +639,7 @@ class RequestInformation extends PureComponent {
 
           dispatch({
             type,
-            payload: {
-              data,
-            },
+            data,
           }).then((statusCode) => {
             if (statusCode === 200) this.setShowSuccessModal(true);
           });

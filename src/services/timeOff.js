@@ -119,13 +119,13 @@ export async function getHolidaysList(payload) {
   });
 }
 export async function getHolidaysListByLocation(payload) {
-  return request('/api/holidaycalendar/get-by-location', {
+  return request('/api/holidaycalendartenant/get-by-location', {
     method: 'POST',
     data: payload,
   });
 }
 export async function getHolidaysByCountry(payload) {
-  return request('/api/holidaycalendar/get-by-country', {
+  return request('/api/holidaycalendartenant/get-by-country', {
     method: 'POST',
     data: payload,
   });
