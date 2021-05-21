@@ -47,7 +47,7 @@ class HROffboarding extends PureComponent {
               </TabPane>
             </Tabs>
 
-            <div className={styles.options}>
+            {/* <div className={styles.options}>
               <Row gutter={[24, 0]}>
                 <Col>
                   <Button className={styles.generate} type="primary">
@@ -60,7 +60,7 @@ class HROffboarding extends PureComponent {
                   </Button>
                 </Col>
               </Row>
-            </div>
+            </div> */}
           </div>
         </div>
       </PageContainer>

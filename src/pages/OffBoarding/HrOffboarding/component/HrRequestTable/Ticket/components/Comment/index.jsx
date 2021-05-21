@@ -79,14 +79,14 @@ class EditComment extends Component {
   };
 
   render() {
-    const { itemComment = {}, q, isEdit, selectButton } = this.state;
+    const { itemComment = {}, q, isEdit } = this.state;
     const {
       // loading,
       myId,
-      handleReviewRequest = () => {},
-      openFormReason = () => {},
-      loadingReview,
-      id = '',
+      // handleReviewRequest = () => {},
+      // openFormReason = () => {},
+      // loadingReview,
+      // id = '',
       isOnHold = false,
     } = this.props;
     const {

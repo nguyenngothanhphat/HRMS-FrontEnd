@@ -77,7 +77,7 @@ class EmployeeOnboarding extends PureComponent {
             <Tabs
               activeKey={mainTabActiveKey}
               onTabClick={this.onChangeTab}
-              tabBarExtraContent={this.renderActionButton()}
+              // tabBarExtraContent={this.renderActionButton()}
             >
               <TabPane
                 tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}

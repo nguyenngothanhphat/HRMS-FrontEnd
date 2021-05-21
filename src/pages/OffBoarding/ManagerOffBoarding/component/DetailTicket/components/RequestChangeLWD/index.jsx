@@ -56,7 +56,13 @@ class RequestChangeLWD extends Component {
 
   submitRequest = (values) => {
     const { dispatch, myRequest: { _id: id = '' } = {} } = this.props;
-    const payload = { id, ...values };
+    const { commentRequestLastDate = '', requestLastDate = '' } = values;
+    const payload = {
+      id,
+      requestLastDate: moment(requestLastDate),
+      commentRequestLastDate,
+    };
+
     dispatch({
       type: 'offboarding/requestChangeLWD',
       payload,
@@ -70,7 +76,11 @@ class RequestChangeLWD extends Component {
   saveComment = () => {
     const { q: commentRequestLastDate = '' } = this.state;
     const { dispatch, myRequest: { _id: id = '', requestLastDate = '' } = {} } = this.props;
-    const payload = { id, requestLastDate, commentRequestLastDate };
+    const payload = {
+      id,
+      requestLastDate: moment(requestLastDate),
+      commentRequestLastDate,
+    };
     dispatch({
       type: 'offboarding/requestChangeLWD',
       payload,
