@@ -2,7 +2,13 @@ import { PageContainer } from '@/layouts/layout/src';
 import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
-import { getCurrentCompany, getCurrentTenant, getAuthority, isOwner } from '@/utils/authority';
+import {
+  getCurrentCompany,
+  getCurrentTenant,
+  getAuthority,
+  isOwner,
+  isAdmin,
+} from '@/utils/authority';
 import DirectoryComponent from './components/Directory';
 import styles from './index.less';
 
@@ -164,7 +170,14 @@ class Directory extends PureComponent {
             tabBarExtraContent={checkRoleEmployee ? '' : null}
             // tabBarExtraContent={checkRoleEmployee ? '' : this.operations()}
           >
-            <TabPane tab={formatMessage({ id: 'pages.directory.directoryTab' })} key="1">
+            <TabPane
+              tab={
+                isOwner()
+                  ? 'Employees Management'
+                  : formatMessage({ id: 'pages.directory.directoryTab' })
+              }
+              key="1"
+            >
               <DirectoryComponent />
             </TabPane>
             {/* <TabPane tab={formatMessage({ id: 'pages.directory.organisationChartTab' })} key="2">

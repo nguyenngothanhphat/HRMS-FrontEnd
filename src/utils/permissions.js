@@ -63,6 +63,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
       // onboarding
       viewOnboardingSettingTab: 1,
       addTeamMemberOnboarding: -1,
+      viewOnboardingOverviewTab: 1,
     };
   }
   // const permissionList = groupPermissions(roles);
@@ -273,12 +274,16 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
       ]);
 
   // ONBOARDING
-  const indexOnboardingSettings =
-    isAuthorized(permissionList, ['hr-manager', 'hr-global']) || isAdmin ? 1 : -1;
+  const indexOnboardingSettings = isAuthorized(permissionList, [
+    'hr-manager',
+    'M_ONBOARDING_T_SETTINGS_VIEW',
+  ]);
 
-  const indexAddTeamMemberOnboarding = isAuthorized(permissionList, ['hr-manager', 'hr-global'])
-    ? 1
-    : -1;
+  const indexAddTeamMemberOnboarding = isAdmin ? -1 : isAuthorized(permissionList, ['hr-manager']);
+  const indexOverviewViewOnboarding = isAuthorized(permissionList, [
+    'M_ONBOARDING_T_ONBOARDING_OVERVIEW_VIEW',
+    'hr-manager',
+  ]);
 
   return {
     // Directory Page
@@ -316,5 +321,6 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     // onboarding
     viewOnboardingSettingTab: indexOnboardingSettings,
     addTeamMemberOnboarding: indexAddTeamMemberOnboarding,
+    viewOnboardingOverviewTab: indexOverviewViewOnboarding,
   };
 }

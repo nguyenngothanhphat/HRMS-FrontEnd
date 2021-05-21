@@ -67,7 +67,8 @@ class EmployeeOnboarding extends PureComponent {
     const { mainTabActiveKey = '1', permissions = [] } = this.props;
     const { TabPane } = Tabs;
 
-    const checkPermission = permissions.viewOnboardingSettingTab !== -1;
+    const viewOnboardingSettingTab = permissions.viewOnboardingSettingTab !== -1;
+    const viewOnboardingOverviewTab = permissions.viewOnboardingOverviewTab !== -1;
 
     return (
       <PageContainer>
@@ -79,13 +80,15 @@ class EmployeeOnboarding extends PureComponent {
               onTabClick={this.onChangeTab}
               // tabBarExtraContent={this.renderActionButton()}
             >
-              <TabPane
-                tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
-                key="1"
-              >
-                <OnboardingOverview />
-              </TabPane>
-              {checkPermission ? (
+              {viewOnboardingOverviewTab && (
+                <TabPane
+                  tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
+                  key="1"
+                >
+                  <OnboardingOverview />
+                </TabPane>
+              )}
+              {viewOnboardingSettingTab ? (
                 <>
                   <TabPane
                     tab={formatMessage({ id: 'component.employeeOnboarding.settings' })}
