@@ -22,6 +22,7 @@ class RequestChangeLWD extends Component {
       q: '',
       isEdit: false,
       lastDate: '',
+      isChanging: false,
     };
   }
 
@@ -81,6 +82,7 @@ class RequestChangeLWD extends Component {
   changeDate = (_, lastDate) => {
     this.setState({
       lastDate,
+      isChanging: true,
     });
   };
 
@@ -105,14 +107,22 @@ class RequestChangeLWD extends Component {
     return check;
   };
 
+  getDatePickerValue = () => {
+    const { myRequest: { lastWorkingDate = null } = {} } = this.props;
+    const { lastDate = '', isChanging } = this.state;
+    if (isChanging) {
+      return moment(lastDate);
+    }
+    return moment(lastWorkingDate);
+  };
+
   render() {
-    const {
-      myRequest: { requestLastDate = '', statusLastDate = '', lastWorkingDate = '' } = {},
-      loading,
-    } = this.props;
-    const { visible, keyModal, isEdit, q, lastDate = '' } = this.state;
+    const { myRequest: { requestLastDate = '', statusLastDate = '' } = {}, loading } = this.props;
+    const { visible, keyModal, isEdit, q } = this.state;
     const checkDisable = statusLastDate !== 'REQUESTED' && !isEdit;
     // const disableButtonSubmit = this.checkDisableButtonSubmit();
+
+    const dateValue = this.getDatePickerValue();
 
     return (
       <>
@@ -137,7 +147,7 @@ class RequestChangeLWD extends Component {
             <Row className={styles.viewChangeLastWorkingDay__viewDateApproved} gutter={[50, 0]}>
               <Col span={8}>
                 <DatePicker
-                  value={lastWorkingDate ? moment(lastWorkingDate) : null}
+                  value={dateValue}
                   format={dateFormat}
                   onChange={this.changeDate}
                   className={styles.viewChangeLastWorkingDay__viewDateApproved__datePicker}
@@ -157,33 +167,35 @@ class RequestChangeLWD extends Component {
               </Col>
             </Row>
 
-            <div className={styles.comments}>
-              <div className={styles.viewChangeLastWorkingDay__label}>
-                <span>Reporting manager’s comments extend or shorten LWD</span>
-              </div>
-
-              <div className={styles.textArea}>
-                <TextArea
-                  className={styles.boxComment}
-                  value={q}
-                  // onChange={this.handleChange}
-                  disabled
-                />
-              </div>
-            </div>
-
             {requestLastDate && (
-              <div className={styles.viewChangeLastWorkingDay__textMessage}>
-                <span
-                  className={styles.viewChangeLastWorkingDay__label}
-                  style={{ fontWeight: 'bold' }}
-                >
-                  Extend and shorten LWD is sent to HR Manager
-                </span>
-                <span className={styles.viewChangeLastWorkingDay__textMessage__date}>
-                  {requestLastDate && moment(requestLastDate).format('MM.DD.YY')}
-                </span>
-              </div>
+              <>
+                <div className={styles.comments}>
+                  <div className={styles.viewChangeLastWorkingDay__label}>
+                    <span>Reporting manager’s comments extend or shorten LWD</span>
+                  </div>
+
+                  <div className={styles.textArea}>
+                    <TextArea
+                      className={styles.boxComment}
+                      value={q}
+                      // onChange={this.handleChange}
+                      disabled
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.viewChangeLastWorkingDay__textMessage}>
+                  <span
+                    className={styles.viewChangeLastWorkingDay__label}
+                    style={{ fontWeight: 'bold' }}
+                  >
+                    Extend and shorten LWD is sent to HR Manager
+                  </span>
+                  <span className={styles.viewChangeLastWorkingDay__textMessage__date}>
+                    {requestLastDate && moment(requestLastDate).format('MM.DD.YY')}
+                  </span>
+                </div>
+              </>
             )}
           </div>
 
@@ -192,16 +204,18 @@ class RequestChangeLWD extends Component {
               className={styles.contentViewButton}
               style={!requestLastDate ? { justifyContent: 'flex-end' } : {}}
             >
-              {requestLastDate && (
+              {requestLastDate ? (
                 <>
-                  <Button
-                    type="link"
-                    disabled={checkDisable}
-                    className={styles.btnReject}
-                    onClick={() => this.handleRequestChangeLWD('REJECT')}
-                  >
-                    Reject
-                  </Button>
+                  {statusLastDate === 'REQUESTED' && (
+                    <Button
+                      type="link"
+                      disabled={checkDisable}
+                      className={styles.btnReject}
+                      onClick={() => this.handleRequestChangeLWD('REJECT')}
+                    >
+                      Reject
+                    </Button>
+                  )}
                   <Button
                     disabled={checkDisable}
                     className={styles.btnSubmit}
@@ -210,6 +224,13 @@ class RequestChangeLWD extends Component {
                     Approve
                   </Button>
                 </>
+              ) : (
+                <Button
+                  className={styles.btnSubmit}
+                  onClick={() => this.handleRequestChangeLWD('ACCEPTED')}
+                >
+                  Approve
+                </Button>
               )}
               {/* <Button
                 onClick={() => this.handleSubmit(lastDate)}
