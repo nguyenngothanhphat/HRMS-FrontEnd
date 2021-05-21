@@ -137,7 +137,7 @@ class EmployeeOffBoading extends Component {
       <PageContainer>
         <div className={styles.EmployeeOffboarding}>
           <div className={styles.tabs}>
-            <Tabs defaultActiveKey="1" tabBarExtraContent={this.viewActivityLogs()}>
+            <Tabs defaultActiveKey="1">
               <TabPane tab="Terminate work relationship" key="1">
                 <div className={styles.paddingHR}>
                   <div className={styles.root}>

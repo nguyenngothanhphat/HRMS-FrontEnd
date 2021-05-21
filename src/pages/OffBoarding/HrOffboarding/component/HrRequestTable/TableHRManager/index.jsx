@@ -42,7 +42,8 @@ class HrTable extends PureComponent {
   };
 
   openNotificationWithIcon = (nodeStep) => {
-    const description = nodeStep !== 4 ? 'Please submit LWD' : 'Moved to relieving formalities';
+    const description =
+      nodeStep >= 4 ? 'Moved to relieving formalities' : 'Please submit Last Working Date';
     notification.warning({
       message: 'Notification',
       description,
@@ -161,9 +162,8 @@ class HrTable extends PureComponent {
         dataIndex: 'Assigned',
         width: 140,
         render: (_, row) => {
-          const {
-            hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {},
-          } = this.props;
+          const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
+            this.props;
           const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
           const arrAvt = [avtManager, avtHrManager];
           return (
