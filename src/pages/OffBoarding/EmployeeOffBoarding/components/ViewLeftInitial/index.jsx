@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Button, Steps, Row, Col } from 'antd';
-import { Link } from 'umi';
+import { Button, Steps, Row, Col, notification } from 'antd';
+import { history } from 'umi';
 
 import ViewDocumentModal from '../ViewDocumentModal';
 
@@ -68,6 +68,20 @@ class ViewLeftInitial extends Component {
     });
   };
 
+  handleResignRequest = () => {
+    const { hrManager } = this.props;
+
+    if (hrManager) {
+      history.push('offboarding/resignation-request');
+    } else {
+      notification.error({
+        message: 'Notification',
+        description:
+          'Can not start your Resignation request because your HR Manager does not existed!',
+      });
+    }
+  };
+
   render() {
     const { current = 0, viewDocumentModal } = this.state;
     return (
@@ -121,11 +135,8 @@ class ViewLeftInitial extends Component {
           <div className={styles.stepAction__text} onClick={this.onLinkClick}>
             Learn more about offboarding policy
           </div>
-          <Button
-            // onClick={() => this.setState({ current: current + 1 })}
-            className={styles.stepAction__btn}
-          >
-            <Link to="offboarding/resignation-request">Initiate resignation request</Link>
+          <Button onClick={this.handleResignRequest} className={styles.stepAction__btn}>
+            Initiate resignation request
           </Button>
         </div>
         <ViewDocumentModal visible={viewDocumentModal} onClose={this.onCancel} />
