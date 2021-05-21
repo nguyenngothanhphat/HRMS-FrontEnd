@@ -71,7 +71,7 @@ class ViewLeftInitial extends Component {
   handleResignRequest = () => {
     const { hrManager } = this.props;
 
-    if (hrManager) {
+    if (hrManager !== null) {
       history.push('offboarding/resignation-request');
     } else {
       notification.error({
