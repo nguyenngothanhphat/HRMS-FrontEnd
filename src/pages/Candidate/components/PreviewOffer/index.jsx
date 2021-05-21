@@ -27,7 +27,8 @@ const PreviewOffer = (props) => {
     candidateSignature: candidateSignatureProp = {},
     privateEmail: candidateEmailProp = '',
     fullName: candidateName = '',
-    staticOfferLetter: offerLetterProp = {},
+    offerLetter: offerLetterProp = {},
+    staticOfferLetter: staticOfferLetterProp = {},
   } = data;
 
   // const inputRefs = [];
@@ -44,7 +45,15 @@ const PreviewOffer = (props) => {
   //     : '',
   // );
   const [offerLetter, setOfferLetter] = useState(
-    offerLetterProp && offerLetterProp.url ? offerLetterProp.url : '',
+    offerLetterProp ? (
+      offerLetterProp.attachment?.url || offerLetterProp.url
+    ) : (
+      <>
+        {staticOfferLetterProp
+          ? staticOfferLetterProp.attachment?.url || staticOfferLetterProp.url
+          : ''}
+      </>
+    ),
   );
 
   const [uploadVisible1, setUploadVisible1] = useState(false);
