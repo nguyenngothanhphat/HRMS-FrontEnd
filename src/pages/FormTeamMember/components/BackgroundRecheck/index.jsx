@@ -89,37 +89,7 @@ class BackgroundRecheck extends Component {
         docsList: documentsByCandidateRD,
       });
     }
-
-    if (
-      JSON.stringify(prevProps.tempData.documentsByCandidateRD) !==
-      JSON.stringify(documentsByCandidateRD)
-    ) {
-      this.checkVerifyStatus();
-    }
   }
-
-  checkVerifyStatus = () => {
-    const { dispatch, tempData: { documentsByCandidateRD = [] } = {} } = this.props;
-
-    let list = [];
-    documentsByCandidateRD.forEach((category) => {
-      if (category.data.length > 0) {
-        list = [...list, ...category.data];
-      }
-    });
-    let check = true;
-    list.forEach((document) => {
-      if (document.candidateDocumentStatus !== 'VERIFIED') {
-        check = false;
-      }
-    });
-
-    if (list.length > 0)
-      dispatch({
-        type: 'candidateInfo/updateAllDocumentVerified',
-        payload: check,
-      });
-  };
 
   processDocumentData = (documentArr) => {
     const { dispatch } = this.props;
@@ -306,7 +276,6 @@ class BackgroundRecheck extends Component {
       });
 
       // -------------------  END MODIFY
-
       this.setState({
         docsList: docsByCandidateRDCheck,
         feedbackStatus: status,
@@ -381,7 +350,7 @@ class BackgroundRecheck extends Component {
               <NoteComponent note={Note} />
             </Row>
             <Row className={styles.stepRow}>
-              <Feedback feedbackStatus={feedbackStatus} />
+              <Feedback feedbackStatus={feedbackStatus} docsList={docsList} />
             </Row>
             {feedbackStatus === 'RE-SUBMIT' && (
               <Row className={styles.stepRow}>
