@@ -332,9 +332,8 @@ class BackgroundRecheck extends Component {
           <br />
           Post this approval, the remaining processes will open for onboarding.
         </Typography.Text>
-      ),
+      ),w
     };
-    console.log('docsList', docsList);
     return (
       <div className={styles.backgroundRecheck}>
         <Row gutter={[24, 0]}>

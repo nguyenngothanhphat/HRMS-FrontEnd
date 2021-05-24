@@ -49,8 +49,6 @@ class Feedback extends Component {
         newVerifiedDocs.push(doc);
       }
     });
-    console.log('newDocumentList', newDocumentList);
-    console.log('newVerifiedDocs', newVerifiedDocs);
 
     if (newVerifiedDocs.length > 0 && newVerifiedDocs.length === newDocumentList.length) {
       return 1;
