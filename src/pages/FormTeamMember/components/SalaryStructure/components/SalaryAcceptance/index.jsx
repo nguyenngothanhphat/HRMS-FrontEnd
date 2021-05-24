@@ -3,6 +3,7 @@ import { notification, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 
 import CustomModal from '@/components/CustomModal';
+import { getCurrentTenant } from '@/utils/authority';
 import ScheduleModal from '../ScheduleModal';
 import pendingIcon from './assets/pendingIcon.png';
 import SalaryAcceptanceContent from '../SalaryAcceptanceContent';
@@ -95,6 +96,7 @@ class SalaryAcceptance extends PureComponent {
     dispatch({
       type: 'candidateInfo/editSalaryStructure',
       payload: {
+        tenantId: getCurrentTenant(),
         candidate: _id,
         settings,
       },
@@ -106,6 +108,7 @@ class SalaryAcceptance extends PureComponent {
     dispatch({
       type: 'candidateInfo/editSalaryStructure',
       payload: {
+        tenantId: getCurrentTenant(),
         candidate: _id,
         settings,
       },

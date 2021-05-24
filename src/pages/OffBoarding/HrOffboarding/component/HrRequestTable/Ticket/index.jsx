@@ -167,6 +167,7 @@ class HRDetailTicket extends Component {
         joinDate,
       } = {},
       manager: {
+        _id: managerId = '',
         generalInfo: { firstName: firstNameManager = '', lastName: lastNameManager = '' } = {},
       } = {},
       // requestLastDate = '',
@@ -189,6 +190,8 @@ class HRDetailTicket extends Component {
 
     const checkMyComment =
       list1On1.filter((comment) => comment.ownerComment._id === myId).length > 0;
+    const isHRManager = managerId !== myId;
+
     return (
       <>
         <PageContainer>
@@ -235,7 +238,7 @@ class HRDetailTicket extends Component {
                 {listScheduleMeeting.map((item) => {
                   return (
                     <Fragment key={item._id}>
-                      <ScheduleMeeting data={item} />
+                      <ScheduleMeeting isHRManager={isHRManager} data={item} />
                     </Fragment>
                   );
                 })}

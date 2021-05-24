@@ -16,13 +16,14 @@ class AddComment extends Component {
     super(props);
     this.state = {
       q: '',
+      canBeRehired: false,
     };
   }
 
   handleSubmitComments = () => {
     const { dispatch, idComment: id = '' } = this.props;
-    const { q: content = '' } = this.state;
-    const payload = { id, content };
+    const { q: content = '', canBeRehired } = this.state;
+    const payload = { id, content, canBeRehired };
     dispatch({
       type: 'offboarding/complete1On1',
       payload,
@@ -51,8 +52,15 @@ class AddComment extends Component {
     });
   };
 
+  handleCanBeRehired = (e) => {
+    const { target: { checked = false } = {} } = e;
+    this.setState({
+      canBeRehired: checked,
+    });
+  };
+
   render() {
-    const { loading, nameOwner = '' } = this.props;
+    const { loading, nameOwner = '', isHRManager = false } = this.props;
     const { q } = this.state;
     const date = moment().format('DD.MM.YY | h:mm A');
 
@@ -67,10 +75,12 @@ class AddComment extends Component {
           <div className={styles.content}>
             <div className={styles.textArea}>
               <TextArea className={styles.box} allowClear value={q} onChange={this.handleChange} />
-              <div className={styles.canBeRehired}>
-                <Checkbox>Can be rehired</Checkbox>{' '}
-                <span>(This will remain private to yourself and the HR)</span>
-              </div>
+              {!isHRManager && (
+                <div className={styles.canBeRehired}>
+                  <Checkbox onChange={this.handleCanBeRehired}>Can be rehired</Checkbox>{' '}
+                  <span>(This will remain private to yourself and the HR)</span>
+                </div>
+              )}
             </div>
 
             <div className={styles.buttonArea}>
