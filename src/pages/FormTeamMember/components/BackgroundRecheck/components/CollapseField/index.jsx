@@ -76,8 +76,8 @@ class CollapseField extends Component {
             >
               <Space direction="vertical" className={styles.space}>
                 {item.data.map((document, index) => {
-                  const { attachment = { fileName: '' }, candidateDocumentStatus } = document;
-                  const { fileName = '' } = attachment;
+                  const { attachment = { name: '' }, candidateDocumentStatus } = document;
+                  const { name: fileName = '' } = attachment;
                   return (
                     <Row gutter={[16, 0]} className={styles.collapseField__row} key={index}>
                       <Col span={6}>

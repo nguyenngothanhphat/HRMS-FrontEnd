@@ -245,7 +245,6 @@ class CommonLayout extends Component {
     } = PROCESS_STATUS;
 
     const { allDocumentVerified, processStatus, skip } = this.props;
-
     if (skip === 1) {
       return false;
     }
