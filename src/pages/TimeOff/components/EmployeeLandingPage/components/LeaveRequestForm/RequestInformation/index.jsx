@@ -485,7 +485,10 @@ class RequestInformation extends PureComponent {
       selectedTypeName,
     } = this.state;
     if (buttonState === 1) {
-      const { dispatch, user: { currentUser: { employee = {} } = {} } = {} } = this.props;
+      const {
+        dispatch,
+        user: { currentUser: { employee = {} } = {}, location: { company = '' } = {} } = {},
+      } = this.props;
       const { _id: employeeId = '', manager: { _id: managerId = '' } = {} } = employee;
       const {
         timeOffType = '',
@@ -522,6 +525,7 @@ class RequestInformation extends PureComponent {
           description,
           approvalManager: managerId, // id
           cc: personCC,
+          company,
         };
 
         // console.log('draft data', data);
@@ -552,7 +556,7 @@ class RequestInformation extends PureComponent {
     const {
       dispatch,
       action = '',
-      user: { currentUser: { employee = {} } = {} } = {},
+      user: { currentUser: { employee = {} } = {}, location: { company = '' } = {} } = {},
     } = this.props;
     const { _id: employeeId = '', manager = '' } = employee;
     console.log('user', manager);
@@ -627,6 +631,7 @@ class RequestInformation extends PureComponent {
             approvalManager: manager, // id
             cc: personCC,
             tenantId: getCurrentTenant(),
+            company,
           };
 
           let type = '';
