@@ -47,9 +47,9 @@ const Model = {
         if (formatRole.includes('owner')) {
           isAdminOrOwner = true;
         }
-        if (formatRole.includes('admin')) {
-          isAdminOrOwner = true;
-        }
+        // if (formatRole.includes('admin')) {
+        //   isAdminOrOwner = true;
+        // }
         formatArrRoles = [...formatArrRoles, ...formatRole];
         setAuthority(formatArrRoles);
 
