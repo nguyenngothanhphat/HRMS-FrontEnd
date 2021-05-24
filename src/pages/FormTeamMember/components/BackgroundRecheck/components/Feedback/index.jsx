@@ -7,9 +7,7 @@ class Feedback extends Component {
   componentDidUpdate() {
     const allDocumentStatus = this.checkStatus();
     const { dispatch } = this.props;
-    if (!dispatch) {
-      return;
-    }
+
     if (allDocumentStatus === 1) {
       dispatch({
         type: 'candidateInfo/updateAllDocumentVerified',
@@ -69,6 +67,7 @@ class Feedback extends Component {
       width: '100%',
       display: 'flex',
     };
+
     const allDocumentStatus = this.checkStatus();
 
     return (

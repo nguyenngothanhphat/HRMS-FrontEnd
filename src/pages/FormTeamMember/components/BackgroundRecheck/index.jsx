@@ -31,6 +31,7 @@ import PROCESS_STATUS from '../utils';
     candidate,
     processStatus,
     loading1: loading.effects['candidateInfo/sendDocumentStatusEffect'],
+    loadingGetById: loading.effects['candidateInfo/fetchCandidateByRookie'],
   }),
 )
 class BackgroundRecheck extends Component {
@@ -270,14 +271,14 @@ class BackgroundRecheck extends Component {
           this.sendDocumentStatus(doc);
           return null;
         }
-        this.sendDocumentStatus(doc);
         newVerifiedDocs.push(doc);
+        this.sendDocumentStatus(doc);
         return null;
       });
 
       // -------------------  END MODIFY
       this.setState({
-        docsList: docsByCandidateRDCheck,
+        docsList: [...docsByCandidateRDCheck],
         feedbackStatus: status,
         verifiedDocs: newVerifiedDocs,
         resubmitDocs: newResubmitDocs,
@@ -295,7 +296,8 @@ class BackgroundRecheck extends Component {
 
   renderCollapseFields = () => {
     const { docsList: documentsCandidateList = [] } = this.state;
-    if (documentsCandidateList.length === 0) {
+    const { loadingGetById = false } = this.props;
+    if (documentsCandidateList.length === 0 || loadingGetById) {
       return <Skeleton active />;
     }
 
@@ -330,9 +332,8 @@ class BackgroundRecheck extends Component {
           <br />
           Post this approval, the remaining processes will open for onboarding.
         </Typography.Text>
-      ),
+      ),w
     };
-
     return (
       <div className={styles.backgroundRecheck}>
         <Row gutter={[24, 0]}>
