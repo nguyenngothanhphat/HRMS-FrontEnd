@@ -556,10 +556,9 @@ class RequestInformation extends PureComponent {
     const {
       dispatch,
       action = '',
-      user: { currentUser: { employee = {} } = {}, location: { company = '' } = {} } = {},
+      user: { currentUser: { employee = {} } = {} } = {},
     } = this.props;
     const { _id: employeeId = '', manager = '' } = employee;
-    console.log('user', manager);
     const {
       viewingLeaveRequestId,
       // totalDayOfSelectedType,
@@ -631,7 +630,7 @@ class RequestInformation extends PureComponent {
             approvalManager: manager, // id
             cc: personCC,
             tenantId: getCurrentTenant(),
-            company,
+            company: employee.company,
           };
 
           let type = '';
