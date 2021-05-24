@@ -28,6 +28,7 @@ const GlobalHeaderRight = (props) => {
   const [isSwitchCompanyVisible, setIsSwitchCompanyVisible] = useState(false);
   const checkIsOwner =
     isOwner() && currentUser.signInRole.map((role) => role.toLowerCase()).includes('owner');
+
   useEffect(() => {
     let authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
     authority = authority.filter(
@@ -140,9 +141,9 @@ const GlobalHeaderRight = (props) => {
               <BuildOutlined />
             </div>
           </Tooltip>
-          {buttonSwitch()}
         </>
       )}
+      {buttonSwitch()}
 
       <Avatar />
       <GlobalEmployeeSearch
