@@ -156,7 +156,7 @@ class EmployeeOffBoading extends Component {
                                 hrManager={hrManager}
                               />
                             ) : (
-                              <ViewLeftInitial />
+                              <ViewLeftInitial hrManager={hrManager} />
                             )}
                           </>
                         )}

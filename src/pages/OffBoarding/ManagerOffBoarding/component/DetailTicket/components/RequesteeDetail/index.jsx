@@ -1,12 +1,44 @@
 import { Col, Row } from 'antd';
 import React, { PureComponent } from 'react';
+import { connect, history } from 'umi';
 import Project from './Project';
 import styles from './index.less';
 
+@connect()
 class RequesteeDetail extends PureComponent {
+  onViewEmployeeProfile = async (id) => {
+    const {
+      employeeInfo: { location: locationName = {}, company = {} } = {},
+      tenant = '',
+      dispatch,
+    } = this.props;
+    console.log(id);
+
+    // await dispatch({
+    //   type: 'employeeProfile/save',
+    //   payload: {
+    //     tenantCurrentEmployee: tenant,
+    //     companyCurrentEmployee: company?._id,
+    //   },
+    // });
+
+    // localStorage.setItem('tenantCurrentEmployee', tenant);
+    // localStorage.setItem('companyCurrentEmployee', company?._id);
+    // localStorage.setItem('idCurrentEmployee', id);
+
+    // setTimeout(() => {
+    //   history.push({
+    //     pathname: `/directory/employee-profile/${id}`,
+    //     state: { location: locationName },
+    //   });
+    // }, 200);
+  };
+
   render() {
-    const { employeeInfo: { nameEmployee, employeeId, title } = {}, projectsList = [] } =
-      this.props;
+    const {
+      employeeInfo: { nameEmployee, employeeId, title, ownerRequest: idEmployee = '' } = {},
+      projectsList = [],
+    } = this.props;
     return (
       <div className={styles.requesteeDetail}>
         <div className={styles.formTitle}>
@@ -23,7 +55,7 @@ class RequesteeDetail extends PureComponent {
             <Col span={6}>Employee Name</Col>
             <Col span={18} className={styles.detailColumn}>
               <span
-                onClick={() => this.onViewEmployeeProfile(employeeId)}
+                onClick={() => this.onViewEmployeeProfile(idEmployee)}
                 className={styles.employeeLink}
               >
                 {nameEmployee}
