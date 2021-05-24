@@ -213,9 +213,16 @@ class DetailTicket extends Component {
       status = '',
       employee: {
         _id: ownerRequest = '',
-        generalInfo: { firstName: nameEmployee = '', employeeId = '', avatar = '' } = {},
+        generalInfo: {
+          firstName: nameEmployee = '',
+          employeeId = '',
+          avatar = '',
+          company = {},
+          tenant = '',
+        } = {},
         title: { name: title = '' } = {},
       } = {},
+      location = {},
     } = myRequest;
     const filterListAssignee = listAssignee.filter((item) => item._id !== ownerRequest);
     if (loading)
@@ -224,7 +231,16 @@ class DetailTicket extends Component {
           <Spin size="large" />
         </div>
       );
-    const employeeInfo = { nameEmployee, employeeId, avatar, title };
+    const employeeInfo = {
+      nameEmployee,
+      employeeId,
+      avatar,
+      title,
+      ownerRequest,
+      location,
+      company,
+      tenant,
+    };
     const listScheduleMeeting = list1On1.filter((item) => item.content === '');
     const listComment = list1On1.filter(
       (item) => item.content !== '' && myId === item.ownerComment?._id,
