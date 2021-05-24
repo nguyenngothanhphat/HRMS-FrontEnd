@@ -116,10 +116,11 @@ class ViewLeft extends Component {
   render() {
     const { TabPane } = Tabs;
     const { data = [], countdata = [], hrManager = {} } = this.props;
-    const { current = 0, tabId } = this.state;
+    const { tabId } = this.state;
     const checkDraft = countdata.filter(({ _id }) => _id === 'DRAFT').length > 0;
     // const checkAccepted = countdata.find(({ _id }) => _id === 'ACCEPTED') || {};
     // const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
+    const currentStep = data.length > 0 ? data[0].nodeStep - 1 : 0;
 
     return (
       <div className={styles.Container}>
@@ -169,7 +170,7 @@ class ViewLeft extends Component {
             Our offboarding process at a glance
           </div>
           <div className={styles.offboardingProcess__process}>
-            <Steps current={current} onChange={this.onChangeSteps} labelPlacement="vertical">
+            <Steps current={currentStep} onChange={this.onChangeSteps} labelPlacement="vertical">
               {steps.map((item) => (
                 <Step key={item.step} description={item.description} />
               ))}
