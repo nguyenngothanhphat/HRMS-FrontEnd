@@ -7,9 +7,7 @@ class Feedback extends Component {
   componentDidUpdate() {
     const allDocumentStatus = this.checkStatus();
     const { dispatch } = this.props;
-    if (!dispatch) {
-      return;
-    }
+
     if (allDocumentStatus === 1) {
       dispatch({
         type: 'candidateInfo/updateAllDocumentVerified',
@@ -51,6 +49,8 @@ class Feedback extends Component {
         newVerifiedDocs.push(doc);
       }
     });
+    console.log('newDocumentList', newDocumentList);
+    console.log('newVerifiedDocs', newVerifiedDocs);
 
     if (newVerifiedDocs.length > 0 && newVerifiedDocs.length === newDocumentList.length) {
       return 1;
@@ -69,6 +69,7 @@ class Feedback extends Component {
       width: '100%',
       display: 'flex',
     };
+
     const allDocumentStatus = this.checkStatus();
 
     return (
