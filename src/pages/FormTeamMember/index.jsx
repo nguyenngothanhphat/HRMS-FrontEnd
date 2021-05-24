@@ -297,6 +297,11 @@ class FormTeamMember extends PureComponent {
           managerList: [],
           salaryTitle: null,
           workLocation: null,
+          employeeType: {},
+          documentsByCandidate: [],
+          documentsByCandidateRD: [],
+          documentChecklistSetting: [],
+          backgroundRecheck: [],
         },
       },
     });

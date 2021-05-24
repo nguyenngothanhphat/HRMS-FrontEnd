@@ -34,7 +34,6 @@ const OfferDetail = (props) => {
     defaultTemplates: defaultTemplatesProp,
     customTemplates: customTemplatesProp,
     staticOfferLetter: staticOfferLetterProp,
-    offerLetter: offerLetterProp,
   } = tempData;
 
   const [defaultTemplates, setDefaultTemplates] = useState(defaultTemplatesProp || []);
