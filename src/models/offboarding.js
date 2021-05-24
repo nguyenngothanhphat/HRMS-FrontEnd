@@ -567,7 +567,7 @@ const offboarding = {
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message,
+          message: 'Exit interview package has been sent.',
         });
         const newRequest = yield call(getRequestById, {
           id: payload.ticketId,

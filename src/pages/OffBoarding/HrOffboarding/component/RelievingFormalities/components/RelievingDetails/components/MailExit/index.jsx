@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Card, Row, Col, Popconfirm } from 'antd';
+import { Card, Row, Col, Popconfirm, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import templateIcon from '@/assets/templateIcon.svg';
 import editIcon from '@/assets/editMailExit.svg';
 import removeIcon from '@/assets/deleteMailExist.svg';
 import sendMailIcon from '@/assets/sendMailOffboarding.svg';
+import { LoadingOutlined } from '@ant-design/icons';
 
 // import addTemplateIcon from '@/assets/add-template-icon.svg';
 import checkTemplateIcon from '@/assets/check-template-icon.svg';
@@ -13,9 +14,10 @@ import RelievingTemplates from '../RelievingTemplates';
 import ModalContent from '../RelievingTemplates/components/ModalContent';
 import styles from './index.less';
 
-@connect(({ offboarding: { relievingDetails: { exitPackage = {}, _id = '' } } }) => ({
+@connect(({ offboarding: { relievingDetails: { exitPackage = {}, _id = '' } }, loading }) => ({
   exitPackage,
   ticketId: _id,
+  loadingSendExitEmail: loading.effects['offboarding/sendOffBoardingPackage'],
 }))
 class MailExit extends Component {
   constructor(props) {
@@ -42,8 +44,16 @@ class MailExit extends Component {
   }
 
   renderExtraContent = () => {
+    const { loadingSendExitEmail } = this.props;
+    const antIcon = (
+      <LoadingOutlined
+        style={{ fontSize: 32, color: '#00C598', position: 'absolute', top: '18px' }}
+        spin
+      />
+    );
     return (
       <div className={styles.icons}>
+        {loadingSendExitEmail ? <Spin indicator={antIcon} /> : null}
         <img
           onClick={this.sendMailPackage}
           className={styles.mailExit__card__iconExtra}
