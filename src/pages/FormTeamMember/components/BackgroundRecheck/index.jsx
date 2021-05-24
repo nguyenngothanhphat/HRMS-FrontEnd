@@ -332,7 +332,7 @@ class BackgroundRecheck extends Component {
           <br />
           Post this approval, the remaining processes will open for onboarding.
         </Typography.Text>
-      ),w
+      ),
     };
     return (
       <div className={styles.backgroundRecheck}>
