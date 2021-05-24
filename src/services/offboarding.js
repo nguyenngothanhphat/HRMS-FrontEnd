@@ -110,7 +110,7 @@ export async function getListRelieving(payload) {
 }
 
 export async function sendMailExitPackage(payload) {
-  return request('/api/offboardingrequesttenant/send-package', {
+  return request('/api/offboardingrequesttenant/send-close-package', {
     method: 'POST',
     data: payload,
   });
@@ -171,7 +171,13 @@ export async function updateRelieving(payload) {
 }
 
 export async function sendOffBoardingPackage(payload) {
-  return request('/api/offboardingrequesttenant/send-package', {
+  return request('/api/offboardingrequesttenant/send-exit-interview-email', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function sendClosePackage(payload) {
+  return request('/api/offboardingrequesttenant/send-close-package', {
     method: 'POST',
     data: payload,
   });

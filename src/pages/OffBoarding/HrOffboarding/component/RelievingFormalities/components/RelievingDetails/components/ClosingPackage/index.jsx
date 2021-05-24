@@ -59,7 +59,7 @@ class ClosingPackage extends PureComponent {
     const { toEmail } = value;
     const { dispatch, ticketId } = this.props;
     dispatch({
-      type: 'offboarding/sendOffBoardingPackage',
+      type: 'offboarding/sendClosePackage',
       payload: {
         packageType: 'CLOSING-PACKAGE',
         ticketId,

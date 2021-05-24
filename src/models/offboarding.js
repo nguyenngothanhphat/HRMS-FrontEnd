@@ -29,6 +29,7 @@ import {
   sendOffBoardingPackage,
   removeOffBoardingPackage,
   terminateReason,
+  sendClosePackage,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -559,6 +560,31 @@ const offboarding = {
     *sendOffBoardingPackage({ payload }, { call, put }) {
       try {
         const response = yield call(sendOffBoardingPackage, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        const newRequest = yield call(getRequestById, {
+          id: payload.ticketId,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode: newRequestStat, data = {} } = newRequest;
+        if (newRequestStat !== 200) throw newRequest;
+        const { item: relievingDetails = {} } = data;
+        yield put({ type: 'save', payload: { relievingDetails } });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *sendClosePackage({ payload }, { call, put }) {
+      try {
+        const response = yield call(sendClosePackage, {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
