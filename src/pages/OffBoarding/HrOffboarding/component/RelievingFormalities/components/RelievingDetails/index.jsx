@@ -17,8 +17,9 @@ import styles from './index.less';
   loading:
     loading.effects['offboarding/fetchRelievingDetailsById'] ||
     loading.effects['offboarding/saveOffBoardingPackage'] ||
-    loading.effects['offboarding/removeOffBoardingPackage'],
-  loadingClose: loading.effects['offboarding/closeEmployeeRecord'],
+    loading.effects['offboarding/removeOffBoardingPackage'] ||
+    loading.effects['offboarding/closeEmployeeRecord'],
+  // loadingClose: loading.effects['offboarding/closeEmployeeRecord'],
 }))
 class RelievingDetails extends PureComponent {
   componentDidMount() {
@@ -66,7 +67,7 @@ class RelievingDetails extends PureComponent {
       offboarding: { relievingDetails = {}, list1On1 = [] },
       currentUser = {},
       loading,
-      loadingClose,
+      // loadingClose,
     } = this.props;
     const {
       employee: { employeeId = '', generalInfo: { firstName = '' } = {} } = {},
@@ -107,7 +108,7 @@ class RelievingDetails extends PureComponent {
                 disabled={!isSent}
                 className={styles.relievingDetail__btnClose}
                 onClick={this.onCloseEmployeeRecord}
-                loading={loadingClose}
+                loading={loading}
               >
                 Close employee record
               </Button>
