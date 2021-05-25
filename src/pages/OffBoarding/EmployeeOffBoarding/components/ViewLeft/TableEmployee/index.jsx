@@ -32,24 +32,28 @@ class TableEmployee extends Component {
     const { dispatch, data = [], fetchData = () => {} } = this.props;
     const getStatus = data.map((item) => (item._id === id ? item.status : null)).join('');
 
-    if (getStatus === 'ACCEPTED') {
-      notification.open({
-        message: 'Notification Title',
-        description:
-          'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
-        icon: <SmileOutlined style={{ color: '#108ee9' }} />,
-      });
-    } else {
-      dispatch({
-        type: 'offboarding/handleWithdraw',
-        payload: {
-          id,
-        },
-        isNotStatusAccepted: true,
-      }).then(() => {
-        fetchData();
-      });
-    }
+    // if (getStatus === 'ACCEPTED' || getStatus === 'REJECTED') {
+    //   dispatch({
+    //     type: 'offboarding/handleWithdrawApproval',
+    //     payload: {
+    //       id,
+    //       action: getStatus,
+    //     },
+    //     isNotStatusAccepted: true,
+    //   }).then(() => {
+    //     fetchData();
+    //   });
+    // } else {
+    dispatch({
+      type: 'offboarding/handleWithdraw',
+      payload: {
+        id,
+      },
+      isNotStatusAccepted: true,
+    }).then(() => {
+      fetchData();
+    });
+    // }
   };
 
   render() {

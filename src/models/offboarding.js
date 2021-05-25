@@ -24,6 +24,7 @@ import {
   requestChangeLWD,
   handleRequestChangeLWD,
   handleWithdraw,
+  handleWithdrawApproval,
   handleRelievingTemplateDraft,
   updateRelieving,
   sendOffBoardingPackage,
@@ -517,6 +518,24 @@ const offboarding = {
       };
       try {
         const response = yield call(handleWithdraw, newPayload);
+        const { statusCode, message = '' } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+        if (isNotStatusAccepted) {
+          yield put({ type: 'fetchRequestById', payload: newPayload });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *handleWithdrawApproval({ payload, isNotStatusAccepted = false }, { call, put }) {
+      const newPayload = {
+        ...payload,
+        company: getCurrentCompany(),
+        tenantId: getCurrentTenant(),
+      };
+      try {
+        const response = yield call(handleWithdrawApproval, newPayload);
         const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
         notification.success({ message });

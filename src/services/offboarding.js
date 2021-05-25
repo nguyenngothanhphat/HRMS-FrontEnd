@@ -157,6 +157,13 @@ export async function handleWithdraw(payload) {
   });
 }
 
+export async function handleWithdrawApproval(payload) {
+  return request('/api/offboardingrequesttenant/withdraw-approval', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function handleRelievingTemplateDraft(payload) {
   return request('/api/offboardingrequesttenant/save-package-draft', {
     method: 'POST',
