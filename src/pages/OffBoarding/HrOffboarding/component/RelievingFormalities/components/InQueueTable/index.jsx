@@ -8,6 +8,7 @@ import styles from './index.less';
 
 @connect(({ loading, offboarding: { inQueuesList = {} } }) => ({
   loadingList: loading.effects['offboarding/getListRelieving'],
+  loadingSearchList: loading.effects['offboarding/searchListRelieving'],
   inQueuesList,
 }))
 class InQueueTable extends PureComponent {
@@ -37,11 +38,15 @@ class InQueueTable extends PureComponent {
   };
 
   render() {
-    const { inQueuesList, loadingList } = this.props;
+    const { inQueuesList, loadingList, loadingSearchList } = this.props;
 
     return (
       <div className={styles.inQueueTable}>
-        <TableComponent loading={loadingList} data={inQueuesList} />
+        <TableComponent
+          loadingSearchList={loadingSearchList}
+          loading={loadingList}
+          data={inQueuesList}
+        />
       </div>
     );
   }

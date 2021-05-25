@@ -5,6 +5,7 @@ import styles from './index.less';
 
 @connect(({ loading, offboarding: { closeRecordsList = {} } }) => ({
   loadingList: loading.effects['offboarding/getListRelieving'],
+  loadingSearchList: loading.effects['offboarding/searchListRelieving'],
   closeRecordsList,
 }))
 class ClosedTable extends PureComponent {
@@ -35,11 +36,16 @@ class ClosedTable extends PureComponent {
   };
 
   render() {
-    const { closeRecordsList, loadingList } = this.props;
+    const { closeRecordsList, loadingList, loadingSearchList } = this.props;
 
     return (
       <div className={styles.closedTable}>
-        <TableComponent loading={loadingList} data={closeRecordsList} isClosedTable />
+        <TableComponent
+          loadingSearchList={loadingSearchList}
+          loading={loadingList}
+          data={closeRecordsList}
+          isClosedTable
+        />
       </div>
     );
   }
