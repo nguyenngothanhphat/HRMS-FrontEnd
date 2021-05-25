@@ -56,7 +56,7 @@ class RelievingDetails extends PureComponent {
     await dispatch({
       type: 'offboarding/closeEmployeeRecord',
       payload: {
-        offBoardingRequest: id,
+        offBoardingId: id,
       },
     });
   };

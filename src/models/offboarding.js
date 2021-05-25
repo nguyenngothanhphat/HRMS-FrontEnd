@@ -648,19 +648,17 @@ const offboarding = {
         dialog(error);
       }
     },
-    *closeEmployeeRecord({ payload }, { call, put }) {
+    *closeEmployeeRecord({ payload }, { call }) {
       try {
         const response = yield call(closeEmplRecord, {
           ...payload,
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, message, data } = response;
+        const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
           message,
         });
-
-        yield put({ type: 'save', payload: { closeRecordsList: data } });
       } catch (error) {
         dialog(error);
       }
