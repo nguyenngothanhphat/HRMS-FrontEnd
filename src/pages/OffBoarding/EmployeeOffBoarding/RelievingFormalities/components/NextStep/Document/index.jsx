@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Progress } from 'antd';
-import FileIcon from '@/assets/fileVectorIcon.svg';
-import DoneCheckIcon from '@/assets/doneCheckIcon.svg';
+import FileIcon from '@/assets/mailTemplate.svg';
+import DoneCheckIcon from '@/assets/tick.svg';
 import styles from './index.less';
 
 class Document extends PureComponent {
@@ -14,18 +14,20 @@ class Document extends PureComponent {
           <span className={styles.fileName}>{name}</span>
         </div>
         <div className={styles.right}>
-          <div>
-            {percent === 100 && <img src={DoneCheckIcon} alt="done" />}
-            {percent !== 0 && percent !== 100 && (
-              <Progress
-                type="circle"
-                percent={percent}
-                width={30}
-                strokeWidth={12}
-                strokeColor="#ffa100"
-              />
-            )}
-          </div>
+          {name === 'Exit Interview Form' ? (
+            <div>
+              {percent === 100 && <img src={DoneCheckIcon} alt="done" />}
+              {percent !== 0 && percent !== 100 && (
+                <Progress
+                  type="circle"
+                  percent={percent}
+                  width={30}
+                  strokeWidth={12}
+                  strokeColor="#00C598"
+                />
+              )}
+            </div>
+          ) : null}
         </div>
       </div>
     );
