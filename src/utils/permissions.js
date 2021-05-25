@@ -279,10 +279,13 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'ONBOARDING_T_SETTINGS_VIEW',
   ]);
 
-  const indexAddTeamMemberOnboarding = isAdmin ? -1 : isAuthorized(permissionList, ['hr-manager']);
+  const indexAddTeamMemberOnboarding = isAdmin
+    ? -1
+    : isAuthorized(permissionList, ['hr-manager', 'hr']);
   const indexOverviewViewOnboarding = isAuthorized(permissionList, [
     'ONBOARDING_OVERVIEW_VIEW',
     'hr-manager',
+    'hr',
   ]);
 
   return {
