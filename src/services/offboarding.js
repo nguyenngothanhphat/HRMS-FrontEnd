@@ -196,3 +196,10 @@ export async function terminateReason(payload) {
     data: payload,
   });
 }
+
+export async function closeEmplRecord(payload) {
+  return request('/api/offboardingrequesttenant/close-employee-record', {
+    method: 'POST',
+    data: payload,
+  });
+}

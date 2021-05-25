@@ -30,6 +30,7 @@ import {
   removeOffBoardingPackage,
   terminateReason,
   sendClosePackage,
+  closeEmplRecord,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -643,6 +644,23 @@ const offboarding = {
         });
 
         yield put({ type: 'save', payload: { terminateData: data } });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *closeEmployeeRecord({ payload }, { call, put }) {
+      try {
+        const response = yield call(closeEmplRecord, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message, data } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+
+        yield put({ type: 'save', payload: { closeRecordsList: data } });
       } catch (error) {
         dialog(error);
       }

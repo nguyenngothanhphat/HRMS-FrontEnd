@@ -47,6 +47,20 @@ class RelievingDetails extends PureComponent {
     });
   };
 
+  onCloseEmplRecord = async () => {
+    const {
+      match: { params: { ticketId: id = '' } = {} },
+      dispatch,
+    } = this.props;
+
+    await dispatch({
+      type: 'offboarding/closeEmployeeRecord',
+      payload: {
+        offBoardingRequest: id,
+      },
+    });
+  };
+
   render() {
     const {
       offboarding: { relievingDetails = {}, list1On1 = [] },
@@ -87,7 +101,9 @@ class RelievingDetails extends PureComponent {
                 />
               )}
               <ClosePackage />
-              <Button className={styles.relievingDetail__btnClose}>Close employee record</Button>
+              <Button className={styles.relievingDetail__btnClose} onClick={this.onCloseEmplRecord}>
+                Close employee record
+              </Button>
               {/* <div className={styles.relievingDetail__closeRecord}>
                 <img src={exclamationIcon} alt="exclamation-icon" />
                 <span> The employee record for this employee has been closed </span>
