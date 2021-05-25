@@ -148,8 +148,12 @@ const offboarding = {
         });
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
-        const { item: { employee: { _id: employee } = {} } = {}, item: myRequest = {} } = data;
-        yield put({ type: 'save', payload: { myRequest } });
+        const {
+          item: { employee: { _id: employee } = {} } = {},
+          item: myRequest = {},
+          hrManager = {},
+        } = data;
+        yield put({ type: 'save', payload: { myRequest, hrManager } });
         yield put({
           type: 'getListProjectByEmployee',
           payload: { employee, company: getCurrentCompany(), tenantId: getCurrentTenant() },
