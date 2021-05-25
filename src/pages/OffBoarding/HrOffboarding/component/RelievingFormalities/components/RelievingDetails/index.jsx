@@ -17,8 +17,8 @@ import styles from './index.less';
   loading:
     loading.effects['offboarding/fetchRelievingDetailsById'] ||
     loading.effects['offboarding/saveOffBoardingPackage'] ||
-    // loading.effects['offboarding/sendOffBoardingPackage'] ||
     loading.effects['offboarding/removeOffBoardingPackage'],
+  loadingClose: loading.effects['offboarding/closeEmployeeRecord'],
 }))
 class RelievingDetails extends PureComponent {
   componentDidMount() {
@@ -47,7 +47,7 @@ class RelievingDetails extends PureComponent {
     });
   };
 
-  onCloseEmplRecord = async () => {
+  onCloseEmployeeRecord = async () => {
     const {
       match: { params: { ticketId: id = '' } = {} },
       dispatch,
@@ -66,10 +66,12 @@ class RelievingDetails extends PureComponent {
       offboarding: { relievingDetails = {}, list1On1 = [] },
       currentUser = {},
       loading,
+      loadingClose,
     } = this.props;
     const {
       employee: { employeeId = '', generalInfo: { firstName = '' } = {} } = {},
       ticketID = '',
+      closingPackage: { isSent = false } = {},
     } = relievingDetails;
     const itemScheduleIsRelieving = list1On1.find(({ isRelieving }) => isRelieving) || {};
     const checkStatusSchedule = itemScheduleIsRelieving.status === 'COMPLETED';
@@ -101,7 +103,12 @@ class RelievingDetails extends PureComponent {
                 />
               )}
               <ClosePackage />
-              <Button className={styles.relievingDetail__btnClose} onClick={this.onCloseEmplRecord}>
+              <Button
+                disabled={!isSent}
+                className={styles.relievingDetail__btnClose}
+                onClick={this.onCloseEmployeeRecord}
+                loading={loadingClose}
+              >
                 Close employee record
               </Button>
               {/* <div className={styles.relievingDetail__closeRecord}>
