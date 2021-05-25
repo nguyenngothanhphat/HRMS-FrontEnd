@@ -83,13 +83,14 @@ class BackgroundRecheck extends Component {
   componentDidUpdate(prevProps) {
     const { docsList } = this.state;
     const { tempData: { documentsByCandidateRD = '' } = {} } = this.props;
-    // if (!prevProps.tempData.documentsByCandidateRD && this.props.tempData.documentsByCandidateRD) {
-    if (docsList.length === 0 && documentsByCandidateRD) {
+    // if (!prevProps.tempData.documentsByCandidateRD && documentsByCandidateRD) {
+    if (docsList.length === 0 && documentsByCandidateRD.length > 0) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         docsList: documentsByCandidateRD,
       });
     }
+    // }
   }
 
   processDocumentData = (documentArr) => {

@@ -747,6 +747,7 @@ class DirectoryComponent extends PureComponent {
             titleModal="Import Employees"
             visible={visibleImportEmployee}
             handleCancel={this.handleCancel}
+            handleRefresh={this.renderData}
           />
         )}
       </div>

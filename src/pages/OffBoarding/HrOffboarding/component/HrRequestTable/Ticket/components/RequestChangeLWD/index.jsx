@@ -143,7 +143,12 @@ class RequestChangeLWD extends Component {
             )}
           </div>
           <div className={styles.contentContainer}>
-            <span className={styles.viewChangeLastWorkingDay__label}>Last working day</span>
+            <span
+              className={styles.viewChangeLastWorkingDay__label}
+              style={{ marginBottom: '10px' }}
+            >
+              Last working day
+            </span>
             <Row className={styles.viewChangeLastWorkingDay__viewDateApproved} gutter={[50, 0]}>
               <Col span={8}>
                 <DatePicker

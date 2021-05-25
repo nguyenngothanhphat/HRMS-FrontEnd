@@ -14,6 +14,7 @@ import {
   isAdmin,
   setCurrentCompany,
   getIsSwitchingRole,
+  getSwitchRoleAbility,
 } from '@/utils/authority';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
@@ -44,7 +45,10 @@ class AvatarDropdown extends React.Component {
       // VIEWPROFILE: 'viewProfile',
       CHANGEPASSWORD: 'changePassword',
       SETTINGS: 'settings',
+      SWITCHROLE: 'switchRole',
       selectLocationAbility: false,
+      isCheck: false,
+      loading: false,
     };
   }
 
@@ -90,6 +94,33 @@ class AvatarDropdown extends React.Component {
     //     });
     //   }
     // });
+    let authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
+    authority = authority.filter(
+      (item) => item === 'owner' || item === 'admin' || item === 'employee',
+    );
+
+    authority.forEach((item) => {
+      if (item.includes('owner')) {
+        this.setIsCheck(false);
+      } else if (item === 'admin') {
+        this.setIsCheck(false);
+      } else {
+        this.setIsCheck(true);
+      }
+    });
+    this.setLoading(false);
+  };
+
+  setIsCheck = (value) => {
+    this.setState({
+      isCheck: value,
+    });
+  };
+
+  setLoading = (value) => {
+    this.setState({
+      loading: value,
+    });
   };
 
   onFinish = () => {
@@ -143,7 +174,7 @@ class AvatarDropdown extends React.Component {
 
   onMenuClick = async (event) => {
     const { key } = event;
-    const { LOGOUT, CHANGEPASSWORD, SETTINGS } = this.state;
+    const { LOGOUT, CHANGEPASSWORD, SETTINGS, SWITCHROLE } = this.state;
     const { listLocationsByCompany = [] } = this.props;
 
     if (key === LOGOUT) {
@@ -166,6 +197,11 @@ class AvatarDropdown extends React.Component {
     if (key === SETTINGS) {
       // eslint-disable-next-line no-alert
       alert('Settings');
+      return;
+    }
+
+    if (key === SWITCHROLE) {
+      this.handleSwitch();
       return;
     }
 
@@ -292,6 +328,61 @@ class AvatarDropdown extends React.Component {
     );
   };
 
+  handleSwitch = async () => {
+    let checkAdmin = false;
+    const { dispatch, signInRole = [] } = this.props;
+    const { isCheck } = this.state;
+
+    let isSwitch = false;
+    const formatRole = signInRole.map((role) => role.toLowerCase());
+
+    formatRole.forEach((item) => {
+      if (item.includes('admin')) {
+        checkAdmin = true;
+      }
+    });
+
+    // if press Switch button is ON
+    if (isCheck) {
+      if (checkAdmin) {
+        isSwitch = false;
+      }
+    } else {
+      isSwitch = true;
+    }
+    this.setIsCheck(!isCheck);
+    this.setLoading(true);
+
+    await dispatch({
+      type: 'user/fetchCurrent',
+      isSwitchingRole: isSwitch,
+    });
+
+    // history.push('/dashboard');
+    window.location.reload();
+  };
+
+  switchRole = () => {
+    const { SWITCHROLE, isCheck, loading } = this.state;
+    const switchRoleAbility = getSwitchRoleAbility();
+
+    return (
+      <>
+        {switchRoleAbility && (
+          <>
+            <Menu.Divider className={styles.secondDivider} />
+            <Menu.Item key={SWITCHROLE} className={styles.menuItemLink}>
+              {loading
+                ? 'Switching...'
+                : `
+            Switch to ${!isCheck ? 'Employee' : 'Admin'}`}
+            </Menu.Item>
+          </>
+        )}
+      </>
+    );
+  };
+
   render() {
     const { currentUser = {} } = this.props;
     const { firstName: name = '', avatar = {} } = currentUser;
@@ -300,6 +391,7 @@ class AvatarDropdown extends React.Component {
     const { LOGOUT, CHANGEPASSWORD } = this.state;
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
+        {/* AVATAR AND INFORMATION */}
         <div className={styles.viewProfile}>
           <div className={styles.viewProfileAvatar}>
             <Avatar
@@ -319,6 +411,8 @@ class AvatarDropdown extends React.Component {
             )}
           </div>
         </div>
+
+        {/* VIEW PROFILE BUTTON */}
         {currentUser && (
           <div className={styles.viewProfileBtn}>
             <Button onClick={this.viewProfile} className={styles.buttonLink}>
@@ -326,15 +420,16 @@ class AvatarDropdown extends React.Component {
             </Button>
           </div>
         )}
-        {/* </Menu.Item> */}
+
+        {/* CHANGE PASSWORD */}
         <Menu.Divider className={styles.firstDivider} />
         <Menu.Item key={CHANGEPASSWORD} className={styles.menuItemLink}>
           {formatMessage({ id: 'component.globalHeader.avatarDropdown.change-password' })}
         </Menu.Item>
-        {/* <Menu.Item key={SETTINGS} className={styles.menuItemLink}>
-          {formatMessage({ id: 'component.globalHeader.avatarDropdown.settings' })}
-        </Menu.Item> */}
+        {/* SWITCH ROLE  */}
+        {this.switchRole()}
 
+        {/* LOCATION LIST */}
         {selectLocationAbility && this.renderLocationList()}
 
         <Menu.Divider className={styles.secondDivider} />
@@ -342,9 +437,6 @@ class AvatarDropdown extends React.Component {
           <Menu.Item key={LOGOUT} className={styles.menuItemLogout}>
             {formatMessage({ id: 'component.globalHeader.avatarDropdown.logout' })}
           </Menu.Item>
-          {/* <Menu.Item className={styles.sessionLogin}>
-            {formatMessage({ id: 'component.globalHeader.avatarDropdown.session-login' })}: 11:30
-          </Menu.Item> */}
         </Menu.ItemGroup>
       </Menu>
     );

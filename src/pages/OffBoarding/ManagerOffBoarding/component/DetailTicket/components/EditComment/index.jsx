@@ -123,7 +123,9 @@ class EditComment extends Component {
     return (
       <div className={s.root}>
         <div className={s.header}>
-          <span className={s.title}>{firstName} comments from 1-on-1</span>
+          <span className={s.title}>
+            {isOwner ? 'Your' : `${firstName}'s`} Closing Comments from 1-on-1
+          </span>
           <div className={s.rightPart}>
             {!isEdit && isOwner && !checkDisable && (
               <div className={s.editBtn} onClick={this.handleOpenEdit}>

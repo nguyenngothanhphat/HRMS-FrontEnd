@@ -1,143 +1,154 @@
 .Container {
   :global {
     .ant-tabs-content-holder {
-      padding: 0px 20px 0px;
+      padding: 0px 24px 24px;
     }
     .ant-tabs > .ant-tabs-nav,
     .ant-tabs > div > .ant-tabs-nav {
       height: 50px;
     }
     .ant-tabs-tab-btn {
-      font-size: 14px;
       color: #000000;
+      font-size: 14px;
       opacity: 0.9;
     }
     .ant-tabs-tab {
-      font-size: 14px;
-      font-weight: 700;
       color: #000000;
+      font-weight: 700;
+      font-size: 14px;
       opacity: 1;
     }
 
-    .ant-tabs-extra-content{
+    .ant-tabs-extra-content {
       margin-right: 24px;
+    }
+    .ant-tabs-ink-bar {
+      display: none !important;
+    }
+
+    .ant-tabs-top > .ant-tabs-nav::before,
+    .ant-tabs-bottom > .ant-tabs-nav::before,
+    .ant-tabs-top > div > .ant-tabs-nav::before,
+    .ant-tabs-bottom > div > .ant-tabs-nav::before {
+      border: none;
     }
   }
   .marrinTop {
     margin-top: 10px;
   }
 
-  .headerTerminate{
+  .headerTerminate {
+    display: flex;
+    justify-content: space-between;
     width: 100%;
     height: 180px;
     margin-bottom: 24px;
+    font-weight: normal;
 
-    background: #FFFFFF;
+    font-style: normal;
+
+    background: #ffffff;
     border: 1px solid #ebeff2;
     border-radius: 5px;
 
-    display: flex;
-    justify-content: space-between;
-
-    font-style: normal;
-    font-weight: normal;
-
-    .leftSection{
+    .leftSection {
       width: 100%;
       height: 100%;
       padding: 24px;
-      &__title{
+      &__title {
+        margin-bottom: 14px;
+        color: #161c29;
         font-weight: bold;
         font-size: 16px;
         line-height: 18.75px;
-        color: #161C29;
-        margin-bottom: 14px;
       }
 
-      &__content{
+      &__content {
+        margin-bottom: 44px;
+        color: #707177;
         font-size: 13px;
         line-height: 20px;
-        color: #707177;
-        margin-bottom: 44px;
       }
 
-      &__linkRequest{
+      &__linkRequest {
+        color: #ffa100;
         font-weight: 500;
         font-size: 13px;
         line-height: 15px;
         text-decoration-line: underline;
-        color: #FFA100;
       }
     }
 
-    .rightSection{
-      padding: 0 24px;
+    .rightSection {
       width: 100%;
-      
-      &__bg{
+      padding: 0 24px;
+
+      &__bg {
         height: 100%;
         background-image: url('../../../../../assets/offboardingMan.svg');
         background-repeat: no-repeat;
-        background-size: 210px auto;
         background-position: 100% 100%;
+        background-size: 210px auto;
       }
     }
   }
 
-  .titleProcess{
+  .titleProcess {
+    margin-bottom: 24px;
+    color: #161c29;
     font-weight: bold;
     font-size: 16px;
     line-height: 18.75px;
-    color: #161C29;
-    margin-bottom: 24px;
   }
 
-  .offboardingProcess{
-    font-style: normal;
-    font-weight: normal;
-
-    padding: 25px 22px;
+  .offboardingProcess {
     margin-bottom: 32px;
 
-    background: #FFFFFF;
+    padding: 25px 22px;
+    font-weight: normal;
+    font-style: normal;
+
+    background: #ffffff;
     border: 1px solid #ebeff2;
     border-radius: 5px;
 
-    :global{
-
+    :global {
       .ant-steps {
-        display: flex;
-        justify-content: center;
+        // display: flex;
+        // justify-content: center;
       }
 
-      .ant-steps-item-icon{
+      .ant-steps-item-icon {
         width: 36px;
         height: 36px;
       }
 
-      .ant-steps-item-icon .ant-steps-icon{
+      .ant-steps-item-icon .ant-steps-icon {
+        top: 0;
+        font-weight: 500;
         font-size: 13px;
         font-style: normal;
-        font-weight: 500;
         line-height: 17px;
-        top: 0;
       }
 
-      .ant-steps-item-description{
+      .ant-steps-item-description {
+        font-weight: 500;
         font-size: 9px;
         font-style: normal;
-        font-weight: 500;
         line-height: 11px;
         text-align: center;
       }
 
-      .ant-steps-item-process > .ant-steps-item-container > .ant-steps-item-content > .ant-steps-item-description{
-        color: #2C6DF9;
+      .ant-steps-item-process
+        > .ant-steps-item-container
+        > .ant-steps-item-content
+        > .ant-steps-item-description {
+        color: #2c6df9;
       }
 
-      .ant-steps-item-tail::after{
+      .ant-steps-item-tail::after {
         height: 0;
-        border-top: 3px solid #D6DCE0;
+        border-top: 3px solid #d6dce0;
       }
 
       .ant-steps-label-vertical .ant-steps-item-tail {
@@ -145,168 +156,119 @@
         padding: 3.5px 0px;
       }
 
-      .ant-steps-item-wait .ant-steps-item-icon{
-        background: #D6DCE0;
-        border: 1px solid #D6DCE0;
+      .ant-steps-item-wait .ant-steps-item-icon {
+        background: #d6dce0;
+        border: 1px solid #d6dce0;
       }
-      
-      .ant-steps-item-wait .ant-steps-icon{
+
+      .ant-steps-item-wait .ant-steps-icon {
         color: #707177;
         font-weight: 500;
         font-size: 13px;
       }
-      .ant-steps-item-wait .ant-steps-item-description{
-        font-style: normal;
+      .ant-steps-item-wait .ant-steps-item-description {
+        color: #707177;
         font-weight: 500;
         font-size: 9px;
+        font-style: normal;
         line-height: 11px;
         text-align: center;
-        color: #707177;
       }
     }
 
-    &__subtitle{
+    &__subtitle {
+      margin-bottom: 24px;
+      color: #161c29;
       font-weight: 500;
       font-size: 16px;
       line-height: 18.75px;
-      color: #161C29;
-      margin-bottom: 24px;
+    }
+
+    &__process {
+      padding: 24px 0;
+      overflow-x: auto;
     }
   }
 
-  .stepAction{
+  .stepAction {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 32px;
-
-    font-style: normal;
     font-weight: normal;
 
-    &__text{
+    font-style: normal;
+
+    &__text {
+      color: #2058d1;
       font-weight: 500;
       font-size: 13px;
       line-height: 17px;
       cursor: pointer;
       text-decoration-line: underline;
-
-      color: #2058D1;
     }
 
-    &__btn{
+    &__btn {
       height: 40px;
-      background: #FFA100;
-      border-radius: 25px;
       padding: 0 35px;
+      background: #ffa100;
+      border-radius: 25px;
 
-      span{
+      span {
+        color: #ffffff;
         font-weight: 500;
         font-size: 14px;
         line-height: 16px;
-        color: #FFFFFF;
       }
     }
   }
-
-
-  // .title_Box {
-  //   border-radius: 5px;
-  //   width: 100%;
-  //   padding: 19px;
-  //   background: #fffdf7;
-  //   border: 1px solid #ffc65a;
-  //   display: flex;
-  //   margin-bottom: 20px;
-  // }
-
-  // .icon {
-  //   margin-left: 2px;
-  //   margin-right: 21px;
-  // }
-
-  // .title_Text {
-  //   font-weight: 700;
-  //   font-size: 13px;
-  //   line-height: 17px;
-  // }
-
-  // .subTitle_Text {
-  //   font-weight: 700;
-  //   font-size: 14px;
-  //   line-height: 16px;
-  //   font-family: 'Roboto';
-  //   margin: 14px 0px 16px;
-  // }
-
-  // .submitButton {
-  //   padding: 0 30px;
-  //   height: 40px;
-  //   border-radius: 30px;
-  //   margin-bottom: 30px;
-  //   background-color: #ffa100;
-  //   color: #fff;
-  //   font-weight: 700;
-  //   border: none;
-  //   &:hover,
-  //   &:active,
-  //   &:focus {
-  //     border: none;
-  //   }
-  //   &:hover {
-  //     background-color: #ee9803;
-  //     transition: 0.3s;
-  //   }
-  // }
-
   .titleContainer {
     height: 35px;
-    background: rgba(86, 138, 250, 0.07);
-    border-radius: 5px 5px 0px 0px;
     margin-bottom: 10px;
-    // text-align: center;
     padding: 8px;
+    color: #464646;
     font-weight: 500;
     font-size: 14px;
     line-height: 16.41px;
-    color: #464646;
+    background: rgba(86, 138, 250, 0.07);
+    border-radius: 5px 5px 0px 0px;
   }
 
   .tabComponent {
-    // min-height: 350px;
-    border-radius: 5px;
     background-color: #fff;
     border: 1px solid #ebeff2;
+    border-radius: 5px;
   }
 
-  .status{
+  .status {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-
-    font-style: normal;
+    justify-content: space-between;
     font-weight: 500;
     font-size: 13px;
+
+    font-style: normal;
     line-height: 15px;
 
-    &__text{
-      color: #161C29;
+    &__text {
+      color: #161c29;
     }
 
-    .action{
-      color: #FFA100;
+    .action {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       margin-left: 9px;
+      color: #ffa100;
 
-      &__dot{
+      &__dot {
         width: 8px;
         height: 8px;
-        background: #FFA100;
+        background: #ffa100;
         border-radius: 50%;
       }
 
-      &__text{
+      &__text {
         margin-left: 6px;
       }
     }

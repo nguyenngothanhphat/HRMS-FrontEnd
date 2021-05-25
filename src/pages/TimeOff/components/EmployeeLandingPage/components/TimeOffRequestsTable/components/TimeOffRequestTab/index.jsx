@@ -100,7 +100,6 @@ class TimeOffRequestTab extends PureComponent {
         status = [TIMEOFF_STATUS.onHold];
       }
     }
-
     const commonFunction = (res = {}) => {
       const { data: { items = [] } = {}, statusCode } = res;
       if (statusCode === 200) {

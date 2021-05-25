@@ -27,6 +27,7 @@ import styles from './index.less';
       itemNewCreate1On1 = {},
       showModalSuccessfully = false,
       listAssignee = [],
+      hrManager = {}
     } = {},
     user: {
       currentUser: { employee: { _id: myId = '' } = {}, company: { _id: company } = {} } = {},
@@ -43,6 +44,7 @@ import styles from './index.less';
     showModalSuccessfully,
     company,
     listAssignee,
+    hrManager
   }),
 )
 class DetailTicket extends Component {
@@ -208,6 +210,7 @@ class DetailTicket extends Component {
       listAssignee = [],
       loadingReview,
       myId = '',
+      hrManager = {}
     } = this.props;
     const {
       status = '',
@@ -307,7 +310,7 @@ class DetailTicket extends Component {
                 {status === 'ACCEPTED' && <RequestChangeLWD />}
               </Col>
               <Col span={9}>
-                <Assignee myRequest={myRequest} />
+                <Assignee myRequest={myRequest} hrManager={hrManager} />
               </Col>
             </Row>
             {/* {checkShowNotification &&

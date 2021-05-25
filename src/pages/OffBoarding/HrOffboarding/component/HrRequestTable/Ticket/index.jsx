@@ -28,6 +28,7 @@ import styles from './index.less';
       listMeetingTime = [],
       showModalSuccessfully = false,
       listAssignee = [],
+      hrManager = {},
     } = {},
     user: { currentUser: { employee: { _id: myId = '' } = {} } = {} } = {},
   }) => ({
@@ -40,6 +41,7 @@ import styles from './index.less';
     myId,
     showModalSuccessfully,
     listAssignee,
+    hrManager,
   }),
 )
 class HRDetailTicket extends Component {
@@ -153,6 +155,7 @@ class HRDetailTicket extends Component {
       showModalSuccessfully,
       listAssignee = [],
       myId = '',
+      hrManager = {},
     } = this.props;
     const {
       // reasonForLeaving = '',
@@ -243,7 +246,8 @@ class HRDetailTicket extends Component {
                   );
                 })}
 
-                {checkClosingComment?._id && <ClosingComment data={checkClosingComment} />}
+                {/* {checkClosingComment?._id && <ClosingComment data={checkClosingComment} />} */}
+
                 {/* {status !== 'REJECTED' && <LastWorkingDate />} */}
                 {/* <HrApproved myRequest={myRequest} /> */}
                 {/* <LWD myRequest={myRequest} /> */}
@@ -253,7 +257,7 @@ class HRDetailTicket extends Component {
                 )}
               </Col>
               <Col span={9}>
-                <Assignee myRequest={myRequest} />
+                <Assignee myRequest={myRequest} hrManager={hrManager} />
                 <InfoEmployee />
                 {/* <ButtonSet1On1
                   loading={loading}

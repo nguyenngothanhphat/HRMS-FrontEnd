@@ -22,29 +22,29 @@ import request from '@/utils/request';
 // ];
 
 export async function getListTimeOff(payload) {
-  return request('/api/leaverequest/get-by-employee-date', {
+  return request('/api/leaverequesttenant/get-by-employee-date', {
     method: 'POST',
     data: payload,
   });
-};
- 
+}
+
 export async function getListEmployees(payload) {
-  return request('/api/employee/list-active',{
+  return request('/api/employee/list-active', {
     method: 'POST',
-    data: payload
+    data: payload,
   });
-};
+}
 
 export async function getRequestById(payload) {
-  return request('/api/leaverequest/get-by-id',{
+  return request('/api/leaverequesttenant/get-by-id', {
     method: 'POST',
-    data: payload
+    data: payload,
   });
-};
+}
 
 export async function generateCSV(payload) {
-  return request('/api/leaverequest/download',{
+  return request('/api/leaverequesttenant/download', {
     method: 'POST',
-    data: payload
+    data: payload,
   });
-};
+}

@@ -1,130 +1,131 @@
 import request from '@/utils/request';
 
 export function getLeaveBalanceOfUser(payload) {
-  return request('/api/leavebalance/get-by-user', {
+  return request('/api/leavebalancetenant/get-by-user', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getTimeOffTypes(payload) {
-  return request('/api/timeofftype/list', {
+  return request('/api/timeofftypetenant/list', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getLeaveRequestOfEmployee(payload) {
-  return request('/api/leaverequest/get-my-request', {
+  return request('/api/leaverequesttenant/get-my-request', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getLeaveRequestById(payload) {
-  return request('/api/leaverequest/get-by-id', {
+  return request('/api/leaverequesttenant/get-by-id', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function updateLeaveRequestById(payload) {
-  return request('/api/leaverequest/update', {
+  return request('/api/leaverequesttenant/update', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function addLeaveRequest(payload) {
-  return request('/api/leaverequest/add', {
+  return request('/api/leaverequesttenant/add', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function saveDraftLeaveRequest(payload) {
-  return request('/api/leaverequest/save-draft', {
+  return request('/api/leaverequesttenant/save-draft', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function updateDraftLeaveRequest(payload) {
-  return request('/api/leaverequest/update-draft', {
+  return request('/api/leaverequesttenant/update-draft', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function addCompoffRequest(payload) {
-  return request('/api/compoffrequest/add', {
+  return request('/api/compoffrequesttenant/add', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function updateCompoffRequest(payload) {
-  return request('/api/compoffrequest/update', {
+  return request('/api/compoffrequesttenant/update', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getMyCompoffRequests(payload) {
-  return request('/api/compoffrequest/get-my-request', {
+  return request('/api/compoffrequesttenant/get-my-request', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getCompoffRequestById(payload) {
-  return request('/api/compoffrequest/get-by-id', {
+  return request('/api/compoffrequesttenant/get-by-id', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function removeLeaveRequestOnDatabase(payload) {
-  return request('/api/leaverequest/remove', {
+  return request('/api/leaverequesttenant/remove', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function withdrawCompoffRequest(payload) {
-  return request('/api/compoffrequest/remove', {
+  return request('/api/compoffrequesttenant/remove', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getEmailsListByCompany(payload) {
-  return request('/api/employee/admin-list', {
+  return request('/api/employeetenant/admin-list', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getProjectsListByEmployee(payload) {
-  return request('/api/project/get-by-employee', {
+  return request('/api/projecttenant/get-by-employee', {
     method: 'POST',
     data: payload,
   });
 }
 // Holidays
-export async function getHolidaysList() {
-  return request('/api/holidaycalendar/list', {
+export async function getHolidaysList(payload) {
+  return request('/api/holidaycalendartenant/list', {
     method: 'POST',
+    data: payload,
   });
 }
 export async function getHolidaysListByLocation(payload) {
-  return request('/api/holidaycalendar/get-by-location', {
+  return request('/api/holidaycalendartenant/get-by-location', {
     method: 'POST',
     data: payload,
   });
 }
 export async function getHolidaysByCountry(payload) {
-  return request('/api/holidaycalendar/get-by-country', {
+  return request('/api/holidaycalendartenant/get-by-country', {
     method: 'POST',
     data: payload,
   });
@@ -132,14 +133,14 @@ export async function getHolidaysByCountry(payload) {
 
 // MANAGER
 export async function getTeamCompoffRequests(payload) {
-  return request('/api/compoffrequest/get-team-request', {
+  return request('/api/compoffrequesttenant/get-team-request', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getTeamLeaveRequests(payload) {
-  return request('/api/leaverequest/get-team-request', {
+  return request('/api/leaverequesttenant/get-team-request', {
     method: 'POST',
     data: payload,
   });
@@ -151,7 +152,7 @@ export async function uploadFile(data) {
   });
 }
 export async function uploadBalances(data) {
-  return request('/api/managebalances/upload-file', {
+  return request('/api/managebalancestenant/upload-file', {
     method: 'POST',
     data,
   });
@@ -159,28 +160,28 @@ export async function uploadBalances(data) {
 
 // reporting manager
 export async function reportingManagerApprove(data) {
-  return request('/api/leaverequest/reporting-manager-approve', {
+  return request('/api/leaverequesttenant/reporting-manager-approve', {
     method: 'POST',
     data,
   });
 }
 
 export async function reportingManagerReject(data) {
-  return request('/api/leaverequest/reporting-manager-reject', {
+  return request('/api/leaverequesttenant/reporting-manager-reject', {
     method: 'POST',
     data,
   });
 }
 
 export async function approveMultipleTimeoffRequest(data) {
-  return request('/api/leaverequest/rm-approve-multiple-tickets', {
+  return request('/api/leaverequesttenant/rm-approve-multiple-tickets', {
     method: 'POST',
     data,
   });
 }
 
 export async function rejectMultipleTimeoffRequest(data) {
-  return request('/api/leaverequest/rm-reject-multiple-tickets', {
+  return request('/api/leaverequesttenant/rm-reject-multiple-tickets', {
     method: 'POST',
     data,
   });
@@ -189,14 +190,14 @@ export async function rejectMultipleTimeoffRequest(data) {
 // WITHDRAW (INCLUDING SEND EMAIL)
 // for employee
 export async function employeeWithdrawInProgress(data) {
-  return request('/api/leaverequest/withdraw-progress', {
+  return request('/api/leaverequesttenant/withdraw-progress', {
     method: 'POST',
     data,
   });
 }
 
 export async function employeeWithdrawApproved(data) {
-  return request('/api/leaverequest/withdraw-submit', {
+  return request('/api/leaverequesttenant/withdraw-submit', {
     method: 'POST',
     data,
   });
@@ -204,14 +205,14 @@ export async function employeeWithdrawApproved(data) {
 
 // for hr manager
 export async function managerApproveWithdrawRequest(data) {
-  return request('/api/leaverequest/withdraw-approve', {
+  return request('/api/leaverequesttenant/withdraw-approve', {
     method: 'POST',
     data,
   });
 }
 
 export async function managerRejectWithdrawRequest(data) {
-  return request('/api/leaverequest/withdraw-reject', {
+  return request('/api/leaverequesttenant/withdraw-reject', {
     method: 'POST',
     data,
   });
@@ -219,35 +220,35 @@ export async function managerRejectWithdrawRequest(data) {
 
 // COMPOFF FLOW
 export async function getCompoffApprovalFlow(data) {
-  return request('/api/compoffrequest/get-approval-flow', {
+  return request('/api/compoffrequesttenant/get-approval-flow', {
     method: 'POST',
     data,
   });
 }
 
 export async function approveCompoffRequest(data) {
-  return request('/api/compoffrequest/approve-compoff-request', {
+  return request('/api/compoffrequesttenant/approve-compoff-request', {
     method: 'POST',
     data,
   });
 }
 
 export async function rejectCompoffRequest(data) {
-  return request('/api/compoffrequest/reject-compoff-request', {
+  return request('/api/compoffrequesttenant/reject-compoff-request', {
     method: 'POST',
     data,
   });
 }
 
 export async function approveMultipleCompoffRequest(data) {
-  return request('/api/compoffrequest/approve-multiple-compoff-request', {
+  return request('/api/compoffrequesttenant/approve-multiple-compoff-request', {
     method: 'POST',
     data,
   });
 }
 
 export async function rejectMultipleCompoffRequest(data) {
-  return request('/api/compoffrequest/reject-multiple-compoff-request', {
+  return request('/api/compoffrequesttenant/reject-multiple-compoff-request', {
     method: 'POST',
     data,
   });
@@ -306,31 +307,31 @@ export async function getCountryList() {
 }
 
 export async function getInitEmployeeSchedule(payload) {
-  return request('/api/employeeschedule/init-default-from-location', {
+  return request('/api/employeescheduletenant/init-default-from-location', {
     method: 'POST',
     data: payload,
   });
 }
 export async function getEmployeeScheduleByLocation(payload) {
-  return request('/api/employeeschedule/get-by-location', {
+  return request('/api/employeescheduletenant/get-by-location', {
     method: 'POST',
     data: payload,
   });
 }
 export async function deleteHoliday(payload) {
-  return request('/api/holidaycalendar/remove-by-id', {
+  return request('/api/holidaycalendartenant/remove-by-id', {
     method: 'POST',
     data: payload,
   });
 }
 export async function addHoliday(payload) {
-  return request('/api/holidaycalendar/add', {
+  return request('/api/holidaycalendartenant/add', {
     method: 'POST',
     data: payload,
   });
 }
 export async function updateEmployeeSchedule(payload) {
-  return request('/api/employeeschedule/update', {
+  return request('/api/employeescheduletenant/update', {
     method: 'POST',
     data: payload,
   });

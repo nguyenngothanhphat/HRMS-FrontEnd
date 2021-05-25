@@ -130,12 +130,12 @@ class LeaveInformation extends PureComponent {
   }
 
   componentDidMount = async () => {
-    const { dispatch, user: { currentUser: { location: { _id } = {} } = {} } = {} } = this.props;
+    const { dispatch, user: { currentUser: { location = {} } = {} } = {} } = this.props;
 
     await dispatch({
       type: 'timeOff/fetchLeaveBalanceOfUser',
       payload: {
-        location: _id,
+        location: location?._id || '',
       },
     });
     // dispatch({
@@ -213,14 +213,10 @@ class LeaveInformation extends PureComponent {
       onInformationClick = () => {},
       timeOff: { totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {} } = {},
     } = this.props;
-    const {
-      timeOffTypes: typesOfCommonLeaves = [],
-      policy: policyCommonLeaves = {},
-    } = commonLeaves;
-    const {
-      timeOffTypes: typesOfSpecialLeaves = [],
-      policy: policySpecialLeaves = {},
-    } = specialLeaves;
+    const { timeOffTypes: typesOfCommonLeaves = [], policy: policyCommonLeaves = {} } =
+      commonLeaves;
+    const { timeOffTypes: typesOfSpecialLeaves = [], policy: policySpecialLeaves = {} } =
+      specialLeaves;
 
     // this.calculateValueForCircleProgress(typesOfCommonLeaves);
 

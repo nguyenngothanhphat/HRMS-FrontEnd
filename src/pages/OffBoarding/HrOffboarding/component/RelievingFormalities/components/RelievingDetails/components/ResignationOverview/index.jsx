@@ -23,7 +23,7 @@ class ResignationOverview extends PureComponent {
             {formatMessage({ id: 'pages.relieving.resignation.lastWorkingDay' })}
             <span className={styles.resignationOverview__card__lwd}>
               {lastWorkingDate
-                ? moment(lastWorkingDate).locale('en').format('DD.MM.YYYY')
+                ? moment(lastWorkingDate).locale('en').format('MM.DD.YY')
                 : 'No data'}
             </span>
           </p>
