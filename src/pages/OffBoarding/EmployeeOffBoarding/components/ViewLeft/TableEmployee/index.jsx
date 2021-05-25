@@ -1,9 +1,9 @@
 /* eslint-disable react/no-array-index-key */
 import React, { Component } from 'react';
-import { Table, Avatar } from 'antd';
+import { Table, Avatar, notification, Popconfirm } from 'antd';
 import moment from 'moment';
 import { history, connect } from 'umi';
-import { UserOutlined } from '@ant-design/icons';
+import { UserOutlined, SmileOutlined } from '@ant-design/icons';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import t from './index.less';
 
@@ -28,6 +28,28 @@ class TableEmployee extends Component {
     history.push(`/offboarding/review/${data}`);
   };
 
+  handleWithDraw = (id) => {
+    const { dispatch, data = [] } = this.props;
+    const getStatus = data.map((item) => (item._id === id ? item.status : null)).join('');
+
+    if (getStatus === 'ACCEPTED') {
+      notification.open({
+        message: 'Notification Title',
+        description:
+          'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
+        icon: <SmileOutlined style={{ color: '#108ee9' }} />,
+      });
+    } else {
+      dispatch({
+        type: 'offboarding/handleWithdraw',
+        payload: {
+          id,
+        },
+        isNotStatusAccepted: true,
+      });
+    }
+  };
+
   render() {
     const {
       data = [],
@@ -35,7 +57,17 @@ class TableEmployee extends Component {
       loading,
       tabId,
     } = this.props;
+
     const { pageNavigation } = this.state;
+
+    const confirm = (id) => {
+      this.handleWithDraw(id);
+    };
+
+    const cancel = (e) => {
+      console.log(e);
+    };
+
     const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
@@ -121,7 +153,15 @@ class TableEmployee extends Component {
         width: 180,
         render: (_id) => (
           <div className={t.rowAction}>
-            <span className={t.rowAction__action}>Withdraw</span>
+            <Popconfirm
+              title="Are you sure to withdraw this offboarding ticket?"
+              onConfirm={() => confirm(_id)}
+              onCancel={cancel}
+              okText="Yes"
+              cancelText="No"
+            >
+              <span className={t.rowAction__action}>Withdraw</span>
+            </Popconfirm>
             <span className={t.rowAction__view} onClick={() => this.push(_id)}>
               View
             </span>
