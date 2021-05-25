@@ -56,7 +56,9 @@ class ViewLeft extends Component {
   }
 
   componentDidMount() {
-    this.initDataTable('1');
+    // const { data } = this.props;
+    // console.log('data: ', data);
+    // this.initDataTable('1');
   }
 
   shouldComponentUpdate(nextProps, nextState) {
