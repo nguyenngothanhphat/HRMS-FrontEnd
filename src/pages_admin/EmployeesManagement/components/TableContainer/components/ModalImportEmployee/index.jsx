@@ -199,7 +199,7 @@ class ModalImportEmployee extends Component {
 
   callAPIImportCSV = () => {
     const { employees, company, isValidateFile } = this.state;
-    const { handleCancel = () => {} } = this.props;
+    const { handleCancel = () => {}, handleRefresh = () => {} } = this.props;
     const tenantId = getCurrentTenant();
 
     const payload = {
@@ -217,6 +217,7 @@ class ModalImportEmployee extends Component {
       }).then(() => {
         this.setState({ company: '', employees: [] });
         handleCancel();
+        handleRefresh();
       });
     } else {
       notification.error({ message: 'Submit failed. Please make sure your file is validated !' });
