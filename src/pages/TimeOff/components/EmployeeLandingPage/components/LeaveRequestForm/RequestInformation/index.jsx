@@ -6,6 +6,7 @@ import TimeOffModal from '@/components/TimeOffModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
+import { getCurrentTenant } from '@/utils/authority';
 import LeaveTimeRow from './LeaveTimeRow';
 
 import styles from './index.less';
@@ -108,16 +109,23 @@ class RequestInformation extends PureComponent {
 
   // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
   componentDidMount = () => {
-    const { dispatch, action = '', user: {currentUser: {location: {_id} = {}} = {}} = {} } = this.props;
+    const {
+      dispatch,
+      action = '',
+      user: { currentUser: { location: { _id } = {} } = {} } = {},
+    } = this.props;
 
     dispatch({
       type: 'timeOff/fetchLeaveBalanceOfUser',
       payload: {
-        location: _id
-      }
+        location: _id,
+      },
     });
     dispatch({
       type: 'timeOff/fetchTimeOffTypes',
+      payload: {
+        tenantId: getCurrentTenant(),
+      },
     });
     this.fetchEmailsListByCompany();
 
@@ -132,7 +140,7 @@ class RequestInformation extends PureComponent {
         leaveDates = [],
         description = '',
         cc = [],
-        _id = '',
+        _id: requestId,
         status = '',
       } = viewingLeaveRequest;
 
@@ -143,7 +151,7 @@ class RequestInformation extends PureComponent {
       }
 
       this.setState({
-        viewingLeaveRequestId: _id,
+        viewingLeaveRequestId: requestId,
       });
 
       this.setState({
@@ -477,7 +485,10 @@ class RequestInformation extends PureComponent {
       selectedTypeName,
     } = this.state;
     if (buttonState === 1) {
-      const { dispatch, user: { currentUser: { employee = {} } = {} } = {} } = this.props;
+      const {
+        dispatch,
+        user: { currentUser: { employee = {} } = {}, location: { company = '' } = {} } = {},
+      } = this.props;
       const { _id: employeeId = '', manager: { _id: managerId = '' } = {} } = employee;
       const {
         timeOffType = '',
@@ -514,6 +525,7 @@ class RequestInformation extends PureComponent {
           description,
           approvalManager: managerId, // id
           cc: personCC,
+          company,
         };
 
         // console.log('draft data', data);
@@ -546,7 +558,7 @@ class RequestInformation extends PureComponent {
       action = '',
       user: { currentUser: { employee = {} } = {} } = {},
     } = this.props;
-    const { _id: employeeId = '', manager: { _id: managerId = '' } = {} } = employee;
+    const { _id: employeeId = '', manager = '' } = employee;
     const {
       viewingLeaveRequestId,
       // totalDayOfSelectedType,
@@ -615,8 +627,10 @@ class RequestInformation extends PureComponent {
             leaveDates,
             onDate: moment(),
             description,
-            approvalManager: managerId, // id
+            approvalManager: manager, // id
             cc: personCC,
+            tenantId: getCurrentTenant(),
+            company: employee.company,
           };
 
           let type = '';
@@ -1125,7 +1139,8 @@ class RequestInformation extends PureComponent {
     } = this.props;
     const { timeOffTypes: typesOfCommonLeaves = [] } = commonLeaves;
     const { timeOffTypes: typesOfSpecialLeaves = [] } = specialLeaves;
-
+    console.log('typesOfCommonLeaves', typesOfCommonLeaves);
+    console.log('typesOfSpecialLeaves', typesOfSpecialLeaves);
     const dataTimeOffTypes1 = this.renderTimeOffTypes1(typesOfCommonLeaves);
     const dataTimeOffTypes2 = this.renderTimeOffTypes1(typesOfSpecialLeaves);
     const dataTimeOffTypes3 = this.renderTimeOffTypes2(timeOffTypes);

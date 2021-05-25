@@ -5,6 +5,7 @@ import Icon from '@/assets/importExcel.svg';
 
 import { connect } from 'umi';
 // import * as XLSX from 'xlsx';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 const { Dragger } = Upload;
@@ -69,6 +70,7 @@ class ImportExcel extends React.Component {
       type: tab === 1 ? 'SWITCH' : 'IMPORT_DATA',
       effectiveDate,
       location: idLocation,
+      tenantId: getCurrentTenant(),
     };
     dispatch({
       type: 'timeOff/uploadBalances',
