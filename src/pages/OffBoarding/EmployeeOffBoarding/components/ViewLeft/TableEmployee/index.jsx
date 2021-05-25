@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import React, { Component } from 'react';
-import { Table, Avatar } from 'antd';
+import { Table, Avatar, Tooltip } from 'antd';
 import moment from 'moment';
 import { history, connect } from 'umi';
 import { UserOutlined } from '@ant-design/icons';
@@ -58,23 +58,23 @@ class TableEmployee extends Component {
       {
         title: <span className={t.title}>Ticket ID</span>,
         dataIndex: 'ticketID',
-        width: 100,
+        // width: '10%',
         render: (ticketID) => {
-          return <p className={t.lastEdited}>{ticketID}</p>;
+          return <span className={t.lastEdited}>{ticketID}</span>;
         },
       },
       {
         title: <span className={t.title}>Requested on</span>,
         dataIndex: 'requestDate',
-        width: 150,
+        // width: '15%',
         render: (requestDate) => {
-          return <p>{moment(requestDate).format('DD.MM.YYYY')}</p>;
+          return <span>{moment(requestDate).format('MM.DD.YY')}</span>;
         },
       },
       {
         title: <span className={t.title}>Assigned </span>,
         dataIndex: 'Assigned',
-        width: 100,
+        // width: '10%',
         render: (_, row) => {
           const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
             this.props;
@@ -82,14 +82,17 @@ class TableEmployee extends Component {
           const arrAvt = [avtManager, avtHrManager];
           return (
             <div className={t.rowAction}>
-              {arrAvt.map(
-                (item, index) =>
-                  item && (
-                    <div key={index} style={{ marginRight: '13px', display: 'inline-block' }}>
-                      <Avatar src={item} size={20} icon={<UserOutlined />} />
-                    </div>
-                  ),
-              )}
+              <Avatar.Group
+                maxCount={3}
+                maxStyle={{
+                  color: '#FFA100',
+                  backgroundColor: '#EAF0FF',
+                }}
+              >
+                {arrAvt.map((user) => {
+                  return <Avatar size="small" style={{ backgroundColor: '#EAF0FF' }} src={user} />;
+                })}
+              </Avatar.Group>
             </div>
           );
         },
@@ -97,9 +100,9 @@ class TableEmployee extends Component {
       {
         title: <span className={t.title}>LWD</span>,
         dataIndex: 'lastWorkingDate',
-        width: 100,
+        // width: '10%',
         render: (lastWorkingDate) => {
-          return <p>{lastWorkingDate && moment(lastWorkingDate).format('DD.MM.YYYY')} </p>;
+          return <span>{lastWorkingDate && moment(lastWorkingDate).format('MM.DD.YY')} </span>;
         },
       },
       // {
@@ -110,14 +113,14 @@ class TableEmployee extends Component {
       // },
       {
         title: <span className={t.title}>Update</span>,
-        width: 150,
+        // width: '15%',
         dataIndex: 'update',
-        render: (update) => <div className={t.update}>{update}</div>,
+        render: (update) => <span className={t.update}>{update}</span>,
       },
       {
         title: <span className={t.title} />,
         dataIndex: '_id',
-        width: 180,
+        width: '15%',
         render: (_id) => (
           <div className={t.rowAction}>
             <span className={t.rowAction__action}>Withdraw</span>
@@ -135,20 +138,20 @@ class TableEmployee extends Component {
         dataIndex: 'requestDate',
         // width: 150,
         render: (requestDate) => {
-          // return <p>{moment(createdAt).format('YYYY/MM/DD')}</p>;
-          return <div className={t.lastEdited}>{moment(requestDate).format('DD-MM-YYYY')}</div>;
+          // return <span>{moment(createdAt).format('YYYY/MM/DD')}</p>;
+          return <span className={t.lastEdited}>{moment(requestDate).format('DD-MM-YYYY')}</span>;
         },
       },
       {
         title: <span className={t.title}>Reason</span>,
         // width: 150,
         dataIndex: 'reasonForLeaving',
-        render: (reasonForLeaving) => <div className={t.reason}>{reasonForLeaving}</div>,
+        render: (reasonForLeaving) => <span className={t.reason}>{reasonForLeaving}</span>,
       },
       {
         title: <span className={t.title} />,
         dataIndex: '_id',
-        width: 150,
+        // width: 150,
         render: (_id) => (
           <div className={t.rowAction}>
             <span className={t.rowAction__action}>Delete</span>
@@ -180,7 +183,7 @@ class TableEmployee extends Component {
           //   total: data.length,
           // }}
           rowKey="id"
-          scroll={{ x: 'max-content' }}
+          // scroll={{ x: 'max-content' }}
           onChange={this.handleChangeTable}
         />
       </div>
