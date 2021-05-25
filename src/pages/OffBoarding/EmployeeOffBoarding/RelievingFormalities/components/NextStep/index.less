@@ -24,8 +24,8 @@
       display: flex;
       justify-content: space-between;
       .divider {
-        border-right: 1px dotted #e8e8e8;
-        margin: 0 20px;
+        border-right: 2px solid #D6DCE0;
+        margin: 0 68px;
       }
       .eachBox {
         display: flex;
@@ -36,10 +36,10 @@
         }
         .indexNumber {
           span {
-            background: #ffa100;
+            background: #2C6DF9;
             border-radius: 50%;
-            height: 25px;
-            width: 25px;
+            height: 44px;
+            width: 44px;
             color: white;
             display: flex;
             align-items: center;
@@ -59,24 +59,43 @@
         .content2 {
           .scheduleTime {
             margin-top: 10px;
+            font-style: normal;
+            font-weight: 500;
+            font-size: 13px;
+            line-height: 19px;
+            color: #2C6DF9;
           }
         }
       }
     }
   }
 
+  
+}
+
+.mailExit{
+
+  background: #FFFFFF;
+  border: 1px solid #D6DCE0;
+  box-sizing: border-box;
+  border-radius: 5px;
+  margin-bottom: 24px;
+
+  .titleBelow {
+    padding: 24px;
+    border-bottom: 1px solid #E2E4E8;
+    .title {
+      font-weight: 700;
+      color: #464646;
+    }
+  }
+
   .belowContainer {
-    padding: 15px 20px 20px 20px;
-    border-top: 1px solid #ebeff2;
+    padding: 24px;
+    
     .submitDocuments {
-      margin: 10px 0;
-      .abovePart {
-        margin-bottom: 20px;
-        .title {
-          font-weight: 700;
-          color: #464646;
-        }
-      }
+      // margin: 10px 0;
+      
       .loadingSpin {
         width: 100%;
         display: flex;

@@ -157,6 +157,13 @@ export async function handleWithdraw(payload) {
   });
 }
 
+export async function handleWithdrawApproval(payload) {
+  return request('/api/offboardingrequesttenant/withdraw-approval', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function handleRelievingTemplateDraft(payload) {
   return request('/api/offboardingrequesttenant/save-package-draft', {
     method: 'POST',
@@ -176,6 +183,12 @@ export async function sendOffBoardingPackage(payload) {
     data: payload,
   });
 }
+export async function sendClosePackage(payload) {
+  return request('/api/offboardingrequesttenant/send-package', {
+    method: 'POST',
+    data: payload,
+  });
+}
 
 export async function removeOffBoardingPackage(payload) {
   return request('/api/offboardingrequesttenant/remove-package', {
@@ -186,6 +199,13 @@ export async function removeOffBoardingPackage(payload) {
 
 export async function terminateReason(payload) {
   return request('/api/offboardingrequesttenant/terminate-hr', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function closeEmplRecord(payload) {
+  return request('/api/offboardingrequesttenant/close-employee-record', {
     method: 'POST',
     data: payload,
   });

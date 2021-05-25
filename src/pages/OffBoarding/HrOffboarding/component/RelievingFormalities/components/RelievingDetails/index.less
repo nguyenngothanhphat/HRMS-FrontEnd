@@ -5,6 +5,15 @@
 }
 .relievingDetail {
   min-height: 100vh;
+
+  :global{
+    .ant-btn[disabled], .ant-btn[disabled]:hover, .ant-btn[disabled]:focus, .ant-btn[disabled]:active{
+      background-color: #ffa100;
+      color: #fff;
+      opacity: 0.4;
+    }
+  }
+
   .titlePage {
     height: 60px;
     width: 100%;
