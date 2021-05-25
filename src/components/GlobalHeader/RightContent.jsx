@@ -143,7 +143,7 @@ const GlobalHeaderRight = (props) => {
           </Tooltip>
         </>
       )}
-      {buttonSwitch()}
+      {/* {buttonSwitch()} */}
 
       <Avatar />
       <GlobalEmployeeSearch
