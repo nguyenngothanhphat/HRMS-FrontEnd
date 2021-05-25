@@ -369,12 +369,15 @@ class AvatarDropdown extends React.Component {
     return (
       <>
         {switchRoleAbility && (
-          <Menu.Item key={SWITCHROLE} className={styles.menuItemLink}>
-            {loading
-              ? 'Switching...'
-              : `
+          <>
+            <Menu.Divider className={styles.secondDivider} />
+            <Menu.Item key={SWITCHROLE} className={styles.menuItemLink}>
+              {loading
+                ? 'Switching...'
+                : `
             Switch to ${!isCheck ? 'Employee' : 'Admin'}`}
-          </Menu.Item>
+            </Menu.Item>
+          </>
         )}
       </>
     );
@@ -424,7 +427,6 @@ class AvatarDropdown extends React.Component {
           {formatMessage({ id: 'component.globalHeader.avatarDropdown.change-password' })}
         </Menu.Item>
         {/* SWITCH ROLE  */}
-        <Menu.Divider className={styles.secondDivider} />
         {this.switchRole()}
 
         {/* LOCATION LIST */}
