@@ -76,8 +76,9 @@ class TableEmployee extends Component {
         dataIndex: 'Assigned',
         width: 100,
         render: (_, row) => {
-          const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
-            this.props;
+          const {
+            hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {},
+          } = this.props;
           const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
           const arrAvt = [avtManager, avtHrManager];
           return (
