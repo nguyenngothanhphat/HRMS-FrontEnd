@@ -133,7 +133,7 @@ class ResignationRequest extends Component {
         </div>
       );
     }
-    const arrStatus = ['IN-PROGRESS', 'ACCEPTED', 'ON-HOLD'];
+    const arrStatus = ['IN-PROGRESS', 'ACCEPTED', 'ON-HOLD', 'DRAFT'];
     const listScheduleMeeting = list1On1.filter((item) => item.content === '');
 
     return (

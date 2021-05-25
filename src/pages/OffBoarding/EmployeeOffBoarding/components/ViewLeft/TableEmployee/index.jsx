@@ -29,7 +29,7 @@ class TableEmployee extends Component {
   };
 
   handleWithDraw = (id) => {
-    const { dispatch, data = [] } = this.props;
+    const { dispatch, data = [], fetchData = () => {} } = this.props;
     const getStatus = data.map((item) => (item._id === id ? item.status : null)).join('');
 
     if (getStatus === 'ACCEPTED') {
@@ -46,6 +46,8 @@ class TableEmployee extends Component {
           id,
         },
         isNotStatusAccepted: true,
+      }).then(() => {
+        fetchData();
       });
     }
   };

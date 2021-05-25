@@ -117,7 +117,7 @@ class ViewLeft extends Component {
 
   render() {
     const { TabPane } = Tabs;
-    const { data = [], countdata = [], hrManager = {} } = this.props;
+    const { data = [], countdata = [], hrManager = {}, fetchData = () => {} } = this.props;
     const { current = 0, tabId } = this.state;
     const checkDraft = countdata.filter(({ _id }) => _id === 'DRAFT').length > 0;
     // const checkAccepted = countdata.find(({ _id }) => _id === 'ACCEPTED') || {};
@@ -194,13 +194,19 @@ class ViewLeft extends Component {
                     countTable={countdata}
                     hrManager={hrManager}
                     tabId={tabId}
+                    fetchData={fetchData}
                   />
                 </div>
               </TabPane>
             ) : (
               <TabPane tab="Saved Draft" key="2">
                 <div className={styles.marrinTop}>
-                  <TabDrafts data={data} textEmpty="No draft saved" tabId={tabId} />
+                  <TabDrafts
+                    fetchData={fetchData}
+                    data={data}
+                    textEmpty="No draft saved"
+                    tabId={tabId}
+                  />
                 </div>
               </TabPane>
             )}

@@ -517,9 +517,9 @@ const offboarding = {
       };
       try {
         const response = yield call(handleWithdraw, newPayload);
-        const { statusCode } = response;
+        const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
-        notification.success({ message: 'Withdraw Successfully' });
+        notification.success({ message });
         if (isNotStatusAccepted) {
           yield put({ type: 'fetchRequestById', payload: newPayload });
         }
