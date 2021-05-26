@@ -40,9 +40,9 @@ class ClosingPackage extends PureComponent {
   }
 
   componentDidMount() {
-    const { employee: { generalInfo: { personalEmail = '' } = {} } = {} } = this.props;
+    const { employee: { generalInfo: { workEmail = '' } = {} } = {} } = this.props;
     this.setState({
-      emailInput: personalEmail,
+      emailInput: workEmail,
     });
   }
 
@@ -63,7 +63,7 @@ class ClosingPackage extends PureComponent {
   };
 
   handleSendMail = (value) => {
-    const { personalEmail: toEmail } = value;
+    const { toEmail } = value;
     const { dispatch, ticketId, isClosed = () => {} } = this.props;
     dispatch({
       type: 'offboarding/sendClosePackage',
@@ -158,7 +158,7 @@ class ClosingPackage extends PureComponent {
 
   renderBeforeSendMail = () => {
     const { closingPackage, customDocuments, emailInput } = this.state;
-    const { employee: { generalInfo: { personalEmail = '' } = {} } = {} } = this.props;
+    const { employee: { generalInfo: { workEmail = '' } = {} } = {} } = this.props;
 
     return (
       <>
@@ -249,12 +249,12 @@ class ClosingPackage extends PureComponent {
           name="packageToEmail"
           onFinish={this.handleSendMail}
           onValuesChange={this.onValueChange}
-          // initialValues={{ personalEmail }}
+          initialValues={{ toEmail: workEmail }}
         >
           <Row gutter={[40, 15]} className={styles.closingPackage__inputSection}>
             <Col span={24}>
               <Form.Item
-                name="personalEmail"
+                name="toEmail"
                 rules={[
                   {
                     type: 'email',
