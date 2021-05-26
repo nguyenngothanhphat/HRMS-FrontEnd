@@ -156,7 +156,7 @@ const offboarding = {
           item: myRequest = {},
           hrManager = {},
         } = data;
-        yield put({ type: 'save', payload: { myRequest, hrManager } });
+        yield put({ type: 'save', payload: { myRequest, hrManager: hrManager || {} } });
         yield put({
           type: 'getListProjectByEmployee',
           payload: { employee, company: getCurrentCompany(), tenantId: getCurrentTenant() },
