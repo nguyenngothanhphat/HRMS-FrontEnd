@@ -218,11 +218,10 @@ class AddEmployeeForm extends Component {
   handleChangeAddEmployee = () => {};
 
   handleSubmitEmployee = (values) => {
-    const tenantId = localStorage.getItem('tenantId');
     const { dispatch, handleCancel = () => {}, handleRefresh = () => {} } = this.props;
     const payload = {
       ...values,
-      tenantId,
+      tenantId: getCurrentTenant(),
       joinDate: moment(values.joinDate).format('MM.DD.YY'),
     };
     dispatch({
@@ -231,7 +230,7 @@ class AddEmployeeForm extends Component {
     }).then(() => {
       this.setState({ isDisabled: true });
       handleCancel();
-      handleRefresh()
+      handleRefresh();
     });
   };
 
@@ -322,7 +321,8 @@ class AddEmployeeForm extends Component {
             rules={[
               { required: true },
               {
-                pattern: /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/,
+                pattern:
+                  /^[a-zA-ZÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂẾưăạảấầẩẫậắằẳẵặẹẻẽềềểếỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ\s\W|_]+$/,
                 message: 'Name is not a validate name!',
               },
             ]}
@@ -384,6 +384,7 @@ class AddEmployeeForm extends Component {
           >
             <Select
               autoComplete="dontshow"
+              mode="multiple"
               allowClear
               showArrow
               style={{ width: '100%' }}
@@ -392,7 +393,7 @@ class AddEmployeeForm extends Component {
             >
               {rolesList.map((item) => (
                 <Option key={item._id} value={item._id}>
-                  {item.name}
+                  {item._id}
                 </Option>
               ))}
             </Select>
