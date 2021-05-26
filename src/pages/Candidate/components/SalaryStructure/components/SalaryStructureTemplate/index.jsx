@@ -117,6 +117,7 @@ class SalaryStructureTemplate extends PureComponent {
         className={`${this.isBlueText(data.order) === true ? `blue-text` : null} ${
           data.order === ' ' ? `big-text` : null
         }`}
+        // style={{ paddingLeft: '30px' }}
       >
         {title}
       </span>
