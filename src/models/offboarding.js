@@ -32,6 +32,7 @@ import {
   terminateReason,
   sendClosePackage,
   closeEmplRecord,
+  submitToHr,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -588,7 +589,7 @@ const offboarding = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, message } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({
           message: 'Exit interview package has been sent.',
@@ -676,6 +677,21 @@ const offboarding = {
         const response = yield call(closeEmplRecord, {
           ...payload,
           tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *submitToHr(_, { call }) {
+      try {
+        const response = yield call(submitToHr, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
