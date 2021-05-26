@@ -138,7 +138,7 @@ class MailExit extends Component {
   renderAfterSendMail = () => {
     const {
       exitPackage: { waitList = [] },
-      isClosed,
+      isClosedRecord,
     } = this.props;
     return (
       <>
@@ -166,7 +166,7 @@ class MailExit extends Component {
                     </span>
                   </div>
                   <div className={styles.template__action}>
-                    {isClosed ? (
+                    {isClosedRecord ? (
                       <>
                         <img src={TickIcon} alt="tick-icon" />
                       </>
@@ -176,16 +176,6 @@ class MailExit extends Component {
                         <img src={removeIcon} alt="remove-icon" />
                       </>
                     )}
-
-                    {/* <Popconfirm
-                      title="Are you sure?"
-                      onConfirm={() => this.handleRemoveTemplate(template, 'template')}
-                      // onCancel={cancel}
-                      okText="Yes"
-                      cancelText="No"
-                    >
-                      <img src={removeIcon} alt="remove-icon" />
-                    </Popconfirm> */}
                   </div>
                 </div>
               </Col>
