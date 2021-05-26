@@ -55,9 +55,6 @@ const BasicLayout = (props) => {
    * init variables
    */
 
-  const [isCheck, setIsCheck] = useState(false);
-  const [loading, setLoading] = useState(false);
-
   const getCurrentLogo = () => {
     const currentCompanyId = getCurrentCompany();
     const currentComp = companies.find((cp) => cp._id === currentCompanyId);
@@ -101,81 +98,6 @@ const BasicLayout = (props) => {
       </Link>
     );
   };
-
-  useEffect(() => {
-    let authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
-    authority = authority.filter(
-      (item) => item === 'owner' || item === 'admin' || item === 'employee',
-    );
-
-    authority.forEach((item) => {
-      if (item.includes('owner')) {
-        setIsCheck(false);
-      } else if (item === 'admin') {
-        setIsCheck(false);
-      } else {
-        setIsCheck(true);
-      }
-    });
-    setLoading(false);
-  }, [setIsCheck, setLoading]);
-
-  function buttonSwitch() {
-    let checkAdmin = false;
-    const { signInRole = [] } = currentUser;
-
-    const formatRole = signInRole.map((role) => role.toLowerCase());
-
-    formatRole.forEach((item) => {
-      if (item.includes('admin')) {
-        checkAdmin = true;
-      }
-    });
-
-    const handleSwitch = async () => {
-      let isSwitch = false;
-
-      // if press Switch button is ON
-      if (isCheck) {
-        if (checkAdmin) {
-          notification.success({ message: 'Switch to Admin successfully' });
-          isSwitch = false;
-        }
-      } else {
-        notification.success({ message: 'Switch to Employee successfully' });
-        isSwitch = true;
-      }
-      setIsCheck(!isCheck);
-      setLoading(true);
-
-      await dispatch({
-        type: 'user/fetchCurrent',
-        isSwitchingRole: isSwitch,
-      });
-
-      // history.push('/dashboard');
-      window.location.reload();
-    };
-
-    const switchRoleAbility = getSwitchRoleAbility();
-    return (
-      <>
-        {switchRoleAbility ? (
-          <Affix className={styles.btnSwitch}>
-            <Tooltip title={isCheck ? 'Switch Admin' : 'Switch Employee'}>
-              <Switch
-                checked={isCheck}
-                checkedChildren={<UserSwitchOutlined />}
-                unCheckedChildren={<UserOutlined />}
-                onClick={handleSwitch}
-                loading={loading}
-              />
-            </Tooltip>
-          </Affix>
-        ) : null}
-      </>
-    );
-  }
 
   function rightContent() {
     // const { pathname } = window.location;

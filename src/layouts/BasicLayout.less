@@ -110,7 +110,7 @@
     .ant-pro-basicLayout-content {
       position: relative;
       margin: 0px;
-      padding: 24px;
+      padding: 24px 24px 0 24px;
     }
     .ant-page-header {
       width: 100%;
@@ -136,7 +136,7 @@
       width: 80px !important;
       min-width: 80px !important;
       max-width: 80px !important;
-      transition: min-width 0.2s, max-width 0.2s;
+      transition: min-width 0.3s, max-width 0.3s;
       .ant-menu-item .anticon + span,
       .ant-menu-submenu-title .anticon + span {
         display: none;
@@ -160,6 +160,8 @@
         width: 242px !important;
         min-width: 242px !important;
         max-width: 242px !important;
+        transition: min-width 0.3s, max-width 0.3s;
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.456);
         .ant-menu-vertical .ant-menu-item,
         .ant-menu-vertical-left .ant-menu-item,
         .ant-menu-vertical-right .ant-menu-item,
@@ -202,6 +204,10 @@
 
     .ant-menu-item-active > a > .ant-pro-menu-item > .ant-pro-menu-item-title {
       opacity: 1;
+    }
+
+    .ant-menu-item-active  {
+      background-color: rgba(0, 0, 0, 0.204);
     }
 
     .ant-pro-sider .ant-menu-inline-collapsed .ant-menu-item {

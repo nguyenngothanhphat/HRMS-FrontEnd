@@ -4,7 +4,7 @@ import TemplateTable from '../../../TemplateTable';
 class SystemDefault extends PureComponent {
   render() {
     const { list = [], loading = false } = this.props;
-    return <TemplateTable list={list} loading={loading} inTab />;
+    return <TemplateTable isDefaultTemplate list={list} loading={loading} inTab />;
   }
 }
 
