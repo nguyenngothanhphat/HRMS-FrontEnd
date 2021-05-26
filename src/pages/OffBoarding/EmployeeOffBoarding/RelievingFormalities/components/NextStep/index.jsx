@@ -149,7 +149,6 @@ class NextStep extends PureComponent {
       waitList = [],
     } = this.props;
     const { showAnswerModal, selectedDocument } = this.state;
-
     return (
       <div className={styles.belowContainer}>
         {isScheduled && (

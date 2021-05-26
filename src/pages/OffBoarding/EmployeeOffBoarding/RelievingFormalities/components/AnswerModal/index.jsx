@@ -1,9 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Modal, Button, Form, Input, Row, Col, Checkbox } from 'antd';
+import { Modal, Button, Form, Row, Col, Checkbox } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
-
-const { TextArea } = Input;
 
 @connect(
   ({
@@ -52,16 +50,29 @@ class AnswerModal extends PureComponent {
   };
 
   renderFormItem = (defaultAnswers, question, answerType, indexOfQuestion) => {
+    const options = [
+      {
+        label: (
+          <div>
+            <span style={{ fontWeight: 'bold', paddingRight: '8px' }}>
+              Question {indexOfQuestion + 1}:
+            </span>
+            {question}
+          </div>
+        ),
+        value: question,
+      },
+    ];
+
     return (
       <>
         <Row key={`${indexOfQuestion + 1}`} align="top" gutter={['10', '10']}>
-          <Col span={12}>
-            <span>
-              <span style={{ fontWeight: 'bold' }}>Question {indexOfQuestion + 1}: </span>
-              {question}
-            </span>
+          <Col span={24}>
+            <Form.Item name={[indexOfQuestion]}>
+              <Checkbox.Group options={options} />
+            </Form.Item>
           </Col>
-          <Col span={12}>
+          {/* <Col span={12}>
             {answerType === 'FIELD' && (
               <>
                 <Form.Item name={[indexOfQuestion]} fieldKey={[indexOfQuestion]}>
@@ -77,7 +88,7 @@ class AnswerModal extends PureComponent {
                 </Form.Item>
               </>
             )}
-          </Col>
+          </Col> */}
         </Row>
       </>
     );
@@ -85,6 +96,7 @@ class AnswerModal extends PureComponent {
 
   renderForm = () => {
     const { settings } = this.state;
+
     return (
       <>
         <Form
