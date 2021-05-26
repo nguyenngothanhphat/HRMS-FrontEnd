@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Spin, Row, Col } from 'antd';
+import { Spin, Row, Col, message } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import Document from './Document';
@@ -138,7 +138,9 @@ class NextStep extends PureComponent {
 
   // on submit to hr button
   onSubmitToHRClicked = () => {
-    alert('SUBMIT TO HR');
+    message
+      .loading('Submit to HR in progress...', 2)
+      .then(() => message.success('Submit finished', 2));
   };
 
   renderMailExit = (checkFilledDocument) => {
