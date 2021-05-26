@@ -1139,8 +1139,6 @@ class RequestInformation extends PureComponent {
     } = this.props;
     const { timeOffTypes: typesOfCommonLeaves = [] } = commonLeaves;
     const { timeOffTypes: typesOfSpecialLeaves = [] } = specialLeaves;
-    console.log('typesOfCommonLeaves', typesOfCommonLeaves);
-    console.log('typesOfSpecialLeaves', typesOfSpecialLeaves);
     const dataTimeOffTypes1 = this.renderTimeOffTypes1(typesOfCommonLeaves);
     const dataTimeOffTypes2 = this.renderTimeOffTypes1(typesOfSpecialLeaves);
     const dataTimeOffTypes3 = this.renderTimeOffTypes2(timeOffTypes);
