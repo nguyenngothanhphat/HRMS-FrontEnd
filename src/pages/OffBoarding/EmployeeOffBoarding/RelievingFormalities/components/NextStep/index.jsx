@@ -32,6 +32,7 @@ class NextStep extends PureComponent {
     this.state = {
       showAnswerModal: false,
       selectedDocument: -1,
+      isExitInterviewForm: false,
     };
   }
 
@@ -102,6 +103,7 @@ class NextStep extends PureComponent {
     this.setState({
       showAnswerModal: true,
       selectedDocument: index,
+      isExitInterviewForm: index === 0,
     });
   };
 
@@ -150,7 +152,7 @@ class NextStep extends PureComponent {
       loadingFetchPackage,
       waitList = [],
     } = this.props;
-    const { showAnswerModal, selectedDocument } = this.state;
+    const { showAnswerModal, selectedDocument, isExitInterviewForm } = this.state;
     return (
       <div className={styles.belowContainer}>
         {isScheduled && (
@@ -191,6 +193,7 @@ class NextStep extends PureComponent {
             onClose={this.onCloseModal}
             submitText="Submit"
             selectedDocument={selectedDocument}
+            isExitInterviewForm={isExitInterviewForm}
           />
         )}
       </div>
