@@ -64,7 +64,7 @@ class ClosingPackage extends PureComponent {
 
   handleSendMail = (value) => {
     const { personalEmail: toEmail } = value;
-    const { dispatch, ticketId } = this.props;
+    const { dispatch, ticketId, isClosed = () => {} } = this.props;
     dispatch({
       type: 'offboarding/sendClosePackage',
       payload: {
@@ -72,6 +72,8 @@ class ClosingPackage extends PureComponent {
         ticketId,
         toEmail,
       },
+    }).then(() => {
+      isClosed(true);
     });
   };
 

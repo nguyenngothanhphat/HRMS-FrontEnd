@@ -22,6 +22,13 @@ import styles from './index.less';
   // loadingClose: loading.effects['offboarding/closeEmployeeRecord'],
 }))
 class RelievingDetails extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isClosed: false,
+    };
+  }
+
   componentDidMount() {
     this.fetchRelievingDetails();
   }
@@ -62,6 +69,10 @@ class RelievingDetails extends PureComponent {
     });
   };
 
+  isClosed = (isClosed) => {
+    this.setState({ isClosed });
+  };
+
   render() {
     const {
       offboarding: { relievingDetails = {}, list1On1 = [] },
@@ -69,6 +80,7 @@ class RelievingDetails extends PureComponent {
       loading,
       // loadingClose,
     } = this.props;
+    const { isClosed } = this.state;
     const {
       employee: { employeeId = '', generalInfo: { firstName = '' } = {} } = {},
       ticketID = '',
@@ -76,6 +88,7 @@ class RelievingDetails extends PureComponent {
     } = relievingDetails;
     const itemScheduleIsRelieving = list1On1.find(({ isRelieving }) => isRelieving) || {};
     const checkStatusSchedule = itemScheduleIsRelieving.status === 'COMPLETED';
+
     if (loading) return <Spin size="large" className={styles.loading} />;
     return (
       <PageContainer>
@@ -93,7 +106,7 @@ class RelievingDetails extends PureComponent {
               <ResignationOverview relievingDetails={relievingDetails} />
             </Col>
             <Col md={24} lg={12}>
-              <MailExit />
+              <MailExit isClosed={isClosed} />
               {checkStatusSchedule ? (
                 <Feedback itemSchedule={itemScheduleIsRelieving} />
               ) : (
@@ -103,7 +116,7 @@ class RelievingDetails extends PureComponent {
                   itemSchedule={itemScheduleIsRelieving}
                 />
               )}
-              <ClosePackage />
+              <ClosePackage isClosed={this.isClosed} />
               <Button
                 disabled={!isSent}
                 className={styles.relievingDetail__btnClose}
