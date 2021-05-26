@@ -54,8 +54,14 @@
     border: none;
   }
 
-  table {
+  :global {
+    .ant-table-body {
     border-bottom: 1px solid @border-color;
+
+    }
+  }
+  table {
+    // border-bottom: 1px solid @border-color;
   }
 
   .tableActions {

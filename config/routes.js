@@ -201,7 +201,7 @@ const routes = [
               'hr-global',
               'employee',
               'leader',
-              'owner',
+              // 'owner',
             ],
           },
           {

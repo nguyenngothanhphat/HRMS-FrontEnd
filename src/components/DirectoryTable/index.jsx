@@ -2,10 +2,25 @@
 import React, { Component } from 'react';
 import { history, formatMessage, connect } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Table, Avatar, Button } from 'antd';
+import { Table, Avatar, Button, Tag } from 'antd';
 import styles from './index.less';
 import ModalTerminate from './components/ModalTerminate';
 
+const departmentTag = [
+  { name: 'IT support', color: 'magenta' },
+  { name: 'Engineering', color: 'blue' },
+  { name: 'HR', color: 'volcano' },
+  { name: 'Sale', color: 'orange' },
+  { name: 'Marketing', color: 'gold' },
+  { name: 'BOD', color: 'lime' },
+  { name: 'Finance', color: 'red' },
+  { name: 'Accounting', color: 'green' },
+  { name: 'Operations & Facility management', color: 'cyan' },
+  { name: 'UX/UI Design', color: 'geekblue' },
+  { name: 'Sales', color: 'purple' },
+  { name: 'Customer services', color: '#f50' },
+  { name: 'Business development', color: '#87d068' },
+];
 @connect(({ loading, offboarding: { approvalflow = [] } = {} }) => ({
   loadingTerminateReason: loading.effects['offboarding/terminateReason'],
   approvalflow,
@@ -153,11 +168,13 @@ class DirectoryTable extends Component {
         title: formatMessage({ id: 'component.directory.table.department' }),
         dataIndex: 'department',
         key: 'department',
-        render: (department) => (
-          <span className={styles.directoryTable_deparmentText}>
-            {department ? department.name : ''}
-          </span>
-        ),
+        render: (department) => {
+          const tag = departmentTag.find((d) => d.name === department.name) || { color: '#108ee9' };
+          return <Tag color={tag.color}>{department.name}</Tag>;
+          //   <span className={styles.directoryTable_deparmentText}>
+          //   {department ? department.name : ''}
+          // </span>
+        },
         width: '14%',
         align: 'left',
       },

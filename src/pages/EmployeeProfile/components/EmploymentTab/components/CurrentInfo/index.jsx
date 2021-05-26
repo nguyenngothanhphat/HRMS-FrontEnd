@@ -11,7 +11,7 @@ function CurrentInfo(props) {
     location = {},
     employeeType = {},
     manager = {},
-  } = employeeProfile?.originData?.employmentData;
+  } = employeeProfile?.originData?.employmentData || {};
   const {
     compensationType = '',
     currentAnnualCTC = '',
