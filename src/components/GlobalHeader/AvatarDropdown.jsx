@@ -409,6 +409,7 @@ class AvatarDropdown extends React.Component {
                 {currentUser?.employee?.generalInfo?.employeeId}
               </p>
             )}
+            {isOwner() && <p>Owner</p>}
           </div>
         </div>
 

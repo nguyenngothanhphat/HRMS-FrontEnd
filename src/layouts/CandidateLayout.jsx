@@ -233,7 +233,7 @@ const CandidateLayout = (props) => {
           <span className={s.id}>Rookie ID: {ticketId}</span>
 
           <Button type="link" block onClick={handleCancel}>
-            Cancel
+            Logout
           </Button>
         </div>
       </Header>
