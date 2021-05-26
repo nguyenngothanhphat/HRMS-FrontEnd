@@ -158,9 +158,7 @@ class NextStep extends PureComponent {
         {isScheduled && (
           <div className={styles.submitDocuments}>
             <div>
-              <Row justify="end" gutter={[24, 24]}>
-                {!loadingFetchPackage && this.renderPackageList()}
-              </Row>
+              <Row gutter={[24, 24]}>{!loadingFetchPackage && this.renderPackageList()}</Row>
               {loadingFetchPackage && (
                 <div className={styles.loadingSpin}>
                   <Spin />
