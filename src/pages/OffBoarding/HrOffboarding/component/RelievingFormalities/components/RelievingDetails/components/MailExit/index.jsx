@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Card, Row, Col, Popconfirm } from 'antd';
+import { Card, Row, Col, Popconfirm, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import templateIcon from '@/assets/templateIcon.svg';
 import editIcon from '@/assets/editMailExit.svg';
 import removeIcon from '@/assets/deleteMailExist.svg';
 import sendMailIcon from '@/assets/sendMailOffboarding.svg';
+import { LoadingOutlined } from '@ant-design/icons';
 
 // import addTemplateIcon from '@/assets/add-template-icon.svg';
 import checkTemplateIcon from '@/assets/check-template-icon.svg';
@@ -13,9 +14,10 @@ import RelievingTemplates from '../RelievingTemplates';
 import ModalContent from '../RelievingTemplates/components/ModalContent';
 import styles from './index.less';
 
-@connect(({ offboarding: { relievingDetails: { exitPackage = {}, _id = '' } } }) => ({
+@connect(({ offboarding: { relievingDetails: { exitPackage = {}, _id = '' } }, loading }) => ({
   exitPackage,
   ticketId: _id,
+  loadingSendExitEmail: loading.effects['offboarding/sendOffBoardingPackage'],
 }))
 class MailExit extends Component {
   constructor(props) {
@@ -42,8 +44,16 @@ class MailExit extends Component {
   }
 
   renderExtraContent = () => {
+    const { loadingSendExitEmail } = this.props;
+    const antIcon = (
+      <LoadingOutlined
+        style={{ fontSize: 32, color: '#00C598', position: 'absolute', top: '18px' }}
+        spin
+      />
+    );
     return (
       <div className={styles.icons}>
+        {loadingSendExitEmail ? <Spin indicator={antIcon} /> : null}
         <img
           onClick={this.sendMailPackage}
           className={styles.mailExit__card__iconExtra}
@@ -126,22 +136,52 @@ class MailExit extends Component {
 
   renderAfterSendMail = () => {
     const {
-      exitPackage: { packages = [] },
+      exitPackage: { waitList = [] },
     } = this.props;
     return (
       <>
-        <Row gutter={[40, 15]}>
-          {packages?.map((doc, index) => {
-            if (typeof doc !== 'object') return null;
-            const { key } = doc;
+        <Row gutter={[42, 24]}>
+          {waitList?.map((template, index) => {
+            if (typeof template !== 'object') return null;
+            const { packageName } = template;
             return (
-              <Col span={10} key={`${index + 1}`}>
+              <Col span={12} key={`${index + 1}`}>
                 <div className={styles.template}>
-                  <div className={styles.template__content}>
+                  <div
+                    className={styles.template__content}
+                    onClick={() => this.handleClickEdit(template, 'View')}
+                  >
                     <img src={templateIcon} alt="template-icon" />
-                    <span>{key}</span>
+                    <span
+                      style={{
+                        textOverflow: 'ellipsis',
+                        overflow: 'hidden',
+                        whiteSpace: 'nowrap',
+                        width: '130px',
+                      }}
+                    >
+                      {packageName}
+                    </span>
                   </div>
-                  <img src={checkTemplateIcon} alt="check-icon" />
+                  <div className={styles.template__action}>
+                    <img
+                      // onClick={() => this.handleClickEdit(template, 'Edit')}
+                      className={styles.edit__icon}
+                      src={editIcon}
+                      alt="edit-icon"
+                    />
+                    <img src={removeIcon} alt="remove-icon" />
+
+                    {/* <Popconfirm
+                      title="Are you sure?"
+                      onConfirm={() => this.handleRemoveTemplate(template, 'template')}
+                      // onCancel={cancel}
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <img src={removeIcon} alt="remove-icon" />
+                    </Popconfirm> */}
+                  </div>
                 </div>
               </Col>
             );
@@ -155,7 +195,7 @@ class MailExit extends Component {
     const { isSent = false, exitPackageTemplates, customDocuments } = this.state;
 
     return (
-      <Row gutter={[21, 12]}>
+      <Row gutter={[42, 24]}>
         {exitPackageTemplates?.map((template, index) => {
           const { packageName } = template;
           return (

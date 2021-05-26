@@ -17,8 +17,9 @@ import styles from './index.less';
   loading:
     loading.effects['offboarding/fetchRelievingDetailsById'] ||
     loading.effects['offboarding/saveOffBoardingPackage'] ||
-    loading.effects['offboarding/sendOffBoardingPackage'] ||
-    loading.effects['offboarding/removeOffBoardingPackage'],
+    loading.effects['offboarding/removeOffBoardingPackage'] ||
+    loading.effects['offboarding/closeEmployeeRecord'],
+  // loadingClose: loading.effects['offboarding/closeEmployeeRecord'],
 }))
 class RelievingDetails extends PureComponent {
   componentDidMount() {
@@ -47,15 +48,31 @@ class RelievingDetails extends PureComponent {
     });
   };
 
+  onCloseEmployeeRecord = async () => {
+    const {
+      match: { params: { ticketId: id = '' } = {} },
+      dispatch,
+    } = this.props;
+
+    await dispatch({
+      type: 'offboarding/closeEmployeeRecord',
+      payload: {
+        offBoardingId: id,
+      },
+    });
+  };
+
   render() {
     const {
       offboarding: { relievingDetails = {}, list1On1 = [] },
       currentUser = {},
       loading,
+      // loadingClose,
     } = this.props;
     const {
       employee: { employeeId = '', generalInfo: { firstName = '' } = {} } = {},
       ticketID = '',
+      closingPackage: { isSent = false } = {},
     } = relievingDetails;
     const itemScheduleIsRelieving = list1On1.find(({ isRelieving }) => isRelieving) || {};
     const checkStatusSchedule = itemScheduleIsRelieving.status === 'COMPLETED';
@@ -87,7 +104,14 @@ class RelievingDetails extends PureComponent {
                 />
               )}
               <ClosePackage />
-              <Button className={styles.relievingDetail__btnClose}>Close employee record</Button>
+              <Button
+                disabled={!isSent}
+                className={styles.relievingDetail__btnClose}
+                onClick={this.onCloseEmployeeRecord}
+                loading={loading}
+              >
+                Close employee record
+              </Button>
               {/* <div className={styles.relievingDetail__closeRecord}>
                 <img src={exclamationIcon} alt="exclamation-icon" />
                 <span> The employee record for this employee has been closed </span>

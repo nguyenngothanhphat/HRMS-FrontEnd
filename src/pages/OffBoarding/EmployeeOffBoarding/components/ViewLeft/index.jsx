@@ -56,7 +56,9 @@ class ViewLeft extends Component {
   }
 
   componentDidMount() {
-    this.initDataTable('1');
+    // const { data } = this.props;
+    // console.log('data: ', data);
+    // this.initDataTable('1');
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -115,11 +117,12 @@ class ViewLeft extends Component {
 
   render() {
     const { TabPane } = Tabs;
-    const { data = [], countdata = [], hrManager = {} } = this.props;
+    const { data = [], countdata = [], hrManager = {}, fetchData = () => {} } = this.props;
     const { current = 0, tabId } = this.state;
     const checkDraft = countdata.filter(({ _id }) => _id === 'DRAFT').length > 0;
     // const checkAccepted = countdata.find(({ _id }) => _id === 'ACCEPTED') || {};
     // const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
+    const currentStep = data.length > 0 ? data[0].nodeStep - 1 : 0;
 
     return (
       <div className={styles.Container}>
@@ -169,7 +172,7 @@ class ViewLeft extends Component {
             Our offboarding process at a glance
           </div>
           <div className={styles.offboardingProcess__process}>
-            <Steps current={current} onChange={this.onChangeSteps} labelPlacement="vertical">
+            <Steps current={currentStep} onChange={this.onChangeSteps} labelPlacement="vertical">
               {steps.map((item) => (
                 <Step key={item.step} description={item.description} />
               ))}
@@ -192,13 +195,19 @@ class ViewLeft extends Component {
                     countTable={countdata}
                     hrManager={hrManager}
                     tabId={tabId}
+                    fetchData={fetchData}
                   />
                 </div>
               </TabPane>
             ) : (
               <TabPane tab="Saved Draft" key="2">
                 <div className={styles.marrinTop}>
-                  <TabDrafts data={data} textEmpty="No draft saved" tabId={tabId} />
+                  <TabDrafts
+                    fetchData={fetchData}
+                    data={data}
+                    textEmpty="No draft saved"
+                    tabId={tabId}
+                  />
                 </div>
               </TabPane>
             )}

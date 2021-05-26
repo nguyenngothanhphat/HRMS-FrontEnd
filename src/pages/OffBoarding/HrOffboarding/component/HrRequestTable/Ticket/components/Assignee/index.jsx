@@ -33,6 +33,18 @@ export default class Assignee extends PureComponent {
           title: { name: managerTitleName = 'Unknown' } = {},
         } = {},
       } = {},
+      hrManager: {
+        // _id: hrManagerId = '',
+        employee: {
+          generalInfo: {
+            firstName: fnHRManager = '',
+            lastName: lnHRManager = '',
+            // workEmail ='',
+            avatar: avatarHRManager = '',
+          } = {},
+          title: { name: titleHRManager = '' } = {},
+        } = {},
+      } = {},
     } = this.props;
 
     return (
@@ -50,13 +62,13 @@ export default class Assignee extends PureComponent {
         <div className={styles.assignee__content}>
           <div className={styles.assignee__title}>HR approval</div>
           <AssigneeDetail
-            jobTitle="UX Lead"
-            name="Aditya venkatesan"
-            avatar="https://via.placeholder.com/150"
+            jobTitle={titleHRManager}
+            name={`${fnHRManager} ${lnHRManager}`}
+            avatar={avatarHRManager}
             priority="Primary"
           />
         </div>
-        <div className={styles.assignee__content}>
+        {/* <div className={styles.assignee__content}>
           <div>
             In case of your unavailability, you may assign this request to someone from the superior
             officers.
@@ -64,7 +76,7 @@ export default class Assignee extends PureComponent {
           <button type="button" className={styles.assignee__content__buttonRequest}>
             Delegate this request
           </button>
-        </div>
+        </div> */}
       </div>
     );
   }

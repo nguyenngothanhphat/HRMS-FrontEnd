@@ -166,27 +166,27 @@ const Benefits = (props) => {
 
                 {/* Medical */}
                 <h3>Medical</h3>
-                <p>Coverage will take effect on 20/04/2020</p>
+                <p>Coverage will take effect on 20/04/2021</p>
                 {_renderFiles(medical)}
 
                 {/* Dental */}
                 <h3>Dental</h3>
-                <p>Coverage will take effect on 20/04/2020</p>
+                <p>Coverage will take effect on 20/04/2021</p>
                 {_renderFiles(dental)}
 
                 {/* Vision */}
                 <h3>Vision</h3>
-                <p>Coverage will take effect on 20/04/2020</p>
+                <p>Coverage will take effect on 20/04/2021</p>
                 {_renderFiles(vision)}
 
                 {/* Life */}
                 <h3>Life</h3>
-                <p>Coverage will take effect on 20/04/2020</p>
+                <p>Coverage will take effect on 20/04/2021</p>
                 {_renderFiles(life)}
 
                 {/* Disability */}
                 <h3>Short-term disability</h3>
-                <p>Coverage will take effect on 20/04/2020</p>
+                <p>Coverage will take effect on 20/04/2021</p>
                 {_renderFiles(disablity)}
               </div>
 
@@ -194,10 +194,10 @@ const Benefits = (props) => {
                 <h2>For India employees</h2>
 
                 <h3>Paytm Wallet</h3>
-                <p>Coverage will take effect on 20/04/2020</p>
+                <p>Coverage will take effect on 20/04/2021</p>
 
                 <h3>Employee Provident Fund</h3>
-                <p>Coverage will take effect on 20/04/2020</p>
+                <p>Coverage will take effect on 20/04/2021</p>
                 {_renderFiles(fund)}
               </div>
             </main>

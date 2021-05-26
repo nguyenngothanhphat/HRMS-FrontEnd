@@ -31,6 +31,7 @@ import PROCESS_STATUS from '../utils';
     candidate,
     processStatus,
     loading1: loading.effects['candidateInfo/sendDocumentStatusEffect'],
+    loadingGetById: loading.effects['candidateInfo/fetchCandidateByRookie'],
   }),
 )
 class BackgroundRecheck extends Component {
@@ -82,44 +83,15 @@ class BackgroundRecheck extends Component {
   componentDidUpdate(prevProps) {
     const { docsList } = this.state;
     const { tempData: { documentsByCandidateRD = '' } = {} } = this.props;
-    // if (!prevProps.tempData.documentsByCandidateRD && this.props.tempData.documentsByCandidateRD) {
-    if (docsList.length === 0 && documentsByCandidateRD) {
+    // if (!prevProps.tempData.documentsByCandidateRD && documentsByCandidateRD) {
+    if (docsList.length === 0 && documentsByCandidateRD.length > 0) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         docsList: documentsByCandidateRD,
       });
     }
-
-    if (
-      JSON.stringify(prevProps.tempData.documentsByCandidateRD) !==
-      JSON.stringify(documentsByCandidateRD)
-    ) {
-      this.checkVerifyStatus();
-    }
+    // }
   }
-
-  checkVerifyStatus = () => {
-    const { dispatch, tempData: { documentsByCandidateRD = [] } = {} } = this.props;
-
-    let list = [];
-    documentsByCandidateRD.forEach((category) => {
-      if (category.data.length > 0) {
-        list = [...list, ...category.data];
-      }
-    });
-    let check = true;
-    list.forEach((document) => {
-      if (document.candidateDocumentStatus !== 'VERIFIED') {
-        check = false;
-      }
-    });
-
-    if (list.length > 0)
-      dispatch({
-        type: 'candidateInfo/updateAllDocumentVerified',
-        payload: check,
-      });
-  };
 
   processDocumentData = (documentArr) => {
     const { dispatch } = this.props;
@@ -300,15 +272,14 @@ class BackgroundRecheck extends Component {
           this.sendDocumentStatus(doc);
           return null;
         }
-        this.sendDocumentStatus(doc);
         newVerifiedDocs.push(doc);
+        this.sendDocumentStatus(doc);
         return null;
       });
 
       // -------------------  END MODIFY
-
       this.setState({
-        docsList: docsByCandidateRDCheck,
+        docsList: [...docsByCandidateRDCheck],
         feedbackStatus: status,
         verifiedDocs: newVerifiedDocs,
         resubmitDocs: newResubmitDocs,
@@ -326,7 +297,8 @@ class BackgroundRecheck extends Component {
 
   renderCollapseFields = () => {
     const { docsList: documentsCandidateList = [] } = this.state;
-    if (documentsCandidateList.length === 0) {
+    const { loadingGetById = false } = this.props;
+    if (documentsCandidateList.length === 0 || loadingGetById) {
       return <Skeleton active />;
     }
 
@@ -363,7 +335,6 @@ class BackgroundRecheck extends Component {
         </Typography.Text>
       ),
     };
-
     return (
       <div className={styles.backgroundRecheck}>
         <Row gutter={[24, 0]}>
@@ -381,7 +352,7 @@ class BackgroundRecheck extends Component {
               <NoteComponent note={Note} />
             </Row>
             <Row className={styles.stepRow}>
-              <Feedback feedbackStatus={feedbackStatus} />
+              <Feedback feedbackStatus={feedbackStatus} docsList={docsList} />
             </Row>
             {feedbackStatus === 'RE-SUBMIT' && (
               <Row className={styles.stepRow}>

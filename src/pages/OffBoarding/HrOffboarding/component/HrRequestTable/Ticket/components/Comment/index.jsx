@@ -79,14 +79,14 @@ class EditComment extends Component {
   };
 
   render() {
-    const { itemComment = {}, q, isEdit, selectButton } = this.state;
+    const { itemComment = {}, q, isEdit } = this.state;
     const {
       // loading,
       myId,
-      handleReviewRequest = () => {},
-      openFormReason = () => {},
-      loadingReview,
-      id = '',
+      // handleReviewRequest = () => {},
+      // openFormReason = () => {},
+      // loadingReview,
+      // id = '',
       isOnHold = false,
     } = this.props;
     const {
@@ -99,7 +99,9 @@ class EditComment extends Component {
     return (
       <div className={s.root}>
         <div className={s.header}>
-          <span className={s.title}>{firstName} comments from 1-on-1</span>
+          <span className={s.title}>
+            {isOwner ? 'Your' : `${firstName}'s`} Closing Comments from 1-on-1
+          </span>
           <div className={s.rightPart}>
             {!isEdit && isOwner && (
               <div className={s.editBtn} onClick={this.handleOpenEdit}>

@@ -24,11 +24,14 @@ import {
   requestChangeLWD,
   handleRequestChangeLWD,
   handleWithdraw,
+  handleWithdrawApproval,
   handleRelievingTemplateDraft,
   updateRelieving,
   sendOffBoardingPackage,
   removeOffBoardingPackage,
   terminateReason,
+  sendClosePackage,
+  closeEmplRecord,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -148,8 +151,12 @@ const offboarding = {
         });
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
-        const { item: { employee: { _id: employee } = {} } = {}, item: myRequest = {} } = data;
-        yield put({ type: 'save', payload: { myRequest } });
+        const {
+          item: { employee: { _id: employee } = {} } = {},
+          item: myRequest = {},
+          hrManager = {},
+        } = data;
+        yield put({ type: 'save', payload: { myRequest, hrManager } });
         yield put({
           type: 'getListProjectByEmployee',
           payload: { employee, company: getCurrentCompany(), tenantId: getCurrentTenant() },
@@ -515,9 +522,27 @@ const offboarding = {
       };
       try {
         const response = yield call(handleWithdraw, newPayload);
-        const { statusCode } = response;
+        const { statusCode, message = '' } = response;
         if (statusCode !== 200) throw response;
-        notification.success({ message: 'Withdraw Successfully' });
+        notification.success({ message });
+        if (isNotStatusAccepted) {
+          yield put({ type: 'fetchRequestById', payload: newPayload });
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *handleWithdrawApproval({ payload, isNotStatusAccepted = false }, { call, put }) {
+      const newPayload = {
+        ...payload,
+        company: getCurrentCompany(),
+        tenantId: getCurrentTenant(),
+      };
+      try {
+        const response = yield call(handleWithdrawApproval, newPayload);
+        const { statusCode, message = '' } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
         if (isNotStatusAccepted) {
           yield put({ type: 'fetchRequestById', payload: newPayload });
         }
@@ -559,6 +584,31 @@ const offboarding = {
     *sendOffBoardingPackage({ payload }, { call, put }) {
       try {
         const response = yield call(sendOffBoardingPackage, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Exit interview package has been sent.',
+        });
+        const newRequest = yield call(getRequestById, {
+          id: payload.ticketId,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode: newRequestStat, data = {} } = newRequest;
+        if (newRequestStat !== 200) throw newRequest;
+        const { item: relievingDetails = {} } = data;
+        yield put({ type: 'save', payload: { relievingDetails } });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *sendClosePackage({ payload }, { call, put }) {
+      try {
+        const response = yield call(sendClosePackage, {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
@@ -617,6 +667,21 @@ const offboarding = {
         });
 
         yield put({ type: 'save', payload: { terminateData: data } });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *closeEmployeeRecord({ payload }, { call }) {
+      try {
+        const response = yield call(closeEmplRecord, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
       } catch (error) {
         dialog(error);
       }

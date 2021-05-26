@@ -5,14 +5,10 @@ import styles from './index.less';
 
 class Feedback extends Component {
   componentDidUpdate() {
-    const { feedbackStatus } = this.props;
-    const valid = this.initDefaultValue(feedbackStatus);
-
+    const allDocumentStatus = this.checkStatus();
     const { dispatch } = this.props;
-    if (!dispatch) {
-      return;
-    }
-    if (valid === 1) {
+
+    if (allDocumentStatus === 1) {
       dispatch({
         type: 'candidateInfo/updateAllDocumentVerified',
         payload: true,
@@ -25,22 +21,45 @@ class Feedback extends Component {
     }
   }
 
-  initDefaultValue = (feedbackStatus) => {
-    // console.log(feedbackStatus);
-    switch (feedbackStatus) {
-      case 'VERIFIED': {
-        return 1;
+  checkStatus = () => {
+    const { docsList = [] } = this.props;
+    const newVerifiedDocs = [];
+    const newResubmitDocs = [];
+    const newIneligibleDocs = [];
+
+    const newDocumentList = [];
+    docsList.map((item) => {
+      const { data = [] } = item;
+      data.map((documentItem) => {
+        newDocumentList.push(documentItem);
+        return null;
+      });
+      return null;
+    });
+
+    newDocumentList.forEach((doc) => {
+      const { candidateDocumentStatus: candidateDocStatus = '' } = doc;
+      if (candidateDocStatus === 'RE-SUBMIT') {
+        newResubmitDocs.push(doc);
       }
-      case 'RE-SUBMIT': {
-        return 2;
+      if (candidateDocStatus === 'INELIGIBLE') {
+        newIneligibleDocs.push(doc);
       }
-      case 'INELIGIBLE': {
-        return 3;
+      if (candidateDocStatus === 'VERIFIED') {
+        newVerifiedDocs.push(doc);
       }
-      default: {
-        return 1;
-      }
+    });
+
+    if (newVerifiedDocs.length > 0 && newVerifiedDocs.length === newDocumentList.length) {
+      return 1;
     }
+    if (newIneligibleDocs.length > 0) {
+      return 3;
+    }
+    if (newResubmitDocs.length > 0) {
+      return 2;
+    }
+    return 4;
   };
 
   render() {
@@ -48,14 +67,15 @@ class Feedback extends Component {
       width: '100%',
       display: 'flex',
     };
-    const { feedbackStatus } = this.props;
-    console.log(feedbackStatus);
+
+    const allDocumentStatus = this.checkStatus();
+
     return (
       <div className={styles.feedback}>
         <Radio.Group
-          value={this.initDefaultValue(feedbackStatus)}
+          value={allDocumentStatus}
           className={styles.feedback__radio}
-          defaultValue={this.initDefaultValue(feedbackStatus)}
+          defaultValue={allDocumentStatus}
           onChange={this.onChange}
         >
           <Radio style={radioStyle} value={1}>

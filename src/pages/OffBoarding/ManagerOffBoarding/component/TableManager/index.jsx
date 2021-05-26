@@ -86,23 +86,22 @@ class TableManager extends PureComponent {
         },
         width: 200,
       },
-      {
-        title: <span className={styles.title}>Current Project </span>,
-        dataIndex: 'currentProject',
-        width: 200,
-      },
-      {
-        title: <span className={styles.title}>Project Manager </span>,
-        dataIndex: 'projectManager',
-        width: 200,
-      },
+      // {
+      //   title: <span className={styles.title}>Current Project </span>,
+      //   dataIndex: 'currentProject',
+      //   width: 200,
+      // },
+      // {
+      //   title: <span className={styles.title}>Project Manager </span>,
+      //   dataIndex: 'projectManager',
+      //   width: 200,
+      // },
       {
         title: <span className={styles.title}>Assigned </span>,
         dataIndex: 'Assigned',
         render: (_, row) => {
-          const {
-            hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {},
-          } = this.props;
+          const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
+            this.props;
           const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
           const arrAvt = [avtManager, avtHrManager];
           return (

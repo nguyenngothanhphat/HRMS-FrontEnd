@@ -70,11 +70,19 @@ class PayrollSetting extends PureComponent {
   };
 
   onClickNext = () => {
-    const { currentStep = 0, dispatch } = this.props;
+    const { currentStep = 0, dispatch, data: { candidate = '' } = {} } = this.props;
     dispatch({
       type: 'candidateInfo/save',
       payload: {
         currentStep: currentStep + 1,
+      },
+    });
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate,
+        currentStep: currentStep + 1,
+        tenantId: getCurrentTenant(),
       },
     });
   };

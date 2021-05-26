@@ -26,14 +26,12 @@ const Note = {
 
 const FileInfo = [
   {
-    name: 'Y2 Confidentiality document _ 11211231.pdf',
-    url:
-      'http://api-stghrms.paxanimi.ai/api/attachments/5f7d4f3825b10e8b115d3e27/PR_report1_Jenny%20Wong.pdff',
+    name: 'Hiring Document.pdf',
+    url: 'http://api-stghrms.paxanimi.ai/api/attachments/60adcca825870e54bbd9e944/Company_handbook.pdf',
   },
   {
-    name: 'Company handbook document _ 11211.pdf',
-    url:
-      'http://api-stghrms.paxanimi.ai/api/attachments/5f7d4f3825b10e8b115d3e27/PR_report1_Jenny%20Wong.pdff',
+    name: 'Company Handbook Document.pdf',
+    url: 'http://api-stghrms.paxanimi.ai/api/attachments/60adcca825870e54bbd9e944/Company_handbook.pdf',
   },
 ];
 

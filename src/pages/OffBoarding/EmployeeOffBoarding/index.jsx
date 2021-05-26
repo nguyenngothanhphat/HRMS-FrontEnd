@@ -50,10 +50,12 @@ class EmployeeOffBoading extends Component {
   }
 
   componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = () => {
     const { dispatch } = this.props;
-    if (!dispatch) {
-      return;
-    }
+
     dispatch({
       type: 'offboarding/fetchList',
       payload: {
@@ -62,7 +64,9 @@ class EmployeeOffBoading extends Component {
     }).then((data) => {
       if (data) {
         this.setState({
-          dataRequest: data.filter((value) => value.status !== 'DRAFT'),
+          dataRequest: data.filter(
+            (value) => value.status !== 'DRAFT' && value.status !== 'WITHDRAW',
+          ),
           loadingFetchList: false,
         });
       }
@@ -90,7 +94,7 @@ class EmployeeOffBoading extends Component {
         this.checkIfExistingRequest();
       }
     });
-  }
+  };
 
   viewActivityLogs = () => {
     return (
@@ -126,10 +130,10 @@ class EmployeeOffBoading extends Component {
 
   render() {
     const {
-      listOffboarding = [],
+      // listOffboarding = [],
       totalList = [],
       hrManager = {},
-      acceptedRequest = [],
+      // acceptedRequest = [],
     } = this.props;
     const { relievingInQueue, dataDraft = [], dataRequest = [], loadingFetchList } = this.state;
 
@@ -137,7 +141,7 @@ class EmployeeOffBoading extends Component {
       <PageContainer>
         <div className={styles.EmployeeOffboarding}>
           <div className={styles.tabs}>
-            <Tabs defaultActiveKey="1" tabBarExtraContent={this.viewActivityLogs()}>
+            <Tabs defaultActiveKey="1">
               <TabPane tab="Terminate work relationship" key="1">
                 <div className={styles.paddingHR}>
                   <div className={styles.root}>
@@ -150,13 +154,15 @@ class EmployeeOffBoading extends Component {
                             {dataDraft.length > 0 || dataRequest.length > 0 ? (
                               <ViewLeft
                                 data={
-                                  listOffboarding.length > 0 ? listOffboarding : acceptedRequest
+                                  // listOffboarding.length > 0 ? listOffboarding : acceptedRequest
+                                  dataRequest.length > 0 ? dataRequest : dataDraft
                                 }
+                                fetchData={this.fetchData}
                                 countdata={totalList}
                                 hrManager={hrManager}
                               />
                             ) : (
-                              <ViewLeftInitial />
+                              <ViewLeftInitial hrManager={hrManager} />
                             )}
                           </>
                         )}

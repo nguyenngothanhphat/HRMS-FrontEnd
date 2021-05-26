@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Spin, Row, Col } from 'antd';
+import { Spin, Row, Col, message } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import Document from './Document';
@@ -138,104 +138,53 @@ class NextStep extends PureComponent {
 
   // on submit to hr button
   onSubmitToHRClicked = () => {
-    alert('SUBMIT TO HR');
+    message
+      .loading('Submit to HR in progress...', 2)
+      .then(() => message.success('Submit finished', 2));
   };
 
-  render() {
+  renderMailExit = (checkFilledDocument) => {
     const {
       isScheduled = true,
       submitted = false,
       loadingFetchPackage,
       waitList = [],
     } = this.props;
-
     const { showAnswerModal, selectedDocument } = this.state;
-    const scheduled1On1 = this.getNewest1On1();
-    const { meetingDate = '', meetingTime = '' } = scheduled1On1;
-    const formattedMeetingTime = `${moment(meetingDate)
-      .locale('en')
-      .format('DD.MM.YYYY')} | ${meetingTime}`;
-
-    const checkFilledDocument = this.checkFilledDocument();
     return (
-      <div className={styles.NextStep}>
-        <div className={styles.aboveContainer}>
-          <div className={styles.abovePart}>
-            <span className={styles.title}>Next steps....</span>
-          </div>
-          <div className={styles.stepBoxes}>
-            <div className={styles.eachBox}>
-              <div className={styles.indexNumber}>
-                <span>1</span>
-              </div>
-              <div className={styles.content1}>
-                <p>
-                  You will soon be receiving an exit interview package. Do go through the check list
-                  and submit it before the exit interview
-                </p>
-              </div>
-            </div>
-            <div className={styles.divider} />
-            <div className={styles.eachBox}>
-              <div className={styles.indexNumber}>
-                <span>2</span>
-              </div>
-              <div className={styles.content2}>
-                {meetingDate === '' && meetingTime === '' && (
-                  <p>The HR will soon send an invitation for your final exit interview.</p>
-                )}
-                {meetingDate !== '' && meetingTime !== '' && (
-                  <div className={styles.scheduledBox}>
-                    <p style={{ fontWeight: 'bold' }}>Your exit interview has been scheduled</p>
-                    <p className={styles.scheduleTime}>{formattedMeetingTime}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.belowContainer}>
-          {isScheduled && (
-            <div className={styles.submitDocuments}>
-              <div className={styles.abovePart}>
-                <span className={styles.title}>
-                  Please ensure that you fill the documents below and Submit them to the HR before
-                  your exit interview.
-                </span>
-              </div>
-              <div>
-                <Row justify="end" gutter={['20', '0']}>
-                  {!loadingFetchPackage && this.renderPackageList()}
-                </Row>
-                {loadingFetchPackage && (
-                  <div className={styles.loadingSpin}>
-                    <Spin />
-                  </div>
-                )}
-              </div>
-
-              {!loadingFetchPackage && waitList.length > 0 && (
-                <div className={styles.submitFiles}>
-                  {submitted ? (
-                    <span className={styles.submittedTime}>Submitted on 22.12.2020</span>
-                  ) : (
-                    <span />
-                  )}
-                  <span
-                    className={`${styles.submitButton} ${
-                      !checkFilledDocument ? styles.disableButton : ''
-                    }`}
-                    onClick={checkFilledDocument ? this.onSubmitToHRClicked : null}
-                  >
-                    Submit to HR
-                  </span>
+      <div className={styles.belowContainer}>
+        {isScheduled && (
+          <div className={styles.submitDocuments}>
+            <div>
+              <Row justify="end" gutter={[24, 24]}>
+                {!loadingFetchPackage && this.renderPackageList()}
+              </Row>
+              {loadingFetchPackage && (
+                <div className={styles.loadingSpin}>
+                  <Spin />
                 </div>
               )}
             </div>
-          )}
-        </div>
 
+            {!loadingFetchPackage && waitList.length > 0 && (
+              <div className={styles.submitFiles}>
+                {submitted ? (
+                  <span className={styles.submittedTime}>Submitted on 22.12.2020</span>
+                ) : (
+                  <span />
+                )}
+                <span
+                  className={`${styles.submitButton} ${
+                    !checkFilledDocument ? styles.disableButton : ''
+                  }`}
+                  onClick={checkFilledDocument ? this.onSubmitToHRClicked : null}
+                >
+                  Submit to HR
+                </span>
+              </div>
+            )}
+          </div>
+        )}
         {!loadingFetchPackage && selectedDocument !== -1 && (
           <AnswerModal
             visible={showAnswerModal}
@@ -244,6 +193,64 @@ class NextStep extends PureComponent {
             selectedDocument={selectedDocument}
           />
         )}
+      </div>
+    );
+  };
+
+  render() {
+    const scheduled1On1 = this.getNewest1On1();
+    const { meetingDate = '', meetingTime = '' } = scheduled1On1;
+    const formattedMeetingTime = `${moment(meetingDate)
+      .locale('en')
+      .format('DD.MM.YYYY')} | ${meetingTime}`;
+
+    const checkFilledDocument = this.checkFilledDocument();
+    return (
+      <div className={styles.root}>
+        <div className={styles.NextStep}>
+          <div className={styles.aboveContainer}>
+            <div className={styles.abovePart}>
+              <span className={styles.title}>Next steps....</span>
+            </div>
+            <div className={styles.stepBoxes}>
+              <div className={styles.eachBox}>
+                <div className={styles.indexNumber}>
+                  <span>1</span>
+                </div>
+                <div className={styles.content1}>
+                  <p>
+                    You will soon be receiving an exit interview package. Do go through the check
+                    list and submit it before the exit interview
+                  </p>
+                </div>
+              </div>
+              <div className={styles.divider} />
+              <div className={styles.eachBox}>
+                <div className={styles.indexNumber}>
+                  <span>2</span>
+                </div>
+                <div className={styles.content2}>
+                  {meetingDate === '' && meetingTime === '' && (
+                    <p>The HR will soon send an invitation for your final exit interview.</p>
+                  )}
+                  {meetingDate !== '' && meetingTime !== '' && (
+                    <div className={styles.scheduledBox}>
+                      <p style={{ fontWeight: 'bold' }}>Your exit interview has been scheduled</p>
+                      <p className={styles.scheduleTime}>{formattedMeetingTime}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.mailExit}>
+          <div className={styles.titleBelow}>
+            <span className={styles.title}>Mail Exit interview package</span>
+          </div>
+          {this.renderMailExit(checkFilledDocument)}
+        </div>
       </div>
     );
   }

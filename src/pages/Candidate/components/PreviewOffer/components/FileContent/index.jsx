@@ -7,7 +7,7 @@ import s from './index.less';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const documentWarning = (msg) => (
-  <div className={s.documentWarning}>
+  <div className={s.documentWarning} style={{ padding: '24px' }}>
     <p>{msg}</p>
   </div>
 );

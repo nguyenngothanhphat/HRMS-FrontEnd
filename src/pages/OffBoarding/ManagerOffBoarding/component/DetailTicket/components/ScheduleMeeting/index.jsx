@@ -32,7 +32,7 @@ class ScheduleMeeting extends Component {
 
   render() {
     const { isAddComment = false } = this.state;
-    const { data = {}, myId = '' } = this.props;
+    const { data = {}, myId = '', isHRManager = false } = this.props;
     const {
       meetingDate = '',
       meetingTime = '',
@@ -49,7 +49,7 @@ class ScheduleMeeting extends Component {
     } = data;
     const checkOwner = myId === ownerCommentId;
     if (isAddComment) {
-      return <AddComment idComment={_id} nameOwner={nameOwner} />;
+      return <AddComment idComment={_id} nameOwner={nameOwner} isHRManager={isHRManager} />;
     }
     const check = checkTime(meetingDate, meetingTime);
     return (
@@ -87,12 +87,12 @@ class ScheduleMeeting extends Component {
           <span style={{ fontWeight: 'bold', fontSize: '13px' }}>Created by:</span> {firstName} (
           {email})
         </div> */}
-        {/* {assigneeId && (
-          <div>
-            <span style={{ fontWeight: 'bold', fontSize: '13px' }}>Assignee:</span> {nameAssignee} (
+        {assigneeId && (
+          <div className={styles.assignee}>
+            <span>Assignee:</span> <span className={styles.assigneeName}>{nameAssignee}</span> (
             {emailAssignee})
           </div>
-        )} */}
+        )}
       </div>
     );
   }

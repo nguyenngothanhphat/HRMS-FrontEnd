@@ -112,11 +112,15 @@ class DirectoryComponent extends PureComponent {
   }
 
   componentDidMount = async () => {
-    // *: error tenant
-    // this.fetchApprovalFlowList();
-
     // this.renderData();
     this.initTabId();
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeesManagement/fetchRolesList',
+    });
+    dispatch({
+      type: 'employeesManagement/fetchCompanyList',
+    });
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -308,12 +312,6 @@ class DirectoryComponent extends PureComponent {
         },
       });
     }
-    dispatch({
-      type: 'employeesManagement/fetchRolesList',
-    });
-    dispatch({
-      type: 'employeesManagement/fetchCompanyList',
-    });
   };
 
   onChangeTab = (params, tabId) => {
@@ -747,6 +745,7 @@ class DirectoryComponent extends PureComponent {
             titleModal="Import Employees"
             visible={visibleImportEmployee}
             handleCancel={this.handleCancel}
+            handleRefresh={this.renderData}
           />
         )}
       </div>

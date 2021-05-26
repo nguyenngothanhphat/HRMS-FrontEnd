@@ -6,11 +6,14 @@
 
 .overviewContainer {
   display: flex;
-
+  width: 100% !important;
+  // max-width: 100%;
   .viewLeft {
     // width: 255px;
     background-color: white;
-
+    border-right: 1px solid rgba(0, 0, 2, 0.15);
+    // border-bottom: 1px solid rgba(0, 0, 2, 0.15);
+    height: 100vh;
     :global {
       .ant-btn-primary {
         box-shadow: none;
@@ -45,9 +48,10 @@
     }
 
     .divider {
-      height: 1px;
-      width: 100%;
-      background-color: #e4e7eb;
+      // height: 1px;
+      // width: 100%;
+      // background-color: #e4e7eb;
+      border-bottom: 1px solid #e4e7eb;
     }
 
     .leftMenu {
@@ -66,9 +70,11 @@
   }
 
   .viewRight {
-    max-width: 82%;
-    flex: 1;
-    padding: 32px;
+    // max-width: 82%;
+    // flex: 1;
+    width: 80% !important;
+    padding: 24px;
+    height: 100%;
 
     .pageTitle {
       font-size: 16px;
@@ -87,6 +93,14 @@
       //   background-color: @scrollbar-color;
       //   // border-radius: 3px;
       // }
+    }
+
+    .ant-tabs-nav {
+      height: 56px;
+    }
+
+    .ant-tabs-tab {
+      padding: 13px 0 6px 0;
     }
   }
 }

@@ -72,7 +72,18 @@ class FormTeamMember extends PureComponent {
         type: 'candidateInfo/fetchDocumentList',
       });
       dispatch({
-        type: 'candidateInfo/fetchTemplateOnboarding',
+        type: 'candidateInfo/fetchDefaultTemplateList',
+        payload: {
+          tenantId: getCurrentTenant(),
+          type: 'ON_BOARDING',
+        },
+      });
+      dispatch({
+        type: 'candidateInfo/fetchCustomTemplateList',
+        payload: {
+          tenantId: getCurrentTenant(),
+          type: 'ON_BOARDING',
+        },
       });
     }
   }
@@ -286,6 +297,11 @@ class FormTeamMember extends PureComponent {
           managerList: [],
           salaryTitle: null,
           workLocation: null,
+          employeeType: {},
+          documentsByCandidate: [],
+          documentsByCandidateRD: [],
+          documentChecklistSetting: [],
+          backgroundRecheck: [],
         },
       },
     });

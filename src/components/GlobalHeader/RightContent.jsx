@@ -1,5 +1,5 @@
 // import { Tooltip, Tag } from 'antd';
-import { getSwitchRoleAbility } from '@/utils/authority';
+import { getSwitchRoleAbility, isOwner } from '@/utils/authority';
 import { BellOutlined, BuildOutlined, LoadingOutlined } from '@ant-design/icons';
 import { Tooltip } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -16,6 +16,7 @@ const GlobalHeaderRight = (props) => {
     layout,
     dispatch,
     currentUser,
+    companiesOfUser,
     employeesManagement: { searchEmployeesList = [] },
     loadingList,
   } = props;
@@ -25,6 +26,8 @@ const GlobalHeaderRight = (props) => {
   const [loading, setLoading] = useState(false);
 
   const [isSwitchCompanyVisible, setIsSwitchCompanyVisible] = useState(false);
+  const checkIsOwner =
+    isOwner() && currentUser.signInRole.map((role) => role.toLowerCase()).includes('owner');
 
   useEffect(() => {
     let authority = JSON.parse(localStorage.getItem('antd-pro-authority'));
@@ -128,15 +131,20 @@ const GlobalHeaderRight = (props) => {
       <div className={`${styles.action} ${styles.notify}`}>
         <BellOutlined />
       </div>
-      <Tooltip title="Switch company">
-        <div
-          className={`${styles.action} ${styles.notify}`}
-          onClick={() => setIsSwitchCompanyVisible(true)}
-        >
-          <BuildOutlined />
-        </div>
-      </Tooltip>
-      {buttonSwitch()}
+      {!(!checkIsOwner && companiesOfUser.length === 1) && (
+        <>
+          <Tooltip title="Switch company">
+            <div
+              className={`${styles.action} ${styles.notify}`}
+              onClick={() => setIsSwitchCompanyVisible(true)}
+            >
+              <BuildOutlined />
+            </div>
+          </Tooltip>
+        </>
+      )}
+      {/* {buttonSwitch()} */}
+
       <Avatar />
       <GlobalEmployeeSearch
         titleModal="GLOBAL EMPLOYEE SEARCH"
@@ -150,10 +158,18 @@ const GlobalHeaderRight = (props) => {
   );
 };
 
-export default connect(({ settings, user, employeesManagement, loading }) => ({
-  theme: settings.navTheme,
-  layout: settings.layout,
-  employeesManagement,
-  currentUser: user.currentUser,
-  loadingList: loading.effects['employeesManagement/fetchSearchEmployeesList'],
-}))(GlobalHeaderRight);
+export default connect(
+  ({
+    settings,
+    user: { companiesOfUser = [], currentUser = {} },
+    employeesManagement,
+    loading,
+  }) => ({
+    theme: settings.navTheme,
+    layout: settings.layout,
+    employeesManagement,
+    currentUser,
+    companiesOfUser,
+    loadingList: loading.effects['employeesManagement/fetchSearchEmployeesList'],
+  }),
+)(GlobalHeaderRight);

@@ -24,6 +24,9 @@
       font-size: 13px;
       padding: 16px 16px;
     }
+    .ant-pagination, .ant-table-pagination, .ant-table-pagination-right {
+      display: none;
+    }
   }
 
   .title {
@@ -56,6 +59,7 @@
     }
     &__view{
       text-decoration-line:underline;
+      margin-left: 14px;
     }
   }
   .reason {
@@ -80,10 +84,12 @@
   }
 
   .update {
-    width: 190px;
+    // width: 190px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
   }
 }
 

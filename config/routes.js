@@ -165,7 +165,14 @@ const routes = [
             name: 'directory',
             icon: '/assets/images/menuIcons/directory.svg',
             component: './Directory',
-            authority: ['P_DIRECTORY_VIEW', 'M_DIRECTORY_VIEW', 'owner'],
+            authority: ['P_DIRECTORY_VIEW', 'M_DIRECTORY_VIEW', 'M_EMPLOYEE_MANAGEMENT_VIEW'],
+          },
+          {
+            path: '/employees',
+            name: 'employees',
+            icon: '/assets/images/menuIcons/members.svg',
+            component: './Directory',
+            authority: ['owner'],
           },
           {
             path: '/employee-onboarding',
@@ -194,7 +201,7 @@ const routes = [
               'hr-global',
               'employee',
               'leader',
-              'owner',
+              // 'owner',
             ],
           },
           {
@@ -209,7 +216,7 @@ const routes = [
             name: 'employees',
             icon: '/assets/images/menuIcons/members.svg',
             component: '../pages_admin/EmployeesManagement',
-            authority: ['M_EMPLOYEE_MANAGEMENT_VIEW', 'owner'],
+            authority: ['M_EMPLOYEE_MANAGEMENT_VIEW'],
           },
           {
             path: '/employees/employee-profile/:reId',

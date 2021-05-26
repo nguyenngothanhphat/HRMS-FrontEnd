@@ -27,6 +27,7 @@ import styles from './index.less';
       itemNewCreate1On1 = {},
       showModalSuccessfully = false,
       listAssignee = [],
+      hrManager = {}
     } = {},
     user: {
       currentUser: { employee: { _id: myId = '' } = {}, company: { _id: company } = {} } = {},
@@ -43,6 +44,7 @@ import styles from './index.less';
     showModalSuccessfully,
     company,
     listAssignee,
+    hrManager
   }),
 )
 class DetailTicket extends Component {
@@ -208,14 +210,22 @@ class DetailTicket extends Component {
       listAssignee = [],
       loadingReview,
       myId = '',
+      hrManager = {}
     } = this.props;
     const {
       status = '',
       employee: {
         _id: ownerRequest = '',
-        generalInfo: { firstName: nameEmployee = '', employeeId = '', avatar = '' } = {},
+        generalInfo: {
+          firstName: nameEmployee = '',
+          employeeId = '',
+          avatar = '',
+          company = {},
+          tenant = '',
+        } = {},
         title: { name: title = '' } = {},
       } = {},
+      location = {},
     } = myRequest;
     const filterListAssignee = listAssignee.filter((item) => item._id !== ownerRequest);
     if (loading)
@@ -224,7 +234,16 @@ class DetailTicket extends Component {
           <Spin size="large" />
         </div>
       );
-    const employeeInfo = { nameEmployee, employeeId, avatar, title };
+    const employeeInfo = {
+      nameEmployee,
+      employeeId,
+      avatar,
+      title,
+      ownerRequest,
+      location,
+      company,
+      tenant,
+    };
     const listScheduleMeeting = list1On1.filter((item) => item.content === '');
     const listComment = list1On1.filter(
       (item) => item.content !== '' && myId === item.ownerComment?._id,
@@ -291,7 +310,7 @@ class DetailTicket extends Component {
                 {status === 'ACCEPTED' && <RequestChangeLWD />}
               </Col>
               <Col span={9}>
-                <Assignee myRequest={myRequest} />
+                <Assignee myRequest={myRequest} hrManager={hrManager} />
               </Col>
             </Row>
             {/* {checkShowNotification &&

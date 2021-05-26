@@ -4,7 +4,7 @@ import { Row, Col, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { map } from 'lodash';
 import CustomModal from '@/components/CustomModal';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import SendEmail from './components/SendEmail';
 import Warning from './components/Warning';
 import NoteComponent from '../NoteComponent';
@@ -712,7 +712,7 @@ class BackgroundCheck extends Component {
         workEmail,
         previousExperience,
         salaryStructure,
-        company,
+        // company,
       } = {},
     } = this.props;
 
@@ -756,7 +756,7 @@ class BackgroundCheck extends Component {
       documentChecklistSetting,
       action: 'submit',
       options: 1,
-      company,
+      company: getCurrentCompany(),
       tenantId: getCurrentTenant(),
     };
 
