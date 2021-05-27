@@ -9,6 +9,19 @@ import ConfirmRemoveModal from '../ConfirmRemoveModal';
 import ResetPasswordModal from '../ResetPasswordModal';
 import styles from './index.less';
 
+const roleTags = [
+  { name: 'ADMIN-CLA', color: 'magenta' },
+  { name: 'CANDIDATE', color: 'gold' },
+  { name: 'CUSTOMER', color: 'orange' },
+  { name: 'EMPLOYEE', color: 'blue' },
+  { name: 'HR', color: 'green' },
+  { name: 'ADMIN-CDA', color: 'lime' },
+  { name: 'LEADER', color: 'red' },
+  { name: 'HR-MANAGER', color: 'volcano' },
+  { name: 'HR-GLOBAL', color: 'cyan' },
+  { name: 'MANAGER', color: 'geekblue' },
+];
+
 @connect(({ usersManagement }) => ({
   usersManagement,
 }))
@@ -100,9 +113,9 @@ class TableUsers extends PureComponent {
         align: 'left',
         render: (roles = []) => {
           return roles.map((role) => {
-            const color = 'geekblue';
+            const tag = roleTags.find((d) => d.name === role) || {};
             return (
-              <Tag className={styles.roleTags} color={color}>
+              <Tag className={styles.roleTags} color={tag.color || 'purple'}>
                 {role.toUpperCase()}
               </Tag>
             );
@@ -147,6 +160,7 @@ class TableUsers extends PureComponent {
         dataIndex: 'userIndentity',
         width: '6%',
         align: 'center',
+        fixed: 'right',
         render: (userIndentity) => (
           <div className={styles.userAction}>
             <img

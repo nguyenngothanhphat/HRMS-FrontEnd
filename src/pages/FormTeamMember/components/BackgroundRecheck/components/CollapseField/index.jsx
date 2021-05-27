@@ -80,7 +80,7 @@ class CollapseField extends Component {
                   const { name: fileName = '' } = attachment;
                   return (
                     <Row gutter={[16, 0]} className={styles.collapseField__row} key={index}>
-                      <Col span={6}>
+                      <Col span={6} className={styles.collapseField__row__name}>
                         <Typography.Text>{document.displayName}</Typography.Text>
                       </Col>
                       <Col span={7} className={styles.collapseField__row__file}>
