@@ -122,7 +122,7 @@ class ViewLeft extends Component {
     const checkDraft = countdata.filter(({ _id }) => _id === 'DRAFT').length > 0;
     // const checkAccepted = countdata.find(({ _id }) => _id === 'ACCEPTED') || {};
     // const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
-    const currentStep = data.length > 0 ? data[0].nodeStep - 1 : 0;
+    const currentStep = data.length > 0 ? data[0].nodeStep : 0;
 
     return (
       <div className={styles.Container}>

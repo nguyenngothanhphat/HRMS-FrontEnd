@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Modal, Button, Form, Row, Col, Checkbox } from 'antd';
+import { Modal, Button, Form, Row, Col, Checkbox, Input } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
+const { TextArea } = Input;
 @connect(
   ({
     offboarding: {
@@ -49,7 +50,7 @@ class AnswerModal extends PureComponent {
     }
   };
 
-  renderFormItem = (defaultAnswers, question, answerType, indexOfQuestion) => {
+  renderFormItem = (defaultAnswers, question, answerType, indexOfQuestion, isExitInterviewForm) => {
     const options = [
       {
         label: (
@@ -67,28 +68,41 @@ class AnswerModal extends PureComponent {
     return (
       <>
         <Row key={`${indexOfQuestion + 1}`} align="top" gutter={['10', '10']}>
-          <Col span={24}>
-            <Form.Item name={[indexOfQuestion]}>
-              <Checkbox.Group options={options} />
-            </Form.Item>
-          </Col>
-          {/* <Col span={12}>
-            {answerType === 'FIELD' && (
-              <>
-                <Form.Item name={[indexOfQuestion]} fieldKey={[indexOfQuestion]}>
-                  <TextArea />
-                </Form.Item>
-              </>
-            )}
+          {isExitInterviewForm ? (
+            <>
+              <Col span={12}>
+                <span style={{ fontWeight: 'bold', paddingRight: '8px' }}>
+                  Question {indexOfQuestion + 1}:
+                </span>
+                {question}
+              </Col>
+              <Col span={12}>
+                {answerType === 'FIELD' && (
+                  <>
+                    <Form.Item name={[indexOfQuestion]} fieldKey={[indexOfQuestion]}>
+                      <TextArea />
+                    </Form.Item>
+                  </>
+                )}
 
-            {answerType === 'BULLET' && (
-              <>
-                <Form.Item name={[indexOfQuestion]} fieldKey={[indexOfQuestion]}>
-                  <Checkbox.Group options={defaultAnswers} />
+                {answerType === 'BULLET' && (
+                  <>
+                    <Form.Item name={[indexOfQuestion]} fieldKey={[indexOfQuestion]}>
+                      <Checkbox.Group options={defaultAnswers} />
+                    </Form.Item>
+                  </>
+                )}
+              </Col>
+            </>
+          ) : (
+            <>
+              <Col span={24}>
+                <Form.Item name={[indexOfQuestion]}>
+                  <Checkbox.Group options={options} />
                 </Form.Item>
-              </>
-            )}
-          </Col> */}
+              </Col>
+            </>
+          )}
         </Row>
       </>
     );
@@ -96,6 +110,7 @@ class AnswerModal extends PureComponent {
 
   renderForm = () => {
     const { settings } = this.state;
+    const { isExitInterviewForm } = this.props;
 
     return (
       <>
@@ -111,7 +126,13 @@ class AnswerModal extends PureComponent {
               <>
                 {settings.map((data, index) => {
                   const { defaultAnswers = [], question = '', answerType = '' } = data;
-                  return this.renderFormItem(defaultAnswers, question, answerType, index);
+                  return this.renderFormItem(
+                    defaultAnswers,
+                    question,
+                    answerType,
+                    index,
+                    isExitInterviewForm,
+                  );
                 })}
               </>
             )}

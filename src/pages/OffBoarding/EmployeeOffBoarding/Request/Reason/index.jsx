@@ -3,7 +3,7 @@ import { Input, Row, Col, DatePicker } from 'antd';
 import { connect } from 'umi';
 import icon from '@/assets/offboarding-bulb.svg';
 import moment from 'moment';
-import Checkbox from 'antd/lib/checkbox/Checkbox';
+// import Checkbox from 'antd/lib/checkbox/Checkbox';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -17,16 +17,16 @@ class Reason extends PureComponent {
   render() {
     const {
       myRequest: {
-        requestDate = '',
+        // requestDate = '',
         reasonForLeaving = '',
-        requestLastDate = '',
+        // requestLastDate = '',
         lastWorkingDate = '',
       } = {},
-      changeLWD = false,
-      handleLWD = () => {},
-      handleRequestToChange = () => {},
+      // changeLWD = false,
+      // handleLWD = () => {},
+      // handleRequestToChange = () => {},
     } = this.props;
-    const marginTop = lastWorkingDate ? '0px' : '60px';
+    // const marginTop = lastWorkingDate ? '0px' : '60px';
     const dateValue = moment(lastWorkingDate).format('MM.DD.YY');
 
     return (

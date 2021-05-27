@@ -5,6 +5,7 @@ import templateIcon from '@/assets/templateIcon.svg';
 import editIcon from '@/assets/editMailExit.svg';
 import removeIcon from '@/assets/deleteMailExist.svg';
 import sendMailIcon from '@/assets/sendMailOffboarding.svg';
+import TickIcon from '@/assets/tick.svg';
 import { LoadingOutlined } from '@ant-design/icons';
 
 // import addTemplateIcon from '@/assets/add-template-icon.svg';
@@ -137,6 +138,7 @@ class MailExit extends Component {
   renderAfterSendMail = () => {
     const {
       exitPackage: { waitList = [] },
+      isClosedRecord,
     } = this.props;
     return (
       <>
@@ -164,23 +166,16 @@ class MailExit extends Component {
                     </span>
                   </div>
                   <div className={styles.template__action}>
-                    <img
-                      // onClick={() => this.handleClickEdit(template, 'Edit')}
-                      className={styles.edit__icon}
-                      src={editIcon}
-                      alt="edit-icon"
-                    />
-                    <img src={removeIcon} alt="remove-icon" />
-
-                    {/* <Popconfirm
-                      title="Are you sure?"
-                      onConfirm={() => this.handleRemoveTemplate(template, 'template')}
-                      // onCancel={cancel}
-                      okText="Yes"
-                      cancelText="No"
-                    >
-                      <img src={removeIcon} alt="remove-icon" />
-                    </Popconfirm> */}
+                    {isClosedRecord ? (
+                      <>
+                        <img src={TickIcon} alt="tick-icon" />
+                      </>
+                    ) : (
+                      <>
+                        <img className={styles.edit__icon} src={editIcon} alt="edit-icon" />
+                        <img src={removeIcon} alt="remove-icon" />
+                      </>
+                    )}
                   </div>
                 </div>
               </Col>
