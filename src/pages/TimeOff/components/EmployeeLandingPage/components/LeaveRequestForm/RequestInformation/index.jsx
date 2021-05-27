@@ -6,7 +6,7 @@ import TimeOffModal from '@/components/TimeOffModal';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import { TIMEOFF_STATUS, TIMEOFF_LINK_ACTION } from '@/utils/timeOff';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import LeaveTimeRow from './LeaveTimeRow';
 
 import styles from './index.less';
@@ -485,11 +485,8 @@ class RequestInformation extends PureComponent {
       selectedTypeName,
     } = this.state;
     if (buttonState === 1) {
-      const {
-        dispatch,
-        user: { currentUser: { employee = {} } = {}, location: { company = '' } = {} } = {},
-      } = this.props;
-      const { _id: employeeId = '', manager: { _id: managerId = '' } = {} } = employee;
+      const { dispatch, user: { currentUser: { employee = {} } = {} } = {} } = this.props;
+      const { _id: employeeId = '', manager = '' } = employee;
       const {
         timeOffType = '',
         subject = '',
@@ -523,9 +520,9 @@ class RequestInformation extends PureComponent {
           leaveDates,
           onDate: moment(),
           description,
-          approvalManager: managerId, // id
+          approvalManager: manager, // id
           cc: personCC,
-          company,
+          company: getCurrentCompany(),
         };
 
         // console.log('draft data', data);

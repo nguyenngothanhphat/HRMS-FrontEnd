@@ -3,6 +3,7 @@ import { connect } from 'umi';
 
 import { PageContainer } from '@/layouts/layout/src';
 import { Tabs, Affix } from 'antd';
+import { getCurrentCompany } from '@/utils/authority';
 import ActiveProject from './components/ActiveProject';
 import InactiveProject from './components/InactiveProject';
 import s from './index.less';
@@ -30,7 +31,7 @@ const ProjectManagement = (props) => {
     dispatch({
       type: 'projectManagement/getProjectByCompany',
       payload: {
-        company: user.currentUser.company._id || '',
+        company: getCurrentCompany(),
       },
     });
   }, []);
