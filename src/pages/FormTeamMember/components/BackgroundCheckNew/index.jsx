@@ -77,6 +77,7 @@ class BackgroundCheck extends Component {
   componentDidMount = () => {
     this.getDataFromServer();
     this.checkBottomBar();
+    window.scrollTo({ top: 77, behavior: 'smooth' });
   };
 
   componentWillUnmount() {

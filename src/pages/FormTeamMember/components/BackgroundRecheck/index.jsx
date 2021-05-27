@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { Component, Fragment } from 'react';
-import { Row, Col, Typography, Skeleton } from 'antd';
+import { Row, Col, Typography, Skeleton, Button } from 'antd';
 import { formatMessage, connect } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
@@ -23,18 +23,26 @@ import PROCESS_STATUS from '../utils';
         candidate = '',
         processStatus,
       },
+      currentStep,
     },
     loading,
   }) => ({
     tempData,
     privateEmail,
     candidate,
+    currentStep,
     processStatus,
     loading1: loading.effects['candidateInfo/sendDocumentStatusEffect'],
     loadingGetById: loading.effects['candidateInfo/fetchCandidateByRookie'],
   }),
 )
 class BackgroundRecheck extends Component {
+  static getDerivedStateFromProps(props) {
+    return {
+      currentStep: props.currentStep,
+    };
+  }
+
   constructor(props) {
     super(props);
     // const {
@@ -57,7 +65,7 @@ class BackgroundRecheck extends Component {
     const { tempData: { backgroundRecheck: { documentList: docsListProp = [] } = {} } = {} } =
       this.props;
 
-    window.scrollTo(0, 70); // Back to top of the page
+    window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
 
     this.setState({
       docsList: docsListProp,
@@ -320,6 +328,104 @@ class BackgroundRecheck extends Component {
     });
   };
 
+  onClickPrev = () => {
+    const { currentStep } = this.state;
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: currentStep - 1,
+      },
+    });
+  };
+
+  onClickNext = () => {
+    const { currentStep } = this.state;
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        currentStep: currentStep + 1,
+      },
+    });
+  };
+
+  _renderBottomBar = () => {
+    const { feedbackStatus } = this.state;
+    return (
+      <div className={styles.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={styles.greenText}>
+              * All mandatory details must be filled to proceed
+            </div>
+          </Col>
+          <Col className={styles.bottomBar__button} span={8}>
+            <Button
+              type="secondary"
+              onClick={this.onClickPrev}
+              className={styles.bottomBar__button__secondary}
+            >
+              Previous
+            </Button>
+            <Button
+              type="primary"
+              onClick={this.onClickNext}
+              className={`${styles.bottomBar__button__primary} ${
+                this.checkStatus() !== 1 ? styles.bottomBar__button__disabled : ''
+              }`}
+              disabled={this.checkStatus() !== 1}
+            >
+              Next
+            </Button>
+          </Col>
+        </Row>
+      </div>
+    );
+  };
+
+  checkStatus = () => {
+    const { docsList = [] } = this.state;
+    const newVerifiedDocs = [];
+    const newResubmitDocs = [];
+    const newIneligibleDocs = [];
+
+    const newDocumentList = [];
+    docsList.map((item) => {
+      const { data = [] } = item;
+      data.map((documentItem) => {
+        newDocumentList.push(documentItem);
+        return null;
+      });
+      return null;
+    });
+
+    newDocumentList.forEach((doc) => {
+      const { candidateDocumentStatus: candidateDocStatus = '' } = doc;
+      if (candidateDocStatus === 'RE-SUBMIT') {
+        newResubmitDocs.push(doc);
+      }
+      if (candidateDocStatus === 'INELIGIBLE') {
+        newIneligibleDocs.push(doc);
+      }
+      if (candidateDocStatus === 'VERIFIED') {
+        newVerifiedDocs.push(doc);
+      }
+    });
+
+    if (newVerifiedDocs.length > 0 && newVerifiedDocs.length === newDocumentList.length) {
+      return 1;
+    }
+    if (newIneligibleDocs.length > 0) {
+      return 3;
+    }
+    if (newResubmitDocs.length > 0) {
+      return 2;
+    }
+    return 4;
+  };
+
   render() {
     const { docsList, feedbackStatus, openModal, modalTitle } = this.state;
     const { privateEmail, loading1 } = this.props;
@@ -346,6 +452,7 @@ class BackgroundRecheck extends Component {
             <div className={styles.backgroundRecheck__left}>
               <>{this.renderCollapseFields()}</>
             </div>
+            {this._renderBottomBar()}
           </Col>
           <Col className={styles.backgroundRecheck__right} xs={24} sm={24} md={24} lg={8} xl={8}>
             <Row>
