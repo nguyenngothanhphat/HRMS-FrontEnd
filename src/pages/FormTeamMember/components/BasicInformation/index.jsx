@@ -50,7 +50,7 @@ class BasicInformation extends Component {
         isOpenReminder: true,
       });
     }
-    window.scrollTo(0, 70);
+    window.scrollTo({ top: 77, behavior: 'smooth' });
 
     this.checkBottomBar();
 
@@ -155,12 +155,12 @@ class BasicInformation extends Component {
     );
     if (
       fullName !== null &&
-      workEmail !== null &&
+      // workEmail !== null &&
       privateEmail !== null &&
       workEmail !== privateEmail &&
       notSpace.test(fullName) &&
-      emailRegExp.test(privateEmail) &&
-      emailRegExp.test(workEmail)
+      emailRegExp.test(privateEmail)
+      // emailRegExp.test(workEmail)
     ) {
       checkStatus.filledBasicInformation = true;
     } else {
@@ -265,7 +265,7 @@ class BasicInformation extends Component {
   testValidate = () => {
     const email1 = this.formRef.current.getFieldValue('privateEmail');
     const email2 = this.formRef.current.getFieldValue('workEmail');
-    if (email2 && email1) {
+    if ((email2 && email1) || email2 === '') {
       this.formRef.current.validateFields();
     }
   };
@@ -343,7 +343,7 @@ class BasicInformation extends Component {
               name="workEmail"
               rules={[
                 {
-                  required: true,
+                  // required: true,
                   message: 'Please input your email!',
                 },
                 {

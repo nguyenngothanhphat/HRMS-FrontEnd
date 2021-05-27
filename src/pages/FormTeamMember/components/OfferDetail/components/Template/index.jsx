@@ -59,7 +59,7 @@ const Template = (props) => {
               <div className={styles.rowIconContainer}>
                 <DownloadFile content={<DownloadOutlined />} url={attachment?.url} />
                 <EditOutlined onClick={() => editTemplate(_id)} />
-                <DeleteOutlined onClick={() => removeTemplate(_id)} />
+                {type !== 'default' && <DeleteOutlined onClick={() => removeTemplate(_id)} />}
               </div>
             </div>
           );

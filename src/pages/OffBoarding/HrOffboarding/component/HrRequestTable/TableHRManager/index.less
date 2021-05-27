@@ -4,6 +4,11 @@
       padding: 6px 16px;
       color: rgba(0, 0, 0, 0.85);
     }
+    .ant-table-placeholder {
+      .ant-table-cell {
+        border: none;
+      }
+    }
   }
   padding: 0 24px;
 
@@ -47,7 +52,6 @@
       border-radius: 3px;
     }
 
-    //Box-shadow first column
     td.ant-table-cell.ant-table-cell-fix-left.ant-table-cell-fix-left-last {
       box-shadow: 4px 0 5px 0 rgba(0, 0, 0, 0.05);
     }
@@ -70,7 +74,8 @@
     line-height: 15.23px;
   }
 
-  .requteeName, .ticketId {
+  .requteeName,
+  .ticketId {
     color: #2c6df9;
     font-weight: normal;
     font-size: 13px;
@@ -78,8 +83,6 @@
     line-height: 15px;
     text-decoration-line: underline;
   }
-
-
 
   .tableText {
     color: #464646;
@@ -95,7 +98,6 @@
     align-items: center;
     justify-content: space-between;
     &__text {
-      // margin-right: 15px;
       color: #ffa100;
       font-weight: 700;
       font-size: 12px;
@@ -105,9 +107,9 @@
     }
     &__popOver {
       &__dots {
-        padding: 0 5px;
         display: flex;
         height: fit-content;
+        padding: 0 5px;
         font-weight: 700;
         font-size: 20px;
         cursor: pointer;
