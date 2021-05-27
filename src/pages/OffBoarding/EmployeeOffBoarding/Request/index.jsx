@@ -20,11 +20,19 @@ import styles from './index.less';
   ({
     loading,
     offboarding: { myRequest = {}, list1On1 = [], listMeetingTime = [], hrManager = {} } = {},
+    user: {
+      currentUser: {
+        location: { _id: locationID = '' } = {},
+        company: { _id: companyID } = {},
+      } = {},
+    } = {},
   }) => ({
     myRequest,
     list1On1,
     listMeetingTime,
     hrManager,
+    locationID,
+    companyID,
     loading: loading.effects['offboarding/create1On1'],
     loadingGetById: loading.effects['offboarding/fetchRequestById'],
   }),
@@ -44,6 +52,8 @@ class ResignationRequest extends Component {
     const {
       dispatch,
       match: { params: { id: code = '' } = {} },
+      companyID,
+      locationID,
     } = this.props;
     dispatch({
       type: 'offboarding/fetchRequestById',
@@ -108,6 +118,16 @@ class ResignationRequest extends Component {
     });
   };
 
+  checkStatus = (status, relievingStatus) => {
+    if (status === 'ACCEPTED') {
+      if (relievingStatus === 'CLOSE-RECORDS') {
+        return 2;
+      }
+      return 1;
+    }
+    return 0;
+  };
+
   render() {
     const {
       myRequest = {},
@@ -119,7 +139,6 @@ class ResignationRequest extends Component {
     } = this.props;
     const { visible, keyModal, changeLWD } = this.state;
     const {
-      approvalStep = '',
       manager: {
         generalInfo: {
           employeeId: idManager = '',
@@ -128,6 +147,7 @@ class ResignationRequest extends Component {
         } = {},
       } = {},
       status = '',
+      relievingStatus = '',
       employee: { generalInfo: { firstName: nameEmployee = '', employeeId = '' } = {} } = {},
       ticketID = '',
     } = myRequest;
@@ -140,6 +160,8 @@ class ResignationRequest extends Component {
     }
     const arrStatus = ['IN-PROGRESS', 'ACCEPTED', 'ON-HOLD', 'DRAFT'];
     const listScheduleMeeting = list1On1.filter((item) => item.content === '');
+
+    const approvalStep = this.checkStatus(status, relievingStatus);
 
     return (
       <PageContainer>
