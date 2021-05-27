@@ -42,7 +42,7 @@ export default class Assignee extends PureComponent {
             // workEmail ='',
             avatar: avatarHRManager = '',
           } = {},
-          title: { name: titleHRManager = '' } = {},
+          title: { name: titleHRManager = 'HR Manager' } = {},
         } = {},
       } = {},
     } = this.props;

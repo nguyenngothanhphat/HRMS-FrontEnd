@@ -39,6 +39,13 @@ class ClosingPackage extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    const { employee: { generalInfo: { workEmail = '' } = {} } = {} } = this.props;
+    this.setState({
+      emailInput: workEmail,
+    });
+  }
+
   renderExtraContent = () => {
     const { isSent } = this.state;
     return (
@@ -57,7 +64,7 @@ class ClosingPackage extends PureComponent {
 
   handleSendMail = (value) => {
     const { toEmail } = value;
-    const { dispatch, ticketId } = this.props;
+    const { dispatch, ticketId, isClosedRecord = () => {} } = this.props;
     dispatch({
       type: 'offboarding/sendClosePackage',
       payload: {
@@ -65,6 +72,8 @@ class ClosingPackage extends PureComponent {
         ticketId,
         toEmail,
       },
+    }).then(() => {
+      isClosedRecord(true);
     });
   };
 
@@ -149,6 +158,7 @@ class ClosingPackage extends PureComponent {
 
   renderBeforeSendMail = () => {
     const { closingPackage, customDocuments, emailInput } = this.state;
+    const { employee: { generalInfo: { workEmail = '' } = {} } = {} } = this.props;
 
     return (
       <>
@@ -239,6 +249,7 @@ class ClosingPackage extends PureComponent {
           name="packageToEmail"
           onFinish={this.handleSendMail}
           onValuesChange={this.onValueChange}
+          initialValues={{ toEmail: workEmail }}
         >
           <Row gutter={[40, 15]} className={styles.closingPackage__inputSection}>
             <Col span={24}>

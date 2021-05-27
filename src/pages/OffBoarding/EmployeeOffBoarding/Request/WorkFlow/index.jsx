@@ -102,7 +102,17 @@ class Step3 extends PureComponent {
   };
 
   render() {
-    const { approvalStep, nameManager, avatarManager = '' } = this.props;
+    const {
+      approvalStep,
+      nameManager,
+      avatarManager = '',
+      hrManager = {},
+      hrManager: {
+        employee: {
+          generalInfo: { firstName: nameHrManager = '', avatar: avatarHrManager = '' } = {},
+        } = {},
+      } = {},
+    } = this.props;
 
     return (
       <div className={styles.Step3}>
@@ -110,7 +120,7 @@ class Step3 extends PureComponent {
           <span className={styles.title}>Chain of approval</span>
           <Steps current={approvalStep} labelPlacement="vertical">
             <Step icon={this.renderIcon(avatarManager, approvalStep, 1)} title={nameManager} />
-            <Step icon={this.renderIcon(DefaultAvatar, approvalStep, 2)} title="HR Manager" />
+            <Step icon={this.renderIcon(avatarHrManager, approvalStep, 2)} title={nameHrManager} />
           </Steps>
         </div>
       </div>
