@@ -20,19 +20,11 @@ import styles from './index.less';
   ({
     loading,
     offboarding: { myRequest = {}, list1On1 = [], listMeetingTime = [], hrManager = {} } = {},
-    user: {
-      currentUser: {
-        location: { _id: locationID = '' } = {},
-        company: { _id: companyID } = {},
-      } = {},
-    } = {},
   }) => ({
     myRequest,
     list1On1,
     listMeetingTime,
     hrManager,
-    locationID,
-    companyID,
     loading: loading.effects['offboarding/create1On1'],
     loadingGetById: loading.effects['offboarding/fetchRequestById'],
   }),
@@ -52,8 +44,6 @@ class ResignationRequest extends Component {
     const {
       dispatch,
       match: { params: { id: code = '' } = {} },
-      companyID,
-      locationID,
     } = this.props;
     dispatch({
       type: 'offboarding/fetchRequestById',

@@ -601,11 +601,17 @@ const offboarding = {
         });
         const { statusCode: newRequestStat, data = {} } = newRequest;
         if (newRequestStat !== 200) throw newRequest;
-        const { item: relievingDetails = {} } = data;
+        const {
+          item: relievingDetails = {},
+          item: { exitPackage: { isSent: isSentEmailPackage = '' } } = {},
+        } = data;
         yield put({ type: 'save', payload: { relievingDetails } });
+        return isSentEmailPackage;
       } catch (error) {
         dialog(error);
       }
+
+      return 0;
     },
     *sendClosePackage({ payload }, { call, put }) {
       try {
