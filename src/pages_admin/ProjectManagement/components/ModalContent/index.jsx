@@ -10,7 +10,7 @@ const { Item } = Form;
 
 const ModalContent = (props) => {
   const {
-    projectInfo: { projectName = '', projectId = '' },
+    projectInfo: { projectName = '', projectId = '', company = '' } = {},
     roleList: roleListProp = [],
     employeeList: employeeListProp = [],
     dispatch,
@@ -100,11 +100,6 @@ const ModalContent = (props) => {
   };
 
   const assign = async () => {
-    const {
-      currentUser: {
-        employee: { _id: employeeId },
-      },
-    } = user;
     const members = formInfo.map((item) => {
       return { id: item.employee.id, role: item.role, effort: item.effort };
     });
@@ -114,7 +109,7 @@ const ModalContent = (props) => {
     const response = await dispatch({
       type: 'projectManagement/addMember',
       payload: {
-        employee: employeeId,
+        company,
         project: projectId,
         members,
       },

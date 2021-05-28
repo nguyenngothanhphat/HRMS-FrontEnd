@@ -1,0 +1,55 @@
+@orange: #ffa100;
+@blue: #2c6df9;
+
+.AddProjectModal {
+  padding: 25px;
+  height: fit-content;
+  // min-width: ;
+
+  h3 {
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .footer {
+      display: flex;
+      justify-content: flex-end;
+      .cancelButton {
+        span {
+          color: rgb(93, 93, 93) !important;
+        }
+      }
+      .saveDraftButton {
+        span {
+          color: #ffa100 !important;
+        }
+      }
+      :global {
+        .ant-btn-link {
+          margin-left: -10px !important;
+          background-color: white !important;
+          span {
+            font-weight: bold !important;
+            // color: #ffa100 !important;
+          }
+        }
+        .ant-btn {
+          height: 40px;
+          margin-left: 20px;
+          // width: 108px;
+          padding: 0 30px;
+          background-color: #ffa100;
+          border: none;
+          border-radius: 30px;
+          span {
+            color: white;
+            font-weight: 700;
+          }
+          &:hover {
+            background-color: #ffa100cc; // hex with alpha 0.8
+          }
+        }
+      }
+
+  }
+}
