@@ -8,13 +8,22 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-@connect(({ employeeProfile, loading, employeeProfile: { tenantCurrentEmployee = '' } = {} }) => ({
-  employeeProfile,
-  tenantCurrentEmployee,
-  loadingLocationsList: loading.effects['employeeProfile/fetchLocationsByCompany'],
-  loadingTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
-  // loadingEmployeeTypes: loading.effects['employeeProfile/fetchEmployeeTypes'],
-}))
+@connect(
+  ({
+    employeeProfile,
+    loading,
+    employeeProfile: { tenantCurrentEmployee = '', compensationTypes = [] } = {},
+  }) => ({
+    employeeProfile,
+    compensationTypes,
+    tenantCurrentEmployee,
+    loadingLocationsList: loading.effects['employeeProfile/fetchLocationsByCompany'],
+    loadingTitleList: loading.effects['employeeProfile/fetchTitleByDepartment'],
+    loadingCompensationList: loading.effects['employeeProfile/fetchCompensationList'],
+
+    // loadingEmployeeTypes: loading.effects['employeeProfile/fetchEmployeeTypes'],
+  }),
+)
 class EditCurrentInfo extends PureComponent {
   componentDidMount() {
     const { employeeProfile, dispatch, tenantCurrentEmployee = '' } = this.props;
@@ -44,6 +53,9 @@ class EditCurrentInfo extends PureComponent {
         company: company._id,
       },
     });
+    dispatch({
+      type: 'employeeProfile/fetchCompensationList',
+    });
   }
 
   componentWillUnmount() {
@@ -61,7 +73,7 @@ class EditCurrentInfo extends PureComponent {
   handleSave = (values, id) => {
     const { dispatch, employeeProfile, tenantCurrentEmployee = '' } = this.props;
     const { company = '' } = employeeProfile.originData.employmentData;
-    const { title, joinDate, location, employeeType } = values;
+    const { title, joinDate, location, employeeType, compensationType, manager } = values;
     const payload = {
       id,
       title,
@@ -69,7 +81,9 @@ class EditCurrentInfo extends PureComponent {
       location,
       employeeType,
       company: company._id,
+      compensationType,
       tenantId: tenantCurrentEmployee,
+      manager
     };
     dispatch({
       type: 'employeeProfile/updateEmployment',
@@ -85,11 +99,18 @@ class EditCurrentInfo extends PureComponent {
 
     const {
       employeeProfile,
+      employeeProfile: {
+        employees = [],
+      },
       loadingTitleList,
       loadingLocationsList,
       handleCancel = () => {},
+      // listEmployeeActive,
     } = this.props;
-
+    // console.log(employees)
+    const filteredList = employees.filter(
+      (item) => item._id !== employeeProfile.idCurrentEmployee,
+    );
     const {
       _id = '',
       title = '',
@@ -133,6 +154,7 @@ class EditCurrentInfo extends PureComponent {
             currentAnnualCTC,
             // timeOffPolicy,
           }}
+          // onFinish={(values) => console.log(values)}
           onFinish={(values) => this.handleSave(values, _id)}
         >
           <Form.Item label="Title" name="title">
@@ -192,9 +214,9 @@ class EditCurrentInfo extends PureComponent {
           <Form.Item label="Compensation Type" name="compensationType">
             <Select
               showSearch
-              placeholder="Select an compensation type"
               optionFilterProp="children"
-              disabled
+              placeholder="Select an compensation type"
+              // disabled
               filterOption={(input, option) =>
                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
@@ -220,7 +242,7 @@ class EditCurrentInfo extends PureComponent {
             ]}
           >
             <InputNumber
-              disabled
+              // disabled
               min={0}
               style={{ width: '100%' }}
               formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
@@ -230,14 +252,15 @@ class EditCurrentInfo extends PureComponent {
           </Form.Item>
           <Form.Item label="Manager" name="manager">
             <Select
-              disabled
+              // disabled
               showSearch
               optionFilterProp="children"
+              placeholder="Select a manager"
               filterOption={(input, option) =>
                 option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               }
             >
-              {employeeProfile?.employees.map((item, index) => {
+              {filteredList.map((item, index) => {
                 return (
                   <Option key={`${index + 1}`} value={item._id}>
                     {item?.generalInfo?.firstName || item?.generalInfo?.legalName || null}

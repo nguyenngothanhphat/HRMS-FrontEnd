@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Checkbox, Select, Row, Col, Spin, InputNumber, Affix, Divider } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
+import { getCurrentLocation } from '@/utils/authority';
 import AddHoliday from './AddHoliday';
 import s from './index.less';
 
@@ -83,7 +84,7 @@ const MOCK_DATA = [
     user: {
       currentUser: {
         company: { _id: idCompany = '' } = {},
-        location: { _id: idLocation = '' } = {},
+        location = {},
       } = {},
     } = {},
   }) => ({
@@ -92,7 +93,7 @@ const MOCK_DATA = [
     loadingbyCountry: loading.effects['timeOff/fetchHolidaysListBylocation'],
     loadingAddHoliday: loading.effects['timeOff/addHoliday'],
     idCompany,
-    idLocation,
+    location,
   }),
 )
 class HollidayCalendar extends Component {
@@ -132,10 +133,10 @@ class HollidayCalendar extends Component {
   };
 
   initListHoliday = (year) => {
-    const { dispatch, idLocation } = this.props;
+    const { dispatch, location = {} } = this.props;
     dispatch({
       type: 'timeOff/fetchHolidaysListBylocation',
-      payload: { location: idLocation },
+      payload: { location: getCurrentLocation(), country: location.headQuarterAddress.country._id, },
     }).then((response) => {
       const { statusCode, data: listData = {} } = response;
       this.setState({
@@ -247,7 +248,7 @@ class HollidayCalendar extends Component {
 
   onChangeChkBoxGroup = (list) => {
     const { plainOptions = [] } = this.state;
-    console.log('list: ', list);
+    // console.log('list: ', list);
 
     this.setState({
       checkedList: list,
@@ -256,10 +257,10 @@ class HollidayCalendar extends Component {
     });
   };
 
-  handleCheckBox = (e) => {
-    const chkBoxVal = e.target.value;
-    console.log('chkBoxVal: ', chkBoxVal);
-  };
+  // handleCheckBox = (e) => {
+  //   const chkBoxVal = e.target.value;
+  //   // console.log('chkBoxVal: ', chkBoxVal);
+  // };
 
   fomatDate = (holidaysList = []) => {
     let result = MOCK_DATA;
@@ -361,9 +362,9 @@ class HollidayCalendar extends Component {
     );
   };
 
-  handleChangeSelect = (value) => {
-    console.log('value: ', value);
-  };
+  // handleChangeSelect = (value) => {
+  //   console.log('value: ', value);
+  // };
 
   renderHoliday = (id, dataItem) => {
     const { children } = dataItem;
@@ -491,8 +492,7 @@ class HollidayCalendar extends Component {
               placeholder="Please select country"
               showArrow
               filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               className={s.selectCountry}
               defaultValue="India"
               onChange={(value) => this.handleChangeSelect(value)}
