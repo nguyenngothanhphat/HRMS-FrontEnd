@@ -394,34 +394,38 @@ class AvatarDropdown extends React.Component {
     const menuHeaderDropdown = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={this.onMenuClick}>
         {/* AVATAR AND INFORMATION */}
-        <div className={styles.viewProfile}>
-          <div className={styles.viewProfileAvatar}>
-            <Avatar
-              size={50}
-              className={styles.avatar}
-              icon={<UserOutlined />}
-              src={currentUser?.employee?.generalInfo?.avatar || avatar?.url || avtDefault}
-            />
+        <Menu.Item className={styles.menu__customItem}>
+          <div className={styles.viewProfile}>
+            <div className={styles.viewProfileAvatar}>
+              <Avatar
+                size={50}
+                className={styles.avatar}
+                icon={<UserOutlined />}
+                src={currentUser?.employee?.generalInfo?.avatar || avatar?.url || avtDefault}
+              />
+            </div>
+            <div className={styles.viewProfileInfo}>
+              <p>{name}</p>
+              {currentUser?.employee?.generalInfo?.employeeId && (
+                <p>
+                  {currentUser?.employee?.title?.name} -{' '}
+                  {currentUser?.employee?.generalInfo?.employeeId}
+                </p>
+              )}
+              {isOwner() && <p>Owner</p>}
+            </div>
           </div>
-          <div className={styles.viewProfileInfo}>
-            <p>{name}</p>
-            {currentUser?.employee?.generalInfo?.employeeId && (
-              <p>
-                {currentUser?.employee?.title?.name} -{' '}
-                {currentUser?.employee?.generalInfo?.employeeId}
-              </p>
-            )}
-            {isOwner() && <p>Owner</p>}
-          </div>
-        </div>
+        </Menu.Item>
 
         {/* VIEW PROFILE BUTTON */}
         {currentUser && (
-          <div className={styles.viewProfileBtn}>
-            <Button onClick={this.viewProfile} className={styles.buttonLink}>
-              {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
-            </Button>
-          </div>
+          <Menu.Item className={styles.menu__customItem}>
+            <div className={styles.viewProfileBtn}>
+              <Button onClick={this.viewProfile} className={styles.buttonLink}>
+                {formatMessage({ id: 'component.globalHeader.avatarDropdown.view-profile' })}
+              </Button>
+            </div>
+          </Menu.Item>
         )}
 
         {/* CHANGE PASSWORD */}
