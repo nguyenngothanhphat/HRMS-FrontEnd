@@ -137,11 +137,16 @@ class EmploymentTab extends Component {
     const { isChanging, current, currentData, isEdit } = this.state;
     const {
       dispatch,
+      listEmployeeActive,
       currentUser: {
         // roles = [],
+        employee: {
+          company = {}
+        } = {},
         permissions = {},
       },
     } = this.props;
+    console.log(company)
     // const permissions = checkPermissions(roles);
     return (
       <div>
@@ -164,7 +169,7 @@ class EmploymentTab extends Component {
             )}
           </div>
           {isEdit ? (
-            <EditCurrentInfo handleCancel={this.handleEditCurrentInfo} />
+            <EditCurrentInfo handleCancel={this.handleEditCurrentInfo} listEmployeeActive={listEmployeeActive} />
           ) : (
             <CurrentInfo isChanging={isChanging} dispatch={dispatch} data={currentData} />
           )}

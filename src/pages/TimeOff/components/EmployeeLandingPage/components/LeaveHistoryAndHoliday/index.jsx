@@ -5,6 +5,7 @@ import ListIcon from '@/assets/list_icon.svg';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { connect } from 'umi';
 import moment from 'moment';
+import { getCurrentLocation } from '@/utils/authority';
 import Holiday from './components/Holiday';
 import LeaveHistory from './components/LeaveHistory';
 import styles from './index.less';
@@ -26,7 +27,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
     const { dispatch, location = {} } = this.props;
     dispatch({
       type: 'timeOff/fetchHolidaysListBylocation',
-      payload: { location: location?._id || '' },
+      payload: { location: getCurrentLocation(), country: location.headQuarterAddress.country._id },
     });
     dispatch({
       type: 'timeOff/fetchLeaveHistory',
@@ -132,9 +133,10 @@ class LeaveHistoryAndHoliday extends PureComponent {
 
   render() {
     const { activeShowType } = this.state;
-    const { timeOff: { holidaysList = [], allMyLeaveRequests: { items = [] } = {} } = {} } =
-      this.props;
-    const formatHolidayLists = this.formatHolidayLists(holidaysList);
+    const {
+      timeOff: { holidaysListByLocation = [], allMyLeaveRequests: { items = [] } = {} } = {},
+    } = this.props;
+    // const formatHolidayLists = this.formatHolidayLists(holidaysList);
     const formatLeavingList = this.formatLeavingList(items);
 
     return (
@@ -144,7 +146,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
             <LeaveHistory leavingList={formatLeavingList} activeShowType={activeShowType} />
           </TabPane>
           <TabPane tab="Holidays" key="2">
-            <Holiday holidaysList={formatHolidayLists} activeShowType={activeShowType} />
+            <Holiday holidaysList={holidaysListByLocation} activeShowType={activeShowType} />
           </TabPane>
         </Tabs>
       </div>
