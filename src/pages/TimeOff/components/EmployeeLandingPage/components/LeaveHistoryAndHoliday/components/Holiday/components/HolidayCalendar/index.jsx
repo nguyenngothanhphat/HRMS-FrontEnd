@@ -149,9 +149,12 @@ export default class HolidayCalendar extends PureComponent {
       const weekDayCheckClassName = '';
 
       holidaysList.forEach((value) => {
-        const { fromDate: from = '', toDate: to = '' } = value; // parse
-        const eventFromDay = moment(from).format('D');
-        const eventFromMonth = moment(from).format('M');
+        // const sameName = holidaysList.filter(item => value.name === item.name)
+        // console.log('sameDay', sameName);
+        const { name = '', date: {iso = '', dateTime: {year = ''} = {}} = {},fromDate: from = '', toDate: to = '' } = value; // parse
+        const newDate = new Date(iso);
+        const eventFromDay = moment(newDate).format('D');
+        const eventFromMonth = moment(newDate).format('M');
         const eventFromYear = moment(from).format('Y');
         const eventToDay = moment(to).format('D');
         const eventToMonth = moment(to).format('M');

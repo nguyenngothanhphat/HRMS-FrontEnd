@@ -134,9 +134,9 @@ class LeaveHistoryAndHoliday extends PureComponent {
   render() {
     const { activeShowType } = this.state;
     const {
-      timeOff: { holidaysList = [], allMyLeaveRequests: { items = [] } = {} } = {},
+      timeOff: { holidaysListByLocation = [], allMyLeaveRequests: { items = [] } = {} } = {},
     } = this.props;
-    const formatHolidayLists = this.formatHolidayLists(holidaysList);
+    // const formatHolidayLists = this.formatHolidayLists(holidaysList);
     const formatLeavingList = this.formatLeavingList(items);
 
     return (
@@ -146,7 +146,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
             <LeaveHistory leavingList={formatLeavingList} activeShowType={activeShowType} />
           </TabPane>
           <TabPane tab="Holidays" key="2">
-            <Holiday holidaysList={formatHolidayLists} activeShowType={activeShowType} />
+            <Holiday holidaysList={holidaysListByLocation} activeShowType={activeShowType} />
           </TabPane>
         </Tabs>
       </div>

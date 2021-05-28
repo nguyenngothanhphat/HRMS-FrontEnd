@@ -61,7 +61,7 @@ const timeOff = {
     currentMineOrTeamTab: '1',
     currentFilterTab: '1',
     holidaysList: [],
-    holidaysListByLocation: {},
+    holidaysListByLocation: [],
     holidaysListByCountry: {},
     allMyLeaveRequests: {},
     leavingList: [],
@@ -233,7 +233,7 @@ const timeOff = {
           ...payload,
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, data: holidaysListByLocation = {} } = response;
+        const { statusCode, data: holidaysListByLocation = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
