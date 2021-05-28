@@ -44,10 +44,14 @@
   box-shadow: 0 6px 16px -8px rgba(0, 0, 0, 0.5), 0 9px 28px 0 rgba(0, 0, 0, 0.05),
     0 12px 48px 16px rgba(0, 0, 0, 0.03);
 
+  &__customItem {
+    all: unset !important;
+  }
+
   .selectLocation {
+    color: #707177;
     font-weight: 400;
     pointer-events: none;
-    color: #707177;
   }
   .viewProfileBtn {
     margin: 18px 20px !important;
@@ -71,16 +75,16 @@
   }
 
   .menuItemLink {
+    overflow: hidden;
     // if the location name is too long, I solve this issue by three lines of css
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
   }
 
   .menuItemLink2 {
     .menuItemLink();
-    pointer-events: none;
     color: #2c6df9;
+    pointer-events: none;
   }
 
   .menuItemLogout {
@@ -207,6 +211,9 @@
   }
 
   .notify {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 44px;
     height: 44px;
     margin: 0 12px;
@@ -214,12 +221,9 @@
     color: #161c29;
     font-size: 17px;
     background-color: #f3f6fc;
+    border: 1px solid rgba(255, 255, 255, 0);
     border-radius: 50%;
     cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid rgba(255, 255, 255, 0);
 
     &:hover {
       background: transparent;
@@ -228,28 +232,27 @@
   }
 
   .switchRole {
-    background-color: #f3f6fc;
-    border-radius: 5px;
-    margin: 0 12px;
-    cursor: pointer;
-    height: 44px;
-    padding: 0 10px;
-    // border: 1px solid rgba(255, 255, 255, 0);
-    border: 1px solid #f3f6fc;
-
-    min-width: 100px;
     display: flex;
     justify-content: center;
+
+    min-width: 100px;
+    height: 44px;
+    margin: 0 12px;
+    padding: 0 10px;
+    background-color: #f3f6fc;
+    // border: 1px solid rgba(255, 255, 255, 0);
+    border: 1px solid #f3f6fc;
+    border-radius: 5px;
+    cursor: pointer;
     &:hover {
       background: transparent;
       border: 1px solid #00c597;
     }
     .roleTitle {
-      font-size: 13px;
       font-weight: 500;
+      font-size: 13px;
     }
   }
-
 
   .account {
     .avatar {
