@@ -73,7 +73,7 @@ class EditCurrentInfo extends PureComponent {
   handleSave = (values, id) => {
     const { dispatch, employeeProfile, tenantCurrentEmployee = '' } = this.props;
     const { company = '' } = employeeProfile.originData.employmentData;
-    const { title, joinDate, location, employeeType, compensationType } = values;
+    const { title, joinDate, location, employeeType, compensationType, manager } = values;
     const payload = {
       id,
       title,
@@ -83,6 +83,7 @@ class EditCurrentInfo extends PureComponent {
       company: company._id,
       compensationType,
       tenantId: tenantCurrentEmployee,
+      manager
     };
     dispatch({
       type: 'employeeProfile/updateEmployment',
@@ -98,12 +99,16 @@ class EditCurrentInfo extends PureComponent {
 
     const {
       employeeProfile,
+      employeeProfile: {
+        employees = [],
+      },
       loadingTitleList,
       loadingLocationsList,
       handleCancel = () => {},
+      // listEmployeeActive,
     } = this.props;
-
-    const filteredList = employeeProfile.employees.filter(
+    // console.log(employees)
+    const filteredList = employees.filter(
       (item) => item._id !== employeeProfile.idCurrentEmployee,
     );
     const {
@@ -149,6 +154,7 @@ class EditCurrentInfo extends PureComponent {
             currentAnnualCTC,
             // timeOffPolicy,
           }}
+          // onFinish={(values) => console.log(values)}
           onFinish={(values) => this.handleSave(values, _id)}
         >
           <Form.Item label="Title" name="title">
@@ -236,7 +242,7 @@ class EditCurrentInfo extends PureComponent {
             ]}
           >
             <InputNumber
-              disabled
+              // disabled
               min={0}
               style={{ width: '100%' }}
               formatter={(value) => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
