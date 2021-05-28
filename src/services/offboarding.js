@@ -210,3 +210,10 @@ export async function closeEmplRecord(payload) {
     data: payload,
   });
 }
+
+export async function submitToHr(payload) {
+  return request('/api/offboardingrequesttenant/submit-to-hr', {
+    method: 'POST',
+    data: payload,
+  });
+}

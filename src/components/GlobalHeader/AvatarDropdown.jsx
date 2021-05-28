@@ -9,11 +9,11 @@ import {
   getCurrentTenant,
   getCurrentCompany,
   getCurrentLocation,
-  getAuthority,
+  // getAuthority,
   isOwner,
   isAdmin,
   setCurrentCompany,
-  getIsSwitchingRole,
+  // getIsSwitchingRole,
   getSwitchRoleAbility,
 } from '@/utils/authority';
 import HeaderDropdown from '../HeaderDropdown';
@@ -358,8 +358,10 @@ class AvatarDropdown extends React.Component {
       isSwitchingRole: isSwitch,
     });
 
-    // history.push('/dashboard');
-    window.location.reload();
+    const { pathname } = window.location;
+    if (pathname === '/dashboard') {
+      window.location.reload();
+    } else history.replace('');
   };
 
   switchRole = () => {

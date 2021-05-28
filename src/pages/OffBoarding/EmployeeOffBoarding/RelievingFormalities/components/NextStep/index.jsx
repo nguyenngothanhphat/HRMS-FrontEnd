@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Spin, Row, Col, message } from 'antd';
+import { Spin, Row, Col } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 import Document from './Document';
@@ -32,6 +32,7 @@ class NextStep extends PureComponent {
     this.state = {
       showAnswerModal: false,
       selectedDocument: -1,
+      isExitInterviewForm: false,
     };
   }
 
@@ -102,6 +103,7 @@ class NextStep extends PureComponent {
     this.setState({
       showAnswerModal: true,
       selectedDocument: index,
+      isExitInterviewForm: index === 0,
     });
   };
 
@@ -138,9 +140,10 @@ class NextStep extends PureComponent {
 
   // on submit to hr button
   onSubmitToHRClicked = () => {
-    message
-      .loading('Submit to HR in progress...', 2)
-      .then(() => message.success('Submit finished', 2));
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'offboarding/submitToHr',
+    });
   };
 
   renderMailExit = (checkFilledDocument) => {
@@ -150,15 +153,13 @@ class NextStep extends PureComponent {
       loadingFetchPackage,
       waitList = [],
     } = this.props;
-    const { showAnswerModal, selectedDocument } = this.state;
+    const { showAnswerModal, selectedDocument, isExitInterviewForm } = this.state;
     return (
       <div className={styles.belowContainer}>
         {isScheduled && (
           <div className={styles.submitDocuments}>
             <div>
-              <Row justify="end" gutter={[24, 24]}>
-                {!loadingFetchPackage && this.renderPackageList()}
-              </Row>
+              <Row gutter={[24, 24]}>{!loadingFetchPackage && this.renderPackageList()}</Row>
               {loadingFetchPackage && (
                 <div className={styles.loadingSpin}>
                   <Spin />
@@ -191,6 +192,7 @@ class NextStep extends PureComponent {
             onClose={this.onCloseModal}
             submitText="Submit"
             selectedDocument={selectedDocument}
+            isExitInterviewForm={isExitInterviewForm}
           />
         )}
       </div>

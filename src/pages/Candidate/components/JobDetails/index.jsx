@@ -31,7 +31,7 @@ class JobDetails extends PureComponent {
   }
 
   componentDidMount() {
-    window.scrollTo(0, 70); // Back to top of the page
+    window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
 
     const {
       data: { dateOfJoining = '', noticePeriod = '' },

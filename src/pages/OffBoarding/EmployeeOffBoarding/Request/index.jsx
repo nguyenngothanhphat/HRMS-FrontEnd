@@ -17,10 +17,14 @@ import WithDraw from './WithDraw';
 import styles from './index.less';
 
 @connect(
-  ({ loading, offboarding: { myRequest = {}, list1On1 = [], listMeetingTime = [] } = {} }) => ({
+  ({
+    loading,
+    offboarding: { myRequest = {}, list1On1 = [], listMeetingTime = [], hrManager = {} } = {},
+  }) => ({
     myRequest,
     list1On1,
     listMeetingTime,
+    hrManager,
     loading: loading.effects['offboarding/create1On1'],
     loadingGetById: loading.effects['offboarding/fetchRequestById'],
   }),
@@ -108,6 +112,7 @@ class ResignationRequest extends Component {
     const {
       myRequest = {},
       listMeetingTime = [],
+      hrManager = {},
       loading,
       loadingGetById,
       list1On1 = [],
@@ -176,6 +181,7 @@ class ResignationRequest extends Component {
                 approvalStep={approvalStep}
                 nameManager={nameManager}
                 avatarManager={avatarManager}
+                hrManager={hrManager}
               />
               <div className={styles.viewSet1On1}>
                 <div className={styles.viewSet1On1__request}>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Modal, Row, Col } from 'antd';
+import { Button, Modal, Row, Col, Tooltip } from 'antd';
 import { formatMessage, connect } from 'umi';
 import templateIcon from '@/assets/templateIcon.svg';
 import editIcon from '@/assets/editMailExit.svg';
@@ -287,19 +287,33 @@ class ConductExit extends Component {
                 <Col span={6}>
                   {checkOwner && (
                     <div className={styles.conductExit__bottom__action}>
-                      <img
-                        src={viewTemplateIcon}
-                        alt="view-template-icon"
-                        onClick={
-                          check ? this.handleOpenFeedbackForm : () => this.modalWarning('Feedback')
-                        }
-                      />
-                      <img
-                        src={externalLinkIcon}
-                        alt="external-link-icon"
-                        onClick={check ? this.handleAddComment : () => this.modalWarning('Comment')}
-                      />
-                      <img src={removeIcon} alt="view-template-icon" />
+                      <Tooltip
+                        className={styles.tooltip}
+                        placement="topRight"
+                        title="Feedback Form"
+                      >
+                        <img
+                          src={viewTemplateIcon}
+                          alt="view-template-icon"
+                          onClick={
+                            check
+                              ? this.handleOpenFeedbackForm
+                              : () => this.modalWarning('Feedback')
+                          }
+                        />
+                      </Tooltip>
+                      <Tooltip className={styles.tooltip} placement="topRight" title="Add Comment">
+                        <img
+                          src={externalLinkIcon}
+                          alt="external-link-icon"
+                          onClick={
+                            check ? this.handleAddComment : () => this.modalWarning('Comment')
+                          }
+                        />
+                      </Tooltip>
+                      <Tooltip className={styles.tooltip} placement="topRight" title="Delete">
+                        <img src={removeIcon} alt="view-template-icon" />
+                      </Tooltip>
                     </div>
                   )}
                 </Col>

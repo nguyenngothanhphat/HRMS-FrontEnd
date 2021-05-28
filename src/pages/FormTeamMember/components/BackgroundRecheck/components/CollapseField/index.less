@@ -111,11 +111,15 @@
   }
   .space {
     width: 100%;
-    padding: 32px;
+    padding: 32px 32px 16px 32px;
     .collapseField__row {
       display: flex;
       margin-bottom: 1rem;
       color: #161c29;
+      &__name {
+        display: flex;
+        align-items: center;
+      }
       &__file {
         .file__content {
           width: 90%;
@@ -147,6 +151,8 @@
       }
       &__radio {
         text-align: end;
+        display: flex;
+        align-items: center;
         .verified {
           color: #2c6df9;
           font-size: 13px;
