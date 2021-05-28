@@ -151,7 +151,7 @@ export default class HolidayCalendar extends PureComponent {
       holidaysList.forEach((value) => {
         // const sameName = holidaysList.filter(item => value.name === item.name)
         // console.log('sameDay', sameName);
-        const { name = '', date: {iso = '', dateTime: {year = ''} = {}} = {},fromDate: from = '', toDate: to = '' } = value; // parse
+        const { date: {iso = ''}, fromDate: from = '', toDate: to = '' } = value; // parse
         const newDate = new Date(iso);
         const eventFromDay = moment(newDate).format('D');
         const eventFromMonth = moment(newDate).format('M');
@@ -239,11 +239,11 @@ export default class HolidayCalendar extends PureComponent {
   };
 
   checkIfUpcomingOrLeaveTaken = (value) => {
-    const { fromDate: from = '', toDate: to = '' } = value; // parse
-
-    const eventFromDay = moment(from).format('D');
-    const eventFromMonth = moment(from).format('M');
-    const eventFromYear = moment(from).format('Y');
+    const { date: {iso} = {} } = value; // parse
+    const convertDate = new Date(iso);
+    const eventFromDay = moment(convertDate).format('D');
+    const eventFromMonth = moment(convertDate).format('M');
+    const eventFromYear = moment(convertDate).format('Y');
     if (this.checkASingleDay(eventFromDay, eventFromMonth, eventFromYear) === 1) return 1; // upcoming
     return 2; // leave taken
   };
