@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
-
+import { getCurrentCompany } from '@/utils/authority';
 import { PageContainer } from '@/layouts/layout/src';
 import { Tabs, Affix } from 'antd';
+import AddIcon from '@/assets/plusIcon1.svg';
 import ActiveProject from './components/ActiveProject';
 import InactiveProject from './components/InactiveProject';
+import AddProjectModal from './components/AddProjectModal';
 import s from './index.less';
 
 import COLUMN_NAME from './components/utils';
@@ -25,15 +27,29 @@ const {
 
 const ProjectManagement = (props) => {
   const { activeList, inactiveList, roleList, employeeList, dispatch, user, loading1 } = props;
+  const [isModalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     dispatch({
       type: 'projectManagement/getProjectByCompany',
       payload: {
-        company: user.currentUser.company._id || '',
+        company: getCurrentCompany(),
       },
     });
   }, []);
+
+  const handleAddNewProject = () => {
+    setModalVisible(true);
+  };
+
+  const addNewProject = () => {
+    return (
+      <div className={s.addNewProject} onClick={handleAddNewProject}>
+        <img src={AddIcon} alt="add" />
+        <span>Add new project</span>
+      </div>
+    );
+  };
 
   return (
     <PageContainer>
@@ -47,7 +63,7 @@ const ProjectManagement = (props) => {
         <div className={s.projectManagement}>
           {/* <h1>Project list</h1> */}
           <div className={s.tabs}>
-            <Tabs defaultActiveKey="1">
+            <Tabs defaultActiveKey="1" tabBarExtraContent={addNewProject()}>
               <TabPane
                 // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
                 tab="Active"
@@ -101,6 +117,7 @@ const ProjectManagement = (props) => {
                 />
               </TabPane>
             </Tabs>
+            <AddProjectModal visible={isModalVisible} />
           </div>
         </div>
       </div>
