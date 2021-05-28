@@ -4,8 +4,9 @@ import {
   listProjectByCompany,
   addProjectMember,
   listProjectRole,
+  addProject,
+  getReportingManagerList,
 } from '../services/projectManagement';
-import { getListEmployee } from '../services/employee';
 
 const PROJECT_STATUS = {
   ACTIVE: 'ACTIVE',
@@ -144,6 +145,19 @@ const projectManagement = {
       return response;
     },
 
+    *addNewProject({ payload }, { call }) {
+      let response;
+      try {
+        response = yield call(addProject, { ...payload, tenantId: getCurrentTenant() });
+        if (response.statusCode !== 200) {
+          dialog(response);
+        }
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
     *addMember({ payload }, { call }) {
       let response;
       try {
@@ -162,7 +176,10 @@ const projectManagement = {
       let response2;
       try {
         // REMEMBER TO ADD ACTIVE STATUS TO PAYLOAD
-        response = yield call(getListEmployee, { ...payload, tenantId: getCurrentTenant() });
+        response = yield call(getReportingManagerList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
         response2 = yield call(listProjectRole);
         const { data: dataEmployee = [] } = response;
         const { data: dataRole = [] } = response2;

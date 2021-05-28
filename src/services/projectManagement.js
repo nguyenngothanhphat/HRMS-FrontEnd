@@ -19,3 +19,17 @@ export async function listProjectRole() {
     method: 'POST',
   });
 }
+
+export async function addProject(payload) {
+  return request('/api/projecttenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getReportingManagerList(params) {
+  return request('/api/employeetenant/list-manager', {
+    method: 'POST',
+    data: params,
+  });
+}

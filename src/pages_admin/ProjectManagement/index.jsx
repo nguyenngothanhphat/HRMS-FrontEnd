@@ -26,7 +26,17 @@ const {
 } = COLUMN_NAME;
 
 const ProjectManagement = (props) => {
-  const { activeList, inactiveList, roleList, employeeList, dispatch, user, loading1 } = props;
+  const {
+    activeList,
+    inactiveList,
+    roleList,
+    employeeList,
+    dispatch,
+    user,
+    loading1,
+    listLocationsByCompany = [],
+    companiesOfUser = [],
+  } = props;
   const [isModalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -51,6 +61,15 @@ const ProjectManagement = (props) => {
     );
   };
 
+  const onDone = () => {
+    setModalVisible(false);
+    dispatch({
+      type: 'projectManagement/getProjectByCompany',
+      payload: {
+        company: getCurrentCompany(),
+      },
+    });
+  };
   return (
     <PageContainer>
       <div className={s.containerDashboard}>
@@ -88,6 +107,8 @@ const ProjectManagement = (props) => {
                   dispatch={dispatch}
                   user={user}
                   loading={loading1}
+                  listLocationsByCompany={listLocationsByCompany}
+                  companiesOfUser={companiesOfUser}
                 />
               </TabPane>
               <TabPane
@@ -117,7 +138,7 @@ const ProjectManagement = (props) => {
                 />
               </TabPane>
             </Tabs>
-            <AddProjectModal visible={isModalVisible} />
+            <AddProjectModal visible={isModalVisible} onDone={onDone} />
           </div>
         </div>
       </div>
@@ -134,6 +155,7 @@ export default connect(
       roleList = [],
       employeeList = [],
     } = {},
+    locationSelection: { listLocationsByCompany = [] } = {},
     loading,
   }) => ({
     user,
@@ -141,6 +163,8 @@ export default connect(
     inactiveList,
     roleList,
     employeeList,
+    listLocationsByCompany,
+    companiesOfUser: user.companiesOfUser,
     loading1: loading.effects['projectManagement/addMember'],
   }),
 )(ProjectManagement);

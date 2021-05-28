@@ -6,35 +6,50 @@
   height: fit-content;
   // min-width: ;
 
-  .add {
-    display: block;
-    margin: 0 auto;
-  }
-
   h3 {
     font-weight: 500;
     margin-bottom: 8px;
   }
 
-  button {
-    display: block;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    color: @blue;
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 16px;
-    background: transparent;
+  .footer {
+      display: flex;
+      justify-content: flex-end;
+      .cancelButton {
+        span {
+          color: rgb(93, 93, 93) !important;
+        }
+      }
+      .saveDraftButton {
+        span {
+          color: #ffa100 !important;
+        }
+      }
+      :global {
+        .ant-btn-link {
+          margin-left: -10px !important;
+          background-color: white !important;
+          span {
+            font-weight: bold !important;
+            // color: #ffa100 !important;
+          }
+        }
+        .ant-btn {
+          height: 40px;
+          margin-left: 20px;
+          // width: 108px;
+          padding: 0 30px;
+          background-color: #ffa100;
+          border: none;
+          border-radius: 30px;
+          span {
+            color: white;
+            font-weight: 700;
+          }
+          &:hover {
+            background-color: #ffa100cc; // hex with alpha 0.8
+          }
+        }
+      }
 
-    &.primary {
-      margin: 0 auto;
-      border-radius: 25px;
-      background-color: @orange;
-      height: fit-content;
-      padding: 10px 25px;
-
-      color: white;
-    }
   }
 }
