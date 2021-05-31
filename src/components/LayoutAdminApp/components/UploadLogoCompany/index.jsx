@@ -95,7 +95,7 @@ class UploadLogoCompany extends Component {
           )}
 
           <Button className={s.btnUpload} onClick={this.openModalUpload}>
-            Upload company logo
+            {logoUrl ? 'Change Logo' : 'Upload company logo'}
           </Button>
         </div>
         <ModalUpload

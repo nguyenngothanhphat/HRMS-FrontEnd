@@ -86,7 +86,7 @@ const BasicLayout = (props) => {
     const logoUrl = getCurrentLogo();
     return (
       <>
-        {logoUrl ? (
+        {logoUrl || logoCompany ? (
           <Link to="/">
             <img
               src={logoCompany || logoUrl || logo}
