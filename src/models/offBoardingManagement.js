@@ -1,3 +1,4 @@
+import { getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import getListOffBoarding from '../services/offBoardingManagement';
 
@@ -9,7 +10,10 @@ const offBoardingManagement = {
   effects: {
     *fetchListOffBoarding({ payload }, { call, put }) {
       try {
-        const response = yield call(getListOffBoarding, payload);
+        const response = yield call(getListOffBoarding, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data: listOffBoarding = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
