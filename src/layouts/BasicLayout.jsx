@@ -9,7 +9,7 @@ import { getCurrentCompany, getSwitchRoleAbility } from '@/utils/authority';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { UserOutlined, UserSwitchOutlined } from '@ant-design/icons';
-import { Affix, Button, notification, Result, Switch, Tooltip } from 'antd';
+import { Affix, Button, notification, Result, Spin, Switch, Tooltip } from 'antd';
 import classnames from 'classnames';
 import React, { useEffect, useState } from 'react';
 import { connect, Link, Redirect, useIntl } from 'umi';
@@ -50,7 +50,9 @@ const BasicLayout = (props) => {
     route: { routes } = {},
     currentUser,
     companies = {},
+    logoCompany,
   } = props;
+
   /**
    * init variables
    */
@@ -83,19 +85,25 @@ const BasicLayout = (props) => {
 
     const logoUrl = getCurrentLogo();
     return (
-      <Link to="/">
-        <img
-          src={logoUrl || logo}
-          alt="logo"
-          style={{
-            objectFit: 'contain',
-            marginBottom: '4px',
-            height: '100%',
-            padding: '12px 0',
-            // marginLeft: '-9px',
-          }}
-        />
-      </Link>
+      <>
+        {logoUrl || logoCompany ? (
+          <Link to="/">
+            <img
+              src={logoCompany || logoUrl || logo}
+              alt="logo"
+              style={{
+                objectFit: 'contain',
+                marginBottom: '4px',
+                height: '100%',
+                padding: '12px 0',
+                // marginLeft: '-9px',
+              }}
+            />
+          </Link>
+        ) : (
+          <Spin />
+        )}
+      </>
     );
   };
 
@@ -182,9 +190,12 @@ const BasicLayout = (props) => {
   );
 };
 
-export default connect(({ global, settings, user }) => ({
-  collapsed: global.collapsed,
-  settings,
-  currentUser: user.currentUser,
-  companies: user.companiesOfUser,
-}))(BasicLayout);
+export default connect(
+  ({ global, settings, user, companiesManagement: { logoCompany = '' } = {} }) => ({
+    collapsed: global.collapsed,
+    settings,
+    currentUser: user.currentUser,
+    companies: user.companiesOfUser,
+    logoCompany,
+  }),
+)(BasicLayout);

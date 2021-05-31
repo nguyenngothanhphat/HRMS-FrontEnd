@@ -41,10 +41,8 @@ class UploadLogoCompany extends Component {
 
   getResponse = (resp) => {
     const { statusCode, data = [] } = resp;
-    const {
-      dispatch,
-      companyDetails: { company: { _id: id = '', tenant = '' } = {} } = {},
-    } = this.props;
+    const { dispatch, companyDetails: { company: { _id: id = '', tenant = '' } = {} } = {} } =
+      this.props;
     if (statusCode === 200) {
       const [first] = data;
       if (id) {
@@ -78,7 +76,7 @@ class UploadLogoCompany extends Component {
   render() {
     const { visible } = this.state;
     const { logoUrl = '' } = this.props;
-    console.log('logo', logoUrl);
+    // console.log('logo', logoUrl);
     return (
       <>
         <div className={s.root}>
@@ -95,7 +93,7 @@ class UploadLogoCompany extends Component {
           )}
 
           <Button className={s.btnUpload} onClick={this.openModalUpload}>
-            Upload company logo
+            {!logoUrl ? 'Upload company logo' : 'Change logo'}
           </Button>
         </div>
         <ModalUpload
