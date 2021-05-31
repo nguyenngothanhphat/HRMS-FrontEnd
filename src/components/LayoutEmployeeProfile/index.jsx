@@ -40,7 +40,7 @@ class CommonLayout extends PureComponent {
     const { listMenu, selectedNewCompanyTab } = this.props;
 
     // auto direct from company details to work locations
-    if (prevProps.selectedNewCompanyTab !== selectedNewCompanyTab && selectedNewCompanyTab === 2) {
+    if (prevProps.selectedNewCompanyTab !== selectedNewCompanyTab) {
       this.handleCLickItemMenu(listMenu[selectedNewCompanyTab - 1]);
     }
 
@@ -92,12 +92,11 @@ class CommonLayout extends PureComponent {
       isAddingCompany = false,
     } = this.props;
     const { displayComponent, selectedItemId } = this.state;
-
     return (
       <div className={s.root}>
         <Affix
           // offsetTop={isCompanyProfile ? 0 : 100}
-          offsetTop={isAddingCompany ? 76 : 102}
+          offsetTop={isAddingCompany ? 75 : 102}
           className={s.affix}
         >
           <div className={s.viewLeft}>

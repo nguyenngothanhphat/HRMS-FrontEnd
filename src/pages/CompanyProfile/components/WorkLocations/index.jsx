@@ -32,16 +32,16 @@ class WorkLocations extends PureComponent {
     this.state = {};
   }
 
-  componentDidMount() {
-    const { dispatch, companyId = '' } = this.props;
+  // componentDidMount() {
+  //   const { dispatch, companyId = '' } = this.props;
 
-    if (companyId) {
-      dispatch({
-        type: 'companiesManagement/fetchLocationsList',
-        payload: { company: companyId },
-      });
-    }
-  }
+  //   if (companyId) {
+  //     dispatch({
+  //       type: 'companiesManagement/fetchLocationsList',
+  //       payload: { company: companyId },
+  //     });
+  //   }
+  // }
 
   componentWillUnmount() {
     const { dispatch } = this.props;
@@ -53,16 +53,6 @@ class WorkLocations extends PureComponent {
 
   onFinish = async ({ workLocations = [] }) => {
     const { dispatch, companyDetails = {} } = this.props;
-    const {
-      company: {
-        _id: newCompanyId = '',
-        tenant: newCompanyTenantId = '',
-        // name: newCompanyName = '',
-        // headQuarterAddress = {},
-        // legalQuarterAddress = {},
-      } = {},
-      // isNewTenant,
-    } = companyDetails;
 
     const formatListLocation = workLocations.map((location) => {
       const {
@@ -93,24 +83,35 @@ class WorkLocations extends PureComponent {
         isHeadQuarter,
       };
     });
-    const payload = {
-      locations: formatListLocation,
-      company: newCompanyId,
-      tenantId: newCompanyTenantId,
-    };
 
-    if (newCompanyId) {
-      const res = await dispatch({
+    const createdCompany = await dispatch({
+      type: 'companiesManagement/addCompanyTenant',
+      payload: companyDetails,
+      dataTempKept: {},
+      isAccountSetup: true,
+    });
+
+    const { statusCode, data = {} } = createdCompany;
+    if (statusCode === 200 && data && data.company?._id) {
+      notification.success({
+        message: 'New company has been created successfully.',
+      });
+
+      const payload = {
+        locations: formatListLocation,
+        company: data.company?._id || '',
+        tenantId: data.company?.tenant || '',
+      };
+
+      await dispatch({
         type: 'companiesManagement/addMultiLocation',
         payload,
       });
-      const { statusCode } = res;
-      if (statusCode === 200) {
-        notification.success({
-          message: 'Add new locations successfully.',
-        });
-        history.push('/control-panel');
-      }
+
+      // const { statusCode: sttCode } = res;
+      // if (sttCode === 200) {
+      history.push('/control-panel');
+      // }
     }
   };
 
@@ -135,11 +136,22 @@ class WorkLocations extends PureComponent {
     });
   };
 
+  onBack = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'companiesManagement/save',
+      payload: {
+        selectedNewCompanyTab: 1,
+      },
+    });
+  };
+
   render() {
     const {
       listCountry = [],
-      workLocations = [],
+      // workLocations = [],
       loading,
+      loadingAddCompany,
       fetchingLocationsList,
       loadingCountry,
       companyDetails = {},
@@ -256,7 +268,10 @@ class WorkLocations extends PureComponent {
           </div>
         </div>
         <div className={s.viewBtn}>
-          <Button className={s.btnSubmit} htmlType="submit" loading={loading}>
+          <Button className={s.btnBack} onClick={this.onBack}>
+            Back
+          </Button>
+          <Button className={s.btnSubmit} htmlType="submit" loading={loading || loadingAddCompany}>
             Save
           </Button>
         </div>

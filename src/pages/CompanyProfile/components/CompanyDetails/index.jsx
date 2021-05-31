@@ -107,7 +107,7 @@ class CompanyDetails extends Component {
   onFinish = (values) => {
     const {
       dispatch,
-      companyId,
+      // companyId,
       companyDetails: { company: { logoUrl: newLogo } = {} },
     } = this.props;
     const {
@@ -189,28 +189,28 @@ class CompanyDetails extends Component {
       childOfCompany: parentCompany,
       parentTenantId,
     };
-    if (companyId) {
-      dispatch({
-        type: 'companiesManagement/updateCompany',
-        payload,
-        dataTempKept: {},
-        isAccountSetup: true,
-      });
-    } else {
-      const payloadAddCompanyTenant = { ...payload };
-      dispatch({
-        type: 'companiesManagement/addCompanyTenant',
-        payload: payloadAddCompanyTenant,
-        dataTempKept: {},
-        isAccountSetup: true,
-      });
-      dispatch({
-        type: 'companiesManagement/addCompanyReducer',
-        payload,
-        dataTempKept: {},
-        isAccountSetup: true,
-      });
-    }
+    // if (companyId) {
+    //   dispatch({
+    //     type: 'companiesManagement/updateCompany',
+    //     payload,
+    //     dataTempKept: {},
+    //     isAccountSetup: true,
+    //   });
+    // } else {
+    // const payloadAddCompanyTenant = { ...payload };
+    // dispatch({
+    //   type: 'companiesManagement/addCompanyTenant',
+    //   payload: payloadAddCompanyTenant,
+    //   dataTempKept: {},
+    //   isAccountSetup: true,
+    // });
+    dispatch({
+      type: 'companiesManagement/addCompanyReducer',
+      payload,
+      dataTempKept: {},
+      isAccountSetup: true,
+    });
+    // }
   };
 
   // COMPANY DETAILS REGEX
@@ -441,7 +441,7 @@ class CompanyDetails extends Component {
                         },
                       ]}
                     >
-                      <Input placeholder={label} />
+                      <Input autoComplete="off" placeholder={label} />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -501,7 +501,7 @@ class CompanyDetails extends Component {
                     },
                   ]}
                 >
-                  <Input placeholder="Address Line 1" />
+                  <Input autoComplete="off" placeholder="Address Line 1" />
                 </Form.Item>
               </Col>
             </Row>
@@ -520,7 +520,7 @@ class CompanyDetails extends Component {
                     },
                   ]}
                 >
-                  <Input placeholder="Address Line 2" />
+                  <Input autoComplete="off" placeholder="Address Line 2" />
                 </Form.Item>
               </Col>
             </Row>
@@ -612,7 +612,7 @@ class CompanyDetails extends Component {
                     },
                   ]}
                 >
-                  <Input placeholder="Zip Code" />
+                  <Input autoComplete="off" placeholder="Zip Code" />
                 </Form.Item>
               </Col>
             </Row>
@@ -639,7 +639,7 @@ class CompanyDetails extends Component {
                     },
                   ]}
                 >
-                  <Input placeholder="Address Line 1" />
+                  <Input autoComplete="off" placeholder="Address Line 1" />
                 </Form.Item>
               </Col>
             </Row>
@@ -658,7 +658,7 @@ class CompanyDetails extends Component {
                     },
                   ]}
                 >
-                  <Input placeholder="Address Line 2" />
+                  <Input autoComplete="off" placeholder="Address Line 2" />
                 </Form.Item>
               </Col>
             </Row>
@@ -750,7 +750,7 @@ class CompanyDetails extends Component {
                     },
                   ]}
                 >
-                  <Input placeholder="Zip Code" />
+                  <Input autoComplete="off" placeholder="Zip Code" />
                 </Form.Item>
               </Col>
             </Row>
@@ -787,7 +787,11 @@ class CompanyDetails extends Component {
                         },
                       ]}
                     >
-                      <Input placeholder={placeholder} defaultValue={defaultValue} />
+                      <Input
+                        autoComplete="off"
+                        placeholder={placeholder}
+                        defaultValue={defaultValue}
+                      />
                     </Form.Item>
                   </Col>
                 </Row>

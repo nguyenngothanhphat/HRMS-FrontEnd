@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-curly-newline */
-import React, { Component } from 'react';
-import { Tabs, Button, Spin, Affix } from 'antd';
 import Breadcrumb from '@/components/Breadcrumb';
 import Layout from '@/components/LayoutEmployeeProfile';
+import { Spin, Tabs } from 'antd';
+import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import CompanyDetails from './components/CompanyDetails';
 import WorkLocations from './components/WorkLocations';
@@ -15,17 +15,21 @@ const { TabPane } = Tabs;
     loading,
     user: { currentUser = {} } = {},
     departmentManagement: { listByCompany: listDepartment = [] } = {},
+    companiesManagement: {
+      originData: { companyDetails: { company: companyDetails = {} } = {} } = {},
+    } = {},
   }) => ({
     currentUser,
     listDepartment,
     loading: loading.effects['companiesManagement/fetchCompanyDetails'],
+    companyDetails,
   }),
 )
 class CompanyProfile extends Component {
   componentDidMount() {
     const {
       dispatch,
-      match: { params: { id = '' } = {} },
+      // match: { params: { id = '' } = {} },
     } = this.props;
     dispatch({
       type: 'country/fetchListCountry',
@@ -36,12 +40,12 @@ class CompanyProfile extends Component {
     dispatch({
       type: 'user/fetchCompanyOfUser',
     });
-    if (id) {
-      dispatch({
-        type: 'companiesManagement/fetchCompanyDetails',
-        payload: { id },
-      });
-    }
+    // if (id) {
+    //   dispatch({
+    //     type: 'companiesManagement/fetchCompanyDetails',
+    //     payload: { id },
+    //   });
+    // }
   }
 
   componentWillUnmount() {
@@ -58,6 +62,18 @@ class CompanyProfile extends Component {
       type: 'companiesManagement/saveTemp',
       payload: { companyDetails: {} },
     });
+  };
+
+  onCancel = () => {
+    history.push('/control-panel');
+  };
+
+  cancelButton = () => {
+    return (
+      <div className={styles.cancelButton} onClick={this.onCancel}>
+        <span>Cancel</span>
+      </div>
+    );
   };
 
   render() {
@@ -91,7 +107,7 @@ class CompanyProfile extends Component {
       <div className={styles.CompanyProfile}>
         <Breadcrumb routes={routes} />
         <div className={styles.root}>
-          <Tabs defaultActiveKey="1">
+          <Tabs defaultActiveKey="1" tabBarExtraContent={this.cancelButton()}>
             <TabPane tab="Profile Information" key="1">
               {loading ? (
                 <div className={styles.viewLoading}>

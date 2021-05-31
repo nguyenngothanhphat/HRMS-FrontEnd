@@ -185,9 +185,9 @@ const companiesManagement = {
         response = yield call(addCompanyTenant, payload);
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message: 'New company created.',
-        });
+        // notification.success({
+        //   message: 'New company created.',
+        // });
 
         // yield put({
         //   type: 'fetchLocationsList',
@@ -340,12 +340,14 @@ const companiesManagement = {
         originData: {
           companyDetails: { company },
         },
+        originData = {},
       } = state;
       return {
         ...state,
         originData: {
-          // ...originData,
+          ...originData,
           companyDetails: {
+            ...originData.companyDetails,
             company: {
               ...company,
               ...action.payload,
