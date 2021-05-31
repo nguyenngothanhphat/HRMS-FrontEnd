@@ -101,10 +101,6 @@ const BasicLayout = (props) => {
     );
   };
 
-  useEffect(() => {
-    getCurrentLogo(logoCompany);
-  }, [logoCompany]);
-
   function rightContent() {
     // const { pathname } = window.location;
     return (
