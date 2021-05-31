@@ -5,10 +5,17 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 const { TextArea } = Input;
-@connect(({ offboarding: { relievingDetails: { _id = '' } }, offboarding }) => ({
-  _id,
-  offboarding,
-}))
+@connect(
+  ({
+    offboarding: {
+      relievingDetails: { _id = '' },
+    },
+    offboarding,
+  }) => ({
+    _id,
+    offboarding,
+  }),
+)
 class ModalContent extends Component {
   constructor(props) {
     super(props);
@@ -56,16 +63,28 @@ class ModalContent extends Component {
       },
     };
 
+    const formatAnswer = (value) => {
+      const answer = value.join('');
+      return answer;
+    };
+
     if (mode === 'View') {
       return (
         <>
           {settings?.map((item, index) => {
             return (
-              <Row gutter={[8, 12]}>
-                <Col span={6}>
+              <Row gutter={[10, 10]} style={{ paddingBottom: '24px' }}>
+                <Col span={12}>
                   <span className={styles.template__label}>Question {index + 1} : </span>
+                  {item.question}
                 </Col>
-                <Col span={18}>{item.question}</Col>
+                <Col span={12}>
+                  <TextArea
+                    autoSize={{ minRows: 3, maxRows: 6 }}
+                    disabled
+                    defaultValue={formatAnswer(item.employeeAnswers)}
+                  />
+                </Col>
               </Row>
             );
           })}
