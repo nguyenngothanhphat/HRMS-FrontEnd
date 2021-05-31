@@ -68,7 +68,7 @@ export default {
   'menu.documents': 'Documents Management',
   'menu.uploadDocument': 'Add Document',
   'menu.timeOffManagement': 'Timeoff Management',
-  'menu.offBoardingManagement': 'Off Boarding Management',
+  'menu.offBoardingManagement': 'Offboarding Management',
   'menu.settings': 'Settings',
   'menu.employeeOffBoarding': 'Off Boarding',
   'menu.ticketId': 'Ticket Id',
