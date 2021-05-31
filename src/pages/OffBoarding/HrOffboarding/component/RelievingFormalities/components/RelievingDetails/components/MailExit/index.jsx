@@ -75,6 +75,9 @@ class MailExit extends Component {
         packageType: 'EXIT-PACKAGE',
         ticketId,
       },
+    }).then((isSentEmailPackage) => {
+      console.log(isSentEmailPackage);
+      this.setState({ isSent: isSentEmailPackage });
     });
     return null;
   };
@@ -138,7 +141,7 @@ class MailExit extends Component {
   renderAfterSendMail = () => {
     const {
       exitPackage: { waitList = [] },
-      isClosedRecord,
+      isClosingPackage,
     } = this.props;
     return (
       <>
@@ -166,7 +169,7 @@ class MailExit extends Component {
                     </span>
                   </div>
                   <div className={styles.template__action}>
-                    {isClosedRecord ? (
+                    {isClosingPackage ? (
                       <>
                         <img src={TickIcon} alt="tick-icon" />
                       </>

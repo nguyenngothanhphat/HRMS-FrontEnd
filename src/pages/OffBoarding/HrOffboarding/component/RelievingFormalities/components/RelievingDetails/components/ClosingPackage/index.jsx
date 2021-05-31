@@ -16,10 +16,12 @@ import styles from './index.less';
     offboarding: {
       relievingDetails: { closingPackage = {}, _id = '', employee = {} },
     },
+    loading,
   }) => ({
     closingPackage,
     employee,
     ticketId: _id,
+    loading: loading.effects['offboarding/sendClosePackage'],
   }),
 )
 class ClosingPackage extends PureComponent {
@@ -46,25 +48,25 @@ class ClosingPackage extends PureComponent {
     });
   }
 
-  renderExtraContent = () => {
-    const { isSent } = this.state;
-    return (
-      <div>
-        {isSent ? null : (
-          <img
-            className={styles.closingPkg__card__iconExtra}
-            style={{ paddingRight: '20px' }}
-            src={addTemplateIcon}
-            alt="add-template-icon"
-          />
-        )}
-      </div>
-    );
-  };
+  // renderExtraContent = () => {
+  //   const { isSent } = this.state;
+  //   return (
+  //     <div>
+  //       {isSent ? null : (
+  //         <img
+  //           className={styles.closingPkg__card__iconExtra}
+  //           style={{ paddingRight: '20px' }}
+  //           src={addTemplateIcon}
+  //           alt="add-template-icon"
+  //         />
+  //       )}
+  //     </div>
+  //   );
+  // };
 
   handleSendMail = (value) => {
     const { toEmail } = value;
-    const { dispatch, ticketId, isClosedRecord = () => {} } = this.props;
+    const { dispatch, ticketId } = this.props;
     dispatch({
       type: 'offboarding/sendClosePackage',
       payload: {
@@ -72,8 +74,6 @@ class ClosingPackage extends PureComponent {
         ticketId,
         toEmail,
       },
-    }).then(() => {
-      isClosedRecord(true);
     });
   };
 
@@ -158,7 +158,7 @@ class ClosingPackage extends PureComponent {
 
   renderBeforeSendMail = () => {
     const { closingPackage, customDocuments, emailInput } = this.state;
-    const { employee: { generalInfo: { workEmail = '' } = {} } = {} } = this.props;
+    const { employee: { generalInfo: { workEmail = '' } = {} } = {}, loading } = this.props;
 
     return (
       <>
@@ -276,6 +276,7 @@ class ClosingPackage extends PureComponent {
                   className={styles.closingPackage__btn}
                   form="packageToEmail"
                   disabled={emailInput === ''}
+                  loading={loading}
                 >
                   {formatMessage({ id: 'pages.relieving.btn.sendMail' })}
                 </Button>

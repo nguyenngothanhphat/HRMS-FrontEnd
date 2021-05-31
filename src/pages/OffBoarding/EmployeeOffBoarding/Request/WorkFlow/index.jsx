@@ -96,7 +96,7 @@ class Step3 extends PureComponent {
           src={url}
           alt="avatar"
         />
-        {approvalStep === index && <CheckCircleFilled twoToneColor="#fd4546" />}
+        {approvalStep >= index && <CheckCircleFilled twoToneColor="#fd4546" />}
       </div>
     );
   };
