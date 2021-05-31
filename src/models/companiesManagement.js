@@ -37,6 +37,7 @@ const companiesManagement = {
     idCurrentCompany: '',
     isOpenEditWorkLocation: false,
     selectedNewCompanyTab: 1,
+    logoCompany: '',
   },
   effects: {
     *fetchCompanyDetails({ payload = {}, dataTempKept = {} }, { call, put }) {
@@ -115,7 +116,7 @@ const companiesManagement = {
       try {
         const response = yield call(updateCompany, payload);
         const { idCurrentCompany } = yield select((state) => state.employeeProfile);
-        const { statusCode } = response;
+        const { statusCode, data: { logoUrl = '' } = {} } = response;
         if (statusCode !== 200) throw response;
         // notification.success({
         //   message,
@@ -129,6 +130,10 @@ const companiesManagement = {
           yield put({
             type: 'save',
             payload: { idCurrentCompany },
+          });
+          yield put({
+            type: 'save',
+            payload: { logoCompany: logoUrl },
           });
         } else {
           // yield put({

@@ -50,7 +50,9 @@ const BasicLayout = (props) => {
     route: { routes } = {},
     currentUser,
     companies = {},
+    logoCompany,
   } = props;
+
   /**
    * init variables
    */
@@ -85,7 +87,7 @@ const BasicLayout = (props) => {
     return (
       <Link to="/">
         <img
-          src={logoUrl || logo}
+          src={logoCompany || logoUrl || logo}
           alt="logo"
           style={{
             objectFit: 'contain',
@@ -98,6 +100,10 @@ const BasicLayout = (props) => {
       </Link>
     );
   };
+
+  useEffect(() => {
+    getCurrentLogo(logoCompany);
+  }, [logoCompany]);
 
   function rightContent() {
     // const { pathname } = window.location;
@@ -182,9 +188,12 @@ const BasicLayout = (props) => {
   );
 };
 
-export default connect(({ global, settings, user }) => ({
-  collapsed: global.collapsed,
-  settings,
-  currentUser: user.currentUser,
-  companies: user.companiesOfUser,
-}))(BasicLayout);
+export default connect(
+  ({ global, settings, user, companiesManagement: { logoCompany = '' } = {} }) => ({
+    collapsed: global.collapsed,
+    settings,
+    currentUser: user.currentUser,
+    companies: user.companiesOfUser,
+    logoCompany,
+  }),
+)(BasicLayout);
