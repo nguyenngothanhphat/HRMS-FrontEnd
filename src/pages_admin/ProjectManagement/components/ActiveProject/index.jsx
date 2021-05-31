@@ -4,7 +4,16 @@ import TableComponent from '../TableComponent';
 // import s from './index.less';
 
 const ActiveProject = (props) => {
-  const { list = [], roleList = [], employeeList = [], dispatch, user, loading } = props;
+  const {
+    list = [],
+    roleList = [],
+    employeeList = [],
+    dispatch,
+    user,
+    loading,
+    listLocationsByCompany = [],
+    companiesOfUser = [],
+  } = props;
   return (
     <div>
       <TableComponent
@@ -13,6 +22,8 @@ const ActiveProject = (props) => {
         employeeList={employeeList}
         dispatch={dispatch}
         user={user}
+        listLocationsByCompany={listLocationsByCompany}
+        companiesOfUser={companiesOfUser}
         loading={loading}
       />
     </div>

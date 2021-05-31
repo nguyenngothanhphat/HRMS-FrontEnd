@@ -19,6 +19,13 @@ export async function getCompensation(payload) {
   });
 }
 
+export async function getCompensationList(payload) {
+  return request('/api/compensationtenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getListSkill() {
   return request('/api/skilltype/list', {
     method: 'POST',

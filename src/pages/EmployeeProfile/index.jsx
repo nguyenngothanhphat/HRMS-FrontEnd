@@ -12,9 +12,10 @@ import AccountsPaychecks from './components/Accounts&Paychecks';
 import Documents from './components/Documents';
 import styles from './index.less';
 
-@connect(({ employeeProfile, user: { currentUser = {}, permissions = {} } }) => ({
+@connect(({ employee: { listEmployeeActive = []} = {}, employeeProfile, user: { currentUser = {}, permissions = {} } }) => ({
   employeeProfile,
   currentUser,
+  listEmployeeActive,
   permissions,
 }))
 class EmployeeProfile extends Component {
@@ -146,7 +147,7 @@ class EmployeeProfile extends Component {
   renderListMenu = (employee, _id) => {
     const listMenu = [];
     const profileOwner = this.checkProfileOwner(_id, employee);
-    const { permissions } = this.props;
+    const { permissions, listEmployeeActive } = this.props;
     listMenu.push({
       id: 1,
       name: 'General Info',
@@ -156,7 +157,7 @@ class EmployeeProfile extends Component {
       listMenu.push({
         id: 2,
         name: `Employment & Compensation`,
-        component: <EmploymentTab />,
+        component: <EmploymentTab listEmployeeActive={listEmployeeActive} />,
       });
     }
     if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {

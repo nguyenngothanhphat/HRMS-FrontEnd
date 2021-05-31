@@ -88,7 +88,7 @@ class BackgroundRecheck extends Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate() {
     const { docsList } = this.state;
     const { tempData: { documentsByCandidateRD = '' } = {} } = this.props;
     // if (!prevProps.tempData.documentsByCandidateRD && documentsByCandidateRD) {
@@ -153,7 +153,7 @@ class BackgroundRecheck extends Component {
 
   sendDocumentStatus = (doc) => {
     const { candidate = '', dispatch } = this.props;
-    const { verifiedDocs = [], resubmitDocs = [], ineligibleDocs = [] } = this.state;
+    // const { verifiedDocs = [], resubmitDocs = [], ineligibleDocs = [] } = this.state;
     const { _id = '', candidateDocumentStatus = '' } = doc;
     let newCandidateDocumentStatus = 0;
     switch (candidateDocumentStatus) {
@@ -352,13 +352,13 @@ class BackgroundRecheck extends Component {
   };
 
   _renderBottomBar = () => {
-    const { feedbackStatus } = this.state;
+    // const { feedbackStatus } = this.state;
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
           <Col span={16}>
             <div className={styles.greenText}>
-              * All mandatory details must be filled to proceed
+              {/* * All mandatory details must be filled to proceed */}
             </div>
           </Col>
           <Col className={styles.bottomBar__button} span={8}>

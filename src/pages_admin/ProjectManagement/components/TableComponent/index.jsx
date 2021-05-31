@@ -23,57 +23,6 @@ const {
   ACTION,
 } = COLUMN_NAME;
 
-const dataSource = [
-  {
-    key: '1',
-    projectId: '8097',
-    projectName: 'Cisco',
-    createdDate: 'Aug-7, 20',
-    projectManager: 'Vamsi Venkat Krishna',
-    duration: '',
-    startDate: '20.08.2020',
-    members: '',
-    projectHealth: '60%',
-    action: 'View Project',
-  },
-  {
-    key: '2',
-    projectId: '8098',
-    projectName: 'Cisco',
-    createdDate: 'Aug-7, 20',
-    projectManager: 'Vamsi Venkat Krishna',
-    duration: '',
-    startDate: '20.08.2020',
-    members: '',
-    projectHealth: '60%',
-    action: 'View Project',
-  },
-  {
-    key: '3',
-    projectId: '8099',
-    projectName: 'Cisco',
-    createdDate: 'Aug-7, 20',
-    projectManager: 'Vamsi Venkat Krishna',
-    duration: '',
-    startDate: '20.08.2020',
-    members: '',
-    projectHealth: '60%',
-    action: 'View Project',
-  },
-  {
-    key: '4',
-    projectId: '8100',
-    projectName: 'Cisco',
-    createdDate: 'Aug-7, 20',
-    projectManager: 'Vamsi Venkat Krishna',
-    duration: '',
-    startDate: '20.08.2020',
-    members: '',
-    projectHealth: '60%',
-    action: 'View Project',
-  },
-];
-
 const columns = [
   {
     title: PROJECT_ID,
@@ -144,7 +93,16 @@ const columns = [
 const rowSize = 10;
 
 const TableComponent = (props) => {
-  const { list = [], roleList = [], employeeList = [], dispatch, user, loading } = props;
+  const {
+    list = [],
+    roleList = [],
+    employeeList = [],
+    dispatch,
+    user,
+    loading,
+    listLocationsByCompany = [],
+    // companiesOfUser = [],
+  } = props;
   const [pageSelected, setPageSelected] = useState(1);
   // const [currentRecord, setCurrentRecord] = useState(1);
   const [open, setOpen] = useState(false);
@@ -188,10 +146,34 @@ const TableComponent = (props) => {
               setOpen(true);
               setProjectInfo({ projectName, projectId, projectManager, company });
 
+              const locationPayload = listLocationsByCompany.map(
+                ({ headQuarterAddress: { country: countryItem1 = '' } = {} }) => {
+                  let stateList = [];
+                  listLocationsByCompany.forEach(
+                    ({
+                      headQuarterAddress: {
+                        country: countryItem2 = '',
+                        state: stateItem2 = '',
+                      } = {},
+                    }) => {
+                      if (countryItem1 === countryItem2) {
+                        stateList = [...stateList, stateItem2];
+                      }
+                    },
+                  );
+                  return {
+                    country: countryItem1,
+                    state: stateList,
+                  };
+                },
+              );
+
               dispatch({
                 type: 'projectManagement/getEmployees',
                 payload: {
-                  company: company._id,
+                  company,
+                  location: locationPayload,
+                  status: ['ACTIVE'],
                 },
               });
             },

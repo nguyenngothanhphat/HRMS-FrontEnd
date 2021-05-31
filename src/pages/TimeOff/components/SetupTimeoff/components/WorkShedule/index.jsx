@@ -122,7 +122,7 @@ class WorkShedule extends Component {
   };
 
   onFinish = (values, formatArray) => {
-    const { getByLocation, dispatch } = this.props;
+    const { getByLocation, dispatch, idLocation } = this.props;
     const { _id } = getByLocation;
     const { startTime, endTime } = this.state;
     const arrayActive = formatArray.filter((item) => item.checked === true);
@@ -135,6 +135,7 @@ class WorkShedule extends Component {
       totalHour,
       workDay: arrayFiler,
       _id,
+      location: idLocation,
     };
     dispatch({
       type: 'timeOff/updateEmployeeSchedule',

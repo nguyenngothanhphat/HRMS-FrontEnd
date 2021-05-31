@@ -1,5 +1,6 @@
 import { dialog } from '@/utils/utils';
 import {
+  getCompensationList,
   getGeneralInfo,
   getCompensation,
   getListSkill,
@@ -53,6 +54,7 @@ import {
   getBenefitPlans,
 } from '@/services/employeeProfiles';
 import { notification } from 'antd';
+import { getCurrentTenant } from '@/utils/authority';
 
 // const documentCategories = [
 //   { employeeGroup: 'Agreement', parentEmployeeGroup: ' Qualifications/Certification' },
@@ -1000,6 +1002,19 @@ const employeeProfile = {
         yield put({
           type: 'save',
           payload: { listLocationsByCompany: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchCompensationList(_, { call, put }) {
+      try {
+        const res = yield call(getCompensationList, { tenantId: getCurrentTenant() });
+        const { statusCode, data } = res;
+        if (statusCode !== 200) throw res;
+        yield put({
+          type: 'save',
+          payload: { compensationTypes: data },
         });
       } catch (errors) {
         dialog(errors);

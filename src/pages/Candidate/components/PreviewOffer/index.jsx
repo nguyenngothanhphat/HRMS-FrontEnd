@@ -7,6 +7,7 @@ import { EditOutlined } from '@ant-design/icons';
 import CustomModal from '@/components/CustomModal';
 // import SendEmail from '@/pages/FormTeamMember/components/BackgroundCheck/components/SendEmail';
 import { getCurrentTenant } from '@/utils/authority';
+import { isEmpty } from 'lodash';
 import whiteImg from './components/images/whiteImg.png';
 
 import CancelIcon from './components/CancelIcon';
@@ -45,16 +46,15 @@ const PreviewOffer = (props) => {
   //     : '',
   // );
   const [offerLetter, setOfferLetter] = useState(
-    offerLetterProp ? (
-      offerLetterProp.attachment?.url || offerLetterProp.url
-    ) : (
-      <>
-        {staticOfferLetterProp
-          ? staticOfferLetterProp.attachment?.url || staticOfferLetterProp.url
-          : ''}
-      </>
-    ),
+    offerLetterProp && !isEmpty(offerLetterProp)
+      ? offerLetterProp.attachment?.url || offerLetterProp.url || ''
+      : staticOfferLetterProp.attachment?.url || staticOfferLetterProp.url || '',
   );
+
+  console.log('offerLetterProp', offerLetterProp);
+  console.log('staticOfferLetterProp', staticOfferLetterProp);
+
+  console.log('offerLetter', offerLetter);
 
   const [uploadVisible1, setUploadVisible1] = useState(false);
   // eslint-disable-next-line no-unused-vars

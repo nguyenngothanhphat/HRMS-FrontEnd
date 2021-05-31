@@ -1,11 +1,14 @@
 import { dialog } from '@/utils/utils';
+import { getCurrentTenant } from '@/utils/authority';
 import {
   listProjectByCompany,
   addProjectMember,
   listProjectRole,
+  addProject,
+  getReportingManagerList,
 } from '../services/projectManagement';
-import { getRoleList } from '../services/usersManagement';
-import { getListEmployee } from '../services/employee';
+// import { getRoleList } from '../services/usersManagement';
+// import { getListEmployee } from '../services/employee';
 
 const PROJECT_STATUS = {
   ACTIVE: 'ACTIVE',
@@ -94,7 +97,7 @@ const projectManagement = {
     *getProjectByCompany({ payload }, { call, put }) {
       let response;
       try {
-        response = yield call(listProjectByCompany, payload);
+        response = yield call(listProjectByCompany, { ...payload, tenantId: getCurrentTenant() });
         // console.log(response);
         const { data = [] } = response;
         const inactiveList = [];
@@ -144,10 +147,23 @@ const projectManagement = {
       return response;
     },
 
+    *addNewProject({ payload }, { call }) {
+      let response;
+      try {
+        response = yield call(addProject, { ...payload, tenantId: getCurrentTenant() });
+        if (response.statusCode !== 200) {
+          dialog(response);
+        }
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
     *addMember({ payload }, { call }) {
       let response;
       try {
-        response = yield call(addProjectMember, payload);
+        response = yield call(addProjectMember, { ...payload, tenantId: getCurrentTenant() });
         if (response.statusCode !== 200) {
           dialog(response);
         }
@@ -162,7 +178,10 @@ const projectManagement = {
       let response2;
       try {
         // REMEMBER TO ADD ACTIVE STATUS TO PAYLOAD
-        response = yield call(getListEmployee, payload);
+        response = yield call(getReportingManagerList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
         response2 = yield call(listProjectRole);
         const { data: dataEmployee = [] } = response;
         const { data: dataRole = [] } = response2;
