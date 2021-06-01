@@ -86,11 +86,12 @@ class EmployeeInformation extends PureComponent {
       openEmployeeInfor,
       permissions = {},
       profileOwner = false,
+      idUser,
     } = this.props;
     const renderComponent = openEmployeeInfor ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
-      <View dataAPI={generalData} />
+      <View dataAPI={generalData} idUser={idUser} />
     );
     return (
       <div className={styles.EmployeeInformation}>
