@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { history, formatMessage, connect } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
 import { Table, Avatar, Button, Tag } from 'antd';
+import avtDefault from '@/assets/avtDefault.jpg';
 import styles from './index.less';
 import ModalTerminate from './components/ModalTerminate';
 
@@ -21,9 +22,10 @@ const departmentTag = [
   { name: 'Customer services', color: '#f50' },
   { name: 'Business development', color: '#87d068' },
 ];
-@connect(({ loading, offboarding: { approvalflow = [] } = {} }) => ({
+@connect(({ loading, offboarding: { approvalflow = [] } = {}, user: { permissions = {} } }) => ({
   loadingTerminateReason: loading.effects['offboarding/terminateReason'],
   approvalflow,
+  permissions,
 }))
 class DirectoryTable extends Component {
   constructor(props) {
@@ -45,11 +47,23 @@ class DirectoryTable extends Component {
     }
   }
 
+  getAvatarUrl = (avatar, isShowAvatar) => {
+    const { permissions = {}, profileOwner = false } = this.props;
+    if (isShowAvatar) return avatar;
+    if (permissions.viewAvatarEmployee !== -1 || profileOwner) {
+      if (avatar) return avatar;
+      return null;
+    }
+    return avtDefault;
+  };
+
   renderUser = (generalInfo) => {
+    const { isShowAvatar = true, avatar = '' } = generalInfo;
+    const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
     return (
       <div className={styles.directoryTableName}>
-        {generalInfo.avatar ? (
-          <Avatar size="medium" className={styles.avatar} src={generalInfo.avatar} alt="avatar" />
+        {avatarUrl ? (
+          <Avatar size="medium" className={styles.avatar} src={avatarUrl} alt="avatar" />
         ) : (
           <Avatar className={styles.avatar_emptySrc} alt="avatar" />
         )}

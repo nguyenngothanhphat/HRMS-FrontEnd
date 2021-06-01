@@ -7,6 +7,7 @@ import ModalUpload from '@/components/ModalUpload';
 import CustomModal from '@/components/CustomModal';
 import s from '@/components/LayoutEmployeeProfile/index.less';
 import { getCurrentTenant } from '@/utils/authority';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
 
 const { TextArea } = Input;
 
@@ -166,12 +167,32 @@ class ViewInformation extends Component {
     );
   };
 
+  onChangeShowAvatar = (e) => {
+    const { target: { checked } = {} } = e;
+    const { dispatch, generalData: { _id: id = '' } = {} } = this.props;
+    dispatch({
+      type: 'employeeProfile/updateGeneralInfo',
+      payload: {
+        id,
+        isShowAvatar: checked,
+        tenantId: getCurrentTenant(),
+      },
+    });
+  };
+
+  getAvatarUrl = (avatar, isShowAvatar) => {
+    const { permissions = {}, profileOwner = false } = this.props;
+    if (isShowAvatar || permissions.viewAvatarEmployee !== -1 || profileOwner)
+      return avatar || avtDefault;
+    return avtDefault;
+  };
+
   render() {
     const {
       generalData,
       // compensationData,
       loading,
-      originGeneralData: { bioInfo = '' } = {},
+      originGeneralData: { bioInfo = '', isShowAvatar = true } = {},
       // employeeLocation = '',
       permissions = {},
       profileOwner = false,
@@ -179,15 +200,9 @@ class ViewInformation extends Component {
       location: { name: locationName = '' } = {},
       department: { name: departmentName = '' } = {},
       joinDate = '',
-      myEmployeeID,
     } = this.props;
-    const idUser = localStorage.getItem('idCurrentEmployee');
-    const authority = localStorage.getItem('antd-pro-authority');
-    const checkVisible =
-      (idUser === myEmployeeID && authority.includes('employee')) ||
-      authority.includes('hr-manager') ||
-      authority.includes('admin') ||
-      authority.includes('owner');
+
+    const checkVisible = profileOwner || permissions.viewOtherInformation !== -1;
 
     const {
       firstName = '',
@@ -205,6 +220,8 @@ class ViewInformation extends Component {
     // const listColors = ['#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0'];
     // const formatListSkill = this.formatListSkill(generalData.skills, listColors) || [];
 
+    const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
+
     if (loading)
       return (
         <div className={s.viewLoading}>
@@ -218,7 +235,7 @@ class ViewInformation extends Component {
           alt="img-cover"
           className={s.infoEmployee__imgCover}
         />
-        <img src={avatar || avtDefault} alt="img-avt" className={s.infoEmployee__imgAvt} />
+        <img src={avatarUrl} alt="img-avt" className={s.infoEmployee__imgAvt} />
         {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
           <img
             src="/assets/images/iconUploadImage.svg"
@@ -241,6 +258,20 @@ class ViewInformation extends Component {
               </Button>
             )}
           </div>
+          {(permissions.editShowAvatarEmployee !== -1 || profileOwner) && (
+            <>
+              <Divider />
+              <div className={s.infoEmployee__viewBottom__row}>
+                <Checkbox
+                  className={s.showAvatar}
+                  checked={isShowAvatar}
+                  onChange={this.onChangeShowAvatar}
+                >
+                  Show profile picture to other users
+                </Checkbox>
+              </div>
+            </>
+          )}
           <Divider />
           {checkVisible ? (
             <div className={s.infoEmployee__viewBottom__row}>

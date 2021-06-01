@@ -15,14 +15,17 @@ import styles from './index.less';
       AdhaarCard = {},
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
+      idCurrentEmployee = '',
     } = {},
-    user: { currentUser = [] },
+    user: { currentUser = [], permissions = [] },
   }) => ({
     employeeInformationURL,
     generalData,
     generalDataOrigin,
     AdhaarCard,
     currentUser,
+    permissions,
+    idCurrentEmployee,
   }),
 )
 class View extends PureComponent {
@@ -57,11 +60,13 @@ class View extends PureComponent {
     const {
       dataAPI,
       AdhaarCard = {},
-      idUser,
       currentUser: {
         employee: { _id: idEmployee = '' },
       },
+      permissions = [],
+      idCurrentEmployee = '',
     } = this.props;
+
     let splitUrl = '';
     let urlAdhaarCard = '';
     if (AdhaarCard !== null) {
@@ -72,12 +77,8 @@ class View extends PureComponent {
       }
     }
 
-    const authority = localStorage.getItem('antd-pro-authority');
     const checkVisible =
-      (idUser === idEmployee && authority.includes('employee')) ||
-      authority.includes('hr-manager') ||
-      authority.includes('admin') ||
-      authority.includes('owner');
+      idCurrentEmployee === idEmployee || permissions.viewOtherInformation !== -1;
 
     const dummyData = [
       { label: 'Legal Name', value: dataAPI.legalName },
