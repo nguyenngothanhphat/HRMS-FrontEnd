@@ -403,7 +403,7 @@ class FormTeamMember extends PureComponent {
       },
       {
         id: 4,
-        name: 'Background Check',
+        name: 'Document Verification',
         key: 'backgroundCheck',
         // key: 'eligibilityDocuments',
         component:
