@@ -445,7 +445,7 @@ class BackgroundRecheck extends Component {
       <div className={styles.backgroundRecheck}>
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-            <p className={styles.backgroundRecheck__title}>Background Check</p>
+            <p className={styles.backgroundRecheck__title}>Document Verification</p>
             <p className={styles.backgroundRecheck__subTitle}>
               All documents supporting candidate's employment eligibility will be displayed here
             </p>
