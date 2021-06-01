@@ -100,9 +100,7 @@ const BasicLayout = (props) => {
               }}
             />
           </Link>
-        ) : (
-          <Spin />
-        )}
+        ) : null}
       </>
     );
   };
