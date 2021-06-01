@@ -8,12 +8,18 @@ import styles from './index.less';
 
 @connect(
   ({
-    employeeProfile: { tempData: { generalData = {} } = {}, tenantCurrentEmployee = '' } = {},
-    user: { currentUser = [] },
+    employeeProfile: {
+      tempData: { generalData = {} } = {},
+      tenantCurrentEmployee = '',
+      idCurrentEmployee = '',
+    } = {},
+    user: { currentUser = [], permissions = {} },
   }) => ({
     generalData,
     tenantCurrentEmployee,
     currentUser,
+    permissions,
+    idCurrentEmployee,
   }),
 )
 class View extends PureComponent {
@@ -92,10 +98,10 @@ class View extends PureComponent {
       generalData,
       permissions = {},
       profileOwner = false,
-      idUser,
       currentUser: {
         employee: { _id: idEmployee = '' },
       },
+      idCurrentEmployee = '',
     } = this.props;
     const { isShowPersonalNumber, isShowPersonalEmail } = generalData;
 
@@ -114,12 +120,8 @@ class View extends PureComponent {
       } = {},
     } = dataAPI;
 
-    const authority = localStorage.getItem('antd-pro-authority');
     const checkVisible =
-      (idUser === idEmployee && authority.includes('employee')) ||
-      authority.includes('hr-manager') ||
-      authority.includes('admin') ||
-      authority.includes('owner');
+      idCurrentEmployee === idEmployee || permissions.viewOtherInformation !== -1;
 
     const dummyData = [
       { label: 'Personal Number', value: dataAPI.personalNumber },

@@ -200,15 +200,9 @@ class ViewInformation extends Component {
       location: { name: locationName = '' } = {},
       department: { name: departmentName = '' } = {},
       joinDate = '',
-      myEmployeeID,
     } = this.props;
-    const idUser = localStorage.getItem('idCurrentEmployee');
-    const authority = localStorage.getItem('antd-pro-authority');
-    const checkVisible =
-      (idUser === myEmployeeID && authority.includes('employee')) ||
-      authority.includes('hr-manager') ||
-      authority.includes('admin') ||
-      authority.includes('owner');
+
+    const checkVisible = profileOwner || permissions.viewOtherInformation !== -1;
 
     const {
       firstName = '',

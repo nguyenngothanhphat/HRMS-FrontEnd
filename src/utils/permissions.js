@@ -61,6 +61,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
       updateAvatarEmployee: 1,
       viewAvatarEmployee: 1,
       editShowAvatarEmployee: 1,
+      viewOtherInformation: 1,
 
       // onboarding
       viewOnboardingSettingTab: 1,
@@ -127,6 +128,11 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL_EMPLOYEE_VIEW',
         'T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL',
       ]);
+
+  // View others personal information
+  const indexViewOthersInformaton = isAdmin
+    ? 1
+    : isAuthorized(permissionList, ['hr', 'hr-manager']);
 
   // Directory Page - Filter - Display location
   const findIndexShowLocationActive = isAuthorized(permissionList, [
@@ -330,6 +336,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     updateAvatarEmployee: indexUpdateAvatar,
     viewAvatarEmployee: indexViewAvatar,
     editShowAvatarEmployee: indexEditShowAvatar,
+    viewOtherInformation: indexViewOthersInformaton,
 
     // onboarding
     viewOnboardingSettingTab: indexOnboardingSettings,
