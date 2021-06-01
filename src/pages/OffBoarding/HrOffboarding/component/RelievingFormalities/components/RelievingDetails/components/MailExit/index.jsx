@@ -15,11 +15,18 @@ import RelievingTemplates from '../RelievingTemplates';
 import ModalContent from '../RelievingTemplates/components/ModalContent';
 import styles from './index.less';
 
-@connect(({ offboarding: { relievingDetails: { exitPackage = {}, _id = '' } }, loading }) => ({
-  exitPackage,
-  ticketId: _id,
-  loadingSendExitEmail: loading.effects['offboarding/sendOffBoardingPackage'],
-}))
+@connect(
+  ({
+    offboarding: {
+      relievingDetails: { exitPackage = {}, _id = '' },
+    },
+    loading,
+  }) => ({
+    exitPackage,
+    ticketId: _id,
+    loadingSendExitEmail: loading.effects['offboarding/sendOffBoardingPackage'],
+  }),
+)
 class MailExit extends Component {
   constructor(props) {
     super(props);

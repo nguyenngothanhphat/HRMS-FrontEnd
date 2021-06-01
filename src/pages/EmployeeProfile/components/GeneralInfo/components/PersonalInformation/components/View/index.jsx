@@ -9,9 +9,11 @@ import styles from './index.less';
 @connect(
   ({
     employeeProfile: { tempData: { generalData = {} } = {}, tenantCurrentEmployee = '' } = {},
+    user: { currentUser = [] },
   }) => ({
     generalData,
     tenantCurrentEmployee,
+    currentUser,
   }),
 )
 class View extends PureComponent {
@@ -85,7 +87,16 @@ class View extends PureComponent {
   };
 
   render() {
-    const { dataAPI, generalData, permissions = {}, profileOwner = false } = this.props;
+    const {
+      dataAPI,
+      generalData,
+      permissions = {},
+      profileOwner = false,
+      idUser,
+      currentUser: {
+        employee: { _id: idEmployee = '' },
+      },
+    } = this.props;
     const { isShowPersonalNumber, isShowPersonalEmail } = generalData;
 
     const {
@@ -103,14 +114,21 @@ class View extends PureComponent {
       } = {},
     } = dataAPI;
 
+    const authority = localStorage.getItem('antd-pro-authority');
+    const checkVisible =
+      (idUser === idEmployee && authority.includes('employee')) ||
+      authority.includes('hr-manager') ||
+      authority.includes('admin') ||
+      authority.includes('owner');
+
     const dummyData = [
       { label: 'Personal Number', value: dataAPI.personalNumber },
       { label: 'Personal Email', value: dataAPI.personalEmail },
-      { label: 'Blood Group', value: dataAPI.Blood },
-      { label: 'Marital Status', value: dataAPI.maritalStatus },
+      { label: checkVisible ? 'Blood Group' : null, value: dataAPI.Blood },
+      { label: checkVisible ? 'Marital Status' : null, value: dataAPI.maritalStatus },
       { label: 'Linkedin', value: dataAPI.linkedIn },
       {
-        label: 'Residence Address',
+        label: checkVisible ? 'Residence Address' : null,
         value: this.formatAddress(r_Address, r_countryName, r_state, r_zipCode),
       },
       {
@@ -118,6 +136,9 @@ class View extends PureComponent {
         value: this.formatAddress(c_Address, c_countryName, c_state, c_zipCode),
       },
     ];
+
+    const newdata = dummyData.filter((item) => item.label !== null);
+
     const content =
       'The number will be still visible to your Reporting Manager, HR and Finance teams however you can Choose to keep it hidden from other co-workers by toggling the highlighted toggle switch!';
     const contentEmail =
@@ -125,7 +146,7 @@ class View extends PureComponent {
 
     return (
       <Row gutter={[0, 16]} className={styles.root}>
-        {dummyData.map((item) => (
+        {newdata.map((item) => (
           <Fragment key={item.label}>
             <Col span={6} className={styles.textLabel}>
               {item.label}

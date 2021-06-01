@@ -200,7 +200,16 @@ class ViewInformation extends Component {
       location: { name: locationName = '' } = {},
       department: { name: departmentName = '' } = {},
       joinDate = '',
+      myEmployeeID,
     } = this.props;
+    const idUser = localStorage.getItem('idCurrentEmployee');
+    const authority = localStorage.getItem('antd-pro-authority');
+    const checkVisible =
+      (idUser === myEmployeeID && authority.includes('employee')) ||
+      authority.includes('hr-manager') ||
+      authority.includes('admin') ||
+      authority.includes('owner');
+
     const {
       firstName = '',
       avatar = '',
@@ -270,10 +279,15 @@ class ViewInformation extends Component {
             </>
           )}
           <Divider />
-          <div className={s.infoEmployee__viewBottom__row}>
-            <p className={s.titleTag}>Joining Date</p>
-            <p className={s.infoEmployee__textNameAndTitle__title}>{joiningDate}</p>
-          </div>
+          {checkVisible ? (
+            <div className={s.infoEmployee__viewBottom__row}>
+              <p className={s.titleTag}>Joining Date</p>
+              <p className={s.infoEmployee__textNameAndTitle__title}>{joiningDate}</p>
+            </div>
+          ) : (
+            ''
+          )}
+
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag}>Location</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{locationName}</p>
