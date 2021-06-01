@@ -290,14 +290,14 @@ const routes = [
             name: 'timeOffManagement',
             icon: '/assets/images/timeOff.svg',
             component: '../pages_admin/TimeOffManagement',
-            authority: ['M_TIMEOFF_MANAGEMENT_VIEW', 'owner', 'admin'],
+            authority: ['M_TIMEOFF_MANAGEMENT_VIEW', 'owner'],
           },
           {
             path: '/offboarding-management',
             name: 'offBoardingManagement',
             icon: '/assets/images/iconOffboarding.svg',
             component: '../pages_admin/OffBoardingManagement',
-            authority: ['M_OFFBOARDING_MANAGEMENT_VIEW', 'owner', 'admin'],
+            authority: ['M_OFFBOARDING_MANAGEMENT_VIEW', 'owner'],
           },
 
           {
