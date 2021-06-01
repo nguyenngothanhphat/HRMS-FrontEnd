@@ -16,11 +16,13 @@ import styles from './index.less';
       originData: { generalData: generalDataOrigin = {} } = {},
       tempData: { generalData = {} } = {},
     } = {},
+    user: { currentUser = [] },
   }) => ({
     employeeInformationURL,
     generalData,
     generalDataOrigin,
     AdhaarCard,
+    currentUser,
   }),
 )
 class View extends PureComponent {
@@ -52,7 +54,14 @@ class View extends PureComponent {
 
   render() {
     const { visible, linkImage } = this.state;
-    const { dataAPI, AdhaarCard = {} } = this.props;
+    const {
+      dataAPI,
+      AdhaarCard = {},
+      idUser,
+      currentUser: {
+        employee: { _id: idEmployee = '' },
+      },
+    } = this.props;
     let splitUrl = '';
     let urlAdhaarCard = '';
     if (AdhaarCard !== null) {
@@ -63,23 +72,32 @@ class View extends PureComponent {
       }
     }
 
+    const authority = localStorage.getItem('antd-pro-authority');
+    const checkVisible =
+      (idUser === idEmployee && authority.includes('employee')) ||
+      authority.includes('hr-manager') ||
+      authority.includes('admin') ||
+      authority.includes('owner');
+
     const dummyData = [
       { label: 'Legal Name', value: dataAPI.legalName },
       {
-        label: 'Date of Birth',
+        label: checkVisible ? 'Date of Birth' : null,
         value: dataAPI.DOB ? Moment(dataAPI.DOB).locale('en').format('MM.DD.YY') : '',
       },
-      { label: 'Legal Gender', value: dataAPI.legalGender },
+      { label: checkVisible ? 'Legal Gender' : null, value: dataAPI.legalGender },
       { label: 'Employee ID', value: dataAPI.employeeId },
       { label: 'Work Email', value: dataAPI.workEmail },
       { label: 'Work Number', value: dataAPI.workNumber },
-      { label: 'Adhaar Card Number', value: dataAPI.adhaarCardNumber },
-      { label: 'UAN Number', value: dataAPI.uanNumber },
+      { label: checkVisible ? 'Adhaar Card Number' : null, value: dataAPI.adhaarCardNumber },
+      { label: checkVisible ? 'UAN Number' : null, value: dataAPI.uanNumber },
     ];
+    const newdata = dummyData.filter((item) => item.label !== null);
     const content = 'We require your gender for legal reasons.';
+
     return (
       <Row gutter={[0, 16]} className={styles.root}>
-        {dummyData.map((item) => (
+        {newdata.map((item) => (
           <Fragment key={item.label}>
             <Col span={6} className={styles.textLabel}>
               {item.label}
