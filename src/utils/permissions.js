@@ -59,6 +59,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
       viewTabBenefitPlans: 1,
       // Update avatar employee
       updateAvatarEmployee: 1,
+      viewAvatarEmployee: 1,
+      editShowAvatarEmployee: 1,
 
       // onboarding
       viewOnboardingSettingTab: 1,
@@ -273,6 +275,12 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         'T_GENERAL_INFO_B_UPLOAD_AVATAR_EMPLOYEE_VIEW',
       ]);
 
+  // View avatar employee
+  const indexViewAvatar = isAdmin ? 1 : isAuthorized(permissionList, ['hr', 'hr-manager']);
+
+  // Edit show avatar employee
+  const indexEditShowAvatar = isAdmin ? 1 : isAuthorized(permissionList, ['hr-manager']);
+
   // ONBOARDING
   const indexOnboardingSettings = isAuthorized(permissionList, [
     'hr-manager',
@@ -320,6 +328,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewTabBenefitPlans: indexBenefitPlans,
     // Update avatar employee
     updateAvatarEmployee: indexUpdateAvatar,
+    viewAvatarEmployee: indexViewAvatar,
+    editShowAvatarEmployee: indexEditShowAvatar,
 
     // onboarding
     viewOnboardingSettingTab: indexOnboardingSettings,
