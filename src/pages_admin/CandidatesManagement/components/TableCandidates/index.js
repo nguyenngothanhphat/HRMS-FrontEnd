@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import moment from 'moment';
-import { formatMessage, connect } from 'umi';
+import { formatMessage, connect, history } from 'umi';
 import styles from './index.less';
 
 @connect(({ employeesManagement }) => ({
@@ -95,15 +95,19 @@ class TableCandidates extends PureComponent {
       },
       {
         title: 'Action',
-        dataIndex: '_id',
+        dataIndex: 'ticketID',
         align: 'center',
-        render: () => <a>Action</a>,
+        render: (ticketID) => <a onClick={() => this.viewCandidate(ticketID)}>View</a>,
       },
     ];
     return columns.map((col) => ({
       ...col,
       title: col.title,
     }));
+  };
+
+  viewCandidate = (rookieId) => {
+    history.push(`/candidates-management/candidate-detail/${rookieId}`);
   };
 
   // pagination

@@ -77,5 +77,5 @@ export default {
   'menu.permission': 'Permission',
   'menu.change-password': 'Change Password',
   'menu.Createcustomfieldsection': 'Create custom field section',
-  'menu.projectManagement': 'Project Management',
+  'menu.projectManagement': 'Projects Management',
 };

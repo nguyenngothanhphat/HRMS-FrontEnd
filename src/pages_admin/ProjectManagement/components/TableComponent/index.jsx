@@ -102,6 +102,7 @@ const TableComponent = (props) => {
     loading,
     listLocationsByCompany = [],
     // companiesOfUser = [],
+    loadingFetchProject = false,
   } = props;
   const [pageSelected, setPageSelected] = useState(1);
   // const [currentRecord, setCurrentRecord] = useState(1);
@@ -139,6 +140,7 @@ const TableComponent = (props) => {
         dataSource={list}
         columns={columns}
         pagination={{ ...pagination, total: list.length }}
+        loading={loadingFetchProject}
         onRow={(record) => {
           return {
             onClick: () => {
