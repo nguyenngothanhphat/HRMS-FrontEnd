@@ -86,8 +86,10 @@ class RequestChangeLWD extends Component {
     });
   };
 
-  openEdit = () => {
-    this.setState({ isEdit: true });
+  openEdit = (nodeStep) => {
+    if (nodeStep === 3 || nodeStep === 4) {
+      this.setState({ isEdit: true });
+    }
   };
 
   closeEdit = () => {
@@ -117,7 +119,8 @@ class RequestChangeLWD extends Component {
   };
 
   render() {
-    const { myRequest: { requestLastDate = '', statusLastDate = '' } = {}, loading } = this.props;
+    const { myRequest: { requestLastDate = '', statusLastDate = '', nodeStep = 0 } = {}, loading } =
+      this.props;
     const { visible, keyModal, isEdit, q } = this.state;
     const checkDisable = statusLastDate !== 'REQUESTED' && !isEdit;
     // const disableButtonSubmit = this.checkDisableButtonSubmit();
@@ -133,7 +136,11 @@ class RequestChangeLWD extends Component {
               {statusLastDate === 'REQUESTED' ? 'Manager requested' : 'HR Manager approved'})
             </span>
             {!isEdit ? (
-              <div className={styles.editBtn} onClick={this.openEdit}>
+              <div
+                className={styles.editBtn}
+                onClick={() => this.openEdit(nodeStep)}
+                style={nodeStep > 4 || nodeStep < 3 ? { opacity: 0.5 } : null}
+              >
                 <span>Edit</span>
               </div>
             ) : (
@@ -231,6 +238,7 @@ class RequestChangeLWD extends Component {
                 </>
               ) : (
                 <Button
+                  disabled={nodeStep > 4 || nodeStep < 3}
                   className={styles.btnSubmit}
                   onClick={() => this.handleRequestChangeLWD('ACCEPTED')}
                 >
