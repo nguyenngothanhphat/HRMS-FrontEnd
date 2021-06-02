@@ -28,7 +28,7 @@ const candidatesManagement = {
     ],
   },
   effects: {
-    *fetchCandidatesList({ processStatus = [], tenantId = '' }, { call, put }) {
+    *fetchCandidatesList({ payload: { tenantId = '', processStatus = [] } }, { call, put }) {
       try {
         const response = yield call(getCandidatesList, { processStatus, tenantId });
         const { statusCode, data: candidatesList } = response;
