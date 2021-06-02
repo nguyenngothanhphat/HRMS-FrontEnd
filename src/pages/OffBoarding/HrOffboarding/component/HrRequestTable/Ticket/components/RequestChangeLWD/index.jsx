@@ -87,7 +87,7 @@ class RequestChangeLWD extends Component {
   };
 
   openEdit = (nodeStep) => {
-    if (nodeStep === 4) {
+    if (nodeStep === 3 || nodeStep === 4) {
       this.setState({ isEdit: true });
     }
   };
@@ -139,7 +139,7 @@ class RequestChangeLWD extends Component {
               <div
                 className={styles.editBtn}
                 onClick={() => this.openEdit(nodeStep)}
-                style={nodeStep === 4 ? null : { opacity: 0.5 }}
+                style={nodeStep > 4 || nodeStep < 3 ? { opacity: 0.5 } : null}
               >
                 <span>Edit</span>
               </div>
@@ -238,7 +238,7 @@ class RequestChangeLWD extends Component {
                 </>
               ) : (
                 <Button
-                  disabled={nodeStep !== 4}
+                  disabled={nodeStep > 4 || nodeStep < 3}
                   className={styles.btnSubmit}
                   onClick={() => this.handleRequestChangeLWD('ACCEPTED')}
                 >
