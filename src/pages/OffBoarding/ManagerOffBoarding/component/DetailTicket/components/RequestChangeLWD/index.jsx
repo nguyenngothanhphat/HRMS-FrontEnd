@@ -89,14 +89,22 @@ class RequestChangeLWD extends Component {
   };
 
   render() {
-    const { myRequest: { lastWorkingDate = '', requestLastDate = '' } = {}, loading } = this.props;
+    const {
+      myRequest: {
+        requestDate = '',
+        lastWorkingDate = '',
+        requestLastDate = '',
+        statusLastDate = '',
+      } = {},
+      loading,
+    } = this.props;
     const { visible, keyModal, isEdit, q } = this.state;
-    const dateValue = moment(lastWorkingDate).format('YYYY/MM/DD');
+    const dateValue = moment(requestDate).add('90', 'days').format('MM.DD.YY');
     return (
       <>
         <div className={styles.viewChangeLastWorkingDay}>
           <div className={styles.viewChangeLastWorkingDay__title}>
-            <span>Resignation request details</span>
+            <span>Last working date</span>
           </div>
           <div className={styles.contentContainer}>
             <span className={styles.viewChangeLastWorkingDay__label}>
@@ -105,7 +113,7 @@ class RequestChangeLWD extends Component {
             <Row className={styles.viewChangeLastWorkingDay__viewDateApproved} gutter={[50, 0]}>
               <Col span={8}>
                 <DatePicker
-                  value={dateValue ? moment(dateValue) : null}
+                  value={moment(dateValue).isValid() ? moment(dateValue) : null}
                   format={dateFormat}
                   className={styles.viewChangeLastWorkingDay__viewDateApproved__datePicker}
                   disabled
@@ -152,7 +160,7 @@ class RequestChangeLWD extends Component {
                 <span>Reporting manager’s comments extend or shorten LWD</span>
               </div>
               <div className={styles.viewTop__right}>
-                {!isEdit && (
+                {!isEdit && statusLastDate !== 'ACCEPTED' && (
                   <div className={styles.viewTop__right__edit} onClick={this.handleOpenEdit}>
                     <img style={{ margin: '0 2px 2px 0' }} src={editIcon} alt="edit-icon" />
                     <span>Edit</span>

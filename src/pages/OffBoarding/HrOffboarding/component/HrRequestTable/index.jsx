@@ -95,14 +95,14 @@ class HRrequestTable extends Component {
     );
 
     return (
-      <Row className={styles.hrContent} gutter={[40, 0]}>
+      <Row className={styles.hrContent}>
         <Col span={24}>
           <div className={styles.header}>
             <div className={styles.header__left}>Team Requests</div>
             <div className={styles.header__right}>
               <Button className={styles.buttonRequest}>
                 <Link to="offboarding/resignation-request">
-                  <span className={styles.buttonRequest__text}>Initiate resignation request</span>
+                  <span className={styles.buttonRequest__text}>Initiate Resignation Request</span>
                 </Link>
               </Button>
             </div>

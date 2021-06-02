@@ -30,7 +30,7 @@ export default class RenderTable extends PureComponent {
     const data = [
       {
         value: '1',
-        title: 'In-progress',
+        title: 'In Progress',
         count: this.getCount('IN-PROGRESS'),
         renderTab: this.renderTab('DRAFT'),
       },
@@ -69,7 +69,7 @@ export default class RenderTable extends PureComponent {
     return (
       <div className={styles.tabTable}>
         <Tabs
-          tabBarGutter={35}
+          // tabBarGutter={35}
           defaultActiveKey="1"
           onChange={(activeKey) => this.onChangeTab(activeKey)}
         >
