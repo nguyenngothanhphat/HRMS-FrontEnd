@@ -34,7 +34,7 @@ class MineOrTeamTabs extends PureComponent {
         <Tabs
           destroyInactiveTabPane
           tabPosition="top"
-          tabBarGutter={40}
+          // tabBarGutter={40}
           onTabClick={(activeKey) => this.saveCurrentTab(activeKey)}
           activeKey={currentMineOrTeamTab}
         >

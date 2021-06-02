@@ -19,6 +19,7 @@ class TimeOff extends PureComponent {
     super(props);
     this.state = {
       role: '',
+      activeKey: '1',
     };
   }
 
@@ -52,6 +53,24 @@ class TimeOff extends PureComponent {
         },
       });
     }
+
+    let activeKey = '1';
+    switch (role) {
+      case 'employee':
+        activeKey = '1';
+        break;
+      case 'manager':
+        activeKey = '2';
+        break;
+      case 'hr-manager':
+        activeKey = '3';
+        break;
+      default:
+        break;
+    }
+    this.setState({
+      activeKey,
+    });
     return role;
   };
 
@@ -108,13 +127,22 @@ class TimeOff extends PureComponent {
     );
   };
 
+  onTabClick = (activeKey) => {
+    this.setState({
+      activeKey,
+    });
+    if (activeKey === '4') {
+      history.push('/link-here');
+    }
+  };
+
   render() {
-    const { role } = this.state;
+    const { role, activeKey } = this.state;
     return (
       <div className={styles.TimeOff}>
         <PageContainer>
           {/* tabBarExtraContent={this.options()} */}
-          <Tabs defaultActiveKey="1">
+          <Tabs activeKey={activeKey} onTabClick={this.onTabClick}>
             {role === 'employee' && (
               <TabPane tab={<span className={styles.employeeTabPane}>Timeoff</span>} key="1">
                 <EmployeeLandingPage />
@@ -132,7 +160,7 @@ class TimeOff extends PureComponent {
             )}
             {role === 'hr-manager' && (
               <TabPane tab="Setup Timeoff policy" key="4">
-                <SetupTimeoff />
+                {/* <SetupTimeoff /> */}
               </TabPane>
             )}
           </Tabs>
