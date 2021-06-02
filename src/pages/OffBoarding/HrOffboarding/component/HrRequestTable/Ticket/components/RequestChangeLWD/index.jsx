@@ -110,12 +110,15 @@ class RequestChangeLWD extends Component {
   };
 
   getDatePickerValue = () => {
-    const { myRequest: { lastWorkingDate = null } = {} } = this.props;
+    const { myRequest: { lastWorkingDate = null, requestDate = '' } = {} } = this.props;
     const { lastDate = '', isChanging } = this.state;
     if (isChanging) {
       return moment(lastDate);
     }
-    return moment(lastWorkingDate);
+    if (!lastWorkingDate) {
+      return moment(requestDate).add('90', 'days');
+    }
+    return lastWorkingDate;
   };
 
   render() {
@@ -132,8 +135,10 @@ class RequestChangeLWD extends Component {
         <div className={styles.viewChangeLastWorkingDay}>
           <div className={styles.viewChangeLastWorkingDay__title}>
             <span className={styles.textTitle}>
-              Last working day (
-              {statusLastDate === 'REQUESTED' ? 'Manager requested' : 'HR Manager approved'})
+              Last working day
+              {statusLastDate === 'REQUESTED' ? (
+                <>{moment(dateValue).isValid() ? '(Manager requested)' : '(HR Manager approved)'}</>
+              ) : null}
             </span>
             {!isEdit ? (
               <div
@@ -159,11 +164,12 @@ class RequestChangeLWD extends Component {
             <Row className={styles.viewChangeLastWorkingDay__viewDateApproved} gutter={[50, 0]}>
               <Col span={8}>
                 <DatePicker
-                  value={dateValue}
+                  value={moment(dateValue).isValid() ? moment(dateValue) : null}
                   format={dateFormat}
                   onChange={this.changeDate}
                   className={styles.viewChangeLastWorkingDay__viewDateApproved__datePicker}
                   disabled={!isEdit}
+                  allowClear={false}
                 />
               </Col>
               <Col
@@ -211,49 +217,51 @@ class RequestChangeLWD extends Component {
             )}
           </div>
 
-          <div className={styles.bottomPart}>
-            <div
-              className={styles.contentViewButton}
-              style={!requestLastDate ? { justifyContent: 'flex-end' } : {}}
-            >
-              {requestLastDate ? (
-                <>
-                  {statusLastDate === 'REQUESTED' && (
+          {(nodeStep < 4 || isEdit) && (
+            <div className={styles.bottomPart}>
+              <div
+                className={styles.contentViewButton}
+                style={!requestLastDate ? { justifyContent: 'flex-end' } : {}}
+              >
+                {requestLastDate ? (
+                  <>
+                    {statusLastDate === 'REQUESTED' && (
+                      <Button
+                        type="link"
+                        disabled={checkDisable}
+                        className={styles.btnReject}
+                        onClick={() => this.handleRequestChangeLWD('REJECT')}
+                      >
+                        Reject
+                      </Button>
+                    )}
                     <Button
-                      type="link"
                       disabled={checkDisable}
-                      className={styles.btnReject}
-                      onClick={() => this.handleRequestChangeLWD('REJECT')}
+                      className={styles.btnSubmit}
+                      onClick={() => this.handleRequestChangeLWD('ACCEPTED')}
                     >
-                      Reject
+                      Approve
                     </Button>
-                  )}
+                  </>
+                ) : (
                   <Button
-                    disabled={checkDisable}
+                    disabled={nodeStep > 4 || nodeStep < 3}
                     className={styles.btnSubmit}
                     onClick={() => this.handleRequestChangeLWD('ACCEPTED')}
                   >
                     Approve
                   </Button>
-                </>
-              ) : (
-                <Button
-                  disabled={nodeStep > 4 || nodeStep < 3}
-                  className={styles.btnSubmit}
-                  onClick={() => this.handleRequestChangeLWD('ACCEPTED')}
-                >
-                  Approve
-                </Button>
-              )}
-              {/* <Button
+                )}
+                {/* <Button
                 onClick={() => this.handleSubmit(lastDate)}
                 disabled={disableButtonSubmit}
                 className={styles.btnSubmit}
               >
                 Submit
               </Button> */}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         <ModalRequestChangeLWD

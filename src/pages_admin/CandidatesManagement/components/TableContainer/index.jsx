@@ -103,6 +103,16 @@ class TableContainer extends PureComponent {
     this.setState({
       tabId: Number(tabId),
     });
+
+    const { dispatch } = this.props;
+    if (Number(tabId) === 1) {
+      dispatch({
+        type: 'candidatesManagement/fetchCandidatesList',
+        payload: {
+          tenantId: getCurrentTenant(),
+        },
+      });
+    }
   };
 
   rightButton = (collapsed) => {

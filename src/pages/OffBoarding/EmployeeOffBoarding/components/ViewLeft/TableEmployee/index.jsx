@@ -113,9 +113,8 @@ class TableEmployee extends Component {
         dataIndex: 'Assigned',
         // width: '10%',
         render: (_, row) => {
-          const {
-            hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {},
-          } = this.props;
+          const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
+            this.props;
           const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
           const arrAvt = [avtManager, avtHrManager];
           return (
@@ -185,7 +184,7 @@ class TableEmployee extends Component {
         // width: 150,
         render: (requestDate) => {
           // return <span>{moment(createdAt).format('YYYY/MM/DD')}</p>;
-          return <span className={t.lastEdited}>{moment(requestDate).format('DD-MM-YYYY')}</span>;
+          return <span className={t.lastEdited}>{moment(requestDate).format('MM.DD.YY')}</span>;
         },
       },
       {

@@ -104,7 +104,7 @@ class ManagerOffBoading extends Component {
               </p>
             </div>
           </Affix>
-          <Row className={styles.content} gutter={[40, 0]}>
+          <Row className={styles.content}>
             <Col span={24}>
               <div className={styles.content__top}>
                 <div className={styles.text}>Team Requests</div>
@@ -125,7 +125,7 @@ class ManagerOffBoading extends Component {
                 className={styles.tabComponent}
                 tabBarExtraContent={renderSearchFilter()}
               >
-                <TabPane tab="Team Request" key="1">
+                <TabPane tab="Team Requests" key="1">
                   <div className={styles.tableTab}>
                     <TeamRequest
                       data={listTeamRequest}
@@ -134,7 +134,7 @@ class ManagerOffBoading extends Component {
                     />
                   </div>
                 </TabPane>
-                <TabPane tab="My Request" key="2">
+                <TabPane tab="My Requests" key="2">
                   <div className={styles.tableTab}>
                     <MyRequestContent
                       data={listOffboarding}

@@ -10,10 +10,17 @@ class ResignationRequestDetail extends PureComponent {
     const {
       requestDate: date = '',
       reasonForLeaving: reason = '',
-      // lastWorkingDate,
+      lastWorkingDate,
       // status = '',
+      statusLastDate = '',
       requestLastDate,
     } = itemRequest;
+
+    const preferredLWD = () => {
+      if (statusLastDate === 'ACCEPTED') return moment(lastWorkingDate);
+      if (requestLastDate) return moment(requestLastDate);
+      return null;
+    };
 
     return (
       <div className={styles.resignationRequest}>
@@ -23,7 +30,7 @@ class ResignationRequestDetail extends PureComponent {
         <div className={styles.resignationRequest__date}>
           <div className={styles.dateOfRequest}>
             <span className={styles.title}>Date of Request</span>
-            <span className={styles.content}>{date && moment(date).format('MM.DD.YYYY')}</span>
+            <span className={styles.content}>{date && moment(date).format('MM.DD.YY')}</span>
           </div>
 
           <div className={styles.reason}>
@@ -31,7 +38,7 @@ class ResignationRequestDetail extends PureComponent {
             <p className={styles.content}>{reason}</p>
           </div>
 
-          <div className={styles.lastWorkingDay}>
+          {/* <div className={styles.lastWorkingDay}>
             <span className={styles.title}>Last working date (System generated)</span>
             <div className={styles.datePicker}>
               <DatePicker
@@ -51,19 +58,9 @@ class ResignationRequestDetail extends PureComponent {
           <div className={styles.lastWorkingDay}>
             <span className={styles.title}>Preferred last working date</span>
             <div className={styles.datePicker}>
-              <DatePicker
-                defaultValue={requestLastDate ? moment(requestLastDate) : null}
-                format="MM.DD.YY"
-                disabled
-              />
-              {/* <div className={styles.notice}>
-                  <span className={styles.content}>
-                    Preferred LWD must be vetted by your reporting manager & approved by the HR
-                    manager to come into effect.
-                  </span>
-                </div> */}
+              <DatePicker defaultValue={preferredLWD} format="MM.DD.YY" disabled />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     );
