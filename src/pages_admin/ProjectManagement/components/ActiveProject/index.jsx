@@ -13,6 +13,7 @@ const ActiveProject = (props) => {
     loading,
     listLocationsByCompany = [],
     companiesOfUser = [],
+    loadingFetchProject = false,
   } = props;
   return (
     <div>
@@ -25,6 +26,7 @@ const ActiveProject = (props) => {
         listLocationsByCompany={listLocationsByCompany}
         companiesOfUser={companiesOfUser}
         loading={loading}
+        loadingFetchProject={loadingFetchProject}
       />
     </div>
   );

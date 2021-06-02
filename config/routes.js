@@ -277,6 +277,14 @@ const routes = [
             authority: ['M_CANDIDATE_MANAGEMENT_VIEW', 'owner'],
           },
           {
+            path: '/candidates-management/:action(candidate-detail)/:reId',
+            name: 'Candidate Detail',
+            icon: '/assets/images/menuIcons/candidate.svg',
+            hideInMenu: true,
+            component: './FormTeamMember',
+            authority: ['M_CANDIDATE_MANAGEMENT_VIEW', 'owner'],
+          },
+          {
             path: '/documents-management',
             name: 'documents',
             // icon: '/assets/images/menuIcons/documents.svg',

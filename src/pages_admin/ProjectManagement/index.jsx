@@ -36,16 +36,21 @@ const ProjectManagement = (props) => {
     loading1,
     listLocationsByCompany = [],
     companiesOfUser = [],
+    loadingFetchProject = false,
   } = props;
   const [isModalVisible, setModalVisible] = useState(false);
 
-  useEffect(() => {
+  const fetchData = () => {
     dispatch({
       type: 'projectManagement/getProjectByCompany',
       payload: {
         company: getCurrentCompany(),
       },
     });
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
   const handleAddNewProject = () => {
@@ -63,26 +68,26 @@ const ProjectManagement = (props) => {
 
   const onDone = () => {
     setModalVisible(false);
-    dispatch({
-      type: 'projectManagement/getProjectByCompany',
-      payload: {
-        company: getCurrentCompany(),
-      },
-    });
+    fetchData();
   };
+
+  const onTabClick = () => {
+    fetchData();
+  };
+
   return (
     <PageContainer>
       <div className={s.containerDashboard}>
         <Affix offsetTop={42}>
           <div className={s.titlePage}>
-            <p className={s.titlePage__text}>Project list</p>
+            <p className={s.titlePage__text}>Projects Management</p>
           </div>
         </Affix>
 
         <div className={s.projectManagement}>
           {/* <h1>Project list</h1> */}
           <div className={s.tabs}>
-            <Tabs defaultActiveKey="1" tabBarExtraContent={addNewProject()}>
+            <Tabs onTabClick={onTabClick} defaultActiveKey="1" tabBarExtraContent={addNewProject()}>
               <TabPane
                 // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
                 tab="Active"
@@ -109,6 +114,7 @@ const ProjectManagement = (props) => {
                   loading={loading1}
                   listLocationsByCompany={listLocationsByCompany}
                   companiesOfUser={companiesOfUser}
+                  loadingFetchProject={loadingFetchProject}
                 />
               </TabPane>
               <TabPane
@@ -135,6 +141,7 @@ const ProjectManagement = (props) => {
                   dispatch={dispatch}
                   user={user}
                   loading={loading1}
+                  loadingFetchProject={loadingFetchProject}
                 />
               </TabPane>
             </Tabs>
@@ -166,5 +173,6 @@ export default connect(
     listLocationsByCompany,
     companiesOfUser: user.companiesOfUser,
     loading1: loading.effects['projectManagement/addMember'],
+    loadingFetchProject: loading.effects['projectManagement/getProjectByCompany'],
   }),
 )(ProjectManagement);
