@@ -221,6 +221,8 @@ class ModalUpload extends Component {
                 <InboxOutlined />
               </p>
               <p className="ant-upload-text">Click or drag file to this area to upload</p>
+              <div className={styles.uploadText}>Type of file: PNG/JPG/JPEG</div>
+              <div className={styles.uploadText}>Size of image must be smaller than 2MB!</div>
             </Dragger>
           )}
         </div>

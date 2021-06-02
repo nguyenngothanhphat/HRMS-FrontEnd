@@ -45,6 +45,7 @@ class ButtonSet1On1 extends Component {
     const { assignee } = values;
     const { dispatch, itemRequest = {}, myId = '' } = this.props;
     const { employee: { _id: meetingWith } = {}, _id: offBoardingRequest } = itemRequest;
+
     const payload = { meetingWith, offBoardingRequest, ownerComment: assignee || myId, ...values };
     dispatch({
       type: 'offboarding/create1On1',
@@ -62,7 +63,9 @@ class ButtonSet1On1 extends Component {
   render() {
     const { visible, keyModal } = this.state;
     const { listMeetingTime = [], loading, itemRequest, listAssignee = [] } = this.props;
-    const { employee: { generalInfo: { firstName: nameEmployee = '' } = {} } = {} } = itemRequest;
+    const { employee: { generalInfo: { firstName: nameEmployee = '' } = {} } = {}, nodeStep = 0 } =
+      itemRequest;
+    console.log(itemRequest);
     return (
       <div className={styles.WhatNext}>
         <div className={styles.header}>
@@ -72,20 +75,24 @@ class ButtonSet1On1 extends Component {
           <span className={styles.description}>
             Schedule a 1-on-1 call with Venkatesh and provide your closing comments for the same
           </span>
-          <Button onClick={this.handleModalSet1On1}>Schedule a 1-on-1</Button>
+          <Button disabled={nodeStep < 3} onClick={this.handleModalSet1On1}>
+            Schedule a 1-on-1
+          </Button>
         </div>
-        <ModalSet1On1
-          visible={visible}
-          handleCancel={this.handleModalSet1On1}
-          handleSubmit={this.handleSubmit}
-          listMeetingTime={listMeetingTime}
-          title={`Request 1 on 1 with ${nameEmployee}`}
-          listAssignee={listAssignee}
-          hideMeetingWith={false}
-          textSubmit="Submit"
-          key={keyModal}
-          loading={loading}
-        />
+        {nodeStep < 3 ? null : (
+          <ModalSet1On1
+            visible={visible}
+            handleCancel={this.handleModalSet1On1}
+            handleSubmit={this.handleSubmit}
+            listMeetingTime={listMeetingTime}
+            title={`Request 1 on 1 with ${nameEmployee}`}
+            listAssignee={listAssignee}
+            hideMeetingWith={false}
+            textSubmit="Submit"
+            key={keyModal}
+            loading={loading}
+          />
+        )}
       </div>
     );
   }

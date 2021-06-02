@@ -59,9 +59,9 @@ const MENU_DATA = [
   },
   {
     id: 3,
-    name: 'Background checks',
+    name: 'Document Verification',
     key: 'backgroundChecks',
-    component: 'BackgroundCheck',
+    component: 'DocumentVerification',
     // quantity: sentProvisionalOffersData.length,
     quantity: pendingData.length,
   },
