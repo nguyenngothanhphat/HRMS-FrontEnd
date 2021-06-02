@@ -16,10 +16,11 @@ class OrderSavedContent extends Component {
   };
 
   render() {
+    const { message = 'Order saved successfuly' } = this.props;
     return (
       <div className={styles.OrderSavedContent}>
         <img src={savedIcon} alt="icon" />
-        <div className={styles.OrderSavedContent_title}>Order saved successfuly</div>
+        <div className={styles.OrderSavedContent_title}>{message}</div>
         <Button onClick={this.onCloseModal} type="primary">
           Close
         </Button>
