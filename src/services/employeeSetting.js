@@ -116,6 +116,13 @@ export async function getListCustomEmailOnboarding(payload) {
   });
 }
 
+export async function getListDefaultCustomEmailByCompany(payload) {
+  return request('api/customemailtenant/get-default-by-company ', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getListCustomEmailOffboarding(payload) {
   return request('/api/customemailtenant/list-active', {
     method: 'POST',

@@ -55,7 +55,7 @@ export default class Summary extends PureComponent {
     return (
       <div className={styles.tabTable}>
         <Tabs
-          tabBarGutter={35}
+          // tabBarGutter={35}
           defaultActiveKey="1"
           onChange={(activeKey) => this.onChangeTab(activeKey)}
           tabBarExtraContent={this.renderTableTitle}

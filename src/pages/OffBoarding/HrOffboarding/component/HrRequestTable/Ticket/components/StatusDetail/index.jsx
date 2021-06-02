@@ -9,7 +9,7 @@ class StatusDetail extends PureComponent {
     const type = {
       'IN-PROGRESS': {
         color: '#2C6DF9',
-        text: 'In-progress',
+        text: 'In Progress',
       },
       ACCEPTED: {
         color: '#006600',

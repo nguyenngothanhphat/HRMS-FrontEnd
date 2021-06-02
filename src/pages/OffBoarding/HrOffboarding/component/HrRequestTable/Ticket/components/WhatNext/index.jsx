@@ -75,9 +75,9 @@ class ButtonSet1On1 extends Component {
           <span className={styles.description}>
             Schedule a 1-on-1 call with Venkatesh and provide your closing comments for the same
           </span>
-          {nodeStep < 3 ? null : (
-            <Button onClick={this.handleModalSet1On1}>Schedule a 1-on-1</Button>
-          )}
+          <Button disabled={nodeStep < 3} onClick={this.handleModalSet1On1}>
+            Schedule a 1-on-1
+          </Button>
         </div>
         {nodeStep < 3 ? null : (
           <ModalSet1On1

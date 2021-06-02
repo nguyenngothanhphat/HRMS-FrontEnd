@@ -9,12 +9,17 @@ import VisaDetails from './components/VisaDetails';
 import EmergencyContact from './components/EmergencyContactDetails';
 import styles from './index.less';
 
-@connect(({ loading }) => ({
+@connect(({ loading, user: { currentUser = [], permissions = {} } }) => ({
   loadingGeneral: loading.effects['employeeProfile/fetchGeneralInfo'],
+  currentUser,
+  permissions,
 }))
 class GeneralInfo extends Component {
   render() {
     const { loadingGeneral = false, permissions = {}, profileOwner = false } = this.props;
+
+    const checkVisible = profileOwner || permissions.viewOtherInformation !== -1;
+
     if (loadingGeneral)
       return (
         <div className={styles.viewLoading}>
@@ -31,8 +36,16 @@ class GeneralInfo extends Component {
             <VisaDetails />
           </>
         )}
-        <EmergencyContact permissions={permissions} profileOwner={profileOwner} />
-        <ProfessionalAcademicBackground permissions={permissions} profileOwner={profileOwner} />
+        {checkVisible ? (
+          <EmergencyContact permissions={permissions} profileOwner={profileOwner} />
+        ) : (
+          ''
+        )}
+        {checkVisible ? (
+          <ProfessionalAcademicBackground permissions={permissions} profileOwner={profileOwner} />
+        ) : (
+          ''
+        )}
       </div>
     );
   }

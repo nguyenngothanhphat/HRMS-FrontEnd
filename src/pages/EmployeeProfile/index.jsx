@@ -12,12 +12,18 @@ import AccountsPaychecks from './components/Accounts&Paychecks';
 import Documents from './components/Documents';
 import styles from './index.less';
 
-@connect(({ employee: { listEmployeeActive = []} = {}, employeeProfile, user: { currentUser = {}, permissions = {} } }) => ({
-  employeeProfile,
-  currentUser,
-  listEmployeeActive,
-  permissions,
-}))
+@connect(
+  ({
+    employee: { listEmployeeActive = [] } = {},
+    employeeProfile,
+    user: { currentUser = {}, permissions = {} },
+  }) => ({
+    employeeProfile,
+    currentUser,
+    listEmployeeActive,
+    permissions,
+  }),
+)
 class EmployeeProfile extends Component {
   constructor(props) {
     super(props);

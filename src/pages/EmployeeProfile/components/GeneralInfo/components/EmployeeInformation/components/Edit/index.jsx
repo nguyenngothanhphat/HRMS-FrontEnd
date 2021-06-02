@@ -356,7 +356,6 @@ class Edit extends PureComponent {
     const dateFormat = 'MM.DD.YY';
 
     const permissions = checkPermissions(roles);
-
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form

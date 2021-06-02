@@ -21,6 +21,7 @@ import {
   getListAutoField,
   addCustomEmail,
   getListCustomEmailOnboarding,
+  getListDefaultCustomEmailByCompany,
   getListCustomEmailOffboarding,
   getCustomEmailInfo,
   deleteCustomEmailItem,
@@ -54,6 +55,7 @@ const employeeSetting = {
     listAutoField: [],
     dataSubmit: {},
     listCustomEmailOnboarding: [],
+    listDefaultCustomEmailOnboarding: [],
     listCustomEmailOffboarding: [],
     emailCustomData: {},
   },
@@ -375,7 +377,18 @@ const employeeSetting = {
       }
       return response;
     },
-
+    *fetchListDefaultCustomEmailByCompany({ payload = {} }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getListDefaultCustomEmailByCompany, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listDefaultCustomEmailOnboarding: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
     *fetchListCustomEmailOffboarding({ payload = {} }, { call, put }) {
       let response;
       try {

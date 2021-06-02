@@ -18,7 +18,7 @@ class EmployeeDetail extends PureComponent {
       joinDate = '',
     } = employee;
     const { generalInfo: { firstName: nameManager = '' } = {} } = manager;
-    const DOJ = moment(joinDate).format('DD-MM-YYYY');
+    const DOJ = moment(joinDate).format('MM.DD.YY');
     return (
       <div className={styles.employeeDetail}>
         <Card

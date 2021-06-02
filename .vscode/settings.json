@@ -10,11 +10,11 @@
   "tslint.exclude": "**/node_modules/**/*",
   "editor.formatOnSave": true,
   "javascript.format.enable": false,
-  "workbench.colorCustomizations": {
-    "activityBar.background": "#0000008a",
-    "titleBar.activeBackground": "#0000008a",
-    "titleBar.activeForeground": "#ffffff"
-  },
+  // "workbench.colorCustomizations": {
+  //   "activityBar.background": "#0000008a",
+  //   "titleBar.activeBackground": "#0000008a",
+  //   "titleBar.activeForeground": "#ffffff"
+  // },
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
