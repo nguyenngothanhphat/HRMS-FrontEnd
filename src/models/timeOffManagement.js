@@ -11,7 +11,7 @@ const timeOffManagement = {
   effects: {
     *fetchEmployeeList({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getListEmployees, { ...payload, status: ['ACTIVE'] });
+        const response = yield call(getListEmployees, payload);
         const { statusCode, data = [] } = response;
         const listEmployee = data.map((item = {}) => {
           const { _id, generalInfo: { firstName = '', lastName = '' } = {} } = item;
