@@ -1,29 +1,29 @@
 import { dialog } from '@/utils/utils';
-import {getListTimeOff, getListEmployees, getRequestById} from '../services/timeOffManagement';
+import { getListTimeOff, getListEmployees, getRequestById } from '../services/timeOffManagement';
 
 const timeOffManagement = {
   namespace: 'timeOffManagement',
   state: {
     listTimeOff: [],
     listEmployee: [],
-    requestDetail: {}
+    requestDetail: {},
   },
   effects: {
-    *fetchEmployeeList( {payload = {}}, {call, put}) {
+    *fetchEmployeeList({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getListEmployees, payload);
-        const {statusCode, data = []} = response;
+        const response = yield call(getListEmployees, { ...payload, status: ['ACTIVE'] });
+        const { statusCode, data = [] } = response;
         const listEmployee = data.map((item = {}) => {
-          const {_id, generalInfo: { firstName = '', lastName = ''} = {} } = item;
+          const { _id, generalInfo: { firstName = '', lastName = '' } = {} } = item;
           return {
             _id,
             name: firstName + lastName,
           };
         });
-        if(statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listEmployee } })
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listEmployee } });
       } catch (error) {
-        dialog(error)
+        dialog(error);
       }
     },
     *fetchListTimeOff({ payload = {} }, { call, put }) {
@@ -32,15 +32,15 @@ const timeOffManagement = {
         let { data: listTimeOff = [] } = response;
         const { statusCode } = response;
         listTimeOff = listTimeOff.map((item = {}) => {
-          const fullName = `${item.employee.generalInfo.firstName  } ${  item.employee.generalInfo.lastName}`;
+          const fullName = `${item.employee.generalInfo.firstName} ${item.employee.generalInfo.lastName}`;
           let newStatus = '';
-          if(item.status === 'IN-PROGRESS') {
+          if (item.status === 'IN-PROGRESS') {
             newStatus = 'In progress';
-          } else if(item.status === 'REJECTED') {
+          } else if (item.status === 'REJECTED') {
             newStatus = 'Rejected';
-          } else if(item.status === 'ACCEPTED' || item.status === 'APPROVED') {
+          } else if (item.status === 'ACCEPTED' || item.status === 'APPROVED') {
             newStatus = 'Accepted';
-          } else if(item.status === 'WAITING-FOR-APPROVE' || item.status === 'HOLDING') {
+          } else if (item.status === 'WAITING-FOR-APPROVE' || item.status === 'HOLDING') {
             newStatus = 'Holding';
           }
           return {
@@ -56,9 +56,9 @@ const timeOffManagement = {
             description: item.description,
             duration: item.duration,
             employee: item.employee,
-            status: newStatus
-          }
-        })
+            status: newStatus,
+          };
+        });
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -69,21 +69,21 @@ const timeOffManagement = {
         dialog(errors);
       }
     },
-    *fetchRequestById({ payload = {}}, {call, put}) {
+    *fetchRequestById({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getRequestById, payload);
         const { statusCode, data = {} } = response;
-        if(statusCode !== 200) throw response;
+        if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
           payload: {
-            requestDetail: data
-          }
-        })
+            requestDetail: data,
+          },
+        });
       } catch (error) {
         dialog(error);
       }
-    }
+    },
   },
   reducers: {
     save(state, action) {

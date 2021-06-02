@@ -1,30 +1,27 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 // import moment from 'moment';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import OptionsHeader from '../OptionsHeader';
 import TableTimeOff from '../TableTimeOff';
 import styles from './index.less';
 
-@connect(
-  ({
-    loading,
-    timeOffManagement,
-    user: { currentUser: { company: { _id: company } = {} } = {} } = {},
-  }) => ({
-    loadingList: loading.effects['timeOffManagement/fetchListTimeOff'],
-    loadingActiveList: loading.effects['timeOffManagement/fetchEmployeeList'],
-    loadingDetail: loading.effects['timeOffManagement/fetchRequestById'],
-    timeOffManagement,
-    company,
-  }),
-)
+@connect(({ loading, timeOffManagement }) => ({
+  loadingList: loading.effects['timeOffManagement/fetchListTimeOff'],
+  loadingActiveList: loading.effects['timeOffManagement/fetchEmployeeList'],
+  loadingDetail: loading.effects['timeOffManagement/fetchRequestById'],
+  timeOffManagement,
+}))
 class TableContainer extends PureComponent {
   componentDidMount() {
-    const { dispatch, company } = this.props;
+    const { dispatch } = this.props;
+    const company = getCurrentCompany();
+    const tenantId = getCurrentTenant();
     dispatch({
       type: 'timeOffManagement/fetchEmployeeList',
       payload: {
         company,
+        tenantId,
       },
     });
     // dispatch({

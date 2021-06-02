@@ -29,7 +29,7 @@ export async function getListTimeOff(payload) {
 }
 
 export async function getListEmployees(payload) {
-  return request('/api/employee/list-active', {
+  return request('/api/employeetenant/list', {
     method: 'POST',
     data: payload,
   });
