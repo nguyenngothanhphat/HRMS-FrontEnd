@@ -40,7 +40,7 @@ class RequesteeDetail extends PureComponent {
           </div>
           <div className={styles.requesteeDetail__item}>
             <div> {formatMessage({ id: 'pages.offBoarding.requestee.joinDate' })}</div>
-            <div>{moment(joinDate).format('DD-MM-YYYY')}</div>
+            <div>{moment(joinDate).format('MM.DD.YY')}</div>
           </div>
           <div className={styles.requesteeDetail__item}>
             <div> {formatMessage({ id: 'pages.offBoarding.requestee.projectManager' })}</div>

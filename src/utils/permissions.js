@@ -59,6 +59,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
       viewTabBenefitPlans: 1,
       // Update avatar employee
       updateAvatarEmployee: 1,
+      viewAvatarEmployee: 1,
+      editShowAvatarEmployee: 1,
+      viewOtherInformation: 1,
 
       // onboarding
       viewOnboardingSettingTab: 1,
@@ -125,6 +128,11 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         // 'P_PROFILE_T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL_EMPLOYEE_VIEW',
         'T_GENERAL_INFO_T_PERSONAL_INFORMATION_PERSONAL_EMAIL',
       ]);
+
+  // View others personal information
+  const indexViewOthersInformaton = isAdmin
+    ? 1
+    : isAuthorized(permissionList, ['hr', 'hr-manager']);
 
   // Directory Page - Filter - Display location
   const findIndexShowLocationActive = isAuthorized(permissionList, [
@@ -273,6 +281,12 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
         'T_GENERAL_INFO_B_UPLOAD_AVATAR_EMPLOYEE_VIEW',
       ]);
 
+  // View avatar employee
+  const indexViewAvatar = isAdmin ? 1 : isAuthorized(permissionList, ['hr', 'hr-manager']);
+
+  // Edit show avatar employee
+  const indexEditShowAvatar = isAdmin ? 1 : isAuthorized(permissionList, ['hr-manager']);
+
   // ONBOARDING
   const indexOnboardingSettings = isAuthorized(permissionList, [
     'hr-manager',
@@ -320,6 +334,9 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewTabBenefitPlans: indexBenefitPlans,
     // Update avatar employee
     updateAvatarEmployee: indexUpdateAvatar,
+    viewAvatarEmployee: indexViewAvatar,
+    editShowAvatarEmployee: indexEditShowAvatar,
+    viewOtherInformation: indexViewOthersInformaton,
 
     // onboarding
     viewOnboardingSettingTab: indexOnboardingSettings,

@@ -40,7 +40,7 @@ const getComponent = (name) => {
       return <AllDrafts />;
     case 'DiscardedFinalOffers': // del
       return <DiscardedFinalOffers />; // del
-    case 'BackgroundCheck':
+    case 'DocumentVerification':
       return <BackgroundCheck />;
     case 'DiscardedOffers':
       return <DiscardedOffers />;

@@ -39,7 +39,7 @@ class EmployeeOnboarding extends PureComponent {
     dispatch({
       type: 'onboard/save',
       payload: {
-        mainTabActiveKey: '1',
+        // mainTabActiveKey: '1',
       },
     });
   };

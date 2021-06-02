@@ -35,7 +35,7 @@ class FormTeamMember extends PureComponent {
     } = this.props;
     // check action is add or review. If isReview fetch candidate by reID
     // console.log(candidateInfo.currentStep);
-    if (action === 'review' || action === 'add') {
+    if (action === 'review' || action === 'add' || action === 'candidate-detail') {
       dispatch({
         type: 'candidateInfo/fetchCandidateByRookie',
         payload: {
@@ -403,7 +403,7 @@ class FormTeamMember extends PureComponent {
       },
       {
         id: 4,
-        name: 'Background Check',
+        name: 'Document Verification',
         key: 'backgroundCheck',
         // key: 'eligibilityDocuments',
         component:

@@ -13,7 +13,7 @@ export default class OffBoardingManagement extends PureComponent {
       <PageContainer>
         <div className={styles.containerOffBoarding}>
           <div className={styles.headerText}>
-            <span>Off Boarding Management</span>
+            <span>Offboarding Management</span>
           </div>
           <TableContainer />
         </div>

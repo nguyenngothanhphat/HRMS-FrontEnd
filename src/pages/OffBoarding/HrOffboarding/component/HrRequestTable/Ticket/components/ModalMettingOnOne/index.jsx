@@ -68,7 +68,7 @@ class ScheduleModal extends Component {
             <div>
               <div className={styles.subText}>Meeting on</div>
               <DatePicker
-                format="YYYY-MM-DD"
+                format="MM.DD.YY"
                 className={styles.datePicker}
                 onChange={this.mettingDate}
                 disabledDate={this.disabledDate}

@@ -251,7 +251,7 @@ class HRDetailTicket extends Component {
                 {/* {status !== 'REJECTED' && <LastWorkingDate />} */}
                 {/* <HrApproved myRequest={myRequest} /> */}
                 {/* <LWD myRequest={myRequest} /> */}
-                <LastWorkingDay myRequest={myRequest} />
+                {status === 'ACCEPTED' && <LastWorkingDay myRequest={myRequest} />}
                 {!checkMyComment && (
                   <WhatNext itemRequest={myRequest} listAssignee={listAssignee} />
                 )}

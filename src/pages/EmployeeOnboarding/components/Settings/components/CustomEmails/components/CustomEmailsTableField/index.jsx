@@ -1,21 +1,31 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react';
-import { Table, Spin, Tooltip, Skeleton } from 'antd';
+import { Table, Spin, Tooltip, Skeleton, Tabs } from 'antd';
 import { formatMessage, connect, Link, history } from 'umi';
 import moment from 'moment';
 import CustomEmailImage from '@/assets/customEmail.svg';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import FileIcon from './images/doc.svg';
 import DeleteIcon from './images/delete.svg';
 
 import styles from './index.less';
 
 @connect(
-  ({ employeeSetting: { dataSubmit = {}, listCustomEmailOnboarding = [] } = {}, loading }) => ({
+  ({
+    employeeSetting: {
+      dataSubmit = {},
+      listCustomEmailOnboarding = [],
+      listDefaultCustomEmailOnboarding = [],
+    } = {},
+    loading,
+  }) => ({
     dataSubmit,
     listCustomEmailOnboarding,
+    listDefaultCustomEmailOnboarding,
     loading: loading.effects['employeeSetting/deleteCustomEmailItem'],
     loadingFetchList: loading.effects['employeeSetting/fetchListCustomEmailOnboarding'],
+    loadingFetchListDefault:
+      loading.effects['employeeSetting/fetchListDefaultCustomEmailByCompany'],
   }),
 )
 class CustomEmailsTableField extends PureComponent {
@@ -24,6 +34,7 @@ class CustomEmailsTableField extends PureComponent {
     this.state = {
       pageSelected: 1,
       currentRecord: {},
+      activeKey: '1',
     };
   }
 
@@ -39,26 +50,39 @@ class CustomEmailsTableField extends PureComponent {
     });
   };
 
-  componentDidMount = () => {
+  fetchData = async (tabId) => {
+    console.log('tabId', tabId);
     const { dispatch } = this.props;
+    this.setState({
+      activeKey: tabId,
+    });
 
-    dispatch({
-      type: 'employeeSetting/fetchListCustomEmailOnboarding',
+    const type =
+      tabId === '1'
+        ? 'employeeSetting/fetchListDefaultCustomEmailByCompany'
+        : 'employeeSetting/fetchListCustomEmailOnboarding';
+
+    await dispatch({
+      type,
       payload: {
         tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
       },
     });
   };
 
-  _renderData = () => {
-    const { listCustomEmailOnboarding } = this.props;
-    const cloneListEmail = [...listCustomEmailOnboarding];
-    const newlistCustomEmailOnboarding = [];
+  componentDidMount = () => {
+    this.fetchData('1');
+  };
+
+  _renderData = (list) => {
+    const cloneListEmail = [...list];
+    const newList = [];
 
     cloneListEmail.reverse().forEach((item) => {
       const formatDate = `${moment(item.createdAt).locale('en').format('MM.DD.YY')}`;
 
-      newlistCustomEmailOnboarding.push({
+      newList.push({
         idCustomEmail: item._id,
         emailSubject: item.subject !== undefined ? item.subject : 'Onboarding email',
         createdOn: formatDate !== undefined ? formatDate : '08.24.20',
@@ -69,7 +93,7 @@ class CustomEmailsTableField extends PureComponent {
       });
     });
 
-    return newlistCustomEmailOnboarding;
+    return newList;
   };
 
   refreshPage = () => {
@@ -161,8 +185,13 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   render() {
-    const { listCustomEmailOnboarding, loadingFetchList } = this.props;
-    const { pageSelected } = this.state;
+    const {
+      listCustomEmailOnboarding,
+      listDefaultCustomEmailOnboarding,
+      loadingFetchList,
+      loadingFetchListDefault,
+    } = this.props;
+    const { pageSelected, activeKey } = this.state;
     const rowSize = 5;
 
     // const scroll = {
@@ -172,7 +201,10 @@ class CustomEmailsTableField extends PureComponent {
 
     const pagination = {
       position: ['bottomRight'],
-      total: listCustomEmailOnboarding.length,
+      total:
+        activeKey === '1'
+          ? listDefaultCustomEmailOnboarding.length
+          : listCustomEmailOnboarding.length,
       showTotal: (total, range) => (
         <span>
           {' '}
@@ -187,14 +219,10 @@ class CustomEmailsTableField extends PureComponent {
       current: pageSelected,
       onChange: this.onChangePagination,
     };
+
     return (
-      <>
-        {loadingFetchList ? (
-          <Skeleton />
-        ) : (
-          <>
-            <div className={styles.CustomEmailsTableField}>
-              {listCustomEmailOnboarding.length === 0 ? (
+      <div className={styles.CustomEmailsTableField}>
+        {/* {listDefaultCustomEmailOnboarding.length === 0 ? (
                 <>
                   <div className={styles.emptyContainer}>
                     <div className={styles.emptyImage}>
@@ -209,37 +237,54 @@ class CustomEmailsTableField extends PureComponent {
                   </div>
                 </>
               ) : (
-                <>
-                  <div className={styles.CustomEmailsTableField_title}>
-                    <span className={styles.title}>
-                      {formatMessage({ id: 'component.customEmailsTableField.titleTable' })}
-                    </span>
-                  </div>
-                  <div className={styles.CustomEmailsTableField_table}>
-                    <Table
-                      dataSource={this._renderData()}
-                      columns={this._renderColumns()}
-                      size="middle"
-                      onRow={(record) => {
-                        return {
-                          onMouseEnter: () => this.handleClickCustomEmail(record), // click row
-                        };
-                      }}
-                      rowKey={(record) => record._id}
-                      pagination={
-                        listCustomEmailOnboarding.length > rowSize
-                          ? { ...pagination, total: listCustomEmailOnboarding.length }
-                          : false
-                      }
-                      scroll={{ y: 300 }}
-                    />
-                  </div>
-                </>
-              )}
+                <> */}
+        <Tabs onTabClick={this.fetchData} activeKey={activeKey}>
+          <Tabs.TabPane tab="System Default Emails" key="1">
+            <div className={styles.CustomEmailsTableField_table}>
+              <Table
+                dataSource={this._renderData(listDefaultCustomEmailOnboarding)}
+                columns={this._renderColumns()}
+                size="middle"
+                loading={loadingFetchListDefault}
+                onRow={(record) => {
+                  return {
+                    onMouseEnter: () => this.handleClickCustomEmail(record), // click row
+                  };
+                }}
+                rowKey={(record) => record._id}
+                pagination={
+                  listDefaultCustomEmailOnboarding.length > rowSize
+                    ? { ...pagination, total: listDefaultCustomEmailOnboarding.length }
+                    : false
+                }
+              />
             </div>
-          </>
-        )}
-      </>
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Custom Emails" key="2">
+            <div className={styles.CustomEmailsTableField_table}>
+              <Table
+                dataSource={this._renderData(listCustomEmailOnboarding)}
+                columns={this._renderColumns()}
+                size="middle"
+                loading={loadingFetchList}
+                onRow={(record) => {
+                  return {
+                    onMouseEnter: () => this.handleClickCustomEmail(record), // click row
+                  };
+                }}
+                rowKey={(record) => record._id}
+                pagination={
+                  listCustomEmailOnboarding.length > rowSize
+                    ? { ...pagination, total: listCustomEmailOnboarding.length }
+                    : false
+                }
+              />
+            </div>
+          </Tabs.TabPane>
+        </Tabs>
+        {/* </>
+              )} */}
+      </div>
     );
   }
 }

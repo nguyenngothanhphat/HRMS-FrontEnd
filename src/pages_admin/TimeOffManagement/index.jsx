@@ -13,7 +13,7 @@ export default class TimeOffManagement extends PureComponent {
       <PageContainer>
         <div className={styles.containerTimeOff}>
           <div className={styles.headerText}>
-            <span>Time Off Management</span>
+            <span>Timeoff Management</span>
           </div>
           <TableContainer />
         </div>
