@@ -9,29 +9,16 @@ import VisaDetails from './components/VisaDetails';
 import EmergencyContact from './components/EmergencyContactDetails';
 import styles from './index.less';
 
-@connect(({ loading, user: { currentUser = [] } }) => ({
+@connect(({ loading, user: { currentUser = [], permissions = {} } }) => ({
   loadingGeneral: loading.effects['employeeProfile/fetchGeneralInfo'],
   currentUser,
+  permissions,
 }))
 class GeneralInfo extends Component {
   render() {
-    const {
-      loadingGeneral = false,
-      permissions = {},
-      profileOwner = false,
-      idUser = '',
-      currentUser: {
-        employee: { _id: idEmployee = '' },
-      },
-    } = this.props;
+    const { loadingGeneral = false, permissions = {}, profileOwner = false } = this.props;
 
-    const authority = localStorage.getItem('antd-pro-authority');
-    const checkVisible =
-      (idUser === idEmployee && authority.includes('employee')) ||
-      authority.includes('hr-manager') ||
-      authority.includes('admin') ||
-      authority.includes('owner') ||
-      authority.includes('manager');
+    const checkVisible = profileOwner || permissions.viewOtherInformation !== -1;
 
     if (loadingGeneral)
       return (
@@ -41,16 +28,8 @@ class GeneralInfo extends Component {
       );
     return (
       <div className={styles.GeneralInfo}>
-        <EmployeeInformation
-          permissions={permissions}
-          profileOwner={profileOwner}
-          idUser={idUser}
-        />
-        <PersonalInformation
-          permissions={permissions}
-          profileOwner={profileOwner}
-          idUser={idUser}
-        />
+        <EmployeeInformation permissions={permissions} profileOwner={profileOwner} />
+        <PersonalInformation permissions={permissions} profileOwner={profileOwner} />
         {(permissions.viewPassportAndVisa !== -1 || profileOwner) && (
           <>
             <PassportDetails />

@@ -51,7 +51,7 @@ class Templates extends PureComponent {
     return (
       <div className={styles.Templates}>
         <div className={styles.tabs}>
-          <Tabs defaultActiveKey="1" onTabClick={fetchData} tabBarExtraContent={this.operations()}>
+          <Tabs defaultActiveKey="1" onTabClick={fetchData}>
             <TabPane tab="System Default Templates" key="1">
               <SystemDefault
                 list={defaultTemplateListOnboarding}

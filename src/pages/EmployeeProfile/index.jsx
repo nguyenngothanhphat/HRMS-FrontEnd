@@ -157,9 +157,7 @@ class EmployeeProfile extends Component {
     listMenu.push({
       id: 1,
       name: 'General Info',
-      component: (
-        <GeneralInfo permissions={permissions} profileOwner={profileOwner} idUser={employee} />
-      ),
+      component: <GeneralInfo permissions={permissions} profileOwner={profileOwner} />,
     });
     if (permissions.viewTabEmployment !== -1 || profileOwner) {
       listMenu.push({
