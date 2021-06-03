@@ -94,6 +94,13 @@
     .ant-btn {
       padding: 0px;
     }
+    // .ant-table-thead>tr.ant-table-row-hover:not(.ant-table-expanded-row)>td, 
+    // .ant-table-tbody>tr.ant-table-row-hover:not(.ant-table-expanded-row)>td, 
+    // .ant-table-thead>tr:hover:not(.ant-table-expanded-row)>td, 
+    // .ant-table-tbody>tr:hover:not(.ant-table-expanded-row)>td {
+    //     background: unset; //Change the existing color to `unset`
+    //     cursor: default;
+    // }
   }
 
   .directoryTable_fullName {
@@ -129,7 +136,11 @@
       letter-spacing: 0.12px;
       color: #2c6df9;
       padding-left: 12px;
-      font-weight: 500;
+      font-weight: 500; 
+      cursor: pointer;
+      &:hover {
+        opacity: 0.8;
+      }
     }
   }
 
@@ -144,6 +155,32 @@
       border: none;
       background: none;
       box-shadow: none !important;
+      color: #2c6df9;
+      font-size: 13px;
+    }
+  }
+
+  .managerName {
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #2c6df9;
+    font-weight: 500;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .title, .department {
+    cursor: pointer;
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+  .title {
+    &:hover {
       color: #2c6df9;
     }
   }

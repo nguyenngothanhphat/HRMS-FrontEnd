@@ -66,7 +66,7 @@ class FilterBar extends PureComponent {
     return (
       <div className={styles.FilterBar}>
         <Tabs
-          tabBarGutter={35}
+          // tabBarGutter={35}
           activeKey={currentFilterTab}
           onChange={(activeKey) => this.onChangeTab(activeKey)}
           tabBarExtraContent={

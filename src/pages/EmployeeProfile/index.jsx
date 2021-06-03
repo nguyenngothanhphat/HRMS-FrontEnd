@@ -6,6 +6,7 @@ import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 // import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
+import { getCurrentTenant } from '@/utils/authority';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 // import Test from './components/test';
@@ -17,11 +18,13 @@ import styles from './index.less';
     employee: { listEmployeeActive = [] } = {},
     employeeProfile,
     user: { currentUser = {}, permissions = {} },
+    loading,
   }) => ({
     employeeProfile,
     currentUser,
     listEmployeeActive,
     permissions,
+    loadingFetchEmployee: loading.effects['employeeProfile/fetchEmploymentInfo'],
   }),
 )
 class EmployeeProfile extends Component {
@@ -31,19 +34,19 @@ class EmployeeProfile extends Component {
   }
 
   componentDidMount = async () => {
-    const { dispatch } = this.props;
-    const tenantCurrentEmployee = localStorage.getItem('tenantCurrentEmployee');
-    const companyCurrentEmployee = localStorage.getItem('companyCurrentEmployee');
-    const idCurrentEmployee = localStorage.getItem('idCurrentEmployee');
+    // const { dispatch } = this.props;
+    // const tenantCurrentEmployee = localStorage.getItem('tenantCurrentEmployee');
+    // const companyCurrentEmployee = localStorage.getItem('companyCurrentEmployee');
+    // const idCurrentEmployee = localStorage.getItem('idCurrentEmployee');
 
-    await dispatch({
-      type: 'employeeProfile/save',
-      payload: {
-        tenantCurrentEmployee,
-        companyCurrentEmployee,
-        idCurrentEmployee,
-      },
-    });
+    // await dispatch({
+    //   type: 'employeeProfile/save',
+    //   payload: {
+    //     tenantCurrentEmployee,
+    //     companyCurrentEmployee,
+    //     idCurrentEmployee,
+    //   },
+    // });
     this.fetchData();
   };
 
@@ -54,90 +57,104 @@ class EmployeeProfile extends Component {
     }
   }
 
-  fetchData = () => {
+  fetchData = async () => {
     const {
       // employeeProfile,
       match: { params: { reId: employee = '' } = {} },
       dispatch,
-      employeeProfile: { tenantCurrentEmployee: tenantId = '', companyCurrentEmployee = '' } = {},
+      // employeeProfile: {
+      //   tenantCurrentEmployee: tenantId1 = '',
+      //   companyCurrentEmployee = ''
+      // } = {},
     } = this.props;
 
-    dispatch({
-      type: 'employeeProfile/fetchGeneralInfo',
-      payload: { employee, tenantId },
-    });
-    dispatch({
-      type: 'employeeProfile/fetchCompensation',
-      payload: { employee, tenantId },
-    });
-    dispatch({
-      type: 'employeeProfile/fetchPassPort',
-      payload: { employee, tenantId },
-    });
-    dispatch({
-      type: 'employeeProfile/fetchVisa',
-      payload: { employee, tenantId },
-    });
-    dispatch({
-      type: 'employeeProfile/fetchAdhaardCard',
-      payload: { employee, tenantId },
-    });
-    dispatch({
-      type: 'employeeProfile/fetchCountryList',
-    });
-    dispatch({
+    let tenantId1 = localStorage.getItem('tenantCurrentEmployee');
+    tenantId1 = tenantId1 && tenantId1 !== 'undefined' ? tenantId1 : '';
+
+    const res = await dispatch({
       type: 'employeeProfile/fetchEmploymentInfo',
-      payload: { id: employee, tenantId },
+      payload: { id: employee, tenantId: tenantId1 || getCurrentTenant() },
     });
-    dispatch({
-      type: 'employeeProfile/fetchPRReport',
-      payload: { employee, tenantId },
-    });
-    // dispatch({
-    //   type: 'employeeProfile/fetchDocuments',
-    //   payload: { employee },
-    // });
-    dispatch({
-      type: 'employeeProfile/fetchPayslips',
-      payload: { employee, employeeGroup: 'Payslip', tenantId },
-    });
-    dispatch({
-      type: 'employeeProfile/fetchBank',
-      payload: { employee, tenantId },
-    });
-    dispatch({
-      type: 'employeeProfile/fetchTax',
-      payload: { employee, tenantId },
-    });
-    dispatch({ type: 'employeeProfile/fetchLocations' });
-    dispatch({
-      type: 'employeeProfile/fetchEmployeeTypes',
-      payload: { tenantId },
-    });
-    dispatch({
-      type: 'employeeProfile/fetchDepartments',
-      payload: { company: companyCurrentEmployee, tenantId },
-    });
-    // dispatch({ type: 'employeeProfile/fetchEmployees'});
-    dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: { employee, tenantId } });
-    dispatch({
-      type: 'employeeProfile/fetchEmployeeDependentDetails',
-      payload: { employee, tenantId },
-    });
-    dispatch({
-      type: 'employeeProfile/getBenefitPlans',
-      payload: {
-        tenantId,
-        company: companyCurrentEmployee,
-      },
-    });
+
+    const { statusCode, data } = res;
+    if (statusCode === 200) {
+      const tenantId = data.tenant;
+      const companyCurrentEmployee = data.company?._id;
+
+      dispatch({
+        type: 'employeeProfile/fetchGeneralInfo',
+        payload: { employee, tenantId },
+      });
+      dispatch({
+        type: 'employeeProfile/fetchCompensation',
+        payload: { employee, tenantId },
+      });
+      dispatch({
+        type: 'employeeProfile/fetchPassPort',
+        payload: { employee, tenantId },
+      });
+      dispatch({
+        type: 'employeeProfile/fetchVisa',
+        payload: { employee, tenantId },
+      });
+      dispatch({
+        type: 'employeeProfile/fetchAdhaardCard',
+        payload: { employee, tenantId },
+      });
+      dispatch({
+        type: 'employeeProfile/fetchCountryList',
+      });
+
+      dispatch({
+        type: 'employeeProfile/fetchPRReport',
+        payload: { employee, tenantId },
+      });
+      // dispatch({
+      //   type: 'employeeProfile/fetchDocuments',
+      //   payload: { employee },
+      // });
+      dispatch({
+        type: 'employeeProfile/fetchPayslips',
+        payload: { employee, employeeGroup: 'Payslip', tenantId },
+      });
+      dispatch({
+        type: 'employeeProfile/fetchBank',
+        payload: { employee, tenantId },
+      });
+      dispatch({
+        type: 'employeeProfile/fetchTax',
+        payload: { employee, tenantId },
+      });
+      dispatch({ type: 'employeeProfile/fetchLocations' });
+      dispatch({
+        type: 'employeeProfile/fetchEmployeeTypes',
+        payload: { tenantId },
+      });
+      dispatch({
+        type: 'employeeProfile/fetchDepartments',
+        payload: { company: companyCurrentEmployee, tenantId },
+      });
+      // dispatch({ type: 'employeeProfile/fetchEmployees'});
+      dispatch({ type: 'employeeProfile/fetchChangeHistories', payload: { employee, tenantId } });
+      dispatch({
+        type: 'employeeProfile/fetchEmployeeDependentDetails',
+        payload: { employee, tenantId },
+      });
+      dispatch({
+        type: 'employeeProfile/getBenefitPlans',
+        payload: {
+          tenantId,
+          company: companyCurrentEmployee,
+        },
+      });
+    }
   };
 
   componentWillUnmount = () => {
     const { dispatch } = this.props;
-    // localStorage.removeItem('tenantCurrentEmployee');
-    // localStorage.removeItem('companyCurrentEmployee');
-    // localStorage.removeItem('idCurrentEmployee');
+    localStorage.removeItem('tenantCurrentEmployee');
+    localStorage.removeItem('companyCurrentEmployee');
+    localStorage.removeItem('idCurrentEmployee');
     dispatch({
       type: 'employeeProfile/clearState',
     });
@@ -188,6 +205,7 @@ class EmployeeProfile extends Component {
       currentUser: { employee: currentEmployee = {} },
       permissions = {},
       location: { state: { location = '' } = {} } = {},
+      loadingFetchEmployee,
     } = this.props;
 
     const listMenu = this.renderListMenu(employee, currentEmployee?._id);
@@ -206,7 +224,7 @@ class EmployeeProfile extends Component {
               <p className={styles.titlePage__text}>Employee Profile</p>
             </div>
           </Affix>
-          {tenant && company && id ? (
+          {tenant && company && id && !loadingFetchEmployee ? (
             <LayoutEmployeeProfile
               listMenu={listMenu}
               employeeLocation={location}

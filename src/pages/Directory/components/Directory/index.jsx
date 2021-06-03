@@ -97,7 +97,7 @@ class DirectoryComponent extends PureComponent {
       },
       tabId: 'active',
       changeTab: false,
-      collapsed: false,
+      collapsed: true,
       pageSelected: 1,
       bottabs: [],
       visible: false,
@@ -682,7 +682,12 @@ class DirectoryComponent extends PureComponent {
       <TabPane tab={tabName} key={key}>
         <Layout className={styles.directoryLayout_inner}>
           <Content className="site-layout-background">
-            <DirectoryTable loading={loading} list={this.renderListEmployee(key)} keyTab={key} />
+            <DirectoryTable
+              handleFilterPane={this.handleToggle}
+              loading={loading}
+              list={this.renderListEmployee(key)}
+              keyTab={key}
+            />
           </Content>
           <TableFilter
             onToggle={this.handleToggle}

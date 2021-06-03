@@ -579,14 +579,30 @@ const employeeProfile = {
       }
     },
     *fetchEmploymentInfo({ payload: { tenantId = '', id = '' } }, { call, put, select }) {
+      let response = '';
       try {
-        const response = yield call(getEmploymentInfo, { tenantId, id });
+        response = yield call(getEmploymentInfo, { tenantId, id });
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { employmentData: data } });
         const { location = {}, department = {} } = data;
-        const { companyCurrentEmployee } = yield select((state) => state.employeeProfile);
-        const { tenantCurrentEmployee } = yield select((state) => state.employeeProfile);
+
+        const tenantCurrentEmployee = data.tenant;
+        const companyCurrentEmployee = data.company?._id;
+        const idCurrentEmployee = data._id;
+
+        localStorage.setItem('tenantCurrentEmployee', tenantCurrentEmployee);
+        localStorage.setItem('companyCurrentEmployee', companyCurrentEmployee);
+        localStorage.setItem('idCurrentEmployee', idCurrentEmployee);
+
+        yield put({
+          type: 'save',
+          payload: {
+            tenantCurrentEmployee,
+            companyCurrentEmployee,
+            idCurrentEmployee,
+          },
+        });
 
         // fetch employees to show in "select manager" of employee
         yield put({
@@ -606,6 +622,7 @@ const employeeProfile = {
       } catch (error) {
         dialog(error.message);
       }
+      return response;
     },
     *fetchPRReport(
       { payload: { employee = '', parentEmployeeGroup = 'PR Reports' } = {} },

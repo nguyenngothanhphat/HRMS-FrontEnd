@@ -40,7 +40,7 @@ class TimeOffRequestsTable extends PureComponent {
       <div className={styles.TimeOffRequestsTable}>
         <Tabs
           tabPosition="left"
-          tabBarGutter={40}
+          // tabBarGutter={40}
           activeKey={currentLeaveTypeTab}
           onTabClick={(activeKey) => this.saveCurrentTypeTab(activeKey)}
           tabBarExtraContent={this.renderTableTitle}
