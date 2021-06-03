@@ -14,11 +14,15 @@ class TableTimeOff extends PureComponent {
     },
     {
       title: 'Employee ID',
-      dataIndex: 'employeeId',
+      dataIndex: 'employee',
       defaultSortOrder: 'ascend',
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
         compare: (a, b) => a._id.localeCompare(b._id),
+      },
+      render: (employee) => {
+        const { employeeId = '' } = employee;
+        return <span>{employeeId}</span>;
       },
     },
     {
@@ -60,7 +64,11 @@ class TableTimeOff extends PureComponent {
     },
     {
       title: 'Leave Type',
-      dataIndex: 'leaveType',
+      dataIndex: 'type',
+      render: (type) => {
+        const { typeName = '' } = type;
+        return <span>{typeName}</span>;
+      },
     },
     {
       title: 'Status',

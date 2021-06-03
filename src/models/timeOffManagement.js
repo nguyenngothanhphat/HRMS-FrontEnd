@@ -1,5 +1,10 @@
 import { dialog } from '@/utils/utils';
-import { getListTimeOff, getListEmployees, getRequestById } from '../services/timeOffManagement';
+import {
+  getListTimeOff,
+  getListEmployees,
+  getRequestById,
+  getListTimeOffManagement,
+} from '../services/timeOffManagement';
 
 const timeOffManagement = {
   namespace: 'timeOffManagement',
@@ -24,6 +29,20 @@ const timeOffManagement = {
         yield put({ type: 'save', payload: { listEmployee } });
       } catch (error) {
         dialog(error);
+      }
+    },
+    *fetchListTimeOffManagement({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getListTimeOffManagement, payload);
+        const { data: listTimeOff = [] } = response;
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { listTimeOff },
+        });
+      } catch (errors) {
+        dialog(errors);
       }
     },
     *fetchListTimeOff({ payload = {} }, { call, put }) {

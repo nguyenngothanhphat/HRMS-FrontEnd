@@ -28,6 +28,13 @@ export async function getListTimeOff(payload) {
   });
 }
 
+export async function getListTimeOffManagement(payload) {
+  return request('/api/leaverequesttenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getListEmployees(payload) {
   return request('/api/employeetenant/list', {
     method: 'POST',

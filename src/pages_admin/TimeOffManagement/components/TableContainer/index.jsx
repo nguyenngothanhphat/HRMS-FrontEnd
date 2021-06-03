@@ -14,6 +14,7 @@ import styles from './index.less';
     locationSelection: { listLocationsByCompany = [] } = {},
   }) => ({
     loadingList: loading.effects['timeOffManagement/fetchListTimeOff'],
+    loading: loading.effects['timeOffManagement/fetchListTimeOffManagement'],
     loadingActiveList: loading.effects['timeOffManagement/fetchEmployeeList'],
     loadingDetail: loading.effects['timeOffManagement/fetchRequestById'],
     timeOffManagement,
@@ -22,19 +23,23 @@ import styles from './index.less';
   }),
 )
 class TableContainer extends PureComponent {
+  // componentDidMount() {
+  //   this.fetchListTimeOffManagement();
+  // }
+
   componentDidUpdate = (prevProps) => {
     const { listLocationsByCompany = [] } = this.props;
     if (
       JSON.stringify(listLocationsByCompany) !== JSON.stringify(prevProps.listLocationsByCompany)
     ) {
       this.fetchEmployees();
+      this.fetchListTimeOffManagement();
     }
   };
 
-  fetchEmployees = () => {
-    const { dispatch, companiesOfUser, listLocationsByCompany } = this.props;
+  getCompanyAndLocation = () => {
+    const { companiesOfUser, listLocationsByCompany } = this.props;
     const companyId = getCurrentCompany();
-    const tenantId = getCurrentTenant();
 
     let getCurrentFirm = companiesOfUser.map((item) => (item._id === companyId ? item : null));
     getCurrentFirm = getCurrentFirm.filter((item) => item !== null);
@@ -47,15 +52,41 @@ class TableContainer extends PureComponent {
       };
     });
 
+    return {
+      getCurrentFirm,
+      getLocation,
+    };
+  };
+
+  fetchListTimeOffManagement = () => {
+    const { dispatch } = this.props;
+    const tenantId = getCurrentTenant();
+    const data = this.getCompanyAndLocation();
+
+    dispatch({
+      type: 'timeOffManagement/fetchListTimeOffManagement',
+      payload: {
+        company: data.getCurrentFirm,
+        tenantId,
+        location: data.getLocation,
+      },
+    });
+  };
+
+  fetchEmployees = () => {
+    const { dispatch } = this.props;
+    const tenantId = getCurrentTenant();
+    const data = this.getCompanyAndLocation();
+
     dispatch({
       type: 'timeOffManagement/fetchEmployeeList',
       payload: {
-        company: getCurrentFirm,
+        company: data.getCurrentFirm,
         tenantId,
         department: [],
         employeeType: [],
         name: '',
-        location: getLocation,
+        location: data.getLocation,
       },
     });
   };
@@ -95,9 +126,9 @@ class TableContainer extends PureComponent {
   render() {
     const {
       // loadingList,
-      timeOffManagement: { listEmployee = [], listTimeOff, requestDetail },
+      timeOffManagement: { listEmployee = [], listTimeOff, requestDetail, loading },
     } = this.props;
-    // console.log(listTimeOff);
+
     return (
       <div className={styles.TimeOffTableContainer}>
         <div className={styles.optionsHeader}>
@@ -110,6 +141,7 @@ class TableContainer extends PureComponent {
         <div className={styles.contentContainer}>
           <TableTimeOff
             listTimeOff={listTimeOff}
+            loading={loading}
             handleRequestDetail={this.handleRequestDetail}
             requestDetail={requestDetail}
           />
