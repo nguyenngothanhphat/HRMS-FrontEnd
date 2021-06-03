@@ -166,7 +166,7 @@ class ClosingPackage extends PureComponent {
           {closingPackage?.map((template, index) => {
             const { packageName } = template;
             return (
-              <Col span={10} key={`${index + 1}`}>
+              <Col span={12} key={`${index + 1}`}>
                 <div className={styles.template}>
                   <div
                     className={styles.template__content}
@@ -209,7 +209,7 @@ class ClosingPackage extends PureComponent {
             if (typeof doc !== 'object') return null;
             const { key } = doc;
             return (
-              <Col span={10} key={`${index + 1}`}>
+              <Col span={12} key={`${index + 1}`}>
                 <div className={styles.template}>
                   <div className={styles.template__content}>
                     <img
@@ -250,6 +250,7 @@ class ClosingPackage extends PureComponent {
           onFinish={this.handleSendMail}
           onValuesChange={this.onValueChange}
           initialValues={{ toEmail: workEmail }}
+          className={styles.formClosingPackage}
         >
           <Row gutter={[40, 15]} className={styles.closingPackage__inputSection}>
             <Col span={24}>

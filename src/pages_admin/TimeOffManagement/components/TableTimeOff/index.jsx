@@ -14,43 +14,56 @@ class TableTimeOff extends PureComponent {
     },
     {
       title: 'Employee ID',
-      dataIndex: 'employeeId',
+      dataIndex: 'employee',
       defaultSortOrder: 'ascend',
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
         compare: (a, b) => a._id.localeCompare(b._id),
       },
+      render: (employee) => {
+        const { employeeId = '' } = employee;
+        return <span>{employeeId}</span>;
+      },
     },
     {
       title: 'Full Name',
-      dataIndex: 'name',
-      // sortDirections: ['ascend', 'descend', 'ascend'],
-      // sorter: {
-      //   compare: (a, b) => a.employeeGroup.localeCompare(b.employeeGroup),
-      // },
+      dataIndex: 'employee',
+      sortDirections: ['ascend', 'descend', 'ascend'],
+      sorter: {
+        compare: (a, b) =>
+          a.employee.generalInfo.firstName.localeCompare(b.employee.generalInfo.firstName),
+      },
+      render: (employee) => {
+        const { generalInfo: { firstName = '', lastName = '' } = {} } = employee;
+        return (
+          <span>
+            {firstName} {lastName}
+          </span>
+        );
+      },
     },
     {
       title: 'From Date',
       dataIndex: 'fromDate',
       sortDirections: ['ascend', 'descend', 'ascend'],
+      sorter: {
+        compare: (a, b) => new Date(a.fromDate) - new Date(b.fromDate),
+      },
       render: (fromDate) => {
         const formatedDate = moment(fromDate).format('MM.DD.YY');
         return <span>{formatedDate}</span>;
-      },
-      sorter: {
-        compare: (a, b) => new Date(a.fromDate) - new Date(b.fromDate),
       },
     },
     {
       title: 'To Date',
       dataIndex: 'toDate',
       sortDirections: ['ascend', 'descend', 'ascend'],
+      sorter: {
+        compare: (a, b) => new Date(a.toDate) - new Date(b.toDate),
+      },
       render: (toDate) => {
         const formatedDate = moment(toDate).format('MM.DD.YY');
         return <span>{formatedDate}</span>;
-      },
-      sorter: {
-        compare: (a, b) => new Date(a.toDate) - new Date(b.toDate),
       },
     },
     {
@@ -60,7 +73,11 @@ class TableTimeOff extends PureComponent {
     },
     {
       title: 'Leave Type',
-      dataIndex: 'leaveType',
+      dataIndex: 'type',
+      render: (type) => {
+        const { typeName = '' } = type;
+        return <span>{typeName}</span>;
+      },
     },
     {
       title: 'Status',
