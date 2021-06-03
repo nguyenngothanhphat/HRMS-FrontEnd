@@ -97,7 +97,7 @@ class DirectoryComponent extends PureComponent {
       },
       tabId: 'active',
       changeTab: false,
-      collapsed: false,
+      collapsed: true,
       pageSelected: 1,
       bottabs: [],
       visible: false,

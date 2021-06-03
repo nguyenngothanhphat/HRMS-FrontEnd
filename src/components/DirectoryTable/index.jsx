@@ -57,7 +57,8 @@ class DirectoryTable extends Component {
     return avtDefault;
   };
 
-  renderUser = (generalInfo) => {
+  renderUser = (employeePack) => {
+    const { _id = '', generalInfo = {}, tenant = '' } = employeePack;
     const { isShowAvatar = true, avatar = '' } = generalInfo;
     const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
     return (
@@ -67,7 +68,9 @@ class DirectoryTable extends Component {
         ) : (
           <Avatar className={styles.avatar_emptySrc} alt="avatar" />
         )}
-        <p>{`${generalInfo.firstName} ${generalInfo.lastName}`}</p>
+        <p onClick={() => this.handleProfileEmployee(_id, tenant)}>
+          {`${generalInfo.firstName} ${generalInfo.lastName}`}
+        </p>
       </div>
     );
   };
@@ -129,6 +132,8 @@ class DirectoryTable extends Component {
   // };
 
   generateColumns = (sortedName, keyTab) => {
+    const { permissions = {} } = this.props;
+
     const { isSort } = this.state;
     const columns = [
       {
@@ -138,14 +143,14 @@ class DirectoryTable extends Component {
             {isSort ? null : <CaretDownOutlined className={styles.directoryTable_iconSort} />}
           </div>
         ),
-        dataIndex: 'generalInfo',
-        key: 'generalInfo',
-        render: (generalInfo) => (generalInfo ? this.renderUser(generalInfo) : ''),
+        dataIndex: 'employeePack',
+        key: 'employeePack',
+        render: (employeePack) => (employeePack ? this.renderUser(employeePack) : ''),
         align: 'left',
         sorter: (a, b) =>
-          a.generalInfo && a.generalInfo.firstName
-            ? `${a.generalInfo.firstName} ${a.generalInfo.lastName}`.localeCompare(
-                `${b.generalInfo.firstName} ${b.generalInfo.lastName}`,
+          a.employeePack.generalInfo && a.employeePack.generalInfo.firstName
+            ? `${a.employeePack.generalInfo.firstName} ${a.employeePack.generalInfo.lastName}`.localeCompare(
+                `${b.employeePack.generalInfo.firstName} ${b.employeePack.generalInfo.lastName}`,
               )
             : null,
         sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
@@ -153,21 +158,31 @@ class DirectoryTable extends Component {
         width: '18%',
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
-      {
-        title: formatMessage({ id: 'component.directory.table.employeeID' }),
-        dataIndex: 'generalInfo',
-        key: 'employeeId',
-        className: `${styles.employeeId} `,
-        render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
-        width: '10%',
-        align: 'left',
-      },
+      // {
+      //   title: formatMessage({ id: 'component.directory.table.employeeID' }),
+      //   dataIndex: 'generalInfo',
+      //   key: 'employeeId',
+      //   className: `${styles.employeeId} `,
+      //   render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
+      //   width: '10%',
+      //   align: 'left',
+      // },
       {
         title: formatMessage({ id: 'component.directory.table.email' }),
         dataIndex: 'generalInfo',
         key: 'employeeId',
         render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
         width: '18%',
+        align: 'left',
+      },
+      {
+        title: 'Work Number',
+        dataIndex: 'generalInfo',
+        key: 'employeeId',
+        render: (generalInfo) => (
+          <span style={{ fontSize: '13px' }}>{generalInfo ? generalInfo.workNumber : '-'}</span>
+        ),
+        width: '10%',
         align: 'left',
       },
       {
@@ -202,12 +217,15 @@ class DirectoryTable extends Component {
       },
       {
         title: formatMessage({ id: 'component.directory.table.reportingManager' }),
-        dataIndex: 'manager',
-        key: 'manager',
-        render: (manager) => (
-          <span>
-            {manager.generalInfo
-              ? `${manager?.generalInfo?.firstName} ${manager?.generalInfo?.lastName}`
+        dataIndex: 'managerPack',
+        key: 'managerPack',
+        render: (managerPack) => (
+          <span
+            className={styles.managerName}
+            onClick={() => this.handleProfileEmployee(managerPack._id, managerPack.tenant)}
+          >
+            {managerPack.generalInfo
+              ? `${managerPack?.generalInfo?.firstName} ${managerPack?.generalInfo?.lastName}`
               : ''}
           </span>
         ),
@@ -242,7 +260,12 @@ class DirectoryTable extends Component {
       },
     ];
 
-    return columns.map((col) => ({
+    const renderColumns =
+      permissions.viewActionButton !== -1
+        ? columns
+        : columns.filter((col) => col.dataIndex !== 'action');
+
+    return renderColumns.map((col) => ({
       ...col,
       title: col.title,
     }));
@@ -273,24 +296,24 @@ class DirectoryTable extends Component {
     });
   };
 
-  handleProfileEmployee = async (row) => {
-    const { _id = '', location: { name = '' } = {}, tenant = '', company = {} } = row;
-    const { dispatch } = this.props;
-    await dispatch({
-      type: 'employeeProfile/save',
-      payload: {
-        tenantCurrentEmployee: tenant,
-        companyCurrentEmployee: company?._id,
-      },
-    });
+  handleProfileEmployee = async (_id, tenant) => {
+    // const { _id = '', location: { name = '' } = {}, tenant = '', company = {} } = row;
+    // const { dispatch } = this.props;
+    // await dispatch({
+    //   type: 'employeeProfile/save',
+    //   payload: {
+    //     tenantCurrentEmployee: tenant,
+    //     companyCurrentEmployee: company?._id,
+    //   },
+    // });
     localStorage.setItem('tenantCurrentEmployee', tenant);
-    localStorage.setItem('companyCurrentEmployee', company?._id);
-    localStorage.setItem('idCurrentEmployee', _id);
+    // localStorage.setItem('companyCurrentEmployee', company?._id);
+    // localStorage.setItem('idCurrentEmployee', _id);
 
     setTimeout(() => {
       history.push({
         pathname: `/directory/employee-profile/${_id}`,
-        state: { location: name },
+        // state: { location: name },
       });
     }, 200);
   };
@@ -301,9 +324,28 @@ class DirectoryTable extends Component {
     return findIndexViewProfile;
   };
 
+  getNewList = (list) => {
+    return list.map((item) => {
+      return {
+        ...item,
+        employeePack: {
+          _id: item._id,
+          generalInfo: item.generalInfo,
+          tenant: item.tenant,
+        },
+        managerPack: {
+          _id: item.manager._id,
+          generalInfo: item.manager.generalInfo,
+          tenant: item.tenant,
+        },
+      };
+    });
+  };
+
   render() {
     const { sortedName = {}, pageSelected, openModal = false, valueReason = '' } = this.state;
     const { list = [], loading, keyTab, loadingTerminateReason } = this.props;
+    const newList = this.getNewList(list);
     const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
@@ -334,12 +376,12 @@ class DirectoryTable extends Component {
           <Table
             size="small"
             columns={this.generateColumns(sortedName, keyTab)}
-            onRow={(record) => {
-              return {
-                onClick: () => this.handleProfileEmployee(record), // click row
-              };
-            }}
-            dataSource={list}
+            // onRow={(record) => {
+            //   return {
+            //     onClick: () => this.handleProfileEmployee(record), // click row
+            //   };
+            // }}
+            dataSource={newList}
             rowKey={(record) => record._id}
             // pagination={{ ...pagination, total: list.length }}
             pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
