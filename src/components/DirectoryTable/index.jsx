@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { history, formatMessage, connect } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Table, Avatar, Button, Tag, Tooltip } from 'antd';
+import { Table, Avatar, Button, Tag, Tooltip, Popover } from 'antd';
 import avtDefault from '@/assets/avtDefault.jpg';
 import { isOwner } from '@/utils/authority';
 import styles from './index.less';
@@ -23,11 +23,19 @@ const departmentTag = [
   { name: 'Customer services', color: '#f50' },
   { name: 'Business development', color: '#87d068' },
 ];
-@connect(({ loading, offboarding: { approvalflow = [] } = {}, user: { permissions = {} } }) => ({
-  loadingTerminateReason: loading.effects['offboarding/terminateReason'],
-  approvalflow,
-  permissions,
-}))
+@connect(
+  ({
+    loading,
+    offboarding: { approvalflow = [] } = {},
+    user: { permissions = {} },
+    locationSelection: { listLocationsByCompany = [] },
+  }) => ({
+    loadingTerminateReason: loading.effects['offboarding/terminateReason'],
+    approvalflow,
+    permissions,
+    listLocationsByCompany,
+  }),
+)
 class DirectoryTable extends Component {
   constructor(props) {
     super(props);
@@ -38,28 +46,29 @@ class DirectoryTable extends Component {
       openModal: false,
       rowData: {},
       valueReason: '',
-      filterList: [],
     };
   }
+
+  // componentDidMount = () => {
+  //   const { listLocationsByCompany = [] } = this.props;
+  //   listLocationsByCompany.forEach((location) => this.getTime(location.headQuarterAddress.state));
+  // };
 
   componentDidUpdate(prevProps) {
     const { list } = this.props;
     if (JSON.stringify(prevProps.list) !== JSON.stringify(list)) {
       this.setFirstPage();
-      this.setFilterList(list);
     }
   }
 
-  componentWillUnmount = () => {
-    console.log('hey');
-  };
+  // getTime = (state) => {
+  //   console.log('state', state);
+  //   const tzNames = moment.tz.names();
+  //   const stateWords = state.split('_');
 
-  setFilterList = (list) => {
-    // const { list } = this.props;
-    this.setState({
-      filterList: list,
-    });
-  };
+  //   // const list = tzNames.find((tz) => tz.indexOf(stateWords) > -1);
+  //   const found = tzNames.some((r) => stateWords.indexOf(r) >= 0);
+  // };
 
   getAvatarUrl = (avatar, isShowAvatar) => {
     const { permissions = {}, profileOwner = false } = this.props;
@@ -241,7 +250,15 @@ class DirectoryTable extends Component {
         title: formatMessage({ id: 'component.directory.table.location' }),
         dataIndex: 'location',
         key: 'location',
-        render: (location) => <span>{location ? location.name : ''}</span>,
+        render: (location) => (
+          <Popover
+            content={() => this.locationContent(location)}
+            title={location.name}
+            trigger="hover"
+          >
+            <span>{location ? location.name : ''}</span>
+          </Popover>
+        ),
         width: '14%',
         align: 'left',
       },
@@ -358,20 +375,53 @@ class DirectoryTable extends Component {
   };
 
   onFilter = (obj, fieldName) => {
-    const { list = [] } = this.props;
-    const { filterList } = this.state;
+    const { dispatch } = this.props;
+    const { list = [], handleFilterPane = () => {} } = this.props;
     let newList = [];
-    if (JSON.stringify(list) === JSON.stringify(filterList)) {
-      if (fieldName === 'department') {
-        newList = filterList.filter((item) => item.department?._id === obj._id);
-      }
-      if (fieldName === 'title') {
-        newList = filterList.filter((item) => item.title?._id === obj._id);
-      }
-    } else newList = [...list];
-    this.setState({
-      filterList: [...newList],
-    });
+
+    if (fieldName === 'department') {
+      dispatch({
+        type: 'employee/saveFilter',
+        payload: { name: 'Department', checkedList: [obj.name] },
+      });
+    }
+    if (fieldName === 'title') {
+      newList = list.filter((item) => item.title?._id === obj._id);
+      dispatch({
+        type: 'employee/save',
+        payload: { listEmployeeActive: [...newList] },
+      });
+    }
+    handleFilterPane(true);
+  };
+
+  locationContent = (location) => {
+    const {
+      headQuarterAddress: {
+        addressLine1 = '',
+        addressLine2 = '',
+        state = '',
+        country = {},
+        zipCode = '',
+      } = {},
+    } = location;
+
+    return (
+      <div className={styles.locationContent}>
+        <span>
+          Address: {addressLine1}
+          {addressLine2 && ', '}
+          {addressLine2}
+          {state && ', '}
+          {state}
+          {country && ', '}
+          {country?.name || country}
+          {zipCode && ', '}
+          {zipCode}
+        </span>
+        {/* <p>Current time: {result}</p> */}
+      </div>
+    );
   };
 
   getNewList = (list) => {
@@ -393,19 +443,8 @@ class DirectoryTable extends Component {
   };
 
   render() {
-    const {
-      sortedName = {},
-      pageSelected,
-      openModal = false,
-      valueReason = '',
-      filterList: list = [],
-    } = this.state;
-    const {
-      // list = [],
-      loading,
-      keyTab,
-      loadingTerminateReason,
-    } = this.props;
+    const { sortedName = {}, pageSelected, openModal = false, valueReason = '' } = this.state;
+    const { list = [], loading, keyTab, loadingTerminateReason } = this.props;
     const newList = this.getNewList(list);
 
     const rowSize = 10;
