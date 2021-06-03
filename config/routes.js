@@ -232,6 +232,8 @@ const routes = [
               'admin-cla',
               'admin-cda',
               'leader',
+              'admin',
+              'owner',
             ],
           },
           {

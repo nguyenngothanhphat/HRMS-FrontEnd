@@ -2,8 +2,9 @@
 import React, { Component } from 'react';
 import { history, formatMessage, connect } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Table, Avatar, Button, Tag } from 'antd';
+import { Table, Avatar, Button, Tag, Tooltip } from 'antd';
 import avtDefault from '@/assets/avtDefault.jpg';
+import { isOwner } from '@/utils/authority';
 import styles from './index.less';
 import ModalTerminate from './components/ModalTerminate';
 
@@ -37,15 +38,28 @@ class DirectoryTable extends Component {
       openModal: false,
       rowData: {},
       valueReason: '',
+      filterList: [],
     };
   }
 
   componentDidUpdate(prevProps) {
     const { list } = this.props;
-    if (prevProps.list !== list) {
+    if (JSON.stringify(prevProps.list) !== JSON.stringify(list)) {
       this.setFirstPage();
+      this.setFilterList(list);
     }
   }
+
+  componentWillUnmount = () => {
+    console.log('hey');
+  };
+
+  setFilterList = (list) => {
+    // const { list } = this.props;
+    this.setState({
+      filterList: list,
+    });
+  };
 
   getAvatarUrl = (avatar, isShowAvatar) => {
     const { permissions = {}, profileOwner = false } = this.props;
@@ -189,7 +203,13 @@ class DirectoryTable extends Component {
         title: formatMessage({ id: 'component.directory.table.title' }),
         dataIndex: 'title',
         key: 'title',
-        render: (title) => <span>{title ? title.name : ''}</span>,
+        render: (title) => (
+          <Tooltip placement="left" title={`Filter by ${title.name}`}>
+            <span className={styles.title} onClick={() => this.onFilter(title, 'title')}>
+              {title ? title.name : ''}
+            </span>
+          </Tooltip>
+        ),
         width: '12%',
         align: 'left',
       },
@@ -199,7 +219,17 @@ class DirectoryTable extends Component {
         key: 'department',
         render: (department) => {
           const tag = departmentTag.find((d) => d.name === department.name) || { color: '#108ee9' };
-          return <Tag color={tag.color}>{department.name}</Tag>;
+          return (
+            <Tooltip placement="left" title={`Filter by ${department.name}`}>
+              <Tag
+                className={styles.department}
+                onClick={() => this.onFilter(department, 'department')}
+                color={tag.color}
+              >
+                {department.name}
+              </Tag>
+            </Tooltip>
+          );
           //   <span className={styles.directoryTable_deparmentText}>
           //   {department ? department.name : ''}
           // </span>
@@ -310,9 +340,12 @@ class DirectoryTable extends Component {
     // localStorage.setItem('companyCurrentEmployee', company?._id);
     // localStorage.setItem('idCurrentEmployee', _id);
 
+    const pathname = isOwner()
+      ? `/employees/employee-profile/${_id}`
+      : `/directory/employee-profile/${_id}`;
     setTimeout(() => {
       history.push({
-        pathname: `/directory/employee-profile/${_id}`,
+        pathname,
         // state: { location: name },
       });
     }, 200);
@@ -322,6 +355,23 @@ class DirectoryTable extends Component {
     const viewProfile = 'P_PROFILE_VIEW';
     const findIndexViewProfile = permissions.indexOf(viewProfile);
     return findIndexViewProfile;
+  };
+
+  onFilter = (obj, fieldName) => {
+    const { list = [] } = this.props;
+    const { filterList } = this.state;
+    let newList = [];
+    if (JSON.stringify(list) === JSON.stringify(filterList)) {
+      if (fieldName === 'department') {
+        newList = filterList.filter((item) => item.department?._id === obj._id);
+      }
+      if (fieldName === 'title') {
+        newList = filterList.filter((item) => item.title?._id === obj._id);
+      }
+    } else newList = [...list];
+    this.setState({
+      filterList: [...newList],
+    });
   };
 
   getNewList = (list) => {
@@ -343,9 +393,21 @@ class DirectoryTable extends Component {
   };
 
   render() {
-    const { sortedName = {}, pageSelected, openModal = false, valueReason = '' } = this.state;
-    const { list = [], loading, keyTab, loadingTerminateReason } = this.props;
+    const {
+      sortedName = {},
+      pageSelected,
+      openModal = false,
+      valueReason = '',
+      filterList: list = [],
+    } = this.state;
+    const {
+      // list = [],
+      loading,
+      keyTab,
+      loadingTerminateReason,
+    } = this.props;
     const newList = this.getNewList(list);
+
     const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
