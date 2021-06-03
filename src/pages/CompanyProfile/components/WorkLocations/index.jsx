@@ -242,24 +242,22 @@ class WorkLocations extends PureComponent {
               {(fields, { add, remove }) => {
                 return (
                   <>
-                    {fields.map((field, index) => (
+                    {fields.map((field) => (
                       <>
-                        {index === 0 ? null : (
-                          <FormWorkLocation
-                            field={field}
-                            key={field.name}
-                            isHidden={false}
-                            name="New work location"
-                            formRef={this.formRef}
-                            listCountry={listCountry}
-                            listLocation={listLocation}
-                            removeLocation={this.removeLocation}
-                            onRemove={() => remove(field.name)}
-                          />
-                        )}
+                        <FormWorkLocation
+                          field={field}
+                          key={field.name}
+                          isHidden={false}
+                          name="New work location"
+                          formRef={this.formRef}
+                          listCountry={listCountry}
+                          listLocation={listLocation}
+                          removeLocation={this.removeLocation}
+                          onRemove={() => remove(field.name)}
+                        />
                       </>
                     ))}
-                    <div className={fields.length === 1 ? s.actions : s.actionsWithMargin}>
+                    <div className={fields.length === 0 ? s.actions : s.actionsWithMargin}>
                       <div className={s.viewAddWorkLocation} onClick={() => add()}>
                         <p className={s.viewAddWorkLocation__icon}>
                           <PlusOutlined />
