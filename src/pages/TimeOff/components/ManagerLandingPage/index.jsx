@@ -7,7 +7,7 @@ import LeaveHistoryAndHoliday from '../EmployeeLandingPage/components/LeaveHisto
 import QuickLinks from '../EmployeeLandingPage/components/QuickLinks';
 import TimeOffRequestsTable from './components/TimeOffRequestsTable';
 import FeedbackBar from '../EmployeeLandingPage/components/FeedbackBar';
-import LeaveBalanceInfo from '../EmployeeLandingPage/components/LeaveBalanceInfo';
+import TimeOffTypesInfo from '../EmployeeLandingPage/components/TimeOffTypesInfo';
 
 import styles from './index.less';
 
@@ -106,7 +106,7 @@ export default class ManagerLandingPage extends PureComponent {
                   </Col>
                 </Row>
               )}
-              <LeaveBalanceInfo onClose={this.onInformationClick} visible={viewInformation} />
+              <TimeOffTypesInfo onClose={this.onInformationClick} visible={viewInformation} />
             </Col>
           </Row>
         </div>

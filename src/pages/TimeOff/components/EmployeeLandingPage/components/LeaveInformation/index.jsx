@@ -146,15 +146,19 @@ class LeaveInformation extends PureComponent {
 
     const percent = this.calculateValueForCircleProgress(typesOfCommonLeaves);
 
-    setTimeout(() => {
-      for (let i = 0; i < percent; i += 1) {
-        setTimeout(() => {
-          this.setState({
-            percentMainCircle: i,
-          });
-        }, 0);
-      }
-    }, 1000);
+    // setTimeout(() => {
+    //   for (let i = 0; i < percent; i += 1) {
+    //     setTimeout(() => {
+    //       this.setState({
+    //         percentMainCircle: i,
+    //       });
+    //     }, 0);
+    //   }
+    // }, 1000);
+
+    this.setState({
+      percentMainCircle: percent,
+    });
   };
 
   handleShow = () => {
