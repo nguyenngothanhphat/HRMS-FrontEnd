@@ -475,6 +475,12 @@ class DirectoryComponent extends PureComponent {
     });
   };
 
+  handleFilterPane = () => {
+    this.setState({
+      collapsed: true,
+    });
+  };
+
   handleChange = (valueInput) => {
     this.setDebounce(valueInput);
   };
@@ -683,7 +689,7 @@ class DirectoryComponent extends PureComponent {
         <Layout className={styles.directoryLayout_inner}>
           <Content className="site-layout-background">
             <DirectoryTable
-              handleFilterPane={this.handleToggle}
+              handleFilterPane={this.handleFilterPane}
               loading={loading}
               list={this.renderListEmployee(key)}
               keyTab={key}
