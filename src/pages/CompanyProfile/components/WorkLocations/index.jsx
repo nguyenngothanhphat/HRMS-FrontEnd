@@ -159,7 +159,7 @@ class WorkLocations extends PureComponent {
 
     const listLocation = this.formatListLocation();
 
-    const defaultListLocation = listLocation.length === 0 ? [{}] : listLocation;
+    const defaultListLocation = listLocation.length === 0 ? [] : listLocation;
     const {
       company: {
         headQuarterAddress: {
