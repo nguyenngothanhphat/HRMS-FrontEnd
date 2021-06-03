@@ -23,9 +23,9 @@ import styles from './index.less';
   }),
 )
 class TableContainer extends PureComponent {
-  // componentDidMount() {
-  //   this.fetchListTimeOffManagement();
-  // }
+  componentDidMount() {
+    this.fetchListTimeOffManagement();
+  }
 
   componentDidUpdate = (prevProps) => {
     const { listLocationsByCompany = [] } = this.props;
