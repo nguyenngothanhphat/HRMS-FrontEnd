@@ -66,7 +66,7 @@ const timeOffManagement = {
             _id: item._id,
             employeeId: item.employee.employeeId,
             name: fullName,
-            country: item.employee.location.country.nativeName,
+            // country: item.employee.location.country.nativeName,
             cc: item.cc,
             fromDate: item.fromDate,
             toDate: item.toDate,

@@ -14,7 +14,9 @@ import styles from './index.less';
     locationSelection: { listLocationsByCompany = [] } = {},
   }) => ({
     loadingList: loading.effects['timeOffManagement/fetchListTimeOff'],
-    loading: loading.effects['timeOffManagement/fetchListTimeOffManagement'],
+    loading:
+      loading.effects['timeOffManagement/fetchListTimeOffManagement'] ||
+      loading.effects['timeOffManagement/fetchListTimeOff'],
     loadingActiveList: loading.effects['timeOffManagement/fetchEmployeeList'],
     loadingDetail: loading.effects['timeOffManagement/fetchRequestById'],
     timeOffManagement,
@@ -25,6 +27,7 @@ import styles from './index.less';
 class TableContainer extends PureComponent {
   componentDidMount() {
     this.fetchListTimeOffManagement();
+    this.fetchEmployees();
   }
 
   componentDidUpdate = (prevProps) => {
@@ -126,7 +129,8 @@ class TableContainer extends PureComponent {
   render() {
     const {
       // loadingList,
-      timeOffManagement: { listEmployee = [], listTimeOff, requestDetail, loading },
+      loading,
+      timeOffManagement: { listEmployee = [], listTimeOff, requestDetail },
     } = this.props;
 
     return (

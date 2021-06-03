@@ -27,34 +27,43 @@ class TableTimeOff extends PureComponent {
     },
     {
       title: 'Full Name',
-      dataIndex: 'name',
-      // sortDirections: ['ascend', 'descend', 'ascend'],
-      // sorter: {
-      //   compare: (a, b) => a.employeeGroup.localeCompare(b.employeeGroup),
-      // },
+      dataIndex: 'employee',
+      sortDirections: ['ascend', 'descend', 'ascend'],
+      sorter: {
+        compare: (a, b) =>
+          a.employee.generalInfo.firstName.localeCompare(b.employee.generalInfo.firstName),
+      },
+      render: (employee) => {
+        const { generalInfo: { firstName = '', lastName = '' } = {} } = employee;
+        return (
+          <span>
+            {firstName} {lastName}
+          </span>
+        );
+      },
     },
     {
       title: 'From Date',
       dataIndex: 'fromDate',
       sortDirections: ['ascend', 'descend', 'ascend'],
+      sorter: {
+        compare: (a, b) => new Date(a.fromDate) - new Date(b.fromDate),
+      },
       render: (fromDate) => {
         const formatedDate = moment(fromDate).format('MM.DD.YY');
         return <span>{formatedDate}</span>;
-      },
-      sorter: {
-        compare: (a, b) => new Date(a.fromDate) - new Date(b.fromDate),
       },
     },
     {
       title: 'To Date',
       dataIndex: 'toDate',
       sortDirections: ['ascend', 'descend', 'ascend'],
+      sorter: {
+        compare: (a, b) => new Date(a.toDate) - new Date(b.toDate),
+      },
       render: (toDate) => {
         const formatedDate = moment(toDate).format('MM.DD.YY');
         return <span>{formatedDate}</span>;
-      },
-      sorter: {
-        compare: (a, b) => new Date(a.toDate) - new Date(b.toDate),
       },
     },
     {
