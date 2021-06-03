@@ -18,7 +18,13 @@ const { TextArea } = Input;
       tempData: { generalData = {}, compensationData = {} } = {},
       originData: {
         generalData: originGeneralData = {},
-        employmentData: { manager = {}, location = {}, department = {}, joinDate = '' } = {},
+        employmentData: {
+          manager = {},
+          location = {},
+          department = {},
+          joinDate = '',
+          title = {},
+        } = {},
       } = {},
     } = {},
     user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
@@ -32,6 +38,7 @@ const { TextArea } = Input;
     location,
     department,
     joinDate,
+    title,
   }),
 )
 class ViewInformation extends Component {
@@ -200,6 +207,7 @@ class ViewInformation extends Component {
       location: { name: locationName = '' } = {},
       department: { name: departmentName = '' } = {},
       joinDate = '',
+      title,
     } = this.props;
 
     const checkVisible = profileOwner || permissions.viewOtherInformation !== -1;
@@ -245,8 +253,8 @@ class ViewInformation extends Component {
           />
         )}
         <div className={s.infoEmployee__textNameAndTitle}>
+          <p className={s.infoEmployee__textNameAndTitle__title}>{title ? title.name : ''}</p>
           <p className={s.infoEmployee__textNameAndTitle__name}>{firstName}</p>
-          {/* <p className={s.infoEmployee__textNameAndTitle__title}>{title}</p> */}
         </div>
 
         <div className={s.infoEmployee__viewBottom}>
