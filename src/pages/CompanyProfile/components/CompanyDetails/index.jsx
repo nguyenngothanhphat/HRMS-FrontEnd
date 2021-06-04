@@ -32,6 +32,7 @@ class CompanyDetails extends Component {
       countryHeadquarter: '',
       countryLegal: '',
       checkLegalSameHeadQuarter: false,
+      isFilled: true,
     };
   }
 
@@ -81,6 +82,7 @@ class CompanyDetails extends Component {
         stateHeadquarter,
         zipHeadquarter,
       } = this.formRef.current.getFieldsValue();
+
       this.formRef.current.setFieldsValue({
         legalAddressLine1: headquarterAddressLine1,
         legalAddressLine2: headquarterAddressLine2,
@@ -203,12 +205,14 @@ class CompanyDetails extends Component {
     //   dataTempKept: {},
     //   isAccountSetup: true,
     // });
-    dispatch({
-      type: 'companiesManagement/addCompanyReducer',
-      payload,
-      dataTempKept: {},
-      isAccountSetup: true,
-    });
+
+    console.log(payload);
+    // dispatch({
+    //   type: 'companiesManagement/addCompanyReducer',
+    //   payload,
+    //   dataTempKept: {},
+    //   isAccountSetup: true,
+    // });
     // }
   };
 
@@ -267,11 +271,23 @@ class CompanyDetails extends Component {
     }
   };
 
+  onValuesChange = (field) => {
+    if (
+      field.headquarterAddressLine1 ||
+      field.countryHeadquarterProps ||
+      field.stateHeadquarter ||
+      field.zipHeadquarter
+    ) {
+      this.setState({ isFilled: false });
+    }
+  };
+
   render() {
     const {
       countryHeadquarter = '',
       countryLegal = '',
       checkLegalSameHeadQuarter = false,
+      isFilled = false,
     } = this.state;
     const {
       listCountry = [],
@@ -388,7 +404,7 @@ class CompanyDetails extends Component {
         className={s.root}
         ref={this.formRef}
         onFinish={this.onFinish}
-        // onFinish={(values) => console.log('values', values)}
+        onValuesChange={this.onValuesChange}
         autoComplete="off"
         validateMessages={validateMessages}
         initialValues={{
@@ -618,7 +634,9 @@ class CompanyDetails extends Component {
           </div>
           <div className={classnames(s.content__viewTop, s.content__viewTop__legalAddress)}>
             <p className={s.title}>Legal Address</p>
-            <Checkbox onChange={this.onChangeCheckbox}>Same as Headquarters address</Checkbox>
+            <Checkbox disabled={isFilled} onChange={this.onChangeCheckbox}>
+              Same as Headquarters address
+            </Checkbox>
           </div>
           <div
             className={classnames(s.content__viewBottom, { [s.hidden]: checkLegalSameHeadQuarter })}
