@@ -74,7 +74,13 @@ export default class OptionsHeader extends PureComponent {
               <Col xs={7}>
                 <span className={styles.itemLabel}>User ID - Name</span>
                 <Form.Item name="userIdName">
-                  <Select placeholder="Select an user">
+                  <Select
+                    placeholder="Select an user"
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                    showSearch
+                  >
                     {listEmployee.map((item = {}) => {
                       return (
                         <Option key={item._id} value={item._id}>

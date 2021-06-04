@@ -399,8 +399,9 @@ class RequestInformation extends PureComponent {
                   <Col span={6}>Status</Col>
                   <Col span={18} className={styles.detailColumn}>
                     <span>
-                      {status === TIMEOFF_STATUS.accepted && 'Rejected'}
-                      {status === TIMEOFF_STATUS.deleted && 'Accepted'}
+                      Withdraw
+                      {status === TIMEOFF_STATUS.accepted && ' rejected'}
+                      {status === TIMEOFF_STATUS.deleted && ' accepted'}
                     </span>
                   </Col>
                 </Row>
@@ -467,13 +468,13 @@ class RequestInformation extends PureComponent {
                 type="link"
                 onClick={() => this.onRejectWithdrawClicked(_id)}
               >
-                Reject
+                Reject withdraw
               </Button>
               <Button
                 loading={loadingManagerApproveWithdrawRequest}
                 onClick={() => this.onApproveWithdrawClicked(_id)}
               >
-                Withdraw
+                Accept withdraw
               </Button>
             </div>
           </div>

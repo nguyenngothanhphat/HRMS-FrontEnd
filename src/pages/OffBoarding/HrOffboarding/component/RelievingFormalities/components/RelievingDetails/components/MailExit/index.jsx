@@ -83,7 +83,6 @@ class MailExit extends Component {
         ticketId,
       },
     }).then((isSentEmailPackage) => {
-      console.log(isSentEmailPackage);
       this.setState({ isSent: isSentEmailPackage });
     });
     return null;

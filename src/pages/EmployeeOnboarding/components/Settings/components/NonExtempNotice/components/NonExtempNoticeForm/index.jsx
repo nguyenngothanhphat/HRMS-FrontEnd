@@ -25,7 +25,7 @@ class NonExtempNoticeForm extends Component {
 
     const { carrierName = '', carrierAddress = '', phone = '', policyNumber = '' } = listInsurances;
     if (carrierName === '' && carrierAddress === '' && phone === '' && policyNumber === '')
-      this.handleEdit(true, false);
+      this.handleEdit(false, false);
   };
 
   onFinish = async (values) => {
@@ -80,10 +80,8 @@ class NonExtempNoticeForm extends Component {
   };
 
   _renderForm = () => {
-    const {
-      onboardingSettings: { listInsurances = {} } = {},
-      loadingFetchAddInsurance,
-    } = this.props;
+    const { onboardingSettings: { listInsurances = {} } = {}, loadingFetchAddInsurance } =
+      this.props;
 
     const {
       selfInsured = '',

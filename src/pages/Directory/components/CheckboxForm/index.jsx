@@ -21,6 +21,35 @@ class CheckBoxForms extends PureComponent {
     };
   }
 
+  componentDidUpdate = (prevProps) => {
+    // these lines is used to sync checkboxes from redux to this component
+    // because I change filter on redux in components/DirectoryTable -> onFilter() function
+    // if not, remove this componentDidUpdate
+    const { employee = {}, name } = this.props;
+    const { filter = [] } = employee;
+    const { list } = this.state;
+    if (JSON.stringify(prevProps.employee.filter) !== JSON.stringify(filter)) {
+      let checkedList = [...list];
+      filter.forEach((f) => {
+        if (f.actionFilter?.name === name) {
+          checkedList = [...f.checkedList];
+        }
+      });
+
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        checkedList,
+        list: checkedList,
+      });
+
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'employee/saveFilter',
+        payload: { name, checkedList },
+      });
+    }
+  };
+
   onChange = (checkedList) => {
     const { data, name, dispatch } = this.props;
     dispatch({

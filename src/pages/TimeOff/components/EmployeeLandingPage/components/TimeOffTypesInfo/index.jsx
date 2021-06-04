@@ -9,7 +9,7 @@ const { Panel } = Collapse;
 @connect(({ timeOff }) => ({
   timeOff,
 }))
-class LeaveBalanceInfo extends PureComponent {
+class TimeOffTypesInfo extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
@@ -60,7 +60,7 @@ class LeaveBalanceInfo extends PureComponent {
     return (
       <div>
         <Modal
-          className={styles.LeaveBalanceInfo}
+          className={styles.TimeOffTypesInfo}
           centered
           visible={visible}
           footer={null}
@@ -102,4 +102,4 @@ class LeaveBalanceInfo extends PureComponent {
   }
 }
 
-export default LeaveBalanceInfo;
+export default TimeOffTypesInfo;

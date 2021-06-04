@@ -34,6 +34,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
       viewTabInActive: 1,
       importEmployees: 1,
       addEmployee: 1,
+      viewActionButton: 1,
       // Directory Page - Filter - Display location
       filterLocationActive: 1,
       filterLocationInActive: 1,
@@ -105,6 +106,8 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     'T_DIRECTORY_B_ADD',
     'T_DIRECTORY_B_ADD_EMPLOYEE',
   ]);
+
+  const indexViewActionButton = isAuthorized(permissionList, ['hr-manager', 'hr', 'admin']);
 
   // Directory Page - Tab general info - Public/Private Personal phone/email
   const indexEditPersonalInfo = isAdmin
@@ -309,6 +312,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     viewTabInActive: findIndexInActive,
     importEmployees: findIndexImport,
     addEmployee: findIndexAdd,
+    viewActionButton: indexViewActionButton,
     // Directory Page - Filter - Display location
     filterLocationActive: findIndexShowLocationActive,
     filterLocationInActive: findIndexShowLocationInActive,
