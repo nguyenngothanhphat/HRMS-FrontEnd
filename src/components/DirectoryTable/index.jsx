@@ -420,7 +420,7 @@ class DirectoryTable extends Component {
 
     const { timezoneList } = this.state;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
-
+    console.log('findTimezone', findTimezone);
     return (
       <div className={styles.locationContent}>
         <span style={{ display: 'block', fontSize: '13px', color: '#0000006e' }}>Address:</span>
@@ -439,7 +439,7 @@ class DirectoryTable extends Component {
           Current time:
         </span>
         <span style={{ display: 'block', fontSize: '13px' }}>
-          {findTimezone && Object.keys(findTimezone).length > 0
+          {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
             ? getCurrentTimeOfTimezone(findTimezone.timezone)
             : 'Not enough data in address'}
         </span>

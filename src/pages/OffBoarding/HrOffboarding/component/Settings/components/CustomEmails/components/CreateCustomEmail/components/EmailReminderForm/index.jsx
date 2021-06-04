@@ -254,7 +254,10 @@ class EmailReminderForm extends PureComponent {
 
     dispatch({
       type: 'employeeSetting/fetchTriggerEventList',
-      payload: {},
+      payload: {
+        type: 'OFF-BOARDING',
+        tenantId: getCurrentTenant()
+      },
     });
     dispatch({
       type: 'employeeSetting/fetchListAutoField',

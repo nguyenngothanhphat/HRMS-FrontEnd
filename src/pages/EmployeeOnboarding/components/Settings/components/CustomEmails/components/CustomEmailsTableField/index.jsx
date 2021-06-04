@@ -24,8 +24,6 @@ import styles from './index.less';
     listDefaultCustomEmailOnboarding,
     loading: loading.effects['employeeSetting/deleteCustomEmailItem'],
     loadingFetchList: loading.effects['employeeSetting/fetchListCustomEmailOnboarding'],
-    loadingFetchListDefault:
-      loading.effects['employeeSetting/fetchListDefaultCustomEmailByCompany'],
   }),
 )
 class CustomEmailsTableField extends PureComponent {
@@ -57,16 +55,13 @@ class CustomEmailsTableField extends PureComponent {
       activeKey: tabId,
     });
 
-    const type =
-      tabId === '1'
-        ? 'employeeSetting/fetchListDefaultCustomEmailByCompany'
-        : 'employeeSetting/fetchListCustomEmailOnboarding';
-
     await dispatch({
-      type,
+      type: 'employeeSetting/fetchListCustomEmailOnboarding',
       payload: {
         tenantId: getCurrentTenant(),
         company: getCurrentCompany(),
+        type: 'ON-BOARDING',
+        isDefault: tabId === '1',
       },
     });
   };
@@ -189,7 +184,6 @@ class CustomEmailsTableField extends PureComponent {
       listCustomEmailOnboarding,
       listDefaultCustomEmailOnboarding,
       loadingFetchList,
-      loadingFetchListDefault,
     } = this.props;
     const { pageSelected, activeKey } = this.state;
     const rowSize = 5;
@@ -245,7 +239,7 @@ class CustomEmailsTableField extends PureComponent {
                 dataSource={this._renderData(listDefaultCustomEmailOnboarding)}
                 columns={this._renderColumns()}
                 size="middle"
-                loading={loadingFetchListDefault}
+                loading={loadingFetchList}
                 onRow={(record) => {
                   return {
                     onMouseEnter: () => this.handleClickCustomEmail(record), // click row

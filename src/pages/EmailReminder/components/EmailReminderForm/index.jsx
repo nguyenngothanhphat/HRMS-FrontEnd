@@ -209,14 +209,8 @@ class EmailReminderForm extends PureComponent {
       return item;
     });
 
-    const {
-      triggerEvent,
-      _sendingDate,
-      appliesToData,
-      recipient,
-      emailSubject,
-      messages,
-    } = this.state;
+    const { triggerEvent, _sendingDate, appliesToData, recipient, emailSubject, messages } =
+      this.state;
 
     if (
       triggerEvent.trim() !== '' &&
@@ -256,6 +250,7 @@ class EmailReminderForm extends PureComponent {
       type: 'employeeSetting/fetchTriggerEventList',
       payload: {
         tenantId: getCurrentTenant(),
+        type: 'ON-BOARDING'
       },
     });
     dispatch({
@@ -602,6 +597,8 @@ class EmailReminderForm extends PureComponent {
         message: messages,
         sendToExistingWorker,
         tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
+        conditions: [],
       };
     }
     if (appliesToData === 'condition') {
@@ -612,6 +609,8 @@ class EmailReminderForm extends PureComponent {
         message: messages,
         sendToExistingWorker,
         tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
+        recipients: null,
       };
     }
 

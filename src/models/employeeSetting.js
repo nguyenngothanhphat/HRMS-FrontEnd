@@ -22,7 +22,6 @@ import {
   getListAutoField,
   addCustomEmail,
   getListCustomEmailOnboarding,
-  getListDefaultCustomEmailByCompany,
   getListCustomEmailOffboarding,
   getCustomEmailInfo,
   deleteCustomEmailItem,
@@ -74,7 +73,11 @@ const employeeSetting = {
   effects: {
     *fetchFormOffBoardingList({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getFormOffBoardingList, payload);
+        const response = yield call(getFormOffBoardingList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -178,7 +181,11 @@ const employeeSetting = {
 
     *fetchDefaultTemplateListOnboarding({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getDefaultTemplateList, payload);
+        const response = yield call(getDefaultTemplateList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
@@ -197,7 +204,11 @@ const employeeSetting = {
     },
     *fetchCustomTemplateListOnboarding({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getCustomTemplateList, payload);
+        const response = yield call(getCustomTemplateList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -213,7 +224,11 @@ const employeeSetting = {
     },
     *fetchDefaultTemplateListOffboarding({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getDefaultTemplateList, payload);
+        const response = yield call(getDefaultTemplateList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
@@ -231,7 +246,11 @@ const employeeSetting = {
     },
     *fetchCustomTemplateListOffboarding({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getCustomTemplateList, payload);
+        const response = yield call(getCustomTemplateList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -250,7 +269,11 @@ const employeeSetting = {
 
     *fetchTemplateById({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getTemplateById, payload);
+        const response = yield call(getTemplateById, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
@@ -261,8 +284,12 @@ const employeeSetting = {
     },
     *removeTemplateById({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(removeTemplate, payload);
-        console.log(payload);
+        const response = yield call(removeTemplate, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        console.log({ ...payload, company: getCurrentCompany(), tenantId: getCurrentTenant() });
         const { statusCode, data } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
@@ -279,7 +306,11 @@ const employeeSetting = {
     *uploadFile({ payload, isUploadSignature = false }, { call, put }) {
       let response = {};
       try {
-        response = yield call(uploadSignature, payload);
+        response = yield call(uploadSignature, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         console.log('data', data);
         if (statusCode !== 200) throw response;
@@ -324,7 +355,11 @@ const employeeSetting = {
     },
     *fetchOptionalQuestions({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getOptionalQuestions, payload);
+        const response = yield call(getOptionalQuestions, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
@@ -338,7 +373,11 @@ const employeeSetting = {
     },
     *updateOptionalQuestions({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(updateOptionalQuestions, payload);
+        const response = yield call(updateOptionalQuestions, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -352,7 +391,11 @@ const employeeSetting = {
     *saveOptionalQuestions({ payload = {} }, { call, put }) {
       let response = {};
       try {
-        response = yield call(saveOptionalQuestions, payload);
+        response = yield call(saveOptionalQuestions, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
@@ -365,9 +408,13 @@ const employeeSetting = {
       }
       return response;
     },
-    *fetchTriggerEventList(_, { call, put }) {
+    *fetchTriggerEventList({ payload }, { call, put }) {
       try {
-        const response = yield call(getTriggerEventList);
+        const response = yield call(getTriggerEventList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { triggerEventList: data } });
@@ -378,7 +425,11 @@ const employeeSetting = {
     *fetchLocationList({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getLocationList, payload);
+        response = yield call(getLocationList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { locationList: data } });
@@ -423,7 +474,11 @@ const employeeSetting = {
     *fetchEmployeeTypeList({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getEmployeeTypeList, payload);
+        response = yield call(getEmployeeTypeList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { employeeTypeList: data } });
@@ -436,7 +491,11 @@ const employeeSetting = {
     *fetchDepartmentListByCompanyId({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getDepartmentList, payload);
+        response = yield call(getDepartmentList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -464,7 +523,11 @@ const employeeSetting = {
     *addCustomEmail({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(addCustomEmail, payload);
+        response = yield call(addCustomEmail, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -484,7 +547,11 @@ const employeeSetting = {
     *fetchListCustomEmailOnboarding({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getListCustomEmailOnboarding, payload);
+        response = yield call(getListCustomEmailOnboarding, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listCustomEmailOnboarding: data } });
@@ -493,22 +560,26 @@ const employeeSetting = {
       }
       return response;
     },
-    *fetchListDefaultCustomEmailByCompany({ payload = {} }, { call, put }) {
-      let response;
-      try {
-        response = yield call(getListDefaultCustomEmailByCompany, payload);
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listDefaultCustomEmailOnboarding: data } });
-      } catch (errors) {
-        dialog(errors);
-      }
-      return response;
-    },
+    // *fetchListDefaultCustomEmailByCompany({ payload = {} }, { call, put }) {
+    //   let response;
+    //   try {
+    //     response = yield call(getListDefaultCustomEmailByCompany, {...payload, company: getCurrentCompany(), tenantId: getCurrentTenant()});
+    //     const { statusCode, data } = response;
+    //     if (statusCode !== 200) throw response;
+    //     yield put({ type: 'save', payload: { listDefaultCustomEmailOnboarding: data } });
+    //   } catch (errors) {
+    //     dialog(errors);
+    //   }
+    //   return response;
+    // },
     *fetchListCustomEmailOffboarding({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getListCustomEmailOffboarding, payload);
+        response = yield call(getListCustomEmailOffboarding, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listCustomEmailOffboarding: data } });
@@ -521,7 +592,11 @@ const employeeSetting = {
     *fetchEmailCustomInfo({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getCustomEmailInfo, payload);
+        response = yield call(getCustomEmailInfo, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { data: emailCustomData, statusCode } = response;
         yield put({ type: 'save', payload: { emailCustomData } });
         if (statusCode !== 200) throw response;
@@ -533,7 +608,11 @@ const employeeSetting = {
     *deleteCustomEmailItem({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(deleteCustomEmailItem, payload);
+        response = yield call(deleteCustomEmailItem, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -555,7 +634,11 @@ const employeeSetting = {
     },
     *updateCustomEmail({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(updateCustomEmail, payload);
+        const response = yield call(updateCustomEmail, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
