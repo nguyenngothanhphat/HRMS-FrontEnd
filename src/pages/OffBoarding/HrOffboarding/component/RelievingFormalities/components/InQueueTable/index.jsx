@@ -41,7 +41,7 @@ class InQueueTable extends PureComponent {
       this.updateData(inQueuesList);
     }
 
-    if (dataSearch) {
+    if (JSON.stringify(dataSearch) !== JSON.stringify(prevProps.dataSearch)) {
       this.onSearch(dataSearch);
     }
   }
