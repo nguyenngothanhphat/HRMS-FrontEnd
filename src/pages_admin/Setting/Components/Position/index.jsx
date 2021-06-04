@@ -1,14 +1,17 @@
 import { DeleteOutlined, PlusCircleFilled } from '@ant-design/icons';
 import { connect } from 'umi';
-import { Input, Spin, Table } from 'antd';
+import { Input, Select, Spin, Table } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import React, { PureComponent } from 'react';
 import styles from './index.less';
 
-@connect(({ loading, adminSetting: { tempData: { listTitle = [] } = {} } = {} }) => ({
-  loading: loading.effects['adminSetting/fetchListTitle'],
-  listTitle,
-}))
+@connect(
+  ({ loading, adminSetting: { tempData: { listTitle = [], department = [] } = {} } = {} }) => ({
+    loading: loading.effects['adminSetting/fetchListTitle'],
+    listTitle,
+    department,
+  }),
+)
 class Position extends PureComponent {
   constructor(props) {
     super(props);
@@ -18,6 +21,7 @@ class Position extends PureComponent {
       testReord: {},
       data: [],
       newValue: '',
+      department: '',
     };
   }
 
@@ -96,19 +100,20 @@ class Position extends PureComponent {
     this.setState({ newValue: value });
   };
 
-  handleAddNewValue = (newValue) => {
+  handleAddNewValue = () => {
+    const { department, newValue } = this.state;
     const { dispatch } = this.props;
     if (newValue === '') return;
     dispatch({
       type: 'adminSetting/addPosition',
-      payload: { name: newValue },
+      payload: { name: newValue, department },
     });
     this.setState({ newValue: '' });
   };
 
   render() {
-    const { selectedRowKeys, visible, testReord, data, newValue } = this.state;
-    const { loading } = this.props;
+    const { selectedRowKeys, visible, testReord, data, newValue, department } = this.state;
+    const { loading, department: departmentList = [] } = this.props;
     if (loading)
       return (
         <div className={styles.Position}>
@@ -141,14 +146,33 @@ class Position extends PureComponent {
           record.PositionID !== '' ? (
             <DeleteOutlined onClick={() => this.handleClickDelete(text, record)} />
           ) : (
-            <PlusCircleFilled onClick={() => this.handleAddNewValue(newValue)} />
+            <PlusCircleFilled onClick={() => this.handleAddNewValue()} />
           ),
         align: 'center',
       },
     ];
     const add = {
       PositionID: '',
-      PositionName: <Input onChange={this.handleChangeValue} value={newValue} />,
+      PositionName: (
+        <>
+          <Select
+            onChange={(value) => {
+              this.setState({ department: value });
+            }}
+            placeholder="Select department"
+          >
+            {departmentList.map((d) => (
+              <Select.Option value={d._id}>{d.name}</Select.Option>
+            ))}
+          </Select>
+          <Input
+            disabled={!department}
+            placeholder="Position Name"
+            onChange={this.handleChangeValue}
+            value={newValue}
+          />
+        </>
+      ),
     };
 
     const renderAdd = [...data, add];
