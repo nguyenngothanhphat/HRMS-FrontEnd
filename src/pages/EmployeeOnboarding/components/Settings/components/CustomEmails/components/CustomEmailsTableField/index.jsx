@@ -1,13 +1,11 @@
 /* eslint-disable no-console */
-import React, { PureComponent } from 'react';
-import { Table, Spin, Tooltip, Skeleton, Tabs } from 'antd';
-import { formatMessage, connect, Link, history } from 'umi';
-import moment from 'moment';
-import CustomEmailImage from '@/assets/customEmail.svg';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import FileIcon from './images/doc.svg';
+import { Table, Tabs, Tooltip } from 'antd';
+import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { connect, formatMessage, history, Link } from 'umi';
 import DeleteIcon from './images/delete.svg';
-
+import FileIcon from './images/doc.svg';
 import styles from './index.less';
 
 @connect(
@@ -49,7 +47,6 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   fetchData = async (tabId) => {
-    console.log('tabId', tabId);
     const { dispatch } = this.props;
     this.setState({
       activeKey: tabId,
@@ -110,6 +107,7 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   _renderColumns = () => {
+    const { activeKey } = this.state;
     const columns = [
       {
         title: formatMessage({ id: 'component.customEmailsTableField.emailSubject' }),
@@ -160,13 +158,15 @@ class CustomEmailsTableField extends PureComponent {
           return (
             <div className={styles.actions}>
               <Link to={`/employee-onboarding/edit-email/${idCustomEmail}`}>View mail</Link>
-              <Tooltip title="Delete">
-                <img
-                  src={DeleteIcon}
-                  alt="delete"
-                  onClick={() => this.handleActionDelete(idCustomEmail)}
-                />
-              </Tooltip>
+              {activeKey !== '1' && (
+                <Tooltip title="Delete">
+                  <img
+                    src={DeleteIcon}
+                    alt="delete"
+                    onClick={() => this.handleActionDelete(idCustomEmail)}
+                  />
+                </Tooltip>
+              )}
             </div>
           );
         },
@@ -179,26 +179,14 @@ class CustomEmailsTableField extends PureComponent {
     history.push('/employee-onboarding/create-email-reminder');
   };
 
-  render() {
-    const {
-      listCustomEmailOnboarding,
-      listDefaultCustomEmailOnboarding,
-      loadingFetchList,
-    } = this.props;
-    const { pageSelected, activeKey } = this.state;
+  _renderTable = (list) => {
+    const { listCustomEmailOnboarding, loadingFetchList } = this.props;
+    const { pageSelected } = this.state;
     const rowSize = 5;
-
-    // const scroll = {
-    //   x: '100vw',
-    //   y: 'max-content',
-    // };
 
     const pagination = {
       position: ['bottomRight'],
-      total:
-        activeKey === '1'
-          ? listDefaultCustomEmailOnboarding.length
-          : listCustomEmailOnboarding.length,
+      total: list.length,
       showTotal: (total, range) => (
         <span>
           {' '}
@@ -213,6 +201,30 @@ class CustomEmailsTableField extends PureComponent {
       current: pageSelected,
       onChange: this.onChangePagination,
     };
+    return (
+      <Table
+        dataSource={this._renderData(list)}
+        columns={this._renderColumns()}
+        size="middle"
+        loading={loadingFetchList}
+        onRow={(record) => {
+          return {
+            onMouseEnter: () => this.handleClickCustomEmail(record), // click row
+          };
+        }}
+        rowKey={(record) => record._id}
+        pagination={
+          listCustomEmailOnboarding.length > rowSize
+            ? { ...pagination, total: listCustomEmailOnboarding.length }
+            : false
+        }
+      />
+    );
+  };
+
+  render() {
+    const { listCustomEmailOnboarding } = this.props;
+    const { activeKey } = this.state;
 
     return (
       <div className={styles.CustomEmailsTableField}>
@@ -235,44 +247,12 @@ class CustomEmailsTableField extends PureComponent {
         <Tabs onTabClick={this.fetchData} activeKey={activeKey}>
           <Tabs.TabPane tab="System Default Emails" key="1">
             <div className={styles.CustomEmailsTableField_table}>
-              <Table
-                dataSource={this._renderData(listDefaultCustomEmailOnboarding)}
-                columns={this._renderColumns()}
-                size="middle"
-                loading={loadingFetchList}
-                onRow={(record) => {
-                  return {
-                    onMouseEnter: () => this.handleClickCustomEmail(record), // click row
-                  };
-                }}
-                rowKey={(record) => record._id}
-                pagination={
-                  listDefaultCustomEmailOnboarding.length > rowSize
-                    ? { ...pagination, total: listDefaultCustomEmailOnboarding.length }
-                    : false
-                }
-              />
+              {this._renderTable(listCustomEmailOnboarding)}
             </div>
           </Tabs.TabPane>
           <Tabs.TabPane tab="Custom Emails" key="2">
             <div className={styles.CustomEmailsTableField_table}>
-              <Table
-                dataSource={this._renderData(listCustomEmailOnboarding)}
-                columns={this._renderColumns()}
-                size="middle"
-                loading={loadingFetchList}
-                onRow={(record) => {
-                  return {
-                    onMouseEnter: () => this.handleClickCustomEmail(record), // click row
-                  };
-                }}
-                rowKey={(record) => record._id}
-                pagination={
-                  listCustomEmailOnboarding.length > rowSize
-                    ? { ...pagination, total: listCustomEmailOnboarding.length }
-                    : false
-                }
-              />
+              {this._renderTable(listCustomEmailOnboarding)}
             </div>
           </Tabs.TabPane>
         </Tabs>
