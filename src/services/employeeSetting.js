@@ -63,9 +63,10 @@ export async function updateOptionalQuestions(payload) {
   });
 }
 
-export async function getTriggerEventList() {
+export async function getTriggerEventList(payload) {
   return request('/api/customemailtenant/list-trigger-event', {
     method: 'POST',
+    data: payload,
   });
 }
 
@@ -110,21 +111,21 @@ export async function addCustomEmail(payload) {
 }
 
 export async function getListCustomEmailOnboarding(payload) {
-  return request('/api/customemailtenant/list-active', {
+  return request('/api/customemailtenant/list', {
     method: 'POST',
     data: payload,
   });
 }
 
-export async function getListDefaultCustomEmailByCompany(payload) {
-  return request('api/customemailtenant/get-default-by-company ', {
-    method: 'POST',
-    data: payload,
-  });
-}
+// export async function getListDefaultCustomEmailByCompany(payload) {
+//   return request('api/customemailtenant/get-default-by-company', {
+//     method: 'POST',
+//     data: payload,
+//   });
+// }
 
 export async function getListCustomEmailOffboarding(payload) {
-  return request('/api/customemailtenant/list-active', {
+  return request('/api/customemailtenant/list', {
     method: 'POST',
     data: payload,
   });
@@ -148,5 +149,42 @@ export async function updateCustomEmail(payload) {
   return request('/api/customemailtenant/update', {
     method: 'POST',
     data: payload,
+  });
+}
+
+/** ================== Form off boarding */
+
+export async function getFormOffBoardingList(payload) {
+  return request('/api/formoffboardingtenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getFormOffBoardingById(payload) {
+  return request('/api/formoffboardingtenant/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function addFormOffBoarding(payload) {
+  return request('/api/formoffboardingtenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateFormOffBoarding(payload) {
+  return request('/api/formoffboardingtenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function removeFormOffBoardingById(data) {
+  return request('/api/formoffboardingtenant/remove', {
+    method: 'POST',
+    data,
   });
 }

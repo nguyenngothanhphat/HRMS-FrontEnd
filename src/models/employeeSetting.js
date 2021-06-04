@@ -3,6 +3,7 @@
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
+import { history } from 'umi';
 import {
   getDefaultTemplateList,
   getCustomTemplateList,
@@ -21,11 +22,16 @@ import {
   getListAutoField,
   addCustomEmail,
   getListCustomEmailOnboarding,
-  getListDefaultCustomEmailByCompany,
   getListCustomEmailOffboarding,
   getCustomEmailInfo,
   deleteCustomEmailItem,
   updateCustomEmail,
+  // form off boarding
+  getFormOffBoardingList,
+  getFormOffBoardingById,
+  updateFormOffBoarding,
+  addFormOffBoarding,
+  removeFormOffBoardingById,
 } from '../services/employeeSetting';
 
 const employeeSetting = {
@@ -58,11 +64,128 @@ const employeeSetting = {
     listDefaultCustomEmailOnboarding: [],
     listCustomEmailOffboarding: [],
     emailCustomData: {},
+    // form off boarding
+    formOffBoardingList: [],
+    currentFormOffBoarding: {
+      settings: [],
+    },
   },
   effects: {
+    *fetchFormOffBoardingList({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getFormOffBoardingList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            formOffBoardingList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getFormOffBoardingById({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getFormOffBoardingById, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            currentFormOffBoarding: {
+              ...data[0],
+              department: data[0]?.department?._id,
+              departmentName: data[0]?.department?.name,
+            },
+          },
+        });
+
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return 0;
+      }
+    },
+    *removeFormOffBoardingById({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(removeFormOffBoardingById, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Remove form successfully',
+        });
+
+        yield put({ type: 'saveRemoveFormOffBoardingById', payload: data });
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return 0;
+      }
+    },
+
+    *addFormOffBoarding({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(addFormOffBoarding, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { currentFormOffBoarding: data } });
+        notification.success({
+          message: 'Add new custom form successfully',
+        });
+        history.push(`/offboarding/forms/${data._id}/view`);
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return 0;
+      }
+    },
+
+    *updateFormOffBoarding({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(updateFormOffBoarding, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { currentFormOffBoarding: data } });
+        notification.success({
+          message: 'Update form successfully',
+        });
+        history.push(`/offboarding/forms/${data._id}/view`);
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return 0;
+      }
+    },
+
     *fetchDefaultTemplateListOnboarding({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getDefaultTemplateList, payload);
+        const response = yield call(getDefaultTemplateList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
@@ -81,7 +204,11 @@ const employeeSetting = {
     },
     *fetchCustomTemplateListOnboarding({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getCustomTemplateList, payload);
+        const response = yield call(getCustomTemplateList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -97,7 +224,11 @@ const employeeSetting = {
     },
     *fetchDefaultTemplateListOffboarding({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getDefaultTemplateList, payload);
+        const response = yield call(getDefaultTemplateList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
@@ -115,7 +246,11 @@ const employeeSetting = {
     },
     *fetchCustomTemplateListOffboarding({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getCustomTemplateList, payload);
+        const response = yield call(getCustomTemplateList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -134,7 +269,11 @@ const employeeSetting = {
 
     *fetchTemplateById({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getTemplateById, payload);
+        const response = yield call(getTemplateById, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
@@ -145,8 +284,12 @@ const employeeSetting = {
     },
     *removeTemplateById({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(removeTemplate, payload);
-        console.log(payload);
+        const response = yield call(removeTemplate, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        console.log({ ...payload, company: getCurrentCompany(), tenantId: getCurrentTenant() });
         const { statusCode, data } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
@@ -163,7 +306,11 @@ const employeeSetting = {
     *uploadFile({ payload, isUploadSignature = false }, { call, put }) {
       let response = {};
       try {
-        response = yield call(uploadSignature, payload);
+        response = yield call(uploadSignature, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         console.log('data', data);
         if (statusCode !== 200) throw response;
@@ -208,7 +355,11 @@ const employeeSetting = {
     },
     *fetchOptionalQuestions({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getOptionalQuestions, payload);
+        const response = yield call(getOptionalQuestions, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
@@ -222,7 +373,11 @@ const employeeSetting = {
     },
     *updateOptionalQuestions({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(updateOptionalQuestions, payload);
+        const response = yield call(updateOptionalQuestions, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -236,7 +391,11 @@ const employeeSetting = {
     *saveOptionalQuestions({ payload = {} }, { call, put }) {
       let response = {};
       try {
-        response = yield call(saveOptionalQuestions, payload);
+        response = yield call(saveOptionalQuestions, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode } = response;
         console.log(response);
         if (statusCode !== 200) throw response;
@@ -249,9 +408,13 @@ const employeeSetting = {
       }
       return response;
     },
-    *fetchTriggerEventList(_, { call, put }) {
+    *fetchTriggerEventList({ payload }, { call, put }) {
       try {
-        const response = yield call(getTriggerEventList);
+        const response = yield call(getTriggerEventList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { triggerEventList: data } });
@@ -262,7 +425,11 @@ const employeeSetting = {
     *fetchLocationList({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getLocationList, payload);
+        response = yield call(getLocationList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { locationList: data } });
@@ -307,7 +474,11 @@ const employeeSetting = {
     *fetchEmployeeTypeList({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getEmployeeTypeList, payload);
+        response = yield call(getEmployeeTypeList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { employeeTypeList: data } });
@@ -320,7 +491,11 @@ const employeeSetting = {
     *fetchDepartmentListByCompanyId({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getDepartmentList, payload);
+        response = yield call(getDepartmentList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -348,7 +523,11 @@ const employeeSetting = {
     *addCustomEmail({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(addCustomEmail, payload);
+        response = yield call(addCustomEmail, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -368,7 +547,11 @@ const employeeSetting = {
     *fetchListCustomEmailOnboarding({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getListCustomEmailOnboarding, payload);
+        response = yield call(getListCustomEmailOnboarding, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listCustomEmailOnboarding: data } });
@@ -377,22 +560,26 @@ const employeeSetting = {
       }
       return response;
     },
-    *fetchListDefaultCustomEmailByCompany({ payload = {} }, { call, put }) {
-      let response;
-      try {
-        response = yield call(getListDefaultCustomEmailByCompany, payload);
-        const { statusCode, data } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listDefaultCustomEmailOnboarding: data } });
-      } catch (errors) {
-        dialog(errors);
-      }
-      return response;
-    },
+    // *fetchListDefaultCustomEmailByCompany({ payload = {} }, { call, put }) {
+    //   let response;
+    //   try {
+    //     response = yield call(getListDefaultCustomEmailByCompany, {...payload, company: getCurrentCompany(), tenantId: getCurrentTenant()});
+    //     const { statusCode, data } = response;
+    //     if (statusCode !== 200) throw response;
+    //     yield put({ type: 'save', payload: { listDefaultCustomEmailOnboarding: data } });
+    //   } catch (errors) {
+    //     dialog(errors);
+    //   }
+    //   return response;
+    // },
     *fetchListCustomEmailOffboarding({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getListCustomEmailOffboarding, payload);
+        response = yield call(getListCustomEmailOffboarding, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listCustomEmailOffboarding: data } });
@@ -405,7 +592,11 @@ const employeeSetting = {
     *fetchEmailCustomInfo({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getCustomEmailInfo, payload);
+        response = yield call(getCustomEmailInfo, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { data: emailCustomData, statusCode } = response;
         yield put({ type: 'save', payload: { emailCustomData } });
         if (statusCode !== 200) throw response;
@@ -417,7 +608,11 @@ const employeeSetting = {
     *deleteCustomEmailItem({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(deleteCustomEmailItem, payload);
+        response = yield call(deleteCustomEmailItem, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -439,7 +634,11 @@ const employeeSetting = {
     },
     *updateCustomEmail({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(updateCustomEmail, payload);
+        const response = yield call(updateCustomEmail, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -460,6 +659,20 @@ const employeeSetting = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    // remove form item by id
+    saveRemoveFormOffBoardingById(state, action) {
+      const { _id } = action.payload;
+      const { formOffBoardingList } = state;
+      const indexOfForm = formOffBoardingList.findIndex((item) => item._id === _id);
+
+      return {
+        ...state,
+        formOffBoardingList: [
+          ...formOffBoardingList.slice(0, indexOfForm),
+          ...formOffBoardingList.slice(indexOfForm + 1),
+        ],
       };
     },
     saveTemplate(state, action) {

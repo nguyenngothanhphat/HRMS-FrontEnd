@@ -1,12 +1,11 @@
-import React, { Component } from 'react';
-import { Table, Empty, message } from 'antd';
-import { formatMessage, connect, history } from 'umi';
+import { Empty, Table } from 'antd';
 import moment from 'moment';
-import axios from 'axios';
-import DownloadIcon from './images/download.svg';
-// import EditIcon from './images/edit.svg';
+import React, { Component } from 'react';
+import { connect, formatMessage, history } from 'umi';
 import DeleteIcon from './images/delete.svg';
 import DocIcon from './images/doc.svg';
+import DownloadIcon from './images/download.svg';
+import EditIcon from './images/edit.svg';
 import styles from './index.less';
 
 class TemplateTable extends Component {
@@ -19,23 +18,32 @@ class TemplateTable extends Component {
     const columns = [
       {
         title: 'Template Name',
-        dataIndex: 'fileInfo',
-        key: 'fileInfo',
+        dataIndex: 'formInfo',
+        key: 'formInfo',
         width: '20%',
-        render: (fileInfo) => {
+        render: (formInfo) => {
           return (
-            <div className={styles.fileName} onClick={() => this.viewTemplateDetail(fileInfo?._id)}>
+            <div className={styles.fileName} onClick={() => this.viewTemplateDetail(formInfo?._id)}>
               <img src={DocIcon} alt="name" />
-              <span>{fileInfo?.title}</span>
+              <span>{formInfo.name}</span>
             </div>
           );
         },
       },
       {
-        title: 'Type',
-        dataIndex: 'type',
+        title: 'Department',
+        dataIndex: 'department',
+        key: 'department',
+        width: '20%',
+        render: (department) => {
+          return <span>{department.name}</span>;
+        },
+      },
+      {
+        title: 'Description',
+        dataIndex: 'description',
         key: 'type',
-        width: '40%',
+        width: '20%',
       },
       {
         title: 'Created At',
@@ -47,19 +55,28 @@ class TemplateTable extends Component {
         },
       },
       {
+        title: 'Status',
+        dataIndex: 'status',
+        key: 'status',
+        width: '20%',
+        render: (status) => {
+          return <span>{status}</span>;
+        },
+      },
+      {
         title: 'Actions',
-        dataIndex: 'fileInfo',
+        dataIndex: 'formInfo',
         key: 'actions',
-        render: (fileInfo) => {
+        render: (formInfo) => {
           return (
             <div className={styles.actionsButton}>
               <img
                 src={DownloadIcon}
-                onClick={() => this.onDownload(fileInfo?.url)}
+                onClick={() => this.onDownload(formInfo?.url)}
                 alt="download"
               />
-              {/* <img src={EditIcon} onClick={() => this.onEdit(fileInfo?._id)} alt="edit" /> */}
-              <img src={DeleteIcon} onClick={() => this.onDelete(fileInfo?._id)} alt="delete" />
+              <img src={EditIcon} onClick={() => this.onEdit(formInfo?._id)} alt="edit" />
+              <img src={DeleteIcon} onClick={() => this.onDelete(formInfo?._id)} alt="delete" />
             </div>
           );
         },
@@ -71,48 +88,42 @@ class TemplateTable extends Component {
 
   // ACTIONS
   onDownload = (url) => {
-    const fileName = url.split('/').pop();
-    message.loading('Downloading file. Please wait...');
-    axios({
-      url,
-      method: 'GET',
-      responseType: 'blob',
-    }).then((resp) => {
-      // eslint-disable-next-line compat/compat
-      const urlDownload = window.URL.createObjectURL(new Blob([resp.data]));
-      const link = document.createElement('a');
-      link.href = urlDownload;
-      link.setAttribute('download', fileName);
-      document.body.appendChild(link);
-      link.click();
-    });
-  };
-
-  onEdit = () => {
     // eslint-disable-next-line no-alert
-    alert('Edit');
+    alert(`download${url}`);
+    // const fileName = url.split('/').pop();
+    // message.loading('Downloading file. Please wait...');
+    // axios({
+    //   url,
+    //   method: 'GET',
+    //   responseType: 'blob',
+    // }).then((resp) => {
+    //   // eslint-disable-next-line compat/compat
+    //   const urlDownload = window.URL.createObjectURL(new Blob([resp.data]));
+    //   const link = document.createElement('a');
+    //   link.href = urlDownload;
+    //   link.setAttribute('download', fileName);
+    //   document.body.appendChild(link);
+    //   link.click();
+    // });
   };
 
-  onDelete = async (id) => {
+  onEdit = (id) => {
+    // eslint-disable-next-line no-alert
+    history.push(`offboarding/forms/${id}/edit`);
+  };
+
+  onDelete = (id) => {
     const { dispatch } = this.props;
-    const statusCode = await dispatch({
-      type: 'employeeSetting/removeTemplateById',
+    dispatch({
+      type: 'employeeSetting/removeFormOffBoardingById',
       payload: {
         id,
       },
     });
-    if (statusCode === 200) {
-      dispatch({
-        type: 'employeeSetting/fetchDefaultTemplateListOffboarding',
-      });
-      dispatch({
-        type: 'employeeSetting/fetchCustomTemplateListOffboarding',
-      });
-    }
   };
 
   viewTemplateDetail = (id) => {
-    history.push(`/offboarding-template-details/${id}`);
+    history.push(`/offboarding/forms/${id}/view`);
   };
 
   onChangePagination = (pageNumber) => {
@@ -126,8 +137,11 @@ class TemplateTable extends Component {
     return list.map((value) => {
       return {
         ...value,
-        fileInfo: {
-          title: value.title || '',
+        department: {
+          name: value?.department?.name || '',
+        },
+        formInfo: {
+          name: value.name || '',
           _id: value._id || '',
           url: value.attachment?.url || '',
         },

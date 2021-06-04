@@ -209,14 +209,8 @@ class EmailReminderForm extends PureComponent {
       return item;
     });
 
-    const {
-      triggerEvent,
-      _sendingDate,
-      appliesToData,
-      recipient,
-      emailSubject,
-      messages,
-    } = this.state;
+    const { triggerEvent, _sendingDate, appliesToData, recipient, emailSubject, messages } =
+      this.state;
 
     if (
       triggerEvent.trim() !== '' &&
@@ -254,7 +248,10 @@ class EmailReminderForm extends PureComponent {
 
     dispatch({
       type: 'employeeSetting/fetchTriggerEventList',
-      payload: {},
+      payload: {
+        type: 'ON-BOARDING',
+        tenantId: getCurrentTenant(),
+      },
     });
     dispatch({
       type: 'employeeSetting/fetchListAutoField',

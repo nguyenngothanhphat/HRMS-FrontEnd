@@ -6,14 +6,15 @@ export async function getListRoles() {
   });
 }
 
-export async function getListTitle() {
-  return request('/api/title/list', {
+export async function getListTitle(payload) {
+  return request('/api/titletenant/list', {
     method: 'POST',
+    data: payload,
   });
 }
 
 export async function removeTitle(payload) {
-  return request('/api/title/remove', {
+  return request('/api/titletenant/remove', {
     method: 'POST',
     data: payload,
   });
@@ -39,28 +40,29 @@ export async function getPermissionByIdRole(payload) {
   });
 }
 
-export async function DepartmentFilter() {
-  return request('/api/department/list', {
+export async function DepartmentFilter(payload) {
+  return request('/api/departmenttenant/list', {
     method: 'POST',
+    data: payload,
   });
 }
 
 export async function addPosition(payload) {
-  return request('/api/title/add', {
+  return request('/api/titletenant/add', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function addDepartment(payload) {
-  return request('/api/department/add', {
+  return request('/api/departmenttenant/add', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function removeDepartment(payload) {
-  return request('/api/department/remove', {
+  return request('/api/departmenttenant/remove', {
     method: 'POST',
     data: payload,
   });
