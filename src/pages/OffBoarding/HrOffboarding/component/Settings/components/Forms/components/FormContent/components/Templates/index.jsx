@@ -85,12 +85,12 @@ class Templates extends PureComponent {
           <Tabs
             defaultActiveKey="1"
             onTabClick={this.fetchData}
-            tabBarExtraContent={this.operations()}
+            // tabBarExtraContent={this.operations()}
           >
-            <TabPane tab="System Default Form" key="1">
+            <TabPane tab="System Default Forms" key="1">
               <SystemDefault list={list} loading={loading} />
             </TabPane>
-            <TabPane tab="Custom Form created" key="2">
+            <TabPane tab="Custom created" key="2">
               <Custom list={list} loading={loading} />
             </TabPane>
           </Tabs>

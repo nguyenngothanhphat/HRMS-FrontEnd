@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import React, { PureComponent } from 'react';
-import { Table, Spin, Tooltip } from 'antd';
+import { Table, Spin, Tooltip, Tabs } from 'antd';
 import { formatMessage, connect, Link, history } from 'umi';
 import moment from 'moment';
 import CustomEmailImage from '@/assets/customEmail.svg';
@@ -14,6 +14,7 @@ import styles from './index.less';
     dataSubmit,
     listCustomEmailOffboarding,
     loading: loading.effects['employeeSetting/deleteCustomEmailItem'],
+    loadingFetchList: loading.effects['employeeSetting/fetchListCustomEmailOffboarding'],
   }),
 )
 class CustomEmailsTableField extends PureComponent {
@@ -22,6 +23,7 @@ class CustomEmailsTableField extends PureComponent {
     this.state = {
       pageSelected: 1,
       currentRecord: {},
+      activeKey: '1',
     };
   }
 
@@ -37,24 +39,33 @@ class CustomEmailsTableField extends PureComponent {
     });
   };
 
-  componentDidMount = () => {
+  fetchData = async (tabId) => {
     const { dispatch } = this.props;
+    this.setState({
+      activeKey: tabId,
+    });
 
-    dispatch({
+    await dispatch({
       type: 'employeeSetting/fetchListCustomEmailOffboarding',
-      payload: {},
+      payload: {
+        type: 'OFF-BOARDING',
+        isDefault: tabId === '1',
+      },
     });
   };
 
-  _renderData = () => {
-    const { listCustomEmailOffboarding } = this.props;
-    const cloneListEmail = [...listCustomEmailOffboarding];
-    const newlistCustomEmailOffboarding = [];
+  componentDidMount = () => {
+    this.fetchData('1');
+  };
+
+  _renderData = (list) => {
+    const cloneListEmail = [...list];
+    const newList = [];
 
     cloneListEmail.reverse().forEach((item) => {
       const formatDate = `${moment(item.createdAt).locale('en').format('MM.DD.YY')}`;
 
-      newlistCustomEmailOffboarding.push({
+      newList.push({
         idCustomEmail: item._id,
         emailSubject: item.subject !== undefined ? item.subject : 'Onboarding email',
         createdOn: formatDate !== undefined ? formatDate : '08.24.20',
@@ -65,7 +76,7 @@ class CustomEmailsTableField extends PureComponent {
       });
     });
 
-    return newlistCustomEmailOffboarding;
+    return newList;
   };
 
   refreshPage = () => {
@@ -79,11 +90,14 @@ class CustomEmailsTableField extends PureComponent {
     }
     dispatch({
       type: 'employeeSetting/deleteCustomEmailItem',
-      payload: customEmailId,
+      payload: {
+        id: customEmailId,
+      },
     });
   };
 
   _renderColumns = () => {
+    const { activeKey } = this.state;
     const columns = [
       {
         title: formatMessage({ id: 'component.customEmailsTableField.emailSubject' }),
@@ -134,13 +148,15 @@ class CustomEmailsTableField extends PureComponent {
           return (
             <div className={styles.actions}>
               <Link to={`/offboarding/edit-email/${idCustomEmail}`}>View mail</Link>
-              <Tooltip title="Delete">
-                <img
-                  src={DeleteIcon}
-                  alt="delete"
-                  onClick={() => this.handleActionDelete(idCustomEmail)}
-                />
-              </Tooltip>
+              {activeKey !== '1' && (
+                <Tooltip title="Delete">
+                  <img
+                    src={DeleteIcon}
+                    alt="delete"
+                    onClick={() => this.handleActionDelete(idCustomEmail)}
+                  />
+                </Tooltip>
+              )}
             </div>
           );
         },
@@ -153,19 +169,14 @@ class CustomEmailsTableField extends PureComponent {
     history.push('/offboarding/create-custom-email');
   };
 
-  render() {
-    const { listCustomEmailOffboarding, loading } = this.props;
+  _renderTable = (list) => {
+    const { loadingFetchList } = this.props;
     const { pageSelected } = this.state;
     const rowSize = 5;
 
-    // const scroll = {
-    //   x: '100vw',
-    //   y: 'max-content',
-    // };
-
     const pagination = {
       position: ['bottomRight'],
-      total: listCustomEmailOffboarding.length,
+      total: list.length,
       showTotal: (total, range) => (
         <span>
           {' '}
@@ -181,57 +192,40 @@ class CustomEmailsTableField extends PureComponent {
       onChange: this.onChangePagination,
     };
     return (
+      <Table
+        dataSource={this._renderData(list)}
+        columns={this._renderColumns()}
+        size="middle"
+        loading={loadingFetchList}
+        onRow={(record) => {
+          return {
+            onMouseEnter: () => this.handleClickCustomEmail(record), // click row
+          };
+        }}
+        rowKey={(record) => record._id}
+        pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
+      />
+    );
+  };
+
+  render() {
+    const { listCustomEmailOffboarding } = this.props;
+    const { activeKey } = this.state;
+
+    return (
       <div className={styles.CustomEmailsTableField}>
-        {loading ? (
-          <div className={styles.CustomEmailsTableField_loading}>
-            <Spin size="large" />
-          </div>
-        ) : (
-          <div>
-            {listCustomEmailOffboarding.length === 0 ? (
-              <>
-                <div className={styles.emptyContainer}>
-                  <div className={styles.emptyImage}>
-                    <img src={CustomEmailImage} alt="custom-email" />
-                  </div>
-                  <div className={styles.texts}>
-                    <span className={styles.bigText}>Custom emails</span>
-                    <span className={styles.smallText}>
-                      Custom emails created by you will be shown here
-                    </span>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className={styles.CustomEmailsTableField_title}>
-                  <span className={styles.title}>
-                    {formatMessage({ id: 'component.customEmailsTableField.titleTable' })}
-                  </span>
-                </div>
-                <div className={styles.CustomEmailsTableField_table}>
-                  <Table
-                    dataSource={this._renderData()}
-                    columns={this._renderColumns()}
-                    size="middle"
-                    onRow={(record) => {
-                      return {
-                        onMouseEnter: () => this.handleClickCustomEmail(record), // click row
-                      };
-                    }}
-                    rowKey={(record) => record._id}
-                    pagination={
-                      listCustomEmailOffboarding.length > rowSize
-                        ? { ...pagination, total: listCustomEmailOffboarding.length }
-                        : false
-                    }
-                    scroll={{ y: 300 }}
-                  />
-                </div>
-              </>
-            )}
-          </div>
-        )}
+        <Tabs onTabClick={this.fetchData} activeKey={activeKey}>
+          <Tabs.TabPane tab="System Default Emails" key="1">
+            <div className={styles.CustomEmailsTableField_table}>
+              {this._renderTable(listCustomEmailOffboarding)}
+            </div>
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Custom Emails" key="2">
+            <div className={styles.CustomEmailsTableField_table}>
+              {this._renderTable(listCustomEmailOffboarding)}
+            </div>
+          </Tabs.TabPane>
+        </Tabs>
       </div>
     );
   }
