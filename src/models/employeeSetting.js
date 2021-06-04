@@ -3,6 +3,7 @@
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
+import { history } from 'umi';
 import {
   getDefaultTemplateList,
   getCustomTemplateList,
@@ -26,6 +27,12 @@ import {
   getCustomEmailInfo,
   deleteCustomEmailItem,
   updateCustomEmail,
+  // form off boarding
+  getFormOffBoardingList,
+  getFormOffBoardingById,
+  updateFormOffBoarding,
+  addFormOffBoarding,
+  removeFormOffBoardingById,
 } from '../services/employeeSetting';
 
 const employeeSetting = {
@@ -58,8 +65,117 @@ const employeeSetting = {
     listDefaultCustomEmailOnboarding: [],
     listCustomEmailOffboarding: [],
     emailCustomData: {},
+    // form off boarding
+    formOffBoardingList: [],
+    currentFormOffBoarding: {
+      settings: [],
+    },
   },
   effects: {
+    *fetchFormOffBoardingList({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getFormOffBoardingList, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            formOffBoardingList: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getFormOffBoardingById({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getFormOffBoardingById, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            currentFormOffBoarding: {
+              ...data[0],
+              department: data[0]?.department?._id,
+              departmentName: data[0]?.department?.name,
+            },
+          },
+        });
+
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return 0;
+      }
+    },
+    *removeFormOffBoardingById({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(removeFormOffBoardingById, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Remove form successfully',
+        });
+
+        yield put({ type: 'saveRemoveFormOffBoardingById', payload: data });
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return 0;
+      }
+    },
+
+    *addFormOffBoarding({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(addFormOffBoarding, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { currentFormOffBoarding: data } });
+        notification.success({
+          message: 'Add new custom form successfully',
+        });
+        history.push(`/offboarding/forms/${data._id}/view`);
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return 0;
+      }
+    },
+
+    *updateFormOffBoarding({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(updateFormOffBoarding, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { currentFormOffBoarding: data } });
+        notification.success({
+          message: 'Update form successfully',
+        });
+        history.push(`/offboarding/forms/${data._id}/view`);
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return 0;
+      }
+    },
+
     *fetchDefaultTemplateListOnboarding({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getDefaultTemplateList, payload);
@@ -460,6 +576,20 @@ const employeeSetting = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    // remove form item by id
+    saveRemoveFormOffBoardingById(state, action) {
+      const { _id } = action.payload;
+      const { formOffBoardingList } = state;
+      const indexOfForm = formOffBoardingList.findIndex((item) => item._id === _id);
+
+      return {
+        ...state,
+        formOffBoardingList: [
+          ...formOffBoardingList.slice(0, indexOfForm),
+          ...formOffBoardingList.slice(indexOfForm + 1),
+        ],
       };
     },
     saveTemplate(state, action) {

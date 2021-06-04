@@ -507,6 +507,27 @@ const routes = [
               './OffBoarding/HrOffboarding/component/Settings/components/DocsTemplates/components/TemplateDetails',
           },
           {
+            path: '/offboarding/forms/:id/view',
+            name: 'View form',
+            hideInMenu: true,
+            component:
+              './OffBoarding/HrOffboarding/component/Settings/components/Forms/components/ViewForm',
+          },
+          {
+            path: '/offboarding/forms/add',
+            name: 'Add custom form',
+            hideInMenu: true,
+            component:
+              './OffBoarding/HrOffboarding/component/Settings/components/Forms/components/HandleForm',
+          },
+          {
+            path: '/offboarding/forms/:id/edit',
+            name: 'Edit form',
+            hideInMenu: true,
+            component:
+              './OffBoarding/HrOffboarding/component/Settings/components/Forms/components/HandleForm',
+          },
+          {
             path: '/setting',
             name: 'setting',
             icon: '/assets/images/CP-icons_settings.svg',

@@ -11,6 +11,7 @@ export default function QuestionItemView({
   questionItem,
   keyQuestion,
   openModalEdit,
+  control = true,
 }) {
   const { answerType = '', question = '', defaultAnswers = [] } = questionItem;
 
@@ -58,26 +59,28 @@ export default function QuestionItemView({
         </div>
         <Col className={styles.questionItem__answer}>{_renderAnswer()}</Col>
       </Col>
-      <div className={styles.questionItem__manage}>
-        <Tooltip title="Edit question">
-          <Button
-            onClick={() => openModalEdit(questionItem)}
-            className={styles.questionItem__manage__edit}
-            shape="circle"
-            icon={<EditOutlined />}
-          />
-        </Tooltip>
-        <Tooltip title="Remove question">
-          <Button
-            className={styles.questionItem__manage__remove}
-            type="danger"
-            danger
-            shape="circle"
-            onClick={() => openModalRemove(questionItem)}
-            icon={<DeleteOutlined />}
-          />
-        </Tooltip>
-      </div>
+      {control && (
+        <div className={styles.questionItem__manage}>
+          <Tooltip title="Edit question">
+            <Button
+              onClick={() => openModalEdit(questionItem, keyQuestion)}
+              className={styles.questionItem__manage__edit}
+              shape="circle"
+              icon={<EditOutlined />}
+            />
+          </Tooltip>
+          <Tooltip title="Remove question">
+            <Button
+              className={styles.questionItem__manage__remove}
+              type="danger"
+              danger
+              shape="circle"
+              onClick={() => openModalRemove(questionItem, keyQuestion)}
+              icon={<DeleteOutlined />}
+            />
+          </Tooltip>
+        </div>
+      )}
     </Row>
   );
 }
