@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
+import FormContent from './components/FormContent';
 import FormsHeader from './components/FormsHeader';
-import Documents from './components/Documents';
 import styles from './index.less';
 
 class Forms extends PureComponent {
@@ -8,7 +8,7 @@ class Forms extends PureComponent {
     return (
       <div className={styles.Forms}>
         <FormsHeader />
-        <Documents />
+        <FormContent />
       </div>
     );
   }

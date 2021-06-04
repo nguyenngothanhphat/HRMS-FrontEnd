@@ -1,0 +1,38 @@
+.questionItem {
+  position: relative;
+  margin-top: 24px;
+  padding: 32px 24px;
+  background-color: #fff;
+  border: 1px solid #d6dce0;
+  border-radius: 5px;
+  &__manage {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    &__edit {
+      color: #ffa100;
+      border: 1px solid #ffa100;
+    }
+
+    &__remove {
+      margin-left: 10px;
+    }
+  }
+  &__question {
+    margin-bottom: 10px;
+    font-weight: 500;
+    font-size: 1.001rem;
+  }
+  &__answers {
+    position: relative;
+    display: flex !important;
+    align-items: center !important;
+    margin-top: 12px !important;
+
+    &__remove {
+      position: absolute;
+      right: -24px;
+      cursor: pointer;
+    }
+  }
+}
