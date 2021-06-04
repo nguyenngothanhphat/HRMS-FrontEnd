@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { history } from 'umi';
 import styles from './index.less';
 
 class FormsHeader extends PureComponent {
@@ -13,7 +14,7 @@ class FormsHeader extends PureComponent {
           </div>
         </div>
         <div className={styles.rightPart}>
-          <div className={styles.addButton}>
+          <div onClick={() => history.push('/offboarding/forms/add')} className={styles.addButton}>
             <span>Create a new form template</span>
           </div>
         </div>

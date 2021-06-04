@@ -1,11 +1,11 @@
 import CustomModal from '@/components/CustomModal';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { Button, Col, notification, Row } from 'antd';
-import React, { PureComponent } from 'react';
-import { connect, formatMessage } from 'umi';
+import ModalQuestionItem from '@/components/Question/ModalQuestionItem';
 import QuestionItemView from '@/components/Question/QuestionItemView';
 import TYPE_QUESTION from '@/components/Question/utils';
-import ModalQuestionItem from '@/components/Question/ModalQuestionItem';
+import { Button, Col, notification, Row } from 'antd';
+import React, { Component } from 'react';
+// import EmailReminderHeader from './components/EmailReminderHeader';
+import { formatMessage } from 'umi';
 import styles from './index.less';
 
 const defaultQuestion = {
@@ -14,17 +14,7 @@ const defaultQuestion = {
   defaultAnswers: ['Answer 1'],
 };
 
-@connect(
-  ({
-    onboardingSettings: {
-      templateOnboardQuestionDefault: { id, settings: optionalOnboardQuestions = [] },
-    },
-  }) => ({
-    optionalOnboardQuestions,
-    id,
-  }),
-)
-class OptionalOnboardingQuestions extends PureComponent {
+class HandleQuestion extends Component {
   constructor(props) {
     super(props);
 
@@ -33,27 +23,9 @@ class OptionalOnboardingQuestions extends PureComponent {
       currentModal: null,
       questionItem: {},
       action: 'Edit',
+      keyQuestion: null,
     };
   }
-
-  componentDidMount = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'employeeSetting/fetchOptionalQuestions',
-      payload: {
-        tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
-      },
-    });
-
-    dispatch({
-      type: 'onboardingSettings/fetchListOptionalOnboardQuestions',
-      payload: {
-        tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
-      },
-    });
-  };
 
   componentDidUpdate = (prevProps, prevState) => {
     const { questionItem, action } = this.state;
@@ -89,24 +61,27 @@ class OptionalOnboardingQuestions extends PureComponent {
       openModal: true,
       questionItem: defaultQuestion,
       action: 'Add',
+      keyQuestion: null,
     });
   };
 
   /**
    * open modal edit question
    */
-  openModalEdit = (question) => {
+  openModalEdit = (question, keyQuestion) => {
     this.setState({
       openModal: true,
       questionItem: question,
       action: 'Edit',
+      keyQuestion,
     });
   };
 
-  openModalRemove = (question) => {
+  openModalRemove = (question, keyQuestion) => {
     this.setState({
       openModal: true,
       action: 'Edit',
+      keyQuestion,
       currentModal: (
         <Row className={styles.modalRemoveQuestion}>
           <Col span={18} offset={3}>
@@ -114,7 +89,7 @@ class OptionalOnboardingQuestions extends PureComponent {
             <div className={styles.modalRemoveQuestion__control}>
               <Button onClick={this.closeModal}>Cancel</Button>
               <Button
-                onClick={() => this.onRemoveQuestion(question)}
+                onClick={() => this.onRemoveQuestion()}
                 style={{ marginLeft: '15px' }}
                 type="danger"
               >
@@ -128,39 +103,32 @@ class OptionalOnboardingQuestions extends PureComponent {
   };
 
   // ================ handle event remove question
-  onRemoveQuestion = (questionItem) => {
-    const { dispatch, id, optionalOnboardQuestions } = this.props;
+  onRemoveQuestion = () => {
+    const { questionList, changeQuestionList } = this.props;
+    const { keyQuestion } = this.state;
     // remove question item
-    const settings = optionalOnboardQuestions.filter((item) => item._id !== questionItem._id);
-    dispatch({
-      type: 'onboardingSettings/updateOptionalOnboardQuestions',
-      payload: {
-        tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
-        id,
-        settings,
-      },
-    }).then(({ statusCode }) => {
-      if (statusCode === 200) {
-        notification.success({
-          message: `Remove the question successfully!`,
-          duration: 3,
-        });
+    const settings = [
+      ...questionList.slice(0, keyQuestion),
+      ...questionList.slice(keyQuestion + 1),
+    ];
+    return changeQuestionList(settings).then(() => {
+      notification.success({
+        message: `Remove the question successfully!`,
+        duration: 3,
+      });
 
-        this.setState({
-          openModal: false,
-          questionItem: {},
-        });
-      }
+      this.setState({
+        openModal: false,
+        questionItem: {},
+      });
     });
   };
 
   // ================ handle event add question or edit question
   onSaveQuestion = () => {
-    const { questionItem } = this.state;
-    const { dispatch, id, optionalOnboardQuestions } = this.props;
-    let settings = [...optionalOnboardQuestions];
-
+    const { questionItem, keyQuestion } = this.state;
+    const { questionList, changeQuestionList } = this.props;
+    let settings = [...questionList];
     // remove empty answer
     const question = {
       ...questionItem,
@@ -177,37 +145,24 @@ class OptionalOnboardingQuestions extends PureComponent {
     }
 
     // if edit question
-    if (question._id) {
-      const indexOfEditQuestion = settings.findIndex((item) => item._id === question._id);
-      if (indexOfEditQuestion > -1) {
-        settings[indexOfEditQuestion] = question; // update question
-      }
+    if (keyQuestion !== null) {
+      settings[keyQuestion] = question; // update question
     } else {
       // add question
-      settings = [...optionalOnboardQuestions, question];
+      settings = [...questionList, question];
     }
 
     // update question list and reset modal
-    return dispatch({
-      type: 'onboardingSettings/updateOptionalOnboardQuestions',
-      payload: {
-        tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
-        id,
-        settings,
-      },
-    }).then(({ statusCode }) => {
-      if (statusCode === 200) {
-        notification.success({
-          message: `Save the question successfully!`,
-          duration: 3,
-        });
+    return changeQuestionList(settings).then(() => {
+      notification.success({
+        message: `Save the question successfully!`,
+        duration: 3,
+      });
 
-        this.setState({
-          openModal: false,
-          questionItem: {},
-        });
-      }
+      this.setState({
+        openModal: false,
+        questionItem: {},
+      });
     });
   };
 
@@ -222,22 +177,11 @@ class OptionalOnboardingQuestions extends PureComponent {
   };
 
   render() {
+    const { questionList = [] } = this.props;
     const { openModal, currentModal } = this.state;
-    const { optionalOnboardQuestions } = this.props;
+
     return (
-      <div className={styles.OptionalOnboardingQuestions}>
-        <CustomModal
-          width={750}
-          open={openModal}
-          closeModal={this.closeModal}
-          content={currentModal}
-        />
-        <div className={styles.OptionalOnboardingQuestions_title}>
-          {formatMessage({ id: 'component.optionalOnboardingQuestions.title' })}
-        </div>
-        <div className={styles.OptionalOnboardingQuestions_subTitle}>
-          {formatMessage({ id: 'component.optionalOnboardingQuestions.subTitle' })}
-        </div>
+      <div className={styles.listQuestion}>
         <Row align="space-between" className={styles.OptionalOnboardingQuestions__buttonAdd}>
           <Col>
             <Button type="link" onClick={this.openModalAdd}>
@@ -245,7 +189,7 @@ class OptionalOnboardingQuestions extends PureComponent {
             </Button>
           </Col>
         </Row>
-        {optionalOnboardQuestions.map((question, keyQuestion) => (
+        {questionList.map((question, keyQuestion) => (
           <QuestionItemView
             openModalEdit={this.openModalEdit}
             keyQuestion={keyQuestion}
@@ -253,9 +197,15 @@ class OptionalOnboardingQuestions extends PureComponent {
             openModalRemove={this.openModalRemove}
           />
         ))}
+        <CustomModal
+          width={750}
+          open={openModal}
+          closeModal={this.closeModal}
+          content={currentModal}
+        />
       </div>
     );
   }
 }
 
-export default OptionalOnboardingQuestions;
+export default HandleQuestion;

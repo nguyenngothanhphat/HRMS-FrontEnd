@@ -150,3 +150,40 @@ export async function updateCustomEmail(payload) {
     data: payload,
   });
 }
+
+/** ================== Form off boarding */
+
+export async function getFormOffBoardingList(payload) {
+  return request('/api/formoffboardingtenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getFormOffBoardingById(payload) {
+  return request('/api/formoffboardingtenant/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function addFormOffBoarding(payload) {
+  return request('/api/formoffboardingtenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateFormOffBoarding(payload) {
+  return request('/api/formoffboardingtenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function removeFormOffBoardingById(data) {
+  return request('/api/formoffboardingtenant/remove', {
+    method: 'POST',
+    data,
+  });
+}
