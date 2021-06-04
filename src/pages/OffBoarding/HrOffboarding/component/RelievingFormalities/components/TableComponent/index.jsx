@@ -1,10 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import moment from 'moment';
-// import empty from '@/assets/empty.svg';
-// import persion from '@/assets/people.svg';
 import { Link } from 'umi';
-// import persion from '@/assets/people.svg';
 import styles from './index.less';
 
 class TableComponent extends PureComponent {

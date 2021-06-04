@@ -31,7 +31,7 @@ class RelievingTables extends PureComponent {
       {
         id: 2,
         name: 'Closed records',
-        component: <ClosedTable />,
+        component: <ClosedTable dataSearch={queuesList} />,
       },
     ];
     return (
