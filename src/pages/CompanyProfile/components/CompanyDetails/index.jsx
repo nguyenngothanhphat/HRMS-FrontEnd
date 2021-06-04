@@ -56,7 +56,6 @@ class CompanyDetails extends Component {
 
   onChangeCountry = (value, name) => {
     const stateName = name === 'countryHeadquarterProps' ? 'countryHeadquarter' : 'countryLegal';
-    console.log('name', stateName);
     this.setState({
       [stateName]: value,
     });
