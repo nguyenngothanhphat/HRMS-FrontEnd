@@ -1,12 +1,13 @@
 /* eslint-disable no-console */
-import React, { Component } from 'react';
-import { history, formatMessage, connect } from 'umi';
-import { CaretDownOutlined } from '@ant-design/icons';
-import { Table, Avatar, Button, Tag, Tooltip, Popover, notification } from 'antd';
 import avtDefault from '@/assets/avtDefault.jpg';
 import { isOwner } from '@/utils/authority';
-import styles from './index.less';
+import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
+import { CaretDownOutlined } from '@ant-design/icons';
+import { Avatar, Button, Popover, Table, Tag, Tooltip } from 'antd';
+import React, { Component } from 'react';
+import { connect, formatMessage, history } from 'umi';
 import ModalTerminate from './components/ModalTerminate';
+import styles from './index.less';
 
 const departmentTag = [
   { name: 'IT support', color: 'magenta' },
@@ -46,13 +47,30 @@ class DirectoryTable extends Component {
       openModal: false,
       rowData: {},
       valueReason: '',
+      timezoneList: [],
     };
   }
 
-  // componentDidMount = () => {
-  //   const { listLocationsByCompany = [] } = this.props;
-  //   listLocationsByCompany.forEach((location) => this.getTime(location.headQuarterAddress.state));
-  // };
+  componentDidMount = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    const timezoneList = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '' } = {},
+        _id = '',
+      } = location;
+      timezoneList.push({
+        locationId: _id,
+        timezone:
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    this.setState({
+      timezoneList,
+    });
+  };
 
   componentDidUpdate(prevProps) {
     const { list } = this.props;
@@ -60,15 +78,6 @@ class DirectoryTable extends Component {
       this.setFirstPage();
     }
   }
-
-  // getTime = (state) => {
-  //   console.log('state', state);
-  //   const tzNames = moment.tz.names();
-  //   const stateWords = state.split('_');
-
-  //   // const list = tzNames.find((tz) => tz.indexOf(stateWords) > -1);
-  //   const found = tzNames.some((r) => stateWords.indexOf(r) >= 0);
-  // };
 
   getAvatarUrl = (avatar, isShowAvatar) => {
     const { permissions = {}, profileOwner = false } = this.props;
@@ -406,22 +415,34 @@ class DirectoryTable extends Component {
         country = {},
         zipCode = '',
       } = {},
+      _id = '',
     } = location;
+
+    const { timezoneList } = this.state;
+    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
 
     return (
       <div className={styles.locationContent}>
-        <span>
-          Address: {addressLine1}
+        <span style={{ display: 'block', fontSize: '13px', color: '#0000006e' }}>Address:</span>
+        <span style={{ display: 'block', fontSize: '13px', marginBottom: '5px' }}>
+          {addressLine1}
           {addressLine2 && ', '}
           {addressLine2}
           {state && ', '}
           {state}
-          {country && ', '}
-          {country?.name || country}
+          {country ? ', ' : ''}
+          {country?.name || country || ''}
           {zipCode && ', '}
           {zipCode}
         </span>
-        {/* <p>Current time: {result}</p> */}
+        <span style={{ display: 'block', fontSize: '13px', color: '#0000006e' }}>
+          Current time:
+        </span>
+        <span style={{ display: 'block', fontSize: '13px' }}>
+          {findTimezone && Object.keys(findTimezone).length > 0
+            ? getCurrentTimeOfTimezone(findTimezone.timezone)
+            : 'Not enough data in address'}
+        </span>
       </div>
     );
   };
