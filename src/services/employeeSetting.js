@@ -63,9 +63,10 @@ export async function updateOptionalQuestions(payload) {
   });
 }
 
-export async function getTriggerEventList() {
+export async function getTriggerEventList(payload) {
   return request('/api/customemailtenant/list-trigger-event', {
     method: 'POST',
+    data: payload,
   });
 }
 
@@ -110,21 +111,21 @@ export async function addCustomEmail(payload) {
 }
 
 export async function getListCustomEmailOnboarding(payload) {
-  return request('/api/customemailtenant/list-active', {
+  return request('/api/customemailtenant/list', {
     method: 'POST',
     data: payload,
   });
 }
 
-export async function getListDefaultCustomEmailByCompany(payload) {
-  return request('api/customemailtenant/get-default-by-company ', {
-    method: 'POST',
-    data: payload,
-  });
-}
+// export async function getListDefaultCustomEmailByCompany(payload) {
+//   return request('api/customemailtenant/get-default-by-company', {
+//     method: 'POST',
+//     data: payload,
+//   });
+// }
 
 export async function getListCustomEmailOffboarding(payload) {
-  return request('/api/customemailtenant/list-active', {
+  return request('/api/customemailtenant/list', {
     method: 'POST',
     data: payload,
   });
