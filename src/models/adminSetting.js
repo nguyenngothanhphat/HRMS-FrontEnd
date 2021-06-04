@@ -176,7 +176,7 @@ const adminSetting = {
         dialog(errors);
       }
     },
-    *removeDepartment({ payload: { id = '' } }, { call }) {
+    *removeDepartment({ payload: { id = '' } }, { call, put }) {
       try {
         const response = yield call(removeDepartment, {
           id,
@@ -188,6 +188,7 @@ const adminSetting = {
         notification.success({
           message,
         });
+        yield put({ type: 'fetchDepartment' });
         return statusCode;
       } catch (errors) {
         dialog(errors);
