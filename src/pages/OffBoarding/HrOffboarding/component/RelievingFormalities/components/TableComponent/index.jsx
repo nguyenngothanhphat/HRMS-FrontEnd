@@ -49,7 +49,7 @@ class TableComponent extends PureComponent {
   };
 
   render() {
-    const { data = [], isClosedTable = false, loading, loadingSearchList } = this.props;
+    const { data = [], isClosedTable = false, loadingSearchList } = this.props;
     const pagination = {
       position: ['bottomLeft'],
       total: data.length,
@@ -121,7 +121,7 @@ class TableComponent extends PureComponent {
     return (
       <div className={styles.tableComponent}>
         <Table
-          loading={loading || loadingSearchList}
+          loading={loadingSearchList}
           rowSelection={{
             ...rowSelection,
           }}

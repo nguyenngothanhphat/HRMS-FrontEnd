@@ -45,7 +45,7 @@ class HRrequestTable extends Component {
         dataListTeamRequest: query,
         loadingSearch: false,
       });
-    }, 500);
+    }, 1000);
   }
 
   componentDidMount() {
