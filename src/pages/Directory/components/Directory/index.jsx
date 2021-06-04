@@ -124,7 +124,8 @@ class DirectoryComponent extends PureComponent {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { department, country, state, employeeType, company, filterName, tabId } = this.state;
+    const { department, country, state, employeeType, company, filterName, tabId, changeTab } =
+      this.state;
     // const isOwnerCheck = isOwner();
     // const currentLocation = getCurrentLocation();
 
@@ -138,6 +139,7 @@ class DirectoryComponent extends PureComponent {
     };
     if (
       prevState.tabId !== tabId ||
+      (changeTab && prevState.tabId === tabId) ||
       prevState.department.length !== department.length ||
       prevState.country.length !== country.length ||
       prevState.state.length !== state.length ||
@@ -477,7 +479,7 @@ class DirectoryComponent extends PureComponent {
 
   handleFilterPane = () => {
     this.setState({
-      collapsed: true,
+      collapsed: false,
     });
   };
 
@@ -485,21 +487,20 @@ class DirectoryComponent extends PureComponent {
     this.setDebounce(valueInput);
   };
 
-  handleClickTabPane = (tabId) => {
+  handleClickTabPane = async (tabId) => {
     this.setState({
       tabId,
       changeTab: true,
       filterName: '',
     });
     const { dispatch } = this.props;
-    dispatch({
+    await dispatch({
       type: 'employee/ClearFilter',
     });
-    setTimeout(() => {
-      this.setState({
-        changeTab: false,
-      });
-    }, 5);
+
+    this.setState({
+      changeTab: false,
+    });
   };
 
   importEmployees = () => {

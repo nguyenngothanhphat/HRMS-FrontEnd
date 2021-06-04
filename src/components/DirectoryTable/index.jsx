@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { history, formatMessage, connect } from 'umi';
 import { CaretDownOutlined } from '@ant-design/icons';
-import { Table, Avatar, Button, Tag, Tooltip, Popover } from 'antd';
+import { Table, Avatar, Button, Tag, Tooltip, Popover, notification } from 'antd';
 import avtDefault from '@/assets/avtDefault.jpg';
 import { isOwner } from '@/utils/authority';
 import styles from './index.less';
@@ -203,7 +203,9 @@ class DirectoryTable extends Component {
         dataIndex: 'generalInfo',
         key: 'employeeId',
         render: (generalInfo) => (
-          <span style={{ fontSize: '13px' }}>{generalInfo ? generalInfo.workNumber : '-'}</span>
+          <span style={{ fontSize: '13px' }}>
+            {generalInfo?.workNumber ? generalInfo.workNumber : '-'}
+          </span>
         ),
         width: '10%',
         align: 'left',
@@ -213,7 +215,7 @@ class DirectoryTable extends Component {
         dataIndex: 'title',
         key: 'title',
         render: (title) => (
-          <Tooltip placement="left" title={`Filter by ${title.name}`}>
+          <Tooltip placement="left" title={`Filter by ${title ? title.name : ''}`}>
             <span className={styles.title} onClick={() => this.onFilter(title, 'title')}>
               {title ? title.name : ''}
             </span>
@@ -229,7 +231,7 @@ class DirectoryTable extends Component {
         render: (department) => {
           const tag = departmentTag.find((d) => d.name === department.name) || { color: '#108ee9' };
           return (
-            <Tooltip placement="left" title={`Filter by ${department.name}`}>
+            <Tooltip placement="left" title={`Filter by ${department ? department.name : ''}`}>
               <Tag
                 className={styles.department}
                 onClick={() => this.onFilter(department, 'department')}
@@ -374,7 +376,7 @@ class DirectoryTable extends Component {
     return findIndexViewProfile;
   };
 
-  onFilter = (obj, fieldName) => {
+  onFilter = async (obj, fieldName) => {
     const { dispatch } = this.props;
     const { list = [], handleFilterPane = () => {} } = this.props;
     let newList = [];
@@ -386,7 +388,7 @@ class DirectoryTable extends Component {
       });
     }
     if (fieldName === 'title') {
-      newList = list.filter((item) => item.title?._id === obj._id);
+      newList = list.filter((item) => item.title?._id === obj._id) || [];
       dispatch({
         type: 'employee/save',
         payload: { listEmployeeActive: [...newList] },
