@@ -1,3 +1,4 @@
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import {
@@ -53,7 +54,10 @@ const adminSetting = {
     *fetchListTitle(_, { call, put }) {
       let resp = [];
       try {
-        const response = yield call(getListTitle);
+        const response = yield call(getListTitle, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data: listTitle = [] } = response;
         if (statusCode !== 200) throw response;
         resp = listTitle;
@@ -65,13 +69,20 @@ const adminSetting = {
       return resp;
     },
 
-    *removeTitle({ payload: { id = '' } }, { call }) {
+    *removeTitle({ payload: { id = '' } }, { call, put }) {
       try {
-        const response = yield call(removeTitle, { id });
+        const response = yield call(removeTitle, {
+          id,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
           message,
+        });
+        yield put({
+          type: 'fetchListTitle',
         });
         return statusCode;
       } catch (errors) {
@@ -82,7 +93,10 @@ const adminSetting = {
 
     *fetchDepartment(_, { call, put }) {
       try {
-        const response = yield call(DepartmentFilter);
+        const response = yield call(DepartmentFilter, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data: department = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { department } });
@@ -127,9 +141,14 @@ const adminSetting = {
         dialog(errors);
       }
     },
-    *addPosition({ payload: { name = '' } }, { call, put }) {
+    *addPosition({ payload: { name = '', department = '' } }, { call, put }) {
       try {
-        const response = yield call(addPosition, { name });
+        const response = yield call(addPosition, {
+          name,
+          department,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -142,7 +161,11 @@ const adminSetting = {
     },
     *addDepartment({ payload: { name = '' } }, { call, put }) {
       try {
-        const response = yield call(addDepartment, { name });
+        const response = yield call(addDepartment, {
+          name,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -153,14 +176,19 @@ const adminSetting = {
         dialog(errors);
       }
     },
-    *removeDepartment({ payload: { id = '' } }, { call }) {
+    *removeDepartment({ payload: { id = '' } }, { call, put }) {
       try {
-        const response = yield call(removeDepartment, { id });
+        const response = yield call(removeDepartment, {
+          id,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
           message,
         });
+        yield put({ type: 'fetchDepartment' });
         return statusCode;
       } catch (errors) {
         dialog(errors);
