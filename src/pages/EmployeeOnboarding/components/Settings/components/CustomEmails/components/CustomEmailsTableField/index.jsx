@@ -9,17 +9,9 @@ import FileIcon from './images/doc.svg';
 import styles from './index.less';
 
 @connect(
-  ({
-    employeeSetting: {
-      dataSubmit = {},
-      listCustomEmailOnboarding = [],
-      listDefaultCustomEmailOnboarding = [],
-    } = {},
-    loading,
-  }) => ({
+  ({ employeeSetting: { dataSubmit = {}, listCustomEmailOnboarding = [] } = {}, loading }) => ({
     dataSubmit,
     listCustomEmailOnboarding,
-    listDefaultCustomEmailOnboarding,
     loading: loading.effects['employeeSetting/deleteCustomEmailItem'],
     loadingFetchList: loading.effects['employeeSetting/fetchListCustomEmailOnboarding'],
   }),
@@ -55,8 +47,6 @@ class CustomEmailsTableField extends PureComponent {
     await dispatch({
       type: 'employeeSetting/fetchListCustomEmailOnboarding',
       payload: {
-        tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
         type: 'ON-BOARDING',
         isDefault: tabId === '1',
       },
@@ -101,7 +91,6 @@ class CustomEmailsTableField extends PureComponent {
       type: 'employeeSetting/deleteCustomEmailItem',
       payload: {
         id: customEmailId,
-        tenantId: getCurrentTenant(),
       },
     });
   };
@@ -180,7 +169,7 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   _renderTable = (list) => {
-    const { listCustomEmailOnboarding, loadingFetchList } = this.props;
+    const { loadingFetchList } = this.props;
     const { pageSelected } = this.state;
     const rowSize = 5;
 
@@ -213,11 +202,7 @@ class CustomEmailsTableField extends PureComponent {
           };
         }}
         rowKey={(record) => record._id}
-        pagination={
-          listCustomEmailOnboarding.length > rowSize
-            ? { ...pagination, total: listCustomEmailOnboarding.length }
-            : false
-        }
+        pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
       />
     );
   };
