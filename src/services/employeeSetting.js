@@ -42,27 +42,6 @@ export async function uploadSignature(data) {
   });
 }
 
-export async function getOptionalQuestions(data) {
-  return request('/api/onboardingquestiontenant/list', {
-    method: 'POST',
-    data,
-  });
-}
-
-export async function saveOptionalQuestions(payload) {
-  return request('/api/onboardingquestiontenant/save-setting', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
-export async function updateOptionalQuestions(payload) {
-  return request('/api/onboardingquestiontenant/update', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
 export async function getTriggerEventList(payload) {
   return request('/api/customemailtenant/list-trigger-event', {
     method: 'POST',
@@ -186,5 +165,35 @@ export async function removeFormOffBoardingById(data) {
   return request('/api/formoffboardingtenant/remove', {
     method: 'POST',
     data,
+  });
+}
+
+/** ================== optional on boarding question */
+
+export async function getListOptionalOnboardQuestions(payload) {
+  return request('/api/templatequestiononboardingtenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateOptionalOnboardQuestions(payload) {
+  return request('/api/templatequestiononboardingtenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function addOptionalOnboardQuestions(payload) {
+  return request('/api/templatequestiononboardingtenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function removeOptionalOnboardQuestions(payload) {
+  return request('/api/templatequestiononboardingtenant/remove', {
+    method: 'POST',
+    data: payload,
   });
 }

@@ -149,7 +149,7 @@ class HandleQuestion extends Component {
       settings[keyQuestion] = question; // update question
     } else {
       // add question
-      settings = [...questionList, question];
+      settings = [question, ...questionList];
     }
 
     // update question list and reset modal

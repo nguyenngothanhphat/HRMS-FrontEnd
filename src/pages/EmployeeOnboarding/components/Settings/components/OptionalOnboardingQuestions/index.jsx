@@ -14,7 +14,7 @@ const defaultQuestion = {
   defaultAnswers: ['Answer 1'],
 };
 
-@connect(({ onboardingSettings: { optionalOnboardQuestionList = [] } }) => ({
+@connect(({ employeeSetting: { optionalOnboardQuestionList = [] } }) => ({
   optionalOnboardQuestionList,
 }))
 class OptionalOnboardingQuestions extends PureComponent {
@@ -31,16 +31,9 @@ class OptionalOnboardingQuestions extends PureComponent {
 
   componentDidMount = () => {
     const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'employeeSetting/fetchOptionalQuestions',
-    //   payload: {
-    //     tenantId: getCurrentTenant(),
-    //     company: getCurrentCompany(),
-    //   },
-    // });
-
+    // fetch list optional onboarding question
     dispatch({
-      type: 'onboardingSettings/fetchListOptionalOnboardQuestions',
+      type: 'employeeSetting/fetchListOptionalOnboardQuestions',
       payload: {
         tenantId: getCurrentTenant(),
         company: getCurrentCompany(),
@@ -128,13 +121,10 @@ class OptionalOnboardingQuestions extends PureComponent {
     const { dispatch } = this.props;
     // remove question item
     dispatch({
-      type: 'onboardingSettings/removeOptionalOnboardQuestions',
+      type: 'employeeSetting/removeOptionalOnboardQuestions',
       payload: questionItem,
     }).then(() => {
-      this.setState({
-        openModal: false,
-        questionItem: {},
-      });
+      this.closeModal();
     });
   };
 
@@ -158,20 +148,17 @@ class OptionalOnboardingQuestions extends PureComponent {
       });
     }
 
-    let action = 'onboardingSettings/addOptionalOnboardQuestions';
+    let action = 'employeeSetting/addOptionalOnboardQuestions';
     // if edit question
     if (question._id) {
-      action = 'onboardingSettings/updateOptionalOnboardQuestions';
+      action = 'employeeSetting/updateOptionalOnboardQuestions';
     }
 
     return dispatch({
       type: action,
       payload: questionItem,
     }).then(() => {
-      this.setState({
-        openModal: false,
-        questionItem: {},
-      });
+      this.closeModal();
     });
   };
 
