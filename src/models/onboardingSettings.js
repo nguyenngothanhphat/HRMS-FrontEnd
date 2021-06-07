@@ -1,10 +1,13 @@
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import {
-  getInsuranceList,
   addInsurance,
-  getTemplateQuestionOnboardingTenantList,
-  updateTemplateQuestionOnboardingTenant,
+  addOptionalOnboardQuestions,
+  getInsuranceList,
+  getListOptionalOnboardQuestions,
+  removeOptionalOnboardQuestions,
+  updateOptionalOnboardQuestions,
 } from '../services/onboardingSettings';
 
 const onboardingSettings = {
@@ -13,28 +16,19 @@ const onboardingSettings = {
     listInsurances: {},
     uploadedInsurance: {},
     optionalQuestions: [],
-    templateOnboardQuestionDefault: {
-      id: null,
-      settings: [],
-    },
+    optionalOnboardQuestionList: [],
   },
   effects: {
     *fetchListOptionalOnboardQuestions({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getTemplateQuestionOnboardingTenantList, payload);
-        const { statusCode, data: listTemplateQuestionDefault = [] } = response;
+        const response = yield call(getListOptionalOnboardQuestions, payload);
+        const { statusCode, data: optionalOnboardQuestionList = [] } = response;
         if (statusCode !== 200) throw response;
-        const { _id, settings } = listTemplateQuestionDefault[0];
         yield put({
           type: 'save',
-          payload: {
-            templateOnboardQuestionDefault: {
-              id: _id,
-              settings,
-            },
-          },
+          payload: { optionalOnboardQuestionList },
         });
-        return listTemplateQuestionDefault;
+        return optionalOnboardQuestionList;
       } catch (errors) {
         // dialog(errors);
         return {};
@@ -43,18 +37,70 @@ const onboardingSettings = {
 
     *updateOptionalOnboardQuestions({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(updateTemplateQuestionOnboardingTenant, payload);
-        const { statusCode, data: listTemplateQuestionDefault = [] } = response;
+        const response = yield call(updateOptionalOnboardQuestions, {
+          tenantId: getCurrentTenant(),
+          id: payload._id,
+          ...payload,
+        });
+        const { statusCode, data: optionalOnboardQuestion = {} } = response;
+
         if (statusCode !== 200) throw response;
-        const { _id, settings } = listTemplateQuestionDefault;
+        notification.success({
+          message: `Update the question successfully!`,
+          duration: 3,
+        });
         yield put({
-          type: 'save',
-          payload: {
-            templateOnboardQuestionDefault: {
-              id: _id,
-              settings,
-            },
-          },
+          type: 'updateQuestion',
+          payload: optionalOnboardQuestion,
+        });
+        return response;
+      } catch (errors) {
+        // dialog(errors);
+        return {};
+      }
+    },
+
+    *addOptionalOnboardQuestions({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(addOptionalOnboardQuestions, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          ...payload,
+        });
+        const { statusCode, data: optionalOnboardQuestion = {} } = response;
+
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: `Add the question successfully!`,
+          duration: 3,
+        });
+        yield put({
+          type: 'saveQuestion',
+          payload: optionalOnboardQuestion,
+        });
+        return response;
+      } catch (errors) {
+        // dialog(errors);
+        return {};
+      }
+    },
+
+    *removeOptionalOnboardQuestions({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(removeOptionalOnboardQuestions, {
+          tenantId: getCurrentTenant(),
+          id: payload._id,
+          ...payload,
+        });
+        const { statusCode, data: optionalOnboardQuestion = {} } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: `Remove the question successfully!`,
+          duration: 3,
+        });
+        yield put({
+          type: 'removeQuestion',
+          payload: optionalOnboardQuestion,
         });
         return response;
       } catch (errors) {
@@ -116,15 +162,50 @@ const onboardingSettings = {
         ...action.payload,
       };
     },
-    // saveQuestion(state, action) {
-    //   return {
-    //     ...state,
-    //     templateOnboardQuestionDefault: {
-    //       ...state.templateOnboardQuestionDefault,
-    //       ...action.payload,
-    //     },
-    //   };
-    // },
+
+    saveQuestion(state, action) {
+      return {
+        ...state,
+        optionalOnboardQuestionList: [action.payload, ...state.optionalOnboardQuestionList],
+      };
+    },
+
+    removeQuestion(state, action) {
+      const { optionalOnboardQuestionList } = state;
+      const indexOfQuestion = optionalOnboardQuestionList.findIndex(
+        (item) => item._id === action.payload._id,
+      );
+
+      if (indexOfQuestion > -1) {
+        return {
+          ...state,
+          optionalOnboardQuestionList: [
+            ...optionalOnboardQuestionList.slice(0, indexOfQuestion),
+            ...optionalOnboardQuestionList.slice(indexOfQuestion + 1),
+          ],
+        };
+      }
+      return state;
+    },
+
+    updateQuestion(state, action) {
+      const { optionalOnboardQuestionList } = state;
+      const indexOfQuestion = optionalOnboardQuestionList.findIndex(
+        (item) => item._id === action.payload._id,
+      );
+
+      if (indexOfQuestion > -1) {
+        return {
+          ...state,
+          optionalOnboardQuestionList: [
+            ...optionalOnboardQuestionList.slice(0, indexOfQuestion),
+            action.payload,
+            ...optionalOnboardQuestionList.slice(indexOfQuestion + 1),
+          ],
+        };
+      }
+      return state;
+    },
   },
 };
 export default onboardingSettings;

@@ -14,15 +14,29 @@ export async function addInsurance(payload) {
   });
 }
 
-export async function getTemplateQuestionOnboardingTenantList(payload) {
+export async function getListOptionalOnboardQuestions(payload) {
   return request('/api/templatequestiononboardingtenant/list', {
     method: 'POST',
     data: payload,
   });
 }
 
-export async function updateTemplateQuestionOnboardingTenant(payload) {
+export async function updateOptionalOnboardQuestions(payload) {
   return request('/api/templatequestiononboardingtenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function addOptionalOnboardQuestions(payload) {
+  return request('/api/templatequestiononboardingtenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function removeOptionalOnboardQuestions(payload) {
+  return request('/api/templatequestiononboardingtenant/remove', {
     method: 'POST',
     data: payload,
   });
