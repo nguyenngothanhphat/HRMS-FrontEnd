@@ -75,6 +75,7 @@ export default class OptionsHeader extends PureComponent {
                 <span className={styles.itemLabel}>User ID - Name</span>
                 <Form.Item name="userIdName">
                   <Select
+                    allowClear
                     placeholder="Select an user"
                     filterOption={(input, option) =>
                       option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0

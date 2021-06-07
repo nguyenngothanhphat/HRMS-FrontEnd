@@ -109,7 +109,7 @@ class TableContainer extends PureComponent {
     dispatch({
       type: 'timeOffManagement/fetchListTimeOff',
       payload: {
-        employee: values.userIdName,
+        employee: values.userIdName || '',
         from: values.durationFrom,
         to: values.durationTo,
         status: values.status,
