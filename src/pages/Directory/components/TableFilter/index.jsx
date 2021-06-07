@@ -37,7 +37,7 @@ class TableFilter extends PureComponent {
       text: '',
       clearText: '',
       reset: false,
-      titleSelected: '',
+      titleSelected: [],
     };
   }
 
@@ -72,16 +72,15 @@ class TableFilter extends PureComponent {
       this.getTitleByCheckedDepartment(listTitle);
 
       // for title selectbox
-      let checkedList = [...checkedFilterList];
+      let newFilterList = [];
       checkedFilterList.forEach((f) => {
         if (f.actionFilter?.name === 'Title') {
-          checkedList = [...f.checkedList];
+          newFilterList = [...f.checkedList];
         }
       });
-
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
-        titleSelected: checkedList.length > 0 ? checkedList[0] : '',
+        titleSelected: newFilterList.length > 0 ? newFilterList : [],
       });
     }
   };
@@ -109,7 +108,7 @@ class TableFilter extends PureComponent {
       payload: { name: 'Title', checkedList: value ? [value] : [] },
     });
     this.setState({
-      titleSelected: value,
+      titleSelected: [value],
     });
   };
 
@@ -152,6 +151,8 @@ class TableFilter extends PureComponent {
   };
 
   getTitleByCheckedDepartment = (listTitle = []) => {
+    console.log('listTitle', listTitle);
+
     const { checkedFilterList = [] } = this.props;
     const checkedList =
       checkedFilterList.find((filter) => {
@@ -275,7 +276,7 @@ class TableFilter extends PureComponent {
               ''
             ) : (
               <Select
-                value={clearFilter ? '' : titleSelected}
+                value={clearFilter && titleSelected.length === 0 ? '' : titleSelected[0]}
                 className={styles.formSelect}
                 onChange={this.handleSelectChange}
                 filterOption={(input, option) =>
