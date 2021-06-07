@@ -94,6 +94,7 @@ const employee = {
           location = [],
           employeeType = [],
           name = '',
+          title = [],
         } = {},
       },
       { call, put },
@@ -106,6 +107,7 @@ const employee = {
           location,
           employeeType,
           name,
+          title,
         });
         const { statusCode, data: listEmployeeMyTeam = [] } = response;
         if (statusCode !== 200) throw response;
@@ -124,6 +126,7 @@ const employee = {
           location = [],
           employeeType = [],
           name = '',
+          title = [],
         } = {},
       },
       { call, put },
@@ -136,6 +139,7 @@ const employee = {
           location,
           employeeType,
           name,
+          title,
         });
         const { statusCode, data: listEmployeeActive = [] } = response;
         if (statusCode !== 200) throw response;
@@ -155,6 +159,7 @@ const employee = {
           location = [],
           employeeType = [],
           name = '',
+          title = [],
         } = {},
       },
       { call, put },
@@ -167,6 +172,7 @@ const employee = {
           location,
           employeeType,
           name,
+          title,
         });
         const { statusCode, data: listEmployeeInActive = [] } = response;
         if (statusCode !== 200) throw response;

@@ -549,6 +549,7 @@ const employeeSetting = {
       try {
         response = yield call(getListCustomEmailOnboarding, {
           ...payload,
+          type: 'ON-BOARDING',
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
@@ -577,6 +578,7 @@ const employeeSetting = {
       try {
         response = yield call(getListCustomEmailOffboarding, {
           ...payload,
+          type: 'OFF-BOARDING',
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
@@ -617,11 +619,11 @@ const employeeSetting = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'fetchListCustomEmailOnboarding',
-          payload: { tenantId: payload.tenantId },
+          payload: { default: false },
         });
         yield put({
           type: 'fetchListCustomEmailOffboarding',
-          payload: { tenantId: payload.tenantId },
+          payload: { default: false },
         });
         notification.success({
           message: response.status,

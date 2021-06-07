@@ -10,6 +10,23 @@
     padding-left: 16px !important;
   }
   :global {
+    .ant-pagination {
+      align-items: center;
+    }
+    .ant-pagination-options {
+      display: flex;
+      justify-content: flex-end;
+      margin-left: 24px !important;
+    }
+
+    .ant-select-selector {
+      height: 32px !important;
+      padding: 5px 7px !important;
+    }
+    .ant-select-selection-item, .ant-select-item {
+      font-size: 13px !important;
+    }
+
     .ant-table-body {
       overflow-x: auto !important;
     }
@@ -20,17 +37,17 @@
 
     .ant-table.ant-table-small:after {
       position: absolute;
-      content: '';
+      bottom: -1px;
+      left: -24px;
       width: 150%;
       height: 1px;
       background-color: #d6dce0;
-      left: -24px;
-      bottom: -1px;
+      content: '';
     }
 
     .ant-table-body {
-      color: #000000;
       height: 400px;
+      color: #000000;
     }
 
     .ant-table-tbody {
@@ -64,9 +81,9 @@
 
     .ant-table-column-sorter-up,
     .ant-table-column-sorter-down {
+      margin-top: 0.5em;
       font-size: 14px;
       opacity: 0;
-      margin-top: 0.5em;
     }
 
     .ant-table-thead th.ant-table-column-has-sorters:hover {
@@ -83,7 +100,8 @@
       box-shadow: 4px 0 5px 0 rgba(0, 0, 0, 0.05);
     }
 
-    .ant-table.ant-table-small .ant-table-thead, .ant-table.ant-table-small .ant-table-thead .ant-table-column-sorters {
+    .ant-table.ant-table-small .ant-table-thead,
+    .ant-table.ant-table-small .ant-table-thead .ant-table-column-sorters {
       padding: 8px 17px !important;
     }
 
@@ -94,9 +112,9 @@
     .ant-btn {
       padding: 0px;
     }
-    // .ant-table-thead>tr.ant-table-row-hover:not(.ant-table-expanded-row)>td, 
-    // .ant-table-tbody>tr.ant-table-row-hover:not(.ant-table-expanded-row)>td, 
-    // .ant-table-thead>tr:hover:not(.ant-table-expanded-row)>td, 
+    // .ant-table-thead>tr.ant-table-row-hover:not(.ant-table-expanded-row)>td,
+    // .ant-table-tbody>tr.ant-table-row-hover:not(.ant-table-expanded-row)>td,
+    // .ant-table-thead>tr:hover:not(.ant-table-expanded-row)>td,
     // .ant-table-tbody>tr:hover:not(.ant-table-expanded-row)>td {
     //     background: unset; //Change the existing color to `unset`
     //     cursor: default;
@@ -127,16 +145,16 @@
     }
 
     p {
-      text-align: left;
-      white-space: nowrap;
       width: 70%;
-      overflow: hidden;
-      text-overflow: ellipsis;
       margin: 0;
-      letter-spacing: 0.12px;
-      color: #2c6df9;
       padding-left: 12px;
-      font-weight: 500; 
+      overflow: hidden;
+      color: #2c6df9;
+      font-weight: 500;
+      letter-spacing: 0.12px;
+      white-space: nowrap;
+      text-align: left;
+      text-overflow: ellipsis;
       cursor: pointer;
       &:hover {
         opacity: 0.8;
@@ -146,34 +164,35 @@
 
   .directoryTable_deparmentText {
     padding: 4px 8px;
-    border-radius: 5px;
     background-color: #f6f7f9;
+    border-radius: 5px;
   }
 
   .viewAction {
     .actionBtn {
-      border: none;
-      background: none;
-      box-shadow: none !important;
       color: #2c6df9;
       font-size: 13px;
+      background: none;
+      border: none;
+      box-shadow: none !important;
     }
   }
 
   .managerName {
-    text-align: left;
-    white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
     color: #2c6df9;
     font-weight: 500;
+    white-space: nowrap;
+    text-align: left;
+    text-overflow: ellipsis;
     cursor: pointer;
     &:hover {
       opacity: 0.8;
     }
   }
 
-  .title, .department {
+  .title,
+  .department {
     cursor: pointer;
     &:hover {
       opacity: 0.8;
@@ -188,9 +207,9 @@
   ::-webkit-scrollbar {
     width: 7px;
     height: 7px;
-    border-radius: 5px;
     background-color: transparent;
     border: none;
+    border-radius: 5px;
   }
 
   ::-webkit-scrollbar-thumb {
