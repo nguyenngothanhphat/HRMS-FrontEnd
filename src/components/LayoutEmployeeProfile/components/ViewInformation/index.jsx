@@ -253,8 +253,8 @@ class ViewInformation extends Component {
           />
         )}
         <div className={s.infoEmployee__textNameAndTitle}>
-          <p className={s.infoEmployee__textNameAndTitle__title}>{title ? title.name : ''}</p>
           <p className={s.infoEmployee__textNameAndTitle__name}>{firstName}</p>
+          <p className={s.infoEmployee__textNameAndTitle__title}>{title ? title.name : ''}</p>
         </div>
 
         <div className={s.infoEmployee__viewBottom}>
