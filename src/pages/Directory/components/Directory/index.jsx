@@ -153,6 +153,7 @@ class DirectoryComponent extends PureComponent {
       company,
       title,
     };
+
     if (
       prevState.tabId !== tabId ||
       (changeTab && prevState.tabId === tabId) ||
@@ -160,7 +161,7 @@ class DirectoryComponent extends PureComponent {
       prevState.country.length !== country.length ||
       prevState.state.length !== state.length ||
       prevState.employeeType.length !== employeeType.length ||
-      prevState.title.length !== title.length ||
+      JSON.stringify(prevState.title) !== JSON.stringify(title) ||
       prevState.filterName !== filterName ||
       prevState.company.length !== company.length
     ) {
