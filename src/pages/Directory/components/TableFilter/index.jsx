@@ -151,8 +151,6 @@ class TableFilter extends PureComponent {
   };
 
   getTitleByCheckedDepartment = (listTitle = []) => {
-    console.log('listTitle', listTitle);
-
     const { checkedFilterList = [] } = this.props;
     const checkedList =
       checkedFilterList.find((filter) => {
