@@ -43,6 +43,7 @@ class DirectoryTable extends Component {
     this.state = {
       sortedName: {},
       pageSelected: 1,
+      rowSize: 10,
       isSort: false,
       openModal: false,
       rowData: {},
@@ -185,9 +186,10 @@ class DirectoryTable extends Component {
                 `${b.employeePack.generalInfo.firstName} ${b.employeePack.generalInfo.lastName}`,
               )
             : null,
-        sortOrder: sortedName.columnKey === 'generalInfo' && sortedName.order,
+        // sortOrder: sortedName.columnKey === 'employeePack' && sortedName.order,
         fixed: 'left',
         width: '18%',
+        defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       // {
@@ -427,6 +429,7 @@ class DirectoryTable extends Component {
 
     const { timezoneList } = this.state;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+    // console.log('findTimezone', findTimezone);
     return (
       <div className={styles.locationContent}>
         <span style={{ display: 'block', fontSize: '13px', color: '#0000006e' }}>Address:</span>
@@ -472,11 +475,16 @@ class DirectoryTable extends Component {
   };
 
   render() {
-    const { sortedName = {}, pageSelected, openModal = false, valueReason = '' } = this.state;
+    const {
+      sortedName = {},
+      pageSelected,
+      openModal = false,
+      valueReason = '',
+      rowSize,
+    } = this.state;
     const { list = [], loading, keyTab, loadingTerminateReason } = this.props;
     const newList = this.getNewList(list);
 
-    const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
       total: list.length,
@@ -490,11 +498,13 @@ class DirectoryTable extends Component {
           {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
         </span>
       ),
-      pageSize: rowSize,
+      defaultPageSize: 10,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
+      // pageSize: rowSize,
       current: pageSelected,
       onChange: this.onChangePagination,
     };
-
     const scroll = {
       x: '100vw',
       y: 'max-content',
