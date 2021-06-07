@@ -32,6 +32,7 @@ class TableFilter extends PureComponent {
       CompanyState: 'Company',
       TitleState: 'Title',
       formatDataState: [], // dynamic state on country
+      formatDataTitle: [], // dynamic title on department
       all: 'All',
       text: '',
       clearText: '',
@@ -53,6 +54,7 @@ class TableFilter extends PureComponent {
     }).then((res) => {
       if (res?.statusCode === 200) {
         this.getStateByCheckedCountry(res?.data?.listCountry);
+        this.getTitleByCheckedDepartment(res?.data?.listTitle);
       }
     });
     dispatch({
@@ -61,9 +63,11 @@ class TableFilter extends PureComponent {
   }
 
   componentDidUpdate = (prevProps) => {
-    const { checkedFilterList = [], filterList: { listCountry = [] } = {} } = this.props;
+    const { checkedFilterList = [], filterList: { listCountry = [], listTitle = [] } = {} } =
+      this.props;
     if (JSON.stringify(checkedFilterList) !== JSON.stringify(prevProps.checkedFilterList)) {
       this.getStateByCheckedCountry(listCountry);
+      this.getTitleByCheckedDepartment(listTitle);
     }
   };
 
@@ -120,6 +124,31 @@ class TableFilter extends PureComponent {
     });
   };
 
+  getTitleByCheckedDepartment = (listTitle = []) => {
+    const { checkedFilterList = [] } = this.props;
+    const checkedList =
+      checkedFilterList.find((filter) => {
+        return filter?.actionFilter?.name === 'Department';
+      })?.checkedList || [];
+
+    let formatDataTitle = listTitle.map((item) => {
+      const { name = '', _id = '', department = {} } = item;
+      if (checkedList.length === 0 || checkedList.includes(department?.name)) {
+        return {
+          label: name,
+          value: _id,
+        };
+      }
+      return null;
+    });
+
+    formatDataTitle = formatDataTitle.filter((val) => val !== null);
+    formatDataTitle = [...new Set(formatDataTitle)];
+    this.setState({
+      formatDataTitle,
+    });
+  };
+
   render() {
     const { Sider } = Layout;
     const {
@@ -132,6 +161,7 @@ class TableFilter extends PureComponent {
       StateState,
       CompanyState,
       formatDataState,
+      formatDataTitle,
       TitleState,
     } = this.state;
     const {
@@ -139,12 +169,7 @@ class TableFilter extends PureComponent {
       collapsed,
       changeTab,
       tabName,
-      filterList: {
-        listCountry = [],
-        listDepartmentName = [],
-        listCompany = [],
-        listTitle = [],
-      } = {},
+      filterList: { listCountry = [], listDepartmentName = [], listCompany = [] } = {},
     } = this.props;
 
     const currentLocation = getCurrentLocation();
@@ -182,13 +207,13 @@ class TableFilter extends PureComponent {
       };
     });
 
-    const formatDataTitle = listTitle.map((item) => {
-      const { name: label, _id: value } = item;
-      return {
-        label,
-        value,
-      };
-    });
+    // const formatDataTitleByDepartment = listTitle.filter((item) => {
+    //   const { name: label, _id: value } = item;
+    //   return {
+    //     label,
+    //     value,
+    //   };
+    // });
 
     return (
       <div className={styles.TabFilter}>
@@ -229,16 +254,7 @@ class TableFilter extends PureComponent {
                     data={filteredArr(formatDataEmployeeType)}
                   />
                 )}
-                {reset || changeTab ? (
-                  ''
-                ) : (
-                  <CheckBoxForms
-                    key={TitleState}
-                    name={TitleState}
-                    all={all}
-                    data={filteredArr(formatDataTitle)}
-                  />
-                )}
+
                 {reset || changeTab ? (
                   ''
                 ) : (
@@ -263,7 +279,16 @@ class TableFilter extends PureComponent {
                     data={filteredArr(formatDataDepartment)}
                   />
                 )}
-
+                {reset || changeTab ? (
+                  ''
+                ) : (
+                  <CheckBoxForms
+                    key={TitleState}
+                    name={TitleState}
+                    all={all}
+                    data={filteredArr(formatDataTitle)}
+                  />
+                )}
                 {/* {reset || changeTab
                   ? ''
                   : this.handleCheckShowLocation(formatDataLocation, locationState, all)} */}
