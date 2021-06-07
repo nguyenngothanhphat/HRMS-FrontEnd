@@ -167,13 +167,13 @@ class DirectoryTable extends Component {
   generateColumns = (sortedName, keyTab) => {
     const { permissions = {} } = this.props;
 
-    const { isSort } = this.state;
+    // const { isSort } = this.state;
     const columns = [
       {
         title: (
           <div className={styles.directoryTable_fullName}>
             {formatMessage({ id: 'component.directory.table.fullName' })}
-            {isSort ? null : <CaretDownOutlined className={styles.directoryTable_iconSort} />}
+            {/* {isSort ? null : <CaretDownOutlined className={styles.directoryTable_iconSort} />} */}
           </div>
         ),
         dataIndex: 'employeePack',
