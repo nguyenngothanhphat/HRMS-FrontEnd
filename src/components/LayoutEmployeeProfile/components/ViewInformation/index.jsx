@@ -253,12 +253,16 @@ class ViewInformation extends Component {
           />
         )}
         <div className={s.infoEmployee__textNameAndTitle}>
-          <p className={s.infoEmployee__textNameAndTitle__title}>{title ? title.name : ''}</p>
           <p className={s.infoEmployee__textNameAndTitle__name}>{firstName}</p>
+          <p className={s.infoEmployee__textNameAndTitle__title} style={{ margin: '5px 0' }}>
+            {title ? title.name : ''}
+          </p>
         </div>
 
         <div className={s.infoEmployee__viewBottom}>
-          <p className={s.infoEmployee__viewBottom__description}>{bioInfo}</p>
+          <p className={s.infoEmployee__viewBottom__description} style={{ marginTop: '10px' }}>
+            {bioInfo}
+          </p>
           <div className={s.viewBtnAction}>
             {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
               <Button onClick={this.handleEditBio} className={s.btnEditBio}>
