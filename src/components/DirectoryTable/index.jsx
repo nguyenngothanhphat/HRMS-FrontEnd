@@ -387,8 +387,11 @@ class DirectoryTable extends Component {
 
   onFilter = async (obj, fieldName) => {
     const { dispatch } = this.props;
-    const { list = [], handleFilterPane = () => {} } = this.props;
-    let newList = [];
+    const {
+      // list = [],
+      handleFilterPane = () => {},
+    } = this.props;
+    // let newList = [];
 
     if (fieldName === 'department') {
       dispatch({
@@ -397,10 +400,14 @@ class DirectoryTable extends Component {
       });
     }
     if (fieldName === 'title') {
-      newList = list.filter((item) => item.title?._id === obj._id) || [];
+      // newList = list.filter((item) => item.title?._id === obj._id) || [];
+      // dispatch({
+      //   type: 'employee/save',
+      //   payload: { listEmployeeActive: [...newList] },
+      // });
       dispatch({
-        type: 'employee/save',
-        payload: { listEmployeeActive: [...newList] },
+        type: 'employee/saveFilter',
+        payload: { name: 'Title', checkedList: [obj._id] },
       });
     }
     handleFilterPane(true);
@@ -420,7 +427,6 @@ class DirectoryTable extends Component {
 
     const { timezoneList } = this.state;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
-    console.log('findTimezone', findTimezone);
     return (
       <div className={styles.locationContent}>
         <span style={{ display: 'block', fontSize: '13px', color: '#0000006e' }}>Address:</span>
@@ -436,7 +442,7 @@ class DirectoryTable extends Component {
           {zipCode}
         </span>
         <span style={{ display: 'block', fontSize: '13px', color: '#0000006e' }}>
-          Current time:
+          Local time{state && ` in  ${state}`}:
         </span>
         <span style={{ display: 'block', fontSize: '13px' }}>
           {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0

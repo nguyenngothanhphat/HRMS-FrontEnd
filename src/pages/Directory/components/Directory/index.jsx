@@ -46,11 +46,13 @@ class DirectoryComponent extends PureComponent {
       let country = [];
       let state = [];
       let company = [];
+      let title = [];
       const employeeTypeConst = 'Employment Type';
       const departmentConst = 'Department';
       const countryConst = 'Country';
       const stateConst = 'State';
       const companyConst = 'Company';
+      const titleConst = 'Title';
       filter.map((item) => {
         if (item.actionFilter.name === employeeTypeConst) {
           employeeType = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
@@ -67,7 +69,10 @@ class DirectoryComponent extends PureComponent {
         if (item.actionFilter.name === companyConst) {
           company = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        return { employeeType, department, countryConst, company };
+        if (item.actionFilter.name === titleConst) {
+          title = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        }
+        return { employeeType, department, countryConst, company, title };
       });
       return {
         ...prevState,
@@ -76,6 +81,7 @@ class DirectoryComponent extends PureComponent {
         state,
         employeeType,
         company,
+        title,
       };
     }
     return null;
@@ -124,8 +130,17 @@ class DirectoryComponent extends PureComponent {
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { department, country, state, employeeType, company, filterName, tabId, changeTab } =
-      this.state;
+    const {
+      department,
+      country,
+      state,
+      employeeType,
+      company,
+      title,
+      filterName,
+      tabId,
+      changeTab,
+    } = this.state;
     // const isOwnerCheck = isOwner();
     // const currentLocation = getCurrentLocation();
 
@@ -136,6 +151,7 @@ class DirectoryComponent extends PureComponent {
       state,
       employeeType,
       company,
+      title,
     };
     if (
       prevState.tabId !== tabId ||
@@ -144,6 +160,7 @@ class DirectoryComponent extends PureComponent {
       prevState.country.length !== country.length ||
       prevState.state.length !== state.length ||
       prevState.employeeType.length !== employeeType.length ||
+      prevState.title.length !== title.length ||
       prevState.filterName !== filterName ||
       prevState.company.length !== company.length
     ) {
@@ -331,7 +348,7 @@ class DirectoryComponent extends PureComponent {
       listLocationsByCompany = [],
       currentUser: { employee: { department: { name: departmentName = '' } = {} } = {} } = {},
     } = this.props;
-    const { name, department, country, state, employeeType, company } = params;
+    const { name, department, country, state, employeeType, company, title } = params;
 
     // MULTI COMPANY & LOCATION PAYLOAD
     let companyPayload = [];
@@ -429,6 +446,7 @@ class DirectoryComponent extends PureComponent {
       department,
       location: locationPayload,
       employeeType,
+      title,
     };
 
     if (tabId === active) {

@@ -1,7 +1,6 @@
 import { isEmpty } from 'lodash';
 
 const moment = require('moment-timezone');
-
 const cityTimezones = require('city-timezones');
 
 export const getTimezoneViaCity = (city) => {

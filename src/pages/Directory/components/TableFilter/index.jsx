@@ -30,6 +30,7 @@ class TableFilter extends PureComponent {
       CountryState: 'Country',
       DepartmentState: 'Department',
       CompanyState: 'Company',
+      TitleState: 'Title',
       formatDataState: [], // dynamic state on country
       all: 'All',
       text: '',
@@ -131,13 +132,19 @@ class TableFilter extends PureComponent {
       StateState,
       CompanyState,
       formatDataState,
+      TitleState,
     } = this.state;
     const {
       employee: { employeetype = [], clearName = false },
       collapsed,
       changeTab,
       tabName,
-      filterList: { listCountry = [], listDepartmentName = [], listCompany = [] } = {},
+      filterList: {
+        listCountry = [],
+        listDepartmentName = [],
+        listCompany = [],
+        listTitle = [],
+      } = {},
     } = this.props;
 
     const currentLocation = getCurrentLocation();
@@ -172,6 +179,14 @@ class TableFilter extends PureComponent {
       return {
         label: item,
         value: item,
+      };
+    });
+
+    const formatDataTitle = listTitle.map((item) => {
+      const { name: label, _id: value } = item;
+      return {
+        label,
+        value,
       };
     });
 
@@ -212,6 +227,16 @@ class TableFilter extends PureComponent {
                     name={EmploymentState}
                     all={all}
                     data={filteredArr(formatDataEmployeeType)}
+                  />
+                )}
+                {reset || changeTab ? (
+                  ''
+                ) : (
+                  <CheckBoxForms
+                    key={TitleState}
+                    name={TitleState}
+                    all={all}
+                    data={filteredArr(formatDataTitle)}
                   />
                 )}
                 {reset || changeTab ? (
