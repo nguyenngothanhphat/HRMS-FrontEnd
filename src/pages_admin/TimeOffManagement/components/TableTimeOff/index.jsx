@@ -21,8 +21,8 @@ class TableTimeOff extends PureComponent {
         compare: (a, b) => a._id.localeCompare(b._id),
       },
       render: (employee) => {
-        const { employeeId = '' } = employee;
-        return <span>{employeeId}</span>;
+        const { employeeId = '', generalInfo: { employeeId: emplID = '' } = {} } = employee;
+        return <span>{employeeId || emplID}</span>;
       },
     },
     {
