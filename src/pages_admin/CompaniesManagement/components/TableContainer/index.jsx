@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect, formatMessage, NavLink } from 'umi';
 import { Tabs, Layout } from 'antd';
+import { getCurrentTenant } from '@/utils/authority';
 import TableCompanies from '../TableCompanies';
 import TabFilter from '../TabFilter';
 import styles from './index.less';
@@ -34,6 +35,9 @@ class TableContainer extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'companiesManagement/fetchCompaniesList',
+      payload: {
+        tenantId: getCurrentTenant(),
+      },
     });
   };
 
