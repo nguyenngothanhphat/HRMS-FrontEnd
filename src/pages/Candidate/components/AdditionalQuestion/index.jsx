@@ -1,6 +1,6 @@
 import QuestionItemView from '@/components/Question/QuestionItemView';
 import { getCurrentTenant } from '@/utils/authority';
-import { Button, Col, Form, Row, Typography } from 'antd';
+import { Button, Col, Row, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { connect, formatMessage } from 'umi';
 import NoteComponent from '../NoteComponent';
@@ -172,22 +172,26 @@ const AdditionalQuestion = (props) => {
             </header>
 
             <div className={s.mainContent}>
-              <Form layout="vertical">
-                <div className={s.form}>
-                  <Row>
-                    <Col md={24}>
-                      {questionOnBoarding.map((questionItem, key) => (
-                        <QuestionItemView
-                          control={false}
-                          questionItem={questionItem}
-                          keyQuestion={key}
-                          onChangeEmployeeAnswers={onChangeEmployeeAnswers}
-                        />
-                      ))}
-                    </Col>
-                  </Row>
-                </div>
-              </Form>
+              <div className={s.form}>
+                <Row>
+                  <Col md={24}>
+                    {questionOnBoarding.map((questionItem, key) => (
+                      <QuestionItemView
+                        control={false}
+                        questionItem={questionItem}
+                        keyQuestion={key}
+                        onChangeEmployeeAnswers={onChangeEmployeeAnswers}
+                      />
+                    ))}
+                    {questionOnBoarding.length === 0 && (
+                      <div>
+                        You don&apos;t have any onboarding questions, so you can press next to
+                        continue
+                      </div>
+                    )}
+                  </Col>
+                </Row>
+              </div>
             </div>
           </div>
           {_renderBottomBar()}
