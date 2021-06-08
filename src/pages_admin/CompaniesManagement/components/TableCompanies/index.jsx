@@ -1,9 +1,9 @@
-import React, { PureComponent } from 'react';
 import { Table } from 'antd';
-import { formatMessage, history } from 'umi';
-import ModalConfirmRemove from './components/ModalConfirmRemove';
+import React, { PureComponent } from 'react';
+import { formatMessage, history, connect } from 'umi';
 import styles from './index.less';
 
+@connect()
 class TableCompanies extends PureComponent {
   constructor(props) {
     super(props);
@@ -169,7 +169,14 @@ class TableCompanies extends PureComponent {
   };
 
   handleCompanyDetail = (record) => {
-    history.push(`/companies/company-detail/${record._id}`);
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'companiesManagement/save',
+      payload: {
+        tenantCurrentCompany: record.tenant,
+      },
+    });
+    history.push(`/companies-management/company-detail/${record._id}`);
   };
 
   render() {
@@ -177,7 +184,7 @@ class TableCompanies extends PureComponent {
     const { pageSelected, selectedRowKeys, visible } = this.state;
     const rowSize = 10;
     const scroll = {
-      x: '100vw',
+      // x: '100vw',
       y: 'max-content',
     };
     const pagination = {
@@ -218,15 +225,9 @@ class TableCompanies extends PureComponent {
           pagination={{ ...pagination, total: data.length }}
           columns={this.generateColumns()}
           dataSource={data}
-          // scroll={scroll}
+          scroll={scroll}
           rowKey={(record) => record._id}
           // onChange={this.onSortChange}
-        />
-        <ModalConfirmRemove
-          titleModal="Confirm Remove Employee"
-          visible={visible}
-          handleCancel={this.handleCancel}
-          getResponse={this.getResponse}
         />
       </div>
     );

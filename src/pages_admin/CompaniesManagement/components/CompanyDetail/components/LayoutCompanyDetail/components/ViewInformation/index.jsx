@@ -8,8 +8,8 @@ import styles from '../../index.less';
 @connect(
   ({
     companiesManagement: {
-      originData: { companyDetails: companyDetailsOrigin = {} },
-      tempData: { companyDetails = {} },
+      originData: { companyDetails: { company: companyDetailsOrigin = {} } = {} },
+      tempData: { companyDetails: { company: companyDetails = {} } = {} },
     } = {},
   }) => ({ companyDetailsOrigin, companyDetails }),
 )

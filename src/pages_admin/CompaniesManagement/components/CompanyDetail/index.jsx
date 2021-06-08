@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { formatMessage, connect } from 'umi';
 import { Affix } from 'antd';
+import { getCurrentTenant } from '@/utils/authority';
 import ComponyInformation from './components/CompanyInformation';
 import WorkLocation from './components/WorkLocation';
 import OwnerContact from './components/OwnerContact';
@@ -9,23 +10,26 @@ import LicenseAndPayment from './components/LicenseAndPayment';
 import LayoutCompanyDetail from './components/LayoutCompanyDetail';
 import styles from './index.less';
 
-@connect(() => ({}))
+@connect(({ companiesManagement: { tenantCurrentCompany = '' } = {} }) => ({
+  tenantCurrentCompany,
+}))
 class CompanyDetail extends Component {
   componentDidMount() {
     const {
       match: { params: { reId: id = '' } = {} },
       dispatch,
+      tenantCurrentCompany = '',
     } = this.props;
     dispatch({
       type: 'country/fetchListCountry',
     });
     dispatch({
       type: 'companiesManagement/fetchCompanyDetails',
-      payload: { id },
+      payload: { id, tenantId: tenantCurrentCompany },
     });
     dispatch({
       type: 'companiesManagement/fetchLocationsList',
-      payload: { company: id },
+      payload: { company: id, tenantId: tenantCurrentCompany },
     });
   }
 

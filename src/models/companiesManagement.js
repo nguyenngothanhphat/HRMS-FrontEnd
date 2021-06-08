@@ -35,6 +35,7 @@ const companiesManagement = {
       },
     },
     idCurrentCompany: '',
+    tenantCurrentCompany: '',
     isOpenEditWorkLocation: false,
     selectedNewCompanyTab: 1,
     logoCompany: '',

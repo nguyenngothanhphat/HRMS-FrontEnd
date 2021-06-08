@@ -11,8 +11,8 @@ const { confirm } = Modal;
   ({
     companiesManagement: {
       isModified,
-      originData: { companyDetails: companyDetailsOrigin = {} },
-      tempData: { companyDetails = {} },
+      originData: { companyDetails: { company: companyDetailsOrigin = {} } = {} },
+      tempData: { companyDetails: { company: companyDetails = {} } = {} },
     } = {},
   }) => ({
     isModified,

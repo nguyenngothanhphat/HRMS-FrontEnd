@@ -3,6 +3,7 @@
 import React, { PureComponent } from 'react';
 import { Button, Form, Input, Select } from 'antd';
 import { connect, formatMessage } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from '../../Information/Edit/index.less';
 
 const { Option } = Select;
@@ -63,6 +64,7 @@ class Edit extends PureComponent {
     const payload = {
       ...companyDetails,
       id: companyDetails._id,
+      tenantId: getCurrentTenant(),
       headQuarterAddress: {
         ...changedValues,
       },

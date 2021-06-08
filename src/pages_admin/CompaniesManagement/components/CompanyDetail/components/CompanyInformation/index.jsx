@@ -8,8 +8,8 @@ import LegalAddress from './components/LegalAddress';
 @connect(
   ({
     companiesManagement: {
-      originData: { companyDetails: companyDetailsOrigin = {} },
-      tempData: { companyDetails = {} },
+      originData: { companyDetails: { company: companyDetailsOrigin = {} } = {} },
+      tempData: { companyDetails: { company: companyDetails = {} } = {} },
     } = {},
     loading,
   }) => ({
