@@ -45,7 +45,7 @@ class HeadquaterAddress extends PureComponent {
     return (
       <div className={styles.companyInformation}>
         <div className={styles.spaceTitle}>
-          <p className={styles.companyInformation_title}>Headquater Address</p>
+          <p className={styles.companyInformation_title}>Headquarter Address</p>
           {isOpenEditDetail ? (
             ''
           ) : (

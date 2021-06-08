@@ -6,7 +6,7 @@ export default {
   'pages_admin.companies.table.addEmployee': 'Add company',
   'pages_admin.companies.table.companyID': 'Company ID',
   'pages_admin.companies.table.companyName': 'Company Name',
-  'pages_admin.companies.table.headQuarterAdd': 'Head Quarter Address',
+  'pages_admin.companies.table.headQuarterAdd': 'Headquarter Address',
   'pages_admin.companies.table.workLocation': 'Work Location',
   'pages_admin.companies.table.ownerEmail': `Owner's Email`,
   'pages_admin.companies.table.ownerName': `Owner's Name`,

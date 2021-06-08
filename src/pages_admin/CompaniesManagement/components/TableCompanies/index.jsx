@@ -25,9 +25,9 @@ class TableCompanies extends PureComponent {
     const columns = [
       {
         title: formatMessage({ id: 'pages_admin.companies.table.companyID' }),
-        dataIndex: '_id',
-        key: '_id',
-        width: '15%',
+        dataIndex: 'code',
+        key: 'code',
+        // width: '15%',
         align: 'left',
         defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],
@@ -40,7 +40,7 @@ class TableCompanies extends PureComponent {
         title: formatMessage({ id: 'pages_admin.companies.table.companyName' }),
         dataIndex: 'name',
         align: 'left',
-        width: '10%',
+        // width: '10%',
       },
       {
         title: 'DBA',
@@ -57,9 +57,30 @@ class TableCompanies extends PureComponent {
       {
         title: formatMessage({ id: 'pages_admin.companies.table.headQuarterAdd' }),
         dataIndex: 'headQuarterAddress',
-        width: '15%',
+        // width: '15%',
         align: 'left',
-        render: (headQuarterAddress) => <span>{headQuarterAddress.state}</span>,
+        render: (headQuarterAddress) => {
+          const {
+            addressLine1 = '',
+            addressLine2 = '',
+            state = '',
+            country = {},
+            zipCode = '',
+          } = headQuarterAddress;
+          return (
+            <span>
+              {addressLine1}
+              {addressLine2 && ', '}
+              {addressLine2}
+              {state && ', '}
+              {state}
+              {country ? ', ' : ''}
+              {country?.name || country || ''}
+              {zipCode && ', '}
+              {zipCode}
+            </span>
+          );
+        },
       },
       {
         title: formatMessage({ id: 'pages_admin.companies.table.workLocation' }),
@@ -76,19 +97,19 @@ class TableCompanies extends PureComponent {
         //     }),
         align: 'left',
       },
-      {
-        title: formatMessage({ id: 'pages_admin.companies.table.ownerEmail' }),
-        // dataIndex: 'user',
-        width: '15%',
-        align: 'center',
-        render: () => <span>test.name@terralogic.com</span>,
-      },
-      {
-        title: formatMessage({ id: 'pages_admin.companies.table.ownerName' }),
-        // dataIndex: 'user',
-        align: 'center',
-        render: () => <span>firstName lastName</span>,
-      },
+      // {
+      //   title: formatMessage({ id: 'pages_admin.companies.table.ownerEmail' }),
+      //   // dataIndex: 'user',
+      //   width: '15%',
+      //   align: 'center',
+      //   render: () => <span>test.name@terralogic.com</span>,
+      // },
+      // {
+      //   title: formatMessage({ id: 'pages_admin.companies.table.ownerName' }),
+      //   // dataIndex: 'user',
+      //   align: 'center',
+      //   render: () => <span>firstName lastName</span>,
+      // },
       {
         title: formatMessage({ id: 'pages_admin.companies.table.license' }),
         // dataIndex: 'user',
@@ -186,7 +207,7 @@ class TableCompanies extends PureComponent {
     return (
       <div className={styles.tableEmployees}>
         <Table
-          size="small"
+          size="middle"
           loading={loading}
           onRow={(record) => {
             return {
@@ -197,7 +218,7 @@ class TableCompanies extends PureComponent {
           pagination={{ ...pagination, total: data.length }}
           columns={this.generateColumns()}
           dataSource={data}
-          scroll={scroll}
+          // scroll={scroll}
           rowKey={(record) => record._id}
           // onChange={this.onSortChange}
         />
