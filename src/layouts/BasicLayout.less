@@ -21,6 +21,7 @@
     .ant-breadcrumb-link {
       display: inline-flex;
       // align-items: center;
+      // z-index: 100;
     }
 
     .ant-breadcrumb a {
@@ -37,6 +38,12 @@
     }
 
     .ant-breadcrumb {
+      .ant-breadcrumb-link {
+      a {
+        z-index: 1;
+      }
+    }
+
       > span:nth-child(n):not(:last-child):not(:first-child) {
         a {
           font-weight: 500;
@@ -60,7 +67,7 @@
             position: absolute;
             top: 0px;
             left: 0;
-            z-index: 100;
+            z-index: 0;
             width: 100%;
             transform: skewX(-25deg);
             border: 1px solid #ccc;
@@ -97,12 +104,14 @@
             position: absolute;
             top: 0px;
             left: 0px;
-            z-index: 100;
+            z-index: 0;
             width: 100%;
             transform: perspective(86px) rotateX(-28deg);
             transform-origin: left center;
             border: 1px solid #ccc;
-            border-radius: 5px 0 0 5px;
+            border-left: none !important;
+               border-right: none !important;
+            // border-radius: 0;
           }
 
           // &::before {
@@ -169,7 +178,7 @@
     .ant-page-header {
       width: 100%;
       padding: 0;
-      background-color: #eeeeee61;
+      background-color: #eeeeee;
     }
 
     .ant-breadcrumb {
