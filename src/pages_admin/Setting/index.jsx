@@ -60,7 +60,7 @@ class SettingTab extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.containerUsers}>
-          <Affix offsetTop={42}>
+          <Affix offsetTop={30}>
             <div className={styles.headerText}>
               <span>{formatMessage({ id: 'pages_admin.setting.title' })}</span>
             </div>

@@ -34,7 +34,7 @@ class FAQs extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.root}>
-          <Affix offsetTop={42}>
+          <Affix offsetTop={30}>
             <div className={styles.titlePage}>
               <div className={styles.titlePage__text}>
                 {formatMessage({ id: 'pages.frequentlyAskedQuestions.title' })}
