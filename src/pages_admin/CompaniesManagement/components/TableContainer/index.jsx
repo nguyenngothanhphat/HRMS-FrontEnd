@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect, formatMessage, NavLink } from 'umi';
 import { Tabs, Layout } from 'antd';
+import { getCurrentTenant } from '@/utils/authority';
 import TableCompanies from '../TableCompanies';
 import TabFilter from '../TabFilter';
 import styles from './index.less';
@@ -34,13 +35,16 @@ class TableContainer extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'companiesManagement/fetchCompaniesList',
+      payload: {
+        tenantId: getCurrentTenant(),
+      },
     });
   };
 
   rightButton = (collapsed) => {
     return (
       <div className={styles.tabBarExtra}>
-        <NavLink to="/companies/add-company">
+        <NavLink to="/control-panel/add-company">
           <div className={styles.buttonAddImport}>
             <img src="/assets/images/addMemberIcon.svg" alt="Add Company" />
             <p className={styles.buttonAddImport_text}>

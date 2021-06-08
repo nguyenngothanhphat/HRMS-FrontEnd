@@ -199,7 +199,7 @@ class HRDetailTicket extends Component {
       <>
         <PageContainer>
           <div className={styles.hrDetailTicket}>
-            <Affix offsetTop={42}>
+            <Affix offsetTop={30}>
               <div className={styles.titlePage}>
                 <p className={styles.titlePage__text}>
                   [Ticket ID: {ticketID}] Terminate work relationship with {firstNameEmp} [

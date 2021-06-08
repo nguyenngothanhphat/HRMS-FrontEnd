@@ -130,7 +130,7 @@ class ManagerOffBoading extends Component {
     return (
       <PageContainer>
         <div className={styles.managerContainer}>
-          <Affix offsetTop={42}>
+          <Affix offsetTop={30}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>
                 Terminate work relationship / Initiate Resignation Request

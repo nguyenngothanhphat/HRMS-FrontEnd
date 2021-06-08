@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 export async function getCompaniesList(payload) {
-  return request('/api/company/list', {
+  return request('/api/companytenant/list-of-user', {
     method: 'POST',
     data: payload,
   });
@@ -42,7 +42,6 @@ export async function addMultiLocation(payload) {
   });
 }
 
-
 export async function addLocation(payload) {
   return request('/api/locationtenant/add', {
     method: 'POST',
@@ -51,7 +50,7 @@ export async function addLocation(payload) {
 }
 
 export async function updateLocation(payload) {
-  return request('/api/location/update', {
+  return request('/api/locationtenant/update', {
     method: 'POST',
     data: payload,
   });
@@ -65,7 +64,7 @@ export async function upsertLocationsList(payload) {
 }
 
 export async function removeLocation(payload) {
-  return request('/api/location/remove', {
+  return request('/api/locationtenant/remove', {
     method: 'POST',
     data: payload,
   });

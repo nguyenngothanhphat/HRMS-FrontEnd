@@ -78,7 +78,7 @@ const ProjectManagement = (props) => {
   return (
     <PageContainer>
       <div className={s.containerDashboard}>
-        <Affix offsetTop={42}>
+        <Affix offsetTop={30}>
           <div className={s.titlePage}>
             <p className={s.titlePage__text}>Projects Management</p>
           </div>
