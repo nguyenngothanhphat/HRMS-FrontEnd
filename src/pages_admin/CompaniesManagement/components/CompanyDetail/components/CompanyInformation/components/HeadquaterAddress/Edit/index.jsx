@@ -83,7 +83,14 @@ class Edit extends PureComponent {
 
   render() {
     const { listCountry = [], location, handleCancelEdit = () => {}, loadingUpdate } = this.props;
-    const { name, addressLine1 = '', country = '', state = '', zipCode = '' } = location;
+    const {
+      name,
+      addressLine1 = '',
+      addressLine2 = '',
+      country = '',
+      state = '',
+      zipCode = '',
+    } = location;
 
     const { listStateHead = [] } = this.state;
 
@@ -101,6 +108,7 @@ class Edit extends PureComponent {
             initialValues={{
               name,
               addressLine1,
+              addressLine2,
               country,
               state,
               zipCode,
@@ -109,8 +117,14 @@ class Edit extends PureComponent {
             {...formLayout}
           >
             <Form.Item
-              label={formatMessage({ id: 'pages_admin.company.location.address' })}
+              label={formatMessage({ id: 'pages_admin.company.location.addressLine1' })}
               name="addressLine1"
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label={formatMessage({ id: 'pages_admin.company.location.addressLine2' })}
+              name="addressLine2"
             >
               <Input />
             </Form.Item>
