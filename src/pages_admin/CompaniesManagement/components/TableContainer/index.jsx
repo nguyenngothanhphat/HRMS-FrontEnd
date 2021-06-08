@@ -44,7 +44,7 @@ class TableContainer extends PureComponent {
   rightButton = (collapsed) => {
     return (
       <div className={styles.tabBarExtra}>
-        <NavLink to="/companies/add-company">
+        <NavLink to="/control-panel/add-company">
           <div className={styles.buttonAddImport}>
             <img src="/assets/images/addMemberIcon.svg" alt="Add Company" />
             <p className={styles.buttonAddImport_text}>

@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
 export async function getCompaniesList(payload) {
-  return request('/api/companytenant/list', {
+  return request('/api/companytenant/list-of-user', {
     method: 'POST',
     data: payload,
   });

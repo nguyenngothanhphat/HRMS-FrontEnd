@@ -75,12 +75,12 @@ class CommonLayout extends PureComponent {
 
     return (
       <div className={s.LayoutAdminApp}>
-        <Affix offsetTop={42}>
+        <Affix offsetTop={30}>
           <div className={s.titlePage}>Admin App</div>
         </Affix>
 
         <div className={s.root}>
-          <Affix offsetTop={101} className={s.affix}>
+          <Affix offsetTop={90} className={s.affix}>
             <div className={s.viewLeft}>
               <div className={s.viewLeft__menu}>
                 {listMenu.map((item) => (

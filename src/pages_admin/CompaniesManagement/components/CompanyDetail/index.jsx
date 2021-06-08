@@ -56,7 +56,7 @@ class CompanyDetail extends Component {
       <div className={styles.companyDetail}>
         <PageContainer>
           <div className={styles.companyDetailContent}>
-            <Affix offsetTop={42}>
+            <Affix offsetTop={30}>
               <div className={styles.titlePage}>
                 <p className={styles.titlePage_text}>
                   {formatMessage({ id: 'pages_admin.companies.companyDetail' })}
