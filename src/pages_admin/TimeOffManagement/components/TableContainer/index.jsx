@@ -15,7 +15,6 @@ import styles from './index.less';
   }) => ({
     loadingList: loading.effects['timeOffManagement/fetchListTimeOff'],
     loading:
-      loading.effects['timeOffManagement/fetchListTimeOffManagement'] ||
       loading.effects['timeOffManagement/fetchListTimeOff'],
     loadingActiveList: loading.effects['timeOffManagement/fetchEmployeeList'],
     loadingDetail: loading.effects['timeOffManagement/fetchRequestById'],
@@ -26,7 +25,7 @@ import styles from './index.less';
 )
 class TableContainer extends PureComponent {
   componentDidMount() {
-    this.fetchListTimeOffManagement();
+    this.fetchListTimeOff();
     this.fetchEmployees();
   }
 
@@ -36,7 +35,7 @@ class TableContainer extends PureComponent {
       JSON.stringify(listLocationsByCompany) !== JSON.stringify(prevProps.listLocationsByCompany)
     ) {
       this.fetchEmployees();
-      this.fetchListTimeOffManagement();
+      this.fetchListTimeOff();
     }
   };
 
@@ -61,13 +60,13 @@ class TableContainer extends PureComponent {
     };
   };
 
-  fetchListTimeOffManagement = () => {
+  fetchListTimeOff = () => {
     const { dispatch } = this.props;
     const tenantId = getCurrentTenant();
     const data = this.getCompanyAndLocation();
 
     dispatch({
-      type: 'timeOffManagement/fetchListTimeOffManagement',
+      type: 'timeOffManagement/fetchListTimeOff',
       payload: {
         company: data.getCurrentFirm,
         tenantId,

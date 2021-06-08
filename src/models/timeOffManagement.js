@@ -1,3 +1,4 @@
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { dialog } from '@/utils/utils';
 import {
   getListTimeOff,
@@ -31,25 +32,27 @@ const timeOffManagement = {
         dialog(error);
       }
     },
-    *fetchListTimeOffManagement({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(getListTimeOffManagement, payload);
-        const { data: listTimeOff = [] } = response;
-        const { statusCode } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { listTimeOff },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
+    // *fetchListTimeOffManagement({ payload = {} }, { call, put }) {
+    //   try {
+    //     const response = yield call(getListTimeOffManagement, payload);
+    //     const { data: listTimeOff = [] } = response;
+    //     const { statusCode } = response;
+    //     if (statusCode !== 200) throw response;
+    //     yield put({
+    //       type: 'save',
+    //       payload: { listTimeOff },
+    //     });
+    //   } catch (errors) {
+    //     dialog(errors);
+    //   }
+    // },
     *fetchListTimeOff({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getListTimeOff, payload);
-        const { data: listTimeOff = [] } = response;
+        let { data: listTimeOff = [] } = response;
         const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+
         // listTimeOff = listTimeOff.map((item = {}) => {
         //   const fullName = `${item.employee.generalInfo.firstName} ${item.employee.generalInfo.lastName}`;
         //   let newStatus = '';
@@ -78,7 +81,42 @@ const timeOffManagement = {
         //     status: newStatus,
         //   };
         // });
-        if (statusCode !== 200) throw response;
+        listTimeOff = listTimeOff.map((item = {}) => {
+          const fullName = `${item.employee.generalInfo.firstName} ${item.employee.generalInfo.lastName}`;
+          let newStatus = '';
+          const options = [
+            { value: TIMEOFF_STATUS.accepted, label: 'Approved' },
+            { value: TIMEOFF_STATUS.inProgress, label: 'In Progress' },
+            { value: TIMEOFF_STATUS.rejected, label: 'Rejected' },
+            { value: TIMEOFF_STATUS.drafts, label: 'Draft' },
+            { value: TIMEOFF_STATUS.onHold, label: 'On-hold' },
+            { value: TIMEOFF_STATUS.drafts, label: 'Draft' },
+            { value: TIMEOFF_STATUS.deleted, label: 'Deleted' },
+          ];
+
+          options.forEach((op) => {
+            if (op.value === item.status) {
+              newStatus = op.label;
+            }
+          });
+
+          return {
+            _id: item._id,
+            employeeId: item.employee.employeeId,
+            name: fullName,
+            // country: item.employee.location.country.nativeName,
+            cc: item.cc,
+            fromDate: item.fromDate,
+            toDate: item.toDate,
+            type: item.type,
+            updated: item.updated,
+            description: item.description,
+            duration: item.duration,
+            employee: item.employee,
+            status: newStatus,
+          };
+        });
+
         yield put({
           type: 'save',
           payload: { listTimeOff },
