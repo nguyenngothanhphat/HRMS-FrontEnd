@@ -212,7 +212,6 @@ class CompanyDetails extends Component {
       dataTempKept: {},
       isAccountSetup: true,
     });
-    }
   };
 
   // COMPANY DETAILS REGEX
