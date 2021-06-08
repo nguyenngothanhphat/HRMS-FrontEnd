@@ -75,9 +75,9 @@ const companiesManagement = {
       }
     },
 
-    *fetchCompaniesList(_, { call, put }) {
+    *fetchCompaniesList({ payload }, { call, put }) {
       try {
-        const response = yield call(getCompaniesList);
+        const response = yield call(getCompaniesList, payload);
         const { statusCode, data: companiesList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { companiesList } });

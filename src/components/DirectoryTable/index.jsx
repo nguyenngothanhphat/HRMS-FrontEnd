@@ -2,8 +2,8 @@
 import avtDefault from '@/assets/avtDefault.jpg';
 import { isOwner } from '@/utils/authority';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
-import { CaretDownOutlined } from '@ant-design/icons';
 import { Avatar, Button, Popover, Table, Tag, Tooltip } from 'antd';
+import moment from 'moment';
 import React, { Component } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import ModalTerminate from './components/ModalTerminate';
@@ -49,6 +49,7 @@ class DirectoryTable extends Component {
       rowData: {},
       valueReason: '',
       timezoneList: [],
+      currentTime: moment(),
     };
   }
 
@@ -269,7 +270,7 @@ class DirectoryTable extends Component {
             title={location.name}
             trigger="hover"
           >
-            <span>{location ? location.name : ''}</span>
+            <span onMouseEnter={this.setCurrentTime}>{location ? location.name : ''}</span>
           </Popover>
         ),
         width: '14%',
@@ -415,6 +416,22 @@ class DirectoryTable extends Component {
     handleFilterPane(true);
   };
 
+  setCurrentTime = () => {
+    // compare two time by hour & minute. If minute changes, get new time
+    const timeFormat = 'HH:mm';
+    const { currentTime } = this.state;
+    const parseTime = (timeString) => moment(timeString, timeFormat);
+    const check = parseTime(moment().format(timeFormat)).isAfter(
+      parseTime(moment(currentTime).format(timeFormat)),
+    );
+
+    if (check) {
+      this.setState({
+        currentTime: moment(),
+      });
+    }
+  };
+
   locationContent = (location) => {
     const {
       headQuarterAddress: {
@@ -427,13 +444,16 @@ class DirectoryTable extends Component {
       _id = '',
     } = location;
 
-    const { timezoneList } = this.state;
+    const { timezoneList, currentTime } = this.state;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
-    // console.log('findTimezone', findTimezone);
     return (
       <div className={styles.locationContent}>
-        <span style={{ display: 'block', fontSize: '13px', color: '#0000006e' }}>Address:</span>
-        <span style={{ display: 'block', fontSize: '13px', marginBottom: '5px' }}>
+        <span
+          style={{ display: 'block', fontSize: '13px', color: '#0000006e', marginBottom: '5px' }}
+        >
+          Address:
+        </span>
+        <span style={{ display: 'block', fontSize: '13px', marginBottom: '10px' }}>
           {addressLine1}
           {addressLine2 && ', '}
           {addressLine2}
@@ -444,12 +464,14 @@ class DirectoryTable extends Component {
           {zipCode && ', '}
           {zipCode}
         </span>
-        <span style={{ display: 'block', fontSize: '13px', color: '#0000006e' }}>
+        <span
+          style={{ display: 'block', fontSize: '13px', color: '#0000006e', marginBottom: '5px' }}
+        >
           Local time{state && ` in  ${state}`}:
         </span>
         <span style={{ display: 'block', fontSize: '13px' }}>
           {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-            ? getCurrentTimeOfTimezone(findTimezone.timezone)
+            ? getCurrentTimeOfTimezone(currentTime, findTimezone.timezone)
             : 'Not enough data in address'}
         </span>
       </div>
