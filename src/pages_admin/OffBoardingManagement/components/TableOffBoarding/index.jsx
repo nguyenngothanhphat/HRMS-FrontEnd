@@ -14,11 +14,10 @@ class TableOffBoarding extends PureComponent {
     },
     {
       title: 'Ticket ID',
-      dataIndex: 'candidate',
+      dataIndex: 'ticketID',
       defaultSortOrder: 'ascend',
       sortDirections: ['ascend', 'descend', 'ascend'],
-      render: (candidate = {}) => {
-        const { ticketID = '' } = candidate;
+      render: (ticketID) => {
         return <span>{ticketID}</span>;
       },
     },
@@ -150,7 +149,7 @@ class TableOffBoarding extends PureComponent {
     return (
       <div className={styles.TableOffBoarding}>
         <Table
-          size="small"
+          size="middle"
           loading={loading}
           rowSelection={rowSelection}
           pagination={{ ...pagination, total: data.length }}

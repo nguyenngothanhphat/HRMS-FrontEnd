@@ -4,8 +4,19 @@ import {
   getListTimeOff,
   getListEmployees,
   getRequestById,
-  getListTimeOffManagement,
+  // getListTimeOffManagement,
 } from '../services/timeOffManagement';
+
+const options = [
+  { value: TIMEOFF_STATUS.accepted, label: 'Approved' },
+  { value: TIMEOFF_STATUS.inProgress, label: 'In Progress' },
+  { value: TIMEOFF_STATUS.inProgressNext, label: 'In Progress' },
+  { value: TIMEOFF_STATUS.rejected, label: 'Rejected' },
+  { value: TIMEOFF_STATUS.drafts, label: 'Draft' },
+  { value: TIMEOFF_STATUS.onHold, label: 'On-hold' },
+  { value: TIMEOFF_STATUS.drafts, label: 'Draft' },
+  { value: TIMEOFF_STATUS.deleted, label: 'Deleted' },
+];
 
 const timeOffManagement = {
   namespace: 'timeOffManagement',
@@ -84,15 +95,6 @@ const timeOffManagement = {
         listTimeOff = listTimeOff.map((item = {}) => {
           const fullName = `${item.employee.generalInfo.firstName} ${item.employee.generalInfo.lastName}`;
           let newStatus = '';
-          const options = [
-            { value: TIMEOFF_STATUS.accepted, label: 'Approved' },
-            { value: TIMEOFF_STATUS.inProgress, label: 'In Progress' },
-            { value: TIMEOFF_STATUS.rejected, label: 'Rejected' },
-            { value: TIMEOFF_STATUS.drafts, label: 'Draft' },
-            { value: TIMEOFF_STATUS.onHold, label: 'On-hold' },
-            { value: TIMEOFF_STATUS.drafts, label: 'Draft' },
-            { value: TIMEOFF_STATUS.deleted, label: 'Deleted' },
-          ];
 
           options.forEach((op) => {
             if (op.value === item.status) {

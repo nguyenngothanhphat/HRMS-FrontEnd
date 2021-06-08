@@ -23,6 +23,29 @@ export default class OptionsHeader extends PureComponent {
   render() {
     const dateFormat = 'MM.DD.YY';
 
+    const statusType = {
+      inProgress: 'IN-PROGRESS',
+      draft: 'DRAFT',
+      completed: 'COMPLETED',
+      deleted: 'DELETED',
+      done: 'DONE',
+      onHold: 'ON-HOLD',
+      accepted: 'ACCEPTED',
+      rejected: 'REJECTED',
+    };
+
+    const options = [
+      { value: statusType.accepted, label: 'Approved' },
+      { value: statusType.inProgress, label: 'In Progress' },
+      { value: statusType.rejected, label: 'Rejected' },
+      { value: statusType.draft, label: 'Draft' },
+      { value: statusType.onHold, label: 'On-hold' },
+      { value: statusType.deleted, label: 'Deleted' },
+      { value: statusType.done, label: 'Deleted' },
+      { value: statusType.completed, label: 'Deleted' },
+    ];
+    const nameOpt = options.map((op) => op.value);
+
     return (
       <div className={styles.OptionsHeader}>
         <div className={styles.container}>
@@ -66,12 +89,7 @@ export default class OptionsHeader extends PureComponent {
               <Col className={styles.statusFilter}>
                 <span className={styles.itemLabel}>Status</span>
                 <Form.Item name="status" className={styles.filterItem}>
-                  <Checkbox.Group>
-                    <Checkbox value="ACCEPTED">Approved</Checkbox>
-                    <Checkbox value="DELETED">Cancel</Checkbox>
-                    <Checkbox value="REJECTED">Rejected</Checkbox>
-                    <Checkbox value="ON-HOLD">Waiting for approve</Checkbox>
-                  </Checkbox.Group>
+                  <Checkbox.Group options={options} name={nameOpt} />
                 </Form.Item>
               </Col>
             </Row>
