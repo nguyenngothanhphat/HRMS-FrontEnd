@@ -1,6 +1,9 @@
 import { Table } from 'antd';
 import React, { PureComponent } from 'react';
 import { formatMessage, history, connect } from 'umi';
+
+import { setTenantCurrentCompany } from '@/utils/authority';
+
 import styles from './index.less';
 
 @connect()
@@ -170,6 +173,7 @@ class TableCompanies extends PureComponent {
 
   handleCompanyDetail = (record) => {
     const { dispatch } = this.props;
+    setTenantCurrentCompany(record.tenant);
     dispatch({
       type: 'companiesManagement/save',
       payload: {

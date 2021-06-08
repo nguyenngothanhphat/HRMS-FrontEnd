@@ -161,7 +161,6 @@ const BasicLayout = (props) => {
           ];
           if (listPath.length > 0) {
             const [firstPath] = listPath;
-            console.log(firstPath);
             const { breadcrumbName = '' } = firstPath;
             if (breadcrumbName === 'Dashboard')
               listPath = [
