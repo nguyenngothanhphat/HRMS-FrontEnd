@@ -28,7 +28,7 @@ class LegalAddress extends PureComponent {
     const {
       legalAddress = {
         name: '',
-        address: '',
+        addressLine1: '',
         country: '',
         state: '',
         zipCode: '',
