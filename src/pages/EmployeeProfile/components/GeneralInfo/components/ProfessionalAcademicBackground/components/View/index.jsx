@@ -51,7 +51,7 @@ class View extends Component {
     }, 500);
   };
 
-  formatListSkill = (skills, colors) => {
+  formatListSkill = (skills, otherSkills, colors) => {
     let temp = 0;
     const listFormat = skills.map((item) => {
       if (temp >= 5) {
@@ -64,7 +64,18 @@ class View extends Component {
         id: item._id,
       };
     });
-    return listFormat;
+    const listFormatOther = otherSkills.map((item) => {
+      if (temp >= 5) {
+        temp -= 5;
+      }
+      temp += 1;
+      return {
+        color: colors[temp - 1],
+        name: item,
+        id: item,
+      };
+    });
+    return [...listFormat, ...listFormatOther];
   };
 
   _renderListCertification = (list) => {
@@ -106,6 +117,7 @@ class View extends Component {
       totalExp = 0,
       qualification = '',
       certification = [],
+      otherSkills = [],
     } = generalData;
     const objPreviousJobTilte = listTitle.find((item) => item._id === preJobTitle) || {};
     const dummyData = [
@@ -117,8 +129,7 @@ class View extends Component {
     ];
     const listColors = ['#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0'];
     // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
-    const formatListSkill = this.formatListSkill(skills, listColors) || [];
-
+    const formatListSkill = this.formatListSkill(skills, otherSkills, listColors) || [];
     return (
       <>
         <Row gutter={[0, 16]} className={styles.root}>
