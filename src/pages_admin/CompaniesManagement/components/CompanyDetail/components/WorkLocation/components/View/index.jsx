@@ -69,22 +69,36 @@ class View extends PureComponent {
 
   render() {
     const { location } = this.props;
+    const {
+      headQuarterAddress: {
+        addressLine1: headAddressLine1 = '',
+        addressLine2: headAddressLine2 = '',
+        country = {},
+        state = '',
+        zipCode = '',
+      } = {},
+    } = location;
+
     const locationData = [
       {
-        label: formatMessage({ id: 'pages_admin.company.location.address' }),
-        value: location.address,
+        label: formatMessage({ id: 'pages_admin.company.location.addressLine1' }),
+        value: headAddressLine1,
+      },
+      {
+        label: formatMessage({ id: 'pages_admin.company.location.addressLine2' }),
+        value: headAddressLine2,
       },
       {
         label: formatMessage({ id: 'pages_admin.company.location.country' }),
-        value: location.country?.name,
+        value: country?.name,
       },
       {
         label: formatMessage({ id: 'pages_admin.company.location.state' }),
-        value: location.state,
+        value: state,
       },
       {
         label: formatMessage({ id: 'pages_admin.company.location.zipCode' }),
-        value: location.zipCode,
+        value: zipCode,
       },
     ];
     const { isOpenEditWorkLocation } = this.state;
