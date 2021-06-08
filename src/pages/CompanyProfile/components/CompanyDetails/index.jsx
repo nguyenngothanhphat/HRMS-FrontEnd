@@ -206,14 +206,13 @@ class CompanyDetails extends Component {
     //   isAccountSetup: true,
     // });
 
-    console.log(payload);
-    // dispatch({
-    //   type: 'companiesManagement/addCompanyReducer',
-    //   payload,
-    //   dataTempKept: {},
-    //   isAccountSetup: true,
-    // });
-    // }
+    dispatch({
+      type: 'companiesManagement/addCompanyReducer',
+      payload,
+      dataTempKept: {},
+      isAccountSetup: true,
+    });
+    }
   };
 
   // COMPANY DETAILS REGEX
