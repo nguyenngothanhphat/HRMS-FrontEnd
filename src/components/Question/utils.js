@@ -4,11 +4,11 @@ const TYPE_QUESTION = {
     value: 'Text Answer',
   },
   SINGLE_CHOICE: {
-    key: 'CHOOSE',
+    key: 'CHOICE',
     value: 'Single Choice',
   },
   MULTIPLE_CHOICE: {
-    key: 'MULTI-CHOOSE',
+    key: 'MULTI-CHOICE',
     value: 'Multiple Choice',
   },
   SELECT_OPTION: {

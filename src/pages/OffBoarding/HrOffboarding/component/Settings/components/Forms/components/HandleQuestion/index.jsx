@@ -77,7 +77,7 @@ class HandleQuestion extends Component {
     });
   };
 
-  openModalRemove = (question, keyQuestion) => {
+  openModalRemove = (_, keyQuestion) => {
     this.setState({
       openModal: true,
       action: 'Edit',
