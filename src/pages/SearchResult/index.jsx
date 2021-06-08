@@ -68,11 +68,11 @@ class SearchResult extends PureComponent {
       <Col
         span={4}
         style={{ cursor: 'pointer' }}
-        onClick={() => history.push(`/employees/employee-profile/${item?._id}`)}
+        onClick={() => history.push(`/employees/employee-profile/${item?.employee._id}`)}
       >
         <div key={index} className={styles.itemListPeople}>
-          <Avatar size={50} src={generalInfo?.avatar || avtDefault} />
-          <p className={styles.itemListPeople__text}>{generalInfo?.firstName}</p>
+          <Avatar size={50} src={item.avatar || avtDefault} />
+          <p className={styles.itemListPeople__text}>{item.firstName}</p>
         </div>
       </Col>
     );
