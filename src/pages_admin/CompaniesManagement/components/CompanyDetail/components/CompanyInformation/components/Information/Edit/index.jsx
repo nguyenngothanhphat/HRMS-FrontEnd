@@ -7,7 +7,7 @@ import styles from './index.less';
 @connect(
   ({
     companiesManagement: {
-      originData: { companyDetails: companyDetailsOrigin = {} },
+      originData: { companyDetails: { company: companyDetailsOrigin = {} } = {} },
       tempData: { companyDetails = {} },
     } = {},
     loading,
@@ -43,7 +43,9 @@ class Edit extends PureComponent {
       id: companyDetailsOrigin._id,
       ...changedValues,
     };
-    delete payload._id;
+    // delete payload._id;
+
+    console.log(payload);
 
     dispatch({
       type: 'companiesManagement/updateCompany',
@@ -66,7 +68,7 @@ class Edit extends PureComponent {
       website = '',
       phone = '',
       contactEmail = '',
-    } = companyDetails;
+    } = companyDetails.company;
 
     const formItemLayout = {
       labelCol: {
