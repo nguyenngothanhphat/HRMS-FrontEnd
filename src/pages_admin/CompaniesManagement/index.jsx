@@ -10,7 +10,7 @@ class CompaniesManagement extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.companiesManagement}>
-          <Affix offsetTop={42}>
+          <Affix offsetTop={30}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage_text}>
                 {formatMessage({ id: 'pages_admin.companies.title' })}

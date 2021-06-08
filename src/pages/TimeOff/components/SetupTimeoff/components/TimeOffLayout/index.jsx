@@ -52,7 +52,7 @@ class TimeOffLayout extends Component {
     const { displayComponent } = this.state;
     return (
       <div className={s.root}>
-        <Affix className={s.affixTimeOff} offsetTop={42}>
+        <Affix className={s.affixTimeOff} offsetTop={30}>
           <div className={s.leftMenu}>
             <div className={s.leftMenu__menuItem}>
               {listMenu.map((item) => this._renderItemMenu(item))}

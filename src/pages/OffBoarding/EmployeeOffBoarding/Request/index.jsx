@@ -156,7 +156,7 @@ class ResignationRequest extends Component {
     return (
       <PageContainer>
         <div className={styles.request}>
-          <Affix offsetTop={42}>
+          <Affix offsetTop={30}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Terminate work relations with the company</p>
             </div>

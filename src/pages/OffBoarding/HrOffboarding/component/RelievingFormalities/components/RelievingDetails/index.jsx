@@ -82,7 +82,7 @@ class RelievingDetails extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.relievingDetail}>
-          <Affix offsetTop={42}>
+          <Affix offsetTop={30}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>
                 [Ticket id: {ticketID}] Terminate work relationship with {firstName} [{employeeId}]
