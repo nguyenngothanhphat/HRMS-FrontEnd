@@ -5,13 +5,16 @@
  * https://github.com/ant-design/ant-design-pro-layout
  */
 import RightContent from '@/components/GlobalHeader/RightContent';
-import { getCurrentCompany, getSwitchRoleAbility } from '@/utils/authority';
+// import { getCurrentCompany, getSwitchRoleAbility } from '@/utils/authority';
+import { getCurrentCompany } from '@/utils/authority';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
-import { UserOutlined, UserSwitchOutlined } from '@ant-design/icons';
-import { Affix, Button, notification, Result, Spin, Switch, Tooltip } from 'antd';
+// import { UserOutlined, UserSwitchOutlined } from '@ant-design/icons';
+// import { Affix, Button, notification, Result, Spin, Switch, Tooltip } from 'antd';
+import { Button, Result } from 'antd';
 import classnames from 'classnames';
-import React, { useEffect, useState } from 'react';
+// import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { connect, Link, Redirect, useIntl } from 'umi';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
@@ -105,6 +108,15 @@ const BasicLayout = (props) => {
     );
   };
 
+  const renderFooter = () => {
+    return (
+      <div className={styles.footerFlex}>
+        <div>© 2019 Paxanimi Inc</div>
+        <div>Version 1.3.0</div>
+      </div>
+    );
+  };
+
   function rightContent() {
     // const { pathname } = window.location;
     return (
@@ -128,64 +140,72 @@ const BasicLayout = (props) => {
   }
 
   return (
-    <div
-      className={classnames(styles.root, classNameBreadCrumb, {
-        [styles.hiddenBreadCrumb]: pathname === '/dashboard',
-      })}
-    >
-      <ProLayout
-        logo={getCurrentLogo() || logo}
-        headerHeight={76}
-        formatMessage={formatMessage}
-        onCollapse={handleMenuCollapse}
-        headerTitleRender={() => <div style={{ display: 'none' }} />}
-        headerContentRender={() => _renderLogo()}
-        menuHeaderRender={false}
-        menuItemRender={(menuItemProps, defaultDom) => {
-          if (menuItemProps.isUrl || !menuItemProps.path) {
-            return defaultDom;
-          }
-
-          return <Link to={menuItemProps.path}>{defaultDom}</Link>;
-        }}
-        breadcrumbLayoutRender={(routers = []) => {
-          let listPath = routers;
-          listPath = [
-            {
-              path: '/',
-              breadcrumbName: formatMessage({
-                id: 'menu.home',
-              }),
-            },
-            ...listPath,
-          ];
-          if (listPath.length > 0) {
-            const [firstPath] = listPath;
-            console.log(firstPath);
-            const { breadcrumbName = '' } = firstPath;
-            if (breadcrumbName === 'Dashboard')
-              listPath = [
-                {
-                  path: '/',
-                  breadcrumbName,
-                },
-              ];
-          }
-          return listPath;
-        }}
-        // footerRender={pathname === '/dashboard' ? null : buttonSwitch}
-        menuDataRender={menuDataRender}
-        rightContentRender={rightContent}
-        collapsedButtonRender={false}
-        disableMobile
-        {...props}
-        {...settings}
+    <>
+      <div
+        className={classnames(styles.root, classNameBreadCrumb, {
+          [styles.hiddenBreadCrumb]: pathname === '/dashboard',
+        })}
       >
-        <Authorized authority={authorized.authority} noMatch={noMatch}>
-          {children}
-        </Authorized>
-      </ProLayout>
-    </div>
+        <ProLayout
+          logo={getCurrentLogo() || logo}
+          headerHeight={76}
+          formatMessage={formatMessage}
+          onCollapse={handleMenuCollapse}
+          headerTitleRender={() => <div style={{ display: 'none' }} />}
+          headerContentRender={() => _renderLogo()}
+          menuHeaderRender={false}
+          menuItemRender={(menuItemProps, defaultDom) => {
+            if (menuItemProps.isUrl || !menuItemProps.path) {
+              return defaultDom;
+            }
+
+            return <Link to={menuItemProps.path}>{defaultDom}</Link>;
+          }}
+          breadcrumbLayoutRender={(routers = []) => {
+            let listPath = routers;
+            listPath = [
+              {
+                path: '/',
+                breadcrumbName: formatMessage({
+                  id: 'menu.home',
+                }),
+              },
+              ...listPath,
+            ];
+            if (listPath.length > 0) {
+              const [firstPath] = listPath;
+              const { breadcrumbName = '' } = firstPath;
+              if (breadcrumbName === 'Dashboard')
+                listPath = [
+                  {
+                    path: '/',
+                    breadcrumbName,
+                  },
+                ];
+            }
+            return listPath;
+          }}
+          // footerRender={pathname === '/dashboard' ? null : buttonSwitch}
+          menuDataRender={menuDataRender}
+          rightContentRender={rightContent}
+          collapsedButtonRender={false}
+          disableMobile
+          {...props}
+          {...settings}
+          footerRender={() => renderFooter()}
+        >
+          <Authorized authority={authorized.authority} noMatch={noMatch}>
+            {children}
+          </Authorized>
+        </ProLayout>
+        {/* <Footer className={styles.footerLogin}>
+          <div className={styles.footerFlex}>
+            <div>© 2019 Paxanimi Inc</div>
+            <div>Version 1.3.0</div>
+          </div>
+        </Footer> */}
+      </div>
+    </>
   );
 };
 

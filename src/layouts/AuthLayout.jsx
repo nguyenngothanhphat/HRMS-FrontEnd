@@ -5,7 +5,7 @@ import { formatMessage, useSelector, useHistory, Link } from 'umi';
 import styles from './AuthLayout.less';
 import LoginImage from '../assets/Intranet_01.png';
 
-const { Header, Content } = Layout;
+const { Header, Content, Footer } = Layout;
 
 const AuthLayout = ({ children }) => {
   const currentUser = useSelector(({ user }) => user.currentUser);
@@ -49,6 +49,12 @@ const AuthLayout = ({ children }) => {
           </Col>
         </Row>
       </Content>
+      <Footer className={styles.footerLogin}>
+        <div className={styles.footerFlex}>
+          <div>© 2019 Paxanimi Inc</div>
+          <div>Version 1.3.0</div>
+        </div>
+      </Footer>
     </Layout>
   );
 };
