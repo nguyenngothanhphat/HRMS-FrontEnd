@@ -89,7 +89,12 @@ class EditEmailForm extends PureComponent {
           value: 'condition',
         },
       ],
-      sendToWorker: false,
+      sendToWorker: [
+        {
+          name: 'Yes, send this email to all current workers ',
+          value: 'Yes, send this email to all current workers ',
+        },
+      ],
       recipients: [],
       conditionsTrigger: {
         units: [
@@ -154,26 +159,6 @@ class EditEmailForm extends PureComponent {
         sendToExistingWorker = '',
       } = {},
     } = this.props;
-
-    dispatch({
-      type: 'employeeSetting/fetchTriggerEventList',
-      payload: {
-        type: 'ON-BOARDING',
-        tenantId: getCurrentTenant(),
-      },
-    });
-
-    dispatch({
-      type: 'employeeSetting/fetchDepartmentListByCompanyId',
-      payload: {
-        company: getCurrentCompany(),
-        tenantId: getCurrentTenant(),
-      },
-    }).then((data) => {
-      this.setState({
-        recipients: data,
-      });
-    });
 
     dispatch({
       type: 'employeeSetting/fetchListAutoField',
@@ -313,9 +298,9 @@ class EditEmailForm extends PureComponent {
   handleChangeApply = (value) => {
     const { dispatch } = this.props;
 
-    this.setState({
-      appliesToData: value,
-    });
+    // this.setState({
+    //   appliesToData: value,
+    // });
 
     if (value === 'any') {
       dispatch({
@@ -340,19 +325,19 @@ class EditEmailForm extends PureComponent {
   };
 
   onChangeTriggerEvent = (value) => {
-    this.setState({ triggerEvent: value });
-    // console.log('value message: ', value);
+    // this.setState({ triggerEvent: value });
+    console.log('value message: ', value);
   };
 
   onChangeSendingDate = (value) => {
-    // console.log('value message: ', value.target.value);
+    console.log('value message: ', value.target.value);
 
-    this.setState({ _sendingDate: value.target.value });
+    // this.setState({ _sendingDate: value.target.value });
   };
 
   onChangeRecipients = (value) => {
-    this.setState({ recipient: value });
-    // console.log('value message: ', value);
+    // this.setState({ recipient: value });
+    console.log('value message: ', value);
   };
 
   onChangeEmailSubject = (value) => {
@@ -635,19 +620,10 @@ class EditEmailForm extends PureComponent {
     // const { triggerEventList, dispatch } = this.props;
     // const { messages = '', appliesToData = '', conditions = [], sendToExistingWorker } = this.state;
     const { dispatch } = this.props;
-    const {
-      messages,
-      emailSubject,
-      triggerEvent,
-      appliesToData,
-      recipient,
-      sendToWorker,
-      conditionsData,
-    } = this.state;
+    const { messages, emailSubject } = this.state;
     const { emailCustomData: { _id = '' } = {} } = this.props;
     let dataSubmit = {};
 
-    const { sendToWorker: sendToWorkerValues = false } = values;
     // const newValue = { ...values };
     // const { subject } = newValue;
 
@@ -658,11 +634,6 @@ class EditEmailForm extends PureComponent {
       subject: emailSubject,
       message: messages,
       tenantId: getCurrentTenant(),
-      triggerEvent,
-      applyTo: appliesToData,
-      recipient,
-      sendToExistingWorker: sendToWorker || sendToWorkerValues,
-      conditions: conditionsData,
     };
 
     console.log('dataSubmit: ', dataSubmit);
@@ -788,7 +759,8 @@ class EditEmailForm extends PureComponent {
                         mode={valueToBeVerb === 'is' ? '' : 'multiple'}
                         showArrow
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                         placeholder="Please select a choice"
                         onChange={(value) => this.onChangeCondition(index, 'value', value)}
                         onClick={() => this.onClickCondition(index)}
@@ -841,17 +813,16 @@ class EditEmailForm extends PureComponent {
   };
 
   handleChangeChckBox = (value) => {
-    const { target: { checked = '' } = {} } = value;
-    this.setState({ sendToWorker: checked });
+    console.log('value message: ', value);
+    // const { target: { checked = '' } = {} } = value;
+    // this.setState({ sendToExistingWorker: checked });
   };
 
   _renderApplyToOptions = () => {
     const { Option } = Select;
-    const { recipients, _isDefault, appliesToData } = this.state;
+    const { recipients, _isDefault } = this.state;
     const { emailCustomData = {} } = this.props;
     const { applyTo = '' } = emailCustomData;
-
-    console.log('appliesToData', appliesToData);
     if (applyTo === 'any') {
       return (
         // recipients
@@ -909,14 +880,7 @@ class EditEmailForm extends PureComponent {
       _sendingDate,
       isCheckBox,
     } = this.state;
-
-    const {
-      subject = '',
-      triggerEvent = {},
-      applyTo: _applyTo = '',
-      sendToExistingWorker = false,
-      recipients: originRecipients = '',
-    } = emailCustomData;
+    const { subject = '', triggerEvent = {}, applyTo: _applyTo = '' } = emailCustomData;
 
     return (
       <>
@@ -925,24 +889,14 @@ class EditEmailForm extends PureComponent {
             <Spin size="large" />
           </div>
         ) : (
-          <Form
-            initialValues={{
-              triggerEvent: triggerEvent.name,
-              sendingDate: _sendingDate,
-              applyTo: _applyTo,
-              sendToWorker: sendToExistingWorker,
-              recipients: originRecipients,
-            }}
-            onFinish={this.onFinish}
-            ref={this.formRef}
-          >
+          <Form onFinish={this.onFinish} ref={this.formRef}>
             <Row gutter={[36, 24]}>
               {/* Trigger Event */}
               <Col span={12}>
                 <Form.Item label="Trigger event" name="triggerEvent">
                   <Select
                     size="large"
-                    // defaultValue={triggerEvent.name}
+                    defaultValue={triggerEvent.name}
                     disabled={_isDefault}
                     onChange={(value) => this.onChangeTriggerEvent(value)}
                   >
@@ -974,7 +928,7 @@ class EditEmailForm extends PureComponent {
                   <Radio.Group
                     onChange={(value) => this.onChangeSendingDate(value)}
                     disabled={_isDefault}
-                    // defaultValue={_sendingDate}
+                    defaultValue={_sendingDate}
                   >
                     {sendingDate.map((option, _index) => {
                       return (
@@ -990,21 +944,27 @@ class EditEmailForm extends PureComponent {
               {/* Applies to */}
               <Col span={12}>
                 <Form.Item name="applyTo" label="Applies to">
-                  <Select
-                    size="large"
-                    // key={`${_index + 1}`}
-                    // value={option.name}
-                    onChange={this.handleChangeApply}
-                    disabled={_isDefault}
-                  >
-                    {applyTo.map((item, _indexItem) => {
-                      return (
-                        <Option value={item.value} key={`${_indexItem + 1}`}>
-                          {item.name}
-                        </Option>
-                      );
-                    })}
-                  </Select>
+                  {applyTo.map((option, _index) => (
+                    <>
+                      {_applyTo === option.value ? (
+                        <Select
+                          size="large"
+                          key={`${_index + 1}`}
+                          value={option.name}
+                          onChange={this.handleChangeApply}
+                          disabled={_isDefault}
+                        >
+                          {applyTo.map((item, _indexItem) => {
+                            return (
+                              <Option value={item.value} key={`${_indexItem + 1}`}>
+                                {item.name}
+                              </Option>
+                            );
+                          })}
+                        </Select>
+                      ) : null}
+                    </>
+                  ))}
                 </Form.Item>
               </Col>
 
@@ -1015,15 +975,19 @@ class EditEmailForm extends PureComponent {
               {/* Send to existing workers */}
               <Col span={12}>
                 <Form.Item name="sendToWorker" label="Send to existing workers">
-                  <Checkbox
-                    value={sendToWorker}
-                    checked={sendToExistingWorker || sendToWorker}
-                    // checked={isCheckBox}
-                    disabled={_isDefault}
-                    onChange={(value) => this.handleChangeChckBox(value)}
-                  >
-                    Yes, send this email to all current workers
-                  </Checkbox>
+                  {sendToWorker.map((option, _index) => {
+                    return (
+                      <Checkbox
+                        value={option.value}
+                        checked={isCheckBox}
+                        disabled={_isDefault}
+                        key={`${_index + 1}`}
+                        onChange={(value) => this.handleChangeChckBox(value)}
+                      >
+                        {option.name}
+                      </Checkbox>
+                    );
+                  })}
                 </Form.Item>
               </Col>
 
