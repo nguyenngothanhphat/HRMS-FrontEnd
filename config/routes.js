@@ -265,7 +265,7 @@ const routes = [
             authority: ['M_PROJECT_MANAGEMENT_VIEW', 'owner'],
           },
           {
-            path: '/companies/company-detail/:reId',
+            path: '/companies-management/company-detail/:reId',
             name: 'companyDetail',
             component: '../pages_admin/CompaniesManagement/components/CompanyDetail',
             hideInMenu: true,

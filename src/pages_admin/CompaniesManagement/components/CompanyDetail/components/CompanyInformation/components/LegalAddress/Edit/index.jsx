@@ -58,11 +58,13 @@ class Edit extends PureComponent {
   handleUpdate = (changedValues) => {
     const { dispatch, companiesManagement, handleCancelEdit = () => {} } = this.props;
     const {
-      originData: { companyDetails = {} },
+      originData: { companyDetails: { company: companyDetails = {} } = {} },
+      tenantCurrentCompany,
     } = companiesManagement;
     const payload = {
       ...companyDetails,
       id: companyDetails._id,
+      tenantId: tenantCurrentCompany,
       legalAddress: {
         ...changedValues,
       },
@@ -82,7 +84,14 @@ class Edit extends PureComponent {
   render() {
     const { listCountry = [], location, loadingUpdate, handleCancelEdit = () => {} } = this.props;
     const { listStateHead = [] } = this.state;
-    const { name, address = '', country = '', state = '', zipCode = '' } = location;
+    const {
+      name,
+      addressLine1 = '',
+      addressLine2 = '',
+      country = '',
+      state = '',
+      zipCode = '',
+    } = location;
 
     const formLayout = {
       labelCol: { span: 6 },
@@ -99,15 +108,19 @@ class Edit extends PureComponent {
             ref={this.formRef}
             initialValues={{
               name,
-              address,
-              country: country._id,
+              addressLine1,
+              addressLine2,
+              country,
               state,
               zipCode,
             }}
             onFinish={this.handleUpdate}
           >
             <>
-              <Form.Item label="Address*" name="address">
+              <Form.Item label="Address line 1*" name="addressLine1">
+                <Input />
+              </Form.Item>
+              <Form.Item label="Address line 2*" name="addressLine2">
                 <Input />
               </Form.Item>
               <Form.Item label="Country" name="country">
