@@ -219,7 +219,7 @@ class EmployeeProfile extends Component {
     return (
       <PageContainer>
         <div className={styles.containerEmployeeProfile}>
-          <Affix offsetTop={42}>
+          <Affix offsetTop={30}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Employee Profile</p>
             </div>

@@ -36,7 +36,7 @@ class UserProfile extends Component {
     return (
       <PageContainer>
         <div className={styles.containerUserProfile}>
-          <Affix offsetTop={42}>
+          <Affix offsetTop={30}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>User Profile</p>
             </div>

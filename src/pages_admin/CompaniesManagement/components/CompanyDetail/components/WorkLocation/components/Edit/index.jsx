@@ -58,15 +58,20 @@ class Edit extends PureComponent {
   handleUpdateLocation = (values, location) => {
     const {
       dispatch,
-      companiesManagement: { idCurrentCompany = '' },
+      companiesManagement: { idCurrentCompany = '', tenantCurrentCompany = '' },
       handleCancelEdit = () => {},
     } = this.props;
 
     const payload = {
-      ...values,
+      headQuarterAddress: {
+        ...values,
+      },
       company: idCurrentCompany,
-      id: location.id,
+      tenantId: tenantCurrentCompany,
+      id: location?._id,
+      name: location?.name,
     };
+
     dispatch({
       type: 'companiesManagement/updateLocation',
       payload,
@@ -80,7 +85,16 @@ class Edit extends PureComponent {
 
   render() {
     const { listCountry = [], location, handleCancelEdit = () => {}, loadingUpdate } = this.props;
-    const { name, address = '', country = '', state = '', zipCode = '' } = location;
+    const { name } = location;
+    const {
+      headQuarterAddress: {
+        addressLine1 = '',
+        addressLine2 = '',
+        country = {},
+        state = '',
+        zipCode = '',
+      } = {},
+    } = location;
     const { listStateHead = [] } = this.state;
     const formLayout = {
       labelCol: { span: 6 },
@@ -97,8 +111,9 @@ class Edit extends PureComponent {
             ref={this.formRef}
             initialValues={{
               name,
-              address,
-              country: country._id,
+              addressLine1,
+              addressLine2,
+              country: country?._id,
               state,
               zipCode,
             }}
@@ -121,7 +136,10 @@ class Edit extends PureComponent {
               >
                 <Input />
               </Form.Item>
-              <Form.Item label="Address" name="address">
+              <Form.Item label="Address line 1" name="addressLine1">
+                <Input />
+              </Form.Item>
+              <Form.Item label="Address line 2" name="addressLine2">
                 <Input />
               </Form.Item>
               <Form.Item label="Country" name="country">

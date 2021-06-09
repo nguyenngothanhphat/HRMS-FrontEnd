@@ -140,72 +140,64 @@ const BasicLayout = (props) => {
   }
 
   return (
-    <>
-      <div
-        className={classnames(styles.root, classNameBreadCrumb, {
-          [styles.hiddenBreadCrumb]: pathname === '/dashboard',
-        })}
-      >
-        <ProLayout
-          logo={getCurrentLogo() || logo}
-          headerHeight={76}
-          formatMessage={formatMessage}
-          onCollapse={handleMenuCollapse}
-          headerTitleRender={() => <div style={{ display: 'none' }} />}
-          headerContentRender={() => _renderLogo()}
-          menuHeaderRender={false}
-          menuItemRender={(menuItemProps, defaultDom) => {
-            if (menuItemProps.isUrl || !menuItemProps.path) {
-              return defaultDom;
-            }
+    <div
+      className={classnames(styles.root, classNameBreadCrumb, {
+        [styles.hiddenBreadCrumb]: pathname === '/dashboard',
+      })}
+    >
+      <ProLayout
+        logo={getCurrentLogo() || logo}
+        headerHeight={76}
+        formatMessage={formatMessage}
+        onCollapse={handleMenuCollapse}
+        headerTitleRender={() => <div style={{ display: 'none' }} />}
+        headerContentRender={() => _renderLogo()}
+        menuHeaderRender={false}
+        menuItemRender={(menuItemProps, defaultDom) => {
+          if (menuItemProps.isUrl || !menuItemProps.path) {
+            return defaultDom;
+          }
 
-            return <Link to={menuItemProps.path}>{defaultDom}</Link>;
-          }}
-          breadcrumbLayoutRender={(routers = []) => {
-            let listPath = routers;
-            listPath = [
-              {
-                path: '/',
-                breadcrumbName: formatMessage({
-                  id: 'menu.home',
-                }),
-              },
-              ...listPath,
-            ];
-            if (listPath.length > 0) {
-              const [firstPath] = listPath;
-              const { breadcrumbName = '' } = firstPath;
-              if (breadcrumbName === 'Dashboard')
-                listPath = [
-                  {
-                    path: '/',
-                    breadcrumbName,
-                  },
-                ];
-            }
-            return listPath;
-          }}
-          // footerRender={pathname === '/dashboard' ? null : buttonSwitch}
-          menuDataRender={menuDataRender}
-          rightContentRender={rightContent}
-          collapsedButtonRender={false}
-          disableMobile
-          {...props}
-          {...settings}
-          footerRender={() => renderFooter()}
-        >
-          <Authorized authority={authorized.authority} noMatch={noMatch}>
-            {children}
-          </Authorized>
-        </ProLayout>
-        {/* <Footer className={styles.footerLogin}>
-          <div className={styles.footerFlex}>
-            <div>© 2019 Paxanimi Inc</div>
-            <div>Version 1.3.0</div>
-          </div>
-        </Footer> */}
-      </div>
-    </>
+          return <Link to={menuItemProps.path}>{defaultDom}</Link>;
+        }}
+        breadcrumbLayoutRender={(routers = []) => {
+          let listPath = routers;
+          listPath = [
+            {
+              path: '/',
+              breadcrumbName: formatMessage({
+                id: 'menu.home',
+              }),
+            },
+            ...listPath,
+          ];
+          if (listPath.length > 0) {
+            const [firstPath] = listPath;
+            const { breadcrumbName = '' } = firstPath;
+            if (breadcrumbName === 'Dashboard')
+              listPath = [
+                {
+                  path: '/',
+                  breadcrumbName,
+                },
+              ];
+          }
+          return listPath;
+        }}
+        // footerRender={pathname === '/dashboard' ? null : buttonSwitch}
+        menuDataRender={menuDataRender}
+        rightContentRender={rightContent}
+        collapsedButtonRender={false}
+        disableMobile
+        {...props}
+        {...settings}
+        footerRender={() => renderFooter()}
+      >
+        <Authorized authority={authorized.authority} noMatch={noMatch}>
+          {children}
+        </Authorized>
+      </ProLayout>
+    </div>
   );
 };
 

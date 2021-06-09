@@ -1,10 +1,22 @@
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { dialog } from '@/utils/utils';
 import {
   getListTimeOff,
   getListEmployees,
   getRequestById,
-  getListTimeOffManagement,
+  // getListTimeOffManagement,
 } from '../services/timeOffManagement';
+
+const options = [
+  { value: TIMEOFF_STATUS.accepted, label: 'Approved' },
+  { value: TIMEOFF_STATUS.inProgress, label: 'In Progress' },
+  { value: TIMEOFF_STATUS.inProgressNext, label: 'In Progress' },
+  { value: TIMEOFF_STATUS.rejected, label: 'Rejected' },
+  { value: TIMEOFF_STATUS.drafts, label: 'Draft' },
+  { value: TIMEOFF_STATUS.onHold, label: 'On-hold' },
+  { value: TIMEOFF_STATUS.drafts, label: 'Draft' },
+  { value: TIMEOFF_STATUS.deleted, label: 'Deleted' },
+];
 
 const timeOffManagement = {
   namespace: 'timeOffManagement',
@@ -31,37 +43,65 @@ const timeOffManagement = {
         dialog(error);
       }
     },
-    *fetchListTimeOffManagement({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(getListTimeOffManagement, payload);
-        const { data: listTimeOff = [] } = response;
-        const { statusCode } = response;
-        if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { listTimeOff },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
+    // *fetchListTimeOffManagement({ payload = {} }, { call, put }) {
+    //   try {
+    //     const response = yield call(getListTimeOffManagement, payload);
+    //     const { data: listTimeOff = [] } = response;
+    //     const { statusCode } = response;
+    //     if (statusCode !== 200) throw response;
+    //     yield put({
+    //       type: 'save',
+    //       payload: { listTimeOff },
+    //     });
+    //   } catch (errors) {
+    //     dialog(errors);
+    //   }
+    // },
     *fetchListTimeOff({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getListTimeOff, payload);
         let { data: listTimeOff = [] } = response;
         const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+
+        // listTimeOff = listTimeOff.map((item = {}) => {
+        //   const fullName = `${item.employee.generalInfo.firstName} ${item.employee.generalInfo.lastName}`;
+        //   let newStatus = '';
+        //   if (item.status === 'IN-PROGRESS') {
+        //     newStatus = 'In progress';
+        //   } else if (item.status === 'REJECTED') {
+        //     newStatus = 'Rejected';
+        //   } else if (item.status === 'ACCEPTED' || item.status === 'APPROVED') {
+        //     newStatus = 'Accepted';
+        //   } else if (item.status === 'WAITING-FOR-APPROVE' || item.status === 'HOLDING') {
+        //     newStatus = 'Holding';
+        //   }
+        //   return {
+        //     _id: item._id,
+        //     employeeId: item.employee.employeeId,
+        //     name: fullName,
+        //     // country: item.employee.location.country.nativeName,
+        //     cc: item.cc,
+        //     fromDate: item.fromDate,
+        //     toDate: item.toDate,
+        //     type: item.type,
+        //     updated: item.updated,
+        //     description: item.description,
+        //     duration: item.duration,
+        //     employee: item.employee,
+        //     status: newStatus,
+        //   };
+        // });
         listTimeOff = listTimeOff.map((item = {}) => {
           const fullName = `${item.employee.generalInfo.firstName} ${item.employee.generalInfo.lastName}`;
           let newStatus = '';
-          if (item.status === 'IN-PROGRESS') {
-            newStatus = 'In progress';
-          } else if (item.status === 'REJECTED') {
-            newStatus = 'Rejected';
-          } else if (item.status === 'ACCEPTED' || item.status === 'APPROVED') {
-            newStatus = 'Accepted';
-          } else if (item.status === 'WAITING-FOR-APPROVE' || item.status === 'HOLDING') {
-            newStatus = 'Holding';
-          }
+
+          options.forEach((op) => {
+            if (op.value === item.status) {
+              newStatus = op.label;
+            }
+          });
+
           return {
             _id: item._id,
             employeeId: item.employee.employeeId,
@@ -78,7 +118,7 @@ const timeOffManagement = {
             status: newStatus,
           };
         });
-        if (statusCode !== 200) throw response;
+
         yield put({
           type: 'save',
           payload: { listTimeOff },

@@ -68,7 +68,7 @@ class AddCompany extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.addCompany}>
-          <Affix offsetTop={42}>
+          <Affix offsetTop={30}>
             <div className={styles.titlePage}>
               <Steps className={styles.steps} current={currentStep} onChange={this.onChangeStep}>
                 <Step icon={this.customStep(0)} />

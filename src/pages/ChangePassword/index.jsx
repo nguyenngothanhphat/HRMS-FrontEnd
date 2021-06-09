@@ -66,7 +66,7 @@ class ChangePassword extends Component {
     ];
     return (
       <PageContainer>
-        <Affix offsetTop={42}>
+        <Affix offsetTop={30}>
           <div className={styles.titlePage}>
             <p className={styles.titlePage_text}>Change Password</p>
           </div>

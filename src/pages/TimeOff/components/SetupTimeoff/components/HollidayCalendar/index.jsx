@@ -81,12 +81,7 @@ const MOCK_DATA = [
   ({
     timeOff: { countryList = [] } = {},
     loading,
-    user: {
-      currentUser: {
-        company: { _id: idCompany = '' } = {},
-        location = {},
-      } = {},
-    } = {},
+    user: { currentUser: { company: { _id: idCompany = '' } = {}, location = {} } = {} } = {},
   }) => ({
     countryList,
     loading: loading.effects['timeOff/fetchHolidaysListBylocation'],
@@ -136,7 +131,7 @@ class HollidayCalendar extends Component {
     const { dispatch, location = {} } = this.props;
     dispatch({
       type: 'timeOff/fetchHolidaysListBylocation',
-      payload: { location: getCurrentLocation(), country: location.headQuarterAddress.country._id, },
+      payload: { location: getCurrentLocation(), country: location.headQuarterAddress.country._id },
     }).then((response) => {
       const { statusCode, data: listData = {} } = response;
       this.setState({
@@ -492,7 +487,8 @@ class HollidayCalendar extends Component {
               placeholder="Please select country"
               showArrow
               filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
               className={s.selectCountry}
               defaultValue="India"
               onChange={(value) => this.handleChangeSelect(value)}
@@ -557,7 +553,7 @@ class HollidayCalendar extends Component {
               </div>
             </Col>
             <Col span={4}>
-              <Affix offsetTop={42} className={s.affix}>
+              <Affix offsetTop={30} className={s.affix}>
                 <div className={s.rightSection}>
                   <InputNumber
                     min={2020}

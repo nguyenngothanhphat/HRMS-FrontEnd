@@ -27,7 +27,7 @@ import styles from './index.less';
       itemNewCreate1On1 = {},
       showModalSuccessfully = false,
       listAssignee = [],
-      hrManager = {}
+      hrManager = {},
     } = {},
     user: {
       currentUser: { employee: { _id: myId = '' } = {}, company: { _id: company } = {} } = {},
@@ -44,7 +44,7 @@ import styles from './index.less';
     showModalSuccessfully,
     company,
     listAssignee,
-    hrManager
+    hrManager,
   }),
 )
 class DetailTicket extends Component {
@@ -210,7 +210,7 @@ class DetailTicket extends Component {
       listAssignee = [],
       loadingReview,
       myId = '',
-      hrManager = {}
+      hrManager = {},
     } = this.props;
     const {
       status = '',
@@ -262,7 +262,7 @@ class DetailTicket extends Component {
       <>
         <PageContainer>
           <div className={styles.detailTicket}>
-            <Affix offsetTop={42}>
+            <Affix offsetTop={30}>
               <div className={styles.titlePage}>
                 <p className={styles.titlePage__text}>
                   Terminate work relationship with {nameEmployee} [{employeeId}]

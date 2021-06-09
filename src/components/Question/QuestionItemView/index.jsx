@@ -1,25 +1,34 @@
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Button, Col, Input, Radio, Row, Select, Space, Tooltip } from 'antd';
-import Checkbox from 'antd/lib/checkbox/Checkbox';
+import { Button, Col, Input, Radio, Row, Select, Space, Tooltip, Checkbox } from 'antd';
 import { Option } from 'antd/lib/mentions';
 import React from 'react';
 import TYPE_QUESTION from '../utils';
 import styles from './index.less';
 
 export default function QuestionItemView({
-  openModalRemove,
   questionItem,
   keyQuestion,
   openModalEdit,
+  openModalRemove,
   control = true,
+
+  onChangeEmployeeAnswers = () => {},
 }) {
-  const { answerType = '', question = '', defaultAnswers = [] } = questionItem;
+  const {
+    answerType = '',
+    question = '',
+    defaultAnswers = [],
+    employeeAnswers = [],
+  } = questionItem;
 
   const _renderAnswer = () => {
     switch (answerType) {
       case TYPE_QUESTION.SINGLE_CHOICE.key:
         return (
-          <Radio.Group>
+          <Radio.Group
+            onChange={(e) => onChangeEmployeeAnswers([e.target.value], keyQuestion)}
+            value={employeeAnswers[0]}
+          >
             <Space direction="vertical">
               {defaultAnswers.map((answer) => (
                 <Radio value={answer}>{answer}</Radio>
@@ -28,18 +37,36 @@ export default function QuestionItemView({
           </Radio.Group>
         );
       case TYPE_QUESTION.MULTIPLE_CHOICE.key:
-        return defaultAnswers.map((answer) => (
-          <div style={{ marginBottom: '5px' }}>
-            <Checkbox value={answer}>{answer}</Checkbox>
-          </div>
-        ));
+        return (
+          <Checkbox.Group
+            defaultValue={employeeAnswers}
+            onChange={(values) => onChangeEmployeeAnswers(values, keyQuestion)}
+            style={{ width: '100%' }}
+          >
+            {defaultAnswers.map((answer) => (
+              <div style={{ marginBottom: '5px' }}>
+                <Checkbox value={answer}>{answer}</Checkbox>
+              </div>
+            ))}
+          </Checkbox.Group>
+        );
+
       case TYPE_QUESTION.TEXT_ANSWER.key:
-        return <Input placeholder={TYPE_QUESTION.TEXT_ANSWER.value} />;
+        return (
+          <Input
+            placeholder={TYPE_QUESTION.TEXT_ANSWER.value}
+            onChange={(e) => onChangeEmployeeAnswers([e.target.value], keyQuestion)}
+            value={employeeAnswers[0]}
+          />
+        );
       case TYPE_QUESTION.SELECT_OPTION.key:
         return (
           <Select
-            defaultValue={defaultAnswers.length > 0 ? defaultAnswers[0] : ''}
+            defaultValue={employeeAnswers[0] && employeeAnswers[0]}
+            placeholder="Select a option"
+            onChange={(value) => onChangeEmployeeAnswers([value], keyQuestion)}
             style={{ width: '100%' }}
+            showSearch
           >
             {defaultAnswers.map((answer) => (
               <Option value={answer}>{answer}</Option>

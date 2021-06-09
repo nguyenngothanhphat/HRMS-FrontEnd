@@ -35,6 +35,7 @@ const companiesManagement = {
       },
     },
     idCurrentCompany: '',
+    tenantCurrentCompany: '',
     isOpenEditWorkLocation: false,
     selectedNewCompanyTab: 1,
     logoCompany: '',
@@ -78,9 +79,9 @@ const companiesManagement = {
     *fetchCompaniesList({ payload }, { call, put }) {
       try {
         const response = yield call(getCompaniesList, payload);
-        const { statusCode, data: companiesList = [] } = response;
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { companiesList } });
+        yield put({ type: 'save', payload: { companiesList: data.listCompany || [] } });
       } catch (errors) {
         dialog(errors);
       }
