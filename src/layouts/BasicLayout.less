@@ -1,4 +1,5 @@
 .root {
+  margin-bottom: 24px;
   .titleHeader {
     display: flex;
     align-items: center;
@@ -159,7 +160,7 @@
     .ant-pro-basicLayout-content {
       position: relative;
       margin: 0px;
-      padding: 24px;
+      padding: 24px 24px 48px;
     }
     .ant-page-header {
       width: 100%;
@@ -302,6 +303,21 @@
         padding: 0 2rem;
       }
     }
+  }
+
+  .footerFlex {
+    position: fixed;
+    bottom: 0;
+    z-index: 9;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    width: 100%;
+    padding: 14px 150px;
+    color: rgba(0, 0, 0, 0.65);
+    font-size: 12px;
+    background-color: #fff;
+    box-shadow: 0 10px 30px 3px #c7bcbc;
   }
 }
 
