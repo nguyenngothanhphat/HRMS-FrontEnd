@@ -8,12 +8,17 @@ class View extends PureComponent {
     const { location } = this.props;
     const locationData = [
       {
-        label: formatMessage({ id: 'pages_admin.company.location.address' }),
-        value: location.address,
+        label: formatMessage({ id: 'pages_admin.company.location.addressLine1' }),
+        value: location.addressLine1,
+      },
+      {
+        label: formatMessage({ id: 'pages_admin.company.location.addressLine2' }),
+        value: location.addressLine2,
       },
       {
         label: formatMessage({ id: 'pages_admin.company.location.country' }),
-        value: location.country?.name,
+        // value: location.country?.name,
+        value: location.country,
       },
       {
         label: formatMessage({ id: 'pages_admin.company.location.state' }),

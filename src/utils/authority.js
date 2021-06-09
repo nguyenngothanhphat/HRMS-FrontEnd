@@ -46,6 +46,17 @@ export function removeLocalStorage() {
   // localStorage.removeItem('idCurrentEmployee');
 }
 
+export function setTenantCurrentCompany(tenantId) {
+  localStorage.setItem('tenantCurrentCompany', tenantId);
+  reloadAuthorized();
+}
+
+export function getTenantCurrentCompany() {
+  const tenantCurrentCompanyId = localStorage.getItem('tenantCurrentCompany');
+  if (tenantCurrentCompanyId === 'undefined') return null;
+  return tenantCurrentCompanyId;
+}
+
 export function setTenantId(tenantId) {
   localStorage.setItem('tenantId', tenantId);
   reloadAuthorized();

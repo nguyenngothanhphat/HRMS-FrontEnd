@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Skeleton } from 'antd';
 import { connect } from 'umi';
+import { getTenantCurrentCompany } from '@/utils/authority';
 import Information from './components/Information';
 import HeadquaterAddress from './components/HeadquaterAddress';
 import LegalAddress from './components/LegalAddress';
@@ -22,6 +23,15 @@ class CompanyInformation extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
+  }
+
+  componentDidMount() {
+    const { dispatch } = this.props;
+    const tenantCurrentCompany = getTenantCurrentCompany();
+    dispatch({
+      type: 'companiesManagement/save',
+      payload: { tenantCurrentCompany },
+    });
   }
 
   render() {
