@@ -1,14 +1,14 @@
 import {
+  addAttachmentService,
+  candidateFinalOffer,
   getById,
   getDocumentByCandidate,
-  updateByCandidate,
-  addAttachmentService,
   getWorkHistory,
   sendEmailByCandidateModel,
-  candidateFinalOffer,
+  updateByCandidate,
 } from '@/services/candidate';
+import { dialog } from '@/utils/utils';
 import { history } from 'umi';
-import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 
 const candidateProfile = {
   namespace: 'candidateProfile',
@@ -64,32 +64,7 @@ const candidateProfile = {
         _id: '',
         url: '',
       },
-      additionalQuestions: [
-        {
-          type: 'text',
-          name: 'opportunity',
-          question: 'Equal employee opportunity',
-          answer: '',
-        },
-        {
-          type: 'text',
-          name: 'payment',
-          question: 'Preferred payment method',
-          answer: '',
-        },
-        {
-          type: 'text',
-          name: 'shirt',
-          question: 'T-shirt size',
-          answer: '',
-        },
-        {
-          type: 'text',
-          name: 'dietary',
-          question: 'Dietary restriction',
-          answer: '',
-        },
-      ],
+      questionOnBoarding: [],
     },
     salaryStructure: [],
     jobDetails: {
@@ -155,6 +130,7 @@ const candidateProfile = {
       filledAdditionalQuestion: false,
       salaryStatus: 2,
     },
+    // questionOnBoarding: [],
   },
   effects: {
     *fetchCandidateById({ payload }, { call, put }) {
@@ -175,7 +151,7 @@ const candidateProfile = {
           type: 'saveTemp',
           payload: {
             candidateSignature: data.candidateSignature,
-            additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
+            questionOnBoarding: data.questionOnBoarding.reverse() || [],
           },
         });
         yield put({
@@ -196,7 +172,6 @@ const candidateProfile = {
     *fetchDocumentByCandidate({ payload }, { call, put }) {
       try {
         const response = yield call(getDocumentByCandidate, payload);
-        console.log('aa ', payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -279,7 +254,7 @@ const candidateProfile = {
       return response;
     },
 
-    *refreshPage(_) {
+    *refreshPage() {
       try {
         history.push('/candidate');
         yield null;
@@ -330,7 +305,7 @@ const candidateProfile = {
       return { ...state, currentUser: action.payload || {} };
     },
 
-    clearAll(state) {
+    clearAll() {
       // const {}
       return {
         candidate: '',
@@ -368,6 +343,7 @@ const candidateProfile = {
           },
         },
         tempData: {
+          questionOnBoarding: [],
           checkStatus: {},
           fullName: '',
           privateEmail: '',
@@ -447,18 +423,6 @@ const candidateProfile = {
           filledOfferDetails: false,
           filledBenefits: false,
           salaryStatus: 2,
-        },
-      };
-    },
-
-    updateAdditionalQuestions(state, action) {
-      const { tempData } = state;
-
-      return {
-        ...state,
-        tempData: {
-          ...tempData,
-          additionalQuestions: action.payload,
         },
       };
     },
