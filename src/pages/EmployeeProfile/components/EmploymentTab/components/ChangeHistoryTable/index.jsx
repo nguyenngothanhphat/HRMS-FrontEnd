@@ -184,14 +184,14 @@ class ChangeHistoryTable extends PureComponent {
     }));
   };
 
-  formatData = (expandData) => {
+  formatData = (expandData, pageSize) => {
     const { expand } = this.state;
     const data = [...expandData];
 
     if (expand) {
       return data;
     }
-    if (expandData?.length > 5 && !expand) {
+    if (expandData?.length > pageSize.min && expandData?.length <= pageSize.max && !expand) {
       return data.slice(0, 5);
     }
 
@@ -201,16 +201,38 @@ class ChangeHistoryTable extends PureComponent {
   render() {
     const { expand, expandData } = this.state;
     const { loading } = this.props;
+    const pageSize = {
+      max: 50,
+      min: 5,
+    };
+
     const footer = () => (
       <>
-        {expandData.length > 5 ? (
+        {expandData.length > pageSize.min && expandData.length <= pageSize.max ? (
           <div className={styles.changeHistoryTable__icon} onClick={this.handleExpand}>
             <img alt="collapse" src={expand ? MinusIcon : PlusIcon} />
-            <div>{expand ? 'Collapse' : 'Expand All'}</div>
+            <div>{expand ? 'Collapse all' : `Expand all ${expandData.length} records`}</div>
           </div>
         ) : null}
       </>
     );
+
+    const pagination = {
+      position: ['bottomLeft'],
+      total: expandData.length,
+      showTotal: (total, range) => (
+        <span>
+          Showing{' '}
+          <b>
+            {range[0]} - {range[1]}
+          </b>{' '}
+          of {expandData.length}
+        </span>
+      ),
+      pageSize: 10,
+      // current: pageSelected,
+      // onChange: this.onChangePagination,
+    };
 
     return (
       <div className={styles.changeHistoryTable}>
@@ -218,9 +240,11 @@ class ChangeHistoryTable extends PureComponent {
           loading={loading}
           size="small"
           columns={this.generateColumns()}
-          dataSource={this.formatData(expandData)}
-          pagination={false}
+          dataSource={this.formatData(expandData, pageSize)}
           footer={expandData.length === 0 ? null : footer}
+          pagination={
+            expandData.length > pageSize.max ? { ...pagination, total: expandData.length } : false
+          }
         />
       </div>
     );
