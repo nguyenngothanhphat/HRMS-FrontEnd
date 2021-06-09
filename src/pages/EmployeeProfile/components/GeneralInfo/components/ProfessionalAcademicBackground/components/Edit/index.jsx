@@ -76,27 +76,29 @@ class Edit extends PureComponent {
     }
   };
 
-  processDataChanges = () => {
+  processDataChanges = (newSkills) => {
     const { generalData: generalDataTemp, tenantCurrentEmployee = '' } = this.props;
     const {
       preJobTitle = '',
-      skills = [],
+      // skills = [],
       preCompany = '',
       pastExp = 0,
       totalExp = 0,
       qualification = '',
       certification = [],
+      otherSkills = '',
       _id: id = '',
     } = generalDataTemp;
     const payloadChanges = {
       id,
       preJobTitle,
-      skills,
+      skills: newSkills,
       preCompany,
       pastExp,
       totalExp,
       qualification,
       certification,
+      otherSkills,
       tenantId: tenantCurrentEmployee,
     };
     return payloadChanges;
@@ -113,6 +115,7 @@ class Edit extends PureComponent {
       'totalExp',
       'qualification',
       'certification',
+      'otherSkills',
     ];
     listKey.forEach((item) => delete newObj[item]);
     return newObj;
@@ -160,8 +163,10 @@ class Edit extends PureComponent {
   };
 
   handleSave = async () => {
-    const { dispatch } = this.props;
-    const payload = this.processDataChanges() || {};
+    const { dispatch, generalData } = this.props;
+    const { skills } = generalData;
+    const newSkills = skills.filter((e) => e !== 'Other');
+    const payload = this.processDataChanges(newSkills) || {};
     const dataTempKept = this.processDataKept() || {};
     const { certification } = payload;
     await this.handleUpdateCertification(certification);
@@ -189,10 +194,14 @@ class Edit extends PureComponent {
       pastExp = 0,
       totalExp = 0,
       qualification = '',
+      otherSkills = [],
     } = generalData;
+
     let { certification = [{}] } = generalData;
     certification = certification?.length > 0 ? certification : [{}];
     const getIdSkill = skills.map((item) => item._id);
+    const newOtherSkills = otherSkills.length > 0 ? otherSkills : [];
+    const veriOther = skills.filter((item) => item === 'Other');
     return (
       <div className={s.root}>
         <Form
@@ -204,6 +213,7 @@ class Edit extends PureComponent {
             totalExp,
             qualification,
             skills: getIdSkill,
+            otherSkills: newOtherSkills,
             certification,
           }}
           // eslint-disable-next-line react/jsx-props-no-spreading
@@ -259,8 +269,17 @@ class Edit extends PureComponent {
               {listSkill.map((item) => (
                 <Option key={item._id}>{item.name}</Option>
               ))}
+              <Option key="Other">Other</Option>
             </Select>
           </Form.Item>
+          {veriOther.length > 0 || otherSkills.length > 0 ? (
+            <Form.Item label="OtherSkill" name="otherSkills">
+              <Input maxLength={50} />
+            </Form.Item>
+          ) : (
+            ''
+          )}
+
           <div className={s.viewFooter}>
             <div className={s.viewFooter__cancel} onClick={handleCancel}>
               Cancel
