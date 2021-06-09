@@ -7,7 +7,14 @@ import PlusIcon from '@/assets/plusIcon1.svg';
 import MinusIcon from '@/assets/minusIcon1.svg';
 import styles from './index.less';
 
-@connect(({ employeeProfile }) => ({ employeeProfile }))
+@connect(({ employeeProfile, loading }) => ({
+  employeeProfile,
+  loading:
+    loading.effects['employeeProfile/addNewChangeHistory'] ||
+    loading.effects['employeeProfile/fetchCompensation'] ||
+    loading.effects['employeeProfile/fetchCompensationList'] ||
+    loading.effects['employeeProfile/revokeHistory'],
+}))
 class ChangeHistoryTable extends PureComponent {
   constructor(props) {
     super(props);
@@ -31,10 +38,8 @@ class ChangeHistoryTable extends PureComponent {
     // console.log('prev', prevProps.employeeProfile.originData.changeHistories);
     // console.log('props', changeHistories);
     const prevHistories = prevProps.employeeProfile.originData.changeHistories || [];
-    if (
-      JSON.stringify(prevHistories) !== JSON.stringify(changeHistories) &&
-      (!prevHistories || prevHistories.length === 0)
-    ) {
+    if (JSON.stringify(prevHistories) !== JSON.stringify(changeHistories)) {
+      // (!prevHistories || prevHistories.length === 0)
       this.getData();
     }
   }
@@ -195,7 +200,7 @@ class ChangeHistoryTable extends PureComponent {
 
   render() {
     const { expand, expandData } = this.state;
-
+    const { loading } = this.props;
     const footer = () => (
       <>
         {expandData.length > 5 ? (
@@ -210,7 +215,7 @@ class ChangeHistoryTable extends PureComponent {
     return (
       <div className={styles.changeHistoryTable}>
         <Table
-          // loading={expandData.length === 0}
+          loading={loading}
           size="small"
           columns={this.generateColumns()}
           dataSource={this.formatData(expandData)}
