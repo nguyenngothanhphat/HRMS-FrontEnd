@@ -54,6 +54,22 @@ class DirectoryTable extends Component {
   }
 
   componentDidMount = () => {
+    this.fetchTimezone();
+  };
+
+  componentDidUpdate(prevProps) {
+    const { list = [], listLocationsByCompany = [] } = this.props;
+    if (JSON.stringify(prevProps.list) !== JSON.stringify(list)) {
+      this.setFirstPage();
+    }
+    if (
+      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+    ) {
+      this.fetchTimezone();
+    }
+  }
+
+  fetchTimezone = () => {
     const { listLocationsByCompany = [] } = this.props;
     const timezoneList = [];
     listLocationsByCompany.forEach((location) => {
@@ -73,13 +89,6 @@ class DirectoryTable extends Component {
       timezoneList,
     });
   };
-
-  componentDidUpdate(prevProps) {
-    const { list } = this.props;
-    if (JSON.stringify(prevProps.list) !== JSON.stringify(list)) {
-      this.setFirstPage();
-    }
-  }
 
   getAvatarUrl = (avatar, isShowAvatar) => {
     const { permissions = {}, profileOwner = false } = this.props;
@@ -446,6 +455,7 @@ class DirectoryTable extends Component {
 
     const { timezoneList, currentTime } = this.state;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+
     return (
       <div className={styles.locationContent}>
         <span

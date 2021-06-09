@@ -41,8 +41,8 @@ export default class OptionsHeader extends PureComponent {
       { value: statusType.draft, label: 'Draft' },
       { value: statusType.onHold, label: 'On-hold' },
       { value: statusType.deleted, label: 'Deleted' },
-      { value: statusType.done, label: 'Deleted' },
-      { value: statusType.completed, label: 'Deleted' },
+      { value: statusType.done, label: 'Done' },
+      { value: statusType.completed, label: 'Completed' },
     ];
     const nameOpt = options.map((op) => op.value);
 
