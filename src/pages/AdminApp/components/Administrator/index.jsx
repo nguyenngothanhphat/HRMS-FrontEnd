@@ -105,6 +105,16 @@ class Adminstrator extends Component {
   //   });
   // };
 
+  // componentWillUnmount = () => {
+  // const { dispatch } = this.props;
+  // dispatch({
+  //   type: 'employee/save',
+  //   payload: {
+  //     filterList: {},
+  //   },
+  // });
+  // };
+
   render() {
     const { isAddAdmin, isEditAdmin, dataAdmin = {} } = this.state;
     const {

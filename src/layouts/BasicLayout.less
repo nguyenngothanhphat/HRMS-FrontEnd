@@ -15,13 +15,11 @@
   }
 
   :global {
-    .ant-affix{
+    .ant-affix {
       z-index: 10 !important;
     }
     .ant-breadcrumb-link {
       display: inline-flex;
-      // align-items: center;
-      // z-index: 100;
     }
 
     .ant-breadcrumb a {
@@ -31,104 +29,92 @@
     }
 
     .ant-breadcrumb-separator {
+      display: none;
       margin: 0px 20px;
       color: rgba(0, 0, 0, 0.45);
       font-size: large;
-      display: none;
     }
 
     .ant-breadcrumb {
       .ant-breadcrumb-link {
-      a {
-        z-index: 1;
+        a {
+          z-index: 1;
+        }
       }
-    }
 
       > span:nth-child(n):not(:last-child):not(:first-child) {
         a {
+          display: inline-block;
+          padding: 8px 14px;
+          color: #000;
           font-weight: 500;
           opacity: 1;
-          color: #000;
-          display: inline-block;
-          padding: 8px 20px;          
         }
         span.ant-breadcrumb-link {
+          position: relative;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          padding: 4px 20px;
-          position: relative;
           height: 30px;
+          padding: 4px 14px;
 
           &::after {
-            content: '';
-            height: 30px;
-            display: block;
             position: absolute;
             top: 0px;
             left: 0;
             z-index: 0;
+            display: block;
             width: 100%;
-            transform: skewX(-32deg);
+            height: 30px;
             border: 1px solid #ccc;
+            transform: skewX(-32deg);
+            content: '';
           }
         }
         span.ant-breadcrumb-separator {
           display: block;
-          margin-bottom: -4px;
           display: none;
+          margin-bottom: -4px;
         }
       }
     }
     .ant-breadcrumb {
       > span:first-child {
         a {
+          display: inline-block;
+          padding: 8px 20px;
+          color: #000;
           font-weight: 500;
           opacity: 1;
-          color: #000;
-          display: inline-block;
-          padding: 8px 20px;          
         }
         span.ant-breadcrumb-link {
+          position: relative;
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          padding: 4px 0px;
-          position: relative;
           height: 30px;
+          padding: 4px 0px;
 
           &::after {
-            content: '';
-            height: 34px;
-            display: block;
             position: absolute;
             top: 0px;
             left: 0px;
             z-index: 0;
+            display: block;
             width: 100%;
+            height: 34px;
+            border: 1px solid #ccc;
+            border-right: none !important;
+            border-left: none !important;
             transform: perspective(63px) rotateX(-30deg);
             transform-origin: left center;
-            border: 1px solid #ccc;
-            border-left: none !important;
-               border-right: none !important;
-            // border-radius: 0;
+            content: '';
           }
-
-          // &::before {
-          //   content: '';
-          //   display: block;
-          //   width: 15px;
-          //   margin-right: 5px;
-          //   height: 15px;
-          //   // content: url(../../public/assets/images/menuIcons/dashboard.svg);
-          //   background: url(../../public/assets/images/menuIcons/dashboard.svg);
-          //   background-size: cover;
-          // }
         }
         span.ant-breadcrumb-separator {
           display: block;
-          margin-bottom: -4px;
           display: none;
+          margin-bottom: -4px;
         }
       }
     }
@@ -223,8 +209,8 @@
         width: 242px !important;
         min-width: 242px !important;
         max-width: 242px !important;
-        transition: min-width 0.3s, max-width 0.3s;
         box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.456);
+        transition: min-width 0.3s, max-width 0.3s;
         .ant-menu-vertical .ant-menu-item,
         .ant-menu-vertical-left .ant-menu-item,
         .ant-menu-vertical-right .ant-menu-item,
@@ -272,7 +258,7 @@
       opacity: 1;
     }
 
-    .ant-menu-item-active  {
+    .ant-menu-item-active {
       background-color: rgba(0, 0, 0, 0.204);
     }
 
@@ -340,33 +326,31 @@
 .breadCrumbB {
   :global {
     .ant-breadcrumb > span:last-child a {
+      position: relative;
       display: flex;
       align-items: center;
       height: 30px;
-      // margin-left: -24px;
-      // padding: 0 15px;
-      padding: 4px 20px;
+      padding: 4px 28px;
       color: #161c29;
+      color: rgb(44, 109, 249);
       font-weight: 500;
       font-size: 13px;
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
       opacity: 1;
-      position: relative;
-      color: rgb(44, 109, 249);
-      
+
       &::after {
-        content: '';
-        width: 100%;
-        height: 30px;
-        display: block;
         position: absolute;
-        
-        transform: skewX(-32deg);
-        border-radius: 0 0 20px 0;
-        border: 1px solid rgb(44, 109, 249);
         top: 0;
         left: 0;
+        display: block;
+        width: 100%;
+        height: 30px;
+        border: 1px solid rgb(44, 109, 249);
+        border-radius: 0 0 20px 0;
+
+        transform: skewX(-32deg);
+        content: '';
       }
     }
   }
@@ -380,31 +364,26 @@
   }
 }
 
-
-.rightContent{
-
-  .btnSwitch{
-    line-height: 0 !important;
-    width: fit-content;
-    height: fit-content;
+.rightContent {
+  .btnSwitch {
     position: absolute;
     right: 20px;
-  
-    :global{
-      .ant-switch{
+    width: fit-content;
+    height: fit-content;
+    line-height: 0 !important;
+
+    :global {
+      .ant-switch {
         margin-top: 10px;
       }
-      
-      .ant-switch-checked{
+
+      .ant-switch-checked {
         background-color: #568afa;
       }
-  
-      .anticon-user-switch{
+
+      .anticon-user-switch {
         font-size: 16px;
       }
     }
   }
-
 }
-
-

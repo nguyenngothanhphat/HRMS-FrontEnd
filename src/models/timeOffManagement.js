@@ -14,7 +14,6 @@ const options = [
   { value: TIMEOFF_STATUS.rejected, label: 'Rejected' },
   { value: TIMEOFF_STATUS.drafts, label: 'Draft' },
   { value: TIMEOFF_STATUS.onHold, label: 'On-hold' },
-  { value: TIMEOFF_STATUS.drafts, label: 'Draft' },
   { value: TIMEOFF_STATUS.deleted, label: 'Deleted' },
 ];
 
