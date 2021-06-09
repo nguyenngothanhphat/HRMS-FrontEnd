@@ -3,8 +3,7 @@ import moment from 'moment';
 import { connect } from 'umi';
 import { Table } from 'antd';
 import { getCurrentTenant } from '@/utils/authority';
-import PlusIcon from '@/assets/plusIcon1.svg';
-import MinusIcon from '@/assets/minusIcon1.svg';
+import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 @connect(({ employeeProfile, loading }) => ({
@@ -34,12 +33,8 @@ class ChangeHistoryTable extends PureComponent {
 
   componentDidUpdate(prevProps) {
     const { employeeProfile: { originData: { changeHistories = [] } = {} } = {} } = this.props;
-
-    // console.log('prev', prevProps.employeeProfile.originData.changeHistories);
-    // console.log('props', changeHistories);
     const prevHistories = prevProps.employeeProfile.originData.changeHistories || [];
     if (JSON.stringify(prevHistories) !== JSON.stringify(changeHistories)) {
-      // (!prevHistories || prevHistories.length === 0)
       this.getData();
     }
   }
@@ -63,7 +58,6 @@ class ChangeHistoryTable extends PureComponent {
       action: item?.takeEffect === 'WILL_UPDATE' ? 'Revoke' : '',
       id: item?._id,
     }));
-    console.log(newData);
 
     this.setState({
       expandData: newData,
@@ -166,8 +160,6 @@ class ChangeHistoryTable extends PureComponent {
       employeeProfile: { originData: { generalData: { employee: employeeId = '' } = {} } = {} },
     } = this.props;
 
-    console.log(employeeId);
-
     dispatch({
       type: 'employeeProfile/revokeHistory',
       payload: {
@@ -209,8 +201,17 @@ class ChangeHistoryTable extends PureComponent {
     const footer = () => (
       <>
         {expandData.length > pageSize.min && expandData.length <= pageSize.max ? (
-          <div className={styles.changeHistoryTable__icon} onClick={this.handleExpand}>
-            <img alt="collapse" src={expand ? MinusIcon : PlusIcon} />
+          <div
+            className={`${styles.changeHistoryTable__icons} ${
+              expand ? styles.collapse : styles.expand
+            } `}
+            onClick={this.handleExpand}
+          >
+            {expand ? (
+              <MinusCircleOutlined className={styles.changeHistoryTable__icons_icon} />
+            ) : (
+              <PlusCircleOutlined className={styles.changeHistoryTable__icons_icon} />
+            )}
             <div>{expand ? 'Collapse all' : `Expand all ${expandData.length} records`}</div>
           </div>
         ) : null}
