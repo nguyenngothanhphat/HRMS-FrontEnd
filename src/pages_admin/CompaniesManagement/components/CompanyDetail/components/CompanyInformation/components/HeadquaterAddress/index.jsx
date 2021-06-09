@@ -28,7 +28,7 @@ class HeadquaterAddress extends PureComponent {
     const {
       headQuarterAddress = {
         name: '',
-        address: '',
+        addressLine1: '',
         country: '',
         state: '',
         zipCode: '',
