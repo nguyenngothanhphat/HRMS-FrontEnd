@@ -58,11 +58,11 @@ const steps = [
     title: 'Benefits',
     content: 'Sixth-content',
   },
-  // {
-  //   id: 7,
-  //   title: 'Additional Questions',
-  //   content: 'Last-content',
-  // },
+  {
+    id: 7,
+    title: 'Additional Questions',
+    content: 'Last-content',
+  },
 ];
 
 const getLineWidth = (value) => {
@@ -157,7 +157,7 @@ const CandidateLayout = (props) => {
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        localStep: 7,
+        localStep: 8,
       },
     });
   };
