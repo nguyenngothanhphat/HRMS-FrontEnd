@@ -11,11 +11,30 @@
     .ant-table-tbody > tr:last-child > td {
       border-bottom: none;
     }
+
+    .ant-table-footer{
+      background-color: transparent;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+    }
   }
   .changeHistoryTable_action {
     letter-spacing: 0.12px;
     color: #2c6df9;
     font-weight: 500;
     cursor: pointer;
+  }
+
+  &__icon{
+    width: fit-content;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    cursor: pointer;
+    img {
+      padding-right: 8px;
+    }
   }
 }

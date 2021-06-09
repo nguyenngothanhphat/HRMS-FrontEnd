@@ -140,13 +140,10 @@ class EmploymentTab extends Component {
       listEmployeeActive,
       currentUser: {
         // roles = [],
-        employee: {
-          company = {}
-        } = {},
+        employee: { company = {} } = {},
         permissions = {},
       },
     } = this.props;
-    console.log(company)
     // const permissions = checkPermissions(roles);
     return (
       <div>
@@ -169,7 +166,10 @@ class EmploymentTab extends Component {
             )}
           </div>
           {isEdit ? (
-            <EditCurrentInfo handleCancel={this.handleEditCurrentInfo} listEmployeeActive={listEmployeeActive} />
+            <EditCurrentInfo
+              handleCancel={this.handleEditCurrentInfo}
+              listEmployeeActive={listEmployeeActive}
+            />
           ) : (
             <CurrentInfo isChanging={isChanging} dispatch={dispatch} data={currentData} />
           )}

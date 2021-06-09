@@ -3,6 +3,8 @@ import moment from 'moment';
 import { connect } from 'umi';
 import { Table } from 'antd';
 import { getCurrentTenant } from '@/utils/authority';
+import PlusIcon from '@/assets/plusIcon1.svg';
+import MinusIcon from '@/assets/minusIcon1.svg';
 import styles from './index.less';
 
 @connect(({ employeeProfile }) => ({ employeeProfile }))
@@ -14,8 +16,54 @@ class ChangeHistoryTable extends PureComponent {
       employee:
         employeeProfile?.originData?.generalData?.legalName ||
         employeeProfile?.originData?.generalData?.firstName,
+      expand: false,
+      expandData: [],
     };
   }
+
+  componentDidMount() {
+    this.getData();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { employeeProfile: { originData: { changeHistories = [] } = {} } = {} } = this.props;
+
+    // console.log('prev', prevProps.employeeProfile.originData.changeHistories);
+    // console.log('props', changeHistories);
+    const prevHistories = prevProps.employeeProfile.originData.changeHistories || [];
+    if (
+      JSON.stringify(prevHistories) !== JSON.stringify(changeHistories) &&
+      (!prevHistories || prevHistories.length === 0)
+    ) {
+      this.getData();
+    }
+  }
+
+  getData = () => {
+    const { employeeProfile: { originData: { changeHistories = [] } = {} } = {} } = this.props;
+
+    const newData = changeHistories.map((item, index) => ({
+      key: `${index + 1}`,
+      changedInfomation: {
+        promotedPosition: item?.title?.name,
+        location: item?.location?.name,
+        department: item?.department?.name,
+        employment: item?.employeeType?.name,
+        compensation: item?.compensationType,
+        manager: item?.manager?.generalInfo?.legalName || item?.manager?.generalInfo?.firstName,
+      },
+      effectiveDate: moment(item?.effectiveDate).locale('en').format('MM.DD.YY'),
+      changedBy: 'HR Admin',
+      changedDate: moment(item?.changeDate).locale('en').format('MM.DD.YY'),
+      action: item?.takeEffect === 'WILL_UPDATE' ? 'Revoke' : '',
+      id: item?._id,
+    }));
+    console.log(newData);
+
+    this.setState({
+      expandData: newData,
+    });
+  };
 
   generateColumns = () => {
     const { employee } = this.state;
@@ -125,32 +173,49 @@ class ChangeHistoryTable extends PureComponent {
     });
   };
 
-  render() {
-    const { employeeProfile: { originData: { changeHistories = [] } = {} } = {} } = this.props;
-    const newData = changeHistories.map((item, index) => ({
-      key: `${index + 1}`,
-      changedInfomation: {
-        promotedPosition: item?.title?.name,
-        location: item?.location?.name,
-        department: item?.department?.name,
-        employment: item?.employeeType?.name,
-        compensation: item?.compensationType,
-        manager: item?.manager?.generalInfo?.legalName || item?.manager?.generalInfo?.firstName,
-      },
-      effectiveDate: moment(item?.effectiveDate).locale('en').format('MM.DD.YY'),
-      changedBy: 'HR Admin',
-      changedDate: moment(item?.changeDate).locale('en').format('MM.DD.YY'),
-      action: item?.takeEffect === 'WILL_UPDATE' ? 'Revoke' : '',
-      id: item?._id,
+  handleExpand = () => {
+    this.setState((prevState) => ({
+      expand: !prevState.expand,
     }));
+  };
+
+  formatData = (expandData) => {
+    const { expand } = this.state;
+    const data = [...expandData];
+
+    if (expand) {
+      return data;
+    }
+    if (expandData?.length > 5 && !expand) {
+      return data.slice(0, 5);
+    }
+
+    return data;
+  };
+
+  render() {
+    const { expand, expandData } = this.state;
+
+    const footer = () => (
+      <>
+        {expandData.length > 5 ? (
+          <div className={styles.changeHistoryTable__icon} onClick={this.handleExpand}>
+            <img alt="collapse" src={expand ? MinusIcon : PlusIcon} />
+            <div>{expand ? 'Collapse' : 'Expand All'}</div>
+          </div>
+        ) : null}
+      </>
+    );
 
     return (
       <div className={styles.changeHistoryTable}>
         <Table
+          // loading={expandData.length === 0}
           size="small"
           columns={this.generateColumns()}
-          dataSource={newData}
+          dataSource={this.formatData(expandData)}
           pagination={false}
+          footer={expandData.length === 0 ? null : footer}
         />
       </div>
     );
