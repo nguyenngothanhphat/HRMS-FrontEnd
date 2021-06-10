@@ -56,6 +56,9 @@ class CarryoverCap extends Component {
 
   render() {
     const { date } = this.state;
+    const {
+      carryoverCap: { date: dateData, effectiveFrom, unlimited, uptownAmount },
+    } = this.props;
     return (
       <div className={styles.contentCarryover}>
         <div className={styles.title}>Carryover cap</div>
@@ -73,7 +76,8 @@ class CarryoverCap extends Component {
                   <InputNumber
                     min={0}
                     max={date === 'day' ? 365 : 12}
-                    defaultValue={0}
+                    // defaultValue={0}
+                    value={uptownAmount}
                     placeholder={date === 'day' ? 'days' : 'hours'}
                     formatter={(value) => (date === 'day' ? `${value} days` : `${value} hours`)}
                     parser={(value) =>
@@ -85,12 +89,12 @@ class CarryoverCap extends Component {
                 <Col>
                   <Radio.Group
                     onChange={this.onChangeRadio}
-                    value={date}
+                    value={dateData}
                     buttonStyle="solid"
                     className={styles.radioGroup}
                   >
-                    <Radio.Button value="day">Days</Radio.Button>
-                    <Radio.Button value="hour">Hours</Radio.Button>
+                    <Radio.Button value="Day">Days</Radio.Button>
+                    <Radio.Button value="Hour">Hours</Radio.Button>
                   </Radio.Group>
                 </Col>
               </Row>
@@ -106,7 +110,11 @@ class CarryoverCap extends Component {
           </Row>
           <Row gutter={[20, 0]}>
             <Col span={10}>
-              <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
+              <Checkbox
+                className={styles.checkbox}
+                checked={unlimited}
+                onChange={this.onChangeSelect}
+              >
                 Do not limit number of hours/days employee carryover
               </Checkbox>
             </Col>

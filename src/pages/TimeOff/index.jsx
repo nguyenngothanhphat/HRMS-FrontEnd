@@ -3,6 +3,7 @@ import { Tabs, notification } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import { history, connect } from 'umi';
 import EmployeeLandingPage from './components/EmployeeLandingPage';
+import Breadcrumb from '@/components/Breadcrumb';
 import ManagerLandingPage from './components/ManagerLandingPage';
 import HRManagerLandingPage from './components/HRManagerLandingPage';
 // import Balances from './components/Balances';
@@ -127,22 +128,25 @@ class TimeOff extends PureComponent {
     );
   };
 
-  onTabClick = (activeKey) => {
-    this.setState({
-      activeKey,
-    });
-    if (activeKey === '4') {
-      history.push('/link-here');
-    }
-  };
-
   render() {
     const { role, activeKey } = this.state;
+    const routes = [
+      {
+        name: 'Time off',
+        path: '/time-off',
+      },
+      {
+        name: 'Setup Timeoff policy',
+        path: '/time-off/setup-timeof-policy',
+      },
+    ];
     return (
+      // <Breadcrumb routes={routes}>
       <div className={styles.TimeOff}>
         <PageContainer>
           {/* tabBarExtraContent={this.options()} */}
-          <Tabs activeKey={activeKey} onTabClick={this.onTabClick}>
+          {/* <Tabs activeKey={activeKey} onTabClick={this.onTabClick}> */}
+          <Tabs defaultActiveKey={1}>
             {role === 'employee' && (
               <TabPane tab={<span className={styles.employeeTabPane}>Timeoff</span>} key="1">
                 <EmployeeLandingPage />
@@ -160,12 +164,13 @@ class TimeOff extends PureComponent {
             )}
             {role === 'hr-manager' && (
               <TabPane tab="Setup Timeoff policy" key="4">
-                {/* <SetupTimeoff /> */}
+                <SetupTimeoff />
               </TabPane>
             )}
           </Tabs>
         </PageContainer>
       </div>
+      // </Breadcrumb>
     );
   }
 }

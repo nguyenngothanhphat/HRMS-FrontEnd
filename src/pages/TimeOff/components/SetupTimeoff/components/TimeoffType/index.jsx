@@ -2,31 +2,56 @@ import React, { Component } from 'react';
 import RuleFrom from './RuleFrom';
 import Configure from './Configure';
 import styles from './index.less';
+import { history, connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 
+@connect(({ loading, timeOff: { itemTimeOffType = {} } = {} }) => ({
+  itemTimeOffType,
+  loadingTimeOffType: loading.effects['timeOff/getDataTimeOffTypeById'],
+}))
 class TimeoffType extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      viewType: 'ruleForm',
+      isEdit: false,
     };
   }
 
-  onChangeCasualLeave = () => {
-    this.setState({ viewType: 'casualLeave' });
+  onChangeType = async (id, value) => {
+    const { isEdit } = this.state;
+    const { dispatch } = this.props;
+    await dispatch({
+      type: 'timeOff/getDataTimeOffTypeById',
+      payload: {
+        _id: id,
+        tenantId: getCurrentTenant(),
+      },
+    });
+    this.setState({
+      isEdit: value,
+    });
+  };
+
+  onExitEditing = (value) => {
+    const { isEdit } = this.state;
+    this.setState({
+      isEdit: value,
+    });
   };
 
   render() {
-    const { viewType } = this.state;
+    const { isEdit } = this.state;
+    const { timeOffTypes, itemTimeOffType = {} } = this.props;
     return (
       <div className={styles.TimeoffType}>
         <div className={styles.TimeoffContain}>
           <div className={styles.TimeoffFrom}>
-            {viewType === 'ruleForm' ? (
+            {!isEdit ? (
               <div className={styles.Content}>Select & Configure timeoff types</div>
             ) : (
               <div className={styles.Content}>Configure Casual leave policy </div>
             )}
-            {viewType === 'ruleForm' ? (
+            {!isEdit ? (
               <div className={styles.SubContent}>
                 You will find below a list of generic timeoffs which every company provides.
                 Configue the rules for each timeoff as per your company norms. Also you can add
@@ -41,10 +66,14 @@ class TimeoffType extends Component {
               </div>
             )}
           </div>
-          {viewType === 'ruleForm' ? (
-            <RuleFrom onChangeCasualLeave={this.onChangeCasualLeave} />
+          {!isEdit ? (
+            <RuleFrom onChangeType={this.onChangeType} timeOffTypes={timeOffTypes} />
           ) : (
-            <Configure tabKey={viewType} />
+            <Configure
+              tabKey={isEdit}
+              onExitEditing={this.onExitEditing}
+              itemTimeOffType={itemTimeOffType}
+            />
           )}
         </div>
       </div>

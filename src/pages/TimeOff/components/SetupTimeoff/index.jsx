@@ -7,8 +7,11 @@ import ManageBalance from './components/ManageBalance';
 import AssignPolicies from './components/AssignPolicy';
 import TimeOffLayout from './components/TimeOffLayout';
 import ScreenBegin from './components/ScreenBegin';
+import { getCurrentTenant } from '@/utils/authority';
 
-@connect()
+@connect(({ timeOff: { timeOffTypes = [] } = {} }) => ({
+  timeOffTypes,
+}))
 class SetupTimeoff extends Component {
   constructor(props) {
     super(props);
@@ -33,12 +36,19 @@ class SetupTimeoff extends Component {
 
   render() {
     const { pageStart } = this.state;
+    const { timeOffTypes } = this.props;
     const listMenu = [
       {
         id: 1,
         name: 'Timeoff Type & Rules',
         key: 'timeoffType',
-        component: <TimeoffType />,
+        component: (
+          <TimeoffType
+            timeOffTypes={timeOffTypes}
+            onGetDataById={this.onGetDataById}
+            itemTimeOffType={itemTimeOffType ? itemTimeOffType : {}}
+          />
+        ),
         progress: 70,
       },
       {

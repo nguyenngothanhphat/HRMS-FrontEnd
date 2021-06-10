@@ -12,6 +12,15 @@ class Balance extends Component {
     };
   }
 
+  componentDidMount() {
+    const { maxBalance } = this.props;
+    this.setState({
+      notGreaterThan: maxBalance.notGreaterThan,
+      date: maxBalance.date,
+      unlimited: maxBalance.unlimited,
+    });
+  }
+
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
     const { notGreaterThan, unlimited } = this.state;
@@ -55,7 +64,10 @@ class Balance extends Component {
   };
 
   render() {
-    const { accrualRate, date } = this.state;
+    const { notGreaterThan, date, unlimited } = this.state;
+    // const {
+    //   maxBalance: { date, notGreaterThan, unlimited },
+    // } = this.props;
     // console.log(accrualRate);
     return (
       <div className={styles.contentbalance}>
@@ -67,7 +79,11 @@ class Balance extends Component {
               <div className={styles.titleText}>
                 At a time, employees cannot have a casual leave balance greater than
               </div>
-              <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
+              <Checkbox
+                defaultChecked={unlimited}
+                className={styles.checkbox}
+                onChange={this.onChangeSelect}
+              >
                 Do not limit employee Casual leave balance
               </Checkbox>
             </Col>
@@ -77,7 +93,8 @@ class Balance extends Component {
                   <InputNumber
                     min={0}
                     max={date === 'day' ? 365 : 12}
-                    defaultValue={0}
+                    // defaultValue={0}
+                    value={notGreaterThan}
                     placeholder={date === 'day' ? 'days' : 'hours'}
                     formatter={(value) => (date === 'day' ? `${value} days` : `${value} hours`)}
                     parser={(value) =>

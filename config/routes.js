@@ -203,6 +203,20 @@ const routes = [
               'leader',
               // 'owner',
             ],
+            // routes: [
+            //   {
+            //     path: 'time-off',
+            //     name: 'timeOff',
+            //     component: './TimeOff',
+            //   },
+            //   {
+            //     path: '/time-off/setup-timeoff-policy/time-off-type/:reId',
+            //     name: 'Setup Timeoff policy',
+            //     hideInMenu: true,
+            //     component: './TimeOff/components/SetupTimeoff/components/TimeoffType/Configure',
+            //     authority: ['hr-manager', 'P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
+            //   },
+            // ],
           },
           {
             path: '/users-management',
@@ -355,6 +369,13 @@ const routes = [
             component: './TimeOff/components/EmployeeLandingPage/components/CompoffRequestForm',
             authority: ['employee'],
           },
+          // {
+          //   path: '/time-off/setup-timeoff-policy/time-off-type/:reId',
+          //   name: 'Setup Timeoff policy',
+          //   hideInMenu: true,
+          //   component: './TimeOff/components/SetupTimeoff/components/TimeoffType/Configure',
+          //   authority: ['hr-manager', 'P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
+          // },
           {
             path: '/time-off/:action(edit-compoff-request)/:reId',
             name: 'Edit compoff request',

@@ -26,6 +26,7 @@ class AnnualReset extends Component {
 
   render() {
     const { resetAnnually } = this.state;
+    const { annualReset } = this.props;
     return (
       <div className={styles.contentAnnual}>
         <div className={styles.title}>Annual reset</div>
@@ -34,7 +35,11 @@ class AnnualReset extends Component {
           <Row gutter={[20, 0]}>
             <Col span={10}>
               <div className={styles.titleText}>Employees Casual leave balance resets to 0 on</div>
-              <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
+              <Checkbox
+                checked={annualReset.resetAnnually}
+                className={styles.checkbox}
+                onChange={this.onChangeSelect}
+              >
                 Reset annually
               </Checkbox>
             </Col>

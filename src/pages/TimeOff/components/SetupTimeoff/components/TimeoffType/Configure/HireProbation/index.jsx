@@ -22,7 +22,10 @@ class HireProbation extends Component {
   };
 
   render() {
-    const { newHire } = this.state;
+    // const { newHire } = this.state;
+    const {
+      hireProbation: { newHire },
+    } = this.props;
     return (
       <div className={styles.contentHireProration}>
         <div className={styles.title}>New hire proration</div>

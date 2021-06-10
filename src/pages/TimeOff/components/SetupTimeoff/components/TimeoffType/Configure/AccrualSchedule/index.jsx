@@ -7,6 +7,7 @@ class AccrualSchedule extends Component {
   onChange = () => {};
 
   render() {
+    // const { accruallSchedule } = this.props;
     return (
       <div className={styles.accrualSection}>
         <div className={styles.title}>Accrual Schedule</div>

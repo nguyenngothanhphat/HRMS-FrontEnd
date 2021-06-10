@@ -39,6 +39,9 @@ class Increaments extends Component {
 
   render() {
     const { minimumIncrements, select } = this.state;
+    const {
+      minIncrements: { min, dateData, notImpose },
+    } = this.props;
     return (
       <div className={styles.contentIncrements}>
         <div className={styles.title}>Minimum increments</div>
@@ -49,7 +52,9 @@ class Increaments extends Component {
               <div className={styles.titleText}>
                 Employees can apply for casual leaves in a minimum increments of
               </div>
-              <Checkbox className={styles.checkbox}>Do not impose a minimum increment</Checkbox>
+              <Checkbox checked={notImpose} className={styles.checkbox}>
+                Do not impose a minimum increment
+              </Checkbox>
             </Col>
             <Col span={12}>
               <Row className={styles.inputText} gutter={[24, 0]}>
@@ -57,7 +62,8 @@ class Increaments extends Component {
                   <InputNumber
                     min={0}
                     max={12}
-                    defaultValue={0}
+                    // defaultValue={0}
+                    value={min}
                     placeholder="day"
                     formatter={(value) => `${value} day`}
                     parser={(value) => value.replace('days', '')}
@@ -67,12 +73,12 @@ class Increaments extends Component {
                 <Col>
                   <Radio.Group
                     onChange={this.onChangeRadio}
-                    value={select}
+                    value={dateData}
                     buttonStyle="solid"
                     className={styles.radioGroup}
                   >
-                    <Radio.Button value="day">Days</Radio.Button>
-                    <Radio.Button value="hour">Hours</Radio.Button>
+                    <Radio.Button value="Day">Days</Radio.Button>
+                    <Radio.Button value="Hour">Hours</Radio.Button>
                   </Radio.Group>
                 </Col>
               </Row>

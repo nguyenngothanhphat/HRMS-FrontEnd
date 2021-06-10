@@ -5,6 +5,7 @@ import { Row, Col, Button, Select, Spin } from 'antd';
 // import icon from '@/assets/delete.svg';
 import { DeleteOutlined } from '@ant-design/icons';
 import styles from './index.less';
+import { getCurrentTenant } from '@/utils/authority';
 
 const { Option } = Select;
 @connect(({ timeOff: { countryList = [] } = {}, loading }) => ({
@@ -32,33 +33,45 @@ class RuleFrom extends Component {
           <div className={styles.straightLine} />
           <div>
             {children.map((item, index) => {
-              const { title, name, change, status } = item;
-              const classNameStatus = status === 100 ? styles.complete : styles.uncomplete;
+              const { title, name, change, isDefault } = item;
+              // const classNameStatus = status === 100 ? styles.complete : styles.uncomplete;
               return (
                 <div key={`${index + 1}`}>
                   <Row gutter={[24, 12]} className={styles.from__rowItem}>
-                    <Col span={8}>
-                      <div className={styles.text}>{title}</div>
+                    <Col span={16}>
+                      <div className={styles.text}>
+                        {name}
+                        {isDefault ? '*' : ''}
+                      </div>
                     </Col>
-                    <Col span={8}>
+                    {/* <Col span={8}>
                       <div className={classNameStatus}>
                         <span>{status > 0 ? `Completion rate: ${status}%` : null}</span>
                       </div>
-                    </Col>
+                    </Col> */}
                     <Col span={8} className={styles.colAction}>
-                      {name !== 'true' ? (
+                      {/* {name !== 'true' ? ( */}
+                      <div className={styles.setup}>
+                        <span onClick={() => this.onChange(item._id, true)}>
+                          {isDefault ? 'Configure' : 'Setup'}
+                        </span>
+                        {isDefault ? (
+                          ''
+                        ) : (
+                          <div className={styles.deleteIcon}>
+                            <DeleteOutlined className={styles.iconImg} />
+                          </div>
+                        )}
+                      </div>
+                      {/* ) : (
                         <div className={styles.setup}>
-                          <span onClick={change}>{status > 0 ? 'Configure' : 'Setup'}</span>
-                        </div>
-                      ) : (
-                        <div className={styles.setup}>
-                          <span>{status > 0 ? 'Configure' : 'Setup'}</span>
+                          <span>{isDefault ? 'Configure' : 'Setup'}</span>
                           <div className={styles.deleteIcon}>
                             <DeleteOutlined className={styles.iconImg} />
                           </div>
                           <span />
                         </div>
-                      )}
+                      )} */}
                     </Col>
                   </Row>
                   {index !== children.length - 1 && <div className={styles.borderStyles} />}
@@ -138,69 +151,62 @@ class RuleFrom extends Component {
     );
   };
 
+  onChange = (value, isEdit) => {
+    const { onChangeType, dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/getCountryList',
+      payload: {
+        _id: value,
+        tenantId: getCurrentTenant(),
+      },
+    });
+    onChangeType(value, isEdit);
+  };
+
   render() {
-    const { onChangeCasualLeave = () => {} } = this.props;
+    const { onGetDataById = () => {}, timeOffTypes = [] } = this.props;
+
     const array = [
       {
+        typeName: 'A',
         type: 'Type A: Paid Leaves',
         button: 'Add a new paid leave',
 
-        children: [
-          {
-            title: 'Casual Leave (CL)*',
-            status: 100,
-            change: onChangeCasualLeave,
-          },
-          {
-            title: 'Sick Leave (SL)* ',
-            status: 50,
-          },
-          {
-            title: ' Compensation leave (Co) ',
-            status: 0,
-            name: 'true',
-          },
-        ],
+        children: [],
       },
       {
+        typeName: 'B',
         type: 'Type B: Unpaid Leaves',
         button: 'Add a new unpaid leave',
-        children: [
-          {
-            title: 'Casual Leave (CL)*',
-          },
-        ],
+        children: [],
       },
       {
+        typeName: 'C',
         type: 'Type C: Special Leaves',
         button: 'Add a new special leave',
-        children: [
-          {
-            title: 'Maternity Leave (ML)*',
-          },
-          {
-            title: 'Bereavement Leave (LWP)',
-          },
-          {
-            title: 'Restricted Holiday (RH)',
-            name: 'true',
-          },
-        ],
+        children: [],
       },
       {
+        typeName: 'D',
         type: 'Type D: Working our of office',
         button: 'Add a new OoO timeoff',
-        children: [
-          {
-            title: 'Work from Client Place (WCP)*',
-          },
-          {
-            title: 'Work from Home (WFH)',
-            name: 'true',
-          },
-        ],
+        children: [],
       },
     ];
+
+    timeOffTypes.map((item) => {
+      array.map((ele) => {
+        if (ele.typeName === item.type) {
+          item.change = this.onChange;
+          ele.children.push(item);
+        }
+      });
+      if (item.name === 'Casual Leave') {
+        const i = timeOffTypes.indexOf(item);
+        timeOffTypes.splice(0, 0, timeOffTypes.splice(i, 1)[0]);
+      }
+    });
+    console.log('array', array);
 
     const { loadingListCountry } = this.props;
     return (

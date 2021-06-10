@@ -55,7 +55,10 @@ class BaseAccual extends Component {
   };
 
   render() {
-    const { unto, date } = this.state;
+    // const { date } = this.state;
+    const {
+      negativeBalance: { date, unlimited, unto },
+    } = this.props;
     return (
       <div className={styles.contentNegative}>
         <div className={styles.title}>Negative balances</div>
@@ -66,7 +69,11 @@ class BaseAccual extends Component {
               <div className={styles.titleText}>
                 Employees can apply for casual leaves that make their balances negative unto
               </div>
-              <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
+              <Checkbox
+                className={styles.checkbox}
+                checked={unlimited}
+                onChange={this.onChangeSelect}
+              >
                 Unlimited negative balances
               </Checkbox>
             </Col>

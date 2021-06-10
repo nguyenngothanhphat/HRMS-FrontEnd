@@ -14,6 +14,26 @@ export async function getTimeOffTypes(payload) {
   });
 }
 
+export async function getTimeOffTypeById(payload) {
+  return request('/api/timeofftypetenant/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function updateTimeOffType(payload) {
+  return request('/api/timeofftypetenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function addTimeOffType(payload) {
+  return request('/api/timeofftypetenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getLeaveRequestOfEmployee(payload) {
   return request('/api/leaverequesttenant/get-my-request', {
     method: 'POST',

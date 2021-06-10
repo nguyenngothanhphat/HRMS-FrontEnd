@@ -6,12 +6,12 @@ import BaseAccual from './BaseAccual';
 import TenuaAccrua from './TenuaAccrua';
 import AccrualSchedule from './AccrualSchedule';
 import Balance from './Balance';
-// import NegativeBalances from './NegativeBalances';
+import NegativeBalances from './NegativeBalances';
 import AnnualReset from './AnnualReset';
 import CarryoverCap from './CarryoverCap';
-// import WaitingPeriod from './WaitingPeriod';
-// import Increaments from './Increaments';
-// import HireProbation from './HireProbation';
+import WaitingPeriod from './WaitingPeriod';
+import Increaments from './Increaments';
+import HireProbation from './HireProbation';
 import styles from './index.less';
 
 // const { TabPane } = Tabs;
@@ -27,81 +27,9 @@ class Configure extends Component {
       balance: {},
       negativeBalance: {},
       carryoverCap: {},
-      // waitingPeriod: {},
+      waitingPeriod: {},
       minIncrements: {},
-      // hireProbation: {},
-      list: [
-        {
-          key: 1,
-          id: 'baseAccrual',
-          title: 'Base accrual rate',
-          ref: React.createRef(),
-          componnet: <BaseAccual onChangeValue={this.onChangeBaseAccual} />,
-        },
-        {
-          key: 2,
-          id: 'tenuaAccrua',
-          title: 'Tenure accrual rate',
-          ref: React.createRef(),
-          componnet: <TenuaAccrua onChangeValue={this.onChangetenuaAccrua} />,
-        },
-        {
-          key: 3,
-          id: 'accrualSchedule',
-          title: 'Accrual schedule',
-          ref: React.createRef(),
-          componnet: <AccrualSchedule onChangeValue={this.onChangetenuaAccrua} />,
-        },
-        {
-          key: 4,
-          id: 'balance',
-          title: 'Maximum balance',
-          ref: React.createRef(),
-          componnet: <Balance onChangeValue={this.onChangeBalance} />,
-        },
-        {
-          key: 5,
-          id: 'annualReset',
-          title: 'Annual reset',
-          ref: React.createRef(),
-          componnet: <AnnualReset onChangeValue={this.onChangeBalance} />,
-        },
-        // {
-        //   key: 6,
-        //   id: 'negativeBalances',
-        //   title: 'Negative balances',
-        //   ref: React.createRef(),
-        //   componnet: <NegativeBalances onChangeValue={this.onChangeNegative} />,
-        // },
-        {
-          key: 6,
-          id: 'carryoverCap',
-          title: 'Carryover cap',
-          ref: React.createRef(),
-          componnet: <CarryoverCap onChangeValue={this.onChangeCarryover} />,
-        },
-        // {
-        //   key: 8,
-        //   id: 'minimumIncrements',
-        //   title: 'Minimum Increments',
-        //   ref: React.createRef(),
-        //   componnet: <Increaments onChangeValue={this.onChangeIncrements} />,
-        // },
-        // {
-        //   key: 9,
-        //   id: 'waitingPeriods',
-        //   title: 'Waiting periods',
-        //   ref: React.createRef(),
-        //   componnet: <WaitingPeriod onChangeValue={this.onChangeWaiting} />,
-        // },
-        // {
-        //   key: 10,
-        //   id: 'hireProbation',
-        //   title: 'New Hire proration',
-        //   ref: React.createRef(),
-        //   componnet: <HireProbation onChangeValue={this.onChangeHireProbation} />,
-        // },
-      ],
+      hireProbation: {},
     };
   }
 
@@ -189,18 +117,18 @@ class Configure extends Component {
     this.setState({ minIncrements: value });
   };
 
-  // onChangeWaiting = (value = {}) => {
-  //   this.setState({ : value });
-  // };
+  onChangeWaiting = (value = {}) => {
+    this.setState({ waitingPeriod: value });
+  };
 
-  // onChangeHireProbation = (value = {}) => {
-  //   this.setState({ hireProbation: value });
-  // };
+  onChangeHireProbation = (value = {}) => {
+    this.setState({ hireProbation: value });
+  };
 
   prevStep = (data) => {
     if (data > 1) {
       const dataPrev = data - 1;
-      const { list } = this.state;
+      // const { list } = this.state;
       const renderStep = list.find((item) => item.key === dataPrev);
       const { ref } = renderStep;
       ref.current.scrollIntoView(true);
@@ -227,9 +155,138 @@ class Configure extends Component {
     }
   };
 
+  onCancel = () => {
+    const { onExitEditing } = this.props;
+    onExitEditing(false);
+  };
+
+  onSubmit = () => {
+    console.log(this.state);
+  };
+
   render() {
+    const { itemTimeOffType } = this.props;
+    const list = [
+      {
+        key: 1,
+        id: 'baseAccrual',
+        title: 'Base accrual rate',
+        ref: React.createRef(),
+        componnet: (
+          <BaseAccual
+            baseAccrual={itemTimeOffType.baseAccrual}
+            onChangeValue={this.onChangeBaseAccual}
+          />
+        ),
+      },
+      {
+        key: 2,
+        id: 'tenuaAccrua',
+        title: 'Tenure accrual rate',
+        ref: React.createRef(),
+        componnet: (
+          <TenuaAccrua
+            tenureAccrual={itemTimeOffType.tenureAccrual}
+            onChangeValue={this.onChangetenuaAccrua}
+          />
+        ),
+      },
+      {
+        key: 3,
+        id: 'accrualSchedule',
+        title: 'Accrual schedule',
+        ref: React.createRef(),
+        componnet: (
+          <AccrualSchedule
+            accrualSchedule={itemTimeOffType.accrualSchedule}
+            onChangeValue={this.onChangetenuaAccrua}
+          />
+        ),
+      },
+      {
+        key: 4,
+        id: 'balance',
+        title: 'Maximum balance',
+        ref: React.createRef(),
+        componnet: (
+          <Balance maxBalance={itemTimeOffType.maxBalance} onChangeValue={this.onChangeBalance} />
+        ),
+      },
+      {
+        key: 5,
+        id: 'annualReset',
+        title: 'Annual reset',
+        ref: React.createRef(),
+        componnet: (
+          <AnnualReset
+            annualReset={itemTimeOffType.annualReset}
+            onChangeValue={this.onChangeBalance}
+          />
+        ),
+      },
+      {
+        key: 6,
+        id: 'carryoverCap',
+        title: 'Carryover cap',
+        ref: React.createRef(),
+        componnet: (
+          <CarryoverCap
+            carryoverCap={itemTimeOffType.carryoverCap}
+            onChangeValue={this.onChangeCarryover}
+          />
+        ),
+      },
+      {
+        key: 7,
+        id: 'negativeBalances',
+        title: 'Negative balances',
+        ref: React.createRef(),
+        componnet: (
+          <NegativeBalances
+            negativeBalance={itemTimeOffType.negativeBalance}
+            onChangeValue={this.onChangeNegative}
+          />
+        ),
+      },
+      {
+        key: 8,
+        id: 'minimumIncrements',
+        title: 'Minimum Increments',
+        ref: React.createRef(),
+        componnet: (
+          <Increaments
+            minIncrements={itemTimeOffType.minIncrements}
+            onChangeValue={this.onChangeIncrements}
+          />
+        ),
+      },
+      {
+        key: 9,
+        id: 'waitingPeriods',
+        title: 'Waiting periods',
+        ref: React.createRef(),
+        componnet: (
+          <WaitingPeriod
+            waitingPeriod={itemTimeOffType.waitingPeriod}
+            onChangeValue={this.onChangeWaiting}
+          />
+        ),
+      },
+      {
+        key: 10,
+        id: 'hireProbation',
+        title: 'New Hire proration',
+        ref: React.createRef(),
+        componnet: (
+          <HireProbation
+            hireProbation={itemTimeOffType.hireProbation}
+            onChangeValue={this.onChangeHireProbation}
+          />
+        ),
+      },
+    ];
     // const { tabKey = '' } = this.props;
-    const { select, list } = this.state;
+    const { select } = this.state;
     const selectStep = list.find((item) => item.id === select).key;
 
     return (
@@ -266,12 +323,18 @@ class Configure extends Component {
                 </Button>
               </Col>
             </Row>
-            <Button
-              disabled={!(selectStep > 1)}
-              className={selectStep > 1 ? styles.btnSave : styles.disableBtnSave}
-            >
-              Save
-            </Button>
+            <div>
+              <Button onClick={this.onCancel} className={styles.btnCancel}>
+                Cancel
+              </Button>
+              <Button
+                disabled={!(selectStep > 1)}
+                className={selectStep > 1 ? styles.btnSave : styles.disableBtnSave}
+                onClick={this.onSubmit}
+              >
+                Save
+              </Button>
+            </div>
           </div>
         </Affix>
       </div>

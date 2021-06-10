@@ -46,11 +46,16 @@ import {
   // timeoffType
   getInitEmployeeSchedule,
   getEmployeeScheduleByLocation,
+  getTimeOffTypeById,
+  updateTimeOffType,
+  addTimeOffType,
   // getCalendarHoliday,
   getHolidaysListByLocation,
   getHolidaysByCountry,
   deleteHoliday,
   addHoliday,
+  currentStep,
+  displayComponent,
   updateEmployeeSchedule,
 } from '../services/timeOff';
 
@@ -102,6 +107,7 @@ const timeOff = {
       //   whenToAdd: 'year',
       // },
     ],
+    itemTimeOffType: {},
   },
   effects: {
     *fetchTimeOffTypes({ payload }, { call, put }) {
@@ -113,6 +119,19 @@ const timeOff = {
         yield put({
           type: 'save',
           payload: { timeOffTypes },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getDataTimeOffTypeById({ payload }, { call, put }) {
+      try {
+        const response = yield call(getTimeOffTypeById, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { itemTimeOffType: data },
         });
       } catch (errors) {
         dialog(errors);
