@@ -137,13 +137,10 @@ class CustomEmailsTableField extends PureComponent {
       },
       {
         title: formatMessage({ id: 'component.customEmailsTableField.actions' }),
-        dataIndex: 'actions',
-        key: 'actions',
+        dataIndex: 'idCustomEmail',
+        key: 'idCustomEmail',
         width: '15%',
-        render: () => {
-          const { currentRecord = {} } = this.state;
-          const { idCustomEmail = '' } = currentRecord;
-
+        render: (idCustomEmail) => {
           return (
             <div className={styles.actions}>
               <Link to={`/employee-onboarding/edit-email/${idCustomEmail}`}>View mail</Link>

@@ -572,8 +572,7 @@ const employeeSetting = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message: response.status,
-          description: response.message,
+          message: response.message,
         });
         yield put({
           type: 'save',
@@ -667,8 +666,7 @@ const employeeSetting = {
           payload: { default: false },
         });
         notification.success({
-          message: response.status,
-          description: response.message,
+          message: response.message,
         });
       } catch (error) {
         dialog(error);
@@ -676,8 +674,9 @@ const employeeSetting = {
       return response;
     },
     *updateCustomEmail({ payload = {} }, { call, put }) {
+      let response = '';
       try {
-        const response = yield call(updateCustomEmail, {
+        response = yield call(updateCustomEmail, {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
@@ -689,12 +688,12 @@ const employeeSetting = {
           payload: {},
         });
         notification.success({
-          message: response.status,
-          description: response.message,
+          message: response.message,
         });
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
   },
   reducers: {
