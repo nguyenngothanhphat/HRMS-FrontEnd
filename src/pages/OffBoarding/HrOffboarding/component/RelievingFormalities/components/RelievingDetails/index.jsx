@@ -85,11 +85,11 @@ class RelievingDetails extends PureComponent {
           <Affix offsetTop={30}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>
-                [Ticket id: {ticketID}] Terminate work relationship with {firstName} [{employeeId}]
+                [Ticket ID: {ticketID}] Terminate work relationship with {firstName} [{employeeId}]
               </p>
             </div>
           </Affix>
-          <Row className={styles.relievingDetail__container} gutter={[30, 0]}>
+          <Row className={styles.relievingDetail__container} gutter={[24, 24]}>
             <Col md={24} lg={12}>
               <EmployeeDetail relievingDetails={relievingDetails} />
               <ResignationOverview relievingDetails={relievingDetails} />

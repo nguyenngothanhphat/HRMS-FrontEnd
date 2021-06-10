@@ -16,6 +16,7 @@ import classnames from 'classnames';
 // import React, { useEffect, useState } from 'react';
 import React from 'react';
 import { connect, Link, Redirect, useIntl } from 'umi';
+import Footer from '@/components/Footer';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
@@ -193,6 +194,7 @@ const BasicLayout = (props) => {
           <div>Version 1.3.0</div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

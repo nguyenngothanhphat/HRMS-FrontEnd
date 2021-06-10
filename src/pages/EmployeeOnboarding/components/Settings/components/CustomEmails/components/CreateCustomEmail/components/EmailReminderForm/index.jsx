@@ -108,7 +108,7 @@ class EmailReminderForm extends PureComponent {
       sendToWorker: [
         {
           name: 'Yes, send this email to all current workers ',
-          value: 'Yes, send this email to all current workers ',
+          value: false,
         },
       ],
       sendToExistingWorker: false,

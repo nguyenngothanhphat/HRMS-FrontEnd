@@ -4,7 +4,6 @@
 
 .directoryTable {
   padding: 24px 24px 0 24px;
-  // scrollbar-color: #e0e4e9 transparent !important;
 
   .employeeId {
     padding-left: 16px !important;
@@ -26,7 +25,8 @@
       height: 32px !important;
       padding: 5px 7px !important;
     }
-    .ant-select-selection-item, .ant-select-item {
+    .ant-select-selection-item,
+    .ant-select-item {
       font-size: 13px !important;
     }
 
@@ -66,8 +66,6 @@
       .mixin-border-bottom-row();
     }
 
-    // Sort active icon
-
     .ant-table-column-sorter-down {
       margin-left: -1em;
     }
@@ -84,7 +82,6 @@
 
     .ant-table-column-sorter-up,
     .ant-table-column-sorter-down {
-      // margin-top: 0.5em;
       font-size: 14px;
       opacity: 0;
     }
@@ -94,7 +91,6 @@
       opacity: 1;
     }
 
-    //Box-shadow first column
     td.ant-table-cell.ant-table-cell-fix-left.ant-table-cell-fix-left-last {
       box-shadow: 4px 0 5px 0 rgba(0, 0, 0, 0.05);
     }
@@ -115,15 +111,10 @@
     .ant-btn {
       padding: 0px;
     }
-    // .ant-table-thead>tr.ant-table-row-hover:not(.ant-table-expanded-row)>td,
-    // .ant-table-tbody>tr.ant-table-row-hover:not(.ant-table-expanded-row)>td,
-    // .ant-table-thead>tr:hover:not(.ant-table-expanded-row)>td,
-    // .ant-table-tbody>tr:hover:not(.ant-table-expanded-row)>td {
-    //     background: unset; //Change the existing color to `unset`
-    //     cursor: default;
-    // }
+
     th.ant-table-cell {
-      padding: 0 8px !important
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
     }
   }
 
@@ -187,7 +178,7 @@
   .managerName {
     overflow: hidden;
     color: #2c6df9;
-    font-weight: 500;
+    // font-weight: 500;
     white-space: nowrap;
     text-align: left;
     text-overflow: ellipsis;

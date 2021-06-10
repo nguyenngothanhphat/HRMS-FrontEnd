@@ -26,9 +26,6 @@ const { TabPane } = Tabs;
     loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
     loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
     loadingCompaniesOfUser: loading.effects['user/fetchCompanyOfUser'],
-    loadingFetchLocations:
-      loading.effects['locationSelection/fetchLocationsByCompany'] ||
-      loading.effects['locationSelection/fetchLocationListByParentCompany'],
     employee,
     currentUser,
     permissions,
@@ -108,7 +105,7 @@ class DirectoryComponent extends PureComponent {
       bottabs: [],
       visible: false,
       visibleImportEmployee: false,
-      listLocationsByCompany: [],
+      // listLocationsByCompany: [],
     };
     this.setDebounce = debounce((query) => {
       this.setState({
@@ -169,12 +166,20 @@ class DirectoryComponent extends PureComponent {
     }
 
     const { filterList = {}, listLocationsByCompany = [] } = this.props;
+
+    // console.log('prevProps.filterList', prevProps.filterList);
+    // console.log('filterList', filterList);
+    // console.log('listLocationsByCompany', listLocationsByCompany);
+    // console.log('prevProps.listLocationsByCompany', prevProps.listLocationsByCompany);
+
     if (
-      JSON.stringify(prevProps?.filterList || []) !== JSON.stringify(filterList) ||
-      JSON.stringify(prevProps?.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+      JSON.stringify(prevProps.filterList) !== JSON.stringify(filterList) &&
+      listLocationsByCompany.length > 0
     ) {
+      // console.log('OK');
       this.renderData();
     }
+    // console.log('--------------------------------------');
   }
 
   componentWillUnmount = async () => {
@@ -740,14 +745,13 @@ class DirectoryComponent extends PureComponent {
     const {
       currentUser: { company, roles = [] },
       companiesOfUser = [],
-      loadingFetchLocations = false,
       loadingCompaniesOfUser = false,
     } = this.props;
     const { collapsed, visible, visibleImportEmployee } = this.state;
 
     return (
       <div className={styles.DirectoryComponent}>
-        {loadingFetchLocations || loadingCompaniesOfUser ? (
+        {loadingCompaniesOfUser ? (
           <Skeleton />
         ) : (
           <div className={styles.contentContainer}>

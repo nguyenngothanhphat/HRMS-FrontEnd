@@ -8,7 +8,7 @@ import styles from './index.less';
 const SignUp1 = (props) => {
   const [form] = Form.useForm();
 
-  const { dispatch } = props;
+  const { dispatch, loadingSignUp } = props;
   const [isVisible, setIsVisible] = useState(false);
   const [isContinue, setIsContinue] = useState(false);
   const [currentEmail, setCurrentEmail] = useState('');
@@ -140,7 +140,7 @@ const SignUp1 = (props) => {
         >
           <Input />
         </Form.Item>
-        <Button type="primary" htmlType="submit">
+        <Button loading={loadingSignUp} type="primary" htmlType="submit">
           {formatMessage({
             id: 'page.signUp.getStarted',
           })}
@@ -151,6 +151,7 @@ const SignUp1 = (props) => {
 };
 
 // export default SignUp1;
-export default connect(({ signup: { user = {} } = {} }) => ({
+export default connect(({ loading, signup: { user = {} } = {} }) => ({
   user,
+  loadingSignUp: loading.effects['signup/fetchUserInfo'],
 }))(SignUp1);

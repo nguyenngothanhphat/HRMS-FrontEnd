@@ -2,10 +2,11 @@ import React, { useEffect } from 'react';
 import { Layout, Avatar, Row, Col } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
 import { formatMessage, useSelector, useHistory, Link } from 'umi';
+import Footer from '@/components/Footer';
 import styles from './AuthLayout.less';
 import LoginImage from '../assets/Intranet_01.png';
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content } = Layout;
 
 const AuthLayout = ({ children }) => {
   const currentUser = useSelector(({ user }) => user.currentUser);

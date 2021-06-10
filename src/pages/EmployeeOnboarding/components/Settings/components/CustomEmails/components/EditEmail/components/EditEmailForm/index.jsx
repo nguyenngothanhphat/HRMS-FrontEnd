@@ -631,7 +631,7 @@ class EditEmailForm extends PureComponent {
       _id,
       subject,
       message: messages,
-      tenantId: getCurrentTenant()
+      tenantId: getCurrentTenant(),
     };
 
     console.log('dataSubmit: ', dataSubmit);

@@ -34,11 +34,15 @@ class TableCandidates extends PureComponent {
     const columns = [
       {
         title: 'Rookie Name',
-        dataIndex: 'fullName',
+        dataIndex: 'nameAndId',
         align: 'left',
         fixed: 'left',
         width: '12%',
-        render: (fullName) => <span className={styles.fullName}>{fullName}</span>,
+        render: (nameAndId) => (
+          <span onClick={() => this.viewCandidate(nameAndId.ticketID)} className={styles.fullName}>
+            {nameAndId ? nameAndId.fullName : ''}
+          </span>
+        ),
         // sortDirections: ['ascend', 'descend', 'ascend'],
         // sorter: {
         //   compare: (a, b) => a.employeeId.slice(4, a.userId) - b.employeeId.slice(4, b.userId),
@@ -133,10 +137,24 @@ class TableCandidates extends PureComponent {
     this.setState({ selectedRowKeys });
   };
 
+  getData = () => {
+    const { data = [] } = this.props;
+    return data.map((value) => {
+      return {
+        ...value,
+        nameAndId: {
+          fullName: value.fullName,
+          ticketID: value.ticketID,
+        },
+      };
+    });
+  };
+
   render() {
-    const { data = [], loading } = this.props;
+    const { loading, data = [] } = this.props;
     const { pageSelected, selectedRowKeys } = this.state;
     const rowSize = 10;
+    const newData = this.getData();
     const scroll = {
       x: '',
       y: '',
@@ -168,12 +186,12 @@ class TableCandidates extends PureComponent {
     return (
       <div className={styles.TableCandidates}>
         <Table
-          size="small"
+          size="middle"
           loading={loading}
           rowSelection={rowSelection}
           pagination={{ ...pagination, total: data.length }}
           columns={this.generateColumns()}
-          dataSource={data}
+          dataSource={newData}
           scroll={scroll}
           rowKey={(record) => record.ticketID}
         />

@@ -70,7 +70,7 @@ const SignUp2 = (props) => {
         {formatMessage({
           id: 'page.signUp.weSentCode',
         })}
-        <Link to="/">{email}</Link>
+        <Link to="#">{email}</Link>
       </p>
 
       <p className={styles.codeDescription}>

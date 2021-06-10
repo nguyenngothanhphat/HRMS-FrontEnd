@@ -6,15 +6,23 @@
 
 .wrapper {
   font-family: 'Roboto', sans-serif;
-
+  width: 40%;
+  height: auto;
+  padding: 20px 30px 40px;
   h2 {
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 700;
     color: @black;
   }
 
   .form {
     margin-top: 38.5px;
+  }
+
+  input:-webkit-autofill,
+  input:focus:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 100px #fff inset;
+    box-shadow: 0 0 0 100px #fff inset;
   }
 
   label {
@@ -27,7 +35,7 @@
   }
 
   input[type='text'] {
-    width: 300px;
+    width: 100%;
     height: 42px;
     border: solid 1px #d6dce4;
     border-radius: 5px;
@@ -58,7 +66,7 @@
     font-weight: 500;
     border-radius: 25px;
     border: none;
-    margin-top: 38px;
+    margin-top: 24px;
 
     &:hover,
     &:focus {
@@ -67,7 +75,7 @@
   }
 
   @media (min-width: 900px) {
-    margin-left: 16% !important;
+    // margin-left: 16% !important;
   }
 
   // @media (max-width: 900px) {

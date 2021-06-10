@@ -64,7 +64,6 @@ export default class OptionsHeader extends PureComponent {
       { value: TIMEOFF_STATUS.accepted, label: 'Approved' },
       { value: TIMEOFF_STATUS.inProgress, label: 'In Progress' },
       { value: TIMEOFF_STATUS.rejected, label: 'Rejected' },
-      { value: TIMEOFF_STATUS.drafts, label: 'Draft' },
       { value: TIMEOFF_STATUS.onHold, label: 'On-hold' },
       { value: TIMEOFF_STATUS.drafts, label: 'Draft' },
       { value: TIMEOFF_STATUS.deleted, label: 'Deleted' },
