@@ -189,7 +189,7 @@ const BasicLayout = (props) => {
           </Authorized>
         </ProLayout>
         <div className={styles.footerFlex}>
-          <div>© 2019 Paxanimi Inc</div>
+          <div>© 2021 Paxanimi Inc</div>
           <div>Version 1.3.0</div>
         </div>
       </div>
