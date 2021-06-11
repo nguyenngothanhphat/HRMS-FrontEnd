@@ -36,7 +36,7 @@ export async function getLocationListByParentCompany(payload) {
 }
 
 export async function getRoleList() {
-  return request('/api/role/list', {
+  return request('/api/roletenant/list', {
     method: 'POST',
   });
 }

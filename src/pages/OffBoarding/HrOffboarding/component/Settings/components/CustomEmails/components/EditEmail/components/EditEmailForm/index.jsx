@@ -397,7 +397,7 @@ class EditEmailForm extends PureComponent {
               this.setState({ load: false });
               dispatch({
                 type: 'employeeSetting/fetchTitleList',
-                payload: { tenantId: getCurrentTenant() },
+                payload: { tenantId: getCurrentTenant(), company: getCurrentCompany() },
               }).then((data) => {
                 this.setState((prevState) => ({
                   conditionsTrigger: {
@@ -473,7 +473,7 @@ class EditEmailForm extends PureComponent {
         this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchTitleList',
-          payload: { tenantId: getCurrentTenant() },
+          payload: { tenantId: getCurrentTenant(), company: getCurrentCompany() },
         }).then((data) => {
           this.setState((prevState) => ({
             conditionsTrigger: {
@@ -757,8 +757,7 @@ class EditEmailForm extends PureComponent {
                         mode={valueToBeVerb === 'is' ? '' : 'multiple'}
                         showArrow
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                         placeholder="Please select a choice"
                         onChange={(value) => this.onChangeCondition(index, 'value', value)}
                         onClick={() => this.onClickCondition(index)}
