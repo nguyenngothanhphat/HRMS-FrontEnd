@@ -8,34 +8,45 @@ class WaitingPeriod extends Component {
     this.state = {
       afterAmount: '',
       date: 'day',
-      unlimited: false,
+      accrue: false,
     };
+  }
+
+  componentDidMount() {
+    const {
+      waitingPeriod: { afterAmount, date, accrue },
+    } = this.props;
+    this.setState({
+      afterAmount,
+      date,
+      accrue,
+    });
   }
 
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
-    const { afterAmount, unlimited } = this.state;
+    const { afterAmount, accrue } = this.state;
     this.setState({
       date: e.target.value,
     });
     const data = {
       date: e.target.value,
       afterAmount,
-      unlimited,
+      accrue,
     };
     onChangeValue(data);
   };
 
   onChange = (value) => {
     const { onChangeValue = () => {} } = this.props;
-    const { date, unlimited } = this.state;
+    const { date, accrue } = this.state;
     this.setState({
       afterAmount: value,
     });
     const data = {
       date,
       afterAmount: value,
-      unlimited,
+      accrue,
     };
     onChangeValue(data);
   };
@@ -44,21 +55,22 @@ class WaitingPeriod extends Component {
     const { onChangeValue = () => {} } = this.props;
     const { date, afterAmount } = this.state;
     this.setState({
-      unlimited: e.target.checked,
+      accrue: e.target.checked,
     });
     const data = {
       date,
       afterAmount,
-      unlimited: e.target.checked,
+      accrue: e.target.checked,
     };
     onChangeValue(data);
   };
 
   render() {
-    const { date } = this.state;
-    const {
-      waitingPeriod: { afterAmount, date: dateData, accrue },
-    } = this.props;
+    const { date, afterAmount, accrue } = this.state;
+    const option = [
+      { label: 'Days', value: 'day' },
+      { label: 'Hours', value: 'hour' },
+    ];
     return (
       <div className={styles.contentWaiting}>
         <div className={styles.title}>Waiting periods</div>
@@ -69,7 +81,11 @@ class WaitingPeriod extends Component {
               <div className={styles.titleText}>
                 New employees can apply for casual leaves after
               </div>
-              <Checkbox checked={accrue} className={styles.checkbox} onChange={this.onChangeSelect}>
+              <Checkbox
+                defaultChecked={accrue}
+                className={styles.checkbox}
+                onChange={this.onChangeSelect}
+              >
                 Accrue casual leave during this period
               </Checkbox>
             </Col>
@@ -80,23 +96,22 @@ class WaitingPeriod extends Component {
                     min={0}
                     max={12}
                     // defaultValue={0}
-                    value={afterAmount}
-                    placeholder="day"
-                    formatter={(value) => `${value} day`}
-                    parser={(value) => value.replace('days', '')}
+                    defaultValue={afterAmount}
+                    // placeholder="day"
+                    // formatter={(value) => `${value} day`}
+                    // parser={(value) => value.replace('days', '')}
                     onChange={this.onChange}
                   />
                 </Col>
                 <Col>
                   <Radio.Group
                     onChange={this.onChangeRadio}
-                    value={dateData}
+                    value={date}
+                    options={option}
+                    optionType="button"
                     buttonStyle="solid"
                     className={styles.radioGroup}
-                  >
-                    <Radio.Button value="Day">Days</Radio.Button>
-                    <Radio.Button value="Hour">Hours</Radio.Button>
-                  </Radio.Group>
+                  />
                 </Col>
               </Row>
             </Col>

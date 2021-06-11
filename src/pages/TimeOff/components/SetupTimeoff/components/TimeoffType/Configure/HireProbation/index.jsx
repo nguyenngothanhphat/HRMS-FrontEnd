@@ -6,8 +6,17 @@ class HireProbation extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      newHire: true,
+      newHire: false,
     };
+  }
+
+  componentDidMount() {
+    const {
+      hireProbation: { newHire },
+    } = this.props;
+    this.setState({
+      newHire,
+    });
   }
 
   onChangeRadio = (e) => {
@@ -22,10 +31,11 @@ class HireProbation extends Component {
   };
 
   render() {
-    // const { newHire } = this.state;
-    const {
-      hireProbation: { newHire },
-    } = this.props;
+    const { newHire } = this.state;
+    const option = [
+      { label: 'Yes', value: true },
+      { label: 'No', value: false },
+    ];
     return (
       <div className={styles.contentHireProration}>
         <div className={styles.title}>New hire proration</div>
@@ -41,12 +51,11 @@ class HireProbation extends Component {
               <Radio.Group
                 onChange={this.onChangeRadio}
                 value={newHire}
+                options={option}
+                optionType="button"
                 buttonStyle="solid"
                 className={styles.radioGroup}
-              >
-                <Radio.Button value>Yes</Radio.Button>
-                <Radio.Button value={false}>No</Radio.Button>
-              </Radio.Group>
+              />
             </Col>
           </Row>
         </div>

@@ -14,7 +14,6 @@ class BaseAccual extends Component {
 
   componentDidMount() {
     const { baseAccrual } = this.props;
-    const { time, date, unlimited } = this.state;
     this.setState({
       time: baseAccrual.time,
       date: baseAccrual.date,

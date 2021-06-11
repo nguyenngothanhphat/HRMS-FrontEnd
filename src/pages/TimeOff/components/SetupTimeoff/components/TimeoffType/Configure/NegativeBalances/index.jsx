@@ -12,6 +12,17 @@ class BaseAccual extends Component {
     };
   }
 
+  componentDidMount() {
+    const {
+      negativeBalance: { unto, date, unlimited },
+    } = this.props;
+    this.setState({
+      unto,
+      date,
+      unlimited,
+    });
+  }
+
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
     const { unto, unlimited } = this.state;
@@ -55,10 +66,11 @@ class BaseAccual extends Component {
   };
 
   render() {
-    // const { date } = this.state;
-    const {
-      negativeBalance: { date, unlimited, unto },
-    } = this.props;
+    const { date, unto, unlimited } = this.state;
+    const option = [
+      { label: 'Days', value: 'day' },
+      { label: 'Hours', value: 'hour' },
+    ];
     return (
       <div className={styles.contentNegative}>
         <div className={styles.title}>Negative balances</div>
@@ -71,7 +83,7 @@ class BaseAccual extends Component {
               </div>
               <Checkbox
                 className={styles.checkbox}
-                checked={unlimited}
+                defaultChecked={unlimited}
                 onChange={this.onChangeSelect}
               >
                 Unlimited negative balances
@@ -83,10 +95,9 @@ class BaseAccual extends Component {
                   <InputNumber
                     min={0}
                     max={12}
-                    defaultValue={0}
-                    placeholder="day"
-                    formatter={(value) => `${value} day`}
-                    parser={(value) => value.replace('days', '')}
+                    defaultValue={unto}
+                    // formatter={(value) => `${value} day`}
+                    // parser={(value) => value.replace('days', '')}
                     onChange={this.onChange}
                   />
                 </Col>
@@ -94,12 +105,11 @@ class BaseAccual extends Component {
                   <Radio.Group
                     onChange={this.onChangeRadio}
                     value={date}
+                    options={option}
+                    optionType="button"
                     buttonStyle="solid"
                     className={styles.radioGroup}
-                  >
-                    <Radio.Button value="day">Days</Radio.Button>
-                    <Radio.Button value="hour">Hours</Radio.Button>
-                  </Radio.Group>
+                  />
                 </Col>
               </Row>
             </Col>

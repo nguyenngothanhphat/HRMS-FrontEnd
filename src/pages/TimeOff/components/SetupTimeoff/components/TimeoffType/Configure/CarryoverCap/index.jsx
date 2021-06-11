@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Radio, Row, Col, InputNumber, Select, Checkbox } from 'antd';
+import { Radio, Row, Col, InputNumber, DatePicker, Checkbox } from 'antd';
 import styles from './index.less';
 
 class CarryoverCap extends Component {
@@ -9,12 +9,25 @@ class CarryoverCap extends Component {
       uptownAmount: '',
       date: 'day',
       unlimited: false,
+      effectiveFrom: '',
     };
+  }
+
+  componentDidMount() {
+    const {
+      carryoverCap: { date, effectiveFrom, unlimited, uptownAmount },
+    } = this.props;
+    this.setState({
+      date,
+      effectiveFrom,
+      unlimited,
+      uptownAmount,
+    });
   }
 
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
-    const { uptownAmount, unlimited } = this.state;
+    const { uptownAmount, unlimited, effectiveFrom } = this.state;
     this.setState({
       date: e.target.value,
     });
@@ -22,13 +35,14 @@ class CarryoverCap extends Component {
       date: e.target.value,
       uptownAmount,
       unlimited,
+      effectiveFrom,
     };
     onChangeValue(data);
   };
 
   onChange = (value) => {
     const { onChangeValue = () => {} } = this.props;
-    const { date, unlimited } = this.state;
+    const { date, unlimited, effectiveFrom } = this.state;
     this.setState({
       uptownAmount: value,
     });
@@ -36,29 +50,48 @@ class CarryoverCap extends Component {
       date,
       uptownAmount: value,
       unlimited,
+      effectiveFrom,
     };
     onChangeValue(data);
   };
 
   onChangeSelect = (e) => {
     const { onChangeValue = () => {} } = this.props;
-    const { date, uptownAmount } = this.state;
+    const { date, uptownAmount, effectiveFrom } = this.state;
     this.setState({
       unlimited: e.target.checked,
     });
     const data = {
       date,
       uptownAmount,
+      effectiveFrom,
       unlimited: e.target.checked,
     };
     onChangeValue(data);
   };
 
+  onChangeDate = (value) => {
+    const { onChangeValue = () => {} } = this.props;
+    const { date, uptownAmount, unlimited } = this.state;
+    this.setState({
+      effectiveFrom: value,
+    });
+    const data = {
+      date,
+      uptownAmount,
+      effectiveFrom: value,
+      unlimited,
+    };
+    onChangeValue(data);
+  };
+
   render() {
-    const { date } = this.state;
-    const {
-      carryoverCap: { date: dateData, effectiveFrom, unlimited, uptownAmount },
-    } = this.props;
+    const { date, uptownAmount, unlimited, effectiveFrom } = this.state;
+    const option = [
+      { label: 'Days', value: 'day' },
+      { label: 'Hours', value: 'hour' },
+    ];
+    const format = 'MM-DD-YYYY';
     return (
       <div className={styles.contentCarryover}>
         <div className={styles.title}>Carryover cap</div>
@@ -77,25 +110,24 @@ class CarryoverCap extends Component {
                     min={0}
                     max={date === 'day' ? 365 : 12}
                     // defaultValue={0}
-                    value={uptownAmount}
-                    placeholder={date === 'day' ? 'days' : 'hours'}
-                    formatter={(value) => (date === 'day' ? `${value} days` : `${value} hours`)}
-                    parser={(value) =>
-                      date === 'day' ? value.replace('days', '') : value.replace('hours', '')
-                    }
+                    defaultValue={uptownAmount}
+                    // placeholder={date === 'day' ? 'days' : 'hours'}
+                    // formatter={(value) => (date === 'day' ? `${value} days` : `${value} hours`)}
+                    // parser={(value) =>
+                    //   date === 'day' ? value.replace('days', '') : value.replace('hours', '')
+                    // }
                     onChange={this.onChange}
                   />
                 </Col>
                 <Col>
                   <Radio.Group
                     onChange={this.onChangeRadio}
-                    value={dateData}
+                    defaultValue={date}
                     buttonStyle="solid"
+                    optionType="button"
+                    options={option}
                     className={styles.radioGroup}
-                  >
-                    <Radio.Button value="Day">Days</Radio.Button>
-                    <Radio.Button value="Hour">Hours</Radio.Button>
-                  </Radio.Group>
+                  />
                 </Col>
               </Row>
             </Col>
@@ -105,14 +137,19 @@ class CarryoverCap extends Component {
               <div className={styles.titleText}>effective from</div>
             </Col>
             <Col span={12}>
-              <Select className={styles.date} placeholder="Select a carryover date" />
+              {/* <Select className={styles.date} placeholder="Select a carryover date" /> */}
+              <DatePicker
+                defaultValue={effectiveFrom}
+                format={format}
+                onChange={this.onChangeDate}
+              />
             </Col>
           </Row>
           <Row gutter={[20, 0]}>
             <Col span={10}>
               <Checkbox
                 className={styles.checkbox}
-                checked={unlimited}
+                defaultChecked={unlimited}
                 onChange={this.onChangeSelect}
               >
                 Do not limit number of hours/days employee carryover

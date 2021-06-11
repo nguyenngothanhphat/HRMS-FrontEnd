@@ -65,10 +65,10 @@ class Balance extends Component {
 
   render() {
     const { notGreaterThan, date, unlimited } = this.state;
-    // const {
-    //   maxBalance: { date, notGreaterThan, unlimited },
-    // } = this.props;
-    // console.log(accrualRate);
+    const option = [
+      { label: 'Days', value: 'day' },
+      { label: 'Hours', value: 'hour' },
+    ];
     return (
       <div className={styles.contentbalance}>
         <div className={styles.title}>Maximum balance</div>
@@ -90,29 +90,17 @@ class Balance extends Component {
             <Col span={12}>
               <Row className={styles.inputText} gutter={[24, 0]}>
                 <Col>
-                  <InputNumber
-                    min={0}
-                    max={date === 'day' ? 365 : 12}
-                    // defaultValue={0}
-                    value={notGreaterThan}
-                    placeholder={date === 'day' ? 'days' : 'hours'}
-                    formatter={(value) => (date === 'day' ? `${value} days` : `${value} hours`)}
-                    parser={(value) =>
-                      date === 'day' ? value.replace('days', '') : value.replace('hours', '')
-                    }
-                    onChange={this.onChange}
-                  />
+                  <InputNumber min={0} defaultValue={notGreaterThan} onChange={this.onChange} />
                 </Col>
                 <Col>
                   <Radio.Group
                     onChange={this.onChangeRadio}
+                    options={option}
                     value={date}
+                    optionType="button"
                     buttonStyle="solid"
                     className={styles.radioGroup}
-                  >
-                    <Radio.Button value="day">Days</Radio.Button>
-                    <Radio.Button value="hour">Hours</Radio.Button>
-                  </Radio.Group>
+                  />
                 </Col>
               </Row>
             </Col>

@@ -128,7 +128,7 @@ class Configure extends Component {
   prevStep = (data) => {
     if (data > 1) {
       const dataPrev = data - 1;
-      // const { list } = this.state;
+      const { list } = this.state;
       const renderStep = list.find((item) => item.key === dataPrev);
       const { ref } = renderStep;
       ref.current.scrollIntoView(true);

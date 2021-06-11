@@ -14,72 +14,78 @@ class TenuaAccrua extends Component {
   componentDidMount() {
     const { tenureAccrual } = this.props;
     this.setState({
-      tenureAccrual: tenureAccrual,
+      tenureAccrual,
     });
   }
 
-  onChangeRadio = (e) => {
-    const { onChangeValue = () => {} } = this.props;
-    const { effectiveFrom, yearOfEmployment, totalLeave } = this.state;
-    this.setState({
-      date: e.target.value,
-    });
-    const data = {
-      date: e.target.value,
-      effectiveFrom,
-      yearOfEmployment,
-      totalLeave,
-    };
-    onChangeValue(data);
+  onChangeEffectiveDate = (value) => {
+    console.log(value);
   };
 
-  onChange = (value) => {
-    const { onChangeValue = () => {} } = this.props;
-    const { effectiveFrom, yearOfEmployment, date, tenureAccrual } = this.state;
-    const data = {
-      date,
-      effectiveFrom,
-      yearOfEmployment,
-      totalLeave: value,
-    };
-    this.setState({
-      totalLeave: value,
-      tenureAccrual: tenureAccrual.push(data),
-    });
-    onChangeValue(data);
+  onChangeRadio = (value) => {
+    console.log(value);
+  };
+
+  onChangeTotalLeave = (value) => {
+    console.log(value);
   };
 
   onChangeYear = (value) => {
-    const { onChangeValue = () => {} } = this.props;
-    const { effectiveFrom, date, totalLeave } = this.state;
-    this.setState({
-      yearOfEmployment: value,
-    });
-    const data = {
-      date,
-      effectiveFrom,
-      yearOfEmployment: value,
-      totalLeave,
-    };
-    onChangeValue(data);
+    console.log(value);
   };
 
-  onAddItem = () => {};
+  onAddItem = () => {
+    const { tenureAccrual } = this.state;
+    const data = {
+      date: 'day',
+      totalLeave: 0,
+      yearOfEmployment: '0',
+      effectiveFrom: new Date(),
+    };
+    this.setState({
+      tenureAccrual: [...tenureAccrual, data],
+    });
+    // return <ItemTenure />;
+  };
+
+  onRemove = (id) => {
+    const { tenureAccrual } = this.state;
+
+    const arr = [...tenureAccrual];
+    const newArr = arr.splice(id, 1);
+
+    this.setState({
+      tenureAccrual: newArr,
+    });
+  };
 
   render() {
-    const { date, tenureAccrual } = this.state;
-    // const { tenureAccrual = [] } = this.props;
+    const { tenureAccrual } = this.state;
     return (
       <div className={styles.contentTenua}>
         <div className={styles.flex}>
           <div className={styles.titleText}> Tenure accrual rate</div>
           <div>
-            <Button className={styles.btnAdd}>Add a new tenure accrual rate</Button>
+            <Button onClick={this.onAddItem} className={styles.btnAdd}>
+              Add a new tenure accrual rate
+            </Button>
           </div>
         </div>
         <div className={styles.borderStyles} />
-        {tenureAccrual.map((item, i) => {
-          return <ItemTenure />;
+        {tenureAccrual.map((item, index) => {
+          return (
+            <div key={item._id || index}>
+              <ItemTenure
+                item={item}
+                index={index}
+                onRemove={this.onRemove}
+                onChangeRadio={this.onChangeRadio}
+                onChangeTotalLeave={this.onChangeTotalLeave}
+                onChangeYear={this.onChangeYear}
+                onChangeEffectiveDate={this.onChangeEffectiveDate}
+              />
+            </div>
+          );
         })}
       </div>
     );

@@ -7,7 +7,6 @@ import ManageBalance from './components/ManageBalance';
 import AssignPolicies from './components/AssignPolicy';
 import TimeOffLayout from './components/TimeOffLayout';
 import ScreenBegin from './components/ScreenBegin';
-import { getCurrentTenant } from '@/utils/authority';
 
 @connect(({ timeOff: { timeOffTypes = [] } = {} }) => ({
   timeOffTypes,
@@ -42,13 +41,7 @@ class SetupTimeoff extends Component {
         id: 1,
         name: 'Timeoff Type & Rules',
         key: 'timeoffType',
-        component: (
-          <TimeoffType
-            timeOffTypes={timeOffTypes}
-            onGetDataById={this.onGetDataById}
-            itemTimeOffType={itemTimeOffType ? itemTimeOffType : {}}
-          />
-        ),
+        component: <TimeoffType timeOffTypes={timeOffTypes} />,
         progress: 70,
       },
       {
