@@ -5,7 +5,6 @@ import { CloseCircleOutlined } from '@ant-design/icons';
 import { formatMessage, connect } from 'umi';
 // import { dialog } from '@/utils/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import TextArea from 'antd/lib/input/TextArea';
 import doneIcon from './assets/doneIcon.png';
 import editIcon from './assets/editIcon.png';
 import styles from './index.less';
@@ -28,13 +27,11 @@ import PROCESS_STATUS from '../../../utils';
           title: salaryTitleOriginData = {},
         } = {},
         candidate,
-        salaryNote = '',
       } = {},
       data,
       tempData = {},
       tempData: {
         salaryStructure: { settings: settingsTempData = [], title: salaryTitleTempData = {} } = {},
-        salaryNote: salaryNoteTemp = '',
       } = {},
     },
     user: { currentUser: { company: { _id = '' } = {} } = {}, currentUser: { location = {} } = {} },
@@ -57,8 +54,6 @@ import PROCESS_STATUS from '../../../utils';
     salaryTitleTempData,
     tempData,
     candidate,
-    salaryNote,
-    salaryNoteTemp,
   }),
 )
 class SalaryStructureTemplate extends PureComponent {
@@ -255,7 +250,7 @@ class SalaryStructureTemplate extends PureComponent {
       settingsOriginData: settings = [],
       // salaryPosition,
       data: { _id },
-      tempData: { salaryTitle = '', salaryNote = '' } = {},
+      tempData: { salaryTitle = '' } = {},
     } = this.props;
 
     dispatch({
@@ -265,7 +260,6 @@ class SalaryStructureTemplate extends PureComponent {
           settings,
           title: salaryTitle,
         },
-        salaryNote,
         candidate: _id,
         currentStep: currentStep + 1,
         tenantId: getCurrentTenant(),
@@ -687,33 +681,6 @@ class SalaryStructureTemplate extends PureComponent {
     // );
   };
 
-  onSalaryNoteChange = (e) => {
-    const { dispatch } = this.props;
-    const { target: { value = '' } = {} } = e;
-    dispatch({
-      type: 'candidateInfo/saveTemp',
-      payload: {
-        salaryNote: value,
-      },
-    });
-  };
-
-  _renderSalaryNote = () => {
-    const { processStatus = '', salaryNoteTemp = '' } = this.props;
-    return (
-      <div className={styles.salaryNote}>
-        <span className={styles.title}>Notes</span>
-        <TextArea
-          defaultValue={salaryNoteTemp}
-          onChange={this.onSalaryNoteChange}
-          disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
-          placeholder="Notes"
-          autoSize={{ minRows: 3, maxRows: 7 }}
-        />
-      </div>
-    );
-  };
-
   _renderBottomBar = () => {
     const { checkMandatory, processStatus } = this.props;
     const { filledSalaryStructure = false } = checkMandatory;
@@ -809,7 +776,6 @@ class SalaryStructureTemplate extends PureComponent {
                         />
                       </div>
                       {this._renderFooter()}
-                      {this._renderSalaryNote()}
                       {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
                         ? this._renderBottomBar()
                         : null}
