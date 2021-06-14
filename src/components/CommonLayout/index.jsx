@@ -48,6 +48,7 @@ const PROCESS_STATUS = {
         hidePreviewOffer,
         disablePreviewOffer,
       } = {},
+      checkMandatory = {},
     } = {},
   }) => ({
     loadingUpdateByHr: loading.effects['candidateInfo/updateByHR'],
@@ -58,6 +59,7 @@ const PROCESS_STATUS = {
     allDocumentVerified,
     hidePreviewOffer,
     disablePreviewOffer,
+    checkMandatory,
   }),
 )
 class CommonLayout extends Component {
@@ -66,6 +68,12 @@ class CommonLayout extends Component {
     this.state = {
       selectedItemId: '',
       displayComponent: '',
+      statusStep: {
+        basicInfoStep: null,
+        jobDetailStep: null,
+        salaryStructureStep: null,
+        backGroundCheckStep: null,
+      },
     };
   }
 
@@ -191,16 +199,11 @@ class CommonLayout extends Component {
     });
   }
 
-  componentWillUnmount() {
-    // const { dispatch } = this.props;
-    // console.log('UNMOUNT');
-    // dispatch({
-    //   type: 'candidateInfo/save',
-    //   payload: {
-    //     a: 2,
-    //     data: {},
-    //   },
-    // });
+  componentDidUpdate(prevProps) {
+    const { currentStep } = this.props;
+    if (currentStep !== prevProps.currentStep) {
+      this.checkStatusStep();
+    }
   }
 
   _handlePreviewOffer = () => {
@@ -235,16 +238,69 @@ class CommonLayout extends Component {
     return processStatus === 'DRAFT' && skip === 0;
   };
 
+  checkStatusStep = () => {
+    const {
+      currentStep,
+      checkMandatory: {
+        filledBasicInformation,
+        filledJobDetail,
+        filledSalaryStructure,
+        filledBackgroundCheck,
+      } = {},
+    } = this.props;
+    const { statusStep } = this.state;
+    const preIndex = currentStep - 1;
+    if (preIndex < 0) {
+      return null;
+    }
+
+    if (preIndex === 0 && filledBasicInformation) {
+      this.setState({
+        statusStep: {
+          ...statusStep,
+          basicInfoStep: preIndex,
+        },
+      });
+    } else if (preIndex === 1 && filledJobDetail) {
+      this.setState({
+        statusStep: {
+          ...statusStep,
+          jobDetailStep: preIndex,
+        },
+      });
+    } else if (preIndex === 2 && filledSalaryStructure) {
+      this.setState({
+        statusStep: {
+          ...statusStep,
+          salaryStructureStep: preIndex,
+        },
+      });
+    } else if (preIndex === 3 && filledBackgroundCheck) {
+      this.setState({
+        statusStep: {
+          ...statusStep,
+          backGroundCheckStep: preIndex,
+        },
+      });
+    }
+  };
+
   isDisabled = (index) => {
     const {
       PROVISIONAL_OFFER_DRAFT,
 
       SENT_PROVISIONAL_OFFERS,
 
-      PENDING,
+      // PENDING,
     } = PROCESS_STATUS;
 
-    const { allDocumentVerified, processStatus, skip } = this.props;
+    const {
+      // allDocumentVerified,
+      processStatus,
+      skip,
+      currentStep,
+    } = this.props;
+    const { statusStep } = this.state;
     if (skip === 1) {
       return false;
     }
@@ -252,23 +308,29 @@ class CommonLayout extends Component {
     switch (processStatus) {
       case PROVISIONAL_OFFER_DRAFT:
       case SENT_PROVISIONAL_OFFERS: {
-        if (index === 0 || index === 1 || index === 2 || index === 3) {
+        if (
+          index === currentStep ||
+          index === statusStep.basicInfoStep ||
+          index === statusStep.jobDetailStep ||
+          index === statusStep.salaryStructureStep ||
+          index === statusStep.backGroundCheckStep
+        ) {
           return false;
         }
         return true;
       }
 
-      case PENDING: {
-        if (allDocumentVerified) {
-          return false;
-        }
+      // case PENDING: {
+      //   if (allDocumentVerified) {
+      //     return false;
+      //   }
 
-        if (index === 0 || index === 1 || index === 2 || index === 3) {
-          return false;
-        }
+      //   if (index === 0 || index === 1 || index === 2 || index === 3) {
+      //     return false;
+      //   }
 
-        return true;
-      }
+      //   return true;
+      // }
 
       default:
         return false;
