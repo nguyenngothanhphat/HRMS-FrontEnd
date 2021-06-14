@@ -1,12 +1,12 @@
 /* eslint-disable react/jsx-curly-newline */
 /* eslint-disable no-template-curly-in-string */
 /* eslint-disable react/jsx-props-no-spreading */
-import React, { Component } from 'react';
-import { Modal, Button, Form, Input, Select, DatePicker } from 'antd';
-import { connect, formatMessage } from 'umi';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
+import { Button, DatePicker, Form, Input, Modal, Select } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
-import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
+import React, { Component } from 'react';
+import { connect, formatMessage } from 'umi';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -53,7 +53,7 @@ class AddEmployeeForm extends Component {
     this.state = {
       isDisabled: true,
       isDisabledTitle: true,
-      tenantCurrentEmployee: '',
+      // tenantCurrentEmployee: '',
     };
   }
 
@@ -100,9 +100,9 @@ class AddEmployeeForm extends Component {
     const companyMatch = companiesOfUser.find((item) => item._id === _id);
     const tenantLocation = companyMatch.tenant;
 
-    this.setState({
-      tenantCurrentEmployee: companyMatch.tenant,
-    });
+    // this.setState({
+    //   tenantCurrentEmployee: companyMatch.tenant,
+    // });
 
     const locationPayload = listLocationsByCompany.map(
       ({ headQuarterAddress: { country: countryItem1 = '' } = {} }) => {
@@ -120,6 +120,14 @@ class AddEmployeeForm extends Component {
         };
       },
     );
+
+    dispatch({
+      type: 'employeesManagement/fetchRolesList',
+      payload: {
+        tenantId: tenantLocation,
+        company: _id,
+      },
+    });
 
     dispatch({
       type: 'employeesManagement/fetchReportingManagerList',
@@ -147,14 +155,14 @@ class AddEmployeeForm extends Component {
 
   onChangeSelect = (type, value) => {
     const { dispatch } = this.props;
-    const { company, tenantCurrentEmployee } = this.state;
+    // const { company, tenantCurrentEmployee } = this.state;
 
     switch (type) {
       case 'company':
         this.fetchData(value);
         this.setState({
           isDisabled: false,
-          company: value,
+          // company: value,
         });
         this.formRef.current.setFieldsValue({
           location: undefined,
@@ -377,28 +385,6 @@ class AddEmployeeForm extends Component {
             </Select>
           </Form.Item>
 
-          <Form.Item
-            label={formatMessage({ id: 'addEmployee.roles' })}
-            name="roles"
-            rules={[{ required: true }]}
-          >
-            <Select
-              autoComplete="dontshow"
-              mode="multiple"
-              allowClear
-              showArrow
-              style={{ width: '100%' }}
-              getPopupContainer={() => document.getElementById('addEmployee__form')}
-              placeholder="Select Roles"
-            >
-              {rolesList.map((item) => (
-                <Option key={item._id} value={item._id}>
-                  {item._id}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-
           {company ? (
             <Form.Item
               label={formatMessage({ id: 'addEmployee.company' })}
@@ -435,6 +421,30 @@ class AddEmployeeForm extends Component {
               </Select>
             </Form.Item>
           )}
+
+          <Form.Item
+            label={formatMessage({ id: 'addEmployee.roles' })}
+            name="roles"
+            rules={[{ required: true }]}
+          >
+            <Select
+              autoComplete="dontshow"
+              mode="multiple"
+              allowClear
+              showArrow
+              disabled={isDisabled}
+              style={{ width: '100%' }}
+              getPopupContainer={() => document.getElementById('addEmployee__form')}
+              placeholder="Select Roles"
+            >
+              {rolesList.map((item) => (
+                <Option key={item._id} value={item._id}>
+                  {item.idSync}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
           <Form.Item
             label={formatMessage({ id: 'addEmployee.location' })}
             name="location"

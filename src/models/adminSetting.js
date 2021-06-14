@@ -44,7 +44,7 @@ const adminSetting = {
         });
         const { statusCode, data: listRoles = [] } = response;
         const formatData = listRoles.map((item) => {
-          const { _id: RolesID, name: Rolesname } = item;
+          const { _id: RolesID, idSync: Rolesname } = item;
           return { RolesID, Rolesname };
         });
         if (statusCode !== 200) throw response;

@@ -9,7 +9,8 @@ const Title = () => {
         Eligibility Documents
       </Typography.Title>
       <Typography.Text className={styles.text}>
-        All documents supporting candidate’s employment eligibility will be displayed here
+        Please choose all the acceptable documents that the candidate can provide. The mandatory
+        documents are required and cannot be deselected.
       </Typography.Text>
     </div>
   );
