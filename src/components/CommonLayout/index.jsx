@@ -248,13 +248,14 @@ class CommonLayout extends Component {
         filledBasicInformation = false,
         filledJobDetail = false,
         filledSalaryCheck = false,
-        // filledBackgroundCheck = false,
+        filledBgCheck = false,
       } = {},
     } = this.props;
 
     let basicInfoStep = 0;
     let jobDetailStep = 0;
     let salaryStructureStep = 0;
+    let backGroundCheckStep = 0;
 
     if (filledBasicInformation) {
       // check basicInformation is full filled
@@ -270,11 +271,16 @@ class CommonLayout extends Component {
       salaryStructureStep = 2;
     }
 
+    if (filledBgCheck) {
+      backGroundCheckStep = 3;
+    }
+
     this.setState({
       statusStep: {
         basicInfoStep,
         jobDetailStep,
         salaryStructureStep,
+        backGroundCheckStep,
       },
     });
   };

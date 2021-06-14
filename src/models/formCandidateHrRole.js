@@ -838,14 +838,37 @@ const candidateInfo = {
           privateEmail = '',
           previousExperience = '',
           salaryStructure = {},
+          documentChecklistSetting = [],
         } = data;
 
-        const checkStatus = {
-          filledBasicInformation: false,
-          filledJobDetail: false,
-          filledSalaryCheck: false,
-          filledBackgroundCheck: false,
-        };
+        const identityProof = documentChecklistSetting[0]?.data;
+        const addressProof = documentChecklistSetting[1]?.data;
+        const educational = documentChecklistSetting[2]?.data;
+        const technicalCertification = documentChecklistSetting[3]?.data;
+
+        let listCheckIP = identityProof.map((item) => item.value);
+        listCheckIP = listCheckIP.filter((item) => item === true);
+
+        let listCheckAP = addressProof.map((item) => item.value);
+        listCheckAP = listCheckAP.filter((item) => item === true);
+
+        let listCheckEdu = educational.map((item) => item.value);
+        listCheckEdu = listCheckEdu.filter((item) => item === true);
+
+        let listCheckTC = technicalCertification.map((item) => item.value);
+        listCheckTC = listCheckTC.filter((item) => item === true);
+
+        const checkStatus = {};
+
+        if (
+          listCheckIP.length > 2 ||
+          listCheckAP.length > 0 ||
+          listCheckEdu.length > 3 ||
+          listCheckTC.length > 0 ||
+          'employer' in documentChecklistSetting[3]
+        ) {
+          checkStatus.filledBgCheck = true;
+        }
 
         if (fullName && privateEmail && previousExperience) {
           checkStatus.filledBasicInformation = true;
