@@ -1,16 +1,22 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { AutoComplete, Button, DatePicker, Form, Input } from 'antd';
 import React, { Component } from 'react';
-import { Form, Button, Select, DatePicker } from 'antd';
 import styles from './index.less';
 
-const { Option } = Select;
+// const { Option } = Select;
 
-const listType = ['doc', 'csv', 'xsxl', 'jpeg', 'mp4'];
+const listType = [
+  { value: 'doc' },
+  { value: 'csv' },
+  { value: 'xsxl' },
+  { value: 'jpeg' },
+  { value: 'mp4' },
+];
 const listAssigned = [
-  'Krithi Priyadarshini',
-  'Shipra Purohit',
-  'Aditya Venkatesan',
-  'Manasi Sanghani',
+  { value: 'Krithi Priyadarshini' },
+  { value: 'Shipra Purohit' },
+  { value: 'Aditya Venkatesan' },
+  { value: 'Manasi Sanghani' },
 ];
 
 // const listLocation = [
@@ -23,6 +29,14 @@ const listAssigned = [
 //   'Timesheet',
 //   'Performance ',
 // ];
+
+const CustomInput = (props) => {
+  return (
+    <Input.Group compact>
+      <AutoComplete style={{ width: '100%' }} {...props} />
+    </Input.Group>
+  );
+};
 
 class FormSearch extends Component {
   formRef = React.createRef();
@@ -84,18 +98,20 @@ class FormSearch extends Component {
         >
           <div className={styles.formField}>
             <Form.Item name="type" label="Type">
-              <Select placeholder="Event, .doc, .xlsx, csv" allowClear>
+              {/* <Select placeholder="Event, .doc, .xlsx, csv" allowClear>
                 {listType.map((item) => (
                   <Option key={item}>{item}</Option>
                 ))}
-              </Select>
+              </Select> */}
+              <CustomInput placeholder="Event, .doc, .xlsx, csv" options={listType} />
             </Form.Item>
-            <Form.Item name="assigned" label="Assigned">
-              <Select placeholder="Enter name of assignee" allowClear>
+            <Form.Item name="assigned" defaultValue="haha" label="Assignee">
+              {/* <Select placeholder="Enter name of assignee" allowClear>
                 {listAssigned.map((item) => (
-                  <Option key={item}>{item}</Option>
+                  <Option key={item.value}>{item.value}</Option>
                 ))}
-              </Select>
+              </Select> */}
+              <CustomInput placeholder="Enter name of assignee" options={listAssigned} />
             </Form.Item>
             <Form.Item name="dateModified" label="Date Modified">
               <DatePicker />
