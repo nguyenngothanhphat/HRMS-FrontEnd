@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import { Radio, Row, Col, InputNumber, DatePicker, Checkbox } from 'antd';
+import moment from 'moment';
 import styles from './index.less';
 
+const dateFormat = 'MM-DD-YYYY';
 class CarryoverCap extends Component {
   constructor(props) {
+    const { carryoverCap } = props;
     super(props);
     this.state = {
-      uptownAmount: '',
+      uptownAmount: 0,
       date: 'day',
       unlimited: false,
-      effectiveFrom: '',
+      effectiveFrom: moment(carryoverCap.effectiveFrom).locale('en').format(dateFormat),
     };
   }
 
@@ -91,7 +94,6 @@ class CarryoverCap extends Component {
       { label: 'Days', value: 'day' },
       { label: 'Hours', value: 'hour' },
     ];
-    const format = 'MM-DD-YYYY';
     return (
       <div className={styles.contentCarryover}>
         <div className={styles.title}>Carryover cap</div>
@@ -139,8 +141,8 @@ class CarryoverCap extends Component {
             <Col span={12}>
               {/* <Select className={styles.date} placeholder="Select a carryover date" /> */}
               <DatePicker
-                defaultValue={effectiveFrom}
-                format={format}
+                defaultValue={moment(effectiveFrom, dateFormat)}
+                format={dateFormat}
                 onChange={this.onChangeDate}
               />
             </Col>

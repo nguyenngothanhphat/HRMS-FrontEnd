@@ -6,7 +6,7 @@ class Balance extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      notGreaterThan: '',
+      notGreaterThan: 0,
       date: 'day',
       unlimited: 'false',
     };

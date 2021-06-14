@@ -3,7 +3,6 @@ import { Tabs, notification } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import { history, connect } from 'umi';
 import EmployeeLandingPage from './components/EmployeeLandingPage';
-import Breadcrumb from '@/components/Breadcrumb';
 import ManagerLandingPage from './components/ManagerLandingPage';
 import HRManagerLandingPage from './components/HRManagerLandingPage';
 // import Balances from './components/Balances';
@@ -20,7 +19,7 @@ class TimeOff extends PureComponent {
     super(props);
     this.state = {
       role: '',
-      activeKey: '1',
+      // activeKey: '1',
     };
   }
 
@@ -55,23 +54,23 @@ class TimeOff extends PureComponent {
       });
     }
 
-    let activeKey = '1';
-    switch (role) {
-      case 'employee':
-        activeKey = '1';
-        break;
-      case 'manager':
-        activeKey = '2';
-        break;
-      case 'hr-manager':
-        activeKey = '3';
-        break;
-      default:
-        break;
-    }
-    this.setState({
-      activeKey,
-    });
+    // let activeKey = '1';
+    // switch (role) {
+    //   case 'employee':
+    //     activeKey = '1';
+    //     break;
+    //   case 'manager':
+    //     activeKey = '2';
+    //     break;
+    //   case 'hr-manager':
+    //     activeKey = '3';
+    //     break;
+    //   default:
+    //     break;
+    // }
+    // this.setState({
+    //   activeKey,
+    // });
     return role;
   };
 
@@ -129,17 +128,7 @@ class TimeOff extends PureComponent {
   };
 
   render() {
-    const { role, activeKey } = this.state;
-    const routes = [
-      {
-        name: 'Time off',
-        path: '/time-off',
-      },
-      {
-        name: 'Setup Timeoff policy',
-        path: '/time-off/setup-timeof-policy',
-      },
-    ];
+    const { role } = this.state;
     return (
       // <Breadcrumb routes={routes}>
       <div className={styles.TimeOff}>

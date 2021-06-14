@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Affix, Progress } from 'antd';
+import { Affix } from 'antd';
 import s from './index.less';
 
 class TimeOffLayout extends Component {

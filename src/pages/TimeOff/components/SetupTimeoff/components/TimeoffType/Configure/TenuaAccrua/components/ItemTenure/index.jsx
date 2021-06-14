@@ -4,14 +4,16 @@ import { DeleteOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import styles from './index.less';
 
+const dateFormat = 'MM-DD-YYYY';
 class ItemTenure extends Component {
   constructor(props) {
+    const { item } = props;
     super(props);
     this.state = {
-      totalLeave: '',
+      totalLeave: 0,
       date: '',
       yearOfEmployment: 0,
-      effectiveFrom: '',
+      effectiveFrom: moment(item.effectiveFrom).locale('en').format(dateFormat),
       // id: '',
     };
   }
@@ -20,11 +22,13 @@ class ItemTenure extends Component {
     const {
       item: { date, totalLeave, yearOfEmployment, effectiveFrom },
     } = this.props;
+    const newDateTemp = moment(effectiveFrom).locale('en').format(dateFormat);
+    console.log(newDateTemp);
     this.setState({
       date,
       totalLeave,
       yearOfEmployment,
-      effectiveFrom,
+      effectiveFrom: newDateTemp,
       // id: _id,
     });
   }
@@ -69,7 +73,6 @@ class ItemTenure extends Component {
   render() {
     const { date, totalLeave, yearOfEmployment, effectiveFrom } = this.state;
     const { index } = this.props;
-    const dateFormat = 'MM-DD-YYYY';
     const listDayHour = [
       { label: 'Days', value: 'day' },
       { label: 'Hours', value: 'hour' },
@@ -92,8 +95,8 @@ class ItemTenure extends Component {
               />
             </Col>
             <Col span={4} className={styles.effectForm__deleteSection}>
-              <div className={styles.effectForm__deleteIcon}>
-                <DeleteOutlined className={styles.iconImg} onClick={() => this.removeItem(index)} />
+              <div className={styles.effectForm__deleteIcon} onClick={() => this.removeItem(index)}>
+                <DeleteOutlined className={styles.iconImg} />
               </div>
             </Col>
           </Row>
@@ -138,9 +141,10 @@ class ItemTenure extends Component {
             <Col span={10}>
               <DatePicker
                 className={styles.date}
+                picker="date"
                 format={dateFormat}
-                defaultValue={moment(effectiveFrom, dateFormat)}
                 onChange={this.handleChangeEffectiveDate}
+                defaultValue={moment(effectiveFrom, dateFormat)}
               />
             </Col>
           </Row>

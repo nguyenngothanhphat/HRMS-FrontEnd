@@ -4,17 +4,18 @@ import { connect } from 'umi';
 import { Form, InputNumber, Row, Col, Radio, Button, TimePicker, Spin } from 'antd';
 import { UpOutlined, DownOutlined } from '@ant-design/icons';
 
+import { getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import s from './index.less';
 
 @connect(
   ({
     loading,
-    timeOff: { employeeSchedule: getByLocation } = {},
+    timeOff: { employeeSchedule = {} } = {},
     user: { currentUser: { location: { _id: idLocation = '' } = {} } = {} } = {},
   }) => ({
     idLocation,
     loading: loading.effects['timeOff/getEmployeeScheduleByLocation'],
-    getByLocation,
+    employeeSchedule,
   }),
 )
 class WorkShedule extends Component {
@@ -68,15 +69,14 @@ class WorkShedule extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, idLocation } = this.props;
-
+    const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/getInitEmployeeSchedule',
-      payload: { location: idLocation },
+      payload: { location: getCurrentLocation(), tenantId: getCurrentTenant() },
     }).then(
       dispatch({
         type: 'timeOff/getEmployeeScheduleByLocation',
-        payload: { location: idLocation },
+        payload: { location: getCurrentLocation(), tenantId: getCurrentTenant() },
       }),
     );
   }
@@ -130,12 +130,13 @@ class WorkShedule extends Component {
     const { endAmPM, startAmPM, totalHour } = values;
 
     const payload = {
-      startWorkDay: { start: startTime || '8:00', amPM: startAmPM },
-      endWorkDay: { end: endTime || '17:00', amPM: endAmPM },
+      startWorkDay: { start: startTime, amPM: startAmPM },
+      endWorkDay: { end: endTime, amPM: endAmPM },
       totalHour,
       workDay: arrayFiler,
       _id,
       location: idLocation,
+      tenantId: getCurrentTenant(),
     };
     dispatch({
       type: 'timeOff/updateEmployeeSchedule',
@@ -184,14 +185,13 @@ class WorkShedule extends Component {
     //   { label: 'PM', value: 'PM' },
     // ];
     const { array = [], check, edit } = this.state;
-    const { getByLocation, loading } = this.props;
-
+    const { employeeSchedule, loading } = this.props;
     const {
       endWorkDay: { end: endTime, amPM: afternoon } = {},
       startWorkDay: { start: startTime, amPM: beforenoon } = {},
       workDay = [],
       totalHour,
-    } = getByLocation;
+    } = employeeSchedule;
 
     let formatArray = [...array];
     if (check === false) {

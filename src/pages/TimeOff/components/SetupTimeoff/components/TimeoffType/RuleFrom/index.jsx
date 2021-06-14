@@ -1,11 +1,13 @@
+/* eslint-disable no-param-reassign */
 import React, { Component } from 'react';
 import { connect } from 'umi';
 import { Row, Col, Button, Select, Spin } from 'antd';
 // import addIcon from '@/assets/addTicket.svg';
 // import icon from '@/assets/delete.svg';
 import { DeleteOutlined } from '@ant-design/icons';
-import styles from './index.less';
 import { getCurrentTenant } from '@/utils/authority';
+// import _ from 'lodash';
+import styles from './index.less';
 
 const { Option } = Select;
 @connect(({ timeOff: { countryList = [] } = {}, loading }) => ({
@@ -33,7 +35,7 @@ class RuleFrom extends Component {
           <div className={styles.straightLine} />
           <div>
             {children.map((item, index) => {
-              const { title, name, change, isDefault } = item;
+              const { name, isDefault } = item;
               // const classNameStatus = status === 100 ? styles.complete : styles.uncomplete;
               return (
                 <div key={`${index + 1}`}>
@@ -164,7 +166,7 @@ class RuleFrom extends Component {
   };
 
   render() {
-    const { onGetDataById = () => {}, timeOffTypes = [] } = this.props;
+    const { timeOffTypes = [] } = this.props;
 
     const array = [
       {
@@ -192,6 +194,12 @@ class RuleFrom extends Component {
         button: 'Add a new OoO timeoff',
         children: [],
       },
+      {
+        typeName: 'E',
+        type: 'Type E: Compoff',
+        button: 'Add a new compoff',
+        children: [],
+      },
     ];
 
     timeOffTypes.map((item) => {
@@ -200,12 +208,38 @@ class RuleFrom extends Component {
           item.change = this.onChange;
           ele.children.push(item);
         }
+        // if (item.type !== ele.typeName) {
+        //   const newObj = {
+        //     typeName: item.type,
+        //     type: `Type ${item.type}: ${item.typeName}`,
+        //     button: `Add a new ${item.typeName}`,
+        //     children: [],
+        //   };
+        //   item.change = this.onChange;
+        //   newObj.children.push(item);
+        //   array.push(newObj);
+        // }
+        // if (item.name === 'Casual Leave') {
+        //   const i = timeOffTypes.indexOf(item);
+        //   timeOffTypes.splice(0, 0, timeOffTypes.splice(i, 1)[0]);
+        // }
+        return ele;
       });
-      if (item.name === 'Casual Leave') {
-        const i = timeOffTypes.indexOf(item);
-        timeOffTypes.splice(0, 0, timeOffTypes.splice(i, 1)[0]);
-      }
+
+      return item;
     });
+
+    // _.map(array, (item) => {
+    //   if (item.typeName === 'A') {
+    //     item.children.map((ele) => {
+    //       if (ele.name === 'Casual Leave') {
+    //         const i = item.children.indexOf(ele);
+    //         item.children.splice(0, 0, item.children.slice(i, 1)[0]);
+    //       }
+    //       return ele;
+    //     });
+    //   }
+    // });
     console.log('array', array);
 
     const { loadingListCountry } = this.props;
@@ -222,9 +256,9 @@ class RuleFrom extends Component {
                 size="large"
                 placeholder="Please select country"
                 showArrow
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                filterOption={(input, option) => {
+                  return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
                 className={styles.selectCountry}
                 defaultValue="India"
                 onChange={(value) => this.handleChangeSelect(value)}

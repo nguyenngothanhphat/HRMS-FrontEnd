@@ -6,7 +6,7 @@ class BaseAccual extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      unto: '',
+      unto: 0,
       date: 'day',
       unlimited: false,
     };

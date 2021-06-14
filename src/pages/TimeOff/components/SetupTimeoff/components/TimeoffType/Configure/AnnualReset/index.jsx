@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { Checkbox, Row, Col, DatePicker } from 'antd';
+import moment from 'moment';
 import styles from './index.less';
 
+const dateFormat = 'MM-DD-YYYY';
 class AnnualReset extends Component {
   constructor(props) {
+    const { annualReset } = props;
     super(props);
     this.state = {
-      resetDate: '',
+      resetDate: moment(annualReset.resetDate).locale('en').format(dateFormat),
       resetAnnually: false,
     };
   }
@@ -70,7 +73,8 @@ class AnnualReset extends Component {
               {/* <Select className={styles.select} placeholder="Select a reset date" /> */}
               <DatePicker
                 className={styles.select}
-                defaultValue={resetDate}
+                format={dateFormat}
+                defaultValue={moment(resetDate, dateFormat)}
                 onChange={this.onChangeSelect}
               />
             </Col>

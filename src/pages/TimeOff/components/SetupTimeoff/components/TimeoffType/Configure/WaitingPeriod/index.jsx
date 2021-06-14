@@ -6,7 +6,7 @@ class WaitingPeriod extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      afterAmount: '',
+      afterAmount: 0,
       date: 'day',
       accrue: false,
     };

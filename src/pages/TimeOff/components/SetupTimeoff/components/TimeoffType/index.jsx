@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
+import { connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import RuleFrom from './RuleFrom';
 import Configure from './Configure';
 import styles from './index.less';
-import { history, connect } from 'umi';
-import { getCurrentTenant } from '@/utils/authority';
 
 @connect(({ loading, timeOff: { itemTimeOffType = {} } = {} }) => ({
   itemTimeOffType,
@@ -18,7 +18,6 @@ class TimeoffType extends Component {
   }
 
   onChangeType = async (id, value) => {
-    const { isEdit } = this.state;
     const { dispatch } = this.props;
     await dispatch({
       type: 'timeOff/getDataTimeOffTypeById',
@@ -33,7 +32,6 @@ class TimeoffType extends Component {
   };
 
   onExitEditing = (value) => {
-    const { isEdit } = this.state;
     this.setState({
       isEdit: value,
     });
