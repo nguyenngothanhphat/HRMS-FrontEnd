@@ -241,7 +241,6 @@ class FirstFieldsComponent extends PureComponent {
             </Row>
           </Form>
         </div>
-        <div className={InternalStyle.Line} />
       </>
     );
   }
