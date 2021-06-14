@@ -61,6 +61,7 @@ const candidateInfo = {
       checkStatus: {
         filledBasicInformation: false,
         filledJobDetail: false,
+        filledSalaryCheck: false,
         filledBackgroundCheck: false,
       },
       position: 'EMPLOYEE',
@@ -832,10 +833,35 @@ const candidateInfo = {
           },
         });
 
+        const {
+          fullName = '',
+          privateEmail = '',
+          previousExperience = '',
+          salaryStructure = {},
+        } = data;
+
+        const checkStatus = {
+          filledBasicInformation: false,
+          filledJobDetail: false,
+          filledSalaryCheck: false,
+          filledBackgroundCheck: false,
+        };
+
+        if (fullName && privateEmail && previousExperience) {
+          checkStatus.filledBasicInformation = true;
+        }
+        if ('title' in data && 'workLocation' in data && 'department' in data) {
+          checkStatus.filledJobDetail = true;
+        }
+        if ('title' in salaryStructure) {
+          checkStatus.filledSalaryCheck = true;
+        }
+
         yield put({
           type: 'saveTemp',
           payload: {
             ...data,
+            checkStatus,
             valueToFinalOffer: 0,
             offerLetter: data.offerLetter,
             candidate: data._id,

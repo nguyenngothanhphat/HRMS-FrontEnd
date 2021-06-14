@@ -47,6 +47,7 @@ const PROCESS_STATUS = {
         backgroundRecheck: { allDocumentVerified = false } = {},
         hidePreviewOffer,
         disablePreviewOffer,
+        checkStatus = {},
       } = {},
       checkMandatory = {},
     } = {},
@@ -60,6 +61,7 @@ const PROCESS_STATUS = {
     hidePreviewOffer,
     disablePreviewOffer,
     checkMandatory,
+    checkStatus,
   }),
 )
 class CommonLayout extends Component {
@@ -157,6 +159,7 @@ class CommonLayout extends Component {
   componentDidMount() {
     const { listMenu, currentStep = 1, processStatus = '' } = this.props;
     const { SENT_FOR_APPROVAL, PROVISIONAL_OFFER_DRAFT } = PROCESS_STATUS;
+    this.initialStatusStep();
     if (processStatus === PROVISIONAL_OFFER_DRAFT) {
       return {
         selectedItemId: listMenu[0].id,
@@ -193,6 +196,7 @@ class CommonLayout extends Component {
     //   };
     // }
     // console.log('HERE 7');
+
     this.setState({
       selectedItemId: listMenu[currentStep].id || 1,
       displayComponent: listMenu[currentStep].component || <BasicInformation />,
@@ -236,6 +240,43 @@ class CommonLayout extends Component {
   disablePhase2 = () => {
     const { processStatus, skip } = this.props;
     return processStatus === 'DRAFT' && skip === 0;
+  };
+
+  initialStatusStep = () => {
+    const {
+      checkStatus: {
+        filledBasicInformation = false,
+        filledJobDetail = false,
+        filledSalaryCheck = false,
+        // filledBackgroundCheck = false,
+      } = {},
+    } = this.props;
+
+    let basicInfoStep = 0;
+    let jobDetailStep = 0;
+    let salaryStructureStep = 0;
+
+    if (filledBasicInformation) {
+      // check basicInformation is full filled
+      basicInfoStep = 0;
+    }
+
+    if (filledJobDetail) {
+      // check Job Detail is full filled
+      jobDetailStep = 1;
+    }
+
+    if (filledSalaryCheck) {
+      salaryStructureStep = 2;
+    }
+
+    this.setState({
+      statusStep: {
+        basicInfoStep,
+        jobDetailStep,
+        salaryStructureStep,
+      },
+    });
   };
 
   checkStatusStep = () => {
@@ -352,7 +393,8 @@ class CommonLayout extends Component {
       hidePreviewOffer = false,
       disablePreviewOffer = false,
     } = this.props;
-    const { displayComponent, selectedItemId } = this.state;
+    const { displayComponent, selectedItemId, statusStep } = this.state;
+
     return (
       <div className={s.containerCommonLayout}>
         <div className={s.viewLeft} style={currentPage === 'settings' ? { width: '300px' } : {}}>
