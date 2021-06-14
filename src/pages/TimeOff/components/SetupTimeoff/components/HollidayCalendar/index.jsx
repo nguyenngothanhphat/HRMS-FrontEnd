@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Checkbox, Select, Row, Col, Spin, InputNumber, Affix, Divider } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
-import { getCurrentLocation } from '@/utils/authority';
+import { getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import AddHoliday from './AddHoliday';
 import s from './index.less';
 
@@ -81,12 +81,7 @@ const MOCK_DATA = [
   ({
     timeOff: { countryList = [] } = {},
     loading,
-    user: {
-      currentUser: {
-        company: { _id: idCompany = '' } = {},
-        location = {},
-      } = {},
-    } = {},
+    user: { currentUser: { company: { _id: idCompany = '' } = {}, location = {} } = {} } = {},
   }) => ({
     countryList,
     loading: loading.effects['timeOff/fetchHolidaysListBylocation'],
@@ -136,7 +131,11 @@ class HollidayCalendar extends Component {
     const { dispatch, location = {} } = this.props;
     dispatch({
       type: 'timeOff/fetchHolidaysListBylocation',
-      payload: { location: getCurrentLocation(), country: location.headQuarterAddress.country._id, },
+      payload: {
+        location: getCurrentLocation(),
+        country: location.headQuarterAddress.country._id,
+        tenantId: getCurrentTenant(),
+      },
     }).then((response) => {
       const { statusCode, data: listData = {} } = response;
       this.setState({
@@ -189,7 +188,7 @@ class HollidayCalendar extends Component {
     const year = yearSelect.toString();
     dispatch({
       type: 'timeOff/fetchHolidaysByCountry',
-      payload: { country: value },
+      payload: { country: value, tenantId: getCurrentTenant() },
     }).then((response) => {
       const { statusCode, data: listByCountry = {} } = response;
       this.setState({
@@ -219,7 +218,7 @@ class HollidayCalendar extends Component {
     const { yearSelect } = this.state;
     dispatch({
       type: 'timeOff/addHoliday',
-      payload: value,
+      payload: { value, tenantId: getCurrentTenant() },
     }).then((response) => {
       const { statusCode } = response;
       if (statusCode === 200) {
@@ -237,7 +236,7 @@ class HollidayCalendar extends Component {
     const { _id: idObjHolidays } = list;
     dispatch({
       type: 'timeOff/deleteHoliday',
-      payload: { removeId: id, id: idObjHolidays },
+      payload: { removeId: id, id: idObjHolidays, tenantId: getCurrentTenant() },
     }).then((response) => {
       const { statusCode } = response;
       if (statusCode === 200) {
@@ -491,8 +490,9 @@ class HollidayCalendar extends Component {
               size="large"
               placeholder="Please select country"
               showArrow
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+              filterOption={(input, option) => {
+                return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+              }}
               className={s.selectCountry}
               defaultValue="India"
               onChange={(value) => this.handleChangeSelect(value)}
