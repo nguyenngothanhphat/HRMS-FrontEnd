@@ -1,34 +1,37 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Typography, Form } from 'antd';
+import { Row, Col, Typography, Form, Input, Button, notification } from 'antd';
 import {
   connect,
   // formatMessage
 } from 'umi';
 
+import { getCurrentTenant } from '@/utils/authority';
 import SalaryStructureHeader from './components/SalaryStructureHeader';
 import SalaryStructureTemplate from './components/SalaryStructureTemplate';
 import NoteComponent from '../NoteComponent';
 import SalaryAcceptance from './components/SalaryAcceptance';
 
 import styles from './index.less';
+import PROCESS_STATUS from '../utils';
 
 // const DRAFT = 'DRAFT';
 // const SENT_PROVISIONAL_OFFER = 'SENT-PROVISIONAL-OFFER';
 // const ACCEPT_PROVISIONAL_OFFER = 'ACCEPT-PROVISIONAL-OFFER';
 // const RENEGOTIATE_PROVISIONAL_OFFER = 'RENEGOTIATE-PROVISIONAL-OFFER';
 // const DISCARDED_PROVISIONAL_OFFER = 'DISCARDED-PROVISIONAL-OFFER';
-
+const { TextArea } = Input;
 @connect(
   ({
     loading,
     candidateInfo: {
-      data: { processStatus = '', candidate = '' },
-      tempData: { salaryTitle = '' } = {},
+      data: { processStatus = '', candidate = '', _id: candidateId = '' },
+      tempData: { salaryTitle = '', salaryNote: salaryNoteTemp = '' } = {},
       salaryStructure = {},
       checkMandatory = {},
       currentStep = 0,
     } = {},
   }) => ({
+    candidateId,
     processStatus,
     salaryStructure,
     checkMandatory,
@@ -36,9 +39,16 @@ import styles from './index.less';
     currentStep,
     salaryTitle,
     loading2: loading.effects['candidateInfo/fetchTitleList'],
+    salaryNoteTemp,
   }),
 )
 class SalaryStructure extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      salaryNoteState: '',
+    };
+  }
   // componentDidMount() {
   //   const { candidate = '', dispatch, currentStep, processStatus } = this.props;
   //   if (processStatus === 'DRAFT') {
@@ -65,6 +75,61 @@ class SalaryStructure extends PureComponent {
   //     </div>
   //   );
   // };
+
+  onSalaryNoteChange = (e) => {
+    const { target: { value = '' } = {} } = e;
+    this.setState({
+      salaryNoteState: value,
+    });
+  };
+
+  saveSalaryNote = () => {
+    const { dispatch, candidateId = '' } = this.props;
+    const { salaryNoteState } = this.state;
+
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        salaryNote: salaryNoteState,
+        candidate: candidateId,
+        tenantId: getCurrentTenant(),
+      },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        notification.success({
+          message: 'Save salary structure note successfully.',
+        });
+        dispatch({
+          type: 'candidateInfo/saveTemp',
+          payload: {
+            salaryNote: salaryNoteState,
+          },
+        });
+      }
+    });
+  };
+
+  _renderSalaryNote = () => {
+    const { processStatus = '', salaryNoteTemp = '' } = this.props;
+    const disableCheck = processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT;
+
+    return (
+      <div className={styles.salaryNote}>
+        <span className={styles.title}>Salary Structure Note</span>
+        <TextArea
+          defaultValue={salaryNoteTemp}
+          onChange={this.onSalaryNoteChange}
+          disabled={disableCheck}
+          placeholder="Notes"
+          autoSize={{ minRows: 3, maxRows: 7 }}
+          style={{ marginBottom: '7px' }}
+        />
+        <Button disabled={disableCheck} onClick={this.saveSalaryNote}>
+          Save note
+        </Button>
+      </div>
+    );
+  };
 
   render() {
     const { processStatus, salaryTitle = '' } = this.props;
@@ -99,6 +164,7 @@ class SalaryStructure extends PureComponent {
             <Row>
               {processStatus !== 'DRAFT' ? <SalaryAcceptance /> : <NoteComponent note={Note} />}
             </Row>
+            <Row>{this._renderSalaryNote()}</Row>
             {/* <Row>{processStatus === 'DRAFT' ? '' : <SalaryAcceptance />}</Row> */}
           </div>
         </Col>

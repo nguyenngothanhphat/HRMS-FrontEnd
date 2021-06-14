@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Form, Table, Button, Input, Row, Col, InputNumber } from 'antd';
 import { formatMessage, connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
+import TextArea from 'antd/lib/input/TextArea';
 import styles from './index.less';
 
 @connect(
@@ -315,8 +316,8 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   render() {
-    const { salaryStructure = [], options, tempData = {} } = this.props;
-    // const defaultValue = listTitle.length > 0 ? listTitle[0].name : [];
+    const { salaryStructure = [], options } = this.props;
+
     return (
       <div className={styles.salaryStructureTemplate}>
         <Form onFinish={this.onFinish}>
