@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Form, Table, Button, Input, Row, Col, InputNumber } from 'antd';
 import { formatMessage, connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
+import TextArea from 'antd/lib/input/TextArea';
 import styles from './index.less';
 
 @connect(
@@ -14,6 +15,7 @@ import styles from './index.less';
       tempData: { options = 1 },
       tempData,
       salaryStructure = [],
+      salaryNote = '',
     },
     user: { currentUser: { company: { _id = '' } = {} } = {} },
   }) => ({
@@ -25,6 +27,7 @@ import styles from './index.less';
     salaryStructure,
     options,
     tempData,
+    salaryNote,
   }),
 )
 class SalaryStructureTemplate extends PureComponent {
@@ -314,9 +317,25 @@ class SalaryStructureTemplate extends PureComponent {
     );
   };
 
+  _renderSalaryNote = () => {
+    const { salaryNote = '' } = this.props;
+    return (
+      <div className={styles.salaryNote}>
+        <span className={styles.title}>Notes from HR</span>
+        <TextArea
+          defaultValue={salaryNote}
+          onChange={this.onSalaryNoteChange}
+          disabled
+          placeholder="Notes"
+          autoSize={{ minRows: 3, maxRows: 7 }}
+        />
+      </div>
+    );
+  };
+
   render() {
-    const { salaryStructure = [], options, tempData = {} } = this.props;
-    // const defaultValue = listTitle.length > 0 ? listTitle[0].name : [];
+    const { salaryStructure = [], options, salaryNote = '' } = this.props;
+
     return (
       <div className={styles.salaryStructureTemplate}>
         <Form onFinish={this.onFinish}>
@@ -329,6 +348,7 @@ class SalaryStructureTemplate extends PureComponent {
             />
           </div>
           {this._renderFooter()}
+          {salaryNote && this._renderSalaryNote()}
           {options === 1 ? this._renderBottomBar() : null}
         </Form>
       </div>
