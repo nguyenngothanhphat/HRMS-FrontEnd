@@ -9,9 +9,9 @@ export default {
   'component.basicInformation.fullName': 'Full name*',
   'component.basicInformation.employeeId': 'Employee Id',
   'component.basicInformation.fullNameRequiredAlert': 'Please input your full name!',
-  'component.basicInformation.privateEmail': 'Private e-mail id*',
+  'component.basicInformation.privateEmail': 'Personal e-mail id*',
   'component.basicInformation.workEmail': 'Work email id',
-  'component.basicInformation.experienceYear': 'Previous experience in years',
+  'component.basicInformation.experienceYear': 'Relevant previous experience in years',
   'component.jobDetail.title': 'Job Details',
   'component.jobDetail.subtitle':
     'The details of the position the candidate is being recruited for',
