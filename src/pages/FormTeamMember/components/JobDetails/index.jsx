@@ -197,13 +197,6 @@ class JobDetails extends PureComponent {
       };
     }
 
-    console.log(`${name}]: ${value}`);
-    console.log(tempData[name]);
-
-    console.log({
-      ...tempData,
-    });
-
     dispatch({
       type: 'candidateInfo/save',
       payload: {

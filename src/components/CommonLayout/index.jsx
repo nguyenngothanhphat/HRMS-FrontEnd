@@ -332,15 +332,10 @@ class CommonLayout extends Component {
 
       SENT_PROVISIONAL_OFFERS,
 
-      // PENDING,
+      PENDING,
     } = PROCESS_STATUS;
 
-    const {
-      // allDocumentVerified,
-      processStatus,
-      skip,
-      currentStep,
-    } = this.props;
+    const { allDocumentVerified, processStatus, skip, currentStep } = this.props;
     const { statusStep } = this.state;
     if (skip === 1) {
       return false;
@@ -361,17 +356,17 @@ class CommonLayout extends Component {
         return true;
       }
 
-      // case PENDING: {
-      //   if (allDocumentVerified) {
-      //     return false;
-      //   }
+      case PENDING: {
+        if (allDocumentVerified) {
+          return false;
+        }
 
-      //   if (index === 0 || index === 1 || index === 2 || index === 3) {
-      //     return false;
-      //   }
+        if (index === 0 || index === 1 || index === 2 || index === 3) {
+          return false;
+        }
 
-      //   return true;
-      // }
+        return true;
+      }
 
       default:
         return false;
@@ -393,7 +388,7 @@ class CommonLayout extends Component {
       hidePreviewOffer = false,
       disablePreviewOffer = false,
     } = this.props;
-    const { displayComponent, selectedItemId, statusStep } = this.state;
+    const { displayComponent, selectedItemId } = this.state;
 
     return (
       <div className={s.containerCommonLayout}>
