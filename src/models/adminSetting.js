@@ -35,9 +35,13 @@ const adminSetting = {
     },
   },
   effects: {
-    *fetchListRoles(_, { call, put }) {
+    *fetchListRoles({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getListRoles, { company: getCurrentCompany() });
+        const response = yield call(getListRoles, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data: listRoles = [] } = response;
         const formatData = listRoles.map((item) => {
           const { _id: RolesID, name: Rolesname } = item;
@@ -120,7 +124,11 @@ const adminSetting = {
     *fetchPermissionByIdRole({ payload: { id: _id = '' } = {} }, { call }) {
       let resp = [];
       try {
-        const response = yield call(getPermissionByIdRole, { _id, company: getCurrentCompany() });
+        const response = yield call(getPermissionByIdRole, {
+          _id,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         resp = data;

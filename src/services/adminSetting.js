@@ -1,8 +1,9 @@
 import request from '@/utils/request';
 
-export async function getListRoles() {
+export async function getListRoles(payload) {
   return request('/api/roletenant/list', {
     method: 'POST',
+    data: payload,
   });
 }
 
