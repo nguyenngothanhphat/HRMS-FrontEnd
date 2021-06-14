@@ -50,7 +50,7 @@ const AuthLayout = ({ children }) => {
           </Col>
         </Row>
       </Content>
-      <Footer />
+      <Footer className={styles.footerLogin} />
     </Layout>
   );
 };

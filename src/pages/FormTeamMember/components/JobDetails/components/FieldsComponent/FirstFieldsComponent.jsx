@@ -16,13 +16,43 @@ class FirstFieldsComponent extends PureComponent {
   formRef = React.createRef();
 
   onChangeValue = (value, fieldName) => {
-    const { _handleSelect = () => {} } = this.props;
-    if (fieldName === 'department') {
-      this.formRef.current.setFieldsValue({
-        title: null,
-      });
+    const {
+      _handleSelect = () => {},
+      locationList = [],
+      departmentList = [],
+      titleList = [],
+    } = this.props;
+    switch (fieldName) {
+      case 'department': {
+        this.formRef.current.setFieldsValue({
+          title: null,
+        });
+        const getDataDepartment = departmentList.filter((item) => item.name === value);
+        _handleSelect(getDataDepartment[0]._id, fieldName);
+        break;
+      }
+
+      case 'workLocation': {
+        const getDataLocation = locationList.filter((item) => item.name === value);
+        _handleSelect(getDataLocation[0]._id, fieldName);
+        break;
+      }
+
+      case 'title': {
+        const getDataTitle = titleList.filter((item) => item.name === value);
+        _handleSelect(getDataTitle[0]._id, fieldName);
+        break;
+      }
+
+      case 'reportingManager': {
+        _handleSelect(value, fieldName);
+        break;
+      }
+
+      default: {
+        break;
+      }
     }
-    _handleSelect(value, fieldName);
   };
 
   render() {
@@ -43,6 +73,50 @@ class FirstFieldsComponent extends PureComponent {
       disabled,
       loadingTitle,
     } = this.props;
+    const showManagerListAB =
+      managerList.length > 0
+        ? managerList.sort((a, b) => {
+            const nameA = a.generalInfo.firstName.toLowerCase();
+            const nameB = b.generalInfo.firstName.toLowerCase();
+            if (nameA < nameB) {
+              return -1;
+            }
+            return 0;
+          })
+        : [];
+    const showWorkLocationAB =
+      locationList.length > 0
+        ? locationList.sort((a, b) => {
+            const nameA = a.name.toLowerCase();
+            const nameB = b.name.toLowerCase();
+            if (nameA < nameB) {
+              return -1;
+            }
+            return 0;
+          })
+        : [];
+    const showDepartmentAB =
+      departmentList.length > 0
+        ? departmentList.sort((a, b) => {
+            const nameA = a.name.toLowerCase();
+            const nameB = b.name.toLowerCase();
+            if (nameA < nameB) {
+              return -1;
+            }
+            return 0;
+          })
+        : [];
+    const showTitleAB =
+      titleList.length > 0
+        ? titleList.sort((a, b) => {
+            const nameA = a.name.toLowerCase();
+            const nameB = b.name.toLowerCase();
+            if (nameA < nameB) {
+              return -1;
+            }
+            return 0;
+          })
+        : [];
 
     return (
       <>
@@ -109,21 +183,26 @@ class FirstFieldsComponent extends PureComponent {
                           !isEmpty(reportingManager) && {
                             defaultValue: reportingManager?.generalInfo?.firstName,
                           })}
-                        showSearch={item.title === 'reportingManager'}
+                        showSearch={
+                          item.title === 'reportingManager' ||
+                          item.title === 'workLocation' ||
+                          item.title === 'title' ||
+                          item.title === 'department'
+                        }
                         allowClear
                         filterOption={(input, option) => {
                           return option.value.toLowerCase().indexOf(input) > -1;
                         }}
                       >
                         {item.title === 'workLocation' ? (
-                          locationList.map((data, index) => (
-                            <Option value={data._id} key={index}>
+                          showWorkLocationAB.map((data, index) => (
+                            <Option value={data.name} key={index}>
                               <Typography.Text>{data.name}</Typography.Text>
                             </Option>
                           ))
                         ) : item.title === 'department' && departmentList.length > 0 ? (
-                          departmentList.map((data, index) => (
-                            <Option value={data._id} key={index}>
+                          showDepartmentAB.map((data, index) => (
+                            <Option value={data.name} key={index}>
                               <Typography.Text>{data.name}</Typography.Text>
                             </Option>
                           ))
@@ -135,16 +214,16 @@ class FirstFieldsComponent extends PureComponent {
                               </Option>
                             ) : (
                               <>
-                                {titleList.map((data, index) => (
-                                  <Option value={data._id} key={index}>
+                                {showTitleAB.map((data, index) => (
+                                  <Option value={data.name} key={index}>
                                     <Typography.Text>{data.name}</Typography.Text>
                                   </Option>
                                 ))}
                               </>
                             )}
                           </>
-                        ) : item.title === 'reportingManager' && managerList.length > 0 ? (
-                          managerList.map((data, index) => (
+                        ) : item.title === 'reportingManager' && showManagerListAB.length > 0 ? (
+                          showManagerListAB.map((data, index) => (
                             <Option value={data.generalInfo.firstName} key={index}>
                               <Typography.Text>
                                 {data.generalInfo && data.generalInfo?.firstName

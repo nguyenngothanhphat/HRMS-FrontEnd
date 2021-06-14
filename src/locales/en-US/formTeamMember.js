@@ -30,7 +30,8 @@ export default {
   'component.jobDetail.jobCategory': 'Job Category',
   'component.jobDetail.workLocation': 'Work Location',
   'component.jobDetail.reportingManager': 'Reporting Manager',
-  'component.jobDetail.filledByCandidate': 'To be filled by candidate',
+  'component.jobDetail.filledByCandidate':
+    'Please add a tentative joining date for the candidate below.',
   'component.jobDetail.candidateNoticePeriod': `Candidate's notice Period`,
   'component.jobDetail.prefferedDateOfJoining': 'Preferred date of joining',
   'component.jobDetail.reminder.content': 'Anticipated Date of joining by the company',
