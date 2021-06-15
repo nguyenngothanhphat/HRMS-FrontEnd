@@ -141,7 +141,7 @@ class TableFilter extends PureComponent {
     //   };
     // });
     const formatDataRole = roles.map((item) => {
-      const { _id: label } = item;
+      const { idSync: label } = item;
       return {
         label,
         value: label,
