@@ -29,10 +29,7 @@ class EmployerComponent extends PureComponent {
 
   componentDidMount = () => {
     const { checkedList = [], employerName = '', dispatch, workDuration = {} } = this.props;
-    this.setState({
-      checkedList,
-      employerName,
-    });
+
     if (employerName) {
       dispatch({
         type: 'candidateInfo/saveTemp',
@@ -42,7 +39,16 @@ class EmployerComponent extends PureComponent {
       });
     }
 
+    let newCheckedList = [...checkedList];
+    if (workDuration.toPresent) {
+      newCheckedList = [...newCheckedList, 'Pay stubs (last 3 months)', 'Form 16'];
+    } else {
+      newCheckedList = [...newCheckedList, 'Relieving Letter'];
+    }
+
     this.setState({
+      checkedList: newCheckedList,
+      employerName,
       toPresent: workDuration.toPresent,
       startDate: workDuration.startDate ? moment(workDuration.startDate) : '',
       endDate: workDuration.endDate ? moment(workDuration.endDate) : '',
@@ -98,6 +104,11 @@ class EmployerComponent extends PureComponent {
     });
     const now = moment();
 
+    const { employerName, checkedList, startDate, endDate, toPresent } = this.state;
+    const { getDataFromFields = () => {}, orderNumber } = this.props;
+
+    let newCheckedList = [...checkedList];
+
     if (index === 'toPresent') {
       this.setState({
         endDate: now,
@@ -105,10 +116,16 @@ class EmployerComponent extends PureComponent {
       this.formRef.current.setFieldsValue({
         endDate: now,
       });
+      if (value) {
+        newCheckedList = [...newCheckedList, 'Pay stubs (last 3 months)', 'Form 16'];
+      } else {
+        newCheckedList = [...newCheckedList, 'Relieving Letter'];
+      }
+      this.setState({
+        checkedList: newCheckedList,
+      });
     }
 
-    const { getDataFromFields = () => {}, orderNumber } = this.props;
-    const { employerName, checkedList, startDate, endDate, toPresent } = this.state;
     const workDuration = {
       startDate: index === 'startDate' ? value : startDate || moment(workDurationProps.startDate),
       endDate:
@@ -120,7 +137,7 @@ class EmployerComponent extends PureComponent {
       toPresent: index === 'toPresent' ? value : toPresent || workDurationProps.toPresent,
     };
 
-    getDataFromFields(orderNumber, employerName, workDuration, checkedList);
+    getDataFromFields(orderNumber, employerName, workDuration, newCheckedList);
   };
 
   render() {
@@ -209,7 +226,12 @@ class EmployerComponent extends PureComponent {
             >
               {checkBoxesData.map((data) => (
                 <Checkbox
-                  disabled={data.alias.substr(data.alias.length - 1) === '*'}
+                  disabled={
+                    data.alias.substr(data.alias.length - 1) === '*' ||
+                    (data.key === 'relievingLetter' && !toPresent) ||
+                    (data.key === 'paysTubs' && toPresent) ||
+                    (data.key === 'form16' && toPresent)
+                  }
                   value={data.alias}
                 >
                   {data.alias}
