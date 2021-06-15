@@ -36,8 +36,7 @@ export default {
   'component.jobDetail.prefferedDateOfJoining': 'Preferred date of joining',
   'component.jobDetail.reminder.content': 'Anticipated Date of joining by the company',
   'component.jobDetail.reminder.content2': '22nd September, 2020',
-  'component.jobDetail.WouldNewDate':
-    'Your Suggested Joining date is xx/yy/zzzz. Would you like to propose a new date ?',
+
   'component.offerDetail.title': 'Offer details',
   'component.offerDetail.subtitle': `All documents supporting candidate's employment eligibility will be display here`,
   'component.offerDetail.offerLetter': 'Offer letter',

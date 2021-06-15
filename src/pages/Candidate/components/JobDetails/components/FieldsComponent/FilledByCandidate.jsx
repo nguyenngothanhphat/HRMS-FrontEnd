@@ -71,7 +71,6 @@ class FilledByCandidate extends PureComponent {
     // console.log(dateOfJoining);
     // console.log(moment('12/23/2020', dateFormat));
     // console.log(dateJoin);
-
     const { isHidden } = this.state;
     return (
       <div className={InternalStyle.CandidateFields}>
@@ -81,7 +80,7 @@ class FilledByCandidate extends PureComponent {
         <Row gutter={[24, 0]} className={InternalStyle.RadioNewDate}>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <Typography.Title level={5} className={InternalStyle.RadioNewDateTitle}>
-              {formatMessage({ id: 'component.jobDetail.WouldNewDate' })}
+              Your Suggested Joining date is {newDate}. Would you like to propose a new date ?
             </Typography.Title>
             <Radio.Group onChange={this.checkChange} value={checkWouldNewDate}>
               <Radio value={false}>No</Radio>
