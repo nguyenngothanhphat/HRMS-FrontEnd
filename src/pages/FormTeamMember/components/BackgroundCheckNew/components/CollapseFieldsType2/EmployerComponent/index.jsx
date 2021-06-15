@@ -185,7 +185,7 @@ class EmployerComponent extends PureComponent {
               <Form.Item label="Start Date" name="startDate">
                 <DatePicker
                   // disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
-                  // disabled
+                  disabled={disabled}
                   placeholder="Start Date"
                   onChange={(value) => this.workDurationHandle(value, 'startDate')}
                   format="MM.DD.YY"
@@ -205,6 +205,7 @@ class EmployerComponent extends PureComponent {
               <Form.Item name="toPresent">
                 <Checkbox
                   defaultChecked={workDuration.toPresent}
+                  disabled={disabled}
                   onChange={({ target: { checked = false } = {} }) =>
                     this.workDurationHandle(checked, 'toPresent')}
                 >

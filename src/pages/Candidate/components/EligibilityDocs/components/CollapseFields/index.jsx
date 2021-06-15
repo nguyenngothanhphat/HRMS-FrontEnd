@@ -93,7 +93,7 @@ class CollapseField extends Component {
 
     return (
       <div className={styles.CollapseField}>
-        {item.data.length > 0 || item.type === 'D' ? (
+        {item.data.length > 0 || item.type === 'E' ? (
           <Collapse
             accordion
             expandIconPosition="right"
@@ -114,7 +114,7 @@ class CollapseField extends Component {
               }
               extra="[Can submit any of the below other than (*)mandatory]"
             >
-              {item.type === 'D' ? (
+              {item.type === 'E' ? (
                 <InputField onValuesChange={onValuesChange} employerName={employerName} />
               ) : (
                 <></>

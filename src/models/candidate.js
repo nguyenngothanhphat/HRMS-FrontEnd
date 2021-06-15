@@ -110,6 +110,11 @@ const candidateProfile = {
         ],
       },
       {
+        type: 'D',
+        name: 'Technical Certifications',
+        data: [],
+      },
+      {
         type: 'E',
         name: 'Previous Employment',
         data: [
@@ -403,6 +408,11 @@ const candidateProfile = {
               { name: 'Post Graduate', value: false },
               { name: 'PHP/Doctorate', value: false },
             ],
+          },
+          {
+            type: 'D',
+            name: 'Technical Certifications',
+            data: [],
           },
           {
             type: 'E',
