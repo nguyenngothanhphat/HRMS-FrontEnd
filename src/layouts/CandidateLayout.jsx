@@ -230,7 +230,7 @@ const CandidateLayout = (props) => {
         </div>
 
         <div className={s.headerRight}>
-          <span className={s.id}>Rookie ID: {ticketId}</span>
+          <span className={s.id}>Candidate ID: {ticketId}</span>
 
           <Button type="link" block onClick={handleCancel}>
             Logout

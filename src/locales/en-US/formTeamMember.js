@@ -5,7 +5,7 @@ export default {
     'This will be used to login to Terralogic portal once the candidate is confirmed as an employee. This field cannot be viewed by the candidate yet.',
   'component.basicInformation.step1': 'Previous experience in years',
   'component.basicInformation.title': 'Basic Information',
-  'component.basicInformation.subtitle': 'Information of the new joinee goes here',
+  'component.basicInformation.subtitle': 'Please verify your details below',
   'component.basicInformation.fullName': 'Full name*',
   'component.basicInformation.employeeId': 'Employee Id',
   'component.basicInformation.fullNameRequiredAlert': 'Please input your full name!',
@@ -36,6 +36,8 @@ export default {
   'component.jobDetail.prefferedDateOfJoining': 'Preferred date of joining',
   'component.jobDetail.reminder.content': 'Anticipated Date of joining by the company',
   'component.jobDetail.reminder.content2': '22nd September, 2020',
+  'component.jobDetail.WouldNewDate':
+    'Your Suggested Joining date is xx/yy/zzzz. Would you like to propose a new date ?',
   'component.offerDetail.title': 'Offer details',
   'component.offerDetail.subtitle': `All documents supporting candidate's employment eligibility will be display here`,
   'component.offerDetail.offerLetter': 'Offer letter',
