@@ -257,9 +257,10 @@ class BasicInformation extends Component {
         </Col>
       );
     }
-    return (
-      <>{isOpenReminder ? <BasicInformationReminder onClickClose={this.onClickClose} /> : null}</>
-    );
+    // return (
+    //   <>{isOpenReminder ? <BasicInformationReminder onClickClose={this.onClickClose} /> : null}</>
+    // );
+    return null;
   };
 
   testValidate = () => {
@@ -333,7 +334,7 @@ class BasicInformation extends Component {
               />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+          {/* <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
@@ -370,7 +371,7 @@ class BasicInformation extends Component {
                 // defaultValue={workEmail}
               />
             </Form.Item>
-          </Col>
+          </Col> */}
           {this._renderEmployeeId()}
         </Row>
         <Row gutter={[48, 0]}>

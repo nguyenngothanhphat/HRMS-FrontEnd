@@ -10,9 +10,10 @@ import LolipopIcon from '../../../../../public/assets/images/lolipop.png';
 
 import styles from './index.less';
 
-@connect(({ candidateInfo: { data = {}, currentStep = 0 } = {} }) => ({
+@connect(({ candidateInfo: { data = {}, currentStep = 0, checkMandatory = {} } = {} }) => ({
   data,
   currentStep,
+  checkMandatory,
 }))
 class PayrollSetting extends PureComponent {
   constructor(props) {
@@ -70,11 +71,20 @@ class PayrollSetting extends PureComponent {
   };
 
   onClickNext = () => {
-    const { currentStep = 0, dispatch, data: { candidate = '' } = {} } = this.props;
+    const {
+      currentStep = 0,
+      dispatch,
+      data: { candidate = '' } = {},
+      checkMandatory = {},
+    } = this.props;
     dispatch({
       type: 'candidateInfo/save',
       payload: {
         currentStep: currentStep + 1,
+        checkMandatory: {
+          ...checkMandatory,
+          payrollSettingCheck: true,
+        },
       },
     });
     dispatch({

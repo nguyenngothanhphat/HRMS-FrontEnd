@@ -52,6 +52,8 @@ const candidateInfo = {
       filledAdditionalQuestion: false,
       salaryStatus: 2,
       calledListTitle: false,
+      payrollSettingCheck: false,
+      benefitsCheck: false,
     },
     currentStep: 0,
     settingStep: 0,
@@ -61,7 +63,11 @@ const candidateInfo = {
       checkStatus: {
         filledBasicInformation: false,
         filledJobDetail: false,
+        filledSalaryCheck: false,
         filledBackgroundCheck: false,
+        offerDetailCheck: false,
+        payrollSettingCheck: false,
+        benefitsCheck: false,
       },
       position: 'EMPLOYEE',
       employeeType: {},
@@ -832,10 +838,75 @@ const candidateInfo = {
           },
         });
 
+        const {
+          fullName = '',
+          privateEmail = '',
+          previousExperience = '',
+          salaryStructure = {},
+          documentChecklistSetting = [],
+          amountIn,
+          timeOffPolicy,
+          currentStep,
+        } = data;
+
+        const identityProof = documentChecklistSetting[0]?.data;
+        const addressProof = documentChecklistSetting[1]?.data;
+        const educational = documentChecklistSetting[2]?.data;
+        const technicalCertification = documentChecklistSetting[3]?.data;
+
+        let listCheckIP = identityProof.map((item) => item.value);
+        listCheckIP = listCheckIP.filter((item) => item === true);
+
+        let listCheckAP = addressProof.map((item) => item.value);
+        listCheckAP = listCheckAP.filter((item) => item === true);
+
+        let listCheckEdu = educational.map((item) => item.value);
+        listCheckEdu = listCheckEdu.filter((item) => item === true);
+
+        let listCheckTC = technicalCertification.map((item) => item.value);
+        listCheckTC = listCheckTC.filter((item) => item === true);
+
+        const checkStatus = {};
+
+        if (
+          listCheckIP.length > 2 ||
+          listCheckAP.length > 0 ||
+          listCheckEdu.length > 3 ||
+          listCheckTC.length > 0 ||
+          'employer' in documentChecklistSetting[3]
+        ) {
+          checkStatus.filledBgCheck = true;
+        }
+
+        if (fullName && privateEmail && previousExperience) {
+          checkStatus.filledBasicInformation = true;
+        }
+        if ('title' in data && 'workLocation' in data && 'department' in data) {
+          checkStatus.filledJobDetail = true;
+        }
+        if ('title' in salaryStructure) {
+          checkStatus.filledSalaryCheck = true;
+        }
+
+        if (amountIn && timeOffPolicy) {
+          checkStatus.offerDetailCheck = true;
+        }
+
+        if (currentStep >= 5) {
+          checkStatus.payrollSettingCheck = true;
+        } else {
+          checkStatus.payrollSettingCheck = false;
+        }
+
+        if (currentStep >= 6) {
+          checkStatus.benefitsCheck = true;
+        }
+
         yield put({
           type: 'saveTemp',
           payload: {
             ...data,
+            checkStatus,
             valueToFinalOffer: 0,
             offerLetter: data.offerLetter,
             candidate: data._id,
@@ -845,6 +916,7 @@ const candidateInfo = {
             compensationType: data.compensationType || '',
             salaryTitle: data.salaryStructure?.title?._id,
             salaryStructure: data.salaryStructure,
+            salaryNote: data.salaryNote,
             includeOffer: data.includeOffer || 1,
             // hidePreviewOffer: !!(data.staticOfferLetter && data.staticOfferLetter.url), // Hide preview offer screen if there's already static offer
             // disablePreviewOffer:

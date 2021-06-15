@@ -9,9 +9,9 @@ export default {
   'component.basicInformation.fullName': 'Full name*',
   'component.basicInformation.employeeId': 'Employee Id',
   'component.basicInformation.fullNameRequiredAlert': 'Please input your full name!',
-  'component.basicInformation.privateEmail': 'Private e-mail id*',
+  'component.basicInformation.privateEmail': 'Personal e-mail id*',
   'component.basicInformation.workEmail': 'Work email id',
-  'component.basicInformation.experienceYear': 'Previous experience in years',
+  'component.basicInformation.experienceYear': 'Relevant previous experience in years',
   'component.jobDetail.title': 'Job Details',
   'component.jobDetail.subtitle':
     'The details of the position the candidate is being recruited for',
@@ -30,7 +30,8 @@ export default {
   'component.jobDetail.jobCategory': 'Job Category',
   'component.jobDetail.workLocation': 'Work Location',
   'component.jobDetail.reportingManager': 'Reporting Manager',
-  'component.jobDetail.filledByCandidate': 'To be filled by candidate',
+  'component.jobDetail.filledByCandidate':
+    'Please add a tentative joining date for the candidate below.',
   'component.jobDetail.candidateNoticePeriod': `Candidate's notice Period`,
   'component.jobDetail.prefferedDateOfJoining': 'Preferred date of joining',
   'component.jobDetail.reminder.content': 'Anticipated Date of joining by the company',

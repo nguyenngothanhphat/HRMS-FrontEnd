@@ -12,7 +12,11 @@ import s from './index.less';
 class ViewHistory extends Component {
   renderItem = (item = {}, index) => {
     const { resetSearch = () => {} } = this.props;
-    const { _id = '', generalInfo: { firstName = '', avatar = '' } = {} } = item;
+    const {
+      employee: { _id = '' },
+      firstName = '',
+      avatar = '',
+    } = item;
     return (
       <Col
         span={6}

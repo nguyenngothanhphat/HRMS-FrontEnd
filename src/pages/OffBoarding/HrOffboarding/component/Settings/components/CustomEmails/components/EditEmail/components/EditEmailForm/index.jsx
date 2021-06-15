@@ -160,9 +160,39 @@ class EditEmailForm extends PureComponent {
       } = {},
     } = this.props;
 
+    console.log(conditionsCustomEmail);
+
     dispatch({
       type: 'employeeSetting/fetchListAutoField',
       payload: {},
+    });
+
+    dispatch({
+      type: 'employeeSetting/fetchDepartmentListByCompanyId',
+      payload: {
+        company: getCurrentCompany(),
+        tenantId: getCurrentTenant(),
+      },
+    }).then((data) => {
+      this.setState({
+        recipients: data,
+      });
+    });
+
+    // FETCH Data condition
+    this.fetchDataCondition(conditionsCustomEmail);
+
+    dispatch({
+      type: 'employeeSetting/fetchDepartmentList',
+      payload: {},
+    }).then((data) => {
+      this.setState((prevState) => ({
+        conditionsTrigger: {
+          ...prevState.conditionsTrigger,
+          departments: data,
+        },
+      }));
+      this.setState({ load: true });
     });
 
     const { conditionsData } = this.state;
@@ -172,15 +202,18 @@ class EditEmailForm extends PureComponent {
 
     // fetch data of emailCustomData got from reducer and set state into conditionsData.
     const conditionsKey = newConditionCustomEmail.map((item) => item.key);
-    conditionsKey.map((item, index) => {
-      const newObj = {
-        id: index,
-        key: item,
-        tobeVerb: '',
-        value: [],
-      };
+    const conditionsValue = newConditionCustomEmail.map((item) => item.value);
+    conditionsValue.map((item, index) => {
+      conditionsKey.forEach((key) => {
+        const newObj = {
+          id: index,
+          key,
+          tobeVerb: '',
+          value: [...item],
+        };
 
-      newData.push(newObj);
+        newData.push(newObj);
+      });
       return newData;
     });
     const filterData = newData.filter((item) => item.key !== '');
@@ -217,6 +250,75 @@ class EditEmailForm extends PureComponent {
       messages: newMessage,
     });
   }
+
+  fetchDataCondition = (conditionsCustomEmail) => {
+    const { dispatch } = this.props;
+
+    conditionsCustomEmail.forEach((item) => {
+      const { key = '' } = item;
+
+      if (key === 'department') {
+        this.setState({ isLocation: false });
+        dispatch({
+          type: 'employeeSetting/fetchDepartmentList',
+          payload: {},
+        }).then((data) => {
+          this.setState((prevState) => ({
+            conditionsTrigger: {
+              ...prevState.conditionsTrigger,
+              departments: data,
+            },
+          }));
+          this.setState({ load: true });
+        });
+      } else if (key === 'location') {
+        this.setState({ isLocation: true });
+        dispatch({
+          type: 'employeeSetting/fetchLocationList',
+          payload: {
+            tenantId: getCurrentTenant(),
+            company: getCurrentCompany(),
+          },
+        }).then((data) => {
+          this.setState((prevState) => ({
+            conditionsTrigger: {
+              ...prevState.conditionsTrigger,
+              departments: data,
+            },
+          }));
+          this.setState({ load: true });
+        });
+      } else if (key === 'title') {
+        this.setState({ isLocation: false });
+        dispatch({
+          type: 'employeeSetting/fetchTitleList',
+          payload: { tenantId: getCurrentTenant() },
+        }).then((data) => {
+          this.setState((prevState) => ({
+            conditionsTrigger: {
+              ...prevState.conditionsTrigger,
+              departments: data,
+            },
+          }));
+          this.setState({ load: true });
+        });
+      } else {
+        this.setState({ isLocation: false });
+        dispatch({
+          type: 'employeeSetting/fetchEmployeeTypeList',
+          payload: {},
+        }).then((data) => {
+          this.setState((prevState) => ({
+            conditionsTrigger: {
+              ...prevState.conditionsTrigger,
+              departments: data,
+            },
+          }));
+          this.setState({ load: true });
+        });
+      }
+    });
+  };
 
   listTemp = () => {
     const { listAutoField } = this.props;
@@ -679,7 +781,7 @@ class EditEmailForm extends PureComponent {
 
   _renderConditions = () => {
     const { Option } = Select;
-    let valueToBeVerb = '';
+    let valueToBeVerb = ''; // HIỆN TẠI API GET BY ID KO CÓ FIELD CHECK XEM EMAIL NÀY ĐANG CHỌN IS HAY LÀ IS IN
     const {
       conditionsData,
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
@@ -693,6 +795,15 @@ class EditEmailForm extends PureComponent {
       }
       return valueToBeVerb;
     });
+
+    const defaultValue = (arrValue) => {
+      const optionArr = [];
+
+      arrValue.forEach((item) => {
+        optionArr.push(item?._id);
+      });
+      return optionArr;
+    };
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -716,7 +827,7 @@ class EditEmailForm extends PureComponent {
                         return (
                           <Option
                             value={unit.value}
-                            disabled={this.checkOptionKey(unit.value)}
+                            // disabled={this.checkOptionKey(unit.value)}
                             key={`${_index + 1}`}
                           >
                             {unit.name}
@@ -751,10 +862,11 @@ class EditEmailForm extends PureComponent {
                       <Select
                         className={styles.departmentCondition}
                         size="large"
-                        value={data.value}
+                        defaultValue={() => defaultValue(data?.value)}
                         disabled={_isDefault}
                         tagRender={this.tagRender}
-                        mode={valueToBeVerb === 'is' ? '' : 'multiple'}
+                        mode={valueToBeVerb === 'is' ? null : 'multiple'}
+                        // mode={valueToBeVerb === 'is' ? '' : 'multiple'}
                         showArrow
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
@@ -877,7 +989,12 @@ class EditEmailForm extends PureComponent {
       _sendingDate,
       isCheckBox,
     } = this.state;
-    const { subject = '', triggerEvent = {}, applyTo: _applyTo = '' } = emailCustomData;
+    const {
+      subject = '',
+      triggerEvent = {},
+      applyTo: _applyTo = '',
+      recipients: recipientId = '',
+    } = emailCustomData;
 
     return (
       <>
@@ -886,7 +1003,13 @@ class EditEmailForm extends PureComponent {
             <Spin size="large" />
           </div>
         ) : (
-          <Form onFinish={this.onFinish} ref={this.formRef}>
+          <Form
+            onFinish={this.onFinish}
+            ref={this.formRef}
+            initialValues={{
+              recipients: recipientId,
+            }}
+          >
             <Row gutter={[36, 24]}>
               {/* Trigger Event */}
               <Col span={12}>

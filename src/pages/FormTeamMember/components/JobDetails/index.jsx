@@ -47,8 +47,8 @@ class JobDetails extends PureComponent {
     const {
       dispatch,
       data: { candidate, processStatus },
-      tempData = {},
-      tempData: { employeeTypeList = [] } = {},
+      // tempData = {},
+      // tempData: { employeeTypeList = [] } = {},
     } = this.props;
 
     const companyId = getCurrentCompany(getCurrentTenant);
@@ -196,13 +196,6 @@ class JobDetails extends PureComponent {
         _id: value,
       };
     }
-
-    console.log(`${name}]: ${value}`);
-    console.log(tempData[name]);
-
-    console.log({
-      ...tempData,
-    });
 
     dispatch({
       type: 'candidateInfo/save',
@@ -380,6 +373,19 @@ class JobDetails extends PureComponent {
           tempData: {
             ...tempData,
             reportingManager: selectedManager,
+          },
+        },
+      });
+    }
+
+    if (name === 'prefferedDateOfJoining') {
+      const { prefferedDateOfJoining } = tempData;
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          tempData: {
+            ...tempData,
+            prefferedDateOfJoining,
           },
         },
       });

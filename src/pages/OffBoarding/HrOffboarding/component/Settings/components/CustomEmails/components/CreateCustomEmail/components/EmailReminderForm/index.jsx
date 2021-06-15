@@ -608,6 +608,8 @@ class EmailReminderForm extends PureComponent {
       };
     }
 
+    console.log(dataSubmit);
+
     dispatch({
       type: 'employeeSetting/addCustomEmail',
       payload: dataSubmit,

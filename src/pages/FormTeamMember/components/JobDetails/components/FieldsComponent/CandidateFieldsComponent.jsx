@@ -1,15 +1,24 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Select, DatePicker, Typography } from 'antd';
+import { Row, Col, DatePicker, Typography } from 'antd';
 import { formatMessage } from 'umi';
 import InternalStyle from './CandidateFieldsComponent.less';
 
-const { Option } = Select;
+// const { Option } = Select;
 class CandidateFieldsComponent extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       isHidden: false,
+      checkAuthor: false,
     };
+  }
+
+  componentDidMount() {
+    const getAuthor = localStorage.getItem('antd-pro-authority');
+    const check = getAuthor.includes('hr');
+    if (check) {
+      this.setState({ checkAuthor: true });
+    }
   }
 
   handleClick = () => {
@@ -19,14 +28,20 @@ class CandidateFieldsComponent extends PureComponent {
   };
 
   render() {
-    const { styles, candidateField, candidatesNoticePeriod, prefferedDateOfJoining } = this.props;
-    const { isHidden } = this.state;
+    const {
+      styles,
+      candidateField,
+      // candidatesNoticePeriod,
+      prefferedDateOfJoining,
+      _handleSelect,
+    } = this.props;
+    const { isHidden, checkAuthor } = this.state;
     return (
       <div className={InternalStyle.CandidateFields}>
         <Typography.Title level={5} className={InternalStyle.title}>
           {formatMessage({ id: 'component.jobDetail.filledByCandidate' })}
         </Typography.Title>
-        <Row gutter={[24, 0]}>
+        {/* <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <Typography.Title level={5}>{candidateField[0].name}</Typography.Title>
             <Select
@@ -45,7 +60,7 @@ class CandidateFieldsComponent extends PureComponent {
               ))}
             </Select>
           </Col>
-        </Row>
+        </Row> */}
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <Typography.Title level={5}>{candidateField[1].name}</Typography.Title>
@@ -54,8 +69,8 @@ class CandidateFieldsComponent extends PureComponent {
               placeholder=""
               picker="date"
               format="MM/DD/YYYY"
-              disabled="true"
-              // onChange={(value) => _handleSelect(value, candidateField[1].title)}
+              disabled={!checkAuthor}
+              onChange={(value) => _handleSelect(value, candidateField[1].title)}
               defaultValue={prefferedDateOfJoining}
             />
           </Col>

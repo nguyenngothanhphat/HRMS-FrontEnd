@@ -47,7 +47,9 @@ const PROCESS_STATUS = {
         backgroundRecheck: { allDocumentVerified = false } = {},
         hidePreviewOffer,
         disablePreviewOffer,
+        checkStatus = {},
       } = {},
+      checkMandatory = {},
     } = {},
   }) => ({
     loadingUpdateByHr: loading.effects['candidateInfo/updateByHR'],
@@ -58,6 +60,8 @@ const PROCESS_STATUS = {
     allDocumentVerified,
     hidePreviewOffer,
     disablePreviewOffer,
+    checkMandatory,
+    checkStatus,
   }),
 )
 class CommonLayout extends Component {
@@ -66,6 +70,15 @@ class CommonLayout extends Component {
     this.state = {
       selectedItemId: '',
       displayComponent: '',
+      statusStep: {
+        basicInfoStep: null,
+        jobDetailStep: null,
+        salaryStructureStep: null,
+        backGroundCheckStep: null,
+        offerDetailStep: null,
+        payrollSettingStep: null,
+        benefitsStep: null,
+      },
     };
   }
 
@@ -149,6 +162,7 @@ class CommonLayout extends Component {
   componentDidMount() {
     const { listMenu, currentStep = 1, processStatus = '' } = this.props;
     const { SENT_FOR_APPROVAL, PROVISIONAL_OFFER_DRAFT } = PROCESS_STATUS;
+    this.initialStatusStep();
     if (processStatus === PROVISIONAL_OFFER_DRAFT) {
       return {
         selectedItemId: listMenu[0].id,
@@ -185,22 +199,18 @@ class CommonLayout extends Component {
     //   };
     // }
     // console.log('HERE 7');
+
     this.setState({
       selectedItemId: listMenu[currentStep].id || 1,
       displayComponent: listMenu[currentStep].component || <BasicInformation />,
     });
   }
 
-  componentWillUnmount() {
-    // const { dispatch } = this.props;
-    // console.log('UNMOUNT');
-    // dispatch({
-    //   type: 'candidateInfo/save',
-    //   payload: {
-    //     a: 2,
-    //     data: {},
-    //   },
-    // });
+  componentDidUpdate(prevProps) {
+    const { currentStep } = this.props;
+    if (currentStep !== prevProps.currentStep) {
+      this.checkStatusStep();
+    }
   }
 
   _handlePreviewOffer = () => {
@@ -235,6 +245,138 @@ class CommonLayout extends Component {
     return processStatus === 'DRAFT' && skip === 0;
   };
 
+  initialStatusStep = () => {
+    const {
+      checkStatus: {
+        filledBasicInformation = false,
+        filledJobDetail = false,
+        filledSalaryCheck = false,
+        filledBgCheck = false,
+        offerDetailCheck = false,
+        payrollSettingCheck = false,
+        benefitsCheck = false,
+      } = {},
+    } = this.props;
+
+    let basicInfoStep = 0;
+    let jobDetailStep = 0;
+    let salaryStructureStep = 0;
+    let backGroundCheckStep = 0;
+    let offerDetailStep = 0;
+    let payrollSettingStep = 0;
+    let benefitsStep = 0;
+
+    if (filledBasicInformation) {
+      // check basicInformation is full filled
+      basicInfoStep = 0;
+    }
+
+    if (filledJobDetail) {
+      // check Job Detail is full filled
+      jobDetailStep = 1;
+    }
+
+    if (filledSalaryCheck) {
+      salaryStructureStep = 2;
+    }
+
+    if (filledBgCheck) {
+      backGroundCheckStep = 3;
+    }
+    if (offerDetailCheck) {
+      offerDetailStep = 4;
+    }
+    if (payrollSettingCheck) {
+      payrollSettingStep = 5;
+    }
+    if (benefitsCheck) {
+      benefitsStep = 6;
+    }
+
+    this.setState({
+      statusStep: {
+        basicInfoStep,
+        jobDetailStep,
+        salaryStructureStep,
+        backGroundCheckStep,
+        offerDetailStep,
+        payrollSettingStep,
+        benefitsStep,
+      },
+    });
+  };
+
+  checkStatusStep = () => {
+    const {
+      currentStep,
+      checkMandatory: {
+        filledBasicInformation,
+        filledJobDetail,
+        filledSalaryStructure,
+        filledBackgroundCheck,
+        filledOfferDetail,
+        payrollSettingCheck,
+        benefitsCheck,
+      } = {},
+    } = this.props;
+    const { statusStep } = this.state;
+    const preIndex = currentStep - 1;
+    if (preIndex < 0) {
+      return null;
+    }
+
+    if (preIndex === 0 && filledBasicInformation) {
+      this.setState({
+        statusStep: {
+          ...statusStep,
+          basicInfoStep: preIndex,
+        },
+      });
+    } else if (preIndex === 1 && filledJobDetail) {
+      this.setState({
+        statusStep: {
+          ...statusStep,
+          jobDetailStep: preIndex,
+        },
+      });
+    } else if (preIndex === 2 && filledSalaryStructure) {
+      this.setState({
+        statusStep: {
+          ...statusStep,
+          salaryStructureStep: preIndex,
+        },
+      });
+    } else if (preIndex === 3 && filledBackgroundCheck) {
+      this.setState({
+        statusStep: {
+          ...statusStep,
+          backGroundCheckStep: preIndex,
+        },
+      });
+    } else if (preIndex === 4 && filledOfferDetail) {
+      this.setState({
+        statusStep: {
+          ...statusStep,
+          offerDetailStep: preIndex,
+        },
+      });
+    } else if (preIndex === 5 && payrollSettingCheck) {
+      this.setState({
+        statusStep: {
+          ...statusStep,
+          payrollSettingStep: preIndex,
+        },
+      });
+    } else if (preIndex === 6 && benefitsCheck) {
+      this.setState({
+        statusStep: {
+          ...statusStep,
+          benefitsStep: preIndex,
+        },
+      });
+    }
+  };
+
   isDisabled = (index) => {
     const {
       PROVISIONAL_OFFER_DRAFT,
@@ -244,7 +386,8 @@ class CommonLayout extends Component {
       PENDING,
     } = PROCESS_STATUS;
 
-    const { allDocumentVerified, processStatus, skip } = this.props;
+    const { processStatus, skip, currentStep } = this.props;
+    const { statusStep } = this.state;
     if (skip === 1) {
       return false;
     }
@@ -252,18 +395,38 @@ class CommonLayout extends Component {
     switch (processStatus) {
       case PROVISIONAL_OFFER_DRAFT:
       case SENT_PROVISIONAL_OFFERS: {
-        if (index === 0 || index === 1 || index === 2 || index === 3) {
+        if (
+          index === currentStep ||
+          index === statusStep.basicInfoStep ||
+          index === statusStep.jobDetailStep ||
+          index === statusStep.salaryStructureStep ||
+          index === statusStep.backGroundCheckStep
+        ) {
           return false;
         }
         return true;
       }
 
       case PENDING: {
-        if (allDocumentVerified) {
+        // if (allDocumentVerified) {
+        //   return false;
+        // }
+
+        if (
+          index === statusStep.basicInfoStep ||
+          index === statusStep.jobDetailStep ||
+          index === statusStep.salaryStructureStep ||
+          index === statusStep.backGroundCheckStep
+        ) {
           return false;
         }
 
-        if (index === 0 || index === 1 || index === 2 || index === 3) {
+        if (
+          index === currentStep ||
+          index === statusStep.offerDetailStep ||
+          index === statusStep.payrollSettingStep ||
+          index === statusStep.benefitsStep
+        ) {
           return false;
         }
 
@@ -290,7 +453,9 @@ class CommonLayout extends Component {
       hidePreviewOffer = false,
       disablePreviewOffer = false,
     } = this.props;
+
     const { displayComponent, selectedItemId } = this.state;
+
     return (
       <div className={s.containerCommonLayout}>
         <div className={s.viewLeft} style={currentPage === 'settings' ? { width: '300px' } : {}}>
