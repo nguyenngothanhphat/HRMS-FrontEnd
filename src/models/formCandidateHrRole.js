@@ -52,6 +52,8 @@ const candidateInfo = {
       filledAdditionalQuestion: false,
       salaryStatus: 2,
       calledListTitle: false,
+      payrollSettingCheck: false,
+      benefitsCheck: false,
     },
     currentStep: 0,
     settingStep: 0,
@@ -63,6 +65,9 @@ const candidateInfo = {
         filledJobDetail: false,
         filledSalaryCheck: false,
         filledBackgroundCheck: false,
+        offerDetailCheck: false,
+        payrollSettingCheck: false,
+        benefitsCheck: false,
       },
       position: 'EMPLOYEE',
       employeeType: {},
@@ -839,6 +844,10 @@ const candidateInfo = {
           previousExperience = '',
           salaryStructure = {},
           documentChecklistSetting = [],
+          amountIn,
+          compensationType,
+          timeOffPolicy,
+          currentStep,
         } = data;
 
         const identityProof = documentChecklistSetting[0]?.data;
@@ -878,6 +887,18 @@ const candidateInfo = {
         }
         if ('title' in salaryStructure) {
           checkStatus.filledSalaryCheck = true;
+        }
+
+        if (amountIn && timeOffPolicy && compensationType) {
+          checkStatus.offerDetailCheck = true;
+        }
+
+        if (currentStep >= 5) {
+          checkStatus.payrollSettingCheck = true;
+        }
+
+        if (currentStep >= 6) {
+          checkStatus.benefitsCheck = true;
         }
 
         yield put({
