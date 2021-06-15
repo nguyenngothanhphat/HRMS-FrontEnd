@@ -110,8 +110,8 @@ const candidateProfile = {
         ],
       },
       {
-        type: 'D',
-        name: 'Technical Certifications',
+        type: 'E',
+        name: 'Previous Employment',
         data: [
           { name: 'Offer letter', value: false },
           { name: 'Appraisal letter', value: false },
@@ -405,8 +405,8 @@ const candidateProfile = {
             ],
           },
           {
-            type: 'D',
-            name: 'Technical Certifications',
+            type: 'E',
+            name: 'Previous Employment',
             data: [
               { name: 'Offer letter', value: false },
               { name: 'Appraisal letter', value: false },

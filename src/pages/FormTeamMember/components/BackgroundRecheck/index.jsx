@@ -106,7 +106,7 @@ class BackgroundRecheck extends Component {
     const groupA = [];
     const groupB = [];
     const groupC = [];
-    const groupD = [];
+    const groupE = [];
     documentArr.map((item) => {
       const { candidateGroup } = item;
       switch (candidateGroup) {
@@ -119,8 +119,8 @@ class BackgroundRecheck extends Component {
         case 'C':
           groupC.push(item);
           break;
-        case 'D':
-          groupD.push(item);
+        case 'E':
+          groupE.push(item);
           break;
         default:
           break;
@@ -131,7 +131,7 @@ class BackgroundRecheck extends Component {
       { type: 'A', name: 'Identity Proof', data: [...groupA] },
       { type: 'B', name: 'Address Proof', data: [...groupB] },
       { type: 'C', name: 'Educational', data: [...groupC] },
-      { type: 'D', name: 'Technical Certifications', data: [...groupD] },
+      { type: 'E', name: 'Previous Employment', data: [...groupE] },
     ];
 
     this.setState({

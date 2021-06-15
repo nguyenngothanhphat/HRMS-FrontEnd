@@ -36,14 +36,13 @@ class CollapseFieldsType2 extends PureComponent {
     const {
       candidateInfo: {
         componentsNumberCount = [],
-        tempData: { technicalCertification: { poe = [] } = {} } = {},
+        tempData: { previousEmployment: { poe = [] } = {} } = {},
       } = {},
       dispatch,
     } = this.props;
 
     const checkedList = poe.map((value) => value.checkedList);
     const employerName = poe.map((value) => value.employer);
-    const workDuration = poe.map((value) => value.workDuration);
 
     const { length } = checkedList;
 
@@ -62,14 +61,14 @@ class CollapseFieldsType2 extends PureComponent {
           checkBoxesData={checkBoxesData}
           checkedList={checkedList[number - 1]}
           employerName={employerName[number - 1]}
-          workDuration={workDuration[number - 1]}
+          workDuration={poe[number - 1]}
           getDataFromFields={this.getDataFromFields}
           deleteComponent={this.deleteComponent}
           processStatus={processStatus}
           handleEmployerName={handleEmployerName}
           disabled={disabled}
         />
-        {/* <hr className={styles.divider} /> */}
+        <hr className={styles.divider} />
       </div>
     );
 
@@ -135,7 +134,8 @@ class CollapseFieldsType2 extends PureComponent {
         />
         <span className={styles.titleText}>{title}</span>
         <span className={styles.noteText}>
-          [Can submit any of the below other than (*)mandatory]
+          [All Mandatory documents will need to be submitted. One or more of the optional documents
+          can be submitted]
         </span>
       </div>
     );
@@ -238,7 +238,7 @@ class CollapseFieldsType2 extends PureComponent {
 
   render() {
     const { children } = this.state;
-    // const { disabled = false } = this.props;
+    const { disabled = false } = this.props;
     return (
       <div className={styles.CollapseFieldsType2}>
         <Collapse
@@ -255,7 +255,7 @@ class CollapseFieldsType2 extends PureComponent {
         >
           <Panel header={this.renderHeader()} className={styles.collapsePanel} key="1">
             <div>{children.map((child) => child)}</div>
-            {/* <div
+            <div
               className={
                 disabled
                   ? `${styles.disableButton} ${styles.addEmployerDetailBtn}`
@@ -265,7 +265,7 @@ class CollapseFieldsType2 extends PureComponent {
             >
               <PlusOutlined className={styles.plusIcon} />
               <span className={styles.title}>Add Employer Detail</span>
-            </div> */}
+            </div>
           </Panel>
         </Collapse>
       </div>

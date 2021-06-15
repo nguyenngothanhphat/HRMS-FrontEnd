@@ -48,7 +48,7 @@ class EligibilityDocs extends PureComponent {
     const groupA = [];
     const groupB = [];
     const groupC = [];
-    const groupD = [];
+    const groupE = [];
     documentList.forEach((item) => {
       const { candidateGroup } = item;
       item.isValidated = true;
@@ -62,8 +62,8 @@ class EligibilityDocs extends PureComponent {
         case 'C':
           groupC.push(item);
           break;
-        case 'D':
-          groupD.push(item);
+        case 'E':
+          groupE.push(item);
           break;
         default:
           break;
@@ -73,7 +73,7 @@ class EligibilityDocs extends PureComponent {
       { type: 'A', name: 'Identity Proof', data: [...groupA] },
       { type: 'B', name: 'Address Proof', data: [...groupB] },
       { type: 'C', name: 'Educational', data: [...groupC] },
-      { type: 'D', name: 'Technical Certifications', data: [...groupD] },
+      { type: 'E', name: 'Previous Employment', data: [...groupE] },
     ];
     dispatch({
       type: 'candidateProfile/saveOrigin',

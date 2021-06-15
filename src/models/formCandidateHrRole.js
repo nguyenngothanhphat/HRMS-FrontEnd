@@ -126,7 +126,7 @@ const candidateInfo = {
         checkedList: [],
         // isChecked: false,
       },
-      technicalCertification: {
+      previousEmployment: {
         poe: [
           // {
           //   employer: '',
@@ -325,8 +325,8 @@ const candidateInfo = {
           ],
         },
         {
-          type: 'D',
-          name: 'Technical Certifications',
+          type: 'E',
+          name: 'Previous Employment',
           employer: 'Kyle Pham',
           data: [
             {
@@ -357,8 +357,8 @@ const candidateInfo = {
           ],
         },
         {
-          type: 'D',
-          name: 'Technical Certifications',
+          type: 'E',
+          name: 'Previous Employment',
           employer: 'Kyle Hung',
           data: [
             {
@@ -1018,7 +1018,7 @@ const candidateInfo = {
         const groupA = [];
         const groupB = [];
         const groupC = [];
-        const groupD = [];
+        const groupE = [];
         data.map((item) => {
           const { candidateGroup } = item;
           switch (candidateGroup) {
@@ -1031,8 +1031,8 @@ const candidateInfo = {
             case 'C':
               groupC.push(item);
               break;
-            case 'D':
-              groupD.push(item);
+            case 'E':
+              groupE.push(item);
               break;
             default:
               break;
@@ -1044,7 +1044,7 @@ const candidateInfo = {
           { type: 'A', name: 'Identity Proof', data: [...groupA] },
           { type: 'B', name: 'Address Proof', data: [...groupB] },
           { type: 'C', name: 'Educational', data: [...groupC] },
-          { type: 'D', name: 'Technical Certifications', data: [...groupD] },
+          { type: 'E', name: 'Previous Employment', data: [...groupE] },
         ];
 
         yield put({

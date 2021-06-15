@@ -6,7 +6,7 @@ import { map } from 'lodash';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import SendEmail from './components/SendEmail';
-import Warning from './components/Warning';
+// import Warning from './components/Warning';
 import NoteComponent from '../NoteComponent';
 import Title from './components/Title';
 import PROCESS_STATUS from '../utils';
@@ -57,8 +57,8 @@ class BackgroundCheck extends Component {
       identityProof: {},
       addressProof: {},
       educational: {},
-      technicalCertification: {},
-      refreshBlockD: false,
+      previousEmployment: {},
+      refreshBlockE: false,
       // documentChecklistSetting: {},
     };
   }
@@ -105,7 +105,7 @@ class BackgroundCheck extends Component {
     // dispatch({
     //   type: 'candidateInfo/saveTemp',
     //   payload: {
-    //     technicalCertification: {
+    //     previousEmployment: {
     //       poe: [],
     //     },
     //   },
@@ -121,7 +121,7 @@ class BackgroundCheck extends Component {
         identityProof = {},
         addressProof = {},
         educational = {},
-        technicalCertification = {},
+        previousEmployment = {},
         candidate: candidateId = '',
       },
       tempData,
@@ -155,19 +155,19 @@ class BackgroundCheck extends Component {
 
     // -----------------------------------------------------------------------------------------
     // initial value for send email/generate link
-    let originalArrD =
+    let originalArrE =
       arrToAdjust.length > 0 &&
       arrToAdjust.map((value) => {
-        const { type = '', data: dataD = {} } = value;
-        if (type === 'D') return dataD.map((x) => x);
+        const { type = '', data: dataE = {} } = value;
+        if (type === 'E') return dataE.map((x) => x);
         return null;
       });
-    originalArrD = originalArrD.filter((value) => value !== null);
+    originalArrE = originalArrE.filter((value) => value !== null);
     this.setState({
       identityProof: arrToAdjust[0].data,
       addressProof: arrToAdjust[1].data,
       educational: arrToAdjust[2].data,
-      technicalCertification: originalArrD,
+      previousEmployment: originalArrE,
     });
 
     // -----------------------------------------------------------------------------------------
@@ -175,34 +175,31 @@ class BackgroundCheck extends Component {
     const arrB = arrToAdjust.length > 0 && arrToAdjust[1].data.filter((x) => x.value === true);
     const arrC = arrToAdjust.length > 0 && arrToAdjust[2].data.filter((x) => x.value === true);
 
-    let arrD =
-      arrToAdjust.length > 0 &&
+    let arrE =
       arrToAdjust.map((value) => {
-        const { type = '', data: dataD = {} } = value;
-        if (type === 'D') return dataD.filter((x) => x.value === true);
+        const { type = '', data: dataE = {} } = value;
+        if (type === 'E') return dataE.filter((x) => x.value === true);
         return null;
-      });
+      }) || [];
 
-    arrD = arrD.filter((value) => value !== null);
+    arrE = arrE.filter((value) => value !== null);
 
     // GET 'EMPLOYER' FIELDS
-    let employerName = arrToAdjust.map((value) => {
-      const { type = '', employer = '' } = value;
-      if (type === 'D') return employer;
-      return null;
-    });
-    employerName = employerName.filter((value) => value !== null);
+    const employerData = arrToAdjust.filter((emp) => emp.type === 'E');
 
     // FINAL LIST OF CHECKED CHECKBOXES
     const listSelectedA = arrA.map((x) => x.alias);
     const listSelectedB = arrB.map((x) => x.alias);
     const listSelectedC = arrC.map((x) => x.alias);
-    const listSelectedD = arrD.map((value) => value && value.map((x) => x.alias));
+    const listSelectedE = arrE.map((value) => value && value.map((x) => x.alias));
 
-    const listSelectedDFinal = listSelectedD.map((value, index) => {
+    const listSelectedEFinal = listSelectedE.map((value, index) => {
       return {
-        employer: employerName[index],
+        employer: employerData[index].employer,
         checkedList: value,
+        startDate: employerData[index].startDate,
+        endDate: employerData[index].endDate,
+        toPresent: employerData[index].toPresent,
       };
     });
 
@@ -222,15 +219,15 @@ class BackgroundCheck extends Component {
           ...educational,
           checkedList: listSelectedC,
         },
-        technicalCertification: {
-          ...technicalCertification,
-          poe: listSelectedDFinal,
+        previousEmployment: {
+          ...previousEmployment,
+          poe: listSelectedEFinal,
         },
       },
     });
 
     // set first value for [newPoe - the final poe]
-    this.setState({ newPoe: listSelectedDFinal });
+    this.setState({ newPoe: listSelectedEFinal });
   };
 
   handleUpdateByHR = (newPoeFinal, checkedListA, checkedListB, checkedListC) => {
@@ -401,6 +398,7 @@ class BackgroundCheck extends Component {
   // HANDLE CHANGE WHEN CLICK CHECKBOXES OF BLOCK D
   handleChangeForD = (checkedList, orderNumber, employerName, workDuration) => {
     // console.log('employerName', employerName);
+    const { startDate = '', endDate = '', toPresent = false } = workDuration;
     const { dispatch } = this.props;
     const { newPoe: newPoeState } = this.state;
     let newPoeFinal = [];
@@ -408,7 +406,9 @@ class BackgroundCheck extends Component {
       const newPoe1 = newPoeState;
       const addPoe = {
         employer: employerName,
-        workDuration,
+        startDate,
+        endDate,
+        toPresent,
         checkedList,
       };
       newPoe1.push(addPoe);
@@ -420,7 +420,9 @@ class BackgroundCheck extends Component {
               ...value,
               employer: employerName,
               checkedList,
-              workDuration,
+              startDate,
+              endDate,
+              toPresent,
             }
           : value,
       );
@@ -432,7 +434,7 @@ class BackgroundCheck extends Component {
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
-        technicalCertification: {
+        previousEmployment: {
           poe: newPoeFinal,
         },
       },
@@ -473,7 +475,7 @@ class BackgroundCheck extends Component {
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
-        technicalCertification: {
+        previousEmployment: {
           poe: newPoeFinal,
         },
       },
@@ -647,20 +649,15 @@ class BackgroundCheck extends Component {
 
   // generate documentCheckListSetting
   generateDocumentCheckListSettings = (newPoeFinal, checkedListA, checkedListB, checkedListC) => {
-    const { identityProof, addressProof, educational, technicalCertification } = this.state;
+    const { identityProof, addressProof, educational, previousEmployment } = this.state;
 
     // value for documentChecklistSetting field
     const arrA = this.generateForSendEmail(identityProof, checkedListA);
     const arrB = this.generateForSendEmail(addressProof, checkedListB);
     const arrC = this.generateForSendEmail(educational, checkedListC);
-    const arrD = newPoeFinal.map((value) => {
+    const arrE = newPoeFinal.map((value) => {
       const { checkedList = [] } = value;
-      return this.generateForSendEmail(technicalCertification[0], checkedList);
-    });
-
-    const employerNameD = newPoeFinal.map((value) => {
-      const { employer = [] } = value;
-      return employer;
+      return this.generateForSendEmail(previousEmployment[0], checkedList);
     });
 
     let documentChecklistSetting = [
@@ -680,17 +677,21 @@ class BackgroundCheck extends Component {
         data: arrC,
       },
     ];
-    const documentChecklistSettingD = arrD.map((value, index) => {
+
+    const documentChecklistSettingE = arrE.map((value, index) => {
       return {
-        type: 'D',
-        name: 'Technical Certifications',
-        employer: employerNameD[index],
+        type: 'E',
+        name: 'Previous Employment',
+        employer: newPoeFinal[index].employer,
+        startDate: newPoeFinal[index].startDate,
+        endDate: newPoeFinal[index].endDate,
+        toPresent: newPoeFinal[index].toPresent,
         data: value,
       };
     });
 
-    // console.log('documentChecklistSettingD', documentChecklistSettingD);
-    documentChecklistSetting = documentChecklistSetting.concat(documentChecklistSettingD);
+    // console.log('documentChecklistSettingE', documentChecklistSettingE);
+    documentChecklistSetting = documentChecklistSetting.concat(documentChecklistSettingE);
     return documentChecklistSetting;
   };
 
@@ -768,13 +769,13 @@ class BackgroundCheck extends Component {
       if (statusCode === 200) {
         this.setState({
           openModal: true,
-          refreshBlockD: true,
+          refreshBlockE: true,
         });
         this.getDataFromServer();
         // refresh block D (IMPORTANT)
         setTimeout(() => {
           this.setState({
-            refreshBlockD: false,
+            refreshBlockE: false,
           });
         }, 100);
 
@@ -856,7 +857,7 @@ class BackgroundCheck extends Component {
   // add/delete block D
   deleteBlockD = (findX) => {
     this.setState({
-      refreshBlockD: true,
+      refreshBlockE: true,
     });
     const {
       candidateInfo: {
@@ -864,7 +865,7 @@ class BackgroundCheck extends Component {
           identityProof: { checkedList: checkedListA = [] } = {},
           addressProof: { checkedList: checkedListB = [] } = {},
           educational: { checkedList: checkedListC = [] } = {},
-          technicalCertification: { poe = [] } = {},
+          previousEmployment: { poe = [] } = {},
         },
       } = {},
       dispatch,
@@ -880,7 +881,7 @@ class BackgroundCheck extends Component {
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
-        technicalCertification: {
+        previousEmployment: {
           poe: newPoeAfterDeleted,
         },
       },
@@ -891,7 +892,7 @@ class BackgroundCheck extends Component {
     // refresh block D (IMPORTANT)
     setTimeout(() => {
       this.setState({
-        refreshBlockD: false,
+        refreshBlockE: false,
       });
     }, 100);
   };
@@ -903,7 +904,7 @@ class BackgroundCheck extends Component {
           identityProof: { checkedList: checkedListA = [] } = {},
           addressProof: { checkedList: checkedListB = [] } = {},
           educational: { checkedList: checkedListC = [] } = {},
-          technicalCertification: { poe = [] } = {},
+          previousEmployment: { poe = [] } = {},
         },
       } = {},
       dispatch,
@@ -919,7 +920,7 @@ class BackgroundCheck extends Component {
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
-        technicalCertification: {
+        previousEmployment: {
           poe: newPoeAfterAdded,
         },
       },
@@ -941,7 +942,7 @@ class BackgroundCheck extends Component {
           checkValidation,
           isMarkAsDone,
 
-          technicalCertification: { poe = [] } = {},
+          previousEmployment: { poe = [] } = {},
         },
         data: { privateEmail },
       } = {},
@@ -950,13 +951,13 @@ class BackgroundCheck extends Component {
       loadingUpdateByHR,
     } = this.props;
 
-    const { openModal, identityProof, addressProof, educational, refreshBlockD } = this.state;
+    const { openModal, identityProof, addressProof, educational, refreshBlockE } = this.state;
     return (
       <div>
         <Row gutter={[24, 0]} className={styles.BackgroundCheckNew}>
           <Col span={16} sm={24} md={24} lg={24} xl={16} className={styles.leftWrapper}>
             <div className={styles.eliContainer}>
-              <Warning formatMessage={formatMessage} />
+              {/* <Warning formatMessage={formatMessage} /> */}
               <Title />
               {identityProof.length > 0 &&
                 addressProof.length > 0 &&
@@ -966,7 +967,7 @@ class BackgroundCheck extends Component {
                 documentList.map((item) => {
                   const { type = '', name = '', data = [] } = item;
                   const title = `Type ${type}: ${name}`;
-                  if (type !== 'D' && data.length !== 0) {
+                  if (type !== 'E' && data.length !== 0) {
                     return (
                       <CollapseFieldsType1
                         title={title}
@@ -980,9 +981,9 @@ class BackgroundCheck extends Component {
                       />
                     );
                   }
-                  if (type === 'D') {
-                    return refreshBlockD ? (
-                      <div className={styles.refreshBlockD}>
+                  if (type === 'E') {
+                    return refreshBlockE ? (
+                      <div className={styles.refreshBlockE}>
                         <Spin size="large" />
                       </div>
                     ) : (

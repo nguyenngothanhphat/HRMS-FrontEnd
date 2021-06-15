@@ -205,8 +205,8 @@ class FormTeamMember extends PureComponent {
             ],
           },
           {
-            type: 'D',
-            name: 'Technical Certifications',
+            type: 'E',
+            name: 'Previous Employment',
             data: [
               {
                 key: 'offerLetter',

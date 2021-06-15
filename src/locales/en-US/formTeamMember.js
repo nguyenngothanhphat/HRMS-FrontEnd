@@ -133,6 +133,7 @@ export default {
   'component.eligibilityDocs.postGraduate': 'Post Graduate',
   'component.eligibilityDocs.phdDoctorate': 'PHD/Docturate',
   'component.eligibilityDocs.TypeD': 'Type D: Technical Certifications',
+  'component.eligibilityDocs.TypeE': 'Type E: Previous Employment',
   'component.eligibilityDocs.offerLetter': 'Offer letter',
   'component.eligibilityDocs.appraisalLetter': 'Appraisal letter',
   'component.eligibilityDocs.paystubs': 'Paystubs',

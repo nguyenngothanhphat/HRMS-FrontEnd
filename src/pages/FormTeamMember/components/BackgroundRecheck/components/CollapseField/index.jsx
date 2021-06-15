@@ -72,7 +72,7 @@ class CollapseField extends Component {
                   Type {item.type}: {item.name}
                 </Checkbox>
               }
-              extra="[Can submit any of the below other than (*)mandatory]"
+              extra="[All Mandatory documents will need to be submitted. One or more of the optional documents can be submitted]"
             >
               <Space direction="vertical" className={styles.space}>
                 {item.data.map((document, index) => {
