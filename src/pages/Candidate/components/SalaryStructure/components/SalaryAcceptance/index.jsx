@@ -6,7 +6,7 @@ import CustomModal from '@/components/CustomModal';
 import NoteComponent from '@/pages/FormTeamMember/components/NoteComponent';
 import { getCurrentTenant } from '@/utils/authority';
 import ModalContentComponent from '../ModalContentComponent';
-
+import SalaryNote from '../SalaryNote';
 import styles from './index.less';
 
 @connect(
@@ -15,12 +15,14 @@ import styles from './index.less';
     candidateProfile: {
       tempData: { options = 1 },
       generatedBy: { user: { email = '' } = {} } = {},
+      salaryNote = '',
     },
     candidateInfo: { data: { processStatus = '' } } = {},
   }) => ({
     processStatus,
     options,
     email,
+    salaryNote,
     loadingSendEmail: loading.effects['candidateProfile/sendEmailByCandidate'],
   }),
 )
@@ -34,22 +36,19 @@ class SalaryAcceptance extends PureComponent {
       select: [
         {
           title: 'I hereby accept this salary structure.',
-          note:
-            'You have gone through all the contents of the table and accept the salary as terms of your employment.',
+          note: 'You have gone through all the contents of the table and accept the salary as terms of your employment.',
           // processStatus: 'ACCEPT-PROVISIONAL-OFFER',
           options: 1,
         },
         {
           title: 'I would like to re-negotiate the salary structure.',
-          note:
-            'You have gone through all the contents of the table. However, I would like to renegotiate.',
+          note: 'You have gone through all the contents of the table. However, I would like to renegotiate.',
           // processStatus: 'RENEGOTIATE-PROVISONAL-OFFER',
           options: 2,
         },
         {
           title: 'I would like to reject this offer.',
-          note:
-            'You have gone through all the contents of the table and do not accept the offer given to me.',
+          note: 'You have gone through all the contents of the table and do not accept the offer given to me.',
           // processStatus: 'DISCARDED-PROVISONAL-OFFER',
           options: 3,
         },
@@ -189,7 +188,7 @@ class SalaryAcceptance extends PureComponent {
 
   render() {
     const { openModal } = this.state;
-    const { options } = this.props;
+    const { options, salaryNote = '' } = this.props;
     const Note = {
       title: 'Note',
       data: (
@@ -201,6 +200,7 @@ class SalaryAcceptance extends PureComponent {
     return (
       <div className={styles.salaryAcceptance}>
         <NoteComponent note={Note} />
+        {salaryNote && <SalaryNote />}
         <div className={styles.salaryAcceptanceWrapper}>{this._renderSelect()}</div>
         {options !== 1 && (
           <div className={styles.salaryAcceptanceWrapper}>{this._renderSubmitForm()}</div>

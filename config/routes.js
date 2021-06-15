@@ -179,7 +179,7 @@ const routes = [
             name: 'employeeOnboarding',
             icon: '/assets/images/menuIcons/onboarding.svg',
             component: './EmployeeOnboarding',
-            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW'],
+            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'hr', 'hr-manager'],
           },
           {
             path: '/offboarding',

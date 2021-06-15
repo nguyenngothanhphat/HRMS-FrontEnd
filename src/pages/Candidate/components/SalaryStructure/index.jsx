@@ -1,12 +1,10 @@
+import { Col, Form, Row } from 'antd';
 import React, { PureComponent } from 'react';
-import { Row, Col, Typography, Button, Form } from 'antd';
 import { connect, formatMessage } from 'umi';
-
+// import NoteComponent from '../NoteComponent';
+import SalaryAcceptance from './components/SalaryAcceptance';
 import SalaryStructureHeader from './components/SalaryStructureHeader';
 import SalaryStructureTemplate from './components/SalaryStructureTemplate';
-import NoteComponent from '../NoteComponent';
-import SalaryAcceptance from './components/SalaryAcceptance';
-
 import styles from './index.less';
 
 // const DRAFT = 'DRAFT';
@@ -21,6 +19,7 @@ import styles from './index.less';
       data: { processStatus = '' }, // tempData = {},
       salaryStructure = {},
       checkMandatory = {},
+      salaryNote = '',
     } = {},
     candidateProfile: { title: { name: titleName = '' } = {} } = {},
   }) => ({
@@ -28,6 +27,7 @@ import styles from './index.less';
     processStatus,
     salaryStructure,
     checkMandatory,
+    salaryNote,
     // tempData,
   }),
 )
@@ -45,20 +45,7 @@ class SalaryStructure extends PureComponent {
   };
 
   render() {
-    const { processStatus, titleName = '' } = this.props;
-    const Note = {
-      title: 'Note',
-      data: (
-        <Typography.Text>
-          The Salary structure will be sent as a <span>provisional offer</span>. The candidate must
-          accept the and acknowledge the salary structure as a part of final negotiation. <br />
-          <br />
-          <span className="bold-text">
-            Post acceptance of salary structure, the final offer letter will be sent.
-          </span>
-        </Typography.Text>
-      ),
-    };
+    const { titleName = '' } = this.props;
     return (
       <Row gutter={[24, 0]}>
         <Col xs={24} sm={24} md={24} lg={16} xl={16}>

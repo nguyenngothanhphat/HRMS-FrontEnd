@@ -845,6 +845,7 @@ const candidateInfo = {
             compensationType: data.compensationType || '',
             salaryTitle: data.salaryStructure?.title?._id,
             salaryStructure: data.salaryStructure,
+            salaryNote: data.salaryNote,
             includeOffer: data.includeOffer || 1,
             // hidePreviewOffer: !!(data.staticOfferLetter && data.staticOfferLetter.url), // Hide preview offer screen if there's already static offer
             // disablePreviewOffer:
