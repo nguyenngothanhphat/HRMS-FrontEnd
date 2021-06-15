@@ -438,7 +438,7 @@ class AddEmployeeForm extends Component {
               placeholder="Select Roles"
             >
               {rolesList.map((item) => (
-                <Option key={item._id} value={item._id}>
+                <Option key={item._id} value={item.idSync}>
                   {item.idSync}
                 </Option>
               ))}

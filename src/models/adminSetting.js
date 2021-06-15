@@ -111,7 +111,11 @@ const adminSetting = {
     },
     *fetchListPermissionOfRole({ payload: { idRoles = '' } }, { call, put }) {
       try {
-        const response = yield call(getListPermissionOfRole, idRoles);
+        const response = yield call(getListPermissionOfRole, {
+          idRoles,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data: listPermission = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { idRoles } });
@@ -141,6 +145,7 @@ const adminSetting = {
       try {
         const response = yield call(updateRoleWithPermission, {
           ...getValues,
+          tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
         const { statusCode, message } = response;
@@ -208,7 +213,7 @@ const adminSetting = {
     },
     *getRolesByCompany({ payload: { company = '' } }, { call, put }) {
       try {
-        const response = yield call(getRolesByCompany, { company });
+        const response = yield call(getRolesByCompany, { company, tenantId: getCurrentTenant() });
         const { statusCode, data: listRoleByCompany = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listRoleByCompany } });
