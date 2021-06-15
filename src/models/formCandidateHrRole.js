@@ -845,7 +845,6 @@ const candidateInfo = {
           salaryStructure = {},
           documentChecklistSetting = [],
           amountIn,
-          compensationType,
           timeOffPolicy,
           currentStep,
         } = data;
@@ -889,12 +888,14 @@ const candidateInfo = {
           checkStatus.filledSalaryCheck = true;
         }
 
-        if (amountIn && timeOffPolicy && compensationType) {
+        if (amountIn && timeOffPolicy) {
           checkStatus.offerDetailCheck = true;
         }
 
         if (currentStep >= 5) {
           checkStatus.payrollSettingCheck = true;
+        } else {
+          checkStatus.payrollSettingCheck = false;
         }
 
         if (currentStep >= 6) {

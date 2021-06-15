@@ -357,7 +357,7 @@ class CommonLayout extends Component {
       this.setState({
         statusStep: {
           ...statusStep,
-          offerDetailCheck: preIndex,
+          offerDetailStep: preIndex,
         },
       });
     } else if (preIndex === 5 && payrollSettingCheck) {
