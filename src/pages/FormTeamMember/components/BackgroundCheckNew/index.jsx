@@ -1,19 +1,17 @@
 /* eslint-disable no-param-reassign */
-import React, { Component } from 'react';
-import { Row, Col, Typography, Button, Spin } from 'antd';
-import { connect, formatMessage } from 'umi';
-import { map } from 'lodash';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import SendEmail from './components/SendEmail';
-import Warning from './components/Warning';
+import { Button, Col, Row, Spin, Typography } from 'antd';
+import { map } from 'lodash';
+import React, { Component } from 'react';
+import { connect, formatMessage } from 'umi';
 import NoteComponent from '../NoteComponent';
-import Title from './components/Title';
 import PROCESS_STATUS from '../utils';
-import ModalContentComponent from './components/ModalContentComponent';
 import CollapseFieldsType1 from './components/CollapseFieldsType1';
 import CollapseFieldsType2 from './components/CollapseFieldsType2';
-
+import ModalContentComponent from './components/ModalContentComponent';
+import SendEmail from './components/SendEmail';
+import Title from './components/Title';
 import styles from './styles.less';
 
 const note = {
@@ -122,7 +120,7 @@ class BackgroundCheck extends Component {
         addressProof = {},
         educational = {},
         technicalCertification = {},
-        candidate: candidateId = '',
+        // candidate: candidateId = '',
       },
       tempData,
       dispatch,
@@ -956,7 +954,7 @@ class BackgroundCheck extends Component {
         <Row gutter={[24, 0]} className={styles.BackgroundCheckNew}>
           <Col span={16} sm={24} md={24} lg={24} xl={16} className={styles.leftWrapper}>
             <div className={styles.eliContainer}>
-              <Warning formatMessage={formatMessage} />
+              {/* <Warning formatMessage={formatMessage} /> */}
               <Title />
               {identityProof.length > 0 &&
                 addressProof.length > 0 &&

@@ -1,8 +1,9 @@
 import request from '@/utils/request';
 
-export async function getListRoles() {
-  return request('/api/role/list', {
+export async function getListRoles(payload) {
+  return request('/api/roletenant/list', {
     method: 'POST',
+    data: payload,
   });
 }
 
@@ -27,14 +28,14 @@ export async function getListPermissionOfRole(payload) {
   });
 }
 export async function updateRoleWithPermission(payload) {
-  return request('/api/role/update', {
+  return request('/api/roletenant/update', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getPermissionByIdRole(payload) {
-  return request('/api/role/get-by-id', {
+  return request('/api/roletenant/get-by-id', {
     method: 'POST',
     data: payload,
   });
@@ -69,7 +70,7 @@ export async function removeDepartment(payload) {
 }
 
 export async function getRolesByCompany(payload) {
-  return request('/api/role/list', {
+  return request('/api/roletenant/list', {
     method: 'POST',
     data: payload,
   });

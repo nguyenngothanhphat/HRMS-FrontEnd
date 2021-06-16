@@ -355,7 +355,7 @@ class EmailReminderForm extends PureComponent {
               this.setState({ load: false });
               dispatch({
                 type: 'employeeSetting/fetchTitleList',
-                payload: { tenantId: getCurrentTenant() },
+                payload: { tenantId: getCurrentTenant(), company: getCurrentCompany() },
               }).then((data) => {
                 this.setState((prevState) => ({
                   conditionsTrigger: {
@@ -431,7 +431,7 @@ class EmailReminderForm extends PureComponent {
         this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchTitleList',
-          payload: { tenantId: getCurrentTenant() },
+          payload: { tenantId: getCurrentTenant(), company: getCurrentCompany() },
         }).then((data) => {
           this.setState((prevState) => ({
             conditionsTrigger: {
