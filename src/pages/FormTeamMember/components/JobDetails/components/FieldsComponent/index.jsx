@@ -50,6 +50,7 @@ class FieldsComponent extends PureComponent {
           disabled={disabled}
         />
         <CandidateFieldsComponent
+          _handleSelect={_handleSelect}
           styles={styles.Input}
           candidateField={candidateField}
           candidatesNoticePeriod={candidatesNoticePeriod}

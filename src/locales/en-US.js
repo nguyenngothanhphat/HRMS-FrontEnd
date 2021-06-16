@@ -27,6 +27,7 @@ import documentsManagementPage from './en-US/documentsManagementPage';
 import employeesManagementPage from './en-US/employeesManagementPage';
 import companiesManagementPage from './en-US/companiesManagementPage';
 import adminSetting from './en-US/adminSetting';
+import footer from './en-US/footer';
 
 export default {
   'navBar.lang': 'Languages',
@@ -65,4 +66,5 @@ export default {
   ...companiesManagementPage,
   ...onBoardingCustomFields,
   ...adminSetting,
+  ...footer,
 };
