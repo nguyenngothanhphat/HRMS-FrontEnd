@@ -71,14 +71,9 @@ class WorkShedule extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'timeOff/getInitEmployeeSchedule',
+      type: 'timeOff/getEmployeeScheduleByLocation',
       payload: { location: getCurrentLocation(), tenantId: getCurrentTenant() },
-    }).then(
-      dispatch({
-        type: 'timeOff/getEmployeeScheduleByLocation',
-        payload: { location: getCurrentLocation(), tenantId: getCurrentTenant() },
-      }),
-    );
+    });
   }
 
   handleClick = (id, formatArray) => {
@@ -90,28 +85,33 @@ class WorkShedule extends Component {
   };
 
   renderItem = (item = {}, formatArray = []) => {
+    const { edit } = this.state;
     return (
-      <div
+      // <div
+      //   className={item.checked ? s.circleActive : s.circle}
+      //   onClick={() => this.handleClick(item.id, formatArray)}
+      // >
+      <Button
+        // className={s.padding}
+        disabled={edit}
         className={item.checked ? s.circleActive : s.circle}
         onClick={() => this.handleClick(item.id, formatArray)}
-        onChange={this.onChangeEdit}
       >
-        <div className={s.padding}>{item.name}</div>
-      </div>
+        {item.name}
+      </Button>
+      // </div>
     );
   };
 
-  selectStartTime = (time, timeString) => {
+  selectStartTime = (timeString) => {
     this.setState({
       startTime: timeString,
-      edit: false,
     });
   };
 
-  selectEndTime = (time, timeString) => {
+  selectEndTime = (timeString) => {
     this.setState({
       endTime: timeString,
-      edit: false,
     });
   };
 
@@ -122,22 +122,24 @@ class WorkShedule extends Component {
   };
 
   onFinish = (values, formatArray) => {
-    const { getByLocation, dispatch, idLocation } = this.props;
-    const { _id } = getByLocation;
-    const { startTime, endTime } = this.state;
+    const { employeeSchedule, dispatch, idLocation } = this.props;
+    const { edit } = this.state;
+    const { _id } = employeeSchedule;
     const arrayActive = formatArray.filter((item) => item.checked === true);
     const arrayFiler = arrayActive.map((item) => ({ checked: item.checked, date: item.text }));
-    const { endAmPM, startAmPM, totalHour } = values;
+    const { endAmPM, startAmPM, totalHour, endAt, startAt } = values;
 
     const payload = {
-      startWorkDay: { start: startTime, amPM: startAmPM },
-      endWorkDay: { end: endTime, amPM: endAmPM },
+      startWorkDay: { start: startAt.format('HH:mm'), amPM: startAmPM },
+      endWorkDay: { end: endAt.format('HH:mm'), amPM: endAmPM },
       totalHour,
       workDay: arrayFiler,
       _id,
       location: idLocation,
       tenantId: getCurrentTenant(),
     };
+
+    this.setState({ edit: !edit });
     dispatch({
       type: 'timeOff/updateEmployeeSchedule',
       payload,
@@ -151,29 +153,31 @@ class WorkShedule extends Component {
     </div>
   );
 
-  handleCancel = () => {
-    this.setState({ edit: true });
-    const { getByLocation, dispatch } = this.props;
+  handleCancel = (formatArray) => {
+    const { employeeSchedule, dispatch } = this.props;
+    const { edit } = this.state;
     const {
       endWorkDay: { end: endTime, amPM: afternoon } = {},
       startWorkDay: { start: startTime, amPM: beforenoon } = {},
       // workDay = [],
       totalHour,
-    } = getByLocation;
-
+      workDay,
+    } = employeeSchedule;
+    console.log(formatArray);
+    this.setState({ edit: !edit });
     const format = 'HH:mm';
 
     this.formRef.current.setFieldsValue({
-      startAmPM: beforenoon,
-      endAmPM: afternoon,
+      amPM: beforenoon,
+      afternoon,
       totalHour,
-      startAt: moment(startTime, format),
-      endAt: moment(endTime, format),
+      start: moment(startTime, format),
+      end: moment(endTime, format),
     });
 
     dispatch({
       type: 'timeOff/save',
-      payload: { employeeSchedule: getByLocation },
+      payload: { employeeSchedule },
     });
   };
 
@@ -219,13 +223,14 @@ class WorkShedule extends Component {
             <Form
               ref={this.formRef}
               onFinish={(values) => this.onFinish(values, formatArray)}
+              // onFinish={(values) => console.log(values)}
               requiredMark={false}
               initialValues={{
                 startAmPM: beforenoon,
                 endAmPM: afternoon,
                 totalHour,
-                startAt: moment(startTime, format),
-                endAt: moment(endTime, format),
+                startAt: moment(startTime, 'HH:mm'),
+                endAt: moment(endTime, 'HH:mm'),
               }}
             >
               <div className={s.formActive}>
@@ -233,7 +238,9 @@ class WorkShedule extends Component {
                   <span>Standard work schedule policy</span>
                   <div className={s.editIcon}>
                     <img src="/assets/images/edit.svg" alt="edit" className={s.editImg} />
-                    <span className={s.editText}>Edit</span>
+                    <span className={s.editText} onClick={this.onChangeEdit}>
+                      Edit
+                    </span>
                   </div>
                 </div>
                 <div className={s.straight} />
@@ -250,8 +257,8 @@ class WorkShedule extends Component {
                         <Form.Item name="totalHour">
                           <InputNumber
                             min={0}
-                            max={12}
-                            // defaultValue={totalHour}
+                            max={24}
+                            disabled={edit}
                             placeholder="hours/day"
                             formatter={(value) => `${value} hours/day`}
                             parser={(value) => value.replace('days', '')}
@@ -268,27 +275,25 @@ class WorkShedule extends Component {
                             <Form.Item name="startAt">
                               <TimePicker
                                 format={format}
-                                // defaultValue={moment(startTime, format)}
                                 onChange={this.selectStartTime}
+                                value={moment(startTime, format)}
+                                disabled={edit}
                                 suffixIcon={this.renderIcons()}
                               />
                             </Form.Item>
                           </Col>
                           <Col style={{ padding: '2px' }} className={s.radioSection}>
                             <Form.Item name="startAmPM">
-                              {/* <div className={s.radioTime}> */}
                               <Radio.Group
-                                // options={options}
-                                // onChange={this.onChange1}
                                 onChange={this.onChangeEdit}
                                 optionType="button"
                                 buttonStyle="solid"
+                                disabled={edit}
                                 className={s.radioGroup}
                               >
                                 <Radio.Button value="AM">AM</Radio.Button>
                                 <Radio.Button value="PM">PM</Radio.Button>
                               </Radio.Group>
-                              {/* </div> */}
                             </Form.Item>
                           </Col>
                         </Row>
@@ -302,6 +307,7 @@ class WorkShedule extends Component {
                             <Form.Item name="endAt">
                               <TimePicker
                                 format={format}
+                                disabled={edit}
                                 onChange={this.selectEndTime}
                                 value={moment(endTime, format)}
                                 suffixIcon={this.renderIcons()}
@@ -310,19 +316,16 @@ class WorkShedule extends Component {
                           </Col>
                           <Col style={{ padding: '2px' }} className={s.radioSection}>
                             <Form.Item name="endAmPM">
-                              {/* <div className={s.radioTime}> */}
                               <Radio.Group
-                                // options={options}
-                                // onChange={this.onChange2}
                                 onChange={this.onChangeEdit}
                                 optionType="button"
+                                disabled={edit}
                                 buttonStyle="solid"
                                 className={s.radioGroup}
                               >
                                 <Radio.Button value="AM">AM</Radio.Button>
                                 <Radio.Button value="PM">PM</Radio.Button>
                               </Radio.Group>
-                              {/* </div> */}
                             </Form.Item>
                           </Col>
                         </Row>
@@ -330,11 +333,11 @@ class WorkShedule extends Component {
                     </Col>
                   </Row>
                   <div className={s.bottom}>
-                    <div className={s.workHour}>Work days</div>
-                    <div className={`${s.description} ${s.pb17}`}>
+                    <p className={s.workHour}>Work days</p>
+                    <p className={`${s.description} ${s.pb17}`}>
                       Only for the days selected below, timeoff hours will be deducted from the
                       total leave balance
-                    </div>
+                    </p>
                     <div className={s.checkboxWrap}>
                       {formatArray.map((item) => this.renderItem(item, formatArray))}
                     </div>
@@ -342,14 +345,21 @@ class WorkShedule extends Component {
                 </div>
                 <div className={s.straight} />
                 <div className={s.flex}>
-                  {edit ? null : (
-                    <Button onClick={this.handleCancel} className={s.cancelBtn}>
-                      Cancel
-                    </Button>
+                  {edit ? (
+                    <></>
+                  ) : (
+                    <>
+                      <Button
+                        onClick={() => this.handleCancel(formatArray)}
+                        className={s.cancelBtn}
+                      >
+                        Cancel
+                      </Button>
+                      <Button className={s.btnSave} htmlType="submit">
+                        Save
+                      </Button>
+                    </>
                   )}
-                  <Button htmlType="submit" disabled={edit}>
-                    Save
-                  </Button>
                 </div>
               </div>
             </Form>
