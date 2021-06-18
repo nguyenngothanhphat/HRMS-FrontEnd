@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { Button, Checkbox, Select, Row, Col, Spin, InputNumber, Affix, Divider } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
-import { getCurrentLocation, getCurrentTenant } from '@/utils/authority';
+import {
+  // getCurrentLocation,
+  getCurrentTenant,
+} from '@/utils/authority';
 import AddHoliday from './AddHoliday';
 import s from './index.less';
 
@@ -79,10 +82,11 @@ const MOCK_DATA = [
 ];
 @connect(
   ({
-    timeOff: { countryList = [] } = {},
+    timeOff: { countryList = [], holidaysListByLocation = [] } = {},
     loading,
     user: { currentUser: { company: { _id: idCompany = '' } = {}, location = {} } = {} } = {},
   }) => ({
+    holidaysListByLocation,
     countryList,
     loading: loading.effects['timeOff/fetchHolidaysListBylocation'],
     loadingbyCountry: loading.effects['timeOff/fetchHolidaysListBylocation'],
@@ -96,7 +100,6 @@ class HollidayCalendar extends Component {
     super(props);
     this.state = {
       data: [],
-      role: '',
       yearSelect: 2021,
       list: {},
       idCheck: [],
@@ -110,15 +113,17 @@ class HollidayCalendar extends Component {
   }
 
   componentDidMount = () => {
-    const listRole = localStorage.getItem('antd-pro-authority');
-    const role = this.findRole(JSON.parse(listRole));
-    this.setState({
-      role,
-    });
     const d = new Date();
     const year = d.getFullYear();
     const formatYear = year.toString();
     this.initListHoliday(formatYear);
+    // dispatch({
+    //   type: 'timeOff/fetchHolidaysListBylocation',
+    //   payload: {
+    //     location: getCurrentLocation(),
+    //     country: location.headQuarterAddress.country._id,
+    //   },
+    // });
   };
 
   findRole = (roles) => {
@@ -132,22 +137,17 @@ class HollidayCalendar extends Component {
     dispatch({
       type: 'timeOff/fetchHolidaysListBylocation',
       payload: {
-        location: getCurrentLocation(),
+        // location: getCurrentLocation(),
         country: location.headQuarterAddress.country._id,
         tenantId: getCurrentTenant(),
       },
     }).then((response) => {
-      const { statusCode, data: listData = {} } = response;
+      const { statusCode, data } = response;
       this.setState({
-        list: listData,
+        list: data,
       });
-      const { holiday = [] } = listData;
       if (statusCode === 200) {
-        const newList = holiday.filter((item) => {
-          const { date } = item;
-          const yearCurrent = moment(date).format('YYYY');
-          return yearCurrent === year;
-        });
+        const newList = data.filter((item) => item.date.dateTime.year === year);
         this.fomatDate(newList);
       }
     });
@@ -218,7 +218,7 @@ class HollidayCalendar extends Component {
     const { yearSelect } = this.state;
     dispatch({
       type: 'timeOff/addHoliday',
-      payload: { value, tenantId: getCurrentTenant() },
+      payload: value,
     }).then((response) => {
       const { statusCode } = response;
       if (statusCode === 200) {
@@ -232,11 +232,10 @@ class HollidayCalendar extends Component {
 
   deleteHoliday = (id) => {
     const { dispatch } = this.props;
-    const { list = [], yearSelect } = this.state;
-    const { _id: idObjHolidays } = list;
+    const { yearSelect } = this.state;
     dispatch({
       type: 'timeOff/deleteHoliday',
-      payload: { removeId: id, id: idObjHolidays, tenantId: getCurrentTenant() },
+      payload: { id, tenantId: getCurrentTenant() },
     }).then((response) => {
       const { statusCode } = response;
       if (statusCode === 200) {
@@ -265,23 +264,27 @@ class HollidayCalendar extends Component {
     let result = MOCK_DATA;
     const listID = [];
     holidaysList.forEach((item) => {
-      const monthItem = moment(item.date).format('MMM');
-      const fomatDataItem = moment(item.date).format('MMM , YYYY');
+      const monthItem = moment(item.date.iso).format('MMM');
+      const fomatDataItem = moment(item.date.iso).format('MMM , YYYY');
       result = result.map((resultItem) => ({
         ...resultItem,
-        month: resultItem.text === monthItem ? fomatDataItem : resultItem.month,
+        month:
+          resultItem.text === monthItem
+            ? fomatDataItem
+            : `${resultItem.text}, ${item.date.dateTime.year}`,
         children:
           resultItem.text === monthItem ? [...resultItem.children, item] : resultItem.children,
       }));
     });
-    result = result.filter((resultItem) => resultItem.children.length > 0);
-
+    // console.log(result);
+    // result = [...result, result.filter((resultItem) => resultItem.children.length > 0)];
     // get id of each children
     result.forEach((item) => {
       const { children = [] } = item;
       const arrID = children.map((subChild) => subChild._id);
       listID.push(...arrID);
     });
+    // console.log(result);
 
     this.setState({ data: result, plainOptions: listID });
   };
@@ -368,14 +371,12 @@ class HollidayCalendar extends Component {
   renderHoliday = (id, dataItem) => {
     const { children } = dataItem;
     const { idCheck = [] } = this.state;
-
     return (
       <>
         {children.map((subChild) => {
           const { date, name, type, _id } = subChild;
-          const dateFormat = moment(date).format('Do MMM');
-          const day = moment(date).format('dddd');
-
+          const dateFormat = moment(date.iso).format('Do MMM');
+          const day = moment(date.iso).format('dddd');
           return (
             <>
               {subChild._id === id ? (
@@ -391,7 +392,7 @@ class HollidayCalendar extends Component {
                       <div className={s.holiday__date}>{day}</div>
                     </Col>
                     <Col span={4}>
-                      <div className={s.holiday__date}>{type}</div>
+                      <div className={s.holiday__date}>{type[0]}</div>
                     </Col>
                     {idCheck.indexOf(_id) > -1 && (
                       <Col span={3} onClick={() => this.deleteHoliday(_id)}>
@@ -410,8 +411,7 @@ class HollidayCalendar extends Component {
 
   renderInfo = () => {
     const { data, plainOptions } = this.state;
-    const newData = [...data];
-
+    const newData = data.filter((item) => item.children.length > 0);
     return (
       <div>
         {newData.map((itemData, index) => {
@@ -456,7 +456,6 @@ class HollidayCalendar extends Component {
   render() {
     const {
       data,
-      role,
       yearSelect,
       visible = true,
       isActive,
@@ -466,6 +465,7 @@ class HollidayCalendar extends Component {
       checkedList,
     } = this.state;
     const { loading = false, loadingbyCountry = false, loadingAddHoliday = false } = this.props;
+
     return (
       <div className={s.root}>
         <div className={s.setUpWrap}>
