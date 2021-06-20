@@ -203,20 +203,15 @@ const routes = [
               'leader',
               // 'owner',
             ],
-            // routes: [
-            //   {
-            //     path: 'time-off',
-            //     name: 'timeOff',
-            //     component: './TimeOff',
-            //   },
-            //   {
-            //     path: '/time-off/setup-timeoff-policy/time-off-type/:reId',
-            //     name: 'Setup Timeoff policy',
-            //     hideInMenu: true,
-            //     component: './TimeOff/components/SetupTimeoff/components/TimeoffType/Configure',
-            //     authority: ['hr-manager', 'P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
-            //   },
-            // ],
+            routes: [
+              {
+                path: '/time-off/setup-timeoff-policy',
+                name: 'Setup Timeoff policy',
+                hideInMenu: true,
+                component: './TimeOff/components/SetupTimeoff/components/TimeoffType/Configure',
+                authority: ['hr-manager', 'P_TIMEOFF_VIEW', 'M_TIMEOFF_VIEW'],
+              },
+            ],
           },
           {
             path: '/users-management',

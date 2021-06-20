@@ -6,29 +6,21 @@ import styles from './index.less';
 const dateFormat = 'MM-DD-YYYY';
 class AnnualReset extends Component {
   constructor(props) {
-    const { annualReset } = props;
-    super(props);
-    this.state = {
-      resetDate: moment(annualReset.resetDate).locale('en').format(dateFormat),
-      resetAnnually: false,
-    };
-  }
-
-  componentDidMount() {
     const {
       annualReset: { resetAnnually, resetDate },
-    } = this.props;
-    this.setState({
-      resetDate,
+    } = props;
+    super(props);
+    this.state = {
+      resetDate: moment(resetDate).locale('en').format(dateFormat),
       resetAnnually,
-    });
+    };
   }
 
   onChangeSelect = (value) => {
     const { onChangeValue = () => {} } = this.props;
     const { resetAnnually } = this.state;
     this.setState({
-      resetAnnually: value,
+      resetDate: value,
     });
     const data = {
       resetAnnually,
@@ -53,6 +45,8 @@ class AnnualReset extends Component {
 
   render() {
     const { resetDate, resetAnnually } = this.state;
+
+    const dateReset = moment(resetDate).locale('en').format(dateFormat);
     return (
       <div className={styles.contentAnnual}>
         <div className={styles.title}>Annual reset</div>
@@ -74,7 +68,7 @@ class AnnualReset extends Component {
               <DatePicker
                 className={styles.select}
                 format={dateFormat}
-                defaultValue={moment(resetDate, dateFormat)}
+                value={moment(dateReset, dateFormat)}
                 onChange={this.onChangeSelect}
               />
             </Col>

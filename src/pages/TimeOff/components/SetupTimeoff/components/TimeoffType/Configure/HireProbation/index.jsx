@@ -1,22 +1,17 @@
+/* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import { Radio, Row, Col } from 'antd';
 import styles from './index.less';
 
 class HireProbation extends Component {
   constructor(props) {
-    super(props);
-    this.state = {
-      newHire: false,
-    };
-  }
-
-  componentDidMount() {
     const {
       hireProbation: { newHire },
-    } = this.props;
-    this.setState({
+    } = props;
+    super(props);
+    this.state = {
       newHire,
-    });
+    };
   }
 
   onChangeRadio = (e) => {
@@ -36,6 +31,9 @@ class HireProbation extends Component {
       { label: 'Yes', value: true },
       { label: 'No', value: false },
     ];
+    // const {
+    //   hireProbation: { newHire },
+    // } = this.props;
     return (
       <div className={styles.contentHireProration}>
         <div className={styles.title}>New hire proration</div>

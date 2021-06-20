@@ -5,45 +5,75 @@ import styles from './index.less';
 
 class TenuaAccrua extends Component {
   constructor(props) {
+    const { tenureAccrual } = props;
     super(props);
     this.state = {
-      tenureAccrual: [],
+      tenureAccrual,
     };
   }
 
-  componentDidMount() {
-    const { tenureAccrual } = this.props;
+  onChangeEffectiveDate = (value, item) => {
+    const { tenureAccrual } = this.state;
+    const { onChangeValue } = this.props;
+    const newArr = [...tenureAccrual];
+    const index = newArr.indexOf(item);
+
+    newArr[index].effectiveFrom = value;
     this.setState({
-      tenureAccrual,
+      tenureAccrual: newArr,
     });
-  }
-
-  onChangeEffectiveDate = (value) => {
-    console.log(value);
+    onChangeValue(newArr);
   };
 
-  onChangeRadio = (value) => {
-    console.log(value);
+  onChangeRadio = (value, item) => {
+    const { tenureAccrual } = this.state;
+    const { onChangeValue } = this.props;
+    const newArr = [...tenureAccrual];
+    const index = newArr.indexOf(item);
+    newArr[index].date = value;
+    this.setState({
+      tenureAccrual: newArr,
+    });
+    onChangeValue(newArr);
   };
 
-  onChangeTotalLeave = (value) => {
-    console.log(value);
+  onChangeTotalLeave = (value, item) => {
+    // console.log(value);
+    const { tenureAccrual } = this.state;
+    const { onChangeValue } = this.props;
+    const newArr = [...tenureAccrual];
+    const index = newArr.indexOf(item);
+    newArr[index].totalLeave = value;
+    this.setState({
+      tenureAccrual: newArr,
+    });
+    onChangeValue(newArr);
   };
 
-  onChangeYear = (value) => {
-    console.log(value);
+  onChangeYear = (value, item) => {
+    const { tenureAccrual } = this.state;
+    const { onChangeValue } = this.props;
+    const newArr = [...tenureAccrual];
+    const index = newArr.indexOf(item);
+    newArr[index].yearOfEmployment = value;
+    this.setState({
+      tenureAccrual: newArr,
+    });
+    onChangeValue(newArr);
   };
 
   onAddItem = () => {
     const { tenureAccrual } = this.state;
+    const newArr = tenureAccrual;
     const data = {
       date: 'day',
       totalLeave: 0,
       yearOfEmployment: '0',
       effectiveFrom: new Date(),
     };
+    newArr.push(data);
     this.setState({
-      tenureAccrual: [...tenureAccrual, data],
+      tenureAccrual: newArr,
     });
     // return <ItemTenure />;
   };
@@ -51,16 +81,19 @@ class TenuaAccrua extends Component {
   onRemove = (id) => {
     const { tenureAccrual } = this.state;
 
-    const arr = [...tenureAccrual];
-    const newArr = arr.splice(id, 1);
+    const arr = tenureAccrual;
 
-    this.setState({
-      tenureAccrual: newArr,
-    });
+    const newArr = arr.splice(id, 1);
+    console.log(newArr);
+
+    // this.setState({
+    //   tenureAccrual: newArr,
+    // });
   };
 
   render() {
     const { tenureAccrual } = this.state;
+    console.log(tenureAccrual);
     return (
       <div className={styles.contentTenua}>
         <div className={styles.flex}>

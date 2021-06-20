@@ -4,11 +4,14 @@ import styles from './index.less';
 
 class BaseAccual extends Component {
   constructor(props) {
+    const {
+      negativeBalance: { unto, date, unlimited },
+    } = props;
     super(props);
     this.state = {
-      unto: 0,
-      date: 'day',
-      unlimited: false,
+      unto,
+      date,
+      unlimited,
     };
   }
 
@@ -71,6 +74,7 @@ class BaseAccual extends Component {
       { label: 'Days', value: 'day' },
       { label: 'Hours', value: 'hour' },
     ];
+    // const {unto, date, unlimited } = this.props;
     return (
       <div className={styles.contentNegative}>
         <div className={styles.title}>Negative balances</div>

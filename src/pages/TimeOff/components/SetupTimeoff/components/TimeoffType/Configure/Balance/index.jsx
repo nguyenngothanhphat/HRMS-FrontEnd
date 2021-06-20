@@ -64,11 +64,13 @@ class Balance extends Component {
   };
 
   render() {
-    const { notGreaterThan, date, unlimited } = this.state;
     const option = [
       { label: 'Days', value: 'day' },
       { label: 'Hours', value: 'hour' },
     ];
+    const {
+      maxBalance: { notGreaterThan, date, unlimited },
+    } = this.props;
     return (
       <div className={styles.contentbalance}>
         <div className={styles.title}>Maximum balance</div>
@@ -90,7 +92,12 @@ class Balance extends Component {
             <Col span={12}>
               <Row className={styles.inputText} gutter={[24, 0]}>
                 <Col>
-                  <InputNumber min={0} defaultValue={notGreaterThan} onChange={this.onChange} />
+                  <InputNumber
+                    min={0}
+                    max={date === 'day' ? 365 : 12}
+                    defaultValue={notGreaterThan}
+                    onChange={this.onChange}
+                  />
                 </Col>
                 <Col>
                   <Radio.Group

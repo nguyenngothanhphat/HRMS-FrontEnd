@@ -6,27 +6,29 @@ import styles from './index.less';
 const dateFormat = 'MM-DD-YYYY';
 class CarryoverCap extends Component {
   constructor(props) {
-    const { carryoverCap } = props;
+    const {
+      carryoverCap: { date, effectiveFrom, unlimited, uptownAmount },
+    } = props;
     super(props);
     this.state = {
-      uptownAmount: 0,
-      date: 'day',
-      unlimited: false,
-      effectiveFrom: moment(carryoverCap.effectiveFrom).locale('en').format(dateFormat),
+      uptownAmount,
+      date,
+      unlimited,
+      effectiveFrom: moment(effectiveFrom).locale('en').format(dateFormat),
     };
   }
 
-  componentDidMount() {
-    const {
-      carryoverCap: { date, effectiveFrom, unlimited, uptownAmount },
-    } = this.props;
-    this.setState({
-      date,
-      effectiveFrom,
-      unlimited,
-      uptownAmount,
-    });
-  }
+  // componentDidMount() {
+  //   const {
+  //     carryoverCap: { date, effectiveFrom, unlimited, uptownAmount },
+  //   } = this.props;
+  //   this.setState({
+  //     date,
+  //     effectiveFrom,
+  //     unlimited,
+  //     uptownAmount,
+  //   });
+  // }
 
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
@@ -94,6 +96,8 @@ class CarryoverCap extends Component {
       { label: 'Days', value: 'day' },
       { label: 'Hours', value: 'hour' },
     ];
+
+    const dateEffect = moment(effectiveFrom).locale('en').format(dateFormat);
     return (
       <div className={styles.contentCarryover}>
         <div className={styles.title}>Carryover cap</div>
@@ -141,7 +145,7 @@ class CarryoverCap extends Component {
             <Col span={12}>
               {/* <Select className={styles.date} placeholder="Select a carryover date" /> */}
               <DatePicker
-                defaultValue={moment(effectiveFrom, dateFormat)}
+                value={moment(dateEffect, dateFormat)}
                 format={dateFormat}
                 onChange={this.onChangeDate}
               />

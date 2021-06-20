@@ -4,24 +4,27 @@ import styles from './index.less';
 
 class Increaments extends Component {
   constructor(props) {
-    super(props);
-    this.state = {
-      min: 0,
-      date: '',
-      notImpose: false,
-    };
-  }
-
-  componentDidMount() {
     const {
       minIncrements: { min, date, notImpose },
-    } = this.props;
-    this.setState({
+    } = props;
+    super(props);
+    this.state = {
       min,
       date,
       notImpose,
-    });
+    };
   }
+
+  // componentDidMount() {
+  //   const {
+  //     minIncrements: { min, date, notImpose },
+  //   } = this.props;
+  //   this.setState({
+  //     min,
+  //     date,
+  //     notImpose,
+  //   });
+  // }
 
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
@@ -71,6 +74,7 @@ class Increaments extends Component {
       { label: 'Days', value: 'day' },
       { label: 'Hours', value: 'hour' },
     ];
+
     return (
       <div className={styles.contentIncrements}>
         <div className={styles.title}>Minimum increments</div>

@@ -8,15 +8,14 @@ import AssignPolicies from './components/AssignPolicy';
 import TimeOffLayout from './components/TimeOffLayout';
 import ScreenBegin from './components/ScreenBegin';
 
-@connect(({ timeOff: { timeOffTypes = [] } = {} }) => ({
+@connect(({ timeOff: { timeOffTypes = [], pageStart } = {} }) => ({
   timeOffTypes,
+  pageStart,
 }))
 class SetupTimeoff extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      pageStart: true,
-    };
+    this.state = {};
   }
 
   componentDidMount = () => {
@@ -27,15 +26,17 @@ class SetupTimeoff extends Component {
   };
 
   changePage = () => {
-    const { pageStart } = this.state;
-    this.setState({
-      pageStart: !pageStart,
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        pageStart: false,
+      },
     });
   };
 
   render() {
-    const { pageStart } = this.state;
-    const { timeOffTypes } = this.props;
+    const { timeOffTypes, pageStart } = this.props;
     const listMenu = [
       {
         id: 1,

@@ -8,6 +8,7 @@ import styles from './index.less';
 @connect(({ loading, timeOff: { itemTimeOffType = {} } = {} }) => ({
   itemTimeOffType,
   loadingTimeOffType: loading.effects['timeOff/getDataTimeOffTypeById'],
+  loadingUpdateType: loading.effects['timeOff/updateTimeOffType'],
 }))
 class TimeoffType extends Component {
   constructor(props) {
@@ -32,8 +33,24 @@ class TimeoffType extends Component {
   };
 
   onExitEditing = (value) => {
+    const { dispatch } = this.props;
     this.setState({
       isEdit: value,
+    });
+    dispatch({
+      type: 'timeoff/save',
+      payload: {
+        itemTimeOffType: {},
+      },
+    });
+  };
+
+  onSaveChange = (value) => {
+    const { dispatch } = this.props;
+    console.log(value);
+    dispatch({
+      type: 'timeOff/updateTimeOffType',
+      payload: value,
     });
   };
 
@@ -71,6 +88,7 @@ class TimeoffType extends Component {
               tabKey={isEdit}
               onExitEditing={this.onExitEditing}
               itemTimeOffType={itemTimeOffType}
+              onSaveChange={this.onSaveChange}
             />
           )}
         </div>

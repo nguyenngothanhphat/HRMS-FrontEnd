@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import { Radio, InputNumber, Row, Col, DatePicker } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
@@ -7,76 +8,77 @@ import styles from './index.less';
 const dateFormat = 'MM-DD-YYYY';
 class ItemTenure extends Component {
   constructor(props) {
-    const { item } = props;
+    const {
+      item: { totalLeave, date, yearOfEmployment, effectiveFrom },
+    } = props;
     super(props);
     this.state = {
-      totalLeave: 0,
-      date: '',
-      yearOfEmployment: 0,
-      effectiveFrom: moment(item.effectiveFrom).locale('en').format(dateFormat),
-      // id: '',
+      totalLeave,
+      date,
+      yearOfEmployment,
+      effectiveFrom: moment(effectiveFrom).locale('en').format(dateFormat),
     };
   }
 
-  componentDidMount() {
-    const {
-      item: { date, totalLeave, yearOfEmployment, effectiveFrom },
-    } = this.props;
-    const newDateTemp = moment(effectiveFrom).locale('en').format(dateFormat);
-    console.log(newDateTemp);
-    this.setState({
-      date,
-      totalLeave,
-      yearOfEmployment,
-      effectiveFrom: newDateTemp,
-      // id: _id,
-    });
-  }
+  // componentDidMount() {
+  //   const {
+  //     item: { date, totalLeave, yearOfEmployment, effectiveFrom },
+  //   } = this.props;
+  //   const newDateTemp = moment(effectiveFrom).locale('en').format(dateFormat);
+  //   this.setState({
+  //     date,
+  //     totalLeave,
+  //     yearOfEmployment,
+  //     effectiveFrom: newDateTemp,
+  //     // id: _id,
+  //   });
+  // }
 
-  _handleChangeRadio = (e) => {
+  _handleChangeRadio = (e, item) => {
     this.setState({
       date: e.target.value,
     });
     const { onChangeRadio } = this.props;
-    onChangeRadio(e.target.value);
+    onChangeRadio(e.target.value, item);
   };
 
-  _handleChangeEffectiveDate = (value) => {
+  _handleChangeEffectiveDate = (value, item) => {
     this.setState({
       effectiveFrom: value,
     });
     const { onChangeEffectiveDate } = this.props;
-    onChangeEffectiveDate(value);
+    onChangeEffectiveDate(value, item);
   };
 
-  _handleChangeTotalLeave = (value) => {
+  _handleChangeTotalLeave = (value, item) => {
     this.setState({
       totalLeave: value,
     });
     const { onChangeTotalLeave } = this.props;
-    onChangeTotalLeave(value);
+    onChangeTotalLeave(value, item);
   };
 
-  _handleChangeYear = (value) => {
+  _handleChangeYear = (value, item) => {
     this.setState({
       yearOfEmployment: value,
     });
     const { onChangeYear } = this.props;
-    onChangeYear(value);
+    onChangeYear(value, item);
   };
 
-  removeItem = (id) => {
+  removeItem = (item) => {
     const { onRemove } = this.props;
-    onRemove(id);
+    onRemove(item);
   };
 
   render() {
     const { date, totalLeave, yearOfEmployment, effectiveFrom } = this.state;
-    const { index } = this.props;
     const listDayHour = [
       { label: 'Days', value: 'day' },
       { label: 'Hours', value: 'hour' },
     ];
+    const { item } = this.props;
+    const dateEffect = moment(effectiveFrom).locale('en').format(dateFormat);
     return (
       <div className={styles.form}>
         <div className={styles.effectForm}>
@@ -91,11 +93,11 @@ class ItemTenure extends Component {
                 value={yearOfEmployment}
                 // formatter={(value) => `${value} days`}
                 // parser={(value) => value.replace('days', '')}
-                onChange={this._handleChangeYear}
+                onChange={(value) => this._handleChangeYear(value, item)}
               />
             </Col>
             <Col span={4} className={styles.effectForm__deleteSection}>
-              <div className={styles.effectForm__deleteIcon} onClick={() => this.removeItem(index)}>
+              <div className={styles.effectForm__deleteIcon} onClick={() => this.removeItem(item)}>
                 <DeleteOutlined className={styles.iconImg} />
               </div>
             </Col>
@@ -116,7 +118,7 @@ class ItemTenure extends Component {
                     // parser={(value) =>
                     //   date === 'days' ? value.replace('days', '') : value.replace('hours', '')
                     // }
-                    onChange={this._handleChangeTotalLeave}
+                    onChange={(value) => this._handleChangeTotalLeave(value, item)}
                   />
                 </Col>
                 <Col>
@@ -126,7 +128,7 @@ class ItemTenure extends Component {
                     options={listDayHour}
                     optionType="button"
                     className={styles.radioGroup}
-                    onChange={(e) => this._handleChangeRadio(e)}
+                    onChange={(e) => this._handleChangeRadio(e, item)}
                   />
                 </Col>
               </Row>
@@ -141,10 +143,9 @@ class ItemTenure extends Component {
             <Col span={10}>
               <DatePicker
                 className={styles.date}
-                picker="date"
                 format={dateFormat}
-                onChange={this.handleChangeEffectiveDate}
-                defaultValue={moment(effectiveFrom, dateFormat)}
+                value={moment(dateEffect, dateFormat)}
+                onChange={(value) => this._handleChangeEffectiveDate(value, item)}
               />
             </Col>
           </Row>

@@ -4,24 +4,27 @@ import styles from './index.less';
 
 class WaitingPeriod extends Component {
   constructor(props) {
-    super(props);
-    this.state = {
-      afterAmount: 0,
-      date: 'day',
-      accrue: false,
-    };
-  }
-
-  componentDidMount() {
     const {
       waitingPeriod: { afterAmount, date, accrue },
-    } = this.props;
-    this.setState({
+    } = props;
+    super(props);
+    this.state = {
       afterAmount,
       date,
       accrue,
-    });
+    };
   }
+
+  // componentDidMount() {
+  //   const {
+  //     waitingPeriod: { afterAmount, date, accrue },
+  //   } = this.props;
+  //   this.setState({
+  //     afterAmount,
+  //     date,
+  //     accrue,
+  //   });
+  // }
 
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
@@ -71,6 +74,9 @@ class WaitingPeriod extends Component {
       { label: 'Days', value: 'day' },
       { label: 'Hours', value: 'hour' },
     ];
+    // const {
+    //   waitingPeriod: { afterAmount, date, accrue },
+    // } = this.props;
     return (
       <div className={styles.contentWaiting}>
         <div className={styles.title}>Waiting periods</div>

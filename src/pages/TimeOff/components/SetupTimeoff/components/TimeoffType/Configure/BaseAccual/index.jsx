@@ -4,21 +4,16 @@ import styles from './index.less';
 
 class BaseAccual extends Component {
   constructor(props) {
+    const {
+      // baseAccrual,
+      baseAccrual: { date, time, unlimited },
+    } = props;
     super(props);
     this.state = {
-      time: 0,
-      date: 'day',
-      unlimited: false,
+      time,
+      date,
+      unlimited,
     };
-  }
-
-  componentDidMount() {
-    const { baseAccrual } = this.props;
-    this.setState({
-      time: baseAccrual.time,
-      date: baseAccrual.date,
-      unlimited: baseAccrual.unlimited,
-    });
   }
 
   onChangeRadio = (e) => {
@@ -65,15 +60,12 @@ class BaseAccual extends Component {
   };
 
   render() {
-    const { date, time, unlimited } = this.state;
+    // const { date, time, unlimited } = this.state;
     const option = [
       { label: 'Days', value: 'day' },
       { label: 'Hours', value: 'hour' },
     ];
-    // const {
-    //   baseAccrual,
-    //   baseAccrual: { date = '', time, unlimited = true },
-    // } = this.props;
+    const { date, time, unlimited } = this.state;
     // console.log(baseAccrual);
     return (
       <div className={styles.contentBaseAccrual}>
@@ -87,11 +79,11 @@ class BaseAccual extends Component {
                   During the employee’s 1st year of employment, total casual leave accrued
                 </div>
                 <Checkbox
-                  checked={unlimited}
                   className={styles.checkbox}
+                  defaultChecked={unlimited}
                   onChange={(e) => this.onChangeSelect(e)}
                 >
-                  Unlimited causal leave
+                  Unlimited casual leave
                 </Checkbox>
               </div>
             </Col>

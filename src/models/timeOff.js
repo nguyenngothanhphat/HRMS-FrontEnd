@@ -54,8 +54,6 @@ import {
   getHolidaysByCountry,
   deleteHoliday,
   addHoliday,
-  currentStep,
-  displayComponent,
   updateEmployeeSchedule,
 } from '../services/timeOff';
 
@@ -108,6 +106,7 @@ const timeOff = {
       // },
     ],
     itemTimeOffType: {},
+    pageStart: true,
   },
   effects: {
     *fetchTimeOffTypes({ payload }, { call, put }) {
@@ -135,6 +134,27 @@ const timeOff = {
         });
       } catch (errors) {
         dialog(errors);
+      }
+    },
+    *updateTimeOffType({ payload }, { call, put }) {
+      try {
+        const response = yield call(updateTimeOffType, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            itemTimeOffType: {},
+          },
+        });
+        notification.success({
+          message: 'Update successfully',
+        });
+      } catch (error) {
+        dialog(error);
       }
     },
     *fetchLeaveBalanceOfUser({ payload }, { call, put }) {
