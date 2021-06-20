@@ -26,9 +26,6 @@ const { TabPane } = Tabs;
     loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
     loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
     loadingCompaniesOfUser: loading.effects['user/fetchCompanyOfUser'],
-    loadingFetchLocations:
-      loading.effects['locationSelection/fetchLocationsByCompany'] ||
-      loading.effects['locationSelection/fetchLocationListByParentCompany'],
     employee,
     currentUser,
     permissions,
@@ -46,11 +43,13 @@ class DirectoryComponent extends PureComponent {
       let country = [];
       let state = [];
       let company = [];
+      let title = [];
       const employeeTypeConst = 'Employment Type';
       const departmentConst = 'Department';
       const countryConst = 'Country';
       const stateConst = 'State';
       const companyConst = 'Company';
+      const titleConst = 'Title';
       filter.map((item) => {
         if (item.actionFilter.name === employeeTypeConst) {
           employeeType = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
@@ -67,7 +66,10 @@ class DirectoryComponent extends PureComponent {
         if (item.actionFilter.name === companyConst) {
           company = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
-        return { employeeType, department, countryConst, company };
+        if (item.actionFilter.name === titleConst) {
+          title = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        }
+        return { employeeType, department, countryConst, company, title };
       });
       return {
         ...prevState,
@@ -76,6 +78,7 @@ class DirectoryComponent extends PureComponent {
         state,
         employeeType,
         company,
+        title,
       };
     }
     return null;
@@ -102,7 +105,7 @@ class DirectoryComponent extends PureComponent {
       bottabs: [],
       visible: false,
       visibleImportEmployee: false,
-      listLocationsByCompany: [],
+      // listLocationsByCompany: [],
     };
     this.setDebounce = debounce((query) => {
       this.setState({
@@ -116,16 +119,22 @@ class DirectoryComponent extends PureComponent {
     this.initTabId();
     const { dispatch } = this.props;
     dispatch({
-      type: 'employeesManagement/fetchRolesList',
-    });
-    dispatch({
       type: 'employeesManagement/fetchCompanyList',
     });
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { department, country, state, employeeType, company, filterName, tabId, changeTab } =
-      this.state;
+    const {
+      department,
+      country,
+      state,
+      employeeType,
+      company,
+      title,
+      filterName,
+      tabId,
+      changeTab,
+    } = this.state;
     // const isOwnerCheck = isOwner();
     // const currentLocation = getCurrentLocation();
 
@@ -136,7 +145,9 @@ class DirectoryComponent extends PureComponent {
       state,
       employeeType,
       company,
+      title,
     };
+
     if (
       prevState.tabId !== tabId ||
       (changeTab && prevState.tabId === tabId) ||
@@ -144,6 +155,7 @@ class DirectoryComponent extends PureComponent {
       prevState.country.length !== country.length ||
       prevState.state.length !== state.length ||
       prevState.employeeType.length !== employeeType.length ||
+      JSON.stringify(prevState.title) !== JSON.stringify(title) ||
       prevState.filterName !== filterName ||
       prevState.company.length !== company.length
     ) {
@@ -151,12 +163,20 @@ class DirectoryComponent extends PureComponent {
     }
 
     const { filterList = {}, listLocationsByCompany = [] } = this.props;
+
+    // console.log('prevProps.filterList', prevProps.filterList);
+    // console.log('filterList', filterList);
+    // console.log('listLocationsByCompany', listLocationsByCompany);
+    // console.log('prevProps.listLocationsByCompany', prevProps.listLocationsByCompany);
+
     if (
-      JSON.stringify(prevProps?.filterList || []) !== JSON.stringify(filterList) ||
-      JSON.stringify(prevProps?.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+      JSON.stringify(prevProps.filterList) !== JSON.stringify(filterList) &&
+      listLocationsByCompany.length > 0
     ) {
+      // console.log('OK');
       this.renderData();
     }
+    // console.log('--------------------------------------');
   }
 
   componentWillUnmount = async () => {
@@ -331,7 +351,7 @@ class DirectoryComponent extends PureComponent {
       listLocationsByCompany = [],
       currentUser: { employee: { department: { name: departmentName = '' } = {} } = {} } = {},
     } = this.props;
-    const { name, department, country, state, employeeType, company } = params;
+    const { name, department, country, state, employeeType, company, title } = params;
 
     // MULTI COMPANY & LOCATION PAYLOAD
     let companyPayload = [];
@@ -429,6 +449,7 @@ class DirectoryComponent extends PureComponent {
       department,
       location: locationPayload,
       employeeType,
+      title,
     };
 
     if (tabId === active) {
@@ -721,14 +742,13 @@ class DirectoryComponent extends PureComponent {
     const {
       currentUser: { company, roles = [] },
       companiesOfUser = [],
-      loadingFetchLocations = false,
       loadingCompaniesOfUser = false,
     } = this.props;
     const { collapsed, visible, visibleImportEmployee } = this.state;
 
     return (
       <div className={styles.DirectoryComponent}>
-        {loadingFetchLocations || loadingCompaniesOfUser ? (
+        {loadingCompaniesOfUser ? (
           <Skeleton />
         ) : (
           <div className={styles.contentContainer}>

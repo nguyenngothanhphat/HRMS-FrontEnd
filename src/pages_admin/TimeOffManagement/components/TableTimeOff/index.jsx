@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
-import { formatMessage, Link } from 'umi';
+import { formatMessage, Link, history } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
 
@@ -15,14 +15,14 @@ class TableTimeOff extends PureComponent {
     {
       title: 'Employee ID',
       dataIndex: 'employee',
-      defaultSortOrder: 'ascend',
-      sortDirections: ['ascend', 'descend', 'ascend'],
-      sorter: {
-        compare: (a, b) => a._id.localeCompare(b._id),
-      },
+      // defaultSortOrder: 'ascend',
+      // sortDirections: ['ascend', 'descend', 'ascend'],
+      // sorter: {
+      //   compare: (a, b) => a._id.localeCompare(b._id),
+      // },
       render: (employee) => {
-        const { employeeId = '' } = employee;
-        return <span>{employeeId}</span>;
+        const { employeeId = '', generalInfo: { employeeId: emplID = '' } = {} } = employee;
+        return <span>{employeeId || emplID}</span>;
       },
     },
     {
@@ -44,6 +44,7 @@ class TableTimeOff extends PureComponent {
     },
     {
       title: 'From Date',
+      align: 'center',
       dataIndex: 'fromDate',
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
@@ -56,6 +57,7 @@ class TableTimeOff extends PureComponent {
     },
     {
       title: 'To Date',
+      align: 'center',
       dataIndex: 'toDate',
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
@@ -68,8 +70,9 @@ class TableTimeOff extends PureComponent {
     },
     {
       title: 'Count/Q.ty',
-      dataIndex: 'country',
+      dataIndex: 'duration',
       width: '10%',
+      align: 'center',
     },
     {
       title: 'Leave Type',
@@ -85,10 +88,10 @@ class TableTimeOff extends PureComponent {
     },
     {
       title: 'Action',
-      dataIndex: 'action',
+      dataIndex: '_id',
       align: 'center',
-      render: () => (
-        <div className={styles.documentAction} onClick={this.onClick}>
+      render: (_id) => (
+        <div className={styles.documentAction} onClick={() => this.onViewClick(_id)}>
           <Link>View Request</Link>
         </div>
       ),
@@ -102,6 +105,10 @@ class TableTimeOff extends PureComponent {
       selectedRowKeys: [],
     };
   }
+
+  onViewClick = (_id) => {
+    history.push(`/time-off/manager-view-request/${_id}`);
+  };
 
   handleRequestDetail = (id) => {
     const { handleRequestDetail } = this.props;
@@ -139,7 +146,7 @@ class TableTimeOff extends PureComponent {
       x: '',
       y: '',
     };
-    // console.log('request detail', requestDetail);
+
     const pagination = {
       position: ['bottomLeft'],
       total: listTimeOff.length,
@@ -167,7 +174,7 @@ class TableTimeOff extends PureComponent {
     return (
       <div className={styles.TableTimeOff}>
         <Table
-          size="small"
+          size="middle"
           loading={loading}
           rowSelection={rowSelection}
           pagination={{ ...pagination, total: listTimeOff.length }}

@@ -58,11 +58,13 @@ class Edit extends PureComponent {
   handleUpdate = (changedValues) => {
     const { dispatch, companiesManagement, handleCancelEdit = () => {} } = this.props;
     const {
-      originData: { companyDetails = {} },
+      originData: { companyDetails: { company: companyDetails = {} } = {} },
+      tenantCurrentCompany,
     } = companiesManagement;
     const payload = {
       ...companyDetails,
       id: companyDetails._id,
+      tenantId: tenantCurrentCompany,
       headQuarterAddress: {
         ...changedValues,
       },
@@ -81,7 +83,14 @@ class Edit extends PureComponent {
 
   render() {
     const { listCountry = [], location, handleCancelEdit = () => {}, loadingUpdate } = this.props;
-    const { name, address = '', country = '', state = '', zipCode = '' } = location;
+    const {
+      name,
+      addressLine1 = '',
+      addressLine2 = '',
+      country = '',
+      state = '',
+      zipCode = '',
+    } = location;
 
     const { listStateHead = [] } = this.state;
 
@@ -98,8 +107,9 @@ class Edit extends PureComponent {
             ref={this.formRef}
             initialValues={{
               name,
-              address,
-              country: country._id,
+              addressLine1,
+              addressLine2,
+              country,
               state,
               zipCode,
             }}
@@ -107,8 +117,14 @@ class Edit extends PureComponent {
             {...formLayout}
           >
             <Form.Item
-              label={formatMessage({ id: 'pages_admin.company.location.address' })}
-              name="address"
+              label={formatMessage({ id: 'pages_admin.company.location.addressLine1' })}
+              name="addressLine1"
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label={formatMessage({ id: 'pages_admin.company.location.addressLine2' })}
+              name="addressLine2"
             >
               <Input />
             </Form.Item>

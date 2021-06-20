@@ -22,7 +22,7 @@ class TenuaAccrua extends Component {
     this.setState({
       tenureAccrual: newArr,
     });
-    onChangeValue(newArr);
+    onChangeValue(tenureAccrual);
   };
 
   onChangeRadio = (value, item) => {
@@ -34,11 +34,10 @@ class TenuaAccrua extends Component {
     this.setState({
       tenureAccrual: newArr,
     });
-    onChangeValue(newArr);
+    onChangeValue(tenureAccrual);
   };
 
   onChangeTotalLeave = (value, item) => {
-    // console.log(value);
     const { tenureAccrual } = this.state;
     const { onChangeValue } = this.props;
     const newArr = [...tenureAccrual];
@@ -47,7 +46,7 @@ class TenuaAccrua extends Component {
     this.setState({
       tenureAccrual: newArr,
     });
-    onChangeValue(newArr);
+    onChangeValue(tenureAccrual);
   };
 
   onChangeYear = (value, item) => {
@@ -59,7 +58,7 @@ class TenuaAccrua extends Component {
     this.setState({
       tenureAccrual: newArr,
     });
-    onChangeValue(newArr);
+    onChangeValue(tenureAccrual);
   };
 
   onAddItem = () => {
@@ -78,22 +77,22 @@ class TenuaAccrua extends Component {
     // return <ItemTenure />;
   };
 
-  onRemove = (id) => {
+  onRemove = (item) => {
     const { tenureAccrual } = this.state;
 
     const arr = tenureAccrual;
+    const index = arr.indexOf(item);
+    if (index > -1) {
+      arr.splice(index, 1);
+    }
 
-    const newArr = arr.splice(id, 1);
-    console.log(newArr);
-
-    // this.setState({
-    //   tenureAccrual: newArr,
-    // });
+    this.setState({
+      tenureAccrual: arr,
+    });
   };
 
   render() {
     const { tenureAccrual } = this.state;
-    console.log(tenureAccrual);
     return (
       <div className={styles.contentTenua}>
         <div className={styles.flex}>

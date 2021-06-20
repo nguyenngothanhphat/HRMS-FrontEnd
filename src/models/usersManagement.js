@@ -1,3 +1,4 @@
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import {
@@ -99,7 +100,10 @@ const usersManagement = {
 
     *fetchRoleList(_, { call, put }) {
       try {
-        const response = yield call(getRoleList, {});
+        const response = yield call(getRoleList, {
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data: roles = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { roles } });

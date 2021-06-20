@@ -126,7 +126,7 @@ class BasicInformation extends PureComponent {
               <Input className={styles.formInput} name="privateEmail" disabled="true" />
             </Form.Item>
           </Col>
-          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+          {/* <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
@@ -137,7 +137,7 @@ class BasicInformation extends PureComponent {
             >
               <Input className={styles.formInput} name="workEmail" disabled="true" />
             </Form.Item>
-          </Col>
+          </Col> */}
         </Row>
         <Row gutter={[48, 0]}>
           <Col xs={24} sm={24} md={24} lg={12} xl={12}>

@@ -1,12 +1,13 @@
+/* eslint-disable import/no-cycle */
 import React, { Component } from 'react';
-import { Col, Tabs, Row, Affix, Button, Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Col, Tabs, Row, Affix, Button } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import { Link, connect } from 'umi';
+import { debounce } from 'lodash';
 // import TableAssigned from '@/components/TableAssigned';
-import filterIcon from '@/assets/filterIcon.svg';
 import TeamRequest from './component/TeamRequest';
 import MyRequestContent from '../components/TabMyRequest';
+import TableSearch from './component/TableSearch';
 import styles from './index.less';
 
 @connect(
@@ -37,11 +38,20 @@ import styles from './index.less';
 class ManagerOffBoading extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      dataListTeamRequest: [],
+      loadingSearch: false,
+    };
+    this.setDebounce = debounce((query) => {
+      this.setState({
+        dataListTeamRequest: query,
+        loadingSearch: false,
+      });
+    }, 1000);
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, listTeamRequest } = this.props;
     if (!dispatch) {
       return;
     }
@@ -57,47 +67,70 @@ class ManagerOffBoading extends Component {
         status: 'IN-PROGRESS',
       },
     });
+
+    if (listTeamRequest.length > 0) this.updateData(listTeamRequest);
   }
+
+  componentDidUpdate(prevProps) {
+    const { listTeamRequest = [] } = this.props;
+    if (JSON.stringify(listTeamRequest) !== JSON.stringify(prevProps.listTeamRequest)) {
+      this.updateData(listTeamRequest);
+    }
+  }
+
+  updateData = (listTeamRequest) => {
+    this.setState({
+      dataListTeamRequest: listTeamRequest,
+    });
+  };
+
+  onSearch = (value) => {
+    const { listTeamRequest = [] } = this.props;
+    const formatValue = value.toLowerCase();
+
+    const filterData = listTeamRequest.filter((item) => {
+      const {
+        ticketID = '',
+        employee: { employeeId = '', generalInfo: { firstName = '', lastName = '' } = {} } = {},
+      } = item;
+      const formatTicketId = ticketID.toLowerCase();
+      const fortmatEmployeeID = employeeId.toLowerCase();
+      const formatFirstName = firstName.toLowerCase();
+      const formatLastName = lastName.toLowerCase();
+
+      if (
+        formatTicketId.includes(formatValue) ||
+        fortmatEmployeeID.includes(formatValue) ||
+        formatFirstName.includes(formatValue) ||
+        formatLastName.includes(formatValue)
+      )
+        return item;
+      return 0;
+    });
+    this.setState({ loadingSearch: true });
+
+    this.setDebounce(filterData);
+  };
 
   render() {
     const { TabPane } = Tabs;
     const {
-      listTeamRequest = [],
       totalListTeamRequest,
       listOffboarding = [],
       totalList = [],
       hrManager = {},
     } = this.props;
+    const { dataListTeamRequest, loadingSearch } = this.state;
 
     const checkInprogress = totalList.find(({ _id }) => _id === 'IN-PROGRESS') || {};
     const checkAccepted = totalList.find(({ _id }) => _id === 'ACCEPTED') || {};
 
     const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
 
-    const renderSearchFilter = () => (
-      <div className={styles.searchFilter}>
-        <Button
-          type="link"
-          shape="round"
-          icon={<img src={filterIcon} alt="" className={styles.searchFilter__icon} />}
-          size="small"
-        />
-
-        <Input
-          size="large"
-          placeholder="Search for Ticket numer, resignee, request ..."
-          onChange={this.onChangeInput}
-          prefix={<SearchOutlined />}
-          onPressEnter={this.onPressEnter}
-          className={styles.searchFilter__input}
-        />
-      </div>
-    );
-
     return (
       <PageContainer>
         <div className={styles.managerContainer}>
-          <Affix offsetTop={42}>
+          <Affix offsetTop={30}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>
                 Terminate work relationship / Initiate Resignation Request
@@ -123,14 +156,15 @@ class ManagerOffBoading extends Component {
               <Tabs
                 defaultActiveKey="1"
                 className={styles.tabComponent}
-                tabBarExtraContent={renderSearchFilter()}
+                tabBarExtraContent={<TableSearch onSearch={this.onSearch} />}
               >
                 <TabPane tab="Team Requests" key="1">
                   <div className={styles.tableTab}>
                     <TeamRequest
-                      data={listTeamRequest}
+                      data={dataListTeamRequest}
                       countdata={totalListTeamRequest}
                       hrManager={hrManager}
+                      loadingSearch={loadingSearch}
                     />
                   </div>
                 </TabPane>

@@ -4,7 +4,7 @@ import iconPDF from '@/assets/pdf-2.svg';
 import iconPNG from '@/assets/group-14-copy.svg';
 import iconJPEG from '@/assets/icon-JPEG.png';
 import avtDefault from '@/assets/avtDefault.jpg';
-import { Affix, Row, Col, Avatar, Spin } from 'antd';
+import { Affix, Row, Col, Avatar, Spin, Pagination } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { connect, history } from 'umi';
 import styles from './index.less';
@@ -23,6 +23,15 @@ import styles from './index.less';
   }),
 )
 class SearchResult extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentDocumentPage: 1,
+      currentEmployeePage: 1,
+      currentResultByCategoryPage: 1,
+    };
+  }
+
   componentDidMount() {
     const { location: { query } = {} } = this.props;
     this.handleSearch(query);
@@ -55,7 +64,8 @@ class SearchResult extends PureComponent {
         type: 'searchAdvance/search',
         payload: {
           _id,
-          keySearch: payload.keySearch,
+          // keySearch: payload.keySearch,
+          ...payload,
           tenantId: getCurrentTenant(),
         },
       });
@@ -63,16 +73,18 @@ class SearchResult extends PureComponent {
   };
 
   renderItemEmployee = (item = {}, index) => {
-    const { generalInfo } = item;
+    const { employee = {} } = item;
     return (
       <Col
         span={4}
         style={{ cursor: 'pointer' }}
-        onClick={() => history.push(`/employees/employee-profile/${item?.employee._id}`)}
+        onClick={() => history.push(`/employees/employee-profile/${employee._id}`)}
       >
         <div key={index} className={styles.itemListPeople}>
-          <Avatar size={50} src={item.avatar || avtDefault} />
-          <p className={styles.itemListPeople__text}>{item.firstName}</p>
+          <Avatar size={50} src={item?.avatar || avtDefault} />
+          <p className={styles.itemListPeople__text}>{item?.firstName}</p>
+          <p className={styles.itemListPeople__text}>{employee?.title.name}</p>
+          <p className={styles.itemListPeople__text}>{employee?.location.name}</p>
         </div>
       </Col>
     );
@@ -81,7 +93,8 @@ class SearchResult extends PureComponent {
   renderItemDocument = (item = {}, index) => {
     const {
       employee: { generalInfo: { firstName = '' } = {} } = {},
-      attachment: { name: nameDocument = '', type = '' } = {},
+      attachment: { type = '' } = {},
+      key: nameDocument = '',
     } = item;
     const iconFile = {
       'image/png': iconPNG,
@@ -115,15 +128,36 @@ class SearchResult extends PureComponent {
 
   renderViewSearchByCategory = () => {
     const { resultByCategory = [] } = this.props;
+    const { currentResultByCategoryPage } = this.state;
     return (
       <div className={styles.mainContent}>
         <div className={styles.block} style={{ borderBottom: 'none' }}>
           {resultByCategory.length > 0 ? (
-            <Row gutter={[16, 16]}>
-              {resultByCategory
-                .filter((doc) => doc !== null && doc?.attachment && doc?.employee?._id)
-                .map((item, index) => this.renderItemDocument(item, index))}
-            </Row>
+            <>
+              {' '}
+              <Row style={{ marginBottom: '15px' }} gutter={[16, 16]}>
+                {resultByCategory
+                  .filter((doc) => doc !== null && doc?.attachment && doc?.employee?._id)
+                  .slice((currentResultByCategoryPage - 1) * 10, currentResultByCategoryPage * 10)
+                  .map((item, index) => this.renderItemDocument(item, index))}
+              </Row>
+              {resultByCategory.length > 10 && (
+                <Pagination
+                  showTotal={(total, range) => (
+                    <span>
+                      Showing{' '}
+                      <b>
+                        {range[0]} - {range[1]}
+                      </b>{' '}
+                      of {total}
+                    </span>
+                  )}
+                  defaultCurrent={1}
+                  total={resultByCategory.length}
+                  onChange={(page) => this.setState({ currentResultByCategoryPage: page })}
+                />
+              )}
+            </>
           ) : (
             this.renderViewEmpty('No Documents Search By Category')
           )}
@@ -139,6 +173,7 @@ class SearchResult extends PureComponent {
       result: { employees = [], employeeDoc = [] } = {},
       location: { query: { isSearchByCategory = false } = {} } = {},
     } = this.props;
+    const { currentDocumentPage, currentEmployeePage } = this.state;
     if (loading || loadingCategory) {
       return (
         <div className={styles.viewLoading}>
@@ -149,7 +184,7 @@ class SearchResult extends PureComponent {
     return (
       <PageContainer>
         <div className={styles.root}>
-          <Affix offsetTop={42}>
+          <Affix offsetTop={30}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Search Result</p>
             </div>
@@ -161,18 +196,58 @@ class SearchResult extends PureComponent {
               <div className={styles.mainContent}>
                 <div className={styles.block}>
                   {employees.length > 0 ? (
-                    <Row gutter={[16, 16]}>
-                      {employees.map((item, index) => this.renderItemEmployee(item, index))}
-                    </Row>
+                    <>
+                      <Row style={{ marginBottom: '15px' }} gutter={[16, 16]}>
+                        {employees
+                          .slice((currentEmployeePage - 1) * 10, currentEmployeePage * 10)
+                          .map((item, index) => this.renderItemEmployee(item, index))}
+                      </Row>
+                      {employees.length > 10 && (
+                        <Pagination
+                          showTotal={(total, range) => (
+                            <span>
+                              Showing{' '}
+                              <b>
+                                {range[0]} - {range[1]}
+                              </b>{' '}
+                              of {total}
+                            </span>
+                          )}
+                          defaultCurrent={1}
+                          total={employees.length}
+                          onChange={(page) => this.setState({ currentEmployeePage: page })}
+                        />
+                      )}
+                    </>
                   ) : (
                     this.renderViewEmpty('No Employees')
                   )}
                 </div>
                 <div className={styles.block} style={{ borderBottom: 'none' }}>
                   {employeeDoc.length > 0 ? (
-                    <Row gutter={[16, 16]}>
-                      {employeeDoc.map((item, index) => this.renderItemDocument(item, index))}
-                    </Row>
+                    <>
+                      <Row style={{ marginBottom: '15px' }} gutter={[16, 16]}>
+                        {employeeDoc
+                          .slice((currentDocumentPage - 1) * 10, currentDocumentPage * 10)
+                          .map((item, index) => this.renderItemDocument(item, index))}
+                      </Row>
+                      {employeeDoc.length > 10 && (
+                        <Pagination
+                          showTotal={(total, range) => (
+                            <span>
+                              Showing{' '}
+                              <b>
+                                {range[0]} - {range[1]}
+                              </b>{' '}
+                              of {total}
+                            </span>
+                          )}
+                          defaultCurrent={1}
+                          total={employeeDoc.length}
+                          onChange={(page) => this.setState({ currentDocumentPage: page })}
+                        />
+                      )}
+                    </>
                   ) : (
                     this.renderViewEmpty('No Documents')
                   )}

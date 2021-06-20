@@ -1,50 +1,42 @@
 import React, { PureComponent } from 'react';
-import { Tabs, Button, Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-import filterIcon from '@/assets/filterIcon.svg';
+import { Tabs } from 'antd';
+
 import InQueueTable from '../InQueueTable';
 import ClosedTable from '../ClosedTable';
+import TableSearch from '../TableSearch';
 
 import styles from './index.less';
 
 class RelievingTables extends PureComponent {
-  renderSearchFilter = () => (
-    <div className={styles.searchFilter}>
-      <Button
-        type="link"
-        shape="round"
-        icon={<img src={filterIcon} alt="" className={styles.searchFilter__icon} />}
-        size="small"
-      />
+  constructor(props) {
+    super(props);
+    this.state = {
+      queuesList: '',
+    };
+  }
 
-      <Input
-        size="large"
-        placeholder="Search for Ticket numer, resignee, request ..."
-        onChange={this.onChangeInput}
-        prefix={<SearchOutlined />}
-        onPressEnter={this.onPressEnter}
-        className={styles.searchFilter__input}
-      />
-    </div>
-  );
+  onSearch = (value) => {
+    this.setState({ queuesList: value });
+  };
 
   render() {
     const { TabPane } = Tabs;
+    const { queuesList } = this.state;
     const data = [
       {
         id: 1,
         name: 'In Queues',
-        component: <InQueueTable />,
+        component: <InQueueTable dataSearch={queuesList} />,
       },
       {
         id: 2,
         name: 'Closed records',
-        component: <ClosedTable />,
+        component: <ClosedTable dataSearch={queuesList} />,
       },
     ];
     return (
       <div className={styles.relievingTables}>
-        <Tabs defaultActiveKey={1} tabBarExtraContent={this.renderSearchFilter()}>
+        <Tabs defaultActiveKey={1} tabBarExtraContent={<TableSearch onSearch={this.onSearch} />}>
           {data.map((item) => {
             return (
               <TabPane tab={item.name} key={item.id}>

@@ -70,12 +70,12 @@ class TeamRequest extends Component {
   };
 
   render() {
-    const { data = [], countdata = [], loading, hrManager = {} } = this.props;
+    const { data = [], countdata = [], loading, hrManager = {}, loadingSearch } = this.props;
 
     return (
       <>
         <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
-        <TableManager data={data} loading={loading} hrManager={hrManager} />
+        <TableManager data={data} loading={loading || loadingSearch} hrManager={hrManager} />
       </>
     );
   }

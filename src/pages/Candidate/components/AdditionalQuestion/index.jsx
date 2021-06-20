@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
-
-import { connect, formatMessage } from 'umi';
-import { Row, Col, Button, Form, Typography, Input, Select } from 'antd';
+import QuestionItemView from '@/components/Question/QuestionItemView';
 import { getCurrentTenant } from '@/utils/authority';
+import { Button, Col, Row, Typography } from 'antd';
+import React, { useEffect } from 'react';
+import { connect, formatMessage } from 'umi';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
-
 import s from './index.less';
 
 const Note = {
@@ -18,51 +17,61 @@ const Note = {
   ),
 };
 
-const INPUT_TYPE = {
-  TEXT: 'text',
-  SELECT: 'select',
-};
-
-const getInput = (data) => {
-  const { type = '' } = data;
-  // console.log(data);
-  const { Option } = Select;
-  if (type === INPUT_TYPE.TEXT) {
-    return <Input />;
-  }
-  if (type === INPUT_TYPE.SELECT) {
-    const { defaultAnswer = [] } = data;
-    console.log('Select');
-    return (
-      <Select>
-        {defaultAnswer.map((answerItem) => (
-          <Option value={answerItem}>{answerItem}</Option>
-        ))}
-      </Select>
-    );
-  }
-  return null;
-};
-
 const AdditionalQuestion = (props) => {
-  const {
-    checkCandidateMandatory,
-    dispatch,
-    localStep,
-    // additionalQuestion: additionalQuestionProp,
-    additionalQuestions: additionalQuestionsProp,
-    candidate,
-    loading1,
-  } = props;
+  const { checkCandidateMandatory, dispatch, localStep, questionOnBoarding, candidate, loading1 } =
+    props;
 
-  // const {
-  //   opportunity: opportunityProp,
-  //   payment: paymentProp,
-  //   shirt: shirtProp,
-  //   dietary: dietaryProp,
-  // } = additionalQuestionProp;
+  const checkAllFieldsValidate = () => {
+    const valid = questionOnBoarding.every(
+      (question) => question.employeeAnswers.filter((answer) => answer).length > 0,
+    );
 
-  const [form] = Form.useForm();
+    if (!dispatch) {
+      return;
+    }
+
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        checkCandidateMandatory: {
+          ...checkCandidateMandatory,
+          filledAdditionalQuestion: valid,
+        },
+      },
+    });
+  };
+
+  useEffect(() => {
+    window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+  }, []);
+
+  /**
+   * Check if all the questions have been answered or not
+   */
+  useEffect(() => {
+    checkAllFieldsValidate();
+  }, [questionOnBoarding]);
+
+  /**
+   * Change the employee's answers in a sentence through the key of the question
+   * @param {*} employeeAnswers
+   * @param {*} keyOfQuestion
+   */
+  const onChangeEmployeeAnswers = (employeeAnswers, keyOfQuestion) => {
+    dispatch({
+      type: 'candidateProfile/saveTemp',
+      payload: {
+        questionOnBoarding: [
+          ...questionOnBoarding.slice(0, keyOfQuestion),
+          {
+            ...questionOnBoarding[keyOfQuestion],
+            employeeAnswers,
+          },
+          ...questionOnBoarding.slice(keyOfQuestion + 1),
+        ],
+      },
+    });
+  };
 
   const onClickPrevious = () => {
     const prevStep = localStep - 1;
@@ -75,17 +84,10 @@ const AdditionalQuestion = (props) => {
   };
 
   const onClickNext = async () => {
-    const dataToSend = additionalQuestionsProp.map((item) => {
-      const { question, answer, defaultAnswer, description, type } = item;
-      return { question, answer, defaultAnswer, description, type };
-    });
-
-    console.log(dataToSend);
-
     const response = await dispatch({
       type: 'candidateProfile/updateByCandidateEffect',
       payload: {
-        additionalQuestions: dataToSend,
+        questionOnBoarding: questionOnBoarding.reverse(),
         candidate,
         tenantId: getCurrentTenant(),
       },
@@ -123,7 +125,6 @@ const AdditionalQuestion = (props) => {
   };
 
   const _renderBottomBar = () => {
-    // const { checkCandidateMandatory } = props;
     const { filledAdditionalQuestion } = checkCandidateMandatory;
 
     return (
@@ -160,74 +161,6 @@ const AdditionalQuestion = (props) => {
     );
   };
 
-  const checkAllFieldsValidate = () => {
-    const allValues = form.getFieldsValue();
-    console.log(allValues);
-    let valid = true;
-    Object.keys(allValues).forEach((key) => {
-      if (allValues[key].length === 0) {
-        valid = false;
-      }
-    });
-
-    if (!dispatch) {
-      return;
-    }
-
-    dispatch({
-      type: 'candidateProfile/save',
-      payload: {
-        checkCandidateMandatory: {
-          ...checkCandidateMandatory,
-          filledAdditionalQuestion: valid,
-        },
-      },
-    });
-
-    // Save input data
-    const newValues = additionalQuestionsProp.map((item) => {
-      const { name } = item;
-      return {
-        ...item,
-        answer: allValues[name],
-      };
-    });
-    console.log('newValues', newValues);
-
-    dispatch({
-      type: 'candidateProfile/updateAdditionalQuestions',
-      payload: newValues,
-    });
-    // dispatch({
-    //   type: 'candidateInfo/updateAdditionalQuestion',
-    //   payload: allValues,
-    // });
-  };
-
-  const handleFormChange = () => {
-    checkAllFieldsValidate();
-  };
-
-  useEffect(() => {
-    window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
-    checkAllFieldsValidate();
-  }, []);
-
-  const getInitialValues = () => {
-    let formattedValues = {};
-    additionalQuestionsProp.map((item) => {
-      const { name = '', answer = '' } = item;
-      formattedValues = {
-        ...formattedValues,
-        [name]: answer,
-      };
-      return null;
-    });
-    return formattedValues;
-  };
-
-  // console.log(getInitialValues());
-
   return (
     <div className={s.additionalQuestion}>
       <Row gutter={[24, 0]}>
@@ -239,84 +172,28 @@ const AdditionalQuestion = (props) => {
             </header>
 
             <div className={s.mainContent}>
-              <Form
-                form={form}
-                // initialValues={{
-                //   opportunity: opportunityProp,
-                //   payment: paymentProp,
-                //   shirt: shirtProp,
-                //   dietary: dietaryProp,
-                // }}
-                initialValues={getInitialValues()}
-                onValuesChange={handleFormChange}
-                layout="vertical"
-              >
-                <div className={s.form}>
-                  <Row>
-                    <Col md={12}>
-                      {additionalQuestionsProp.map((item) => {
-                        const { name = '', question = '', defaultAnswer = [] } = item;
-                        if (defaultAnswer.length === 0) {
-                          return null;
-                        }
-                        return (
-                          <Form.Item name={name} label={question}>
-                            {getInput(item)}
-                          </Form.Item>
-                        );
-                      })}
-
-                      {/* <Form.Item name="opportunity" label="Equal employee opportunity">
-                        <Input />
-                      </Form.Item> */}
-                    </Col>
-                  </Row>
-                </div>
-              </Form>
-              {/* <Form
-                form={form}
-                initialValues={{
-                  opportunity: opportunityProp,
-                  payment: paymentProp,
-                  shirt: shirtProp,
-                  dietary: dietaryProp,
-                }}
-                onValuesChange={handleFormChange}
-                layout="vertical"
-              >
-                <div className={s.form}>
-                  <Row>
-                    <Col md={12}>
-                      <Form.Item name="opportunity" label="Equal employee opportunity">
-                        <Input />
-                      </Form.Item>
-                    </Col>
-
-                    <Col md={12}>
-                      <Form.Item name="payment" label="Preferred payment method">
-                        <Input />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-
-                  <Row>
-                    <Col md={12}>
-                      <Form.Item name="shirt" label="T-shirt size">
-                        <Input />
-                      </Form.Item>
-                    </Col>
-
-                    <Col md={12}>
-                      <Form.Item name="dietary" label="Dietary restrictions">
-                        <Input />
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                </div>
-              </Form> */}
+              <div className={s.form}>
+                <Row>
+                  <Col md={24}>
+                    {questionOnBoarding.map((questionItem, key) => (
+                      <QuestionItemView
+                        control={false}
+                        questionItem={questionItem}
+                        keyQuestion={key}
+                        onChangeEmployeeAnswers={onChangeEmployeeAnswers}
+                      />
+                    ))}
+                    {questionOnBoarding.length === 0 && (
+                      <div>
+                        You don&apos;t have any onboarding questions, so you can press next to
+                        continue
+                      </div>
+                    )}
+                  </Col>
+                </Row>
+              </div>
             </div>
           </div>
-
           {_renderBottomBar()}
         </Col>
         <Col className={s.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
@@ -340,15 +217,14 @@ export default connect(
       checkCandidateMandatory = {},
       localStep = 7,
       data: { _id: candidate = '' } = {},
-      tempData: { hidePreviewOffer = true, additionalQuestion = {}, additionalQuestions = [] },
+      tempData: { hidePreviewOffer = true, questionOnBoarding = [] },
     } = {},
     loading,
   }) => ({
     checkCandidateMandatory,
     localStep,
     hidePreviewOffer,
-    additionalQuestion,
-    additionalQuestions,
+    questionOnBoarding,
     candidate,
     loading1: loading.effects['candidateProfile/updateByCandidateEffect'],
   }),

@@ -35,12 +35,16 @@ const adminSetting = {
     },
   },
   effects: {
-    *fetchListRoles(_, { call, put }) {
+    *fetchListRoles({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getListRoles);
+        const response = yield call(getListRoles, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data: listRoles = [] } = response;
         const formatData = listRoles.map((item) => {
-          const { _id: RolesID, name: Rolesname } = item;
+          const { _id: RolesID, idSync: Rolesname } = item;
           return { RolesID, Rolesname };
         });
         if (statusCode !== 200) throw response;
@@ -107,7 +111,11 @@ const adminSetting = {
     },
     *fetchListPermissionOfRole({ payload: { idRoles = '' } }, { call, put }) {
       try {
-        const response = yield call(getListPermissionOfRole, idRoles);
+        const response = yield call(getListPermissionOfRole, {
+          idRoles,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data: listPermission = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { idRoles } });
@@ -120,7 +128,11 @@ const adminSetting = {
     *fetchPermissionByIdRole({ payload: { id: _id = '' } = {} }, { call }) {
       let resp = [];
       try {
-        const response = yield call(getPermissionByIdRole, { _id });
+        const response = yield call(getPermissionByIdRole, {
+          _id,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         resp = data;
@@ -131,7 +143,11 @@ const adminSetting = {
     },
     *updatePermission({ payload: { getValues = {} } }, { call }) {
       try {
-        const response = yield call(updateRoleWithPermission, getValues);
+        const response = yield call(updateRoleWithPermission, {
+          ...getValues,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
         notification.success({
@@ -197,7 +213,7 @@ const adminSetting = {
     },
     *getRolesByCompany({ payload: { company = '' } }, { call, put }) {
       try {
-        const response = yield call(getRolesByCompany, { company });
+        const response = yield call(getRolesByCompany, { company, tenantId: getCurrentTenant() });
         const { statusCode, data: listRoleByCompany = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { listRoleByCompany } });

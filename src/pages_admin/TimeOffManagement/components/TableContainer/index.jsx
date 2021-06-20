@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 // import moment from 'moment';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import OptionsHeader from '../OptionsHeader';
 import TableTimeOff from '../TableTimeOff';
 import styles from './index.less';
@@ -14,9 +15,7 @@ import styles from './index.less';
     locationSelection: { listLocationsByCompany = [] } = {},
   }) => ({
     loadingList: loading.effects['timeOffManagement/fetchListTimeOff'],
-    loading:
-      loading.effects['timeOffManagement/fetchListTimeOffManagement'] ||
-      loading.effects['timeOffManagement/fetchListTimeOff'],
+    loading: loading.effects['timeOffManagement/fetchListTimeOff'],
     loadingActiveList: loading.effects['timeOffManagement/fetchEmployeeList'],
     loadingDetail: loading.effects['timeOffManagement/fetchRequestById'],
     timeOffManagement,
@@ -26,7 +25,7 @@ import styles from './index.less';
 )
 class TableContainer extends PureComponent {
   componentDidMount() {
-    this.fetchListTimeOffManagement();
+    this.fetchListTimeOff();
     this.fetchEmployees();
   }
 
@@ -36,7 +35,7 @@ class TableContainer extends PureComponent {
       JSON.stringify(listLocationsByCompany) !== JSON.stringify(prevProps.listLocationsByCompany)
     ) {
       this.fetchEmployees();
-      this.fetchListTimeOffManagement();
+      this.fetchListTimeOff();
     }
   };
 
@@ -61,13 +60,13 @@ class TableContainer extends PureComponent {
     };
   };
 
-  fetchListTimeOffManagement = () => {
+  fetchListTimeOff = () => {
     const { dispatch } = this.props;
     const tenantId = getCurrentTenant();
     const data = this.getCompanyAndLocation();
 
     dispatch({
-      type: 'timeOffManagement/fetchListTimeOffManagement',
+      type: 'timeOffManagement/fetchListTimeOff',
       payload: {
         company: data.getCurrentFirm,
         tenantId,
@@ -106,13 +105,18 @@ class TableContainer extends PureComponent {
 
   getDataTable = (values) => {
     const { dispatch } = this.props;
+    const { status = [] } = values;
+    let newStatus = [...status];
+    if (status.includes(TIMEOFF_STATUS.inProgress)) {
+      newStatus = [...newStatus, TIMEOFF_STATUS.inProgressNext];
+    }
     dispatch({
       type: 'timeOffManagement/fetchListTimeOff',
       payload: {
-        employee: values.userIdName,
+        employee: values.userIdName || '',
         from: values.durationFrom,
         to: values.durationTo,
-        status: values.status,
+        status: newStatus,
         tenantId: getCurrentTenant(),
       },
     });

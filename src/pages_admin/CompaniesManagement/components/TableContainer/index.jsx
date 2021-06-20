@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect, formatMessage, NavLink } from 'umi';
 import { Tabs, Layout } from 'antd';
+import { getCurrentTenant } from '@/utils/authority';
 import TableCompanies from '../TableCompanies';
 import TabFilter from '../TabFilter';
 import styles from './index.less';
@@ -34,13 +35,16 @@ class TableContainer extends PureComponent {
     const { dispatch } = this.props;
     dispatch({
       type: 'companiesManagement/fetchCompaniesList',
+      payload: {
+        tenantId: getCurrentTenant(),
+      },
     });
   };
 
   rightButton = (collapsed) => {
     return (
       <div className={styles.tabBarExtra}>
-        <NavLink to="/companies/add-company">
+        <NavLink to="/control-panel/add-company">
           <div className={styles.buttonAddImport}>
             <img src="/assets/images/addMemberIcon.svg" alt="Add Company" />
             <p className={styles.buttonAddImport_text}>
@@ -69,10 +73,19 @@ class TableContainer extends PureComponent {
     });
   };
 
+  getCompanies = () => {
+    const { companiesList = [] } = this.props;
+    const tenantId = getCurrentTenant();
+    return companiesList.filter(
+      (company) => company.tenant === tenantId || company.childOfCompany === tenantId,
+    );
+  };
+
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { loadingCompaniesList, companiesList } = this.props;
+    const { loadingCompaniesList } = this.props;
+    const companies = this.getCompanies();
     const { collapsed, changeTab } = this.state;
     return (
       <div className={styles.tableContainer}>
@@ -85,7 +98,7 @@ class TableContainer extends PureComponent {
             <TabPane>
               <Layout className={styles.managementLayout}>
                 <Content className="site-layout-background">
-                  <TableCompanies loading={loadingCompaniesList} data={companiesList} />
+                  <TableCompanies loading={loadingCompaniesList} data={companies} />
                 </Content>
                 <TabFilter
                   onToggle={this.handleToggle}

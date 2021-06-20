@@ -1,10 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import moment from 'moment';
-// import empty from '@/assets/empty.svg';
-// import persion from '@/assets/people.svg';
 import { Link } from 'umi';
-// import persion from '@/assets/people.svg';
 import styles from './index.less';
 
 class TableComponent extends PureComponent {
@@ -49,7 +46,7 @@ class TableComponent extends PureComponent {
   };
 
   render() {
-    const { data = [], isClosedTable = false, loading, loadingSearchList } = this.props;
+    const { data = [], isClosedTable = false, loadingSearchList } = this.props;
     const pagination = {
       position: ['bottomLeft'],
       total: data.length,
@@ -121,7 +118,7 @@ class TableComponent extends PureComponent {
     return (
       <div className={styles.tableComponent}>
         <Table
-          loading={loading || loadingSearchList}
+          loading={loadingSearchList}
           rowSelection={{
             ...rowSelection,
           }}

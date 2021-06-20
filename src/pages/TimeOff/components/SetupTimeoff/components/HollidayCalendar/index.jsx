@@ -2,10 +2,7 @@ import React, { Component } from 'react';
 import { Button, Checkbox, Select, Row, Col, Spin, InputNumber, Affix, Divider } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
-import {
-  // getCurrentLocation,
-  getCurrentTenant,
-} from '@/utils/authority';
+import { getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import AddHoliday from './AddHoliday';
 import s from './index.less';
 
@@ -137,9 +134,8 @@ class HollidayCalendar extends Component {
     dispatch({
       type: 'timeOff/fetchHolidaysListBylocation',
       payload: {
-        // location: getCurrentLocation(),
+        location: getCurrentLocation(),
         country: location.headQuarterAddress.country._id,
-        tenantId: getCurrentTenant(),
       },
     }).then((response) => {
       const { statusCode, data } = response;
@@ -246,7 +242,6 @@ class HollidayCalendar extends Component {
 
   onChangeChkBoxGroup = (list) => {
     const { plainOptions = [] } = this.state;
-    // console.log('list: ', list);
 
     this.setState({
       checkedList: list,
@@ -257,7 +252,6 @@ class HollidayCalendar extends Component {
 
   // handleCheckBox = (e) => {
   //   const chkBoxVal = e.target.value;
-  //   // console.log('chkBoxVal: ', chkBoxVal);
   // };
 
   fomatDate = (holidaysList = []) => {
@@ -276,7 +270,6 @@ class HollidayCalendar extends Component {
           resultItem.text === monthItem ? [...resultItem.children, item] : resultItem.children,
       }));
     });
-    // console.log(result);
     // result = [...result, result.filter((resultItem) => resultItem.children.length > 0)];
     // get id of each children
     result.forEach((item) => {
@@ -284,7 +277,6 @@ class HollidayCalendar extends Component {
       const arrID = children.map((subChild) => subChild._id);
       listID.push(...arrID);
     });
-    // console.log(result);
 
     this.setState({ data: result, plainOptions: listID });
   };
@@ -363,10 +355,6 @@ class HollidayCalendar extends Component {
       </>
     );
   };
-
-  // handleChangeSelect = (value) => {
-  //   console.log('value: ', value);
-  // };
 
   renderHoliday = (id, dataItem) => {
     const { children } = dataItem;
@@ -557,7 +545,7 @@ class HollidayCalendar extends Component {
               </div>
             </Col>
             <Col span={4}>
-              <Affix offsetTop={42} className={s.affix}>
+              <Affix offsetTop={30} className={s.affix}>
                 <div className={s.rightSection}>
                   <InputNumber
                     min={2020}

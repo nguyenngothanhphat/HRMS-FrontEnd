@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Layout, Input } from 'antd';
+import { Layout, Input, Select } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { filteredArr } from '@/utils/utils';
@@ -30,11 +30,14 @@ class TableFilter extends PureComponent {
       CountryState: 'Country',
       DepartmentState: 'Department',
       CompanyState: 'Company',
+      // TitleState: 'Title',
       formatDataState: [], // dynamic state on country
+      formatDataTitle: [], // dynamic title on department
       all: 'All',
       text: '',
       clearText: '',
       reset: false,
+      titleSelected: [],
     };
   }
 
@@ -52,6 +55,8 @@ class TableFilter extends PureComponent {
     }).then((res) => {
       if (res?.statusCode === 200) {
         this.getStateByCheckedCountry(res?.data?.listCountry);
+        // for title selectbox
+        this.getTitleByCheckedDepartment(res?.data?.listTitle);
       }
     });
     dispatch({
@@ -60,9 +65,23 @@ class TableFilter extends PureComponent {
   }
 
   componentDidUpdate = (prevProps) => {
-    const { checkedFilterList = [], filterList: { listCountry = [] } = {} } = this.props;
+    const { checkedFilterList = [], filterList: { listCountry = [], listTitle = [] } = {} } =
+      this.props;
     if (JSON.stringify(checkedFilterList) !== JSON.stringify(prevProps.checkedFilterList)) {
       this.getStateByCheckedCountry(listCountry);
+      this.getTitleByCheckedDepartment(listTitle);
+
+      // for title selectbox
+      let newFilterList = [];
+      checkedFilterList.forEach((f) => {
+        if (f.actionFilter?.name === 'Title') {
+          newFilterList = [...f.checkedList];
+        }
+      });
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        titleSelected: newFilterList.length > 0 ? newFilterList : [],
+      });
     }
   };
 
@@ -79,6 +98,18 @@ class TableFilter extends PureComponent {
     const inputvalue = e.target.value;
     this.setState({ text: inputvalue });
     onHandleChange(inputvalue);
+  };
+
+  // for title selectbox
+  handleSelectChange = (value) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employee/saveFilter',
+      payload: { name: 'Title', checkedList: value ? [value] : [] },
+    });
+    this.setState({
+      titleSelected: [value],
+    });
   };
 
   handleReset = () => {
@@ -119,6 +150,31 @@ class TableFilter extends PureComponent {
     });
   };
 
+  getTitleByCheckedDepartment = (listTitle = []) => {
+    const { checkedFilterList = [] } = this.props;
+    const checkedList =
+      checkedFilterList.find((filter) => {
+        return filter?.actionFilter?.name === 'Department';
+      })?.checkedList || [];
+
+    let formatDataTitle = listTitle.map((item) => {
+      const { name = '', _id = '', department = {} } = item;
+      if (checkedList.length === 0 || checkedList.includes(department?.name)) {
+        return {
+          label: name,
+          value: _id,
+        };
+      }
+      return null;
+    });
+
+    formatDataTitle = formatDataTitle.filter((val) => val !== null);
+    formatDataTitle = [...new Set(formatDataTitle)];
+    this.setState({
+      formatDataTitle,
+    });
+  };
+
   render() {
     const { Sider } = Layout;
     const {
@@ -131,9 +187,12 @@ class TableFilter extends PureComponent {
       StateState,
       CompanyState,
       formatDataState,
+      formatDataTitle,
+      // TitleState,
+      titleSelected,
     } = this.state;
     const {
-      employee: { employeetype = [], clearName = false },
+      employee: { employeetype = [], clearName = false, clearFilter },
       collapsed,
       changeTab,
       tabName,
@@ -175,6 +234,14 @@ class TableFilter extends PureComponent {
       };
     });
 
+    // const formatDataTitleByDepartment = listTitle.filter((item) => {
+    //   const { name: label, _id: value } = item;
+    //   return {
+    //     label,
+    //     value,
+    //   };
+    // });
+
     return (
       <div className={styles.TabFilter}>
         <Sider width="244px" trigger={null} collapsed={collapsed} collapsedWidth="0">
@@ -201,6 +268,25 @@ class TableFilter extends PureComponent {
                 onChange={this.handleChange}
               />
             )}
+            {/* for title selectbox */}
+            <p className={styles.textName}>Title</p>
+            {reset || changeTab ? (
+              ''
+            ) : (
+              <Select
+                value={clearFilter && titleSelected.length === 0 ? '' : titleSelected[0]}
+                className={styles.formSelect}
+                onChange={this.handleSelectChange}
+                filterOption={(input, option) =>
+                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                showSearch
+                allowClear
+              >
+                {formatDataTitle.map((tl) => (
+                  <Select.Option value={tl.value}>{tl.label}</Select.Option>
+                ))}
+              </Select>
+            )}
 
             {tabName !== 'myTeam' && (
               <>
@@ -214,6 +300,7 @@ class TableFilter extends PureComponent {
                     data={filteredArr(formatDataEmployeeType)}
                   />
                 )}
+
                 {reset || changeTab ? (
                   ''
                 ) : (
@@ -238,7 +325,16 @@ class TableFilter extends PureComponent {
                     data={filteredArr(formatDataDepartment)}
                   />
                 )}
-
+                {/* {reset || changeTab ? (
+                  ''
+                ) : (
+                  <CheckBoxForms
+                    key={TitleState}
+                    name={TitleState}
+                    all={all}
+                    data={filteredArr(formatDataTitle)}
+                  />
+                )} */}
                 {/* {reset || changeTab
                   ? ''
                   : this.handleCheckShowLocation(formatDataLocation, locationState, all)} */}

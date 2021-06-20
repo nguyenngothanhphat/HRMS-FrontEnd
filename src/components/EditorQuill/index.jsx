@@ -32,7 +32,7 @@ class EditorQuill extends Component {
             ],
             toolbar:
               'undo redo formatselect bold italic size backcolor  alignleft aligncenter alignright alignjustify bullist numlist outdent indent removeformat help variable custom-preview',
-            content_style: 'body { margin: 1rem auto; max-width: 900px; padding: 0 13px; }',
+            content_style: 'body { margin: 1rem; max-width: 900px; padding: 0 13px; }',
             setup(ed) {
               ed.ui.registry.addButton('custom-preview', {
                 text: 'Preview',

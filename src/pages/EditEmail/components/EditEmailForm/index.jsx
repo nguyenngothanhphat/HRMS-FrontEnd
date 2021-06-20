@@ -67,7 +67,7 @@ class EditEmailForm extends PureComponent {
           value: [],
         },
       ],
-      // checkOption: [],
+      checkOption: [],
       messages: '',
       sendingDate: [
         {
@@ -144,6 +144,7 @@ class EditEmailForm extends PureComponent {
       _isDefault: false,
       _sendingDate: '',
       isCheckBox: false,
+      appliesToData: '',
     };
   }
 
@@ -157,8 +158,65 @@ class EditEmailForm extends PureComponent {
         sendingDate: { type: typeSendingDate = '' } = {},
         subject = '',
         sendToExistingWorker = '',
+        applyTo = '',
       } = {},
     } = this.props;
+
+    // dispatch({
+    //   type: 'employeeSetting/fetchDepartmentList',
+    //   payload: {
+    //     tenantId: getCurrentTenant(),
+    //     company: getCurrentCompany(),
+    //   },
+    // }).then((data) => {
+    //   this.setState((prevState) => ({
+    //     conditionsTrigger: {
+    //       ...prevState.conditionsTrigger,
+    //       departments: data,
+    //     },
+    //   }));
+    // });
+
+    // dispatch({
+    //   type: 'employeeSetting/fetchLocationList',
+    //   payload: {
+    //     tenantId: getCurrentTenant(),
+    //     company: getCurrentCompany(),
+    //   },
+    // }).then((data) => {
+    //   this.setState((prevState) => ({
+    //     conditionsTrigger: {
+    //       ...prevState.conditionsTrigger,
+    //       departments: data,
+    //     },
+    //   }));
+    // });
+
+    // dispatch({
+    //   type: 'employeeSetting/fetchTitleList',
+    //   payload: {
+    //     tenantId: getCurrentTenant(),
+    //   },
+    // }).then((data) => {
+    //   this.setState((prevState) => ({
+    //     conditionsTrigger: {
+    //       ...prevState.conditionsTrigger,
+    //       departments: data,
+    //     },
+    //   }));
+    // });
+
+    // dispatch({
+    //   type: 'employeeSetting/fetchEmployeeTypeList',
+    //   payload: {},
+    // }).then((data) => {
+    //   this.setState((prevState) => ({
+    //     conditionsTrigger: {
+    //       ...prevState.conditionsTrigger,
+    //       departments: data,
+    //     },
+    //   }));
+    // });
 
     dispatch({
       type: 'employeeSetting/fetchListAutoField',
@@ -170,18 +228,33 @@ class EditEmailForm extends PureComponent {
     const newData = [...conditionsData];
 
     // fetch data of emailCustomData got from reducer and set state into conditionsData.
-    const conditionsKey = newConditionCustomEmail.map((item) => item.key);
-    conditionsKey.map((item, index) => {
+    // const conditionsKey = newConditionCustomEmail.map((item) => item.key);
+    newConditionCustomEmail.map((item, index) => {
       const newObj = {
         id: index,
-        key: item,
+        key: item.key,
         tobeVerb: '',
-        value: [],
+        value: item.value.length > 0 ? item.value[0]._id : '',
       };
 
       newData.push(newObj);
       return newData;
     });
+
+    // let conditionsData = [];
+    // conditionFetched.forEach((condition) => {
+    //   const { key = '', value = [] } = condition;
+    //   value.forEach((v) => {
+    //     conditionsData = [
+    //       ...conditionsData,
+    //       {
+    //         key,
+    //         value: v._id,
+    //       },
+    //     ];
+    //   });
+    // });
+
     const filterData = newData.filter((item) => item.key !== '');
     /// ///////////////////////////////////////////
 
@@ -214,6 +287,8 @@ class EditEmailForm extends PureComponent {
       conditionsData: filterData,
       emailSubject: subject,
       messages: newMessage,
+      appliesToData: applyTo,
+      sendToWorker: sendToExistingWorker,
     });
   }
 
@@ -616,7 +691,7 @@ class EditEmailForm extends PureComponent {
     });
   };
 
-  onFinish = (values) => {
+  onFinish = async (values) => {
     // const { triggerEventList, dispatch } = this.props;
     // const { messages = '', appliesToData = '', conditions = [], sendToExistingWorker } = this.state;
     const { dispatch } = this.props;
@@ -638,10 +713,13 @@ class EditEmailForm extends PureComponent {
 
     console.log('dataSubmit: ', dataSubmit);
     // console.log('success: ', dataSubmit);
-    dispatch({
+    const res = await dispatch({
       type: 'employeeSetting/updateCustomEmail',
       payload: dataSubmit,
     });
+    if (res.statusCode === 200) {
+      this.back();
+    }
 
     // delete newValue.sendToWorker;
     // delete newValue.frequency;
@@ -683,7 +761,7 @@ class EditEmailForm extends PureComponent {
     const { Option } = Select;
     let valueToBeVerb = '';
     const {
-      conditionsData,
+      conditionsData = [],
       conditionsTrigger: { units = [], toBeVerbs = [], departments = [] },
       load,
       _isDefault,
@@ -703,7 +781,7 @@ class EditEmailForm extends PureComponent {
         <Form.Item label="Conditions: Trigger for someone if">
           {conditionsData.map((data, index) => {
             return (
-              <div>
+              <div style={{ marginBottom: '10px' }}>
                 <Row gutter={[24, 12]} align="middle" key={data.id}>
                   {/* Units  */}
                   <Col span={9}>
@@ -756,11 +834,10 @@ class EditEmailForm extends PureComponent {
                         value={data.value}
                         disabled={_isDefault}
                         tagRender={this.tagRender}
-                        mode={valueToBeVerb === 'is' ? '' : 'multiple'}
+                        // mode={valueToBeVerb === 'is' ? '' : 'multiple'}
                         showArrow
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                         placeholder="Please select a choice"
                         onChange={(value) => this.onChangeCondition(index, 'value', value)}
                         onClick={() => this.onClickCondition(index)}
@@ -812,17 +889,18 @@ class EditEmailForm extends PureComponent {
     history.goBack();
   };
 
-  handleChangeChckBox = (value) => {
-    console.log('value message: ', value);
-    // const { target: { checked = '' } = {} } = value;
-    // this.setState({ sendToExistingWorker: checked });
+  handleChangeCheckBox = (value) => {
+    const { target: { checked = '' } = {} } = value;
+    this.setState({ sendToWorker: checked });
   };
 
   _renderApplyToOptions = () => {
     const { Option } = Select;
-    const { recipients, _isDefault } = this.state;
-    const { emailCustomData = {} } = this.props;
-    const { applyTo = '' } = emailCustomData;
+    const { recipients, _isDefault, appliesToData: applyTo = '' } = this.state;
+    // const { emailCustomData = {} } = this.props;
+    // const { applyTo = '' } = emailCustomData;
+
+    // console.log('appliesToData', appliesToData);
     if (applyTo === 'any') {
       return (
         // recipients
@@ -878,7 +956,8 @@ class EditEmailForm extends PureComponent {
       disabled,
       _isDefault,
       _sendingDate,
-      isCheckBox,
+      triggerEvent: triggerEventState = '',
+      conditionsTrigger,
     } = this.state;
     const { subject = '', triggerEvent = {}, applyTo: _applyTo = '' } = emailCustomData;
 
@@ -898,6 +977,7 @@ class EditEmailForm extends PureComponent {
                     size="large"
                     defaultValue={triggerEvent.name}
                     disabled={_isDefault}
+                    value={triggerEventState}
                     onChange={(value) => this.onChangeTriggerEvent(value)}
                   >
                     {triggerEventList.map((option, _index) => {
@@ -975,19 +1055,16 @@ class EditEmailForm extends PureComponent {
               {/* Send to existing workers */}
               <Col span={12}>
                 <Form.Item name="sendToWorker" label="Send to existing workers">
-                  {sendToWorker.map((option, _index) => {
-                    return (
-                      <Checkbox
-                        value={option.value}
-                        checked={isCheckBox}
-                        disabled={_isDefault}
-                        key={`${_index + 1}`}
-                        onChange={(value) => this.handleChangeChckBox(value)}
-                      >
-                        {option.name}
-                      </Checkbox>
-                    );
-                  })}
+                  <Checkbox
+                    value={sendToWorker}
+                    defaultChecked={sendToWorker}
+                    // checked={sendToExistingWorker || sendToWorker}
+                    // checked={isCheckBox}
+                    disabled={_isDefault}
+                    onChange={(value) => this.handleChangeCheckBox(value)}
+                  >
+                    Yes, send this email to all current workers
+                  </Checkbox>
                 </Form.Item>
               </Col>
 
@@ -1058,7 +1135,6 @@ class EditEmailForm extends PureComponent {
           <div className={styles.EditEmailForm}>
             <div className={styles.EditEmailForm_title}>
               {formatMessage({ id: 'component.editEmailForm.title' })}
-              <hr />
             </div>
             <div className={styles.EditEmailForm_form}>{this._renderForm(listAutoText)}</div>
           </div>

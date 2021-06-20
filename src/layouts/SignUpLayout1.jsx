@@ -1,7 +1,11 @@
 import img from '@/assets/sign-up-img.png';
-import { Layout } from 'antd';
+import { Col, Layout, Row } from 'antd';
 import React from 'react';
-import { Link } from 'umi';
+import { Link, formatMessage } from 'umi';
+import Footer from '@/components/Footer';
+import Avatar from 'antd/lib/avatar/avatar';
+
+import { SmileOutlined } from '@ant-design/icons';
 import styles from './SignUpLayout1.less';
 
 const { Header, Content } = Layout;
@@ -10,37 +14,43 @@ const SignUpLayout1 = (props) => {
   const { children } = props;
 
   return (
-    <Layout className={styles.root}>
+    <Layout className={styles.rootSignUp}>
       <Header>
-        <div className={styles.header}>
-          <div className={styles.logo}>{/* <span>Logo</span> */}</div>
-          <div className={styles.ask}>
-            <span>Already have an account?</span>
-            <Link to="/signin">sign in</Link>
-          </div>
+        <div className={styles.leftContent}>
+          <Avatar size="large" icon={<SmileOutlined />} />
+          <span className={styles.textAppName}>
+            {formatMessage({ id: 'layout.authLayout.appName' })}
+          </span>
+        </div>
+        <div className={styles.rightContent}>
+          <span>Already have an account?</span>
+          <Link to="/login" className={styles.textSignUp}>
+            Sign in
+          </Link>
         </div>
       </Header>
-      <Content>
-        <div className={styles.main}>
-          <div className={styles.leftContent}>
-            <div className={styles.leftWrapper}>
-              <div className={styles.imgContainer}>
-                <img src={img} alt="sign up" />
-              </div>
 
-              <div className={styles.description}>
-                <h1>Spending too much time on HR, not your business? We can fix that.</h1>
-                <p>
-                  Streamline onboarding, benefits, payroll, PTO, and more with our simple, intuitive
-                  platform.
-                </p>
-              </div>
+      <Content className={styles.content}>
+        <Row className={styles.rootLogin}>
+          <Col lg={9} xl={10} className={styles.contentLeft}>
+            <div className={styles.contentLeft__image}>
+              <img src={img} alt="login" />
             </div>
-          </div>
-
-          <div className={styles.rightContent}>{children}</div>
-        </div>
+            <p className={styles.contentLeft__text1}>
+              {formatMessage({ id: 'layout.authLayout.contentLeft.text1.1' })} <br />
+              {formatMessage({ id: 'layout.authLayout.contentLeft.text1.2' })}
+            </p>
+            <p className={styles.contentLeft__text2}>
+              {formatMessage({ id: 'layout.authLayout.contentLeft.text2' })}
+            </p>
+          </Col>
+          <Col xs={24} sm={24} md={24} lg={15} xl={14} className={styles.contentRight}>
+            {children}
+          </Col>
+        </Row>
       </Content>
+
+      <Footer />
     </Layout>
   );
 };

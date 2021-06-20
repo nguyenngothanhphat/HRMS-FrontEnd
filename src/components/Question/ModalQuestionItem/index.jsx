@@ -22,5 +22,5 @@ const ModalQuestionItem = ({ loadingSaveQuestions, onSaveClick, action, ...props
 };
 
 export default connect(({ loading }) => ({
-  loadingSaveQuestions: loading.effects['onboardingSettings/updateOptionalOnboardQuestions'],
+  loadingSaveQuestions: loading.effects['employeeSetting/updateOptionalOnboardQuestions'],
 }))(ModalQuestionItem);

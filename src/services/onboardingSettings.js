@@ -13,17 +13,3 @@ export async function addInsurance(payload) {
     data: payload,
   });
 }
-
-export async function getTemplateQuestionOnboardingTenantList(payload) {
-  return request('/api/templatequestiononboardingtenant/list', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
-export async function updateTemplateQuestionOnboardingTenant(payload) {
-  return request('/api/templatequestiononboardingtenant/update', {
-    method: 'POST',
-    data: payload,
-  });
-}

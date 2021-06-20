@@ -7,7 +7,8 @@ export default class PayrollSettingsHeader extends PureComponent {
       <div className={styles.PayrollSettingsHeader}>
         <p className={styles.title}>Payroll Settings</p>
         <p className={styles.subtitle}>
-          All documents supporting candidate’s employment eligibility will be displayed here
+          Please choose all the acceptable documents that the candidate can provide. The mandatory
+          documents are required and cannot be deselected.
         </p>
       </div>
     );

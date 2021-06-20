@@ -19,7 +19,6 @@ class BaseAccual extends Component {
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
     const { time, unlimited } = this.state;
-    console.log(e);
     this.setState({
       date: e.target.value,
     });
@@ -66,7 +65,6 @@ class BaseAccual extends Component {
       { label: 'Hours', value: 'hour' },
     ];
     const { date, time, unlimited } = this.state;
-    // console.log(baseAccrual);
     return (
       <div className={styles.contentBaseAccrual}>
         <div className={styles.title}>Base accrual rate</div>

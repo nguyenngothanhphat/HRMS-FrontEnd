@@ -28,7 +28,7 @@ class HeadquaterAddress extends PureComponent {
     const {
       headQuarterAddress = {
         name: '',
-        address: '',
+        addressLine1: '',
         country: '',
         state: '',
         zipCode: '',
@@ -45,7 +45,7 @@ class HeadquaterAddress extends PureComponent {
     return (
       <div className={styles.companyInformation}>
         <div className={styles.spaceTitle}>
-          <p className={styles.companyInformation_title}>Headquater Address</p>
+          <p className={styles.companyInformation_title}>Headquarter Address</p>
           {isOpenEditDetail ? (
             ''
           ) : (

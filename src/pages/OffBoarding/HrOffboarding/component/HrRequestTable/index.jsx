@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Col, Tabs, Row, Button, Input } from 'antd';
-import { SearchOutlined, CaretDownOutlined, CloseOutlined } from '@ant-design/icons';
-// import { PageContainer } from '@/layouts/layout/src';
-// import Icon from '@ant-design/icons';
+import { Col, Tabs, Row, Button } from 'antd';
 import { Link, connect } from 'umi';
-import filterIcon from '@/assets/offboarding-filter.svg';
+import { debounce } from 'lodash';
+
 import TeamRequest from './TeamRequest';
 import MyRequestContent from '../../../components/TabMyRequest';
+import TableSearch from './TableSearch';
 import styles from './index.less';
 
 @connect(
@@ -38,12 +37,19 @@ class HRrequestTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      q: '',
+      dataListTeamRequest: [],
+      loadingSearch: false,
     };
+    this.setDebounce = debounce((query) => {
+      this.setState({
+        dataListTeamRequest: query,
+        loadingSearch: false,
+      });
+    }, 1000);
   }
 
   componentDidMount() {
-    const { dispatch, locationID } = this.props;
+    const { dispatch, locationID, listTeamRequest = [] } = this.props;
     if (!dispatch) {
       return;
     }
@@ -54,45 +60,62 @@ class HRrequestTable extends Component {
         location: [locationID],
       },
     });
+
+    if (listTeamRequest.length > 0) this.updateData(listTeamRequest);
   }
 
-  onPressEnter = ({ target: { value } }) => {
-    console.log('enter value: ', value);
+  componentDidUpdate(prevProps) {
+    const { listTeamRequest = [] } = this.props;
+    if (JSON.stringify(listTeamRequest) !== JSON.stringify(prevProps.listTeamRequest)) {
+      this.updateData(listTeamRequest);
+    }
+  }
+
+  updateData = (listTeamRequest) => {
+    this.setState({
+      dataListTeamRequest: listTeamRequest,
+    });
   };
 
-  onChangeInput = ({ target: { value } }) => {
-    console.log('onChange Input: ', value);
-    this.setState({
-      q: value,
+  onSearch = (value) => {
+    const { listTeamRequest = [] } = this.props;
+    const formatValue = value.toLowerCase();
+
+    const filterData = listTeamRequest.filter((item) => {
+      const {
+        ticketID = '',
+        employee: { employeeId = '', generalInfo: { firstName = '', lastName = '' } = {} } = {},
+      } = item;
+      const formatTicketId = ticketID.toLowerCase();
+      const fortmatEmployeeID = employeeId.toLowerCase();
+      const formatFirstName = firstName.toLowerCase();
+      const formatLastName = lastName.toLowerCase();
+
+      if (
+        formatTicketId.includes(formatValue) ||
+        fortmatEmployeeID.includes(formatValue) ||
+        formatFirstName.includes(formatValue) ||
+        formatLastName.includes(formatValue)
+      )
+        return item;
+      return 0;
     });
+    this.setState({ loadingSearch: true });
+
+    this.setDebounce(filterData);
   };
 
   render() {
     const { TabPane } = Tabs;
     const {
-      listTeamRequest = [],
       totalListTeamRequest = [],
       listOffboarding = [],
       totalList = [],
       hrManager = {},
       locationID = '',
     } = this.props;
-    const { q = '' } = this.state;
 
-    const resignationRequest = (
-      <div className={styles.searchFilter}>
-        <img src={filterIcon} alt="" className={styles.searchFilter__icon} />
-        <Input
-          value={q}
-          size="large"
-          placeholder="Search for Ticket numer, resignee, request ..."
-          onChange={this.onChangeInput}
-          prefix={<SearchOutlined />}
-          onPressEnter={this.onPressEnter}
-          className={styles.searchFilter__input}
-        />
-      </div>
-    );
+    const { dataListTeamRequest, loadingSearch } = this.state;
 
     return (
       <Row className={styles.hrContent}>
@@ -112,12 +135,13 @@ class HRrequestTable extends Component {
           <Tabs
             defaultActiveKey="1"
             className={styles.tabComponent}
-            tabBarExtraContent={resignationRequest}
+            tabBarExtraContent={<TableSearch onSearch={this.onSearch} />}
           >
             <TabPane tab="Team Requests" key="1">
               <div className={styles.tableTab}>
                 <TeamRequest
-                  data={listTeamRequest}
+                  data={dataListTeamRequest}
+                  loadingSearch={loadingSearch}
                   countdata={totalListTeamRequest}
                   hrManager={hrManager}
                   location={[locationID]}

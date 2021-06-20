@@ -13,10 +13,14 @@ import DirectoryComponent from './components/Directory';
 import styles from './index.less';
 
 @connect(
-  ({ user: { currentUser: { roles = [], signInRole = [], manageTenant = [] } = {} } = {} }) => ({
+  ({
+    user: { currentUser: { roles = [], signInRole = [], manageTenant = [] } = {} } = {},
+    employee: { filterList = {} } = {},
+  }) => ({
     roles,
     signInRole,
     manageTenant,
+    filterList,
   }),
 )
 class Directory extends PureComponent {
@@ -31,53 +35,68 @@ class Directory extends PureComponent {
     };
   }
 
-  componentDidMount() {
-    const { roles = [], signInRole = [] } = this.props;
+  componentDidMount = async () => {
+    const { dispatch, roles = [], signInRole = [], filterList = {} } = this.props;
     const checkRoleEmployee = this.checkRoleEmployee(roles, signInRole);
 
     this.setState({
       checkRoleEmployee,
     });
 
-    const { dispatch } = this.props;
-    const tenantId = getCurrentTenant();
-    const company = getCurrentCompany();
-    // const checkIsOwner = isOwner();
-    dispatch({
-      type: 'employee/fetchFilterList',
-      payload: {
-        id: company,
-        tenantId,
-      },
-    });
-
-    this.fetchData();
-  }
-
-  fetchData = async () => {
-    const { dispatch, manageTenant = [] } = this.props;
-    const companyId = getCurrentCompany();
-    const tenantId = getCurrentTenant();
-    const checkIsOwner = isOwner();
-
-    if (checkIsOwner) {
+    if (Object.keys(filterList).length > 0 && filterList) {
       await dispatch({
-        type: 'locationSelection/fetchLocationListByParentCompany',
+        type: 'employee/save',
         payload: {
-          company: companyId,
-          tenantIds: manageTenant,
-        },
-      });
-    } else {
-      await dispatch({
-        type: 'locationSelection/fetchLocationsByCompany',
-        payload: {
-          company: companyId,
-          tenantId,
+          filterList: {},
         },
       });
     }
+
+    // this.fetchFilterList();
   };
+
+  componentDidUpdate = (prevProps) => {
+    // const { filterList = {} } = this.props;
+    if (!prevProps.filterList || Object.keys(prevProps.filterList).length === 0) {
+      this.fetchFilterList();
+    }
+  };
+
+  fetchFilterList = async () => {
+    const { dispatch } = this.props;
+    await dispatch({
+      type: 'employee/fetchFilterList',
+      payload: {
+        id: getCurrentCompany(),
+        tenantId: getCurrentTenant(),
+      },
+    });
+  };
+
+  // fetchData = async () => {
+  //   const { dispatch, manageTenant = [] } = this.props;
+  //   const companyId = getCurrentCompany();
+  //   const tenantId = getCurrentTenant();
+  //   const checkIsOwner = isOwner();
+
+  //   if (checkIsOwner) {
+  //     await dispatch({
+  //       type: 'locationSelection/fetchLocationListByParentCompany',
+  //       payload: {
+  //         company: companyId,
+  //         tenantIds: manageTenant,
+  //       },
+  //     });
+  //   } else {
+  //     await dispatch({
+  //       type: 'locationSelection/fetchLocationsByCompany',
+  //       payload: {
+  //         company: companyId,
+  //         tenantId,
+  //       },
+  //     });
+  //   }
+  // };
 
   componentWillUnmount = () => {
     const { dispatch } = this.props;

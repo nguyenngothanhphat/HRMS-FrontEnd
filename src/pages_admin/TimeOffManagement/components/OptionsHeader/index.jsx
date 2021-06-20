@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Form, Select, DatePicker, Button, Checkbox } from 'antd';
 import exportToCsv from '@/utils/exportToCsv';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -46,7 +47,7 @@ export default class OptionsHeader extends PureComponent {
   };
 
   // onFromChange = (value) => {
-  //   const newMoment = moment(value).format('MM-DD-YY');
+  //   const newMoment = moment(value).format('MM.DD.YY');
   //   this.setState({
   //     from: newMoment,
   //   });
@@ -58,14 +59,16 @@ export default class OptionsHeader extends PureComponent {
 
   render() {
     const { listEmployee } = this.props;
-    const dateFormat = 'MM-DD-YY';
+    const dateFormat = 'MM.DD.YY';
     const options = [
-      { value: 'APPROVED', label: 'Approved' },
-      { value: 'IN-PROGRESS', label: 'New' },
-      { value: 'REJECTED', label: 'Rejected' },
-      { value: 'WAITING-FOR-APPROVE', label: 'Waiting for approve' },
+      { value: TIMEOFF_STATUS.accepted, label: 'Approved' },
+      { value: TIMEOFF_STATUS.inProgress, label: 'In Progress' },
+      { value: TIMEOFF_STATUS.rejected, label: 'Rejected' },
+      { value: TIMEOFF_STATUS.onHold, label: 'On-hold' },
+      { value: TIMEOFF_STATUS.drafts, label: 'Draft' },
+      { value: TIMEOFF_STATUS.deleted, label: 'Deleted' },
     ];
-    const nameOpt = ['APPROVED', 'IN-PROGRESS', 'REJECTED', 'WAITING-FOR-APPROVE'];
+    const nameOpt = options.map((op) => op.value);
     return (
       <div className={styles.OptionsHeader}>
         <div className={styles.container}>
@@ -75,10 +78,10 @@ export default class OptionsHeader extends PureComponent {
                 <span className={styles.itemLabel}>User ID - Name</span>
                 <Form.Item name="userIdName">
                   <Select
+                    allowClear
                     placeholder="Select an user"
                     filterOption={(input, option) =>
-                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                     showSearch
                   >
                     {listEmployee.map((item = {}) => {

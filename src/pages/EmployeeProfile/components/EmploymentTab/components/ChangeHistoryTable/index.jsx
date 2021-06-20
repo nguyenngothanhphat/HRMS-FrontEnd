@@ -3,9 +3,17 @@ import moment from 'moment';
 import { connect } from 'umi';
 import { Table } from 'antd';
 import { getCurrentTenant } from '@/utils/authority';
+import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
-@connect(({ employeeProfile }) => ({ employeeProfile }))
+@connect(({ employeeProfile, loading }) => ({
+  employeeProfile,
+  loading:
+    loading.effects['employeeProfile/addNewChangeHistory'] ||
+    loading.effects['employeeProfile/fetchCompensation'] ||
+    loading.effects['employeeProfile/fetchCompensationList'] ||
+    loading.effects['employeeProfile/revokeHistory'],
+}))
 class ChangeHistoryTable extends PureComponent {
   constructor(props) {
     super(props);
@@ -14,8 +22,47 @@ class ChangeHistoryTable extends PureComponent {
       employee:
         employeeProfile?.originData?.generalData?.legalName ||
         employeeProfile?.originData?.generalData?.firstName,
+      expand: false,
+      expandData: [],
     };
   }
+
+  componentDidMount() {
+    this.getData();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { employeeProfile: { originData: { changeHistories = [] } = {} } = {} } = this.props;
+    const prevHistories = prevProps.employeeProfile.originData.changeHistories || [];
+    if (JSON.stringify(prevHistories) !== JSON.stringify(changeHistories)) {
+      this.getData();
+    }
+  }
+
+  getData = () => {
+    const { employeeProfile: { originData: { changeHistories = [] } = {} } = {} } = this.props;
+
+    const newData = changeHistories.map((item, index) => ({
+      key: `${index + 1}`,
+      changedInfomation: {
+        promotedPosition: item?.title?.name,
+        location: item?.location?.name,
+        department: item?.department?.name,
+        employment: item?.employeeType?.name,
+        compensation: item?.compensationType,
+        manager: item?.manager?.generalInfo?.legalName || item?.manager?.generalInfo?.firstName,
+      },
+      effectiveDate: moment(item?.effectiveDate).locale('en').format('MM.DD.YY'),
+      changedBy: 'HR Admin',
+      changedDate: moment(item?.changeDate).locale('en').format('MM.DD.YY'),
+      action: item?.takeEffect === 'WILL_UPDATE' ? 'Revoke' : '',
+      id: item?._id,
+    }));
+
+    this.setState({
+      expandData: newData,
+    });
+  };
 
   generateColumns = () => {
     const { employee } = this.state;
@@ -113,8 +160,6 @@ class ChangeHistoryTable extends PureComponent {
       employeeProfile: { originData: { generalData: { employee: employeeId = '' } = {} } = {} },
     } = this.props;
 
-    console.log(employeeId);
-
     dispatch({
       type: 'employeeProfile/revokeHistory',
       payload: {
@@ -125,32 +170,82 @@ class ChangeHistoryTable extends PureComponent {
     });
   };
 
-  render() {
-    const { employeeProfile: { originData: { changeHistories = [] } = {} } = {} } = this.props;
-    const newData = changeHistories.map((item, index) => ({
-      key: `${index + 1}`,
-      changedInfomation: {
-        promotedPosition: item?.title?.name,
-        location: item?.location?.name,
-        department: item?.department?.name,
-        employment: item?.employeeType?.name,
-        compensation: item?.compensationType,
-        manager: item?.manager?.generalInfo?.legalName || item?.manager?.generalInfo?.firstName,
-      },
-      effectiveDate: moment(item?.effectiveDate).locale('en').format('MM.DD.YY'),
-      changedBy: 'HR Admin',
-      changedDate: moment(item?.changeDate).locale('en').format('MM.DD.YY'),
-      action: item?.takeEffect === 'WILL_UPDATE' ? 'Revoke' : '',
-      id: item?._id,
+  handleExpand = () => {
+    this.setState((prevState) => ({
+      expand: !prevState.expand,
     }));
+  };
+
+  formatData = (expandData, pageSize) => {
+    const { expand } = this.state;
+    const data = [...expandData];
+
+    if (expand) {
+      return data;
+    }
+    if (expandData?.length > pageSize.min && expandData?.length <= pageSize.max && !expand) {
+      return data.slice(0, 5);
+    }
+
+    return data;
+  };
+
+  render() {
+    const { expand, expandData } = this.state;
+    const { loading } = this.props;
+    const pageSize = {
+      max: 50,
+      min: 5,
+    };
+
+    const footer = () => (
+      <>
+        {expandData.length > pageSize.min && expandData.length <= pageSize.max ? (
+          <div
+            className={`${styles.changeHistoryTable__icons} ${
+              expand ? styles.collapse : styles.expand
+            } `}
+            onClick={this.handleExpand}
+          >
+            {expand ? (
+              <MinusCircleOutlined className={styles.changeHistoryTable__icons_icon} />
+            ) : (
+              <PlusCircleOutlined className={styles.changeHistoryTable__icons_icon} />
+            )}
+            <div>{expand ? 'Collapse all' : `Expand all ${expandData.length} records`}</div>
+          </div>
+        ) : null}
+      </>
+    );
+
+    const pagination = {
+      position: ['bottomLeft'],
+      total: expandData.length,
+      showTotal: (total, range) => (
+        <span>
+          Showing{' '}
+          <b>
+            {range[0]} - {range[1]}
+          </b>{' '}
+          of {expandData.length}
+        </span>
+      ),
+      pageSize: 10,
+      // current: pageSelected,
+      // onChange: this.onChangePagination,
+    };
 
     return (
       <div className={styles.changeHistoryTable}>
         <Table
+          loading={loading}
           size="small"
           columns={this.generateColumns()}
-          dataSource={newData}
-          pagination={false}
+          dataSource={this.formatData(expandData, pageSize)}
+          footer={expandData.length === 0 ? null : footer}
+          pagination={
+            expandData.length > pageSize.max ? { ...pagination, total: expandData.length } : false
+          }
         />
       </div>
     );

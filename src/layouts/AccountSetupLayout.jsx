@@ -4,6 +4,7 @@ import { Layout, Button, Result, Affix } from 'antd';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { Link } from 'umi';
+import Footer from '@/components/Footer';
 import styles from './AccountSetupLayout.less';
 
 const { Header, Content } = Layout;
@@ -51,6 +52,7 @@ class AccountSetup extends PureComponent {
         <Authorized authority={authorized.authority} noMatch={noMatch}>
           <Content className={styles.content}>{children}</Content>
         </Authorized>
+        <Footer />
       </Layout>
     );
   }

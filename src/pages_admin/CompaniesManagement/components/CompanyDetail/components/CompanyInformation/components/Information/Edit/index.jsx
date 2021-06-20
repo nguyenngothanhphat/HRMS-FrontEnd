@@ -7,13 +7,15 @@ import styles from './index.less';
 @connect(
   ({
     companiesManagement: {
-      originData: { companyDetails: companyDetailsOrigin = {} },
+      originData: { companyDetails: { company: companyDetailsOrigin = {} } = {} },
       tempData: { companyDetails = {} },
+      tenantCurrentCompany = '',
     } = {},
     loading,
   }) => ({
     companyDetailsOrigin,
     companyDetails,
+    tenantCurrentCompany,
     loadingUpdate: loading.effects['companiesManagement/updateCompany'],
   }),
 )
@@ -37,11 +39,17 @@ class Edit extends PureComponent {
   };
 
   handleUpdate = (changedValues) => {
-    const { dispatch, companyDetailsOrigin, handleCancelEdit = () => {} } = this.props;
+    const {
+      dispatch,
+      companyDetailsOrigin,
+      handleCancelEdit = () => {},
+      tenantCurrentCompany,
+    } = this.props;
     const payload = {
       ...companyDetailsOrigin,
       id: companyDetailsOrigin._id,
       ...changedValues,
+      tenantId: tenantCurrentCompany,
     };
     delete payload._id;
 
@@ -66,7 +74,7 @@ class Edit extends PureComponent {
       website = '',
       phone = '',
       contactEmail = '',
-    } = companyDetails;
+    } = companyDetails.company;
 
     const formItemLayout = {
       labelCol: {

@@ -209,14 +209,8 @@ class EmailReminderForm extends PureComponent {
       return item;
     });
 
-    const {
-      triggerEvent,
-      _sendingDate,
-      appliesToData,
-      recipient,
-      emailSubject,
-      messages,
-    } = this.state;
+    const { triggerEvent, _sendingDate, appliesToData, recipient, emailSubject, messages } =
+      this.state;
 
     if (
       triggerEvent.trim() !== '' &&
@@ -256,7 +250,7 @@ class EmailReminderForm extends PureComponent {
       type: 'employeeSetting/fetchTriggerEventList',
       payload: {
         type: 'OFF-BOARDING',
-        tenantId: getCurrentTenant()
+        tenantId: getCurrentTenant(),
       },
     });
     dispatch({
@@ -361,7 +355,7 @@ class EmailReminderForm extends PureComponent {
               this.setState({ load: false });
               dispatch({
                 type: 'employeeSetting/fetchTitleList',
-                payload: { tenantId: getCurrentTenant() },
+                payload: { tenantId: getCurrentTenant(), company: getCurrentCompany() },
               }).then((data) => {
                 this.setState((prevState) => ({
                   conditionsTrigger: {
@@ -437,7 +431,7 @@ class EmailReminderForm extends PureComponent {
         this.setState({ isLocation: false });
         dispatch({
           type: 'employeeSetting/fetchTitleList',
-          payload: { tenantId: getCurrentTenant() },
+          payload: { tenantId: getCurrentTenant(), company: getCurrentCompany() },
         }).then((data) => {
           this.setState((prevState) => ({
             conditionsTrigger: {
@@ -613,6 +607,8 @@ class EmailReminderForm extends PureComponent {
         tenantId: getCurrentTenant(),
       };
     }
+
+    console.log(dataSubmit);
 
     dispatch({
       type: 'employeeSetting/addCustomEmail',
