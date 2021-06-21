@@ -78,7 +78,7 @@ export function checkPermissions(roles, isOwner, isAdmin, isEmployee) {
     // 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_VIEW',
     // 'M_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW',
     // 'P_DIRECTORY_T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW',
-    'T_DIRECTORY_T_ACTIVE',
+    'T_DIRECTORY_T_ACTIVE_EMPLOYEE_VIEW',
   ]);
   const findIndexMyTeam = isAuthorized(permissionList, [
     // 'P_DIRECTORY_T_DIRECTORY_T_MY_TEAM_VIEW',
