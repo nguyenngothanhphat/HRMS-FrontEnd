@@ -905,10 +905,13 @@ const timeOff = {
           ...payload,
           tenantId: getCurrentTenant(),
         });
-        const { statusCode } = response;
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
+          payload: {
+            employeeSchedule: data,
+          },
         });
       } catch (errors) {
         // dialog(errors);
