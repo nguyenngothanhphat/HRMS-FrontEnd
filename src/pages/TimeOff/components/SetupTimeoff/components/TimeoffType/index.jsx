@@ -63,7 +63,7 @@ class TimeoffType extends Component {
             {!isEdit ? (
               <div className={styles.Content}>Select & Configure timeoff types</div>
             ) : (
-              <div className={styles.Content}>Configure `${itemTimeOffType.name}` policy </div>
+              <div className={styles.Content}>Configure {itemTimeOffType.name} policy </div>
             )}
             {!isEdit ? (
               <div className={styles.SubContent}>
