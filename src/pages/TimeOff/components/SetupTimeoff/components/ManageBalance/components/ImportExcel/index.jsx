@@ -108,6 +108,7 @@ class ImportExcel extends React.Component {
         <div className={styles.form}>
           <div className={styles.import}>
             <Dragger
+              // eslint-disable-next-line react/jsx-props-no-spreading
               {...propsUpload}
               beforeUpload={this.beforeUpload}
               action={(file) => this.handleUpload(file)}

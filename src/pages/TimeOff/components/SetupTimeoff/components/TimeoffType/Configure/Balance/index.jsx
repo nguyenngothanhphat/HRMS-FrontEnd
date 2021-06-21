@@ -6,10 +6,19 @@ class Balance extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      notGreaterThan: '',
+      notGreaterThan: 0,
       date: 'day',
       unlimited: 'false',
     };
+  }
+
+  componentDidMount() {
+    const { maxBalance } = this.props;
+    this.setState({
+      notGreaterThan: maxBalance.notGreaterThan,
+      date: maxBalance.date,
+      unlimited: maxBalance.unlimited,
+    });
   }
 
   onChangeRadio = (e) => {
@@ -55,8 +64,13 @@ class Balance extends Component {
   };
 
   render() {
-    const { accrualRate, date } = this.state;
-    // console.log(accrualRate);
+    const option = [
+      { label: 'Days', value: 'day' },
+      { label: 'Hours', value: 'hour' },
+    ];
+    const {
+      maxBalance: { notGreaterThan, date, unlimited },
+    } = this.props;
     return (
       <div className={styles.contentbalance}>
         <div className={styles.title}>Maximum balance</div>
@@ -67,7 +81,11 @@ class Balance extends Component {
               <div className={styles.titleText}>
                 At a time, employees cannot have a casual leave balance greater than
               </div>
-              <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
+              <Checkbox
+                defaultChecked={unlimited}
+                className={styles.checkbox}
+                onChange={this.onChangeSelect}
+              >
                 Do not limit employee Casual leave balance
               </Checkbox>
             </Col>
@@ -77,25 +95,19 @@ class Balance extends Component {
                   <InputNumber
                     min={0}
                     max={date === 'day' ? 365 : 12}
-                    defaultValue={0}
-                    placeholder={date === 'day' ? 'days' : 'hours'}
-                    formatter={(value) => (date === 'day' ? `${value} days` : `${value} hours`)}
-                    parser={(value) =>
-                      date === 'day' ? value.replace('days', '') : value.replace('hours', '')
-                    }
+                    defaultValue={notGreaterThan}
                     onChange={this.onChange}
                   />
                 </Col>
                 <Col>
                   <Radio.Group
                     onChange={this.onChangeRadio}
+                    options={option}
                     value={date}
+                    optionType="button"
                     buttonStyle="solid"
                     className={styles.radioGroup}
-                  >
-                    <Radio.Button value="day">Days</Radio.Button>
-                    <Radio.Button value="hour">Hours</Radio.Button>
-                  </Radio.Group>
+                  />
                 </Col>
               </Row>
             </Col>

@@ -1,9 +1,12 @@
+/* eslint-disable no-param-reassign */
 import React, { Component } from 'react';
 import { connect } from 'umi';
 import { Row, Col, Button, Select, Spin } from 'antd';
 // import addIcon from '@/assets/addTicket.svg';
 // import icon from '@/assets/delete.svg';
 import { DeleteOutlined } from '@ant-design/icons';
+import { getCurrentTenant } from '@/utils/authority';
+// import _ from 'lodash';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -32,33 +35,45 @@ class RuleFrom extends Component {
           <div className={styles.straightLine} />
           <div>
             {children.map((item, index) => {
-              const { title, name, change, status } = item;
-              const classNameStatus = status === 100 ? styles.complete : styles.uncomplete;
+              const { name, isDefault } = item;
+              // const classNameStatus = status === 100 ? styles.complete : styles.uncomplete;
               return (
                 <div key={`${index + 1}`}>
                   <Row gutter={[24, 12]} className={styles.from__rowItem}>
-                    <Col span={8}>
-                      <div className={styles.text}>{title}</div>
+                    <Col span={16}>
+                      <div className={styles.text}>
+                        {name}
+                        {isDefault ? '*' : ''}
+                      </div>
                     </Col>
-                    <Col span={8}>
+                    {/* <Col span={8}>
                       <div className={classNameStatus}>
                         <span>{status > 0 ? `Completion rate: ${status}%` : null}</span>
                       </div>
-                    </Col>
+                    </Col> */}
                     <Col span={8} className={styles.colAction}>
-                      {name !== 'true' ? (
+                      {/* {name !== 'true' ? ( */}
+                      <div className={styles.setup}>
+                        <span onClick={() => this.onChange(item._id, true)}>
+                          {isDefault ? 'Configure' : 'Setup'}
+                        </span>
+                        {isDefault ? (
+                          ''
+                        ) : (
+                          <div className={styles.deleteIcon}>
+                            <DeleteOutlined className={styles.iconImg} />
+                          </div>
+                        )}
+                      </div>
+                      {/* ) : (
                         <div className={styles.setup}>
-                          <span onClick={change}>{status > 0 ? 'Configure' : 'Setup'}</span>
-                        </div>
-                      ) : (
-                        <div className={styles.setup}>
-                          <span>{status > 0 ? 'Configure' : 'Setup'}</span>
+                          <span>{isDefault ? 'Configure' : 'Setup'}</span>
                           <div className={styles.deleteIcon}>
                             <DeleteOutlined className={styles.iconImg} />
                           </div>
                           <span />
                         </div>
-                      )}
+                      )} */}
                     </Col>
                   </Row>
                   {index !== children.length - 1 && <div className={styles.borderStyles} />}
@@ -138,69 +153,94 @@ class RuleFrom extends Component {
     );
   };
 
+  onChange = (value, isEdit) => {
+    const { onChangeType, dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/getCountryList',
+      payload: {
+        _id: value,
+        tenantId: getCurrentTenant(),
+      },
+    });
+    onChangeType(value, isEdit);
+  };
+
   render() {
-    const { onChangeCasualLeave = () => {} } = this.props;
+    const { timeOffTypes = [] } = this.props;
+
     const array = [
       {
+        typeName: 'A',
         type: 'Type A: Paid Leaves',
         button: 'Add a new paid leave',
 
-        children: [
-          {
-            title: 'Casual Leave (CL)*',
-            status: 100,
-            change: onChangeCasualLeave,
-          },
-          {
-            title: 'Sick Leave (SL)* ',
-            status: 50,
-          },
-          {
-            title: ' Compensation leave (Co) ',
-            status: 0,
-            name: 'true',
-          },
-        ],
+        children: [],
       },
       {
+        typeName: 'B',
         type: 'Type B: Unpaid Leaves',
         button: 'Add a new unpaid leave',
-        children: [
-          {
-            title: 'Casual Leave (CL)*',
-          },
-        ],
+        children: [],
       },
       {
+        typeName: 'C',
         type: 'Type C: Special Leaves',
         button: 'Add a new special leave',
-        children: [
-          {
-            title: 'Maternity Leave (ML)*',
-          },
-          {
-            title: 'Bereavement Leave (LWP)',
-          },
-          {
-            title: 'Restricted Holiday (RH)',
-            name: 'true',
-          },
-        ],
+        children: [],
       },
       {
+        typeName: 'D',
         type: 'Type D: Working our of office',
         button: 'Add a new OoO timeoff',
-        children: [
-          {
-            title: 'Work from Client Place (WCP)*',
-          },
-          {
-            title: 'Work from Home (WFH)',
-            name: 'true',
-          },
-        ],
+        children: [],
+      },
+      {
+        typeName: 'E',
+        type: 'Type E: Compoff',
+        button: 'Add a new compoff',
+        children: [],
       },
     ];
+
+    timeOffTypes.map((item) => {
+      array.map((ele) => {
+        if (ele.typeName === item.type) {
+          item.change = this.onChange;
+          ele.children.push(item);
+        }
+        // if (item.type !== ele.typeName) {
+        //   const newObj = {
+        //     typeName: item.type,
+        //     type: `Type ${item.type}: ${item.typeName}`,
+        //     button: `Add a new ${item.typeName}`,
+        //     children: [],
+        //   };
+        //   item.change = this.onChange;
+        //   newObj.children.push(item);
+        //   array.push(newObj);
+        // }
+        // if (item.name === 'Casual Leave') {
+        //   const i = timeOffTypes.indexOf(item);
+        //   timeOffTypes.splice(0, 0, timeOffTypes.splice(i, 1)[0]);
+        // }
+        return ele;
+      });
+
+      return item;
+    });
+
+    // _.map(array, (item) => {
+    //   if (item.typeName === 'A') {
+    //     item.children.map((ele) => {
+    //       if (ele.name === 'Casual Leave') {
+    //         const i = item.children.indexOf(ele);
+    //         item.children.splice(0, 0, item.children.slice(i, 1)[0]);
+    //       }
+    //       return ele;
+    //     });
+    //   }
+    // });
+    console.log('array', array);
 
     const { loadingListCountry } = this.props;
     return (
@@ -216,9 +256,9 @@ class RuleFrom extends Component {
                 size="large"
                 placeholder="Please select country"
                 showArrow
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                filterOption={(input, option) => {
+                  return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
                 className={styles.selectCountry}
                 defaultValue="India"
                 onChange={(value) => this.handleChangeSelect(value)}

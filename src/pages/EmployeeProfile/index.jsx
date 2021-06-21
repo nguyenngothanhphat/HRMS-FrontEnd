@@ -6,7 +6,7 @@ import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 // import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 // import Test from './components/test';
@@ -78,8 +78,8 @@ class EmployeeProfile extends Component {
 
     const { statusCode, data } = res;
     if (statusCode === 200) {
-      const tenantId = data.tenant;
-      const companyCurrentEmployee = data.company?._id;
+      const tenantId = getCurrentTenant();
+      const companyCurrentEmployee = getCurrentCompany();
 
       dispatch({
         type: 'employeeProfile/fetchGeneralInfo',

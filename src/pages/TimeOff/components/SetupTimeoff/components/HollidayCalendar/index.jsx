@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Checkbox, Select, Row, Col, Spin, InputNumber, Affix, Divider } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
-import { getCurrentLocation } from '@/utils/authority';
+import { getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import AddHoliday from './AddHoliday';
 import s from './index.less';
 
@@ -79,10 +79,11 @@ const MOCK_DATA = [
 ];
 @connect(
   ({
-    timeOff: { countryList = [] } = {},
+    timeOff: { countryList = [], holidaysListByLocation = [] } = {},
     loading,
     user: { currentUser: { company: { _id: idCompany = '' } = {}, location = {} } = {} } = {},
   }) => ({
+    holidaysListByLocation,
     countryList,
     loading: loading.effects['timeOff/fetchHolidaysListBylocation'],
     loadingbyCountry: loading.effects['timeOff/fetchHolidaysListBylocation'],
@@ -96,7 +97,6 @@ class HollidayCalendar extends Component {
     super(props);
     this.state = {
       data: [],
-      role: '',
       yearSelect: 2021,
       list: {},
       idCheck: [],
@@ -110,15 +110,17 @@ class HollidayCalendar extends Component {
   }
 
   componentDidMount = () => {
-    const listRole = localStorage.getItem('antd-pro-authority');
-    const role = this.findRole(JSON.parse(listRole));
-    this.setState({
-      role,
-    });
     const d = new Date();
     const year = d.getFullYear();
     const formatYear = year.toString();
     this.initListHoliday(formatYear);
+    // dispatch({
+    //   type: 'timeOff/fetchHolidaysListBylocation',
+    //   payload: {
+    //     location: getCurrentLocation(),
+    //     country: location.headQuarterAddress.country._id,
+    //   },
+    // });
   };
 
   findRole = (roles) => {
@@ -131,19 +133,17 @@ class HollidayCalendar extends Component {
     const { dispatch, location = {} } = this.props;
     dispatch({
       type: 'timeOff/fetchHolidaysListBylocation',
-      payload: { location: getCurrentLocation(), country: location.headQuarterAddress.country._id },
+      payload: {
+        location: getCurrentLocation(),
+        country: location.headQuarterAddress.country._id,
+      },
     }).then((response) => {
-      const { statusCode, data: listData = {} } = response;
+      const { statusCode, data } = response;
       this.setState({
-        list: listData,
+        list: data,
       });
-      const { holiday = [] } = listData;
       if (statusCode === 200) {
-        const newList = holiday.filter((item) => {
-          const { date } = item;
-          const yearCurrent = moment(date).format('YYYY');
-          return yearCurrent === year;
-        });
+        const newList = data.filter((item) => item.date.dateTime.year === year);
         this.fomatDate(newList);
       }
     });
@@ -184,7 +184,7 @@ class HollidayCalendar extends Component {
     const year = yearSelect.toString();
     dispatch({
       type: 'timeOff/fetchHolidaysByCountry',
-      payload: { country: value },
+      payload: { country: value, tenantId: getCurrentTenant() },
     }).then((response) => {
       const { statusCode, data: listByCountry = {} } = response;
       this.setState({
@@ -228,11 +228,10 @@ class HollidayCalendar extends Component {
 
   deleteHoliday = (id) => {
     const { dispatch } = this.props;
-    const { list = [], yearSelect } = this.state;
-    const { _id: idObjHolidays } = list;
+    const { yearSelect } = this.state;
     dispatch({
       type: 'timeOff/deleteHoliday',
-      payload: { removeId: id, id: idObjHolidays },
+      payload: { id, tenantId: getCurrentTenant() },
     }).then((response) => {
       const { statusCode } = response;
       if (statusCode === 200) {
@@ -243,7 +242,6 @@ class HollidayCalendar extends Component {
 
   onChangeChkBoxGroup = (list) => {
     const { plainOptions = [] } = this.state;
-    // console.log('list: ', list);
 
     this.setState({
       checkedList: list,
@@ -254,24 +252,25 @@ class HollidayCalendar extends Component {
 
   // handleCheckBox = (e) => {
   //   const chkBoxVal = e.target.value;
-  //   // console.log('chkBoxVal: ', chkBoxVal);
   // };
 
   fomatDate = (holidaysList = []) => {
     let result = MOCK_DATA;
     const listID = [];
     holidaysList.forEach((item) => {
-      const monthItem = moment(item.date).format('MMM');
-      const fomatDataItem = moment(item.date).format('MMM , YYYY');
+      const monthItem = moment(item.date.iso).format('MMM');
+      const fomatDataItem = moment(item.date.iso).format('MMM , YYYY');
       result = result.map((resultItem) => ({
         ...resultItem,
-        month: resultItem.text === monthItem ? fomatDataItem : resultItem.month,
+        month:
+          resultItem.text === monthItem
+            ? fomatDataItem
+            : `${resultItem.text}, ${item.date.dateTime.year}`,
         children:
           resultItem.text === monthItem ? [...resultItem.children, item] : resultItem.children,
       }));
     });
-    result = result.filter((resultItem) => resultItem.children.length > 0);
-
+    // result = [...result, result.filter((resultItem) => resultItem.children.length > 0)];
     // get id of each children
     result.forEach((item) => {
       const { children = [] } = item;
@@ -357,21 +356,15 @@ class HollidayCalendar extends Component {
     );
   };
 
-  // handleChangeSelect = (value) => {
-  //   console.log('value: ', value);
-  // };
-
   renderHoliday = (id, dataItem) => {
     const { children } = dataItem;
     const { idCheck = [] } = this.state;
-
     return (
       <>
         {children.map((subChild) => {
           const { date, name, type, _id } = subChild;
-          const dateFormat = moment(date).format('Do MMM');
-          const day = moment(date).format('dddd');
-
+          const dateFormat = moment(date.iso).format('Do MMM');
+          const day = moment(date.iso).format('dddd');
           return (
             <>
               {subChild._id === id ? (
@@ -387,7 +380,7 @@ class HollidayCalendar extends Component {
                       <div className={s.holiday__date}>{day}</div>
                     </Col>
                     <Col span={4}>
-                      <div className={s.holiday__date}>{type}</div>
+                      <div className={s.holiday__date}>{type[0]}</div>
                     </Col>
                     {idCheck.indexOf(_id) > -1 && (
                       <Col span={3} onClick={() => this.deleteHoliday(_id)}>
@@ -406,8 +399,7 @@ class HollidayCalendar extends Component {
 
   renderInfo = () => {
     const { data, plainOptions } = this.state;
-    const newData = [...data];
-
+    const newData = data.filter((item) => item.children.length > 0);
     return (
       <div>
         {newData.map((itemData, index) => {
@@ -452,7 +444,6 @@ class HollidayCalendar extends Component {
   render() {
     const {
       data,
-      role,
       yearSelect,
       visible = true,
       isActive,
@@ -462,6 +453,7 @@ class HollidayCalendar extends Component {
       checkedList,
     } = this.state;
     const { loading = false, loadingbyCountry = false, loadingAddHoliday = false } = this.props;
+
     return (
       <div className={s.root}>
         <div className={s.setUpWrap}>
@@ -486,9 +478,9 @@ class HollidayCalendar extends Component {
               size="large"
               placeholder="Please select country"
               showArrow
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+              filterOption={(input, option) => {
+                return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+              }}
               className={s.selectCountry}
               defaultValue="India"
               onChange={(value) => this.handleChangeSelect(value)}

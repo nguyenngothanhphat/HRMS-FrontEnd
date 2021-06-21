@@ -4,41 +4,77 @@ import styles from './index.less';
 
 class Increaments extends Component {
   constructor(props) {
+    const {
+      minIncrements: { min, date, notImpose },
+    } = props;
     super(props);
     this.state = {
-      minimumIncrements: '',
-      select: 'day',
+      min,
+      date,
+      notImpose,
     };
   }
 
+  // componentDidMount() {
+  //   const {
+  //     minIncrements: { min, date, notImpose },
+  //   } = this.props;
+  //   this.setState({
+  //     min,
+  //     date,
+  //     notImpose,
+  //   });
+  // }
+
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
-    const { minimumIncrements } = this.state;
+    const { min, notImpose } = this.state;
     this.setState({
-      select: e.target.value,
+      date: e.target.value,
     });
     const data = {
-      select: e.target.value,
-      minimumIncrements,
+      min,
+      date: e.target.value,
+      notImpose,
     };
     onChangeValue(data);
   };
 
   onChange = (value) => {
     const { onChangeValue = () => {} } = this.props;
-    const { select } = this.state;
+    const { date, notImpose } = this.state;
     this.setState({
-      minimumIncrements: value,
+      min: value,
     });
     const data = {
-      select,
-      minimumIncrements: value,
+      min: value,
+      date,
+      notImpose,
+    };
+    onChangeValue(data);
+  };
+
+  onChecked = (e) => {
+    const { onChangeValue = () => {} } = this.props;
+    const { min, date } = this.state;
+    this.setState({
+      notImpose: e.target.checked,
+    });
+    const data = {
+      min,
+      date,
+      notImpose: e.target.checked,
     };
     onChangeValue(data);
   };
 
   render() {
-    const { minimumIncrements, select } = this.state;
+    const { min, date, notImpose } = this.state;
+    const option = [
+      { label: 'Days', value: 'day' },
+      { label: 'Hours', value: 'hour' },
+    ];
+
     return (
       <div className={styles.contentIncrements}>
         <div className={styles.title}>Minimum increments</div>
@@ -49,7 +85,13 @@ class Increaments extends Component {
               <div className={styles.titleText}>
                 Employees can apply for casual leaves in a minimum increments of
               </div>
-              <Checkbox className={styles.checkbox}>Do not impose a minimum increment</Checkbox>
+              <Checkbox
+                defaultChecked={notImpose}
+                onChange={this.onChecked}
+                className={styles.checkbox}
+              >
+                Do not impose a minimum increment
+              </Checkbox>
             </Col>
             <Col span={12}>
               <Row className={styles.inputText} gutter={[24, 0]}>
@@ -57,23 +99,22 @@ class Increaments extends Component {
                   <InputNumber
                     min={0}
                     max={12}
-                    defaultValue={0}
-                    placeholder="day"
-                    formatter={(value) => `${value} day`}
-                    parser={(value) => value.replace('days', '')}
+                    defaultValue={min}
+                    // placeholder="day"
+                    // formatter={(value) => `${value} day`}
+                    // parser={(value) => value.replace('days', '')}
                     onChange={this.onChange}
                   />
                 </Col>
                 <Col>
                   <Radio.Group
                     onChange={this.onChangeRadio}
-                    value={select}
+                    value={date}
+                    options={option}
+                    optionType="button"
                     buttonStyle="solid"
                     className={styles.radioGroup}
-                  >
-                    <Radio.Button value="day">Days</Radio.Button>
-                    <Radio.Button value="hour">Hours</Radio.Button>
-                  </Radio.Group>
+                  />
                 </Col>
               </Row>
             </Col>
