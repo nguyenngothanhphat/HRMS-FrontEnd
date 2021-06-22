@@ -1,11 +1,12 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Typography, Button } from 'antd';
+import { Row, Col, Typography, Button, notification } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import Header from './components/Header';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
 import FieldsComponent from './components/FieldsComponent';
+
 import styles from './index.less';
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
 @connect(({ candidateProfile: { data, jobDetails, checkMandatory, localStep } = {} }) => ({
@@ -57,8 +58,6 @@ class JobDetails extends PureComponent {
 
     const { dateOfJoining = '', noticePeriod = '' } = data;
     let valid = false;
-    console.log('noticePeriod', noticePeriod);
-    console.log('dateOfJoining', dateOfJoining);
     if (dateOfJoining && noticePeriod) {
       valid = true;
     } else {
@@ -79,7 +78,7 @@ class JobDetails extends PureComponent {
   }
 
   _handleSelect = (value, name) => {
-    const { dispatch, checkMandatory, data } = this.props;
+    const { dispatch, data } = this.props;
     const { jobDetails = {} } = this.state;
     jobDetails[name] = value;
     const { dateOfJoining, noticePeriod } = data;
@@ -92,6 +91,9 @@ class JobDetails extends PureComponent {
     }
     if (name === 'prefferedDateOfJoining') {
       newDateOfJoining = value;
+      notification.success({
+        message: 'New Joining Date has been saved and the HR has been notified.',
+      });
     }
 
     dispatch({
@@ -117,12 +119,12 @@ class JobDetails extends PureComponent {
       localStep,
     } = this.props;
 
-    const convert = (str) => {
-      const date = new Date(str);
-      const mnth = `0 ${date.getMonth() + 1}`.slice(-2);
-      const day = `0 ${date.getDate() + 1}`.slice(-2);
-      return [mnth, day, date.getFullYear()].join('/');
-    };
+    // const convert = (str) => {
+    //   const date = new Date(str);
+    //   const mnth = `0 ${date.getMonth() + 1}`.slice(-2);
+    //   const day = `0 ${date.getDate() + 1}`.slice(-2);
+    //   return [mnth, day, date.getFullYear()].join('/');
+    // };
 
     const converted = prefferedDateOfJoining?._d?.toLocaleDateString() || dateOfJoining;
 
@@ -162,7 +164,7 @@ class JobDetails extends PureComponent {
   _renderStatus = () => {
     const { checkMandatory } = this.props;
     const { filledJobDetail } = checkMandatory;
-    return !filledJobDetail ? (
+    return filledJobDetail ? (
       <div className={styles.normalText}>
         <div className={styles.redText}>*</div>
         {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
@@ -198,9 +200,9 @@ class JobDetails extends PureComponent {
                 type="primary"
                 onClick={this.onClickNext}
                 className={`${styles.bottomBar__button__primary} ${
-                  !filledJobDetail ? styles.bottomBar__button__disabled : ''
+                  filledJobDetail ? styles.bottomBar__button__disabled : ''
                 }`}
-                disabled={!filledJobDetail}
+                disabled={filledJobDetail}
               >
                 Next
               </Button>
