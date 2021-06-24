@@ -82,6 +82,7 @@ class EmployerComponent extends PureComponent {
       // processStatus = '',
       candidateInfo: { componentsNumberCount = [] } = {},
       disabled = false,
+      // workDuration = {},
     } = this.props;
     const { checkedList } = this.state;
 
@@ -89,16 +90,22 @@ class EmployerComponent extends PureComponent {
       <div className={styles.EmployerComponent}>
         <div className={styles.titleBar}>
           <span className={styles.title}>Employer {orderNumber} Details</span>
-          <CloseOutlined
-            style={componentsNumberCount.length === 1 ? { display: 'none' } : { display: 'block' }}
-            className={styles.deleteIcon}
-            onClick={() => deleteComponent(orderNumber)}
-          />
+          {!disabled && (
+            <CloseOutlined
+              style={
+                componentsNumberCount.length === 1 ? { display: 'none' } : { display: 'block' }
+              }
+              className={styles.deleteIcon}
+              onClick={() => deleteComponent(orderNumber)}
+            />
+          )}
         </div>
         <Form
           ref={this.formRef}
           initialValues={{
             employerName: employerNameFromServer,
+            // startDate: workDuration.startDate ? moment(workDuration.startDate) : '',
+            // endDate: workDuration.endDate ? moment(workDuration.endDate) : '',
           }}
         >
           <Row gutter={['20', '20']}>
@@ -111,38 +118,29 @@ class EmployerComponent extends PureComponent {
                 />
               </Form.Item>
             </Col>
-            {/* <Col span={7}>
-              <Form.Item label="Start Date" name="startDate">
-                <DatePicker
-                  // disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
-                  disabled={disabled}
-                  placeholder="Start Date"
-                  onChange={(value) => this.workDurationHandle(value, 'startDate')}
-                  format="MM.DD.YY"
-                />
-              </Form.Item>
-            </Col>
-            <Col span={7}>
-              <Form.Item label="End Date" name="endDate">
-                <DatePicker
-                  // disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
-                  disabled={toPresent}
-                  placeholder="End Date"
-                  onChange={(value) => this.workDurationHandle(value, 'endDate')}
-                  format="MM.DD.YY"
-                />
-              </Form.Item>
-              <Form.Item name="toPresent">
-                <Checkbox
-                  defaultChecked={workDuration.toPresent}
-                  disabled={disabled}
-                  onChange={({ target: { checked = false } = {} }) =>
-                    this.workDurationHandle(checked, 'toPresent')}
-                >
-                  To Present
-                </Checkbox>
-              </Form.Item>
-            </Col> */}
+            {/* {disabled && (
+              <>
+                <Col span={24}>
+                  <Form.Item name="toPresent">
+                    <Checkbox defaultChecked={workDuration.toPresent} disabled>
+                      Currently work
+                    </Checkbox>
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Start Date" name="startDate">
+                    <DatePicker disabled placeholder="Start Date" format="MM.DD.YY" />
+                  </Form.Item>
+                </Col>
+                {!workDuration.toPresent && (
+                  <Col span={12}>
+                    <Form.Item label="End Date" name="endDate">
+                      <DatePicker disabled placeholder="End Date" format="MM.DD.YY" />
+                    </Form.Item>
+                  </Col>
+                )}
+              </>
+            )} */}
           </Row>
         </Form>
         <Row gutter={['20', '20']}>

@@ -255,6 +255,7 @@ class CollapseFieldsType2 extends PureComponent {
         >
           <Panel header={this.renderHeader()} className={styles.collapsePanel} key="1">
             <div>{children.map((child) => child)}</div>
+
             <div
               className={
                 disabled

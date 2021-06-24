@@ -302,6 +302,8 @@ class FormTeamMember extends PureComponent {
           documentsByCandidateRD: [],
           documentChecklistSetting: [],
           backgroundRecheck: [],
+          documentList: [],
+          previousEmployment: {},
         },
       },
     });
