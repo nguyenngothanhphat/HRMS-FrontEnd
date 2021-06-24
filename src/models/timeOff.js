@@ -48,7 +48,7 @@ import {
   getEmployeeScheduleByLocation,
   getTimeOffTypeById,
   updateTimeOffType,
-  addTimeOffType,
+  // addTimeOffType,
   // getCalendarHoliday,
   getHolidaysListByLocation,
   getHolidaysByCountry,
@@ -142,7 +142,7 @@ const timeOff = {
           ...payload,
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, data } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -179,7 +179,12 @@ const timeOff = {
       try {
         const tenantId = getCurrentTenant();
         if (status !== '') {
-          const response = yield call(getLeaveRequestOfEmployee, { employee, status, tenantId });
+          const response = yield call(getLeaveRequestOfEmployee, {
+            employee,
+            status,
+            tenantId,
+            company: getCurrentCompany(),
+          });
           const { statusCode, data: leaveRequests = [] } = response;
           if (statusCode !== 200) throw response;
 
@@ -190,7 +195,11 @@ const timeOff = {
           return response;
         }
         if (status === '') {
-          const response = yield call(getLeaveRequestOfEmployee, { employee, tenantId });
+          const response = yield call(getLeaveRequestOfEmployee, {
+            employee,
+            tenantId,
+            company: getCurrentCompany(),
+          });
           const { statusCode, data: allMyLeaveRequests = [] } = response;
           if (statusCode !== 200) throw response;
           yield put({
@@ -224,7 +233,11 @@ const timeOff = {
       try {
         const tenantId = getCurrentTenant();
         if (id !== '') {
-          const response = yield call(getLeaveRequestById, { id, tenantId });
+          const response = yield call(getLeaveRequestById, {
+            id,
+            tenantId,
+            company: getCurrentCompany(),
+          });
           const { statusCode, data: viewingLeaveRequest = [] } = response;
           if (statusCode !== 200) throw response;
           yield put({
@@ -238,7 +251,10 @@ const timeOff = {
     },
     *updateLeaveRequestById({ payload = {} }, { call }) {
       try {
-        const response = yield call(updateLeaveRequestById, payload);
+        const response = yield call(updateLeaveRequestById, {
+          ...payload,
+          company: getCurrentCompany(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         return statusCode;
@@ -300,7 +316,7 @@ const timeOff = {
     },
     *addLeaveRequest({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(addLeaveRequest, payload);
+        const response = yield call(addLeaveRequest, { ...payload, company: getCurrentCompany() });
         const { statusCode, data: addedLeaveRequest = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -318,6 +334,7 @@ const timeOff = {
         const response = yield call(removeLeaveRequestOnDatabase, {
           id,
           tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
         const { statusCode, data: withdrawnLeaveRequest = [] } = response;
         if (statusCode !== 200) throw response;
@@ -336,6 +353,7 @@ const timeOff = {
         const response = yield call(saveDraftLeaveRequest, {
           ...payload,
           tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
         const { statusCode, data: savedDraftLR = {} } = response;
         if (statusCode !== 200) throw response;
@@ -354,6 +372,7 @@ const timeOff = {
         const response = yield call(updateDraftLeaveRequest, {
           ...payload,
           tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
         const { statusCode, data: savedDraftLR = {} } = response;
         if (statusCode !== 200) throw response;
@@ -545,6 +564,7 @@ const timeOff = {
           const response = yield call(getTeamLeaveRequests, {
             status,
             tenantId: getCurrentTenant(),
+            company: getCurrentCompany(),
           });
           const { statusCode, data: teamLeaveRequests = {} } = response;
           // console.log('response', response);
@@ -556,7 +576,10 @@ const timeOff = {
           return response;
         }
         if (status === '') {
-          const response = yield call(getTeamLeaveRequests, { tenantId: getCurrentTenant() });
+          const response = yield call(getTeamLeaveRequests, {
+            tenantId: getCurrentTenant(),
+            company: getCurrentCompany(),
+          });
           const { statusCode, data: allTeamLeaveRequests = {} } = response;
           // console.log('response', response);
           if (statusCode !== 200) throw response;
@@ -634,6 +657,7 @@ const timeOff = {
         const response = yield call(reportingManagerApprove, {
           ...payload,
           tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
         const { statusCode, data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
@@ -655,6 +679,7 @@ const timeOff = {
         const response = yield call(reportingManagerReject, {
           ...payload,
           tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
         const { statusCode, data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
@@ -677,6 +702,7 @@ const timeOff = {
         const response = yield call(approveMultipleTimeoffRequest, {
           ...payload,
           tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
@@ -691,6 +717,7 @@ const timeOff = {
         const response = yield call(rejectMultipleTimeoffRequest, {
           ...payload,
           tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
@@ -707,6 +734,7 @@ const timeOff = {
         const response = yield call(employeeWithdrawInProgress, {
           ...payload,
           tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
@@ -721,6 +749,7 @@ const timeOff = {
         const response = yield call(employeeWithdrawApproved, {
           ...payload,
           tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
@@ -735,6 +764,7 @@ const timeOff = {
         const response = yield call(managerApproveWithdrawRequest, {
           ...payload,
           tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
         const { statusCode, data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;
@@ -756,6 +786,7 @@ const timeOff = {
         const response = yield call(managerRejectWithdrawRequest, {
           ...payload,
           tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
         });
         const { statusCode, data: { leaveRequest = {} } = {} } = response;
         if (statusCode !== 200) throw response;

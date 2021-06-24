@@ -1,3 +1,4 @@
+import { getCurrentCompany } from '@/utils/authority';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { dialog } from '@/utils/utils';
 import {
@@ -58,7 +59,7 @@ const timeOffManagement = {
     // },
     *fetchListTimeOff({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getListTimeOff, payload);
+        const response = yield call(getListTimeOff, { ...payload, company: getCurrentCompany() });
         let { data: listTimeOff = [] } = response;
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
@@ -129,7 +130,7 @@ const timeOffManagement = {
     },
     *fetchRequestById({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getRequestById, payload);
+        const response = yield call(getRequestById, { ...payload, company: getCurrentCompany() });
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
