@@ -33,8 +33,10 @@ class FirstFieldsComponent extends PureComponent {
       }
 
       case 'workLocation': {
-        const getDataLocation = locationList.filter((item) => item.name === value);
-        _handleSelect(getDataLocation[0]._id, fieldName);
+        const getDataLocation = locationList.filter((item) => item.name === value) || [];
+        if (getDataLocation.length > 0) {
+          _handleSelect(getDataLocation[0]._id, fieldName);
+        }
         break;
       }
 

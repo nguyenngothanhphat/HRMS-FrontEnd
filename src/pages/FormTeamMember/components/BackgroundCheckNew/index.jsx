@@ -1,22 +1,19 @@
 /* eslint-disable no-param-reassign */
-import React, { Component } from 'react';
-import { Row, Col, Typography, Button, Spin } from 'antd';
-import { connect, formatMessage } from 'umi';
-import { map } from 'lodash';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { AreaChartOutlined } from '@ant-design/icons';
-import { TypedRule } from 'tslint/lib/rules';
-import SendEmail from './components/SendEmail';
 // import Warning from './components/Warning';
+import { Button, Col, Row, Spin, Typography } from 'antd';
+import { map } from 'lodash';
+import React, { Component } from 'react';
+import { connect, formatMessage } from 'umi';
 import NoteComponent from '../NoteComponent';
-import Title from './components/Title';
 import PROCESS_STATUS from '../utils';
-import ModalContentComponent from './components/ModalContentComponent';
 import CollapseFieldsType1 from './components/CollapseFieldsType1';
-import CollapseFieldsType3 from './components/CollapseFieldsType3';
 import CollapseFieldsType2 from './components/CollapseFieldsType2';
-
+import CollapseFieldsType3 from './components/CollapseFieldsType3';
+import ModalContentComponent from './components/ModalContentComponent';
+import SendEmail from './components/SendEmail';
+import Title from './components/Title';
 import styles from './styles.less';
 
 const note = {
@@ -440,9 +437,8 @@ class BackgroundCheck extends Component {
   // };
 
   // HANDLE CHANGE WHEN CLICK CHECKBOXES OF BLOCK E
-  handleChangeForE = (checkedList, orderNumber, employerName, workDuration) => {
+  handleChangeForE = (checkedList, orderNumber, employerName) => {
     // console.log('employerName', employerName);
-    const { startDate = '', endDate = '', toPresent = false } = workDuration;
     const { dispatch } = this.props;
     const { newPoe: newPoeState } = this.state;
     let newPoeFinal = [];
@@ -450,9 +446,6 @@ class BackgroundCheck extends Component {
       const newPoe1 = newPoeState;
       const addPoe = {
         employer: employerName,
-        startDate,
-        endDate,
-        toPresent,
         checkedList,
       };
       newPoe1.push(addPoe);
@@ -464,9 +457,6 @@ class BackgroundCheck extends Component {
               ...value,
               employer: employerName,
               checkedList,
-              startDate,
-              endDate,
-              toPresent,
             }
           : value,
       );
@@ -1106,6 +1096,32 @@ class BackgroundCheck extends Component {
     this.handleUpdateByHR(poe, checkedListA, checkedListB, checkedListC, newDocument);
   };
 
+  // get document list by country
+  getDocumentListByCountry = (list) => {
+    const { tempData = {} } = this.props;
+    const { workLocation = {} } = tempData;
+
+    if (workLocation) {
+      return list.map((item) => {
+        const { type = '', name = '', data = [] } = item;
+        const newData = data.filter(({ country = [] }) => {
+          return (
+            country.includes(workLocation?.headQuarterAddress?.country?._id) ||
+            country.includes(workLocation?.headQuarterAddress?.country) ||
+            country.length === 0
+          );
+        });
+
+        return {
+          type,
+          name,
+          data: newData,
+        };
+      });
+    }
+    return list;
+  };
+
   // main
   render() {
     const {
@@ -1129,6 +1145,7 @@ class BackgroundCheck extends Component {
       loadingUpdateByHR,
     } = this.props;
 
+    const documentListByCountry = this.getDocumentListByCountry(documentList);
     const { openModal, identityProof, addressProof, educational, refreshBlockE } = this.state;
     return (
       <div>
@@ -1140,8 +1157,8 @@ class BackgroundCheck extends Component {
               {identityProof.length > 0 &&
                 addressProof.length > 0 &&
                 educational.length > 0 &&
-                documentList.length > 0 &&
-                documentList.map((item) => {
+                documentListByCountry.length > 0 &&
+                documentListByCountry.map((item) => {
                   const { type = '', name = '', data = [] } = item;
                   const title = `Type ${type}: ${name}`;
                   if (type !== 'D' && type !== 'E' && data.length !== 0) {
@@ -1182,8 +1199,8 @@ class BackgroundCheck extends Component {
               })}
 
               {poe.length !== 0 && // only render when poe has already got the data
-                documentList.length > 0 &&
-                documentList.map((item) => {
+                documentListByCountry.length > 0 &&
+                documentListByCountry.map((item) => {
                   const { type = '', name = '', data = [] } = item;
                   const title = `Type ${type}: ${name}`;
 

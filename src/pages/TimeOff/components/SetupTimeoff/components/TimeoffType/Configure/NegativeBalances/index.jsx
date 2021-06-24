@@ -4,12 +4,26 @@ import styles from './index.less';
 
 class BaseAccual extends Component {
   constructor(props) {
+    const {
+      negativeBalance: { unto, date, unlimited },
+    } = props;
     super(props);
     this.state = {
-      unto: '',
-      date: 'day',
-      unlimited: false,
+      unto,
+      date,
+      unlimited,
     };
+  }
+
+  componentDidMount() {
+    const {
+      negativeBalance: { unto, date, unlimited },
+    } = this.props;
+    this.setState({
+      unto,
+      date,
+      unlimited,
+    });
   }
 
   onChangeRadio = (e) => {
@@ -55,7 +69,12 @@ class BaseAccual extends Component {
   };
 
   render() {
-    const { unto, date } = this.state;
+    const { date, unto, unlimited } = this.state;
+    const option = [
+      { label: 'Days', value: 'day' },
+      { label: 'Hours', value: 'hour' },
+    ];
+    // const {unto, date, unlimited } = this.props;
     return (
       <div className={styles.contentNegative}>
         <div className={styles.title}>Negative balances</div>
@@ -66,7 +85,11 @@ class BaseAccual extends Component {
               <div className={styles.titleText}>
                 Employees can apply for casual leaves that make their balances negative unto
               </div>
-              <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
+              <Checkbox
+                className={styles.checkbox}
+                defaultChecked={unlimited}
+                onChange={this.onChangeSelect}
+              >
                 Unlimited negative balances
               </Checkbox>
             </Col>
@@ -76,10 +99,9 @@ class BaseAccual extends Component {
                   <InputNumber
                     min={0}
                     max={12}
-                    defaultValue={0}
-                    placeholder="day"
-                    formatter={(value) => `${value} day`}
-                    parser={(value) => value.replace('days', '')}
+                    defaultValue={unto}
+                    // formatter={(value) => `${value} day`}
+                    // parser={(value) => value.replace('days', '')}
                     onChange={this.onChange}
                   />
                 </Col>
@@ -87,12 +109,11 @@ class BaseAccual extends Component {
                   <Radio.Group
                     onChange={this.onChangeRadio}
                     value={date}
+                    options={option}
+                    optionType="button"
                     buttonStyle="solid"
                     className={styles.radioGroup}
-                  >
-                    <Radio.Button value="day">Days</Radio.Button>
-                    <Radio.Button value="hour">Hours</Radio.Button>
-                  </Radio.Group>
+                  />
                 </Col>
               </Row>
             </Col>

@@ -105,9 +105,9 @@ const employeesManagement = {
         dialog(errors);
       }
     },
-    *fetchRolesList(_, { call, put }) {
+    *fetchRolesList({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getRoleList, {});
+        const response = yield call(getRoleList, payload);
         const { statusCode, data: rolesList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { rolesList } });

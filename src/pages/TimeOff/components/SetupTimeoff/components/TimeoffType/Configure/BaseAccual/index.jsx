@@ -4,18 +4,21 @@ import styles from './index.less';
 
 class BaseAccual extends Component {
   constructor(props) {
+    const {
+      // baseAccrual,
+      baseAccrual: { date, time, unlimited },
+    } = props;
     super(props);
     this.state = {
-      time: '',
-      date: 'day',
-      unlimited: false,
+      time,
+      date,
+      unlimited,
     };
   }
 
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
     const { time, unlimited } = this.state;
-    console.log(e);
     this.setState({
       date: e.target.value,
     });
@@ -56,7 +59,12 @@ class BaseAccual extends Component {
   };
 
   render() {
-    const { accrualRate, date } = this.state;
+    // const { date, time, unlimited } = this.state;
+    const option = [
+      { label: 'Days', value: 'day' },
+      { label: 'Hours', value: 'hour' },
+    ];
+    const { date, time, unlimited } = this.state;
     return (
       <div className={styles.contentBaseAccrual}>
         <div className={styles.title}>Base accrual rate</div>
@@ -68,8 +76,12 @@ class BaseAccual extends Component {
                 <div className={styles.titleText}>
                   During the employee’s 1st year of employment, total casual leave accrued
                 </div>
-                <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
-                  Unlimited causal leave
+                <Checkbox
+                  className={styles.checkbox}
+                  defaultChecked={unlimited}
+                  onChange={(e) => this.onChangeSelect(e)}
+                >
+                  Unlimited casual leave
                 </Checkbox>
               </div>
             </Col>
@@ -79,11 +91,13 @@ class BaseAccual extends Component {
                   <InputNumber
                     min={0}
                     max={date === 'day' ? 365 : 12}
-                    defaultValue={0}
-                    placeholder={date === 'day' ? 'days' : 'hours'}
-                    formatter={(value) => (date === 'day' ? `${value} days` : `${value} hours`)}
-                    parser={(value) =>
-                      date === 'day' ? value.replace('days', '') : value.replace('hours', '')}
+                    // defaultValue={0}
+                    defaultValue={time}
+                    // placeholder={date === 'day' ? 'days' : 'hours'}
+                    // formatter={(value) => (date === 'day' ? `${value} days` : `${value} hours`)}
+                    // parser={(value) =>
+                    //   date === 'day' ? value.replace('days', '') : value.replace('hours', '')
+                    // }
                     onChange={this.onChange}
                   />
                 </Col>
@@ -91,14 +105,12 @@ class BaseAccual extends Component {
                   {/* <div className={styles.radioTime}> */}
                   <Radio.Group
                     onChange={this.onChangeRadio}
+                    options={option}
                     value={date}
+                    optionType="button"
                     buttonStyle="solid"
                     className={styles.radioGroup}
-                  >
-                    <Radio.Button value="day">Days</Radio.Button>
-                    <Radio.Button value="hour">Hours</Radio.Button>
-                  </Radio.Group>
-                  {/* </div> */}
+                  />
                 </Col>
               </Row>
             </Col>

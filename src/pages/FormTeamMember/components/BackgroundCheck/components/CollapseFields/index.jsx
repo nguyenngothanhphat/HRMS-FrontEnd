@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { Checkbox, Collapse, Space } from 'antd';
 import React, { PureComponent } from 'react';
-import { Collapse, Space, Checkbox, Typography } from 'antd';
-import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import InputField from '../InputField';
 import styles from './index.less';
 
@@ -73,7 +73,7 @@ class CollapseField extends PureComponent {
                 Type {item.type}: {item.name}
               </Checkbox>
             }
-            extra="[Can submit any of the below other than (*)mandatory]"
+            extra="[All Mandatory documents will need to be submitted. One or more of the optional documents can be submitted]"
           >
             {item.type === 'D' ? (
               <InputField

@@ -116,9 +116,9 @@ class CollapseFieldsType2 extends PureComponent {
   };
 
   // eslint-disable-next-line no-unused-vars
-  getDataFromFields = (orderNumber, employerName, workDuration, checkedList) => {
+  getDataFromFields = (orderNumber, employerName, checkedList) => {
     const { handleChange = () => {} } = this.props;
-    handleChange(checkedList, orderNumber, employerName, workDuration);
+    handleChange(checkedList, orderNumber, employerName);
   };
 
   renderHeader = () => {

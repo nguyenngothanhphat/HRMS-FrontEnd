@@ -196,7 +196,7 @@ class EditUserModal extends PureComponent {
       return location.company?._id === companyId || location.company === companyId;
     });
 
-    const roleList = roles.map((role) => role._id);
+    const roleList = roles.map((role) => role.idSync);
     const {
       joinDate = '',
       location: { _id: locationName = '' } = {},

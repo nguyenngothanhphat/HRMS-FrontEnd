@@ -1,12 +1,16 @@
+/* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import { Radio, Row, Col } from 'antd';
 import styles from './index.less';
 
 class HireProbation extends Component {
   constructor(props) {
+    const {
+      hireProbation: { newHire },
+    } = props;
     super(props);
     this.state = {
-      newHire: true,
+      newHire,
     };
   }
 
@@ -23,6 +27,13 @@ class HireProbation extends Component {
 
   render() {
     const { newHire } = this.state;
+    const option = [
+      { label: 'Yes', value: true },
+      { label: 'No', value: false },
+    ];
+    // const {
+    //   hireProbation: { newHire },
+    // } = this.props;
     return (
       <div className={styles.contentHireProration}>
         <div className={styles.title}>New hire proration</div>
@@ -38,12 +49,11 @@ class HireProbation extends Component {
               <Radio.Group
                 onChange={this.onChangeRadio}
                 value={newHire}
+                options={option}
+                optionType="button"
                 buttonStyle="solid"
                 className={styles.radioGroup}
-              >
-                <Radio.Button value>Yes</Radio.Button>
-                <Radio.Button value={false}>No</Radio.Button>
-              </Radio.Group>
+              />
             </Col>
           </Row>
         </div>

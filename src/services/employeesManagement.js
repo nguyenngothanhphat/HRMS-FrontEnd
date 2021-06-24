@@ -21,9 +21,10 @@ export async function getLocationList(payload) {
   });
 }
 
-export async function getRoleList() {
-  return request('/api/role/list', {
+export async function getRoleList(payload) {
+  return request('/api/roletenant/list', {
     method: 'POST',
+    data: payload,
   });
 }
 

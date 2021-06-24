@@ -4,38 +4,52 @@ import styles from './index.less';
 
 class WaitingPeriod extends Component {
   constructor(props) {
+    const {
+      waitingPeriod: { afterAmount, date, accrue },
+    } = props;
     super(props);
     this.state = {
-      afterAmount: '',
-      date: 'day',
-      unlimited: false,
+      afterAmount,
+      date,
+      accrue,
     };
   }
 
+  // componentDidMount() {
+  //   const {
+  //     waitingPeriod: { afterAmount, date, accrue },
+  //   } = this.props;
+  //   this.setState({
+  //     afterAmount,
+  //     date,
+  //     accrue,
+  //   });
+  // }
+
   onChangeRadio = (e) => {
     const { onChangeValue = () => {} } = this.props;
-    const { afterAmount, unlimited } = this.state;
+    const { afterAmount, accrue } = this.state;
     this.setState({
       date: e.target.value,
     });
     const data = {
       date: e.target.value,
       afterAmount,
-      unlimited,
+      accrue,
     };
     onChangeValue(data);
   };
 
   onChange = (value) => {
     const { onChangeValue = () => {} } = this.props;
-    const { date, unlimited } = this.state;
+    const { date, accrue } = this.state;
     this.setState({
       afterAmount: value,
     });
     const data = {
       date,
       afterAmount: value,
-      unlimited,
+      accrue,
     };
     onChangeValue(data);
   };
@@ -44,18 +58,25 @@ class WaitingPeriod extends Component {
     const { onChangeValue = () => {} } = this.props;
     const { date, afterAmount } = this.state;
     this.setState({
-      unlimited: e.target.checked,
+      accrue: e.target.checked,
     });
     const data = {
       date,
       afterAmount,
-      unlimited: e.target.checked,
+      accrue: e.target.checked,
     };
     onChangeValue(data);
   };
 
   render() {
-    const { date } = this.state;
+    const { date, afterAmount, accrue } = this.state;
+    const option = [
+      { label: 'Days', value: 'day' },
+      { label: 'Hours', value: 'hour' },
+    ];
+    // const {
+    //   waitingPeriod: { afterAmount, date, accrue },
+    // } = this.props;
     return (
       <div className={styles.contentWaiting}>
         <div className={styles.title}>Waiting periods</div>
@@ -66,7 +87,11 @@ class WaitingPeriod extends Component {
               <div className={styles.titleText}>
                 New employees can apply for casual leaves after
               </div>
-              <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
+              <Checkbox
+                defaultChecked={accrue}
+                className={styles.checkbox}
+                onChange={this.onChangeSelect}
+              >
                 Accrue casual leave during this period
               </Checkbox>
             </Col>
@@ -76,10 +101,11 @@ class WaitingPeriod extends Component {
                   <InputNumber
                     min={0}
                     max={12}
-                    defaultValue={0}
-                    placeholder="day"
-                    formatter={(value) => `${value} day`}
-                    parser={(value) => value.replace('days', '')}
+                    // defaultValue={0}
+                    defaultValue={afterAmount}
+                    // placeholder="day"
+                    // formatter={(value) => `${value} day`}
+                    // parser={(value) => value.replace('days', '')}
                     onChange={this.onChange}
                   />
                 </Col>
@@ -87,12 +113,11 @@ class WaitingPeriod extends Component {
                   <Radio.Group
                     onChange={this.onChangeRadio}
                     value={date}
+                    options={option}
+                    optionType="button"
                     buttonStyle="solid"
                     className={styles.radioGroup}
-                  >
-                    <Radio.Button value="day">Days</Radio.Button>
-                    <Radio.Button value="hour">Hours</Radio.Button>
-                  </Radio.Group>
+                  />
                 </Col>
               </Row>
             </Col>

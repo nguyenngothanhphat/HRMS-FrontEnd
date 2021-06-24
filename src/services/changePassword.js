@@ -2,7 +2,7 @@ import request from '@/utils/request';
 
 export async function forgotPasswordAPI(params) {
   return request(
-    '/api/password/recover',
+    '/api/password/recover-tenant',
     {
       method: 'POST',
       data: params,
@@ -13,7 +13,7 @@ export async function forgotPasswordAPI(params) {
 
 export async function resetPasswordAPI(params) {
   return request(
-    '/api/password/reset',
+    '/api/password/reset-tenant',
     {
       method: 'POST',
       data: params,
@@ -23,7 +23,7 @@ export async function resetPasswordAPI(params) {
 }
 
 export async function updatePasswordAPI(params) {
-  return request('/api/password-update', {
+  return request('/api/password-update-tenant', {
     method: 'POST',
     data: params,
   });

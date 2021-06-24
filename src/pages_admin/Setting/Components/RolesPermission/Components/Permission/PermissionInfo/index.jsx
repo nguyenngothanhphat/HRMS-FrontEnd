@@ -26,9 +26,8 @@ class PermissionInfo extends PureComponent {
       type: 'adminSetting/fetchPermissionByIdRole',
       payload: { id },
     }).then((resp) => {
-      const { permissions } = resp;
-      const getData = permissions.map((item) => item._id);
-      this.setState({ listRowKeys: getData, currentId: id });
+      const { permissions = [] } = resp;
+      this.setState({ listRowKeys: permissions, currentId: id });
     });
   }
 
@@ -40,9 +39,8 @@ class PermissionInfo extends PureComponent {
         type: 'adminSetting/fetchPermissionByIdRole',
         payload: { id },
       }).then((resp) => {
-        const { permissions } = resp;
-        const getData = permissions.map((item) => item._id);
-        this.setState({ listRowKeys: getData, currentId: id });
+        const { permissions = [] } = resp;
+        this.setState({ listRowKeys: permissions, currentId: id });
       });
     }
   }

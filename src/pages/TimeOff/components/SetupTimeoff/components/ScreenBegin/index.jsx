@@ -1,9 +1,21 @@
 import { Button, Col, Row } from 'antd';
 import React, { PureComponent } from 'react';
 import icon from '@/assets/settingTimeoff.svg';
+import { connect } from 'umi';
 import t from './index.less';
 
+@connect()
 class ScreenBegin extends PureComponent {
+  componentWillUnmount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        pageStart: false,
+      },
+    });
+  }
+
   render() {
     const { handleChange = () => {} } = this.props;
 

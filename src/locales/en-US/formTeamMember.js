@@ -159,7 +159,7 @@ export default {
   'component.eligibilityDocs.headerReminder': 'To be uploaded by candidate only',
   'component.eligibilityDocs.title': 'Background Check',
   'component.eligibilityDocs.subtitle':
-    'All documents supporting candidate’s employment eligibility will be displayed here',
+    'Please choose all the acceptable documents that the candidate can provide. The mandatory documents are required and cannot be deselected.',
   'component.eligibilityDocs.emailLabel': 'Personal email id of the joinee',
   'component.eligibilityDocs.sendEmail': 'Send email',
   'component.eligibilityDocs.markAsDone': 'Mark as done',

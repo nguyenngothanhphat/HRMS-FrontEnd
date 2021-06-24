@@ -119,9 +119,6 @@ class DirectoryComponent extends PureComponent {
     this.initTabId();
     const { dispatch } = this.props;
     dispatch({
-      type: 'employeesManagement/fetchRolesList',
-    });
-    dispatch({
       type: 'employeesManagement/fetchCompanyList',
     });
   };

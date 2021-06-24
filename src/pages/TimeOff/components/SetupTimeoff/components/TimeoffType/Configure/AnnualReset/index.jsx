@@ -1,31 +1,52 @@
 import React, { Component } from 'react';
-import { Checkbox, Row, Col, Select } from 'antd';
+import { Checkbox, Row, Col, DatePicker } from 'antd';
+import moment from 'moment';
 import styles from './index.less';
 
+const dateFormat = 'MM-DD-YYYY';
 class AnnualReset extends Component {
   constructor(props) {
+    const {
+      annualReset: { resetAnnually, resetDate },
+    } = props;
     super(props);
     this.state = {
-      annualReset: '',
-      resetAnnually: false,
+      resetDate: moment(resetDate).locale('en').format(dateFormat),
+      resetAnnually,
     };
   }
 
-  onChangeSelect = (e) => {
+  onChangeSelect = (value) => {
     const { onChangeValue = () => {} } = this.props;
-    const { annualReset } = this.state;
+    const { resetAnnually } = this.state;
+    this.setState({
+      resetDate: value,
+    });
+    const data = {
+      resetAnnually,
+      resetDate: value,
+    };
+    onChangeValue(data);
+  };
+
+  onChangeCheck = (e) => {
+    e.preventDefault();
+    const { onChangeValue } = this.props;
+    const { resetDate } = this.state;
     this.setState({
       resetAnnually: e.target.checked,
     });
     const data = {
-      annualReset,
-      unlimited: e.target.checked,
+      resetAnnually: e.target.checked,
+      resetDate,
     };
     onChangeValue(data);
   };
 
   render() {
-    const { resetAnnually } = this.state;
+    const { resetDate, resetAnnually } = this.state;
+
+    const dateReset = moment(resetDate).locale('en').format(dateFormat);
     return (
       <div className={styles.contentAnnual}>
         <div className={styles.title}>Annual reset</div>
@@ -34,12 +55,22 @@ class AnnualReset extends Component {
           <Row gutter={[20, 0]}>
             <Col span={10}>
               <div className={styles.titleText}>Employees Casual leave balance resets to 0 on</div>
-              <Checkbox className={styles.checkbox} onChange={this.onChangeSelect}>
+              <Checkbox
+                defaultChecked={resetAnnually}
+                className={styles.checkbox}
+                onChange={(e) => this.onChangeCheck(e)}
+              >
                 Reset annually
               </Checkbox>
             </Col>
             <Col span={12}>
-              <Select className={styles.select} placeholder="Select a reset date" />
+              {/* <Select className={styles.select} placeholder="Select a reset date" /> */}
+              <DatePicker
+                className={styles.select}
+                format={dateFormat}
+                value={moment(dateReset, dateFormat)}
+                onChange={this.onChangeSelect}
+              />
             </Col>
           </Row>
         </div>
