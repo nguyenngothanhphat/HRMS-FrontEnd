@@ -45,7 +45,7 @@ const steps = [
   },
   {
     id: 4,
-    title: 'Background Check',
+    title: 'Document Verification',
     content: 'Fourth-content',
   },
   {

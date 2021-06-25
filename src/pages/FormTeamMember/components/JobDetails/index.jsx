@@ -385,7 +385,7 @@ class JobDetails extends PureComponent {
         payload: {
           tempData: {
             ...tempData,
-            prefferedDateOfJoining,
+            dateOfJoining: prefferedDateOfJoining,
           },
         },
       });
@@ -397,12 +397,21 @@ class JobDetails extends PureComponent {
     const {
       currentStep,
       data: { _id },
-      tempData: { position, employeeType, workLocation, department, title, reportingManager },
+      tempData: {
+        position,
+        employeeType,
+        workLocation,
+        department,
+        title,
+        reportingManager,
+        dateOfJoining,
+      },
     } = this.state;
     const { dispatch } = this.props;
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
+        dateOfJoining,
         position,
         employeeType: employeeType ? employeeType._id : '',
         workLocation: workLocation ? workLocation._id : '',
@@ -590,12 +599,12 @@ class JobDetails extends PureComponent {
         title,
         workLocation,
         reportingManager,
-        prefferedDateOfJoining,
         candidatesNoticePeriod,
       },
       data,
     } = this.state;
     const { loading1, loading2, loading3, loading, loading4, processStatus } = this.props;
+    const { dateOfJoining } = data;
     return (
       <>
         <Row gutter={[24, 0]}>
@@ -616,7 +625,7 @@ class JobDetails extends PureComponent {
                     employeeType={employeeType}
                     position={position}
                     data={data}
-                    // processStatus={processStatus}
+                    processStatus={processStatus}
                     disabled={this.disableEdit()}
                   />
                   <FieldsComponent
@@ -632,7 +641,7 @@ class JobDetails extends PureComponent {
                     title={title}
                     reportingManager={reportingManager}
                     candidatesNoticePeriod={candidatesNoticePeriod}
-                    prefferedDateOfJoining={prefferedDateOfJoining}
+                    prefferedDateOfJoining={dateOfJoining}
                     _handleSelect={this._handleSelect}
                     loading1={loading1}
                     loading2={loading2}
