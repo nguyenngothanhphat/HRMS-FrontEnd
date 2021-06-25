@@ -10,7 +10,7 @@ import ResetPasswordModal from '../ResetPasswordModal';
 import styles from './index.less';
 
 const roleTags = [
-  { name: 'ADMIN-CLA', color: 'magenta' },
+  { name: 'REGION-HEAD', color: 'magenta' },
   { name: 'CANDIDATE', color: 'gold' },
   { name: 'CUSTOMER', color: 'orange' },
   { name: 'EMPLOYEE', color: 'blue' },

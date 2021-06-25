@@ -34,7 +34,7 @@ class TimeOff extends PureComponent {
     const hrManager = roles.find((item) => item === 'hr-manager');
     const manager = roles.find((item) => item === 'manager');
     const employee = roles.find((item) => item === 'employee');
-    const admincla = roles.find((item) => item === 'admin-cla');
+    const admincla = roles.find((item) => item === 'region-head');
 
     let role = '';
     role = hrManager || manager || employee || 'employee';
@@ -49,7 +49,7 @@ class TimeOff extends PureComponent {
       dispatch({
         type: 'timeOff/save',
         payload: {
-          currentUserRole: 'ADMIN-CLA',
+          currentUserRole: 'REGION-HEAD',
         },
       });
     }
