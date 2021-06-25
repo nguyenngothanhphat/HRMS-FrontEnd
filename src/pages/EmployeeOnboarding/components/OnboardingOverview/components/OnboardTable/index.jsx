@@ -115,11 +115,20 @@ class OnboardTable extends Component {
       ACCEPTED_FINAL_OFFERS,
       RENEGOTIATE_FINAL_OFFERS,
       ACCEPTED__PROVISIONAL_OFFERS,
+      ALL,
     } = TABLE_TYPE;
 
     let actionContent = null;
 
     switch (type) {
+      case ALL: {
+        actionContent = (
+          <>
+            <span>View</span>
+          </>
+        );
+        break;
+      }
       case PROVISIONAL_OFFERS_DRAFTS: {
         actionContent = (
           <>

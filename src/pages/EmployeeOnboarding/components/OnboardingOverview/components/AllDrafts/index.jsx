@@ -11,6 +11,7 @@ import { PROCESS_STATUS } from '@/models/onboard';
 import styles from './index.less';
 import ProvisionalOfferDrafts from './components/ProvisionalOfferDrafts';
 import FinalOfferDrafts from './components/FinalOfferDrafts';
+import AllTab from './components/AllTab';
 
 const { TabPane } = Tabs;
 
@@ -20,10 +21,11 @@ const { TabPane } = Tabs;
 class AllDrafts extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
-    const { PROVISIONAL_OFFER_DRAFT } = PROCESS_STATUS;
+    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT } = PROCESS_STATUS;
 
     if (dispatch) {
-      this.fetchOfferDraft(PROVISIONAL_OFFER_DRAFT);
+      // this.fetchOfferDraft(PROVISIONAL_OFFER_DRAFT);
+      this.fetchAllDraft([PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT]);
     }
   }
 
@@ -37,9 +39,23 @@ class AllDrafts extends PureComponent {
     });
   };
 
+  fetchAllDraft = (status) => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'onboard/fetchOnboardList',
+      payload: {
+        processStatus: status,
+      },
+    });
+  };
+
   onChangeTab = (key) => {
     const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT } = PROCESS_STATUS;
     if (key === '1') {
+      // this.fetchOfferDraft(PROVISIONAL_OFFER_DRAFT);
+      this.fetchAllDraft([PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT]);
+    } else if (key === '2') {
       this.fetchOfferDraft(PROVISIONAL_OFFER_DRAFT);
     } else {
       this.fetchOfferDraft(FINAL_OFFERS_DRAFT);
@@ -48,9 +64,9 @@ class AllDrafts extends PureComponent {
 
   render() {
     const { allDrafts = {} } = this.props;
-    // console.log(allDrafts);
+
     const { provisionalOfferDrafts = [], finalOfferDrafts = [] } = allDrafts;
-    // console.log(provisionalOfferDrafts);
+    const listAll = [...provisionalOfferDrafts, ...finalOfferDrafts];
 
     return (
       // <OnboardTable
@@ -63,15 +79,22 @@ class AllDrafts extends PureComponent {
           <Tabs defaultActiveKey="1" onChange={this.onChangeTab}>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
-              tab="provisional offer drafts"
+              tab="all"
               key="1"
+            >
+              <AllTab list={listAll} />
+            </TabPane>
+            <TabPane
+              // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
+              tab="provisional offer drafts"
+              key="2"
             >
               <ProvisionalOfferDrafts list={provisionalOfferDrafts} />
             </TabPane>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
               tab="final offers draft"
-              key="2"
+              key="3"
             >
               <FinalOfferDrafts list={finalOfferDrafts} />
             </TabPane>

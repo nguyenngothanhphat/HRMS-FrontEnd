@@ -469,6 +469,12 @@ const onboard = {
             page: 1,
             tenantId,
           };
+        } else if (Array.isArray(processStatus)) {
+          req = {
+            processStatus,
+            page: 1,
+            tenantId,
+          };
         } else {
           req = {
             processStatus: [processStatus],
