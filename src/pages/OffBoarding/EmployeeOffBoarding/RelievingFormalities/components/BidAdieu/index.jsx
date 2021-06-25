@@ -28,8 +28,8 @@ export default class BidAdieu extends PureComponent {
   };
 
   sendMessage = () => {
-    const { goodbyeContent } = this.state;
-    console.log('SENT MESSAGE: ', goodbyeContent);
+    // const { goodbyeContent } = this.state;
+    // console.log('SENT MESSAGE: ', goodbyeContent);
   };
 
   render() {

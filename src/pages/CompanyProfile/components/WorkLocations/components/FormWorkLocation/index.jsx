@@ -81,7 +81,7 @@ class FormWorkLocation extends Component {
       field = {},
       name = '',
     } = this.props;
-    console.log('filed', field);
+
     const listState = this.findListState(country) || [];
     const itemLocation = listLocation[field.name] || {};
     return (

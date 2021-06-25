@@ -340,13 +340,6 @@ const routes = [
             hideInMenu: true,
             authority: ['admin-sa', 'owner'],
           },
-          // {
-          //   path: '/continue-company-profile',
-          //   component: './BackToCompanyProfile',
-          //   name: 'Company Profile',
-          //   icon: '/assets/images/menuIcons/members.svg',
-          //   authority: ['admin-csa'],
-          // },
           {
             // path: '/time-off/new-leave-request',
             path: '/time-off/:action(new-compoff-request)',

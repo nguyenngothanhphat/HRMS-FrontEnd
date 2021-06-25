@@ -67,7 +67,7 @@ const FormProject = (props) => {
                 return;
               }
               const { value = '', children = '' } = option;
-              console.log(option);
+              // console.log(option);
               updateInfo('role', children);
             }}
           >

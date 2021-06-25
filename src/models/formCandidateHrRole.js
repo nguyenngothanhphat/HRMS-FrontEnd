@@ -1187,9 +1187,9 @@ const candidateInfo = {
       let response = {};
       try {
         response = yield call(getAdditionalQuestion, payload);
-        const { statusCode, data } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        console.log(response);
+
         // put({
         //   type: 'updateAdditionalQuestion',
         //   payload: data

@@ -61,7 +61,6 @@ class BottomBar extends PureComponent {
   };
 
   // shouldComponentUpdate(nextProps) {
-  //   console.log(nextProps);
   //   return (
   //     nextProps.checkCandidateMandatory.filledCandidateBasicInformation !==
   //     this.props.checkCandidateMandatory.filledCandidateBasicInformation
@@ -69,8 +68,6 @@ class BottomBar extends PureComponent {
   // }
 
   // componentDidUpdate(prevProps) {
-  //   console.log(this.props.checkCandidateMandatory.filledCandidateBasicInformation);
-  //   console.log(prevProps.checkCandidateMandatory.filledCandidateBasicInformation);
   //   if (
   //     !equal(
   //       this.props.checkCandidateMandatory.filledCandidateBasicInformation,
@@ -79,7 +76,6 @@ class BottomBar extends PureComponent {
   //   ) {
   //     // Check if it's a new user, you can also use some unique property, like the ID  (this.props.user.id !== prevProps.user.id)
   //     // this.updateUser();
-  //     console.log('UPDATE');
   //     this.onClickNext();
   //   }
   // }
@@ -114,7 +110,6 @@ class BottomBar extends PureComponent {
         </div>
       );
     }
-    console.log('currentPage', currentPage);
     if (currentPage === HR.jobDetails) {
       return !filledJobDetail ? (
         <div className={styles.normalText}>
@@ -177,7 +172,6 @@ class BottomBar extends PureComponent {
     const { currentPage, checkMandatory, checkCandidateMandatory } = this.props;
     const { filledBasicInformation, filledJobDetail, filledCustomField } = checkMandatory;
     const { filledCandidateBasicInformation, filledCandidateJobDetails } = checkCandidateMandatory;
-    // console.log(`hihi ${filledCandidateBasicInformation}`);
     if (currentPage === HR.basicInformation) {
       return (
         <Button
@@ -193,8 +187,6 @@ class BottomBar extends PureComponent {
       );
     }
     if (currentPage === CANDIDATE.basicInformation) {
-      // console.log('abcsd');
-
       return (
         <Button
           type="primary"

@@ -48,8 +48,7 @@ class NonExtempNoticeForm extends Component {
   };
 
   onFinishFailed = (errorInfo) => {
-    // eslint-disable-next-line no-console
-    console.log('Failed:', errorInfo);
+
   };
 
   setValueForForm = (data) => {

@@ -77,7 +77,7 @@ class TimeOffRequestTab extends PureComponent {
       currentUserRole = '',
     } = this.props;
     const { user: { currentUser: { employee: { _id = '' } = {} } = {} } = {} } = this.props;
-    console.log('_id', _id);
+
     let status = '';
     if (tabType === 1) {
       if (filterTab === '1') {

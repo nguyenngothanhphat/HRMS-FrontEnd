@@ -65,7 +65,7 @@ class ButtonSet1On1 extends Component {
     const { listMeetingTime = [], loading, itemRequest, listAssignee = [] } = this.props;
     const { employee: { generalInfo: { firstName: nameEmployee = '' } = {} } = {}, nodeStep = 0 } =
       itemRequest;
-    console.log(itemRequest);
+
     return (
       <div className={styles.WhatNext}>
         <div className={styles.header}>

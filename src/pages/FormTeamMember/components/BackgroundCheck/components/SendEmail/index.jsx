@@ -101,7 +101,7 @@ const SendEmail = ({
                 className={style.linkForm}
                 initialValues={{ generateLink: generateLink || initialGenerateLink }}
                 onFinish={(values) => handleMarkAsDone(values)}
-                onChange={(e) => console.log(e)}
+                // onChange={(e) => console.log(e)}
               >
                 <div className={style.wrapperInput}>
                   <Form.Item name="generateLink">

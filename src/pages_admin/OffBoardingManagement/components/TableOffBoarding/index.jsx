@@ -109,8 +109,6 @@ class TableOffBoarding extends PureComponent {
   // };
 
   onSelectChange = (selectedRowKeys) => {
-    // eslint-disable-next-line no-console
-    console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
   };
 

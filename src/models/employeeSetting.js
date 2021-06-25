@@ -283,7 +283,6 @@ const employeeSetting = {
           tenantId: getCurrentTenant(),
         });
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -326,7 +325,6 @@ const employeeSetting = {
           tenantId: getCurrentTenant(),
         });
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
@@ -371,7 +369,6 @@ const employeeSetting = {
           tenantId: getCurrentTenant(),
         });
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { currentTemplate: data } });
       } catch (errors) {
@@ -385,9 +382,7 @@ const employeeSetting = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
-        console.log({ ...payload, company: getCurrentCompany(), tenantId: getCurrentTenant() });
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         notification.success({
           message: 'Remove template successfully',
@@ -408,7 +403,6 @@ const employeeSetting = {
           tenantId: getCurrentTenant(),
         });
         const { statusCode, data } = response;
-        console.log('data', data);
         if (statusCode !== 200) throw response;
         if (!isUploadSignature) {
           notification.success({
@@ -440,7 +434,6 @@ const employeeSetting = {
           tenantId: getCurrentTenant(),
         });
         const { statusCode, data } = response;
-        console.log(response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { newTemplate: data } });
         return statusCode;

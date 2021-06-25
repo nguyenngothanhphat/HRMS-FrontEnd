@@ -10,7 +10,6 @@ export const getTimezoneViaCity = (city) => {
     const result = cityTimezones.findFromCityStateProvince(c);
     if (result) cityLookup = result;
   });
-  // console.log('cityLookup', cityLookup);
   if (cityLookup.length === 0) return '';
   if (cityLookup.length > 1) {
     const found = cityLookup.find((c) => c.city === city);

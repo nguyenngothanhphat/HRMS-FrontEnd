@@ -53,7 +53,7 @@ class ViewLeftInitial extends Component {
   }
 
   onChangeSteps = (values) => {
-    console.log(values);
+
   };
 
   onCancel = () => {

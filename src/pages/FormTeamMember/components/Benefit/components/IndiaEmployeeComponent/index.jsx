@@ -6,23 +6,13 @@ import styles from './index.less';
 
 class IndiaEmployeeComponent extends PureComponent {
   render() {
-    const {
-      IndiaEmployeesCheckbox,
-      headerText,
-      onChange,
-      handleChange,
-      handleCheckAll,
-      benefits,
-    } = this.props;
+    const { IndiaEmployeesCheckbox, headerText, onChange, handleChange, handleCheckAll, benefits } =
+      this.props;
 
-    const {
-      employeeProvident,
-      paytmWallet,
-      listSelectedEmployee,
-      listSelectedPaytmWallet,
-    } = benefits;
+    const { employeeProvident, paytmWallet, listSelectedEmployee, listSelectedPaytmWallet } =
+      benefits;
     const { name, checkBox } = IndiaEmployeesCheckbox;
-    console.log('checkBox', checkBox);
+    // console.log('checkBox', checkBox);
 
     const CheckboxGroup = Checkbox.Group;
     return (
