@@ -217,7 +217,12 @@ const timeOff = {
     *fetchLeaveHistory({ employee = '', status = '' }, { call, put }) {
       try {
         const tenantId = getCurrentTenant();
-        const response = yield call(getLeaveRequestOfEmployee, { employee, status, tenantId });
+        const response = yield call(getLeaveRequestOfEmployee, {
+          employee,
+          status,
+          tenantId,
+          company: getCurrentCompany(),
+        });
         const { statusCode, data: allMyLeaveRequests = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
