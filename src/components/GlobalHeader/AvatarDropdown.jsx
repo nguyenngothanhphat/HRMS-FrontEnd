@@ -213,7 +213,7 @@ class AvatarDropdown extends React.Component {
     }
 
     let selectLocation = '';
-    setCurrentLocation(key);
+    // setCurrentLocation(key);
     const currentCompany = getCurrentCompany();
     let newCompId = '';
     let newCompName = '';
@@ -250,6 +250,7 @@ class AvatarDropdown extends React.Component {
     }
 
     if (selectLocation) {
+      setCurrentLocation(selectLocation);
       window.location.reload();
       // history.push(`/`);
       return;
