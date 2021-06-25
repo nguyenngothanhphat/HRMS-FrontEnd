@@ -98,12 +98,12 @@ class TimeOffRequestTab extends PureComponent {
     } else if (tabType === 2) {
       // compoff
       if (filterTab === '1') {
-        if (currentUserRole === 'ADMIN-CLA') {
+        if (currentUserRole === 'REGION-HEAD') {
           status = [TIMEOFF_STATUS.inProgressNext, TIMEOFF_STATUS.inProgress];
         } else status = [TIMEOFF_STATUS.inProgress];
       }
       if (filterTab === '2') {
-        if (currentUserRole === 'ADMIN-CLA') {
+        if (currentUserRole === 'REGION-HEAD') {
           status = [TIMEOFF_STATUS.accepted];
         } else status = [TIMEOFF_STATUS.inProgressNext, TIMEOFF_STATUS.accepted];
       }
@@ -232,7 +232,7 @@ class TimeOffRequestTab extends PureComponent {
 
     newData.forEach((row) => {
       const { status = '' } = row;
-      if (currentUserRole === 'ADMIN-CLA') {
+      if (currentUserRole === 'REGION-HEAD') {
         switch (status) {
           case TIMEOFF_STATUS.inProgressNext: {
             inProgressLength.push(row);
@@ -241,7 +241,7 @@ class TimeOffRequestTab extends PureComponent {
           default:
             break;
         }
-      } else if (currentUserRole !== 'ADMIN-CLA') {
+      } else if (currentUserRole !== 'REGION-HEAD') {
         switch (status) {
           case TIMEOFF_STATUS.inProgressNext: {
             approvedLength.push(row);
