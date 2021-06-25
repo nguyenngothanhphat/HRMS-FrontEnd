@@ -464,7 +464,7 @@ class OnboardTable extends Component {
       onChange: this.onChangePagination,
     };
 
-    const { columnArr, type, inTab, hasCheckbox, loading } = this.props;
+    const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch } = this.props;
     const { openModal } = this.state;
     return (
       <>
@@ -489,7 +489,7 @@ class OnboardTable extends Component {
             }}
             columns={this.generateColumns(columnArr, type)}
             dataSource={list}
-            loading={loading}
+            loading={loading || loadingFetch}
             // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
             pagination={{ ...pagination, total: list.length }}
             onRow={(record) => {

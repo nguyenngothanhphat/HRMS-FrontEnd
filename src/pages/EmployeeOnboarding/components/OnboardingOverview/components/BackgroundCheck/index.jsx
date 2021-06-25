@@ -8,18 +8,29 @@ import { PROCESS_STATUS } from '@/models/onboard';
 import Pending from './components/Pending/index';
 import EligibleCandidates from './components/EligibleCandidates/index';
 import IneligibleCandidates from './components/IneligibleCandidates/index';
+import AllTab from './components/AllTab';
 
 import styles from './index.less';
 
 class BackgroundCheck extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
-    const { PENDING } = PROCESS_STATUS;
+    const { PENDING, INELIGIBLE_CANDIDATES, ELIGIBLE_CANDIDATES } = PROCESS_STATUS;
 
     if (dispatch) {
-      this.fetchBackgroundCheck(PENDING);
+      this.fetchBackgroundCheckAll([PENDING, ELIGIBLE_CANDIDATES, INELIGIBLE_CANDIDATES]);
     }
   }
+
+  fetchBackgroundCheckAll = (status) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'onboard/fetchOnboardListAll',
+      payload: {
+        processStatus: status,
+      },
+    });
+  };
 
   fetchBackgroundCheck = (status) => {
     const { dispatch } = this.props;
@@ -34,8 +45,10 @@ class BackgroundCheck extends PureComponent {
   onChangeTab = (key) => {
     const { PENDING, ELIGIBLE_CANDIDATES, INELIGIBLE_CANDIDATES } = PROCESS_STATUS;
     if (key === '1') {
-      this.fetchBackgroundCheck(PENDING);
+      this.fetchBackgroundCheckAll([PENDING, ELIGIBLE_CANDIDATES, INELIGIBLE_CANDIDATES]);
     } else if (key === '2') {
+      this.fetchBackgroundCheck(PENDING);
+    } else if (key === '3') {
       this.fetchBackgroundCheck(ELIGIBLE_CANDIDATES);
     } else {
       this.fetchBackgroundCheck(INELIGIBLE_CANDIDATES);
@@ -44,7 +57,7 @@ class BackgroundCheck extends PureComponent {
 
   render() {
     const { TabPane } = Tabs;
-    const { backgroundCheck = {} } = this.props;
+    const { backgroundCheck = {}, dataAll, loadingAll } = this.props;
     const { pending = [], eligibleCandidates = [], ineligibleCandidates = [] } = backgroundCheck;
 
     return (
@@ -53,8 +66,16 @@ class BackgroundCheck extends PureComponent {
           <Tabs defaultActiveKey="1" onChange={this.onChangeTab}>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
-              tab="pending"
+              tab="all"
               key="1"
+            >
+              <AllTab list={dataAll} loading={loadingAll} />
+            </TabPane>
+
+            <TabPane
+              // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
+              tab="pending"
+              key="2"
             >
               <Pending list={pending} />
             </TabPane>
@@ -62,7 +83,7 @@ class BackgroundCheck extends PureComponent {
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
               tab="eligible candidates"
-              key="2"
+              key="3"
             >
               <EligibleCandidates list={eligibleCandidates} />
             </TabPane>
@@ -70,7 +91,7 @@ class BackgroundCheck extends PureComponent {
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
               tab="ineligible candidates"
-              key="3"
+              key="4"
             >
               <IneligibleCandidates list={ineligibleCandidates} />
             </TabPane>
@@ -83,11 +104,13 @@ class BackgroundCheck extends PureComponent {
 
 // export default ProvisionalOffers;
 export default connect((state) => {
-  const { onboard = {} } = state;
+  const { onboard = {}, loading } = state;
   const { onboardingOverview = {} } = onboard;
-  const { backgroundCheck = {} } = onboardingOverview;
+  const { backgroundCheck = {}, dataAll = [] } = onboardingOverview;
 
   return {
     backgroundCheck,
+    dataAll,
+    loadingAll: loading.effects['onboard/fetchOnboardListAll'],
   };
 })(BackgroundCheck);

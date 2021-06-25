@@ -8,6 +8,7 @@ import { connect } from 'umi';
 import { PROCESS_STATUS } from '@/models/onboard';
 import ProvisionalOffers from './components/ProvisionalOffers/index';
 import FinalOffers from './components/FinalOffers/index';
+import AllTab from './components/AllTab';
 
 import styles from './index.less';
 
@@ -16,12 +17,22 @@ const { TabPane } = Tabs;
 class DiscardedOffers extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
-    const { PROVISIONAL_OFFERS } = PROCESS_STATUS;
+    const { PROVISIONAL_OFFERS, FINAL_OFFERS } = PROCESS_STATUS;
 
     if (dispatch) {
-      this.fetchBackgroundCheck(PROVISIONAL_OFFERS);
+      this.fetchBackgroundCheckAll([PROVISIONAL_OFFERS, FINAL_OFFERS]);
     }
   }
+
+  fetchBackgroundCheckAll = (status) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'onboard/fetchOnboardListAll',
+      payload: {
+        processStatus: status,
+      },
+    });
+  };
 
   fetchBackgroundCheck = (status) => {
     const { dispatch } = this.props;
@@ -36,14 +47,16 @@ class DiscardedOffers extends PureComponent {
   onChangeTab = (key) => {
     const { PROVISIONAL_OFFERS, FINAL_OFFERS } = PROCESS_STATUS;
     if (key === '1') {
-      this.fetchBackgroundCheck(PROVISIONAL_OFFERS);
+      this.fetchBackgroundCheckAll([PROVISIONAL_OFFERS, FINAL_OFFERS]);
     } else if (key === '2') {
+      this.fetchBackgroundCheck(PROVISIONAL_OFFERS);
+    } else {
       this.fetchBackgroundCheck(FINAL_OFFERS);
     }
   };
 
   render() {
-    const { discardedOffers = {} } = this.props;
+    const { discardedOffers = {}, dataAll, loadingAll } = this.props;
     const { provisionalOffers = [], finalOffers = [] } = discardedOffers;
 
     return (
@@ -52,8 +65,15 @@ class DiscardedOffers extends PureComponent {
           <Tabs defaultActiveKey="1" onChange={this.onChangeTab}>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
-              tab="provisional offers"
+              tab="all"
               key="1"
+            >
+              <AllTab list={dataAll} loading={loadingAll} />
+            </TabPane>
+            <TabPane
+              // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
+              tab="provisional offers"
+              key="2"
             >
               {/* <SentFinalOffers list={sentFinalOffers} /> */}
               <ProvisionalOffers list={provisionalOffers} />
@@ -62,7 +82,7 @@ class DiscardedOffers extends PureComponent {
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
               tab="final offers"
-              key="2"
+              key="3"
             >
               <FinalOffers list={finalOffers} />
             </TabPane>
@@ -75,11 +95,13 @@ class DiscardedOffers extends PureComponent {
 
 // export default FinalOffers;
 export default connect((state) => {
-  const { onboard = {} } = state;
+  const { onboard = {}, loading } = state;
   const { onboardingOverview = {} } = onboard;
-  const { discardedOffers = {} } = onboardingOverview;
+  const { discardedOffers = {}, dataAll = [] } = onboardingOverview;
 
   return {
     discardedOffers,
+    dataAll,
+    loadingAll: loading.effects['onboard/fetchOnboardListAll'],
   };
 })(DiscardedOffers);

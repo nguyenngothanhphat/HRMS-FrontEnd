@@ -275,6 +275,7 @@ const onboard = {
         provisionalOffers: provisionalOffersData,
         finalOffers: finalOffersData,
       },
+      dataAll: [],
     },
     settings: {
       backgroundChecks: {
@@ -431,6 +432,33 @@ const onboard = {
         });
       } catch (error) {
         dialog(error);
+      }
+    },
+
+    *fetchOnboardListAll({ payload }, { call, put }) {
+      try {
+        const { processStatus = '' } = payload;
+        const tenantId = getCurrentTenant();
+        const req = {
+          processStatus,
+          page: 1,
+          tenantId,
+        };
+        const response = yield call(getOnboardingList, req);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // const returnedData = formatData(response.data[0].paginatedResults);
+        const returnedData = formatData(response.data);
+        yield put({
+          type: 'fetchTotalNumberOfOnboardingListEffect',
+        });
+
+        yield put({
+          type: 'saveAll',
+          payload: returnedData,
+        });
+      } catch (errors) {
+        dialog(errors);
       }
     },
 
@@ -764,6 +792,17 @@ const onboard = {
     //     },
     //   };
     // },
+
+    // 0
+    saveAll(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          dataAll: action.payload,
+        },
+      };
+    },
 
     // 1
     saveProvisionalOfferDrafts(state, action) {

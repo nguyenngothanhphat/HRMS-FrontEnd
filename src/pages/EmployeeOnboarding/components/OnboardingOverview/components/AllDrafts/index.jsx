@@ -24,10 +24,19 @@ class AllDrafts extends PureComponent {
     const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT } = PROCESS_STATUS;
 
     if (dispatch) {
-      // this.fetchOfferDraft(PROVISIONAL_OFFER_DRAFT);
-      this.fetchAllDraft([PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT]);
+      this.fetchOfferDraftAll([PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT]);
     }
   }
+
+  fetchOfferDraftAll = (status) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'onboard/fetchOnboardListAll',
+      payload: {
+        processStatus: status,
+      },
+    });
+  };
 
   fetchOfferDraft = (status) => {
     const { dispatch } = this.props;
@@ -39,22 +48,10 @@ class AllDrafts extends PureComponent {
     });
   };
 
-  fetchAllDraft = (status) => {
-    const { dispatch } = this.props;
-
-    dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: status,
-      },
-    });
-  };
-
   onChangeTab = (key) => {
     const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT } = PROCESS_STATUS;
     if (key === '1') {
-      // this.fetchOfferDraft(PROVISIONAL_OFFER_DRAFT);
-      this.fetchAllDraft([PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT]);
+      this.fetchOfferDraftAll([PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT]);
     } else if (key === '2') {
       this.fetchOfferDraft(PROVISIONAL_OFFER_DRAFT);
     } else {
@@ -63,10 +60,9 @@ class AllDrafts extends PureComponent {
   };
 
   render() {
-    const { allDrafts = {} } = this.props;
+    const { allDrafts = {}, dataAll, loadingAll } = this.props;
 
     const { provisionalOfferDrafts = [], finalOfferDrafts = [] } = allDrafts;
-    const listAll = [...provisionalOfferDrafts, ...finalOfferDrafts];
 
     return (
       // <OnboardTable
@@ -82,7 +78,7 @@ class AllDrafts extends PureComponent {
               tab="all"
               key="1"
             >
-              <AllTab list={listAll} />
+              <AllTab list={dataAll} loading={loadingAll} />
             </TabPane>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
@@ -107,11 +103,13 @@ class AllDrafts extends PureComponent {
 
 // export default FinalOfferDrafts;
 export default connect((state) => {
-  const { onboard = {} } = state;
+  const { onboard = {}, loading } = state;
   const { onboardingOverview = {} } = onboard;
-  const { finalOfferDrafts = [], allDrafts = {} } = onboardingOverview;
+  const { finalOfferDrafts = [], allDrafts = {}, dataAll = [] } = onboardingOverview;
   return {
     finalOfferDrafts,
     allDrafts,
+    dataAll,
+    loadingAll: loading.effects['onboard/fetchOnboardListAll'],
   };
 })(React.memo(AllDrafts));
