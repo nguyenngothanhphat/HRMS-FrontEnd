@@ -5,8 +5,9 @@ import moment from 'moment';
 import InternalStyle from './FilledByCandidate.less';
 
 const dateFormat = 'MM/DD/YYYY';
-@connect(({ candidateProfile: { data } = {} }) => ({
+@connect(({ candidateProfile: { data, checkMandatory } = {} }) => ({
   data,
+  checkMandatory,
 }))
 class FilledByCandidate extends PureComponent {
   constructor(props) {
@@ -54,7 +55,32 @@ class FilledByCandidate extends PureComponent {
   };
 
   checkChange = (e) => {
-    this.setState({ checkWouldNewDate: e.target.value });
+    const { dispatch, checkMandatory } = this.props;
+    const { value } = e.target;
+    this.setState({ checkWouldNewDate: value });
+    if (value) {
+      dispatch({
+        type: 'candidateProfile/save',
+        payload: {
+          // jobDetails,
+          checkMandatory: {
+            ...checkMandatory,
+            filledJobDetail: true,
+          },
+        },
+      });
+    } else {
+      dispatch({
+        type: 'candidateProfile/save',
+        payload: {
+          // jobDetails,
+          checkMandatory: {
+            ...checkMandatory,
+            filledJobDetail: false,
+          },
+        },
+      });
+    }
   };
 
   render() {
@@ -74,11 +100,8 @@ class FilledByCandidate extends PureComponent {
     const { isHidden } = this.state;
     return (
       <div className={InternalStyle.CandidateFields}>
-        <Typography.Title level={5} className={InternalStyle.title}>
-          {formatMessage({ id: 'component.jobDetail.filledByCandidate' })}
-        </Typography.Title>
         <Row gutter={[24, 0]} className={InternalStyle.RadioNewDate}>
-          <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+          <Col xs={24}>
             <Typography.Title level={5} className={InternalStyle.RadioNewDateTitle}>
               Your Suggested Joining date is {newDate}. Would you like to propose a new date ?
             </Typography.Title>
