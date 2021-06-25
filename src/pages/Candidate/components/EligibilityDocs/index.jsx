@@ -7,6 +7,7 @@ import { isUndefined } from 'lodash';
 import { getCurrentTenant } from '@/utils/authority';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
+import PreviousEmployment from './components/PreviousEmployment';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
 import SendEmail from './components/SendEmail';
@@ -250,7 +251,6 @@ class EligibilityDocs extends PureComponent {
         documentListToRender,
         validateFileSize,
         generatedBy,
-        employerName,
         workDuration,
         processStatus,
       } = {},
@@ -270,8 +270,25 @@ class EligibilityDocs extends PureComponent {
               {documentListToRender.length > 0 &&
                 documentListToRender.map((item, index) => {
                   // console.log(index);
+                  if (item.type !== 'E') {
+                    return (
+                      <CollapseFields
+                        onValuesChange={this.onValuesChange}
+                        item={item && item}
+                        index={index}
+                        docList={documentListToRender}
+                        handleCanCelIcon={this.handleCanCelIcon}
+                        handleFile={this.handleFile}
+                        loading={loading}
+                        attachments={attachments}
+                        validateFileSize={validateFileSize}
+                        checkLength={this.checkLength}
+                        processStatus={processStatus}
+                      />
+                    );
+                  }
                   return (
-                    <CollapseFields
+                    <PreviousEmployment
                       onValuesChange={this.onValuesChange}
                       item={item && item}
                       index={index}
@@ -281,7 +298,6 @@ class EligibilityDocs extends PureComponent {
                       loading={loading}
                       attachments={attachments}
                       validateFileSize={validateFileSize}
-                      employerName={employerName}
                       checkLength={this.checkLength}
                       processStatus={processStatus}
                     />

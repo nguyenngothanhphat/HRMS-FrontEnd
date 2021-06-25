@@ -6,7 +6,6 @@ import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import undo from '@/assets/undo-signs.svg';
 import UploadImage from '../UploadImage';
-import InputField from '../InputField';
 import styles from './index.less';
 
 class CollapseField extends Component {
@@ -84,8 +83,6 @@ class CollapseField extends Component {
       // handleFile,
       docList,
       handleCanCelIcon: handleCancelIcon,
-      onValuesChange,
-      employerName,
       checkLength,
     } = this.props;
 
@@ -114,11 +111,6 @@ class CollapseField extends Component {
               }
               extra="[Can submit any of the below other than (*)mandatory]"
             >
-              {item.type === 'E' ? (
-                <InputField onValuesChange={onValuesChange} employerName={employerName} />
-              ) : (
-                <></>
-              )}
               <Space direction="vertical" className={styles.Space}>
                 <div className={styles.Upload}>
                   {item.data.map((file, id) => (

@@ -1,7 +1,7 @@
 @color-grey: #707177;
 @color-blue: #2c6df9;
 
-.CollapseField {
+.PreviousEmployment {
   margin-bottom: 1rem;
   :global {
     .ant-collapse-extra {
@@ -9,6 +9,9 @@
       float: none !important;
       display: inline;
       color: @color-grey;
+    }
+    .ant-collapse-arrow {
+      padding: 0px !important
     }
     svg {
       width: 20px;
@@ -21,7 +24,8 @@
     }
     .ant-collapse {
       border-radius: 5px;
-      border: solid 1px #d6dce0;
+      // border: solid 1px #d6dce0;
+      overflow: hidden;
       .ant-collapse-item > .ant-collapse-header {
         background-color: #fff;
         padding: 32px;
@@ -46,6 +50,10 @@
       .ant-space-item {
         margin-right: 0 !important;
       }
+    }
+    .anticon-plus,
+    .anticon-minus {
+      // top: 15px !important;
     }
   }
   .checkbox {
@@ -84,44 +92,94 @@
     span {
       &:last-child {
         padding-left: 1rem;
-        padding-top: 1rem;
+        // padding-top: 1rem;
       }
     }
   }
-  .checkboxItem {
-    display: block;
-    color: #161c29;
-    margin-bottom: 1rem;
-    padding-left: 16px;
-    :global {
-      .ant-checkbox-checked {
-        &:hover {
-          border-radius: 4px;
+  .Space {
+    width: 100%;
+    .checkboxItem {
+      display: flex;
+      color: #161c29;
+      margin-bottom: 1rem;
+      .viewLoading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+      }
+      .Padding {
+        margin-left: 14px;
+      }
+      .textAlign {
+        text-align: right;
+        .viewUpLoadDataText {
+          color: #47c97f;
+          font-weight: 500;
         }
-        .ant-checkbox-inner {
-          background: #f6f7f9;
-          border-radius: 4px;
+      }
+      .textAlignCenter {
+        text-align: center;
+      }
+      :global {
+        .ant-upload {
+          color: #2c6df9;
+          font-weight: 700;
+          cursor: pointer;
+        }
+        .ant-checkbox-checked {
           &:hover {
             border-radius: 4px;
           }
-          &:after {
-            border: 2px solid #2c6df9;
-            border-top: 0;
-            border-left: 0;
+          .ant-checkbox-inner {
+            background: #f6f7f9;
+            border-radius: 4px;
+            &:hover {
+              border-radius: 4px;
+            }
+            &:after {
+              border: 2px solid #2c6df9;
+              border-top: 0;
+              border-left: 0;
+            }
+          }
+        }
+        .ant-checkbox {
+          .ant-checkbox-inner {
+            background: #f6f7f9;
+            border-radius: 4px;
+          }
+        }
+        .ant-checkbox-group-item {
+          display: block;
+          margin-bottom: 1rem;
+          &:last-child {
+            margin-bottom: 0;
           }
         }
       }
-      .ant-checkbox {
-        .ant-checkbox-inner {
-          background: #f6f7f9;
-          border-radius: 4px;
+    }
+    .checkboxItemError {
+      display: flex;
+      background-color: rgba(255, 108, 108, 0.2);
+      margin-bottom: 1rem;
+      .textAlign {
+        text-align: right;
+        letter-spacing: 0.13px;
+        .textLeft {
+          text-align: left;
+        }
+        .boldText {
+          font-weight: 500;
         }
       }
-      .ant-checkbox-group-item {
-        display: block;
-        margin-bottom: 1rem;
-        &:last-child {
-          margin-bottom: 0;
+      .textAlignCenter {
+        text-align: center;
+      }
+      :global {
+        .ant-typography {
+          color: #ff6c6c;
+          font-size: 14px;
         }
       }
     }
