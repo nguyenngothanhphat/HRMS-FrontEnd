@@ -13,12 +13,14 @@ import CheckBoxForms from '../CheckboxForm';
     employee,
     employee: { filterList = {}, filter: checkedFilterList = [] } = {},
     locationSelection: { listLocationsByCompany = [] } = {},
+    employeeProfile: { listSkill = [] } = {},
   }) => ({
     loading: loading.effects['login/login'],
     employee,
     listLocationsByCompany,
     filterList,
     checkedFilterList,
+    listSkill,
   }),
 )
 class TableFilter extends PureComponent {
@@ -30,6 +32,7 @@ class TableFilter extends PureComponent {
       CountryState: 'Country',
       DepartmentState: 'Department',
       CompanyState: 'Company',
+      SkillState: 'Skill',
       // TitleState: 'Title',
       formatDataState: [], // dynamic state on country
       formatDataTitle: [], // dynamic title on department
@@ -186,6 +189,7 @@ class TableFilter extends PureComponent {
       CountryState,
       StateState,
       CompanyState,
+      SkillState,
       formatDataState,
       formatDataTitle,
       // TitleState,
@@ -196,6 +200,7 @@ class TableFilter extends PureComponent {
       collapsed,
       changeTab,
       tabName,
+      listSkill,
       filterList: { listCountry = [], listDepartmentName = [], listCompany = [] } = {},
     } = this.props;
 
@@ -231,6 +236,12 @@ class TableFilter extends PureComponent {
       return {
         label: item,
         value: item,
+      };
+    });
+    const formatDataSkill = listSkill.map((item) => {
+      return {
+        label: item.name,
+        value: item._id,
       };
     });
 
@@ -277,8 +288,10 @@ class TableFilter extends PureComponent {
                 value={clearFilter && titleSelected.length === 0 ? '' : titleSelected[0]}
                 className={styles.formSelect}
                 onChange={this.handleSelectChange}
-                filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                filterOption={
+                  (input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  // eslint-disable-next-line react/jsx-curly-newline
+                }
                 showSearch
                 allowClear
               >
@@ -325,6 +338,17 @@ class TableFilter extends PureComponent {
                     data={filteredArr(formatDataDepartment)}
                   />
                 )}
+                {reset || changeTab ? (
+                  ''
+                ) : (
+                  <CheckBoxForms
+                    key={SkillState}
+                    name={SkillState}
+                    all={all}
+                    data={filteredArr(formatDataSkill)}
+                  />
+                )}
+
                 {/* {reset || changeTab ? (
                   ''
                 ) : (

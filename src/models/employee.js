@@ -127,6 +127,7 @@ const employee = {
           employeeType = [],
           name = '',
           title = [],
+          skill = [],
         } = {},
       },
       { call, put },
@@ -140,6 +141,7 @@ const employee = {
           employeeType,
           name,
           title,
+          skill,
         });
         const { statusCode, data: listEmployeeActive = [] } = response;
         if (statusCode !== 200) throw response;

@@ -36,6 +36,7 @@ export async function DepartmentFilter(payload) {
 }
 
 export async function getListEmployee(payload) {
+  console.log(payload);
   return request('/api/employeetenant/list', {
     method: 'POST',
     data: payload,

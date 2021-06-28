@@ -7,7 +7,7 @@ import {
   getCurrentTenant,
   getAuthority,
   isOwner,
-  isAdmin,
+  // isAdmin,
 } from '@/utils/authority';
 import DirectoryComponent from './components/Directory';
 import styles from './index.less';
@@ -70,6 +70,10 @@ class Directory extends PureComponent {
         id: getCurrentCompany(),
         tenantId: getCurrentTenant(),
       },
+    });
+
+    await dispatch({
+      type: 'employeeProfile/fetchListSkill',
     });
   };
 
