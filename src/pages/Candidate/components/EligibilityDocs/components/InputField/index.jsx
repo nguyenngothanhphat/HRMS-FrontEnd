@@ -1,26 +1,33 @@
 import React, { useState } from 'react';
 import { Typography, Row, Col, Form, Input, DatePicker } from 'antd';
 import Checkbox from 'antd/es/checkbox';
+import moment from 'moment';
 import style from './index.less';
 
 const dateFormat = 'MM.DD.YY';
 
 const InputField = ({
-  onValuesChange,
+  onValuesChange = () => {},
   index = '',
-  item: { employer = '', startDate = '', endDate = '' } = {},
+  item: {
+    workHistoryId = '',
+    employer = '',
+    startDate = '',
+    endDate = '',
+    toPresent: toPresentProp = false,
+  } = {},
   currentCompany, // index
+  hasCurrentCompany = false,
   handleToPresent = () => {},
 }) => {
-  const [toPresent, setToPresent] = useState(false);
-
+  const [toPresent, setToPresent] = useState(toPresentProp);
   const onCheckboxChange = (e) => {
     const {
       target: { checked = false },
     } = e;
-    onValuesChange(checked, 'toPresent');
+    onValuesChange(checked, 'toPresent', workHistoryId);
     setToPresent(checked);
-    handleToPresent(index, checked);
+    handleToPresent(index, checked, workHistoryId);
   };
 
   return (
@@ -31,7 +38,12 @@ const InputField = ({
         labelCol={24}
         wrapperCol={24}
         layout="vertical"
-        initialValues={{ employer, startDate, endDate, toPresent }}
+        initialValues={{
+          employer,
+          startDate: startDate ? moment(startDate) : '',
+          endDate: endDate ? moment(endDate) : '',
+          toPresent,
+        }}
       >
         <Row gutter={[48, 0]} className={style.form}>
           <Col span={24}>
@@ -42,8 +54,8 @@ const InputField = ({
 
           <Col span={24} className={style.checkBox}>
             <Checkbox
-              disabled={currentCompany !== index && currentCompany}
-              value={toPresent}
+              disabled={currentCompany !== index && hasCurrentCompany}
+              defaultChecked={toPresent}
               onChange={(val) => onCheckboxChange(val)}
             >
               Currently work in this role
@@ -56,7 +68,7 @@ const InputField = ({
                 placeholder="Start Date"
                 format={dateFormat}
                 className={style.inputDate}
-                onChange={(val) => onValuesChange(val, 'startDate')}
+                onChange={(val) => onValuesChange(val, 'startDate', workHistoryId)}
               />
             </Form.Item>
           </Col>
@@ -67,7 +79,7 @@ const InputField = ({
                   placeholder="End Date"
                   className={style.inputDate}
                   format={dateFormat}
-                  onChange={(val) => onValuesChange(val, 'endDate')}
+                  onChange={(val) => onValuesChange(val, 'endDate', workHistoryId)}
                 />
               </Form.Item>
             </Col>

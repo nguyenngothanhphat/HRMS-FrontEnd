@@ -4,6 +4,7 @@ import {
   getById,
   getDocumentByCandidate,
   getWorkHistory,
+  updateWorkHistory,
   sendEmailByCandidateModel,
   updateByCandidate,
 } from '@/services/candidate';
@@ -230,6 +231,24 @@ const candidateProfile = {
           type: 'saveOrigin',
           payload: {
             workHistory: data,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *updateWorkHistory({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(updateWorkHistory, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'fetchWorkHistory',
+          payload: {
+            candidate: payload.candidate,
+            tenantId: payload.tenantId,
           },
         });
       } catch (error) {

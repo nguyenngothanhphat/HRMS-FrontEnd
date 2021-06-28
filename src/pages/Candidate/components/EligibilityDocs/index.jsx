@@ -89,14 +89,15 @@ class EligibilityDocs extends PureComponent {
       return {
         type: 'E',
         name: 'Previous Employment',
-        employer: em,
+        employer: em.employer,
         toPresent: em.toPresent,
         startDate: em.startDate,
         endDate: em.endDate,
+        workHistoryId: em._id,
         data: [...groupE],
       };
     });
-    console.log('groupMultiE', groupMultiE);
+
     const docList = [
       { type: 'A', name: 'Identity Proof', data: [...groupA] },
       { type: 'B', name: 'Address Proof', data: [...groupB] },
@@ -173,7 +174,7 @@ class EligibilityDocs extends PureComponent {
 
   handleSendEmail = () => {
     const {
-      data: { dateOfJoining, noticePeriod, fullName, workDuration, employerId, generatedBy },
+      data: { dateOfJoining, noticePeriod, fullName, generatedBy, workHistory = [] },
       dispatch,
     } = this.props;
     const { user = {} } = generatedBy;
@@ -192,12 +193,7 @@ class EligibilityDocs extends PureComponent {
         fullName,
         noticePeriod,
         hrEmail: email,
-        workHistories: [
-          {
-            id: employerId,
-            workDuration,
-          },
-        ],
+        workHistories: workHistory,
         tenantId: getCurrentTenant(),
       },
     }).then(({ statusCode }) => {
@@ -284,6 +280,16 @@ class EligibilityDocs extends PureComponent {
     } = generatedBy;
     // const {  } = user;
     // console.log(processStatus);
+
+    let checkFull = true;
+    documentListToRender.forEach((doc) => {
+      doc.data.forEach((doc1) => {
+        if (!doc1.attachment && !doc1.isMandatoryBySystem && doc1.isCandidateUpload) {
+          checkFull = false;
+        }
+      });
+    });
+
     return (
       <div className={styles.EligibilityDocs}>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
@@ -329,12 +335,7 @@ class EligibilityDocs extends PureComponent {
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={Note} />
-            {/* {documentListToRender.length > 0 &&
-            documentListToRender[0].data[0]?.attachment &&
-            documentListToRender[0].data[1]?.attachment &&
-            documentListToRender[2].data[0]?.attachment &&
-            documentListToRender[2].data[1]?.attachment &&
-            documentListToRender[2].data[2]?.attachment ? (
+            {documentListToRender.length > 0 ? (
               <SendEmail
                 loading={loading1}
                 handleSendEmail={this.handleSendEmail}
@@ -342,11 +343,12 @@ class EligibilityDocs extends PureComponent {
                 onValuesChangeEmail={this.onValuesChangeEmail}
                 isSentEmail={isSentEmail}
                 handleSubmitAgain={this.handleSubmitAgain}
-                disabled={!(workDuration !== 0 && !isUndefined(workDuration))}
+                // disabled={!(workDuration !== 0 && !isUndefined(workDuration))}
+                disabled={!checkFull}
               />
             ) : (
               <StepsComponent />
-            )} */}
+            )}
           </Col>
         </Row>
         <CustomModal

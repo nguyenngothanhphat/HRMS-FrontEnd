@@ -6,13 +6,15 @@ import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import undo from '@/assets/undo-signs.svg';
 import { connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import UploadImage from '../UploadImage';
 import InputField from '../InputField';
 import styles from './index.less';
 
-@connect(({ candidateProfile: { data, tempData } = {} }) => ({
+@connect(({ candidateProfile: { candidate = '', data, tempData } = {} }) => ({
   data,
   tempData,
+  candidate,
 }))
 class PreviousEmployment extends Component {
   // uploadText = (status) => {
@@ -32,7 +34,10 @@ class PreviousEmployment extends Component {
   }
 
   componentDidMount() {
-    const { docList } = this.props;
+    const {
+      docList,
+      data: { workHistory = [] },
+    } = this.props;
     const allDoc = [];
     // let outerIndex = 0;
     docList.map((list, outerIndex) => {
@@ -48,6 +53,13 @@ class PreviousEmployment extends Component {
     });
     this.setState({
       allDocs: allDoc,
+    });
+    workHistory.forEach((wh, index) => {
+      if (wh.toPresent) {
+        this.setState({
+          currentCompany: index,
+        });
+      }
     });
   }
 
@@ -82,7 +94,7 @@ class PreviousEmployment extends Component {
     this.resetSelectedIndex();
   };
 
-  handleToPresent = (index, checked) => {
+  handleToPresent = (index, checked, workHistoryId) => {
     if (checked) {
       this.setState({
         currentCompany: index,
@@ -92,6 +104,37 @@ class PreviousEmployment extends Component {
         currentCompany: null,
       });
     }
+    const { dispatch, candidate } = this.props;
+    dispatch({
+      type: 'candidateProfile/updateWorkHistory',
+      payload: {
+        tenantId: getCurrentTenant(),
+        candidate,
+        _id: workHistoryId,
+        toPresent: checked,
+      },
+    });
+  };
+
+  onValuesChange = (val, type, workHistoryId) => {
+    const { dispatch, candidate } = this.props;
+
+    dispatch({
+      type: 'candidateProfile/updateWorkHistory',
+      payload: {
+        tenantId: getCurrentTenant(),
+        candidate,
+        _id: workHistoryId,
+        [type]: val,
+      },
+    });
+
+    dispatch({
+      type: 'candidateProfile/saveOrigin',
+      payload: {
+        [type]: val,
+      },
+    });
   };
 
   renderEmployer = (docListE, item, index) => {
@@ -99,14 +142,14 @@ class PreviousEmployment extends Component {
       loading = false,
       // handleFile,
       handleCanCelIcon: handleCancelIcon = () => {},
-      onValuesChange = () => {},
       checkLength = () => {},
+      data: { workHistory = [] },
     } = this.props;
 
     const { selectedFile, currentCompany } = this.state;
 
     let itemDataFilter = [];
-    if (currentCompany === index) {
+    if (currentCompany === index || item.toPresent) {
       itemDataFilter = item.data.filter(
         (doc) => doc.key === 'paysTubs' || doc.key === 'form16' || doc.isCandidateUpload,
       );
@@ -123,13 +166,16 @@ class PreviousEmployment extends Component {
       };
     });
 
+    const checkIfHasCurrentCompany = workHistory.filter((value) => value.toPresent) || [];
+
     return (
       <>
         <InputField
-          onValuesChange={onValuesChange}
+          onValuesChange={this.onValuesChange}
           item={item}
           index={index}
           currentCompany={currentCompany}
+          hasCurrentCompany={checkIfHasCurrentCompany.length > 0}
           handleToPresent={this.handleToPresent}
         />
         <Space direction="vertical" className={styles.Space}>
