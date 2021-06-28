@@ -89,19 +89,19 @@ const routes = [
           },
         ],
       },
-      {
-        path: '/select-location',
-        component: '../layouts/AccountSetupLayout',
-        // authority: ['admin-csa'],
-        routes: [
-          {
-            path: '/select-location',
-            component: './LocationSelection',
-            name: 'Location Selection',
-            // authority: ['admin-csa'],
-          },
-        ],
-      },
+      // {
+      //   path: '/select-location',
+      //   component: '../layouts/AccountSetupLayout',
+      //   // authority: ['admin-csa'],
+      //   routes: [
+      //     {
+      //       path: '/select-location',
+      //       component: './LocationSelection',
+      //       name: 'Location Selection',
+      //       // authority: ['admin-csa'],
+      //     },
+      //   ],
+      // },
       {
         path: '/control-panel',
         component: '../layouts/AccountSetupLayout',
@@ -522,14 +522,14 @@ const routes = [
             component:
               './OffBoarding/HrOffboarding/component/Settings/components/Forms/components/HandleForm',
           },
-          {
-            path: '/setting',
-            name: 'setting',
-            icon: '/assets/images/CP-icons_settings.svg',
-            component: './Setting',
-            hideInMenu: true,
-            authority: ['M_SETTING_VIEW', 'P_SETTING_VIEW', 'owner'], // TEMP
-          },
+          // {
+          //   path: '/setting',
+          //   name: 'setting',
+          //   icon: '/assets/images/CP-icons_settings.svg',
+          //   component: './Setting',
+          //   hideInMenu: true,
+          //   authority: ['M_SETTING_VIEW', 'P_SETTING_VIEW', 'owner'], // TEMP
+          // },
           {
             path: '/view-document/:documentId',
             name: 'viewDocument',
