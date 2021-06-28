@@ -66,13 +66,13 @@ const Candidate = (props) => {
           },
         });
         // if (employer !== undefined && employer.length > 0) {
-        //   dispatch({
-        //     type: 'candidateProfile/fetchEmployer',
-        //     payload: {
-        //       candidate: _id,
-        //       tenantId: getCurrentTenant(),
-        //     },
-        //   });
+        dispatch({
+          type: 'candidateProfile/fetchWorkHistory',
+          payload: {
+            candidate: _id,
+            tenantId: getCurrentTenant(),
+          },
+        });
         // }
       }
     });

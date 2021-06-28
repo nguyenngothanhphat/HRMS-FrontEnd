@@ -43,14 +43,16 @@ class EligibilityDocs extends PureComponent {
   componentDidMount() {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
     const {
-      data: { documentList },
+      data: { documentList = [], documentChecklistSetting = [], workHistory = [] },
       dispatch,
     } = this.props;
+
+    const employers = [];
     const groupA = [];
     const groupB = [];
     const groupC = [];
     const groupD = [];
-    const groupE = [];
+
     documentList.forEach((item) => {
       const { candidateGroup } = item;
       item.isValidated = true;
@@ -67,19 +69,40 @@ class EligibilityDocs extends PureComponent {
         case 'D':
           groupD.push(item);
           break;
-        case 'E':
-          groupE.push(item);
-          break;
         default:
           break;
       }
     });
+
+    // const countGroupE = documentChecklistSetting.filter((doc) => doc.type === 'E').length || 0;
+    let groupMultiE = [];
+
+    groupMultiE = workHistory.map((em) => {
+      let groupE = [];
+      documentList.forEach((item) => {
+        const { candidateGroup, employer } = item;
+        item.isValidated = true;
+        if (candidateGroup === 'E' && employer === em.employer) {
+          groupE = [...groupE, item];
+        }
+      });
+      return {
+        type: 'E',
+        name: 'Previous Employment',
+        employer: em,
+        toPresent: em.toPresent,
+        startDate: em.startDate,
+        endDate: em.endDate,
+        data: [...groupE],
+      };
+    });
+    console.log('groupMultiE', groupMultiE);
     const docList = [
       { type: 'A', name: 'Identity Proof', data: [...groupA] },
       { type: 'B', name: 'Address Proof', data: [...groupB] },
       { type: 'C', name: 'Educational', data: [...groupC] },
       { type: 'D', name: 'Technical Certifications', data: [...groupD] },
-      { type: 'E', name: 'Previous Employment', data: [...groupE] },
+      ...groupMultiE,
     ];
     dispatch({
       type: 'candidateProfile/saveOrigin',
@@ -193,12 +216,13 @@ class EligibilityDocs extends PureComponent {
     });
   };
 
-  onValuesChange = (val) => {
+  onValuesChange = (val, type) => {
     const { dispatch } = this.props;
+
     dispatch({
       type: 'candidateProfile/saveOrigin',
       payload: {
-        workDuration: Math.ceil(val.workDuration),
+        [type]: val,
       },
     });
   };
@@ -251,7 +275,6 @@ class EligibilityDocs extends PureComponent {
         documentListToRender,
         validateFileSize,
         generatedBy,
-        workDuration,
         processStatus,
       } = {},
     } = this.props;
@@ -287,27 +310,26 @@ class EligibilityDocs extends PureComponent {
                       />
                     );
                   }
-                  return (
-                    <PreviousEmployment
-                      onValuesChange={this.onValuesChange}
-                      item={item && item}
-                      index={index}
-                      docList={documentListToRender}
-                      handleCanCelIcon={this.handleCanCelIcon}
-                      handleFile={this.handleFile}
-                      loading={loading}
-                      attachments={attachments}
-                      validateFileSize={validateFileSize}
-                      checkLength={this.checkLength}
-                      processStatus={processStatus}
-                    />
-                  );
+                  return '';
                 })}
+
+              {/* type E */}
+              <PreviousEmployment
+                onValuesChange={this.onValuesChange}
+                docList={documentListToRender}
+                handleCanCelIcon={this.handleCanCelIcon}
+                handleFile={this.handleFile}
+                loading={loading}
+                attachments={attachments}
+                validateFileSize={validateFileSize}
+                checkLength={this.checkLength}
+                processStatus={processStatus}
+              />
             </div>
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={Note} />
-            {documentListToRender.length > 0 &&
+            {/* {documentListToRender.length > 0 &&
             documentListToRender[0].data[0]?.attachment &&
             documentListToRender[0].data[1]?.attachment &&
             documentListToRender[2].data[0]?.attachment &&
@@ -324,7 +346,7 @@ class EligibilityDocs extends PureComponent {
               />
             ) : (
               <StepsComponent />
-            )}
+            )} */}
           </Col>
         </Row>
         <CustomModal

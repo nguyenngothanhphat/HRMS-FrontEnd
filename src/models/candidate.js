@@ -46,6 +46,7 @@ const candidateProfile = {
         _id: '',
         url: '',
       },
+      workHistory: [],
     },
     tempData: {
       checkStatus: {},
@@ -219,7 +220,7 @@ const candidateProfile = {
       }
       return response;
     },
-    *fetchEmployer({ payload }, { call, put }) {
+    *fetchWorkHistory({ payload }, { call, put }) {
       let response = {};
       try {
         response = yield call(getWorkHistory, payload);
@@ -227,7 +228,9 @@ const candidateProfile = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
-          payload: { employerId: data._id, employerName: data.employer },
+          payload: {
+            workHistory: data,
+          },
         });
       } catch (error) {
         dialog(error);

@@ -1,34 +1,80 @@
 import React, { useState } from 'react';
-import { Typography, Row, Col, Form, Input } from 'antd';
+import { Typography, Row, Col, Form, Input, DatePicker } from 'antd';
+import Checkbox from 'antd/es/checkbox';
 import style from './index.less';
 
-const InputField = ({ onValuesChange, employerName }) => {
-  const [workDuration] = useState('');
+const dateFormat = 'MM.DD.YY';
+
+const InputField = ({
+  onValuesChange,
+  index = '',
+  item: { employer = '', startDate = '', endDate = '' } = {},
+  currentCompany, // index
+  handleToPresent = () => {},
+}) => {
+  const [toPresent, setToPresent] = useState(false);
+
+  const onCheckboxChange = (e) => {
+    const {
+      target: { checked = false },
+    } = e;
+    onValuesChange(checked, 'toPresent');
+    setToPresent(checked);
+    handleToPresent(index, checked);
+  };
+
   return (
     <div className={style.InputField}>
-      <Typography.Text className={style.text}>Employer 1 Details</Typography.Text>
-      <Row gutter={[48, 0]} className={style.form}>
-        <Col span={12} sm={24} md={24} lg={12} xl={12} className={style.colLeft}>
-          <Form labelCol={24} wrapperCol={24} layout="vertical" initialValues={{ employerName }}>
-            <Form.Item label="Name of the employer*" name="employerName">
-              <Input className={style.input} disabled="true" />
+      <Typography.Text className={style.text}>Employer {index + 1} Details</Typography.Text>
+
+      <Form
+        labelCol={24}
+        wrapperCol={24}
+        layout="vertical"
+        initialValues={{ employer, startDate, endDate, toPresent }}
+      >
+        <Row gutter={[48, 0]} className={style.form}>
+          <Col span={24}>
+            <Form.Item label="Name of the employer*" name="employer">
+              <Input className={style.input} disabled />
             </Form.Item>
-          </Form>
-        </Col>
-        <Col span={12} sm={24} md={24} lg={12} xl={12} className={style.colRight}>
-          <Form
-            labelCol={24}
-            wrapperCol={24}
-            layout="vertical"
-            onValuesChange={onValuesChange}
-            initialValues={{ workDuration }}
-          >
-            <Form.Item label="Work Duration (In year, months, days)*" name="workDuration">
-              <Input placeholder="Work Duration" className={style.inputDate} />
+          </Col>
+
+          <Col span={24} className={style.checkBox}>
+            <Checkbox
+              disabled={currentCompany !== index && currentCompany}
+              value={toPresent}
+              onChange={(val) => onCheckboxChange(val)}
+            >
+              Currently work in this role
+            </Checkbox>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item label="Start Date*" name="startDate">
+              <DatePicker
+                placeholder="Start Date"
+                format={dateFormat}
+                className={style.inputDate}
+                onChange={(val) => onValuesChange(val, 'startDate')}
+              />
             </Form.Item>
-          </Form>
-        </Col>
-      </Row>
+          </Col>
+          {!toPresent && (
+            <Col span={12}>
+              <Form.Item label="End Date*" name="endDate">
+                <DatePicker
+                  placeholder="End Date"
+                  className={style.inputDate}
+                  format={dateFormat}
+                  onChange={(val) => onValuesChange(val, 'endDate')}
+                />
+              </Form.Item>
+            </Col>
+          )}
+        </Row>
+      </Form>
+
       <Typography.Text className={style.bottomTitle}>Proof of employment</Typography.Text>
     </div>
   );

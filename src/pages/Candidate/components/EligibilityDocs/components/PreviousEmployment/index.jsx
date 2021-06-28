@@ -5,10 +5,15 @@ import { Collapse, Space, Checkbox, Typography, Row, Col } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import undo from '@/assets/undo-signs.svg';
+import { connect } from 'umi';
 import UploadImage from '../UploadImage';
 import InputField from '../InputField';
 import styles from './index.less';
 
+@connect(({ candidateProfile: { data, tempData } = {} }) => ({
+  data,
+  tempData,
+}))
 class PreviousEmployment extends Component {
   // uploadText = (status) => {
   //   if(status === 'VERIFIED') {
@@ -22,6 +27,7 @@ class PreviousEmployment extends Component {
     this.state = {
       allDocs: [],
       selectedFile: { outerIndex: '', innerIndex: '' },
+      currentCompany: null,
     };
   }
 
@@ -76,142 +82,170 @@ class PreviousEmployment extends Component {
     this.resetSelectedIndex();
   };
 
-  renderEmployer = () => {
+  handleToPresent = (index, checked) => {
+    if (checked) {
+      this.setState({
+        currentCompany: index,
+      });
+    } else {
+      this.setState({
+        currentCompany: null,
+      });
+    }
+  };
+
+  renderEmployer = (docListE, item, index) => {
     const {
-      item = {},
-      loading,
-      index,
+      loading = false,
       // handleFile,
-      docList,
-      handleCanCelIcon: handleCancelIcon,
-      onValuesChange,
-      checkLength,
+      handleCanCelIcon: handleCancelIcon = () => {},
+      onValuesChange = () => {},
+      checkLength = () => {},
     } = this.props;
 
-    const { selectedFile } = this.state;
+    const { selectedFile, currentCompany } = this.state;
+
+    let itemDataFilter = [];
+    if (currentCompany === index) {
+      itemDataFilter = item.data.filter(
+        (doc) => doc.key === 'paysTubs' || doc.key === 'form16' || doc.isCandidateUpload,
+      );
+    } else {
+      itemDataFilter = item.data.filter(
+        (doc) => doc.key === 'relievingLetter' || doc.isCandidateUpload,
+      );
+    }
+
+    const docListEFilter = docListE.map((doc) => {
+      return {
+        ...doc,
+        data: itemDataFilter,
+      };
+    });
+
     return (
       <>
-        <InputField onValuesChange={onValuesChange} />
+        <InputField
+          onValuesChange={onValuesChange}
+          item={item}
+          index={index}
+          currentCompany={currentCompany}
+          handleToPresent={this.handleToPresent}
+        />
         <Space direction="vertical" className={styles.Space}>
           <div className={styles.Upload}>
-            {item.data.map((file, id) => (
-              <div key={id}>
-                {!file.attachment && file.isValidated ? (
-                  <Row className={styles.checkboxItem}>
-                    <Col span={18}>
-                      <Typography.Text>{file.displayName}</Typography.Text>
-                    </Col>
-                    <Col span={5} className={styles.Padding}>
+            {itemDataFilter.map((file, id) => {
+              return (
+                <div key={id}>
+                  {!file.attachment && file.isValidated ? (
+                    <Row className={styles.checkboxItem}>
+                      <Col span={18}>
+                        <Typography.Text>{file.displayName}</Typography.Text>
+                      </Col>
+                      <Col span={5} className={styles.Padding}>
+                        {file.candidateDocumentStatus !== 'VERIFIED' && (
+                          <Typography.Text>{file.attachment?.name}</Typography.Text>
+                        )}
+                        <UploadImage
+                          content={this.getActionContent(file.candidateDocumentStatus)}
+                          getResponse={(res) => this.getResponse(res, index, id, docListEFilter)}
+                          loading={loading}
+                          hideValidation
+                          typeIndex={index}
+                          nestedIndex={id}
+                          getIndexFailed={this.getIndexFailed}
+                          selectedInner={selectedFile.innerIndex}
+                          selectedOuter={selectedFile.outerIndex}
+                          handleSelectedFile={this.handleSelectedFile}
+                          resetSelectedIndex={this.resetSelectedIndex}
+                        />
+                      </Col>
+                    </Row>
+                  ) : file.attachment ? (
+                    <Row className={styles.checkboxItem}>
+                      <Col span={14}>
+                        <Typography.Text>{file.displayName}</Typography.Text>
+                      </Col>
+                      <Col span={5} className={styles.textAlign}>
+                        <a
+                          href={file.attachment.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.viewUpLoadDataURL}
+                        >
+                          {checkLength(file.attachment.name)}
+                        </a>
+                      </Col>
                       {file.candidateDocumentStatus !== 'VERIFIED' && (
-                        <Typography.Text>{file.attachment?.name}</Typography.Text>
+                        <>
+                          <Col span={4} className={styles.textAlign}>
+                            {/* <p className={styles.viewUpLoadDataText}>Uploaded</p> */}
+                            <UploadImage
+                              content={this.getActionContent(file.candidateDocumentStatus)}
+                              getResponse={(res) =>
+                                this.getResponse(res, index, id, docListEFilter)}
+                              loading={loading}
+                              hideValidation
+                              typeIndex={index}
+                              nestedIndex={id}
+                              getIndexFailed={this.getIndexFailed}
+                              selectedInner={selectedFile.innerIndex}
+                              selectedOuter={selectedFile.outerIndex}
+                              handleSelectedFile={this.handleSelectedFile}
+                              resetSelectedIndex={this.resetSelectedIndex}
+                            />
+                          </Col>
+                          <Col span={1} className={styles.textAlignCenter}>
+                            <img
+                              src={cancelIcon}
+                              alt=""
+                              onClick={() => handleCancelIcon(index, id, docListEFilter)}
+                              className={styles.viewUpLoadDataIconCancel}
+                            />
+                          </Col>
+                        </>
                       )}
-                      <UploadImage
-                        content={this.getActionContent(file.candidateDocumentStatus)}
-                        getResponse={(res) => this.getResponse(res, index, id, docList)}
-                        loading={loading}
-                        hideValidation
-                        typeIndex={index}
-                        nestedIndex={id}
-                        getIndexFailed={this.getIndexFailed}
-                        selectedInner={selectedFile.innerIndex}
-                        selectedOuter={selectedFile.outerIndex}
-                        handleSelectedFile={this.handleSelectedFile}
-                        resetSelectedIndex={this.resetSelectedIndex}
-                      />
-                    </Col>
-                  </Row>
-                ) : file.attachment ? (
-                  <Row className={styles.checkboxItem}>
-                    <Col span={14}>
-                      <Typography.Text>{file.displayName}</Typography.Text>
-                    </Col>
-                    <Col span={5} className={styles.textAlign}>
-                      <a
-                        href={file.attachment.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.viewUpLoadDataURL}
-                      >
-                        {checkLength(file.attachment.name)}
-                      </a>
-                    </Col>
-                    {file.candidateDocumentStatus !== 'VERIFIED' && (
-                      <>
-                        <Col span={4} className={styles.textAlign}>
-                          {/* <p className={styles.viewUpLoadDataText}>Uploaded</p> */}
-                          <UploadImage
-                            content={this.getActionContent(file.candidateDocumentStatus)}
-                            getResponse={(res) => this.getResponse(res, index, id, docList)}
-                            loading={loading}
-                            hideValidation
-                            typeIndex={index}
-                            nestedIndex={id}
-                            getIndexFailed={this.getIndexFailed}
-                            selectedInner={selectedFile.innerIndex}
-                            selectedOuter={selectedFile.outerIndex}
-                            handleSelectedFile={this.handleSelectedFile}
-                            resetSelectedIndex={this.resetSelectedIndex}
-                          />
-                        </Col>
-                        <Col span={1} className={styles.textAlignCenter}>
-                          <img
-                            src={cancelIcon}
-                            alt=""
-                            onClick={() => handleCancelIcon(index, id, docList)}
-                            className={styles.viewUpLoadDataIconCancel}
-                          />
-                        </Col>
-                      </>
-                    )}
-                  </Row>
-                ) : // <div />
-                file.isValidated === false ? (
-                  <Row className={styles.checkboxItemError}>
-                    <Col span={8}>
-                      <Typography.Text>{file.displayName}</Typography.Text>
-                    </Col>
-                    <Col span={11} className={styles.textLeft}>
-                      <Typography.Text>File must be under 5Mb</Typography.Text>
-                    </Col>
-                    <Col span={3} className={styles.textAlign}>
-                      <Typography.Text className={styles.boldText}>Retry</Typography.Text>
-                    </Col>
-                    <Col span={2} className={styles.textAlignCenter}>
-                      <img
-                        src={undo}
-                        alt=""
-                        onClick={() => handleCancelIcon(index, id, docList)}
-                        className={styles.viewUpLoadDataIconCancel}
-                      />
-                    </Col>
-                  </Row>
-                ) : (
-                  ''
-                )}
-              </div>
-            ))}
+                    </Row>
+                  ) : // <div />
+                  file.isValidated === false ? (
+                    <Row className={styles.checkboxItemError}>
+                      <Col span={8}>
+                        <Typography.Text>{file.displayName}</Typography.Text>
+                      </Col>
+                      <Col span={11} className={styles.textLeft}>
+                        <Typography.Text>File must be under 5Mb</Typography.Text>
+                      </Col>
+                      <Col span={3} className={styles.textAlign}>
+                        <Typography.Text className={styles.boldText}>Retry</Typography.Text>
+                      </Col>
+                      <Col span={2} className={styles.textAlignCenter}>
+                        <img
+                          src={undo}
+                          alt=""
+                          onClick={() => handleCancelIcon(index, id, docListE)}
+                          className={styles.viewUpLoadDataIconCancel}
+                        />
+                      </Col>
+                    </Row>
+                  ) : (
+                    ''
+                  )}
+                </div>
+              );
+            })}
           </div>
-          {/* {item.type === 'D' ? (
-                  <Space direction="horizontal">
-                    <PlusOutlined className={styles.plusIcon} />
-                    <Typography.Text className={styles.addMore}>
-                      Add Employer Details
-                    </Typography.Text>
-                  </Space>
-                ) : (
-                  <></>
-                )} */}
         </Space>
+        {index + 1 < docListE.length && <hr />}
       </>
     );
   };
 
   render() {
-    const { item = {} } = this.props;
-
+    const { docList = [] } = this.props;
+    const docListE = docList.filter((d) => d.type === 'E');
     return (
       <div className={styles.PreviousEmployment}>
-        {item.data.length > 0 || item.type === 'E' ? (
+        {docListE.length > 0 && (
           <Collapse
             accordion
             expandIconPosition="right"
@@ -227,15 +261,15 @@ class PreviousEmployment extends Component {
                   // onChange={(e) => handleCheckAll(e, defaultArr, item)}
                   checked
                 >
-                  Type {item.type}: {item.name}
+                  Type {docListE[0].type}: {docListE[0].name}
                 </Checkbox>
               }
               extra="[Can submit any of the below other than (*)mandatory]"
             >
-              {this.renderEmployer()}
+              {docListE.map((item, index) => this.renderEmployer(docListE, item, index))}
             </Collapse.Panel>
           </Collapse>
-        ) : null}
+        )}
       </div>
     );
   }
