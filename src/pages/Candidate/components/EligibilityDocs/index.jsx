@@ -148,6 +148,47 @@ class EligibilityDocs extends PureComponent {
     }
   };
 
+  handleFileForTypeE = (res, index, id, docList, docListEFilter) => {
+    const { dispatch } = this.props;
+
+    const otherDocs = docList.filter((d) => d.type !== 'E');
+    const arrToAdjust = JSON.parse(JSON.stringify(docListEFilter));
+    const typeIndex = arrToAdjust.findIndex((item, index1) => index1 === index);
+
+    if (arrToAdjust[typeIndex].data.length > 0) {
+      const nestedIndex = arrToAdjust[typeIndex].data.findIndex((item, id1) => id1 === id);
+
+      const documentId = arrToAdjust[typeIndex].data[nestedIndex]._id;
+      const { statusCode, data } = res;
+      const Obj = arrToAdjust[typeIndex].data[nestedIndex];
+      const attachment1 = data.find((x) => x);
+      if (statusCode === 200) {
+        dispatch({
+          type: 'candidateProfile/addAttachmentCandidate',
+          payload: {
+            attachment: attachment1.id,
+            document: documentId,
+            tenantId: getCurrentTenant(),
+          },
+        }).then(({ data: { attachment } = {} }) => {
+          if (attachment) {
+            arrToAdjust[typeIndex].data.splice(nestedIndex, 1, {
+              ...Obj,
+              attachment,
+            });
+
+            dispatch({
+              type: 'candidateProfile/saveOrigin',
+              payload: {
+                documentListToRender: [...otherDocs, ...arrToAdjust],
+              },
+            });
+          }
+        });
+      }
+    }
+  };
+
   handleCanCelIcon = (index, id, docList) => {
     const { dispatch } = this.props;
     const arrToAdjust = JSON.parse(JSON.stringify(docList));
@@ -323,7 +364,7 @@ class EligibilityDocs extends PureComponent {
                 onValuesChange={this.onValuesChange}
                 docList={documentListToRender}
                 handleCanCelIcon={this.handleCanCelIcon}
-                handleFile={this.handleFile}
+                handleFile={this.handleFileForTypeE}
                 loading={loading}
                 attachments={attachments}
                 validateFileSize={validateFileSize}

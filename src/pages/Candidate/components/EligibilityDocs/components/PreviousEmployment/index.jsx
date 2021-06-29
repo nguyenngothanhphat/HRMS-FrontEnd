@@ -88,9 +88,9 @@ class PreviousEmployment extends Component {
     });
   };
 
-  getResponse = async (res, index, id, docList) => {
+  getResponse = async (res, index, id, docList, docListEFilter) => {
     const { handleFile } = this.props;
-    handleFile(res, index, id, docList);
+    handleFile(res, index, id, docList, docListEFilter);
     this.resetSelectedIndex();
   };
 
@@ -144,6 +144,7 @@ class PreviousEmployment extends Component {
       handleCanCelIcon: handleCancelIcon = () => {},
       checkLength = () => {},
       data: { workHistory = [] },
+      docList = [],
     } = this.props;
 
     const { selectedFile, currentCompany } = this.state;
@@ -159,11 +160,14 @@ class PreviousEmployment extends Component {
       );
     }
 
-    const docListEFilter = docListE.map((doc) => {
-      return {
-        ...doc,
-        data: itemDataFilter,
-      };
+    const docListEFilter = docListE.map((doc, index1) => {
+      if (index === index1) {
+        return {
+          ...doc,
+          data: itemDataFilter,
+        };
+      }
+      return doc;
     });
 
     const checkIfHasCurrentCompany = workHistory.filter((value) => value.toPresent) || [];
@@ -194,7 +198,8 @@ class PreviousEmployment extends Component {
                         )}
                         <UploadImage
                           content={this.getActionContent(file.candidateDocumentStatus)}
-                          getResponse={(res) => this.getResponse(res, index, id, docListEFilter)}
+                          getResponse={(res) =>
+                            this.getResponse(res, index, id, docList, docListEFilter)}
                           loading={loading}
                           hideValidation
                           typeIndex={index}
@@ -229,7 +234,7 @@ class PreviousEmployment extends Component {
                             <UploadImage
                               content={this.getActionContent(file.candidateDocumentStatus)}
                               getResponse={(res) =>
-                                this.getResponse(res, index, id, docListEFilter)}
+                                this.getResponse(res, index, id, docList, docListEFilter)}
                               loading={loading}
                               hideValidation
                               typeIndex={index}
@@ -245,7 +250,7 @@ class PreviousEmployment extends Component {
                             <img
                               src={cancelIcon}
                               alt=""
-                              onClick={() => handleCancelIcon(index, id, docListEFilter)}
+                              onClick={() => handleCancelIcon(index, id, docList, docListEFilter)}
                               className={styles.viewUpLoadDataIconCancel}
                             />
                           </Col>
