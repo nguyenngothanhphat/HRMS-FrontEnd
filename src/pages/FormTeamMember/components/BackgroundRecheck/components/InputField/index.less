@@ -1,0 +1,82 @@
+@color-grey: #707177;
+
+.InputField {
+  // margin-bottom: 1.5rem;
+  // padding-top: 1.3rem;
+  // padding-right: 16px;
+  // padding-left: 16px;
+  :global {
+    .ant-input,
+    .ant-picker {
+      width: 100%;
+      height: 40px;
+      border-radius: 5px;
+    }
+    .ant-checkbox {
+      display: inline-block;
+      margin-right: 15px;
+    }
+  }
+  .checkBox {
+    margin-bottom: 10px;
+  }
+  .bottomTitle {
+    color: @color-grey;
+  }
+  .text {
+    margin-bottom: 1.5rem;
+    color: @color-grey;
+    font-weight: normal;
+    font-size: 14px;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+  }
+  .form {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    label {
+      color: @color-grey;
+    }
+    .colLeft {
+      .input {
+        height: 42px;
+        // padding: 10px 15px;
+        border: solid 1px #d6dce4;
+        border-radius: 5px;
+        outline: none;
+        &:focus {
+          box-shadow: none;
+        }
+      }
+    }
+    .colRight {
+      .inputDate {
+        width: 100%;
+        height: 42px;
+        padding: 10px 15px;
+        border: solid 1px #d6dce4;
+        border-radius: 5px;
+        outline: none;
+        &:focus {
+          box-shadow: none;
+        }
+        svg {
+          margin-right: 0px;
+        }
+        :global {
+          .ant-picker-input {
+            .ant-picker-suffix {
+              .anticon-calendar {
+                svg {
+                  margin-right: 0px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

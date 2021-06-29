@@ -28,7 +28,22 @@ class Feedback extends Component {
     const newIneligibleDocs = [];
 
     const newDocumentList = [];
-    docsList.map((item) => {
+
+    const docsListFilter = docsList.map((item) => {
+      const { data = [] } = item;
+      let newData = [];
+      data.forEach((doc) => {
+        if (doc.isCandidateUpload) {
+          newData = [...newData, doc];
+        }
+      });
+      return {
+        ...item,
+        data: newData,
+      };
+    });
+
+    docsListFilter.map((item) => {
       const { data = [] } = item;
       data.map((documentItem) => {
         newDocumentList.push(documentItem);

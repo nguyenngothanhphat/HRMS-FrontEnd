@@ -19,6 +19,7 @@ import {
   getLocationListByCompany,
   addManagerSignature,
   getDocumentByCandidate,
+  getWorkHistory,
 } from '@/services/addNewMember';
 import { history } from 'umi';
 import { notification } from 'antd';
@@ -937,50 +938,17 @@ const candidateInfo = {
           payload: { documentsByCandidate: data },
         });
 
-        // Group data
-        const groupA = [];
-        const groupB = [];
-        const groupC = [];
-        const groupE = [];
-        data.map((item) => {
-          const { candidateGroup } = item;
-          switch (candidateGroup) {
-            case 'A':
-              groupA.push(item);
-              break;
-            case 'B':
-              groupB.push(item);
-              break;
-            case 'C':
-              groupC.push(item);
-              break;
-            case 'E':
-              groupE.push(item);
-              break;
-            default:
-              break;
-          }
-          return null;
-        });
-
-        const documentsCandidateList = [
-          { type: 'A', name: 'Identity Proof', data: [...groupA] },
-          { type: 'B', name: 'Address Proof', data: [...groupB] },
-          { type: 'C', name: 'Educational', data: [...groupC] },
-          { type: 'E', name: 'Previous Employment', data: [...groupE] },
-        ];
-
         yield put({
           type: 'saveTemp',
           payload: {
             documentsByCandidate: data,
-            documentsByCandidateRD: documentsCandidateList,
+            // documentsByCandidateRD: documentsCandidateList,
           },
         });
-        yield put({
-          type: 'updateBackgroundRecheck',
-          payload: documentsCandidateList,
-        });
+        // yield put({
+        //   type: 'updateBackgroundRecheck',
+        //   payload: data,
+        // });
       } catch (error) {
         dialog(error);
       }
@@ -1046,6 +1014,23 @@ const candidateInfo = {
         //   type: 'updateAdditionalQuestion',
         //   payload: data
         // })
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchWorkHistory({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getWorkHistory, payload);
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            workHistory: data,
+          },
+        });
       } catch (error) {
         dialog(error);
       }

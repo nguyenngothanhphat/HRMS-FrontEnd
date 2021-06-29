@@ -43,11 +43,10 @@ class EligibilityDocs extends PureComponent {
   componentDidMount() {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
     const {
-      data: { documentList = [], documentChecklistSetting = [], workHistory = [] },
+      data: { documentList = [], workHistory = [] },
       dispatch,
     } = this.props;
 
-    const employers = [];
     const groupA = [];
     const groupB = [];
     const groupC = [];
