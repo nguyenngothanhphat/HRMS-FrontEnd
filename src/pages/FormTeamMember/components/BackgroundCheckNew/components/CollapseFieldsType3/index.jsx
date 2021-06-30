@@ -134,7 +134,10 @@ class CollapseFieldsType3 extends PureComponent {
                   placeholder="Document Name"
                   value={documentName}
                 />
-                <PlusOutlined onClick={this.handleAddDocumentName} className={styles.plusIcon} />
+                <PlusOutlined
+                  onClick={documentName ? this.handleAddDocumentName : () => {}}
+                  className={styles.plusIcon}
+                />
               </div>
             )}
           </Panel>
