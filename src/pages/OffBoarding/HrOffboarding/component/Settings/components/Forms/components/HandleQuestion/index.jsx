@@ -1,7 +1,8 @@
+import AddIcon from '@/assets/add-symbols.svg';
 import CustomModal from '@/components/CustomModal';
 import ModalQuestionItem from '@/components/Question/ModalQuestionItem';
 import QuestionItemView from '@/components/Question/QuestionItemView';
-import TYPE_QUESTION from '@/components/Question/utils';
+import { TYPE_QUESTION } from '@/components/Question/utils';
 import { Button, Col, notification, Row } from 'antd';
 import React, { Component } from 'react';
 // import EmailReminderHeader from './components/EmailReminderHeader';
@@ -9,9 +10,12 @@ import { formatMessage } from 'umi';
 import styles from './index.less';
 
 const defaultQuestion = {
-  answerType: TYPE_QUESTION.SINGLE_CHOICE.key,
-  question: 'Untitled Question',
-  defaultAnswers: ['Answer 1'],
+  answerType: TYPE_QUESTION.TEXT_ANSWER.key,
+  question: 'Type your question',
+  defaultAnswers: [],
+  isRequired: false,
+  rating: {},
+  multiChoice: {},
 };
 
 class HandleQuestion extends Component {
@@ -34,6 +38,7 @@ class HandleQuestion extends Component {
       this.setState({
         currentModal: (
           <ModalQuestionItem
+            closeModal={this.closeModal}
             onChangeQuestionItem={this.onChangeQuestionItem}
             questionItem={questionItem}
             action={action}
@@ -136,7 +141,8 @@ class HandleQuestion extends Component {
     };
 
     if (
-      question.answerType !== TYPE_QUESTION.TEXT_ANSWER.key &&
+      (question.answerType === TYPE_QUESTION.SINGLE_CHOICE.key ||
+        question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key) &&
       question.defaultAnswers.length < 1
     ) {
       return notification.error({
@@ -185,6 +191,7 @@ class HandleQuestion extends Component {
         <Row align="space-between" className={styles.OptionalOnboardingQuestions__buttonAdd}>
           <Col>
             <Button type="link" onClick={this.openModalAdd}>
+              <img src={AddIcon} alt="Add icon" style={{ width: '18px', marginRight: '15px' }} />{' '}
               {formatMessage({ id: 'component.optionalOnboardingQuestions.addQuestion' })}
             </Button>
           </Col>
@@ -198,7 +205,7 @@ class HandleQuestion extends Component {
           />
         ))}
         <CustomModal
-          width={750}
+          width={646}
           open={openModal}
           closeModal={this.closeModal}
           content={currentModal}
