@@ -1,4 +1,4 @@
-.terminateModal {
+.feedbackModal {
   :global {
     .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
       height: 42px;
@@ -8,11 +8,12 @@
     }
     .ant-modal-content {
       box-sizing: border-box;
-      width: 554px;
+      width: 630px;
       height: auto;
       background-color: #fff;
       border-right: 1px solid #d6dce0;
       box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+      border-radius: 10px;
     }
     .ant-modal-body {
       padding: 0px 0px 1px 0px;
@@ -37,77 +38,126 @@
     .ant-modal-footer {
       padding: 10px 67px;
     }
-
-    .ant-form-item-control-input-content {
-      display: flex;
-      justify-content: flex-end;
+    
+    .ant-form-item {
+      margin-bottom: 0;
     }
+
+    // .ant-form-item-control-input-content {
+    //   display: flex;
+    //   justify-content: flex-end;
+    // }
   }
 
-  .contentModal {
-    padding: 50px 67px 0px;
+  .contentFeedback {
 
     .titleModal {
-      padding-bottom: 25px;
-      color: #2560e0;
-      font-weight: 700;
+      padding: 24px;
+      border-bottom: 1px solid #d6dce0;
+      font-weight: bold;
       font-size: 18px;
       line-height: 18px;
     }
 
     .formModal {
-      display: flex;
-      flex-direction: column;
-      :global {
-        .ant-form-item-label {
-          text-align: left;
+      .subTitle{
+        font-size: 14px;
+        color: #707177;
+      }
+
+      .title1{
+        padding: 24px;
+      }
+
+      .title2{
+        padding-bottom: 4px;
+      }
+
+      .form {
+        
+        .formTop{
+          padding: 0 24px;
+
+          .radioText{
+            color: #000;
+            font-weight: 500;
+          }
+
+        }
+
+        .formBottom{
+          padding: 24px;
+          padding-top: 0;
+          width: 100%;
+          display: flex;
+          justify-content: flex-end;
+
+          .flexButton1 {
+            margin-right: 24px;
+          }
+
+          .flexButton1, .flexButton2 {
+            .btnGroup {
+              display: inline-block;
+              width: 100%;
+              height: 40px;
+              margin-top: 4px;
+              color: white;
+              font-weight: 500;
+              font-size: 14px;
+              background-color: #ffa100;
+              border: 1px solid #ffa100;
+              border-radius: 25px;
+              cursor: pointer;
+              &:active {
+                opacity: 0.5;
+              }
+            }
+  
+            .btnSubmit {
+              background-color: #ffa100;
+              padding: 0 24px;
+            }
+
+            .highlightBtn {
+              color: #ffa100;
+              background-color: #fff;
+            }
+          }
         }
       }
-
-      .fieldModal {
-        border-radius: 5px;
-      }
+      
     }
 
-    .datePickerForm {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      width: 100%;
-
-      .datePicker {
-        border-radius: 5px;
-      }
-    }
   }
 
-  .flexContent {
-    height: 46px;
+  // .flexContent {
+  //   height: 46px;
 
-    .btnGroup {
-      display: inline-block;
-      width: 110px;
-      height: 35px;
-      margin-top: 4px;
-      color: white;
-      font-weight: 500;
-      font-size: 14px;
-      background-color: #ffa100;
-      border: 1px solid #ffa100;
-      border-radius: 25px;
-      cursor: pointer;
-      &:active {
-        opacity: 0.5;
-      }
-    }
+  //   .btnGroup {
+  //     display: inline-block;
+  //     width: 110px;
+  //     height: 35px;
+  //     margin-top: 4px;
+  //     color: white;
+  //     font-weight: 500;
+  //     font-size: 14px;
+  //     background-color: #ffa100;
+  //     border: 1px solid #ffa100;
+  //     border-radius: 25px;
+  //     cursor: pointer;
+  //     &:active {
+  //       opacity: 0.5;
+  //     }
+  //   }
 
-    .btnSubmit {
-      background-color: #ffa100;
-    }
-    .btnCancel {
-      margin-right: 20px;
-      color: #ffa100;
-      background-color: #fff;
-    }
-  }
+  //   .btnSubmit {
+  //     background-color: #ffa100;
+  //   }
+  //   .btnCancel {
+  //     margin-right: 20px;
+  //     color: #ffa100;
+  //     background-color: #fff;
+  //   }
+  // }
 }

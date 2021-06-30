@@ -72,10 +72,8 @@
     position: relative;
     
     .btnFeedback {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 60px;
+      
+      height: 66px;
       color: #ffffff;
       font-weight: 500;
       font-size: 14px;
@@ -86,6 +84,12 @@
       border-radius: 50px;
       transition: width 0.5s;
 
+      .spanText{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
       &:hover {
         .feedbackText{
            max-width: 300px;
@@ -94,6 +98,7 @@
 
       .feedbackIcon{
         font-size: 24px;
+        padding: 6px;
       }
 
       .feedbackText{

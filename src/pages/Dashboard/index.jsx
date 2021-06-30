@@ -200,8 +200,10 @@ class Dashboard extends PureComponent {
               <Affix offsetBottom={60}>
                 <div className={styles.feedback}>
                   <Button onClick={this.openFeedback} className={styles.btnFeedback}>
-                    <FormOutlined className={styles.feedbackIcon} />
-                    <span className={styles.feedbackText}>Feedback</span>
+                    <div className={styles.spanText}>
+                      <FormOutlined className={styles.feedbackIcon} />
+                      <span className={styles.feedbackText}>Feedback</span>
+                    </div>
                   </Button>
                 </div>
               </Affix>
