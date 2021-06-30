@@ -3,6 +3,7 @@ import { getCurrentTenant } from '@/utils/authority';
 import { Button, Col, Row, Typography } from 'antd';
 import React, { useEffect } from 'react';
 import { connect, formatMessage } from 'umi';
+import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
 import s from './index.less';
@@ -22,10 +23,28 @@ const AdditionalQuestion = (props) => {
     props;
 
   const checkAllFieldsValidate = () => {
-    const valid = questionOnBoarding.every(
-      (question) => question.employeeAnswers.filter((answer) => answer).length > 0,
-    );
+    const valid = questionOnBoarding.every((question) => {
+      const employeeAnswers = question.employeeAnswers.filter((answer) => answer);
 
+      if (question.isRequired) {
+        if (question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key) {
+          const { specify, num } = question.multiChoice;
+          switch (specify) {
+            case SPECIFY.AT_LEAST.key:
+              return employeeAnswers.length >= num;
+            case SPECIFY.AT_MOST.key:
+              return employeeAnswers.length <= num;
+            case SPECIFY.EXACTLY.key:
+              return employeeAnswers.length !== num;
+            default:
+              break;
+          }
+        }
+        return employeeAnswers.length > 0;
+      }
+      return true;
+    });
+    console.log('valid', valid);
     if (!dispatch) {
       return;
     }
@@ -87,7 +106,7 @@ const AdditionalQuestion = (props) => {
     const response = await dispatch({
       type: 'candidateProfile/updateByCandidateEffect',
       payload: {
-        questionOnBoarding: questionOnBoarding.reverse(),
+        questionOnBoarding,
         candidate,
         tenantId: getCurrentTenant(),
       },

@@ -83,7 +83,17 @@ const employeeSetting = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { optionalOnboardQuestionList },
+          payload: {
+            optionalOnboardQuestionList: optionalOnboardQuestionList.map((item) => {
+              if (!('multiChoice' in item)) {
+                return { ...item, multiChoice: {} };
+              }
+              if (!('rating' in item)) {
+                return { ...item, rating: {} };
+              }
+              return item;
+            }),
+          },
         });
         return optionalOnboardQuestionList;
       } catch (errors) {
@@ -99,13 +109,21 @@ const employeeSetting = {
           id: payload._id,
           ...payload,
         });
-        const { statusCode, data: optionalOnboardQuestion = {} } = response;
 
+        const { statusCode } = response;
+        let { data: optionalOnboardQuestion = {} } = response;
+        if (!('multiChoice' in optionalOnboardQuestion)) {
+          optionalOnboardQuestion = { ...optionalOnboardQuestion, multiChoice: {} };
+        }
+        if (!('rating' in optionalOnboardQuestion)) {
+          optionalOnboardQuestion = { ...optionalOnboardQuestion, rating: {} };
+        }
         if (statusCode !== 200) throw response;
         notification.success({
           message: `Update the question successfully!`,
           duration: 3,
         });
+
         yield put({
           type: 'updateQuestion',
           payload: optionalOnboardQuestion,
@@ -124,8 +142,14 @@ const employeeSetting = {
           company: getCurrentCompany(),
           ...payload,
         });
-        const { statusCode, data: optionalOnboardQuestion = {} } = response;
-
+        const { statusCode } = response;
+        let { data: optionalOnboardQuestion = {} } = response;
+        if (!('multiChoice' in optionalOnboardQuestion)) {
+          optionalOnboardQuestion = { ...optionalOnboardQuestion, multiChoice: {} };
+        }
+        if (!('rating' in optionalOnboardQuestion)) {
+          optionalOnboardQuestion = { ...optionalOnboardQuestion, rating: {} };
+        }
         if (statusCode !== 200) throw response;
         notification.success({
           message: `Add the question successfully!`,
