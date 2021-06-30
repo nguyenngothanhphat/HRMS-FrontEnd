@@ -72,7 +72,7 @@ const info = {
         checkedList: [],
         isChecked: false,
       },
-      technicalCertification: {
+      previousEmployment: {
         name: '',
         duration: '',
         poe: {

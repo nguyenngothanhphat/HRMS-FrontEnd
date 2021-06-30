@@ -4,6 +4,7 @@ import {
   getById,
   getDocumentByCandidate,
   getWorkHistory,
+  updateWorkHistory,
   sendEmailByCandidateModel,
   updateByCandidate,
 } from '@/services/candidate';
@@ -46,6 +47,7 @@ const candidateProfile = {
         _id: '',
         url: '',
       },
+      workHistory: [],
     },
     tempData: {
       checkStatus: {},
@@ -112,6 +114,11 @@ const candidateProfile = {
       {
         type: 'D',
         name: 'Technical Certifications',
+        data: [],
+      },
+      {
+        type: 'E',
+        name: 'Previous Employment',
         data: [
           { name: 'Offer letter', value: false },
           { name: 'Appraisal letter', value: false },
@@ -131,6 +138,7 @@ const candidateProfile = {
       salaryStatus: 2,
     },
     // questionOnBoarding: [],
+    isCandidateAcceptDOJ: true
   },
   effects: {
     *fetchCandidateById({ payload }, { call, put }) {
@@ -214,7 +222,7 @@ const candidateProfile = {
       }
       return response;
     },
-    *fetchEmployer({ payload }, { call, put }) {
+    *fetchWorkHistory({ payload }, { call, put }) {
       let response = {};
       try {
         response = yield call(getWorkHistory, payload);
@@ -222,7 +230,27 @@ const candidateProfile = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',
-          payload: { employerId: data._id, employerName: data.employer },
+          payload: {
+            workHistory: data,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *updateWorkHistory({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(updateWorkHistory, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'fetchWorkHistory',
+          payload: {
+            candidate: payload.candidate,
+            tenantId: payload.tenantId,
+          },
         });
       } catch (error) {
         dialog(error);
@@ -407,6 +435,11 @@ const candidateProfile = {
           {
             type: 'D',
             name: 'Technical Certifications',
+            data: [],
+          },
+          {
+            type: 'E',
+            name: 'Previous Employment',
             data: [
               { name: 'Offer letter', value: false },
               { name: 'Appraisal letter', value: false },
