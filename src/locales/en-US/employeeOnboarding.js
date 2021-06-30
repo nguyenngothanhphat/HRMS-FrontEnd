@@ -75,7 +75,7 @@ export default {
   'component.optionalOnboardingQuestions.sectionName': `Section name`,
   'component.optionalOnboardingQuestions.fieldName': `Field name`,
   'component.optionalOnboardingQuestions.saveOrdering': `Save ordering`,
-  'component.optionalOnboardingQuestions.addQuestion': `Add question`,
+  'component.optionalOnboardingQuestions.addQuestion': `Add more questions`,
   // Settings custom emails
   'component.emailReminderNote.title': 'Note',
   'component.emailReminderNote.note1':

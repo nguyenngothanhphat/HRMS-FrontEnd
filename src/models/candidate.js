@@ -151,7 +151,7 @@ const candidateProfile = {
           type: 'saveTemp',
           payload: {
             candidateSignature: data.candidateSignature,
-            questionOnBoarding: data.questionOnBoarding.reverse() || [],
+            questionOnBoarding: data.questionOnBoarding || [],
           },
         });
         yield put({
