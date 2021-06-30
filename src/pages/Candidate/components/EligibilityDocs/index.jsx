@@ -312,7 +312,6 @@ class EligibilityDocs extends PureComponent {
     documentListToRender.forEach((doc) => {
       doc.data.forEach((doc1) => {
         if (!doc1.attachment && !doc1.isMandatoryBySystem && doc1.isCandidateUpload) {
-          console.log('doc1', doc1);
           checkFull = false;
         }
       });

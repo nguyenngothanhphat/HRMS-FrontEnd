@@ -428,6 +428,8 @@ class BackgroundRecheck extends Component {
 
   _renderBottomBar = () => {
     // const { feedbackStatus } = this.state;
+    const { docsList } = this.state;
+    const checkStatus = this.checkStatus(docsList);
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
@@ -448,9 +450,9 @@ class BackgroundRecheck extends Component {
               type="primary"
               onClick={this.onClickNext}
               className={`${styles.bottomBar__button__primary} ${
-                this.checkStatus() !== 1 ? styles.bottomBar__button__disabled : ''
+                checkStatus !== 1 ? styles.bottomBar__button__disabled : ''
               }`}
-              disabled={this.checkStatus() !== 1}
+              disabled={checkStatus !== 1}
             >
               Next
             </Button>
@@ -460,8 +462,7 @@ class BackgroundRecheck extends Component {
     );
   };
 
-  checkStatus = () => {
-    const { docsList: docsListState = [] } = this.state;
+  checkStatus = (docsListState) => {
     const newVerifiedDocs = [];
     const newResubmitDocs = [];
     const newIneligibleDocs = [];
@@ -512,6 +513,7 @@ class BackgroundRecheck extends Component {
     if (newResubmitDocs.length > 0) {
       return 2;
     }
+
     return 4;
   };
 
@@ -548,7 +550,7 @@ class BackgroundRecheck extends Component {
               <NoteComponent note={Note} />
             </Row>
             <Row className={styles.stepRow}>
-              <Feedback feedbackStatus={feedbackStatus} docsList={docsList} />
+              <Feedback checkStatus={this.checkStatus} docsList={docsList} />
             </Row>
             {feedbackStatus === 'RE-SUBMIT' && (
               <Row className={styles.stepRow}>
