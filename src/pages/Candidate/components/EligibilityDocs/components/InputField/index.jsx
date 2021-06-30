@@ -12,8 +12,8 @@ const InputField = ({
   item: {
     workHistoryId = '',
     employer = '',
-    startDate = '',
-    endDate = '',
+    startDate: startDateProp = '',
+    endDate: endDateProp = '',
     toPresent: toPresentProp = false,
   } = {},
   currentCompany, // index
@@ -21,13 +21,31 @@ const InputField = ({
   handleToPresent = () => {},
 }) => {
   const [toPresent, setToPresent] = useState(toPresentProp);
+  const [startDate, setStartDate] = useState(startDateProp);
+  const [endDate, setEndDate] = useState(endDateProp);
+
   const onCheckboxChange = (e) => {
     const {
       target: { checked = false },
     } = e;
-    onValuesChange(checked, 'toPresent', workHistoryId);
+    // onValuesChange(checked, 'toPresent', workHistoryId);
     setToPresent(checked);
     handleToPresent(index, checked, workHistoryId);
+  };
+
+  // DISABLE DATE OF DATE PICKER
+  const disabledStartDate = (current) => {
+    if (endDate) {
+      return (current && current > moment()) || current > moment(endDate);
+    }
+    return current && current > moment();
+  };
+
+  const disabledEndDate = (current) => {
+    if (startDate) {
+      return current && current < moment(startDate);
+    }
+    return null;
   };
 
   return (
@@ -65,10 +83,14 @@ const InputField = ({
           <Col span={12}>
             <Form.Item label="Start Date*" name="startDate">
               <DatePicker
+                disabledDate={disabledStartDate}
                 placeholder="Start Date"
                 format={dateFormat}
                 className={style.inputDate}
-                onChange={(val) => onValuesChange(val, 'startDate', workHistoryId)}
+                onChange={(val) => {
+                  onValuesChange(val, 'startDate');
+                  setStartDate(moment(val));
+                }}
               />
             </Form.Item>
           </Col>
@@ -76,10 +98,14 @@ const InputField = ({
             <Col span={12}>
               <Form.Item label="End Date*" name="endDate">
                 <DatePicker
+                  disabledDate={disabledEndDate}
                   placeholder="End Date"
                   className={style.inputDate}
                   format={dateFormat}
-                  onChange={(val) => onValuesChange(val, 'endDate', workHistoryId)}
+                  onChange={(val) => {
+                    onValuesChange(val, 'endDate');
+                    setEndDate(moment(val));
+                  }}
                 />
               </Form.Item>
             </Col>

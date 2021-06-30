@@ -42,6 +42,10 @@ class EligibilityDocs extends PureComponent {
 
   componentDidMount() {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+    this.processData();
+  }
+
+  processData = async () => {
     const {
       data: { documentList = [], workHistory = [] },
       dispatch,
@@ -104,13 +108,13 @@ class EligibilityDocs extends PureComponent {
       { type: 'D', name: 'Technical Certifications', data: [...groupD] },
       ...groupMultiE,
     ];
-    dispatch({
+    await dispatch({
       type: 'candidateProfile/saveOrigin',
       payload: {
-        documentListToRender: docList,
+        documentListToRender: [...docList],
       },
     });
-  }
+  };
 
   handleFile = (res, index, id, docList) => {
     const { dispatch } = this.props;
@@ -302,6 +306,22 @@ class EligibilityDocs extends PureComponent {
     return url;
   };
 
+  checkFull = () => {
+    const { data: { workHistory, documentListToRender } = {} } = this.props;
+    let checkFull = true;
+    documentListToRender.forEach((doc) => {
+      doc.data.forEach((doc1) => {
+        if (!doc1.attachment && !doc1.isMandatoryBySystem && doc1.isCandidateUpload) {
+          checkFull = false;
+        }
+      });
+    });
+    workHistory.forEach((w) => {
+      if (!w.startDate || (!w.toPresent && !w.endDate)) checkFull = false;
+    });
+    return checkFull;
+  };
+
   render() {
     const {
       loading,
@@ -321,14 +341,7 @@ class EligibilityDocs extends PureComponent {
     // const {  } = user;
     // console.log(processStatus);
 
-    let checkFull = true;
-    documentListToRender.forEach((doc) => {
-      doc.data.forEach((doc1) => {
-        if (!doc1.attachment && !doc1.isMandatoryBySystem && doc1.isCandidateUpload) {
-          checkFull = false;
-        }
-      });
-    });
+    const checkFull = this.checkFull();
 
     return (
       <div className={styles.EligibilityDocs}>
@@ -362,7 +375,6 @@ class EligibilityDocs extends PureComponent {
               {/* type E */}
               <PreviousEmployment
                 onValuesChange={this.onValuesChange}
-                docList={documentListToRender}
                 handleCanCelIcon={this.handleCanCelIcon}
                 handleFile={this.handleFileForTypeE}
                 loading={loading}
@@ -370,6 +382,7 @@ class EligibilityDocs extends PureComponent {
                 validateFileSize={validateFileSize}
                 checkLength={this.checkLength}
                 processStatus={processStatus}
+                renderData={this.processData}
               />
             </div>
           </Col>

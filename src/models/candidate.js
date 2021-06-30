@@ -138,6 +138,7 @@ const candidateProfile = {
       salaryStatus: 2,
     },
     // questionOnBoarding: [],
+    isCandidateAcceptDOJ: true
   },
   effects: {
     *fetchCandidateById({ payload }, { call, put }) {

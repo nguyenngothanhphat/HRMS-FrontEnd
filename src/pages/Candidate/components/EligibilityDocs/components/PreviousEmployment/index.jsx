@@ -17,17 +17,9 @@ import styles from './index.less';
   candidate,
 }))
 class PreviousEmployment extends Component {
-  // uploadText = (status) => {
-  //   if(status === 'VERIFIED') {
-  //     return 'Uploaded';
-  //   }
-  //   return 'Reupload'
-  // }
-
   constructor(props) {
     super(props);
     this.state = {
-      allDocs: [],
       selectedFile: { outerIndex: '', innerIndex: '' },
       currentCompany: null,
     };
@@ -35,25 +27,9 @@ class PreviousEmployment extends Component {
 
   componentDidMount() {
     const {
-      docList,
       data: { workHistory = [] },
     } = this.props;
-    const allDoc = [];
-    // let outerIndex = 0;
-    docList.map((list, outerIndex) => {
-      const { data = [] } = list;
-      // let innerIndex = 0;
-      data.map((dataItem, innerIndex) => {
-        allDoc.push({ ...dataItem, outerIndex, innerIndex });
-        // innerIndex++;
-        return null;
-      });
-      // outerIndex++;
-      return null;
-    });
-    this.setState({
-      allDocs: allDoc,
-    });
+
     workHistory.forEach((wh, index) => {
       if (wh.toPresent) {
         this.setState({
@@ -94,7 +70,7 @@ class PreviousEmployment extends Component {
     this.resetSelectedIndex();
   };
 
-  handleToPresent = (index, checked, workHistoryId) => {
+  handleToPresent = async (index, checked, workHistoryId) => {
     if (checked) {
       this.setState({
         currentCompany: index,
@@ -104,8 +80,8 @@ class PreviousEmployment extends Component {
         currentCompany: null,
       });
     }
-    const { dispatch, candidate } = this.props;
-    dispatch({
+    const { dispatch, candidate, renderData = () => {} } = this.props;
+    await dispatch({
       type: 'candidateProfile/updateWorkHistory',
       payload: {
         tenantId: getCurrentTenant(),
@@ -114,20 +90,18 @@ class PreviousEmployment extends Component {
         toPresent: checked,
       },
     });
-  };
-
-  onValuesChange = (val, type, workHistoryId) => {
-    const { dispatch, candidate } = this.props;
-
-    dispatch({
-      type: 'candidateProfile/updateWorkHistory',
+    await dispatch({
+      type: 'candidateProfile/fetchDocumentByCandidate',
       payload: {
-        tenantId: getCurrentTenant(),
         candidate,
-        _id: workHistoryId,
-        [type]: val,
+        tenantId: getCurrentTenant(),
       },
     });
+    renderData();
+  };
+
+  onValuesChange = (val, type) => {
+    const { dispatch } = this.props;
 
     dispatch({
       type: 'candidateProfile/saveOrigin',
@@ -138,19 +112,20 @@ class PreviousEmployment extends Component {
   };
 
   renderEmployer = (docListE, item, index) => {
+    console.log('docListE', docListE);
     const {
       loading = false,
       // handleFile,
       handleCanCelIcon: handleCancelIcon = () => {},
       checkLength = () => {},
-      data: { workHistory = [] },
-      docList = [],
+      data: { documentListToRender: docList = [], workHistory = [] },
     } = this.props;
 
     const { selectedFile, currentCompany } = this.state;
 
     let itemDataFilter = [];
-    if (currentCompany === index || item.toPresent) {
+    const workHistoryObj = workHistory.find((w) => w._id === item.workHistoryId);
+    if (currentCompany === index || workHistoryObj.toPresent) {
       itemDataFilter = item.data.filter(
         (doc) => doc.key === 'paysTubs' || doc.key === 'form16' || doc.isCandidateUpload,
       );
@@ -292,7 +267,7 @@ class PreviousEmployment extends Component {
   };
 
   render() {
-    const { docList = [] } = this.props;
+    const { data: { documentListToRender: docList = [] } = {} } = this.props;
     const docListE = docList.filter((d) => d.type === 'E');
     return (
       <div className={styles.PreviousEmployment}>

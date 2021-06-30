@@ -370,7 +370,7 @@ class BackgroundRecheck extends Component {
   renderCollapseFields = () => {
     const { docsList: documentsCandidateList = [] } = this.state;
     const { loadingGetById = false } = this.props;
-    if (loadingGetById) {
+    if (documentsCandidateList.length === 0 || loadingGetById) {
       return <Skeleton active />;
     }
 

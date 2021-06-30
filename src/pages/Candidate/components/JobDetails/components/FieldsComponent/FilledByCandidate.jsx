@@ -55,6 +55,13 @@ class FilledByCandidate extends PureComponent {
 
   checkChange = (e) => {
     this.setState({ checkWouldNewDate: e.target.value });
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        isCandidateAcceptDOJ: !e.target.value,
+      },
+    });
   };
 
   render() {
