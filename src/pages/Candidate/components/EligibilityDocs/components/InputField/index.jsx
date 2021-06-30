@@ -88,7 +88,7 @@ const InputField = ({
                 format={dateFormat}
                 className={style.inputDate}
                 onChange={(val) => {
-                  onValuesChange(val, 'startDate');
+                  onValuesChange(val, 'startDate', workHistoryId);
                   setStartDate(moment(val));
                 }}
               />
@@ -103,7 +103,7 @@ const InputField = ({
                   className={style.inputDate}
                   format={dateFormat}
                   onChange={(val) => {
-                    onValuesChange(val, 'endDate');
+                    onValuesChange(val, 'endDate', workHistoryId);
                     setEndDate(moment(val));
                   }}
                 />

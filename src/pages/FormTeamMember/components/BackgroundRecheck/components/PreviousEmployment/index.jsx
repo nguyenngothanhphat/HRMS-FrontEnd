@@ -56,7 +56,7 @@ class PreviousEmployment extends Component {
     return className;
   };
 
-  renderEmployer = (item, docListE, indexGroupDoc) => {
+  renderEmployer = (item, docListE, indexGroupDoc, firstIndex) => {
     const {
       handleCheckDocument = () => {},
       data: { workHistory = [] },
@@ -114,7 +114,7 @@ class PreviousEmployment extends Component {
                     name="radiogroup"
                     defaultValue={candidateDocumentStatus}
                     onChange={(event) => {
-                      handleCheckDocument(event, indexGroupDoc, document, 'E');
+                      handleCheckDocument(event, indexGroupDoc + firstIndex, document, 'E');
                     }}
                   >
                     <Radio value="VERIFIED" className={styles.verified}>
@@ -141,6 +141,7 @@ class PreviousEmployment extends Component {
     const { docList = [] } = this.props;
     const { visible, url, displayName } = this.state;
     const docListE = docList.filter((d) => d.type === 'E');
+    const firstIndex = docList.findIndex((d) => d.type === 'E');
     return (
       <div className={styles.PreviousEmployment}>
         {docListE.length > 0 ? (
@@ -166,7 +167,7 @@ class PreviousEmployment extends Component {
               <Space direction="vertical" className={styles.space}>
                 {docList.map((doc, i) => {
                   if (doc.type === 'E') {
-                    return this.renderEmployer(doc, docListE, i);
+                    return this.renderEmployer(doc, docListE, i - firstIndex, firstIndex);
                   }
                   return '';
                 })}

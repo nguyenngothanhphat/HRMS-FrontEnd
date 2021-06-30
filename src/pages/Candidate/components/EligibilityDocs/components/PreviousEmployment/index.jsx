@@ -100,8 +100,18 @@ class PreviousEmployment extends Component {
     renderData();
   };
 
-  onValuesChange = (val, type) => {
-    const { dispatch } = this.props;
+  onValuesChange = async (val, type, workHistoryId) => {
+    const { dispatch, candidate } = this.props;
+
+    await dispatch({
+      type: 'candidateProfile/updateWorkHistory',
+      payload: {
+        tenantId: getCurrentTenant(),
+        candidate,
+        _id: workHistoryId,
+        [type]: val,
+      },
+    });
 
     dispatch({
       type: 'candidateProfile/saveOrigin',
@@ -112,7 +122,6 @@ class PreviousEmployment extends Component {
   };
 
   renderEmployer = (docListE, item, index) => {
-    console.log('docListE', docListE);
     const {
       loading = false,
       // handleFile,
