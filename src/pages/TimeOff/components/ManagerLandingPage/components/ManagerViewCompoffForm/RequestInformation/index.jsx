@@ -366,7 +366,7 @@ class RequestInformation extends PureComponent {
         {/* IN PROGRESS */}
         {!isReject &&
           (status === TIMEOFF_STATUS.inProgress ||
-            (currentUserRole === 'ADMIN-CLA' && status === TIMEOFF_STATUS.inProgressNext)) && (
+            (currentUserRole === 'REGION-HEAD' && status === TIMEOFF_STATUS.inProgressNext)) && (
             <div className={styles.footer}>
               <span className={styles.note}>
                 By default notifications will be sent to HR, the requestee and recursively loop to
@@ -386,7 +386,7 @@ class RequestInformation extends PureComponent {
         {/* ACCEPTED OR REJECTED  */}
         {!isReject &&
           (status === TIMEOFF_STATUS.accepted ||
-            (currentUserRole !== 'ADMIN-CLA' && status === TIMEOFF_STATUS.inProgressNext) ||
+            (currentUserRole !== 'REGION-HEAD' && status === TIMEOFF_STATUS.inProgressNext) ||
             status === TIMEOFF_STATUS.rejected) && (
             <div className={styles.footer}>
               <span className={styles.note}>
@@ -396,7 +396,7 @@ class RequestInformation extends PureComponent {
               <div className={styles.formButtons}>
                 <Button type="link" disabled>
                   {(status === TIMEOFF_STATUS.accepted ||
-                    (currentUserRole !== 'ADMIN-CLA' &&
+                    (currentUserRole !== 'REGION-HEAD' &&
                       status === TIMEOFF_STATUS.inProgressNext)) &&
                     'Approved'}
                   {status === TIMEOFF_STATUS.rejected && 'Rejected'}
