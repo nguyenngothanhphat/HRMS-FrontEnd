@@ -24,7 +24,7 @@ class ManagerViewCompoffForm extends PureComponent {
     const hrManager = roles.find((item) => item === 'hr-manager');
     const manager = roles.find((item) => item === 'manager');
     const employee = roles.find((item) => item === 'employee');
-    const admincla = roles.find((item) => item === 'admin-cla');
+    const admincla = roles.find((item) => item === 'region-head');
 
     let role = '';
     role = hrManager || manager || employee || 'employee';
@@ -39,7 +39,7 @@ class ManagerViewCompoffForm extends PureComponent {
       dispatch({
         type: 'timeOff/save',
         payload: {
-          currentUserRole: 'ADMIN-CLA',
+          currentUserRole: 'REGION-HEAD',
         },
       });
     }
@@ -70,7 +70,7 @@ class ManagerViewCompoffForm extends PureComponent {
 
   getColorOfStatus = (status) => {
     const { currentUserRole = '' } = this.props;
-    if (currentUserRole === 'ADMIN-CLA') {
+    if (currentUserRole === 'REGION-HEAD') {
       if (status === TIMEOFF_STATUS.inProgressNext)
         return `${styles.leaveStatus} ${styles.inProgressColor}`;
     } else if (status === TIMEOFF_STATUS.inProgressNext)
@@ -96,7 +96,7 @@ class ManagerViewCompoffForm extends PureComponent {
 
   getNameOfStatus = (status) => {
     const { currentUserRole = '' } = this.props;
-    if (currentUserRole === 'ADMIN-CLA' || currentUserRole === 'hr-manager') {
+    if (currentUserRole === 'REGION-HEAD' || currentUserRole === 'hr-manager') {
       if (status === TIMEOFF_STATUS.inProgressNext) return 'In Progress (PM Approved)';
     } else if (status === TIMEOFF_STATUS.inProgressNext) return 'Approved (PM Approved)';
 

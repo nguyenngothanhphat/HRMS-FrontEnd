@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, DatePicker, Typography } from 'antd';
 // import { formatMessage } from 'umi';
+import moment from 'moment';
 import InternalStyle from './CandidateFieldsComponent.less';
 
 // const { Option } = Select;
@@ -36,6 +37,7 @@ class CandidateFieldsComponent extends PureComponent {
       _handleSelect,
     } = this.props;
     const { checkAuthor } = this.state;
+    console.log(prefferedDateOfJoining);
     // const { isHidden, checkAuthor } = this.state;
     return (
       <div className={InternalStyle.CandidateFields}>
@@ -72,7 +74,7 @@ class CandidateFieldsComponent extends PureComponent {
               format="MM/DD/YYYY"
               disabled={!checkAuthor}
               onChange={(value) => _handleSelect(value, candidateField[1].title)}
-              defaultValue={prefferedDateOfJoining}
+              defaultValue={moment(prefferedDateOfJoining)}
             />
           </Col>
           {/* <Col xs={16} sm={16} md={12} lg={12} xl={12}>
