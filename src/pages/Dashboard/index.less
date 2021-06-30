@@ -63,4 +63,48 @@
     background: #d2d8dd;
     height: 1px;
   }
+
+  .feedback{
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 24px;
+    position: relative;
+    
+    .btnFeedback {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 60px;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 16px;
+      text-align: center;
+      background: #ffa100;
+      border: none;
+      border-radius: 50px;
+      transition: width 0.5s;
+
+      &:hover {
+        .feedbackText{
+           max-width: 300px;
+        }
+      }
+
+      .feedbackIcon{
+        font-size: 24px;
+      }
+
+      .feedbackText{
+        max-width: 0;
+        display: inline-block;
+        -webkit-transition: color .25s .25s, max-width 1s;
+        transition: color .25s .25s, max-width 1s;
+        vertical-align: top;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+    }
+  }
 }

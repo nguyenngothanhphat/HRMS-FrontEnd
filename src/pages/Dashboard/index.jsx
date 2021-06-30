@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Row, Col, Affix } from 'antd';
+import { Row, Col, Affix, Button } from 'antd';
+import { FormOutlined } from '@ant-design/icons';
 
 import { connect } from 'umi';
 import { isAdmin, isOwner } from '@/utils/authority';
@@ -10,6 +11,7 @@ import MyApps from './components/MyApps';
 import TabManageTeamWork from './components/TabManageTeamWork';
 import Links from './components/Links';
 import Carousel from './components/Carousel';
+import ModalFeedback from './components/ModalFeedback';
 import styles from './index.less';
 
 const listQuickLinks = [
@@ -67,7 +69,9 @@ const listQuickLinks = [
 class Dashboard extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      visible: false,
+    };
   }
 
   componentDidMount = async () => {
@@ -127,6 +131,18 @@ class Dashboard extends PureComponent {
     });
   }
 
+  openFeedback = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
+  handleCandelModal = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
   render() {
     const {
       listEmployeeMyTeam = [],
@@ -136,6 +152,7 @@ class Dashboard extends PureComponent {
       fetchListProject,
       getListByCompany = {},
     } = this.props;
+    const { visible } = this.state;
     const { faq = [] } = getListByCompany;
 
     const listQuestion = [];
@@ -179,8 +196,18 @@ class Dashboard extends PureComponent {
                   </Col>
                 </Row>
               )}
+
+              <Affix offsetBottom={60}>
+                <div className={styles.feedback}>
+                  <Button onClick={this.openFeedback} className={styles.btnFeedback}>
+                    <FormOutlined className={styles.feedbackIcon} />
+                    <span className={styles.feedbackText}>Feedback</span>
+                  </Button>
+                </div>
+              </Affix>
             </Col>
           </Row>
+          <ModalFeedback visible={visible} handleCandelModal={this.handleCandelModal} />
         </div>
       </PageContainer>
     );
