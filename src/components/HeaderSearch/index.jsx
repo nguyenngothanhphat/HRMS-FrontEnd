@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Input, Dropdown } from 'antd';
 import { SearchOutlined, CaretDownOutlined, CloseOutlined } from '@ant-design/icons';
 import { history, connect } from 'umi';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import ViewHistory from './components/ViewHistory';
 import ViewAdvancedSearch from './components/ViewAdvancedSearch';
 import styles from './index.less';
@@ -21,10 +22,15 @@ class HeaderSearch extends Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'searchAdvance/getHistorySearch',
-    // });
+    const { dispatch, currentUser } = this.props;
+    dispatch({
+      type: 'searchAdvance/getHistorySearch',
+      payload: {
+        user: currentUser._id,
+        tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
+      },
+    });
   }
 
   changeMode = (mode) => {

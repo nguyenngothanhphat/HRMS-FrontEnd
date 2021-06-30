@@ -4,6 +4,7 @@ import { Checkbox, Form, Input, Row, Col, DatePicker } from 'antd';
 import throttle from 'lodash/throttle';
 import { CloseOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
+import moment from 'moment';
 import styles from './index.less';
 
 const CheckboxGroup = Checkbox.Group;
@@ -11,23 +12,21 @@ const CheckboxGroup = Checkbox.Group;
   candidateInfo,
 }))
 class EmployerComponent extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
 
     this.state = {
       checkedList: [],
       employerName: '',
-      workDuration: '',
     };
     this.handleInputThrottled = throttle(this.handleInputThrottled, 2000);
   }
 
   componentDidMount = () => {
     const { checkedList = [], employerName = '', dispatch } = this.props;
-    this.setState({
-      checkedList,
-      employerName,
-    });
+
     if (employerName) {
       dispatch({
         type: 'candidateInfo/saveTemp',
@@ -36,6 +35,11 @@ class EmployerComponent extends PureComponent {
         },
       });
     }
+
+    this.setState({
+      checkedList,
+      employerName,
+    });
   };
 
   handleInputThrottled = (value) => {
@@ -55,17 +59,11 @@ class EmployerComponent extends PureComponent {
     });
   };
 
-  setWorkDuration = (workDuration) => {
-    this.setState({
-      workDuration,
-    });
-  };
-
   onChange = (list) => {
     this.setCheckedList(list);
     const { getDataFromFields = () => {}, orderNumber } = this.props;
-    const { employerName, workDuration } = this.state;
-    getDataFromFields(orderNumber, employerName, workDuration, list);
+    const { employerName } = this.state;
+    getDataFromFields(orderNumber, employerName, list);
   };
 
   employerNameHandle = (event) => {
@@ -75,23 +73,16 @@ class EmployerComponent extends PureComponent {
     this.handleInputThrottled(value);
   };
 
-  workDurationHandle = (value) => {
-    this.setWorkDuration(value);
-    const { getDataFromFields = () => {}, orderNumber } = this.props;
-    const { employerName, checkedList } = this.state;
-    getDataFromFields(orderNumber, employerName, value, checkedList);
-  };
-
   render() {
     const {
       checkBoxesData = [],
       orderNumber = 0,
       employerName: employerNameFromServer = '',
-      workDuration = '',
       deleteComponent = () => {},
       // processStatus = '',
       candidateInfo: { componentsNumberCount = [] } = {},
       disabled = false,
+      // workDuration = {},
     } = this.props;
     const { checkedList } = this.state;
 
@@ -99,15 +90,26 @@ class EmployerComponent extends PureComponent {
       <div className={styles.EmployerComponent}>
         <div className={styles.titleBar}>
           <span className={styles.title}>Employer {orderNumber} Details</span>
-          <CloseOutlined
-            style={componentsNumberCount.length === 1 ? { display: 'none' } : { display: 'block' }}
-            className={styles.deleteIcon}
-            onClick={() => deleteComponent(orderNumber)}
-          />
+          {!disabled && (
+            <CloseOutlined
+              style={
+                componentsNumberCount.length === 1 ? { display: 'none' } : { display: 'block' }
+              }
+              className={styles.deleteIcon}
+              onClick={() => deleteComponent(orderNumber)}
+            />
+          )}
         </div>
-        <Form initialValues={{ employerName: employerNameFromServer, workDuration }}>
+        <Form
+          ref={this.formRef}
+          initialValues={{
+            employerName: employerNameFromServer,
+            // startDate: workDuration.startDate ? moment(workDuration.startDate) : '',
+            // endDate: workDuration.endDate ? moment(workDuration.endDate) : '',
+          }}
+        >
           <Row gutter={['20', '20']}>
-            <Col span={12}>
+            <Col span={24}>
               <Form.Item label="Name of the employer*" name="employerName">
                 <Input
                   disabled={disabled}
@@ -116,16 +118,29 @@ class EmployerComponent extends PureComponent {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item label="Work Duration (In year, months, days)" name="workDuration">
-                <DatePicker
-                  // disabled={processStatus === 'SENT-PROVISIONAL-OFFER'}
-                  disabled
-                  onChange={this.workDurationHandle}
-                  format="MM.DD.YY"
-                />
-              </Form.Item>
-            </Col>
+            {/* {disabled && (
+              <>
+                <Col span={24}>
+                  <Form.Item name="toPresent">
+                    <Checkbox defaultChecked={workDuration.toPresent} disabled>
+                      Currently work
+                    </Checkbox>
+                  </Form.Item>
+                </Col>
+                <Col span={12}>
+                  <Form.Item label="Start Date" name="startDate">
+                    <DatePicker disabled placeholder="Start Date" format="MM.DD.YY" />
+                  </Form.Item>
+                </Col>
+                {!workDuration.toPresent && (
+                  <Col span={12}>
+                    <Form.Item label="End Date" name="endDate">
+                      <DatePicker disabled placeholder="End Date" format="MM.DD.YY" />
+                    </Form.Item>
+                  </Col>
+                )}
+              </>
+            )} */}
           </Row>
         </Form>
         <Row gutter={['20', '20']}>

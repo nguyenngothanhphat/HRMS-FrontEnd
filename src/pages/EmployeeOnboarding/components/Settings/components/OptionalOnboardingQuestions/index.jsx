@@ -1,7 +1,8 @@
+import AddIcon from '@/assets/add-symbols.svg';
 import CustomModal from '@/components/CustomModal';
 import ModalQuestionItem from '@/components/Question/ModalQuestionItem';
 import QuestionItemView from '@/components/Question/QuestionItemView';
-import TYPE_QUESTION from '@/components/Question/utils';
+import { TYPE_QUESTION } from '@/components/Question/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { Button, Col, notification, Row } from 'antd';
 import React, { PureComponent } from 'react';
@@ -9,9 +10,12 @@ import { connect, formatMessage } from 'umi';
 import styles from './index.less';
 
 const defaultQuestion = {
-  answerType: TYPE_QUESTION.SINGLE_CHOICE.key,
-  question: 'Untitled Question',
-  defaultAnswers: ['Answer 1'],
+  answerType: TYPE_QUESTION.TEXT_ANSWER.key,
+  question: 'Type your question',
+  defaultAnswers: [],
+  isRequired: false,
+  rating: {},
+  multiChoice: {},
 };
 
 @connect(({ employeeSetting: { optionalOnboardQuestionList = [] } }) => ({
@@ -48,6 +52,7 @@ class OptionalOnboardingQuestions extends PureComponent {
       this.setState({
         currentModal: (
           <ModalQuestionItem
+            closeModal={this.closeModal}
             onChangeQuestionItem={this.onChangeQuestionItem}
             questionItem={questionItem}
             action={action}
@@ -140,7 +145,8 @@ class OptionalOnboardingQuestions extends PureComponent {
 
     // check the number of answers
     if (
-      question.answerType !== TYPE_QUESTION.TEXT_ANSWER.key &&
+      (question.answerType === TYPE_QUESTION.SINGLE_CHOICE.key ||
+        question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key) &&
       question.defaultAnswers.length < 1
     ) {
       return notification.error({
@@ -178,20 +184,33 @@ class OptionalOnboardingQuestions extends PureComponent {
     return (
       <div className={styles.OptionalOnboardingQuestions}>
         <CustomModal
-          width={750}
+          width={646}
           open={openModal}
           closeModal={this.closeModal}
           content={currentModal}
         />
-        <div className={styles.OptionalOnboardingQuestions_title}>
-          {formatMessage({ id: 'component.optionalOnboardingQuestions.title' })}
+        <div className={styles.OptionalOnboardingQuestions__box}>
+          <div className={styles.OptionalOnboardingQuestions_title}>
+            {formatMessage({ id: 'component.optionalOnboardingQuestions.title' })}
+          </div>
+          <div className={styles.OptionalOnboardingQuestions_subTitle}>
+            {formatMessage({ id: 'component.optionalOnboardingQuestions.subTitle' })}
+          </div>
         </div>
-        <div className={styles.OptionalOnboardingQuestions_subTitle}>
-          {formatMessage({ id: 'component.optionalOnboardingQuestions.subTitle' })}
-        </div>
-        <Row align="space-between" className={styles.OptionalOnboardingQuestions__buttonAdd}>
+        <Row
+          align="space-between"
+          style={{ marginTop: '24px' }}
+          className={
+            optionalOnboardQuestionList.length < 1 && styles.OptionalOnboardingQuestions__buttonAdd
+          }
+        >
           <Col>
-            <Button type="link" onClick={this.openModalAdd}>
+            <Button
+              type="link"
+              style={{ display: 'flex', alignItems: 'center', paddingLeft: '0px' }}
+              onClick={this.openModalAdd}
+            >
+              <img src={AddIcon} alt="Add icon" style={{ width: '18px', marginRight: '15px' }} />
               {formatMessage({ id: 'component.optionalOnboardingQuestions.addQuestion' })}
             </Button>
           </Col>

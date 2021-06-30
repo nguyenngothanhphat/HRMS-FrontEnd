@@ -1,32 +1,69 @@
+/* eslint-disable react/jsx-curly-newline */
+import AddIcon from '@/assets/add-symbols.svg';
 import CircleIcon from '@/assets/circle.svg';
+import RemoveIcon from '@/assets/remove.svg';
 import SquareIcon from '@/assets/square.svg';
-import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Col, Input, Row, Select, Tooltip } from 'antd';
+import { Button, Checkbox, Col, Input, InputNumber, notification, Row, Select } from 'antd';
 import { Option } from 'antd/lib/mentions';
 import { map } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import TYPE_QUESTION from '../utils';
+import { SPECIFY, TYPE_QUESTION } from '../utils';
 import styles from './index.less';
 
 export default function QuestionItem({
   onChangeQuestionItem,
-  questionItem: { answerType = '', question = '', defaultAnswers = [] } = {},
+  questionItem: {
+    isRequired = false,
+    multiChoice = {},
+    answerType = '',
+    question = '',
+    rating = {},
+    defaultAnswers = [],
+  } = {},
 }) {
+  console.log('rating', rating);
   const [Icon, setIcon] = useState(CircleIcon);
+  const [newOption, setNewOption] = useState(`Option ${defaultAnswers.length + 1}`);
+
   useEffect(() => {
     if (defaultAnswers.length < 1) onChangeQuestionItem({ defaultAnswers: ['Answer 1'] });
-
+    let newDefaultAnswers = defaultAnswers;
+    if (newDefaultAnswers.length === 0) {
+      newDefaultAnswers = ['Option 1'];
+    }
     // change icon
     switch (answerType) {
       case TYPE_QUESTION.TEXT_ANSWER.key:
         setIcon(null);
-        onChangeQuestionItem({ defaultAnswers: [] });
+        onChangeQuestionItem({ defaultAnswers: [], multiChoice: {}, rating: {} });
         break;
       case TYPE_QUESTION.MULTIPLE_CHOICE.key:
+        onChangeQuestionItem({
+          multiChoice: {
+            specify: SPECIFY.AT_LEAST.key,
+            num: 1,
+          },
+          rating: {},
+          defaultAnswers: newDefaultAnswers,
+        });
         setIcon(SquareIcon);
         break;
       case TYPE_QUESTION.SINGLE_CHOICE.key:
         setIcon(CircleIcon);
+        onChangeQuestionItem({ defaultAnswers: newDefaultAnswers, multiChoice: {}, rating: {} });
+        break;
+      case TYPE_QUESTION.RATING_CHOICE.key:
+        setIcon(null);
+        console.log('set rating', rating);
+        if (!rating.columns)
+          onChangeQuestionItem({
+            defaultAnswers: [],
+            multiChoice: {},
+            rating: {
+              columns: [1, 5],
+              rows: ['Bad', 'Good'],
+            },
+          });
         break;
       default:
         setIcon(null);
@@ -34,9 +71,13 @@ export default function QuestionItem({
     }
   }, [answerType]);
 
+  useEffect(() => {
+    setNewOption(`Option ${defaultAnswers.length + 1}`);
+  }, [defaultAnswers]);
+
   const onAddAnswer = () => {
     onChangeQuestionItem({
-      defaultAnswers: [...defaultAnswers, `Answer ${defaultAnswers.length + 1}`],
+      defaultAnswers: [...defaultAnswers, newOption],
     });
   };
 
@@ -51,58 +92,211 @@ export default function QuestionItem({
   };
 
   const onRemoveAnswer = (e, indexOfAnswer) => {
-    onChangeQuestionItem({
+    if (defaultAnswers.length === 1) {
+      return notification.error({
+        message: 'This type of question must have at least one answer!',
+      });
+    }
+    let newMultiChoice = multiChoice;
+    if (defaultAnswers.length === multiChoice.num) {
+      newMultiChoice = { ...multiChoice, num: defaultAnswers.length - 1 };
+    }
+    return onChangeQuestionItem({
       defaultAnswers: [
         ...defaultAnswers.slice(0, indexOfAnswer),
         ...defaultAnswers.slice(indexOfAnswer + 1),
       ],
+      multiChoice: newMultiChoice,
     });
   };
 
   const _renderAnswer = () => {
-    if (answerType === TYPE_QUESTION.TEXT_ANSWER.key) {
-      return (
-        <Col className={styles.questionItem__answer}>
-          <Input placeholder={TYPE_QUESTION.TEXT_ANSWER.value} disabled />
-        </Col>
-      );
-    }
+    switch (answerType) {
+      case TYPE_QUESTION.TEXT_ANSWER.key:
+        return (
+          <Col style={{ marginTop: '32px' }}>
+            <Input.TextArea rows={4} placeholder="Answer here" />
+            <div
+              className="label-input"
+              style={{ display: 'flex', justifyContent: 'flex-end', margin: '8px 0' }}
+            >
+              Maximum character limit 200.
+            </div>
+          </Col>
+        );
+      case TYPE_QUESTION.SINGLE_CHOICE.key:
+      case TYPE_QUESTION.MULTIPLE_CHOICE.key:
+        return defaultAnswers.map((answer, key) => (
+          <Col className={styles.questionItem__answer}>
+            <img style={{ width: '18px', height: '18px' }} src={Icon} alt="icon" />
+            <Input
+              onChange={(e) => onChangeAnswer(e, key)}
+              style={{ marginLeft: '12px' }}
+              placeholder="Enter the answer"
+              value={answer}
+            />
 
-    return defaultAnswers.map((answer, key) => (
-      <Col className={styles.questionItem__answer}>
-        {answerType === TYPE_QUESTION.SELECT_OPTION.key && `${key + 1}. `}
-        {answerType !== TYPE_QUESTION.SELECT_OPTION.key && (
-          <img style={{ width: '18px', height: '18px' }} src={Icon} alt="icon" />
-        )}
-        <Input
-          onChange={(e) => onChangeAnswer(e, key)}
-          style={{ marginLeft: '12px' }}
-          placeholder="Enter the answer"
-          value={answer}
-        />
-        {key > 0 && (
-          <CloseOutlined
-            onClick={(e) => onRemoveAnswer(e, key)}
-            className={styles.questionItem__answer__remove}
-          />
-        )}
-      </Col>
-    ));
+            <img
+              onClick={(e) => onRemoveAnswer(e, key)}
+              className={styles.questionItem__answer__remove}
+              alt="delete icon"
+              src={RemoveIcon}
+            />
+          </Col>
+        ));
+      default:
+        return <></>;
+    }
+  };
+
+  const _renderExtra = () => {
+    switch (answerType) {
+      case TYPE_QUESTION.RATING_CHOICE.key:
+        return (
+          <>
+            {rating.columns && (
+              <>
+                <Select
+                  style={{ width: '80px' }}
+                  onChange={(e) =>
+                    onChangeQuestionItem({ rating: { ...rating, columns: [e, rating.columns[1]] } })
+                  }
+                  defaultValue={rating.columns[0]}
+                >
+                  {map([...Array(10)], (value, index) => (
+                    <Option value={index + 1}>{`0${index + 1}`.substr(-2)}</Option>
+                  ))}
+                </Select>
+                <span style={{ margin: '0 16px' }}>to</span>
+                <Select
+                  style={{ width: '80px' }}
+                  onChange={(e) => {
+                    if (e <= rating.columns[0]) {
+                      return notification.error({
+                        message: `This value must be greater than ${rating.columns[0]}`,
+                      });
+                    }
+                    return onChangeQuestionItem({
+                      rating: { ...rating, columns: [rating.columns[0], e] },
+                    });
+                  }}
+                  defaultValue={rating.columns[1]}
+                >
+                  {map([...Array(10)], (value, index) => (
+                    <Option value={index + 1}>{`0${index + 1}`.substr(-2)}</Option>
+                  ))}
+                </Select>
+              </>
+            )}
+          </>
+        );
+      case TYPE_QUESTION.MULTIPLE_CHOICE.key:
+        return (
+          <>
+            <div className={styles.questionItem__question__extra__specify}>
+              <div className="label-input">Specify:</div>
+              <div className={styles.questionItem__question__extra__specify__input}>
+                <Select
+                  onChange={(e) =>
+                    onChangeQuestionItem({ multiChoice: { ...multiChoice, specify: e } })
+                  }
+                  defaultValue={multiChoice?.specify || SPECIFY.AT_LEAST.key}
+                >
+                  {map(SPECIFY, (type) => (
+                    <Option value={type.key}>{type.value}</Option>
+                  ))}
+                </Select>
+                <InputNumber
+                  min={1}
+                  max={defaultAnswers.length}
+                  value={multiChoice.num}
+                  onChange={(value) =>
+                    onChangeQuestionItem({ multiChoice: { ...multiChoice, num: value } })
+                  }
+                />
+              </div>
+            </div>
+            <div className={styles.questionItem__question__extra__note}>
+              <strong>Note:</strong> This allows to specify how answers should be chosen.
+            </div>
+          </>
+        );
+      default:
+        return <></>;
+    }
+  };
+
+  const _renderAddOption = () => {
+    switch (answerType) {
+      case TYPE_QUESTION.MULTIPLE_CHOICE.key:
+      case TYPE_QUESTION.SINGLE_CHOICE.key:
+        return (
+          <Col className={styles.questionItem__addOption} span={24}>
+            <div className={styles.questionItem__addOption__label}>Options:</div>
+            <Input
+              onChange={(e) => setNewOption(e.target.value)}
+              style={{ marginLeft: '12px' }}
+              placeholder="Enter the answer"
+              value={newOption}
+            />
+            <Button
+              type="link"
+              style={{ display: 'flex', alignItems: 'center', paddingLeft: '0px' }}
+              onClick={() => onAddAnswer()}
+            >
+              <img src={AddIcon} alt="Add icon" style={{ width: '17px', marginRight: '16px' }} />
+              <span className={styles.questionItem__addOption__add}> Add option </span>
+            </Button>
+          </Col>
+        );
+      case TYPE_QUESTION.RATING_CHOICE.key:
+        console.log(rating.rows, rating.columns);
+        return (
+          <>
+            {rating.rows && rating.columns && (
+              <>
+                <Col className={styles.questionItem__addLabel} span={24}>
+                  <div className={styles.questionItem__addLabel__label}>{rating.columns[0]}:</div>
+                  <Input
+                    onChange={(e) =>
+                      onChangeQuestionItem({
+                        rating: { ...rating, rows: [e.target.value, rating.rows[1]] },
+                      })
+                    }
+                    style={{ marginLeft: '12px' }}
+                    placeholder="Label"
+                    value={rating.rows[0]}
+                  />
+                </Col>
+                <Col className={styles.questionItem__addLabel} span={24}>
+                  <div className={styles.questionItem__addLabel__label}>{rating.columns[1]}:</div>
+                  <Input
+                    onChange={(e) =>
+                      onChangeQuestionItem({
+                        rating: { ...rating, rows: [rating.rows[0], e.target.value] },
+                      })
+                    }
+                    style={{ marginLeft: '12px' }}
+                    placeholder="Label"
+                    value={rating.rows[1]}
+                  />
+                </Col>
+              </>
+            )}
+          </>
+        );
+      default:
+        return <div>&nbsp;</div>;
+    }
   };
 
   return (
     <>
       <Row className={styles.questionItem}>
-        <Col span={18}>
-          <Input
-            placeholder="Enter the question"
-            onChange={(e) => onChangeQuestionItem({ question: e.target.value })}
-            value={question}
-            allowClear
-          />
-          {_renderAnswer()}
-        </Col>
-        <Col span={5} offset={1}>
+        <Col span={24} className={styles.questionItem__type}>
+          <div style={{ marginBottom: '8px' }} className="label-input">
+            Type of questions
+          </div>
           <Select
             onChange={(e) => onChangeQuestionItem({ answerType: e })}
             defaultValue={answerType}
@@ -112,19 +306,37 @@ export default function QuestionItem({
               <Option value={type.key}>{type.value}</Option>
             ))}
           </Select>
-          <Col>
-            {answerType !== TYPE_QUESTION.TEXT_ANSWER.key && (
-              <Tooltip title="Add the answer">
-                <Button
-                  onClick={() => onAddAnswer()}
-                  style={{ marginTop: '12px' }}
-                  shape="circle"
-                  icon={<PlusOutlined />}
-                />
-              </Tooltip>
-            )}
-          </Col>
         </Col>
+        <Col span={24} className={styles.questionItem__question}>
+          <Input
+            placeholder="Type your question"
+            onChange={(e) => onChangeQuestionItem({ question: e.target.value })}
+            value={question}
+            // allowClear
+          />
+          <Row className={styles.questionItem__question__extra}>
+            <Col span={12}>{_renderExtra()}</Col>
+            <Col style={{ display: 'flex', justifyContent: 'flex-end' }} span={12}>
+              <Checkbox
+                onChange={(e) => onChangeQuestionItem({ isRequired: e.target.checked })}
+                checked={isRequired}
+              >
+                Mandatory
+              </Checkbox>
+            </Col>
+            <Col
+              style={
+                answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key
+                  ? { borderTop: '1px solid #d6dce0' }
+                  : {}
+              }
+              span={24}
+            >
+              {_renderAnswer()}
+            </Col>
+          </Row>
+        </Col>
+        {_renderAddOption()}
       </Row>
     </>
   );

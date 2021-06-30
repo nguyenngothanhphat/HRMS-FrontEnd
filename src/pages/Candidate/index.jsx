@@ -53,8 +53,11 @@ const Candidate = (props) => {
       },
     }).then(({ data, statusCode }) => {
       if (statusCode === 200) {
-        const { _id, documentChecklistSetting } = data;
-        const { employer } = documentChecklistSetting[3];
+        const {
+          _id,
+          //  documentChecklistSetting
+        } = data;
+        // const { employer } = documentChecklistSetting[3];
         dispatch({
           type: 'candidateProfile/fetchDocumentByCandidate',
           payload: {
@@ -62,15 +65,15 @@ const Candidate = (props) => {
             tenantId: getCurrentTenant(),
           },
         });
-        if (employer !== undefined && employer.length > 0) {
-          dispatch({
-            type: 'candidateProfile/fetchEmployer',
-            payload: {
-              candidate: _id,
-              tenantId: getCurrentTenant(),
-            },
-          });
-        }
+        // if (employer !== undefined && employer.length > 0) {
+        dispatch({
+          type: 'candidateProfile/fetchWorkHistory',
+          payload: {
+            candidate: _id,
+            tenantId: getCurrentTenant(),
+          },
+        });
+        // }
       }
     });
   }, []);

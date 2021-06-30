@@ -1,34 +1,44 @@
 @color-grey: #707177;
 @color-blue: #2c6df9;
+@orange: orange;
 
-.CollapseField {
+.PreviousEmployment {
   margin-bottom: 1rem;
   :global {
-    .ant-collapse-extra {
-      font-size: 12px;
-      float: none !important;
-      display: inline;
-      color: @color-grey;
+    .ant-col {
+      // padding: 0 !important;
     }
     .ant-collapse-arrow {
-      padding: 0px !important
+      padding: 0px !important;
+    }
+    .ant-collapse-extra {
+      display: inline;
+      float: none !important;
+      color: @color-grey;
+      font-size: 12px;
     }
     svg {
       width: 20px;
       height: 20px;
-      color: @color-blue;
       margin-right: 21px !important;
+      color: @color-blue;
       &:last-child {
         margin-right: 0;
       }
     }
     .ant-collapse {
+      border: solid 1px #d6dce0;
       border-radius: 5px;
-      // border: solid 1px #d6dce0;
-      overflow: hidden;
       .ant-collapse-item > .ant-collapse-header {
-        background-color: #fff;
         padding: 32px;
+        background-color: #fff;
+        border-radius: 5px;
+      }
+      .ant-collapse-item {
+        border-bottom: none;
+      }
+      .ant-collapse-content-box {
+        padding: 0;
       }
     }
     .ant-checkbox-disabled + span {
@@ -39,10 +49,10 @@
     }
     span.anticon-calendar {
       svg {
-        color: #000;
-        margin-right: 0 !important;
         width: 14px;
         height: 14px;
+        margin-right: 0 !important;
+        color: #000;
       }
     }
     .ant-space-horizontal {
@@ -51,14 +61,17 @@
         margin-right: 0 !important;
       }
     }
-    .anticon-plus,
-    .anticon-minus {
-      top: 15px !important;
+    .ant-radio-group {
+      display: flex;
+    }
+
+    .ant-radio-wrapper {
+      margin: 0 !important;
     }
   }
   .checkbox {
-    color: #161c29;
     padding-right: 1rem;
+    color: #161c29;
     font-size: 14px;
     &:hover {
       border-radius: 5px;
@@ -91,25 +104,99 @@
     }
     span {
       &:last-child {
-        padding-left: 1rem;
         // padding-top: 1rem;
+        padding-left: 1rem;
       }
     }
   }
-  .Space {
+  .space {
     width: 100%;
-    .checkboxItem {
+    padding: 32px 32px 16px 32px;
+    .previousEmployment__row {
       display: flex;
-      color: #161c29;
       margin-bottom: 1rem;
+      color: #161c29;
+      &__name {
+        display: flex;
+        align-items: center;
+      }
+      &__file {
+        .file__content {
+          width: 90%;
+          min-height: 27px;
+          padding: 4px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-decoration: underline;
+          text-overflow: ellipsis;
+          border: 1px solid #d9d9d9;
+          cursor: pointer;
+
+          &__verified {
+            color: #2c6df9;
+           
+            border: 1px solid #2c6df9;
+          }
+          &__resubmit {
+            color: red;
+            
+            border: 1px solid red;
+          }
+          &__ineligible {
+            color: @orange;
+            
+            border: 1px solid @orange;
+          }
+        }
+      }
+      &__radio {
+        text-align: end;
+        display: flex;
+        align-items: center;
+        .verified {
+          color: #2c6df9;
+          font-size: 13px;
+        }
+        .resubmit {
+          color: red;
+          font-size: 13px;
+          :global {
+            .ant-radio-checked .ant-radio-inner {
+              border-color: red !important ;
+            }
+
+            .ant-radio-checked .ant-radio-inner:after {
+              background-color: red;
+            }
+
+            .ant-radio:hover .ant-radio-inner {
+              border-color: red;
+            }
+          }
+        }
+        .ineligible {
+          font-size: 13px;
+          color: @orange;
+          :global {
+            .ant-radio-checked .ant-radio-inner {
+              border-color: @orange !important ;
+            }
+
+            .ant-radio-checked .ant-radio-inner:after {
+              background-color: @orange;
+            }
+
+            .ant-radio:hover .ant-radio-inner {
+              border-color: @orange;
+            }
+          }
+        }
+      }
       .viewLoading {
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
         height: 100%;
-      }
-      .Padding {
-        margin-left: 14px;
       }
       .textAlign {
         text-align: right;
@@ -161,11 +248,11 @@
     }
     .checkboxItemError {
       display: flex;
-      background-color: rgba(255, 108, 108, 0.2);
       margin-bottom: 1rem;
+      background-color: rgba(255, 108, 108, 0.2);
       .textAlign {
-        text-align: right;
         letter-spacing: 0.13px;
+        text-align: right;
         .textLeft {
           text-align: left;
         }
@@ -184,10 +271,6 @@
       }
     }
     span {
-      &:last-child {
-        padding-top: 1rem;
-        padding-left: 1rem;
-      }
       &:first {
         input {
           width: 18px;
@@ -201,17 +284,17 @@
   }
   .addMore {
     color: @color-blue;
-    cursor: pointer;
     font-weight: 500;
-    font-stretch: normal;
     font-style: normal;
+    font-stretch: normal;
     line-height: normal;
     letter-spacing: 0.12px;
+    cursor: pointer;
   }
 }
 
 @media screen and (max-width: 768px) {
-  .CollapseField {
+  .PreviousEmployment {
     :global {
       .ant-collapse-extra {
         display: none;

@@ -9,12 +9,17 @@ import FieldsComponent from './components/FieldsComponent';
 
 import styles from './index.less';
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
-@connect(({ candidateProfile: { data, jobDetails, checkMandatory, localStep } = {} }) => ({
-  jobDetails,
-  checkMandatory,
-  data,
-  localStep,
-}))
+@connect(
+  ({
+    candidateProfile: { data, jobDetails, checkMandatory, localStep, isCandidateAcceptDOJ } = {},
+  }) => ({
+    jobDetails,
+    checkMandatory,
+    data,
+    localStep,
+    isCandidateAcceptDOJ,
+  }),
+)
 class JobDetails extends PureComponent {
   constructor(props) {
     super(props);
@@ -38,9 +43,10 @@ class JobDetails extends PureComponent {
       data: { dateOfJoining = '', noticePeriod = '' },
       dispatch,
       checkMandatory,
+      isCandidateAcceptDOJ = true,
     } = this.props;
 
-    if (dateOfJoining && noticePeriod) {
+    if (dateOfJoining && (isCandidateAcceptDOJ || (!isCandidateAcceptDOJ && noticePeriod))) {
       dispatch({
         type: 'candidateProfile/save',
         payload: {
