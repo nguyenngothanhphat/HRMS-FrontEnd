@@ -15,7 +15,7 @@ import AllTab from './components/AllTab';
 
 const { TabPane } = Tabs;
 
-// const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
+// const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION } = COLUMN_NAME;
 // const { FINAL_OFFERS_DRAFTS } = TABLE_TYPE;
 
 class AllDrafts extends PureComponent {
@@ -67,7 +67,7 @@ class AllDrafts extends PureComponent {
     return (
       // <OnboardTable
       //   list={finalOfferDrafts}
-      //   columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION]}
+      //   columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION]}
       //   type={FINAL_OFFERS_DRAFTS}
       // />
       <div className={styles.AllDrafts}>

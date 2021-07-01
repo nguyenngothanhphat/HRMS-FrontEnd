@@ -10,7 +10,7 @@ import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOvervi
 
 // const list = rookieList.filter((rookie) => rookie.isNew != true);
 // console.log(list);
-const { ID, NAME, POSITION, LOCATION, COMMENT, ACTION } = COLUMN_NAME;
+const { ID, NAME, POSITION, LOCATION, COMMENT, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION } = COLUMN_NAME;
 const { DISCARDED_PROVISIONAL_OFFERS } = TABLE_TYPE;
 
 class DiscardedProvisionalOffers extends PureComponent {
@@ -20,7 +20,7 @@ class DiscardedProvisionalOffers extends PureComponent {
     return (
       <OnboardTable
         list={discardedProvisionalOffers}
-        columnArr={[ID, NAME, POSITION, LOCATION, COMMENT, ACTION]}
+        columnArr={[ID, NAME, POSITION, LOCATION, COMMENT, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION]}
         type={DISCARDED_PROVISIONAL_OFFERS}
       />
     );

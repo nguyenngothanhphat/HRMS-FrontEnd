@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Table, Empty, Dropdown, Menu } from 'antd';
+import { Table, Empty, Dropdown, Menu, Tag } from 'antd';
 import { EllipsisOutlined, DeleteOutlined } from '@ant-design/icons';
-import { formatMessage, Link, connect } from 'umi';
+import { formatMessage, Link, connect, history } from 'umi';
 
 import CustomModal from '@/components/CustomModal/index';
 import { getCurrentTenant } from '@/utils/authority';
@@ -281,6 +281,9 @@ class OnboardTable extends Component {
       RESUBMIT,
       CHANGE_REQUEST,
       DATE_REQUEST,
+      ASSIGN_TO,
+      ASSIGNEE_MANAGER,
+      PROCESS_STATUS,
     } = COLUMN_NAME;
     const actionText = getActionText(type);
 
@@ -292,6 +295,7 @@ class OnboardTable extends Component {
         key: 'rookieId',
         width: getColumnWidth('rookieId', type),
         columnName: ID,
+        fixed: 'left',
       },
       {
         // title: 'Rookie Name',
@@ -404,6 +408,43 @@ class OnboardTable extends Component {
         columnName: COMMENT,
       },
       {
+        title: 'Assign To',
+        dataIndex: 'assignTo',
+        key: 'assignTo',
+        render: (assignTo) => (
+          <span className={styles.renderAssignee} onClick={() => this.viewProfile(assignTo._id)}>
+            {assignTo?.generalInfo?.firstName + assignTo?.generalInfo?.lastName || '-'}
+          </span>
+        ),
+        columnName: ASSIGN_TO,
+        width: getColumnWidth('assignTo', type),
+      },
+      {
+        title: 'HR Manager',
+        dataIndex: 'assigneeManager',
+        key: 'assigneeManager',
+        render: (assigneeManager) => (
+          <span
+            className={styles.renderAssignee}
+            onClick={() => this.viewProfile(assigneeManager._id)}
+          >
+            {assigneeManager?.generalInfo?.firstName + assigneeManager?.generalInfo?.lastName ||
+              '-'}
+          </span>
+        ),
+        columnName: ASSIGNEE_MANAGER,
+        width: getColumnWidth('assigneeManager', type),
+      },
+      {
+        title: 'Status',
+        dataIndex: 'processStatus',
+        key: 'processStatus',
+        render: (processStatus) => <Tag color="geekblue">{processStatus}</Tag>,
+        columnName: PROCESS_STATUS,
+        width: getColumnWidth('processStatus', type),
+        fixed: 'right',
+      },
+      {
         // title: 'Actions',
         title: formatMessage({ id: 'component.onboardingOverview.actions' }),
         dataIndex: 'actions',
@@ -415,6 +456,7 @@ class OnboardTable extends Component {
           return this.renderAction(id, type, actionText);
         },
         columnName: ACTION,
+        fixed: 'right',
       },
     ];
 
@@ -422,6 +464,10 @@ class OnboardTable extends Component {
     const newColumns = columns.filter((column) => columnArr.includes(column.columnName));
 
     return newColumns;
+  };
+
+  viewProfile = (_id) => {
+    history.push(`/directory/employee-profile/${_id}`);
   };
 
   onChangePagination = (pageNumber) => {

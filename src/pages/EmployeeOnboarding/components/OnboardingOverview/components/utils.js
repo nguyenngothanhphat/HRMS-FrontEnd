@@ -15,6 +15,9 @@ const COLUMN_NAME = {
   RESUBMIT: 'resubmit',
   CHANGE_REQUEST: 'change_request',
   DATE_REQUEST: 'date_request',
+  ASSIGN_TO: 'assign_to',
+  ASSIGNEE_MANAGER: 'assignee_manager',
+  PROCESS_STATUS: 'process_status',
 };
 
 const PROCESS_STATUS = {

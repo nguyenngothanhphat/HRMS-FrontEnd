@@ -114,6 +114,29 @@ export const PROCESS_STATUS = {
   FINAL_OFFERS_CANDIDATE: 'REJECT-FINAL-OFFER-CANDIDATE',
 };
 
+const processStatusName = {
+  DRAFT: 'Provisional Offer Drafts',
+  'FINAL-OFFER-DRAFT': 'Final Offers Draft',
+  'SENT-PROVISIONAL-OFFER': 'Sent Provisional Offers',
+  'ACCEPT-PROVISIONAL-OFFER': 'Accepted Provisional Offers',
+  'RENEGOTIATE-PROVISONAL-OFFER': 'Renegotiate Provisional Offers',
+  'PENDING-BACKGROUND-CHECK': 'Pending',
+  'ELIGIBLE-CANDIDATE': 'Eligible Candidates',
+  'INELIGIBLE-CANDIDATE': 'Ineligible Candidates',
+  'PENDING-APPROVAL-FINAL-OFFER': 'Sent For Approval',
+  'APPROVED-FINAL-OFFER': 'Approved Offers',
+  'SENT-FINAL-OFFERS': 'Sent Final Offers',
+  'ACCEPT-FINAL-OFFER': 'Accepted Final Offers',
+  'RENEGOTIATE-FINAL-OFFERS': 'Re-Negotiate Final Offers',
+  'DISCARDED-PROVISONAL-OFFER': 'Provisional Offers',
+  'REJECT-FINAL-OFFER-HR': 'Final Offers',
+  'REJECT-FINAL-OFFER-CANDIDATE': 'Final Offers',
+};
+
+const getProcessStatusName = (name) => {
+  return processStatusName[name];
+};
+
 const formatMonth = (month) => {
   const monthNames = [
     'January',
@@ -195,6 +218,9 @@ const formatData = (list = []) => {
       updatedAt = '',
       // createdAt = '',
       comments = '',
+      assignTo = {},
+      assigneeManager = {},
+      processStatus = '',
     } = item;
     const dateSent = formatDate(sentDate) || '';
     const dateReceived = formatDate(receiveDate) || '';
@@ -222,6 +248,9 @@ const formatData = (list = []) => {
       documentVerified: '',
       resubmit: 0,
       changeRequest: '-',
+      assignTo,
+      assigneeManager,
+      processStatus: getProcessStatusName(processStatus),
     };
     formatList.push(rookie);
   });
