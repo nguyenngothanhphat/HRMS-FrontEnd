@@ -4,8 +4,8 @@ import { EllipsisOutlined, DeleteOutlined } from '@ant-design/icons';
 import { formatMessage, Link, connect, history } from 'umi';
 
 import CustomModal from '@/components/CustomModal/index';
-import { getCurrentTenant } from '@/utils/authority';
-import ModalContent from '../FinalOffers/components/ModalContent/index';
+import { getAuthority, getCurrentTenant } from '@/utils/authority';
+// import ModalContent from '../FinalOffers/components/ModalContent/index';
 import ProfileModalContent from '../FinalOffers/components/ProfileModalContent';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 
@@ -265,6 +265,17 @@ class OnboardTable extends Component {
     );
   };
 
+  checkPermission = (role) => {
+    const getAuth = getAuthority();
+    let check = false;
+    getAuth.forEach((item) => {
+      if (item.toLowerCase().includes(role)) {
+        check = true;
+      }
+    });
+    return check;
+  };
+
   generateColumns = (columnArr = ['id'], type = TABLE_TYPE.PROVISIONAL_OFFER) => {
     const {
       ID,
@@ -451,9 +462,16 @@ class OnboardTable extends Component {
         key: 'actions',
         width: getColumnWidth('actions', type),
         render: (_, row) => {
-          const { rookieId = '' } = row;
+          const { currentUser: { employee: { _id: empId = '' } = {} } = {} } = this.props;
+          const { rookieId = '', assignTo = {}, assigneeManager = {} } = row;
           const id = rookieId.replace('#', '') || '';
-          return this.renderAction(id, type, actionText);
+
+          const checkPermission =
+            this.checkPermission('hr-manager') ||
+            assignTo._id === empId ||
+            assigneeManager._id === empId;
+          if (checkPermission) return this.renderAction(id, type, actionText);
+          return '';
         },
         columnName: ACTION,
         fixed: 'right',
@@ -562,7 +580,8 @@ class OnboardTable extends Component {
 }
 
 // export default OnboardTable;
-export default connect(({ candidateInfo, loading }) => ({
+export default connect(({ candidateInfo, loading, user: { currentUser = {} } = {} }) => ({
   isAddNewMember: candidateInfo.isAddNewMember,
   loading: loading.effects['onboard/fetchOnboardList'],
+  currentUser,
 }))(OnboardTable);
