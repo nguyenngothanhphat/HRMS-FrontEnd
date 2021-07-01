@@ -17,6 +17,7 @@ import classnames from 'classnames';
 import React from 'react';
 import { connect, Link, Redirect, useIntl } from 'umi';
 import Footer from '@/components/Footer';
+import Feedback from '@/components/Feedback';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
@@ -190,6 +191,7 @@ const BasicLayout = (props) => {
           </Authorized>
         </ProLayout>
       </div>
+      <Feedback />
       <Footer />
     </>
   );
