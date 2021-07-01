@@ -26,20 +26,22 @@
 
       &:hover {
         .feedbackText{
-           max-width: 300px;
+          max-width: 300px;
+          -webkit-transition: color .25s .25s, max-width 1s;
+          transition: color .25s .25s, max-width 1s;
         }
       }
-
+      
       .feedbackIcon{
         font-size: 24px;
         padding: 6px;
       }
-
+      
       .feedbackText{
         max-width: 0;
         display: inline-block;
-        -webkit-transition: color .25s .25s, max-width 1s;
-        transition: color .25s .25s, max-width 1s;
+        -webkit-transition: color .25s .25s, max-width .25s;
+        transition: color .25s .25s, max-width .25s;
         vertical-align: top;
         white-space: nowrap;
         overflow: hidden;
