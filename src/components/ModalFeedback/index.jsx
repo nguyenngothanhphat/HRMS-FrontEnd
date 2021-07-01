@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Input, Form, Button, Radio, Divider } from 'antd';
+import ScreenCapture from './ScreenCapture';
 
 import styles from './index.less';
 
@@ -8,6 +9,7 @@ const { TextArea } = Input;
 const ModalFeedback = (props) => {
   const [form] = Form.useForm();
   const [value, setValue] = useState(1);
+  const [screenCapture, setScreenCapture] = useState('');
   const { visible = false, handleCandelModal = () => {} } = props;
 
   const onChange = (e) => {
@@ -17,6 +19,10 @@ const ModalFeedback = (props) => {
 
   const handleFinish = (values) => {
     console.log(values);
+  };
+
+  const handleScreenCapture = (img) => {
+    setScreenCapture(img);
   };
 
   return (
@@ -80,14 +86,26 @@ const ModalFeedback = (props) => {
                     autoSize={{ minRows: 6, maxRows: 12 }}
                   />
                 </Form.Item>
+                {screenCapture && (
+                  <Form.Item>
+                    <img alt="screenshot" src={screenCapture} />
+                  </Form.Item>
+                )}
               </div>
               <Divider />
 
               <div className={styles.formBottom}>
                 <Form.Item className={styles.flexButton1}>
-                  <Button className={`${styles.btnGroup} ${styles.highlightBtn}`}>
-                    Highlight Page
-                  </Button>
+                  <ScreenCapture onEndCapture={handleScreenCapture}>
+                    {({ onStartCapture }) => (
+                      <Button
+                        onClick={onStartCapture}
+                        className={`${styles.btnGroup} ${styles.highlightBtn}`}
+                      >
+                        Highlight Page
+                      </Button>
+                    )}
+                  </ScreenCapture>
                 </Form.Item>
                 <Form.Item className={styles.flexButton2}>
                   <Button
