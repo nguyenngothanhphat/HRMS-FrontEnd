@@ -19,6 +19,7 @@ import {
   getLocationListByCompany,
   addManagerSignature,
   getDocumentByCandidate,
+  getWorkHistory,
 } from '@/services/addNewMember';
 import { history } from 'umi';
 import { notification } from 'antd';
@@ -132,7 +133,7 @@ const candidateInfo = {
         checkedList: [],
         // isChecked: false,
       },
-      technicalCertification: {
+      previousEmployment: {
         poe: [
           // {
           //   employer: '',
@@ -246,155 +247,7 @@ const candidateInfo = {
       },
       id: '',
       candidate: '',
-      documentChecklistSetting: [
-        {
-          type: 'A',
-          name: 'Identity Proof',
-          data: [
-            {
-              key: 'aadharCard',
-              alias: 'Aadhar Card',
-              value: true,
-            },
-            {
-              key: 'panCard',
-              alias: 'PAN Card',
-              value: true,
-            },
-            {
-              key: 'passport',
-              alias: 'Passport',
-              value: false,
-            },
-            {
-              key: 'drivingLicence',
-              alias: 'Driving Licence',
-              value: false,
-            },
-            {
-              key: 'voterCard',
-              alias: 'Voter Card',
-              value: false,
-            },
-          ],
-        },
-        {
-          type: 'B',
-          name: 'Address Proof',
-          data: [
-            {
-              key: 'rentalAgreement',
-              alias: 'Rental Agreement',
-              value: false,
-            },
-            {
-              key: 'electricityUtilityBills',
-              alias: 'Electricity & Utility Bills',
-              value: false,
-            },
-            {
-              key: 'telephoneBills',
-              alias: 'Telephone Bills',
-              value: false,
-            },
-          ],
-        },
-        {
-          type: 'C',
-          name: 'Educational',
-          data: [
-            {
-              key: 'sslc',
-              alias: 'SSLC',
-              value: true,
-            },
-            {
-              key: 'intermediateDiploma',
-              alias: 'Intermedidate/Diploma',
-              value: true,
-            },
-            {
-              key: 'graduation',
-              alias: 'Graduation',
-              value: true,
-            },
-            {
-              key: 'postGraduate',
-              alias: 'Post Graduate',
-              value: false,
-            },
-            {
-              key: 'phdDoctorate',
-              alias: 'PHD/Doctorate',
-              value: false,
-            },
-          ],
-        },
-        {
-          type: 'D',
-          name: 'Technical Certifications',
-          employer: 'Kyle Pham',
-          data: [
-            {
-              key: 'offerLetter',
-              alias: 'Offer letter',
-              value: true,
-            },
-            {
-              key: 'appraisalLetter',
-              alias: 'Appraisal letter',
-              value: false,
-            },
-            {
-              key: 'paysTubs',
-              alias: 'Paystubs',
-              value: true,
-            },
-            {
-              key: 'form16',
-              alias: 'Form 16',
-              value: true,
-            },
-            {
-              key: 'relievingLetter',
-              alias: 'Relieving Letter',
-              value: true,
-            },
-          ],
-        },
-        {
-          type: 'D',
-          name: 'Technical Certifications',
-          employer: 'Kyle Hung',
-          data: [
-            {
-              key: 'offerLetter',
-              alias: 'Offer letter',
-              value: true,
-            },
-            {
-              key: 'appraisalLetter',
-              alias: 'Appraisal letter',
-              value: true,
-            },
-            {
-              key: 'paysTubs',
-              alias: 'Paystubs',
-              value: true,
-            },
-            {
-              key: 'form16',
-              alias: 'Form 16',
-              value: true,
-            },
-            {
-              key: 'relievingLetter',
-              alias: 'Relieving Letter',
-              value: true,
-            },
-          ],
-        },
-      ],
+      documentChecklistSetting: [],
       documentsByCandidate: [],
       documentsByCandidateRD: [],
       managerList: [],
@@ -849,31 +702,34 @@ const candidateInfo = {
           currentStep,
         } = data;
 
+        const filterValue = (arr) => {
+          let listCheck = arr.map((item) => item.value);
+          listCheck = listCheck.filter((item) => item === true);
+
+          return listCheck;
+        };
+
         const identityProof = documentChecklistSetting[0]?.data;
         const addressProof = documentChecklistSetting[1]?.data;
         const educational = documentChecklistSetting[2]?.data;
         const technicalCertification = documentChecklistSetting[3]?.data;
+        const prevEmployee = documentChecklistSetting[4]?.data;
 
-        let listCheckIP = identityProof.map((item) => item.value);
-        listCheckIP = listCheckIP.filter((item) => item === true);
-
-        let listCheckAP = addressProof.map((item) => item.value);
-        listCheckAP = listCheckAP.filter((item) => item === true);
-
-        let listCheckEdu = educational.map((item) => item.value);
-        listCheckEdu = listCheckEdu.filter((item) => item === true);
-
-        let listCheckTC = technicalCertification.map((item) => item.value);
-        listCheckTC = listCheckTC.filter((item) => item === true);
+        const checkStatusTypeA = filterValue(identityProof);
+        const checkStatusTypeB = filterValue(addressProof);
+        const checkStatusTypeC = filterValue(educational);
+        const checkStatusTypeD = filterValue(technicalCertification);
+        const checkStatusTypeE = filterValue(prevEmployee);
 
         const checkStatus = {};
 
         if (
-          listCheckIP.length > 2 ||
-          listCheckAP.length > 0 ||
-          listCheckEdu.length > 3 ||
-          listCheckTC.length > 0 ||
-          'employer' in documentChecklistSetting[3]
+          checkStatusTypeA.length > 4 ||
+          checkStatusTypeB.length > 1 ||
+          checkStatusTypeC.length > 4 ||
+          checkStatusTypeD.length > 0 ||
+          checkStatusTypeE.length > 0 ||
+          'employer' in documentChecklistSetting[4]
         ) {
           checkStatus.filledBgCheck = true;
         }
@@ -1085,50 +941,17 @@ const candidateInfo = {
           payload: { documentsByCandidate: data },
         });
 
-        // Group data
-        const groupA = [];
-        const groupB = [];
-        const groupC = [];
-        const groupD = [];
-        data.map((item) => {
-          const { candidateGroup } = item;
-          switch (candidateGroup) {
-            case 'A':
-              groupA.push(item);
-              break;
-            case 'B':
-              groupB.push(item);
-              break;
-            case 'C':
-              groupC.push(item);
-              break;
-            case 'D':
-              groupD.push(item);
-              break;
-            default:
-              break;
-          }
-          return null;
-        });
-
-        const documentsCandidateList = [
-          { type: 'A', name: 'Identity Proof', data: [...groupA] },
-          { type: 'B', name: 'Address Proof', data: [...groupB] },
-          { type: 'C', name: 'Educational', data: [...groupC] },
-          { type: 'D', name: 'Technical Certifications', data: [...groupD] },
-        ];
-
         yield put({
           type: 'saveTemp',
           payload: {
             documentsByCandidate: data,
-            documentsByCandidateRD: documentsCandidateList,
+            // documentsByCandidateRD: documentsCandidateList,
           },
         });
-        yield put({
-          type: 'updateBackgroundRecheck',
-          payload: documentsCandidateList,
-        });
+        // yield put({
+        //   type: 'updateBackgroundRecheck',
+        //   payload: data,
+        // });
       } catch (error) {
         dialog(error);
       }
@@ -1194,6 +1017,23 @@ const candidateInfo = {
         //   type: 'updateAdditionalQuestion',
         //   payload: data
         // })
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchWorkHistory({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getWorkHistory, payload);
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            workHistory: data,
+          },
+        });
       } catch (error) {
         dialog(error);
       }

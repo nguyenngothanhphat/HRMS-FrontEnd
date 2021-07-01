@@ -1,4 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
+/* eslint-disable no-param-reassign */
 import React, { Component, Fragment } from 'react';
 import { Row, Col, Typography, Skeleton, Button } from 'antd';
 import { formatMessage, connect } from 'umi';
@@ -10,6 +11,7 @@ import CollapseField from './components/CollapseField';
 import styles from './index.less';
 import SendEmail from '../PreviewOffer/components/SendEmail';
 import CloseCandidateModal from './components/CloseCandidateModal';
+import PreviousEmployment from './components/PreviousEmployment';
 import PROCESS_STATUS from '../utils';
 
 @connect(
@@ -22,12 +24,14 @@ import PROCESS_STATUS from '../utils';
         privateEmail = '',
         candidate = '',
         processStatus,
+        workHistory = [],
       },
       currentStep,
     },
     loading,
   }) => ({
     tempData,
+    workHistory,
     privateEmail,
     candidate,
     currentStep,
@@ -51,26 +55,36 @@ class BackgroundRecheck extends Component {
     this.state = {
       docsList: [],
       feedbackStatus: '',
-      resubmitDocs: [],
-      ineligibleDocs: [],
-      verifiedDocs: [],
       openModal: false,
       modalTitle: '',
     };
   }
 
-  componentDidMount() {
-    const { dispatch, candidate, processStatus = '' } = this.props;
+  componentDidMount = async () => {
+    const {
+      dispatch,
+      candidate,
+      processStatus = '',
+      tempData: { documentsByCandidate = [] } = {},
+    } = this.props;
+
     const { PROVISIONAL_OFFER_DRAFT, SENT_PROVISIONAL_OFFERS, PENDING } = PROCESS_STATUS;
-    const { tempData: { backgroundRecheck: { documentList: docsListProp = [] } = {} } = {} } =
-      this.props;
 
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
 
-    this.setState({
-      docsList: docsListProp,
-    });
-    // this.processDocumentData(docsListProp);
+    if (documentsByCandidate.length > 0) {
+      await dispatch({
+        type: 'candidateInfo/fetchWorkHistory',
+        payload: {
+          candidate,
+          tenantId: getCurrentTenant(),
+        },
+      }).then((res) => {
+        if (res.statusCode === 200) {
+          this.processDocumentData(documentsByCandidate);
+        }
+      });
+    }
 
     if (
       processStatus === PROVISIONAL_OFFER_DRAFT ||
@@ -86,29 +100,48 @@ class BackgroundRecheck extends Component {
         },
       });
     }
-  }
+  };
 
-  componentDidUpdate() {
+  componentDidUpdate = async (prevProps) => {
     const { docsList } = this.state;
     const { tempData: { documentsByCandidateRD = '' } = {} } = this.props;
-    // if (!prevProps.tempData.documentsByCandidateRD && documentsByCandidateRD) {
     if (docsList.length === 0 && documentsByCandidateRD.length > 0) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         docsList: documentsByCandidateRD,
       });
     }
-    // }
-  }
 
-  processDocumentData = (documentArr) => {
-    const { dispatch } = this.props;
+    const { dispatch, candidate, tempData: { documentsByCandidate = [] } = {} } = this.props;
+    if (
+      documentsByCandidate.length > 0 &&
+      JSON.stringify(documentsByCandidate) !==
+        JSON.stringify(prevProps.tempData.documentsByCandidate || [])
+    ) {
+      await dispatch({
+        type: 'candidateInfo/fetchWorkHistory',
+        payload: {
+          candidate,
+          tenantId: getCurrentTenant(),
+        },
+      }).then((res) => {
+        if (res.statusCode === 200) {
+          this.processDocumentData(documentsByCandidate);
+        }
+      });
+    }
+  };
+
+  processDocumentData = (documentList) => {
+    const { workHistory = [], dispatch } = this.props;
     const groupA = [];
     const groupB = [];
     const groupC = [];
     const groupD = [];
-    documentArr.map((item) => {
+
+    documentList.forEach((item) => {
       const { candidateGroup } = item;
+      item.isValidated = true;
       switch (candidateGroup) {
         case 'A':
           groupA.push(item);
@@ -125,29 +158,61 @@ class BackgroundRecheck extends Component {
         default:
           break;
       }
-      return null;
     });
-    const documentsCandidateList = [
+
+    // const countGroupE = documentChecklistSetting.filter((doc) => doc.type === 'E').length || 0;
+    let groupMultiE = [];
+
+    groupMultiE = workHistory.map((em) => {
+      let groupE = [];
+      documentList.forEach((item) => {
+        const { candidateGroup, employer } = item;
+        item.isValidated = true;
+        if (candidateGroup === 'E' && employer === em.employer) {
+          groupE = [...groupE, item];
+        }
+      });
+      return {
+        type: 'E',
+        name: 'Previous Employment',
+        employer: em.employer,
+        toPresent: em.toPresent,
+        startDate: em.startDate,
+        endDate: em.endDate,
+        workHistoryId: em._id,
+        data: [...groupE],
+      };
+    });
+
+    const docsList = [
       { type: 'A', name: 'Identity Proof', data: [...groupA] },
       { type: 'B', name: 'Address Proof', data: [...groupB] },
       { type: 'C', name: 'Educational', data: [...groupC] },
       { type: 'D', name: 'Technical Certifications', data: [...groupD] },
+      ...groupMultiE,
     ];
 
     this.setState({
-      docsList: documentsCandidateList,
+      docsList,
     });
 
     dispatch({
       type: 'candidateInfo/saveOrigin',
       payload: {
-        documentsByCandidateRD: documentsCandidateList,
+        documentsByCandidateRD: docsList,
+      },
+    });
+
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        documentsByCandidateRD: docsList,
       },
     });
 
     dispatch({
       type: 'candidateInfo/updateBackgroundRecheck',
-      payload: documentsCandidateList,
+      payload: docsList,
     });
   };
 
@@ -234,7 +299,9 @@ class BackgroundRecheck extends Component {
     const { documentsByCandidateRD } = tempData;
     // const { documentsByCandidateRD, dispatch } = this.props;
     const candidateDocumentStatus = event.target.value;
+
     const docsByCandidateRDCheck = documentsByCandidateRD;
+
     const checkedDocument = {
       ...document,
       candidateDocumentStatus,
@@ -289,9 +356,6 @@ class BackgroundRecheck extends Component {
       this.setState({
         docsList: [...docsByCandidateRDCheck],
         feedbackStatus: status,
-        verifiedDocs: newVerifiedDocs,
-        resubmitDocs: newResubmitDocs,
-        ineligibleDocs: newIneligibleDocs,
       });
 
       dispatch({
@@ -310,16 +374,27 @@ class BackgroundRecheck extends Component {
       return <Skeleton active />;
     }
 
-    return documentsCandidateList.map((document, index) => {
-      return (
-        <CollapseField
-          item={document}
-          index={index}
-          //   docList={documentListToRender}
+    return (
+      <>
+        {documentsCandidateList.map((document, index) => {
+          if (document.type !== 'E') {
+            return (
+              <CollapseField
+                item={document}
+                index={index}
+                //   docList={documentListToRender}
+                handleCheckDocument={this.handleCheckDocument}
+              />
+            );
+          }
+          return '';
+        })}
+        <PreviousEmployment
+          docList={documentsCandidateList}
           handleCheckDocument={this.handleCheckDocument}
         />
-      );
-    });
+      </>
+    );
   };
 
   closeModal = () => {
@@ -353,6 +428,8 @@ class BackgroundRecheck extends Component {
 
   _renderBottomBar = () => {
     // const { feedbackStatus } = this.state;
+    const { docsList } = this.state;
+    const checkStatus = this.checkStatus(docsList);
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
@@ -373,9 +450,9 @@ class BackgroundRecheck extends Component {
               type="primary"
               onClick={this.onClickNext}
               className={`${styles.bottomBar__button__primary} ${
-                this.checkStatus() !== 1 ? styles.bottomBar__button__disabled : ''
+                checkStatus !== 1 ? styles.bottomBar__button__disabled : ''
               }`}
-              disabled={this.checkStatus() !== 1}
+              disabled={checkStatus !== 1}
             >
               Next
             </Button>
@@ -385,14 +462,27 @@ class BackgroundRecheck extends Component {
     );
   };
 
-  checkStatus = () => {
-    const { docsList = [] } = this.state;
+  checkStatus = (docsListState) => {
     const newVerifiedDocs = [];
     const newResubmitDocs = [];
     const newIneligibleDocs = [];
 
+    const docsListFilter = docsListState.map((item) => {
+      const { data = [] } = item;
+      let newData = [];
+      data.forEach((doc) => {
+        if (doc.isCandidateUpload) {
+          newData = [...newData, doc];
+        }
+      });
+      return {
+        ...item,
+        data: newData,
+      };
+    });
+
     const newDocumentList = [];
-    docsList.map((item) => {
+    docsListFilter.map((item) => {
       const { data = [] } = item;
       data.map((documentItem) => {
         newDocumentList.push(documentItem);
@@ -423,6 +513,7 @@ class BackgroundRecheck extends Component {
     if (newResubmitDocs.length > 0) {
       return 2;
     }
+
     return 4;
   };
 
@@ -459,7 +550,7 @@ class BackgroundRecheck extends Component {
               <NoteComponent note={Note} />
             </Row>
             <Row className={styles.stepRow}>
-              <Feedback feedbackStatus={feedbackStatus} docsList={docsList} />
+              <Feedback checkStatus={this.checkStatus} docsList={docsList} />
             </Row>
             {feedbackStatus === 'RE-SUBMIT' && (
               <Row className={styles.stepRow}>

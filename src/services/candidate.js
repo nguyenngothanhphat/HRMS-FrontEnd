@@ -42,6 +42,13 @@ export function getWorkHistory(params) {
   });
 }
 
+export function updateWorkHistory(params) {
+  return request('/api/workhistorytenant/update', {
+    method: 'POST',
+    data: params,
+  });
+}
+
 export function sendEmailByCandidateModel(params) {
   return request('/api/candidatetenant/phase-one-candidate', {
     method: 'POST',

@@ -35,6 +35,7 @@ const PROCESS_STATUS = {
 };
 
 const TABLE_TYPE = {
+  ALL: 'ALL',
   PENDING_ELIGIBILITY_CHECKS: 'PENDING_ELIGIBILITY_CHECKS', // Pending eligibility checks
   SENT_ELIGIBILITY_FORMS: 'SENT_ELIGIBILITY_FORMS', // Pending eligibility checks
   RECEIVED_SUBMITTED_DOCUMENTS: 'RECEIVED_SUBMITTED_DOCUMENTS', // Pending eligibility checks

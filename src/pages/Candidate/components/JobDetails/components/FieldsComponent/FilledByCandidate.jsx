@@ -58,29 +58,17 @@ class FilledByCandidate extends PureComponent {
     const { dispatch, checkMandatory } = this.props;
     const { value } = e.target;
     this.setState({ checkWouldNewDate: value });
-    if (value) {
-      dispatch({
-        type: 'candidateProfile/save',
-        payload: {
-          // jobDetails,
-          checkMandatory: {
-            ...checkMandatory,
-            filledJobDetail: true,
-          },
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        // jobDetails,
+        checkMandatory: {
+          ...checkMandatory,
+          filledJobDetail: !!value,
+          isCandidateAcceptDOJ: !value,
         },
-      });
-    } else {
-      dispatch({
-        type: 'candidateProfile/save',
-        payload: {
-          // jobDetails,
-          checkMandatory: {
-            ...checkMandatory,
-            filledJobDetail: false,
-          },
-        },
-      });
-    }
+      },
+    });
   };
 
   render() {
