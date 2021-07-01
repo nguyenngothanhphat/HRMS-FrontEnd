@@ -408,10 +408,6 @@ class CommonLayout extends Component {
       }
 
       case PENDING: {
-        // if (allDocumentVerified) {
-        //   return false;
-        // }
-
         if (
           index === statusStep.basicInfoStep ||
           index === statusStep.jobDetailStep ||
