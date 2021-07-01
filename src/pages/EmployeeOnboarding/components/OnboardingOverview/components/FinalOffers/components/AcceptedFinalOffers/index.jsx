@@ -6,7 +6,17 @@ import {
 } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable/index';
 
-const { ID, NAME, POSITION, LOCATION, DATE_JOIN, CHANGE_REQUEST, ACTION } = COLUMN_NAME;
+const {
+  ID,
+  NAME,
+  POSITION,
+  LOCATION,
+  DATE_JOIN,
+  CHANGE_REQUEST,
+  ASSIGN_TO,
+  ASSIGNEE_MANAGER,
+  ACTION,
+} = COLUMN_NAME;
 const { ACCEPTED_FINAL_OFFERS } = TABLE_TYPE;
 
 class AcceptedFinalOffers extends PureComponent {
@@ -16,7 +26,17 @@ class AcceptedFinalOffers extends PureComponent {
     return (
       <OnboardTable
         list={list}
-        columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, CHANGE_REQUEST, ACTION]}
+        columnArr={[
+          ID,
+          NAME,
+          POSITION,
+          LOCATION,
+          DATE_JOIN,
+          CHANGE_REQUEST,
+          ASSIGN_TO,
+          ASSIGNEE_MANAGER,
+          ACTION,
+        ]}
         type={ACCEPTED_FINAL_OFFERS}
         inTab
         // hasCheckbox

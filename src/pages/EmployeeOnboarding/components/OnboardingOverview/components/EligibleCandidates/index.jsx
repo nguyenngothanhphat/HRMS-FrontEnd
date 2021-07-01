@@ -8,7 +8,7 @@ import {
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable/index';
 
 // const list = rookieList;
-const { ID, NAME, POSITION, LOCATION, COMMENT, ACTION } = COLUMN_NAME;
+const { ID, NAME, POSITION, LOCATION, COMMENT, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION } = COLUMN_NAME;
 const { ELIGIBLE_CANDIDATES } = TABLE_TYPE;
 
 class EligibleCandidates extends PureComponent {
@@ -17,7 +17,7 @@ class EligibleCandidates extends PureComponent {
     return (
       <OnboardTable
         list={eligibleCandidates}
-        columnArr={[ID, NAME, POSITION, LOCATION, COMMENT, ACTION]}
+        columnArr={[ID, NAME, POSITION, LOCATION, COMMENT, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION]}
         type={ELIGIBLE_CANDIDATES}
       />
     );

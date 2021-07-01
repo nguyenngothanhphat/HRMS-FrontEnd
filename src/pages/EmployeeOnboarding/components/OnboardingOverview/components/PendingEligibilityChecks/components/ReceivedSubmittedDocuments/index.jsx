@@ -6,7 +6,8 @@ import {
 } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable/index';
 
-const { ID, NAME, POSITION, LOCATION, DATE_RECEIVED, ACTION } = COLUMN_NAME;
+const { ID, NAME, POSITION, LOCATION, DATE_RECEIVED, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION } =
+  COLUMN_NAME;
 const { RECEIVED_SUBMITTED_DOCUMENTS } = TABLE_TYPE;
 
 class ReceivedSubmittedDocuments extends PureComponent {
@@ -16,7 +17,16 @@ class ReceivedSubmittedDocuments extends PureComponent {
     return (
       <OnboardTable
         list={list}
-        columnArr={[ID, NAME, POSITION, LOCATION, DATE_RECEIVED, ACTION]}
+        columnArr={[
+          ID,
+          NAME,
+          POSITION,
+          LOCATION,
+          DATE_RECEIVED,
+          ASSIGN_TO,
+          ASSIGNEE_MANAGER,
+          ACTION,
+        ]}
         type={RECEIVED_SUBMITTED_DOCUMENTS}
         inTab
       />
