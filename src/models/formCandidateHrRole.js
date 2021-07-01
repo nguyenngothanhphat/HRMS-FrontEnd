@@ -650,6 +650,170 @@ const candidateInfo = {
       return response;
     },
 
+    // *fetchCandidateByRookie({ payload }, { call, put }) {
+    //   let response = {};
+    //   try {
+    //     response = yield call(getById, payload);
+    //     const { data, statusCode } = response;
+
+    //     if (statusCode !== 200) throw response;
+    //     const { _id } = data;
+    //     yield put({
+    //       type: 'save',
+    //       payload: {
+    //         currentStep: data.currentStep,
+    //       },
+    //     });
+    //     yield put({
+    //       type: 'saveOrigin',
+    //       payload: {
+    //         ...data,
+    //         candidate: _id,
+    //         _id,
+    //       },
+    //     });
+    //     const {
+    //       offerLetter: { attachment: { url = '', name = '' } = {} } = {
+    //         attachment: { url: '', name: '' },
+    //       },
+    //     } = data;
+    //     yield put({
+    //       type: 'save',
+    //       payload: {
+    //         data: {
+    //           ...data,
+    //           offerLetter: {
+    //             url,
+    //             name,
+    //           },
+    //           candidate: data._id,
+    //         },
+    //       },
+    //     });
+
+    //     const {
+    //       fullName = '',
+    //       privateEmail = '',
+    //       previousExperience = '',
+    //       salaryStructure = {},
+    //       documentChecklistSetting = [],
+    //       amountIn,
+    //       timeOffPolicy,
+    //       currentStep,
+    //     } = data;
+
+    //     const identityProof = documentChecklistSetting[0]?.data;
+    //     const addressProof = documentChecklistSetting[1]?.data;
+    //     const educational = documentChecklistSetting[2]?.data;
+    //     const technicalCertification = documentChecklistSetting[3]?.data;
+
+    //     let listCheckIP = identityProof.map((item) => item.value);
+    //     listCheckIP = listCheckIP.filter((item) => item === true);
+
+    //     let listCheckAP = addressProof.map((item) => item.value);
+    //     listCheckAP = listCheckAP.filter((item) => item === true);
+
+    //     let listCheckEdu = educational.map((item) => item.value);
+    //     listCheckEdu = listCheckEdu.filter((item) => item === true);
+
+    //     let listCheckTC = technicalCertification.map((item) => item.value);
+    //     listCheckTC = listCheckTC.filter((item) => item === true);
+
+    //     const checkStatus = {};
+
+    //     if (
+    //       listCheckIP.length > 2 ||
+    //       listCheckAP.length > 0 ||
+    //       listCheckEdu.length > 3 ||
+    //       listCheckTC.length > 0 ||
+    //       'employer' in documentChecklistSetting[3]
+    //     ) {
+    //       checkStatus.filledBgCheck = true;
+    //     }
+
+    //     if (fullName && privateEmail && previousExperience) {
+    //       checkStatus.filledBasicInformation = true;
+    //     }
+    //     if ('title' in data && 'workLocation' in data && 'department' in data) {
+    //       checkStatus.filledJobDetail = true;
+    //     }
+    //     if ('title' in salaryStructure) {
+    //       checkStatus.filledSalaryCheck = true;
+    //     }
+
+    //     if (amountIn && timeOffPolicy) {
+    //       checkStatus.offerDetailCheck = true;
+    //     }
+
+    //     if (currentStep >= 5) {
+    //       checkStatus.payrollSettingCheck = true;
+    //     } else {
+    //       checkStatus.payrollSettingCheck = false;
+    //     }
+
+    //     if (currentStep >= 6) {
+    //       checkStatus.benefitsCheck = true;
+    //     }
+
+    //     yield put({
+    //       type: 'saveTemp',
+    //       payload: {
+    //         ...data,
+    //         checkStatus,
+    //         valueToFinalOffer: 0,
+    //         offerLetter: data.offerLetter,
+    //         candidate: data._id,
+    //         candidateSignature: data.candidateSignature || {},
+    //         amountIn: data.amountIn || '',
+    //         timeOffPolicy: data.timeOffPolicy || '',
+    //         compensationType: data.compensationType || '',
+    //         salaryTitle: data.salaryStructure?.title?._id,
+    //         salaryStructure: data.salaryStructure,
+    //         salaryNote: data.salaryNote,
+    //         includeOffer: data.includeOffer || 1,
+    //         // hidePreviewOffer: !!(data.staticOfferLetter && data.staticOfferLetter.url), // Hide preview offer screen if there's already static offer
+    //         // disablePreviewOffer:
+    //         //   (data.offerLetter && data.offerLetter.attachment) ||
+    //         //   (data.staticOfferLetter && data.staticOfferLetter.url),
+    //         additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
+    //       },
+    //     });
+
+    //     if (
+    //       (data.offerLetter && data.offerLetter.attachment) ||
+    //       (data.staticOfferLetter && data.staticOfferLetter.url)
+    //     ) {
+    //       yield put({
+    //         type: 'saveTemp',
+    //         payload: {
+    //           disablePreviewOffer: false,
+    //         },
+    //       });
+    //     }
+
+    //     // yield put({
+    //     //   type: 'upadateAdditionalQuestion',
+    //     //   payload: formatAdditionalQuestion(data.additionalQuestions),
+    //     // });
+    //     yield put({
+    //       type: 'updateSignature',
+    //       payload: data,
+    //     });
+    //     if (_id) {
+    //       yield put({
+    //         type: 'fetchDocumentByCandidateID',
+    //         payload: {
+    //           candidate: _id,
+    //           tenantId: payload.tenantId,
+    //         },
+    //       });
+    //     }
+    //   } catch (error) {
+    //     dialog(error);
+    //   }
+    //   return response;
+    // },
+
     *fetchCandidateByRookie({ payload }, { call, put }) {
       let response = {};
       try {
@@ -702,31 +866,36 @@ const candidateInfo = {
           currentStep,
         } = data;
 
+        console.log(data);
+
+        const filterValue = (arr) => {
+          let listCheck = arr.map((item) => item.value);
+          listCheck = listCheck.filter((item) => item === true);
+
+          return listCheck;
+        };
+
         const identityProof = documentChecklistSetting[0]?.data;
         const addressProof = documentChecklistSetting[1]?.data;
         const educational = documentChecklistSetting[2]?.data;
         const technicalCertification = documentChecklistSetting[3]?.data;
+        const prevEmployee = documentChecklistSetting[4]?.data;
 
-        let listCheckIP = identityProof.map((item) => item.value);
-        listCheckIP = listCheckIP.filter((item) => item === true);
-
-        let listCheckAP = addressProof.map((item) => item.value);
-        listCheckAP = listCheckAP.filter((item) => item === true);
-
-        let listCheckEdu = educational.map((item) => item.value);
-        listCheckEdu = listCheckEdu.filter((item) => item === true);
-
-        let listCheckTC = technicalCertification.map((item) => item.value);
-        listCheckTC = listCheckTC.filter((item) => item === true);
+        const checkStatusTypeA = filterValue(identityProof);
+        const checkStatusTypeB = filterValue(addressProof);
+        const checkStatusTypeC = filterValue(educational);
+        const checkStatusTypeD = filterValue(technicalCertification);
+        const checkStatusTypeE = filterValue(prevEmployee);
 
         const checkStatus = {};
 
         if (
-          listCheckIP.length > 2 ||
-          listCheckAP.length > 0 ||
-          listCheckEdu.length > 3 ||
-          listCheckTC.length > 0 ||
-          'employer' in documentChecklistSetting[3]
+          checkStatusTypeA.length > 4 ||
+          checkStatusTypeB.length > 0 ||
+          checkStatusTypeC.length > 3 ||
+          checkStatusTypeD.length > 0 ||
+          checkStatusTypeE.length > 0 ||
+          'employer' in documentChecklistSetting[4]
         ) {
           checkStatus.filledBgCheck = true;
         }

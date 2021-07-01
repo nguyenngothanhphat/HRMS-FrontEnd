@@ -115,11 +115,20 @@ class OnboardTable extends Component {
       ACCEPTED_FINAL_OFFERS,
       RENEGOTIATE_FINAL_OFFERS,
       ACCEPTED__PROVISIONAL_OFFERS,
+      ALL,
     } = TABLE_TYPE;
 
     let actionContent = null;
 
     switch (type) {
+      case ALL: {
+        actionContent = (
+          <>
+            <span>View</span>
+          </>
+        );
+        break;
+      }
       case PROVISIONAL_OFFERS_DRAFTS: {
         actionContent = (
           <>
@@ -455,7 +464,7 @@ class OnboardTable extends Component {
       onChange: this.onChangePagination,
     };
 
-    const { columnArr, type, inTab, hasCheckbox, loading } = this.props;
+    const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch } = this.props;
     const { openModal } = this.state;
     return (
       <>
@@ -480,7 +489,7 @@ class OnboardTable extends Component {
             }}
             columns={this.generateColumns(columnArr, type)}
             dataSource={list}
-            loading={loading}
+            loading={loading || loadingFetch}
             // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
             pagination={{ ...pagination, total: list.length }}
             onRow={(record) => {
