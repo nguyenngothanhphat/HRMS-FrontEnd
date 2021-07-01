@@ -38,7 +38,15 @@ const ModalFeedback = (props) => {
           <div className={styles.form}>
             <Form form={form} onFinish={handleFinish} preserve={false}>
               <div className={styles.formTop}>
-                <Form.Item name="option">
+                <Form.Item
+                  name="option"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please check the radio !',
+                    },
+                  ]}
+                >
                   <Radio.Group onChange={onChange} value={value}>
                     <Radio value={1} className={styles.radioText}>
                       Report an issue
