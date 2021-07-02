@@ -87,7 +87,6 @@ class RuleFrom extends Component {
   };
 
   handleChangeSelect = (value) => {
-    console.log('value: ', value);
   };
 
   renderCountry = () => {
@@ -240,7 +239,6 @@ class RuleFrom extends Component {
     //     });
     //   }
     // });
-    console.log('array', array);
 
     const { loadingListCountry } = this.props;
     return (

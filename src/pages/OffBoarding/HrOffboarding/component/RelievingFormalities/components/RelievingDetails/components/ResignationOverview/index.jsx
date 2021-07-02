@@ -6,7 +6,7 @@ import styles from './index.less';
 
 class ResignationOverview extends PureComponent {
   onCheckBox = (value) => {
-    console.log(value);
+    // console.log(value);
   };
 
   render() {

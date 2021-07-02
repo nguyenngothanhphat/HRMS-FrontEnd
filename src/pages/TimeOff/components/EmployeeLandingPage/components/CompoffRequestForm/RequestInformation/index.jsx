@@ -214,8 +214,6 @@ class RequestInformation extends PureComponent {
 
   // ON FINISH
   onFinish = (values) => {
-    // eslint-disable-next-line no-console
-    console.log('Success:', values);
     const { projectId = '', description = '', personCC = [] } = values;
     const { action: pageAction = '' } = this.props; // edit or new compoff request
     const { dateLists, buttonState, viewingCompoffRequestId, totalHours } = this.state;
@@ -266,8 +264,6 @@ class RequestInformation extends PureComponent {
   };
 
   onFinishFailed = (errorInfo) => {
-    // eslint-disable-next-line no-console
-    console.log('Failed:', errorInfo);
   };
 
   // DATE PICKER ON CHANGE

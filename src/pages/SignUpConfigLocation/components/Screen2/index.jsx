@@ -39,12 +39,12 @@ const Screen2 = (props) => {
   }, [locations]);
 
   const onFinish = (values) => {
-    console.log('Success:', values);
+    // console.log('Success:', values);
     return null;
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
+    // console.log('Failed:', errorInfo);
   };
 
   const addLocation = () => {

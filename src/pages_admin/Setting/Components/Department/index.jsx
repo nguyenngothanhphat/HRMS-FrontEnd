@@ -46,7 +46,6 @@ class Department extends Component {
   }
 
   onSelectChange = (selectedRowKeys, selectedRows) => {
-    console.log('selectedRowKeys', selectedRowKeys, 'selectedRows', selectedRows);
     this.setState({ selectedRowKeys });
   };
 

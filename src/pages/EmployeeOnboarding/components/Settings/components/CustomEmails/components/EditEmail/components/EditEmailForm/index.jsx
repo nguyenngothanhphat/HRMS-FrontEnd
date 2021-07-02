@@ -1,6 +1,5 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-bitwise */
-/* eslint-disable no-console */
 import React, { PureComponent } from 'react';
 import { Link, history, formatMessage, connect } from 'umi';
 import { Form, Input, Row, Col, Button, Select, Radio, Checkbox, Tag, Spin } from 'antd';
@@ -319,7 +318,6 @@ class EditEmailForm extends PureComponent {
   };
 
   handleChangeEmail = (value) => {
-    console.log('value', value);
     this.setState({
       messages: value,
     });
@@ -327,18 +325,14 @@ class EditEmailForm extends PureComponent {
 
   onChangeTriggerEvent = (value) => {
     // this.setState({ triggerEvent: value });
-    console.log('value message: ', value);
   };
 
   onChangeSendingDate = (value) => {
-    console.log('value message: ', value.target.value);
-
     // this.setState({ _sendingDate: value.target.value });
   };
 
   onChangeRecipients = (value) => {
     // this.setState({ recipient: value });
-    console.log('value message: ', value);
   };
 
   onChangeEmailSubject = (value) => {
@@ -507,8 +501,6 @@ class EditEmailForm extends PureComponent {
 
     newConditionsData[index][name] = value;
 
-    // console.log('newConditionsData:', newConditionsData);
-
     this.setState({
       conditionsData: newConditionsData,
       conditions: newConditions,
@@ -634,8 +626,6 @@ class EditEmailForm extends PureComponent {
       tenantId: getCurrentTenant(),
     };
 
-    console.log('dataSubmit: ', dataSubmit);
-    // console.log('success: ', dataSubmit);
     // dispatch({
     //   type: 'employeeSetting/updateCustomEmail',
     //   payload: dataSubmit,
@@ -810,7 +800,6 @@ class EditEmailForm extends PureComponent {
   };
 
   handleChangeChckBox = (value) => {
-    console.log('value message: ', value);
     // const { target: { checked = '' } = {} } = value;
     // this.setState({ sendToExistingWorker: checked });
   };

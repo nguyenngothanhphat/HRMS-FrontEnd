@@ -1283,9 +1283,9 @@ const candidateInfo = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        console.log(response);
+
         // put({
         //   type: 'updateAdditionalQuestion',
         //   payload: data

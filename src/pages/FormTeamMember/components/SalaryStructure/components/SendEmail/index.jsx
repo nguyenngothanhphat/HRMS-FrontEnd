@@ -21,7 +21,7 @@ const index = ({
   const [isEnable, setIsEnable] = useState(true);
   const [isInputEnable, setIsInputEnable] = useState(true);
   const [initialGenerateLink] = useState('abc.xyz.com');
-  console.log('initial', privateEmail);
+
   const handleEmailClick = () => {
     setIsEnable(true);
   };

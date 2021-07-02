@@ -81,9 +81,7 @@ class SalaryStructureTemplate extends PureComponent {
     });
   };
 
-  onFinish = (values) => {
-    console.log.log('hi', values);
-  };
+  onFinish = (values) => {};
 
   onClickEdit = () => {
     const { isEditted } = this.state;
@@ -132,14 +130,10 @@ class SalaryStructureTemplate extends PureComponent {
     const { value = '', key, edit = false, number = {} } = data;
     const isNumber = Object.keys(number).length > 0;
 
-    // console.log(salaryStructure);
-    // console.log(order);
-    // console.log(data);
     // return null;
 
     if (edit && isEditted) {
       if (isNumber) {
-        console.log(data);
         const { current = '', max = '' } = number;
         return (
           <Form.Item name={key} className={styles.formNumber}>

@@ -51,11 +51,6 @@ const PreviewOffer = (props) => {
       : staticOfferLetterProp.attachment?.url || staticOfferLetterProp.url || '',
   );
 
-  console.log('offerLetterProp', offerLetterProp);
-  console.log('staticOfferLetterProp', staticOfferLetterProp);
-
-  console.log('offerLetter', offerLetter);
-
   const [uploadVisible1, setUploadVisible1] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [uploadVisible2, setUploadVisible2] = useState(false);

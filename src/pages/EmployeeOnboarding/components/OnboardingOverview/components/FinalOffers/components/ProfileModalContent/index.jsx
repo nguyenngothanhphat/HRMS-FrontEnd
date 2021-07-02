@@ -16,7 +16,6 @@ const ProfileModalContent = (props) => {
   const [form] = Form.useForm();
 
   const onValuesChange = (values) => {
-    console.log(values);
     const { employeeId = '' } = values;
     if (employeeId.length > 0) {
       setValidate(true);

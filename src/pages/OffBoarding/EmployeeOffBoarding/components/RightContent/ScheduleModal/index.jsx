@@ -16,10 +16,7 @@ class ScheduleModal extends Component {
     this.setState({}, () => handleCancel());
   };
 
-  handleSubmit = () => {
-    // eslint-disable-next-line no-console
-    console.log('handle');
-  };
+  handleSubmit = () => {};
 
   render() {
     const { visible = false, loading, modalContent } = this.props;
