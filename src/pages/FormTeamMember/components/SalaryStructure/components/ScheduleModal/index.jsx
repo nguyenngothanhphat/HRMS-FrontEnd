@@ -39,12 +39,12 @@ class ScheduleModal extends Component {
   handleSubmit = () => {};
 
   onFinish = (values) => {
-    const { dispatch, candidate } = this.props;
+    const { dispatch, _id } = this.props;
     const { meetingOn, meetingAt, meetingWith } = values;
     dispatch({
       type: 'candidateInfo/addSchedule',
       payload: {
-        candidate,
+        candidate: _id,
         schedule: {
           meetingOn: meetingOn._d.toLocaleDateString(),
           meetingAt,
@@ -78,7 +78,7 @@ class ScheduleModal extends Component {
             <div className={styles.flexContent}>
               <div>
                 <Form.Item name="meetingOn" label="Meeting on">
-                  <DatePicker format="MM/DD/YYYY" className={styles.datePicker} />
+                  <DatePicker format="MM.DD.YY" className={styles.datePicker} />
                 </Form.Item>
               </div>
               <div>
