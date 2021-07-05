@@ -9,7 +9,7 @@ const { TextArea } = Input;
 const ModalFeedback = (props) => {
   const [form] = Form.useForm();
   const [valueRadio, setValueRadio] = useState(null);
-  const [screenCapture, setScreenCapture] = useState('');
+  const [screenCapture, setScreenCapture] = useState(null);
   const { visible = false, handleCandelModal = () => {} } = props;
 
   const onChange = (e) => {
@@ -27,6 +27,7 @@ const ModalFeedback = (props) => {
   const destroyOnClose = () => {
     handleCandelModal();
     setValueRadio(null);
+    setScreenCapture(null);
   };
 
   return (
