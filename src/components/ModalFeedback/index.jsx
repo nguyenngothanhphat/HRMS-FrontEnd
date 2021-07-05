@@ -8,13 +8,12 @@ const { TextArea } = Input;
 
 const ModalFeedback = (props) => {
   const [form] = Form.useForm();
-  const [value, setValue] = useState(1);
+  const [valueRadio, setValueRadio] = useState(null);
   const [screenCapture, setScreenCapture] = useState('');
   const { visible = false, handleCandelModal = () => {} } = props;
 
   const onChange = (e) => {
-    console.log('radio checked', e.target.value);
-    setValue(e.target.value);
+    setValueRadio(e.target.value);
   };
 
   const handleFinish = (values) => {
@@ -25,13 +24,18 @@ const ModalFeedback = (props) => {
     setScreenCapture(img);
   };
 
+  const destroyOnClose = () => {
+    handleCandelModal();
+    setValueRadio(null);
+  };
+
   return (
     <Modal
       visible={visible}
       className={styles.feedbackModal}
       title={false}
-      onCancel={handleCandelModal}
-      destroyOnClose
+      onCancel={destroyOnClose}
+      destroyOnClose={destroyOnClose}
       footer={false}
     >
       <div className={styles.contentFeedback}>
@@ -53,7 +57,7 @@ const ModalFeedback = (props) => {
                     },
                   ]}
                 >
-                  <Radio.Group onChange={onChange} value={value}>
+                  <Radio.Group onChange={onChange} value={valueRadio}>
                     <Radio value={1} className={styles.radioText}>
                       Report an issue
                     </Radio>
@@ -67,25 +71,27 @@ const ModalFeedback = (props) => {
                   Please describe what you would like to change or what you liked?
                 </div>
 
-                <Form.Item
-                  name="feedback"
-                  rules={[
-                    {
-                      pattern: /^[\W\S_]{0,1000}$/,
-                      message: 'Only fill up to 1000 characters !',
-                    },
-                    {
-                      required: true,
-                      message: 'Please input field !',
-                    },
-                  ]}
-                >
-                  <TextArea
-                    className={styles.fieldModal}
-                    placeholder="Type here..."
-                    autoSize={{ minRows: 6, maxRows: 12 }}
-                  />
-                </Form.Item>
+                {valueRadio && (
+                  <Form.Item
+                    name="feedback"
+                    rules={[
+                      {
+                        pattern: /^[\W\S_]{0,1000}$/,
+                        message: 'Only fill up to 1000 characters !',
+                      },
+                      {
+                        required: true,
+                        message: 'Please input field !',
+                      },
+                    ]}
+                  >
+                    <TextArea
+                      className={styles.fieldModal}
+                      placeholder="Type here..."
+                      autoSize={{ minRows: 6, maxRows: 12 }}
+                    />
+                  </Form.Item>
+                )}
                 {screenCapture && (
                   <Form.Item>
                     <img alt="screenshot" src={screenCapture} />
@@ -95,18 +101,21 @@ const ModalFeedback = (props) => {
               <Divider />
 
               <div className={styles.formBottom}>
-                <Form.Item className={styles.flexButton1}>
-                  <ScreenCapture onEndCapture={handleScreenCapture}>
-                    {({ onStartCapture }) => (
-                      <Button
-                        onClick={onStartCapture}
-                        className={`${styles.btnGroup} ${styles.highlightBtn}`}
-                      >
-                        Highlight Page
-                      </Button>
-                    )}
-                  </ScreenCapture>
-                </Form.Item>
+                {valueRadio && (
+                  <Form.Item className={styles.flexButton1}>
+                    <ScreenCapture onEndCapture={handleScreenCapture}>
+                      {({ onStartCapture }) => (
+                        <Button
+                          onClick={onStartCapture}
+                          className={`${styles.btnGroup} ${styles.highlightBtn}`}
+                        >
+                          Highlight Page
+                        </Button>
+                      )}
+                    </ScreenCapture>
+                  </Form.Item>
+                )}
+
                 <Form.Item className={styles.flexButton2}>
                   <Button
                     className={`${styles.btnGroup} ${styles.btnSubmit}`}
