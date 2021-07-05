@@ -397,6 +397,8 @@ class CompanyDetails extends Component {
       },
     };
 
+    const industry = 'Information Technology';
+
     return (
       <Form
         className={s.root}
@@ -426,6 +428,7 @@ class CompanyDetails extends Component {
           hrPhone,
           isNewTenant: false,
           isHeadQuarter: true,
+          industry,
           // logoUrl,
         }}
       >
@@ -434,6 +437,68 @@ class CompanyDetails extends Component {
             <p className={s.title}>Company Details</p>
           </div>
           <div className={s.content__viewBottom}>
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>Industry</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item name="industry">
+                  <Select
+                    placeholder="Select Industry"
+                    showArrow
+                    showSearch
+                    allowClear
+                    defaultValue="informationTechnology"
+                    className={s.parentCompanySelect}
+                    // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    <Option
+                      value="Information Technology"
+                      style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                    >
+                      Information Technology
+                    </Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>Company Type</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item name="companyType">
+                  <Select
+                    placeholder="Select Company Type"
+                    showArrow
+                    showSearch
+                    allowClear
+                    // defaultValue=""
+                    className={s.parentCompanySelect}
+                    // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    <Option
+                      value="IT Services"
+                      style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                    >
+                      IT Services
+                    </Option>
+                    <Option
+                      value="Product"
+                      style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                    >
+                      Product
+                    </Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
             {fieldCompanyDetail.map(
               ({ label, name: nameField, required = false, message }, index) => (
                 <Row key={nameField} className={s.content__viewBottom__row}>
