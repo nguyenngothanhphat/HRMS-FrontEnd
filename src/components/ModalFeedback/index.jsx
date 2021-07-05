@@ -32,7 +32,7 @@ const ModalFeedback = (props) => {
   return (
     <Modal
       visible={visible}
-      className={styles.feedbackModal}
+      className={`${styles.feedbackModal} ${screenCapture ? styles.mainModal2 : styles.mainModal}`}
       title={false}
       onCancel={destroyOnClose}
       destroyOnClose={destroyOnClose}
@@ -47,29 +47,41 @@ const ModalFeedback = (props) => {
           </div>
           <div className={styles.form}>
             <Form form={form} onFinish={handleFinish} preserve={false}>
-              <div className={styles.formTop}>
-                <Form.Item
-                  name="option"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please check the radio !',
-                    },
-                  ]}
-                >
-                  <Radio.Group onChange={onChange} value={valueRadio}>
-                    <Radio value={1} className={styles.radioText}>
-                      Report an issue
-                    </Radio>
-                    <Radio value={2} className={styles.radioText}>
-                      Suggest an Enhancement
-                    </Radio>
-                  </Radio.Group>
-                </Form.Item>
+              <div className={styles.formTop} style={screenCapture ? { display: 'flex' } : {}}>
+                {screenCapture ? null : (
+                  <>
+                    <Form.Item
+                      name="option"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Please check the radio !',
+                        },
+                      ]}
+                    >
+                      <Radio.Group onChange={onChange} value={valueRadio}>
+                        <Radio value={1} className={styles.radioText}>
+                          Report an issue
+                        </Radio>
+                        <Radio value={2} className={styles.radioText}>
+                          Suggest an Enhancement
+                        </Radio>
+                      </Radio.Group>
+                    </Form.Item>
 
-                <div className={`${styles.subTitle} ${styles.title2}`}>
-                  Please describe what you would like to change or what you liked?
-                </div>
+                    <div className={`${styles.subTitle} ${styles.title2}`}>
+                      Please describe what you would like to change or what you liked?
+                    </div>
+                  </>
+                )}
+
+                {screenCapture && (
+                  <Form.Item>
+                    <div className={styles.captureSection}>
+                      <img className={styles.screenshot} alt="screenshot" src={screenCapture} />
+                    </div>
+                  </Form.Item>
+                )}
 
                 {valueRadio && (
                   <Form.Item
@@ -84,17 +96,13 @@ const ModalFeedback = (props) => {
                         message: 'Please input field !',
                       },
                     ]}
+                    className={styles.textBoxForm}
                   >
                     <TextArea
                       className={styles.fieldModal}
                       placeholder="Type here..."
                       autoSize={{ minRows: 6, maxRows: 12 }}
                     />
-                  </Form.Item>
-                )}
-                {screenCapture && (
-                  <Form.Item>
-                    <img alt="screenshot" src={screenCapture} />
                   </Form.Item>
                 )}
               </div>
