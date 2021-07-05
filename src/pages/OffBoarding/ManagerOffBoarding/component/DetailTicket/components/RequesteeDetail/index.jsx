@@ -12,7 +12,6 @@ class RequesteeDetail extends PureComponent {
       tenant = '',
       dispatch,
     } = this.props;
-    console.log(id);
 
     // await dispatch({
     //   type: 'employeeProfile/save',

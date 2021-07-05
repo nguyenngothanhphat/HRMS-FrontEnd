@@ -89,19 +89,19 @@ const routes = [
           },
         ],
       },
-      {
-        path: '/select-location',
-        component: '../layouts/AccountSetupLayout',
-        // authority: ['admin-csa'],
-        routes: [
-          {
-            path: '/select-location',
-            component: './LocationSelection',
-            name: 'Location Selection',
-            // authority: ['admin-csa'],
-          },
-        ],
-      },
+      // {
+      //   path: '/select-location',
+      //   component: '../layouts/AccountSetupLayout',
+      //   // authority: ['admin-csa'],
+      //   routes: [
+      //     {
+      //       path: '/select-location',
+      //       component: './LocationSelection',
+      //       name: 'Location Selection',
+      //       // authority: ['admin-csa'],
+      //     },
+      //   ],
+      // },
       {
         path: '/control-panel',
         component: '../layouts/AccountSetupLayout',
@@ -340,13 +340,6 @@ const routes = [
             hideInMenu: true,
             authority: ['admin-sa', 'owner'],
           },
-          // {
-          //   path: '/continue-company-profile',
-          //   component: './BackToCompanyProfile',
-          //   name: 'Company Profile',
-          //   icon: '/assets/images/menuIcons/members.svg',
-          //   authority: ['admin-csa'],
-          // },
           {
             // path: '/time-off/new-leave-request',
             path: '/time-off/:action(new-compoff-request)',
@@ -529,14 +522,14 @@ const routes = [
             component:
               './OffBoarding/HrOffboarding/component/Settings/components/Forms/components/HandleForm',
           },
-          {
-            path: '/setting',
-            name: 'setting',
-            icon: '/assets/images/CP-icons_settings.svg',
-            component: './Setting',
-            hideInMenu: true,
-            authority: ['M_SETTING_VIEW', 'P_SETTING_VIEW', 'owner'], // TEMP
-          },
+          // {
+          //   path: '/setting',
+          //   name: 'setting',
+          //   icon: '/assets/images/CP-icons_settings.svg',
+          //   component: './Setting',
+          //   hideInMenu: true,
+          //   authority: ['M_SETTING_VIEW', 'P_SETTING_VIEW', 'owner'], // TEMP
+          // },
           {
             path: '/view-document/:documentId',
             name: 'viewDocument',
@@ -560,36 +553,14 @@ const routes = [
             name: 'addTeamMember',
             hideInMenu: true,
             component: './FormTeamMember',
-            authority: [
-              'employee',
-              'hr-manager',
-              'hr',
-              'hr-global',
-              'admin-csa',
-              'region-head',
-              'admin-cda',
-              'leader',
-              'owner',
-              'admin',
-            ],
+            authority: ['hr-manager', 'hr', 'hr-global'],
           },
           {
             path: '/employee-onboarding/:action(review)/:reId',
             name: 'reviewTeamMember',
             hideInMenu: true,
             component: './FormTeamMember',
-            authority: [
-              'employee',
-              'hr-manager',
-              'hr',
-              'hr-global',
-              'admin-csa',
-              'region-head',
-              'admin-cda',
-              'leader',
-              'owner',
-              'admin',
-            ],
+            authority: ['hr-manager', 'hr', 'hr-global'],
           },
           {
             path: '/employee-onboarding/create-email-reminder',

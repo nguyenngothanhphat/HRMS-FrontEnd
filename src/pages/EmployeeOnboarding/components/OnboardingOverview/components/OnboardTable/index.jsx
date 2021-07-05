@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { Table, Empty, Dropdown, Menu } from 'antd';
+import { Table, Empty, Dropdown, Menu, Tag } from 'antd';
 import { EllipsisOutlined, DeleteOutlined } from '@ant-design/icons';
-import { formatMessage, Link, connect } from 'umi';
+import { formatMessage, Link, connect, history } from 'umi';
 
 import CustomModal from '@/components/CustomModal/index';
-import { getCurrentTenant } from '@/utils/authority';
-import ModalContent from '../FinalOffers/components/ModalContent/index';
+import { getAuthority, getCurrentTenant } from '@/utils/authority';
+// import ModalContent from '../FinalOffers/components/ModalContent/index';
 import ProfileModalContent from '../FinalOffers/components/ProfileModalContent';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 
@@ -115,11 +115,20 @@ class OnboardTable extends Component {
       ACCEPTED_FINAL_OFFERS,
       RENEGOTIATE_FINAL_OFFERS,
       ACCEPTED__PROVISIONAL_OFFERS,
+      ALL,
     } = TABLE_TYPE;
 
     let actionContent = null;
 
     switch (type) {
+      case ALL: {
+        actionContent = (
+          <>
+            <span>View</span>
+          </>
+        );
+        break;
+      }
       case PROVISIONAL_OFFERS_DRAFTS: {
         actionContent = (
           <>
@@ -256,6 +265,17 @@ class OnboardTable extends Component {
     );
   };
 
+  checkPermission = (role) => {
+    const getAuth = getAuthority();
+    let check = false;
+    getAuth.forEach((item) => {
+      if (item.toLowerCase().includes(role)) {
+        check = true;
+      }
+    });
+    return check;
+  };
+
   generateColumns = (columnArr = ['id'], type = TABLE_TYPE.PROVISIONAL_OFFER) => {
     const {
       ID,
@@ -272,6 +292,9 @@ class OnboardTable extends Component {
       RESUBMIT,
       CHANGE_REQUEST,
       DATE_REQUEST,
+      ASSIGN_TO,
+      ASSIGNEE_MANAGER,
+      PROCESS_STATUS,
     } = COLUMN_NAME;
     const actionText = getActionText(type);
 
@@ -283,6 +306,7 @@ class OnboardTable extends Component {
         key: 'rookieId',
         width: getColumnWidth('rookieId', type),
         columnName: ID,
+        fixed: 'left',
       },
       {
         // title: 'Rookie Name',
@@ -395,17 +419,62 @@ class OnboardTable extends Component {
         columnName: COMMENT,
       },
       {
+        title: 'Assign To',
+        dataIndex: 'assignTo',
+        key: 'assignTo',
+        render: (assignTo) => (
+          <span className={styles.renderAssignee} onClick={() => this.viewProfile(assignTo._id)}>
+            {assignTo?.generalInfo?.firstName + assignTo?.generalInfo?.lastName || '-'}
+          </span>
+        ),
+        columnName: ASSIGN_TO,
+        width: getColumnWidth('assignTo', type),
+      },
+      {
+        title: 'HR Manager',
+        dataIndex: 'assigneeManager',
+        key: 'assigneeManager',
+        render: (assigneeManager) => (
+          <span
+            className={styles.renderAssignee}
+            onClick={() => this.viewProfile(assigneeManager._id)}
+          >
+            {assigneeManager?.generalInfo?.firstName + assigneeManager?.generalInfo?.lastName ||
+              '-'}
+          </span>
+        ),
+        columnName: ASSIGNEE_MANAGER,
+        width: getColumnWidth('assigneeManager', type),
+      },
+      {
+        title: 'Status',
+        dataIndex: 'processStatus',
+        key: 'processStatus',
+        render: (processStatus) => <Tag color="geekblue">{processStatus}</Tag>,
+        columnName: PROCESS_STATUS,
+        width: getColumnWidth('processStatus', type),
+        fixed: 'right',
+      },
+      {
         // title: 'Actions',
         title: formatMessage({ id: 'component.onboardingOverview.actions' }),
         dataIndex: 'actions',
         key: 'actions',
         width: getColumnWidth('actions', type),
         render: (_, row) => {
-          const { rookieId = '' } = row;
+          const { currentUser: { employee: { _id: empId = '' } = {} } = {} } = this.props;
+          const { rookieId = '', assignTo = {}, assigneeManager = {} } = row;
           const id = rookieId.replace('#', '') || '';
-          return this.renderAction(id, type, actionText);
+
+          const checkPermission =
+            this.checkPermission('hr-manager') ||
+            assignTo._id === empId ||
+            assigneeManager._id === empId;
+          if (checkPermission) return this.renderAction(id, type, actionText);
+          return '';
         },
         columnName: ACTION,
+        fixed: 'right',
       },
     ];
 
@@ -413,6 +482,10 @@ class OnboardTable extends Component {
     const newColumns = columns.filter((column) => columnArr.includes(column.columnName));
 
     return newColumns;
+  };
+
+  viewProfile = (_id) => {
+    history.push(`/directory/employee-profile/${_id}`);
   };
 
   onChangePagination = (pageNumber) => {
@@ -455,7 +528,7 @@ class OnboardTable extends Component {
       onChange: this.onChangePagination,
     };
 
-    const { columnArr, type, inTab, hasCheckbox, loading } = this.props;
+    const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch } = this.props;
     const { openModal } = this.state;
     return (
       <>
@@ -480,7 +553,7 @@ class OnboardTable extends Component {
             }}
             columns={this.generateColumns(columnArr, type)}
             dataSource={list}
-            loading={loading}
+            loading={loading || loadingFetch}
             // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
             pagination={{ ...pagination, total: list.length }}
             onRow={(record) => {
@@ -507,7 +580,8 @@ class OnboardTable extends Component {
 }
 
 // export default OnboardTable;
-export default connect(({ candidateInfo, loading }) => ({
+export default connect(({ candidateInfo, loading, user: { currentUser = {} } = {} }) => ({
   isAddNewMember: candidateInfo.isAddNewMember,
   loading: loading.effects['onboard/fetchOnboardList'],
+  currentUser,
 }))(OnboardTable);

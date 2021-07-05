@@ -61,7 +61,6 @@ class AvatarProfile extends Component {
         });
       }
     } else {
-      // console.log('payload add new company', first?.url);
       this.handleCancel();
     }
   };

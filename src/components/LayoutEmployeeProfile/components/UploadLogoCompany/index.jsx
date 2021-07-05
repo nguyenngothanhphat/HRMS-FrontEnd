@@ -61,7 +61,6 @@ class UploadLogoCompany extends Component {
           }
         });
       } else {
-        // console.log('payload add new company', first?.url);
         dispatch({
           type: 'companiesManagement/saveCompanyDetails',
           payload: { logoUrl: first?.url },
@@ -76,7 +75,6 @@ class UploadLogoCompany extends Component {
   render() {
     const { visible } = this.state;
     const { logoUrl = '' } = this.props;
-    // console.log('logo', logoUrl);
     return (
       <>
         <div className={s.root}>

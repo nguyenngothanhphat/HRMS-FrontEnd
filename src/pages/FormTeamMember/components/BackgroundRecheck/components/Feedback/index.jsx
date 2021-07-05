@@ -4,9 +4,9 @@ import { connect } from 'umi';
 import styles from './index.less';
 
 class Feedback extends Component {
-  componentDidUpdate() {
-    const allDocumentStatus = this.checkStatus();
-    const { dispatch } = this.props;
+  componentDidUpdate = () => {
+    const { dispatch, checkStatus = () => {}, docsList = [] } = this.props;
+    const allDocumentStatus = checkStatus(docsList);
 
     if (allDocumentStatus === 1) {
       dispatch({
@@ -19,47 +19,6 @@ class Feedback extends Component {
         payload: false,
       });
     }
-  }
-
-  checkStatus = () => {
-    const { docsList = [] } = this.props;
-    const newVerifiedDocs = [];
-    const newResubmitDocs = [];
-    const newIneligibleDocs = [];
-
-    const newDocumentList = [];
-    docsList.map((item) => {
-      const { data = [] } = item;
-      data.map((documentItem) => {
-        newDocumentList.push(documentItem);
-        return null;
-      });
-      return null;
-    });
-
-    newDocumentList.forEach((doc) => {
-      const { candidateDocumentStatus: candidateDocStatus = '' } = doc;
-      if (candidateDocStatus === 'RE-SUBMIT') {
-        newResubmitDocs.push(doc);
-      }
-      if (candidateDocStatus === 'INELIGIBLE') {
-        newIneligibleDocs.push(doc);
-      }
-      if (candidateDocStatus === 'VERIFIED') {
-        newVerifiedDocs.push(doc);
-      }
-    });
-
-    if (newVerifiedDocs.length > 0 && newVerifiedDocs.length === newDocumentList.length) {
-      return 1;
-    }
-    if (newIneligibleDocs.length > 0) {
-      return 3;
-    }
-    if (newResubmitDocs.length > 0) {
-      return 2;
-    }
-    return 4;
   };
 
   render() {
@@ -67,8 +26,8 @@ class Feedback extends Component {
       width: '100%',
       display: 'flex',
     };
-
-    const allDocumentStatus = this.checkStatus();
+    const { checkStatus = () => {}, docsList = [] } = this.props;
+    const allDocumentStatus = checkStatus(docsList);
 
     return (
       <div className={styles.feedback}>

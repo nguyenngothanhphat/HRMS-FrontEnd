@@ -15,6 +15,9 @@ const COLUMN_NAME = {
   RESUBMIT: 'resubmit',
   CHANGE_REQUEST: 'change_request',
   DATE_REQUEST: 'date_request',
+  ASSIGN_TO: 'assign_to',
+  ASSIGNEE_MANAGER: 'assignee_manager',
+  PROCESS_STATUS: 'process_status',
 };
 
 const PROCESS_STATUS = {
@@ -35,6 +38,7 @@ const PROCESS_STATUS = {
 };
 
 const TABLE_TYPE = {
+  ALL: 'ALL',
   PENDING_ELIGIBILITY_CHECKS: 'PENDING_ELIGIBILITY_CHECKS', // Pending eligibility checks
   SENT_ELIGIBILITY_FORMS: 'SENT_ELIGIBILITY_FORMS', // Pending eligibility checks
   RECEIVED_SUBMITTED_DOCUMENTS: 'RECEIVED_SUBMITTED_DOCUMENTS', // Pending eligibility checks

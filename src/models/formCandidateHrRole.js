@@ -19,10 +19,12 @@ import {
   getLocationListByCompany,
   addManagerSignature,
   getDocumentByCandidate,
+  getWorkHistory,
 } from '@/services/addNewMember';
 import { history } from 'umi';
 import { notification } from 'antd';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
+import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
 
 import {
   addTeamMember,
@@ -132,7 +134,7 @@ const candidateInfo = {
         checkedList: [],
         // isChecked: false,
       },
-      technicalCertification: {
+      previousEmployment: {
         poe: [
           // {
           //   employer: '',
@@ -246,155 +248,7 @@ const candidateInfo = {
       },
       id: '',
       candidate: '',
-      documentChecklistSetting: [
-        {
-          type: 'A',
-          name: 'Identity Proof',
-          data: [
-            {
-              key: 'aadharCard',
-              alias: 'Aadhar Card',
-              value: true,
-            },
-            {
-              key: 'panCard',
-              alias: 'PAN Card',
-              value: true,
-            },
-            {
-              key: 'passport',
-              alias: 'Passport',
-              value: false,
-            },
-            {
-              key: 'drivingLicence',
-              alias: 'Driving Licence',
-              value: false,
-            },
-            {
-              key: 'voterCard',
-              alias: 'Voter Card',
-              value: false,
-            },
-          ],
-        },
-        {
-          type: 'B',
-          name: 'Address Proof',
-          data: [
-            {
-              key: 'rentalAgreement',
-              alias: 'Rental Agreement',
-              value: false,
-            },
-            {
-              key: 'electricityUtilityBills',
-              alias: 'Electricity & Utility Bills',
-              value: false,
-            },
-            {
-              key: 'telephoneBills',
-              alias: 'Telephone Bills',
-              value: false,
-            },
-          ],
-        },
-        {
-          type: 'C',
-          name: 'Educational',
-          data: [
-            {
-              key: 'sslc',
-              alias: 'SSLC',
-              value: true,
-            },
-            {
-              key: 'intermediateDiploma',
-              alias: 'Intermedidate/Diploma',
-              value: true,
-            },
-            {
-              key: 'graduation',
-              alias: 'Graduation',
-              value: true,
-            },
-            {
-              key: 'postGraduate',
-              alias: 'Post Graduate',
-              value: false,
-            },
-            {
-              key: 'phdDoctorate',
-              alias: 'PHD/Doctorate',
-              value: false,
-            },
-          ],
-        },
-        {
-          type: 'D',
-          name: 'Technical Certifications',
-          employer: 'Kyle Pham',
-          data: [
-            {
-              key: 'offerLetter',
-              alias: 'Offer letter',
-              value: true,
-            },
-            {
-              key: 'appraisalLetter',
-              alias: 'Appraisal letter',
-              value: false,
-            },
-            {
-              key: 'paysTubs',
-              alias: 'Paystubs',
-              value: true,
-            },
-            {
-              key: 'form16',
-              alias: 'Form 16',
-              value: true,
-            },
-            {
-              key: 'relievingLetter',
-              alias: 'Relieving Letter',
-              value: true,
-            },
-          ],
-        },
-        {
-          type: 'D',
-          name: 'Technical Certifications',
-          employer: 'Kyle Hung',
-          data: [
-            {
-              key: 'offerLetter',
-              alias: 'Offer letter',
-              value: true,
-            },
-            {
-              key: 'appraisalLetter',
-              alias: 'Appraisal letter',
-              value: true,
-            },
-            {
-              key: 'paysTubs',
-              alias: 'Paystubs',
-              value: true,
-            },
-            {
-              key: 'form16',
-              alias: 'Form 16',
-              value: true,
-            },
-            {
-              key: 'relievingLetter',
-              alias: 'Relieving Letter',
-              value: true,
-            },
-          ],
-        },
-      ],
+      documentChecklistSetting: [],
       documentsByCandidate: [],
       documentsByCandidateRD: [],
       managerList: [],
@@ -471,7 +325,11 @@ const candidateInfo = {
     *fetchTitleList({ payload = {} }, { call, put }) {
       let response;
       try {
-        response = yield call(getTitleListByDepartment, payload);
+        response = yield call(getTitleListByDepartment, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -500,7 +358,11 @@ const candidateInfo = {
 
     *fetchLocationListByCompany({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getLocationListByCompany, payload);
+        const response = yield call(getLocationListByCompany, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data: locationList = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -532,7 +394,11 @@ const candidateInfo = {
 
     *fetchManagerList({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getManagerList, payload);
+        const response = yield call(getManagerList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -546,7 +412,11 @@ const candidateInfo = {
 
     *addCandidateByHR({ payload }, { call, put }) {
       try {
-        const response = yield call(addCandidate, payload);
+        const response = yield call(addCandidate, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { Obj: data } });
@@ -558,7 +428,11 @@ const candidateInfo = {
     *updateByHR({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(updateByHR, payload);
+        response = yield call(updateByHR, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
@@ -570,7 +444,11 @@ const candidateInfo = {
     *submitBasicInfo({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(submitBasicInfo, payload);
+        response = yield call(submitBasicInfo, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
@@ -582,7 +460,11 @@ const candidateInfo = {
     *addSchedule({ payload }, { call }) {
       let response;
       try {
-        response = yield call(addSchedule, payload);
+        response = yield call(addSchedule, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         // yield put({ type: 'saveOrigin', payload: { ...data } });
@@ -595,7 +477,11 @@ const candidateInfo = {
     *addManagerSignatureEffect({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(addManagerSignature, payload);
+        response = yield call(addManagerSignature, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
@@ -608,7 +494,11 @@ const candidateInfo = {
     *fetchCandidateInfo({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(addTeamMember, payload);
+        response = yield call(addTeamMember, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { data, statusCode } = response;
         const { ticketID = '', _id } = data;
         if (statusCode !== 200) throw response;
@@ -640,7 +530,11 @@ const candidateInfo = {
     *getCandidateManagerList({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getCandidateManagerList, payload);
+        response = yield call(getCandidateManagerList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -659,7 +553,11 @@ const candidateInfo = {
     *fetchEmployeeById({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getById, payload);
+        response = yield call(getById, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
 
@@ -684,7 +582,11 @@ const candidateInfo = {
       let response = {};
 
       try {
-        response = yield call(getTitleListByCompany, payload);
+        response = yield call(getTitleListByCompany, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -701,7 +603,11 @@ const candidateInfo = {
     *fetchTableData({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getTableDataByTitle, payload);
+        response = yield call(getTableDataByTitle, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data } = response;
         const { setting } = data;
         if (statusCode !== 200) throw response;
@@ -725,7 +631,11 @@ const candidateInfo = {
     *closeCandidate({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(closeCandidate, payload);
+        response = yield call(closeCandidate, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode } = response;
         const candidate = payload._id;
         if (statusCode !== 200) throw response;
@@ -741,7 +651,11 @@ const candidateInfo = {
 
     *editSalaryStructure({ payload }, { call, put }) {
       try {
-        const response = yield call(editSalaryStructure, payload);
+        const response = yield call(editSalaryStructure, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, message } = response;
         const candidate = payload._id;
         if (statusCode !== 200) throw response;
@@ -761,7 +675,11 @@ const candidateInfo = {
     *submitPhase1Effect({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(submitPhase1, payload);
+        response = yield call(submitPhase1, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { test: data } });
@@ -774,7 +692,11 @@ const candidateInfo = {
     *sentForApprovalEffect({ payload }, { call }) {
       let response = {};
       try {
-        response = yield call(sentForApproval, payload);
+        response = yield call(sentForApproval, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         // yield put({ type: 'save', payload: { test: data } });
@@ -787,7 +709,11 @@ const candidateInfo = {
     *approveFinalOfferEffect({ payload }, { call }) {
       let response = {};
       try {
-        response = yield call(approveFinalOffer, payload);
+        response = yield call(approveFinalOffer, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         // yield put({ type: 'save', payload: { test: data } });
@@ -797,10 +723,178 @@ const candidateInfo = {
       return response;
     },
 
+    // *fetchCandidateByRookie({ payload }, { call, put }) {
+    //   let response = {};
+    //   try {
+    //     response = yield call(getById, {...payload, tenantId: getCurrentTenant(), company: getCurrentCompany()});
+    //     const { data, statusCode } = response;
+
+    //     if (statusCode !== 200) throw response;
+    //     const { _id } = data;
+    //     yield put({
+    //       type: 'save',
+    //       payload: {
+    //         currentStep: data.currentStep,
+    //       },
+    //     });
+    //     yield put({
+    //       type: 'saveOrigin',
+    //       payload: {
+    //         ...data,
+    //         candidate: _id,
+    //         _id,
+    //       },
+    //     });
+    //     const {
+    //       offerLetter: { attachment: { url = '', name = '' } = {} } = {
+    //         attachment: { url: '', name: '' },
+    //       },
+    //     } = data;
+    //     yield put({
+    //       type: 'save',
+    //       payload: {
+    //         data: {
+    //           ...data,
+    //           offerLetter: {
+    //             url,
+    //             name,
+    //           },
+    //           candidate: data._id,
+    //         },
+    //       },
+    //     });
+
+    //     const {
+    //       fullName = '',
+    //       privateEmail = '',
+    //       previousExperience = '',
+    //       salaryStructure = {},
+    //       documentChecklistSetting = [],
+    //       amountIn,
+    //       timeOffPolicy,
+    //       currentStep,
+    //     } = data;
+
+    //     const identityProof = documentChecklistSetting[0]?.data;
+    //     const addressProof = documentChecklistSetting[1]?.data;
+    //     const educational = documentChecklistSetting[2]?.data;
+    //     const technicalCertification = documentChecklistSetting[3]?.data;
+
+    //     let listCheckIP = identityProof.map((item) => item.value);
+    //     listCheckIP = listCheckIP.filter((item) => item === true);
+
+    //     let listCheckAP = addressProof.map((item) => item.value);
+    //     listCheckAP = listCheckAP.filter((item) => item === true);
+
+    //     let listCheckEdu = educational.map((item) => item.value);
+    //     listCheckEdu = listCheckEdu.filter((item) => item === true);
+
+    //     let listCheckTC = technicalCertification.map((item) => item.value);
+    //     listCheckTC = listCheckTC.filter((item) => item === true);
+
+    //     const checkStatus = {};
+
+    //     if (
+    //       listCheckIP.length > 2 ||
+    //       listCheckAP.length > 0 ||
+    //       listCheckEdu.length > 3 ||
+    //       listCheckTC.length > 0 ||
+    //       'employer' in documentChecklistSetting[3]
+    //     ) {
+    //       checkStatus.filledBgCheck = true;
+    //     }
+
+    //     if (fullName && privateEmail && previousExperience) {
+    //       checkStatus.filledBasicInformation = true;
+    //     }
+    //     if ('title' in data && 'workLocation' in data && 'department' in data) {
+    //       checkStatus.filledJobDetail = true;
+    //     }
+    //     if ('title' in salaryStructure) {
+    //       checkStatus.filledSalaryCheck = true;
+    //     }
+
+    //     if (amountIn && timeOffPolicy) {
+    //       checkStatus.offerDetailCheck = true;
+    //     }
+
+    //     if (currentStep >= 5) {
+    //       checkStatus.payrollSettingCheck = true;
+    //     } else {
+    //       checkStatus.payrollSettingCheck = false;
+    //     }
+
+    //     if (currentStep >= 6) {
+    //       checkStatus.benefitsCheck = true;
+    //     }
+
+    //     yield put({
+    //       type: 'saveTemp',
+    //       payload: {
+    //         ...data,
+    //         checkStatus,
+    //         valueToFinalOffer: 0,
+    //         offerLetter: data.offerLetter,
+    //         candidate: data._id,
+    //         candidateSignature: data.candidateSignature || {},
+    //         amountIn: data.amountIn || '',
+    //         timeOffPolicy: data.timeOffPolicy || '',
+    //         compensationType: data.compensationType || '',
+    //         salaryTitle: data.salaryStructure?.title?._id,
+    //         salaryStructure: data.salaryStructure,
+    //         salaryNote: data.salaryNote,
+    //         includeOffer: data.includeOffer || 1,
+    //         // hidePreviewOffer: !!(data.staticOfferLetter && data.staticOfferLetter.url), // Hide preview offer screen if there's already static offer
+    //         // disablePreviewOffer:
+    //         //   (data.offerLetter && data.offerLetter.attachment) ||
+    //         //   (data.staticOfferLetter && data.staticOfferLetter.url),
+    //         additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
+    //       },
+    //     });
+
+    //     if (
+    //       (data.offerLetter && data.offerLetter.attachment) ||
+    //       (data.staticOfferLetter && data.staticOfferLetter.url)
+    //     ) {
+    //       yield put({
+    //         type: 'saveTemp',
+    //         payload: {
+    //           disablePreviewOffer: false,
+    //         },
+    //       });
+    //     }
+
+    //     // yield put({
+    //     //   type: 'upadateAdditionalQuestion',
+    //     //   payload: formatAdditionalQuestion(data.additionalQuestions),
+    //     // });
+    //     yield put({
+    //       type: 'updateSignature',
+    //       payload: data,
+    //     });
+    //     if (_id) {
+    //       yield put({
+    //         type: 'fetchDocumentByCandidateID',
+    //         payload: {
+    //           candidate: _id,
+    //           tenantId: payload.tenantId,
+    //         },
+    //       });
+    //     }
+    //   } catch (error) {
+    //     dialog(error);
+    //   }
+    //   return response;
+    // },
+
     *fetchCandidateByRookie({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getById, payload);
+        response = yield call(getById, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { data, statusCode } = response;
 
         if (statusCode !== 200) throw response;
@@ -849,31 +943,34 @@ const candidateInfo = {
           currentStep,
         } = data;
 
+        const filterValue = (arr) => {
+          let listCheck = arr.map((item) => item.value);
+          listCheck = listCheck.filter((item) => item === true);
+
+          return listCheck;
+        };
+
         const identityProof = documentChecklistSetting[0]?.data;
         const addressProof = documentChecklistSetting[1]?.data;
         const educational = documentChecklistSetting[2]?.data;
         const technicalCertification = documentChecklistSetting[3]?.data;
+        const prevEmployee = documentChecklistSetting[4]?.data;
 
-        let listCheckIP = identityProof.map((item) => item.value);
-        listCheckIP = listCheckIP.filter((item) => item === true);
-
-        let listCheckAP = addressProof.map((item) => item.value);
-        listCheckAP = listCheckAP.filter((item) => item === true);
-
-        let listCheckEdu = educational.map((item) => item.value);
-        listCheckEdu = listCheckEdu.filter((item) => item === true);
-
-        let listCheckTC = technicalCertification.map((item) => item.value);
-        listCheckTC = listCheckTC.filter((item) => item === true);
+        const checkStatusTypeA = filterValue(identityProof);
+        const checkStatusTypeB = filterValue(addressProof);
+        const checkStatusTypeC = filterValue(educational);
+        const checkStatusTypeD = filterValue(technicalCertification);
+        const checkStatusTypeE = filterValue(prevEmployee);
 
         const checkStatus = {};
 
         if (
-          listCheckIP.length > 2 ||
-          listCheckAP.length > 0 ||
-          listCheckEdu.length > 3 ||
-          listCheckTC.length > 0 ||
-          'employer' in documentChecklistSetting[3]
+          checkStatusTypeA.length > 4 ||
+          checkStatusTypeB.length > 1 ||
+          checkStatusTypeC.length > 4 ||
+          checkStatusTypeD.length > 0 ||
+          checkStatusTypeE.length > 0 ||
+          'employer' in documentChecklistSetting[4]
         ) {
           checkStatus.filledBgCheck = true;
         }
@@ -982,7 +1079,11 @@ const candidateInfo = {
 
     *fetchDefaultTemplateList({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getDefaultTemplateList, payload);
+        const response = yield call(getDefaultTemplateList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -997,7 +1098,11 @@ const candidateInfo = {
     },
     *fetchCustomTemplateList({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getCustomTemplateList, payload);
+        const response = yield call(getCustomTemplateList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -1014,7 +1119,11 @@ const candidateInfo = {
     *removeTemplateEffect({ payload }, { call, put }) {
       try {
         // const { id = '' } = payload;
-        const response = yield call(removeTemplate, payload); // payload: id
+        const response = yield call(removeTemplate, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        }); // payload: id
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         const newPayload = {
@@ -1047,7 +1156,11 @@ const candidateInfo = {
     *createFinalOfferEffect({ payload }, { call, put }) {
       let response;
       try {
-        response = yield call(createFinalOffer, payload); // payload: offer data ...
+        response = yield call(createFinalOffer, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        }); // payload: offer data ...
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
         const { data: { attachment: { name = '', url = '' } = {} } = {} } = response;
@@ -1077,7 +1190,11 @@ const candidateInfo = {
     *fetchDocumentByCandidateID({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getDocumentByCandidate, payload);
+        response = yield call(getDocumentByCandidate, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -1085,50 +1202,17 @@ const candidateInfo = {
           payload: { documentsByCandidate: data },
         });
 
-        // Group data
-        const groupA = [];
-        const groupB = [];
-        const groupC = [];
-        const groupD = [];
-        data.map((item) => {
-          const { candidateGroup } = item;
-          switch (candidateGroup) {
-            case 'A':
-              groupA.push(item);
-              break;
-            case 'B':
-              groupB.push(item);
-              break;
-            case 'C':
-              groupC.push(item);
-              break;
-            case 'D':
-              groupD.push(item);
-              break;
-            default:
-              break;
-          }
-          return null;
-        });
-
-        const documentsCandidateList = [
-          { type: 'A', name: 'Identity Proof', data: [...groupA] },
-          { type: 'B', name: 'Address Proof', data: [...groupB] },
-          { type: 'C', name: 'Educational', data: [...groupC] },
-          { type: 'D', name: 'Technical Certifications', data: [...groupD] },
-        ];
-
         yield put({
           type: 'saveTemp',
           payload: {
             documentsByCandidate: data,
-            documentsByCandidateRD: documentsCandidateList,
+            // documentsByCandidateRD: documentsCandidateList,
           },
         });
-        yield put({
-          type: 'updateBackgroundRecheck',
-          payload: documentsCandidateList,
-        });
+        // yield put({
+        //   type: 'updateBackgroundRecheck',
+        //   payload: data,
+        // });
       } catch (error) {
         dialog(error);
       }
@@ -1138,7 +1222,11 @@ const candidateInfo = {
     *checkDocumentEffect({ payload }, { call }) {
       let response = {};
       try {
-        response = yield call(checkDocument, payload);
+        response = yield call(checkDocument, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
       } catch (error) {
@@ -1150,7 +1238,11 @@ const candidateInfo = {
     *sendDocumentStatusEffect({ payload }, { call }) {
       let response = {};
       try {
-        response = yield call(sendDocumentStatus, payload);
+        response = yield call(sendDocumentStatus, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
       } catch (error) {
@@ -1186,14 +1278,39 @@ const candidateInfo = {
     *fetchAdditionalQuestion({ payload }, { call }) {
       let response = {};
       try {
-        response = yield call(getAdditionalQuestion, payload);
-        const { statusCode, data } = response;
+        response = yield call(getAdditionalQuestion, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        console.log(response);
+
         // put({
         //   type: 'updateAdditionalQuestion',
         //   payload: data
         // })
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *fetchWorkHistory({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getWorkHistory, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            workHistory: data,
+          },
+        });
       } catch (error) {
         dialog(error);
       }

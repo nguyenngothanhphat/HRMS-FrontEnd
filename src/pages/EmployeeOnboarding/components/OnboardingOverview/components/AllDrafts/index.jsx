@@ -11,21 +11,32 @@ import { PROCESS_STATUS } from '@/models/onboard';
 import styles from './index.less';
 import ProvisionalOfferDrafts from './components/ProvisionalOfferDrafts';
 import FinalOfferDrafts from './components/FinalOfferDrafts';
+import AllTab from './components/AllTab';
 
 const { TabPane } = Tabs;
 
-// const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
+// const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION } = COLUMN_NAME;
 // const { FINAL_OFFERS_DRAFTS } = TABLE_TYPE;
 
 class AllDrafts extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
-    const { PROVISIONAL_OFFER_DRAFT } = PROCESS_STATUS;
+    const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT } = PROCESS_STATUS;
 
     if (dispatch) {
-      this.fetchOfferDraft(PROVISIONAL_OFFER_DRAFT);
+      this.fetchOfferDraftAll([PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT]);
     }
   }
+
+  fetchOfferDraftAll = (status) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'onboard/fetchOnboardListAll',
+      payload: {
+        processStatus: status,
+      },
+    });
+  };
 
   fetchOfferDraft = (status) => {
     const { dispatch } = this.props;
@@ -40,6 +51,8 @@ class AllDrafts extends PureComponent {
   onChangeTab = (key) => {
     const { PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT } = PROCESS_STATUS;
     if (key === '1') {
+      this.fetchOfferDraftAll([PROVISIONAL_OFFER_DRAFT, FINAL_OFFERS_DRAFT]);
+    } else if (key === '2') {
       this.fetchOfferDraft(PROVISIONAL_OFFER_DRAFT);
     } else {
       this.fetchOfferDraft(FINAL_OFFERS_DRAFT);
@@ -47,15 +60,14 @@ class AllDrafts extends PureComponent {
   };
 
   render() {
-    const { allDrafts = {} } = this.props;
-    // console.log(allDrafts);
+    const { allDrafts = {}, dataAll, loadingAll } = this.props;
+
     const { provisionalOfferDrafts = [], finalOfferDrafts = [] } = allDrafts;
-    // console.log(provisionalOfferDrafts);
 
     return (
       // <OnboardTable
       //   list={finalOfferDrafts}
-      //   columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION]}
+      //   columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION]}
       //   type={FINAL_OFFERS_DRAFTS}
       // />
       <div className={styles.AllDrafts}>
@@ -63,15 +75,22 @@ class AllDrafts extends PureComponent {
           <Tabs defaultActiveKey="1" onChange={this.onChangeTab}>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
-              tab="provisional offer drafts"
+              tab="all"
               key="1"
+            >
+              <AllTab list={dataAll} loading={loadingAll} />
+            </TabPane>
+            <TabPane
+              // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
+              tab="provisional offer drafts"
+              key="2"
             >
               <ProvisionalOfferDrafts list={provisionalOfferDrafts} />
             </TabPane>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
               tab="final offers draft"
-              key="2"
+              key="3"
             >
               <FinalOfferDrafts list={finalOfferDrafts} />
             </TabPane>
@@ -84,11 +103,13 @@ class AllDrafts extends PureComponent {
 
 // export default FinalOfferDrafts;
 export default connect((state) => {
-  const { onboard = {} } = state;
+  const { onboard = {}, loading } = state;
   const { onboardingOverview = {} } = onboard;
-  const { finalOfferDrafts = [], allDrafts = {} } = onboardingOverview;
+  const { finalOfferDrafts = [], allDrafts = {}, dataAll = [] } = onboardingOverview;
   return {
     finalOfferDrafts,
     allDrafts,
+    dataAll,
+    loadingAll: loading.effects['onboard/fetchOnboardListAll'],
   };
 })(React.memo(AllDrafts));

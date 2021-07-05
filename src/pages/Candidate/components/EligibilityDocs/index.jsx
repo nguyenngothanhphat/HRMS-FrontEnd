@@ -7,6 +7,7 @@ import { isUndefined } from 'lodash';
 import { getCurrentTenant } from '@/utils/authority';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
+import PreviousEmployment from './components/PreviousEmployment';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
 import SendEmail from './components/SendEmail';
@@ -41,14 +42,20 @@ class EligibilityDocs extends PureComponent {
 
   componentDidMount() {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+    this.processData();
+  }
+
+  processData = async () => {
     const {
-      data: { documentList },
+      data: { documentList = [], workHistory = [] },
       dispatch,
     } = this.props;
+
     const groupA = [];
     const groupB = [];
     const groupC = [];
     const groupD = [];
+
     documentList.forEach((item) => {
       const { candidateGroup } = item;
       item.isValidated = true;
@@ -69,19 +76,45 @@ class EligibilityDocs extends PureComponent {
           break;
       }
     });
+
+    // const countGroupE = documentChecklistSetting.filter((doc) => doc.type === 'E').length || 0;
+    let groupMultiE = [];
+
+    groupMultiE = workHistory.map((em) => {
+      let groupE = [];
+      documentList.forEach((item) => {
+        const { candidateGroup, employer } = item;
+        item.isValidated = true;
+        if (candidateGroup === 'E' && employer === em.employer) {
+          groupE = [...groupE, item];
+        }
+      });
+      return {
+        type: 'E',
+        name: 'Previous Employment',
+        employer: em.employer,
+        toPresent: em.toPresent,
+        startDate: em.startDate,
+        endDate: em.endDate,
+        workHistoryId: em._id,
+        data: [...groupE],
+      };
+    });
+
     const docList = [
       { type: 'A', name: 'Identity Proof', data: [...groupA] },
       { type: 'B', name: 'Address Proof', data: [...groupB] },
       { type: 'C', name: 'Educational', data: [...groupC] },
       { type: 'D', name: 'Technical Certifications', data: [...groupD] },
+      ...groupMultiE,
     ];
-    dispatch({
+    await dispatch({
       type: 'candidateProfile/saveOrigin',
       payload: {
-        documentListToRender: docList,
+        documentListToRender: [...docList],
       },
     });
-  }
+  };
 
   handleFile = (res, index, id, docList) => {
     const { dispatch } = this.props;
@@ -119,6 +152,47 @@ class EligibilityDocs extends PureComponent {
     }
   };
 
+  handleFileForTypeE = (res, index, id, docList, docListEFilter) => {
+    const { dispatch } = this.props;
+
+    const otherDocs = docList.filter((d) => d.type !== 'E');
+    const arrToAdjust = JSON.parse(JSON.stringify(docListEFilter));
+    const typeIndex = arrToAdjust.findIndex((item, index1) => index1 === index);
+
+    if (arrToAdjust[typeIndex].data.length > 0) {
+      const nestedIndex = arrToAdjust[typeIndex].data.findIndex((item, id1) => id1 === id);
+
+      const documentId = arrToAdjust[typeIndex].data[nestedIndex]._id;
+      const { statusCode, data } = res;
+      const Obj = arrToAdjust[typeIndex].data[nestedIndex];
+      const attachment1 = data.find((x) => x);
+      if (statusCode === 200) {
+        dispatch({
+          type: 'candidateProfile/addAttachmentCandidate',
+          payload: {
+            attachment: attachment1.id,
+            document: documentId,
+            tenantId: getCurrentTenant(),
+          },
+        }).then(({ data: { attachment } = {} }) => {
+          if (attachment) {
+            arrToAdjust[typeIndex].data.splice(nestedIndex, 1, {
+              ...Obj,
+              attachment,
+            });
+
+            dispatch({
+              type: 'candidateProfile/saveOrigin',
+              payload: {
+                documentListToRender: [...otherDocs, ...arrToAdjust],
+              },
+            });
+          }
+        });
+      }
+    }
+  };
+
   handleCanCelIcon = (index, id, docList) => {
     const { dispatch } = this.props;
     const arrToAdjust = JSON.parse(JSON.stringify(docList));
@@ -144,7 +218,7 @@ class EligibilityDocs extends PureComponent {
 
   handleSendEmail = () => {
     const {
-      data: { dateOfJoining, noticePeriod, fullName, workDuration, employerId, generatedBy },
+      data: { dateOfJoining, noticePeriod, fullName, generatedBy, workHistory = [] },
       dispatch,
     } = this.props;
     const { user = {} } = generatedBy;
@@ -163,12 +237,7 @@ class EligibilityDocs extends PureComponent {
         fullName,
         noticePeriod,
         hrEmail: email,
-        workHistories: [
-          {
-            id: employerId,
-            workDuration,
-          },
-        ],
+        workHistories: workHistory,
         tenantId: getCurrentTenant(),
       },
     }).then(({ statusCode }) => {
@@ -187,12 +256,13 @@ class EligibilityDocs extends PureComponent {
     });
   };
 
-  onValuesChange = (val) => {
+  onValuesChange = (val, type) => {
     const { dispatch } = this.props;
+
     dispatch({
       type: 'candidateProfile/saveOrigin',
       payload: {
-        workDuration: Math.ceil(val.workDuration),
+        [type]: val,
       },
     });
   };
@@ -236,6 +306,22 @@ class EligibilityDocs extends PureComponent {
     return url;
   };
 
+  checkFull = () => {
+    const { data: { workHistory, documentListToRender } = {} } = this.props;
+    let checkFull = true;
+    documentListToRender.forEach((doc) => {
+      doc.data.forEach((doc1) => {
+        if (!doc1.attachment && !doc1.isMandatoryBySystem && doc1.isCandidateUpload) {
+          checkFull = false;
+        }
+      });
+    });
+    workHistory.forEach((w) => {
+      if (!w.startDate || (!w.toPresent && !w.endDate)) checkFull = false;
+    });
+    return checkFull;
+  };
+
   render() {
     const {
       loading,
@@ -245,8 +331,6 @@ class EligibilityDocs extends PureComponent {
         documentListToRender,
         validateFileSize,
         generatedBy,
-        employerName,
-        workDuration,
         processStatus,
       } = {},
     } = this.props;
@@ -256,6 +340,9 @@ class EligibilityDocs extends PureComponent {
     } = generatedBy;
     // const {  } = user;
     // console.log(processStatus);
+
+    const checkFull = this.checkFull();
+
     return (
       <div className={styles.EligibilityDocs}>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
@@ -265,33 +352,43 @@ class EligibilityDocs extends PureComponent {
               {documentListToRender.length > 0 &&
                 documentListToRender.map((item, index) => {
                   // console.log(index);
-                  return (
-                    <CollapseFields
-                      onValuesChange={this.onValuesChange}
-                      item={item && item}
-                      index={index}
-                      docList={documentListToRender}
-                      handleCanCelIcon={this.handleCanCelIcon}
-                      handleFile={this.handleFile}
-                      loading={loading}
-                      attachments={attachments}
-                      validateFileSize={validateFileSize}
-                      employerName={employerName}
-                      checkLength={this.checkLength}
-                      processStatus={processStatus}
-                    />
-                  );
+                  if (item.type !== 'E') {
+                    return (
+                      <CollapseFields
+                        onValuesChange={this.onValuesChange}
+                        item={item && item}
+                        index={index}
+                        docList={documentListToRender}
+                        handleCanCelIcon={this.handleCanCelIcon}
+                        handleFile={this.handleFile}
+                        loading={loading}
+                        attachments={attachments}
+                        validateFileSize={validateFileSize}
+                        checkLength={this.checkLength}
+                        processStatus={processStatus}
+                      />
+                    );
+                  }
+                  return '';
                 })}
+
+              {/* type E */}
+              <PreviousEmployment
+                onValuesChange={this.onValuesChange}
+                handleCanCelIcon={this.handleCanCelIcon}
+                handleFile={this.handleFileForTypeE}
+                loading={loading}
+                attachments={attachments}
+                validateFileSize={validateFileSize}
+                checkLength={this.checkLength}
+                processStatus={processStatus}
+                renderData={this.processData}
+              />
             </div>
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={Note} />
-            {documentListToRender.length > 0 &&
-            documentListToRender[0].data[0]?.attachment &&
-            documentListToRender[0].data[1]?.attachment &&
-            documentListToRender[2].data[0]?.attachment &&
-            documentListToRender[2].data[1]?.attachment &&
-            documentListToRender[2].data[2]?.attachment ? (
+            {documentListToRender.length > 0 ? (
               <SendEmail
                 loading={loading1}
                 handleSendEmail={this.handleSendEmail}
@@ -299,7 +396,8 @@ class EligibilityDocs extends PureComponent {
                 onValuesChangeEmail={this.onValuesChangeEmail}
                 isSentEmail={isSentEmail}
                 handleSubmitAgain={this.handleSubmitAgain}
-                disabled={!(workDuration !== 0 && !isUndefined(workDuration))}
+                // disabled={!(workDuration !== 0 && !isUndefined(workDuration))}
+                disabled={!checkFull}
               />
             ) : (
               <StepsComponent />

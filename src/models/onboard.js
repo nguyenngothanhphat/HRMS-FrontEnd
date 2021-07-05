@@ -114,6 +114,29 @@ export const PROCESS_STATUS = {
   FINAL_OFFERS_CANDIDATE: 'REJECT-FINAL-OFFER-CANDIDATE',
 };
 
+const processStatusName = {
+  DRAFT: 'Provisional Offer Drafts',
+  'FINAL-OFFER-DRAFT': 'Final Offers Draft',
+  'SENT-PROVISIONAL-OFFER': 'Sent Provisional Offers',
+  'ACCEPT-PROVISIONAL-OFFER': 'Accepted Provisional Offers',
+  'RENEGOTIATE-PROVISONAL-OFFER': 'Renegotiate Provisional Offers',
+  'PENDING-BACKGROUND-CHECK': 'Pending',
+  'ELIGIBLE-CANDIDATE': 'Eligible Candidates',
+  'INELIGIBLE-CANDIDATE': 'Ineligible Candidates',
+  'PENDING-APPROVAL-FINAL-OFFER': 'Sent For Approval',
+  'APPROVED-FINAL-OFFER': 'Approved Offers',
+  'SENT-FINAL-OFFERS': 'Sent Final Offers',
+  'ACCEPT-FINAL-OFFER': 'Accepted Final Offers',
+  'RENEGOTIATE-FINAL-OFFERS': 'Re-Negotiate Final Offers',
+  'DISCARDED-PROVISONAL-OFFER': 'Provisional Offers',
+  'REJECT-FINAL-OFFER-HR': 'Final Offers',
+  'REJECT-FINAL-OFFER-CANDIDATE': 'Final Offers',
+};
+
+const getProcessStatusName = (name) => {
+  return processStatusName[name];
+};
+
 const formatMonth = (month) => {
   const monthNames = [
     'January',
@@ -195,6 +218,9 @@ const formatData = (list = []) => {
       updatedAt = '',
       // createdAt = '',
       comments = '',
+      assignTo = {},
+      assigneeManager = {},
+      processStatus = '',
     } = item;
     const dateSent = formatDate(sentDate) || '';
     const dateReceived = formatDate(receiveDate) || '';
@@ -222,6 +248,9 @@ const formatData = (list = []) => {
       documentVerified: '',
       resubmit: 0,
       changeRequest: '-',
+      assignTo,
+      assigneeManager,
+      processStatus: getProcessStatusName(processStatus),
     };
     formatList.push(rookie);
   });
@@ -275,6 +304,7 @@ const onboard = {
         provisionalOffers: provisionalOffersData,
         finalOffers: finalOffersData,
       },
+      dataAll: [],
     },
     settings: {
       backgroundChecks: {
@@ -434,6 +464,33 @@ const onboard = {
       }
     },
 
+    *fetchOnboardListAll({ payload }, { call, put }) {
+      try {
+        const { processStatus = '' } = payload;
+        const tenantId = getCurrentTenant();
+        const req = {
+          processStatus,
+          page: 1,
+          tenantId,
+        };
+        const response = yield call(getOnboardingList, req);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // const returnedData = formatData(response.data[0].paginatedResults);
+        const returnedData = formatData(response.data);
+        yield put({
+          type: 'fetchTotalNumberOfOnboardingListEffect',
+        });
+
+        yield put({
+          type: 'saveAll',
+          payload: returnedData,
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
     *fetchOnboardList({ payload }, { call, put }) {
       try {
         const {
@@ -466,6 +523,12 @@ const onboard = {
         if (processStatus === FINAL_OFFERS) {
           req = {
             processStatus: [FINAL_OFFERS_HR, FINAL_OFFERS_CANDIDATE],
+            page: 1,
+            tenantId,
+          };
+        } else if (Array.isArray(processStatus)) {
+          req = {
+            processStatus,
             page: 1,
             tenantId,
           };
@@ -758,6 +821,17 @@ const onboard = {
     //     },
     //   };
     // },
+
+    // 0
+    saveAll(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          dataAll: action.payload,
+        },
+      };
+    },
 
     // 1
     saveProvisionalOfferDrafts(state, action) {

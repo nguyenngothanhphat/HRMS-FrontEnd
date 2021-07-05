@@ -14,9 +14,9 @@ const InputField = ({
 }) => {
   // const [validation, setValidation] = useState(false);
   const { employer } = documentChecklistSetting[3];
-  console.log('documentCheck', documentChecklistSetting[3]);
+  // console.log('documentCheck', documentChecklistSetting[3]);
   const employer1 = tempData.employer;
-  console.log('processStatus', processStatus === 'DRAFT', employer1);
+  // console.log('processStatus', processStatus === 'DRAFT', employer1);
   // const onChange = (e) => {
   //   console.log('e', e.target.value);
   //   if (e.target.value.length > 0) {

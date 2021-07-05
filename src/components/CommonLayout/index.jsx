@@ -83,7 +83,6 @@ class CommonLayout extends Component {
   }
 
   // componentDidUpdate(prevProp) {
-  //   console.log('ReRender');
   // }
 
   static getDerivedStateFromProps(props) {
@@ -97,14 +96,8 @@ class CommonLayout extends Component {
     } = PROCESS_STATUS;
     // const selectedItemId = listMenu[currentStep]
 
-    // console.log(processStatus);
-    // console.log(currentStep);
-
-    // console.log(processStatus);
-
     if (currentStep !== null) {
       // if (processStatus === PROVISIONAL_OFFER_DRAFT && currentStep === 0) {
-      //   console.log('HEEERE');
       //   return {
       //     selectedItemId: listMenu[0].id,
       //     displayComponent: <BasicInformation />,
@@ -116,35 +109,30 @@ class CommonLayout extends Component {
           processStatus === INELIGIBLE_CANDIDATES) &&
         currentStep === 3
       ) {
-        // console.log('HERE 1');
         return {
           selectedItemId: listMenu[3].id,
           displayComponent: <BackgroundRecheck />,
         };
       }
       if (processStatus === SENT_PROVISIONAL_OFFERS && currentStep === 3) {
-        // console.log('Right here');
         return {
           selectedItemId: listMenu[3].id,
           displayComponent: <BackgroundCheck />,
         };
       }
       if (processStatus === SENT_FOR_APPROVAL && currentStep === 7) {
-        // console.log('HERE 2');
         return {
           selectedItemId: '',
           displayComponent: <PreviewOffer />,
         };
       }
       if (currentStep === 7) {
-        // console.log('HERE 2');
         return {
           selectedItemId: '',
           displayComponent: <PreviewOffer />,
         };
       }
       if (currentStep !== 7) {
-        // console.log('HERE 3');
         return {
           selectedItemId: listMenu[currentStep].id,
           displayComponent: listMenu[currentStep].component,
@@ -152,7 +140,6 @@ class CommonLayout extends Component {
       }
     }
 
-    // console.log('HERE 4');
     return {
       selectedItemId: listMenu[0].id,
       displayComponent: <BasicInformation />,
@@ -171,7 +158,6 @@ class CommonLayout extends Component {
     }
 
     if (processStatus === SENT_FOR_APPROVAL) {
-      // console.log('HERE 6');
       return {
         selectedItemId: '',
         displayComponent: <PreviewOffer />,
@@ -186,7 +172,6 @@ class CommonLayout extends Component {
     //   processStatus === ELIGIBLE_CANDIDATES ||
     //   processStatus === INELIGIBLE_CANDIDATES
     // ) {
-    //   console.log(listMenu[3].id);
     //   this.setState({
     //     selectedItemId: listMenu[3].id,
     //     displayComponent: <BackgroundRecheck />,
@@ -198,7 +183,6 @@ class CommonLayout extends Component {
     //     displayComponent: <BasicInformation />,
     //   };
     // }
-    // console.log('HERE 7');
 
     this.setState({
       selectedItemId: listMenu[currentStep].id || 1,
@@ -226,7 +210,6 @@ class CommonLayout extends Component {
 
   _handleClick = (item) => {
     const { dispatch } = this.props;
-    // console.log(item);
     dispatch({
       type: 'candidateInfo/save',
       payload: {
@@ -408,10 +391,6 @@ class CommonLayout extends Component {
       }
 
       case PENDING: {
-        // if (allDocumentVerified) {
-        //   return false;
-        // }
-
         if (
           index === statusStep.basicInfoStep ||
           index === statusStep.jobDetailStep ||

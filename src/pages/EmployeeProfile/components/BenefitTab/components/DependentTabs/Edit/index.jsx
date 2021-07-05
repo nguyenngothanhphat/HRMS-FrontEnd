@@ -87,7 +87,6 @@ class Edit extends PureComponent {
         tenantId: tenantCurrentEmployee,
       };
     }
-    console.log(payload);
 
     const res = await dispatch({
       type,

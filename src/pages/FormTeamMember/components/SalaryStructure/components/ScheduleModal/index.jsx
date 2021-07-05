@@ -30,22 +30,17 @@ class ScheduleModal extends Component {
 
   handleCancel = () => {
     const { handleCancel } = this.props;
-    console.log('ye');
     this.setState({}, () => handleCancel());
     // dispatch({
     //   type: 'candidateInfo/redirectToOnboardList',
     // });
   };
 
-  handleSubmit = () => {
-    // eslint-disable-next-line no-console
-    console.log('handle');
-  };
+  handleSubmit = () => {};
 
   onFinish = (values) => {
     const { dispatch, candidate } = this.props;
     const { meetingOn, meetingAt, meetingWith } = values;
-    console.log(meetingOn._d.toLocaleDateString());
     dispatch({
       type: 'candidateInfo/addSchedule',
       payload: {
@@ -57,7 +52,6 @@ class ScheduleModal extends Component {
         },
       },
     }).then(({ statusCode }) => {
-      console.log('ye');
       if (statusCode === 200) {
         this.handleCancel();
       }
