@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Affix } from 'antd';
-import { FormOutlined } from '@ant-design/icons';
+import FeedbackIcon from '@/assets/feedbackIcon.svg';
 import ModalFeedback from '@/components/ModalFeedback';
 import styles from './index.less';
 
@@ -32,7 +32,7 @@ export default class Feedback extends Component {
           <div className={styles.feedback}>
             <Button onClick={this.openFeedback} className={styles.btnFeedback}>
               <div className={styles.spanText}>
-                <FormOutlined className={styles.feedbackIcon} />
+                <img alt="feedback-icon" src={FeedbackIcon} />
                 <span className={styles.feedbackText}>Feedback</span>
               </div>
             </Button>
