@@ -21,7 +21,7 @@ export default function QuestionItem({
     defaultAnswers = [],
   } = {},
 }) {
-  console.log('rating', rating);
+  // console.log('rating', rating);
   const [Icon, setIcon] = useState(CircleIcon);
   const [newOption, setNewOption] = useState(`Option ${defaultAnswers.length + 1}`);
 
@@ -54,7 +54,7 @@ export default function QuestionItem({
         break;
       case TYPE_QUESTION.RATING_CHOICE.key:
         setIcon(null);
-        console.log('set rating', rating);
+        // console.log('set rating', rating);
         if (!rating.columns)
           onChangeQuestionItem({
             defaultAnswers: [],
@@ -250,7 +250,7 @@ export default function QuestionItem({
           </Col>
         );
       case TYPE_QUESTION.RATING_CHOICE.key:
-        console.log(rating.rows, rating.columns);
+        // console.log(rating.rows, rating.columns);
         return (
           <>
             {rating.rows && rating.columns && (

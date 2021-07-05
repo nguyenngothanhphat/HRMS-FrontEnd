@@ -254,7 +254,7 @@ class ViewDocument extends PureComponent {
 
   handleChange = (value) => {
     // eslint-disable-next-line no-console
-    console.log(`selected emails ${value}`);
+    // console.log(`selected emails ${value}`);
     this.setState({
       selectedStr: value,
     });

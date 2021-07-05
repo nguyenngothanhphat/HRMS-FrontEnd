@@ -37,7 +37,7 @@ class CandidateFieldsComponent extends PureComponent {
       _handleSelect,
     } = this.props;
     const { checkAuthor } = this.state;
-    console.log(prefferedDateOfJoining);
+    // console.log(prefferedDateOfJoining);
     // const { isHidden, checkAuthor } = this.state;
     return (
       <div className={InternalStyle.CandidateFields}>

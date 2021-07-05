@@ -11,7 +11,7 @@ class TableSearch extends Component {
   }
 
   onPressEnter = ({ target: { value } }) => {
-    console.log('enter value: ', value);
+    // console.log('enter value: ', value);
   };
 
   onChangeInput = (e) => {

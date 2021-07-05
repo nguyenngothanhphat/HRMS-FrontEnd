@@ -26,7 +26,7 @@ class CompanySignatory extends PureComponent {
         isAccountSetup: true,
       });
     } else {
-      console.log('payload add new company', payload);
+      // console.log('payload add new company', payload);
     }
   };
 

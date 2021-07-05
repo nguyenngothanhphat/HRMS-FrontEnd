@@ -12,9 +12,7 @@ class EditProfile extends Component {
     this.state = {};
   }
 
-  handleChange = (value) => {
-    console.log(value);
-  };
+  handleChange = (value) => {};
 
   handleSave = (value) => {
     const { dispatch, currentUser: { _id: currentUserId = '' } = {} } = this.props;

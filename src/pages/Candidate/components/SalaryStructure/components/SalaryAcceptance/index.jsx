@@ -63,7 +63,7 @@ class SalaryAcceptance extends PureComponent {
   };
 
   onFinish = (values) => {
-    console.log(values);
+    // console.log(values);
   };
 
   // static getDerivedStateFromProps(props) {

@@ -7,7 +7,8 @@ import {
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable/index';
 
 // const list = rookieList.filter((rookie) => rookie.isNew != true);
-const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
+const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION } =
+  COLUMN_NAME;
 const { PENDING_APPROVALS } = TABLE_TYPE;
 
 class PendingApprovals extends PureComponent {
@@ -17,7 +18,7 @@ class PendingApprovals extends PureComponent {
     return (
       <OnboardTable
         list={list}
-        columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION]}
+        columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION]}
         type={PENDING_APPROVALS}
         inTab
         hasCheckbox

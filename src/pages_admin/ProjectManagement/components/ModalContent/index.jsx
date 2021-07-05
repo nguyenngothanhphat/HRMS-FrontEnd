@@ -56,13 +56,10 @@ const ModalContent = (props) => {
     }
 
     // Check to validate 1 project lead per project
-    console.log(formInfo);
     const existPM = formInfo.find((item) => {
       const { role } = item;
       return role === 'Project Manager';
     });
-
-    console.log('existPM: ', existPM);
 
     if (existPM) {
       const filteredRoleList = roleListProp.filter((item) => {

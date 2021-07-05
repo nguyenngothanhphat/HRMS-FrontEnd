@@ -163,7 +163,7 @@ class WorkShedule extends Component {
       totalHour,
       workDay,
     } = employeeSchedule;
-    console.log(formatArray);
+
     this.setState({ edit: !edit });
     const format = 'HH:mm';
 

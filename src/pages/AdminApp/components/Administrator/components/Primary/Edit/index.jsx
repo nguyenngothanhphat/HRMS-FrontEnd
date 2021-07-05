@@ -9,16 +9,11 @@ class EditPrimary extends Component {
     this.state = {};
   }
 
-  handleChange = (value) => {
-    console.log('value: ', value);
-  };
+  handleChange = (value) => {};
 
-  handleChangeField = (value) => {
-    console.log(value);
-  };
+  handleChangeField = (value) => {};
 
   onFinish = (value) => {
-    console.log(value);
     message.success('Save change !');
   };
 

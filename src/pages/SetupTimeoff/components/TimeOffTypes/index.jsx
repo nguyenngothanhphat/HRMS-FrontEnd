@@ -121,8 +121,6 @@ class TimeOffTypes extends PureComponent {
 
   _renderTimeoffTypes = () => {
     const { setupPack = [] } = this.props;
-    // eslint-disable-next-line no-console
-    console.log('setupPack', setupPack);
     return (
       <div className={setupPack.length > 0 ? s.timeoffTypesContainer : ''}>
         {setupPack.map((value, index) => {

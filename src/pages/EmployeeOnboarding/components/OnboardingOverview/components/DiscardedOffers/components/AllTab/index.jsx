@@ -6,7 +6,17 @@ import {
 } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
 
-const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
+const {
+  ID,
+  NAME,
+  POSITION,
+  LOCATION,
+  DATE_JOIN,
+  ASSIGN_TO,
+  ASSIGNEE_MANAGER,
+  PROCESS_STATUS,
+  // ACTION,
+} = COLUMN_NAME;
 const { ALL } = TABLE_TYPE;
 
 class AllTab extends PureComponent {
@@ -16,7 +26,17 @@ class AllTab extends PureComponent {
     return (
       <OnboardTable
         list={list}
-        columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION]}
+        columnArr={[
+          ID,
+          NAME,
+          POSITION,
+          LOCATION,
+          DATE_JOIN,
+          ASSIGN_TO,
+          ASSIGNEE_MANAGER,
+          PROCESS_STATUS,
+          // ACTION,
+        ]}
         type={ALL}
         inTab
         loadingFetch={loading}

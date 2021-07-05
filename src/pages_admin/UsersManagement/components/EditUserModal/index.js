@@ -120,8 +120,7 @@ class EditUserModal extends PureComponent {
     const { companyId, locationId } = this.state;
     const { workEmail = '', firstName = '', lastName = '', roles = [], status = '' } = values;
     const submitValues = { workEmail, firstName, lastName, roles, locationId, companyId };
-    // eslint-disable-next-line no-console
-    console.log('Success:', submitValues);
+
     dispatch({
       type: 'usersManagement/updateRolesByEmployee',
       payload: {
@@ -162,10 +161,7 @@ class EditUserModal extends PureComponent {
     });
   };
 
-  onFinishFailed = (errorInfo) => {
-    // eslint-disable-next-line no-console
-    console.log('Failed:', errorInfo);
-  };
+  onFinishFailed = (errorInfo) => {};
 
   renderHeaderModal = () => {
     const { titleModal = 'Edit User Profile' } = this.props;

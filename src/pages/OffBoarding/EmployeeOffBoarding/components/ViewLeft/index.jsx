@@ -97,7 +97,7 @@ class ViewLeft extends Component {
   };
 
   onChangeSteps = (values) => {
-    console.log(values);
+    // console.log(values);
   };
 
   operations = (countdata = []) => {

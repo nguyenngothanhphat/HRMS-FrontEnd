@@ -89,10 +89,8 @@ class RequestInformation extends PureComponent {
 
   // fetch email list of company
   fetchEmailsListByCompany = () => {
-    const {
-      dispatch,
-      user: { currentUser: { company: { _id: company = '' } = {} } = {} } = {},
-    } = this.props;
+    const { dispatch, user: { currentUser: { company: { _id: company = '' } = {} } = {} } = {} } =
+      this.props;
     dispatch({
       type: 'timeOff/fetchEmailsListByCompany',
       payload: [company],
@@ -549,7 +547,7 @@ class RequestInformation extends PureComponent {
   // ON FINISH
   onFinish = (values) => {
     // eslint-disable-next-line no-console
-    console.log('Success:', values);
+    // console.log('Success:', values);
     const {
       dispatch,
       action = '',
@@ -652,8 +650,6 @@ class RequestInformation extends PureComponent {
   };
 
   onFinishFailed = (errorInfo) => {
-    // eslint-disable-next-line no-console
-    console.log('Failed:', errorInfo);
     const { values = {} } = errorInfo;
     this.onSaveDraft(values);
   };

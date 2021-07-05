@@ -5,7 +5,7 @@ const TestForm = () => {
   const [form] = Form.useForm();
 
   useEffect(() => {
-    console.log(form.getFieldsValue());
+    // console.log(form.getFieldsValue());
   }, []);
 
   return (

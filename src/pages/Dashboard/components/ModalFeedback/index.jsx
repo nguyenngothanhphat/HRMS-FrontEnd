@@ -11,12 +11,12 @@ const ModalFeedback = (props) => {
   const { visible = false, handleCandelModal = () => {} } = props;
 
   const onChange = (e) => {
-    console.log('radio checked', e.target.value);
+    // console.log('radio checked', e.target.value);
     setValue(e.target.value);
   };
 
   const handleFinish = (values) => {
-    console.log(values);
+    // console.log(values);
   };
 
   return (

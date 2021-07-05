@@ -148,9 +148,7 @@ const documentsManagement = {
           document,
           employee,
         });
-        // console.log('data add visa', data);
         const { statusCode = '', data: uploadedVisa = [] } = response;
-        // console.log('added visa', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { uploadedVisa } });
         notification.success({ message: 'Add Visa document successfully! Refreshing page...' });
@@ -171,7 +169,6 @@ const documentsManagement = {
           employee = '',
           document = '',
         } = data;
-        // console.log('data add passport', data);
         const response = yield call(addPassport, {
           passportNumber,
           passportIssuedCountry,
@@ -181,7 +178,6 @@ const documentsManagement = {
           document,
         });
         const { statusCode = '', data: uploadedPassport = [] } = response;
-        // console.log('added passport', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { uploadedPassport } });
         notification.success({ message: 'Add Passport document successfully! Refreshing page...' });
@@ -215,7 +211,6 @@ const documentsManagement = {
         });
 
         const { statusCode, data: uploadedDocument = [] } = response;
-        // console.log('upload document res', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { uploadedDocument } });
         return uploadedDocument;
@@ -243,8 +238,7 @@ const documentsManagement = {
         const response = yield call(getGeneralInfo, { employee });
         const { statusCode, data: generalInfo = {} } = response;
         if (statusCode !== 200) throw response;
-        // eslint-disable-next-line no-console
-        console.log('fetch general info success', response);
+
         const { _id } = generalInfo;
         yield put({ type: 'save', payload: { generalInfoId: _id } });
       } catch (errors) {
@@ -257,8 +251,7 @@ const documentsManagement = {
         const response = yield call(updateGeneralInfo, { id, document, adhaarCardNumber });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        // eslint-disable-next-line no-console
-        console.log('update General Info success');
+
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -272,8 +265,6 @@ const documentsManagement = {
         const { statusCode, data: adhaarCardDetail = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { adhaarCardDetail } });
-        // eslint-disable-next-line no-console
-        console.log('get employee success', response);
       } catch (errors) {
         dialog(errors);
       }
@@ -285,8 +276,7 @@ const documentsManagement = {
         const response = yield call(updateAdhaarCard, { id, document, adhaarNumber });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        // eslint-disable-next-line no-console
-        console.log('update adhaar card success');
+
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -300,8 +290,7 @@ const documentsManagement = {
         const response = yield call(addAdhaarCard, { employee, document, adhaarNumber });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        // eslint-disable-next-line no-console
-        console.log('add adhaar card success');
+
         return statusCode;
       } catch (errors) {
         dialog(errors);
