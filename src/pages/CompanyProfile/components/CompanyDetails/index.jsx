@@ -13,7 +13,11 @@ const { Option } = Select;
     country: { listCountry = [] } = {},
     user: { currentUser: { email = '' } = {}, companiesOfUser: listCompany = [] } = {},
     upload: { urlImage = '' } = {},
-    companiesManagement: { originData: { companyDetails } = {} } = {},
+    companiesManagement: {
+      originData: { companyDetails } = {},
+      companyTypeList = [],
+      industryList = [],
+    } = {},
   }) => ({
     listCountry,
     listCompany,
@@ -22,6 +26,8 @@ const { Option } = Select;
     loadingUpdate: loading.effects['companiesManagement/updateCompany'],
     loadingAdd: loading.effects['companiesManagement/addCompanyReducer'],
     email,
+    companyTypeList,
+    industryList,
   }),
 )
 class CompanyDetails extends Component {
@@ -131,6 +137,8 @@ class CompanyDetails extends Component {
       hrEmail,
       hrPhone,
       parentCompany,
+      industry,
+      companyType,
       // logoUrl,
     } = values;
 
@@ -164,6 +172,8 @@ class CompanyDetails extends Component {
         hrContactName: hrName,
         hrContactEmail: hrEmail,
         hrContactPhone: hrPhone,
+        industry,
+        companyType,
         // isHeadquarter: true,
       },
       locations: [
@@ -295,6 +305,8 @@ class CompanyDetails extends Component {
       loadingAdd,
       companyId,
       email,
+      industryList = [],
+      companyTypeList = [],
     } = this.props;
 
     const fieldCompanyDetail = [
@@ -350,6 +362,8 @@ class CompanyDetails extends Component {
         dba,
         ein,
         website,
+        industry,
+        companyType,
         // logoUrl,
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
@@ -426,6 +440,8 @@ class CompanyDetails extends Component {
           hrPhone,
           isNewTenant: false,
           isHeadQuarter: true,
+          industry,
+          companyType,
           // logoUrl,
         }}
       >
@@ -434,6 +450,84 @@ class CompanyDetails extends Component {
             <p className={s.title}>Company Details</p>
           </div>
           <div className={s.content__viewBottom}>
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>Industry</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item name="industry">
+                  <Select
+                    placeholder="Select Industry"
+                    showArrow
+                    showSearch
+                    allowClear
+                    defaultValue="informationTechnology"
+                    className={s.parentCompanySelect}
+                    // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {industryList.map((item) => (
+                      <Option
+                        key={item._id}
+                        style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                      >
+                        {item.name}
+                      </Option>
+                    ))}
+                    {/* <Option
+                      value="Information Technology"
+                      style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                    >
+                      Information Technology
+                    </Option> */}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>Company Type</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item name="companyType">
+                  <Select
+                    placeholder="Select Company Type"
+                    showArrow
+                    showSearch
+                    allowClear
+                    // defaultValue=""
+                    className={s.parentCompanySelect}
+                    // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {companyTypeList.map((item) => (
+                      <Option
+                        key={item._id}
+                        style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                      >
+                        {item.name}
+                      </Option>
+                    ))}
+                    {/* <Option
+                      value="IT Services"
+                      style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                    >
+                      IT Services
+                    </Option>
+                    <Option
+                      value="Product"
+                      style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                    >
+                      Product
+                    </Option> */}
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
             {fieldCompanyDetail.map(
               ({ label, name: nameField, required = false, message }, index) => (
                 <Row key={nameField} className={s.content__viewBottom__row}>
