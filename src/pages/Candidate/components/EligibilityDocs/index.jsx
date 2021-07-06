@@ -1,9 +1,8 @@
 /* eslint-disable no-param-reassign */
 import React, { PureComponent } from 'react';
-import { Typography, Row, Col } from 'antd';
-import { connect } from 'umi';
+import { Typography, Row, Col, Button } from 'antd';
+import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
-import { isUndefined } from 'lodash';
 import { getCurrentTenant } from '@/utils/authority';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
@@ -24,13 +23,26 @@ const Note = {
   ),
 };
 
-@connect(({ candidateProfile: { data, localStep, tempData } = {}, loading }) => ({
-  data,
-  localStep,
-  tempData,
-  loading: loading.effects['upload/uploadFile'],
-  loading1: loading.effects['candidateProfile/sendEmailByCandidate'],
-}))
+@connect(
+  ({
+    candidateProfile: {
+      data,
+      data: { checkMandatory = {} } = {},
+      localStep,
+      currentStep,
+      tempData,
+    } = {},
+    loading,
+  }) => ({
+    data,
+    localStep,
+    currentStep,
+    tempData,
+    checkMandatory,
+    loading: loading.effects['upload/uploadFile'],
+    loading1: loading.effects['candidateProfile/sendEmailByCandidate'],
+  }),
+)
 class EligibilityDocs extends PureComponent {
   constructor(props) {
     super(props);
@@ -322,6 +334,64 @@ class EligibilityDocs extends PureComponent {
     return checkFull;
   };
 
+  _renderStatus = () => {
+    return (
+      <div className={styles.normalText}>
+        <div className={styles.redText}>*</div>
+        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+      </div>
+    );
+  };
+
+  onClickPrev = () => {
+    const { dispatch, localStep } = this.props;
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        localStep: localStep - 1,
+      },
+    });
+  };
+
+  onClickNext = () => {
+    const { dispatch, localStep } = this.props;
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        localStep: localStep + 1,
+      },
+    });
+  };
+
+  _renderBottomBar = () => {
+    const { currentStep = 0 } = this.props;
+    return (
+      <div className={styles.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
+          </Col>
+          <Col span={8}>
+            <div className={styles.bottomBar__button}>
+              <Button type="secondary" onClick={this.onClickPrev}>
+                Previous
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={this.onClickNext}
+                className={`${styles.bottomBar__button__primary} ${styles.bottomBar__button__disabled}`}
+                disabled={currentStep < 5}
+              >
+                Next
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
+  };
+
   render() {
     const {
       loading,
@@ -385,6 +455,7 @@ class EligibilityDocs extends PureComponent {
                 renderData={this.processData}
               />
             </div>
+            {this._renderBottomBar()}
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={Note} />

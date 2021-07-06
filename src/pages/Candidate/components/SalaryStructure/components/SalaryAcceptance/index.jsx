@@ -14,12 +14,12 @@ import styles from './index.less';
     loading,
     candidateProfile: {
       tempData: { options = 1 },
-      generatedBy: { user: { email = '' } = {} } = {},
+      assignTo: { generalInfo: { workEmail: email = '' } = {} } = {},
       salaryNote = '',
+      data: { processStatus: processStatusProp = '' } = {},
     },
-    candidateInfo: { data: { processStatus = '' } } = {},
   }) => ({
-    processStatus,
+    processStatusProp,
     options,
     email,
     salaryNote,
@@ -37,24 +37,39 @@ class SalaryAcceptance extends PureComponent {
         {
           title: 'I hereby accept this salary structure.',
           note: 'You have gone through all the contents of the table and accept the salary as terms of your employment.',
-          // processStatus: 'ACCEPT-PROVISIONAL-OFFER',
+          processStatus: 'ACCEPT-PROVISIONAL-OFFER',
           options: 1,
         },
         {
           title: 'I would like to re-negotiate the salary structure.',
           note: 'You have gone through all the contents of the table. However, I would like to renegotiate.',
-          // processStatus: 'RENEGOTIATE-PROVISONAL-OFFER',
+          processStatus: 'RENEGOTIATE-PROVISONAL-OFFER',
           options: 2,
         },
         {
           title: 'I would like to reject this offer.',
           note: 'You have gone through all the contents of the table and do not accept the offer given to me.',
-          // processStatus: 'DISCARDED-PROVISONAL-OFFER',
+          processStatus: 'DISCARDED-PROVISONAL-OFFER',
           options: 3,
         },
       ],
     };
   }
+
+  componentDidMount = () => {
+    const { select } = this.state;
+    const { processStatusProp = '', dispatch } = this.props;
+    const selectValue = select.find((d) => d.processStatus === processStatusProp);
+
+    if (selectValue && selectValue.options) {
+      dispatch({
+        type: 'candidateProfile/saveTemp',
+        payload: {
+          options: selectValue.options,
+        },
+      });
+    }
+  };
 
   closeModal = () => {
     this.setState({
@@ -94,29 +109,33 @@ class SalaryAcceptance extends PureComponent {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidateProfile/saveTemp',
       payload: {
-        tempData: {
-          options: value,
-        },
+        options: value,
       },
     });
   };
 
   _renderSelect = () => {
     const { select } = this.state;
+    const { processStatusProp = '' } = this.props;
+    const selectValue = select.find((d) => d.processStatus === processStatusProp);
+
     return (
       <div className={styles.salaryAcceptanceWrapper_select}>
         <div className={styles.title}>
           {formatMessage({ id: 'component.salaryAcceptance.acceptanceTitle' })}
         </div>
-        <Radio.Group defaultValue={1} onChange={this.onChangeSelect}>
+        <Radio.Group
+          defaultValue={selectValue && selectValue.options ? selectValue.options : 1}
+          onChange={this.onChangeSelect}
+        >
           {select.map((data) => {
             return (
               <div className={styles.select}>
                 <Row>
                   <Col span={3}>
-                    <Radio checked value={data.options} />
+                    <Radio value={data.options} />
                   </Col>
                   <Col span={21}>
                     <p className="radio__title">{data.title}</p>
@@ -150,9 +169,9 @@ class SalaryAcceptance extends PureComponent {
         this.setState({
           openModal: true,
         });
-        dispatch({
-          type: 'candidateInfo/redirectToOnboardList',
-        });
+        // dispatch({
+        //   type: 'candidateInfo/redirectToOnboardList',
+        // });
       }
     });
   };
