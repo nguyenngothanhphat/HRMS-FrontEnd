@@ -76,28 +76,36 @@ export default class ScreenCapture extends Component {
     if (isMouseDown) {
       if (isStartTopLeft) {
         newBorderWidth = `${startY}px ${windowWidth - endX}px ${windowHeight - endY}px ${startX}px`;
-        cropWidth = endX - startX;
-        cropHeigth = endY - startY;
+        cropWidth = endX + startX;
+        cropHeigth = endY + startY;
+        // cropWidth = endX - startX;
+        // cropHeigth = endY - startY;
       }
 
       if (isStartTopRight) {
         newBorderWidth = `${startY}px ${windowWidth - startX}px ${windowHeight - endY}px ${endX}px`;
-        cropWidth = startX - endX;
-        cropHeigth = endY - startY;
+        // cropWidth = startX - endX;
+        // cropHeigth = endY - startY;
+        cropWidth = startX + endX;
+        cropHeigth = endY + startY;
         cropPositionLeft = endX;
       }
 
       if (isStartBottomLeft) {
         newBorderWidth = `${endY}px ${windowWidth - endX}px ${windowHeight - startY}px ${startX}px`;
-        cropWidth = endX - startX;
-        cropHeigth = startY - endY;
+        // cropWidth = endX - startX;
+        // cropHeigth = startY - endY;
+        cropWidth = endX + startX;
+        cropHeigth = startY + endY;
         cropPositionTop = endY;
       }
 
       if (isStartBottomRight) {
         newBorderWidth = `${endY}px ${windowWidth - startX}px ${windowHeight - startY}px ${endX}px`;
-        cropWidth = startX - endX;
-        cropHeigth = startY - endY;
+        // cropWidth = startX - endX;
+        // cropHeigth = startY - endY;
+        cropWidth = startX + endX;
+        cropHeigth = startY + endY;
         cropPositionLeft = endX;
         cropPositionTop = endY;
       }
