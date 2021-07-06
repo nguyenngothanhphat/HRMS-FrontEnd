@@ -4,6 +4,8 @@ import xlsxwriter   # to create and write to an excel sheet
 import math     # to use the ceil function
 import sys  # to use command line arguments
 import os   # to open the created spreadsheet upon running the script
+import openpyxl    # python excel support
+import csv   # csv library
 
 
 
@@ -289,9 +291,33 @@ complete_roles = generic_teams()
 populate_employees()
 populate_manager_email()
 
-
 workbook.close()
 
-command = 'open ' + name_of_file
-print("Name of the spreadsheet created:", name_of_file )
-os.system(command)  # command to open the created spreadsheet
+
+# HERE WE START CONVERTING THE XLSX SHEET TO CSV FOR IMPORTATION
+excel = openpyxl.load_workbook(name_of_file)
+sheet = excel.active    # SWITCHING TO THE ACTIVE OPEN SHEET
+
+plain_file_name = name_of_file.split(".xlsx")
+csv_file_name = plain_file_name[0] + ".csv"     # NAMING OUR NEW CSV FILE
+
+col = csv.writer(open(csv_file_name,'w', newline=""))
+
+for r in sheet.rows:    # POPULATING THE CSV FILE WE JUST CREATED WITH THE CONTENT FROM THE XLSX SHEET
+    # row by row write operation is performed
+    col.writerow([cell.value for cell in r])
+
+
+
+# CSV FILE GENERATED
+command = 'open ' + csv_file_name
+print("Name of the CSV file created:", csv_file_name)
+os.system(command)  # command to open the created CSV file
+
+
+
+# #  IF YOU WANTED TO OPEN THE XLSX FILE GENERATED
+# command = 'open ' + name_of_file
+print("Name of the XLSX spreadsheet created:", name_of_file)
+# os.system(command)  # command to open the created XLSX spreadsheet
+
