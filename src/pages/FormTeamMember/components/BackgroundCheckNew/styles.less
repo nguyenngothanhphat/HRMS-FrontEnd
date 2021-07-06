@@ -5,8 +5,8 @@
   .leftWrapper {
     .eliContainer {
       width: 100%;
-      font-family: Roboto, sans-serif;
       padding-left: 0px;
+      font-family: Roboto, sans-serif;
     }
   }
   .rightWrapper {
@@ -17,41 +17,41 @@
   }
   .refreshBlockD {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     height: 300px;
   }
   .bottomBar {
+    padding: 4 * @spacing-xxs;
+    background-color: #ffffff;
+    border: solid 1px #d6dce0;
     // position: fixed;
     // bottom: 0;
     // width: inherit;
     // height: 72px;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
-    border: solid 1px #d6dce0;
-    background-color: #ffffff;
-    padding: 4 * @spacing-xxs;
 
     .normalText {
       display: flex;
-      font-family: Roboto;
-      font-size: 13px;
-      font-style: italic;
       color: #707177;
+      font-size: 13px;
+      font-family: Roboto;
+      font-style: italic;
     }
 
     .redText {
-      font-family: Roboto;
-      font-size: 13px;
-      font-style: italic;
       color: #ff4949;
+      font-size: 13px;
+      font-family: Roboto;
+      font-style: italic;
     }
 
     .greenText {
-      font-family: Roboto;
-      font-size: 13px;
-      font-style: italic;
       color: #47c97f;
+      font-size: 13px;
+      font-family: Roboto;
+      font-style: italic;
     }
 
     &__button {
@@ -61,44 +61,54 @@
       }
       :global {
         .ant-btn-primary {
-          // display: none;
-          text-shadow: none;
-          box-shadow: none;
           width: 94px;
           height: 40px;
           object-fit: contain;
-          border-radius: 25px;
-          border: solid 1px #ffa100;
-          background-color: #ffa100;
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: 500;
-          letter-spacing: 0.13px;
           color: #ffffff;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: Roboto;
+          letter-spacing: 0.13px;
+          // display: none;
+          text-shadow: none;
+          background-color: #ffa100;
+          border: solid 1px #ffa100;
+          border-radius: 25px;
+          box-shadow: none;
           &:hover {
-            background-color: #ffa100;
             color: #ffffff;
+            background-color: #ffa100;
           }
         }
         .ant-btn-secondary {
           width: 94px;
           height: 40px;
-          object-fit: contain;
-          border-radius: 25px;
-          border: solid 0;
-          font-family: Roboto;
-          font-size: 14px;
-          font-weight: 500;
-          letter-spacing: 0.13px;
-          color: #ffa100;
           padding-right: 41px;
+          object-fit: contain;
+          color: #ffa100;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: Roboto;
+          letter-spacing: 0.13px;
+          border: solid 0;
+          border-radius: 25px;
         }
       }
     }
   }
+  .displayButtonChangeEmail {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+  }
+  .buttonChangeEmailFilled {
+    border-radius: 4px;
+  }
 }
 .viewLoading {
-  margin: 0 auto;
-  height: 500px;
   width: 300px;
+  height: 500px;
+  margin: 0 auto;
 }

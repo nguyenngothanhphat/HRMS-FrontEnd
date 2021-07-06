@@ -208,6 +208,7 @@ const index = ({
               </>
             )}
             {/* {valueToFinalOffer === 1 && <br />} */}
+
             <Radio value={1}>
               <Typography.Text>Process to release a final offer</Typography.Text>
             </Radio>

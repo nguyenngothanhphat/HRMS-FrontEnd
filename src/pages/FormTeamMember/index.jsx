@@ -373,6 +373,7 @@ class FormTeamMember extends PureComponent {
       tempData: { locationList, employeeTypeList, documentList, valueToFinalOffer = 0 } = {},
       data: { processStatus = '' } = {},
     } = candidateInfo;
+
     const title = isAddNew ? `Add team member [${reId}]` : `Review team member [${reId}]`;
     const listMenu = [
       {
@@ -410,7 +411,7 @@ class FormTeamMember extends PureComponent {
         // key: 'eligibilityDocuments',
         component:
           processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT &&
-          processStatus !== PROCESS_STATUS.SENT_PROVISIONAL_OFFER ? (
+          processStatus !== PROCESS_STATUS.SENT_PROVISIONAL_OFFERS ? (
             <BackgroundRecheck />
           ) : (
             <BackgroundCheck
