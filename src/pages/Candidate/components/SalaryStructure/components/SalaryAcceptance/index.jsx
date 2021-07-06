@@ -16,10 +16,10 @@ import styles from './index.less';
       tempData: { options = 1 },
       assignTo: { generalInfo: { workEmail: email = '' } = {} } = {},
       salaryNote = '',
+      data: { processStatus: processStatusProp = '' } = {},
     },
-    candidateInfo: { data: { processStatus = '' } } = {},
   }) => ({
-    processStatus,
+    processStatusProp,
     options,
     email,
     salaryNote,
@@ -55,6 +55,21 @@ class SalaryAcceptance extends PureComponent {
       ],
     };
   }
+
+  componentDidMount = () => {
+    const { select } = this.state;
+    const { processStatusProp = '', dispatch } = this.props;
+    const selectValue = select.find((d) => d.processStatus === processStatusProp);
+
+    if (selectValue && selectValue.options) {
+      dispatch({
+        type: 'candidateProfile/saveTemp',
+        payload: {
+          options: selectValue.options,
+        },
+      });
+    }
+  };
 
   closeModal = () => {
     this.setState({
@@ -94,30 +109,17 @@ class SalaryAcceptance extends PureComponent {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidateProfile/saveTemp',
       payload: {
-        tempData: {
-          options: value,
-        },
+        options: value,
       },
     });
   };
 
   _renderSelect = () => {
     const { select } = this.state;
-    const { processStatus = '', dispatch } = this.props;
-    const selectValue = select.find((d) => d.processStatus === processStatus);
-
-    if (selectValue) {
-      dispatch({
-        type: 'candidateProfile/save',
-        payload: {
-          tempData: {
-            options: selectValue.options,
-          },
-        },
-      });
-    }
+    const { processStatusProp = '' } = this.props;
+    const selectValue = select.find((d) => d.processStatus === processStatusProp);
 
     return (
       <div className={styles.salaryAcceptanceWrapper_select}>
@@ -125,7 +127,7 @@ class SalaryAcceptance extends PureComponent {
           {formatMessage({ id: 'component.salaryAcceptance.acceptanceTitle' })}
         </div>
         <Radio.Group
-          defaultValue={selectValue ? selectValue.options : 1}
+          defaultValue={selectValue && selectValue.options ? selectValue.options : 1}
           onChange={this.onChangeSelect}
         >
           {select.map((data) => {
