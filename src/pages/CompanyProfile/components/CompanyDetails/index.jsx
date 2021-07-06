@@ -13,7 +13,11 @@ const { Option } = Select;
     country: { listCountry = [] } = {},
     user: { currentUser: { email = '' } = {}, companiesOfUser: listCompany = [] } = {},
     upload: { urlImage = '' } = {},
-    companiesManagement: { originData: { companyDetails } = {} } = {},
+    companiesManagement: {
+      originData: { companyDetails } = {},
+      companyTypeList = [],
+      industryList = [],
+    } = {},
   }) => ({
     listCountry,
     listCompany,
@@ -22,6 +26,8 @@ const { Option } = Select;
     loadingUpdate: loading.effects['companiesManagement/updateCompany'],
     loadingAdd: loading.effects['companiesManagement/addCompanyReducer'],
     email,
+    companyTypeList,
+    industryList,
   }),
 )
 class CompanyDetails extends Component {
@@ -131,6 +137,8 @@ class CompanyDetails extends Component {
       hrEmail,
       hrPhone,
       parentCompany,
+      industry,
+      companyType,
       // logoUrl,
     } = values;
 
@@ -164,6 +172,8 @@ class CompanyDetails extends Component {
         hrContactName: hrName,
         hrContactEmail: hrEmail,
         hrContactPhone: hrPhone,
+        industry,
+        companyType,
         // isHeadquarter: true,
       },
       locations: [
@@ -295,6 +305,8 @@ class CompanyDetails extends Component {
       loadingAdd,
       companyId,
       email,
+      industryList = [],
+      companyTypeList = [],
     } = this.props;
 
     const fieldCompanyDetail = [
@@ -350,6 +362,8 @@ class CompanyDetails extends Component {
         dba,
         ein,
         website,
+        industry,
+        companyType,
         // logoUrl,
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
@@ -397,8 +411,6 @@ class CompanyDetails extends Component {
       },
     };
 
-    const industry = 'Information Technology';
-
     return (
       <Form
         className={s.root}
@@ -429,6 +441,7 @@ class CompanyDetails extends Component {
           isNewTenant: false,
           isHeadQuarter: true,
           industry,
+          companyType,
           // logoUrl,
         }}
       >
@@ -455,12 +468,20 @@ class CompanyDetails extends Component {
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
                   >
-                    <Option
+                    {industryList.map((item) => (
+                      <Option
+                        key={item._id}
+                        style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                      >
+                        {item.name}
+                      </Option>
+                    ))}
+                    {/* <Option
                       value="Information Technology"
                       style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
                     >
                       Information Technology
-                    </Option>
+                    </Option> */}
                   </Select>
                 </Form.Item>
               </Col>
@@ -483,7 +504,15 @@ class CompanyDetails extends Component {
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
                   >
-                    <Option
+                    {companyTypeList.map((item) => (
+                      <Option
+                        key={item._id}
+                        style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                      >
+                        {item.name}
+                      </Option>
+                    ))}
+                    {/* <Option
                       value="IT Services"
                       style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
                     >
@@ -494,7 +523,7 @@ class CompanyDetails extends Component {
                       style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
                     >
                       Product
-                    </Option>
+                    </Option> */}
                   </Select>
                 </Form.Item>
               </Col>

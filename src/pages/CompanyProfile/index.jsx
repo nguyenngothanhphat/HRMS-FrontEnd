@@ -40,6 +40,13 @@ class CompanyProfile extends Component {
     dispatch({
       type: 'user/fetchCompanyOfUser',
     });
+    // dispatch({
+    //   type: 'companiesManagement/fetchCompanyTypeList',
+    // });
+    // dispatch({
+    //   type: 'companiesManagement/fetchIndustryList',
+    // });
+
     // if (id) {
     //   dispatch({
     //     type: 'companiesManagement/fetchCompanyDetails',
