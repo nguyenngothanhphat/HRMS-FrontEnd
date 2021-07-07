@@ -15,8 +15,6 @@ export default class ScreenCapture extends Component {
     this.state = {
       startX: 0,
       startY: 0,
-      crossHairsTop: 0,
-      crossHairsLeft: 0,
       isMouseDown: false,
       windowWidth: 0,
       windowHeight: 0,
@@ -80,8 +78,6 @@ export default class ScreenCapture extends Component {
     }
 
     this.setState({
-      crossHairsTop: e.clientY,
-      crossHairsLeft: e.clientX,
       borderWidth: newBorderWidth,
     });
   };
@@ -112,28 +108,18 @@ export default class ScreenCapture extends Component {
     const body = document.querySelector('body');
     window.scrollTo(0, 0);
     html2canvas(body, {
-      useCORS: true,
-      // width: window.screen.availWidth,
-      height: window.screen.availHeight,
-      windowWidth: body.offsetWidth,
-      windowHeight: body.offsetHeight,
-      x: 0,
-      y: window.pageYOffset,
+      // allowTaint: true,
+      // useCORS: true,
+      // logging: false,
+      height: window.innerHeight,
+      width: window.innerWidth,
+      windowHeight: window.innerHeight,
+      windowWidth: window.innerWidth,
     }).then((canvas) => {
-      document.documentElement.style.overflow = 'hidden';
-      document.body.appendChild(canvas);
-      document.documentElement.style.overflow = '';
-      const canvasItem = document.getElementsByTagName('canvas')[0];
-      base64URL = canvasItem.toDataURL();
+      base64URL = canvas.toDataURL();
       this.setState({
         imgUrl: base64URL,
       });
-    });
-
-    this.setState({
-      crossHairsTop: 0,
-      crossHairsLeft: 0,
-      // imgUrl: base64URL,
     });
   };
 
@@ -145,24 +131,23 @@ export default class ScreenCapture extends Component {
   };
 
   render() {
-    const { crossHairsTop, crossHairsLeft, borderWidth, isMouseDown, imgUrl } = this.state;
+    const { borderWidth, isMouseDown, imgUrl } = this.state;
 
     return (
       <div
         onMouseMove={this.handleMouseMove}
-        onMouseDown={this.handleMouseDown}
-        onMouseUp={this.handleMouseUp}
+        onMouseDown={imgUrl ? null : this.handleMouseDown}
+        onMouseUp={imgUrl ? null : this.handleMouseUp}
       >
         <div
           className={`${styles.overlay} ${isMouseDown && `${styles.highlighting}`}`}
           style={{ borderWidth }}
-        >
-          {imgUrl ? <Button onClick={this.handleNext}>Next</Button> : null}
-        </div>
-        <div
-          className={styles.crosshairs}
-          style={{ left: `${crossHairsLeft}px`, top: `${crossHairsTop}px` }}
         />
+        {imgUrl ? (
+          <Button className={styles.nextBtn} onClick={this.handleNext}>
+            Next
+          </Button>
+        ) : null}
       </div>
     );
   }
