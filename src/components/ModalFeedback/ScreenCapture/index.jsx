@@ -4,8 +4,6 @@ import html2canvas from 'html2canvas';
 import styles from './index.less';
 
 export default class ScreenCapture extends Component {
-  ref = React.createRef(null);
-
   static defaultProps = {
     onStartCapture: () => null,
     onEndCapture: () => null,
