@@ -1,5 +1,6 @@
 /* eslint-disable react/static-property-placement */
 import React, { Component } from 'react';
+import { Button } from 'antd';
 import html2canvas from 'html2canvas';
 import styles from './index.less';
 
@@ -12,7 +13,6 @@ export default class ScreenCapture extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      on: false,
       startX: 0,
       startY: 0,
       crossHairsTop: 0,
@@ -21,6 +21,7 @@ export default class ScreenCapture extends Component {
       windowWidth: 0,
       windowHeight: 0,
       borderWidth: 0,
+      imgUrl: '',
     };
   }
 
@@ -44,8 +45,6 @@ export default class ScreenCapture extends Component {
   componentWillUnmount = () => {
     window.removeEventListener('resize', this.handleWindowResize);
   };
-
-  handStartCapture = () => this.setState({ on: true });
 
   handleMouseMove = (e) => {
     const { isMouseDown, windowWidth, windowHeight, startX, startY, borderWidth } = this.state;
@@ -109,7 +108,7 @@ export default class ScreenCapture extends Component {
   };
 
   handleClickTakeScreenShot = async () => {
-    const { onEndCapture = () => {} } = this.props;
+    let base64URL = '';
     const body = document.querySelector('body');
     window.scrollTo(0, 0);
     html2canvas(body, {
@@ -125,32 +124,28 @@ export default class ScreenCapture extends Component {
       document.body.appendChild(canvas);
       document.documentElement.style.overflow = '';
       const canvasItem = document.getElementsByTagName('canvas')[0];
-      const base64URL = canvasItem.toDataURL();
-
-      onEndCapture(base64URL);
+      base64URL = canvasItem.toDataURL();
+      this.setState({
+        imgUrl: base64URL,
+      });
     });
 
     this.setState({
       crossHairsTop: 0,
       crossHairsLeft: 0,
+      // imgUrl: base64URL,
     });
   };
 
-  renderChild = () => {
-    const { children } = this.props;
+  handleNext = () => {
+    const { onEndCapture = () => {} } = this.props;
+    const { imgUrl } = this.state;
 
-    const props = {
-      onStartCapture: this.handStartCapture,
-    };
-
-    if (typeof children === 'function') return children(props);
-    return children;
+    onEndCapture(imgUrl);
   };
 
   render() {
-    const { on, crossHairsTop, crossHairsLeft, borderWidth, isMouseDown } = this.state;
-
-    // if (!on) return this.renderChild();
+    const { crossHairsTop, crossHairsLeft, borderWidth, isMouseDown, imgUrl } = this.state;
 
     return (
       <div
@@ -158,11 +153,12 @@ export default class ScreenCapture extends Component {
         onMouseDown={this.handleMouseDown}
         onMouseUp={this.handleMouseUp}
       >
-        {/* {this.renderChild()} */}
         <div
           className={`${styles.overlay} ${isMouseDown && `${styles.highlighting}`}`}
           style={{ borderWidth }}
-        />
+        >
+          {imgUrl ? <Button onClick={this.handleNext}>Next</Button> : null}
+        </div>
         <div
           className={styles.crosshairs}
           style={{ left: `${crossHairsLeft}px`, top: `${crossHairsTop}px` }}
