@@ -4,7 +4,7 @@ import { formatMessage, connect } from 'umi';
 import moment from 'moment';
 import InternalStyle from './FilledByCandidate.less';
 
-const dateFormat = 'MM/DD/YYYY';
+const dateFormat = 'MM.DD.YY';
 @connect(({ candidateProfile: { data, checkMandatory } = {} }) => ({
   data,
   checkMandatory,
@@ -64,7 +64,7 @@ class FilledByCandidate extends PureComponent {
         // jobDetails,
         checkMandatory: {
           ...checkMandatory,
-          filledJobDetail: !!value,
+          // filledJobDetail: !!value,
           isCandidateAcceptDOJ: !value,
         },
       },
@@ -91,7 +91,7 @@ class FilledByCandidate extends PureComponent {
         <Row gutter={[24, 0]} className={InternalStyle.RadioNewDate}>
           <Col xs={24}>
             <Typography.Title level={5} className={InternalStyle.RadioNewDateTitle}>
-              Your Suggested Joining date is {newDate}. Would you like to propose a new date ?
+              Your Suggested Joining date is {newDate}. Would you like to propose a new date?
             </Typography.Title>
             <Radio.Group onChange={this.checkChange} value={checkWouldNewDate}>
               <Radio value={false}>No</Radio>

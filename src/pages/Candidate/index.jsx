@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Skeleton } from 'antd';
 import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import BasicInfomation from './components/BasicInfomation';
@@ -34,7 +35,13 @@ const _renderScreen = (screenNumber) => {
 };
 
 const Candidate = (props) => {
-  const { dispatch, localStep, candidate } = props;
+  const {
+    dispatch,
+    localStep,
+    candidate,
+    loadingFetchDocumentsByCandidate = false,
+    loadingFetchWorkHistory = false,
+  } = props;
   const [screen, setScreen] = useState(localStep);
   useEffect(() => {
     setScreen(localStep);
@@ -77,7 +84,7 @@ const Candidate = (props) => {
       }
     });
   }, []);
-
+  if (loadingFetchDocumentsByCandidate || loadingFetchWorkHistory) return <Skeleton />;
   return <div>{_renderScreen(screen)}</div>;
 };
 
@@ -86,10 +93,13 @@ export default connect(
   ({
     candidateProfile: { localStep, data, tempData } = {},
     user: { currentUser: { candidate = '' } = {} } = {},
+    loading,
   }) => ({
     localStep,
     data,
     tempData,
     candidate,
+    loadingFetchWorkHistory: loading.effects['candidateProfile/fetchWorkHistory'],
+    loadingFetchDocumentsByCandidate: loading.effects['candidateProfile/fetchDocumentByCandidate'],
   }),
 )(Candidate);

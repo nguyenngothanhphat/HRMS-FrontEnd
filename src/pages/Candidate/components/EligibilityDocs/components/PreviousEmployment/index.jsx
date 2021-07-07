@@ -283,12 +283,14 @@ class PreviousEmployment extends Component {
         {docListE.length > 0 && (
           <Collapse
             accordion
+            defaultActiveKey="1"
             expandIconPosition="right"
             expandIcon={(props) => {
               return props.isActive ? <MinusOutlined /> : <PlusOutlined />;
             }}
           >
             <Collapse.Panel
+              key="1"
               header={
                 <Checkbox
                   className={styles.checkbox}
