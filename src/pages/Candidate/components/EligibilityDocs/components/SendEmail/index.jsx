@@ -68,7 +68,7 @@ const index = ({
               initialValues={{ email }}
               onValuesChange={onValuesChangeEmail}
             >
-              <Form.Item name="email" label="Terralogic HR Email ID" className={style.marginBottom}>
+              <Form.Item name="email" label="HR Email" className={style.marginBottom}>
                 <Input disabled="true" />
               </Form.Item>
               <Form.Item>

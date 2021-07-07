@@ -55,6 +55,25 @@ class EligibilityDocs extends PureComponent {
   componentDidMount() {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
     this.processData();
+    const { data: { processStatus = '' } = {} } = this.props;
+    if (
+      [
+        'ACCEPT-PROVISIONAL-OFFER',
+        'APPROVED-FINAL-OFFER',
+        'SENT-FINAL-OFFERS',
+        'ACCEPT-FINAL-OFFER',
+        'RENEGOTIATE-FINAL-OFFERS',
+        'DISCARDED-PROVISONAL-OFFER',
+        'REJECT-FINAL-OFFER-HR',
+        'REJECT-FINAL-OFFER-CANDIDATE',
+        'PENDING-BACKGROUND-CHECK',
+        'PENDING-APPROVAL-FINAL-OFFER',
+      ].includes(processStatus)
+    ) {
+      this.setState({
+        isSentEmail: true,
+      });
+    }
   }
 
   processData = async () => {
@@ -319,7 +338,7 @@ class EligibilityDocs extends PureComponent {
   };
 
   checkFull = () => {
-    const { data: { workHistory, documentListToRender } = {} } = this.props;
+    const { data: { workHistory = [], documentListToRender = [] } = {} } = this.props;
     let checkFull = true;
     documentListToRender.forEach((doc) => {
       doc.data.forEach((doc1) => {
