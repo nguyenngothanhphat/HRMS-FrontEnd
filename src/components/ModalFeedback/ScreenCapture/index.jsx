@@ -19,7 +19,7 @@ export default class ScreenCapture extends Component {
       windowWidth: 0,
       windowHeight: 0,
       borderWidth: 0,
-      imgUrl: '',
+      imgUrl: null,
     };
   }
 
@@ -143,11 +143,14 @@ export default class ScreenCapture extends Component {
           className={`${styles.overlay} ${isMouseDown && `${styles.highlighting}`}`}
           style={{ borderWidth }}
         />
-        {imgUrl ? (
-          <Button className={styles.nextBtn} onClick={this.handleNext}>
-            Next
-          </Button>
-        ) : null}
+        <Button
+          disabled={imgUrl === null}
+          className={`${styles.initialBtn} ${imgUrl === null ? styles.disabledBtn : ''}`}
+          onClick={this.handleNext}
+          style={isMouseDown ? { display: 'none' } : {}}
+        >
+          Next
+        </Button>
       </div>
     );
   }
