@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Spin, Skeleton } from 'antd';
+import { Skeleton } from 'antd';
 import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import BasicInfomation from './components/BasicInfomation';
