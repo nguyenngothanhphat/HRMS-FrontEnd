@@ -150,7 +150,7 @@ export default class ScreenCapture extends Component {
   render() {
     const { on, crossHairsTop, crossHairsLeft, borderWidth, isMouseDown } = this.state;
 
-    if (!on) return this.renderChild();
+    // if (!on) return this.renderChild();
 
     return (
       <div
@@ -158,7 +158,7 @@ export default class ScreenCapture extends Component {
         onMouseDown={this.handleMouseDown}
         onMouseUp={this.handleMouseUp}
       >
-        {this.renderChild()}
+        {/* {this.renderChild()} */}
         <div
           className={`${styles.overlay} ${isMouseDown && `${styles.highlighting}`}`}
           style={{ borderWidth }}
