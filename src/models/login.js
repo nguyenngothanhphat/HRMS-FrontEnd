@@ -30,8 +30,13 @@ const Model = {
         setToken(response.data.token);
 
         let formatArrRoles = [];
-        const { user: { signInRole = [] } = {}, listCompany = [] } = data;
+        const { user: { signInRole = [], isFirstLogin = false } = {}, listCompany = [] } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
+
+        if (isFirstLogin) {
+          history.replace('/first-change-password');
+          return {};
+        }
 
         // CANDIDATE
         if (formatRole.indexOf('candidate') > -1) {
@@ -40,7 +45,6 @@ const Model = {
             payload: response,
           });
           history.replace('/candidate');
-          return;
         }
         // ELSE
         let isAdminOrOwner = false;

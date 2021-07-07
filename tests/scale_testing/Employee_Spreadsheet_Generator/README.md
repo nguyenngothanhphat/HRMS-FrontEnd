@@ -1,5 +1,5 @@
 # About
-Python Script to generate an Excel sheet that simulates a company with employees on a scale of your preference.
+Python Script to generate an Excel sheet, and a CSV copy of that file that simulates a company with employees on a scale of your preference.
 
 ##Departments in the company:
 
@@ -53,6 +53,9 @@ The Executive Leadership Team reports to the CEO. The Executive Leadership Team 
 ###Argument 4:
 * <b>director_sr_manager_managers_people_count</b>: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The number of people under each manager under each senior manager for every director of a department.
   
+###Argument 5:
+* <b>name_of_company</b>: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The name of the company (for which we are generating employees) enclosed in quotes.
+  
 
 <br>
 
@@ -77,22 +80,27 @@ pip install xlsxwriter
 
 ###Small Scale ~ 90 people: 
 ```sh
-$ python excel_generator_xlsx.py 1 1 2 3
+$ python excel_generator_xlsx.py 1 1 2 3 <name_of_company>
 ```
   
 ###Normal Scale ~ 500 people:
 ```sh
-$ python excel_generator_xlsx.py 2 1 3 9  
+$ python excel_generator_xlsx.py 2 1 3 9 <name_of_company> 
 ```
   
 ###Medium Scale ~ 1000 people: 
 ```sh
-$ python excel_generator_xlsx.py 2 3 3 6     
+$ python excel_generator_xlsx.py 2 3 3 6 <name_of_company>   
 ```
 
 ###Large Scale ~ 5000 people: 
 ```sh
-$ python excel_generator_xlsx.py 4 4 4 9     
+$ python excel_generator_xlsx.py 4 4 4 9 <name_of_company>    
+```
+
+##Example (Medium Scale ~ 1000 people): 
+```sh
+$ python excel_generator_xlsx.py 2 3 3 6 "Test Company 1"
 ```
 
 <br>

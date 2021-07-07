@@ -115,6 +115,7 @@ class EmployerComponent extends PureComponent {
                   disabled={disabled}
                   onChange={this.employerNameHandle}
                   className={styles.input}
+                  placeholder="Name of the employer"
                 />
               </Form.Item>
             </Col>

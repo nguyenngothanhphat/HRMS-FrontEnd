@@ -35,15 +35,23 @@ export default {
         dialog(errors);
       }
     },
-    *updatePassword({ payload }, { call, put }) {
+    *updatePassword({ payload, isFirstLogin = false }, { call, put }) {
       let statusChangePassword = false;
+      let response = '';
       try {
-        const response = yield call(updatePasswordAPI, payload);
+        response = yield call(updatePasswordAPI, payload);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
-        notification.success({
-          message,
-        });
+        if (!isFirstLogin) {
+          notification.success({
+            message,
+          });
+        } else {
+          notification.success({
+            message: 'Updated password successfully. Please login again!',
+          });
+        }
+
         statusChangePassword = true;
       } catch (errors) {
         statusChangePassword = false;
@@ -53,6 +61,7 @@ export default {
         type: 'save',
         payload: { statusChangePassword },
       });
+      return response;
     },
   },
 
