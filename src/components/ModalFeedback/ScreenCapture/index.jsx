@@ -4,6 +4,8 @@ import html2canvas from 'html2canvas';
 import styles from './index.less';
 
 export default class ScreenCapture extends Component {
+  ref = React.createRef(null);
+
   static defaultProps = {
     onStartCapture: () => null,
     onEndCapture: () => null,
@@ -15,19 +17,12 @@ export default class ScreenCapture extends Component {
       on: false,
       startX: 0,
       startY: 0,
-      //   endX: 0,
-      //   endY: 0,
       crossHairsTop: 0,
       crossHairsLeft: 0,
       isMouseDown: false,
       windowWidth: 0,
       windowHeight: 0,
       borderWidth: 0,
-      cropPositionTop: 0,
-      cropPositionLeft: 0,
-      cropWidth: 0,
-      cropHeigth: 0,
-      //   imageURL: '',
     };
   }
 
@@ -57,8 +52,6 @@ export default class ScreenCapture extends Component {
   handleMouseMove = (e) => {
     const { isMouseDown, windowWidth, windowHeight, startX, startY, borderWidth } = this.state;
 
-    let cropPositionTop = startY;
-    let cropPositionLeft = startX;
     const endX = e.clientX;
     const endY = e.clientY;
     const isStartTop = endY >= startY;
@@ -70,44 +63,22 @@ export default class ScreenCapture extends Component {
     const isStartBottomLeft = isStartBottom && isStartLeft;
     const isStartBottomRight = isStartBottom && isStartRight;
     let newBorderWidth = borderWidth;
-    let cropWidth = 0;
-    let cropHeigth = 0;
 
     if (isMouseDown) {
       if (isStartTopLeft) {
         newBorderWidth = `${startY}px ${windowWidth - endX}px ${windowHeight - endY}px ${startX}px`;
-        cropWidth = endX + startX;
-        cropHeigth = endY + startY;
-        // cropWidth = endX - startX;
-        // cropHeigth = endY - startY;
       }
 
       if (isStartTopRight) {
         newBorderWidth = `${startY}px ${windowWidth - startX}px ${windowHeight - endY}px ${endX}px`;
-        // cropWidth = startX - endX;
-        // cropHeigth = endY - startY;
-        cropWidth = startX + endX;
-        cropHeigth = endY + startY;
-        cropPositionLeft = endX;
       }
 
       if (isStartBottomLeft) {
         newBorderWidth = `${endY}px ${windowWidth - endX}px ${windowHeight - startY}px ${startX}px`;
-        // cropWidth = endX - startX;
-        // cropHeigth = startY - endY;
-        cropWidth = endX + startX;
-        cropHeigth = startY + endY;
-        cropPositionTop = endY;
       }
 
       if (isStartBottomRight) {
         newBorderWidth = `${endY}px ${windowWidth - startX}px ${windowHeight - startY}px ${endX}px`;
-        // cropWidth = startX - endX;
-        // cropHeigth = startY - endY;
-        cropWidth = startX + endX;
-        cropHeigth = startY + endY;
-        cropPositionLeft = endX;
-        cropPositionTop = endY;
       }
     }
 
@@ -115,23 +86,16 @@ export default class ScreenCapture extends Component {
       crossHairsTop: e.clientY,
       crossHairsLeft: e.clientX,
       borderWidth: newBorderWidth,
-      cropWidth,
-      cropHeigth,
-      cropPositionTop,
-      cropPositionLeft,
     });
   };
 
   handleMouseDown = (e) => {
-    console.log('down');
     const startX = e.clientX;
     const startY = e.clientY;
 
     this.setState((prevState) => ({
       startX,
       startY,
-      cropPositionTop: startY,
-      cropPositionLeft: startX,
       isMouseDown: true,
       borderWidth: `${prevState.windowWidth}px ${prevState.windowHeight}px`,
     }));
@@ -140,37 +104,32 @@ export default class ScreenCapture extends Component {
   handleMouseUp = () => {
     this.handleClickTakeScreenShot();
     this.setState({
-      on: false,
+      // on: false,
       isMouseDown: false,
       borderWidth: 0,
     });
   };
 
-  handleClickTakeScreenShot = () => {
-    const { cropPositionTop, cropPositionLeft, cropWidth, cropHeigth } = this.state;
+  handleClickTakeScreenShot = async () => {
     const { onEndCapture = () => {} } = this.props;
     const body = document.querySelector('body');
+    window.scrollTo(0, 0);
+    html2canvas(body, {
+      useCORS: true,
+      // width: window.screen.availWidth,
+      height: window.screen.availHeight,
+      windowWidth: body.offsetWidth,
+      windowHeight: body.offsetHeight,
+      x: 0,
+      y: window.pageYOffset,
+    }).then((canvas) => {
+      document.documentElement.style.overflow = 'hidden';
+      document.body.appendChild(canvas);
+      document.documentElement.style.overflow = '';
+      const canvasItem = document.getElementsByTagName('canvas')[0];
+      const base64URL = canvasItem.toDataURL();
 
-    html2canvas(body).then((canvas) => {
-      const croppedCanvas = document.createElement('canvas');
-      const croppedCanvasContext = croppedCanvas.getContext('2d');
-
-      croppedCanvas.width = cropWidth;
-      croppedCanvas.height = cropHeigth;
-
-      croppedCanvasContext.drawImage(
-        canvas,
-        cropPositionLeft,
-        cropPositionTop,
-        cropWidth,
-        cropHeigth,
-        0,
-        0,
-        cropWidth,
-        cropHeigth,
-      );
-      console.log(croppedCanvas);
-      onEndCapture(croppedCanvas.toDataURL());
+      onEndCapture(base64URL);
     });
 
     this.setState({

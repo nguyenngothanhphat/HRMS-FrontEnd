@@ -26,7 +26,6 @@ const ModalFeedback = (props) => {
 
   const handleBack = () => {
     setScreenCapture(null);
-    console.log(valueRadio);
   };
 
   const destroyOnClose = () => {
