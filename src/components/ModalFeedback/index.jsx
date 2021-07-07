@@ -24,6 +24,11 @@ const ModalFeedback = (props) => {
     setScreenCapture(img);
   };
 
+  const handleBack = () => {
+    setScreenCapture(null);
+    console.log(valueRadio);
+  };
+
   const destroyOnClose = () => {
     handleCandelModal();
     setValueRadio(null);
@@ -47,9 +52,14 @@ const ModalFeedback = (props) => {
             the current page that relate to your entry with the &quot;Highlight Page&quot; tool.
           </div>
           <div className={styles.form}>
-            <Form form={form} onFinish={handleFinish} preserve={false}>
+            <Form
+              form={form}
+              onFinish={handleFinish}
+              preserve={false}
+              initialValues={{ option: valueRadio }}
+            >
               <div className={styles.formTop} style={screenCapture ? { display: 'flex' } : {}}>
-                {screenCapture ? null : (
+                {!screenCapture && (
                   <>
                     <Form.Item
                       name="option"
@@ -112,16 +122,25 @@ const ModalFeedback = (props) => {
               <div className={styles.formBottom}>
                 {valueRadio && (
                   <Form.Item className={styles.flexButton1}>
-                    <ScreenCapture onEndCapture={handleScreenCapture}>
-                      {({ onStartCapture }) => (
-                        <Button
-                          onClick={onStartCapture}
-                          className={`${styles.btnGroup} ${styles.highlightBtn}`}
-                        >
-                          Highlight Page
-                        </Button>
-                      )}
-                    </ScreenCapture>
+                    {screenCapture ? (
+                      <Button
+                        onClick={handleBack}
+                        className={`${styles.btnGroup} ${styles.highlightBtn} ${styles.backBtn}`}
+                      >
+                        Back
+                      </Button>
+                    ) : (
+                      <ScreenCapture onEndCapture={handleScreenCapture}>
+                        {({ onStartCapture }) => (
+                          <Button
+                            onClick={onStartCapture}
+                            className={`${styles.btnGroup} ${styles.highlightBtn}`}
+                          >
+                            Highlight Page
+                          </Button>
+                        )}
+                      </ScreenCapture>
+                    )}
                   </Form.Item>
                 )}
 
