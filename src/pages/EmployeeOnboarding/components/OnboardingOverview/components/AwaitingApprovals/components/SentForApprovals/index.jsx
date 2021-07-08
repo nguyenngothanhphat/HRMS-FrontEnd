@@ -7,7 +7,8 @@ import {
 import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
 
 // const list = rookieList.filter((rookie) => rookie.isNew != true);
-const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION } = COLUMN_NAME;
+const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION } =
+  COLUMN_NAME;
 const { SENT_FOR_APPROVALS } = TABLE_TYPE;
 
 class SentForApprovals extends PureComponent {
@@ -17,7 +18,7 @@ class SentForApprovals extends PureComponent {
     return (
       <OnboardTable
         list={list}
-        columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ACTION]}
+        columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION]}
         type={SENT_FOR_APPROVALS}
         inTab
         // hasCheckbox

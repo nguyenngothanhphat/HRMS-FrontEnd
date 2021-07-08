@@ -58,7 +58,7 @@ class EmploymentDetails extends PureComponent {
   };
 
   onFinish = (values) => {
-    console.log('Success:', values);
+    // console.log('Success:', values);
   };
 
   render() {

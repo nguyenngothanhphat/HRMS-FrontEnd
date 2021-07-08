@@ -44,7 +44,7 @@ const AdditionalQuestion = (props) => {
       }
       return true;
     });
-    console.log('valid', valid);
+    // console.log('valid', valid);
     if (!dispatch) {
       return;
     }

@@ -69,9 +69,7 @@ class TableEmployee extends Component {
       this.handleWithDraw(id);
     };
 
-    const cancel = (e) => {
-      console.log(e);
-    };
+    const cancel = (e) => {};
 
     const rowSize = 10;
     const pagination = {

@@ -37,7 +37,7 @@ class CandidateFieldsComponent extends PureComponent {
       _handleSelect,
     } = this.props;
     const { checkAuthor } = this.state;
-    console.log(prefferedDateOfJoining);
+    // console.log(prefferedDateOfJoining);
     // const { isHidden, checkAuthor } = this.state;
     return (
       <div className={InternalStyle.CandidateFields}>
@@ -71,10 +71,10 @@ class CandidateFieldsComponent extends PureComponent {
               className={styles}
               placeholder=""
               picker="date"
-              format="MM/DD/YYYY"
+              format="MM.DD.YY"
               disabled={!checkAuthor}
               onChange={(value) => _handleSelect(value, candidateField[1].title)}
-              defaultValue={moment(prefferedDateOfJoining)}
+              defaultValue={prefferedDateOfJoining ? moment(prefferedDateOfJoining) : null}
             />
           </Col>
           {/* <Col xs={16} sm={16} md={12} lg={12} xl={12}>

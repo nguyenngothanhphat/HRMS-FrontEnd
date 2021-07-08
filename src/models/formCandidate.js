@@ -277,7 +277,6 @@ const info = {
     },
 
     *fetchManagerList({ payload = {} }, { call, put }) {
-      console.log(payload);
       try {
         const response = yield call(getManagerList, payload);
         const { statusCode, data } = response;
@@ -289,28 +288,23 @@ const info = {
     },
 
     *addCandidateByHR({ payload }, { call, put }) {
-      console.log('payload model', payload);
       try {
         const response = yield call(addCandidate, payload);
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { Obj: data } });
       } catch (errors) {
-        console.log(errors);
         dialog(errors);
       }
     },
 
     *updateByHR({ payload }, { call, put }) {
-      console.log('payload model', payload);
       try {
         const response = yield call(updateByHR, payload);
         const { statusCode, data } = response;
-        console.log('abc', response);
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { dataTest: data } });
       } catch (errors) {
-        console.log(errors);
         dialog(errors);
       }
     },
@@ -320,7 +314,6 @@ const info = {
         const response = yield call(addTeamMember, payload);
         const { data } = response;
         const { ticketID = '', _id = '' } = data;
-        console.log(response);
         const rookieId = ticketID;
         yield put({ type: 'save', payload: { rookieId, _id } });
         history.push(`/employee-onboarding/review/${rookieId}`);

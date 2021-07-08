@@ -63,7 +63,6 @@ class UploadLogoCompany extends Component {
           }
         });
       } else {
-        // console.log('payload add new company', first?.url);
         dispatch({
           type: 'companiesManagement/saveCompanyDetails',
           payload: { ...companyDetails?.company, logoUrl: first?.url },

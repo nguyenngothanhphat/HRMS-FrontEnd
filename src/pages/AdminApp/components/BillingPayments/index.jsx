@@ -18,7 +18,7 @@ export default class BillingPayments extends PureComponent {
         <Form
           ref={this.formRef}
           initialValues={{}}
-          onValuesChange={(values) => console.log(values)}
+          // onValuesChange={(values) => console.log(values)}
         >
           <BillingHistory />
           <PayrollBankAccount />

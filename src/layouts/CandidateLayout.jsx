@@ -107,6 +107,7 @@ const CandidateLayout = (props) => {
   }, [localStep, processStatus]);
 
   useEffect(() => {
+    let lcStep = 1;
     if (
       [
         'APPROVED-FINAL-OFFER',
@@ -118,14 +119,27 @@ const CandidateLayout = (props) => {
         'REJECT-FINAL-OFFER-CANDIDATE',
       ].includes(processStatus)
     ) {
-      dispatch({
-        type: 'candidateProfile/save',
-        payload: {
-          localStep: 5,
-        },
-      });
-      setCurrent(5);
+      lcStep = 5;
     }
+    if (
+      [
+        'ACCEPT-PROVISIONAL-OFFER',
+        'PENDING-BACKGROUND-CHECK',
+        'PENDING-APPROVAL-FINAL-OFFER',
+      ].includes(processStatus)
+    ) {
+      lcStep = 4;
+    }
+    if (['RENEGOTIATE-PROVISONAL-OFFER'].includes(processStatus)) {
+      lcStep = 3;
+    }
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        localStep: lcStep,
+      },
+    });
+    setCurrent(lcStep);
   }, [processStatus]);
 
   useEffect(() => {

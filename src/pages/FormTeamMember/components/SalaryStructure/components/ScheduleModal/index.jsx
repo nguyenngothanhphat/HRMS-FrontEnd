@@ -30,26 +30,21 @@ class ScheduleModal extends Component {
 
   handleCancel = () => {
     const { handleCancel } = this.props;
-    console.log('ye');
     this.setState({}, () => handleCancel());
     // dispatch({
     //   type: 'candidateInfo/redirectToOnboardList',
     // });
   };
 
-  handleSubmit = () => {
-    // eslint-disable-next-line no-console
-    console.log('handle');
-  };
+  handleSubmit = () => {};
 
   onFinish = (values) => {
-    const { dispatch, candidate } = this.props;
+    const { dispatch, _id } = this.props;
     const { meetingOn, meetingAt, meetingWith } = values;
-    console.log(meetingOn._d.toLocaleDateString());
     dispatch({
       type: 'candidateInfo/addSchedule',
       payload: {
-        candidate,
+        candidate: _id,
         schedule: {
           meetingOn: meetingOn._d.toLocaleDateString(),
           meetingAt,
@@ -57,7 +52,6 @@ class ScheduleModal extends Component {
         },
       },
     }).then(({ statusCode }) => {
-      console.log('ye');
       if (statusCode === 200) {
         this.handleCancel();
       }
@@ -84,7 +78,7 @@ class ScheduleModal extends Component {
             <div className={styles.flexContent}>
               <div>
                 <Form.Item name="meetingOn" label="Meeting on">
-                  <DatePicker format="MM/DD/YYYY" className={styles.datePicker} />
+                  <DatePicker format="MM.DD.YY" className={styles.datePicker} />
                 </Form.Item>
               </div>
               <div>

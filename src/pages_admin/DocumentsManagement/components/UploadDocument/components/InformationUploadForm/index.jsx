@@ -313,8 +313,6 @@ class InformationUploadForm extends PureComponent {
   };
 
   onFinish = (fieldsValue) => {
-    // eslint-disable-next-line no-console
-    console.log('fieldsValue', fieldsValue);
     const { secondType, identityType, checkEmployeeExists } = this.state;
     const { attachmentId = '' } = this.props;
     if (!checkEmployeeExists) {
@@ -347,14 +345,8 @@ class InformationUploadForm extends PureComponent {
   };
 
   render() {
-    const {
-      type,
-      secondType,
-      identityType,
-      checkEmployeeExists,
-      hasTyped,
-      passportExisted,
-    } = this.state;
+    const { type, secondType, identityType, checkEmployeeExists, hasTyped, passportExisted } =
+      this.state;
     const {
       documentsManagement: {
         employeeDetail: { firstName = '', lastName = '', passportNo = '' } = '',

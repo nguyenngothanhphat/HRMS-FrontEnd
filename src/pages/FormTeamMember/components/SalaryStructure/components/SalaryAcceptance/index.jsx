@@ -46,7 +46,6 @@ class SalaryAcceptance extends PureComponent {
   }
 
   onFinish = (values) => {
-    console.log(values);
   };
 
   // static getDerivedStateFromProps(props) {
@@ -123,7 +122,6 @@ class SalaryAcceptance extends PureComponent {
 
   _renderStatus = () => {
     const { processStatus, fullName, loadingCloseCandidate, loadingSendFormAgain } = this.props;
-    console.log(processStatus);
     if (processStatus === 'ACCEPT-PROVISIONAL-OFFER') {
       return (
         <SalaryAcceptanceContent

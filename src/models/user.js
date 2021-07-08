@@ -43,8 +43,13 @@ const UserModel = {
 
         let formatArrRoles = [];
         let switchRoleAbility = false;
-        const { signInRole = [], roles = [], candidate = {} } = data;
+        const { signInRole = [], roles = [], candidate = {}, isFirstLogin = false } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
+
+        if (isFirstLogin) {
+          history.replace('/first-change-password');
+          return {};
+        }
 
         if (formatRole.indexOf('candidate') > -1) {
           setAuthority(...formatRole);

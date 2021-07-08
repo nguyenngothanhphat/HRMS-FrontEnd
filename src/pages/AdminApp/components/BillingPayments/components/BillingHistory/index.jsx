@@ -29,15 +29,21 @@ export default class BillingHistory extends PureComponent {
           <Form
             className={s.content__formHeader}
             // initialValues={(from, to)}
-            onFinish={(values) => console.log(values)}
+            // onFinish={(values) => console.log(values)}
           >
             <Form.Item name="from" className={s.content__formHeader__item}>
               <span className={s.from}>From</span>
-              <DatePicker onChange={(values) => console.log(values)} format={dateFormat} />
+              <DatePicker
+                // onChange={(values) => console.log(values)}
+                format={dateFormat}
+              />
             </Form.Item>
             <Form.Item name="to" className={s.content__formHeader__item}>
               <span className={s.to}>To</span>
-              <DatePicker onChange={(values) => console.log(values)} format={dateFormat} />
+              <DatePicker
+                // onChange={(values) => console.log(values)}
+                format={dateFormat}
+              />
             </Form.Item>
           </Form>
         </div>

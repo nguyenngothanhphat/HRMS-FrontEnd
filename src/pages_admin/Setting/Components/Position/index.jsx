@@ -56,7 +56,6 @@ class Position extends PureComponent {
   }
 
   onSelectChange = (selectedRowKeys, selectedRows) => {
-    console.log('selectedRowKeys', selectedRowKeys, 'selectedRows', selectedRows);
     this.setState({ selectedRowKeys });
   };
 
@@ -82,7 +81,6 @@ class Position extends PureComponent {
   };
 
   handleCancel = (e) => {
-    console.log(e);
     this.setState({
       visible: false,
     });

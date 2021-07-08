@@ -1195,6 +1195,7 @@ class BackgroundCheck extends Component {
                       item={item}
                       addDocumentName={this.addDocumentName}
                       removeDocumentName={this.removeDocumentName}
+                      processStatus={processStatus}
                       // handleChange={this.handleChangeForD}
                       disabled={this.disableEdit()}
                     />
