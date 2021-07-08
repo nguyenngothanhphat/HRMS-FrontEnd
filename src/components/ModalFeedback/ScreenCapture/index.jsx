@@ -131,6 +131,9 @@ export default class ScreenCapture extends Component {
 
   render() {
     const { borderWidth, isMouseDown, imgUrl } = this.state;
+    if (imgUrl) {
+      document.body.style.overflow = 'hidden';
+    }
 
     return (
       <div
@@ -142,6 +145,18 @@ export default class ScreenCapture extends Component {
           className={`${styles.overlay} ${isMouseDown && `${styles.highlighting}`}`}
           style={{ borderWidth }}
         />
+        {imgUrl ? (
+          <img
+            alt="temp"
+            src={imgUrl}
+            style={{
+              width: '100%',
+              height: '100%',
+              top: 0,
+              position: 'absolute',
+            }}
+          />
+        ) : null}
         <Button
           disabled={imgUrl === null}
           className={`${styles.initialBtn} ${imgUrl === null ? styles.disabledBtn : ''}`}
