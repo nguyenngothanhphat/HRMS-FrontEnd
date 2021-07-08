@@ -185,10 +185,28 @@ class Screen1 extends Component {
                 contact you easily.
               </p>
 
-              <Form.Item label="Legal Business Name*" name="name">
+              <Form.Item
+                label="Legal Business Name*"
+                name="name"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter Legal Bussiness Name',
+                  },
+                ]}
+              >
                 <Input />
               </Form.Item>
-              <Form.Item label="Doing Business As (DBA)*" name="dba">
+              <Form.Item
+                label="Doing Business As (DBA)*"
+                name="dba"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter dba',
+                  },
+                ]}
+              >
                 <Input />
               </Form.Item>
               <Form.Item
@@ -198,6 +216,10 @@ class Screen1 extends Component {
                   {
                     pattern: /^[0-9]*$/,
                     message: 'Please input number only!',
+                  },
+                  {
+                    required: true,
+                    message: 'Please enter EIN',
                   },
                 ]}
               >
@@ -224,20 +246,29 @@ class Screen1 extends Component {
           >
             <>
               <p className={s.root__form__title}>Headquarter address</p>
-              <Form.Item label="Address Line 1*" name="addressLine1">
+              <Form.Item
+                label="Address Line 1*"
+                name="addressLine1"
+                rules={[{ required: true, message: 'Please enter address line 1' }]}
+              >
                 <Input />
               </Form.Item>
               <Form.Item label="Address Line 2" name="addressLine2">
                 <Input />
               </Form.Item>
-              <Form.Item label="Country*" name="country">
+              <Form.Item
+                label="Country*"
+                name="country"
+                rules={[{ required: true, message: 'Please enter Country' }]}
+              >
                 <Select
                   placeholder="Select Country"
                   showArrow
                   showSearch
                   onChange={this.onChangeCountryHeadquarter}
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
                   {listCountry.map((item) => (
                     <Option key={item._id}>{item.name}</Option>
@@ -246,14 +277,19 @@ class Screen1 extends Component {
               </Form.Item>
               <Row gutter={[30, 0]}>
                 <Col span={12}>
-                  <Form.Item label="State*" name="state">
+                  <Form.Item
+                    label="State*"
+                    name="state"
+                    rules={[{ required: true, message: 'Please enter state' }]}
+                  >
                     <Select
                       placeholder="Select State"
                       showArrow
                       showSearch
                       disabled={!countryHead}
                       filterOption={(input, option) =>
-                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
                     >
                       {listStateHead.map((item) => (
                         <Option key={item}>{item}</Option>
@@ -262,7 +298,11 @@ class Screen1 extends Component {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Zip Code*" name="zipCode">
+                  <Form.Item
+                    label="Zip Code*"
+                    name="zipCode"
+                    rules={[{ required: true, message: 'Please enter zip' }]}
+                  >
                     <Input />
                   </Form.Item>
                 </Col>
@@ -297,14 +337,22 @@ class Screen1 extends Component {
                 </Checkbox>
               </div>
 
-              <Form.Item label="Address Line 1*" name="addressLine1">
+              <Form.Item
+                label="Address Line 1*"
+                name="addressLine1"
+                rules={[{ required: true, message: 'Please enter address' }]}
+              >
                 <Input disabled={checkLegalSameHeadQuarter} />
               </Form.Item>
               <Form.Item label="Address Line 2" name="addressLine2">
                 <Input disabled={checkLegalSameHeadQuarter} />
               </Form.Item>
 
-              <Form.Item label="Country*" name="country">
+              <Form.Item
+                label="Country*"
+                name="country"
+                rules={[{ required: true, message: 'Please enter country' }]}
+              >
                 <Select
                   placeholder="Select Country"
                   showArrow
@@ -312,7 +360,8 @@ class Screen1 extends Component {
                   onChange={this.onChangeSelectLegal}
                   disabled={checkLegalSameHeadQuarter}
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
                   {listCountry.map((item) => (
                     <Option key={item._id}>{item.name}</Option>
@@ -321,14 +370,19 @@ class Screen1 extends Component {
               </Form.Item>
               <Row gutter={[30, 0]}>
                 <Col span={12}>
-                  <Form.Item label="State*" name="state">
+                  <Form.Item
+                    label="State*"
+                    name="state"
+                    rules={[{ required: true, message: 'Please enter state' }]}
+                  >
                     <Select
                       placeholder="Select State"
                       showArrow
                       showSearch
                       disabled={checkLegalSameHeadQuarter || !country}
                       filterOption={(input, option) =>
-                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
                     >
                       {listStateLegal.map((item) => (
                         <Option key={item}>{item}</Option>
@@ -337,7 +391,11 @@ class Screen1 extends Component {
                   </Form.Item>
                 </Col>
                 <Col span={12}>
-                  <Form.Item label="Zip Code*" name="zipCode">
+                  <Form.Item
+                    label="Zip Code*"
+                    name="zipCode"
+                    rules={[{ required: true, message: 'Please enter zip code' }]}
+                  >
                     <Input disabled={checkLegalSameHeadQuarter} />
                   </Form.Item>
                 </Col>

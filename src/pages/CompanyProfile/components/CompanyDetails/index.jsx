@@ -111,6 +111,7 @@ class CompanyDetails extends Component {
       // companyId,
       companyDetails: { company: { logoUrl: newLogo } = {} },
     } = this.props;
+    const { checkLegalSameHeadQuarter } = this.state;
     const {
       countryHeadquarterProps,
       countryLegalProps,
@@ -160,6 +161,7 @@ class CompanyDetails extends Component {
           state: stateLegal,
           zipCode: zipLegal,
         },
+        isSameAsHeadquarter: checkLegalSameHeadQuarter,
         contactEmail: ownerEmail,
         hrContactName: hrName,
         hrContactEmail: hrEmail,

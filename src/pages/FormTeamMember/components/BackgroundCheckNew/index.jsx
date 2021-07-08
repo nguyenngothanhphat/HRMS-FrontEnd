@@ -772,7 +772,9 @@ class BackgroundCheck extends Component {
         title,
         employeeType,
         _id,
-        fullName,
+        firstName,
+        middleName,
+        lastName,
         position,
         privateEmail,
         workEmail,
@@ -810,7 +812,9 @@ class BackgroundCheck extends Component {
 
     const payload = {
       candidate: _id,
-      fullName,
+      firstName,
+      middleName,
+      lastName,
       position,
       employeeType: employeeType._id,
       department: department._id,
@@ -1131,7 +1135,9 @@ class BackgroundCheck extends Component {
           documentList,
           isSentEmail,
           generateLink,
-          fullName,
+          firstName,
+          middleName,
+          lastName,
           valueToFinalOffer,
           checkValidation,
           isMarkAsDone,
@@ -1242,7 +1248,9 @@ class BackgroundCheck extends Component {
                 isSentEmail={isSentEmail}
                 generateLink={generateLink}
                 handleMarkAsDone={this.handleMarkAsDone}
-                fullName={fullName}
+                firstName={firstName}
+                middleName={middleName}
+                lastName={lastName}
                 handleValueChange={this.handleValueChange}
                 privateEmail={privateEmail}
                 processStatus={processStatus}

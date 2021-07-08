@@ -117,14 +117,16 @@ class BasicInformation extends Component {
     const {
       data,
       currentStep,
-      tempData: { fullName, privateEmail, workEmail, previousExperience },
+      tempData: { firstName, middleName, lastName, privateEmail, workEmail, previousExperience },
     } = this.state;
     const { dispatch } = this.props;
     const { _id } = data;
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
-        fullName,
+        firstName,
+        middleName,
+        lastName,
         privateEmail,
         workEmail,
         previousExperience,
@@ -145,7 +147,7 @@ class BasicInformation extends Component {
 
   checkBottomBar = () => {
     const {
-      tempData: { fullName, privateEmail, workEmail, checkStatus },
+      tempData: { firstName, middleName, lastName, privateEmail, workEmail, checkStatus },
       checkMandatory,
       dispatch,
     } = this.props;
@@ -154,11 +156,15 @@ class BasicInformation extends Component {
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i,
     );
     if (
-      fullName !== null &&
+      firstName !== null &&
+      middleName !== null &&
+      lastName !== null &&
       // workEmail !== null &&
       privateEmail !== null &&
       workEmail !== privateEmail &&
-      notSpace.test(fullName) &&
+      notSpace.test(firstName) &&
+      notSpace.test(middleName) &&
+      notSpace.test(lastName) &&
       emailRegExp.test(privateEmail)
       // emailRegExp.test(workEmail)
     ) {
@@ -193,7 +199,9 @@ class BasicInformation extends Component {
       dispatch({
         type: 'candidateInfo/submitBasicInfo',
         payload: {
-          fullName: values.fullName,
+          firstName: values.firstName,
+          middleName: values.middleName,
+          lastName: values.lastName,
           privateEmail: values.privateEmail,
           workEmail: values.workEmail,
           previousExperience: values.previousExperience,
@@ -275,25 +283,74 @@ class BasicInformation extends Component {
     return (
       <div className={styles.basicInformation__form}>
         <Row gutter={[48, 0]}>
-          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+          <Col xs={24} sm={24} md={24} lg={8} xl={8}>
             <Form.Item
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               required={false}
-              label={formatMessage({ id: 'component.basicInformation.fullName' })}
-              name="fullName"
+              label={formatMessage({ id: 'component.basicInformation.firstName' })}
+              name="firstName"
               rules={[
-                { required: true, message: `'Please input your full name!'` },
+                { required: true, message: `'Please input your first name!'` },
                 {
                   pattern: /[^\s-]/,
-                  message: 'Fullname is invalid!',
+                  message: 'First name is invalid!',
                 },
               ]}
             >
               <Input
                 // onChange={(e) => this.handleChange(e)}
+                placeholder="First name"
                 className={styles.formInput}
-                name="fullName"
+                name="firstName"
+                disabled={this.disableEdit()}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={24} lg={8} xl={8}>
+            <Form.Item
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              required={false}
+              label={formatMessage({ id: 'component.basicInformation.middleName' })}
+              name="middleName"
+              rules={[
+                { required: true, message: `'Please input your middle name!'` },
+                {
+                  pattern: /[^\s-]/,
+                  message: 'Middle name is invalid!',
+                },
+              ]}
+            >
+              <Input
+                // onChange={(e) => this.handleChange(e)}
+                placeholder="Middle name"
+                className={styles.formInput}
+                name="middleName"
+                disabled={this.disableEdit()}
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={24} lg={8} xl={8}>
+            <Form.Item
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              required={false}
+              label={formatMessage({ id: 'component.basicInformation.lastName' })}
+              name="lastName"
+              rules={[
+                { required: true, message: `'Please input your last name!'` },
+                {
+                  pattern: /[^\s-]/,
+                  message: 'Last name is invalid!',
+                },
+              ]}
+            >
+              <Input
+                // onChange={(e) => this.handleChange(e)}
+                placeholder="Last name"
+                className={styles.formInput}
+                name="lastName"
                 disabled={this.disableEdit()}
               />
             </Form.Item>
@@ -326,6 +383,7 @@ class BasicInformation extends Component {
             >
               <Input
                 // onChange={(e) => this.handleChange(e)}
+                placeholder="Personal email"
                 className={styles.formInput}
                 name="privateEmail"
                 disabled={this.disableEdit()}
@@ -373,8 +431,8 @@ class BasicInformation extends Component {
             </Form.Item>
           </Col> */}
           {this._renderEmployeeId()}
-        </Row>
-        <Row gutter={[48, 0]}>
+          {/* </Row> */}
+          {/* <Row gutter={[48, 0]}> */}
           <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
               labelCol={{ span: 24 }}
@@ -395,6 +453,7 @@ class BasicInformation extends Component {
             >
               <Input
                 // onChange={(e) => this.handleChange(e)}
+                placeholder="Relevant previous experience"
                 className={styles.formInput}
                 name="previousExperience"
                 disabled={this.disableEdit()}

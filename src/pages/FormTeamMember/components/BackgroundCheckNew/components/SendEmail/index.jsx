@@ -13,7 +13,9 @@ const index = ({
   generateLink = '',
   handleMarkAsDone = () => {},
   handleSendFormAgain = () => {},
-  fullName = '',
+  firstName = '',
+  middleName = '',
+  lastName = '',
   handleValueChange = () => {},
   valueToFinalOffer,
   changeValueToFinalOffer = () => {},
@@ -177,8 +179,11 @@ const index = ({
       {isSentEmail ? (
         <div className={style.anotherBody}>
           <Typography.Text className={style.text}>
-            We are waiting for <span className={style.specificText}>Mr / Mrs. {fullName}</span> to
-            upload all requested documents for eligibility check.
+            We are waiting for{' '}
+            <span className={style.specificText}>
+              Mr / Mrs. {firstName + lastName + middleName}
+            </span>{' '}
+            to upload all requested documents for eligibility check.
           </Typography.Text>
           <br />
           <Button type="link" onClick={handleSendFormAgain} className={style.buttonSend}>

@@ -175,6 +175,7 @@ class CompanyDetails extends Component {
           state: checkLegalSameHeadQuarter ? stateHeadquarter : stateLegal,
           zipCode: checkLegalSameHeadQuarter ? zipHeadquarter : zipLegal,
         },
+        isSameAsHeadquarter: checkLegalSameHeadQuarter,
         contactEmail: ownerEmail,
         hrContactName: hrName,
         hrContactEmail: hrEmail,
@@ -519,6 +520,7 @@ class CompanyDetails extends Component {
           state: stateLegal,
           zipCode: zipLegal,
         } = {},
+        isSameAsHeadquarter,
         hrContactEmail: hrEmail,
         hrContactName: hrName,
         hrContactPhone: hrPhone,
@@ -583,6 +585,7 @@ class CompanyDetails extends Component {
               stateLegal,
               zipLegal,
               ownerEmail: email,
+              isSameAsHeadquarter,
               hrName,
               hrEmail,
               hrPhone,
@@ -804,7 +807,7 @@ class CompanyDetails extends Component {
                         s.content__viewBottom__row__textLabelVertical,
                       )}
                     >
-                      Zip
+                      Zip / Postal Code
                     </p>
                     <Form.Item
                       name="zipHeadquarter"
@@ -833,6 +836,7 @@ class CompanyDetails extends Component {
                   // defaultChecked={checkLegalSameHeadQuarter}
                   disabled={!isEditAddresses}
                   onChange={this.onChangeCheckbox}
+                  defaultChecked={isSameAsHeadquarter}
                   checked={checkLegalSameHeadQuarter}
                 >
                   Same as Headquarters address
@@ -958,7 +962,7 @@ class CompanyDetails extends Component {
                         s.content__viewBottom__row__textLabelVertical,
                       )}
                     >
-                      Zip
+                      Zip / Postal Code
                     </p>
                     <Form.Item
                       name="zipLegal"
