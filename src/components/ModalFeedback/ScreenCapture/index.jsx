@@ -127,6 +127,9 @@ export default class ScreenCapture extends Component {
     const { imgUrl } = this.state;
 
     onEndCapture(imgUrl);
+    this.setState({
+      imgUrl: null,
+    });
   };
 
   render() {

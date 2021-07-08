@@ -10,7 +10,7 @@ const ModalFeedback = (props) => {
   const [form] = Form.useForm();
   const [on, setOn] = useState(false);
   const [valueRadio, setValueRadio] = useState(null);
-  const [feedback, setFeedback] = useState('');
+  const [feedback, setFeedback] = useState(null);
   const [screenCapture, setScreenCapture] = useState(null);
   const { visible = false, handleCandelModal = () => {}, openFeedback = () => {} } = props;
 
@@ -32,6 +32,7 @@ const ModalFeedback = (props) => {
     openFeedback();
     setScreenCapture(img);
     setOn(false);
+    document.body.style.overflow = 'scroll';
   };
 
   const handleBack = () => {
@@ -39,9 +40,11 @@ const ModalFeedback = (props) => {
   };
 
   const destroyOnClose = () => {
-    handleCandelModal();
-    setValueRadio(null);
+    setOn(false);
+    setFeedback(null);
     setScreenCapture(null);
+    setValueRadio(null);
+    handleCandelModal();
   };
 
   return (
@@ -70,7 +73,6 @@ const ModalFeedback = (props) => {
                 onFinish={handleFinish}
                 onValuesChange={handleChange}
                 preserve={false}
-                initialValues={{ option: valueRadio, feedback }}
               >
                 <div className={styles.formTop} style={screenCapture ? { display: 'flex' } : {}}>
                   {!screenCapture && (
@@ -122,6 +124,7 @@ const ModalFeedback = (props) => {
                         },
                       ]}
                       className={styles.textBoxForm}
+                      initialValue={feedback}
                     >
                       <TextArea
                         className={styles.fieldModal}
