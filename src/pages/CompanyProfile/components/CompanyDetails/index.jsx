@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Select, Button, Checkbox, Row, Col } from 'antd';
+import { Form, Input, Select, Button, Checkbox, Row, Col, Spin } from 'antd';
 import classnames from 'classnames';
 import { connect } from 'umi';
 import s from './index.less';
@@ -84,6 +84,7 @@ class CompanyDetails extends Component {
       const {
         headquarterAddressLine1,
         headquarterAddressLine2,
+        cityHeadquarter,
         countryHeadquarterProps,
         stateHeadquarter,
         zipHeadquarter,
@@ -92,6 +93,7 @@ class CompanyDetails extends Component {
       this.formRef.current.setFieldsValue({
         legalAddressLine1: headquarterAddressLine1,
         legalAddressLine2: headquarterAddressLine2,
+        cityLegal: cityHeadquarter,
         countryLegalProps: countryHeadquarterProps,
         stateLegal: stateHeadquarter,
         zipLegal: zipHeadquarter,
@@ -101,6 +103,7 @@ class CompanyDetails extends Component {
       this.formRef.current.setFieldsValue({
         legalAddressLine1: undefined,
         legalAddressLine2: undefined,
+        cityLegal: undefined,
         countryLegalProps: undefined,
         stateLegal: undefined,
         zipLegal: undefined,
@@ -124,6 +127,8 @@ class CompanyDetails extends Component {
       ein,
       headquarterAddressLine1,
       headquarterAddressLine2,
+      cityHeadquarter,
+      cityLegal,
       legalAddressLine1,
       legalAddressLine2,
       name,
@@ -157,6 +162,7 @@ class CompanyDetails extends Component {
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
           addressLine2: headquarterAddressLine2 || '',
+          city: cityHeadquarter,
           country: countryHeadquarterProps,
           state: stateHeadquarter,
           zipCode: zipHeadquarter,
@@ -164,6 +170,7 @@ class CompanyDetails extends Component {
         legalAddress: {
           addressLine1: legalAddressLine1,
           addressLine2: legalAddressLine2 || '',
+          city: cityLegal,
           country: countryLegalProps,
           state: stateLegal,
           zipCode: zipLegal,
@@ -182,6 +189,7 @@ class CompanyDetails extends Component {
           headQuarterAddress: {
             addressLine1: headquarterAddressLine1,
             addressLine2: headquarterAddressLine2,
+            city: cityHeadquarter,
             country: countryHeadquarterProps,
             state: stateHeadquarter,
             zipCode: zipHeadquarter,
@@ -189,6 +197,7 @@ class CompanyDetails extends Component {
           legalAddress: {
             addressLine1: headquarterAddressLine1,
             addressLine2: headquarterAddressLine2,
+            city: cityHeadquarter,
             country: countryLegalProps,
             state: stateLegal,
             zipCode: zipLegal,
@@ -283,6 +292,7 @@ class CompanyDetails extends Component {
     if (
       field.headquarterAddressLine1 ||
       field.countryHeadquarterProps ||
+      field.cityHeadquarter ||
       field.stateHeadquarter ||
       field.zipHeadquarter
     ) {
@@ -368,6 +378,7 @@ class CompanyDetails extends Component {
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
           addressLine2: headquarterAddressLine2,
+          city: cityHeadquarter,
           country: countryHeadquarterProps,
           state: stateHeadquarter,
           zipCode: zipHeadquarter,
@@ -375,6 +386,7 @@ class CompanyDetails extends Component {
         legalAddress: {
           addressLine1: legalAddressLine1,
           addressLine2: legalAddressLine2,
+          city: cityLegal,
           country: countryLegalProps,
           state: stateLegal,
           zipCode: zipLegal,
@@ -411,6 +423,13 @@ class CompanyDetails extends Component {
       },
     };
 
+    if (!industryList[0]?._id)
+      return (
+        <div className={s.loadingSpin}>
+          <Spin />
+        </div>
+      );
+
     return (
       <Form
         className={s.root}
@@ -426,11 +445,13 @@ class CompanyDetails extends Component {
           website,
           headquarterAddressLine1,
           headquarterAddressLine2,
+          cityHeadquarter,
           countryHeadquarterProps,
           stateHeadquarter,
           zipHeadquarter,
           legalAddressLine1,
           legalAddressLine2,
+          cityLegal,
           countryLegalProps,
           stateLegal,
           zipLegal,
@@ -440,7 +461,7 @@ class CompanyDetails extends Component {
           hrPhone,
           isNewTenant: false,
           isHeadQuarter: true,
-          industry,
+          industry: industry || industryList[0]?._id,
           companyType,
           // logoUrl,
         }}
@@ -461,9 +482,7 @@ class CompanyDetails extends Component {
                     showArrow
                     showSearch
                     allowClear
-                    defaultValue="informationTechnology"
                     className={s.parentCompanySelect}
-                    // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
                     filterOption={(input, option) =>
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
@@ -476,12 +495,6 @@ class CompanyDetails extends Component {
                         {item.name}
                       </Option>
                     ))}
-                    {/* <Option
-                      value="Information Technology"
-                      style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
-                    >
-                      Information Technology
-                    </Option> */}
                   </Select>
                 </Form.Item>
               </Col>
@@ -499,7 +512,6 @@ class CompanyDetails extends Component {
                     allowClear
                     // defaultValue=""
                     className={s.parentCompanySelect}
-                    // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
                     filterOption={(input, option) =>
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
@@ -512,18 +524,6 @@ class CompanyDetails extends Component {
                         {item.name}
                       </Option>
                     ))}
-                    {/* <Option
-                      value="IT Services"
-                      style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
-                    >
-                      IT Services
-                    </Option>
-                    <Option
-                      value="Product"
-                      style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
-                    >
-                      Product
-                    </Option> */}
                   </Select>
                 </Form.Item>
               </Col>
@@ -631,6 +631,25 @@ class CompanyDetails extends Component {
                 </Form.Item>
               </Col>
             </Row>
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>City Name*</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item
+                  name="cityHeadquarter"
+                  label={false}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter City Name!',
+                    },
+                  ]}
+                >
+                  <Input autoComplete="off" placeholder="City Name" />
+                </Form.Item>
+              </Col>
+            </Row>
             <Row gutter={[24, 24]} className={s.content__viewBottom__row}>
               <Col span={8} className={s.viewFormVertical}>
                 <p
@@ -731,7 +750,9 @@ class CompanyDetails extends Component {
             </Checkbox>
           </div>
           <div
-            className={classnames(s.content__viewBottom, { [s.hidden]: checkLegalSameHeadQuarter })}
+            className={classnames(s.content__viewBottom, {
+              [s.hidden]: checkLegalSameHeadQuarter,
+            })}
           >
             <Row className={s.content__viewBottom__row}>
               <Col span={8}>
@@ -768,6 +789,25 @@ class CompanyDetails extends Component {
                   ]}
                 >
                   <Input autoComplete="off" placeholder="Address Line 2" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>City Name*</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item
+                  name="cityLegal"
+                  label={false}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please enter City Name!',
+                    },
+                  ]}
+                >
+                  <Input autoComplete="off" placeholder="City Name" />
                 </Form.Item>
               </Col>
             </Row>

@@ -21,8 +21,9 @@ const Screen2 = (props) => {
         zipCode = '',
         country: country1 = '',
         state = '',
+        city = '',
       } = data;
-      if (!name || !addressLine1 || !zipCode || !country1 || !state) check = false;
+      if (!name || !addressLine1 || !zipCode || !country1 || !state || !city) check = false;
     });
     setGoNext(check);
   };
@@ -58,10 +59,11 @@ const Screen2 = (props) => {
               name: '',
               addressLine1: '',
               addressLine2: '',
+              city: '',
               country: '',
               state: '',
               zipCode: '',
-              isheadQuarter: false,
+              isHeadQuarter: false,
               index: currentIndex,
             },
           ],
@@ -101,6 +103,13 @@ const Screen2 = (props) => {
     }
   };
 
+  const onChangeHeadquarterName = (e) => {
+    dispatch({
+      type: 'signup/saveHeadQuarterAddress',
+      payload: { ...headQuarterAddress, name: e?.target?.value || 'Headquarter' },
+    });
+  };
+
   return (
     <div className={styles.container}>
       <Form
@@ -110,13 +119,16 @@ const Screen2 = (props) => {
           remember: true,
           addressLine1: headQuarterAddress.addressLine1,
           addressLine2: headQuarterAddress.addressLine2,
+          city: headQuarterAddress.city,
           country: headQuarterAddress.country,
           state: headQuarterAddress.state,
           zipCode: headQuarterAddress.zipCode,
+          name: headQuarterAddress.name,
           locations: [
             {
               addressLine1: '',
               addressLine2: '',
+              city: '',
               country: '',
               state: '',
               zipCode: '',
@@ -140,6 +152,19 @@ const Screen2 = (props) => {
             {useIntl().formatMessage({ id: 'page.signUp.step2.headquarter' })}
           </h2>
 
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[
+              {
+                required: true,
+                message: 'Please input headquarter name!',
+              },
+            ]}
+            className={styles.vertical}
+          >
+            <Input onChange={onChangeHeadquarterName} />
+          </Form.Item>
           <Form.Item
             label="Address Line 1"
             name="addressLine1"
@@ -167,7 +192,9 @@ const Screen2 = (props) => {
           >
             <Input disabled />
           </Form.Item>
-
+          <Form.Item label="City Name*" className={styles.vertical} name="city">
+            <Input disabled />
+          </Form.Item>
           <Form.Item
             label={useIntl().formatMessage({ id: 'page.signUp.step2.country' })}
             name="country"
