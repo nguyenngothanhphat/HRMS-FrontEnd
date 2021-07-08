@@ -85,6 +85,7 @@ const ModalFeedback = (props) => {
                             message: 'Please check the radio !',
                           },
                         ]}
+                        initialValue={valueRadio}
                       >
                         <Radio.Group onChange={onChange} value={valueRadio}>
                           <Radio value={1} className={styles.radioText}>
