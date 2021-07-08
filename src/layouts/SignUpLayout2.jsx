@@ -12,7 +12,7 @@ const SignUpLayout2 = (props) => {
       <Layout className={styles.SignUpLayout2}>
         <Header className={styles.header}>
           <div className={styles.logo}>
-            <span>APP NAME</span>
+            <span>HRMS</span>
           </div>
         </Header>
         <Content className={styles.content}>
