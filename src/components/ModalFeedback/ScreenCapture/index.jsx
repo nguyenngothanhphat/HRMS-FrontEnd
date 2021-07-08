@@ -148,6 +148,12 @@ export default class ScreenCapture extends Component {
           className={`${styles.overlay} ${isMouseDown && `${styles.highlighting}`}`}
           style={{ borderWidth }}
         />
+        <div className={styles.highlightNote} style={isMouseDown ? { display: 'none' } : {}}>
+          <div className={styles.highlightNote__title}>Highlight page</div>
+          <div className={styles.highlightNote__subtitle}>
+            Click and drag to highlight the area.
+          </div>
+        </div>
         {imgUrl ? (
           <img
             alt="temp"
