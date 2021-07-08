@@ -40,13 +40,21 @@ class JobDetails extends PureComponent {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
 
     const {
-      data: { dateOfJoining = '', noticePeriod = '' },
+      data: { dateOfJoining = '' },
       dispatch,
       checkMandatory,
       isCandidateAcceptDOJ = true,
+      jobDetails: { candidatesNoticePeriod = 0, prefferedDateOfJoining = '' } = {},
     } = this.props;
+    // console.log('dateOfJoining', dateOfJoining);
+    // console.log('prefferedDateOfJoining', prefferedDateOfJoining);
+    // console.log('isCandidateAcceptDOJ', isCandidateAcceptDOJ);
+    // console.log('candidatesNoticePeriod', candidatesNoticePeriod);
 
-    if (dateOfJoining && (isCandidateAcceptDOJ || (!isCandidateAcceptDOJ && noticePeriod))) {
+    if (
+      (dateOfJoining && isCandidateAcceptDOJ) ||
+      ((prefferedDateOfJoining || dateOfJoining) && !isCandidateAcceptDOJ && candidatesNoticePeriod)
+    ) {
       dispatch({
         type: 'candidateProfile/save',
         payload: {
@@ -63,6 +71,7 @@ class JobDetails extends PureComponent {
     const { dispatch, checkMandatory, data } = this.props;
 
     const { dateOfJoining = '', noticePeriod = '' } = data;
+
     let valid = false;
     if (dateOfJoining && noticePeriod) {
       valid = true;
@@ -132,7 +141,7 @@ class JobDetails extends PureComponent {
     //   return [mnth, day, date.getFullYear()].join('/');
     // };
 
-    const converted = prefferedDateOfJoining?._d?.toLocaleDateString() || dateOfJoining;
+    const converted = prefferedDateOfJoining || dateOfJoining;
 
     dispatch({
       type: 'candidateProfile/updateByCandidateEffect',
@@ -194,7 +203,6 @@ class JobDetails extends PureComponent {
           </Col>
           <Col span={8}>
             <div className={styles.bottomBar__button}>
-              {' '}
               <Button
                 type="secondary"
                 onClick={this.onClickPrev}
@@ -206,9 +214,9 @@ class JobDetails extends PureComponent {
                 type="primary"
                 onClick={this.onClickNext}
                 className={`${styles.bottomBar__button__primary} ${
-                  filledJobDetail ? styles.bottomBar__button__disabled : ''
+                  !filledJobDetail ? styles.bottomBar__button__disabled : ''
                 }`}
-                disabled={filledJobDetail}
+                disabled={!filledJobDetail}
               >
                 Next
               </Button>

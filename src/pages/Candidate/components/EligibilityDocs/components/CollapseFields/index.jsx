@@ -92,6 +92,7 @@ class CollapseField extends Component {
       <div className={styles.CollapseField}>
         {item.data.length > 0 || item.type === 'E' ? (
           <Collapse
+            defaultActiveKey="1"
             accordion
             expandIconPosition="right"
             expandIcon={(props) => {
@@ -99,6 +100,7 @@ class CollapseField extends Component {
             }}
           >
             <Collapse.Panel
+              key="1"
               header={
                 <Checkbox
                   className={styles.checkbox}

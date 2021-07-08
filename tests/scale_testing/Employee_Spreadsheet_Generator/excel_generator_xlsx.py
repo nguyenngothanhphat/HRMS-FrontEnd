@@ -4,24 +4,27 @@ import xlsxwriter   # to create and write to an excel sheet
 import math     # to use the ceil function
 import sys  # to use command line arguments
 import os   # to open the created spreadsheet upon running the script
+import openpyxl    # python excel support
+import csv   # csv library
 
 
 
-if len(sys.argv) != 5:  # number of arguments check
-    print("There should be exactly 5 arguments.")
-    print("Usage:  python excel_generator_xlsx.py [director_count] [director_sr_manager_count] [director_sr_manager_managers_count] [director_sr_manager_managers_people_count]")
+if len(sys.argv) != 6:  # number of arguments check
+    print("There should be exactly 6 arguments.")
+    print("Usage:  python excel_generator_xlsx.py [director_count] [director_sr_manager_count] [director_sr_manager_managers_count] [director_sr_manager_managers_people_count] [name_of_company]")
     exit()
 
 args = []
 
-for i in range(1, len(sys.argv)):   # creating a new args array while making sure that all entered arguments are integers
+for i in range(1, len(sys.argv)-1):   # creating a new args array while making sure that all entered arguments are integers
     try :
         args.append(int(sys.argv[i]))
     except:
-        raise Exception ("All arguments must be non-negative integers")
+        raise Exception ("All arguments except for the name of company must be non-negative integers")
 
+args.append(sys.argv[len(sys.argv)-1])
 
-arg_name_arr = ['director_count', 'director_sr_manager_count', 'director_sr_manager_managers_count', 'director_sr_manager_managers_people_count']
+arg_name_arr = ['director_count', 'director_sr_manager_count', 'director_sr_manager_managers_count', 'director_sr_manager_managers_people_count', 'name_of_company']
 
 arg_dict = {}
 
@@ -29,6 +32,21 @@ for index in range(len(arg_name_arr)):
     arg_dict[arg_name_arr[index]] = args[index]
 
 print("Args:", arg_dict)    # printing out args array with labels for user to understand them
+
+
+
+
+# converting the name of the company into lowercase and stripping off whitespaces
+
+final_arg_4 = ""
+for i in range(len(args[4])):
+    if args[4][i] != ' ':
+        final_arg_4 += args[4][i].lower()
+
+args[4] = final_arg_4
+
+
+
 
 
 # CEO is Super Admin
@@ -52,7 +70,7 @@ total_non_ELT_count = (director_count + director_sr_manager_total_count + direct
 total_number_of_employees = total_chief_count + total_non_ELT_count    # total number of employees
 
 
-name_of_file = "scale_" + str(total_number_of_employees) + ".xlsx"
+name_of_file = args[4] + "_scale_" + str(total_number_of_employees) + ".xlsx"
 workbook = xlsxwriter.Workbook(name_of_file)   # create xlsx file
 worksheet = workbook.add_worksheet()
 
@@ -62,8 +80,8 @@ worksheet.set_column('B:E', 15)
 worksheet.set_column('F:F', 25)
 worksheet.set_column('G:G', 15)
 worksheet.set_column('H:H', 25)
-worksheet.set_column('I:J', 40)
-worksheet.set_column('K:K', 33)
+worksheet.set_column('I:J', 50)
+worksheet.set_column('K:K', 50)
 worksheet.set_column('L:L', 15)
 
 column_names = ['Employee Id', 'First Name', 'Last Name', 'Joined Date', 'Location', 'Department', 'Employment Type',
@@ -161,7 +179,7 @@ def populate_manager_email():   # function that populates all the manager email 
 
 
     for i in range(len(man_arr)):   # for all elements in man_arr, write them in the correct field with the appended '@mailinator.com' to signify an email id
-        worksheet.write(i+1, 10, man_arr[i] + "@mailinator.com")    # row i+1 (since the first row is just the column name), column 10 (manager work email)
+        worksheet.write(i+1, 10, args[4] + "_" + man_arr[i] + "@mailinator.com")    # row i+1 (since the first row is just the column name), column 10 (manager work email)
 
 
 
@@ -247,13 +265,13 @@ def populate_employees():   # function to populate all the fields of the excel s
                 result += string[j] # end of the code to convert the employee's job title to lowercase to use to create the work email field's content
 
         work_email = result + "@mailinator.com"
-        worksheet.write(emp_id, column_id, work_email)
+        worksheet.write(emp_id, column_id, args[4] + "_" + work_email)
         column_id += 1
 
 
         # Employee's Personal Email ID
         personal_email = result + "_personal@mailinator.com"    # just adding '_personal' next to the employee's work email
-        worksheet.write(emp_id, column_id, personal_email)
+        worksheet.write(emp_id, column_id, args[4] + "_" + personal_email)
         column_id += 2      # notice it's incremented by 2 instead of 1 because the manager work email field is filled outside of this function
 
 
@@ -273,9 +291,33 @@ complete_roles = generic_teams()
 populate_employees()
 populate_manager_email()
 
-
 workbook.close()
 
-command = 'open ' + name_of_file
-print("Name of the spreadsheet created:", name_of_file )
-os.system(command)  # command to open the created spreadsheet
+
+# HERE WE START CONVERTING THE XLSX SHEET TO CSV FOR IMPORTATION
+excel = openpyxl.load_workbook(name_of_file)
+sheet = excel.active    # SWITCHING TO THE ACTIVE OPEN SHEET
+
+plain_file_name = name_of_file.split(".xlsx")
+csv_file_name = plain_file_name[0] + ".csv"     # NAMING OUR NEW CSV FILE
+
+col = csv.writer(open(csv_file_name,'w', newline=""))
+
+for r in sheet.rows:    # POPULATING THE CSV FILE WE JUST CREATED WITH THE CONTENT FROM THE XLSX SHEET
+    # row by row write operation is performed
+    col.writerow([cell.value for cell in r])
+
+
+
+# CSV FILE GENERATED
+command = 'open ' + csv_file_name
+print("Name of the CSV file created:", csv_file_name)
+os.system(command)  # command to open the created CSV file
+
+
+
+# #  IF YOU WANTED TO OPEN THE XLSX FILE GENERATED
+# command = 'open ' + name_of_file
+print("Name of the XLSX spreadsheet created:", name_of_file)
+# os.system(command)  # command to open the created XLSX spreadsheet
+

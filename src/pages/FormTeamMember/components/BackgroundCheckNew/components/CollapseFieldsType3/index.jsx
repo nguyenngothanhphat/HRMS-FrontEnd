@@ -83,65 +83,67 @@ class CollapseFieldsType3 extends PureComponent {
   };
 
   render() {
-    const { item: { data = [] } = {}, disabled = false } = this.props;
+    const { processStatus = '', item: { data = [] } = {}, disabled = false } = this.props;
     const { documentName } = this.state;
 
     const checkAll = data.map((val) => val.alias);
     return (
       <div className={styles.CollapseFieldsType3}>
-        <Collapse
-          accordion
-          expandIconPosition="right"
-          defaultActiveKey="1"
-          expandIcon={(props) => {
-            return props.isActive ? (
-              <MinusOutlined className={styles.alternativeExpandIcon} />
-            ) : (
-              <PlusOutlined className={styles.alternativeExpandIcon} />
-            );
-          }}
-        >
-          <Panel header={this.renderHeader()} key="1">
-            {data.length > 0 && (
-              <CheckboxGroup
-                direction="vertical"
-                // onChange={this.onChange}
-                value={checkAll}
-                disabled={disabled}
-                onChange={() => {}}
-                className={styles.checkBoxesGroup}
-              >
-                {data.map((val, index) => (
-                  <Checkbox value={val.alias}>
-                    {val.alias}
+        {(data.length > 0 || processStatus === 'DRAFT') && (
+          <Collapse
+            accordion
+            expandIconPosition="right"
+            defaultActiveKey="1"
+            expandIcon={(props) => {
+              return props.isActive ? (
+                <MinusOutlined className={styles.alternativeExpandIcon} />
+              ) : (
+                <PlusOutlined className={styles.alternativeExpandIcon} />
+              );
+            }}
+          >
+            <Panel header={this.renderHeader()} key="1">
+              {data.length > 0 && (
+                <CheckboxGroup
+                  direction="vertical"
+                  // onChange={this.onChange}
+                  value={checkAll}
+                  disabled={disabled}
+                  onChange={() => {}}
+                  className={styles.checkBoxesGroup}
+                >
+                  {data.map((val, index) => (
+                    <Checkbox value={val.alias}>
+                      {val.alias}
 
-                    {!disabled && (
-                      <DeleteOutlined
-                        onClick={() => this.handleRemoveDocumentName(index)}
-                        className={styles.removeIcon}
-                      />
-                    )}
-                  </Checkbox>
-                ))}
-              </CheckboxGroup>
-            )}
-            {!disabled && (
-              <div className={styles.addDocumentName}>
-                <Input
-                  onChange={(e) => {
-                    this.setState({ documentName: e.target.value });
-                  }}
-                  placeholder="Document Name"
-                  value={documentName}
-                />
-                <PlusOutlined
-                  onClick={documentName ? this.handleAddDocumentName : () => {}}
-                  className={styles.plusIcon}
-                />
-              </div>
-            )}
-          </Panel>
-        </Collapse>
+                      {!disabled && (
+                        <DeleteOutlined
+                          onClick={() => this.handleRemoveDocumentName(index)}
+                          className={styles.removeIcon}
+                        />
+                      )}
+                    </Checkbox>
+                  ))}
+                </CheckboxGroup>
+              )}
+              {!disabled && (
+                <div className={styles.addDocumentName}>
+                  <Input
+                    onChange={(e) => {
+                      this.setState({ documentName: e.target.value });
+                    }}
+                    placeholder="Document Name"
+                    value={documentName}
+                  />
+                  <PlusOutlined
+                    onClick={documentName ? this.handleAddDocumentName : () => {}}
+                    className={styles.plusIcon}
+                  />
+                </div>
+              )}
+            </Panel>
+          </Collapse>
+        )}
       </div>
     );
   }

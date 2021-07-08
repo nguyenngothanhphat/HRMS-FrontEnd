@@ -74,6 +74,16 @@ const routes = [
     ],
   },
   {
+    path: '/first-change-password',
+    component: '../layouts/AccountSetupLayout',
+    routes: [
+      {
+        path: '/first-change-password',
+        component: './FirstChangePassword',
+      },
+    ],
+  },
+  {
     path: '/',
     component: '../layouts/SecurityLayout',
     routes: [
