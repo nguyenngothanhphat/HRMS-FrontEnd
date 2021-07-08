@@ -59,6 +59,7 @@ class WorkLocations extends PureComponent {
         name = '',
         addressLine1 = '',
         addressLine2 = '',
+        city = '',
         country = '',
         state = '',
         zipCode = '',
@@ -69,6 +70,7 @@ class WorkLocations extends PureComponent {
         headQuarterAddress: {
           addressLine1,
           addressLine2,
+          city,
           country,
           state,
           zipCode,
@@ -76,6 +78,7 @@ class WorkLocations extends PureComponent {
         legalAddress: {
           addressLine1,
           addressLine2,
+          city,
           country,
           state,
           zipCode,
@@ -146,6 +149,20 @@ class WorkLocations extends PureComponent {
     });
   };
 
+  onChangeHeadquarterName = (e) => {
+    const { dispatch, companyDetails: { locations = [] } = {} } = this.props;
+    const newHeadquarter = {
+      ...locations[0],
+      name: e.target?.value || 'Headquarter',
+    };
+    dispatch({
+      type: 'companiesManagement/saveHeadquarterName',
+      payload: {
+        locations: [newHeadquarter],
+      },
+    });
+  };
+
   render() {
     const {
       listCountry = [],
@@ -165,6 +182,7 @@ class WorkLocations extends PureComponent {
         headQuarterAddress: {
           addressLine1 = '',
           addressLine2 = '',
+          city = '',
           country = '',
           state = '',
           zipCode = '',
@@ -201,6 +219,8 @@ class WorkLocations extends PureComponent {
           country,
           state,
           addressLine1,
+          city,
+          name: 'Headquarter',
           workLocations: defaultListLocation,
         }}
       >
@@ -222,12 +242,12 @@ class WorkLocations extends PureComponent {
             {/* <Form.Item name="companyDetails"> */}
             <FormWorkLocationTenant
               isRequired={false}
-              name="Headquarter"
               companyDetails={companyDetails}
               formRef={this.formRef}
               listCountry={listCountry}
               listLocation={listLocation}
               defaultCountry="AF"
+              onChangeHeadquarterName={this.onChangeHeadquarterName}
             />
             {/* </Form.Item> */}
             {/* ))}

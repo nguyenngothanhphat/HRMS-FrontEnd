@@ -6,7 +6,7 @@ export async function query() {
 export async function queryCurrent(payload) {
   return request('/api/usermap/get-current-user', {
     method: 'POST',
-    data: payload
+    data: payload,
   });
 }
 export async function queryNotices() {
@@ -18,7 +18,7 @@ export async function getUserInfo(data) {
     '/api/security-register-tenant',
     {
       method: 'POST',
-      data, // {firstName, email}
+      data, // {firstName, middleName, lastName, email}
     },
     true,
   );
