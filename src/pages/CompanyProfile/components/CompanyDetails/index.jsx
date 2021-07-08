@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Select, Button, Checkbox, Row, Col } from 'antd';
+import { Form, Input, Select, Button, Checkbox, Row, Col, Spin } from 'antd';
 import classnames from 'classnames';
 import { connect } from 'umi';
 import s from './index.less';
@@ -411,6 +411,13 @@ class CompanyDetails extends Component {
       },
     };
 
+    if (!industryList[0]?._id)
+      return (
+        <div className={s.loadingSpin}>
+          <Spin />
+        </div>
+      );
+
     return (
       <Form
         className={s.root}
@@ -440,7 +447,7 @@ class CompanyDetails extends Component {
           hrPhone,
           isNewTenant: false,
           isHeadQuarter: true,
-          industry,
+          industry: industry || industryList[0]?._id,
           companyType,
           // logoUrl,
         }}
@@ -461,9 +468,7 @@ class CompanyDetails extends Component {
                     showArrow
                     showSearch
                     allowClear
-                    defaultValue="informationTechnology"
                     className={s.parentCompanySelect}
-                    // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
                     filterOption={(input, option) =>
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
@@ -476,12 +481,6 @@ class CompanyDetails extends Component {
                         {item.name}
                       </Option>
                     ))}
-                    {/* <Option
-                      value="Information Technology"
-                      style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
-                    >
-                      Information Technology
-                    </Option> */}
                   </Select>
                 </Form.Item>
               </Col>
@@ -499,7 +498,6 @@ class CompanyDetails extends Component {
                     allowClear
                     // defaultValue=""
                     className={s.parentCompanySelect}
-                    // onChange={(value) => this.onChangeCountry(value, 'countryLegal')}
                     filterOption={(input, option) =>
                       option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                     }
@@ -512,18 +510,6 @@ class CompanyDetails extends Component {
                         {item.name}
                       </Option>
                     ))}
-                    {/* <Option
-                      value="IT Services"
-                      style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
-                    >
-                      IT Services
-                    </Option>
-                    <Option
-                      value="Product"
-                      style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
-                    >
-                      Product
-                    </Option> */}
                   </Select>
                 </Form.Item>
               </Col>
@@ -731,7 +717,9 @@ class CompanyDetails extends Component {
             </Checkbox>
           </div>
           <div
-            className={classnames(s.content__viewBottom, { [s.hidden]: checkLegalSameHeadQuarter })}
+            className={classnames(s.content__viewBottom, {
+              [s.hidden]: checkLegalSameHeadQuarter,
+            })}
           >
             <Row className={s.content__viewBottom__row}>
               <Col span={8}>

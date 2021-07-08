@@ -38,7 +38,11 @@ export default class Feedback extends Component {
             </Button>
           </div>
         </Affix>
-        <ModalFeedback visible={visible} handleCandelModal={this.handleCandelModal} />
+        <ModalFeedback
+          visible={visible}
+          handleCandelModal={this.handleCandelModal}
+          openFeedback={this.openFeedback}
+        />
       </>
     );
   }
