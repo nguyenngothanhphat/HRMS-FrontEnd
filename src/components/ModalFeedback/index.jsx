@@ -10,6 +10,7 @@ const ModalFeedback = (props) => {
   const [form] = Form.useForm();
   const [on, setOn] = useState(false);
   const [valueRadio, setValueRadio] = useState(null);
+  const [feedback, setFeedback] = useState('');
   const [screenCapture, setScreenCapture] = useState(null);
   const { visible = false, handleCandelModal = () => {}, openFeedback = () => {} } = props;
 
@@ -19,6 +20,12 @@ const ModalFeedback = (props) => {
 
   const handleFinish = (values) => {
     console.log(values);
+  };
+
+  const handleChange = (objValue) => {
+    if ('feedback' in objValue) {
+      setFeedback(objValue.feedback);
+    }
   };
 
   const handleScreenCapture = (img) => {
@@ -61,8 +68,9 @@ const ModalFeedback = (props) => {
               <Form
                 form={form}
                 onFinish={handleFinish}
+                onValuesChange={handleChange}
                 preserve={false}
-                initialValues={{ option: valueRadio }}
+                initialValues={{ option: valueRadio, feedback }}
               >
                 <div className={styles.formTop} style={screenCapture ? { display: 'flex' } : {}}>
                   {!screenCapture && (

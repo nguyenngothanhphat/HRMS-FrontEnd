@@ -97,9 +97,8 @@ export default class ScreenCapture extends Component {
   handleMouseUp = () => {
     this.handleClickTakeScreenShot();
     this.setState({
-      // on: false,
       isMouseDown: false,
-      borderWidth: 0,
+      // borderWidth: 0,
     });
   };
 
