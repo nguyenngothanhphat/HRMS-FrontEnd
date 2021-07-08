@@ -386,6 +386,20 @@ const companiesManagement = {
         },
       };
     },
+
+    saveHeadquarterName(state, action) {
+      const { originData = {} } = state;
+      return {
+        ...state,
+        originData: {
+          ...originData,
+          companyDetails: {
+            ...originData.companyDetails,
+            ...action.payload,
+          },
+        },
+      };
+    },
   },
 };
 export default companiesManagement;
