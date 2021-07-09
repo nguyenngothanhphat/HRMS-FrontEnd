@@ -19,7 +19,9 @@ import styles from './index.less';
     candidateInfo: {
       data: {
         _id = '',
-        fullName = '',
+        firstName = '',
+        middleName = '',
+        lastName = '',
         processStatus = '',
         privateEmail = '',
         salaryStructure: { settings = [] },
@@ -29,7 +31,9 @@ import styles from './index.less';
     processStatus,
     privateEmail,
     _id,
-    fullName,
+    firstName,
+    middleName,
+    lastName,
     settings,
     loadingCloseCandidate: loading.effects['candidateInfo/closeCandidate'],
     loadingSendFormAgain: loading.effects['candidateInfo/editSalaryStructure'],
@@ -45,8 +49,7 @@ class SalaryAcceptance extends PureComponent {
     };
   }
 
-  onFinish = (values) => {
-  };
+  // onFinish = (values) => {};
 
   // static getDerivedStateFromProps(props) {
   //   if ('salaryStructure' in props) {
@@ -121,7 +124,15 @@ class SalaryAcceptance extends PureComponent {
   };
 
   _renderStatus = () => {
-    const { processStatus, fullName, loadingCloseCandidate, loadingSendFormAgain } = this.props;
+    const {
+      processStatus,
+      firstName,
+      middleName,
+      lastName,
+      loadingCloseCandidate,
+      loadingSendFormAgain,
+    } = this.props;
+    const fullName = `${firstName} ${lastName} ${middleName}`;
     if (processStatus === 'ACCEPT-PROVISIONAL-OFFER') {
       return (
         <SalaryAcceptanceContent

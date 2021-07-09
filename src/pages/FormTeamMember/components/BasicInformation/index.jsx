@@ -514,7 +514,15 @@ class BasicInformation extends Component {
 
   render() {
     const { data = {} } = this.state;
-    const { fullName, privateEmail, workEmail, previousExperience, employeeId } = data;
+    const {
+      firstName,
+      middleName,
+      lastName,
+      privateEmail,
+      workEmail,
+      previousExperience,
+      employeeId,
+    } = data;
     const { loading1 } = this.props;
     const Note = {
       title: 'Note',
@@ -539,7 +547,9 @@ class BasicInformation extends Component {
                   wrapperCol={{ span: 24 }}
                   name="basic"
                   initialValues={{
-                    fullName,
+                    firstName,
+                    middleName,
+                    lastName,
                     privateEmail,
                     workEmail,
                     previousExperience,

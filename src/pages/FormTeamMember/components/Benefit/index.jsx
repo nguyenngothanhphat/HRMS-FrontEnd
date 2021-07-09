@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
-import PreviewOffer from '@/pages/FormTeamMember/components/PreviewOffer/index';
+// import PreviewOffer from '@/pages/FormTeamMember/components/PreviewOffer/index';
 import { getCurrentTenant } from '@/utils/authority';
 import Header from './components/Header';
 import GlobalEmployeeComponent from './components/GlobalEmployeeComponent';

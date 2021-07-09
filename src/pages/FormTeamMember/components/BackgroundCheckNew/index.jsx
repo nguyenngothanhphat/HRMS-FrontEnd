@@ -123,7 +123,7 @@ class BackgroundCheck extends Component {
         educational = {},
         technicalCertifications = {},
         previousEmployment = {},
-        candidate: candidateId = '',
+        // candidate: candidateId = '',
         documentChecklistSetting = [],
       },
       tempData,
@@ -251,7 +251,7 @@ class BackgroundCheck extends Component {
       checkedListC,
       checkedListD,
     );
-    console.log('documentChecklistSetting', documentChecklistSetting);
+    // console.log('documentChecklistSetting', documentChecklistSetting);
 
     dispatch({
       type: 'candidateInfo/updateByHR',
