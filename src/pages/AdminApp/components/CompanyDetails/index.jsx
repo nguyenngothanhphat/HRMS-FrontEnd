@@ -155,6 +155,8 @@ class CompanyDetails extends Component {
       hrPhone,
       parentCompany,
       // logoUrl,
+      industry,
+      companyType,
     } = values;
 
     const { listCompany = [] } = this.props;
@@ -169,6 +171,8 @@ class CompanyDetails extends Component {
         dba,
         ein,
         website,
+        industry,
+        companyType,
         logoUrl: newLogo,
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
@@ -364,6 +368,8 @@ class CompanyDetails extends Component {
         name,
         dba,
         ein,
+        industry,
+        companyType,
         website,
         // logoUrl,
         headQuarterAddress: {
@@ -396,6 +402,8 @@ class CompanyDetails extends Component {
           name,
           dba,
           ein,
+          industry,
+          companyType,
           website,
           parentCompany: childOfCompany,
         });
@@ -654,6 +662,7 @@ class CompanyDetails extends Component {
                         showArrow
                         showSearch
                         allowClear
+                        disabled={!isEditCompanyDetails}
                         className={s.parentCompanySelect}
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -682,6 +691,7 @@ class CompanyDetails extends Component {
                         showArrow
                         showSearch
                         allowClear
+                        disabled={!isEditCompanyDetails}
                         // defaultValue=""
                         className={s.parentCompanySelect}
                         filterOption={(input, option) =>
