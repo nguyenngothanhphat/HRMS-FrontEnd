@@ -89,6 +89,7 @@ class CompanyDetails extends Component {
       const {
         headquarterAddressLine1,
         headquarterAddressLine2,
+        cityHeadquarter,
         countryHeadquarterProps,
         stateHeadquarter,
         zipHeadquarter,
@@ -96,6 +97,7 @@ class CompanyDetails extends Component {
       this.formRef.current.setFieldsValue({
         legalAddressLine1: headquarterAddressLine1,
         legalAddressLine2: headquarterAddressLine2,
+        cityLegal: cityHeadquarter,
         countryLegalProps: countryHeadquarterProps,
         stateLegal: stateHeadquarter,
         zipLegal: zipHeadquarter,
@@ -105,6 +107,7 @@ class CompanyDetails extends Component {
       this.formRef.current.setFieldsValue({
         legalAddressLine1: undefined,
         legalAddressLine2: undefined,
+        cityLegal: undefined,
         countryLegalProps: undefined,
         stateLegal: undefined,
         zipLegal: undefined,
@@ -132,6 +135,8 @@ class CompanyDetails extends Component {
       headquarterAddressLine2,
       legalAddressLine1,
       legalAddressLine2,
+      cityHeadquarter,
+      cityLegal,
       name,
       stateHeadquarter,
       stateLegal,
@@ -162,6 +167,7 @@ class CompanyDetails extends Component {
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
           addressLine2: headquarterAddressLine2 || '',
+          city: cityHeadquarter,
           country: countryHeadquarterProps,
           state: stateHeadquarter,
           zipCode: zipHeadquarter,
@@ -171,6 +177,7 @@ class CompanyDetails extends Component {
           addressLine2: checkLegalSameHeadQuarter
             ? headquarterAddressLine2 || ''
             : legalAddressLine2 || '',
+          city: checkLegalSameHeadQuarter ? cityHeadquarter : cityLegal,
           country: checkLegalSameHeadQuarter ? countryHeadquarterProps : countryLegalProps,
           state: checkLegalSameHeadQuarter ? stateHeadquarter : stateLegal,
           zipCode: checkLegalSameHeadQuarter ? zipHeadquarter : zipLegal,
@@ -188,16 +195,20 @@ class CompanyDetails extends Component {
           headQuarterAddress: {
             addressLine1: headquarterAddressLine1,
             addressLine2: headquarterAddressLine2,
+            city: cityHeadquarter,
             country: countryHeadquarterProps,
             state: stateHeadquarter,
             zipCode: zipHeadquarter,
           },
           legalAddress: {
-            addressLine1: headquarterAddressLine1,
-            addressLine2: headquarterAddressLine2,
-            country: countryLegalProps,
-            state: stateLegal,
-            zipCode: zipLegal,
+            addressLine1: checkLegalSameHeadQuarter ? headquarterAddressLine1 : legalAddressLine1,
+            addressLine2: checkLegalSameHeadQuarter
+              ? headquarterAddressLine2 || ''
+              : legalAddressLine2 || '',
+            city: checkLegalSameHeadQuarter ? cityHeadquarter : cityLegal,
+            country: checkLegalSameHeadQuarter ? countryHeadquarterProps : countryLegalProps,
+            state: checkLegalSameHeadQuarter ? stateHeadquarter : stateLegal,
+            zipCode: checkLegalSameHeadQuarter ? zipHeadquarter : zipLegal,
           },
           isHeadquarter: true,
         },
@@ -307,6 +318,7 @@ class CompanyDetails extends Component {
           country: countryHeadquarterProps = '',
           state: stateHeadquarter = '',
           zipCode: zipHeadquarter = '',
+          city: cityHeadquarter = '',
         } = {},
         legalAddress: {
           addressLine1: legalAddressLine1 = '',
@@ -314,6 +326,7 @@ class CompanyDetails extends Component {
           country: countryLegalProps = '',
           state: stateLegal = '',
           zipCode: zipLegal = '',
+          city: cityLegal = '',
         } = {},
         // isHeadquarter,
       } = {},
@@ -322,6 +335,7 @@ class CompanyDetails extends Component {
     const check =
       headquarterAddressLine1 === legalAddressLine1 &&
       headquarterAddressLine2 === legalAddressLine2 &&
+      cityHeadquarter === cityLegal &&
       countryHeadquarterProps === countryLegalProps &&
       stateHeadquarter === stateLegal &&
       zipHeadquarter === zipLegal;
@@ -350,6 +364,7 @@ class CompanyDetails extends Component {
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
           addressLine2: headquarterAddressLine2,
+          city: cityHeadquarter,
           country: countryHeadquarterProps,
           state: stateHeadquarter,
           zipCode: zipHeadquarter,
@@ -357,6 +372,7 @@ class CompanyDetails extends Component {
         legalAddress: {
           addressLine1: legalAddressLine1,
           addressLine2: legalAddressLine2,
+          city: cityLegal,
           country: countryLegalProps,
           state: stateLegal,
           zipCode: zipLegal,
@@ -383,11 +399,13 @@ class CompanyDetails extends Component {
         this.formRef.current.setFieldsValue({
           headquarterAddressLine1,
           headquarterAddressLine2,
+          cityHeadquarter,
           countryHeadquarterProps,
           stateHeadquarter,
           zipHeadquarter,
           legalAddressLine1,
           legalAddressLine2,
+          cityLegal,
           countryLegalProps,
           stateLegal,
           zipLegal,
@@ -509,6 +527,7 @@ class CompanyDetails extends Component {
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
           addressLine2: headquarterAddressLine2,
+          city: cityHeadquarter,
           country: countryHeadquarterProps,
           state: stateHeadquarter,
           zipCode: zipHeadquarter,
@@ -516,6 +535,7 @@ class CompanyDetails extends Component {
         legalAddress: {
           addressLine1: legalAddressLine1,
           addressLine2: legalAddressLine2,
+          city: cityLegal,
           country: countryLegalProps,
           state: stateLegal,
           zipCode: zipLegal,
@@ -576,11 +596,13 @@ class CompanyDetails extends Component {
               website,
               headquarterAddressLine1,
               headquarterAddressLine2,
+              cityHeadquarter,
               countryHeadquarterProps,
               stateHeadquarter,
               zipHeadquarter,
               legalAddressLine1,
               legalAddressLine2,
+              cityLegal,
               countryLegalProps,
               stateLegal,
               zipLegal,
@@ -727,6 +749,25 @@ class CompanyDetails extends Component {
                       ]}
                     >
                       <Input disabled={!isEditAddresses} placeholder="Address Line 2" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row className={s.content__viewBottom__row}>
+                  <Col span={8}>
+                    <p className={s.content__viewBottom__row__textLabel}>City Name*</p>
+                  </Col>
+                  <Col span={16}>
+                    <Form.Item
+                      name="cityHeadquarter"
+                      label={false}
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Please enter City Name!',
+                        },
+                      ]}
+                    >
+                      <Input disabled={!isEditAddresses} placeholder="City Name" />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -882,6 +923,25 @@ class CompanyDetails extends Component {
                       ]}
                     >
                       <Input disabled={!isEditAddresses} placeholder="Address Line 2" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row className={s.content__viewBottom__row}>
+                  <Col span={8}>
+                    <p className={s.content__viewBottom__row__textLabel}>City Name*</p>
+                  </Col>
+                  <Col span={16}>
+                    <Form.Item
+                      name="cityLegal"
+                      label={false}
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Please enter City Name!',
+                        },
+                      ]}
+                    >
+                      <Input disabled={!isEditAddresses} placeholder="City Name" />
                     </Form.Item>
                   </Col>
                 </Row>

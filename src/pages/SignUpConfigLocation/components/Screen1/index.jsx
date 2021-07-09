@@ -65,7 +65,7 @@ class Screen1 extends Component {
     const { checkLegalSameHeadQuarter = false } = signup;
     dispatch({
       type: 'signup/saveHeadQuarterAddress',
-      payload: { ...changedValues },
+      payload: { ...changedValues, name: 'Headquarter' },
     });
 
     if (checkLegalSameHeadQuarter) {
@@ -134,6 +134,8 @@ class Screen1 extends Component {
         country: countryHead = '',
         state: stateHead = '',
         zipCode: zipCodeHead = '',
+        city: cityHead = '',
+        name: nameHead = '',
       } = {},
       legalAddress: {
         addressLine1: addressLine1Legal = '',
@@ -141,6 +143,7 @@ class Screen1 extends Component {
         country = '',
         state: stateLegal = '',
         zipCode: zipCodeLegal = '',
+        city: cityLegal = '',
       } = {},
       checkLegalSameHeadQuarter = false,
     } = signup;
@@ -150,11 +153,13 @@ class Screen1 extends Component {
       !dba.trim() ||
       !ein.trim() ||
       !addressLine1Head.trim() ||
+      !cityHead.trim() ||
       // !addressLine2Head.trim() ||
       !countryHead.trim() ||
       !stateHead.trim() ||
       !zipCodeHead.trim() ||
       !addressLine1Legal ||
+      !cityLegal.trim() ||
       // !addressLine2Legal ||
       !country.trim() ||
       !stateLegal.trim() ||
@@ -241,6 +246,8 @@ class Screen1 extends Component {
               country: countryHead,
               state: stateHead,
               zipCode: zipCodeHead,
+              city: cityHead,
+              name: 'Headquarter',
             }}
             onValuesChange={this.handleFormHeadquarter}
           >
@@ -256,11 +263,10 @@ class Screen1 extends Component {
               <Form.Item label="Address Line 2" name="addressLine2">
                 <Input />
               </Form.Item>
-              <Form.Item
-                label="Country*"
-                name="country"
-                rules={[{ required: true, message: 'Please enter Country' }]}
-              >
+              <Form.Item label="City Name*" name="city">
+                <Input />
+              </Form.Item>
+              <Form.Item label="Country*" name="country">
                 <Select
                   placeholder="Select Country"
                   showArrow
@@ -323,6 +329,7 @@ class Screen1 extends Component {
               country,
               state: stateLegal,
               zipCode: zipCodeLegal,
+              city: cityLegal,
             }}
             onValuesChange={this.handleFormLegal}
           >
@@ -347,12 +354,10 @@ class Screen1 extends Component {
               <Form.Item label="Address Line 2" name="addressLine2">
                 <Input disabled={checkLegalSameHeadQuarter} />
               </Form.Item>
-
-              <Form.Item
-                label="Country*"
-                name="country"
-                rules={[{ required: true, message: 'Please enter country' }]}
-              >
+              <Form.Item label="City Name*" name="city">
+                <Input disabled={checkLegalSameHeadQuarter} />
+              </Form.Item>
+              <Form.Item label="Country*" name="country">
                 <Select
                   placeholder="Select Country"
                   showArrow

@@ -32,6 +32,7 @@ const LocationForm = (props) => {
       addressLine1 = '',
       addressLine2 = '',
       zipCode = '',
+      city = '',
       country: countryValue = '',
       state = '',
     } = formValues;
@@ -40,6 +41,7 @@ const LocationForm = (props) => {
       name,
       addressLine1,
       addressLine2,
+      city,
       country: countryValue,
       state,
       zipCode,
@@ -123,7 +125,7 @@ const LocationForm = (props) => {
   return (
     <Form form={form} onValuesChange={() => saveToStore()} initialValues={locationItem}>
       <div className={styles.card}>
-        <h2 className={styles.header}>Work location</h2>
+        <h2 className={styles.header}>Work Locations</h2>
 
         <Form.Item
           name="name"
@@ -166,7 +168,9 @@ const LocationForm = (props) => {
         >
           <Input onChange={() => handleOnChange()} />
         </Form.Item>
-
+        <Form.Item label="City Name*" className={styles.vertical} name="city">
+          <Input />
+        </Form.Item>
         <Form.Item
           name="country"
           label={useIntl().formatMessage({ id: 'page.signUp.step2.country' })}

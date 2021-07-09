@@ -67,6 +67,7 @@ class FormWorkLocationTenant extends Component {
         name = '',
         addressLine1 = '',
         addressLine2 = '',
+        city = '',
         country = '',
         state = '',
         zipCode = '',
@@ -76,6 +77,7 @@ class FormWorkLocationTenant extends Component {
       name: locationName || name,
       addressLine1,
       addressLine2,
+      city,
       country,
       state,
       zipCode,
@@ -132,6 +134,7 @@ class FormWorkLocationTenant extends Component {
       name,
       addressLine1 = '',
       addressLine2 = '',
+      city = '',
       country = '',
       state = '',
       zipCode = '',
@@ -144,6 +147,7 @@ class FormWorkLocationTenant extends Component {
       headQuarterAddress: {
         addressLine1,
         addressLine2,
+        city,
         country,
         state,
         zipCode,
@@ -189,11 +193,13 @@ class FormWorkLocationTenant extends Component {
     const {
       listCountry = [],
       field = {},
+      locationInfo = {},
       locationInfo: {
         name = '',
         _id = '',
         addressLine1 = '',
         addressLine2 = '',
+        city = '',
         country = '',
         state = '',
         zipCode = '',
@@ -204,7 +210,7 @@ class FormWorkLocationTenant extends Component {
       loadingUpdateLocation = false,
       loadingRemoveLocation = false,
     } = this.props;
-
+    console.log('locationInfo', locationInfo);
     const listState = this.findListState(newCountry) || [];
     const disableInput = !isEditing;
 
@@ -219,6 +225,7 @@ class FormWorkLocationTenant extends Component {
               name: name || locationName,
               addressLine1,
               addressLine2,
+              city,
               country,
               state,
               zipCode,
@@ -230,7 +237,7 @@ class FormWorkLocationTenant extends Component {
               </div>
             )}
             <Row className={s.content__viewBottom__viewTitle}>
-              <p className={s.title}>{isHeadQuarter ? 'Headquarter' : locationName}</p>
+              <p className={s.title}>{locationName}</p>
 
               <div className={s.actionBtn}>
                 {!isEditing ? (
@@ -312,6 +319,19 @@ class FormWorkLocationTenant extends Component {
                 </Form.Item>
               </Col>
             </Row>
+            <Row className={s.content__viewBottom__row}>
+              <Col span={8}>
+                <p className={s.content__viewBottom__row__textLabel}>City Name*</p>
+              </Col>
+              <Col span={16}>
+                <Form.Item
+                  rules={[{ required: true, message: 'Please input City Name' }]}
+                  name="city"
+                >
+                  <Input disabled={disableInput} placeholder="City Name" />
+                </Form.Item>
+              </Col>
+            </Row>
             <Row gutter={[24, 24]} className={s.content__viewBottom__row}>
               <Col span={8} className={s.viewFormVertical}>
                 <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>
@@ -328,8 +348,7 @@ class FormWorkLocationTenant extends Component {
                     disabled={disableInput}
                     onChange={this.onChangeCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {listCountry.map((item) => (
                       <Option key={item._id}>{item.name}</Option>
@@ -349,8 +368,7 @@ class FormWorkLocationTenant extends Component {
                     showSearch
                     disabled={disableInput || !newCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {listState.map((item) => (
                       <Option key={item}>{item}</Option>

@@ -169,6 +169,27 @@ class FormWorkLocation extends Component {
               </Form.Item>
             </Col>
           </Row>
+          <Row className={s.FormWorkLocation__viewBottom__row}>
+            <Col span={8}>
+              <p className={s.FormWorkLocation__viewBottom__row__textLabel}>City Name*</p>
+            </Col>
+            <Col span={16}>
+              <Form.Item
+                {...field}
+                label={false}
+                name={[field.name, 'city']}
+                fieldKey={[field.fieldKey, 'city']}
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter City Name!',
+                  },
+                ]}
+              >
+                <Input placeholder="City Name" />
+              </Form.Item>
+            </Col>
+          </Row>
           <Row gutter={[24, 24]} className={s.FormWorkLocation__viewBottom__row}>
             <Col span={8} className={s.viewFormVertical}>
               <p className={classnames(s.FormWorkLocation__viewBottom__row__textLabel, s.mgb10)}>
