@@ -63,3 +63,23 @@ export async function fetchCompanyOfUser(data) {
     data,
   });
 }
+
+export async function getCompanyTypeListInSignUp() {
+  return request(
+    '/api/companytype/list',
+    {
+      method: 'POST',
+    },
+    true,
+  );
+}
+
+export async function getIndustryListInSignUp() {
+  return request(
+    '/api/industry/list',
+    {
+      method: 'POST',
+    },
+    true,
+  );
+}

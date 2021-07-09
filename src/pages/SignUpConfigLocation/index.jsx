@@ -18,10 +18,10 @@ class SignUpConfigLocation extends Component {
       type: 'country/fetchListCountry',
     });
     dispatch({
-      type: 'companiesManagement/fetchCompanyTypeList',
+      type: 'signup/fetchCompanyTypeListInSignUp',
     });
     dispatch({
-      type: 'companiesManagement/fetchIndustryList',
+      type: 'signup/fetchIndustryListInSignUp',
     });
   }
 
