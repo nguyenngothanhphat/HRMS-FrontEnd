@@ -17,6 +17,12 @@ class SignUpConfigLocation extends Component {
     dispatch({
       type: 'country/fetchListCountry',
     });
+    dispatch({
+      type: 'signup/fetchCompanyTypeListInSignUp',
+    });
+    dispatch({
+      type: 'signup/fetchIndustryListInSignUp',
+    });
   }
 
   customStep = (number) => {

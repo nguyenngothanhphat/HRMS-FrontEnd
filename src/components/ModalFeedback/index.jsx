@@ -12,14 +12,34 @@ const ModalFeedback = (props) => {
   const [valueRadio, setValueRadio] = useState(null);
   const [feedback, setFeedback] = useState(null);
   const [screenCapture, setScreenCapture] = useState(null);
+  const [submit, setSubmit] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const { visible = false, handleCandelModal = () => {}, openFeedback = () => {} } = props;
 
   const onChange = (e) => {
     setValueRadio(e.target.value);
   };
 
+  const destroyOnClose = () => {
+    setOn(false);
+    setFeedback(null);
+    setScreenCapture(null);
+    setValueRadio(null);
+    handleCandelModal();
+  };
+
   const handleFinish = (values) => {
     console.log(values);
+    setLoadingSubmit(true);
+    setTimeout(() => {
+      setSubmit(true);
+      setLoadingSubmit(false);
+    }, 1000);
+
+    setTimeout(() => {
+      destroyOnClose();
+      setSubmit(false);
+    }, 2500);
   };
 
   const handleChange = (objValue) => {
@@ -39,14 +59,6 @@ const ModalFeedback = (props) => {
     setScreenCapture(null);
   };
 
-  const destroyOnClose = () => {
-    setOn(false);
-    setFeedback(null);
-    setScreenCapture(null);
-    setValueRadio(null);
-    handleCandelModal();
-  };
-
   return (
     <div>
       <Modal
@@ -60,12 +72,20 @@ const ModalFeedback = (props) => {
         footer={false}
       >
         <div className={styles.contentFeedback}>
-          <div className={styles.titleModal}>Feedback</div>
+          <div className={styles.titleModal}>
+            Feedback
+            {submit && (
+              <span className={styles.message}>
+                Thank you for your feedback ! Your feedback has been recorded and will be shared
+                with the appropriate team.
+              </span>
+            )}
+          </div>
           <div className={styles.formModal}>
             <div className={`${styles.subTitle} ${styles.title1}`}>
-              You can choose either to submit your wish as is, or, you can now also pinpoint areas
-              of the current page that relate to your entry with the &quot;Highlight Page&quot;
-              tool.
+              {screenCapture
+                ? `Please describe what you would like to change or what you liked?`
+                : `Thank you for helping us improve ! Please select an option below.`}
             </div>
             <div className={styles.form}>
               <Form
@@ -97,9 +117,13 @@ const ModalFeedback = (props) => {
                         </Radio.Group>
                       </Form.Item>
 
-                      <div className={`${styles.subTitle} ${styles.title2}`}>
-                        Please describe what you would like to change or what you liked?
-                      </div>
+                      {valueRadio && (
+                        <div className={`${styles.subTitle} ${styles.title2}`}>
+                          Please describe what you would like to change or what you liked? You can
+                          also pinpoint areas of the current page that relate to your feedback with
+                          the &quot;Highlight Page&quot; tool.
+                        </div>
+                      )}
                     </>
                   )}
 
@@ -143,7 +167,10 @@ const ModalFeedback = (props) => {
                       {screenCapture ? (
                         <Button
                           onClick={handleBack}
-                          className={`${styles.btnGroup} ${styles.highlightBtn} ${styles.backBtn}`}
+                          className={`${submit ? styles.disableBtn : styles.btnGroup} ${
+                            styles.highlightBtn
+                          } ${styles.backBtn}`}
+                          disabled={submit}
                         >
                           Back
                         </Button>
@@ -163,9 +190,12 @@ const ModalFeedback = (props) => {
 
                   <Form.Item className={styles.flexButton2}>
                     <Button
-                      className={`${styles.btnGroup} ${styles.btnSubmit}`}
+                      className={`${submit ? styles.disableBtn : styles.btnGroup} ${
+                        styles.btnSubmit
+                      }`}
                       htmlType="submit"
-                      //   loading={loading}
+                      loading={loadingSubmit}
+                      disabled={submit}
                     >
                       Submit
                     </Button>
