@@ -167,7 +167,9 @@ const ModalFeedback = (props) => {
                       {screenCapture ? (
                         <Button
                           onClick={handleBack}
-                          className={`${styles.btnGroup} ${styles.highlightBtn} ${styles.backBtn}`}
+                          className={`${submit ? styles.disableBtn : styles.btnGroup} ${
+                            styles.highlightBtn
+                          } ${styles.backBtn}`}
                           disabled={submit}
                         >
                           Back
@@ -188,7 +190,9 @@ const ModalFeedback = (props) => {
 
                   <Form.Item className={styles.flexButton2}>
                     <Button
-                      className={`${styles.btnGroup} ${styles.btnSubmit}`}
+                      className={`${submit ? styles.disableBtn : styles.btnGroup} ${
+                        styles.btnSubmit
+                      }`}
                       htmlType="submit"
                       loading={loadingSubmit}
                       disabled={submit}
