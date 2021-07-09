@@ -6,11 +6,19 @@ import s from './index.less';
 
 const { Option } = Select;
 
-@connect(({ country: { listState = [], listCountry = [] } = {}, signup = {} }) => ({
-  listState,
-  listCountry,
-  signup,
-}))
+@connect(
+  ({
+    country: { listState = [], listCountry = [] } = {},
+    signup = {},
+    companiesManagement: { companyTypeList = [], industryList = [] } = {},
+  }) => ({
+    listState,
+    listCountry,
+    signup,
+    companyTypeList,
+    industryList,
+  }),
+)
 class Screen1 extends Component {
   constructor(props) {
     super(props);
@@ -125,7 +133,7 @@ class Screen1 extends Component {
   };
 
   render() {
-    const { listCountry = [], signup = {} } = this.props;
+    const { listCountry = [], signup = {}, companyTypeList = [], industryList = [] } = this.props;
     const {
       company: { name = '', dba = '', ein = '' } = {},
       headQuarterAddress: {
@@ -190,6 +198,46 @@ class Screen1 extends Component {
                 contact you easily.
               </p>
 
+              <Form.Item label="Industry*" name="industry">
+                <Select
+                  placeholder="Select Industry"
+                  showArrow
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {industryList.map((item) => (
+                    <Option
+                      style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                      key={item._id}
+                    >
+                      {item.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item label="Industry*" name="industry">
+                <Select
+                  placeholder="Select Industry"
+                  showArrow
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {companyTypeList.map((item) => (
+                    <Option
+                      style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                      key={item._id}
+                    >
+                      {item.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
               <Form.Item label="Legal Business Name*" name="name">
                 <Input />
               </Form.Item>
@@ -247,7 +295,8 @@ class Screen1 extends Component {
                   showSearch
                   onChange={this.onChangeCountryHeadquarter}
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
                   {listCountry.map((item) => (
                     <Option key={item._id}>{item.name}</Option>
@@ -263,7 +312,8 @@ class Screen1 extends Component {
                       showSearch
                       disabled={!countryHead}
                       filterOption={(input, option) =>
-                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
                     >
                       {listStateHead.map((item) => (
                         <Option key={item}>{item}</Option>
@@ -325,7 +375,8 @@ class Screen1 extends Component {
                   onChange={this.onChangeSelectLegal}
                   disabled={checkLegalSameHeadQuarter}
                   filterOption={(input, option) =>
-                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
                 >
                   {listCountry.map((item) => (
                     <Option key={item._id}>{item.name}</Option>
@@ -341,7 +392,8 @@ class Screen1 extends Component {
                       showSearch
                       disabled={checkLegalSameHeadQuarter || !country}
                       filterOption={(input, option) =>
-                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
                     >
                       {listStateLegal.map((item) => (
                         <Option key={item}>{item}</Option>
