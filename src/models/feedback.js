@@ -13,9 +13,11 @@ const country = {
         const { statusCode, data: feedback = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { feedback } });
+        return statusCode;
       } catch (errors) {
         dialog(errors);
       }
+      return 0;
     },
   },
   reducers: {

@@ -8,7 +8,10 @@ import styles from './index.less';
 
 const { TextArea } = Input;
 
-@connect()
+@connect(({ loading }) => ({
+  loading: loading.effects['upload/uploadFile'],
+  loadingSubmit: loading.effects['feedback/submitFeedback'],
+}))
 class ModalFeedback extends Component {
   // const [form] = Form.useForm();
 
@@ -20,6 +23,7 @@ class ModalFeedback extends Component {
       feedback: null,
       screenCapture: null,
       submit: false,
+      dataScreenshot: [],
     };
   }
 
@@ -41,8 +45,20 @@ class ModalFeedback extends Component {
   };
 
   handleFinish = (data) => {
-    const { feedback: feedbackContent } = data;
-    const { screenCapture, valueRadio } = this.state;
+    this.getResponse(data);
+  };
+
+  getResponse = (dataSubmit) => {
+    const { dispatch } = this.props;
+    const { valueRadio, dataScreenshot } = this.state;
+    const { feedback: feedbackContent } = dataSubmit;
+    let url = '';
+    let name = '';
+
+    dataScreenshot.forEach((item) => {
+      url = item.url;
+      name = item.name;
+    });
 
     const tenantId = getCurrentTenant();
     const companyId = getCurrentCompany();
@@ -55,24 +71,29 @@ class ModalFeedback extends Component {
       type,
       images: [
         {
-          url: screenCapture,
-          name: 'abc',
+          url,
+          name,
         },
       ],
     };
 
-    console.log(screenCapture);
-    console.log(payload);
-    // setLoadingSubmit(true);
-    // setTimeout(() => {
-    //   setSubmit(true);
-    //   setLoadingSubmit(false);
-    // }, 1000);
+    dispatch({
+      type: 'feedback/submitFeedback',
+      payload,
+    }).then((statusCode = 0) => {
+      if (statusCode === 200) {
+        this.setState({
+          submit: true,
+        });
+      }
 
-    // setTimeout(() => {
-    //   destroyOnClose();
-    //   setSubmit(false);
-    // }, 2500);
+      setTimeout(() => {
+        this.destroyOnClose();
+        this.setState({
+          submit: false,
+        });
+      }, 2500);
+    });
   };
 
   handleChange = (objValue) => {
@@ -83,28 +104,41 @@ class ModalFeedback extends Component {
     }
   };
 
-  handleUploadToServer = () => {
-    const { dispatch, getResponse = () => {} } = this.props;
-    const { croppedImage } = this.state;
-    const formData = new FormData();
-    formData.append('uri', croppedImage);
-    dispatch({
-      type: 'upload/uploadFile',
-      payload: formData,
-      isUploadAvatar: true,
-    }).then((resp) => {
-      getResponse(resp);
-    });
+  dataURItoBlob = (dataURI) => {
+    const binary = atob(dataURI.split(',')[1]);
+    const array = [];
+    for (let i = 0; i < binary.length; i += 1) {
+      array.push(binary.charCodeAt(i));
+    }
+    // eslint-disable-next-line compat/compat
+    return new Blob([new Uint8Array(array)], { type: 'image/jpeg' });
+  };
+
+  getBase64 = (img, callback) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => callback(reader.result));
+    reader.readAsDataURL(img);
   };
 
   handleScreenCapture = (img) => {
-    const { openFeedback = () => {} } = this.props;
-    openFeedback();
-    this.setState({
-      screenCapture: img,
-      on: false,
+    const { openFeedback = () => {}, dispatch } = this.props;
+
+    const formData = new FormData();
+    const file = this.dataURItoBlob(img);
+    formData.append('blob', file, 'screenshot.jpeg');
+
+    dispatch({
+      type: 'upload/uploadFile',
+      payload: formData,
+    }).then(({ data }) => {
+      openFeedback();
+      this.setState({
+        screenCapture: img,
+        on: false,
+        dataScreenshot: data,
+      });
     });
-    document.body.style.overflow = 'scroll';
+    // document.body.style.overflow = 'scroll';
   };
 
   handleBack = () => {
@@ -114,7 +148,7 @@ class ModalFeedback extends Component {
   };
 
   render() {
-    const { visible = false, handleCandelModal = () => {} } = this.props;
+    const { visible = false, handleCandelModal = () => {}, loadingSubmit, loading } = this.props;
     const { screenCapture, on, submit, valueRadio, feedback } = this.state;
 
     return (
@@ -254,7 +288,7 @@ class ModalFeedback extends Component {
                           styles.btnSubmit
                         }`}
                         htmlType="submit"
-                        // loading={loadingSubmit}
+                        loading={loadingSubmit || loading}
                         disabled={submit}
                       >
                         Submit
