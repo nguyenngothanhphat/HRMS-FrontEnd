@@ -1,6 +1,6 @@
 /* eslint-disable react/static-property-placement */
 import React, { Component } from 'react';
-// import { Button } from 'antd';
+import { Spin } from 'antd';
 import html2canvas from 'html2canvas';
 import styles from './index.less';
 
@@ -19,7 +19,8 @@ export default class ScreenCapture extends Component {
       windowWidth: 0,
       windowHeight: 0,
       borderWidth: 0,
-      imgUrl: null,
+      // imgUrl: null,
+      isScreenshot: false,
     };
   }
 
@@ -98,6 +99,7 @@ export default class ScreenCapture extends Component {
     this.handleClickTakeScreenShot();
     this.setState({
       isMouseDown: false,
+      isScreenshot: true,
       // borderWidth: 0,
     });
   };
@@ -135,21 +137,26 @@ export default class ScreenCapture extends Component {
   // };
 
   render() {
-    const { borderWidth, isMouseDown, imgUrl } = this.state;
-    if (imgUrl) {
-      document.body.style.overflow = 'hidden';
-    }
+    const { borderWidth, isMouseDown, isScreenshot } = this.state;
+    // if (imgUrl) {
+    //   document.body.style.overflow = 'hidden';
+    // }
 
     return (
       <div
         onMouseMove={this.handleMouseMove}
-        onMouseDown={imgUrl ? null : this.handleMouseDown}
-        onMouseUp={imgUrl ? null : this.handleMouseUp}
+        onMouseDown={this.handleMouseDown}
+        onMouseUp={this.handleMouseUp}
       >
         <div
           className={`${styles.overlay} ${isMouseDown && `${styles.highlighting}`}`}
           style={{ borderWidth }}
         />
+        {isScreenshot ? (
+          <div className={styles.loadingScreenshot}>
+            <Spin />
+          </div>
+        ) : null}
         <div className={styles.highlightNote} style={isMouseDown ? { display: 'none' } : {}}>
           <div className={styles.highlightNote__title}>Highlight page</div>
           <div className={styles.highlightNote__subtitle}>
