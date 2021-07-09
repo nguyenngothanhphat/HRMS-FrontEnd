@@ -20,6 +20,14 @@ const ModalFeedback = (props) => {
     setValueRadio(e.target.value);
   };
 
+  const destroyOnClose = () => {
+    setOn(false);
+    setFeedback(null);
+    setScreenCapture(null);
+    setValueRadio(null);
+    handleCandelModal();
+  };
+
   const handleFinish = (values) => {
     console.log(values);
     setLoadingSubmit(true);
@@ -29,7 +37,8 @@ const ModalFeedback = (props) => {
     }, 1000);
 
     setTimeout(() => {
-      handleCandelModal();
+      destroyOnClose();
+      setSubmit(false);
     }, 2500);
   };
 
@@ -48,14 +57,6 @@ const ModalFeedback = (props) => {
 
   const handleBack = () => {
     setScreenCapture(null);
-  };
-
-  const destroyOnClose = () => {
-    setOn(false);
-    setFeedback(null);
-    setScreenCapture(null);
-    setValueRadio(null);
-    handleCandelModal();
   };
 
   return (
