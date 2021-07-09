@@ -423,7 +423,7 @@ class OnboardTable extends Component {
         dataIndex: 'assignTo',
         key: 'assignTo',
         render: (assignTo) => (
-          <span className={styles.renderAssignee} onClick={() => this.viewProfile(assignTo._id)}>
+          <span className={styles.renderAssignee} onClick={() => this.viewProfile(assignTo.userId)}>
             {assignTo?.generalInfo?.firstName + assignTo?.generalInfo?.lastName || '-'}
           </span>
         ),
@@ -437,7 +437,7 @@ class OnboardTable extends Component {
         render: (assigneeManager) => (
           <span
             className={styles.renderAssignee}
-            onClick={() => this.viewProfile(assigneeManager._id)}
+            onClick={() => this.viewProfile(assigneeManager.userId)}
           >
             {assigneeManager?.generalInfo?.firstName + assigneeManager?.generalInfo?.lastName ||
               '-'}

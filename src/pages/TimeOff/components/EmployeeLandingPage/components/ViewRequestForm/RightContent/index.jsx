@@ -32,7 +32,10 @@ class RightContent extends PureComponent {
 
   render() {
     const {
-      approvalManager: { _id = '', generalInfo: { firstName = '', lastName = '' } = {} } = {},
+      approvalManager: {
+        // _id = '',
+        generalInfo: { firstName = '', lastName = '', userId = '' } = {},
+      } = {},
       // status = '',
     } = this.props;
     return (
@@ -54,7 +57,10 @@ class RightContent extends PureComponent {
           </div>
           <div className={styles.description}>
             <span className={styles.text1}>Your request is under review by </span>
-            <span onClick={() => this.viewEmployeeProfile(_id)} className={styles.reportingManager}>
+            <span
+              onClick={() => this.viewEmployeeProfile(userId)}
+              className={styles.reportingManager}
+            >
               {firstName} {lastName}
             </span>
           </div>

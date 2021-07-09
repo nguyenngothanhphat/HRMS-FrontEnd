@@ -38,10 +38,18 @@ class BasicInformation extends PureComponent {
 
     const { basicInformation = {} } = this.state;
     basicInformation[name] = value;
-    const { fullName = '', workEmail = '', privateEmail = '' } = basicInformation;
+    const {
+      firstName = '',
+      middleName = '',
+      lastName = '',
+      workEmail = '',
+      privateEmail = '',
+    } = basicInformation;
 
     if (
-      fullName !== '' &&
+      firstName !== '' &&
+      middleName !== '' &&
+      lastName !== '' &&
       workEmail !== '' &&
       privateEmail !== '' &&
       emailRegExp.test(privateEmail)
@@ -84,29 +92,62 @@ class BasicInformation extends PureComponent {
 
   _renderForm = () => {
     const { isOpenReminder, basicInformation = {} } = this.state;
-    const { fullName, privateEmail, workEmail, experienceYear } = basicInformation;
+    const { firstName, middleName, lastName, privateEmail, workEmail, experienceYear } =
+      basicInformation;
     return (
       <Form
         className={styles.basicInformation__form}
         wrapperCol={{ span: 24 }}
         name="basic"
-        initialValues={{ fullName, privateEmail, workEmail, experienceYear }}
+        initialValues={{ firstName, middleName, lastName, privateEmail, workEmail, experienceYear }}
         onFocus={this.onFocus}
       >
         <Row gutter={[48, 0]}>
-          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+          <Col xs={24} sm={24} md={24} lg={8} xl={8}>
             <Form.Item
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               required={false}
-              label={formatMessage({ id: 'component.basicInformation.fullName' })}
-              name="fullName"
-              rules={[{ required: true, message: `'Please input your full name!'` }]}
+              label={formatMessage({ id: 'component.basicInformation.firstName' })}
+              name="firstName"
+              rules={[{ required: true, message: `'Please input your first name!'` }]}
             >
               <Input
                 onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
-                name="fullName"
+                name="firstName"
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={24} lg={8} xl={8}>
+            <Form.Item
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              required={false}
+              label={formatMessage({ id: 'component.basicInformation.middleName' })}
+              name="middleName"
+              rules={[{ required: true, message: `'Please input your middle name!'` }]}
+            >
+              <Input
+                onChange={(e) => this.handleChange(e)}
+                className={styles.formInput}
+                name="middleName"
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={24} lg={8} xl={8}>
+            <Form.Item
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              required={false}
+              label={formatMessage({ id: 'component.basicInformation.lastName' })}
+              name="lastName"
+              rules={[{ required: true, message: `'Please input your last name!'` }]}
+            >
+              <Input
+                onChange={(e) => this.handleChange(e)}
+                className={styles.formInput}
+                name="lastName"
               />
             </Form.Item>
           </Col>

@@ -61,14 +61,30 @@ class Edit extends PureComponent {
       originData: { companyDetails: { company: companyDetails = {} } = {} },
       tenantCurrentCompany,
     } = companiesManagement;
-    const payload = {
-      ...companyDetails,
-      id: companyDetails._id,
-      tenantId: tenantCurrentCompany,
-      headQuarterAddress: {
-        ...changedValues,
-      },
-    };
+    let payload = {};
+    if (companyDetails.isSameAsHeadquarter) {
+      payload = {
+        ...companyDetails,
+        id: companyDetails._id,
+        tenantId: tenantCurrentCompany,
+        headQuarterAddress: {
+          ...changedValues,
+        },
+        legalAddress: {
+          ...changedValues,
+        },
+      };
+    } else {
+      payload = {
+        ...companyDetails,
+        id: companyDetails._id,
+        tenantId: tenantCurrentCompany,
+        headQuarterAddress: {
+          ...changedValues,
+        },
+      };
+    }
+
     delete payload._id;
     dispatch({
       type: 'companiesManagement/updateCompany',

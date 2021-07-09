@@ -249,7 +249,15 @@ class EligibilityDocs extends PureComponent {
 
   handleSendEmail = () => {
     const {
-      data: { dateOfJoining, noticePeriod, fullName, generatedBy, workHistory = [] },
+      data: {
+        dateOfJoining,
+        noticePeriod,
+        firstName,
+        middleName,
+        lastName,
+        generatedBy,
+        workHistory = [],
+      },
       dispatch,
     } = this.props;
     const { user = {} } = generatedBy;
@@ -265,7 +273,9 @@ class EligibilityDocs extends PureComponent {
       payload: {
         dateOfJoining,
         options: 1,
-        fullName,
+        firstName,
+        middleName,
+        lastName,
         noticePeriod,
         hrEmail: email,
         workHistories: workHistory,
