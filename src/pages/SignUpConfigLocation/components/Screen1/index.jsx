@@ -15,8 +15,6 @@ const { Option } = Select;
     listState,
     listCountry,
     signup,
-    companyTypeList,
-    industryList,
   }),
 )
 class Screen1 extends Component {
@@ -133,9 +131,9 @@ class Screen1 extends Component {
   };
 
   render() {
-    const { listCountry = [], signup = {}, companyTypeList = [], industryList = [] } = this.props;
+    const { listCountry = [], signup = {} } = this.props;
     const {
-      company: { name = '', dba = '', ein = '' } = {},
+      company: { name = '', dba = '', ein = '', companyType = '', industry = '' } = {},
       headQuarterAddress: {
         addressLine1: addressLine1Head = '',
         addressLine2: addressLine2Head = '',
@@ -154,12 +152,16 @@ class Screen1 extends Component {
         city: cityLegal = '',
       } = {},
       checkLegalSameHeadQuarter = false,
+      companyTypeList = [],
+      industryList = [],
     } = signup;
 
     const checkDisableBtnNext =
       !name.trim() ||
       !dba.trim() ||
       !ein.trim() ||
+      !companyType.trim() ||
+      !industry.trim() ||
       !addressLine1Head.trim() ||
       !cityHead.trim() ||
       // !addressLine2Head.trim() ||
@@ -188,6 +190,8 @@ class Screen1 extends Component {
               name,
               dba,
               ein,
+              companyType,
+              industry,
             }}
             onValuesChange={this.handleFormCompanyChange}
           >
@@ -218,9 +222,9 @@ class Screen1 extends Component {
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item label="Industry*" name="industry">
+              <Form.Item label="Company Type*" name="companyType">
                 <Select
-                  placeholder="Select Industry"
+                  placeholder="Select Company Type"
                   showArrow
                   showSearch
                   allowClear

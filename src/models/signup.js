@@ -51,6 +51,8 @@ const signup = {
       lastName: '',
       email: '',
     },
+    companyTypeList: [],
+    industryList: [],
   },
   effects: {
     *fetchUserInfo({ payload }, { call, put }) {
