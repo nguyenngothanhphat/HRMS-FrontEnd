@@ -14,6 +14,7 @@ class ViewHistory extends Component {
     const { resetSearch = () => {} } = this.props;
     const {
       employee: { _id = '' },
+      userId = '',
       firstName = '',
       avatar = '',
     } = item;
@@ -23,7 +24,7 @@ class ViewHistory extends Component {
         key={index}
         className={s.itemDisplay}
         onClick={() => {
-          history.push(`/employees/employee-profile/${_id}`);
+          history.push(`/employees/employee-profile/${userId}`);
           resetSearch();
         }}
       >

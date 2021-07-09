@@ -89,8 +89,8 @@ class RequesteeDetail extends PureComponent {
                   const {
                     name: prName = '',
                     manager: {
-                      _id: pjManagerId = '',
-                      generalInfo: { firstName: fn = '', lastName: ln = '' } = {},
+                      // _id: pjManagerId = '',
+                      generalInfo: { firstName: fn = '', lastName: ln = '', userId = '' } = {},
                     } = {},
                     projectHealth = 0,
                   } = project;
@@ -100,7 +100,7 @@ class RequesteeDetail extends PureComponent {
                         name={prName}
                         projectManager={`${fn} ${ln}`}
                         projectHealth={projectHealth}
-                        employeeId={pjManagerId}
+                        employeeId={userId}
                       />
                       {/* {index + 1 < projects.length && <div className={styles.divider} />} */}
                     </>
