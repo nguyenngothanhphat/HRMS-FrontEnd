@@ -244,13 +244,17 @@ const OfferDetail = (props) => {
     const {
       candidate = '',
       _id = '',
-      fullName = '',
+      firstName = '',
+      middleName = '',
+      lastName = '',
       position = '',
       employeeType: { name: classificationName = '' } = {},
       workLocation: { name: workLocationName = '' } = {},
       department: { name: departmentName = '' } = {},
       title: { name: jobTitle = '' } = {},
-      reportingManager: { generalInfo: { firstName = '', lastName = '' } = {} } = {},
+      reportingManager: {
+        generalInfo: { firstName: managerFirstName = '', lastName: managerLastnName = '' } = {},
+      } = {},
     } = data;
     const formValues = form.getFieldsValue();
     const { compensation, currency, timeoff } = formValues;
@@ -365,13 +369,15 @@ const OfferDetail = (props) => {
       const offerData = {
         candidateId: candidate,
         templateId,
-        fullname: fullName,
+        firstName,
+        middleName,
+        lastName,
         position,
         classification: classificationName,
         workLocation: workLocationName,
         department: departmentName,
         jobTitle,
-        reportManager: `${firstName} ${lastName}`,
+        reportManager: `${managerFirstName} ${managerLastnName}`,
         includeOffer,
         tenantId: getCurrentTenant(),
       };

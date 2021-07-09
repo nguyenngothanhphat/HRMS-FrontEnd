@@ -11,12 +11,12 @@ const { TabPane } = Tabs;
 export default class ManageTeamWork extends PureComponent {
   renderItemMyTeam = (item = {}) => {
     const {
-      generalInfo: { avatar = '', firstName = '' } = {},
+      generalInfo: { avatar = '', firstName = '', userId = '' } = {},
       title: { name: title = '' } = {},
       _id = '',
     } = item;
     return (
-      <Link to={`/employees/employee-profile/${_id}`}>
+      <Link to={`/employees/employee-profile/${userId}`}>
         <div className={s.containerItemMyTeam}>
           <Avatar size={42} src={avatar} icon={<UserOutlined />} />
           <div className={s.containerItemMyTeam__viewInfo}>

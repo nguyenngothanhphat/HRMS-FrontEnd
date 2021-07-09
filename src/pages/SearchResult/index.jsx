@@ -73,12 +73,12 @@ class SearchResult extends PureComponent {
   };
 
   renderItemEmployee = (item = {}, index) => {
-    const { employee = {} } = item;
+    const { employee = {}, userId = '' } = item;
     return (
       <Col
         span={4}
         style={{ cursor: 'pointer' }}
-        onClick={() => history.push(`/employees/employee-profile/${employee._id}`)}
+        onClick={() => history.push(`/employees/employee-profile/${userId}`)}
       >
         <div key={index} className={styles.itemListPeople}>
           <Avatar size={50} src={item?.avatar || avtDefault} />

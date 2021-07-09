@@ -129,7 +129,9 @@ class AvatarDropdown extends React.Component {
 
   viewProfile = async () => {
     const {
-      currentUser: { employee: { _id: employeeID = '' } = {} } = {},
+      currentUser: {
+        employee: { _id: employeeID = '', generalInfo: { userId = '' } = {} } = {},
+      } = {},
       currentUser: { _id: adminOwnerID = '' } = {},
     } = this.props;
     const { dispatch } = this.props;
@@ -161,7 +163,7 @@ class AvatarDropdown extends React.Component {
     if (checkIsAdmin || checkIsOwner) {
       history.replace(`/user-profile/${adminOwnerID}`);
     } else {
-      history.replace(`/directory/employee-profile/${employeeID}`);
+      history.push(`/directory/employee-profile/${userId}`);
     }
   };
 

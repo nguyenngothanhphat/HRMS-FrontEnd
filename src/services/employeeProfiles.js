@@ -6,6 +6,12 @@ export async function getGeneralInfo(payload) {
     data: payload,
   });
 }
+export async function getGeneralInfoByUserId(payload) {
+  return request('/api/generalinfotenant/get-employee-by-user-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
 export async function getEmploymentInfo(payload) {
   return request('/api/employeetenant/get-by-id', {
     method: 'POST',

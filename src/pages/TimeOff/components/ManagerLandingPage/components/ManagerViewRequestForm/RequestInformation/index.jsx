@@ -84,9 +84,9 @@ class RequestInformation extends PureComponent {
   };
 
   // ON VIEW EMPLOYEE PROFILE
-  onViewEmployeeProfile = (_id) => {
+  onViewEmployeeProfile = (userId) => {
     history.push({
-      pathname: `/directory/employee-profile/${_id}`,
+      pathname: `/directory/employee-profile/${userId}`,
     });
   };
 
@@ -204,8 +204,8 @@ class RequestInformation extends PureComponent {
       description = '',
       type: { name = '', shortType = '' } = {},
       employee: {
-        _id: employeeId = '',
-        generalInfo: { firstName = '', lastName = '' } = {},
+        // _id: employeeId = '',
+        generalInfo: { firstName = '', lastName = '', userId = '' } = {},
         employeeId: employeeIdText = '',
         position: { name: position = '' } = {},
       } = {},
@@ -236,7 +236,7 @@ class RequestInformation extends PureComponent {
               <Col span={6}>Employee Name</Col>
               <Col span={18} className={styles.detailColumn}>
                 <span
-                  onClick={() => this.onViewEmployeeProfile(employeeId)}
+                  onClick={() => this.onViewEmployeeProfile(userId)}
                   className={styles.employeeLink}
                 >
                   {`${firstName} ${lastName}`}
@@ -283,8 +283,12 @@ class RequestInformation extends PureComponent {
                         const {
                           name: prName = '',
                           manager: {
-                            _id: pjManagerId = '',
-                            generalInfo: { firstName: fn = '', lastName: ln = '' } = {},
+                            // _id: pjManagerId = '',
+                            generalInfo: {
+                              firstName: fn = '',
+                              lastName: ln = '',
+                              userId = '',
+                            } = {},
                           } = {},
                           projectHealth = 0,
                         } = project;
@@ -294,7 +298,7 @@ class RequestInformation extends PureComponent {
                               name={prName}
                               projectManager={`${fn} ${ln}`}
                               projectHealth={projectHealth}
-                              employeeId={pjManagerId}
+                              employeeId={userId}
                             />
                             {/* {index + 1 < projects.length && <div className={styles.divider} />} */}
                           </>

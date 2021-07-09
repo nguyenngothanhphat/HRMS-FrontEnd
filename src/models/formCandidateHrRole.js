@@ -225,7 +225,9 @@ const candidateInfo = {
       salaryTitle: null,
     },
     data: {
-      fullName: null,
+      firstName: null,
+      middleName: null,
+      lastName: null,
       privateEmail: null,
       workEmail: null,
       workLocation: null,
@@ -933,7 +935,9 @@ const candidateInfo = {
         });
 
         const {
-          fullName = '',
+          firstName = '',
+          middleName = '',
+          lastName = '',
           privateEmail = '',
           previousExperience = '',
           salaryStructure = {},
@@ -975,7 +979,7 @@ const candidateInfo = {
           checkStatus.filledBgCheck = true;
         }
 
-        if (fullName && privateEmail && previousExperience) {
+        if (firstName && middleName && lastName && privateEmail && previousExperience) {
           checkStatus.filledBasicInformation = true;
         }
         if ('title' in data && 'workLocation' in data && 'department' in data) {
@@ -1346,7 +1350,7 @@ const candidateInfo = {
       };
     },
     saveFilledSalaryStructure(state, action) {
-      const { data, checkMandatory } = state;
+      const { checkMandatory } = state;
       return {
         ...state,
         checkMandatory: {
