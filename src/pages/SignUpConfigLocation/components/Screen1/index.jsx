@@ -6,11 +6,17 @@ import s from './index.less';
 
 const { Option } = Select;
 
-@connect(({ country: { listState = [], listCountry = [] } = {}, signup = {} }) => ({
-  listState,
-  listCountry,
-  signup,
-}))
+@connect(
+  ({
+    country: { listState = [], listCountry = [] } = {},
+    signup = {},
+    companiesManagement: { companyTypeList = [], industryList = [] } = {},
+  }) => ({
+    listState,
+    listCountry,
+    signup,
+  }),
+)
 class Screen1 extends Component {
   constructor(props) {
     super(props);
@@ -127,7 +133,7 @@ class Screen1 extends Component {
   render() {
     const { listCountry = [], signup = {} } = this.props;
     const {
-      company: { name = '', dba = '', ein = '' } = {},
+      company: { name = '', dba = '', ein = '', companyType = '', industry = '' } = {},
       headQuarterAddress: {
         addressLine1: addressLine1Head = '',
         addressLine2: addressLine2Head = '',
@@ -146,12 +152,16 @@ class Screen1 extends Component {
         city: cityLegal = '',
       } = {},
       checkLegalSameHeadQuarter = false,
+      companyTypeList = [],
+      industryList = [],
     } = signup;
 
     const checkDisableBtnNext =
       !name.trim() ||
       !dba.trim() ||
       !ein.trim() ||
+      !companyType.trim() ||
+      !industry.trim() ||
       !addressLine1Head.trim() ||
       !cityHead.trim() ||
       // !addressLine2Head.trim() ||
@@ -180,6 +190,8 @@ class Screen1 extends Component {
               name,
               dba,
               ein,
+              companyType,
+              industry,
             }}
             onValuesChange={this.handleFormCompanyChange}
           >
@@ -190,6 +202,46 @@ class Screen1 extends Component {
                 contact you easily.
               </p>
 
+              <Form.Item label="Industry*" name="industry">
+                <Select
+                  placeholder="Select Industry"
+                  showArrow
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {industryList.map((item) => (
+                    <Option
+                      style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                      key={item._id}
+                    >
+                      {item.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item label="Company Type*" name="companyType">
+                <Select
+                  placeholder="Select Company Type"
+                  showArrow
+                  showSearch
+                  allowClear
+                  filterOption={(input, option) =>
+                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {companyTypeList.map((item) => (
+                    <Option
+                      style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                      key={item._id}
+                    >
+                      {item.name}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
               <Form.Item
                 label="Legal Business Name*"
                 name="name"

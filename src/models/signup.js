@@ -2,7 +2,14 @@
 import { dialog } from '@/utils/utils';
 import { history } from 'umi';
 import { notification } from 'antd';
-import { signupAdmin, getUserInfo, getSecurityCode, activeAdmin } from '../services/user';
+import {
+  signupAdmin,
+  getUserInfo,
+  getSecurityCode,
+  activeAdmin,
+  getIndustryListInSignUp,
+  getCompanyTypeListInSignUp,
+} from '../services/user';
 
 const delay = (timeout) => {
   return new Promise((resolve) => {
@@ -20,6 +27,8 @@ const signup = {
       name: '',
       dba: '',
       ein: '',
+      companyType: '',
+      industry: '',
     },
     headQuarterAddress: {
       addressLine1: '',
@@ -42,6 +51,8 @@ const signup = {
       lastName: '',
       email: '',
     },
+    companyTypeList: [],
+    industryList: [],
   },
   effects: {
     *fetchUserInfo({ payload }, { call, put }) {
@@ -122,6 +133,26 @@ const signup = {
       } catch (errors) {
         dialog(errors);
         return {};
+      }
+    },
+    *fetchCompanyTypeListInSignUp(_, { call, put }) {
+      try {
+        const response = yield call(getCompanyTypeListInSignUp);
+        const { statusCode, data: companyTypeList = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { companyTypeList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchIndustryListInSignUp(_, { call, put }) {
+      try {
+        const response = yield call(getIndustryListInSignUp);
+        const { statusCode, data: industryList = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { industryList } });
+      } catch (errors) {
+        dialog(errors);
       }
     },
   },

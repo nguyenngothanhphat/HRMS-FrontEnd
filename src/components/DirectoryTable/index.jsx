@@ -111,8 +111,8 @@ class DirectoryTable extends Component {
         ) : (
           <Avatar className={styles.avatar_emptySrc} alt="avatar" />
         )}
-        <p onClick={() => this.handleProfileEmployee(_id, tenant, generalInfo.userId)}>
-          {`${generalInfo.firstName} ${generalInfo.lastName}`}
+        <p onClick={() => this.handleProfileEmployee(_id, tenant, generalInfo?.userId)}>
+          {`${generalInfo?.firstName} ${generalInfo?.lastName}`}
         </p>
       </div>
     );
@@ -191,9 +191,9 @@ class DirectoryTable extends Component {
         render: (employeePack) => (employeePack ? this.renderUser(employeePack) : ''),
         align: 'left',
         sorter: (a, b) =>
-          a.employeePack.generalInfo && a.employeePack.generalInfo.firstName
-            ? `${a.employeePack.generalInfo.firstName} ${a.employeePack.generalInfo.lastName}`.localeCompare(
-                `${b.employeePack.generalInfo.firstName} ${b.employeePack.generalInfo.lastName}`,
+          a.employeePack.generalInfo && a.employeePack.generalInfo?.firstName
+            ? `${a.employeePack.generalInfo?.firstName} ${a.employeePack.generalInfo?.lastName}`.localeCompare(
+                `${b.employeePack.generalInfo?.firstName} ${b.employeePack.generalInfo?.lastName}`,
               )
             : null,
         // sortOrder: sortedName.columnKey === 'employeePack' && sortedName.order,
@@ -498,8 +498,8 @@ class DirectoryTable extends Component {
           tenant: item.tenant,
         },
         managerPack: {
-          _id: item.manager._id,
-          generalInfo: item.manager.generalInfo,
+          _id: item.manager?._id,
+          generalInfo: item.manager?.generalInfo,
           tenant: item.tenant,
         },
       };

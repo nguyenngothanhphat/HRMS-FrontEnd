@@ -15,7 +15,11 @@ const { Option } = Select;
     country: { listCountry = [] } = {},
     user: { currentUser: { email = '' } = {}, companiesOfUser: listCompany = [] } = {},
     upload: { urlImage = '' } = {},
-    companiesManagement: { originData: { companyDetails } = {} } = {},
+    companiesManagement: {
+      originData: { companyDetails } = {},
+      companyTypeList = [],
+      industryList = [],
+    } = {},
   }) => ({
     listCountry,
     listCompany,
@@ -25,6 +29,8 @@ const { Option } = Select;
     loadingAdd: loading.effects['companiesManagement/addCompanyReducer'],
     loadingGetCompanyDetails: loading.effects['companiesManagement/fetchCompanyDetails'],
     email,
+    companyTypeList,
+    industryList,
   }),
 )
 class CompanyDetails extends Component {
@@ -149,6 +155,8 @@ class CompanyDetails extends Component {
       hrPhone,
       parentCompany,
       // logoUrl,
+      industry,
+      companyType,
     } = values;
 
     const { listCompany = [] } = this.props;
@@ -163,6 +171,8 @@ class CompanyDetails extends Component {
         dba,
         ein,
         website,
+        industry,
+        companyType,
         logoUrl: newLogo,
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
@@ -359,6 +369,8 @@ class CompanyDetails extends Component {
         name,
         dba,
         ein,
+        industry,
+        companyType,
         website,
         // logoUrl,
         headQuarterAddress: {
@@ -391,6 +403,8 @@ class CompanyDetails extends Component {
           name,
           dba,
           ein,
+          industry,
+          companyType,
           website,
           parentCompany: childOfCompany,
         });
@@ -468,6 +482,8 @@ class CompanyDetails extends Component {
       loadingAdd,
       companyId,
       email,
+      companyTypeList = [],
+      industryList = [],
     } = this.props;
 
     const fieldCompanyDetail = [
@@ -523,6 +539,8 @@ class CompanyDetails extends Component {
         dba,
         ein,
         website,
+        industry,
+        companyType,
         // logoUrl,
         headQuarterAddress: {
           addressLine1: headquarterAddressLine1,
@@ -594,6 +612,8 @@ class CompanyDetails extends Component {
               dba,
               ein,
               website,
+              industry,
+              companyType,
               headquarterAddressLine1,
               headquarterAddressLine2,
               cityHeadquarter,
@@ -634,6 +654,65 @@ class CompanyDetails extends Component {
                 </div>
               </div>
               <div className={s.content__viewBottom}>
+                <Row className={s.content__viewBottom__row}>
+                  <Col span={8}>
+                    <p className={s.content__viewBottom__row__textLabel}>Industry</p>
+                  </Col>
+                  <Col span={16}>
+                    <Form.Item name="industry">
+                      <Select
+                        placeholder="Select Industry"
+                        showArrow
+                        showSearch
+                        allowClear
+                        disabled={!isEditCompanyDetails}
+                        className={s.parentCompanySelect}
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                      >
+                        {industryList.map((item) => (
+                          <Option
+                            key={item._id}
+                            style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                          >
+                            {item.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <Row className={s.content__viewBottom__row}>
+                  <Col span={8}>
+                    <p className={s.content__viewBottom__row__textLabel}>Company Type</p>
+                  </Col>
+                  <Col span={16}>
+                    <Form.Item name="companyType">
+                      <Select
+                        placeholder="Select Company Type"
+                        showArrow
+                        showSearch
+                        allowClear
+                        disabled={!isEditCompanyDetails}
+                        // defaultValue=""
+                        className={s.parentCompanySelect}
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                      >
+                        {companyTypeList.map((item) => (
+                          <Option
+                            key={item._id}
+                            style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                          >
+                            {item.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+                </Row>
                 {fieldCompanyDetail.map(
                   ({ label, name: nameField, required = false, message }, index) => (
                     <Row key={nameField} className={s.content__viewBottom__row}>
