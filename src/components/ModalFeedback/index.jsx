@@ -63,9 +63,7 @@ const ModalFeedback = (props) => {
           <div className={styles.titleModal}>Feedback</div>
           <div className={styles.formModal}>
             <div className={`${styles.subTitle} ${styles.title1}`}>
-              You can choose either to submit your wish as is, or, you can now also pinpoint areas
-              of the current page that relate to your entry with the &quot;Highlight Page&quot;
-              tool.
+              Thank you for helping us improve ! Please select an option below.
             </div>
             <div className={styles.form}>
               <Form
@@ -97,9 +95,13 @@ const ModalFeedback = (props) => {
                         </Radio.Group>
                       </Form.Item>
 
-                      <div className={`${styles.subTitle} ${styles.title2}`}>
-                        Please describe what you would like to change or what you liked?
-                      </div>
+                      {valueRadio && (
+                        <div className={`${styles.subTitle} ${styles.title2}`}>
+                          Please describe what you would like to change or what you liked? You can
+                          also pinpoint areas of the current page that relate to your feedback with
+                          the &quot;Highlight Page&quot; tool.
+                        </div>
+                      )}
                     </>
                   )}
 
