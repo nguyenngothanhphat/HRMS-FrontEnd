@@ -89,13 +89,21 @@ class CompanyDetails extends Component {
         zipHeadquarter,
       } = this.formRef.current.getFieldsValue();
 
-      this.formRef.current.setFieldsValue({
-        legalAddressLine1: headquarterAddressLine1,
-        legalAddressLine2: headquarterAddressLine2,
-        countryLegalProps: countryHeadquarterProps,
-        stateLegal: stateHeadquarter,
-        zipLegal: zipHeadquarter,
-      });
+      if (
+        headquarterAddressLine1 &&
+        countryHeadquarterProps &&
+        stateHeadquarter &&
+        zipHeadquarter
+      ) {
+        this.formRef.current.setFieldsValue({
+          legalAddressLine1: headquarterAddressLine1,
+          legalAddressLine2: headquarterAddressLine2,
+          countryLegalProps: countryHeadquarterProps,
+          stateLegal: stateHeadquarter,
+          zipLegal: zipHeadquarter,
+        });
+      }
+
       // console.log('ref', this.formRef.current.getFieldsValue());
     } else {
       this.formRef.current.setFieldsValue({
@@ -281,13 +289,15 @@ class CompanyDetails extends Component {
     }
   };
 
-  onValuesChange = (field) => {
-    if (
-      field.headquarterAddressLine1 ||
-      field.countryHeadquarterProps ||
-      field.stateHeadquarter ||
-      field.zipHeadquarter
-    ) {
+  onValuesChange = () => {
+    const {
+      headquarterAddressLine1,
+      // headquarterAddressLine2,
+      countryHeadquarterProps,
+      stateHeadquarter,
+      zipHeadquarter,
+    } = this.formRef.current.getFieldsValue();
+    if (headquarterAddressLine1 && countryHeadquarterProps && stateHeadquarter && zipHeadquarter) {
       this.setState({ isFilled: false });
     }
   };
