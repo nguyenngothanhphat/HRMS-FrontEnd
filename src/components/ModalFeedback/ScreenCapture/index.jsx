@@ -1,6 +1,6 @@
 /* eslint-disable react/static-property-placement */
 import React, { Component } from 'react';
-import { Button } from 'antd';
+// import { Button } from 'antd';
 import html2canvas from 'html2canvas';
 import styles from './index.less';
 
@@ -103,6 +103,7 @@ export default class ScreenCapture extends Component {
   };
 
   handleClickTakeScreenShot = async () => {
+    const { onEndCapture = () => {} } = this.props;
     let base64URL = '';
     const body = document.querySelector('body');
     window.scrollTo(0, 0);
@@ -116,21 +117,22 @@ export default class ScreenCapture extends Component {
       windowWidth: window.innerWidth,
     }).then((canvas) => {
       base64URL = canvas.toDataURL();
-      this.setState({
-        imgUrl: base64URL,
-      });
+      onEndCapture(base64URL);
+      // this.setState({
+      //   imgUrl: base64URL,
+      // });
     });
   };
 
-  handleNext = () => {
-    const { onEndCapture = () => {} } = this.props;
-    const { imgUrl } = this.state;
+  // handleNext = () => {
+  //   const { onEndCapture = () => {} } = this.props;
+  //   const { imgUrl } = this.state;
 
-    onEndCapture(imgUrl);
-    this.setState({
-      imgUrl: null,
-    });
-  };
+  //   onEndCapture(imgUrl);
+  //   this.setState({
+  //     imgUrl: null,
+  //   });
+  // };
 
   render() {
     const { borderWidth, isMouseDown, imgUrl } = this.state;
@@ -154,7 +156,7 @@ export default class ScreenCapture extends Component {
             Click and drag to highlight the area.
           </div>
         </div>
-        {imgUrl ? (
+        {/* {imgUrl ? (
           <img
             alt="temp"
             src={imgUrl}
@@ -173,7 +175,7 @@ export default class ScreenCapture extends Component {
           style={isMouseDown ? { display: 'none' } : {}}
         >
           Next
-        </Button>
+        </Button> */}
       </div>
     );
   }
