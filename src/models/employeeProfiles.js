@@ -2,6 +2,7 @@ import { dialog } from '@/utils/utils';
 import {
   getCompensationList,
   getGeneralInfo,
+  getGeneralInfoByUserId,
   getCompensation,
   getListSkill,
   updateGeneralInfo,
@@ -95,6 +96,7 @@ const employeeProfile = {
     employeeTypes: [],
     departments: [],
     compensationTypes: [],
+    employee: '',
     employees: [],
     jobTitleList: [],
     originData: {
@@ -132,6 +134,23 @@ const employeeProfile = {
     revoke: [],
   },
   effects: {
+    *fetchEmployeeIdByUserId({ payload }, { call, put }) {
+      try {
+        const response = yield call(getGeneralInfoByUserId, payload);
+        const { statusCode, data } = response;
+        console.log(response);
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            employee: data,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
     *fetchGeneralInfo(
       { payload: { employee = '', tenantId = '' }, dataTempKept = {} },
       { call, put },
@@ -578,7 +597,7 @@ const employeeProfile = {
         dialog(errors);
       }
     },
-    *fetchEmploymentInfo({ payload: { tenantId = '', id = '' } }, { call, put, select }) {
+    *fetchEmploymentInfo({ payload: { tenantId = '', id = '' } }, { call, put }) {
       let response = '';
       try {
         response = yield call(getEmploymentInfo, { tenantId, id });

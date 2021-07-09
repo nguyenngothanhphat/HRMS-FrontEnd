@@ -34,11 +34,18 @@ class EmployeeProfile extends Component {
   }
 
   componentDidMount = async () => {
-    // const { dispatch } = this.props;
+    const { dispatch, match: { params: { reId = '' } = {} } = {} } = this.props;
     // const tenantCurrentEmployee = localStorage.getItem('tenantCurrentEmployee');
     // const companyCurrentEmployee = localStorage.getItem('companyCurrentEmployee');
     // const idCurrentEmployee = localStorage.getItem('idCurrentEmployee');
-
+    await dispatch({
+      type: 'employeeProfile/fetchEmployeeIdByUserId',
+      payload: {
+        userId: reId,
+        company: getCurrentCompany(),
+        tenantId: getCurrentTenant(),
+      },
+    });
     // await dispatch({
     //   type: 'employeeProfile/save',
     //   payload: {
@@ -59,15 +66,14 @@ class EmployeeProfile extends Component {
 
   fetchData = async () => {
     const {
-      // employeeProfile,
-      match: { params: { reId: employee = '' } = {} },
+      employeeProfile: { employee = '' } = {},
+      // match: { params: { reId: employee = '' } = {} },
       dispatch,
       // employeeProfile: {
       //   tenantCurrentEmployee: tenantId1 = '',
       //   companyCurrentEmployee = ''
       // } = {},
     } = this.props;
-
     let tenantId1 = localStorage.getItem('tenantCurrentEmployee');
     tenantId1 = tenantId1 && tenantId1 !== 'undefined' ? tenantId1 : '';
 
@@ -76,7 +82,7 @@ class EmployeeProfile extends Component {
       payload: { id: employee, tenantId: tenantId1 || getCurrentTenant() },
     });
 
-    const { statusCode, data } = res;
+    const { statusCode } = res;
     if (statusCode === 200) {
       const tenantId = getCurrentTenant();
       const companyCurrentEmployee = getCurrentCompany();
@@ -206,8 +212,9 @@ class EmployeeProfile extends Component {
       permissions = {},
       location: { state: { location = '' } = {} } = {},
       loadingFetchEmployee,
+      employeeProfile,
     } = this.props;
-
+    console.log(employeeProfile);
     const listMenu = this.renderListMenu(employee, currentEmployee?._id);
 
     const profileOwner = this.checkProfileOwner(currentEmployee?._id, employee);

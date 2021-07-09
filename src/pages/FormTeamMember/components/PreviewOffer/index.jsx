@@ -19,11 +19,11 @@ import styles from './index.less';
 import PROCESS_STATUS from '../utils';
 // const INPUT_WIDTH = [50, 100, 18, 120, 100, 50, 100, 18, 120, 100]; // Width for each input field
 
-const ROLE = {
-  HRMANAGER: 'HR-MANAGER',
-  HR: 'HR',
-  HRGLOBAL: 'HR-GLOBAL',
-};
+// const ROLE = {
+//   HRMANAGER: 'HR-MANAGER',
+//   HR: 'HR',
+//   HRGLOBAL: 'HR-GLOBAL',
+// };
 
 const PreviewOffer = (props) => {
   const {
@@ -47,7 +47,9 @@ const PreviewOffer = (props) => {
   const {
     // offerLetter: offerLetterProp,
     privateEmail: candidateEmailProp = '',
-    fullName: candidateName = '',
+    firstName: candidateFirstName = '',
+    middleName: candidateMiddleName = '',
+    lastName: candidateLastName = '',
     processStatus,
   } = data;
 
@@ -583,7 +585,9 @@ const PreviewOffer = (props) => {
                 </header>
 
                 {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
-                <p>Undersigned - {candidateName}</p>
+                <p>
+                  Undersigned - {candidateFirstName} {candidateLastName} {candidateMiddleName}{' '}
+                </p>
 
                 <div className={styles.upload}>
                   {candidateSignature !== null && candidateSignature.url ? (

@@ -146,8 +146,8 @@ class RequestInformation extends PureComponent {
       status = '',
       _id = '',
       employee: {
-        generalInfo: { firstName = '', lastName = '' } = {},
-        _id: employeeId = '',
+        generalInfo: { firstName = '', lastName = '', userId: employeeUserId = '' } = {},
+        // _id: employeeId = '',
         employeeId: employeeIdText = '',
         position: { name: position = '' } = {},
       } = {},
@@ -156,8 +156,12 @@ class RequestInformation extends PureComponent {
       project: {
         name = '',
         manager: {
-          _id: managerId = '',
-          generalInfo: { firstName: firstName1 = '', lastName: lastName1 = '' } = {},
+          // _id: managerId = '',
+          generalInfo: {
+            firstName: firstName1 = '',
+            lastName: lastName1 = '',
+            userId: managerUserId = '',
+          } = {},
         } = {},
         projectHealth = 0,
       } = {},
@@ -188,7 +192,7 @@ class RequestInformation extends PureComponent {
               <Col span={6}>Employee Name</Col>
               <Col span={18} className={styles.detailColumn}>
                 <span
-                  onClick={() => this.onViewEmployeeProfile(employeeId)}
+                  onClick={() => this.onViewEmployeeProfile(employeeUserId)}
                   className={styles.employeeLink}
                 >
                   {`${firstName} ${lastName}`}
@@ -211,7 +215,7 @@ class RequestInformation extends PureComponent {
               <Col span={6}>Project Manager</Col>
               <Col span={18} className={styles.detailColumn}>
                 <span
-                  onClick={() => this.onViewEmployeeProfile(managerId)}
+                  onClick={() => this.onViewEmployeeProfile(managerUserId)}
                   className={styles.employeeLink}
                 >
                   {projectManagerName}

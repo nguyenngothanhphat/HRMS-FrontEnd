@@ -120,6 +120,7 @@ class CompanyDetails extends Component {
       // companyId,
       companyDetails: { company: { logoUrl: newLogo } = {} },
     } = this.props;
+    const { checkLegalSameHeadQuarter } = this.state;
     const {
       countryHeadquarterProps,
       countryLegalProps,
@@ -175,6 +176,7 @@ class CompanyDetails extends Component {
           state: stateLegal,
           zipCode: zipLegal,
         },
+        isSameAsHeadquarter: checkLegalSameHeadQuarter,
         contactEmail: ownerEmail,
         hrContactName: hrName,
         hrContactEmail: hrEmail,
@@ -288,14 +290,15 @@ class CompanyDetails extends Component {
     }
   };
 
-  onValuesChange = (field) => {
-    if (
-      field.headquarterAddressLine1 ||
-      field.countryHeadquarterProps ||
-      field.cityHeadquarter ||
-      field.stateHeadquarter ||
-      field.zipHeadquarter
-    ) {
+  onValuesChange = () => {
+    const {
+      headquarterAddressLine1,
+      // headquarterAddressLine2,
+      countryHeadquarterProps,
+      stateHeadquarter,
+      zipHeadquarter,
+    } = this.formRef.current.getFieldsValue();
+    if (headquarterAddressLine1 && countryHeadquarterProps && stateHeadquarter && zipHeadquarter) {
       this.setState({ isFilled: false });
     }
   };

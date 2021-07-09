@@ -111,7 +111,7 @@ class DirectoryTable extends Component {
         ) : (
           <Avatar className={styles.avatar_emptySrc} alt="avatar" />
         )}
-        <p onClick={() => this.handleProfileEmployee(_id, tenant)}>
+        <p onClick={() => this.handleProfileEmployee(_id, tenant, generalInfo.userId)}>
           {`${generalInfo.firstName} ${generalInfo.lastName}`}
         </p>
       </div>
@@ -366,7 +366,7 @@ class DirectoryTable extends Component {
     });
   };
 
-  handleProfileEmployee = async (_id, tenant) => {
+  handleProfileEmployee = async (_id, tenant, userId) => {
     // const { _id = '', location: { name = '' } = {}, tenant = '', company = {} } = row;
     // const { dispatch } = this.props;
     // await dispatch({
@@ -381,8 +381,8 @@ class DirectoryTable extends Component {
     // localStorage.setItem('idCurrentEmployee', _id);
 
     const pathname = isOwner()
-      ? `/employees/employee-profile/${_id}`
-      : `/directory/employee-profile/${_id}`;
+      ? `/employees/employee-profile/${userId}`
+      : `/directory/employee-profile/${userId}`;
     setTimeout(() => {
       history.push({
         pathname,

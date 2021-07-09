@@ -63,6 +63,7 @@ class Edit extends PureComponent {
     } = companiesManagement;
     const payload = {
       ...companyDetails,
+      isSameAsHeadquarter: false,
       id: companyDetails._id,
       tenantId: tenantCurrentCompany,
       legalAddress: {

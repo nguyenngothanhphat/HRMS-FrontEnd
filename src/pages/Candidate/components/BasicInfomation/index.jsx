@@ -39,8 +39,20 @@ class BasicInformation extends PureComponent {
     const { tempData, checkMandatory, data } = this.state;
     tempData[name] = value;
     const { checkStatus = {} } = tempData;
-    const { fullName = '', privateEmail = '', previousExperience = '' } = data;
-    if (fullName !== '' && privateEmail !== '' && previousExperience !== '') {
+    const {
+      firstName = '',
+      middleName = '',
+      lastName = '',
+      privateEmail = '',
+      previousExperience = '',
+    } = data;
+    if (
+      firstName !== '' &&
+      middleName !== '' &&
+      lastName !== '' &&
+      privateEmail !== '' &&
+      previousExperience !== ''
+    ) {
       checkStatus.filledBasicInformation = true;
     } else {
       checkStatus.filledBasicInformation = false;
@@ -72,7 +84,9 @@ class BasicInformation extends PureComponent {
     dispatch({
       type: 'candidateProfile/updateByCandidateEffect',
       payload: {
-        fullName: values.fullName,
+        firstName: values.firstName,
+        middleName: values.middleName,
+        lastName: values.lastName,
         candidate: _id,
         tenantId: getCurrentTenant(),
       },
@@ -80,7 +94,9 @@ class BasicInformation extends PureComponent {
     dispatch({
       type: 'candidateProfile/saveOrigin',
       payload: {
-        fullName: values.fullName,
+        firstName: values.firstName,
+        middleName: values.middleName,
+        lastName: values.lastName,
       },
     });
   };
@@ -89,19 +105,51 @@ class BasicInformation extends PureComponent {
     return (
       <div className={styles.basicInformation__form}>
         <Row gutter={[48, 0]}>
-          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+          <Col xs={24} sm={24} md={24} lg={8} xl={8}>
             <Form.Item
               labelCol={{ span: 24 }}
               wrapperCol={{ span: 24 }}
               required={false}
-              label={formatMessage({ id: 'component.basicInformation.fullName' })}
-              name="fullName"
-              rules={[{ required: true, message: `'Please input your full name!'` }]}
+              label={formatMessage({ id: 'component.basicInformation.firstName' })}
+              name="firstName"
+              rules={[{ required: true, message: `'Please input your first name!'` }]}
             >
               <Input
                 // onChange={(e) => this.handleChange(e)}
                 className={styles.formInput}
-                name="fullName"
+                name="firstName"
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={24} lg={8} xl={8}>
+            <Form.Item
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              required={false}
+              label={formatMessage({ id: 'component.basicInformation.middleName' })}
+              name="middleName"
+              rules={[{ required: true, message: `'Please input your middle name!'` }]}
+            >
+              <Input
+                // onChange={(e) => this.handleChange(e)}
+                className={styles.formInput}
+                name="middleName"
+              />
+            </Form.Item>
+          </Col>
+          <Col xs={24} sm={24} md={24} lg={8} xl={8}>
+            <Form.Item
+              labelCol={{ span: 24 }}
+              wrapperCol={{ span: 24 }}
+              required={false}
+              label={formatMessage({ id: 'component.basicInformation.lastName' })}
+              name="lastName"
+              rules={[{ required: true, message: `'Please input your last name!'` }]}
+            >
+              <Input
+                // onChange={(e) => this.handleChange(e)}
+                className={styles.formInput}
+                name="lastName"
               />
             </Form.Item>
           </Col>
@@ -138,8 +186,8 @@ class BasicInformation extends PureComponent {
               <Input className={styles.formInput} name="workEmail" disabled="true" />
             </Form.Item>
           </Col> */}
-        </Row>
-        <Row gutter={[48, 0]}>
+          {/* </Row>
+        <Row gutter={[48, 0]}> */}
           <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
               labelCol={{ span: 24 }}
@@ -210,7 +258,7 @@ class BasicInformation extends PureComponent {
 
   render() {
     const { data = {} } = this.state;
-    const { workEmail, fullName, privateEmail, previousExperience } = data;
+    const { workEmail, firstName, middleName, lastName, privateEmail, previousExperience } = data;
     const { loading } = this.props;
     const Note = {
       title: 'Note',
@@ -236,7 +284,14 @@ class BasicInformation extends PureComponent {
               wrapperCol={{ span: 24 }}
               name="basic"
               initialValues={
-                fullName.length > 1 && { workEmail, fullName, privateEmail, previousExperience }
+                firstName !== '' && {
+                  workEmail,
+                  firstName,
+                  middleName,
+                  lastName,
+                  privateEmail,
+                  previousExperience,
+                }
               }
               onFocus={this.onFocus}
               onValuesChange={this.handleChange}

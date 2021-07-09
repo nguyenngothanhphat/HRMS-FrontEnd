@@ -34,6 +34,7 @@ class Screen3 extends Component {
   processData = (psw) => {
     const { signup = {} } = this.props;
     const {
+      checkLegalSameHeadQuarter,
       codeNumber = '',
       company = {},
       headQuarterAddress = {},
@@ -65,7 +66,12 @@ class Screen3 extends Component {
     });
     const payload = {
       codeNumber,
-      company: { ...company, headQuarterAddress, legalAddress },
+      company: {
+        ...company,
+        isSameAsHeadquarter: checkLegalSameHeadQuarter,
+        headQuarterAddress,
+        legalAddress,
+      },
       locations: [defaultLocation, ...formatLocation],
       user: { ...user, password: psw },
     };
