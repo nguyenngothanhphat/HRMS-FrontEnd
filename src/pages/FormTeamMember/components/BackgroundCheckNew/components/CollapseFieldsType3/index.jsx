@@ -1,8 +1,10 @@
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
-import { Collapse, Checkbox, Input } from 'antd';
+import { Collapse, Checkbox, Input, Form, Button, Space } from 'antd';
+
 import { PlusOutlined, MinusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
+import Certification from './components/Certification';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -82,6 +84,21 @@ class CollapseFieldsType3 extends PureComponent {
     );
   };
 
+  handleAddCertification = () => {
+    const { addCertification = () => {} } = this.props;
+    addCertification();
+  };
+
+  handleChangeCertification = (type, index, value) => {
+    const { changeCertification = () => {} } = this.props;
+    changeCertification({ type, index, value });
+  };
+
+  handleRemoveCertification = (index) => {
+    const { removeCertification = () => {} } = this.props;
+    removeCertification(index);
+  };
+
   render() {
     const { processStatus = '', item: { data = [] } = {}, disabled = false } = this.props;
     const { documentName } = this.state;
@@ -103,7 +120,7 @@ class CollapseFieldsType3 extends PureComponent {
             }}
           >
             <Panel header={this.renderHeader()} key="1">
-              {data.length > 0 && (
+              {/* {data.length > 0 && (
                 <CheckboxGroup
                   direction="vertical"
                   // onChange={this.onChange}
@@ -125,8 +142,8 @@ class CollapseFieldsType3 extends PureComponent {
                     </Checkbox>
                   ))}
                 </CheckboxGroup>
-              )}
-              {!disabled && (
+              )} */}
+              {/* {!disabled && (
                 <div className={styles.addDocumentName}>
                   <Input
                     onChange={(e) => {
@@ -140,7 +157,24 @@ class CollapseFieldsType3 extends PureComponent {
                     className={styles.plusIcon}
                   />
                 </div>
+              )} */}
+              {data.length > 0 && (
+                <>
+                  {data.map((val, index) => (
+                    <Certification
+                      certification={val}
+                      length={data.length}
+                      handleChange={this.handleChangeCertification}
+                      remove={this.handleRemoveCertification}
+                      index={index}
+                    />
+                  ))}
+                </>
               )}
+              <div className={styles.addBtn} onClick={this.handleAddCertification}>
+                <PlusOutlined className={styles.plusIcon} />
+                <span className={styles.title}>Add other Certifications</span>
+              </div>
             </Panel>
           </Collapse>
         )}

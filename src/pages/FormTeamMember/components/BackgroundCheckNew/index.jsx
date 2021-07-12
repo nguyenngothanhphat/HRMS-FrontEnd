@@ -1009,7 +1009,7 @@ class BackgroundCheck extends Component {
   };
 
   // for block D
-  addDocumentName = (name) => {
+  addCertification = () => {
     const {
       candidateInfo: {
         tempData: {
@@ -1025,20 +1025,21 @@ class BackgroundCheck extends Component {
       dispatch,
     } = this.props;
 
-    const newDocument = [...checkedListD, name];
+    const newDocument = [...checkedListD];
 
-    function camelize(str) {
-      return str
-        .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-          return index === 0 ? word.toLowerCase() : word.toUpperCase();
-        })
-        .replace(/\s+/g, '');
-    }
+    // const newDoc = {
+    //   key: camelize(name),
+    //   alias: name,
+    //   value: true,
+    // };
 
     const newDoc = {
-      key: camelize(name),
-      alias: name,
-      value: true,
+      key: '',
+      alias: '', // name
+      value: false,
+      mandatory: false,
+      limited: false,
+      issuedDate: '',
     };
 
     const newDocumentList = [...documentChecklistSetting];
@@ -1061,7 +1062,60 @@ class BackgroundCheck extends Component {
     this.handleUpdateByHR(poe, checkedListA, checkedListB, checkedListC, newDocument);
   };
 
-  removeDocumentName = (index) => {
+  handleChangeCertification = ({type, index, value}) => {
+    console.log('type ',type,', index ',index,', value',value);
+    // const {
+    //   candidateInfo: {
+    //     tempData: {
+    //       identityProof: { checkedList: checkedListA = [] } = {},
+    //       addressProof: { checkedList: checkedListB = [] } = {},
+    //       educational: { checkedList: checkedListC = [] } = {},
+    //       technicalCertifications: { checkedList: checkedListD = [] } = {},
+    //       technicalCertifications = {},
+    //       previousEmployment: { poe = [] } = {},
+    //       documentChecklistSetting = [],
+    //     },
+    //   } = {},
+    //   dispatch,
+    // } = this.props;
+
+    // const newDocument = [...checkedListD, name];
+
+    // function camelize(str) {
+    //   return str
+    //     .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+    //       return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    //     })
+    //     .replace(/\s+/g, '');
+    // }
+
+    // const newDoc = {
+    //   key: camelize(name),
+    //   alias: name,
+    //   value: true,
+    // };
+
+    // const newDocumentList = [...documentChecklistSetting];
+    // documentChecklistSetting.forEach((doc) => {
+    //   if (doc.type === 'D') {
+    //     doc.data.push(newDoc);
+    //   }
+    // });
+
+    // dispatch({
+    //   type: 'candidateInfo/saveTemp',
+    //   payload: {
+    //     documentChecklistSetting: newDocumentList,
+    //     technicalCertifications: {
+    //       ...technicalCertifications,
+    //       checkedList: newDocument,
+    //     },
+    //   },
+    // });
+    // this.handleUpdateByHR(poe, checkedListA, checkedListB, checkedListC, newDocument);
+  };
+
+  removeCertification = (index) => {
     const {
       candidateInfo: {
         tempData: {
@@ -1193,8 +1247,9 @@ class BackgroundCheck extends Component {
                     <CollapseFieldsType3
                       title={title}
                       item={item}
-                      addDocumentName={this.addDocumentName}
-                      removeDocumentName={this.removeDocumentName}
+                      addCertification={this.addCertification}
+                      changeCertification={this.handleChangeCertification}
+                      removeCertification={this.removeCertification}
                       processStatus={processStatus}
                       // handleChange={this.handleChangeForD}
                       disabled={this.disableEdit()}
