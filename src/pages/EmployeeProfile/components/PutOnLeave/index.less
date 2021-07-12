@@ -45,6 +45,50 @@
 
         .viewBottom{
             padding: 24px;
+
+            .lwpForm{
+                &__form{
+
+                    &__row{
+                        padding: 24px 0;
+                    }
+
+                    &__col{
+                        display: flex;
+                        align-items: center;
+                    }
+                    :global{
+                        .ant-form-item{
+                            margin-bottom: 0;
+                            width: 299px;
+                            height: auto;
+                        }
+                        
+                        .ant-picker{
+                            width: 100%;
+                            height: 42px;
+                            border-radius: 6px;
+                        }
+                    }
+                }
+            }
+
+            .notification{
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                padding: 12px 24px;
+
+                border: 1px solid #FFC65A;
+                background-color: #FFFDF7;
+
+                &__text{
+                    font-size: 16px;
+                    font-weight: bold;
+                    padding-left: 16px;
+                }
+
+            }
         }
 
     }
