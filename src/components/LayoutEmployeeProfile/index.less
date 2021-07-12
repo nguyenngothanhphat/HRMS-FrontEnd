@@ -156,21 +156,24 @@
       }
     }
     .viewBtnAction {
-      display: flex;
-      justify-content: center;
+
       width: 100%;
-      margin: 25px 0 15px 0;
-      .btnEditBio {
-        width: 150px;
+      padding-bottom: 24px;
+      
+      .actionBtn{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(86,138,250, 0.07); // #568AFA;
+        color: #2C6DF9;
         height: 40px;
-        color: #ffffff;
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 16px;
-        text-align: center;
-        background: #ffa100;
-        border: none;
-        border-radius: 25px;
+        width: 100%;
+        padding: 24px;
+        cursor: pointer;
+        border-radius: 4px;
+        img {
+          padding-left: 4px;
+        }
       }
     }
     .viewLoading {
@@ -241,3 +244,27 @@
     }
   }
 }
+
+.menuDropdown{
+
+  .menuItem{
+  
+    &__text{
+      color: #161c29;
+      font-weight: normal;
+      font-size: 14px;
+
+      &:hover{
+        color: #2C6DF9;
+      }
+    }
+  }
+
+  :global{
+    .ant-dropdown-menu-item:hover, .ant-dropdown-menu-submenu-title:hover{
+      background-color: rgba(86,138,250, 0.07);
+    }
+  }
+}
+
+

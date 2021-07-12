@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Divider, Button, Spin, Input, Tooltip } from 'antd';
+import { Divider, Button, Spin, Input, Tooltip, Menu, Dropdown } from 'antd';
 import avtDefault from '@/assets/avtDefault.jpg';
+import bioSvg from '@/assets/bioActions.svg';
 import { connect } from 'umi';
 import moment from 'moment';
 import ModalUpload from '@/components/ModalUpload';
@@ -194,6 +195,39 @@ class ViewInformation extends Component {
     return avtDefault;
   };
 
+  btnAction = (permissions, profileOwner) => {
+    const menu = (
+      <Menu className={s.menuDropdown}>
+        <Menu.Item key="0" className={s.menuItem}>
+          {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
+            <div className={s.menuItem__text} onClick={this.handleEditBio}>
+              Edit Bio
+            </div>
+          )}
+        </Menu.Item>
+        <Menu.Item key="1" className={s.menuItem}>
+          <div className={s.menuItem__text}>Put on Leave (LWP) </div>
+        </Menu.Item>
+        <Menu.Item key="2" className={s.menuItem}>
+          <div className={s.menuItem__text}>Raise Termination </div>
+        </Menu.Item>
+        <Menu.Item key="3" className={s.menuItem}>
+          <div className={s.menuItem__text}>Request Details </div>
+        </Menu.Item>
+      </Menu>
+    );
+
+    return (
+      <>
+        <Dropdown className={s.actionBtn} overlay={menu} trigger={['click']}>
+          <div onClick={(e) => e.preventDefault()}>
+            Actions <img alt="bio" src={bioSvg} />
+          </div>
+        </Dropdown>
+      </>
+    );
+  };
+
   render() {
     const {
       generalData,
@@ -263,13 +297,13 @@ class ViewInformation extends Component {
           <p className={s.infoEmployee__viewBottom__description} style={{ marginTop: '10px' }}>
             {bioInfo}
           </p>
-          <div className={s.viewBtnAction}>
+          {/* <div className={s.viewBtnAction}>
             {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
               <Button onClick={this.handleEditBio} className={s.btnEditBio}>
                 Edit Bio
               </Button>
             )}
-          </div>
+          </div> */}
           {(permissions.editShowAvatarEmployee !== -1 || profileOwner) && (
             <>
               <Divider />
@@ -349,6 +383,7 @@ class ViewInformation extends Component {
               />
             </Tooltip>
           </div>
+          <div className={s.viewBtnAction}>{this.btnAction(permissions, profileOwner)}</div>
         </div>
         <ModalUpload
           titleModal="Profile Picture Update"
