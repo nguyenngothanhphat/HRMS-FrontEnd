@@ -44,18 +44,52 @@
         }
 
         .viewBottom{
-            padding: 24px;
+            width: 100%;
+            
+            &__layout{
+                padding: 24px;
+            }
 
             .lwpForm{
+                padding-top: 24px;
                 &__form{
 
+                    .btnSection{
+                        width: 100%;
+                        display: flex;
+                        justify-content: flex-end;
+                        align-items: center;
+                        padding-bottom: 24px;
+                        padding-right: 24px;
+
+                        .btnSubmit{
+                            width: 94px;
+                            height: 40px;
+                            color: #ffffff;
+                            font-size: 14px;
+                            background-color: #ffa100;
+                            border: solid 1px #ffa100;
+                            border-radius: 25px;
+                        }
+                    }
+
                     &__row{
-                        padding: 24px 0;
+                        padding-bottom: 24px;
                     }
 
                     &__col{
                         display: flex;
                         align-items: center;
+
+                        .lwpText{
+                            font-style: normal;
+                            font-weight: 600;
+                            color: #161c29;
+                        }
+
+                        .iconClose {
+                            cursor: pointer;
+                        }
                     }
                     :global{
                         .ant-form-item{
@@ -69,6 +103,15 @@
                             height: 42px;
                             border-radius: 6px;
                         }
+
+                        .ant-select-selector{
+                            min-height: 42px;
+                            border-radius: 6px;
+                        }
+
+                        .ant-form-item-explain, .ant-form-item-extra{
+                            font-size: 12px;
+                        }                      
                     }
                 }
             }
