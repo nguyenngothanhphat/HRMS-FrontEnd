@@ -14,10 +14,6 @@ class TabContent extends Component {
     };
   }
 
-  componentDidMount() {
-    this.initDataTable('1');
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     const { selectedFilterTab } = this.state;
     const { selectedFilterTab: nextTabId } = nextState;
