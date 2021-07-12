@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Divider, Button, Spin, Input, Tooltip, Menu, Dropdown } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
 import avtDefault from '@/assets/avtDefault.jpg';
 import bioSvg from '@/assets/bioActions.svg';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import moment from 'moment';
 import ModalUpload from '@/components/ModalUpload';
 import CustomModal from '@/components/CustomModal';
@@ -11,6 +12,7 @@ import { getCurrentTenant } from '@/utils/authority';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 
 const { TextArea } = Input;
+const { SubMenu } = Menu;
 
 @connect(
   ({
@@ -196,23 +198,36 @@ class ViewInformation extends Component {
   };
 
   btnAction = (permissions, profileOwner) => {
+    const subDropdown = (
+      <SubMenu key="sub1" title="Job Change">
+        <Menu.Item
+          key="1"
+          className={s.menuItem}
+          onClick={() => {
+            history.push('/offboarding');
+          }}
+        >
+          Offboarding
+        </Menu.Item>
+      </SubMenu>
+    );
+
     const menu = (
-      <Menu className={s.menuDropdown}>
-        <Menu.Item key="0" className={s.menuItem}>
-          {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
-            <div className={s.menuItem__text} onClick={this.handleEditBio}>
-              Edit Bio
-            </div>
-          )}
-        </Menu.Item>
-        <Menu.Item key="1" className={s.menuItem}>
-          <div className={s.menuItem__text}>Put on Leave (LWP) </div>
-        </Menu.Item>
+      <Menu className={s.menuDropdown} mode="inline">
+        {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
+          <Menu.Item key="0" className={s.menuItem} onClick={this.handleEditBio}>
+            Edit Bio
+          </Menu.Item>
+        )}
+        {subDropdown}
         <Menu.Item key="2" className={s.menuItem}>
-          <div className={s.menuItem__text}>Raise Termination </div>
+          Put on Leave (LWP)
         </Menu.Item>
         <Menu.Item key="3" className={s.menuItem}>
-          <div className={s.menuItem__text}>Request Details </div>
+          Raise Termination
+        </Menu.Item>
+        <Menu.Item key="4" className={s.menuItem}>
+          Request Details
         </Menu.Item>
       </Menu>
     );
@@ -297,13 +312,6 @@ class ViewInformation extends Component {
           <p className={s.infoEmployee__viewBottom__description} style={{ marginTop: '10px' }}>
             {bioInfo}
           </p>
-          {/* <div className={s.viewBtnAction}>
-            {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
-              <Button onClick={this.handleEditBio} className={s.btnEditBio}>
-                Edit Bio
-              </Button>
-            )}
-          </div> */}
           {(permissions.editShowAvatarEmployee !== -1 || profileOwner) && (
             <>
               <Divider />
