@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import { Form, DatePicker, Row, Col, Input, Select, Divider, Button, Tag } from 'antd';
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import warning from '@/assets/warning_filled.svg';
+import modalSuccess from '@/assets/modal_img_1.png';
 import path from '@/assets/path.svg';
 
+import Modal from 'antd/lib/modal/Modal';
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -12,16 +14,37 @@ const { Option } = Select;
 class PutOnLeave extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      visible: false,
+    };
   }
 
-  handleCancel = () => {
+  handleCancelAction = () => {
     const { cancel = () => {} } = this.props;
+    cancel();
+  };
+
+  openFeedback = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
+  handleCandelModal = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleOkay = () => {
+    const { cancel = () => {} } = this.props;
+    this.handleCandelModal();
     cancel();
   };
 
   onFinish = (value) => {
     console.log(value);
+    this.openFeedback();
   };
 
   tagRender = (props) => {
@@ -35,12 +58,13 @@ class PutOnLeave extends Component {
   };
 
   render() {
+    const { visible } = this.state;
     return (
       <div className={styles.putOnLeaveRoot}>
         <div className={styles.putOnLeaveRoot__titleSection}>
           <div className={styles.spaceTitle}>
             <p className={styles.putOnLeaveRoot__titleSection__text}>Put on Leave (LWP)</p>
-            <div onClick={this.handleCancel} className={styles.cancelButton}>
+            <div onClick={this.handleCancelAction} className={styles.cancelButton}>
               <img alt="" src={path} />
               <span className={styles.editBtn}>Cancel & Return</span>
             </div>
@@ -192,7 +216,7 @@ class PutOnLeave extends Component {
                   </Row>
                 </div>
                 <Divider />
-                <div className={styles.btnSection}>
+                <div className={styles.btnGroup}>
                   <Button htmlType="submit" className={styles.btnSubmit}>
                     Submit
                   </Button>
@@ -201,6 +225,20 @@ class PutOnLeave extends Component {
             </div>
           </div>
         </div>
+        <Modal
+          visible={visible}
+          title={false}
+          onCancel={this.handleCandelModal}
+          destroyOnClose={this.handleCandelModal}
+          footer={false}
+          className={styles.modalPopup}
+        >
+          <img alt="success" src={modalSuccess} />
+          <div className={styles.modalText}>Your request has been registered successfully!</div>
+          <Button onClick={this.handleOkay} className={styles.btnModal}>
+            Okay
+          </Button>
+        </Modal>
       </div>
     );
   }
