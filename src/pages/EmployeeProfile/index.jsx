@@ -218,20 +218,6 @@ class EmployeeProfile extends Component {
       employeeProfile,
     } = this.props;
     const listMenu = this.renderListMenu(employee, currentEmployee?._id);
-    const listItemActions = [
-      {
-        key: '2',
-        component: <PutOnLeave />,
-      },
-      {
-        key: '3',
-        component: <RaiseTermination />,
-      },
-      {
-        key: '4',
-        component: <RequestDetails />,
-      },
-    ];
 
     const profileOwner = this.checkProfileOwner(currentEmployee?._id, employee);
 
@@ -253,7 +239,6 @@ class EmployeeProfile extends Component {
               employeeLocation={location}
               permissions={permissions}
               profileOwner={profileOwner}
-              listItemActions={listItemActions}
             />
           ) : (
             <div style={{ padding: '24px' }}>

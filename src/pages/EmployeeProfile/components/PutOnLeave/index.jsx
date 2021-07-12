@@ -10,13 +10,18 @@ class PutOnLeave extends Component {
     this.state = {};
   }
 
+  handleCancel = () => {
+    const { cancel = () => {} } = this.props;
+    cancel();
+  };
+
   render() {
     return (
       <div className={styles.putOnLeaveRoot}>
         <div className={styles.putOnLeaveRoot__titleSection}>
           <div className={styles.spaceTitle}>
             <p className={styles.putOnLeaveRoot__titleSection__text}>Put on Leave (LWP)</p>
-            <div onClick={this.handleMakeChanges} className={styles.cancelButton}>
+            <div onClick={this.handleCancel} className={styles.cancelButton}>
               <img alt="" src={path} />
               <span className={styles.editBtn}>Cancel & Return</span>
             </div>

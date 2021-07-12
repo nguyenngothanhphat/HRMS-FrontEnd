@@ -1,4 +1,7 @@
 /* eslint-disable react/jsx-curly-newline */
+import PutOnLeave from '@/pages/EmployeeProfile/components/PutOnLeave';
+import RaiseTermination from '@/pages/EmployeeProfile/components/RaiseTermination';
+import RequestDetails from '@/pages/EmployeeProfile/components/RequestDetails';
 import { Affix, Col, Row } from 'antd';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
@@ -83,9 +86,35 @@ class CommonLayout extends PureComponent {
     });
   };
 
+  listItemActions = () => {
+    const listItemActions = [
+      {
+        key: '0',
+        component: <PutOnLeave cancel={this.cancelDisplayItemAction} />,
+      },
+      {
+        key: '1',
+        component: <RaiseTermination cancel={this.cancelDisplayItemAction} />,
+      },
+      {
+        key: '2',
+        component: <RequestDetails />,
+      },
+    ];
+
+    return listItemActions;
+  };
+
+  cancelDisplayItemAction = () => {
+    this.setState({
+      displayComponentActions: null,
+    });
+  };
+
   handleClickOnActions = (keyItem) => {
-    const { listItemActions = [] } = this.props;
-    listItemActions.forEach((item) => {
+    const list = this.listItemActions();
+
+    list.forEach((item) => {
       const { key = '', component } = item;
       if (key === keyItem) {
         this.setState({
@@ -105,6 +134,7 @@ class CommonLayout extends PureComponent {
       isAddingCompany = false,
     } = this.props;
     const { displayComponent, selectedItemId, displayComponentActions } = this.state;
+
     return (
       <div className={s.root}>
         <Affix

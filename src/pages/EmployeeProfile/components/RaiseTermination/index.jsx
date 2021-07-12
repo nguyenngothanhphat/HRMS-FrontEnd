@@ -10,13 +10,18 @@ class RaiseTermination extends Component {
     this.state = {};
   }
 
+  handleCancel = () => {
+    const { cancel = () => {} } = this.props;
+    cancel();
+  };
+
   render() {
     return (
       <div className={styles.raiseTermination}>
         <div className={styles.raiseTermination__titleSection}>
           <div className={styles.spaceTitle}>
             <p className={styles.raiseTermination__titleSection__text}>Raise Termination</p>
-            <div onClick={this.handleMakeChanges} className={styles.cancelButton}>
+            <div onClick={this.handleCancel} className={styles.cancelButton}>
               <img alt="" src={path} />
               <span className={styles.editBtn}>Cancel & Return</span>
             </div>

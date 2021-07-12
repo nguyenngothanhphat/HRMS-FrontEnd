@@ -207,7 +207,7 @@ class ViewInformation extends Component {
     const subDropdown = (
       <SubMenu key="sub1" title="Job Change">
         <Menu.Item
-          key="1"
+          key="offboarding"
           className={s.menuItem}
           onClick={() => {
             history.push('/offboarding');
@@ -221,18 +221,18 @@ class ViewInformation extends Component {
     const menu = (
       <Menu className={s.menuDropdown} mode="inline" onClick={this.handleClickMenu}>
         {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
-          <Menu.Item key="0" className={s.menuItem} onClick={this.handleEditBio}>
+          <Menu.Item key="editBio" className={s.menuItem} onClick={this.handleEditBio}>
             Edit Bio
           </Menu.Item>
         )}
         {subDropdown}
-        <Menu.Item key="2" className={s.menuItem}>
+        <Menu.Item key="0" className={s.menuItem}>
           Put on Leave (LWP)
         </Menu.Item>
-        <Menu.Item key="3" className={s.menuItem}>
+        <Menu.Item key="1" className={s.menuItem}>
           Raise Termination
         </Menu.Item>
-        <Menu.Item key="4" className={s.menuItem}>
+        <Menu.Item key="2" className={s.menuItem}>
           Request Details
         </Menu.Item>
       </Menu>
