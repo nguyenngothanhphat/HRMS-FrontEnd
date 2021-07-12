@@ -44,7 +44,109 @@
         }
 
         .viewBottom{
-            padding: 24px;
+            width: 100%;
+
+            &__layout{
+                padding: 24px;
+
+                .formItemRadio{
+                    width: 100%;
+                    // padding: 24px 0;
+
+                    :global{
+                        .ant-form-item{
+                            margin-bottom: 0;
+                            width: 100% !important;
+                            height: auto;
+                        }
+
+                        .ant-radio-group{
+                            width: 100%;
+                        }
+                    }
+
+                    .radioRow{
+                        padding-bottom: 24px;
+
+                        // &__col{
+                        //     height: 42px;
+                        // }
+                    }
+                }
+            }
+
+            &__title{
+                font-weight: 600;
+                font: 18px;
+            }
+
+            .raiseTerminationForm{
+                // padding-top: 24px;
+
+                &__form{
+
+                    .btnGroup{
+                        width: 100%;
+                        display: flex;
+                        justify-content: flex-end;
+                        align-items: center;
+                        padding-bottom: 24px;
+                        padding-right: 24px;
+
+                        .btnSubmit{
+                            width: 94px;
+                            height: 40px;
+                            color: #ffffff;
+                            font-size: 14px;
+                            background-color: #ffa100;
+                            border: solid 1px #ffa100;
+                            border-radius: 25px;
+                        }
+                    }
+
+                    &__row{
+                        padding-bottom: 24px;
+                    }
+
+                    &__col{
+                        display: flex;
+                        align-items: center;
+
+                        .terminationText{
+                            font-style: normal;
+                            font-weight: 600;
+                            color: #161c29;
+                        }
+
+                        .iconClose {
+                            cursor: pointer;
+                        }
+                    }
+
+                    :global{
+                        .ant-form-item{
+                            margin-bottom: 0;
+                            width: 299px;
+                            height: auto;
+                        }
+                        
+                        .ant-picker{
+                            width: 100%;
+                            height: 42px;
+                            border-radius: 6px;
+                        }
+
+                        .ant-select-selector{
+                            min-height: 42px;
+                            border-radius: 6px;
+                        }
+
+                        .ant-form-item-explain, .ant-form-item-extra{
+                            font-size: 12px;
+                        }                      
+                    }
+                }
+            }
         }
 
     }
