@@ -12,6 +12,9 @@ import AccountsPaychecks from './components/Accounts&Paychecks';
 // import Test from './components/test';
 import Documents from './components/Documents';
 import styles from './index.less';
+import PutOnLeave from './components/PutOnLeave';
+import RaiseTermination from './components/RaiseTermination';
+import RequestDetails from './components/RequestDetails';
 
 @connect(
   ({
@@ -214,8 +217,21 @@ class EmployeeProfile extends Component {
       loadingFetchEmployee,
       employeeProfile,
     } = this.props;
-    console.log(employeeProfile);
     const listMenu = this.renderListMenu(employee, currentEmployee?._id);
+    const listItemActions = [
+      {
+        key: '2',
+        component: <PutOnLeave />,
+      },
+      {
+        key: '3',
+        component: <RaiseTermination />,
+      },
+      {
+        key: '4',
+        component: <RequestDetails />,
+      },
+    ];
 
     const profileOwner = this.checkProfileOwner(currentEmployee?._id, employee);
 
@@ -237,6 +253,7 @@ class EmployeeProfile extends Component {
               employeeLocation={location}
               permissions={permissions}
               profileOwner={profileOwner}
+              listItemActions={listItemActions}
             />
           ) : (
             <div style={{ padding: '24px' }}>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Divider, Button, Spin, Input, Tooltip, Menu, Dropdown } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+
 import avtDefault from '@/assets/avtDefault.jpg';
 import bioSvg from '@/assets/bioActions.svg';
 import { connect, history } from 'umi';
@@ -197,6 +197,12 @@ class ViewInformation extends Component {
     return avtDefault;
   };
 
+  handleClickMenu = (menu) => {
+    const { handleClickOnActions = () => {} } = this.props;
+    const { key = '' } = menu;
+    handleClickOnActions(key);
+  };
+
   btnAction = (permissions, profileOwner) => {
     const subDropdown = (
       <SubMenu key="sub1" title="Job Change">
@@ -213,7 +219,7 @@ class ViewInformation extends Component {
     );
 
     const menu = (
-      <Menu className={s.menuDropdown} mode="inline">
+      <Menu className={s.menuDropdown} mode="inline" onClick={this.handleClickMenu}>
         {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
           <Menu.Item key="0" className={s.menuItem} onClick={this.handleEditBio}>
             Edit Bio

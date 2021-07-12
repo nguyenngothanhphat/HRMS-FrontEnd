@@ -25,6 +25,7 @@ class CommonLayout extends PureComponent {
     this.state = {
       selectedItemId: '',
       displayComponent: '',
+      displayComponentActions: null,
     };
   }
 
@@ -82,6 +83,18 @@ class CommonLayout extends PureComponent {
     });
   };
 
+  handleClickOnActions = (keyItem) => {
+    const { listItemActions = [] } = this.props;
+    listItemActions.forEach((item) => {
+      const { key = '', component } = item;
+      if (key === keyItem) {
+        this.setState({
+          displayComponentActions: component,
+        });
+      }
+    });
+  };
+
   render() {
     const {
       listMenu = [],
@@ -91,7 +104,7 @@ class CommonLayout extends PureComponent {
       isCompanyProfile = false,
       isAddingCompany = false,
     } = this.props;
-    const { displayComponent, selectedItemId } = this.state;
+    const { displayComponent, selectedItemId, displayComponentActions } = this.state;
     return (
       <div className={s.root}>
         <Affix
@@ -130,7 +143,7 @@ class CommonLayout extends PureComponent {
           </div>
         </Affix>
         <Row className={s.viewRight} gutter={[24, 0]}>
-          <Col span={isCompanyProfile ? 16 : 18}>{displayComponent}</Col>
+          <Col span={isCompanyProfile ? 16 : 18}>{displayComponentActions || displayComponent}</Col>
           <Col span={isCompanyProfile ? 8 : 6}>
             {isCompanyProfile ? (
               <UploadLogoCompany />
@@ -139,6 +152,7 @@ class CommonLayout extends PureComponent {
                 permissions={permissions}
                 profileOwner={profileOwner}
                 employeeLocation={employeeLocation}
+                handleClickOnActions={this.handleClickOnActions}
               />
             )}
           </Col>
