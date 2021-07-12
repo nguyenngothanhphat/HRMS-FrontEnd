@@ -1,11 +1,21 @@
 import React, { PureComponent } from 'react';
 import { Form, Input, Checkbox, DatePicker, Divider, Row, Col } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
+import { debounce } from 'lodash';
 import styles from './index.less';
 
 class Certification extends PureComponent {
-  handleInput = (e, type) => {
-    const { target: { value = '' } = {} } = e;
+  constructor(props) {
+    super(props);
+    this.state = {
+      isLimittedPeriod: false,
+    };
+    this.handleInputDelay = debounce((value, type) => {
+      this.handleInput(value, type);
+    }, 500);
+  }
+
+  handleInput = (value, type) => {
     const { index = 0, handleChange = () => {} } = this.props;
     handleChange(type, index, value);
   };
@@ -13,6 +23,11 @@ class Certification extends PureComponent {
   handleCheckBox = (e, type) => {
     const { target: { checked = false } = {} } = e;
     const { index = 0, handleChange = () => {} } = this.props;
+    if (type === 'limited') {
+      this.setState({
+        isLimittedPeriod: checked,
+      });
+    }
     handleChange(type, index, checked);
   };
 
@@ -28,6 +43,8 @@ class Certification extends PureComponent {
       certification = {},
       handleChange = () => {},
     } = this.props;
+    const { isLimittedPeriod } = this.state;
+
     return (
       <div className={styles.Certification}>
         <div className={styles.titleBar}>
@@ -39,18 +56,24 @@ class Certification extends PureComponent {
           />
         </div>
         <Form name="basic">
-          <Form.Item label="Certification name" name="name" labelCol={{ span: 24 }}>
-            <Input placeholder="Certification name" onChange={(e) => this.handleInput(e, 'name')} />
+          <Form.Item label="Certification name" name="alias" labelCol={{ span: 24 }}>
+            <Input
+              placeholder="Certification name"
+              onChange={(e) => this.handleInputDelay(e.target?.value, 'alias')}
+            />
           </Form.Item>
           <Form.Item>
-            <Form.Item name="limittedPeriod" valuePropName="checked" noStyle>
-              <Checkbox onChange={(e) => this.handleCheckBox(e, 'limittedPeriod')}>
+            <Form.Item name="limited" valuePropName="checked" noStyle>
+              <Checkbox onChange={(e) => this.handleCheckBox(e, 'limited')}>
                 Limitted validity period
               </Checkbox>
             </Form.Item>
 
             <Form.Item name="mandatory" valuePropName="checked" noStyle>
-              <Checkbox onChange={(e) => this.handleCheckBox(e, 'mandatory')}>
+              <Checkbox
+                defaultChecked={isLimittedPeriod}
+                onChange={(e) => this.handleCheckBox(e, 'mandatory')}
+              >
                 Upload certificates mandatory
               </Checkbox>
             </Form.Item>
@@ -65,15 +88,17 @@ class Certification extends PureComponent {
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
-              <Form.Item label="Validity date" name="validityDate" labelCol={{ span: 24 }}>
-                <DatePicker
-                  placeholder="Validity date"
-                  format="MM.DD.YY"
-                  onChange={(val) => handleChange('validityDate', index, val)}
-                />
-              </Form.Item>
-            </Col>
+            {isLimittedPeriod && (
+              <Col span={12}>
+                <Form.Item label="Validity date" name="validityDate" labelCol={{ span: 24 }}>
+                  <DatePicker
+                    placeholder="Validity date"
+                    format="MM.DD.YY"
+                    onChange={(val) => handleChange('validityDate', index, val)}
+                  />
+                </Form.Item>
+              </Col>
+            )}
           </Row>
         </Form>
         {index + 1 < length && <Divider />}

@@ -1040,6 +1040,7 @@ class BackgroundCheck extends Component {
       mandatory: false,
       limited: false,
       issuedDate: '',
+      validityDate: '',
     };
 
     const newDocumentList = [...documentChecklistSetting];
@@ -1062,57 +1063,62 @@ class BackgroundCheck extends Component {
     this.handleUpdateByHR(poe, checkedListA, checkedListB, checkedListC, newDocument);
   };
 
-  handleChangeCertification = ({type, index, value}) => {
-    console.log('type ',type,', index ',index,', value',value);
-    // const {
-    //   candidateInfo: {
-    //     tempData: {
-    //       identityProof: { checkedList: checkedListA = [] } = {},
-    //       addressProof: { checkedList: checkedListB = [] } = {},
-    //       educational: { checkedList: checkedListC = [] } = {},
-    //       technicalCertifications: { checkedList: checkedListD = [] } = {},
-    //       technicalCertifications = {},
-    //       previousEmployment: { poe = [] } = {},
-    //       documentChecklistSetting = [],
-    //     },
-    //   } = {},
-    //   dispatch,
-    // } = this.props;
+  handleChangeCertification = ({ type, index, value }) => {
+    console.log('type ', type, ', index ', index, ', value', value);
+    const {
+      candidateInfo: {
+        tempData: {
+          identityProof: { checkedList: checkedListA = [] } = {},
+          addressProof: { checkedList: checkedListB = [] } = {},
+          educational: { checkedList: checkedListC = [] } = {},
+          technicalCertifications: { checkedList: checkedListD = [] } = {},
+          technicalCertifications = {},
+          previousEmployment: { poe = [] } = {},
+          documentChecklistSetting = [],
+        },
+      } = {},
+      dispatch,
+    } = this.props;
 
     // const newDocument = [...checkedListD, name];
 
-    // function camelize(str) {
-    //   return str
-    //     .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-    //       return index === 0 ? word.toLowerCase() : word.toUpperCase();
-    //     })
-    //     .replace(/\s+/g, '');
-    // }
+    function camelize(str) {
+      return str
+        .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+          return index === 0 ? word.toLowerCase() : word.toUpperCase();
+        })
+        .replace(/\s+/g, '');
+    }
 
     // const newDoc = {
     //   key: camelize(name),
     //   alias: name,
     //   value: true,
     // };
+    let checkedList = [];
+    const newDocumentList = JSON.parse(JSON.stringify(documentChecklistSetting));
+    newDocumentList.forEach((doc) => {
+      if (doc.type === 'D') {
+        const itemData = doc.data[index];
+        itemData[type] = value;
+        itemData.key = camelize(type === 'alias' ? value : itemData.alias);
+        if (doc.data[index].mandatory === true) {
+          checkedList = [...checkedList, itemData.alias];
+        }
+      }
+    });
 
-    // const newDocumentList = [...documentChecklistSetting];
-    // documentChecklistSetting.forEach((doc) => {
-    //   if (doc.type === 'D') {
-    //     doc.data.push(newDoc);
-    //   }
-    // });
-
-    // dispatch({
-    //   type: 'candidateInfo/saveTemp',
-    //   payload: {
-    //     documentChecklistSetting: newDocumentList,
-    //     technicalCertifications: {
-    //       ...technicalCertifications,
-    //       checkedList: newDocument,
-    //     },
-    //   },
-    // });
-    // this.handleUpdateByHR(poe, checkedListA, checkedListB, checkedListC, newDocument);
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        documentChecklistSetting: newDocumentList,
+        technicalCertifications: {
+          ...technicalCertifications,
+          checkedList,
+        },
+      },
+    });
+    this.handleUpdateByHR(poe, checkedListA, checkedListB, checkedListC, checkedList);
   };
 
   removeCertification = (index) => {
