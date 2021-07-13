@@ -32,6 +32,7 @@ class DetailEmployeeChart extends Component {
       } = {},
       department: { name = '' } = {},
       location: { name: nameLocation = '' } = {},
+      localTime = '',
     } = user;
     return (
       <>
@@ -117,7 +118,7 @@ class DetailEmployeeChart extends Component {
                   <div className={styles.chartDetail__Bottom_label}>Local Time:</div>
                 </Col>
                 <Col span={15}>
-                  <div className={styles.chartDetail__Bottom_value}>time</div>
+                  <div className={styles.chartDetail__Bottom_value}>{localTime || ''}</div>
                 </Col>
               </Row>
             </div>

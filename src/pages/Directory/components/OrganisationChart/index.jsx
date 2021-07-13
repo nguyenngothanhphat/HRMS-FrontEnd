@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { Avatar, Spin, Row, Col } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { connect } from 'umi';
+import moment from 'moment';
 import OrganizationChart from '@dabeng/react-orgchart';
 import DetailEmployeeChart from './components/detailEmployee';
 import styles from './index.less';
@@ -31,6 +33,8 @@ class OrganisationChart extends Component {
     this.state = {
       idChart: '',
       chartDetails: {},
+      timezoneList: [],
+      currentTime: moment(),
     };
   }
 
@@ -53,6 +57,16 @@ class OrganisationChart extends Component {
       type: 'employee/fetchAllListUser',
       payload: { company: companiesOfUser, location: convertLocation },
     });
+    this.fetchTimezone();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { listLocationsByCompany = [] } = this.props;
+    if (
+      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+    ) {
+      this.fetchTimezone();
+    }
   }
 
   handleOnClick = (e) => {
@@ -63,7 +77,13 @@ class OrganisationChart extends Component {
   };
 
   getDetailUser = async (nodeData) => {
-    this.setState({ chartDetails: nodeData });
+    const { user: { location } = {} } = nodeData;
+    const { timezoneList, currentTime } = this.state;
+    const findTimezone =
+      timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+    const timeData = getCurrentTimeOfTimezone(currentTime, findTimezone.timezone);
+    const addTimeData = { user: { ...nodeData.user, localTime: timeData } };
+    this.setState({ chartDetails: addTimeData });
   };
 
   renderNode = ({ nodeData }) => {
@@ -117,18 +137,45 @@ class OrganisationChart extends Component {
 
   handleSelect = (value) => {
     const { listEmployeeAll } = this.props;
+    const { timezoneList, currentTime } = this.state;
     const getData = listEmployeeAll.filter((item) => item._id === value);
     const convertData = getData.map((item) => {
       const { _id, generalInfo, department, location } = item;
+      const findTimezone =
+        timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+      const timeData = getCurrentTimeOfTimezone(currentTime, findTimezone.timezone);
       return {
         _id,
         generalInfo,
         department,
         location,
+        localTime: timeData,
       };
     });
+
     const convertFinal = { user: convertData[0] };
     this.setState({ chartDetails: convertFinal });
+  };
+
+  fetchTimezone = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    const timezoneList = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '' } = {},
+        _id = '',
+      } = location;
+      timezoneList.push({
+        locationId: _id,
+        timezone:
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    this.setState({
+      timezoneList,
+    });
   };
 
   render() {
