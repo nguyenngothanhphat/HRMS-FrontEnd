@@ -37,13 +37,13 @@ class InfoCollapseType2 extends PureComponent {
             <Col span={8}>
               {formatMessage({ id: 'pages.employeeProfile.documents.infoCollapseType2.type' })}
             </Col>
-            <Col span={7}>Uploaded by</Col>
-            <Col span={7}>
+            <Col span={6}>Uploaded by</Col>
+            <Col span={6}>
               {formatMessage({ id: 'pages.employeeProfile.documents.infoCollapseType2.date' })}
             </Col>
-            <Col className={styles.status} span={2}>
+            <Col className={styles.status} span={4}>
               {/* {formatMessage({ id: 'pages.employeeProfile.documents.infoCollapseType2.status' })} */}
-              Action
+              Status
             </Col>
           </Row>
           <div className={styles.tableOfContents}>{this._renderChildren()}</div>
