@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Form, Input, Checkbox, DatePicker, Divider, Row, Col } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
 import { debounce } from 'lodash';
+import moment from 'moment';
 import styles from './index.less';
 
 class Certification extends PureComponent {
@@ -14,6 +15,16 @@ class Certification extends PureComponent {
       this.handleInput(value, type);
     }, 500);
   }
+
+  componentDidMount = () => {
+    const { certification: { limited = false } = {} } = this.props;
+
+    if (limited) {
+      this.setState({
+        isLimittedPeriod: limited,
+      });
+    }
+  };
 
   handleInput = (value, type) => {
     const { index = 0, handleChange = () => {} } = this.props;
@@ -40,8 +51,16 @@ class Certification extends PureComponent {
       index = 0,
       remove = () => {},
       length = 0,
-      certification = {},
+      certification: {
+        alias = '', // name
+        // value = false,
+        mandatory = false,
+        limited = false,
+        issuedDate = '',
+        validityDate = '',
+      } = {},
       handleChange = () => {},
+      disabled = false,
     } = this.props;
     const { isLimittedPeriod } = this.state;
 
@@ -49,22 +68,34 @@ class Certification extends PureComponent {
       <div className={styles.Certification}>
         <div className={styles.titleBar}>
           <span className={styles.title}>Certification {this.minTwoDigits(index + 1)}</span>
-          <CloseOutlined
-            style={length === 1 ? { display: 'none' } : { display: 'block' }}
-            className={styles.deleteIcon}
-            onClick={() => remove(index)}
-          />
+          {!disabled && (
+            <CloseOutlined
+              style={length === 1 ? { display: 'none' } : { display: 'block' }}
+              className={styles.deleteIcon}
+              onClick={() => remove(index)}
+            />
+          )}
         </div>
-        <Form name="basic">
+        <Form
+          name="basic"
+          initialValues={{
+            alias,
+            mandatory,
+            limited,
+            issuedDate: issuedDate ? moment(issuedDate) : null,
+            validityDate: validityDate ? moment(validityDate) : null,
+          }}
+        >
           <Form.Item label="Certification name" name="alias" labelCol={{ span: 24 }}>
             <Input
+              disabled={disabled}
               placeholder="Certification name"
               onChange={(e) => this.handleInputDelay(e.target?.value, 'alias')}
             />
           </Form.Item>
           <Form.Item>
             <Form.Item name="limited" valuePropName="checked" noStyle>
-              <Checkbox onChange={(e) => this.handleCheckBox(e, 'limited')}>
+              <Checkbox disabled={disabled} onChange={(e) => this.handleCheckBox(e, 'limited')}>
                 Limitted validity period
               </Checkbox>
             </Form.Item>
@@ -72,6 +103,7 @@ class Certification extends PureComponent {
             <Form.Item name="mandatory" valuePropName="checked" noStyle>
               <Checkbox
                 defaultChecked={isLimittedPeriod}
+                disabled={disabled}
                 onChange={(e) => this.handleCheckBox(e, 'mandatory')}
               >
                 Upload certificates mandatory
@@ -84,6 +116,7 @@ class Certification extends PureComponent {
                 <DatePicker
                   placeholder="Issued date"
                   format="MM.DD.YY"
+                  disabled={disabled}
                   onChange={(val) => handleChange('issuedDate', index, val)}
                 />
               </Form.Item>
@@ -93,6 +126,7 @@ class Certification extends PureComponent {
                 <Form.Item label="Validity date" name="validityDate" labelCol={{ span: 24 }}>
                   <DatePicker
                     placeholder="Validity date"
+                    disabled={disabled}
                     format="MM.DD.YY"
                     onChange={(val) => handleChange('validityDate', index, val)}
                   />

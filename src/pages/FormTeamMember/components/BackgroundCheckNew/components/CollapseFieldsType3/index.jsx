@@ -35,7 +35,12 @@ class CollapseFieldsType3 extends PureComponent {
   };
 
   renderHeader = () => {
-    const { title = '', disabled = false } = this.props;
+    const { disabled = false, certifications = [] } = this.props;
+    let title = '';
+    if (certifications.length > 0) {
+      title = `Type ${certifications[0].type}: ${certifications[0].name}`;
+    } else title = `Type D: Technical Certifications`;
+
     return (
       <div className={styles.header}>
         <Checkbox
@@ -68,7 +73,12 @@ class CollapseFieldsType3 extends PureComponent {
   };
 
   render() {
-    const { processStatus = '', item: { data = [] } = {}, disabled = false } = this.props;
+    const {
+      processStatus = '',
+      item: { data = [] } = {},
+      disabled = false,
+      certifications = [],
+    } = this.props;
 
     // const checkAll = data.map((val) => val.alias);
     return (
@@ -125,12 +135,13 @@ class CollapseFieldsType3 extends PureComponent {
                   />
                 </div>
               )} */}
-              {data.length > 0 && (
+              {certifications.length > 0 && (
                 <>
-                  {data.map((val, index) => (
+                  {certifications.map((cer, index) => (
                     <Certification
-                      certification={val}
-                      length={data.length}
+                      disabled={disabled}
+                      certification={cer.data.length > 0 ? cer.data[0] : {}}
+                      length={certifications.length}
                       handleChange={this.handleChangeCertification}
                       remove={this.handleRemoveCertification}
                       index={index}
@@ -138,7 +149,10 @@ class CollapseFieldsType3 extends PureComponent {
                   ))}
                 </>
               )}
-              <div className={styles.addBtn} onClick={this.handleAddCertification}>
+              <div
+                className={disabled ? `${styles.disableButton} ${styles.addBtn}` : styles.addBtn}
+                onClick={disabled ? () => {} : this.handleAddCertification}
+              >
                 <PlusOutlined className={styles.plusIcon} />
                 <span className={styles.title}>Add other Certifications</span>
               </div>
