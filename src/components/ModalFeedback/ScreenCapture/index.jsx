@@ -19,7 +19,6 @@ export default class ScreenCapture extends Component {
       windowWidth: 0,
       windowHeight: 0,
       borderWidth: 0,
-      // imgUrl: null,
       isScreenshot: false,
     };
   }
@@ -100,7 +99,7 @@ export default class ScreenCapture extends Component {
     this.setState({
       isMouseDown: false,
       isScreenshot: true,
-      // borderWidth: 0,
+      borderWidth: 0,
     });
   };
 
@@ -120,27 +119,11 @@ export default class ScreenCapture extends Component {
     }).then((canvas) => {
       base64URL = canvas.toDataURL();
       onEndCapture(base64URL);
-      // this.setState({
-      //   imgUrl: base64URL,
-      // });
     });
   };
 
-  // handleNext = () => {
-  //   const { onEndCapture = () => {} } = this.props;
-  //   const { imgUrl } = this.state;
-
-  //   onEndCapture(imgUrl);
-  //   this.setState({
-  //     imgUrl: null,
-  //   });
-  // };
-
   render() {
     const { borderWidth, isMouseDown, isScreenshot } = this.state;
-    // if (imgUrl) {
-    //   document.body.style.overflow = 'hidden';
-    // }
 
     return (
       <div
@@ -163,26 +146,6 @@ export default class ScreenCapture extends Component {
             Click and drag to highlight the area.
           </div>
         </div>
-        {/* {imgUrl ? (
-          <img
-            alt="temp"
-            src={imgUrl}
-            style={{
-              width: '100%',
-              height: '100%',
-              top: 0,
-              position: 'absolute',
-            }}
-          />
-        ) : null}
-        <Button
-          disabled={imgUrl === null}
-          className={`${styles.initialBtn} ${imgUrl === null ? styles.disabledBtn : ''}`}
-          onClick={this.handleNext}
-          style={isMouseDown ? { display: 'none' } : {}}
-        >
-          Next
-        </Button> */}
       </div>
     );
   }

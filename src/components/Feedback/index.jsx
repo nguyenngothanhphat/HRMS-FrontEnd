@@ -28,7 +28,7 @@ export default class Feedback extends Component {
     const { visible } = this.state;
     return (
       <>
-        <Affix offsetBottom={60} className={styles.feedbackRoot}>
+        <Affix style={{ width: 48 }} offsetBottom={60} className={styles.feedbackRoot}>
           <div className={styles.feedback}>
             <Button onClick={this.openFeedback} className={styles.btnFeedback}>
               <div className={styles.spanText}>

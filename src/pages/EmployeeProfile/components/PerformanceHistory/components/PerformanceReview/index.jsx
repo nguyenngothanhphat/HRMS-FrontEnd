@@ -1,9 +1,15 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Card, Row, Col } from 'antd';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
+
 import PerformanceReviewIndicator from './components/PerformanceReviewIndicator';
 import styles from './index.less';
 
+@connect(
+  ({ employeeProfile: { originData: { employmentData: { manager = {} } = {} } = {} } = {} }) => ({
+    manager,
+  }),
+)
 class PerformanceReview extends PureComponent {
   renderTypePerformanceReview = (level) => {
     if (level === 2) {
@@ -35,6 +41,9 @@ class PerformanceReview extends PureComponent {
   };
 
   render() {
+    const { manager: { generalInfo: { firstName = '', lastName = '' } = {} } = {} } = this.props;
+    const fullName = firstName + lastName;
+
     const dummyData = [
       {
         id: 1,
@@ -48,7 +57,7 @@ class PerformanceReview extends PureComponent {
         label: formatMessage({
           id: 'pages.employeeProfile.performanceHistory.performanceReview.reportingTo',
         }),
-        value: 'Anil Reddy',
+        value: fullName,
       },
       {
         id: 3,

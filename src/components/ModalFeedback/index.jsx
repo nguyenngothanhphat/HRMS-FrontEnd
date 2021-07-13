@@ -13,8 +13,6 @@ const { TextArea } = Input;
   loadingSubmit: loading.effects['feedback/submitFeedback'],
 }))
 class ModalFeedback extends Component {
-  // const [form] = Form.useForm();
-
   constructor(props) {
     super(props);
     this.state = {
@@ -27,7 +25,7 @@ class ModalFeedback extends Component {
     };
   }
 
-  onChange = (e) => {
+  onChangeRadio = (e) => {
     this.setState({
       valueRadio: e.target.value,
     });
@@ -45,13 +43,9 @@ class ModalFeedback extends Component {
   };
 
   handleFinish = (data) => {
-    this.getResponse(data);
-  };
-
-  getResponse = (dataSubmit) => {
     const { dispatch } = this.props;
     const { valueRadio, dataScreenshot } = this.state;
-    const { feedback: feedbackContent } = dataSubmit;
+    const { feedback: feedbackContent } = data;
     let url = '';
     let name = '';
 
@@ -96,7 +90,7 @@ class ModalFeedback extends Component {
     });
   };
 
-  handleChange = (objValue) => {
+  handleChangeForm = (objValue) => {
     if ('feedback' in objValue) {
       this.setState({
         feedback: objValue.feedback,
@@ -183,7 +177,7 @@ class ModalFeedback extends Component {
                 <Form
                   // form={form}
                   onFinish={this.handleFinish}
-                  onValuesChange={this.handleChange}
+                  onValuesChange={this.handleChangeForm}
                   preserve={false}
                 >
                   <div className={styles.formTop} style={screenCapture ? { display: 'flex' } : {}}>
@@ -199,7 +193,7 @@ class ModalFeedback extends Component {
                           ]}
                           initialValue={valueRadio}
                         >
-                          <Radio.Group onChange={this.onChange} value={valueRadio}>
+                          <Radio.Group onChange={this.onChangeRadio} value={valueRadio}>
                             <Radio value={1} className={styles.radioText}>
                               Report an issue
                             </Radio>
