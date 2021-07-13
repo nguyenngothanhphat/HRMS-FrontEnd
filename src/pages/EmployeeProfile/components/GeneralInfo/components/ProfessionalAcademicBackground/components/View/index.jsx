@@ -131,7 +131,29 @@ class View extends Component {
       { id: 4, label: 'Total Experience', value: totalExp },
       { id: 5, label: 'Qualification', value: qualification },
     ];
-    const listColors = ['#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0'];
+    // const listColors = ['#E0F4F0', '#ffefef', '#f1edff', '#f1f8ff', '#E0F4F0'];
+    const listColors = [
+      {
+        bg: '#E0F4F0',
+        colorText: '#00c598',
+      },
+      {
+        bg: '#ffefef',
+        colorText: '#fd4546',
+      },
+      {
+        bg: '#f1edff',
+        colorText: '#6236ff',
+      },
+      {
+        bg: '#f1f8ff',
+        colorText: '#006bec',
+      },
+      {
+        bg: '#fff7fa',
+        colorText: '#ff6ca1',
+      },
+    ];
     // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
     const formatListSkill = this.formatListSkill(skills, otherSkills, listColors) || [];
     return (
@@ -156,7 +178,13 @@ class View extends Component {
           </Col>
           <Col span={9} className={styles.tagSkill}>
             {formatListSkill.map((item) => (
-              <Tag key={item.id} color={item.color}>
+              <Tag
+                style={{
+                  color: `${item.color.colorText}`,
+                }}
+                key={item.id}
+                color={item.color.bg}
+              >
                 {item.name}
               </Tag>
             ))}

@@ -279,7 +279,28 @@ class ViewInformation extends Component {
     const joiningDate = joinDate ? moment(joinDate).format('MM.DD.YY') : '-';
     const { generalInfo: { firstName: managerFN = '', lastName: managerLN = '' } = {} } = manager;
     // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
-    const listColors = ['#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0'];
+    const listColors = [
+      {
+        bg: '#E0F4F0',
+        colorText: '#00c598',
+      },
+      {
+        bg: '#ffefef',
+        colorText: '#fd4546',
+      },
+      {
+        bg: '#f1edff',
+        colorText: '#6236ff',
+      },
+      {
+        bg: '#f1f8ff',
+        colorText: '#006bec',
+      },
+      {
+        bg: '#fff7fa',
+        colorText: '#ff6ca1',
+      },
+    ];
     const formatListSkill = this.formatListSkill(generalData.skills, listColors) || [];
 
     const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
@@ -335,7 +356,13 @@ class ViewInformation extends Component {
           <p className={s.titleTag}>Skills</p>
           <div>
             {formatListSkill.map((item) => (
-              <Tag key={item.id} color={item.color}>
+              <Tag
+                style={{
+                  color: `${item.color.colorText}`,
+                }}
+                key={item.id}
+                color={item.color.bg}
+              >
                 {item.name}
               </Tag>
             ))}
