@@ -204,7 +204,7 @@ class ViewInformation extends Component {
 
   btnAction = (permissions, profileOwner) => {
     const subDropdown = (
-      <SubMenu key="sub1" title="Job Change">
+      <SubMenu className={s.subMenu} key="sub1" title="Job Change">
         <Menu.Item
           key="offboarding"
           className={s.menuItem}

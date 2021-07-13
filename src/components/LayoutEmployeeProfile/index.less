@@ -166,13 +166,22 @@
         display: flex;
         align-items: center;
         justify-content: center;
+
         background: rgba(86,138,250, 0.07); // #568AFA;
-        color: #2C6DF9;
         height: 40px;
         width: 100%;
         padding: 24px;
         cursor: pointer;
         border-radius: 4px;
+        
+        font-family: Roboto;
+        font-size: 14px;
+        font-weight: 500;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: 0.13px;
+        color: #2c6df9;
         img {
           padding-left: 4px;
         }
@@ -250,10 +259,35 @@
 .menuDropdown{
   width: 100%;
 
+  .subMenu{
+
+    :global{
+      .ant-dropdown-menu-submenu-title{
+        font-family: Roboto;
+        font-size: 14px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        color: #8a8d93;
+
+         &:hover{
+           color: #2C6DF9;
+         }
+      }
+    }
+  }
+
   .menuItem{
-      color: #161c29;
-      font-weight: normal;
+      font-family: Roboto;
       font-size: 14px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      color: #8a8d93;
 
       &:hover{
         color: #2C6DF9;
