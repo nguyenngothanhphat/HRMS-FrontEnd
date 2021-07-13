@@ -12,6 +12,7 @@ import AccountsPaychecks from './components/Accounts&Paychecks';
 // import Test from './components/test';
 import Documents from './components/Documents';
 import styles from './index.less';
+import PerformanceHistory from './components/PerformanceHistory';
 
 @connect(
   ({
@@ -190,16 +191,19 @@ class EmployeeProfile extends Component {
       });
     }
     if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
-      listMenu.push({ id: 3, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> });
+      listMenu.push({ id: 3, name: 'Performance History', component: <PerformanceHistory /> });
+    }
+    if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
+      listMenu.push({ id: 4, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> });
     }
     if (permissions.viewTabDocument !== -1 || profileOwner) {
-      listMenu.push({ id: 4, name: 'Documents', component: <Documents /> });
+      listMenu.push({ id: 5, name: 'Documents', component: <Documents /> });
     }
     // if (permissions.viewTabTimeSchedule !== -1 || profileOwner) {
     //   listMenu.push({ id: 5, name: 'Time & Scheduling', component: <Test /> });
     // }
     if (permissions.viewTabBenefitPlans !== -1 || profileOwner) {
-      listMenu.push({ id: 5, name: 'Benefit Plans', component: <BenefitTab /> });
+      listMenu.push({ id: 6, name: 'Benefit Plans', component: <BenefitTab /> });
     }
 
     return listMenu;
@@ -214,7 +218,6 @@ class EmployeeProfile extends Component {
       loadingFetchEmployee,
       employeeProfile,
     } = this.props;
-    console.log(employeeProfile);
     const listMenu = this.renderListMenu(employee, currentEmployee?._id);
 
     const profileOwner = this.checkProfileOwner(currentEmployee?._id, employee);

@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { Row, Col, Tag } from 'antd';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { connect } from 'umi';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(({ employeeProfile: { tempData: { generalData = {} } = {}, listTitle = [] } = {} }) => ({
@@ -22,6 +23,8 @@ class View extends Component {
       dispatch,
       // , tenantCurrentEmployee = ''
     } = this.props;
+    const tenantId = getCurrentTenant();
+    const companyCurrentEmployee = getCurrentCompany();
     dispatch({
       type: 'employeeProfile/fetchListSkill',
     });
@@ -29,6 +32,7 @@ class View extends Component {
       type: 'employeeProfile/fetchListTitle',
       payload: {
         // tenantId: tenantCurrentEmployee,
+        payload: { company: companyCurrentEmployee, tenantId },
       },
     });
   }

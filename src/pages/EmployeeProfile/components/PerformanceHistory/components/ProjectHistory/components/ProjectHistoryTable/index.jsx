@@ -64,7 +64,7 @@ class ProjectHistoryTable extends PureComponent {
     const engagementColumn = (
       <Row className={styles.engagementColumn} justify="space-between" align="middle">
         <span>{engagement}</span>
-        <Dropdown overlay={menu}>
+        <Dropdown overlayStyle={{ width: 200 }} overlay={menu}>
           <EllipsisOutlined
             onClick={this.handleMenuClick}
             className={styles.engagementColumn_menu}

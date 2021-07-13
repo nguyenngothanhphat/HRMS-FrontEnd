@@ -1,9 +1,7 @@
 .feedback{
-    width: 100%;
+    width: auto; 
     display: flex;
     justify-content: flex-end;
-    padding-top: 24px;
-    position: relative;
     
     .btnFeedback {
       width: 48px;
@@ -54,11 +52,16 @@
 }
 
 .feedbackRoot{
+  width: auto;
+  position: relative;
 
   background: #f6f7f9;
   :global {
     .ant-affix {
-      padding-right: 24px;
+      // padding-right: 24px;
+      right: 24px;
+      z-index: 1000;
+      // width: 100px !important;
     }
   }
 }

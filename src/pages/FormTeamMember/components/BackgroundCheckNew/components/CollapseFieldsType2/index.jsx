@@ -185,8 +185,8 @@ class CollapseFieldsType2 extends PureComponent {
   // add component
   addComponent = () => {
     this.renderEmployerComponent();
-    const { addBlockD = () => {} } = this.props;
-    addBlockD();
+    const { addBlockE = () => {} } = this.props;
+    addBlockE();
   };
 
   // render component
