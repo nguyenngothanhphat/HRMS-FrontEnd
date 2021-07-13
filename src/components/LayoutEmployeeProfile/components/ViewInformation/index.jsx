@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Divider, Button, Spin, Input, Tooltip, Menu, Dropdown } from 'antd';
+import { Divider, Button, Spin, Input, Tooltip, Menu, Dropdown, Checkbox, Tag } from 'antd';
 
 import avtDefault from '@/assets/avtDefault.jpg';
 import bioSvg from '@/assets/bioActions.svg';
@@ -9,7 +9,6 @@ import ModalUpload from '@/components/ModalUpload';
 import CustomModal from '@/components/CustomModal';
 import s from '@/components/LayoutEmployeeProfile/index.less';
 import { getCurrentTenant } from '@/utils/authority';
-import Checkbox from 'antd/lib/checkbox/Checkbox';
 
 const { TextArea } = Input;
 const { SubMenu } = Menu;
@@ -86,7 +85,7 @@ class ViewInformation extends Component {
 
   formatListSkill = (skills, colors) => {
     let temp = 0;
-    const listFormat = skills.map((item) => {
+    const listFormat = skills?.map((item) => {
       if (temp >= 5) {
         temp -= 5;
       }
@@ -280,8 +279,8 @@ class ViewInformation extends Component {
     const joiningDate = joinDate ? moment(joinDate).format('MM.DD.YY') : '-';
     const { generalInfo: { firstName: managerFN = '', lastName: managerLN = '' } = {} } = manager;
     // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
-    // const listColors = ['#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0'];
-    // const formatListSkill = this.formatListSkill(generalData.skills, listColors) || [];
+    const listColors = ['#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0'];
+    const formatListSkill = this.formatListSkill(generalData.skills, listColors) || [];
 
     const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
 
@@ -318,7 +317,7 @@ class ViewInformation extends Component {
           <p className={s.infoEmployee__viewBottom__description} style={{ marginTop: '10px' }}>
             {bioInfo}
           </p>
-          {(permissions.editShowAvatarEmployee !== -1 || profileOwner) && (
+          {/* {(permissions.editShowAvatarEmployee !== -1 || profileOwner) && (
             <>
               <Divider />
               <div className={s.infoEmployee__viewBottom__row}>
@@ -331,7 +330,16 @@ class ViewInformation extends Component {
                 </Checkbox>
               </div>
             </>
-          )}
+          )} */}
+          <Divider />
+          <p className={s.titleTag}>Skills</p>
+          <div>
+            {formatListSkill.map((item) => (
+              <Tag key={item.id} color={item.color}>
+                {item.name}
+              </Tag>
+            ))}
+          </div>
           <Divider />
           {checkVisible ? (
             <div className={s.infoEmployee__viewBottom__row}>
@@ -346,21 +354,13 @@ class ViewInformation extends Component {
             <p className={s.titleTag}>Location</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{locationName}</p>
           </div>
-          <div className={s.infoEmployee__viewBottom__row}>
+          {/* <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag}>Reporting to</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>
               {managerFN} {managerLN}
             </p>
           </div>
           <Divider />
-          {/* <p className={s.titleTag}>Skills</p>
-          <div>
-            {formatListSkill.map((item) => (
-              <Tag key={item.id} color={item.color}>
-                {item.name}
-              </Tag>
-            ))}
-          </div> */}
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Email</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{workEmail}</p>
@@ -369,16 +369,16 @@ class ViewInformation extends Component {
             <p className={s.titleTag1}>Contact number</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{workNumber}</p>
           </div>
-          {/* <div className={s.infoEmployee__viewBottom__row}>
+          <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Joining department</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>Not implemented</p>
-          </div> */}
+          </div>
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Current department</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{departmentName}</p>
-          </div>
+          </div> 
 
-          <Divider />
+          <Divider /> */}
           <div className={s.infoEmployee__socialMedia}>
             <Tooltip title="LinkedIn">
               <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
