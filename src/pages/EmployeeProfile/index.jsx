@@ -12,9 +12,6 @@ import AccountsPaychecks from './components/Accounts&Paychecks';
 // import Test from './components/test';
 import Documents from './components/Documents';
 import styles from './index.less';
-import PutOnLeave from './components/PutOnLeave';
-import RaiseTermination from './components/RaiseTermination';
-import RequestDetails from './components/RequestDetails';
 import PerformanceHistory from './components/PerformanceHistory';
 
 @connect(

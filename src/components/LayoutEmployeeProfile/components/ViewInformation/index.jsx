@@ -317,7 +317,7 @@ class ViewInformation extends Component {
           <p className={s.infoEmployee__viewBottom__description} style={{ marginTop: '10px' }}>
             {bioInfo}
           </p>
-          {/* {(permissions.editShowAvatarEmployee !== -1 || profileOwner) && (
+          {(permissions.editShowAvatarEmployee !== -1 || profileOwner) && (
             <>
               <Divider />
               <div className={s.infoEmployee__viewBottom__row}>
@@ -330,7 +330,7 @@ class ViewInformation extends Component {
                 </Checkbox>
               </div>
             </>
-          )} */}
+          )}
           <Divider />
           <p className={s.titleTag}>Skills</p>
           <div>
