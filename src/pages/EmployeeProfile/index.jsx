@@ -15,6 +15,7 @@ import styles from './index.less';
 import PutOnLeave from './components/PutOnLeave';
 import RaiseTermination from './components/RaiseTermination';
 import RequestDetails from './components/RequestDetails';
+import PerformanceHistory from './components/PerformanceHistory';
 
 @connect(
   ({
@@ -193,16 +194,19 @@ class EmployeeProfile extends Component {
       });
     }
     if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
-      listMenu.push({ id: 3, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> });
+      listMenu.push({ id: 3, name: 'Performance History', component: <PerformanceHistory /> });
+    }
+    if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
+      listMenu.push({ id: 4, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> });
     }
     if (permissions.viewTabDocument !== -1 || profileOwner) {
-      listMenu.push({ id: 4, name: 'Documents', component: <Documents /> });
+      listMenu.push({ id: 5, name: 'Documents', component: <Documents /> });
     }
     // if (permissions.viewTabTimeSchedule !== -1 || profileOwner) {
     //   listMenu.push({ id: 5, name: 'Time & Scheduling', component: <Test /> });
     // }
     if (permissions.viewTabBenefitPlans !== -1 || profileOwner) {
-      listMenu.push({ id: 5, name: 'Benefit Plans', component: <BenefitTab /> });
+      listMenu.push({ id: 6, name: 'Benefit Plans', component: <BenefitTab /> });
     }
 
     return listMenu;

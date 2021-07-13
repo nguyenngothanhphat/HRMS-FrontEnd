@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Form, DatePicker, Row, Col, Input, Select, Divider, Button, Radio } from 'antd';
+import { Form, DatePicker, Row, Col, Input, Select, Divider, Button, Radio, Modal } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import path from '@/assets/path.svg';
+import modalSuccess from '@/assets/modal_img_1.png';
 
 import styles from './index.less';
 
@@ -16,11 +17,30 @@ class RaiseTermination extends Component {
       valueRadio1: null,
       valueRadio2: null,
       valueRadio3: null,
+      visible: false,
     };
   }
 
   handleCancel = () => {
     const { cancel = () => {} } = this.props;
+    cancel();
+  };
+
+  openFeedback = () => {
+    this.setState({
+      visible: true,
+    });
+  };
+
+  handleCandelModal = () => {
+    this.setState({
+      visible: false,
+    });
+  };
+
+  handleOkay = () => {
+    const { cancel = () => {} } = this.props;
+    this.handleCandelModal();
     cancel();
   };
 
@@ -52,12 +72,13 @@ class RaiseTermination extends Component {
     console.log(data);
   };
 
-  onFinish = (data) => {
-    console.log(data);
+  onFinish = (value) => {
+    console.log(value);
+    this.openFeedback();
   };
 
   render() {
-    const { valueRadio1, valueRadio2, valueRadio3, valueRadio } = this.state;
+    const { valueRadio1, valueRadio2, valueRadio3, valueRadio, visible } = this.state;
     const arr = [
       {
         name: 'happenChanged',
@@ -253,6 +274,20 @@ class RaiseTermination extends Component {
             </div>
           </div>
         </div>
+        <Modal
+          visible={visible}
+          title={false}
+          onCancel={this.handleCandelModal}
+          destroyOnClose={this.handleCandelModal}
+          footer={false}
+          className={styles.modalPopup}
+        >
+          <img alt="success" src={modalSuccess} />
+          <div className={styles.modalText}>Your request has been registered successfully!</div>
+          <Button onClick={this.handleOkay} className={styles.btnModal}>
+            Okay
+          </Button>
+        </Modal>
       </div>
     );
   }

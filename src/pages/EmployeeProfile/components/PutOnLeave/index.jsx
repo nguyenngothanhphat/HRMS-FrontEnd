@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Form, DatePicker, Row, Col, Input, Select, Divider, Button, Tag } from 'antd';
+import { Form, DatePicker, Row, Col, Input, Select, Divider, Button, Tag, Modal } from 'antd';
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import warning from '@/assets/warning_filled.svg';
 import modalSuccess from '@/assets/modal_img_1.png';
 import path from '@/assets/path.svg';
 
-import Modal from 'antd/lib/modal/Modal';
 import styles from './index.less';
 
 const { TextArea } = Input;
