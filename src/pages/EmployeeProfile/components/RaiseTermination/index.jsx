@@ -52,6 +52,10 @@ class RaiseTermination extends Component {
     console.log(data);
   };
 
+  onFinish = (data) => {
+    console.log(data);
+  };
+
   render() {
     const { valueRadio1, valueRadio2, valueRadio3, valueRadio } = this.state;
     const arr = [
@@ -115,9 +119,9 @@ class RaiseTermination extends Component {
                                 className={styles.radioRow__col}
                                 xs={24}
                                 sm={24}
-                                md={12}
-                                lg={12}
-                                xl={12}
+                                md={8}
+                                lg={8}
+                                xl={8}
                               >
                                 <Radio value={item.value}>{item.optionName}</Radio>
                               </Col>
@@ -126,16 +130,16 @@ class RaiseTermination extends Component {
                                   className={styles.radioRow__col}
                                   xs={24}
                                   sm={24}
-                                  md={12}
-                                  lg={12}
-                                  xl={12}
+                                  md={16}
+                                  lg={16}
+                                  xl={16}
                                 >
                                   <Form.Item
-                                    name="leaveFrom"
+                                    name="dateChanged"
                                     rules={[
                                       {
                                         required: true,
-                                        message: 'Please select Leave from date',
+                                        message: 'Please select date changed !',
                                       },
                                     ]}
                                   >
