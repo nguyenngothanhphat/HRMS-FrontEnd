@@ -12,13 +12,24 @@ class DetailEmployeeChart extends Component {
     history.push(`directory/employee-profile/${id}`);
   };
 
+  handleSelect = (value) => {
+    const { handleSelectSearch } = this.props;
+    handleSelectSearch(value);
+  };
+
   render() {
     const { chartDetails = {}, listEmployeeAll } = this.props;
     const checkObj = chartDetails.user !== undefined;
     const { user = {} } = chartDetails;
     const {
       _id = '',
-      generalInfo: { firstName = '', avatar = '', workEmail = '', employeeId = '' } = {},
+      generalInfo: {
+        firstName = '',
+        avatar = '',
+        workEmail = '',
+        employeeId = '',
+        workNumber = '',
+      } = {},
       department: { name = '' } = {},
       location: { name: nameLocation = '' } = {},
     } = user;
@@ -27,7 +38,7 @@ class DetailEmployeeChart extends Component {
         <div className={styles.chartSearch}>
           <p className={styles.chartSearch__name}>Terralogic Software Solution Pvt. Ltd.</p>
           <Select
-            mode="multiple"
+            showSearch
             allowClear
             style={{ width: '100%' }}
             placeholder="Search for employee, department"
@@ -36,18 +47,20 @@ class DetailEmployeeChart extends Component {
                 option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
               );
             }}
+            onSelect={this.handleSelect}
           >
             {listEmployeeAll.map((value) => {
               const {
+                _id: idSearch = '',
                 generalInfo: {
                   avatar: avatarSearch = '',
                   firstName: nameSearch = '',
                   employeeId: employeeIdSearch = '',
                 } = {},
               } = value;
-
+              const converName = `${nameSearch} (${employeeIdSearch})`;
               return (
-                <Option key={_id} value={_id}>
+                <Option key={idSearch} value={idSearch}>
                   <div style={{ display: 'inline', marginRight: '10px' }}>
                     <Avatar
                       src={avatarSearch || ''}
@@ -55,13 +68,13 @@ class DetailEmployeeChart extends Component {
                       icon={<UserOutlined />}
                       style={{
                         borderRadius: '50%',
-                        width: '30px',
-                        height: '30px',
+                        width: '25px',
+                        height: '25px',
                       }}
                     />
                   </div>
                   <span style={{ fontSize: '13px', color: '#161C29' }} className={styles.ccEmail}>
-                    {nameSearch}({employeeIdSearch})
+                    {converName}
                   </span>
                 </Option>
               );
@@ -86,7 +99,7 @@ class DetailEmployeeChart extends Component {
                   <div className={styles.chartDetail__Bottom_label}>Mobile:</div>
                 </Col>
                 <Col span={15}>
-                  <div className={styles.chartDetail__Bottom_value}>Number</div>
+                  <div className={styles.chartDetail__Bottom_value}>{workNumber || ''}</div>
                 </Col>
                 <Col span={9}>
                   <div className={styles.chartDetail__Bottom_label}>Email id:</div>

@@ -115,8 +115,20 @@ class OrganisationChart extends Component {
     );
   };
 
-  handleSearch = (value) => {
-    console.log(value);
+  handleSelect = (value) => {
+    const { listEmployeeAll } = this.props;
+    const getData = listEmployeeAll.filter((item) => item._id === value);
+    const convertData = getData.map((item) => {
+      const { _id, generalInfo, department, location } = item;
+      return {
+        _id,
+        generalInfo,
+        department,
+        location,
+      };
+    });
+    const convertFinal = { user: convertData[0] };
+    this.setState({ chartDetails: convertFinal });
   };
 
   render() {
@@ -133,7 +145,7 @@ class OrganisationChart extends Component {
             <Col span={7}>
               <DetailEmployeeChart
                 chartDetails={chartDetails}
-                handleSearch={this.handleSearch}
+                handleSelectSearch={this.handleSelect}
                 listEmployeeAll={listEmployeeAll}
               />
             </Col>
