@@ -22,6 +22,7 @@ const employee = {
     listEmployeeMyTeam: [],
     listEmployeeActive: [],
     listEmployeeInActive: [],
+    listEmployeeAll: [],
     dataRadio: [],
     clearFilter: false,
     clearName: false,
@@ -183,10 +184,10 @@ const employee = {
         dialog(errors);
       }
     },
-    *fetchDataOrgChart(_, { call, put }) {
+    *fetchDataOrgChart({ payload: { tenantId = '', company = '' } = {} }, { call, put }) {
       try {
-        const response = yield call(getDataOrgChart);
-        const { statusCode, data: { chart: dataOrgChart = {} } = {} } = response;
+        const response = yield call(getDataOrgChart, { tenantId, company });
+        const { statusCode, data: dataOrgChart = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { dataOrgChart } });
       } catch (errors) {
@@ -234,6 +235,41 @@ const employee = {
         dialog(errors);
       }
       return response;
+    },
+    *fetchAllListUser(
+      {
+        payload: {
+          company = [],
+          department = [],
+          location = [],
+          employeeType = [],
+          name = '',
+          title = [],
+          skill = [],
+        } = {},
+      },
+      { call, put },
+    ) {
+      try {
+        const response = yield call(getListEmployee, {
+          status: ['ACTIVE', 'INACTIVE'],
+          company,
+          department,
+          location,
+          employeeType,
+          name,
+          title,
+          skill,
+        });
+        const { statusCode, data: listEmployeeAll = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({ type: 'listEmployeeAll', payload: { listEmployeeAll } });
+        return listEmployeeAll;
+      } catch (errors) {
+        dialog(errors);
+        return 0;
+      }
     },
   },
   reducers: {
@@ -306,6 +342,12 @@ const employee = {
       };
     },
     listEmployeeInActive(state, action) {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+    listEmployeeAll(state, action) {
       return {
         ...state,
         ...action.payload,

@@ -10,6 +10,7 @@ import {
   // isAdmin,
 } from '@/utils/authority';
 import DirectoryComponent from './components/Directory';
+import OrganisationChart from './components/OrganisationChart';
 import styles from './index.less';
 
 @connect(
@@ -203,9 +204,9 @@ class Directory extends PureComponent {
             >
               <DirectoryComponent />
             </TabPane>
-            {/* <TabPane tab={formatMessage({ id: 'pages.directory.organisationChartTab' })} key="2">
-              <OrganChart />
-            </TabPane> */}
+            <TabPane tab={formatMessage({ id: 'pages.directory.organisationChartTab' })} key="2">
+              <OrganisationChart />
+            </TabPane>
           </Tabs>
         </div>
       </PageContainer>

@@ -44,7 +44,7 @@ class DirectoryTable extends Component {
       sortedName: {},
       pageSelected: 1,
       rowSize: 10,
-      isSort: false,
+      // isSort: false,
       openModal: false,
       rowData: {},
       valueReason: '',
@@ -342,15 +342,15 @@ class DirectoryTable extends Component {
   };
 
   handleChangeTable = (_pagination, _filters, sorter) => {
-    const descend = 'descend';
-    const ascend = 'ascend';
-    let isSort = false;
-    if (sorter.order === descend || sorter.order === ascend) {
-      isSort = true;
-    }
+    // const descend = 'descend';
+    // const ascend = 'ascend';
+    // let isSort = false;
+    // if (sorter.order === descend || sorter.order === ascend) {
+    //   isSort = true;
+    // }
     this.setState({
       sortedName: sorter,
-      isSort,
+      // isSort,
     });
   };
 
@@ -498,8 +498,8 @@ class DirectoryTable extends Component {
           tenant: item.tenant,
         },
         managerPack: {
-          _id: item.manager._id,
-          generalInfo: item.manager.generalInfo,
+          _id: item?.manager?._id,
+          generalInfo: item?.manager?.generalInfo,
           tenant: item.tenant,
         },
       };
