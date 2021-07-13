@@ -2,7 +2,7 @@
 import CustomModal from '@/components/CustomModal';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 // import Warning from './components/Warning';
-import { Button, Col, Row, Spin, Typography } from 'antd';
+import { Button, Col, notification, Row, Spin, Typography } from 'antd';
 import { map } from 'lodash';
 import React, { Component } from 'react';
 import { connect, formatMessage } from 'umi';
@@ -553,22 +553,28 @@ class BackgroundCheck extends Component {
   };
 
   changeValueToFinalOffer = (e) => {
-    const { dispatch, tempData, checkMandatory } = this.props;
-    // console.log('e', e.target.value);
+    const { dispatch, tempData, checkMandatory, data: { processStatus = '' } = {} } = this.props;
+    const { SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
     if (e.target.value === 1) {
-      dispatch({
-        type: 'candidateInfo/save',
-        payload: {
-          tempData: {
-            ...tempData,
-            valueToFinalOffer: 1,
+      if (processStatus === SENT_PROVISIONAL_OFFERS) {
+        notification.warning({
+          message: 'Waiting for candidate to upload the required documents.',
+        });
+      } else {
+        dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            tempData: {
+              ...tempData,
+              valueToFinalOffer: 1,
+            },
+            checkMandatory: {
+              ...checkMandatory,
+              filledBackgroundCheck: true,
+            },
           },
-          checkMandatory: {
-            ...checkMandatory,
-            filledBackgroundCheck: true,
-          },
-        },
-      });
+        });
+      }
     } else {
       dispatch({
         type: 'candidateInfo/save',
@@ -1212,7 +1218,7 @@ class BackgroundCheck extends Component {
           documentChecklistSetting = [],
           previousEmployment: { poe = [] } = {},
         },
-        data: { privateEmail },
+        data: { privateEmail, processStatus: processStatusFilled = '' },
       } = {},
       processStatus,
       loading4,
@@ -1223,6 +1229,7 @@ class BackgroundCheck extends Component {
 
     const documentCLSTypeD = documentChecklistSetting.find((doc) => doc.type === 'D');
     const { openModal, identityProof, addressProof, educational, refreshBlockE } = this.state;
+
     return (
       <div>
         <Row gutter={[24, 0]} className={styles.BackgroundCheckNew}>
@@ -1312,7 +1319,9 @@ class BackgroundCheck extends Component {
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={note} />
-            {processStatus === 'DRAFT' && (
+
+            {processStatus === 'DRAFT' ||
+            processStatusFilled === PROCESS_STATUS.SENT_PROVISIONAL_OFFERS ? (
               <SendEmail
                 loading4={loading4}
                 handleSendEmail={this.handleSendEmail}
@@ -1326,11 +1335,14 @@ class BackgroundCheck extends Component {
                 lastName={lastName}
                 handleValueChange={this.handleValueChange}
                 privateEmail={privateEmail}
+                processStatusFilled={processStatusFilled}
                 processStatus={processStatus}
                 checkValidation={checkValidation}
                 valueToFinalOffer={valueToFinalOffer}
                 changeValueToFinalOffer={this.changeValueToFinalOffer}
               />
+            ) : (
+              ''
             )}
           </Col>
         </Row>
