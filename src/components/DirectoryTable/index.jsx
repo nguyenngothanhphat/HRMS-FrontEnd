@@ -74,12 +74,13 @@ class DirectoryTable extends Component {
     const timezoneList = [];
     listLocationsByCompany.forEach((location) => {
       const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '' } = {},
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
         _id = '',
       } = location;
       timezoneList.push({
         locationId: _id,
         timezone:
+          getTimezoneViaCity(city) ||
           getTimezoneViaCity(state) ||
           getTimezoneViaCity(addressLine1) ||
           getTimezoneViaCity(addressLine2),
@@ -292,7 +293,12 @@ class DirectoryTable extends Component {
         render: (managerPack) => (
           <span
             className={styles.managerName}
-            onClick={() => this.handleProfileEmployee(managerPack._id, managerPack.tenant)}
+            onClick={() =>
+              this.handleProfileEmployee(
+                managerPack._id,
+                managerPack.tenant,
+                managerPack.generalInfo?.userId,
+              )}
           >
             {managerPack.generalInfo
               ? `${managerPack?.generalInfo?.firstName} ${managerPack?.generalInfo?.lastName}`

@@ -153,6 +153,7 @@ class BackgroundRecheck extends Component {
           groupC.push(item);
           break;
         case 'D':
+          if (item.isCandidateUpload) item.displayName += '*';
           groupD.push(item);
           break;
         default:
