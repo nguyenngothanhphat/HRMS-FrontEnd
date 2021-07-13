@@ -3,6 +3,7 @@ import { Collapse, Skeleton } from 'antd';
 import { formatMessage, connect } from 'umi';
 import { EditFilled } from '@ant-design/icons';
 import PlusIcon from '@/assets/plusIcon1.svg';
+import AddIcon from '@/assets/add-symbols.svg';
 import MinusIcon from '@/assets/minusIcon1.svg';
 import styles from './styles.less';
 import GroupInfoType2 from '../../../../components/GroupInfoType2';
@@ -160,7 +161,7 @@ class BenefitTab extends PureComponent {
                 isActive ? (
                   <img src={MinusIcon} alt="collapse" />
                 ) : (
-                  <img src={PlusIcon} alt="expand" />
+                  <img src={AddIcon} alt="expand" />
                 )
               }
               className="site-collapse-custom-collapse"
