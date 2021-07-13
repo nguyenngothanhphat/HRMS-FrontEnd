@@ -7,19 +7,19 @@
   }
 
   .viewActivityButton {
-    border: none;
     width: 168px;
     height: 40px;
     object-fit: contain;
-    border-radius: 5px;
-    background-color: rgba(86, 138, 250, 0.07);
-    font-size: 14px;
+    color: #2c6df9;
     font-weight: 500;
-    font-stretch: normal;
+    font-size: 14px;
     font-style: normal;
+    font-stretch: normal;
     line-height: normal;
     letter-spacing: 0.13px;
-    color: #2c6df9;
+    background-color: rgba(86, 138, 250, 0.07);
+    border: none;
+    border-radius: 5px;
   }
 
   :global {
@@ -29,11 +29,18 @@
     // }
     .ant-tabs-tab-btn {
       color: #707177;
-      opacity: 1;
       font-weight: 500;
+      opacity: 1;
     }
-    .ant-tabs-ink-bar {
-      display: none;
+    .ant-tabs-top > .ant-tabs-nav .ant-tabs-ink-bar-animated,
+    .ant-tabs-bottom > .ant-tabs-nav .ant-tabs-ink-bar-animated,
+    .ant-tabs-top > div > .ant-tabs-nav .ant-tabs-ink-bar-animated,
+    .ant-tabs-bottom > div > .ant-tabs-nav .ant-tabs-ink-bar-animated {
+      height: 3px;
     }
+    // .ant-tabs-ink-bar {
+    //   display: none;
+
+    // }
   }
 }

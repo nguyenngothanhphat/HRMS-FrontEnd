@@ -44,12 +44,14 @@ class DirectoryComponent extends PureComponent {
       let state = [];
       let company = [];
       let title = [];
+      let skill = [];
       const employeeTypeConst = 'Employment Type';
       const departmentConst = 'Department';
       const countryConst = 'Country';
       const stateConst = 'State';
       const companyConst = 'Company';
       const titleConst = 'Title';
+      const titleSkill = 'Skill';
       filter.map((item) => {
         if (item.actionFilter.name === employeeTypeConst) {
           employeeType = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
@@ -69,6 +71,9 @@ class DirectoryComponent extends PureComponent {
         if (item.actionFilter.name === titleConst) {
           title = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
         }
+        if (item.actionFilter.name === titleSkill) {
+          skill = item.checkedList ? item.checkedList : item.actionFilter.checkedList;
+        }
         return { employeeType, department, countryConst, company, title };
       });
       return {
@@ -79,6 +84,7 @@ class DirectoryComponent extends PureComponent {
         employeeType,
         company,
         title,
+        skill,
       };
     }
     return null;
@@ -134,6 +140,7 @@ class DirectoryComponent extends PureComponent {
       filterName,
       tabId,
       changeTab,
+      skill,
     } = this.state;
     // const isOwnerCheck = isOwner();
     // const currentLocation = getCurrentLocation();
@@ -146,8 +153,8 @@ class DirectoryComponent extends PureComponent {
       employeeType,
       company,
       title,
+      skill,
     };
-
     if (
       prevState.tabId !== tabId ||
       (changeTab && prevState.tabId === tabId) ||
@@ -155,6 +162,7 @@ class DirectoryComponent extends PureComponent {
       prevState.country.length !== country.length ||
       prevState.state.length !== state.length ||
       prevState.employeeType.length !== employeeType.length ||
+      prevState.skill.length !== skill.length ||
       JSON.stringify(prevState.title) !== JSON.stringify(title) ||
       prevState.filterName !== filterName ||
       prevState.company.length !== company.length
@@ -351,7 +359,7 @@ class DirectoryComponent extends PureComponent {
       listLocationsByCompany = [],
       currentUser: { employee: { department: { name: departmentName = '' } = {} } = {} } = {},
     } = this.props;
-    const { name, department, country, state, employeeType, company, title } = params;
+    const { name, department, country, state, employeeType, company, title, skill } = params;
 
     // MULTI COMPANY & LOCATION PAYLOAD
     let companyPayload = [];
@@ -450,6 +458,7 @@ class DirectoryComponent extends PureComponent {
       location: locationPayload,
       employeeType,
       title,
+      skill,
     };
 
     if (tabId === active) {

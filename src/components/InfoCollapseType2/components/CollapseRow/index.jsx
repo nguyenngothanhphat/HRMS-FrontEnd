@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Collapse, Row, Col } from 'antd';
+import { EllipsisOutlined } from '@ant-design/icons';
 import PDFIcon from '@/assets/pdf_icon.png';
 import ImageIcon from '@/assets/image_icon.png';
 // import UploadIcon from '@/assets/upload_icon.png';
@@ -194,9 +195,9 @@ class CollapseRow extends PureComponent {
                       <span>{fileName}</span>
                     </div>
                   </Col>
-                  <Col span={7}>{generatedBy}</Col>
-                  <Col span={7}>{moment(createdAt).locale('en').format('MM.DD.YY')}</Col>
-                  <Col span={2}>
+                  <Col span={6}>{generatedBy}</Col>
+                  <Col span={6}>{moment(createdAt).locale('en').format('MM.DD.YY')}</Col>
+                  <Col span={4}>
                     <div className={styles.downloadFile}>
                       {showUpload && (
                         <div className={styles.uploadButton}>
@@ -208,8 +209,12 @@ class CollapseRow extends PureComponent {
                           />
                         </div>
                       )}
+                      <div className={styles.completed}>Complete</div>
                       <div className={styles.downloadButton}>
                         <DownloadFile content={this.renderDownloadIcon()} url={source} />
+                      </div>
+                      <div className={styles.actionButton}>
+                        <EllipsisOutlined />
                       </div>
                     </div>
                   </Col>
