@@ -1,0 +1,67 @@
+.feedback{
+    width: auto; 
+    display: flex;
+    justify-content: flex-end;
+    
+    .btnFeedback {
+      width: 48px;
+      height: 48px;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 16px;
+      text-align: center;
+      background: #ffa100;
+      border: none;
+      border-radius: 50px;
+      transition: width 0.5s;
+
+      .spanText{
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+      }
+
+      &:hover {
+        width: 129px;
+        .feedbackText{
+          max-width: 300px;
+          -webkit-transition: color .25s .25s, max-width 1s;
+          transition: color .25s .25s, max-width 1s;
+        }
+      }
+      
+      .feedbackText{
+        max-width: 0;
+        display: inline-block;
+        -webkit-transition: color .25s .25s, max-width .25s;
+        transition: color .25s .25s, max-width .25s;
+        vertical-align: top;
+        white-space: nowrap;
+        overflow: hidden;
+
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 16px;
+
+        color: #FFFFFF;
+      }
+    }
+}
+
+.feedbackRoot{
+  width: auto;
+  position: relative;
+
+  background: #f6f7f9;
+  :global {
+    .ant-affix {
+      // padding-right: 24px;
+      right: 24px;
+      z-index: 1000;
+      // width: 100px !important;
+    }
+  }
+}

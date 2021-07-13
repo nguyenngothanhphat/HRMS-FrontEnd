@@ -100,7 +100,9 @@ class FormTeamMember extends PureComponent {
       type: 'candidateInfo/saveOrigin',
       payload: {
         listTitle,
-        fullName: null,
+        firstName: null,
+        middleName: null,
+        lastName: null,
         privateEmail: null,
         workEmail: null,
         workLocation: null,

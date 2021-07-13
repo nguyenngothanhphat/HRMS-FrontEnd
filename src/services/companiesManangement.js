@@ -76,3 +76,15 @@ export async function addCompanyTenant(payload) {
     data: payload,
   });
 }
+
+export async function getCompanyTypeList() {
+  return request('/api/companytype/list', {
+    method: 'POST',
+  });
+}
+
+export async function getIndustryList() {
+  return request('/api/industry/list', {
+    method: 'POST',
+  });
+}

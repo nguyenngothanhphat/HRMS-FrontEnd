@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="9px" height="5px" viewBox="0 0 9 5" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Path</title>
+    <g id="Directory-UI" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="ED-D1" transform="translate(-1286.000000, -804.000000)" fill="#2C6DF9" fill-rule="nonzero">
+            <g id="Group-18" transform="translate(1123.000000, 215.000000)">
+                <g id="Group-5" transform="translate(16.000000, 571.000000)">
+                    <g id="Group-4" transform="translate(90.000000, 12.000000)">
+                        <path d="M65.60805,6.16272 C65.49963,6.05421 65.37111,6 65.22261,6 L57.54822,6 C57.39966,6 57.27123,6.05421 57.16272,6.16272 C57.05421,6.27135 57,6.39978 57,6.54825 C57,6.69669 57.05421,6.82512 57.16272,6.93366 L60.99993,10.77087 C61.10856,10.87938 61.23699,10.93371 61.38543,10.93371 C61.53387,10.93371 61.66242,10.87938 61.77084,10.77087 L65.60805,6.93363 C65.71644,6.82512 65.77086,6.69669 65.77086,6.54822 C65.77086,6.39978 65.71644,6.27135 65.60805,6.16272 Z" id="Path"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

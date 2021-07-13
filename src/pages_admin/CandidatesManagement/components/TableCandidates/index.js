@@ -40,7 +40,9 @@ class TableCandidates extends PureComponent {
         width: '12%',
         render: (nameAndId) => (
           <span onClick={() => this.viewCandidate(nameAndId.ticketID)} className={styles.fullName}>
-            {nameAndId ? nameAndId.fullName : ''}
+            {nameAndId
+              ? `${nameAndId.firstName} ${nameAndId.lastName} ${nameAndId.middleName}`
+              : ''}
           </span>
         ),
         // sortDirections: ['ascend', 'descend', 'ascend'],
@@ -141,7 +143,9 @@ class TableCandidates extends PureComponent {
       return {
         ...value,
         nameAndId: {
-          fullName: value.fullName,
+          firstName: value.firstName,
+          middleName: value.middleName,
+          lastName: value.lastName,
           ticketID: value.ticketID,
         },
       };

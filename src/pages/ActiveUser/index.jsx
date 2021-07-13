@@ -53,13 +53,17 @@ class ActiveUser extends PureComponent {
               {isActivated ? (
                 <div className={styles.loadingText}>
                   <CheckCircleOutlined className={styles.loadingIcon} />
-                  <span className={styles.activatingText}>Your account has been activated.</span>
+                  <span className={styles.activatingText}>
+                    Your account was activated. Please check your email for your sign in
+                    information.
+                  </span>
                 </div>
               ) : (
                 <div className={styles.loadingText}>
                   <InfoCircleOutlined className={styles.loadingIcon} />
                   <span className={styles.activatedText}>
-                    This link is expired or your account is activated.
+                    This link is expired or your account is activated. Please refresh this page or
+                    check your email for your sign in information.
                   </span>
                 </div>
               )}

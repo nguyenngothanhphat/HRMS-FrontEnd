@@ -12,6 +12,7 @@ import AccountsPaychecks from './components/Accounts&Paychecks';
 // import Test from './components/test';
 import Documents from './components/Documents';
 import styles from './index.less';
+import PerformanceHistory from './components/PerformanceHistory';
 
 @connect(
   ({
@@ -34,11 +35,18 @@ class EmployeeProfile extends Component {
   }
 
   componentDidMount = async () => {
-    // const { dispatch } = this.props;
+    const { dispatch, match: { params: { reId = '' } = {} } = {} } = this.props;
     // const tenantCurrentEmployee = localStorage.getItem('tenantCurrentEmployee');
     // const companyCurrentEmployee = localStorage.getItem('companyCurrentEmployee');
     // const idCurrentEmployee = localStorage.getItem('idCurrentEmployee');
-
+    await dispatch({
+      type: 'employeeProfile/fetchEmployeeIdByUserId',
+      payload: {
+        userId: reId,
+        company: getCurrentCompany(),
+        tenantId: getCurrentTenant(),
+      },
+    });
     // await dispatch({
     //   type: 'employeeProfile/save',
     //   payload: {
@@ -59,15 +67,14 @@ class EmployeeProfile extends Component {
 
   fetchData = async () => {
     const {
-      // employeeProfile,
-      match: { params: { reId: employee = '' } = {} },
+      employeeProfile: { employee = '' } = {},
+      // match: { params: { reId: employee = '' } = {} },
       dispatch,
       // employeeProfile: {
       //   tenantCurrentEmployee: tenantId1 = '',
       //   companyCurrentEmployee = ''
       // } = {},
     } = this.props;
-
     let tenantId1 = localStorage.getItem('tenantCurrentEmployee');
     tenantId1 = tenantId1 && tenantId1 !== 'undefined' ? tenantId1 : '';
 
@@ -76,7 +83,7 @@ class EmployeeProfile extends Component {
       payload: { id: employee, tenantId: tenantId1 || getCurrentTenant() },
     });
 
-    const { statusCode, data } = res;
+    const { statusCode } = res;
     if (statusCode === 200) {
       const tenantId = getCurrentTenant();
       const companyCurrentEmployee = getCurrentCompany();
@@ -184,16 +191,19 @@ class EmployeeProfile extends Component {
       });
     }
     if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
-      listMenu.push({ id: 3, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> });
+      listMenu.push({ id: 3, name: 'Performance History', component: <PerformanceHistory /> });
+    }
+    if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
+      listMenu.push({ id: 4, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> });
     }
     if (permissions.viewTabDocument !== -1 || profileOwner) {
-      listMenu.push({ id: 4, name: 'Documents', component: <Documents /> });
+      listMenu.push({ id: 5, name: 'Documents', component: <Documents /> });
     }
     // if (permissions.viewTabTimeSchedule !== -1 || profileOwner) {
     //   listMenu.push({ id: 5, name: 'Time & Scheduling', component: <Test /> });
     // }
     if (permissions.viewTabBenefitPlans !== -1 || profileOwner) {
-      listMenu.push({ id: 5, name: 'Benefit Plans', component: <BenefitTab /> });
+      listMenu.push({ id: 6, name: 'Benefit Plans', component: <BenefitTab /> });
     }
 
     return listMenu;
@@ -206,8 +216,8 @@ class EmployeeProfile extends Component {
       permissions = {},
       location: { state: { location = '' } = {} } = {},
       loadingFetchEmployee,
+      employeeProfile,
     } = this.props;
-
     const listMenu = this.renderListMenu(employee, currentEmployee?._id);
 
     const profileOwner = this.checkProfileOwner(currentEmployee?._id, employee);

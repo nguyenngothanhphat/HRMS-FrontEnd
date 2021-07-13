@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
-import { Divider, Button, Spin, Input, Tooltip } from 'antd';
+import { Divider, Button, Spin, Input, Tooltip, Menu, Dropdown, Checkbox, Tag } from 'antd';
+
 import avtDefault from '@/assets/avtDefault.jpg';
-import { connect } from 'umi';
+import bioSvg from '@/assets/bioActions.svg';
+import { connect, history } from 'umi';
 import moment from 'moment';
 import ModalUpload from '@/components/ModalUpload';
 import CustomModal from '@/components/CustomModal';
 import s from '@/components/LayoutEmployeeProfile/index.less';
 import { getCurrentTenant } from '@/utils/authority';
-import Checkbox from 'antd/lib/checkbox/Checkbox';
 
 const { TextArea } = Input;
+const { SubMenu } = Menu;
 
 @connect(
   ({
@@ -83,7 +85,7 @@ class ViewInformation extends Component {
 
   formatListSkill = (skills, colors) => {
     let temp = 0;
-    const listFormat = skills.map((item) => {
+    const listFormat = skills?.map((item) => {
       if (temp >= 5) {
         temp -= 5;
       }
@@ -194,6 +196,58 @@ class ViewInformation extends Component {
     return avtDefault;
   };
 
+  handleClickMenu = (menu) => {
+    const { handleClickOnActions = () => {} } = this.props;
+    const { key = '' } = menu;
+    handleClickOnActions(key);
+  };
+
+  btnAction = (permissions, profileOwner) => {
+    const subDropdown = (
+      <SubMenu className={s.subMenu} key="sub1" title="Job Change">
+        <Menu.Item
+          key="offboarding"
+          className={s.menuItem}
+          onClick={() => {
+            history.push('/offboarding');
+          }}
+        >
+          Offboarding
+        </Menu.Item>
+      </SubMenu>
+    );
+
+    const menu = (
+      <Menu className={s.menuDropdown} mode="inline" onClick={this.handleClickMenu}>
+        {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
+          <Menu.Item key="editBio" className={s.menuItem} onClick={this.handleEditBio}>
+            Edit Bio
+          </Menu.Item>
+        )}
+        {subDropdown}
+        <Menu.Item key="0" className={s.menuItem}>
+          Put on Leave (LWP)
+        </Menu.Item>
+        <Menu.Item key="1" className={s.menuItem}>
+          Raise Termination
+        </Menu.Item>
+        <Menu.Item key="2" className={s.menuItem}>
+          Request Details
+        </Menu.Item>
+      </Menu>
+    );
+
+    return (
+      <>
+        <Dropdown className={s.actionBtn} overlay={menu} trigger={['click']}>
+          <div onClick={(e) => e.preventDefault()}>
+            Actions <img alt="bio" src={bioSvg} />
+          </div>
+        </Dropdown>
+      </>
+    );
+  };
+
   render() {
     const {
       generalData,
@@ -225,8 +279,8 @@ class ViewInformation extends Component {
     const joiningDate = joinDate ? moment(joinDate).format('MM.DD.YY') : '-';
     const { generalInfo: { firstName: managerFN = '', lastName: managerLN = '' } = {} } = manager;
     // const listColors = ['red', 'purple', 'green', 'magenta', 'blue'];
-    // const listColors = ['#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0'];
-    // const formatListSkill = this.formatListSkill(generalData.skills, listColors) || [];
+    const listColors = ['#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0', '#E0F4F0'];
+    const formatListSkill = this.formatListSkill(generalData.skills, listColors) || [];
 
     const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
 
@@ -263,13 +317,6 @@ class ViewInformation extends Component {
           <p className={s.infoEmployee__viewBottom__description} style={{ marginTop: '10px' }}>
             {bioInfo}
           </p>
-          <div className={s.viewBtnAction}>
-            {(permissions.updateAvatarEmployee !== -1 || profileOwner) && (
-              <Button onClick={this.handleEditBio} className={s.btnEditBio}>
-                Edit Bio
-              </Button>
-            )}
-          </div>
           {(permissions.editShowAvatarEmployee !== -1 || profileOwner) && (
             <>
               <Divider />
@@ -285,6 +332,15 @@ class ViewInformation extends Component {
             </>
           )}
           <Divider />
+          <p className={s.titleTag}>Skills</p>
+          <div>
+            {formatListSkill.map((item) => (
+              <Tag key={item.id} color={item.color}>
+                {item.name}
+              </Tag>
+            ))}
+          </div>
+          <Divider />
           {checkVisible ? (
             <div className={s.infoEmployee__viewBottom__row}>
               <p className={s.titleTag}>Joining Date</p>
@@ -298,21 +354,13 @@ class ViewInformation extends Component {
             <p className={s.titleTag}>Location</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{locationName}</p>
           </div>
-          <div className={s.infoEmployee__viewBottom__row}>
+          {/* <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag}>Reporting to</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>
               {managerFN} {managerLN}
             </p>
           </div>
           <Divider />
-          {/* <p className={s.titleTag}>Skills</p>
-          <div>
-            {formatListSkill.map((item) => (
-              <Tag key={item.id} color={item.color}>
-                {item.name}
-              </Tag>
-            ))}
-          </div> */}
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Email</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{workEmail}</p>
@@ -321,16 +369,16 @@ class ViewInformation extends Component {
             <p className={s.titleTag1}>Contact number</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{workNumber}</p>
           </div>
-          {/* <div className={s.infoEmployee__viewBottom__row}>
+          <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Joining department</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>Not implemented</p>
-          </div> */}
+          </div>
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Current department</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{departmentName}</p>
-          </div>
+          </div> 
 
-          <Divider />
+          <Divider /> */}
           <div className={s.infoEmployee__socialMedia}>
             <Tooltip title="LinkedIn">
               <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
@@ -349,6 +397,7 @@ class ViewInformation extends Component {
               />
             </Tooltip>
           </div>
+          <div className={s.viewBtnAction}>{this.btnAction(permissions, profileOwner)}</div>
         </div>
         <ModalUpload
           titleModal="Profile Picture Update"

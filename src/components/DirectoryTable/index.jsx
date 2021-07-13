@@ -74,12 +74,13 @@ class DirectoryTable extends Component {
     const timezoneList = [];
     listLocationsByCompany.forEach((location) => {
       const {
-        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '' } = {},
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
         _id = '',
       } = location;
       timezoneList.push({
         locationId: _id,
         timezone:
+          getTimezoneViaCity(city) ||
           getTimezoneViaCity(state) ||
           getTimezoneViaCity(addressLine1) ||
           getTimezoneViaCity(addressLine2),
@@ -111,8 +112,8 @@ class DirectoryTable extends Component {
         ) : (
           <Avatar className={styles.avatar_emptySrc} alt="avatar" />
         )}
-        <p onClick={() => this.handleProfileEmployee(_id, tenant)}>
-          {`${generalInfo.firstName} ${generalInfo.lastName}`}
+        <p onClick={() => this.handleProfileEmployee(_id, tenant, generalInfo?.userId)}>
+          {`${generalInfo?.firstName} ${generalInfo?.lastName}`}
         </p>
       </div>
     );
@@ -191,9 +192,9 @@ class DirectoryTable extends Component {
         render: (employeePack) => (employeePack ? this.renderUser(employeePack) : ''),
         align: 'left',
         sorter: (a, b) =>
-          a.employeePack.generalInfo && a.employeePack.generalInfo.firstName
-            ? `${a.employeePack.generalInfo.firstName} ${a.employeePack.generalInfo.lastName}`.localeCompare(
-                `${b.employeePack.generalInfo.firstName} ${b.employeePack.generalInfo.lastName}`,
+          a.employeePack.generalInfo && a.employeePack.generalInfo?.firstName
+            ? `${a.employeePack.generalInfo?.firstName} ${a.employeePack.generalInfo?.lastName}`.localeCompare(
+                `${b.employeePack.generalInfo?.firstName} ${b.employeePack.generalInfo?.lastName}`,
               )
             : null,
         // sortOrder: sortedName.columnKey === 'employeePack' && sortedName.order,
@@ -292,7 +293,13 @@ class DirectoryTable extends Component {
         render: (managerPack) => (
           <span
             className={styles.managerName}
-            onClick={() => this.handleProfileEmployee(managerPack._id, managerPack.tenant)}
+            onClick={() =>
+              this.handleProfileEmployee(
+                managerPack._id,
+                managerPack.tenant,
+                managerPack.generalInfo?.userId,
+              )
+            }
           >
             {managerPack.generalInfo
               ? `${managerPack?.generalInfo?.firstName} ${managerPack?.generalInfo?.lastName}`
@@ -366,7 +373,7 @@ class DirectoryTable extends Component {
     });
   };
 
-  handleProfileEmployee = async (_id, tenant) => {
+  handleProfileEmployee = async (_id, tenant, userId) => {
     // const { _id = '', location: { name = '' } = {}, tenant = '', company = {} } = row;
     // const { dispatch } = this.props;
     // await dispatch({
@@ -381,8 +388,8 @@ class DirectoryTable extends Component {
     // localStorage.setItem('idCurrentEmployee', _id);
 
     const pathname = isOwner()
-      ? `/employees/employee-profile/${_id}`
-      : `/directory/employee-profile/${_id}`;
+      ? `/employees/employee-profile/${userId}`
+      : `/directory/employee-profile/${userId}`;
     setTimeout(() => {
       history.push({
         pathname,

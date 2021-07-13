@@ -162,6 +162,25 @@ class FormWorkLocation extends Component {
               <Input placeholder="Address Line 2" />
             </Form.Item>
           </div>
+
+          <div className={s.content__viewBottom__row}>
+            <p className={s.content__viewBottom__row__textLabel}>City Name*</p>
+            <Form.Item
+              {...field}
+              label={false}
+              name={[field.name, 'city']}
+              fieldKey={[field.fieldKey, 'city']}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter City Name!',
+                },
+              ]}
+            >
+              <Input placeholder="City Name" />
+            </Form.Item>
+          </div>
+
           <div className={s.content__viewBottom__row}>
             <div className={s.viewFormVertical}>
               <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>Country</p>

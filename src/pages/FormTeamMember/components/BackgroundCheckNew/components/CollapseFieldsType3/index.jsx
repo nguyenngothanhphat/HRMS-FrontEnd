@@ -1,12 +1,13 @@
 /* eslint-disable no-nested-ternary */
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { Checkbox, Collapse } from 'antd';
 import React, { PureComponent } from 'react';
-import { Collapse, Checkbox, Input } from 'antd';
-import { PlusOutlined, MinusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
+import Certification from './components/Certification';
 import styles from './index.less';
 
 const { Panel } = Collapse;
-const CheckboxGroup = Checkbox.Group;
+// const CheckboxGroup = Checkbox.Group;
 
 @connect(({ candidateInfo }) => ({
   candidateInfo,
@@ -18,26 +19,6 @@ class CollapseFieldsType3 extends PureComponent {
       documentName: '',
     };
   }
-
-  // componentDidMount = () => {
-  //   const { candidateInfo: { tempData: { documentChecklistSetting = [] } } = {}, item = {} } =
-  //     this.props;
-
-  //   const find = documentChecklistSetting.find((val) => val.type === 'D');
-  //   const { data = [] } = item;
-
-  //   // handle check all checkbox
-  //   let checkAll = false;
-  //   if (data.length === find.data.length) {
-  //     checkAll = true;
-  //   }
-
-  //   this.setState({
-  //     checkedList: data,
-  //     indeterminate: false,
-  //     checkAll,
-  //   });
-  // };
 
   handleAddDocumentName = () => {
     const { documentName } = this.state;
@@ -53,19 +34,10 @@ class CollapseFieldsType3 extends PureComponent {
     removeDocumentName(index);
   };
 
-  // onChange = (list) => {
-  //   console.log('list', list);
-  //   const { handleChange = () => {}, item = {} } = this.props;
-  //   this.setState({
-  //     checkedList: list,
-  //     indeterminate: !!list.length && list.length < item.data.length,
-  //     checkAll: list.length === item.data.length,
-  //   });
-  //   handleChange(list, item);
-  // };
-
   renderHeader = () => {
-    const { title = '', disabled = false } = this.props;
+    const { disabled = false, certifications = {} } = this.props;
+    const title = `Type ${certifications.type}: ${certifications.name}`;
+
     return (
       <div className={styles.header}>
         <Checkbox
@@ -82,66 +54,63 @@ class CollapseFieldsType3 extends PureComponent {
     );
   };
 
-  render() {
-    const { item: { data = [] } = {}, disabled = false } = this.props;
-    const { documentName } = this.state;
+  handleAddCertification = () => {
+    const { addCertification = () => {} } = this.props;
+    addCertification();
+  };
 
-    const checkAll = data.map((val) => val.alias);
+  handleChangeCertification = (type, index, value) => {
+    const { changeCertification = () => {} } = this.props;
+    changeCertification({ type, index, value });
+  };
+
+  handleRemoveCertification = (index) => {
+    const { removeCertification = () => {} } = this.props;
+    removeCertification(index);
+  };
+
+  render() {
+    const { processStatus = '', disabled = false, certifications = {} } = this.props;
     return (
       <div className={styles.CollapseFieldsType3}>
-        <Collapse
-          accordion
-          expandIconPosition="right"
-          defaultActiveKey="1"
-          expandIcon={(props) => {
-            return props.isActive ? (
-              <MinusOutlined className={styles.alternativeExpandIcon} />
-            ) : (
-              <PlusOutlined className={styles.alternativeExpandIcon} />
-            );
-          }}
-        >
-          <Panel header={this.renderHeader()} key="1">
-            {data.length > 0 && (
-              <CheckboxGroup
-                direction="vertical"
-                // onChange={this.onChange}
-                value={checkAll}
-                disabled={disabled}
-                onChange={() => {}}
-                className={styles.checkBoxesGroup}
+        {(certifications.data.length > 0 || processStatus === 'DRAFT') && (
+          <Collapse
+            accordion
+            expandIconPosition="right"
+            defaultActiveKey="1"
+            expandIcon={(props) => {
+              return props.isActive ? (
+                <MinusOutlined className={styles.alternativeExpandIcon} />
+              ) : (
+                <PlusOutlined className={styles.alternativeExpandIcon} />
+              );
+            }}
+          >
+            <Panel header={this.renderHeader()} key="1">
+              {certifications.data.length > 0 && (
+                <>
+                  {certifications.data.map((cer, index) => (
+                    <Certification
+                      disabled={disabled}
+                      certification={cer}
+                      length={certifications.data.length}
+                      handleChange={this.handleChangeCertification}
+                      remove={this.handleRemoveCertification}
+                      index={index}
+                    />
+                  ))}
+                </>
+              )}
+              <div
+                className={disabled ? `${styles.disableButton} ${styles.addBtn}` : styles.addBtn}
+                onClick={disabled ? () => {} : this.handleAddCertification}
               >
-                {data.map((val, index) => (
-                  <Checkbox value={val.alias}>
-                    {val.alias}
-
-                    {!disabled && (
-                      <DeleteOutlined
-                        onClick={() => this.handleRemoveDocumentName(index)}
-                        className={styles.removeIcon}
-                      />
-                    )}
-                  </Checkbox>
-                ))}
-              </CheckboxGroup>
-            )}
-            {!disabled && (
-              <div className={styles.addDocumentName}>
-                <Input
-                  onChange={(e) => {
-                    this.setState({ documentName: e.target.value });
-                  }}
-                  placeholder="Document Name"
-                  value={documentName}
-                />
-                <PlusOutlined
-                  onClick={documentName ? this.handleAddDocumentName : () => {}}
-                  className={styles.plusIcon}
-                />
+                <PlusOutlined className={styles.plusIcon} />
+                <span className={styles.title}>Add other Certifications</span>
               </div>
-            )}
-          </Panel>
-        </Collapse>
+            </Panel>
+          </Collapse>
+        )}
       </div>
     );
   }

@@ -1,9 +1,8 @@
 /* eslint-disable no-param-reassign */
 import React, { PureComponent } from 'react';
-import { Typography, Row, Col } from 'antd';
-import { connect } from 'umi';
+import { Typography, Row, Col, Button } from 'antd';
+import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
-import { isUndefined } from 'lodash';
 import { getCurrentTenant } from '@/utils/authority';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
@@ -24,13 +23,26 @@ const Note = {
   ),
 };
 
-@connect(({ candidateProfile: { data, localStep, tempData } = {}, loading }) => ({
-  data,
-  localStep,
-  tempData,
-  loading: loading.effects['upload/uploadFile'],
-  loading1: loading.effects['candidateProfile/sendEmailByCandidate'],
-}))
+@connect(
+  ({
+    candidateProfile: {
+      data,
+      data: { checkMandatory = {} } = {},
+      localStep,
+      currentStep,
+      tempData,
+    } = {},
+    loading,
+  }) => ({
+    data,
+    localStep,
+    currentStep,
+    tempData,
+    checkMandatory,
+    loading: loading.effects['upload/uploadFile'],
+    loading1: loading.effects['candidateProfile/sendEmailByCandidate'],
+  }),
+)
 class EligibilityDocs extends PureComponent {
   constructor(props) {
     super(props);
@@ -43,6 +55,25 @@ class EligibilityDocs extends PureComponent {
   componentDidMount() {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
     this.processData();
+    const { data: { processStatus = '' } = {} } = this.props;
+    if (
+      [
+        'ACCEPT-PROVISIONAL-OFFER',
+        'APPROVED-FINAL-OFFER',
+        'SENT-FINAL-OFFERS',
+        'ACCEPT-FINAL-OFFER',
+        'RENEGOTIATE-FINAL-OFFERS',
+        'DISCARDED-PROVISONAL-OFFER',
+        'REJECT-FINAL-OFFER-HR',
+        'REJECT-FINAL-OFFER-CANDIDATE',
+        'PENDING-BACKGROUND-CHECK',
+        'PENDING-APPROVAL-FINAL-OFFER',
+      ].includes(processStatus)
+    ) {
+      this.setState({
+        isSentEmail: true,
+      });
+    }
   }
 
   processData = async () => {
@@ -70,6 +101,7 @@ class EligibilityDocs extends PureComponent {
           groupC.push(item);
           break;
         case 'D':
+          if (item.isCandidateUpload) item.displayName += '*';
           groupD.push(item);
           break;
         default:
@@ -218,7 +250,15 @@ class EligibilityDocs extends PureComponent {
 
   handleSendEmail = () => {
     const {
-      data: { dateOfJoining, noticePeriod, fullName, generatedBy, workHistory = [] },
+      data: {
+        dateOfJoining,
+        noticePeriod,
+        firstName,
+        middleName,
+        lastName,
+        generatedBy,
+        workHistory = [],
+      },
       dispatch,
     } = this.props;
     const { user = {} } = generatedBy;
@@ -234,7 +274,9 @@ class EligibilityDocs extends PureComponent {
       payload: {
         dateOfJoining,
         options: 1,
-        fullName,
+        firstName,
+        middleName,
+        lastName,
         noticePeriod,
         hrEmail: email,
         workHistories: workHistory,
@@ -307,7 +349,7 @@ class EligibilityDocs extends PureComponent {
   };
 
   checkFull = () => {
-    const { data: { workHistory, documentListToRender } = {} } = this.props;
+    const { data: { workHistory = [], documentListToRender = [] } = {} } = this.props;
     let checkFull = true;
     documentListToRender.forEach((doc) => {
       doc.data.forEach((doc1) => {
@@ -320,6 +362,64 @@ class EligibilityDocs extends PureComponent {
       if (!w.startDate || (!w.toPresent && !w.endDate)) checkFull = false;
     });
     return checkFull;
+  };
+
+  _renderStatus = () => {
+    return (
+      <div className={styles.normalText}>
+        <div className={styles.redText}>*</div>
+        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
+      </div>
+    );
+  };
+
+  onClickPrev = () => {
+    const { dispatch, localStep } = this.props;
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        localStep: localStep - 1,
+      },
+    });
+  };
+
+  onClickNext = () => {
+    const { dispatch, localStep } = this.props;
+    dispatch({
+      type: 'candidateProfile/save',
+      payload: {
+        localStep: localStep + 1,
+      },
+    });
+  };
+
+  _renderBottomBar = () => {
+    const { currentStep = 0 } = this.props;
+    return (
+      <div className={styles.bottomBar}>
+        <Row align="middle">
+          <Col span={16}>
+            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
+          </Col>
+          <Col span={8}>
+            <div className={styles.bottomBar__button}>
+              <Button type="secondary" onClick={this.onClickPrev}>
+                Previous
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={this.onClickNext}
+                className={`${styles.bottomBar__button__primary} ${styles.bottomBar__button__disabled}`}
+                disabled={currentStep < 5}
+              >
+                Next
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    );
   };
 
   render() {
@@ -385,6 +485,7 @@ class EligibilityDocs extends PureComponent {
                 renderData={this.processData}
               />
             </div>
+            {this._renderBottomBar()}
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={Note} />

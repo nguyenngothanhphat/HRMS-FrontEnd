@@ -3,7 +3,7 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Select, Divider, Modal } from 'antd';
+import { Form, Input, Select,  Modal } from 'antd';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import classnames from 'classnames';
 // import { bool } from 'prop-types';
@@ -80,6 +80,7 @@ class FormWorkLocationTenant extends Component {
       name = '',
       // isRequired = bool,
       // companyDetails = {},
+      onChangeHeadquarterName = () => {}
     } = this.props;
     const listState = this.findListState(newCountry) || [];
     const itemLocation = listLocation[field.name] || {};
@@ -90,70 +91,58 @@ class FormWorkLocationTenant extends Component {
             <p className={s.title}>{itemLocation?.name || name}</p>
           </div>
           <div className={s.content__viewBottom__row}>
+            <p className={s.content__viewBottom__row__textLabel}>Location Name*</p>
+            <Form.Item
+              name="name"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter Location Name!',
+                },
+              ]}
+            >
+              <Input placeholder="Location Name" onChange={(e) => onChangeHeadquarterName(e)} />
+            </Form.Item>
+          </div>
+          <div className={s.content__viewBottom__row}>
             <p className={s.content__viewBottom__row__textLabel}>Address Line 1*</p>
             <Form.Item
               // {...field}
               // label={false}
               name="addressLine1"
-              // value={companyDetails.company.headQuarterAddress.addressLine1}
-              // fieldKey={[field.fieldKey, 'name']}
-              // rules={[
-              //   {
-              //     required: { isRequired },
-              //     message: 'Please enter name!',
-              //   },
-              //   ({ getFieldValue }) => ({
-              //     validator(_, value) {
-              //       const checkUnique = getFieldValue('workLocations').filter(
-              //         (item) => item?.name && item?.name === value,
-              //       );
-              //       if (checkUnique.length <= 1) {
-              //         return Promise.resolve();
-              //       }
-              //       return Promise.reject('This name has already been used!');
-              //     },
-              //   }),
-              // ]}
             >
-              <Input placeholder="Name Location" />
+              <Input disabled placeholder="Address Line 1" />
             </Form.Item>
           </div>
           <div className={s.content__viewBottom__row}>
             <p className={s.content__viewBottom__row__textLabel}>Address Line 2</p>
+            <Form.Item name="addressLine2">
+              <Input disabled placeholder="Address Line 2" />
+            </Form.Item>
+          </div>
+          <div className={s.content__viewBottom__row}>
+            <p className={s.content__viewBottom__row__textLabel}>City Name*</p>
             <Form.Item
-              // {...field}
-              // label={false}
-              name="addressLine2"
-              // fieldKey={[field.fieldKey, 'address']}
-              // rules={[
-              //   {
-              //     required: { isRequired },
-              //     message: 'Please enter Address!',
-              //   },
-              // ]}
+              name="city"
+              rules={[
+                {
+                  required: true,
+                  message: 'Please enter City Name!',
+                },
+              ]}
             >
-              <Input placeholder="Address" />
+              <Input disabled placeholder="Location Name" />
             </Form.Item>
           </div>
           <div className={s.content__viewBottom__row}>
             <div className={s.viewFormVertical}>
               <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>Country</p>
-              <Form.Item
-                // {...field}
-                // label={false}
-                name="country"
-                // fieldKey={[field.fieldKey, 'country']}
-                // rules={[
-                //   {
-                //     required: { isRequired },
-                //     message: 'Please enter Country!',
-                //   },
-                // ]}
-              >
+              <Form.Item name="country">
                 <Select
                   placeholder="Select Country"
                   showArrow
                   showSearch
+                  disabled
                   onChange={this.onChangeCountry}
                   filterOption={(input, option) =>
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -183,6 +172,7 @@ class FormWorkLocationTenant extends Component {
                   placeholder="Select State"
                   showArrow
                   showSearch
+                  disabled
                   disabled={!newCountry}
                   filterOption={(input, option) =>
                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -208,7 +198,7 @@ class FormWorkLocationTenant extends Component {
                 //   },
                 // ]}
               >
-                <Input placeholder="Zip Code" />
+                <Input disabled placeholder="Zip Code" />
               </Form.Item>
             </div>
           </div>

@@ -11,6 +11,8 @@ import {
   upsertLocationsList,
   removeLocation,
   getLocationsListTenant,
+  getCompanyTypeList,
+  getIndustryList,
 } from '@/services/companiesManangement';
 // import { history } from 'umi';
 import { notification } from 'antd';
@@ -39,6 +41,8 @@ const companiesManagement = {
     isOpenEditWorkLocation: false,
     selectedNewCompanyTab: 1,
     logoCompany: '',
+    companyTypeList: [],
+    industryList: [],
   },
   effects: {
     *fetchCompanyDetails({ payload = {}, dataTempKept = {} }, { call, put }) {
@@ -281,6 +285,26 @@ const companiesManagement = {
         dialog(errors);
       }
     },
+    *fetchCompanyTypeList(_, { call, put }) {
+      try {
+        const response = yield call(getCompanyTypeList);
+        const { statusCode, data: companyTypeList = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { companyTypeList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchIndustryList(_, { call, put }) {
+      try {
+        const response = yield call(getIndustryList);
+        const { statusCode, data: industryList = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { industryList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     save(state, action) {
@@ -358,6 +382,20 @@ const companiesManagement = {
               ...company,
               ...action.payload,
             },
+          },
+        },
+      };
+    },
+
+    saveHeadquarterName(state, action) {
+      const { originData = {} } = state;
+      return {
+        ...state,
+        originData: {
+          ...originData,
+          companyDetails: {
+            ...originData.companyDetails,
+            ...action.payload,
           },
         },
       };

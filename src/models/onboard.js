@@ -206,7 +206,9 @@ const formatData = (list = []) => {
     const {
       _id,
       ticketID,
-      fullName,
+      firstName = '',
+      middleName = '',
+      lastName = '',
       // position,
       title = '',
       workLocation = '',
@@ -228,6 +230,9 @@ const formatData = (list = []) => {
     const dateRequest = formatDate(requestDate) || '';
     const expire = formatDate(expireDate) || '';
     let isNew = false;
+    let fullName = `${firstName || ''} ${middleName || ''} ${lastName || ''}`;
+    if (!middleName) fullName = `${firstName || ''} ${lastName || ''}`;
+
     if (fullName) {
       isNew = dateDiffInDays(Date.now(), updatedAt) < 3;
     }

@@ -4,12 +4,13 @@
   min-height: 90vh;
   background-color: #f6f7f9;
   .affix {
-    height: fit-content;
+    min-height: 200vh;
     .viewLeft {
       width: 250px;
-      height: auto;
+      min-height: 200vh;
       // margin-top: 1px;
       &__menu {
+        min-height: 200vh;
         padding: 24px 0 24px 20px;
         background-color: #ffffff;
         // border-top: 1px solid rgba(0, 0, 2, 0.15);
@@ -136,6 +137,7 @@
             // text-align: justify;
             text-align: center;
             opacity: 0.5;
+            padding-bottom: 12px;
           }
           :global {
             .ant-divider-horizontal {
@@ -156,21 +158,33 @@
       }
     }
     .viewBtnAction {
-      display: flex;
-      justify-content: center;
+
       width: 100%;
-      margin: 25px 0 15px 0;
-      .btnEditBio {
-        width: 150px;
+      padding-bottom: 24px;
+      
+      .actionBtn{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: rgba(86,138,250, 0.07); // #568AFA;
         height: 40px;
-        color: #ffffff;
-        font-weight: 500;
+        width: 100%;
+        padding: 24px;
+        cursor: pointer;
+        border-radius: 4px;
+        
+        font-family: Roboto;
         font-size: 14px;
-        line-height: 16px;
-        text-align: center;
-        background: #ffa100;
-        border: none;
-        border-radius: 25px;
+        font-weight: 500;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: 0.13px;
+        color: #2c6df9;
+        img {
+          padding-left: 4px;
+        }
       }
     }
     .viewLoading {
@@ -241,3 +255,50 @@
     }
   }
 }
+
+.menuDropdown{
+  width: 100%;
+
+  .subMenu{
+
+    :global{
+      .ant-dropdown-menu-submenu-title{
+        font-family: Roboto;
+        font-size: 14px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        color: #8a8d93;
+
+         &:hover{
+           color: #2C6DF9;
+         }
+      }
+    }
+  }
+
+  .menuItem{
+      font-family: Roboto;
+      font-size: 14px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      color: #8a8d93;
+
+      &:hover{
+        color: #2C6DF9;
+      }
+  }
+
+  :global{
+    .ant-dropdown-menu-item:hover, .ant-dropdown-menu-submenu-title:hover{
+      background-color: rgba(86,138,250, 0.07);
+    }
+  }
+}
+
+

@@ -2,6 +2,7 @@
  * request 网络请求工具
  * 更详细的 api 文档: https://github.com/umijs/umi-request
  */
+import { getDvaApp } from 'umi';
 import { extend } from 'umi-request';
 import { notification } from 'antd';
 import { getCurrentTenant } from '@/utils/authority';
@@ -32,7 +33,7 @@ const errorHandler = (error) => {
   const { response } = error;
   const { status, statusText, url } = response;
   if (status === 401) {
-    window.g_app._store.dispatch({
+    getDvaApp()._store.dispatch({
       type: 'login/logout',
     });
     return { statusCode: 401 };

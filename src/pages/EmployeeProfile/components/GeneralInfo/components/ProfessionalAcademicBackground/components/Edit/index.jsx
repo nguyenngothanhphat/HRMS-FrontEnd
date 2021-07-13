@@ -20,7 +20,7 @@ const { Option } = Select;
       originData: { generalData: generalDataOrigin = {}, compensationData = {} } = {},
       tempData: { generalData = {} } = {},
       listSkill = [],
-      listTitle = [],
+      // listTitle = [],
       tenantCurrentEmployee = '',
     } = {},
   }) => ({
@@ -28,7 +28,7 @@ const { Option } = Select;
     generalDataOrigin,
     generalData,
     listSkill,
-    listTitle,
+    // listTitle,
     compensationData,
     tenantCurrentEmployee,
   }),
@@ -184,7 +184,7 @@ class Edit extends PureComponent {
       handleCancel = () => {},
       listSkill = [],
       loading,
-      listTitle = [],
+      // listTitle = [],
     } = this.props;
     const { notValid } = this.state;
     const {
@@ -226,7 +226,7 @@ class Edit extends PureComponent {
           onValuesChange={this.handleFormChange}
         >
           <Form.Item label="Previous Job Tilte" name="preJobTitle">
-            <Select
+            {/* <Select
               placeholder="Select title"
               showArrow
               filterOption={(input, option) =>
@@ -236,7 +236,8 @@ class Edit extends PureComponent {
               {listTitle.map((item) => (
                 <Option key={item._id}>{item.name}</Option>
               ))}
-            </Select>
+            </Select> */}
+            <Input placeholder="Type previous job title" />
           </Form.Item>
           <Form.Item label="Previous Company" name="preCompany">
             <Input />

@@ -176,7 +176,7 @@ class BackgroundCheck extends Component {
     const arrA = arrToAdjust.length > 0 && arrToAdjust[0].data.filter((x) => x.value === true);
     const arrB = arrToAdjust.length > 0 && arrToAdjust[1].data.filter((x) => x.value === true);
     const arrC = arrToAdjust.length > 0 && arrToAdjust[2].data.filter((x) => x.value === true);
-    const arrD = documentChecklistSetting.find((val) => val.type === 'D').data || [];
+    // const arrD = documentChecklistSetting.find((val) => val.type === 'D')?.data || [];
 
     let arrE =
       arrToAdjust.map((value) => {
@@ -195,7 +195,7 @@ class BackgroundCheck extends Component {
     const listSelectedB = arrB.map((x) => x.alias);
     const listSelectedC = arrC.map((x) => x.alias);
 
-    const listSelectedD = arrD.map((x) => x.alias);
+    // const listSelectedD = arrD.map((x) => x.alias);
     const listSelectedE = arrE.map((value) => value && value.map((x) => x.alias));
 
     const listSelectedEFinal = listSelectedE.map((value, index) => {
@@ -224,10 +224,10 @@ class BackgroundCheck extends Component {
           ...educational,
           checkedList: listSelectedC,
         },
-        technicalCertifications: {
-          ...technicalCertifications,
-          checkedList: listSelectedD,
-        },
+        // technicalCertifications: {
+        //   ...technicalCertifications,
+        //   checkedList: listSelectedD,
+        // },
         previousEmployment: {
           ...previousEmployment,
           poe: listSelectedEFinal,
@@ -239,7 +239,7 @@ class BackgroundCheck extends Component {
     this.setState({ newPoe: listSelectedEFinal });
   };
 
-  handleUpdateByHR = (newPoeFinal, checkedListA, checkedListB, checkedListC, checkedListD) => {
+  handleUpdateByHR = (newPoeFinal, checkedListA, checkedListB, checkedListC, docsListD) => {
     const { data, currentStep } = this.props;
     const { dispatch } = this.props;
     const { _id } = data;
@@ -249,9 +249,9 @@ class BackgroundCheck extends Component {
       checkedListA,
       checkedListB,
       checkedListC,
-      checkedListD,
+      docsListD,
     );
-    console.log('documentChecklistSetting', documentChecklistSetting);
+    // console.log('documentChecklistSetting', documentChecklistSetting);
 
     dispatch({
       type: 'candidateInfo/updateByHR',
@@ -302,10 +302,13 @@ class BackgroundCheck extends Component {
           identityProof: { checkedList: checkedListA = [] } = {},
           addressProof: { checkedList: checkedListB = [] } = {},
           educational: { checkedList: checkedListC = [] } = {},
-          technicalCertifications: { checkedList: checkedListD = [] } = {},
+          // technicalCertifications: { checkedList: checkedListD = [] } = {},
+          documentChecklistSetting: docsList = [],
         },
       } = {},
     } = this.props;
+
+    const docsListD = docsList.filter((doc) => doc.type === 'D') || [];
 
     if (type === 'A') {
       dispatch({
@@ -317,7 +320,7 @@ class BackgroundCheck extends Component {
           },
         },
       });
-      this.handleUpdateByHR(newPoe, checkedList, checkedListB, checkedListC, checkedListD);
+      this.handleUpdateByHR(newPoe, checkedList, checkedListB, checkedListC, docsListD);
     } else if (type === 'B') {
       dispatch({
         type: 'candidateInfo/saveTemp',
@@ -328,7 +331,7 @@ class BackgroundCheck extends Component {
           },
         },
       });
-      this.handleUpdateByHR(newPoe, checkedListA, checkedList, checkedListC, checkedListD);
+      this.handleUpdateByHR(newPoe, checkedListA, checkedList, checkedListC, docsListD);
     } else if (type === 'C') {
       dispatch({
         type: 'candidateInfo/saveTemp',
@@ -339,7 +342,7 @@ class BackgroundCheck extends Component {
           },
         },
       });
-      this.handleUpdateByHR(newPoe, checkedListA, checkedListB, checkedList, checkedListD);
+      this.handleUpdateByHR(newPoe, checkedListA, checkedListB, checkedList, docsListD);
     }
   };
 
@@ -365,11 +368,12 @@ class BackgroundCheck extends Component {
           identityProof: { checkedList: checkedListA = [] } = {},
           addressProof: { checkedList: checkedListB = [] } = {},
           educational: { checkedList: checkedListC = [] } = {},
-          technicalCertifications: { checkedList: checkedListD = [] } = {},
+          documentChecklistSetting: docsList = [],
         },
       } = {},
     } = this.props;
 
+    const docsListD = docsList.filter((doc) => doc.type === 'D') || [];
     const checkedListNew = e.target.checked ? arr.map((data) => data.alias) : [];
     if (type === 'A') {
       dispatch({
@@ -381,7 +385,7 @@ class BackgroundCheck extends Component {
           },
         },
       });
-      this.handleUpdateByHR(newPoe, checkedListNew, checkedListB, checkedListC, checkedListD);
+      this.handleUpdateByHR(newPoe, checkedListNew, checkedListB, checkedListC, docsListD);
     } else if (type === 'B') {
       dispatch({
         type: 'candidateInfo/saveTemp',
@@ -392,7 +396,7 @@ class BackgroundCheck extends Component {
           },
         },
       });
-      this.handleUpdateByHR(newPoe, checkedListA, checkedListNew, checkedListC, checkedListD);
+      this.handleUpdateByHR(newPoe, checkedListA, checkedListNew, checkedListC, docsListD);
     } else if (type === 'C') {
       dispatch({
         type: 'candidateInfo/saveTemp',
@@ -403,7 +407,7 @@ class BackgroundCheck extends Component {
           },
         },
       });
-      this.handleUpdateByHR(newPoe, checkedListA, checkedListB, checkedListNew, checkedListD);
+      this.handleUpdateByHR(newPoe, checkedListA, checkedListB, checkedListNew, docsListD);
     }
   };
 
@@ -480,12 +484,14 @@ class BackgroundCheck extends Component {
           identityProof: { checkedList: checkedListA = [] } = {},
           addressProof: { checkedList: checkedListB = [] } = {},
           educational: { checkedList: checkedListC = [] } = {},
-          technicalCertifications: { checkedList: checkedListD = [] } = {},
+          // technicalCertifications: { checkedList: checkedListD = [] } = {},
+          documentChecklistSetting: docsList = [],
         },
       } = {},
     } = this.props;
 
-    this.handleUpdateByHR(newPoeFinal, checkedListA, checkedListB, checkedListC, checkedListD);
+    const docsListD = docsList.filter((doc) => doc.type === 'D') || [];
+    this.handleUpdateByHR(newPoeFinal, checkedListA, checkedListB, checkedListC, docsListD);
   };
 
   // HANDLE EMPLOYER NAME CHANGES
@@ -537,11 +543,13 @@ class BackgroundCheck extends Component {
           identityProof: { checkedList: checkedListA = [] } = {},
           addressProof: { checkedList: checkedListB = [] } = {},
           educational: { checkedList: checkedListC = [] } = {},
-          technicalCertifications: { checkedList: checkedListD = [] } = {},
+          documentChecklistSetting: docsList = [],
         },
       } = {},
     } = this.props;
-    this.handleUpdateByHR(newPoeFinal, checkedListA, checkedListB, checkedListC, checkedListD);
+
+    const docsListD = docsList.filter((doc) => doc.type === 'D') || [];
+    this.handleUpdateByHR(newPoeFinal, checkedListA, checkedListB, checkedListC, docsListD);
   };
 
   changeValueToFinalOffer = (e) => {
@@ -695,7 +703,7 @@ class BackgroundCheck extends Component {
     checkedListA,
     checkedListB,
     checkedListC,
-    checkedListD,
+    docsListD,
   ) => {
     const { identityProof, addressProof, educational, previousEmployment } = this.state;
 
@@ -704,28 +712,12 @@ class BackgroundCheck extends Component {
     const arrB = this.generateForSendEmail(addressProof, checkedListB);
     const arrC = this.generateForSendEmail(educational, checkedListC);
 
-    function camelize(str) {
-      return str
-        .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-          return index === 0 ? word.toLowerCase() : word.toUpperCase();
-        })
-        .replace(/\s+/g, '');
-    }
-
-    const arrD = checkedListD.map((val) => {
-      return {
-        key: camelize(val),
-        alias: val,
-        value: true,
-      };
-    });
-
     const arrE = newPoeFinal.map((value) => {
       const { checkedList = [] } = value;
       return this.generateForSendEmail(previousEmployment[0], checkedList);
     });
 
-    let documentChecklistSetting = [
+    let documentCLS = [
       {
         type: 'A',
         name: 'Identity Proof',
@@ -741,12 +733,14 @@ class BackgroundCheck extends Component {
         name: 'Educational',
         data: arrC,
       },
-      {
-        type: 'D',
-        name: 'Technical Certifications',
-        data: arrD,
-      },
+      // {
+      //   type: 'D',
+      //   name: 'Technical Certifications',
+      //   data: arrD,
+      // },
     ];
+
+    documentCLS = documentCLS.concat(docsListD);
 
     const documentChecklistSettingE = arrE.map((value, index) => {
       return {
@@ -761,8 +755,8 @@ class BackgroundCheck extends Component {
     });
 
     // console.log('documentChecklistSettingE', documentChecklistSettingE);
-    documentChecklistSetting = documentChecklistSetting.concat(documentChecklistSettingE);
-    return documentChecklistSetting;
+    documentCLS = documentCLS.concat(documentChecklistSettingE);
+    return documentCLS;
   };
 
   // EMAILS
@@ -778,7 +772,9 @@ class BackgroundCheck extends Component {
         title,
         employeeType,
         _id,
-        fullName,
+        firstName,
+        middleName,
+        lastName,
         position,
         privateEmail,
         workEmail,
@@ -794,17 +790,19 @@ class BackgroundCheck extends Component {
           identityProof: { checkedList: checkedListA = [] } = {},
           addressProof: { checkedList: checkedListB = [] } = {},
           educational: { checkedList: checkedListC = [] } = {},
-          technicalCertifications: { checkedList: checkedListD = [] } = {},
+          // technicalCertifications: { checkedList: checkedListD = [] } = {},
+          documentChecklistSetting: docsList = [],
         },
       } = {},
     } = this.props;
 
+    const docsListD = docsList.filter((doc) => doc.type === 'D') || [];
     const documentChecklistSetting = this.generateDocumentCheckListSettings(
       newPoe,
       checkedListA,
       checkedListB,
       checkedListC,
-      checkedListD,
+      docsListD,
     );
 
     dispatch({
@@ -816,7 +814,9 @@ class BackgroundCheck extends Component {
 
     const payload = {
       candidate: _id,
-      fullName,
+      firstName,
+      middleName,
+      lastName,
       position,
       employeeType: employeeType._id,
       department: department._id,
@@ -937,13 +937,15 @@ class BackgroundCheck extends Component {
           identityProof: { checkedList: checkedListA = [] } = {},
           addressProof: { checkedList: checkedListB = [] } = {},
           educational: { checkedList: checkedListC = [] } = {},
-          technicalCertifications: { checkedList: checkedListD = [] } = {},
-
+          // technicalCertifications: { checkedList: checkedListD = [] } = {},
+          documentChecklistSetting: docsList = [],
           previousEmployment: { poe = [] } = {},
         },
       } = {},
       dispatch,
     } = this.props;
+
+    const docsListD = docsList.filter((doc) => doc.type === 'D') || [];
 
     const newPoeAfterDeleted = poe.filter((value, index) => index + 1 !== findX);
     // console.log('newPoeAfterDeleted', newPoeAfterDeleted);
@@ -960,14 +962,7 @@ class BackgroundCheck extends Component {
         },
       },
     });
-
-    this.handleUpdateByHR(
-      newPoeAfterDeleted,
-      checkedListA,
-      checkedListB,
-      checkedListC,
-      checkedListD,
-    );
+    this.handleUpdateByHR(newPoeAfterDeleted, checkedListA, checkedListB, checkedListC, docsListD);
 
     // refresh block D (IMPORTANT)
     setTimeout(() => {
@@ -984,18 +979,21 @@ class BackgroundCheck extends Component {
           identityProof: { checkedList: checkedListA = [] } = {},
           addressProof: { checkedList: checkedListB = [] } = {},
           educational: { checkedList: checkedListC = [] } = {},
-          technicalCertifications: { checkedList: checkedListD = [] } = {},
-
+          // technicalCertifications: { checkedList: checkedListD = [] } = {},
+          documentChecklistSetting: docsList = [],
           previousEmployment: { poe = [] } = {},
         },
       } = {},
       dispatch,
     } = this.props;
+    const docsListD = docsList.filter((doc) => doc.type === 'D') || [];
+
     const newElement = {
       employer: '',
       checkedList: [],
     };
     const newPoeAfterAdded = poe.concat(newElement);
+    // console.log('newPoeAfterAdded', newPoeAfterAdded);
     this.setState({
       newPoe: newPoeAfterAdded,
     });
@@ -1007,63 +1005,11 @@ class BackgroundCheck extends Component {
         },
       },
     });
-    this.handleUpdateByHR(newPoeAfterAdded, checkedListA, checkedListB, checkedListC, checkedListD);
+    this.handleUpdateByHR(newPoeAfterAdded, checkedListA, checkedListB, checkedListC, docsListD);
   };
 
   // for block D
-  addDocumentName = (name) => {
-    const {
-      candidateInfo: {
-        tempData: {
-          identityProof: { checkedList: checkedListA = [] } = {},
-          addressProof: { checkedList: checkedListB = [] } = {},
-          educational: { checkedList: checkedListC = [] } = {},
-          technicalCertifications: { checkedList: checkedListD = [] } = {},
-          technicalCertifications = {},
-          previousEmployment: { poe = [] } = {},
-          documentChecklistSetting = [],
-        },
-      } = {},
-      dispatch,
-    } = this.props;
-
-    const newDocument = [...checkedListD, name];
-
-    function camelize(str) {
-      return str
-        .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-          return index === 0 ? word.toLowerCase() : word.toUpperCase();
-        })
-        .replace(/\s+/g, '');
-    }
-
-    const newDoc = {
-      key: camelize(name),
-      alias: name,
-      value: true,
-    };
-
-    const newDocumentList = [...documentChecklistSetting];
-    documentChecklistSetting.forEach((doc) => {
-      if (doc.type === 'D') {
-        doc.data.push(newDoc);
-      }
-    });
-
-    dispatch({
-      type: 'candidateInfo/saveTemp',
-      payload: {
-        documentChecklistSetting: newDocumentList,
-        technicalCertifications: {
-          ...technicalCertifications,
-          checkedList: newDocument,
-        },
-      },
-    });
-    this.handleUpdateByHR(poe, checkedListA, checkedListB, checkedListC, newDocument);
-  };
-
-  removeDocumentName = (index) => {
+  addCertification = () => {
     const {
       candidateInfo: {
         tempData: {
@@ -1080,14 +1026,140 @@ class BackgroundCheck extends Component {
     } = this.props;
 
     const newDocument = [...checkedListD];
-    newDocument.splice(index, 1);
+
+    // const newDoc = {
+    //   key: camelize(name),
+    //   alias: name,
+    //   value: true,
+    // };
+
+    const newDoc = {
+      key: '',
+      alias: '', // name
+      value: false,
+      mandatoryToSend: true,
+      limited: false,
+      issuedDate: '',
+      validityDate: '',
+    };
 
     const newDocumentList = [...documentChecklistSetting];
     documentChecklistSetting.forEach((doc) => {
       if (doc.type === 'D') {
+        doc.data.push(newDoc);
+      }
+    });
+
+    const docsListD = newDocumentList.filter((doc) => doc.type === 'D') || [];
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        documentChecklistSetting: newDocumentList,
+        technicalCertifications: {
+          ...technicalCertifications,
+          checkedList: newDocument,
+        },
+      },
+    });
+    this.handleUpdateByHR(poe, checkedListA, checkedListB, checkedListC, docsListD);
+  };
+
+  handleChangeCertification = ({ type, index, value }) => {
+    const {
+      candidateInfo: {
+        tempData: {
+          identityProof: { checkedList: checkedListA = [] } = {},
+          addressProof: { checkedList: checkedListB = [] } = {},
+          educational: { checkedList: checkedListC = [] } = {},
+          // technicalCertifications: { checkedList: checkedListD = [] } = {},
+          technicalCertifications = {},
+          previousEmployment: { poe = [] } = {},
+          documentChecklistSetting = [],
+        },
+      } = {},
+      dispatch,
+    } = this.props;
+
+    // const newDocument = [...checkedListD, name];
+
+    function camelize(str) {
+      return str
+        .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+          return index === 0 ? word.toLowerCase() : word.toUpperCase();
+        })
+        .replace(/\s+/g, '');
+    }
+
+    // const newDoc = {
+    //   key: camelize(name),
+    //   alias: name,
+    //   value: true,
+    // };
+    let checkedList = [];
+    const docsList = documentChecklistSetting.filter((doc) => doc.type !== 'D');
+    const newDocumentList = JSON.parse(
+      JSON.stringify(documentChecklistSetting.filter((doc) => doc.type === 'D')),
+    );
+
+    newDocumentList.forEach((doc) => {
+      if (doc.type === 'D') {
+        if (doc.data.length === 0)
+          doc.data.push({
+            key: '',
+            alias: '',
+            value: false,
+          });
+        const itemData = doc.data[index];
+        if (type === 'mandatoryToSend') {
+          itemData.value = value;
+        } else itemData[type] = value;
+        itemData.key = camelize(type === 'alias' ? value : itemData.alias);
+
+        if (doc.value === true) {
+          checkedList = [...checkedList, itemData.alias];
+        }
+      }
+    });
+
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        documentChecklistSetting: [...docsList, ...newDocumentList],
+        technicalCertifications: {
+          ...technicalCertifications,
+          checkedList,
+        },
+      },
+    });
+    this.handleUpdateByHR(poe, checkedListA, checkedListB, checkedListC, newDocumentList);
+  };
+
+  removeCertification = (index) => {
+    const {
+      candidateInfo: {
+        tempData: {
+          identityProof: { checkedList: checkedListA = [] } = {},
+          addressProof: { checkedList: checkedListB = [] } = {},
+          educational: { checkedList: checkedListC = [] } = {},
+          technicalCertifications: { checkedList: checkedListD = [] } = {},
+          technicalCertifications = {},
+          previousEmployment: { poe = [] } = {},
+          documentChecklistSetting = [],
+        },
+      } = {},
+      dispatch,
+    } = this.props;
+
+    const newDocument = [...checkedListD];
+
+    const newDocumentList = [...documentChecklistSetting];
+    newDocumentList.forEach((doc) => {
+      if (doc.type === 'D') {
         doc.data.splice(index, 1);
       }
     });
+
+    const docsListD = newDocumentList.filter((val) => val.type === 'D') || [];
 
     dispatch({
       type: 'candidateInfo/saveTemp',
@@ -1099,7 +1171,7 @@ class BackgroundCheck extends Component {
         },
       },
     });
-    this.handleUpdateByHR(poe, checkedListA, checkedListB, checkedListC, newDocument);
+    this.handleUpdateByHR(poe, checkedListA, checkedListB, checkedListC, docsListD);
   };
 
   // get document list by country
@@ -1137,11 +1209,13 @@ class BackgroundCheck extends Component {
           documentList,
           isSentEmail,
           generateLink,
-          fullName,
+          firstName,
+          middleName,
+          lastName,
           valueToFinalOffer,
           checkValidation,
           isMarkAsDone,
-          documentChecklistSetting = {},
+          documentChecklistSetting = [],
           previousEmployment: { poe = [] } = {},
         },
         data: { privateEmail, processStatus: processStatusFilled = '' },
@@ -1152,6 +1226,8 @@ class BackgroundCheck extends Component {
     } = this.props;
 
     const documentListByCountry = this.getDocumentListByCountry(documentList);
+
+    const documentCLSTypeD = documentChecklistSetting.find((doc) => doc.type === 'D');
     const { openModal, identityProof, addressProof, educational, refreshBlockE } = this.state;
 
     return (
@@ -1185,25 +1261,28 @@ class BackgroundCheck extends Component {
                   return '';
                 })}
 
-              {documentChecklistSetting.map((item) => {
+              {/* {documentChecklistSetting.map((item) => {
                 const { type = '', name = '' } = item;
                 const title = `Type ${type}: ${name}`;
 
                 if (type === 'D') {
-                  return (
-                    <CollapseFieldsType3
-                      title={title}
-                      item={item}
-                      addDocumentName={this.addDocumentName}
-                      removeDocumentName={this.removeDocumentName}
-                      // handleChange={this.handleChangeForD}
-                      disabled={this.disableEdit()}
-                    />
-                  );
-                }
+                  return ( */}
+
+              <CollapseFieldsType3
+                certifications={documentCLSTypeD}
+                addCertification={this.addCertification}
+                changeCertification={this.handleChangeCertification}
+                removeCertification={this.removeCertification}
+                processStatus={processStatus}
+                // handleChange={this.handleChangeForD}
+                disabled={this.disableEdit()}
+              />
+
+              {/* );
+               }
 
                 return '';
-              })}
+             })} */}
 
               {poe.length !== 0 && // only render when poe has already got the data
                 documentListByCountry.length > 0 &&
@@ -1251,7 +1330,9 @@ class BackgroundCheck extends Component {
                 isSentEmail={isSentEmail}
                 generateLink={generateLink}
                 handleMarkAsDone={this.handleMarkAsDone}
-                fullName={fullName}
+                firstName={firstName}
+                middleName={middleName}
+                lastName={lastName}
                 handleValueChange={this.handleValueChange}
                 privateEmail={privateEmail}
                 processStatusFilled={processStatusFilled}

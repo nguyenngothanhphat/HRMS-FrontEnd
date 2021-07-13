@@ -2,7 +2,14 @@
 import { dialog } from '@/utils/utils';
 import { history } from 'umi';
 import { notification } from 'antd';
-import { signupAdmin, getUserInfo, getSecurityCode, activeAdmin } from '../services/user';
+import {
+  signupAdmin,
+  getUserInfo,
+  getSecurityCode,
+  activeAdmin,
+  getIndustryListInSignUp,
+  getCompanyTypeListInSignUp,
+} from '../services/user';
 
 const delay = (timeout) => {
   return new Promise((resolve) => {
@@ -20,6 +27,8 @@ const signup = {
       name: '',
       dba: '',
       ein: '',
+      companyType: '',
+      industry: '',
     },
     headQuarterAddress: {
       addressLine1: '',
@@ -38,8 +47,12 @@ const signup = {
     locations: [],
     user: {
       firstName: '',
+      middleName: '',
+      lastName: '',
       email: '',
     },
+    companyTypeList: [],
+    industryList: [],
   },
   effects: {
     *fetchUserInfo({ payload }, { call, put }) {
@@ -79,25 +92,28 @@ const signup = {
       }
     },
 
-    *signupAdmin({ payload }, { call, put }) {
+    *signupAdmin({ payload }, { call }) {
       try {
         yield call(delay, 2000);
 
         const response = yield call(signupAdmin, payload);
-        const { statusCode, message, data: { id = '' } = {} } = response;
-        const payloadAutoLogin = {
-          email: payload?.user?.email,
-          password: payload?.user?.password,
-        };
+        const { statusCode } = response;
+        // const payloadAutoLogin = {
+        //   email: payload?.user?.email,
+        //   password: payload?.user?.password,
+        // };
         if (statusCode !== 200) throw response;
         notification.success({
-          message,
+          message: 'Sign up successfully. Please check email to active your account.',
         });
-        yield put({
-          type: 'activeAdmin',
-          payload: { id },
-          payloadAutoLogin,
-        });
+        setTimeout(() => {
+          history.push('/login');
+        }, 1000);
+        // yield put({
+        //   type: 'activeAdmin',
+        //   payload: { id },
+        //   payloadAutoLogin,
+        // });
       } catch (errors) {
         dialog(errors);
       }
@@ -117,6 +133,26 @@ const signup = {
       } catch (errors) {
         dialog(errors);
         return {};
+      }
+    },
+    *fetchCompanyTypeListInSignUp(_, { call, put }) {
+      try {
+        const response = yield call(getCompanyTypeListInSignUp);
+        const { statusCode, data: companyTypeList = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { companyTypeList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchIndustryListInSignUp(_, { call, put }) {
+      try {
+        const response = yield call(getIndustryListInSignUp);
+        const { statusCode, data: industryList = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { industryList } });
+      } catch (errors) {
+        dialog(errors);
       }
     },
   },

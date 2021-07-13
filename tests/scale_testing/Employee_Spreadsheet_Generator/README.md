@@ -1,5 +1,5 @@
 # About
-Python Script to generate an Excel sheet that simulates a company with employees on a scale of your preference.
+Python Script to generate an Excel sheet, and a CSV copy of that file that simulates a company with employees on a scale of your preference.
 
 ##Departments in the company:
 

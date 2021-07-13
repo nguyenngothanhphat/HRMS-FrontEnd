@@ -27,7 +27,9 @@ const PreviewOffer = (props) => {
     hrManagerSignature: hrManagerSignatureProp,
     candidateSignature: candidateSignatureProp = {},
     privateEmail: candidateEmailProp = '',
-    fullName: candidateName = '',
+    firstName: candidateFirstName = '',
+    middleName: candidateMiddleName = '',
+    lastName: candidateLastame = '',
     offerLetter: offerLetterProp = {},
     staticOfferLetter: staticOfferLetterProp = {},
   } = data;
@@ -295,7 +297,9 @@ const PreviewOffer = (props) => {
           </header>
 
           {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
-          <p>Undersigned - {candidateName}</p>
+          <p>
+            Undersigned - {candidateFirstName} {candidateLastame} {candidateMiddleName}
+          </p>
 
           <div className={styles.upload}>
             {candidateSignature !== null && candidateSignature.url ? (

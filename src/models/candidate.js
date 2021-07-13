@@ -26,7 +26,9 @@ const candidateProfile = {
     data: {
       _id: '',
       candidate: '',
-      fullName: '',
+      firstName: '',
+      middleName: '',
+      lastName: '',
       privateEmail: '',
       workEmail: '',
       previousExperience: '',
@@ -51,7 +53,9 @@ const candidateProfile = {
     },
     tempData: {
       checkStatus: {},
-      fullName: '',
+      firstName: '',
+      middleName: '',
+      lastName: '',
       privateEmail: '',
       experienceYear: '',
       workLocation: '',
@@ -138,7 +142,7 @@ const candidateProfile = {
       salaryStatus: 2,
     },
     // questionOnBoarding: [],
-    isCandidateAcceptDOJ: true
+    isCandidateAcceptDOJ: true,
   },
   effects: {
     *fetchCandidateById({ payload }, { call, put }) {
@@ -348,7 +352,9 @@ const candidateProfile = {
         data: {
           _id: '',
           candidate: '',
-          fullName: '',
+          firstName: '',
+          middleName: '',
+          lastName: '',
           privateEmail: '',
           workEmail: '',
           previousExperience: '',
@@ -373,7 +379,9 @@ const candidateProfile = {
         tempData: {
           questionOnBoarding: [],
           checkStatus: {},
-          fullName: '',
+          firstName: '',
+          middleName: '',
+          lastName: '',
           privateEmail: '',
           experienceYear: '',
           workLocation: '',
