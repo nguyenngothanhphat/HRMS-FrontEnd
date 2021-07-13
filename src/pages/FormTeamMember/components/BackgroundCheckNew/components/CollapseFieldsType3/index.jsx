@@ -35,11 +35,8 @@ class CollapseFieldsType3 extends PureComponent {
   };
 
   renderHeader = () => {
-    const { disabled = false, certifications = [] } = this.props;
-    let title = '';
-    if (certifications.length > 0) {
-      title = `Type ${certifications[0].type}: ${certifications[0].name}`;
-    } else title = `Type D: Technical Certifications`;
+    const { disabled = false, certifications = {} } = this.props;
+    const title = `Type ${certifications.type}: ${certifications.name}`;
 
     return (
       <div className={styles.header}>
@@ -73,17 +70,10 @@ class CollapseFieldsType3 extends PureComponent {
   };
 
   render() {
-    const {
-      processStatus = '',
-      item: { data = [] } = {},
-      disabled = false,
-      certifications = [],
-    } = this.props;
-
-    // const checkAll = data.map((val) => val.alias);
+    const { processStatus = '', disabled = false, certifications = {} } = this.props;
     return (
       <div className={styles.CollapseFieldsType3}>
-        {(data.length > 0 || processStatus === 'DRAFT') && (
+        {(certifications.data.length > 0 || processStatus === 'DRAFT') && (
           <Collapse
             accordion
             expandIconPosition="right"
@@ -97,50 +87,12 @@ class CollapseFieldsType3 extends PureComponent {
             }}
           >
             <Panel header={this.renderHeader()} key="1">
-              {/* {data.length > 0 && (
-                <CheckboxGroup
-                  direction="vertical"
-                  // onChange={this.onChange}
-                  value={checkAll}
-                  disabled={disabled}
-                  onChange={() => {}}
-                  className={styles.checkBoxesGroup}
-                >
-                  {data.map((val, index) => (
-                    <Checkbox value={val.alias}>
-                      {val.alias}
-
-                      {!disabled && (
-                        <DeleteOutlined
-                          onClick={() => this.handleRemoveDocumentName(index)}
-                          className={styles.removeIcon}
-                        />
-                      )}
-                    </Checkbox>
-                  ))}
-                </CheckboxGroup>
-              )} */}
-              {/* {!disabled && (
-                <div className={styles.addDocumentName}>
-                  <Input
-                    onChange={(e) => {
-                      this.setState({ documentName: e.target.value });
-                    }}
-                    placeholder="Document Name"
-                    value={documentName}
-                  />
-                  <PlusOutlined
-                    onClick={documentName ? this.handleAddDocumentName : () => {}}
-                    className={styles.plusIcon}
-                  />
-                </div>
-              )} */}
-              {certifications.length > 0 && (
+              {certifications.data.length > 0 && (
                 <>
-                  {certifications.map((cer, index) => (
+                  {certifications.data.map((cer, index) => (
                     <Certification
                       disabled={disabled}
-                      certification={cer.data.length > 0 ? cer.data[0] : {}}
+                      certification={cer}
                       length={certifications.length}
                       handleChange={this.handleChangeCertification}
                       remove={this.handleRemoveCertification}

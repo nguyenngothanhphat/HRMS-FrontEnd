@@ -1028,29 +1028,21 @@ class BackgroundCheck extends Component {
     // };
 
     const newDoc = {
-      type: 'D',
-      name: 'Technical Certifications',
-      data: [
-        {
-          key: '',
-          alias: '', // name
-          value: false,
-          mandatory: false,
-          limited: false,
-          issuedDate: '',
-          validityDate: '',
-        },
-      ],
+      key: '',
+      alias: '', // name
+      value: false,
+      mandatory: false,
+      limited: false,
+      issuedDate: '',
+      validityDate: '',
     };
 
     const newDocumentList = [...documentChecklistSetting];
-    // documentChecklistSetting.forEach((doc) => {
-    //   if (doc.type === 'D') {
-    //     doc.data.push(newDoc);
-    //   }
-    // });
-
-    newDocumentList.push(newDoc);
+    documentChecklistSetting.forEach((doc) => {
+      if (doc.type === 'D') {
+        doc.data.push(newDoc);
+      }
+    });
 
     const docsListD = newDocumentList.filter((doc) => doc.type === 'D') || [];
     dispatch({
@@ -1104,15 +1096,15 @@ class BackgroundCheck extends Component {
       JSON.stringify(documentChecklistSetting.filter((doc) => doc.type === 'D')),
     );
 
-    newDocumentList.forEach((doc, i) => {
-      if (doc.type === 'D' && index === i) {
+    newDocumentList.forEach((doc) => {
+      if (doc.type === 'D') {
         if (doc.data.length === 0)
           doc.data.push({
             key: '',
             alias: '',
             value: false,
           });
-        const itemData = doc.data[0];
+        const itemData = doc.data[index];
         if (type === 'mandatory' && value === true) itemData.value = value;
 
         itemData[type] = value;
@@ -1154,23 +1146,27 @@ class BackgroundCheck extends Component {
     } = this.props;
 
     const newDocument = [...checkedListD];
-    newDocument.splice(index, 1);
 
-    const docOthers = documentChecklistSetting.filter((val) => val.type !== 'D') || [];
-    const newDocumentList = documentChecklistSetting.filter((val) => val.type === 'D') || [];
-    newDocumentList.splice(index, 1);
+    const newDocumentList = [...documentChecklistSetting];
+    newDocumentList.forEach((doc) => {
+      if (doc.type === 'D') {
+        doc.data.splice(index, 1);
+      }
+    });
+
+    const docsListD = newDocumentList.filter((val) => val.type === 'D') || [];
 
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
-        documentChecklistSetting: [...docOthers, ...newDocumentList],
+        documentChecklistSetting: newDocumentList,
         technicalCertifications: {
           ...technicalCertifications,
           checkedList: newDocument,
         },
       },
     });
-    this.handleUpdateByHR(poe, checkedListA, checkedListB, checkedListC, newDocumentList);
+    this.handleUpdateByHR(poe, checkedListA, checkedListB, checkedListC, docsListD);
   };
 
   // get document list by country
@@ -1226,7 +1222,7 @@ class BackgroundCheck extends Component {
 
     const documentListByCountry = this.getDocumentListByCountry(documentList);
 
-    const documentCLSTypeD = documentChecklistSetting.filter((doc) => doc.type === 'D');
+    const documentCLSTypeD = documentChecklistSetting.find((doc) => doc.type === 'D');
     const { openModal, identityProof, addressProof, educational, refreshBlockE } = this.state;
     return (
       <div>
