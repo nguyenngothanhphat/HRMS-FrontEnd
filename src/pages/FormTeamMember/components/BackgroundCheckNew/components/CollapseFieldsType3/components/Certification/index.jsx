@@ -10,6 +10,8 @@ class Certification extends PureComponent {
     super(props);
     this.state = {
       isLimittedPeriod: false,
+      startDate: '',
+      endDate: '',
     };
     this.handleInputDelay = debounce((value, type) => {
       this.handleInput(value, type);
@@ -17,13 +19,14 @@ class Certification extends PureComponent {
   }
 
   componentDidMount = () => {
-    const { certification: { limited = false } = {} } = this.props;
+    const { certification: { limited = false, issuedDate = '', validityDate = '' } = {} } =
+      this.props;
 
-    if (limited) {
-      this.setState({
-        isLimittedPeriod: limited,
-      });
-    }
+    this.setState({
+      isLimittedPeriod: limited,
+      startDate: issuedDate ? moment(issuedDate) : null,
+      endDate: validityDate ? moment(validityDate) : null,
+    });
   };
 
   handleInput = (value, type) => {
@@ -46,6 +49,23 @@ class Certification extends PureComponent {
     return (n < 10 ? '0' : '') + n;
   };
 
+  // DISABLE DATE OF DATE PICKER
+  disabledStartDate = (current) => {
+    const { endDate } = this.state;
+    if (endDate) {
+      return current && current > moment(endDate);
+    }
+    return null;
+  };
+
+  disabledEndDate = (current) => {
+    const { startDate } = this.state;
+    if (startDate) {
+      return current && current < moment(startDate);
+    }
+    return null;
+  };
+
   render() {
     const {
       index = 0,
@@ -53,8 +73,7 @@ class Certification extends PureComponent {
       length = 0,
       certification: {
         alias = '', // name
-        // value = false,
-        mandatory = false,
+        value = false,
         limited = false,
         issuedDate = '',
         validityDate = '',
@@ -70,7 +89,7 @@ class Certification extends PureComponent {
           <span className={styles.title}>Certification {this.minTwoDigits(index + 1)}</span>
           {!disabled && (
             <CloseOutlined
-              style={length === 1 ? { display: 'none' } : { display: 'block' }}
+              // style={length === 1 ? { display: 'none' } : { display: 'block' }}
               className={styles.deleteIcon}
               onClick={() => remove(index)}
             />
@@ -80,7 +99,7 @@ class Certification extends PureComponent {
           name="basic"
           initialValues={{
             alias,
-            mandatory,
+            mandatoryToSend: value,
             limited,
             issuedDate: issuedDate ? moment(issuedDate) : null,
             validityDate: validityDate ? moment(validityDate) : null,
@@ -100,11 +119,11 @@ class Certification extends PureComponent {
               </Checkbox>
             </Form.Item>
 
-            <Form.Item name="mandatory" valuePropName="checked" noStyle>
+            <Form.Item name="mandatoryToSend" valuePropName="checked" noStyle>
               <Checkbox
                 defaultChecked={isLimittedPeriod}
                 disabled={disabled}
-                onChange={(e) => this.handleCheckBox(e, 'mandatory')}
+                onChange={(e) => this.handleCheckBox(e, 'mandatoryToSend')}
               >
                 Upload certificates mandatory
               </Checkbox>
@@ -114,10 +133,16 @@ class Certification extends PureComponent {
             <Col span={12}>
               <Form.Item label="Issued date" name="issuedDate" labelCol={{ span: 24 }}>
                 <DatePicker
+                  disabledDate={this.disabledStartDate}
                   placeholder="Issued date"
                   format="MM.DD.YY"
                   disabled={disabled}
-                  onChange={(val) => handleChange('issuedDate', index, val)}
+                  onChange={(val) => {
+                    this.setState({
+                      startDate: val,
+                    });
+                    handleChange('issuedDate', index, val);
+                  }}
                 />
               </Form.Item>
             </Col>
@@ -125,10 +150,16 @@ class Certification extends PureComponent {
               <Col span={12}>
                 <Form.Item label="Validity date" name="validityDate" labelCol={{ span: 24 }}>
                   <DatePicker
+                    disabledDate={this.disabledEndDate}
                     placeholder="Validity date"
                     disabled={disabled}
                     format="MM.DD.YY"
-                    onChange={(val) => handleChange('validityDate', index, val)}
+                    onChange={(val) => {
+                      this.setState({
+                        endDate: val,
+                      });
+                      handleChange('validityDate', index, val);
+                    }}
                   />
                 </Form.Item>
               </Col>

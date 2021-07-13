@@ -1031,7 +1031,7 @@ class BackgroundCheck extends Component {
       key: '',
       alias: '', // name
       value: false,
-      mandatory: false,
+      mandatoryToSend: true,
       limited: false,
       issuedDate: '',
       validityDate: '',
@@ -1059,7 +1059,6 @@ class BackgroundCheck extends Component {
   };
 
   handleChangeCertification = ({ type, index, value }) => {
-    console.log('type ', type, ', index ', index, ', value', value);
     const {
       candidateInfo: {
         tempData: {
@@ -1105,12 +1104,12 @@ class BackgroundCheck extends Component {
             value: false,
           });
         const itemData = doc.data[index];
-        if (type === 'mandatory' && value === true) itemData.value = value;
-
-        itemData[type] = value;
+        if (type === 'mandatoryToSend') {
+          itemData.value = value;
+        } else itemData[type] = value;
         itemData.key = camelize(type === 'alias' ? value : itemData.alias);
 
-        if (doc.mandatory === true) {
+        if (doc.value === true) {
           checkedList = [...checkedList, itemData.alias];
         }
       }

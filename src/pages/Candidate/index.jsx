@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Skeleton } from 'antd';
+// import { Skeleton } from 'antd';
 import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import BasicInfomation from './components/BasicInfomation';
@@ -39,8 +39,8 @@ const Candidate = (props) => {
     dispatch,
     localStep,
     candidate,
-    loadingFetchDocumentsByCandidate = false,
-    loadingFetchWorkHistory = false,
+    // loadingFetchDocumentsByCandidate = false,
+    // loadingFetchWorkHistory = false,
   } = props;
   const [screen, setScreen] = useState(localStep);
   useEffect(() => {
@@ -84,7 +84,7 @@ const Candidate = (props) => {
       }
     });
   }, []);
-  if (loadingFetchDocumentsByCandidate || loadingFetchWorkHistory) return <Skeleton />;
+  // if (loadingFetchDocumentsByCandidate || loadingFetchWorkHistory) return <Skeleton />;
   return <div>{_renderScreen(screen)}</div>;
 };
 

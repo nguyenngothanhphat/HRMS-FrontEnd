@@ -93,7 +93,7 @@ class CollapseFieldsType3 extends PureComponent {
                     <Certification
                       disabled={disabled}
                       certification={cer}
-                      length={certifications.length}
+                      length={certifications.data.length}
                       handleChange={this.handleChangeCertification}
                       remove={this.handleRemoveCertification}
                       index={index}
