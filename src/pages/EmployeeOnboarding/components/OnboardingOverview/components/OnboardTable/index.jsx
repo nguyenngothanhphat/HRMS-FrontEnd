@@ -6,11 +6,11 @@ import { formatMessage, Link, connect, history } from 'umi';
 import CustomModal from '@/components/CustomModal/index';
 import { getAuthority, getCurrentTenant } from '@/utils/authority';
 // import ModalContent from '../FinalOffers/components/ModalContent/index';
+import MenuIcon from '@/assets/menuDots.svg';
 import ProfileModalContent from '../FinalOffers/components/ProfileModalContent';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
-
+import ReassignModal from './components/ReassignModal';
 import { getActionText, getColumnWidth } from './utils';
-
 import styles from './index.less';
 
 class OnboardTable extends Component {
@@ -20,6 +20,10 @@ class OnboardTable extends Component {
       // pageSelected: 1,
       openModal: false,
       currentRecord: {},
+      reassignModalVisible: false,
+      currentEmpId: '',
+      reassignTicketId: '',
+      reassignStatus: '',
     };
   }
 
@@ -461,20 +465,32 @@ class OnboardTable extends Component {
       },
       {
         // title: 'Actions',
-        title: formatMessage({ id: 'component.onboardingOverview.actions' }),
+        // title: formatMessage({ id: 'component.onboardingOverview.actions' }),
         dataIndex: 'actions',
         key: 'actions',
         width: getColumnWidth('actions', type),
+        align: 'center',
         render: (_, row) => {
           const { currentUser: { employee: { _id: empId = '' } = {} } = {} } = this.props;
-          const { rookieId = '', assignTo = {}, assigneeManager = {} } = row;
+          const { processStatusId = '', rookieId = '', assignTo = {}, assigneeManager = {} } = row;
           const id = rookieId.replace('#', '') || '';
 
           const checkPermission =
             this.checkPermission('hr-manager') ||
             assignTo._id === empId ||
             assigneeManager._id === empId;
-          if (checkPermission) return this.renderAction(id, type, actionText);
+          // if (checkPermission) return this.renderAction(id, type, actionText);
+          // return '';
+          if (checkPermission)
+            return (
+              <Dropdown
+                className={styles.menuIcon}
+                overlay={this.actionMenu(id, assignTo?._id, type, actionText, processStatusId)}
+                placement="topLeft"
+              >
+                <img src={MenuIcon} alt="menu" />
+              </Dropdown>
+            );
           return '';
         },
         columnName: ACTION,
@@ -486,6 +502,142 @@ class OnboardTable extends Component {
     const newColumns = columns.filter((column) => columnArr.includes(column.columnName));
 
     return newColumns;
+  };
+
+  actionMenu = (id, currentEmpId, type, actionText, processStatusId) => {
+    const {
+      PROVISIONAL_OFFERS_DRAFTS,
+      FINAL_OFFERS_DRAFTS,
+      RENEGOTIATE_PROVISIONAL_OFFERS,
+      RENEGOTIATE_FINAL_OFFERS,
+      APPROVED_OFFERS,
+      ACCEPTED_FINAL_OFFERS,
+      ACCEPTED__PROVISIONAL_OFFERS,
+    } = TABLE_TYPE;
+    const isRemovable = type === PROVISIONAL_OFFERS_DRAFTS;
+
+    return (
+      <Menu>
+        {[PROVISIONAL_OFFERS_DRAFTS].includes(type) && (
+          <Menu.Item>
+            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData()}>
+              <span>Continue</span>
+            </Link>
+          </Menu.Item>
+        )}
+        {[RENEGOTIATE_PROVISIONAL_OFFERS, RENEGOTIATE_FINAL_OFFERS].includes(type) && (
+          <>
+            <Menu.Item>
+              <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData()}>
+                <span>Schedule 1-on-1</span>
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
+              <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+                <span className={styles.viewDraft}>View Form</span>
+              </Link>
+            </Menu.Item>
+          </>
+        )}
+        {[ACCEPTED__PROVISIONAL_OFFERS].includes(type) && (
+          <Menu.Item>
+            <Link
+              to={`/employee-onboarding/review/${id}`}
+              onClick={() => {
+                this.initiateBackgroundCheck(id);
+              }}
+            >
+              <span>Initiate Background Check</span>
+            </Link>
+          </Menu.Item>
+        )}
+
+        {[FINAL_OFFERS_DRAFTS].includes(type) && (
+          <>
+            <Menu.Item>
+              <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+                Send for approval
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
+              <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+                <span className={styles.viewDraft}>View Form</span>
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
+              <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+                Discard offer
+              </Link>
+            </Menu.Item>
+          </>
+        )}
+
+        {[APPROVED_OFFERS].includes(type) && (
+          <>
+            <Menu.Item>
+              <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+                Send to candidate
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
+              <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+                <span className={styles.viewDraft}>View Form</span>
+              </Link>
+            </Menu.Item>
+          </>
+        )}
+
+        {[ACCEPTED_FINAL_OFFERS].includes(type) && (
+          <>
+            <Menu.Item>
+              <span
+                onClick={() => {
+                  this.openModal();
+                }}
+              >
+                Create Profile
+              </span>
+            </Menu.Item>
+          </>
+        )}
+
+        {![
+          PROVISIONAL_OFFERS_DRAFTS,
+          FINAL_OFFERS_DRAFTS,
+          RENEGOTIATE_PROVISIONAL_OFFERS,
+          RENEGOTIATE_FINAL_OFFERS,
+          APPROVED_OFFERS,
+          ACCEPTED_FINAL_OFFERS,
+          ACCEPTED__PROVISIONAL_OFFERS,
+        ].includes(type) && (
+          <>
+            <Menu.Item>
+              <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+                <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
+              </Link>
+            </Menu.Item>
+          </>
+        )}
+
+        <Menu.Item>
+          <div onClick={() => this.handleReassignModal(true, currentEmpId, id, processStatusId)}>
+            Re-assign
+          </div>
+        </Menu.Item>
+        <Menu.Item disabled={!isRemovable}>
+          <div onClick={isRemovable ? () => this.handleActionDelete(id) : () => {}}>Delete</div>
+        </Menu.Item>
+      </Menu>
+    );
+  };
+
+  handleReassignModal = (value, currentEmpId, id, processStatusId) => {
+    this.setState({
+      reassignModalVisible: value,
+      currentEmpId,
+      reassignTicketId: id,
+      reassignStatus: processStatusId,
+    });
   };
 
   viewProfile = (_id) => {
@@ -500,8 +652,14 @@ class OnboardTable extends Component {
 
   render() {
     // const { pageSelected } = this.state;
-    const { list, pageSelected, size, getPageAndSize, total: totalData } = this.props;
+    const { list = [], pageSelected, size, getPageAndSize, total: totalData } = this.props;
     // const rowSize = 10;
+    const {
+      reassignModalVisible = false,
+      currentEmpId = '',
+      reassignTicketId = '',
+      reassignStatus = '',
+    } = this.state;
 
     const rowSelection = {
       // onChange: (selectedRowKeys, selectedRows) => {
@@ -582,6 +740,13 @@ class OnboardTable extends Component {
           width={590}
           closeModal={this.closeModal}
           content={this.getModalContent()}
+        />
+        <ReassignModal
+          visible={reassignModalVisible}
+          currentEmpId={currentEmpId}
+          reassignTicketId={reassignTicketId}
+          handleReassignModal={this.handleReassignModal}
+          processStatus={reassignStatus}
         />
       </>
     );
