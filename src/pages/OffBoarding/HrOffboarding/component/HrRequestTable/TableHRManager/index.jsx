@@ -100,13 +100,13 @@ class HrTable extends PureComponent {
     const {
       employee: {
         title: { name: titleName = 'UX Lead' } = {},
+        employeeType: { name: typeName = 'Full Time' } = {},
         employeeId = '',
         generalInfo: {
           avatar = '',
           firstName = '',
           lastName = '',
           middleName = '',
-          employeeType: { name: typeName = 'Full Time' } = {},
           linkedIn = '',
           userId = '',
         } = {},
