@@ -13,7 +13,6 @@ class HrTable extends PureComponent {
     super(props);
     this.state = {
       pageNavigation: 1,
-      selectedRowKeys: [],
     };
   }
 
@@ -58,19 +57,23 @@ class HrTable extends PureComponent {
     });
   };
 
-  onSelectChange = (selectedRowKeys) => {
-    // console.log('selectedRowKeys changed: ', selectedRowKeys);
-    this.setState({ selectedRowKeys });
-  };
-
   openViewTicket = (ticketID) => {
-    const { data = [] } = this.props;
+    const { data = [], dataAll = [], isTabAll } = this.props;
     let id = '';
-    data.forEach((item) => {
-      if (item.ticketID === ticketID) {
-        id = item._id;
-      }
-    });
+
+    if (isTabAll) {
+      dataAll.forEach((item) => {
+        if (item.ticketID === ticketID) {
+          id = item._id;
+        }
+      });
+    } else {
+      data.forEach((item) => {
+        if (item.ticketID === ticketID) {
+          id = item._id;
+        }
+      });
+    }
     if (id) {
       history.push(`/offboarding/review/${id}`);
     }
