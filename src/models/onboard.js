@@ -4,11 +4,15 @@ import {
   inititateBackgroundCheck,
   createProfile,
   getTotalNumberOnboardingList,
+  reassignTicket,
+  getListEmployee,
+  getFilterList,
 } from '@/services/onboard';
 import _ from 'lodash';
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { notification } from 'antd';
 
 // const employeeList = rookieList.filter(
 //   (rookie) => rookie.isNew === undefined || rookie.isNew === null,
@@ -256,6 +260,7 @@ const formatData = (list = []) => {
       assignTo,
       assigneeManager,
       processStatus: getProcessStatusName(processStatus),
+      processStatusId: processStatus,
     };
     formatList.push(rookie);
   });
@@ -334,6 +339,8 @@ const onboard = {
         totalNumber: [],
       },
     },
+    hrList: [],
+    filterList: {},
   },
 
   effects: {
@@ -730,6 +737,34 @@ const onboard = {
       return response;
     },
 
+    *reassignTicket({ payload }, { call, put }) {
+      let response;
+      try {
+        const { id = '', tenantId = '', newAssignee = '', processStatus = '' } = payload;
+        const req = {
+          rookieID: id,
+          tenantId,
+          newAssignee,
+        };
+        response = yield call(reassignTicket, req);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            tenantId,
+            processStatus,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
     *inititateBackgroundCheckEffect({ payload }, { call, put }) {
       try {
         const { ACCEPTED_PROVISIONAL_OFFERS, PENDING } = PROCESS_STATUS;
@@ -804,6 +839,41 @@ const onboard = {
         dialog(error);
       }
       return response;
+    },
+
+    // REASSIGN
+    *fetchFilterList({ payload }, { call, put }) {
+      try {
+        const response = yield call(getFilterList, payload);
+        const { statusCode, data: filterList = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { filterList } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *fetchHRList(
+      { payload: { company = [], department = [], location = [] } = {} },
+      { call, put },
+    ) {
+      try {
+        const response = yield call(getListEmployee, {
+          status: ['ACTIVE'],
+          company,
+          department,
+          location,
+        });
+        const { statusCode, data: hrList = [] } = response;
+        if (statusCode !== 200) throw response;
+
+        yield put({ type: 'save', payload: { hrList } });
+        return hrList;
+      } catch (errors) {
+        dialog(errors);
+        return [];
+      }
     },
   },
   reducers: {

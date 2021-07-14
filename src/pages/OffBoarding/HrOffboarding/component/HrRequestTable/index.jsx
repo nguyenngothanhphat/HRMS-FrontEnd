@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Col, Tabs, Row, Button } from 'antd';
 import { Link, connect } from 'umi';
 import { debounce } from 'lodash';
-
+import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import TeamRequest from './TeamRequest';
 import MyRequestContent from '../../../components/TabMyRequest';
 import TableSearch from './TableSearch';
@@ -12,6 +12,7 @@ import styles from './index.less';
   ({
     offboarding: {
       listTeamRequest = [],
+      listAllRequest = [],
       totalListTeamRequest = [],
       listOffboarding = [],
       totalList = [],
@@ -23,6 +24,7 @@ import styles from './index.less';
         company: { _id: companyID } = {},
       } = {},
     } = {},
+    locationSelection: { listLocationsByCompany = [] },
   }) => ({
     listOffboarding,
     totalListTeamRequest,
@@ -30,7 +32,9 @@ import styles from './index.less';
     locationID,
     companyID,
     listTeamRequest,
+    listAllRequest,
     hrManager,
+    listLocationsByCompany,
   }),
 )
 class HRrequestTable extends Component {
@@ -38,10 +42,13 @@ class HRrequestTable extends Component {
     super(props);
     this.state = {
       dataListTeamRequest: [],
+      dataListAll: [],
       loadingSearch: false,
+      timezoneList: [],
     };
     this.setDebounce = debounce((query) => {
       this.setState({
+        dataListAll: query,
         dataListTeamRequest: query,
         loadingSearch: false,
       });
@@ -49,32 +56,69 @@ class HRrequestTable extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, locationID, listTeamRequest = [] } = this.props;
+    const { dispatch, locationID, listTeamRequest = [], listAllRequest = [] } = this.props;
     if (!dispatch) {
       return;
     }
     dispatch({
-      type: 'offboarding/fetchListTeamRequest',
+      type: 'offboarding/fetchListAllRequest',
       payload: {
-        status: 'IN-PROGRESS',
         location: [locationID],
       },
     });
 
-    if (listTeamRequest.length > 0) this.updateData(listTeamRequest);
+    this.fetchTimezone();
+    if (listTeamRequest.length > 0) this.updateData(listTeamRequest, 1);
+    if (listAllRequest.length > 0) this.updateData(listAllRequest, 2);
   }
 
   componentDidUpdate(prevProps) {
-    const { listTeamRequest = [] } = this.props;
+    const { listTeamRequest = [], listAllRequest = [], listLocationsByCompany = [] } = this.props;
     if (JSON.stringify(listTeamRequest) !== JSON.stringify(prevProps.listTeamRequest)) {
-      this.updateData(listTeamRequest);
+      this.updateData(listTeamRequest, 1);
+    }
+    if (JSON.stringify(listAllRequest) !== JSON.stringify(prevProps.listAllRequest)) {
+      this.updateData(listAllRequest, 2);
+    }
+    if (
+      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+    ) {
+      this.fetchTimezone();
     }
   }
 
-  updateData = (listTeamRequest) => {
-    this.setState({
-      dataListTeamRequest: listTeamRequest,
+  fetchTimezone = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    const timezoneList = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id = '',
+      } = location;
+      timezoneList.push({
+        locationId: _id,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
     });
+    this.setState({
+      timezoneList,
+    });
+  };
+
+  updateData = (list, key) => {
+    if (key === 1) {
+      this.setState({
+        dataListTeamRequest: list,
+      });
+    } else {
+      this.setState({
+        dataListAll: list,
+      });
+    }
   };
 
   onSearch = (value) => {
@@ -115,7 +159,7 @@ class HRrequestTable extends Component {
       locationID = '',
     } = this.props;
 
-    const { dataListTeamRequest, loadingSearch } = this.state;
+    const { dataListTeamRequest, dataListAll, loadingSearch, timezoneList } = this.state;
 
     return (
       <Row className={styles.hrContent}>
@@ -141,10 +185,12 @@ class HRrequestTable extends Component {
               <div className={styles.tableTab}>
                 <TeamRequest
                   data={dataListTeamRequest}
+                  dataAll={dataListAll}
                   loadingSearch={loadingSearch}
                   countdata={totalListTeamRequest}
                   hrManager={hrManager}
                   location={[locationID]}
+                  timezoneList={timezoneList}
                 />
               </div>
             </TabPane>
