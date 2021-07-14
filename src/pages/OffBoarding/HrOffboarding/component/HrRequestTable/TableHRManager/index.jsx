@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import React, { PureComponent } from 'react';
-import { Table, notification, Popover, Divider, Row, Col, Avatar } from 'antd';
+import { Table, notification, Popover, Divider, Row, Col, Avatar, Tooltip } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
@@ -114,6 +114,7 @@ class HrTable extends PureComponent {
           lastName = '',
           middleName = '',
           employeeType: { name: typeName = 'Full Time' } = {},
+          linkedIn = '',
         } = {},
       } = {},
       department: { name: departmentName = '' } = {},
@@ -175,6 +176,28 @@ class HrTable extends PureComponent {
               </div>
             </Col>
           </Row>
+        </div>
+        <Divider />
+        <div className={styles.popupActions}>
+          <div className={styles.popupActions__link}>View full profile</div>
+          <div className={styles.popupActions__actions}>
+            <Tooltip title="Email">
+              <img
+                src="/assets/images/iconMail.svg"
+                alt="img-arrow"
+                style={{ marginLeft: '5px', cursor: 'pointer' }}
+              />
+            </Tooltip>
+            <Tooltip title="LinkedIn">
+              <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
+                <img
+                  src="/assets/images/iconLinkedin.svg"
+                  alt="img-arrow"
+                  style={{ cursor: 'pointer' }}
+                />
+              </a>
+            </Tooltip>
+          </div>
         </div>
       </div>
     );
