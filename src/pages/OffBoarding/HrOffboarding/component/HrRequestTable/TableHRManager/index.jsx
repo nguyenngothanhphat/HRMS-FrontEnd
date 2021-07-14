@@ -150,7 +150,10 @@ class HrTable extends PureComponent {
         render: (employee) => {
           const { generalInfo = {} } = employee;
           return (
-            <p className={styles.requteeName}>
+            <p
+              className={styles.requteeName}
+              onClick={() => history.push(`/directory/employee-profile/${generalInfo.userId}`)}
+            >
               {Object.keys(employee).length === 0 ? '' : generalInfo.firstName}
             </p>
           );
