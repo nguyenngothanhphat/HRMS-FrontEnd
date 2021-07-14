@@ -73,7 +73,7 @@ class CollapseFieldsType3 extends PureComponent {
     const { processStatus = '', disabled = false, certifications = {} } = this.props;
     return (
       <div className={styles.CollapseFieldsType3}>
-        {(certifications.data.length > 0 || processStatus === 'DRAFT') && (
+        {(certifications?.data?.length > 0 || processStatus === 'DRAFT') && (
           <Collapse
             accordion
             expandIconPosition="right"
@@ -87,7 +87,7 @@ class CollapseFieldsType3 extends PureComponent {
             }}
           >
             <Panel header={this.renderHeader()} key="1">
-              {certifications.data.length > 0 && (
+              {certifications?.data?.length > 0 && (
                 <>
                   {certifications.data.map((cer, index) => (
                     <Certification
