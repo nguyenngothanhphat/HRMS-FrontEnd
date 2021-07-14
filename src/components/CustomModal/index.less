@@ -27,20 +27,64 @@
 
     .ant-modal-close-x {
       position: absolute;
-      background-color: @blue;
-      color: white;
-      height: 48px;
-      width: 54px;
-      border-top-right-radius: 8px;
-      border-bottom-right-radius: 8px;
 
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 54px;
+      height: 48px;
+      color: white;
+      background-color: @blue;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
     }
 
     .ant-modal-body {
       padding: 0;
+    }
+
+    // &:hover {
+    //   background-color: @dark-blue;
+    // }
+  }
+}
+
+.root {
+  // min-width: 520px !important;
+
+  .body {
+    min-height: 120px;
+  }
+
+  :global {
+    .ant-modal-header {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background-color: transparent;
+    }
+
+    .ant-modal-content {
+      border-radius: 9px;
+      border-top-right-radius: 0;
+    }
+
+    .ant-modal-close-x {
+      position: absolute;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 54px;
+      height: 48px;
+      color: white;
+      background-color: @blue;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+
+    .ant-modal-body {
+      padding: 24px 32px 32px 12px;
     }
 
     // &:hover {

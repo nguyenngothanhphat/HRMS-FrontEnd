@@ -55,7 +55,7 @@ const getActionText = (type) => {
     //   return formatMessage({ id: 'component.onboardingOverview.createProfile' });
     case PROVISIONAL_OFFERS_DRAFTS:
     case PENDING:
-      return 'continue';
+      return 'Continue';
 
     case SENT_PROVISIONAL_OFFERS:
     case ELIGIBLE_CANDIDATES:
@@ -64,12 +64,12 @@ const getActionText = (type) => {
     case SENT_FINAL_OFFERS:
     case PROVISIONAL_OFFERS:
     case FINAL_OFFERS:
-      return 'view form';
+      return 'View Form';
 
     case ACCEPTED_FINAL_OFFERS:
-      return 'create profile';
+      return 'Create Profile';
     case ACCEPTED__PROVISIONAL_OFFERS:
-      return 'Initiate Background check';
+      return 'Initiate Background Check';
     // case RENEGOTIATE_PROVISIONAL_OFFERS
 
     default:
