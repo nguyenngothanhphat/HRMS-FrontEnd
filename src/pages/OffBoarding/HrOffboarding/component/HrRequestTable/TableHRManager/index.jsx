@@ -5,7 +5,7 @@ import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import { history } from 'umi';
-import { getCurrentTimeOfTimezone } from '@/utils/times';
+import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
 import styles from './index.less';
 
 class HrTable extends PureComponent {
@@ -101,7 +101,7 @@ class HrTable extends PureComponent {
   };
 
   popupContent = (dataRow) => {
-    console.log(dataRow);
+    // console.log(dataRow);
     const { timezoneList } = this.props;
     const { currentTime } = this.state;
     const {
@@ -170,7 +170,7 @@ class HrTable extends PureComponent {
             <Col span={16}>
               <div className={styles.contact__value}>
                 {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-                  ? getCurrentTimeOfTimezone(currentTime, findTimezone.timezone)
+                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
                   : 'Not enough data in address'}
               </div>
             </Col>
