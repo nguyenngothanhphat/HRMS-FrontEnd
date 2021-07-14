@@ -200,6 +200,8 @@ class HRrequestTable extends Component {
                   data={listOffboarding}
                   countdata={totalList}
                   hrManager={hrManager}
+                  timezoneList={timezoneList}
+                  dataAll={dataListAll}
                 />
               </div>
             </TabPane>

@@ -92,12 +92,27 @@ class RenderRequest extends Component {
   };
 
   render() {
-    const { data = [], countdata = [], loading, hrManager = {} } = this.props;
-
+    const {
+      data = [],
+      dataAll = [],
+      timezoneList,
+      selectedFilterTab,
+      countdata = [],
+      loading,
+      hrManager = {},
+    } = this.props;
+    const isTabAll = selectedFilterTab === '1';
     return (
       <>
         <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
-        <MyRequestTable data={data} loading={loading} hrManager={hrManager} />
+        <MyRequestTable
+          timezoneList={timezoneList}
+          isTabAll={isTabAll}
+          data={data}
+          dataAll={dataAll}
+          loading={loading}
+          hrManager={hrManager}
+        />
       </>
     );
   }
