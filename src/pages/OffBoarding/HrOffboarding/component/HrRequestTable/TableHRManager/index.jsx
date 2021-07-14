@@ -143,7 +143,7 @@ class HrTable extends PureComponent {
         },
       },
       {
-        title: <span className={styles.title}>Requ’tee Name </span>,
+        title: <span className={styles.title}>Requestee</span>,
         dataIndex: 'employee',
         width: 140,
         ellipsis: true,
@@ -250,11 +250,6 @@ class HrTable extends PureComponent {
       },
     ];
 
-    const rowSelection = {
-      selectedRowKeys,
-      onChange: this.onSelectChange,
-    };
-
     return (
       <div className={styles.HRtableStyles}>
         <Table
@@ -266,7 +261,6 @@ class HrTable extends PureComponent {
               </div>
             ),
           }}
-          rowSelection={rowSelection}
           columns={columns}
           dataSource={newData}
           hideOnSinglePage
