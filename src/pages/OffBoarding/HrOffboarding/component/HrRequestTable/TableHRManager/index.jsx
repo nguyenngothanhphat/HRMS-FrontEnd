@@ -115,6 +115,7 @@ class HrTable extends PureComponent {
           middleName = '',
           employeeType: { name: typeName = 'Full Time' } = {},
           linkedIn = '',
+          userId = '',
         } = {},
       } = {},
       department: { name: departmentName = '' } = {},
@@ -179,7 +180,12 @@ class HrTable extends PureComponent {
         </div>
         <Divider />
         <div className={styles.popupActions}>
-          <div className={styles.popupActions__link}>View full profile</div>
+          <div
+            className={styles.popupActions__link}
+            onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+          >
+            View full profile
+          </div>
           <div className={styles.popupActions__actions}>
             <Tooltip title="Email">
               <img
