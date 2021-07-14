@@ -104,24 +104,10 @@ class TableComponent extends PureComponent {
       },
     ];
 
-    const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => {
-        // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-      },
-      getCheckboxProps: (record) => ({
-        disabled: record.name === 'Disabled User',
-        // Column configuration not to be checked
-        name: record.name,
-      }),
-    };
-
     return (
       <div className={styles.tableComponent}>
         <Table
           loading={loadingSearchList}
-          rowSelection={{
-            ...rowSelection,
-          }}
           columns={columns}
           dataSource={data}
           pagination={{ ...pagination, total: data.length }}
