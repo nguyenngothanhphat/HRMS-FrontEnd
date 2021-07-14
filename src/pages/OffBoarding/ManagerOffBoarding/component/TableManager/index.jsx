@@ -129,17 +129,6 @@ class TableManager extends PureComponent {
       },
     ];
 
-    const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => {
-        // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-      },
-      getCheckboxProps: (record) => ({
-        disabled: record.name === 'Disabled User',
-        // Column configuration not to be checked
-        name: record.name,
-      }),
-    };
-
     return (
       <div className={styles.tableStyles}>
         <Table
@@ -150,9 +139,6 @@ class TableManager extends PureComponent {
                 <p className={styles.textEmpty}>{textEmpty}</p>
               </div>
             ),
-          }}
-          rowSelection={{
-            ...rowSelection,
           }}
           loading={loading}
           columns={columns}

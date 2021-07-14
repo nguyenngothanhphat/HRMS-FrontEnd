@@ -53,12 +53,14 @@ class BackgroundCheck extends Component {
     super(props);
     this.state = {
       openModal: false,
+      openModalEmail: false,
       newPoe: [],
       identityProof: {},
       addressProof: {},
       educational: {},
       previousEmployment: {},
       refreshBlockE: false,
+      checkRadioSendMail: 0,
       // documentChecklistSetting: {},
     };
   }
@@ -121,10 +123,10 @@ class BackgroundCheck extends Component {
         identityProof = {},
         addressProof = {},
         educational = {},
-        technicalCertifications = {},
+        // technicalCertifications = {},
         previousEmployment = {},
         // candidate: candidateId = '',
-        documentChecklistSetting = [],
+        // documentChecklistSetting = [],
       },
       tempData,
       dispatch,
@@ -585,11 +587,12 @@ class BackgroundCheck extends Component {
           },
           checkMandatory: {
             ...checkMandatory,
-            filledBackgroundCheck: false,
+            filledBackgroundCheck: true,
           },
         },
       });
     }
+    this.setState({ checkRadioSendMail: e.target.value });
   };
 
   checkBottomBar = () => {
@@ -635,6 +638,7 @@ class BackgroundCheck extends Component {
   _renderBottomBar = () => {
     const { checkMandatory } = this.props;
     const { filledBackgroundCheck } = checkMandatory;
+    console.log(filledBackgroundCheck);
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
@@ -654,10 +658,12 @@ class BackgroundCheck extends Component {
               <Button
                 type="primary"
                 onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary} ${
-                  !filledBackgroundCheck ? styles.bottomBar__button__disabled : ''
-                }`}
-                disabled={!filledBackgroundCheck}
+                className={`${styles.bottomBar__button__primary} `}
+                // ${
+                //   !filledBackgroundCheck ? styles.bottomBar__button__disabled : ''
+                // }
+
+                // disabled={!filledBackgroundCheck}
               >
                 Next
               </Button>
@@ -666,6 +672,12 @@ class BackgroundCheck extends Component {
         </Row>
       </div>
     );
+  };
+
+  closeModalEmail = () => {
+    this.setState({
+      openModalEmail: false,
+    });
   };
 
   closeModal = () => {
@@ -906,15 +918,19 @@ class BackgroundCheck extends Component {
   };
 
   onClickNext = () => {
-    const { currentStep } = this.props;
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        currentStep: currentStep + 1,
-        valueToFinalOffer: 1,
-      },
-    });
+    const { currentStep, dispatch } = this.props;
+    const { checkRadioSendMail } = this.state;
+    if (checkRadioSendMail === 0) {
+      this.setState({ openModalEmail: true });
+    } else {
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          currentStep: currentStep + 1,
+          valueToFinalOffer: 1,
+        },
+      });
+    }
   };
 
   // if clicking on ADD EMPLOYER DETAILS button, add a new object of newPoe
@@ -1083,11 +1099,14 @@ class BackgroundCheck extends Component {
     // const newDocument = [...checkedListD, name];
 
     function camelize(str) {
-      return str
-        .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-          return index === 0 ? word.toLowerCase() : word.toUpperCase();
-        })
-        .replace(/\s+/g, '');
+      return (
+        str
+          // eslint-disable-next-line no-shadow
+          .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
+            return index === 0 ? word.toLowerCase() : word.toUpperCase();
+          })
+          .replace(/\s+/g, '')
+      );
     }
 
     // const newDoc = {
@@ -1228,7 +1247,8 @@ class BackgroundCheck extends Component {
     const documentListByCountry = this.getDocumentListByCountry(documentList);
 
     const documentCLSTypeD = documentChecklistSetting.find((doc) => doc.type === 'D');
-    const { openModal, identityProof, addressProof, educational, refreshBlockE } = this.state;
+    const { openModalEmail, openModal, identityProof, addressProof, educational, refreshBlockE } =
+      this.state;
 
     return (
       <div>
@@ -1323,6 +1343,8 @@ class BackgroundCheck extends Component {
             {processStatus === 'DRAFT' ||
             processStatusFilled === PROCESS_STATUS.SENT_PROVISIONAL_OFFERS ? (
               <SendEmail
+                openModalEmail={openModalEmail}
+                closeModalEmail={this.closeModalEmail}
                 loading4={loading4}
                 handleSendEmail={this.handleSendEmail}
                 handleChangeEmail={this.handleChangeEmail}

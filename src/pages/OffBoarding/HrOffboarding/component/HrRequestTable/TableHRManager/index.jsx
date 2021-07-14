@@ -1,13 +1,11 @@
 /* eslint-disable react/no-array-index-key */
 import React, { PureComponent } from 'react';
-import { Table, notification, Popover } from 'antd';
-// import { Table, Popover, notification, Avatar } from 'antd';
+import { Table, notification, Popover, Divider, Row, Col, Avatar } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
-// import { UserOutlined } from '@ant-design/icons';
 import { history } from 'umi';
-import Avatar from 'antd/lib/avatar/avatar';
-import { UserOutlined } from '@ant-design/icons';
+import { getCurrentTimeOfTimezone } from '@/utils/times';
 import styles from './index.less';
 
 class HrTable extends PureComponent {
@@ -15,9 +13,29 @@ class HrTable extends PureComponent {
     super(props);
     this.state = {
       pageNavigation: 1,
-      selectedRowKeys: [],
+      currentTime: moment(),
     };
   }
+
+  componentDidMount = () => {
+    this.setCurrentTime();
+  };
+
+  setCurrentTime = () => {
+    // compare two time by hour & minute. If minute changes, get new time
+    const timeFormat = 'HH:mm';
+    const { currentTime } = this.state;
+    const parseTime = (timeString) => moment(timeString, timeFormat);
+    const check = parseTime(moment().format(timeFormat)).isAfter(
+      parseTime(moment(currentTime).format(timeFormat)),
+    );
+
+    if (check) {
+      this.setState({
+        currentTime: moment(),
+      });
+    }
+  };
 
   renderContent = (row) => {
     const { _id = '', nodeStep = 1, relievingStatus = '' } = row;
@@ -50,9 +68,9 @@ class HrTable extends PureComponent {
     });
   };
 
-  push = (data) => {
-    history.push(`/offboarding/review/${data}`);
-  };
+  // push = (data) => {
+  //   history.push(`/offboarding/review/${data}`);
+  // };
 
   onChangePagination = (pageNumber) => {
     this.setState({
@@ -60,22 +78,128 @@ class HrTable extends PureComponent {
     });
   };
 
-  onSelectChange = (selectedRowKeys) => {
-    // console.log('selectedRowKeys changed: ', selectedRowKeys);
-    this.setState({ selectedRowKeys });
+  openViewTicket = (ticketID) => {
+    const { data = [], dataAll = [], isTabAll } = this.props;
+    let id = '';
+
+    if (isTabAll) {
+      dataAll.forEach((item) => {
+        if (item.ticketID === ticketID) {
+          id = item._id;
+        }
+      });
+    } else {
+      data.forEach((item) => {
+        if (item.ticketID === ticketID) {
+          id = item._id;
+        }
+      });
+    }
+    if (id) {
+      history.push(`/offboarding/review/${id}`);
+    }
+  };
+
+  popupContent = (dataRow) => {
+    console.log(dataRow);
+    const { timezoneList } = this.props;
+    const { currentTime } = this.state;
+    const {
+      employee: {
+        title: { name: titleName = 'UX Lead' } = {},
+        employeeId = '',
+        generalInfo: {
+          avatar = '',
+          firstName = '',
+          lastName = '',
+          middleName = '',
+          employeeType: { name: typeName = 'Full Time' } = {},
+        } = {},
+      } = {},
+      department: { name: departmentName = '' } = {},
+      location: { _id = '' } = {},
+    } = dataRow;
+    const fullName = `${firstName} ${middleName} ${lastName}`;
+    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+    return (
+      <div className={styles.popupContent}>
+        <div className={styles.generalInfo}>
+          <div className={styles.avatar}>
+            <Avatar src={avatar} size={40} icon={<UserOutlined />} />
+          </div>
+          <div className={styles.employeeInfo}>
+            <div className={styles.employeeInfo__name}>{fullName}</div>
+            <div className={styles.employeeInfo__department}>
+              {titleName}, {departmentName} Dept.
+            </div>
+            <div className={styles.employeeInfo__emplId}>
+              {employeeId} | {typeName}
+            </div>
+          </div>
+        </div>
+        <Divider />
+        <div className={styles.contact}>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Mobile: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>abccc</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Email id: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>abc@gmail.com</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Location: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>abccc</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Local Time: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>
+                {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
+                  ? getCurrentTimeOfTimezone(currentTime, findTimezone.timezone)
+                  : 'Not enough data in address'}
+              </div>
+            </Col>
+          </Row>
+        </div>
+      </div>
+    );
   };
 
   render() {
-    const { pageNavigation, selectedRowKeys = [] } = this.state;
+    const { pageNavigation } = this.state;
     const {
       data = [],
+      dataAll = [],
       loading,
       textEmpty = 'No resignation request is submitted',
       isTabAccept = false,
+      isTabAll = false,
     } = this.props;
     // const dateFormat = 'YYYY/MM/DD';
     const rowSize = 10;
     const newData = data.map((item) => {
+      return {
+        key: item._id,
+        ...item,
+      };
+    });
+
+    const newDataAll = dataAll.map((item) => {
       return {
         key: item._id,
         ...item,
@@ -106,7 +230,11 @@ class HrTable extends PureComponent {
         fixed: 'left',
         width: 150,
         render: (ticketID) => {
-          return <p className={styles.ticketId}>{ticketID}</p>;
+          return (
+            <p className={styles.ticketId} onClick={() => this.openViewTicket(ticketID)}>
+              {ticketID}
+            </p>
+          );
         },
       },
       {
@@ -120,22 +248,31 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>Created date </span>,
         dataIndex: 'createDate',
-        width: 120,
+        width: 160,
         render: (createDate) => {
           return <p>{moment(createDate).format('YYYY/MM/DD')}</p>;
         },
       },
       {
-        title: <span className={styles.title}>Requ’tee Name </span>,
+        title: <span className={styles.title}>Requestee</span>,
         dataIndex: 'employee',
-        width: 140,
+        width: 200,
         ellipsis: true,
-        render: (employee) => {
+        render: (employee, row) => {
           const { generalInfo = {} } = employee;
           return (
-            <p className={styles.requteeName}>
-              {Object.keys(employee).length === 0 ? '' : generalInfo.firstName}
-            </p>
+            <Popover
+              content={() => this.popupContent(row)}
+              // title={location.name}
+              trigger="hover"
+            >
+              <p
+                className={styles.requteeName}
+                onClick={() => history.push(`/directory/employee-profile/${generalInfo.userId}`)}
+              >
+                {Object.keys(employee).length === 0 ? '' : generalInfo.firstName}
+              </p>
+            </Popover>
           );
         },
       },
@@ -160,29 +297,42 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>Assigned </span>,
         dataIndex: 'Assigned',
-        width: 140,
-        render: (_, row) => {
-          const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
-            this.props;
-          const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
-          const arrAvt = [avtManager, avtHrManager];
+        width: 200,
+        render: () => {
+          // const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
+          //   this.props;
+          // const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
+          // const arrAvt = [avtManager, avtHrManager];
+          const {
+            hrManager: {
+              generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {},
+            } = {},
+          } = this.props;
+          const fullName = `${firstName} ${middleName} ${lastName}`;
           return (
-            <div className={styles.rowAction}>
-              {arrAvt.map(
-                (item, index) =>
-                  item && (
-                    <div key={index} style={{ marginRight: '13px', display: 'inline-block' }}>
-                      <Avatar src={item} size={20} icon={<UserOutlined />} />
-                    </div>
-                  ),
-              )}
-            </div>
+            // <div className={styles.rowAction}>
+            //   {arrAvt.map(
+            //     (item, index) =>
+            //       item && (
+            //         <div key={index} style={{ marginRight: '13px', display: 'inline-block' }}>
+            //           <Avatar src={item} size={20} icon={<UserOutlined />} />
+            //         </div>
+            //       ),
+            //   )}
+            // </div>
+            <p
+              className={styles.assignee}
+              onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+            >
+              {fullName}
+            </p>
           );
         },
       },
       {
         title: <span className={styles.title}>Department</span>,
         dataIndex: 'department',
+        width: 200,
         render: (department) => {
           return <p>{department?.name}</p>;
         },
@@ -190,23 +340,24 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>LWD</span>,
         dataIndex: 'lastWorkingDate',
+        width: 200,
         render: (lastWorkingDate) => {
           return <p>{lastWorkingDate && moment(lastWorkingDate).format('YYYY/MM/DD')} </p>;
         },
       },
       {
         title: <span className={styles.title}>Action</span>,
-        dataIndex: '_id',
-        align: 'left',
-        render: (_id) => {
-          return (
-            <div className={styles.viewAction}>
-              <p className={styles.viewAction__text} onClick={() => this.push(_id)}>
-                View Request
-              </p>
-            </div>
-          );
-        },
+        // dataIndex: '_id',
+        // align: 'left',
+        // render: (_id) => {
+        //   return (
+        //     <div className={styles.viewAction}>
+        //       <p className={styles.viewAction__text} onClick={() => this.push(_id)}>
+        //         View Request
+        //       </p>
+        //     </div>
+        //   );
+        // },
       },
       {
         title: '',
@@ -233,11 +384,6 @@ class HrTable extends PureComponent {
       },
     ];
 
-    const rowSelection = {
-      selectedRowKeys,
-      onChange: this.onSelectChange,
-    };
-
     return (
       <div className={styles.HRtableStyles}>
         <Table
@@ -249,9 +395,8 @@ class HrTable extends PureComponent {
               </div>
             ),
           }}
-          rowSelection={rowSelection}
           columns={columns}
-          dataSource={newData}
+          dataSource={isTabAll ? newDataAll : newData}
           hideOnSinglePage
           pagination={{ ...pagination, total: data.length }}
           rowKey={(record) => record._id}
