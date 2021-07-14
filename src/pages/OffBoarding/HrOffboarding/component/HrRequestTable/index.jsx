@@ -12,6 +12,7 @@ import styles from './index.less';
   ({
     offboarding: {
       listTeamRequest = [],
+      listAllRequest = [],
       totalListTeamRequest = [],
       listOffboarding = [],
       totalList = [],
@@ -23,6 +24,7 @@ import styles from './index.less';
         company: { _id: companyID } = {},
       } = {},
     } = {},
+    loading,
   }) => ({
     listOffboarding,
     totalListTeamRequest,
@@ -30,7 +32,9 @@ import styles from './index.less';
     locationID,
     companyID,
     listTeamRequest,
+    listAllRequest,
     hrManager,
+    loadingAll: loading.effects['offboarding/fetchListAllRequest'],
   }),
 )
 class HRrequestTable extends Component {
@@ -38,10 +42,12 @@ class HRrequestTable extends Component {
     super(props);
     this.state = {
       dataListTeamRequest: [],
+      dataListAll: [],
       loadingSearch: false,
     };
     this.setDebounce = debounce((query) => {
       this.setState({
+        dataListAll: query,
         dataListTeamRequest: query,
         loadingSearch: false,
       });
@@ -49,32 +55,41 @@ class HRrequestTable extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, locationID, listTeamRequest = [] } = this.props;
+    const { dispatch, locationID, listTeamRequest = [], listAllRequest = [] } = this.props;
     if (!dispatch) {
       return;
     }
     dispatch({
-      type: 'offboarding/fetchListTeamRequest',
+      type: 'offboarding/fetchListAllRequest',
       payload: {
-        status: 'IN-PROGRESS',
         location: [locationID],
       },
     });
 
-    if (listTeamRequest.length > 0) this.updateData(listTeamRequest);
+    if (listTeamRequest.length > 0) this.updateData(listTeamRequest, 1);
+    if (listAllRequest.length > 0) this.updateData(listAllRequest, 2);
   }
 
   componentDidUpdate(prevProps) {
-    const { listTeamRequest = [] } = this.props;
+    const { listTeamRequest = [], listAllRequest = [] } = this.props;
     if (JSON.stringify(listTeamRequest) !== JSON.stringify(prevProps.listTeamRequest)) {
-      this.updateData(listTeamRequest);
+      this.updateData(listTeamRequest, 1);
+    }
+    if (JSON.stringify(listAllRequest) !== JSON.stringify(prevProps.listAllRequest)) {
+      this.updateData(listAllRequest, 2);
     }
   }
 
-  updateData = (listTeamRequest) => {
-    this.setState({
-      dataListTeamRequest: listTeamRequest,
-    });
+  updateData = (list, key) => {
+    if (key === 1) {
+      this.setState({
+        dataListTeamRequest: list,
+      });
+    } else {
+      this.setState({
+        dataListAll: list,
+      });
+    }
   };
 
   onSearch = (value) => {
@@ -113,9 +128,10 @@ class HRrequestTable extends Component {
       totalList = [],
       hrManager = {},
       locationID = '',
+      loadingAll,
     } = this.props;
 
-    const { dataListTeamRequest, loadingSearch } = this.state;
+    const { dataListTeamRequest, dataListAll, loadingSearch } = this.state;
 
     return (
       <Row className={styles.hrContent}>
@@ -141,6 +157,7 @@ class HRrequestTable extends Component {
               <div className={styles.tableTab}>
                 <TeamRequest
                   data={dataListTeamRequest}
+                  dataAll={dataListAll}
                   loadingSearch={loadingSearch}
                   countdata={totalListTeamRequest}
                   hrManager={hrManager}

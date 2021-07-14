@@ -6,8 +6,6 @@ import moment from 'moment';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 // import { UserOutlined } from '@ant-design/icons';
 import { history } from 'umi';
-import Avatar from 'antd/lib/avatar/avatar';
-import { UserOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 class HrTable extends PureComponent {
@@ -79,16 +77,25 @@ class HrTable extends PureComponent {
   };
 
   render() {
-    const { pageNavigation, selectedRowKeys = [] } = this.state;
+    const { pageNavigation } = this.state;
     const {
       data = [],
+      dataAll = [],
       loading,
       textEmpty = 'No resignation request is submitted',
       isTabAccept = false,
+      isTabAll = false,
     } = this.props;
     // const dateFormat = 'YYYY/MM/DD';
     const rowSize = 10;
     const newData = data.map((item) => {
+      return {
+        key: item._id,
+        ...item,
+      };
+    });
+
+    const newDataAll = dataAll.map((item) => {
       return {
         key: item._id,
         ...item,
@@ -279,7 +286,7 @@ class HrTable extends PureComponent {
             ),
           }}
           columns={columns}
-          dataSource={newData}
+          dataSource={isTabAll ? newDataAll : newData}
           hideOnSinglePage
           pagination={{ ...pagination, total: data.length }}
           rowKey={(record) => record._id}

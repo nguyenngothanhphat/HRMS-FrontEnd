@@ -5,6 +5,7 @@ import Summary from '../Summary';
 
 @connect(({ loading }) => ({
   loading: loading.effects['offboarding/fetchListTeamRequest'],
+  loadingAll: loading.effects['offboarding/fetchListAllRequest'],
 }))
 class TabContent extends Component {
   constructor(props) {
@@ -27,9 +28,8 @@ class TabContent extends Component {
     const { dispatch, location = [] } = this.props;
     if (tabId === '1') {
       dispatch({
-        type: 'offboarding/fetchListTeamRequest',
+        type: 'offboarding/fetchListAllRequest',
         payload: {
-          status: 'IN-PROGRESS',
           location,
         },
       });
@@ -38,7 +38,7 @@ class TabContent extends Component {
       dispatch({
         type: 'offboarding/fetchListTeamRequest',
         payload: {
-          status: 'ON-HOLD',
+          status: 'IN-PROGRESS',
           location,
         },
       });
@@ -47,12 +47,21 @@ class TabContent extends Component {
       dispatch({
         type: 'offboarding/fetchListTeamRequest',
         payload: {
-          status: 'ACCEPTED',
+          status: 'ON-HOLD',
           location,
         },
       });
     }
     if (tabId === '4') {
+      dispatch({
+        type: 'offboarding/fetchListTeamRequest',
+        payload: {
+          status: 'ACCEPTED',
+          location,
+        },
+      });
+    }
+    if (tabId === '5') {
       dispatch({
         type: 'offboarding/fetchListTeamRequest',
         payload: {
@@ -78,15 +87,26 @@ class TabContent extends Component {
   };
 
   render() {
-    const { data = [], countdata, loading, hrManager = {}, loadingSearch } = this.props;
+    const {
+      data = [],
+      dataAll = [],
+      countdata,
+      loading,
+      loadingAll,
+      hrManager = {},
+      loadingSearch,
+    } = this.props;
     const { selectedFilterTab = '1' } = this.state;
     const isTabAccept = selectedFilterTab === '3';
+    const isTabAll = selectedFilterTab === '1';
     return (
       <>
         <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
         <HrTable
           data={data}
-          loading={loading || loadingSearch}
+          dataAll={dataAll}
+          loading={loadingAll || loading || loadingSearch}
+          isTabAll={isTabAll}
           isTabAccept={isTabAccept}
           moveToRelieving={this.moveToRelieving}
           hrManager={hrManager}
