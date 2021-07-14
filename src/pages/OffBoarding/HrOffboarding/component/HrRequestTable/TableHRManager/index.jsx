@@ -79,22 +79,15 @@ class HrTable extends PureComponent {
   };
 
   openViewTicket = (ticketID) => {
-    const { data = [], dataAll = [], isTabAll } = this.props;
+    const { data = [] } = this.props;
     let id = '';
 
-    if (isTabAll) {
-      dataAll.forEach((item) => {
-        if (item.ticketID === ticketID) {
-          id = item._id;
-        }
-      });
-    } else {
-      data.forEach((item) => {
-        if (item.ticketID === ticketID) {
-          id = item._id;
-        }
-      });
-    }
+    data.forEach((item) => {
+      if (item.ticketID === ticketID) {
+        id = item._id;
+      }
+    });
+
     if (id) {
       history.push(`/offboarding/review/${id}`);
     }
@@ -213,22 +206,13 @@ class HrTable extends PureComponent {
     const { pageNavigation } = this.state;
     const {
       data = [],
-      dataAll = [],
       loading,
       textEmpty = 'No resignation request is submitted',
       isTabAccept = false,
-      isTabAll = false,
     } = this.props;
     // const dateFormat = 'YYYY/MM/DD';
     const rowSize = 10;
     const newData = data.map((item) => {
-      return {
-        key: item._id,
-        ...item,
-      };
-    });
-
-    const newDataAll = dataAll.map((item) => {
       return {
         key: item._id,
         ...item,
@@ -327,7 +311,7 @@ class HrTable extends PureComponent {
         title: <span className={styles.title}>Assigned </span>,
         dataIndex: 'Assigned',
         width: 200,
-        render: () => {
+        render: (_, row) => {
           // const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
           //   this.props;
           // const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
@@ -349,12 +333,18 @@ class HrTable extends PureComponent {
             //       ),
             //   )}
             // </div>
-            <p
-              className={styles.assignee}
-              onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+            <Popover
+              content={() => this.popupContent(row)}
+              // title={location.name}
+              trigger="hover"
             >
-              {fullName}
-            </p>
+              <p
+                className={styles.assignee}
+                onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+              >
+                {fullName}
+              </p>
+            </Popover>
           );
         },
       },
@@ -425,7 +415,7 @@ class HrTable extends PureComponent {
             ),
           }}
           columns={columns}
-          dataSource={isTabAll ? newDataAll : newData}
+          dataSource={newData}
           hideOnSinglePage
           pagination={{ ...pagination, total: data.length }}
           rowKey={(record) => record._id}

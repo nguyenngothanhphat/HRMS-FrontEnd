@@ -3,9 +3,9 @@ import { connect } from 'umi';
 import HrTable from '../TableHRManager';
 import Summary from '../Summary';
 
-@connect(({ loading }) => ({
+@connect(({ loading, offboarding: { totalAll = 0 } = {} }) => ({
   loading: loading.effects['offboarding/fetchListTeamRequest'],
-  loadingAll: loading.effects['offboarding/fetchListAllRequest'],
+  totalAll,
 }))
 class TabContent extends Component {
   constructor(props) {
@@ -28,7 +28,7 @@ class TabContent extends Component {
     const { dispatch, location = [] } = this.props;
     if (tabId === '1') {
       dispatch({
-        type: 'offboarding/fetchListAllRequest',
+        type: 'offboarding/fetchListTeamRequest',
         payload: {
           location,
         },
@@ -89,24 +89,22 @@ class TabContent extends Component {
   render() {
     const {
       data = [],
-      dataAll = [],
       countdata,
       loading,
-      loadingAll,
       hrManager = {},
       loadingSearch,
       timezoneList,
+      totalAll,
     } = this.props;
     const { selectedFilterTab = '1' } = this.state;
     const isTabAccept = selectedFilterTab === '3';
     const isTabAll = selectedFilterTab === '1';
     return (
       <>
-        <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
+        <Summary totalAll={totalAll} setSelectedTab={this.setSelectedTab} countdata={countdata} />
         <HrTable
           data={data}
-          dataAll={dataAll}
-          loading={loadingAll || loading || loadingSearch}
+          loading={loading || loadingSearch}
           isTabAll={isTabAll}
           isTabAccept={isTabAccept}
           moveToRelieving={this.moveToRelieving}

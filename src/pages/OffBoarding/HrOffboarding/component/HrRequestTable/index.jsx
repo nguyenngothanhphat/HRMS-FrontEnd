@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Col, Tabs, Row, Button } from 'antd';
 import { Link, connect } from 'umi';
 import { debounce } from 'lodash';
-import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
+import { getTimezoneViaCity } from '@/utils/times';
 import TeamRequest from './TeamRequest';
 import MyRequestContent from '../../../components/TabMyRequest';
 import TableSearch from './TableSearch';
@@ -12,7 +12,6 @@ import styles from './index.less';
   ({
     offboarding: {
       listTeamRequest = [],
-      listAllRequest = [],
       totalListTeamRequest = [],
       listOffboarding = [],
       totalList = [],
@@ -32,7 +31,6 @@ import styles from './index.less';
     locationID,
     companyID,
     listTeamRequest,
-    listAllRequest,
     hrManager,
     listLocationsByCompany,
   }),
@@ -42,13 +40,11 @@ class HRrequestTable extends Component {
     super(props);
     this.state = {
       dataListTeamRequest: [],
-      dataListAll: [],
       loadingSearch: false,
       timezoneList: [],
     };
     this.setDebounce = debounce((query) => {
       this.setState({
-        dataListAll: query,
         dataListTeamRequest: query,
         loadingSearch: false,
       });
@@ -56,12 +52,12 @@ class HRrequestTable extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, locationID, listTeamRequest = [], listAllRequest = [] } = this.props;
+    const { dispatch, locationID, listTeamRequest = [] } = this.props;
     if (!dispatch) {
       return;
     }
     dispatch({
-      type: 'offboarding/fetchListAllRequest',
+      type: 'offboarding/fetchListTeamRequest',
       payload: {
         location: [locationID],
       },
@@ -69,17 +65,17 @@ class HRrequestTable extends Component {
 
     this.fetchTimezone();
     if (listTeamRequest.length > 0) this.updateData(listTeamRequest, 1);
-    if (listAllRequest.length > 0) this.updateData(listAllRequest, 2);
+    // if (listAllRequest.length > 0) this.updateData(listAllRequest, 2);
   }
 
   componentDidUpdate(prevProps) {
-    const { listTeamRequest = [], listAllRequest = [], listLocationsByCompany = [] } = this.props;
+    const { listTeamRequest = [], listLocationsByCompany = [] } = this.props;
     if (JSON.stringify(listTeamRequest) !== JSON.stringify(prevProps.listTeamRequest)) {
       this.updateData(listTeamRequest, 1);
     }
-    if (JSON.stringify(listAllRequest) !== JSON.stringify(prevProps.listAllRequest)) {
-      this.updateData(listAllRequest, 2);
-    }
+    // if (JSON.stringify(listAllRequest) !== JSON.stringify(prevProps.listAllRequest)) {
+    //   this.updateData(listAllRequest, 2);
+    // }
     if (
       JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {
@@ -109,16 +105,10 @@ class HRrequestTable extends Component {
     });
   };
 
-  updateData = (list, key) => {
-    if (key === 1) {
-      this.setState({
-        dataListTeamRequest: list,
-      });
-    } else {
-      this.setState({
-        dataListAll: list,
-      });
-    }
+  updateData = (list) => {
+    this.setState({
+      dataListTeamRequest: list,
+    });
   };
 
   onSearch = (value) => {
@@ -159,7 +149,7 @@ class HRrequestTable extends Component {
       locationID = '',
     } = this.props;
 
-    const { dataListTeamRequest, dataListAll, loadingSearch, timezoneList } = this.state;
+    const { dataListTeamRequest, loadingSearch, timezoneList } = this.state;
 
     return (
       <Row className={styles.hrContent}>
@@ -185,7 +175,6 @@ class HRrequestTable extends Component {
               <div className={styles.tableTab}>
                 <TeamRequest
                   data={dataListTeamRequest}
-                  dataAll={dataListAll}
                   loadingSearch={loadingSearch}
                   countdata={totalListTeamRequest}
                   hrManager={hrManager}
@@ -201,7 +190,6 @@ class HRrequestTable extends Component {
                   countdata={totalList}
                   hrManager={hrManager}
                   timezoneList={timezoneList}
-                  dataAll={dataListAll}
                 />
               </div>
             </TabPane>
