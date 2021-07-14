@@ -1,22 +1,30 @@
 import React, { Component } from 'react';
-import { Table, Empty, Dropdown, Menu, Tag } from 'antd';
+import { Table, Empty, Dropdown, Menu, Tag, Button } from 'antd';
 import { EllipsisOutlined, DeleteOutlined } from '@ant-design/icons';
 import { formatMessage, Link, connect, history } from 'umi';
 
 import CustomModal from '@/components/CustomModal/index';
 import { getAuthority, getCurrentTenant } from '@/utils/authority';
 // import ModalContent from '../FinalOffers/components/ModalContent/index';
+import MenuIcon from '@/assets/menuDots.svg';
 import ProfileModalContent from '../FinalOffers/components/ProfileModalContent';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
-
+import ReassignModal from './components/ReassignModal';
 import { getActionText, getColumnWidth } from './utils';
-
 import styles from './index.less';
 
 class OnboardTable extends Component {
   constructor(props) {
     super(props);
-    this.state = { pageSelected: 1, openModal: false, currentRecord: {} };
+    this.state = {
+      pageSelected: 1,
+      openModal: false,
+      currentRecord: {},
+      reassignModalVisible: false,
+      currentEmpId: '',
+      reassignTicketId: '',
+      reassignStatus: '',
+    };
   }
 
   handleActionClick = (tableType) => {
@@ -104,165 +112,6 @@ class OnboardTable extends Component {
         tenantId: getCurrentTenant(),
       },
     });
-  };
-
-  renderAction = (id, type, actionText) => {
-    const {
-      PROVISIONAL_OFFERS_DRAFTS,
-      FINAL_OFFERS_DRAFTS,
-      RENEGOTIATE_PROVISIONAL_OFFERS,
-      APPROVED_OFFERS,
-      ACCEPTED_FINAL_OFFERS,
-      RENEGOTIATE_FINAL_OFFERS,
-      ACCEPTED__PROVISIONAL_OFFERS,
-      ALL,
-    } = TABLE_TYPE;
-
-    let actionContent = null;
-
-    switch (type) {
-      case ALL: {
-        actionContent = (
-          <>
-            <span>View</span>
-          </>
-        );
-        break;
-      }
-      case PROVISIONAL_OFFERS_DRAFTS: {
-        actionContent = (
-          <>
-            {/* <span>{actionText}</span> */}
-            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData()}>
-              <span>Continue</span>
-            </Link>
-
-            <DeleteOutlined
-              className={styles.deleteIcon}
-              onClick={() => this.handleActionDelete(id)}
-            />
-          </>
-        );
-        break;
-      }
-
-      case RENEGOTIATE_PROVISIONAL_OFFERS:
-      case RENEGOTIATE_FINAL_OFFERS:
-        actionContent = (
-          <>
-            {/* <span>{actionText}</span> */}
-            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
-              <span>Schedule 1-on-1</span>
-
-              <span className={styles.viewDraft}>
-                View Form
-                {/* {formatMessage({ id: 'component.onboardingOverview.viewDraft' })} */}
-              </span>
-            </Link>
-          </>
-        );
-        break;
-
-      case ACCEPTED__PROVISIONAL_OFFERS: {
-        actionContent = (
-          <>
-            <Link
-              to={`/employee-onboarding/review/${id}`}
-              onClick={() => {
-                this.initiateBackgroundCheck(id);
-              }}
-            >
-              <span>Initiate Background Check</span>
-            </Link>
-          </>
-        );
-        break;
-      }
-
-      case FINAL_OFFERS_DRAFTS: {
-        const menu = (
-          <Menu>
-            <Menu.Item key="1">Discard offer</Menu.Item>
-          </Menu>
-        );
-
-        actionContent = (
-          <>
-            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
-              <span>Send for approval</span>
-
-              <span className={styles.viewDraft}>
-                {formatMessage({ id: 'component.onboardingOverview.viewDraft' })}
-              </span>
-
-              <Dropdown.Button
-                overlay={menu}
-                placement="bottomCenter"
-                icon={<EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />}
-              />
-            </Link>
-          </>
-        );
-        break;
-      }
-
-      case APPROVED_OFFERS:
-        actionContent = (
-          <>
-            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
-              <span>Send to candidate</span>
-              <span className={styles.viewDraft}>View form</span>
-            </Link>
-          </>
-        );
-        break;
-
-      case ACCEPTED_FINAL_OFFERS: {
-        const menu = (
-          <Menu>
-            <Menu.Item key="1">Discard offer</Menu.Item>
-          </Menu>
-        );
-
-        actionContent = (
-          <>
-            <span
-              onClick={() => {
-                this.openModal();
-              }}
-            >
-              Create Profile
-            </span>
-            {/* <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
-              <Dropdown.Button
-                overlay={menu}
-                placement="bottomCenter"
-                icon={<EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />}
-              >
-                {actionText}
-              </Dropdown.Button>
-            </Link> */}
-          </>
-        );
-        break;
-      }
-
-      default:
-        actionContent = (
-          <>
-            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
-              <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
-              {/* <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} /> */}
-            </Link>
-          </>
-        );
-        break;
-    }
-    return (
-      // <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
-      <span className={styles.tableActions}>{actionContent}</span>
-      // </Link>
-    );
   };
 
   checkPermission = (role) => {
@@ -457,20 +306,32 @@ class OnboardTable extends Component {
       },
       {
         // title: 'Actions',
-        title: formatMessage({ id: 'component.onboardingOverview.actions' }),
+        // title: formatMessage({ id: 'component.onboardingOverview.actions' }),
         dataIndex: 'actions',
         key: 'actions',
         width: getColumnWidth('actions', type),
+        align: 'center',
         render: (_, row) => {
           const { currentUser: { employee: { _id: empId = '' } = {} } = {} } = this.props;
-          const { rookieId = '', assignTo = {}, assigneeManager = {} } = row;
+          const { processStatusId = '', rookieId = '', assignTo = {}, assigneeManager = {} } = row;
           const id = rookieId.replace('#', '') || '';
 
           const checkPermission =
             this.checkPermission('hr-manager') ||
             assignTo._id === empId ||
             assigneeManager._id === empId;
-          if (checkPermission) return this.renderAction(id, type, actionText);
+          // if (checkPermission) return this.renderAction(id, type, actionText);
+          // return '';
+          if (checkPermission)
+            return (
+              <Dropdown
+                className={styles.menuIcon}
+                overlay={this.actionMenu(id, assignTo?._id, type, actionText, processStatusId)}
+                placement="topLeft"
+              >
+                <img src={MenuIcon} alt="menu" />
+              </Dropdown>
+            );
           return '';
         },
         columnName: ACTION,
@@ -484,6 +345,142 @@ class OnboardTable extends Component {
     return newColumns;
   };
 
+  actionMenu = (id, currentEmpId, type, actionText, processStatusId) => {
+    const {
+      PROVISIONAL_OFFERS_DRAFTS,
+      FINAL_OFFERS_DRAFTS,
+      RENEGOTIATE_PROVISIONAL_OFFERS,
+      RENEGOTIATE_FINAL_OFFERS,
+      APPROVED_OFFERS,
+      ACCEPTED_FINAL_OFFERS,
+      ACCEPTED__PROVISIONAL_OFFERS,
+    } = TABLE_TYPE;
+    const isRemovable = type === PROVISIONAL_OFFERS_DRAFTS;
+
+    return (
+      <Menu>
+        {[PROVISIONAL_OFFERS_DRAFTS].includes(type) && (
+          <Menu.Item>
+            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData()}>
+              <span>Continue</span>
+            </Link>
+          </Menu.Item>
+        )}
+        {[RENEGOTIATE_PROVISIONAL_OFFERS, RENEGOTIATE_FINAL_OFFERS].includes(type) && (
+          <>
+            <Menu.Item>
+              <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData()}>
+                <span>Schedule 1-on-1</span>
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
+              <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+                <span className={styles.viewDraft}>View Form</span>
+              </Link>
+            </Menu.Item>
+          </>
+        )}
+        {[ACCEPTED__PROVISIONAL_OFFERS].includes(type) && (
+          <Menu.Item>
+            <Link
+              to={`/employee-onboarding/review/${id}`}
+              onClick={() => {
+                this.initiateBackgroundCheck(id);
+              }}
+            >
+              <span>Initiate Background Check</span>
+            </Link>
+          </Menu.Item>
+        )}
+
+        {[FINAL_OFFERS_DRAFTS].includes(type) && (
+          <>
+            <Menu.Item>
+              <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+                Send for approval
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
+              <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+                <span className={styles.viewDraft}>View Form</span>
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
+              <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+                Discard offer
+              </Link>
+            </Menu.Item>
+          </>
+        )}
+
+        {[APPROVED_OFFERS].includes(type) && (
+          <>
+            <Menu.Item>
+              <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+                Send to candidate
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
+              <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+                <span className={styles.viewDraft}>View Form</span>
+              </Link>
+            </Menu.Item>
+          </>
+        )}
+
+        {[ACCEPTED_FINAL_OFFERS].includes(type) && (
+          <>
+            <Menu.Item>
+              <span
+                onClick={() => {
+                  this.openModal();
+                }}
+              >
+                Create Profile
+              </span>
+            </Menu.Item>
+          </>
+        )}
+
+        {![
+          PROVISIONAL_OFFERS_DRAFTS,
+          FINAL_OFFERS_DRAFTS,
+          RENEGOTIATE_PROVISIONAL_OFFERS,
+          RENEGOTIATE_FINAL_OFFERS,
+          APPROVED_OFFERS,
+          ACCEPTED_FINAL_OFFERS,
+          ACCEPTED__PROVISIONAL_OFFERS,
+        ].includes(type) && (
+          <>
+            <Menu.Item>
+              <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+                <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
+              </Link>
+            </Menu.Item>
+          </>
+        )}
+
+        <Menu.Item>
+          <div onClick={() => this.handleReassignModal(true, currentEmpId, id, processStatusId)}>
+            Re-assign
+          </div>
+        </Menu.Item>
+        <Menu.Item disabled={!isRemovable}>
+          <div onClick={isRemovable ? () => this.handleActionDelete(id) : () => {}}>Delete</div>
+        </Menu.Item>
+      </Menu>
+    );
+  };
+
+  handleReassignModal = (value, currentEmpId, id, processStatusId) => {
+    this.setState({
+      reassignModalVisible: value,
+      currentEmpId,
+      reassignTicketId: id,
+      reassignStatus: processStatusId,
+    });
+  };
+
   viewProfile = (_id) => {
     history.push(`/directory/employee-profile/${_id}`);
   };
@@ -495,8 +492,14 @@ class OnboardTable extends Component {
   };
 
   render() {
-    const { pageSelected } = this.state;
-    const { list } = this.props;
+    const {
+      pageSelected,
+      reassignModalVisible = false,
+      currentEmpId = '',
+      reassignTicketId = '',
+      reassignStatus = '',
+    } = this.state;
+    const { list = [] } = this.props;
     const rowSize = 10;
 
     const rowSelection = {
@@ -573,6 +576,13 @@ class OnboardTable extends Component {
           width={590}
           closeModal={this.closeModal}
           content={this.getModalContent()}
+        />
+        <ReassignModal
+          visible={reassignModalVisible}
+          currentEmpId={currentEmpId}
+          reassignTicketId={reassignTicketId}
+          handleReassignModal={this.handleReassignModal}
+          processStatus={reassignStatus}
         />
       </>
     );
