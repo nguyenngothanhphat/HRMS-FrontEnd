@@ -1,11 +1,11 @@
 /* eslint-disable react/no-array-index-key */
 import React, { PureComponent } from 'react';
-import { Table, notification, Popover } from 'antd';
-// import { Table, Popover, notification, Avatar } from 'antd';
+import { Table, notification, Popover, Divider, Row, Col, Avatar } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
-// import { UserOutlined } from '@ant-design/icons';
 import { history } from 'umi';
+import { getCurrentTimeOfTimezone } from '@/utils/times';
 import styles from './index.less';
 
 class HrTable extends PureComponent {
@@ -13,8 +13,29 @@ class HrTable extends PureComponent {
     super(props);
     this.state = {
       pageNavigation: 1,
+      currentTime: moment(),
     };
   }
+
+  componentDidMount = () => {
+    this.setCurrentTime();
+  };
+
+  setCurrentTime = () => {
+    // compare two time by hour & minute. If minute changes, get new time
+    const timeFormat = 'HH:mm';
+    const { currentTime } = this.state;
+    const parseTime = (timeString) => moment(timeString, timeFormat);
+    const check = parseTime(moment().format(timeFormat)).isAfter(
+      parseTime(moment(currentTime).format(timeFormat)),
+    );
+
+    if (check) {
+      this.setState({
+        currentTime: moment(),
+      });
+    }
+  };
 
   renderContent = (row) => {
     const { _id = '', nodeStep = 1, relievingStatus = '' } = row;
@@ -77,6 +98,86 @@ class HrTable extends PureComponent {
     if (id) {
       history.push(`/offboarding/review/${id}`);
     }
+  };
+
+  popupContent = (dataRow) => {
+    console.log(dataRow);
+    const { timezoneList } = this.props;
+    const { currentTime } = this.state;
+    const {
+      employee: {
+        title: { name: titleName = 'UX Lead' } = {},
+        employeeId = '',
+        generalInfo: {
+          avatar = '',
+          firstName = '',
+          lastName = '',
+          middleName = '',
+          employeeType: { name: typeName = 'Full Time' } = {},
+        } = {},
+      } = {},
+      department: { name: departmentName = '' } = {},
+      location: { _id = '' } = {},
+    } = dataRow;
+    const fullName = `${firstName} ${middleName} ${lastName}`;
+    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+    return (
+      <div className={styles.popupContent}>
+        <div className={styles.generalInfo}>
+          <div className={styles.avatar}>
+            <Avatar src={avatar} size={40} icon={<UserOutlined />} />
+          </div>
+          <div className={styles.employeeInfo}>
+            <div className={styles.employeeInfo__name}>{fullName}</div>
+            <div className={styles.employeeInfo__department}>
+              {titleName}, {departmentName} Dept.
+            </div>
+            <div className={styles.employeeInfo__emplId}>
+              {employeeId} | {typeName}
+            </div>
+          </div>
+        </div>
+        <Divider />
+        <div className={styles.contact}>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Mobile: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>abccc</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Email id: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>abc@gmail.com</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Location: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>abccc</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Local Time: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>
+                {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
+                  ? getCurrentTimeOfTimezone(currentTime, findTimezone.timezone)
+                  : 'Not enough data in address'}
+              </div>
+            </Col>
+          </Row>
+        </div>
+      </div>
+    );
   };
 
   render() {
@@ -157,15 +258,21 @@ class HrTable extends PureComponent {
         dataIndex: 'employee',
         width: 200,
         ellipsis: true,
-        render: (employee) => {
+        render: (employee, row) => {
           const { generalInfo = {} } = employee;
           return (
-            <p
-              className={styles.requteeName}
-              onClick={() => history.push(`/directory/employee-profile/${generalInfo.userId}`)}
+            <Popover
+              content={() => this.popupContent(row)}
+              // title={location.name}
+              trigger="hover"
             >
-              {Object.keys(employee).length === 0 ? '' : generalInfo.firstName}
-            </p>
+              <p
+                className={styles.requteeName}
+                onClick={() => history.push(`/directory/employee-profile/${generalInfo.userId}`)}
+              >
+                {Object.keys(employee).length === 0 ? '' : generalInfo.firstName}
+              </p>
+            </Popover>
           );
         },
       },

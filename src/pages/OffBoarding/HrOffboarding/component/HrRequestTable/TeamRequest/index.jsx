@@ -95,6 +95,7 @@ class TabContent extends Component {
       loadingAll,
       hrManager = {},
       loadingSearch,
+      timezoneList,
     } = this.props;
     const { selectedFilterTab = '1' } = this.state;
     const isTabAccept = selectedFilterTab === '3';
@@ -110,6 +111,7 @@ class TabContent extends Component {
           isTabAccept={isTabAccept}
           moveToRelieving={this.moveToRelieving}
           hrManager={hrManager}
+          timezoneList={timezoneList}
         />
       </>
     );

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Col, Tabs, Row, Button } from 'antd';
 import { Link, connect } from 'umi';
 import { debounce } from 'lodash';
-
+import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import TeamRequest from './TeamRequest';
 import MyRequestContent from '../../../components/TabMyRequest';
 import TableSearch from './TableSearch';
@@ -24,7 +24,7 @@ import styles from './index.less';
         company: { _id: companyID } = {},
       } = {},
     } = {},
-    loading,
+    locationSelection: { listLocationsByCompany = [] },
   }) => ({
     listOffboarding,
     totalListTeamRequest,
@@ -34,7 +34,7 @@ import styles from './index.less';
     listTeamRequest,
     listAllRequest,
     hrManager,
-    loadingAll: loading.effects['offboarding/fetchListAllRequest'],
+    listLocationsByCompany,
   }),
 )
 class HRrequestTable extends Component {
@@ -44,6 +44,7 @@ class HRrequestTable extends Component {
       dataListTeamRequest: [],
       dataListAll: [],
       loadingSearch: false,
+      timezoneList: [],
     };
     this.setDebounce = debounce((query) => {
       this.setState({
@@ -66,19 +67,47 @@ class HRrequestTable extends Component {
       },
     });
 
+    this.fetchTimezone();
     if (listTeamRequest.length > 0) this.updateData(listTeamRequest, 1);
     if (listAllRequest.length > 0) this.updateData(listAllRequest, 2);
   }
 
   componentDidUpdate(prevProps) {
-    const { listTeamRequest = [], listAllRequest = [] } = this.props;
+    const { listTeamRequest = [], listAllRequest = [], listLocationsByCompany = [] } = this.props;
     if (JSON.stringify(listTeamRequest) !== JSON.stringify(prevProps.listTeamRequest)) {
       this.updateData(listTeamRequest, 1);
     }
     if (JSON.stringify(listAllRequest) !== JSON.stringify(prevProps.listAllRequest)) {
       this.updateData(listAllRequest, 2);
     }
+    if (
+      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+    ) {
+      this.fetchTimezone();
+    }
   }
+
+  fetchTimezone = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    const timezoneList = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id = '',
+      } = location;
+      timezoneList.push({
+        locationId: _id,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    this.setState({
+      timezoneList,
+    });
+  };
 
   updateData = (list, key) => {
     if (key === 1) {
@@ -128,10 +157,9 @@ class HRrequestTable extends Component {
       totalList = [],
       hrManager = {},
       locationID = '',
-      loadingAll,
     } = this.props;
 
-    const { dataListTeamRequest, dataListAll, loadingSearch } = this.state;
+    const { dataListTeamRequest, dataListAll, loadingSearch, timezoneList } = this.state;
 
     return (
       <Row className={styles.hrContent}>
@@ -162,6 +190,7 @@ class HRrequestTable extends Component {
                   countdata={totalListTeamRequest}
                   hrManager={hrManager}
                   location={[locationID]}
+                  timezoneList={timezoneList}
                 />
               </div>
             </TabPane>
