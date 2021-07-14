@@ -79,9 +79,10 @@ const offboarding = {
         const {
           statusCode,
           data: { items: listOffboarding = [], total: totalList = [], hrManager = {} } = {},
+          total: totalAll = 0,
         } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listOffboarding, totalList, hrManager } });
+        yield put({ type: 'save', payload: { listOffboarding, totalList, hrManager, totalAll } });
         return listOffboarding;
       } catch (errors) {
         dialog(errors);

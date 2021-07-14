@@ -4,8 +4,9 @@ import MyRequestTable from './MyRequestTable';
 import Summary from './Summary';
 // import styles from './index.less';
 
-@connect(({ loading }) => ({
+@connect(({ loading, offboarding: { totalAll = 0 } = {} }) => ({
   loading: loading.effects['offboarding/fetchList'],
+  totalAll,
 }))
 class RenderRequest extends Component {
   constructor(props) {
@@ -34,16 +35,13 @@ class RenderRequest extends Component {
       case '1':
         dispatch({
           type: 'offboarding/fetchList',
-          payload: {
-            status: 'IN-PROGRESS',
-          },
         });
         break;
       case '2':
         dispatch({
           type: 'offboarding/fetchList',
           payload: {
-            status: 'ON-HOLD',
+            status: 'IN-PROGRESS',
           },
         });
         break;
@@ -51,7 +49,7 @@ class RenderRequest extends Component {
         dispatch({
           type: 'offboarding/fetchList',
           payload: {
-            status: 'ACCEPTED',
+            status: 'ON-HOLD',
           },
         });
         break;
@@ -59,7 +57,7 @@ class RenderRequest extends Component {
         dispatch({
           type: 'offboarding/fetchList',
           payload: {
-            status: 'REJECTED',
+            status: 'ACCEPTED',
           },
         });
         break;
@@ -67,11 +65,19 @@ class RenderRequest extends Component {
         dispatch({
           type: 'offboarding/fetchList',
           payload: {
-            status: 'DRAFT',
+            status: 'REJECTED',
           },
         });
         break;
       case '6':
+        dispatch({
+          type: 'offboarding/fetchList',
+          payload: {
+            status: 'DRAFT',
+          },
+        });
+        break;
+      case '7':
         dispatch({
           type: 'offboarding/fetchList',
           payload: {
@@ -94,22 +100,18 @@ class RenderRequest extends Component {
   render() {
     const {
       data = [],
-      dataAll = [],
+      totalAll,
       timezoneList,
-      selectedFilterTab,
       countdata = [],
       loading,
       hrManager = {},
     } = this.props;
-    const isTabAll = selectedFilterTab === '1';
     return (
       <>
-        <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
+        <Summary totalAll={totalAll} setSelectedTab={this.setSelectedTab} countdata={countdata} />
         <MyRequestTable
           timezoneList={timezoneList}
-          isTabAll={isTabAll}
           data={data}
-          dataAll={dataAll}
           loading={loading}
           hrManager={hrManager}
         />
