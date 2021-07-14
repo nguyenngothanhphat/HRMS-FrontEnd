@@ -137,7 +137,7 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>Created date </span>,
         dataIndex: 'createDate',
-        width: 120,
+        width: 160,
         render: (createDate) => {
           return <p>{moment(createDate).format('YYYY/MM/DD')}</p>;
         },
@@ -145,7 +145,7 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>Requestee</span>,
         dataIndex: 'employee',
-        width: 140,
+        width: 200,
         ellipsis: true,
         render: (employee) => {
           const { generalInfo = {} } = employee;
@@ -180,29 +180,42 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>Assigned </span>,
         dataIndex: 'Assigned',
-        width: 140,
-        render: (_, row) => {
-          const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
-            this.props;
-          const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
-          const arrAvt = [avtManager, avtHrManager];
+        width: 200,
+        render: () => {
+          // const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
+          //   this.props;
+          // const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
+          // const arrAvt = [avtManager, avtHrManager];
+          const {
+            hrManager: {
+              generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {},
+            } = {},
+          } = this.props;
+          const fullName = `${firstName} ${middleName} ${lastName}`;
           return (
-            <div className={styles.rowAction}>
-              {arrAvt.map(
-                (item, index) =>
-                  item && (
-                    <div key={index} style={{ marginRight: '13px', display: 'inline-block' }}>
-                      <Avatar src={item} size={20} icon={<UserOutlined />} />
-                    </div>
-                  ),
-              )}
-            </div>
+            // <div className={styles.rowAction}>
+            //   {arrAvt.map(
+            //     (item, index) =>
+            //       item && (
+            //         <div key={index} style={{ marginRight: '13px', display: 'inline-block' }}>
+            //           <Avatar src={item} size={20} icon={<UserOutlined />} />
+            //         </div>
+            //       ),
+            //   )}
+            // </div>
+            <p
+              className={styles.assignee}
+              onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+            >
+              {fullName}
+            </p>
           );
         },
       },
       {
         title: <span className={styles.title}>Department</span>,
         dataIndex: 'department',
+        width: 200,
         render: (department) => {
           return <p>{department?.name}</p>;
         },
@@ -210,6 +223,7 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>LWD</span>,
         dataIndex: 'lastWorkingDate',
+        width: 200,
         render: (lastWorkingDate) => {
           return <p>{lastWorkingDate && moment(lastWorkingDate).format('YYYY/MM/DD')} </p>;
         },
