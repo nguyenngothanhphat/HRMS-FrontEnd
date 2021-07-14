@@ -50,9 +50,9 @@ class HrTable extends PureComponent {
     });
   };
 
-  push = (data) => {
-    history.push(`/offboarding/review/${data}`);
-  };
+  // push = (data) => {
+  //   history.push(`/offboarding/review/${data}`);
+  // };
 
   onChangePagination = (pageNumber) => {
     this.setState({
@@ -63,6 +63,19 @@ class HrTable extends PureComponent {
   onSelectChange = (selectedRowKeys) => {
     // console.log('selectedRowKeys changed: ', selectedRowKeys);
     this.setState({ selectedRowKeys });
+  };
+
+  openViewTicket = (ticketID) => {
+    const { data = [] } = this.props;
+    let id = '';
+    data.forEach((item) => {
+      if (item.ticketID === ticketID) {
+        id = item._id;
+      }
+    });
+    if (id) {
+      history.push(`/offboarding/review/${id}`);
+    }
   };
 
   render() {
@@ -106,7 +119,11 @@ class HrTable extends PureComponent {
         fixed: 'left',
         width: 150,
         render: (ticketID) => {
-          return <p className={styles.ticketId}>{ticketID}</p>;
+          return (
+            <p className={styles.ticketId} onClick={() => this.openViewTicket(ticketID)}>
+              {ticketID}
+            </p>
+          );
         },
       },
       {
@@ -196,17 +213,17 @@ class HrTable extends PureComponent {
       },
       {
         title: <span className={styles.title}>Action</span>,
-        dataIndex: '_id',
-        align: 'left',
-        render: (_id) => {
-          return (
-            <div className={styles.viewAction}>
-              <p className={styles.viewAction__text} onClick={() => this.push(_id)}>
-                View Request
-              </p>
-            </div>
-          );
-        },
+        // dataIndex: '_id',
+        // align: 'left',
+        // render: (_id) => {
+        //   return (
+        //     <div className={styles.viewAction}>
+        //       <p className={styles.viewAction__text} onClick={() => this.push(_id)}>
+        //         View Request
+        //       </p>
+        //     </div>
+        //   );
+        // },
       },
       {
         title: '',
