@@ -1,8 +1,9 @@
 import request from '@/utils/request';
 
-export const getListDocuments = async () => {
+export const getListDocuments = async (payload) => {
   return request('/api/documenttenant/list', {
     method: 'POST',
+    data: payload,
   });
 };
 

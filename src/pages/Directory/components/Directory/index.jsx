@@ -20,7 +20,7 @@ const { TabPane } = Tabs;
     locationSelection: { listLocationsByCompany = [] } = {},
     employee,
     user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
-    employee: { filterList = {} } = {},
+    employee: { filterList = {}, totalActiveEmployee = '', totalInactiveEmployee = '' } = {},
   }) => ({
     loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
     loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
@@ -32,6 +32,8 @@ const { TabPane } = Tabs;
     listLocationsByCompany,
     companiesOfUser,
     filterList,
+    totalActiveEmployee,
+    totalInactiveEmployee,
   }),
 )
 class DirectoryComponent extends PureComponent {
@@ -108,6 +110,7 @@ class DirectoryComponent extends PureComponent {
       changeTab: false,
       collapsed: true,
       pageSelected: 1,
+      size: 10,
       bottabs: [],
       visible: false,
       visibleImportEmployee: false,
@@ -141,6 +144,8 @@ class DirectoryComponent extends PureComponent {
       tabId,
       changeTab,
       skill,
+      pageSelected,
+      size,
     } = this.state;
     // const isOwnerCheck = isOwner();
     // const currentLocation = getCurrentLocation();
@@ -154,6 +159,8 @@ class DirectoryComponent extends PureComponent {
       company,
       title,
       skill,
+      pageSelected,
+      size,
     };
     if (
       prevState.tabId !== tabId ||
@@ -166,6 +173,7 @@ class DirectoryComponent extends PureComponent {
       JSON.stringify(prevState.title) !== JSON.stringify(title) ||
       prevState.filterName !== filterName ||
       prevState.company.length !== company.length
+      // prevState.pageSelected !== pageSelected
     ) {
       this.onChangeTab(params, tabId);
     }
@@ -178,8 +186,10 @@ class DirectoryComponent extends PureComponent {
     // console.log('prevProps.listLocationsByCompany', prevProps.listLocationsByCompany);
 
     if (
-      JSON.stringify(prevProps.filterList) !== JSON.stringify(filterList) &&
-      listLocationsByCompany.length > 0
+      (JSON.stringify(prevProps.filterList) !== JSON.stringify(filterList) &&
+        listLocationsByCompany.length > 0) ||
+      prevState.pageSelected !== pageSelected ||
+      prevState.size !== size
     ) {
       // console.log('OK');
       this.renderData();
@@ -242,8 +252,21 @@ class DirectoryComponent extends PureComponent {
     });
   };
 
+  getPageSelected = (page) => {
+    this.setState({
+      pageSelected: page,
+    });
+  };
+
+  getSize = (size) => {
+    this.setState({
+      size,
+    });
+  };
+
   renderData = () => {
     const { dispatch, permissions = {} } = this.props;
+    const { pageSelected, size } = this.state;
     const {
       companiesOfUser = [],
       filterList: { listCountry = [] } = {},
@@ -329,6 +352,8 @@ class DirectoryComponent extends PureComponent {
         payload: {
           company: companyPayload,
           location: locationPayload,
+          page: pageSelected,
+          limit: size,
         },
       });
     }
@@ -714,7 +739,8 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderTab = (tabName, key, loading, indexShowLocation) => {
-    const { tabId, collapsed, changeTab } = this.state;
+    const { tabId, collapsed, changeTab, pageSelected, size } = this.state;
+    const { totalActiveEmployee, totalInactiveEmployee } = this.props;
     return (
       <TabPane tab={tabName} key={key}>
         <Layout className={styles.directoryLayout_inner}>
@@ -724,6 +750,13 @@ class DirectoryComponent extends PureComponent {
               loading={loading}
               list={this.renderListEmployee(key)}
               keyTab={key}
+              getPageSelected={this.getPageSelected}
+              getSize={this.getSize}
+              pageSelected={pageSelected}
+              rowSize={size}
+              tabName={tabName}
+              totalActiveEmployee={totalActiveEmployee}
+              totalInactiveEmployee={totalInactiveEmployee}
             />
           </Content>
           <TableFilter

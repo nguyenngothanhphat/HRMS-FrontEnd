@@ -15,6 +15,15 @@ import styles from './index.less';
 const { TabPane } = Tabs;
 
 class DiscardedOffers extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tabId: 1,
+      pageSelected: 1,
+      size: 10,
+    };
+  }
+
   componentDidMount() {
     const { dispatch } = this.props;
     const { PROVISIONAL_OFFERS, FINAL_OFFERS } = PROCESS_STATUS;
@@ -24,28 +33,55 @@ class DiscardedOffers extends PureComponent {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { tabId, pageSelected, size } = this.state;
+    if (
+      prevState.tabId !== tabId ||
+      prevState.pageSelected !== pageSelected ||
+      prevState.size !== size
+    ) {
+      this.onChangeTab(tabId);
+    }
+  }
+
   fetchBackgroundCheckAll = (status) => {
     const { dispatch } = this.props;
+    const { pageSelected, size } = this.props;
     dispatch({
       type: 'onboard/fetchOnboardListAll',
       payload: {
         processStatus: status,
+        page: pageSelected,
+        limit: size,
       },
     });
   };
 
   fetchBackgroundCheck = (status) => {
     const { dispatch } = this.props;
+    const { pageSelected, size } = this.props;
     dispatch({
       type: 'onboard/fetchOnboardList',
       payload: {
         processStatus: status,
+        page: pageSelected,
+        limit: size,
       },
+    });
+  };
+
+  getPageAndSize = (page, pageSize) => {
+    this.setState({
+      pageSelected: page,
+      size: pageSize,
     });
   };
 
   onChangeTab = (key) => {
     const { PROVISIONAL_OFFERS, FINAL_OFFERS } = PROCESS_STATUS;
+    this.setState({
+      tabId: key,
+    });
     if (key === '1') {
       this.fetchBackgroundCheckAll([PROVISIONAL_OFFERS, FINAL_OFFERS]);
     } else if (key === '2') {
@@ -56,19 +92,26 @@ class DiscardedOffers extends PureComponent {
   };
 
   render() {
-    const { discardedOffers = {}, dataAll, loadingAll } = this.props;
+    const { discardedOffers = {}, dataAll, loadingAll, total } = this.props;
     const { provisionalOffers = [], finalOffers = [] } = discardedOffers;
-
+    const { tabId, pageSelected, size } = this.state;
     return (
       <div className={styles.DiscardedOffers}>
         <div className={styles.tabs}>
-          <Tabs defaultActiveKey="1" onChange={this.onChangeTab}>
+          <Tabs defaultActiveKey={tabId} onChange={this.onChangeTab}>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
               tab="all"
               key="1"
             >
-              <AllTab list={dataAll} loading={loadingAll} />
+              <AllTab
+                list={dataAll}
+                loading={loadingAll}
+                pageSelected={pageSelected}
+                size={size}
+                getPageAndSize={this.getPageAndSize}
+                total={total}
+              />
             </TabPane>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
@@ -76,7 +119,13 @@ class DiscardedOffers extends PureComponent {
               key="2"
             >
               {/* <SentFinalOffers list={sentFinalOffers} /> */}
-              <ProvisionalOffers list={provisionalOffers} />
+              <ProvisionalOffers
+                list={provisionalOffers}
+                pageSelected={pageSelected}
+                size={size}
+                getPageAndSize={this.getPageAndSize}
+                total={total}
+              />
             </TabPane>
 
             <TabPane
@@ -84,7 +133,13 @@ class DiscardedOffers extends PureComponent {
               tab="final offers"
               key="3"
             >
-              <FinalOffers list={finalOffers} />
+              <FinalOffers
+                list={finalOffers}
+                pageSelected={pageSelected}
+                size={size}
+                getPageAndSize={this.getPageAndSize}
+                total={total}
+              />
             </TabPane>
           </Tabs>
         </div>
@@ -97,10 +152,11 @@ class DiscardedOffers extends PureComponent {
 export default connect((state) => {
   const { onboard = {}, loading } = state;
   const { onboardingOverview = {} } = onboard;
-  const { discardedOffers = {}, dataAll = [] } = onboardingOverview;
+  const { discardedOffers = {}, dataAll = [], total = '' } = onboardingOverview;
 
   return {
     discardedOffers,
+    total,
     dataAll,
     loadingAll: loading.effects['onboard/fetchOnboardListAll'],
   };

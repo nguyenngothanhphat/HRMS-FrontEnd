@@ -34,6 +34,8 @@ const usersManagement = {
     filterList: {},
     selectedUserId: '',
     selectedUserTenant: '',
+    totalActiveEmployee: '',
+    totalInactiveEmploiyee: '',
   },
   effects: {
     *fetchEmployeesList({ payload = {} }, { call, put }) {
@@ -44,10 +46,16 @@ const usersManagement = {
 
         const { status = [] } = payload;
         if (status.includes('ACTIVE')) {
-          yield put({ type: 'save', payload: { activeEmployeesList: listEmployee } });
+          yield put({
+            type: 'save',
+            payload: { activeEmployeesList: listEmployee, totalActiveEmployee: response.total },
+          });
         }
         if (status.includes('INACTIVE')) {
-          yield put({ type: 'save', payload: { inActiveEmployeesList: listEmployee } });
+          yield put({
+            type: 'save',
+            payload: { inActiveEmployeesList: listEmployee, totalInactiveEmployee: response.total },
+          });
         }
         return listEmployee;
       } catch (errors) {

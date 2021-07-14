@@ -29,6 +29,8 @@ const employee = {
     dataOrgChart: {},
     listAdministrator: [],
     filterList: {},
+    totalActiveEmployee: '',
+    totalInactiveEmployee: '',
   },
   effects: {
     *fetchEmployeeType(_, { call, put }) {
@@ -129,6 +131,8 @@ const employee = {
           name = '',
           title = [],
           skill = [],
+          page = '',
+          limit = '',
         } = {},
       },
       { call, put },
@@ -143,11 +147,16 @@ const employee = {
           name,
           title,
           skill,
+          page,
+          limit,
         });
         const { statusCode, data: listEmployeeActive = [] } = response;
         if (statusCode !== 200) throw response;
 
-        yield put({ type: 'listEmployeeActive', payload: { listEmployeeActive } });
+        yield put({
+          type: 'listEmployeeActive',
+          payload: { listEmployeeActive, totalActiveEmployee: response.total },
+        });
         return listEmployeeActive;
       } catch (errors) {
         dialog(errors);
@@ -163,6 +172,8 @@ const employee = {
           employeeType = [],
           name = '',
           title = [],
+          page = '',
+          limit = '',
         } = {},
       },
       { call, put },
@@ -176,10 +187,15 @@ const employee = {
           employeeType,
           name,
           title,
+          page,
+          limit,
         });
         const { statusCode, data: listEmployeeInActive = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'listEmployeeInActive', payload: { listEmployeeInActive } });
+        yield put({
+          type: 'listEmployeeInActive',
+          payload: { listEmployeeInActive, totalInactiveEmployee: response.total },
+        });
       } catch (errors) {
         dialog(errors);
       }

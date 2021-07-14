@@ -29,6 +29,8 @@ const ProjectManagement = (props) => {
   const {
     activeList,
     inactiveList,
+    totalActive,
+    totalInactive,
     roleList,
     employeeList,
     dispatch,
@@ -39,19 +41,28 @@ const ProjectManagement = (props) => {
     loadingFetchProject = false,
   } = props;
   const [isModalVisible, setModalVisible] = useState(false);
+  const [pageSelected, setPageSelected] = useState(1);
+  const [size, setSize] = useState(10);
 
   const fetchData = () => {
     dispatch({
       type: 'projectManagement/getProjectByCompany',
       payload: {
         company: getCurrentCompany(),
+        page: pageSelected,
+        limit: size,
       },
     });
   };
 
+  const getPageAndSize = (page, pageSize) => {
+    setPageSelected(page);
+    setSize(pageSize);
+  };
+
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [pageSelected, size]);
 
   const handleAddNewProject = () => {
     setModalVisible(true);
@@ -108,8 +119,12 @@ const ProjectManagement = (props) => {
                     ACTION,
                   ]}
                   roleList={roleList}
+                  getPageAndSize={getPageAndSize}
                   employeeList={employeeList}
+                  pageSelected={pageSelected}
+                  size={size}
                   dispatch={dispatch}
+                  totalActive={totalActive}
                   user={user}
                   loading={loading1}
                   listLocationsByCompany={listLocationsByCompany}
@@ -137,6 +152,10 @@ const ProjectManagement = (props) => {
                     ACTION,
                   ]}
                   roleList={roleList}
+                  getPageAndSize={getPageAndSize}
+                  totalInactive={totalInactive}
+                  pageSelected={pageSelected}
+                  size={size}
                   employeeList={employeeList}
                   dispatch={dispatch}
                   user={user}
@@ -161,12 +180,16 @@ export default connect(
       inactiveList = [],
       roleList = [],
       employeeList = [],
+      totalActive = '',
+      totalInactive = '',
     } = {},
     locationSelection: { listLocationsByCompany = [] } = {},
     loading,
   }) => ({
     user,
     activeList,
+    totalActive,
+    totalInactive,
     inactiveList,
     roleList,
     employeeList,

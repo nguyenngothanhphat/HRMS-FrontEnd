@@ -92,6 +92,8 @@ const projectManagement = {
     // employeeList: MOCK_EMPLOYEE,
     roleList: [],
     employeeList: [],
+    totalActive: '',
+    totalInactive: '',
   },
   effects: {
     *getProjectByCompany({ payload }, { call, put }) {
@@ -133,6 +135,22 @@ const projectManagement = {
             inactiveList.push(project);
           }
         });
+
+        if (activeList.length > 0) {
+          yield put({
+            type: 'save',
+            payload: {
+              totalActive: response.total,
+            },
+          });
+        } else if (inactiveList.length > 0) {
+          yield put({
+            type: 'save',
+            payload: {
+              totalInactive: response.total,
+            },
+          });
+        }
 
         yield put({
           type: 'save',

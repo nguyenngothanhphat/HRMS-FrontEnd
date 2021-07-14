@@ -14,6 +14,10 @@ const ActiveProject = (props) => {
     listLocationsByCompany = [],
     companiesOfUser = [],
     loadingFetchProject = false,
+    getPageAndSize = () => {},
+    pageSelected = '',
+    size = '',
+    totalActive = '',
   } = props;
   return (
     <div>
@@ -23,7 +27,11 @@ const ActiveProject = (props) => {
         employeeList={employeeList}
         dispatch={dispatch}
         user={user}
+        pageSelected={pageSelected}
+        size={size}
+        totalActive={totalActive}
         listLocationsByCompany={listLocationsByCompany}
+        getPageAndSize={getPageAndSize}
         companiesOfUser={companiesOfUser}
         loading={loading}
         loadingFetchProject={loadingFetchProject}

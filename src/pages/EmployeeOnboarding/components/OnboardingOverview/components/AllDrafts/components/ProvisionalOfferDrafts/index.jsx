@@ -12,7 +12,13 @@ const { PROVISIONAL_OFFERS_DRAFTS } = TABLE_TYPE;
 
 class ProvisionalOfferDrafts extends PureComponent {
   render() {
-    const { list = [] } = this.props;
+    const {
+      list = [],
+      pageSelected = '',
+      size = '',
+      total = '',
+      getPageAndSize = () => {},
+    } = this.props;
 
     return (
       <OnboardTable
@@ -20,6 +26,10 @@ class ProvisionalOfferDrafts extends PureComponent {
         columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION]}
         type={PROVISIONAL_OFFERS_DRAFTS}
         inTab
+        pageSelected={pageSelected}
+        size={size}
+        tota={total}
+        getPageAndSize={getPageAndSize}
       />
     );
   }

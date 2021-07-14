@@ -42,9 +42,9 @@ class DirectoryTable extends Component {
     super(props);
     this.state = {
       sortedName: {},
-      pageSelected: 1,
-      rowSize: 10,
-      // isSort: false,
+      // pageSelected: 1,
+      // rowSize: 10,
+      isSort: false,
       openModal: false,
       rowData: {},
       valueReason: '',
@@ -361,11 +361,13 @@ class DirectoryTable extends Component {
     });
   };
 
-  onChangePagination = (pageNumber) => {
-    this.setState({
-      pageSelected: pageNumber,
-    });
-  };
+  // onChangePagination = (pageNumber) => {
+  //   const { getPageSelected } = this.props;
+  //   this.setState({
+  //     pageSelected: pageNumber,
+  //   });
+  //   getPageSelected(pageNumber);
+  // };
 
   setFirstPage = () => {
     this.setState({
@@ -513,36 +515,69 @@ class DirectoryTable extends Component {
     });
   };
 
+  renderTotal = () => {
+    const { totalActiveEmployee, totalInactiveEmployee, tabName } = this.props;
+    if (tabName === 'Active Employees') {
+      return totalActiveEmployee;
+    }
+    if (tabName === 'Inactive Employees') {
+      return totalInactiveEmployee;
+    }
+    return 0;
+  };
+
   render() {
     const {
       sortedName = {},
-      pageSelected,
+      // pageSelected,
       openModal = false,
       valueReason = '',
-      rowSize,
+      // rowSize,
     } = this.state;
-    const { list = [], loading, keyTab, loadingTerminateReason } = this.props;
+    const {
+      list = [],
+      loading,
+      keyTab,
+      loadingTerminateReason,
+      totalActiveEmployee,
+      totalInactiveEmployee,
+      tabName,
+      pageSelected,
+      rowSize,
+    } = this.props;
     const newList = this.getNewList(list);
-
     const pagination = {
       position: ['bottomLeft'],
-      total: list.length,
-      showTotal: (total, range) => (
-        <span>
-          {' '}
-          {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
-          <b>
-            {range[0]} - {range[1]}
-          </b>{' '}
-          {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
-        </span>
-      ),
-      defaultPageSize: 10,
+      total:
+        // eslint-disable-next-line no-nested-ternary
+        tabName === 'Active Employees'
+          ? totalActiveEmployee
+          : tabName === 'Inactive Employees'
+          ? totalInactiveEmployee
+          : '',
+      showTotal: (total, range) => {
+        return (
+          <span>
+            {' '}
+            {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
+            <b>
+              {' '}
+              {range[0]} - {range[1]}{' '}
+            </b>{' '}
+            {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
+          </span>
+        );
+      },
+      defaultPageSize: rowSize,
       showSizeChanger: true,
       pageSizeOptions: ['10', '25', '50', '100'],
       // pageSize: rowSize,
       current: pageSelected,
-      onChange: this.onChangePagination,
+      onChange: (page, pageSize) => {
+        const { getPageSelected, getSize } = this.props;
+        getPageSelected(page);
+        getSize(pageSize);
+      },
     };
     const scroll = {
       x: '100vw',
@@ -563,7 +598,7 @@ class DirectoryTable extends Component {
             dataSource={newList}
             rowKey={(record) => record._id}
             // pagination={{ ...pagination, total: list.length }}
-            pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
+            pagination={pagination}
             loading={loading}
             onChange={this.handleChangeTable}
             scroll={scroll}
