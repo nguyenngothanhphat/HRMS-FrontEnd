@@ -260,10 +260,10 @@ class HrTable extends PureComponent {
       },
       {
         title: <span className={styles.title}>Created date </span>,
-        dataIndex: 'createDate',
+        dataIndex: 'requestDate',
         width: 160,
-        render: (createDate) => {
-          return <p>{moment(createDate).format('YYYY/MM/DD')}</p>;
+        render: (requestDate) => {
+          return <p>{moment(requestDate).format('YYYY/MM/DD')}</p>;
         },
       },
       {
