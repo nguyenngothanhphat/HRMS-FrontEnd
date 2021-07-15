@@ -97,7 +97,7 @@ class TabContent extends Component {
       totalAll,
     } = this.props;
     const { selectedFilterTab = '1' } = this.state;
-    const isTabAccept = selectedFilterTab === '3';
+    const isTabAccept = selectedFilterTab === '4';
     return (
       <>
         <Summary totalAll={totalAll} setSelectedTab={this.setSelectedTab} countdata={countdata} />
