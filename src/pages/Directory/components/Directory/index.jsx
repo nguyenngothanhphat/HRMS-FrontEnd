@@ -20,7 +20,12 @@ const { TabPane } = Tabs;
     locationSelection: { listLocationsByCompany = [] } = {},
     employee,
     user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
-    employee: { filterList = {}, totalActiveEmployee = '', totalInactiveEmployee = '' } = {},
+    employee: {
+      filterList = {},
+      totalActiveEmployee = '',
+      totalInactiveEmployee = '',
+      totalMyTeam = '',
+    } = {},
   }) => ({
     loadingListActive: loading.effects['employee/fetchListEmployeeActive'],
     loadingListMyTeam: loading.effects['employee/fetchListEmployeeMyTeam'],
@@ -34,6 +39,7 @@ const { TabPane } = Tabs;
     filterList,
     totalActiveEmployee,
     totalInactiveEmployee,
+    totalMyTeam,
   }),
 )
 class DirectoryComponent extends PureComponent {
@@ -172,8 +178,9 @@ class DirectoryComponent extends PureComponent {
       prevState.skill.length !== skill.length ||
       JSON.stringify(prevState.title) !== JSON.stringify(title) ||
       prevState.filterName !== filterName ||
-      prevState.company.length !== company.length
-      // prevState.pageSelected !== pageSelected
+      prevState.company.length !== company.length ||
+      prevState.pageSelected !== pageSelected ||
+      prevState.size !== size
     ) {
       this.onChangeTab(params, tabId);
     }
@@ -266,7 +273,7 @@ class DirectoryComponent extends PureComponent {
 
   renderData = () => {
     const { dispatch, permissions = {} } = this.props;
-    const { pageSelected, size } = this.state;
+    const { pageSelected, size, tabId } = this.state;
     const {
       companiesOfUser = [],
       filterList: { listCountry = [] } = {},
@@ -335,18 +342,20 @@ class DirectoryComponent extends PureComponent {
     const viewTabInActive = permissions.viewTabInActive !== -1;
     const viewTabMyTeam = permissions.viewTabMyTeam !== -1;
 
-    if (viewTabMyTeam) {
+    if (viewTabMyTeam && tabId === 'myTeam') {
       dispatch({
         type: 'employee/fetchListEmployeeMyTeam',
         payload: {
           company: companyPayload,
           department: [departmentName],
           location: locationPayload,
+          page: pageSelected,
+          limit: size,
         },
       });
     }
 
-    if (viewTabActive) {
+    if (viewTabActive && tabId === 'active') {
       dispatch({
         type: 'employee/fetchListEmployeeActive',
         payload: {
@@ -357,12 +366,13 @@ class DirectoryComponent extends PureComponent {
         },
       });
     }
-    if (viewTabInActive) {
+    if (viewTabInActive && tabId === 'inactive') {
       dispatch({
         type: 'employee/fetchListEmployeeInActive',
         payload: {
           company: companyPayload,
-
+          page: pageSelected,
+          limit: size,
           location: locationPayload,
         },
       });
@@ -372,6 +382,8 @@ class DirectoryComponent extends PureComponent {
   onChangeTab = (params, tabId) => {
     const {
       tabList: { active, myTeam, inActive },
+      // pageSelected,
+      size,
     } = this.state;
 
     const currentLocation = getCurrentLocation();
@@ -484,6 +496,8 @@ class DirectoryComponent extends PureComponent {
       employeeType,
       title,
       skill,
+      page: 1,
+      limit: size,
     };
 
     if (tabId === active) {
@@ -740,7 +754,7 @@ class DirectoryComponent extends PureComponent {
 
   renderTab = (tabName, key, loading, indexShowLocation) => {
     const { tabId, collapsed, changeTab, pageSelected, size } = this.state;
-    const { totalActiveEmployee, totalInactiveEmployee } = this.props;
+    const { totalActiveEmployee, totalInactiveEmployee, totalMyTeam } = this.props;
     return (
       <TabPane tab={tabName} key={key}>
         <Layout className={styles.directoryLayout_inner}>
@@ -757,6 +771,7 @@ class DirectoryComponent extends PureComponent {
               tabName={tabName}
               totalActiveEmployee={totalActiveEmployee}
               totalInactiveEmployee={totalInactiveEmployee}
+              totalMyTeam={totalMyTeam}
             />
           </Content>
           <TableFilter

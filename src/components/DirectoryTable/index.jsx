@@ -541,6 +541,7 @@ class DirectoryTable extends Component {
       loadingTerminateReason,
       totalActiveEmployee,
       totalInactiveEmployee,
+      totalMyTeam,
       tabName,
       pageSelected,
       rowSize,
@@ -554,7 +555,7 @@ class DirectoryTable extends Component {
           ? totalActiveEmployee
           : tabName === 'Inactive Employees'
           ? totalInactiveEmployee
-          : '',
+          : totalMyTeam,
       showTotal: (total, range) => {
         return (
           <span>
