@@ -3,9 +3,8 @@ import { connect } from 'umi';
 import TableManager from '../TableManager';
 import Summary from '../Summary';
 
-@connect(({ loading, offboarding: { totalAll = 0 } = {} }) => ({
+@connect(({ loading }) => ({
   loading: loading.effects['offboarding/fetchListTeamRequest'],
-  totalAll,
 }))
 class TeamRequest extends Component {
   constructor(props) {
@@ -78,13 +77,12 @@ class TeamRequest extends Component {
       loading,
       hrManager = {},
       loadingSearch,
-      totalAll,
       timezoneList,
     } = this.props;
 
     return (
       <>
-        <Summary totalAll={totalAll} setSelectedTab={this.setSelectedTab} countdata={countdata} />
+        <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
         <TableManager
           data={data}
           timezoneList={timezoneList}

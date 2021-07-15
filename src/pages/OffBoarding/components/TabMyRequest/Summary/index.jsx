@@ -22,17 +22,24 @@ export default class RenderTable extends PureComponent {
     return count;
   };
 
+  getTotalCount = () => {
+    const { countdata = [] } = this.props;
+    let total = 0;
+    if (countdata.length > 0) total = countdata.reduce((a, b) => a.count + b.count);
+
+    return total;
+  };
+
   renderTab = (value) => {
     return <div>{value}</div>;
   };
 
   render() {
-    const { totalAll } = this.props;
     const data = [
       {
         value: '1',
         title: 'All',
-        count: totalAll,
+        count: this.getTotalCount(),
         renderTab: this.renderTab('ALL'),
       },
       {

@@ -4,9 +4,8 @@ import MyRequestTable from './MyRequestTable';
 import Summary from './Summary';
 // import styles from './index.less';
 
-@connect(({ loading, offboarding: { totalAll = 0 } = {} }) => ({
+@connect(({ loading }) => ({
   loading: loading.effects['offboarding/fetchList'],
-  totalAll,
 }))
 class RenderRequest extends Component {
   constructor(props) {
@@ -98,17 +97,10 @@ class RenderRequest extends Component {
   };
 
   render() {
-    const {
-      data = [],
-      totalAll,
-      timezoneList,
-      countdata = [],
-      loading,
-      hrManager = {},
-    } = this.props;
+    const { data = [], timezoneList, countdata = [], loading, hrManager = {} } = this.props;
     return (
       <>
-        <Summary totalAll={totalAll} setSelectedTab={this.setSelectedTab} countdata={countdata} />
+        <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
         <MyRequestTable
           timezoneList={timezoneList}
           data={data}
