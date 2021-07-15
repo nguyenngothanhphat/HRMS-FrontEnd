@@ -5,10 +5,12 @@ import { PageContainer } from '@/layouts/layout/src';
 import { Link, connect } from 'umi';
 import { debounce } from 'lodash';
 // import TableAssigned from '@/components/TableAssigned';
+import { getTimezoneViaCity } from '@/utils/times';
 import TeamRequest from './component/TeamRequest';
 import MyRequestContent from '../components/TabMyRequest';
 import TableSearch from './component/TableSearch';
 import styles from './index.less';
+import ViewInitialManager from './component/ViewInitialManager';
 
 @connect(
   ({
@@ -18,6 +20,7 @@ import styles from './index.less';
       listOffboarding = [],
       totalList = [],
       hrManager = {},
+      screenMode = '',
     } = {},
     user: {
       currentUser: {
@@ -25,6 +28,7 @@ import styles from './index.less';
         company: { _id: companyID } = {},
       } = {},
     } = {},
+    locationSelection: { listLocationsByCompany = [] },
   }) => ({
     listOffboarding,
     totalList,
@@ -33,6 +37,8 @@ import styles from './index.less';
     companyID,
     listTeamRequest,
     hrManager,
+    listLocationsByCompany,
+    screenMode,
   }),
 )
 class ManagerOffBoading extends Component {
@@ -41,6 +47,7 @@ class ManagerOffBoading extends Component {
     this.state = {
       dataListTeamRequest: [],
       loadingSearch: false,
+      timezoneList: [],
     };
     this.setDebounce = debounce((query) => {
       this.setState({
@@ -57,26 +64,45 @@ class ManagerOffBoading extends Component {
     }
     dispatch({
       type: 'offboarding/fetchListTeamRequest',
-      payload: {
-        status: 'IN-PROGRESS',
-      },
-    });
-    dispatch({
-      type: 'offboarding/fetchList',
-      payload: {
-        status: 'IN-PROGRESS',
-      },
     });
 
+    this.fetchTimezone();
     if (listTeamRequest.length > 0) this.updateData(listTeamRequest);
   }
 
   componentDidUpdate(prevProps) {
-    const { listTeamRequest = [] } = this.props;
+    const { listTeamRequest = [], listLocationsByCompany = [] } = this.props;
     if (JSON.stringify(listTeamRequest) !== JSON.stringify(prevProps.listTeamRequest)) {
       this.updateData(listTeamRequest);
     }
+    if (
+      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+    ) {
+      this.fetchTimezone();
+    }
   }
+
+  fetchTimezone = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    const timezoneList = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id = '',
+      } = location;
+      timezoneList.push({
+        locationId: _id,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    this.setState({
+      timezoneList,
+    });
+  };
 
   updateData = (listTeamRequest) => {
     this.setState({
@@ -119,8 +145,9 @@ class ManagerOffBoading extends Component {
       listOffboarding = [],
       totalList = [],
       hrManager = {},
+      screenMode = '',
     } = this.props;
-    const { dataListTeamRequest, loadingSearch } = this.state;
+    const { dataListTeamRequest, loadingSearch, timezoneList } = this.state;
 
     const checkInprogress = totalList.find(({ _id }) => _id === 'IN-PROGRESS') || {};
     const checkAccepted = totalList.find(({ _id }) => _id === 'ACCEPTED') || {};
@@ -129,63 +156,69 @@ class ManagerOffBoading extends Component {
 
     return (
       <PageContainer>
-        <div className={styles.managerContainer}>
-          <Affix offsetTop={30}>
-            <div className={styles.titlePage}>
-              <p className={styles.titlePage__text}>
-                Terminate work relationship / Initiate Resignation Request
-              </p>
-            </div>
-          </Affix>
-          <Row className={styles.content}>
-            <Col span={24}>
-              <div className={styles.content__top}>
-                <div className={styles.text}>Team Requests</div>
-                <>
-                  {!checkSendRequest && (
-                    <Button className={styles.btnInitiate}>
-                      <Link to="/offboarding/resignation-request">
-                        <span className={styles.btnText}>Initiate Resignation Request</span>
-                      </Link>
-                    </Button>
-                  )}
-                </>
+        {screenMode === 'JOB-CHANGE' ? (
+          <ViewInitialManager />
+        ) : (
+          <div className={styles.managerContainer}>
+            <Affix offsetTop={30}>
+              <div className={styles.titlePage}>
+                <p className={styles.titlePage__text}>
+                  Terminate work relationship / Initiate Resignation Request
+                </p>
               </div>
-            </Col>
-            <Col span={24}>
-              <Tabs
-                defaultActiveKey="1"
-                className={styles.tabComponent}
-                tabBarExtraContent={<TableSearch onSearch={this.onSearch} />}
-              >
-                <TabPane tab="Team Requests" key="1">
-                  <div className={styles.tableTab}>
-                    <TeamRequest
-                      data={dataListTeamRequest}
-                      countdata={totalListTeamRequest}
-                      hrManager={hrManager}
-                      loadingSearch={loadingSearch}
-                    />
-                  </div>
-                </TabPane>
-                <TabPane tab="My Requests" key="2">
-                  <div className={styles.tableTab}>
-                    <MyRequestContent
-                      data={listOffboarding}
-                      countdata={totalList}
-                      hrManager={hrManager}
-                    />
-                  </div>
-                </TabPane>
-                {/* <TabPane tab="Assigned" key="3">
+            </Affix>
+            <Row className={styles.content}>
+              <Col span={24}>
+                <div className={styles.content__top}>
+                  <div className={styles.text}>Team Requests</div>
+                  <>
+                    {!checkSendRequest && (
+                      <Button className={styles.btnInitiate}>
+                        <Link to="/offboarding/resignation-request">
+                          <span className={styles.btnText}>Initiate Resignation Request</span>
+                        </Link>
+                      </Button>
+                    )}
+                  </>
+                </div>
+              </Col>
+              <Col span={24}>
+                <Tabs
+                  defaultActiveKey="1"
+                  className={styles.tabComponent}
+                  tabBarExtraContent={<TableSearch onSearch={this.onSearch} />}
+                >
+                  <TabPane tab="Team Requests" key="1">
+                    <div className={styles.tableTab}>
+                      <TeamRequest
+                        data={dataListTeamRequest}
+                        countdata={totalListTeamRequest}
+                        hrManager={hrManager}
+                        loadingSearch={loadingSearch}
+                        timezoneList={timezoneList}
+                      />
+                    </div>
+                  </TabPane>
+                  <TabPane tab="My Requests" key="2">
+                    <div className={styles.tableTab}>
+                      <MyRequestContent
+                        data={listOffboarding}
+                        countdata={totalList}
+                        hrManager={hrManager}
+                        timezoneList={timezoneList}
+                      />
+                    </div>
+                  </TabPane>
+                  {/* <TabPane tab="Assigned" key="3">
                   <div style={{ padding: '10px 18px' }}>
                     <TableAssigned />
                   </div>
                 </TabPane> */}
-              </Tabs>
-            </Col>
-          </Row>
-        </div>
+                </Tabs>
+              </Col>
+            </Row>
+          </div>
+        )}
       </PageContainer>
     );
   }

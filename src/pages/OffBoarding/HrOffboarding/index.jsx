@@ -1,12 +1,16 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Tabs, Button, Row, Col } from 'antd';
-import { history } from 'umi';
+import { Tabs } from 'antd';
+import { connect } from 'umi';
 import HRrequestTable from './component/HrRequestTable';
 import RelievingFormalities from './component/RelievingFormalities';
 import Settings from './component/Settings';
+import ViewInitialHr from './component/ViewInitialHr';
 import styles from './index.less';
 
+@connect(({ offboarding: { screenMode = '' } = {} }) => ({
+  screenMode,
+}))
 class HROffboarding extends PureComponent {
   constructor(props) {
     super(props);
@@ -29,6 +33,8 @@ class HROffboarding extends PureComponent {
   render() {
     const { TabPane } = Tabs;
     const { tabKey } = this.state;
+    const { screenMode = '' } = this.props;
+
     return (
       <PageContainer>
         <div className={styles.containerEmployeeOffboarding}>
@@ -36,7 +42,13 @@ class HROffboarding extends PureComponent {
             <Tabs onTabClick={(key) => this.onChangeTab(key)} activeKey={tabKey}>
               <TabPane tab="Terminate work relationship" key="1">
                 <div className={styles.paddingHR}>
-                  <HRrequestTable onChangeTab={this.onChangeTab} />
+                  {screenMode === 'JOB-CHANGE' ? (
+                    <div className={styles.viewInitial}>
+                      <ViewInitialHr />
+                    </div>
+                  ) : (
+                    <HRrequestTable onChangeTab={this.onChangeTab} />
+                  )}
                 </div>
               </TabPane>
               <TabPane tab="Relieving Formalities" key="2">
@@ -46,21 +58,6 @@ class HROffboarding extends PureComponent {
                 <Settings />
               </TabPane>
             </Tabs>
-
-            {/* <div className={styles.options}>
-              <Row gutter={[24, 0]}>
-                <Col>
-                  <Button className={styles.generate} type="primary">
-                    Generate Report
-                  </Button>
-                </Col>
-                <Col>
-                  <Button className={styles.view} type="secondary">
-                    View Activity log (15)
-                  </Button>
-                </Col>
-              </Row>
-            </div> */}
           </div>
         </div>
       </PageContainer>

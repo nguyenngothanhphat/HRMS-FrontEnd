@@ -34,16 +34,13 @@ class RenderRequest extends Component {
       case '1':
         dispatch({
           type: 'offboarding/fetchList',
-          payload: {
-            status: 'IN-PROGRESS',
-          },
         });
         break;
       case '2':
         dispatch({
           type: 'offboarding/fetchList',
           payload: {
-            status: 'ON-HOLD',
+            status: 'IN-PROGRESS',
           },
         });
         break;
@@ -51,7 +48,7 @@ class RenderRequest extends Component {
         dispatch({
           type: 'offboarding/fetchList',
           payload: {
-            status: 'ACCEPTED',
+            status: 'ON-HOLD',
           },
         });
         break;
@@ -59,7 +56,7 @@ class RenderRequest extends Component {
         dispatch({
           type: 'offboarding/fetchList',
           payload: {
-            status: 'REJECTED',
+            status: 'ACCEPTED',
           },
         });
         break;
@@ -67,11 +64,19 @@ class RenderRequest extends Component {
         dispatch({
           type: 'offboarding/fetchList',
           payload: {
-            status: 'DRAFT',
+            status: 'REJECTED',
           },
         });
         break;
       case '6':
+        dispatch({
+          type: 'offboarding/fetchList',
+          payload: {
+            status: 'DRAFT',
+          },
+        });
+        break;
+      case '7':
         dispatch({
           type: 'offboarding/fetchList',
           payload: {
@@ -92,12 +97,16 @@ class RenderRequest extends Component {
   };
 
   render() {
-    const { data = [], countdata = [], loading, hrManager = {} } = this.props;
-
+    const { data = [], timezoneList, countdata = [], loading, hrManager = {} } = this.props;
     return (
       <>
         <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
-        <MyRequestTable data={data} loading={loading} hrManager={hrManager} />
+        <MyRequestTable
+          timezoneList={timezoneList}
+          data={data}
+          loading={loading}
+          hrManager={hrManager}
+        />
       </>
     );
   }

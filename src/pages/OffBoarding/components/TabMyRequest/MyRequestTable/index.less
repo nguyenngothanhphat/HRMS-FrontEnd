@@ -41,6 +41,16 @@
     line-height: 15.23px;
   }
 
+  .ticketId {
+    color: #2c6df9;
+    font-weight: 500;
+    font-size: 13px;
+    font-style: normal;
+    line-height: 15px;
+    text-decoration-line: underline;
+    cursor: pointer;
+  }
+
   .tableText {
     color: #464646;
     font-size: 13px;
@@ -55,5 +65,84 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+}
+
+:global {
+  .ant-popover-inner{
+    border-radius: 8px;
+  }
+}  
+
+.popupContent{
+  width: 300px; 
+
+  .generalInfo{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    .employeeInfo{
+      text-align: left;
+      padding-left: 24px;
+
+      &__name{
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 18.75px;
+        font-style: normal;
+        color: #161c29;
+      }
+  
+      &__department, &__emplId{
+        color: #707177;
+        font-size: 13px;
+        font-weight: 500;
+      }
+    }
+
+
+    .avatar{
+      
+    }
+  }
+
+  .contact{
+    &__title {
+      color: #707177;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    &__value{
+      font-weight: 400;
+      font-style: normal;
+      color: #161c29;
+    }
+  }
+
+  .popupActions{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    &__link{
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 13px;
+      font-style: normal;
+      line-height: 15px;
+      text-decoration-line: underline;
+      cursor: pointer;
+    }
+
+    &__actions {
+      width: 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
   }
 }
