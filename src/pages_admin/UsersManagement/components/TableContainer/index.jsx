@@ -147,7 +147,14 @@ class TableContainer extends PureComponent {
       filterList: { listCountry = [] } = {},
       listLocationsByCompany = [],
     } = this.props;
-    const { name = '', department = [], country = [], state = [], company = [] } = params;
+    const {
+      name = '',
+      department = [],
+      country = [],
+      state = [],
+      company = [],
+      roles = [],
+    } = params;
 
     // MULTI COMPANY & LOCATION PAYLOAD
     let companyPayload = [];
@@ -242,8 +249,9 @@ class TableContainer extends PureComponent {
       company: companyPayload,
       name,
       department,
+      roles,
       location: locationPayload,
-      page: pageSelected,
+      page: 1,
       limit: size,
     };
 

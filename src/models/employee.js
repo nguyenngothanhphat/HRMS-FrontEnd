@@ -31,6 +31,7 @@ const employee = {
     filterList: {},
     totalActiveEmployee: '',
     totalInactiveEmployee: '',
+    totalMyTeam: '',
   },
   effects: {
     *fetchEmployeeType(_, { call, put }) {
@@ -98,6 +99,8 @@ const employee = {
           employeeType = [],
           name = '',
           title = [],
+          page = '',
+          limit = '',
         } = {},
       },
       { call, put },
@@ -111,10 +114,15 @@ const employee = {
           employeeType,
           name,
           title,
+          page,
+          limit,
         });
         const { statusCode, data: listEmployeeMyTeam = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'listEmployeeMyTeam', payload: { listEmployeeMyTeam } });
+        yield put({
+          type: 'listEmployeeMyTeam',
+          payload: { listEmployeeMyTeam, myTeam: response.total },
+        });
         return listEmployeeMyTeam;
       } catch (errors) {
         dialog(errors);
