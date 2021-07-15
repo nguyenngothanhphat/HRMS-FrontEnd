@@ -44,7 +44,7 @@ const offboarding = {
     listAllRequest: [],
     request: [],
     sendrequest: false,
-    myRequest: {},
+    listMyRequest: [],
     list1On1: [],
     approvalflow: [],
     listMeetingTime: [],
@@ -66,8 +66,14 @@ const offboarding = {
     listAssignee: [],
     hrManager: {},
     terminateData: {},
+    total: '',
+    totalInProgressList: '',
+    totalHoldOnList: '',
+    totalRejectList: '',
+    totalAcceptedList: '',
   },
   effects: {
+    // my request
     *fetchList({ payload }, { call, put }) {
       let response;
       try {
@@ -81,13 +87,17 @@ const offboarding = {
           data: { items: listOffboarding = [], total: totalList = [], hrManager = {} } = {},
         } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listOffboarding, totalList, hrManager } });
+        yield put({
+          type: 'save',
+          payload: { listOffboarding, totalList, hrManager, total: response.total },
+        });
         return listOffboarding;
       } catch (errors) {
         dialog(errors);
       }
       return response;
     },
+    // team request
     *fetchListTeamRequest({ payload }, { call, put }) {
       try {
         const response = yield call(teamRequestList, {
@@ -104,7 +114,10 @@ const offboarding = {
           } = {},
         } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listTeamRequest, totalListTeamRequest, hrManager } });
+        yield put({
+          type: 'save',
+          payload: { listTeamRequest, totalListTeamRequest, hrManager, total: response.total },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -137,23 +150,24 @@ const offboarding = {
         });
 
         const {
-          statusCodeIP,
+          // statusCodeIP,
           data: {
             items: listInProgress = [],
             total: totalInProgress = [],
             hrManager: hrManagerInProgress = {},
           } = {},
+          // total: totalInProgress
         } = resInProgress;
         const {
-          statusCodeOH,
+          // statusCodeOH,
           data: { items: listOnHold = [], hrManager: hrManagerOnHold = {} } = {},
         } = resOnHold;
         const {
-          statusCodeAcc,
+          // statusCodeAcc,
           data: { items: listAccepted = [], hrManager: hrManagerAccepted = {} } = {},
         } = resAccepted;
         const {
-          statusCodeRJ,
+          // statusCodeRJ,
           data: { items: listRejected = [], hrManager: hrManagerRejected = {} } = {},
         } = resRejected;
 
@@ -176,6 +190,7 @@ const offboarding = {
             totalListTeamRequest: totalInProgress,
             listAllRequest: listAll,
             hrManagerAll,
+            total: resInProgress.total + resRejected.total + resAccepted.total + resOnHold.total,
           },
         });
       } catch (errors) {
@@ -191,7 +206,10 @@ const offboarding = {
         });
         const { statusCode, data: { items: acceptedRequest = [] } = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { acceptedRequest } });
+        yield put({
+          type: 'save',
+          payload: { acceptedRequest, totalAcceptedList: response.total },
+        });
         return acceptedRequest;
       } catch (errors) {
         dialog(errors);

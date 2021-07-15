@@ -12,7 +12,7 @@ class HrTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      pageNavigation: 1,
+      // pageNavigation: 1,
       currentTime: moment(),
     };
   }
@@ -72,11 +72,11 @@ class HrTable extends PureComponent {
   //   history.push(`/offboarding/review/${data}`);
   // };
 
-  onChangePagination = (pageNumber) => {
-    this.setState({
-      pageNavigation: pageNumber,
-    });
-  };
+  // onChangePagination = (pageNumber) => {
+  //   this.setState({
+  //     pageNavigation: pageNumber,
+  //   });
+  // };
 
   openViewTicket = (ticketID) => {
     const { data = [], dataAll = [], isTabAll } = this.props;
@@ -181,34 +181,38 @@ class HrTable extends PureComponent {
   };
 
   render() {
-    const { pageNavigation } = this.state;
+    // const { pageNavigation } = this.state;
     const {
       data = [],
-      dataAll = [],
+      // dataAll = [],
       loading,
       textEmpty = 'No resignation request is submitted',
       isTabAccept = false,
-      isTabAll = false,
+      // isTabAll = false,
+      pageSelected,
+      size,
+      total: totalData,
+      getPageAndSize = () => {},
     } = this.props;
     // const dateFormat = 'YYYY/MM/DD';
-    const rowSize = 10;
-    const newData = data.map((item) => {
-      return {
-        key: item._id,
-        ...item,
-      };
-    });
+    // const rowSize = 10;
+    // const newData = data.map((item) => {
+    //   return {
+    //     key: item._id,
+    //     ...item,
+    //   };
+    // });
 
-    const newDataAll = dataAll.map((item) => {
-      return {
-        key: item._id,
-        ...item,
-      };
-    });
+    // const newDataAll = dataAll.map((item) => {
+    //   return {
+    //     key: item._id,
+    //     ...item,
+    //   };
+    // });
 
     const pagination = {
       position: ['bottomLeft'],
-      total: data.length,
+      total: totalData,
       showTotal: (total, range) => (
         <span>
           Showing{' '}
@@ -218,9 +222,11 @@ class HrTable extends PureComponent {
           total
         </span>
       ),
-      pageSize: rowSize,
-      current: pageNavigation,
-      onChange: this.onChangePagination,
+      pageSize: size,
+      current: pageSelected,
+      onChange: (page, pageSize) => {
+        getPageAndSize(page, pageSize);
+      },
     };
 
     const columns = [
@@ -396,9 +402,9 @@ class HrTable extends PureComponent {
             ),
           }}
           columns={columns}
-          dataSource={isTabAll ? newDataAll : newData}
+          dataSource={data}
           hideOnSinglePage
-          pagination={{ ...pagination, total: data.length }}
+          pagination={pagination}
           rowKey={(record) => record._id}
           scroll={{ x: 'max-content' }}
           loading={loading}

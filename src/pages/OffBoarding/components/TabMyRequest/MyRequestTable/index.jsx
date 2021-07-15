@@ -17,31 +17,42 @@ class TableManager extends PureComponent {
     history.push(`/offboarding/my-request/${data}`);
   };
 
-  onChangePagination = (pageNumber) => {
-    this.setState({
-      pageNavigation: pageNumber,
-    });
-  };
+  // onChangePagination = (pageNumber) => {
+  //   this.setState({
+  //     pageNavigation: pageNumber,
+  //   });
+  // };
 
   render() {
-    const { data = [], loading, textEmpty = 'No resignation request is submitted' } = this.props;
-    const { pageNavigation } = this.state;
-    const rowSize = 10;
+    const {
+      data = [],
+      loading,
+      textEmpty = 'No resignation request is submitted',
+      pageSelected,
+      size,
+      total: totalData,
+      getPageAndSize = () => {},
+    } = this.props;
+    // const { pageNavigation } = this.state;
+    // const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
-      total: data.length,
+      total: totalData,
       showTotal: (total, range) => (
         <span>
           Showing{' '}
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
-          total
+          of
+          <b>{total}</b>
         </span>
       ),
-      pageSize: rowSize,
-      current: pageNavigation,
-      onChange: this.onChangePagination,
+      pageSize: size,
+      current: pageSelected,
+      onChange: (page, pageSize) => {
+        getPageAndSize(page, pageSize);
+      },
     };
 
     const columns = [
@@ -77,9 +88,8 @@ class TableManager extends PureComponent {
         title: <span className={t.title}>Assigned </span>,
         dataIndex: 'Assigned',
         render: (_, row) => {
-          const {
-            hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {},
-          } = this.props;
+          const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
+            this.props;
           const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
           const arrAvt = [avtManager, avtHrManager];
           return (
@@ -127,10 +137,7 @@ class TableManager extends PureComponent {
           columns={columns}
           dataSource={data}
           hideOnSinglePage
-          pagination={{
-            ...pagination,
-            total: data.length,
-          }}
+          pagination={pagination}
           rowKey="id"
           scroll={{ x: 'max-content' }}
         />

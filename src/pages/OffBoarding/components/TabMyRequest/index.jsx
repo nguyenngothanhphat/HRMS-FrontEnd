@@ -4,14 +4,17 @@ import MyRequestTable from './MyRequestTable';
 import Summary from './Summary';
 // import styles from './index.less';
 
-@connect(({ loading }) => ({
+@connect(({ loading, offboarding: { total = '' } = {} }) => ({
   loading: loading.effects['offboarding/fetchList'],
+  total,
 }))
 class RenderRequest extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedFilterTab: '1',
+      pageSelected: 1,
+      size: 10,
     };
   }
 
@@ -20,9 +23,9 @@ class RenderRequest extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    const { selectedFilterTab } = this.state;
-    const { selectedFilterTab: nextTabId } = nextState;
-    if (selectedFilterTab !== nextTabId) {
+    const { selectedFilterTab, pageSelected, size } = this.state;
+    const { selectedFilterTab: nextTabId, pageSelected: nextPage, size: nextSize } = nextState;
+    if (selectedFilterTab !== nextTabId || nextSize !== size || nextPage !== pageSelected) {
       this.initDataTable(nextTabId);
     }
     return true;
@@ -30,12 +33,15 @@ class RenderRequest extends Component {
 
   initDataTable = (tabId) => {
     const { dispatch } = this.props;
+    const { pageSelected, size } = this.state;
     switch (tabId) {
       case '1':
         dispatch({
           type: 'offboarding/fetchList',
           payload: {
             status: 'IN-PROGRESS',
+            page: pageSelected,
+            limit: size,
           },
         });
         break;
@@ -44,6 +50,8 @@ class RenderRequest extends Component {
           type: 'offboarding/fetchList',
           payload: {
             status: 'ON-HOLD',
+            page: pageSelected,
+            limit: size,
           },
         });
         break;
@@ -52,6 +60,8 @@ class RenderRequest extends Component {
           type: 'offboarding/fetchList',
           payload: {
             status: 'ACCEPTED',
+            page: pageSelected,
+            limit: size,
           },
         });
         break;
@@ -60,6 +70,8 @@ class RenderRequest extends Component {
           type: 'offboarding/fetchList',
           payload: {
             status: 'REJECTED',
+            page: pageSelected,
+            limit: size,
           },
         });
         break;
@@ -68,6 +80,8 @@ class RenderRequest extends Component {
           type: 'offboarding/fetchList',
           payload: {
             status: 'DRAFT',
+            page: pageSelected,
+            limit: size,
           },
         });
         break;
@@ -76,6 +90,8 @@ class RenderRequest extends Component {
           type: 'offboarding/fetchList',
           payload: {
             status: 'WITHDRAW',
+            page: pageSelected,
+            limit: size,
           },
         });
         break;
@@ -91,13 +107,29 @@ class RenderRequest extends Component {
     });
   };
 
+  getPageAndSize = (page, pageSize) => {
+    this.setState({
+      pageSelected: page,
+      size: pageSize,
+    });
+  };
+
   render() {
-    const { data = [], countdata = [], loading, hrManager = {} } = this.props;
+    const { data = [], countdata = [], loading, hrManager = {}, total } = this.props;
+    const { pageSelected, size } = this.state;
 
     return (
       <>
         <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
-        <MyRequestTable data={data} loading={loading} hrManager={hrManager} />
+        <MyRequestTable
+          data={data}
+          loading={loading}
+          hrManager={hrManager}
+          pageSelected={pageSelected}
+          size={size}
+          total={total}
+          getPageAndSize={this.getPageAndSize}
+        />
       </>
     );
   }
