@@ -57,7 +57,7 @@ class TableComponent extends PureComponent {
     } = dataRow;
     const fullName = `${firstName} ${middleName} ${lastName}`;
 
-    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+    const findTimezone = timezoneList?.find((timezone) => timezone.locationId === _id) || {};
     return (
       <div className={styles.popupContent}>
         <div className={styles.generalInfo}>
