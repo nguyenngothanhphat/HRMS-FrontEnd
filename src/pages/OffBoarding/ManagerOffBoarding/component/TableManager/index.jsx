@@ -25,6 +25,21 @@ class TableManager extends PureComponent {
     });
   };
 
+  openViewTicket = (ticketID) => {
+    const { data = [] } = this.props;
+    let id = '';
+
+    data.forEach((item) => {
+      if (item.ticketID === ticketID) {
+        id = item._id;
+      }
+    });
+
+    if (id) {
+      history.push(`/offboarding/review/${id}`);
+    }
+  };
+
   render() {
     const { data = [], textEmpty = 'No resignation request is submitted', loading } = this.props;
     const { pageNavigation } = this.state;
@@ -52,7 +67,11 @@ class TableManager extends PureComponent {
         title: <span className={styles.title}>Ticket ID </span>,
         dataIndex: 'ticketID',
         render: (ticketID) => {
-          return <span className={styles.title__value}>{ticketID}</span>;
+          return (
+            <span onClick={() => this.openViewTicket(ticketID)} className={styles.title__value}>
+              {ticketID}
+            </span>
+          );
         },
         fixed: 'left',
         width: 200,
@@ -77,9 +96,12 @@ class TableManager extends PureComponent {
         title: <span className={styles.title}>Requ’tee Name </span>,
         dataIndex: 'employee',
         render: (employee) => {
-          const { generalInfo: { firstName = '' } = {} } = employee;
+          const { generalInfo: { firstName = '', userId = '' } = {} } = employee;
           return (
-            <span className={`${styles.title__value} ${styles.title__requteeName}`}>
+            <span
+              onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+              className={`${styles.title__value} ${styles.title__requteeName}`}
+            >
               {firstName}
             </span>
           );
@@ -100,32 +122,30 @@ class TableManager extends PureComponent {
         title: <span className={styles.title}>Assigned </span>,
         dataIndex: 'Assigned',
         render: (_, row) => {
-          const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
-            this.props;
-          const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
-          const arrAvt = [avtManager, avtHrManager];
+          const {
+            hrManager: {
+              generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {},
+            } = {},
+          } = this.props;
+          const fullName = `${firstName} ${middleName} ${lastName}`;
           return (
-            <div className={styles.rowAction}>
-              {arrAvt.map(
-                (item, index) =>
-                  item && (
-                    <div key={index} style={{ marginRight: '13px', display: 'inline-block' }}>
-                      <Avatar src={item} size={20} icon={<UserOutlined />} />
-                    </div>
-                  ),
-              )}
-            </div>
+            <span
+              className={styles.title__value}
+              onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+            >
+              {fullName}
+            </span>
           );
         },
       },
       {
         title: <span className={styles.title}>Action</span>,
-        dataIndex: '_id',
-        render: (_id) => (
-          <div className={styles.rowAction}>
-            <span onClick={() => this.push(_id)}>View Request</span>
-          </div>
-        ),
+        // dataIndex: '_id',
+        // render: (_id) => (
+        //   <div className={styles.rowAction}>
+        //     <span onClick={() => this.push(_id)}>View Request</span>
+        //   </div>
+        // ),
       },
     ];
 
