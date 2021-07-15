@@ -5,6 +5,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import { Link, connect } from 'umi';
 import { debounce } from 'lodash';
 // import TableAssigned from '@/components/TableAssigned';
+import { getTimezoneViaCity } from '@/utils/times';
 import TeamRequest from './component/TeamRequest';
 import MyRequestContent from '../components/TabMyRequest';
 import TableSearch from './component/TableSearch';
@@ -25,6 +26,7 @@ import styles from './index.less';
         company: { _id: companyID } = {},
       } = {},
     } = {},
+    locationSelection: { listLocationsByCompany = [] },
   }) => ({
     listOffboarding,
     totalList,
@@ -33,6 +35,7 @@ import styles from './index.less';
     companyID,
     listTeamRequest,
     hrManager,
+    listLocationsByCompany,
   }),
 )
 class ManagerOffBoading extends Component {
@@ -41,6 +44,7 @@ class ManagerOffBoading extends Component {
     this.state = {
       dataListTeamRequest: [],
       loadingSearch: false,
+      timezoneList: [],
     };
     this.setDebounce = debounce((query) => {
       this.setState({
@@ -59,15 +63,43 @@ class ManagerOffBoading extends Component {
       type: 'offboarding/fetchListTeamRequest',
     });
 
+    this.fetchTimezone();
     if (listTeamRequest.length > 0) this.updateData(listTeamRequest);
   }
 
   componentDidUpdate(prevProps) {
-    const { listTeamRequest = [] } = this.props;
+    const { listTeamRequest = [], listLocationsByCompany = [] } = this.props;
     if (JSON.stringify(listTeamRequest) !== JSON.stringify(prevProps.listTeamRequest)) {
       this.updateData(listTeamRequest);
     }
+    if (
+      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+    ) {
+      this.fetchTimezone();
+    }
   }
+
+  fetchTimezone = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    const timezoneList = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id = '',
+      } = location;
+      timezoneList.push({
+        locationId: _id,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    this.setState({
+      timezoneList,
+    });
+  };
 
   updateData = (listTeamRequest) => {
     this.setState({
@@ -111,7 +143,7 @@ class ManagerOffBoading extends Component {
       totalList = [],
       hrManager = {},
     } = this.props;
-    const { dataListTeamRequest, loadingSearch } = this.state;
+    const { dataListTeamRequest, loadingSearch, timezoneList } = this.state;
 
     const checkInprogress = totalList.find(({ _id }) => _id === 'IN-PROGRESS') || {};
     const checkAccepted = totalList.find(({ _id }) => _id === 'ACCEPTED') || {};
@@ -156,6 +188,7 @@ class ManagerOffBoading extends Component {
                       countdata={totalListTeamRequest}
                       hrManager={hrManager}
                       loadingSearch={loadingSearch}
+                      timezoneList={timezoneList}
                     />
                   </div>
                 </TabPane>
@@ -165,6 +198,7 @@ class ManagerOffBoading extends Component {
                       data={listOffboarding}
                       countdata={totalList}
                       hrManager={hrManager}
+                      timezoneList={timezoneList}
                     />
                   </div>
                 </TabPane>

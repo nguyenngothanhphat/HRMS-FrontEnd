@@ -79,12 +79,18 @@ class TeamRequest extends Component {
       hrManager = {},
       loadingSearch,
       totalAll,
+      timezoneList,
     } = this.props;
 
     return (
       <>
         <Summary totalAll={totalAll} setSelectedTab={this.setSelectedTab} countdata={countdata} />
-        <TableManager data={data} loading={loading || loadingSearch} hrManager={hrManager} />
+        <TableManager
+          data={data}
+          timezoneList={timezoneList}
+          loading={loading || loadingSearch}
+          hrManager={hrManager}
+        />
       </>
     );
   }
