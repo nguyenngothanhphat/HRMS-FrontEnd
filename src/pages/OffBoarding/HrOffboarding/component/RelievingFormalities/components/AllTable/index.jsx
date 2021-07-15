@@ -82,12 +82,16 @@ class AllTable extends PureComponent {
   };
 
   render() {
-    const { loadingSearchList } = this.props;
+    const { loadingSearchList, timezoneList } = this.props;
     const { dataListAll, loadingFilter } = this.state;
 
     return (
       <div className={styles.allTable}>
-        <TableComponent loadingSearchList={loadingSearchList || loadingFilter} data={dataListAll} />
+        <TableComponent
+          timezoneList={timezoneList}
+          loadingSearchList={loadingSearchList || loadingFilter}
+          data={dataListAll}
+        />
       </div>
     );
   }
