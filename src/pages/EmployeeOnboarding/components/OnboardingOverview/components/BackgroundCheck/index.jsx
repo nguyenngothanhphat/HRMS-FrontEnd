@@ -13,6 +13,15 @@ import AllTab from './components/AllTab';
 import styles from './index.less';
 
 class BackgroundCheck extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tabId: 1,
+      pageSelected: 1,
+      size: 10,
+    };
+  }
+
   componentDidMount() {
     const { dispatch } = this.props;
     const { PENDING, INELIGIBLE_CANDIDATES, ELIGIBLE_CANDIDATES } = PROCESS_STATUS;
@@ -22,28 +31,48 @@ class BackgroundCheck extends PureComponent {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { tabId, pageSelected, size } = this.state;
+    if (
+      prevState.tabId !== tabId ||
+      prevState.pageSelected !== pageSelected ||
+      prevState.size !== size
+    ) {
+      this.onChangeTab(tabId);
+    }
+  }
+
   fetchBackgroundCheckAll = (status) => {
+    const { pageSelected, size } = this.state;
     const { dispatch } = this.props;
     dispatch({
       type: 'onboard/fetchOnboardListAll',
       payload: {
         processStatus: status,
+        page: pageSelected,
+        limit: size,
       },
     });
   };
 
   fetchBackgroundCheck = (status) => {
+    const { pageSelected, size } = this.state;
     const { dispatch } = this.props;
     dispatch({
       type: 'onboard/fetchOnboardList',
       payload: {
         processStatus: status,
+        page: pageSelected,
+        limit: size,
       },
     });
   };
 
   onChangeTab = (key) => {
     const { PENDING, ELIGIBLE_CANDIDATES, INELIGIBLE_CANDIDATES } = PROCESS_STATUS;
+    this.setState({
+      tabId: key,
+    });
     if (key === '1') {
       this.fetchBackgroundCheckAll([PENDING, ELIGIBLE_CANDIDATES, INELIGIBLE_CANDIDATES]);
     } else if (key === '2') {
@@ -55,21 +84,36 @@ class BackgroundCheck extends PureComponent {
     }
   };
 
+  getPageAndSize = (page, pageSize) => {
+    this.setState({
+      pageSelected: page,
+      size: pageSize,
+    });
+  };
+
   render() {
+    const { tabId, pageSelected, size } = this.state;
     const { TabPane } = Tabs;
-    const { backgroundCheck = {}, dataAll, loadingAll } = this.props;
+    const { backgroundCheck = {}, dataAll, loadingAll, total } = this.props;
     const { pending = [], eligibleCandidates = [], ineligibleCandidates = [] } = backgroundCheck;
 
     return (
       <div className={styles.BackgroundCheck}>
         <div className={styles.tabs}>
-          <Tabs defaultActiveKey="1" onChange={this.onChangeTab}>
+          <Tabs defaultActiveKey={tabId} onChange={this.onChangeTab}>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
               tab="all"
               key="1"
             >
-              <AllTab list={dataAll} loading={loadingAll} />
+              <AllTab
+                list={dataAll}
+                loading={loadingAll}
+                pageSelected={pageSelected}
+                size={size}
+                getPageAndSize={this.getPageAndSize}
+                total={total}
+              />
             </TabPane>
 
             <TabPane
@@ -77,7 +121,13 @@ class BackgroundCheck extends PureComponent {
               tab="pending"
               key="2"
             >
-              <Pending list={pending} />
+              <Pending
+                list={pending}
+                pageSelected={pageSelected}
+                size={size}
+                getPageAndSize={this.getPageAndSize}
+                total={total}
+              />
             </TabPane>
 
             <TabPane
@@ -85,7 +135,13 @@ class BackgroundCheck extends PureComponent {
               tab="eligible candidates"
               key="3"
             >
-              <EligibleCandidates list={eligibleCandidates} />
+              <EligibleCandidates
+                list={eligibleCandidates}
+                pageSelected={pageSelected}
+                size={size}
+                getPageAndSize={this.getPageAndSize}
+                total={total}
+              />
             </TabPane>
 
             <TabPane
@@ -93,7 +149,13 @@ class BackgroundCheck extends PureComponent {
               tab="ineligible candidates"
               key="4"
             >
-              <IneligibleCandidates list={ineligibleCandidates} />
+              <IneligibleCandidates
+                list={ineligibleCandidates}
+                pageSelected={pageSelected}
+                size={size}
+                getPageAndSize={this.getPageAndSize}
+                total={total}
+              />
             </TabPane>
           </Tabs>
         </div>
@@ -106,10 +168,11 @@ class BackgroundCheck extends PureComponent {
 export default connect((state) => {
   const { onboard = {}, loading } = state;
   const { onboardingOverview = {} } = onboard;
-  const { backgroundCheck = {}, dataAll = [] } = onboardingOverview;
+  const { backgroundCheck = {}, dataAll = [], total = '' } = onboardingOverview;
 
   return {
     backgroundCheck,
+    total,
     dataAll,
     loadingAll: loading.effects['onboard/fetchOnboardListAll'],
   };

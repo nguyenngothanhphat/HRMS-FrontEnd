@@ -11,7 +11,7 @@ const { INELIGIBLE_CANDIDATES } = TABLE_TYPE;
 
 class IneligibleCandidates extends PureComponent {
   render() {
-    const { list = [] } = this.props;
+    const { list = [], pageSelected, size, getPageAndSize = () => {}, total } = this.props;
 
     return (
       <OnboardTable
@@ -19,6 +19,10 @@ class IneligibleCandidates extends PureComponent {
         columnArr={[ID, NAME, POSITION, LOCATION, COMMENT, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION]}
         type={INELIGIBLE_CANDIDATES}
         inTab
+        pageSelected={pageSelected}
+        size={size}
+        total={total}
+        getPageAndSize={getPageAndSize}
       />
     );
   }

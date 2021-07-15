@@ -103,19 +103,24 @@ const TableComponent = (props) => {
     listLocationsByCompany = [],
     // companiesOfUser = [],
     loadingFetchProject = false,
+    getPageAndSize = () => {},
+    pageSelected = '',
+    size = '',
+    totalActive = '',
+    totalInactive = '',
   } = props;
-  const [pageSelected, setPageSelected] = useState(1);
+  // const [pageSelected, setPageSelected] = useState(1);
   // const [currentRecord, setCurrentRecord] = useState(1);
   const [open, setOpen] = useState(false);
   const [projectInfo, setProjectInfo] = useState({});
 
-  const onChangePagination = (pageNumber) => {
-    setPageSelected(pageNumber);
-  };
+  // const onChangePagination = (pageNumber) => {
+  //   setPageSelected(pageNumber);
+  // };
 
   const pagination = {
     position: ['bottomLeft'],
-    total: list.length,
+    total: totalActive || totalInactive,
     showTotal: (total, range) => (
       <span>
         {formatMessage({ id: 'component.directory.pagination.showing' })}{' '}
@@ -125,9 +130,14 @@ const TableComponent = (props) => {
         {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
       </span>
     ),
-    pageSize: rowSize,
+    defaultPageSize: size,
+    showSizeChanger: true,
+    pageSizeOptions: ['10', '25', '50', '100'],
+    pageSize: size,
     current: pageSelected,
-    onChange: onChangePagination,
+    onChange: (page, pageSize) => {
+      getPageAndSize(page, pageSize);
+    },
   };
 
   const closeModal = () => {
@@ -139,7 +149,7 @@ const TableComponent = (props) => {
       <Table
         dataSource={list}
         columns={columns}
-        pagination={{ ...pagination, total: list.length }}
+        pagination={pagination}
         loading={loadingFetchProject}
         onRow={(record) => {
           return {

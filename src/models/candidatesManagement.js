@@ -7,6 +7,7 @@ const candidatesManagement = {
     candidatesList: [],
     clearFilter: false,
     filter: [],
+    total: '',
     statusList: [
       'DRAFT',
       'SENT-PROVISIONAL-OFFER',
@@ -28,14 +29,17 @@ const candidatesManagement = {
     ],
   },
   effects: {
-    *fetchCandidatesList({ payload: { tenantId = '', processStatus = [] } }, { call, put }) {
+    *fetchCandidatesList(
+      { payload: { tenantId = '', processStatus = [], page = '', limit = '' } },
+      { call, put },
+    ) {
       try {
-        const response = yield call(getCandidatesList, { processStatus, tenantId });
+        const response = yield call(getCandidatesList, { processStatus, tenantId, page, limit });
         const { statusCode, data: candidatesList } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { candidatesList },
+          payload: { candidatesList, total: response.total },
         });
       } catch (errors) {
         dialog(errors);

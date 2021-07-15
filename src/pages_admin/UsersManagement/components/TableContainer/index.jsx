@@ -14,7 +14,7 @@ import TableFilter from '../TableFilter';
     locationSelection: { listLocationsByCompany = [] } = {},
     employee,
     user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
-    usersManagement: { filterList = {} } = {},
+    usersManagement: { filterList = {}, totalActiveEmployee = '', totalInactiveEmployee = '' } = {},
   }) => ({
     employee,
     currentUser,
@@ -24,6 +24,8 @@ import TableFilter from '../TableFilter';
     filterList,
     loadingList: loading.effects['usersManagement/fetchEmployeesList'],
     usersManagement,
+    totalActiveEmployee,
+    totalInactiveEmployee,
   }),
 )
 class TableContainer extends PureComponent {
@@ -70,6 +72,8 @@ class TableContainer extends PureComponent {
       tabId: 1,
       changeTab: false,
       collapsed: false,
+      pageSelected: 1,
+      size: 10,
       roles: [],
       location: [],
       company: [],
@@ -91,7 +95,8 @@ class TableContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { roles, department, country, state, company, filterName, tabId } = this.state;
+    const { roles, department, country, state, company, filterName, tabId, pageSelected, size } =
+      this.state;
     const params = {
       name: filterName,
       roles,
@@ -115,14 +120,25 @@ class TableContainer extends PureComponent {
     const { filterList = {}, listLocationsByCompany = [] } = this.props;
     if (
       JSON.stringify(prevProps?.filterList || []) !== JSON.stringify(filterList) ||
-      JSON.stringify(prevProps?.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+      JSON.stringify(prevProps?.listLocationsByCompany) !==
+        JSON.stringify(listLocationsByCompany) ||
+      prevState.pageSelected !== pageSelected ||
+      prevState.size !== size
     ) {
       this.getTableData({}, 1);
     }
   }
 
+  getPageAndSize = (pageSelected, size) => {
+    this.setState({
+      pageSelected,
+      size,
+    });
+  };
+
   getTableData = async (params, tabId) => {
     const currentLocation = getCurrentLocation();
+    const { pageSelected, size } = this.state;
     const currentCompany = getCurrentCompany();
 
     const { dispatch } = this.props;
@@ -131,7 +147,14 @@ class TableContainer extends PureComponent {
       filterList: { listCountry = [] } = {},
       listLocationsByCompany = [],
     } = this.props;
-    const { name = '', department = [], country = [], state = [], company = [] } = params;
+    const {
+      name = '',
+      department = [],
+      country = [],
+      state = [],
+      company = [],
+      roles = [],
+    } = params;
 
     // MULTI COMPANY & LOCATION PAYLOAD
     let companyPayload = [];
@@ -226,7 +249,10 @@ class TableContainer extends PureComponent {
       company: companyPayload,
       name,
       department,
+      roles,
       location: locationPayload,
+      page: 1,
+      limit: size,
     };
 
     if (tabId === 1) {
@@ -301,8 +327,9 @@ class TableContainer extends PureComponent {
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { bottabs, collapsed, changeTab, tabId } = this.state;
-    const { loadingList } = this.props;
+    const { bottabs, collapsed, changeTab, tabId, pageSelected, size } = this.state;
+    const { loadingList, totalActiveEmployee, totalInactiveEmployee } = this.props;
+    const total = tabId === 1 ? totalActiveEmployee : totalInactiveEmployee;
     return (
       <div className={styles.UsersTableContainer}>
         <div className={styles.contentContainer}>
@@ -321,6 +348,10 @@ class TableContainer extends PureComponent {
                       loading={loadingList}
                       data={this.renderListUsers(tab.id)}
                       tabId={tabId}
+                      total={total}
+                      pageSelected={pageSelected}
+                      size={size}
+                      getPageAndSize={this.getPageAndSize}
                     />
                   </Content>
                   <TableFilter

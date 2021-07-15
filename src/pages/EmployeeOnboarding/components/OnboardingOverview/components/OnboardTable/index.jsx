@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Empty, Dropdown, Menu, Tag, Button } from 'antd';
+import { Table, Empty, Dropdown, Menu, Tag } from 'antd';
 import { EllipsisOutlined, DeleteOutlined } from '@ant-design/icons';
 import { formatMessage, Link, connect, history } from 'umi';
 
@@ -17,7 +17,7 @@ class OnboardTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageSelected: 1,
+      // pageSelected: 1,
       openModal: false,
       currentRecord: {},
       reassignModalVisible: false,
@@ -485,22 +485,22 @@ class OnboardTable extends Component {
     history.push(`/directory/employee-profile/${_id}`);
   };
 
-  onChangePagination = (pageNumber) => {
-    this.setState({
-      pageSelected: pageNumber,
-    });
-  };
+  // onChangePagination = (pageNumber) => {
+  //   this.setState({
+  //     pageSelected: pageNumber,
+  //   });
+  // };
 
   render() {
+    // const { pageSelected } = this.state;
+    const { list = [], pageSelected, size, getPageAndSize, total: totalData } = this.props;
+    // const rowSize = 10;
     const {
-      pageSelected,
       reassignModalVisible = false,
       currentEmpId = '',
       reassignTicketId = '',
       reassignStatus = '',
     } = this.state;
-    const { list = [] } = this.props;
-    const rowSize = 10;
 
     const rowSelection = {
       // onChange: (selectedRowKeys, selectedRows) => {
@@ -515,7 +515,7 @@ class OnboardTable extends Component {
 
     const pagination = {
       position: ['bottomLeft'],
-      total: list.length,
+      total: totalData,
       showTotal: (total, range) => (
         <span>
           {' '}
@@ -526,9 +526,14 @@ class OnboardTable extends Component {
           {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
         </span>
       ),
-      pageSize: rowSize,
+      defaultPageSize: size,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
+      pageSize: size,
       current: pageSelected,
-      onChange: this.onChangePagination,
+      onChange: (page, pageSize) => {
+        getPageAndSize(page, pageSize);
+      },
     };
 
     const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch } = this.props;
@@ -558,7 +563,7 @@ class OnboardTable extends Component {
             dataSource={list}
             loading={loading || loadingFetch}
             // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-            pagination={{ ...pagination, total: list.length }}
+            pagination={pagination}
             onRow={(record) => {
               return {
                 onMouseEnter: () => {

@@ -397,7 +397,7 @@ class ViewInformation extends Component {
             <p className={s.titleTag}>Location</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{locationName}</p>
           </div>
-          {/* <div className={s.infoEmployee__viewBottom__row}>
+          <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag}>Reporting to</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>
               {managerFN} {managerLN}
@@ -412,16 +412,16 @@ class ViewInformation extends Component {
             <p className={s.titleTag1}>Contact number</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{workNumber}</p>
           </div>
-          <div className={s.infoEmployee__viewBottom__row}>
+          {/* <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Joining department</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>Not implemented</p>
-          </div>
+          </div> */}
           <div className={s.infoEmployee__viewBottom__row}>
             <p className={s.titleTag1}>Current department</p>
             <p className={s.infoEmployee__textNameAndTitle__title}>{departmentName}</p>
-          </div> 
+          </div>
 
-          <Divider /> */}
+          <Divider />
           <div className={s.infoEmployee__socialMedia}>
             <Tooltip title="LinkedIn">
               <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
