@@ -309,13 +309,9 @@ class HrTable extends PureComponent {
       // },
       {
         title: <span className={styles.title}>Assigned </span>,
-        dataIndex: 'Assigned',
+        dataIndex: 'assigned',
         width: 200,
         render: (_, row) => {
-          // const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
-          //   this.props;
-          // const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
-          // const arrAvt = [avtManager, avtHrManager];
           const {
             hrManager: {
               generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {},
@@ -323,16 +319,33 @@ class HrTable extends PureComponent {
           } = this.props;
           const fullName = `${firstName} ${middleName} ${lastName}`;
           return (
-            // <div className={styles.rowAction}>
-            //   {arrAvt.map(
-            //     (item, index) =>
-            //       item && (
-            //         <div key={index} style={{ marginRight: '13px', display: 'inline-block' }}>
-            //           <Avatar src={item} size={20} icon={<UserOutlined />} />
-            //         </div>
-            //       ),
-            //   )}
-            // </div>
+            <Popover
+              content={() => this.popupContent(row)}
+              // title={location.name}
+              trigger="hover"
+            >
+              <p
+                className={styles.assignee}
+                onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+              >
+                {fullName}
+              </p>
+            </Popover>
+          );
+        },
+      },
+      {
+        title: <span className={styles.title}>HR Manager </span>,
+        dataIndex: 'hr-manager',
+        width: 200,
+        render: (_, row) => {
+          const {
+            hrManager: {
+              generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {},
+            } = {},
+          } = this.props;
+          const fullName = `${firstName} ${middleName} ${lastName}`;
+          return (
             <Popover
               content={() => this.popupContent(row)}
               // title={location.name}
