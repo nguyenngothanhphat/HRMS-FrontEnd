@@ -220,7 +220,7 @@ class TableManager extends PureComponent {
         width: 200,
       },
       {
-        title: <span className={styles.title}>Requ’tee Name </span>,
+        title: <span className={styles.title}>Requestee Name </span>,
         dataIndex: 'employee',
         render: (employee, row) => {
           const { generalInfo: { firstName = '', userId = '' } = {} } = employee;
