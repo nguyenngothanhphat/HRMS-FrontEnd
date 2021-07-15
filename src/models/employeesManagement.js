@@ -35,6 +35,8 @@ const employeesManagement = {
     employeeDetail: {},
     clearFilter: false,
     clearName: false,
+    totalActiveEmployee: '',
+    totalInactiveEmployee: '',
   },
   effects: {
     *fetchActiveEmployeesList(
@@ -46,6 +48,8 @@ const employeesManagement = {
           company = [],
           employeeType = [],
           name = '',
+          page = '',
+          limit = '',
         } = {},
       },
       { call, put },
@@ -58,10 +62,15 @@ const employeesManagement = {
           location,
           company,
           employeeType,
+          page,
+          limit,
         });
         const { statusCode, data: activeEmployeesList = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { activeEmployeesList } });
+        yield put({
+          type: 'save',
+          payload: { activeEmployeesList, totalActiveEmployee: response.total },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -74,6 +83,8 @@ const employeesManagement = {
           location = [],
           employeeType = [],
           name = '',
+          page = '',
+          limit = '',
         } = {},
       },
       { call, put },
@@ -85,10 +96,15 @@ const employeesManagement = {
           department,
           location,
           employeeType,
+          page,
+          limit,
         });
         const { statusCode, data: inActiveEmployeesList = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { inActiveEmployeesList } });
+        yield put({
+          type: 'save',
+          payload: { inActiveEmployeesList, totalInactiveEmployee: response.total },
+        });
       } catch (errors) {
         dialog(errors);
       }

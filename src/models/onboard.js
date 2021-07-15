@@ -274,6 +274,7 @@ const onboard = {
   state: {
     mainTabActiveKey: '1',
     onboardingOverview: {
+      total: '',
       pendingEligibilityChecks: {
         sentEligibilityForms: sentEligibilityFormsData,
         receivedSubmittedDocuments: receivedSubmittedDocumentsData,
@@ -478,12 +479,13 @@ const onboard = {
 
     *fetchOnboardListAll({ payload }, { call, put }) {
       try {
-        const { processStatus = '' } = payload;
+        const { processStatus = '', page, limit } = payload;
         const tenantId = getCurrentTenant();
         const req = {
           processStatus,
-          page: 1,
+          page,
           tenantId,
+          limit,
         };
         const response = yield call(getOnboardingList, req);
         const { statusCode } = response;
@@ -497,6 +499,12 @@ const onboard = {
         yield put({
           type: 'saveAll',
           payload: returnedData,
+        });
+        yield put({
+          type: 'save',
+          payload: {
+            total: response.total,
+          },
         });
       } catch (errors) {
         dialog(errors);

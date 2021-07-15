@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+// import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { Table, Tabs, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
@@ -21,14 +21,16 @@ class CustomEmailsTableField extends PureComponent {
     super(props);
     this.state = {
       pageSelected: 1,
+      size: 10,
       currentRecord: {},
       activeKey: '1',
     };
   }
 
-  onChangePagination = (pageNumber) => {
+  onChangePagination = (pageNumber, pageSize) => {
     this.setState({
       pageSelected: pageNumber,
+      size: pageSize,
     });
   };
 
@@ -40,6 +42,7 @@ class CustomEmailsTableField extends PureComponent {
 
   fetchData = async (tabId) => {
     const { dispatch } = this.props;
+    const { pageSelected, size } = this.state;
     this.setState({
       activeKey: tabId,
     });
@@ -49,6 +52,8 @@ class CustomEmailsTableField extends PureComponent {
       payload: {
         type: 'ON-BOARDING',
         isDefault: tabId === '1',
+        page: pageSelected,
+        limit: size,
       },
     });
   };
@@ -84,6 +89,7 @@ class CustomEmailsTableField extends PureComponent {
 
   handleActionDelete = (customEmailId) => {
     const { dispatch } = this.props;
+    const { pageSelected, size } = this.state;
     if (!dispatch) {
       return;
     }
@@ -91,6 +97,8 @@ class CustomEmailsTableField extends PureComponent {
       type: 'employeeSetting/deleteCustomEmailItem',
       payload: {
         id: customEmailId,
+        page: pageSelected,
+        limit: size,
       },
     });
   };
@@ -167,8 +175,8 @@ class CustomEmailsTableField extends PureComponent {
 
   _renderTable = (list) => {
     const { loadingFetchList } = this.props;
-    const { pageSelected } = this.state;
-    const rowSize = 5;
+    const { pageSelected, size } = this.state;
+    // const rowSize = 5;
 
     const pagination = {
       position: ['bottomRight'],
@@ -183,9 +191,9 @@ class CustomEmailsTableField extends PureComponent {
           {formatMessage({ id: 'component.customEmailsTableField.pagination.of' })} {total}{' '}
         </span>
       ),
-      pageSize: rowSize,
+      pageSize: size,
       current: pageSelected,
-      onChange: this.onChangePagination,
+      onChange: (page, pageSize) => this.onChangePagination(page, pageSize),
     };
     return (
       <Table
@@ -199,7 +207,7 @@ class CustomEmailsTableField extends PureComponent {
           };
         }}
         rowKey={(record) => record._id}
-        pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
+        pagination={pagination}
       />
     );
   };

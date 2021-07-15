@@ -12,7 +12,7 @@ const { SENT_PROVISIONAL_OFFERS } = TABLE_TYPE;
 
 class SentProvisionalOffers extends PureComponent {
   render() {
-    const { list = [] } = this.props;
+    const { list = [], pageSelected, size, total, getPageAndSize = () => {} } = this.props;
 
     return (
       <OnboardTable
@@ -30,6 +30,10 @@ class SentProvisionalOffers extends PureComponent {
         ]}
         type={SENT_PROVISIONAL_OFFERS}
         inTab
+        pageSelected={pageSelected}
+        size={size}
+        total={total}
+        getPageAndSize={getPageAndSize}
       />
     );
   }

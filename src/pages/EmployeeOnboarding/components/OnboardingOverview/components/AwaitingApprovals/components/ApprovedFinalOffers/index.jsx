@@ -13,7 +13,7 @@ const { APPROVED_OFFERS } = TABLE_TYPE;
 
 class ApprovedFinalOffers extends PureComponent {
   render() {
-    const { list = [] } = this.props;
+    const { list = [], pageSelected, size, getPageAndSize = () => {}, total } = this.props;
 
     return (
       <OnboardTable
@@ -22,6 +22,10 @@ class ApprovedFinalOffers extends PureComponent {
         type={APPROVED_OFFERS}
         inTab
         hasCheckbox
+        pageSelected={pageSelected}
+        size={size}
+        total={total}
+        getPageAndSize={getPageAndSize}
       />
     );
   }

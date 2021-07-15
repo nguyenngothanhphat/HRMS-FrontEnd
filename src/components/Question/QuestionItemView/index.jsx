@@ -28,7 +28,7 @@ export default function QuestionItemView({
   const [errMessage, setErrMessage] = useState(errorMessage);
 
   const changeMultiChoice = (values) => {
-    const { specify, num } = multiChoice;
+    const { specify = {}, num } = multiChoice || {};
     onChangeEmployeeAnswers(values, keyQuestion);
     if (!isRequired && !values.length) {
       return setErrMessage('');
