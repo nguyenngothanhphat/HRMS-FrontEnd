@@ -3,6 +3,7 @@ import { Tabs } from 'antd';
 
 import InQueueTable from '../InQueueTable';
 import ClosedTable from '../ClosedTable';
+import AllTable from '../AllTable';
 import TableSearch from '../TableSearch';
 
 import styles from './index.less';
@@ -25,11 +26,16 @@ class RelievingTables extends PureComponent {
     const data = [
       {
         id: 1,
+        name: 'All',
+        component: <AllTable dataSearch={queuesList} />,
+      },
+      {
+        id: 2,
         name: 'In Queues',
         component: <InQueueTable dataSearch={queuesList} />,
       },
       {
-        id: 2,
+        id: 3,
         name: 'Closed records',
         component: <ClosedTable dataSearch={queuesList} />,
       },

@@ -59,6 +59,7 @@ const offboarding = {
     customExitPackage: [],
     customClosingPackage: [],
     currentTemplate: {},
+    listRelievingFormalities: [],
     inQueuesList: [],
     closeRecordsList: [],
     itemCreateScheduleInterview: {},
@@ -416,7 +417,8 @@ const offboarding = {
             yield put({ type: 'save', payload: { inQueuesList: data.result } });
             break;
           default:
-            return null;
+            yield put({ type: 'save', payload: { listRelievingFormalities: data.result } });
+            break;
         }
       } catch (errors) {
         dialog(errors);
