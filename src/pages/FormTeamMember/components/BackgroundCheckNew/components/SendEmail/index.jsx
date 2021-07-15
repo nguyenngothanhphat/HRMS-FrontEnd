@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Typography, Space, Radio, Button, message } from 'antd';
 import CustomModal from '@/components/CustomModal';
 import ModalEmail from './components/ModalEmail';
@@ -17,15 +17,17 @@ const index = ({
   middleName = '',
   lastName = '',
   handleValueChange = () => {},
-  valueToFinalOffer,
-  changeValueToFinalOffer = () => {},
+  // valueToFinalOffer,
+  // changeValueToFinalOffer = () => {},
   checkValidation,
   loading4,
   openModalEmail,
   closeModalEmail = () => {},
+  processStatus = '',
 }) => {
   const [isEnable, setIsEnable] = useState('');
   const [isInputEnable, setIsInputEnable] = useState(true);
+  const [check, setCheck] = useState(false);
   const [initialGenerateLink] = useState('abc.xyz.com');
   const handleEmailClick = () => {
     setIsEnable(true);
@@ -43,77 +45,41 @@ const index = ({
     message.success('Generated link sucessfully');
   };
 
+  useEffect(() => {
+    if (isSentEmail || processStatus === 'SENT-PROVISIONAL-OFFER') setCheck(true);
+    else setCheck(false);
+  }, [isSentEmail, processStatus]);
+
   return (
-    <div className={style.SendEmail}>
-      <div className={style.header}>
-        <Space direction="horizontal">
-          <div className={style.icon}>
-            <div className={style.inside}>
-              {isSentEmail ? (
-                <img src={sent} alt="send-icon" className={style.send} />
-              ) : (
-                <img src={send} alt="sent-icon" className={style.send} />
-              )}
-            </div>
+    <>
+      {check && (
+        <div className={style.SendEmail}>
+          <div className={style.header}>
+            <Space direction="horizontal">
+              <div className={style.icon}>
+                <div className={style.inside}>
+                  <img src={sent} alt="send-icon" className={style.send} />
+                </div>
+              </div>
+
+              <Typography.Text className={style.text}>Sent</Typography.Text>
+            </Space>
           </div>
-          {isSentEmail ? (
-            <Typography.Text className={style.text}>Sent</Typography.Text>
-          ) : (
-            <Typography.Text className={style.text}>Send Form</Typography.Text>
-          )}
-        </Space>
-      </div>
-      {isSentEmail ? (
-        <div className={style.anotherBody}>
-          <Typography.Text className={style.text}>
-            We are waiting for{' '}
-            <span className={style.specificText}>
-              Mr / Mrs. {firstName + lastName + middleName}
-            </span>{' '}
-            to upload all requested documents for eligibility check.
-          </Typography.Text>
-          <br />
-          <Button type="link" onClick={handleSendFormAgain} className={style.buttonSend}>
-            <Typography.Text className={style.buttonText}>Send form again</Typography.Text>
-          </Button>
+
+          <div className={style.anotherBody}>
+            <Typography.Text className={style.text}>
+              We are waiting for{' '}
+              <span className={style.specificText}>
+                Mr / Mrs. {`${firstName} ${middleName ? `${middleName} ` : ''}${lastName}`}
+              </span>{' '}
+              to upload all requested documents for eligibility check.
+            </Typography.Text>
+            <br />
+            <Button type="link" onClick={handleSendFormAgain} className={style.buttonSend}>
+              <Typography.Text className={style.buttonText}>Send form again</Typography.Text>
+            </Button>
+          </div>
         </div>
-      ) : (
-        <>
-          <Radio.Group
-            className={style.s}
-            onChange={changeValueToFinalOffer}
-            value={valueToFinalOffer}
-          >
-            <br />
-
-            <Radio value={0}>
-              <Typography.Text>Send Provisional Offer</Typography.Text>
-            </Radio>
-            <br />
-            <br />
-            <div className={style.line} />
-            {/* {valueToFinalOffer === 0 ? (
-              renderBody()
-            ) : (
-              <>
-             
-              </>
-            )} */}
-            {/* {valueToFinalOffer === 1 && <br />} */}
-
-            <Radio value={1}>
-              <Typography.Text>Process to release a final offer</Typography.Text>
-            </Radio>
-          </Radio.Group>
-          {/* 
-          <Radio.Group
-            className={style.s}
-            onChange={changeValueToFinalOffer}
-            value={valueToFinalOffer}
-          >
-            
-          </Radio.Group> */}
-        </>
       )}
 
       <CustomModal
@@ -140,7 +106,7 @@ const index = ({
           />
         }
       />
-    </div>
+    </>
   );
 };
 
