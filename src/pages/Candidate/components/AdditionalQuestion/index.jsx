@@ -28,7 +28,7 @@ const AdditionalQuestion = (props) => {
 
       if (question.isRequired) {
         if (question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key) {
-          const { specify, num } = question.multiChoice;
+          const { specify = {}, num } = question?.multiChoice || {};
           switch (specify) {
             case SPECIFY.AT_LEAST.key:
               return employeeAnswers.length >= num;
