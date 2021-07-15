@@ -65,7 +65,6 @@ class HRrequestTable extends Component {
 
     this.fetchTimezone();
     if (listTeamRequest.length > 0) this.updateData(listTeamRequest, 1);
-    // if (listAllRequest.length > 0) this.updateData(listAllRequest, 2);
   }
 
   componentDidUpdate(prevProps) {
@@ -73,9 +72,6 @@ class HRrequestTable extends Component {
     if (JSON.stringify(listTeamRequest) !== JSON.stringify(prevProps.listTeamRequest)) {
       this.updateData(listTeamRequest, 1);
     }
-    // if (JSON.stringify(listAllRequest) !== JSON.stringify(prevProps.listAllRequest)) {
-    //   this.updateData(listAllRequest, 2);
-    // }
     if (
       JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {

@@ -57,15 +57,6 @@ class ManagerOffBoading extends Component {
     }
     dispatch({
       type: 'offboarding/fetchListTeamRequest',
-      payload: {
-        status: 'IN-PROGRESS',
-      },
-    });
-    dispatch({
-      type: 'offboarding/fetchList',
-      payload: {
-        status: 'IN-PROGRESS',
-      },
     });
 
     if (listTeamRequest.length > 0) this.updateData(listTeamRequest);

@@ -22,27 +22,34 @@ export default class RejectTable extends PureComponent {
   };
 
   render() {
+    const { totalAll } = this.props;
     const data = [
       {
         value: '1',
+        title: 'All',
+        count: totalAll,
+        renderTab: this.renderTab('ALL'),
+      },
+      {
+        value: '2',
         title: 'In Progress',
         count: this.getCount('IN-PROGRESS'),
         renderTab: this.renderTab('DRAFT'),
       },
       {
-        value: '2',
+        value: '3',
         title: 'On-hold',
         count: this.getCount('ON-HOLD'),
         renderTab: this.renderTab('ON-HOLD'),
       },
       {
-        value: '3',
+        value: '4',
         title: 'Accepted',
         count: this.getCount('ACCEPTED'),
         renderTab: this.renderTab('ACCEPTED'),
       },
       {
-        value: '4',
+        value: '5',
         title: 'Rejected',
         count: this.getCount('REJECTED'),
         renderTab: this.renderTab('REJECTED'),

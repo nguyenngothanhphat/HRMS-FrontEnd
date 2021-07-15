@@ -3,8 +3,9 @@ import { connect } from 'umi';
 import TableManager from '../TableManager';
 import Summary from '../Summary';
 
-@connect(({ loading }) => ({
+@connect(({ loading, offboarding: { totalAll = 0 } = {} }) => ({
   loading: loading.effects['offboarding/fetchListTeamRequest'],
+  totalAll,
 }))
 class TeamRequest extends Component {
   constructor(props) {
@@ -12,10 +13,6 @@ class TeamRequest extends Component {
     this.state = {
       selectedFilterTab: '1',
     };
-  }
-
-  componentDidMount() {
-    this.initDataTable('1');
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -32,16 +29,13 @@ class TeamRequest extends Component {
     if (tabId === '1') {
       dispatch({
         type: 'offboarding/fetchListTeamRequest',
-        payload: {
-          status: 'IN-PROGRESS',
-        },
       });
     }
     if (tabId === '2') {
       dispatch({
         type: 'offboarding/fetchListTeamRequest',
         payload: {
-          status: 'ON-HOLD',
+          status: 'IN-PROGRESS',
         },
       });
     }
@@ -49,11 +43,19 @@ class TeamRequest extends Component {
       dispatch({
         type: 'offboarding/fetchListTeamRequest',
         payload: {
-          status: 'ACCEPTED',
+          status: 'ON-HOLD',
         },
       });
     }
     if (tabId === '4') {
+      dispatch({
+        type: 'offboarding/fetchListTeamRequest',
+        payload: {
+          status: 'ACCEPTED',
+        },
+      });
+    }
+    if (tabId === '5') {
       dispatch({
         type: 'offboarding/fetchListTeamRequest',
         payload: {
@@ -70,11 +72,18 @@ class TeamRequest extends Component {
   };
 
   render() {
-    const { data = [], countdata = [], loading, hrManager = {}, loadingSearch } = this.props;
+    const {
+      data = [],
+      countdata = [],
+      loading,
+      hrManager = {},
+      loadingSearch,
+      totalAll,
+    } = this.props;
 
     return (
       <>
-        <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
+        <Summary totalAll={totalAll} setSelectedTab={this.setSelectedTab} countdata={countdata} />
         <TableManager data={data} loading={loading || loadingSearch} hrManager={hrManager} />
       </>
     );

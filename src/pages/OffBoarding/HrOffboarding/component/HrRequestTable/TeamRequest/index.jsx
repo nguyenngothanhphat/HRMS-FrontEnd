@@ -98,14 +98,12 @@ class TabContent extends Component {
     } = this.props;
     const { selectedFilterTab = '1' } = this.state;
     const isTabAccept = selectedFilterTab === '3';
-    const isTabAll = selectedFilterTab === '1';
     return (
       <>
         <Summary totalAll={totalAll} setSelectedTab={this.setSelectedTab} countdata={countdata} />
         <HrTable
           data={data}
           loading={loading || loadingSearch}
-          isTabAll={isTabAll}
           isTabAccept={isTabAccept}
           moveToRelieving={this.moveToRelieving}
           hrManager={hrManager}
