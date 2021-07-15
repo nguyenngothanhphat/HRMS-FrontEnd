@@ -1,14 +1,148 @@
 import React, { PureComponent } from 'react';
-import { Table } from 'antd';
+import { Avatar, Col, Divider, Popover, Row, Table, Tooltip } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import { Link } from 'umi';
+import { Link, history } from 'umi';
+import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
+
 import styles from './index.less';
 
 class TableComponent extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      currentTime: moment(),
+    };
   }
+
+  componentDidMount = () => {
+    this.setCurrentTime();
+  };
+
+  setCurrentTime = () => {
+    // compare two time by hour & minute. If minute changes, get new time
+    const timeFormat = 'HH:mm';
+    const { currentTime } = this.state;
+    const parseTime = (timeString) => moment(timeString, timeFormat);
+    const check = parseTime(moment().format(timeFormat)).isAfter(
+      parseTime(moment(currentTime).format(timeFormat)),
+    );
+
+    if (check) {
+      this.setState({
+        currentTime: moment(),
+      });
+    }
+  };
+
+  popupContent = (dataRow) => {
+    const { timezoneList } = this.props;
+    const { currentTime } = this.state;
+    const {
+      employee: {
+        title: { name: titleName = 'UX Lead' } = {},
+        employeeType: { name: typeName = 'Full Time' } = {},
+        generalInfo: {
+          employeeId = '',
+          avatar = '',
+          firstName = '',
+          lastName = '',
+          middleName = '',
+          linkedIn = '',
+          userId = '',
+        } = {},
+      } = {},
+      department: { name: departmentName = '' } = {},
+      location: { _id = '' } = {},
+    } = dataRow;
+    const fullName = `${firstName} ${middleName} ${lastName}`;
+
+    const findTimezone = timezoneList?.find((timezone) => timezone.locationId === _id) || {};
+    return (
+      <div className={styles.popupContent}>
+        <div className={styles.generalInfo}>
+          <div className={styles.avatar}>
+            <Avatar src={avatar} size={40} icon={<UserOutlined />} />
+          </div>
+          <div className={styles.employeeInfo}>
+            <div className={styles.employeeInfo__name}>{fullName}</div>
+            <div className={styles.employeeInfo__department}>
+              {titleName}, {departmentName} Dept.
+            </div>
+            <div className={styles.employeeInfo__emplId}>
+              {employeeId} | {typeName}
+            </div>
+          </div>
+        </div>
+        <Divider />
+        <div className={styles.contact}>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Mobile: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>abccc</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Email id: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>abc@gmail.com</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Location: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>abccc</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Local Time: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>
+                {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
+                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
+                  : 'Not enough data in address'}
+              </div>
+            </Col>
+          </Row>
+        </div>
+        <Divider />
+        <div className={styles.popupActions}>
+          <div
+            className={styles.popupActions__link}
+            onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+          >
+            View full profile
+          </div>
+          <div className={styles.popupActions__actions}>
+            <Tooltip title="Email">
+              <img
+                src="/assets/images/iconMail.svg"
+                alt="img-arrow"
+                style={{ marginLeft: '5px', cursor: 'pointer' }}
+              />
+            </Tooltip>
+            <Tooltip title="LinkedIn">
+              <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
+                <img
+                  src="/assets/images/iconLinkedin.svg"
+                  alt="img-arrow"
+                  style={{ cursor: 'pointer' }}
+                />
+              </a>
+            </Tooltip>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   renderAction = (id) => {
     return (
@@ -29,7 +163,22 @@ class TableComponent extends PureComponent {
   _renderEmployeeName = (id) => {
     const { data = [] } = this.props;
     const newItem = data?.filter((item) => item._id === id);
-    return <span className={styles.requteeName}>{newItem[0].employee.generalInfo.legalName}</span>;
+    return (
+      <Popover
+        content={() => this.popupContent(newItem[0])}
+        // title={location.name}
+        trigger="hover"
+      >
+        <span
+          onClick={() =>
+            history.push(`/directory/employee-profile/${newItem[0].employee.generalInfo.userId}`)
+          }
+          className={styles.requteeName}
+        >
+          {newItem[0].employee.generalInfo.legalName}
+        </span>
+      </Popover>
+    );
   };
 
   _renderDepartment = (id) => {

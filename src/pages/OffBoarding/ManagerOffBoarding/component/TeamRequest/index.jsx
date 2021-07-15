@@ -14,10 +14,6 @@ class TeamRequest extends Component {
     };
   }
 
-  componentDidMount() {
-    this.initDataTable('1');
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     const { selectedFilterTab } = this.state;
     const { selectedFilterTab: nextTabId } = nextState;
@@ -32,16 +28,13 @@ class TeamRequest extends Component {
     if (tabId === '1') {
       dispatch({
         type: 'offboarding/fetchListTeamRequest',
-        payload: {
-          status: 'IN-PROGRESS',
-        },
       });
     }
     if (tabId === '2') {
       dispatch({
         type: 'offboarding/fetchListTeamRequest',
         payload: {
-          status: 'ON-HOLD',
+          status: 'IN-PROGRESS',
         },
       });
     }
@@ -49,11 +42,19 @@ class TeamRequest extends Component {
       dispatch({
         type: 'offboarding/fetchListTeamRequest',
         payload: {
-          status: 'ACCEPTED',
+          status: 'ON-HOLD',
         },
       });
     }
     if (tabId === '4') {
+      dispatch({
+        type: 'offboarding/fetchListTeamRequest',
+        payload: {
+          status: 'ACCEPTED',
+        },
+      });
+    }
+    if (tabId === '5') {
       dispatch({
         type: 'offboarding/fetchListTeamRequest',
         payload: {
@@ -70,12 +71,24 @@ class TeamRequest extends Component {
   };
 
   render() {
-    const { data = [], countdata = [], loading, hrManager = {}, loadingSearch } = this.props;
+    const {
+      data = [],
+      countdata = [],
+      loading,
+      hrManager = {},
+      loadingSearch,
+      timezoneList,
+    } = this.props;
 
     return (
       <>
         <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
-        <TableManager data={data} loading={loading || loadingSearch} hrManager={hrManager} />
+        <TableManager
+          data={data}
+          timezoneList={timezoneList}
+          loading={loading || loadingSearch}
+          hrManager={hrManager}
+        />
       </>
     );
   }

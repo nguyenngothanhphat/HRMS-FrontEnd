@@ -1,11 +1,11 @@
 /* eslint-disable react/no-array-index-key */
 import React, { PureComponent } from 'react';
-import { Table, notification, Popover, Divider, Row, Col, Avatar } from 'antd';
+import { Table, notification, Popover, Divider, Row, Col, Avatar, Tooltip } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import { history } from 'umi';
-import { getCurrentTimeOfTimezone } from '@/utils/times';
+import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
 import styles from './index.less';
 
 class HrTable extends PureComponent {
@@ -79,41 +79,36 @@ class HrTable extends PureComponent {
   };
 
   openViewTicket = (ticketID) => {
-    const { data = [], dataAll = [], isTabAll } = this.props;
+    const { data = [] } = this.props;
     let id = '';
 
-    if (isTabAll) {
-      dataAll.forEach((item) => {
-        if (item.ticketID === ticketID) {
-          id = item._id;
-        }
-      });
-    } else {
-      data.forEach((item) => {
-        if (item.ticketID === ticketID) {
-          id = item._id;
-        }
-      });
-    }
+    data.forEach((item) => {
+      if (item.ticketID === ticketID) {
+        id = item._id;
+      }
+    });
+
     if (id) {
       history.push(`/offboarding/review/${id}`);
     }
   };
 
   popupContent = (dataRow) => {
-    console.log(dataRow);
+    // console.log(dataRow);
     const { timezoneList } = this.props;
     const { currentTime } = this.state;
     const {
       employee: {
         title: { name: titleName = 'UX Lead' } = {},
+        employeeType: { name: typeName = 'Full Time' } = {},
         employeeId = '',
         generalInfo: {
           avatar = '',
           firstName = '',
           lastName = '',
           middleName = '',
-          employeeType: { name: typeName = 'Full Time' } = {},
+          linkedIn = '',
+          userId = '',
         } = {},
       } = {},
       department: { name: departmentName = '' } = {},
@@ -170,11 +165,38 @@ class HrTable extends PureComponent {
             <Col span={16}>
               <div className={styles.contact__value}>
                 {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-                  ? getCurrentTimeOfTimezone(currentTime, findTimezone.timezone)
+                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
                   : 'Not enough data in address'}
               </div>
             </Col>
           </Row>
+        </div>
+        <Divider />
+        <div className={styles.popupActions}>
+          <div
+            className={styles.popupActions__link}
+            onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+          >
+            View full profile
+          </div>
+          <div className={styles.popupActions__actions}>
+            <Tooltip title="Email">
+              <img
+                src="/assets/images/iconMail.svg"
+                alt="img-arrow"
+                style={{ marginLeft: '5px', cursor: 'pointer' }}
+              />
+            </Tooltip>
+            <Tooltip title="LinkedIn">
+              <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
+                <img
+                  src="/assets/images/iconLinkedin.svg"
+                  alt="img-arrow"
+                  style={{ cursor: 'pointer' }}
+                />
+              </a>
+            </Tooltip>
+          </div>
         </div>
       </div>
     );
@@ -184,22 +206,13 @@ class HrTable extends PureComponent {
     const { pageNavigation } = this.state;
     const {
       data = [],
-      dataAll = [],
       loading,
       textEmpty = 'No resignation request is submitted',
       isTabAccept = false,
-      isTabAll = false,
     } = this.props;
     // const dateFormat = 'YYYY/MM/DD';
     const rowSize = 10;
     const newData = data.map((item) => {
-      return {
-        key: item._id,
-        ...item,
-      };
-    });
-
-    const newDataAll = dataAll.map((item) => {
       return {
         key: item._id,
         ...item,
@@ -247,10 +260,10 @@ class HrTable extends PureComponent {
       },
       {
         title: <span className={styles.title}>Created date </span>,
-        dataIndex: 'createDate',
+        dataIndex: 'requestDate',
         width: 160,
-        render: (createDate) => {
-          return <p>{moment(createDate).format('YYYY/MM/DD')}</p>;
+        render: (requestDate) => {
+          return <p>{moment(requestDate).format('YYYY/MM/DD')}</p>;
         },
       },
       {
@@ -298,7 +311,7 @@ class HrTable extends PureComponent {
         title: <span className={styles.title}>Assigned </span>,
         dataIndex: 'Assigned',
         width: 200,
-        render: () => {
+        render: (_, row) => {
           // const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
           //   this.props;
           // const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
@@ -320,12 +333,18 @@ class HrTable extends PureComponent {
             //       ),
             //   )}
             // </div>
-            <p
-              className={styles.assignee}
-              onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+            <Popover
+              content={() => this.popupContent(row)}
+              // title={location.name}
+              trigger="hover"
             >
-              {fullName}
-            </p>
+              <p
+                className={styles.assignee}
+                onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+              >
+                {fullName}
+              </p>
+            </Popover>
           );
         },
       },
@@ -396,7 +415,7 @@ class HrTable extends PureComponent {
             ),
           }}
           columns={columns}
-          dataSource={isTabAll ? newDataAll : newData}
+          dataSource={newData}
           hideOnSinglePage
           pagination={{ ...pagination, total: data.length }}
           rowKey={(record) => record._id}
