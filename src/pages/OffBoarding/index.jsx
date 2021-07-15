@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { initViewOffboarding } from '@/utils/authority';
 import EmployeeOffBoading from './EmployeeOffBoarding';
 import ManagerOffBoading from './ManagerOffBoarding';
 import HrOffboarding from './HrOffboarding';
@@ -13,15 +14,22 @@ class OffBoarding extends PureComponent {
   };
 
   render() {
-    const { location: { state: { defaultActiveKey = '1' } = {} } = {} } = this.props;
+    const { location: { state: { defaultActiveKey = '1', isEmployeeMode = '' } = {} } = {} } =
+      this.props;
+    const viewOffboarding = initViewOffboarding();
     const renderComponent = {
       'hr-manager': <HrOffboarding defaultActiveKey={defaultActiveKey} />,
       manager: <ManagerOffBoading />,
       employee: <EmployeeOffBoading />,
     };
+
     const listRole = localStorage.getItem('antd-pro-authority');
     const role = this.findRole(JSON.parse(listRole));
-    return renderComponent[role];
+
+    if (!isEmployeeMode && !viewOffboarding) {
+      return renderComponent[role];
+    }
+    return renderComponent.employee;
   }
 }
 
