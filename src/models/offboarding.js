@@ -67,6 +67,7 @@ const offboarding = {
     listAssignee: [],
     hrManager: {},
     terminateData: {},
+    screenMode: 'JOB-CHANGE',
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
