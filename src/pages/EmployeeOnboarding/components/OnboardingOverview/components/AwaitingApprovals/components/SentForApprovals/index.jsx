@@ -13,7 +13,7 @@ const { SENT_FOR_APPROVALS } = TABLE_TYPE;
 
 class SentForApprovals extends PureComponent {
   render() {
-    const { list = [] } = this.props;
+    const { list = [], pageSelected, size, getPageAndSize = () => {}, total } = this.props;
 
     return (
       <OnboardTable
@@ -21,6 +21,10 @@ class SentForApprovals extends PureComponent {
         columnArr={[ID, NAME, POSITION, LOCATION, DATE_JOIN, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION]}
         type={SENT_FOR_APPROVALS}
         inTab
+        pageSelected={pageSelected}
+        size={size}
+        total={total}
+        getPageAndSize={getPageAndSize}
         // hasCheckbox
       />
     );

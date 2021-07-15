@@ -10,6 +10,15 @@ import AllTab from './components/AllTab';
 import styles from './index.less';
 
 class ProvisionalOffers extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tabId: 1,
+      pageSelected: 1,
+      size: 10,
+    };
+  }
+
   componentDidMount() {
     const { dispatch } = this.props;
     const { SENT_PROVISIONAL_OFFERS, ACCEPTED_PROVISIONAL_OFFERS, RENEGOTIATE_PROVISIONAL_OFFERS } =
@@ -24,24 +33,41 @@ class ProvisionalOffers extends PureComponent {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { tabId, pageSelected, size } = this.state;
+    if (
+      prevState.tabId !== tabId ||
+      prevState.pageSelected !== pageSelected ||
+      prevState.size !== size
+    ) {
+      this.onChangeTab(tabId);
+    }
+  }
+
   fetchProvisionalOfferAll = (status) => {
     const { dispatch } = this.props;
+    const { pageSelected, size } = this.state;
 
     dispatch({
       type: 'onboard/fetchOnboardListAll',
       payload: {
         processStatus: status,
+        page: pageSelected,
+        limit: size,
       },
     });
   };
 
   fetchProvisionalOffer = (status) => {
     const { dispatch } = this.props;
+    const { pageSelected, size } = this.state;
 
     dispatch({
       type: 'onboard/fetchOnboardList',
       payload: {
         processStatus: status,
+        page: pageSelected,
+        limit: size,
       },
     });
   };
@@ -49,6 +75,9 @@ class ProvisionalOffers extends PureComponent {
   onChangeTab = (key) => {
     const { SENT_PROVISIONAL_OFFERS, ACCEPTED_PROVISIONAL_OFFERS, RENEGOTIATE_PROVISIONAL_OFFERS } =
       PROCESS_STATUS;
+    this.setState({
+      tabId: key,
+    });
     if (key === '1') {
       this.fetchProvisionalOfferAll([
         SENT_PROVISIONAL_OFFERS,
@@ -64,9 +93,17 @@ class ProvisionalOffers extends PureComponent {
     }
   };
 
+  getPageAndSize = (page, pageSize) => {
+    this.setState({
+      pageSelected: page,
+      size: pageSize,
+    });
+  };
+
   render() {
     const { TabPane } = Tabs;
-    const { provisionalOffers = {}, dataAll = [], loadingAll } = this.props;
+    const { tabId, pageSelected, size } = this.state;
+    const { provisionalOffers = {}, dataAll = [], loadingAll, total } = this.props;
     const {
       sentProvisionalOffers = [],
       // receivedProvisionalOffers = [],
@@ -77,13 +114,20 @@ class ProvisionalOffers extends PureComponent {
     return (
       <div className={styles.PendingEligibilityChecks}>
         <div className={styles.tabs}>
-          <Tabs defaultActiveKey="1" onChange={this.onChangeTab}>
+          <Tabs defaultActiveKey={tabId} onChange={this.onChangeTab}>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
               tab="all"
               key="1"
             >
-              <AllTab list={dataAll} loading={loadingAll} />
+              <AllTab
+                list={dataAll}
+                loading={loadingAll}
+                pageSelected={pageSelected}
+                size={size}
+                getPageAndSize={this.getPageAndSize}
+                total={total}
+              />
             </TabPane>
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
@@ -91,7 +135,13 @@ class ProvisionalOffers extends PureComponent {
               key="2"
             >
               {/* <OnboardTable list={rookieList} /> */}
-              <SentProvisionalOffers list={sentProvisionalOffers} />
+              <SentProvisionalOffers
+                list={sentProvisionalOffers}
+                pageSelected={pageSelected}
+                size={size}
+                getPageAndSize={this.getPageAndSize}
+                total={total}
+              />
             </TabPane>
 
             <TabPane
@@ -99,7 +149,13 @@ class ProvisionalOffers extends PureComponent {
               tab="accepted provisional offers"
               key="3"
             >
-              <AcceptedProvisionalOffers list={acceptedProvisionalOffers} />
+              <AcceptedProvisionalOffers
+                list={acceptedProvisionalOffers}
+                pageSelected={pageSelected}
+                size={size}
+                getPageAndSize={this.getPageAndSize}
+                total={total}
+              />
             </TabPane>
 
             <TabPane
@@ -107,7 +163,13 @@ class ProvisionalOffers extends PureComponent {
               tab="renegotiate provisional offers"
               key="4"
             >
-              <RenegotiateProvisionalOffers list={renegotiateProvisionalOffers} />
+              <RenegotiateProvisionalOffers
+                list={renegotiateProvisionalOffers}
+                pageSelected={pageSelected}
+                size={size}
+                getPageAndSize={this.getPageAndSize}
+                total={total}
+              />
             </TabPane>
           </Tabs>
         </div>
@@ -120,10 +182,11 @@ class ProvisionalOffers extends PureComponent {
 export default connect((state) => {
   const { onboard = {}, loading } = state;
   const { onboardingOverview = {} } = onboard;
-  const { provisionalOffers = {}, dataAll = [] } = onboardingOverview;
+  const { provisionalOffers = {}, dataAll = [], total = '' } = onboardingOverview;
 
   return {
     provisionalOffers,
+    total,
     dataAll,
     loadingAll: loading.effects['onboard/fetchOnboardListAll'],
   };

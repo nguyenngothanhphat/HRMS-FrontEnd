@@ -46,7 +46,7 @@ class PendingEligibilityChecks extends PureComponent {
 export default connect((state) => {
   const { onboard = {} } = state;
   const { onboardingOverview = {} } = onboard;
-  const { pendingEligibilityChecks = {} } = onboardingOverview;
+  const { pendingEligibilityChecks = {}, total = '' } = onboardingOverview;
 
   return {
     pendingEligibilityChecks,

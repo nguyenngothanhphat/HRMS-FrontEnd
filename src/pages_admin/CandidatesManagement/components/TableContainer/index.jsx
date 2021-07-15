@@ -37,6 +37,8 @@ class TableContainer extends PureComponent {
       bottabs: [{ id: 1, name: 'Active Candidates' }],
       collapsed: true,
       processStatus: [],
+      pageSelected: 1,
+      size: 10,
     };
   }
 
@@ -45,11 +47,16 @@ class TableContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { processStatus, tabId } = this.state;
+    const { processStatus, tabId, pageSelected, size } = this.state;
     const params = {
       processStatus,
     };
-    if (prevState.tabId !== tabId || prevState.processStatus.length !== processStatus.length) {
+    if (
+      prevState.tabId !== tabId ||
+      prevState.processStatus.length !== processStatus.length ||
+      prevState.pageSelected !== pageSelected ||
+      prevState.size !== size
+    ) {
       this.getDataTable(params, tabId);
     }
   }
@@ -61,6 +68,13 @@ class TableContainer extends PureComponent {
       payload: {
         tenantId: getCurrentTenant(),
       },
+    });
+  };
+
+  getPageAndSize = (page, size) => {
+    this.setState({
+      pageSelected: page,
+      size,
     });
   };
 
@@ -135,8 +149,8 @@ class TableContainer extends PureComponent {
   render() {
     const { Content } = Layout;
     const { TabPane } = Tabs;
-    const { bottabs, collapsed } = this.state;
-    const { loadingCandidatesList } = this.props;
+    const { bottabs, collapsed, pageSelected, size } = this.state;
+    const { loadingCandidatesList, candidatesManagement: { total = '' } = {} } = this.props;
     return (
       <div className={styles.UsersTableContainer}>
         <div className={styles.contentContainer}>
@@ -153,6 +167,10 @@ class TableContainer extends PureComponent {
                     <TableCandidates
                       loading={loadingCandidatesList}
                       data={this.renderListCandidates(tab.id)}
+                      total={total}
+                      pageSelected={pageSelected}
+                      size={size}
+                      getPageAndSize={this.getPageAndSize}
                     />
                   </Content>
                   <TableFilter

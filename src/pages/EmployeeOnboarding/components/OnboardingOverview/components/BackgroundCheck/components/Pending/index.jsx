@@ -11,7 +11,7 @@ const { PENDING } = TABLE_TYPE;
 
 class Pending extends PureComponent {
   render() {
-    const { list = [] } = this.props;
+    const { list = [], pageSelected, size, getPageAndSize = () => {}, total } = this.props;
 
     return (
       <OnboardTable
@@ -19,6 +19,10 @@ class Pending extends PureComponent {
         columnArr={[ID, NAME, POSITION, LOCATION, DOCUMENT, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION]}
         type={PENDING}
         inTab
+        pageSelected={pageSelected}
+        size={size}
+        total={total}
+        getPageAndSize={getPageAndSize}
       />
     );
   }

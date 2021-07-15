@@ -12,7 +12,7 @@ const { RENEGOTIATE_FINAL_OFFERS } = TABLE_TYPE;
 
 class RenegotiateFinalOffer extends PureComponent {
   render() {
-    const { list = [] } = this.props;
+    const { list = [], pageSelected, size, getPageAndSize = () => {}, total } = this.props;
 
     return (
       <OnboardTable
@@ -29,6 +29,10 @@ class RenegotiateFinalOffer extends PureComponent {
         ]}
         type={RENEGOTIATE_FINAL_OFFERS}
         inTab
+        pageSelected={pageSelected}
+        size={size}
+        total={total}
+        getPageAndSize={getPageAndSize}
         // hasCheckbox
       />
     );

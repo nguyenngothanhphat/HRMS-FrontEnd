@@ -71,6 +71,7 @@ const employeeSetting = {
     currentFormOffBoarding: {
       settings: [],
     },
+    total: '',
     // optional on boarding question
     optionalOnboardQuestionList: [],
   },
@@ -612,7 +613,10 @@ const employeeSetting = {
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listCustomEmailOnboarding: data } });
+        yield put({
+          type: 'save',
+          payload: { listCustomEmailOnboarding: data, total: response.total },
+        });
       } catch (errors) {
         dialog(errors);
       }
@@ -668,7 +672,7 @@ const employeeSetting = {
       let response;
       try {
         response = yield call(deleteCustomEmailItem, {
-          ...payload,
+          id: payload.id,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
@@ -676,7 +680,7 @@ const employeeSetting = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'fetchListCustomEmailOnboarding',
-          payload: { default: false },
+          payload: { default: false, page: payload.page, limit: payload.limit },
         });
         yield put({
           type: 'fetchListCustomEmailOffboarding',

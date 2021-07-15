@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Empty, Dropdown, Menu, Tag, Button } from 'antd';
+import { Table, Empty, Dropdown, Menu, Tag } from 'antd';
 import { EllipsisOutlined, DeleteOutlined } from '@ant-design/icons';
 import { formatMessage, Link, connect, history } from 'umi';
 
@@ -17,7 +17,7 @@ class OnboardTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageSelected: 1,
+      // pageSelected: 1,
       openModal: false,
       currentRecord: {},
       reassignModalVisible: false,
@@ -112,6 +112,165 @@ class OnboardTable extends Component {
         tenantId: getCurrentTenant(),
       },
     });
+  };
+
+  renderAction = (id, type, actionText) => {
+    const {
+      PROVISIONAL_OFFERS_DRAFTS,
+      FINAL_OFFERS_DRAFTS,
+      RENEGOTIATE_PROVISIONAL_OFFERS,
+      APPROVED_OFFERS,
+      ACCEPTED_FINAL_OFFERS,
+      RENEGOTIATE_FINAL_OFFERS,
+      ACCEPTED__PROVISIONAL_OFFERS,
+      ALL,
+    } = TABLE_TYPE;
+
+    let actionContent = null;
+
+    switch (type) {
+      case ALL: {
+        actionContent = (
+          <>
+            <span>View</span>
+          </>
+        );
+        break;
+      }
+      case PROVISIONAL_OFFERS_DRAFTS: {
+        actionContent = (
+          <>
+            {/* <span>{actionText}</span> */}
+            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData()}>
+              <span>Continue</span>
+            </Link>
+
+            <DeleteOutlined
+              className={styles.deleteIcon}
+              onClick={() => this.handleActionDelete(id)}
+            />
+          </>
+        );
+        break;
+      }
+
+      case RENEGOTIATE_PROVISIONAL_OFFERS:
+      case RENEGOTIATE_FINAL_OFFERS:
+        actionContent = (
+          <>
+            {/* <span>{actionText}</span> */}
+            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+              <span>Schedule 1-on-1</span>
+
+              <span className={styles.viewDraft}>
+                View Form
+                {/* {formatMessage({ id: 'component.onboardingOverview.viewDraft' })} */}
+              </span>
+            </Link>
+          </>
+        );
+        break;
+
+      case ACCEPTED__PROVISIONAL_OFFERS: {
+        actionContent = (
+          <>
+            <Link
+              to={`/employee-onboarding/review/${id}`}
+              onClick={() => {
+                this.initiateBackgroundCheck(id);
+              }}
+            >
+              <span>Initiate Background Check</span>
+            </Link>
+          </>
+        );
+        break;
+      }
+
+      case FINAL_OFFERS_DRAFTS: {
+        const menu = (
+          <Menu>
+            <Menu.Item key="1">Discard offer</Menu.Item>
+          </Menu>
+        );
+
+        actionContent = (
+          <>
+            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+              <span>Send for approval</span>
+
+              <span className={styles.viewDraft}>
+                {formatMessage({ id: 'component.onboardingOverview.viewDraft' })}
+              </span>
+
+              <Dropdown.Button
+                overlay={menu}
+                placement="bottomCenter"
+                icon={<EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />}
+              />
+            </Link>
+          </>
+        );
+        break;
+      }
+
+      case APPROVED_OFFERS:
+        actionContent = (
+          <>
+            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+              <span>Send to candidate</span>
+              <span className={styles.viewDraft}>View form</span>
+            </Link>
+          </>
+        );
+        break;
+
+      case ACCEPTED_FINAL_OFFERS: {
+        // const menu = (
+        //   <Menu>
+        //     <Menu.Item key="1">Discard offer</Menu.Item>
+        //   </Menu>
+        // );
+
+        actionContent = (
+          <>
+            <span
+              onClick={() => {
+                this.openModal();
+              }}
+            >
+              Create Profile
+            </span>
+            {/* <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+              <Dropdown.Button
+                overlay={menu}
+                placement="bottomCenter"
+                icon={<EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} />}
+              >
+                {actionText}
+              </Dropdown.Button>
+            </Link> */}
+          </>
+        );
+        break;
+      }
+
+      default:
+        actionContent = (
+          <>
+            <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+              <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
+              {/* <EllipsisOutlined style={{ color: '#bfbfbf', fontSize: '20px' }} /> */}
+            </Link>
+          </>
+        );
+        break;
+    }
+    return (
+      // <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+      <span className={styles.tableActions}>{actionContent}</span>
+      // </Link>
+    );
   };
 
   checkPermission = (role) => {
@@ -485,22 +644,22 @@ class OnboardTable extends Component {
     history.push(`/directory/employee-profile/${_id}`);
   };
 
-  onChangePagination = (pageNumber) => {
-    this.setState({
-      pageSelected: pageNumber,
-    });
-  };
+  // onChangePagination = (pageNumber) => {
+  //   this.setState({
+  //     pageSelected: pageNumber,
+  //   });
+  // };
 
   render() {
+    // const { pageSelected } = this.state;
+    const { list = [], pageSelected, size, getPageAndSize, total: totalData } = this.props;
+    // const rowSize = 10;
     const {
-      pageSelected,
       reassignModalVisible = false,
       currentEmpId = '',
       reassignTicketId = '',
       reassignStatus = '',
     } = this.state;
-    const { list = [] } = this.props;
-    const rowSize = 10;
 
     const rowSelection = {
       // onChange: (selectedRowKeys, selectedRows) => {
@@ -515,7 +674,7 @@ class OnboardTable extends Component {
 
     const pagination = {
       position: ['bottomLeft'],
-      total: list.length,
+      total: totalData,
       showTotal: (total, range) => (
         <span>
           {' '}
@@ -526,9 +685,14 @@ class OnboardTable extends Component {
           {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
         </span>
       ),
-      pageSize: rowSize,
+      defaultPageSize: size,
+      showSizeChanger: true,
+      pageSizeOptions: ['10', '25', '50', '100'],
+      pageSize: size,
       current: pageSelected,
-      onChange: this.onChangePagination,
+      onChange: (page, pageSize) => {
+        getPageAndSize(page, pageSize);
+      },
     };
 
     const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch } = this.props;
@@ -558,7 +722,7 @@ class OnboardTable extends Component {
             dataSource={list}
             loading={loading || loadingFetch}
             // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-            pagination={{ ...pagination, total: list.length }}
+            pagination={pagination}
             onRow={(record) => {
               return {
                 onMouseEnter: () => {

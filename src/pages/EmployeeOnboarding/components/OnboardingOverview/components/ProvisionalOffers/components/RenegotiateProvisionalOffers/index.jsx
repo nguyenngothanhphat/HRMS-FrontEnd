@@ -11,7 +11,7 @@ const { RENEGOTIATE_PROVISIONAL_OFFERS } = TABLE_TYPE;
 
 class RenegotiateProvisionalOffers extends PureComponent {
   render() {
-    const { list = [] } = this.props;
+    const { list = [], pageSelected, size, total, getPageAndSize = () => {} } = this.props;
 
     return (
       <OnboardTable
@@ -19,6 +19,10 @@ class RenegotiateProvisionalOffers extends PureComponent {
         columnArr={[ID, NAME, POSITION, LOCATION, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION]}
         type={RENEGOTIATE_PROVISIONAL_OFFERS}
         inTab
+        pageSelected={pageSelected}
+        size={size}
+        total={total}
+        getPageAndSize={getPageAndSize}
       />
     );
   }
