@@ -131,7 +131,7 @@ class HrTable extends PureComponent {
       <div className={styles.popupContent}>
         <div className={styles.generalInfo}>
           <div className={styles.avatar}>
-            <Avatar src={avatar} size={40} icon={<UserOutlined />} />
+            <Avatar src={avatar} size={60} icon={<UserOutlined />} />
           </div>
           <div className={styles.employeeInfo}>
             <div className={styles.employeeInfo__name}>{fullName}</div>
@@ -143,7 +143,7 @@ class HrTable extends PureComponent {
             </div>
           </div>
         </div>
-        <Divider />
+        <Divider className={styles.divider} />
         <div className={styles.contact}>
           <Row gutter={[24, 0]}>
             <Col span={8}>
@@ -182,7 +182,7 @@ class HrTable extends PureComponent {
             </Col>
           </Row>
         </div>
-        <Divider />
+        <Divider className={styles.divider} />
         <div className={styles.popupActions}>
           <div
             className={styles.popupActions__link}
