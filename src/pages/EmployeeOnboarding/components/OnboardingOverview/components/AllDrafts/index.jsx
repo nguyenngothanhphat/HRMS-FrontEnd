@@ -104,7 +104,6 @@ class AllDrafts extends PureComponent {
   render() {
     const { allDrafts = {}, dataAll, loadingAll, total } = this.props;
     const { tabId, pageSelected, size } = this.state;
-    console.log('aaaaa');
     const { provisionalOfferDrafts = [], finalOfferDrafts = [] } = allDrafts;
 
     return (

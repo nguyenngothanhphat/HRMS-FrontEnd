@@ -137,10 +137,6 @@ const processStatusName = {
   'REJECT-FINAL-OFFER-CANDIDATE': 'Final Offers',
 };
 
-const getProcessStatusName = (name) => {
-  return processStatusName[name];
-};
-
 const formatMonth = (month) => {
   const monthNames = [
     'January',
@@ -259,7 +255,7 @@ const formatData = (list = []) => {
       changeRequest: '-',
       assignTo,
       assigneeManager,
-      processStatus: getProcessStatusName(processStatus),
+      processStatus: processStatusName[processStatus],
       processStatusId: processStatus,
     };
     formatList.push(rookie);
@@ -345,138 +341,6 @@ const onboard = {
   },
 
   effects: {
-    // eslint-disable-next-line no-shadow
-    *fetchAllOnboardList(_, { put }) {
-      try {
-        const {
-          PROVISIONAL_OFFER_DRAFT,
-          FINAL_OFFERS_DRAFT,
-
-          SENT_PROVISIONAL_OFFERS,
-          ACCEPTED_PROVISIONAL_OFFERS,
-          RENEGOTIATE_PROVISIONAL_OFFERS,
-
-          PENDING,
-          ELIGIBLE_CANDIDATES,
-          INELIGIBLE_CANDIDATES,
-
-          SENT_FOR_APPROVAL,
-          APPROVED_OFFERS,
-
-          SENT_FINAL_OFFERS,
-          ACCEPTED_FINAL_OFFERS,
-          RENEGOTIATE_FINAL_OFFERS,
-
-          PROVISIONAL_OFFERS,
-          FINAL_OFFERS,
-        } = PROCESS_STATUS;
-
-        // 1
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: PROVISIONAL_OFFER_DRAFT,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: FINAL_OFFERS_DRAFT,
-          },
-        });
-
-        // 2
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: SENT_PROVISIONAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: ACCEPTED_PROVISIONAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: RENEGOTIATE_PROVISIONAL_OFFERS,
-          },
-        });
-
-        // 3
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: PENDING,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: ELIGIBLE_CANDIDATES,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: INELIGIBLE_CANDIDATES,
-          },
-        });
-
-        // 4
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: SENT_FOR_APPROVAL,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: APPROVED_OFFERS,
-          },
-        });
-
-        // 5
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: SENT_FINAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: ACCEPTED_FINAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: RENEGOTIATE_FINAL_OFFERS,
-          },
-        });
-
-        // 6
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: PROVISIONAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: FINAL_OFFERS,
-          },
-        });
-      } catch (error) {
-        dialog(error);
-      }
-    },
-
     *fetchOnboardListAll({ payload }, { call, put }) {
       try {
         const { processStatus = '', page, limit } = payload;
@@ -567,6 +431,13 @@ const onboard = {
 
         yield put({
           type: 'fetchTotalNumberOfOnboardingListEffect',
+        });
+
+        yield put({
+          type: 'saveTotal',
+          payload: {
+            total: response.total,
+          },
         });
 
         // Fetch data
