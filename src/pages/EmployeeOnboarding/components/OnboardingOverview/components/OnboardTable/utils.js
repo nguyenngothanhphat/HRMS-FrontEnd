@@ -27,6 +27,7 @@ const getActionText = (type) => {
     SENT_FOR_APPROVALS,
     PROVISIONAL_OFFERS,
     FINAL_OFFERS,
+    ALL,
   } = TABLE_TYPE;
 
   switch (type) {
@@ -73,7 +74,7 @@ const getActionText = (type) => {
     // case RENEGOTIATE_PROVISIONAL_OFFERS
 
     default:
-      return '';
+      return 'View Form';
   }
 };
 
