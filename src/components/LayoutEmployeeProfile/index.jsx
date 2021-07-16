@@ -5,7 +5,7 @@ import RequestDetails from '@/pages/EmployeeProfile/components/RequestDetails';
 import { Affix, Col, Row } from 'antd';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import ItemMenu from './components/ItemMenu';
 import UploadLogoCompany from './components/UploadLogoCompany';
 import ViewInformation from './components/ViewInformation';
@@ -33,10 +33,11 @@ class CommonLayout extends PureComponent {
   }
 
   componentDidMount() {
-    const { listMenu, selectedNewCompanyTab } = this.props;
+    const { listMenu, selectedNewCompanyTab, tabName } = this.props;
+    const selectedTab = listMenu.find((m) => m.link === tabName) || listMenu[0];
     this.setState({
-      selectedItemId: selectedNewCompanyTab || listMenu[0].id,
-      displayComponent: listMenu[0].component,
+      selectedItemId: selectedTab.id || selectedNewCompanyTab,
+      displayComponent: selectedTab.component,
     });
   }
 
@@ -83,6 +84,12 @@ class CommonLayout extends PureComponent {
       top: 0,
       left: 0,
       behavior: 'smooth',
+    });
+    const { reId } = this.props;
+
+    history.push({
+      pathname: `/directory/employee-profile/${reId}/${item.link}`,
+      state: { isChangeTab: true },
     });
   };
 

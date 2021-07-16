@@ -358,7 +358,7 @@ class FormTeamMember extends PureComponent {
 
   render() {
     const {
-      match: { params: { action = '', reId = '' } = {} },
+      match: { params: { action = '', reId = '', tabName = '' } = {} },
       candidateInfo,
       loading1 = false,
       candidateInfo: {
@@ -385,6 +385,7 @@ class FormTeamMember extends PureComponent {
         component: !check ? null : (
           <BasicInformation reId={reId} loading1={loading1} processStatus={processStatus} />
         ),
+        link: 'basic-information',
       },
       {
         id: 2,
@@ -399,12 +400,14 @@ class FormTeamMember extends PureComponent {
             processStatus={processStatus}
           />
         ),
+        link: 'job-details',
       },
       {
         id: 3,
         name: 'Salary Structure',
         key: 'salaryStructure',
         component: <SalaryStructure loading={loading1} reId={reId} processStatus={processStatus} />,
+        link: 'salary-structure',
       },
       {
         id: 4,
@@ -423,7 +426,7 @@ class FormTeamMember extends PureComponent {
               processStatus={processStatus}
             />
           ),
-
+        link: 'document-verification',
         // component:
         //   processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT &&
         //   processStatus !== PROCESS_STATUS.SENT_PROVISIONAL_OFFERS ? (
@@ -446,18 +449,21 @@ class FormTeamMember extends PureComponent {
         component: (
           <OfferDetail processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />
         ),
+        link: 'offer-details',
       },
       {
         id: 6,
         name: 'Payroll Settings',
         key: 'payrollSettings',
         component: <Payroll processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />,
+        link: 'payroll-settings',
       },
       {
         id: 7,
         name: 'Benefits',
         key: 'benefits',
         component: <Benefit processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />,
+        link: 'benefits',
       },
       // {
       //   id: 8,
@@ -520,7 +526,7 @@ class FormTeamMember extends PureComponent {
               <Spin size="large" />
             </div>
           ) : (
-            <CommonLayout listMenu={formatListMenu} />
+            <CommonLayout listMenu={formatListMenu} tabName={tabName} />
           )}
         </div>
       </PageContainer>

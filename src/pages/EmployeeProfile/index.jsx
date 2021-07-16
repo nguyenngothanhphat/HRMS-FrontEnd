@@ -182,28 +182,40 @@ class EmployeeProfile extends Component {
       id: 1,
       name: 'General Info',
       component: <GeneralInfo permissions={permissions} profileOwner={profileOwner} />,
+      link: 'general-info',
     });
     if (permissions.viewTabEmployment !== -1 || profileOwner) {
       listMenu.push({
         id: 2,
         name: `Employment & Compensation`,
         component: <EmploymentTab listEmployeeActive={listEmployeeActive} />,
+        link: 'employment-compensation',
       });
     }
     if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
-      listMenu.push({ id: 3, name: 'Performance History', component: <PerformanceHistory /> });
+      listMenu.push({
+        id: 3,
+        name: 'Performance History',
+        component: <PerformanceHistory />,
+        link: 'performance-history',
+      });
     }
     if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
-      listMenu.push({ id: 4, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> });
+      listMenu.push({
+        id: 4,
+        name: 'Accounts and Paychecks',
+        component: <AccountsPaychecks />,
+        link: 'accounts-paychecks',
+      });
     }
     if (permissions.viewTabDocument !== -1 || profileOwner) {
-      listMenu.push({ id: 5, name: 'Documents', component: <Documents /> });
+      listMenu.push({ id: 5, name: 'Documents', component: <Documents />, link: 'documents' });
     }
     // if (permissions.viewTabTimeSchedule !== -1 || profileOwner) {
     //   listMenu.push({ id: 5, name: 'Time & Scheduling', component: <Test /> });
     // }
     if (permissions.viewTabBenefitPlans !== -1 || profileOwner) {
-      listMenu.push({ id: 6, name: 'Benefit Plans', component: <BenefitTab /> });
+      listMenu.push({ id: 6, name: 'Benefit Plans', component: <BenefitTab />, link: 'benefit' });
     }
 
     return listMenu;
@@ -211,20 +223,21 @@ class EmployeeProfile extends Component {
 
   render() {
     const {
-      match: { params: { reId: employee = '' } = {} },
+      match: { params: { reId: employee = '', tabName = '' } = {} },
       currentUser: { employee: currentEmployee = {} },
       permissions = {},
       location: { state: { location = '' } = {} } = {},
-      loadingFetchEmployee,
-      employeeProfile,
+      // loadingFetchEmployee,
+      // employeeProfile,
     } = this.props;
+
     const listMenu = this.renderListMenu(employee, currentEmployee?._id);
 
     const profileOwner = this.checkProfileOwner(currentEmployee?._id, employee);
 
-    const tenant = localStorage.getItem('tenantCurrentEmployee');
-    const company = localStorage.getItem('companyCurrentEmployee');
-    const id = localStorage.getItem('idCurrentEmployee');
+    // const tenant = localStorage.getItem('tenantCurrentEmployee');
+    // const company = localStorage.getItem('companyCurrentEmployee');
+    // const id = localStorage.getItem('idCurrentEmployee');
 
     return (
       <PageContainer>
@@ -234,18 +247,20 @@ class EmployeeProfile extends Component {
               <p className={styles.titlePage__text}>Employee Profile</p>
             </div>
           </Affix>
-          {tenant && company && id && !loadingFetchEmployee ? (
-            <LayoutEmployeeProfile
-              listMenu={listMenu}
-              employeeLocation={location}
-              permissions={permissions}
-              profileOwner={profileOwner}
-            />
-          ) : (
+          {/* {tenant && company && id && !loadingFetchEmployee ? ( */}
+          <LayoutEmployeeProfile
+            listMenu={listMenu}
+            tabName={tabName}
+            reId={employee}
+            employeeLocation={location}
+            permissions={permissions}
+            profileOwner={profileOwner}
+          />
+          {/* ) : (
             <div style={{ padding: '24px' }}>
               <Skeleton />
             </div>
-          )}
+          )} */}
         </div>
       </PageContainer>
     );
