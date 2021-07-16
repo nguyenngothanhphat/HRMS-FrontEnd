@@ -9,6 +9,7 @@ import {
   getListEmployee,
   getDataOrgChart,
   getListAdministrator,
+  getListExportEmployees,
 } from '../services/employee';
 import { addEmployee, updateEmployee } from '../services/employeesManagement';
 
@@ -295,7 +296,40 @@ const employee = {
         return 0;
       }
     },
+
+    *exportEmployees(
+      {
+        payload: {
+          company = [],
+          department = [],
+          location = [],
+          employeeType = [],
+          name = '',
+          title = [],
+          skill = [],
+        } = {},
+      },
+      { call },
+    ) {
+      try {
+        const response = yield call(getListExportEmployees, {
+          status: ['ACTIVE', 'INACTIVE'],
+          company,
+          department,
+          location,
+          employeeType,
+          name,
+          title,
+          skill,
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return 0;
+      }
+    },
   },
+
   reducers: {
     saveFilter(state, action) {
       const data = [...state.filter];
