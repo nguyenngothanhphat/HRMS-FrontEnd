@@ -4,10 +4,13 @@ import { Table, notification, Popover, Divider, Row, Col, Avatar, Tooltip } from
 import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
-import { history } from 'umi';
+import { history, connect } from 'umi';
 import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
 import styles from './index.less';
 
+@connect(({ locationSelection: { listLocationsByCompany = [] } = {} }) => ({
+  listLocationsByCompany,
+}))
 class HrTable extends PureComponent {
   constructor(props) {
     super(props);
@@ -95,12 +98,12 @@ class HrTable extends PureComponent {
 
   popupContent = (dataRow) => {
     // console.log(dataRow);
-    const { timezoneList } = this.props;
+    const { timezoneList, listLocationsByCompany } = this.props;
     const { currentTime } = this.state;
     const {
       employee: {
         title: { name: titleName = 'UX Lead' } = {},
-        employeeType: { name: typeName = 'Full Time' } = {},
+        employeeType: { name: typeName = '...' } = {},
         employeeId = '',
         generalInfo: {
           avatar = '',
@@ -109,6 +112,8 @@ class HrTable extends PureComponent {
           middleName = '',
           linkedIn = '',
           userId = '',
+          workEmail = '',
+          workNumber = '',
         } = {},
       } = {},
       department: { name: departmentName = '' } = {},
@@ -116,6 +121,12 @@ class HrTable extends PureComponent {
     } = dataRow;
     const fullName = `${firstName} ${middleName} ${lastName}`;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+    let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
+    filterLocation = filterLocation.filter((item) => item !== null);
+
+    const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
+      filterLocation[0];
+
     return (
       <div className={styles.popupContent}>
         <div className={styles.generalInfo}>
@@ -139,7 +150,7 @@ class HrTable extends PureComponent {
               <div className={styles.contact__title}>Mobile: </div>
             </Col>
             <Col span={16}>
-              <div className={styles.contact__value}>abccc</div>
+              <div className={styles.contact__value}>{workNumber}</div>
             </Col>
           </Row>
           <Row gutter={[24, 0]}>
@@ -147,7 +158,7 @@ class HrTable extends PureComponent {
               <div className={styles.contact__title}>Email id: </div>
             </Col>
             <Col span={16}>
-              <div className={styles.contact__value}>abc@gmail.com</div>
+              <div className={styles.contact__value}>{workEmail}</div>
             </Col>
           </Row>
           <Row gutter={[24, 0]}>
@@ -155,7 +166,7 @@ class HrTable extends PureComponent {
               <div className={styles.contact__title}>Location: </div>
             </Col>
             <Col span={16}>
-              <div className={styles.contact__value}>abccc</div>
+              <div className={styles.contact__value}>{`${state}, ${countryName}`}</div>
             </Col>
           </Row>
           <Row gutter={[24, 0]}>
@@ -308,7 +319,7 @@ class HrTable extends PureComponent {
       //   },
       // },
       {
-        title: <span className={styles.title}>Assigned </span>,
+        title: <span className={styles.title}>Assigned To</span>,
         dataIndex: 'assigned',
         width: 200,
         render: (_, row) => {
