@@ -41,7 +41,6 @@ const offboarding = {
     acceptedRequest: [],
     listOffboarding: [],
     listTeamRequest: [],
-    listAllRequest: [],
     request: [],
     sendrequest: false,
     listMyRequest: [],
@@ -50,6 +49,7 @@ const offboarding = {
     listMeetingTime: [],
     listProjectByEmployee: [],
     itemNewCreate1On1: {},
+    totalAll: [],
     totalList: [],
     totalListTeamRequest: [],
     showModalSuccessfully: false,
@@ -59,6 +59,7 @@ const offboarding = {
     customExitPackage: [],
     customClosingPackage: [],
     currentTemplate: {},
+    listRelievingFormalities: [],
     inQueuesList: [],
     closeRecordsList: [],
     itemCreateScheduleInterview: {},
@@ -71,6 +72,7 @@ const offboarding = {
     totalHoldOnList: '',
     totalRejectList: '',
     totalAcceptedList: '',
+    screenMode: 'JOB-CHANGE',
   },
   effects: {
     // my request
@@ -85,11 +87,12 @@ const offboarding = {
         const {
           statusCode,
           data: { items: listOffboarding = [], total: totalList = [], hrManager = {} } = {},
+          total: totalAll = 0,
         } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { listOffboarding, totalList, hrManager, total: response.total },
+          payload: { listOffboarding, totalList, hrManager, total: response.total, totalAll },
         });
         return listOffboarding;
       } catch (errors) {
@@ -112,86 +115,12 @@ const offboarding = {
             total: totalListTeamRequest = [],
             hrManager = {},
           } = {},
+          total: totalAll = [],
         } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { listTeamRequest, totalListTeamRequest, hrManager, total: response.total },
-        });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-    *fetchListAllRequest({ payload }, { call, put }) {
-      try {
-        const resInProgress = yield call(teamRequestList, {
-          ...payload,
-          status: 'IN-PROGRESS',
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
-        });
-        const resOnHold = yield call(teamRequestList, {
-          ...payload,
-          status: 'ON-HOLD',
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
-        });
-        const resAccepted = yield call(teamRequestList, {
-          ...payload,
-          status: 'ACCEPTED',
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
-        });
-        const resRejected = yield call(teamRequestList, {
-          ...payload,
-          status: 'REJECTED',
-          company: getCurrentCompany(),
-          tenantId: getCurrentTenant(),
-        });
-
-        const {
-          // statusCodeIP,
-          data: {
-            items: listInProgress = [],
-            total: totalInProgress = [],
-            hrManager: hrManagerInProgress = {},
-          } = {},
-          // total: totalInProgress
-        } = resInProgress;
-        const {
-          // statusCodeOH,
-          data: { items: listOnHold = [], hrManager: hrManagerOnHold = {} } = {},
-        } = resOnHold;
-        const {
-          // statusCodeAcc,
-          data: { items: listAccepted = [], hrManager: hrManagerAccepted = {} } = {},
-        } = resAccepted;
-        const {
-          // statusCodeRJ,
-          data: { items: listRejected = [], hrManager: hrManagerRejected = {} } = {},
-        } = resRejected;
-
-        // if (statusCodeIP !== 200) throw resInProgress;
-        // if (statusCodeOH !== 200) throw resOnHold;
-        // if (statusCodeAcc !== 200) throw resAccepted;
-        // if (statusCodeRJ !== 200) throw resRejected;
-
-        const listAll = [...listInProgress, ...listOnHold, ...listAccepted, ...listRejected];
-        const hrManagerAll = [
-          hrManagerInProgress,
-          hrManagerOnHold,
-          hrManagerAccepted,
-          hrManagerRejected,
-        ];
-
-        yield put({
-          type: 'save',
-          payload: {
-            totalListTeamRequest: totalInProgress,
-            listAllRequest: listAll,
-            hrManagerAll,
-            total: resInProgress.total + resRejected.total + resAccepted.total + resOnHold.total,
-          },
+          payload: { listTeamRequest, totalListTeamRequest, hrManager, totalAll },
         });
       } catch (errors) {
         dialog(errors);
@@ -502,7 +431,8 @@ const offboarding = {
             yield put({ type: 'save', payload: { inQueuesList: data.result } });
             break;
           default:
-            return null;
+            yield put({ type: 'save', payload: { listRelievingFormalities: data.result } });
+            break;
         }
       } catch (errors) {
         dialog(errors);

@@ -117,11 +117,17 @@
         cursor: pointer;
       }
     }
-  }
+  } 
 }
 
+:global {
+  .ant-popover-inner{
+    border-radius: 8px;
+  }
+}  
+
 .popupContent{
-  width: 300px;
+  width: 300px; 
 
   .generalInfo{
     width: 100%;
@@ -165,6 +171,30 @@
       font-weight: 400;
       font-style: normal;
       color: #161c29;
+    }
+  }
+
+  .popupActions{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    &__link{
+      color: #2c6df9;
+      font-weight: 500;
+      font-size: 13px;
+      font-style: normal;
+      line-height: 15px;
+      text-decoration-line: underline;
+      cursor: pointer;
+    }
+
+    &__actions {
+      width: 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
   }
 }

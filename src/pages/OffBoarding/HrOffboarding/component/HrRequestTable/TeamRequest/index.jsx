@@ -3,9 +3,9 @@ import { connect } from 'umi';
 import HrTable from '../TableHRManager';
 import Summary from '../Summary';
 
-@connect(({ loading, offboarding: { list } = {} }) => ({
+@connect(({ loading, offboarding: { totalAll = '' } = {} }) => ({
   loading: loading.effects['offboarding/fetchListTeamRequest'],
-  loadingAll: loading.effects['offboarding/fetchListAllRequest'],
+  totalAll,
 }))
 class TabContent extends Component {
   constructor(props) {
@@ -14,7 +14,7 @@ class TabContent extends Component {
       selectedFilterTab: '1',
       pageSelected: 1,
       size: 10,
-      tabId: 1,
+      // tabId: 1,
     };
   }
 
@@ -33,21 +33,77 @@ class TabContent extends Component {
     });
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   const { selectedFilterTab } = this.state;
-  //   const { selectedFilterTab: nextTabId } = nextState;
-  //   if (selectedFilterTab !== nextTabId) {
-  //     this.initDataTable(nextTabId);
-  //   }
-  //   return true;
-  // }
+  componentDidUpdate(prevProps, prevState) {
+    const { dispatch, location = [] } = this.props;
+    const { selectedFilterTab, pageSelected, size } = this.state;
+    if (prevState.pageSelected !== pageSelected || prevState.size !== size) {
+      this.initDataTable(selectedFilterTab);
+    }
+    if (prevState.selectedFilterTab !== selectedFilterTab) {
+      if (selectedFilterTab === '1') {
+        dispatch({
+          type: 'offboarding/fetchListTeamRequest',
+          payload: {
+            // status: ['IN-PROGRESS', 'ON-HOLD', 'ACCEPTED', 'REJECTED'],
+            location,
+            page: 1,
+            limit: size,
+          },
+        });
+      }
+      if (selectedFilterTab === '2') {
+        dispatch({
+          type: 'offboarding/fetchListTeamRequest',
+          payload: {
+            status: 'IN-PROGRESS',
+            location,
+            page: 1,
+            limit: size,
+          },
+        });
+      }
+      if (selectedFilterTab === '3') {
+        dispatch({
+          type: 'offboarding/fetchListTeamRequest',
+          payload: {
+            status: 'ON-HOLD',
+            location,
+            page: 1,
+            limit: size,
+          },
+        });
+      }
+      if (selectedFilterTab === '4') {
+        dispatch({
+          type: 'offboarding/fetchListTeamRequest',
+          payload: {
+            status: 'ACCEPTED',
+            location,
+            page: 1,
+            limit: size,
+          },
+        });
+      }
+      if (selectedFilterTab === '5') {
+        dispatch({
+          type: 'offboarding/fetchListTeamRequest',
+          payload: {
+            status: 'REJECTED',
+            location,
+            page: 1,
+            limit: size,
+          },
+        });
+      }
+    }
+  }
 
   initDataTable = (tabId) => {
     const { dispatch, location = [] } = this.props;
     const { pageSelected, size } = this.state;
     if (tabId === '1') {
       dispatch({
-        type: 'offboarding/fetchListAllRequest',
+        type: 'offboarding/fetchListTeamRequest',
         payload: {
           // status: ['IN-PROGRESS', 'ON-HOLD', 'ACCEPTED', 'REJECTED'],
           location,
@@ -133,26 +189,21 @@ class TabContent extends Component {
   render() {
     const {
       data = [],
-      dataAll = [],
       countdata,
       loading,
-      loadingAll,
       hrManager = {},
-      // loadingSearch,
+      loadingSearch,
       timezoneList,
-      total = '',
+      totalAll = '',
     } = this.props;
     const { selectedFilterTab = '1', pageSelected, size } = this.state;
-    const isTabAccept = selectedFilterTab === '3';
-    const isTabAll = selectedFilterTab === '1';
+    const isTabAccept = selectedFilterTab === '4';
     return (
       <>
         <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
         <HrTable
           data={data}
-          dataAll={dataAll}
-          // loading={loadingAll || loading |}
-          isTabAll={isTabAll}
+          loading={loading || loadingSearch}
           isTabAccept={isTabAccept}
           moveToRelieving={this.moveToRelieving}
           hrManager={hrManager}
@@ -160,7 +211,7 @@ class TabContent extends Component {
           pageSelected={pageSelected}
           size={size}
           getPageAndSize={this.getPageAndSize}
-          total={total}
+          total={totalAll}
         />
       </>
     );

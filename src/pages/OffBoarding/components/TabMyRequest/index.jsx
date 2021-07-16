@@ -38,18 +38,13 @@ class RenderRequest extends Component {
       case '1':
         dispatch({
           type: 'offboarding/fetchList',
-          payload: {
-            status: 'IN-PROGRESS',
-            page: pageSelected,
-            limit: size,
-          },
         });
         break;
       case '2':
         dispatch({
           type: 'offboarding/fetchList',
           payload: {
-            status: 'ON-HOLD',
+            status: 'IN-PROGRESS',
             page: pageSelected,
             limit: size,
           },
@@ -59,7 +54,7 @@ class RenderRequest extends Component {
         dispatch({
           type: 'offboarding/fetchList',
           payload: {
-            status: 'ACCEPTED',
+            status: 'ON-HOLD',
             page: pageSelected,
             limit: size,
           },
@@ -69,7 +64,7 @@ class RenderRequest extends Component {
         dispatch({
           type: 'offboarding/fetchList',
           payload: {
-            status: 'REJECTED',
+            status: 'ACCEPTED',
             page: pageSelected,
             limit: size,
           },
@@ -79,13 +74,23 @@ class RenderRequest extends Component {
         dispatch({
           type: 'offboarding/fetchList',
           payload: {
-            status: 'DRAFT',
+            status: 'REJECTED',
             page: pageSelected,
             limit: size,
           },
         });
         break;
       case '6':
+        dispatch({
+          type: 'offboarding/fetchList',
+          payload: {
+            status: 'DRAFT',
+            page: pageSelected,
+            limit: size,
+          },
+        });
+        break;
+      case '7':
         dispatch({
           type: 'offboarding/fetchList',
           payload: {
@@ -115,13 +120,14 @@ class RenderRequest extends Component {
   };
 
   render() {
-    const { data = [], countdata = [], loading, hrManager = {}, total } = this.props;
+    const { data = [], timezoneList, countdata = [], loading, hrManager = {}, total } = this.props;
     const { pageSelected, size } = this.state;
 
     return (
       <>
         <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
         <MyRequestTable
+          timezoneList={timezoneList}
           data={data}
           loading={loading}
           hrManager={hrManager}
