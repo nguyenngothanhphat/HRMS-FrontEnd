@@ -33,6 +33,8 @@ import {
   sendClosePackage,
   closeEmplRecord,
   submitToHr,
+  getListAssigneeHr,
+  assignToHr,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -67,6 +69,7 @@ const offboarding = {
     listAssignee: [],
     hrManager: {},
     terminateData: {},
+    listAssigneeHr: [],
   },
   effects: {
     *fetchList({ payload }, { call, put }) {
@@ -707,6 +710,38 @@ const offboarding = {
         const response = yield call(submitToHr, {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *getListAssigneeHr(_, { put, call }) {
+      try {
+        const response = yield call(getListAssigneeHr, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          location: getCurrentLocation(),
+        });
+        const { statusCode, data: listAssigneeHr = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { listAssigneeHr },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *assignToHr({ payload }, { call }) {
+      try {
+        const response = yield call(assignToHr, {
+          tenantId: getCurrentTenant(),
+          ...payload,
         });
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;

@@ -217,3 +217,17 @@ export async function submitToHr(payload) {
     data: payload,
   });
 }
+
+export async function getListAssigneeHr(payload) {
+  return request('/api/offboardingrequesttenant/get-list-assigneeHR', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function assignToHr(payload) {
+  return request('/api/offboardingrequesttenant/change-assigneeHR', {
+    method: 'POST',
+    data: payload,
+  });
+}
