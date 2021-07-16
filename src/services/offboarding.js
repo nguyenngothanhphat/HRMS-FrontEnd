@@ -130,7 +130,7 @@ export async function getListAssignee(payload) {
 }
 
 export async function searchListRelieving(payload) {
-  return request('/api/offboardingrequesttenant/search-request', {
+  return request('/api/offboardingrequesttenant/list-relieving', {
     method: 'POST',
     data: payload,
   });

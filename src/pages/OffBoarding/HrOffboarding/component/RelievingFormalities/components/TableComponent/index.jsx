@@ -154,28 +154,29 @@ class TableComponent extends PureComponent {
     );
   };
 
-  _renderEmployeeId = (id) => {
-    const { data = [] } = this.props;
-    const newItem = data?.filter((item) => item._id === id);
-    return newItem[0].employee.generalInfo.employeeId;
+  _renderEmployeeId = (employee) => {
+    // const { data = [] } = this.props;
+    // const newItem = data?.filter((item) => item._id === id);
+    // return newItem[0].employee.generalInfo.employeeId;
+    const { employeeId = '' } = employee;
+    return employeeId;
   };
 
-  _renderEmployeeName = (id) => {
-    const { data = [] } = this.props;
-    const newItem = data?.filter((item) => item._id === id);
+  _renderEmployeeName = (employee, row) => {
+    const { generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {} } =
+      employee;
+    const fullName = `${firstName} ${middleName} ${lastName}`;
     return (
       <Popover
-        content={() => this.popupContent(newItem[0])}
+        content={() => this.popupContent(row)}
         // title={location.name}
         trigger="hover"
       >
         <span
-          onClick={() =>
-            history.push(`/directory/employee-profile/${newItem[0].employee.generalInfo.userId}`)
-          }
+          onClick={() => history.push(`/directory/employee-profile/${userId}`)}
           className={styles.requteeName}
         >
-          {newItem[0].employee.generalInfo.legalName}
+          {fullName}
         </span>
       </Popover>
     );
@@ -223,13 +224,13 @@ class TableComponent extends PureComponent {
       },
       {
         title: <span className={styles.title}>Employee ID </span>,
-        dataIndex: '_id',
-        render: (_id) => this._renderEmployeeId(_id),
+        dataIndex: 'employee',
+        render: (employee) => this._renderEmployeeId(employee),
       },
       {
         title: <span className={styles.title}>Requ’tee Name </span>,
-        dataIndex: '_id',
-        render: (_id) => this._renderEmployeeName(_id),
+        dataIndex: 'employee',
+        render: (employee, row) => this._renderEmployeeName(employee, row),
         width: 180,
       },
       {

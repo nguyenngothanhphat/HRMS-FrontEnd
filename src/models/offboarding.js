@@ -1,4 +1,4 @@
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import {
@@ -405,19 +405,20 @@ const offboarding = {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
+          location: [getCurrentLocation()],
         });
         const { relievingStatus } = payload;
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         switch (relievingStatus) {
           case 'CLOSE-RECORDS':
-            yield put({ type: 'save', payload: { closeRecordsList: data.result } });
+            yield put({ type: 'save', payload: { closeRecordsList: data.items } });
             break;
           case 'IN-QUEUES':
-            yield put({ type: 'save', payload: { inQueuesList: data.result } });
+            yield put({ type: 'save', payload: { inQueuesList: data.items } });
             break;
           default:
-            yield put({ type: 'save', payload: { listRelievingFormalities: data.result } });
+            yield put({ type: 'save', payload: { listRelievingFormalities: data.items } });
             break;
         }
       } catch (errors) {
