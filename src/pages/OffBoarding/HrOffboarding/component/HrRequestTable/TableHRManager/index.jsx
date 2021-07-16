@@ -213,6 +213,118 @@ class HrTable extends PureComponent {
     );
   };
 
+  popupContentHr = (data) => {
+    const { timezoneList, listLocationsByCompany } = this.props;
+    const { currentTime } = this.state;
+    const {
+      generalInfo: {
+        legalName = '',
+        userId = '',
+        workEmail = '',
+        workNumber = '',
+        avatar = '',
+        linkedIn = '',
+      } = {},
+      employeeId = 'abc',
+      title: { name: titleName = '' } = {},
+      employeeType: { name: typeName } = {},
+      department: { name: departmentName = '' } = {},
+      location: { _id = '' } = {},
+    } = data;
+    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+    // let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
+    // filterLocation = filterLocation.filter((item) => item !== null);
+
+    // const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
+    //   filterLocation[0];
+
+    return (
+      <div className={styles.popupContent}>
+        <div className={styles.generalInfo}>
+          <div className={styles.avatar}>
+            <Avatar src={avatar} size={60} icon={<UserOutlined />} />
+          </div>
+          <div className={styles.employeeInfo}>
+            <div className={styles.employeeInfo__name}>{legalName}</div>
+            <div className={styles.employeeInfo__department}>
+              {titleName}, {departmentName} Dept.
+            </div>
+            <div className={styles.employeeInfo__emplId}>
+              {employeeId} | {typeName}
+            </div>
+          </div>
+        </div>
+        <Divider className={styles.divider} />
+        <div className={styles.contact}>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Mobile: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>{workNumber}</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Email id: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>{workEmail}</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Location: </div>
+            </Col>
+            <Col span={16}>
+              {/* <div className={styles.contact__value}>{`${state}, ${countryName}`}</div> */}
+              <div className={styles.contact__value}>HCM</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Local Time: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>
+                {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
+                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
+                  : 'Not enough data in address'}
+              </div>
+            </Col>
+          </Row>
+        </div>
+        <Divider className={styles.divider} />
+        <div className={styles.popupActions}>
+          <div
+            className={styles.popupActions__link}
+            onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+          >
+            View full profile
+          </div>
+          <div className={styles.popupActions__actions}>
+            <Tooltip title="Email">
+              <img
+                src="/assets/images/iconMail.svg"
+                alt="img-arrow"
+                style={{ marginLeft: '5px', cursor: 'pointer' }}
+              />
+            </Tooltip>
+            <Tooltip title="LinkedIn">
+              <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
+                <img
+                  src="/assets/images/iconLinkedin.svg"
+                  alt="img-arrow"
+                  style={{ cursor: 'pointer' }}
+                />
+              </a>
+            </Tooltip>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     const { pageNavigation } = this.state;
     const {
@@ -285,11 +397,7 @@ class HrTable extends PureComponent {
         render: (employee, row) => {
           const { generalInfo = {} } = employee;
           return (
-            <Popover
-              content={() => this.popupContent(row)}
-              // title={location.name}
-              trigger="hover"
-            >
+            <Popover content={() => this.popupContent(row)} trigger="hover">
               <p
                 className={styles.requteeName}
                 onClick={() => history.push(`/directory/employee-profile/${generalInfo.userId}`)}
@@ -322,19 +430,16 @@ class HrTable extends PureComponent {
         title: <span className={styles.title}>Assigned To</span>,
         dataIndex: 'assigned',
         width: 200,
-        render: (_, row) => {
+        render: () => {
           const {
             hrManager: {
               generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {},
             } = {},
+            hrManager = {},
           } = this.props;
           const fullName = `${firstName} ${middleName} ${lastName}`;
           return (
-            <Popover
-              content={() => this.popupContent(row)}
-              // title={location.name}
-              trigger="hover"
-            >
+            <Popover content={() => this.popupContentHr(hrManager)} trigger="hover">
               <p
                 className={styles.assignee}
                 onClick={() => history.push(`/directory/employee-profile/${userId}`)}
@@ -349,19 +454,16 @@ class HrTable extends PureComponent {
         title: <span className={styles.title}>HR Manager </span>,
         dataIndex: 'hr-manager',
         width: 200,
-        render: (_, row) => {
+        render: () => {
           const {
             hrManager: {
               generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {},
             } = {},
+            hrManager = {},
           } = this.props;
           const fullName = `${firstName} ${middleName} ${lastName}`;
           return (
-            <Popover
-              content={() => this.popupContent(row)}
-              // title={location.name}
-              trigger="hover"
-            >
+            <Popover content={() => this.popupContentHr(hrManager)} trigger="hover">
               <p
                 className={styles.assignee}
                 onClick={() => history.push(`/directory/employee-profile/${userId}`)}
