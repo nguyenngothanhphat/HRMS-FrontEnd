@@ -13,6 +13,7 @@ import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { notification } from 'antd';
+import moment from 'moment';
 
 // const employeeList = rookieList.filter(
 //   (rookie) => rookie.isNew === undefined || rookie.isNew === null,
@@ -174,17 +175,7 @@ const formatDay = (day) => {
 };
 
 const formatDate = (date) => {
-  if (!date) {
-    return '';
-  }
-  const dateObj = new Date(date);
-  const month = dateObj.getUTCMonth(); // months from 1-12
-  // const month = dateObj.getUTCMonth() + 1; // months from 1-12
-  const day = dateObj.getUTCDate();
-  const year = dateObj.getUTCFullYear();
-
-  const newDate = `${formatDay(day)} ${formatMonth(month).substring(0, 3)}, ${year}`;
-  return newDate;
+  return date ? moment(date).locale('en').format('MM.DD.YY') : '';
 };
 
 const dateDiffInDays = (a, b) => {
@@ -213,12 +204,12 @@ const formatData = (list = []) => {
       title = '',
       workLocation = '',
       dateOfJoining = '',
-      requestDate = '',
+      // requestDate = '',
       receiveDate = '',
       sentDate = '',
-      expireDate = '',
+      offerExpirationDate = '',
       updatedAt = '',
-      // createdAt = '',
+      createdAt = '',
       comments = '',
       assignTo = {},
       assigneeManager = {},
@@ -227,8 +218,9 @@ const formatData = (list = []) => {
     const dateSent = formatDate(sentDate) || '';
     const dateReceived = formatDate(receiveDate) || '';
     const dateJoin = formatDate(dateOfJoining) || '';
-    const dateRequest = formatDate(requestDate) || '';
-    const expire = formatDate(expireDate) || '';
+    const dateRequest = formatDate(createdAt) || '';
+    const expire = formatDate(offerExpirationDate) || '';
+
     let isNew = false;
     let fullName = `${firstName || ''} ${middleName || ''} ${lastName || ''}`;
     if (!middleName) fullName = `${firstName || ''} ${lastName || ''}`;
