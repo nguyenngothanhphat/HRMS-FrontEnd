@@ -13,6 +13,7 @@ import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { notification } from 'antd';
+import moment from 'moment';
 
 // const employeeList = rookieList.filter(
 //   (rookie) => rookie.isNew === undefined || rookie.isNew === null,
@@ -137,10 +138,6 @@ const processStatusName = {
   'REJECT-FINAL-OFFER-CANDIDATE': 'Final Offers',
 };
 
-const getProcessStatusName = (name) => {
-  return processStatusName[name];
-};
-
 const formatMonth = (month) => {
   const monthNames = [
     'January',
@@ -178,17 +175,7 @@ const formatDay = (day) => {
 };
 
 const formatDate = (date) => {
-  if (!date) {
-    return '';
-  }
-  const dateObj = new Date(date);
-  const month = dateObj.getUTCMonth(); // months from 1-12
-  // const month = dateObj.getUTCMonth() + 1; // months from 1-12
-  const day = dateObj.getUTCDate();
-  const year = dateObj.getUTCFullYear();
-
-  const newDate = `${formatDay(day)} ${formatMonth(month).substring(0, 3)}, ${year}`;
-  return newDate;
+  return date ? moment(date).locale('en').format('MM.DD.YY') : '';
 };
 
 const dateDiffInDays = (a, b) => {
@@ -217,12 +204,12 @@ const formatData = (list = []) => {
       title = '',
       workLocation = '',
       dateOfJoining = '',
-      requestDate = '',
+      // requestDate = '',
       receiveDate = '',
       sentDate = '',
-      expireDate = '',
+      offerExpirationDate = '',
       updatedAt = '',
-      // createdAt = '',
+      createdAt = '',
       comments = '',
       assignTo = {},
       assigneeManager = {},
@@ -231,8 +218,9 @@ const formatData = (list = []) => {
     const dateSent = formatDate(sentDate) || '';
     const dateReceived = formatDate(receiveDate) || '';
     const dateJoin = formatDate(dateOfJoining) || '';
-    const dateRequest = formatDate(requestDate) || '';
-    const expire = formatDate(expireDate) || '';
+    const dateRequest = formatDate(createdAt) || '';
+    const expire = formatDate(offerExpirationDate) || '';
+
     let isNew = false;
     let fullName = `${firstName || ''} ${middleName || ''} ${lastName || ''}`;
     if (!middleName) fullName = `${firstName || ''} ${lastName || ''}`;
@@ -259,7 +247,7 @@ const formatData = (list = []) => {
       changeRequest: '-',
       assignTo,
       assigneeManager,
-      processStatus: getProcessStatusName(processStatus),
+      processStatus: processStatusName[processStatus],
       processStatusId: processStatus,
     };
     formatList.push(rookie);
@@ -345,138 +333,6 @@ const onboard = {
   },
 
   effects: {
-    // eslint-disable-next-line no-shadow
-    *fetchAllOnboardList(_, { put }) {
-      try {
-        const {
-          PROVISIONAL_OFFER_DRAFT,
-          FINAL_OFFERS_DRAFT,
-
-          SENT_PROVISIONAL_OFFERS,
-          ACCEPTED_PROVISIONAL_OFFERS,
-          RENEGOTIATE_PROVISIONAL_OFFERS,
-
-          PENDING,
-          ELIGIBLE_CANDIDATES,
-          INELIGIBLE_CANDIDATES,
-
-          SENT_FOR_APPROVAL,
-          APPROVED_OFFERS,
-
-          SENT_FINAL_OFFERS,
-          ACCEPTED_FINAL_OFFERS,
-          RENEGOTIATE_FINAL_OFFERS,
-
-          PROVISIONAL_OFFERS,
-          FINAL_OFFERS,
-        } = PROCESS_STATUS;
-
-        // 1
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: PROVISIONAL_OFFER_DRAFT,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: FINAL_OFFERS_DRAFT,
-          },
-        });
-
-        // 2
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: SENT_PROVISIONAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: ACCEPTED_PROVISIONAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: RENEGOTIATE_PROVISIONAL_OFFERS,
-          },
-        });
-
-        // 3
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: PENDING,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: ELIGIBLE_CANDIDATES,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: INELIGIBLE_CANDIDATES,
-          },
-        });
-
-        // 4
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: SENT_FOR_APPROVAL,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: APPROVED_OFFERS,
-          },
-        });
-
-        // 5
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: SENT_FINAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: ACCEPTED_FINAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: RENEGOTIATE_FINAL_OFFERS,
-          },
-        });
-
-        // 6
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: PROVISIONAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: FINAL_OFFERS,
-          },
-        });
-      } catch (error) {
-        dialog(error);
-      }
-    },
-
     *fetchOnboardListAll({ payload }, { call, put }) {
       try {
         const { processStatus = '', page, limit } = payload;
@@ -501,7 +357,7 @@ const onboard = {
           payload: returnedData,
         });
         yield put({
-          type: 'save',
+          type: 'saveTotal',
           payload: {
             total: response.total,
           },
@@ -567,6 +423,13 @@ const onboard = {
 
         yield put({
           type: 'fetchTotalNumberOfOnboardingListEffect',
+        });
+
+        yield put({
+          type: 'saveTotal',
+          payload: {
+            total: response.total,
+          },
         });
 
         // Fetch data
@@ -889,6 +752,15 @@ const onboard = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveTotal(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          ...action.payload,
+        },
       };
     },
 

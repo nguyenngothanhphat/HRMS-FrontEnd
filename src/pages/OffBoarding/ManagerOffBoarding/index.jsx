@@ -10,7 +10,6 @@ import TeamRequest from './component/TeamRequest';
 import MyRequestContent from '../components/TabMyRequest';
 import TableSearch from './component/TableSearch';
 import styles from './index.less';
-import ViewInitialManager from './component/ViewInitialManager';
 
 @connect(
   ({
@@ -20,7 +19,6 @@ import ViewInitialManager from './component/ViewInitialManager';
       listOffboarding = [],
       totalList = [],
       hrManager = {},
-      screenMode = '',
     } = {},
     user: {
       currentUser: {
@@ -38,7 +36,6 @@ import ViewInitialManager from './component/ViewInitialManager';
     listTeamRequest,
     hrManager,
     listLocationsByCompany,
-    screenMode,
   }),
 )
 class ManagerOffBoading extends Component {
@@ -145,7 +142,6 @@ class ManagerOffBoading extends Component {
       listOffboarding = [],
       totalList = [],
       hrManager = {},
-      screenMode = '',
     } = this.props;
     const { dataListTeamRequest, loadingSearch, timezoneList } = this.state;
 
@@ -156,69 +152,65 @@ class ManagerOffBoading extends Component {
 
     return (
       <PageContainer>
-        {screenMode === 'JOB-CHANGE' ? (
-          <ViewInitialManager />
-        ) : (
-          <div className={styles.managerContainer}>
-            <Affix offsetTop={30}>
-              <div className={styles.titlePage}>
-                <p className={styles.titlePage__text}>
-                  Terminate work relationship / Initiate Resignation Request
-                </p>
+        <div className={styles.managerContainer}>
+          <Affix offsetTop={30}>
+            <div className={styles.titlePage}>
+              <p className={styles.titlePage__text}>
+                Terminate work relationship / Initiate Resignation Request
+              </p>
+            </div>
+          </Affix>
+          <Row className={styles.content}>
+            <Col span={24}>
+              <div className={styles.content__top}>
+                <div className={styles.text}>Team Requests</div>
+                <>
+                  {!checkSendRequest && (
+                    <Button className={styles.btnInitiate}>
+                      <Link to="/offboarding/resignation-request">
+                        <span className={styles.btnText}>Initiate Resignation Request</span>
+                      </Link>
+                    </Button>
+                  )}
+                </>
               </div>
-            </Affix>
-            <Row className={styles.content}>
-              <Col span={24}>
-                <div className={styles.content__top}>
-                  <div className={styles.text}>Team Requests</div>
-                  <>
-                    {!checkSendRequest && (
-                      <Button className={styles.btnInitiate}>
-                        <Link to="/offboarding/resignation-request">
-                          <span className={styles.btnText}>Initiate Resignation Request</span>
-                        </Link>
-                      </Button>
-                    )}
-                  </>
-                </div>
-              </Col>
-              <Col span={24}>
-                <Tabs
-                  defaultActiveKey="1"
-                  className={styles.tabComponent}
-                  tabBarExtraContent={<TableSearch onSearch={this.onSearch} />}
-                >
-                  <TabPane tab="Team Requests" key="1">
-                    <div className={styles.tableTab}>
-                      <TeamRequest
-                        data={dataListTeamRequest}
-                        countdata={totalListTeamRequest}
-                        hrManager={hrManager}
-                        loadingSearch={loadingSearch}
-                        timezoneList={timezoneList}
-                      />
-                    </div>
-                  </TabPane>
-                  <TabPane tab="My Requests" key="2">
-                    <div className={styles.tableTab}>
-                      <MyRequestContent
-                        data={listOffboarding}
-                        countdata={totalList}
-                        hrManager={hrManager}
-                        timezoneList={timezoneList}
-                      />
-                    </div>
-                  </TabPane>
-                  {/* <TabPane tab="Assigned" key="3">
+            </Col>
+            <Col span={24}>
+              <Tabs
+                defaultActiveKey="1"
+                className={styles.tabComponent}
+                tabBarExtraContent={<TableSearch onSearch={this.onSearch} />}
+              >
+                <TabPane tab="Team Requests" key="1">
+                  <div className={styles.tableTab}>
+                    <TeamRequest
+                      data={dataListTeamRequest}
+                      countdata={totalListTeamRequest}
+                      hrManager={hrManager}
+                      loadingSearch={loadingSearch}
+                      timezoneList={timezoneList}
+                    />
+                  </div>
+                </TabPane>
+                <TabPane tab="My Requests" key="2">
+                  <div className={styles.tableTab}>
+                    <MyRequestContent
+                      data={listOffboarding}
+                      countdata={totalList}
+                      hrManager={hrManager}
+                      timezoneList={timezoneList}
+                    />
+                  </div>
+                </TabPane>
+                {/* <TabPane tab="Assigned" key="3">
                   <div style={{ padding: '10px 18px' }}>
                     <TableAssigned />
                   </div>
                 </TabPane> */}
-                </Tabs>
-              </Col>
-            </Row>
-          </div>
-        )}
+              </Tabs>
+            </Col>
+          </Row>
+        </div>
       </PageContainer>
     );
   }

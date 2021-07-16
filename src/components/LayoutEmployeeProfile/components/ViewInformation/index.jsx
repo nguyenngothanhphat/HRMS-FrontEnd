@@ -208,19 +208,20 @@ class ViewInformation extends Component {
   };
 
   redirectOffboarding = () => {
-    const { roles = [], dispatch } = this.props;
+    const { roles = [] } = this.props;
     const checkRoleHrAndManager =
       roles.includes(HR_MANAGER) || roles.includes(HR_EMPLOYEE) || roles.includes(MANAGER);
     if (checkRoleHrAndManager) {
-      dispatch({
-        type: 'offboarding/save',
-        payload: {
-          screenMode: 'JOB-CHANGE',
-        },
+      localStorage.setItem('initViewOffboarding', true);
+      history.push({
+        pathname: '/offboarding',
+        state: { isEmployeeMode: true },
       });
-      history.push('/offboarding');
     } else {
-      history.push('/offboarding');
+      history.push({
+        pathname: '/offboarding',
+        state: { isEmployeeMode: false },
+      });
     }
   };
 

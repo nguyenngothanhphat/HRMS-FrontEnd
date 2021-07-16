@@ -23,11 +23,12 @@ export default class Summary extends PureComponent {
   getTotalCount = () => {
     const { countdata = [] } = this.props;
     let total = 0;
+
     if (countdata.length > 0) {
       if (countdata.length === 1) {
         total = countdata[0].count;
       } else {
-        total = countdata.reduce((a, b) => a.count + b.count);
+        total = countdata.reduce((a, b) => a + b.count, 0);
       }
     }
 

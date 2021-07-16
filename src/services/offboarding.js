@@ -130,7 +130,7 @@ export async function getListAssignee(payload) {
 }
 
 export async function searchListRelieving(payload) {
-  return request('/api/offboardingrequesttenant/search-request', {
+  return request('/api/offboardingrequesttenant/list-relieving', {
     method: 'POST',
     data: payload,
   });
@@ -213,6 +213,20 @@ export async function closeEmplRecord(payload) {
 
 export async function submitToHr(payload) {
   return request('/api/offboardingrequesttenant/submit-to-hr', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getListAssigneeHr(payload) {
+  return request('/api/offboardingrequesttenant/get-list-assigneeHR', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function assignToHr(payload) {
+  return request('/api/offboardingrequesttenant/change-assigneeHR', {
     method: 'POST',
     data: payload,
   });

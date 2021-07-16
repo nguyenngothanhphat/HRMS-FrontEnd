@@ -572,6 +572,46 @@ class DirectoryComponent extends PureComponent {
     });
   };
 
+  exportEmployyees = async () => {
+    const { dispatch } = this.props;
+    const { department, employeeType, title, filterName } = this.state;
+    const { companiesOfUser = [], listLocationsByCompany = [] } = this.props;
+    const currentLocation = getCurrentLocation();
+    const currentCompany = getCurrentCompany();
+    const companyList = companiesOfUser.filter(
+      (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
+    );
+    const getLocation = listLocationsByCompany.filter((item) => item._id === currentLocation);
+    const convertLocation = getLocation.map((item) => {
+      const { headQuarterAddress: { country: { _id = '' } = {}, state: nameState = '' } = {} } =
+        item;
+      return {
+        country: _id,
+        state: [nameState],
+      };
+    });
+
+    const payload = {
+      company: companyList,
+      name: filterName,
+      department,
+      location: convertLocation,
+      employeeType,
+      title,
+    };
+    const getListExport = await dispatch({
+      type: 'employee/exportEmployees',
+      payload,
+    });
+
+    const downloadLink = document.createElement('a');
+    downloadLink.href = `data:text/csv;charset=utf-8,${escape(getListExport)}`;
+    downloadLink.download = 'data.csv';
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
+  };
+
   importEmployees = () => {
     this.openFormImportEmployees();
   };
@@ -664,6 +704,16 @@ class DirectoryComponent extends PureComponent {
             </p>
           </div>
         )}
+
+        {findIndexImport && (
+          <div className={styles.buttonAddImport} onClick={this.exportEmployyees}>
+            <img src={iconDownload} alt="Download Template" />
+            <p className={styles.buttonAddImport_text}>
+              {formatMessage({ id: 'pages_admin.employees.table.exportEmployees' })}
+            </p>
+          </div>
+        )}
+
         {findIndexImport && (
           <div className={styles.buttonAddImport} onClick={this.importEmployees}>
             <img

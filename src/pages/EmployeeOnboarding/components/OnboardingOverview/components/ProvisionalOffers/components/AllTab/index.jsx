@@ -15,7 +15,7 @@ const {
   ASSIGN_TO,
   ASSIGNEE_MANAGER,
   PROCESS_STATUS,
-  // ACTION,
+  ACTION,
 } = COLUMN_NAME;
 const { ALL } = TABLE_TYPE;
 
@@ -35,7 +35,7 @@ class AllTab extends PureComponent {
           ASSIGN_TO,
           ASSIGNEE_MANAGER,
           PROCESS_STATUS,
-          // ACTION,
+          ACTION,
         ]}
         type={ALL}
         inTab
