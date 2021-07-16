@@ -501,7 +501,7 @@ const onboard = {
           payload: returnedData,
         });
         yield put({
-          type: 'save',
+          type: 'saveTotal',
           payload: {
             total: response.total,
           },
@@ -889,6 +889,15 @@ const onboard = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveTotal(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          ...action.payload,
+        },
       };
     },
 
