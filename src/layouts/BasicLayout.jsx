@@ -143,12 +143,7 @@ const BasicLayout = (props) => {
       roles.includes(HR_MANAGER) || roles.includes(HR_EMPLOYEE) || roles.includes(MANAGER);
 
     if (path === '/offboarding' && checkRoleHrAndManager) {
-      dispatch({
-        type: 'offboarding/save',
-        payload: {
-          screenMode: 'MENU',
-        },
-      });
+      localStorage.setItem('initViewOffboarding', false);
     }
   };
 

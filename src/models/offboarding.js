@@ -1,4 +1,4 @@
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import {
@@ -33,6 +33,8 @@ import {
   sendClosePackage,
   closeEmplRecord,
   submitToHr,
+  getListAssigneeHr,
+  assignToHr,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -67,12 +69,7 @@ const offboarding = {
     listAssignee: [],
     hrManager: {},
     terminateData: {},
-    total: '',
-    totalInProgressList: '',
-    totalHoldOnList: '',
-    totalRejectList: '',
-    totalAcceptedList: '',
-    screenMode: 'JOB-CHANGE',
+    listAssigneeHr: [],
   },
   effects: {
     // my request
@@ -92,7 +89,7 @@ const offboarding = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { listOffboarding, totalList, hrManager, total: response.total, totalAll },
+          payload: { listOffboarding, totalList, hrManager, totalAll },
         });
         return listOffboarding;
       } catch (errors) {
@@ -419,19 +416,20 @@ const offboarding = {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
+          location: [getCurrentLocation()],
         });
         const { relievingStatus } = payload;
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         switch (relievingStatus) {
           case 'CLOSE-RECORDS':
-            yield put({ type: 'save', payload: { closeRecordsList: data.result } });
+            yield put({ type: 'save', payload: { closeRecordsList: data.items } });
             break;
           case 'IN-QUEUES':
-            yield put({ type: 'save', payload: { inQueuesList: data.result } });
+            yield put({ type: 'save', payload: { inQueuesList: data.items } });
             break;
           default:
-            yield put({ type: 'save', payload: { listRelievingFormalities: data.result } });
+            yield put({ type: 'save', payload: { listRelievingFormalities: data.items } });
             break;
         }
       } catch (errors) {
@@ -720,6 +718,38 @@ const offboarding = {
         const response = yield call(submitToHr, {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *getListAssigneeHr(_, { put, call }) {
+      try {
+        const response = yield call(getListAssigneeHr, {
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+          location: getCurrentLocation(),
+        });
+        const { statusCode, data: listAssigneeHr = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { listAssigneeHr },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *assignToHr({ payload }, { call }) {
+      try {
+        const response = yield call(assignToHr, {
+          tenantId: getCurrentTenant(),
+          ...payload,
         });
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;

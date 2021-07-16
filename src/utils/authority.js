@@ -123,3 +123,9 @@ export function getSwitchRoleAbility() {
   if (isSwitch === 'true') return true;
   return false;
 }
+
+export function initViewOffboarding() {
+  const view = localStorage.getItem('initViewOffboarding');
+  if (view === 'true') return true;
+  return false;
+}
