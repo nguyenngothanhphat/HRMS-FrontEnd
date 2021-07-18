@@ -229,7 +229,7 @@ class HrTable extends PureComponent {
     );
   };
 
-  popupContentHr = (data, key) => {
+  popupContentHr = (data) => {
     const { timezoneList, listLocationsByCompany } = this.props;
     const { currentTime } = this.state;
     const {
@@ -242,6 +242,7 @@ class HrTable extends PureComponent {
         linkedIn = '',
       } = {},
       employee: { employeeId = '' } = {},
+      employeeId: hrId = '',
       title: { name: titleName = '' } = {},
       employeeType: { name: typeName } = {},
       department: { name: departmentName = '' } = {},
@@ -266,7 +267,7 @@ class HrTable extends PureComponent {
               {titleName}, {departmentName} Dept.
             </div>
             <div className={styles.employeeInfo__emplId}>
-              {employeeId} | {typeName}
+              {employeeId || hrId} | {typeName}
             </div>
           </div>
         </div>
@@ -486,10 +487,7 @@ class HrTable extends PureComponent {
             } = assigneeHR;
             const hrFullName = `${hrFirstName} ${hrMiddleName} ${hrLastName}`;
             return (
-              <Popover
-                content={() => this.popupContentHr(assigneeHR, 'assigneeHR')}
-                trigger="hover"
-              >
+              <Popover content={() => this.popupContentHr(assigneeHR)} trigger="hover">
                 <p
                   className={styles.assignee}
                   onClick={() => history.push(`/directory/employee-profile/${hrUserId}`)}
@@ -500,7 +498,7 @@ class HrTable extends PureComponent {
             );
           }
           return (
-            <Popover content={() => this.popupContentHr(hrManager, 'hrManager')} trigger="hover">
+            <Popover content={() => this.popupContentHr(hrManager)} trigger="hover">
               <p
                 className={styles.assignee}
                 onClick={() => history.push(`/directory/employee-profile/${userId}`)}
