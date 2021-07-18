@@ -229,7 +229,7 @@ class HrTable extends PureComponent {
     );
   };
 
-  popupContentHr = (data) => {
+  popupContentHr = (data, key) => {
     const { timezoneList, listLocationsByCompany } = this.props;
     const { currentTime } = this.state;
     const {
@@ -473,10 +473,34 @@ class HrTable extends PureComponent {
             } = {},
             hrManager = {},
           } = this.props;
-          if (!isEmpty(assigneeHR)) console.log(assigneeHR);
           const fullName = `${firstName} ${middleName} ${lastName}`;
+
+          if (!isEmpty(assigneeHR)) {
+            const {
+              generalInfo: {
+                firstName: hrFirstName = '',
+                lastName: hrLastName = '',
+                middleName: hrMiddleName = '',
+                userId: hrUserId = '',
+              } = {},
+            } = assigneeHR;
+            const hrFullName = `${hrFirstName} ${hrMiddleName} ${hrLastName}`;
+            return (
+              <Popover
+                content={() => this.popupContentHr(assigneeHR, 'assigneeHR')}
+                trigger="hover"
+              >
+                <p
+                  className={styles.assignee}
+                  onClick={() => history.push(`/directory/employee-profile/${hrUserId}`)}
+                >
+                  {hrFullName}
+                </p>
+              </Popover>
+            );
+          }
           return (
-            <Popover content={() => this.popupContentHr(hrManager)} trigger="hover">
+            <Popover content={() => this.popupContentHr(hrManager, 'hrManager')} trigger="hover">
               <p
                 className={styles.assignee}
                 onClick={() => history.push(`/directory/employee-profile/${userId}`)}

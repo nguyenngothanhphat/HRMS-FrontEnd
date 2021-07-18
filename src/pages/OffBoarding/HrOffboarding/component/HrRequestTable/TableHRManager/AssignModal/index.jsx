@@ -35,10 +35,11 @@ class AssignModal extends Component {
         middleName = '',
         lastName = '',
       } = {},
+      employee: { _id: hrId = '' } = {},
     } = hr;
     const fullName = `${firstName} ${middleName ? `${middleName} ` : ''}${lastName}`;
     return (
-      <Option key={hr._id} value={hr._id} style={{ padding: '10px' }}>
+      <Option key={hr._id} value={hrId} style={{ padding: '10px' }}>
         <div
           style={{
             display: 'inline',
@@ -122,13 +123,13 @@ class AssignModal extends Component {
           visible={visible}
         >
           <Form
-            name="basic"
+            name="assignHr"
             id="myForm"
             onFinish={this.onFinish}
             onValuesChange={this.onValuesChange}
           >
             <Form.Item
-              label="Assign"
+              label="Assign to"
               name="assigneeId"
               labelCol={{ span: 24 }}
               rules={[
