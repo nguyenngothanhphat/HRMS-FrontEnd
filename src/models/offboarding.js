@@ -739,7 +739,6 @@ const offboarding = {
     },
     *assignToHr({ payload }, { call, put }) {
       let response = {};
-      console.log(getCurrentLocation());
       try {
         response = yield call(assignToHr, {
           tenantId: getCurrentTenant(),
@@ -753,7 +752,7 @@ const offboarding = {
         yield put({
           type: 'fetchListTeamRequest',
           payload: {
-            location: getCurrentLocation(),
+            location: [getCurrentLocation()],
           },
         });
       } catch (error) {
