@@ -1,11 +1,25 @@
 /* eslint-disable react/no-array-index-key */
 import React, { PureComponent } from 'react';
-import { Table, notification, Popover, Divider, Row, Col, Avatar, Tooltip } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import {
+  Table,
+  notification,
+  Popover,
+  Divider,
+  Row,
+  Col,
+  Avatar,
+  Tooltip,
+  Dropdown,
+  Menu,
+} from 'antd';
+import { UserOutlined, MoreOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import { isEmpty } from 'lodash';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
+// import MenuIcon from '@/assets/menuDots.svg';
 import { history, connect } from 'umi';
 import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
+import AssignModal from './AssignModal';
 import styles from './index.less';
 
 @connect(({ locationSelection: { listLocationsByCompany = [] } = {} }) => ({
@@ -16,6 +30,8 @@ class HrTable extends PureComponent {
     super(props);
     this.state = {
       pageNavigation: 1,
+      assignModalVisible: false,
+      offBoardingRequest: '',
       currentTime: moment(),
     };
   }
@@ -325,6 +341,23 @@ class HrTable extends PureComponent {
     );
   };
 
+  actionMenu = (id) => {
+    return (
+      <Menu>
+        <Menu.Item>
+          <div onClick={() => this.handleAssignModal(true, id)}>Assign to</div>
+        </Menu.Item>
+      </Menu>
+    );
+  };
+
+  handleAssignModal = (value, id) => {
+    this.setState({
+      assignModalVisible: value,
+      offBoardingRequest: id,
+    });
+  };
+
   render() {
     const { pageNavigation } = this.state;
     const {
@@ -332,7 +365,10 @@ class HrTable extends PureComponent {
       loading,
       textEmpty = 'No resignation request is submitted',
       isTabAccept = false,
+      isTabAll = false,
     } = this.props;
+
+    const { assignModalVisible, offBoardingRequest } = this.state;
     // const dateFormat = 'YYYY/MM/DD';
     const rowSize = 10;
     const newData = data.map((item) => {
@@ -428,15 +464,16 @@ class HrTable extends PureComponent {
       // },
       {
         title: <span className={styles.title}>Assigned To</span>,
-        dataIndex: 'assigned',
+        dataIndex: 'assigneeHR',
         width: 200,
-        render: () => {
+        render: (assigneeHR) => {
           const {
             hrManager: {
               generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {},
             } = {},
             hrManager = {},
           } = this.props;
+          if (!isEmpty(assigneeHR)) console.log(assigneeHR);
           const fullName = `${firstName} ${middleName} ${lastName}`;
           return (
             <Popover content={() => this.popupContentHr(hrManager)} trigger="hover">
@@ -492,17 +529,24 @@ class HrTable extends PureComponent {
       },
       {
         title: <span className={styles.title}>Action</span>,
-        // dataIndex: '_id',
-        // align: 'left',
-        // render: (_id) => {
-        //   return (
-        //     <div className={styles.viewAction}>
-        //       <p className={styles.viewAction__text} onClick={() => this.push(_id)}>
-        //         View Request
-        //       </p>
-        //     </div>
-        //   );
-        // },
+        dataIndex: '_id',
+        align: 'left',
+        render: (_id) => {
+          return (
+            <>
+              {isTabAll ? (
+                <Dropdown
+                  className={styles.menuIcon}
+                  overlay={this.actionMenu(_id)}
+                  placement="topLeft"
+                >
+                  {/* <img src={MenuIcon} alt="menu" /> */}
+                  <MoreOutlined />
+                </Dropdown>
+              ) : null}
+            </>
+          );
+        },
       },
       {
         title: '',
@@ -530,25 +574,32 @@ class HrTable extends PureComponent {
     ];
 
     return (
-      <div className={styles.HRtableStyles}>
-        <Table
-          locale={{
-            emptyText: (
-              <div className={styles.viewEmpty}>
-                <img src={empty} alt="" />
-                <p className={styles.textEmpty}>{textEmpty}</p>
-              </div>
-            ),
-          }}
-          columns={columns}
-          dataSource={newData}
-          hideOnSinglePage
-          pagination={{ ...pagination, total: data.length }}
-          rowKey={(record) => record._id}
-          scroll={{ x: 'max-content' }}
-          loading={loading}
+      <>
+        <div className={styles.HRtableStyles}>
+          <Table
+            locale={{
+              emptyText: (
+                <div className={styles.viewEmpty}>
+                  <img src={empty} alt="" />
+                  <p className={styles.textEmpty}>{textEmpty}</p>
+                </div>
+              ),
+            }}
+            columns={columns}
+            dataSource={newData}
+            hideOnSinglePage
+            pagination={{ ...pagination, total: data.length }}
+            rowKey={(record) => record._id}
+            scroll={{ x: 'max-content' }}
+            loading={loading}
+          />
+        </div>
+        <AssignModal
+          visible={assignModalVisible}
+          offBoardingRequest={offBoardingRequest}
+          handleAssignModal={this.handleAssignModal}
         />
-      </div>
+      </>
     );
   }
 }
