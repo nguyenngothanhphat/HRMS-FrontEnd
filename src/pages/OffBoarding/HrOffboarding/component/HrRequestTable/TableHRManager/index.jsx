@@ -225,18 +225,18 @@ class HrTable extends PureComponent {
         avatar = '',
         linkedIn = '',
       } = {},
-      employeeId = 'abc',
+      employee: { employeeId = '' } = {},
       title: { name: titleName = '' } = {},
       employeeType: { name: typeName } = {},
       department: { name: departmentName = '' } = {},
       location: { _id = '' } = {},
     } = data;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
-    // let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
-    // filterLocation = filterLocation.filter((item) => item !== null);
+    let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
+    filterLocation = filterLocation.filter((item) => item !== null);
 
-    // const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
-    //   filterLocation[0];
+    const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
+      filterLocation[0];
 
     return (
       <div className={styles.popupContent}>
@@ -277,7 +277,7 @@ class HrTable extends PureComponent {
               <div className={styles.contact__title}>Location: </div>
             </Col>
             <Col span={16}>
-              {/* <div className={styles.contact__value}>{`${state}, ${countryName}`}</div> */}
+              <div className={styles.contact__value}>{`${state}, ${countryName}`}</div>
               <div className={styles.contact__value}>HCM</div>
             </Col>
           </Row>
