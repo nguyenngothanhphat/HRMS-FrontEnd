@@ -578,16 +578,15 @@ class HrTable extends PureComponent {
           return (
             <div className={styles.viewAction}>
               {isTabAccept && (
-                <div className={styles.viewAction__popOver}>
-                  <Popover
-                    content={this.renderContent(row)}
-                    title={false}
-                    trigger="click"
-                    placement="bottomRight"
-                  >
-                    <span className={styles.viewAction__popOver__dots}>&#8285;</span>
-                  </Popover>
-                </div>
+                <Popover
+                  content={this.renderContent(row)}
+                  title={false}
+                  trigger="click"
+                  placement="bottomRight"
+                  className={styles.viewAction__popOver}
+                >
+                  <span className={styles.viewAction__popOver__dots}>&#8285;</span>
+                </Popover>
               )}
             </div>
           );
