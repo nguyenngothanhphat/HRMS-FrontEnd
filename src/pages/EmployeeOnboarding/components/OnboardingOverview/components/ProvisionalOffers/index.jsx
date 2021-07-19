@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
 import { connect } from 'umi';
-import { PROCESS_STATUS } from '@/models/onboard';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import SentProvisionalOffers from './components/SentProvisionalOffers/index';
 import AcceptedProvisionalOffers from './components/AcceptedProvisionalOffers/index';
 import RenegotiateProvisionalOffers from './components/RenegotiateProvisionalOffers/index';
@@ -13,7 +13,7 @@ class ProvisionalOffers extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      tabId: 1,
+      tabId: '1',
       pageSelected: 1,
       size: 10,
     };
@@ -47,7 +47,6 @@ class ProvisionalOffers extends PureComponent {
   fetchProvisionalOfferAll = (status) => {
     const { dispatch } = this.props;
     const { pageSelected, size } = this.state;
-
     dispatch({
       type: 'onboard/fetchOnboardListAll',
       payload: {

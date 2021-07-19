@@ -174,6 +174,7 @@ class HRDetailTicket extends Component {
         generalInfo: { firstName: firstNameManager = '', lastName: lastNameManager = '' } = {},
       } = {},
       // requestLastDate = '',
+      assigneeHR = {},
     } = myRequest;
     if (loadingGetById) {
       return (
@@ -185,11 +186,11 @@ class HRDetailTicket extends Component {
 
     const listScheduleMeeting = list1On1.filter((item) => item.content === '');
     const listComment = list1On1.filter((item) => item.content !== '');
-    const checkClosingComment =
-      list1On1.find(
-        ({ isRelieving, status: statusRelieving }) =>
-          isRelieving && statusRelieving === 'COMPLETED',
-      ) || {};
+    // const checkClosingComment =
+    //   list1On1.find(
+    //     ({ isRelieving, status: statusRelieving }) =>
+    //       isRelieving && statusRelieving === 'COMPLETED',
+    //   ) || {};
 
     const checkMyComment =
       list1On1.filter((comment) => comment.ownerComment._id === myId).length > 0;

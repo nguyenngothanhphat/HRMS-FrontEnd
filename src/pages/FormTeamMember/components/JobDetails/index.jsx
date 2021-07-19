@@ -3,12 +3,12 @@ import { Row, Col, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { isEmpty, isObject } from 'lodash';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
-import PROCESS_STATUS from '../utils';
 import styles from './index.less';
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
 @connect(

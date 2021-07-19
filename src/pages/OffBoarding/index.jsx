@@ -7,18 +7,20 @@ import HrOffboarding from './HrOffboarding';
 class OffBoarding extends PureComponent {
   findRole = (roles) => {
     const hrManager = roles.find((item) => item === 'hr-manager');
+    const hr = roles.find((item) => item === 'hr');
     const manager = roles.find((item) => item === 'manager');
     const employee = roles.find((item) => item === 'employee');
-    const role = hrManager || manager || employee || 'employee';
+    const role = hrManager || hr || manager || employee || 'employee';
     return role;
   };
 
   render() {
-    const { location: { state: { defaultActiveKey = '1', isEmployeeMode = '' } = {} } = {} } =
+    const { location: { state: { defaultActiveKey = '1', isEmployeeMode = false } = {} } = {} } =
       this.props;
     const viewOffboarding = initViewOffboarding();
     const renderComponent = {
       'hr-manager': <HrOffboarding defaultActiveKey={defaultActiveKey} />,
+      hr: <HrOffboarding defaultActiveKey={defaultActiveKey} />,
       manager: <ManagerOffBoading />,
       employee: <EmployeeOffBoading />,
     };
