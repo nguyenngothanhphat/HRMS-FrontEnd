@@ -67,8 +67,7 @@
 // export default Step3;
 
 import React, { PureComponent } from 'react';
-// import { Steps } from 'antd';
-// import NoteIcon from '@/assets/NoteIcon.svg';
+import { isEmpty } from 'lodash';
 import DefaultAvatar from '@/assets/defaultAvatar.png';
 import { Steps } from 'antd';
 import { CheckCircleFilled } from '@ant-design/icons';
@@ -106,12 +105,13 @@ class Step3 extends PureComponent {
       approvalStep,
       nameManager,
       avatarManager = '',
-      hrManager = {},
       hrManager: {
         employee: {
           generalInfo: { firstName: nameHrManager = '', avatar: avatarHrManager = '' } = {},
         } = {},
       } = {},
+      assigneeHR = {},
+      assigneeHR: { generalInfo: { firstName: nameHr = '', avatar: avatarHr = '' } = {} } = {},
     } = this.props;
 
     return (
@@ -120,7 +120,14 @@ class Step3 extends PureComponent {
           <span className={styles.title}>Chain of approval</span>
           <Steps current={approvalStep} labelPlacement="vertical">
             <Step icon={this.renderIcon(avatarManager, approvalStep, 1)} title={nameManager} />
-            <Step icon={this.renderIcon(avatarHrManager, approvalStep, 2)} title={nameHrManager} />
+            {!isEmpty(assigneeHR) ? (
+              <Step icon={this.renderIcon(avatarHr, approvalStep, 2)} title={nameHr} />
+            ) : (
+              <Step
+                icon={this.renderIcon(avatarHrManager, approvalStep, 2)}
+                title={nameHrManager}
+              />
+            )}
           </Steps>
         </div>
       </div>

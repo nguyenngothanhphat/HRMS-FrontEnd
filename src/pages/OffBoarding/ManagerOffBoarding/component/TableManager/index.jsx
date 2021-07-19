@@ -2,12 +2,16 @@
 import React, { PureComponent } from 'react';
 import { Table, Popover, Divider, Row, Col, Avatar, Tooltip } from 'antd';
 import moment from 'moment';
+import { isEmpty } from 'lodash';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import { UserOutlined } from '@ant-design/icons';
-import { history } from 'umi';
+import { history, connect } from 'umi';
 import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
 import styles from './index.less';
 
+@connect(({ locationSelection: { listLocationsByCompany = [] } = {} }) => ({
+  listLocationsByCompany,
+}))
 class TableManager extends PureComponent {
   constructor(props) {
     super(props);
@@ -53,13 +57,12 @@ class TableManager extends PureComponent {
   };
 
   popupContent = (dataRow) => {
-    // console.log(dataRow);
-    const { timezoneList } = this.props;
+    const { timezoneList, listLocationsByCompany } = this.props;
     const { currentTime } = this.state;
     const {
       employee: {
         title: { name: titleName = 'UX Lead' } = {},
-        employeeType: { name: typeName = 'Full Time' } = {},
+        employeeType: { name: typeName = '...' } = {},
         employeeId = '',
         generalInfo: {
           avatar = '',
@@ -68,6 +71,8 @@ class TableManager extends PureComponent {
           middleName = '',
           linkedIn = '',
           userId = '',
+          workEmail = '',
+          workNumber = '',
         } = {},
       } = {},
       department: { name: departmentName = '' } = {},
@@ -75,11 +80,18 @@ class TableManager extends PureComponent {
     } = dataRow;
     const fullName = `${firstName} ${middleName} ${lastName}`;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+    let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
+    filterLocation = filterLocation.filter((item) => item !== null);
+
+    const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
+      filterLocation[0];
+
+    if (filterLocation.length === 0) return null;
     return (
       <div className={styles.popupContent}>
         <div className={styles.generalInfo}>
           <div className={styles.avatar}>
-            <Avatar src={avatar} size={40} icon={<UserOutlined />} />
+            <Avatar src={avatar} size={60} icon={<UserOutlined />} />
           </div>
           <div className={styles.employeeInfo}>
             <div className={styles.employeeInfo__name}>{fullName}</div>
@@ -91,14 +103,14 @@ class TableManager extends PureComponent {
             </div>
           </div>
         </div>
-        <Divider />
+        <Divider className={styles.divider} />
         <div className={styles.contact}>
           <Row gutter={[24, 0]}>
             <Col span={8}>
               <div className={styles.contact__title}>Mobile: </div>
             </Col>
             <Col span={16}>
-              <div className={styles.contact__value}>abccc</div>
+              <div className={styles.contact__value}>{workNumber}</div>
             </Col>
           </Row>
           <Row gutter={[24, 0]}>
@@ -106,7 +118,7 @@ class TableManager extends PureComponent {
               <div className={styles.contact__title}>Email id: </div>
             </Col>
             <Col span={16}>
-              <div className={styles.contact__value}>abc@gmail.com</div>
+              <div className={styles.contact__value}>{workEmail}</div>
             </Col>
           </Row>
           <Row gutter={[24, 0]}>
@@ -114,7 +126,122 @@ class TableManager extends PureComponent {
               <div className={styles.contact__title}>Location: </div>
             </Col>
             <Col span={16}>
-              <div className={styles.contact__value}>abccc</div>
+              <div className={styles.contact__value}>{`${state}, ${countryName}`}</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Local Time: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>
+                {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
+                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
+                  : 'Not enough data in address'}
+              </div>
+            </Col>
+          </Row>
+        </div>
+        <Divider className={styles.divider} />
+        <div className={styles.popupActions}>
+          <div
+            className={styles.popupActions__link}
+            onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+          >
+            View full profile
+          </div>
+          <div className={styles.popupActions__actions}>
+            <Tooltip title="Email">
+              <img
+                src="/assets/images/iconMail.svg"
+                alt="img-arrow"
+                style={{ marginLeft: '5px', cursor: 'pointer' }}
+              />
+            </Tooltip>
+            <Tooltip title="LinkedIn">
+              <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
+                <img
+                  src="/assets/images/iconLinkedin.svg"
+                  alt="img-arrow"
+                  style={{ cursor: 'pointer' }}
+                />
+              </a>
+            </Tooltip>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  popupContentHr = (data) => {
+    const { timezoneList, listLocationsByCompany } = this.props;
+    const { currentTime } = this.state;
+    const {
+      generalInfo: {
+        legalName = '',
+        userId = '',
+        workEmail = '',
+        workNumber = '',
+        avatar = '',
+        linkedIn = '',
+      } = {},
+      employee: { employeeId = '' } = {},
+      employeeId: hrId = '',
+      title: { name: titleName = '' } = {},
+      employeeType: { name: typeName } = {},
+      department: { name: departmentName = '' } = {},
+      location: { _id = '' } = {},
+    } = data;
+    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+    let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
+    filterLocation = filterLocation.filter((item) => item !== null);
+
+    if (filterLocation.length === 0) {
+      return null;
+    }
+    const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
+      filterLocation[0];
+
+    return (
+      <div className={styles.popupContent}>
+        <div className={styles.generalInfo}>
+          <div className={styles.avatar}>
+            <Avatar src={avatar} size={40} icon={<UserOutlined />} />
+          </div>
+          <div className={styles.employeeInfo}>
+            <div className={styles.employeeInfo__name}>{legalName}</div>
+            <div className={styles.employeeInfo__department}>
+              {titleName}, {departmentName} Dept.
+            </div>
+            <div className={styles.employeeInfo__emplId}>
+              {employeeId || hrId} | {typeName}
+            </div>
+          </div>
+        </div>
+        <Divider />
+        <div className={styles.contact}>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Mobile: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>{workNumber}</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Email id: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>{workEmail}</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Location: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>{`${state}, ${countryName}`}</div>
             </Col>
           </Row>
           <Row gutter={[24, 0]}>
@@ -183,7 +310,7 @@ class TableManager extends PureComponent {
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
-          total
+          of {data.length}
         </span>
       ),
       pageSize: size,
@@ -226,14 +353,11 @@ class TableManager extends PureComponent {
       {
         title: <span className={styles.title}>Requestee Name </span>,
         dataIndex: 'employee',
+        ellipsis: true,
         render: (employee, row) => {
           const { generalInfo: { firstName = '', userId = '' } = {} } = employee;
           return (
-            <Popover
-              content={() => this.popupContent(row)}
-              // title={location.name}
-              trigger="hover"
-            >
+            <Popover content={() => this.popupContent(row)} trigger="hover">
               <span
                 onClick={() => history.push(`/directory/employee-profile/${userId}`)}
                 className={`${styles.title__value} ${styles.title__requteeName}`}
@@ -245,34 +369,68 @@ class TableManager extends PureComponent {
         },
         width: 200,
       },
-      // {
-      //   title: <span className={styles.title}>Current Project </span>,
-      //   dataIndex: 'currentProject',
-      //   width: 200,
-      // },
-      // {
-      //   title: <span className={styles.title}>Project Manager </span>,
-      //   dataIndex: 'projectManager',
-      //   width: 200,
-      // },
       {
-        title: <span className={styles.title}>Assigned </span>,
-        dataIndex: 'Assigned',
-        render: (_, row) => {
+        title: <span className={styles.title}>Assigned To </span>,
+        dataIndex: 'assigneeHR',
+        width: 200,
+        render: (assigneeHR) => {
           const {
             hrManager: {
               generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {},
             } = {},
+            hrManager = {},
+          } = this.props;
+          const fullName = `${firstName} ${middleName} ${lastName}`;
+
+          if (!isEmpty(assigneeHR)) {
+            const {
+              generalInfo: {
+                firstName: hrFirstName = '',
+                lastName: hrLastName = '',
+                middleName: hrMiddleName = '',
+                userId: hrUserId = '',
+              } = {},
+            } = assigneeHR;
+            const hrFullName = `${hrFirstName} ${hrMiddleName} ${hrLastName}`;
+            return (
+              <Popover content={() => this.popupContentHr(assigneeHR)} trigger="hover">
+                <span
+                  className={`${styles.title__value} ${styles.title__assignee}`}
+                  onClick={() => history.push(`/directory/employee-profile/${hrUserId}`)}
+                >
+                  {hrFullName}
+                </span>
+              </Popover>
+            );
+          }
+          return (
+            <Popover content={() => this.popupContentHr(hrManager)} trigger="hover">
+              <span
+                className={`${styles.title__value} ${styles.title__hrManager}`}
+                onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+              >
+                {fullName}
+              </span>
+            </Popover>
+          );
+        },
+      },
+      {
+        title: <span className={styles.title}>HR Manager </span>,
+        dataIndex: 'hr-manager',
+        width: 400,
+        render: () => {
+          const {
+            hrManager: {
+              generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {},
+            } = {},
+            hrManager = {},
           } = this.props;
           const fullName = `${firstName} ${middleName} ${lastName}`;
           return (
-            <Popover
-              content={() => this.popupContent(row)}
-              // title={location.name}
-              trigger="hover"
-            >
+            <Popover content={() => this.popupContentHr(hrManager)} trigger="hover">
               <span
-                className={styles.title__value}
+                className={`${styles.title__value} ${styles.title__hrManager}`}
                 onClick={() => history.push(`/directory/employee-profile/${userId}`)}
               >
                 {fullName}

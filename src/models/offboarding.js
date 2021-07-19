@@ -745,9 +745,10 @@ const offboarding = {
         dialog(error);
       }
     },
-    *assignToHr({ payload }, { call }) {
+    *assignToHr({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(assignToHr, {
+        response = yield call(assignToHr, {
           tenantId: getCurrentTenant(),
           ...payload,
         });
@@ -756,9 +757,16 @@ const offboarding = {
         notification.success({
           message,
         });
+        yield put({
+          type: 'fetchListTeamRequest',
+          payload: {
+            location: [getCurrentLocation()],
+          },
+        });
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
   },
   reducers: {

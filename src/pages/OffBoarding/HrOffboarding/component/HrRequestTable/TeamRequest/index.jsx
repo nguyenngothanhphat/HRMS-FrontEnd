@@ -198,6 +198,7 @@ class TabContent extends Component {
     } = this.props;
     const { selectedFilterTab = '1', pageSelected, size } = this.state;
     const isTabAccept = selectedFilterTab === '4';
+    const isTabAll = selectedFilterTab === '2';
     return (
       <>
         <Summary setSelectedTab={this.setSelectedTab} countdata={countdata} />
@@ -205,6 +206,7 @@ class TabContent extends Component {
           data={data}
           loading={loading || loadingSearch}
           isTabAccept={isTabAccept}
+          isTabAll={isTabAll}
           moveToRelieving={this.moveToRelieving}
           hrManager={hrManager}
           timezoneList={timezoneList}

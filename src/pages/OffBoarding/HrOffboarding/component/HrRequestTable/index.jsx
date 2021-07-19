@@ -64,6 +64,9 @@ class HRrequestTable extends Component {
         location: [locationID],
       },
     });
+    dispatch({
+      type: 'offboarding/getListAssigneeHr',
+    });
 
     this.fetchTimezone();
     if (listTeamRequest.length > 0) this.updateData(listTeamRequest, 1);

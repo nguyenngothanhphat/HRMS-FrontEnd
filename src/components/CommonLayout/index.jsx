@@ -3,37 +3,14 @@
 import React, { Component } from 'react';
 import { Button } from 'antd';
 import { connect } from 'umi';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import ItemMenu from './components/ItemMenu';
 import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
 import BasicInformation from '../../pages/FormTeamMember/components/BasicInformation';
 import BackgroundRecheck from '../../pages/FormTeamMember/components/BackgroundRecheck';
 import BackgroundCheck from '../../pages/FormTeamMember/components/BackgroundCheckNew';
 // import BottomBar from '../BottomBar';
-
 import s from './index.less';
-
-const PROCESS_STATUS = {
-  PROVISIONAL_OFFER_DRAFT: 'DRAFT',
-  FINAL_OFFERS_DRAFT: 'FINAL-OFFERS-DRAFT',
-
-  SENT_PROVISIONAL_OFFERS: 'SENT-PROVISIONAL-OFFER',
-  ACCEPTED_PROVISIONAL_OFFERS: 'ACCEPT-PROVISIONAL-OFFER',
-  RENEGOTIATE_PROVISIONAL_OFFERS: 'RENEGOTIATE-PROVISONAL-OFFER',
-
-  PENDING: 'PENDING-BACKGROUND-CHECK',
-  ELIGIBLE_CANDIDATES: 'ELIGIBLE-CANDIDATE',
-  INELIGIBLE_CANDIDATES: 'INELIGIBLE-CANDIDATE',
-
-  SENT_FOR_APPROVAL: 'PENDING-APPROVAL-FINAL-OFFER',
-  APPROVED_OFFERS: 'APPROVED-FINAL-OFFER',
-
-  SENT_FINAL_OFFERS: 'SENT-FINAL-OFFERS',
-  ACCEPTED_FINAL_OFFERS: 'ACCEPT-FINAL-OFFER',
-  RENEGOTIATE_FINAL_OFFERS: 'RENEGOTIATE-FINAL-OFFERS',
-
-  PROVISIONAL_OFFERS: 'DISCARDED-PROVISONAL-OFFER',
-  FINAL_OFFERS: 'FINAL-OFFERS',
-};
 
 @connect(
   ({

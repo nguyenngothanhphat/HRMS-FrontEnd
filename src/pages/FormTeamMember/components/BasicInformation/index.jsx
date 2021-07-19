@@ -4,11 +4,11 @@ import React, { Component } from 'react';
 import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import BasicInformationHeader from './components/BasicInformationHeader';
 import BasicInformationReminder from './components/BasicInformationReminder';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
-import PROCESS_STATUS from '../utils';
 
 import styles from './index.less';
 
