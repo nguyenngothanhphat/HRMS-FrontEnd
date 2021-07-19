@@ -91,10 +91,6 @@ class TableContainer extends PureComponent {
   }
 
   componentDidMount() {
-    // this.getTableData({}, 1);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
     const { roles, department, country, state, company, filterName, tabId, pageSelected, size } =
       this.state;
     const params = {
@@ -107,6 +103,23 @@ class TableContainer extends PureComponent {
       page: pageSelected,
       limit: size,
     };
+    this.getTableData(params, tabId);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { roles, department, country, state, company, filterName, tabId, pageSelected, size } =
+      this.state;
+    const { filterList = {}, listLocationsByCompany = [] } = this.props;
+    const params = {
+      name: filterName,
+      roles,
+      company,
+      department,
+      country,
+      state,
+      page: 1,
+      limit: size,
+    };
 
     if (
       prevState.tabId !== tabId ||
@@ -114,25 +127,31 @@ class TableContainer extends PureComponent {
       prevState.company.length !== company.length ||
       prevState.country.length !== country.length ||
       prevState.state.length !== state.length ||
-      prevState.filterName !== filterName
+      prevState.filterName !== filterName ||
+      prevState.size !== size ||
+      JSON.stringify(prevProps?.filterList || []) !== JSON.stringify(filterList) ||
+      JSON.stringify(prevProps?.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {
       this.getTableData(params, tabId);
     }
 
-    const { filterList = {}, listLocationsByCompany = [] } = this.props;
-    if (
-      JSON.stringify(prevProps?.filterList || []) !== JSON.stringify(filterList) ||
-      JSON.stringify(prevProps?.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
-    ) {
-      this.getTableData({}, 1);
-    }
+    // if (
+    //   JSON.stringify(prevProps?.filterList || []) !== JSON.stringify(filterList) ||
+    //   JSON.stringify(prevProps?.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+    // ) {
+    //   // const paramsPage = {
+    //   //   page: pageSelected,
+    //   //   limit: size,
+    //   // };
+    //   console.log(prevState, prevProps, filterList);
+    //   this.getTableData({}, 1);
+    // }
 
-    if (prevState.pageSelected !== pageSelected || prevState.size !== size) {
+    if (prevState.pageSelected !== pageSelected) {
       const paramsPage = {
         page: pageSelected,
-        limit: size,
       };
-      this.getTableData(paramsPage, tabId);
+      this.getPageChange(paramsPage, 1);
     }
   }
 
@@ -143,11 +162,11 @@ class TableContainer extends PureComponent {
     });
   };
 
-  getTableData = async (params, tabId) => {
+  getPageChange = async (params, tabId) => {
     const currentLocation = getCurrentLocation();
-    const { pageSelected, size } = this.state;
+    // const { pageSelected, size } = this.state;
     const currentCompany = getCurrentCompany();
-    console.log(pageSelected, size);
+    // console.log(pageSelected, size);
     const { dispatch } = this.props;
     const {
       companiesOfUser = [],
@@ -161,8 +180,8 @@ class TableContainer extends PureComponent {
       state = [],
       company = [],
       roles = [],
-      page = '',
-      limit = '',
+      page,
+      limit,
     } = params;
 
     // MULTI COMPANY & LOCATION PAYLOAD
@@ -264,10 +283,144 @@ class TableContainer extends PureComponent {
       limit,
     };
 
-    // this.setState({
-    //   pageSelected: page,
-    //   size: limit,
-    // });
+    if (tabId === 1) {
+      await dispatch({
+        type: 'usersManagement/fetchEmployeesList',
+        payload: { ...payload, status: ['ACTIVE'] },
+      });
+    }
+    if (tabId === 2) {
+      await dispatch({
+        type: 'usersManagement/fetchEmployeesList',
+        payload: { ...payload, status: ['INACTIVE'] },
+      });
+    }
+  };
+
+  getTableData = async (params, tabId) => {
+    const currentLocation = getCurrentLocation();
+    // const { pageSelected, size } = this.state;
+    const currentCompany = getCurrentCompany();
+    // console.log(pageSelected, size);
+    const { dispatch } = this.props;
+    const {
+      companiesOfUser = [],
+      filterList: { listCountry = [] } = {},
+      listLocationsByCompany = [],
+    } = this.props;
+    const {
+      name = '',
+      department = [],
+      country = [],
+      state = [],
+      company = [],
+      roles = [],
+      page,
+      limit,
+    } = params;
+
+    // MULTI COMPANY & LOCATION PAYLOAD
+    let companyPayload = [];
+    const companyList = companiesOfUser.filter(
+      (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
+    );
+    const isOwnerCheck = isOwner();
+    // OWNER
+    if (!currentLocation && isOwnerCheck) {
+      if (company.length !== 0) {
+        companyPayload = companyList.filter((lo) => company.includes(lo?._id));
+      } else {
+        companyPayload = [...companyList];
+      }
+    } else companyPayload = companyList.filter((lo) => lo?._id === currentCompany);
+
+    let locationPayload = [];
+
+    // if country is not selected, select all
+    if (!currentLocation) {
+      if (country.length === 0) {
+        locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
+          let stateList = [];
+          listCountry.forEach(
+            ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
+              if (countryItem1 === countryItem2) {
+                if (state.length !== 0) {
+                  if (state.includes(stateItem2)) {
+                    stateList = [...stateList, stateItem2];
+                  }
+                } else {
+                  stateList = [...stateList, stateItem2];
+                }
+              }
+            },
+          );
+          return {
+            country: countryItem1,
+            state: stateList,
+          };
+        });
+      } else {
+        locationPayload = country.map((item) => {
+          let stateList = [];
+
+          listCountry.forEach(
+            ({ country: { _id: countryItem = '' } = {}, state: stateItem = '' }) => {
+              if (item === countryItem) {
+                if (state.length !== 0) {
+                  if (state.includes(stateItem)) {
+                    stateList = [...stateList, stateItem];
+                  }
+                } else {
+                  stateList = [...stateList, stateItem];
+                }
+              }
+            },
+          );
+
+          return {
+            country: item,
+            state: stateList,
+          };
+        });
+      }
+    } else {
+      const currentLocationObj = listLocationsByCompany.find((loc) => loc?._id === currentLocation);
+      const currentLocationCountry = currentLocationObj?.headQuarterAddress?.country?._id;
+      const currentLocationState = currentLocationObj?.headQuarterAddress?.state;
+
+      locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
+        let stateList = [];
+        listCountry.forEach(
+          ({ country: { _id: countryItem2 = '' } = {}, state: stateItem2 = '' }) => {
+            if (
+              countryItem1 === countryItem2 &&
+              currentLocationCountry === countryItem2 &&
+              currentLocationState === stateItem2
+            ) {
+              stateList = [...stateList, stateItem2];
+            }
+          },
+        );
+        return {
+          country: countryItem1,
+          state: stateList,
+        };
+      });
+    }
+
+    const payload = {
+      company: companyPayload,
+      name,
+      department,
+      roles,
+      location: locationPayload,
+      page,
+      limit,
+    };
+    this.setState({
+      pageSelected: page,
+      size: limit,
+    });
 
     if (tabId === 1) {
       await dispatch({
