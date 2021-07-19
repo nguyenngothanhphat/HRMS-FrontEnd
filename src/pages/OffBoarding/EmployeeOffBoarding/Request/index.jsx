@@ -140,6 +140,7 @@ class ResignationRequest extends Component {
       relievingStatus = '',
       employee: { generalInfo: { firstName: nameEmployee = '', employeeId = '' } = {} } = {},
       ticketID = '',
+      assigneeHR = {},
     } = myRequest;
     if (loadingGetById) {
       return (
@@ -194,6 +195,7 @@ class ResignationRequest extends Component {
                 nameManager={nameManager}
                 avatarManager={avatarManager}
                 hrManager={hrManager}
+                assigneeHR={assigneeHR}
               />
               <div className={styles.viewSet1On1}>
                 <div className={styles.viewSet1On1__request}>

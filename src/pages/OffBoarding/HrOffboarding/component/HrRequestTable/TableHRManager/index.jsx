@@ -1,11 +1,24 @@
 /* eslint-disable react/no-array-index-key */
 import React, { PureComponent } from 'react';
-import { Table, notification, Popover, Divider, Row, Col, Avatar, Tooltip } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import {
+  Table,
+  notification,
+  Popover,
+  Divider,
+  Row,
+  Col,
+  Avatar,
+  Tooltip,
+  Dropdown,
+  Menu,
+} from 'antd';
+import { UserOutlined, MoreOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import { isEmpty } from 'lodash';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import { history, connect } from 'umi';
 import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
+import AssignModal from './AssignModal';
 import styles from './index.less';
 
 @connect(({ locationSelection: { listLocationsByCompany = [] } = {} }) => ({
@@ -16,6 +29,8 @@ class HrTable extends PureComponent {
     super(props);
     this.state = {
       pageNavigation: 1,
+      assignModalVisible: false,
+      offBoardingRequest: '',
       currentTime: moment(),
     };
   }
@@ -71,10 +86,6 @@ class HrTable extends PureComponent {
     });
   };
 
-  // push = (data) => {
-  //   history.push(`/offboarding/review/${data}`);
-  // };
-
   onChangePagination = (pageNumber) => {
     this.setState({
       pageNavigation: pageNumber,
@@ -97,7 +108,6 @@ class HrTable extends PureComponent {
   };
 
   popupContent = (dataRow) => {
-    // console.log(dataRow);
     const { timezoneList, listLocationsByCompany } = this.props;
     const { currentTime } = this.state;
     const {
@@ -123,6 +133,10 @@ class HrTable extends PureComponent {
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
     let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
     filterLocation = filterLocation.filter((item) => item !== null);
+
+    if (filterLocation.length === 0) {
+      return null;
+    }
 
     const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
       filterLocation[0];
@@ -225,18 +239,23 @@ class HrTable extends PureComponent {
         avatar = '',
         linkedIn = '',
       } = {},
-      employeeId = 'abc',
+      employee: { employeeId = '' } = {},
+      employeeId: hrId = '',
       title: { name: titleName = '' } = {},
       employeeType: { name: typeName } = {},
       department: { name: departmentName = '' } = {},
       location: { _id = '' } = {},
     } = data;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
-    // let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
-    // filterLocation = filterLocation.filter((item) => item !== null);
+    let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
+    filterLocation = filterLocation.filter((item) => item !== null);
 
-    // const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
-    //   filterLocation[0];
+    if (filterLocation.length === 0) {
+      return null;
+    }
+
+    const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
+      filterLocation[0];
 
     return (
       <div className={styles.popupContent}>
@@ -250,7 +269,7 @@ class HrTable extends PureComponent {
               {titleName}, {departmentName} Dept.
             </div>
             <div className={styles.employeeInfo__emplId}>
-              {employeeId} | {typeName}
+              {employeeId || hrId} | {typeName}
             </div>
           </div>
         </div>
@@ -277,8 +296,7 @@ class HrTable extends PureComponent {
               <div className={styles.contact__title}>Location: </div>
             </Col>
             <Col span={16}>
-              {/* <div className={styles.contact__value}>{`${state}, ${countryName}`}</div> */}
-              <div className={styles.contact__value}>HCM</div>
+              <div className={styles.contact__value}>{`${state}, ${countryName}`}</div>
             </Col>
           </Row>
           <Row gutter={[24, 0]}>
@@ -325,6 +343,23 @@ class HrTable extends PureComponent {
     );
   };
 
+  actionMenu = (id) => {
+    return (
+      <Menu>
+        <Menu.Item>
+          <div onClick={() => this.handleAssignModal(true, id)}>Assign to</div>
+        </Menu.Item>
+      </Menu>
+    );
+  };
+
+  handleAssignModal = (value, id) => {
+    this.setState({
+      assignModalVisible: value,
+      offBoardingRequest: id,
+    });
+  };
+
   render() {
     const { pageNavigation } = this.state;
     const {
@@ -332,7 +367,10 @@ class HrTable extends PureComponent {
       loading,
       textEmpty = 'No resignation request is submitted',
       isTabAccept = false,
+      isTabAll = false,
     } = this.props;
+
+    const { assignModalVisible, offBoardingRequest } = this.state;
     // const dateFormat = 'YYYY/MM/DD';
     const rowSize = 10;
     const newData = data.map((item) => {
@@ -351,7 +389,7 @@ class HrTable extends PureComponent {
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
-          total
+          of {data.length}
         </span>
       ),
       pageSize: rowSize,
@@ -364,7 +402,7 @@ class HrTable extends PureComponent {
         title: <span className={styles.title}>Ticket ID </span>,
         dataIndex: 'ticketID',
         fixed: 'left',
-        width: 150,
+        width: 200,
         render: (ticketID) => {
           return (
             <p className={styles.ticketId} onClick={() => this.openViewTicket(ticketID)}>
@@ -376,7 +414,7 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>Employee ID </span>,
         dataIndex: 'employee',
-        width: 150,
+        width: 200,
         render: (employee) => {
           return <p>{employee.employeeId}</p>;
         },
@@ -384,13 +422,13 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>Created date </span>,
         dataIndex: 'requestDate',
-        width: 160,
+        width: 200,
         render: (requestDate) => {
           return <p>{moment(requestDate).format('YYYY/MM/DD')}</p>;
         },
       },
       {
-        title: <span className={styles.title}>Requestee</span>,
+        title: <span className={styles.title}>Requestee Name</span>,
         dataIndex: 'employee',
         width: 200,
         ellipsis: true,
@@ -408,29 +446,11 @@ class HrTable extends PureComponent {
           );
         },
       },
-      // {
-      //   title: <span className={styles.title}>Current Project</span>,
-      //   dataIndex: 'project',
-      //   width: 200,
-      //   render: (project) => {
-      //     const { manager = '' } = project[0];
-      //     return <p>{Object.keys(manager).length === 0 ? '' : manager}</p>;
-      //   },
-      // },
-      // {
-      //   title: <span className={styles.title}>Project Manager</span>,
-      //   dataIndex: 'project',
-      //   width: 200,
-      //   render: (project) => {
-      //     const { manager = '' } = project[0];
-      //     return <p>{Object.keys(manager).length === 0 ? '' : manager}</p>;
-      //   },
-      // },
       {
         title: <span className={styles.title}>Assigned To</span>,
-        dataIndex: 'assigned',
+        dataIndex: 'assigneeHR',
         width: 200,
-        render: () => {
+        render: (assigneeHR) => {
           const {
             hrManager: {
               generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {},
@@ -438,6 +458,28 @@ class HrTable extends PureComponent {
             hrManager = {},
           } = this.props;
           const fullName = `${firstName} ${middleName} ${lastName}`;
+
+          if (!isEmpty(assigneeHR)) {
+            const {
+              generalInfo: {
+                firstName: hrFirstName = '',
+                lastName: hrLastName = '',
+                middleName: hrMiddleName = '',
+                userId: hrUserId = '',
+              } = {},
+            } = assigneeHR;
+            const hrFullName = `${hrFirstName} ${hrMiddleName} ${hrLastName}`;
+            return (
+              <Popover content={() => this.popupContentHr(assigneeHR)} trigger="hover">
+                <p
+                  className={styles.assignee}
+                  onClick={() => history.push(`/directory/employee-profile/${hrUserId}`)}
+                >
+                  {hrFullName}
+                </p>
+              </Popover>
+            );
+          }
           return (
             <Popover content={() => this.popupContentHr(hrManager)} trigger="hover">
               <p
@@ -492,17 +534,23 @@ class HrTable extends PureComponent {
       },
       {
         title: <span className={styles.title}>Action</span>,
-        // dataIndex: '_id',
-        // align: 'left',
-        // render: (_id) => {
-        //   return (
-        //     <div className={styles.viewAction}>
-        //       <p className={styles.viewAction__text} onClick={() => this.push(_id)}>
-        //         View Request
-        //       </p>
-        //     </div>
-        //   );
-        // },
+        dataIndex: '_id',
+        align: 'left',
+        render: (_id) => {
+          return (
+            <>
+              {isTabAll ? (
+                <Dropdown
+                  className={styles.menuIcon}
+                  overlay={this.actionMenu(_id)}
+                  placement="topLeft"
+                >
+                  <MoreOutlined />
+                </Dropdown>
+              ) : null}
+            </>
+          );
+        },
       },
       {
         title: '',
@@ -512,16 +560,15 @@ class HrTable extends PureComponent {
           return (
             <div className={styles.viewAction}>
               {isTabAccept && (
-                <div className={styles.viewAction__popOver}>
-                  <Popover
-                    content={this.renderContent(row)}
-                    title={false}
-                    trigger="click"
-                    placement="bottomRight"
-                  >
-                    <span className={styles.viewAction__popOver__dots}>&#8285;</span>
-                  </Popover>
-                </div>
+                <Popover
+                  content={this.renderContent(row)}
+                  title={false}
+                  trigger="click"
+                  placement="bottomRight"
+                  className={styles.viewAction__popOver}
+                >
+                  <span className={styles.viewAction__popOver__dots}>&#8285;</span>
+                </Popover>
               )}
             </div>
           );
@@ -530,25 +577,32 @@ class HrTable extends PureComponent {
     ];
 
     return (
-      <div className={styles.HRtableStyles}>
-        <Table
-          locale={{
-            emptyText: (
-              <div className={styles.viewEmpty}>
-                <img src={empty} alt="" />
-                <p className={styles.textEmpty}>{textEmpty}</p>
-              </div>
-            ),
-          }}
-          columns={columns}
-          dataSource={newData}
-          hideOnSinglePage
-          pagination={{ ...pagination, total: data.length }}
-          rowKey={(record) => record._id}
-          scroll={{ x: 'max-content' }}
-          loading={loading}
+      <>
+        <div className={styles.HRtableStyles}>
+          <Table
+            locale={{
+              emptyText: (
+                <div className={styles.viewEmpty}>
+                  <img src={empty} alt="" />
+                  <p className={styles.textEmpty}>{textEmpty}</p>
+                </div>
+              ),
+            }}
+            columns={columns}
+            dataSource={newData}
+            hideOnSinglePage
+            pagination={{ ...pagination, total: data.length }}
+            rowKey={(record) => record._id}
+            scroll={{ x: 'max-content' }}
+            loading={loading}
+          />
+        </div>
+        <AssignModal
+          visible={assignModalVisible}
+          offBoardingRequest={offBoardingRequest}
+          handleAssignModal={this.handleAssignModal}
         />
-      </div>
+      </>
     );
   }
 }

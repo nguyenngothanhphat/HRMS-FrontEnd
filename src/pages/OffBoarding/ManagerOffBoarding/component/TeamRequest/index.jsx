@@ -24,10 +24,13 @@ class TeamRequest extends Component {
   }
 
   initDataTable = (tabId) => {
-    const { dispatch } = this.props;
+    const { dispatch, location } = this.props;
     if (tabId === '1') {
       dispatch({
         type: 'offboarding/fetchListTeamRequest',
+        payload: {
+          location,
+        },
       });
     }
     if (tabId === '2') {
@@ -35,6 +38,7 @@ class TeamRequest extends Component {
         type: 'offboarding/fetchListTeamRequest',
         payload: {
           status: 'IN-PROGRESS',
+          location,
         },
       });
     }
@@ -43,6 +47,7 @@ class TeamRequest extends Component {
         type: 'offboarding/fetchListTeamRequest',
         payload: {
           status: 'ON-HOLD',
+          location,
         },
       });
     }
@@ -51,6 +56,7 @@ class TeamRequest extends Component {
         type: 'offboarding/fetchListTeamRequest',
         payload: {
           status: 'ACCEPTED',
+          location,
         },
       });
     }
@@ -59,6 +65,7 @@ class TeamRequest extends Component {
         type: 'offboarding/fetchListTeamRequest',
         payload: {
           status: 'REJECTED',
+          location,
         },
       });
     }
