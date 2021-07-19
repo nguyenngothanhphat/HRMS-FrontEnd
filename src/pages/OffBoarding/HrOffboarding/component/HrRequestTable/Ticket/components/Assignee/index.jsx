@@ -1,13 +1,15 @@
 import React, { PureComponent } from 'react';
 import { isEmpty } from 'lodash';
 import Avatar from 'antd/lib/avatar/avatar';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
+
 import styles from './index.less';
 
 const AssigneeDetail = ({ avatar = '', name = '', jobTitle = '', priority = 'Primary' }) => {
   return (
     <div className={styles.assignee__item}>
       <div className={styles.assignee__item__info}>
-        <Avatar size={36} src={avatar} />
+        <Avatar size={36} src={avatar || DefaultAvatar} />
         <div
           style={{
             marginLeft: '15px',
