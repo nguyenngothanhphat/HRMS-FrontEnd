@@ -11,6 +11,7 @@ import {
 import _ from 'lodash';
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
+import { PROCESS_STATUS_TABLE_NAME, PROCESS_STATUS } from '@/utils/onboarding';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { notification } from 'antd';
 import moment from 'moment';
@@ -94,86 +95,6 @@ const MENU_DATA = [
   },
 ];
 
-export const PROCESS_STATUS = {
-  PROVISIONAL_OFFER_DRAFT: 'DRAFT',
-  FINAL_OFFERS_DRAFT: 'FINAL-OFFER-DRAFT',
-
-  SENT_PROVISIONAL_OFFERS: 'SENT-PROVISIONAL-OFFER',
-  ACCEPTED_PROVISIONAL_OFFERS: 'ACCEPT-PROVISIONAL-OFFER',
-  RENEGOTIATE_PROVISIONAL_OFFERS: 'RENEGOTIATE-PROVISONAL-OFFER',
-
-  PENDING: 'PENDING-BACKGROUND-CHECK',
-  ELIGIBLE_CANDIDATES: 'ELIGIBLE-CANDIDATE',
-  INELIGIBLE_CANDIDATES: 'INELIGIBLE-CANDIDATE',
-
-  SENT_FOR_APPROVAL: 'PENDING-APPROVAL-FINAL-OFFER',
-  APPROVED_OFFERS: 'APPROVED-FINAL-OFFER',
-
-  SENT_FINAL_OFFERS: 'SENT-FINAL-OFFERS',
-  ACCEPTED_FINAL_OFFERS: 'ACCEPT-FINAL-OFFER',
-  RENEGOTIATE_FINAL_OFFERS: 'RENEGOTIATE-FINAL-OFFERS',
-
-  PROVISIONAL_OFFERS: 'DISCARDED-PROVISONAL-OFFER',
-  FINAL_OFFERS: 'FINAL-OFFERS',
-  FINAL_OFFERS_HR: 'REJECT-FINAL-OFFER-HR',
-  FINAL_OFFERS_CANDIDATE: 'REJECT-FINAL-OFFER-CANDIDATE',
-};
-
-const processStatusName = {
-  DRAFT: 'Provisional Offer Drafts',
-  'FINAL-OFFER-DRAFT': 'Final Offers Draft',
-  'SENT-PROVISIONAL-OFFER': 'Sent Provisional Offers',
-  'ACCEPT-PROVISIONAL-OFFER': 'Accepted Provisional Offers',
-  'RENEGOTIATE-PROVISONAL-OFFER': 'Renegotiate Provisional Offers',
-  'PENDING-BACKGROUND-CHECK': 'Pending',
-  'ELIGIBLE-CANDIDATE': 'Eligible Candidates',
-  'INELIGIBLE-CANDIDATE': 'Ineligible Candidates',
-  'PENDING-APPROVAL-FINAL-OFFER': 'Sent For Approval',
-  'APPROVED-FINAL-OFFER': 'Approved Offers',
-  'SENT-FINAL-OFFERS': 'Sent Final Offers',
-  'ACCEPT-FINAL-OFFER': 'Accepted Final Offers',
-  'RENEGOTIATE-FINAL-OFFERS': 'Re-Negotiate Final Offers',
-  'DISCARDED-PROVISONAL-OFFER': 'Provisional Offers',
-  'REJECT-FINAL-OFFER-HR': 'Final Offers',
-  'REJECT-FINAL-OFFER-CANDIDATE': 'Final Offers',
-};
-
-const formatMonth = (month) => {
-  const monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-
-  return monthNames[month];
-};
-
-const formatDay = (day) => {
-  const nth = (d) => {
-    if (d > 3 && d < 21) return 'th';
-    switch (d % 10) {
-      case 1:
-        return 'st';
-      case 2:
-        return 'nd';
-      case 3:
-        return 'rd';
-      default:
-        return 'th';
-    }
-  };
-  return day + nth(day);
-};
-
 const formatDate = (date) => {
   return date ? moment(date).locale('en').format('MM.DD.YY') : '';
 };
@@ -222,8 +143,9 @@ const formatData = (list = []) => {
     const expire = formatDate(offerExpirationDate) || '';
 
     let isNew = false;
-    let fullName = `${firstName || ''} ${middleName || ''} ${lastName || ''}`;
-    if (!middleName) fullName = `${firstName || ''} ${lastName || ''}`;
+    const fullName = `${firstName ? `${firstName} ` : ''}${middleName ? `${middleName} ` : ''}${
+      lastName ? `${lastName} ` : ''
+    }`;
 
     if (fullName) {
       isNew = dateDiffInDays(Date.now(), updatedAt) < 3;
@@ -247,7 +169,7 @@ const formatData = (list = []) => {
       changeRequest: '-',
       assignTo,
       assigneeManager,
-      processStatus: processStatusName[processStatus],
+      processStatus: PROCESS_STATUS_TABLE_NAME[processStatus],
       processStatusId: processStatus,
     };
     formatList.push(rookie);

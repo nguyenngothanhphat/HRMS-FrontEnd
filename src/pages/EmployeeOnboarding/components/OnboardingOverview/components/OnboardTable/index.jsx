@@ -7,6 +7,7 @@ import CustomModal from '@/components/CustomModal/index';
 import { getAuthority, getCurrentTenant } from '@/utils/authority';
 // import ModalContent from '../FinalOffers/components/ModalContent/index';
 import MenuIcon from '@/assets/menuDots.svg';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import ProfileModalContent from '../FinalOffers/components/ProfileModalContent';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 import ReassignModal from './components/ReassignModal';
@@ -28,9 +29,9 @@ class OnboardTable extends Component {
     };
   }
 
-  handleActionClick = (tableType) => {
-    const { SENT_FINAL_OFFERS, ACCEPTED_FINAL_OFFERS } = TABLE_TYPE;
-    if (tableType === SENT_FINAL_OFFERS || tableType === ACCEPTED_FINAL_OFFERS) {
+  handleActionClick = (ticketType) => {
+    const { SENT_FINAL_OFFERS, ACCEPTED_FINAL_OFFERS } = PROCESS_STATUS;
+    if (ticketType === SENT_FINAL_OFFERS || ticketType === ACCEPTED_FINAL_OFFERS) {
       this.setState((prevState) => ({ openModal: !prevState.openModal }));
     }
   };
@@ -85,11 +86,12 @@ class OnboardTable extends Component {
   renderName = (id) => {
     const { list } = this.props;
     const selectedPerson = list.find((item) => item.rookieId === id);
-    const { rookieName: name, isNew } = selectedPerson;
+    const { rookieName: name = '', isNew } = selectedPerson;
+
     if (isNew) {
       return (
         <p>
-          {name}
+          {name && <span className={styles.name}>{name}</span>}
           <span className={styles.new}>
             {formatMessage({ id: 'component.onboardingOverview.new' })}
           </span>
@@ -153,7 +155,7 @@ class OnboardTable extends Component {
       DATE_REQUEST,
       ASSIGN_TO,
       ASSIGNEE_MANAGER,
-      PROCESS_STATUS,
+      PROCESS_STATUS: PROCESS_STATUS_1,
     } = COLUMN_NAME;
     const actionText = getActionText(type);
 
@@ -283,7 +285,10 @@ class OnboardTable extends Component {
         dataIndex: 'assignTo',
         key: 'assignTo',
         render: (assignTo) => (
-          <span className={styles.renderAssignee} onClick={() => this.viewProfile(assignTo.userId)}>
+          <span
+            className={styles.renderAssignee}
+            onClick={() => this.viewProfile(assignTo?.generalInfo?.userId)}
+          >
             {assignTo?.generalInfo?.firstName + assignTo?.generalInfo?.lastName || '-'}
           </span>
         ),
@@ -311,7 +316,7 @@ class OnboardTable extends Component {
         dataIndex: 'processStatus',
         key: 'processStatus',
         render: (processStatus) => <Tag color="geekblue">{processStatus}</Tag>,
-        columnName: PROCESS_STATUS,
+        columnName: PROCESS_STATUS_1,
         width: getColumnWidth('processStatus', type),
         fixed: 'right',
       },
@@ -359,20 +364,23 @@ class OnboardTable extends Component {
 
   actionMenu = (id, currentEmpId, type, actionText, processStatusId) => {
     const {
-      PROVISIONAL_OFFERS_DRAFTS,
-      FINAL_OFFERS_DRAFTS,
+      PROVISIONAL_OFFER_DRAFT,
+      FINAL_OFFERS_DRAFT,
+
       RENEGOTIATE_PROVISIONAL_OFFERS,
       RENEGOTIATE_FINAL_OFFERS,
+
+      ACCEPTED_PROVISIONAL_OFFERS,
+
       APPROVED_OFFERS,
       ACCEPTED_FINAL_OFFERS,
-      ACCEPTED__PROVISIONAL_OFFERS,
-    } = TABLE_TYPE;
-    const isRemovable = type === PROVISIONAL_OFFERS_DRAFTS;
+    } = PROCESS_STATUS;
+    const isRemovable = processStatusId === PROVISIONAL_OFFER_DRAFT || FINAL_OFFERS_DRAFT;
     const isHRManager = this.checkPermission('hr-manager');
 
     let menuItem = '';
-    switch (type) {
-      case PROVISIONAL_OFFERS_DRAFTS:
+    switch (processStatusId) {
+      case PROVISIONAL_OFFER_DRAFT:
         menuItem = (
           <Menu.Item>
             <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData()}>
@@ -400,7 +408,7 @@ class OnboardTable extends Component {
         );
         break;
 
-      case ACCEPTED__PROVISIONAL_OFFERS:
+      case ACCEPTED_PROVISIONAL_OFFERS:
         menuItem = (
           <Menu.Item>
             <Link
@@ -415,7 +423,7 @@ class OnboardTable extends Component {
         );
         break;
 
-      case FINAL_OFFERS_DRAFTS:
+      case FINAL_OFFERS_DRAFT:
         menuItem = (
           <>
             <Menu.Item>
@@ -471,7 +479,7 @@ class OnboardTable extends Component {
         menuItem = (
           <Menu.Item>
             <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
-              <span onClick={() => this.handleActionClick(type)}>{actionText}</span>
+              <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
             </Link>
           </Menu.Item>
         );
@@ -522,7 +530,6 @@ class OnboardTable extends Component {
     // const { pageSelected } = this.state;
     const { list = [], pageSelected, size, getPageAndSize, total: totalData } = this.props;
     // const rowSize = 10;
-    console.log('size', size, 'pageSelected', pageSelected);
     const {
       reassignModalVisible = false,
       currentEmpId = '',
@@ -571,7 +578,7 @@ class OnboardTable extends Component {
       <>
         <div className={`${styles.OnboardTable} ${inTab ? styles.inTab : ''}`}>
           <Table
-            size="small"
+            size="middle"
             rowSelection={
               hasCheckbox && {
                 type: 'checkbox',

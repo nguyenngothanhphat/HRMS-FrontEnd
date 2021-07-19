@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
 import { connect } from 'umi';
 
-import { PROCESS_STATUS } from '@/models/onboard';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import SentFinalOffers from './components/SentFinalOffers/index';
 import AcceptedFinalOffers from './components/AcceptedFinalOffers/index';
 import RenegotitateFinalOffers from './components/RenegotiateFinalOffers/index';

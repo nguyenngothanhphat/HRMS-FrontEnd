@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
 import { connect } from 'umi';
-import { PROCESS_STATUS } from '@/models/onboard';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import SentProvisionalOffers from './components/SentProvisionalOffers/index';
 import AcceptedProvisionalOffers from './components/AcceptedProvisionalOffers/index';
 import RenegotiateProvisionalOffers from './components/RenegotiateProvisionalOffers/index';

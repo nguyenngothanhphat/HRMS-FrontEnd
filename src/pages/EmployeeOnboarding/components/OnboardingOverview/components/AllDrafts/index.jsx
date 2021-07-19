@@ -7,7 +7,7 @@ import { Tabs } from 'antd';
 //   TABLE_TYPE,
 // } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
 // import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
-import { PROCESS_STATUS } from '@/models/onboard';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import styles from './index.less';
 import ProvisionalOfferDrafts from './components/ProvisionalOfferDrafts';
 import FinalOfferDrafts from './components/FinalOfferDrafts';
