@@ -104,8 +104,8 @@ class TableContainer extends PureComponent {
       department,
       country,
       state,
-      page: 1,
-      limit: 10,
+      page: pageSelected,
+      limit: size,
     };
 
     if (
@@ -122,22 +122,17 @@ class TableContainer extends PureComponent {
     const { filterList = {}, listLocationsByCompany = [] } = this.props;
     if (
       JSON.stringify(prevProps?.filterList || []) !== JSON.stringify(filterList) ||
-      JSON.stringify(prevProps?.listLocationsByCompany) !==
-        JSON.stringify(listLocationsByCompany) ||
-      prevState.pageSelected !== pageSelected ||
-      prevState.size !== size
+      JSON.stringify(prevProps?.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {
+      this.getTableData({}, 1);
+    }
+
+    if (prevState.pageSelected !== pageSelected || prevState.size !== size) {
       const paramsPage = {
-        name: filterName,
-        roles,
-        company,
-        department,
-        country,
-        state,
         page: pageSelected,
         limit: size,
       };
-      this.getTableData(paramsPage, 1);
+      this.getTableData(paramsPage, tabId);
     }
   }
 
@@ -150,9 +145,9 @@ class TableContainer extends PureComponent {
 
   getTableData = async (params, tabId) => {
     const currentLocation = getCurrentLocation();
-    // const { pageSelected, size } = this.state;
+    const { pageSelected, size } = this.state;
     const currentCompany = getCurrentCompany();
-
+    console.log(pageSelected, size);
     const { dispatch } = this.props;
     const {
       companiesOfUser = [],
@@ -269,10 +264,10 @@ class TableContainer extends PureComponent {
       limit,
     };
 
-    this.setState({
-      pageSelected: page,
-      size: limit,
-    });
+    // this.setState({
+    //   pageSelected: page,
+    //   size: limit,
+    // });
 
     if (tabId === 1) {
       await dispatch({
@@ -314,6 +309,8 @@ class TableContainer extends PureComponent {
       tabId: Number(tabId),
       changeTab: true,
       filterName: '',
+      pageSelected: 1,
+      size: 10,
     });
     const { dispatch } = this.props;
     dispatch({
