@@ -16,7 +16,6 @@ import { UserOutlined, MoreOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { isEmpty } from 'lodash';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
-// import MenuIcon from '@/assets/menuDots.svg';
 import { history, connect } from 'umi';
 import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
 import AssignModal from './AssignModal';
@@ -87,10 +86,6 @@ class HrTable extends PureComponent {
     });
   };
 
-  // push = (data) => {
-  //   history.push(`/offboarding/review/${data}`);
-  // };
-
   onChangePagination = (pageNumber) => {
     this.setState({
       pageNavigation: pageNumber,
@@ -113,7 +108,6 @@ class HrTable extends PureComponent {
   };
 
   popupContent = (dataRow) => {
-    // console.log(dataRow);
     const { timezoneList, listLocationsByCompany } = this.props;
     const { currentTime } = this.state;
     const {
@@ -133,10 +127,7 @@ class HrTable extends PureComponent {
         } = {},
       } = {},
       department: { name: departmentName = '' } = {},
-      location: {
-        _id = '',
-        // headQuarterAddress: { state = '', country: countryName = '' } = {},
-      } = {},
+      location: { _id = '' } = {},
     } = dataRow;
     const fullName = `${firstName} ${middleName} ${lastName}`;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
@@ -253,10 +244,7 @@ class HrTable extends PureComponent {
       title: { name: titleName = '' } = {},
       employeeType: { name: typeName } = {},
       department: { name: departmentName = '' } = {},
-      location: {
-        _id = '',
-        // headQuarterAddress: { state = '', country: countryName = '' } = {},
-      } = {},
+      location: { _id = '' } = {},
     } = data;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
     let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
@@ -401,7 +389,7 @@ class HrTable extends PureComponent {
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
-          total
+          of {data.length}
         </span>
       ),
       pageSize: rowSize,
@@ -458,24 +446,6 @@ class HrTable extends PureComponent {
           );
         },
       },
-      // {
-      //   title: <span className={styles.title}>Current Project</span>,
-      //   dataIndex: 'project',
-      //   width: 200,
-      //   render: (project) => {
-      //     const { manager = '' } = project[0];
-      //     return <p>{Object.keys(manager).length === 0 ? '' : manager}</p>;
-      //   },
-      // },
-      // {
-      //   title: <span className={styles.title}>Project Manager</span>,
-      //   dataIndex: 'project',
-      //   width: 200,
-      //   render: (project) => {
-      //     const { manager = '' } = project[0];
-      //     return <p>{Object.keys(manager).length === 0 ? '' : manager}</p>;
-      //   },
-      // },
       {
         title: <span className={styles.title}>Assigned To</span>,
         dataIndex: 'assigneeHR',
@@ -575,7 +545,6 @@ class HrTable extends PureComponent {
                   overlay={this.actionMenu(_id)}
                   placement="topLeft"
                 >
-                  {/* <img src={MenuIcon} alt="menu" /> */}
                   <MoreOutlined />
                 </Dropdown>
               ) : null}

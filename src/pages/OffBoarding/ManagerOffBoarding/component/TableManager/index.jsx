@@ -63,7 +63,6 @@ class TableManager extends PureComponent {
   };
 
   popupContent = (dataRow) => {
-    // console.log(dataRow);
     const { timezoneList, listLocationsByCompany } = this.props;
     const { currentTime } = this.state;
     const {
@@ -83,10 +82,7 @@ class TableManager extends PureComponent {
         } = {},
       } = {},
       department: { name: departmentName = '' } = {},
-      location: {
-        _id = '',
-        // headQuarterAddress: { state = '', country: countryName = '' } = {},
-      } = {},
+      location: { _id = '' } = {},
     } = dataRow;
     const fullName = `${firstName} ${middleName} ${lastName}`;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
@@ -200,10 +196,7 @@ class TableManager extends PureComponent {
       title: { name: titleName = '' } = {},
       employeeType: { name: typeName } = {},
       department: { name: departmentName = '' } = {},
-      location: {
-        _id = '',
-        // headQuarterAddress: { state = '', country: countryName = '' } = {},
-      } = {},
+      location: { _id = '' } = {},
     } = data;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
     let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
@@ -315,7 +308,7 @@ class TableManager extends PureComponent {
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
-          total
+          of {data.length}
         </span>
       ),
       pageSize: rowSize,
@@ -372,16 +365,6 @@ class TableManager extends PureComponent {
         },
         width: 200,
       },
-      // {
-      //   title: <span className={styles.title}>Current Project </span>,
-      //   dataIndex: 'currentProject',
-      //   width: 200,
-      // },
-      // {
-      //   title: <span className={styles.title}>Project Manager </span>,
-      //   dataIndex: 'projectManager',
-      //   width: 200,
-      // },
       {
         title: <span className={styles.title}>Assigned To </span>,
         dataIndex: 'assigneeHR',
