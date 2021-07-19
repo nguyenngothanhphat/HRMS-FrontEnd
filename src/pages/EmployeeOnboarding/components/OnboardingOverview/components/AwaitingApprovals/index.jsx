@@ -15,7 +15,7 @@ class AwaitingApprovals extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      tabId: 1,
+      tabId: '1',
       pageSelected: 1,
       size: 10,
     };

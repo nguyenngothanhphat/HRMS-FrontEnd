@@ -512,6 +512,7 @@ class OnboardTable extends Component {
     // const { pageSelected } = this.state;
     const { list = [], pageSelected, size, getPageAndSize, total: totalData } = this.props;
     // const rowSize = 10;
+    console.log('size', size, 'pageSelected', pageSelected);
     const {
       reassignModalVisible = false,
       currentEmpId = '',
