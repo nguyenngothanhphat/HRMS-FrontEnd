@@ -209,10 +209,11 @@ class TableManager extends PureComponent {
     let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
     filterLocation = filterLocation.filter((item) => item !== null);
 
+    if (filterLocation.length === 0) {
+      return null;
+    }
     const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
       filterLocation[0];
-
-    if (filterLocation.length === 0) return null;
 
     return (
       <div className={styles.popupContent}>
