@@ -326,6 +326,13 @@ export async function getCountryList() {
   });
 }
 
+export async function getLocationByCompany(payload) {
+  return request('api/locationtenant/list-by-company-parent', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getInitEmployeeSchedule(payload) {
   return request('/api/employeescheduletenant/init-default-from-location', {
     method: 'POST',

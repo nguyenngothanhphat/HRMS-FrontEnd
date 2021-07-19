@@ -29,7 +29,9 @@ class RuleFrom extends Component {
             </Col>
             <Col span={8} />
             <Col span={8} className={styles.colAction}>
-              <Button className={styles.buttonRequest}>{render.button}</Button>
+              <Button className={styles.buttonRequest} onClick={this.handleAddNewType}>
+                {render.button}
+              </Button>
             </Col>
           </Row>
           <div className={styles.straightLine} />
@@ -86,8 +88,7 @@ class RuleFrom extends Component {
     );
   };
 
-  handleChangeSelect = (value) => {
-  };
+  handleChangeSelect = (value) => {};
 
   renderCountry = () => {
     const { countryList = [] } = this.props;

@@ -55,6 +55,7 @@ import {
   deleteHoliday,
   addHoliday,
   updateEmployeeSchedule,
+  getLocationByCompany,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -107,6 +108,7 @@ const timeOff = {
     ],
     itemTimeOffType: {},
     pageStart: true,
+    locationByCompany: [],
   },
   effects: {
     *fetchTimeOffTypes({ payload }, { call, put }) {
@@ -933,6 +935,7 @@ const timeOff = {
         dialog(errors);
       }
     },
+
     // timeoff type
     *getInitEmployeeSchedule({ payload = {} }, { call, put }) {
       let response;
