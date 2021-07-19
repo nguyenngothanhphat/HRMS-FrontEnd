@@ -55,12 +55,15 @@ class ManagerOffBoading extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, listTeamRequest } = this.props;
+    const { dispatch, listTeamRequest, locationID } = this.props;
     if (!dispatch) {
       return;
     }
     dispatch({
       type: 'offboarding/fetchListTeamRequest',
+      payload: {
+        location: [locationID],
+      },
     });
 
     this.fetchTimezone();
