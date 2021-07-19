@@ -73,6 +73,15 @@ class OnboardTable extends Component {
     });
   };
 
+  renderRookieId = (rookieId, type) => {
+    const id = rookieId.replace('#', '') || '';
+    return (
+      <Link to={`/employee-onboarding/review/${id}`} onClick={() => this.fetchData(id)}>
+        <span onClick={() => this.handleActionClick(type)}>{rookieId}</span>
+      </Link>
+    );
+  };
+
   renderName = (id) => {
     const { list } = this.props;
     const selectedPerson = list.find((item) => item.rookieId === id);
@@ -155,6 +164,7 @@ class OnboardTable extends Component {
         dataIndex: 'rookieId',
         key: 'rookieId',
         width: getColumnWidth('rookieId', type),
+        render: (rookieId) => this.renderRookieId(rookieId, type),
         columnName: ID,
         fixed: 'left',
       },
