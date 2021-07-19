@@ -104,6 +104,8 @@ class TableContainer extends PureComponent {
       department,
       country,
       state,
+      page: 1,
+      limit: 10,
     };
 
     if (
@@ -125,7 +127,17 @@ class TableContainer extends PureComponent {
       prevState.pageSelected !== pageSelected ||
       prevState.size !== size
     ) {
-      this.getTableData({}, 1);
+      const paramsPage = {
+        name: filterName,
+        roles,
+        company,
+        department,
+        country,
+        state,
+        page: pageSelected,
+        limit: size,
+      };
+      this.getTableData(paramsPage, 1);
     }
   }
 
@@ -138,7 +150,7 @@ class TableContainer extends PureComponent {
 
   getTableData = async (params, tabId) => {
     const currentLocation = getCurrentLocation();
-    const { pageSelected, size } = this.state;
+    // const { pageSelected, size } = this.state;
     const currentCompany = getCurrentCompany();
 
     const { dispatch } = this.props;
@@ -154,6 +166,8 @@ class TableContainer extends PureComponent {
       state = [],
       company = [],
       roles = [],
+      page = '',
+      limit = '',
     } = params;
 
     // MULTI COMPANY & LOCATION PAYLOAD
@@ -251,9 +265,14 @@ class TableContainer extends PureComponent {
       department,
       roles,
       location: locationPayload,
-      page: 1,
-      limit: size,
+      page,
+      limit,
     };
+
+    this.setState({
+      pageSelected: page,
+      size: limit,
+    });
 
     if (tabId === 1) {
       await dispatch({
