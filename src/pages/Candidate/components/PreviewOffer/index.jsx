@@ -8,6 +8,7 @@ import CustomModal from '@/components/CustomModal';
 // import SendEmail from '@/pages/FormTeamMember/components/BackgroundCheck/components/SendEmail';
 import { getCurrentTenant } from '@/utils/authority';
 import { isEmpty } from 'lodash';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import whiteImg from './components/images/whiteImg.png';
 
 import CancelIcon from './components/CancelIcon';
@@ -15,7 +16,6 @@ import ModalUpload from '../../../../components/ModalUpload';
 import FileContent from './components/FileContent';
 // import SendEmail from '../BackgroundCheck/components/SendEmail';
 import ModalContent from './components/ModalContent';
-import PROCESS_STATUS from '../utils';
 
 import styles from './index.less';
 

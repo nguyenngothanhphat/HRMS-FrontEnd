@@ -6,13 +6,13 @@ import {
 } from 'umi';
 
 import { getCurrentTenant } from '@/utils/authority';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import SalaryStructureHeader from './components/SalaryStructureHeader';
 import SalaryStructureTemplate from './components/SalaryStructureTemplate';
 import NoteComponent from '../NoteComponent';
 import SalaryAcceptance from './components/SalaryAcceptance';
 
 import styles from './index.less';
-import PROCESS_STATUS from '../utils';
 
 // const DRAFT = 'DRAFT';
 // const SENT_PROVISIONAL_OFFER = 'SENT-PROVISIONAL-OFFER';

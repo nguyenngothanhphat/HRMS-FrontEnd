@@ -5,6 +5,7 @@ import { Row, Col, Typography, Skeleton, Button } from 'antd';
 import { formatMessage, connect } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import NoteComponent from '../NoteComponent';
 import Feedback from './components/Feedback';
 import CollapseField from './components/CollapseField';
@@ -12,7 +13,6 @@ import styles from './index.less';
 import SendEmail from '../PreviewOffer/components/SendEmail';
 import CloseCandidateModal from './components/CloseCandidateModal';
 import PreviousEmployment from './components/PreviousEmployment';
-import PROCESS_STATUS from '../utils';
 
 @connect(
   ({
