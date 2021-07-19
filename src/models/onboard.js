@@ -263,6 +263,7 @@ const onboard = {
     mainTabActiveKey: '1',
     onboardingOverview: {
       total: '',
+      currentStatusAll: [],
       pendingEligibilityChecks: {
         sentEligibilityForms: sentEligibilityFormsData,
         receivedSubmittedDocuments: receivedSubmittedDocumentsData,
@@ -357,9 +358,10 @@ const onboard = {
           payload: returnedData,
         });
         yield put({
-          type: 'saveTotal',
+          type: 'saveOnboardingOverview',
           payload: {
             total: response.total,
+            currentStatusAll: processStatus,
           },
         });
       } catch (errors) {
@@ -426,7 +428,7 @@ const onboard = {
         });
 
         yield put({
-          type: 'saveTotal',
+          type: 'saveOnboardingOverview',
           payload: {
             total: response.total,
           },
@@ -608,10 +610,18 @@ const onboard = {
       return response;
     },
 
-    *reassignTicket({ payload }, { call, put }) {
+    *reassignTicket({ payload }, { call, put, select }) {
       let response;
       try {
-        const { id = '', tenantId = '', newAssignee = '', processStatus = '' } = payload;
+        const {
+          id = '',
+          tenantId = '',
+          newAssignee = '',
+          processStatus = '',
+          isAll = false,
+          page = '',
+          limit = '',
+        } = payload;
         const req = {
           rookieID: id,
           tenantId,
@@ -623,13 +633,27 @@ const onboard = {
         notification.success({
           message,
         });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            tenantId,
-            processStatus,
-          },
-        });
+        if (!isAll) {
+          yield put({
+            type: 'fetchOnboardList',
+            payload: {
+              tenantId,
+              processStatus,
+            },
+          });
+        } else {
+          const { currentStatusAll } = yield select((state) => state.onboard.onboardingOverview);
+
+          yield put({
+            type: 'fetchOnboardListAll',
+            payload: {
+              tenantId,
+              processStatus: currentStatusAll,
+              page,
+              limit,
+            },
+          });
+        }
       } catch (error) {
         dialog(error);
       }
@@ -754,7 +778,7 @@ const onboard = {
         ...action.payload,
       };
     },
-    saveTotal(state, action) {
+    saveOnboardingOverview(state, action) {
       return {
         ...state,
         onboardingOverview: {

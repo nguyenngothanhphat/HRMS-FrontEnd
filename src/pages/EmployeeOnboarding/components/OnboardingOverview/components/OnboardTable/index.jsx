@@ -24,6 +24,7 @@ class OnboardTable extends Component {
       currentEmpId: '',
       reassignTicketId: '',
       reassignStatus: '',
+      reassignType: '',
     };
   }
 
@@ -472,7 +473,10 @@ class OnboardTable extends Component {
         {menuItem}
         {isHRManager && (
           <Menu.Item>
-            <div onClick={() => this.handleReassignModal(true, currentEmpId, id, processStatusId)}>
+            <div
+              onClick={() =>
+                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)}
+            >
               Re-assign
             </div>
           </Menu.Item>
@@ -484,12 +488,13 @@ class OnboardTable extends Component {
     );
   };
 
-  handleReassignModal = (value, currentEmpId, id, processStatusId) => {
+  handleReassignModal = (value, currentEmpId, id, processStatusId, type) => {
     this.setState({
       reassignModalVisible: value,
       currentEmpId,
       reassignTicketId: id,
       reassignStatus: processStatusId,
+      reassignType: type,
     });
   };
 
@@ -512,6 +517,7 @@ class OnboardTable extends Component {
       currentEmpId = '',
       reassignTicketId = '',
       reassignStatus = '',
+      reassignType = '',
     } = this.state;
 
     const rowSelection = {
@@ -599,7 +605,10 @@ class OnboardTable extends Component {
           currentEmpId={currentEmpId}
           reassignTicketId={reassignTicketId}
           handleReassignModal={this.handleReassignModal}
+          type={reassignType}
           processStatus={reassignStatus}
+          page={pageSelected}
+          limit={size}
         />
       </>
     );
