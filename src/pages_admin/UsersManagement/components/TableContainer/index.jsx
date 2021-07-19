@@ -90,21 +90,9 @@ class TableContainer extends PureComponent {
     }, 500);
   }
 
-  componentDidMount() {
-    const { roles, department, country, state, company, filterName, tabId, pageSelected, size } =
-      this.state;
-    const params = {
-      name: filterName,
-      roles,
-      company,
-      department,
-      country,
-      state,
-      page: pageSelected,
-      limit: size,
-    };
-    this.getTableData(params, tabId);
-  }
+  // componentDidMount() {
+
+  // }
 
   componentDidUpdate(prevProps, prevState) {
     const { roles, department, country, state, company, filterName, tabId, pageSelected, size } =
@@ -128,24 +116,17 @@ class TableContainer extends PureComponent {
       prevState.country.length !== country.length ||
       prevState.state.length !== state.length ||
       prevState.filterName !== filterName ||
-      prevState.size !== size ||
-      JSON.stringify(prevProps?.filterList || []) !== JSON.stringify(filterList) ||
-      JSON.stringify(prevProps?.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+      prevState.size !== size
     ) {
       this.getTableData(params, tabId);
     }
 
-    // if (
-    //   JSON.stringify(prevProps?.filterList || []) !== JSON.stringify(filterList) ||
-    //   JSON.stringify(prevProps?.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
-    // ) {
-    //   // const paramsPage = {
-    //   //   page: pageSelected,
-    //   //   limit: size,
-    //   // };
-    //   console.log(prevState, prevProps, filterList);
-    //   this.getTableData({}, 1);
-    // }
+    if (
+      JSON.stringify(prevProps?.filterList || []) !== JSON.stringify(filterList) ||
+      JSON.stringify(prevProps?.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+    ) {
+      this.getTableData(params, 1);
+    }
 
     if (prevState.pageSelected !== pageSelected) {
       const paramsPage = {
@@ -164,7 +145,7 @@ class TableContainer extends PureComponent {
 
   getPageChange = async (params, tabId) => {
     const currentLocation = getCurrentLocation();
-    // const { pageSelected, size } = this.state;
+    const { size } = this.state;
     const currentCompany = getCurrentCompany();
     // console.log(pageSelected, size);
     const { dispatch } = this.props;
@@ -181,7 +162,7 @@ class TableContainer extends PureComponent {
       company = [],
       roles = [],
       page,
-      limit,
+      // limit,
     } = params;
 
     // MULTI COMPANY & LOCATION PAYLOAD
@@ -280,7 +261,7 @@ class TableContainer extends PureComponent {
       roles,
       location: locationPayload,
       page,
-      limit,
+      limit: size,
     };
 
     if (tabId === 1) {
@@ -299,9 +280,7 @@ class TableContainer extends PureComponent {
 
   getTableData = async (params, tabId) => {
     const currentLocation = getCurrentLocation();
-    // const { pageSelected, size } = this.state;
     const currentCompany = getCurrentCompany();
-    // console.log(pageSelected, size);
     const { dispatch } = this.props;
     const {
       companiesOfUser = [],
@@ -419,9 +398,7 @@ class TableContainer extends PureComponent {
     };
     this.setState({
       pageSelected: page,
-      size: limit,
     });
-
     if (tabId === 1) {
       await dispatch({
         type: 'usersManagement/fetchEmployeesList',
