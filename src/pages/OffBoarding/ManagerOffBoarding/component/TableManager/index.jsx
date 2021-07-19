@@ -5,10 +5,13 @@ import moment from 'moment';
 import { isEmpty } from 'lodash';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import { UserOutlined } from '@ant-design/icons';
-import { history } from 'umi';
+import { history, connect } from 'umi';
 import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
 import styles from './index.less';
 
+@connect(({ locationSelection: { listLocationsByCompany = [] } = {} }) => ({
+  listLocationsByCompany,
+}))
 class TableManager extends PureComponent {
   constructor(props) {
     super(props);
@@ -61,7 +64,7 @@ class TableManager extends PureComponent {
 
   popupContent = (dataRow) => {
     // console.log(dataRow);
-    const { timezoneList } = this.props;
+    const { timezoneList, listLocationsByCompany } = this.props;
     const { currentTime } = this.state;
     const {
       employee: {
@@ -82,17 +85,18 @@ class TableManager extends PureComponent {
       department: { name: departmentName = '' } = {},
       location: {
         _id = '',
-        headQuarterAddress: { state = '', country: countryName = '' } = {},
+        // headQuarterAddress: { state = '', country: countryName = '' } = {},
       } = {},
     } = dataRow;
     const fullName = `${firstName} ${middleName} ${lastName}`;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
-    // let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
-    // filterLocation = filterLocation.filter((item) => item !== null);
+    let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
+    filterLocation = filterLocation.filter((item) => item !== null);
 
-    // const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
-    //   filterLocation[0];
+    const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
+      filterLocation[0];
 
+    if (filterLocation.length === 0) return null;
     return (
       <div className={styles.popupContent}>
         <div className={styles.generalInfo}>
@@ -180,8 +184,7 @@ class TableManager extends PureComponent {
   };
 
   popupContentHr = (data) => {
-    // console.log(dataRow);
-    const { timezoneList } = this.props;
+    const { timezoneList, listLocationsByCompany } = this.props;
     const { currentTime } = this.state;
     const {
       generalInfo: {
@@ -199,10 +202,17 @@ class TableManager extends PureComponent {
       department: { name: departmentName = '' } = {},
       location: {
         _id = '',
-        headQuarterAddress: { state = '', country: countryName = '' } = {},
+        // headQuarterAddress: { state = '', country: countryName = '' } = {},
       } = {},
     } = data;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+    let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
+    filterLocation = filterLocation.filter((item) => item !== null);
+
+    const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
+      filterLocation[0];
+
+    if (filterLocation.length === 0) return null;
 
     return (
       <div className={styles.popupContent}>
