@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { Button } from 'antd';
 import { connect } from 'umi';
-import {PROCESS_STATUS} from '@/utils/onboarding'
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import ItemMenu from './components/ItemMenu';
 import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
 import BasicInformation from '../../pages/FormTeamMember/components/BasicInformation';

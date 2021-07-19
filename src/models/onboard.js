@@ -526,6 +526,7 @@ const onboard = {
         //     processStatus: PROVISIONAL_OFFER_DRAFT,
         //   },
         // });
+        notification.success({ message: 'Delete ticket successfully.' });
       } catch (error) {
         dialog(error);
       }
@@ -1082,9 +1083,14 @@ const onboard = {
 
     deleteTicket(state, action) {
       const { payload } = action;
-      const { onboardingOverview: { allDrafts: { provisionalOfferDrafts = [] } = {} } = {} } =
-        state;
+      const {
+        onboardingOverview: { dataAll = [], allDrafts: { provisionalOfferDrafts = [] } = {} } = {},
+      } = state;
       const newList = provisionalOfferDrafts.filter((item) => {
+        const { rookieId } = item;
+        return rookieId !== `#${payload}`;
+      });
+      const newAllList = dataAll.filter((item) => {
         const { rookieId } = item;
         return rookieId !== `#${payload}`;
       });
@@ -1096,6 +1102,7 @@ const onboard = {
             ...state.onboardingOverview.allDrafts,
             provisionalOfferDrafts: newList,
           },
+          dataAll: newAllList,
         },
       };
     },
