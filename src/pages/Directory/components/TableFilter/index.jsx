@@ -41,6 +41,7 @@ class TableFilter extends PureComponent {
       clearText: '',
       reset: false,
       titleSelected: [],
+      skillSelected: [],
     };
   }
 
@@ -112,6 +113,18 @@ class TableFilter extends PureComponent {
     });
     this.setState({
       titleSelected: [value],
+    });
+  };
+
+  // for skill selectbox
+  handleSelectSkills = (value) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employee/saveFilter',
+      payload: { name: 'Skill', checkedList: value ? [value] : [] },
+    });
+    this.setState({
+      skillSelected: [value],
     });
   };
 
@@ -194,6 +207,7 @@ class TableFilter extends PureComponent {
       formatDataTitle,
       // TitleState,
       titleSelected,
+      skillSelected,
     } = this.state;
     const {
       employee: { employeetype = [], clearName = false, clearFilter },
@@ -300,6 +314,27 @@ class TableFilter extends PureComponent {
                 ))}
               </Select>
             )}
+            {/* for skills selectbox */}
+            <p className={styles.textName}>Skills</p>
+            {reset || changeTab ? (
+              ''
+            ) : (
+              <Select
+                value={clearFilter && skillSelected.length === 0 ? '' : skillSelected[0]}
+                className={styles.formSelect}
+                onChange={this.handleSelectSkills}
+                filterOption={
+                  (input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  // eslint-disable-next-line react/jsx-curly-newline
+                }
+                showSearch
+                allowClear
+              >
+                {formatDataSkill.map((skill) => (
+                  <Select.Option value={skill.value}>{skill.label}</Select.Option>
+                ))}
+              </Select>
+            )}
 
             {tabName !== 'myTeam' && (
               <>
@@ -338,7 +373,7 @@ class TableFilter extends PureComponent {
                     data={filteredArr(formatDataDepartment)}
                   />
                 )}
-                {reset || changeTab ? (
+                {/* {reset || changeTab ? (
                   ''
                 ) : (
                   <CheckBoxForms
@@ -347,7 +382,7 @@ class TableFilter extends PureComponent {
                     all={all}
                     data={filteredArr(formatDataSkill)}
                   />
-                )}
+                )} */}
 
                 {/* {reset || changeTab ? (
                   ''

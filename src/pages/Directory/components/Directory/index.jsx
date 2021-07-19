@@ -175,7 +175,7 @@ class DirectoryComponent extends PureComponent {
       prevState.country.length !== country.length ||
       prevState.state.length !== state.length ||
       prevState.employeeType.length !== employeeType.length ||
-      prevState.skill.length !== skill.length ||
+      JSON.stringify(prevState.skill) !== JSON.stringify(skill) ||
       JSON.stringify(prevState.title) !== JSON.stringify(title) ||
       prevState.filterName !== filterName ||
       prevState.company.length !== company.length ||
