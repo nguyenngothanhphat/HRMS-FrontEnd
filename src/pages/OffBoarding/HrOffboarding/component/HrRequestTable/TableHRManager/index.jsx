@@ -406,7 +406,7 @@ class HrTable extends PureComponent {
         title: <span className={styles.title}>Ticket ID </span>,
         dataIndex: 'ticketID',
         fixed: 'left',
-        width: 150,
+        width: 200,
         render: (ticketID) => {
           return (
             <p className={styles.ticketId} onClick={() => this.openViewTicket(ticketID)}>
@@ -418,7 +418,7 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>Employee ID </span>,
         dataIndex: 'employee',
-        width: 150,
+        width: 200,
         render: (employee) => {
           return <p>{employee.employeeId}</p>;
         },
@@ -426,13 +426,13 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>Created date </span>,
         dataIndex: 'requestDate',
-        width: 160,
+        width: 200,
         render: (requestDate) => {
           return <p>{moment(requestDate).format('YYYY/MM/DD')}</p>;
         },
       },
       {
-        title: <span className={styles.title}>Requestee</span>,
+        title: <span className={styles.title}>Requestee Name</span>,
         dataIndex: 'employee',
         width: 200,
         ellipsis: true,
