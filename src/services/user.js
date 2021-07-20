@@ -83,3 +83,14 @@ export async function getIndustryListInSignUp() {
     true,
   );
 }
+
+export async function sendAgainSecurityCode(data) {
+  return request(
+    '/api/resend-security-register',
+    {
+      method: 'POST',
+      data,
+    },
+    true,
+  );
+}
