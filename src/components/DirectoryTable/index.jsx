@@ -600,7 +600,7 @@ class DirectoryTable extends Component {
       },
     };
     const scroll = {
-      x: '100vw',
+      x: '120vw',
       y: 'max-content',
     };
 
