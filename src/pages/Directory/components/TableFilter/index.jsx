@@ -293,7 +293,7 @@ class TableFilter extends PureComponent {
             ) : (
               <Select
                 value={clearFilter && titleSelected.length === 0 ? '' : titleSelected[0]}
-                className={styles.formSelect}
+                className={styles.formSelectTitle}
                 onChange={(value) => this.handleSelectChange(value, 'Title')}
                 filterOption={
                   (input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
