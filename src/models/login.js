@@ -35,6 +35,7 @@ const Model = {
 
         if (isFirstLogin) {
           history.replace('/first-change-password');
+          return {};
         }
 
         // CANDIDATE
@@ -79,6 +80,7 @@ const Model = {
           yield put({ type: 'save', payload: { messageError } });
         }
       }
+      return {};
     },
 
     *logout(_, { put }) {
