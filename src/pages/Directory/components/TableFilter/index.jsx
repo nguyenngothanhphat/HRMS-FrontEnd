@@ -30,9 +30,9 @@ class TableFilter extends PureComponent {
       EmploymentState: 'Employment Type',
       StateState: 'State',
       CountryState: 'Country',
-      DepartmentState: 'Department',
+      // DepartmentState: 'Department',
       CompanyState: 'Company',
-      SkillState: 'Skill',
+      // SkillState: 'Skill',
       // TitleState: 'Title',
       formatDataState: [], // dynamic state on country
       formatDataTitle: [], // dynamic title on department
@@ -41,7 +41,6 @@ class TableFilter extends PureComponent {
       clearText: '',
       reset: false,
       titleSelected: [],
-      skillSelected: [],
     };
   }
 
@@ -104,28 +103,24 @@ class TableFilter extends PureComponent {
     onHandleChange(inputvalue);
   };
 
-  // for title selectbox
-  handleSelectChange = (value) => {
+  // for title + department + skill selectbox
+  handleSelectChange = (value, name) => {
     const { dispatch } = this.props;
-    dispatch({
-      type: 'employee/saveFilter',
-      payload: { name: 'Title', checkedList: value ? [value] : [] },
-    });
-    this.setState({
-      titleSelected: [value],
-    });
-  };
 
-  // for skill selectbox
-  handleSelectSkills = (value) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'employee/saveFilter',
-      payload: { name: 'Skill', checkedList: value ? [value] : [] },
-    });
-    this.setState({
-      skillSelected: [value],
-    });
+    if (name === 'Title') {
+      dispatch({
+        type: 'employee/saveFilter',
+        payload: { name, checkedList: value ? [value] : [] },
+      });
+      this.setState({
+        titleSelected: [value],
+      });
+    } else {
+      dispatch({
+        type: 'employee/saveFilter',
+        payload: { name, checkedList: value || [] },
+      });
+    }
   };
 
   handleReset = () => {
@@ -194,7 +189,7 @@ class TableFilter extends PureComponent {
   render() {
     const { Sider } = Layout;
     const {
-      DepartmentState,
+      // DepartmentState,
       all,
       EmploymentState,
       text,
@@ -202,12 +197,10 @@ class TableFilter extends PureComponent {
       CountryState,
       StateState,
       CompanyState,
-      SkillState,
       formatDataState,
       formatDataTitle,
       // TitleState,
       titleSelected,
-      skillSelected,
     } = this.state;
     const {
       employee: { employeetype = [], clearName = false, clearFilter },
@@ -301,7 +294,7 @@ class TableFilter extends PureComponent {
               <Select
                 value={clearFilter && titleSelected.length === 0 ? '' : titleSelected[0]}
                 className={styles.formSelect}
-                onChange={this.handleSelectChange}
+                onChange={(value) => this.handleSelectChange(value, 'Title')}
                 filterOption={
                   (input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   // eslint-disable-next-line react/jsx-curly-newline
@@ -314,20 +307,44 @@ class TableFilter extends PureComponent {
                 ))}
               </Select>
             )}
+            {/* for department selectbox */}
+            <p className={styles.textName}>Department</p>
+            {reset || changeTab ? (
+              ''
+            ) : (
+              <Select
+                className={styles.formSelect}
+                onChange={(value) => this.handleSelectChange(value, 'Department')}
+                mode="multiple"
+                filterOption={
+                  (input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  // eslint-disable-next-line react/jsx-curly-newline
+                }
+                showSearch
+                showArrow
+                allowClear
+              >
+                {formatDataDepartment.map((skill) => (
+                  <Select.Option value={skill.value}>{skill.label}</Select.Option>
+                ))}
+              </Select>
+            )}
+
             {/* for skills selectbox */}
             <p className={styles.textName}>Skills</p>
             {reset || changeTab ? (
               ''
             ) : (
               <Select
-                value={clearFilter && skillSelected.length === 0 ? '' : skillSelected[0]}
                 className={styles.formSelect}
-                onChange={this.handleSelectSkills}
+                onChange={(value) => this.handleSelectChange(value, 'Skill')}
+                mode="multiple"
                 filterOption={
                   (input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                   // eslint-disable-next-line react/jsx-curly-newline
                 }
                 showSearch
+                showArrow
                 allowClear
               >
                 {formatDataSkill.map((skill) => (
@@ -363,7 +380,7 @@ class TableFilter extends PureComponent {
                     )}
                   </>
                 )}
-                {reset || changeTab ? (
+                {/* {reset || changeTab ? (
                   ''
                 ) : (
                   <CheckBoxForms
@@ -372,7 +389,7 @@ class TableFilter extends PureComponent {
                     all={all}
                     data={filteredArr(formatDataDepartment)}
                   />
-                )}
+                )} */}
                 {/* {reset || changeTab ? (
                   ''
                 ) : (

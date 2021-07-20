@@ -171,7 +171,7 @@ class DirectoryComponent extends PureComponent {
     if (
       prevState.tabId !== tabId ||
       (changeTab && prevState.tabId === tabId) ||
-      prevState.department.length !== department.length ||
+      JSON.stringify(prevState.department) !== JSON.stringify(department) ||
       prevState.country.length !== country.length ||
       prevState.state.length !== state.length ||
       prevState.employeeType.length !== employeeType.length ||
