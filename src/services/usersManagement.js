@@ -80,7 +80,7 @@ export async function updateGeneralInfo(payload) {
 }
 
 export async function resetPasswordByEmail(payload) {
-  return request('/api/passwordtenant/recover', {
+  return request('/api/password/recover-tenant', {
     method: 'POST',
     data: payload,
   });
