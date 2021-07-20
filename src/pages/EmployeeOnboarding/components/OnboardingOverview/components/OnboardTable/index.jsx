@@ -375,7 +375,7 @@ class OnboardTable extends Component {
       APPROVED_OFFERS,
       ACCEPTED_FINAL_OFFERS,
     } = PROCESS_STATUS;
-    const isRemovable = processStatusId === PROVISIONAL_OFFER_DRAFT || FINAL_OFFERS_DRAFT;
+    const isRemovable = processStatusId === PROVISIONAL_OFFER_DRAFT || processStatusId === FINAL_OFFERS_DRAFT;
     const isHRManager = this.checkPermission('hr-manager');
 
     let menuItem = '';
