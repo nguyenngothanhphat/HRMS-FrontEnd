@@ -6,6 +6,7 @@ import { EditOutlined, SendOutlined } from '@ant-design/icons';
 // import logo from './components/images/brand-logo.png';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import whiteImg from './components/images/whiteImg.png';
 
 import CancelIcon from './components/CancelIcon';
@@ -13,10 +14,9 @@ import ModalUpload from '../../../../components/ModalUpload';
 import FileContent from './components/FileContent';
 import SendEmail from './components/SendEmail';
 import ModalContent from './components/ModalContent';
-// import PROCESS_STATUS from '../utils';
+// import { PROCESS_STATUS } from '@/utils/onboarding';
 import styles from './index.less';
 // import { PROCESS_STATUS } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
-import PROCESS_STATUS from '../utils';
 // const INPUT_WIDTH = [50, 100, 18, 120, 100, 50, 100, 18, 120, 100]; // Width for each input field
 
 // const ROLE = {

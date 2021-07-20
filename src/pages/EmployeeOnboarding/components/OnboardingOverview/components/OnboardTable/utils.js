@@ -27,6 +27,7 @@ const getActionText = (type) => {
     SENT_FOR_APPROVALS,
     PROVISIONAL_OFFERS,
     FINAL_OFFERS,
+    ALL,
   } = TABLE_TYPE;
 
   switch (type) {
@@ -73,7 +74,7 @@ const getActionText = (type) => {
     // case RENEGOTIATE_PROVISIONAL_OFFERS
 
     default:
-      return '';
+      return 'View Form';
   }
 };
 
@@ -103,29 +104,54 @@ const getColumnWidth = (columnName, tableType) => {
     PROVISIONAL_OFFERS,
     FINAL_OFFERS,
     // SENT_FOR_APPROVALS,
+    ALL,
   } = TABLE_TYPE;
 
+  if (tableType === ALL) {
+    switch (columnName) {
+      case 'rookieId':
+        return '13%';
+      case 'rookieName':
+        return '25%';
+      case 'position':
+        return '16%';
+      case 'location':
+        return '';
+      case 'dateJoin':
+        return '10%';
+      case 'actions':
+        return '10%';
+      case 'assignTo':
+        return '10%';
+      case 'assigneeManager':
+        return '10%';
+      case 'processStatus':
+        return '8%';
+      default:
+        return '';
+    }
+  }
   // .
   if (tableType === PROVISIONAL_OFFERS_DRAFTS) {
     switch (columnName) {
       case 'rookieId':
-        return '15%';
+        return '10%';
       case 'rookieName':
         return '21%';
       case 'position':
-        return '17%';
+        return '14%';
       case 'location':
         return '';
       case 'date_join':
         return '16%';
       case 'actions':
-        return '12%';
+        return '8%';
       case 'assignTo':
-        return '8%';
+        return '10%';
       case 'assigneeManager':
-        return '8%';
+        return '10%';
       case 'processStatus':
-        return '15%';
+        return '12%';
 
       default:
         return '';
@@ -152,7 +178,7 @@ const getColumnWidth = (columnName, tableType) => {
       case 'assigneeManager':
         return '8%';
       case 'processStatus':
-        return '15%';
+        return '12%';
       default:
         return '';
     }
@@ -178,7 +204,7 @@ const getColumnWidth = (columnName, tableType) => {
       case 'assigneeManager':
         return '8%';
       case 'processStatus':
-        return '15%';
+        return '12%';
       default:
         return '';
     }
@@ -206,14 +232,14 @@ const getColumnWidth = (columnName, tableType) => {
       case 'assigneeManager':
         return '8%';
       case 'processStatus':
-        return '15%';
+        return '12%';
       default:
         return '';
     }
   }
 
   // .
-  if (tableType === ACCEPTED__PROVISIONAL_OFFERS) {
+  if (tableType === ACCEPTED__PROVISIONAL_OFFERS || tableType === RENEGOTIATE_PROVISIONAL_OFFERS) {
     switch (columnName) {
       case 'rookieId':
         return '14%';
@@ -230,31 +256,7 @@ const getColumnWidth = (columnName, tableType) => {
       case 'assigneeManager':
         return '8%';
       case 'processStatus':
-        return '15%';
-      default:
-        return '';
-    }
-  }
-
-  // .
-  if (tableType === RENEGOTIATE_PROVISIONAL_OFFERS) {
-    switch (columnName) {
-      case 'rookieId':
-        return '14%';
-      case 'rookieName':
-        return '24%';
-      case 'position':
-        return '20%';
-      case 'location':
-        return '';
-      case 'actions':
-        return '23%';
-      case 'assignTo':
-        return '8%';
-      case 'assigneeManager':
-        return '8%';
-      case 'processStatus':
-        return '15%';
+        return '12%';
       default:
         return '';
     }
@@ -280,7 +282,7 @@ const getColumnWidth = (columnName, tableType) => {
       case 'assigneeManager':
         return '8%';
       case 'processStatus':
-        return '15%';
+        return '12%';
       default:
         return '';
     }
@@ -306,7 +308,7 @@ const getColumnWidth = (columnName, tableType) => {
       case 'assigneeManager':
         return '8%';
       case 'processStatus':
-        return '15%';
+        return '12%';
       default:
         return '';
     }
@@ -331,7 +333,7 @@ const getColumnWidth = (columnName, tableType) => {
       case 'assigneeManager':
         return '8%';
       case 'processStatus':
-        return '15%';
+        return '12%';
       default:
         return '';
     }
@@ -356,7 +358,7 @@ const getColumnWidth = (columnName, tableType) => {
       case 'assigneeManager':
         return '8%';
       case 'processStatus':
-        return '15%';
+        return '12%';
       default:
         return '';
     }
@@ -384,7 +386,7 @@ const getColumnWidth = (columnName, tableType) => {
       case 'assigneeManager':
         return '8%';
       case 'processStatus':
-        return '15%';
+        return '12%';
       default:
         return '';
     }
@@ -402,8 +404,8 @@ const getColumnWidth = (columnName, tableType) => {
       case 'location':
         return '';
       case 'dateJoin':
-        return '15%';
-      case 'change_request':
+        return '10%';
+      case 'changeRequest':
         return '22%';
       case 'actions':
         return '14%';
@@ -411,8 +413,8 @@ const getColumnWidth = (columnName, tableType) => {
         return '8%';
       case 'assigneeManager':
         return '8%';
-      case 'processStatus':
-        return '15%';
+      // case 'processStatus':
+      //   return '15%';
       default:
         return '';
     }
@@ -428,17 +430,17 @@ const getColumnWidth = (columnName, tableType) => {
       case 'position':
         return '15%';
       case 'location':
-        return '';
+        return '10%';
       case 'dateRequest':
         return '15%';
       case 'actions':
         return '25%';
       case 'assignTo':
-        return '8%';
+        return '12%';
       case 'assigneeManager':
-        return '8%';
+        return '12%';
       case 'processStatus':
-        return '15%';
+        return '12%';
       default:
         return '';
     }
@@ -464,7 +466,7 @@ const getColumnWidth = (columnName, tableType) => {
       case 'assigneeManager':
         return '8%';
       case 'processStatus':
-        return '15%';
+        return '12%';
       default:
         return '';
     }
@@ -490,7 +492,7 @@ const getColumnWidth = (columnName, tableType) => {
       case 'assigneeManager':
         return '8%';
       case 'processStatus':
-        return '15%';
+        return '12%';
       default:
         return '';
     }
@@ -516,7 +518,7 @@ const getColumnWidth = (columnName, tableType) => {
       case 'assigneeManager':
         return '8%';
       case 'processStatus':
-        return '15%';
+        return '12%';
       default:
         return '';
     }

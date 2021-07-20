@@ -11,8 +11,10 @@ import {
 import _ from 'lodash';
 import { history } from 'umi';
 import { dialog } from '@/utils/utils';
+import { PROCESS_STATUS_TABLE_NAME, PROCESS_STATUS } from '@/utils/onboarding';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { notification } from 'antd';
+import moment from 'moment';
 
 // const employeeList = rookieList.filter(
 //   (rookie) => rookie.isNew === undefined || rookie.isNew === null,
@@ -93,102 +95,8 @@ const MENU_DATA = [
   },
 ];
 
-export const PROCESS_STATUS = {
-  PROVISIONAL_OFFER_DRAFT: 'DRAFT',
-  FINAL_OFFERS_DRAFT: 'FINAL-OFFER-DRAFT',
-
-  SENT_PROVISIONAL_OFFERS: 'SENT-PROVISIONAL-OFFER',
-  ACCEPTED_PROVISIONAL_OFFERS: 'ACCEPT-PROVISIONAL-OFFER',
-  RENEGOTIATE_PROVISIONAL_OFFERS: 'RENEGOTIATE-PROVISONAL-OFFER',
-
-  PENDING: 'PENDING-BACKGROUND-CHECK',
-  ELIGIBLE_CANDIDATES: 'ELIGIBLE-CANDIDATE',
-  INELIGIBLE_CANDIDATES: 'INELIGIBLE-CANDIDATE',
-
-  SENT_FOR_APPROVAL: 'PENDING-APPROVAL-FINAL-OFFER',
-  APPROVED_OFFERS: 'APPROVED-FINAL-OFFER',
-
-  SENT_FINAL_OFFERS: 'SENT-FINAL-OFFERS',
-  ACCEPTED_FINAL_OFFERS: 'ACCEPT-FINAL-OFFER',
-  RENEGOTIATE_FINAL_OFFERS: 'RENEGOTIATE-FINAL-OFFERS',
-
-  PROVISIONAL_OFFERS: 'DISCARDED-PROVISONAL-OFFER',
-  FINAL_OFFERS: 'FINAL-OFFERS',
-  FINAL_OFFERS_HR: 'REJECT-FINAL-OFFER-HR',
-  FINAL_OFFERS_CANDIDATE: 'REJECT-FINAL-OFFER-CANDIDATE',
-};
-
-const processStatusName = {
-  DRAFT: 'Provisional Offer Drafts',
-  'FINAL-OFFER-DRAFT': 'Final Offers Draft',
-  'SENT-PROVISIONAL-OFFER': 'Sent Provisional Offers',
-  'ACCEPT-PROVISIONAL-OFFER': 'Accepted Provisional Offers',
-  'RENEGOTIATE-PROVISONAL-OFFER': 'Renegotiate Provisional Offers',
-  'PENDING-BACKGROUND-CHECK': 'Pending',
-  'ELIGIBLE-CANDIDATE': 'Eligible Candidates',
-  'INELIGIBLE-CANDIDATE': 'Ineligible Candidates',
-  'PENDING-APPROVAL-FINAL-OFFER': 'Sent For Approval',
-  'APPROVED-FINAL-OFFER': 'Approved Offers',
-  'SENT-FINAL-OFFERS': 'Sent Final Offers',
-  'ACCEPT-FINAL-OFFER': 'Accepted Final Offers',
-  'RENEGOTIATE-FINAL-OFFERS': 'Re-Negotiate Final Offers',
-  'DISCARDED-PROVISONAL-OFFER': 'Provisional Offers',
-  'REJECT-FINAL-OFFER-HR': 'Final Offers',
-  'REJECT-FINAL-OFFER-CANDIDATE': 'Final Offers',
-};
-
-const getProcessStatusName = (name) => {
-  return processStatusName[name];
-};
-
-const formatMonth = (month) => {
-  const monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-
-  return monthNames[month];
-};
-
-const formatDay = (day) => {
-  const nth = (d) => {
-    if (d > 3 && d < 21) return 'th';
-    switch (d % 10) {
-      case 1:
-        return 'st';
-      case 2:
-        return 'nd';
-      case 3:
-        return 'rd';
-      default:
-        return 'th';
-    }
-  };
-  return day + nth(day);
-};
-
 const formatDate = (date) => {
-  if (!date) {
-    return '';
-  }
-  const dateObj = new Date(date);
-  const month = dateObj.getUTCMonth(); // months from 1-12
-  // const month = dateObj.getUTCMonth() + 1; // months from 1-12
-  const day = dateObj.getUTCDate();
-  const year = dateObj.getUTCFullYear();
-
-  const newDate = `${formatDay(day)} ${formatMonth(month).substring(0, 3)}, ${year}`;
-  return newDate;
+  return date ? moment(date).locale('en').format('MM.DD.YY') : '';
 };
 
 const dateDiffInDays = (a, b) => {
@@ -217,25 +125,28 @@ const formatData = (list = []) => {
       title = '',
       workLocation = '',
       dateOfJoining = '',
-      requestDate = '',
+      // requestDate = '',
       receiveDate = '',
       sentDate = '',
-      expireDate = '',
+      offerExpirationDate = '',
       updatedAt = '',
-      // createdAt = '',
+      createdAt = '',
       comments = '',
       assignTo = {},
       assigneeManager = {},
       processStatus = '',
+      verifiedDocument = 0,
     } = item;
     const dateSent = formatDate(sentDate) || '';
     const dateReceived = formatDate(receiveDate) || '';
     const dateJoin = formatDate(dateOfJoining) || '';
-    const dateRequest = formatDate(requestDate) || '';
-    const expire = formatDate(expireDate) || '';
+    const dateRequest = formatDate(createdAt) || '';
+    const expire = formatDate(offerExpirationDate) || '';
+
     let isNew = false;
-    let fullName = `${firstName || ''} ${middleName || ''} ${lastName || ''}`;
-    if (!middleName) fullName = `${firstName || ''} ${lastName || ''}`;
+    const fullName = `${firstName ? `${firstName} ` : ''}${middleName ? `${middleName} ` : ''}${
+      lastName ? `${lastName} ` : ''
+    }`;
 
     if (fullName) {
       isNew = dateDiffInDays(Date.now(), updatedAt) < 3;
@@ -254,12 +165,12 @@ const formatData = (list = []) => {
       dateJoin: dateJoin || '',
       dateRequest: dateRequest || '',
       expire: expire || '',
-      documentVerified: '',
+      documentVerified: verifiedDocument,
       resubmit: 0,
       changeRequest: '-',
       assignTo,
       assigneeManager,
-      processStatus: getProcessStatusName(processStatus),
+      processStatus: PROCESS_STATUS_TABLE_NAME[processStatus],
       processStatusId: processStatus,
     };
     formatList.push(rookie);
@@ -275,6 +186,7 @@ const onboard = {
     mainTabActiveKey: '1',
     onboardingOverview: {
       total: '',
+      currentStatusAll: [],
       pendingEligibilityChecks: {
         sentEligibilityForms: sentEligibilityFormsData,
         receivedSubmittedDocuments: receivedSubmittedDocumentsData,
@@ -345,138 +257,6 @@ const onboard = {
   },
 
   effects: {
-    // eslint-disable-next-line no-shadow
-    *fetchAllOnboardList(_, { put }) {
-      try {
-        const {
-          PROVISIONAL_OFFER_DRAFT,
-          FINAL_OFFERS_DRAFT,
-
-          SENT_PROVISIONAL_OFFERS,
-          ACCEPTED_PROVISIONAL_OFFERS,
-          RENEGOTIATE_PROVISIONAL_OFFERS,
-
-          PENDING,
-          ELIGIBLE_CANDIDATES,
-          INELIGIBLE_CANDIDATES,
-
-          SENT_FOR_APPROVAL,
-          APPROVED_OFFERS,
-
-          SENT_FINAL_OFFERS,
-          ACCEPTED_FINAL_OFFERS,
-          RENEGOTIATE_FINAL_OFFERS,
-
-          PROVISIONAL_OFFERS,
-          FINAL_OFFERS,
-        } = PROCESS_STATUS;
-
-        // 1
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: PROVISIONAL_OFFER_DRAFT,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: FINAL_OFFERS_DRAFT,
-          },
-        });
-
-        // 2
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: SENT_PROVISIONAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: ACCEPTED_PROVISIONAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: RENEGOTIATE_PROVISIONAL_OFFERS,
-          },
-        });
-
-        // 3
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: PENDING,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: ELIGIBLE_CANDIDATES,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: INELIGIBLE_CANDIDATES,
-          },
-        });
-
-        // 4
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: SENT_FOR_APPROVAL,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: APPROVED_OFFERS,
-          },
-        });
-
-        // 5
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: SENT_FINAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: ACCEPTED_FINAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: RENEGOTIATE_FINAL_OFFERS,
-          },
-        });
-
-        // 6
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: PROVISIONAL_OFFERS,
-          },
-        });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            processStatus: FINAL_OFFERS,
-          },
-        });
-      } catch (error) {
-        dialog(error);
-      }
-    },
-
     *fetchOnboardListAll({ payload }, { call, put }) {
       try {
         const { processStatus = '', page, limit } = payload;
@@ -501,9 +281,10 @@ const onboard = {
           payload: returnedData,
         });
         yield put({
-          type: 'save',
+          type: 'saveOnboardingOverview',
           payload: {
             total: response.total,
+            currentStatusAll: processStatus,
           },
         });
       } catch (errors) {
@@ -567,6 +348,13 @@ const onboard = {
 
         yield put({
           type: 'fetchTotalNumberOfOnboardingListEffect',
+        });
+
+        yield put({
+          type: 'saveOnboardingOverview',
+          payload: {
+            total: response.total,
+          },
         });
 
         // Fetch data
@@ -739,16 +527,25 @@ const onboard = {
         //     processStatus: PROVISIONAL_OFFER_DRAFT,
         //   },
         // });
+        notification.success({ message: 'Delete ticket successfully.' });
       } catch (error) {
         dialog(error);
       }
       return response;
     },
 
-    *reassignTicket({ payload }, { call, put }) {
+    *reassignTicket({ payload }, { call, put, select }) {
       let response;
       try {
-        const { id = '', tenantId = '', newAssignee = '', processStatus = '' } = payload;
+        const {
+          id = '',
+          tenantId = '',
+          newAssignee = '',
+          processStatus = '',
+          isAll = false,
+          page = '',
+          limit = '',
+        } = payload;
         const req = {
           rookieID: id,
           tenantId,
@@ -760,13 +557,27 @@ const onboard = {
         notification.success({
           message,
         });
-        yield put({
-          type: 'fetchOnboardList',
-          payload: {
-            tenantId,
-            processStatus,
-          },
-        });
+        if (!isAll) {
+          yield put({
+            type: 'fetchOnboardList',
+            payload: {
+              tenantId,
+              processStatus,
+            },
+          });
+        } else {
+          const { currentStatusAll } = yield select((state) => state.onboard.onboardingOverview);
+
+          yield put({
+            type: 'fetchOnboardListAll',
+            payload: {
+              tenantId,
+              processStatus: currentStatusAll,
+              page,
+              limit,
+            },
+          });
+        }
       } catch (error) {
         dialog(error);
       }
@@ -889,6 +700,15 @@ const onboard = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveOnboardingOverview(state, action) {
+      return {
+        ...state,
+        onboardingOverview: {
+          ...state.onboardingOverview,
+          ...action.payload,
+        },
       };
     },
 
@@ -1264,9 +1084,14 @@ const onboard = {
 
     deleteTicket(state, action) {
       const { payload } = action;
-      const { onboardingOverview: { allDrafts: { provisionalOfferDrafts = [] } = {} } = {} } =
-        state;
+      const {
+        onboardingOverview: { dataAll = [], allDrafts: { provisionalOfferDrafts = [] } = {} } = {},
+      } = state;
       const newList = provisionalOfferDrafts.filter((item) => {
+        const { rookieId } = item;
+        return rookieId !== `#${payload}`;
+      });
+      const newAllList = dataAll.filter((item) => {
         const { rookieId } = item;
         return rookieId !== `#${payload}`;
       });
@@ -1278,6 +1103,7 @@ const onboard = {
             ...state.onboardingOverview.allDrafts,
             provisionalOfferDrafts: newList,
           },
+          dataAll: newAllList,
         },
       };
     },

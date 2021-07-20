@@ -117,9 +117,11 @@ class ReassignModal extends PureComponent {
       reassignTicketId = '',
       processStatus = '',
       dispatch,
+      type = '',
+      page = '',
+      limit = '',
     } = this.props;
     const { to = '' } = values;
-
     if (to) {
       const res = await dispatch({
         type: 'onboard/reassignTicket',
@@ -128,6 +130,9 @@ class ReassignModal extends PureComponent {
           tenantId: getCurrentTenant(),
           newAssignee: to,
           processStatus,
+          isAll: type === 'ALL',
+          page,
+          limit,
         },
       });
       if (res?.statusCode === 200) {

@@ -9,6 +9,7 @@ import {
   getListEmployee,
   getDataOrgChart,
   getListAdministrator,
+  getListExportEmployees,
 } from '../services/employee';
 import { addEmployee, updateEmployee } from '../services/employeesManagement';
 
@@ -31,6 +32,7 @@ const employee = {
     filterList: {},
     totalActiveEmployee: '',
     totalInactiveEmployee: '',
+    totalMyTeam: '',
   },
   effects: {
     *fetchEmployeeType(_, { call, put }) {
@@ -98,6 +100,8 @@ const employee = {
           employeeType = [],
           name = '',
           title = [],
+          page = '',
+          limit = '',
         } = {},
       },
       { call, put },
@@ -111,10 +115,15 @@ const employee = {
           employeeType,
           name,
           title,
+          page,
+          limit,
         });
         const { statusCode, data: listEmployeeMyTeam = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'listEmployeeMyTeam', payload: { listEmployeeMyTeam } });
+        yield put({
+          type: 'listEmployeeMyTeam',
+          payload: { listEmployeeMyTeam, myTeam: response.total },
+        });
         return listEmployeeMyTeam;
       } catch (errors) {
         dialog(errors);
@@ -287,7 +296,40 @@ const employee = {
         return 0;
       }
     },
+
+    *exportEmployees(
+      {
+        payload: {
+          company = [],
+          department = [],
+          location = [],
+          employeeType = [],
+          name = '',
+          title = [],
+          skill = [],
+        } = {},
+      },
+      { call },
+    ) {
+      try {
+        const response = yield call(getListExportEmployees, {
+          status: ['ACTIVE', 'INACTIVE'],
+          company,
+          department,
+          location,
+          employeeType,
+          name,
+          title,
+          skill,
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return 0;
+      }
+    },
   },
+
   reducers: {
     saveFilter(state, action) {
       const data = [...state.filter];

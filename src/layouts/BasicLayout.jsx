@@ -18,6 +18,7 @@ import React from 'react';
 import { connect, Link, Redirect, useIntl } from 'umi';
 import Footer from '@/components/Footer';
 import Feedback from '@/components/Feedback';
+import { constant } from 'lodash';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
@@ -34,6 +35,10 @@ const noMatch = (
     }
   />
 );
+
+const HR_MANAGER = 'HR-MANAGER';
+const HR_EMPLOYEE = 'HR';
+const MANAGER = 'MANAGER';
 
 const menuDataRender = (menuList) =>
   menuList.map((item) => {
@@ -132,6 +137,16 @@ const BasicLayout = (props) => {
     return <Redirect to="/control-panel" />;
   }
 
+  const handleClickMenu = (path) => {
+    const { roles = [] } = currentUser;
+    const checkRoleHrAndManager =
+      roles.includes(HR_MANAGER) || roles.includes(HR_EMPLOYEE) || roles.includes(MANAGER);
+
+    if (path === '/offboarding' && checkRoleHrAndManager) {
+      localStorage.setItem('initViewOffboarding', false);
+    }
+  };
+
   return (
     <>
       <div
@@ -152,7 +167,11 @@ const BasicLayout = (props) => {
               return defaultDom;
             }
 
-            return <Link to={menuItemProps.path}>{defaultDom}</Link>;
+            return (
+              <Link onClick={() => handleClickMenu(menuItemProps.path)} to={menuItemProps.path}>
+                {defaultDom}
+              </Link>
+            );
           }}
           breadcrumbLayoutRender={(routers = []) => {
             let listPath = routers;

@@ -1,8 +1,9 @@
 /* eslint-disable react/no-array-index-key */
 import React, { PureComponent } from 'react';
-import { Table, Avatar } from 'antd';
+import { Table, Popover, Divider, Row, Col, Avatar, Tooltip } from 'antd';
 import moment from 'moment';
 import { history } from 'umi';
+import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import { UserOutlined } from '@ant-design/icons';
 import t from './index.less';
@@ -13,35 +14,197 @@ class TableManager extends PureComponent {
     this.state = {};
   }
 
+  componentDidMount = () => {
+    this.setCurrentTime();
+  };
+
+  setCurrentTime = () => {
+    // compare two time by hour & minute. If minute changes, get new time
+    const timeFormat = 'HH:mm';
+    const { currentTime } = this.state;
+    const parseTime = (timeString) => moment(timeString, timeFormat);
+    const check = parseTime(moment().format(timeFormat)).isAfter(
+      parseTime(moment(currentTime).format(timeFormat)),
+    );
+
+    if (check) {
+      this.setState({
+        currentTime: moment(),
+      });
+    }
+  };
+
   push = (data) => {
     history.push(`/offboarding/my-request/${data}`);
   };
 
-  onChangePagination = (pageNumber) => {
-    this.setState({
-      pageNavigation: pageNumber,
-    });
+  // onChangePagination = (pageNumber) => {
+  //   this.setState({
+  //     pageNavigation: pageNumber,
+  //   });
+  // };
+
+  openViewTicket = (ticketID) => {
+    const { data = [], dataAll = [], isTabAll } = this.props;
+    let id = '';
+
+    if (isTabAll) {
+      dataAll.forEach((item) => {
+        if (item.ticketID === ticketID) {
+          id = item._id;
+        }
+      });
+    } else {
+      data.forEach((item) => {
+        if (item.ticketID === ticketID) {
+          id = item._id;
+        }
+      });
+    }
+    if (id) {
+      history.push(`/offboarding/review/${id}`);
+    }
+  };
+
+  popupContent = (dataRow) => {
+    // console.log(dataRow);
+    const { timezoneList } = this.props;
+    const { currentTime } = this.state;
+    const {
+      employee: {
+        title: { name: titleName = 'UX Lead' } = {},
+        employeeId = '',
+        generalInfo: {
+          avatar = '',
+          firstName = '',
+          lastName = '',
+          middleName = '',
+          employeeType: { name: typeName = 'Full Time' } = {},
+          linkedIn = '',
+          userId = '',
+        } = {},
+      } = {},
+      department: { name: departmentName = '' } = {},
+      location: { _id = '' } = {},
+    } = dataRow;
+    const fullName = `${firstName} ${middleName} ${lastName}`;
+    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+    return (
+      <div className={t.popupContent}>
+        <div className={t.generalInfo}>
+          <div className={t.avatar}>
+            <Avatar src={avatar} size={40} icon={<UserOutlined />} />
+          </div>
+          <div className={t.employeeInfo}>
+            <div className={t.employeeInfo__name}>{fullName}</div>
+            <div className={t.employeeInfo__department}>
+              {titleName}, {departmentName} Dept.
+            </div>
+            <div className={t.employeeInfo__emplId}>
+              {employeeId} | {typeName}
+            </div>
+          </div>
+        </div>
+        <Divider />
+        <div className={t.contact}>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={t.contact__title}>Mobile: </div>
+            </Col>
+            <Col span={16}>
+              <div className={t.contact__value}>abccc</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={t.contact__title}>Email id: </div>
+            </Col>
+            <Col span={16}>
+              <div className={t.contact__value}>abc@gmail.com</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={t.contact__title}>Location: </div>
+            </Col>
+            <Col span={16}>
+              <div className={t.contact__value}>abccc</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={t.contact__title}>Local Time: </div>
+            </Col>
+            <Col span={16}>
+              <div className={t.contact__value}>
+                {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
+                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
+                  : 'Not enough data in address'}
+              </div>
+            </Col>
+          </Row>
+        </div>
+        <Divider />
+        <div className={t.popupActions}>
+          <div
+            className={t.popupActions__link}
+            onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+          >
+            View full profile
+          </div>
+          <div className={t.popupActions__actions}>
+            <Tooltip title="Email">
+              <img
+                src="/assets/images/iconMail.svg"
+                alt="img-arrow"
+                style={{ marginLeft: '5px', cursor: 'pointer' }}
+              />
+            </Tooltip>
+            <Tooltip title="LinkedIn">
+              <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
+                <img
+                  src="/assets/images/iconLinkedin.svg"
+                  alt="img-arrow"
+                  style={{ cursor: 'pointer' }}
+                />
+              </a>
+            </Tooltip>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   render() {
-    const { data = [], loading, textEmpty = 'No resignation request is submitted' } = this.props;
-    const { pageNavigation } = this.state;
-    const rowSize = 10;
+    const {
+      data = [],
+      loading,
+      textEmpty = 'No resignation request is submitted',
+      pageSelected,
+      size,
+      total: totalData,
+      getPageAndSize = () => {},
+    } = this.props;
+    // const { pageNavigation } = this.state;
+    // const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
-      total: data.length,
+      total: totalData,
       showTotal: (total, range) => (
         <span>
           Showing{' '}
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
-          total
+          of
+          <b>{total}</b>
         </span>
       ),
-      pageSize: rowSize,
-      current: pageNavigation,
-      onChange: this.onChangePagination,
+      pageSize: size,
+      current: pageSelected,
+      onChange: (page, pageSize) => {
+        getPageAndSize(page, pageSize);
+      },
     };
 
     const columns = [
@@ -49,7 +212,11 @@ class TableManager extends PureComponent {
         title: <span className={t.title}>Ticket ID</span>,
         dataIndex: 'ticketID',
         render: (ticketID) => {
-          return <p>{ticketID}</p>;
+          return (
+            <p className={t.ticketId} onClick={() => this.openViewTicket(ticketID)}>
+              {ticketID}
+            </p>
+          );
         },
       },
       {
@@ -76,23 +243,27 @@ class TableManager extends PureComponent {
       {
         title: <span className={t.title}>Assigned </span>,
         dataIndex: 'Assigned',
+        width: 200,
         render: (_, row) => {
           const {
-            hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {},
+            hrManager: {
+              generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {},
+            } = {},
           } = this.props;
-          const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
-          const arrAvt = [avtManager, avtHrManager];
+          const fullName = `${firstName} ${middleName} ${lastName}`;
           return (
-            <div className={t.rowAction}>
-              {arrAvt.map(
-                (item, index) =>
-                  item && (
-                    <div key={index} style={{ marginRight: '13px', display: 'inline-block' }}>
-                      <Avatar src={item} size={20} icon={<UserOutlined />} />
-                    </div>
-                  ),
-              )}
-            </div>
+            <Popover
+              content={() => this.popupContent(row)}
+              // title={location.name}
+              trigger="hover"
+            >
+              <p
+                className={t.assignee}
+                onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+              >
+                {fullName}
+              </p>
+            </Popover>
           );
         },
       },
@@ -103,12 +274,12 @@ class TableManager extends PureComponent {
       },
       {
         title: <span className={t.title}>Action</span>,
-        dataIndex: '_id',
-        render: (_id) => (
-          <div className={t.rowAction}>
-            <span onClick={() => this.push(_id)}>View Request</span>
-          </div>
-        ),
+        // dataIndex: '_id',
+        // render: (_id) => (
+        //   <div className={t.rowAction}>
+        //     <span onClick={() => this.push(_id)}>View Request</span>
+        //   </div>
+        // ),
       },
     ];
 
@@ -127,10 +298,7 @@ class TableManager extends PureComponent {
           columns={columns}
           dataSource={data}
           hideOnSinglePage
-          pagination={{
-            ...pagination,
-            total: data.length,
-          }}
+          pagination={pagination}
           rowKey="id"
           scroll={{ x: 'max-content' }}
         />

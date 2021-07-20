@@ -80,6 +80,7 @@ const Model = {
           yield put({ type: 'save', payload: { messageError } });
         }
       }
+      return {};
     },
 
     *logout(_, { put }) {
@@ -106,26 +107,72 @@ const Model = {
         const password = '*';
         const value = { accessToken, email, password };
         const response = yield call(signInThirdParty, value);
-        if (response.statusCode !== 200) throw response;
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
         yield put({
           type: 'changeLoginStatus',
           payload: response,
         });
         setToken(response.data.token);
-        const arrayRoles = response.data.user.roles;
+
+        // const arrayRoles = response.data.user.roles;
+        // let formatArrRoles = [];
+        // arrayRoles.forEach((e) => {
+        //   formatArrRoles = [...formatArrRoles, e._id.toLowerCase(), ...e.permissions];
+        // });
+        // setAuthority(formatArrRoles);
+        // if (formatArrRoles.indexOf('candidate') > -1) {
+        //   history.replace('/candidate');
+        //   return;
+        // }
+        // history.replace('/');
         let formatArrRoles = [];
-        arrayRoles.forEach((e) => {
-          formatArrRoles = [...formatArrRoles, e._id.toLowerCase(), ...e.permissions];
-        });
-        setAuthority(formatArrRoles);
-        if (formatArrRoles.indexOf('candidate') > -1) {
-          history.replace('/candidate');
-          return;
+        const { user: { signInRole = [], isFirstLogin = false } = {}, listCompany = [] } = data;
+        const formatRole = signInRole.map((role) => role.toLowerCase());
+
+        if (isFirstLogin) {
+          history.replace('/first-change-password');
+          return {};
         }
-        history.replace('/');
+
+        // CANDIDATE
+        if (formatRole.indexOf('candidate') > -1) {
+          yield put({
+            type: 'saveCandidateId',
+            payload: response,
+          });
+          history.replace('/candidate');
+        }
+        // ELSE
+        let isAdminOrOwner = false;
+        if (formatRole.includes('owner')) {
+          isAdminOrOwner = true;
+        }
+        // if (formatRole.includes('admin')) {
+        //   isAdminOrOwner = true;
+        // }
+        formatArrRoles = [...formatArrRoles, ...formatRole];
+        setAuthority(formatArrRoles);
+
+        // redirect
+        if (isAdminOrOwner) {
+          history.replace('/control-panel');
+        } else if (listCompany.length === 1) {
+          const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
+          setTenantId(tenantId);
+          setCurrentCompany(selectedCompany);
+          yield put({
+            type: 'user/fetchCurrent',
+            refreshCompanyList: false,
+          });
+          history.push('/');
+        } else {
+          history.replace('/control-panel');
+        }
       } catch (errors) {
         dialog(errors);
       }
+      return {};
     },
   },
   reducers: {

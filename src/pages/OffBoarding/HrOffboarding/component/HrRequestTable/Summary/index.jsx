@@ -20,12 +20,18 @@ export default class Summary extends PureComponent {
     return result.count || 0;
   };
 
-  getTotal = () => {
+  getTotalCount = () => {
     const { countdata = [] } = this.props;
     let total = 0;
+
     if (countdata.length > 0) {
-      total = countdata.reduce((a, b) => a.count + b.count) || 0;
+      if (countdata.length === 1) {
+        total = countdata[0].count;
+      } else {
+        total = countdata.reduce((a, b) => a + b.count, 0);
+      }
     }
+
     return total;
   };
 
@@ -38,7 +44,7 @@ export default class Summary extends PureComponent {
       {
         value: '1',
         title: 'All',
-        count: this.getTotal(),
+        count: this.getTotalCount(),
         renderTab: this.renderTab('ALL'),
       },
       {

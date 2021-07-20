@@ -5,7 +5,7 @@ import { connect } from 'umi';
 // import SentFinalOffers from './components/SentFinalOffers/index';
 // import AcceptedFinalOffers from './components/AcceptedFinalOffers/index';
 // import RenegotitateFinalOffers from './components/RenegotiateFinalOffers/index';
-import { PROCESS_STATUS } from '@/models/onboard';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import ProvisionalOffers from './components/ProvisionalOffers/index';
 import FinalOffers from './components/FinalOffers/index';
 import AllTab from './components/AllTab';
@@ -18,7 +18,7 @@ class DiscardedOffers extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      tabId: 1,
+      tabId: '1',
       pageSelected: 1,
       size: 10,
     };

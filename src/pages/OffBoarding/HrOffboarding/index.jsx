@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Tabs, Button, Row, Col } from 'antd';
-import { history } from 'umi';
+import { Tabs } from 'antd';
 import HRrequestTable from './component/HrRequestTable';
 import RelievingFormalities from './component/RelievingFormalities';
 import Settings from './component/Settings';
@@ -29,6 +28,7 @@ class HROffboarding extends PureComponent {
   render() {
     const { TabPane } = Tabs;
     const { tabKey } = this.state;
+
     return (
       <PageContainer>
         <div className={styles.containerEmployeeOffboarding}>
@@ -46,21 +46,6 @@ class HROffboarding extends PureComponent {
                 <Settings />
               </TabPane>
             </Tabs>
-
-            {/* <div className={styles.options}>
-              <Row gutter={[24, 0]}>
-                <Col>
-                  <Button className={styles.generate} type="primary">
-                    Generate Report
-                  </Button>
-                </Col>
-                <Col>
-                  <Button className={styles.view} type="secondary">
-                    View Activity log (15)
-                  </Button>
-                </Col>
-              </Row>
-            </div> */}
           </div>
         </div>
       </PageContainer>

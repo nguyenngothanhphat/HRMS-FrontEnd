@@ -6,8 +6,8 @@ import { Button, Col, notification, Row, Spin, Typography } from 'antd';
 import { map } from 'lodash';
 import React, { Component } from 'react';
 import { connect, formatMessage } from 'umi';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import NoteComponent from '../NoteComponent';
-import PROCESS_STATUS from '../utils';
 import CollapseFieldsType1 from './components/CollapseFieldsType1';
 import CollapseFieldsType2 from './components/CollapseFieldsType2';
 import CollapseFieldsType3 from './components/CollapseFieldsType3';
@@ -276,6 +276,7 @@ class BackgroundCheck extends Component {
         isSentEmail: !isSentEmail,
       },
     });
+    this.setState({ openModalEmail: true });
   };
 
   disableEdit = () => {
@@ -636,9 +637,9 @@ class BackgroundCheck extends Component {
   };
 
   _renderBottomBar = () => {
-    const { checkMandatory } = this.props;
-    const { filledBackgroundCheck } = checkMandatory;
-    console.log(filledBackgroundCheck);
+    // const { checkMandatory } = this.props;
+    // const { filledBackgroundCheck } = checkMandatory;
+    // console.log(filledBackgroundCheck);
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
@@ -665,7 +666,7 @@ class BackgroundCheck extends Component {
 
                 // disabled={!filledBackgroundCheck}
               >
-                Next
+                Send
               </Button>
             </div>
           </Col>
@@ -854,6 +855,7 @@ class BackgroundCheck extends Component {
         this.setState({
           openModal: true,
           refreshBlockE: true,
+          openModalEmail: false,
         });
         this.getDataFromServer();
         // refresh block D (IMPORTANT)
@@ -1358,7 +1360,7 @@ class BackgroundCheck extends Component {
                 handleValueChange={this.handleValueChange}
                 privateEmail={privateEmail}
                 processStatusFilled={processStatusFilled}
-                processStatus={processStatus}
+                processStatus={processStatusFilled}
                 checkValidation={checkValidation}
                 valueToFinalOffer={valueToFinalOffer}
                 changeValueToFinalOffer={this.changeValueToFinalOffer}

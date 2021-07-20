@@ -204,7 +204,7 @@ const routes = [
             name: 'Offboarding',
             icon: '/assets/images/menuIcons/offboarding.svg',
             component: './OffBoarding',
-            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW', 'hr', 'hr-manager'],
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW', 'hr', 'hr-manager', 'manager'],
           },
           {
             path: '/time-off',

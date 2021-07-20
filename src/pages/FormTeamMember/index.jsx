@@ -4,6 +4,7 @@ import { Button, Affix, Spin } from 'antd';
 import CommonLayout from '@/components/CommonLayout';
 import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import BasicInformation from './components/BasicInformation';
 import JobDetails from './components/JobDetails';
 import OfferDetail from './components/OfferDetail';
@@ -16,7 +17,6 @@ import BackgroundCheck from './components/BackgroundCheckNew';
 import BackgroundRecheck from './components/BackgroundRecheck';
 import Payroll from './components/Payroll';
 // import AdditionalQuestion from './components/AdditionalQuestion';
-import PROCESS_STATUS from './components/utils';
 // import Additional from './components/Additional';
 // import PreviewOffer from './components/PreviewOffer';
 

@@ -13,6 +13,10 @@ import { getCurrentTenant } from '@/utils/authority';
 const { TextArea } = Input;
 const { SubMenu } = Menu;
 
+const HR_MANAGER = 'HR-MANAGER';
+const HR_EMPLOYEE = 'HR';
+const MANAGER = 'MANAGER';
+
 @connect(
   ({
     loading,
@@ -29,7 +33,7 @@ const { SubMenu } = Menu;
         } = {},
       } = {},
     } = {},
-    user: { currentUser: { employee: { _id: myEmployeeID = '' } = {} } = {} } = {},
+    user: { currentUser: { employee: { _id: myEmployeeID = '' } = {}, roles = [] } = {} } = {},
   }) => ({
     generalData,
     compensationData,
@@ -41,6 +45,7 @@ const { SubMenu } = Menu;
     department,
     joinDate,
     title,
+    roles,
   }),
 )
 class ViewInformation extends Component {
@@ -202,16 +207,28 @@ class ViewInformation extends Component {
     handleClickOnActions(key);
   };
 
+  redirectOffboarding = () => {
+    const { roles = [] } = this.props;
+    const checkRoleHrAndManager =
+      roles.includes(HR_MANAGER) || roles.includes(HR_EMPLOYEE) || roles.includes(MANAGER);
+    if (checkRoleHrAndManager) {
+      localStorage.setItem('initViewOffboarding', true);
+      history.push({
+        pathname: '/offboarding',
+        state: { isEmployeeMode: true },
+      });
+    } else {
+      history.push({
+        pathname: '/offboarding',
+        state: { isEmployeeMode: false },
+      });
+    }
+  };
+
   btnAction = (permissions, profileOwner) => {
     const subDropdown = (
       <SubMenu className={s.subMenu} key="sub1" title="Job Change">
-        <Menu.Item
-          key="offboarding"
-          className={s.menuItem}
-          onClick={() => {
-            history.push('/offboarding');
-          }}
-        >
+        <Menu.Item key="offboarding" className={s.menuItem} onClick={this.redirectOffboarding}>
           Offboarding
         </Menu.Item>
       </SubMenu>

@@ -1,18 +1,36 @@
 /* eslint-disable react/no-array-index-key */
 import React, { PureComponent } from 'react';
-import { Table, notification, Popover, Divider, Row, Col, Avatar } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import {
+  Table,
+  notification,
+  Popover,
+  Divider,
+  Row,
+  Col,
+  Avatar,
+  Tooltip,
+  Dropdown,
+  Menu,
+} from 'antd';
+import { UserOutlined, MoreOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import { isEmpty } from 'lodash';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
-import { history } from 'umi';
-import { getCurrentTimeOfTimezone } from '@/utils/times';
+import { history, connect } from 'umi';
+import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
+import AssignModal from './AssignModal';
 import styles from './index.less';
 
+@connect(({ locationSelection: { listLocationsByCompany = [] } = {} }) => ({
+  listLocationsByCompany,
+}))
 class HrTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      pageNavigation: 1,
+      // pageNavigation: 1,
+      assignModalVisible: false,
+      offBoardingRequest: '',
       currentTime: moment(),
     };
   }
@@ -68,52 +86,44 @@ class HrTable extends PureComponent {
     });
   };
 
-  // push = (data) => {
-  //   history.push(`/offboarding/review/${data}`);
+  // onChangePagination = (pageNumber) => {
+  //   this.setState({
+  //     pageNavigation: pageNumber,
+  //   });
   // };
 
-  onChangePagination = (pageNumber) => {
-    this.setState({
-      pageNavigation: pageNumber,
-    });
-  };
-
   openViewTicket = (ticketID) => {
-    const { data = [], dataAll = [], isTabAll } = this.props;
+    const { data = [] } = this.props;
     let id = '';
 
-    if (isTabAll) {
-      dataAll.forEach((item) => {
-        if (item.ticketID === ticketID) {
-          id = item._id;
-        }
-      });
-    } else {
-      data.forEach((item) => {
-        if (item.ticketID === ticketID) {
-          id = item._id;
-        }
-      });
-    }
+    data.forEach((item) => {
+      if (item.ticketID === ticketID) {
+        id = item._id;
+      }
+    });
+
     if (id) {
       history.push(`/offboarding/review/${id}`);
     }
   };
 
   popupContent = (dataRow) => {
-    console.log(dataRow);
-    const { timezoneList } = this.props;
+    const { timezoneList, listLocationsByCompany } = this.props;
     const { currentTime } = this.state;
     const {
       employee: {
         title: { name: titleName = 'UX Lead' } = {},
+        employeeType: { name: typeName = '...' } = {},
         employeeId = '',
         generalInfo: {
           avatar = '',
           firstName = '',
           lastName = '',
           middleName = '',
-          employeeType: { name: typeName = 'Full Time' } = {},
+          linkedIn = '',
+          userId = '',
+          workEmail = '',
+          workNumber = '',
         } = {},
       } = {},
       department: { name: departmentName = '' } = {},
@@ -121,11 +131,21 @@ class HrTable extends PureComponent {
     } = dataRow;
     const fullName = `${firstName} ${middleName} ${lastName}`;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+    let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
+    filterLocation = filterLocation.filter((item) => item !== null);
+
+    if (filterLocation.length === 0) {
+      return null;
+    }
+
+    const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
+      filterLocation[0];
+
     return (
       <div className={styles.popupContent}>
         <div className={styles.generalInfo}>
           <div className={styles.avatar}>
-            <Avatar src={avatar} size={40} icon={<UserOutlined />} />
+            <Avatar src={avatar} size={60} icon={<UserOutlined />} />
           </div>
           <div className={styles.employeeInfo}>
             <div className={styles.employeeInfo__name}>{fullName}</div>
@@ -137,14 +157,14 @@ class HrTable extends PureComponent {
             </div>
           </div>
         </div>
-        <Divider />
+        <Divider className={styles.divider} />
         <div className={styles.contact}>
           <Row gutter={[24, 0]}>
             <Col span={8}>
               <div className={styles.contact__title}>Mobile: </div>
             </Col>
             <Col span={16}>
-              <div className={styles.contact__value}>abccc</div>
+              <div className={styles.contact__value}>{workNumber}</div>
             </Col>
           </Row>
           <Row gutter={[24, 0]}>
@@ -152,7 +172,7 @@ class HrTable extends PureComponent {
               <div className={styles.contact__title}>Email id: </div>
             </Col>
             <Col span={16}>
-              <div className={styles.contact__value}>abc@gmail.com</div>
+              <div className={styles.contact__value}>{workEmail}</div>
             </Col>
           </Row>
           <Row gutter={[24, 0]}>
@@ -160,7 +180,7 @@ class HrTable extends PureComponent {
               <div className={styles.contact__title}>Location: </div>
             </Col>
             <Col span={16}>
-              <div className={styles.contact__value}>abccc</div>
+              <div className={styles.contact__value}>{`${state}, ${countryName}`}</div>
             </Col>
           </Row>
           <Row gutter={[24, 0]}>
@@ -170,57 +190,223 @@ class HrTable extends PureComponent {
             <Col span={16}>
               <div className={styles.contact__value}>
                 {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-                  ? getCurrentTimeOfTimezone(currentTime, findTimezone.timezone)
+                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
                   : 'Not enough data in address'}
               </div>
             </Col>
           </Row>
         </div>
+        <Divider className={styles.divider} />
+        <div className={styles.popupActions}>
+          <div
+            className={styles.popupActions__link}
+            onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+          >
+            View full profile
+          </div>
+          <div className={styles.popupActions__actions}>
+            <Tooltip title="Email">
+              <img
+                src="/assets/images/iconMail.svg"
+                alt="img-arrow"
+                style={{ marginLeft: '5px', cursor: 'pointer' }}
+              />
+            </Tooltip>
+            <Tooltip title="LinkedIn">
+              <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
+                <img
+                  src="/assets/images/iconLinkedin.svg"
+                  alt="img-arrow"
+                  style={{ cursor: 'pointer' }}
+                />
+              </a>
+            </Tooltip>
+          </div>
+        </div>
       </div>
     );
   };
 
+  popupContentHr = (data) => {
+    const { timezoneList, listLocationsByCompany } = this.props;
+    const { currentTime } = this.state;
+    const {
+      generalInfo: {
+        legalName = '',
+        userId = '',
+        workEmail = '',
+        workNumber = '',
+        avatar = '',
+        linkedIn = '',
+      } = {},
+      employee: { employeeId = '' } = {},
+      employeeId: hrId = '',
+      title: { name: titleName = '' } = {},
+      employeeType: { name: typeName } = {},
+      department: { name: departmentName = '' } = {},
+      location: { _id = '' } = {},
+    } = data;
+    const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+    let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
+    filterLocation = filterLocation.filter((item) => item !== null);
+
+    if (filterLocation.length === 0) {
+      return null;
+    }
+
+    const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
+      filterLocation[0];
+
+    return (
+      <div className={styles.popupContent}>
+        <div className={styles.generalInfo}>
+          <div className={styles.avatar}>
+            <Avatar src={avatar} size={60} icon={<UserOutlined />} />
+          </div>
+          <div className={styles.employeeInfo}>
+            <div className={styles.employeeInfo__name}>{legalName}</div>
+            <div className={styles.employeeInfo__department}>
+              {titleName}, {departmentName} Dept.
+            </div>
+            <div className={styles.employeeInfo__emplId}>
+              {employeeId || hrId} | {typeName}
+            </div>
+          </div>
+        </div>
+        <Divider className={styles.divider} />
+        <div className={styles.contact}>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Mobile: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>{workNumber}</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Email id: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>{workEmail}</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Location: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>{`${state}, ${countryName}`}</div>
+            </Col>
+          </Row>
+          <Row gutter={[24, 0]}>
+            <Col span={8}>
+              <div className={styles.contact__title}>Local Time: </div>
+            </Col>
+            <Col span={16}>
+              <div className={styles.contact__value}>
+                {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
+                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
+                  : 'Not enough data in address'}
+              </div>
+            </Col>
+          </Row>
+        </div>
+        <Divider className={styles.divider} />
+        <div className={styles.popupActions}>
+          <div
+            className={styles.popupActions__link}
+            onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+          >
+            View full profile
+          </div>
+          <div className={styles.popupActions__actions}>
+            <Tooltip title="Email">
+              <img
+                src="/assets/images/iconMail.svg"
+                alt="img-arrow"
+                style={{ marginLeft: '5px', cursor: 'pointer' }}
+              />
+            </Tooltip>
+            <Tooltip title="LinkedIn">
+              <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
+                <img
+                  src="/assets/images/iconLinkedin.svg"
+                  alt="img-arrow"
+                  style={{ cursor: 'pointer' }}
+                />
+              </a>
+            </Tooltip>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  actionMenu = (id) => {
+    return (
+      <Menu>
+        <Menu.Item>
+          <div onClick={() => this.handleAssignModal(true, id)}>Assign to</div>
+        </Menu.Item>
+      </Menu>
+    );
+  };
+
+  handleAssignModal = (value, id) => {
+    this.setState({
+      assignModalVisible: value,
+      offBoardingRequest: id,
+    });
+  };
+
   render() {
-    const { pageNavigation } = this.state;
+    // const { pageNavigation } = this.state;
     const {
       data = [],
-      dataAll = [],
       loading,
       textEmpty = 'No resignation request is submitted',
       isTabAccept = false,
+      pageSelected,
+      size,
+      total: totalData,
+      getPageAndSize = () => {},
       isTabAll = false,
     } = this.props;
+
+    const { assignModalVisible, offBoardingRequest } = this.state;
     // const dateFormat = 'YYYY/MM/DD';
-    const rowSize = 10;
+    // const rowSize = 10;
     const newData = data.map((item) => {
       return {
         key: item._id,
         ...item,
       };
     });
-
-    const newDataAll = dataAll.map((item) => {
-      return {
-        key: item._id,
-        ...item,
-      };
-    });
+    // const newDataAll = dataAll.map((item) => {
+    //   return {
+    //     key: item._id,
+    //     ...item,
+    //   };
+    // });
 
     const pagination = {
       position: ['bottomLeft'],
-      total: data.length,
+      total: totalData,
       showTotal: (total, range) => (
         <span>
           Showing{' '}
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
-          total
+          of {total}
         </span>
       ),
-      pageSize: rowSize,
-      current: pageNavigation,
-      onChange: this.onChangePagination,
+      pageSize: size,
+      current: pageSelected,
+      onChange: (page, pageSize) => {
+        getPageAndSize(page, pageSize);
+      },
     };
 
     const columns = [
@@ -228,7 +414,7 @@ class HrTable extends PureComponent {
         title: <span className={styles.title}>Ticket ID </span>,
         dataIndex: 'ticketID',
         fixed: 'left',
-        width: 150,
+        width: 200,
         render: (ticketID) => {
           return (
             <p className={styles.ticketId} onClick={() => this.openViewTicket(ticketID)}>
@@ -240,32 +426,28 @@ class HrTable extends PureComponent {
       {
         title: <span className={styles.title}>Employee ID </span>,
         dataIndex: 'employee',
-        width: 150,
+        width: 200,
         render: (employee) => {
           return <p>{employee.employeeId}</p>;
         },
       },
       {
         title: <span className={styles.title}>Created date </span>,
-        dataIndex: 'createDate',
-        width: 160,
-        render: (createDate) => {
-          return <p>{moment(createDate).format('YYYY/MM/DD')}</p>;
+        dataIndex: 'requestDate',
+        width: 200,
+        render: (requestDate) => {
+          return <p>{moment(requestDate).format('YYYY/MM/DD')}</p>;
         },
       },
       {
-        title: <span className={styles.title}>Requestee</span>,
+        title: <span className={styles.title}>Requestee Name</span>,
         dataIndex: 'employee',
         width: 200,
         ellipsis: true,
         render: (employee, row) => {
           const { generalInfo = {} } = employee;
           return (
-            <Popover
-              content={() => this.popupContent(row)}
-              // title={location.name}
-              trigger="hover"
-            >
+            <Popover content={() => this.popupContent(row)} trigger="hover">
               <p
                 className={styles.requteeName}
                 onClick={() => history.push(`/directory/employee-profile/${generalInfo.userId}`)}
@@ -276,56 +458,73 @@ class HrTable extends PureComponent {
           );
         },
       },
-      // {
-      //   title: <span className={styles.title}>Current Project</span>,
-      //   dataIndex: 'project',
-      //   width: 200,
-      //   render: (project) => {
-      //     const { manager = '' } = project[0];
-      //     return <p>{Object.keys(manager).length === 0 ? '' : manager}</p>;
-      //   },
-      // },
-      // {
-      //   title: <span className={styles.title}>Project Manager</span>,
-      //   dataIndex: 'project',
-      //   width: 200,
-      //   render: (project) => {
-      //     const { manager = '' } = project[0];
-      //     return <p>{Object.keys(manager).length === 0 ? '' : manager}</p>;
-      //   },
-      // },
       {
-        title: <span className={styles.title}>Assigned </span>,
-        dataIndex: 'Assigned',
+        title: <span className={styles.title}>Assigned To</span>,
+        dataIndex: 'assigneeHR',
         width: 200,
-        render: () => {
-          // const { hrManager: { generalInfo: { avatar: avtHrManager = '' } = {} } = {} } =
-          //   this.props;
-          // const { manager: { generalInfo: { avatar: avtManager = '' } = {} } = {} } = row;
-          // const arrAvt = [avtManager, avtHrManager];
+        render: (assigneeHR) => {
           const {
             hrManager: {
               generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {},
             } = {},
+            hrManager = {},
+          } = this.props;
+          const fullName = `${firstName} ${middleName} ${lastName}`;
+
+          if (!isEmpty(assigneeHR)) {
+            const {
+              generalInfo: {
+                firstName: hrFirstName = '',
+                lastName: hrLastName = '',
+                middleName: hrMiddleName = '',
+                userId: hrUserId = '',
+              } = {},
+            } = assigneeHR;
+            const hrFullName = `${hrFirstName} ${hrMiddleName} ${hrLastName}`;
+            return (
+              <Popover content={() => this.popupContentHr(assigneeHR)} trigger="hover">
+                <p
+                  className={styles.assignee}
+                  onClick={() => history.push(`/directory/employee-profile/${hrUserId}`)}
+                >
+                  {hrFullName}
+                </p>
+              </Popover>
+            );
+          }
+          return (
+            <Popover content={() => this.popupContentHr(hrManager)} trigger="hover">
+              <p
+                className={styles.assignee}
+                onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+              >
+                {fullName}
+              </p>
+            </Popover>
+          );
+        },
+      },
+      {
+        title: <span className={styles.title}>HR Manager </span>,
+        dataIndex: 'hr-manager',
+        width: 200,
+        render: () => {
+          const {
+            hrManager: {
+              generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {},
+            } = {},
+            hrManager = {},
           } = this.props;
           const fullName = `${firstName} ${middleName} ${lastName}`;
           return (
-            // <div className={styles.rowAction}>
-            //   {arrAvt.map(
-            //     (item, index) =>
-            //       item && (
-            //         <div key={index} style={{ marginRight: '13px', display: 'inline-block' }}>
-            //           <Avatar src={item} size={20} icon={<UserOutlined />} />
-            //         </div>
-            //       ),
-            //   )}
-            // </div>
-            <p
-              className={styles.assignee}
-              onClick={() => history.push(`/directory/employee-profile/${userId}`)}
-            >
-              {fullName}
-            </p>
+            <Popover content={() => this.popupContentHr(hrManager)} trigger="hover">
+              <p
+                className={styles.assignee}
+                onClick={() => history.push(`/directory/employee-profile/${userId}`)}
+              >
+                {fullName}
+              </p>
+            </Popover>
           );
         },
       },
@@ -347,17 +546,23 @@ class HrTable extends PureComponent {
       },
       {
         title: <span className={styles.title}>Action</span>,
-        // dataIndex: '_id',
-        // align: 'left',
-        // render: (_id) => {
-        //   return (
-        //     <div className={styles.viewAction}>
-        //       <p className={styles.viewAction__text} onClick={() => this.push(_id)}>
-        //         View Request
-        //       </p>
-        //     </div>
-        //   );
-        // },
+        dataIndex: '_id',
+        align: 'left',
+        render: (_id) => {
+          return (
+            <>
+              {isTabAll ? (
+                <Dropdown
+                  className={styles.menuIcon}
+                  overlay={this.actionMenu(_id)}
+                  placement="topLeft"
+                >
+                  <MoreOutlined />
+                </Dropdown>
+              ) : null}
+            </>
+          );
+        },
       },
       {
         title: '',
@@ -367,16 +572,15 @@ class HrTable extends PureComponent {
           return (
             <div className={styles.viewAction}>
               {isTabAccept && (
-                <div className={styles.viewAction__popOver}>
-                  <Popover
-                    content={this.renderContent(row)}
-                    title={false}
-                    trigger="click"
-                    placement="bottomRight"
-                  >
-                    <span className={styles.viewAction__popOver__dots}>&#8285;</span>
-                  </Popover>
-                </div>
+                <Popover
+                  content={this.renderContent(row)}
+                  title={false}
+                  trigger="click"
+                  placement="bottomRight"
+                  className={styles.viewAction__popOver}
+                >
+                  <span className={styles.viewAction__popOver__dots}>&#8285;</span>
+                </Popover>
               )}
             </div>
           );
@@ -385,25 +589,32 @@ class HrTable extends PureComponent {
     ];
 
     return (
-      <div className={styles.HRtableStyles}>
-        <Table
-          locale={{
-            emptyText: (
-              <div className={styles.viewEmpty}>
-                <img src={empty} alt="" />
-                <p className={styles.textEmpty}>{textEmpty}</p>
-              </div>
-            ),
-          }}
-          columns={columns}
-          dataSource={isTabAll ? newDataAll : newData}
-          hideOnSinglePage
-          pagination={{ ...pagination, total: data.length }}
-          rowKey={(record) => record._id}
-          scroll={{ x: 'max-content' }}
-          loading={loading}
+      <>
+        <div className={styles.HRtableStyles}>
+          <Table
+            locale={{
+              emptyText: (
+                <div className={styles.viewEmpty}>
+                  <img src={empty} alt="" />
+                  <p className={styles.textEmpty}>{textEmpty}</p>
+                </div>
+              ),
+            }}
+            columns={columns}
+            dataSource={newData}
+            hideOnSinglePage
+            pagination={pagination}
+            rowKey={(record) => record._id}
+            scroll={{ x: 'max-content' }}
+            loading={loading}
+          />
+        </div>
+        <AssignModal
+          visible={assignModalVisible}
+          offBoardingRequest={offBoardingRequest}
+          handleAssignModal={this.handleAssignModal}
         />
-      </div>
+      </>
     );
   }
 }

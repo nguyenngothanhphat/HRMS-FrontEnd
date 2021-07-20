@@ -7,7 +7,7 @@ import { Tabs } from 'antd';
 //   TABLE_TYPE,
 // } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
 // import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
-import { PROCESS_STATUS } from '@/models/onboard';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import styles from './index.less';
 import ProvisionalOfferDrafts from './components/ProvisionalOfferDrafts';
 import FinalOfferDrafts from './components/FinalOfferDrafts';
@@ -28,7 +28,7 @@ class AllDrafts extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      tabId: 1,
+      tabId: '1',
       pageSelected: 1,
       size: 10,
     };
@@ -104,7 +104,6 @@ class AllDrafts extends PureComponent {
   render() {
     const { allDrafts = {}, dataAll, loadingAll, total } = this.props;
     const { tabId, pageSelected, size } = this.state;
-    console.log('aaaaa');
     const { provisionalOfferDrafts = [], finalOfferDrafts = [] } = allDrafts;
 
     return (

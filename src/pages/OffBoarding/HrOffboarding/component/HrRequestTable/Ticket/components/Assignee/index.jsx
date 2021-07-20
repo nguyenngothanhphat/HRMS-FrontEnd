@@ -1,12 +1,15 @@
-import Avatar from 'antd/lib/avatar/avatar';
 import React, { PureComponent } from 'react';
+import { isEmpty } from 'lodash';
+import Avatar from 'antd/lib/avatar/avatar';
+import DefaultAvatar from '@/assets/defaultAvatar.png';
+
 import styles from './index.less';
 
 const AssigneeDetail = ({ avatar = '', name = '', jobTitle = '', priority = 'Primary' }) => {
   return (
     <div className={styles.assignee__item}>
       <div className={styles.assignee__item__info}>
-        <Avatar size={36} src={avatar} />
+        <Avatar size={36} src={avatar || DefaultAvatar} />
         <div
           style={{
             marginLeft: '15px',
@@ -32,6 +35,7 @@ export default class Assignee extends PureComponent {
           generalInfo: { firstName = '', lastName = '', avatar = '' } = {},
           title: { name: managerTitleName = 'Unknown' } = {},
         } = {},
+        assigneeHR = {},
       } = {},
       hrManager: {
         // _id: hrManagerId = '',
@@ -47,6 +51,11 @@ export default class Assignee extends PureComponent {
       } = {},
     } = this.props;
 
+    const {
+      generalInfo: { firstName: fnHR = '', lastName: lnHR = '', avatar: avatarHR = '' } = {},
+      title: { name: titleHR = 'HR' } = {},
+    } = assigneeHR;
+
     return (
       <div className={styles.assignee}>
         <div className={styles.assignee__header}>This request is assigned to:</div>
@@ -61,12 +70,21 @@ export default class Assignee extends PureComponent {
         </div>
         <div className={styles.assignee__content}>
           <div className={styles.assignee__title}>HR approval</div>
-          <AssigneeDetail
-            jobTitle={titleHRManager}
-            name={`${fnHRManager} ${lnHRManager}`}
-            avatar={avatarHRManager}
-            priority="Primary"
-          />
+          {!isEmpty(assigneeHR) ? (
+            <AssigneeDetail
+              jobTitle={titleHR}
+              name={`${fnHR} ${lnHR}`}
+              avatar={avatarHR}
+              priority="Primary"
+            />
+          ) : (
+            <AssigneeDetail
+              jobTitle={titleHRManager}
+              name={`${fnHRManager} ${lnHRManager}`}
+              avatar={avatarHRManager}
+              priority="Primary"
+            />
+          )}
         </div>
         {/* <div className={styles.assignee__content}>
           <div>
