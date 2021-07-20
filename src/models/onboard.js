@@ -135,6 +135,7 @@ const formatData = (list = []) => {
       assignTo = {},
       assigneeManager = {},
       processStatus = '',
+      verifiedDocument = 0,
     } = item;
     const dateSent = formatDate(sentDate) || '';
     const dateReceived = formatDate(receiveDate) || '';
@@ -164,7 +165,7 @@ const formatData = (list = []) => {
       dateJoin: dateJoin || '',
       dateRequest: dateRequest || '',
       expire: expire || '',
-      documentVerified: '',
+      documentVerified: verifiedDocument,
       resubmit: 0,
       changeRequest: '-',
       assignTo,

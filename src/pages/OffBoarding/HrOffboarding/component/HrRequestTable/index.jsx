@@ -16,6 +16,7 @@ import styles from './index.less';
       listOffboarding = [],
       totalList = [],
       hrManager = {},
+      total = '',
     } = {},
     user: {
       currentUser: {
@@ -27,6 +28,7 @@ import styles from './index.less';
   }) => ({
     listOffboarding,
     totalListTeamRequest,
+    total,
     totalList,
     locationID,
     companyID,
@@ -110,40 +112,41 @@ class HRrequestTable extends Component {
     });
   };
 
-  onSearch = (value) => {
-    const { listTeamRequest = [] } = this.props;
-    const formatValue = value.toLowerCase();
+  // onSearch = (value) => {
+  //   const { listTeamRequest = [] } = this.props;
+  //   const formatValue = value.toLowerCase();
 
-    const filterData = listTeamRequest.filter((item) => {
-      const {
-        ticketID = '',
-        employee: { employeeId = '', generalInfo: { firstName = '', lastName = '' } = {} } = {},
-      } = item;
-      const formatTicketId = ticketID.toLowerCase();
-      const fortmatEmployeeID = employeeId.toLowerCase();
-      const formatFirstName = firstName.toLowerCase();
-      const formatLastName = lastName.toLowerCase();
+  //   const filterData = listTeamRequest.filter((item) => {
+  //     const {
+  //       ticketID = '',
+  //       employee: { employeeId = '', generalInfo: { firstName = '', lastName = '' } = {} } = {},
+  //     } = item;
+  //     const formatTicketId = ticketID.toLowerCase();
+  //     const fortmatEmployeeID = employeeId.toLowerCase();
+  //     const formatFirstName = firstName.toLowerCase();
+  //     const formatLastName = lastName.toLowerCase();
 
-      if (
-        formatTicketId.includes(formatValue) ||
-        fortmatEmployeeID.includes(formatValue) ||
-        formatFirstName.includes(formatValue) ||
-        formatLastName.includes(formatValue)
-      )
-        return item;
-      return 0;
-    });
-    this.setState({ loadingSearch: true });
+  //     if (
+  //       formatTicketId.includes(formatValue) ||
+  //       fortmatEmployeeID.includes(formatValue) ||
+  //       formatFirstName.includes(formatValue) ||
+  //       formatLastName.includes(formatValue)
+  //     )
+  //       return item;
+  //     return 0;
+  //   });
+  //   // this.setState({ loadingSearch: true });
 
-    this.setDebounce(filterData);
-  };
+  //   // this.setDebounce(filterData);
+  // };
 
   render() {
     const { TabPane } = Tabs;
     const {
       totalListTeamRequest = [],
+      // listTeamRequest = [],
       listOffboarding = [],
-      totalList = [],
+      // totalList = [],
       hrManager = {},
       locationID = '',
     } = this.props;
@@ -167,6 +170,7 @@ class HRrequestTable extends Component {
         <Col span={24}>
           <Tabs
             defaultActiveKey="1"
+            onChange={this.onChangeTabId}
             className={styles.tabComponent}
             tabBarExtraContent={<TableSearch onSearch={this.onSearch} />}
           >
@@ -186,7 +190,7 @@ class HRrequestTable extends Component {
               <div className={styles.tableTab}>
                 <MyRequestContent
                   data={listOffboarding}
-                  countdata={totalList}
+                  // countdata={totalList}
                   hrManager={hrManager}
                   timezoneList={timezoneList}
                 />
