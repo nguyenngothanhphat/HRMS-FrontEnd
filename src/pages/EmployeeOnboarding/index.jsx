@@ -58,7 +58,7 @@ class EmployeeOnboarding extends PureComponent {
     const viewOnboardingOverviewTab = permissions.viewOnboardingOverviewTab !== -1;
 
     const {
-      match: { params: { tabName = '' } = {} },
+      match: { params: { tabName = '', type = '' } = {} },
     } = this.props;
 
     return (
@@ -79,7 +79,7 @@ class EmployeeOnboarding extends PureComponent {
                   tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
                   key="list"
                 >
-                  <OnboardingOverview />
+                  <OnboardingOverview type={type} />
                 </TabPane>
               )}
               {viewOnboardingSettingTab ? (

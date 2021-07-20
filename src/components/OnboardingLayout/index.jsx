@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import { Button } from 'antd';
-import { formatMessage, connect } from 'umi';
+import { formatMessage, connect, history } from 'umi';
 
 import AwaitingApprovals from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/AwaitingApprovals';
 import DiscardedProvisionalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedProvisionalOffers';
@@ -65,14 +65,8 @@ class OnboardingLayout extends PureComponent {
   }
 
   componentDidMount() {
-    const { listMenu = [], dispatch } = this.props;
-    const firstComponent = listMenu[0].component;
-    this.setState({
-      pageTitle: listMenu[0].name,
-      selectedId: listMenu[0].id,
-      displayComponent: getComponent(firstComponent),
-    });
-
+    this.fetchTab();
+    const { dispatch } = this.props;
     dispatch({
       type: 'candidateInfo/save',
       payload: {
@@ -83,7 +77,7 @@ class OnboardingLayout extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { dispatch } = this.props;
+    const { dispatch, tabName = 'all-drafts' } = this.props;
     if (prevProps.data._id) {
       dispatch({
         type: 'candidateInfo/save',
@@ -92,10 +86,27 @@ class OnboardingLayout extends PureComponent {
         },
       });
     }
+
+    if (prevProps.tabName !== tabName) {
+      this.fetchTab();
+    }
   }
 
+  fetchTab = () => {
+    const { listMenu = [], tabName = 'all-drafts' } = this.props;
+    const findTab = listMenu.find((menu) => menu.link === tabName) || listMenu[0];
+
+    const firstComponent = findTab.component;
+    this.setState({
+      pageTitle: findTab.name,
+      selectedId: findTab.id,
+      displayComponent: getComponent(firstComponent),
+    });
+  };
+
   handleClick = (item) => {
-    const { id = 1, component = '', name = '' } = item;
+    const { id = 1, component = '', name = '', link = '' } = item;
+    history.push(`/employee-onboarding/list/${link}`);
     this.setState({
       selectedId: id,
       displayComponent: getComponent(component),
@@ -142,7 +153,7 @@ class OnboardingLayout extends PureComponent {
 
           <div className={styles.leftMenu}>
             {listMenu.map((item) => {
-              const { id, name, component, quantity } = item;
+              const { id, name, component, quantity, link } = item;
               const { selectedId } = this.state;
               return (
                 <div key={id}>
@@ -152,6 +163,7 @@ class OnboardingLayout extends PureComponent {
                     name={name}
                     component={component}
                     quantity={quantity}
+                    link={link}
                     handleClick={this.handleClick}
                   />
                 </div>

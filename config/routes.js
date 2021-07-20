@@ -212,6 +212,13 @@ const routes = [
             authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'hr', 'hr-manager'],
           },
           {
+            path: '/employee-onboarding/list/:type',
+            // name: 'Settings',
+            component: './EmployeeOnboarding',
+            hideInMenu: true,
+            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'hr', 'hr-manager'],
+          },
+          {
             path: '/offboarding',
             name: 'Offboarding',
             icon: '/assets/images/menuIcons/offboarding.svg',
