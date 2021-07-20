@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Col, Tabs, Button, Spin } from 'antd';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import ViewLeft from './components/ViewLeft';
 import ViewRight from './components/ViewRight';
@@ -134,6 +134,7 @@ class EmployeeOffBoading extends Component {
       totalList = [],
       hrManager = {},
       // acceptedRequest = [],
+      tabName = '',
     } = this.props;
     const { relievingInQueue, dataDraft = [], dataRequest = [], loadingFetchList } = this.state;
 
@@ -141,8 +142,13 @@ class EmployeeOffBoading extends Component {
       <PageContainer>
         <div className={styles.EmployeeOffboarding}>
           <div className={styles.tabs}>
-            <Tabs defaultActiveKey="1">
-              <TabPane tab="Terminate work relationship" key="1">
+            <Tabs
+              activeKey={tabName || 'terminate-work-relationship'}
+              onChange={(key) => {
+                history.push(`/offboarding/${key}`);
+              }}
+            >
+              <TabPane tab="Terminate work relationship" key="terminate-work-relationship">
                 <div className={styles.paddingHR}>
                   <div className={styles.root}>
                     <Row className={styles.content} gutter={[20, 20]}>
@@ -176,7 +182,11 @@ class EmployeeOffBoading extends Component {
                 </div>
               </TabPane>
 
-              <TabPane disabled={!relievingInQueue} tab="Relieving Formalities" key="2">
+              <TabPane
+                disabled={!relievingInQueue}
+                tab="Relieving Formalities"
+                key="relieving-formalities"
+              >
                 <RelievingFormalities />
               </TabPane>
             </Tabs>

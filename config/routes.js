@@ -178,6 +178,12 @@ const routes = [
             authority: ['P_DIRECTORY_VIEW', 'M_DIRECTORY_VIEW', 'M_EMPLOYEE_MANAGEMENT_VIEW'],
           },
           {
+            path: '/directory/:tabName',
+            component: './Directory',
+            hideInMenu: true,
+            authority: ['P_DIRECTORY_VIEW', 'M_DIRECTORY_VIEW', 'M_EMPLOYEE_MANAGEMENT_VIEW'],
+          },
+          {
             path: '/employees',
             name: 'employees',
             icon: '/assets/images/menuIcons/members.svg',
@@ -185,10 +191,24 @@ const routes = [
             authority: ['owner'],
           },
           {
+            path: '/employees/:tabName',
+            name: 'employees',
+            component: './Directory',
+            hideInMenu: true,
+            authority: ['owner'],
+          },
+          {
             path: '/employee-onboarding',
             name: 'employeeOnboarding',
             icon: '/assets/images/menuIcons/onboarding.svg',
             component: './EmployeeOnboarding',
+            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'hr', 'hr-manager'],
+          },
+          {
+            path: '/employee-onboarding/:tabName',
+            // name: 'Settings',
+            component: './EmployeeOnboarding',
+            hideInMenu: true,
             authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'hr', 'hr-manager'],
           },
           {
@@ -200,11 +220,23 @@ const routes = [
             hideInMenu: true,
           },
           {
+            path: '/offboarding/:tabName',
+            component: './OffBoarding',
+            authority: ['employee'],
+            hideInMenu: true,
+          },
+          {
             path: '/offboarding',
             name: 'Offboarding',
             icon: '/assets/images/menuIcons/offboarding.svg',
             component: './OffBoarding',
             authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW', 'hr', 'hr-manager', 'manager'],
+          },
+          {
+            path: '/offboarding/:tabName',
+            component: './OffBoarding',
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW', 'hr', 'hr-manager', 'manager'],
+            hideInMenu: true,
           },
           {
             path: '/time-off',
@@ -221,6 +253,21 @@ const routes = [
               'leader',
               // 'owner',
             ],
+          },
+          {
+            path: '/time-off/:tabName',
+            component: './TimeOff',
+            authority: [
+              'P_TIMEOFF_VIEW',
+              'M_TIMEOFF_VIEW',
+              'hr-manager',
+              'hr',
+              'hr-global',
+              'employee',
+              'leader',
+              // 'owner',
+            ],
+            hideInMenu: true,
           },
           {
             path: '/users-management',
@@ -623,13 +670,13 @@ const routes = [
             authority: ['hr-manager', 'hr', 'hr-global'],
           },
           {
-            path: '/employee-onboarding/create-email-reminder',
+            path: '/employee-onboarding/:tabName/create-email-reminder',
             name: 'Create Email Reminder',
             hideInMenu: true,
             component: './EmailReminder',
           },
           {
-            path: '/employee-onboarding/edit-email/:reId',
+            path: '/employee-onboarding/:tabName/edit-email/:reId',
             name: 'Edit Email',
             component: './EditEmail',
             hideInMenu: true,

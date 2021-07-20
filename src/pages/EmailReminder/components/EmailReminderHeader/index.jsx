@@ -10,8 +10,8 @@ class EmailReminderHeader extends PureComponent {
       <div className={styles.EmailReminderHeader}>
         <Link
           to={{
-            pathname: '/employee-onboarding',
-            state: { defaultActiveKey: '2', settingsDisplayComponent: true },
+            pathname: '/employee-onboarding/settings',
+            state: { settingsDisplayComponent: true },
           }}
         >
           <img src={blueBackIcon} alt="back icon" />

@@ -1,7 +1,7 @@
 import { PageContainer } from '@/layouts/layout/src';
 import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
-import { connect, formatMessage } from 'umi';
+import { connect, formatMessage, history } from 'umi';
 import {
   getCurrentCompany,
   getCurrentTenant,
@@ -186,13 +186,20 @@ class Directory extends PureComponent {
   render() {
     const { TabPane } = Tabs;
     const { checkRoleEmployee } = this.state;
+    const {
+      match: { params: { tabName = '' } = {} },
+    } = this.props;
+
     return (
       <PageContainer>
         <div className={styles.containerDirectory}>
           <Tabs
-            defaultActiveKey="1"
+            activeKey={tabName || 'list'}
             tabBarExtraContent={checkRoleEmployee ? '' : null}
             // tabBarExtraContent={checkRoleEmployee ? '' : this.operations()}
+            onChange={(key) => {
+              history.push(isOwner() ? `/employees/${key}` : `/directory/${key}`);
+            }}
           >
             <TabPane
               tab={
@@ -200,11 +207,14 @@ class Directory extends PureComponent {
                   ? 'Employees Management'
                   : formatMessage({ id: 'pages.directory.directoryTab' })
               }
-              key="1"
+              key="list"
             >
               <DirectoryComponent />
             </TabPane>
-            <TabPane tab={formatMessage({ id: 'pages.directory.organisationChartTab' })} key="2">
+            <TabPane
+              tab={formatMessage({ id: 'pages.directory.organisationChartTab' })}
+              key="org-chart"
+            >
               <OrganisationChart />
             </TabPane>
           </Tabs>

@@ -10,8 +10,7 @@ class CreateNewTemplateHeader extends PureComponent {
       <div className={styles.CreateNewTemplateHeader}>
         <Link
           to={{
-            pathname: '/employee-onboarding',
-            state: { defaultActiveKey: '2' },
+            pathname: '/employee-onboarding/settings',
           }}
         >
           <img src={blueBackIcon} alt="back icon" />

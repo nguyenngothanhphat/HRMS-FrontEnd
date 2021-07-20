@@ -1,20 +1,17 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Tabs, Button, Row, Col } from 'antd';
-import { connect, formatMessage } from 'umi';
+import { connect, formatMessage, history } from 'umi';
 // import { isAdmin, isOwner } from '@/utils/authority';
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
 // import CustomFields from './components/CustomFields';
 import styles from './index.less';
 
-@connect(
-  ({ loading, onboard: { mainTabActiveKey = '1' } = {}, user: { permissions = [] } = {} }) => ({
-    loading: loading.effects['login/login'],
-    permissions,
-    mainTabActiveKey,
-  }),
-)
+@connect(({ loading, user: { permissions = [] } = {} }) => ({
+  loading: loading.effects['login/login'],
+  permissions,
+}))
 class EmployeeOnboarding extends PureComponent {
   constructor(props) {
     super(props);
@@ -23,16 +20,6 @@ class EmployeeOnboarding extends PureComponent {
   }
 
   componentDidMount = () => {};
-
-  onChangeTab = (activeKey) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'onboard/save',
-      payload: {
-        mainTabActiveKey: activeKey,
-      },
-    });
-  };
 
   componentWillUnmount = () => {
     const { dispatch } = this.props;
@@ -64,11 +51,15 @@ class EmployeeOnboarding extends PureComponent {
   };
 
   render() {
-    const { mainTabActiveKey = '1', permissions = [] } = this.props;
+    const { permissions = [] } = this.props;
     const { TabPane } = Tabs;
 
     const viewOnboardingSettingTab = permissions.viewOnboardingSettingTab !== -1;
     const viewOnboardingOverviewTab = permissions.viewOnboardingOverviewTab !== -1;
+
+    const {
+      match: { params: { tabName = '' } = {} },
+    } = this.props;
 
     return (
       <PageContainer>
@@ -76,14 +67,17 @@ class EmployeeOnboarding extends PureComponent {
         <div className={styles.containerEmployeeOnboarding}>
           <div className={styles.tabs}>
             <Tabs
-              activeKey={mainTabActiveKey}
-              onTabClick={this.onChangeTab}
+              // activeKey={mainTabActiveKey}
+              activeKey={tabName || 'list'}
+              onChange={(key) => {
+                history.push(`/employee-onboarding/${key}`);
+              }}
               // tabBarExtraContent={this.renderActionButton()}
             >
               {viewOnboardingOverviewTab && (
                 <TabPane
                   tab={formatMessage({ id: 'component.employeeOnboarding.onboardingOverview' })}
-                  key="1"
+                  key="list"
                 >
                   <OnboardingOverview />
                 </TabPane>
@@ -92,7 +86,7 @@ class EmployeeOnboarding extends PureComponent {
                 <>
                   <TabPane
                     tab={formatMessage({ id: 'component.employeeOnboarding.settings' })}
-                    key="2"
+                    key="settings"
                   >
                     <Settings />
                   </TabPane>

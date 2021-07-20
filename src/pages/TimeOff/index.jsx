@@ -129,30 +129,29 @@ class TimeOff extends PureComponent {
 
   render() {
     const { role } = this.state;
+    const {
+      match: { params: { tabName = '' } = {} },
+    } = this.props;
     return (
       // <Breadcrumb routes={routes}>
       <div className={styles.TimeOff}>
         <PageContainer>
           {/* tabBarExtraContent={this.options()} */}
           {/* <Tabs activeKey={activeKey} onTabClick={this.onTabClick}> */}
-          <Tabs defaultActiveKey={1}>
-            {role === 'employee' && (
-              <TabPane tab={<span className={styles.employeeTabPane}>Timeoff</span>} key="1">
-                <EmployeeLandingPage />
-              </TabPane>
-            )}
-            {role === 'manager' && (
-              <TabPane tab={<span className={styles.managerTabPane}>Timeoff</span>} key="2">
-                <ManagerLandingPage />
-              </TabPane>
-            )}
+          <Tabs
+            activeKey={tabName || 'overview'}
+            onChange={(key) => {
+              history.push(`/time-off/${key}`);
+            }}
+          >
+            <TabPane tab={<span className={styles.employeeTabPane}>Timeoff</span>} key="overview">
+              {role === 'employee' && <EmployeeLandingPage />}
+              {role === 'manager' && <ManagerLandingPage />}
+              {role === 'hr-manager' && <HRManagerLandingPage />}
+            </TabPane>
+
             {role === 'hr-manager' && (
-              <TabPane tab="Timeoff" key="3">
-                <HRManagerLandingPage />
-              </TabPane>
-            )}
-            {role === 'hr-manager' && (
-              <TabPane tab="Setup Timeoff policy" key="4">
+              <TabPane tab="Setup Timeoff policy" key="setup">
                 <SetupTimeoff />
               </TabPane>
             )}

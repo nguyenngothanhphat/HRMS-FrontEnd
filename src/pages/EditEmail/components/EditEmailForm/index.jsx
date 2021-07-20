@@ -1085,8 +1085,7 @@ class EditEmailForm extends PureComponent {
               <Col className={styles.buttons} span={8} offset={16}>
                 <Link
                   to={{
-                    pathname: '/employee-onboarding',
-                    state: { defaultActiveKey: '2' },
+                    pathname: '/employee-onboarding/settings',
                   }}
                 >
                   <Button type="secondary">

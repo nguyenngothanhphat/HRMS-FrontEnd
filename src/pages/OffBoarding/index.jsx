@@ -15,14 +15,17 @@ class OffBoarding extends PureComponent {
   };
 
   render() {
-    const { location: { state: { defaultActiveKey = '1', isEmployeeMode = false } = {} } = {} } =
-      this.props;
+    const {
+      match: { params: { tabName = '' } = {} },
+      location: { state: { isEmployeeMode = false } = {} } = {},
+    } = this.props;
+
     const viewOffboarding = initViewOffboarding();
     const renderComponent = {
-      'hr-manager': <HrOffboarding defaultActiveKey={defaultActiveKey} />,
-      hr: <HrOffboarding defaultActiveKey={defaultActiveKey} />,
-      manager: <ManagerOffBoading />,
-      employee: <EmployeeOffBoading />,
+      'hr-manager': <HrOffboarding tabName={tabName} />,
+      hr: <HrOffboarding tabName={tabName} />,
+      manager: <ManagerOffBoading tabName={tabName} />,
+      employee: <EmployeeOffBoading tabName={tabName} />,
     };
 
     const listRole = localStorage.getItem('antd-pro-authority');
