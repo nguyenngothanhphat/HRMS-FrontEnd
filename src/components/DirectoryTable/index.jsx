@@ -202,35 +202,48 @@ class DirectoryTable extends Component {
         width: '18%',
         defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],
+        className: `${styles.col} `,
       },
-      // {
-      //   title: formatMessage({ id: 'component.directory.table.employeeID' }),
-      //   dataIndex: 'generalInfo',
-      //   key: 'employeeId',
-      //   className: `${styles.employeeId} `,
-      //   render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
-      //   width: '10%',
-      //   align: 'left',
-      // },
       {
         title: formatMessage({ id: 'component.directory.table.email' }),
         dataIndex: 'generalInfo',
-        key: 'employeeId',
+        key: 'workEmail',
         render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
-        width: '18%',
+        width: '20%',
         align: 'left',
+        sorter: () => null,
+      },
+      {
+        title: formatMessage({ id: 'component.directory.table.userId' }),
+        dataIndex: 'generalInfo',
+        key: 'userId',
+        render: (generalInfo) => <span>{generalInfo?.userId}</span>,
+        width: '12%',
+        align: 'left',
+        sorter: () => null,
       },
       {
         title: 'Work Number',
         dataIndex: 'generalInfo',
-        key: 'employeeId',
+        key: 'workNumber',
         render: (generalInfo) => (
           <span style={{ fontSize: '13px' }}>
             {generalInfo?.workNumber ? generalInfo.workNumber : '-'}
           </span>
         ),
-        width: '10%',
+        width: '12%',
         align: 'left',
+        sorter: () => null,
+      },
+      {
+        title: formatMessage({ id: 'component.directory.table.employeeID' }),
+        dataIndex: 'generalInfo',
+        key: 'employeeId',
+        className: `${styles.employeeId} `,
+        render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
+        width: '12%',
+        align: 'left',
+        sorter: () => null,
       },
       {
         title: formatMessage({ id: 'component.directory.table.title' }),
@@ -245,6 +258,7 @@ class DirectoryTable extends Component {
         ),
         width: '12%',
         align: 'left',
+        sorter: () => null,
       },
       {
         title: formatMessage({ id: 'component.directory.table.department' }),
@@ -269,6 +283,7 @@ class DirectoryTable extends Component {
         },
         width: '14%',
         align: 'left',
+        sorter: () => null,
       },
       {
         title: formatMessage({ id: 'component.directory.table.location' }),
@@ -285,6 +300,7 @@ class DirectoryTable extends Component {
         ),
         width: '14%',
         align: 'left',
+        sorter: () => null,
       },
       {
         title: formatMessage({ id: 'component.directory.table.reportingManager' }),
@@ -307,7 +323,8 @@ class DirectoryTable extends Component {
           </span>
         ),
         align: 'left',
-        width: '12%',
+        width: '14%',
+        sorter: () => null,
       },
       {
         title: formatMessage({ id: 'component.directory.table.employmentType' }),
@@ -315,7 +332,8 @@ class DirectoryTable extends Component {
         key: 'employmentType',
         render: (employeeType) => <span>{employeeType ? employeeType.name : ''}</span>,
         align: 'left',
-        width: '12%',
+        width: '14%',
+        sorter: () => null,
       },
       {
         title: formatMessage({ id: 'component.directory.table.action' }),
@@ -334,6 +352,7 @@ class DirectoryTable extends Component {
             </div>
           );
         },
+        sorter: () => null,
       },
     ];
 

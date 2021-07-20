@@ -22,6 +22,7 @@ export default {
   /* Table */
   'component.directory.table.fullName': 'Full Name',
   'component.directory.table.employeeID': 'Employee ID',
+  'component.directory.table.userId': 'User ID',
   'component.directory.table.email': 'Email',
   'component.directory.table.title': 'Title',
   'component.directory.table.department': 'Department',
