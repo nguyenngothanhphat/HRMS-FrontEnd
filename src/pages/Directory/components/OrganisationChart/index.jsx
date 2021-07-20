@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Avatar, Spin, Row, Col } from 'antd';
+import { Avatar, Spin, Row, Col, Affix } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
@@ -77,6 +77,7 @@ class OrganisationChart extends Component {
   };
 
   getDetailUser = async (nodeData) => {
+    console.log(nodeData);
     const { user: { location } = {} } = nodeData;
     const { timezoneList, currentTime } = this.state;
     const findTimezone =
@@ -188,28 +189,26 @@ class OrganisationChart extends Component {
             <Spin size="large" />
           </div>
         ) : (
-          <Row gutter={[24, 24]} style={{ padding: '24px 20px 0 0' }}>
-            <Col span={7}>
+          <div className={styles.orgChart}>
+            <OrganizationChart
+              datasource={dataOrgChart}
+              NodeTemplate={this.renderNode}
+              chartClass={styles.myChart}
+              containerClass={styles.chartContainer}
+              collapsible
+              pan
+              zoom
+              zoominLimit={1}
+              zoomoutLimit={0.2}
+            />
+            <div className={styles.orgChart__detailEmplChart}>
               <DetailEmployeeChart
                 chartDetails={chartDetails}
                 handleSelectSearch={this.handleSelect}
                 listEmployeeAll={listEmployeeAll}
               />
-            </Col>
-            <Col span={17}>
-              <OrganizationChart
-                datasource={dataOrgChart}
-                NodeTemplate={this.renderNode}
-                chartClass={styles.myChart}
-                containerClass={styles.chartContainer}
-                collapsible
-                // pan
-                // zoom
-                // zoominLimit={1}
-                // zoomoutLimit={0.2}
-              />
-            </Col>
-          </Row>
+            </div>
+          </div>
         )}
       </div>
     );

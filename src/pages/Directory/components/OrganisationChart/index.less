@@ -100,37 +100,51 @@
       display: none;
     }
   }
-  .chartContainer {
-    // display: flex;
-    // align-items: center;
-    // justify-content: center;
+
+  .orgChart{
     width: 100%;
     height: auto;
-    border: none;
-    .myChart {
-      background-image: none;
-      // transform: matrix(0.479603, 0, 0, 0.479603, -19, -213);
+    
+    &__detailEmplChart{
+      position: absolute;
+      top: 120px;
+      left: 120px;
     }
-
-    .myChart .oc-node .position {
-      box-sizing: border-box;
-      width: 130px;
-      height: 65px;
-      padding: 2px;
-      color: #fff;
-      background-color: #215a88;
-    }
-    .myChart .oc-node .fullname {
-      box-sizing: border-box;
-      width: 130px;
-      height: 65px;
-      padding: 2px;
-      color: #215a88;
-      background-color: #fff;
-      border: 1px solid #215a88;
-    }
-    .myChart .oc-node .horizontalEdge {
-      display: none;
+      
+      .chartContainer {
+        // display: flex;
+        // align-items: center;
+        // justify-content: center;
+      position: relative;
+      width: 100%;
+      height: 90vh;
+      border: none;
+      background-color: #F6F7F9;
+      .myChart {
+        background-image: none;
+        // transform: matrix(0.479603, 0, 0, 0.479603, -19, -213);
+      }
+  
+      .myChart .oc-node .position {
+        box-sizing: border-box;
+        width: 130px;
+        height: 65px;
+        padding: 2px;
+        color: #fff;
+        background-color: #215a88;
+      }
+      .myChart .oc-node .fullname {
+        box-sizing: border-box;
+        width: 130px;
+        height: 65px;
+        padding: 2px;
+        color: #215a88;
+        background-color: #fff;
+        border: 1px solid #215a88;
+      }
+      .myChart .oc-node .horizontalEdge {
+        display: none;
+      }
     }
   }
 }
