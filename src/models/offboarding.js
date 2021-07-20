@@ -45,7 +45,7 @@ const offboarding = {
     listTeamRequest: [],
     request: [],
     sendrequest: false,
-    myRequest: {},
+    listMyRequest: [],
     list1On1: [],
     approvalflow: [],
     listMeetingTime: [],
@@ -72,6 +72,7 @@ const offboarding = {
     listAssigneeHr: [],
   },
   effects: {
+    // my request
     *fetchList({ payload }, { call, put }) {
       let response;
       try {
@@ -86,13 +87,17 @@ const offboarding = {
           total: totalAll = 0,
         } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listOffboarding, totalList, hrManager, totalAll } });
+        yield put({
+          type: 'save',
+          payload: { listOffboarding, totalList, hrManager, totalAll },
+        });
         return listOffboarding;
       } catch (errors) {
         dialog(errors);
       }
       return response;
     },
+    // team request
     *fetchListTeamRequest({ payload }, { call, put }) {
       try {
         const response = yield call(teamRequestList, {
@@ -127,7 +132,10 @@ const offboarding = {
         });
         const { statusCode, data: { items: acceptedRequest = [] } = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { acceptedRequest } });
+        yield put({
+          type: 'save',
+          payload: { acceptedRequest, totalAcceptedList: response.total },
+        });
         return acceptedRequest;
       } catch (errors) {
         dialog(errors);

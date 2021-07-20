@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import React, { PureComponent } from 'react';
-import { Table, notification, Popover, Divider, Row, Col, Avatar, Tooltip } from 'antd';
+import { Table, Popover, Divider, Row, Col, Avatar, Tooltip } from 'antd';
 import moment from 'moment';
 import { history } from 'umi';
 import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
@@ -38,11 +38,11 @@ class TableManager extends PureComponent {
     history.push(`/offboarding/my-request/${data}`);
   };
 
-  onChangePagination = (pageNumber) => {
-    this.setState({
-      pageNavigation: pageNumber,
-    });
-  };
+  // onChangePagination = (pageNumber) => {
+  //   this.setState({
+  //     pageNavigation: pageNumber,
+  //   });
+  // };
 
   openViewTicket = (ticketID) => {
     const { data = [], dataAll = [], isTabAll } = this.props;
@@ -176,24 +176,35 @@ class TableManager extends PureComponent {
   };
 
   render() {
-    const { data = [], loading, textEmpty = 'No resignation request is submitted' } = this.props;
-    const { pageNavigation } = this.state;
-    const rowSize = 10;
+    const {
+      data = [],
+      loading,
+      textEmpty = 'No resignation request is submitted',
+      pageSelected,
+      size,
+      total: totalData,
+      getPageAndSize = () => {},
+    } = this.props;
+    // const { pageNavigation } = this.state;
+    // const rowSize = 10;
     const pagination = {
       position: ['bottomLeft'],
-      total: data.length,
+      total: totalData,
       showTotal: (total, range) => (
         <span>
           Showing{' '}
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
-          total
+          of
+          <b>{total}</b>
         </span>
       ),
-      pageSize: rowSize,
-      current: pageNavigation,
-      onChange: this.onChangePagination,
+      pageSize: size,
+      current: pageSelected,
+      onChange: (page, pageSize) => {
+        getPageAndSize(page, pageSize);
+      },
     };
 
     const columns = [
@@ -287,10 +298,7 @@ class TableManager extends PureComponent {
           columns={columns}
           dataSource={data}
           hideOnSinglePage
-          pagination={{
-            ...pagination,
-            total: data.length,
-          }}
+          pagination={pagination}
           rowKey="id"
           scroll={{ x: 'max-content' }}
         />

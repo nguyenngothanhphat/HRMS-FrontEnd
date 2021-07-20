@@ -16,7 +16,7 @@ class TableManager extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      pageNavigation: '1',
+      // pageNavigation: '1',
       currentTime: moment(),
     };
   }
@@ -39,12 +39,6 @@ class TableManager extends PureComponent {
         currentTime: moment(),
       });
     }
-  };
-
-  onChangePagination = (pageNumber) => {
-    this.setState({
-      pageNavigation: pageNumber,
-    });
   };
 
   openViewTicket = (ticketID) => {
@@ -295,13 +289,21 @@ class TableManager extends PureComponent {
   };
 
   render() {
-    const { data = [], textEmpty = 'No resignation request is submitted', loading } = this.props;
-    const { pageNavigation } = this.state;
-    const rowSize = 10;
+    const {
+      data = [],
+      textEmpty = 'No resignation request is submitted',
+      loading,
+      pageSelected,
+      size,
+      total: totalAll,
+      getPageAndSize = () => {},
+    } = this.props;
+    // const { pageNavigation } = this.state;
+    // const rowSize = 10;
 
     const pagination = {
       position: ['bottomLeft'],
-      total: data.length,
+      total: totalAll,
       showTotal: (total, range) => (
         <span>
           Showing{' '}
@@ -311,9 +313,11 @@ class TableManager extends PureComponent {
           of {data.length}
         </span>
       ),
-      pageSize: rowSize,
-      current: pageNavigation,
-      onChange: this.onChangePagination,
+      pageSize: size,
+      current: pageSelected,
+      onChange: (page, pageSize) => {
+        getPageAndSize(page, pageSize);
+      },
     };
 
     const columns = [
@@ -461,7 +465,7 @@ class TableManager extends PureComponent {
           columns={columns}
           dataSource={data}
           hideOnSinglePage
-          pagination={{ ...pagination, total: data.length }}
+          pagination={pagination}
           rowKey="id"
           scroll={{ x: 'max-content' }}
           onChange={this.handleChangeTable}

@@ -165,13 +165,13 @@ class DirectoryComponent extends PureComponent {
       company,
       title,
       skill,
-      pageSelected,
-      size,
+      page: 1,
+      limit: size,
     };
     if (
       prevState.tabId !== tabId ||
-      (changeTab && prevState.tabId === tabId) ||
-      JSON.stringify(prevState.department) !== JSON.stringify(department) ||
+      (changeTab && prevState.tabId !== tabId) ||
+      prevState.department.length !== department.length ||
       prevState.country.length !== country.length ||
       prevState.state.length !== state.length ||
       prevState.employeeType.length !== employeeType.length ||
@@ -179,7 +179,6 @@ class DirectoryComponent extends PureComponent {
       JSON.stringify(prevState.title) !== JSON.stringify(title) ||
       prevState.filterName !== filterName ||
       prevState.company.length !== company.length ||
-      prevState.pageSelected !== pageSelected ||
       prevState.size !== size
     ) {
       this.onChangeTab(params, tabId);
@@ -193,20 +192,34 @@ class DirectoryComponent extends PureComponent {
     // console.log('prevProps.listLocationsByCompany', prevProps.listLocationsByCompany);
 
     if (
-      (JSON.stringify(prevProps.filterList) !== JSON.stringify(filterList) &&
-        listLocationsByCompany.length > 0) ||
-      prevState.pageSelected !== pageSelected ||
-      prevState.size !== size
+      JSON.stringify(prevProps?.filterList || []) !== JSON.stringify(filterList) ||
+      JSON.stringify(prevProps?.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {
       // console.log('OK');
       this.renderData();
+    }
+
+    if (prevState.pageSelected !== pageSelected) {
+      const paramsPage = {
+        name: filterName,
+        department,
+        country,
+        state,
+        employeeType,
+        company,
+        title,
+        skill,
+        page: pageSelected,
+        limit: size,
+      };
+      this.onChangeTab(paramsPage, tabId);
     }
     // console.log('--------------------------------------');
   }
 
   componentWillUnmount = async () => {
     this.setState = () => {
-      return { tabId: 'active', changeTab: false };
+      return { tabId: 'active', changeTab: false, pageSelected: 1, size: 10 };
     };
     const { dispatch } = this.props;
     dispatch({
@@ -349,7 +362,7 @@ class DirectoryComponent extends PureComponent {
           company: companyPayload,
           department: [departmentName],
           location: locationPayload,
-          page: pageSelected,
+          page: 1,
           limit: size,
         },
       });
@@ -361,7 +374,7 @@ class DirectoryComponent extends PureComponent {
         payload: {
           company: companyPayload,
           location: locationPayload,
-          page: pageSelected,
+          page: 1,
           limit: size,
         },
       });
@@ -371,7 +384,7 @@ class DirectoryComponent extends PureComponent {
         type: 'employee/fetchListEmployeeInActive',
         payload: {
           company: companyPayload,
-          page: pageSelected,
+          page: 1,
           limit: size,
           location: locationPayload,
         },
@@ -382,8 +395,6 @@ class DirectoryComponent extends PureComponent {
   onChangeTab = (params, tabId) => {
     const {
       tabList: { active, myTeam, inActive },
-      // pageSelected,
-      size,
     } = this.state;
 
     const currentLocation = getCurrentLocation();
@@ -396,7 +407,8 @@ class DirectoryComponent extends PureComponent {
       listLocationsByCompany = [],
       currentUser: { employee: { department: { name: departmentName = '' } = {} } = {} } = {},
     } = this.props;
-    const { name, department, country, state, employeeType, company, title, skill } = params;
+    const { name, department, country, state, employeeType, company, title, skill, page, limit } =
+      params;
 
     // MULTI COMPANY & LOCATION PAYLOAD
     let companyPayload = [];
@@ -496,10 +508,10 @@ class DirectoryComponent extends PureComponent {
       employeeType,
       title,
       skill,
-      page: 1,
-      limit: size,
+      page,
+      limit,
     };
-
+    this.setState({ pageSelected: page });
     if (tabId === active) {
       dispatch({
         type: 'employee/fetchListEmployeeActive',
@@ -561,6 +573,8 @@ class DirectoryComponent extends PureComponent {
       tabId,
       changeTab: true,
       filterName: '',
+      pageSelected: 1,
+      size: 10,
     });
     const { dispatch } = this.props;
     await dispatch({
