@@ -132,6 +132,7 @@ const Model = {
 
         if (isFirstLogin) {
           history.replace('/first-change-password');
+          return {};
         }
 
         // CANDIDATE
@@ -171,6 +172,7 @@ const Model = {
       } catch (errors) {
         dialog(errors);
       }
+      return {};
     },
   },
   reducers: {
