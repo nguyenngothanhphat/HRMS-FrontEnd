@@ -4,7 +4,7 @@ import styles from './index.less';
 
 class CustomEmailsHeader extends PureComponent {
   createCustomEmail = () => {
-    history.push('/offboarding/create-custom-email');
+    history.push('/offboarding/settings/custom-emails/create-custom-email');
   };
 
   render() {

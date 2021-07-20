@@ -166,7 +166,7 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   addNewEmailTemplate = () => {
-    history.push('/offboarding/create-custom-email');
+    history.push('/offboarding/settings/custom-emails/create-custom-email');
   };
 
   _renderTable = (list) => {

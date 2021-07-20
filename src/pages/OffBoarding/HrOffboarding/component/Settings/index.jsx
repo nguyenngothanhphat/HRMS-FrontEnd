@@ -18,30 +18,46 @@ class Settings extends PureComponent {
         name: 'Documents and Templates',
         key: 'documentsAndTemplates',
         component: <DocsTemplates />,
+        link: 'documents-templates',
       },
       {
         id: 2,
         name: 'Forms',
         key: 'forms',
         component: <Forms />,
+        link: 'forms',
       },
       {
         id: 3,
         name: 'Company Signatory',
         key: 'companySignatory',
         component: <CompanySignatory />,
+        link: 'company-signatory',
       },
-      { id: 4, name: 'Custom Emails', key: 'customEmails', component: <CustomEmails /> },
+      {
+        id: 4,
+        name: 'Custom Emails',
+        key: 'customEmails',
+        component: <CustomEmails />,
+        link: 'custom-emails',
+      },
       {
         id: 5,
         name: 'Approval & Permissions',
         key: 'aoprovalPermissions',
+        link: 'approval-permissions',
         // component: <CompanySignatory />,
       },
     ];
+    const { type = '' } = this.props;
     return (
       <div>
-        <SettingLayout listMenu={listMenu} currentPage="settings" />
+        <SettingLayout
+          listMenu={listMenu}
+          currentPage="settings"
+          tabName={type}
+          route="offboarding"
+        />
       </div>
     );
   }

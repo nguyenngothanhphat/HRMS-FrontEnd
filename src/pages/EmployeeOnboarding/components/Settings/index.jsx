@@ -8,48 +8,64 @@ import DocumentsAndTemplates from './components/DocumentsAndTemplates';
 import NonExtempNotice from './components/NonExtempNotice';
 import OptionalOnboardingQuestions from './components/OptionalOnboardingQuestions';
 
+export const listMenu = [
+  {
+    id: 1,
+    name: 'Documents and Templates',
+    key: 'documentsAndTemplates',
+    component: <DocumentsAndTemplates />,
+    link: 'documents-templates',
+  },
+  {
+    id: 2,
+    name: 'Non-Extemp Notice',
+    key: 'nonExtempNotice',
+    component: <NonExtempNotice />,
+    link: 'non-extemp-notice',
+  },
+  // {
+  //   id: 3,
+  //   name: 'Background Checks',
+  //   key: 'backgroundChecks',
+  //   component: <BackgroundChecks />,
+  // },
+  {
+    id: 3,
+    name: 'Optional Onboarding Questions',
+    key: 'optionalOnboardingQuestions',
+    component: <OptionalOnboardingQuestions />,
+    link: 'optional-onboarding-questions',
+  },
+  {
+    id: 4,
+    name: 'Company Signatory',
+    key: 'companySignatory',
+    component: <CompanySignatory />,
+    link: 'company-signatory',
+  },
+  {
+    id: 5,
+    name: 'Custom Emails',
+    key: 'customEmails',
+    component: <CustomEmails />,
+    link: 'custom-emails',
+  },
+];
 @connect(({ info: { currentStep = 0, displayComponent = {} } = {} }) => ({
   currentStep,
   displayComponent,
 }))
 class Settings extends PureComponent {
   render() {
-    const listMenu = [
-      {
-        id: 1,
-        name: 'Documents and Templates',
-        key: 'documentsAndTemplates',
-        component: <DocumentsAndTemplates />,
-      },
-      {
-        id: 2,
-        name: 'Non-Extemp Notice',
-        key: 'nonExtempNotice',
-        component: <NonExtempNotice />,
-      },
-      // {
-      //   id: 3,
-      //   name: 'Background Checks',
-      //   key: 'backgroundChecks',
-      //   component: <BackgroundChecks />,
-      // },
-      {
-        id: 3,
-        name: 'Optional Onboarding Questions',
-        key: 'optionalOnboardingQuestions',
-        component: <OptionalOnboardingQuestions />,
-      },
-      {
-        id: 4,
-        name: 'Company Signatory',
-        key: 'companySignatory',
-        component: <CompanySignatory />,
-      },
-      { id: 5, name: 'Custom Emails', key: 'customEmails', component: <CustomEmails /> },
-    ];
+    const { type = '' } = this.props;
     return (
       <div>
-        <SettingLayout listMenu={listMenu} currentPage="settings" />
+        <SettingLayout
+          listMenu={listMenu}
+          currentPage="settings"
+          tabName={type}
+          route="employee-onboarding"
+        />
       </div>
     );
   }

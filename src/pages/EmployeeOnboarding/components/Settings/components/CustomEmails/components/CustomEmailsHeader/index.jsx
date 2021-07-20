@@ -4,7 +4,7 @@ import styles from './index.less';
 
 class CustomEmailsHeader extends PureComponent {
   createCustomEmail = () => {
-    history.push('/employee-onboarding/settings/create-email-reminder');
+    history.push('/employee-onboarding/settings/custom-emails/create-email-reminder');
   };
 
   render() {

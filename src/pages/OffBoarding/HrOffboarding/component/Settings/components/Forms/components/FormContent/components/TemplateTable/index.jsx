@@ -123,7 +123,7 @@ class TemplateTable extends Component {
   };
 
   viewTemplateDetail = (id) => {
-    history.push(`/offboarding/forms/${id}/view`);
+    history.push(`/offboarding/settings/forms/${id}/view`);
   };
 
   onChangePagination = (pageNumber) => {

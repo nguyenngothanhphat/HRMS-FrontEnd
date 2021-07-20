@@ -88,7 +88,7 @@ class EmployeeOnboarding extends PureComponent {
                     tab={formatMessage({ id: 'component.employeeOnboarding.settings' })}
                     key="settings"
                   >
-                    <Settings />
+                    <Settings type={type} />
                   </TabPane>
                   {/* <TabPane
                     tab={formatMessage({ id: 'component.employeeOnboarding.customFields' })}

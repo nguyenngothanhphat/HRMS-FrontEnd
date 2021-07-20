@@ -105,13 +105,8 @@ class OnboardingLayout extends PureComponent {
   };
 
   handleClick = (item) => {
-    const { id = 1, component = '', name = '', link = '' } = item;
+    const { link = '' } = item;
     history.push(`/employee-onboarding/list/${link}`);
-    this.setState({
-      selectedId: id,
-      displayComponent: getComponent(component),
-      pageTitle: name,
-    });
   };
 
   handleAddBtn = () => {

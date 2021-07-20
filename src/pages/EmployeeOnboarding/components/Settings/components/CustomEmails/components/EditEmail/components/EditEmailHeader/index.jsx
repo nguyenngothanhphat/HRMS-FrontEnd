@@ -10,7 +10,7 @@ class EditEmailHeader extends PureComponent {
       <div className={styles.EditEmailHeader}>
         <Link
           to={{
-            pathname: '/employee-onboarding/settings',
+            pathname: '/employee-onboarding/settings/custom-emails',
             state: { settingsDisplayComponent: true },
           }}
         >

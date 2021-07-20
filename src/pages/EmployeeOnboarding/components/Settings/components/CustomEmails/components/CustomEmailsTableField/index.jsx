@@ -172,7 +172,7 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   addNewEmailTemplate = () => {
-    history.push('/employee-onboarding/settings/create-email-reminder');
+    history.push('/employee-onboarding/settings/custom-emails/create-email-reminder');
   };
 
   _renderTable = (list) => {

@@ -14,7 +14,10 @@ class FormsHeader extends PureComponent {
           </div>
         </div>
         <div className={styles.rightPart}>
-          <div onClick={() => history.push('/offboarding/forms/add')} className={styles.addButton}>
+          <div
+            onClick={() => history.push('/offboarding/settings/forms/add')}
+            className={styles.addButton}
+          >
             <span>Create a new form template</span>
           </div>
         </div>

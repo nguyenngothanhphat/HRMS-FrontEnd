@@ -16,14 +16,14 @@ class OffBoarding extends PureComponent {
 
   render() {
     const {
-      match: { params: { tabName = '' } = {} },
+      match: { params: { tabName = '', type = '' } = {} },
       location: { state: { isEmployeeMode = false } = {} } = {},
     } = this.props;
 
     const viewOffboarding = initViewOffboarding();
     const renderComponent = {
-      'hr-manager': <HrOffboarding tabName={tabName} />,
-      hr: <HrOffboarding tabName={tabName} />,
+      'hr-manager': <HrOffboarding tabName={tabName} type={type} />,
+      hr: <HrOffboarding tabName={tabName} type={type} />,
       manager: <ManagerOffBoading tabName={tabName} />,
       employee: <EmployeeOffBoading tabName={tabName} />,
     };

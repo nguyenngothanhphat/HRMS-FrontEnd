@@ -1,18 +1,14 @@
 /* eslint-disable react/button-has-type */
 import React, { PureComponent } from 'react';
 import { Row, Col, Button } from 'antd';
-import { connect } from 'umi';
+import { history } from 'umi';
 import ItemMenu from './components/ItemMenu';
-import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
+// import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
 import BasicInformation from '../../pages/FormTeamMember/components/BasicInformation';
 // import BottomBar from '../BottomBar';
 
 import s from './index.less';
 
-@connect(({ candidateInfo: { settingStep = 0, displayComponent = {} } = {} }) => ({
-  settingStep,
-  displayComponent,
-}))
 class SettingLayout extends PureComponent {
   constructor(props) {
     super(props);
@@ -22,67 +18,42 @@ class SettingLayout extends PureComponent {
     };
   }
 
-  static getDerivedStateFromProps(props) {
-    const { listMenu = [], settingStep } = props;
-    // const selectedItemId = listMenu[settingStep]
-    if (settingStep !== null) {
-      return {
-        selectedItemId: listMenu[settingStep].id,
-        displayComponent: listMenu[settingStep].component,
-      };
-    }
-
-    return {
-      selectedItemId: '',
-      displayComponent: <PreviewOffer />,
-    };
-  }
-
   componentDidMount() {
-    const { listMenu, settingStep = 1 } = this.props;
-    if (!listMenu[settingStep]) {
-      return;
-    }
-    this.setState({
-      selectedItemId: listMenu[settingStep].id || 1,
-      displayComponent: listMenu[settingStep].component || <BasicInformation />,
-    });
+    this.fetchTab();
   }
 
-  componentWillUnmount = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        settingStep: 0,
-      },
+  componentDidUpdate(prevProps) {
+    const { tabName = '' } = this.props;
+
+    if (prevProps.tabName !== tabName) {
+      this.fetchTab();
+    }
+  }
+
+  fetchTab = () => {
+    const { listMenu, tabName = '' } = this.props;
+    const findTab = listMenu.find((menu) => menu.link === tabName) || listMenu[0];
+
+    this.setState({
+      selectedItemId: findTab.id || 1,
+      displayComponent: findTab.component || <BasicInformation />,
     });
   };
 
   _handlePreviewOffer = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        settingStep: null,
-        displayComponent: <PreviewOffer />,
-      },
-    });
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'candidateInfo/save',
+    //   payload: {
+    //     displayComponent: <PreviewOffer />,
+    //   },
+    // });
+    // history.push(`/employee-onboarding/review/preview-offer`);
   };
 
   _handleClick = (item) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        settingStep: item.id - 1,
-        displayComponent: item.component,
-      },
-    });
-    this.setState({
-      selectedItemId: item.id,
-      displayComponent: item.component,
-    });
+    const { route = '' } = this.props;
+    history.push(`/${route}/settings/${item.link}`);
   };
 
   render() {

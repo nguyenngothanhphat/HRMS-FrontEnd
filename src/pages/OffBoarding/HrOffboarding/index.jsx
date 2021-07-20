@@ -10,7 +10,7 @@ import styles from './index.less';
 class HROffboarding extends PureComponent {
   render() {
     const { TabPane } = Tabs;
-    const { tabName = '' } = this.props;
+    const { tabName = '', type = '' } = this.props;
 
     return (
       <PageContainer>
@@ -31,7 +31,7 @@ class HROffboarding extends PureComponent {
                 <RelievingFormalities />
               </TabPane>
               <TabPane tab="Settings" key="settings">
-                <Settings />
+                <Settings type={type} />
               </TabPane>
             </Tabs>
           </div>

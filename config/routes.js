@@ -212,7 +212,7 @@ const routes = [
             authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'hr', 'hr-manager'],
           },
           {
-            path: '/employee-onboarding/list/:type',
+            path: '/employee-onboarding/:tabName/:type',
             // name: 'Settings',
             component: './EmployeeOnboarding',
             hideInMenu: true,
@@ -241,6 +241,12 @@ const routes = [
           },
           {
             path: '/offboarding/:tabName',
+            component: './OffBoarding',
+            authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW', 'hr', 'hr-manager', 'manager'],
+            hideInMenu: true,
+          },
+          {
+            path: '/offboarding/:tabName/:type',
             component: './OffBoarding',
             authority: ['M_OFFBOARDING_VIEW', 'P_OFFBOARDING_VIEW', 'hr', 'hr-manager', 'manager'],
             hideInMenu: true,
@@ -588,7 +594,7 @@ const routes = [
             // authority: ['hr-manager'],
           },
           {
-            path: '/offboarding/create-custom-email',
+            path: '/offboarding/:tabName/:type/create-custom-email',
             name: 'Create custom email',
             hideInMenu: true,
             component:
@@ -609,21 +615,21 @@ const routes = [
               './OffBoarding/HrOffboarding/component/Settings/components/DocsTemplates/components/TemplateDetails',
           },
           {
-            path: '/offboarding/forms/:id/view',
+            path: '/offboarding/:tabName/:type/:id/view',
             name: 'View form',
             hideInMenu: true,
             component:
               './OffBoarding/HrOffboarding/component/Settings/components/Forms/components/ViewForm',
           },
           {
-            path: '/offboarding/forms/add',
+            path: '/offboarding/:tabName/:type/add',
             name: 'Add custom form',
             hideInMenu: true,
             component:
               './OffBoarding/HrOffboarding/component/Settings/components/Forms/components/HandleForm',
           },
           {
-            path: '/offboarding/forms/:id/edit',
+            path: '/offboarding/:tabName/:type/:id/edit',
             name: 'Edit form',
             hideInMenu: true,
             component:
@@ -670,14 +676,14 @@ const routes = [
             authority: ['hr-manager', 'hr', 'hr-global'],
           },
           {
-            path: '/employee-onboarding/:action(review)/:reId/:tabName',
+            path: '/employee-onboarding/:action(review)/:reId/:type',
             name: 'reviewTeamMember',
             hideInMenu: true,
             component: './FormTeamMember',
             authority: ['hr-manager', 'hr', 'hr-global'],
           },
           {
-            path: '/employee-onboarding/:tabName/create-email-reminder',
+            path: '/employee-onboarding/:tabName/:type/create-email-reminder',
             name: 'Create Email Reminder',
             hideInMenu: true,
             component: './EmailReminder',
