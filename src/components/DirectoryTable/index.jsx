@@ -49,6 +49,7 @@ class DirectoryTable extends Component {
       rowData: {},
       valueReason: '',
       timezoneList: [],
+      selectColumn: false,
       currentTime: moment(),
     };
   }
@@ -178,7 +179,6 @@ class DirectoryTable extends Component {
   generateColumns = (sortedName, keyTab) => {
     const { permissions = {} } = this.props;
 
-    // const { isSort } = this.state;
     const columns = [
       {
         title: (
@@ -191,12 +191,13 @@ class DirectoryTable extends Component {
         key: 'employeePack',
         render: (employeePack) => (employeePack ? this.renderUser(employeePack) : ''),
         align: 'left',
-        sorter: (a, b) =>
-          a.employeePack.generalInfo && a.employeePack.generalInfo?.firstName
+        sorter: (a, b) => {
+          return a.employeePack.generalInfo && a.employeePack.generalInfo?.firstName
             ? `${a.employeePack.generalInfo?.firstName} ${a.employeePack.generalInfo?.lastName}`.localeCompare(
                 `${b.employeePack.generalInfo?.firstName} ${b.employeePack.generalInfo?.lastName}`,
               )
-            : null,
+            : null;
+        },
         // sortOrder: sortedName.columnKey === 'employeePack' && sortedName.order,
         fixed: 'left',
         width: '18%',
@@ -552,6 +553,7 @@ class DirectoryTable extends Component {
       openModal = false,
       valueReason = '',
       // rowSize,
+      selectColumn,
     } = this.state;
     const {
       list = [],
@@ -606,7 +608,7 @@ class DirectoryTable extends Component {
 
     return (
       <>
-        <div className={styles.directoryTable}>
+        <div className={`${styles.directoryTable} ${selectColumn ? styles.selectCol : null}`}>
           <Table
             size="small"
             columns={this.generateColumns(sortedName, keyTab)}
@@ -622,6 +624,11 @@ class DirectoryTable extends Component {
             loading={loading}
             onChange={this.handleChangeTable}
             scroll={scroll}
+            onHeaderRow={() => {
+              return {
+                onClick: () => this.setState({ selectColumn: true }), // if select column, the whole column will be highlighted.
+              };
+            }}
           />
         </div>
         <ModalTerminate
