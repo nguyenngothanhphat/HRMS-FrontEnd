@@ -8,6 +8,14 @@
   .employeeId {
     padding-left: 16px !important;
   }
+
+  .col {
+    :global {
+      .ant-table-column-sorter-inner {
+        display: inline;
+      }
+    }
+  }
   :global {
     .ant-pagination {
       align-items: center;
@@ -71,7 +79,7 @@
     }
 
     .ant-table-column-sorter-inner {
-      display: inline;
+      display: none;
     }
 
     .ant-table-column-sorter-up.active,
@@ -115,6 +123,10 @@
     th.ant-table-cell {
       padding-top: 0 !important;
       padding-bottom: 0 !important;
+    }
+
+    td.ant-table-column-sort {
+      background-color: #fafafa;
     }
   }
 
