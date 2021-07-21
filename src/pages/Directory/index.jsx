@@ -191,7 +191,7 @@ class Directory extends PureComponent {
         <div className={styles.containerDirectory}>
           <Tabs
             defaultActiveKey="1"
-            tabBarExtraContent={checkRoleEmployee ? '' : null}
+            // tabBarExtraContent={checkRoleEmployee ? '' : null}
             // tabBarExtraContent={checkRoleEmployee ? '' : this.operations()}
           >
             <TabPane
@@ -200,11 +200,14 @@ class Directory extends PureComponent {
                   ? 'Employees Management'
                   : formatMessage({ id: 'pages.directory.directoryTab' })
               }
-              key="1"
+              key={checkRoleEmployee ? '2' : '1'}
             >
               <DirectoryComponent />
             </TabPane>
-            <TabPane tab={formatMessage({ id: 'pages.directory.organisationChartTab' })} key="2">
+            <TabPane
+              tab={formatMessage({ id: 'pages.directory.organisationChartTab' })}
+              key={checkRoleEmployee ? '1' : '2'}
+            >
               <OrganisationChart />
             </TabPane>
           </Tabs>
