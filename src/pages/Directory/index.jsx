@@ -37,20 +37,31 @@ class Directory extends PureComponent {
   }
 
   componentDidMount = async () => {
-    const { dispatch, roles = [], signInRole = [], filterList = {} } = this.props;
-    const checkRoleEmployee = this.checkRoleEmployee(roles, signInRole);
+    const {
+      match: { params: { tabName = '' } = {} },
+    } = this.props;
+    if (!tabName) {
+      if (isOwner()) {
+        history.replace(`/employees/list`);
+      } else {
+        history.replace(`/directory/list`);
+      }
+    } else {
+      const { dispatch, roles = [], signInRole = [], filterList = {} } = this.props;
+      const checkRoleEmployee = this.checkRoleEmployee(roles, signInRole);
 
-    this.setState({
-      checkRoleEmployee,
-    });
-
-    if (Object.keys(filterList).length > 0 && filterList) {
-      await dispatch({
-        type: 'employee/save',
-        payload: {
-          filterList: {},
-        },
+      this.setState({
+        checkRoleEmployee,
       });
+
+      if (Object.keys(filterList).length > 0 && filterList) {
+        await dispatch({
+          type: 'employee/save',
+          payload: {
+            filterList: {},
+          },
+        });
+      }
     }
 
     // this.fetchFilterList();
