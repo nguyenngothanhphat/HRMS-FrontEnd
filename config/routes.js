@@ -136,6 +136,11 @@ const routes = [
             authority: ['owner'],
           },
           {
+            path: '/control-panel/add-company/:tabName',
+            component: './CompanyProfile',
+            authority: ['owner'],
+          },
+          {
             component: './404',
           },
         ],

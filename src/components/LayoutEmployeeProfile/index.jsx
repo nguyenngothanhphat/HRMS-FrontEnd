@@ -34,16 +34,18 @@ class CommonLayout extends PureComponent {
   }
 
   componentDidMount() {
+    const { selectedNewCompanyTab = 1, isAddingCompany = false } = this.props;
+
+    // auto direct from  work locations to company details if company details were not filled
+    if (selectedNewCompanyTab === 1 && isAddingCompany) {
+      history.push(`/control-panel/add-company/company-details`);
+    }
+
     this.fetchTab();
   }
 
   componentDidUpdate(prevProps) {
-    const { listMenu, selectedNewCompanyTab, tabName = '' } = this.props;
-
-    // auto direct from company details to work locations
-    if (prevProps.selectedNewCompanyTab !== selectedNewCompanyTab) {
-      this.handleCLickItemMenu(listMenu[selectedNewCompanyTab - 1]);
-    }
+    const { listMenu = [], tabName = '' } = this.props;
 
     const prevListMenu = prevProps.listMenu.map((item) => {
       return {
@@ -69,11 +71,17 @@ class CommonLayout extends PureComponent {
   }
 
   fetchTab = () => {
-    const { listMenu, selectedNewCompanyTab, tabName } = this.props;
+    const { listMenu, tabName } = this.props;
     const selectedTab = listMenu.find((m) => m.link === tabName) || listMenu[0];
+
     this.setState({
-      selectedItemId: selectedTab.id || selectedNewCompanyTab,
+      selectedItemId: selectedTab.id,
       displayComponent: selectedTab.component,
+    });
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
     });
   };
 
@@ -89,15 +97,15 @@ class CommonLayout extends PureComponent {
     //   selectedItemId: item.id,
     //   displayComponent: item.component,
     // });
-    // window.scrollTo({
-    //   top: 0,
-    //   left: 0,
-    //   behavior: 'smooth',
-    // });
-    const { reId } = this.props;
 
-    const link = isOwner() ? 'employees' : 'directory';
-    history.push(`/${link}/employee-profile/${reId}/${item.link}`);
+    const { reId, isAddingCompany = false } = this.props;
+
+    if (!isAddingCompany) {
+      const link = isOwner() ? 'employees' : 'directory';
+      history.push(`/${link}/employee-profile/${reId}/${item.link}`);
+    } else {
+      history.push(`/control-panel/add-company/${item.link}`);
+    }
   };
 
   listItemActions = () => {
