@@ -41,6 +41,8 @@ class TableFilter extends PureComponent {
       clearText: '',
       reset: false,
       titleSelected: [],
+      departmentSelected: [],
+      skillSelected: [],
     };
   }
 
@@ -76,14 +78,26 @@ class TableFilter extends PureComponent {
 
       // for title selectbox
       let newFilterList = [];
+      // for department selectbox
+      let newFilterListDept = [];
+      // for skill selectbox
+      let newFilterListSkill = [];
       checkedFilterList.forEach((f) => {
         if (f.actionFilter?.name === 'Title') {
           newFilterList = [...f.checkedList];
+        }
+        if (f.actionFilter?.name === 'Department') {
+          newFilterListDept = [...f.checkedList];
+        }
+        if (f.actionFilter?.name === 'Skill') {
+          newFilterListSkill = [...f.checkedList];
         }
       });
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         titleSelected: newFilterList.length > 0 ? newFilterList : [],
+        departmentSelected: newFilterListDept.length > 0 ? newFilterListDept : [],
+        skillSelected: newFilterListSkill.length > 0 ? newFilterListSkill : [],
       });
     }
   };
@@ -186,6 +200,15 @@ class TableFilter extends PureComponent {
     });
   };
 
+  handleValueSelect = (clearFilter, valueSelected) => {
+    if (clearFilter && valueSelected.length === 0) return null;
+
+    if (valueSelected.length > 1) {
+      return valueSelected;
+    }
+    return valueSelected[0];
+  };
+
   render() {
     const { Sider } = Layout;
     const {
@@ -201,6 +224,8 @@ class TableFilter extends PureComponent {
       formatDataTitle,
       // TitleState,
       titleSelected,
+      departmentSelected,
+      skillSelected,
     } = this.state;
     const {
       employee: { employeetype = [], clearName = false, clearFilter },
@@ -293,7 +318,7 @@ class TableFilter extends PureComponent {
             ) : (
               <Select
                 value={clearFilter && titleSelected.length === 0 ? '' : titleSelected[0]}
-                className={styles.formSelect}
+                className={styles.formSelectTitle}
                 onChange={(value) => this.handleSelectChange(value, 'Title')}
                 filterOption={
                   (input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
@@ -313,6 +338,7 @@ class TableFilter extends PureComponent {
               ''
             ) : (
               <Select
+                value={this.handleValueSelect(clearFilter, departmentSelected)}
                 className={styles.formSelect}
                 onChange={(value) => this.handleSelectChange(value, 'Department')}
                 mode="multiple"
@@ -336,6 +362,7 @@ class TableFilter extends PureComponent {
               ''
             ) : (
               <Select
+                value={this.handleValueSelect(clearFilter, skillSelected)}
                 className={styles.formSelect}
                 onChange={(value) => this.handleSelectChange(value, 'Skill')}
                 mode="multiple"
