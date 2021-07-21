@@ -36,6 +36,7 @@ class OrganisationChart extends Component {
       timezoneList: [],
       currentTime: moment(),
     };
+    this.myRef = React.createRef();
   }
 
   componentDidMount() {
@@ -52,6 +53,11 @@ class OrganisationChart extends Component {
     dispatch({
       type: 'employee/fetchDataOrgChart',
       payload: { tenantId, company },
+    }).then((response) => {
+      const { statusCode, data = {} } = response;
+      if (statusCode === 200) {
+        this.getCurrentUser(data);
+      }
     });
     dispatch({
       type: 'employee/fetchAllListUser',
@@ -68,6 +74,24 @@ class OrganisationChart extends Component {
       this.fetchTimezone();
     }
   }
+
+  getCurrentUser = (data) => {
+    const { myEmployeeId = '' } = this.props;
+    let idUser = '';
+
+    if (data) {
+      const { children: firstChild = [] } = data;
+      idUser = firstChild[1].children[0].user._id;
+      const check = idUser === myEmployeeId;
+      if (check) {
+        this.myRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'center',
+        });
+      }
+    }
+  };
 
   handleOnClick = (e) => {
     const getId = e.target.id;
@@ -102,8 +126,13 @@ class OrganisationChart extends Component {
       // title: { name: title = '' } = {},
     } = user;
     const check = _id === myEmployeeId;
+
     return (
-      <div className={styles.chartNode} style={check ? { border: '1px solid #00C598' } : {}}>
+      <div
+        className={styles.chartNode}
+        style={check ? { border: '1px solid #00C598' } : {}}
+        ref={check ? this.myRef : null}
+      >
         <div className={styles.chartAvt}>
           <Avatar src={avatar} size={64} icon={<UserOutlined />} />
         </div>
@@ -181,6 +210,7 @@ class OrganisationChart extends Component {
   render() {
     const { loading, dataOrgChart, listEmployeeAll } = this.props;
     const { chartDetails } = this.state;
+    console.log(dataOrgChart);
     return (
       <div className={styles.container}>
         {loading ? (
