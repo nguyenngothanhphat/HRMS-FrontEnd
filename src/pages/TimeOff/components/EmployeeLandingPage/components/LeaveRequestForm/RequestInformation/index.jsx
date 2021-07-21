@@ -1049,7 +1049,7 @@ class RequestInformation extends PureComponent {
   // ON CANCEL EDIT
   onCancelEdit = () => {
     const { viewingLeaveRequestId: id } = this.state;
-    history.push(`/time-off/view-request/${id}`);
+    history.push(`/time-off/overview/personal-timeoff/view/${id}`);
   };
 
   // RENDER MODAL content

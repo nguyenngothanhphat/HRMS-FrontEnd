@@ -48,7 +48,7 @@ class RequestInformation extends PureComponent {
   // EDIT BUTTON
   handleEdit = (_id) => {
     history.push({
-      pathname: `/time-off/edit-leave-request/${_id}`,
+      pathname: `/time-off/overview/personal-timeoff/edit/${_id}`,
     });
   };
 
