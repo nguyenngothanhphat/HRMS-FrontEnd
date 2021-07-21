@@ -16,7 +16,7 @@ function CurrentInfo(props) {
     compensationType = '',
     currentAnnualCTC = '',
     timeOffPolicy = '',
-  } = employeeProfile?.originData?.compensationData;
+  } = employeeProfile?.originData?.compensationData || {};
 
   const data = {
     title: title?.name || 'Missing title',

@@ -316,7 +316,7 @@ const routes = [
           },
           {
             path: '/employees/employee-profile/:reId/:tabName',
-            name: 'employeeProfile',
+            // name: 'employeeProfile',
             component: './EmployeeProfile',
             hideInMenu: true,
             authority: [
@@ -514,7 +514,7 @@ const routes = [
           },
           {
             path: '/directory/employee-profile/:reId/:tabName',
-            name: 'employeeProfile',
+            // name: 'employeeProfile',
             component: './EmployeeProfile',
             hideInMenu: true,
             authority: [
@@ -662,14 +662,14 @@ const routes = [
             ],
           },
           {
-            path: '/employee-onboarding/:action(add)/:reId',
+            path: '/employee-onboarding/list/:action(add)/:reId',
             name: 'addTeamMember',
             hideInMenu: true,
             component: './FormTeamMember',
             authority: ['hr-manager', 'hr', 'hr-global'],
           },
           {
-            path: '/employee-onboarding/:action(review)/:reId',
+            path: '/employee-onboarding/list/:action(review)/:reId',
             name: 'reviewTeamMember',
             hideInMenu: true,
             component: './FormTeamMember',

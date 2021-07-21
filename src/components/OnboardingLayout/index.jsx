@@ -128,7 +128,7 @@ class OnboardingLayout extends PureComponent {
     return (
       <div className={styles.overviewContainer}>
         <div className={styles.viewLeft}>
-          {/* <Link to="/employee-onboarding/add"> */}
+          {/* <Link to="/employee-onboarding/list/add"> */}
           {checkPermissionAddTeamMember && (
             <Button
               icon={<img src="/assets/images/addMemberIcon.svg" alt="add member icon" />}

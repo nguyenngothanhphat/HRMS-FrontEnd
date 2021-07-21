@@ -61,7 +61,7 @@ class EmployeeProfile extends Component {
   componentDidUpdate(prevProps) {
     const { location } = this.props;
     if (prevProps.location.pathname !== location.pathname) {
-      this.fetchData();
+      // this.fetchData();
     }
   }
 
@@ -215,7 +215,12 @@ class EmployeeProfile extends Component {
     //   listMenu.push({ id: 5, name: 'Time & Scheduling', component: <Test /> });
     // }
     if (permissions.viewTabBenefitPlans !== -1 || profileOwner) {
-      listMenu.push({ id: 6, name: 'Benefit Plans', component: <BenefitTab />, link: 'benefit' });
+      listMenu.push({
+        id: 6,
+        name: 'Benefit Plans',
+        component: <BenefitTab />,
+        link: 'benefit-plans',
+      });
     }
 
     return listMenu;

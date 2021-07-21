@@ -521,7 +521,7 @@ const candidateInfo = {
         });
 
         history.push({
-          pathname: `/employee-onboarding/add/${rookieId}`,
+          pathname: `/employee-onboarding/list/add/${rookieId}`,
           state: { isAddNew: true },
         });
       } catch (error) {
@@ -1259,7 +1259,7 @@ const candidateInfo = {
       try {
         const { rookieId = '' } = payload;
         history.push({
-          pathname: `/employee-onboarding/review/${rookieId}`,
+          pathname: `/employee-onboarding/list/review/${rookieId}`,
           state: { isAddNew: true },
         });
         yield null;

@@ -6,6 +6,7 @@ import { Affix, Col, Row } from 'antd';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
+import { isOwner } from '@/utils/authority';
 import ItemMenu from './components/ItemMenu';
 import UploadLogoCompany from './components/UploadLogoCompany';
 import ViewInformation from './components/ViewInformation';
@@ -33,16 +34,11 @@ class CommonLayout extends PureComponent {
   }
 
   componentDidMount() {
-    const { listMenu, selectedNewCompanyTab, tabName } = this.props;
-    const selectedTab = listMenu.find((m) => m.link === tabName) || listMenu[0];
-    this.setState({
-      selectedItemId: selectedTab.id || selectedNewCompanyTab,
-      displayComponent: selectedTab.component,
-    });
+    this.fetchTab();
   }
 
   componentDidUpdate(prevProps) {
-    const { listMenu, selectedNewCompanyTab } = this.props;
+    const { listMenu, selectedNewCompanyTab, tabName = '' } = this.props;
 
     // auto direct from company details to work locations
     if (prevProps.selectedNewCompanyTab !== selectedNewCompanyTab) {
@@ -66,7 +62,20 @@ class CommonLayout extends PureComponent {
     if (!_.isEqual(prevListMenu, nextListMenu)) {
       this.initItemMenu(listMenu);
     }
+
+    if (tabName !== prevProps.tabName) {
+      this.fetchTab();
+    }
   }
+
+  fetchTab = () => {
+    const { listMenu, selectedNewCompanyTab, tabName } = this.props;
+    const selectedTab = listMenu.find((m) => m.link === tabName) || listMenu[0];
+    this.setState({
+      selectedItemId: selectedTab.id || selectedNewCompanyTab,
+      displayComponent: selectedTab.component,
+    });
+  };
 
   initItemMenu = (listMenu) => {
     this.setState({
@@ -76,21 +85,19 @@ class CommonLayout extends PureComponent {
   };
 
   handleCLickItemMenu = (item) => {
-    this.setState({
-      selectedItemId: item.id,
-      displayComponent: item.component,
-    });
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    });
+    // this.setState({
+    //   selectedItemId: item.id,
+    //   displayComponent: item.component,
+    // });
+    // window.scrollTo({
+    //   top: 0,
+    //   left: 0,
+    //   behavior: 'smooth',
+    // });
     const { reId } = this.props;
 
-    history.push({
-      pathname: `/directory/employee-profile/${reId}/${item.link}`,
-      state: { isChangeTab: true },
-    });
+    const link = isOwner() ? 'employees' : 'directory';
+    history.push(`/${link}/employee-profile/${reId}/${item.link}`);
   };
 
   listItemActions = () => {

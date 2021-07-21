@@ -622,7 +622,7 @@ const onboard = {
     *redirectToReview({ payload }) {
       try {
         const { id } = payload;
-        history.push(`/employee-onboarding/review/${id}`);
+        history.push(`/employee-onboarding/list/review/${id}`);
         yield null;
       } catch (error) {
         dialog(error);
