@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Avatar, Spin, Row, Col, Affix } from 'antd';
+import { Avatar, Spin } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
@@ -77,7 +77,6 @@ class OrganisationChart extends Component {
   };
 
   getDetailUser = async (nodeData) => {
-    console.log(nodeData);
     const { user: { location } = {} } = nodeData;
     const { timezoneList, currentTime } = this.state;
     const findTimezone =
@@ -85,6 +84,10 @@ class OrganisationChart extends Component {
     const timeData = getCurrentTimeOfTimezone(currentTime, findTimezone.timezone);
     const addTimeData = { user: { ...nodeData.user, localTime: timeData } };
     this.setState({ chartDetails: addTimeData });
+  };
+
+  closeDetailEmployee = () => {
+    this.setState({ chartDetails: {} });
   };
 
   renderNode = ({ nodeData }) => {
@@ -99,6 +102,7 @@ class OrganisationChart extends Component {
       // title: { name: title = '' } = {},
     } = user;
     const check = _id === myEmployeeId;
+    // console.log(nodeData);
     return (
       <div
         className={styles.chartNode}
@@ -206,6 +210,7 @@ class OrganisationChart extends Component {
                 chartDetails={chartDetails}
                 handleSelectSearch={this.handleSelect}
                 listEmployeeAll={listEmployeeAll}
+                closeDetailEmployee={this.closeDetailEmployee}
               />
             </div>
           </div>
