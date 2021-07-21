@@ -45,25 +45,7 @@ class CommonLayout extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { listMenu = [], tabName = '' } = this.props;
-
-    const prevListMenu = prevProps.listMenu.map((item) => {
-      return {
-        id: item.id,
-        name: item.name,
-      };
-    });
-
-    const nextListMenu = listMenu.map((item) => {
-      return {
-        id: item.id,
-        name: item.name,
-      };
-    });
-
-    if (!_.isEqual(prevListMenu, nextListMenu)) {
-      this.initItemMenu(listMenu);
-    }
+    const { tabName = '' } = this.props;
 
     if (tabName !== prevProps.tabName) {
       this.fetchTab();
@@ -71,7 +53,7 @@ class CommonLayout extends PureComponent {
   }
 
   fetchTab = () => {
-    const { listMenu, tabName } = this.props;
+    const { listMenu = [], tabName = '' } = this.props;
     const selectedTab = listMenu.find((m) => m.link === tabName) || listMenu[0];
 
     this.setState({
@@ -82,13 +64,6 @@ class CommonLayout extends PureComponent {
       top: 0,
       left: 0,
       behavior: 'smooth',
-    });
-  };
-
-  initItemMenu = (listMenu) => {
-    this.setState({
-      selectedItemId: listMenu[0].id,
-      displayComponent: listMenu[0].component,
     });
   };
 

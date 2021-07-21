@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Affix, Skeleton } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 // import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant, isOwner } from '@/utils/authority';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 // import Test from './components/test';
@@ -25,7 +25,7 @@ import PerformanceHistory from './components/PerformanceHistory';
     currentUser,
     listEmployeeActive,
     permissions,
-    loadingFetchEmployee: loading.effects['employeeProfile/fetchEmploymentInfo'],
+    loadingFetchEmployee: loading.effects['employeeProfile/fetchGeneralInfo'],
   }),
 )
 class EmployeeProfile extends Component {
@@ -35,7 +35,7 @@ class EmployeeProfile extends Component {
   }
 
   componentDidMount = async () => {
-    const { dispatch, match: { params: { reId = '' } = {} } = {} } = this.props;
+    const { dispatch, match: { params: { reId = '', tabName = '' } = {} } = {} } = this.props;
     // const tenantCurrentEmployee = localStorage.getItem('tenantCurrentEmployee');
     // const companyCurrentEmployee = localStorage.getItem('companyCurrentEmployee');
     // const idCurrentEmployee = localStorage.getItem('idCurrentEmployee');
@@ -55,7 +55,13 @@ class EmployeeProfile extends Component {
     //     idCurrentEmployee,
     //   },
     // });
-    this.fetchData();
+
+    if (!tabName) {
+      const link = isOwner() ? 'employees' : 'directory';
+      history.replace(`/${link}/employee-profile/${reId}/general-info`);
+    } else {
+      this.fetchData();
+    }
   };
 
   componentDidUpdate(prevProps) {
@@ -83,15 +89,16 @@ class EmployeeProfile extends Component {
       payload: { id: employee, tenantId: tenantId1 || getCurrentTenant() },
     });
 
+    const tenantId = getCurrentTenant();
+    dispatch({
+      type: 'employeeProfile/fetchGeneralInfo',
+      payload: { employee, tenantId },
+    });
+
     const { statusCode } = res;
     if (statusCode === 200) {
-      const tenantId = getCurrentTenant();
       const companyCurrentEmployee = getCurrentCompany();
 
-      dispatch({
-        type: 'employeeProfile/fetchGeneralInfo',
-        payload: { employee, tenantId },
-      });
       dispatch({
         type: 'employeeProfile/fetchCompensation',
         payload: { employee, tenantId },
@@ -232,7 +239,7 @@ class EmployeeProfile extends Component {
       currentUser: { employee: currentEmployee = {} },
       permissions = {},
       location: { state: { location = '' } = {} } = {},
-      // loadingFetchEmployee,
+      loadingFetchEmployee,
       // employeeProfile,
     } = this.props;
 
@@ -240,9 +247,9 @@ class EmployeeProfile extends Component {
 
     const profileOwner = this.checkProfileOwner(currentEmployee?._id, employee);
 
-    // const tenant = localStorage.getItem('tenantCurrentEmployee');
-    // const company = localStorage.getItem('companyCurrentEmployee');
-    // const id = localStorage.getItem('idCurrentEmployee');
+    const tenant = localStorage.getItem('tenantCurrentEmployee');
+    const company = localStorage.getItem('companyCurrentEmployee');
+    const id = localStorage.getItem('idCurrentEmployee');
 
     return (
       <PageContainer>
@@ -252,20 +259,20 @@ class EmployeeProfile extends Component {
               <p className={styles.titlePage__text}>Employee Profile</p>
             </div>
           </Affix>
-          {/* {tenant && company && id && !loadingFetchEmployee ? ( */}
-          <LayoutEmployeeProfile
-            listMenu={listMenu}
-            tabName={tabName}
-            reId={employee}
-            employeeLocation={location}
-            permissions={permissions}
-            profileOwner={profileOwner}
-          />
-          {/* ) : (
+          {tenant && company && id && !loadingFetchEmployee ? (
+            <LayoutEmployeeProfile
+              listMenu={listMenu}
+              tabName={tabName}
+              reId={employee}
+              employeeLocation={location}
+              permissions={permissions}
+              profileOwner={profileOwner}
+            />
+          ) : (
             <div style={{ padding: '24px' }}>
               <Skeleton />
             </div>
-          )} */}
+          )}
         </div>
       </PageContainer>
     );

@@ -8,6 +8,13 @@ import Settings from './component/Settings';
 import styles from './index.less';
 
 class HROffboarding extends PureComponent {
+  componentDidMount = () => {
+    const { tabName = '' } = this.props;
+    if (!tabName) {
+      history.replace(`/offboarding/list`);
+    }
+  };
+
   render() {
     const { TabPane } = Tabs;
     const { tabName = '', type = '' } = this.props;

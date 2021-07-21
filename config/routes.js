@@ -176,6 +176,12 @@ const routes = [
             authority: ['owner'],
           },
           {
+            path: '/admin-app/:tabName',
+            hideInMenu: true,
+            component: './AdminApp',
+            authority: ['owner'],
+          },
+          {
             path: '/directory',
             name: 'directory',
             icon: '/assets/images/menuIcons/directory.svg',
@@ -197,7 +203,7 @@ const routes = [
           },
           {
             path: '/employees/:tabName',
-            name: 'employees',
+            // name: 'employees',
             component: './Directory',
             hideInMenu: true,
             authority: ['owner'],
@@ -303,7 +309,7 @@ const routes = [
           },
           {
             path: '/employees/employee-profile/:reId',
-            name: 'employeeProfile',
+            name: 'Employee Profile',
             component: './EmployeeProfile',
             hideInMenu: true,
             authority: [

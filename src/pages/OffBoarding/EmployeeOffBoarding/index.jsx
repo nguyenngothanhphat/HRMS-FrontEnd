@@ -50,7 +50,10 @@ class EmployeeOffBoading extends Component {
   }
 
   componentDidMount() {
-    this.fetchData();
+    const { tabName = '' } = this.props;
+    if (!tabName) {
+      history.replace(`/offboarding/terminate-work-relationship`);
+    } else this.fetchData();
   }
 
   fetchData = () => {

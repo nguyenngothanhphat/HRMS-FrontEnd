@@ -2,7 +2,7 @@
 import { Affix, Col, Row } from 'antd';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import UploadLogoCompany from './components/UploadLogoCompany';
 import ItemMenu from './components/ItemMenu';
 import s from './index.less';
@@ -21,52 +21,34 @@ class CommonLayout extends PureComponent {
   }
 
   componentDidMount() {
-    const { listMenu } = this.props;
-    this.setState({
-      selectedItemId: listMenu[0].id,
-      displayComponent: listMenu[0].component,
-    });
-  }
-
-  componentDidUpdate(prevProps) {
-    const { listMenu } = this.props;
-
-    const prevListMenu = prevProps.listMenu.map((item) => {
-      return {
-        id: item.id,
-        name: item.name,
-      };
-    });
-
-    const nextListMenu = listMenu.map((item) => {
-      return {
-        id: item.id,
-        name: item.name,
-      };
-    });
-
-    if (!_.isEqual(prevListMenu, nextListMenu)) {
-      this.initItemMenu(listMenu);
-    }
-  }
-
-  initItemMenu = (listMenu) => {
-    this.setState({
-      selectedItemId: listMenu[0].id,
-      displayComponent: listMenu[0].component,
-    });
-  };
-
-  handleCLickItemMenu = (item) => {
-    this.setState({
-      selectedItemId: item.id,
-      displayComponent: item.component,
-    });
+    this.fetchTab();
     window.scrollTo({
       top: 0,
       left: 0,
       behavior: 'smooth',
     });
+  }
+
+  componentDidUpdate(prevProps) {
+    const { tabName = '' } = this.props;
+
+    if (prevProps.tabName !== tabName) {
+      this.fetchTab();
+    }
+  }
+
+  fetchTab = () => {
+    const { listMenu, tabName = '' } = this.props;
+    const findTab = listMenu.find((menu) => menu.link === tabName) || listMenu[0];
+
+    this.setState({
+      selectedItemId: findTab.id || 1,
+      displayComponent: findTab.component,
+    });
+  };
+
+  handleCLickItemMenu = (item) => {
+    history.push(`/admin-app/${item.link}`);
   };
 
   render() {

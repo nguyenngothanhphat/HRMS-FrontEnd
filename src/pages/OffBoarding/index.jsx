@@ -5,6 +5,7 @@ import ManagerOffBoading from './ManagerOffBoarding';
 import HrOffboarding from './HrOffboarding';
 
 class OffBoarding extends PureComponent {
+
   findRole = (roles) => {
     const hrManager = roles.find((item) => item === 'hr-manager');
     const hr = roles.find((item) => item === 'hr');

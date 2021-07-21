@@ -314,8 +314,7 @@ class DirectoryTable extends Component {
                 managerPack._id,
                 managerPack.tenant,
                 managerPack.generalInfo?.userId,
-              )
-            }
+              )}
           >
             {managerPack.generalInfo
               ? `${managerPack?.generalInfo?.firstName} ${managerPack?.generalInfo?.lastName}`

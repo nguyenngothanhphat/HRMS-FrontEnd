@@ -19,7 +19,14 @@ class EmployeeOnboarding extends PureComponent {
     this.state = {};
   }
 
-  componentDidMount = () => {};
+  componentDidMount = () => {
+    const {
+      match: { params: { tabName = '' } = {} },
+    } = this.props;
+    if (!tabName) {
+      history.replace(`/employee-onboarding/list`);
+    }
+  };
 
   componentWillUnmount = () => {
     const { dispatch } = this.props;
