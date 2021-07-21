@@ -52,7 +52,7 @@ class EmployeeOffBoading extends Component {
   componentDidMount() {
     const { tabName = '' } = this.props;
     if (!tabName) {
-      history.replace(`/offboarding/terminate-work-relationship`);
+      history.replace(`/offboarding/list`);
     } else this.fetchData();
   }
 
@@ -146,12 +146,12 @@ class EmployeeOffBoading extends Component {
         <div className={styles.EmployeeOffboarding}>
           <div className={styles.tabs}>
             <Tabs
-              activeKey={tabName || 'terminate-work-relationship'}
+              activeKey={tabName || 'list'}
               onChange={(key) => {
                 history.push(`/offboarding/${key}`);
               }}
             >
-              <TabPane tab="Terminate work relationship" key="terminate-work-relationship">
+              <TabPane tab="Terminate work relationship" key="list">
                 <div className={styles.paddingHR}>
                   <div className={styles.root}>
                     <Row className={styles.content} gutter={[20, 20]}>

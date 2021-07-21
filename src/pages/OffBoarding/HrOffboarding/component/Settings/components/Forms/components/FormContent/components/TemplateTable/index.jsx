@@ -109,7 +109,7 @@ class TemplateTable extends Component {
 
   onEdit = (id) => {
     // eslint-disable-next-line no-alert
-    history.push(`offboarding/forms/${id}/edit`);
+    history.push(`offboarding/forms/form-detail/${id}/edit`);
   };
 
   onDelete = (id) => {
@@ -123,7 +123,7 @@ class TemplateTable extends Component {
   };
 
   viewTemplateDetail = (id) => {
-    history.push(`/offboarding/settings/forms/${id}/view`);
+    history.push(`/offboarding/settings/forms/form-detail/${id}/view`);
   };
 
   onChangePagination = (pageNumber) => {

@@ -156,7 +156,7 @@ class ViewForm extends PureComponent {
               <Button
                 type="primary"
                 loading={loading}
-                onClick={() => history.push(`/offboarding/settings/forms/${id}/edit`)}
+                onClick={() => history.push(`/offboarding/settings/forms/form-detail/${id}/edit`)}
                 className={styles.formItem__header__saveBtn}
               >
                 Edit Form

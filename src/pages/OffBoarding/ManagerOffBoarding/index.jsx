@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Col, Tabs, Row, Affix, Button } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
-import { Link, connect } from 'umi';
+import { Link, connect, history } from 'umi';
 import { debounce } from 'lodash';
 // import TableAssigned from '@/components/TableAssigned';
 import { getTimezoneViaCity } from '@/utils/times';
@@ -55,19 +55,24 @@ class ManagerOffBoading extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, listTeamRequest, locationID } = this.props;
-    if (!dispatch) {
-      return;
-    }
-    dispatch({
-      type: 'offboarding/fetchListTeamRequest',
-      payload: {
-        location: [locationID],
-      },
-    });
+    const { tabName = '' } = this.props;
+    if (!tabName) {
+      history.replace(`/offboarding/list`);
+    } else {
+      const { dispatch, listTeamRequest, locationID } = this.props;
+      if (!dispatch) {
+        return;
+      }
+      dispatch({
+        type: 'offboarding/fetchListTeamRequest',
+        payload: {
+          location: [locationID],
+        },
+      });
 
-    this.fetchTimezone();
-    if (listTeamRequest.length > 0) this.updateData(listTeamRequest);
+      this.fetchTimezone();
+      if (listTeamRequest.length > 0) this.updateData(listTeamRequest);
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -171,7 +176,7 @@ class ManagerOffBoading extends Component {
                 <>
                   {!checkSendRequest && (
                     <Button className={styles.btnInitiate}>
-                      <Link to="/offboarding/resignation-request">
+                      <Link to="/offboarding/list/my-request/new">
                         <span className={styles.btnText}>Initiate Resignation Request</span>
                       </Link>
                     </Button>

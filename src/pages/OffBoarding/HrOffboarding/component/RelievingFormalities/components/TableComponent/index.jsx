@@ -147,7 +147,10 @@ class TableComponent extends PureComponent {
   renderAction = (id) => {
     return (
       <div className={styles.rowAction}>
-        <Link className={styles.rowAction__link} to={`/offboarding/relieving-detail/${id}`}>
+        <Link
+          className={styles.rowAction__link}
+          to={`/offboarding/hr-relieving-formalities/relieving-detail/${id}`}
+        >
           Start Relieving Formalities
         </Link>
       </div>

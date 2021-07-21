@@ -109,7 +109,7 @@ class CustomEmailsTableField extends PureComponent {
           const { idCustomEmail = '' } = currentRecord;
 
           return (
-            <Link to={`/offboarding/edit-email/${idCustomEmail}`}>
+            <Link to={`/offboarding/settings/custom-emails/edit-email/${idCustomEmail}`}>
               <div className={styles.fileName}>
                 <img src={FileIcon} alt="name" />
                 <span>{emailSubject}</span>
@@ -147,7 +147,9 @@ class CustomEmailsTableField extends PureComponent {
 
           return (
             <div className={styles.actions}>
-              <Link to={`/offboarding/edit-email/${idCustomEmail}`}>View mail</Link>
+              <Link to={`/offboarding/settings/custom-emails/edit-email/${idCustomEmail}`}>
+                View mail
+              </Link>
               {activeKey !== '1' && (
                 <Tooltip title="Delete">
                   <img

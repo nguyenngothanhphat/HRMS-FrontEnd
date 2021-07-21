@@ -577,102 +577,6 @@ const routes = [
           },
 
           {
-            path: '/offboarding/resignation-request',
-            name: 'Resignation Request',
-            hideInMenu: true,
-            component: './ResignationRequest',
-          },
-          {
-            path: '/offboarding/review/:id',
-            name: 'Review Ticket',
-            component: './OffBoarding/ReviewTicket',
-            hideInMenu: true,
-            // authority: ['employee', 'leader', 'manager', 'hr', 'hr-manager'],
-          },
-          {
-            path: '/offboarding/my-request/:id',
-            name: 'Review Ticket',
-            component: './OffBoarding//EmployeeOffBoarding/Request',
-            hideInMenu: true,
-            // authority: ['employee', 'leader', 'manager', 'hr', 'hr-manager'],
-          },
-          {
-            path: '/offboarding/relieving-detail/:ticketId',
-            name: 'relievingDetail',
-            component:
-              './OffBoarding/HrOffboarding/component/RelievingFormalities/components/RelievingDetails',
-            hideInMenu: true,
-            // authority: ['hr-manager'],
-          },
-          {
-            path: '/offboarding/:tabName/:type/create-custom-email',
-            name: 'Create custom email',
-            hideInMenu: true,
-            component:
-              './OffBoarding/HrOffboarding/component/Settings/components/CustomEmails/components/CreateCustomEmail',
-          },
-          {
-            path: '/offboarding/edit-email/:reId',
-            name: 'Edit email',
-            hideInMenu: true,
-            component:
-              './OffBoarding/HrOffboarding/component/Settings/components/CustomEmails/components/EditEmail',
-          },
-          {
-            path: '/offboarding-template-details/:templateId',
-            name: 'Offboarding Template Details',
-            hideInMenu: true,
-            component:
-              './OffBoarding/HrOffboarding/component/Settings/components/DocsTemplates/components/TemplateDetails',
-          },
-          {
-            path: '/offboarding/:tabName/:type/:id/view',
-            name: 'View form',
-            hideInMenu: true,
-            component:
-              './OffBoarding/HrOffboarding/component/Settings/components/Forms/components/ViewForm',
-          },
-          {
-            path: '/offboarding/:tabName/:type/add',
-            name: 'Add custom form',
-            hideInMenu: true,
-            component:
-              './OffBoarding/HrOffboarding/component/Settings/components/Forms/components/HandleForm',
-          },
-          {
-            path: '/offboarding/:tabName/:type/:id/edit',
-            name: 'Edit form',
-            hideInMenu: true,
-            component:
-              './OffBoarding/HrOffboarding/component/Settings/components/Forms/components/HandleForm',
-          },
-          // {
-          //   path: '/setting',
-          //   name: 'setting',
-          //   icon: '/assets/images/CP-icons_settings.svg',
-          //   component: './Setting',
-          //   hideInMenu: true,
-          //   authority: ['M_SETTING_VIEW', 'P_SETTING_VIEW', 'owner'], // TEMP
-          // },
-          {
-            path: '/view-document/:documentId',
-            name: 'viewDocument',
-            hideInMenu: true,
-            component: './ViewDocument',
-            authority: [
-              'employee',
-              'hr',
-              'hr-global',
-              'admin-csa',
-              'region-head',
-              'admin-cda',
-              'leader',
-              'admin-sa',
-              'owner',
-              'admin',
-            ],
-          },
-          {
             path: '/employee-onboarding/list/:action(add)/:reId',
             name: 'addTeamMember',
             hideInMenu: true,
@@ -717,6 +621,105 @@ const routes = [
             hideInMenu: true,
             component: './CreateNewTemplate',
           },
+
+          // OFFBOARDING
+          {
+            path: '/offboarding/list/my-request/new',
+            name: 'Resignation Request',
+            hideInMenu: true,
+            component: './ResignationRequest',
+          },
+          {
+            path: '/offboarding/list/review/:id',
+            name: 'Review Ticket',
+            component: './OffBoarding/ReviewTicket',
+            hideInMenu: true,
+            // authority: ['employee', 'leader', 'manager', 'hr', 'hr-manager'],
+          },
+          {
+            path: '/offboarding/list/my-request/:id',
+            name: 'Review Ticket',
+            component: './OffBoarding//EmployeeOffBoarding/Request',
+            hideInMenu: true,
+            // authority: ['employee', 'leader', 'manager', 'hr', 'hr-manager'],
+          },
+          {
+            path: '/offboarding/hr-relieving-formalities/relieving-detail/:ticketId',
+            name: 'relievingDetail',
+            component:
+              './OffBoarding/HrOffboarding/component/RelievingFormalities/components/RelievingDetails',
+            hideInMenu: true,
+            // authority: ['hr-manager'],
+          },
+          {
+            path: '/offboarding/settings/:type/create-custom-email',
+            name: 'Create custom email',
+            hideInMenu: true,
+            component:
+              './OffBoarding/HrOffboarding/component/Settings/components/CustomEmails/components/CreateCustomEmail',
+          },
+          {
+            path: '/offboarding/settings/:type/edit-email/:reId',
+            name: 'Edit email',
+            hideInMenu: true,
+            component:
+              './OffBoarding/HrOffboarding/component/Settings/components/CustomEmails/components/EditEmail',
+          },
+          {
+            path: '/offboarding/settings/:type/template-detail/:templateId',
+            name: 'Offboarding Template Details',
+            hideInMenu: true,
+            component:
+              './OffBoarding/HrOffboarding/component/Settings/components/DocsTemplates/components/TemplateDetails',
+          },
+          {
+            path: '/offboarding/settings/:type/form-detail/:id/view',
+            name: 'View form',
+            hideInMenu: true,
+            component:
+              './OffBoarding/HrOffboarding/component/Settings/components/Forms/components/ViewForm',
+          },
+          {
+            path: '/offboarding/settings/:type/form-detail/add',
+            name: 'Add custom form',
+            hideInMenu: true,
+            component:
+              './OffBoarding/HrOffboarding/component/Settings/components/Forms/components/HandleForm',
+          },
+          {
+            path: '/offboarding/settings/:type/form-detail/:id/edit',
+            name: 'Edit form',
+            hideInMenu: true,
+            component:
+              './OffBoarding/HrOffboarding/component/Settings/components/Forms/components/HandleForm',
+          },
+          // {
+          //   path: '/setting',
+          //   name: 'setting',
+          //   icon: '/assets/images/CP-icons_settings.svg',
+          //   component: './Setting',
+          //   hideInMenu: true,
+          //   authority: ['M_SETTING_VIEW', 'P_SETTING_VIEW', 'owner'], // TEMP
+          // },
+          {
+            path: '/view-document/:documentId',
+            name: 'viewDocument',
+            hideInMenu: true,
+            component: './ViewDocument',
+            authority: [
+              'employee',
+              'hr',
+              'hr-global',
+              'admin-csa',
+              'region-head',
+              'admin-cda',
+              'leader',
+              'admin-sa',
+              'owner',
+              'admin',
+            ],
+          },
+
           {
             path: '/change-password',
             name: 'change-password',
