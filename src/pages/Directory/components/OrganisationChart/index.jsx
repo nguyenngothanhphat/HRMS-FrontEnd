@@ -102,13 +102,8 @@ class OrganisationChart extends Component {
       // title: { name: title = '' } = {},
     } = user;
     const check = _id === myEmployeeId;
-    // console.log(nodeData);
     return (
-      <div
-        className={styles.chartNode}
-        style={check ? { border: '1px solid #00C598' } : {}}
-        onClick={() => this.getDetailUser(nodeData)}
-      >
+      <div className={styles.chartNode} style={check ? { border: '1px solid #00C598' } : {}}>
         <div className={styles.chartAvt}>
           <Avatar src={avatar} size={64} icon={<UserOutlined />} />
         </div>
@@ -197,6 +192,7 @@ class OrganisationChart extends Component {
             <OrganizationChart
               datasource={dataOrgChart}
               NodeTemplate={this.renderNode}
+              onClickNode={(node) => this.getDetailUser(node)}
               chartClass={styles.myChart}
               containerClass={styles.chartContainer}
               collapsible
