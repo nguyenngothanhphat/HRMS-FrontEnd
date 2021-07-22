@@ -68,9 +68,10 @@ class DetailEmployeeChart extends Component {
                   avatar: avatarSearch = '',
                   firstName: nameSearch = '',
                   employeeId: employeeIdSearch = '',
+                  userId: userIdSearch = '',
                 } = {},
               } = value;
-              const converName = `${nameSearch} (${employeeIdSearch})`;
+              const emplName = `${nameSearch} (${employeeIdSearch}) (${userIdSearch})`;
               return (
                 <Option key={idSearch} value={idSearch}>
                   <div style={{ display: 'inline', marginRight: '10px' }}>
@@ -86,7 +87,7 @@ class DetailEmployeeChart extends Component {
                     />
                   </div>
                   <span style={{ fontSize: '13px', color: '#161C29' }} className={styles.ccEmail}>
-                    {converName}
+                    {emplName}
                   </span>
                 </Option>
               );
