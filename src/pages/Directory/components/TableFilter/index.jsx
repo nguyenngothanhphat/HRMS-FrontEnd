@@ -320,7 +320,7 @@ class TableFilter extends PureComponent {
               ''
             ) : (
               <Select
-                value={clearFilter && titleSelected.length === 0 ? null : titleSelected[0]}
+                value={clearFilter && titleSelected.length === 0 ? '' : titleSelected[0]}
                 className={styles.formSelectTitle}
                 onChange={(value) => this.handleSelectChange(value, 'Title')}
                 filterOption={
