@@ -39,16 +39,19 @@ class SettingTab extends PureComponent {
         id: 1,
         name: formatMessage({ id: 'pages_admin.setting.RolesPermission' }),
         component: <RolesPermission />,
+        link: 'roles-permissions',
       },
       {
         id: 2,
         name: formatMessage({ id: 'pages_admin.setting.Department' }),
         component: <Department />,
+        link: 'departments',
       },
       {
         id: 3,
         name: formatMessage({ id: 'pages_admin.setting.Positions' }),
         component: <Position />,
+        link: 'position',
       },
       // {
       //   id: 4,
@@ -57,6 +60,8 @@ class SettingTab extends PureComponent {
       // },
       // { id: 5, name: formatMessage({ id: 'pages_admin.setting.Emailtemplates' }), component: '' },
     ];
+
+    const { match: { params: { tabName = '', roleId = '' } = {} } = {} } = this.props;
     return (
       <PageContainer>
         <div className={styles.containerUsers}>
@@ -65,7 +70,7 @@ class SettingTab extends PureComponent {
               <span>{formatMessage({ id: 'pages_admin.setting.title' })}</span>
             </div>
           </Affix>
-          <LayoutAdminSetting listMenu={listMenu} />
+          <LayoutAdminSetting listMenu={listMenu} tabName={tabName} roleId={roleId} />
         </div>
       </PageContainer>
     );

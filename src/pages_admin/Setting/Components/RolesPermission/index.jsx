@@ -91,21 +91,13 @@ class RolesPermission extends PureComponent {
   };
 
   handlePermission = (text, record) => {
-    // console.log(text, record, index);
     const { Rolesname = '' } = record;
-    localStorage.setItem('Rolesname', Rolesname);
-    history.push(`/settings/Permission`);
+    history.push(`/settings/roles-permissions/${Rolesname.toLowerCase()}`);
   };
 
   render() {
-    const {
-      selectedRowKeys,
-      visible,
-      testReord,
-      roleValue,
-      getIndex,
-      permissionValues,
-    } = this.state;
+    const { selectedRowKeys, visible, testReord, roleValue, getIndex, permissionValues } =
+      this.state;
     const { formatData, loading = true } = this.props;
 
     const rowSelection = {

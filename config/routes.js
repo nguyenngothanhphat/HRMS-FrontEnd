@@ -456,12 +456,19 @@ const routes = [
             authority: ['M_SETTING_VIEW', 'owner'],
           },
           {
-            path: '/settings/Permission',
+            path: '/settings/:tabName',
+            component: '../pages_admin/Setting',
+            hideInMenu: true,
+            authority: ['M_SETTING_VIEW', 'owner'],
+          },
+          {
+            path: '/settings/:tabName/:roleId',
             name: 'permission',
             component: '../pages_admin/Setting/Components/RolesPermission/Components/Permission',
             hideInMenu: true,
-            authority: ['admin-sa', 'owner'],
+            authority: ['M_SETTING_VIEW', 'owner'],
           },
+
           // TIMEOFF REQUEST
           {
             // path: '/time-off/new-leave-request',

@@ -50,7 +50,7 @@ class PermissionInfo extends PureComponent {
   };
 
   handleCancel = () => {
-    history.push('/settings/');
+    history.push('/settings/roles-permissions/');
   };
 
   handleSubmit = (selectedRowKeys) => {

@@ -38,29 +38,27 @@ class Directory extends PureComponent {
   componentDidMount = async () => {
     const {
       match: { params: { tabName = '' } = {} },
+      dispatch,
+      roles = [],
+      signInRole = [],
+      filterList = {},
     } = this.props;
+    const checkRoleEmployee = this.checkRoleEmployee(roles, signInRole);
+
     if (!tabName) {
       if (isOwner()) {
         history.replace(`/employees/list`);
-      } else {
-        history.replace(`/directory/list`);
-      }
-    } else {
-      const { dispatch, roles = [], signInRole = [], filterList = {} } = this.props;
-      const checkRoleEmployee = this.checkRoleEmployee(roles, signInRole);
+      } else if (checkRoleEmployee) history.replace(`/directory/org-chart`);
+      else history.replace(`/directory/list`);
+    }
 
-      if (checkRoleEmployee) {
-        history.replace(`/directory/org-chart`);
-      }
-
-      if (Object.keys(filterList).length > 0 && filterList) {
-        await dispatch({
-          type: 'employee/save',
-          payload: {
-            filterList: {},
-          },
-        });
-      }
+    if (Object.keys(filterList).length > 0 && filterList) {
+      await dispatch({
+        type: 'employee/save',
+        payload: {
+          filterList: {},
+        },
+      });
     }
 
     // this.fetchFilterList();
@@ -87,31 +85,6 @@ class Directory extends PureComponent {
       type: 'employeeProfile/fetchListSkill',
     });
   };
-
-  // fetchData = async () => {
-  //   const { dispatch, manageTenant = [] } = this.props;
-  //   const companyId = getCurrentCompany();
-  //   const tenantId = getCurrentTenant();
-  //   const checkIsOwner = isOwner();
-
-  //   if (checkIsOwner) {
-  //     await dispatch({
-  //       type: 'locationSelection/fetchLocationListByParentCompany',
-  //       payload: {
-  //         company: companyId,
-  //         tenantIds: manageTenant,
-  //       },
-  //     });
-  //   } else {
-  //     await dispatch({
-  //       type: 'locationSelection/fetchLocationsByCompany',
-  //       payload: {
-  //         company: companyId,
-  //         tenantId,
-  //       },
-  //     });
-  //   }
-  // };
 
   componentWillUnmount = () => {
     const { dispatch } = this.props;
@@ -207,8 +180,7 @@ class Directory extends PureComponent {
       <PageContainer>
         <div className={styles.containerDirectory}>
           <Tabs
-            activeKey={checkRoleEmployee ? 'org-chart' : tabName || 'list'}
-            // tabBarExtraContent={checkRoleEmployee ? '' : this.operations()}
+            activeKey={checkRoleEmployee && !tabName ? 'org-chart' : tabName || 'list'}
             onChange={(key) => {
               history.push(isOwner() ? `/employees/${key}` : `/directory/${key}`);
             }}
