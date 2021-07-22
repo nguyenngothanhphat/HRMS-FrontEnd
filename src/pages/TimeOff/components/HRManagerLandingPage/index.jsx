@@ -50,14 +50,14 @@ export default class HRManagerLandingPage extends PureComponent {
   };
 
   render() {
-    const describeText = [
-      <p className={styles.subText}>
-        Apply for leaves with/without pay, work from home or client office.
-      </p>,
-      <p className={styles.subText}>
-        Request for a compensation leave if you have worked for extra days/hours.
-      </p>,
-    ];
+    // const describeText = [
+    //   <p className={styles.subText}>
+    //     Apply for leaves with/without pay, work from home or client office.
+    //   </p>,
+    //   <p className={styles.subText}>
+    //     Request for a compensation leave if you have worked for extra days/hours.
+    //   </p>,
+    // ];
     const { viewInformation, closeFeedbackBar } = this.state;
     return (
       <>
@@ -82,7 +82,7 @@ export default class HRManagerLandingPage extends PureComponent {
                 <Col xs={24} lg={15}>
                   <ApplyRequest
                     title="Apply for Timeoff from Office"
-                    describe={describeText[0]}
+                    // describe={describeText[0]}
                     buttonText="Request Time Off"
                     onClick={this.buttonOnClickLeave}
                     type={1}
@@ -91,7 +91,7 @@ export default class HRManagerLandingPage extends PureComponent {
                 <Col xs={24} lg={9}>
                   <ApplyRequest
                     title="Apply for Compoff"
-                    describe={describeText[1]}
+                    // describe={describeText[1]}
                     onClick={this.buttonOnClickCompoff}
                     buttonText="Request Compoff"
                     type={2}

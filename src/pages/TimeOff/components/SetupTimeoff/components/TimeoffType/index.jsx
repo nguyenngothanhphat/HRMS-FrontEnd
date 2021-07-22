@@ -1,15 +1,33 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import RuleFrom from './RuleFrom';
 import Configure from './Configure';
 import styles from './index.less';
 
-@connect(({ loading, timeOff: { itemTimeOffType = {} } = {} }) => ({
-  itemTimeOffType,
-  loadingTimeOffType: loading.effects['timeOff/getDataTimeOffTypeById'],
-  loadingUpdateType: loading.effects['timeOff/updateTimeOffType'],
-}))
+@connect(
+  ({
+    loading,
+    timeOff: {
+      timeOffTypesByCountry = [],
+      itemTimeOffType = {},
+      timeOffTypes,
+      countryList = [],
+      tempData: { type = {}, countrySelected = '' },
+    } = {},
+  }) => ({
+    itemTimeOffType,
+    type,
+    countrySelected,
+    timeOffTypesByCountry,
+    timeOffTypes,
+    countryList,
+    loadingTimeOffType: loading.effects['timeOff/getDataTimeOffTypeById'],
+    loadingUpdateType: loading.effects['timeOff/updateTimeOffType'],
+    loadingAddType: loading.effects['timeOff/addTimeOffType'],
+    loadingFetchList: loading.effects['timeOff/fetchTimeOffTypesByCountry'],
+  }),
+)
 class TimeoffType extends Component {
   constructor(props) {
     super(props);
@@ -18,30 +36,59 @@ class TimeoffType extends Component {
     };
   }
 
-  onChangeType = async (id, value) => {
+  componentDidMount = () => {
     const { dispatch } = this.props;
-    await dispatch({
-      type: 'timeOff/getDataTimeOffTypeById',
+    dispatch({
+      type: 'timeOff/getCountryListByCompany',
       payload: {
-        _id: id,
-        tenantId: getCurrentTenant(),
+        tenantIds: [getCurrentTenant()],
+        company: getCurrentCompany(),
       },
     });
-    this.setState({
-      isEdit: value,
+  };
+
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/saveTemp',
+      payload: {
+        countrySelected: '',
+        type: {},
+      },
     });
+    dispatch({
+      type: 'timeOff/save',
+      payload: {
+        timeOffTypesByCountry: [],
+      },
+    });
+  };
+
+  onChangeType = async (id, value) => {
+    // const { dispatch } = this.props;
+    // await dispatch({
+    //   type: 'timeOff/getDataTimeOffTypeById',
+    //   payload: {
+    //     _id: id,
+    //     tenantId: getCurrentTenant(),
+    //   },
+    // });
+    // this.setState({
+    //   isEdit: value,
+    // });
+    console.log(id, value);
   };
 
   onExitEditing = (value) => {
     const { dispatch } = this.props;
-    this.setState({
-      isEdit: value,
-    });
     dispatch({
       type: 'timeoff/save',
       payload: {
         itemTimeOffType: {},
       },
+    });
+    this.setState({
+      isEdit: value,
     });
   };
 
@@ -53,9 +100,106 @@ class TimeoffType extends Component {
     });
   };
 
+  onChangeCountry = (country) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/fetchTimeOffTypesByCountry',
+      payload: {
+        country,
+        company: getCurrentCompany(),
+        tenantId: getCurrentTenant(),
+      },
+    });
+    dispatch({
+      type: 'timeOff/saveTemp',
+      payload: {
+        countrySelected: country,
+      },
+    });
+  };
+
+  onRemoveItem = (id) => {
+    const { countrySelected } = this.state;
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/removeTimeOffType',
+      payload: {
+        _id: id,
+        tenantId: getCurrentTenant(),
+        country: countrySelected,
+      },
+    }).then(() => {
+      dispatch({
+        type: 'timeOff/fetchTimeOffTypesByCountry',
+        payload: {
+          country: countrySelected,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        },
+      });
+    });
+  };
+
+  onTypeSelected = (type) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/saveTemp',
+      payload: {
+        type,
+      },
+    });
+  };
+
+  onAddNewType = async (newType) => {
+    const { countrySelected, type } = this.props;
+    const payload = {
+      tenantId: getCurrentTenant(),
+      name: newType.name,
+      type: type.typeName,
+      typeName: type.type.substr(8),
+      noOfDays: newType.noOfDay,
+      accrualSetting: {
+        accrualMethod: newType.accrualMethod,
+        accuralRate: newType.accrualRate,
+      },
+      company: getCurrentCompany(),
+      country: countrySelected,
+    };
+    const { dispatch } = this.props;
+
+    await dispatch({
+      type: 'timeOff/addTimeOffType',
+      payload,
+    }).then(() => {
+      dispatch({
+        type: 'timeOff/fetchTimeOffTypesByCountry',
+        payload: {
+          country: countrySelected,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        },
+      });
+      dispatch({
+        type: 'timeOff/saveTemp',
+        payload: {
+          type: {},
+        },
+      });
+    });
+  };
+
   render() {
     const { isEdit } = this.state;
-    const { timeOffTypes, itemTimeOffType = {} } = this.props;
+    const {
+      timeOffTypesByCountry,
+      // timeOffTypes,
+      itemTimeOffType = {},
+      countryList = [],
+      loadingAddType,
+      loadingFetchList,
+      countrySelected,
+    } = this.props;
+    // console.log(timeOffTypesByCountry);
     return (
       <div className={styles.TimeoffType}>
         <div className={styles.TimeoffContain}>
@@ -81,7 +225,18 @@ class TimeoffType extends Component {
             )}
           </div>
           {!isEdit ? (
-            <RuleFrom onChangeType={this.onChangeType} timeOffTypes={timeOffTypes} />
+            <RuleFrom
+              onChangeType={this.onChangeType}
+              timeOffTypes={timeOffTypesByCountry}
+              countryList={countryList}
+              addNewType={this.onAddNewType}
+              handleChangeCountry={this.onChangeCountry}
+              onTypeSelected={this.onTypeSelected}
+              loadingAddType={loadingAddType}
+              removeItem={this.onRemoveItem}
+              countrySelected={countrySelected}
+              loadingFetchList={loadingFetchList}
+            />
           ) : (
             <Configure
               tabKey={isEdit}

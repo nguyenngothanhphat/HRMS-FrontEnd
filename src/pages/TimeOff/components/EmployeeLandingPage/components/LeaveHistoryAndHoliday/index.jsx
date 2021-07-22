@@ -5,7 +5,7 @@ import ListIcon from '@/assets/list_icon.svg';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { connect } from 'umi';
 import moment from 'moment';
-import { getCurrentLocation } from '@/utils/authority';
+import { getCurrentCompany, getCurrentLocation } from '@/utils/authority';
 import Holiday from './components/Holiday';
 import LeaveHistory from './components/LeaveHistory';
 import styles from './index.less';
@@ -27,7 +27,11 @@ class LeaveHistoryAndHoliday extends PureComponent {
     const { dispatch, location = {} } = this.props;
     dispatch({
       type: 'timeOff/fetchHolidaysListBylocation',
-      payload: { location: getCurrentLocation(), country: location.headQuarterAddress.country._id },
+      payload: {
+        location: getCurrentLocation(),
+        country: location.headQuarterAddress.country._id,
+        company: getCurrentCompany(),
+      },
     });
     dispatch({
       type: 'timeOff/fetchLeaveHistory',
