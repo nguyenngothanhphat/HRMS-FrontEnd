@@ -89,9 +89,6 @@ class TimeOff extends PureComponent {
   componentDidMount = () => {
     const {
       match: { params: { tabName = '' } = {} },
-    } = this.props;
-
-    const {
       location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
     } = this.props;
 
@@ -99,19 +96,19 @@ class TimeOff extends PureComponent {
       if (category === 'TIMEOFF') {
         notification.success({
           message: 'Timeoff request',
-          description: `Timeoff request [Ticket id: ${tickedId}] [Type: ${typeName}] was withdrawn & deleted.`,
+          description: `Timeoff request [Ticket ID: ${tickedId}] [Type: ${typeName}] was withdrawn & deleted.`,
         });
       }
       if (category === 'DRAFTS') {
         notification.success({
           message: 'Timeoff request',
-          description: `Draft request [Ticket id: ${tickedId}] [Type: ${typeName}] was deleted.`,
+          description: `Draft request [Ticket ID: ${tickedId}] [Type: ${typeName}] was deleted.`,
         });
       }
       if (category === 'COMPOFF') {
         notification.success({
           message: 'Compoff request',
-          description: `Compoff request [Ticket id: ${tickedId}] was withdrawn & deleted.`,
+          description: `Compoff request [Ticket ID: ${tickedId}] was withdrawn & deleted.`,
         });
       }
       history.replace();
