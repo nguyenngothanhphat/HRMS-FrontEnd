@@ -14,8 +14,14 @@
     .ant-picker, .ant-input, .ant-select {
       width: 100%;
     }
-    .ant-modal-footer {
-      padding: 24px;
+    .ant-modal-body {
+      .ant-form {
+        .ant-form-item {
+          &:last-child{
+            margin-bottom: 0px;
+          }
+        }
+      }
     }
     .ant-modal-close-x {
       position: absolute;
@@ -32,6 +38,9 @@
         opacity: 0.5;
       }
     }
+    .ant-modal-footer{
+      padding:24px;
+    }
   }
   &__content {
     text-align: center;
@@ -45,7 +54,7 @@
   }
   .btnSubmit {
     font-size: 14px;
-    width: 95px;
+    width: 150px;
     height: 40px;
     font-weight: 600;
     border-radius: 25px;
@@ -62,8 +71,9 @@
     color: #ffa100;
     font-size: 14px;
     font-weight: 500;
-    margin-right: 40px;
+    margin-right: 20px;
     cursor: pointer;
+    border: none;
     &:active {
       opacity: 0.5;
     }

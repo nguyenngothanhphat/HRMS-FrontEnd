@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import HollidayCalendar from './components/HollidayCalendar';
 import WorkShedule from './components/WorkShedule';
 import TimeoffType from './components/TimeoffType';
@@ -15,28 +16,33 @@ import ScreenBegin from './components/ScreenBegin';
 class SetupTimeoff extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      start: false,
+    };
   }
 
-  componentDidMount = () => {
+  componentDidMount = () => {};
+
+  componentWillUnmount = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'timeOff/getCountryList',
+      type: 'timeOff/saveTemp',
+      payload: {
+        type: {},
+        countrySelected: '',
+      },
     });
   };
 
-  changePage = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'timeOff/save',
-      payload: {
-        pageStart: false,
-      },
+  changePage = (start) => {
+    this.setState({
+      start,
     });
   };
 
   render() {
     const { timeOffTypes, pageStart } = this.props;
+    const { start } = this.state;
     const listMenu = [
       {
         id: 1,
@@ -76,11 +82,11 @@ class SetupTimeoff extends Component {
     ];
     return (
       <div>
-        {pageStart ? (
+        {/* {timeOffTypes.length !== 0 ? (
           <ScreenBegin handleChange={this.changePage} />
-        ) : (
-          <TimeOffLayout listMenu={listMenu} />
-        )}
+        ) : ( */}
+        <TimeOffLayout listMenu={listMenu} />
+        {/* )} */}
       </div>
     );
   }

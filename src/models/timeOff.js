@@ -33,6 +33,7 @@ import {
   // compoff approval flow
   getCompoffApprovalFlow,
   approveCompoffRequest,
+  removeTimeOffType,
   rejectCompoffRequest,
   // approve, reject multiple requests
   approveMultipleTimeoffRequest,
@@ -42,13 +43,14 @@ import {
 
   // ACCOUNT SETTINGS
   getDefaultTimeoffTypesList,
-  getCountryList,
+  // getCountryList,
   // timeoffType
   getInitEmployeeSchedule,
   getEmployeeScheduleByLocation,
   getTimeOffTypeById,
+  getTimeOffTypeByCountry,
   updateTimeOffType,
-  // addTimeOffType,
+  addTimeOffType,
   // getCalendarHoliday,
   getHolidaysListByLocation,
   getHolidaysByCountry,
@@ -74,6 +76,7 @@ const timeOff = {
     compoffRequests: {},
     allMyCompoffRequests: {},
     timeOffTypes: [],
+    timeOffTypesByCountry: [],
     employeeInfo: {},
     emailsList: [],
     projectsList: [],
@@ -109,8 +112,71 @@ const timeOff = {
     itemTimeOffType: {},
     pageStart: true,
     locationByCompany: [],
+    tempData: {
+      type: {},
+      countrySelected: '',
+      countryHoliday: '',
+    },
   },
   effects: {
+    *addTimeOffType({ payload }, { call, put }) {
+      try {
+        const response = yield call(addTimeOffType, payload);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put
+        notification.success({
+          message: 'Add new type successfully',
+        });
+        yield put({
+          type: 'fetchTimeOffTypesByCountry',
+          payload: {
+            country: payload.country,
+            company: getCurrentCompany(),
+            tenantId: getCurrentTenant(),
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
+    *removeTimeOffType({ payload }, { call, put }) {
+      try {
+        const response = yield call(removeTimeOffType, {
+          _id: payload._id,
+          tenantId: payload.tenantId,
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Remove successfully',
+        });
+        yield put({
+          type: 'fetchTimeOffTypesByCompany',
+          payload: {
+            country: payload.country,
+            company: getCurrentCompany(),
+            tenantId: getCurrentTenant(),
+          },
+        });
+      } catch (error) {
+        dialog(error);
+        notification.error(error);
+      }
+    },
+    *fetchTimeOffTypesByCountry({ payload }, { call, put }) {
+      try {
+        const response = yield call(getTimeOffTypeByCountry, payload);
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: { timeOffTypesByCountry: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
     *fetchTimeOffTypes({ payload }, { call, put }) {
       try {
         const response = yield call(getTimeOffTypes, payload);
@@ -922,14 +988,14 @@ const timeOff = {
         dialog(errors);
       }
     },
-    *getCountryList(_, { call, put }) {
+    *getCountryListByCompany({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getCountryList);
-        const { statusCode, data: countryList = [] } = response;
+        const response = yield call(getLocationByCompany, payload);
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
-          payload: { countryList },
+          payload: { countryList: data },
         });
       } catch (errors) {
         dialog(errors);
@@ -1034,6 +1100,16 @@ const timeOff = {
       return {
         ...state,
         ...action.payload,
+      };
+    },
+    saveTemp(state, action) {
+      const { tempData } = state;
+      return {
+        ...state,
+        tempData: {
+          ...tempData,
+          ...action.payload,
+        },
       };
     },
     saveViewingLeaveRequest(state, action) {
