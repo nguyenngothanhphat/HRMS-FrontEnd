@@ -64,22 +64,30 @@ class Directory extends PureComponent {
     // this.fetchFilterList();
   };
 
-  componentDidUpdate = (prevProps) => {
-    // const { filterList = {} } = this.props;
-    if (!prevProps.filterList || Object.keys(prevProps.filterList).length === 0) {
-      this.fetchFilterList();
-    }
-  };
+  // componentDidUpdate = (prevProps) => {
+  //   // const { filterList = {} } = this.props;
+  //   if (!prevProps.filterList || Object.keys(prevProps.filterList).length === 0) {
+  //     this.fetchFilterList();
+  //   }
+  // };
 
-  fetchFilterList = async () => {
+  // fetchFilterList = async () => {
+  //   const { dispatch } = this.props;
+  //   await dispatch({
+  //     type: 'employee/fetchFilterList',
+  //     payload: {
+  //       id: getCurrentCompany(),
+  //       tenantId: getCurrentTenant(),
+  //     },
+  //   });
+
+  //   await dispatch({
+  //     type: 'employeeProfile/fetchListSkill',
+  //   });
+  // };
+
+  componentDidUpdate = async () => {
     const { dispatch } = this.props;
-    await dispatch({
-      type: 'employee/fetchFilterList',
-      payload: {
-        id: getCurrentCompany(),
-        tenantId: getCurrentTenant(),
-      },
-    });
 
     await dispatch({
       type: 'employeeProfile/fetchListSkill',

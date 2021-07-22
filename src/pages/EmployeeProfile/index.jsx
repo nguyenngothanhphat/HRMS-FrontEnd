@@ -35,7 +35,7 @@ class EmployeeProfile extends Component {
   }
 
   componentDidMount = async () => {
-    const { dispatch, match: { params: { reId = '', tabName = '' } = {} } = {} } = this.props;
+    const { dispatch, match: { params: { reId = '' } = {} } = {} } = this.props;
     // const tenantCurrentEmployee = localStorage.getItem('tenantCurrentEmployee');
     // const companyCurrentEmployee = localStorage.getItem('companyCurrentEmployee');
     // const idCurrentEmployee = localStorage.getItem('idCurrentEmployee');
@@ -56,12 +56,12 @@ class EmployeeProfile extends Component {
     //   },
     // });
 
-    if (!tabName) {
-      const link = isOwner() ? 'employees' : 'directory';
-      history.replace(`/${link}/employee-profile/${reId}/general-info`);
-    } else {
-      this.fetchData();
-    }
+    // if (!tabName) {
+    //   const link = isOwner() ? 'employees' : 'directory';
+    //   history.replace(`/${link}/employee-profile/${reId}/general-info`);
+    // } else {
+    this.fetchData();
+    // }
   };
 
   componentDidUpdate(prevProps) {
