@@ -491,12 +491,7 @@ class CompanyDetails extends Component {
                     }
                   >
                     {industryList.map((item) => (
-                      <Option
-                        key={item._id}
-                        style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
-                      >
-                        {item.name}
-                      </Option>
+                      <Option key={item._id}>{item.name}</Option>
                     ))}
                   </Select>
                 </Form.Item>
@@ -520,12 +515,7 @@ class CompanyDetails extends Component {
                     }
                   >
                     {companyTypeList.map((item) => (
-                      <Option
-                        key={item._id}
-                        style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
-                      >
-                        {item.name}
-                      </Option>
+                      <Option key={item._id}>{item.name}</Option>
                     ))}
                   </Select>
                 </Form.Item>

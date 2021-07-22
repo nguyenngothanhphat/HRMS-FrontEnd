@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Affix } from 'antd';
+import { history } from 'umi';
 import s from './index.less';
 
 class TimeOffLayout extends Component {
@@ -12,15 +13,34 @@ class TimeOffLayout extends Component {
   }
 
   componentDidMount() {
-    const { listMenu } = this.props;
-    this.setState({
-      selectedItemId: listMenu[0].id,
-      displayComponent: listMenu[0].component,
+    this.fetchTab();
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
     });
   }
 
-  onClickItemMenu = ({ id, component }) => {
-    this.setState({ selectedItemId: id, displayComponent: component });
+  componentDidUpdate(prevProps) {
+    const { tabName = '' } = this.props;
+    if (prevProps.tabName !== tabName) {
+      this.fetchTab();
+    }
+  }
+
+  fetchTab = () => {
+    const { listMenu, tabName = '' } = this.props;
+    const findTab = listMenu.find((menu) => menu.link === tabName) || listMenu[0];
+
+    this.setState({
+      selectedItemId: findTab.id || 1,
+      displayComponent: findTab.component,
+    });
+  };
+
+  onClickItemMenu = ({ link }) => {
+    // this.setState({ selectedItemId: id, displayComponent: component });
+    history.push(`/time-off/setup/${link}`);
   };
 
   _renderItemMenu = (item) => {

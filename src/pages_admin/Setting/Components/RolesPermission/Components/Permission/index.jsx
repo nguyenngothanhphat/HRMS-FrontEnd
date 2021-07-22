@@ -31,7 +31,11 @@ class Permission extends PureComponent {
   }
 
   render() {
-    const { loading } = this.props;
+    const {
+      loading,
+      match: { params: { roleId = '' } = {} },
+    } = this.props;
+
     const dataRoles = JSON.parse(localStorage.getItem('dataRoles'));
     const listMenuRoles = dataRoles.map((item, index) => {
       const { RolesID, Rolesname } = item;
@@ -39,6 +43,7 @@ class Permission extends PureComponent {
         id: index + 1,
         name: Rolesname,
         component: <PermissionInfo id={RolesID} />,
+        link: Rolesname.toLowerCase(),
       };
     });
     if (loading)
@@ -56,7 +61,7 @@ class Permission extends PureComponent {
             </div>
           </Affix>
           <div>
-            <LayoutAdminSetting listMenu={listMenuRoles} />
+            <LayoutAdminSetting listMenu={listMenuRoles} roleId={roleId} />
           </div>
         </div>
       </PageContainer>

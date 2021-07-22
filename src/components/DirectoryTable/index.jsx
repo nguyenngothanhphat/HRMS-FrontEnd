@@ -94,10 +94,10 @@ class DirectoryTable extends Component {
 
   getAvatarUrl = (avatar, isShowAvatar) => {
     const { permissions = {}, profileOwner = false } = this.props;
-    if (isShowAvatar) return avatar;
+    if (isShowAvatar) return avatar || avtDefault;
     if (permissions.viewAvatarEmployee !== -1 || profileOwner) {
       if (avatar) return avatar;
-      return null;
+      return avtDefault;
     }
     return avtDefault;
   };
@@ -315,8 +315,7 @@ class DirectoryTable extends Component {
                 managerPack._id,
                 managerPack.tenant,
                 managerPack.generalInfo?.userId,
-              )
-            }
+              )}
           >
             {managerPack.generalInfo
               ? `${managerPack?.generalInfo?.firstName} ${managerPack?.generalInfo?.lastName}`

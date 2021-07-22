@@ -32,13 +32,13 @@ export default class ManagerLandingPage extends PureComponent {
 
   buttonOnClickCompoff = () => {
     history.push({
-      pathname: `/time-off/new-compoff-request`,
+      pathname: `/time-off/overview/personal-compoff/new`,
     });
   };
 
   buttonOnClickLeave = () => {
     history.push({
-      pathname: `/time-off/new-leave-request`,
+      pathname: `/time-off/overview/personal-timeoff/new`,
     });
   };
 

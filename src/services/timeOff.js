@@ -35,7 +35,7 @@ export async function addTimeOffType(payload) {
 }
 
 export async function removeTimeOffType(payload) {
-  return request('api/timeofftypetenant/remove', {
+  return request('/api/timeofftypetenant/remove', {
     method: 'POST',
     data: payload,
   });
@@ -328,14 +328,14 @@ export async function getDefaultTimeoffTypesList() {
 }
 
 export async function getLocationByCompany(payload) {
-  return request('api/locationtenant/list-by-company-parent', {
+  return request('/api/locationtenant/list-by-company-parent', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function getTimeOffTypeByCountry(payload) {
-  return request('api/timeofftypetenant/get-by-country', {
+  return request('/api/timeofftypetenant/get-by-country', {
     method: 'POST',
     data: payload,
   });

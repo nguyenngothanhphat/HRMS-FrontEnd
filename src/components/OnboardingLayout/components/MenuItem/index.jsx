@@ -3,7 +3,7 @@ import styles from './index.less';
 
 const MenuItem = (props) => {
   // const { title = '', menuItem = [], selectedId = 1 } = props;
-  const { name = '', component = '', quantity = 1, selectedId = 1, id = 0 } = props;
+  const { name = '', component = '', quantity = 1, selectedId = 1, id = 0, link = '' } = props;
   const { handleClick } = props;
   // console.log(id);
   // const { id, name, quantity } = item;
@@ -13,7 +13,7 @@ const MenuItem = (props) => {
 
       <p
         className={selectedId === id ? `${styles.menuItem} ${styles.active}` : styles.menuItem}
-        onClick={() => handleClick({ name, component, id })}
+        onClick={() => handleClick({ name, component, id, link })}
       >
         {name} <span>({quantity})</span>
       </p>

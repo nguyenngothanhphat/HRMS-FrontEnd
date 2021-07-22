@@ -33,13 +33,13 @@ class DetailEmployeeChart extends Component {
     const checkObj = chartDetails.user !== undefined;
     const { user = {} } = chartDetails;
     const {
-      _id = '',
       generalInfo: {
         firstName = '',
         avatar = '',
         workEmail = '',
         employeeId = '',
         workNumber = '',
+        userId = '',
       } = {},
       department: { name = '' } = {},
       location: { name: nameLocation = '' } = {},
@@ -68,9 +68,10 @@ class DetailEmployeeChart extends Component {
                   avatar: avatarSearch = '',
                   firstName: nameSearch = '',
                   employeeId: employeeIdSearch = '',
+                  userId: userIdSearch = '',
                 } = {},
               } = value;
-              const converName = `${nameSearch} (${employeeIdSearch})`;
+              const emplName = `${nameSearch} (${employeeIdSearch}) (${userIdSearch})`;
               return (
                 <Option key={idSearch} value={idSearch}>
                   <div style={{ display: 'inline', marginRight: '10px' }}>
@@ -86,7 +87,7 @@ class DetailEmployeeChart extends Component {
                     />
                   </div>
                   <span style={{ fontSize: '13px', color: '#161C29' }} className={styles.ccEmail}>
-                    {converName}
+                    {emplName}
                   </span>
                 </Option>
               );
@@ -141,7 +142,7 @@ class DetailEmployeeChart extends Component {
               <Text
                 className={styles.chartDetail__Bottom_ViewProfile}
                 underline
-                onClick={() => this.handleViewFullProfile(_id)}
+                onClick={() => this.handleViewFullProfile(userId)}
               >
                 View full profile
               </Text>

@@ -1,7 +1,7 @@
 import { PageContainer } from '@/layouts/layout/src';
 import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
-import { connect, formatMessage } from 'umi';
+import { connect, formatMessage, history } from 'umi';
 import {
   getCurrentCompany,
   getCurrentTenant,
@@ -32,18 +32,24 @@ class Directory extends PureComponent {
       roles: {
         employee: 'EMPLOYEE',
       },
-      activeKey: '1',
     };
   }
 
   componentDidMount = async () => {
-    const { dispatch, roles = [], signInRole = [], filterList = {} } = this.props;
+    const {
+      match: { params: { tabName = '' } = {} },
+      dispatch,
+      roles = [],
+      signInRole = [],
+      filterList = {},
+    } = this.props;
     const checkRoleEmployee = this.checkRoleEmployee(roles, signInRole);
 
-    if (checkRoleEmployee) {
-      this.setState({
-        activeKey: '2',
-      });
+    if (!tabName) {
+      if (isOwner()) {
+        history.replace(`/employees/list`);
+      } else if (checkRoleEmployee) history.replace(`/directory/org-chart`);
+      else history.replace(`/directory/list`);
     }
 
     if (Object.keys(filterList).length > 0 && filterList) {
@@ -58,52 +64,35 @@ class Directory extends PureComponent {
     // this.fetchFilterList();
   };
 
-  componentDidUpdate = (prevProps) => {
-    // const { filterList = {} } = this.props;
-    if (!prevProps.filterList || Object.keys(prevProps.filterList).length === 0) {
-      this.fetchFilterList();
-    }
-  };
+  // componentDidUpdate = (prevProps) => {
+  //   // const { filterList = {} } = this.props;
+  //   if (!prevProps.filterList || Object.keys(prevProps.filterList).length === 0) {
+  //     this.fetchFilterList();
+  //   }
+  // };
 
-  fetchFilterList = async () => {
+  // fetchFilterList = async () => {
+  //   const { dispatch } = this.props;
+  //   await dispatch({
+  //     type: 'employee/fetchFilterList',
+  //     payload: {
+  //       id: getCurrentCompany(),
+  //       tenantId: getCurrentTenant(),
+  //     },
+  //   });
+
+  //   await dispatch({
+  //     type: 'employeeProfile/fetchListSkill',
+  //   });
+  // };
+
+  componentDidUpdate = async () => {
     const { dispatch } = this.props;
-    await dispatch({
-      type: 'employee/fetchFilterList',
-      payload: {
-        id: getCurrentCompany(),
-        tenantId: getCurrentTenant(),
-      },
-    });
 
     await dispatch({
       type: 'employeeProfile/fetchListSkill',
     });
   };
-
-  // fetchData = async () => {
-  //   const { dispatch, manageTenant = [] } = this.props;
-  //   const companyId = getCurrentCompany();
-  //   const tenantId = getCurrentTenant();
-  //   const checkIsOwner = isOwner();
-
-  //   if (checkIsOwner) {
-  //     await dispatch({
-  //       type: 'locationSelection/fetchLocationListByParentCompany',
-  //       payload: {
-  //         company: companyId,
-  //         tenantIds: manageTenant,
-  //       },
-  //     });
-  //   } else {
-  //     await dispatch({
-  //       type: 'locationSelection/fetchLocationsByCompany',
-  //       payload: {
-  //         company: companyId,
-  //         tenantId,
-  //       },
-  //     });
-  //   }
-  // };
 
   componentWillUnmount = () => {
     const { dispatch } = this.props;
@@ -185,24 +174,24 @@ class Directory extends PureComponent {
   //   );
   // };
 
-  onTabClick = (value) => {
-    this.setState({
-      activeKey: value,
-    });
-  };
-
   render() {
     const { TabPane } = Tabs;
-    const { activeKey } = this.state;
+    const {
+      match: { params: { tabName = '' } = {} },
+      roles = [],
+      signInRole = [],
+    } = this.props;
+
+    const checkRoleEmployee = this.checkRoleEmployee(roles, signInRole);
+
     return (
       <PageContainer>
         <div className={styles.containerDirectory}>
           <Tabs
-            defaultActiveKey="1"
-            activeKey={activeKey}
-            // tabBarExtraContent={checkRoleEmployee ? '' : null}
-            // tabBarExtraContent={checkRoleEmployee ? '' : this.operations()}
-            onTabClick={this.onTabClick}
+            activeKey={checkRoleEmployee && !tabName ? 'org-chart' : tabName || 'list'}
+            onChange={(key) => {
+              history.push(isOwner() ? `/employees/${key}` : `/directory/${key}`);
+            }}
           >
             <TabPane
               tab={
@@ -210,11 +199,14 @@ class Directory extends PureComponent {
                   ? 'Employees Management'
                   : formatMessage({ id: 'pages.directory.directoryTab' })
               }
-              key="1"
+              key="list"
             >
               <DirectoryComponent />
             </TabPane>
-            <TabPane tab={formatMessage({ id: 'pages.directory.organisationChartTab' })} key="2">
+            <TabPane
+              tab={formatMessage({ id: 'pages.directory.organisationChartTab' })}
+              key="org-chart"
+            >
               <OrganisationChart />
             </TabPane>
           </Tabs>

@@ -333,29 +333,33 @@ class TableFilter extends PureComponent {
               </Select>
             )}
             {/* for department selectbox */}
-            <p className={styles.textName}>Department</p>
-            {reset || changeTab ? (
-              ''
-            ) : (
-              <Select
-                value={this.handleValueSelect(clearFilter, departmentSelected)}
-                className={styles.formSelect}
-                onChange={(value) => this.handleSelectChange(value, 'Department')}
-                mode="multiple"
-                filterOption={
-                  (input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  // eslint-disable-next-line react/jsx-curly-newline
-                }
-                showSearch
-                showArrow
-                allowClear
-              >
-                {formatDataDepartment.map((skill) => (
-                  <Select.Option value={skill.value}>{skill.label}</Select.Option>
-                ))}
-              </Select>
+            {tabName !== 'myTeam' && (
+              <>
+                <p className={styles.textName}>Department</p>
+                {reset || changeTab ? (
+                  ''
+                ) : (
+                  <Select
+                    value={this.handleValueSelect(clearFilter, departmentSelected)}
+                    className={styles.formSelect}
+                    onChange={(value) => this.handleSelectChange(value, 'Department')}
+                    mode="multiple"
+                    filterOption={
+                      (input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      // eslint-disable-next-line react/jsx-curly-newline
+                    }
+                    showSearch
+                    showArrow
+                    allowClear
+                  >
+                    {formatDataDepartment.map((skill) => (
+                      <Select.Option value={skill.value}>{skill.label}</Select.Option>
+                    ))}
+                  </Select>
+                )}
+              </>
             )}
-
             {/* for skills selectbox */}
             <p className={styles.textName}>Skills</p>
             {reset || changeTab ? (
@@ -393,7 +397,7 @@ class TableFilter extends PureComponent {
                   />
                 )}
 
-                {reset || changeTab ? (
+                {reset || changeTab || formatDataCompany.length < 2 ? (
                   ''
                 ) : (
                   <>

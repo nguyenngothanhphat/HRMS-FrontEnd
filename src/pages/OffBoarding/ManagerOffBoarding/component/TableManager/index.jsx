@@ -52,7 +52,7 @@ class TableManager extends PureComponent {
     });
 
     if (id) {
-      history.push(`/offboarding/review/${id}`);
+      history.push(`/offboarding/list/review/${id}`);
     }
   };
 
@@ -376,8 +376,8 @@ class TableManager extends PureComponent {
         render: (assigneeHR) => {
           const {
             hrManager: {
-              generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {},
-            } = {},
+              generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {} || {},
+            } = {} || {},
             hrManager = {},
           } = this.props;
           const fullName = `${firstName} ${middleName} ${lastName}`;

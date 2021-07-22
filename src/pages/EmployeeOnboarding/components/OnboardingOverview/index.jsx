@@ -33,11 +33,16 @@ class OnboardingOverview extends Component {
     const {
       menu: { onboardingOverviewTab: { listMenu = [] } = {} } = {},
       // loading = true,
+      type = '',
     } = this.props;
     // const checkEmpty = !loading && listMenu.map((item) => item.quantity).reduce((a, b) => a + b, 0);\
     const checkEmpty = false;
 
-    return checkEmpty === 0 ? <OnboardingEmpty /> : <OnboardingLayout listMenu={listMenu} />;
+    return checkEmpty === 0 ? (
+      <OnboardingEmpty />
+    ) : (
+      <OnboardingLayout listMenu={listMenu} tabName={type} />
+    );
   }
 }
 

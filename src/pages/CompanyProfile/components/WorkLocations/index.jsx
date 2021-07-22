@@ -147,6 +147,7 @@ class WorkLocations extends PureComponent {
         selectedNewCompanyTab: 1,
       },
     });
+    history.push(`/control-panel/add-company/company-details`);
   };
 
   onChangeHeadquarterName = (e) => {

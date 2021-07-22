@@ -271,7 +271,7 @@ const employeeSetting = {
         notification.success({
           message: 'Add new custom form successfully',
         });
-        history.push(`/offboarding/forms/${data._id}/view`);
+        history.push(`/offboarding/settings/forms/${data._id}/view`);
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -292,7 +292,7 @@ const employeeSetting = {
         notification.success({
           message: 'Update form successfully',
         });
-        history.push(`/offboarding/forms/${data._id}/view`);
+        history.push(`/offboarding/settings/forms/${data._id}/view`);
         return statusCode;
       } catch (errors) {
         dialog(errors);

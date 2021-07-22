@@ -183,7 +183,7 @@ class TeamLeaveTable extends PureComponent {
   // HANDLE TEAM REQUESTS
   onOpenClick = (_id) => {
     history.push({
-      pathname: `/time-off/manager-view-request/${_id}`,
+      pathname: `/time-off/overview/manager-timeoff/view/${_id}`,
       // state: { location: name },
     });
   };
@@ -239,7 +239,7 @@ class TeamLeaveTable extends PureComponent {
   // view request
   viewRequest = (_id) => {
     history.push({
-      pathname: `/time-off/view-request/${_id}`,
+      pathname: `/time-off/overview/personal-timeoff/view/${_id}`,
       // state: { location: name },
     });
   };

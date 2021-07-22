@@ -24,7 +24,7 @@ class TableEmployee extends Component {
   // };
 
   push = (data) => {
-    history.push(`/offboarding/review/${data}`);
+    history.push(`/offboarding/list/review/${data}`);
   };
 
   handleWithDraw = (id) => {

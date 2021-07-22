@@ -5,7 +5,8 @@ import RequestDetails from '@/pages/EmployeeProfile/components/RequestDetails';
 import { Affix, Col, Row } from 'antd';
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
+import { isOwner } from '@/utils/authority';
 import ItemMenu from './components/ItemMenu';
 import UploadLogoCompany from './components/UploadLogoCompany';
 import ViewInformation from './components/ViewInformation';
@@ -33,57 +34,53 @@ class CommonLayout extends PureComponent {
   }
 
   componentDidMount() {
-    const { listMenu, selectedNewCompanyTab } = this.props;
-    this.setState({
-      selectedItemId: selectedNewCompanyTab || listMenu[0].id,
-      displayComponent: listMenu[0].component,
-    });
+    const { selectedNewCompanyTab = 1, isAddingCompany = false } = this.props;
+
+    // auto direct from  work locations to company details if company details were not filled
+    if (selectedNewCompanyTab === 1 && isAddingCompany) {
+      history.push(`/control-panel/add-company/company-details`);
+    }
+
+    this.fetchTab();
   }
 
   componentDidUpdate(prevProps) {
-    const { listMenu, selectedNewCompanyTab } = this.props;
+    const { tabName = '' } = this.props;
 
-    // auto direct from company details to work locations
-    if (prevProps.selectedNewCompanyTab !== selectedNewCompanyTab) {
-      this.handleCLickItemMenu(listMenu[selectedNewCompanyTab - 1]);
-    }
-
-    const prevListMenu = prevProps.listMenu.map((item) => {
-      return {
-        id: item.id,
-        name: item.name,
-      };
-    });
-
-    const nextListMenu = listMenu.map((item) => {
-      return {
-        id: item.id,
-        name: item.name,
-      };
-    });
-
-    if (!_.isEqual(prevListMenu, nextListMenu)) {
-      this.initItemMenu(listMenu);
+    if (tabName !== prevProps.tabName) {
+      this.fetchTab();
     }
   }
 
-  initItemMenu = (listMenu) => {
-    this.setState({
-      selectedItemId: listMenu[0].id,
-      displayComponent: listMenu[0].component,
-    });
-  };
+  fetchTab = () => {
+    const { listMenu = [], tabName = '' } = this.props;
+    const selectedTab = listMenu.find((m) => m.link === tabName) || listMenu[0];
 
-  handleCLickItemMenu = (item) => {
     this.setState({
-      selectedItemId: item.id,
-      displayComponent: item.component,
+      selectedItemId: selectedTab.id,
+      displayComponent: selectedTab.component,
     });
     window.scrollTo({
       top: 0,
       left: 0,
       behavior: 'smooth',
     });
+  };
+
+  handleCLickItemMenu = (item) => {
+    // this.setState({
+    //   selectedItemId: item.id,
+    //   displayComponent: item.component,
+    // });
+
+    const { reId, isAddingCompany = false } = this.props;
+
+    if (!isAddingCompany) {
+      const link = isOwner() ? 'employees' : 'directory';
+      history.push(`/${link}/employee-profile/${reId}/${item.link}`);
+    } else {
+      history.push(`/control-panel/add-company/${item.link}`);
+    }
   };
 
   listItemActions = () => {
