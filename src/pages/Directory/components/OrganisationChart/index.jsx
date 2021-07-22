@@ -37,6 +37,7 @@ class OrganisationChart extends Component {
       currentTime: moment(),
     };
     this.myRef = React.createRef();
+    this.userRef = React.createRef();
   }
 
   componentDidMount() {
@@ -75,13 +76,34 @@ class OrganisationChart extends Component {
     }
   }
 
+  deepSearch = (data, value, key = 'title', sub = 'children', tempObj = {}) => {
+    const newTempObj = { ...tempObj };
+    if (value) {
+      data.map((node) => {
+        console.log('my id: ', value);
+        console.log(node[key]._id);
+        if (node[key]._id === value) {
+          newTempObj.found = node;
+          return node;
+        }
+        return this.deepSearch(node[sub], value, key, sub, newTempObj);
+      });
+      if (newTempObj.found) {
+        return newTempObj.found;
+      }
+    }
+    return false;
+  };
+
   getCurrentUser = (data) => {
     const { myEmployeeId = '' } = this.props;
     let idUser = '';
 
     if (data) {
+      const newData = this.deepSearch(data.children, myEmployeeId, 'user', 'children');
+      console.log(newData);
       const { children: firstChild = [] } = data;
-      idUser = firstChild[1].children[0].user._id;
+      idUser = firstChild[1].children[0].user._id; // 02348239452345
       const check = idUser === myEmployeeId;
       if (check) {
         this.myRef.current.scrollIntoView({
@@ -107,6 +129,14 @@ class OrganisationChart extends Component {
       timezoneList.find((timezone) => timezone.locationId === location._id) || {};
     const timeData = getCurrentTimeOfTimezone(currentTime, findTimezone.timezone);
     const addTimeData = { user: { ...nodeData.user, localTime: timeData } };
+
+    // when click on this node will control the org chart move to the center of the screen.
+    this.userRef.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'center',
+    });
+
     this.setState({ chartDetails: addTimeData });
   };
 
@@ -131,7 +161,7 @@ class OrganisationChart extends Component {
       <div
         className={styles.chartNode}
         style={check ? { border: '1px solid #00C598' } : {}}
-        ref={check ? this.myRef : null}
+        ref={this.userRef}
       >
         <div className={styles.chartAvt}>
           <Avatar src={avatar} size={64} icon={<UserOutlined />} />
@@ -158,7 +188,11 @@ class OrganisationChart extends Component {
             ''
           )}
 
-          {check && <div className={styles.chartNode__subInfo__you}>You</div>}
+          {check && (
+            <div ref={this.myRef} className={styles.chartNode__subInfo__you}>
+              You
+            </div>
+          )}
         </div>
       </div>
     );
@@ -210,7 +244,6 @@ class OrganisationChart extends Component {
   render() {
     const { loading, dataOrgChart, listEmployeeAll } = this.props;
     const { chartDetails } = this.state;
-    console.log(dataOrgChart);
     return (
       <div className={styles.container}>
         {loading ? (
