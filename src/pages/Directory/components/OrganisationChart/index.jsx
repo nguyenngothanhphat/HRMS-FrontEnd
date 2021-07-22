@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Avatar, Spin, Row, Col } from 'antd';
+import { Avatar, Spin } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
@@ -36,6 +36,8 @@ class OrganisationChart extends Component {
       timezoneList: [],
       currentTime: moment(),
     };
+    this.myRef = React.createRef();
+    this.userRef = React.createRef();
   }
 
   componentDidMount() {
@@ -52,6 +54,11 @@ class OrganisationChart extends Component {
     dispatch({
       type: 'employee/fetchDataOrgChart',
       payload: { tenantId, company },
+    }).then((response) => {
+      const { statusCode, data = {} } = response;
+      if (statusCode === 200) {
+        this.getCurrentUser(data);
+      }
     });
     dispatch({
       type: 'employee/fetchAllListUser',
@@ -69,6 +76,45 @@ class OrganisationChart extends Component {
     }
   }
 
+  deepSearch = (data, value, key = 'title', sub = 'children', tempObj = {}) => {
+    const newTempObj = { ...tempObj };
+    if (value) {
+      data.map((node) => {
+        console.log('my id: ', value);
+        console.log(node[key]._id);
+        if (node[key]._id === value) {
+          newTempObj.found = node;
+          return node;
+        }
+        return this.deepSearch(node[sub], value, key, sub, newTempObj);
+      });
+      if (newTempObj.found) {
+        return newTempObj.found;
+      }
+    }
+    return false;
+  };
+
+  getCurrentUser = (data) => {
+    const { myEmployeeId = '' } = this.props;
+    let idUser = '';
+
+    if (data) {
+      const newData = this.deepSearch(data.children, myEmployeeId, 'user', 'children');
+      console.log(newData);
+      const { children: firstChild = [] } = data;
+      idUser = firstChild[1].children[0].user._id; // 02348239452345
+      const check = idUser === myEmployeeId;
+      if (check) {
+        this.myRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'center',
+        });
+      }
+    }
+  };
+
   handleOnClick = (e) => {
     const getId = e.target.id;
     this.setState({ idChart: getId });
@@ -83,7 +129,19 @@ class OrganisationChart extends Component {
       timezoneList.find((timezone) => timezone.locationId === location._id) || {};
     const timeData = getCurrentTimeOfTimezone(currentTime, findTimezone.timezone);
     const addTimeData = { user: { ...nodeData.user, localTime: timeData } };
+
+    // when click on this node will control the org chart move to the center of the screen.
+    this.userRef.current.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'center',
+    });
+
     this.setState({ chartDetails: addTimeData });
+  };
+
+  closeDetailEmployee = () => {
+    this.setState({ chartDetails: {} });
   };
 
   renderNode = ({ nodeData }) => {
@@ -98,11 +156,12 @@ class OrganisationChart extends Component {
       // title: { name: title = '' } = {},
     } = user;
     const check = _id === myEmployeeId;
+
     return (
       <div
         className={styles.chartNode}
         style={check ? { border: '1px solid #00C598' } : {}}
-        onClick={() => this.getDetailUser(nodeData)}
+        ref={this.userRef}
       >
         <div className={styles.chartAvt}>
           <Avatar src={avatar} size={64} icon={<UserOutlined />} />
@@ -129,7 +188,11 @@ class OrganisationChart extends Component {
             ''
           )}
 
-          {check && <div className={styles.chartNode__subInfo__you}>You</div>}
+          {check && (
+            <div ref={this.myRef} className={styles.chartNode__subInfo__you}>
+              You
+            </div>
+          )}
         </div>
       </div>
     );
@@ -188,28 +251,28 @@ class OrganisationChart extends Component {
             <Spin size="large" />
           </div>
         ) : (
-          <Row gutter={[24, 24]} style={{ padding: '24px 20px 0 0' }}>
-            <Col span={7}>
+          <div className={styles.orgChart}>
+            <OrganizationChart
+              datasource={dataOrgChart}
+              NodeTemplate={this.renderNode}
+              onClickNode={(node) => this.getDetailUser(node)}
+              chartClass={styles.myChart}
+              containerClass={styles.chartContainer}
+              collapsible
+              pan
+              zoom
+              zoominLimit={1}
+              zoomoutLimit={0.2}
+            />
+            <div className={styles.orgChart__detailEmplChart}>
               <DetailEmployeeChart
                 chartDetails={chartDetails}
                 handleSelectSearch={this.handleSelect}
                 listEmployeeAll={listEmployeeAll}
+                closeDetailEmployee={this.closeDetailEmployee}
               />
-            </Col>
-            <Col span={17}>
-              <OrganizationChart
-                datasource={dataOrgChart}
-                NodeTemplate={this.renderNode}
-                chartClass={styles.myChart}
-                containerClass={styles.chartContainer}
-                collapsible
-                // pan
-                // zoom
-                // zoominLimit={1}
-                // zoomoutLimit={0.2}
-              />
-            </Col>
-          </Row>
+            </div>
+          </div>
         )}
       </div>
     );

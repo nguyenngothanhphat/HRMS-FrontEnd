@@ -32,7 +32,6 @@ class Directory extends PureComponent {
       roles: {
         employee: 'EMPLOYEE',
       },
-      checkRoleEmployee: false,
     };
   }
 
@@ -50,9 +49,9 @@ class Directory extends PureComponent {
       const { dispatch, roles = [], signInRole = [], filterList = {} } = this.props;
       const checkRoleEmployee = this.checkRoleEmployee(roles, signInRole);
 
-      this.setState({
-        checkRoleEmployee,
-      });
+      if (checkRoleEmployee) {
+        history.replace(`/directory/org-chart`);
+      }
 
       if (Object.keys(filterList).length > 0 && filterList) {
         await dispatch({
@@ -196,17 +195,19 @@ class Directory extends PureComponent {
 
   render() {
     const { TabPane } = Tabs;
-    const { checkRoleEmployee } = this.state;
     const {
       match: { params: { tabName = '' } = {} },
+      roles = [],
+      signInRole = [],
     } = this.props;
+
+    const checkRoleEmployee = this.checkRoleEmployee(roles, signInRole);
 
     return (
       <PageContainer>
         <div className={styles.containerDirectory}>
           <Tabs
-            activeKey={tabName || 'list'}
-            tabBarExtraContent={checkRoleEmployee ? '' : null}
+            activeKey={checkRoleEmployee ? 'org-chart' : tabName || 'list'}
             // tabBarExtraContent={checkRoleEmployee ? '' : this.operations()}
             onChange={(key) => {
               history.push(isOwner() ? `/employees/${key}` : `/directory/${key}`);

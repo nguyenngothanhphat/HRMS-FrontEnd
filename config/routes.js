@@ -610,8 +610,8 @@ const routes = [
             authority: ['hr-manager', 'hr', 'hr-global'],
           },
           {
-            path: '/employee-onboarding/:action(review)/:reId/:type',
-            name: 'reviewTeamMember',
+            path: '/employee-onboarding/list/:action(review)/:reId/:type',
+            // name: 'reviewTeamMember',
             hideInMenu: true,
             component: './FormTeamMember',
             authority: ['hr-manager', 'hr', 'hr-global'],
