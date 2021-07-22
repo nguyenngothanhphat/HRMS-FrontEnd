@@ -191,7 +191,8 @@ class Directory extends PureComponent {
         <div className={styles.containerDirectory}>
           <Tabs
             defaultActiveKey="1"
-            tabBarExtraContent={checkRoleEmployee ? '' : null}
+            activeKey={checkRoleEmployee ? '2' : '1'}
+            // tabBarExtraContent={checkRoleEmployee ? '' : null}
             // tabBarExtraContent={checkRoleEmployee ? '' : this.operations()}
           >
             <TabPane
