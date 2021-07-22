@@ -1123,12 +1123,10 @@ class EditEmailForm extends PureComponent {
               <Col className={styles.buttons} span={8} offset={16}>
                 <Link
                   to={{
-                    pathname: '/offboarding',
-                    state: { defaultActiveKey: '3' },
+                    pathname: '/offboarding/settings/custom-emails',
                   }}
                 >
                   <Button type="secondary">
-                    {' '}
                     {formatMessage({ id: 'component.editEmailForm.cancel' })}
                   </Button>
                 </Link>

@@ -14,7 +14,7 @@ import {
   getCompanyTypeList,
   getIndustryList,
 } from '@/services/companiesManangement';
-// import { history } from 'umi';
+import { history } from 'umi';
 import { notification } from 'antd';
 
 const companiesManagement = {
@@ -223,6 +223,7 @@ const companiesManagement = {
           type: 'saveOrigin',
           payload: { companyDetails: payload },
         });
+        history.push(`/control-panel/add-company/work-locations`);
         yield put({
           type: 'save',
           payload: {

@@ -10,8 +10,7 @@ class TemplateDetailsHeader extends PureComponent {
       <div className={styles.TemplateDetailsHeader}>
         <Link
           to={{
-            pathname: '/offboarding',
-            state: { defaultActiveKey: '3' },
+            pathname: '/offboarding/settings/documents-templates',
           }}
         >
           <img src={blueBackIcon} alt="back icon" />

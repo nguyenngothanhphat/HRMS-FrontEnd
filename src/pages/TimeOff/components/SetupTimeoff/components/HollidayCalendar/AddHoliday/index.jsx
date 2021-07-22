@@ -32,27 +32,19 @@ class AddHoliday extends Component {
 
   onFinish = (value) => {
     const { addHoliday = () => {} } = this.props;
-
-    const {
-      idLocation,
-      headQuarterAddress: {
-        country: { _id },
-      },
-      company,
-    } = this.props;
     const { date, name } = value;
     const datetime = moment(date).format('YYYY-MM-DD');
     const typeHoliday = [];
     typeHoliday.push(value.type);
     const payload = {
-      newHoliday: {
-        date: datetime,
-        type: typeHoliday,
-        name,
-        company,
-        location: idLocation,
-        country: _id,
-      },
+      // newHoliday: {
+      date: datetime,
+      type: typeHoliday,
+      name,
+      // company,
+      // location: idLocation,
+      // country: _id,
+      // },
     };
     addHoliday(payload);
   };
@@ -68,10 +60,25 @@ class AddHoliday extends Component {
       <Modal
         className={styles.modal}
         visible={visible}
-        title={false}
+        title="Create a new holiday"
         onCancel={this.handleCancel}
         destroyOnClose
-        footer={false}
+        footer={[
+          <>
+            <Button key="cancel" className={styles.btnCancel} onClick={this.handleCancel}>
+              Cancel
+            </Button>
+            <Button
+              key="submit"
+              type="primary"
+              htmlType="submit"
+              form="basic"
+              className={styles.btnSubmit}
+            >
+              Add Holidays
+            </Button>
+          </>,
+        ]}
       >
         <div className={styles.modal__content}>
           <Form {...layout} name="basic" onFinish={this.onFinish}>
@@ -80,7 +87,7 @@ class AddHoliday extends Component {
               name="name"
               rules={[{ required: true, message: 'Please input Holiday Name!' }]}
             >
-              <Input />
+              <Input placeholder="Input name of holiday" />
             </Form.Item>
 
             <Form.Item
@@ -100,11 +107,6 @@ class AddHoliday extends Component {
                   <Select.Option key={item}>{item}</Select.Option>
                 ))}
               </Select>
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Add Holidays
-              </Button>
             </Form.Item>
           </Form>
         </div>

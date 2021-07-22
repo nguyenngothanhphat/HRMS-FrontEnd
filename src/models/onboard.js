@@ -54,6 +54,7 @@ const MENU_DATA = [
     component: 'AllDrafts',
     // quantity: finalOfferDraftsData.length,
     quantity: provisionalOfferDraftsData.length,
+    link: 'all-drafts',
   },
   {
     id: 2,
@@ -62,6 +63,7 @@ const MENU_DATA = [
     component: 'ProvisionalOffers',
     // quantity: sentProvisionalOffersData.length,
     quantity: acceptedProvisionalOffersData.length,
+    link: 'provisional-offers',
   },
   {
     id: 3,
@@ -70,6 +72,7 @@ const MENU_DATA = [
     component: 'DocumentVerification',
     // quantity: sentProvisionalOffersData.length,
     quantity: pendingData.length,
+    link: 'document-verification',
   },
   {
     id: 4,
@@ -77,6 +80,7 @@ const MENU_DATA = [
     key: 'awaitingApprovals',
     component: 'AwaitingApprovals',
     quantity: sentForApprovalsData.length,
+    link: 'awaiting-approvals',
   },
   {
     id: 5,
@@ -84,6 +88,7 @@ const MENU_DATA = [
     key: 'finalOffers',
     component: 'FinalOffers',
     quantity: sentFinalOffersData.length,
+    link: 'final-offers',
   },
   {
     id: 6,
@@ -91,6 +96,7 @@ const MENU_DATA = [
     key: 'discardedOffers',
     component: 'DiscardedOffers',
     quantity: provisionalOffersData.length,
+    link: 'discarded-offers',
     // quantity: 5,
   },
 ];
@@ -616,7 +622,7 @@ const onboard = {
     *redirectToReview({ payload }) {
       try {
         const { id } = payload;
-        history.push(`/employee-onboarding/review/${id}`);
+        history.push(`/employee-onboarding/list/review/${id}`);
         yield null;
       } catch (error) {
         dialog(error);

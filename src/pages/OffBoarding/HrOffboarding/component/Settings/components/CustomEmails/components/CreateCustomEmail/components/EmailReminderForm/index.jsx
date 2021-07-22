@@ -927,7 +927,7 @@ class EmailReminderForm extends PureComponent {
               type="secondary"
               onClick={() => {
                 history.push({
-                  pathname: `/offboarding`,
+                  pathname: `/offboarding/settings/custom-emails`,
                   state: { defaultActiveKey: '3' },
                 });
               }}

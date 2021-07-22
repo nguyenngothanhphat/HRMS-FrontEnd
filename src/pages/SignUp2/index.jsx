@@ -58,6 +58,17 @@ const SignUp2 = (props) => {
     }
   };
 
+  const handleSendAgain = () => {
+    if (dispatch) {
+      dispatch({
+        type: 'signup/sendAgainSecurityCode',
+        payload: {
+          email,
+        },
+      });
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       <h2>
@@ -99,11 +110,11 @@ const SignUp2 = (props) => {
           {formatMessage({
             id: 'page.signUp.notReceiveCode',
           })}{' '}
-          <Link to="/">
+          <span onClick={handleSendAgain}>
             {formatMessage({
               id: 'page.signUp.sendAgain',
             })}
-          </Link>
+          </span>
         </p>
       </div>
 

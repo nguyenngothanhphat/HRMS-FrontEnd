@@ -43,8 +43,7 @@ class EditForm extends Component {
       if (statusCode === 200) {
         onClose();
         history.push({
-          pathname: '/employee-onboarding',
-          state: { defaultActiveKey: '2' },
+          pathname: '/employee-onboarding/settings',
         });
       }
     });

@@ -4,6 +4,8 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
+import Feedback from '@/components/Feedback';
+import Footer from '@/components/Footer';
 import RightContent from '@/components/GlobalHeader/RightContent';
 // import { getCurrentCompany, getSwitchRoleAbility } from '@/utils/authority';
 import { getCurrentCompany } from '@/utils/authority';
@@ -16,9 +18,6 @@ import classnames from 'classnames';
 // import React, { useEffect, useState } from 'react';
 import React from 'react';
 import { connect, Link, Redirect, useIntl } from 'umi';
-import Footer from '@/components/Footer';
-import Feedback from '@/components/Feedback';
-import { constant } from 'lodash';
 import logo from '../assets/logo.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';

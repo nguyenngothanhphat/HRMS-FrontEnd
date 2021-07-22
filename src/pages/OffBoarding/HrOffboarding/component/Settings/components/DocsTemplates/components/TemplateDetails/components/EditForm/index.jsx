@@ -40,8 +40,7 @@ class EditForm extends Component {
       if (statusCode === 200) {
         onClose();
         history.push({
-          pathname: '/offboarding',
-          state: { defaultActiveKey: '3' },
+          pathname: '/offboarding/settings/documents-templates',
         });
       }
     });

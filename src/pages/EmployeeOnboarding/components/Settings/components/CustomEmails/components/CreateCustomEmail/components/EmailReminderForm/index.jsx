@@ -927,7 +927,7 @@ class EmailReminderForm extends PureComponent {
               type="secondary"
               onClick={() => {
                 history.push({
-                  pathname: `/employee-onboarding`,
+                  pathname: `/employee-onboarding/settings/custom-emails`,
                 });
               }}
             >

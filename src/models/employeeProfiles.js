@@ -138,7 +138,7 @@ const employeeProfile = {
       try {
         const response = yield call(getGeneralInfoByUserId, payload);
         const { statusCode, data } = response;
-        console.log(response);
+        // console.log(response);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',

@@ -7,7 +7,7 @@ import styles from './index.less';
 export default class LeaveHistoryList extends PureComponent {
   goToLeaveRequest = (_id) => {
     history.push({
-      pathname: `/time-off/view-request/${_id}`,
+      pathname: `/time-off/overview/personal-timeoff/view/${_id}`,
     });
   };
 

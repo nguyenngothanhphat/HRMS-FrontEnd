@@ -43,7 +43,7 @@ export async function getListEmployee(payload) {
 }
 
 export async function getListExportEmployees(payload) {
-  return request('api/employeetenant/export-csv', {
+  return request('/api/employeetenant/export-csv', {
     method: 'POST',
     data: payload,
   });

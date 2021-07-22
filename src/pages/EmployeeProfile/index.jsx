@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Affix, Skeleton } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 // import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant, isOwner } from '@/utils/authority';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 // import Test from './components/test';
@@ -25,7 +25,7 @@ import PerformanceHistory from './components/PerformanceHistory';
     currentUser,
     listEmployeeActive,
     permissions,
-    loadingFetchEmployee: loading.effects['employeeProfile/fetchEmploymentInfo'],
+    loadingFetchEmployee: loading.effects['employeeProfile/fetchGeneralInfo'],
   }),
 )
 class EmployeeProfile extends Component {
@@ -55,13 +55,19 @@ class EmployeeProfile extends Component {
     //     idCurrentEmployee,
     //   },
     // });
+
+    // if (!tabName) {
+    //   const link = isOwner() ? 'employees' : 'directory';
+    //   history.replace(`/${link}/employee-profile/${reId}/general-info`);
+    // } else {
     this.fetchData();
+    // }
   };
 
   componentDidUpdate(prevProps) {
     const { location } = this.props;
     if (prevProps.location.pathname !== location.pathname) {
-      this.fetchData();
+      // this.fetchData();
     }
   }
 
@@ -83,15 +89,16 @@ class EmployeeProfile extends Component {
       payload: { id: employee, tenantId: tenantId1 || getCurrentTenant() },
     });
 
+    const tenantId = getCurrentTenant();
+    dispatch({
+      type: 'employeeProfile/fetchGeneralInfo',
+      payload: { employee, tenantId },
+    });
+
     const { statusCode } = res;
     if (statusCode === 200) {
-      const tenantId = getCurrentTenant();
       const companyCurrentEmployee = getCurrentCompany();
 
-      dispatch({
-        type: 'employeeProfile/fetchGeneralInfo',
-        payload: { employee, tenantId },
-      });
       dispatch({
         type: 'employeeProfile/fetchCompensation',
         payload: { employee, tenantId },
@@ -182,28 +189,45 @@ class EmployeeProfile extends Component {
       id: 1,
       name: 'General Info',
       component: <GeneralInfo permissions={permissions} profileOwner={profileOwner} />,
+      link: 'general-info',
     });
     if (permissions.viewTabEmployment !== -1 || profileOwner) {
       listMenu.push({
         id: 2,
         name: `Employment & Compensation`,
         component: <EmploymentTab listEmployeeActive={listEmployeeActive} />,
+        link: 'employment-compensation',
       });
     }
     if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
-      listMenu.push({ id: 3, name: 'Performance History', component: <PerformanceHistory /> });
+      listMenu.push({
+        id: 3,
+        name: 'Performance History',
+        component: <PerformanceHistory />,
+        link: 'performance-history',
+      });
     }
     if (permissions.viewTabAccountPaychecks !== -1 || profileOwner) {
-      listMenu.push({ id: 4, name: 'Accounts and Paychecks', component: <AccountsPaychecks /> });
+      listMenu.push({
+        id: 4,
+        name: 'Accounts and Paychecks',
+        component: <AccountsPaychecks />,
+        link: 'accounts-paychecks',
+      });
     }
     if (permissions.viewTabDocument !== -1 || profileOwner) {
-      listMenu.push({ id: 5, name: 'Documents', component: <Documents /> });
+      listMenu.push({ id: 5, name: 'Documents', component: <Documents />, link: 'documents' });
     }
     // if (permissions.viewTabTimeSchedule !== -1 || profileOwner) {
     //   listMenu.push({ id: 5, name: 'Time & Scheduling', component: <Test /> });
     // }
     if (permissions.viewTabBenefitPlans !== -1 || profileOwner) {
-      listMenu.push({ id: 6, name: 'Benefit Plans', component: <BenefitTab /> });
+      listMenu.push({
+        id: 6,
+        name: 'Benefit Plans',
+        component: <BenefitTab />,
+        link: 'benefit-plans',
+      });
     }
 
     return listMenu;
@@ -211,13 +235,14 @@ class EmployeeProfile extends Component {
 
   render() {
     const {
-      match: { params: { reId: employee = '' } = {} },
+      match: { params: { reId: employee = '', tabName = '' } = {} },
       currentUser: { employee: currentEmployee = {} },
       permissions = {},
       location: { state: { location = '' } = {} } = {},
       loadingFetchEmployee,
-      employeeProfile,
+      // employeeProfile,
     } = this.props;
+
     const listMenu = this.renderListMenu(employee, currentEmployee?._id);
 
     const profileOwner = this.checkProfileOwner(currentEmployee?._id, employee);
@@ -237,6 +262,8 @@ class EmployeeProfile extends Component {
           {tenant && company && id && !loadingFetchEmployee ? (
             <LayoutEmployeeProfile
               listMenu={listMenu}
+              tabName={tabName}
+              reId={employee}
               employeeLocation={location}
               permissions={permissions}
               profileOwner={profileOwner}

@@ -49,6 +49,7 @@ class DirectoryTable extends Component {
       rowData: {},
       valueReason: '',
       timezoneList: [],
+      selectColumn: false,
       currentTime: moment(),
     };
   }
@@ -93,10 +94,10 @@ class DirectoryTable extends Component {
 
   getAvatarUrl = (avatar, isShowAvatar) => {
     const { permissions = {}, profileOwner = false } = this.props;
-    if (isShowAvatar) return avatar;
+    if (isShowAvatar) return avatar || avtDefault;
     if (permissions.viewAvatarEmployee !== -1 || profileOwner) {
       if (avatar) return avatar;
-      return null;
+      return avtDefault;
     }
     return avtDefault;
   };
@@ -178,7 +179,6 @@ class DirectoryTable extends Component {
   generateColumns = (sortedName, keyTab) => {
     const { permissions = {} } = this.props;
 
-    // const { isSort } = this.state;
     const columns = [
       {
         title: (
@@ -191,46 +191,60 @@ class DirectoryTable extends Component {
         key: 'employeePack',
         render: (employeePack) => (employeePack ? this.renderUser(employeePack) : ''),
         align: 'left',
-        sorter: (a, b) =>
-          a.employeePack.generalInfo && a.employeePack.generalInfo?.firstName
+        sorter: (a, b) => {
+          return a.employeePack.generalInfo && a.employeePack.generalInfo?.firstName
             ? `${a.employeePack.generalInfo?.firstName} ${a.employeePack.generalInfo?.lastName}`.localeCompare(
                 `${b.employeePack.generalInfo?.firstName} ${b.employeePack.generalInfo?.lastName}`,
               )
-            : null,
+            : null;
+        },
         // sortOrder: sortedName.columnKey === 'employeePack' && sortedName.order,
         fixed: 'left',
         width: '18%',
         defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],
+        className: `${styles.col} `,
       },
-      // {
-      //   title: formatMessage({ id: 'component.directory.table.employeeID' }),
-      //   dataIndex: 'generalInfo',
-      //   key: 'employeeId',
-      //   className: `${styles.employeeId} `,
-      //   render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
-      //   width: '10%',
-      //   align: 'left',
-      // },
       {
         title: formatMessage({ id: 'component.directory.table.email' }),
         dataIndex: 'generalInfo',
-        key: 'employeeId',
+        key: 'workEmail',
         render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
-        width: '18%',
+        width: '20%',
         align: 'left',
+        sorter: () => null,
+      },
+      {
+        title: formatMessage({ id: 'component.directory.table.userId' }),
+        dataIndex: 'generalInfo',
+        key: 'userId',
+        render: (generalInfo) => <span>{generalInfo?.userId}</span>,
+        width: '12%',
+        align: 'left',
+        sorter: () => null,
       },
       {
         title: 'Work Number',
         dataIndex: 'generalInfo',
-        key: 'employeeId',
+        key: 'workNumber',
         render: (generalInfo) => (
           <span style={{ fontSize: '13px' }}>
             {generalInfo?.workNumber ? generalInfo.workNumber : '-'}
           </span>
         ),
-        width: '10%',
+        width: '12%',
         align: 'left',
+        sorter: () => null,
+      },
+      {
+        title: formatMessage({ id: 'component.directory.table.employeeID' }),
+        dataIndex: 'generalInfo',
+        key: 'employeeId',
+        className: `${styles.employeeId} `,
+        render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
+        width: '12%',
+        align: 'left',
+        sorter: () => null,
       },
       {
         title: formatMessage({ id: 'component.directory.table.title' }),
@@ -245,6 +259,7 @@ class DirectoryTable extends Component {
         ),
         width: '12%',
         align: 'left',
+        sorter: () => null,
       },
       {
         title: formatMessage({ id: 'component.directory.table.department' }),
@@ -269,6 +284,7 @@ class DirectoryTable extends Component {
         },
         width: '14%',
         align: 'left',
+        sorter: () => null,
       },
       {
         title: formatMessage({ id: 'component.directory.table.location' }),
@@ -285,6 +301,7 @@ class DirectoryTable extends Component {
         ),
         width: '14%',
         align: 'left',
+        sorter: () => null,
       },
       {
         title: formatMessage({ id: 'component.directory.table.reportingManager' }),
@@ -298,8 +315,7 @@ class DirectoryTable extends Component {
                 managerPack._id,
                 managerPack.tenant,
                 managerPack.generalInfo?.userId,
-              )
-            }
+              )}
           >
             {managerPack.generalInfo
               ? `${managerPack?.generalInfo?.firstName} ${managerPack?.generalInfo?.lastName}`
@@ -307,7 +323,8 @@ class DirectoryTable extends Component {
           </span>
         ),
         align: 'left',
-        width: '12%',
+        width: '14%',
+        sorter: () => null,
       },
       {
         title: formatMessage({ id: 'component.directory.table.employmentType' }),
@@ -315,7 +332,8 @@ class DirectoryTable extends Component {
         key: 'employmentType',
         render: (employeeType) => <span>{employeeType ? employeeType.name : ''}</span>,
         align: 'left',
-        width: '12%',
+        width: '14%',
+        sorter: () => null,
       },
       {
         title: formatMessage({ id: 'component.directory.table.action' }),
@@ -334,6 +352,7 @@ class DirectoryTable extends Component {
             </div>
           );
         },
+        sorter: () => null,
       },
     ];
 
@@ -533,6 +552,7 @@ class DirectoryTable extends Component {
       openModal = false,
       valueReason = '',
       // rowSize,
+      selectColumn,
     } = this.state;
     const {
       list = [],
@@ -581,13 +601,13 @@ class DirectoryTable extends Component {
       },
     };
     const scroll = {
-      x: '100vw',
+      x: '120vw',
       y: 'max-content',
     };
 
     return (
       <>
-        <div className={styles.directoryTable}>
+        <div className={`${styles.directoryTable} ${selectColumn ? styles.selectCol : null}`}>
           <Table
             size="small"
             columns={this.generateColumns(sortedName, keyTab)}
@@ -603,6 +623,11 @@ class DirectoryTable extends Component {
             loading={loading}
             onChange={this.handleChangeTable}
             scroll={scroll}
+            onHeaderRow={() => {
+              return {
+                onClick: () => this.setState({ selectColumn: true }), // if select column, the whole column will be highlighted.
+              };
+            }}
           />
         </div>
         <ModalTerminate

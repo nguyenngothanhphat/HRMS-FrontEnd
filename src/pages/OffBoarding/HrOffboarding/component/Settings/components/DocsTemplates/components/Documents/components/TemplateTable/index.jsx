@@ -115,7 +115,7 @@ class TemplateTable extends Component {
   };
 
   viewTemplateDetail = (id) => {
-    history.push(`/offboarding-template-details/${id}`);
+    history.push(`/offboarding/settings/documents-templates/template-detail/${id}`);
   };
 
   onChangePagination = (pageNumber) => {

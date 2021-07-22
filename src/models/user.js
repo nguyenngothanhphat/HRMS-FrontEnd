@@ -69,7 +69,7 @@ const UserModel = {
         }
 
         // if there's no tenantId and companyId, return to control panel
-        if (!tenantId || !company) {
+        if ((!tenantId || !company) && !window.location.href.includes('add-company')) {
           formatArrRoles = [...formatRole];
           setAuthority(formatArrRoles);
           history.replace('/control-panel');

@@ -215,8 +215,10 @@ const employee = {
         const { statusCode, data: dataOrgChart = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { dataOrgChart } });
+        return response;
       } catch (errors) {
         dialog(errors);
+        return 0;
       }
     },
     *addEmployee({ payload }, { call, put }) {

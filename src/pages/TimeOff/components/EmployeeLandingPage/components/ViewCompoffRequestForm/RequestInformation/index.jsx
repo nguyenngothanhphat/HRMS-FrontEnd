@@ -26,7 +26,7 @@ class RequestInformation extends PureComponent {
   // EDIT BUTTON
   handleEdit = (_id) => {
     history.push({
-      pathname: `/time-off/${TIMEOFF_LINK_ACTION.editCompoffRequest}/${_id}`,
+      pathname: `/time-off/overview/personal-compoff/${TIMEOFF_LINK_ACTION.editCompoffRequest}/${_id}`,
     });
   };
 
@@ -61,9 +61,8 @@ class RequestInformation extends PureComponent {
 
   // ON PROCEED withDraw
   onProceed = async () => {
-    const {
-      timeOff: { viewingCompoffRequest: { _id: id = '', ticketID = '' } = {} } = {},
-    } = this.props;
+    const { timeOff: { viewingCompoffRequest: { _id: id = '', ticketID = '' } = {} } = {} } =
+      this.props;
     const { dispatch } = this.props;
     const statusCode = await dispatch({
       type: 'timeOff/withdrawCompoffRequest',

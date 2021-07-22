@@ -116,7 +116,7 @@ class CustomEmailsTableField extends PureComponent {
           const { idCustomEmail = '' } = currentRecord;
 
           return (
-            <Link to={`/employee-onboarding/edit-email/${idCustomEmail}`}>
+            <Link to={`/employee-onboarding/settings/edit-email/${idCustomEmail}`}>
               <div className={styles.fileName}>
                 <img src={FileIcon} alt="name" />
                 <span>{emailSubject}</span>
@@ -151,7 +151,9 @@ class CustomEmailsTableField extends PureComponent {
         render: (idCustomEmail) => {
           return (
             <div className={styles.actions}>
-              <Link to={`/employee-onboarding/edit-email/${idCustomEmail}`}>View mail</Link>
+              <Link to={`/employee-onboarding/settings/edit-email/${idCustomEmail}`}>
+                View mail
+              </Link>
               {activeKey !== '1' && (
                 <Tooltip title="Delete">
                   <img
@@ -170,7 +172,7 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   addNewEmailTemplate = () => {
-    history.push('/employee-onboarding/create-email-reminder');
+    history.push('/employee-onboarding/settings/custom-emails/create-email-reminder');
   };
 
   _renderTable = (list) => {

@@ -40,9 +40,9 @@ class EmploymentTab extends Component {
   componentDidMount = () => {
     const { employeeProfile = {} } = this.props;
 
-    const { title = {}, location = {} } = employeeProfile?.originData?.employmentData;
-    const { firstName = '', legalName = '' } = employeeProfile?.originData?.generalData;
-    const { compensationType = null } = employeeProfile?.originData?.compensationData;
+    const { title = {}, location = {} } = employeeProfile?.originData?.employmentData || {};
+    const { firstName = '', legalName = '' } = employeeProfile?.originData?.generalData || {};
+    const { compensationType = null } = employeeProfile?.originData?.compensationData || {};
     this.setState({
       currentData: {
         name: legalName || firstName || null,

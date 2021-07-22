@@ -160,7 +160,7 @@ class HRrequestTable extends Component {
             <div className={styles.header__left}>Team Requests</div>
             <div className={styles.header__right}>
               <Button className={styles.buttonRequest}>
-                <Link to="offboarding/resignation-request">
+                <Link to="/offboarding/list/my-request/new">
                   <span className={styles.buttonRequest__text}>Initiate Resignation Request</span>
                 </Link>
               </Button>

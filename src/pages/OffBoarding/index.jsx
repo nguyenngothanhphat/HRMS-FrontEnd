@@ -5,6 +5,7 @@ import ManagerOffBoading from './ManagerOffBoarding';
 import HrOffboarding from './HrOffboarding';
 
 class OffBoarding extends PureComponent {
+
   findRole = (roles) => {
     const hrManager = roles.find((item) => item === 'hr-manager');
     const hr = roles.find((item) => item === 'hr');
@@ -15,14 +16,17 @@ class OffBoarding extends PureComponent {
   };
 
   render() {
-    const { location: { state: { defaultActiveKey = '1', isEmployeeMode = false } = {} } = {} } =
-      this.props;
+    const {
+      match: { params: { tabName = '', type = '' } = {} },
+      location: { state: { isEmployeeMode = false } = {} } = {},
+    } = this.props;
+
     const viewOffboarding = initViewOffboarding();
     const renderComponent = {
-      'hr-manager': <HrOffboarding defaultActiveKey={defaultActiveKey} />,
-      hr: <HrOffboarding defaultActiveKey={defaultActiveKey} />,
-      manager: <ManagerOffBoading />,
-      employee: <EmployeeOffBoading />,
+      'hr-manager': <HrOffboarding tabName={tabName} type={type} />,
+      hr: <HrOffboarding tabName={tabName} type={type} />,
+      manager: <ManagerOffBoading tabName={tabName} />,
+      employee: <EmployeeOffBoading tabName={tabName} />,
     };
 
     const listRole = localStorage.getItem('antd-pro-authority');

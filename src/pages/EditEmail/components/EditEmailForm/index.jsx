@@ -403,7 +403,6 @@ class EditEmailForm extends PureComponent {
   };
 
   onChangeSendingDate = (value) => {
-
     // this.setState({ _sendingDate: value.target.value });
   };
 
@@ -578,7 +577,6 @@ class EditEmailForm extends PureComponent {
     }
 
     newConditionsData[index][name] = value;
-
 
     this.setState({
       conditionsData: newConditionsData,
@@ -1085,8 +1083,7 @@ class EditEmailForm extends PureComponent {
               <Col className={styles.buttons} span={8} offset={16}>
                 <Link
                   to={{
-                    pathname: '/employee-onboarding',
-                    state: { defaultActiveKey: '2' },
+                    pathname: '/employee-onboarding/settings/custom-emails',
                   }}
                 >
                   <Button type="secondary">

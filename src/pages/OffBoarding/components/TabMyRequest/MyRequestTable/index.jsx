@@ -62,7 +62,7 @@ class TableManager extends PureComponent {
       });
     }
     if (id) {
-      history.push(`/offboarding/review/${id}`);
+      history.push(`/offboarding/list/review/${id}`);
     }
   };
 

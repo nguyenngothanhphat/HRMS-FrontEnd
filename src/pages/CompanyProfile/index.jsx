@@ -102,13 +102,19 @@ class CompanyProfile extends Component {
         id: 1,
         name: 'Company Details',
         component: <CompanyDetails companyId={id} />,
+        link: 'company-details',
       },
       {
         id: 2,
         name: 'Work Locations',
         component: <WorkLocations companyId={id} />,
+        link: 'work-locations',
       },
     ];
+
+    const {
+      match: { params: { tabName = '' } = {} },
+    } = this.props;
 
     return (
       <div className={styles.CompanyProfile}>
@@ -121,7 +127,7 @@ class CompanyProfile extends Component {
                   <Spin size="large" />
                 </div>
               ) : (
-                <Layout listMenu={listMenu} isCompanyProfile isAddingCompany />
+                <Layout listMenu={listMenu} isCompanyProfile isAddingCompany tabName={tabName} />
               )}
             </TabPane>
           </Tabs>

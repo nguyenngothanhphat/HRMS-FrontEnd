@@ -102,7 +102,7 @@ class MyCompoffTable extends PureComponent {
   // view request
   viewRequest = (_id) => {
     history.push({
-      pathname: `/time-off/view-compoff-request/${_id}`,
+      pathname: `/time-off/overview/personal-compoff/view/${_id}`,
       // state: { location: name },
     });
   };
