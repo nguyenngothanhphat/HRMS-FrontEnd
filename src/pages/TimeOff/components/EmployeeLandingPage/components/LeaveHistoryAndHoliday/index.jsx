@@ -27,7 +27,11 @@ class LeaveHistoryAndHoliday extends PureComponent {
     const { dispatch, location = {} } = this.props;
     dispatch({
       type: 'timeOff/fetchHolidaysListBylocation',
-      payload: { location: getCurrentLocation(), country: location.headQuarterAddress.country._id, company: getCurrentCompany() },
+      payload: {
+        location: getCurrentLocation(),
+        country: location.headQuarterAddress.country._id,
+        company: getCurrentCompany(),
+      },
     });
     dispatch({
       type: 'timeOff/fetchLeaveHistory',
