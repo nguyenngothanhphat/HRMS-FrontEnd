@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import { Avatar, Row, Col, Typography, Select } from 'antd';
-import { LinkedinOutlined, MailOutlined, MessageFilled, UserOutlined } from '@ant-design/icons';
+import {
+  LinkedinOutlined,
+  MailOutlined,
+  MessageFilled,
+  UpCircleOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { history } from 'umi';
 import styles from './index.less';
 
@@ -15,6 +21,11 @@ class DetailEmployeeChart extends Component {
   handleSelect = (value) => {
     const { handleSelectSearch } = this.props;
     handleSelectSearch(value);
+  };
+
+  handleClick = () => {
+    const { closeDetailEmployee = () => {} } = this.props;
+    closeDetailEmployee();
   };
 
   render() {
@@ -81,6 +92,9 @@ class DetailEmployeeChart extends Component {
               );
             })}
           </Select>
+          {checkObj ? (
+            <UpCircleOutlined className={styles.iconUp} onClick={this.handleClick} />
+          ) : null}
         </div>
         {checkObj ? (
           <div className={styles.chartDetail}>
