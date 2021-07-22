@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
 import { connect } from 'umi';
 
-import { PROCESS_STATUS } from '@/models/onboard';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import SentFinalOffers from './components/SentFinalOffers/index';
 import AcceptedFinalOffers from './components/AcceptedFinalOffers/index';
 import RenegotitateFinalOffers from './components/RenegotiateFinalOffers/index';
@@ -16,7 +16,7 @@ class FinalOffers extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      tabId: 1,
+      tabId: '1',
       pageSelected: 1,
       size: 10,
     };

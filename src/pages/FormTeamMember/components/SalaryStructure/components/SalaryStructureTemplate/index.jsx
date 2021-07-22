@@ -5,11 +5,11 @@ import { CloseCircleOutlined } from '@ant-design/icons';
 import { formatMessage, connect } from 'umi';
 // import { dialog } from '@/utils/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import{ PROCESS_STATUS} from '@/utils/onboarding';
 import doneIcon from './assets/doneIcon.png';
 import editIcon from './assets/editIcon.png';
 import styles from './index.less';
 
-import PROCESS_STATUS from '../../../utils';
 
 @connect(
   ({

@@ -148,7 +148,7 @@ class FormLogin extends Component {
           </Form.Item>
           <div className={styles.textOr}>or sign in with</div>
           <GoogleLogin
-            clientId="979138479820-7hv5jn95k39tb42ltiscoi552ce9i2an.apps.googleusercontent.com"
+            clientId="569320903794-k9h03nao8e8sq4mm6tq5rv5enjs0dlo6.apps.googleusercontent.com"
             render={(renderProps) => (
               <Button
                 type="primary"

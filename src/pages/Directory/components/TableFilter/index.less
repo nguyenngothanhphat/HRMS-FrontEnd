@@ -21,14 +21,16 @@
     }
 
     .ant-select-selector {
-      height: 42px !important;
       border: none !important;
       background: transparent !important;
-      // padding-top: 10px !important;
-      padding: 7px 11px !important;
     }
-    .ant-select-selection-search-input {
-      height: 42px !important;
+
+    .ant-select-multiple .ant-select-selector{
+      padding: 6px;
+    }
+
+    .ant-select-focused:not(.ant-select-disabled).ant-select:not(.ant-select-customize-input) .ant-select-selector {
+      box-shadow: none;
     }
   }
 
@@ -148,6 +150,18 @@
     background-color: #fff;
     border: 1px solid #2c6df9;
     border-radius: 5px;
+    min-height: 42px !important;
+  }
+
+  .formSelectTitle {
+    width: 100%;
+    margin-bottom: 33px;
+    font-size: 14px;
+    background-color: #fff;
+    border: 1px solid #2c6df9;
+    border-radius: 5px;
+    min-height: 42px !important;
+    padding: 6px 0;
   }
 }
 

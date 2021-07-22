@@ -4,7 +4,7 @@ import { connect } from 'umi';
 // import SentProvisionalOffers from './components/SentProvisionalOffers/index';
 // import AcceptedProvisionalOffers from './components/AcceptedProvisionalOffers/index';
 // import RenegotiateProvisionalOffers from './components/RenegotiateProvisionalOffers/index';
-import { PROCESS_STATUS } from '@/models/onboard';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import Pending from './components/Pending/index';
 import EligibleCandidates from './components/EligibleCandidates/index';
 import IneligibleCandidates from './components/IneligibleCandidates/index';
@@ -16,7 +16,7 @@ class BackgroundCheck extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      tabId: 1,
+      tabId: '1',
       pageSelected: 1,
       size: 10,
     };

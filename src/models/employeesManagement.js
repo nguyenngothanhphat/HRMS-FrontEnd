@@ -65,7 +65,9 @@ const employeesManagement = {
           page,
           limit,
         });
-        const { statusCode, data: activeEmployeesList = [] } = response;
+        console.log('acv');
+        const { statusCode, data: activeEmployeesList = [], total } = response;
+        console.log(total);
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',

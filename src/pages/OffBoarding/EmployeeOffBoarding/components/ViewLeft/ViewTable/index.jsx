@@ -3,12 +3,14 @@ import { connect } from 'umi';
 import TableEmployee from '../TableEmployee';
 // import Summary from '../Summary';
 
-@connect()
+@connect(({ offboarding: { totalAll = '' } = {} }) => ({ totalAll }))
 class ViewTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedFilterTab: '1',
+      pageSelected: 1,
+      size: 10,
     };
   }
 
@@ -16,13 +18,64 @@ class ViewTable extends Component {
     this.initDataTable('1');
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    const { selectedFilterTab } = this.state;
-    const { selectedFilterTab: nextTabId } = nextState;
-    if (selectedFilterTab !== nextTabId) {
-      this.initDataTable(nextTabId);
+  componentDidUpdate(prevProps, prevState) {
+    const { selectedFilterTab, pageSelected, size } = this.state;
+    const { dispatch } = this.props;
+    if (prevState.pageSelected !== pageSelected || prevState.size !== size) {
+      this.initDataTable(selectedFilterTab);
     }
-    return true;
+    if (prevState.selectedFilterTab !== selectedFilterTab) {
+      if (selectedFilterTab === '1') {
+        dispatch({
+          type: 'offboarding/fetchList',
+          payload: {
+            status: 'IN-PROGRESS',
+            page: 1,
+            limit: size,
+          },
+        });
+      }
+      if (selectedFilterTab === '2') {
+        dispatch({
+          type: 'offboarding/fetchList',
+          payload: {
+            status: 'ON-HOLD',
+            page: 1,
+            limit: size,
+          },
+        });
+      }
+      if (selectedFilterTab === '3') {
+        dispatch({
+          type: 'offboarding/fetchList',
+          payload: {
+            status: 'ACCEPTED',
+            page: 1,
+            limit: size,
+          },
+        });
+      }
+      if (selectedFilterTab === '4') {
+        dispatch({
+          type: 'offboarding/fetchList',
+          payload: {
+            status: 'REJECTED',
+            page: 1,
+            limit: size,
+          },
+        });
+      }
+      if (selectedFilterTab === '5') {
+        dispatch({
+          type: 'offboarding/fetchList',
+          payload: {
+            status: 'WITHDRAW',
+            page: 1,
+            limit: size,
+          },
+        });
+      }
+    }
   }
 
   initDataTable = (tabId) => {
@@ -69,6 +122,13 @@ class ViewTable extends Component {
     }
   };
 
+  getPageAndSize = (page, pageSize) => {
+    this.setState({
+      pageSelected: page,
+      size: pageSize,
+    });
+  };
+
   setSelectedTab = (id) => {
     this.setState({
       selectedFilterTab: id,
@@ -76,11 +136,29 @@ class ViewTable extends Component {
   };
 
   render() {
-    const { data = [], countTable = [], hrManager = {}, tabId, fetchData = () => {} } = this.props;
+    const {
+      data = [],
+      countTable = [],
+      hrManager = {},
+      tabId,
+      fetchData = () => {},
+      totalAll = '',
+    } = this.props;
+    const { pageSelected, size } = this.state;
+
     return (
       <>
         {/* <Summary setSelectedTab={this.setSelectedTab} totallist={countTable} /> */}
-        <TableEmployee fetchData={fetchData} data={data} hrManager={hrManager} tabId={tabId} />
+        <TableEmployee
+          fetchData={fetchData}
+          data={data}
+          hrManager={hrManager}
+          tabId={tabId}
+          pageSelected={pageSelected}
+          size={size}
+          total={totalAll}
+          getPageAndSize={this.getPageAndSize}
+        />
       </>
     );
   }

@@ -2,12 +2,21 @@
   border-bottom: solid 1px #d6dce0;
 }
 
+.selectCol {
+  :global{
+    td.ant-table-column-sort {
+      background-color: #fafafa;
+    }
+  }
+}
+
 .directoryTable {
   padding: 24px 24px 0 24px;
 
   .employeeId {
     padding-left: 16px !important;
   }
+
   :global {
     .ant-pagination {
       align-items: center;
@@ -71,7 +80,7 @@
     }
 
     .ant-table-column-sorter-inner {
-      display: inline;
+      display: none;
     }
 
     .ant-table-column-sorter-up.active,
@@ -115,6 +124,14 @@
     th.ant-table-cell {
       padding-top: 0 !important;
       padding-bottom: 0 !important;
+    }
+  }
+
+  .col {
+    :global {
+      .ant-table-column-sorter-inner {
+        display: inline;
+      }
     }
   }
 

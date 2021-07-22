@@ -9,6 +9,7 @@ import {
   activeAdmin,
   getIndustryListInSignUp,
   getCompanyTypeListInSignUp,
+  sendAgainSecurityCode,
 } from '../services/user';
 
 const delay = (timeout) => {
@@ -151,6 +152,25 @@ const signup = {
         const { statusCode, data: industryList = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { industryList } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *sendAgainSecurityCode({ payload }, { call, put }) {
+      try {
+        const response = yield call(sendAgainSecurityCode, payload);
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        if (!data?.result) {
+          notification.error({
+            message: 'Email delivery failed !',
+          });
+        } else {
+          yield put({ type: 'save', payload: { codeNumber: data?.securityCode?.codeNumber } });
+          notification.success({
+            message: 'Email sent successfully !',
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }

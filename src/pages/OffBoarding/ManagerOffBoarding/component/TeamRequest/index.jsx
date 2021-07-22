@@ -3,31 +3,91 @@ import { connect } from 'umi';
 import TableManager from '../TableManager';
 import Summary from '../Summary';
 
-@connect(({ loading }) => ({
+@connect(({ loading, offboarding: { totalAll = '' } = {} }) => ({
   loading: loading.effects['offboarding/fetchListTeamRequest'],
+  totalAll,
 }))
 class TeamRequest extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedFilterTab: '1',
+      pageSelected: 1,
+      size: 10,
     };
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    const { selectedFilterTab } = this.state;
-    const { selectedFilterTab: nextTabId } = nextState;
-    if (selectedFilterTab !== nextTabId) {
-      this.initDataTable(nextTabId);
+  componentDidUpdate(prevProps, prevState) {
+    const { selectedFilterTab, pageSelected, size } = this.state;
+    const { dispatch } = this.props;
+    if (prevState.pageSelected !== pageSelected || prevState.size !== size) {
+      this.initDataTable(selectedFilterTab);
     }
-    return true;
+    if (prevState.selectedFilterTab !== selectedFilterTab) {
+      if (selectedFilterTab === '1') {
+        dispatch({
+          type: 'offboarding/fetchListTeamRequest',
+          payload: {
+            page: 1,
+            limit: size,
+          },
+        });
+      }
+      if (selectedFilterTab === '2') {
+        dispatch({
+          type: 'offboarding/fetchListTeamRequest',
+          payload: {
+            status: 'IN-PROGRESS',
+            page: 1,
+            limit: size,
+          },
+        });
+      }
+      if (selectedFilterTab === '3') {
+        dispatch({
+          type: 'offboarding/fetchListTeamRequest',
+          payload: {
+            status: 'ON-HOLD',
+            page: 1,
+            limit: size,
+          },
+        });
+      }
+      if (selectedFilterTab === '4') {
+        dispatch({
+          type: 'offboarding/fetchListTeamRequest',
+          payload: {
+            status: 'ACCEPTED',
+            page: 1,
+            limit: size,
+          },
+        });
+      }
+      if (selectedFilterTab === '5') {
+        dispatch({
+          type: 'offboarding/fetchListTeamRequest',
+          payload: {
+            status: 'REJECTED',
+            page: 1,
+            limit: size,
+          },
+        });
+      }
+    }
   }
 
   initDataTable = (tabId) => {
-    const { dispatch } = this.props;
+    const { dispatch, location } = this.props;
+    const { pageSelected, size } = this.state;
+
     if (tabId === '1') {
       dispatch({
         type: 'offboarding/fetchListTeamRequest',
+        payload: {
+          page: pageSelected,
+          limit: size,
+          location,
+        },
       });
     }
     if (tabId === '2') {
@@ -35,6 +95,7 @@ class TeamRequest extends Component {
         type: 'offboarding/fetchListTeamRequest',
         payload: {
           status: 'IN-PROGRESS',
+          location,
         },
       });
     }
@@ -43,6 +104,9 @@ class TeamRequest extends Component {
         type: 'offboarding/fetchListTeamRequest',
         payload: {
           status: 'ON-HOLD',
+          page: pageSelected,
+          limit: size,
+          location,
         },
       });
     }
@@ -51,6 +115,9 @@ class TeamRequest extends Component {
         type: 'offboarding/fetchListTeamRequest',
         payload: {
           status: 'ACCEPTED',
+          page: pageSelected,
+          limit: size,
+          location,
         },
       });
     }
@@ -59,6 +126,9 @@ class TeamRequest extends Component {
         type: 'offboarding/fetchListTeamRequest',
         payload: {
           status: 'REJECTED',
+          page: pageSelected,
+          limit: size,
+          location,
         },
       });
     }
@@ -70,6 +140,13 @@ class TeamRequest extends Component {
     });
   };
 
+  getPageAndSize = (page, pageSize) => {
+    this.setState({
+      pageSelected: page,
+      size: pageSize,
+    });
+  };
+
   render() {
     const {
       data = [],
@@ -78,7 +155,9 @@ class TeamRequest extends Component {
       hrManager = {},
       loadingSearch,
       timezoneList,
+      totalAll = '',
     } = this.props;
+    const { pageSelected, size } = this.state;
 
     return (
       <>
@@ -88,6 +167,10 @@ class TeamRequest extends Component {
           timezoneList={timezoneList}
           loading={loading || loadingSearch}
           hrManager={hrManager}
+          pageSelected={pageSelected}
+          size={size}
+          total={totalAll}
+          getPageAndSize={this.getPageAndSize}
         />
       </>
     );

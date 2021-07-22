@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Tabs } from 'antd';
 import { connect } from 'umi';
 
-import { PROCESS_STATUS } from '@/models/onboard';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import ApprovedFinalOffers from './components/ApprovedFinalOffers/index';
 import SentForApprovals from './components/SentForApprovals/index';
 import AllTab from './components/AllTab';
@@ -15,7 +15,7 @@ class AwaitingApprovals extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      tabId: 1,
+      tabId: '1',
       pageSelected: 1,
       size: 10,
     };
