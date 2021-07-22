@@ -240,7 +240,7 @@ const timeOff = {
           payload: { totalLeaveBalance },
         });
       } catch (errors) {
-        dialog(errors);
+        // dialog(errors);
       }
     },
     *fetchLeaveRequestOfEmployee({ employee = '', status = '' }, { call, put }) {
