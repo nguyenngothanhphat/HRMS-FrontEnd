@@ -90,6 +90,33 @@ class TimeOff extends PureComponent {
     const {
       match: { params: { tabName = '' } = {} },
     } = this.props;
+
+    const {
+      location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
+    } = this.props;
+
+    if (status === 'WITHDRAW') {
+      if (category === 'TIMEOFF') {
+        notification.success({
+          message: 'Timeoff request',
+          description: `Timeoff request [Ticket id: ${tickedId}] [Type: ${typeName}] was withdrawn & deleted.`,
+        });
+      }
+      if (category === 'DRAFTS') {
+        notification.success({
+          message: 'Timeoff request',
+          description: `Draft request [Ticket id: ${tickedId}] [Type: ${typeName}] was deleted.`,
+        });
+      }
+      if (category === 'COMPOFF') {
+        notification.success({
+          message: 'Compoff request',
+          description: `Compoff request [Ticket id: ${tickedId}] was withdrawn & deleted.`,
+        });
+      }
+      history.replace();
+    }
+
     if (!tabName) {
       history.replace(`/time-off/overview`);
     } else {
@@ -98,31 +125,6 @@ class TimeOff extends PureComponent {
       this.setState({
         role,
       });
-
-      const {
-        location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
-      } = this.props;
-      if (status === 'WITHDRAW') {
-        if (category === 'TIMEOFF') {
-          notification.success({
-            message: 'Timeoff request',
-            description: `Timeoff request [Ticket id: ${tickedId}] [Type: ${typeName}] was withdrawn & deleted.`,
-          });
-        }
-        if (category === 'DRAFTS') {
-          notification.success({
-            message: 'Timeoff request',
-            description: `Draft request [Ticket id: ${tickedId}] [Type: ${typeName}] was deleted.`,
-          });
-        }
-        if (category === 'COMPOFF') {
-          notification.success({
-            message: 'Compoff request',
-            description: `Compoff request [Ticket id: ${tickedId}] was withdrawn & deleted.`,
-          });
-        }
-        history.replace();
-      }
     }
   };
 
