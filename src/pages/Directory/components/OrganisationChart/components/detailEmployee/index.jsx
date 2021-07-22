@@ -33,13 +33,13 @@ class DetailEmployeeChart extends Component {
     const checkObj = chartDetails.user !== undefined;
     const { user = {} } = chartDetails;
     const {
-      _id = '',
       generalInfo: {
         firstName = '',
         avatar = '',
         workEmail = '',
         employeeId = '',
         workNumber = '',
+        userId = '',
       } = {},
       department: { name = '' } = {},
       location: { name: nameLocation = '' } = {},
@@ -141,7 +141,7 @@ class DetailEmployeeChart extends Component {
               <Text
                 className={styles.chartDetail__Bottom_ViewProfile}
                 underline
-                onClick={() => this.handleViewFullProfile(_id)}
+                onClick={() => this.handleViewFullProfile(userId)}
               >
                 View full profile
               </Text>
