@@ -32,7 +32,7 @@ class Directory extends PureComponent {
       roles: {
         employee: 'EMPLOYEE',
       },
-      checkRoleEmployee: false,
+      activeKey: '1',
     };
   }
 
@@ -40,9 +40,11 @@ class Directory extends PureComponent {
     const { dispatch, roles = [], signInRole = [], filterList = {} } = this.props;
     const checkRoleEmployee = this.checkRoleEmployee(roles, signInRole);
 
-    this.setState({
-      checkRoleEmployee,
-    });
+    if (checkRoleEmployee) {
+      this.setState({
+        activeKey: '2',
+      });
+    }
 
     if (Object.keys(filterList).length > 0 && filterList) {
       await dispatch({
@@ -183,17 +185,24 @@ class Directory extends PureComponent {
   //   );
   // };
 
+  onTabClick = (value) => {
+    this.setState({
+      activeKey: value,
+    });
+  };
+
   render() {
     const { TabPane } = Tabs;
-    const { checkRoleEmployee } = this.state;
+    const { activeKey } = this.state;
     return (
       <PageContainer>
         <div className={styles.containerDirectory}>
           <Tabs
             defaultActiveKey="1"
-            activeKey={checkRoleEmployee ? '2' : '1'}
+            activeKey={activeKey}
             // tabBarExtraContent={checkRoleEmployee ? '' : null}
             // tabBarExtraContent={checkRoleEmployee ? '' : this.operations()}
+            onTabClick={this.onTabClick}
           >
             <TabPane
               tab={
