@@ -76,35 +76,34 @@ class OrganisationChart extends Component {
     }
   }
 
-  deepSearch = (data, value, key = 'title', sub = 'children', tempObj = {}) => {
-    const newTempObj = { ...tempObj };
-    if (value) {
-      data.map((node) => {
-        console.log('my id: ', value);
-        console.log(node[key]._id);
-        if (node[key]._id === value) {
-          newTempObj.found = node;
-          return node;
-        }
-        return this.deepSearch(node[sub], value, key, sub, newTempObj);
-      });
-      if (newTempObj.found) {
+  deepSearchCurrentUser = (data, myEmployeeId, key, sub) => {
+    const newTempObj = {};
+    const getCurrentUserItem = data.find((node) => {
+      if (node[key]._id === myEmployeeId) {
+        newTempObj.found = node;
         return newTempObj.found;
       }
-    }
-    return false;
+      if (node[sub].length > 0) {
+        // if cannot find the id, then continue to search the array sub-children (node[sub])
+        return this.deepSearchCurrentUser(node[sub], myEmployeeId, key, sub);
+      }
+      return null;
+    });
+    return getCurrentUserItem;
   };
 
   getCurrentUser = (data) => {
     const { myEmployeeId = '' } = this.props;
-    let idUser = '';
+    let check = false;
 
     if (data) {
-      const newData = this.deepSearch(data.children, myEmployeeId, 'user', 'children');
-      console.log(newData);
-      const { children: firstChild = [] } = data;
-      idUser = firstChild[1].children[0].user._id; // 02348239452345
-      const check = idUser === myEmployeeId;
+      const newData = this.deepSearchCurrentUser(data.children, myEmployeeId, 'user', 'children');
+      const { children = [] } = newData;
+      children.forEach((item) => {
+        if (item.user._id === myEmployeeId) {
+          check = true;
+        }
+      });
       if (check) {
         this.myRef.current.scrollIntoView({
           behavior: 'smooth',
