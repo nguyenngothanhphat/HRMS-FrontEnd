@@ -16,6 +16,12 @@ const { Text } = Typography;
 const { Option } = Select;
 // eslint-disable-next-line react/prefer-stateless-function
 class DetailEmployeeChart extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+    this.inputRef = React.createRef();
+  }
+
   handleViewFullProfile = (id) => {
     history.push(`directory/employee-profile/${id}`);
   };
@@ -23,6 +29,7 @@ class DetailEmployeeChart extends Component {
   handleSelect = (value) => {
     const { handleSelectSearch } = this.props;
     handleSelectSearch(value);
+    this.inputRef.current.blur();
   };
 
   handleClick = () => {
@@ -72,6 +79,7 @@ class DetailEmployeeChart extends Component {
             </div>
           ) : (
             <Select
+              ref={this.inputRef}
               showSearch
               allowClear
               placeholder="Search for employee, department"
