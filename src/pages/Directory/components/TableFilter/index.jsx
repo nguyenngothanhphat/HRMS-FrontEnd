@@ -201,12 +201,15 @@ class TableFilter extends PureComponent {
   };
 
   handleValueSelect = (clearFilter, valueSelected) => {
-    if (clearFilter && valueSelected.length === 0) return null;
-
-    if (valueSelected.length > 1) {
+    if (!clearFilter && valueSelected.length > 1) {
       return valueSelected;
     }
-    return valueSelected[0];
+
+    if (!clearFilter && valueSelected.length === 1) {
+      return valueSelected[0];
+    }
+
+    return undefined;
   };
 
   render() {

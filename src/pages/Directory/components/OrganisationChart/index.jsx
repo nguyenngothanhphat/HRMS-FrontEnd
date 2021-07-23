@@ -6,7 +6,7 @@ import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { connect } from 'umi';
 import moment from 'moment';
 import OrganizationChart from '@dabeng/react-orgchart';
-import DetailEmployeeChart from './components/detailEmployee';
+import DetailEmployeeChart from './components/EmployeeCard';
 import styles from './index.less';
 
 @connect(
@@ -21,6 +21,7 @@ import styles from './index.less';
   }) => ({
     dataOrgChart,
     loading: loading.effects['employee/fetchDataOrgChart'],
+    loadingFetchListAll: loading.effects['employee/fetchAllListUser'],
     myEmployeeId,
     companiesOfUser,
     listLocationsByCompany,
@@ -37,18 +38,12 @@ class OrganisationChart extends Component {
       currentTime: moment(),
     };
     this.myRef = React.createRef();
-    this.userRef = React.createRef();
+    this.userRef = React.createRef([]);
+    this.userRef.current = [];
   }
 
   componentDidMount() {
-    const { dispatch, companiesOfUser = [], listLocationsByCompany = [] } = this.props;
-    const convertLocation = listLocationsByCompany.map((item) => {
-      const { headQuarterAddress: { country: { _id = '' } = {}, state = '' } = {} } = item;
-      return {
-        country: _id,
-        state: [state],
-      };
-    });
+    const { dispatch } = this.props;
     const tenantId = getCurrentTenant();
     const company = getCurrentCompany();
     dispatch({
@@ -60,10 +55,8 @@ class OrganisationChart extends Component {
         this.getCurrentUser(data);
       }
     });
-    dispatch({
-      type: 'employee/fetchAllListUser',
-      payload: { company: companiesOfUser, location: convertLocation },
-    });
+
+    this.fetchAllListUser();
     this.fetchTimezone();
   }
 
@@ -72,9 +65,26 @@ class OrganisationChart extends Component {
     if (
       JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {
+      this.fetchAllListUser();
       this.fetchTimezone();
     }
   }
+
+  fetchAllListUser = () => {
+    const { listLocationsByCompany = [], companiesOfUser = [], dispatch } = this.props;
+
+    const convertLocation = listLocationsByCompany.map((item) => {
+      const { headQuarterAddress: { country: { _id = '' } = {}, state = '' } = {} } = item;
+      return {
+        country: _id,
+        state: [state],
+      };
+    });
+    dispatch({
+      type: 'employee/fetchAllListUser',
+      payload: { company: companiesOfUser, location: convertLocation },
+    });
+  };
 
   deepSearchCurrentUser = (data, myEmployeeId, key, sub) => {
     const newTempObj = {};
@@ -98,7 +108,7 @@ class OrganisationChart extends Component {
 
     if (data) {
       const newData = this.deepSearchCurrentUser(data.children, myEmployeeId, 'user', 'children');
-      const { children = [] } = newData;
+      const { children = [] } = newData || {};
       children.forEach((item) => {
         if (item.user._id === myEmployeeId) {
           check = true;
@@ -121,26 +131,60 @@ class OrganisationChart extends Component {
     arrowDown.click();
   };
 
-  getDetailUser = async (nodeData) => {
-    const { user: { location } = {} } = nodeData;
+  handleClickUserCard = async (nodeData) => {
+    const { dataOrgChart = {} } = this.props;
     const { timezoneList, currentTime } = this.state;
+    let check = false;
+
+    const { user: { location } = {}, id: userId = '' } = nodeData;
+    const arrRef = this.userRef.current;
+
+    const newData = this.deepSearchCurrentUser(dataOrgChart.children, userId, 'user', 'children');
+    const { children = [] } = newData || {};
+
     const findTimezone =
       timezoneList.find((timezone) => timezone.locationId === location._id) || {};
     const timeData = getCurrentTimeOfTimezone(currentTime, findTimezone.timezone);
     const addTimeData = { user: { ...nodeData.user, localTime: timeData } };
 
     // when click on this node will control the org chart move to the center of the screen.
-    this.userRef.current.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-      inline: 'center',
+    children.forEach((item) => {
+      if (item.user._id === userId) {
+        check = true;
+      }
     });
+    if (check) {
+      this.handleFocusUserCard(arrRef, userId);
+    }
 
     this.setState({ chartDetails: addTimeData });
   };
 
   closeDetailEmployee = () => {
     this.setState({ chartDetails: {} });
+  };
+
+  addToRefs = (el, id) => {
+    if (el && !this.userRef.current.includes(el)) {
+      this.userRef.current.push({
+        ref: el,
+        id,
+      });
+    }
+
+    return el;
+  };
+
+  handleFocusUserCard = (arrRef, userId) => {
+    let arrTemp = arrRef?.map((item) => (item.id === userId ? item.ref : null));
+    arrTemp = arrTemp.filter((item) => item !== null);
+    arrTemp = [...new Set(arrTemp)];
+
+    arrTemp[0].scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'center',
+    });
   };
 
   renderNode = ({ nodeData }) => {
@@ -160,7 +204,7 @@ class OrganisationChart extends Component {
       <div
         className={styles.chartNode}
         style={check ? { border: '1px solid #00C598' } : {}}
-        ref={this.userRef}
+        ref={(el) => this.addToRefs(el, _id)}
       >
         <div className={styles.chartAvt}>
           <Avatar src={avatar} size={64} icon={<UserOutlined />} />
@@ -241,7 +285,13 @@ class OrganisationChart extends Component {
   };
 
   render() {
-    const { loading, dataOrgChart, listEmployeeAll } = this.props;
+    const {
+      loading,
+      dataOrgChart,
+      listEmployeeAll,
+      loadingFetchListAll,
+      companiesOfUser = [],
+    } = this.props;
     const { chartDetails } = this.state;
     return (
       <div className={styles.container}>
@@ -254,7 +304,7 @@ class OrganisationChart extends Component {
             <OrganizationChart
               datasource={dataOrgChart}
               NodeTemplate={this.renderNode}
-              onClickNode={(node) => this.getDetailUser(node)}
+              onClickNode={(node) => this.handleClickUserCard(node)}
               chartClass={styles.myChart}
               containerClass={styles.chartContainer}
               collapsible
@@ -268,7 +318,9 @@ class OrganisationChart extends Component {
                 chartDetails={chartDetails}
                 handleSelectSearch={this.handleSelect}
                 listEmployeeAll={listEmployeeAll}
+                loadingFetchListAll={loadingFetchListAll}
                 closeDetailEmployee={this.closeDetailEmployee}
+                companiesOfUser={companiesOfUser}
               />
             </div>
           </div>

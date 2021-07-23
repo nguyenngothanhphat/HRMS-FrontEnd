@@ -119,7 +119,7 @@ class TimeoffType extends Component {
   };
 
   onRemoveItem = (id) => {
-    const { countrySelected } = this.state;
+    const { countrySelected } = this.props;
     const { dispatch } = this.props;
     dispatch({
       type: 'timeOff/removeTimeOffType',
@@ -128,8 +128,8 @@ class TimeoffType extends Component {
         tenantId: getCurrentTenant(),
         country: countrySelected,
       },
-    }).then(() => {
-      dispatch({
+    }).then(async () => {
+      await dispatch({
         type: 'timeOff/fetchTimeOffTypesByCountry',
         payload: {
           country: countrySelected,

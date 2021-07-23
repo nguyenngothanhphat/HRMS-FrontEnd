@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Avatar, Row, Col, Typography, Select } from 'antd';
+import { Avatar, Row, Col, Typography, Select, Spin } from 'antd';
 import {
   LinkedinOutlined,
   MailOutlined,
@@ -8,12 +8,20 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { history } from 'umi';
+import SearchIcon from '@/assets/searchOrgChart.svg';
+import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
 
 const { Text } = Typography;
 const { Option } = Select;
 // eslint-disable-next-line react/prefer-stateless-function
 class DetailEmployeeChart extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+    this.inputRef = React.createRef();
+  }
+
   handleViewFullProfile = (id) => {
     history.push(`directory/employee-profile/${id}`);
   };
@@ -21,6 +29,7 @@ class DetailEmployeeChart extends Component {
   handleSelect = (value) => {
     const { handleSelectSearch } = this.props;
     handleSelectSearch(value);
+    this.inputRef.current.blur();
   };
 
   handleClick = () => {
@@ -28,8 +37,15 @@ class DetailEmployeeChart extends Component {
     closeDetailEmployee();
   };
 
+  getCurrentFirm = () => {
+    const { companiesOfUser = [] } = this.props;
+    const idFirm = getCurrentCompany();
+    const currentFirm = companiesOfUser.filter((item) => item._id === idFirm);
+    return currentFirm[0]?.name;
+  };
+
   render() {
-    const { chartDetails = {}, listEmployeeAll } = this.props;
+    const { chartDetails = {}, listEmployeeAll, loadingFetchListAll } = this.props;
     const checkObj = chartDetails.user !== undefined;
     const { user = {} } = chartDetails;
     const {
@@ -42,57 +58,72 @@ class DetailEmployeeChart extends Component {
         userId = '',
       } = {},
       department: { name = '' } = {},
-      location: { name: nameLocation = '' } = {},
+      employeeType: { name: emplTypeName = 'Full Time' } = {} || {},
+      location: {
+        headQuarterAddress: { country: { name: countryName = '' } = {} || {}, state = '' } = {} ||
+          {},
+      } = {},
       localTime = '',
     } = user;
+
+    const locationName = `${state}, ${countryName}`;
+
+    const getCurrentCompanyName = this.getCurrentFirm();
     return (
       <>
         <div className={styles.chartSearch}>
-          <p className={styles.chartSearch__name}>Terralogic Software Solution Pvt. Ltd.</p>
-          <Select
-            showSearch
-            allowClear
-            style={{ width: '100%' }}
-            placeholder="Search for employee, department"
-            filterOption={(input, option) => {
-              return (
-                option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              );
-            }}
-            onSelect={this.handleSelect}
-          >
-            {listEmployeeAll.map((value) => {
-              const {
-                _id: idSearch = '',
-                generalInfo: {
-                  avatar: avatarSearch = '',
-                  firstName: nameSearch = '',
-                  employeeId: employeeIdSearch = '',
-                  userId: userIdSearch = '',
-                } = {},
-              } = value;
-              const emplName = `${nameSearch} (${employeeIdSearch}) (${userIdSearch})`;
-              return (
-                <Option key={idSearch} value={idSearch}>
-                  <div style={{ display: 'inline', marginRight: '10px' }}>
-                    <Avatar
-                      src={avatarSearch || ''}
-                      size={30}
-                      icon={<UserOutlined />}
-                      style={{
-                        borderRadius: '50%',
-                        width: '25px',
-                        height: '25px',
-                      }}
-                    />
-                  </div>
-                  <span style={{ fontSize: '13px', color: '#161C29' }} className={styles.ccEmail}>
-                    {emplName}
-                  </span>
-                </Option>
-              );
-            })}
-          </Select>
+          <div className={styles.chartSearch__name}>{getCurrentCompanyName}</div>
+          {loadingFetchListAll ? (
+            <div className={styles.viewLoading}>
+              <Spin size="large" />
+            </div>
+          ) : (
+            <Select
+              ref={this.inputRef}
+              showSearch
+              allowClear
+              placeholder="Search for employee, department"
+              filterOption={(input, option) => {
+                return (
+                  option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                );
+              }}
+              onSelect={this.handleSelect}
+              suffixIcon={<img alt="search" src={SearchIcon} />}
+            >
+              {listEmployeeAll.map((value) => {
+                const {
+                  _id: idSearch = '',
+                  generalInfo: {
+                    avatar: avatarSearch = '',
+                    firstName: nameSearch = '',
+                    employeeId: employeeIdSearch = '',
+                    userId: userIdSearch = '',
+                  } = {},
+                } = value;
+                const emplName = `${nameSearch} (${employeeIdSearch}) (${userIdSearch})`;
+                return (
+                  <Option key={idSearch} value={idSearch}>
+                    <div style={{ display: 'inline', marginRight: '10px' }}>
+                      <Avatar
+                        src={avatarSearch || ''}
+                        size={30}
+                        icon={<UserOutlined />}
+                        style={{
+                          fontSize: 'initial',
+                          width: '25px',
+                          height: '25px',
+                        }}
+                      />
+                    </div>
+                    <span style={{ fontSize: '13px', color: '#161C29' }} className={styles.ccEmail}>
+                      {emplName}
+                    </span>
+                  </Option>
+                );
+              })}
+            </Select>
+          )}
           {checkObj ? (
             <UpCircleOutlined className={styles.iconUp} onClick={this.handleClick} />
           ) : null}
@@ -106,7 +137,10 @@ class DetailEmployeeChart extends Component {
               <div className={styles.chartDetail__Top_name}>
                 <p className={styles.chartDetail__Top_firstName}>{firstName || ''}</p>
                 <div className={styles.chartDetail__Top_department}>{name || ''}</div>
-                <div className={styles.chartDetail__Top_psi}>{employeeId || ''}</div>
+                <div className={styles.chartDetail__Top_psi}>
+                  {`${employeeId} | ${emplTypeName}`}
+                  {/* {employeeId} */}
+                </div>
               </div>
             </div>
             <div className={styles.chartDetail__Bottom}>
@@ -127,7 +161,7 @@ class DetailEmployeeChart extends Component {
                   <div className={styles.chartDetail__Bottom_label}>Location:</div>
                 </Col>
                 <Col span={15}>
-                  <div className={styles.chartDetail__Bottom_value}>{nameLocation || ''}</div>
+                  <div className={styles.chartDetail__Bottom_value}>{locationName || ''}</div>
                 </Col>
                 <Col span={9}>
                   <div className={styles.chartDetail__Bottom_label}>Local Time:</div>
