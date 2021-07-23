@@ -47,7 +47,7 @@ export default class ModalAddType extends PureComponent {
               <p>Accrual Settings</p>
             </div>
             <Form.Item className={styles.nameField} label="Accrual Method" name="accrualMethod">
-              <Radio.Group defaultValue="unlimited">
+              <Radio.Group defaultValue="Unlimited">
                 <Space direction="vertical">
                   <Radio value="Unlimited">Unlimited</Radio>
                   <Radio value="Days Per Year">Days Per Year </Radio>
@@ -56,7 +56,7 @@ export default class ModalAddType extends PureComponent {
               </Radio.Group>
             </Form.Item>
             <Form.Item className={styles.noOfDay} label="Vacation Accrual Rate" name="accrualRate">
-              <Input addonAfter="Days per year" defaultValue="0" />
+              <Input addonAfter="Days per year" placeholder="0" />
             </Form.Item>
             <Form.Item className={styles.lastFormItem}>
               <Button className={styles.btnCancel} htmlType="reset" onClick={this.onCancel}>
