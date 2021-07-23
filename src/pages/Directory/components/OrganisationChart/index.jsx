@@ -107,7 +107,7 @@ class OrganisationChart extends Component {
 
     if (data) {
       const newData = this.deepSearchCurrentUser(data.children, myEmployeeId, 'user', 'children');
-      const { children = [] } = newData;
+      const { children = [] } = newData || {};
       children.forEach((item) => {
         if (item.user._id === myEmployeeId) {
           check = true;
