@@ -21,6 +21,7 @@ import styles from './index.less';
   }) => ({
     dataOrgChart,
     loading: loading.effects['employee/fetchDataOrgChart'],
+    loadingFetchListAll: loading.effects['employee/fetchAllListUser'],
     myEmployeeId,
     companiesOfUser,
     listLocationsByCompany,
@@ -241,7 +242,13 @@ class OrganisationChart extends Component {
   };
 
   render() {
-    const { loading, dataOrgChart, listEmployeeAll, companiesOfUser = [] } = this.props;
+    const {
+      loading,
+      dataOrgChart,
+      listEmployeeAll,
+      loadingFetchListAll,
+      companiesOfUser = [],
+    } = this.props;
     const { chartDetails } = this.state;
     return (
       <div className={styles.container}>
@@ -268,6 +275,7 @@ class OrganisationChart extends Component {
                 chartDetails={chartDetails}
                 handleSelectSearch={this.handleSelect}
                 listEmployeeAll={listEmployeeAll}
+                loadingFetchListAll={loadingFetchListAll}
                 closeDetailEmployee={this.closeDetailEmployee}
                 companiesOfUser={companiesOfUser}
               />

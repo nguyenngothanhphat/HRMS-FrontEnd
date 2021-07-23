@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Avatar, Row, Col, Typography, Select } from 'antd';
+import { Avatar, Row, Col, Typography, Select, Spin } from 'antd';
 import {
   LinkedinOutlined,
   MailOutlined,
@@ -8,6 +8,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { history } from 'umi';
+import SearchIcon from '@/assets/searchOrgChart.svg';
 import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
 
@@ -37,7 +38,7 @@ class DetailEmployeeChart extends Component {
   };
 
   render() {
-    const { chartDetails = {}, listEmployeeAll } = this.props;
+    const { chartDetails = {}, listEmployeeAll, loadingFetchListAll } = this.props;
     const checkObj = chartDetails.user !== undefined;
     const { user = {} } = chartDetails;
     const {
@@ -50,59 +51,71 @@ class DetailEmployeeChart extends Component {
         userId = '',
       } = {},
       department: { name = '' } = {},
-      location: { name: nameLocation = '' } = {},
+      employeeType: { name: emplTypeName = 'Full Time' } = {} || {},
+      location: {
+        headQuarterAddress: { country: { name: countryName = '' } = {} || {}, state = '' } = {} ||
+          {},
+      } = {},
       localTime = '',
     } = user;
 
-    const getCurrentCompanyName = this.getCurrentFirm();
+    const locationName = `${state}, ${countryName}`;
 
+    const getCurrentCompanyName = this.getCurrentFirm();
     return (
       <>
         <div className={styles.chartSearch}>
           <div className={styles.chartSearch__name}>{getCurrentCompanyName}</div>
-          <Select
-            showSearch
-            allowClear
-            placeholder="Search for employee, department"
-            filterOption={(input, option) => {
-              return (
-                option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              );
-            }}
-            onSelect={this.handleSelect}
-          >
-            {listEmployeeAll.map((value) => {
-              const {
-                _id: idSearch = '',
-                generalInfo: {
-                  avatar: avatarSearch = '',
-                  firstName: nameSearch = '',
-                  employeeId: employeeIdSearch = '',
-                  userId: userIdSearch = '',
-                } = {},
-              } = value;
-              const emplName = `${nameSearch} (${employeeIdSearch}) (${userIdSearch})`;
-              return (
-                <Option key={idSearch} value={idSearch}>
-                  <div style={{ display: 'inline', marginRight: '10px' }}>
-                    <Avatar
-                      src={avatarSearch || ''}
-                      size={30}
-                      icon={<UserOutlined />}
-                      style={{
-                        borderRadius: '50%',
-                        width: '25px',
-                        height: '25px',
-                      }}
-                    />
-                  </div>
-                  <span style={{ fontSize: '13px', color: '#161C29' }} className={styles.ccEmail}>
-                    {emplName}
-                  </span>
-                </Option>
-              );
-            })}
-          </Select>
+          {loadingFetchListAll ? (
+            <div className={styles.viewLoading}>
+              <Spin size="large" />
+            </div>
+          ) : (
+            <Select
+              showSearch
+              allowClear
+              placeholder="Search for employee, department"
+              filterOption={(input, option) => {
+                return (
+                  option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                );
+              }}
+              onSelect={this.handleSelect}
+              suffixIcon={<img alt="search" src={SearchIcon} />}
+            >
+              {listEmployeeAll.map((value) => {
+                const {
+                  _id: idSearch = '',
+                  generalInfo: {
+                    avatar: avatarSearch = '',
+                    firstName: nameSearch = '',
+                    employeeId: employeeIdSearch = '',
+                    userId: userIdSearch = '',
+                  } = {},
+                } = value;
+                const emplName = `${nameSearch} (${employeeIdSearch}) (${userIdSearch})`;
+                return (
+                  <Option key={idSearch} value={idSearch}>
+                    <div style={{ display: 'inline', marginRight: '10px' }}>
+                      <Avatar
+                        src={avatarSearch || ''}
+                        size={30}
+                        icon={<UserOutlined />}
+                        style={{
+                          borderRadius: '50%',
+                          width: '25px',
+                          height: '25px',
+                        }}
+                      />
+                    </div>
+                    <span style={{ fontSize: '13px', color: '#161C29' }} className={styles.ccEmail}>
+                      {emplName}
+                    </span>
+                  </Option>
+                );
+              })}
+            </Select>
+          )}
           {checkObj ? (
             <UpCircleOutlined className={styles.iconUp} onClick={this.handleClick} />
           ) : null}
@@ -116,7 +129,10 @@ class DetailEmployeeChart extends Component {
               <div className={styles.chartDetail__Top_name}>
                 <p className={styles.chartDetail__Top_firstName}>{firstName || ''}</p>
                 <div className={styles.chartDetail__Top_department}>{name || ''}</div>
-                <div className={styles.chartDetail__Top_psi}>{employeeId || ''}</div>
+                <div className={styles.chartDetail__Top_psi}>
+                  {`${employeeId} | ${emplTypeName}`}
+                  {/* {employeeId} */}
+                </div>
               </div>
             </div>
             <div className={styles.chartDetail__Bottom}>
@@ -137,7 +153,7 @@ class DetailEmployeeChart extends Component {
                   <div className={styles.chartDetail__Bottom_label}>Location:</div>
                 </Col>
                 <Col span={15}>
-                  <div className={styles.chartDetail__Bottom_value}>{nameLocation || ''}</div>
+                  <div className={styles.chartDetail__Bottom_value}>{locationName || ''}</div>
                 </Col>
                 <Col span={9}>
                   <div className={styles.chartDetail__Bottom_label}>Local Time:</div>

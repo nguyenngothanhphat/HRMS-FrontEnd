@@ -1,6 +1,6 @@
 .chartSearch {
   margin-bottom: 10px;
-  // padding: 24px;
+  padding: 16px;
   // padding-bottom: 12px;
   width: 413px;
   background-color: #ffffff;
@@ -28,6 +28,16 @@
     .ant-select-selection-placeholder{
       display: flex;
       align-items: center;
+
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 13px;
+      line-height: 15px;
+
+      color: #707177;
+
+      opacity: 0.53;
     }
 
     .ant-input-affix-wrapper {
@@ -41,45 +51,49 @@
     .ant-btn.ant-btn-icon-only.ant-input-search-button {
       border: none;
     }
+
+    .ant-select-arrow{
+      top: 47%;
+    }
+  }
+
+  .viewLoading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
   }
 
   &__name {
     font-family: Roboto;
-    font-weight: bold;
-    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 21px;
+    color: #161C29;
     text-align: center;
     padding-bottom: 12px;
   }
   &__search {
-    width: 100%;
-    border: 1px solid gray;
-    border-radius: 5px;
-    // :global {
-    //   .ant-input-affix-wrapper {
-    //     font-size: 16px;
-    //     border: none;
-    //     &-focused {
-    //       border: none;
-    //       outline: none;
-    //     }
-    //   }
-    //   .ant-btn.ant-btn-icon-only.ant-input-search-button {
-    //     border: none;
-    //   }
-    // }
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 21px;
+    color: #161C29;
   }
 
   .iconUp{
     width: 100%;
     font-size: 20px;
-    padding-top: 12px;
+    padding-top: 16px;
     cursor: pointer;
   }
 }
 
 .chartDetail {
   padding: 24px;
-  width: 400px;
+  width: 413px;
   background-color: #ffffff;
   border: 1px solid #e8eef2;
   border-radius: 8px;
@@ -97,29 +111,42 @@
     }
     &_firstName {
       margin-bottom: 0;
-      font-weight: bold;
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 18px;
+      line-height: 21px;
+      color: #161C29;
+    }
+
+    &_psi, &_department {
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
       font-size: 14px;
-    }
-    &_department {
-      font-weight: 500;
-      font-size: 12px;
-      opacity: 0.5;
-    }
-    &_psi {
-      font-weight: 500;
-      font-size: 12px;
-      opacity: 0.5;
+      line-height: 15px;
+      color: #707177;
+
+      opacity: 0.53;
     }
   }
 
   &__Bottom {
     &_label {
-      font-weight: 500;
-      font-size: 12px;
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 15px;
+      color: #707177;
     }
     &_value {
-      font-weight: 500;
-      font-size: 12px;
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 15px;
+      color: #161C29;
     }
     &_line {
       margin: 10px 0;
@@ -148,3 +175,5 @@
     }
   }
 }
+
+
