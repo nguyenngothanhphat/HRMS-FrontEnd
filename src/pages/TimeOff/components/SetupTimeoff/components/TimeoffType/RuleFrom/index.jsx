@@ -5,7 +5,7 @@ import { Row, Col, Button, Select, Spin } from 'antd';
 // import addIcon from '@/assets/addTicket.svg';
 // import icon from '@/assets/delete.svg';
 import { DeleteOutlined } from '@ant-design/icons';
-import { getCurrentTenant } from '@/utils/authority';
+// import { getCurrentTenant } from '@/utils/authority';
 // import _ from 'lodash';
 import styles from './index.less';
 import ModalAddType from './ModalAddType';
@@ -189,7 +189,7 @@ class RuleFrom extends Component {
       addNewType = () => {},
       loadingAddType,
       loadingFetchList,
-      countrySelected,
+      // countrySelected,
     } = this.props;
     const { isVisible } = this.state;
     const array = [

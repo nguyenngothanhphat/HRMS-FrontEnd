@@ -93,7 +93,7 @@ const MOCK_DATA = [
     countryHoliday,
     countryList,
     loading: loading.effects['timeOff/fetchHolidaysListBylocation'],
-    loadingbyCountry: loading.effects['timeOff/fetchHolidaysListBylocation'],
+    loadingbyCountry: loading.effects['timeOff/fetchHolidaysByCountry'],
     loadingAddHoliday: loading.effects['timeOff/addHoliday'],
     idCompany,
     location,
@@ -112,7 +112,7 @@ class HollidayCalendar extends Component {
       checkAll: false,
       plainOptions: [],
       checkedList: [],
-      indeterminate: true,
+      indeterminate: false,
     };
   }
 
@@ -490,11 +490,10 @@ class HollidayCalendar extends Component {
     } = this.state;
     const {
       // loading = false,
-      // loadingbyCountry = false,
-      // loadingAddHoliday = false,
+      loadingbyCountry,
+      loadingAddHoliday,
       countryHoliday,
     } = this.props;
-
     return (
       <div className={s.root}>
         <div className={s.setUpWrap}>
@@ -562,19 +561,25 @@ class HollidayCalendar extends Component {
                       </Row>
                     </div>
                   </div>
-                  <div>
-                    <Row>
-                      <Col span={24}>
-                        <CheckboxGroup
-                          className={s.chkBoxGroup}
-                          value={checkedList}
-                          onChange={this.onChangeChkBoxGroup}
-                        >
-                          <div>{this.renderInfo()}</div>
-                        </CheckboxGroup>
-                      </Col>
-                    </Row>
-                  </div>
+                  {loadingbyCountry || loadingAddHoliday ? (
+                    <div className={s.loadingListCountry}>
+                      <Spin size="large" />
+                    </div>
+                  ) : (
+                    <div>
+                      <Row>
+                        <Col span={24}>
+                          <CheckboxGroup
+                            className={s.chkBoxGroup}
+                            value={checkedList}
+                            onChange={this.onChangeChkBoxGroup}
+                          >
+                            <div>{this.renderInfo()}</div>
+                          </CheckboxGroup>
+                        </Col>
+                      </Row>
+                    </div>
+                  )}
                 </div>
               </Col>
               <Col span={4}>
