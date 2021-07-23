@@ -214,7 +214,7 @@ class RuleFrom extends Component {
       },
       {
         typeName: 'D',
-        type: 'Type D: Working our of office',
+        type: 'Type D: Working out of office',
         button: 'Add a new WOO leave',
         children: [],
       },

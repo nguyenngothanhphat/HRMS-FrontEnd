@@ -180,7 +180,7 @@ const timeOff = {
     *fetchTimeOffTypes({ payload }, { call, put }) {
       try {
         const response = yield call(getTimeOffTypes, payload);
-        const { statusCode, data: timeOffTypes = {} } = response;
+        const { statusCode, data: timeOffTypes = [] } = response;
         // console.log('timeOffTypes', timeOffTypes);
         if (statusCode !== 200) throw response;
         yield put({
