@@ -38,7 +38,8 @@ class OrganisationChart extends Component {
       currentTime: moment(),
     };
     this.myRef = React.createRef();
-    this.userRef = React.createRef();
+    this.userRef = React.createRef([]);
+    this.userRef.current = [];
   }
 
   componentDidMount() {
@@ -130,26 +131,60 @@ class OrganisationChart extends Component {
     arrowDown.click();
   };
 
-  getDetailUser = async (nodeData) => {
-    const { user: { location } = {} } = nodeData;
+  handleClickUserCard = async (nodeData) => {
+    const { dataOrgChart = {} } = this.props;
     const { timezoneList, currentTime } = this.state;
+    let check = false;
+
+    const { user: { location } = {}, id: userId = '' } = nodeData;
+    const arrRef = this.userRef.current;
+
+    const newData = this.deepSearchCurrentUser(dataOrgChart.children, userId, 'user', 'children');
+    const { children = [] } = newData || {};
+
     const findTimezone =
       timezoneList.find((timezone) => timezone.locationId === location._id) || {};
     const timeData = getCurrentTimeOfTimezone(currentTime, findTimezone.timezone);
     const addTimeData = { user: { ...nodeData.user, localTime: timeData } };
 
     // when click on this node will control the org chart move to the center of the screen.
-    this.userRef.current.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-      inline: 'center',
+    children.forEach((item) => {
+      if (item.user._id === userId) {
+        check = true;
+      }
     });
+    if (check) {
+      this.handleFocusUserCard(arrRef, userId);
+    }
 
     this.setState({ chartDetails: addTimeData });
   };
 
   closeDetailEmployee = () => {
     this.setState({ chartDetails: {} });
+  };
+
+  addToRefs = (el, id) => {
+    if (el && !this.userRef.current.includes(el)) {
+      this.userRef.current.push({
+        ref: el,
+        id,
+      });
+    }
+
+    return el;
+  };
+
+  handleFocusUserCard = (arrRef, userId) => {
+    let arrTemp = arrRef?.map((item) => (item.id === userId ? item.ref : null));
+    arrTemp = arrTemp.filter((item) => item !== null);
+    arrTemp = [...new Set(arrTemp)];
+
+    arrTemp[0].scrollIntoView({
+      behavior: 'smooth',
+      block: 'center',
+      inline: 'center',
+    });
   };
 
   renderNode = ({ nodeData }) => {
@@ -169,7 +204,7 @@ class OrganisationChart extends Component {
       <div
         className={styles.chartNode}
         style={check ? { border: '1px solid #00C598' } : {}}
-        ref={this.userRef}
+        ref={(el) => this.addToRefs(el, _id)}
       >
         <div className={styles.chartAvt}>
           <Avatar src={avatar} size={64} icon={<UserOutlined />} />
@@ -269,7 +304,7 @@ class OrganisationChart extends Component {
             <OrganizationChart
               datasource={dataOrgChart}
               NodeTemplate={this.renderNode}
-              onClickNode={(node) => this.getDetailUser(node)}
+              onClickNode={(node) => this.handleClickUserCard(node)}
               chartClass={styles.myChart}
               containerClass={styles.chartContainer}
               collapsible
