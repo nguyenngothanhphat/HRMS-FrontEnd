@@ -6,7 +6,7 @@ import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { connect } from 'umi';
 import moment from 'moment';
 import OrganizationChart from '@dabeng/react-orgchart';
-import DetailEmployeeChart from './components/detailEmployee';
+import DetailEmployeeChart from './components/EmployeeCard';
 import styles from './index.less';
 
 @connect(
