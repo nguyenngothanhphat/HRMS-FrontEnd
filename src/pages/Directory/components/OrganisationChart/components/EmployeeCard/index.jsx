@@ -110,7 +110,7 @@ class DetailEmployeeChart extends Component {
                         size={30}
                         icon={<UserOutlined />}
                         style={{
-                          borderRadius: '50%',
+                          fontSize: 'initial',
                           width: '25px',
                           height: '25px',
                         }}
