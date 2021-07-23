@@ -42,14 +42,7 @@ class OrganisationChart extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, companiesOfUser = [], listLocationsByCompany = [] } = this.props;
-    const convertLocation = listLocationsByCompany.map((item) => {
-      const { headQuarterAddress: { country: { _id = '' } = {}, state = '' } = {} } = item;
-      return {
-        country: _id,
-        state: [state],
-      };
-    });
+    const { dispatch } = this.props;
     const tenantId = getCurrentTenant();
     const company = getCurrentCompany();
     dispatch({
@@ -61,10 +54,8 @@ class OrganisationChart extends Component {
         this.getCurrentUser(data);
       }
     });
-    dispatch({
-      type: 'employee/fetchAllListUser',
-      payload: { company: companiesOfUser, location: convertLocation },
-    });
+
+    this.fetchAllListUser();
     this.fetchTimezone();
   }
 
@@ -73,9 +64,26 @@ class OrganisationChart extends Component {
     if (
       JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {
+      this.fetchAllListUser();
       this.fetchTimezone();
     }
   }
+
+  fetchAllListUser = () => {
+    const { listLocationsByCompany = [], companiesOfUser = [], dispatch } = this.props;
+
+    const convertLocation = listLocationsByCompany.map((item) => {
+      const { headQuarterAddress: { country: { _id = '' } = {}, state = '' } = {} } = item;
+      return {
+        country: _id,
+        state: [state],
+      };
+    });
+    dispatch({
+      type: 'employee/fetchAllListUser',
+      payload: { company: companiesOfUser, location: convertLocation },
+    });
+  };
 
   deepSearchCurrentUser = (data, myEmployeeId, key, sub) => {
     const newTempObj = {};
