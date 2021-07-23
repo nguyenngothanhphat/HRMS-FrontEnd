@@ -8,6 +8,7 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { history } from 'umi';
+import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
 
 const { Text } = Typography;
@@ -28,6 +29,13 @@ class DetailEmployeeChart extends Component {
     closeDetailEmployee();
   };
 
+  getCurrentFirm = () => {
+    const { companiesOfUser = [] } = this.props;
+    const idFirm = getCurrentCompany();
+    const currentFirm = companiesOfUser.filter((item) => item._id === idFirm);
+    return currentFirm[0]?.name;
+  };
+
   render() {
     const { chartDetails = {}, listEmployeeAll } = this.props;
     const checkObj = chartDetails.user !== undefined;
@@ -45,14 +53,16 @@ class DetailEmployeeChart extends Component {
       location: { name: nameLocation = '' } = {},
       localTime = '',
     } = user;
+
+    const getCurrentCompanyName = this.getCurrentFirm();
+
     return (
       <>
         <div className={styles.chartSearch}>
-          <p className={styles.chartSearch__name}>Terralogic Software Solution Pvt. Ltd.</p>
+          <div className={styles.chartSearch__name}>{getCurrentCompanyName}</div>
           <Select
             showSearch
             allowClear
-            style={{ width: '100%' }}
             placeholder="Search for employee, department"
             filterOption={(input, option) => {
               return (

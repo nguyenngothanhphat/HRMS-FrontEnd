@@ -241,7 +241,7 @@ class OrganisationChart extends Component {
   };
 
   render() {
-    const { loading, dataOrgChart, listEmployeeAll } = this.props;
+    const { loading, dataOrgChart, listEmployeeAll, companiesOfUser = [] } = this.props;
     const { chartDetails } = this.state;
     return (
       <div className={styles.container}>
@@ -269,6 +269,7 @@ class OrganisationChart extends Component {
                 handleSelectSearch={this.handleSelect}
                 listEmployeeAll={listEmployeeAll}
                 closeDetailEmployee={this.closeDetailEmployee}
+                companiesOfUser={companiesOfUser}
               />
             </div>
           </div>
