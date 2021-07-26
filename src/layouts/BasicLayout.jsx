@@ -19,6 +19,7 @@ import classnames from 'classnames';
 import React from 'react';
 import { connect, Link, Redirect, useIntl } from 'umi';
 import logo from '../assets/logo.svg';
+import iconMenu from '../assets/iconMenu.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
 
@@ -94,7 +95,10 @@ const BasicLayout = (props) => {
 
     const logoUrl = getCurrentLogo();
     return (
-      <>
+      <div className={styles.logoSection}>
+        <Button className={styles.logoSection__button}>
+          <img alt="icon-menu" src={iconMenu} />
+        </Button>
         {logoUrl || logoCompany ? (
           <Link to="/">
             <img
@@ -110,7 +114,7 @@ const BasicLayout = (props) => {
             />
           </Link>
         ) : null}
-      </>
+      </div>
     );
   };
 
