@@ -1,9 +1,10 @@
 import AttachmentIcon from '@/assets/attachment.svg';
 import ImageIcon from '@/assets/image_icon.png';
 import PDFIcon from '@/assets/pdf_icon.png';
-import { Button, Form, Input, message, Modal, Select, Spin, Upload } from 'antd';
+import { Button, Form, Input, message, Modal, Select, Spin, Tooltip, Upload } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import TrashIcon from '@/assets/trash.svg';
 import styles from './index.less';
 
 const { Dragger } = Upload;
@@ -14,7 +15,10 @@ const { Option } = Select;
 class AddDocumentModal extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      selectExistDocument: '',
+      uploadedFile: {},
+    };
   }
 
   componentDidMount = async () => {};
@@ -25,12 +29,17 @@ class AddDocumentModal extends PureComponent {
     switch (ext.toLowerCase()) {
       case 'jpg':
       case 'jpeg':
-      case 'gif':
-      case 'bmp':
+      case 'svg':
+      case 'webp':
+      case 'tiff':
       case 'png':
         return 0;
       case 'pdf':
         return 1;
+      case 'doc':
+      case 'docx':
+        return 2;
+
       default:
         return 0;
     }
@@ -45,9 +54,9 @@ class AddDocumentModal extends PureComponent {
   beforeUpload = (file) => {
     const { setSizeImageMatch = () => {} } = this.props;
     const checkType =
-      file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'application/pdf';
+      this.identifyImageOrPdf(file.name) === 0 || this.identifyImageOrPdf(file.name) === 1;
     if (!checkType) {
-      message.error('You can only upload JPG/PNG/PDF file!');
+      message.error('You can only upload image and PDF file!');
     }
     const isLt5M = file.size / 1024 / 1024 < 5;
     if (!isLt5M) {
@@ -63,7 +72,7 @@ class AddDocumentModal extends PureComponent {
   };
 
   handleUpload = (file) => {
-    const { dispatch, getResponse = () => {} } = this.props;
+    const { dispatch } = this.props;
 
     const formData = new FormData();
     formData.append('uri', file);
@@ -72,10 +81,15 @@ class AddDocumentModal extends PureComponent {
       payload: formData,
     }).then((resp) => {
       const { data = [] } = resp;
-      const { name = '' } = data[0];
-      // getResponse(resp);
+      const uploadedFile = data.length > 0 ? data[0] : {};
+      const { name = '' } = file;
+      this.setState({ uploadedFile, selectExistDocument: '' });
       this.handlePreview(name);
     });
+  };
+
+  handleRemove = () => {
+    this.handlePreview('');
   };
 
   renderHeaderModal = () => {
@@ -88,42 +102,71 @@ class AddDocumentModal extends PureComponent {
   };
 
   onFinish = async (values) => {
-    // const { dispatch } = this.props;
-    // const res = await dispatch({
-    //   type: '',
-    //   payload: {},
-    // });
-    // if (res?.statusCode === 200) {
-    // }
+    const { onAdd = () => {}, defaultTemplates = [], customTemplates = [] } = this.props;
+    const existingDocumentList = [...defaultTemplates, ...customTemplates];
+
+    const { name = '', existingDocument = '' } = values;
+    const { uploadedFile = {} } = this.state;
+
+    let selectedFile = existingDocumentList.find((doc) => doc._id === existingDocument)?.attachment;
+    if (!existingDocument) {
+      selectedFile = uploadedFile;
+    }
+    const payload = {
+      name,
+      uploadedFile: selectedFile,
+    };
+
+    if (!selectedFile || Object.keys(selectedFile).length === 0) {
+      message.error('Invalid file');
+    } else {
+      this.setState({ uploadedFile: {}, selectExistDocument: '' });
+      onAdd(payload);
+    }
   };
 
-  renderHR = (hr) => {
+  renderDocument = (document) => {
+    const { title = '', _id = '' } = document;
     return (
-      <Option style={{ padding: '10px' }}>
+      <Option value={_id} key={_id} style={{ padding: '10px' }}>
         <div
           style={{
             display: 'inline',
-            marginRight: '10px',
+            // marginRight: '10px',
           }}
         />
         <span style={{ fontSize: '13px', color: '#161C29' }} className={styles.ccEmail}>
-          Doc Name
+          {title}
         </span>
       </Option>
     );
   };
 
+  handleCancel = () => {
+    const { handleModalVisible = () => {} } = this.props;
+    this.setState({ uploadedFile: {}, selectExistDocument: '' });
+    this.handlePreview('');
+    handleModalVisible(false);
+  };
+
   render() {
-    const { loadingUploadAttachment, visible = false, handleModalVisible = () => {} } = this.props;
-    const { fileName = '' } = this.state;
+    const {
+      loadingUploadAttachment,
+      visible = false,
+      defaultTemplates = [],
+      customTemplates = [],
+    } = this.props;
+    const { fileName = '', selectExistDocument = '' } = this.state;
+
+    const existingDocumentList = [...defaultTemplates, ...customTemplates];
     return (
       <>
         <Modal
           className={styles.AddDocumentModal}
-          onCancel={() => handleModalVisible(false)}
+          onCancel={this.handleCancel}
           destroyOnClose
           footer={[
-            <Button onClick={() => handleModalVisible(false)} className={styles.btnCancel}>
+            <Button onClick={this.handleCancel} className={styles.btnCancel}>
               Cancel
             </Button>,
             <Button
@@ -153,7 +196,12 @@ class AddDocumentModal extends PureComponent {
               }
             }
           >
-            <Form.Item label="Name" name="name" labelCol={{ span: 24 }}>
+            <Form.Item
+              rules={[{ required: true, message: 'Please enter name' }]}
+              label="Name"
+              name="name"
+              labelCol={{ span: 24 }}
+            >
               <Input placeholder="Name" />
             </Form.Item>
             <Form.Item
@@ -164,34 +212,44 @@ class AddDocumentModal extends PureComponent {
               <Select
                 // filterOption={(input, option) =>
                 //   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-                // filterOption={(input, option) => {
-                //   return (
-                //     option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                //     0
-                //   );
-                // }}
+                filterOption={(input, option) => {
+                  return (
+                    option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                    0
+                  );
+                }}
                 showSearch
                 allowClear
                 placeholder="Select an existing document"
-                // onChange={(val) => {
-                //   this.setState({
-                //     selectedEmployee: val,
-                //   });
-                // }}
+                disabled={fileName}
+                onChange={(val) => {
+                  this.setState({
+                    selectExistDocument: val,
+                  });
+                }}
               >
-                {/* {hrListFormat.map((hr) => {
-                  return this.renderHR(hr);
-                })} */}
+                {existingDocumentList.map((doc) => {
+                  return this.renderDocument(doc);
+                })}
               </Select>
             </Form.Item>
             <div className={styles.fileUploadForm}>
               <Dragger
                 beforeUpload={this.beforeUpload}
                 showUploadList={false}
+                disabled={selectExistDocument || fileName}
                 action={(file) => this.handleUpload(file)}
               >
                 {fileName !== '' ? (
                   <div className={styles.fileUploadedContainer}>
+                    <Tooltip title="Remove">
+                      <img
+                        onClick={() => this.handleRemove()}
+                        className={styles.trashIcon}
+                        src={TrashIcon}
+                        alt="remove"
+                      />
+                    </Tooltip>
                     <p className={styles.previewIcon}>
                       {this.identifyImageOrPdf(fileName) === 1 ? (
                         <img src={PDFIcon} alt="pdf" />
@@ -202,19 +260,18 @@ class AddDocumentModal extends PureComponent {
                     <p className={styles.fileName}>
                       Uploaded: <a>{fileName}</a>
                     </p>
-                    <Button>Choose an another file</Button>
+                    {/* <Button disabled={selectExistDocument}>Choose an another file</Button> */}
                   </div>
                 ) : (
                   <div className={styles.drapperBlock}>
                     {loadingUploadAttachment ? (
                       <Spin />
                     ) : (
-                      <div>
+                      <>
                         <img className={styles.uploadIcon} src={AttachmentIcon} alt="upload" />
-
                         <span className={styles.chooseFileText}>Choose file</span>
                         <span className={styles.uploadText}>or drop file here</span>
-                      </div>
+                      </>
                     )}
                   </div>
                 )}

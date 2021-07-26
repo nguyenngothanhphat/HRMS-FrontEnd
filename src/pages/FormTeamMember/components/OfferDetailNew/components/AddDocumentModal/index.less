@@ -1,15 +1,21 @@
 .AddDocumentModal {
   :global {
-    .ant-select-selection-item {
-      color: #161c29 !important
+    .ant-form-item-explain {
+      div {
+        font-size: 13px;
+      }
     }
-    .ant-select-selector, .ant-input {
+    .ant-select-selection-item {
+      color: #161c29 !important;
+    }
+    .ant-select-selector,
+    .ant-input {
       height: 42px !important;
-      // border: none !important;
-      background: transparent !important;
-      // padding-top: 10px !important;
+
       padding: 5px 11px !important;
-      border-radius: 5px !important; 
+
+      background: transparent !important;
+      border-radius: 5px !important;
     }
     .ant-select-selection-search-input {
       height: 42px !important;
@@ -29,7 +35,7 @@
       font-size: 14px;
       font-family: Roboto;
       letter-spacing: 0.13px;
-      // display: none;
+
       text-shadow: none;
       background-color: #ffa100;
       border: solid 1px #ffa100;
@@ -58,9 +64,9 @@
       border-top-left-radius: 8px;
     }
     .ant-modal-content {
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
       border-top-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
     }
     .ant-form-item {
       margin-bottom: 12px;
@@ -70,13 +76,13 @@
     }
     .ant-modal-close-x {
       position: absolute;
-      background-color: #2c6df9;
-      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 54px;
       height: 48px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      color: #fff;
+      background-color: #2c6df9;
       border-top-right-radius: 8px;
       border-bottom-right-radius: 8px;
       &:active {
@@ -85,26 +91,26 @@
     }
   }
   .btnSubmit {
-    font-size: 14px;
     width: 95px;
-    // height: 40px;
-    font-weight: 600;
-    border-radius: 25px;
     color: #fff;
+
+    font-weight: 600;
+    font-size: 14px;
     background-color: #ffa100;
     border: none;
+    border-radius: 25px;
   }
   .btnSubmit:disabled {
     color: #fff;
     opacity: 0.5;
   }
   .btnCancel {
-    border: none;
     display: inline-block;
-    color: #ffa100;
-    font-size: 14px;
-    font-weight: 500;
     margin-right: 20px;
+    color: #ffa100;
+    font-weight: 500;
+    font-size: 14px;
+    border: none;
     cursor: pointer;
     &:active {
       opacity: 0.5;
@@ -113,77 +119,83 @@
 
   .header {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     &__text {
+      margin: 0;
+      color: #161c29;
       font-weight: 600;
       font-size: 16px;
-      color: #161c29;
-      margin: 0;
     }
   }
 
   .fileUploadForm {
+    height: 100%;
     margin-top: 20px;
     background-color: white;
-    height: 100%;
     .fileUploadedContainer {
+      position: relative;
+      .trashIcon {
+        position: absolute;
+        top: -24px;
+        right: -5px;
+        display: block;
+        cursor: pointer;
+        &:hover {
+          opacity: 0.9;
+        }
+      }
+
       .previewIcon {
         margin-bottom: 20px;
-        // img {
-        //   width: 0px;
-        // }
       }
       .fileName {
         font-size: 14px;
         a {
-          // text-decoration: underline;
           color: #2c6df9;
         }
-        margin-bottom: 30px;
       }
     }
     .drapperBlock {
+      position: relative;
       margin: 20px;
-    
+
       .uploadIcon {
-          margin-right: 10px;
+        margin-right: 10px;
       }
       .chooseFileText {
         display: inline-block;
-        line-height: 1.4;
+        color: #2c6df9;
         font-weight: 500;
         font-size: 14px;
-        color: #2C6DF9;
+        line-height: 1.4;
       }
       .uploadText {
         display: inline-block;
+        margin-left: 5px;
+        color: #464646;
         font-size: 13px;
         line-height: 1.4;
-        color: #464646;
-        margin-left: 5px;
       }
     }
     :global {
       .ant-upload.ant-upload-drag {
-        border-radius: 8px;
-        background: #fff;
         padding: 20px;
+        background: #fff;
+        border-radius: 8px;
       }
       .ant-btn {
+        height: 35px;
+        padding: 0 35px;
         background-color: #ffa100;
         border: none;
-        padding: 0 35px;
-        height: 35px;
         border-radius: 40px;
         span {
-          font-size: 14px;
           color: white;
           font-weight: 700;
+          font-size: 14px;
         }
       }
     }
   }
-  
 }
-  

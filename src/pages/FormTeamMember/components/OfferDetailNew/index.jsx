@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 import { getCurrentTenant } from '@/utils/authority';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Col, DatePicker, Form, Row, Select } from 'antd';
@@ -25,6 +24,7 @@ const OfferDetail = (props) => {
     defaultTemplates: defaultTemplatesProp,
     customTemplates: customTemplatesProp,
     staticOfferLetter: staticOfferLetterProp,
+    offerDocuments: offerDocumentsProp = [],
   } = tempData;
   const [isAddModalVisible, setAddModalVisible] = useState(false);
 
@@ -378,14 +378,6 @@ const OfferDetail = (props) => {
     });
   };
 
-  const renderDocuments = () => {
-    const documentList = [
-      { _id: 1, title: 'Free form text', attachment: { name: '[ 2020 ] Basic Life / AD & D.pdf' } },
-      { _id: 2, title: 'Free form text', attachment: { name: '[ 2020 ] Vol life / AD & D.pdf' } },
-    ];
-    return documentList.map((doc) => <DocumentItem item={doc} />);
-  };
-
   const handleAddDocument = (type = 'document') => {
     setAddModalVisible(true);
   };
@@ -397,6 +389,73 @@ const OfferDetail = (props) => {
   // DISABLE DATE OF DATE PICKER
   const disabledDate = (current) => {
     return current && current < moment();
+  };
+
+  const onAddDocument = async (payload) => {
+    const { name = '', uploadedFile = {} } = payload;
+
+    let newOfferDocumentsProp = [...offerDocumentsProp];
+    const payloadNew = [
+      {
+        name,
+        attachmentName: uploadedFile.name,
+        attachmentUrl: uploadedFile.url,
+        attachment: uploadedFile.id,
+      },
+    ];
+
+    newOfferDocumentsProp = [...newOfferDocumentsProp, ...payloadNew];
+
+    await dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        tempData: {
+          ...tempData,
+          offerDocuments: newOfferDocumentsProp,
+        },
+      },
+    });
+
+    const { candidate } = data;
+    await dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate,
+        tenantId: getCurrentTenant(),
+        offerDocuments: newOfferDocumentsProp,
+      },
+    });
+    handleModalVisible(false);
+  };
+
+  const onRemove = async (attachmentId) => {
+    const newOfferDocumentsProp = offerDocumentsProp.filter(
+      (doc) => doc.attachment !== attachmentId && doc.attachment?._id !== attachmentId,
+    );
+
+    await dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        tempData: {
+          ...tempData,
+          offerDocuments: newOfferDocumentsProp,
+        },
+      },
+    });
+
+    const { candidate } = data;
+    await dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate,
+        tenantId: getCurrentTenant(),
+        offerDocuments: newOfferDocumentsProp,
+      },
+    });
+  };
+
+  const renderDocuments = () => {
+    return offerDocumentsProp.map((doc) => <DocumentItem onRemove={onRemove} item={doc} />);
   };
 
   return (
@@ -489,14 +548,17 @@ const OfferDetail = (props) => {
         </div>
       </Form>
 
-      <AddDocumentModal visible={isAddModalVisible} handleModalVisible={handleModalVisible} />
+      <AddDocumentModal
+        visible={isAddModalVisible}
+        handleModalVisible={handleModalVisible}
+        defaultTemplates={defaultTemplatesProp}
+        customTemplates={customTemplatesProp}
+        onAdd={onAddDocument}
+      />
     </>
   );
 };
 
-// export default connect(({ info: { offerDetail = {} } = {} }) => ({
-//   offerDetail,
-// }))(OfferDetail);
 export default connect(
   ({ candidateInfo: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
     data,
