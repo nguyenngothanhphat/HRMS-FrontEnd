@@ -141,12 +141,13 @@ class JobDetails extends PureComponent {
 
   onClickNext = () => {
     const { jobDetails } = this.state;
-    const { candidatesNoticePeriod, prefferedDateOfJoining, checkMandatory } = jobDetails;
+    const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetails;
     const {
       dispatch,
       data: { _id, dateOfJoining = '', noticePeriod = '' },
       data,
       localStep,
+      checkMandatory,
     } = this.props;
 
     // const convert = (str) => {

@@ -189,7 +189,7 @@ const CandidateLayout = (props) => {
     });
   };
 
-  const handleStepClick = (id) => {
+  const handleStepClick = (id, isDisabled) => {
     if (!dispatch) {
       return;
     }
@@ -205,13 +205,7 @@ const CandidateLayout = (props) => {
     //   }
     // }
 
-    if (
-      // filledBasicInformation &&
-      // filledJobDetail &&
-      // filledSalaryStructure &&
-      // filledDocumentVerification
-      true
-    ) {
+    if (!isDisabled) {
       dispatch({
         type: 'candidateProfile/save',
         payload: {
@@ -287,7 +281,7 @@ const CandidateLayout = (props) => {
                           disabled={item.disabled}
                           key={title}
                           title={title}
-                          onClick={() => handleStepClick(id)}
+                          onClick={() => handleStepClick(id, item.disabled)}
                         />
                       );
                     })}
