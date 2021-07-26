@@ -265,6 +265,17 @@ class ViewInformation extends Component {
     );
   };
 
+  _renderListCertification = (list) => {
+    return list.map((item, index) => {
+      const { name = '', _id = '' } = item;
+      return (
+        <div key={_id} className={s.infoEmployee__textNameAndTitle__title}>
+          <div className={s.textValue}>{`${index + 1} - ${name}`}</div>
+        </div>
+      );
+    });
+  };
+
   render() {
     const {
       generalData,
@@ -289,6 +300,7 @@ class ViewInformation extends Component {
       linkedIn = '',
       workEmail = '',
       workNumber = '',
+      certification = [],
     } = generalData;
 
     // const { tittle: { name: title = '' } = {} } = compensationData;
@@ -383,6 +395,11 @@ class ViewInformation extends Component {
                 {item.name}
               </Tag>
             ))}
+          </div>
+          <Divider />
+          <p className={s.titleTag}>Certifications</p>
+          <div className={s.infoEmployee__viewBottom__certifications}>
+            {this._renderListCertification(certification)}
           </div>
           <Divider />
           {checkVisible ? (
