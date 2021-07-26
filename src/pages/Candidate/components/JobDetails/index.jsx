@@ -93,7 +93,7 @@ class JobDetails extends PureComponent {
   }
 
   _handleSelect = (value, name) => {
-    const { dispatch, data } = this.props;
+    const { dispatch, data, checkMandatory } = this.props;
     const { jobDetails = {} } = this.state;
     jobDetails[name] = value;
     const { dateOfJoining, noticePeriod } = data;
@@ -101,6 +101,21 @@ class JobDetails extends PureComponent {
     let newNoticePeriod = noticePeriod;
     let newDateOfJoining = dateOfJoining;
 
+    if (name === 'noPropose') {
+      if (!value) {
+        newNoticePeriod = null;
+        dispatch({
+          type: 'candidateProfile/save',
+          payload: {
+            // jobDetails,
+            checkMandatory: {
+              ...checkMandatory,
+              filledJobDetail: value,
+            },
+          },
+        });
+      }
+    }
     if (name === 'candidatesNoticePeriod') {
       newNoticePeriod = value;
     }
@@ -132,6 +147,7 @@ class JobDetails extends PureComponent {
       data: { _id, dateOfJoining = '', noticePeriod = '' },
       data,
       localStep,
+      checkMandatory,
     } = this.props;
 
     // const convert = (str) => {
@@ -160,6 +176,10 @@ class JobDetails extends PureComponent {
           ...data,
           noticePeriod: candidatesNoticePeriod || noticePeriod,
           dateOfJoining: converted,
+        },
+        checkMandatory: {
+          ...checkMandatory,
+          filledSalaryStructure: true,
         },
       },
     });
@@ -191,9 +211,28 @@ class JobDetails extends PureComponent {
     );
   };
 
+  handleDisabled = () => {
+    const { checkMandatory } = this.props;
+    const { filledJobDetail, isCandidateAcceptDOJ } = checkMandatory;
+    if (isCandidateAcceptDOJ) {
+      return !isCandidateAcceptDOJ;
+    }
+
+    return !filledJobDetail;
+  };
+
   _renderBottomBar = () => {
     const { checkMandatory } = this.props;
-    const { filledJobDetail } = checkMandatory;
+    const { filledJobDetail, isCandidateAcceptDOJ } = checkMandatory;
+
+    const className = () => {
+      if (isCandidateAcceptDOJ) {
+        return '';
+      }
+
+      if (filledJobDetail) return '';
+      return styles.bottomBar__button__disabled;
+    };
 
     return (
       <div className={styles.bottomBar}>
@@ -213,10 +252,8 @@ class JobDetails extends PureComponent {
               <Button
                 type="primary"
                 onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary} ${
-                  !filledJobDetail ? styles.bottomBar__button__disabled : ''
-                }`}
-                disabled={!filledJobDetail}
+                className={`${styles.bottomBar__button__primary} ${className()}`}
+                disabled={this.handleDisabled()}
               >
                 Next
               </Button>
