@@ -67,7 +67,7 @@ class PersonalInformation extends PureComponent {
   render() {
     const { generalData, openPersonnalInfor, permissions = {}, profileOwner } = this.props;
     const renderComponent = openPersonnalInfor ? (
-      <Edit handleCancel={this.handleCancel} />
+      <Edit handleCancel={this.handleCancel} profileOwner={profileOwner} />
     ) : (
       <View dataAPI={generalData} permissions={permissions} profileOwner={profileOwner} />
     );
