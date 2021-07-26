@@ -116,15 +116,15 @@ const getColumnWidth = (columnName, tableType) => {
       case 'position':
         return '16%';
       case 'location':
-        return '20%';
+        return '16%';
       case 'dateJoin':
         return '15%';
       case 'actions':
         return '15%';
       case 'assignTo':
-        return '20%';
+        return '10%';
       case 'assigneeManager':
-        return '20%';
+        return '10%';
       case 'processStatus':
         return '8%';
       default:
