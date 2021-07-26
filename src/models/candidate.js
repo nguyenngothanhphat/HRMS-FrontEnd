@@ -22,6 +22,7 @@ const candidateProfile = {
     checkMandatory: {
       filledBasicInformation: true,
       filledJobDetail: false,
+      isCandidateAcceptDOJ: true,
     },
     data: {
       _id: '',
