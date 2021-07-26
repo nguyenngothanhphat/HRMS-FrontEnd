@@ -28,19 +28,15 @@ class GeneralInfo extends Component {
       );
     return (
       <div className={styles.GeneralInfo}>
-        <EmployeeInformation permissions={permissions} profileOwner={profileOwner} />
+        <EmployeeInformation permissions={permissions} />
         <PersonalInformation permissions={permissions} profileOwner={profileOwner} />
         {(permissions.viewPassportAndVisa !== -1 || profileOwner) && (
           <>
-            <PassportDetails />
-            <VisaDetails />
+            <PassportDetails profileOwner={profileOwner} />
+            <VisaDetails profileOwner={profileOwner} />
           </>
         )}
-        {checkVisible ? (
-          <EmergencyContact permissions={permissions} profileOwner={profileOwner} />
-        ) : (
-          ''
-        )}
+        {checkVisible ? <EmergencyContact permissions={permissions} /> : ''}
         {checkVisible ? (
           <ProfessionalAcademicBackground permissions={permissions} profileOwner={profileOwner} />
         ) : (
