@@ -141,7 +141,7 @@ class JobDetails extends PureComponent {
 
   onClickNext = () => {
     const { jobDetails } = this.state;
-    const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetails;
+    const { candidatesNoticePeriod, prefferedDateOfJoining, checkMandatory } = jobDetails;
     const {
       dispatch,
       data: { _id, dateOfJoining = '', noticePeriod = '' },
@@ -175,6 +175,10 @@ class JobDetails extends PureComponent {
           ...data,
           noticePeriod: candidatesNoticePeriod || noticePeriod,
           dateOfJoining: converted,
+        },
+        checkMandatory: {
+          ...checkMandatory,
+          filledSalaryStructure: true,
         },
       },
     });

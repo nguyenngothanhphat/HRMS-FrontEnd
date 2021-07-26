@@ -27,44 +27,6 @@ const noMatch = (
   />
 );
 
-const steps = [
-  {
-    id: 1,
-    title: 'Basic Infomation',
-    content: 'First-content',
-  },
-  {
-    id: 2,
-    title: 'Job Details',
-    content: 'Second-content',
-  },
-  {
-    id: 3,
-    title: 'Salary Structure',
-    content: 'Third-content',
-  },
-  {
-    id: 4,
-    title: 'Document Verification',
-    content: 'Fourth-content',
-  },
-  {
-    id: 5,
-    title: 'Offer Details',
-    content: 'Fifth-content',
-  },
-  {
-    id: 6,
-    title: 'Benefits',
-    content: 'Sixth-content',
-  },
-  {
-    id: 7,
-    title: 'Additional Questions',
-    content: 'Last-content',
-  },
-];
-
 const getLineWidth = (value) => {
   switch (value) {
     case 1:
@@ -98,9 +60,60 @@ const CandidateLayout = (props) => {
     dispatch,
     processStatus = '',
     companiesOfUser = [],
+    checkMandatory: {
+      filledBasicInformation = false,
+      filledJobDetail = false,
+      filledSalaryStructure = false,
+      filledDocumentVerification = false,
+    } = {},
   } = props;
 
   const [current, setCurrent] = useState(1);
+
+  const steps = [
+    {
+      id: 1,
+      title: 'Basic Infomation',
+      content: 'First-content',
+      disabled: !filledBasicInformation,
+    },
+    {
+      id: 2,
+      title: 'Job Details',
+      content: 'Second-content',
+      disabled: !filledJobDetail,
+    },
+    {
+      id: 3,
+      title: 'Salary Structure',
+      content: 'Third-content',
+      disabled: !filledSalaryStructure,
+    },
+    {
+      id: 4,
+      title: 'Document Verification',
+      content: 'Fourth-content',
+      disabled: !filledDocumentVerification,
+    },
+    {
+      id: 5,
+      title: 'Offer Details',
+      content: 'Fifth-content',
+      // disabled: !filledBasicInformation,
+    },
+    {
+      id: 6,
+      title: 'Benefits',
+      content: 'Sixth-content',
+      // disabled: !filledBasicInformation,
+    },
+    {
+      id: 7,
+      title: 'Additional Questions',
+      content: 'Last-content',
+      // disabled: !filledBasicInformation,
+    },
+  ];
 
   useEffect(() => {
     setCurrent(localStep);
@@ -180,7 +193,6 @@ const CandidateLayout = (props) => {
     if (!dispatch) {
       return;
     }
-    const valid = true;
 
     // if (
     //   processStatus === 'SENT-PROVISIONAL-OFFER' ||
@@ -193,7 +205,13 @@ const CandidateLayout = (props) => {
     //   }
     // }
 
-    if (valid) {
+    if (
+      // filledBasicInformation &&
+      // filledJobDetail &&
+      // filledSalaryStructure &&
+      // filledDocumentVerification
+      true
+    ) {
       dispatch({
         type: 'candidateProfile/save',
         payload: {
@@ -264,7 +282,14 @@ const CandidateLayout = (props) => {
                   >
                     {newSteps.map((item) => {
                       const { title, id } = item;
-                      return <Step key={title} title={title} onClick={() => handleStepClick(id)} />;
+                      return (
+                        <Step
+                          disabled={item.disabled}
+                          key={title}
+                          title={title}
+                          onClick={() => handleStepClick(id)}
+                        />
+                      );
                     })}
                   </Steps>
 
@@ -296,12 +321,14 @@ export default connect(
       title: { name: titleName = '' } = {},
       ticketId,
       checkCandidateMandatory,
+      checkMandatory,
       processStatus = '',
     } = {},
     user: { companiesOfUser = [] } = {},
   }) => ({
     localStep,
     checkCandidateMandatory,
+    checkMandatory,
     ticketId,
     processStatus,
     titleName,
