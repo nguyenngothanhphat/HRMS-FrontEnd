@@ -7,7 +7,7 @@ import { getCurrentTenant } from '@/utils/authority';
 import { PROCESS_STATUS } from '@/utils/onboarding';
 import BasicInformation from './components/BasicInformation';
 import JobDetails from './components/JobDetails';
-import OfferDetail from './components/OfferDetail';
+import OfferDetail from './components/OfferDetailNew';
 // import CustomField from './components/CustomField';
 import Benefit from './components/Benefit';
 import styles from './index.less';

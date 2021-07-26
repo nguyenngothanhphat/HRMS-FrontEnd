@@ -1,0 +1,189 @@
+.AddDocumentModal {
+  :global {
+    .ant-select-selection-item {
+      color: #161c29 !important
+    }
+    .ant-select-selector, .ant-input {
+      height: 42px !important;
+      // border: none !important;
+      background: transparent !important;
+      // padding-top: 10px !important;
+      padding: 5px 11px !important;
+      border-radius: 5px !important; 
+    }
+    .ant-select-selection-search-input {
+      height: 42px !important;
+      border-radius: 5px;
+    }
+    .ant-form-item-label label {
+      height: 0;
+      color: #707177;
+      font-size: 12px;
+    }
+    .ant-btn-primary {
+      width: 94px;
+      height: 40px;
+      object-fit: contain;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: Roboto;
+      letter-spacing: 0.13px;
+      // display: none;
+      text-shadow: none;
+      background-color: #ffa100;
+      border: solid 1px #ffa100;
+      border-radius: 25px;
+      box-shadow: none;
+      &:hover {
+        color: #ffffff;
+        background-color: #ffa100;
+      }
+    }
+    .ant-btn-secondary {
+      width: 94px;
+      height: 40px;
+      padding-right: 41px;
+      object-fit: contain;
+      color: #ffa100;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: Roboto;
+      letter-spacing: 0.13px;
+      border: solid 0;
+      border-radius: 25px;
+    }
+    .ant-modal-header {
+      padding: 24px;
+      border-top-left-radius: 8px;
+    }
+    .ant-modal-content {
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-top-left-radius: 8px;
+    }
+    .ant-form-item {
+      margin-bottom: 12px;
+    }
+    .ant-modal-footer {
+      padding: 13px 24px;
+    }
+    .ant-modal-close-x {
+      position: absolute;
+      background-color: #2c6df9;
+      color: #fff;
+      width: 54px;
+      height: 48px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+      &:active {
+        opacity: 0.5;
+      }
+    }
+  }
+  .btnSubmit {
+    font-size: 14px;
+    width: 95px;
+    // height: 40px;
+    font-weight: 600;
+    border-radius: 25px;
+    color: #fff;
+    background-color: #ffa100;
+    border: none;
+  }
+  .btnSubmit:disabled {
+    color: #fff;
+    opacity: 0.5;
+  }
+  .btnCancel {
+    border: none;
+    display: inline-block;
+    color: #ffa100;
+    font-size: 14px;
+    font-weight: 500;
+    margin-right: 20px;
+    cursor: pointer;
+    &:active {
+      opacity: 0.5;
+    }
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    &__text {
+      font-weight: 600;
+      font-size: 16px;
+      color: #161c29;
+      margin: 0;
+    }
+  }
+
+  .fileUploadForm {
+    margin-top: 20px;
+    background-color: white;
+    height: 100%;
+    .fileUploadedContainer {
+      .previewIcon {
+        margin-bottom: 20px;
+        // img {
+        //   width: 0px;
+        // }
+      }
+      .fileName {
+        font-size: 14px;
+        a {
+          // text-decoration: underline;
+          color: #2c6df9;
+        }
+        margin-bottom: 30px;
+      }
+    }
+    .drapperBlock {
+      margin: 20px;
+    
+      .uploadIcon {
+          margin-right: 10px;
+      }
+      .chooseFileText {
+        display: inline-block;
+        line-height: 1.4;
+        font-weight: 500;
+        font-size: 14px;
+        color: #2C6DF9;
+      }
+      .uploadText {
+        display: inline-block;
+        font-size: 13px;
+        line-height: 1.4;
+        color: #464646;
+        margin-left: 5px;
+      }
+    }
+    :global {
+      .ant-upload.ant-upload-drag {
+        border-radius: 8px;
+        background: #fff;
+        padding: 20px;
+      }
+      .ant-btn {
+        background-color: #ffa100;
+        border: none;
+        padding: 0 35px;
+        height: 35px;
+        border-radius: 40px;
+        span {
+          font-size: 14px;
+          color: white;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+  
+}
+  
