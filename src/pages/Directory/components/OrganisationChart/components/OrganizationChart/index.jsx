@@ -26,7 +26,7 @@ class OrganizationChart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isCollapsed: false,
+      isCollapsed: true,
     };
   }
 
@@ -64,6 +64,8 @@ class OrganizationChart extends Component {
 
   renderUserNode = () => {
     const { dataOrgChart, idCurrentUser = '' } = this.props;
+    const { isCollapsed = false } = this.state;
+
     const {
       user: {
         _id: idUser = '',
@@ -87,8 +89,17 @@ class OrganizationChart extends Component {
       <div id={idUser} className={`${styles.userNode} ${styles.node}`}>
         {this.renderCardInfo(userAvatar, legalName, jobTitleName, deptName, countryName)}
         <div className={styles.userNode__bottom}>
-          <div onClick={this.handleCollapse} className={styles.userNode__bottom_reportees}>
-            {`${listEmployees.length} reportees`}
+          <div
+            onClick={this.handleCollapse}
+            className={
+              isCollapsed
+                ? styles.userNode__bottom_reporteesExpand
+                : styles.userNode__bottom_reporteesCollapse
+            }
+          >
+            {isCollapsed
+              ? `- ${listEmployees.length} reportees`
+              : `+ ${listEmployees.length} reportees`}
           </div>
           {idUser === idCurrentUser ? <div className={styles.userNode__bottom_you}>You</div> : null}
         </div>

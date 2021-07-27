@@ -70,7 +70,7 @@
                 display: flex;
                 align-items: center;
 
-                &_reportees, &_you{
+                &_reporteesExpand, &_reporteesCollapse, &_you{
                     font-family: Roboto;
                     font-style: normal;
                     font-weight: 500;
@@ -79,10 +79,17 @@
                     color: #FFFFFF;
                     padding: 4px 10px;
                     border-radius: 13px;
+                    transition: 0.3s all ease-in-out;
                 }
 
-                &_reportees{
+                &_reporteesExpand{
                     background: #2C6DF9;
+                    margin-right: 16px;
+                }
+
+                &_reporteesCollapse{
+                    background: #FFA100;
+                    color: #000;
                     margin-right: 16px;
                 }
 
@@ -100,8 +107,8 @@
             width: 100%;
 
             .employeeNode{
-                margin: 113px 0 0 0;
-                margin-bottom: 24px;
+                // margin: 113px 0 0 0;
+                // margin-bottom: 24px;
                 max-width: 750px; // exactly = 750px
                 /*
                     - each node's width = 234px. 
