@@ -16,25 +16,11 @@ class EmployeeNode extends Component {
         {listEmployees.length > 0 ? (
           <>
             {listEmployees.map((empl) => {
-              const {
-                _id: idEmpl = '',
-                generalInfo: {
-                  avatar: emplAvatar = '',
-                  firstName: emplFirstName = '',
-                  middleName: emplMiddleName = '',
-                  lastName: emplLastName = '',
-                } = {} || {},
-                department: { name: deptName = '' } = {} || {},
-                title: { name: jobTitleName = '' } = {} || {},
-                location: {
-                  headQuarterAddress: { country: { name: countryName = '' } = {} || {} } = {} || {},
-                } = {} || {},
-              } = empl;
-              const legalName = `${emplFirstName} ${emplMiddleName} ${emplLastName}`;
+              const { _id: idEmpl = '' } = empl;
 
               return (
                 <div id={idEmpl} key={idEmpl} className={`${styles.employeeNode} ${styles.node}`}>
-                  {renderCardInfo(emplAvatar, legalName, jobTitleName, deptName, countryName)}
+                  {renderCardInfo(empl)}
                 </div>
               );
             })}

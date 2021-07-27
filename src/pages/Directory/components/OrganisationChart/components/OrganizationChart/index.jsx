@@ -37,9 +37,24 @@ class OrganizationChart extends Component {
     this.setState({ isCollapsed: !isCollapsed });
   };
 
-  renderCardInfo = (avatar, legalName, jobTitleName, deptName, countryName) => {
+  renderCardInfo = (userData) => {
+    const { handleClickNode = () => {} } = this.props;
+    const {
+      generalInfo: {
+        avatar = '',
+        firstName: userFirstName = '',
+        middleName: userMiddleName = '',
+        lastName: userLastName = '',
+      } = {} || {},
+      department: { name: deptName = '' } = {} || {},
+      title: { name: jobTitleName = '' } = {} || {},
+      location: {
+        headQuarterAddress: { country: { name: countryName = '' } = {} || {} } = {} || {},
+      } = {} || {},
+    } = userData;
+    const legalName = `${userFirstName} ${userMiddleName} ${userLastName}`;
     return (
-      <div className={styles.node__card}>
+      <div className={styles.node__card} onClick={() => handleClickNode(userData)}>
         <Avatar className={styles.avatar} src={avatar} size={42} icon={<UserOutlined />} />
         <div className={styles.node__card__info}>
           <div className={styles.legalName}>{legalName}</div>
@@ -69,27 +84,14 @@ class OrganizationChart extends Component {
     const { isCollapsed = false } = this.state;
 
     const {
-      user: {
-        _id: idUser = '',
-        generalInfo: {
-          avatar: userAvatar = '',
-          firstName: userFirstName = '',
-          middleName: userMiddleName = '',
-          lastName: userLastName = '',
-        } = {} || {},
-        department: { name: deptName = '' } = {} || {},
-        title: { name: jobTitleName = '' } = {} || {},
-        location: {
-          headQuarterAddress: { country: { name: countryName = '' } = {} || {} } = {} || {},
-        } = {} || {},
-      } = {},
+      user: { _id: idUser = '' } = {},
+      user = {},
       employees: listEmployees = [],
     } = dataOrgChart;
 
-    const legalName = `${userFirstName} ${userMiddleName} ${userLastName}`;
     return (
       <div id={idUser} className={`${styles.userNode} ${styles.node}`}>
-        {this.renderCardInfo(userAvatar, legalName, jobTitleName, deptName, countryName)}
+        {this.renderCardInfo(user)}
         <div className={styles.userNode__bottom}>
           <div
             onClick={this.handleCollapse}

@@ -8,6 +8,8 @@ import {
   UserOutlined,
 } from '@ant-design/icons';
 import { history } from 'umi';
+import { isEmpty } from 'lodash';
+
 import SearchIcon from '@/assets/searchOrgChart.svg';
 import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
@@ -35,6 +37,8 @@ class DetailEmployeeChart extends Component {
   handleClick = () => {
     const { closeDetailEmployee = () => {} } = this.props;
     closeDetailEmployee();
+    console.log(this.inputRef.current);
+    this.inputRef.current = undefined;
   };
 
   getCurrentFirm = () => {
@@ -46,8 +50,8 @@ class DetailEmployeeChart extends Component {
 
   render() {
     const { chartDetails = {}, listEmployeeAll, loadingFetchListAll } = this.props;
-    const checkObj = chartDetails.user !== undefined;
-    const { user = {} } = chartDetails;
+    const checkObj = !isEmpty(chartDetails);
+
     const {
       generalInfo: {
         firstName = '',
@@ -64,7 +68,7 @@ class DetailEmployeeChart extends Component {
           {},
       } = {},
       localTime = '',
-    } = user;
+    } = chartDetails;
 
     const locationName = `${state}, ${countryName}`;
 

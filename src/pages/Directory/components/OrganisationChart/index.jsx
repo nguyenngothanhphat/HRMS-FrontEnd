@@ -161,6 +161,18 @@ class OrganisationChart extends Component {
 
   //   this.setState({ chartDetails: addTimeData });
   // };
+  handleClickNode = async (nodeData) => {
+    const { timezoneList, currentTime } = this.state;
+
+    const { location = {} } = nodeData;
+
+    const findTimezone =
+      timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+    const timeData = getCurrentTimeOfTimezone(currentTime, findTimezone.timezone);
+    const addTimeData = { ...nodeData, localTime: timeData };
+
+    this.setState({ chartDetails: addTimeData });
+  };
 
   closeDetailEmployee = () => {
     this.setState({ chartDetails: {} });
@@ -261,7 +273,7 @@ class OrganisationChart extends Component {
       };
     });
 
-    const convertFinal = { user: convertData[0] };
+    const convertFinal = { ...convertData[0] };
     this.setState({ chartDetails: convertFinal });
   };
 
@@ -315,7 +327,7 @@ class OrganisationChart extends Component {
               zoominLimit={1}
               zoomoutLimit={0.2}
             /> */}
-            <OrganizationChart />
+            <OrganizationChart handleClickNode={this.handleClickNode} />
             <div className={styles.orgChart__detailEmplChart}>
               <DetailEmployeeChart
                 chartDetails={chartDetails}
