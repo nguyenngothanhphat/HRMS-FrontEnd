@@ -15,13 +15,13 @@
   display: flex;
 
   .offerDetail {
+    flex: 1;
+    height: fit-content;
     font-family: 'Roboto', sans-serif;
+    background-color: white;
     border: 0.5px solid @border-color;
     border-bottom: none;
     border-radius: 2.5px;
-    flex: 1;
-    background-color: white;
-    height: fit-content;
 
     :global {
       .ant-input,
@@ -32,7 +32,7 @@
         border-radius: 5px;
       }
       .ant-select {
-        width: 100%
+        width: 100%;
       }
       .ant-checkbox {
         display: inline-block;
@@ -41,9 +41,9 @@
     }
 
     .addButton {
-      margin-top: 20px;
       display: flex;
       align-items: center;
+      margin-top: 20px;
       padding-left: 0;
       cursor: pointer;
       .plusIcon,
@@ -99,9 +99,9 @@
     h2,
     h3,
     h4 {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
 
     p {
@@ -114,12 +114,11 @@
         margin-bottom: 0;
       }
       .radioGroup {
+        width: 100%;
         margin: 14px 0;
         margin-bottom: 0;
-        width: 100%;
 
         .radioRow:not(:first-child) {
-          // display: none;
           margin-top: 7px;
         }
 
@@ -141,8 +140,8 @@
     .top,
     .middle,
     .bottom {
-      border-bottom: 1px solid @border-color;
       padding: 32px;
+      border-bottom: 1px solid @border-color;
     }
 
     .header {
@@ -168,8 +167,8 @@
       }
 
       .title {
-        color: #000;
         margin-bottom: 10px;
+        color: #000;
         font-size: 13px;
       }
       .subTitle {
@@ -181,18 +180,24 @@
         }
       }
 
+      .expiryDate {
+        display: block;
+        margin: 10px 0;
+        color: #ff5252;
+        font-size: 13px;
+        line-height: 20px;
+      }
       .wrapper1,
       .wrapper2,
       .wrapper3 {
-        margin-top: 10px;
         display: flex;
         align-items: flex-start;
+        margin-top: 10px;
       }
 
       .wrapper1 {
         align-items: center;
       }
-
     }
 
     .select {
@@ -203,9 +208,9 @@
   }
 
   .rightCol {
-    margin-left: 24px;
     width: 322px;
     min-width: 241px;
+    margin-left: 24px;
   }
 
   @media (max-width: 1090px) {
@@ -263,33 +268,33 @@
 }
 
 .bottomBar {
-  border-radius: 5px;
-  // box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
-  border-bottom: solid 1px #d6dce0;
-  // border-top: solid 1px #d6dce0;
-  background-color: #ffffff;
   padding: 20px 32px;
+
+  background-color: #ffffff;
+
+  border-bottom: solid 1px #d6dce0;
+  border-radius: 5px;
 
   .normalText {
     display: flex;
-    font-family: 'Roboto';
-    font-size: 13px;
-    font-style: italic;
     color: #707177;
+    font-size: 13px;
+    font-family: 'Roboto';
+    font-style: italic;
   }
 
   .redText {
-    font-family: 'Roboto';
-    font-size: 13px;
-    font-style: italic;
     color: #ff4949;
+    font-size: 13px;
+    font-family: 'Roboto';
+    font-style: italic;
   }
 
   .greenText {
-    font-family: 'Roboto';
-    font-size: 13px;
-    font-style: italic;
     color: #47c97f;
+    font-size: 13px;
+    font-family: 'Roboto';
+    font-style: italic;
   }
 
   &__button {
@@ -299,38 +304,37 @@
     }
     :global {
       .ant-btn-primary {
-        box-shadow: none;
-        text-shadow: none;
-        // display: none;
-        // width: 94px;
-        padding: 0 30px;
         height: 40px;
+
+        padding: 0 30px;
         object-fit: contain;
-        border-radius: 25px;
-        border: solid 1px #ffa100;
-        background-color: #ffa100;
-        font-family: 'Roboto';
-        font-size: 14px;
-        font-weight: 500;
-        letter-spacing: 0.13px;
         color: #ffffff;
+        font-weight: 500;
+        font-size: 14px;
+        font-family: 'Roboto';
+        letter-spacing: 0.13px;
+        text-shadow: none;
+        background-color: #ffa100;
+        border: solid 1px #ffa100;
+        border-radius: 25px;
+        box-shadow: none;
         &:hover {
-          background-color: #ffa100;
           color: #ffffff;
+          background-color: #ffa100;
         }
       }
       .ant-btn-secondary {
         height: 40px;
-        object-fit: contain;
-        border-radius: 25px;
-        border: none;
-        font-family: 'Roboto';
-        font-size: 14px;
-        font-weight: 500;
-        letter-spacing: 0.13px;
-        color: #ffa100;
-        padding: 0 30px;
         margin-right: 10px;
+        padding: 0 30px;
+        object-fit: contain;
+        color: #ffa100;
+        font-weight: 500;
+        font-size: 14px;
+        font-family: 'Roboto';
+        letter-spacing: 0.13px;
+        border: none;
+        border-radius: 25px;
         box-shadow: none;
       }
     }

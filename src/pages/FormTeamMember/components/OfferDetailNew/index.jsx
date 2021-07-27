@@ -1,20 +1,20 @@
 import { getCurrentTenant } from '@/utils/authority';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Col, DatePicker, Form, Row, Select } from 'antd';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
-import moment from 'moment';
-import FileIcon from './components/FileIcon/index';
-import Template from './components/Template/index';
-import { getFileType } from './components/utils';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import AddDocumentModal from './components/AddDocumentModal';
-import styles from './index.less';
 import DocumentItem from './components/DocumentItem';
+import Template from './components/Template/index';
+import styles from './index.less';
 
 const { Option } = Select;
 
 const OfferDetail = (props) => {
   const { dispatch, checkMandatory, currentStep, data, tempData, loading1, loading2 } = props;
+  const { processStatus = '' } = tempData;
   const previousStep = currentStep - 1;
   const nextStep = currentStep + 1;
   // Get default value from "candidateInfo" store
@@ -25,6 +25,8 @@ const OfferDetail = (props) => {
     customTemplates: customTemplatesProp,
     staticOfferLetter: staticOfferLetterProp,
     offerDocuments: offerDocumentsProp = [],
+    offerLetterTemplate: offerLetterTemplateProp,
+    expiryDate: expiryDateProp,
   } = tempData;
   const [isAddModalVisible, setAddModalVisible] = useState(false);
 
@@ -43,7 +45,17 @@ const OfferDetail = (props) => {
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
   // const [disableAll, setDisableAll] = useState(processStatus === 'SENT-PROVISIONAL-OFFER');
   // eslint-disable-next-line no-unused-vars
-  const [disableAll, setDisableAll] = useState(false);
+  const [disableAll, setDisableAll] = useState(
+    [
+      PROCESS_STATUS.APPROVED_OFFERS,
+      PROCESS_STATUS.SENT_FINAL_OFFERS,
+      PROCESS_STATUS.ACCEPTED_FINAL_OFFERS,
+      PROCESS_STATUS.RENEGOTIATE_FINAL_OFFERS,
+      PROCESS_STATUS.FINAL_OFFERS,
+      PROCESS_STATUS.FINAL_OFFERS_HR,
+      PROCESS_STATUS.FINAL_OFFERS_CANDIDATE,
+    ].includes(processStatus),
+  );
 
   const checkAllFieldsValid = (allFieldsValues) => {
     const keys = Object.keys(allFieldsValues);
@@ -183,6 +195,19 @@ const OfferDetail = (props) => {
       type: 'candidateInfo/saveTemp',
       payload: {
         template: value,
+        offerLetterTemplate: key,
+      },
+    });
+
+    const { candidate } = data;
+
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate,
+        includeOffer: 3,
+        tenantId: getCurrentTenant(),
+        offerLetterTemplate: key,
       },
     });
   };
@@ -246,7 +271,7 @@ const OfferDetail = (props) => {
 
     const offerData = {
       candidateId: candidate,
-      templateId,
+      templateId: templateId || offerLetterTemplateProp,
       firstName,
       middleName,
       lastName,
@@ -322,10 +347,10 @@ const OfferDetail = (props) => {
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
-          <Col span={16}>
+          <Col span={12}>
             <div className={styles.bottomBar__status}>{_renderStatus()}</div>
           </Col>
-          <Col span={8}>
+          <Col span={12}>
             <div className={styles.bottomBar__button}>
               <Button
                 type="secondary"
@@ -455,7 +480,31 @@ const OfferDetail = (props) => {
   };
 
   const renderDocuments = () => {
-    return offerDocumentsProp.map((doc) => <DocumentItem onRemove={onRemove} item={doc} />);
+    return offerDocumentsProp.map((doc) => (
+      <DocumentItem disableAll={disableAll} onRemove={onRemove} item={doc} />
+    ));
+  };
+
+  const handleExpiryDay = async (val) => {
+    const { candidate } = data;
+    await dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        tempData: {
+          ...tempData,
+          expiryDate: val,
+        },
+      },
+    });
+
+    await dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate,
+        tenantId: getCurrentTenant(),
+        expiryDate: val,
+      },
+    });
   };
 
   return (
@@ -481,12 +530,7 @@ const OfferDetail = (props) => {
                     <div className={styles.wrapper1}>
                       {/* <Form.Item name="template"> */}
                       <Select
-                        value={
-                          <>
-                            <FileIcon type={getFileType(file.name)} />
-                            {file.name}
-                          </>
-                        }
+                        defaultValue={offerLetterTemplateProp}
                         placeholder="Select file"
                         className={styles.select}
                         onChange={(value, option) => handleTemplateChange(value, option)}
@@ -495,7 +539,7 @@ const OfferDetail = (props) => {
                         {templateList.map((fileItem) => {
                           const { _id = '', attachment = {} } = fileItem;
                           return (
-                            <Option value={attachment?.name} key={_id}>
+                            <Option value={attachment?._id} key={_id}>
                               <div className={styles.iconWrapper}>
                                 <span>{attachment?.name}</span>
                               </div>
@@ -506,34 +550,51 @@ const OfferDetail = (props) => {
                     </div>
                   </Col>
                   <Col span={12}>
-                    <p>Add Expiry Date</p>
-                    <div className={styles.wrapper1}>
-                      <DatePicker
-                        className={styles.inputDate}
-                        format="DD.MM.YY"
-                        placeholder="Select expiry date"
-                        disabledDate={disabledDate}
-                        defaultValue={moment().add('15', 'days')}
-                      />
-                    </div>
+                    {!disableAll && (
+                      <>
+                        <p>Add Expiry Date</p>
+                        <div className={styles.wrapper1}>
+                          <DatePicker
+                            className={styles.inputDate}
+                            format="DD.MM.YY"
+                            placeholder="Select expiry date"
+                            disabledDate={disabledDate}
+                            defaultValue={
+                              expiryDateProp ? moment(expiryDateProp) : moment().add('15', 'days')
+                            }
+                            onChange={(val) => handleExpiryDay(val)}
+                          />
+                        </div>
+                      </>
+                    )}
                   </Col>
                 </Row>
-                <div className={styles.addButton} onClick={() => handleAddDocument('template')}>
-                  <PlusOutlined className={styles.plusIcon} />
-                  <span className={styles.buttonTitle}>Add Template</span>
-                </div>
+                {!disableAll ? (
+                  <div className={styles.addButton} onClick={() => handleAddDocument('template')}>
+                    <PlusOutlined className={styles.plusIcon} />
+                    <span className={styles.buttonTitle}>Add Template</span>
+                  </div>
+                ) : (
+                  <span className={styles.expiryDate}>
+                    Document Expires on {moment(expiryDateProp).locale('en').format('MM.DD.YY')}
+                  </span>
+                )}
               </div>
 
               <div className={styles.documentBlock}>
                 <p className={styles.title}>Documents</p>
-                <p className={styles.subTitle}>Uploaded Documents</p>
+                <p className={styles.subTitle}>
+                  {offerDocumentsProp.length === 0 ? 'Upload all documents' : 'Uploaded Documents'}
+                </p>
 
                 {renderDocuments()}
 
-                <div className={styles.addButton} onClick={() => handleAddDocument('document')}>
-                  <PlusOutlined className={styles.plusIcon} />
-                  <span className={styles.buttonTitle}>Add Document</span>
-                </div>
+                {!disableAll && (
+                  <div className={styles.addButton} onClick={() => handleAddDocument('document')}>
+                    <PlusOutlined className={styles.plusIcon} />
+                    <span className={styles.buttonTitle}>Add Document</span>
+                  </div>
+                )}
               </div>
             </div>
             {_renderBottomBar()}
