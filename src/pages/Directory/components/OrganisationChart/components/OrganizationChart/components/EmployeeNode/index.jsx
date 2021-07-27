@@ -9,23 +9,14 @@ class EmployeeNode extends Component {
   }
 
   render() {
-    const { listEmployees = [], renderCardInfo = () => {} } = this.props;
+    const { employee = {}, itemSelected = '', renderCardInfo = () => {} } = this.props;
+    const { _id: idEmpl = '' } = employee;
 
+    const isActive = itemSelected === idEmpl;
+    const className = isActive ? styles.selectNode : styles.node;
     return (
-      <div className={styles.childrenList}>
-        {listEmployees.length > 0 ? (
-          <>
-            {listEmployees.map((empl) => {
-              const { _id: idEmpl = '' } = empl;
-
-              return (
-                <div id={idEmpl} key={idEmpl} className={`${styles.employeeNode} ${styles.node}`}>
-                  {renderCardInfo(empl)}
-                </div>
-              );
-            })}
-          </>
-        ) : null}
+      <div id={idEmpl} className={`${styles.employeeNode} ${styles.node} ${className}`}>
+        {renderCardInfo(employee)}
       </div>
     );
   }

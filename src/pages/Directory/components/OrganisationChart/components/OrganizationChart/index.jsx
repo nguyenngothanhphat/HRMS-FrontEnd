@@ -29,6 +29,7 @@ class OrganizationChart extends Component {
     super(props);
     this.state = {
       isCollapsed: true,
+      itemSelected: '',
     };
   }
 
@@ -37,8 +38,13 @@ class OrganizationChart extends Component {
     this.setState({ isCollapsed: !isCollapsed });
   };
 
-  renderCardInfo = (userData) => {
+  clickCardInfo = (userData) => {
     const { handleClickNode = () => {} } = this.props;
+    handleClickNode(userData);
+    this.setState({ itemSelected: userData._id });
+  };
+
+  renderCardInfo = (userData) => {
     const {
       generalInfo: {
         avatar = '',
@@ -54,7 +60,7 @@ class OrganizationChart extends Component {
     } = userData;
     const legalName = `${userFirstName} ${userMiddleName} ${userLastName}`;
     return (
-      <div className={styles.node__card} onClick={() => handleClickNode(userData)}>
+      <div className={styles.node__card} onClick={() => this.clickCardInfo(userData)}>
         <Avatar className={styles.avatar} src={avatar} size={42} icon={<UserOutlined />} />
         <div className={styles.node__card__info}>
           <div className={styles.legalName}>{legalName}</div>
@@ -81,7 +87,7 @@ class OrganizationChart extends Component {
 
   renderUserNode = () => {
     const { dataOrgChart, idCurrentUser = '' } = this.props;
-    const { isCollapsed = false } = this.state;
+    const { isCollapsed = false, itemSelected = '' } = this.state;
 
     const {
       user: { _id: idUser = '' } = {},
@@ -89,8 +95,11 @@ class OrganizationChart extends Component {
       employees: listEmployees = [],
     } = dataOrgChart;
 
+    const isActive = itemSelected === idUser;
+    const className = isActive ? styles.selectNode : styles.node;
+
     return (
-      <div id={idUser} className={`${styles.userNode} ${styles.node}`}>
+      <div id={idUser} className={`${styles.userNode} ${styles.node} ${className}`}>
         {this.renderCardInfo(user)}
         <div className={styles.userNode__bottom}>
           <div
@@ -113,7 +122,7 @@ class OrganizationChart extends Component {
 
   renderChildrenList = () => {
     const { dataOrgChart } = this.props;
-    const { isCollapsed = false } = this.state;
+    const { isCollapsed = false, itemSelected = '' } = this.state;
     const { employees: listEmployees = [] } = dataOrgChart;
 
     if (listEmployees.length === 0) return null;
@@ -125,7 +134,22 @@ class OrganizationChart extends Component {
               <img alt="lines" src={listEmployees.length > 2 ? bigLines : lines} />
             </div>
           </div>
-          <EmployeeNode listEmployees={listEmployees} renderCardInfo={this.renderCardInfo} />
+          <div className={styles.childrenList}>
+            {listEmployees.length > 0 ? (
+              <>
+                {listEmployees.map((employee) => {
+                  return (
+                    <EmployeeNode
+                      key={employee._id}
+                      itemSelected={itemSelected}
+                      employee={employee}
+                      renderCardInfo={this.renderCardInfo}
+                    />
+                  );
+                })}
+              </>
+            ) : null}
+          </div>
         </div>
       </CollapseNode>
     );
