@@ -318,7 +318,7 @@ class OnboardTable extends Component {
         render: (processStatus) => <Tag color="geekblue">{processStatus}</Tag>,
         columnName: PROCESS_STATUS_1,
         width: getColumnWidth('processStatus', type),
-        fixed: 'right',
+        // fixed: 'right',
       },
       {
         // title: 'Actions',
@@ -352,7 +352,7 @@ class OnboardTable extends Component {
           return '';
         },
         columnName: ACTION,
-        fixed: 'right',
+        // fixed: 'right',
       },
     ];
 

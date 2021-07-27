@@ -27,7 +27,7 @@ export default {
   'pages_admin.company.location.addressLine2': 'Address line 2',
   'pages_admin.company.location.country': 'Country',
   'pages_admin.company.location.state': 'State',
-  'pages_admin.company.location.zipCode': 'Zip Code',
+  'pages_admin.company.location.zipCode': 'Zip/Postal Code',
   'pages_admin.owner.fullName': 'Full Name',
   'pages_admin.owner.email': 'Email',
   'pages_admin.owner.phone': 'Phone Number',

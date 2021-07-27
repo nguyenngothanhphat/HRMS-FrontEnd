@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { Form, Table, Button, Input, Row, Col, InputNumber } from 'antd';
 import { formatMessage, connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
-import TextArea from 'antd/lib/input/TextArea';
 import styles from './index.less';
 
 @connect(
@@ -58,7 +57,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   onClickNext = () => {
-    const { dispatch, options, tempData, localStep } = this.props;
+    const { dispatch, options, tempData, localStep, checkMandatory } = this.props;
 
     dispatch({
       type: 'candidateProfile/updateByCandidateEffect',
@@ -77,6 +76,10 @@ class SalaryStructureTemplate extends PureComponent {
       type: 'candidateProfile/save',
       payload: {
         localStep: localStep + 1,
+        checkMandatory: {
+          ...checkMandatory,
+          filledDocumentVerification: true,
+        },
       },
     });
   };

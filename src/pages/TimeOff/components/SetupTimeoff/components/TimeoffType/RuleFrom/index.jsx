@@ -5,7 +5,7 @@ import { Row, Col, Button, Select, Spin } from 'antd';
 // import addIcon from '@/assets/addTicket.svg';
 // import icon from '@/assets/delete.svg';
 import { DeleteOutlined } from '@ant-design/icons';
-import { getCurrentTenant } from '@/utils/authority';
+// import { getCurrentTenant } from '@/utils/authority';
 // import _ from 'lodash';
 import styles from './index.less';
 import ModalAddType from './ModalAddType';
@@ -189,7 +189,7 @@ class RuleFrom extends Component {
       addNewType = () => {},
       loadingAddType,
       loadingFetchList,
-      countrySelected,
+      // countrySelected,
     } = this.props;
     const { isVisible } = this.state;
     const array = [
@@ -214,7 +214,7 @@ class RuleFrom extends Component {
       },
       {
         typeName: 'D',
-        type: 'Type D: Working our of office',
+        type: 'Type D: Working out of office',
         button: 'Add a new WOO leave',
         children: [],
       },
