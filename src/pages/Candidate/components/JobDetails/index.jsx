@@ -111,6 +111,7 @@ class JobDetails extends PureComponent {
             checkMandatory: {
               ...checkMandatory,
               filledJobDetail: value,
+              isCandidateAcceptDOJ: !value,
             },
           },
         });
