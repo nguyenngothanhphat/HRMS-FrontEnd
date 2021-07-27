@@ -16,7 +16,6 @@ import styles from './index.less';
 
 const { Text } = Typography;
 const { Option } = Select;
-// eslint-disable-next-line react/prefer-stateless-function
 class DetailEmployeeChart extends Component {
   constructor(props) {
     super(props);
@@ -25,6 +24,18 @@ class DetailEmployeeChart extends Component {
     };
     this.inputRef = React.createRef();
   }
+
+  componentDidUpdate = (prevProp) => {
+    const { chartDetails = {} } = this.props;
+    const { _id = '' } = chartDetails;
+    if (JSON.stringify(prevProp.chartDetails) !== JSON.stringify(chartDetails)) {
+      this.updateValueSelect(_id);
+    }
+  };
+
+  updateValueSelect = (valueInput) => {
+    this.setState({ valueInput });
+  };
 
   handleViewFullProfile = (id) => {
     history.push(`directory/employee-profile/${id}`);
