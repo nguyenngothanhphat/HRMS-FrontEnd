@@ -7,6 +7,7 @@ import { isEmpty } from 'lodash';
 import EmployeeNode from './components/EmployeeNode';
 
 import styles from './index.less';
+import CollapseNode from '../CollapseNode';
 
 @connect(
   ({
@@ -100,9 +101,9 @@ class OrganizationChart extends Component {
     const { isCollapsed = false } = this.state;
     const { employees: listEmployees = [] } = dataOrgChart;
     return (
-      <div className={isCollapsed ? styles.collapsed : styles.expand}>
+      <CollapseNode isCollapsed={isCollapsed}>
         <EmployeeNode listEmployees={listEmployees} renderCardInfo={this.renderCardInfo} />
-      </div>
+      </CollapseNode>
     );
   };
 

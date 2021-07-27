@@ -19,7 +19,6 @@
             border-radius: 8px;
 
             padding: 8px 16px;
-            margin-bottom: 113px;
 
             &__card{
                 display: flex;
@@ -98,17 +97,18 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 24px;
-
-            width: 750px; // exactly = 750px
-            /*
-                - each node's width = 234px. 
-                - 3 columns => 234px * 3 = 702px
-                - spacing between nodes: 24px
-                -> 702 + 24*2 = 750px
-            */ 
+            width: 100%;
 
             .employeeNode{
+                margin: 113px 0 0 0;
                 margin-bottom: 24px;
+                max-width: 750px; // exactly = 750px
+                /*
+                    - each node's width = 234px. 
+                    - 3 columns => 234px * 3 = 702px
+                    - spacing between nodes: 24px
+                    -> 702 + 24*2 = 750px
+                */ 
             }
         }
     }
