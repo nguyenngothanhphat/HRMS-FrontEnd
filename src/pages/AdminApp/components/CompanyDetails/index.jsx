@@ -925,7 +925,7 @@ class CompanyDetails extends Component {
                       rules={[
                         {
                           required: true,
-                          message: 'Please enter Zip Code!',
+                          message: 'Please enter Zip/Postal Code!',
                         },
                       ]}
                     >
@@ -1099,11 +1099,11 @@ class CompanyDetails extends Component {
                       rules={[
                         {
                           required: true,
-                          message: 'Please enter Zip Code!',
+                          message: 'Please enter Zip/Postal Code!',
                         },
                       ]}
                     >
-                      <Input disabled={!isEditAddresses} placeholder="Zip Code" />
+                      <Input disabled={!isEditAddresses} placeholder="Zip/Postal Code" />
                     </Form.Item>
                   </Col>
                 </Row>

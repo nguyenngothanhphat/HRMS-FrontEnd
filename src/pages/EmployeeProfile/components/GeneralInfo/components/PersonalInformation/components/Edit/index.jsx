@@ -457,7 +457,7 @@ class Edit extends PureComponent {
                 </Form.Item>
               </Col>
               <Col span={8} className={styles.address}>
-                <Form.Item label="Zip Code" className={styles.addressSection}>
+                <Form.Item label="Zip/Postal Code" className={styles.addressSection}>
                   <Input
                     className={styles.selectForm}
                     // eslint-disable-next-line camelcase
@@ -528,7 +528,7 @@ class Edit extends PureComponent {
                 </Form.Item>
               </Col>
               <Col span={8} className={styles.address}>
-                <Form.Item label="Zip Code" className={styles.addressSection}>
+                <Form.Item label="Zip/Postal Code" className={styles.addressSection}>
                   <Input
                     className={styles.selectForm}
                     // eslint-disable-next-line camelcase

@@ -23,8 +23,8 @@ export default {
   'page.signUp.step1.einError': 'Please input your EIN!',
   'page.signUp.step1.countryError': 'Please input your country!',
   'page.signUp.step1.stateError': 'Please input your state!',
-  'page.signUp.step1.zipCodeError': 'Please input your Zip code!',
-  'page.signUp.step1.zipCodeError2': 'Zip code must contain 6 digits!',
+  'page.signUp.step1.zipCodeError': 'Please input your Zip/Postal code!',
+  'page.signUp.step1.zipCodeError2': 'Zip/Postal code must contain 6 digits!',
   //   - Step 2
   'page.signUp.step2.workLocations': 'Work locations',
   'page.signUp.step2.description':
@@ -37,8 +37,8 @@ export default {
   'page.signUp.step2.state': 'state*',
   'page.signUp.step2.stateError': 'Please input your state!',
   'page.signUp.step2.zipCode': 'zip code*',
-  'page.signUp.step2.zipCodeError': 'Please input your Zip code!',
-  'page.signUp.step2.zipCodeError2': 'Zip code must contain 6 digits!',
+  'page.signUp.step2.zipCodeError': 'Please input your Zip/Postal code!',
+  'page.signUp.step2.zipCodeError2': 'Zip/Postal code must contain 6 digits!',
   'page.signUp.step2.add': 'Add work location',
   'page.signUp.step2.remove': 'Remove work location',
   'page.signUp.step2.back': 'back',
