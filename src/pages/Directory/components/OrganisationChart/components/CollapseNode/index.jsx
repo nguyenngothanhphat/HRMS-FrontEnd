@@ -9,14 +9,27 @@ class CollapseNode extends Component {
     };
 
     this.content = React.createRef();
+    this.oldRef = { current: { clientHeight: 0 } };
   }
 
   componentDidMount() {
-    const childHeightRaw = this.content.current.clientHeight;
-    const childHeight = `${childHeightRaw / 16}rem`;
-
-    this.setState({ childHeight });
+    this.initialGetContentHeigh();
   }
+
+  componentDidUpdate() {
+    const refChanged = this.oldRef.current.clientHeight !== this.content.current.clientHeight;
+    if (refChanged) {
+      this.initialGetContentHeigh();
+    }
+  }
+
+  initialGetContentHeigh = () => {
+    const initHeight = this.content.current.clientHeight;
+    this.oldRef.current.clientHeight = initHeight;
+    const childHeightRaw = this.content.current.clientHeight;
+    const childHeight = `${childHeightRaw}px`;
+    this.setState({ childHeight });
+  };
 
   render() {
     const { children, isCollapsed } = this.props;

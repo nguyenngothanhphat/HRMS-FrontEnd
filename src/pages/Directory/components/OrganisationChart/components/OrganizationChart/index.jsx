@@ -5,6 +5,7 @@ import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 
 import lines from '@/assets/lines.svg';
+import bigLines from '@/assets/bigLines.svg';
 import EmployeeNode from './components/EmployeeNode';
 
 import styles from './index.less';
@@ -112,12 +113,18 @@ class OrganizationChart extends Component {
     const { dataOrgChart } = this.props;
     const { isCollapsed = false } = this.state;
     const { employees: listEmployees = [] } = dataOrgChart;
+
+    if (listEmployees.length === 0) return null;
     return (
       <CollapseNode isCollapsed={isCollapsed}>
-        <div className={styles.lineNode}>
-          <img alt="lines" src={lines} />
+        <div className={styles.nodesTree}>
+          <div className={styles.lineNode}>
+            <div style={{ margin: '0 auto', width: 'fit-content' }}>
+              <img alt="lines" src={listEmployees.length > 2 ? bigLines : lines} />
+            </div>
+          </div>
+          <EmployeeNode listEmployees={listEmployees} renderCardInfo={this.renderCardInfo} />
         </div>
-        <EmployeeNode listEmployees={listEmployees} renderCardInfo={this.renderCardInfo} />
       </CollapseNode>
     );
   };
