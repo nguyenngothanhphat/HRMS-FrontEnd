@@ -98,9 +98,9 @@ class OrganizationChart extends Component {
     return (
       <div className={styles.orgChartRoot}>
         <div className={styles.orgChart}>
-          {this.renderParentNode()}
-          {this.renderUserNode()}
-          {this.renderChildrenList()}
+          {this.renderParentNode() /* Manager */}
+          {this.renderUserNode() /* Current User */}
+          {this.renderChildrenList() /* List Employees */}
         </div>
       </div>
     );
