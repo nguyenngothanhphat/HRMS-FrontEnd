@@ -6,7 +6,7 @@ import { connect } from 'umi';
 import moment from 'moment';
 
 import OrganizationChart from './components/OrganizationChart';
-import DetailEmployeeChart from './components/EmployeeCard';
+import DetailEmployeeChart from './components/EmployeeBox';
 import styles from './index.less';
 
 @connect(
