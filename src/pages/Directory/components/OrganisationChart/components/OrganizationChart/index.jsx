@@ -4,6 +4,7 @@ import { UserOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 
+import lines from '@/assets/lines.svg';
 import EmployeeNode from './components/EmployeeNode';
 
 import styles from './index.less';
@@ -113,6 +114,9 @@ class OrganizationChart extends Component {
     const { employees: listEmployees = [] } = dataOrgChart;
     return (
       <CollapseNode isCollapsed={isCollapsed}>
+        <div className={styles.lineNode}>
+          <img alt="lines" src={lines} />
+        </div>
         <EmployeeNode listEmployees={listEmployees} renderCardInfo={this.renderCardInfo} />
       </CollapseNode>
     );
