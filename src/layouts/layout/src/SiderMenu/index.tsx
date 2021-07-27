@@ -72,6 +72,7 @@ const SiderMenuWrapper: React.FC<SiderMenuProps> = (props) => {
   ) : (
     <SiderMenu
       className={classNames(`${prefixCls}-sider`, className)}
+      collapsed
       {...omitProps}
       style={style}
     />

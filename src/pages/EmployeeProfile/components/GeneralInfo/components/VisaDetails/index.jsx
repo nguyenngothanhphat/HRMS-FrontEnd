@@ -50,7 +50,7 @@ class VisaDetails extends PureComponent {
   };
 
   render() {
-    const { openVisa } = this.props;
+    const { openVisa, profileOwner = false } = this.props;
     const renderComponent = openVisa ? (
       <Edit handleCancel={this.handleCancel} />
     ) : (
@@ -61,14 +61,14 @@ class VisaDetails extends PureComponent {
       <div className={styles.VisaDetails}>
         <div className={styles.spaceTitle}>
           <p className={styles.EmployeeTitle}>Visa Details</p>
-          {openVisa ? (
-            ''
-          ) : (
-            <div className={styles.flexEdit} onClick={this.handleEdit}>
-              <EditFilled className={styles.IconEdit} />
-              <p className={styles.Edit}>Edit</p>
-            </div>
-          )}
+          {openVisa
+            ? ''
+            : !profileOwner && (
+                <div className={styles.flexEdit} onClick={this.handleEdit}>
+                  <EditFilled className={styles.IconEdit} />
+                  <p className={styles.Edit}>Edit</p>
+                </div>
+              )}
         </div>
         <div className={styles.viewBottom}>{renderComponent}</div>
       </div>
