@@ -20,14 +20,14 @@ class DetailEmployeeChart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      valueInput: '',
+      valueInput: undefined,
     };
     this.inputRef = React.createRef();
   }
 
   componentDidUpdate = (prevProp) => {
     const { chartDetails = {} } = this.props;
-    const { _id = '' } = chartDetails;
+    const { _id = undefined } = chartDetails;
     if (JSON.stringify(prevProp.chartDetails) !== JSON.stringify(chartDetails)) {
       this.updateValueSelect(_id);
     }
@@ -45,12 +45,10 @@ class DetailEmployeeChart extends Component {
     const { handleSelectSearch } = this.props;
     handleSelectSearch(value);
     this.inputRef.current.blur();
-    this.setState({ valueInput: value });
   };
 
   handleClick = () => {
     const { closeDetailEmployee = () => {} } = this.props;
-    this.setState({ valueInput: '' });
     closeDetailEmployee();
   };
 
@@ -99,7 +97,6 @@ class DetailEmployeeChart extends Component {
             <Select
               ref={this.inputRef}
               showSearch
-              allowClear
               placeholder="Search for employee, department"
               filterOption={(input, option) => {
                 return (
