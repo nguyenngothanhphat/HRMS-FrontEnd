@@ -17,7 +17,7 @@ import moment from 'moment';
 import { isEmpty } from 'lodash';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import { history, connect } from 'umi';
-import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
+import { getCurrentTimeOfTimezoneOption } from '@/utils/times';
 import AssignModal from './AssignModal';
 import styles from './index.less';
 
@@ -190,7 +190,7 @@ class HrTable extends PureComponent {
             <Col span={16}>
               <div className={styles.contact__value}>
                 {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
+                  ? getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone)
                   : 'Not enough data in address'}
               </div>
             </Col>
@@ -306,7 +306,7 @@ class HrTable extends PureComponent {
             <Col span={16}>
               <div className={styles.contact__value}>
                 {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
+                  ? getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone)
                   : 'Not enough data in address'}
               </div>
             </Col>

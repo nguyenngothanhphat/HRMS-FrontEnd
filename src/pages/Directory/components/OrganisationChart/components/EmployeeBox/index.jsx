@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
-import { Avatar, Row, Col, Typography, Select, Spin } from 'antd';
-import {
-  LinkedinOutlined,
-  MailOutlined,
-  MessageFilled,
-  UpCircleOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+import { Avatar, Row, Col, Typography, Select, Spin, Divider, Tooltip } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import { history } from 'umi';
 import { isEmpty } from 'lodash';
 
@@ -72,9 +66,11 @@ class DetailEmployeeChart extends Component {
         employeeId = '',
         workNumber = '',
         userId = '',
+        linkedIn = '',
       } = {},
-      department: { name = '' } = {},
-      employeeType: { name: emplTypeName = 'Full Time' } = {} || {},
+      department: { name: deptName = '' } = {},
+      title: { name: titleName = '' } = {},
+      employeeType: { name: emplTypeName = '' } = {} || {},
       location: {
         headQuarterAddress: { country: { name: countryName = '' } = {} || {}, state = '' } = {} ||
           {},
@@ -87,7 +83,7 @@ class DetailEmployeeChart extends Component {
     const getCurrentCompanyName = this.getCurrentFirm();
     return (
       <>
-        <div className={styles.chartSearch}>
+        <div className={styles.chartSearch} onClick={checkObj ? this.handleClick : null}>
           <div className={styles.chartSearch__name}>{getCurrentCompanyName}</div>
           {loadingFetchListAll ? (
             <div className={styles.viewLoading}>
@@ -140,54 +136,52 @@ class DetailEmployeeChart extends Component {
               })}
             </Select>
           )}
-          {checkObj ? (
-            <UpCircleOutlined className={styles.iconUp} onClick={this.handleClick} />
-          ) : null}
         </div>
         {checkObj ? (
           <div className={styles.chartDetail}>
             <div className={styles.chartDetail__Top}>
-              <div className={styles.chartDetail__Top_Avt}>
-                <Avatar src={avatar || ''} size={64} icon={<UserOutlined />} />
-              </div>
+              <Avatar src={avatar || ''} size={55} icon={<UserOutlined />} />
               <div className={styles.chartDetail__Top_name}>
                 <p className={styles.chartDetail__Top_firstName}>{firstName || ''}</p>
-                <div className={styles.chartDetail__Top_department}>{name || ''}</div>
+                <div className={styles.chartDetail__Top_department}>
+                  {`${titleName}, ${deptName} Dept.`}
+                </div>
                 <div className={styles.chartDetail__Top_psi}>
                   {`${employeeId} | ${emplTypeName}`}
                   {/* {employeeId} */}
                 </div>
               </div>
             </div>
+            <Divider />
             <div className={styles.chartDetail__Bottom}>
-              <Row gutter={[24, 24]} style={{ padding: '24px 20px 0 0' }}>
-                <Col span={9}>
+              <Row gutter={[24, 24]}>
+                <Col span={7}>
                   <div className={styles.chartDetail__Bottom_label}>Mobile:</div>
                 </Col>
-                <Col span={15}>
+                <Col span={17}>
                   <div className={styles.chartDetail__Bottom_value}>{workNumber || ''}</div>
                 </Col>
-                <Col span={9}>
+                <Col span={7}>
                   <div className={styles.chartDetail__Bottom_label}>Email id:</div>
                 </Col>
-                <Col span={15}>
+                <Col span={17}>
                   <div className={styles.chartDetail__Bottom_value}>{workEmail || ''}</div>
                 </Col>
-                <Col span={9}>
+                <Col span={7}>
                   <div className={styles.chartDetail__Bottom_label}>Location:</div>
                 </Col>
-                <Col span={15}>
+                <Col span={17}>
                   <div className={styles.chartDetail__Bottom_value}>{locationName || ''}</div>
                 </Col>
-                <Col span={9}>
+                <Col span={7}>
                   <div className={styles.chartDetail__Bottom_label}>Local Time:</div>
                 </Col>
-                <Col span={15}>
+                <Col span={17}>
                   <div className={styles.chartDetail__Bottom_value}>{localTime || ''}</div>
                 </Col>
               </Row>
             </div>
-            <div className={styles.chartDetail__Bottom_line} />
+            <Divider />
             <div className={styles.chartDetail__Bottom_flexBottom}>
               <Text
                 className={styles.chartDetail__Bottom_ViewProfile}
@@ -196,10 +190,30 @@ class DetailEmployeeChart extends Component {
               >
                 View full profile
               </Text>
-              <div>
-                <MessageFilled className={styles.chartDetail__Bottom_Icon} />
-                <MailOutlined className={styles.chartDetail__Bottom_Icon} />
-                <LinkedinOutlined className={styles.chartDetail__Bottom_Icon} />
+              <div className={styles.chartDetail__Bottom_actions}>
+                <Tooltip title="Message">
+                  <img
+                    src="/assets/images/messageIcon.svg"
+                    alt="img-arrow"
+                    style={{ cursor: 'pointer' }}
+                  />
+                </Tooltip>
+                <Tooltip title="Email">
+                  <img
+                    src="/assets/images/iconMail.svg"
+                    alt="img-arrow"
+                    style={{ cursor: 'pointer' }}
+                  />
+                </Tooltip>
+                <Tooltip title="LinkedIn">
+                  <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
+                    <img
+                      src="/assets/images/iconLinkedin.svg"
+                      alt="img-arrow"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </a>
+                </Tooltip>
               </div>
             </div>
           </div>

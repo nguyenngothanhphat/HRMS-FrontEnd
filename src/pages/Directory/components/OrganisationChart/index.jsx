@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Spin } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
+import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/times';
 import { connect } from 'umi';
 import moment from 'moment';
 
@@ -154,7 +154,7 @@ class OrganisationChart extends Component {
 
     const findTimezone =
       timezoneList.find((timezone) => timezone.locationId === location._id) || {};
-    const timeData = getCurrentTimeOfTimezone(currentTime, findTimezone.timezone);
+    const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
     const addTimeData = { ...nodeData, localTime: timeData };
 
     this.setState({ chartDetails: addTimeData });
@@ -249,7 +249,7 @@ class OrganisationChart extends Component {
       const { _id, generalInfo, department, location } = item;
       const findTimezone =
         timezoneList.find((timezone) => timezone.locationId === location._id) || {};
-      const timeData = getCurrentTimeOfTimezone(currentTime, findTimezone.timezone);
+      const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
       this.setState({ idSelect: value });
       return {
         _id,

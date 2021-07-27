@@ -6,7 +6,7 @@ import { isEmpty } from 'lodash';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import { UserOutlined } from '@ant-design/icons';
 import { history, connect } from 'umi';
-import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
+import { getCurrentTimeOfTimezoneOption } from '@/utils/times';
 import styles from './index.less';
 
 @connect(({ locationSelection: { listLocationsByCompany = [] } = {} }) => ({
@@ -136,7 +136,7 @@ class TableManager extends PureComponent {
             <Col span={16}>
               <div className={styles.contact__value}>
                 {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
+                  ? getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone)
                   : 'Not enough data in address'}
               </div>
             </Col>
@@ -251,7 +251,7 @@ class TableManager extends PureComponent {
             <Col span={16}>
               <div className={styles.contact__value}>
                 {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
+                  ? getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone)
                   : 'Not enough data in address'}
               </div>
             </Col>
@@ -376,7 +376,8 @@ class TableManager extends PureComponent {
         render: (assigneeHR) => {
           const {
             hrManager: {
-              generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {} || {},
+              generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {} ||
+                {},
             } = {} || {},
             hrManager = {},
           } = this.props;

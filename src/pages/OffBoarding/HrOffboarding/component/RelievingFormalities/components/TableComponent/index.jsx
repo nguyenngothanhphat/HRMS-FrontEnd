@@ -3,7 +3,7 @@ import { Avatar, Col, Divider, Popover, Row, Table, Tooltip } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { Link, history } from 'umi';
-import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
+import { getCurrentTimeOfTimezoneOption } from '@/utils/times';
 
 import styles from './index.less';
 
@@ -107,7 +107,7 @@ class TableComponent extends PureComponent {
             <Col span={16}>
               <div className={styles.contact__value}>
                 {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
+                  ? getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone)
                   : 'Not enough data in address'}
               </div>
             </Col>
