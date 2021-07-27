@@ -31,7 +31,23 @@ class OrganizationChart extends Component {
       isCollapsed: true,
       itemSelected: '',
     };
+    this.userRef = React.createRef();
   }
+
+  componentDidMount() {
+    document.addEventListener('mousedown', this.handleClickOutSide);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.handleClickOutSide);
+  }
+
+  handleClickOutSide = (event) => {
+    const { target } = event;
+    if (!this.userRef.current.contains(target)) {
+      this.setState({ itemSelected: '' });
+    }
+  };
 
   handleCollapse = () => {
     const { isCollapsed = false } = this.state;
@@ -99,7 +115,11 @@ class OrganizationChart extends Component {
     const className = isActive ? styles.selectNode : styles.node;
 
     return (
-      <div id={idUser} className={`${styles.userNode} ${styles.node} ${className}`}>
+      <div
+        id={idUser}
+        className={`${styles.userNode} ${styles.node} ${className}`}
+        ref={this.userRef}
+      >
         {this.renderCardInfo(user)}
         <div className={styles.userNode__bottom}>
           <div

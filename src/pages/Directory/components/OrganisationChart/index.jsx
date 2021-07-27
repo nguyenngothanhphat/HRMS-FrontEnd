@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { Avatar, Spin } from 'antd';
-// import { UserOutlined } from '@ant-design/icons';
+import { Spin } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { connect } from 'umi';
 import moment from 'moment';
-// import OrganizationChart from '@dabeng/react-orgchart';
+
 import OrganizationChart from './components/OrganizationChart';
 import DetailEmployeeChart from './components/EmployeeCard';
 import styles from './index.less';
@@ -51,12 +50,6 @@ class OrganisationChart extends Component {
       type: 'employee/fetchDataOrgChart',
       payload: { tenantId, company },
     });
-    // .then((response) => {
-    //   const { statusCode, data = {} } = response;
-    //   if (statusCode === 200) {
-    //     this.getCurrentUser(data);
-    //   }
-    // });
 
     this.fetchAllListUser();
     this.fetchTimezone();
@@ -124,13 +117,6 @@ class OrganisationChart extends Component {
   //       });
   //     }
   //   }
-  // };
-
-  // handleOnClick = (e) => {
-  //   const getId = e.target.id;
-  //   this.setState({ idChart: getId });
-  //   const arrowDown = e.target.parentElement.parentElement.parentElement.lastElementChild;
-  //   arrowDown.click();
   // };
 
   // handleClickUserCard = async (nodeData) => {
@@ -315,18 +301,6 @@ class OrganisationChart extends Component {
           </div>
         ) : (
           <div className={styles.orgChart}>
-            {/* <OrganizationChart
-              datasource={dataOrgChart}
-              NodeTemplate={this.renderNode}
-              onClickNode={(node) => this.handleClickUserCard(node)}
-              chartClass={styles.myChart}
-              containerClass={styles.chartContainer}
-              collapsible
-              pan
-              zoom
-              zoominLimit={1}
-              zoomoutLimit={0.2}
-            /> */}
             <OrganizationChart handleClickNode={this.handleClickNode} />
             <div className={styles.orgChart__detailEmplChart}>
               <DetailEmployeeChart
