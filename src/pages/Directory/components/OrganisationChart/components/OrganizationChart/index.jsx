@@ -132,7 +132,7 @@ class OrganizationChart extends Component {
   render() {
     return (
       <div className={styles.orgChartRoot}>
-        <div className={styles.orgChart}>
+        <div className={styles.charts}>
           {this.renderParentNode() /* Manager */}
           {this.renderUserNode() /* Current User */}
           {this.renderChildrenList() /* List Employees */}
