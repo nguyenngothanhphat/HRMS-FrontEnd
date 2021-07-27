@@ -246,7 +246,7 @@ class OrganisationChart extends Component {
     const { timezoneList, currentTime } = this.state;
     const getData = listEmployeeAll.filter((item) => item._id === value);
     const convertData = getData.map((item) => {
-      const { _id, generalInfo, department, location } = item;
+      const { _id, generalInfo, department, location, title } = item;
       const findTimezone =
         timezoneList.find((timezone) => timezone.locationId === location._id) || {};
       const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
@@ -255,6 +255,7 @@ class OrganisationChart extends Component {
         _id,
         generalInfo,
         department,
+        title,
         location,
         localTime: timeData,
       };
