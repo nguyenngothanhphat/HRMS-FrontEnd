@@ -848,7 +848,7 @@ class CompanyDetails extends Component {
                         s.content__viewBottom__row__textLabelVertical,
                       )}
                     >
-                      Country
+                      Country*
                     </p>
                     <Form.Item
                       name="countryHeadquarterProps"
@@ -883,7 +883,7 @@ class CompanyDetails extends Component {
                         s.content__viewBottom__row__textLabelVertical,
                       )}
                     >
-                      State
+                      State*
                     </p>
                     <Form.Item
                       name="stateHeadquarter"
@@ -917,7 +917,7 @@ class CompanyDetails extends Component {
                         s.content__viewBottom__row__textLabelVertical,
                       )}
                     >
-                      Zip / Postal Code
+                      Zip / Postal Code*
                     </p>
                     <Form.Item
                       name="zipHeadquarter"
@@ -1022,7 +1022,7 @@ class CompanyDetails extends Component {
                         s.content__viewBottom__row__textLabelVertical,
                       )}
                     >
-                      Country
+                      Country*
                     </p>
                     <Form.Item
                       name="countryLegalProps"
@@ -1057,7 +1057,7 @@ class CompanyDetails extends Component {
                         s.content__viewBottom__row__textLabelVertical,
                       )}
                     >
-                      State
+                      State*
                     </p>
                     <Form.Item
                       name="stateLegal"
@@ -1091,7 +1091,7 @@ class CompanyDetails extends Component {
                         s.content__viewBottom__row__textLabelVertical,
                       )}
                     >
-                      Zip / Postal Code
+                      Zip / Postal Code*
                     </p>
                     <Form.Item
                       name="zipLegal"
