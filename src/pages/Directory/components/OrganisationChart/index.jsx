@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Avatar, Spin } from 'antd';
 // import { UserOutlined } from '@ant-design/icons';
-// import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { connect } from 'umi';
 import moment from 'moment';
@@ -44,13 +44,13 @@ class OrganisationChart extends Component {
   }
 
   componentDidMount() {
-    // const { dispatch } = this.props;
-    // const tenantId = getCurrentTenant();
-    // const company = getCurrentCompany();
-    // dispatch({
-    //   type: 'employee/fetchDataOrgChart',
-    //   payload: { tenantId, company },
-    // });
+    const { dispatch } = this.props;
+    const tenantId = getCurrentTenant();
+    const company = getCurrentCompany();
+    dispatch({
+      type: 'employee/fetchDataOrgChart',
+      payload: { tenantId, company },
+    });
     // .then((response) => {
     //   const { statusCode, data = {} } = response;
     //   if (statusCode === 200) {
