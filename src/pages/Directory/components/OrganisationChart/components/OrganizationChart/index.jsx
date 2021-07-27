@@ -34,13 +34,24 @@ class OrganizationChart extends Component {
     this.userRef = React.createRef();
   }
 
-  componentDidMount() {
+  componentDidMount = () => {
     document.addEventListener('mousedown', this.handleClickOutSide);
-  }
+  };
 
-  componentWillUnmount() {
+  componentDidUpdate = (prevProps) => {
+    const { idSelect = '' } = this.props;
+    if (prevProps.idSelect !== idSelect) {
+      this.autoFocusNodeById(idSelect);
+    }
+  };
+
+  componentWillUnmount = () => {
     document.removeEventListener('mousedown', this.handleClickOutSide);
-  }
+  };
+
+  autoFocusNodeById = (id) => {
+    this.setState({ itemSelected: id });
+  };
 
   handleClickOutSide = (event) => {
     const { target } = event;

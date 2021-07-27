@@ -32,7 +32,7 @@ class OrganisationChart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // idChart: '',
+      idSelect: '',
       chartDetails: {},
       timezoneList: [],
       currentTime: moment(),
@@ -250,6 +250,7 @@ class OrganisationChart extends Component {
       const findTimezone =
         timezoneList.find((timezone) => timezone.locationId === location._id) || {};
       const timeData = getCurrentTimeOfTimezone(currentTime, findTimezone.timezone);
+      this.setState({ idSelect: value });
       return {
         _id,
         generalInfo,
@@ -292,7 +293,7 @@ class OrganisationChart extends Component {
       loadingFetchListAll,
       companiesOfUser = [],
     } = this.props;
-    const { chartDetails } = this.state;
+    const { chartDetails, idSelect } = this.state;
     return (
       <div className={styles.container}>
         {loading ? (
@@ -301,7 +302,7 @@ class OrganisationChart extends Component {
           </div>
         ) : (
           <div className={styles.orgChart}>
-            <OrganizationChart handleClickNode={this.handleClickNode} />
+            <OrganizationChart idSelect={idSelect} handleClickNode={this.handleClickNode} />
             <div className={styles.orgChart__detailEmplChart}>
               <DetailEmployeeChart
                 chartDetails={chartDetails}
