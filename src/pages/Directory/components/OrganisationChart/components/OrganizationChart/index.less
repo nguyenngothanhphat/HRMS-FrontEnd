@@ -19,6 +19,7 @@
             border-radius: 8px;
 
             padding: 8px 16px;
+            margin-bottom: 113px;
 
             &__card{
                 display: flex;
@@ -88,6 +89,25 @@
                 &_you{
                     background: #00C598;
                 }
+            }
+        }
+
+        .childrenList{
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+
+            width: 750px; // exactly = 750px
+            /*
+                - each node's width = 234px. 
+                - 3 columns => 234px * 3 = 702px
+                - spacing between nodes: 24px
+                -> 702 + 24*2 = 750px
+            */ 
+
+            .employeeNode{
+                margin-bottom: 24px;
             }
         }
     }

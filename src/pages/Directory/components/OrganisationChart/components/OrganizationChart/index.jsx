@@ -4,6 +4,8 @@ import { UserOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 
+import EmployeeNode from './components/EmployeeNode';
+
 import styles from './index.less';
 
 @connect(
@@ -38,12 +40,23 @@ class OrganizationChart extends Component {
     );
   };
 
-  render() {
-    const { dataOrgChart, idCurrentUser = '' } = this.props;
+  renderParentNode = () => {
+    const { dataOrgChart } = this.props;
+    const { manager = {}, manager: { _id: idManager = '' } = {} } = dataOrgChart;
+    return (
+      <>
+        {isEmpty(manager) ? null : (
+          <div id={idManager || ''} className={`${styles.parentNode} ${styles.node}`}>
+            parent
+          </div>
+        )}
+      </>
+    );
+  };
 
+  renderUserNode = () => {
+    const { dataOrgChart, idCurrentUser = '' } = this.props;
     const {
-      manager = {} || {},
-      manager: { _id: idManager = '' } = {} || {},
       user: {
         _id: idUser = '',
         generalInfo: {
@@ -60,28 +73,34 @@ class OrganizationChart extends Component {
       } = {},
       employees: listEmployees = [],
     } = dataOrgChart;
-    const legalName = `${userFirstName} ${userMiddleName} ${userLastName}`;
 
+    const legalName = `${userFirstName} ${userMiddleName} ${userLastName}`;
+    return (
+      <div id={idUser} className={`${styles.userNode} ${styles.node}`}>
+        {this.renderCardInfo(userAvatar, legalName, jobTitleName, deptName, countryName)}
+        <div className={styles.userNode__bottom}>
+          <div className={styles.userNode__bottom_reportees}>
+            {`${listEmployees.length} reportees`}
+          </div>
+          {idUser === idCurrentUser ? <div className={styles.userNode__bottom_you}>You</div> : null}
+        </div>
+      </div>
+    );
+  };
+
+  renderChildrenList = () => {
+    const { dataOrgChart } = this.props;
+    const { employees: listEmployees = [] } = dataOrgChart;
+    return <EmployeeNode listEmployees={listEmployees} renderCardInfo={this.renderCardInfo} />;
+  };
+
+  render() {
     return (
       <div className={styles.orgChartRoot}>
         <div className={styles.orgChart}>
-          {isEmpty(manager) ? null : (
-            <div id={idManager || ''} className={`${styles.parentNode} ${styles.node}`}>
-              parent
-            </div>
-          )}
-          <div id={idUser} className={`${styles.userNode} ${styles.node}`}>
-            {this.renderCardInfo(userAvatar, legalName, jobTitleName, deptName, countryName)}
-            <div className={styles.userNode__bottom}>
-              <div className={styles.userNode__bottom_reportees}>
-                {`${listEmployees.length} reportees`}
-              </div>
-              {idUser === idCurrentUser ? (
-                <div className={styles.userNode__bottom_you}>You</div>
-              ) : null}
-            </div>
-          </div>
-          <div className={styles.childrenList}>childsssss</div>
+          {this.renderParentNode()}
+          {this.renderUserNode()}
+          {this.renderChildrenList()}
         </div>
       </div>
     );
