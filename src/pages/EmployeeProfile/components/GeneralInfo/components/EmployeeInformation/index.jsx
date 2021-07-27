@@ -85,7 +85,6 @@ class EmployeeInformation extends PureComponent {
       generalData,
       openEmployeeInfor,
       permissions = {},
-      profileOwner = false,
     } = this.props;
     const renderComponent = openEmployeeInfor ? (
       <Edit handleCancel={this.handleCancel} />
@@ -98,7 +97,7 @@ class EmployeeInformation extends PureComponent {
           <p className={styles.EmployeeTitle}>Employee Information</p>
           {openEmployeeInfor
             ? ''
-            : (permissions.editEmployeeInfo !== -1 || profileOwner) && (
+            : permissions.editEmployeeInfo !== -1 && (
                 <div className={styles.flexEdit} onClick={this.handleEdit}>
                   <EditFilled className={styles.IconEdit} />
                   <p className={styles.Edit}>Edit</p>

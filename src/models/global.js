@@ -4,6 +4,7 @@ const GlobalModel = {
   namespace: 'global',
   state: {
     collapsed: false,
+    expandMenuSidebar: true,
     notices: [],
   },
   effects: {
@@ -77,6 +78,15 @@ const GlobalModel = {
       { payload },
     ) {
       return { ...state, collapsed: payload };
+    },
+    collapseExpandMenuSidebar(
+      state = {
+        notices: [],
+        collapsed: true,
+      },
+      { payload },
+    ) {
+      return { ...state, expandMenuSidebar: payload };
     },
 
     saveNotices(state, { payload }) {
