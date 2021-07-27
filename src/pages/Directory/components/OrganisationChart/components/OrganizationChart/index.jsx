@@ -24,8 +24,15 @@ import styles from './index.less';
 class OrganizationChart extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isCollapsed: false,
+    };
   }
+
+  handleCollapse = () => {
+    const { isCollapsed = false } = this.state;
+    this.setState({ isCollapsed: !isCollapsed });
+  };
 
   renderCardInfo = (avatar, legalName, jobTitleName, deptName, countryName) => {
     return (
@@ -79,7 +86,7 @@ class OrganizationChart extends Component {
       <div id={idUser} className={`${styles.userNode} ${styles.node}`}>
         {this.renderCardInfo(userAvatar, legalName, jobTitleName, deptName, countryName)}
         <div className={styles.userNode__bottom}>
-          <div className={styles.userNode__bottom_reportees}>
+          <div onClick={this.handleCollapse} className={styles.userNode__bottom_reportees}>
             {`${listEmployees.length} reportees`}
           </div>
           {idUser === idCurrentUser ? <div className={styles.userNode__bottom_you}>You</div> : null}
@@ -90,8 +97,13 @@ class OrganizationChart extends Component {
 
   renderChildrenList = () => {
     const { dataOrgChart } = this.props;
+    const { isCollapsed = false } = this.state;
     const { employees: listEmployees = [] } = dataOrgChart;
-    return <EmployeeNode listEmployees={listEmployees} renderCardInfo={this.renderCardInfo} />;
+    return (
+      <div className={isCollapsed ? styles.collapsed : styles.expand}>
+        <EmployeeNode listEmployees={listEmployees} renderCardInfo={this.renderCardInfo} />
+      </div>
+    );
   };
 
   render() {
