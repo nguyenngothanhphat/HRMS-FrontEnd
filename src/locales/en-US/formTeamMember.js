@@ -7,7 +7,7 @@ export default {
   'component.basicInformation.title': 'Basic Information',
   'component.basicInformation.subtitle': 'Please verify your details below',
   'component.basicInformation.firstName': 'First name*',
-  'component.basicInformation.middleName': 'Middle name*',
+  'component.basicInformation.middleName': 'Middle name',
   'component.basicInformation.lastName': 'Last name*',
   'component.basicInformation.employeeId': 'Employee Id',
   'component.basicInformation.firstNameRequiredAlert': 'Please input your first name!',
@@ -29,6 +29,7 @@ export default {
     'Part-Time (Employee working less than 30 hours a week)',
   'component.jobDetail.classificationRadio3':
     'Internship (A student or trainee participating in an internship)',
+  'component.jobDetail.jobGrade': 'Job grade',
   'component.jobDetail.department': 'Department',
   'component.jobDetail.jobTitle': 'Job Title',
   'component.jobDetail.jobCategory': 'Job Category',

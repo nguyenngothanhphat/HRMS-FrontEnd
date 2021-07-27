@@ -315,7 +315,6 @@ class BasicInformation extends Component {
               label={formatMessage({ id: 'component.basicInformation.middleName' })}
               name="middleName"
               rules={[
-                { required: true, message: `'Please input your middle name!'` },
                 {
                   pattern: /[^\s-]/,
                   message: 'Middle name is invalid!',

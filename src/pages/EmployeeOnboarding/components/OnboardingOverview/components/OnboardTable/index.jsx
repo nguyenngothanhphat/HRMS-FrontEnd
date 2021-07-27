@@ -512,7 +512,8 @@ class OnboardTable extends Component {
           <Menu.Item>
             <div
               onClick={() =>
-                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)}
+                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)
+              }
             >
               Re-assign
             </div>

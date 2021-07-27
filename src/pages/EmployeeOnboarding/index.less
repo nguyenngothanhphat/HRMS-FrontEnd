@@ -7,13 +7,15 @@
   .employeeOnboarding__tab {
     position: relative;
   }
+  
   .options {
     display: flex;
     margin-right: 12px;
+    .generate {
+      background-color: red;
+    }
     :global {
-      .generate {
-        background-color: red;
-      }
+      
       .ant-row {
         align-items: baseline;
       }
@@ -48,6 +50,28 @@
     .ant-tabs-tab-btn {
       color: #707177;
       opacity: 1;
+    }
+    .ant-tabs-extra-content {
+      .ant-btn.ant-btn-text {
+        background: #FFFFFF;
+    border: 1px solid #FFA100;
+    box-sizing: border-box;
+    border-radius: 21px;
+    color: #FFA100;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0.13125px;
+    .ant-icon-download {
+      
+      font-size: 20px;
+    svg {
+      font-weight: 500;
+      line-height: 16px;
+      letter-spacing: 0.13125px;
+    }
+    }
+      }
     }
   }
 }
