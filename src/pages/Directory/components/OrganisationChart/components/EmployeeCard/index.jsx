@@ -20,7 +20,9 @@ const { Option } = Select;
 class DetailEmployeeChart extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      valueInput: '',
+    };
     this.inputRef = React.createRef();
   }
 
@@ -32,13 +34,13 @@ class DetailEmployeeChart extends Component {
     const { handleSelectSearch } = this.props;
     handleSelectSearch(value);
     this.inputRef.current.blur();
+    this.setState({ valueInput: value });
   };
 
   handleClick = () => {
     const { closeDetailEmployee = () => {} } = this.props;
+    this.setState({ valueInput: '' });
     closeDetailEmployee();
-    console.log(this.inputRef.current);
-    this.inputRef.current = undefined;
   };
 
   getCurrentFirm = () => {
@@ -50,6 +52,7 @@ class DetailEmployeeChart extends Component {
 
   render() {
     const { chartDetails = {}, listEmployeeAll, loadingFetchListAll } = this.props;
+    const { valueInput } = this.state;
     const checkObj = !isEmpty(chartDetails);
 
     const {
@@ -94,6 +97,7 @@ class DetailEmployeeChart extends Component {
               }}
               onSelect={this.handleSelect}
               suffixIcon={<img alt="search" src={SearchIcon} />}
+              value={valueInput}
             >
               {listEmployeeAll.map((value) => {
                 const {
