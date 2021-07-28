@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
-import { Tabs } from 'antd';
+import { Input, Tabs } from 'antd';
 import { connect } from 'umi';
 
 import { PROCESS_STATUS } from '@/utils/onboarding';
+import { debounce } from 'lodash';
+import { SearchOutlined } from '@ant-design/icons';
 import ApprovedFinalOffers from './components/ApprovedFinalOffers/index';
 import SentForApprovals from './components/SentForApprovals/index';
 import AllTab from './components/AllTab';
@@ -18,7 +20,13 @@ class AwaitingApprovals extends PureComponent {
       tabId: '1',
       pageSelected: 1,
       size: 10,
+      nameSearch: '',
     };
+    this.setDebounce = debounce((query) => {
+      this.setState({
+        nameSearch: query,
+      });
+    });
   }
 
   componentDidMount() {
@@ -31,18 +39,19 @@ class AwaitingApprovals extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { tabId, pageSelected, size } = this.state;
+    const { tabId, pageSelected, size, nameSearch } = this.state;
     if (
       prevState.tabId !== tabId ||
       prevState.pageSelected !== pageSelected ||
-      prevState.size !== size
+      prevState.size !== size ||
+      prevState.nameSearch !== nameSearch
     ) {
       this.onChangeTab(tabId);
     }
   }
 
   fetchAwaitingApprovalsAll = (status) => {
-    const { pageSelected, size } = this.state;
+    const { pageSelected, size, nameSearch } = this.state;
     const { dispatch } = this.props;
     dispatch({
       type: 'onboard/fetchOnboardListAll',
@@ -50,12 +59,17 @@ class AwaitingApprovals extends PureComponent {
         processStatus: status,
         page: pageSelected,
         limit: size,
+        name: nameSearch,
       },
     });
   };
 
+  onChange = (e) => {
+    this.setDebounce(e.target.value);
+  };
+
   fetchAwaitingApprovals = (status) => {
-    const { pageSelected, size } = this.state;
+    const { pageSelected, size, nameSearch } = this.state;
     const { dispatch } = this.props;
     dispatch({
       type: 'onboard/fetchOnboardList',
@@ -63,6 +77,7 @@ class AwaitingApprovals extends PureComponent {
         processStatus: status,
         page: pageSelected,
         limit: size,
+        name: nameSearch,
       },
     });
   };
@@ -100,7 +115,17 @@ class AwaitingApprovals extends PureComponent {
     return (
       <div className={styles.AwaitingApprovals}>
         <div className={styles.tabs}>
-          <Tabs defaultActiveKey={tabId} onChange={this.onChangeTab}>
+          <Tabs
+            defaultActiveKey={tabId}
+            onChange={this.onChangeTab}
+            tabBarExtraContent={
+              <Input
+                onChange={this.onChange}
+                placeholder="Search by candidate ID"
+                prefix={<SearchOutlined />}
+              />
+            }
+          >
             <TabPane tab="all" key="1">
               <AllTab
                 list={dataAll}

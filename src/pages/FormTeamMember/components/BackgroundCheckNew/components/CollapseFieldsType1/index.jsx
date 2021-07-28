@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
-import { Collapse, Checkbox } from 'antd';
-import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import { Collapse, Checkbox, Input, Form, Button, Row, Col } from 'antd';
+import { PlusOutlined, MinusOutlined, CloseOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import styles from './index.less';
 
@@ -12,12 +12,16 @@ const CheckboxGroup = Checkbox.Group;
   candidateInfo,
 }))
 class CollapseFieldsType1 extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = {
       checkedList: [],
       indeterminate: true,
       checkAll: false,
+      visible: true,
+      typeSelected: '',
     };
   }
 
@@ -112,9 +116,48 @@ class CollapseFieldsType1 extends PureComponent {
     );
   };
 
+  handleCancel = () => {
+    const { visible } = this.state;
+    this.setState({
+      visible: !visible,
+    });
+  };
+
+  handleClick = (type) => {
+    const { visible } = this.state;
+    this.setState({
+      visible: !visible,
+      typeSelected: type,
+    });
+  };
+
+  camelize = (str) => {
+    return str
+      .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
+        return index === 0 ? word.toLowerCase() : word.toUpperCase();
+      })
+      .replace(/\s+/g, '');
+  };
+
+  onSubmit = (values) => {
+    const { visible, typeSelected } = this.state;
+    const { addNewField } = this.props;
+    this.setState({
+      visible: !visible,
+    });
+    const newField = {
+      key: this.camelize(values.nameOfField),
+      alias: values.nameOfField,
+      country: [],
+      value: true,
+    };
+    addNewField(newField, typeSelected);
+    // this.formRef.current.setFields();
+  };
+
   render() {
-    const { checkedList } = this.state;
-    const { checkBoxesData = [], disabled = false } = this.props;
+    const { checkedList, visible } = this.state;
+    const { checkBoxesData = [], disabled = false, type, loading } = this.props;
     const checkBoxes1 = checkBoxesData.filter(
       (data) => data.alias.substr(data.alias.length - 1) === '*',
     );
@@ -146,7 +189,7 @@ class CollapseFieldsType1 extends PureComponent {
             >
               {checkBoxes1.map((data) => (
                 <Checkbox
-                  disabled={data.alias.substr(data.alias.length - 1) === '*'}
+                  // disabled={data.alias.substr(data.alias.length - 1) === '*'}
                   value={data.alias}
                 >
                   {data.alias}
@@ -157,6 +200,37 @@ class CollapseFieldsType1 extends PureComponent {
               ))}
             </CheckboxGroup>
           </Panel>
+          <div
+            className={visible ? `${styles.addNewType} ${styles.hidden}` : `${styles.addNewType}`}
+          >
+            <div className={styles.addTitle}>
+              <Row>
+                <Col span={23}>
+                  <p>Add new field</p>
+                </Col>
+                <Col span={1}>
+                  <CloseOutlined onClick={this.handleCancel} />
+                </Col>
+              </Row>
+            </div>
+            <Form ref={this.formRef} onFinish={(values) => this.onSubmit(values)} layout="vertical">
+              <Form.Item label="Name of field" name="nameOfField">
+                <Input placeholder="Enter name of the field" />
+              </Form.Item>
+              <Form.Item>
+                <Button loading={loading} htmlType="submit">
+                  Submit
+                </Button>
+              </Form.Item>
+            </Form>
+          </div>
+          <div
+            className={!visible ? `${styles.hidden}` : `${styles.addBtn}`}
+            onClick={() => this.handleClick(type)}
+          >
+            <PlusOutlined className={styles.plusIcon} />
+            <span className={styles.title}>Add new Field</span>
+          </div>
         </Collapse>
       </div>
     );

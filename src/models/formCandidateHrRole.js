@@ -1,4 +1,5 @@
 import {
+  getGradeList,
   getDocumentList,
   getTitleListByDepartment,
   fetchDepartmentList,
@@ -76,6 +77,7 @@ const candidateInfo = {
       previousExperience: null,
       candidatesNoticePeriod: '',
       prefferedDateOfJoining: '',
+      jobGradeLevelList: [],
       employeeTypeList: [],
       locationList: [],
       departmentList: [],
@@ -83,6 +85,7 @@ const candidateInfo = {
       managerList: [],
       joineeEmail: '',
       employer: '',
+      grade: null,
       department: null,
       workLocation: null,
       title: null,
@@ -223,6 +226,8 @@ const candidateInfo = {
 
       cancelCandidate: false,
       salaryTitle: null,
+      salaryDepartment: null,
+      salaryLocation: null,
     },
     data: {
       firstName: null,
@@ -246,6 +251,8 @@ const candidateInfo = {
       amountIn: null,
       timeOffPolicy: null,
       salaryStructure: {
+        salaryDepartment: '',
+        salaryLocation: '',
         salaryPosition: '',
       },
       id: '',
@@ -295,6 +302,17 @@ const candidateInfo = {
   },
 
   effects: {
+    *getJobGradeList(_, { call, put }) {
+      try {
+        const response = yield call(getGradeList);
+        yield put({
+          type: 'saveTemp',
+          payload: { jobGradeLevelList: response },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
     *fetchDocumentList(_, { call, put }) {
       try {
         const response = yield call(getDocumentList);
@@ -615,13 +633,23 @@ const candidateInfo = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveSalaryStructure',
-          payload: { title: payload.title, settings: setting },
+          payload: {
+            department: payload.department,
+            workLocation: payload.workLocation,
+            title: payload.title,
+            settings: setting,
+          },
         });
 
         yield put({
           type: 'saveOrigin',
           payload: {
-            salaryStructure: { title: payload.title, settings: setting },
+            salaryStructure: {
+              department: payload.department,
+              workLocation: payload.workLocation,
+              title: payload.title,
+              settings: setting,
+            },
           },
         });
       } catch (errors) {
