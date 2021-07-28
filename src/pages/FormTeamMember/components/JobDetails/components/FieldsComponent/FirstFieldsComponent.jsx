@@ -193,7 +193,7 @@ class FirstFieldsComponent extends PureComponent {
                         }
                         allowClear
                         filterOption={(input, option) => {
-                          return option.value.toLowerCase().indexOf(input) > -1;
+                          return option.value.toLowerCase().indexOf(input.toLowerCase()) > -1;
                         }}
                       >
                         {item.title === 'workLocation' ? (
