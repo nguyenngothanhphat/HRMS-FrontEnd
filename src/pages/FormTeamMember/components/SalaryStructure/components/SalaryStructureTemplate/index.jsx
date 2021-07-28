@@ -5,11 +5,10 @@ import { CloseCircleOutlined } from '@ant-design/icons';
 import { formatMessage, connect } from 'umi';
 // import { dialog } from '@/utils/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import{ PROCESS_STATUS} from '@/utils/onboarding';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import doneIcon from './assets/doneIcon.png';
 import editIcon from './assets/editIcon.png';
 import styles from './index.less';
-
 
 @connect(
   ({
@@ -21,6 +20,8 @@ import styles from './index.less';
       data: {
         listTitle = [],
         title = {},
+        department = '',
+        workLocation = '',
         processStatus = '',
         salaryStructure: {
           settings: settingsOriginData = [],
@@ -31,7 +32,15 @@ import styles from './index.less';
       data,
       tempData = {},
       tempData: {
-        salaryStructure: { settings: settingsTempData = [], title: salaryTitleTempData = {} } = {},
+        titleList = [],
+        locationList = [],
+        departmentList = [],
+        salaryStructure: {
+          settings: settingsTempData = [],
+          title: salaryTitleTempData = {},
+          department: salaryDepartmentTempData = {},
+          workLocation: salaryWorkLocationTempData = {},
+        } = {},
       } = {},
     },
     user: { currentUser: { company: { _id = '' } = {} } = {}, currentUser: { location = {} } = {} },
@@ -40,9 +49,16 @@ import styles from './index.less';
     loadingFetchTable: loading.effects['candidateInfo/fetchTableData'],
     loadingEditSalary: loading.effects['candidateInfo/updateByHR'],
     listTitle,
+    titleList,
     cancelCandidate,
     location,
     checkMandatory,
+    locationList,
+    department,
+    workLocation,
+    departmentList,
+    salaryDepartmentTempData,
+    salaryWorkLocationTempData,
     currentStep,
     processStatus,
     _id,
@@ -63,7 +79,7 @@ class SalaryStructureTemplate extends PureComponent {
     super(props);
 
     this.state = {
-      dataSettings: [],
+      // dataSettings: [],
       // error: '',
       // errorInfo: '',
       isEditted: false,
@@ -78,18 +94,6 @@ class SalaryStructureTemplate extends PureComponent {
         },
       ],
     };
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  componentDidUpdate(prevProps) {
-    const { salaryTitle: salaryTitleId, settingsTempData: settings = [] } = this.props;
-    if (!salaryTitleId) {
-      return;
-    }
-    // eslint-disable-next-line react/no-did-update-set-state
-    this.setState({
-      dataSettings: settings,
-    });
   }
 
   // componentDidCatch(error, errorInfo) {
@@ -169,16 +173,27 @@ class SalaryStructureTemplate extends PureComponent {
     //     salaryTitle: '',
     //   },
     // });
-    this.setState({
-      dataSettings: settings,
-    });
+    // this.setState({
+    //   dataSettings: settings,
+    // });
 
     // const { processStatus } = this.props;
     // const tempTableData = [...settings];
 
     // if (processStatus === 'DRAFT') {
+
+    // dispatch({
+    //   type: 'candidateInfo/fetchTitleListByCompany',
+    //   payload: { company: getCurrentCompany(), tenantId: getCurrentTenant() },
+    // });
+
     dispatch({
-      type: 'candidateInfo/fetchTitleListByCompany',
+      type: 'candidateInfo/fetchDepartmentList',
+      payload: { company: getCurrentCompany(), tenantId: getCurrentTenant() },
+    });
+
+    dispatch({
+      type: 'candidateInfo/fetchLocationList',
       payload: { company: getCurrentCompany(), tenantId: getCurrentTenant() },
     });
     // }
@@ -265,6 +280,7 @@ class SalaryStructureTemplate extends PureComponent {
         tenantId: getCurrentTenant(),
       },
     }).then(({ data: data1, statusCode }) => {
+      console.log(data1);
       if (statusCode === 200) {
         dispatch({
           type: 'candidateInfo/save',
@@ -387,7 +403,7 @@ class SalaryStructureTemplate extends PureComponent {
     });
   };
 
-  handleNumberChange = (name, current, value) => {
+  handleNumberChange = (name, current) => {
     const { dispatch, settingsTempData: settings = [] } = this.props;
     const tempTableData = [...settings];
     const index = tempTableData.findIndex((data) => data.key === name);
@@ -440,7 +456,11 @@ class SalaryStructureTemplate extends PureComponent {
 
     dispatch({
       type: 'candidateInfo/fetchTableData',
-      payload: { title: value, tenantId: getCurrentTenant(), country: country._id || country },
+      payload: {
+        title: value,
+        tenantId: getCurrentTenant(),
+        country: country._id || country,
+      },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         dispatch({
@@ -475,6 +495,24 @@ class SalaryStructureTemplate extends PureComponent {
     //     settings: tempTableData,
     //   },
     // });
+  };
+
+  handleChangeDepartment = (value) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'candidateInfo/fetchTitleList',
+      payload: {
+        department: value,
+      },
+    });
+  };
+
+  handleChangeGrade = (value) => {
+    console.log(value);
+  };
+
+  handleChangeLocation = (value) => {
+    console.log(value);
   };
 
   _renderTableTitle = (order) => {
@@ -719,47 +757,137 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   render() {
+    const dataGrade = [
+      { _id: 1, grade: 1 },
+      { _id: 2, grade: 2 },
+      { _id: 3, grade: 3 },
+      { _id: 4, grade: 4 },
+      { _id: 5, grade: 5 },
+      { _id: 6, grade: 6 },
+      { _id: 7, grade: 7 },
+      { _id: 8, grade: 8 },
+      { _id: 9, grade: 9 },
+      { _id: 10, grade: 10 },
+    ];
     const { Option } = Select;
     const {
       loadingTable,
       salaryTitle: salaryTitleId,
+      department,
+      workLocation,
       loadingFetchTable,
       settingsTempData: settings,
+      departmentList,
+      locationList = [],
     } = this.props;
-    const { processStatus, listTitle = [] } = this.props;
+    const { processStatus, titleList = [] } = this.props;
 
     return (
       <div className={styles.salaryStructureTemplate}>
         <Form
           initialValues={{
             salaryTemplate: salaryTitleId,
+            // grade,
+            // department,
+            // location,
           }}
           onFinish={this.onFinish}
           ref={this.formRef}
         >
-          {listTitle.length === 0 ? (
+          {dataGrade.length === 0 ? (
             <Spin className={styles.spin} />
           ) : (
             <>
-              <div className={styles.salaryStructureTemplate_select}>
-                <Select
-                  value={salaryTitleId || null}
-                  onChange={this.handleChangeSelect}
-                  placeholder="Please select a choice!"
-                  loading={loadingTable || loadingFetchTable}
-                  size="large"
-                  style={{ width: 280 }}
-                  disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
-                >
-                  {listTitle.map(({ _id = '', name = '' }) => {
-                    return (
-                      <Option key={_id} value={_id}>
-                        {name}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </div>
+              <Row gutter={[8, 0]}>
+                <Col xs={24} sm={24} md={6} lg={6}>
+                  <p className={styles.p_title_select}>Grade</p>
+                  <div className={styles.salaryStructureTemplate_select}>
+                    <Select
+                      // value={salaryTitleId || null}
+                      onChange={this.handleChangeGrade}
+                      placeholder="Please select a choice!"
+                      loading={loadingTable || loadingFetchTable}
+                      size="large"
+                      style={{ width: 280 }}
+                      disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
+                    >
+                      {dataGrade.map(({ _id = '', grade = '' }) => {
+                        return (
+                          <Option key={_id} value={_id}>
+                            {grade}
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  </div>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6}>
+                  <p className={styles.p_title_select}>Department</p>
+                  <div className={styles.salaryStructureTemplate_select}>
+                    <Select
+                      defaultValue={department || null}
+                      onChange={this.handleChangeDepartment}
+                      placeholder="Please select a choice!"
+                      loading={loadingTable || loadingFetchTable}
+                      size="large"
+                      style={{ width: 280 }}
+                      disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
+                    >
+                      {departmentList.map(({ _id = '', name = '' }) => {
+                        return (
+                          <Option key={_id} value={_id}>
+                            {name}
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  </div>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6}>
+                  <p className={styles.p_title_select}>Location</p>
+                  <div className={styles.salaryStructureTemplate_select}>
+                    <Select
+                      defaultValue={workLocation || null}
+                      onChange={this.handleChangeLocation}
+                      placeholder="Please select a choice!"
+                      loading={loadingTable || loadingFetchTable}
+                      size="large"
+                      style={{ width: 280 }}
+                      disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
+                    >
+                      {locationList.map(({ _id = '', name = '' }) => {
+                        return (
+                          <Option key={_id} value={_id}>
+                            {name}
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  </div>
+                </Col>
+                <Col xs={24} sm={24} md={6} lg={6}>
+                  <p className={styles.p_title_select}> Job title</p>
+                  <div className={styles.salaryStructureTemplate_select}>
+                    <Select
+                      defaultValue={salaryTitleId}
+                      onChange={this.handleChangeSelect}
+                      placeholder="Please select a choice!"
+                      loading={loadingTable || loadingFetchTable}
+                      size="large"
+                      style={{ width: 280 }}
+                      disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
+                    >
+                      {titleList.map(({ _id = '', name = '' }) => {
+                        return (
+                          <Option key={_id} value={_id}>
+                            {name}
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  </div>
+                </Col>
+              </Row>
               {loadingFetchTable ? (
                 <Spin className={styles.spin} />
               ) : (

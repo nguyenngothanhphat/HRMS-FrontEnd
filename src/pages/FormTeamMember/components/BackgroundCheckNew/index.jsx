@@ -724,7 +724,7 @@ class BackgroundCheck extends Component {
     const arrA = this.generateForSendEmail(identityProof, checkedListA);
     const arrB = this.generateForSendEmail(addressProof, checkedListB);
     const arrC = this.generateForSendEmail(educational, checkedListC);
-
+    console.log(identityProof);
     const arrE = newPoeFinal.map((value) => {
       const { checkedList = [] } = value;
       return this.generateForSendEmail(previousEmployment[0], checkedList);
@@ -1221,6 +1221,32 @@ class BackgroundCheck extends Component {
     return list;
   };
 
+  addNewField = (field, type) => {
+    const {
+      candidateInfo: {
+        tempData: {
+          identityProof: { checkedList: checkedListA = [] } = {},
+          addressProof: { checkedList: checkedListB = [] } = {},
+          educational: { checkedList: checkedListC = [] } = {},
+          technicalCertifications: { checkedList: checkedListD = [] } = {},
+          // documentChecklistSetting: docsList = [],
+          previousEmployment: { poe = [] } = {},
+        },
+      } = {},
+      // dispatch,
+    } = this.props;
+    if (type === 'A') {
+      checkedListA.push(field);
+    }
+    if (type === 'B') {
+      checkedListB.push(field);
+    }
+    if (type === 'C') {
+      checkedListC.push(field);
+    }
+    this.handleUpdateByHR(poe, checkedListA, checkedListB, checkedListC, checkedListD);
+  };
+
   // main
   render() {
     const {
@@ -1270,8 +1296,11 @@ class BackgroundCheck extends Component {
                     return (
                       <CollapseFieldsType1
                         title={title}
+                        addNewField={this.addNewField}
                         item={item}
                         checkBoxesData={data}
+                        loading={loadingUpdateByHR}
+                        type={type}
                         handleChange={this.handleChange}
                         handleCheckAll={this.handleCheckAll}
                         processStatus={processStatus}
