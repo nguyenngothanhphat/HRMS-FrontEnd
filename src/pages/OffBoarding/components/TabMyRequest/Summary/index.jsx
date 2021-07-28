@@ -15,18 +15,23 @@ export default class RenderTable extends PureComponent {
   getCount = (value) => {
     const { countdata = [] } = this.props;
     const result = countdata.find(({ _id }) => _id === value) || {};
-    let count = 0;
-    if (result.count > 0) {
-      count = result.count;
-    }
-    return count;
+    // if (result.count < 10) {
+    //   result.count = `0${result.count}`;
+    // }
+    return result.count || 0;
   };
 
   getTotalCount = () => {
     const { countdata = [] } = this.props;
     let total = 0;
-    if (countdata.length > 0) total = countdata.reduce((a, b) => a.count + b.count);
 
+    if (countdata.length > 0) {
+      if (countdata.length === 1) {
+        total = countdata[0].count;
+      } else {
+        total = countdata.reduce((a, b) => a + b.count, 0);
+      }
+    }
     return total;
   };
 

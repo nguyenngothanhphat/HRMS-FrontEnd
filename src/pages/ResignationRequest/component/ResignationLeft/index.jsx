@@ -1,8 +1,7 @@
 import icon from '@/assets/lightIcon.svg';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { Button, DatePicker, Input, Spin } from 'antd';
-import Checkbox from 'antd/lib/checkbox/Checkbox';
-import moment from 'moment';
+import { Button, Input, Spin } from 'antd';
+// import Checkbox from 'antd/lib/checkbox/Checkbox';
 // import moment from 'moment';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
@@ -90,12 +89,23 @@ class ResigationLeft extends Component {
     });
   };
 
+  getCurrentCompanyName = () => {
+    const { companiesOfUser = [] } = this.props;
+    const currentCompanyId = getCurrentCompany();
+    let getName = companiesOfUser.map((item) => (item._id === currentCompanyId ? item.name : null));
+    getName = getName.filter((item) => item !== null);
+    return getName[0];
+  };
+
   render() {
     const { reasonForLeaving = '', sendleaveRequest, changeLWD } = this.state;
     const { loading, totalList = [], loadingFetchListRequest } = this.props;
     const checkInprogress = totalList.find(({ _id }) => _id === 'IN-PROGRESS') || {};
     const checkAccepted = totalList.find(({ _id }) => _id === 'ACCEPTED') || {};
     const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
+
+    const companyName = this.getCurrentCompanyName() || '';
+
     if (loadingFetchListRequest)
       return (
         <div className={styles.viewLoading}>
@@ -124,7 +134,11 @@ class ResigationLeft extends Component {
             className={styles.boxReason}
             value={reasonForLeaving}
             onChange={this.handleChange}
-            placeholder="The reason I have decided to end my journey with Lollypop here is because…"
+            placeholder={
+              companyName
+                ? `The reason I have decided to end my journey with ${companyName} here is because…`
+                : ''
+            }
             disabled={sendleaveRequest || checkSendRequest}
           />
         </div>
@@ -188,15 +202,13 @@ export default connect(
   ({
     offboarding: { approvalflow = [], totalList = [] } = {},
     user: {
-      currentUser: {
-        location: { _id: locationID = '' } = {},
-        company: { _id: companyID } = {},
-      } = {},
+      currentUser: { location: { _id: locationID = '' } = {} } = {},
+      companiesOfUser = [],
     } = {},
     loading,
   }) => ({
     locationID,
-    companyID,
+    companiesOfUser,
     approvalflow,
     totalList,
     loading: loading.effects['offboarding/sendRequest'],
