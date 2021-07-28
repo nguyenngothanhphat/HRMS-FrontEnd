@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Input } from 'antd';
 import { connect } from 'umi';
+import { SearchOutlined } from '@ant-design/icons';
 // import SentProvisionalOffers from './components/SentProvisionalOffers/index';
 // import AcceptedProvisionalOffers from './components/AcceptedProvisionalOffers/index';
 // import RenegotiateProvisionalOffers from './components/RenegotiateProvisionalOffers/index';
 import { PROCESS_STATUS } from '@/utils/onboarding';
+import { debounce } from 'lodash';
 import Pending from './components/Pending/index';
 import EligibleCandidates from './components/EligibleCandidates/index';
 import IneligibleCandidates from './components/IneligibleCandidates/index';
@@ -19,7 +21,13 @@ class BackgroundCheck extends PureComponent {
       tabId: '1',
       pageSelected: 1,
       size: 10,
+      nameSearch: '',
     };
+    this.setDebounce = debounce((query) => {
+      this.setState({
+        nameSearch: query,
+      });
+    }, 500);
   }
 
   componentDidMount() {
@@ -32,18 +40,19 @@ class BackgroundCheck extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { tabId, pageSelected, size } = this.state;
+    const { tabId, pageSelected, size, nameSearch } = this.state;
     if (
       prevState.tabId !== tabId ||
       prevState.pageSelected !== pageSelected ||
-      prevState.size !== size
+      prevState.size !== size ||
+      prevState.nameSearch !== nameSearch
     ) {
       this.onChangeTab(tabId);
     }
   }
 
   fetchBackgroundCheckAll = (status) => {
-    const { pageSelected, size } = this.state;
+    const { pageSelected, size, nameSearch } = this.state;
     const { dispatch } = this.props;
     dispatch({
       type: 'onboard/fetchOnboardListAll',
@@ -51,12 +60,17 @@ class BackgroundCheck extends PureComponent {
         processStatus: status,
         page: pageSelected,
         limit: size,
+        name: nameSearch,
       },
     });
   };
 
+  onChange = (e) => {
+    this.setDebounce(e.target.value);
+  };
+
   fetchBackgroundCheck = (status) => {
-    const { pageSelected, size } = this.state;
+    const { pageSelected, size, nameSearch } = this.state;
     const { dispatch } = this.props;
     dispatch({
       type: 'onboard/fetchOnboardList',
@@ -64,6 +78,7 @@ class BackgroundCheck extends PureComponent {
         processStatus: status,
         page: pageSelected,
         limit: size,
+        name: nameSearch,
       },
     });
   };
@@ -100,7 +115,17 @@ class BackgroundCheck extends PureComponent {
     return (
       <div className={styles.BackgroundCheck}>
         <div className={styles.tabs}>
-          <Tabs defaultActiveKey={tabId} onChange={this.onChangeTab}>
+          <Tabs
+            defaultActiveKey={tabId}
+            onChange={this.onChangeTab}
+            tabBarExtraContent={
+              <Input
+                onChange={this.onChange}
+                placeholder="Search by candidate ID"
+                prefix={<SearchOutlined />}
+              />
+            }
+          >
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
               tab="all"

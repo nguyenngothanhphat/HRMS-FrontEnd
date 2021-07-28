@@ -265,13 +265,14 @@ const onboard = {
   effects: {
     *fetchOnboardListAll({ payload }, { call, put }) {
       try {
-        const { processStatus = '', page, limit } = payload;
+        const { processStatus = '', page, limit, name } = payload;
         const tenantId = getCurrentTenant();
         const req = {
           processStatus,
           page,
           tenantId,
           limit,
+          name,
         };
         const response = yield call(getOnboardingList, req);
         const { statusCode } = response;
@@ -324,7 +325,7 @@ const onboard = {
           FINAL_OFFERS_HR,
           FINAL_OFFERS_CANDIDATE,
         } = PROCESS_STATUS;
-        const { processStatus = '' } = payload;
+        const { processStatus = '', name } = payload;
         const tenantId = getCurrentTenant();
         let req;
         if (processStatus === FINAL_OFFERS) {
@@ -332,18 +333,21 @@ const onboard = {
             processStatus: [FINAL_OFFERS_HR, FINAL_OFFERS_CANDIDATE],
             page: 1,
             tenantId,
+            name,
           };
         } else if (Array.isArray(processStatus)) {
           req = {
             processStatus,
             page: 1,
             tenantId,
+            name,
           };
         } else {
           req = {
             processStatus: [processStatus],
             page: 1,
             tenantId,
+            name,
           };
         }
         const response = yield call(getOnboardingList, req);

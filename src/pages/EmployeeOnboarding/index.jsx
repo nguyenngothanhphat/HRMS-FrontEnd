@@ -1,17 +1,28 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
+import { DownloadOutlined } from '@ant-design/icons';
 import { Tabs, Button, Row, Col } from 'antd';
 import { connect, formatMessage, history } from 'umi';
+import exportToExcel from '@/utils/exportAsExcel';
 // import { isAdmin, isOwner } from '@/utils/authority';
+import { getCurrentCompany } from '@/utils/authority';
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
 // import CustomFields from './components/CustomFields';
 import styles from './index.less';
 
-@connect(({ loading, user: { permissions = [] } = {} }) => ({
-  loading: loading.effects['login/login'],
-  permissions,
-}))
+@connect(
+  ({
+    loading,
+    user: { permissions = [] } = {},
+    onboard: { onboardingOverview: { dataAll = [] } = {} } = {},
+  }) => ({
+    loading: loading.effects['login/login'],
+    loadingFetchList: loading.effects['onboard/fetchOnboardList'],
+    permissions,
+    dataAll,
+  }),
+)
 class EmployeeOnboarding extends PureComponent {
   constructor(props) {
     super(props);
@@ -38,12 +49,59 @@ class EmployeeOnboarding extends PureComponent {
     });
   };
 
+  downloadTemplate = () => {
+    const { dataAll } = this.props;
+    exportToExcel('test.xlsx', this.processData(dataAll));
+  };
+
+  processData = (array) => {
+    // Uppercase first letter
+    let capsPopulations = [];
+    capsPopulations = array.map((item) => {
+      const {
+        generalInfo: { firstName },
+      } = item.assignTo;
+      const {
+        generalInfo: { firstName: name },
+      } = item.assigneeManager;
+      return {
+        'Rookie Id': item.rookieId,
+        Candidate: item.candidate,
+        'Rookie Name': item.rookieName,
+        Position: item.position,
+        Location: item.location,
+        'Date of Join': item.dateJoin,
+        'Assign to': firstName,
+        'HR Manager': name,
+        Status: item.processStatus,
+      };
+    });
+
+    // Get keys, header csv
+    const keys = Object.keys(capsPopulations[0]);
+    const dataExport = [];
+    dataExport.push(keys);
+
+    // Add the rows
+    capsPopulations.forEach((obj) => {
+      const value = `${keys.map((k) => obj[k]).join('_')}`.split('_');
+      dataExport.push(value);
+    });
+
+    return dataExport;
+  };
+
   renderActionButton = () => {
     return (
       <div className={styles.options}>
         <Row gutter={[24, 0]}>
           <Col>
-            <Button className={styles.generate} type="text">
+            <Button
+              icon={<DownloadOutlined />}
+              className={styles.generate}
+              type="text"
+              onClick={this.downloadTemplate}
+            >
               {formatMessage({ id: 'component.employeeOnboarding.generate' })}
             </Button>
           </Col>
@@ -79,7 +137,7 @@ class EmployeeOnboarding extends PureComponent {
               onChange={(key) => {
                 history.push(`/employee-onboarding/${key}`);
               }}
-              // tabBarExtraContent={this.renderActionButton()}
+              tabBarExtraContent={this.renderActionButton()}
             >
               {viewOnboardingOverviewTab && (
                 <TabPane
