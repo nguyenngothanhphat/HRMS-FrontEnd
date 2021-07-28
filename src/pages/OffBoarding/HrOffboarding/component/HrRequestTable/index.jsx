@@ -112,33 +112,33 @@ class HRrequestTable extends Component {
     });
   };
 
-  // onSearch = (value) => {
-  //   const { listTeamRequest = [] } = this.props;
-  //   const formatValue = value.toLowerCase();
+  onSearch = (value) => {
+    const { listTeamRequest = [] } = this.props;
+    const formatValue = value.toLowerCase();
 
-  //   const filterData = listTeamRequest.filter((item) => {
-  //     const {
-  //       ticketID = '',
-  //       employee: { employeeId = '', generalInfo: { firstName = '', lastName = '' } = {} } = {},
-  //     } = item;
-  //     const formatTicketId = ticketID.toLowerCase();
-  //     const fortmatEmployeeID = employeeId.toLowerCase();
-  //     const formatFirstName = firstName.toLowerCase();
-  //     const formatLastName = lastName.toLowerCase();
+    const filterData = listTeamRequest.filter((item) => {
+      const {
+        ticketID = '',
+        employee: { employeeId = '', generalInfo: { firstName = '', lastName = '' } = {} } = {},
+      } = item;
+      const formatTicketId = ticketID.toLowerCase();
+      const fortmatEmployeeID = employeeId.toLowerCase();
+      const formatFirstName = firstName.toLowerCase();
+      const formatLastName = lastName.toLowerCase();
 
-  //     if (
-  //       formatTicketId.includes(formatValue) ||
-  //       fortmatEmployeeID.includes(formatValue) ||
-  //       formatFirstName.includes(formatValue) ||
-  //       formatLastName.includes(formatValue)
-  //     )
-  //       return item;
-  //     return 0;
-  //   });
-  //   // this.setState({ loadingSearch: true });
+      if (
+        formatTicketId.includes(formatValue) ||
+        fortmatEmployeeID.includes(formatValue) ||
+        formatFirstName.includes(formatValue) ||
+        formatLastName.includes(formatValue)
+      )
+        return item;
+      return 0;
+    });
+    this.setState({ loadingSearch: true });
 
-  //   // this.setDebounce(filterData);
-  // };
+    this.setDebounce(filterData);
+  };
 
   render() {
     const { TabPane } = Tabs;
@@ -193,6 +193,7 @@ class HRrequestTable extends Component {
                   countdata={totalList}
                   hrManager={hrManager}
                   timezoneList={timezoneList}
+                  loadingSearch={loadingSearch}
                 />
               </div>
             </TabPane>
