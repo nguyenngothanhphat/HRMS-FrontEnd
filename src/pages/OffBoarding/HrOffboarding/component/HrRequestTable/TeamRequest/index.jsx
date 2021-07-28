@@ -21,7 +21,7 @@ class TabContent extends Component {
   componentDidMount() {
     const { pageSelected, size } = this.state;
     const { dispatch, location = [] } = this.props;
-    console.log('adsfadsf');
+
     dispatch({
       type: 'offboarding/fetchListAllRequest',
       payload: {
