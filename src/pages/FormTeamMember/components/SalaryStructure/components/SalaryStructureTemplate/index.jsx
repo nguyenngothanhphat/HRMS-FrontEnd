@@ -48,6 +48,7 @@ import styles from './index.less';
     loadingTable: loading.effects['candidateInfo/saveSalaryStructure'],
     loadingFetchTable: loading.effects['candidateInfo/fetchTableData'],
     loadingEditSalary: loading.effects['candidateInfo/updateByHR'],
+    loadingTitleList: loading.effects['candidateInfo/fetchTitleList'],
     listTitle,
     titleList,
     cancelCandidate,
@@ -215,6 +216,12 @@ class SalaryStructureTemplate extends PureComponent {
     }
   };
 
+  componentDidUpdate = (prevProps) => {
+    const { department } = this.props;
+    if (prevProps.department !== department) {
+      this.handleChangeDepartment(department._id || department);
+    }
+  };
   // componentWillUnmount = () => {
   //   const {
   //     dispatch,
@@ -499,10 +506,17 @@ class SalaryStructureTemplate extends PureComponent {
 
   handleChangeDepartment = (value) => {
     const { dispatch } = this.props;
+
     dispatch({
       type: 'candidateInfo/fetchTitleList',
       payload: {
         department: value,
+      },
+    });
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        salaryTitle: null,
       },
     });
   };
@@ -779,6 +793,7 @@ class SalaryStructureTemplate extends PureComponent {
       settingsTempData: settings,
       departmentList,
       locationList = [],
+      loadingTitleList,
     } = this.props;
     const { processStatus, titleList = [] } = this.props;
 
@@ -798,7 +813,7 @@ class SalaryStructureTemplate extends PureComponent {
             <Spin className={styles.spin} />
           ) : (
             <>
-              <Row gutter={[8, 0]}>
+              <Row gutter={[8, 8]}>
                 <Col xs={24} sm={24} md={6} lg={6}>
                   <p className={styles.p_title_select}>Grade</p>
                   <div className={styles.salaryStructureTemplate_select}>
@@ -808,7 +823,7 @@ class SalaryStructureTemplate extends PureComponent {
                       placeholder="Please select a choice!"
                       loading={loadingTable || loadingFetchTable}
                       size="large"
-                      style={{ width: 280 }}
+                      // style={{ width: 280 }}
                       disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
                     >
                       {dataGrade.map(({ _id = '', grade = '' }) => {
@@ -825,15 +840,17 @@ class SalaryStructureTemplate extends PureComponent {
                   <p className={styles.p_title_select}>Department</p>
                   <div className={styles.salaryStructureTemplate_select}>
                     <Select
-                      defaultValue={department || null}
+                      defaultValue={
+                        Object.keys(department).length !== 0 ? department._id : department || null
+                      }
                       onChange={this.handleChangeDepartment}
                       placeholder="Please select a choice!"
                       loading={loadingTable || loadingFetchTable}
                       size="large"
-                      style={{ width: 280 }}
+                      // style={{ width: 280 }}
                       disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
                     >
-                      {departmentList.map(({ _id = '', name = '' }) => {
+                      {departmentList.map(({ _id = '', name = '' } = {}) => {
                         return (
                           <Option key={_id} value={_id}>
                             {name}
@@ -847,15 +864,19 @@ class SalaryStructureTemplate extends PureComponent {
                   <p className={styles.p_title_select}>Location</p>
                   <div className={styles.salaryStructureTemplate_select}>
                     <Select
-                      defaultValue={workLocation || null}
+                      defaultValue={
+                        Object.keys(workLocation).length !== 0
+                          ? workLocation._id
+                          : workLocation || null
+                      }
                       onChange={this.handleChangeLocation}
                       placeholder="Please select a choice!"
                       loading={loadingTable || loadingFetchTable}
                       size="large"
-                      style={{ width: 280 }}
+                      // style={{ width: 280 }}
                       disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
                     >
-                      {locationList.map(({ _id = '', name = '' }) => {
+                      {locationList.map(({ _id = '', name = '' } = {}) => {
                         return (
                           <Option key={_id} value={_id}>
                             {name}
@@ -872,9 +893,9 @@ class SalaryStructureTemplate extends PureComponent {
                       defaultValue={salaryTitleId}
                       onChange={this.handleChangeSelect}
                       placeholder="Please select a choice!"
-                      loading={loadingTable || loadingFetchTable}
+                      loading={loadingTable || loadingFetchTable || loadingTitleList}
                       size="large"
-                      style={{ width: 280 }}
+                      // style={{ width: 280 }}
                       disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
                     >
                       {titleList.map(({ _id = '', name = '' }) => {

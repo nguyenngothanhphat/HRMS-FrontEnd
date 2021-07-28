@@ -961,7 +961,7 @@ const candidateInfo = {
             },
           },
         });
-
+        console.log('a');
         const {
           firstName = '',
           middleName = '',
@@ -981,12 +981,12 @@ const candidateInfo = {
 
           return listCheck;
         };
+        const identityProof = documentChecklistSetting[0]?.data || [];
+        const addressProof = documentChecklistSetting[1]?.data || [];
+        const educational = documentChecklistSetting[2]?.data || [];
+        const technicalCertification = documentChecklistSetting[3]?.data || [];
 
-        const identityProof = documentChecklistSetting[0]?.data;
-        const addressProof = documentChecklistSetting[1]?.data;
-        const educational = documentChecklistSetting[2]?.data;
-        const technicalCertification = documentChecklistSetting[3]?.data;
-        const prevEmployee = documentChecklistSetting[4]?.data;
+        const prevEmployee = documentChecklistSetting[4]?.data || [];
 
         const checkStatusTypeA = filterValue(identityProof);
         const checkStatusTypeB = filterValue(addressProof);
@@ -995,14 +995,13 @@ const candidateInfo = {
         const checkStatusTypeE = filterValue(prevEmployee);
 
         const checkStatus = {};
-
         if (
           checkStatusTypeA.length > 4 ||
           checkStatusTypeB.length > 1 ||
           checkStatusTypeC.length > 4 ||
           checkStatusTypeD.length > 0 ||
           checkStatusTypeE.length > 0 ||
-          'employer' in documentChecklistSetting[4]
+          'employer' in (documentChecklistSetting[4] ? documentChecklistSetting[4] : {})
         ) {
           checkStatus.filledBgCheck = true;
         }
@@ -1030,7 +1029,7 @@ const candidateInfo = {
         if (currentStep >= 6) {
           checkStatus.benefitsCheck = true;
         }
-
+        console.log('documentChecklistSetting', data.documentChecklistSetting);
         yield put({
           type: 'saveTemp',
           payload: {
