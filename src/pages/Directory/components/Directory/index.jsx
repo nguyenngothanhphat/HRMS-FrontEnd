@@ -432,7 +432,6 @@ class DirectoryComponent extends PureComponent {
           payload,
         });
       }
-      console.log('tabId', tabId);
       if (viewTabMyTeam && tabId === myTeam) {
         dispatch({
           type: 'employee/fetchListEmployeeMyTeam',
