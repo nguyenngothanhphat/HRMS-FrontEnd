@@ -1029,7 +1029,7 @@ const candidateInfo = {
         if (currentStep >= 6) {
           checkStatus.benefitsCheck = true;
         }
-        console.log('documentChecklistSetting', data.documentChecklistSetting);
+
         yield put({
           type: 'saveTemp',
           payload: {

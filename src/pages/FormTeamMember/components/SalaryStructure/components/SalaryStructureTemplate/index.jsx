@@ -115,51 +115,12 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   componentDidMount = () => {
-    const {
-      dispatch,
-      settingsTempData: settings = [],
-      salaryTitle: salaryTitleId,
-      location: { headQuarterAddress: { country = {} } = {} } = {},
-    } = this.props;
+    const { dispatch, settingsTempData: settings = [] } = this.props;
     const tempTableData = [...settings];
     const isFilled = tempTableData.filter((item) => item.value === '');
 
     // Fetch Salary structure table when user click other tab (Ex: Job Details, Basic Information,...) then click Salary structure
-    if (salaryTitleId) {
-      dispatch({
-        type: 'candidateInfo/saveTemp',
-        payload: {
-          salaryTitle: salaryTitleId,
-        },
-      });
-
-      if (settings.length === 0) {
-        dispatch({
-          type: 'candidateInfo/fetchTableData',
-          payload: {
-            title: salaryTitleId,
-            tenantId: getCurrentTenant(),
-            country: country._id || country,
-          },
-        }).then(({ statusCode }) => {
-          if (statusCode === 200) {
-            dispatch({
-              type: 'candidateInfo/saveFilledSalaryStructure',
-              payload: {
-                filledSalaryStructure: true,
-              },
-            });
-          }
-        });
-      } else {
-        dispatch({
-          type: 'candidateInfo/saveFilledSalaryStructure',
-          payload: {
-            filledSalaryStructure: true,
-          },
-        });
-      }
-    }
+    // this.fetchSalaryStructure();
 
     // if (processStatus !== 'DRAFT') {
     //   dispatch({
@@ -221,7 +182,56 @@ class SalaryStructureTemplate extends PureComponent {
     if (prevProps.department !== department) {
       this.handleChangeDepartment(department._id || department);
     }
+    // if (prevProps.salaryTitle !== salaryTitle) {
+    //   this.fetchSalaryStructure();
+    // }
   };
+
+  fetchSalaryStructure = () => {
+    const {
+      dispatch,
+      settingsTempData: settings = [],
+      salaryTitle: salaryTitleId,
+      location: { headQuarterAddress: { country = {} } = {} } = {},
+    } = this.props;
+
+    if (salaryTitleId) {
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          salaryTitle: salaryTitleId,
+        },
+      });
+
+      if (settings.length === 0) {
+        dispatch({
+          type: 'candidateInfo/fetchTableData',
+          payload: {
+            title: salaryTitleId,
+            tenantId: getCurrentTenant(),
+            country: country._id || country,
+          },
+        }).then(({ statusCode }) => {
+          if (statusCode === 200) {
+            dispatch({
+              type: 'candidateInfo/saveFilledSalaryStructure',
+              payload: {
+                filledSalaryStructure: true,
+              },
+            });
+          }
+        });
+      } else {
+        dispatch({
+          type: 'candidateInfo/saveFilledSalaryStructure',
+          payload: {
+            filledSalaryStructure: true,
+          },
+        });
+      }
+    }
+  };
+
   // componentWillUnmount = () => {
   //   const {
   //     dispatch,
@@ -287,7 +297,6 @@ class SalaryStructureTemplate extends PureComponent {
         tenantId: getCurrentTenant(),
       },
     }).then(({ data: data1, statusCode }) => {
-      console.log(data1);
       if (statusCode === 200) {
         dispatch({
           type: 'candidateInfo/save',
@@ -796,7 +805,7 @@ class SalaryStructureTemplate extends PureComponent {
       loadingTitleList,
     } = this.props;
     const { processStatus, titleList = [] } = this.props;
-
+    console.log('salaryTitleId', salaryTitleId);
     return (
       <div className={styles.salaryStructureTemplate}>
         <Form
@@ -913,23 +922,23 @@ class SalaryStructureTemplate extends PureComponent {
                 <Spin className={styles.spin} />
               ) : (
                 <>
-                  {salaryTitleId && (
-                    <>
-                      {this._renderButtons()}
-                      <div className={styles.salaryStructureTemplate_table}>
-                        <Table
-                          loading={loadingTable}
-                          dataSource={settings}
-                          columns={this._renderColumns()}
-                          pagination={false}
-                        />
-                      </div>
-                      {this._renderFooter()}
-                      {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
-                        ? this._renderBottomBar()
-                        : null}
-                    </>
-                  )}
+                  {/* {salaryTitleId && (
+                    <> */}
+                  {this._renderButtons()}
+                  <div className={styles.salaryStructureTemplate_table}>
+                    <Table
+                      loading={loadingTable}
+                      dataSource={settings}
+                      columns={this._renderColumns()}
+                      pagination={false}
+                    />
+                  </div>
+                  {this._renderFooter()}
+                  {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
+                    ? this._renderBottomBar()
+                    : null}
+                  {/* </>
+                  )} */}
                 </>
               )}
             </>

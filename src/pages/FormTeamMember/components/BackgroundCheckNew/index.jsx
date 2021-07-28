@@ -1456,7 +1456,7 @@ class BackgroundCheck extends Component {
                 addressProof.length > 0 &&
                 educational.length > 0 &&
                 documentCLSByCountryTypeABC.map((item) => {
-                  const { type = '', name = '' } = item;
+                  const { type = '', name = '', data = [] } = item;
                   const title = `Type ${type}: ${name}`;
 
                   if (['A', 'B', 'C'].includes(type)) {
@@ -1473,6 +1473,7 @@ class BackgroundCheck extends Component {
                         processStatus={processStatus}
                         loadingUpdateByHR={loadingUpdateByHR}
                         disabled={this.disableEdit()}
+                        checkBoxesData={data}
                       />
                     );
                   }
