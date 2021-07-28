@@ -146,7 +146,7 @@ class HRrequestTable extends Component {
       totalListTeamRequest = [],
       // listTeamRequest = [],
       listOffboarding = [],
-      // totalList = [],
+      totalList = [],
       hrManager = {},
       locationID = '',
     } = this.props;
@@ -190,7 +190,7 @@ class HRrequestTable extends Component {
               <div className={styles.tableTab}>
                 <MyRequestContent
                   data={listOffboarding}
-                  // countdata={totalList}
+                  countdata={totalList}
                   hrManager={hrManager}
                   timezoneList={timezoneList}
                 />
