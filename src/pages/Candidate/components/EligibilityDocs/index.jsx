@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import React, { PureComponent } from 'react';
-import { Typography, Row, Col, Button } from 'antd';
+import { Typography, Row, Col, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
@@ -33,14 +33,17 @@ const Note = {
       tempData,
     } = {},
     loading,
+    user: { currentUser: { candidate = {} } = {} },
   }) => ({
     data,
     localStep,
     currentStep,
     tempData,
     checkMandatory,
+    candidate,
     loading: loading.effects['upload/uploadFile'],
     loading1: loading.effects['candidateProfile/sendEmailByCandidate'],
+    loading2: loading.effects['candidateProfile/fetchCandidateById'],
   }),
 )
 class EligibilityDocs extends PureComponent {
@@ -49,12 +52,15 @@ class EligibilityDocs extends PureComponent {
     this.state = {
       openModal: false,
       isSentEmail: false,
+      isSending: false,
+      hrEmail: null,
     };
   }
 
   componentDidMount() {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
     this.processData();
+    this.fetchCandidateAgain();
     const { data: { processStatus = '' } = {} } = this.props;
     if (
       [
@@ -75,6 +81,20 @@ class EligibilityDocs extends PureComponent {
       });
     }
   }
+
+  fetchCandidateAgain = () => {
+    const { dispatch, candidate } = this.props;
+
+    // fetch data candidate by id to update the newest data (especially the Email HR)
+    dispatch({
+      type: 'candidateProfile/fetchCandidateById',
+      payload: {
+        candidate: candidate._id,
+        tenantId: getCurrentTenant(),
+        rookieID: candidate.ticketID,
+      },
+    });
+  };
 
   processData = async () => {
     const {
@@ -248,7 +268,38 @@ class EligibilityDocs extends PureComponent {
     }
   };
 
-  handleSendEmail = () => {
+  sendEmailAgain = (email) => {
+    const {
+      data: { dateOfJoining, noticePeriod, firstName, middleName, lastName, workHistory = [] },
+      dispatch,
+    } = this.props;
+
+    console.log('SEND AGAIN');
+
+    // dispatch({
+    //   type: 'candidateProfile/sendEmailByCandidate',
+    //   payload: {
+    //     dateOfJoining,
+    //     options: 1,
+    //     firstName,
+    //     middleName,
+    //     lastName,
+    //     noticePeriod,
+    //     hrEmail: email,
+    //     workHistories: workHistory,
+    //     tenantId: getCurrentTenant(),
+    //   },
+    // }).then(({ statusCode }) => {
+    //   if (statusCode === 200) {
+    //     this.setState({
+    //       openModal: true,
+    //       isSentEmail: true,
+    //     });
+    //   }
+    // });
+  };
+
+  initSendMail = () => {
     const {
       data: {
         dateOfJoining,
@@ -260,36 +311,64 @@ class EligibilityDocs extends PureComponent {
         workHistory = [],
       },
       dispatch,
+      candidate,
     } = this.props;
     const { user = {} } = generatedBy;
     const { email } = user;
-
-    // this.setState({
-    //   openModal: true,
-    //   isSentEmail: true,
-    // });
-
+    this.setState({ isSending: true });
+    // fetch data candidate by id to update the newest data (especially the Email HR)
     dispatch({
-      type: 'candidateProfile/sendEmailByCandidate',
+      type: 'candidateProfile/fetchCandidateById',
       payload: {
-        dateOfJoining,
-        options: 1,
-        firstName,
-        middleName,
-        lastName,
-        noticePeriod,
-        hrEmail: email,
-        workHistories: workHistory,
+        candidate: candidate._id,
         tenantId: getCurrentTenant(),
+        rookieID: candidate.ticketID,
       },
-    }).then(({ statusCode }) => {
-      if (statusCode === 200) {
-        this.setState({
-          openModal: true,
-          isSentEmail: true,
-        });
+    }).then((response) => {
+      const { generatedBy: newestGeneratedBy = {} } = response;
+      const { workEmail: newestEmailHr = '' } = newestGeneratedBy;
+
+      if (newestEmailHr === email) {
+        console.log('INIT SENDMAIL');
+        // if true, the email is still not change
+        // dispatch({
+        //   type: 'candidateProfile/sendEmailByCandidate',
+        //   payload: {
+        //     dateOfJoining,
+        //     options: 1,
+        //     firstName,
+        //     middleName,
+        //     lastName,
+        //     noticePeriod,
+        //     hrEmail: email,
+        //     workHistories: workHistory,
+        //     tenantId: getCurrentTenant(),
+        //   },
+        // }).then(({ statusCode }) => {
+        //   if (statusCode === 200) {
+        //     this.setState({
+        //       openModal: true,
+        //       isSentEmail: true,
+        //     });
+        //   }
+        // });
+      } else {
+        // else, it means the email was changed/assigned to other HR while the candidate is updating document files.
+        this.setState({ hrEmail: newestEmailHr });
       }
+      this.setState({ isSending: false });
     });
+  };
+
+  handleSendEmail = () => {
+    const { hrEmail } = this.state;
+    console.log(hrEmail);
+
+    if (hrEmail) {
+      this.sendEmailAgain(hrEmail);
+    } else {
+      this.initSendMail();
+    }
   };
 
   handleSubmitAgain = () => {
@@ -426,6 +505,7 @@ class EligibilityDocs extends PureComponent {
     const {
       loading,
       loading1,
+      loading2,
       data: {
         attachments,
         documentListToRender,
@@ -434,7 +514,7 @@ class EligibilityDocs extends PureComponent {
         processStatus,
       } = {},
     } = this.props;
-    const { openModal, isSentEmail } = this.state;
+    const { openModal, isSentEmail, isSending, hrEmail } = this.state;
     const {
       generalInfo: { workEmail },
     } = generatedBy;
@@ -443,6 +523,12 @@ class EligibilityDocs extends PureComponent {
 
     const checkFull = this.checkFull();
 
+    if (loading2 && !isSending)
+      return (
+        <div className={styles.viewLoading}>
+          <Spin />
+        </div>
+      );
     return (
       <div className={styles.EligibilityDocs}>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>
@@ -490,16 +576,31 @@ class EligibilityDocs extends PureComponent {
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={Note} />
             {documentListToRender.length > 0 ? (
-              <SendEmail
-                loading={loading1}
-                handleSendEmail={this.handleSendEmail}
-                email={workEmail}
-                onValuesChangeEmail={this.onValuesChangeEmail}
-                isSentEmail={isSentEmail}
-                handleSubmitAgain={this.handleSubmitAgain}
-                // disabled={!(workDuration !== 0 && !isUndefined(workDuration))}
-                disabled={!checkFull}
-              />
+              <>
+                {hrEmail ? (
+                  <SendEmail
+                    loading={loading1 || isSending}
+                    handleSendEmail={this.handleSendEmail}
+                    email={workEmail}
+                    onValuesChangeEmail={this.onValuesChangeEmail}
+                    isSentEmail={hrEmail}
+                    handleSubmitAgain={this.handleSubmitAgain}
+                    // disabled={!(workDuration !== 0 && !isUndefined(workDuration))}
+                    disabled={!checkFull}
+                  />
+                ) : (
+                  <SendEmail
+                    loading={loading1 || isSending}
+                    handleSendEmail={this.handleSendEmail}
+                    email={workEmail}
+                    onValuesChangeEmail={this.onValuesChangeEmail}
+                    isSentEmail={isSentEmail}
+                    handleSubmitAgain={this.handleSubmitAgain}
+                    // disabled={!(workDuration !== 0 && !isUndefined(workDuration))}
+                    disabled={!checkFull}
+                  />
+                )}
+              </>
             ) : (
               <StepsComponent />
             )}
