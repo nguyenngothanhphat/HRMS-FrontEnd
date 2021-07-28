@@ -2,12 +2,15 @@
 import React, { PureComponent } from 'react';
 import { Table, Popover, Divider, Row, Col, Avatar, Tooltip } from 'antd';
 import moment from 'moment';
-import { history } from 'umi';
+import { history, connect } from 'umi';
 import { getCurrentTimeOfTimezoneOption } from '@/utils/times';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import { UserOutlined } from '@ant-design/icons';
 import t from './index.less';
 
+@connect(({ locationSelection: { listLocationsByCompany = [] } = {} }) => ({
+  listLocationsByCompany,
+}))
 class TableManager extends PureComponent {
   constructor(props) {
     super(props);
@@ -66,76 +69,82 @@ class TableManager extends PureComponent {
     }
   };
 
-  popupContent = (dataRow) => {
-    // console.log(dataRow);
-    const { timezoneList } = this.props;
+  popupContentHr = (data) => {
+    const { timezoneList, listLocationsByCompany } = this.props;
     const { currentTime } = this.state;
     const {
-      employee: {
-        title: { name: titleName = 'UX Lead' } = {},
-        employeeId = '',
-        generalInfo: {
-          avatar = '',
-          firstName = '',
-          lastName = '',
-          middleName = '',
-          employeeType: { name: typeName = 'Full Time' } = {},
-          linkedIn = '',
-          userId = '',
-        } = {},
+      generalInfo: {
+        firstName = '',
+        middleName = '',
+        lastName = '',
+        userId = '',
+        workEmail = '',
+        workNumber = '',
+        avatar = '',
+        linkedIn = '',
       } = {},
+      employee: { employeeId = '' } = {},
+      employeeId: hrId = '',
+      title: { name: titleName = '' } = {},
+      employeeType: { name: typeName } = {},
       department: { name: departmentName = '' } = {},
       location: { _id = '' } = {},
-    } = dataRow;
-    const fullName = `${firstName} ${middleName} ${lastName}`;
+    } = data;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
+    let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
+    filterLocation = filterLocation.filter((item) => item !== null);
+
+    const legalName = `${firstName} ${middleName} ${lastName}`;
+
+    if (filterLocation.length === 0) {
+      return null;
+    }
+
+    const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
+      filterLocation[0];
+    const locationName = `${state}, ${countryName}`;
+
     return (
       <div className={t.popupContent}>
         <div className={t.generalInfo}>
           <div className={t.avatar}>
-            <Avatar src={avatar} size={40} icon={<UserOutlined />} />
+            <Avatar src={avatar} size={55} icon={<UserOutlined />} />
           </div>
           <div className={t.employeeInfo}>
-            <div className={t.employeeInfo__name}>{fullName}</div>
+            <div className={t.employeeInfo__name}>{legalName}</div>
             <div className={t.employeeInfo__department}>
               {titleName}, {departmentName} Dept.
             </div>
             <div className={t.employeeInfo__emplId}>
-              {employeeId} | {typeName}
+              {employeeId || hrId} | {typeName}
             </div>
           </div>
         </div>
-        <Divider />
+        <Divider className={t.divider} />
         <div className={t.contact}>
-          <Row gutter={[24, 0]}>
-            <Col span={8}>
+          <Row gutter={[24, 24]}>
+            <Col span={7}>
               <div className={t.contact__title}>Mobile: </div>
             </Col>
-            <Col span={16}>
-              <div className={t.contact__value}>abccc</div>
+            <Col span={17}>
+              <div className={t.contact__value}>{workNumber}</div>
             </Col>
-          </Row>
-          <Row gutter={[24, 0]}>
-            <Col span={8}>
+            <Col span={7}>
               <div className={t.contact__title}>Email id: </div>
             </Col>
-            <Col span={16}>
-              <div className={t.contact__value}>abc@gmail.com</div>
+            <Col span={17}>
+              <div className={t.contact__value}>{workEmail}</div>
             </Col>
-          </Row>
-          <Row gutter={[24, 0]}>
-            <Col span={8}>
+            <Col span={7}>
               <div className={t.contact__title}>Location: </div>
             </Col>
-            <Col span={16}>
-              <div className={t.contact__value}>abccc</div>
+            <Col span={17}>
+              <div className={t.contact__value}>{locationName || ''}</div>
             </Col>
-          </Row>
-          <Row gutter={[24, 0]}>
-            <Col span={8}>
+            <Col span={7}>
               <div className={t.contact__title}>Local Time: </div>
             </Col>
-            <Col span={16}>
+            <Col span={17}>
               <div className={t.contact__value}>
                 {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
                   ? getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone)
@@ -144,7 +153,7 @@ class TableManager extends PureComponent {
             </Col>
           </Row>
         </div>
-        <Divider />
+        <Divider className={t.divider} />
         <div className={t.popupActions}>
           <div
             className={t.popupActions__link}
@@ -153,11 +162,18 @@ class TableManager extends PureComponent {
             View full profile
           </div>
           <div className={t.popupActions__actions}>
+            <Tooltip title="Message">
+              <img
+                src="/assets/images/messageIcon.svg"
+                alt="img-arrow"
+                style={{ cursor: 'pointer' }}
+              />
+            </Tooltip>
             <Tooltip title="Email">
               <img
                 src="/assets/images/iconMail.svg"
                 alt="img-arrow"
-                style={{ marginLeft: '5px', cursor: 'pointer' }}
+                style={{ cursor: 'pointer' }}
               />
             </Tooltip>
             <Tooltip title="LinkedIn">
@@ -242,21 +258,18 @@ class TableManager extends PureComponent {
       },
       {
         title: <span className={t.title}>Assigned </span>,
-        dataIndex: 'Assigned',
+        dataIndex: 'hr-manager',
         width: 200,
-        render: (_, row) => {
+        render: () => {
           const {
             hrManager: {
               generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {},
             } = {},
+            hrManager = {},
           } = this.props;
           const fullName = `${firstName} ${middleName} ${lastName}`;
           return (
-            <Popover
-              content={() => this.popupContent(row)}
-              // title={location.name}
-              trigger="hover"
-            >
+            <Popover content={() => this.popupContentHr(hrManager)} trigger="hover">
               <p
                 className={t.assignee}
                 onClick={() => history.push(`/directory/employee-profile/${userId}`)}
@@ -270,7 +283,7 @@ class TableManager extends PureComponent {
       {
         title: <span className={t.title}>Reason of leaving</span>,
         dataIndex: 'reasonForLeaving',
-        render: (reasonForLeaving) => <div className={t.reason}>{reasonForLeaving}</div>,
+        render: (reasonForLeaving) => <p className={t.reason}>{reasonForLeaving}</p>,
       },
       {
         title: <span className={t.title}>Action</span>,

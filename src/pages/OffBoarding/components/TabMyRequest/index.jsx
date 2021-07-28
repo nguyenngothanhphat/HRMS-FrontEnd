@@ -120,7 +120,15 @@ class RenderRequest extends Component {
   };
 
   render() {
-    const { data = [], timezoneList, countdata = [], loading, hrManager = {}, total } = this.props;
+    const {
+      data = [],
+      loadingSearch,
+      timezoneList,
+      countdata = [],
+      loading,
+      hrManager = {},
+      total,
+    } = this.props;
     const { pageSelected, size } = this.state;
 
     return (
@@ -129,7 +137,7 @@ class RenderRequest extends Component {
         <MyRequestTable
           timezoneList={timezoneList}
           data={data}
-          loading={loading}
+          loading={loading || loadingSearch}
           hrManager={hrManager}
           pageSelected={pageSelected}
           size={size}
