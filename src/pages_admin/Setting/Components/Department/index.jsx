@@ -24,8 +24,8 @@ class Department extends Component {
   componentDidMount() {
     const { department } = this.props;
     const formatData = department.map((item) => {
-      const { _id: DepartmentID, name: Deparmentname } = item;
-      return { DepartmentID, Deparmentname };
+      const { departmentId: DepartmentIDText, _id: DepartmentID, name: Deparmentname } = item;
+      return { DepartmentID, Deparmentname, DepartmentIDText };
     });
     this.setState({ data2: formatData });
   }
@@ -39,8 +39,8 @@ class Department extends Component {
       };
     }
     const formatData = department.map((item) => {
-      const { _id: DepartmentID, name: Deparmentname } = item;
-      return { DepartmentID, Deparmentname };
+      const { departmentId: DepartmentIDText, _id: DepartmentID, name: Deparmentname } = item;
+      return { DepartmentID, Deparmentname, DepartmentIDText };
     });
     return { data2: formatData };
   }
@@ -88,10 +88,10 @@ class Department extends Component {
     this.setState({ newValue: value });
   };
 
-  handleAddNewValue = (newValue) => {
+  handleAddNewValue = async (newValue) => {
     const { dispatch } = this.props;
     if (newValue === '') return;
-    dispatch({
+    await dispatch({
       type: 'adminSetting/addDepartment',
       payload: { name: newValue },
     });
@@ -115,7 +115,7 @@ class Department extends Component {
       {
         key: 1,
         title: 'Department ID',
-        dataIndex: 'DepartmentID',
+        dataIndex: 'DepartmentIDText',
         align: 'center',
       },
       {

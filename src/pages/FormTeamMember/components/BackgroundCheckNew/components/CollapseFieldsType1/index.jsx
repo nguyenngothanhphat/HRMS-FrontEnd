@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
 import { Collapse, Checkbox, Input, Form, Button, Row, Col } from 'antd';
-import { PlusOutlined, MinusOutlined, CloseOutlined } from '@ant-design/icons';
+import { PlusOutlined, MinusOutlined, CloseOutlined, DeleteOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import styles from './index.less';
 
@@ -116,18 +116,18 @@ class CollapseFieldsType1 extends PureComponent {
     );
   };
 
-  handleCancel = () => {
-    const { visible } = this.state;
-    this.setState({
-      visible: !visible,
-    });
-  };
-
   handleClick = (type) => {
     const { visible } = this.state;
     this.setState({
       visible: !visible,
       typeSelected: type,
+    });
+  };
+
+  handleCancel = () => {
+    const { visible } = this.state;
+    this.setState({
+      visible: !visible,
     });
   };
 
@@ -145,25 +145,25 @@ class CollapseFieldsType1 extends PureComponent {
     this.setState({
       visible: !visible,
     });
-    const newField = {
-      key: this.camelize(values.nameOfField),
-      alias: values.nameOfField,
-      country: [],
-      value: true,
-    };
-    addNewField(newField, typeSelected);
-    // this.formRef.current.setFields();
+
+    addNewField(values.nameOfField, typeSelected);
+    this.formRef.current.resetFields();
+  };
+
+  handleRemove = (key, type) => {
+    const { handleRemoveDocument = () => {} } = this.props;
+    handleRemoveDocument(key, type);
   };
 
   render() {
     const { checkedList, visible } = this.state;
-    const { checkBoxesData = [], disabled = false, type, loading } = this.props;
-    const checkBoxes1 = checkBoxesData.filter(
-      (data) => data.alias.substr(data.alias.length - 1) === '*',
-    );
-    const checkBoxes2 = checkBoxesData.filter(
-      (data) => data.alias.substr(data.alias.length - 1) !== '*',
-    );
+    const { item: { data = [] } = {}, checkBoxesData = [], disabled = false, type } = this.props;
+    // const checkBoxes1 = checkBoxesData.filter(
+    //   (data) => data.alias.substr(data.alias.length - 1) === '*',
+    // );
+    // const checkBoxes2 = checkBoxesData.filter(
+    //   (data) => data.alias.substr(data.alias.length - 1) !== '*',
+    // );
 
     return (
       <div className={styles.CollapseFieldsType1}>
@@ -187,50 +187,59 @@ class CollapseFieldsType1 extends PureComponent {
               disabled={disabled}
               className={styles.checkBoxesGroup}
             >
-              {checkBoxes1.map((data) => (
+              {/* {data.map((data) => (
                 <Checkbox
-                  // disabled={data.alias.substr(data.alias.length - 1) === '*'}
+                  disabled={data.alias.substr(data.alias.length - 1) === '*'}
                   value={data.alias}
                 >
                   {data.alias}
                 </Checkbox>
-              ))}
-              {checkBoxes2.map((data) => (
-                <Checkbox value={data.alias}>{data.alias}</Checkbox>
-              ))}
+              ))} */}
+              {data.map((val) => {
+                return (
+                  <Checkbox
+                    value={val.alias}
+                    disabled={val.alias.substr(val.alias.length - 1) === '*'}
+                  >
+                    {val.alias}
+                    {!disabled && val.new && (
+                      <DeleteOutlined
+                        onClick={() => this.handleRemove(val.key, type)}
+                        className={styles.removeIcon}
+                      />
+                    )}
+                  </Checkbox>
+                );
+              })}
             </CheckboxGroup>
-          </Panel>
-          <div
-            className={visible ? `${styles.addNewType} ${styles.hidden}` : `${styles.addNewType}`}
-          >
-            <div className={styles.addTitle}>
-              <Row>
-                <Col span={23}>
-                  <p>Add new field</p>
-                </Col>
-                <Col span={1}>
-                  <CloseOutlined onClick={this.handleCancel} />
-                </Col>
-              </Row>
+            <div
+              className={visible ? `${styles.addNewType} ${styles.hidden}` : `${styles.addNewType}`}
+            >
+              <div className={styles.addTitle}>
+                <p>Add New Field</p>
+                <CloseOutlined onClick={this.handleCancel} />
+              </div>
+              <Form
+                ref={this.formRef}
+                onFinish={(values) => this.onSubmit(values)}
+                layout="vertical"
+              >
+                <Form.Item label="Name of the field" name="nameOfField">
+                  <Input placeholder="Enter name of the field" />
+                </Form.Item>
+                <Form.Item>
+                  <Button htmlType="submit">Submit</Button>
+                </Form.Item>
+              </Form>
             </div>
-            <Form ref={this.formRef} onFinish={(values) => this.onSubmit(values)} layout="vertical">
-              <Form.Item label="Name of field" name="nameOfField">
-                <Input placeholder="Enter name of the field" />
-              </Form.Item>
-              <Form.Item>
-                <Button loading={loading} htmlType="submit">
-                  Submit
-                </Button>
-              </Form.Item>
-            </Form>
-          </div>
-          <div
-            className={!visible ? `${styles.hidden}` : `${styles.addBtn}`}
-            onClick={() => this.handleClick(type)}
-          >
-            <PlusOutlined className={styles.plusIcon} />
-            <span className={styles.title}>Add new Field</span>
-          </div>
+            <div
+              className={!visible ? `${styles.hidden}` : `${styles.addBtn}`}
+              onClick={() => this.handleClick(type)}
+            >
+              <PlusOutlined className={styles.plusIcon} />
+              <span className={styles.title}>Add New Field</span>
+            </div>
+          </Panel>
         </Collapse>
       </div>
     );
