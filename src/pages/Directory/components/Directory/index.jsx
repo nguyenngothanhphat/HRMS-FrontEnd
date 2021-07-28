@@ -4,7 +4,7 @@ import AddEmployeeForm from '@/pages_admin/EmployeesManagement/components/TableC
 import ModalImportEmployee from '@/pages_admin/EmployeesManagement/components/TableContainer/components/ModalImportEmployee';
 import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
 import exportToCsv from '@/utils/exportToCsv';
-import { Layout, Skeleton, Tabs } from 'antd';
+import { Layout, message, Skeleton, Tabs } from 'antd';
 import { debounce } from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
@@ -20,6 +20,7 @@ const { TabPane } = Tabs;
     employee,
     user: { currentUser = {}, permissions = {}, companiesOfUser = [] },
     employee: {
+      currentPayload = {},
       filterList = {},
       totalActiveEmployee = '',
       totalInactiveEmployee = '',
@@ -31,12 +32,14 @@ const { TabPane } = Tabs;
     loadingListInActive: loading.effects['employee/fetchListEmployeeInActive'],
     loadingCompaniesOfUser: loading.effects['user/fetchCompanyOfUser'],
     loadingFetchFilterList: loading.effects['employee/fetchFilterList'],
+    loadingExportCSV: loading.effects['employee/exportEmployees'],
     employee,
     currentUser,
     permissions,
     listLocationsByCompany,
     companiesOfUser,
     filterList,
+    currentPayload,
     totalActiveEmployee,
     totalInactiveEmployee,
     totalMyTeam,
@@ -432,6 +435,7 @@ class DirectoryComponent extends PureComponent {
           payload,
         });
       }
+
       if (viewTabMyTeam && tabId === myTeam) {
         dispatch({
           type: 'employee/fetchListEmployeeMyTeam',
@@ -501,40 +505,27 @@ class DirectoryComponent extends PureComponent {
     });
   };
 
-  exportEmployyees = async () => {
-    const { dispatch } = this.props;
-    const { department, employeeType, title, filterName } = this.state;
-    const { companiesOfUser = [], listLocationsByCompany = [] } = this.props;
-    const currentLocation = getCurrentLocation();
-    const currentCompany = getCurrentCompany();
-    const companyList = companiesOfUser.filter(
-      (comp) => comp?._id === currentCompany || comp?.childOfCompany === currentCompany,
-    );
-    const getLocation = listLocationsByCompany.filter((item) => item._id === currentLocation);
-    const convertLocation = getLocation.map((item) => {
-      const { headQuarterAddress: { country: { _id = '' } = {}, state: nameState = '' } = {} } =
-        item;
-      return {
-        country: _id,
-        state: [nameState],
-      };
-    });
+  exportEmployees = async () => {
+    const { dispatch, currentPayload = {} } = this.props;
 
-    const payload = {
-      company: companyList,
-      name: filterName,
-      department,
-      location: convertLocation,
-      employeeType,
-      title,
+    const success = () => {
+      const hide = message.loading('Exporting data...', 0);
+      // Dismiss manually and asynchronously
+      setTimeout(hide, 2500);
     };
+
+    success();
     const getListExport = await dispatch({
       type: 'employee/exportEmployees',
-      payload,
+      payload: currentPayload,
     });
 
     const downloadLink = document.createElement('a');
-    downloadLink.href = `data:text/csv;charset=utf-8,${escape(getListExport)}`;
+    const universalBOM = '\uFEFF';
+    // downloadLink.href = `data:text/csv;charset=utf-8,${escape(getListExport)}`;
+    downloadLink.href = `data:text/csv; charset=utf-8,${encodeURIComponent(
+      universalBOM + getListExport,
+    )}`;
     downloadLink.download = 'data.csv';
     document.body.appendChild(downloadLink);
     downloadLink.click();
@@ -635,7 +626,7 @@ class DirectoryComponent extends PureComponent {
         )}
 
         {findIndexImport && (
-          <div className={styles.buttonAddImport} onClick={this.exportEmployyees}>
+          <div className={styles.buttonAddImport} onClick={this.exportEmployees}>
             <img src={iconDownload} alt="Download Template" />
             <p className={styles.buttonAddImport_text}>
               {formatMessage({ id: 'pages_admin.employees.table.exportEmployees' })}

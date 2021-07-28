@@ -961,7 +961,7 @@ const candidateInfo = {
             },
           },
         });
-        console.log('a');
+
         const {
           firstName = '',
           middleName = '',
