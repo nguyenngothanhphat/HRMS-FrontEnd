@@ -208,6 +208,8 @@ class FirstFieldsComponent extends PureComponent {
                         }
                         allowClear
                         filterOption={(input, option) => {
+                          if (item.title === 'jobGradeLevel')
+                            return option.value.toString().indexOf(input) > -1;
                           return option.value.toLowerCase().indexOf(input.toLowerCase()) > -1;
                         }}
                       >
