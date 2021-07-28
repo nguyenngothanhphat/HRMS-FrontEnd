@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
-import { Collapse, Checkbox, Input, Form, Button, Row, Col } from 'antd';
+import { Collapse, Checkbox, Input, Form, Button, Row, Col, notification } from 'antd';
 import { PlusOutlined, MinusOutlined, CloseOutlined, DeleteOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -141,12 +141,24 @@ class CollapseFieldsType1 extends PureComponent {
 
   onSubmit = (values) => {
     const { visible, typeSelected } = this.state;
-    const { addNewField } = this.props;
+    const { addNewField, documentChecklistSetting = [], type = '' } = this.props;
     this.setState({
       visible: !visible,
     });
 
-    addNewField(values.nameOfField, typeSelected);
+    let check = false;
+    documentChecklistSetting.forEach((doc) => {
+      if (doc.type === type) {
+        const findObj = doc.data.filter((d) => d.alias === values.nameOfField);
+        if (findObj.length > 0) {
+          check = true;
+        }
+      }
+    });
+
+    if (check) {
+      notification.error({ message: 'This field name is duplicated' });
+    } else addNewField(values.nameOfField, typeSelected);
     this.formRef.current.resetFields();
   };
 
@@ -157,7 +169,7 @@ class CollapseFieldsType1 extends PureComponent {
 
   render() {
     const { checkedList, visible } = this.state;
-    const { item: { data = [] } = {}, checkBoxesData = [], disabled = false, type } = this.props;
+    const { item: { data = [] } = {}, disabled = false, type } = this.props;
     // const checkBoxes1 = checkBoxesData.filter(
     //   (data) => data.alias.substr(data.alias.length - 1) === '*',
     // );
@@ -232,13 +244,15 @@ class CollapseFieldsType1 extends PureComponent {
                 </Form.Item>
               </Form>
             </div>
-            <div
-              className={!visible ? `${styles.hidden}` : `${styles.addBtn}`}
-              onClick={() => this.handleClick(type)}
-            >
-              <PlusOutlined className={styles.plusIcon} />
-              <span className={styles.title}>Add New Field</span>
-            </div>
+            {!disabled && (
+              <div
+                className={!visible ? `${styles.hidden}` : `${styles.addBtn}`}
+                onClick={() => this.handleClick(type)}
+              >
+                <PlusOutlined className={styles.plusIcon} />
+                <span className={styles.title}>Add New Field</span>
+              </div>
+            )}
           </Panel>
         </Collapse>
       </div>
