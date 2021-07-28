@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Affix, Skeleton } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
-import { connect, history } from 'umi';
+import { connect } from 'umi';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 // import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
-import { getCurrentCompany, getCurrentTenant, isOwner } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 // import Test from './components/test';
@@ -236,16 +236,16 @@ class EmployeeProfile extends Component {
   render() {
     const {
       match: { params: { reId: employee = '', tabName = '' } = {} },
-      currentUser: { employee: currentEmployee = {} },
+      currentUser: { employee: { generalInfo: { userId = '' } = {} } = {} },
       permissions = {},
       location: { state: { location = '' } = {} } = {},
       loadingFetchEmployee,
       // employeeProfile,
     } = this.props;
 
-    const listMenu = this.renderListMenu(employee, currentEmployee?._id);
+    const listMenu = this.renderListMenu(employee, userId);
 
-    const profileOwner = this.checkProfileOwner(currentEmployee?._id, employee);
+    const profileOwner = this.checkProfileOwner(userId, employee);
 
     const tenant = localStorage.getItem('tenantCurrentEmployee');
     const company = localStorage.getItem('companyCurrentEmployee');

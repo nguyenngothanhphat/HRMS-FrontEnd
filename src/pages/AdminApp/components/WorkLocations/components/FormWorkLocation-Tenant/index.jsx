@@ -348,7 +348,8 @@ class FormWorkLocationTenant extends Component {
                     disabled={disableInput}
                     onChange={this.onChangeCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     {listCountry.map((item) => (
                       <Option key={item._id}>{item.name}</Option>
@@ -368,7 +369,8 @@ class FormWorkLocationTenant extends Component {
                     showSearch
                     disabled={disableInput || !newCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     {listState.map((item) => (
                       <Option key={item}>{item}</Option>
@@ -377,12 +379,14 @@ class FormWorkLocationTenant extends Component {
                 </Form.Item>
               </Col>
               <Col span={8} className={s.viewFormVertical}>
-                <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>Zip*</p>
+                <p className={classnames(s.content__viewBottom__row__textLabel, s.mgb10)}>
+                  Zip/Postal Code*
+                </p>
                 <Form.Item
-                  rules={[{ required: true, message: 'Please input Zip Code' }]}
+                  rules={[{ required: true, message: 'Please input Zip/Postall Code' }]}
                   name="zipCode"
                 >
-                  <Input disabled={disableInput} placeholder="Zip Code" />
+                  <Input disabled={disableInput} placeholder="Zip/Postal Code" />
                 </Form.Item>
               </Col>
             </Row>

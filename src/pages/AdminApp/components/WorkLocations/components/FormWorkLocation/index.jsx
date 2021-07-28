@@ -255,7 +255,7 @@ class FormWorkLocation extends Component {
             </Col>
             <Col span={8} className={s.viewFormVertical}>
               <p className={classnames(s.FormWorkLocation__viewBottom__row__textLabel, s.mgb10)}>
-                Zip*
+                Zip/Postal Code*
               </p>
               <Form.Item
                 {...field}
@@ -265,11 +265,11 @@ class FormWorkLocation extends Component {
                 rules={[
                   {
                     required: true,
-                    message: 'Please enter Zip Code!',
+                    message: 'Please enter Zip/Postal Code!',
                   },
                 ]}
               >
-                <Input placeholder="Zip Code" />
+                <Input placeholder="Zip/Postal Code" />
               </Form.Item>
             </Col>
           </Row>

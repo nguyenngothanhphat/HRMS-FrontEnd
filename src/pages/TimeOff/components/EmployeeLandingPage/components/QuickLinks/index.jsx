@@ -32,6 +32,7 @@ export default class QuickLinks extends PureComponent {
     super(props);
     this.state = {
       viewDocumentModal: false,
+      link: '',
     };
   }
 
@@ -41,24 +42,31 @@ export default class QuickLinks extends PureComponent {
     });
   };
 
-  onLinkClick = () => {
+  onLinkClick = (link) => {
     this.setViewDocumentModal(true);
+    this.setState({
+      link,
+    });
   };
 
   render() {
-    const { viewDocumentModal } = this.state;
+    const { viewDocumentModal, link } = this.state;
     return (
       <div className={styles.QuickLinks}>
         <Tabs defaultActiveKey="1">
           <TabPane tab="Quick Links" key="1">
             {mockData.map((row) => (
-              <span key={row.id} onClick={this.onLinkClick}>
+              <span key={row.id} onClick={() => this.onLinkClick(row.link)}>
                 {row.text}
               </span>
             ))}
           </TabPane>
         </Tabs>
-        <ViewDocumentModal visible={viewDocumentModal} onClose={this.setViewDocumentModal} />
+        <ViewDocumentModal
+          url={link}
+          visible={viewDocumentModal}
+          onClose={this.setViewDocumentModal}
+        />
       </div>
     );
   }
