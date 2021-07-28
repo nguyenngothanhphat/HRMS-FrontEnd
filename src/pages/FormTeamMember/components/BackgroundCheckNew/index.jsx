@@ -1243,7 +1243,7 @@ class BackgroundCheck extends Component {
           identityProof: { checkedList: checkedListA = [] } = {},
           addressProof: { checkedList: checkedListB = [] } = {},
           educational: { checkedList: checkedListC = [] } = {},
-          technicalCertifications: { checkedList: checkedListD = [] } = {},
+          // technicalCertifications: { checkedList: checkedListD = [] } = {},
           identityProof = {},
           addressProof = {},
           educational = {},
@@ -1259,7 +1259,7 @@ class BackgroundCheck extends Component {
       newDocument = [...checkedListA, name];
     }
     if (type === 'B') {
-      newDocument = checkedListA.filter((val) => val.key !== key);
+      newDocument = [...checkedListB, name];
     }
     if (type === 'C') {
       newDocument = [...checkedListC, name];
@@ -1474,6 +1474,7 @@ class BackgroundCheck extends Component {
                         loadingUpdateByHR={loadingUpdateByHR}
                         disabled={this.disableEdit()}
                         checkBoxesData={data}
+                        documentChecklistSetting={documentChecklistSetting}
                       />
                     );
                   }
