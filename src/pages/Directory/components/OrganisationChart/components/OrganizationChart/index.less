@@ -1,0 +1,135 @@
+.orgChartRoot{
+    width: 100%;
+    min-height: 80vh;
+    padding-top: 100px;
+
+    .charts {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+
+        .node{
+            &:hover{
+                border: 1px solid #2c6df9;
+            }
+
+            cursor: pointer;
+            width: 234px;
+            // height: 74px; 
+            background: #FFFFFF;
+            border: 1px solid #E8EEF2;
+            box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+
+            padding: 8px 16px;
+
+            &__card{
+                display: flex;
+                align-items: flex-start;
+
+                .avatar{
+                }
+
+                &__info{
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    padding-left: 10px;
+
+                    .legalName, .deptName, .countryName{
+                        padding-bottom: 6px;
+                    }
+
+                    .legalName{
+                        font-family: Roboto;
+                        font-style: normal;
+                        font-weight: 500;
+                        font-size: 14px;
+                        line-height: 16px;
+
+                        color: #161C29;
+                    }
+                    .deptName, .countryName{
+                        font-family: Roboto;
+                        font-style: normal;
+                        font-weight: normal;
+                        font-size: 13px;
+                        line-height: 15px;
+
+                        color: #707177;
+                    }
+                }
+
+            }
+            
+        }
+
+        .userNode{
+            position: relative;
+            border: 1px solid #00C598;
+
+            &__bottom{
+                position: absolute;
+                display: flex;
+                align-items: center;
+
+                &_reporteesExpand, &_reporteesCollapse, &_you{
+                    font-family: Roboto;
+                    font-style: normal;
+                    font-weight: 500;
+                    font-size: 12px;
+                    line-height: 14px;
+                    color: #FFFFFF;
+                    padding: 4px 10px;
+                    border-radius: 13px;
+                    transition: 0.3s all ease-in-out;
+                }
+
+                &_reporteesExpand{
+                    background: #2C6DF9;
+                    margin-right: 16px;
+                }
+
+                &_reporteesCollapse{
+                    background: #FFA100;
+                    color: #000;
+                    margin-right: 16px;
+                }
+
+                &_you{
+                    background: #00C598;
+                }
+            }
+        }
+
+        .nodesTree{
+            max-width: 750px; // exactly = 750px
+            /*
+                - each node's width = 234px. 
+                - 3 columns => 234px * 3 = 702px
+                - spacing between nodes: 24px
+                -> 702 + 24*2 = 750px
+            */      
+
+            .lineNode{
+                width: 100%;
+            }
+        }
+
+        .childrenList{
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 24px;
+
+            .employeeNode{
+            }
+        }
+
+        .selectNode{
+            border: 1px solid #2c6df9;
+        }
+    }
+}

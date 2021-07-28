@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { Table, Popover, Divider, Row, Col, Avatar, Tooltip } from 'antd';
 import moment from 'moment';
 import { history } from 'umi';
-import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
+import { getCurrentTimeOfTimezoneOption } from '@/utils/times';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import { UserOutlined } from '@ant-design/icons';
 import t from './index.less';
@@ -138,7 +138,7 @@ class TableManager extends PureComponent {
             <Col span={16}>
               <div className={t.contact__value}>
                 {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
+                  ? getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone)
                   : 'Not enough data in address'}
               </div>
             </Col>

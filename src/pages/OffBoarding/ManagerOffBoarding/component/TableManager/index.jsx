@@ -6,7 +6,7 @@ import { isEmpty } from 'lodash';
 import empty from '@/assets/timeOffTableEmptyIcon.svg';
 import { UserOutlined } from '@ant-design/icons';
 import { history, connect } from 'umi';
-import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
+import { getCurrentTimeOfTimezoneOption } from '@/utils/times';
 import styles from './index.less';
 
 @connect(({ locationSelection: { listLocationsByCompany = [] } = {} }) => ({
@@ -85,13 +85,14 @@ class TableManager extends PureComponent {
 
     const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
       filterLocation[0];
+    const locationName = `${state}, ${countryName}`;
 
     if (filterLocation.length === 0) return null;
     return (
       <div className={styles.popupContent}>
         <div className={styles.generalInfo}>
           <div className={styles.avatar}>
-            <Avatar src={avatar} size={60} icon={<UserOutlined />} />
+            <Avatar src={avatar} size={55} icon={<UserOutlined />} />
           </div>
           <div className={styles.employeeInfo}>
             <div className={styles.employeeInfo__name}>{fullName}</div>
@@ -105,38 +106,32 @@ class TableManager extends PureComponent {
         </div>
         <Divider className={styles.divider} />
         <div className={styles.contact}>
-          <Row gutter={[24, 0]}>
-            <Col span={8}>
+          <Row gutter={[24, 24]}>
+            <Col span={7}>
               <div className={styles.contact__title}>Mobile: </div>
             </Col>
-            <Col span={16}>
+            <Col span={17}>
               <div className={styles.contact__value}>{workNumber}</div>
             </Col>
-          </Row>
-          <Row gutter={[24, 0]}>
-            <Col span={8}>
+            <Col span={7}>
               <div className={styles.contact__title}>Email id: </div>
             </Col>
-            <Col span={16}>
+            <Col span={17}>
               <div className={styles.contact__value}>{workEmail}</div>
             </Col>
-          </Row>
-          <Row gutter={[24, 0]}>
-            <Col span={8}>
+            <Col span={7}>
               <div className={styles.contact__title}>Location: </div>
             </Col>
-            <Col span={16}>
-              <div className={styles.contact__value}>{`${state}, ${countryName}`}</div>
+            <Col span={17}>
+              <div className={styles.contact__value}>{locationName || ''}</div>
             </Col>
-          </Row>
-          <Row gutter={[24, 0]}>
-            <Col span={8}>
+            <Col span={7}>
               <div className={styles.contact__title}>Local Time: </div>
             </Col>
-            <Col span={16}>
+            <Col span={17}>
               <div className={styles.contact__value}>
                 {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
+                  ? getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone)
                   : 'Not enough data in address'}
               </div>
             </Col>
@@ -151,11 +146,18 @@ class TableManager extends PureComponent {
             View full profile
           </div>
           <div className={styles.popupActions__actions}>
+            <Tooltip title="Message">
+              <img
+                src="/assets/images/messageIcon.svg"
+                alt="img-arrow"
+                style={{ cursor: 'pointer' }}
+              />
+            </Tooltip>
             <Tooltip title="Email">
               <img
                 src="/assets/images/iconMail.svg"
                 alt="img-arrow"
-                style={{ marginLeft: '5px', cursor: 'pointer' }}
+                style={{ cursor: 'pointer' }}
               />
             </Tooltip>
             <Tooltip title="LinkedIn">
@@ -201,12 +203,13 @@ class TableManager extends PureComponent {
     }
     const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
       filterLocation[0];
+    const locationName = `${state}, ${countryName}`;
 
     return (
       <div className={styles.popupContent}>
         <div className={styles.generalInfo}>
           <div className={styles.avatar}>
-            <Avatar src={avatar} size={40} icon={<UserOutlined />} />
+            <Avatar src={avatar} size={55} icon={<UserOutlined />} />
           </div>
           <div className={styles.employeeInfo}>
             <div className={styles.employeeInfo__name}>{legalName}</div>
@@ -220,38 +223,32 @@ class TableManager extends PureComponent {
         </div>
         <Divider />
         <div className={styles.contact}>
-          <Row gutter={[24, 0]}>
-            <Col span={8}>
+          <Row gutter={[24, 24]}>
+            <Col span={7}>
               <div className={styles.contact__title}>Mobile: </div>
             </Col>
-            <Col span={16}>
+            <Col span={17}>
               <div className={styles.contact__value}>{workNumber}</div>
             </Col>
-          </Row>
-          <Row gutter={[24, 0]}>
-            <Col span={8}>
+            <Col span={7}>
               <div className={styles.contact__title}>Email id: </div>
             </Col>
-            <Col span={16}>
+            <Col span={17}>
               <div className={styles.contact__value}>{workEmail}</div>
             </Col>
-          </Row>
-          <Row gutter={[24, 0]}>
-            <Col span={8}>
+            <Col span={7}>
               <div className={styles.contact__title}>Location: </div>
             </Col>
-            <Col span={16}>
-              <div className={styles.contact__value}>{`${state}, ${countryName}`}</div>
+            <Col span={17}>
+              <div className={styles.contact__value}>{locationName || ''}</div>
             </Col>
-          </Row>
-          <Row gutter={[24, 0]}>
-            <Col span={8}>
+            <Col span={7}>
               <div className={styles.contact__title}>Local Time: </div>
             </Col>
-            <Col span={16}>
+            <Col span={17}>
               <div className={styles.contact__value}>
                 {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
+                  ? getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone)
                   : 'Not enough data in address'}
               </div>
             </Col>
@@ -266,6 +263,13 @@ class TableManager extends PureComponent {
             View full profile
           </div>
           <div className={styles.popupActions__actions}>
+            <Tooltip title="Message">
+              <img
+                src="/assets/images/messageIcon.svg"
+                alt="img-arrow"
+                style={{ cursor: 'pointer' }}
+              />
+            </Tooltip>
             <Tooltip title="Email">
               <img
                 src="/assets/images/iconMail.svg"
@@ -376,7 +380,8 @@ class TableManager extends PureComponent {
         render: (assigneeHR) => {
           const {
             hrManager: {
-              generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {} || {},
+              generalInfo: { firstName = '', lastName = '', middleName = '', userId = '' } = {} ||
+                {},
             } = {} || {},
             hrManager = {},
           } = this.props;
