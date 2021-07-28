@@ -157,7 +157,7 @@ class BasicInformation extends Component {
     );
     if (
       firstName !== null &&
-      middleName !== null &&
+      // middleName !== null &&
       lastName !== null &&
       // workEmail !== null &&
       privateEmail !== null &&
