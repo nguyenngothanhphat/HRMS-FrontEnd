@@ -116,17 +116,25 @@ class LeaveHistoryAndHoliday extends PureComponent {
       if (status === TIMEOFF_STATUS.accepted) {
         const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
         const toDate = moment(to).locale('en').format('MM/DD/YYYY');
-        const now = moment().locale('en').format('MM/DD/YYYY');
-        if (moment(now).isAfter(moment(toDate))) {
-          return {
-            _id,
-            name: subject,
-            fromDate,
-            toDate,
-            duration,
-            type: shortType,
-          };
-        }
+        // const now = moment().locale('en').format('MM/DD/YYYY');
+        // if (moment(now).isAfter(moment(toDate))) {
+        //   return {
+        //     _id,
+        //     name: subject,
+        //     fromDate,
+        //     toDate,
+        //     duration,
+        //     type: shortType,
+        //   };
+        // }
+        return {
+          _id,
+          name: subject,
+          fromDate,
+          toDate,
+          duration,
+          type: shortType,
+        };
       }
       return null;
     });
