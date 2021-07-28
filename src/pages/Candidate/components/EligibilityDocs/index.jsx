@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import React, { PureComponent } from 'react';
-import { Typography, Row, Col, Button, Spin } from 'antd';
+import { Typography, Row, Col, Button, Spin, notification } from 'antd';
 import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
@@ -274,29 +274,27 @@ class EligibilityDocs extends PureComponent {
       dispatch,
     } = this.props;
 
-    console.log('SEND AGAIN');
-
-    // dispatch({
-    //   type: 'candidateProfile/sendEmailByCandidate',
-    //   payload: {
-    //     dateOfJoining,
-    //     options: 1,
-    //     firstName,
-    //     middleName,
-    //     lastName,
-    //     noticePeriod,
-    //     hrEmail: email,
-    //     workHistories: workHistory,
-    //     tenantId: getCurrentTenant(),
-    //   },
-    // }).then(({ statusCode }) => {
-    //   if (statusCode === 200) {
-    //     this.setState({
-    //       openModal: true,
-    //       isSentEmail: true,
-    //     });
-    //   }
-    // });
+    dispatch({
+      type: 'candidateProfile/sendEmailByCandidate',
+      payload: {
+        dateOfJoining,
+        options: 1,
+        firstName,
+        middleName,
+        lastName,
+        noticePeriod,
+        hrEmail: email,
+        workHistories: workHistory,
+        tenantId: getCurrentTenant(),
+      },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        this.setState({
+          openModal: true,
+          isSentEmail: true,
+        });
+      }
+    });
   };
 
   initSendMail = () => {
@@ -313,8 +311,8 @@ class EligibilityDocs extends PureComponent {
       dispatch,
       candidate,
     } = this.props;
-    const { user = {} } = generatedBy;
-    const { email } = user;
+    const { generalInfo = {} } = generatedBy;
+    const { workEmail: email = '' } = generalInfo;
     this.setState({ isSending: true });
     // fetch data candidate by id to update the newest data (especially the Email HR)
     dispatch({
@@ -325,36 +323,38 @@ class EligibilityDocs extends PureComponent {
         rookieID: candidate.ticketID,
       },
     }).then((response) => {
-      const { generatedBy: newestGeneratedBy = {} } = response;
-      const { workEmail: newestEmailHr = '' } = newestGeneratedBy;
+      const { generatedBy: { generalInfo: newGeneralInfo = {} } = {} } = response.data;
+      const { workEmail: newestEmailHr = '' } = newGeneralInfo;
 
       if (newestEmailHr === email) {
-        console.log('INIT SENDMAIL');
         // if true, the email is still not change
-        // dispatch({
-        //   type: 'candidateProfile/sendEmailByCandidate',
-        //   payload: {
-        //     dateOfJoining,
-        //     options: 1,
-        //     firstName,
-        //     middleName,
-        //     lastName,
-        //     noticePeriod,
-        //     hrEmail: email,
-        //     workHistories: workHistory,
-        //     tenantId: getCurrentTenant(),
-        //   },
-        // }).then(({ statusCode }) => {
-        //   if (statusCode === 200) {
-        //     this.setState({
-        //       openModal: true,
-        //       isSentEmail: true,
-        //     });
-        //   }
-        // });
+        dispatch({
+          type: 'candidateProfile/sendEmailByCandidate',
+          payload: {
+            dateOfJoining,
+            options: 1,
+            firstName,
+            middleName,
+            lastName,
+            noticePeriod,
+            hrEmail: email,
+            workHistories: workHistory,
+            tenantId: getCurrentTenant(),
+          },
+        }).then(({ statusCode }) => {
+          if (statusCode === 200) {
+            this.setState({
+              openModal: true,
+              isSentEmail: true,
+            });
+          }
+        });
       } else {
         // else, it means the email was changed/assigned to other HR while the candidate is updating document files.
-        this.setState({ hrEmail: newestEmailHr });
+        this.setState({ hrEmail: newestEmailHr, isSentEmail: true });
+        notification.warning({
+          message: 'The Email HR was changed/re-assigned. Please send mail again !',
+        });
       }
       this.setState({ isSending: false });
     });
@@ -362,7 +362,6 @@ class EligibilityDocs extends PureComponent {
 
   handleSendEmail = () => {
     const { hrEmail } = this.state;
-    console.log(hrEmail);
 
     if (hrEmail) {
       this.sendEmailAgain(hrEmail);
@@ -581,9 +580,9 @@ class EligibilityDocs extends PureComponent {
                   <SendEmail
                     loading={loading1 || isSending}
                     handleSendEmail={this.handleSendEmail}
-                    email={workEmail}
+                    email={hrEmail}
                     onValuesChangeEmail={this.onValuesChangeEmail}
-                    isSentEmail={hrEmail}
+                    isSentEmail={isSentEmail}
                     handleSubmitAgain={this.handleSubmitAgain}
                     // disabled={!(workDuration !== 0 && !isUndefined(workDuration))}
                     disabled={!checkFull}
