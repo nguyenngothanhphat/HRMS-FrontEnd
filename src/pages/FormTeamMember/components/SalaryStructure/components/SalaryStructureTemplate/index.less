@@ -3,6 +3,13 @@
   padding-left: 62px;
 }
 
+.p_title_select {
+  width: 80%;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #707177;
+}
+
 .spin{
   display: flex;
   justify-content: center;
@@ -125,6 +132,10 @@
       color: #464646
     }
 
+    .ant-select {
+      // width: 245px;
+    }
+
     .ant-select-placeholder {
       color: red !important;
       font-weight: bolder;
@@ -133,6 +144,9 @@
   &_select {
     // margin-bottom: 30px;
     :global {
+      .ant-select {
+        width: 100% !important;
+      }
       .ant-form-item {
         display: block;
       }

@@ -49,24 +49,25 @@ class SalaryStructure extends PureComponent {
       salaryNoteState: '',
     };
   }
-  // componentDidMount() {
-  //   const { candidate = '', dispatch, currentStep, processStatus } = this.props;
-  //   if (processStatus === 'DRAFT') {
-  //     if (dispatch && candidate) {
-  //       dispatch({
-  //         type: 'candidateInfo/updateByHR',
-  //         payload: {
-  //           candidate,
-  //           currentStep: 2,
-  //         },
-  //       });
-  //     }
-  //   }
-  // }
 
   componentDidMount() {
-    window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+    const { candidate = '', dispatch, processStatus } = this.props;
+    if (processStatus === 'DRAFT') {
+      if (dispatch && candidate) {
+        dispatch({
+          type: 'candidateInfo/updateByHR',
+          payload: {
+            candidate,
+            currentStep: 2,
+          },
+        });
+      }
+    }
   }
+
+  // componentDidMount() {
+  //   window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+  // }
 
   // _renderTable = () => {
   //   return (

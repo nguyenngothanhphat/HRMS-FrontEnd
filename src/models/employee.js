@@ -107,7 +107,7 @@ const employee = {
       { call, put },
     ) {
       try {
-        const response = yield call(getListEmployee, {
+        const currentPayload = {
           status: ['ACTIVE'],
           company,
           department,
@@ -117,12 +117,17 @@ const employee = {
           title,
           page,
           limit,
-        });
+        };
+        const response = yield call(getListEmployee, currentPayload);
         const { statusCode, data: listEmployeeMyTeam = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'listEmployeeMyTeam',
           payload: { listEmployeeMyTeam, myTeam: response.total },
+        });
+        yield put({
+          type: 'save',
+          payload: { currentPayload },
         });
         return listEmployeeMyTeam;
       } catch (errors) {
@@ -147,7 +152,7 @@ const employee = {
       { call, put },
     ) {
       try {
-        const response = yield call(getListEmployee, {
+        const currentPayload = {
           status: ['ACTIVE'],
           company,
           department,
@@ -158,13 +163,18 @@ const employee = {
           skill,
           page,
           limit,
-        });
+        };
+        const response = yield call(getListEmployee, currentPayload);
         const { statusCode, data: listEmployeeActive = [] } = response;
         if (statusCode !== 200) throw response;
 
         yield put({
           type: 'listEmployeeActive',
           payload: { listEmployeeActive, totalActiveEmployee: response.total },
+        });
+        yield put({
+          type: 'save',
+          payload: { currentPayload },
         });
         return listEmployeeActive;
       } catch (errors) {
@@ -188,7 +198,7 @@ const employee = {
       { call, put },
     ) {
       try {
-        const response = yield call(getListEmployee, {
+        const currentPayload = {
           status: ['INACTIVE'],
           company,
           department,
@@ -198,12 +208,17 @@ const employee = {
           title,
           page,
           limit,
-        });
+        };
+        const response = yield call(getListEmployee, currentPayload);
         const { statusCode, data: listEmployeeInActive = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'listEmployeeInActive',
           payload: { listEmployeeInActive, totalInactiveEmployee: response.total },
+        });
+        yield put({
+          type: 'save',
+          payload: { currentPayload },
         });
       } catch (errors) {
         dialog(errors);

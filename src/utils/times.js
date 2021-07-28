@@ -22,6 +22,6 @@ export const getCurrentTimeOfTimezone = (currentTime, timezone) => {
   return moment(currentTime).tz(timezone).locale('en').format('LLLL');
 };
 
-export const getCurrentTimeOfTimezoneOffboarding = (currentTime, timezone) => {
+export const getCurrentTimeOfTimezoneOption = (currentTime, timezone) => {
   return moment(currentTime).tz(timezone).locale('en').format('DD/MM/YYYY | HH:mm A');
 };

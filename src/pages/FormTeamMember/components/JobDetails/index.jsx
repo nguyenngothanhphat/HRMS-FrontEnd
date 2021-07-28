@@ -66,6 +66,9 @@ class JobDetails extends PureComponent {
         tenantId,
       },
     });
+    dispatch({
+      type: 'candidateInfo/getJobGradeList',
+    });
 
     // dispatch({
     //   type: 'candidateInfo/save',
@@ -124,12 +127,22 @@ class JobDetails extends PureComponent {
     const {
       dispatch,
       currentStep,
-      tempData: { department, workLocation, title, reportingManager, position, employeeType, _id },
+      tempData: {
+        department,
+        workLocation,
+        title,
+        reportingManager,
+        position,
+        employeeType,
+        _id,
+        grade,
+      },
       data: { processStatus = '' } = {},
     } = this.props;
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
+        grade,
         workLocation: workLocation ? workLocation._id : '',
         department: department ? department._id : '',
         title: title ? title._id : '',
@@ -157,12 +170,13 @@ class JobDetails extends PureComponent {
 
   checkBottomBar = () => {
     const {
-      tempData: { department, workLocation, title, reportingManager, checkStatus },
+      tempData: { grade, department, workLocation, title, reportingManager, checkStatus },
       checkMandatory,
       dispatch,
     } = this.props;
 
     if (
+      grade !== null &&
       department !== null &&
       workLocation !== null &&
       title !== null &&
@@ -211,7 +225,7 @@ class JobDetails extends PureComponent {
     const { dispatch, locationList } = this.props;
     const { tempData = {} } = this.state;
     tempData[name] = value;
-    const { department, workLocation, title } = tempData;
+    const { grade, department, workLocation, title, jobGradeLevelList } = tempData;
     const companyId = getCurrentCompany();
     const tenantId = getCurrentTenant();
 
@@ -232,7 +246,45 @@ class JobDetails extends PureComponent {
     //   },
     // );
 
-    if (name === 'workLocation') {
+    if (name === 'jobGradeLevel') {
+      // const changedGrade = JSON.parse(JSON.stringify(jobGradeLevelList));
+      const selectedGrade = jobGradeLevelList.find((data) => data._id === value);
+
+      if (value === undefined) {
+        await dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            tempData: {
+              ...tempData,
+              grade: null,
+            },
+          },
+        });
+      } else {
+        dispatch({
+          type: 'candidateInfo/save',
+          payload: {
+            tempData: {
+              ...tempData,
+              grade: selectedGrade,
+            },
+          },
+        });
+      }
+
+      if (!isEmpty(grade)) {
+        console.log(grade);
+        //   const companyIdNew = getCurrentCompany(getCurrentTenant);
+        //   // const tenantId = getCurrentTenant();
+        //   dispatch({
+        //     type: 'candidateInfo/fetchLocationList',
+        //     payload: {
+        //       company: companyIdNew,
+        //       tenantId: getCurrentTenant(),
+        //     },
+        //   });
+      }
+    } else if (name === 'workLocation') {
       const changedWorkLocation = JSON.parse(JSON.stringify(locationList));
       const selectedWorkLocation = changedWorkLocation.find((data) => data._id === value);
 
@@ -398,6 +450,7 @@ class JobDetails extends PureComponent {
       currentStep,
       data: { _id },
       tempData: {
+        grade,
         position,
         employeeType,
         workLocation,
@@ -411,6 +464,7 @@ class JobDetails extends PureComponent {
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
+        grade,
         dateOfJoining,
         position,
         employeeType: employeeType ? employeeType._id : '',
@@ -531,27 +585,33 @@ class JobDetails extends PureComponent {
     };
     const dropdownField = [
       {
+        title: 'jobGradeLevel',
+        name: `${formatMessage({ id: 'component.jobDetail.jobGrade' })}*`,
+        id: 1,
+        placeholder: 'Select a grade',
+      },
+      {
         title: 'workLocation',
         name: `${formatMessage({ id: 'component.jobDetail.workLocation' })}*`,
-        id: 1,
+        id: 2,
         placeholder: 'Select a work location',
       },
       {
         title: 'department',
         name: `${formatMessage({ id: 'component.jobDetail.department' })}*`,
-        id: 2,
+        id: 3,
         placeholder: 'Select a department',
       },
       {
         title: 'title',
         name: 'Job Title*',
-        id: 3,
+        id: 4,
         placeholder: 'Select a job title',
       },
       {
         title: 'reportingManager',
         name: `${formatMessage({ id: 'component.jobDetail.reportingManager' })}*`,
-        id: 4,
+        id: 5,
         placeholder: 'Select a reporting manager',
       },
     ];
@@ -588,6 +648,7 @@ class JobDetails extends PureComponent {
     const {
       tempData,
       tempData: {
+        jobGradeLevelList,
         employeeTypeList,
         departmentList,
         locationList,
@@ -600,6 +661,7 @@ class JobDetails extends PureComponent {
         workLocation,
         reportingManager,
         candidatesNoticePeriod,
+        grade,
       },
       data,
     } = this.state;
@@ -633,12 +695,14 @@ class JobDetails extends PureComponent {
                     dropdownField={dropdownField}
                     candidateField={candidateField}
                     departmentList={departmentList}
+                    jobGradeList={jobGradeLevelList}
                     locationList={locationList}
                     titleList={titleList}
                     managerList={managerList}
                     department={department}
                     workLocation={workLocation}
                     title={title}
+                    grade={grade}
                     reportingManager={reportingManager}
                     candidatesNoticePeriod={candidatesNoticePeriod}
                     prefferedDateOfJoining={dateOfJoining}

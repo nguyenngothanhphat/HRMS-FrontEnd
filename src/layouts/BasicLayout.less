@@ -154,6 +154,11 @@
       cursor: pointer;
     }
 
+    .ant-pro-global-header{
+      padding: 0;
+      padding-right: 16px;
+    }
+
     .ant-pro-global-header-logo {
       display: none;
     }
@@ -318,6 +323,49 @@
     font-size: 12px;
     background-color: #fff;
     box-shadow: 0 10px 30px 3px #c7bcbc;
+  }
+
+  .logoSection{
+    height: 76px;
+    display: flex;
+
+    &__button{
+      width: 80px;
+      height: 76px;
+      background-color: #161c29;
+      border: none;
+      border-radius: 0;
+    }
+  }
+}
+
+.expandMenu{
+  :global{
+    .ant-pro-sider-light{
+      transition: min-width 0.3s, max-width 0.5s all ease-in-out;
+      -moz-transition: min-width 0.3s, max-width 0.5s all ease-in-out;
+      -ms-transition: min-width 0.3s, max-width 0.5s all ease-in-out;
+      -o-transition: min-width 0.3s, max-width 0.5s all ease-in-out;
+      -webkit-transition: min-width 0.3s, max-width 0.5s all ease-in-out;
+
+      min-width: 80px !important;
+      max-width: 80px !important;
+    }
+  }
+}
+
+.collapseMenu{
+  :global{
+    .ant-pro-sider-light{
+      transition: min-width 0.3s, max-width 0.5s all ease-in-out;
+      -moz-transition: min-width 0.3s, max-width 0.5s all ease-in-out;
+      -ms-transition: min-width 0.3s, max-width 0.5s all ease-in-out;
+      -o-transition: min-width 0.3s, max-width 0.5s all ease-in-out;
+      -webkit-transition: min-width 0.3s, max-width 0.5s all ease-in-out;
+
+      min-width: 0 !important;
+      max-width: 0 !important;
+    }
   }
 }
 

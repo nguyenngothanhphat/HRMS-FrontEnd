@@ -128,7 +128,7 @@ class BasicInformation extends PureComponent {
               required={false}
               label={formatMessage({ id: 'component.basicInformation.middleName' })}
               name="middleName"
-              rules={[{ required: true, message: `'Please input your middle name!'` }]}
+              // rules={[{ required: true, message: `'Please input your middle name!'` }]}
             >
               <Input
                 // onChange={(e) => this.handleChange(e)}

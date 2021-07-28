@@ -79,10 +79,19 @@
   .ant-popover-inner{
     border-radius: 8px;
   }
+
+  .ant-divider{
+    border-top: 0.2px solid #B6B6B6;
+    opacity: 0.3;
+  }
+
+  .ant-divider-horizontal{
+    margin: 18px 0;
+  }
 }  
 
 .popupContent{
-  width: 300px; 
+  width: 346px; 
 
   .generalInfo{
     width: 100%;
@@ -92,20 +101,29 @@
 
     .employeeInfo{
       text-align: left;
-      padding-left: 24px;
+      padding-left: 16px;
 
       &__name{
-        font-size: 18px;
-        font-weight: 700;
-        line-height: 18.75px;
+        margin-bottom: 0;
+        font-family: Roboto;
         font-style: normal;
-        color: #161c29;
+        font-weight: 500;
+        font-size: 18px;
+        line-height: 21px;
+        color: #161C29;
+
+        padding-bottom: 6px;
       }
   
       &__department, &__emplId{
-        color: #707177;
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: normal;
         font-size: 13px;
-        font-weight: 500;
+        line-height: 15px;
+        color: #707177;
+
+        padding-bottom: 6px;
       }
     }
 
@@ -117,15 +135,24 @@
 
   .contact{
     &__title {
-      color: #707177;
-      font-size: 13px;
+      font-family: Roboto;
+      font-style: normal;
       font-weight: 500;
+      font-size: 13px;
+      line-height: 15px;
+
+      color: #707177;
     }
 
     &__value{
-      font-weight: 400;
       font-style: normal;
-      color: #161c29;
+      font-weight: normal;
+      font-size: 14px;
+      line-height: 16px;
+
+      color: #161C29;
+
+      opacity: 0.91;
     }
   }
 
@@ -146,7 +173,7 @@
     }
 
     &__actions {
-      width: 60px;
+      width: 106px;
       display: flex;
       justify-content: space-between;
       align-items: center;
