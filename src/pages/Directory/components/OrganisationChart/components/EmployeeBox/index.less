@@ -1,12 +1,11 @@
 .chartSearch {
   margin-bottom: 10px;
-  padding: 16px;
-  // padding-bottom: 12px;
-  width: 413px;
-  background-color: #ffffff;
-  border: 1px solid #e8eef2;
-  border-radius: 8px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.14);
+  padding: 18px;
+  width: 346px;
+  background: #FFFFFF;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  cursor: pointer;
 
   :global {
     .ant-select {
@@ -78,7 +77,7 @@
     line-height: 21px;
     color: #161C29;
     text-align: center;
-    padding-bottom: 12px;
+    padding-bottom: 16px;
   }
   &__search {
     font-family: Roboto;
@@ -88,34 +87,35 @@
     line-height: 21px;
     color: #161C29;
   }
-
-  .iconUp{
-    width: 100%;
-    font-size: 20px;
-    padding-top: 16px;
-    cursor: pointer;
-    color: #707177;
-    opacity: 0.53;
-  }
 }
 
 .chartDetail {
-  padding: 24px;
-  width: 413px;
-  background-color: #ffffff;
-  border: 1px solid #e8eef2;
-  border-radius: 8px;
-  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.14);
+  padding: 18px;
+  width: 346px;
+
+  background: #FFFFFF;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+
+  :global{
+    .ant-divider{
+      border-top: 0.2px solid #B6B6B6;
+      opacity: 0.3;
+    }
+
+    .ant-divider-horizontal{
+      margin: 18px 0;
+    }
+  }
+
   &__Top {
     display: flex;
     flex-flow: row nowrap;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
-    & > &_Avt {
-      width: 30%;
-    }
+
     & > &_name {
-      width: 70;
+      padding-left: 16px;
     }
     &_firstName {
       margin-bottom: 0;
@@ -125,17 +125,19 @@
       font-size: 18px;
       line-height: 21px;
       color: #161C29;
+
+      padding-bottom: 6px;
     }
 
     &_psi, &_department {
       font-family: Roboto;
       font-style: normal;
       font-weight: normal;
-      font-size: 14px;
+      font-size: 13px;
       line-height: 15px;
       color: #707177;
 
-      opacity: 0.53;
+      padding-bottom: 6px;
     }
   }
 
@@ -143,23 +145,23 @@
     &_label {
       font-family: Roboto;
       font-style: normal;
-      font-weight: normal;
-      font-size: 14px;
+      font-weight: 500;
+      font-size: 13px;
       line-height: 15px;
+
       color: #707177;
     }
     &_value {
-      font-family: Roboto;
       font-style: normal;
       font-weight: normal;
       font-size: 14px;
-      line-height: 15px;
+      line-height: 16px;
+
       color: #161C29;
+
+      opacity: 0.91;
     }
-    &_line {
-      margin: 10px 0;
-      border-top: 1px solid #e8eef2;
-    }
+
     &_flexBottom {
       display: flex;
       flex-flow: row nowrap;
@@ -167,19 +169,20 @@
       justify-content: space-between;
     }
     &_ViewProfile {
-      color: #2c6df9;
+      font-family: Roboto;
+      font-style: normal;
       font-weight: 500;
-      font-size: 12px;
+      font-size: 14px;
+      line-height: 16px;
+      text-align: center;
       cursor: pointer;
+      color: #2C6DF9;
     }
-    &_Icon {
-      margin-left: 5px;
-      padding: 5px;
-      color: #707177;
-      font-size: 16px;
-      background-color: #80808017;
-      border-radius: 50%;
-      box-shadow: 0px 2px 12px rgba(0, 0, 0, 0);
+    &_actions{
+      width: 106px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
   }
 }

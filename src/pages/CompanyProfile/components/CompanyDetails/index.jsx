@@ -651,7 +651,7 @@ class CompanyDetails extends Component {
                     s.content__viewBottom__row__textLabelVertical,
                   )}
                 >
-                  Country
+                  Country*
                 </p>
                 <Form.Item
                   name="countryHeadquarterProps"
@@ -685,7 +685,7 @@ class CompanyDetails extends Component {
                     s.content__viewBottom__row__textLabelVertical,
                   )}
                 >
-                  State
+                  State*
                 </p>
                 <Form.Item
                   name="stateHeadquarter"
@@ -719,7 +719,7 @@ class CompanyDetails extends Component {
                     s.content__viewBottom__row__textLabelVertical,
                   )}
                 >
-                  Zip
+                  Zip/Postal Code*
                 </p>
                 <Form.Item
                   name="zipHeadquarter"
@@ -727,11 +727,11 @@ class CompanyDetails extends Component {
                   rules={[
                     {
                       required: true,
-                      message: 'Please enter Zip Code!',
+                      message: 'Please enter Zip/Postal Code!',
                     },
                   ]}
                 >
-                  <Input autoComplete="off" placeholder="Zip Code" />
+                  <Input autoComplete="off" placeholder="Zip/Postal Code" />
                 </Form.Item>
               </Col>
             </Row>
@@ -812,7 +812,7 @@ class CompanyDetails extends Component {
                     s.content__viewBottom__row__textLabelVertical,
                   )}
                 >
-                  Country
+                  Country*
                 </p>
                 <Form.Item
                   name="countryLegalProps"
@@ -846,7 +846,7 @@ class CompanyDetails extends Component {
                     s.content__viewBottom__row__textLabelVertical,
                   )}
                 >
-                  State
+                  State*
                 </p>
                 <Form.Item
                   name="stateLegal"
@@ -880,7 +880,7 @@ class CompanyDetails extends Component {
                     s.content__viewBottom__row__textLabelVertical,
                   )}
                 >
-                  Zip
+                  Zip/Postal Code*
                 </p>
                 <Form.Item
                   name="zipLegal"
@@ -888,11 +888,11 @@ class CompanyDetails extends Component {
                   rules={[
                     {
                       required: true,
-                      message: 'Please enter Zip Code!',
+                      message: 'Please enter Zip/Postal Code!',
                     },
                   ]}
                 >
-                  <Input autoComplete="off" placeholder="Zip Code" />
+                  <Input autoComplete="off" placeholder="Zip/Postal Code" />
                 </Form.Item>
               </Col>
             </Row>

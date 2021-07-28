@@ -3,7 +3,7 @@ import { Avatar, Col, Divider, Popover, Row, Table, Tooltip } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { Link, history } from 'umi';
-import { getCurrentTimeOfTimezoneOffboarding } from '@/utils/times';
+import { getCurrentTimeOfTimezoneOption } from '@/utils/times';
 
 import styles from './index.less';
 
@@ -42,19 +42,25 @@ class TableComponent extends PureComponent {
       employee: {
         title: { name: titleName = 'UX Lead' } = {},
         employeeType: { name: typeName = 'Full Time' } = {},
+        employeeId = '',
         generalInfo: {
-          employeeId = '',
           avatar = '',
           firstName = '',
           lastName = '',
           middleName = '',
           linkedIn = '',
           userId = '',
+          workEmail = '',
+          workNumber = '',
+        } = {},
+        location: {
+          _id = '',
+          headQuarterAddress: { country: countryName = '', state = '' } = {} || {},
         } = {},
       } = {},
       department: { name: departmentName = '' } = {},
-      location: { _id = '' } = {},
     } = dataRow;
+    const locationName = `${state}, ${countryName}`;
     const fullName = `${firstName} ${middleName} ${lastName}`;
 
     const findTimezone = timezoneList?.find((timezone) => timezone.locationId === _id) || {};
@@ -62,7 +68,7 @@ class TableComponent extends PureComponent {
       <div className={styles.popupContent}>
         <div className={styles.generalInfo}>
           <div className={styles.avatar}>
-            <Avatar src={avatar} size={40} icon={<UserOutlined />} />
+            <Avatar src={avatar} size={55} icon={<UserOutlined />} />
           </div>
           <div className={styles.employeeInfo}>
             <div className={styles.employeeInfo__name}>{fullName}</div>
@@ -76,38 +82,32 @@ class TableComponent extends PureComponent {
         </div>
         <Divider />
         <div className={styles.contact}>
-          <Row gutter={[24, 0]}>
-            <Col span={8}>
+          <Row gutter={[24, 24]}>
+            <Col span={7}>
               <div className={styles.contact__title}>Mobile: </div>
             </Col>
-            <Col span={16}>
-              <div className={styles.contact__value}>abccc</div>
+            <Col span={17}>
+              <div className={styles.contact__value}>{workNumber}</div>
             </Col>
-          </Row>
-          <Row gutter={[24, 0]}>
-            <Col span={8}>
+            <Col span={7}>
               <div className={styles.contact__title}>Email id: </div>
             </Col>
-            <Col span={16}>
-              <div className={styles.contact__value}>abc@gmail.com</div>
+            <Col span={17}>
+              <div className={styles.contact__value}>{workEmail}</div>
             </Col>
-          </Row>
-          <Row gutter={[24, 0]}>
-            <Col span={8}>
+            <Col span={7}>
               <div className={styles.contact__title}>Location: </div>
             </Col>
-            <Col span={16}>
-              <div className={styles.contact__value}>abccc</div>
+            <Col span={17}>
+              <div className={styles.contact__value}>{locationName || ''}</div>
             </Col>
-          </Row>
-          <Row gutter={[24, 0]}>
-            <Col span={8}>
+            <Col span={7}>
               <div className={styles.contact__title}>Local Time: </div>
             </Col>
-            <Col span={16}>
+            <Col span={17}>
               <div className={styles.contact__value}>
                 {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
-                  ? getCurrentTimeOfTimezoneOffboarding(currentTime, findTimezone.timezone)
+                  ? getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone)
                   : 'Not enough data in address'}
               </div>
             </Col>
@@ -122,11 +122,18 @@ class TableComponent extends PureComponent {
             View full profile
           </div>
           <div className={styles.popupActions__actions}>
+            <Tooltip title="Message">
+              <img
+                src="/assets/images/messageIcon.svg"
+                alt="img-arrow"
+                style={{ cursor: 'pointer' }}
+              />
+            </Tooltip>
             <Tooltip title="Email">
               <img
                 src="/assets/images/iconMail.svg"
                 alt="img-arrow"
-                style={{ marginLeft: '5px', cursor: 'pointer' }}
+                style={{ cursor: 'pointer' }}
               />
             </Tooltip>
             <Tooltip title="LinkedIn">
