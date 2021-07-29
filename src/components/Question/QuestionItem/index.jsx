@@ -3,7 +3,7 @@ import AddIcon from '@/assets/add-symbols.svg';
 import CircleIcon from '@/assets/circle.svg';
 import RemoveIcon from '@/assets/remove.svg';
 import SquareIcon from '@/assets/square.svg';
-import { Button, Checkbox, Col, Input, InputNumber, notification, Row, Select } from 'antd';
+import { Button, Checkbox, Col, Input, InputNumber, notification, Row, Select, Space } from 'antd';
 import { Option } from 'antd/lib/mentions';
 import { map } from 'lodash';
 import React, { useEffect, useState } from 'react';
@@ -52,6 +52,10 @@ export default function QuestionItem({
         setIcon(CircleIcon);
         onChangeQuestionItem({ defaultAnswers: newDefaultAnswers, multiChoice: {}, rating: {} });
         break;
+      case TYPE_QUESTION.SELECT_OPTION.key:
+        setIcon(null);
+        onChangeQuestionItem({ defaultAnswers: newDefaultAnswers, multiChoice: {}, rating: {} });
+        break;
       case TYPE_QUESTION.RATING_CHOICE.key:
         setIcon(null);
         // console.log('set rating', rating);
@@ -62,6 +66,17 @@ export default function QuestionItem({
             rating: {
               columns: [1, 5],
               rows: ['Bad', 'Good'],
+            },
+          });
+        break;
+      case TYPE_QUESTION.MULTI_RATING_CHOICE.key:
+        if (!rating.columns && !rating.rows)
+          onChangeQuestionItem({
+            defaultAnswers: [],
+            multiChoice: {},
+            rating: {
+              columns: ['Column 1'],
+              rows: ['Row 1'],
             },
           });
         break;
@@ -90,7 +105,58 @@ export default function QuestionItem({
       ],
     });
   };
-
+  const onChangeMultiRating = (e, indexOfAnswer, position) => {
+    switch (position) {
+      case 'row':
+        onChangeQuestionItem({
+          rating: {
+            columns: [...rating.columns],
+            rows: [
+              ...rating.rows.slice(0, indexOfAnswer),
+              e.target.value,
+              ...rating.rows.slice(indexOfAnswer + 1),
+            ],
+          },
+        });
+        break;
+      case 'col':
+        onChangeQuestionItem({
+          rating: {
+            columns: [
+              ...rating.columns.slice(0, indexOfAnswer),
+              e.target.value,
+              ...rating.columns.slice(indexOfAnswer + 1),
+            ],
+            rows: [...rating.rows],
+          },
+        });
+        break;
+      default:
+        break;
+    }
+  };
+  const addRating = (position) => {
+    switch (position) {
+      case 'row':
+        onChangeQuestionItem({
+          rating: {
+            columns: [...rating.columns],
+            rows: [...rating.rows, `Row ${rating.rows.length + 1}`],
+          },
+        });
+        break;
+      case 'col':
+        onChangeQuestionItem({
+          rating: {
+            rows: [...rating.rows],
+            columns: [...rating.columns, `Columns ${rating.columns.length + 1}`],
+          },
+        });
+        break;
+      default:
+        break;
+    }
+  };
   const onRemoveAnswer = (e, indexOfAnswer) => {
     if (defaultAnswers.length === 1) {
       return notification.error({
@@ -128,14 +194,19 @@ export default function QuestionItem({
       case TYPE_QUESTION.MULTIPLE_CHOICE.key:
         return defaultAnswers.map((answer, key) => (
           <Col className={styles.questionItem__answer}>
-            <img style={{ width: '18px', height: '18px' }} src={Icon} alt="icon" />
-            <Input
-              onChange={(e) => onChangeAnswer(e, key)}
-              style={{ marginLeft: '12px' }}
-              placeholder="Enter the answer"
-              value={answer}
-            />
-
+            <div>
+              <img
+                style={{ width: '18px', height: '18px', marginRight: '10px' }}
+                src={Icon}
+                alt="icon"
+              />
+              <Input
+                onChange={(e) => onChangeAnswer(e, key)}
+                style={{ marginLeft: '12px' }}
+                placeholder="Enter the answer"
+                value={answer}
+              />
+            </div>
             <img
               onClick={(e) => onRemoveAnswer(e, key)}
               className={styles.questionItem__answer__remove}
@@ -144,6 +215,82 @@ export default function QuestionItem({
             />
           </Col>
         ));
+      case TYPE_QUESTION.SELECT_OPTION.key:
+        return defaultAnswers.map((answer, key) => (
+          <Col className={styles.questionItem__answer}>
+            <Input
+              onChange={(e) => onChangeAnswer(e, key)}
+              style={{ marginLeft: '12px' }}
+              placeholder="Enter the answer"
+              value={answer}
+            />
+            <img
+              onClick={(e) => onRemoveAnswer(e, key)}
+              className={styles.questionItem__answer__remove}
+              alt="delete icon"
+              src={RemoveIcon}
+            />
+          </Col>
+        ));
+      case TYPE_QUESTION.MULTI_RATING_CHOICE.key:
+        return (
+          <Row style={{ marginTop: '5px' }}>
+            <Col span={12}>
+              <Space>
+                <strong>Rows</strong>
+              </Space>
+              {map(rating.rows, (row, index) => (
+                <Row
+                  key={index}
+                  // style={{ marginTop: '5px' }}
+                  className={styles.questionItem__answer2}
+                >
+                  {' '}
+                  {`0${index + 1}`.substr(-2)}.{' '}
+                  <Input
+                    onChange={(e) => onChangeMultiRating(e, index, 'row')}
+                    style={{ marginLeft: '12px', justifyContent: 'left' }}
+                    placeholder="Enter the answer"
+                    value={row}
+                  />
+                </Row>
+              ))}
+              <Row style={{ marginTop: '5px' }}>
+                {`0${rating.rows?.length + 1}`.substr(-2)}.{' '}
+                <div type="Button" className={styles.addRating} onClick={() => addRating('row')}>
+                  Add row
+                </div>
+              </Row>
+            </Col>
+            <Col span={12}>
+              <Space>
+                <strong>Columns</strong>
+              </Space>
+              {map(rating.columns, (col, index) => (
+                <Row
+                  key={index + 1}
+                  // style={{ marginTop: '5px' }}
+                  className={styles.questionItem__answer2}
+                >
+                  {' '}
+                  {`0${index + 1}`.substr(-2)}.{' '}
+                  <Input
+                    onChange={(e) => onChangeMultiRating(e, index, 'col')}
+                    style={{ marginLeft: '12px' }}
+                    placeholder="Enter the answer"
+                    value={col}
+                  />
+                </Row>
+              ))}
+              <Row style={{ marginTop: '5px' }}>
+                {`0${rating.columns?.length + 1}`.substr(-2)}.{' '}
+                <div type="Button" className={styles.addRating} onClick={() => addRating('col')}>
+                  Add row
+                </div>
+              </Row>
+            </Col>
+          </Row>
+        );
       default:
         return <></>;
     }
@@ -230,6 +377,7 @@ export default function QuestionItem({
     switch (answerType) {
       case TYPE_QUESTION.MULTIPLE_CHOICE.key:
       case TYPE_QUESTION.SINGLE_CHOICE.key:
+      case TYPE_QUESTION.SELECT_OPTION.key:
         return (
           <Col className={styles.questionItem__addOption} span={24}>
             <div className={styles.questionItem__addOption__label}>Options:</div>
@@ -326,7 +474,10 @@ export default function QuestionItem({
             </Col>
             <Col
               style={
-                answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key
+                answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key ||
+                answerType === TYPE_QUESTION.SELECT_OPTION.key ||
+                answerType === TYPE_QUESTION.SINGLE_CHOICE.key ||
+                answerType === TYPE_QUESTION.MULTI_RATING_CHOICE.key
                   ? { borderTop: '1px solid #d6dce0' }
                   : {}
               }
