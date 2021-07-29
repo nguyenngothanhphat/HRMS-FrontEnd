@@ -656,7 +656,7 @@ class DirectoryTable extends Component {
       },
     };
     const scroll = {
-      x: '120vw',
+      x: '140vw',
       y: 'max-content',
     };
 
