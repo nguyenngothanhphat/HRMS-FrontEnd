@@ -4,6 +4,7 @@ import { UserOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 
+import line from '@/assets/lineParent.svg';
 import lines from '@/assets/lines.svg';
 import bigLines from '@/assets/bigLines.svg';
 import EmployeeNode from './components/EmployeeNode';
@@ -100,13 +101,24 @@ class OrganizationChart extends Component {
 
   renderParentNode = () => {
     const { dataOrgChart } = this.props;
+    const { itemSelected = '' } = this.state;
     const { manager = {}, manager: { _id: idManager = '' } = {} } = dataOrgChart;
+    const isActive = itemSelected === idManager;
+    const className = isActive ? styles.selectNode : styles.node;
     return (
       <>
         {isEmpty(manager) ? null : (
-          <div id={idManager || ''} className={`${styles.parentNode} ${styles.node}`}>
-            parent
-          </div>
+          <>
+            <div
+              id={idManager || ''}
+              className={`${styles.parentNode} ${styles.node} ${className}`}
+            >
+              {this.renderCardInfo(manager)}
+            </div>
+            <div style={{ margin: '0 auto', width: 'fit-content' }}>
+              <img alt="line" src={line} />
+            </div>
+          </>
         )}
       </>
     );
@@ -190,8 +202,10 @@ class OrganizationChart extends Component {
       <div className={styles.orgChartRoot}>
         <div className={styles.charts}>
           {this.renderParentNode() /* Manager */}
-          {this.renderUserNode() /* Current User */}
-          {this.renderChildrenList() /* List Employees */}
+          <div>
+            {this.renderUserNode() /* Current User */}
+            {this.renderChildrenList() /* List Employees */}
+          </div>
         </div>
       </div>
     );
