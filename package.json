@@ -76,6 +76,7 @@
     "quill-mention": "^3.0.0",
     "react": "^16.8.6",
     "react-beautiful-dnd": "^13.0.0",
+    "react-collapse": "^5.1.0",
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.8.6",
     "react-dropzone": "^11.2.1",

@@ -64,7 +64,7 @@ class CreateNewTemplateForm extends PureComponent {
       payload: {
         html: content,
         settings,
-        type,
+        type: type || 'ON_BOARDING',
         title,
         tenantId,
       },

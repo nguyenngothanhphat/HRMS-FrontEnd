@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Affix, Skeleton } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import LayoutEmployeeProfile from '@/components/LayoutEmployeeProfile';
 import BenefitTab from '@/pages/EmployeeProfile/components/BenefitTab';
 import EmploymentTab from '@/pages/EmployeeProfile/components/EmploymentTab';
 // import PerformanceHistory from '@/pages/EmployeeProfile/components/PerformanceHistory';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant, isOwner } from '@/utils/authority';
 import GeneralInfo from './components/GeneralInfo';
 import AccountsPaychecks from './components/Accounts&Paychecks';
 // import Test from './components/test';
@@ -35,7 +35,7 @@ class EmployeeProfile extends Component {
   }
 
   componentDidMount = async () => {
-    const { dispatch, match: { params: { reId = '' } = {} } = {} } = this.props;
+    const { dispatch, match: { params: { reId = '', tabName = '' } = {} } = {} } = this.props;
     // const tenantCurrentEmployee = localStorage.getItem('tenantCurrentEmployee');
     // const companyCurrentEmployee = localStorage.getItem('companyCurrentEmployee');
     // const idCurrentEmployee = localStorage.getItem('idCurrentEmployee');
@@ -56,12 +56,12 @@ class EmployeeProfile extends Component {
     //   },
     // });
 
-    // if (!tabName) {
-    //   const link = isOwner() ? 'employees' : 'directory';
-    //   history.replace(`/${link}/employee-profile/${reId}/general-info`);
-    // } else {
-    this.fetchData();
-    // }
+    if (!tabName) {
+      const link = isOwner() ? 'employees' : 'directory';
+      history.replace(`/${link}/employee-profile/${reId}/general-info`);
+    } else {
+      this.fetchData();
+    }
   };
 
   componentDidUpdate(prevProps) {
