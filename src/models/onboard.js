@@ -7,6 +7,7 @@ import {
   reassignTicket,
   getListEmployee,
   getFilterList,
+  handleExpiryTicket,
 } from '@/services/onboard';
 import _ from 'lodash';
 import { history } from 'umi';
@@ -134,7 +135,6 @@ const formatData = (list = []) => {
       // requestDate = '',
       receiveDate = '',
       sentDate = '',
-      offerExpirationDate = '',
       updatedAt = '',
       createdAt = '',
       comments = '',
@@ -142,12 +142,13 @@ const formatData = (list = []) => {
       assigneeManager = {},
       processStatus = '',
       verifiedDocument = 0,
+      expiryDate = '',
     } = item;
     const dateSent = formatDate(sentDate) || '';
     const dateReceived = formatDate(receiveDate) || '';
     const dateJoin = formatDate(dateOfJoining) || '';
     const dateRequest = formatDate(createdAt) || '';
-    const expire = formatDate(offerExpirationDate) || '';
+    const offerExpiryDate = formatDate(expiryDate) || '';
 
     let isNew = false;
     const fullName = `${firstName ? `${firstName} ` : ''}${middleName ? `${middleName} ` : ''}${
@@ -170,7 +171,7 @@ const formatData = (list = []) => {
       dateReceived: dateReceived || '',
       dateJoin: dateJoin || '',
       dateRequest: dateRequest || '',
-      expire: expire || '',
+      offerExpiryDate: offerExpiryDate || '',
       documentVerified: verifiedDocument,
       resubmit: 0,
       changeRequest: '-',
@@ -594,6 +595,57 @@ const onboard = {
       return response;
     },
 
+    *handleExpiryTicket({ payload }, { call, put, select }) {
+      let response;
+      try {
+        const {
+          id = '',
+          tenantId = '',
+          expiryDate = '',
+          processStatus = '',
+          isAll = false,
+          page = '',
+          limit = '',
+          type = '',
+        } = payload;
+        const req = {
+          rookieID: id,
+          tenantId,
+          expiryDate,
+          type,
+        };
+        response = yield call(handleExpiryTicket, req);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        if (!isAll) {
+          yield put({
+            type: 'fetchOnboardList',
+            payload: {
+              tenantId,
+              processStatus,
+            },
+          });
+        } else {
+          const { currentStatusAll } = yield select((state) => state.onboard.onboardingOverview);
+
+          yield put({
+            type: 'fetchOnboardListAll',
+            payload: {
+              tenantId,
+              processStatus: currentStatusAll,
+              page,
+              limit,
+            },
+          });
+        }
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
     *inititateBackgroundCheckEffect({ payload }, { call, put }) {
       try {
         const { ACCEPTED_PROVISIONAL_OFFERS, PENDING } = PROCESS_STATUS;
