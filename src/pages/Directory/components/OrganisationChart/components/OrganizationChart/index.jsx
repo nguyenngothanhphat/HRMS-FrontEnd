@@ -11,7 +11,7 @@ import bigLines from '@/assets/bigLines.svg';
 import EmployeeNode from './components/EmployeeNode';
 
 import styles from './index.less';
-import CollapseNode from '../CollapseNode';
+// import CollapseNode from '../CollapseNode';
 
 @connect(
   ({
@@ -37,9 +37,9 @@ class OrganizationChart extends Component {
     this.userRef = React.createRef();
   }
 
-  // componentDidMount = () => {
-  //   document.addEventListener('mousedown', this.handleClickOutSide);
-  // };
+  componentDidMount = () => {
+    document.addEventListener('mousedown', this.handleClickOutSide);
+  };
 
   componentDidUpdate = (prevProps) => {
     const { idSelect = '' } = this.props;
@@ -48,17 +48,15 @@ class OrganizationChart extends Component {
     }
   };
 
-  // componentWillUnmount = () => {
-  //   document.removeEventListener('mousedown', this.handleClickOutSide);
-  // };
+  componentWillUnmount = () => {
+    document.removeEventListener('mousedown', this.handleClickOutSide);
+  };
 
   autoFocusNodeById = (id) => {
     this.setState({ itemSelected: id });
   };
 
   handleClickOutSide = (event) => {
-    console.log(event);
-    console.log(this.userRef.current);
     const { target } = event;
     if (!this.userRef.current.contains(target)) {
       this.setState({ itemSelected: '' });
@@ -162,21 +160,23 @@ class OrganizationChart extends Component {
         ref={this.userRef}
       >
         {this.renderCardInfo(user)}
-        <div className={styles.node__bottom}>
-          <div
-            onClick={() => this.handleCollapse('user')}
-            className={
-              isCollapsedChild
-                ? styles.node__bottom_reporteesExpand
-                : styles.node__bottom_reporteesCollapse
-            }
-          >
-            {isCollapsedChild
-              ? `- ${listEmployees.length} reportees`
-              : `+ ${listEmployees.length} reportees`}
+        {listEmployees.length === 0 ? null : (
+          <div className={styles.node__bottom}>
+            <div
+              onClick={() => this.handleCollapse('user')}
+              className={
+                isCollapsedChild
+                  ? styles.node__bottom_reporteesExpand
+                  : styles.node__bottom_reporteesCollapse
+              }
+            >
+              {isCollapsedChild
+                ? `- ${listEmployees.length} reportees`
+                : `+ ${listEmployees.length} reportees`}
+            </div>
+            {idUser === idCurrentUser ? <div className={styles.node__bottom_you}>You</div> : null}
           </div>
-          {idUser === idCurrentUser ? <div className={styles.node__bottom_you}>You</div> : null}
-        </div>
+        )}
       </div>
     );
   };
