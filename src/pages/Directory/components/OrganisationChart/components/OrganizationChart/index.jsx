@@ -212,7 +212,7 @@ class OrganizationChart extends Component {
   render() {
     const { dataOrgChart } = this.props;
     const { isCollapsed } = this.state;
-    const { employees: listEmployees = [] } = dataOrgChart;
+    const { employees: listEmployees = [], manager = {} } = dataOrgChart;
 
     if (listEmployees.length === 0) return null;
     return (
@@ -220,9 +220,11 @@ class OrganizationChart extends Component {
         <div className={styles.charts}>
           {this.renderParentNode() /* Manager */}
           <Collapse isOpened={isCollapsed} hasNestedCollapse>
-            <div style={{ margin: '0 auto', width: 'fit-content' }}>
-              <img alt="line" src={line} />
-            </div>
+            {isEmpty(manager) ? null : (
+              <div style={{ margin: '0 auto', width: 'fit-content' }}>
+                <img alt="line" src={line} />
+              </div>
+            )}
             {this.renderUserNode() /* Current User */}
             {this.renderChildrenList() /* List Employees */}
           </Collapse>
