@@ -250,7 +250,6 @@ class OrganisationChart extends Component {
       const findTimezone =
         timezoneList.find((timezone) => timezone.locationId === location._id) || {};
       const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
-      this.setState({ idSelect: value });
       return {
         _id,
         generalInfo,
@@ -262,6 +261,7 @@ class OrganisationChart extends Component {
     });
 
     const convertFinal = { ...convertData[0] };
+    this.setState({ idSelect: value });
     this.setState({ chartDetails: convertFinal });
   };
 

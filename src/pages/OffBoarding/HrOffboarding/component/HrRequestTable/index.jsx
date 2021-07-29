@@ -42,19 +42,28 @@ class HRrequestTable extends Component {
     super(props);
     this.state = {
       dataListTeamRequest: [],
+      dataListMyRequest: [],
       loadingSearch: false,
       timezoneList: [],
+      tabId: '1',
     };
-    this.setDebounce = debounce((query) => {
-      this.setState({
-        dataListTeamRequest: query,
-        loadingSearch: false,
-      });
+    this.setDebounce = debounce((query, key) => {
+      if (key === 1) {
+        this.setState({
+          dataListTeamRequest: query,
+          loadingSearch: false,
+        });
+      } else {
+        this.setState({
+          dataListMyRequest: query,
+          loadingSearch: false,
+        });
+      }
     }, 1000);
   }
 
   componentDidMount() {
-    const { dispatch, locationID, listTeamRequest = [] } = this.props;
+    const { dispatch, locationID, listTeamRequest = [], listOffboarding = [] } = this.props;
     if (!dispatch) {
       return;
     }
@@ -70,12 +79,16 @@ class HRrequestTable extends Component {
 
     this.fetchTimezone();
     if (listTeamRequest.length > 0) this.updateData(listTeamRequest, 1);
+    if (listOffboarding.length > 0) this.updateData(listOffboarding, 2);
   }
 
   componentDidUpdate(prevProps) {
-    const { listTeamRequest = [], listLocationsByCompany = [] } = this.props;
+    const { listTeamRequest = [], listLocationsByCompany = [], listOffboarding = [] } = this.props;
     if (JSON.stringify(listTeamRequest) !== JSON.stringify(prevProps.listTeamRequest)) {
       this.updateData(listTeamRequest, 1);
+    }
+    if (JSON.stringify(listOffboarding) !== JSON.stringify(prevProps.listOffboarding)) {
+      this.updateData(listOffboarding, 2);
     }
     if (
       JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
@@ -106,52 +119,71 @@ class HRrequestTable extends Component {
     });
   };
 
-  updateData = (list) => {
-    this.setState({
-      dataListTeamRequest: list,
-    });
+  updateData = (list, key) => {
+    if (key === 1) {
+      this.setState({
+        dataListTeamRequest: list,
+      });
+    } else {
+      this.setState({
+        dataListMyRequest: list,
+      });
+    }
   };
 
-  // onSearch = (value) => {
-  //   const { listTeamRequest = [] } = this.props;
-  //   const formatValue = value.toLowerCase();
+  filterDataSearch = (list, value, tabId) => {
+    const formatValue = value.toLowerCase();
+    const filterData = list.filter((item) => {
+      const {
+        ticketID = '',
+        employee: { employeeId = '', generalInfo: { firstName = '', lastName = '' } = {} } = {},
+      } = item;
+      const formatTicketId = ticketID.toLowerCase();
+      const fortmatEmployeeID = employeeId.toLowerCase();
+      const formatFirstName = firstName.toLowerCase();
+      const formatLastName = lastName.toLowerCase();
 
-  //   const filterData = listTeamRequest.filter((item) => {
-  //     const {
-  //       ticketID = '',
-  //       employee: { employeeId = '', generalInfo: { firstName = '', lastName = '' } = {} } = {},
-  //     } = item;
-  //     const formatTicketId = ticketID.toLowerCase();
-  //     const fortmatEmployeeID = employeeId.toLowerCase();
-  //     const formatFirstName = firstName.toLowerCase();
-  //     const formatLastName = lastName.toLowerCase();
+      if (
+        formatTicketId.includes(formatValue) ||
+        fortmatEmployeeID.includes(formatValue) ||
+        formatFirstName.includes(formatValue) ||
+        formatLastName.includes(formatValue)
+      )
+        return item;
+      return 0;
+    });
+    this.setState({ loadingSearch: true });
 
-  //     if (
-  //       formatTicketId.includes(formatValue) ||
-  //       fortmatEmployeeID.includes(formatValue) ||
-  //       formatFirstName.includes(formatValue) ||
-  //       formatLastName.includes(formatValue)
-  //     )
-  //       return item;
-  //     return 0;
-  //   });
-  //   // this.setState({ loadingSearch: true });
+    this.setDebounce(filterData, tabId);
+  };
 
-  //   // this.setDebounce(filterData);
-  // };
+  onSearch = (value) => {
+    const { listTeamRequest = [], listOffboarding = [] } = this.props;
+    const { tabId } = this.state;
+
+    if (tabId === '1') {
+      this.filterDataSearch(listTeamRequest, value, tabId);
+    } else {
+      this.filterDataSearch(listOffboarding, value, tabId);
+    }
+  };
+
+  onChangeTabId = (value) => {
+    this.setState({ tabId: value });
+  };
 
   render() {
     const { TabPane } = Tabs;
     const {
       totalListTeamRequest = [],
       // listTeamRequest = [],
-      listOffboarding = [],
-      // totalList = [],
+      // listOffboarding = [],
+      totalList = [],
       hrManager = {},
       locationID = '',
     } = this.props;
 
-    const { dataListTeamRequest, loadingSearch, timezoneList } = this.state;
+    const { dataListTeamRequest, dataListMyRequest, loadingSearch, timezoneList } = this.state;
 
     return (
       <Row className={styles.hrContent}>
@@ -189,10 +221,11 @@ class HRrequestTable extends Component {
             <TabPane tab="My Requests" key="2">
               <div className={styles.tableTab}>
                 <MyRequestContent
-                  data={listOffboarding}
-                  // countdata={totalList}
+                  data={dataListMyRequest}
+                  countdata={totalList}
                   hrManager={hrManager}
                   timezoneList={timezoneList}
+                  loadingSearch={loadingSearch}
                 />
               </div>
             </TabPane>

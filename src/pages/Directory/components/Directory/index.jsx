@@ -508,13 +508,6 @@ class DirectoryComponent extends PureComponent {
   exportEmployees = async () => {
     const { dispatch, currentPayload = {} } = this.props;
 
-    const success = () => {
-      const hide = message.loading('Exporting data...', 0);
-      // Dismiss manually and asynchronously
-      setTimeout(hide, 2500);
-    };
-
-    success();
     const getListExport = await dispatch({
       type: 'employee/exportEmployees',
       payload: currentPayload,
@@ -662,12 +655,16 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderButtonFilter = (tabId, collapsed) => {
+    const { loadingListActive, loadingListMyTeam, loadingListInActive, loadingFetchFilterList } =
+      this.props;
+    const loading =
+      loadingListActive || loadingListMyTeam || loadingListInActive || loadingFetchFilterList;
     return (
-      <div className={styles.filterSider} onClick={this.handleToggle}>
+      <div className={styles.filterSider} onClick={loading ? null : this.handleToggle}>
         <div
           className={`${styles.filterButton} ${
             collapsed ? '' : `${styles.filterBackgroundButton}`
-          }`}
+          } ${loading ? styles.loadingFilterBtn : ''} `}
         >
           <img src="/assets/images/iconFilter.svg" alt="filter" />
           <p className={styles.textButtonFilter}>Filter</p>
@@ -771,6 +768,7 @@ class DirectoryComponent extends PureComponent {
       currentUser: { company, roles = [] },
       companiesOfUser = [],
       loadingCompaniesOfUser = false,
+      loadingExportCSV = false,
     } = this.props;
     const { collapsed, visible, visibleImportEmployee } = this.state;
 
