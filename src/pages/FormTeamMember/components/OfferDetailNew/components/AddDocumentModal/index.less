@@ -21,6 +21,10 @@
       height: 42px !important;
       border-radius: 5px;
     }
+    .ant-form-item-label
+      > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+      display: none;
+    }
     .ant-form-item-label label {
       height: 0;
       color: #707177;

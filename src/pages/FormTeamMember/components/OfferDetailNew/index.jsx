@@ -404,7 +404,11 @@ const OfferDetail = (props) => {
   };
 
   const handleAddDocument = (type = 'document') => {
-    setAddModalVisible(true);
+    if (type === 'document') setAddModalVisible(true);
+    else {
+      const win = window.open('/create-new-template', '_blank');
+      win.focus();
+    }
   };
 
   const handleModalVisible = (value) => {

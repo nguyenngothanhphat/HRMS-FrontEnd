@@ -28,6 +28,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Change the white to any color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active
+{
+ box-shadow: 0 0 0 30px white inset !important;
+ -webkit-box-shadow: 0 0 0 30px white inset !important;
+}
+
 ul,
 ol {
   list-style: none;

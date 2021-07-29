@@ -93,7 +93,7 @@ class AddDocumentModal extends PureComponent {
   };
 
   renderHeaderModal = () => {
-    const { titleModal = 'Add Template' } = this.props;
+    const { titleModal = 'Add Document' } = this.props;
     return (
       <div className={styles.header}>
         <p className={styles.header__text}>{titleModal}</p>
@@ -175,7 +175,7 @@ class AddDocumentModal extends PureComponent {
               form="myForm"
               key="submit"
               htmlType="submit"
-              // disabled={!selectedEmployee}
+              disabled={!selectExistDocument || !fileName}
               // loading={loadingReassign}
             >
               Add
