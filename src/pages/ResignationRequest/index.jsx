@@ -1,15 +1,14 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Affix, Button } from 'antd';
+import { Row, Col, Affix } from 'antd';
 import { connect } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import ResignationLeft from './component/ResignationLeft';
-import Sidebar from './component/Sidebar';
-import Workflow from './component/TerminationWorkflow';
+
 import styles from './index.less';
 
 class ResignationRequest extends PureComponent {
   render() {
-    const { sendrequest } = this.props;
+    // const { sendrequest } = this.props;
     return (
       <PageContainer>
         <div className={styles.root}>

@@ -150,6 +150,13 @@ const candidateProfile = {
   effects: {
     *fetchCandidateById({ payload }, { call, put }) {
       let response = {};
+      const checkMandatory = {
+        filledBasicInformation: true,
+        filledJobDetail: false,
+        filledSalaryStructure: false,
+        filledDocumentVerification: false,
+        isCandidateAcceptDOJ: true,
+      };
       try {
         response = yield call(getById, payload);
         const { data, statusCode } = response;
@@ -176,6 +183,7 @@ const candidateProfile = {
             candidate: data._id,
             ticketId: data.ticketID,
             salaryStructure: data.salaryStructure.settings,
+            checkMandatory: { ...checkMandatory },
           },
         });
       } catch (error) {

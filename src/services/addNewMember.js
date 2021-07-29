@@ -1,5 +1,22 @@
 import request from '@/utils/request';
 
+const jobGradeLevelList = [
+  { _id: 1, grade: 1 },
+  { _id: 2, grade: 2 },
+  { _id: 3, grade: 3 },
+  { _id: 4, grade: 4 },
+  { _id: 5, grade: 5 },
+  { _id: 6, grade: 6 },
+  { _id: 7, grade: 7 },
+  { _id: 8, grade: 8 },
+  { _id: 9, grade: 9 },
+  { _id: 10, grade: 10 },
+];
+
+export function getGradeList() {
+  return jobGradeLevelList;
+}
+
 export function SendEmail(payload) {
   return request('/api/', {
     method: 'POST',

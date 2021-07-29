@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Input } from 'antd';
 import { connect } from 'umi';
+import { SearchOutlined } from '@ant-design/icons';
 
 import { PROCESS_STATUS } from '@/utils/onboarding';
+import { debounce } from 'lodash';
 import SentFinalOffers from './components/SentFinalOffers/index';
 import AcceptedFinalOffers from './components/AcceptedFinalOffers/index';
 import RenegotitateFinalOffers from './components/RenegotiateFinalOffers/index';
@@ -19,7 +21,13 @@ class FinalOffers extends PureComponent {
       tabId: '1',
       pageSelected: 1,
       size: 10,
+      nameSearch: '',
     };
+    this.setDebounce = debounce((query) => {
+      this.setState({
+        nameSearch: query,
+      });
+    }, 500);
   }
 
   componentDidMount() {
@@ -32,11 +40,12 @@ class FinalOffers extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { tabId, pageSelected, size } = this.state;
+    const { tabId, pageSelected, size, nameSearch } = this.state;
     if (
       prevState.tabId !== tabId ||
       prevState.pageSelected !== pageSelected ||
-      prevState.size !== size
+      prevState.size !== size ||
+      prevState.nameSearch !== nameSearch
     ) {
       this.onChangeTab(tabId);
     }
@@ -44,19 +53,20 @@ class FinalOffers extends PureComponent {
 
   fetchFinalOfferAll = (status) => {
     const { dispatch } = this.props;
-    const { pageSelected, size } = this.state;
+    const { pageSelected, size, nameSearch } = this.state;
     dispatch({
       type: 'onboard/fetchOnboardListAll',
       payload: {
         processStatus: status,
         page: pageSelected,
         limit: size,
+        name: nameSearch,
       },
     });
   };
 
   fetchFinalOffer = (status) => {
-    const { pageSelected, size } = this.state;
+    const { pageSelected, size, nameSearch } = this.state;
     const { dispatch } = this.props;
     dispatch({
       type: 'onboard/fetchOnboardList',
@@ -64,6 +74,7 @@ class FinalOffers extends PureComponent {
         processStatus: status,
         page: pageSelected,
         limit: size,
+        name: nameSearch,
       },
     });
   };
@@ -91,6 +102,10 @@ class FinalOffers extends PureComponent {
     });
   };
 
+  onChange = (e) => {
+    this.setDebounce(e.target.value);
+  };
+
   render() {
     const { finalOffers = {}, dataAll, loadingAll, total } = this.props;
     const { tabId, pageSelected, size } = this.state;
@@ -103,7 +118,17 @@ class FinalOffers extends PureComponent {
     return (
       <div className={styles.FinalOffers}>
         <div className={styles.tabs}>
-          <Tabs defaultActiveKey={tabId} onChange={this.onChangeTab}>
+          <Tabs
+            defaultActiveKey={tabId}
+            onChange={this.onChangeTab}
+            tabBarExtraContent={
+              <Input
+                onChange={this.onChange}
+                placeholder="Search by candidate ID"
+                prefix={<SearchOutlined />}
+              />
+            }
+          >
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
               tab="all"

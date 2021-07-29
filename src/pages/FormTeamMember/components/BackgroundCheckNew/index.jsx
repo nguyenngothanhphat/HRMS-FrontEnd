@@ -31,7 +31,13 @@ const note = {
     </>
   ),
 };
-
+const camelize = (str) => {
+  return str
+    .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
+      return index === 0 ? word.toLowerCase() : word.toUpperCase();
+    })
+    .replace(/\s+/g, '');
+};
 @connect(
   ({
     candidateInfo,
@@ -209,7 +215,6 @@ class BackgroundCheck extends Component {
         toPresent: employerData[index].toPresent,
       };
     });
-
     // SAVE TO REDUX
     dispatch({
       type: 'candidateInfo/saveTemp',
@@ -718,7 +723,27 @@ class BackgroundCheck extends Component {
     checkedListC,
     docsListD,
   ) => {
-    const { identityProof, addressProof, educational, previousEmployment } = this.state;
+    const {
+      // identityProof, addressProof, educational,
+      previousEmployment,
+    } = this.state;
+
+    let identityProof = [];
+    let addressProof = [];
+    let educational = [];
+
+    const { tempData: { documentChecklistSetting = [] } = {} } = this.props;
+    documentChecklistSetting.forEach((doc) => {
+      if (doc.type === 'A') {
+        identityProof = [...doc.data];
+      }
+      if (doc.type === 'B') {
+        addressProof = [...doc.data];
+      }
+      if (doc.type === 'C') {
+        educational = [...doc.data];
+      }
+    });
 
     // value for documentChecklistSetting field
     const arrA = this.generateForSendEmail(identityProof, checkedListA);
@@ -1100,17 +1125,6 @@ class BackgroundCheck extends Component {
 
     // const newDocument = [...checkedListD, name];
 
-    function camelize(str) {
-      return (
-        str
-          // eslint-disable-next-line no-shadow
-          .replace(/(?:^\w|[A-Z]|\b\w)/g, function (word, index) {
-            return index === 0 ? word.toLowerCase() : word.toUpperCase();
-          })
-          .replace(/\s+/g, '')
-      );
-    }
-
     // const newDoc = {
     //   key: camelize(name),
     //   alias: name,
@@ -1221,6 +1235,179 @@ class BackgroundCheck extends Component {
     return list;
   };
 
+  // BLOCK A,B,C ADDING NEW FIELD
+  addNewField = async (name, type) => {
+    const {
+      candidateInfo: {
+        tempData: {
+          identityProof: { checkedList: checkedListA = [] } = {},
+          addressProof: { checkedList: checkedListB = [] } = {},
+          educational: { checkedList: checkedListC = [] } = {},
+          // technicalCertifications: { checkedList: checkedListD = [] } = {},
+          identityProof = {},
+          addressProof = {},
+          educational = {},
+          previousEmployment: { poe = [] } = {},
+          documentChecklistSetting = [],
+        },
+      } = {},
+      dispatch,
+    } = this.props;
+
+    let newDocument = [];
+    if (type === 'A') {
+      newDocument = [...checkedListA, name];
+    }
+    if (type === 'B') {
+      newDocument = [...checkedListB, name];
+    }
+    if (type === 'C') {
+      newDocument = [...checkedListC, name];
+    }
+
+    const newDoc = {
+      key: camelize(name),
+      alias: name,
+      value: false,
+      new: true,
+    };
+
+    const newDocumentList = [...documentChecklistSetting];
+    newDocumentList.forEach((doc) => {
+      if (doc.type === type) {
+        doc.data.push(newDoc);
+      }
+    });
+
+    const docsListD = documentChecklistSetting.filter((doc) => doc.type === 'D') || [];
+    let payload = {};
+
+    if (type === 'A') {
+      payload = {
+        documentChecklistSetting: newDocumentList,
+        identityProof: {
+          ...identityProof,
+          checkedList: newDocument,
+        },
+      };
+      await dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload,
+      });
+      this.handleUpdateByHR(poe, newDocument, checkedListB, checkedListC, docsListD);
+    }
+    if (type === 'B') {
+      payload = {
+        documentChecklistSetting: newDocumentList,
+        addressProof: {
+          ...addressProof,
+          checkedList: newDocument,
+        },
+      };
+      await dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload,
+      });
+      this.handleUpdateByHR(poe, checkedListA, newDocument, checkedListC, docsListD);
+    }
+    if (type === 'C') {
+      payload = {
+        documentChecklistSetting: newDocumentList,
+        educational: {
+          ...educational,
+          checkedList: newDocument,
+        },
+      };
+      await dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload,
+      });
+      this.handleUpdateByHR(poe, checkedListA, checkedListB, newDocument, docsListD);
+    }
+  };
+
+  removeNewField = async (key, type) => {
+    const {
+      candidateInfo: {
+        tempData: {
+          identityProof: { checkedList: checkedListA = [] } = {},
+          addressProof: { checkedList: checkedListB = [] } = {},
+          educational: { checkedList: checkedListC = [] } = {},
+          identityProof = {},
+          addressProof = {},
+          educational = {},
+          previousEmployment: { poe = [] } = {},
+          documentChecklistSetting = [],
+        },
+      } = {},
+      dispatch,
+    } = this.props;
+
+    let newDocument = [];
+    if (type === 'A') {
+      newDocument = checkedListA.filter((val) => val.key !== key);
+    }
+    if (type === 'B') {
+      newDocument = checkedListB.filter((val) => val.key !== key);
+    }
+    if (type === 'C') {
+      newDocument = checkedListC.filter((val) => val.key !== key);
+    }
+
+    const newDocumentList = [...documentChecklistSetting];
+    newDocumentList.forEach((doc) => {
+      if (doc.type === type) {
+        doc.data = doc.data.filter((v) => v.key !== key);
+      }
+    });
+
+    const docsListD = documentChecklistSetting.filter((doc) => doc.type === 'D') || [];
+    let payload = {};
+
+    if (type === 'A') {
+      payload = {
+        documentChecklistSetting: newDocumentList,
+        identityProof: {
+          ...identityProof,
+          checkedList: newDocument,
+        },
+      };
+      await dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload,
+      });
+      this.handleUpdateByHR(poe, newDocument, checkedListB, checkedListC, docsListD);
+    }
+    if (type === 'B') {
+      payload = {
+        documentChecklistSetting: newDocumentList,
+        addressProof: {
+          ...addressProof,
+          checkedList: newDocument,
+        },
+      };
+      await dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload,
+      });
+      this.handleUpdateByHR(poe, checkedListA, newDocument, checkedListC, docsListD);
+    }
+    if (type === 'C') {
+      payload = {
+        documentChecklistSetting: newDocumentList,
+        educational: {
+          ...educational,
+          checkedList: newDocument,
+        },
+      };
+      await dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload,
+      });
+      this.handleUpdateByHR(poe, checkedListA, checkedListB, newDocument, docsListD);
+    }
+  };
+
   // main
   render() {
     const {
@@ -1249,6 +1436,12 @@ class BackgroundCheck extends Component {
     const documentListByCountry = this.getDocumentListByCountry(documentList);
 
     const documentCLSTypeD = documentChecklistSetting.find((doc) => doc.type === 'D');
+
+    const documentCLSTByCountry = this.getDocumentListByCountry(documentChecklistSetting);
+    const documentCLSByCountryTypeABC = documentCLSTByCountry.filter((doc) =>
+      ['A', 'B', 'C'].includes(doc.type),
+    );
+
     const { openModalEmail, openModal, identityProof, addressProof, educational, refreshBlockE } =
       this.state;
 
@@ -1262,33 +1455,32 @@ class BackgroundCheck extends Component {
               {identityProof.length > 0 &&
                 addressProof.length > 0 &&
                 educational.length > 0 &&
-                documentListByCountry.length > 0 &&
-                documentListByCountry.map((item) => {
+                documentCLSByCountryTypeABC.map((item) => {
                   const { type = '', name = '', data = [] } = item;
                   const title = `Type ${type}: ${name}`;
-                  if (type !== 'D' && type !== 'E' && data.length !== 0) {
+
+                  if (['A', 'B', 'C'].includes(type)) {
                     return (
                       <CollapseFieldsType1
                         title={title}
+                        addNewField={this.addNewField}
                         item={item}
-                        checkBoxesData={data}
+                        loading={loadingUpdateByHR}
+                        type={type}
                         handleChange={this.handleChange}
+                        handleRemoveDocument={this.removeNewField}
                         handleCheckAll={this.handleCheckAll}
                         processStatus={processStatus}
                         loadingUpdateByHR={loadingUpdateByHR}
                         disabled={this.disableEdit()}
+                        checkBoxesData={data}
+                        documentChecklistSetting={documentChecklistSetting}
                       />
                     );
                   }
+
                   return '';
                 })}
-
-              {/* {documentChecklistSetting.map((item) => {
-                const { type = '', name = '' } = item;
-                const title = `Type ${type}: ${name}`;
-
-                if (type === 'D') {
-                  return ( */}
 
               <CollapseFieldsType3
                 certifications={documentCLSTypeD}
@@ -1299,12 +1491,6 @@ class BackgroundCheck extends Component {
                 // handleChange={this.handleChangeForD}
                 disabled={this.disableEdit()}
               />
-
-              {/* );
-               }
-
-                return '';
-             })} */}
 
               {poe.length !== 0 && // only render when poe has already got the data
                 documentListByCountry.length > 0 &&
