@@ -171,28 +171,40 @@ export async function removeFormOffBoardingById(data) {
 /** ================== optional on boarding question */
 
 export async function getListOptionalOnboardQuestions(payload) {
-  return request('/api/templatequestiononboardingtenant/list', {
+  return request('/api/questiononboardingtenant/list', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function updateOptionalOnboardQuestions(payload) {
-  return request('/api/templatequestiononboardingtenant/update', {
+  return request('/api/questiononboardingtenant/update', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function addOptionalOnboardQuestions(payload) {
-  return request('/api/templatequestiononboardingtenant/add', {
+  return request('/api/questiononboardingtenant/add', {
     method: 'POST',
     data: payload,
   });
 }
 
 export async function removeOptionalOnboardQuestions(payload) {
-  return request('/api/templatequestiononboardingtenant/remove', {
+  return request('/api/questiononboardingtenant/remove-question-candidate', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getQuestionOnboardingById(payload) {
+  return request('/api/questiononboardingtenant/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getListPageOnboarding(payload) {
+  return request('/api/listpageonboardingtenant/get-default', {
     method: 'POST',
     data: payload,
   });
