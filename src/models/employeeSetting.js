@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-console */
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import { history } from 'umi';
@@ -31,10 +31,8 @@ import {
   removeFormOffBoardingById,
 
   // optional on boarding question
-  getListOptionalOnboardQuestions,
-  removeOptionalOnboardQuestions,
-  updateOptionalOnboardQuestions,
   addOptionalOnboardQuestions,
+  getListPageOnboarding,
 } from '../services/employeeSetting';
 
 const employeeSetting = {
@@ -73,121 +71,56 @@ const employeeSetting = {
     },
     total: '',
     // optional on boarding question
-    optionalOnboardQuestionList: [],
+    optionalOnboardQuestion: {},
+    listPageOnboarding: [],
   },
   effects: {
-    // =================== optional on boarding question
-    *fetchListOptionalOnboardQuestions({ payload = {} }, { call, put }) {
+    // list page on boarding
+    *fetchListPageOnboard({ call, put }) {
       try {
-        const response = yield call(getListOptionalOnboardQuestions, payload);
-        const { statusCode, data: optionalOnboardQuestionList = [] } = response;
+        const response = yield call(getListPageOnboarding, {
+          tenantId: getCurrentTenant(),
+          location: getCurrentLocation(),
+        });
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'save',
           payload: {
-            optionalOnboardQuestionList: optionalOnboardQuestionList.map((item) => {
-              if (!('multiChoice' in item)) {
-                return { ...item, multiChoice: {} };
-              }
-              if (!('rating' in item)) {
-                return { ...item, rating: {} };
-              }
-              return item;
-            }),
+            listPageOnboarding: data.listPage,
           },
         });
-        return optionalOnboardQuestionList;
+        return data;
       } catch (errors) {
         // dialog(errors);
         return {};
       }
     },
-
-    *updateOptionalOnboardQuestions({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(updateOptionalOnboardQuestions, {
-          tenantId: getCurrentTenant(),
-          id: payload._id,
-          ...payload,
-        });
-
-        const { statusCode } = response;
-        let { data: optionalOnboardQuestion = {} } = response;
-        if (!('multiChoice' in optionalOnboardQuestion)) {
-          optionalOnboardQuestion = { ...optionalOnboardQuestion, multiChoice: {} };
-        }
-        if (!('rating' in optionalOnboardQuestion)) {
-          optionalOnboardQuestion = { ...optionalOnboardQuestion, rating: {} };
-        }
-        if (statusCode !== 200) throw response;
-        notification.success({
-          message: `Update the question successfully!`,
-          duration: 3,
-        });
-
-        yield put({
-          type: 'updateQuestion',
-          payload: optionalOnboardQuestion,
-        });
-        return response;
-      } catch (errors) {
-        // dialog(errors);
-        return {};
-      }
-    },
+    // =================== optional on boarding question
 
     *addOptionalOnboardQuestions({ payload = {} }, { call, put }) {
       try {
         const response = yield call(addOptionalOnboardQuestions, {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
+          location: getCurrentLocation(),
           ...payload,
         });
         const { statusCode } = response;
-        let { data: optionalOnboardQuestion = {} } = response;
-        if (!('multiChoice' in optionalOnboardQuestion)) {
-          optionalOnboardQuestion = { ...optionalOnboardQuestion, multiChoice: {} };
-        }
-        if (!('rating' in optionalOnboardQuestion)) {
-          optionalOnboardQuestion = { ...optionalOnboardQuestion, rating: {} };
-        }
-        if (statusCode !== 200) throw response;
-        notification.success({
-          message: `Add the question successfully!`,
-          duration: 3,
-        });
-        yield put({
-          type: 'saveQuestion',
-          payload: optionalOnboardQuestion,
-        });
-        return response;
-      } catch (errors) {
-        // dialog(errors);
-        return {};
-      }
-    },
 
-    *removeOptionalOnboardQuestions({ payload = {} }, { call, put }) {
-      try {
-        const response = yield call(removeOptionalOnboardQuestions, {
-          tenantId: getCurrentTenant(),
-          id: payload._id,
-          ...payload,
-        });
-        const { statusCode, data: optionalOnboardQuestion = {} } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message: `Remove the question successfully!`,
+          message: `Add new page successfully!`,
           duration: 3,
         });
         yield put({
-          type: 'removeQuestion',
-          payload: optionalOnboardQuestion,
+          type: 'save',
+          payload: { optionalOnboardQuestion: response },
         });
         return response;
       } catch (errors) {
-        // dialog(errors);
-        return {};
+        dialog(errors);
+        return errors;
       }
     },
 
@@ -726,49 +659,6 @@ const employeeSetting = {
     },
 
     // ========== optional on boarding question
-    saveQuestion(state, action) {
-      return {
-        ...state,
-        optionalOnboardQuestionList: [action.payload, ...state.optionalOnboardQuestionList],
-      };
-    },
-
-    removeQuestion(state, action) {
-      const { optionalOnboardQuestionList } = state;
-      const indexOfQuestion = optionalOnboardQuestionList.findIndex(
-        (item) => item._id === action.payload._id,
-      );
-
-      if (indexOfQuestion > -1) {
-        return {
-          ...state,
-          optionalOnboardQuestionList: [
-            ...optionalOnboardQuestionList.slice(0, indexOfQuestion),
-            ...optionalOnboardQuestionList.slice(indexOfQuestion + 1),
-          ],
-        };
-      }
-      return state;
-    },
-
-    updateQuestion(state, action) {
-      const { optionalOnboardQuestionList } = state;
-      const indexOfQuestion = optionalOnboardQuestionList.findIndex(
-        (item) => item._id === action.payload._id,
-      );
-
-      if (indexOfQuestion > -1) {
-        return {
-          ...state,
-          optionalOnboardQuestionList: [
-            ...optionalOnboardQuestionList.slice(0, indexOfQuestion),
-            action.payload,
-            ...optionalOnboardQuestionList.slice(indexOfQuestion + 1),
-          ],
-        };
-      }
-      return state;
-    },
     // remove form item by id
     saveRemoveFormOffBoardingById(state, action) {
       const { _id } = action.payload;
