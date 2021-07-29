@@ -3,6 +3,7 @@ import Avatar from 'antd/lib/avatar/avatar';
 import { UserOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import { isEmpty } from 'lodash';
+import { Collapse } from 'react-collapse';
 
 import line from '@/assets/lineParent.svg';
 import lines from '@/assets/lines.svg';
@@ -30,6 +31,7 @@ class OrganizationChart extends Component {
     super(props);
     this.state = {
       isCollapsed: true,
+      isCollapsedChild: true,
       itemSelected: '',
     };
     this.userRef = React.createRef();
@@ -61,9 +63,14 @@ class OrganizationChart extends Component {
     }
   };
 
-  handleCollapse = () => {
-    const { isCollapsed = false } = this.state;
-    this.setState({ isCollapsed: !isCollapsed });
+  handleCollapse = (name) => {
+    const { isCollapsed = false, isCollapsedChild = false } = this.state;
+
+    if (name === 'parent') {
+      this.setState({ isCollapsed: !isCollapsed });
+    } else {
+      this.setState({ isCollapsedChild: !isCollapsedChild });
+    }
   };
 
   clickCardInfo = (userData) => {
@@ -109,23 +116,23 @@ class OrganizationChart extends Component {
       <>
         {isEmpty(manager) ? null : (
           <>
-            <div id={idManager || ''} className={`${styles.userNode} ${styles.node} ${className}`}>
+            <div
+              id={idManager || ''}
+              className={`${styles.parentNode} ${styles.node} ${className}`}
+            >
               {this.renderCardInfo(manager)}
-              <div className={styles.userNode__bottom}>
+              <div className={styles.node__bottom}>
                 <div
-                  onClick={this.handleCollapse}
+                  onClick={() => this.handleCollapse('parent')}
                   className={
                     isCollapsed
-                      ? styles.userNode__bottom_reporteesExpand
-                      : styles.userNode__bottom_reporteesCollapse
+                      ? styles.node__bottom_reporteesExpand
+                      : styles.node__bottom_reporteesCollapse
                   }
                 >
                   {isCollapsed ? `- 1 reportees` : `+ 1 reportees`}
                 </div>
               </div>
-            </div>
-            <div style={{ margin: '0 auto', width: 'fit-content' }}>
-              <img alt="line" src={line} />
             </div>
           </>
         )}
@@ -135,7 +142,7 @@ class OrganizationChart extends Component {
 
   renderUserNode = () => {
     const { dataOrgChart, idCurrentUser = '' } = this.props;
-    const { isCollapsed = false, itemSelected = '' } = this.state;
+    const { isCollapsedChild = false, itemSelected = '' } = this.state;
 
     const {
       user: { _id: idUser = '' } = {},
@@ -153,20 +160,20 @@ class OrganizationChart extends Component {
         ref={this.userRef}
       >
         {this.renderCardInfo(user)}
-        <div className={styles.userNode__bottom}>
+        <div className={styles.node__bottom}>
           <div
-            onClick={this.handleCollapse}
+            onClick={() => this.handleCollapse('user')}
             className={
-              isCollapsed
-                ? styles.userNode__bottom_reporteesExpand
-                : styles.userNode__bottom_reporteesCollapse
+              isCollapsedChild
+                ? styles.node__bottom_reporteesExpand
+                : styles.node__bottom_reporteesCollapse
             }
           >
-            {isCollapsed
+            {isCollapsedChild
               ? `- ${listEmployees.length} reportees`
               : `+ ${listEmployees.length} reportees`}
           </div>
-          {idUser === idCurrentUser ? <div className={styles.userNode__bottom_you}>You</div> : null}
+          {idUser === idCurrentUser ? <div className={styles.node__bottom_you}>You</div> : null}
         </div>
       </div>
     );
@@ -174,11 +181,11 @@ class OrganizationChart extends Component {
 
   renderChildrenList = () => {
     const { dataOrgChart } = this.props;
-    const { isCollapsed = false, itemSelected = '' } = this.state;
+    const { isCollapsedChild = false, itemSelected = '' } = this.state;
     const { employees: listEmployees = [] } = dataOrgChart;
 
     return (
-      <CollapseNode isCollapsed={isCollapsed}>
+      <Collapse isOpened={isCollapsedChild}>
         <div className={styles.nodesTree}>
           <div className={styles.lineNode}>
             <div style={{ margin: '0 auto', width: 'fit-content' }}>
@@ -198,12 +205,13 @@ class OrganizationChart extends Component {
             })}
           </div>
         </div>
-      </CollapseNode>
+      </Collapse>
     );
   };
 
   render() {
     const { dataOrgChart } = this.props;
+    const { isCollapsed } = this.state;
     const { employees: listEmployees = [] } = dataOrgChart;
 
     if (listEmployees.length === 0) return null;
@@ -211,10 +219,13 @@ class OrganizationChart extends Component {
       <div className={styles.orgChartRoot}>
         <div className={styles.charts}>
           {this.renderParentNode() /* Manager */}
-          <div>
+          <Collapse isOpened={isCollapsed} hasNestedCollapse>
+            <div style={{ margin: '0 auto', width: 'fit-content' }}>
+              <img alt="line" src={line} />
+            </div>
             {this.renderUserNode() /* Current User */}
             {this.renderChildrenList() /* List Employees */}
-          </div>
+          </Collapse>
         </div>
       </div>
     );
