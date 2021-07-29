@@ -9,6 +9,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        padding-left: 300px;
 
         .node{
             &:hover{
@@ -64,16 +65,11 @@
 
             }
             
-        }
-
-        .userNode{
-            position: relative;
-            border: 1px solid #00C598;
-
             &__bottom{
                 position: absolute;
                 display: flex;
                 align-items: center;
+                transition: 0.3s all ease-in-out !important;
 
                 &_reporteesExpand, &_reporteesCollapse, &_you{
                     font-family: Roboto;
@@ -84,7 +80,7 @@
                     color: #FFFFFF;
                     padding: 4px 10px;
                     border-radius: 13px;
-                    transition: 0.3s all ease-in-out;
+                    transition: 0.3s all ease-in-out !important;
                 }
 
                 &_reporteesExpand{
@@ -102,6 +98,16 @@
                     background: #00C598;
                 }
             }
+        }
+
+        .userNode{
+            position: relative;
+            border: 1px solid #00C598;
+            margin: auto;
+        }
+
+        .parentNode {
+            position: relative;
         }
 
         .nodesTree{

@@ -655,12 +655,16 @@ class DirectoryComponent extends PureComponent {
   };
 
   renderButtonFilter = (tabId, collapsed) => {
+    const { loadingListActive, loadingListMyTeam, loadingListInActive, loadingFetchFilterList } =
+      this.props;
+    const loading =
+      loadingListActive || loadingListMyTeam || loadingListInActive || loadingFetchFilterList;
     return (
-      <div className={styles.filterSider} onClick={this.handleToggle}>
+      <div className={styles.filterSider} onClick={loading ? null : this.handleToggle}>
         <div
           className={`${styles.filterButton} ${
             collapsed ? '' : `${styles.filterBackgroundButton}`
-          }`}
+          } ${loading ? styles.loadingFilterBtn : ''} `}
         >
           <img src="/assets/images/iconFilter.svg" alt="filter" />
           <p className={styles.textButtonFilter}>Filter</p>

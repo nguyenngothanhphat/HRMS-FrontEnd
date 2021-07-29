@@ -32,7 +32,7 @@ class DetailEmployeeChart extends Component {
   };
 
   handleViewFullProfile = (id) => {
-    history.push(`directory/employee-profile/${id}`);
+    history.push(`employee-profile/${id}`);
   };
 
   handleSelect = (value) => {
@@ -154,7 +154,7 @@ class DetailEmployeeChart extends Component {
             </div>
             <Divider />
             <div className={styles.chartDetail__Bottom}>
-              <Row gutter={[24, 24]}>
+              <Row gutter={[0, 24]}>
                 <Col span={7}>
                   <div className={styles.chartDetail__Bottom_label}>Mobile:</div>
                 </Col>
@@ -201,7 +201,7 @@ class DetailEmployeeChart extends Component {
                 <Tooltip title="Email">
                   <img
                     src="/assets/images/iconMail.svg"
-                    alt="img-arrow"
+                    alt="img-mail"
                     style={{ cursor: 'pointer' }}
                   />
                 </Tooltip>
