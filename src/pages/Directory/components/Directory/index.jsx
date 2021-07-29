@@ -508,13 +508,6 @@ class DirectoryComponent extends PureComponent {
   exportEmployees = async () => {
     const { dispatch, currentPayload = {} } = this.props;
 
-    const success = () => {
-      const hide = message.loading('Exporting data...', 0);
-      // Dismiss manually and asynchronously
-      setTimeout(hide, 2500);
-    };
-
-    success();
     const getListExport = await dispatch({
       type: 'employee/exportEmployees',
       payload: currentPayload,
@@ -775,6 +768,7 @@ class DirectoryComponent extends PureComponent {
       currentUser: { company, roles = [] },
       companiesOfUser = [],
       loadingCompaniesOfUser = false,
+      loadingExportCSV = false,
     } = this.props;
     const { collapsed, visible, visibleImportEmployee } = this.state;
 

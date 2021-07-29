@@ -1,5 +1,5 @@
 import { dialog } from '@/utils/utils';
-import { notification } from 'antd';
+import { message, notification } from 'antd';
 import {
   LocationFilter,
   LocationOwnerFilter,
@@ -329,6 +329,7 @@ const employee = {
       { call },
     ) {
       try {
+        const hide = message.loading('Exporting data...', 0);
         const response = yield call(getListExportEmployees, {
           status: ['ACTIVE', 'INACTIVE'],
           company,
@@ -339,6 +340,7 @@ const employee = {
           title,
           skill,
         });
+        hide();
         return response;
       } catch (errors) {
         dialog(errors);
