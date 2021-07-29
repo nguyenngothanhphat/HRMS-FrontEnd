@@ -9,6 +9,7 @@ import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
 import { isEmpty } from 'lodash';
 import { PROCESS_STATUS } from '@/utils/onboarding';
+import moment from 'moment';
 import whiteImg from './components/images/whiteImg.png';
 
 import CancelIcon from './components/CancelIcon';
@@ -18,6 +19,14 @@ import FileContent from './components/FileContent';
 import ModalContent from './components/ModalContent';
 
 import styles from './index.less';
+
+const compare = (dateTimeA, dateTimeB) => {
+  const momentA = moment(dateTimeA, 'DD/MM/YYYY');
+  const momentB = moment(dateTimeB, 'DD/MM/YYYY');
+  if (momentA > momentB) return 1;
+  if (momentA < momentB) return -1;
+  return 0;
+};
 
 const PreviewOffer = (props) => {
   const { dispatch, tempData = {}, data = {}, candidate, loading1 } = props;
@@ -32,6 +41,9 @@ const PreviewOffer = (props) => {
     lastName: candidateLastame = '',
     offerLetter: offerLetterProp = {},
     staticOfferLetter: staticOfferLetterProp = {},
+    expiryDate: expiryDateProp = '',
+    assignTo: assignToProp = {},
+    assigneeManager: assigneeManagerProp = {},
   } = data;
 
   // const inputRefs = [];
@@ -208,6 +220,14 @@ const PreviewOffer = (props) => {
     setOpenModal(false);
   };
 
+  const isExpired = compare(moment(), moment(expiryDateProp)) === 1;
+  const emails = () => {
+    const assignToMail = assignToProp?.generalInfo?.workEmail || '';
+    const assigneeManagerMail = assigneeManagerProp?.generalInfo?.workEmail || '';
+
+    return [...new Set([assignToMail, assigneeManagerMail])];
+  };
+
   return (
     <div className={styles.previewContainer}>
       <div className={styles.left}>
@@ -325,11 +345,29 @@ const PreviewOffer = (props) => {
             )}
           </div>
 
+          {isExpired && (
+            <div className={styles.expiredMessage}>
+              <span className={styles.subtitle}>This offer is expired. Please contact HR.</span>
+              <div className={styles.emails}>
+                {emails().map((em) => (
+                  <>
+                    <a href={`mailto:${em}`}>{em}</a>
+                  </>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* <div className={styles.submitContainer} /> */}
           <Button
             type="primary"
             disabled={
-              !(candidateSignature.url && hrManagerSignature.url && !disableCandidateSubmit())
+              !(
+                !isExpired &&
+                candidateSignature.url &&
+                hrManagerSignature.url &&
+                !disableCandidateSubmit()
+              )
             }
             className={
               candidateSignature.url && hrManagerSignature.url && !disableCandidateSubmit()

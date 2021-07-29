@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react';
-
-import { formatMessage, connect } from 'umi';
 import FileIcon from '@/assets/pdf_icon.png';
-import { Row, Col, Typography, Button } from 'antd';
-import CustomModal from '@/components/CustomModal/index';
+import ModalUpload from '@/components/ModalUpload';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import CancelIcon from '@/pages/FormTeamMember/components/PreviewOffer/components/CancelIcon';
 import whiteImg from '@/pages/FormTeamMember/components/PreviewOffer/components/images/whiteImg.png';
-import ModalUpload from '@/components/ModalUpload';
 import { getCurrentTenant } from '@/utils/authority';
-import FileContent from '../FileContent';
+import { Button, Col, Row, Typography } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { connect, formatMessage } from 'umi';
 import NoteComponent from '../NoteComponent';
 import Alert from './components/Alert';
-
 import s from './index.less';
+
+
 
 const Note = {
   title: 'Note',
@@ -38,7 +37,10 @@ const FileInfo = [
 const OfferDetails = (props) => {
   const { dispatch, checkCandidateMandatory, localStep, tempData, data, loading1 } = props;
   const { filledOfferDetails = false } = checkCandidateMandatory;
-  const { candidateSignature: candidateSignatureProp = {} } = data;
+  const {
+    candidateSignature: candidateSignatureProp = {},
+    offerDocuments: offerDocumentsProp = [],
+  } = data;
 
   const [signature, setSignature] = useState(candidateSignatureProp || {});
   const [signatureSubmit, setSignatureSubmit] = useState(false);
@@ -95,10 +97,6 @@ const OfferDetails = (props) => {
   const handleClick = (url) => {
     setFileUrl(url);
     setModalVisible(true);
-  };
-
-  const _renderFile = (url) => {
-    return <FileContent url={url} />;
   };
 
   const _renderViewFile = ({ name, url }) => {
@@ -228,6 +226,7 @@ const OfferDetails = (props) => {
     setSignature({ ...signature, url: '', id: '' });
   };
 
+
   return (
     <div className={s.offerDetailsContainer}>
       <Row gutter={24}>
@@ -250,7 +249,11 @@ const OfferDetails = (props) => {
 
               <h4>Attached documents</h4>
 
-              {_renderViewFile(FileInfo[0])}
+              {offerDocumentsProp.map((doc) => {
+                const doc1 = { name: doc.name, url: doc.attachment?.url };
+                return _renderViewFile(doc1);
+              })}
+
               <h4>Signature of the candidate</h4>
               <p>
                 The candidate may draw the signature below or can upload the signature from personal
@@ -281,6 +284,7 @@ const OfferDetails = (props) => {
 
                       <CancelIcon resetImg={() => resetImg()} />
                     </div>
+
 
                     <div className={s.submitContainer}>
                       <Button
@@ -334,12 +338,7 @@ const OfferDetails = (props) => {
         </Col>
       </Row>
 
-      <CustomModal
-        width={700}
-        open={modalVisible}
-        closeModal={closeModal}
-        content={_renderFile(fileUrl)}
-      />
+      <ViewDocumentModal visible={modalVisible} onClose={closeModal} url={fileUrl} />
 
       <ModalUpload
         visible={uploadVisible}
