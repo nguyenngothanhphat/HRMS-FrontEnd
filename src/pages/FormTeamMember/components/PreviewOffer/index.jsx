@@ -448,6 +448,7 @@ const PreviewOffer = (props) => {
         </div>
 
         {(isHr || isHrManager) &&
+          processStatus !== PROCESS_STATUS.SENT_FINAL_OFFERS &&
           processStatus !== PROCESS_STATUS.SENT_FOR_APPROVAL &&
           processStatus !== PROCESS_STATUS.ACCEPTED_FINAL_OFFERS && (
             <div className={styles.send}>
