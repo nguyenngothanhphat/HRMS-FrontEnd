@@ -201,7 +201,7 @@ class DetailEmployeeChart extends Component {
                 <Tooltip title="Email">
                   <img
                     src="/assets/images/iconMail.svg"
-                    alt="img-arrow"
+                    alt="img-mail"
                     style={{ cursor: 'pointer' }}
                   />
                 </Tooltip>

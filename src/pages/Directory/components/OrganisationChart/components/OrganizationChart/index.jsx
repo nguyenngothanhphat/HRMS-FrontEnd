@@ -156,7 +156,6 @@ class OrganizationChart extends Component {
     const { isCollapsed = false, itemSelected = '' } = this.state;
     const { employees: listEmployees = [] } = dataOrgChart;
 
-    if (listEmployees.length === 0) return null;
     return (
       <CollapseNode isCollapsed={isCollapsed}>
         <div className={styles.nodesTree}>
@@ -166,20 +165,16 @@ class OrganizationChart extends Component {
             </div>
           </div>
           <div className={styles.childrenList}>
-            {listEmployees.length > 0 ? (
-              <>
-                {listEmployees.map((employee) => {
-                  return (
-                    <EmployeeNode
-                      key={employee._id}
-                      itemSelected={itemSelected}
-                      employee={employee}
-                      renderCardInfo={this.renderCardInfo}
-                    />
-                  );
-                })}
-              </>
-            ) : null}
+            {listEmployees.map((employee) => {
+              return (
+                <EmployeeNode
+                  key={employee._id}
+                  itemSelected={itemSelected}
+                  employee={employee}
+                  renderCardInfo={this.renderCardInfo}
+                />
+              );
+            })}
           </div>
         </div>
       </CollapseNode>
@@ -187,6 +182,10 @@ class OrganizationChart extends Component {
   };
 
   render() {
+    const { dataOrgChart } = this.props;
+    const { employees: listEmployees = [] } = dataOrgChart;
+
+    if (listEmployees.length === 0) return null;
     return (
       <div className={styles.orgChartRoot}>
         <div className={styles.charts}>
