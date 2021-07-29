@@ -11,18 +11,18 @@ const TYPE_QUESTION = {
     key: 'MULTI-CHOICE',
     value: 'Multiple choice',
   },
-  // SELECT_OPTION: {
-  //   key: 'SELECT',
-  //   value: 'Dropdown',
-  // },
+  SELECT_OPTION: {
+    key: 'SELECT',
+    value: 'Dropdown',
+  },
   RATING_CHOICE: {
     key: 'RATING',
     value: 'Single rating choice',
   },
-  // MULTI_RATING_CHOICE: {
-  //   key: 'MULTI-RATING',
-  //   value: 'Multiple rating choice',
-  // },
+  MULTI_RATING_CHOICE: {
+    key: 'MULTI-RATING',
+    value: 'Multiple rating choice',
+  },
 };
 
 const SPECIFY = {
