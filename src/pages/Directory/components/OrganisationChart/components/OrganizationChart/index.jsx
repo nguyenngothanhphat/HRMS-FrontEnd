@@ -37,9 +37,9 @@ class OrganizationChart extends Component {
     this.userRef = React.createRef();
   }
 
-  componentDidMount = () => {
-    document.addEventListener('mousedown', this.handleClickOutSide);
-  };
+  // componentDidMount = () => {
+  //   document.addEventListener('mousedown', this.handleClickOutSide);
+  // };
 
   componentDidUpdate = (prevProps) => {
     const { idSelect = '' } = this.props;
@@ -48,15 +48,17 @@ class OrganizationChart extends Component {
     }
   };
 
-  componentWillUnmount = () => {
-    document.removeEventListener('mousedown', this.handleClickOutSide);
-  };
+  // componentWillUnmount = () => {
+  //   document.removeEventListener('mousedown', this.handleClickOutSide);
+  // };
 
   autoFocusNodeById = (id) => {
     this.setState({ itemSelected: id });
   };
 
   handleClickOutSide = (event) => {
+    console.log(event);
+    console.log(this.userRef.current);
     const { target } = event;
     if (!this.userRef.current.contains(target)) {
       this.setState({ itemSelected: '' });
@@ -184,6 +186,7 @@ class OrganizationChart extends Component {
     const { isCollapsedChild = false, itemSelected = '' } = this.state;
     const { employees: listEmployees = [] } = dataOrgChart;
 
+    if (listEmployees.length === 0) return null;
     return (
       <Collapse isOpened={isCollapsedChild}>
         <div className={styles.nodesTree}>
@@ -212,9 +215,8 @@ class OrganizationChart extends Component {
   render() {
     const { dataOrgChart } = this.props;
     const { isCollapsed } = this.state;
-    const { employees: listEmployees = [], manager = {} } = dataOrgChart;
+    const { manager = {} } = dataOrgChart;
 
-    if (listEmployees.length === 0) return null;
     return (
       <div className={styles.orgChartRoot}>
         <div className={styles.charts}>
