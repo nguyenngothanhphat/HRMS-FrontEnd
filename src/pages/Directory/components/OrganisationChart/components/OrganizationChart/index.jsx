@@ -130,7 +130,7 @@ class OrganizationChart extends Component {
                       : styles.node__bottom_reporteesCollapse
                   }
                 >
-                  {isCollapsed ? `- 1 reportees` : `+ 1 reportees`}
+                  {isCollapsed ? `- 1 reportee` : `+ 1 reportee`}
                 </div>
               </div>
             </div>
