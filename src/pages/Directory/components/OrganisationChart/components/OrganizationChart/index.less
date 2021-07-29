@@ -30,19 +30,6 @@
                 display: flex;
                 align-items: flex-start;
 
-                &__you{
-                    font-family: Roboto;
-                    font-style: normal;
-                    font-weight: 500;
-                    font-size: 12px;
-                    line-height: 14px;
-                    color: #FFFFFF;
-                    padding: 4px 10px;
-                    border-radius: 13px;
-                    transition: 0.3s all ease-in-out;
-                    
-                }
-
                 .avatar{
                 }
 
@@ -115,6 +102,39 @@
 
                 &_you{
                     background: #00C598;
+                }
+            }
+
+            .parentNode {
+                position: relative;
+
+                &__bottom{
+                    position: absolute;
+                    display: flex;
+                    align-items: center;
+
+                    &_reporteesExpand, &_reporteesCollapse, &_you{
+                        font-family: Roboto;
+                        font-style: normal;
+                        font-weight: 500;
+                        font-size: 12px;
+                        line-height: 14px;
+                        color: #FFFFFF;
+                        padding: 4px 10px;
+                        border-radius: 13px;
+                        transition: 0.3s all ease-in-out;
+                    }
+
+                    &_reporteesExpand{
+                        background: #2C6DF9;
+                        margin-right: 16px;
+                    }
+
+                    &_reporteesCollapse{
+                        background: #FFA100;
+                        color: #000;
+                        margin-right: 16px;
+                    }
                 }
             }
         }

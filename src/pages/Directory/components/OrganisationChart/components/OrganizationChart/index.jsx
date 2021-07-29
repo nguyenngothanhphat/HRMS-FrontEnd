@@ -101,7 +101,7 @@ class OrganizationChart extends Component {
 
   renderParentNode = () => {
     const { dataOrgChart } = this.props;
-    const { itemSelected = '' } = this.state;
+    const { isCollapsed, itemSelected = '' } = this.state;
     const { manager = {}, manager: { _id: idManager = '' } = {} } = dataOrgChart;
     const isActive = itemSelected === idManager;
     const className = isActive ? styles.selectNode : styles.node;
@@ -109,11 +109,20 @@ class OrganizationChart extends Component {
       <>
         {isEmpty(manager) ? null : (
           <>
-            <div
-              id={idManager || ''}
-              className={`${styles.parentNode} ${styles.node} ${className}`}
-            >
+            <div id={idManager || ''} className={`${styles.userNode} ${styles.node} ${className}`}>
               {this.renderCardInfo(manager)}
+              <div className={styles.userNode__bottom}>
+                <div
+                  onClick={this.handleCollapse}
+                  className={
+                    isCollapsed
+                      ? styles.userNode__bottom_reporteesExpand
+                      : styles.userNode__bottom_reporteesCollapse
+                  }
+                >
+                  {isCollapsed ? `- 1 reportees` : `+ 1 reportees`}
+                </div>
+              </div>
             </div>
             <div style={{ margin: '0 auto', width: 'fit-content' }}>
               <img alt="line" src={line} />
