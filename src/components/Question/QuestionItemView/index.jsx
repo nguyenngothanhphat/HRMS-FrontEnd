@@ -1,6 +1,6 @@
 import EditIcon from '@/assets/editBtnBlue.svg';
 import RemoveIcon from '@/assets/remove.svg';
-import { Button, Checkbox, Col, Input, Radio, Row, Space } from 'antd';
+import { Button, Checkbox, Col, Input, Radio, Row, Space, Select } from 'antd';
 import React, { useState } from 'react';
 import { TYPE_QUESTION, SPECIFY } from '../utils';
 import styles from './index.less';
@@ -44,7 +44,7 @@ export default function QuestionItemView({
     }
     return true;
   };
-
+  const onChangeRating = () => {};
   const _renderAnswer = () => {
     switch (answerType) {
       case TYPE_QUESTION.SINGLE_CHOICE.key:
@@ -100,20 +100,51 @@ export default function QuestionItemView({
             <span>{rating.rows[1]}</span>
           </div>
         );
-      // case TYPE_QUESTION.SELECT_OPTION.key:
-      //   return (
-      //     <Select
-      //       defaultValue={employeeAnswers[0] && employeeAnswers[0]}
-      //       placeholder="Select a option"
-      //       onChange={(value) => onChangeEmployeeAnswers([value], keyQuestion)}
-      //       style={{ width: '100%' }}
-      //       showSearch
-      //     >
-      //       {defaultAnswers.map((answer) => (
-      //         <Option value={answer}>{answer}</Option>
-      //       ))}
-      //     </Select>
-      //   );
+      case TYPE_QUESTION.MULTI_RATING_CHOICE.key:
+        return (
+          <div>
+            <Row>
+              <Col flex="50px" key={0} />
+              {rating.columns?.map((item) => (
+                <Col flex={1}>
+                  <div className={styles.contentColumns}>{item}</div>
+                </Col>
+              ))}
+            </Row>
+            {rating.rows?.map((item, i) => (
+              <Row>
+                <Col flex="50px">{item}</Col>
+                <Col flex="auto">
+                  <Radio.Group
+                    style={{ width: '100%' }}
+                    onChange={(e) => onChangeRating(e, i)}
+                    value={employeeAnswers[i] || null}
+                  >
+                    <Space direction="horizontal" className={styles.radioGroup}>
+                      {[...Array(rating.columns.length)].map((k, j) => (
+                        <Radio value={j} />
+                      ))}
+                    </Space>
+                  </Radio.Group>
+                </Col>
+              </Row>
+            ))}
+          </div>
+        );
+      case TYPE_QUESTION.SELECT_OPTION.key:
+        return (
+          <Select
+            defaultValue={employeeAnswers[0] && employeeAnswers[0]}
+            placeholder="Select a option"
+            onChange={(value) => onChangeEmployeeAnswers([value], keyQuestion)}
+            style={{ width: '100%' }}
+            showSearch
+          >
+            {defaultAnswers.map((answer) => (
+              <Select.Option value={answer}>{answer}</Select.Option>
+            ))}
+          </Select>
+        );
       default:
         return null;
     }

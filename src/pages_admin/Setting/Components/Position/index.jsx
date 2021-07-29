@@ -18,7 +18,7 @@ class Position extends PureComponent {
     this.state = {
       selectedRowKeys: [],
       visible: false,
-      testReord: {},
+      testRecord: {},
       data: [],
       newValue: '',
       department: '',
@@ -28,10 +28,17 @@ class Position extends PureComponent {
   componentDidMount() {
     const { listTitle } = this.props;
     const formatData = listTitle.map((item) => {
-      const { _id: PositionID, name: PositionName } = item;
+      const {
+        _id: id,
+        titleId: PositionID,
+        name: PositionName,
+        department: { name: DepartmentName },
+      } = item;
       return {
+        id,
         PositionID,
         PositionName,
+        DepartmentName,
       };
     });
     this.setState({ data: formatData });
@@ -46,27 +53,34 @@ class Position extends PureComponent {
       };
     }
     const formatData = listTitle.map((item) => {
-      const { _id: PositionID, name: PositionName } = item;
+      const {
+        _id: id,
+        titleId: PositionID,
+        name: PositionName,
+        department: { name: DepartmentName },
+      } = item;
       return {
+        id,
         PositionID,
         PositionName,
+        DepartmentName,
       };
     });
     return { data: formatData };
   }
 
-  onSelectChange = (selectedRowKeys, selectedRows) => {
+  onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   };
 
   handleOk = () => {
-    const { testReord } = this.state;
+    const { testRecord } = this.state;
     const { dispatch } = this.props;
-    const { PositionID = '' } = testReord;
+    const { id = '' } = testRecord;
     const statusCode = dispatch({
       type: 'adminSetting/removeTitle',
       payload: {
-        id: PositionID,
+        id,
       },
     });
     if (statusCode === 200) {
@@ -80,7 +94,7 @@ class Position extends PureComponent {
     });
   };
 
-  handleCancel = (e) => {
+  handleCancel = () => {
     this.setState({
       visible: false,
     });
@@ -89,7 +103,7 @@ class Position extends PureComponent {
   handleClickDelete = (text, record) => {
     this.setState({
       visible: true,
-      testReord: record,
+      testRecord: record,
     });
   };
 
@@ -110,7 +124,7 @@ class Position extends PureComponent {
   };
 
   render() {
-    const { selectedRowKeys, visible, testReord, data, newValue, department } = this.state;
+    const { selectedRowKeys, visible, testRecord, data, newValue, department } = this.state;
     const { loading, department: departmentList = [] } = this.props;
     if (loading)
       return (
@@ -119,6 +133,7 @@ class Position extends PureComponent {
         </div>
       );
 
+    // eslint-disable-next-line no-unused-vars
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
@@ -128,16 +143,32 @@ class Position extends PureComponent {
         key: 1,
         title: 'Position ID',
         dataIndex: 'PositionID',
-        align: 'center',
+        align: 'left',
+        width: '15%',
       },
       {
         key: 2,
         title: 'Position name',
         dataIndex: 'PositionName',
-        align: 'center',
+        align: 'left',
+        width: '25%',
       },
       {
         key: 3,
+        title: 'Department Name',
+        dataIndex: 'DepartmentName',
+        align: 'left',
+        width: '25%',
+      },
+      {
+        key: 4,
+        title: 'Grades level',
+        dataIndex: 'Grade',
+        align: 'center',
+        width: '10%',
+      },
+      {
+        key: 5,
         title: 'Action',
         dataIndex: 'Action',
         render: (text, record) =>
@@ -178,7 +209,7 @@ class Position extends PureComponent {
     return (
       <div className={styles.Position}>
         <Table
-          rowSelection={rowSelection}
+          // rowSelection={rowSelection}
           columns={columns}
           dataSource={renderAdd}
           size="small"
@@ -187,7 +218,7 @@ class Position extends PureComponent {
         />
 
         <Modal
-          title={`Delete ${testReord.PositionName}? Are you sure?`}
+          title={`Delete ${testRecord.PositionName}? Are you sure?`}
           visible={visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
