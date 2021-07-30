@@ -11,20 +11,15 @@ import bigLines from '@/assets/bigLines.svg';
 import EmployeeNode from './components/EmployeeNode';
 
 import styles from './index.less';
+import ManagerNode from './components/ManagerNode';
+import UserNode from './components/UserNode';
 
-@connect(
-  ({
-    employee: { dataOrgChart = {}, listEmployeeAll = [] } = {},
-    user: { currentUser: { employee: { _id: idCurrentUser = '' } = {} } = {} } = {},
-    loading,
-  }) => ({
-    dataOrgChart,
-    idCurrentUser,
-    loading: loading.effects['employee/fetchDataOrgChart'],
-    loadingFetchListAll: loading.effects['employee/fetchAllListUser'],
-    listEmployeeAll,
-  }),
-)
+@connect(({ employee: { dataOrgChart = {}, listEmployeeAll = [] } = {}, loading }) => ({
+  dataOrgChart,
+  loading: loading.effects['employee/fetchDataOrgChart'],
+  loadingFetchListAll: loading.effects['employee/fetchAllListUser'],
+  listEmployeeAll,
+}))
 class OrganizationChart extends Component {
   constructor(props) {
     super(props);
@@ -145,80 +140,41 @@ class OrganizationChart extends Component {
     );
   };
 
-  renderParentNode = () => {
-    const { dataOrgChart } = this.props;
+  renderManagerNode = () => {
+    const { dataOrgChart: { manager = {} } = {} } = this.props;
     const { isCollapsed, itemSelected = '' } = this.state;
-    const { manager = {}, manager: { _id: idManager = '' } = {} } = dataOrgChart;
-    const isActive = itemSelected === idManager;
-    const className = isActive ? styles.selectNode : styles.node;
+    const propsState = { itemSelected, isCollapsed };
+
     return (
       <>
         {isEmpty(manager) ? null : (
-          <>
-            <div
-              id={idManager || ''}
-              className={`${styles.parentNode} ${styles.node} ${className}`}
-            >
-              {this.renderCardInfo(manager, 'manager')}
-              <div className={styles.node__bottom}>
-                <div
-                  onClick={() => this.handleCollapse('parent')}
-                  className={
-                    isCollapsed
-                      ? styles.node__bottom_reporteesExpand
-                      : styles.node__bottom_reporteesCollapse
-                  }
-                >
-                  {isCollapsed ? `- 1 reportee` : `+ 1 reportee`}
-                </div>
-              </div>
-            </div>
-          </>
+          <ManagerNode
+            renderCardInfo={this.renderCardInfo}
+            handleCollapse={this.handleCollapse}
+            propsState={propsState}
+            manager={manager}
+          />
         )}
       </>
     );
   };
 
   renderUserNode = () => {
-    const { dataOrgChart, idCurrentUser = '' } = this.props;
+    const { dataOrgChart } = this.props;
     const { isCollapsedChild = false, itemSelected = '' } = this.state;
 
-    const {
-      user: { _id: idUser = '' } = {},
-      user = {},
-      employees: listEmployees = [],
-    } = dataOrgChart;
-
-    const isActive = itemSelected === idUser;
-    const className = isActive ? styles.selectNode : styles.node;
+    const propsState = { itemSelected, isCollapsedChild };
 
     if (isEmpty(dataOrgChart)) return null;
 
     return (
-      <div
-        id={idUser}
-        className={`${styles.userNode} ${styles.node} ${className}`}
-        ref={this.userRef}
-      >
-        {this.renderCardInfo(user, 'user')}
-        {listEmployees.length === 0 ? null : (
-          <div className={styles.node__bottom}>
-            <div
-              onClick={() => this.handleCollapse('user')}
-              className={
-                isCollapsedChild
-                  ? styles.node__bottom_reporteesExpand
-                  : styles.node__bottom_reporteesCollapse
-              }
-            >
-              {isCollapsedChild
-                ? `- ${listEmployees.length} reportees`
-                : `+ ${listEmployees.length} reportees`}
-            </div>
-            {idUser === idCurrentUser ? <div className={styles.node__bottom_you}>You</div> : null}
-          </div>
-        )}
-      </div>
+      <UserNode
+        renderCardInfo={this.renderCardInfo}
+        handleCollapse={this.handleCollapse}
+        propsState={propsState}
+        dataOrgChart={dataOrgChart}
+        userRef={this.userRef}
+      />
     );
   };
 
@@ -269,15 +225,16 @@ class OrganizationChart extends Component {
     return (
       <div className={styles.orgChartRoot}>
         <div className={styles.charts}>
-          {this.renderParentNode() /* Manager */}
+          {this.renderManagerNode()}
+
           <Collapse isOpened={isCollapsed} hasNestedCollapse>
             {isEmpty(manager) ? null : (
               <div style={{ margin: '0 auto', width: 'fit-content' }}>
                 <img alt="line" src={line} />
               </div>
             )}
-            {this.renderUserNode() /* Current User */}
-            {this.renderChildrenList() /* List Employees */}
+            {this.renderUserNode()}
+            {this.renderChildrenList()}
           </Collapse>
         </div>
       </div>
