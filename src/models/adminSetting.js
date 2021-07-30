@@ -199,10 +199,10 @@ const adminSetting = {
         return 0;
       }
     },
-    *addDepartment({ payload: { name = '' } }, { call, put }) {
+    *addDepartment({ payload }, { call, put }) {
       try {
         const response = yield call(addDepartment, {
-          name,
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
