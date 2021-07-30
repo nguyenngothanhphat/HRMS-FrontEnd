@@ -175,7 +175,7 @@ class AddDocumentModal extends PureComponent {
               form="myForm"
               key="submit"
               htmlType="submit"
-              disabled={!selectExistDocument || !fileName}
+              disabled={!selectExistDocument && !fileName}
               // loading={loadingReassign}
             >
               Add

@@ -144,6 +144,13 @@ export function submitPhase1(payload) {
   });
 }
 
+export function generateLink(payload) {
+  return request('/api/candidatetenant/generate-link', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export function getLocationListByCompany(params) {
   return request('/api/locationtenant/get-by-company', {
     method: 'POST',
