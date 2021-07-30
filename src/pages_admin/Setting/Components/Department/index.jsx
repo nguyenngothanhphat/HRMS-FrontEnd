@@ -15,48 +15,51 @@ class Department extends Component {
     this.state = {
       selectedRowKeys: [],
       visible: false,
-      testReord: {},
-      data2: [],
+      testRecord: {},
+      // data2: [],
       newDepartment: { name: '', departmentParentId: '' },
     };
   }
 
   componentDidMount() {
-    const { department } = this.props;
-    const formatData = department.map((item) => {
-      const { departmentId: DepartmentIDText, _id: DepartmentID, name: DepartmentName } = item;
-      return { DepartmentID, DepartmentName, DepartmentIDText };
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'adminSetting/fetchDepartment',
     });
-    this.setState({ data2: formatData });
   }
 
-  static getDerivedStateFromProps(props, state) {
-    const { department } = props;
-    const { data2 } = state;
-    if (department.length === data2.length) {
-      return {
-        data2,
-      };
-    }
-    const formatData = department.map((item) => {
-      const { departmentId: DepartmentIDText, _id: DepartmentID, name: DepartmentName } = item;
-      return { DepartmentID, DepartmentName, DepartmentIDText };
-    });
-    return { data2: formatData };
-  }
+  // static getDerivedStateFromProps(props, state) {
+  //   const { department } = props;
+  //   const { data2 } = state;
+  //   if (department.length === data2.length) {
+  //     return {
+  //       data2,
+  //     };
+  //   }
+  //   const formatData = department.map((item) => {
+  //     const {
+  //       departmentId: DepartmentIDText,
+  //       _id: DepartmentID,
+  //       name: DepartmentName,
+  //       departmentParentId: DepartmentParentId,
+  //     } = item;
+  //     return { DepartmentID, DepartmentName, DepartmentIDText, DepartmentParentId };
+  //   });
+  //   return { data2: formatData };
+  // }
 
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   };
 
   handleOk = () => {
-    const { testReord } = this.state;
+    const { testRecord } = this.state;
     const { dispatch } = this.props;
-    const { DepartmentID = '' } = testReord;
+    const { _id = '' } = testRecord;
     const statusCode = dispatch({
       type: 'adminSetting/removeDepartment',
       payload: {
-        id: DepartmentID,
+        id: _id,
       },
     });
     if (statusCode === 200) {
@@ -79,7 +82,7 @@ class Department extends Component {
   handleClickDelete = (text, record) => {
     this.setState({
       visible: true,
-      testReord: record,
+      testRecord: record,
     });
   };
 
@@ -100,8 +103,8 @@ class Department extends Component {
   };
 
   render() {
-    const { selectedRowKeys, visible, testReord, data2, newDepartment } = this.state;
-    const { loading } = this.props;
+    const { selectedRowKeys, visible, testRecord, newDepartment } = this.state;
+    const { loading, department } = this.props;
     if (loading)
       return (
         <div className={styles.Department}>
@@ -116,23 +119,38 @@ class Department extends Component {
       {
         key: 1,
         title: 'Department ID',
-        dataIndex: 'DepartmentIDText',
+        dataIndex: 'departmentId',
         align: 'center',
         width: '20%',
       },
       {
         key: 2,
-        title: 'Department name',
-        dataIndex: 'DepartmentName',
+        title: 'Department Name',
+        dataIndex: 'name',
         align: 'left',
-        width: '70%',
+        width: '35%',
       },
       {
         key: 3,
+        title: 'Department Parent Name',
+        dataIndex: 'departmentParent',
+        align: 'left',
+        width: '35%',
+        render: (text, record) => {
+          if (!record.departmentParent) {
+            const data = department.find((item) => item.departmentId === record.departmentParentId);
+            return <>{data && data.name}</>;
+          }
+          return text;
+          // return ({record.DepartmentParentName});
+        },
+      },
+      {
+        key: 4,
         title: 'Action',
         dataIndex: 'Action',
         render: (text, record) =>
-          record.DepartmentID !== '' ? (
+          record._id !== '' ? (
             <DeleteOutlined onClick={() => this.handleClickDelete(text, record)} />
           ) : (
             <PlusCircleFilled onClick={() => this.handleAddNewValue()} />
@@ -141,33 +159,34 @@ class Department extends Component {
       },
     ];
     const add = {
-      DepartmentID: '',
-      DepartmentName: (
-        <>
-          <Input
-            placeholder="DepartmentName"
-            onChange={(e) => this.handleChangeValue({ name: e.target.value })}
-            value={newDepartment.name}
-          />
-          <Select
-            onChange={
-              (value) =>
-                this.handleChangeValue({
-                  departmentParentId: value,
-                })
-              // eslint-disable-next-line react/jsx-curly-newline
-            }
-            placeholder="Parent Department"
-          >
-            <Select.Option value="">None</Select.Option>
-            {data2.map((d) => (
-              <Select.Option value={d.DepartmentIDText}>{d.DepartmentName}</Select.Option>
-            ))}
-          </Select>
-        </>
+      _id: '',
+      departmentId: '',
+      name: (
+        <Input
+          placeholder="Department Name"
+          onChange={(e) => this.handleChangeValue({ name: e.target.value })}
+          value={newDepartment.name}
+        />
+      ),
+      departmentParent: (
+        <Select
+          onChange={
+            (value) =>
+              this.handleChangeValue({
+                departmentParentId: value,
+              })
+            // eslint-disable-next-line react/jsx-curly-newline
+          }
+          placeholder="Parent Department Name"
+        >
+          <Select.Option value="">None</Select.Option>
+          {department.map((d) => (
+            <Select.Option value={d.departmentId}>{d.name}</Select.Option>
+          ))}
+        </Select>
       ),
     };
-    const renderAdd = [...data2, add];
+    const renderAdd = [...department, add];
 
     return (
       <div className={styles.Department}>
@@ -181,7 +200,7 @@ class Department extends Component {
         />
 
         <Modal
-          title={`Delete ${testReord.DepartmentName}? Are you sure?`}
+          title={`Delete ${testRecord.DepartmentName}? Are you sure?`}
           visible={visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
