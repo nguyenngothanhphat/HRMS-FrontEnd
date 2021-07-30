@@ -440,7 +440,7 @@ class RequestInformation extends PureComponent {
                 Reject
               </Button>
               <Button loading={loadingApproveRequest} onClick={() => this.onApproveClicked(_id)}>
-                Accept
+                Approve
               </Button>
             </div>
           </div>
