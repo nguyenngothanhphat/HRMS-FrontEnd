@@ -35,8 +35,12 @@ class OrganizationChart extends Component {
       itemSelected: '',
     };
     this.userRef = React.createRef();
-    this.employeeRef = React.createRef([]);
+
+    this.employeeRef = React.createRef([]); // list employees => to store employee refs.
     this.employeeRef.current = [];
+
+    this.refTemp = React.createRef([]); // temp => to handle/set condition.
+    this.refTemp.current = [];
   }
 
   componentDidMount = () => {
@@ -76,22 +80,34 @@ class OrganizationChart extends Component {
   };
 
   handleScrollView = (userData, name) => {
-    // const { idCurrentUser = '' } = this.props;
+    const { _id: userId = '' } = userData;
+    const arrEmployeeRef = this.employeeRef.current;
+    let userRef = [];
 
-    if (name === 'user') {
-      this.userRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-        inline: 'center',
-      });
-    } else {
-      console.log(this.employeeRef);
-      console.log(this.employeeRef.current);
-      this.employeeRef.current.scrollIntoView({
-        behavior: 'smooth',
-        block: 'center',
-        inline: 'center',
-      });
+    switch (name) {
+      case 'user':
+        this.userRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'center',
+        });
+        break;
+      case 'manager':
+        console.log(name);
+        break;
+      default:
+        userRef = arrEmployeeRef?.map((item) => (item.id === userId ? item.ref : null));
+        userRef = userRef.filter((item) => item !== null);
+        userRef = [...new Set(userRef)];
+
+        if (userRef.length > 0) {
+          userRef[0].scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'center',
+          });
+        }
+        break;
     }
   };
 
@@ -217,8 +233,6 @@ class OrganizationChart extends Component {
     const { isCollapsedChild = false, itemSelected = '' } = this.state;
     const { employees: listEmployees = [] } = dataOrgChart;
 
-    // if (this.employeeRef.current.length > 0) console.log(this.employeeRef.current);
-
     if (listEmployees.length === 0) return null;
     return (
       <Collapse isOpened={isCollapsedChild}>
@@ -237,6 +251,7 @@ class OrganizationChart extends Component {
                   employee={employee}
                   renderCardInfo={this.renderCardInfo}
                   employeeRef={this.employeeRef.current}
+                  refTemp={this.refTemp.current}
                 />
               );
             })}

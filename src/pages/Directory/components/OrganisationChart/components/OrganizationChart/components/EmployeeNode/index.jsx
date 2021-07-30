@@ -9,9 +9,9 @@ class EmployeeNode extends Component {
   }
 
   addToRefs = (el, id) => {
-    const { employeeRef } = this.props;
-    console.log(employeeRef);
-    if (el && !employeeRef.includes(el)) {
+    const { employeeRef, refTemp } = this.props;
+    if (el && !refTemp.includes(el)) {
+      refTemp.push(el);
       employeeRef.push({
         ref: el,
         id,
