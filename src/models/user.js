@@ -46,7 +46,8 @@ const UserModel = {
         const { signInRole = [], roles = [], candidate = {}, isFirstLogin = false } = data;
         const formatRole = signInRole.map((role) => role.toLowerCase());
 
-        if (isFirstLogin) {
+        const candidateLinkMode = localStorage.getItem('candidate-link-mode') === 'true';
+        if (isFirstLogin && !candidateLinkMode) {
           history.replace('/first-change-password');
           return {};
         }

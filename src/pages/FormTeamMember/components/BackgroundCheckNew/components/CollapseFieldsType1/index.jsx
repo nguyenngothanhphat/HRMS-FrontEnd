@@ -225,7 +225,11 @@ class CollapseFieldsType1 extends PureComponent {
               })}
             </CheckboxGroup>
             <div
-              className={visible ? `${styles.addNewType} ${styles.hidden}` : `${styles.addNewType}`}
+              className={
+                (visible || disabled)
+                  ? `${styles.addNewType} ${styles.hidden}`
+                  : `${styles.addNewType}`
+              }
             >
               <div className={styles.addTitle}>
                 <p>Add New Field</p>

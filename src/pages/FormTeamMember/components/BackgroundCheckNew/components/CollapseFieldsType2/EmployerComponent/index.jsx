@@ -1,10 +1,9 @@
 /* eslint-disable no-nested-ternary */
-import React, { PureComponent } from 'react';
-import { Checkbox, Form, Input, Row, Col, DatePicker } from 'antd';
-import throttle from 'lodash/throttle';
 import { CloseOutlined } from '@ant-design/icons';
+import { Checkbox, Col, Form, Input, Row } from 'antd';
+import throttle from 'lodash/throttle';
+import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
 import styles from './index.less';
 
 const CheckboxGroup = Checkbox.Group;
