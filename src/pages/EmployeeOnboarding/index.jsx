@@ -91,7 +91,7 @@ class EmployeeOnboarding extends PureComponent {
     return dataExport;
   };
 
-  renderActionButton = () => {
+  renderActionButton = (tabName) => {
     return (
       <div className={styles.options}>
         <Row gutter={[24, 0]}>
@@ -101,7 +101,7 @@ class EmployeeOnboarding extends PureComponent {
               className={styles.generate}
               type="text"
               onClick={this.downloadTemplate}
-              style={{ display: 'none' }}
+              style={tabName === 'settings' ? { display: 'none' } : {}}
             >
               {formatMessage({ id: 'component.employeeOnboarding.generate' })}
             </Button>
@@ -138,7 +138,7 @@ class EmployeeOnboarding extends PureComponent {
               onChange={(key) => {
                 history.push(`/employee-onboarding/${key}`);
               }}
-              tabBarExtraContent={this.renderActionButton()}
+              tabBarExtraContent={this.renderActionButton(tabName)}
             >
               {viewOnboardingOverviewTab && (
                 <TabPane
