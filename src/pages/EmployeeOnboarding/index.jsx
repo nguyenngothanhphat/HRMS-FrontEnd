@@ -101,6 +101,7 @@ class EmployeeOnboarding extends PureComponent {
               className={styles.generate}
               type="text"
               onClick={this.downloadTemplate}
+              style={{ display: 'none' }}
             >
               {formatMessage({ id: 'component.employeeOnboarding.generate' })}
             </Button>
