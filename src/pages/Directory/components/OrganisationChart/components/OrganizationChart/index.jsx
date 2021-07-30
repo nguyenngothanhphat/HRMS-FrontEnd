@@ -11,7 +11,6 @@ import bigLines from '@/assets/bigLines.svg';
 import EmployeeNode from './components/EmployeeNode';
 
 import styles from './index.less';
-// import CollapseNode from '../CollapseNode';
 
 @connect(
   ({
@@ -59,6 +58,7 @@ class OrganizationChart extends Component {
   };
 
   autoFocusNodeById = (id) => {
+    // auto focus on the node when select user
     this.setState({ itemSelected: id });
   };
 
