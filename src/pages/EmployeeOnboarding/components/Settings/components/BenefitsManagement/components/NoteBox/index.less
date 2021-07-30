@@ -7,7 +7,7 @@
 
     padding: 32px;
 
-    .headerNode{
+    .headerNote{
         display: flex;
         align-items: center;
 
@@ -20,6 +20,26 @@
             line-height: 16px;
 
             color: #161C29;
+        }
+
+        &__content, &__bottom{
+            padding-top: 24px;
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 13px;
+            line-height: 23px;
+            color: #707177;
+
+            span{
+                color: #ffa100;
+                font-weight: bold;
+            }
+        }
+
+        &__bottom{
+            font-weight: bold;
+            padding-top: 24px;
         }
     }
 }

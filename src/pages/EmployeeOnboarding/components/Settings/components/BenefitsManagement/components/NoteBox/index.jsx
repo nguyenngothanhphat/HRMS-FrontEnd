@@ -12,9 +12,16 @@ class NoteBox extends Component {
   render() {
     return (
       <div className={styles.benefitNote}>
-        <div className={styles.headerNode}>
+        <div className={styles.headerNote}>
           <img alt="note" src={NodeIcon} />
-          <div className={styles.headerNode__text}>Note</div>
+          <div className={styles.headerNote__text}>Note</div>
+        </div>
+        <div className={styles.headerNote__content}>
+          The candidate must upload all required documents. And, <span>the HR must approve</span>{' '}
+          the documents and mark candidate as eligible.
+        </div>
+        <div className={styles.headerNote__bottom}>
+          Post this approval, the remaining processes will open for onboarding.
         </div>
       </div>
     );
