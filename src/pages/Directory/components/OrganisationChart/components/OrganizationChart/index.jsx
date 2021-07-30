@@ -35,6 +35,8 @@ class OrganizationChart extends Component {
       itemSelected: '',
     };
     this.userRef = React.createRef();
+    this.employeeRef = React.createRef([]);
+    this.employeeRef.current = [];
   }
 
   componentDidMount = () => {
@@ -73,13 +75,34 @@ class OrganizationChart extends Component {
     }
   };
 
-  clickCardInfo = (userData) => {
+  handleScrollView = (userData, name) => {
+    // const { idCurrentUser = '' } = this.props;
+
+    if (name === 'user') {
+      this.userRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'center',
+      });
+    } else {
+      console.log(this.employeeRef);
+      console.log(this.employeeRef.current);
+      this.employeeRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'center',
+      });
+    }
+  };
+
+  clickCardInfo = (userData, name) => {
     const { handleClickNode = () => {} } = this.props;
     handleClickNode(userData);
     this.setState({ itemSelected: userData._id });
+    this.handleScrollView(userData, name);
   };
 
-  renderCardInfo = (userData) => {
+  renderCardInfo = (userData, name) => {
     const {
       generalInfo: {
         avatar = '',
@@ -95,7 +118,7 @@ class OrganizationChart extends Component {
     } = userData;
     const legalName = `${userFirstName} ${userMiddleName} ${userLastName}`;
     return (
-      <div className={styles.node__card} onClick={() => this.clickCardInfo(userData)}>
+      <div className={styles.node__card} onClick={() => this.clickCardInfo(userData, name)}>
         <Avatar className={styles.avatar} src={avatar} size={42} icon={<UserOutlined />} />
         <div className={styles.node__card__info}>
           <div className={styles.legalName}>{legalName}</div>
@@ -120,7 +143,7 @@ class OrganizationChart extends Component {
               id={idManager || ''}
               className={`${styles.parentNode} ${styles.node} ${className}`}
             >
-              {this.renderCardInfo(manager)}
+              {this.renderCardInfo(manager, 'manager')}
               <div className={styles.node__bottom}>
                 <div
                   onClick={() => this.handleCollapse('parent')}
@@ -161,7 +184,7 @@ class OrganizationChart extends Component {
         className={`${styles.userNode} ${styles.node} ${className}`}
         ref={this.userRef}
       >
-        {this.renderCardInfo(user)}
+        {this.renderCardInfo(user, 'user')}
         {listEmployees.length === 0 ? null : (
           <div className={styles.node__bottom}>
             <div
@@ -194,6 +217,8 @@ class OrganizationChart extends Component {
     const { isCollapsedChild = false, itemSelected = '' } = this.state;
     const { employees: listEmployees = [] } = dataOrgChart;
 
+    // if (this.employeeRef.current.length > 0) console.log(this.employeeRef.current);
+
     if (listEmployees.length === 0) return null;
     return (
       <Collapse isOpened={isCollapsedChild}>
@@ -211,6 +236,7 @@ class OrganizationChart extends Component {
                   itemSelected={itemSelected}
                   employee={employee}
                   renderCardInfo={this.renderCardInfo}
+                  employeeRef={this.employeeRef.current}
                 />
               );
             })}
