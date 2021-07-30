@@ -21,9 +21,10 @@ import {
   addManagerSignature,
   getDocumentByCandidate,
   getWorkHistory,
+  generateLink,
 } from '@/services/addNewMember';
 import { history } from 'umi';
-import { notification } from 'antd';
+import { message, notification } from 'antd';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
 
@@ -710,6 +711,25 @@ const candidateInfo = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { test: data } });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *generateLink({ payload }, { call, put }) {
+      let response = {};
+      const loading = message.loading('Generating...', 0);
+      try {
+        response = yield call(generateLink, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        loading()
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { test: data } });

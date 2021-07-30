@@ -798,7 +798,7 @@ class BackgroundCheck extends Component {
   };
 
   // EMAILS
-  handleSendEmail = () => {
+  handleSendEmail = async (type) => {
     const { dispatch } = this.props;
     const { newPoe } = this.state;
 
@@ -872,15 +872,15 @@ class BackgroundCheck extends Component {
       tenantId: getCurrentTenant(),
     };
 
-    dispatch({
+    await dispatch({
       type: 'candidateInfo/submitPhase1Effect',
       payload,
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         this.setState({
-          openModal: true,
+          openModal: type !== 'generate-link',
           refreshBlockE: true,
-          openModalEmail: false,
+          openModalEmail: type === 'generate-link',
         });
         this.getDataFromServer();
         // refresh block D (IMPORTANT)
@@ -893,8 +893,8 @@ class BackgroundCheck extends Component {
         dispatch({
           type: 'candidateInfo/saveTemp',
           payload: {
-            isMarkAsDone: false,
-            isSentEmail: true,
+            isMarkAsDone: type === 'generate-link',
+            isSentEmail: type !== 'generate-link',
           },
         });
       }
@@ -905,6 +905,8 @@ class BackgroundCheck extends Component {
         checkValidation: true,
       },
     });
+
+    return 'DONE';
   };
 
   handleValueChange = (e) => {
@@ -918,18 +920,43 @@ class BackgroundCheck extends Component {
     });
   };
 
-  handleMarkAsDone = (user) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'candidateInfo/saveTemp',
+  handleMarkAsDone = async (user) => {
+    const {
+      dispatch,
+      tempData: {
+        candidate,
+        firstName,
+
+        privateEmail,
+        processStatus,
+      } = {},
+    } = this.props;
+
+    if (processStatus !== 'SENT-PROVISIONAL-OFFER') {
+      await this.handleSendEmail('generate-link');
+    }
+    const link = await dispatch({
+      type: 'candidateInfo/generateLink',
       payload: {
-        generateLink: user.generateLink,
-        isMarkAsDone: true,
+        candidate,
+        firstName,
+        privateEmail,
       },
     });
-    this.setState({
-      openModal: true,
-    });
+    if (link.statusCode === 200) {
+      // setGeneratedLink(link.data.url);
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          generateLink: link.data.url,
+          isMarkAsDone: true,
+        },
+      });
+
+      this.setState({
+        openModal: true,
+      });
+    }
   };
 
   // bottom bar
@@ -1256,13 +1283,16 @@ class BackgroundCheck extends Component {
 
     let newDocument = [];
     if (type === 'A') {
-      newDocument = [...checkedListA, name];
+      newDocument = [...checkedListA];
+      // newDocument = [...checkedListA, name];
     }
     if (type === 'B') {
-      newDocument = [...checkedListB, name];
+      // newDocument = [...checkedListB, name];
+      newDocument = [...checkedListB];
     }
     if (type === 'C') {
-      newDocument = [...checkedListC, name];
+      newDocument = [...checkedListC];
+      // newDocument = [...checkedListC, name];
     }
 
     const newDoc = {
@@ -1272,7 +1302,8 @@ class BackgroundCheck extends Component {
       new: true,
     };
 
-    const newDocumentList = [...documentChecklistSetting];
+    const documentCLSTByCountry = this.getDocumentListByCountry(documentChecklistSetting);
+    const newDocumentList = [...documentCLSTByCountry];
     newDocumentList.forEach((doc) => {
       if (doc.type === type) {
         doc.data.push(newDoc);
@@ -1354,7 +1385,8 @@ class BackgroundCheck extends Component {
       newDocument = checkedListC.filter((val) => val.key !== key);
     }
 
-    const newDocumentList = [...documentChecklistSetting];
+    const documentCLSTByCountry = this.getDocumentListByCountry(documentChecklistSetting);
+    const newDocumentList = [...documentCLSTByCountry];
     newDocumentList.forEach((doc) => {
       if (doc.type === type) {
         doc.data = doc.data.filter((v) => v.key !== key);
@@ -1411,6 +1443,7 @@ class BackgroundCheck extends Component {
   // main
   render() {
     const {
+      dispatch,
       candidateInfo: {
         tempData,
         tempData: {
@@ -1426,7 +1459,7 @@ class BackgroundCheck extends Component {
           documentChecklistSetting = [],
           previousEmployment: { poe = [] } = {},
         },
-        data: { privateEmail, processStatus: processStatusFilled = '' },
+        data: { privateEmail, processStatus: processStatusFilled = '', candidate = '' },
       } = {},
       processStatus,
       loading4,
@@ -1528,7 +1561,7 @@ class BackgroundCheck extends Component {
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={note} />
 
-            {processStatus === 'DRAFT' ||
+            {processStatus === PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT ||
             processStatusFilled === PROCESS_STATUS.SENT_PROVISIONAL_OFFERS ? (
               <SendEmail
                 openModalEmail={openModalEmail}
@@ -1550,6 +1583,8 @@ class BackgroundCheck extends Component {
                 checkValidation={checkValidation}
                 valueToFinalOffer={valueToFinalOffer}
                 changeValueToFinalOffer={this.changeValueToFinalOffer}
+                dispatch={dispatch}
+                candidate={candidate}
               />
             ) : (
               ''

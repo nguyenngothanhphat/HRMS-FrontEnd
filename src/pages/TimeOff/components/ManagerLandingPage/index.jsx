@@ -6,7 +6,7 @@ import ApplyRequest from '../EmployeeLandingPage/components/ApplyRequest';
 import LeaveHistoryAndHoliday from '../EmployeeLandingPage/components/LeaveHistoryAndHoliday';
 import QuickLinks from '../EmployeeLandingPage/components/QuickLinks';
 import TimeOffRequestsTable from './components/TimeOffRequestsTable';
-import FeedbackBar from '../EmployeeLandingPage/components/FeedbackBar';
+// import FeedbackBar from '../EmployeeLandingPage/components/FeedbackBar';
 import TimeOffTypesInfo from '../EmployeeLandingPage/components/TimeOffTypesInfo';
 
 import styles from './index.less';
@@ -16,7 +16,7 @@ export default class ManagerLandingPage extends PureComponent {
     super(props);
     this.state = {
       viewInformation: false,
-      closeFeedbackBar: false,
+      // closeFeedbackBar: false,
     };
   }
 
@@ -24,11 +24,11 @@ export default class ManagerLandingPage extends PureComponent {
     window.scroll({ top: 0, left: 0, behavior: 'smooth' });
   };
 
-  onCloseFeedbackBar = () => {
-    this.setState({
-      closeFeedbackBar: true,
-    });
-  };
+  // onCloseFeedbackBar = () => {
+  //   this.setState({
+  //     closeFeedbackBar: true,
+  //   });
+  // };
 
   buttonOnClickCompoff = () => {
     history.push({
@@ -54,7 +54,7 @@ export default class ManagerLandingPage extends PureComponent {
       <p>Apply for leaves with/without pay, work from home or client office.</p>,
       <p>Request for a compensation leave if you have worked for extra days/hours.</p>,
     ];
-    const { viewInformation, closeFeedbackBar } = this.state;
+    const { viewInformation } = this.state;
     return (
       <>
         <div className={styles.ManagerLandingPage}>
@@ -99,13 +99,13 @@ export default class ManagerLandingPage extends PureComponent {
                   <TimeOffRequestsTable />
                 </Col>
               </Row>
-              {!closeFeedbackBar && (
+              {/* {!closeFeedbackBar && (
                 <Row gutter={[20, 20]}>
                   <Col span={24}>
                     <FeedbackBar onClose={this.onCloseFeedbackBar} />
                   </Col>
                 </Row>
-              )}
+              )} */}
               <TimeOffTypesInfo onClose={this.onInformationClick} visible={viewInformation} />
             </Col>
           </Row>
