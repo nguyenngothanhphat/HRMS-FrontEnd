@@ -29,6 +29,7 @@ class OrganizationChart extends Component {
       itemSelected: '',
     };
     this.userRef = React.createRef();
+    this.managerRef = React.createRef();
 
     this.employeeRef = React.createRef([]); // list employees => to store employee refs.
     this.employeeRef.current = [];
@@ -88,7 +89,11 @@ class OrganizationChart extends Component {
         });
         break;
       case 'manager':
-        console.log(name);
+        this.managerRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'center',
+        });
         break;
       default:
         userRef = arrEmployeeRef?.map((item) => (item.id === userId ? item.ref : null));
@@ -153,6 +158,7 @@ class OrganizationChart extends Component {
             handleCollapse={this.handleCollapse}
             propsState={propsState}
             manager={manager}
+            managerRef={this.managerRef}
           />
         )}
       </>
