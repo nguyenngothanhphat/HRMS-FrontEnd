@@ -68,8 +68,8 @@ class CreateNewTemplateForm extends PureComponent {
         title,
         tenantId,
       },
-    }).then((statusCode) => {
-      if (statusCode === 200) {
+    }).then((res) => {
+      if (res.statusCode === 200) {
         notification.success({
           message: 'Create new template successfully',
         });
