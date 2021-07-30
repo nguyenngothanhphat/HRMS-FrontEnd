@@ -178,16 +178,16 @@ class OrganizationChart extends Component {
     );
   };
 
-  handleGetLine = (length) => {
-    if (length === 1) return line;
-    if (length > 2) return bigLines;
-    return lines;
-  };
-
   renderChildrenList = () => {
     const { dataOrgChart } = this.props;
     const { isCollapsedChild = false, itemSelected = '' } = this.state;
     const { employees: listEmployees = [] } = dataOrgChart;
+
+    const handleGetLine = (length) => {
+      if (length === 1) return line;
+      if (length > 2) return bigLines;
+      return lines;
+    };
 
     if (listEmployees.length === 0) return null;
     return (
@@ -195,7 +195,7 @@ class OrganizationChart extends Component {
         <div className={styles.nodesTree}>
           <div className={styles.lineNode}>
             <div style={{ margin: '0 auto', width: 'fit-content' }}>
-              <img alt="lines" src={this.handleGetLine(listEmployees.length)} />
+              <img alt="lines" src={handleGetLine(listEmployees.length)} />
             </div>
           </div>
           <div className={styles.childrenList}>
