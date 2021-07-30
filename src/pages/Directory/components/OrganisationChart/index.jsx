@@ -5,6 +5,7 @@ import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/time
 import { connect } from 'umi';
 import moment from 'moment';
 
+import { isEmpty } from 'lodash';
 import OrganizationChart from './components/OrganizationChart';
 import DetailEmployeeChart from './components/EmployeeBox';
 import styles from './index.less';
@@ -151,13 +152,14 @@ class OrganisationChart extends Component {
     const { timezoneList, currentTime } = this.state;
 
     const { location = {} } = nodeData;
+    if (!isEmpty(location)) {
+      const findTimezone =
+        timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+      const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
+      const addTimeData = { ...nodeData, localTime: timeData };
 
-    const findTimezone =
-      timezoneList.find((timezone) => timezone.locationId === location._id) || {};
-    const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
-    const addTimeData = { ...nodeData, localTime: timeData };
-
-    this.setState({ chartDetails: addTimeData });
+      this.setState({ chartDetails: addTimeData });
+    }
   };
 
   closeDetailEmployee = () => {
