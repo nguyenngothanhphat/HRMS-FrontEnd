@@ -41,7 +41,8 @@ const index = ({
   };
 
   const handleGenerate = () => {
-    message.success('Generated link successfully');
+    navigator.clipboard.writeText(generateLink);
+    message.success('Copied to clipboard');
   };
 
   useEffect(() => {
