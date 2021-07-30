@@ -1,0 +1,118 @@
+.loadingSpin{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+}
+
+.benefitSection{
+    padding-right: 24px;
+    width: 100%;
+
+    .benefitRoot{
+
+        background: #FFFFFF;
+        border: 1px solid #D6DCE0;
+        box-sizing: border-box;
+        border-radius: 5px;
+    
+        width: 100%;
+
+        &__header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 24px;
+            border-bottom: 1px solid #D6DCE0;
+
+            :global{
+                .ant-btn{
+                    width: 109px;
+                    height: 34px;
+                    background: rgba(86, 138, 250, 0.12);
+                    border-radius: 5px;
+                    font-family: Roboto;
+
+                    font-style: normal;
+                    font-weight: 500;
+                    font-size: 14px;
+                    line-height: 16px;
+                    color: #2C6DF9;
+                    padding: 9px 12px;
+                    border: none;
+                }
+            }
+
+            &__text{
+
+                .title{
+                    font-family: Roboto;
+                    font-style: normal;
+                    font-weight: bold;
+                    font-size: 16px;
+                    line-height: 19px;
+                    color: #161C29;
+                    padding-bottom: 8px;
+                }
+
+                .subTitle{
+                    font-family: Roboto;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-size: 13px;
+                    line-height: 15px;
+
+                    color: #707177;
+                }
+            }
+        }
+
+        &__form{
+            width: 100%;
+            height: auto;
+            padding: 24px;
+
+            
+            &__text{
+                font-family: Roboto;
+                font-style: normal;
+                font-weight: bold;
+                font-size: 16px;
+                line-height: 19px;
+                color: #161C29;
+                
+                padding-bottom: 19px;
+            }
+            
+            &__selectCountry{
+                :global{
+                    
+                    .ant-select-selector{
+                        width: 300px;
+                        height: 42px;
+                        background: #FFFFFF;
+                        box-sizing: border-box;
+                        border-radius: 4px;
+                        border: 1px solid #D6DCE0;
+                    }
+
+                    .ant-select-selection-search-input{
+                        height: 100%;
+                    }
+
+                    // .ant-select-selection-placeholder {
+                    //     padding-top: 6px;
+                    // }
+
+                    .ant-select-single.ant-select-show-arrow .ant-select-selection-item, .ant-select-single.ant-select-show-arrow .ant-select-selection-placeholder, 
+                    .ant-select-single.ant-select-show-arrow .ant-select-selection-search{
+                        display: flex;
+                        align-items: center;
+                    }
+                }
+            }
+        }
+    }
+
+}
