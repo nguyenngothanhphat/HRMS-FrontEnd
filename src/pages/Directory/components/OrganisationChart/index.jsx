@@ -57,14 +57,43 @@ class OrganisationChart extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { listLocationsByCompany = [] } = this.props;
+    const { listLocationsByCompany = [], dataOrgChart = {}, listEmployeeAll } = this.props;
     if (
       JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {
       this.fetchAllListUser();
       this.fetchTimezone();
     }
+    if (JSON.stringify(prevProps.listEmployeeAll) !== JSON.stringify(listEmployeeAll)) {
+      this.getInitUserInformation(dataOrgChart);
+    }
   }
+
+  getInitUserInformation = (data) => {
+    const { listEmployeeAll } = this.props;
+    const { timezoneList, currentTime } = this.state;
+
+    const { user: { _id: userId = '' } = {} } = data;
+    const getData = listEmployeeAll.filter((item) => item._id === userId);
+    const convertData = getData.map((item) => {
+      const { _id, generalInfo, department, location, title } = item;
+      const findTimezone =
+        timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+      const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
+      return {
+        _id,
+        generalInfo,
+        department,
+        title,
+        location,
+        localTime: timeData,
+      };
+    });
+
+    const convertFinal = { ...convertData[0] };
+    this.setState({ idSelect: userId });
+    this.setState({ chartDetails: convertFinal });
+  };
 
   fetchAllListUser = () => {
     const { listLocationsByCompany = [], companiesOfUser = [], dispatch } = this.props;
