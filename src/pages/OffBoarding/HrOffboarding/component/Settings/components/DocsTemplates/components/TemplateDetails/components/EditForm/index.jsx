@@ -36,8 +36,8 @@ class EditForm extends Component {
         type: 'OFF_BOARDING',
         title,
       },
-    }).then((statusCode) => {
-      if (statusCode === 200) {
+    }).then((res) => {
+      if (res.statusCode === 200) {
         onClose();
         history.push({
           pathname: '/offboarding/settings/documents-templates',
