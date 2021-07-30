@@ -1283,13 +1283,16 @@ class BackgroundCheck extends Component {
 
     let newDocument = [];
     if (type === 'A') {
-      newDocument = [...checkedListA, name];
+      newDocument = [...checkedListA];
+      // newDocument = [...checkedListA, name];
     }
     if (type === 'B') {
-      newDocument = [...checkedListB, name];
+      // newDocument = [...checkedListB, name];
+      newDocument = [...checkedListB];
     }
     if (type === 'C') {
-      newDocument = [...checkedListC, name];
+      newDocument = [...checkedListC];
+      // newDocument = [...checkedListC, name];
     }
 
     const newDoc = {
@@ -1299,7 +1302,8 @@ class BackgroundCheck extends Component {
       new: true,
     };
 
-    const newDocumentList = [...documentChecklistSetting];
+    const documentCLSTByCountry = this.getDocumentListByCountry(documentChecklistSetting);
+    const newDocumentList = [...documentCLSTByCountry];
     newDocumentList.forEach((doc) => {
       if (doc.type === type) {
         doc.data.push(newDoc);
@@ -1381,7 +1385,8 @@ class BackgroundCheck extends Component {
       newDocument = checkedListC.filter((val) => val.key !== key);
     }
 
-    const newDocumentList = [...documentChecklistSetting];
+    const documentCLSTByCountry = this.getDocumentListByCountry(documentChecklistSetting);
+    const newDocumentList = [...documentCLSTByCountry];
     newDocumentList.forEach((doc) => {
       if (doc.type === type) {
         doc.data = doc.data.filter((v) => v.key !== key);
@@ -1556,7 +1561,7 @@ class BackgroundCheck extends Component {
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={note} />
 
-            {processStatus === 'DRAFT' ||
+            {processStatus === PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT ||
             processStatusFilled === PROCESS_STATUS.SENT_PROVISIONAL_OFFERS ? (
               <SendEmail
                 openModalEmail={openModalEmail}
