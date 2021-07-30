@@ -3,8 +3,6 @@ import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import {
-  getCurrentCompany,
-  getCurrentTenant,
   getAuthority,
   isOwner,
   // isAdmin,

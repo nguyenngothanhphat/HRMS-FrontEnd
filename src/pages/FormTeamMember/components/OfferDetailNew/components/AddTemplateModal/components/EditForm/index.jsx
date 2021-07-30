@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { history, connect } from 'umi';
-import { Button, notification } from 'antd';
+import { Button } from 'antd';
 import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
@@ -13,58 +13,19 @@ class EditForm extends Component {
   constructor(props) {
     super(props);
     this.mapValues = {};
-    const { currentTemplate } = this.props;
-    currentTemplate.settings.map((item) =>
-      Object.assign(this.mapValues, { [item.key]: item.description }),
-    );
-    this.state = {
-      editorContent: currentTemplate.htmlContent,
-    };
   }
 
-  handleSubmit = () => {
-    const { editorContent } = this.state;
-    const {
-      currentTemplate: { title, settings = [] },
-      dispatch,
-      onClose = () => {},
-    } = this.props;
-    const tenantId = getCurrentTenant();
-    dispatch({
-      type: 'employeeSetting/addCustomTemplate',
-      payload: {
-        html: editorContent,
-        settings,
-        type: 'ON_BOARDING',
-        title,
-        tenantId,
-      },
-    }).then((res) => {
-      if (res.statusCode === 200) {
-        onClose();
-        history.push({
-          pathname: '/employee-onboarding/settings',
-        });
-      }
-    });
-  };
-
   handleEditorChange = (content) => {
-    this.setState({
-      editorContent: content,
-    });
+    const { handleHtmlContent = () => {} } = this.props;
+    handleHtmlContent(content);
   };
 
   render() {
-    const {
-      currentTemplate: { settings = [] },
-      currentTemplate,
-      loading,
-    } = this.props;
+    const { currentTemplate: { settings = [] } = {} } = this.props;
     return (
       <div className={styles.EditForm}>
         <Editor
-          initialValue={currentTemplate.htmlContent}
+          // initialValue={currentTemplate.htmlContent}
           // apiKey={process.env.REACT_APP_TINYMCE_KEY}
           init={{
             height: '100%',
@@ -115,11 +76,6 @@ class EditForm extends Component {
           onEditorChange={this.handleEditorChange}
           outputFormat="raw"
         />
-        <div className={styles.buttonArea}>
-          <Button variant="contained" onClick={this.handleSubmit} loading={loading}>
-            Save as new template
-          </Button>
-        </div>
       </div>
     );
   }

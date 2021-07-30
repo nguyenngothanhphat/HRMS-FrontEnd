@@ -8,6 +8,7 @@ import { PROCESS_STATUS } from '@/utils/onboarding';
 import AddDocumentModal from './components/AddDocumentModal';
 import DocumentItem from './components/DocumentItem';
 import Template from './components/Template/index';
+import AddTemplateModal from './components/AddTemplateModal';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -29,6 +30,9 @@ const OfferDetail = (props) => {
     expiryDate: expiryDateProp,
   } = tempData;
   const [isAddModalVisible, setAddModalVisible] = useState(false);
+  const [isAddTemplateModalVisible, setAddTemplateModalVisible] = useState(false);
+
+  const [uploadedOfferTemplate, setUploadedOfferTemplate] = useState(offerLetterTemplateProp);
 
   const [defaultTemplates, setDefaultTemplates] = useState(defaultTemplatesProp || []);
   const [customTemplates, setCustomTemplates] = useState(customTemplatesProp || []);
@@ -186,7 +190,7 @@ const OfferDetail = (props) => {
 
   const handleTemplateChange = (_, option) => {
     const { value = '', key = '' } = option;
-
+    setUploadedOfferTemplate(key);
     setFile({
       name: value,
       id: key,
@@ -406,8 +410,9 @@ const OfferDetail = (props) => {
   const handleAddDocument = (type = 'document') => {
     if (type === 'document') setAddModalVisible(true);
     else {
-      const win = window.open('/create-new-template', '_blank');
-      win.focus();
+      setAddTemplateModalVisible(true);
+      // const win = window.open('/create-new-template', '_blank');
+      // win.focus();
     }
   };
 
@@ -415,6 +420,30 @@ const OfferDetail = (props) => {
     setAddModalVisible(value);
   };
 
+  const handleTemplateModalVisible = (value) => {
+    setAddTemplateModalVisible(value);
+  };
+
+  // refresh template list
+  const refreshTemplateList = async (value, key) => {
+    await dispatch({
+      type: 'candidateInfo/fetchDefaultTemplateList',
+      payload: {
+        tenantId: getCurrentTenant(),
+        type: 'ON_BOARDING',
+      },
+    });
+    await dispatch({
+      type: 'candidateInfo/fetchCustomTemplateList',
+      payload: {
+        tenantId: getCurrentTenant(),
+        type: 'ON_BOARDING',
+      },
+    });
+    const option = { value, key };
+    handleTemplateChange('', option);
+    setUploadedOfferTemplate(key);
+  };
   // DISABLE DATE OF DATE PICKER
   const disabledDate = (current) => {
     return current && current < moment();
@@ -534,7 +563,8 @@ const OfferDetail = (props) => {
                     <div className={styles.wrapper1}>
                       {/* <Form.Item name="template"> */}
                       <Select
-                        defaultValue={offerLetterTemplateProp}
+                        defaultValue={uploadedOfferTemplate}
+                        value={uploadedOfferTemplate}
                         placeholder="Select file"
                         className={styles.select}
                         onChange={(value, option) => handleTemplateChange(value, option)}
@@ -619,6 +649,12 @@ const OfferDetail = (props) => {
         defaultTemplates={defaultTemplatesProp}
         customTemplates={customTemplatesProp}
         onAdd={onAddDocument}
+      />
+      <AddTemplateModal
+        visible={isAddTemplateModalVisible}
+        handleModalVisible={handleTemplateModalVisible}
+        // onAdd={onAddTemplate}
+        refreshTemplateList={refreshTemplateList}
       />
     </>
   );

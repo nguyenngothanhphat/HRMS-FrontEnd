@@ -1,5 +1,5 @@
 import { DeleteOutlined, PlusCircleFilled } from '@ant-design/icons';
-import { Input, Spin, Table } from 'antd';
+import { Input, Select, Spin, Table } from 'antd';
 import { connect } from 'umi';
 import Modal from 'antd/lib/modal/Modal';
 import React, { Component } from 'react';
@@ -17,15 +17,15 @@ class Department extends Component {
       visible: false,
       testReord: {},
       data2: [],
-      newValue: '',
+      newDepartment: { name: '', departmentParentId: '' },
     };
   }
 
   componentDidMount() {
     const { department } = this.props;
     const formatData = department.map((item) => {
-      const { departmentId: DepartmentIDText, _id: DepartmentID, name: Deparmentname } = item;
-      return { DepartmentID, Deparmentname, DepartmentIDText };
+      const { departmentId: DepartmentIDText, _id: DepartmentID, name: DepartmentName } = item;
+      return { DepartmentID, DepartmentName, DepartmentIDText };
     });
     this.setState({ data2: formatData });
   }
@@ -39,13 +39,13 @@ class Department extends Component {
       };
     }
     const formatData = department.map((item) => {
-      const { departmentId: DepartmentIDText, _id: DepartmentID, name: Deparmentname } = item;
-      return { DepartmentID, Deparmentname, DepartmentIDText };
+      const { departmentId: DepartmentIDText, _id: DepartmentID, name: DepartmentName } = item;
+      return { DepartmentID, DepartmentName, DepartmentIDText };
     });
     return { data2: formatData };
   }
 
-  onSelectChange = (selectedRowKeys, selectedRows) => {
+  onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
   };
 
@@ -70,7 +70,7 @@ class Department extends Component {
     });
   };
 
-  handleCancel = (e) => {
+  handleCancel = () => {
     this.setState({
       visible: false,
     });
@@ -83,23 +83,24 @@ class Department extends Component {
     });
   };
 
-  handleChangeValue = (e) => {
-    const { value } = e.target;
-    this.setState({ newValue: value });
+  handleChangeValue = (value) => {
+    const { newDepartment } = this.state;
+    this.setState({ newDepartment: { ...newDepartment, ...value } });
   };
 
-  handleAddNewValue = async (newValue) => {
+  handleAddNewValue = async () => {
     const { dispatch } = this.props;
-    if (newValue === '') return;
+    const { newDepartment } = this.state;
+    if (newDepartment.name === '') return;
     await dispatch({
       type: 'adminSetting/addDepartment',
-      payload: { name: newValue },
+      payload: newDepartment,
     });
-    this.setState({ newValue: '' });
+    this.setState({ newDepartment: { name: '', departmentParentId: '' } });
   };
 
   render() {
-    const { selectedRowKeys, visible, testReord, data2, newValue } = this.state;
+    const { selectedRowKeys, visible, testReord, data2, newDepartment } = this.state;
     const { loading } = this.props;
     if (loading)
       return (
@@ -117,12 +118,14 @@ class Department extends Component {
         title: 'Department ID',
         dataIndex: 'DepartmentIDText',
         align: 'center',
+        width: '20%',
       },
       {
         key: 2,
-        title: 'Deparment name',
-        dataIndex: 'Deparmentname',
-        align: 'center',
+        title: 'Department name',
+        dataIndex: 'DepartmentName',
+        align: 'left',
+        width: '70%',
       },
       {
         key: 3,
@@ -132,14 +135,37 @@ class Department extends Component {
           record.DepartmentID !== '' ? (
             <DeleteOutlined onClick={() => this.handleClickDelete(text, record)} />
           ) : (
-            <PlusCircleFilled onClick={() => this.handleAddNewValue(newValue)} />
+            <PlusCircleFilled onClick={() => this.handleAddNewValue()} />
           ),
         align: 'center',
       },
     ];
     const add = {
       DepartmentID: '',
-      Deparmentname: <Input onChange={this.handleChangeValue} value={newValue} />,
+      DepartmentName: (
+        <>
+          <Input
+            placeholder="DepartmentName"
+            onChange={(e) => this.handleChangeValue({ name: e.target.value })}
+            value={newDepartment.name}
+          />
+          <Select
+            onChange={
+              (value) =>
+                this.handleChangeValue({
+                  departmentParentId: value,
+                })
+              // eslint-disable-next-line react/jsx-curly-newline
+            }
+            placeholder="Parent Department"
+          >
+            <Select.Option value="">None</Select.Option>
+            {data2.map((d) => (
+              <Select.Option value={d.DepartmentIDText}>{d.DepartmentName}</Select.Option>
+            ))}
+          </Select>
+        </>
+      ),
     };
     const renderAdd = [...data2, add];
 
@@ -155,7 +181,7 @@ class Department extends Component {
         />
 
         <Modal
-          title={`Delete ${testReord.Deparmentname}? Are you sure?`}
+          title={`Delete ${testReord.DepartmentName}? Are you sure?`}
           visible={visible}
           onOk={this.handleOk}
           onCancel={this.handleCancel}
