@@ -20,11 +20,11 @@ class ModalEmail extends Component {
       checkValidation,
       handleLinkClick = () => {},
       generateLink,
-      initialGenerateLink,
       handleGenerate = () => {},
       handleMarkAsDone = () => {},
       isSentEmail,
     } = this.props;
+
     return (
       <>
         <div className={style.header}>
@@ -47,7 +47,10 @@ class ModalEmail extends Component {
         </div>
         <div className={style.body}>
           <Form no-style>
-            <Radio.Group className={style.radioContainer}>
+            <Radio.Group
+              disabled={checkValidation === false || checkValidation === undefined}
+              className={style.radioContainer}
+            >
               {/* Email */}
               <Radio value={1} className={style.radioItem} onChange={handleEmailClick}>
                 Via Mail
@@ -99,19 +102,21 @@ class ModalEmail extends Component {
                 <Form
                   no-style
                   className={style.linkForm}
-                  initialValues={{ generateLink: generateLink || initialGenerateLink }}
+                  // initialValues={{ generateLink }}
                   onFinish={(values) => handleMarkAsDone(values)}
                 >
-                  <div className={style.wrapperInput}>
-                    <Form.Item name="generateLink">
-                      <Input />
-                    </Form.Item>
-                    <Form.Item className={style.generateButton}>
-                      <Button onClick={handleGenerate} className={style.generateButtonItem}>
-                        <img src={copy} alt="copy item" className={style.copy} />
-                      </Button>
-                    </Form.Item>
-                  </div>
+                  {generateLink && (
+                    <div className={style.wrapperInput}>
+                      <Form.Item name="generateLink">
+                        <Input defaultValue={generateLink} />
+                      </Form.Item>
+                      <Form.Item className={style.generateButton}>
+                        <Button onClick={handleGenerate} className={style.generateButtonItem}>
+                          <img src={copy} alt="copy item" className={style.copy} />
+                        </Button>
+                      </Form.Item>
+                    </div>
+                  )}
                   <div className={style.textBottom}>
                     <Typography.Text className={style.title}>Restricted access</Typography.Text>
                     <Typography.Paragraph className={style.helper}>
@@ -149,7 +154,17 @@ class ModalEmail extends Component {
                     )}
 
                     <Form.Item className={style.s1}>
-                      <Button htmlType="submit">Mark as done</Button>
+                      <Button
+                        disabled={checkValidation === false || checkValidation === undefined}
+                        // eslint-disable-next-line react/jsx-props-no-spreading
+                        {...((checkValidation === false || checkValidation === undefined) && {
+                          className: style.s,
+                        })}
+                        loading={loading4}
+                        htmlType="submit"
+                      >
+                        {generateLink ? 'Mark as done' : 'Generate link'}
+                      </Button>
                     </Form.Item>
                     {/* Process to release a final offer */}
                   </div>

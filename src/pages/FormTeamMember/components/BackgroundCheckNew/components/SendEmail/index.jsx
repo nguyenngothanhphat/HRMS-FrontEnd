@@ -28,12 +28,11 @@ const index = ({
   const [isEnable, setIsEnable] = useState('');
   const [isInputEnable, setIsInputEnable] = useState(true);
   const [check, setCheck] = useState(false);
-  const [initialGenerateLink] = useState('abc.xyz.com');
   const handleEmailClick = () => {
     setIsEnable(true);
   };
 
-  const handleLinkClick = () => {
+  const handleLinkClick = async () => {
     setIsEnable(false);
   };
 
@@ -42,7 +41,7 @@ const index = ({
   };
 
   const handleGenerate = () => {
-    message.success('Generated link sucessfully');
+    message.success('Generated link successfully');
   };
 
   useEffect(() => {
@@ -84,7 +83,10 @@ const index = ({
 
       <CustomModal
         open={openModalEmail}
-        closeModal={closeModalEmail}
+        closeModal={() => {
+          closeModalEmail();
+          setIsEnable('');
+        }}
         docmail={1}
         content={
           <ModalEmail
@@ -100,7 +102,6 @@ const index = ({
             loading4={loading4}
             handleLinkClick={handleLinkClick}
             generateLink={generateLink}
-            initialGenerateLink={initialGenerateLink}
             handleGenerate={handleGenerate}
             handleMarkAsDone={handleMarkAsDone}
           />

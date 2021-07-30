@@ -798,7 +798,7 @@ class BackgroundCheck extends Component {
   };
 
   // EMAILS
-  handleSendEmail = () => {
+  handleSendEmail = async (type) => {
     const { dispatch } = this.props;
     const { newPoe } = this.state;
 
@@ -872,15 +872,15 @@ class BackgroundCheck extends Component {
       tenantId: getCurrentTenant(),
     };
 
-    dispatch({
+    await dispatch({
       type: 'candidateInfo/submitPhase1Effect',
       payload,
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         this.setState({
-          openModal: true,
+          openModal: type !== 'generate-link',
           refreshBlockE: true,
-          openModalEmail: false,
+          openModalEmail: type === 'generate-link',
         });
         this.getDataFromServer();
         // refresh block D (IMPORTANT)
@@ -893,8 +893,8 @@ class BackgroundCheck extends Component {
         dispatch({
           type: 'candidateInfo/saveTemp',
           payload: {
-            isMarkAsDone: false,
-            isSentEmail: true,
+            isMarkAsDone: type === 'generate-link',
+            isSentEmail: type !== 'generate-link',
           },
         });
       }
@@ -905,6 +905,8 @@ class BackgroundCheck extends Component {
         checkValidation: true,
       },
     });
+
+    return 'DONE';
   };
 
   handleValueChange = (e) => {
@@ -918,18 +920,43 @@ class BackgroundCheck extends Component {
     });
   };
 
-  handleMarkAsDone = (user) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'candidateInfo/saveTemp',
+  handleMarkAsDone = async (user) => {
+    const {
+      dispatch,
+      tempData: {
+        candidate,
+        firstName,
+
+        privateEmail,
+        processStatus,
+      } = {},
+    } = this.props;
+
+    if (processStatus !== 'SENT-PROVISIONAL-OFFER') {
+      await this.handleSendEmail('generate-link');
+    }
+    const link = await dispatch({
+      type: 'candidateInfo/generateLink',
       payload: {
-        generateLink: user.generateLink,
-        isMarkAsDone: true,
+        candidate,
+        firstName,
+        privateEmail,
       },
     });
-    this.setState({
-      openModal: true,
-    });
+    if (link.statusCode === 200) {
+      // setGeneratedLink(link.data.url);
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          generateLink: link.data.url,
+          isMarkAsDone: true,
+        },
+      });
+
+      this.setState({
+        openModal: true,
+      });
+    }
   };
 
   // bottom bar
@@ -1411,6 +1438,7 @@ class BackgroundCheck extends Component {
   // main
   render() {
     const {
+      dispatch,
       candidateInfo: {
         tempData,
         tempData: {
@@ -1426,7 +1454,7 @@ class BackgroundCheck extends Component {
           documentChecklistSetting = [],
           previousEmployment: { poe = [] } = {},
         },
-        data: { privateEmail, processStatus: processStatusFilled = '' },
+        data: { privateEmail, processStatus: processStatusFilled = '', candidate = '' },
       } = {},
       processStatus,
       loading4,
@@ -1550,6 +1578,8 @@ class BackgroundCheck extends Component {
                 checkValidation={checkValidation}
                 valueToFinalOffer={valueToFinalOffer}
                 changeValueToFinalOffer={this.changeValueToFinalOffer}
+                dispatch={dispatch}
+                candidate={candidate}
               />
             ) : (
               ''
