@@ -153,6 +153,8 @@ class OrganizationChart extends Component {
     const isActive = itemSelected === idUser;
     const className = isActive ? styles.selectNode : styles.node;
 
+    if (isEmpty(dataOrgChart)) return null;
+
     return (
       <div
         id={idUser}
