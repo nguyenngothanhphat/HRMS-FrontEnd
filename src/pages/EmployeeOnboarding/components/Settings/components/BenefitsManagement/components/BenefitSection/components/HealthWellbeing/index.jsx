@@ -213,7 +213,6 @@ class HealthWellbeing extends Component {
   };
 
   formItem = (benefitName, index) => {
-    const { visionPlanDocs, dentalPlanDocs } = this.state;
     return (
       <>
         <div className={styles.benefit}>
@@ -225,13 +224,7 @@ class HealthWellbeing extends Component {
             <div className={styles.benefit__subTitle__right}>Valid Till 26/04/2020</div>
           </div>
           {this.planDocuments(benefitName)}
-          <div
-            className={`
-            ${styles.addDocs} 
-            ${visionPlanDocs.length === 0 ? styles.addDocs1 : {}} 
-            ${dentalPlanDocs.length === 0 ? styles.addDocs2 : {}}`}
-            onClick={() => this.handleAddPlanDocs(benefitName)}
-          >
+          <div className={styles.addDocs} onClick={() => this.handleAddPlanDocs(benefitName)}>
             <img alt="add" src={AddIcon} />
             <div className={styles.addDocs__text}>Add Documents</div>
           </div>
