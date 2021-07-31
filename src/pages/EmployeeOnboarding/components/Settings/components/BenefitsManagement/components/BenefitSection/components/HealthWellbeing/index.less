@@ -41,29 +41,30 @@
 
             .planDocuments{
                 padding-top: 16px;
+                :global{
+                    .ant-select-selector{
+                        background: #FFFFFF;
+                        border: 1px solid #D6DCE4;
+                        box-sizing: border-box;
+                        border-radius: 5px;
 
+                        height: 42px;
+                    }
+
+                    .ant-select-selection-search-input{
+                        height: 100%;
+                    }
+
+                    .ant-select-single.ant-select-show-arrow .ant-select-selection-item, .ant-select-single.ant-select-show-arrow .ant-select-selection-placeholder, 
+                    .ant-select-single.ant-select-show-arrow .ant-select-selection-search{
+                        display: flex;
+                        align-items: center;
+                    }
+
+                }
+                
                 &__first{
-
                     :global{
-                        .ant-select-selector{
-                            background: #FFFFFF;
-                            border: 1px solid #D6DCE4;
-                            box-sizing: border-box;
-                            border-radius: 5px;
-
-                            height: 42px;
-                        }
-
-                        .ant-select-selection-search-input{
-                            height: 100%;
-                        }
-
-                        .ant-select-single.ant-select-show-arrow .ant-select-selection-item, .ant-select-single.ant-select-show-arrow .ant-select-selection-placeholder, 
-                        .ant-select-single.ant-select-show-arrow .ant-select-selection-search{
-                            display: flex;
-                            align-items: center;
-                        }
-
                         .ant-select-selection-item{
                             font-family: Roboto;
                             font-style: normal;
@@ -71,9 +72,10 @@
                             font-size: 14px;
                             line-height: 16px;
                             text-decoration-line: underline;
-
+        
                             color: #2C6DF9;
                         }
+                        
                     }
 
 
@@ -87,6 +89,55 @@
                         color: #707177;
                         
                         padding-bottom: 16px;
+                    }
+                }
+
+                &__second{
+                    :global {
+                        .ant-select-arrow{
+                            font-family: Roboto;
+                            font-style: normal;
+                            font-weight: normal;
+                            font-size: 14px;
+                            line-height: 16px;
+
+                            color: #161C29;
+                        }
+                    }
+
+                    .inputNumber{
+                        width: 180px;
+                    }
+
+                    .label{
+                        font-family: Roboto;
+                        font-style: normal;
+                        font-weight: normal;
+                        font-size: 13px;
+                        line-height: 15px;
+
+                        color: #707177;
+                        padding-bottom: 8px;
+                    }
+
+                    .addDocs{
+                        display: flex;
+                        align-items: center;
+                        cursor: pointer;
+
+                        &__text{
+                            padding-left: 16px;
+                            font-family: Roboto;
+                            font-style: normal;
+                            font-weight: 500;
+                            font-size: 13px;
+                            line-height: 15px;
+                            /* identical to box height */
+
+                            letter-spacing: 0.121875px;
+
+                            color: #2C6DF9;
+                        }
                     }
                 }
             }
