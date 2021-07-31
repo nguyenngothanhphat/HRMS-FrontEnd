@@ -31,7 +31,7 @@ class HealthWellbeing extends Component {
     console.log(value);
   };
 
-  handleAddDocuments = (benefitName) => {
+  handleAddPlanDocs = (benefitName) => {
     const { visionPlanDocs, dentalPlanDocs } = this.state;
     let arrTemp = [];
 
@@ -92,7 +92,7 @@ class HealthWellbeing extends Component {
                       showSearch
                       showArrow
                       // allowClear
-                      placeholder="Choice Plan Document (01)"
+                      placeholder={`Choice Plan Document (${doc})`}
                       onChange={this.onChangeSelect}
                       suffixIcon={
                         visionPlanDoc1 ? (
@@ -213,6 +213,7 @@ class HealthWellbeing extends Component {
   };
 
   formItem = (benefitName, index) => {
+    const { visionPlanDocs, dentalPlanDocs } = this.state;
     return (
       <>
         <div className={styles.benefit}>
@@ -224,7 +225,13 @@ class HealthWellbeing extends Component {
             <div className={styles.benefit__subTitle__right}>Valid Till 26/04/2020</div>
           </div>
           {this.planDocuments(benefitName)}
-          <div className={styles.addDocs} onClick={() => this.handleAddDocuments(benefitName)}>
+          <div
+            className={`
+            ${styles.addDocs} 
+            ${visionPlanDocs.length === 0 ? styles.addDocs1 : {}} 
+            ${dentalPlanDocs.length === 0 ? styles.addDocs2 : {}}`}
+            onClick={() => this.handleAddPlanDocs(benefitName)}
+          >
             <img alt="add" src={AddIcon} />
             <div className={styles.addDocs__text}>Add Documents</div>
           </div>
