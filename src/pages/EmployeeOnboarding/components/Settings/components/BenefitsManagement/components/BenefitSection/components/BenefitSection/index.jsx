@@ -25,7 +25,7 @@ class BenefitSection extends Component {
       <div className={styles.benefitSection}>
         <div className={styles.locationSelection}>
           <div className={styles.locationSelection__text}>Choose Location</div>
-          <div className={styles.locationSelection__selectCountry}>
+          {/* <div className={styles.locationSelection__selectCountry}>
             <Select
               showSearch
               showArrow
@@ -53,7 +53,7 @@ class BenefitSection extends Component {
                 </Option>
               ))}
             </Select>
-          </div>
+          </div> */}
         </div>
         <Tabs defaultActiveKey="1">
           <TabPane tab="Health & Wellbeing" key="1">

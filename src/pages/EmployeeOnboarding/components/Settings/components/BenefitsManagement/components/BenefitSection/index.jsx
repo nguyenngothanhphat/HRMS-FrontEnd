@@ -14,12 +14,12 @@ class BenefitPage extends Component {
     this.state = {};
   }
 
-  componentDidMount = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'country/fetchListCountry',
-    });
-  };
+  // componentDidMount = () => {
+  //   const { dispatch } = this.props;
+  //   dispatch({
+  //     type: 'country/fetchListCountry',
+  //   });
+  // };
 
   render() {
     const { loadingFetchCountry } = this.props;

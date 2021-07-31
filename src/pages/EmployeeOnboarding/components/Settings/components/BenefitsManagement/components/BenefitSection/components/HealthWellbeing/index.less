@@ -1,12 +1,22 @@
 .healthWellbeing{
     width: 100%;
 
-    .formVision{
+    .formItem{
         width: 100%;
         height: auto;
-        padding: 30px 33px;
 
-        .vision{
+        :global{
+            .ant-divider-horizontal{
+                margin: 0;
+            }
+
+            .ant-divider{
+                border-top: 1px solid #D6DCE0;
+            }
+        }
+        
+        .benefit{
+            padding: 30px 33px;
 
             &__title{
                 font-family: Roboto;
@@ -120,25 +130,25 @@
                         padding-bottom: 8px;
                     }
 
-                    .addDocs{
-                        display: flex;
-                        align-items: center;
-                        cursor: pointer;
+                }
+            }
+            .addDocs{
+                display: flex;
+                align-items: center;
+                cursor: pointer;
 
-                        &__text{
-                            padding-left: 16px;
-                            font-family: Roboto;
-                            font-style: normal;
-                            font-weight: 500;
-                            font-size: 13px;
-                            line-height: 15px;
-                            /* identical to box height */
+                &__text{
+                    padding-left: 16px;
+                    font-family: Roboto;
+                    font-style: normal;
+                    font-weight: 500;
+                    font-size: 13px;
+                    line-height: 15px;
+                    /* identical to box height */
 
-                            letter-spacing: 0.121875px;
+                    letter-spacing: 0.121875px;
 
-                            color: #2C6DF9;
-                        }
-                    }
+                    color: #2C6DF9;
                 }
             }
         }
