@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Col, Row } from 'antd';
 
-import BenefitSection from './components/BenefitSection';
+import BenefitPage from './components/BenefitSection';
 import NoteBox from './components/NoteBox';
 
 import styles from './index.less';
@@ -17,7 +17,7 @@ class BenefitsManagement extends Component {
       <div className={styles.benefitManagement}>
         <Row gutter={[0, 24]}>
           <Col span={17}>
-            <BenefitSection />
+            <BenefitPage />
           </Col>
           <Col span={7}>
             <NoteBox />

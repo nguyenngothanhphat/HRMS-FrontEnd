@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
-import { Button, Select, Spin } from 'antd';
+import { Button, Spin } from 'antd';
 import { connect } from 'umi';
+import BenefitSection from './components/BenefitSection';
 
 import styles from './index.less';
 
-const { Option } = Select;
-@connect(({ country: { listCountry = [] } = {}, loading }) => ({
-  listCountry,
+@connect(({ loading }) => ({
   loadingFetchCountry: loading.effects['country/fetchListCountry'],
 }))
-class BenefitSection extends Component {
+class BenefitPage extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -23,7 +22,7 @@ class BenefitSection extends Component {
   };
 
   render() {
-    const { listCountry = [], loadingFetchCountry } = this.props;
+    const { loadingFetchCountry } = this.props;
     if (loadingFetchCountry)
       return (
         <div className={styles.loadingSpin}>
@@ -31,7 +30,7 @@ class BenefitSection extends Component {
         </div>
       );
     return (
-      <div className={styles.benefitSection}>
+      <div className={styles.benefitManagement}>
         <div className={styles.benefitRoot}>
           <div className={styles.benefitRoot__header}>
             <div className={styles.benefitRoot__header__text}>
@@ -43,37 +42,8 @@ class BenefitSection extends Component {
             <Button>Add a Benefit</Button>
           </div>
 
-          <div className={styles.benefitRoot__form}>
-            <div className={styles.benefitRoot__form__text}>Choose Location</div>
-            <div className={styles.benefitRoot__form__selectCountry}>
-              <Select
-                showSearch
-                showArrow
-                allowClear
-                loading={loadingFetchCountry}
-                placeholder="Select location"
-                onChange={this.onChangeSelect}
-                filterOption={(input, option) => {
-                  return option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                }}
-              >
-                {listCountry.map((item) => (
-                  <Option value={item._id}>
-                    <img
-                      style={{
-                        width: '24px',
-                        height: '24px',
-                        borderRadius: '50%',
-                        marginRight: '8px',
-                      }}
-                      src={item.flag}
-                      alt="flag"
-                    />
-                    {item.name}
-                  </Option>
-                ))}
-              </Select>
-            </div>
+          <div className={styles.benefitRoot__bottom}>
+            <BenefitSection />
           </div>
         </div>
       </div>
@@ -81,4 +51,4 @@ class BenefitSection extends Component {
   }
 }
 
-export default BenefitSection;
+export default BenefitPage;
