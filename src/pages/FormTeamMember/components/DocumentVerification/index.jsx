@@ -1,16 +1,16 @@
 /* eslint-disable no-param-reassign */
 import CustomModal from '@/components/CustomModal';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 // import Warning from './components/Warning';
-import { Button, Col, notification, Row, Spin, Typography } from 'antd';
+import { Button, Col, notification, Row, Typography } from 'antd';
 import { map } from 'lodash';
 import React, { Component } from 'react';
 import { connect, formatMessage } from 'umi';
-import { PROCESS_STATUS } from '@/utils/onboarding';
 import NoteComponent from '../NoteComponent';
 import CollapseFieldsType1 from './components/CollapseFieldsType1';
-import CollapseFieldsTypeE from './components/CollapseFieldsTypeE';
 import CollapseFieldsType3 from './components/CollapseFieldsType3';
+import CollapseFieldsTypeE from './components/CollapseFieldsTypeE';
 import ModalContentComponent from './components/ModalContentComponent';
 import SendEmail from './components/SendEmail';
 import Title from './components/Title';
@@ -60,14 +60,10 @@ class DocumentVerification extends Component {
     this.state = {
       openModal: false,
       openModalEmail: false,
-      // newPoe: [],
       identityProof: {},
       addressProof: {},
       educational: {},
-      // previousEmployment: {},
       checkRadioSendMail: 0,
-      // documentChecklistSetting: {},
-
       refreshBlockE: false,
     };
   }
@@ -121,6 +117,35 @@ class DocumentVerification extends Component {
     // });
     // this.handleUpdateByHR();
   }
+
+  componentDidUpdate = (prevProps) => {
+    const { tempData: { documentChecklistSetting = [] } = {}, dispatch } = this.props;
+
+    if (
+      JSON.stringify(prevProps.tempData.documentChecklistSetting) !==
+      JSON.stringify(documentChecklistSetting)
+    ) {
+      let validation = true;
+      documentChecklistSetting.forEach((item) => {
+        if (item.type === 'D') {
+          const aliases = item.data
+            .map((v) => v.alias)
+            .filter((f) => f !== null && f !== undefined && f !== '');
+          if (aliases.length !== item.data.length) validation = false;
+        }
+        if (item.type === 'E') {
+          if (!item.employer) validation = false;
+        }
+      });
+
+      dispatch({
+        type: 'candidateInfo/saveTemp',
+        payload: {
+          checkValidation: validation,
+        },
+      });
+    }
+  };
 
   // GET DATA FROM SERVER
   getDataFromServer = () => {
@@ -888,8 +913,9 @@ class DocumentVerification extends Component {
       data: fieldDataTypeE,
     };
 
-    let newDocumentList = [...documentChecklistSetting];
-    const forCheckE = documentChecklistSetting.filter((doc) => doc.type === 'E');
+    let newDocumentList = [...JSON.parse(JSON.stringify(documentChecklistSetting))];
+    const forCheckE = newDocumentList.filter((doc) => doc.type === 'E');
+
     if (forCheckE.length === 1 && forCheckE[0].data.length === 0) {
       newDocumentList = newDocumentList.map((doc) => {
         if (doc.type === 'E') {
@@ -920,18 +946,17 @@ class DocumentVerification extends Component {
           identityProof: { checkedList: checkedListA = [] } = {},
           addressProof: { checkedList: checkedListB = [] } = {},
           educational: { checkedList: checkedListC = [] } = {},
-          // technicalCertifications: { checkedList: checkedListD = [] } = {},
-          // technicalCertifications = {},
-          // previousEmployment: { poe = [] } = {},
           documentChecklistSetting = [],
         },
       } = {},
       dispatch,
     } = this.props;
 
+    const documentCLS = JSON.parse(JSON.stringify(documentChecklistSetting));
+
     // const newDocument = [...checkedListD];
-    const documentCLSTypeOthers = documentChecklistSetting.filter((doc) => doc.type !== 'E');
-    const documentCLSTypeE = documentChecklistSetting.filter((doc) => doc.type === 'E');
+    const documentCLSTypeOthers = documentCLS.filter((doc) => doc.type !== 'E');
+    const documentCLSTypeE = documentCLS.filter((doc) => doc.type === 'E');
 
     documentCLSTypeE[index].employer = value;
 
@@ -972,8 +997,10 @@ class DocumentVerification extends Component {
     });
 
     // const newDocument = [...checkedListD];
-    const documentCLSTypeOthers = documentChecklistSetting.filter((doc) => doc.type !== 'E');
-    const documentCLSTypeE = documentChecklistSetting.filter((doc) => doc.type === 'E');
+    const documentCLS = JSON.parse(JSON.stringify(documentChecklistSetting));
+
+    const documentCLSTypeOthers = documentCLS.filter((doc) => doc.type !== 'E');
+    const documentCLSTypeE = documentCLS.filter((doc) => doc.type === 'E');
 
     documentCLSTypeE[index].data = [...newList];
 
@@ -1006,8 +1033,10 @@ class DocumentVerification extends Component {
     } = this.props;
 
     // const newDocument = [...checkedListD];
-    const documentCLSTypeOthers = documentChecklistSetting.filter((doc) => doc.type !== 'E');
-    const documentCLSTypeE = documentChecklistSetting.filter((doc) => doc.type === 'E');
+    const documentCLS = JSON.parse(JSON.stringify(documentChecklistSetting));
+
+    const documentCLSTypeOthers = documentCLS.filter((doc) => doc.type !== 'E');
+    const documentCLSTypeE = documentCLS.filter((doc) => doc.type === 'E');
 
     documentCLSTypeE.splice(index, 1);
 
@@ -1060,20 +1089,21 @@ class DocumentVerification extends Component {
       validityDate: '',
     };
 
-    const newDocumentList = [...documentChecklistSetting];
-    documentChecklistSetting.forEach((doc) => {
+    const documentCLS = JSON.parse(JSON.stringify(documentChecklistSetting));
+
+    documentCLS.forEach((doc) => {
       if (doc.type === 'D') {
         doc.data.push(newDoc);
       }
     });
 
-    const docsListD = newDocumentList.filter((doc) => doc.type === 'D') || [];
-    const docsListE = newDocumentList.filter((doc) => doc.type === 'E') || [];
+    const docsListD = documentCLS.filter((doc) => doc.type === 'D') || [];
+    const docsListE = documentCLS.filter((doc) => doc.type === 'E') || [];
 
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
-        documentChecklistSetting: newDocumentList,
+        documentChecklistSetting: documentCLS,
         technicalCertifications: {
           ...technicalCertifications,
           checkedList: newDocument,
@@ -1106,10 +1136,12 @@ class DocumentVerification extends Component {
     //   alias: name,
     //   value: true,
     // };
+    const documentCLS = JSON.parse(JSON.stringify(documentChecklistSetting));
+
     let checkedList = [];
-    const docsList = documentChecklistSetting.filter((doc) => doc.type !== 'D');
+    const docsList = documentCLS.filter((doc) => doc.type !== 'D');
     const newDocumentList = JSON.parse(
-      JSON.stringify(documentChecklistSetting.filter((doc) => doc.type === 'D')),
+      JSON.stringify(documentCLS.filter((doc) => doc.type === 'D')),
     );
 
     newDocumentList.forEach((doc) => {
@@ -1142,7 +1174,8 @@ class DocumentVerification extends Component {
         },
       },
     });
-    const docsListE = documentChecklistSetting.filter((doc) => doc.type === 'E');
+
+    const docsListE = documentCLS.filter((doc) => doc.type === 'E');
     this.handleUpdateByHR(docsListE, checkedListA, checkedListB, checkedListC, newDocumentList);
   };
 
@@ -1164,20 +1197,21 @@ class DocumentVerification extends Component {
 
     const newDocument = [...checkedListD];
 
-    const newDocumentList = [...documentChecklistSetting];
-    newDocumentList.forEach((doc) => {
+    const documentCLS = JSON.parse(JSON.stringify(documentChecklistSetting));
+
+    documentCLS.forEach((doc) => {
       if (doc.type === 'D') {
         doc.data.splice(index, 1);
       }
     });
 
-    const docsListD = newDocumentList.filter((val) => val.type === 'D') || [];
-    const docsListE = newDocumentList.filter((val) => val.type === 'E') || [];
+    const docsListD = documentCLS.filter((val) => val.type === 'D') || [];
+    const docsListE = documentCLS.filter((val) => val.type === 'E') || [];
 
     dispatch({
       type: 'candidateInfo/saveTemp',
       payload: {
-        documentChecklistSetting: newDocumentList,
+        documentChecklistSetting: documentCLS,
         technicalCertifications: {
           ...technicalCertifications,
           checkedList: newDocument,
