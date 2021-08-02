@@ -74,9 +74,9 @@ class HealthWellbeing extends Component {
               <Col span={15}>
                 <Form.Item>
                   <Select
+                    disabled
                     showSearch
                     showArrow
-                    dropdownRender={() => null}
                     ref={this.inputRef}
                     placeholder="Choice Plan Document"
                     defaultValue={
