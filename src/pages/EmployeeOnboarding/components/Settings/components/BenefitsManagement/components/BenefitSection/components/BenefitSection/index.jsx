@@ -19,7 +19,7 @@ class BenefitSection extends Component {
   }
 
   render() {
-    const { loadingFetchCountry, listCountry = [] } = this.props;
+    const { loadingFetchCountry, listCountry = [], onChangeSelect = () => {} } = this.props;
 
     return (
       <div className={styles.benefitSection}>
@@ -32,7 +32,7 @@ class BenefitSection extends Component {
               allowClear
               loading={loadingFetchCountry}
               placeholder="Select location"
-              onChange={this.onChangeSelect}
+              onChange={onChangeSelect}
               filterOption={(input, option) => {
                 return option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0;
               }}

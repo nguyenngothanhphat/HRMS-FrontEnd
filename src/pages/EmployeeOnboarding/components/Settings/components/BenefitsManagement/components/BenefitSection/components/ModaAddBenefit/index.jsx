@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Spin, Modal, Form, Select, DatePicker } from 'antd';
+import { connect } from 'umi';
 
 import CalendarIcon from '@/assets/calendar-v2.svg';
 
@@ -7,10 +8,16 @@ import styles from './index.less';
 
 const { Option } = Select;
 
+@connect(({ onboardingSettings: { listBenefitDefault = [] } = {}, loading }) => ({
+  listBenefitDefault,
+  loadingFetchListBenefitDefault: loading.effects['onboardingSettings/fetchListBenefitDefault'],
+}))
 class ModalAddBenefit extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      listBenefitCategory: [],
+    };
   }
 
   destroyOnClose = () => {
@@ -18,9 +25,38 @@ class ModalAddBenefit extends Component {
     handleCandelModal();
   };
 
-  render() {
-    const { visible = false } = this.props;
+  onChangeBenefitType = (value) => {
+    const { listBenefitDefault = [] } = this.props;
 
+    let getListBenefit = listBenefitDefault.map((item) => {
+      if (item.benefitType === value) {
+        return item.benefitCategory;
+      }
+      return null;
+    });
+
+    getListBenefit = getListBenefit.filter((item) => item !== null);
+
+    if (getListBenefit) {
+      this.setState({ listBenefitCategory: getListBenefit[0] });
+    }
+  };
+
+  render() {
+    const {
+      visible = false,
+      loadingFetchListBenefitDefault = false,
+      listBenefitDefault = [],
+    } = this.props;
+
+    const { listBenefitCategory } = this.state;
+
+    if (loadingFetchListBenefitDefault)
+      return (
+        <div className={styles.loadingModal}>
+          <Spin />
+        </div>
+      );
     return (
       <Modal
         visible={visible}
@@ -36,20 +72,45 @@ class ModalAddBenefit extends Component {
           </div>
           <Form>
             <div className={styles.addBenefit__body}>
-              <div className={styles.addBenefit__body_label}>Heading</div>
+              <div className={styles.addBenefit__body_label}>Benefit Type</div>
               <div className={styles.addBenefit__body_formItem}>
-                <Form.Item name="heading">
+                <Form.Item name="type">
                   <Select
                     showSearch
                     allowClear
                     suffixIcon={null}
-                    placeholder="Select heading"
+                    placeholder="Select benefit type"
+                    onChange={this.onChangeBenefitType}
+                    filterOption={(input, option) => {
+                      return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                    }}
+                  >
+                    {listBenefitDefault.map((item) => (
+                      <Option key={item.benefitType} value={item.benefitType}>
+                        {item.benefitType}
+                      </Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </div>
+              <div className={styles.addBenefit__body_label}>Benefit Category</div>
+              <div className={styles.addBenefit__body_formItem}>
+                <Form.Item name="category">
+                  <Select
+                    showSearch
+                    allowClear
+                    suffixIcon={null}
+                    placeholder="Select benefit category"
                     // onChange={this.onChangeSelect}
                     filterOption={(input, option) => {
                       return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
                     }}
                   >
-                    <Option value="health">Health & Wellbeing</Option>
+                    {listBenefitCategory.map((item) => (
+                      <Option key={item} value={item}>
+                        {item}
+                      </Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </div>

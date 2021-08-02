@@ -13,3 +13,10 @@ export async function addInsurance(payload) {
     data: payload,
   });
 }
+
+export async function getListBenefitDefault(payload) {
+  return request('/api/benefittenant/list-benefit-type', {
+    method: 'POST',
+    data: payload,
+  });
+}

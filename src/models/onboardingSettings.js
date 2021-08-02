@@ -1,15 +1,36 @@
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
-import { addInsurance, getInsuranceList } from '../services/onboardingSettings';
+import { getCurrentTenant } from '@/utils/authority';
+import {
+  addInsurance,
+  getInsuranceList,
+  getListBenefitDefault,
+} from '../services/onboardingSettings';
 
 const onboardingSettings = {
   namespace: 'onboardingSettings',
   state: {
     listInsurances: {},
     uploadedInsurance: {},
-    // optionalQuestions: [],
+    listBenefitDefault: [],
   },
   effects: {
+    *fetchListBenefitDefault({ payload: { country = '' } = {} }, { call, put }) {
+      try {
+        const payload = {
+          country,
+          tenantId: getCurrentTenant(),
+        };
+        const response = yield call(getListBenefitDefault, payload);
+        const { statusCode, data: listBenefitDefault = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listBenefitDefault } });
+        return listBenefitDefault;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
     *fetchListInsurances({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getInsuranceList, payload);
