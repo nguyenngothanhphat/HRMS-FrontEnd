@@ -59,7 +59,7 @@ class BenefitSection extends Component {
           <TabPane tab="Health & Wellbeing" key="1">
             <HealthWellbeing />
           </TabPane>
-          <TabPane tab="Health & Wellbeing" key="2">
+          <TabPane tab="Financial Wellbeing" key="2">
             Financial Wellbeing
           </TabPane>
           <TabPane tab="Health & Wellbeing" key="3">
