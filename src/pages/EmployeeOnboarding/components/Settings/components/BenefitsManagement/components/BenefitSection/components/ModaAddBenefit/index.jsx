@@ -219,7 +219,7 @@ class ModalAddBenefit extends Component {
       >
         <div className={styles.addBenefit}>
           <div className={styles.addBenefit__header}>
-            <div className={styles.addBenefit__header__title}>Add a benefit</div>
+            <div className={styles.addBenefit__header__title}>Add a Benefit</div>
           </div>
           {loadingFetchListBenefitDefault ? (
             <div className={styles.loadingModal}>

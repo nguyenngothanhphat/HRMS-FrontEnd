@@ -8,6 +8,7 @@ import {
   getListBenefitDefault,
   getListBenefit,
   deleteBenefit,
+  addDocument,
 } from '../services/onboardingSettings';
 
 const onboardingSettings = {
@@ -149,6 +150,33 @@ const onboardingSettings = {
         });
       } catch (errors) {
         dialog(errors);
+      }
+    },
+    *addDocument({ payload: data }, { call, put }) {
+      try {
+        const { country } = data;
+        const payload = {
+          ...data.payload,
+          tenantId: getCurrentTenant(),
+        };
+        const response = yield call(addDocument, payload);
+        const { statusCode, message = '' } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+
+        yield put({
+          type: 'fetchListBenefit',
+          payload: {
+            country,
+            tenantId: getCurrentTenant(),
+          },
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
       }
     },
   },

@@ -7,6 +7,7 @@ import TrashIcon from '@/assets/trash.svg';
 import iconPDF from '@/assets/pdf-2.svg';
 
 import styles from './index.less';
+import ModalAddDocument from '../ModalAddDocument';
 
 // const { Option } = Select;
 
@@ -15,30 +16,29 @@ import styles from './index.less';
   loadingFetchCountry: loading.effects['country/fetchListCountry'],
   loadingAddBenefit: loading.effects['onboardingSettings/addBenefit'],
   loadingDeleteBenefit: loading.effects['onboardingSettings/deleteBenefit'],
+  loadingAddDocument: loading.effects['onboardingSettings/addDocument'],
 }))
 class HealthWellbeing extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      openModal: false,
+      idBenefit: '',
+      idCountry: '',
+    };
   }
 
   onFinish = (value) => {
     console.log(value);
   };
 
-  handleAddPlanDocs = (benefitName) => {
-    const { visionPlanDocs, dentalPlanDocs } = this.state;
-    let arrTemp = [];
+  handleOpenModal = (benefit) => {
+    const { _id: benefitId = '', country = '' } = benefit;
+    this.setState({ openModal: true, idBenefit: benefitId, idCountry: country });
+  };
 
-    if (benefitName === 'Vision') {
-      arrTemp = [...visionPlanDocs];
-      arrTemp.push(visionPlanDocs.length + 1);
-      this.setState({ visionPlanDocs: arrTemp });
-    } else {
-      arrTemp = [...dentalPlanDocs];
-      arrTemp.push(dentalPlanDocs.length + 1);
-      this.setState({ dentalPlanDocs: arrTemp });
-    }
+  closeModal = () => {
+    this.setState({ openModal: false });
   };
 
   handleRemovePlanDocs = (benefit, documentId) => {
@@ -73,7 +73,7 @@ class HealthWellbeing extends Component {
                     // allowClear
                     placeholder="Choice Plan Document"
                     // onChange={this.onChangeSelect}
-                    defaultValue={item.attachmentName}
+                    defaultValue={item?.attachmentName || ''}
                     suffixIcon={
                       <img
                         style={{ marginTop: '-6px', marginLeft: '-12px' }}
@@ -93,7 +93,7 @@ class HealthWellbeing extends Component {
               <Col
                 span={1}
                 style={{ paddingLeft: 0 }}
-                onClick={() => this.handleRemovePlanDocs(benefit, item._id)}
+                onClick={() => this.handleRemovePlanDocs(benefit, item?._id || '')}
               >
                 <img style={{ cursor: 'pointer' }} alt="delete" src={TrashIcon} />
               </Col>
@@ -174,7 +174,7 @@ class HealthWellbeing extends Component {
             <div className={styles.benefit__subTitle__right}>{`Valid Till ${validTill}`}</div>
           </div>
           {this.planDocuments(benefit, index)}
-          <div className={styles.addDocs} onClick={() => this.handleAddPlanDocs(benefit)}>
+          <div className={styles.addDocs} onClick={() => this.handleOpenModal(benefit)}>
             <img alt="add" src={AddIcon} />
             <div className={styles.addDocs__text}>Add Documents</div>
           </div>
@@ -189,12 +189,15 @@ class HealthWellbeing extends Component {
       listBenefit = [],
       loadingAddBenefit = false,
       loadingDeleteBenefit = false,
+      loadingAddDocument = false,
     } = this.props;
+
+    const { openModal, idBenefit, idCountry } = this.state;
 
     if (listBenefit.length === 0) return <div style={{ padding: '30px' }} />;
     return (
       <div className={styles.healthWellbeing}>
-        {loadingAddBenefit || loadingDeleteBenefit ? (
+        {loadingAddBenefit || loadingDeleteBenefit || loadingAddDocument ? (
           <div className={styles.loadingSpin}>
             <Spin />
           </div>
@@ -221,6 +224,12 @@ class HealthWellbeing extends Component {
             })}
           </div>
         )}
+        <ModalAddDocument
+          idBenefit={idBenefit}
+          idCountry={idCountry}
+          visible={openModal}
+          handleCandelModal={this.closeModal}
+        />
       </div>
     );
   }

@@ -41,3 +41,9 @@ export async function deleteBenefit(payload) {
     data: payload,
   });
 }
+export async function addDocument(payload) {
+  return request('/api/benefittenant/add-document', {
+    method: 'POST',
+    data: payload,
+  });
+}
