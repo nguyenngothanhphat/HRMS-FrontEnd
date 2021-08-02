@@ -12,7 +12,7 @@ const { Panel } = Collapse;
 @connect(({ candidateInfo }) => ({
   candidateInfo,
 }))
-class CollapseFieldsType3 extends PureComponent {
+class CollapseFieldsTypeD extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -72,7 +72,7 @@ class CollapseFieldsType3 extends PureComponent {
   render() {
     const { processStatus = '', disabled = false, certifications = {} } = this.props;
     return (
-      <div className={styles.CollapseFieldsType3}>
+      <div className={styles.CollapseFieldsTypeD}>
         {(certifications?.data?.length > 0 || processStatus === 'DRAFT') && (
           <Collapse
             accordion
@@ -116,4 +116,4 @@ class CollapseFieldsType3 extends PureComponent {
   }
 }
 
-export default CollapseFieldsType3;
+export default CollapseFieldsTypeD;

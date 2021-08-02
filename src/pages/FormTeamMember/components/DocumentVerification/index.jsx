@@ -8,8 +8,8 @@ import { map } from 'lodash';
 import React, { Component } from 'react';
 import { connect, formatMessage } from 'umi';
 import NoteComponent from '../NoteComponent';
-import CollapseFieldsType1 from './components/CollapseFieldsType1';
-import CollapseFieldsType3 from './components/CollapseFieldsType3';
+import CollapseFieldsTypeABC from './components/CollapseFieldsTypeABC';
+import CollapseFieldsTypeD from './components/CollapseFieldsTypeD';
 import CollapseFieldsTypeE from './components/CollapseFieldsTypeE';
 import ModalContentComponent from './components/ModalContentComponent';
 import SendEmail from './components/SendEmail';
@@ -166,6 +166,7 @@ class DocumentVerification extends Component {
 
     // save step
     const { candidate = '', processStatus } = data;
+    const { privateEmail } = tempData;
     const { PROVISIONAL_OFFER_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
 
     if (processStatus === PROVISIONAL_OFFER_DRAFT || processStatus === SENT_PROVISIONAL_OFFERS) {
@@ -175,6 +176,7 @@ class DocumentVerification extends Component {
           payload: {
             candidate,
             currentStep: 3,
+            privateEmail,
             tenantId: getCurrentTenant(),
           },
         });
@@ -808,7 +810,7 @@ class DocumentVerification extends Component {
     const { dispatch } = this.props;
     const value = Object.values(e).find((x) => x);
     dispatch({
-      type: 'candidateInfo/saveOrigin',
+      type: 'candidateInfo/saveTemp',
       payload: {
         privateEmail: value,
       },
@@ -816,16 +818,8 @@ class DocumentVerification extends Component {
   };
 
   handleMarkAsDone = async () => {
-    const {
-      dispatch,
-      tempData: {
-        candidate,
-        firstName,
-
-        privateEmail,
-        processStatus,
-      } = {},
-    } = this.props;
+    const { dispatch, tempData: { candidate, firstName, privateEmail, processStatus } = {} } =
+      this.props;
 
     if (processStatus !== 'SENT-PROVISIONAL-OFFER') {
       await this.handleSendEmail('generate-link');
@@ -909,7 +903,7 @@ class DocumentVerification extends Component {
       employer: '',
       startDate: '',
       endDate: '',
-      toPresent: '',
+      toPresent: false,
       data: fieldDataTypeE,
     };
 
@@ -1484,7 +1478,7 @@ class DocumentVerification extends Component {
 
                   if (['A', 'B', 'C'].includes(type)) {
                     return (
-                      <CollapseFieldsType1
+                      <CollapseFieldsTypeABC
                         title={title}
                         addNewField={this.addNewField}
                         item={item}
@@ -1505,7 +1499,7 @@ class DocumentVerification extends Component {
                   return '';
                 })}
 
-              <CollapseFieldsType3
+              <CollapseFieldsTypeD
                 certifications={documentCLSTypeD}
                 addCertification={this.addCertification}
                 changeCertification={this.handleChangeCertification}

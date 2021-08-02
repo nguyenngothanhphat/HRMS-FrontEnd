@@ -89,6 +89,7 @@ class CollapseFieldsType2 extends PureComponent {
                         handleChange={handleChangeName}
                         handleCheck={handleCheck}
                         listLength={previousEmployment.length}
+                        disabled={disabled}
                       />
                     );
                   return '';
