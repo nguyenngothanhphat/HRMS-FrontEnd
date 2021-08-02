@@ -201,8 +201,8 @@ class Benefit extends PureComponent {
 
   // _renderStatus = () => {
   //   // const { checkMandatory } = this.props;
-  //   // const { filledBackgroundCheck } = checkMandatory;
-  //   return !filledBackgroundCheck ? (
+  //   // const { filledDocumentVerification } = checkMandatory;
+  //   return !filledDocumentVerification ? (
   //     <div className={styles.normalText}>
   //       <div className={styles.redText}>*</div>
   //       {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
