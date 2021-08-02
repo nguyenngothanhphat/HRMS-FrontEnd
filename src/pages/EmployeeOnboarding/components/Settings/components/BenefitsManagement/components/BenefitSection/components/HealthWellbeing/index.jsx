@@ -54,32 +54,38 @@ class HealthWellbeing extends Component {
     arrTemp.splice(index, 1);
   };
 
-  planDocuments = () => {
+  planDocuments = (benefit) => {
+    const { documents = [] } = benefit;
     return (
       <div className={styles.planDocuments}>
         <div className={styles.planDocuments__first}>
           <div className={styles.labelDocs}>Choice Plan Document (01)</div>
           <Row gutter={[24, 0]}>
             <Col span={15}>
-              <Form.Item name="planDoc">
-                <Select
-                  showSearch
-                  showArrow
-                  // allowClear
-                  placeholder="Choice Plan Document"
-                  onChange={this.onChangeSelect}
-                  suffixIcon={
-                    <img
-                      style={{ marginTop: '-6px', marginLeft: '-12px' }}
-                      alt="pdf-img"
-                      src={iconPDF}
-                    />
-                  }
-                  filterOption={(input, option) => {
-                    return option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                  }}
-                />
-              </Form.Item>
+              {documents.map((item, index) => (
+                <Form.Item name={`planDoc%${index}`}>
+                  <Select
+                    showSearch
+                    showArrow
+                    // allowClear
+                    placeholder="Choice Plan Document"
+                    // onChange={this.onChangeSelect}
+                    defaultValue={item.attachmentName}
+                    suffixIcon={
+                      <img
+                        style={{ marginTop: '-6px', marginLeft: '-12px' }}
+                        alt="pdf-img"
+                        src={iconPDF}
+                      />
+                    }
+                    filterOption={(input, option) => {
+                      return (
+                        option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
+                  />
+                </Form.Item>
+              ))}
             </Col>
             <Col span={8} />
             {/* <Col
@@ -164,7 +170,7 @@ class HealthWellbeing extends Component {
             </div>
             <div className={styles.benefit__subTitle__right}>{`Valid Till ${validTill}`}</div>
           </div>
-          {this.planDocuments()}
+          {this.planDocuments(benefit)}
           <div className={styles.addDocs} onClick={() => this.handleAddPlanDocs(benefit)}>
             <img alt="add" src={AddIcon} />
             <div className={styles.addDocs__text}>Add Documents</div>
@@ -178,7 +184,7 @@ class HealthWellbeing extends Component {
   render() {
     const { listBenefit = [] } = this.props;
 
-    if (listBenefit.length === 0) return null;
+    if (listBenefit.length === 0) return <div style={{ padding: '30px' }} />;
     return (
       <div className={styles.healthWellbeing}>
         <div className={styles.formItem}>
@@ -192,7 +198,6 @@ class HealthWellbeing extends Component {
               <Form
                 onFinish={this.onFinish}
                 initialValues={{
-                  // planDoc,
                   annualCost,
                   employeeContribution,
                   employerContribution,

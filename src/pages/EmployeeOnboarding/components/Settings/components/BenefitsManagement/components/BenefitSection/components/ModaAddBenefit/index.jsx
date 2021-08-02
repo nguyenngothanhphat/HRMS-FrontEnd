@@ -168,13 +168,23 @@ class ModalAddBenefit extends Component {
 
   onFinish = (value) => {
     const { countryId, dispatch } = this.props;
-    const { validTill, deductionDate, uploadedFile } = this.state;
+    const {
+      validTill,
+      deductionDate,
+      uploadedFile: { id = '', url = '', name = '' } = {},
+    } = this.state;
     const payload = {
       ...value,
       validTill,
       deductionDate,
       country: countryId,
-      documents: [uploadedFile.id],
+      documents: [
+        {
+          attachment: id,
+          attachmentName: name,
+          attachmentUrl: url,
+        },
+      ],
     };
 
     dispatch({

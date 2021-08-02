@@ -31,7 +31,7 @@ class BenefitSection extends Component {
   };
 
   initGetCountryId = () => {
-    const { listLocationsByCompany = [] } = this.props;
+    const { listLocationsByCompany = [], onChangeSelect = () => {} } = this.props;
     let countryId = '';
 
     listLocationsByCompany.forEach((item) => {
@@ -42,6 +42,7 @@ class BenefitSection extends Component {
     });
 
     if (countryId) {
+      onChangeSelect(countryId);
       this.fetchListBenefit(countryId);
       this.setState({ countryId });
     }
