@@ -1,31 +1,24 @@
 import React, { Component } from 'react';
 import { Col, Divider, Form, Row, Select } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
 
 import AddIcon from '@/assets/add-symbols.svg';
-import TrashIcon from '@/assets/trash.svg';
+// import TrashIcon from '@/assets/trash.svg';
 import iconPDF from '@/assets/pdf-2.svg';
 
 import styles from './index.less';
 
 const { Option } = Select;
 
+@connect(({ onboardingSettings: { listBenefit = [] } = {}, loading }) => ({
+  listBenefit,
+  loadingFetchCountry: loading.effects['country/fetchListCountry'],
+}))
 class HealthWellbeing extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      visionPlanDoc1: 'visionPlanDoc1',
-      annualCost: '10,000',
-      employeeContribution: '5,000',
-      employerContribution: '5,000',
-      visionPlanDocs: [1],
-      dentalPlanDocs: [1],
-    };
+    this.state = {};
   }
-
-  onChangeSelect = (value) => {
-    this.setState({ visionPlanDoc1: value });
-  };
 
   onFinish = (value) => {
     console.log(value);
@@ -61,170 +54,118 @@ class HealthWellbeing extends Component {
     arrTemp.splice(index, 1);
   };
 
-  planDocuments = (benefitName) => {
-    const {
-      visionPlanDocs,
-      dentalPlanDocs,
-      visionPlanDoc1,
-      annualCost,
-      employeeContribution,
-      employerContribution,
-    } = this.state;
-
-    let arrPlanDocs = [];
-
-    if (benefitName === 'Vision') {
-      arrPlanDocs = [...visionPlanDocs];
-    } else {
-      arrPlanDocs = [...dentalPlanDocs];
-    }
-
+  planDocuments = () => {
     return (
-      <>
-        {arrPlanDocs.map((doc, index) => (
-          <div key={doc} className={styles.planDocuments}>
-            <div className={styles.planDocuments__first}>
-              <div className={styles.labelDocs}>{`Choice Plan Document (${doc})`}</div>
-              <Row gutter={[24, 0]}>
-                <Col span={15}>
-                  <Form.Item name="visionPlanDoc1">
-                    <Select
-                      showSearch
-                      showArrow
-                      // allowClear
-                      placeholder={`Choice Plan Document (${doc})`}
-                      onChange={this.onChangeSelect}
-                      suffixIcon={
-                        visionPlanDoc1 ? (
-                          <img
-                            style={{ marginTop: '-6px', marginLeft: '-12px' }}
-                            alt="pdf-img"
-                            src={iconPDF}
-                          />
-                        ) : (
-                          <DownOutlined />
-                        )
-                      }
-                      filterOption={(input, option) => {
-                        return (
-                          option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      <Option value="visionPlanDoc1">
-                        [ 2020 ] Open Access Plus - Choice Plan.pdf
-                      </Option>
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={8} />
-                <Col
-                  span={1}
-                  style={{ paddingLeft: 0 }}
-                  onClick={() => this.handleRemovePlanDocs(benefitName, index)}
-                >
-                  <img style={{ cursor: 'pointer' }} alt="delete" src={TrashIcon} />
-                </Col>
-              </Row>
-            </div>
-            <div className={styles.planDocuments__second}>
-              <Row justify="space-between">
-                <Col span={8}>
-                  <div className={styles.label}>Annual Cost</div>
-                  <Form.Item name="annualCost">
-                    <Select
-                      showSearch
-                      showArrow
-                      className={styles.inputNumber}
-                      // allowClear
-                      placeholder="Choose annual cost"
-                      // onChange={this.onChangeSelect}
-                      suffixIcon={annualCost ? <span>₹</span> : <DownOutlined />}
-                      filterOption={(input, option) => {
-                        return (
-                          option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {['10,000', '15,000', '20,000'].map((item) => (
-                        <Option key={item} value={item}>
-                          {item}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <div className={styles.label}>Employee Contribution</div>
-                  <Form.Item name="employeeContribution">
-                    <Select
-                      showSearch
-                      showArrow
-                      className={styles.inputNumber}
-                      // allowClear
-                      placeholder="Choose employee contribution"
-                      // onChange={this.onChangeSelect}
-                      suffixIcon={employeeContribution ? <span>₹</span> : <DownOutlined />}
-                      filterOption={(input, option) => {
-                        return (
-                          option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {['5,000', '10,000', '15,000'].map((item) => (
-                        <Option key={item} value={item}>
-                          {item}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <div className={styles.label}>Employer&lsquo;s Contribution</div>
-                  <Form.Item name="employerContribution">
-                    <Select
-                      showSearch
-                      showArrow
-                      className={styles.inputNumber}
-                      // allowClear
-                      placeholder="Choose employer's contribution"
-                      // onChange={this.onChangeSelect}
-                      suffixIcon={employerContribution ? <span>₹</span> : <DownOutlined />}
-                      filterOption={(input, option) => {
-                        return (
-                          option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {['5,000', '10,000', '15,000'].map((item) => (
-                        <Option key={item} value={item}>
-                          {item}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </Col>
-              </Row>
-            </div>
-          </div>
-        ))}
-      </>
+      <div className={styles.planDocuments}>
+        <div className={styles.planDocuments__first}>
+          <div className={styles.labelDocs}>Choice Plan Document (01)</div>
+          <Row gutter={[24, 0]}>
+            <Col span={15}>
+              <Form.Item name="planDoc">
+                <Select
+                  showSearch
+                  showArrow
+                  // allowClear
+                  placeholder="Choice Plan Document"
+                  onChange={this.onChangeSelect}
+                  suffixIcon={
+                    <img
+                      style={{ marginTop: '-6px', marginLeft: '-12px' }}
+                      alt="pdf-img"
+                      src={iconPDF}
+                    />
+                  }
+                  filterOption={(input, option) => {
+                    return option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                  }}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={8} />
+            {/* <Col
+              span={1}
+              style={{ paddingLeft: 0 }}
+              onClick={() => this.handleRemovePlanDocs(benefitName, index)}
+            >
+              <img style={{ cursor: 'pointer' }} alt="delete" src={TrashIcon} />
+            </Col> */}
+          </Row>
+        </div>
+        <div className={styles.planDocuments__second}>
+          <Row justify="space-between">
+            <Col span={8}>
+              <div className={styles.label}>Annual Cost</div>
+              <Form.Item name="annualCost">
+                <Select
+                  disabled
+                  showSearch
+                  showArrow
+                  className={styles.inputNumber}
+                  placeholder="Choose annual cost"
+                  suffixIcon={<span>₹</span>}
+                  filterOption={(input, option) => {
+                    return option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                  }}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <div className={styles.label}>Employee Contribution</div>
+              <Form.Item name="employeeContribution">
+                <Select
+                  disabled
+                  showSearch
+                  showArrow
+                  className={styles.inputNumber}
+                  // allowClear
+                  placeholder="Choose employee contribution"
+                  // onChange={this.onChangeSelect}
+                  suffixIcon={<span>₹</span>}
+                  filterOption={(input, option) => {
+                    return option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                  }}
+                />
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <div className={styles.label}>Employer&lsquo;s Contribution</div>
+              <Form.Item name="employerContribution">
+                <Select
+                  disabled
+                  showSearch
+                  showArrow
+                  className={styles.inputNumber}
+                  // allowClear
+                  placeholder="Choose employer's contribution"
+                  // onChange={this.onChangeSelect}
+                  suffixIcon={<span>₹</span>}
+                  filterOption={(input, option) => {
+                    return option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                  }}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+        </div>
+      </div>
     );
   };
 
-  formItem = (benefitName, index) => {
+  formItem = (benefit, index) => {
+    const { category: benefitCategoryName = '', deductionDate = '', validTill } = benefit;
+
     return (
       <>
         <div className={styles.benefit}>
-          <div className={styles.benefit__title}>{benefitName}</div>
+          <div className={styles.benefit__title}>{benefitCategoryName}</div>
           <div className={styles.benefit__subTitle}>
             <div className={styles.benefit__subTitle__left}>
-              Deduction Will be done on 20/04/2020
+              {`Deduction Will be done on ${deductionDate}`}
             </div>
-            <div className={styles.benefit__subTitle__right}>Valid Till 26/04/2020</div>
+            <div className={styles.benefit__subTitle__right}>{`Valid Till ${validTill}`}</div>
           </div>
-          {this.planDocuments(benefitName)}
-          <div className={styles.addDocs} onClick={() => this.handleAddPlanDocs(benefitName)}>
+          {this.planDocuments()}
+          <div className={styles.addDocs} onClick={() => this.handleAddPlanDocs(benefit)}>
             <img alt="add" src={AddIcon} />
             <div className={styles.addDocs__text}>Add Documents</div>
           </div>
@@ -235,21 +176,33 @@ class HealthWellbeing extends Component {
   };
 
   render() {
-    const { visionPlanDoc1, annualCost, employeeContribution, employerContribution } = this.state;
-    const arrFormItem = ['Vision', 'Dental'];
+    const { listBenefit = [] } = this.props;
 
+    if (listBenefit.length === 0) return null;
     return (
       <div className={styles.healthWellbeing}>
-        <Form
-          onFinish={this.onFinish}
-          initialValues={{ visionPlanDoc1, annualCost, employeeContribution, employerContribution }}
-        >
-          <div className={styles.formItem}>
-            {arrFormItem.map((benefit, index) => {
-              return <div key={benefit}>{this.formItem(benefit, index)}</div>;
-            })}
-          </div>
-        </Form>
+        <div className={styles.formItem}>
+          {listBenefit.map((benefit, index) => {
+            const {
+              annualCost = '',
+              employeeContribution = '',
+              employerContribution = '',
+            } = benefit;
+            return (
+              <Form
+                onFinish={this.onFinish}
+                initialValues={{
+                  // planDoc,
+                  annualCost,
+                  employeeContribution,
+                  employerContribution,
+                }}
+              >
+                <div key={benefit}>{this.formItem(benefit, index)}</div>
+              </Form>
+            );
+          })}
+        </div>
       </div>
     );
   }
