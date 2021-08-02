@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col, Divider, Form, Row, Select } from 'antd';
+import { Col, Divider, Form, Row, Select, Spin } from 'antd';
 import { connect } from 'umi';
 
 import AddIcon from '@/assets/add-symbols.svg';
@@ -13,6 +13,8 @@ import styles from './index.less';
 @connect(({ onboardingSettings: { listBenefit = [] } = {}, loading }) => ({
   listBenefit,
   loadingFetchCountry: loading.effects['country/fetchListCountry'],
+  loadingAddBenefit: loading.effects['onboardingSettings/addBenefit'],
+  loadingDeleteBenefit: loading.effects['onboardingSettings/deleteBenefit'],
 }))
 class HealthWellbeing extends Component {
   constructor(props) {
@@ -183,32 +185,42 @@ class HealthWellbeing extends Component {
   };
 
   render() {
-    const { listBenefit = [] } = this.props;
+    const {
+      listBenefit = [],
+      loadingAddBenefit = false,
+      loadingDeleteBenefit = false,
+    } = this.props;
 
     if (listBenefit.length === 0) return <div style={{ padding: '30px' }} />;
     return (
       <div className={styles.healthWellbeing}>
-        <div className={styles.formItem}>
-          {listBenefit.map((benefit, index) => {
-            const {
-              annualCost = '',
-              employeeContribution = '',
-              employerContribution = '',
-            } = benefit;
-            return (
-              <Form
-                onFinish={this.onFinish}
-                initialValues={{
-                  annualCost,
-                  employeeContribution,
-                  employerContribution,
-                }}
-              >
-                <div key={benefit}>{this.formItem(benefit, index)}</div>
-              </Form>
-            );
-          })}
-        </div>
+        {loadingAddBenefit || loadingDeleteBenefit ? (
+          <div className={styles.loadingSpin}>
+            <Spin />
+          </div>
+        ) : (
+          <div className={styles.formItem}>
+            {listBenefit.map((benefit, index) => {
+              const {
+                annualCost = '',
+                employeeContribution = '',
+                employerContribution = '',
+              } = benefit;
+              return (
+                <Form
+                  onFinish={this.onFinish}
+                  initialValues={{
+                    annualCost,
+                    employeeContribution,
+                    employerContribution,
+                  }}
+                >
+                  <div key={benefit}>{this.formItem(benefit, index)}</div>
+                </Form>
+              );
+            })}
+          </div>
+        )}
       </div>
     );
   }

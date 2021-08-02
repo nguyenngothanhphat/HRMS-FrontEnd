@@ -167,7 +167,7 @@ class ModalAddBenefit extends Component {
   };
 
   onFinish = (value) => {
-    const { countryId, dispatch } = this.props;
+    const { countryId, dispatch, handleCandelModal = () => {} } = this.props;
     const {
       validTill,
       deductionDate,
@@ -190,6 +190,11 @@ class ModalAddBenefit extends Component {
     dispatch({
       type: 'onboardingSettings/addBenefit',
       payload,
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        handleCandelModal();
+      }
     });
   };
 
