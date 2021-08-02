@@ -7,6 +7,7 @@ import {
   getInsuranceList,
   getListBenefitDefault,
   getListBenefit,
+  deleteBenefit,
 } from '../services/onboardingSettings';
 
 const onboardingSettings = {
@@ -99,6 +100,7 @@ const onboardingSettings = {
 
     *addBenefit({ payload: data }, { call, put }) {
       try {
+        const { country } = data;
         const payload = {
           ...data,
           company: getCurrentCompany(),
@@ -111,10 +113,42 @@ const onboardingSettings = {
           message,
         });
         yield put({ type: 'save', payload: { dataBenefits } });
+        yield put({
+          type: 'fetchListBenefit',
+          payload: {
+            country,
+            tenantId: getCurrentTenant(),
+          },
+        });
         return response;
       } catch (errors) {
         dialog(errors);
         return {};
+      }
+    },
+
+    *deleteBenefit({ payload: data }, { call, put }) {
+      try {
+        const payload = {
+          ...data.payload,
+          tenantId: getCurrentTenant(),
+        };
+
+        const response = yield call(deleteBenefit, payload);
+        const { statusCode, message = '' } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchListBenefit',
+          payload: {
+            country: data.country,
+            tenantId: getCurrentTenant(),
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
       }
     },
   },

@@ -34,3 +34,10 @@ export async function addBenefit(payload) {
     data: payload,
   });
 }
+
+export async function deleteBenefit(payload) {
+  return request('/api/benefittenant/delete-document', {
+    method: 'POST',
+    data: payload,
+  });
+}
