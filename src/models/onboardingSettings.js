@@ -6,6 +6,7 @@ import {
   addBenefit,
   getInsuranceList,
   getListBenefitDefault,
+  getListBenefit,
 } from '../services/onboardingSettings';
 
 const onboardingSettings = {
@@ -14,24 +15,9 @@ const onboardingSettings = {
     listInsurances: {},
     uploadedInsurance: {},
     listBenefitDefault: [],
+    listBenefit: [],
   },
   effects: {
-    *fetchListBenefitDefault({ payload: { country = '' } = {} }, { call, put }) {
-      try {
-        const payload = {
-          country,
-          tenantId: getCurrentTenant(),
-        };
-        const response = yield call(getListBenefitDefault, payload);
-        const { statusCode, data: listBenefitDefault = {} } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { listBenefitDefault } });
-        return listBenefitDefault;
-      } catch (errors) {
-        dialog(errors);
-        return {};
-      }
-    },
     *fetchListInsurances({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getInsuranceList, payload);
@@ -76,6 +62,41 @@ const onboardingSettings = {
         return {};
       }
     },
+
+    *fetchListBenefitDefault({ payload: { country = '' } = {} }, { call, put }) {
+      try {
+        const payload = {
+          country,
+          tenantId: getCurrentTenant(),
+        };
+        const response = yield call(getListBenefitDefault, payload);
+        const { statusCode, data: listBenefitDefault = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listBenefitDefault } });
+        return listBenefitDefault;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+
+    *fetchListBenefit({ payload: { country = '' } = {} }, { call, put }) {
+      try {
+        const payload = {
+          country,
+          tenantId: getCurrentTenant(),
+        };
+        const response = yield call(getListBenefit, payload);
+        const { statusCode, data: listBenefit = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listBenefit } });
+        return listBenefit;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+
     *addBenefit({ payload: data }, { call, put }) {
       try {
         const payload = {

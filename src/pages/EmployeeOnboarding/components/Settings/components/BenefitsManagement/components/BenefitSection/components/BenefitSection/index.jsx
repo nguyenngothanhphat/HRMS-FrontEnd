@@ -2,29 +2,70 @@ import React, { Component } from 'react';
 import { Tabs, Select } from 'antd';
 import { connect } from 'umi';
 
+import { getCurrentLocation } from '@/utils/authority';
 import styles from './index.less';
 import HealthWellbeing from '../HealthWellbeing';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
 
-@connect(({ country: { listCountry = [] } = {}, loading }) => ({
-  listCountry,
-  loadingFetchCountry: loading.effects['country/fetchListCountry'],
-}))
+@connect(
+  ({
+    locationSelection: { listLocationsByCompany = [] } = {},
+    country: { listCountry = [] } = {},
+    loading,
+  }) => ({
+    listCountry,
+    listLocationsByCompany,
+    loadingFetchCountry: loading.effects['country/fetchListCountry'],
+  }),
+)
 class BenefitSection extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { countryId: '' };
   }
 
+  componentDidMount = () => {
+    this.initGetCountryId();
+  };
+
+  initGetCountryId = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    let countryId = '';
+
+    listLocationsByCompany.forEach((item) => {
+      if (item._id === getCurrentLocation()) {
+        const { headQuarterAddress: { country = {} || {} } = {} || {} } = item;
+        countryId = country._id;
+      }
+    });
+
+    if (countryId) {
+      this.fetchListBenefit(countryId);
+      this.setState({ countryId });
+    }
+  };
+
+  fetchListBenefit = (countryId) => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'onboardingSettings/fetchListBenefit',
+      payload: { country: countryId },
+    });
+  };
+
+  onChangeSelectLocation = (value) => {
+    const { onChangeSelect = () => {} } = this.props;
+    onChangeSelect(value);
+
+    this.fetchListBenefit(value);
+  };
+
   render() {
-    const {
-      loadingFetchCountry,
-      listCountry = [],
-      onChangeSelect = () => {},
-      onChangeTab = () => {},
-    } = this.props;
+    const { loadingFetchCountry, listCountry = [], onChangeTab = () => {} } = this.props;
+    const { countryId } = this.state;
 
     return (
       <div className={styles.benefitSection}>
@@ -36,8 +77,9 @@ class BenefitSection extends Component {
               showArrow
               allowClear
               loading={loadingFetchCountry}
+              defaultValue={countryId}
               placeholder="Select location"
-              onChange={onChangeSelect}
+              onChange={this.onChangeSelectLocation}
               filterOption={(input, option) => {
                 return option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0;
               }}

@@ -21,6 +21,13 @@ export async function getListBenefitDefault(payload) {
   });
 }
 
+export async function getListBenefit(payload) {
+  return request('/api/benefittenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function addBenefit(payload) {
   return request('/api/benefittenant/add', {
     method: 'POST',
