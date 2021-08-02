@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Spin, Modal, Form, Select, DatePicker } from 'antd';
+import { Button, Spin, Modal, Form, Select, DatePicker, Input } from 'antd';
 import { connect } from 'umi';
 
 import CalendarIcon from '@/assets/calendar-v2.svg';
@@ -16,13 +16,16 @@ class ModalAddBenefit extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      type: '',
       listBenefitCategory: [],
     };
   }
 
-  destroyOnClose = () => {
-    const { handleCandelModal = () => {} } = this.props;
-    handleCandelModal();
+  componentDidUpdate = (prevProps) => {
+    const { listBenefitDefault = [] } = this.props;
+    if (JSON.stringify(prevProps.listBenefitDefault) !== JSON.stringify(listBenefitDefault)) {
+      this.getInitValueByActiveTab();
+    }
   };
 
   onChangeBenefitType = (value) => {
@@ -45,13 +48,22 @@ class ModalAddBenefit extends Component {
   getInitValueByActiveTab = () => {
     const { activeKeyTab, listBenefitDefault = [] } = this.props;
     const key = +activeKeyTab - 1;
-    let defaultValue = null;
+    let defaultType = null;
+    let defaultCategoryList = [];
 
     listBenefitDefault.forEach((item, index) => {
-      if (key === index) defaultValue = item.benefitType;
+      if (key === index) {
+        defaultType = item.benefitType;
+        defaultCategoryList = item.benefitCategory;
+      }
     });
 
-    return defaultValue;
+    this.setState({ listBenefitCategory: defaultCategoryList, type: defaultType });
+  };
+
+  destroyOnClose = () => {
+    const { handleCandelModal = () => {} } = this.props;
+    handleCandelModal();
   };
 
   render() {
@@ -61,7 +73,7 @@ class ModalAddBenefit extends Component {
       listBenefitDefault = [],
     } = this.props;
 
-    const { listBenefitCategory } = this.state;
+    const { listBenefitCategory, type } = this.state;
 
     return (
       <Modal
@@ -81,11 +93,19 @@ class ModalAddBenefit extends Component {
               <Spin />
             </div>
           ) : (
-            <Form initialValues={{ type: this.getInitValueByActiveTab() }}>
+            <Form initialValues={{ type }}>
               <div className={styles.addBenefit__body}>
                 <div className={styles.addBenefit__body_label}>Benefit Type</div>
                 <div className={styles.addBenefit__body_formItem}>
-                  <Form.Item name="type">
+                  <Form.Item
+                    name="type"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please input field Benefit Type!',
+                      },
+                    ]}
+                  >
                     <Select
                       showSearch
                       allowClear
@@ -108,7 +128,15 @@ class ModalAddBenefit extends Component {
                 </div>
                 <div className={styles.addBenefit__body_label}>Benefit Category</div>
                 <div className={styles.addBenefit__body_formItem}>
-                  <Form.Item name="category">
+                  <Form.Item
+                    name="category"
+                    rules={[
+                      {
+                        required: true,
+                        message: 'Please input field Benefit Category!',
+                      },
+                    ]}
+                  >
                     <Select
                       showSearch
                       allowClear
@@ -129,24 +157,22 @@ class ModalAddBenefit extends Component {
                     </Select>
                   </Form.Item>
                 </div>
-                <div className={styles.addBenefit__body_label}>Name of the Benefit</div>
+                <div className={styles.addBenefit__body_label}>Name of the Benefit Plan</div>
                 <div className={styles.addBenefit__body_formItem}>
-                  <Form.Item name="benefitName">
-                    <Select
-                      showSearch
-                      allowClear
-                      suffixIcon={null}
-                      placeholder="Select name of the Benefit"
-                      // onChange={this.onChangeSelect}
-                      filterOption={(input, option) => {
-                        return (
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      <Option value="vision">Vision</Option>
-                      <Option value="dental">Dental</Option>
-                    </Select>
+                  <Form.Item
+                    name="name"
+                    rules={[
+                      {
+                        pattern: /^[\W\S_]{0,120}$/,
+                        message: 'Only fill up to 120 characters !',
+                      },
+                      {
+                        required: true,
+                        message: 'Please input field !',
+                      },
+                    ]}
+                  >
+                    <Input placeholder="Type the name of the Benefit Plan" />
                   </Form.Item>
                 </div>
                 <div className={styles.addBenefit__body_label}>Deduction Date</div>
