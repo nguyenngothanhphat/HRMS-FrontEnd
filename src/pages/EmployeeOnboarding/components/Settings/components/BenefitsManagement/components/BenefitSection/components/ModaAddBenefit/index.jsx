@@ -13,6 +13,7 @@ import {
 } from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
+import { isEmpty } from 'lodash';
 
 import CalendarIcon from '@/assets/calendar-v2.svg';
 import AttachmentIcon from '@/assets/attachment.svg';
@@ -39,8 +40,8 @@ class ModalAddBenefit extends Component {
       deductionDate: '',
       validTill: '',
       listBenefitCategory: [],
-      uploadedFile: {},
-      fileName: '',
+      uploadedFile: [],
+      fileName: [],
     };
   }
 
@@ -111,9 +112,13 @@ class ModalAddBenefit extends Component {
     handleCandelModal();
   };
 
-  handlePreview = (fileName) => {
+  handlePreview = (nameFile) => {
+    const { fileName } = this.state;
+    const arrFileName = [...fileName];
+    arrFileName.push(nameFile);
+
     this.setState({
-      fileName,
+      fileName: arrFileName,
     });
   };
 
@@ -139,6 +144,8 @@ class ModalAddBenefit extends Component {
 
   handleUpload = (file) => {
     const { dispatch } = this.props;
+    const { uploadedFile } = this.state;
+    const arrFile = [...uploadedFile];
     const formData = new FormData();
     formData.append('uri', file);
 
@@ -147,9 +154,10 @@ class ModalAddBenefit extends Component {
       payload: formData,
     }).then((resp) => {
       const { data = [] } = resp;
-      const uploadedFile = data.length > 0 ? data[0] : {};
+      const fileUploaded = data.length > 0 ? data[0] : {};
+      arrFile.push(fileUploaded);
       const { name = '' } = file;
-      this.setState({ uploadedFile });
+      this.setState({ uploadedFile: arrFile });
       this.handlePreview(name);
     });
   };
@@ -193,6 +201,7 @@ class ModalAddBenefit extends Component {
     }).then((response) => {
       const { statusCode } = response;
       if (statusCode === 200) {
+        this.setState({ uploadedFile: [] });
         handleCandelModal();
       }
     });
@@ -413,40 +422,53 @@ class ModalAddBenefit extends Component {
                     beforeUpload={this.beforeUpload}
                     showUploadList={false}
                     action={(file) => this.handleUpload(file)}
+                    multiple
                   >
-                    {fileName === '' ? (
+                    {isEmpty(fileName) ? (
                       <>
                         {loadingUploadAttachment ? (
                           <Spin />
                         ) : (
-                          <>
+                          <div className={styles.chooseFile}>
                             <img className={styles.uploadIcon} src={AttachmentIcon} alt="upload" />
                             <span className={styles.chooseFileText}>Choose file</span>
                             <span className={styles.uploadText}>or drop file here</span>
-                          </>
+                          </div>
                         )}
                       </>
                     ) : (
                       <div className={styles.fileUploadedContainer}>
-                        <Tooltip title="Remove">
-                          <img
-                            onClick={() => this.handleRemove()}
-                            className={styles.trashIcon}
-                            src={TrashIcon}
-                            alt="remove"
-                          />
-                        </Tooltip>
-                        <p className={styles.previewIcon}>
-                          {this.identifyImageOrPdf(fileName) === 1 ? (
-                            <img src={PDFIcon} alt="pdf" />
-                          ) : (
-                            <img src={ImageIcon} alt="img" />
-                          )}
-                        </p>
-                        <p className={styles.fileName}>
-                          Uploaded: <a>{fileName}</a>
-                        </p>
-                        {/* <Button disabled={selectExistDocument}>Choose an another file</Button> */}
+                        <div className={styles.dragAndDrop}>
+                          <img className={styles.uploadIcon} src={AttachmentIcon} alt="upload" />
+                          <span className={styles.chooseFileText}>Choose file</span>
+                          <span className={styles.uploadText}>or drop file here</span>
+                        </div>
+                        <>
+                          {fileName.map((item) => (
+                            <div className={styles.fileUploadedContainer__listFiles}>
+                              <div className={styles.fileUploadedContainer__listFiles__files}>
+                                <p className={styles.previewIcon}>
+                                  {this.identifyImageOrPdf(item) === 1 ? (
+                                    <img src={PDFIcon} alt="pdf" />
+                                  ) : (
+                                    <img src={ImageIcon} alt="img" />
+                                  )}
+                                </p>
+                                <p className={styles.fileName}>
+                                  Uploaded: <a>{item}</a>
+                                </p>
+                              </div>
+                              <Tooltip title="Remove">
+                                <img
+                                  onClick={() => this.handleRemove()}
+                                  className={styles.trashIcon}
+                                  src={TrashIcon}
+                                  alt="remove"
+                                />
+                              </Tooltip>
+                            </div>
+                          ))}
+                        </>
                       </div>
                     )}
                   </Dragger>

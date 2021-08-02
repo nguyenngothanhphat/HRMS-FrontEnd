@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { message, Button, Spin, Modal, Form, Input, Upload, Tooltip } from 'antd';
+import { message, Button, Spin, Modal, Form, Upload, Tooltip } from 'antd';
 import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 

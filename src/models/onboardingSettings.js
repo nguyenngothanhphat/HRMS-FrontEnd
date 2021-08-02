@@ -136,10 +136,10 @@ const onboardingSettings = {
         };
 
         const response = yield call(deleteBenefit, payload);
-        const { statusCode, message = '' } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         notification.success({
-          message,
+          message: 'Delete benefit succesfully!',
         });
         yield put({
           type: 'fetchListBenefit',

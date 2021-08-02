@@ -135,7 +135,7 @@
 
               :global {
                 .ant-upload.ant-upload-drag {
-                  padding: 68px;
+                  min-height: 200px;
                   background: #fff;
                   border-radius: 8px;
                 }
@@ -151,30 +151,67 @@
                     font-size: 14px;
                   }
                 }
+
+                .ant-upload.ant-upload-drag .ant-upload{
+                  padding: 0;
+                  min-height: 200px;
+                  cursor: pointer;
+                }
+              }
+
+              .chooseFile{
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
               }
 
               .fileUploadedContainer{
-                position: relative;
-                .trashIcon {
-                  position: absolute;
-                  top: -24px;
-                  right: -5px;
-                  display: block;
-                  cursor: pointer;
-                  &:hover {
-                    opacity: 0.9;
+
+                .dragAndDrop{
+                  padding-bottom: 8px;
+                }
+                
+                &__listFiles {
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  padding: 16px;
+                  padding-bottom: 0;
+
+                  &__files{
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+
+                    .previewIcon {
+                      img {
+                        width: 20px;
+                        margin-bottom: 2px;
+                      }
+                    }
+                    .fileName {
+                      font-size: 14px;
+                      padding-left: 8px;
+                      a {
+                        color: #2c6df9;
+                      }
+                    }
                   }
+                  .trashIcon {
+                    // position: absolute;
+                    // top: -24px;
+                    // right: -5px;
+                    display: block;
+                    cursor: pointer;
+                    &:hover {
+                      opacity: 0.9;
+                    }
+                  }
+  
+
                 }
 
-                .previewIcon {
-                  margin-bottom: 20px;
-                }
-                .fileName {
-                  font-size: 14px;
-                  a {
-                    color: #2c6df9;
-                  }
-                }
               }
             }
           }
