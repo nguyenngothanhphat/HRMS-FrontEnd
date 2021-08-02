@@ -32,7 +32,7 @@ class SalaryStructureTemplate extends PureComponent {
     super(props);
 
     this.state = {
-      isEditted: false,
+      isEdited: false,
       footerData: [
         {
           name: 'Employer’s PF',
@@ -84,58 +84,48 @@ class SalaryStructureTemplate extends PureComponent {
     });
   };
 
-  onFinish = (values) => {};
+  onFinish = () => {};
 
   onClickEdit = () => {
-    const { isEditted } = this.state;
+    const { isEdited } = this.state;
     this.setState({
-      isEditted: !isEditted,
+      isEdited: !isEdited,
     });
   };
 
   onClickSubmit = () => {
-    const { isEditted } = this.state;
+    const { isEdited } = this.state;
     this.setState({
-      isEditted: !isEditted,
+      isEdited: !isEdited,
     });
   };
 
   isBlueText = (order) => {
-    const orderNonDisplay = ['D', 'E', ' '];
+    const orderNonDisplay = [];
     return orderNonDisplay.includes(order);
   };
 
-  isEditted = (order) => {
-    const orderNonDisplay = ['A', 'B', 'G', 'H'];
+  isEdited = (order) => {
+    const orderNonDisplay = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
     return orderNonDisplay.includes(order);
   };
 
-  _renderTableTitle = (order) => {
+  _renderTableTitle = (record) => {
     const { salaryStructure } = this.props;
-    const data = salaryStructure.find((item) => item.order === order);
-    const { title } = data;
-    return (
-      <span
-        className={`${this.isBlueText(data.order) === true ? `blue-text` : null} ${
-          data.order === ' ' ? `big-text` : null
-        }`}
-        // style={{ paddingLeft: '30px' }}
-      >
-        {title}
-      </span>
-    );
+    const data = salaryStructure.find((item) => item === record);
+    return <span className={` ${data.rank === 2 ? `big-text` : null}`}>{data?.title}</span>;
   };
 
-  _renderTableValue = (order) => {
-    const { isEditted } = this.state;
+  _renderTableValue = (record) => {
+    const { isEdited } = this.state;
     const { salaryStructure = [] } = this.props;
-    const data = salaryStructure?.find((item) => item.order === order) || {};
+    const data = salaryStructure?.find((item) => item === record) || {};
     const { value = '', key, edit = false, number = {} } = data;
     const isNumber = Object.keys(number).length > 0;
 
     // return null;
 
-    if (edit && isEditted) {
+    if (edit && isEdited) {
       if (isNumber) {
         const { current = '', max = '' } = number;
         return (
@@ -186,9 +176,9 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   _renderTableOrder = (order) => {
-    if (order === 'E') {
-      return ' ';
-    }
+    // if (order === 'E') {
+    //   return ' ';
+    // }
     return order;
   };
 
@@ -199,7 +189,7 @@ class SalaryStructureTemplate extends PureComponent {
         dataIndex: 'order',
         key: 'title',
         width: '40%',
-        render: (order) => this._renderTableTitle(order),
+        render: (_, record) => this._renderTableTitle(record),
       },
       {
         title: '',
@@ -214,7 +204,7 @@ class SalaryStructureTemplate extends PureComponent {
         key: 'value',
         className: 'thirdColumn',
         width: '50%',
-        render: (order) => this._renderTableValue(order),
+        render: (_, record) => this._renderTableValue(record),
       },
       // {
       //   title: 'Action',
@@ -326,7 +316,7 @@ class SalaryStructureTemplate extends PureComponent {
               pagination={false}
             />
           </div>
-          {this._renderFooter()}
+          {/* {this._renderFooter()} */}
           {options === 1 ? this._renderBottomBar() : null}
         </Form>
       </div>

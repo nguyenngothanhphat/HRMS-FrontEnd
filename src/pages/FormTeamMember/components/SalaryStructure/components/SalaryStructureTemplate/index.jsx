@@ -83,7 +83,7 @@ class SalaryStructureTemplate extends PureComponent {
       // dataSettings: [],
       // error: '',
       // errorInfo: '',
-      isEditted: false,
+      isEdited: false,
       footerData: [
         {
           name: 'Employer’s PF',
@@ -115,7 +115,12 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   componentDidMount = () => {
-    const { dispatch, settingsTempData: settings = [], title } = this.props;
+    const {
+      dispatch,
+      settingsTempData: settings = [],
+      title,
+      workLocation: { headQuarterAddress: { country = {} } = {}, _id } = {},
+    } = this.props;
     const tempTableData = [...settings];
     const isFilled = tempTableData.filter((item) => item.value === '');
 
@@ -148,7 +153,15 @@ class SalaryStructureTemplate extends PureComponent {
     //   type: 'candidateInfo/fetchTitleListByCompany',
     //   payload: { company: getCurrentCompany(), tenantId: getCurrentTenant() },
     // });
-
+    dispatch({
+      type: 'candidateInfo/fetchTableData',
+      payload: {
+        title: title._id,
+        tenantId: getCurrentTenant(),
+        country: country._id || country,
+        location: _id,
+      },
+    });
     dispatch({
       type: 'candidateInfo/fetchDepartmentList',
       payload: { company: getCurrentCompany(), tenantId: getCurrentTenant() },
@@ -193,7 +206,7 @@ class SalaryStructureTemplate extends PureComponent {
       dispatch,
       settingsTempData: settings = [],
       salaryTitle: salaryTitleId,
-      location: { headQuarterAddress: { country = {} } = {} } = {},
+      workLocation: { headQuarterAddress: { country = {} } = {} } = {},
     } = this.props;
 
     if (salaryTitleId) {
@@ -310,7 +323,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   onClickEdit = (key) => {
-    const { isEditted } = this.state;
+    const { isEdited } = this.state;
     const {
       dispatch,
       settingsTempData: settings = [],
@@ -332,12 +345,12 @@ class SalaryStructureTemplate extends PureComponent {
         },
       }).then(() => {
         this.setState({
-          isEditted: !isEditted,
+          isEdited: !isEdited,
         });
       });
     } else {
       this.setState({
-        isEditted: !isEditted,
+        isEdited: !isEdited,
       });
     }
   };
@@ -353,14 +366,14 @@ class SalaryStructureTemplate extends PureComponent {
     this.formRef.current.resetFields();
 
     this.setState({
-      isEditted: false,
+      isEdited: false,
     });
   };
 
   onClickSubmit = () => {
-    const { isEditted } = this.state;
+    const { isEdited } = this.state;
     this.setState({
-      isEditted: !isEditted,
+      isEdited: !isEdited,
     });
   };
 
@@ -369,7 +382,7 @@ class SalaryStructureTemplate extends PureComponent {
     return orderNonDisplay.includes(order);
   };
 
-  isEditted = (order) => {
+  isEdited = (order) => {
     const orderNonDisplay = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
     return orderNonDisplay.includes(order);
   };
@@ -548,7 +561,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   _renderTableValue = (record) => {
-    const { isEditted } = this.state;
+    const { isEdited } = this.state;
     const { settingsTempData: settings = [] } = this.props;
     const data = settings.find((item) => item === record) || {};
     const { value = '', key, number = {} } = data;
@@ -562,7 +575,7 @@ class SalaryStructureTemplate extends PureComponent {
       return false;
     };
 
-    if (isEditted) {
+    if (isEdited) {
       if (isNumber) {
         const { current = '', max = '' } = number;
         return (
@@ -679,7 +692,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   _renderButtons = () => {
-    const { isEditted } = this.state;
+    const { isEdited } = this.state;
     const { processStatus, settingsTempData: settings = [], loadingEditSalary } = this.props;
     if (
       (processStatus === 'DRAFT' ||
@@ -689,7 +702,7 @@ class SalaryStructureTemplate extends PureComponent {
     ) {
       return (
         <Form.Item className={styles.buttons}>
-          {isEditted === true ? (
+          {isEdited === true ? (
             <div className={styles.actionBtn}>
               <Button
                 loading={loadingEditSalary}
