@@ -1,1 +1,9 @@
-{}
+{
+    "env": {
+        "employee_email": "adidashrguy@mailinator.com",
+        "manager_email" : "adidashrman@mailinator.com",
+        "password" : "12345678@Tc",
+        "fromDate" : "09.29.21",
+        "toDate" : "09.30.21"
+    }
+}

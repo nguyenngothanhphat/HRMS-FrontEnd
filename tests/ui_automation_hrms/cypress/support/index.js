@@ -14,15 +14,33 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+import './commands';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
+
+
+
+// code to ignore resize observer loop errors
 const resizeObserverLoopErrRe = /^[^(ResizeObserver loop limit exceeded)]/;
 Cypress.on('uncaught:exception', (err) => {
     /* returning false here prevents Cypress from failing the test */
     if (resizeObserverLoopErrRe.test(err.message)) {
-        return false
+        return false;
     }
+});
+
+
+Cypress.Commands.add('loginAsSomeone',(email, password) => {
+    cy.get('#basic_email.ant-input', {timeout:8000}).type(email);
+    cy.get('#basic_password.ant-input', {timeout:8000}).type(password);
+    cy.get('button[type="submit"]', {timeout:8000}).click();
+});
+
+Cypress.Commands.add('logout',() => {
+    cy.get(".ant-dropdown-trigger", {timeout:8000}).then((resp)=>{
+        cy.get(resp[1]).trigger('mousemove').click();
+        cy.contains("Logout").click();
+    });
 });
