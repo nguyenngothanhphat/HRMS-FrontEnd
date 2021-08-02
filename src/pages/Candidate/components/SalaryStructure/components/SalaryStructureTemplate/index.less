@@ -5,12 +5,12 @@
 .salaryStructureTemplate {
   :global {
     .ant-input {
+      box-sizing: border-box;
       height: 27px;
+      font-size: 13px;
       background: #ffffff;
       border: 1px solid #d6dce0;
-      box-sizing: border-box;
       border-radius: 5px;
-      font-size: 13px;
     }
 
     .blue-text {
@@ -18,9 +18,9 @@
     }
 
     .big-text {
-      font-size: 18px;
+      margin-top: 5px;
+      padding-left: 15px;
     }
-
     // .ant-form-item-control {
     //   height: 0;
     // }
@@ -33,51 +33,68 @@
       margin-bottom: 0;
     }
     .ant-btn-primary {
-      box-shadow: none;
-      text-shadow: none;
       position: absolute;
-      display: flex;
-      justify-content: center;
-      align-items: baseline;
-      right: 0;
       top: -5px;
-      border-radius: 25px;
-      border: none;
-      box-shadow: none;
-      background-color: transparent;
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: 0.13px;
+      right: 0;
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
       color: #ffa100;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.13px;
+      text-shadow: none;
+      background-color: transparent;
+      border: none;
+      border-radius: 25px;
+      box-shadow: none;
+      box-shadow: none;
       &:hover {
-        background-color: transparent;
         color: #ffa100;
+        background-color: transparent;
       }
     }
 
     .ant-table-cell.thirdColumn {
-      padding-bottom: 0;
       padding-top: 0;
+      padding-bottom: 0;
     }
 
     .ant-table-thead {
       display: none;
     }
+    .ant-table table {
+      border-collapse: collapse;
+    }
     .ant-table-tbody {
       tr {
         td {
           border: none;
+          // padding-left: 30px;
         }
         td:first-child {
-          padding-left: 32px;
+          padding-left: 50px;
         }
         td:nth-child(2) {
+          font-weight: bold;
+          text-align: center;
           border-right: 1px solid #d6dce0;
           border-left: 1px solid #d6dce0;
-          text-align: center;
         }
         td:last-child {
           padding-left: 62px;
+        }
+      }
+      tr:first-child {
+      }
+      tr:last-child {
+        box-sizing: border-box;
+        height: 80px;
+        border-top: 1px solid #d6dce0;
+        border-collapse: collapse;
+        td:first-child {
+          color: #2c6df9;
+          font-weight: bold;
         }
       }
     }
@@ -90,10 +107,10 @@
       }
     }
     p {
-      font-family: 'Roboto';
-      font-size: 13px;
-      line-height: 19px;
       color: #464646;
+      font-size: 13px;
+      font-family: 'Roboto';
+      line-height: 19px;
     }
   }
   .buttons {
@@ -103,13 +120,13 @@
   }
   &_table {
     // margin-bottom: 8 * @spacing-xxs;
-    min-height: 570px;
+    // min-height: 570px;
     height: max-content;
+    padding: 30px 0 0 0;
+    background-color: #ffffff;
+    border: solid 1px #d6dce0;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
-    border: solid 1px #d6dce0;
-    background-color: #ffffff;
-    padding: 30px;
 
     // display: flex;
     // justify-content: center;
@@ -119,39 +136,39 @@
     .value {
       width: 448px;
       height: 36px;
-      font-family: 'Roboto';
+      color: #707177;
       font-size: 13px;
+      font-family: 'Roboto';
       line-height: 1.38;
       letter-spacing: 0.12px;
       text-align: center;
-      color: #707177;
     }
   }
 
   &_footer {
-    margin-bottom: 8 * @spacing-xxs;
-    min-height: 79px;
-    height: max-content;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border: solid 1px #d6dce0;
-    background-color: #ffffff;
-    padding: 12px 62px;
     display: grid;
     grid-template-columns: 30% 30%;
+    height: max-content;
+    min-height: 79px;
+    margin-bottom: 8 * @spacing-xxs;
+    padding: 12px 62px;
+    background-color: #ffffff;
+    border: solid 1px #d6dce0;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
     &_info {
       .title {
+        margin-bottom: 10px;
+        color: #707177;
         font-weight: 500;
         font-size: 18px;
         line-height: 21px;
-        color: #707177;
-        margin-bottom: 10px;
       }
       .value {
+        color: #707177;
         font-weight: 500;
         font-size: 13px;
         line-height: 21px;
-        color: #707177;
       }
     }
   }
@@ -163,77 +180,77 @@
     position: relative;
     display: grid;
     height: 72px;
+    padding: 4 * @spacing-xxs;
+    background-color: #ffffff;
+    border: solid 1px #d6dce0;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
-    border: solid 1px #d6dce0;
-    background-color: #ffffff;
-    padding: 4 * @spacing-xxs;
 
     .normalText {
       display: flex;
-      font-family: 'Roboto';
-      font-size: 13px;
-      font-style: italic;
       color: #707177;
+      font-size: 13px;
+      font-family: 'Roboto';
+      font-style: italic;
     }
 
     .redText {
-      font-family: 'Roboto';
-      font-size: 13px;
-      font-style: italic;
       color: #ff4949;
+      font-size: 13px;
+      font-family: 'Roboto';
+      font-style: italic;
     }
 
     .greenText {
-      font-family: 'Roboto';
-      font-size: 13px;
-      font-style: italic;
       color: #47c97f;
+      font-size: 13px;
+      font-family: 'Roboto';
+      font-style: italic;
     }
 
     &__button {
-      text-align: right;
       display: flex;
       align-items: center;
+      text-align: right;
       &__disabled {
         opacity: 0.3;
       }
       :global {
         .ant-btn-primary {
-          // display: none;
-          text-shadow: none;
-          box-shadow: none;
+          top: 0;
           display: flex;
           align-items: center;
-          top: 0;
           width: 94px;
           height: 40px;
           object-fit: contain;
-          border-radius: 25px;
-          border: solid 1px #ffa100;
-          background-color: #ffa100;
-          font-family: 'Roboto';
-          font-size: 14px;
-          font-weight: 500;
-          letter-spacing: 0.13px;
           color: #ffffff;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: 'Roboto';
+          letter-spacing: 0.13px;
+          // display: none;
+          text-shadow: none;
+          background-color: #ffa100;
+          border: solid 1px #ffa100;
+          border-radius: 25px;
+          box-shadow: none;
           &:hover {
-            background-color: #ffa100;
             color: #ffffff;
+            background-color: #ffa100;
           }
         }
         .ant-btn-secondary {
           width: 94px;
           height: 40px;
-          object-fit: contain;
-          border-radius: 25px;
-          border: solid 0;
-          font-family: 'Roboto';
-          font-size: 14px;
-          font-weight: 500;
-          letter-spacing: 0.13px;
-          color: #ffa100;
           padding-right: 41px;
+          object-fit: contain;
+          color: #ffa100;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: 'Roboto';
+          letter-spacing: 0.13px;
+          border: solid 0;
+          border-radius: 25px;
         }
       }
     }
@@ -241,8 +258,8 @@
 
   :global {
     .ant-empty-description {
-      width: 100% !important;
       display: none !important;
+      width: 100% !important;
     }
     .ant-table-placeholder {
       display: none !important;
@@ -257,32 +274,32 @@
     }
   }
   .salaryNote {
-    border: solid 1px #d6dce0;
-    border-radius: 5px;
     margin-bottom: 24px;
     padding: 24px;
     background-color: #fff;
+    border: solid 1px #d6dce0;
+    border-radius: 5px;
     :global {
       .ant-input {
         font-size: 14px;
       }
       .ant-input-disabled {
-        color:rgba(0, 0, 2, 0.755)
+        color: rgba(0, 0, 2, 0.755);
       }
     }
     .title {
-      font-weight: 500;
-      font-size: 13px;
       display: block;
       margin-bottom: 10px;
+      font-weight: 500;
+      font-size: 13px;
     }
   }
 }
 
 :global {
   .ant-empty-description {
-    width: 100% !important;
     display: none !important;
+    width: 100% !important;
   }
   .ant-table-placeholder {
     display: none !important;
