@@ -19,7 +19,12 @@ class BenefitSection extends Component {
   }
 
   render() {
-    const { loadingFetchCountry, listCountry = [], onChangeSelect = () => {} } = this.props;
+    const {
+      loadingFetchCountry,
+      listCountry = [],
+      onChangeSelect = () => {},
+      onChangeTab = () => {},
+    } = this.props;
 
     return (
       <div className={styles.benefitSection}>
@@ -55,15 +60,15 @@ class BenefitSection extends Component {
             </Select>
           </div>
         </div>
-        <Tabs defaultActiveKey="1">
+        <Tabs defaultActiveKey="1" onChange={onChangeTab}>
           <TabPane tab="Health & Wellbeing" key="1">
             <HealthWellbeing />
           </TabPane>
           <TabPane tab="Financial Wellbeing" key="2">
             Financial Wellbeing
           </TabPane>
-          <TabPane tab="Health & Wellbeing" key="3">
-            Health & Wellbeing 3
+          <TabPane tab="Legal" key="3">
+            Legal
           </TabPane>
         </Tabs>
       </div>

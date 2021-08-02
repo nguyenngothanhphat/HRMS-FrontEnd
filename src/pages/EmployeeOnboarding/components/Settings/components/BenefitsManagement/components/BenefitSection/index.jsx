@@ -15,6 +15,7 @@ class BenefitPage extends Component {
     this.state = {
       visible: false,
       countryId: '',
+      activeKeyTab: '1',
     };
   }
 
@@ -23,6 +24,10 @@ class BenefitPage extends Component {
     dispatch({
       type: 'country/fetchListCountry',
     });
+  };
+
+  onChangeTab = (value) => {
+    this.setState({ activeKeyTab: value });
   };
 
   onChangeSelect = (value) => {
@@ -52,7 +57,7 @@ class BenefitPage extends Component {
 
   render() {
     const { loadingFetchCountry } = this.props;
-    const { visible } = this.state;
+    const { visible, activeKeyTab } = this.state;
 
     if (loadingFetchCountry)
       return (
@@ -74,10 +79,14 @@ class BenefitPage extends Component {
           </div>
 
           <div className={styles.benefitRoot__bottom}>
-            <BenefitSection onChangeSelect={this.onChangeSelect} />
+            <BenefitSection onChangeTab={this.onChangeTab} onChangeSelect={this.onChangeSelect} />
           </div>
         </div>
-        <ModalAddBenefit visible={visible} handleCandelModal={this.closeModal} />
+        <ModalAddBenefit
+          activeKeyTab={activeKeyTab}
+          visible={visible}
+          handleCandelModal={this.closeModal}
+        />
       </div>
     );
   }
