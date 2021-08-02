@@ -83,11 +83,13 @@ class ModalAddBenefit extends Component {
   };
 
   onFinish = (value) => {
+    const { countryId } = this.props;
     const { validTill, deductionDate } = this.state;
     const payload = {
       ...value,
       validTill,
       deductionDate,
+      country: countryId,
     };
     console.log(payload);
   };

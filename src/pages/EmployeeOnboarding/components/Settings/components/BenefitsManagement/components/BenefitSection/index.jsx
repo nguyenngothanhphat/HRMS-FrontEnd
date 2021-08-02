@@ -57,7 +57,7 @@ class BenefitPage extends Component {
 
   render() {
     const { loadingFetchCountry } = this.props;
-    const { visible, activeKeyTab } = this.state;
+    const { visible, activeKeyTab, countryId } = this.state;
 
     if (loadingFetchCountry)
       return (
@@ -85,6 +85,7 @@ class BenefitPage extends Component {
         <ModalAddBenefit
           activeKeyTab={activeKeyTab}
           visible={visible}
+          countryId={countryId}
           handleCandelModal={this.closeModal}
         />
       </div>
