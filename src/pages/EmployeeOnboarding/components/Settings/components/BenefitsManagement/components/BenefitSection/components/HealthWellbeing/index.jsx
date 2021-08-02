@@ -17,6 +17,7 @@ import ModalAddDocument from '../ModalAddDocument';
   loadingAddBenefit: loading.effects['onboardingSettings/addBenefit'],
   loadingDeleteBenefit: loading.effects['onboardingSettings/deleteBenefit'],
   loadingAddDocument: loading.effects['onboardingSettings/addDocument'],
+  loadingFetchListBenefit: loading.effects['onboardingSettings/fetchListBenefit'],
 }))
 class HealthWellbeing extends Component {
   constructor(props) {
@@ -65,6 +66,7 @@ class HealthWellbeing extends Component {
 
   planDocuments = (benefit) => {
     const { documents = [] } = benefit;
+
     return (
       <div className={styles.planDocuments}>
         <div className={styles.planDocuments__first}>
@@ -81,7 +83,7 @@ class HealthWellbeing extends Component {
                     placeholder="Choice Plan Document"
                     defaultValue={
                       <span onClick={this.onDownload} style={{ cursor: 'pointer' }}>
-                        {item?.attachmentName}
+                        {item.attachmentName}
                       </span>
                     }
                     suffixIcon={
@@ -200,6 +202,7 @@ class HealthWellbeing extends Component {
       loadingAddBenefit = false,
       loadingDeleteBenefit = false,
       loadingAddDocument = false,
+      loadingFetchListBenefit = false,
     } = this.props;
 
     const { openModal, idBenefit, idCountry } = this.state;
@@ -207,7 +210,10 @@ class HealthWellbeing extends Component {
     if (listBenefit.length === 0) return <div style={{ padding: '30px' }} />;
     return (
       <div className={styles.healthWellbeing}>
-        {loadingAddBenefit || loadingDeleteBenefit || loadingAddDocument ? (
+        {loadingAddBenefit ||
+        loadingDeleteBenefit ||
+        loadingAddDocument ||
+        loadingFetchListBenefit ? (
           <div className={styles.loadingSpin}>
             <Spin />
           </div>
@@ -219,6 +225,7 @@ class HealthWellbeing extends Component {
                 employeeContribution = '',
                 employerContribution = '',
               } = benefit;
+
               return (
                 <Form
                   onFinish={this.onFinish}
