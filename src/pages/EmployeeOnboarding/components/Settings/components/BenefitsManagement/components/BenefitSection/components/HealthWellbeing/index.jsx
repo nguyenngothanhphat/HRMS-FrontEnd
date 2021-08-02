@@ -65,7 +65,6 @@ class HealthWellbeing extends Component {
 
   planDocuments = (benefit) => {
     const { documents = [] } = benefit;
-    console.log(documents);
     return (
       <div className={styles.planDocuments}>
         <div className={styles.planDocuments__first}>
