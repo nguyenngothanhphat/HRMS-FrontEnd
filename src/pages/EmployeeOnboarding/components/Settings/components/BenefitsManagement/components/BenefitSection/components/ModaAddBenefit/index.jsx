@@ -1,18 +1,35 @@
 import React, { Component } from 'react';
-import { Button, Spin, Modal, Form, Select, DatePicker, Input } from 'antd';
+import {
+  message,
+  Button,
+  Spin,
+  Modal,
+  Form,
+  Select,
+  DatePicker,
+  Input,
+  Upload,
+  Tooltip,
+} from 'antd';
 import { connect } from 'umi';
 import moment from 'moment';
 
 import CalendarIcon from '@/assets/calendar-v2.svg';
+import AttachmentIcon from '@/assets/attachment.svg';
+import TrashIcon from '@/assets/trash.svg';
+import ImageIcon from '@/assets/image_icon.png';
+import PDFIcon from '@/assets/pdf_icon.png';
 
 import styles from './index.less';
 
 const { Option } = Select;
 const formatDate = 'YYYY-MM-DD';
+const { Dragger } = Upload;
 
 @connect(({ onboardingSettings: { listBenefitDefault = [] } = {}, loading }) => ({
   listBenefitDefault,
   loadingFetchListBenefitDefault: loading.effects['onboardingSettings/fetchListBenefitDefault'],
+  loadingUploadAttachment: loading.effects['upload/uploadFile'],
 }))
 class ModalAddBenefit extends Component {
   constructor(props) {
@@ -22,6 +39,8 @@ class ModalAddBenefit extends Component {
       deductionDate: '',
       validTill: '',
       listBenefitCategory: [],
+      uploadedFile: {},
+      fileName: '',
     };
   }
 
@@ -29,6 +48,28 @@ class ModalAddBenefit extends Component {
     const { listBenefitDefault = [] } = this.props;
     if (JSON.stringify(prevProps.listBenefitDefault) !== JSON.stringify(listBenefitDefault)) {
       this.getInitValueByActiveTab();
+    }
+  };
+
+  identifyImageOrPdf = (fileName) => {
+    const parts = fileName.split('.');
+    const ext = parts[parts.length - 1];
+    switch (ext.toLowerCase()) {
+      case 'jpg':
+      case 'jpeg':
+      case 'svg':
+      case 'webp':
+      case 'tiff':
+      case 'png':
+        return 0;
+      case 'pdf':
+        return 1;
+      case 'doc':
+      case 'docx':
+        return 2;
+
+      default:
+        return 0;
     }
   };
 
@@ -70,6 +111,49 @@ class ModalAddBenefit extends Component {
     handleCandelModal();
   };
 
+  handlePreview = (fileName) => {
+    this.setState({
+      fileName,
+    });
+  };
+
+  beforeUpload = (file) => {
+    const { setSizeImageMatch = () => {} } = this.props;
+    const checkType =
+      this.identifyImageOrPdf(file.name) === 0 || this.identifyImageOrPdf(file.name) === 1;
+    if (!checkType) {
+      message.error('You can only upload image and PDF file!');
+    }
+    const isLt5M = file.size / 1024 / 1024 < 5;
+    if (!isLt5M) {
+      message.error('Image must smaller than 5MB!');
+      setSizeImageMatch(isLt5M);
+      // this.setState({ check: isLt5M });
+    }
+    setTimeout(() => {
+      setSizeImageMatch(isLt5M);
+      // this.setState({ check: isLt5M });
+    }, 2000);
+    return checkType && isLt5M;
+  };
+
+  handleUpload = (file) => {
+    const { dispatch } = this.props;
+    const formData = new FormData();
+    formData.append('uri', file);
+
+    dispatch({
+      type: 'upload/uploadFile',
+      payload: formData,
+    }).then((resp) => {
+      const { data = [] } = resp;
+      const uploadedFile = data.length > 0 ? data[0] : {};
+      const { name = '' } = file;
+      this.setState({ uploadedFile });
+      this.handlePreview(name);
+    });
+  };
+
   onValuesChange = (value) => {
     if ('deductionDate' in value) {
       const deductionDate = moment(value.deductionDate).format(formatDate);
@@ -84,12 +168,13 @@ class ModalAddBenefit extends Component {
 
   onFinish = (value) => {
     const { countryId } = this.props;
-    const { validTill, deductionDate } = this.state;
+    const { validTill, deductionDate, uploadedFile } = this.state;
     const payload = {
       ...value,
       validTill,
       deductionDate,
       country: countryId,
+      documents: [uploadedFile.id],
     };
     console.log(payload);
   };
@@ -98,10 +183,11 @@ class ModalAddBenefit extends Component {
     const {
       visible = false,
       loadingFetchListBenefitDefault = false,
+      loadingUploadAttachment = false,
       listBenefitDefault = [],
     } = this.props;
 
-    const { listBenefitCategory, type } = this.state;
+    const { listBenefitCategory, type, fileName } = this.state;
 
     return (
       <Modal
@@ -302,6 +388,49 @@ class ModalAddBenefit extends Component {
                       dropdownClassName={styles.calendar}
                     />
                   </Form.Item>
+                </div>
+                <div className={styles.documentSection}>
+                  <Dragger
+                    beforeUpload={this.beforeUpload}
+                    showUploadList={false}
+                    action={(file) => this.handleUpload(file)}
+                  >
+                    {fileName === '' ? (
+                      <>
+                        {loadingUploadAttachment ? (
+                          <Spin />
+                        ) : (
+                          <>
+                            <img className={styles.uploadIcon} src={AttachmentIcon} alt="upload" />
+                            <span className={styles.chooseFileText}>Choose file</span>
+                            <span className={styles.uploadText}>or drop file here</span>
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <div className={styles.fileUploadedContainer}>
+                        <Tooltip title="Remove">
+                          <img
+                            onClick={() => this.handleRemove()}
+                            className={styles.trashIcon}
+                            src={TrashIcon}
+                            alt="remove"
+                          />
+                        </Tooltip>
+                        <p className={styles.previewIcon}>
+                          {this.identifyImageOrPdf(fileName) === 1 ? (
+                            <img src={PDFIcon} alt="pdf" />
+                          ) : (
+                            <img src={ImageIcon} alt="img" />
+                          )}
+                        </p>
+                        <p className={styles.fileName}>
+                          Uploaded: <a>{fileName}</a>
+                        </p>
+                        {/* <Button disabled={selectExistDocument}>Choose an another file</Button> */}
+                      </div>
+                    )}
+                  </Dragger>
                 </div>
               </div>
               <div className={styles.addBenefit__bottom}>

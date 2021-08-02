@@ -103,6 +103,80 @@
 
               padding-bottom: 8px;
             }
+
+            .documentSection{
+              width: 100%;
+              .uploadIcon {
+                margin-right: 10px;
+              }
+              .chooseFileText {
+                display: inline-block;
+                font-family: Roboto;
+                font-style: normal;
+                font-weight: 500;
+                font-size: 14px;
+                line-height: 16px;
+                letter-spacing: 0.13125px;
+
+                color: #2C6DF9;
+              }
+              .uploadText {
+                display: inline-block;
+                margin-left: 5px;
+                font-family: Roboto;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 13px;
+                line-height: 15px;
+
+                color: #707177;
+                opacity: 0.6;
+              }
+
+              :global {
+                .ant-upload.ant-upload-drag {
+                  padding: 68px;
+                  background: #fff;
+                  border-radius: 8px;
+                }
+                .ant-btn {
+                  height: 35px;
+                  padding: 0 35px;
+                  background-color: #ffa100;
+                  border: none;
+                  border-radius: 40px;
+                  span {
+                    color: white;
+                    font-weight: 700;
+                    font-size: 14px;
+                  }
+                }
+              }
+
+              .fileUploadedContainer{
+                position: relative;
+                .trashIcon {
+                  position: absolute;
+                  top: -24px;
+                  right: -5px;
+                  display: block;
+                  cursor: pointer;
+                  &:hover {
+                    opacity: 0.9;
+                  }
+                }
+
+                .previewIcon {
+                  margin-bottom: 20px;
+                }
+                .fileName {
+                  font-size: 14px;
+                  a {
+                    color: #2c6df9;
+                  }
+                }
+              }
+            }
           }
           
           &__bottom{
