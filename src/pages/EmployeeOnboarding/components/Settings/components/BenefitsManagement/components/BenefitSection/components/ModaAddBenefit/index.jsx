@@ -176,23 +176,23 @@ class ModalAddBenefit extends Component {
 
   onFinish = (value) => {
     const { countryId, dispatch, handleCandelModal = () => {} } = this.props;
-    const {
-      validTill,
-      deductionDate,
-      uploadedFile: { id = '', url = '', name = '' } = {},
-    } = this.state;
+    const { validTill, deductionDate, uploadedFile = [] } = this.state;
+
+    const documents = uploadedFile.map((item) => {
+      const { id = '', url = '', name = '' } = item;
+      return {
+        attachment: id,
+        attachmentName: name,
+        attachmentUrl: url,
+      };
+    });
+
     const payload = {
       ...value,
       validTill,
       deductionDate,
       country: countryId,
-      documents: [
-        {
-          attachment: id,
-          attachmentName: name,
-          attachmentUrl: url,
-        },
-      ],
+      documents,
     };
 
     dispatch({
@@ -443,35 +443,35 @@ class ModalAddBenefit extends Component {
                           <span className={styles.chooseFileText}>Choose file</span>
                           <span className={styles.uploadText}>or drop file here</span>
                         </div>
-                        <>
-                          {fileName.map((item) => (
-                            <div className={styles.fileUploadedContainer__listFiles}>
-                              <div className={styles.fileUploadedContainer__listFiles__files}>
-                                <p className={styles.previewIcon}>
-                                  {this.identifyImageOrPdf(item) === 1 ? (
-                                    <img src={PDFIcon} alt="pdf" />
-                                  ) : (
-                                    <img src={ImageIcon} alt="img" />
-                                  )}
-                                </p>
-                                <p className={styles.fileName}>
-                                  Uploaded: <a>{item}</a>
-                                </p>
-                              </div>
-                              <Tooltip title="Remove">
-                                <img
-                                  onClick={() => this.handleRemove()}
-                                  className={styles.trashIcon}
-                                  src={TrashIcon}
-                                  alt="remove"
-                                />
-                              </Tooltip>
-                            </div>
-                          ))}
-                        </>
                       </div>
                     )}
                   </Dragger>
+                  <>
+                    {fileName.map((item) => (
+                      <div className={styles.fileUploadedContainer__listFiles}>
+                        <div className={styles.fileUploadedContainer__listFiles__files}>
+                          <p className={styles.previewIcon}>
+                            {this.identifyImageOrPdf(item) === 1 ? (
+                              <img src={PDFIcon} alt="pdf" />
+                            ) : (
+                              <img src={ImageIcon} alt="img" />
+                            )}
+                          </p>
+                          <p className={styles.fileName}>
+                            Uploaded: <a>{item}</a>
+                          </p>
+                        </div>
+                        <Tooltip title="Remove">
+                          <img
+                            // onClick={() => this.handleRemove()}
+                            className={styles.trashIcon}
+                            src={TrashIcon}
+                            alt="remove"
+                          />
+                        </Tooltip>
+                      </div>
+                    ))}
+                  </>
                 </div>
               </div>
               <div className={styles.addBenefit__bottom}>

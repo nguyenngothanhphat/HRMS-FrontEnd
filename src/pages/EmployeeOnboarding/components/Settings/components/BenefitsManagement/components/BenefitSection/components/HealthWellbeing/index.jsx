@@ -26,6 +26,8 @@ class HealthWellbeing extends Component {
       idBenefit: '',
       idCountry: '',
     };
+
+    this.inputRef = React.createRef();
   }
 
   onFinish = (value) => {
@@ -57,23 +59,32 @@ class HealthWellbeing extends Component {
     });
   };
 
+  onDownload = () => {
+    console.log('ok');
+  };
+
   planDocuments = (benefit) => {
     const { documents = [] } = benefit;
+    console.log(documents);
     return (
       <div className={styles.planDocuments}>
         <div className={styles.planDocuments__first}>
           <div className={styles.labelDocs}>Choice Plan Document (01)</div>
-          {documents.map((item, itemIndex) => (
+          {documents.map((item) => (
             <Row gutter={[24, 0]}>
               <Col span={15}>
-                <Form.Item name={`planDoc%${itemIndex}`}>
+                <Form.Item>
                   <Select
                     showSearch
                     showArrow
-                    // allowClear
+                    dropdownRender={() => null}
+                    ref={this.inputRef}
                     placeholder="Choice Plan Document"
-                    // onChange={this.onChangeSelect}
-                    defaultValue={item?.attachmentName || ''}
+                    defaultValue={
+                      <span onClick={this.onDownload} style={{ cursor: 'pointer' }}>
+                        {item?.attachmentName}
+                      </span>
+                    }
                     suffixIcon={
                       <img
                         style={{ marginTop: '-6px', marginLeft: '-12px' }}
