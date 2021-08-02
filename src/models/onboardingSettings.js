@@ -1,8 +1,9 @@
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import {
   addInsurance,
+  addBenefit,
   getInsuranceList,
   getListBenefitDefault,
 } from '../services/onboardingSettings';
@@ -69,6 +70,26 @@ const onboardingSettings = {
           message,
         });
         yield put({ type: 'save', payload: { uploadedInsurance } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *addBenefit({ payload: data }, { call, put }) {
+      try {
+        const payload = {
+          ...data,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        };
+        const response = yield call(addBenefit, payload);
+        const { statusCode, message = '', data: dataBenefits = {} } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({ type: 'save', payload: { dataBenefits } });
         return response;
       } catch (errors) {
         dialog(errors);

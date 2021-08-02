@@ -20,3 +20,10 @@ export async function getListBenefitDefault(payload) {
     data: payload,
   });
 }
+
+export async function addBenefit(payload) {
+  return request('/api/benefittenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}

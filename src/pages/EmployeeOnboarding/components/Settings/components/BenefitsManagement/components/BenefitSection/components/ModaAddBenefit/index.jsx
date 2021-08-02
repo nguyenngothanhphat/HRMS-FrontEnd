@@ -167,7 +167,7 @@ class ModalAddBenefit extends Component {
   };
 
   onFinish = (value) => {
-    const { countryId } = this.props;
+    const { countryId, dispatch } = this.props;
     const { validTill, deductionDate, uploadedFile } = this.state;
     const payload = {
       ...value,
@@ -176,7 +176,11 @@ class ModalAddBenefit extends Component {
       country: countryId,
       documents: [uploadedFile.id],
     };
-    console.log(payload);
+
+    dispatch({
+      type: 'onboardingSettings/addBenefit',
+      payload,
+    });
   };
 
   render() {
