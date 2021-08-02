@@ -76,6 +76,7 @@ class BenefitSection extends Component {
     });
     filterListCountry = filterListCountry.filter((item) => item !== null);
 
+    if (!countryId) return null;
     return (
       <div className={styles.benefitSection}>
         <div className={styles.locationSelection}>
