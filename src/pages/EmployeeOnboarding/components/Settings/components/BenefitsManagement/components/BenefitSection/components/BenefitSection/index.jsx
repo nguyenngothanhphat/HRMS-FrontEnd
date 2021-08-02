@@ -67,6 +67,15 @@ class BenefitSection extends Component {
     const { loadingFetchCountry, listCountry = [], onChangeTab = () => {} } = this.props;
     const { countryId } = this.state;
 
+    let filterListCountry = listCountry.map((item) => {
+      if (item._id === 'VN' || item._id === 'IN' || item._id === 'US') {
+        return item;
+      }
+
+      return null;
+    });
+    filterListCountry = filterListCountry.filter((item) => item !== null);
+
     return (
       <div className={styles.benefitSection}>
         <div className={styles.locationSelection}>
@@ -84,7 +93,7 @@ class BenefitSection extends Component {
                 return option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0;
               }}
             >
-              {listCountry.map((item) => (
+              {filterListCountry.map((item) => (
                 <Option value={item._id}>
                   <img
                     style={{
