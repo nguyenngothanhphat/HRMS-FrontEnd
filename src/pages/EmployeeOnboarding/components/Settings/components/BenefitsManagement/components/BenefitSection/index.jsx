@@ -17,12 +17,12 @@ class BenefitPage extends Component {
     };
   }
 
-  // componentDidMount = () => {
-  //   const { dispatch } = this.props;
-  //   dispatch({
-  //     type: 'country/fetchListCountry',
-  //   });
-  // };
+  componentDidMount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'country/fetchListCountry',
+    });
+  };
 
   openModal = () => {
     this.setState({ visible: true });
