@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Button, Spin, Modal, Form, Select, DatePicker, Input } from 'antd';
 import { connect } from 'umi';
+import moment from 'moment';
 
 import CalendarIcon from '@/assets/calendar-v2.svg';
 
 import styles from './index.less';
 
 const { Option } = Select;
+const formatDate = 'YYYY-MM-DD';
 
 @connect(({ onboardingSettings: { listBenefitDefault = [] } = {}, loading }) => ({
   listBenefitDefault,
@@ -17,6 +19,8 @@ class ModalAddBenefit extends Component {
     super(props);
     this.state = {
       type: '',
+      deductionDate: '',
+      validTill: '',
       listBenefitCategory: [],
     };
   }
@@ -66,6 +70,28 @@ class ModalAddBenefit extends Component {
     handleCandelModal();
   };
 
+  onValuesChange = (value) => {
+    if ('deductionDate' in value) {
+      const deductionDate = moment(value.deductionDate).format(formatDate);
+      this.setState({ deductionDate });
+    }
+
+    if ('validTill' in value) {
+      const validTill = moment(value.validTill).format(formatDate);
+      this.setState({ validTill });
+    }
+  };
+
+  onFinish = (value) => {
+    const { validTill, deductionDate } = this.state;
+    const payload = {
+      ...value,
+      validTill,
+      deductionDate,
+    };
+    console.log(payload);
+  };
+
   render() {
     const {
       visible = false,
@@ -93,7 +119,11 @@ class ModalAddBenefit extends Component {
               <Spin />
             </div>
           ) : (
-            <Form initialValues={{ type }}>
+            <Form
+              initialValues={{ type }}
+              onFinish={this.onFinish}
+              onValuesChange={this.onValuesChange}
+            >
               <div className={styles.addBenefit__body}>
                 <div className={styles.addBenefit__body_label}>Benefit Type</div>
                 <div className={styles.addBenefit__body_formItem}>
@@ -198,9 +228,13 @@ class ModalAddBenefit extends Component {
                         );
                       }}
                     >
-                      {['10,000', '15,000', '20,000'].map((item) => (
-                        <Option value={item} key={item}>
-                          {item}
+                      {[
+                        { value: '10000', name: '10,000' },
+                        { value: '15000', name: '15,000' },
+                        { value: '20000', name: '20,000' },
+                      ].map((item) => (
+                        <Option value={item.value} key={item.value}>
+                          {item.name}
                         </Option>
                       ))}
                     </Select>
@@ -220,9 +254,13 @@ class ModalAddBenefit extends Component {
                         );
                       }}
                     >
-                      {['5,000', '10,000', '15,000'].map((item) => (
-                        <Option value={item} key={item}>
-                          {item}
+                      {[
+                        { value: '5000', name: '5,000' },
+                        { value: '10000', name: '10,000' },
+                        { value: '15000', name: '15,000' },
+                      ].map((item) => (
+                        <Option value={item.value} key={item.value}>
+                          {item.name}
                         </Option>
                       ))}
                     </Select>
@@ -242,9 +280,13 @@ class ModalAddBenefit extends Component {
                         );
                       }}
                     >
-                      {['10,000', '15,000', '20,000'].map((item) => (
-                        <Option value={item} key={item}>
-                          {item}
+                      {[
+                        { value: '10000', name: '10,000' },
+                        { value: '15000', name: '15,000' },
+                        { value: '20000', name: '20,000' },
+                      ].map((item) => (
+                        <Option value={item.value} key={item.value}>
+                          {item.name}
                         </Option>
                       ))}
                     </Select>
@@ -264,7 +306,12 @@ class ModalAddBenefit extends Component {
                 <Button className={`${styles.addBenefit__bottom_btn} ${styles.cancelBtn}`}>
                   Cancel
                 </Button>
-                <Button className={`${styles.addBenefit__bottom_btn} ${styles.addBtn}`}>Add</Button>
+                <Button
+                  htmlType="submit"
+                  className={`${styles.addBenefit__bottom_btn} ${styles.addBtn}`}
+                >
+                  Add
+                </Button>
               </div>
             </Form>
           )}
