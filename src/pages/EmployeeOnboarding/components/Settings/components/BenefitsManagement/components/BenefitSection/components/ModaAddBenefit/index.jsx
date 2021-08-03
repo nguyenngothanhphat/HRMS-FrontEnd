@@ -479,7 +479,10 @@ class ModalAddBenefit extends Component {
                 </div>
               </div>
               <div className={styles.addBenefit__bottom}>
-                <Button className={`${styles.addBenefit__bottom_btn} ${styles.cancelBtn}`}>
+                <Button
+                  onClick={this.destroyOnClose}
+                  className={`${styles.addBenefit__bottom_btn} ${styles.cancelBtn}`}
+                >
                   Cancel
                 </Button>
                 <Button
