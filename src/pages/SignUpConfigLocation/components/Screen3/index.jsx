@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Button, Col, Row, Spin } from 'antd';
 import { connect } from 'umi';
-import { CheckCircleFilled } from '@ant-design/icons';
+import { CheckCircleFilled, EyeFilled } from '@ant-design/icons';
 import styles from './index.less';
 
 @connect(({ loading, signup = {} }) => ({
@@ -130,7 +130,12 @@ class Screen3 extends Component {
                     },
                   ]}
                 >
-                  <Input.Password className={styles.inputPassword} />
+                  <Input.Password
+                    iconRender={(visible) =>
+                      visible ? <EyeFilled style={{ color: '#2c6df9' }} /> : <EyeFilled />
+                    }
+                    className={styles.inputPassword}
+                  />
                 </Form.Item>
               </Col>
               <Col xs={0} md={2} />
@@ -154,7 +159,12 @@ class Screen3 extends Component {
                     }),
                   ]}
                 >
-                  <Input.Password className={styles.inputPassword} />
+                  <Input.Password
+                    iconRender={(visible) =>
+                      visible ? <EyeFilled style={{ color: '#2c6df9' }} /> : <EyeFilled />
+                    }
+                    className={styles.inputPassword}
+                  />
                 </Form.Item>
               </Col>
             </Row>
