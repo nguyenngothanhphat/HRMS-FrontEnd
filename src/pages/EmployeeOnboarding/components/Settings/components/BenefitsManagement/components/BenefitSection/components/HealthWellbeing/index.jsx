@@ -199,7 +199,6 @@ class HealthWellbeing extends Component {
     const {
       listBenefit = [],
       loadingDeleteBenefit = false,
-      loadingAddDocument = false,
       loadingFetchListBenefit = false,
     } = this.props;
 
@@ -208,7 +207,7 @@ class HealthWellbeing extends Component {
     if (listBenefit.length === 0) return <div style={{ padding: '30px' }} />;
     return (
       <div className={styles.healthWellbeing}>
-        {loadingDeleteBenefit || loadingAddDocument || loadingFetchListBenefit ? (
+        {loadingDeleteBenefit || loadingFetchListBenefit ? (
           <div className={styles.loadingSpin}>
             <Spin />
           </div>
