@@ -36,7 +36,7 @@ class ModalAddBenefit extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      type: '',
+      // type: '',
       deductionDate: '',
       validTill: '',
       listBenefitCategory: [],
@@ -45,9 +45,16 @@ class ModalAddBenefit extends Component {
     };
   }
 
+  componentDidMount = () => {
+    this.getInitValueByActiveTab();
+  };
+
   componentDidUpdate = (prevProps) => {
-    const { listBenefitDefault = [] } = this.props;
-    if (JSON.stringify(prevProps.listBenefitDefault) !== JSON.stringify(listBenefitDefault)) {
+    const { listBenefitDefault = [], activeKeyTab } = this.props;
+    if (
+      JSON.stringify(prevProps.listBenefitDefault) !== JSON.stringify(listBenefitDefault) ||
+      JSON.stringify(prevProps.activeKeyTab) !== JSON.stringify(activeKeyTab)
+    ) {
       this.getInitValueByActiveTab();
     }
   };
@@ -94,17 +101,15 @@ class ModalAddBenefit extends Component {
   getInitValueByActiveTab = () => {
     const { activeKeyTab, listBenefitDefault = [] } = this.props;
     const key = +activeKeyTab - 1;
-    let defaultType = null;
     let defaultCategoryList = [];
 
     listBenefitDefault.forEach((item, index) => {
       if (key === index) {
-        defaultType = item.benefitType;
         defaultCategoryList = item.benefitCategory;
       }
     });
 
-    this.setState({ listBenefitCategory: defaultCategoryList, type: defaultType });
+    this.setState({ listBenefitCategory: defaultCategoryList });
   };
 
   destroyOnClose = () => {
@@ -112,10 +117,10 @@ class ModalAddBenefit extends Component {
     handleCandelModal();
   };
 
-  handlePreview = (nameFile) => {
+  handlePreview = (nameFile, idFile) => {
     const { fileName } = this.state;
     const arrFileName = [...fileName];
-    arrFileName.push(nameFile);
+    arrFileName.push({ nameFile, idFile });
 
     this.setState({
       fileName: arrFileName,
@@ -156,10 +161,19 @@ class ModalAddBenefit extends Component {
       const { data = [] } = resp;
       const fileUploaded = data.length > 0 ? data[0] : {};
       arrFile.push(fileUploaded);
-      const { name = '' } = file;
+      const { name = '', id } = fileUploaded;
+
       this.setState({ uploadedFile: arrFile });
-      this.handlePreview(name);
+      this.handlePreview(name, id);
     });
+  };
+
+  handleRemove = (idFile) => {
+    const { uploadedFile = [], fileName = [] } = this.state;
+    const filterUploadedFile = uploadedFile.filter((item) => item.id !== idFile);
+    const filterFileName = fileName.filter((item) => item.idFile !== idFile);
+
+    this.setState({ uploadedFile: filterUploadedFile, fileName: filterFileName });
   };
 
   onValuesChange = (value) => {
@@ -211,15 +225,34 @@ class ModalAddBenefit extends Component {
     }
   };
 
+  getValueField = (activeKeyTab) => {
+    const { listBenefitDefault = [] } = this.props;
+    const key = +activeKeyTab - 1;
+    let defaultType = null;
+    // let defaultCategoryList = [];
+
+    listBenefitDefault.forEach((item, index) => {
+      if (key === index) {
+        defaultType = item.benefitType;
+        // defaultCategoryList = item.benefitCategory;
+      }
+    });
+    // this.setState({ listBenefitCategory: defaultCategoryList });
+    return defaultType;
+  };
+
   render() {
     const {
       visible = false,
       loadingFetchListBenefitDefault = false,
       loadingUploadAttachment = false,
       listBenefitDefault = [],
+      activeKeyTab,
     } = this.props;
 
-    const { listBenefitCategory, type, fileName } = this.state;
+    const valueType = this.getValueField(activeKeyTab, 'type');
+
+    const { listBenefitCategory, fileName } = this.state;
 
     return (
       <Modal
@@ -240,7 +273,7 @@ class ModalAddBenefit extends Component {
             </div>
           ) : (
             <Form
-              initialValues={{ type }}
+              initialValues={{ type: valueType }}
               onFinish={this.onFinish}
               onValuesChange={this.onValuesChange}
             >
@@ -455,19 +488,19 @@ class ModalAddBenefit extends Component {
                       <div className={styles.fileUploadedContainer__listFiles}>
                         <div className={styles.fileUploadedContainer__listFiles__files}>
                           <p className={styles.previewIcon}>
-                            {this.identifyImageOrPdf(item) === 1 ? (
+                            {this.identifyImageOrPdf(item.nameFile) === 1 ? (
                               <img src={PDFIcon} alt="pdf" />
                             ) : (
                               <img src={ImageIcon} alt="img" />
                             )}
                           </p>
                           <p className={styles.fileName}>
-                            Uploaded: <a>{item}</a>
+                            Uploaded: <a>{item.nameFile}</a>
                           </p>
                         </div>
                         <Tooltip title="Remove">
                           <img
-                            // onClick={() => this.handleRemove()}
+                            onClick={() => this.handleRemove(item.idFile)}
                             className={styles.trashIcon}
                             src={TrashIcon}
                             alt="remove"
@@ -479,7 +512,10 @@ class ModalAddBenefit extends Component {
                 </div>
               </div>
               <div className={styles.addBenefit__bottom}>
-                <Button className={`${styles.addBenefit__bottom_btn} ${styles.cancelBtn}`}>
+                <Button
+                  onClick={this.destroyOnClose}
+                  className={`${styles.addBenefit__bottom_btn} ${styles.cancelBtn}`}
+                >
                   Cancel
                 </Button>
                 <Button

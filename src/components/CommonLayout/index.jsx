@@ -8,7 +8,7 @@ import ItemMenu from './components/ItemMenu';
 import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
 import BasicInformation from '../../pages/FormTeamMember/components/BasicInformation';
 import BackgroundRecheck from '../../pages/FormTeamMember/components/BackgroundRecheck';
-import BackgroundCheck from '../../pages/FormTeamMember/components/BackgroundCheckNew';
+import DocumentVerification from '../../pages/FormTeamMember/components/DocumentVerification';
 // import BottomBar from '../BottomBar';
 import s from './index.less';
 
@@ -94,7 +94,7 @@ class CommonLayout extends Component {
       if (processStatus === SENT_PROVISIONAL_OFFERS && currentStep === 3) {
         return {
           selectedItemId: listMenu[3].id,
-          displayComponent: <BackgroundCheck />,
+          displayComponent: <DocumentVerification />,
         };
       }
       if (processStatus === SENT_FOR_APPROVAL && currentStep === 7) {
@@ -273,7 +273,7 @@ class CommonLayout extends Component {
         filledBasicInformation,
         filledJobDetail,
         filledSalaryStructure,
-        filledBackgroundCheck,
+        filledDocumentVerification,
         filledOfferDetail,
         payrollSettingCheck,
         benefitsCheck,
@@ -306,7 +306,7 @@ class CommonLayout extends Component {
           salaryStructureStep: preIndex,
         },
       });
-    } else if (preIndex === 3 && filledBackgroundCheck) {
+    } else if (preIndex === 3 && filledDocumentVerification) {
       this.setState({
         statusStep: {
           ...statusStep,

@@ -11,7 +11,7 @@ const CheckboxGroup = Checkbox.Group;
 @connect(({ candidateInfo }) => ({
   candidateInfo,
 }))
-class CollapseFieldsType1 extends PureComponent {
+class CollapseFieldsTypeABC extends PureComponent {
   formRef = React.createRef();
 
   constructor(props) {
@@ -178,7 +178,7 @@ class CollapseFieldsType1 extends PureComponent {
     // );
 
     return (
-      <div className={styles.CollapseFieldsType1}>
+      <div className={styles.CollapseFieldsTypeABC}>
         <Collapse
           accordion
           expandIconPosition="right"
@@ -226,7 +226,7 @@ class CollapseFieldsType1 extends PureComponent {
             </CheckboxGroup>
             <div
               className={
-                (visible || disabled)
+                visible || disabled
                   ? `${styles.addNewType} ${styles.hidden}`
                   : `${styles.addNewType}`
               }
@@ -264,4 +264,4 @@ class CollapseFieldsType1 extends PureComponent {
   }
 }
 
-export default CollapseFieldsType1;
+export default CollapseFieldsTypeABC;
