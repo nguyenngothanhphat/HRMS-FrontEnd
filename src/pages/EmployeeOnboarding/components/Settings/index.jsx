@@ -7,6 +7,7 @@ import CustomEmails from './components/CustomEmails';
 import DocumentsAndTemplates from './components/DocumentsAndTemplates';
 import NonExtempNotice from './components/NonExtempNotice';
 import OptionalOnboardingQuestions from './components/OptionalOnboardingQuestions';
+import BenefitsManagement from './components/BenefitsManagement';
 
 export const listMenu = [
   {
@@ -49,6 +50,13 @@ export const listMenu = [
     key: 'customEmails',
     component: <CustomEmails />,
     link: 'custom-emails',
+  },
+  {
+    id: 6,
+    name: 'Benefits Management ',
+    key: 'benefitsManagement',
+    component: <BenefitsManagement />,
+    link: 'benefits-management',
   },
 ];
 @connect(({ info: { currentStep = 0, displayComponent = {} } = {} }) => ({
