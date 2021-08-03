@@ -18,15 +18,14 @@ class EmployerComponent extends PureComponent {
 
     this.state = {
       checkedList: [],
-      employerName: '',
     };
     this.handleInputThrottled = throttle(this.handleInputThrottled, 2000);
   }
 
   componentDidMount = () => {
-    const { checkedList = [], employerName = '', dispatch } = this.props;
+    const { data = [], employer = '', dispatch } = this.props;
 
-    if (employerName) {
+    if (employer) {
       dispatch({
         type: 'candidateInfo/saveTemp',
         payload: {
@@ -35,15 +34,17 @@ class EmployerComponent extends PureComponent {
       });
     }
 
+    let checkedList = data.filter((val) => val.alias && val.value === true);
+    checkedList = checkedList.map((val) => val.alias);
+
     this.setState({
       checkedList,
-      employerName,
     });
   };
 
   handleInputThrottled = (value) => {
-    const { orderNumber, handleEmployerName = () => {} } = this.props;
-    handleEmployerName(value, orderNumber);
+    const { handleChange = () => {}, index } = this.props;
+    handleChange(value, index);
   };
 
   setCheckedList = (list) => {
@@ -52,35 +53,26 @@ class EmployerComponent extends PureComponent {
     });
   };
 
-  setEmployerName = (name) => {
-    this.setState({
-      employerName: name,
-    });
-  };
-
-  onChange = (list) => {
+  onChange = (list, fieldToRender) => {
+    const { handleCheck = () => {}, index } = this.props;
     this.setCheckedList(list);
-    const { getDataFromFields = () => {}, orderNumber } = this.props;
-    const { employerName } = this.state;
-    getDataFromFields(orderNumber, employerName, list);
+    handleCheck(fieldToRender, list, index);
   };
 
   employerNameHandle = (event) => {
     const { value = '' } = event.target;
-    this.setEmployerName(value);
-    // this.throttled.current(value);
     this.handleInputThrottled(value);
   };
 
   render() {
     const {
-      checkBoxesData = [],
-      orderNumber = 0,
-      employerName: employerNameFromServer = '',
-      deleteComponent = () => {},
+      data = [],
+      index = 0,
+      employer = '',
+      remove = () => {},
       // processStatus = '',
-      candidateInfo: { componentsNumberCount = [] } = {},
       disabled = false,
+      listLength = 0,
       // workDuration = {},
     } = this.props;
     const { checkedList } = this.state;
@@ -88,28 +80,22 @@ class EmployerComponent extends PureComponent {
     return (
       <div className={styles.EmployerComponent}>
         <div className={styles.titleBar}>
-          <span className={styles.title}>Employer {orderNumber} Details</span>
+          <span className={styles.title}>Employer {index + 1} Details</span>
           {!disabled && (
-            <CloseOutlined
-              style={
-                componentsNumberCount.length === 1 ? { display: 'none' } : { display: 'block' }
-              }
-              className={styles.deleteIcon}
-              onClick={() => deleteComponent(orderNumber)}
-            />
+            <CloseOutlined className={styles.deleteIcon} onClick={() => remove(index)} />
           )}
         </div>
         <Form
           ref={this.formRef}
           initialValues={{
-            employerName: employerNameFromServer,
+            employer,
             // startDate: workDuration.startDate ? moment(workDuration.startDate) : '',
             // endDate: workDuration.endDate ? moment(workDuration.endDate) : '',
           }}
         >
           <Row gutter={['20', '20']}>
             <Col span={24}>
-              <Form.Item label="Name of the employer*" name="employerName">
+              <Form.Item label="Name of the employer*" name="employer">
                 <Input
                   disabled={disabled}
                   onChange={this.employerNameHandle}
@@ -118,52 +104,31 @@ class EmployerComponent extends PureComponent {
                 />
               </Form.Item>
             </Col>
-            {/* {disabled && (
-              <>
-                <Col span={24}>
-                  <Form.Item name="toPresent">
-                    <Checkbox defaultChecked={workDuration.toPresent} disabled>
-                      Currently work
-                    </Checkbox>
-                  </Form.Item>
-                </Col>
-                <Col span={12}>
-                  <Form.Item label="Start Date" name="startDate">
-                    <DatePicker disabled placeholder="Start Date" format="MM.DD.YY" />
-                  </Form.Item>
-                </Col>
-                {!workDuration.toPresent && (
-                  <Col span={12}>
-                    <Form.Item label="End Date" name="endDate">
-                      <DatePicker disabled placeholder="End Date" format="MM.DD.YY" />
-                    </Form.Item>
-                  </Col>
-                )}
-              </>
-            )} */}
           </Row>
         </Form>
         <Row gutter={['20', '20']}>
           <Col span={24}>
             <span className={styles.title2}>Proof of employment</span>
             <CheckboxGroup
-              onChange={this.onChange}
-              // options={checkBoxesData.map((data) => data.alias)}
+              onChange={(list) => this.onChange(list, data)}
+              // options={data.map((data) => data.alias)}
               value={checkedList}
               disabled={disabled}
               className={styles.checkBoxesGroup}
             >
-              {checkBoxesData.map((data) => (
+              {data.map((field) => (
                 <Checkbox
-                  disabled={data.alias.substr(data.alias.length - 1) === '*'}
-                  value={data.alias}
+                  disabled={field.alias.substr(field.alias.length - 1) === '*'}
+                  value={field.alias}
                 >
-                  {data.alias}
+                  {field.alias}
                 </Checkbox>
               ))}
             </CheckboxGroup>
           </Col>
         </Row>
+
+        {index + 1 <= listLength && <hr className={styles.divider} />}
       </div>
     );
   }
