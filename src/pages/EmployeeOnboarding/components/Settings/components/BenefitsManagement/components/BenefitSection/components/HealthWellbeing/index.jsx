@@ -16,7 +16,6 @@ import ModalAddDocument from '../ModalAddDocument';
   loadingFetchCountry: loading.effects['country/fetchListCountry'],
   loadingAddBenefit: loading.effects['onboardingSettings/addBenefit'],
   loadingDeleteBenefit: loading.effects['onboardingSettings/deleteBenefit'],
-  loadingAddDocument: loading.effects['onboardingSettings/addDocument'],
   loadingFetchListBenefit: loading.effects['onboardingSettings/fetchListBenefit'],
 }))
 class HealthWellbeing extends Component {
@@ -191,7 +190,7 @@ class HealthWellbeing extends Component {
             <div className={styles.addDocs__text}>Add Documents</div>
           </div>
         </div>
-        {index === 0 ? <Divider /> : null}
+        <Divider />
       </>
     );
   };
@@ -199,7 +198,6 @@ class HealthWellbeing extends Component {
   render() {
     const {
       listBenefit = [],
-      loadingAddBenefit = false,
       loadingDeleteBenefit = false,
       loadingAddDocument = false,
       loadingFetchListBenefit = false,
@@ -210,10 +208,7 @@ class HealthWellbeing extends Component {
     if (listBenefit.length === 0) return <div style={{ padding: '30px' }} />;
     return (
       <div className={styles.healthWellbeing}>
-        {loadingAddBenefit ||
-        loadingDeleteBenefit ||
-        loadingAddDocument ||
-        loadingFetchListBenefit ? (
+        {loadingDeleteBenefit || loadingAddDocument || loadingFetchListBenefit ? (
           <div className={styles.loadingSpin}>
             <Spin />
           </div>
