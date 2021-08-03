@@ -102,13 +102,11 @@ class ModalAddDocument extends Component {
       country: idCountry,
       payload: {
         benefitId: idBenefit,
-        documents: [
-          {
-            attachment: id,
-            attachmentName: name,
-            attachmentUrl: url,
-          },
-        ],
+        document: {
+          attachment: id,
+          attachmentName: name,
+          attachmentUrl: url,
+        },
       },
     };
 
@@ -119,6 +117,7 @@ class ModalAddDocument extends Component {
       }).then((response) => {
         const { statusCode } = response;
         if (statusCode === 200) {
+          this.setState({ uploadedFile: {} });
           handleCandelModal();
         }
       });

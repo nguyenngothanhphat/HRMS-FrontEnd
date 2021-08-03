@@ -178,7 +178,7 @@ class ModalAddBenefit extends Component {
     const { countryId, dispatch, handleCandelModal = () => {} } = this.props;
     const { validTill, deductionDate, uploadedFile = [] } = this.state;
 
-    const documents = uploadedFile.map((item) => {
+    const documents = uploadedFile?.map((item) => {
       const { id = '', url = '', name = '' } = item;
       return {
         attachment: id,
@@ -195,16 +195,20 @@ class ModalAddBenefit extends Component {
       documents,
     };
 
-    dispatch({
-      type: 'onboardingSettings/addBenefit',
-      payload,
-    }).then((response) => {
-      const { statusCode } = response;
-      if (statusCode === 200) {
-        this.setState({ uploadedFile: [] });
-        handleCandelModal();
-      }
-    });
+    if (!isEmpty(uploadedFile)) {
+      dispatch({
+        type: 'onboardingSettings/addBenefit',
+        payload,
+      }).then((response) => {
+        const { statusCode } = response;
+        if (statusCode === 200) {
+          this.setState({ uploadedFile: [] });
+          handleCandelModal();
+        }
+      });
+    } else {
+      message.error('Please choose file');
+    }
   };
 
   render() {
