@@ -50,8 +50,11 @@ class ModalAddBenefit extends Component {
   };
 
   componentDidUpdate = (prevProps) => {
-    const { listBenefitDefault = [] } = this.props;
-    if (JSON.stringify(prevProps.listBenefitDefault) !== JSON.stringify(listBenefitDefault)) {
+    const { listBenefitDefault = [], activeKeyTab } = this.props;
+    if (
+      JSON.stringify(prevProps.listBenefitDefault) !== JSON.stringify(listBenefitDefault) ||
+      JSON.stringify(prevProps.activeKeyTab) !== JSON.stringify(activeKeyTab)
+    ) {
       this.getInitValueByActiveTab();
     }
   };
