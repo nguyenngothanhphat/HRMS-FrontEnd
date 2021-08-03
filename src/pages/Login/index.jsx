@@ -80,7 +80,7 @@ class FormLogin extends Component {
   };
 
   returnMessageValidationEmail = (messageError) => {
-    if (messageError === 'User not found') return 'User does not existssss';
+    if (messageError === 'User not found') return 'User does not exist';
     if (messageError === 'Invalid user') return 'Invalid user';
     return undefined;
   };
