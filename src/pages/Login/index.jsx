@@ -17,6 +17,14 @@ import styles from './index.less';
 class FormLogin extends Component {
   formRef = React.createRef();
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      checkValidationEmail: undefined,
+      isMessageValidationEmail: true,
+    };
+  }
+
   componentDidMount = () => {
     const { location: { state: { autoFillEmail = '' } = {} } = {} } = this.props;
     removeLocalStorage();
@@ -36,6 +44,13 @@ class FormLogin extends Component {
     dispatch({
       type: 'login/login',
       payload: { ...values },
+    }).then(() => {
+      const { messageError = '' } = this.props;
+
+      const checkValidationEmail =
+        messageError === 'User not found' || messageError === 'Invalid user' ? 'error' : undefined;
+
+      this.setState({ checkValidationEmail, isMessageValidationEmail: true });
     });
   };
 
@@ -65,16 +80,21 @@ class FormLogin extends Component {
   };
 
   returnMessageValidationEmail = (messageError) => {
-    if (messageError === 'User not found') return 'User does not exist';
+    if (messageError === 'User not found') return 'User does not existssss';
     if (messageError === 'Invalid user') return 'Invalid user';
     return undefined;
   };
 
+  onValuesChange = (values) => {
+    const { checkValidationEmail } = this.state;
+    if (checkValidationEmail === 'error' && values) {
+      this.setState({ isMessageValidationEmail: false, checkValidationEmail: undefined });
+    }
+  };
+
   render() {
     const { loadingLoginThirdParty, messageError = '' } = this.props;
-
-    const checkValidationEmail =
-      messageError === 'User not found' || messageError === 'Invalid user' ? 'error' : undefined;
+    const { checkValidationEmail, isMessageValidationEmail } = this.state;
 
     const messageValidationEmail = this.returnMessageValidationEmail(messageError);
 
@@ -93,6 +113,7 @@ class FormLogin extends Component {
             remember: true,
           }}
           onFinish={this.onFinish}
+          onValuesChange={this.onValuesChange}
           requiredMark={false}
           ref={this.formRef}
         >
@@ -100,7 +121,7 @@ class FormLogin extends Component {
             label={formatMessage({ id: 'pages.login.emailLabel' })}
             name="email"
             validateStatus={checkValidationEmail}
-            help={messageValidationEmail}
+            help={isMessageValidationEmail ? messageValidationEmail : null}
             rules={[
               {
                 required: true,
