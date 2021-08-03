@@ -83,7 +83,7 @@ class HealthWellbeing extends Component {
                     placeholder="Choice Plan Document"
                     defaultValue={
                       <span onClick={this.onDownload} style={{ cursor: 'pointer' }}>
-                        {item.attachmentName}
+                        {item?.attachmentName}
                       </span>
                     }
                     suffixIcon={
