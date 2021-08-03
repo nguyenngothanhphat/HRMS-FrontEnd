@@ -79,9 +79,9 @@ class ModalEmail extends Component {
                   <Form.Item name="email" label="Personal e-mail id of the joinee">
                     <Input disabled={isInputEnable} />
                   </Form.Item>
-                  {/* <Typography.Text className={style.change} onClick={handleClick}>
+                  <Typography.Text className={style.change} onClick={handleClick}>
                     Change
-                  </Typography.Text> */}
+                  </Typography.Text>
                   <Form.Item className={style.margin}>
                     <Button
                       loading={loading4}
