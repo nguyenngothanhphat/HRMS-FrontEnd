@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Tabs, Select } from 'antd';
+import { Tabs, Select, Button } from 'antd';
 import { connect } from 'umi';
 
 import { getCurrentLocation } from '@/utils/authority';
@@ -13,9 +13,11 @@ const { Option } = Select;
   ({
     locationSelection: { listLocationsByCompany = [] } = {},
     country: { listCountry = [] } = {},
+    onboardingSettings: { listBenefit = [] } = {},
     loading,
   }) => ({
     listCountry,
+    listBenefit,
     listLocationsByCompany,
     loadingFetchCountry: loading.effects['country/fetchListCountry'],
   }),
@@ -23,7 +25,7 @@ const { Option } = Select;
 class BenefitSection extends Component {
   constructor(props) {
     super(props);
-    this.state = { countryId: '' };
+    this.state = { countryId: '', activeKey: '1' };
   }
 
   componentDidMount = () => {
@@ -64,9 +66,23 @@ class BenefitSection extends Component {
     this.fetchListBenefit(value);
   };
 
+  handleClick = (action) => {
+    const { activeKey } = this.state;
+    if (action === 'next' && +activeKey <= 3) {
+      this.setState({ activeKey: `${+activeKey + 1}` });
+    } else {
+      this.setState({ activeKey: `${+activeKey - 1}` });
+    }
+  };
+
   render() {
-    const { loadingFetchCountry, listCountry = [], onChangeTab = () => {} } = this.props;
-    const { countryId } = this.state;
+    const {
+      loadingFetchCountry,
+      listCountry = [],
+      onChangeTab = () => {},
+      listBenefit = [],
+    } = this.props;
+    const { countryId, activeKey } = this.state;
 
     let filterListCountry = listCountry.map((item) => {
       if (item._id === 'VN' || item._id === 'IN' || item._id === 'US') {
@@ -113,7 +129,7 @@ class BenefitSection extends Component {
             </Select>
           </div>
         </div>
-        <Tabs defaultActiveKey="1" onChange={onChangeTab}>
+        <Tabs activeKey={activeKey} onChange={onChangeTab}>
           <TabPane tab="Health & Wellbeing" key="1">
             <HealthWellbeing />
           </TabPane>
@@ -124,6 +140,27 @@ class BenefitSection extends Component {
             Legal
           </TabPane>
         </Tabs>
+        <div
+          style={listBenefit.length === 0 ? { display: 'none' } : {}}
+          className={styles.benefitSection__bottom}
+        >
+          {activeKey === '1' ? null : (
+            <Button
+              onClick={() => this.handleClick('previous')}
+              className={`${styles.benefitSection__bottom_btn} ${styles.previousBtn}`}
+            >
+              Previous
+            </Button>
+          )}
+          {activeKey === '3' ? null : (
+            <Button
+              onClick={() => this.handleClick('next')}
+              className={`${styles.benefitSection__bottom_btn} ${styles.nextBtn}`}
+            >
+              Next
+            </Button>
+          )}
+        </div>
       </div>
     );
   }
