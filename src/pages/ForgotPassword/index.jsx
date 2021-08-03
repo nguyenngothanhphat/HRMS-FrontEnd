@@ -131,6 +131,9 @@ class ForgotPassword extends Component {
           <span>{protectEmail}</span>
           {formatMessage({ id: 'pages.forgotPassword.descriptionSuccessfully2' })}
         </p>
+        <Link to="/login" className={styles.textSignIn}>
+          Sign in
+        </Link>
       </div>
     );
   };
