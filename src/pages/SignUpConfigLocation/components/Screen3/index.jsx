@@ -84,7 +84,7 @@ class Screen3 extends Component {
     const arrText = [
       'Use a minimum of 8 characters.',
       'Avoid common words and repetition (eg. password, 12121212)',
-      'Avoid keyboard patterns (eg. Asdf )',
+      'At least one letter, one number and special character!',
     ];
     return (
       <div className={styles.Screen3}>
@@ -127,7 +127,7 @@ class Screen3 extends Component {
                     },
                     {
                       pattern: /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{0,}$/,
-                      message: 'Avoid keyboard patterns (eg. Asdf )',
+                      message: 'At least one letter, one number and special character!',
                     },
                   ]}
                 >
