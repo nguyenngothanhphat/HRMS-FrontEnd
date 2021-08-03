@@ -1,0 +1,110 @@
+@orange: #e9b551;
+@blue: #2c6df9;
+
+.alert {
+  width: 222px;
+  padding: 14px;
+  border-radius: 5px;
+  border: solid 1px;
+  background-color: #fffdf7;
+  margin-left: 16px;
+  position: relative;
+  opacity: 1;
+  visibility: visible;
+  transition: 0.2s ease-in;
+
+  .exclamationIcon {
+    width: 14px;
+    height: 14px;
+
+    border-radius: 50%;
+    margin-right: 9px;
+
+    path:nth-child(2) {
+      fill: white;
+    }
+  }
+
+  &.info,
+  &.remind,
+  &.caution {
+    border-color: @orange;
+
+    .exclamationIcon {
+      background-color: @orange;
+
+      path:first-child {
+        fill: @orange;
+      }
+    }
+  }
+
+  .crossIcon {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+
+    svg {
+      width: 11px;
+      height: 11px;
+      transform: rotate(45deg);
+      cursor: pointer;
+
+      path {
+        fill: #707177;
+      }
+
+      &:hover {
+        path {
+          fill: black;
+        }
+      }
+    }
+  }
+
+  // &.info {
+  //   border-color: @blue;
+  //   background-color: white;
+
+  //   .exclamationIcon {
+  //     background-color: @blue;
+
+  //     path:first-child {
+  //       fill: @blue;
+  //     }
+  //   }
+  // }
+
+  .alertHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+
+    h4 {
+      font-size: 12px;
+      font-weight: 500;
+    }
+  }
+
+  .alertContent {
+    font-size: 10px;
+
+    a {
+      color: @blue;
+    }
+  }
+
+  &.hide {
+    opacity: 0;
+    visibility: hidden;
+    display: none;
+  }
+
+  @media (max-width: 880px) {
+    margin-left: 0;
+  }
+
+  @media (max-width: 325px) {
+    width: 100%;
+  }
+}
