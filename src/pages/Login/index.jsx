@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, Checkbox } from 'antd';
 import { EyeFilled } from '@ant-design/icons';
 import logoGoogle from '@/assets/logo_google.png';
 import GoogleLogin from 'react-google-login';
 import { Link, connect, formatMessage, history } from 'umi';
 import { removeLocalStorage } from '@/utils/authority';
+
 import styles from './index.less';
 
 @connect(({ loading, login: { messageError = '' } = {} }) => ({
@@ -132,11 +133,11 @@ class FormLogin extends Component {
               className={styles.inputPassword}
             />
           </Form.Item>
-          {/* <Form.Item className={styles.checkbox} name="remember" valuePropName="checked">
+          <Form.Item className={styles.checkbox} name="remember">
             <Checkbox>
               <span>{formatMessage({ id: 'pages.login.keepMeSignedIn' })}</span>
             </Checkbox>
-          </Form.Item> */}
+          </Form.Item>
           <Form.Item
             noStyle
             shouldUpdate={(prevValues, currentValues) =>
