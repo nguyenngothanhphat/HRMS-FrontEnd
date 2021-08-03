@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Button } from 'antd';
+import { Form, Input, Button, Checkbox } from 'antd';
 import { EyeFilled } from '@ant-design/icons';
 import logoGoogle from '@/assets/logo_google.png';
 import GoogleLogin from 'react-google-login';
 import { Link, connect, formatMessage, history } from 'umi';
 import { removeLocalStorage } from '@/utils/authority';
+
 import styles from './index.less';
 
 @connect(({ loading, login: { messageError = '' } = {} }) => ({
@@ -15,6 +16,14 @@ import styles from './index.less';
 }))
 class FormLogin extends Component {
   formRef = React.createRef();
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      checkValidationEmail: undefined,
+      isMessageValidationEmail: true,
+    };
+  }
 
   componentDidMount = () => {
     const { location: { state: { autoFillEmail = '' } = {} } = {} } = this.props;
@@ -35,6 +44,13 @@ class FormLogin extends Component {
     dispatch({
       type: 'login/login',
       payload: { ...values },
+    }).then(() => {
+      const { messageError = '' } = this.props;
+
+      const checkValidationEmail =
+        messageError === 'User not found' || messageError === 'Invalid user' ? 'error' : undefined;
+
+      this.setState({ checkValidationEmail, isMessageValidationEmail: true });
     });
   };
 
@@ -69,11 +85,16 @@ class FormLogin extends Component {
     return undefined;
   };
 
+  onValuesChange = (values) => {
+    const { checkValidationEmail } = this.state;
+    if (checkValidationEmail === 'error' && values) {
+      this.setState({ isMessageValidationEmail: false, checkValidationEmail: undefined });
+    }
+  };
+
   render() {
     const { loadingLoginThirdParty, messageError = '' } = this.props;
-
-    const checkValidationEmail =
-      messageError === 'User not found' || messageError === 'Invalid user' ? 'error' : undefined;
+    const { checkValidationEmail, isMessageValidationEmail } = this.state;
 
     const messageValidationEmail = this.returnMessageValidationEmail(messageError);
 
@@ -92,6 +113,7 @@ class FormLogin extends Component {
             remember: true,
           }}
           onFinish={this.onFinish}
+          onValuesChange={this.onValuesChange}
           requiredMark={false}
           ref={this.formRef}
         >
@@ -99,7 +121,7 @@ class FormLogin extends Component {
             label={formatMessage({ id: 'pages.login.emailLabel' })}
             name="email"
             validateStatus={checkValidationEmail}
-            help={messageValidationEmail}
+            help={isMessageValidationEmail ? messageValidationEmail : null}
             rules={[
               {
                 required: true,
@@ -132,11 +154,11 @@ class FormLogin extends Component {
               className={styles.inputPassword}
             />
           </Form.Item>
-          {/* <Form.Item className={styles.checkbox} name="remember" valuePropName="checked">
+          <Form.Item className={styles.checkbox} name="remember">
             <Checkbox>
               <span>{formatMessage({ id: 'pages.login.keepMeSignedIn' })}</span>
             </Checkbox>
-          </Form.Item> */}
+          </Form.Item>
           <Form.Item
             noStyle
             shouldUpdate={(prevValues, currentValues) =>

@@ -1,4 +1,18 @@
 .Screen3 {
+  :global{
+    .ant-form-item-has-error :not(.ant-input-affix-wrapper-disabled).ant-input-affix-wrapper-focused, .ant-form-item-has-error :not(.ant-input-affix-wrapper-disabled).ant-input-affix-wrapper:focus, .ant-form-item-has-error :not(.ant-input-disabled).ant-input-focused, .ant-form-item-has-error :not(.ant-input-disabled).ant-input:focus{
+      box-shadow: none !important;
+      -webkit-box-shadow: none !important;
+	    -moz-box-shadow: none !important;
+    }
+
+      
+.ant-input-affix-wrapper .ant-input:focus {
+    border: none !important;
+    // border-bottom: 1px solid white !important;
+    box-shadow: none !important;
+}
+  }
   .container {
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgb(214, 220, 229);
@@ -30,9 +44,6 @@
           border: solid 1px #d6dce4;
           background-color: #ffffff;
         }
-        .ant-form-item {
-          margin-bottom: 1rem;
-        }
         .ant-form-item-label label {
           font-size: 13px;
           font-weight: 500;
@@ -41,6 +52,9 @@
         }
         .ant-form-item-explain {
           margin: 10px 0;
+        }
+        .ant-form-item-has-error :not(.ant-input-affix-wrapper-disabled).ant-input-affix-wrapper-focused, .ant-form-item-has-error :not(.ant-input-affix-wrapper-disabled).ant-input-affix-wrapper:focus, .ant-form-item-has-error :not(.ant-input-disabled).ant-input-focused, .ant-form-item-has-error :not(.ant-input-disabled).ant-input:focus{
+          box-shadow: none !important;
         }
       }
     }
