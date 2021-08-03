@@ -112,10 +112,10 @@ class ModalAddBenefit extends Component {
     handleCandelModal();
   };
 
-  handlePreview = (nameFile) => {
+  handlePreview = (nameFile, idFile) => {
     const { fileName } = this.state;
     const arrFileName = [...fileName];
-    arrFileName.push(nameFile);
+    arrFileName.push({ nameFile, idFile });
 
     this.setState({
       fileName: arrFileName,
@@ -156,10 +156,19 @@ class ModalAddBenefit extends Component {
       const { data = [] } = resp;
       const fileUploaded = data.length > 0 ? data[0] : {};
       arrFile.push(fileUploaded);
-      const { name = '' } = file;
+      const { name = '', id } = fileUploaded;
+
       this.setState({ uploadedFile: arrFile });
-      this.handlePreview(name);
+      this.handlePreview(name, id);
     });
+  };
+
+  handleRemove = (idFile) => {
+    const { uploadedFile = [], fileName = [] } = this.state;
+    const filterUploadedFile = uploadedFile.filter((item) => item.id !== idFile);
+    const filterFileName = fileName.filter((item) => item.idFile !== idFile);
+
+    this.setState({ uploadedFile: filterUploadedFile, fileName: filterFileName });
   };
 
   onValuesChange = (value) => {
@@ -455,19 +464,19 @@ class ModalAddBenefit extends Component {
                       <div className={styles.fileUploadedContainer__listFiles}>
                         <div className={styles.fileUploadedContainer__listFiles__files}>
                           <p className={styles.previewIcon}>
-                            {this.identifyImageOrPdf(item) === 1 ? (
+                            {this.identifyImageOrPdf(item.nameFile) === 1 ? (
                               <img src={PDFIcon} alt="pdf" />
                             ) : (
                               <img src={ImageIcon} alt="img" />
                             )}
                           </p>
                           <p className={styles.fileName}>
-                            Uploaded: <a>{item}</a>
+                            Uploaded: <a>{item.nameFile}</a>
                           </p>
                         </div>
                         <Tooltip title="Remove">
                           <img
-                            // onClick={() => this.handleRemove()}
+                            onClick={() => this.handleRemove(item.idFile)}
                             className={styles.trashIcon}
                             src={TrashIcon}
                             alt="remove"
