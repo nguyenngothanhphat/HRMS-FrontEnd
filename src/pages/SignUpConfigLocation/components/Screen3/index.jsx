@@ -96,7 +96,6 @@ class Screen3 extends Component {
           }}
           onFinish={this.onFinish}
           requiredMark={false}
-          style={{ marginTop: '1rem' }}
         >
           <div className={styles.container}>
             <div className={styles.titleAndDescription}>
