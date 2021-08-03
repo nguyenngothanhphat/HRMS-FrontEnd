@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { Button, Spin, notification } from 'antd';
 import { connect } from 'umi';
-import BenefitSection from './components/BenefitSection';
-import ModalAddBenefit from './components/ModaAddBenefit';
 
+import BenefitSection from './components/BenefitSection';
 import styles from './index.less';
 
 @connect(({ loading }) => ({
@@ -24,10 +23,6 @@ class BenefitPage extends Component {
     dispatch({
       type: 'country/fetchListCountry',
     });
-  };
-
-  onChangeTab = (value) => {
-    this.setState({ activeKeyTab: value });
   };
 
   onChangeSelect = (value) => {
@@ -79,15 +74,15 @@ class BenefitPage extends Component {
           </div>
 
           <div className={styles.benefitRoot__bottom}>
-            <BenefitSection onChangeTab={this.onChangeTab} onChangeSelect={this.onChangeSelect} />
+            <BenefitSection
+              activeKeyTab={activeKeyTab}
+              onChangeSelect={this.onChangeSelect}
+              visible={visible}
+              countryId={countryId}
+              closeModal={this.closeModal}
+            />
           </div>
         </div>
-        <ModalAddBenefit
-          activeKeyTab={activeKeyTab}
-          visible={visible}
-          countryId={countryId}
-          handleCandelModal={this.closeModal}
-        />
       </div>
     );
   }

@@ -36,7 +36,7 @@ class ModalAddBenefit extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      type: '',
+      // type: '',
       deductionDate: '',
       validTill: '',
       listBenefitCategory: [],
@@ -44,6 +44,10 @@ class ModalAddBenefit extends Component {
       fileName: [],
     };
   }
+
+  componentDidMount = () => {
+    this.getInitValueByActiveTab();
+  };
 
   componentDidUpdate = (prevProps) => {
     const { listBenefitDefault = [] } = this.props;
@@ -94,17 +98,15 @@ class ModalAddBenefit extends Component {
   getInitValueByActiveTab = () => {
     const { activeKeyTab, listBenefitDefault = [] } = this.props;
     const key = +activeKeyTab - 1;
-    let defaultType = null;
     let defaultCategoryList = [];
 
     listBenefitDefault.forEach((item, index) => {
       if (key === index) {
-        defaultType = item.benefitType;
         defaultCategoryList = item.benefitCategory;
       }
     });
 
-    this.setState({ listBenefitCategory: defaultCategoryList, type: defaultType });
+    this.setState({ listBenefitCategory: defaultCategoryList });
   };
 
   destroyOnClose = () => {
@@ -220,15 +222,34 @@ class ModalAddBenefit extends Component {
     }
   };
 
+  getValueField = (activeKeyTab) => {
+    const { listBenefitDefault = [] } = this.props;
+    const key = +activeKeyTab - 1;
+    let defaultType = null;
+    // let defaultCategoryList = [];
+
+    listBenefitDefault.forEach((item, index) => {
+      if (key === index) {
+        defaultType = item.benefitType;
+        // defaultCategoryList = item.benefitCategory;
+      }
+    });
+    // this.setState({ listBenefitCategory: defaultCategoryList });
+    return defaultType;
+  };
+
   render() {
     const {
       visible = false,
       loadingFetchListBenefitDefault = false,
       loadingUploadAttachment = false,
       listBenefitDefault = [],
+      activeKeyTab,
     } = this.props;
 
-    const { listBenefitCategory, type, fileName } = this.state;
+    const valueType = this.getValueField(activeKeyTab, 'type');
+
+    const { listBenefitCategory, fileName } = this.state;
 
     return (
       <Modal
@@ -249,7 +270,7 @@ class ModalAddBenefit extends Component {
             </div>
           ) : (
             <Form
-              initialValues={{ type }}
+              initialValues={{ type: valueType }}
               onFinish={this.onFinish}
               onValuesChange={this.onValuesChange}
             >
