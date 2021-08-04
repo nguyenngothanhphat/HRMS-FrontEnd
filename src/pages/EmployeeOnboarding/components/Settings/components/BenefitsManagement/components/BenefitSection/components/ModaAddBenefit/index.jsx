@@ -31,29 +31,36 @@ const { Dragger } = Upload;
   listBenefitDefault,
   loadingFetchListBenefitDefault: loading.effects['onboardingSettings/fetchListBenefitDefault'],
   loadingUploadAttachment: loading.effects['upload/uploadFile'],
+  loadingAddDocument: loading.effects['onboardingSettings/addBenefit'],
 }))
 class ModalAddBenefit extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      type: '',
       deductionDate: '',
       validTill: '',
       listBenefitCategory: [],
-      uploadedFile: [],
-      fileName: [],
+      uploadedFileList: [],
+      fileNameList: [],
     };
   }
 
+  componentDidMount = () => {
+    this.getInitValueByActiveTab();
+  };
+
   componentDidUpdate = (prevProps) => {
-    const { listBenefitDefault = [] } = this.props;
-    if (JSON.stringify(prevProps.listBenefitDefault) !== JSON.stringify(listBenefitDefault)) {
+    const { listBenefitDefault = [], activeKeyTab } = this.props;
+    if (
+      JSON.stringify(prevProps.listBenefitDefault) !== JSON.stringify(listBenefitDefault) ||
+      JSON.stringify(prevProps.activeKeyTab) !== JSON.stringify(activeKeyTab)
+    ) {
       this.getInitValueByActiveTab();
     }
   };
 
-  identifyImageOrPdf = (fileName) => {
-    const parts = fileName.split('.');
+  identifyImageOrPdf = (fileNameList) => {
+    const parts = fileNameList.split('.');
     const ext = parts[parts.length - 1];
     switch (ext.toLowerCase()) {
       case 'jpg':
@@ -94,17 +101,15 @@ class ModalAddBenefit extends Component {
   getInitValueByActiveTab = () => {
     const { activeKeyTab, listBenefitDefault = [] } = this.props;
     const key = +activeKeyTab - 1;
-    let defaultType = null;
     let defaultCategoryList = [];
 
     listBenefitDefault.forEach((item, index) => {
       if (key === index) {
-        defaultType = item.benefitType;
         defaultCategoryList = item.benefitCategory;
       }
     });
 
-    this.setState({ listBenefitCategory: defaultCategoryList, type: defaultType });
+    this.setState({ listBenefitCategory: defaultCategoryList });
   };
 
   destroyOnClose = () => {
@@ -112,13 +117,13 @@ class ModalAddBenefit extends Component {
     handleCandelModal();
   };
 
-  handlePreview = (nameFile) => {
-    const { fileName } = this.state;
-    const arrFileName = [...fileName];
-    arrFileName.push(nameFile);
+  handlePreview = (nameFile, idFile) => {
+    const { fileNameList } = this.state;
+    const arrFileName = [...fileNameList];
+    arrFileName.push({ nameFile, idFile });
 
     this.setState({
-      fileName: arrFileName,
+      fileNameList: arrFileName,
     });
   };
 
@@ -144,8 +149,8 @@ class ModalAddBenefit extends Component {
 
   handleUpload = (file) => {
     const { dispatch } = this.props;
-    const { uploadedFile } = this.state;
-    const arrFile = [...uploadedFile];
+    const { uploadedFileList } = this.state;
+    const arrFile = [...uploadedFileList];
     const formData = new FormData();
     formData.append('uri', file);
 
@@ -156,10 +161,19 @@ class ModalAddBenefit extends Component {
       const { data = [] } = resp;
       const fileUploaded = data.length > 0 ? data[0] : {};
       arrFile.push(fileUploaded);
-      const { name = '' } = file;
-      this.setState({ uploadedFile: arrFile });
-      this.handlePreview(name);
+      const { name = '', id } = fileUploaded;
+
+      this.setState({ uploadedFileList: arrFile });
+      this.handlePreview(name, id);
     });
+  };
+
+  handleRemove = (idFile) => {
+    const { uploadedFileList = [], fileNameList = [] } = this.state;
+    const filterUploadedFile = uploadedFileList.filter((item) => item.id !== idFile);
+    const filterFileName = fileNameList.filter((item) => item.idFile !== idFile);
+
+    this.setState({ uploadedFileList: filterUploadedFile, fileNameList: filterFileName });
   };
 
   onValuesChange = (value) => {
@@ -176,9 +190,9 @@ class ModalAddBenefit extends Component {
 
   onFinish = (value) => {
     const { countryId, dispatch, handleCandelModal = () => {} } = this.props;
-    const { validTill, deductionDate, uploadedFile = [] } = this.state;
+    const { validTill, deductionDate, uploadedFileList = [] } = this.state;
 
-    const documents = uploadedFile?.map((item) => {
+    const documents = uploadedFileList?.map((item) => {
       const { id = '', url = '', name = '' } = item;
       return {
         attachment: id,
@@ -195,14 +209,14 @@ class ModalAddBenefit extends Component {
       documents,
     };
 
-    if (!isEmpty(uploadedFile)) {
+    if (!isEmpty(uploadedFileList)) {
       dispatch({
         type: 'onboardingSettings/addBenefit',
         payload,
       }).then((response) => {
         const { statusCode } = response;
         if (statusCode === 200) {
-          this.setState({ uploadedFile: [] });
+          this.setState({ uploadedFileList: [], fileNameList: [] });
           handleCandelModal();
         }
       });
@@ -211,15 +225,32 @@ class ModalAddBenefit extends Component {
     }
   };
 
+  getValueField = (activeKeyTab) => {
+    const { listBenefitDefault = [] } = this.props;
+    const key = +activeKeyTab - 1;
+    let defaultType = null;
+
+    listBenefitDefault.forEach((item, index) => {
+      if (key === index) {
+        defaultType = item.benefitType;
+      }
+    });
+    return defaultType;
+  };
+
   render() {
     const {
       visible = false,
       loadingFetchListBenefitDefault = false,
       loadingUploadAttachment = false,
       listBenefitDefault = [],
+      activeKeyTab,
+      loadingAddDocument,
     } = this.props;
 
-    const { listBenefitCategory, type, fileName } = this.state;
+    const valueType = this.getValueField(activeKeyTab, 'type');
+
+    const { listBenefitCategory, fileNameList } = this.state;
 
     return (
       <Modal
@@ -240,7 +271,7 @@ class ModalAddBenefit extends Component {
             </div>
           ) : (
             <Form
-              initialValues={{ type }}
+              initialValues={{ type: valueType }}
               onFinish={this.onFinish}
               onValuesChange={this.onValuesChange}
             >
@@ -428,7 +459,7 @@ class ModalAddBenefit extends Component {
                     action={(file) => this.handleUpload(file)}
                     multiple
                   >
-                    {isEmpty(fileName) ? (
+                    {isEmpty(fileNameList) ? (
                       <>
                         {loadingUploadAttachment ? (
                           <Spin />
@@ -451,23 +482,23 @@ class ModalAddBenefit extends Component {
                     )}
                   </Dragger>
                   <>
-                    {fileName.map((item) => (
+                    {fileNameList.map((item) => (
                       <div className={styles.fileUploadedContainer__listFiles}>
                         <div className={styles.fileUploadedContainer__listFiles__files}>
                           <p className={styles.previewIcon}>
-                            {this.identifyImageOrPdf(item) === 1 ? (
+                            {this.identifyImageOrPdf(item.nameFile) === 1 ? (
                               <img src={PDFIcon} alt="pdf" />
                             ) : (
                               <img src={ImageIcon} alt="img" />
                             )}
                           </p>
                           <p className={styles.fileName}>
-                            Uploaded: <a>{item}</a>
+                            Uploaded: <a>{item.nameFile}</a>
                           </p>
                         </div>
                         <Tooltip title="Remove">
                           <img
-                            // onClick={() => this.handleRemove()}
+                            onClick={() => this.handleRemove(item.idFile)}
                             className={styles.trashIcon}
                             src={TrashIcon}
                             alt="remove"
@@ -479,12 +510,16 @@ class ModalAddBenefit extends Component {
                 </div>
               </div>
               <div className={styles.addBenefit__bottom}>
-                <Button className={`${styles.addBenefit__bottom_btn} ${styles.cancelBtn}`}>
+                <Button
+                  onClick={this.destroyOnClose}
+                  className={`${styles.addBenefit__bottom_btn} ${styles.cancelBtn}`}
+                >
                   Cancel
                 </Button>
                 <Button
                   htmlType="submit"
                   className={`${styles.addBenefit__bottom_btn} ${styles.addBtn}`}
+                  loading={loadingAddDocument}
                 >
                   Add
                 </Button>

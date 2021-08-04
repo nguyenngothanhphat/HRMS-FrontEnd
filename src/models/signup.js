@@ -161,7 +161,7 @@ const signup = {
         const response = yield call(sendAgainSecurityCode, payload);
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
-        if (!data?.result) {
+        if (!data) {
           notification.error({
             message: 'Email delivery failed !',
           });

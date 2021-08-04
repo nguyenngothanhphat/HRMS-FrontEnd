@@ -119,8 +119,7 @@ const SignUp2 = (props) => {
       </div>
 
       <div className={styles.btnContainer}>
-        <Button>
-          {/* <Link to="http://gmail.com/"> */}
+        <Button onClick={() => window.open('http://gmail.com/')}>
           <div className={styles.btn}>
             <img src={gmail} alt="gmail icon" />
             <span>
@@ -129,11 +128,9 @@ const SignUp2 = (props) => {
               })}
             </span>
           </div>
-          {/* </Link> */}
         </Button>
 
-        <Button>
-          {/* <Link to="https://outlook.office.com/"> */}
+        <Button onClick={() => window.open('https://outlook.office.com/')}>
           <div className={styles.btn}>
             <img src={outlook} alt="outlook icon" />
             <span>
@@ -142,7 +139,6 @@ const SignUp2 = (props) => {
               })}
             </span>
           </div>
-          {/* </Link> */}
         </Button>
       </div>
     </div>

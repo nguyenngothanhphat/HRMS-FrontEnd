@@ -44,16 +44,23 @@
         border-color: #2c6df9;
         opacity: 1;
         &::after {
-          left: 3px;
-          width: 4px;
-          height: 7px;
-          border-radius: 30px;
+          left: 2px;
+          // width: 4px;
+          // height: 7px;
+          // border-radius: 30px;
         }
       }
 
       span {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.15;
+        letter-spacing: normal;
+        text-align: left;
         color: #707177;
-        font-size: 12px;
       }
       label {
         position: relative;
@@ -135,6 +142,11 @@
     .ant-form-item-explain,
     .ant-form-item-extra {
       min-height: 0;
+    }
+
+    .ant-btn-primary[disabled], .ant-btn-primary[disabled]:hover, .ant-btn-primary[disabled]:focus, .ant-btn-primary[disabled]:active{
+      background: #ffa100;
+      color: #fff;
     }
   }
 

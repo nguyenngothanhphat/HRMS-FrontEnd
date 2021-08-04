@@ -5,6 +5,7 @@ import { connect } from 'umi';
 import { getCurrentLocation } from '@/utils/authority';
 import styles from './index.less';
 import HealthWellbeing from '../HealthWellbeing';
+import ModalAddBenefit from '../ModaAddBenefit';
 
 const { TabPane } = Tabs;
 const { Option } = Select;
@@ -25,7 +26,8 @@ const { Option } = Select;
 class BenefitSection extends Component {
   constructor(props) {
     super(props);
-    this.state = { countryId: '', activeKey: '1' };
+    const { activeKeyTab } = this.props;
+    this.state = { countryId: '', activeKey: activeKeyTab };
   }
 
   componentDidMount = () => {
@@ -75,12 +77,18 @@ class BenefitSection extends Component {
     }
   };
 
+  onChangeTab = (value) => {
+    this.setState({ activeKey: value });
+  };
+
   render() {
     const {
       loadingFetchCountry,
       listCountry = [],
-      onChangeTab = () => {},
       listBenefit = [],
+      visible = false,
+      countryId: countryIdProps = '',
+      closeModal = () => {},
     } = this.props;
     const { countryId, activeKey } = this.state;
 
@@ -129,7 +137,7 @@ class BenefitSection extends Component {
             </Select>
           </div>
         </div>
-        <Tabs activeKey={activeKey} onChange={onChangeTab}>
+        <Tabs activeKey={activeKey} onChange={this.onChangeTab}>
           <TabPane tab="Health & Wellbeing" key="1">
             <HealthWellbeing />
           </TabPane>
@@ -161,6 +169,12 @@ class BenefitSection extends Component {
             </Button>
           )}
         </div>
+        <ModalAddBenefit
+          activeKeyTab={activeKey}
+          visible={visible}
+          countryId={countryIdProps}
+          handleCandelModal={closeModal}
+        />
       </div>
     );
   }
