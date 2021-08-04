@@ -19,7 +19,7 @@ import classnames from 'classnames';
 import React, { useState } from 'react';
 import { connect, Link, Redirect, useIntl } from 'umi';
 import logo from '../assets/logo.svg';
-import iconMenu from '../assets/iconMenu.svg';
+import iconMenu from '../assets/menuIcon.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
 
