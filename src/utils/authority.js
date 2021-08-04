@@ -34,8 +34,10 @@ export function setAuthority(authority) {
 }
 
 export function removeLocalStorage() {
+  const getAuthData = localStorage.getItem('authData');
   localStorage.clear();
-  // localStorage.removeItem('dataRoles');
+  localStorage.setItem('authData', getAuthData);
+
   // localStorage.removeItem('Rolesname');
   // localStorage.removeItem('currentCompanyId');
   // localStorage.removeItem('tenantId');

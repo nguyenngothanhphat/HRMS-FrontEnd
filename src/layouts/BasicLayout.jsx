@@ -19,7 +19,7 @@ import classnames from 'classnames';
 import React, { useState } from 'react';
 import { connect, Link, Redirect, useIntl } from 'umi';
 import logo from '../assets/logo.svg';
-import iconMenu from '../assets/iconMenu.svg';
+import iconMenu from '../assets/menuIcon.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
 
@@ -61,9 +61,10 @@ const BasicLayout = (props) => {
     currentUser,
     companies = {},
     logoCompany,
+    expandMenuSidebar,
   } = props;
 
-  const [openMenu, setOpenMenu] = useState(true);
+  const [openMenu, setOpenMenu] = useState(false);
 
   /**
    * init variables
@@ -84,15 +85,15 @@ const BasicLayout = (props) => {
     }
   };
 
-  // const handleClickMenuSideBar = () => {
-  //   setOpenMenu(!openMenu);
-  //   if (dispatch) {
-  //     dispatch({
-  //       type: 'global/collapseExpandMenuSidebar',
-  //       payload: !openMenu,
-  //     });
-  //   }
-  // };
+  const handleClickMenuSideBar = () => {
+    setOpenMenu(!openMenu);
+    if (dispatch) {
+      dispatch({
+        type: 'global/collapseExpandMenuSidebar',
+        payload: !openMenu,
+      });
+    }
+  };
 
   const _renderLogo = () => {
     // const checkRole = (roleName) => {
@@ -108,9 +109,14 @@ const BasicLayout = (props) => {
     const logoUrl = getCurrentLogo();
     return (
       <div className={styles.logoSection}>
-        {/* <Button onClick={handleClickMenuSideBar} className={styles.logoSection__button}>
+        <Button
+          onClick={handleClickMenuSideBar}
+          className={
+            expandMenuSidebar ? styles.logoSection__buttonExpand : styles.logoSection__button
+          }
+        >
           <img alt="icon-menu" src={iconMenu} />
-        </Button> */}
+        </Button>
         {logoUrl || logoCompany ? (
           <Link to="/">
             <img
@@ -166,7 +172,7 @@ const BasicLayout = (props) => {
     <>
       <div
         className={classnames(
-          `${styles.root} ${openMenu ? styles.expandMenu : styles.collapseMenu}`,
+          `${styles.root} ${expandMenuSidebar ? styles.expandMenu : styles.collapseMenu}`,
           classNameBreadCrumb,
           {
             [styles.hiddenBreadCrumb]: pathname === '/dashboard',
@@ -180,13 +186,7 @@ const BasicLayout = (props) => {
           onCollapse={handleMenuCollapse}
           headerTitleRender={() => <div style={{ display: 'none' }} />}
           headerContentRender={() => _renderLogo()}
-          menuHeaderRender={() => {
-            return (
-              // <Button className={styles.logoSection__button}>
-              <img style={{ margin: 'auto' }} alt="icon-menu" src={iconMenu} />
-              // </Button>
-            );
-          }}
+          menuHeaderRender={false}
           menuItemRender={(menuItemProps, defaultDom) => {
             if (menuItemProps.isUrl || !menuItemProps.path) {
               return defaultDom;
@@ -243,7 +243,8 @@ const BasicLayout = (props) => {
 
 export default connect(
   ({ global, settings, user, companiesManagement: { logoCompany = '' } = {} }) => ({
-    collapsed: global.collapsed,
+    // collapsed: global.collapsed,
+    expandMenuSidebar: global.expandMenuSidebar,
     settings,
     currentUser: user.currentUser,
     companies: user.companiesOfUser,

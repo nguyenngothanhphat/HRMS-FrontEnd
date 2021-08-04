@@ -638,7 +638,7 @@ const OfferDetail = (props) => {
             {/* <Template type="default" files={['Offer letter 1', 'Offer letter 2', 'Offer letter 3']} /> */}
             {/* <Template files={['Offer letter 4', 'Offer letter 5', 'Offer letter 6']} /> */}
             <Template dispatch={dispatch} type="default" files={defaultTemplates} />
-            <Template dispatch={dispatch} files={customTemplates} />
+            <Template dispatch={dispatch} type="custom" files={customTemplates} handleAdd={handleAddDocument} />
           </div>
         </div>
       </Form>

@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { connect, formatMessage } from 'umi';
 
-import { Button, Input, Form } from 'antd';
+import { Button, Input, Form, Select, Row, Col, Popover, Radio, Space } from 'antd';
 import { EditOutlined, SendOutlined } from '@ant-design/icons';
 // import logo from './components/images/brand-logo.png';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
 import { PROCESS_STATUS } from '@/utils/onboarding';
+import ModalDrawSignature from '@/components/ModalDrawSignature/index';
+import ModalGenerateSignature from '@/components/ModalGenerateSignature/index';
+import TextSignature from '@/components/TextSignature';
 import whiteImg from './components/images/whiteImg.png';
-
 import CancelIcon from './components/CancelIcon';
 import ModalUpload from '../../../../components/ModalUpload';
 import FileContent from './components/FileContent';
@@ -16,8 +18,10 @@ import SendEmail from './components/SendEmail';
 import ModalContent from './components/ModalContent';
 // import { PROCESS_STATUS } from '@/utils/onboarding';
 import styles from './index.less';
+
+const { Option } = Select;
 // import { PROCESS_STATUS } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
-// const INPUT_WIDTH = [50, 100, 18, 120, 100, 50, 100, 18, 120, 100]; // Width for each input field
+//
 
 // const ROLE = {
 //   HRMANAGER: 'HR-MANAGER',
@@ -63,9 +67,6 @@ const PreviewOffer = (props) => {
   // eslint-disable-next-line no-unused-vars
   const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
 
-  const [uploadVisible1, setUploadVisible1] = useState(false);
-  const [uploadVisible2, setUploadVisible2] = useState(false);
-
   const [mail, setMail] = useState(candidateEmailProp || '');
   const [mailForm] = Form.useForm();
 
@@ -74,6 +75,17 @@ const PreviewOffer = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
 
+  const [modalSignature, setModalSignature] = useState('');
+  const [isSignatureHR, setIsSignatureHR] = useState(false);
+  const [optionSignature, setOptionSignature] = useState('upload');
+  const [optionSignatureHRManager, setOptionSignatureHRManager] = useState('upload');
+  const [valueDigitalSignature, setValueDigitalSignature] = useState(0);
+  const [arrImgBase64, setArrImgBase64] = useState([]);
+  const [openDigital, setOpenDigital] = useState(false);
+  const [nameSignature, setNameSignature] = useState('');
+  // const trim = () => {
+  //   setTrimDataURL(sigPad.getTrimmedCanvas().toDataURL('image/png'));
+  // };
   const getOfferLetterProp = () => {
     if (staticOfferLetterProp && staticOfferLetterProp.url) {
       return staticOfferLetterProp.url;
@@ -97,7 +109,10 @@ const PreviewOffer = (props) => {
       // setFile2('');
     }
   };
-
+  const isOfferAccepted = () => {
+    const { ACCEPTED_FINAL_OFFERS } = PROCESS_STATUS;
+    return processStatus === ACCEPTED_FINAL_OFFERS;
+  };
   const saveChanges = () => {
     // Save changes to redux store
     if (dispatch) {
@@ -114,12 +129,21 @@ const PreviewOffer = (props) => {
       });
     }
   };
+  const isHr = role.indexOf('HR') > -1 || role.indexOf('hr') > -1;
+  const isHrManager = role.indexOf('HR-MANAGER') > -1 || role.indexOf('hr-manager') > -1;
+  const renderHRManagerSignature = () => {
+    return (
+      isHrManager &&
+      (processStatus === PROCESS_STATUS.SENT_FOR_APPROVAL ||
+        processStatus === PROCESS_STATUS.ACCEPTED_FINAL_OFFERS)
+    );
+  };
 
-  const loadImage = (type, response) => {
+  const loadImage = (response) => {
     const { data: responseData = [] } = response;
     const { url, id } = responseData[0];
 
-    if (type === 'hr') {
+    if (isSignatureHR) {
       setHrSignature({
         url,
         id,
@@ -153,8 +177,7 @@ const PreviewOffer = (props) => {
           },
         },
       });
-    }
-    if (type === 'hrManager') {
+    } else {
       // setFile2(url);
       setHrManagerSignature({ url, id });
       // save to Store
@@ -234,48 +257,6 @@ const PreviewOffer = (props) => {
     setRole(roles);
   };
 
-  const handleHrSignatureSubmit = () => {
-    const { _id } = data;
-    if (!dispatch || !_id) {
-      return;
-    }
-
-    dispatch({
-      type: 'candidateInfo/updateByHR',
-      payload: {
-        candidate: _id,
-        hrSignature: hrSignatureProp.id,
-        currentStep: 7,
-        tenantId: getCurrentTenant(),
-      },
-    }).then(({ statusCode }) => {
-      if (statusCode === 200) {
-        setHrSignatureSubmit(true);
-      }
-    });
-  };
-
-  const handleHrManagerSignatureSubmit = () => {
-    const { _id } = data;
-    if (!dispatch || !_id) {
-      return;
-    }
-
-    dispatch({
-      type: 'candidateInfo/addManagerSignatureEffect',
-      payload: {
-        candidate: _id,
-        hrManagerSignature: hrManagerSignatureProp.id,
-        tenantId: getCurrentTenant(),
-        // currentStep: 6,
-      },
-    }).then(({ statusCode }) => {
-      if (statusCode === 200) {
-        setHrManagerSignatureSubmit(true);
-      }
-    });
-  };
-
   useEffect(() => {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
 
@@ -333,11 +314,6 @@ const PreviewOffer = (props) => {
   //   const { ACCEPTED_FINAL_OFFERS } = PROCESS_STATUS;
   // };
 
-  const isOfferAccepted = () => {
-    const { ACCEPTED_FINAL_OFFERS } = PROCESS_STATUS;
-    return processStatus === ACCEPTED_FINAL_OFFERS;
-  };
-
   // useEffect(() => {
   //   dispatch({
   //     type: 'candidateInfo/saveTemp',
@@ -347,21 +323,372 @@ const PreviewOffer = (props) => {
   //   });
   // }, [offerLetterProp]);
 
-  const isHr = role.indexOf('HR') > -1 || role.indexOf('hr') > -1;
-  const isHrManager = role.indexOf('HR-MANAGER') > -1 || role.indexOf('hr-manager') > -1;
-
   const renderCandidateSignature = () => {
     return candidateSignature && candidateSignature.url;
   };
 
-  const renderHRManagerSignature = () => {
+  // close modal signature
+  const closeModalSignature = () => {
+    setModalSignature('');
+  };
+  // convert base64 to file
+  const dataURItoBlob = (dataURI) => {
+    const binary = atob(dataURI.split(',')[1]);
+    const array = [];
+    for (let i = 0; i < binary.length; i += 1) {
+      array.push(binary.charCodeAt(i));
+    }
+    // eslint-disable-next-line compat/compat
+    return new Blob([new Uint8Array(array)], { type: 'image/jpeg' });
+  };
+  // save draw signature
+  const saveDrawSignature = async (imageBase64) => {
+    const formData = new FormData();
+    if (!imageBase64) {
+      closeModalSignature();
+      return;
+    }
+    const file = dataURItoBlob(imageBase64);
+    formData.append('blob', file, 'signature.jpeg');
+    const responsive = await dispatch({
+      type: 'upload/uploadFile',
+      payload: formData,
+    });
+    loadImage(responsive);
+    closeModalSignature();
+  };
+  // open modal upload signature
+  const openModalUploadSignature = () => {
+    setModalSignature(optionSignature);
+    setIsSignatureHR(true);
+  };
+  const resetDefaultState = () => {
+    setValueDigitalSignature(0);
+    setNameSignature('');
+    setArrImgBase64([]);
+    setOptionSignature('upload');
+    setOptionSignatureHRManager('upload');
+    setOpenDigital(false);
+  };
+
+  const getImg = (e) => {
+    const arr = arrImgBase64;
+    arr.push(e);
+    setArrImgBase64(arr);
+  };
+  const changeName = (e) => {
+    setOpenDigital(true);
+    setArrImgBase64([]);
+    setNameSignature(e.target.value);
+  };
+
+  const handleHrSignatureSubmit = async () => {
+    const { _id } = data;
+    if (!dispatch || !_id) {
+      return;
+    }
+    if (arrImgBase64.length > 0) {
+      const formData = new FormData();
+      if (!arrImgBase64[valueDigitalSignature]) {
+        setOpenModal('');
+        return;
+      }
+      const file = dataURItoBlob(arrImgBase64[valueDigitalSignature]);
+      formData.append('blob', file, 'signatureCandidate.jpeg');
+      const responsive = await dispatch({
+        type: 'upload/uploadFile',
+        payload: formData,
+      });
+      const { data: imageData = [] } = responsive;
+      const { id = '', url = '' } = imageData[0];
+      setHrSignature({
+        url,
+        id,
+      });
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          tempData: {
+            ...tempData,
+            hrSignature: {
+              id,
+              url,
+            },
+          },
+        },
+      });
+
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          data: {
+            ...data,
+            // hrSignature: id,
+            hrSignature: {
+              ...data.hrSignature,
+              id,
+              url,
+            },
+          },
+        },
+      });
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate: _id,
+          hrSignature: id,
+          currentStep: 7,
+          tenantId: getCurrentTenant(),
+        },
+      }).then(({ statusCode }) => {
+        if (statusCode === 200) {
+          setHrSignatureSubmit(true);
+        }
+      });
+      resetDefaultState();
+    } else {
+      dispatch({
+        type: 'candidateInfo/updateByHR',
+        payload: {
+          candidate: _id,
+          hrSignature: hrSignatureProp.id,
+          currentStep: 7,
+          tenantId: getCurrentTenant(),
+        },
+      }).then(({ statusCode }) => {
+        if (statusCode === 200) {
+          setHrSignatureSubmit(true);
+        }
+      });
+    }
+  };
+  const renderSignatureHr = () => {
+    if (optionSignature === 'digital')
+      return (
+        <>
+          <div>
+            <p>Digital Signature</p>
+          </div>
+          <Row>
+            <Col span={24}>
+              <Popover
+                content={
+                  <Radio.Group
+                    onChange={(e) => {
+                      setValueDigitalSignature(e.target.value);
+                    }}
+                    value={valueDigitalSignature}
+                  >
+                    <Space direction="vertical">
+                      {['Airin', 'GermanyScript', 'Bestlife', 'AudreyAndReynold'].map(
+                        (item, index) => (
+                          <Radio value={index} style={{ display: 'flex', alignItems: 'center' }}>
+                            <TextSignature
+                              name={nameSignature}
+                              getImage={getImg}
+                              x={10}
+                              y={75}
+                              height={100}
+                              font={`60px ${item}`}
+                            />
+                          </Radio>
+                          // </Col>
+                        ),
+                      )}
+                    </Space>
+                  </Radio.Group>
+                }
+                placement="left"
+                trigger="hover"
+                visible={nameSignature && openDigital}
+              >
+                <Input placeholder="Enter your name" onChange={changeName} value={nameSignature} />
+              </Popover>
+            </Col>
+          </Row>
+        </>
+      );
     return (
-      isHrManager &&
-      (processStatus === PROCESS_STATUS.SENT_FOR_APPROVAL ||
-        processStatus === PROCESS_STATUS.ACCEPTED_FINAL_OFFERS)
+      <div className={styles.upload}>
+        {!hrSignature.url ? (
+          // Default image
+          <>
+            <img className={styles.signatureImg} src={whiteImg} alt="" />
+            {!isOfferAccepted() && (
+              <button type="submit" onClick={openModalUploadSignature}>
+                {formatMessage({ id: 'component.previewOffer.upload' })}
+              </button>
+            )}
+          </>
+        ) : (
+          <>
+            <img className={styles.signatureImg} src={hrSignature.url} alt="" />
+            {!isOfferAccepted() && (
+              <>
+                <button type="submit" onClick={openModalUploadSignature}>
+                  {formatMessage({ id: 'component.previewOffer.uploadNew' })}
+                </button>
+                <CancelIcon resetImg={() => resetImg('hr')} />
+              </>
+            )}
+          </>
+        )}
+      </div>
     );
   };
 
+  const handleHrManagerSignatureSubmit = async () => {
+    const { _id } = data;
+    if (!dispatch || !_id) {
+      return;
+    }
+    if (arrImgBase64.length > 0) {
+      const formData = new FormData();
+      if (!arrImgBase64[valueDigitalSignature]) {
+        setOpenModal('');
+        return;
+      }
+      const file = dataURItoBlob(arrImgBase64[valueDigitalSignature]);
+      formData.append('blob', file, 'signatureCandidate.jpeg');
+      const responsive = await dispatch({
+        type: 'upload/uploadFile',
+        payload: formData,
+      });
+      const { data: imageData = [] } = responsive;
+      const { id = '', url = '' } = imageData[0];
+      setHrManagerSignature({ url, id });
+      // save to Store
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          tempData: {
+            ...tempData,
+            hrManagerSignature: {
+              id,
+              url,
+            },
+          },
+        },
+      });
+
+      dispatch({
+        type: 'candidateInfo/save',
+        payload: {
+          data: {
+            ...data,
+            hrManagerSignature: {
+              ...data.hrSignature,
+              id,
+              url,
+            },
+          },
+        },
+      });
+      dispatch({
+        type: 'candidateInfo/addManagerSignatureEffect',
+        payload: {
+          candidate: _id,
+          hrManagerSignature: hrManagerSignatureProp.id,
+          tenantId: getCurrentTenant(),
+          // currentStep: 6,
+        },
+      }).then(({ statusCode }) => {
+        if (statusCode === 200) {
+          setHrManagerSignatureSubmit(true);
+        }
+      });
+      resetDefaultState();
+    } else {
+      dispatch({
+        type: 'candidateInfo/addManagerSignatureEffect',
+        payload: {
+          candidate: _id,
+          hrManagerSignature: hrManagerSignatureProp.id,
+          tenantId: getCurrentTenant(),
+          // currentStep: 6,
+        },
+      }).then(({ statusCode }) => {
+        if (statusCode === 200) {
+          setHrManagerSignatureSubmit(true);
+        }
+      });
+    }
+  };
+  const renderSignatureHrManager = () => {
+    if (optionSignatureHRManager === 'digital')
+      return (
+        <>
+          <div>
+            <p>Digital Signature</p>
+          </div>
+          <Row>
+            <Col span={24}>
+              <Popover
+                content={
+                  <Radio.Group
+                    onChange={(e) => {
+                      setValueDigitalSignature(e.target.value);
+                    }}
+                    value={valueDigitalSignature}
+                  >
+                    <Space direction="vertical">
+                      {['Airin', 'GermanyScript', 'Bestlife', 'AudreyAndReynold'].map(
+                        (item, index) => (
+                          <Radio value={index} style={{ display: 'flex', alignItems: 'center' }}>
+                            <TextSignature
+                              name={nameSignature}
+                              getImage={getImg}
+                              x={10}
+                              y={75}
+                              height={100}
+                              font={`60px ${item}`}
+                            />
+                          </Radio>
+                          // </Col>
+                        ),
+                      )}
+                    </Space>
+                  </Radio.Group>
+                }
+                placement="left"
+                trigger="hover"
+                visible={nameSignature && openDigital}
+              >
+                <Input placeholder="Enter your name" onChange={changeName} value={nameSignature} />
+              </Popover>
+            </Col>
+          </Row>
+        </>
+      );
+    return (
+      <div className={styles.upload}>
+        {!hrManagerSignature.url ? (
+          // Default image
+          <img className={styles.signatureImg} src={whiteImg} alt="" />
+        ) : (
+          <img className={styles.signatureImg} src={hrManagerSignature.url} alt="" />
+        )}
+
+        {!isOfferAccepted() && (
+          <>
+            <button
+              type="submit"
+              onClick={() => {
+                setIsSignatureHR(false);
+                setModalSignature(optionSignatureHRManager);
+              }}
+            >
+              {formatMessage({ id: 'component.previewOffer.uploadNew' })}
+            </button>
+
+            <CancelIcon resetImg={() => resetImg('hrManager')} />
+          </>
+        )}
+      </div>
+    );
+  };
+
+  // main
   return (
     <div className={styles.previewContainer}>
       <div className={styles.left}>
@@ -391,60 +718,45 @@ const PreviewOffer = (props) => {
           ) : (
             <p>Undersigned</p>
           )}
+          {!isOfferAccepted() && (
+            <Row>
+              <Col span={24}>
+                <Select
+                  value={optionSignature}
+                  style={{ width: '100%', marginBottom: '5px' }}
+                  onChange={(e) => {
+                    setOptionSignature(e);
+                  }}
+                >
+                  <Option value="upload">Upload</Option>
+                  <Option value="draw">Draw</Option>
+                  <Option value="digital">Digital Signature</Option>
+                </Select>
+              </Col>
+            </Row>
+          )}
+          {renderSignatureHr()}
+          {!isOfferAccepted() && (
+            <div className={styles.submitContainer}>
+              <Button
+                type="primary"
+                onClick={handleHrSignatureSubmit}
+                disabled={!hrSignature.url && isOfferAccepted() && optionSignature !== 'digital'}
+                className={`${
+                  (hrSignature.url && !isOfferAccepted()) || optionSignature === 'digital'
+                    ? styles.active
+                    : styles.disable
+                }`}
+                loading={loading3}
+              >
+                {formatMessage({ id: 'component.previewOffer.submit' })}
+              </Button>
 
-          <div className={styles.upload}>
-            {!hrSignature.url ? (
-              // Default image
-              <>
-                <img className={styles.signatureImg} src={whiteImg} alt="" />
-                {!isOfferAccepted() && (
-                  <button
-                    type="submit"
-                    onClick={() => {
-                      setUploadVisible1(true);
-                    }}
-                  >
-                    {formatMessage({ id: 'component.previewOffer.upload' })}
-                  </button>
-                )}
-              </>
-            ) : (
-              <>
-                <img className={styles.signatureImg} src={hrSignature.url} alt="" />
-                {!isOfferAccepted() && (
-                  <>
-                    <button
-                      type="submit"
-                      onClick={() => {
-                        setUploadVisible1(true);
-                      }}
-                    >
-                      {formatMessage({ id: 'component.previewOffer.uploadNew' })}
-                    </button>
-                    <CancelIcon resetImg={() => resetImg('hr')} />
-                  </>
-                )}
-              </>
-            )}
-          </div>
-
-          <div className={styles.submitContainer}>
-            <Button
-              type="primary"
-              onClick={handleHrSignatureSubmit}
-              disabled={!hrSignature.url && isOfferAccepted()}
-              className={`${
-                hrSignature.url && !isOfferAccepted() ? styles.active : styles.disable
-              }`}
-              loading={loading3}
-            >
-              {formatMessage({ id: 'component.previewOffer.submit' })}
-            </Button>
-
-            <span className={styles.submitMessage}>
-              {hrSignatureSubmit ? formatMessage({ id: 'component.previewOffer.submitted' }) : ''}
-            </span>
-          </div>
+              <span className={styles.submitMessage}>
+                {hrSignatureSubmit ? formatMessage({ id: 'component.previewOffer.submitted' }) : ''}
+              </span>
+            </div>
+          )}
         </div>
 
         {(isHr || isHrManager) &&
@@ -527,48 +839,51 @@ const PreviewOffer = (props) => {
               ) : (
                 <p>Undersigned</p>
               )}
-              <div className={styles.upload}>
-                {!hrManagerSignature.url ? (
-                  // Default image
-                  <img className={styles.signatureImg} src={whiteImg} alt="" />
-                ) : (
-                  <img className={styles.signatureImg} src={hrManagerSignature.url} alt="" />
-                )}
-
-                {!isOfferAccepted() && (
-                  <>
-                    <button
-                      type="submit"
-                      onClick={() => {
-                        setUploadVisible2(true);
+              {!isOfferAccepted() && (
+                <Row>
+                  <Col span={24}>
+                    <Select
+                      defaultValue={optionSignatureHRManager}
+                      style={{ width: '100%', marginBottom: '5px' }}
+                      onChange={(e) => {
+                        setOptionSignatureHRManager(e);
                       }}
                     >
-                      {formatMessage({ id: 'component.previewOffer.uploadNew' })}
-                    </button>
+                      <Option value="upload">Upload</Option>
+                      <Option value="draw">Draw</Option>
+                      <Option value="digital">Digital Signature</Option>
+                    </Select>
+                  </Col>
+                </Row>
+              )}
+              {renderSignatureHrManager()}
+              {!isOfferAccepted() && (
+                <div className={styles.submitContainer}>
+                  <Button
+                    type="primary"
+                    disabled={
+                      !hrManagerSignature.url &&
+                      isOfferAccepted() &&
+                      optionSignatureHRManager !== 'digital'
+                    }
+                    onClick={handleHrManagerSignatureSubmit}
+                    className={`${
+                      (hrManagerSignature.url && !isOfferAccepted()) ||
+                      optionSignatureHRManager === 'digital'
+                        ? styles.active
+                        : styles.disable
+                    }`}
+                  >
+                    {formatMessage({ id: 'component.previewOffer.submit' })}
+                  </Button>
 
-                    <CancelIcon resetImg={() => resetImg('hrManager')} />
-                  </>
-                )}
-              </div>
-
-              <div className={styles.submitContainer}>
-                <Button
-                  type="primary"
-                  disabled={!hrManagerSignature.url && isOfferAccepted()}
-                  onClick={handleHrManagerSignatureSubmit}
-                  className={`${
-                    hrManagerSignature.url && !isOfferAccepted() ? styles.active : styles.disable
-                  }`}
-                >
-                  {formatMessage({ id: 'component.previewOffer.submit' })}
-                </Button>
-
-                <span className={styles.submitMessage}>
-                  {hrManagerSignatureSubmit
-                    ? formatMessage({ id: 'component.previewOffer.submitted' })
-                    : ''}
-                </span>
-              </div>
+                  <span className={styles.submitMessage}>
+                    {hrManagerSignatureSubmit
+                      ? formatMessage({ id: 'component.previewOffer.submitted' })
+                      : ''}
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Candidate Signature */}
@@ -620,23 +935,23 @@ const PreviewOffer = (props) => {
         )}
 
         <ModalUpload
-          visible={uploadVisible1}
+          visible={modalSignature === 'upload'}
           getResponse={(response) => {
-            loadImage('hr', response);
+            loadImage(response);
             const { statusCode } = response;
             if (statusCode === 200) {
-              setUploadVisible1(false);
+              setModalSignature('');
             }
           }}
           handleCancel={() => {
-            setUploadVisible1(false);
+            setModalSignature();
           }}
         />
 
-        <ModalUpload
+        {/* <ModalUpload
           visible={uploadVisible2}
           getResponse={(response) => {
-            loadImage('hrManager', response);
+            loadImage( response);
             const { statusCode } = response;
             if (statusCode === 200) {
               setUploadVisible2(false);
@@ -645,6 +960,19 @@ const PreviewOffer = (props) => {
           handleCancel={() => {
             setUploadVisible2(false);
           }}
+        /> */}
+        <ModalDrawSignature
+          visible={modalSignature === 'draw'}
+          title="Draw your signature"
+          onOk={saveDrawSignature}
+          onCancel={closeModalSignature}
+        />
+
+        <ModalGenerateSignature
+          visible={modalSignature === 'digital'}
+          title="Digital Signature"
+          onOk={saveDrawSignature}
+          onCancel={closeModalSignature}
         />
 
         <CustomModal
@@ -656,7 +984,6 @@ const PreviewOffer = (props) => {
               tempData={tempData}
               candidateEmail={mail}
               type="hrManager"
-              // privateEmail={privateEmail}
             />
           }
         />
