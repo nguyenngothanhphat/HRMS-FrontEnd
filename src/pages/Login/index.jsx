@@ -206,7 +206,7 @@ class FormLogin extends Component {
                 type="primary"
                 className={styles.btnSignInGG}
                 onClick={renderProps.onClick}
-                disabled={renderProps.disabled}
+                // disabled={renderProps.disabled}
                 loading={loadingLoginThirdParty}
               >
                 <img src={logoGoogle} alt="logo" />
