@@ -56,6 +56,31 @@
                 }
             }
 
+            &__bottom{
+                width: 100%;
+
+                  .addDocs{
+                    display: flex;
+                    align-items: center;
+                    cursor: pointer;
+                    width: fit-content;
+
+                    &__text{
+                        padding-left: 16px;
+                        font-family: Roboto;
+                        font-style: normal;
+                        font-weight: 500;
+                        font-size: 13px;
+                        line-height: 15px;
+                        /* identical to box height */
+
+                        letter-spacing: 0.121875px;
+
+                        color: #2C6DF9;
+                    }
+                }
+            }
+
             .planDocuments{
                 padding-top: 16px;
                 :global{
@@ -127,6 +152,7 @@
                 }
 
                 &__second{
+                    padding-bottom: 24px;
                     :global {
                         .ant-select-arrow{
                             font-family: Roboto;
@@ -158,26 +184,6 @@
                         padding-bottom: 8px;
                     }
 
-                }
-            }
-            .addDocs{
-                display: flex;
-                align-items: center;
-                cursor: pointer;
-                padding-top: 24px;
-
-                &__text{
-                    padding-left: 16px;
-                    font-family: Roboto;
-                    font-style: normal;
-                    font-weight: 500;
-                    font-size: 13px;
-                    line-height: 15px;
-                    /* identical to box height */
-
-                    letter-spacing: 0.121875px;
-
-                    color: #2C6DF9;
                 }
             }
         }
