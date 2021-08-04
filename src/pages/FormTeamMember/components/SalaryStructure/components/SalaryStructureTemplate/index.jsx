@@ -1,15 +1,14 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
-import { Select, Form, Table, Button, Input, Row, Col, InputNumber, Spin } from 'antd';
+import { Form, Table, Button, Input, Row, Col, InputNumber, Spin } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import { formatMessage, connect } from 'umi';
 // import { dialog } from '@/utils/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import{ PROCESS_STATUS} from '@/utils/onboarding';
+// import { PROCESS_STATUS } from '@/utils/onboarding';
 import doneIcon from './assets/doneIcon.png';
 import editIcon from './assets/editIcon.png';
 import styles from './index.less';
-
 
 @connect(
   ({
@@ -21,6 +20,8 @@ import styles from './index.less';
       data: {
         listTitle = [],
         title = {},
+        department = '',
+        workLocation = '',
         processStatus = '',
         salaryStructure: {
           settings: settingsOriginData = [],
@@ -31,7 +32,15 @@ import styles from './index.less';
       data,
       tempData = {},
       tempData: {
-        salaryStructure: { settings: settingsTempData = [], title: salaryTitleTempData = {} } = {},
+        titleList = [],
+        locationList = [],
+        departmentList = [],
+        salaryStructure: {
+          settings: settingsTempData = [],
+          title: salaryTitleTempData = {},
+          department: salaryDepartmentTempData = {},
+          workLocation: salaryWorkLocationTempData = {},
+        } = {},
       } = {},
     },
     user: { currentUser: { company: { _id = '' } = {} } = {}, currentUser: { location = {} } = {} },
@@ -39,10 +48,18 @@ import styles from './index.less';
     loadingTable: loading.effects['candidateInfo/saveSalaryStructure'],
     loadingFetchTable: loading.effects['candidateInfo/fetchTableData'],
     loadingEditSalary: loading.effects['candidateInfo/updateByHR'],
+    loadingTitleList: loading.effects['candidateInfo/fetchTitleList'],
     listTitle,
+    titleList,
     cancelCandidate,
     location,
     checkMandatory,
+    locationList,
+    department,
+    workLocation,
+    departmentList,
+    salaryDepartmentTempData,
+    salaryWorkLocationTempData,
     currentStep,
     processStatus,
     _id,
@@ -63,10 +80,10 @@ class SalaryStructureTemplate extends PureComponent {
     super(props);
 
     this.state = {
-      dataSettings: [],
+      // dataSettings: [],
       // error: '',
       // errorInfo: '',
-      isEditted: false,
+      isEdited: false,
       footerData: [
         {
           name: 'Employer’s PF',
@@ -78,18 +95,6 @@ class SalaryStructureTemplate extends PureComponent {
         },
       ],
     };
-  }
-
-  // eslint-disable-next-line no-unused-vars
-  componentDidUpdate(prevProps) {
-    const { salaryTitle: salaryTitleId, settingsTempData: settings = [] } = this.props;
-    if (!salaryTitleId) {
-      return;
-    }
-    // eslint-disable-next-line react/no-did-update-set-state
-    this.setState({
-      dataSettings: settings,
-    });
   }
 
   // componentDidCatch(error, errorInfo) {
@@ -113,13 +118,97 @@ class SalaryStructureTemplate extends PureComponent {
     const {
       dispatch,
       settingsTempData: settings = [],
-      salaryTitle: salaryTitleId,
-      location: { headQuarterAddress: { country = {} } = {} } = {},
+      title,
+      workLocation: { headQuarterAddress: { country = {} } = {}, _id } = {},
     } = this.props;
     const tempTableData = [...settings];
     const isFilled = tempTableData.filter((item) => item.value === '');
 
     // Fetch Salary structure table when user click other tab (Ex: Job Details, Basic Information,...) then click Salary structure
+    // this.fetchSalaryStructure();
+
+    // if (processStatus !== 'DRAFT') {
+    //   dispatch({
+    //     type: 'candidateInfo/fetchTitleListByCompany',
+    //     payload: { company: _id },
+    //   });
+    //
+
+    // dispatch({
+    //   type: 'candidateInfo/saveTemp',
+    //   payload: {
+    //     salaryTitle: '',
+    //   },
+    // });
+    // this.setState({
+    //   dataSettings: settings,
+    // });
+
+    // const { processStatus } = this.props;
+    // const tempTableData = [...settings];
+
+    // if (processStatus === 'DRAFT') {
+
+    // dispatch({
+    //   type: 'candidateInfo/fetchTitleListByCompany',
+    //   payload: { company: getCurrentCompany(), tenantId: getCurrentTenant() },
+    // });
+    dispatch({
+      type: 'candidateInfo/fetchTableData',
+      payload: {
+        title: title._id,
+        tenantId: getCurrentTenant(),
+        country: country._id || country,
+        location: _id,
+      },
+    });
+    dispatch({
+      type: 'candidateInfo/fetchDepartmentList',
+      payload: { company: getCurrentCompany(), tenantId: getCurrentTenant() },
+    });
+
+    dispatch({
+      type: 'candidateInfo/fetchLocationList',
+      payload: { company: getCurrentCompany(), tenantId: getCurrentTenant() },
+    });
+    // }
+
+    if (isFilled.length === 0 && tempTableData.length > 0) {
+      dispatch({
+        type: 'candidateInfo/saveFilledSalaryStructure',
+        payload: {
+          filledSalaryStructure: true,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'candidateInfo/saveFilledSalaryStructure',
+        payload: {
+          filledSalaryStructure: false,
+        },
+      });
+    }
+    this.handleChangeSelect(title._id);
+  };
+
+  componentDidUpdate = (prevProps) => {
+    const { department } = this.props;
+    if (prevProps.department !== department) {
+      this.handleChangeDepartment(department._id || department);
+    }
+    // if (prevProps.salaryTitle !== salaryTitle) {
+    //   this.fetchSalaryStructure();
+    // }
+  };
+
+  fetchSalaryStructure = () => {
+    const {
+      dispatch,
+      settingsTempData: settings = [],
+      salaryTitle: salaryTitleId,
+      workLocation: { headQuarterAddress: { country = {} } = {} } = {},
+    } = this.props;
+
     if (salaryTitleId) {
       dispatch({
         type: 'candidateInfo/saveTemp',
@@ -154,49 +243,6 @@ class SalaryStructureTemplate extends PureComponent {
           },
         });
       }
-    }
-
-    // if (processStatus !== 'DRAFT') {
-    //   dispatch({
-    //     type: 'candidateInfo/fetchTitleListByCompany',
-    //     payload: { company: _id },
-    //   });
-    //
-
-    // dispatch({
-    //   type: 'candidateInfo/saveTemp',
-    //   payload: {
-    //     salaryTitle: '',
-    //   },
-    // });
-    this.setState({
-      dataSettings: settings,
-    });
-
-    // const { processStatus } = this.props;
-    // const tempTableData = [...settings];
-
-    // if (processStatus === 'DRAFT') {
-    dispatch({
-      type: 'candidateInfo/fetchTitleListByCompany',
-      payload: { company: getCurrentCompany(), tenantId: getCurrentTenant() },
-    });
-    // }
-
-    if (isFilled.length === 0 && tempTableData.length > 0) {
-      dispatch({
-        type: 'candidateInfo/saveFilledSalaryStructure',
-        payload: {
-          filledSalaryStructure: true,
-        },
-      });
-    } else {
-      dispatch({
-        type: 'candidateInfo/saveFilledSalaryStructure',
-        payload: {
-          filledSalaryStructure: false,
-        },
-      });
     }
   };
 
@@ -277,7 +323,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   onClickEdit = (key) => {
-    const { isEditted } = this.state;
+    const { isEdited } = this.state;
     const {
       dispatch,
       settingsTempData: settings = [],
@@ -299,12 +345,12 @@ class SalaryStructureTemplate extends PureComponent {
         },
       }).then(() => {
         this.setState({
-          isEditted: !isEditted,
+          isEdited: !isEdited,
         });
       });
     } else {
       this.setState({
-        isEditted: !isEditted,
+        isEdited: !isEdited,
       });
     }
   };
@@ -320,24 +366,24 @@ class SalaryStructureTemplate extends PureComponent {
     this.formRef.current.resetFields();
 
     this.setState({
-      isEditted: false,
+      isEdited: false,
     });
   };
 
   onClickSubmit = () => {
-    const { isEditted } = this.state;
+    const { isEdited } = this.state;
     this.setState({
-      isEditted: !isEditted,
+      isEdited: !isEdited,
     });
   };
 
   isBlueText = (order) => {
-    const orderNonDisplay = ['D', 'E', ' '];
+    const orderNonDisplay = [];
     return orderNonDisplay.includes(order);
   };
 
-  isEditted = (order) => {
-    const orderNonDisplay = ['A', 'B', 'G', 'H'];
+  isEdited = (order) => {
+    const orderNonDisplay = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
     return orderNonDisplay.includes(order);
   };
 
@@ -387,7 +433,7 @@ class SalaryStructureTemplate extends PureComponent {
     });
   };
 
-  handleNumberChange = (name, current, value) => {
+  handleNumberChange = (name, current) => {
     const { dispatch, settingsTempData: settings = [] } = this.props;
     const tempTableData = [...settings];
     const index = tempTableData.findIndex((data) => data.key === name);
@@ -417,7 +463,8 @@ class SalaryStructureTemplate extends PureComponent {
     //   dispatch,
     //   tempData: { workLocation: { headQuarterAddress: { country = '' } = {} } = {} } = {},
     // } = this.props;
-    const { dispatch, location: { headQuarterAddress: { country = {} } = {} } = {} } = this.props;
+    const { dispatch, location: { headQuarterAddress: { country = {} } = {}, _id } = {} } =
+      this.props;
     // const tempTableData = [];
     // const check = tempTableData.map((data) => data.value !== '').every((data) => data === true);
 
@@ -440,7 +487,12 @@ class SalaryStructureTemplate extends PureComponent {
 
     dispatch({
       type: 'candidateInfo/fetchTableData',
-      payload: { title: value, tenantId: getCurrentTenant(), country: country._id || country },
+      payload: {
+        title: value,
+        tenantId: getCurrentTenant(),
+        country: country._id || country,
+        location: _id,
+      },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         dispatch({
@@ -477,36 +529,53 @@ class SalaryStructureTemplate extends PureComponent {
     // });
   };
 
-  _renderTableTitle = (order) => {
-    const { settingsTempData: settings = [] } = this.props;
-    const data = settings.find((item) => item.order === order) || {};
-    return (
-      <span
-        className={`${this.isBlueText(data.order) === true ? `blue-text` : null} ${
-          data.order === ' ' ? `big-text` : null
-        }`}
-      >
-        {data?.title}
-      </span>
-    );
+  handleChangeDepartment = (value) => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'candidateInfo/fetchTitleList',
+      payload: {
+        department: value,
+      },
+    });
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        salaryTitle: null,
+      },
+    });
   };
 
-  _renderTableValue = (order) => {
-    const { isEditted } = this.state;
+  handleChangeGrade = (value) => {
+    console.log(value);
+  };
+
+  handleChangeLocation = (value) => {
+    console.log(value);
+  };
+
+  _renderTableTitle = (record) => {
     const { settingsTempData: settings = [] } = this.props;
-    const data = settings.find((item) => item.order === order) || {};
+    const data = settings.find((item) => item === record) || {};
+    return <span className={` ${data.rank === 2 ? `big-text` : null}`}>{data?.title}</span>;
+  };
+
+  _renderTableValue = (record) => {
+    const { isEdited } = this.state;
+    const { settingsTempData: settings = [] } = this.props;
+    const data = settings.find((item) => item === record) || {};
     const { value = '', key, number = {} } = data;
     const isNumber = Object.keys(number).length > 0;
 
     const valueKey = () => {
-      if (key === 'basic' || key === 'hra' || key === 'employeesPF' || key === 'employeesESI') {
+      if (value !== '') {
         return true;
       }
 
       return false;
     };
 
-    if (isEditted) {
+    if (isEdited) {
       if (isNumber) {
         const { current = '', max = '' } = number;
         return (
@@ -564,9 +633,9 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   _renderTableOrder = (order) => {
-    if (order === 'E') {
-      return ' ';
-    }
+    // if (order === 'E') {
+    //   return ' ';
+    // }
     return order;
   };
 
@@ -577,7 +646,7 @@ class SalaryStructureTemplate extends PureComponent {
         dataIndex: 'order',
         key: 'title',
         width: '40%',
-        render: (order) => this._renderTableTitle(order),
+        render: (_, record) => this._renderTableTitle(record),
       },
       {
         title: '',
@@ -592,7 +661,7 @@ class SalaryStructureTemplate extends PureComponent {
         key: 'value',
         className: 'thirdColumn',
         width: '50%',
-        render: (order) => this._renderTableValue(order),
+        render: (_, record) => this._renderTableValue(record),
       },
       // {
       //   title: 'Action',
@@ -623,7 +692,7 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   _renderButtons = () => {
-    const { isEditted } = this.state;
+    const { isEdited } = this.state;
     const { processStatus, settingsTempData: settings = [], loadingEditSalary } = this.props;
     if (
       (processStatus === 'DRAFT' ||
@@ -633,7 +702,7 @@ class SalaryStructureTemplate extends PureComponent {
     ) {
       return (
         <Form.Item className={styles.buttons}>
-          {isEditted === true ? (
+          {isEdited === true ? (
             <div className={styles.actionBtn}>
               <Button
                 loading={loadingEditSalary}
@@ -719,72 +788,103 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   render() {
-    const { Option } = Select;
     const {
       loadingTable,
       salaryTitle: salaryTitleId,
+      department,
+      workLocation,
       loadingFetchTable,
       settingsTempData: settings,
+      title,
     } = this.props;
-    const { processStatus, listTitle = [] } = this.props;
-
+    const { processStatus } = this.props;
     return (
       <div className={styles.salaryStructureTemplate}>
         <Form
           initialValues={{
             salaryTemplate: salaryTitleId,
+            // grade,
+            // department,
+            // location,
           }}
           onFinish={this.onFinish}
           ref={this.formRef}
         >
-          {listTitle.length === 0 ? (
-            <Spin className={styles.spin} />
-          ) : (
-            <>
-              <div className={styles.salaryStructureTemplate_select}>
-                <Select
-                  value={salaryTitleId || null}
-                  onChange={this.handleChangeSelect}
-                  placeholder="Please select a choice!"
-                  loading={loadingTable || loadingFetchTable}
-                  size="large"
-                  style={{ width: 280 }}
-                  disabled={processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT}
-                >
-                  {listTitle.map(({ _id = '', name = '' }) => {
-                    return (
-                      <Option key={_id} value={_id}>
-                        {name}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </div>
-              {loadingFetchTable ? (
-                <Spin className={styles.spin} />
-              ) : (
-                <>
-                  {salaryTitleId && (
-                    <>
-                      {this._renderButtons()}
-                      <div className={styles.salaryStructureTemplate_table}>
-                        <Table
-                          loading={loadingTable}
-                          dataSource={settings}
-                          columns={this._renderColumns()}
-                          pagination={false}
-                        />
-                      </div>
-                      {this._renderFooter()}
-                      {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
-                        ? this._renderBottomBar()
-                        : null}
-                    </>
-                  )}
-                </>
-              )}
-            </>
-          )}
+          <>
+            <Row gutter={[8, 8]}>
+              <Col xs={24} sm={24} md={6} lg={6}>
+                <p className={styles.p_title_select}>Grade</p>
+                <div className={styles.salaryStructureTemplate_select}>
+                  <Input
+                    value={Object.keys(title).length !== 0 ? title.grade : null}
+                    size="large"
+                    disabled
+                  />
+                </div>
+              </Col>
+              <Col xs={24} sm={24} md={6} lg={6}>
+                <p className={styles.p_title_select}>Department</p>
+                <div className={styles.salaryStructureTemplate_select}>
+                  <Input
+                    value={
+                      Object.keys(department).length !== 0 ? department.name : department || null
+                    }
+                    size="large"
+                    disabled
+                  />
+                </div>
+              </Col>
+              <Col xs={24} sm={24} md={6} lg={6}>
+                <p className={styles.p_title_select}>Location</p>
+                <div className={styles.salaryStructureTemplate_select}>
+                  <Input
+                    value={
+                      Object.keys(workLocation).length !== 0
+                        ? workLocation.name
+                        : workLocation || null
+                    }
+                    size="large"
+                    // style={{ width: 280 }}
+                    disabled
+                  />
+                </div>
+              </Col>
+              <Col xs={24} sm={24} md={6} lg={6}>
+                <p className={styles.p_title_select}> Job title</p>
+                <div className={styles.salaryStructureTemplate_select}>
+                  <Input
+                    value={Object.keys(title).length !== 0 ? title.name : title || null}
+                    size="large"
+                    // style={{ width: 280 }}
+                    disabled
+                  />
+                </div>
+              </Col>
+            </Row>
+            {loadingFetchTable ? (
+              <Spin className={styles.spin} />
+            ) : (
+              <>
+                {/* {salaryTitleId && (
+                    <> */}
+                {this._renderButtons()}
+                <div className={styles.salaryStructureTemplate_table}>
+                  <Table
+                    loading={loadingTable}
+                    dataSource={settings}
+                    columns={this._renderColumns()}
+                    pagination={false}
+                  />
+                </div>
+                {/* {this._renderFooter()} */}
+                {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
+                  ? this._renderBottomBar()
+                  : null}
+                {/* </>
+                  )} */}
+              </>
+            )}
+          </>
         </Form>
       </div>
     );

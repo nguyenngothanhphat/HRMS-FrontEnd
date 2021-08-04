@@ -283,7 +283,7 @@ class Step1 extends Component {
                       </Col>
                       <Col span={12}>
                         <Form.Item
-                          label="Zip Code"
+                          label="Zip/Postal Code"
                           name="zipCode"
                           rules={[
                             {
@@ -395,7 +395,7 @@ class Step1 extends Component {
                       </Col>
                       <Col span={12}>
                         <Form.Item
-                          label="Zip Code"
+                          label="Zip/Postal Code"
                           name="zipCode"
                           rules={[
                             {

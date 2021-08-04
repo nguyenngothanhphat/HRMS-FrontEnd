@@ -64,7 +64,11 @@ class ProfessionalAcademicBackground extends PureComponent {
 
   render() {
     const { openAcademic, permissions = {}, profileOwner = false } = this.props;
-    const renderComponent = openAcademic ? <Edit handleCancel={this.handleCancel} /> : <View />;
+    const renderComponent = openAcademic ? (
+      <Edit profileOwner={profileOwner} handleCancel={this.handleCancel} />
+    ) : (
+      <View />
+    );
     return (
       <div className={styles.root}>
         <div className={styles.viewTitle}>

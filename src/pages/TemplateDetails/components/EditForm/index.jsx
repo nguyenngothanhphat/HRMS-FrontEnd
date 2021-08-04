@@ -39,8 +39,8 @@ class EditForm extends Component {
         title,
         tenantId,
       },
-    }).then((statusCode) => {
-      if (statusCode === 200) {
+    }).then((res) => {
+      if (res.statusCode === 200) {
         onClose();
         history.push({
           pathname: '/employee-onboarding/settings',

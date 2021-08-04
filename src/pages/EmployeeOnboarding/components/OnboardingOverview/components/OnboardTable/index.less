@@ -1,5 +1,7 @@
 @border-color: #d6dce0;
 @orange: #fe5d27;
+@darkBlue: #253c6b;
+@expired-background: #cddcfc;
 @new-background: #fff4f1;
 @border-color: #d6dce0;
 @checkbox-background: #e7eaee;
@@ -102,18 +104,26 @@
   .name {
     margin-right: 8px;
   }
-  .new {
-    color: @orange;
+
+  .ticketTag {
     font-size: 11px;
     font-weight: 500;
-    
     text-transform: capitalize;
     font-family: 'Roboto';
     display: inline-block;
-    background-color: @new-background;
     padding: 0 8px;
   }
+  .new {
+    .ticketTag();
+    color: @orange;
+    background-color: @new-background;
+  }
 
+  .expired {
+    .ticketTag();
+    color: @darkBlue;
+    background-color: @expired-background;
+  }
   svg {
     &:hover {
       cursor: pointer;

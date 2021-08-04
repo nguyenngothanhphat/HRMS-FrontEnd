@@ -7,13 +7,13 @@ import { getCurrentTenant } from '@/utils/authority';
 import { PROCESS_STATUS } from '@/utils/onboarding';
 import BasicInformation from './components/BasicInformation';
 import JobDetails from './components/JobDetails';
-import OfferDetail from './components/OfferDetail';
+import OfferDetail from './components/OfferDetailNew';
 // import CustomField from './components/CustomField';
 import Benefit from './components/Benefit';
 import styles from './index.less';
 import SalaryStructure from './components/SalaryStructure';
 // import BackgroundCheck from './components/BackgroundCheck';
-import BackgroundCheck from './components/BackgroundCheckNew';
+import DocumentVerification from './components/DocumentVerification';
 import BackgroundRecheck from './components/BackgroundRecheck';
 import Payroll from './components/Payroll';
 // import AdditionalQuestion from './components/AdditionalQuestion';
@@ -267,7 +267,7 @@ class FormTeamMember extends PureComponent {
     //       checkStatus: {
     //         filledBasicInformation: false,
     //         filledJobDetail: false,
-    //         filledBackgroundCheck: false,
+    //         filledDocumentVerification: false,
     //       },
     //     },
     //   },
@@ -419,7 +419,7 @@ class FormTeamMember extends PureComponent {
           processStatus !== PROCESS_STATUS.SENT_PROVISIONAL_OFFERS ? (
             <BackgroundRecheck />
           ) : (
-            <BackgroundCheck
+            <DocumentVerification
               documentList={documentList}
               loading={loading1}
               reId={reId}

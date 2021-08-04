@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react';
-import { Tabs } from 'antd';
+import { Tabs, Input } from 'antd';
 import { connect } from 'umi';
+import { SearchOutlined } from '@ant-design/icons';
 
 // import SentFinalOffers from './components/SentFinalOffers/index';
 // import AcceptedFinalOffers from './components/AcceptedFinalOffers/index';
 // import RenegotitateFinalOffers from './components/RenegotiateFinalOffers/index';
 import { PROCESS_STATUS } from '@/utils/onboarding';
+import { debounce } from 'lodash';
 import ProvisionalOffers from './components/ProvisionalOffers/index';
 import FinalOffers from './components/FinalOffers/index';
 import AllTab from './components/AllTab';
@@ -21,7 +23,13 @@ class DiscardedOffers extends PureComponent {
       tabId: '1',
       pageSelected: 1,
       size: 10,
+      nameSearch: '',
     };
+    this.setDebounce = debounce((query) => {
+      this.setState({
+        nameSearch: query,
+      });
+    }, 500);
   }
 
   componentDidMount() {
@@ -34,11 +42,12 @@ class DiscardedOffers extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { tabId, pageSelected, size } = this.state;
+    const { tabId, pageSelected, size, nameSearch } = this.state;
     if (
       prevState.tabId !== tabId ||
       prevState.pageSelected !== pageSelected ||
-      prevState.size !== size
+      prevState.size !== size ||
+      prevState.nameSearch !== nameSearch
     ) {
       this.onChangeTab(tabId);
     }
@@ -46,26 +55,28 @@ class DiscardedOffers extends PureComponent {
 
   fetchBackgroundCheckAll = (status) => {
     const { dispatch } = this.props;
-    const { pageSelected, size } = this.props;
+    const { pageSelected, size, nameSearch } = this.props;
     dispatch({
       type: 'onboard/fetchOnboardListAll',
       payload: {
         processStatus: status,
         page: pageSelected,
         limit: size,
+        name: nameSearch,
       },
     });
   };
 
   fetchBackgroundCheck = (status) => {
     const { dispatch } = this.props;
-    const { pageSelected, size } = this.props;
+    const { pageSelected, size, nameSearch } = this.props;
     dispatch({
       type: 'onboard/fetchOnboardList',
       payload: {
         processStatus: status,
         page: pageSelected,
         limit: size,
+        name: nameSearch,
       },
     });
   };
@@ -91,6 +102,10 @@ class DiscardedOffers extends PureComponent {
     }
   };
 
+  onChange = (e) => {
+    this.setDebounce(e.target.value);
+  };
+
   render() {
     const { discardedOffers = {}, dataAll, loadingAll, total } = this.props;
     const { provisionalOffers = [], finalOffers = [] } = discardedOffers;
@@ -98,7 +113,17 @@ class DiscardedOffers extends PureComponent {
     return (
       <div className={styles.DiscardedOffers}>
         <div className={styles.tabs}>
-          <Tabs defaultActiveKey={tabId} onChange={this.onChangeTab}>
+          <Tabs
+            defaultActiveKey={tabId}
+            onChange={this.onChangeTab}
+            tabBarExtraContent={
+              <Input
+                onChange={this.onChange}
+                placeholder="Search by candidate ID"
+                prefix={<SearchOutlined />}
+              />
+            }
+          >
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
               tab="all"

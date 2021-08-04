@@ -172,12 +172,12 @@ class Edit extends PureComponent {
                 </Select>
               </Form.Item>
               <Form.Item
-                label="Zip Code"
+                label="Zip/Postal Code"
                 name="zipCode"
                 rules={[
                   {
                     pattern: /^[0-9]*$/,
-                    message: 'Zip Code is not a valid number',
+                    message: 'Zip/Postal Code is not a valid number',
                   },
                 ]}
               >

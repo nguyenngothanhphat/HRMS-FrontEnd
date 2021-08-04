@@ -8,12 +8,17 @@ export async function getListRoles(payload) {
 }
 
 export async function getListTitle(payload) {
-  return request('/api/titletenant/list', {
+  return request('/api/titletenant/list-by-company', {
     method: 'POST',
     data: payload,
   });
 }
-
+export async function countEmployee(payload) {
+  return request('/api/titletenant/count-employee', {
+    method: 'POST',
+    data: payload,
+  });
+}
 export async function removeTitle(payload) {
   return request('/api/titletenant/remove', {
     method: 'POST',

@@ -116,11 +116,11 @@ const getColumnWidth = (columnName, tableType) => {
       case 'position':
         return '16%';
       case 'location':
-        return '';
+        return '16%';
       case 'dateJoin':
-        return '10%';
+        return '15%';
       case 'actions':
-        return '10%';
+        return '15%';
       case 'assignTo':
         return '10%';
       case 'assigneeManager':

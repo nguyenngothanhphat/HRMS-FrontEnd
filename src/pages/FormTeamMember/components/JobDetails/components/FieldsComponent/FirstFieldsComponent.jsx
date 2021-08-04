@@ -18,11 +18,17 @@ class FirstFieldsComponent extends PureComponent {
   onChangeValue = (value, fieldName) => {
     const {
       _handleSelect = () => {},
+      jobGradeList = [],
       locationList = [],
       departmentList = [],
       titleList = [],
     } = this.props;
     switch (fieldName) {
+      case 'jobGradeLevel': {
+        const getDataGrade = jobGradeList.filter((item) => item.grade === value);
+        _handleSelect(getDataGrade[0]._id, fieldName);
+        break;
+      }
       case 'department': {
         this.formRef.current.setFieldsValue({
           title: null,
@@ -61,11 +67,13 @@ class FirstFieldsComponent extends PureComponent {
     const {
       styles,
       dropdownField = [],
+      jobGradeList,
       departmentList,
       locationList,
       titleList,
       managerList,
       department,
+      grade,
       title,
       workLocation,
       reportingManager,
@@ -157,7 +165,8 @@ class FirstFieldsComponent extends PureComponent {
                         // onChange={(value) => _handleSelect(value, item.title)}
                         onChange={(value) => this.onChangeValue(value, item.title)}
                         disabled={
-                          !!(item.title === 'reportingManager' && managerList.length <= 0) ||
+                          !!(item.title === 'jobGradeLevel' && jobGradeList.length <= 0) ||
+                          (item.title === 'reportingManager' && managerList.length <= 0) ||
                           (item.title === 'department' && departmentList.length <= 0) ||
                           (item.title === 'title' && titleList.length <= 0) ||
                           (item.title === 'workLocation' && disabled) ||
@@ -182,10 +191,16 @@ class FirstFieldsComponent extends PureComponent {
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'reportingManager' &&
-                          !isEmpty(reportingManager) && {
+                          !isNull(reportingManager) && {
                             defaultValue: reportingManager?.generalInfo?.firstName,
                           })}
+                        // eslint-disable-next-line react/jsx-props-no-spreading
+                        {...(item.title === 'jobGradeLevel' &&
+                          !isEmpty(grade) && {
+                            defaultValue: grade.grade,
+                          })}
                         showSearch={
+                          item.title === 'jobGradeLevel' ||
                           item.title === 'reportingManager' ||
                           item.title === 'workLocation' ||
                           item.title === 'title' ||
@@ -193,10 +208,18 @@ class FirstFieldsComponent extends PureComponent {
                         }
                         allowClear
                         filterOption={(input, option) => {
-                          return option.value.toLowerCase().indexOf(input) > -1;
+                          if (item.title === 'jobGradeLevel')
+                            return option.value.toString().indexOf(input) > -1;
+                          return option.value.toLowerCase().indexOf(input.toLowerCase()) > -1;
                         }}
                       >
-                        {item.title === 'workLocation' ? (
+                        {item.title === 'jobGradeLevel' ? (
+                          jobGradeList.map((data) => (
+                            <Option value={data.grade} key={data._id}>
+                              <Typography.Text>{data.grade}</Typography.Text>
+                            </Option>
+                          ))
+                        ) : item.title === 'workLocation' ? (
                           showWorkLocationAB.map((data, index) => (
                             <Option value={data.name} key={index}>
                               <Typography.Text>{data.name}</Typography.Text>

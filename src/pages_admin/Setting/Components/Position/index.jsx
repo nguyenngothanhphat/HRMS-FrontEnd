@@ -1,91 +1,78 @@
-import { DeleteOutlined, PlusCircleFilled } from '@ant-design/icons';
+import { DeleteOutlined, PlusCircleFilled, ExclamationCircleOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
-import { Input, Select, Spin, Table } from 'antd';
+import { Input, Select, Table, Row, Col, Pagination, InputNumber } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 import React, { PureComponent } from 'react';
 import styles from './index.less';
 
+const { confirm } = Modal;
 @connect(
-  ({ loading, adminSetting: { tempData: { listTitle = [], department = [] } = {} } = {} }) => ({
+  ({
+    loading,
+    adminSetting: {
+      tempData: { listTitle = [], totalTitle, department = [] } = {},
+      countEmployee,
+    } = {},
+  }) => ({
     loading: loading.effects['adminSetting/fetchListTitle'],
     listTitle,
+    totalTitle,
     department,
+    countEmployee,
   }),
 )
 class Position extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      selectedRowKeys: [],
+      // selectedRowKeys: [],
       visible: false,
       testRecord: {},
-      data: [],
-      newValue: '',
-      department: '',
+      newPosition: {
+        name: '',
+        grade: 1,
+        department: '',
+      },
+      page: 1,
+      limit: 10,
+      // total: 0,
     };
   }
 
   componentDidMount() {
-    const { listTitle } = this.props;
-    const formatData = listTitle.map((item) => {
-      const {
-        _id: id,
-        titleId: PositionID,
-        name: PositionName,
-        department: { name: DepartmentName },
-      } = item;
-      return {
-        id,
-        PositionID,
-        PositionName,
-        DepartmentName,
-      };
-    });
-    this.setState({ data: formatData });
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    const { listTitle } = props;
-    const { data } = state;
-    if (listTitle.length === data.length) {
-      return {
-        data,
-      };
-    }
-    const formatData = listTitle.map((item) => {
-      const {
-        _id: id,
-        titleId: PositionID,
-        name: PositionName,
-        department: { name: DepartmentName },
-      } = item;
-      return {
-        id,
-        PositionID,
-        PositionName,
-        DepartmentName,
-      };
-    });
-    return { data: formatData };
-  }
-
-  onSelectChange = (selectedRowKeys) => {
-    this.setState({ selectedRowKeys });
-  };
-
-  handleOk = () => {
-    const { testRecord } = this.state;
     const { dispatch } = this.props;
-    const { id = '' } = testRecord;
-    const statusCode = dispatch({
+    const { page, limit } = this.state;
+    dispatch({
+      type: 'adminSetting/fetchListTitle',
+      payload: { page, limit },
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { page, limit } = this.state;
+    const { dispatch } = this.props;
+
+    if (page !== prevState.page || limit !== prevState.limit)
+      dispatch({
+        type: 'adminSetting/fetchListTitle',
+        payload: { page, limit },
+      });
+  }
+
+  handleOk = async () => {
+    const { testRecord, page, limit } = this.state;
+    const { dispatch } = this.props;
+    const { _id = '' } = testRecord;
+    const statusCode = await dispatch({
       type: 'adminSetting/removeTitle',
       payload: {
-        id,
+        id: _id,
       },
     });
     if (statusCode === 200) {
       dispatch({
         type: 'adminSetting/fetchListTitle',
+        payload: { page, limit },
       });
     }
 
@@ -100,79 +87,102 @@ class Position extends PureComponent {
     });
   };
 
-  handleClickDelete = (text, record) => {
+  showPropsConfirm = () => {
+    const { countEmployee } = this.props;
+    confirm({
+      title: 'Are you sure delete this Position?',
+      icon: <ExclamationCircleOutlined />,
+      content: `This position currently has ${countEmployee} employees`,
+      okText: 'Yes',
+      okType: 'danger',
+      okButtonProps: {
+        disabled: countEmployee === 0,
+      },
+      cancelText: 'No',
+      onOk() {
+        console.log('OK');
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  };
+
+  handleClickDelete = async (text, record) => {
+    const { dispatch } = this.props;
+    await dispatch({
+      type: 'adminSetting/countEmployeeInPosition',
+      payload: { title: record._id },
+    });
+
     this.setState({
       visible: true,
       testRecord: record,
     });
   };
 
-  handleChangeValue = (e) => {
-    const { value } = e.target;
-    this.setState({ newValue: value });
+  handleChangeValue = (value) => {
+    const { newPosition } = this.state;
+    this.setState({ newPosition: { ...newPosition, ...value } });
   };
 
-  handleAddNewValue = () => {
-    const { department, newValue } = this.state;
+  handleAddNewValue = async () => {
+    const { newPosition, page, limit } = this.state;
     const { dispatch } = this.props;
-    if (newValue === '') return;
-    dispatch({
+    if (newPosition.name === '') return;
+    const statusCode = await dispatch({
       type: 'adminSetting/addPosition',
-      payload: { name: newValue, department },
+      payload: newPosition,
     });
-    this.setState({ newValue: '' });
+    if (statusCode === 200) {
+      dispatch({
+        type: 'adminSetting/fetchListTitle',
+        payload: { page, limit },
+      });
+      this.setState({ newPosition: { name: '', grade: 1, department: '' } });
+    }
   };
 
   render() {
-    const { selectedRowKeys, visible, testRecord, data, newValue, department } = this.state;
-    const { loading, department: departmentList = [] } = this.props;
-    if (loading)
-      return (
-        <div className={styles.Position}>
-          <Spin loading={loading} active size="large" />
-        </div>
-      );
+    const { visible, testRecord, newPosition, page, limit } = this.state;
+    const { loading, department: departmentList = [], totalTitle, listTitle } = this.props;
 
-    // eslint-disable-next-line no-unused-vars
-    const rowSelection = {
-      selectedRowKeys,
-      onChange: this.onSelectChange,
-    };
     const columns = [
       {
         key: 1,
         title: 'Position ID',
-        dataIndex: 'PositionID',
+        dataIndex: 'titleId',
         align: 'left',
         width: '15%',
       },
       {
         key: 2,
         title: 'Position name',
-        dataIndex: 'PositionName',
+        dataIndex: 'name',
         align: 'left',
-        width: '25%',
+        width: '30%',
       },
       {
         key: 3,
         title: 'Department Name',
-        dataIndex: 'DepartmentName',
+        dataIndex: 'department',
         align: 'left',
-        width: '25%',
+        width: '30%',
+        render: (_, record) => record.department.name,
       },
       {
         key: 4,
-        title: 'Grades level',
-        dataIndex: 'Grade',
+        title: 'Grade level',
+        dataIndex: 'grade',
         align: 'center',
-        width: '10%',
+        width: '15%',
       },
       {
         key: 5,
         title: 'Action',
         dataIndex: 'Action',
         render: (text, record) =>
-          record.PositionID !== '' ? (
+          record.titleId !== '' ? (
             <DeleteOutlined onClick={() => this.handleClickDelete(text, record)} />
           ) : (
             <PlusCircleFilled onClick={() => this.handleAddNewValue()} />
@@ -181,42 +191,78 @@ class Position extends PureComponent {
       },
     ];
     const add = {
-      PositionID: '',
-      PositionName: (
+      titleId: '',
+      name: (
         <>
+          <Input
+            disabled={!newPosition.department}
+            placeholder="Position Name"
+            onChange={(e) => this.handleChangeValue({ name: e.target.value })}
+            value={newPosition.name}
+          />
+        </>
+      ),
+      grade: (
+        <>
+          <InputNumber
+            disabled={!newPosition.department}
+            placeholder="Grade level"
+            onChange={(e) => this.handleChangeValue({ grade: e.target.value })}
+            defaultValue={newPosition.grade}
+          />
+        </>
+      ),
+      department: {
+        name: (
           <Select
-            onChange={(value) => {
-              this.setState({ department: value });
-            }}
+            onChange={
+              (value) =>
+                this.handleChangeValue({
+                  department: value,
+                })
+              // eslint-disable-next-line react/jsx-curly-newline
+            }
             placeholder="Select department"
+            defaultValue={newPosition.department}
           >
             {departmentList.map((d) => (
               <Select.Option value={d._id}>{d.name}</Select.Option>
             ))}
           </Select>
-          <Input
-            disabled={!department}
-            placeholder="Position Name"
-            onChange={this.handleChangeValue}
-            value={newValue}
-          />
-        </>
-      ),
+        ),
+      },
     };
 
-    const renderAdd = [...data, add];
+    const renderAdd = [...listTitle, add];
 
     return (
       <div className={styles.Position}>
-        <Table
-          // rowSelection={rowSelection}
-          columns={columns}
-          dataSource={renderAdd}
-          size="small"
-          pagination={false}
-          rowKey="PositionID"
-        />
-
+        <Row>
+          <Col span={24}>
+            <Table
+              // rowSelection={rowSelection}
+              columns={columns}
+              dataSource={renderAdd}
+              loading={loading}
+              size="small"
+              pagination={false}
+              rowKey="PositionID"
+            />
+          </Col>
+        </Row>
+        <Row className={styles.pagination}>
+          <Pagination
+            size="small"
+            total={totalTitle}
+            defaultPageSize={limit}
+            showSizeChanger
+            pageSizeOptions={[10, 25, 50, 100]}
+            current={page}
+            showTotal={(totals, range) => `Showing ${range[0]}-${range[1]} of ${totals} `}
+            onChange={(e) => this.setState({ page: e })}
+            onShowSizeChange={(e) => this.setState({ limit: e })}
+          />
+        </Row>
         <Modal
           title={`Delete ${testRecord.PositionName}? Are you sure?`}
           visible={visible}

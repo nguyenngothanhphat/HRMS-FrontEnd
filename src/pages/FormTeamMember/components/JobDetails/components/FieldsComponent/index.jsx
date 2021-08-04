@@ -9,6 +9,7 @@ class FieldsComponent extends PureComponent {
       dropdownField,
       candidateField,
       departmentList,
+      jobGradeList,
       locationList,
       titleList,
       managerList,
@@ -32,6 +33,7 @@ class FieldsComponent extends PureComponent {
         <FirstFieldsComponent
           styles={styles.Input}
           dropdownField={dropdownField}
+          jobGradeList={jobGradeList}
           departmentList={departmentList}
           locationList={locationList}
           titleList={titleList}

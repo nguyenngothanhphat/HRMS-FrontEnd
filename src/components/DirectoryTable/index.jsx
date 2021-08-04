@@ -203,7 +203,7 @@ class DirectoryTable extends Component {
         width: '18%',
         defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],
-        className: `${styles.col} `,
+        // className: `${styles.col} `,
       },
       {
         title: formatMessage({ id: 'component.directory.table.email' }),
@@ -212,7 +212,13 @@ class DirectoryTable extends Component {
         render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
         width: '20%',
         align: 'left',
-        sorter: () => null,
+        sorter: (a, b) => {
+          return a.generalInfo && a.generalInfo?.workEmail
+            ? a.generalInfo?.workEmail.localeCompare(`${b.generalInfo?.workEmail}`)
+            : null;
+        },
+        defaultSortOrder: 'ascend',
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: formatMessage({ id: 'component.directory.table.userId' }),
@@ -221,7 +227,13 @@ class DirectoryTable extends Component {
         render: (generalInfo) => <span>{generalInfo?.userId}</span>,
         width: '12%',
         align: 'left',
-        sorter: () => null,
+        sorter: (a, b) => {
+          return a.generalInfo && a.generalInfo?.userId
+            ? a.generalInfo?.userId.localeCompare(`${b.generalInfo?.userId}`)
+            : null;
+        },
+        defaultSortOrder: 'ascend',
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: 'Work Number',
@@ -234,7 +246,13 @@ class DirectoryTable extends Component {
         ),
         width: '12%',
         align: 'left',
-        sorter: () => null,
+        sorter: (a, b) => {
+          return a.generalInfo && a.generalInfo?.workNumber
+            ? a.generalInfo?.workNumber.localeCompare(`${b.generalInfo?.workNumber}`)
+            : null;
+        },
+        defaultSortOrder: 'ascend',
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: formatMessage({ id: 'component.directory.table.employeeID' }),
@@ -244,7 +262,13 @@ class DirectoryTable extends Component {
         render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
         width: '12%',
         align: 'left',
-        sorter: () => null,
+        sorter: (a, b) => {
+          return a.generalInfo && a.generalInfo?.employeeId
+            ? a.generalInfo?.employeeId.localeCompare(`${b.generalInfo?.employeeId}`)
+            : null;
+        },
+        defaultSortOrder: 'ascend',
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: formatMessage({ id: 'component.directory.table.title' }),
@@ -259,7 +283,11 @@ class DirectoryTable extends Component {
         ),
         width: '12%',
         align: 'left',
-        sorter: () => null,
+        sorter: (a, b) => {
+          return a.title && a.title?.name ? a.title?.name.localeCompare(`${b.title?.name}`) : null;
+        },
+        defaultSortOrder: 'ascend',
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: formatMessage({ id: 'component.directory.table.department' }),
@@ -284,7 +312,13 @@ class DirectoryTable extends Component {
         },
         width: '14%',
         align: 'left',
-        sorter: () => null,
+        sorter: (a, b) => {
+          return a.department && a.department?.name
+            ? a.department?.name.localeCompare(`${b.department?.name}`)
+            : null;
+        },
+        defaultSortOrder: 'ascend',
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: formatMessage({ id: 'component.directory.table.location' }),
@@ -301,7 +335,13 @@ class DirectoryTable extends Component {
         ),
         width: '14%',
         align: 'left',
-        sorter: () => null,
+        sorter: (a, b) => {
+          return a.location && a.location?.name
+            ? a.location?.name.localeCompare(`${b.location?.name}`)
+            : null;
+        },
+        defaultSortOrder: 'ascend',
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: formatMessage({ id: 'component.directory.table.reportingManager' }),
@@ -315,7 +355,8 @@ class DirectoryTable extends Component {
                 managerPack._id,
                 managerPack.tenant,
                 managerPack.generalInfo?.userId,
-              )}
+              )
+            }
           >
             {managerPack.generalInfo
               ? `${managerPack?.generalInfo?.firstName} ${managerPack?.generalInfo?.lastName}`
@@ -324,7 +365,15 @@ class DirectoryTable extends Component {
         ),
         align: 'left',
         width: '14%',
-        sorter: () => null,
+        sorter: (a, b) => {
+          return a.managerPack.generalInfo && a.managerPack.generalInfo?.firstName
+            ? `${a.managerPack.generalInfo?.firstName} ${a.managerPack.generalInfo?.lastName}`.localeCompare(
+                `${b.managerPack.generalInfo?.firstName} ${b.managerPack.generalInfo?.lastName}`,
+              )
+            : null;
+        },
+        defaultSortOrder: 'ascend',
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: formatMessage({ id: 'component.directory.table.employmentType' }),
@@ -333,7 +382,13 @@ class DirectoryTable extends Component {
         render: (employeeType) => <span>{employeeType ? employeeType.name : ''}</span>,
         align: 'left',
         width: '14%',
-        sorter: () => null,
+        sorter: (a, b) => {
+          return a.employmentType && a.employmentType?.name
+            ? a.employmentType?.name.localeCompare(`${b.employmentType?.name}`)
+            : null;
+        },
+        defaultSortOrder: 'ascend',
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         title: formatMessage({ id: 'component.directory.table.action' }),
@@ -601,7 +656,7 @@ class DirectoryTable extends Component {
       },
     };
     const scroll = {
-      x: '120vw',
+      x: '140vw',
       y: 'max-content',
     };
 

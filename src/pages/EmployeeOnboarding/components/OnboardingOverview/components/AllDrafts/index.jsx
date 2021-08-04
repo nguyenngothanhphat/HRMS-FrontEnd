@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { Tabs } from 'antd';
+import { Tabs, Input } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 
 // import {
 //   COLUMN_NAME,
@@ -8,6 +9,7 @@ import { Tabs } from 'antd';
 // } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
 // import OnboardTable from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/OnboardTable';
 import { PROCESS_STATUS } from '@/utils/onboarding';
+import { debounce } from 'lodash';
 import styles from './index.less';
 import ProvisionalOfferDrafts from './components/ProvisionalOfferDrafts';
 import FinalOfferDrafts from './components/FinalOfferDrafts';
@@ -31,7 +33,13 @@ class AllDrafts extends PureComponent {
       tabId: '1',
       pageSelected: 1,
       size: 10,
+      nameSearch: '',
     };
+    this.setDebounce = debounce((query) => {
+      this.setState({
+        nameSearch: query,
+      });
+    }, 500);
   }
 
   componentDidMount() {
@@ -44,18 +52,19 @@ class AllDrafts extends PureComponent {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { tabId, pageSelected, size } = this.state;
+    const { tabId, pageSelected, size, nameSearch } = this.state;
     if (
       prevState.tabId !== tabId ||
       prevState.pageSelected !== pageSelected ||
-      prevState.size !== size
+      prevState.size !== size ||
+      prevState.nameSearch !== nameSearch
     ) {
       this.onChangeTab(tabId);
     }
   }
 
   fetchOfferDraftAll = (status) => {
-    const { pageSelected, size } = this.state;
+    const { pageSelected, size, nameSearch } = this.state;
     const { dispatch } = this.props;
     dispatch({
       type: 'onboard/fetchOnboardListAll',
@@ -63,12 +72,13 @@ class AllDrafts extends PureComponent {
         processStatus: status,
         page: pageSelected,
         limit: size,
+        name: nameSearch,
       },
     });
   };
 
   fetchOfferDraft = (status) => {
-    const { pageSelected, size } = this.state;
+    const { pageSelected, size, nameSearch } = this.state;
     const { dispatch } = this.props;
     dispatch({
       type: 'onboard/fetchOnboardList',
@@ -76,6 +86,7 @@ class AllDrafts extends PureComponent {
         processStatus: status,
         page: pageSelected,
         limit: size,
+        name: nameSearch,
       },
     });
   };
@@ -101,6 +112,10 @@ class AllDrafts extends PureComponent {
     });
   };
 
+  onChange = (e) => {
+    this.setDebounce(e.target.value);
+  };
+
   render() {
     const { allDrafts = {}, dataAll, loadingAll, total } = this.props;
     const { tabId, pageSelected, size } = this.state;
@@ -114,7 +129,17 @@ class AllDrafts extends PureComponent {
       // />
       <div className={styles.AllDrafts}>
         <div className={styles.tabs}>
-          <Tabs defaultActiveKey={tabId} onChange={this.onChangeTab}>
+          <Tabs
+            defaultActiveKey={tabId}
+            onChange={this.onChangeTab}
+            tabBarExtraContent={
+              <Input
+                onChange={this.onChange}
+                placeholder="Search by candidate ID"
+                prefix={<SearchOutlined />}
+              />
+            }
+          >
             <TabPane
               // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
               tab="all"

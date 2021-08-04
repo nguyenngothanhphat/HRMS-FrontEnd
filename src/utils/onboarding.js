@@ -67,7 +67,7 @@ const PROCESS_STATUS_TABLE_NAME = {
   'PENDING-APPROVAL-FINAL-OFFER': 'Sent For Approval',
   'APPROVED-FINAL-OFFER': 'Approved Offers',
 
-  'SENT-FINAL-OFFERS': 'Sent Final Offers',
+  'SENT-FINAL-OFFER': 'Sent Final Offers',
   'ACCEPT-FINAL-OFFER': 'Accepted Final Offers',
 
   'DISCARDED-PROVISONAL-OFFER': 'Provisional Offers',

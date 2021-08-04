@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { Avatar, Spin } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { Spin } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
+import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/times';
 import { connect } from 'umi';
 import moment from 'moment';
-import OrganizationChart from '@dabeng/react-orgchart';
-import DetailEmployeeChart from './components/EmployeeCard';
+
+import { isEmpty } from 'lodash';
+import OrganizationChart from './components/OrganizationChart';
+import DetailEmployeeChart from './components/EmployeeBox';
 import styles from './index.less';
 
 @connect(
@@ -32,7 +33,7 @@ class OrganisationChart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      idChart: '',
+      idSelect: '',
       chartDetails: {},
       timezoneList: [],
       currentTime: moment(),
@@ -49,11 +50,6 @@ class OrganisationChart extends Component {
     dispatch({
       type: 'employee/fetchDataOrgChart',
       payload: { tenantId, company },
-    }).then((response) => {
-      const { statusCode, data = {} } = response;
-      if (statusCode === 200) {
-        this.getCurrentUser(data);
-      }
     });
 
     this.fetchAllListUser();
@@ -61,14 +57,43 @@ class OrganisationChart extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { listLocationsByCompany = [] } = this.props;
+    const { listLocationsByCompany = [], dataOrgChart = {}, listEmployeeAll } = this.props;
     if (
       JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {
       this.fetchAllListUser();
       this.fetchTimezone();
     }
+    if (JSON.stringify(prevProps.listEmployeeAll) !== JSON.stringify(listEmployeeAll)) {
+      this.getInitUserInformation(dataOrgChart);
+    }
   }
+
+  getInitUserInformation = (data) => {
+    const { listEmployeeAll } = this.props;
+    const { timezoneList, currentTime } = this.state;
+
+    const { user: { _id: userId = '' } = {} } = data;
+    const getData = listEmployeeAll.filter((item) => item._id === userId);
+    const convertData = getData.map((item) => {
+      const { _id, generalInfo, department, location, title } = item;
+      const findTimezone =
+        timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+      const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
+      return {
+        _id,
+        generalInfo,
+        department,
+        title,
+        location,
+        localTime: timeData,
+      };
+    });
+
+    const convertFinal = { ...convertData[0] };
+    this.setState({ idSelect: userId });
+    this.setState({ chartDetails: convertFinal });
+  };
 
   fetchAllListUser = () => {
     const { listLocationsByCompany = [], companiesOfUser = [], dispatch } = this.props;
@@ -86,159 +111,60 @@ class OrganisationChart extends Component {
     });
   };
 
-  deepSearchCurrentUser = (data, myEmployeeId, key, sub) => {
-    const newTempObj = {};
-    const getCurrentUserItem = data.find((node) => {
-      if (node[key]._id === myEmployeeId) {
-        newTempObj.found = node;
-        return newTempObj.found;
-      }
-      if (node[sub].length > 0) {
-        // if cannot find the id, then continue to search the array sub-children (node[sub])
-        return this.deepSearchCurrentUser(node[sub], myEmployeeId, key, sub);
-      }
-      return null;
-    });
-    return getCurrentUserItem;
-  };
+  // deepSearchCurrentUser = (data, myEmployeeId, key, sub) => {
+  //   const newTempObj = {};
+  //   const getCurrentUserItem = data.find((node) => {
+  //     if (node[key]._id === myEmployeeId) {
+  //       newTempObj.found = node;
+  //       return newTempObj.found;
+  //     }
+  //     if (node[sub].length > 0) {
+  //       // if cannot find the id, then continue to search the array sub-children (node[sub])
+  //       return this.deepSearchCurrentUser(node[sub], myEmployeeId, key, sub);
+  //     }
+  //     return null;
+  //   });
+  //   return getCurrentUserItem;
+  // };
 
-  getCurrentUser = (data) => {
-    const { myEmployeeId = '' } = this.props;
-    let check = false;
+  // getCurrentUser = (data) => {
+  //   const { myEmployeeId = '' } = this.props;
+  //   let check = false;
 
-    if (data) {
-      const newData = this.deepSearchCurrentUser(data.children, myEmployeeId, 'user', 'children');
-      const { children = [] } = newData || {};
-      children.forEach((item) => {
-        if (item.user._id === myEmployeeId) {
-          check = true;
-        }
-      });
-      if (check) {
-        this.myRef.current.scrollIntoView({
-          behavior: 'smooth',
-          block: 'center',
-          inline: 'center',
-        });
-      }
-    }
-  };
+  //   if (data) {
+  //     const newData = this.deepSearchCurrentUser(data.children, myEmployeeId, 'user', 'children');
+  //     const { children = [] } = newData || {};
+  //     children.forEach((item) => {
+  //       if (item.user._id === myEmployeeId) {
+  //         check = true;
+  //       }
+  //     });
+  //     if (check) {
+  //       this.myRef.current.scrollIntoView({
+  //         behavior: 'smooth',
+  //         block: 'center',
+  //         inline: 'center',
+  //       });
+  //     }
+  //   }
+  // };
 
-  handleOnClick = (e) => {
-    const getId = e.target.id;
-    this.setState({ idChart: getId });
-    const arrowDown = e.target.parentElement.parentElement.parentElement.lastElementChild;
-    arrowDown.click();
-  };
-
-  handleClickUserCard = async (nodeData) => {
-    const { dataOrgChart = {} } = this.props;
+  handleClickNode = async (nodeData) => {
     const { timezoneList, currentTime } = this.state;
-    let check = false;
 
-    const { user: { location } = {}, id: userId = '' } = nodeData;
-    const arrRef = this.userRef.current;
+    const { location = {} } = nodeData;
+    if (!isEmpty(location)) {
+      const findTimezone =
+        timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+      const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
+      const addTimeData = { ...nodeData, localTime: timeData };
 
-    const newData = this.deepSearchCurrentUser(dataOrgChart.children, userId, 'user', 'children');
-    const { children = [] } = newData || {};
-
-    const findTimezone =
-      timezoneList.find((timezone) => timezone.locationId === location._id) || {};
-    const timeData = getCurrentTimeOfTimezone(currentTime, findTimezone.timezone);
-    const addTimeData = { user: { ...nodeData.user, localTime: timeData } };
-
-    // when click on this node will control the org chart move to the center of the screen.
-    children.forEach((item) => {
-      if (item.user._id === userId) {
-        check = true;
-      }
-    });
-    if (check) {
-      this.handleFocusUserCard(arrRef, userId);
+      this.setState({ chartDetails: addTimeData });
     }
-
-    this.setState({ chartDetails: addTimeData });
   };
 
   closeDetailEmployee = () => {
     this.setState({ chartDetails: {} });
-  };
-
-  addToRefs = (el, id) => {
-    if (el && !this.userRef.current.includes(el)) {
-      this.userRef.current.push({
-        ref: el,
-        id,
-      });
-    }
-
-    return el;
-  };
-
-  handleFocusUserCard = (arrRef, userId) => {
-    let arrTemp = arrRef?.map((item) => (item.id === userId ? item.ref : null));
-    arrTemp = arrTemp.filter((item) => item !== null);
-    arrTemp = [...new Set(arrTemp)];
-
-    arrTemp[0].scrollIntoView({
-      behavior: 'smooth',
-      block: 'center',
-      inline: 'center',
-    });
-  };
-
-  renderNode = ({ nodeData }) => {
-    const { idChart } = this.state;
-    const { myEmployeeId = '' } = this.props;
-    const { user = {}, children = [] } = nodeData;
-    const {
-      _id = '',
-      generalInfo: { avatar = '', firstName = '' } = {},
-      department: { name = '' } = {},
-      location: { name: nameLocation = '' } = {},
-      // title: { name: title = '' } = {},
-    } = user;
-    const check = _id === myEmployeeId;
-
-    return (
-      <div
-        className={styles.chartNode}
-        style={check ? { border: '1px solid #00C598' } : {}}
-        ref={(el) => this.addToRefs(el, _id)}
-      >
-        <div className={styles.chartAvt}>
-          <Avatar src={avatar} size={64} icon={<UserOutlined />} />
-        </div>
-        <div className={styles.chartDetails}>
-          <p className={styles.chartNode__textName}>{firstName}</p>
-          {/* <div className={styles.chartNode__textInfo}>{title}</div> */}
-          <div className={styles.chartNode__textInfo}>{name}</div>
-          <div className={styles.chartNode__textInfo}>{nameLocation}</div>
-        </div>
-        <div className={styles.chartNode__subInfo} onClick={this.handleOnClick}>
-          {children.length > 0 ? (
-            <div
-              id={_id}
-              className={
-                idChart === _id
-                  ? styles.chartNode__subInfo__amountCollap
-                  : styles.chartNode__subInfo__amount
-              }
-            >
-              {`+${children.length} reportees`}
-            </div>
-          ) : (
-            ''
-          )}
-
-          {check && (
-            <div ref={this.myRef} className={styles.chartNode__subInfo__you}>
-              You
-            </div>
-          )}
-        </div>
-      </div>
-    );
   };
 
   handleSelect = (value) => {
@@ -246,20 +172,22 @@ class OrganisationChart extends Component {
     const { timezoneList, currentTime } = this.state;
     const getData = listEmployeeAll.filter((item) => item._id === value);
     const convertData = getData.map((item) => {
-      const { _id, generalInfo, department, location } = item;
+      const { _id, generalInfo, department, location, title } = item;
       const findTimezone =
         timezoneList.find((timezone) => timezone.locationId === location._id) || {};
-      const timeData = getCurrentTimeOfTimezone(currentTime, findTimezone.timezone);
+      const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
       return {
         _id,
         generalInfo,
         department,
+        title,
         location,
         localTime: timeData,
       };
     });
 
-    const convertFinal = { user: convertData[0] };
+    const convertFinal = { ...convertData[0] };
+    this.setState({ idSelect: value });
     this.setState({ chartDetails: convertFinal });
   };
 
@@ -287,12 +215,12 @@ class OrganisationChart extends Component {
   render() {
     const {
       loading,
-      dataOrgChart,
+      // dataOrgChart,
       listEmployeeAll,
       loadingFetchListAll,
       companiesOfUser = [],
     } = this.props;
-    const { chartDetails } = this.state;
+    const { chartDetails, idSelect } = this.state;
     return (
       <div className={styles.container}>
         {loading ? (
@@ -301,18 +229,7 @@ class OrganisationChart extends Component {
           </div>
         ) : (
           <div className={styles.orgChart}>
-            <OrganizationChart
-              datasource={dataOrgChart}
-              NodeTemplate={this.renderNode}
-              onClickNode={(node) => this.handleClickUserCard(node)}
-              chartClass={styles.myChart}
-              containerClass={styles.chartContainer}
-              collapsible
-              pan
-              zoom
-              zoominLimit={1}
-              zoomoutLimit={0.2}
-            />
+            <OrganizationChart idSelect={idSelect} handleClickNode={this.handleClickNode} />
             <div className={styles.orgChart__detailEmplChart}>
               <DetailEmployeeChart
                 chartDetails={chartDetails}

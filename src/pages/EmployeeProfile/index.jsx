@@ -35,7 +35,7 @@ class EmployeeProfile extends Component {
   }
 
   componentDidMount = async () => {
-    const { dispatch, match: { params: { reId = '' } = {} } = {} } = this.props;
+    const { dispatch, match: { params: { reId = '', tabName = '' } = {} } = {} } = this.props;
     // const tenantCurrentEmployee = localStorage.getItem('tenantCurrentEmployee');
     // const companyCurrentEmployee = localStorage.getItem('companyCurrentEmployee');
     // const idCurrentEmployee = localStorage.getItem('idCurrentEmployee');
@@ -56,12 +56,12 @@ class EmployeeProfile extends Component {
     //   },
     // });
 
-    // if (!tabName) {
-    //   const link = isOwner() ? 'employees' : 'directory';
-    //   history.replace(`/${link}/employee-profile/${reId}/general-info`);
-    // } else {
-    this.fetchData();
-    // }
+    if (!tabName) {
+      const link = isOwner() ? 'employees' : 'directory';
+      history.replace(`/${link}/employee-profile/${reId}/general-info`);
+    } else {
+      this.fetchData();
+    }
   };
 
   componentDidUpdate(prevProps) {
@@ -236,16 +236,16 @@ class EmployeeProfile extends Component {
   render() {
     const {
       match: { params: { reId: employee = '', tabName = '' } = {} },
-      currentUser: { employee: currentEmployee = {} },
+      currentUser: { employee: { generalInfo: { userId = '' } = {} } = {} },
       permissions = {},
       location: { state: { location = '' } = {} } = {},
       loadingFetchEmployee,
       // employeeProfile,
     } = this.props;
 
-    const listMenu = this.renderListMenu(employee, currentEmployee?._id);
+    const listMenu = this.renderListMenu(employee, userId);
 
-    const profileOwner = this.checkProfileOwner(currentEmployee?._id, employee);
+    const profileOwner = this.checkProfileOwner(userId, employee);
 
     const tenant = localStorage.getItem('tenantCurrentEmployee');
     const company = localStorage.getItem('companyCurrentEmployee');

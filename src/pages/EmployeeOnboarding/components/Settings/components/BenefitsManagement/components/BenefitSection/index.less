@@ -1,0 +1,77 @@
+.loadingSpin{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+}
+
+.benefitManagement{
+    padding-right: 24px;
+    width: 100%;
+
+    .benefitRoot{
+
+        background: #FFFFFF;
+        border: 1px solid #D6DCE0;
+        box-sizing: border-box;
+        border-radius: 5px;
+    
+        width: 100%;
+
+        &__header{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 35px 33px;
+            border-bottom: 1px solid #D6DCE0;
+
+            :global{
+                .ant-btn{
+                    width: 109px;
+                    height: 34px;
+                    background: rgba(86, 138, 250, 0.12);
+                    border-radius: 5px;
+                    font-family: Roboto;
+
+                    font-style: normal;
+                    font-weight: 500;
+                    font-size: 14px;
+                    line-height: 16px;
+                    color: #2C6DF9;
+                    padding: 9px 12px;
+                    border: none;
+                }
+            }
+
+            &__text{
+
+                .title{
+                    font-family: Roboto;
+                    font-style: normal;
+                    font-weight: bold;
+                    font-size: 16px;
+                    line-height: 19px;
+                    color: #161C29;
+                    padding-bottom: 8px;
+                }
+
+                .subTitle{
+                    font-family: Roboto;
+                    font-style: normal;
+                    font-weight: normal;
+                    font-size: 13px;
+                    line-height: 15px;
+
+                    color: #707177;
+                }
+            }
+        }
+
+        &__bottom{
+            width: 100%;
+            height: auto;
+        }
+    }
+
+}

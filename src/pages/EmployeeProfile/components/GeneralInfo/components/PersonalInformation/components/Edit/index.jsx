@@ -276,7 +276,7 @@ class Edit extends PureComponent {
       handleCancel = () => {},
       countryList,
       // listStates,
-
+      profileOwner = false,
       loadingStates,
     } = this.props;
 
@@ -354,7 +354,7 @@ class Edit extends PureComponent {
               <Input className={styles.inputForm} />
             </Form.Item>
             <Form.Item label="Blood Group" name="Blood">
-              <Select showArrow className={styles.selectForm}>
+              <Select disabled={profileOwner} showArrow className={styles.selectForm}>
                 <Option value="O-">O-</Option>
                 <Option value="O+">O+</Option>
                 <Option value="A-">A-</Option>
@@ -457,7 +457,7 @@ class Edit extends PureComponent {
                 </Form.Item>
               </Col>
               <Col span={8} className={styles.address}>
-                <Form.Item label="Zip Code" className={styles.addressSection}>
+                <Form.Item label="Zip/Postal Code" className={styles.addressSection}>
                   <Input
                     className={styles.selectForm}
                     // eslint-disable-next-line camelcase
@@ -475,6 +475,7 @@ class Edit extends PureComponent {
                 // eslint-disable-next-line camelcase
                 defaultValue={c_Address}
                 onChange={(e) => this.handleChangeAddress('c_Address', e.target.value)}
+                disabled={profileOwner}
               />
             </Form.Item>
             <Row gutter={[12, 24]} align="left">
@@ -486,6 +487,7 @@ class Edit extends PureComponent {
                     // eslint-disable-next-line camelcase
                     defaultValue={c_countryName}
                     onChange={(value) => this.handleChangeAddress('c_countryName', value)}
+                    disabled={profileOwner}
                   >
                     {formatCountryList.map((itemCountry) => {
                       return (
@@ -505,6 +507,7 @@ class Edit extends PureComponent {
                     // eslint-disable-next-line camelcase
                     defaultValue={c_state}
                     onChange={(value) => this.handleChangeAddress('c_state', value)}
+                    disabled={profileOwner}
                   >
                     {loadingStates ? (
                       <div className={styles.selectForm_loading}>
@@ -525,12 +528,13 @@ class Edit extends PureComponent {
                 </Form.Item>
               </Col>
               <Col span={8} className={styles.address}>
-                <Form.Item label="Zip Code" className={styles.addressSection}>
+                <Form.Item label="Zip/Postal Code" className={styles.addressSection}>
                   <Input
                     className={styles.selectForm}
                     // eslint-disable-next-line camelcase
                     defaultValue={c_zipCode}
                     onChange={(e) => this.handleChangeAddress('c_zipCode', e.target.value)}
+                    disabled={profileOwner}
                   />
                 </Form.Item>
               </Col>

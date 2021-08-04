@@ -1,4 +1,5 @@
 import {
+  getGradeList,
   getDocumentList,
   getTitleListByDepartment,
   fetchDepartmentList,
@@ -20,9 +21,10 @@ import {
   addManagerSignature,
   getDocumentByCandidate,
   getWorkHistory,
+  generateLink,
 } from '@/services/addNewMember';
 import { history } from 'umi';
-import { notification } from 'antd';
+import { message, notification } from 'antd';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
 
@@ -48,7 +50,7 @@ const candidateInfo = {
       filledBasicInformation: false,
       filledJobDetail: false,
       filledCustomField: false,
-      filledBackgroundCheck: false,
+      filledDocumentVerification: false,
       filledOfferDetail: false,
       filledSalaryStructure: false,
       filledAdditionalQuestion: false,
@@ -66,7 +68,7 @@ const candidateInfo = {
         filledBasicInformation: false,
         filledJobDetail: false,
         filledSalaryCheck: false,
-        filledBackgroundCheck: false,
+        filledDocumentVerification: false,
         offerDetailCheck: false,
         payrollSettingCheck: false,
         benefitsCheck: false,
@@ -76,6 +78,7 @@ const candidateInfo = {
       previousExperience: null,
       candidatesNoticePeriod: '',
       prefferedDateOfJoining: '',
+      jobGradeLevelList: [],
       employeeTypeList: [],
       locationList: [],
       departmentList: [],
@@ -83,6 +86,7 @@ const candidateInfo = {
       managerList: [],
       joineeEmail: '',
       employer: '',
+      grade: null,
       department: null,
       workLocation: null,
       title: null,
@@ -133,21 +137,6 @@ const candidateInfo = {
         // phd: false,
         checkedList: [],
         // isChecked: false,
-      },
-      previousEmployment: {
-        poe: [
-          // {
-          //   employer: '',
-          //   offerLetter: false,
-          //   appraisalLetter: false,
-          //   paystubs: false,
-          //   form16: false,
-          //   relievingLetter: false,
-          //   checkedList: [],
-          //   isChecked: false,
-          // },
-        ],
-        addSchedule,
       },
 
       candidateSignature: {
@@ -223,6 +212,8 @@ const candidateInfo = {
 
       cancelCandidate: false,
       salaryTitle: null,
+      salaryDepartment: null,
+      salaryLocation: null,
     },
     data: {
       firstName: null,
@@ -246,6 +237,8 @@ const candidateInfo = {
       amountIn: null,
       timeOffPolicy: null,
       salaryStructure: {
+        salaryDepartment: '',
+        salaryLocation: '',
         salaryPosition: '',
       },
       id: '',
@@ -295,6 +288,17 @@ const candidateInfo = {
   },
 
   effects: {
+    *getJobGradeList(_, { call, put }) {
+      try {
+        const response = yield call(getGradeList);
+        yield put({
+          type: 'saveTemp',
+          payload: { jobGradeLevelList: response },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+    },
     *fetchDocumentList(_, { call, put }) {
       try {
         const response = yield call(getDocumentList);
@@ -615,13 +619,23 @@ const candidateInfo = {
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveSalaryStructure',
-          payload: { title: payload.title, settings: setting },
+          payload: {
+            department: payload.department,
+            workLocation: payload.workLocation,
+            title: payload.title,
+            settings: setting,
+          },
         });
 
         yield put({
           type: 'saveOrigin',
           payload: {
-            salaryStructure: { title: payload.title, settings: setting },
+            salaryStructure: {
+              department: payload.department,
+              workLocation: payload.workLocation,
+              title: payload.title,
+              settings: setting,
+            },
           },
         });
       } catch (errors) {
@@ -682,6 +696,25 @@ const candidateInfo = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { test: data } });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *generateLink({ payload }, { call, put }) {
+      let response = {};
+      const loading = message.loading('Generating...', 0);
+      try {
+        response = yield call(generateLink, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        loading();
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { test: data } });
@@ -953,12 +986,12 @@ const candidateInfo = {
 
           return listCheck;
         };
+        const identityProof = documentChecklistSetting[0]?.data || [];
+        const addressProof = documentChecklistSetting[1]?.data || [];
+        const educational = documentChecklistSetting[2]?.data || [];
+        const technicalCertification = documentChecklistSetting[3]?.data || [];
 
-        const identityProof = documentChecklistSetting[0]?.data;
-        const addressProof = documentChecklistSetting[1]?.data;
-        const educational = documentChecklistSetting[2]?.data;
-        const technicalCertification = documentChecklistSetting[3]?.data;
-        const prevEmployee = documentChecklistSetting[4]?.data;
+        const prevEmployee = documentChecklistSetting[4]?.data || [];
 
         const checkStatusTypeA = filterValue(identityProof);
         const checkStatusTypeB = filterValue(addressProof);
@@ -967,14 +1000,13 @@ const candidateInfo = {
         const checkStatusTypeE = filterValue(prevEmployee);
 
         const checkStatus = {};
-
         if (
           checkStatusTypeA.length > 4 ||
           checkStatusTypeB.length > 1 ||
           checkStatusTypeC.length > 4 ||
           checkStatusTypeD.length > 0 ||
           checkStatusTypeE.length > 0 ||
-          'employer' in documentChecklistSetting[4]
+          'employer' in (documentChecklistSetting[4] ? documentChecklistSetting[4] : {})
         ) {
           checkStatus.filledBgCheck = true;
         }

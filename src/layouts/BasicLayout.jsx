@@ -16,9 +16,10 @@ import { getAuthorityFromRouter } from '@/utils/utils';
 import { Button, Result } from 'antd';
 import classnames from 'classnames';
 // import React, { useEffect, useState } from 'react';
-import React from 'react';
+import React, { useState } from 'react';
 import { connect, Link, Redirect, useIntl } from 'umi';
 import logo from '../assets/logo.svg';
+import iconMenu from '../assets/iconMenu.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
 
@@ -62,6 +63,8 @@ const BasicLayout = (props) => {
     logoCompany,
   } = props;
 
+  const [openMenu, setOpenMenu] = useState(true);
+
   /**
    * init variables
    */
@@ -81,6 +84,16 @@ const BasicLayout = (props) => {
     }
   };
 
+  // const handleClickMenuSideBar = () => {
+  //   setOpenMenu(!openMenu);
+  //   if (dispatch) {
+  //     dispatch({
+  //       type: 'global/collapseExpandMenuSidebar',
+  //       payload: !openMenu,
+  //     });
+  //   }
+  // };
+
   const _renderLogo = () => {
     // const checkRole = (roleName) => {
     //   const { signInRole = [] } = currentUser;
@@ -94,7 +107,10 @@ const BasicLayout = (props) => {
 
     const logoUrl = getCurrentLogo();
     return (
-      <>
+      <div className={styles.logoSection}>
+        {/* <Button onClick={handleClickMenuSideBar} className={styles.logoSection__button}>
+          <img alt="icon-menu" src={iconMenu} />
+        </Button> */}
         {logoUrl || logoCompany ? (
           <Link to="/">
             <img
@@ -110,7 +126,7 @@ const BasicLayout = (props) => {
             />
           </Link>
         ) : null}
-      </>
+      </div>
     );
   };
 
@@ -149,9 +165,13 @@ const BasicLayout = (props) => {
   return (
     <>
       <div
-        className={classnames(styles.root, classNameBreadCrumb, {
-          [styles.hiddenBreadCrumb]: pathname === '/dashboard',
-        })}
+        className={classnames(
+          `${styles.root} ${openMenu ? styles.expandMenu : styles.collapseMenu}`,
+          classNameBreadCrumb,
+          {
+            [styles.hiddenBreadCrumb]: pathname === '/dashboard',
+          },
+        )}
       >
         <ProLayout
           logo={getCurrentLogo() || logo}
@@ -160,7 +180,13 @@ const BasicLayout = (props) => {
           onCollapse={handleMenuCollapse}
           headerTitleRender={() => <div style={{ display: 'none' }} />}
           headerContentRender={() => _renderLogo()}
-          menuHeaderRender={false}
+          menuHeaderRender={() => {
+            return (
+              // <Button className={styles.logoSection__button}>
+              <img style={{ margin: 'auto' }} alt="icon-menu" src={iconMenu} />
+              // </Button>
+            );
+          }}
           menuItemRender={(menuItemProps, defaultDom) => {
             if (menuItemProps.isUrl || !menuItemProps.path) {
               return defaultDom;

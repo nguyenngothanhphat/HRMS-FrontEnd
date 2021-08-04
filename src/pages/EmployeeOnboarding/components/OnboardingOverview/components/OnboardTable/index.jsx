@@ -8,12 +8,22 @@ import { getAuthority, getCurrentTenant } from '@/utils/authority';
 // import ModalContent from '../FinalOffers/components/ModalContent/index';
 import MenuIcon from '@/assets/menuDots.svg';
 import { PROCESS_STATUS } from '@/utils/onboarding';
+import moment from 'moment';
 import ProfileModalContent from '../FinalOffers/components/ProfileModalContent';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 import ReassignModal from './components/ReassignModal';
+import RenewModal from './components/RenewModal';
+
 import { getActionText, getColumnWidth } from './utils';
 import styles from './index.less';
 
+const compare = (dateTimeA, dateTimeB) => {
+  const momentA = moment(dateTimeA, 'DD/MM/YYYY');
+  const momentB = moment(dateTimeB, 'DD/MM/YYYY');
+  if (momentA > momentB) return 1;
+  if (momentA < momentB) return -1;
+  return 0;
+};
 class OnboardTable extends Component {
   constructor(props) {
     super(props);
@@ -26,6 +36,12 @@ class OnboardTable extends Component {
       reassignTicketId: '',
       reassignStatus: '',
       reassignType: '',
+
+      // expiry tickets
+      renewModalVisible: false,
+      selectedExpiryTicketId: '',
+      expiryStatus: '',
+      expiryType: '',
     };
   }
 
@@ -86,8 +102,17 @@ class OnboardTable extends Component {
   renderName = (id) => {
     const { list } = this.props;
     const selectedPerson = list.find((item) => item.rookieId === id);
-    const { rookieName: name = '', isNew } = selectedPerson;
+    const { rookieName: name = '', isNew, offerExpiryDate = '' } = selectedPerson;
+    const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;
 
+    if (isExpired) {
+      return (
+        <p>
+          {name && <span className={styles.name}>{name}</span>}
+          <span className={styles.expired}>Expired</span>
+        </p>
+      );
+    }
     if (isNew) {
       return (
         <p>
@@ -98,6 +123,7 @@ class OnboardTable extends Component {
         </p>
       );
     }
+
     return <p>{name || '-'}</p>;
   };
 
@@ -318,7 +344,7 @@ class OnboardTable extends Component {
         render: (processStatus) => <Tag color="geekblue">{processStatus}</Tag>,
         columnName: PROCESS_STATUS_1,
         width: getColumnWidth('processStatus', type),
-        fixed: 'right',
+        // fixed: 'right',
       },
       {
         // title: 'Actions',
@@ -329,7 +355,13 @@ class OnboardTable extends Component {
         align: 'center',
         render: (_, row) => {
           const { currentUser: { employee: { _id: empId = '' } = {} } = {} } = this.props;
-          const { processStatusId = '', rookieId = '', assignTo = {}, assigneeManager = {} } = row;
+          const {
+            processStatusId = '',
+            rookieId = '',
+            assignTo = {},
+            assigneeManager = {},
+            offerExpiryDate = '',
+          } = row;
           const id = rookieId.replace('#', '') || '';
 
           const checkPermission =
@@ -339,11 +371,19 @@ class OnboardTable extends Component {
           // if (checkPermission) return this.renderAction(id, type, actionText);
           // return '';
 
+          const payload = {
+            id,
+            assignToId: assignTo?._id,
+            type,
+            actionText,
+            processStatusId,
+            offerExpiryDate,
+          };
           if (checkPermission)
             return (
               <Dropdown
                 className={styles.menuIcon}
-                overlay={this.actionMenu(id, assignTo?._id, type, actionText, processStatusId)}
+                overlay={this.actionMenu(payload)}
                 placement="topLeft"
               >
                 <img src={MenuIcon} alt="menu" />
@@ -352,7 +392,7 @@ class OnboardTable extends Component {
           return '';
         },
         columnName: ACTION,
-        fixed: 'right',
+        // fixed: 'right',
       },
     ];
 
@@ -362,7 +402,16 @@ class OnboardTable extends Component {
     return newColumns;
   };
 
-  actionMenu = (id, currentEmpId, type, actionText, processStatusId) => {
+  actionMenu = (payload = {}) => {
+    const {
+      id = '',
+      assignToId: currentEmpId = '',
+      type = '',
+      actionText = '',
+      processStatusId = '',
+      offerExpiryDate = '',
+    } = payload;
+
     const {
       PROVISIONAL_OFFER_DRAFT,
       FINAL_OFFERS_DRAFT,
@@ -374,10 +423,14 @@ class OnboardTable extends Component {
 
       APPROVED_OFFERS,
       ACCEPTED_FINAL_OFFERS,
+
+      SENT_FINAL_OFFERS,
     } = PROCESS_STATUS;
     const isRemovable =
       processStatusId === PROVISIONAL_OFFER_DRAFT || processStatusId === FINAL_OFFERS_DRAFT;
     const isHRManager = this.checkPermission('hr-manager');
+
+    const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;
 
     let menuItem = '';
     switch (processStatusId) {
@@ -481,6 +534,38 @@ class OnboardTable extends Component {
         );
         break;
 
+      case SENT_FINAL_OFFERS:
+        menuItem = isExpired ? (
+          <>
+            <Menu.Item>
+              <Link
+                to={`/employee-onboarding/list/review/${id}`}
+                onClick={() => this.fetchData(id)}
+              >
+                <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
+              <span onClick={() => this.handleExpiryTicket(id, 'renew', processStatusId, type)}>
+                Renew
+              </span>
+            </Menu.Item>
+            <Menu.Item>
+              <span onClick={() => this.handleExpiryTicket(id, 'discard', processStatusId, type)}>
+                Discard
+              </span>
+            </Menu.Item>
+          </>
+        ) : (
+          <Menu.Item>
+            <Link to={`/employee-onboarding/list/review/${id}`} onClick={() => this.fetchData(id)}>
+              <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
+            </Link>
+          </Menu.Item>
+        );
+
+        break;
+
       case ACCEPTED_FINAL_OFFERS:
         menuItem = (
           <Menu.Item>
@@ -535,6 +620,45 @@ class OnboardTable extends Component {
     });
   };
 
+  handleExpiryTicket = (id, type, processStatusId, tableType) => {
+    if (type === 'renew') {
+      this.setState({
+        renewModalVisible: true,
+        selectedExpiryTicketId: id,
+        expiryStatus: processStatusId,
+        expiryType: tableType,
+      });
+    }
+    if (type === 'discard') {
+      this.discardOffer(id, tableType, processStatusId);
+    }
+  };
+
+  // discard offer
+  discardOffer = async (id, tableType, processStatusId) => {
+    const { dispatch } = this.props;
+    const { pageSelected, size } = this.props;
+
+    await dispatch({
+      type: 'onboard/handleExpiryTicket',
+      payload: {
+        id,
+        tenantId: getCurrentTenant(),
+        type: 2, // discard
+        isAll: tableType === 'ALL',
+        processStatus: processStatusId,
+        page: pageSelected,
+        limit: size,
+      },
+    });
+  };
+
+  handleRenewModal = (value) => {
+    this.setState({
+      renewModalVisible: value,
+    });
+  };
+
   viewProfile = (_id) => {
     history.push(`/directory/employee-profile/${_id}`);
   };
@@ -555,6 +679,10 @@ class OnboardTable extends Component {
       reassignTicketId = '',
       reassignStatus = '',
       reassignType = '',
+      selectedExpiryTicketId,
+      renewModalVisible,
+      expiryStatus,
+      expiryType,
     } = this.state;
 
     const rowSelection = {
@@ -644,6 +772,15 @@ class OnboardTable extends Component {
           handleReassignModal={this.handleReassignModal}
           type={reassignType}
           processStatus={reassignStatus}
+          page={pageSelected}
+          limit={size}
+        />
+        <RenewModal
+          visible={renewModalVisible}
+          ticketId={selectedExpiryTicketId}
+          handleRenewModal={this.handleRenewModal}
+          processStatus={expiryStatus}
+          type={expiryType}
           page={pageSelected}
           limit={size}
         />

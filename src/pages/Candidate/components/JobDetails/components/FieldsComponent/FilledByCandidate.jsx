@@ -55,7 +55,7 @@ class FilledByCandidate extends PureComponent {
   };
 
   checkChange = (e) => {
-    const { dispatch, checkMandatory } = this.props;
+    const { dispatch, checkMandatory, _handleSelect = () => {} } = this.props;
     const { value } = e.target;
     this.setState({ checkWouldNewDate: value });
     dispatch({
@@ -69,6 +69,7 @@ class FilledByCandidate extends PureComponent {
         },
       },
     });
+    _handleSelect(value, 'noPropose');
   };
 
   render() {

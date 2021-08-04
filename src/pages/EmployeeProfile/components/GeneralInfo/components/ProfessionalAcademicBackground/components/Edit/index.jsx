@@ -185,6 +185,7 @@ class Edit extends PureComponent {
       listSkill = [],
       loading,
       // listTitle = [],
+      profileOwner = false,
     } = this.props;
     const { notValid } = this.state;
     const {
@@ -237,19 +238,19 @@ class Edit extends PureComponent {
                 <Option key={item._id}>{item.name}</Option>
               ))}
             </Select> */}
-            <Input placeholder="Type previous job title" />
+            <Input disabled={profileOwner} placeholder="Type previous job title" />
           </Form.Item>
           <Form.Item label="Previous Company" name="preCompany">
-            <Input />
+            <Input disabled={profileOwner} />
           </Form.Item>
           <Form.Item label="Past Experience" name="pastExp">
-            <Input />
+            <Input disabled={profileOwner} />
           </Form.Item>
           <Form.Item label="Total Experience" name="totalExp">
-            <Input />
+            <Input disabled={profileOwner} />
           </Form.Item>
           <Form.Item label="Qualification" name="qualification">
-            <Input />
+            <Input disabled={profileOwner} />
           </Form.Item>
           <Form.Item name="certification" className={s.certificationContainer}>
             <FormCertification
