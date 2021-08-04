@@ -181,11 +181,7 @@ const BasicLayout = (props) => {
           headerTitleRender={() => <div style={{ display: 'none' }} />}
           headerContentRender={() => _renderLogo()}
           menuHeaderRender={() => {
-            return (
-              // <Button className={styles.logoSection__button}>
-              <img style={{ margin: 'auto' }} alt="icon-menu" src={iconMenu} />
-              // </Button>
-            );
+            return <img alt="icon-menu" src={iconMenu} />;
           }}
           menuItemRender={(menuItemProps, defaultDom) => {
             if (menuItemProps.isUrl || !menuItemProps.path) {
