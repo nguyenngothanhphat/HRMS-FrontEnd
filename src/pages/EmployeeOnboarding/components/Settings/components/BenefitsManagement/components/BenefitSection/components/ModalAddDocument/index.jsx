@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { message, Button, Spin, Modal, Form, Upload, Tooltip } from 'antd';
+import { message, Button, Spin, Modal, Form, Upload } from 'antd';
 import { connect } from 'umi';
 import { isEmpty } from 'lodash';
 
 import AttachmentIcon from '@/assets/attachment.svg';
-import TrashIcon from '@/assets/trash.svg';
 import ImageIcon from '@/assets/image_icon.png';
 import PDFIcon from '@/assets/pdf_icon.png';
 
@@ -14,6 +13,7 @@ const { Dragger } = Upload;
 
 @connect(({ loading }) => ({
   loadingUploadAttachment: loading.effects['upload/uploadFile'],
+  loadingAddDocument: loading.effects['onboardingSettings/addDocument'],
 }))
 class ModalAddDocument extends Component {
   constructor(props) {
@@ -98,7 +98,6 @@ class ModalAddDocument extends Component {
     const { dispatch, handleCandelModal = () => {}, idBenefit = '', idCountry } = this.props;
     const { uploadedFile: { id = '', url = '', name = '' } = {}, uploadedFile = {} } = this.state;
     const payload = {
-      //   ...value,
       country: idCountry,
       payload: {
         benefitId: idBenefit,
@@ -117,7 +116,7 @@ class ModalAddDocument extends Component {
       }).then((response) => {
         const { statusCode } = response;
         if (statusCode === 200) {
-          this.setState({ uploadedFile: {} });
+          this.setState({ uploadedFile: {}, fileName: '' });
           handleCandelModal();
         }
       });
@@ -127,7 +126,11 @@ class ModalAddDocument extends Component {
   };
 
   render() {
-    const { visible = false, loadingUploadAttachment = false } = this.props;
+    const {
+      visible = false,
+      loadingUploadAttachment = false,
+      loadingAddDocument = false,
+    } = this.props;
 
     const { fileName } = this.state;
 
@@ -146,24 +149,6 @@ class ModalAddDocument extends Component {
           </div>
           <Form onFinish={this.onFinish}>
             <div className={styles.addDocument__body}>
-              {/* <div className={styles.addDocument__body_label}>Name</div>
-              <div className={styles.addDocument__body_formItem}>
-                <Form.Item
-                  name="name"
-                  rules={[
-                    {
-                      pattern: /^[\W\S_]{0,120}$/,
-                      message: 'Only fill up to 120 characters !',
-                    },
-                    {
-                      required: true,
-                      message: 'Please input field !',
-                    },
-                  ]}
-                >
-                  <Input placeholder="Type the name of Document" />
-                </Form.Item>
-              </div> */}
               <div className={styles.documentSection}>
                 <Dragger
                   beforeUpload={this.beforeUpload}
@@ -184,14 +169,6 @@ class ModalAddDocument extends Component {
                     </>
                   ) : (
                     <div className={styles.fileUploadedContainer}>
-                      <Tooltip title="Remove">
-                        <img
-                          onClick={() => this.handleRemove()}
-                          className={styles.trashIcon}
-                          src={TrashIcon}
-                          alt="remove"
-                        />
-                      </Tooltip>
                       <p className={styles.previewIcon}>
                         {this.identifyImageOrPdf(fileName) === 1 ? (
                           <img src={PDFIcon} alt="pdf" />
@@ -202,19 +179,22 @@ class ModalAddDocument extends Component {
                       <p className={styles.fileName}>
                         Uploaded: <a>{fileName}</a>
                       </p>
-                      {/* <Button disabled={selectExistDocument}>Choose an another file</Button> */}
                     </div>
                   )}
                 </Dragger>
               </div>
             </div>
             <div className={styles.addDocument__bottom}>
-              <Button className={`${styles.addDocument__bottom_btn} ${styles.cancelBtn}`}>
+              <Button
+                onClick={this.destroyOnClose}
+                className={`${styles.addDocument__bottom_btn} ${styles.cancelBtn}`}
+              >
                 Cancel
               </Button>
               <Button
                 htmlType="submit"
                 className={`${styles.addDocument__bottom_btn} ${styles.addBtn}`}
+                loading={loadingAddDocument}
               >
                 Add
               </Button>
