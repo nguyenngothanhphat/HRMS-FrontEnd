@@ -31,17 +31,17 @@ const { Dragger } = Upload;
   listBenefitDefault,
   loadingFetchListBenefitDefault: loading.effects['onboardingSettings/fetchListBenefitDefault'],
   loadingUploadAttachment: loading.effects['upload/uploadFile'],
+  loadingAddDocument: loading.effects['onboardingSettings/addBenefit'],
 }))
 class ModalAddBenefit extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // type: '',
       deductionDate: '',
       validTill: '',
       listBenefitCategory: [],
-      uploadedFile: [],
-      fileName: [],
+      uploadedFileList: [],
+      fileNameList: [],
     };
   }
 
@@ -59,8 +59,8 @@ class ModalAddBenefit extends Component {
     }
   };
 
-  identifyImageOrPdf = (fileName) => {
-    const parts = fileName.split('.');
+  identifyImageOrPdf = (fileNameList) => {
+    const parts = fileNameList.split('.');
     const ext = parts[parts.length - 1];
     switch (ext.toLowerCase()) {
       case 'jpg':
@@ -118,12 +118,12 @@ class ModalAddBenefit extends Component {
   };
 
   handlePreview = (nameFile, idFile) => {
-    const { fileName } = this.state;
-    const arrFileName = [...fileName];
+    const { fileNameList } = this.state;
+    const arrFileName = [...fileNameList];
     arrFileName.push({ nameFile, idFile });
 
     this.setState({
-      fileName: arrFileName,
+      fileNameList: arrFileName,
     });
   };
 
@@ -149,8 +149,8 @@ class ModalAddBenefit extends Component {
 
   handleUpload = (file) => {
     const { dispatch } = this.props;
-    const { uploadedFile } = this.state;
-    const arrFile = [...uploadedFile];
+    const { uploadedFileList } = this.state;
+    const arrFile = [...uploadedFileList];
     const formData = new FormData();
     formData.append('uri', file);
 
@@ -163,17 +163,17 @@ class ModalAddBenefit extends Component {
       arrFile.push(fileUploaded);
       const { name = '', id } = fileUploaded;
 
-      this.setState({ uploadedFile: arrFile });
+      this.setState({ uploadedFileList: arrFile });
       this.handlePreview(name, id);
     });
   };
 
   handleRemove = (idFile) => {
-    const { uploadedFile = [], fileName = [] } = this.state;
-    const filterUploadedFile = uploadedFile.filter((item) => item.id !== idFile);
-    const filterFileName = fileName.filter((item) => item.idFile !== idFile);
+    const { uploadedFileList = [], fileNameList = [] } = this.state;
+    const filterUploadedFile = uploadedFileList.filter((item) => item.id !== idFile);
+    const filterFileName = fileNameList.filter((item) => item.idFile !== idFile);
 
-    this.setState({ uploadedFile: filterUploadedFile, fileName: filterFileName });
+    this.setState({ uploadedFileList: filterUploadedFile, fileNameList: filterFileName });
   };
 
   onValuesChange = (value) => {
@@ -190,9 +190,9 @@ class ModalAddBenefit extends Component {
 
   onFinish = (value) => {
     const { countryId, dispatch, handleCandelModal = () => {} } = this.props;
-    const { validTill, deductionDate, uploadedFile = [] } = this.state;
+    const { validTill, deductionDate, uploadedFileList = [] } = this.state;
 
-    const documents = uploadedFile?.map((item) => {
+    const documents = uploadedFileList?.map((item) => {
       const { id = '', url = '', name = '' } = item;
       return {
         attachment: id,
@@ -209,14 +209,14 @@ class ModalAddBenefit extends Component {
       documents,
     };
 
-    if (!isEmpty(uploadedFile)) {
+    if (!isEmpty(uploadedFileList)) {
       dispatch({
         type: 'onboardingSettings/addBenefit',
         payload,
       }).then((response) => {
         const { statusCode } = response;
         if (statusCode === 200) {
-          this.setState({ uploadedFile: [] });
+          this.setState({ uploadedFileList: [], fileNameList: [] });
           handleCandelModal();
         }
       });
@@ -229,15 +229,12 @@ class ModalAddBenefit extends Component {
     const { listBenefitDefault = [] } = this.props;
     const key = +activeKeyTab - 1;
     let defaultType = null;
-    // let defaultCategoryList = [];
 
     listBenefitDefault.forEach((item, index) => {
       if (key === index) {
         defaultType = item.benefitType;
-        // defaultCategoryList = item.benefitCategory;
       }
     });
-    // this.setState({ listBenefitCategory: defaultCategoryList });
     return defaultType;
   };
 
@@ -248,11 +245,12 @@ class ModalAddBenefit extends Component {
       loadingUploadAttachment = false,
       listBenefitDefault = [],
       activeKeyTab,
+      loadingAddDocument,
     } = this.props;
 
     const valueType = this.getValueField(activeKeyTab, 'type');
 
-    const { listBenefitCategory, fileName } = this.state;
+    const { listBenefitCategory, fileNameList } = this.state;
 
     return (
       <Modal
@@ -461,7 +459,7 @@ class ModalAddBenefit extends Component {
                     action={(file) => this.handleUpload(file)}
                     multiple
                   >
-                    {isEmpty(fileName) ? (
+                    {isEmpty(fileNameList) ? (
                       <>
                         {loadingUploadAttachment ? (
                           <Spin />
@@ -484,7 +482,7 @@ class ModalAddBenefit extends Component {
                     )}
                   </Dragger>
                   <>
-                    {fileName.map((item) => (
+                    {fileNameList.map((item) => (
                       <div className={styles.fileUploadedContainer__listFiles}>
                         <div className={styles.fileUploadedContainer__listFiles__files}>
                           <p className={styles.previewIcon}>
@@ -521,6 +519,7 @@ class ModalAddBenefit extends Component {
                 <Button
                   htmlType="submit"
                   className={`${styles.addBenefit__bottom_btn} ${styles.addBtn}`}
+                  loading={loadingAddDocument}
                 >
                   Add
                 </Button>
