@@ -34,13 +34,24 @@ class FormLogin extends Component {
     history.replace();
   };
 
-  onFinish = ({ email, password }) => {
+  onFinish = ({ userEmail: email, password, remember }) => {
     const payload = { email, password };
-    this.handleSubmit(payload);
+    this.handleSubmit(payload, remember);
   };
 
-  handleSubmit = (values) => {
+  handleSubmit = (values, remember) => {
     const { dispatch } = this.props;
+
+    if (remember) {
+      const data = JSON.stringify({
+        userEmail: values.email,
+        password: values.password,
+      });
+      localStorage.setItem('authData', data);
+    } else {
+      localStorage.clear();
+    }
+
     dispatch({
       type: 'login/login',
       payload: { ...values },
@@ -56,7 +67,7 @@ class FormLogin extends Component {
 
   _renderButton = (getFieldValue) => {
     const { loading } = this.props;
-    const valueEmail = getFieldValue('email');
+    const valueEmail = getFieldValue('userEmail');
     const valuePsw = getFieldValue('password');
     return (
       <Button
@@ -92,6 +103,15 @@ class FormLogin extends Component {
     }
   };
 
+  checkBoxValue = (emailsLocalStr, passwordLocalStr) => {
+    let checkedBox = false;
+    if (emailsLocalStr && passwordLocalStr) {
+      checkedBox = true;
+    }
+
+    return checkedBox;
+  };
+
   render() {
     const { loadingLoginThirdParty, messageError = '' } = this.props;
     const { checkValidationEmail, isMessageValidationEmail } = this.state;
@@ -101,6 +121,14 @@ class FormLogin extends Component {
     const checkValidationPsw = messageError === 'Invalid password' ? 'error' : undefined;
     const messageValidationPsw =
       messageError === 'Invalid password' ? 'Incorrect password. Try again' : undefined;
+
+    const getAuthData = JSON.parse(localStorage.getItem('authData'));
+
+    const getEmailsLocalStr = getAuthData?.userEmail;
+    const getPasswordLocalStr = getAuthData?.password;
+
+    const checkedBox = this.checkBoxValue(getEmailsLocalStr, getPasswordLocalStr);
+
     return (
       <div className={styles.formWrapper}>
         <p className={styles.formWrapper__title}>
@@ -110,7 +138,9 @@ class FormLogin extends Component {
           layout="vertical"
           name="basic"
           initialValues={{
-            remember: true,
+            remember: checkedBox,
+            userEmail: getEmailsLocalStr,
+            password: getPasswordLocalStr,
           }}
           onFinish={this.onFinish}
           onValuesChange={this.onValuesChange}
@@ -119,7 +149,7 @@ class FormLogin extends Component {
         >
           <Form.Item
             label={formatMessage({ id: 'pages.login.emailLabel' })}
-            name="email"
+            name="userEmail"
             validateStatus={checkValidationEmail}
             help={isMessageValidationEmail ? messageValidationEmail : null}
             rules={[
@@ -154,7 +184,7 @@ class FormLogin extends Component {
               className={styles.inputPassword}
             />
           </Form.Item>
-          <Form.Item className={styles.checkbox} name="remember">
+          <Form.Item className={styles.checkbox} name="remember" valuePropName="checked">
             <Checkbox>
               <span>{formatMessage({ id: 'pages.login.keepMeSignedIn' })}</span>
             </Checkbox>
@@ -162,7 +192,7 @@ class FormLogin extends Component {
           <Form.Item
             noStyle
             shouldUpdate={(prevValues, currentValues) =>
-              prevValues.email !== currentValues.email ||
+              prevValues.userEmail !== currentValues.userEmail ||
               prevValues.password !== currentValues.password
             }
           >
@@ -176,7 +206,7 @@ class FormLogin extends Component {
                 type="primary"
                 className={styles.btnSignInGG}
                 onClick={renderProps.onClick}
-                disabled={renderProps.disabled}
+                // disabled={renderProps.disabled}
                 loading={loadingLoginThirdParty}
               >
                 <img src={logoGoogle} alt="logo" />
