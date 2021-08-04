@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Row, Col, Collapse, Tree } from 'antd';
+import { Row, Col, Collapse, Tree, Popconfirm } from 'antd';
 import icon from '@/assets/primary-administrator.svg';
 import editIcon from '@/assets/edit-administrator.svg';
 import deleteIcon from '@/assets/deleteIcon-Administator.svg';
 import arrowIcon from '@/assets/arrowDownCollapseIcon.svg';
 
+import { QuestionCircleOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
 class ViewAdministrator extends Component {
@@ -115,11 +116,7 @@ class ViewAdministrator extends Component {
           } = adminstrator;
           const moduleList = this.renderListModule(permissionAdmin, permissionList);
           return (
-            <div
-              className={styles.addAdminstrator}
-              key={`${index + 1}`}
-              style={index > 0 ? { paddingTop: '30px' } : null}
-            >
+            <div className={styles.addAdminstrator} key={`${index + 1}`}>
               <Row gutter={[0, 16]}>
                 <Row className={styles.addAdminstrator__row}>
                   <Col span={8}>
@@ -148,13 +145,17 @@ class ViewAdministrator extends Component {
                         <img src={editIcon} alt="edit-administrator" />
                         {/* <span>Edit</span> */}
                       </div>
-                      <div
-                        className={styles.btnActions__delete}
-                        onClick={() => this.handleDelete(index)}
+                      <Popconfirm
+                        title="Are you sure to delete this administrator?"
+                        icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
+                        onConfirm={() => this.handleDelete(index)}
                       >
-                        <img src={deleteIcon} alt="delete-administrator" />
-                        {/* <span>Delete</span> */}
-                      </div>
+                        <div className={styles.btnActions__delete}>
+                          <img src={deleteIcon} alt="delete-administrator" />
+                          {/* <span>Delete</span> */}
+                        </div>
+                      </Popconfirm>
+                      ,
                     </div>
                   </Col>
                 </Row>
@@ -263,7 +264,7 @@ class ViewAdministrator extends Component {
                   </Collapse>
                 </Col> */}
               </Row>
-              {list.length > index + 1 && <div className={styles.divider} />}
+              <div className={styles.divider} />
             </div>
           );
         })}

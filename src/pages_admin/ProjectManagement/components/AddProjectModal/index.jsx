@@ -4,6 +4,7 @@ import { connect } from 'umi';
 import { Form, Input, Select, DatePicker, Button } from 'antd';
 import Modal from 'antd/lib/modal/Modal';
 
+import moment from 'moment';
 import s from './index.less';
 
 const dateFormat = 'MM.DD.YY';
@@ -22,6 +23,9 @@ const AddProjectModal = (props) => {
     onDone = () => {},
   } = props;
   const [selectedCompany, setSelectedCompany] = useState('');
+  const [beginDate, setBeginDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -56,6 +60,15 @@ const AddProjectModal = (props) => {
     }
     return () => {};
   }, [selectedCompany, companiesOfUser, listLocationsByCompany]);
+
+  // DISABLE DATE OF DATE PICKER
+  const disabledBeginDate = (current) => {
+    return current >= moment(endDate);
+  };
+
+  const disabledEndDate = (current) => {
+    return current <= moment(beginDate);
+  };
 
   const onFinish = (values) => {
     dispatch({
@@ -116,10 +129,18 @@ const AddProjectModal = (props) => {
           <Input placeholder="Project Health" />
         </Item>
         <Item rules={[{ required: true }]} label="Begin date" name="beginDate">
-          <DatePicker format={dateFormat} />
+          <DatePicker
+            format={dateFormat}
+            onChange={(val) => setBeginDate(val)}
+            disabledDate={disabledBeginDate}
+          />
         </Item>
         <Item rules={[{ required: true }]} label="End date" name="endDate">
-          <DatePicker format={dateFormat} />
+          <DatePicker
+            format={dateFormat}
+            onChange={(val) => setEndDate(val)}
+            disabledDate={disabledEndDate}
+          />
         </Item>
       </Form>
       <div className={s.footer}>

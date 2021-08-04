@@ -20,21 +20,18 @@ class AdditionalAdministrator extends Component {
       <div className={styles.additional}>
         <div className={styles.header}>
           <div className={styles.header__title}>Additional Administrators</div>
-          <div className={styles.header__action} onClick={() => handleAddAdmin(true)}>
-            <img src={icon} alt="add-administrator" />
-            <div className={styles.addBtn}>Add Administrator</div>
-          </div>
         </div>
         <div className={styles.listAdministrator}>
-          {listAdministrator.length === 0 ? (
-            <span>No data</span>
-          ) : (
+          {listAdministrator.length !== 0 && 
             <ViewAdministrator
               permissionList={permissionList}
               listAdministrator={listAdministrator}
               handleEditAdmin={handleEditAdmin}
-            />
-          )}
+            />}
+          <div className={styles.addAdminBtn} onClick={() => handleAddAdmin(true)}>
+            <img src={icon} alt="add-administrator" />
+            <div className={styles.addBtn}>Add Administrator</div>
+          </div>
         </div>
       </div>
     );
