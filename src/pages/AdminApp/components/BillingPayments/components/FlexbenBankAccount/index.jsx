@@ -1,7 +1,8 @@
 import { Col, Form, Input, Row } from 'antd';
 import React, { PureComponent } from 'react';
-import { PlusOutlined, DeleteOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 // import NewField from './components/NewField';
+import deleteIcon from '@/assets/deleteIcon-Administator.svg';
 import s from './index.less';
 
 export default class index extends PureComponent {
@@ -40,7 +41,7 @@ export default class index extends PureComponent {
                             }}
                           >
                             <p className={s.viewRemoveNewField__icon}>
-                              <DeleteOutlined />
+                              <img src={deleteIcon} alt="delete" />
                             </p>
                             {/* <p className={s.viewRemoveNewField__text}>Delete</p> */}
                           </div>
