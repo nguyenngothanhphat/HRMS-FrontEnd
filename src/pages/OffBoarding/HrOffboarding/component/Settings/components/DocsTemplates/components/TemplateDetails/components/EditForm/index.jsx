@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import REACT_APP_TINYMCE_KEY from '@/utils/editor';
 import { Editor } from '@tinymce/tinymce-react';
-import { history, connect } from 'umi';
-import { Button, notification } from 'antd';
+import { Button } from 'antd';
+import React, { Component } from 'react';
+import { connect, history } from 'umi';
 import styles from './index.less';
 
 @connect(({ employeeSetting, loading }) => ({
@@ -63,6 +64,7 @@ class EditForm extends Component {
         <Editor
           initialValue={currentTemplate.htmlContent}
           // apiKey={process.env.REACT_APP_TINYMCE_KEY}
+          apiKey={REACT_APP_TINYMCE_KEY}
           init={{
             height: '100%',
             menubar: true,

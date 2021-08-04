@@ -33,6 +33,8 @@ class FormWorkLocationTenant extends Component {
       isSaved: false,
       locationName: '',
       removeModalVisible: false,
+      notification: 'This location is updated successfully.',
+      notificationColor: '#00c598',
     };
   }
 
@@ -125,8 +127,38 @@ class FormWorkLocationTenant extends Component {
     }
   };
 
+  compareValues = (beforeVals, afterVals) => {
+    const {
+      name,
+      addressLine1 = '',
+      addressLine2 = '',
+      city = '',
+      country = '',
+      state = '',
+      zipCode = '',
+    } = beforeVals;
+    const {
+      name: newName,
+      addressLine1: newAddressLine1 = '',
+      addressLine2: newAddressLine2 = '',
+      city: newCity = '',
+      country: newCountry = '',
+      state: newState = '',
+      zipCode: newZipCode = '',
+    } = afterVals;
+    return (
+      name === newName &&
+      addressLine1 === newAddressLine1 &&
+      addressLine2 === newAddressLine2 &&
+      city === newCity &&
+      country === newCountry &&
+      state === newState &&
+      zipCode === newZipCode
+    );
+  };
+
   saveLocationAPI = async (values, locationId) => {
-    const { dispatch, manageTenant = [] } = this.props;
+    const { dispatch, manageTenant = [], locationInfo = {} } = this.props;
     const tenantId = getCurrentTenant();
     const companyId = getCurrentCompany();
 
@@ -140,60 +172,82 @@ class FormWorkLocationTenant extends Component {
       zipCode = '',
     } = values;
 
-    const payload = {
-      tenantId,
-      id: locationId,
-      name,
-      headQuarterAddress: {
-        addressLine1,
-        addressLine2,
-        city,
-        country,
-        state,
-        zipCode,
-      },
-      // legalAddress: {
-      //   addressLine1,
-      //   addressLine2,
-      //   country,
-      //   state,
-      //   zipCode,
-      // },
-    };
-    const res = await dispatch({
-      type: 'adminApp/updateLocation',
-      payload,
-    });
+    const checkTheSame = this.compareValues(values, locationInfo);
 
-    const { statusCode } = res;
-    if (statusCode === 200) {
+    if (checkTheSame) {
       this.setState({
+        notification: 'Nothing changed.',
+        notificationColor: '#FD4546',
         isSaved: true,
-        isEditing: false,
-        locationName: name,
-      });
-      // refresh locations in dropdown menu (owner)
-      dispatch({
-        type: 'locationSelection/fetchLocationListByParentCompany',
-        payload: {
-          company: companyId,
-          tenantIds: manageTenant,
-        },
       });
       setTimeout(() => {
         this.setState({
           isSaved: false,
         });
       }, 2500);
+    } else {
+      const payload = {
+        tenantId,
+        id: locationId,
+        name,
+        headQuarterAddress: {
+          addressLine1,
+          addressLine2,
+          city,
+          country,
+          state,
+          zipCode,
+        },
+        // legalAddress: {
+        //   addressLine1,
+        //   addressLine2,
+        //   country,
+        //   state,
+        //   zipCode,
+        // },
+      };
+      const res = await dispatch({
+        type: 'adminApp/updateLocation',
+        payload,
+      });
+
+      const { statusCode } = res;
+      if (statusCode === 200) {
+        this.setState({
+          isSaved: true,
+          isEditing: false,
+          locationName: name,
+        });
+        // refresh locations in dropdown menu (owner)
+        dispatch({
+          type: 'locationSelection/fetchLocationListByParentCompany',
+          payload: {
+            company: companyId,
+            tenantIds: manageTenant,
+          },
+        });
+        setTimeout(() => {
+          this.setState({
+            isSaved: false,
+          });
+        }, 2500);
+      }
     }
   };
 
   render() {
-    const { newCountry = '', isEditing, isSaved, locationName, removeModalVisible } = this.state;
+    const {
+      newCountry = '',
+      notification,
+      notificationColor,
+      isEditing,
+      isSaved,
+      locationName,
+      removeModalVisible,
+    } = this.state;
     const {
       listCountry = [],
       field = {},
-      locationInfo = {},
       locationInfo: {
         name = '',
         _id = '',
@@ -210,7 +264,7 @@ class FormWorkLocationTenant extends Component {
       loadingUpdateLocation = false,
       loadingRemoveLocation = false,
     } = this.props;
-    console.log('locationInfo', locationInfo);
+
     const listState = this.findListState(newCountry) || [];
     const disableInput = !isEditing;
 
@@ -232,8 +286,8 @@ class FormWorkLocationTenant extends Component {
             }}
           >
             {isSaved && (
-              <div className={s.savedBanner}>
-                <span>This location is updated successfully.</span>
+              <div style={{ backgroundColor: `${notificationColor}` }} className={s.savedBanner}>
+                <span>{notification}</span>
               </div>
             )}
             <Row className={s.content__viewBottom__viewTitle}>
@@ -348,8 +402,7 @@ class FormWorkLocationTenant extends Component {
                     disabled={disableInput}
                     onChange={this.onChangeCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {listCountry.map((item) => (
                       <Option key={item._id}>{item.name}</Option>
@@ -369,8 +422,7 @@ class FormWorkLocationTenant extends Component {
                     showSearch
                     disabled={disableInput || !newCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                   >
                     {listState.map((item) => (
                       <Option key={item}>{item}</Option>

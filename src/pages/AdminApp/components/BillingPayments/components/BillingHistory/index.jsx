@@ -1,9 +1,29 @@
 import { DatePicker, Form, Table } from 'antd';
+import moment from 'moment';
 // import moment from 'moment';
 import React, { PureComponent } from 'react';
 import s from './index.less';
 
 export default class BillingHistory extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      fromDate: '',
+      toDate: '',
+    };
+  }
+
+  // DISABLE DATE OF DATE PICKER
+  disabledFromDate = (current) => {
+    const { toDate } = this.state;
+    return (current && current >= moment(toDate)) || current > moment();
+  };
+
+  disabledToDate = (current) => {
+    const { fromDate } = this.state;
+    return (current && current <= moment(fromDate)) || current > moment();
+  };
+
   render() {
     const dateFormat = 'MM.DD.YYYY';
 
@@ -34,14 +54,16 @@ export default class BillingHistory extends PureComponent {
             <Form.Item name="from" className={s.content__formHeader__item}>
               <span className={s.from}>From</span>
               <DatePicker
-                // onChange={(values) => console.log(values)}
+                onChange={(val) => this.setState({ fromDate: val })}
                 format={dateFormat}
+                disabledDate={this.disabledFromDate}
               />
             </Form.Item>
             <Form.Item name="to" className={s.content__formHeader__item}>
               <span className={s.to}>To</span>
               <DatePicker
-                // onChange={(values) => console.log(values)}
+                onChange={(val) => this.setState({ toDate: val })}
+                disabledDate={this.disabledToDate}
                 format={dateFormat}
               />
             </Form.Item>

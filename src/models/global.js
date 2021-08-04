@@ -4,7 +4,7 @@ const GlobalModel = {
   namespace: 'global',
   state: {
     collapsed: false,
-    expandMenuSidebar: true,
+    expandMenuSidebar: false,
     notices: [],
   },
   effects: {
