@@ -1,3 +1,4 @@
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { message, notification } from 'antd';
 import {
@@ -224,9 +225,11 @@ const employee = {
         dialog(errors);
       }
     },
-    *fetchDataOrgChart({ payload: { tenantId = '', company = '' } = {} }, { call, put }) {
+    *fetchDataOrgChart({ payload }, { call, put }) {
       try {
-        const response = yield call(getDataOrgChart, { tenantId, company });
+        const tenantId = getCurrentTenant();
+        const company = getCurrentCompany();
+        const response = yield call(getDataOrgChart, { ...payload, tenantId, company });
         const { statusCode, data: dataOrgChart = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { dataOrgChart } });
