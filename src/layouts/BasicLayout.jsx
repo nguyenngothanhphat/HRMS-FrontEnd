@@ -84,15 +84,15 @@ const BasicLayout = (props) => {
     }
   };
 
-  // const handleClickMenuSideBar = () => {
-  //   setOpenMenu(!openMenu);
-  //   if (dispatch) {
-  //     dispatch({
-  //       type: 'global/collapseExpandMenuSidebar',
-  //       payload: !openMenu,
-  //     });
-  //   }
-  // };
+  const handleClickMenuSideBar = () => {
+    setOpenMenu(!openMenu);
+    if (dispatch) {
+      dispatch({
+        type: 'global/collapseExpandMenuSidebar',
+        payload: !openMenu,
+      });
+    }
+  };
 
   const _renderLogo = () => {
     // const checkRole = (roleName) => {
@@ -108,9 +108,9 @@ const BasicLayout = (props) => {
     const logoUrl = getCurrentLogo();
     return (
       <div className={styles.logoSection}>
-        {/* <Button onClick={handleClickMenuSideBar} className={styles.logoSection__button}>
+        <Button onClick={handleClickMenuSideBar} className={styles.logoSection__button}>
           <img alt="icon-menu" src={iconMenu} />
-        </Button> */}
+        </Button>
         {logoUrl || logoCompany ? (
           <Link to="/">
             <img
@@ -180,9 +180,7 @@ const BasicLayout = (props) => {
           onCollapse={handleMenuCollapse}
           headerTitleRender={() => <div style={{ display: 'none' }} />}
           headerContentRender={() => _renderLogo()}
-          menuHeaderRender={() => {
-            return <img alt="icon-menu" src={iconMenu} />;
-          }}
+          menuHeaderRender={false}
           menuItemRender={(menuItemProps, defaultDom) => {
             if (menuItemProps.isUrl || !menuItemProps.path) {
               return defaultDom;
