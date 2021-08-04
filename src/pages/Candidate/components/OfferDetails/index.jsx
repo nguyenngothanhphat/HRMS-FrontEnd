@@ -4,14 +4,16 @@ import ViewDocumentModal from '@/components/ViewDocumentModal';
 import CancelIcon from '@/pages/FormTeamMember/components/PreviewOffer/components/CancelIcon';
 import whiteImg from '@/pages/FormTeamMember/components/PreviewOffer/components/images/whiteImg.png';
 import { getCurrentTenant } from '@/utils/authority';
-import { Button, Col, Row, Typography } from 'antd';
+import { Button, Col, Row, Select, Typography, Input, Popover, Radio, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
+import ModalDrawSignature from '@/components/ModalDrawSignature/index';
+import TextSignature from '@/components/TextSignature';
 import NoteComponent from '../NoteComponent';
 import Alert from './components/Alert';
 import s from './index.less';
 
-
+const { Option } = Select;
 
 const Note = {
   title: 'Note',
@@ -46,9 +48,14 @@ const OfferDetails = (props) => {
   const [signatureSubmit, setSignatureSubmit] = useState(false);
   const [fileUrl, setFileUrl] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
-  const [uploadVisible, setUploadVisible] = useState(false);
+  // const [uploadVisible, setUploadVisible] = useState(false);
   const [allFieldFilled, setAllFieldFilled] = useState(false);
-
+  const [nameSignature, setNameSignature] = useState('');
+  const [optionSignature, setOptionSignature] = useState('upload');
+  const [openModal, setOpenModal] = useState('');
+  const [valueDigitalSignature, setValueDigitalSignature] = useState(0);
+  const [arrImgBase64, setArrImgBase64] = useState([]);
+  const [openDigital, setOpenDigital] = useState(false);
   useEffect(() => {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
   }, []);
@@ -195,11 +202,67 @@ const OfferDetails = (props) => {
     setModalVisible(false);
   };
 
-  const handleSubmit = async () => {
+  const loadImage = (response) => {
+    const { data: imageData = [] } = response;
+    const { url = '', id = '', fileName } = imageData[0];
+
+    setSignature({ url, id, fileName });
+  };
+
+  const resetImg = () => {
+    setSignature({ ...signature, url: '', id: '' });
+  };
+
+  const dataURItoBlob = (dataURI) => {
+    const binary = atob(dataURI.split(',')[1]);
+    const array = [];
+    for (let i = 0; i < binary.length; i += 1) {
+      array.push(binary.charCodeAt(i));
+    }
+    // eslint-disable-next-line compat/compat
+    return new Blob([new Uint8Array(array)], { type: 'image/jpeg' });
+  };
+  const resetDefaultState = () => {
+    setValueDigitalSignature(0);
+    setNameSignature('');
+    setArrImgBase64([]);
+    setOptionSignature('upload');
+    setOpenDigital(false);
+  };
+
+  const saveDrawSignature = async (imageBase64) => {
+    const formData = new FormData();
+    if (!imageBase64) {
+      setOpenModal('');
+      return;
+    }
+    const file = dataURItoBlob(imageBase64);
+    formData.append('blob', file, 'signatureCandidate.jpeg');
+    const responsive = await dispatch({
+      type: 'upload/uploadFile',
+      payload: formData,
+    });
+    loadImage(responsive);
+    setOpenModal('');
+  };
+
+  const getImg = (e) => {
+    const arr = arrImgBase64;
+    arr.push(e);
+    setArrImgBase64(arr);
+  };
+  const changeName = (e) => {
+    setOpenDigital(true);
+    setArrImgBase64([]);
+    setNameSignature(e.target.value);
+  };
+  // submit signature
+
+  const submitSignature = async () => {
     if (!dispatch) {
       return;
     }
-    const { id } = signature;
+    const { id, url, fileName } = signature;
     const { candidate } = data;
     const res = await dispatch({
       type: 'candidateProfile/updateByCandidateEffect',
@@ -212,21 +275,135 @@ const OfferDetails = (props) => {
     const { statusCode = 1 } = res;
     if (statusCode === 200) {
       setSignatureSubmit(true);
+      dispatch({
+        type: 'candidateProfile/save',
+        payload: {
+          data: {
+            ...data,
+            candidateSignature: {
+              _id: id,
+              url,
+              fileName,
+            },
+          },
+        },
+      });
     }
   };
+  const handleSubmit = async () => {
+    if (!dispatch) {
+      return;
+    }
+    if (optionSignature === 'digital') {
+      if (arrImgBase64.length > 0) {
+        const formData = new FormData();
+        if (!arrImgBase64[valueDigitalSignature]) {
+          setOpenModal('');
+          return;
+        }
+        const file = dataURItoBlob(arrImgBase64[valueDigitalSignature]);
+        formData.append('blob', file, 'signatureCandidate.jpeg');
+        const responsive = await dispatch({
+          type: 'upload/uploadFile',
+          payload: formData,
+        });
+        const { data: imageData = [] } = responsive;
+        const { url = '', id = '', fileName } = imageData[0];
 
-  const loadImage = (response) => {
-    const { data: imageData = [] } = response;
-    const { url = '', id = '' } = imageData[0];
-
-    setSignature({ url, id });
+        const { candidate } = data;
+        const res = await dispatch({
+          type: 'candidateProfile/updateByCandidateEffect',
+          payload: {
+            candidateSignature: id,
+            candidate,
+            tenantId: getCurrentTenant(),
+          },
+        });
+        const { statusCode = 1 } = res;
+        if (statusCode === 200) {
+          setSignatureSubmit(true);
+          dispatch({
+            type: 'candidateProfile/save',
+            payload: {
+              data: {
+                ...data,
+                candidateSignature: {
+                  _id: id,
+                  url,
+                  fileName,
+                },
+              },
+            },
+          });
+        }
+        resetDefaultState();
+      } else submitSignature();
+    }
   };
+  // render signature candidate
+  const renderSignature = () => {
+    if (optionSignature === 'digital')
+      return (
+        <>
+          <div>
+            <p>Digital Signature</p>
+          </div>
+          <Row>
+            <Col span={24}>
+              <Popover
+                content={
+                  <Radio.Group
+                    onChange={(e) => {
+                      setValueDigitalSignature(e.target.value);
+                    }}
+                    value={valueDigitalSignature}
+                  >
+                    <Space direction="vertical">
+                      {['Airin', 'GermanyScript', 'Bestlife', 'AudreyAndReynold'].map(
+                        (item, index) => (
+                          <Radio value={index} style={{ display: 'flex', alignItems: 'center' }}>
+                            <TextSignature
+                              name={nameSignature}
+                              getImage={getImg}
+                              x={10}
+                              y={75}
+                              height={100}
+                              font={`60px ${item}`}
+                            />
+                          </Radio>
+                          // </Col>
+                        ),
+                      )}
+                    </Space>
+                  </Radio.Group>
+                }
+                placement="right"
+                trigger="hover"
+                visible={nameSignature && openDigital}
+              >
+                <Input placeholder="Enter your name" onChange={changeName} value={nameSignature} />
+              </Popover>
+            </Col>
+          </Row>
+        </>
+      );
+    return (
+      <div className={s.upload}>
+        {!signature.url ? (
+          // Default image
+          <img className={s.signatureImg} src={whiteImg} alt="" />
+        ) : (
+          <img className={s.signatureImg} src={signature.url} alt="" />
+        )}
 
-  const resetImg = () => {
-    setSignature({ ...signature, url: '', id: '' });
+        <button type="submit" onClick={() => setOpenModal(optionSignature)}>
+          {formatMessage({ id: 'component.previewOffer.uploadNew' })}
+        </button>
+
+        <CancelIcon resetImg={() => resetImg()} />
+      </div>
+    );
   };
-
-
   return (
     <div className={s.offerDetailsContainer}>
       <Row gutter={24}>
@@ -255,43 +432,37 @@ const OfferDetails = (props) => {
               })}
 
               <h4>Signature of the candidate</h4>
-              <p>
-                The candidate may draw the signature below or can upload the signature from personal
-                system.
-              </p>
+              <p>Choose your options for Signature</p>
+              <Row>
+                <Col span={12}>
+                  <Select
+                    value={optionSignature}
+                    style={{ width: '100%', marginBottom: '5px' }}
+                    onChange={(e) => {
+                      setOptionSignature(e);
+                    }}
+                  >
+                    <Option value="upload">Upload</Option>
+                    <Option value="draw">Draw</Option>
+                    <Option value="digital">Digital Signature</Option>
+                  </Select>
+                </Col>
+              </Row>
               <Row gutter={16} style={{ marginTop: '24px' }}>
                 <Col
                   // sm={8}
-                  md={14}
+                  md={12}
                 >
                   <div className={s.signature}>
-                    <div className={s.upload}>
-                      {!signature.url ? (
-                        // Default image
-                        <img className={s.signatureImg} src={whiteImg} alt="" />
-                      ) : (
-                        <img className={s.signatureImg} src={signature.url} alt="" />
-                      )}
-
-                      <button
-                        type="submit"
-                        onClick={() => {
-                          setUploadVisible(true);
-                        }}
-                      >
-                        {formatMessage({ id: 'component.previewOffer.uploadNew' })}
-                      </button>
-
-                      <CancelIcon resetImg={() => resetImg()} />
-                    </div>
-
-
+                    {renderSignature()}
                     <div className={s.submitContainer}>
                       <Button
                         type="primary"
                         onClick={handleSubmit}
-                        className={`${signature.url ? s.active : s.disable}`}
-                        disabled={!signature.url}
+                        className={`${
+                          signature.url || optionSignature === 'digital' ? s.active : s.disable
+                        }`}
+                        disabled={!signature.url && optionSignature !== 'digital'}
                         loading={loading1}
                       >
                         {formatMessage({ id: 'component.previewOffer.submit' })}
@@ -341,17 +512,21 @@ const OfferDetails = (props) => {
       <ViewDocumentModal visible={modalVisible} onClose={closeModal} url={fileUrl} />
 
       <ModalUpload
-        visible={uploadVisible}
+        visible={openModal === 'upload'}
         getResponse={(response) => {
           loadImage(response);
           const { statusCode = 1 } = response;
           if (statusCode === 200) {
-            setUploadVisible(false);
+            setOpenModal('');
           }
         }}
-        handleCancel={() => {
-          setUploadVisible(false);
-        }}
+        handleCancel={() => setOpenModal('')}
+      />
+      <ModalDrawSignature
+        visible={openModal === 'draw'}
+        title="Draw your signature"
+        onOk={saveDrawSignature}
+        onCancel={() => setOpenModal('')}
       />
     </div>
   );
