@@ -109,12 +109,7 @@ const BasicLayout = (props) => {
     const logoUrl = getCurrentLogo();
     return (
       <div className={styles.logoSection}>
-        <Button
-          onClick={handleClickMenuSideBar}
-          className={
-            expandMenuSidebar ? styles.logoSection__buttonExpand : styles.logoSection__button
-          }
-        >
+        <Button onClick={handleClickMenuSideBar} className={styles.logoSection__button}>
           <img alt="icon-menu" src={iconMenu} />
         </Button>
         {logoUrl || logoCompany ? (
