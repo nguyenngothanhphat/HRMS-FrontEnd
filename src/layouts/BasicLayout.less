@@ -203,7 +203,7 @@
       width: 80px !important;
       min-width: 80px !important;
       max-width: 80px !important;
-      transition: min-width 0.3s, max-width 0.3s;
+      transition: min-width 0.5s, max-width 0.5s;
       .ant-menu-item .anticon + span,
       .ant-menu-submenu-title .anticon + span {
         display: none;
@@ -237,7 +237,7 @@
         min-width: 242px !important;
         max-width: 242px !important;
         box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.456);
-        transition: min-width 0.3s, max-width 0.3s;
+        transition: min-width 0.5s, max-width 0.5s;
 
         .ant-pro-sider-logo{
           img{
@@ -362,6 +362,18 @@
 
     &__button{
       width: 80px;
+      min-width: 80px;
+      max-width: 80px;
+      height: 76px;
+      background-color: #161c29;
+      border: none;
+      border-radius: 0;
+    }
+
+    &__buttonExpand{
+      width: 242px;
+      min-width: 242px;
+      max-width: 242px;
       height: 76px;
       background-color: #161c29;
       border: none;
@@ -373,12 +385,6 @@
 .expandMenu{
   :global{
     .ant-pro-sider-light{
-      transition: min-width 0.3s, max-width 0.5s all ease-in-out;
-      -moz-transition: min-width 0.3s, max-width 0.5s all ease-in-out;
-      -ms-transition: min-width 0.3s, max-width 0.5s all ease-in-out;
-      -o-transition: min-width 0.3s, max-width 0.5s all ease-in-out;
-      -webkit-transition: min-width 0.3s, max-width 0.5s all ease-in-out;
-
       width: 242px !important;
       min-width: 242px !important;
       max-width: 242px !important;
@@ -421,15 +427,12 @@
 
 .collapseMenu{
   :global{
+
     .ant-pro-sider-light{
-      transition: min-width 0.3s, max-width 0.5s all ease-in-out;
-      -moz-transition: min-width 0.3s, max-width 0.5s all ease-in-out;
-      -ms-transition: min-width 0.3s, max-width 0.5s all ease-in-out;
-      -o-transition: min-width 0.3s, max-width 0.5s all ease-in-out;
-      -webkit-transition: min-width 0.3s, max-width 0.5s all ease-in-out;
 
       min-width: 80px !important;
       max-width: 80px !important;
+
     }
 
     // .ant-layout-header{

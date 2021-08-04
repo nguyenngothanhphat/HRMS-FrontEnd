@@ -61,9 +61,10 @@ const BasicLayout = (props) => {
     currentUser,
     companies = {},
     logoCompany,
+    expandMenuSidebar,
   } = props;
 
-  const [openMenu, setOpenMenu] = useState(true);
+  const [openMenu, setOpenMenu] = useState(false);
 
   /**
    * init variables
@@ -108,7 +109,12 @@ const BasicLayout = (props) => {
     const logoUrl = getCurrentLogo();
     return (
       <div className={styles.logoSection}>
-        <Button onClick={handleClickMenuSideBar} className={styles.logoSection__button}>
+        <Button
+          onClick={handleClickMenuSideBar}
+          className={
+            expandMenuSidebar ? styles.logoSection__buttonExpand : styles.logoSection__button
+          }
+        >
           <img alt="icon-menu" src={iconMenu} />
         </Button>
         {logoUrl || logoCompany ? (
@@ -166,7 +172,7 @@ const BasicLayout = (props) => {
     <>
       <div
         className={classnames(
-          `${styles.root} ${openMenu ? styles.expandMenu : styles.collapseMenu}`,
+          `${styles.root} ${expandMenuSidebar ? styles.expandMenu : styles.collapseMenu}`,
           classNameBreadCrumb,
           {
             [styles.hiddenBreadCrumb]: pathname === '/dashboard',
@@ -237,7 +243,8 @@ const BasicLayout = (props) => {
 
 export default connect(
   ({ global, settings, user, companiesManagement: { logoCompany = '' } = {} }) => ({
-    collapsed: global.collapsed,
+    // collapsed: global.collapsed,
+    expandMenuSidebar: global.expandMenuSidebar,
     settings,
     currentUser: user.currentUser,
     companies: user.companiesOfUser,
