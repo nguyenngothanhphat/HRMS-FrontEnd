@@ -115,11 +115,7 @@ class ViewAdministrator extends Component {
           } = adminstrator;
           const moduleList = this.renderListModule(permissionAdmin, permissionList);
           return (
-            <div
-              className={styles.addAdminstrator}
-              key={`${index + 1}`}
-              style={index > 0 ? { paddingTop: '30px' } : null}
-            >
+            <div className={styles.addAdminstrator} key={`${index + 1}`}>
               <Row gutter={[0, 16]}>
                 <Row className={styles.addAdminstrator__row}>
                   <Col span={8}>
@@ -263,7 +259,7 @@ class ViewAdministrator extends Component {
                   </Collapse>
                 </Col> */}
               </Row>
-              {list.length > index + 1 && <div className={styles.divider} />}
+              <div className={styles.divider} />
             </div>
           );
         })}
