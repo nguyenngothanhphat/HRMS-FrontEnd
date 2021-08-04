@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { history, connect } from 'umi';
+import REACT_APP_TINYMCE_KEY from '@/utils/editor';
+
 import styles from './index.less';
 
 @connect(({ employeeSetting }) => ({
@@ -19,7 +21,7 @@ class EditorQuill extends Component {
       <div className={styles.EditorQuill}>
         <Editor
           initialValue={messages}
-          // apiKey={process.env.REACT_APP_TINYMCE_KEY}
+          apiKey={REACT_APP_TINYMCE_KEY}
           init={{
             height: '100%',
             menubar: true,
