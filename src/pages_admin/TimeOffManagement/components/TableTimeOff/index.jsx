@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { formatMessage, Link, history } from 'umi';
 import moment from 'moment';
+import { getCurrentPage, setCurrentPage, removeCurrentPage } from '@/utils/timeoffManagement';
 import styles from './index.less';
 
 class TableTimeOff extends PureComponent {
@@ -89,7 +90,7 @@ class TableTimeOff extends PureComponent {
     {
       title: 'Action',
       dataIndex: '_id',
-      align: 'center',
+      align: 'left',
       render: (_id) => (
         <div className={styles.documentAction} onClick={() => this.onViewClick(_id)}>
           <Link>View Request</Link>
@@ -101,13 +102,29 @@ class TableTimeOff extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      pageSelected: 1,
+      pageSelected: getCurrentPage() || 1,
       selectedRowKeys: [],
     };
   }
 
+  componentDidUpdate = (prevProps) => {
+    const { listTimeOff = [] } = this.props;
+    if (JSON.stringify(listTimeOff) !== JSON.stringify(prevProps.listTimeOff)) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        pageSelected: 1,
+      });
+    }
+  };
+
+  componentWillUnmount = () => {
+    window.addEventListener('beforeunload', () => {
+      removeCurrentPage();
+    });
+  };
+
   onViewClick = (_id) => {
-    history.push(`/time-off/manager-view-request/${_id}`);
+    history.push(`/time-off/overview/manager-timeoff/view/${_id}`);
   };
 
   handleRequestDetail = (id) => {
@@ -120,6 +137,7 @@ class TableTimeOff extends PureComponent {
     this.setState({
       pageSelected: pageNumber,
     });
+    setCurrentPage(pageNumber);
   };
 
   setFirstPage = () => {
@@ -137,7 +155,7 @@ class TableTimeOff extends PureComponent {
   };
 
   render() {
-    const { listTimeOff = [], loading, requestDetail } = this.props;
+    const { listTimeOff = [], loading } = this.props;
     const { pageSelected, selectedRowKeys } = this.state;
     const rowSize = 10;
     const scroll = {

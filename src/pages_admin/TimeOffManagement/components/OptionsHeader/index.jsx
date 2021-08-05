@@ -2,15 +2,30 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Form, Select, DatePicker, Button, Checkbox } from 'antd';
 import exportToCsv from '@/utils/exportToCsv';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { setFilter, getFilter } from '@/utils/timeoffManagement';
 import moment from 'moment';
 import styles from './index.less';
 
 const { Option } = Select;
 export default class OptionsHeader extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = { fromDate: '', toDate: '' };
   }
+
+  componentDidMount = () => {
+    const preState = getFilter();
+    if (preState) {
+      this.formRef.current.setFieldsValue({
+        userIdName: preState.userIdName,
+        durationFrom: preState.durationFrom ? moment(preState.durationFrom) : '',
+        durationTo: preState.durationTo ? moment(preState.durationTo) : '',
+        status: preState.status,
+      });
+    }
+  };
 
   // DISABLE DATE OF DATE PICKER
   disabledFromDate = (current) => {
@@ -25,7 +40,8 @@ export default class OptionsHeader extends PureComponent {
 
   onFinish = (values) => {
     const { reloadData } = this.props;
-    return reloadData(values);
+    setFilter(values);
+    reloadData(values);
   };
 
   downloadCSVFile = () => {
