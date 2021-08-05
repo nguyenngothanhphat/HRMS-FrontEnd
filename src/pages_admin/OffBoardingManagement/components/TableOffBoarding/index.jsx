@@ -158,7 +158,7 @@ class TableOffBoarding extends PureComponent {
           columns={this.columns}
           dataSource={data}
           scroll={scroll}
-          rowKey={(record) => record.ticketNo}
+          rowKey={(record) => record.ticketID}
         />
       </div>
     );

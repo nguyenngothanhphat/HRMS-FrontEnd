@@ -197,7 +197,7 @@ class TableTimeOff extends PureComponent {
           columns={this.columns}
           dataSource={listTimeOff}
           scroll={scroll}
-          rowKey="employeeId"
+          rowKey={(record) => record._id}
           onRow={(item) => {
             return {
               onClick: () => this.handleRequestDetail(item._id),
