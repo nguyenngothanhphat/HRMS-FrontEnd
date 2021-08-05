@@ -392,7 +392,7 @@ class CompanyDetails extends Component {
         hrContactEmail: hrEmail,
         hrContactName: hrName,
         hrContactPhone: hrPhone,
-        childOfCompany = '',
+        childOfCompany = 'none',
         // isHeadquarter,
       } = {},
     } = companyDetails;
@@ -633,7 +633,7 @@ class CompanyDetails extends Component {
               hrPhone,
               isNewTenant: false,
               isHeadquarter: true,
-              parentCompany: childOfCompany || null,
+              parentCompany: childOfCompany || null || 'none',
               // logoUrl,
             }}
           >
@@ -747,7 +747,10 @@ class CompanyDetails extends Component {
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
                       >
-                        <Option style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}>
+                        <Option
+                          value="none"
+                          style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
+                        >
                           None
                         </Option>
                         {listCompany.map((item) => (
