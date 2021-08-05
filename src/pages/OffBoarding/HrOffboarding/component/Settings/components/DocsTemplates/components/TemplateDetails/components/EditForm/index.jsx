@@ -53,6 +53,42 @@ class EditForm extends Component {
     });
   };
 
+  beforeUpload = (file) => {
+    const checkType = this.imageType(file.name);
+    const isLt5M = file.size / 1024 / 1024 < 5;
+    return checkType && isLt5M;
+  };
+
+  uploadImageHandle = (blobInfo, success, failure, progress) => {
+    const { dispatch } = this.props;
+    const check = this.beforeUpload(blobInfo.blob());
+    if (check) {
+      const formData = new FormData();
+      // formData.append('uri', file);
+      formData.append('file', blobInfo.blob(), blobInfo.filename());
+      dispatch({
+        type: 'upload/uploadFile',
+        payload: formData,
+      }).then((resp = {}) => {
+        const { statusCode, data = [] } = resp;
+        if (statusCode === 200) {
+          const uploadedFile = data.length > 0 ? data[0] : {};
+          success(uploadedFile.url);
+        }
+        if (statusCode === 403) {
+          failure(`HTTP Error: ${statusCode}`, { remove: true });
+          return;
+        }
+
+        if (statusCode < 200 || statusCode >= 300) {
+          failure(`HTTP Error: ${statusCode}`);
+        }
+      });
+    } else {
+      failure('Invalid file. Only images to be accepted and must smaller than 5MB!');
+    }
+  };
+
   render() {
     const {
       currentTemplate: { settings = [] },
@@ -110,6 +146,7 @@ class EditForm extends Component {
                 '/tinymce/plugins/auto_text/plugin.js',
               ),
             },
+            images_upload_handler: this.uploadImageHandle,
           }}
           onEditorChange={this.handleEditorChange}
           outputFormat="raw"
