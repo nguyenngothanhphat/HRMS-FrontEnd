@@ -10,23 +10,22 @@ import OnboardingEmpty from './components/OnboardingEmpty';
 }))
 class OnboardingOverview extends Component {
   componentDidMount() {
-    const { dispatch } = this.props;
-    if (!dispatch) {
-      return;
-    }
-    dispatch({
-      type: 'onboard/fetchOnboardList',
-      payload: {
-        processStatus: 'DRAFT',
-      },
-    });
-    dispatch({
-      type: 'onboard/fetchTotalNumberOfOnboardingListEffect',
-      payload: {
-        tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
-      },
-    });
+    // const { dispatch } = this.props;
+    // if (!dispatch) {
+    // }
+    // dispatch({
+    //   type: 'onboard/fetchOnboardList',
+    //   payload: {
+    //     processStatus: 'DRAFT',
+    //   },
+    // });
+    // dispatch({
+    //   type: 'onboard/fetchTotalNumberOfOnboardingListEffect',
+    //   payload: {
+    //     tenantId: getCurrentTenant(),
+    //     company: getCurrentCompany(),
+    //   },
+    // });
   }
 
   render() {
