@@ -74,7 +74,7 @@ class TableOffBoarding extends PureComponent {
     {
       title: 'Action',
       dataIndex: 'action',
-      align: 'center',
+      align: 'left',
       render: () => (
         <div className={styles.documentAction}>
           <Link>View Request</Link>
