@@ -32,10 +32,10 @@ class TableTimeOff extends PureComponent {
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
         compare: (a, b) =>
-          a.employee.generalInfo.firstName.localeCompare(b.employee.generalInfo.firstName),
+          a.employee?.generalInfo?.firstName.localeCompare(b.employee?.generalInfo?.firstName),
       },
       render: (employee) => {
-        const { generalInfo: { firstName = '', lastName = '' } = {} } = employee;
+        const { generalInfo: { firstName = '', lastName = '' } = {} } = employee || {};
         return (
           <span>
             {firstName} {lastName}

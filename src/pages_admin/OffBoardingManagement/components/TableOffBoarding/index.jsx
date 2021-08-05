@@ -36,6 +36,13 @@ class TableOffBoarding extends PureComponent {
         const { generalInfo: { legalName = '' } = {} } = employee;
         return <span>{legalName}</span>;
       },
+      sorter: (a, b) => {
+        const name1 = a.employee.generalInfo?.legalName || '';
+        const name2 = b.employee.generalInfo?.legalName || '';
+        return this.isString(name1) && this.isString(name2) ? name1.localeCompare(name2) : null;
+      },
+      // defaultSortOrder: 'ascend',
+      sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: 'Group',
@@ -91,9 +98,13 @@ class TableOffBoarding extends PureComponent {
     };
   }
 
+  isString = (text) => {
+    return typeof text === 'string' || text instanceof String;
+  };
+
   viewRequest = (_id) => {
-    history.push(`/offboarding/list/review/${_id}`)
-  }
+    history.push(`/offboarding/list/review/${_id}`);
+  };
 
   // pagination
   onChangePagination = (pageNumber) => {
