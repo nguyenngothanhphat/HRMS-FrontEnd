@@ -4,6 +4,7 @@ import { Form, Input, Skeleton, Select, Button, Checkbox, Row, Col } from 'antd'
 import classnames from 'classnames';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { connect } from 'umi';
+import { CloseOutlined } from '@ant-design/icons';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import s from './index.less';
 
@@ -651,6 +652,7 @@ class CompanyDetails extends Component {
                 <div className={s.editBtn} onClick={() => this.handleEdit(1)}>
                   {isEditCompanyDetails ? (
                     <div className={s.wrapBtn}>
+                      <CloseOutlined className={s.buttonIcon} />
                       <span className={s.cancelText}>Cancel</span>
                     </div>
                   ) : (
@@ -783,6 +785,7 @@ class CompanyDetails extends Component {
                 <div className={s.editBtn} onClick={() => this.handleEdit(2)}>
                   {isEditAddresses ? (
                     <div className={s.wrapBtn}>
+                      <CloseOutlined className={s.buttonIcon} />
                       <span className={s.cancelText}>Cancel</span>
                     </div>
                   ) : (
@@ -1127,6 +1130,7 @@ class CompanyDetails extends Component {
                 <div className={s.editBtn} onClick={() => this.handleEdit(3)}>
                   {isEditContactInfomation ? (
                     <div className={s.wrapBtn}>
+                      <CloseOutlined className={s.buttonIcon} />
                       <span className={s.cancelText}>Cancel</span>
                     </div>
                   ) : (
