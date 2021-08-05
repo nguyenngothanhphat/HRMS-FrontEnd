@@ -26,8 +26,8 @@
             }
 
             cursor: pointer;
-            width: 234px;
-            // height: 74px; 
+            width: 240px;
+            min-height: 90px; 
             background: #FFFFFF;
             border: 1px solid #E8EEF2;
             box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.2);
@@ -40,6 +40,7 @@
                 align-items: flex-start;
 
                 .avatar{
+                    min-width: 42px;
                 }
 
                 &__info{
@@ -80,7 +81,7 @@
                 align-items: center;
                 transition: 0.3s all ease-in-out !important;
 
-                &_reporteesExpand, &_reporteesCollapse, &_you{
+                &_reporteesExpand, &_reporteesCollapse, &_you, &_you1{
                     font-family: Roboto;
                     font-style: normal;
                     font-weight: 500;
@@ -106,12 +107,22 @@
                 &_you{
                     background: #00C598;
                 }
+
+                &_you1{
+                    position: absolute;
+                    background: #00C598;
+                }
             }
+        }
+
+        .currentUserNode{
+            position: relative;
+            border: 1px solid #00C598;
+            margin: auto;
         }
 
         .userNode{
             position: relative;
-            border: 1px solid #00C598;
             margin: auto;
         }
 
@@ -120,12 +131,12 @@
         }
 
         .nodesTree{
-            max-width: 750px; // exactly = 750px
+            max-width: 768px; // exactly = 750px
             /*
-                - each node's width = 234px. 
-                - 3 columns => 234px * 3 = 702px
+                - each node's width = 240px. 
+                - 3 columns => 240px * 3 = 720px
                 - spacing between nodes: 24px
-                -> 702 + 24*2 = 750px
+                -> 720 + 24*2 = 768px
             */      
 
             .lineNode{

@@ -100,7 +100,7 @@ class DetailEmployeeChart extends Component {
                 );
               }}
               onSelect={this.handleSelect}
-              suffixIcon={<img alt="search" src={SearchIcon} />}
+              suffixIcon={valueInput ? null : <img alt="search" src={SearchIcon} />}
               value={valueInput}
             >
               {listEmployeeAll.map((value) => {
