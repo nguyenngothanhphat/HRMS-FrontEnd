@@ -51,7 +51,7 @@ class TableTimeOff extends PureComponent {
         compare: (a, b) => new Date(a.fromDate) - new Date(b.fromDate),
       },
       render: (fromDate) => {
-        const formatedDate = moment(fromDate).format('MM.DD.YY');
+        const formatedDate = fromDate ? moment(fromDate).format('MM.DD.YY') : '';
         return <span>{formatedDate}</span>;
       },
     },
@@ -64,7 +64,7 @@ class TableTimeOff extends PureComponent {
         compare: (a, b) => new Date(a.toDate) - new Date(b.toDate),
       },
       render: (toDate) => {
-        const formatedDate = moment(toDate).format('MM.DD.YY');
+        const formatedDate = toDate ? moment(toDate).format('MM.DD.YY') : '';
         return <span>{formatedDate}</span>;
       },
     },
