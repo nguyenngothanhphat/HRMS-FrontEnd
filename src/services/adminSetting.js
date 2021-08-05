@@ -7,6 +7,20 @@ export async function getListRoles(payload) {
   });
 }
 
+export async function addRole(payload) {
+  return request('/api/roletenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function removeRole(payload) {
+  return request('/api/roletenant/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getListTitle(payload) {
   return request('/api/titletenant/list-by-company', {
     method: 'POST',

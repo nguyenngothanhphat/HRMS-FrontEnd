@@ -1,7 +1,6 @@
 import { DeleteOutlined, DropboxOutlined, PlusCircleFilled } from '@ant-design/icons';
-import { Input, Table, Spin } from 'antd';
+import { Input, Table, Spin, Popconfirm, message } from 'antd';
 import { history, connect } from 'umi';
-import Modal from 'antd/lib/modal/Modal';
 import React, { PureComponent } from 'react';
 import styles from './index.less';
 
@@ -15,11 +14,8 @@ class RolesPermission extends PureComponent {
 
     this.state = {
       selectedRowKeys: [],
-      visible: false,
-      testReord: {},
+      roleId: '',
       roleValue: '',
-      getIndex: '',
-      permissionValues: '',
     };
   }
 
@@ -27,41 +23,25 @@ class RolesPermission extends PureComponent {
     this.setState({ selectedRowKeys });
   };
 
-  handleOk = (e, getIndex) => {
-    const { dispatch, formatData } = this.props;
-    formatData.splice(getIndex, 1);
-    this.setState({
-      visible: false,
+  handleClickDelete = async (_id, roleId) => {
+    const { dispatch } = this.props;
+    const { selectedRowKeys } = this.state;
+    const res = await dispatch({
+      type: 'adminSetting/removeRole',
+      payload: { _id },
     });
-    dispatch({
-      type: 'adminSetting/saveTemp',
-      payload: { formatData },
-    });
+    if (res.statusCode === 200) {
+      this.setState({
+        selectedRowKeys: selectedRowKeys.filter((val) => val !== roleId),
+      });
+    }
   };
 
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-    });
-  };
-
-  handleClickDelete = (text, record, index) => {
-    // console.log('click', 'text: ', text, 'record: ', record, 'index: ', index);
-    this.setState({
-      visible: true,
-      testReord: record,
-      getIndex: index,
-    });
-  };
-
-  handleChangeValueRoles = (e) => {
+  handleChangeInput = (e, type) => {
     const { value } = e.target;
-    this.setState({ roleValue: value });
-  };
-
-  handleChangeValuePermission = (e) => {
-    const { value } = e.target;
-    this.setState({ permissionValues: value });
+    this.setState({
+      [type]: type === 'roleId' ? value.toUpperCase().replace(/\s/g, '') : value,
+    });
   };
 
   handleRandomNumberID = () => {
@@ -75,48 +55,70 @@ class RolesPermission extends PureComponent {
     return randomNumber;
   };
 
-  handleAddNewValue = (roleValue, permissionValues, data) => {
+  handleAddNewValue = async (roleId, roleValue) => {
     const { dispatch } = this.props;
-    const addData = {
-      RolesID: this.handleRandomNumberID(),
-      Rolesname: roleValue,
-      Permission: permissionValues,
-    };
-    const newData = [...data, addData];
-    this.setState({ roleValue: '', permissionValues: '' });
-    dispatch({
-      type: 'adminSetting/saveTemp',
-      payload: { formatData: newData },
-    });
+    const { selectedRowKeys } = this.state;
+    if (roleId && roleValue) {
+      const res = await dispatch({
+        type: 'adminSetting/addRole',
+        payload: { idSync: roleId, name: roleValue, description: roleValue },
+      });
+      if (res.statusCode === 200) {
+        this.setState({
+          roleId: '',
+          roleValue: '',
+          selectedRowKeys: [...selectedRowKeys, roleId],
+        });
+      }
+    } else {
+      message.error('Please input fields');
+    }
   };
 
   handlePermission = (text, record) => {
-    const { Rolesname = '' } = record;
-    history.push(`/settings/roles-permissions/${Rolesname.toLowerCase()}`);
+    const { RolesID = '' } = record;
+    history.push(`/settings/roles-permissions/${RolesID.toLowerCase()}`);
+  };
+
+  isString = (text) => {
+    return typeof text === 'string' || text instanceof String;
   };
 
   render() {
-    const { selectedRowKeys, visible, testReord, roleValue, getIndex, permissionValues } =
-      this.state;
+    const { selectedRowKeys, roleValue, roleId } = this.state;
     const { formatData, loading = true } = this.props;
 
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange,
     };
+
     const columns = [
       {
         key: 1,
-        title: 'Roles ID',
+        title: 'Role ID',
         dataIndex: 'RolesID',
         align: 'center',
+        sorter: (a, b) => {
+          return this.isString(a.RolesID) && this.isString(b.RolesID)
+            ? a.RolesID.localeCompare(b.RolesID)
+            : null;
+        },
+        defaultSortOrder: 'ascend',
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         key: 2,
-        title: 'Roles name',
+        title: 'Description',
         dataIndex: 'Rolesname',
         align: 'center',
         width: '250px',
+        sorter: (a, b) => {
+          return this.isString(a.Rolesname) && this.isString(b.Rolesname)
+            ? a.Rolesname.localeCompare(b.Rolesname)
+            : null;
+        },
+        sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
         key: 4,
@@ -124,7 +126,7 @@ class RolesPermission extends PureComponent {
         dataIndex: 'Permission',
         align: 'center',
         render: (text, record) =>
-          record.RolesID !== '' ? (
+          record._id ? (
             <DropboxOutlined
               className={styles.iconPermission}
               onClick={() => this.handlePermission(text, record)}
@@ -137,13 +139,18 @@ class RolesPermission extends PureComponent {
         key: 5,
         title: 'Action',
         dataIndex: 'Action',
-        render: (text, record, index) =>
-          record.RolesID !== '' ? (
-            <DeleteOutlined onClick={() => this.handleClickDelete(text, record, index)} />
+        render: (text, record) =>
+          record._id ? (
+            <Popconfirm
+              title="Are you sure to delete this role?"
+              onConfirm={() => this.handleClickDelete(record._id, record.idSync)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <DeleteOutlined />
+            </Popconfirm>
           ) : (
-            <PlusCircleFilled
-              onClick={() => this.handleAddNewValue(roleValue, permissionValues, formatData)}
-            />
+            <PlusCircleFilled onClick={() => this.handleAddNewValue(roleId, roleValue)} />
           ),
         align: 'center',
       },
@@ -155,8 +162,11 @@ class RolesPermission extends PureComponent {
         </div>
       );
     const add = {
-      RolesID: '',
-      Rolesname: <Input onChange={this.handleChangeValueRoles} value={roleValue} />,
+      _id: '',
+      RolesID: <Input onChange={(e) => this.handleChangeInput(e, 'roleId')} value={roleId} />,
+      Rolesname: (
+        <Input onChange={(e) => this.handleChangeInput(e, 'roleValue')} value={roleValue} />
+      ),
     };
 
     const renderAdd = [...formatData, add];
@@ -170,13 +180,6 @@ class RolesPermission extends PureComponent {
           size="small"
           pagination={false}
           rowKey="RolesID"
-        />
-
-        <Modal
-          title={`Delete ${testReord.Rolesname}? Are you sure?`}
-          visible={visible}
-          onOk={(e) => this.handleOk(e, getIndex)}
-          onCancel={this.handleCancel}
         />
       </div>
     );
