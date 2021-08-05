@@ -80,7 +80,7 @@
                 align-items: center;
                 transition: 0.3s all ease-in-out !important;
 
-                &_reporteesExpand, &_reporteesCollapse, &_you{
+                &_reporteesExpand, &_reporteesCollapse, &_you, &_you1{
                     font-family: Roboto;
                     font-style: normal;
                     font-weight: 500;
@@ -106,12 +106,22 @@
                 &_you{
                     background: #00C598;
                 }
+
+                &_you1{
+                    position: absolute;
+                    background: #00C598;
+                }
             }
+        }
+
+        .currentUserNode{
+            position: relative;
+            border: 1px solid #00C598;
+            margin: auto;
         }
 
         .userNode{
             position: relative;
-            border: 1px solid #00C598;
             margin: auto;
         }
 
