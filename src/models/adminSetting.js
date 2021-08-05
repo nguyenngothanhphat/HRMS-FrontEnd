@@ -15,6 +15,8 @@ import {
   getRolesByCompany,
   setupComplete,
   countEmployee,
+  addRole,
+  removeRole,
 } from '../services/adminSetting';
 
 const adminSetting = {
@@ -48,8 +50,8 @@ const adminSetting = {
         });
         const { statusCode, data: listRoles = [] } = response;
         const formatData = listRoles.map((item) => {
-          const { _id: RolesID, idSync: Rolesname } = item;
-          return { RolesID, Rolesname };
+          const { _id, idSync: RolesID, description: Rolesname } = item;
+          return { _id, RolesID, Rolesname };
         });
         if (statusCode !== 200) throw response;
         localStorage.setItem('dataRoles', JSON.stringify(formatData));
@@ -255,6 +257,50 @@ const adminSetting = {
         });
       } catch (errors) {
         dialog(errors);
+      }
+    },
+
+    // roles
+    *addRole({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(addRole, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchListRoles',
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+    *removeRole({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(removeRole, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        yield put({
+          type: 'fetchListRoles',
+        });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
       }
     },
   },

@@ -22,13 +22,15 @@ class OffBoarding extends PureComponent {
     const hrManager = roles.find((item) => item === 'hr-manager');
     const manager = roles.find((item) => item === 'manager');
     const employee = roles.find((item) => item === 'employee');
-    const role = hrManager || manager || employee || 'employee';
+    const owner = roles.find((item) => item === 'owner');
+    const role = hrManager || manager || owner || employee || 'employee';
     return role;
   };
 
   render() {
     const renderComponent = {
       'hr-manager': <TicketHr {...this.props} />,
+      owner: <TicketHr {...this.props} />,
       manager: <TicketManager {...this.props} />,
       employee: <TicketEmployee {...this.props} />,
     };

@@ -38,12 +38,12 @@ class Permission extends PureComponent {
 
     const dataRoles = JSON.parse(localStorage.getItem('dataRoles'));
     const listMenuRoles = dataRoles.map((item, index) => {
-      const { RolesID, Rolesname } = item;
+      const { _id, RolesID } = item;
       return {
         id: index + 1,
-        name: Rolesname,
-        component: <PermissionInfo id={RolesID} />,
-        link: Rolesname.toLowerCase(),
+        name: RolesID,
+        component: <PermissionInfo id={_id} />,
+        link: RolesID.toLowerCase(),
       };
     });
     if (loading)
