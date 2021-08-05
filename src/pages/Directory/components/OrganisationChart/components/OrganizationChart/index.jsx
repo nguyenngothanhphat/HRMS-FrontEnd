@@ -8,6 +8,7 @@ import { Collapse } from 'react-collapse';
 import line from '@/assets/lineParent.svg';
 import lines from '@/assets/lines.svg';
 import bigLines from '@/assets/bigLines.svg';
+import { Spin } from 'antd';
 import EmployeeNode from './components/EmployeeNode';
 
 import styles from './index.less';
@@ -17,7 +18,6 @@ import UserNode from './components/UserNode';
 @connect(({ employee: { dataOrgChart = {}, listEmployeeAll = [] } = {}, loading }) => ({
   dataOrgChart,
   loading: loading.effects['employee/fetchDataOrgChart'],
-  loadingFetchListAll: loading.effects['employee/fetchAllListUser'],
   listEmployeeAll,
 }))
 class OrganizationChart extends Component {
@@ -43,8 +43,12 @@ class OrganizationChart extends Component {
   };
 
   componentDidUpdate = (prevProps) => {
-    const { idSelect = '' } = this.props;
+    const { idSelect = '', dispatch } = this.props;
     if (prevProps.idSelect !== idSelect) {
+      dispatch({
+        type: 'employee/fetchDataOrgChart',
+        payload: { employee: idSelect },
+      });
       this.autoFocusNodeById(idSelect);
     }
   };
@@ -224,25 +228,31 @@ class OrganizationChart extends Component {
   };
 
   render() {
-    const { dataOrgChart } = this.props;
+    const { dataOrgChart, loading } = this.props;
     const { isCollapsed } = this.state;
     const { manager = {} } = dataOrgChart;
 
     return (
       <div className={styles.orgChartRoot}>
-        <div className={styles.charts}>
-          {this.renderManagerNode()}
+        {loading ? (
+          <div className={styles.viewLoading}>
+            <Spin size="large" />
+          </div>
+        ) : (
+          <div className={styles.charts}>
+            {this.renderManagerNode()}
 
-          <Collapse isOpened={isCollapsed} hasNestedCollapse>
-            {isEmpty(manager) ? null : (
-              <div style={{ margin: '0 auto', width: 'fit-content' }}>
-                <img alt="line" src={line} />
-              </div>
-            )}
-            {this.renderUserNode()}
-            {this.renderChildrenList()}
-          </Collapse>
-        </div>
+            <Collapse isOpened={isCollapsed} hasNestedCollapse>
+              {isEmpty(manager) ? null : (
+                <div style={{ margin: '0 auto', width: 'fit-content' }}>
+                  <img alt="line" src={line} />
+                </div>
+              )}
+              {this.renderUserNode()}
+              {this.renderChildrenList()}
+            </Collapse>
+          </div>
+        )}
       </div>
     );
   }

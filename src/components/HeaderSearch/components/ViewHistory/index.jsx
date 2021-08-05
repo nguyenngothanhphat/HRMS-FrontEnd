@@ -1,9 +1,15 @@
 /* eslint-disable react/no-array-index-key */
 import avtDefault from '@/assets/avtDefault.jpg';
-import { AntDesignOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Col, Row } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
+
+import docIcon from '@/assets/advanceSearchDocs.svg';
+import reportIcon from '@/assets/advanceSearchReport.svg';
+import requestIcon from '@/assets/advanceSearchRequest.svg';
+import eventIcon from '@/assets/advanceSearchEvents.svg';
+
 import s from './index.less';
 
 @connect(({ searchAdvance: { historySearch = {} } = {} }) => ({
@@ -85,8 +91,20 @@ class ViewHistory extends Component {
         )}
         <Row className={s.blockRecent}>
           <Col span={6} className={s.itemDisplay} onClick={this.handleSearchByCategory}>
-            <Avatar size={48} icon={<AntDesignOutlined />} />
+            <Avatar size={48} icon={<img alt="documents" src={docIcon} />} />
             <p className={s.itemDisplay__text}>Documents</p>
+          </Col>
+          <Col span={6} className={s.itemDisplay} onClick={this.handleSearchByCategory}>
+            <Avatar size={48} icon={<img alt="Reports" src={reportIcon} />} />
+            <p className={s.itemDisplay__text}>Reports</p>
+          </Col>
+          <Col span={6} className={s.itemDisplay} onClick={this.handleSearchByCategory}>
+            <Avatar size={48} icon={<img alt="Requests" src={requestIcon} />} />
+            <p className={s.itemDisplay__text}>Requests</p>
+          </Col>
+          <Col span={6} className={s.itemDisplay} onClick={this.handleSearchByCategory}>
+            <Avatar size={48} icon={<img alt="Events" src={eventIcon} />} />
+            <p className={s.itemDisplay__text}>Events</p>
           </Col>
         </Row>
         <div className={s.viewActionChangeMode} onClick={() => changeMode('advanced')}>

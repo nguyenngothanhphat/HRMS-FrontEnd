@@ -71,101 +71,109 @@ class HealthWellbeing extends Component {
         <div className={styles.planDocuments__first}>
           <div className={styles.labelDocs}>Choice Plan Document (01)</div>
           {documents.map((item) => (
-            <Row gutter={[24, 0]}>
-              <Col span={15}>
-                <Form.Item>
-                  <Select
-                    disabled
-                    showSearch
-                    showArrow
-                    ref={this.inputRef}
-                    placeholder="Choice Plan Document"
-                    defaultValue={
-                      <span onClick={this.onDownload} style={{ cursor: 'pointer' }}>
-                        {item?.attachmentName}
-                      </span>
-                    }
-                    suffixIcon={
-                      <img
-                        style={{ marginTop: '-6px', marginLeft: '-12px' }}
-                        alt="pdf-img"
-                        src={iconPDF}
+            <>
+              <Row gutter={[24, 0]}>
+                <Col span={15}>
+                  <Form.Item>
+                    <Select
+                      disabled
+                      showSearch
+                      showArrow
+                      ref={this.inputRef}
+                      placeholder="Choice Plan Document"
+                      defaultValue={
+                        <span onClick={this.onDownload} style={{ cursor: 'pointer' }}>
+                          {item?.attachmentName}
+                        </span>
+                      }
+                      suffixIcon={
+                        <img
+                          style={{ marginTop: '-6px', marginLeft: '-12px' }}
+                          alt="pdf-img"
+                          src={iconPDF}
+                        />
+                      }
+                      filterOption={(input, option) => {
+                        return (
+                          option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={8} />
+                <Col
+                  span={1}
+                  style={{ paddingLeft: 0 }}
+                  onClick={() => this.handleRemovePlanDocs(benefit, item?._id || '')}
+                >
+                  <img style={{ cursor: 'pointer' }} alt="delete" src={TrashIcon} />
+                </Col>
+              </Row>
+              <div className={styles.planDocuments__second}>
+                <Row justify="space-between">
+                  <Col span={8}>
+                    <div className={styles.label}>Annual Cost</div>
+                    <Form.Item name="annualCost">
+                      <Select
+                        disabled
+                        showSearch
+                        showArrow
+                        className={styles.inputNumber}
+                        placeholder="Choose annual cost"
+                        suffixIcon={<span>₹</span>}
+                        filterOption={(input, option) => {
+                          return (
+                            option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0
+                          );
+                        }}
                       />
-                    }
-                    filterOption={(input, option) => {
-                      return (
-                        option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={8} />
-              <Col
-                span={1}
-                style={{ paddingLeft: 0 }}
-                onClick={() => this.handleRemovePlanDocs(benefit, item?._id || '')}
-              >
-                <img style={{ cursor: 'pointer' }} alt="delete" src={TrashIcon} />
-              </Col>
-            </Row>
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <div className={styles.label}>Employee Contribution</div>
+                    <Form.Item name="employeeContribution">
+                      <Select
+                        disabled
+                        showSearch
+                        showArrow
+                        className={styles.inputNumber}
+                        // allowClear
+                        placeholder="Choose employee contribution"
+                        // onChange={this.onChangeSelect}
+                        suffixIcon={<span>₹</span>}
+                        filterOption={(input, option) => {
+                          return (
+                            option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0
+                          );
+                        }}
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <div className={styles.label}>Employer&lsquo;s Contribution</div>
+                    <Form.Item name="employerContribution">
+                      <Select
+                        disabled
+                        showSearch
+                        showArrow
+                        className={styles.inputNumber}
+                        // allowClear
+                        placeholder="Choose employer's contribution"
+                        // onChange={this.onChangeSelect}
+                        suffixIcon={<span>₹</span>}
+                        filterOption={(input, option) => {
+                          return (
+                            option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0
+                          );
+                        }}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </div>
+            </>
           ))}
-        </div>
-        <div className={styles.planDocuments__second}>
-          <Row justify="space-between">
-            <Col span={8}>
-              <div className={styles.label}>Annual Cost</div>
-              <Form.Item name="annualCost">
-                <Select
-                  disabled
-                  showSearch
-                  showArrow
-                  className={styles.inputNumber}
-                  placeholder="Choose annual cost"
-                  suffixIcon={<span>₹</span>}
-                  filterOption={(input, option) => {
-                    return option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                  }}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <div className={styles.label}>Employee Contribution</div>
-              <Form.Item name="employeeContribution">
-                <Select
-                  disabled
-                  showSearch
-                  showArrow
-                  className={styles.inputNumber}
-                  // allowClear
-                  placeholder="Choose employee contribution"
-                  // onChange={this.onChangeSelect}
-                  suffixIcon={<span>₹</span>}
-                  filterOption={(input, option) => {
-                    return option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                  }}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <div className={styles.label}>Employer&lsquo;s Contribution</div>
-              <Form.Item name="employerContribution">
-                <Select
-                  disabled
-                  showSearch
-                  showArrow
-                  className={styles.inputNumber}
-                  // allowClear
-                  placeholder="Choose employer's contribution"
-                  // onChange={this.onChangeSelect}
-                  suffixIcon={<span>₹</span>}
-                  filterOption={(input, option) => {
-                    return option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0;
-                  }}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
         </div>
       </div>
     );
@@ -185,9 +193,11 @@ class HealthWellbeing extends Component {
             <div className={styles.benefit__subTitle__right}>{`Valid Till ${validTill}`}</div>
           </div>
           {this.planDocuments(benefit, index)}
-          <div className={styles.addDocs} onClick={() => this.handleOpenModal(benefit)}>
-            <img alt="add" src={AddIcon} />
-            <div className={styles.addDocs__text}>Add Documents</div>
+          <div className={styles.benefit__bottom}>
+            <div className={styles.addDocs} onClick={() => this.handleOpenModal(benefit)}>
+              <img alt="add" src={AddIcon} />
+              <div className={styles.addDocs__text}>Add Documents</div>
+            </div>
           </div>
         </div>
         <Divider />

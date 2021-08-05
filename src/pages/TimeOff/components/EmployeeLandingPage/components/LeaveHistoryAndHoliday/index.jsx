@@ -113,20 +113,34 @@ class LeaveHistoryAndHoliday extends PureComponent {
         _id = '',
       } = each;
 
-      if (status === TIMEOFF_STATUS.accepted) {
+      if (
+        status === TIMEOFF_STATUS.accepted ||
+        status === TIMEOFF_STATUS.rejected ||
+        status === TIMEOFF_STATUS.inProgress ||
+        status === TIMEOFF_STATUS.inProgressNext
+      ) {
         const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
         const toDate = moment(to).locale('en').format('MM/DD/YYYY');
-        const now = moment().locale('en').format('MM/DD/YYYY');
-        if (moment(now).isAfter(moment(toDate))) {
-          return {
-            _id,
-            name: subject,
-            fromDate,
-            toDate,
-            duration,
-            type: shortType,
-          };
-        }
+        // const now = moment().locale('en').format('MM/DD/YYYY');
+        // if (moment(now).isAfter(moment(toDate))) {
+        //   return {
+        //     _id,
+        //     name: subject,
+        //     fromDate,
+        //     toDate,
+        //     duration,
+        //     type: shortType,
+        //   };
+        // }
+        return {
+          _id,
+          name: subject,
+          fromDate,
+          toDate,
+          duration,
+          type: shortType,
+          status,
+        };
       }
       return null;
     });
@@ -146,7 +160,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
     return (
       <div className={styles.LeaveHistoryAndHoliday}>
         <Tabs destroyInactiveTabPane defaultActiveKey="1" tabBarExtraContent={this.operations()}>
-          <TabPane tab="Leave History" key="1">
+          <TabPane tab="Time off Calendar" key="1">
             <LeaveHistory leavingList={formatLeavingList} activeShowType={activeShowType} />
           </TabPane>
           <TabPane tab="Holidays" key="2">

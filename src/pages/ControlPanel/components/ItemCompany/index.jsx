@@ -1,9 +1,10 @@
 import logoDefault from '@/assets/companyDefault.png';
-import { Button } from 'antd';
+import { Button, Tooltip } from 'antd';
 import React, { PureComponent } from 'react';
 import { history, connect } from 'umi';
 import { setTenantId, setCurrentCompany } from '@/utils/authority';
 
+import { MoreOutlined } from '@ant-design/icons';
 import s from './index.less';
 
 @connect(({ user: { currentUser: { email = '' } = {} } = {} }) => ({ email }))
@@ -105,6 +106,15 @@ class ItemCompany extends PureComponent {
           >
             Get Started
           </Button>
+          {/* <Dropdown className={styles.menuIcon} overlay={this.actionMenu(_id)} placement="topLeft"> */}
+          <Tooltip title="Option" className={s.optionMenu}>
+            <Button
+              className={s.optionMenu__btn}
+              shape="circle"
+              icon={<MoreOutlined className={s.dots} />}
+            />
+          </Tooltip>
+          {/* </Dropdown> */}
         </div>
       </div>
     );

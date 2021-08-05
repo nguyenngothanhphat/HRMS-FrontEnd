@@ -1,8 +1,9 @@
-import React, { PureComponent } from 'react';
-import { connect } from 'umi';
 // import moment from 'moment';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { getFilter, removeCurrentPage, removeFilter } from '@/utils/timeoffManagement';
+import React, { PureComponent } from 'react';
+import { connect } from 'umi';
 import OptionsHeader from '../OptionsHeader';
 import TableTimeOff from '../TableTimeOff';
 import styles from './index.less';
@@ -24,19 +25,35 @@ import styles from './index.less';
   }),
 )
 class TableContainer extends PureComponent {
+  // constructor(props) {
+  //   super(props);
+  //   if (window.performance) {
+  //     if (performance.navigation.type === 1) {
+  //       localStorage.removeItem('timeOffManagementState');
+  //     }
+  //   }
+  // }
+
   componentDidMount() {
-    this.fetchListTimeOff();
+    const { timeOffManagement: { listTimeOff = [] } = {} } = this.props;
+    const preState = getFilter();
+    if (listTimeOff.length === 0) this.getDataTable(preState || {});
     this.fetchEmployees();
   }
 
-  componentDidUpdate = (prevProps) => {
-    const { listLocationsByCompany = [] } = this.props;
-    if (
-      JSON.stringify(listLocationsByCompany) !== JSON.stringify(prevProps.listLocationsByCompany)
-    ) {
-      this.fetchEmployees();
-      this.fetchListTimeOff();
-    }
+  // componentDidUpdate = (prevProps) => {
+  //   const { listLocationsByCompany = [] } = this.props;
+  //   if (
+  //     JSON.stringify(listLocationsByCompany) !== JSON.stringify(prevProps.listLocationsByCompany)
+  //   ) {
+  //     this.fetchEmployees();
+  //     this.fetchListTimeOff();
+  //   }
+  // };
+  componentWillUnmount = () => {
+    window.addEventListener('beforeunload', () => {
+      removeFilter();
+    });
   };
 
   getCompanyAndLocation = () => {
@@ -104,6 +121,7 @@ class TableContainer extends PureComponent {
   };
 
   getDataTable = (values) => {
+    removeCurrentPage();
     const { dispatch } = this.props;
     const { status = [] } = values;
     let newStatus = [...status];

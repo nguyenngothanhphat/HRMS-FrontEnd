@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
+import { connect } from 'umi';
 
 import styles from '@/pages/Directory/components/OrganisationChart/components/OrganizationChart/index.less';
 
+@connect(({ user: { currentUser: { employee: { _id: idCurrentUser = '' } = {} } = {} } = {} }) => ({
+  idCurrentUser,
+}))
 class EmployeeNode extends Component {
   constructor(props) {
     super(props);
@@ -22,18 +26,28 @@ class EmployeeNode extends Component {
   };
 
   render() {
-    const { employee = {}, itemSelected = '', renderCardInfo = () => {} } = this.props;
+    const {
+      employee = {},
+      itemSelected = '',
+      renderCardInfo = () => {},
+      idCurrentUser = '',
+    } = this.props;
     const { _id: idEmpl = '' } = employee;
 
     const isActive = itemSelected === idEmpl;
+    const isCurrentUser = idEmpl === idCurrentUser;
+
     const className = isActive ? styles.selectNode : styles.node;
+    const className2 = isCurrentUser ? styles.currentUserNode : styles.employeeNode;
+
     return (
       <div
         ref={(el) => this.addToRefs(el, idEmpl)}
         id={idEmpl}
-        className={`${styles.employeeNode} ${styles.node} ${className}`}
+        className={`${className2} ${styles.node} ${className}`}
       >
         {renderCardInfo(employee, 'employee')}
+        {isCurrentUser ? <div className={styles.node__bottom_you1}>You</div> : null}
       </div>
     );
   }
