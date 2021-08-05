@@ -27,10 +27,13 @@ class UserNode extends Component {
     } = dataOrgChart;
 
     const isActive = itemSelected === idUser;
+    const isCurrentUser = idUser === idCurrentUser;
+
     const className = isActive ? styles.selectNode : styles.node;
+    const className2 = isCurrentUser ? styles.currentUserNode : styles.userNode;
 
     return (
-      <div id={idUser} className={`${styles.userNode} ${styles.node} ${className}`} ref={userRef}>
+      <div id={idUser} className={`${className2} ${styles.node} ${className}`} ref={userRef}>
         {renderCardInfo(user, 'user')}
         {listEmployees.length === 0 ? null : (
           <div className={styles.node__bottom}>
@@ -46,7 +49,7 @@ class UserNode extends Component {
                 ? `- ${listEmployees.length} reportees`
                 : `+ ${listEmployees.length} reportees`}
             </div>
-            {idUser === idCurrentUser ? <div className={styles.node__bottom_you}>You</div> : null}
+            {isCurrentUser ? <div className={styles.node__bottom_you}>You</div> : null}
           </div>
         )}
       </div>
