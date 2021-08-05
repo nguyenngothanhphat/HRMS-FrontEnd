@@ -67,14 +67,14 @@ class FormLogin extends Component {
 
   _renderButton = (getFieldValue) => {
     const { loading } = this.props;
-    const valueEmail = getFieldValue('userEmail');
-    const valuePsw = getFieldValue('password');
+    // const valueEmail = getFieldValue('userEmail');
+    // const valuePsw = getFieldValue('password');
     return (
       <Button
         type="primary"
         htmlType="submit"
         loading={loading}
-        disabled={!valueEmail || !valuePsw}
+        // disabled={!valueEmail || !valuePsw}
         className={styles.btnSignIn}
       >
         {formatMessage({ id: 'pages.login.signIn' })}
