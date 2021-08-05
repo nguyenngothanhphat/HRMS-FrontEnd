@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Table } from 'antd';
 import { formatMessage, Link, history } from 'umi';
 import moment from 'moment';
+import { getCurrentPage, setCurrentPage, removeCurrentPage } from '@/utils/timeoffManagement';
 import styles from './index.less';
 
 class TableTimeOff extends PureComponent {
@@ -31,10 +32,10 @@ class TableTimeOff extends PureComponent {
       sortDirections: ['ascend', 'descend', 'ascend'],
       sorter: {
         compare: (a, b) =>
-          a.employee.generalInfo.firstName.localeCompare(b.employee.generalInfo.firstName),
+          a.employee?.generalInfo?.firstName.localeCompare(b.employee?.generalInfo?.firstName),
       },
       render: (employee) => {
-        const { generalInfo: { firstName = '', lastName = '' } = {} } = employee;
+        const { generalInfo: { firstName = '', lastName = '' } = {} } = employee || {};
         return (
           <span>
             {firstName} {lastName}
@@ -51,7 +52,7 @@ class TableTimeOff extends PureComponent {
         compare: (a, b) => new Date(a.fromDate) - new Date(b.fromDate),
       },
       render: (fromDate) => {
-        const formatedDate = moment(fromDate).format('MM.DD.YY');
+        const formatedDate = fromDate ? moment(fromDate).format('MM.DD.YY') : '';
         return <span>{formatedDate}</span>;
       },
     },
@@ -64,7 +65,7 @@ class TableTimeOff extends PureComponent {
         compare: (a, b) => new Date(a.toDate) - new Date(b.toDate),
       },
       render: (toDate) => {
-        const formatedDate = moment(toDate).format('MM.DD.YY');
+        const formatedDate = toDate ? moment(toDate).format('MM.DD.YY') : '';
         return <span>{formatedDate}</span>;
       },
     },
@@ -89,7 +90,7 @@ class TableTimeOff extends PureComponent {
     {
       title: 'Action',
       dataIndex: '_id',
-      align: 'center',
+      align: 'left',
       render: (_id) => (
         <div className={styles.documentAction} onClick={() => this.onViewClick(_id)}>
           <Link>View Request</Link>
@@ -101,13 +102,29 @@ class TableTimeOff extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      pageSelected: 1,
+      pageSelected: getCurrentPage() || 1,
       selectedRowKeys: [],
     };
   }
 
+  componentDidUpdate = (prevProps) => {
+    const { listTimeOff = [] } = this.props;
+    if (JSON.stringify(listTimeOff) !== JSON.stringify(prevProps.listTimeOff)) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        pageSelected: 1,
+      });
+    }
+  };
+
+  componentWillUnmount = () => {
+    window.addEventListener('beforeunload', () => {
+      removeCurrentPage();
+    });
+  };
+
   onViewClick = (_id) => {
-    history.push(`/time-off/manager-view-request/${_id}`);
+    history.push(`/time-off/overview/manager-timeoff/view/${_id}`);
   };
 
   handleRequestDetail = (id) => {
@@ -120,6 +137,7 @@ class TableTimeOff extends PureComponent {
     this.setState({
       pageSelected: pageNumber,
     });
+    setCurrentPage(pageNumber);
   };
 
   setFirstPage = () => {
@@ -137,7 +155,7 @@ class TableTimeOff extends PureComponent {
   };
 
   render() {
-    const { listTimeOff = [], loading, requestDetail } = this.props;
+    const { listTimeOff = [], loading } = this.props;
     const { pageSelected, selectedRowKeys } = this.state;
     const rowSize = 10;
     const scroll = {
@@ -179,7 +197,7 @@ class TableTimeOff extends PureComponent {
           columns={this.columns}
           dataSource={listTimeOff}
           scroll={scroll}
-          rowKey="employeeId"
+          rowKey={(record) => record._id}
           onRow={(item) => {
             return {
               onClick: () => this.handleRequestDetail(item._id),

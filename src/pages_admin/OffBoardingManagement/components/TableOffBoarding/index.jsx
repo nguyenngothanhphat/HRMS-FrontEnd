@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
-import { formatMessage, Link } from 'umi';
+import { formatMessage, Link, history } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
 
@@ -36,6 +36,13 @@ class TableOffBoarding extends PureComponent {
         const { generalInfo: { legalName = '' } = {} } = employee;
         return <span>{legalName}</span>;
       },
+      sorter: (a, b) => {
+        const name1 = a.employee.generalInfo?.legalName || '';
+        const name2 = b.employee.generalInfo?.legalName || '';
+        return this.isString(name1) && this.isString(name2) ? name1.localeCompare(name2) : null;
+      },
+      // defaultSortOrder: 'ascend',
+      sortDirections: ['ascend', 'descend', 'ascend'],
     },
     {
       title: 'Group',
@@ -74,9 +81,9 @@ class TableOffBoarding extends PureComponent {
     {
       title: 'Action',
       dataIndex: 'action',
-      align: 'center',
-      render: () => (
-        <div className={styles.documentAction}>
+      align: 'left',
+      render: (_, record) => (
+        <div className={styles.documentAction} onClick={() => this.viewRequest(record._id)}>
           <Link>View Request</Link>
         </div>
       ),
@@ -90,6 +97,14 @@ class TableOffBoarding extends PureComponent {
       selectedRowKeys: [],
     };
   }
+
+  isString = (text) => {
+    return typeof text === 'string' || text instanceof String;
+  };
+
+  viewRequest = (_id) => {
+    history.push(`/offboarding/list/review/${_id}`);
+  };
 
   // pagination
   onChangePagination = (pageNumber) => {
@@ -154,7 +169,7 @@ class TableOffBoarding extends PureComponent {
           columns={this.columns}
           dataSource={data}
           scroll={scroll}
-          rowKey={(record) => record.ticketNo}
+          rowKey={(record) => record.ticketID}
         />
       </div>
     );

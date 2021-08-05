@@ -129,19 +129,21 @@ class SearchResult extends PureComponent {
   renderViewSearchByCategory = () => {
     const { resultByCategory = [] } = this.props;
     const { currentResultByCategoryPage } = this.state;
+
+    const filterResult = resultByCategory
+      .filter((doc) => doc !== null && doc?.attachment && doc?.employee?._id)
+      .slice((currentResultByCategoryPage - 1) * 10, currentResultByCategoryPage * 10)
+      .map((item, index) => this.renderItemDocument(item, index));
+
     return (
       <div className={styles.mainContent}>
         <div className={styles.block} style={{ borderBottom: 'none' }}>
           {resultByCategory.length > 0 ? (
             <>
-              {' '}
               <Row style={{ marginBottom: '15px' }} gutter={[16, 16]}>
-                {resultByCategory
-                  .filter((doc) => doc !== null && doc?.attachment && doc?.employee?._id)
-                  .slice((currentResultByCategoryPage - 1) * 10, currentResultByCategoryPage * 10)
-                  .map((item, index) => this.renderItemDocument(item, index))}
+                {filterResult}
               </Row>
-              {resultByCategory.length > 10 && (
+              {filterResult.length > 10 && (
                 <Pagination
                   showTotal={(total, range) => (
                     <span>
@@ -153,7 +155,7 @@ class SearchResult extends PureComponent {
                     </span>
                   )}
                   defaultCurrent={1}
-                  total={resultByCategory.length}
+                  total={filterResult.length}
                   onChange={(page) => this.setState({ currentResultByCategoryPage: page })}
                 />
               )}

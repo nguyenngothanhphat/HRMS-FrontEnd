@@ -217,7 +217,6 @@ class DirectoryTable extends Component {
             ? a.generalInfo?.workEmail.localeCompare(`${b.generalInfo?.workEmail}`)
             : null;
         },
-        defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
@@ -232,7 +231,6 @@ class DirectoryTable extends Component {
             ? a.generalInfo?.userId.localeCompare(`${b.generalInfo?.userId}`)
             : null;
         },
-        defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
@@ -251,7 +249,6 @@ class DirectoryTable extends Component {
             ? a.generalInfo?.workNumber.localeCompare(`${b.generalInfo?.workNumber}`)
             : null;
         },
-        defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
@@ -267,7 +264,6 @@ class DirectoryTable extends Component {
             ? a.generalInfo?.employeeId.localeCompare(`${b.generalInfo?.employeeId}`)
             : null;
         },
-        defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
@@ -286,7 +282,6 @@ class DirectoryTable extends Component {
         sorter: (a, b) => {
           return a.title && a.title?.name ? a.title?.name.localeCompare(`${b.title?.name}`) : null;
         },
-        defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
@@ -317,7 +312,6 @@ class DirectoryTable extends Component {
             ? a.department?.name.localeCompare(`${b.department?.name}`)
             : null;
         },
-        defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
@@ -340,7 +334,6 @@ class DirectoryTable extends Component {
             ? a.location?.name.localeCompare(`${b.location?.name}`)
             : null;
         },
-        defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
@@ -355,8 +348,7 @@ class DirectoryTable extends Component {
                 managerPack._id,
                 managerPack.tenant,
                 managerPack.generalInfo?.userId,
-              )
-            }
+              )}
           >
             {managerPack.generalInfo
               ? `${managerPack?.generalInfo?.firstName} ${managerPack?.generalInfo?.lastName}`
@@ -372,7 +364,6 @@ class DirectoryTable extends Component {
               )
             : null;
         },
-        defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
@@ -387,7 +378,6 @@ class DirectoryTable extends Component {
             ? a.employmentType?.name.localeCompare(`${b.employmentType?.name}`)
             : null;
         },
-        defaultSortOrder: 'ascend',
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
