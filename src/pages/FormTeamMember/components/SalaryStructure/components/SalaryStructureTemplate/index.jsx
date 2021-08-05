@@ -6,6 +6,7 @@ import { formatMessage, connect } from 'umi';
 // import { dialog } from '@/utils/utils';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 // import { PROCESS_STATUS } from '@/utils/onboarding';
+import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import doneIcon from './assets/doneIcon.png';
 import editIcon from './assets/editIcon.png';
 import styles from './index.less';
@@ -875,7 +876,13 @@ class SalaryStructureTemplate extends PureComponent {
                     columns={this._renderColumns()}
                     pagination={false}
                   />
+                  <Row style={{ margin: '32px' }}>
+                    <Col>
+                      <RenderAddQuestion />
+                    </Col>
+                  </Row>
                 </div>
+
                 {/* {this._renderFooter()} */}
                 {processStatus === 'ACCEPT-PROVISIONAL-OFFER' || processStatus === 'DRAFT'
                   ? this._renderBottomBar()

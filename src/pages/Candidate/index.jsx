@@ -8,35 +8,14 @@ import OfferDetails from './components/OfferDetails';
 import JobDetails from './components/JobDetails';
 import Benefits from './components/Benefits';
 import SalaryStructure from './components/SalaryStructure';
-import AdditionalQuestion from './components/AdditionalQuestion';
+// import AdditionalQuestion from './components/AdditionalQuestion';
 import PreviewOffer from './components/PreviewOffer';
-
-const _renderScreen = (screenNumber) => {
-  switch (screenNumber) {
-    case 1:
-      return <BasicInfomation />;
-    case 2:
-      return <JobDetails />;
-    case 3:
-      return <SalaryStructure />;
-    case 4:
-      return <EligibilityDocs />;
-    case 5:
-      return <OfferDetails />;
-    case 6:
-      return <Benefits />;
-    case 7:
-      return <AdditionalQuestion />;
-    case 8:
-      return <PreviewOffer />;
-    default:
-      return null;
-  }
-};
+import { Page } from '../FormTeamMember/utils';
 
 const Candidate = (props) => {
   const {
     dispatch,
+    listPage,
     localStep,
     candidate,
     // loadingFetchDocumentsByCandidate = false,
@@ -84,22 +63,42 @@ const Candidate = (props) => {
       }
     });
   }, []);
+  const _renderScreen = (item) => {
+    switch (item) {
+      case Page.Basic_Information:
+        return <BasicInfomation />;
+      case Page.Job_Details:
+        return <JobDetails />;
+      case Page.Salary_Structure:
+        return <SalaryStructure />;
+      case Page.Eligibility_documents:
+        return <EligibilityDocs />;
+      case Page.Offer_Details:
+        return <OfferDetails />;
+      case Page.Benefits:
+        return <Benefits />;
+      case undefined:
+        return <PreviewOffer />;
+      default:
+        return null;
+    }
+  };
+  console.log('reRender', listPage);
   // if (loadingFetchDocumentsByCandidate || loadingFetchWorkHistory) return <Skeleton />;
-  return <div>{_renderScreen(screen)}</div>;
+  return <div>{_renderScreen(listPage[screen - 1])}</div>;
 };
 
 // export default Candidate;
 export default connect(
   ({
+    optionalQuestion: { listPage = [] },
     candidateProfile: { localStep, data, tempData } = {},
     user: { currentUser: { candidate = '' } = {} } = {},
-    loading,
   }) => ({
+    listPage,
     localStep,
     data,
     tempData,
     candidate,
-    loadingFetchWorkHistory: loading.effects['candidateProfile/fetchWorkHistory'],
-    loadingFetchDocumentsByCandidate: loading.effects['candidateProfile/fetchDocumentByCandidate'],
   }),
 )(Candidate);

@@ -1,37 +1,25 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-param-reassign */
-import React, { Component } from 'react';
-import { Row, Col, Form, Input, Typography, Button, Spin, notification } from 'antd';
+import React, { PureComponent } from 'react';
+import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import { PROCESS_STATUS } from '@/utils/onboarding';
-import AddIcon from '@/assets/add-symbols.svg';
-import { TYPE_QUESTION } from '@/components/Question/utils';
-import ModalListQuestion from '@/components/ModalListQuestion/index';
-import ModalAddQuestion from '@/components/ModalAddQuestion/index';
+import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import BasicInformationHeader from './components/BasicInformationHeader';
 // import BasicInformationReminder from './components/BasicInformationReminder';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
-
 import styles from './index.less';
+import { Page } from '../../utils';
 
-const defaultQuestion = {
-  index: null,
-  answerType: TYPE_QUESTION.TEXT_ANSWER.key,
-  question: 'Type your question',
-  defaultAnswers: [],
-  isRequired: false,
-  rating: {},
-  multiChoice: {},
-};
 @connect(({ candidateInfo: { data, checkMandatory, currentStep, tempData } = {} }) => ({
   data,
   checkMandatory,
   currentStep,
   tempData,
 }))
-class BasicInformation extends Component {
+class BasicInformation extends PureComponent {
   formRef = React.createRef();
 
   constructor(props) {
@@ -39,13 +27,6 @@ class BasicInformation extends Component {
 
     this.state = {
       isOpenReminder: false,
-      openModal: '',
-      questionItem: {},
-      newPage: {},
-      action: 'Add',
-      settings: [],
-      title: '',
-      firstOpen: true,
     };
   }
 
@@ -73,7 +54,14 @@ class BasicInformation extends Component {
     window.scrollTo({ top: 77, behavior: 'smooth' });
 
     this.checkBottomBar();
-
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Basic_Information,
+        candidate,
+        data: {},
+      },
+    });
     if (processStatus === 'DRAFT') {
       // const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
       // console.log(candidate, currentStepLocal);
@@ -117,110 +105,6 @@ class BasicInformation extends Component {
     }
   }
 
-  // question onboarding
-  openModalAdd = () => {
-    this.setState({
-      openModal: 'AddQuestion',
-      // openModalList: false,
-      questionItem: defaultQuestion,
-      action: 'Add',
-      title: 'Add question',
-    });
-  };
-
-  closeModalAdd = () => {
-    const { firstOpen } = this.state;
-    if (firstOpen) this.setState({ openModal: '' });
-    else this.setState({ openModal: 'ListQuestion' });
-  };
-
-  closeModalList = () => {
-    this.setState({ openModal: '', settings: [] });
-  };
-
-  openModalEdit = () => {
-    this.setState({
-      openModal: 'AddQuestion',
-      // openModalList: false,
-      title: 'Edit question',
-      action: 'Save',
-    });
-  };
-
-  openModalRemove = (_questionItem, keyQuestion) => {
-    const { settings } = this.state;
-
-    this.setState({
-      settings: [...settings.slice(0, keyQuestion), ...settings.slice(keyQuestion + 1)],
-      // questionItem: {},
-    });
-  };
-
-  onSave = () => {
-    const { questionItem, settings } = this.state;
-    // remove empty answer
-    const question = {
-      ...questionItem,
-      defaultAnswers: questionItem.defaultAnswers.filter((i) => i),
-    };
-
-    // check the number of answers
-    if (
-      (question.answerType === TYPE_QUESTION.SINGLE_CHOICE.key ||
-        question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key ||
-        question.answerType === TYPE_QUESTION.SELECT_OPTION.key) &&
-      question.defaultAnswers.length < 1
-    ) {
-      notification.error({
-        message: `This type of question must have at least one answer!`,
-      });
-    }
-    if (questionItem.index === null) {
-      questionItem.index = settings.length;
-      settings.push(questionItem);
-    } else {
-      settings[questionItem.index] = questionItem;
-    }
-
-    this.setState({ settings, openModal: 'ListQuestion', firstOpen: false });
-  };
-
-  onSaveList = async () => {
-    const { data, settings } = this.state;
-    const { dispatch } = this.props;
-    const { _id } = data;
-    // fetch list optional onboarding question
-    const result = await dispatch({
-      type: 'employeeSetting/addOptionalOnboardQuestions',
-      payload: {
-        isDefault: false,
-        position: {
-          move_to: 'IN-PAGE',
-          page: 'Basic Information',
-        },
-        candidate: _id,
-        settings,
-      },
-    });
-    if (result.statusCode === 200) this.setState({ openModal: '', settings: [] });
-  };
-
-  onChangeQuestionItem = (data) => {
-    const { questionItem } = this.state;
-    this.setState({
-      questionItem: {
-        ...questionItem,
-        ...data,
-      },
-    });
-  };
-
-  onChangeNewPage = (data) => {
-    const { newPage } = this.state;
-    this.setState({ newPage: { ...newPage, ...data } });
-  };
-
-  // end question onboarding
   disableEdit = () => {
     const {
       data: { processStatus = '' },
@@ -586,22 +470,7 @@ class BasicInformation extends Component {
             </Form.Item>
           </Col>
         </Row>
-        <Row
-          align="space-between"
-          style={{ marginTop: '24px' }}
-          className={styles.OptionalOnboardingQuestions__buttonAdd}
-        >
-          <Col>
-            <Button
-              type="link"
-              // style={{ display: 'flex', alignItems: 'center', paddingLeft: '0px' }}
-              onClick={this.openModalAdd}
-            >
-              <img src={AddIcon} alt="Add icon" style={{ width: '18px', marginRight: '15px' }} />
-              Add optional onboarding questions
-            </Button>
-          </Col>
-        </Row>
+        <RenderAddQuestion />
       </div>
     );
   };
@@ -628,7 +497,7 @@ class BasicInformation extends Component {
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
-          <Col span={16}>
+          <Col span={12}>
             <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
           </Col>
           <Col span={8}>
@@ -653,7 +522,7 @@ class BasicInformation extends Component {
   };
 
   render() {
-    const { data = {}, settings, openModal, questionItem, title, action } = this.state;
+    const { data = {} } = this.state;
     const {
       firstName,
       middleName,
@@ -722,26 +591,6 @@ class BasicInformation extends Component {
             </Col>
           </>
         )}
-        <ModalAddQuestion
-          openModal={openModal === 'AddQuestion'}
-          title={title}
-          onSave={this.onSave}
-          onCancel={this.closeModalAdd}
-          onChangeQuestionItem={this.onChangeQuestionItem}
-          questionItem={questionItem}
-          action={action}
-        />
-        <ModalListQuestion
-          openModalList={openModal === 'ListQuestion'}
-          title={title}
-          onSave={this.onSaveList}
-          onCancel={this.closeModalList}
-          openModalEdit={this.openModalEdit}
-          openModalRemove={this.openModalRemove}
-          openModalAdd={this.openModalAdd}
-          settings={settings}
-          // action={action}
-        />
       </Row>
     );
   }

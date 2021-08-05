@@ -76,7 +76,7 @@ const employeeSetting = {
   },
   effects: {
     // list page on boarding
-    *fetchListPageOnboard({ call, put }) {
+    *fetchListPageOnboard(_, { call, put }) {
       try {
         const response = yield call(getListPageOnboarding, {
           tenantId: getCurrentTenant(),

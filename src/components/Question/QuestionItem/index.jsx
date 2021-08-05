@@ -285,7 +285,7 @@ export default function QuestionItem({
               <Row style={{ marginTop: '5px' }}>
                 {`0${rating.columns?.length + 1}`.substr(-2)}.{' '}
                 <div type="Button" className={styles.addRating} onClick={() => addRating('col')}>
-                  Add row
+                  Add column
                 </div>
               </Row>
             </Col>

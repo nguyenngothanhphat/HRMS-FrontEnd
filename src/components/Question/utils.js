@@ -39,5 +39,9 @@ const SPECIFY = {
     value: 'Exactly',
   },
 };
-
-export { TYPE_QUESTION, SPECIFY };
+const MODE = {
+  ANSWER: 'answer',
+  EDIT: 'edit',
+  VIEW: 'view',
+};
+export { TYPE_QUESTION, SPECIFY, MODE };

@@ -3,6 +3,7 @@ import React from 'react';
 import { formatMessage } from 'umi';
 import QuestionItemView from '@/components/Question/QuestionItemView';
 import AddIcon from '@/assets/add-symbols.svg';
+import { MODE } from '@/components/Question/utils';
 import styles from './index.less';
 
 const ModalListQuestion = (props) => {
@@ -14,6 +15,8 @@ const ModalListQuestion = (props) => {
     openModalRemove,
     openModalAdd,
     settings,
+    action = 'Add New Page',
+    mode = MODE.EDIT,
   } = props;
   // const [form] = Form.useForm();
   return (
@@ -34,9 +37,10 @@ const ModalListQuestion = (props) => {
           htmlType="submit"
           type="primary"
           onClick={onSave}
+          disabled={mode === MODE.VIEW || settings.length === 0}
           className={styles.btnSubmit}
         >
-          Add New Page
+          {action}
         </Button>,
       ]}
     >
@@ -49,30 +53,37 @@ const ModalListQuestion = (props) => {
             {formatMessage({ id: 'component.optionalOnboardingQuestions.subTitle' })}
           </div>
         </div>
-        <Row
-          align="space-between"
-          style={{ marginTop: '24px' }}
-          className={styles.OptionalOnboardingQuestions__buttonAdd}
-        >
-          <Col>
-            <Button
-              type="link"
-              style={{ display: 'flex', alignItems: 'left', paddingLeft: '0px' }}
-              onClick={openModalAdd}
-            >
-              <img src={AddIcon} alt="Add icon" style={{ width: '18px', marginRight: '15px' }} />
-              {formatMessage({ id: 'component.optionalOnboardingQuestions.addQuestion' })}
-            </Button>
-          </Col>
-        </Row>
-        {settings.map((question, keyQuestion) => (
-          <QuestionItemView
-            openModalEdit={openModalEdit}
-            keyQuestion={keyQuestion}
-            questionItem={question}
-            openModalRemove={openModalRemove}
-          />
-        ))}
+        {mode === 'edit' && (
+          <Row
+            align="space-between"
+            style={{ marginTop: '24px' }}
+            className={styles.OptionalOnboardingQuestions__buttonAdd}
+          >
+            <Col>
+              <Button
+                type="link"
+                style={{ display: 'flex', alignItems: 'left', paddingLeft: '0px' }}
+                onClick={openModalAdd}
+              >
+                <img src={AddIcon} alt="Add icon" style={{ width: '18px', marginRight: '15px' }} />
+                {formatMessage({ id: 'component.optionalOnboardingQuestions.addQuestion' })}
+              </Button>
+            </Col>
+          </Row>
+        )}
+        {settings.map((question, keyQuestion) => {
+          const questionItem = question;
+          questionItem.index = keyQuestion;
+          return (
+            <QuestionItemView
+              openModalEdit={openModalEdit}
+              keyQuestion={keyQuestion}
+              questionItem={questionItem}
+              openModalRemove={openModalRemove}
+              mode={mode}
+            />
+          );
+        })}
       </div>
     </Modal>
   );

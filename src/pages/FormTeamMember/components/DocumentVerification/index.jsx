@@ -7,12 +7,14 @@ import { Button, Col, notification, Row, Typography } from 'antd';
 import { map } from 'lodash';
 import React, { Component } from 'react';
 import { connect, formatMessage } from 'umi';
+import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import NoteComponent from '../NoteComponent';
 import CollapseFieldsTypeABC from './components/CollapseFieldsTypeABC';
 import CollapseFieldsTypeD from './components/CollapseFieldsTypeD';
 import CollapseFieldsTypeE from './components/CollapseFieldsTypeE';
 import ModalContentComponent from './components/ModalContentComponent';
 import SendEmail from './components/SendEmail';
+import { Page } from '../../utils';
 import Title from './components/Title';
 import styles from './styles.less';
 
@@ -80,9 +82,21 @@ class DocumentVerification extends Component {
   }
 
   componentDidMount = () => {
+    const {
+      dispatch,
+      data: { candidate },
+    } = this.props;
     this.getDataFromServer();
     this.checkBottomBar();
     window.scrollTo({ top: 77, behavior: 'smooth' });
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Eligibility_documents,
+        candidate,
+        data: {},
+      },
+    });
   };
 
   componentWillUnmount() {
@@ -1519,7 +1533,13 @@ class DocumentVerification extends Component {
                 previousEmployment={documentCLSTByCountryTypeE}
                 refresh={refreshBlockE}
               />
-
+              <div className={styles.bottomBar} style={{ marginBottom: '20px' }}>
+                <Row>
+                  <Col>
+                    <RenderAddQuestion />
+                  </Col>
+                </Row>
+              </div>
               {this._renderBottomBar()}
             </div>
           </Col>
