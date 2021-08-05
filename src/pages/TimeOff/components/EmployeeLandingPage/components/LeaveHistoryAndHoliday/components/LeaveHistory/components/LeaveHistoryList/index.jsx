@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
 import moment from 'moment';
 import { history } from 'umi';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import styles from './index.less';
 
 export default class LeaveHistoryList extends PureComponent {
@@ -11,12 +12,21 @@ export default class LeaveHistoryList extends PureComponent {
     });
   };
 
+  getStatus = (status) => {
+    if (status === TIMEOFF_STATUS.accepted)
+      return <span className={`${styles.status} ${styles.approved}`}>Approved</span>;
+    if (status === TIMEOFF_STATUS.rejected)
+      return <span className={`${styles.status} ${styles.rejected}`}>Rejected</span>;
+    return <span className={`${styles.status} ${styles.applied}`}>Applied</span>;
+  };
+
   render() {
     const { leavingList = [] } = this.props;
+
     return (
       <div className={styles.LeaveHistoryList}>
         {leavingList.map((row, index) => {
-          const { fromDate = '', toDate = '', duration = '', type = '', name = '', _id } = row;
+          const { fromDate = '', toDate = '', name = '', _id, status } = row;
           return (
             <Row
               key={`${index + 1}`}
@@ -69,10 +79,8 @@ export default class LeaveHistoryList extends PureComponent {
                 </>
               )}
 
-              <Col className={styles.dayInWeek} xs={6}>
-                {`-`}
-                {duration} {` `}
-                {type}
+              <Col className={styles.text} xs={6}>
+                {this.getStatus(status)}
               </Col>
             </Row>
           );

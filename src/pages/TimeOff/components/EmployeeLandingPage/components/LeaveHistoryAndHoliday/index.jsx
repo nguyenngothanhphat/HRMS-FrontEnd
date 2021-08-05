@@ -113,7 +113,12 @@ class LeaveHistoryAndHoliday extends PureComponent {
         _id = '',
       } = each;
 
-      if (status === TIMEOFF_STATUS.accepted) {
+      if (
+        status === TIMEOFF_STATUS.accepted ||
+        status === TIMEOFF_STATUS.rejected ||
+        status === TIMEOFF_STATUS.inProgress ||
+        status === TIMEOFF_STATUS.inProgressNext
+      ) {
         const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
         const toDate = moment(to).locale('en').format('MM/DD/YYYY');
         // const now = moment().locale('en').format('MM/DD/YYYY');
@@ -134,6 +139,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
           toDate,
           duration,
           type: shortType,
+          status,
         };
       }
       return null;
