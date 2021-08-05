@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { Spin } from 'antd';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/times';
 import { connect } from 'umi';
 import moment from 'moment';
@@ -44,12 +42,10 @@ class OrganisationChart extends Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    const tenantId = getCurrentTenant();
-    const company = getCurrentCompany();
+    const { dispatch, myEmployeeId = '' } = this.props;
     dispatch({
       type: 'employee/fetchDataOrgChart',
-      payload: { tenantId, company },
+      payload: { employee: myEmployeeId },
     });
 
     this.fetchAllListUser();
@@ -150,14 +146,20 @@ class OrganisationChart extends Component {
   // };
 
   handleClickNode = async (nodeData) => {
+    const { dispatch } = this.props;
     const { timezoneList, currentTime } = this.state;
 
-    const { location = {} } = nodeData;
+    const { location = {}, _id = '' } = nodeData;
     if (!isEmpty(location)) {
       const findTimezone =
         timezoneList.find((timezone) => timezone.locationId === location._id) || {};
       const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
       const addTimeData = { ...nodeData, localTime: timeData };
+
+      dispatch({
+        type: 'employee/fetchDataOrgChart',
+        payload: { employee: _id },
+      });
 
       this.setState({ chartDetails: addTimeData });
     }
@@ -213,35 +215,23 @@ class OrganisationChart extends Component {
   };
 
   render() {
-    const {
-      loading,
-      // dataOrgChart,
-      listEmployeeAll,
-      loadingFetchListAll,
-      companiesOfUser = [],
-    } = this.props;
+    const { listEmployeeAll, loadingFetchListAll, companiesOfUser = [] } = this.props;
     const { chartDetails, idSelect } = this.state;
     return (
       <div className={styles.container}>
-        {loading ? (
-          <div className={styles.viewLoading}>
-            <Spin size="large" />
+        <div className={styles.orgChart}>
+          <OrganizationChart idSelect={idSelect} handleClickNode={this.handleClickNode} />
+          <div className={styles.orgChart__detailEmplChart}>
+            <DetailEmployeeChart
+              chartDetails={chartDetails}
+              handleSelectSearch={this.handleSelect}
+              listEmployeeAll={listEmployeeAll}
+              loadingFetchListAll={loadingFetchListAll}
+              closeDetailEmployee={this.closeDetailEmployee}
+              companiesOfUser={companiesOfUser}
+            />
           </div>
-        ) : (
-          <div className={styles.orgChart}>
-            <OrganizationChart idSelect={idSelect} handleClickNode={this.handleClickNode} />
-            <div className={styles.orgChart__detailEmplChart}>
-              <DetailEmployeeChart
-                chartDetails={chartDetails}
-                handleSelectSearch={this.handleSelect}
-                listEmployeeAll={listEmployeeAll}
-                loadingFetchListAll={loadingFetchListAll}
-                closeDetailEmployee={this.closeDetailEmployee}
-                companiesOfUser={companiesOfUser}
-              />
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     );
   }
