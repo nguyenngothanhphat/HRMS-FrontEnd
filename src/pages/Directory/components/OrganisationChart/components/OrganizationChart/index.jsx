@@ -43,8 +43,12 @@ class OrganizationChart extends Component {
   };
 
   componentDidUpdate = (prevProps) => {
-    const { idSelect = '' } = this.props;
+    const { idSelect = '', dispatch } = this.props;
     if (prevProps.idSelect !== idSelect) {
+      dispatch({
+        type: 'employee/fetchDataOrgChart',
+        payload: { employee: idSelect },
+      });
       this.autoFocusNodeById(idSelect);
     }
   };
