@@ -16,10 +16,10 @@ import { getAuthorityFromRouter } from '@/utils/utils';
 import { Button, Result } from 'antd';
 import classnames from 'classnames';
 // import React, { useEffect, useState } from 'react';
-import React, { useState } from 'react';
+import React from 'react';
 import { connect, Link, Redirect, useIntl } from 'umi';
 import logo from '../assets/logo.svg';
-import iconMenu from '../assets/iconMenu.svg';
+// import iconMenu from '../assets/menuIcon.svg';
 import styles from './BasicLayout.less';
 import ProLayout from './layout/src';
 
@@ -61,9 +61,10 @@ const BasicLayout = (props) => {
     currentUser,
     companies = {},
     logoCompany,
+    expandMenuSidebar,
   } = props;
 
-  const [openMenu, setOpenMenu] = useState(true);
+  // const [openMenu, setOpenMenu] = useState(false);
 
   /**
    * init variables
@@ -73,6 +74,12 @@ const BasicLayout = (props) => {
     const currentCompanyId = getCurrentCompany();
     const currentComp = companies.find((cp) => cp._id === currentCompanyId);
     return currentComp?.logoUrl;
+  };
+
+  const getCurrentName = () => {
+    const currentCompanyId = getCurrentCompany();
+    const currentComp = companies.find((cp) => cp._id === currentCompanyId);
+    return currentComp?.name;
   };
 
   const handleMenuCollapse = (payload) => {
@@ -106,26 +113,20 @@ const BasicLayout = (props) => {
     // const isAdmin = checkRole('admin');
 
     const logoUrl = getCurrentLogo();
+    const currentName = getCurrentName();
     return (
-      <div className={styles.logoSection}>
-        {/* <Button onClick={handleClickMenuSideBar} className={styles.logoSection__button}>
-          <img alt="icon-menu" src={iconMenu} />
+      <div className={styles.rootLogo}>
+        <div className={styles.logoSection}>
+          {/* <Button className={styles.logoSection__button}>
+           <img alt="icon-menu" src={iconMenu} />
         </Button> */}
-        {logoUrl || logoCompany ? (
-          <Link to="/">
-            <img
-              src={logoCompany || logoUrl || logo}
-              alt="logo"
-              style={{
-                objectFit: 'contain',
-                marginBottom: '4px',
-                height: '100%',
-                padding: '12px 0',
-                // marginLeft: '-9px',
-              }}
-            />
-          </Link>
-        ) : null}
+          {logoUrl || logoCompany ? (
+            <Link to="/">
+              <img src={logoCompany || logoUrl || logo} alt="logo" />
+            </Link>
+          ) : null}
+        </div>
+        <div className={styles.currentName}>{currentName}</div>
       </div>
     );
   };
@@ -166,7 +167,7 @@ const BasicLayout = (props) => {
     <>
       <div
         className={classnames(
-          `${styles.root} ${openMenu ? styles.expandMenu : styles.collapseMenu}`,
+          `${styles.root} ${expandMenuSidebar ? styles.expandMenu : styles.collapseMenu}`,
           classNameBreadCrumb,
           {
             [styles.hiddenBreadCrumb]: pathname === '/dashboard',
@@ -180,13 +181,7 @@ const BasicLayout = (props) => {
           onCollapse={handleMenuCollapse}
           headerTitleRender={() => <div style={{ display: 'none' }} />}
           headerContentRender={() => _renderLogo()}
-          menuHeaderRender={() => {
-            return (
-              // <Button className={styles.logoSection__button}>
-              <img style={{ margin: 'auto' }} alt="icon-menu" src={iconMenu} />
-              // </Button>
-            );
-          }}
+          menuHeaderRender={false}
           menuItemRender={(menuItemProps, defaultDom) => {
             if (menuItemProps.isUrl || !menuItemProps.path) {
               return defaultDom;
@@ -243,7 +238,8 @@ const BasicLayout = (props) => {
 
 export default connect(
   ({ global, settings, user, companiesManagement: { logoCompany = '' } = {} }) => ({
-    collapsed: global.collapsed,
+    // collapsed: global.collapsed,
+    expandMenuSidebar: global.expandMenuSidebar,
     settings,
     currentUser: user.currentUser,
     companies: user.companiesOfUser,

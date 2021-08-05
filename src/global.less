@@ -2,11 +2,35 @@
 @import (css)
   url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
+@font-face {
+  font-weight: 'bold';
+  font-family: 'Airin';
+  src: local('Airin'), url(./fonts/Airin.ttf) format('truetype');
+}
+
+@font-face {
+  font-weight: 'bold';
+  font-family: 'GermanyScript';
+  src: local('GermanyScript'), url(./fonts/GermanyScript.ttf) format('truetype');
+}
+
+@font-face {
+  font-weight: 'bold';
+  font-family: 'Bestlife';
+  src: local('Bestlife'), url(./fonts/Bestlife.ttf) format('truetype');
+}
+
+@font-face {
+  font-weight: 'bold';
+  font-family: 'AudreyAndReynold';
+  src: local('AudreyAndReynold'), url(./fonts/AudreyAndReynold.ttf) format('truetype');
+}
+
 html,
 body,
 #root {
   height: 100%;
-  font-family: 'Roboto', sans-serif !important;
+  font-family: 'Roboto', sans-serif, 'Airin';
   scrollbar-color: #e0e4e9 transparent !important;
 }
 
@@ -26,6 +50,15 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Change the white to any color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  box-shadow: 0 0 0 30px white inset !important;
 }
 
 ul,
@@ -102,7 +135,6 @@ button.ant-pagination-item-link {
   border-radius: 5px;
 }
 
-
 li.ant-pagination-jump-next.ant-pagination-jump-next-custom-icon,
 li.ant-pagination-jump-prev.ant-pagination-jump-prev-custom-icon {
   display: none;
@@ -147,8 +179,8 @@ li.ant-pagination-options {
 
 .ant-notification-notice {
   width: 100%;
-  max-width: 370px;
   min-width: 150px;
+  max-width: 370px;
   padding: 16px 16px 12px 10px !important;
   border-left: 6px solid #00c598;
   border-radius: 5px !important;
@@ -169,8 +201,6 @@ li.ant-pagination-options {
     }
   }
 }
-
-
 
 /* width */
 ::-webkit-scrollbar {

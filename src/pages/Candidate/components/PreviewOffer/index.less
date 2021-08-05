@@ -14,69 +14,69 @@
   display: flex;
 
   .left {
+    flex: 1;
+    min-width: 475px;
     // padding: 63px 55px 78px 55px;
     height: fit-content;
-    flex: 1;
     background-color: white;
-    border-radius: 5px;
     border: solid 1px @border-color;
-    min-width: 475px;
+    border-radius: 5px;
 
     .leftContainer {
       header {
+        position: relative;
         display: flex;
         align-items: center;
         width: 100%;
-        text-align: center;
-        position: relative;
         padding-bottom: 20px;
+        text-align: center;
         border-bottom: 1px solid #b7b7b7;
 
         img {
-          max-width: 85px;
-          height: auto;
           position: absolute;
           top: 0;
           left: 0;
+          max-width: 85px;
+          height: auto;
         }
 
         h1 {
-          text-transform: capitalize;
           margin: 0 auto;
-          font-size: 16px;
           color: #636363;
           font-weight: 500;
+          font-size: 16px;
+          text-transform: capitalize;
         }
       }
 
       .content {
-        padding: 5px 0;
-        font-size: 12px;
-        font-weight: 400;
-        color: @black;
         height: 400px;
-        overflow-y: scroll;
         min-height: 600px;
+        padding: 5px 0;
+        overflow-y: scroll;
+        color: @black;
+        font-weight: 400;
+        font-size: 12px;
 
         div {
-          display: inline-block;
           //   border-bottom: 1px solid @black;
           position: relative;
+          display: inline-block;
           //   margin: 0 5px;
           //   width: 200px;
 
           input {
+            width: 100%;
             text-align: center;
             border: none;
             outline: none;
-            width: 100%;
           }
 
           /* Chrome, Safari, Edge, Opera */
           input::-webkit-outer-spin-button,
           input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
             margin: 0;
+            -webkit-appearance: none;
           }
 
           /* Firefox */
@@ -85,13 +85,13 @@
           }
 
           &:before {
-            content: '';
             position: absolute;
+            bottom: 3px;
+            left: 0;
             width: 100%;
             height: 1px;
             background-color: @black;
-            bottom: 3px;
-            left: 0;
+            content: '';
           }
         }
 
@@ -113,17 +113,17 @@
 
     .signature,
     .send {
-      border-radius: 5px;
-      border: solid 1px @border-color;
-      background-color: white;
-      padding: 25px;
       margin-bottom: 16px;
+      padding: 25px;
+      background-color: white;
+      border: solid 1px @border-color;
+      border-radius: 5px;
 
       button {
         height: 40px;
-        border-radius: 25px;
-        border: solid 1px #ffa100;
         background-color: #ffa100;
+        border: solid 1px #ffa100;
+        border-radius: 25px;
 
         span {
           color: white !important;
@@ -140,10 +140,10 @@
         }
 
         h2 {
+          margin-left: 16px;
+          color: @header-color;
           font-weight: 500;
           font-size: 14px;
-          color: @header-color;
-          margin-left: 16px;
         }
 
         .icon {
@@ -153,22 +153,20 @@
           }
 
           .bigGlow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             width: 64px;
             height: 64px;
             background-color: @big-glow;
 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
             .smallGlow {
-              width: 41px;
-              height: 41px;
-              background-color: @small-glow;
-
               display: flex;
               align-items: center;
               justify-content: center;
+              width: 41px;
+              height: 41px;
+              background-color: @small-glow;
 
               svg {
                 width: 18px;
@@ -190,27 +188,30 @@
 
       p {
         margin-top: 24px;
-        font-size: 13px;
         color: #707177;
+        font-size: 13px;
       }
 
       .upload {
-        border: 1px solid #d6dce4;
-        padding: 23px 28px 15px 28px;
-        border-style: dashed;
-        border-radius: 5px;
+        position: relative;
         display: flex;
         flex-direction: column;
-        position: relative;
+        padding: 23px 28px 15px 28px;
+        border: 1px solid #d6dce4;
+        border-style: dashed;
+        border-radius: 5px;
 
         .signatureImg {
           width: 212px;
           height: 85px;
+          margin: auto;
           border: 0;
           outline: none;
         }
 
         button {
+          margin: 0 auto;
+          margin-top: 10px;
           color: #568afa;
           font-weight: 500;
           font-size: 16px;
@@ -218,8 +219,6 @@
           border: none;
           outline: none;
           cursor: pointer;
-          margin: 0 auto;
-          margin-top: 10px;
         }
       }
 
@@ -228,26 +227,26 @@
       }
 
       .submitContainer {
-        margin-top: 24px;
         display: flex;
         align-items: center;
         justify-content: space-between;
+        margin-top: 24px;
 
         button {
           // padding: 12px 24px;
           width: 94px;
           height: 40px;
           background-color: @orange;
-          border-radius: 25px;
           border: none;
+          border-radius: 25px;
           outline: none;
           cursor: pointer;
           transition: background-color 0.2s ease-in;
 
           span {
-            font-size: 14px;
-            font-weight: 500;
             color: white;
+            font-weight: 500;
+            font-size: 14px;
           }
 
           &.active {
@@ -268,18 +267,18 @@
       }
 
       .proceed {
-        margin-top: 24px;
         height: 40px;
-        border-radius: 25px;
-        border: solid 1px #ffa100;
-        background-color: #ffa100;
+        margin-top: 24px;
+        font-weight: 500;
         font-size: 14px;
         letter-spacing: 0.13px;
-        font-weight: 500;
+        background-color: #ffa100;
+        border: solid 1px #ffa100;
+        border-radius: 25px;
 
         span {
-          color: white !important;
           margin: 0 12px;
+          color: white !important;
         }
 
         &.disabled {
@@ -302,35 +301,35 @@
       }
 
       p:nth-of-type(2) {
-        color: #505050;
-        font-weight: 600;
         position: relative;
         margin-bottom: 65px;
+        color: #505050;
+        font-weight: 600;
 
         &:after {
           position: absolute;
           bottom: -31px;
-          content: '';
+          left: 0;
           // width: 288px;
           width: 100%;
           height: 2px;
           background-color: @border-color;
-          left: 0;
+          content: '';
         }
       }
 
       .mail {
         span {
-          font-size: 15px;
           color: @gray;
+          font-size: 15px;
           // margin-bottom: 8px;
         }
 
         input {
           margin-top: 8px;
           padding: 13px 16px;
-          font-size: 16px;
           color: @header-color;
+          font-size: 16px;
           border-radius: 5px;
           transition: border-color 0.2s ease-in;
         }
@@ -342,6 +341,22 @@
         }
       }
     }
+
+    .expiredMessage {
+      margin: 20px 0 0;
+      font-size: 13px;
+
+      .subtitle {
+        display: block;
+        color: #ff5252;
+        font-weight: 500;
+      }
+
+      .emails {
+        display: block;
+        // color: #2c6df9;
+      }
+    }
   }
 
   @media (max-width: 1165px) {
@@ -349,8 +364,8 @@
 
     .right {
       width: 100%;
-      margin-left: 0;
       margin-top: 16px;
+      margin-left: 0;
 
       .signature {
         .upload {

@@ -8,24 +8,18 @@ import { Collapse } from 'react-collapse';
 import line from '@/assets/lineParent.svg';
 import lines from '@/assets/lines.svg';
 import bigLines from '@/assets/bigLines.svg';
+import { Spin } from 'antd';
 import EmployeeNode from './components/EmployeeNode';
 
 import styles from './index.less';
-import CollapseNode from '../CollapseNode';
+import ManagerNode from './components/ManagerNode';
+import UserNode from './components/UserNode';
 
-@connect(
-  ({
-    employee: { dataOrgChart = {}, listEmployeeAll = [] } = {},
-    user: { currentUser: { employee: { _id: idCurrentUser = '' } = {} } = {} } = {},
-    loading,
-  }) => ({
-    dataOrgChart,
-    idCurrentUser,
-    loading: loading.effects['employee/fetchDataOrgChart'],
-    loadingFetchListAll: loading.effects['employee/fetchAllListUser'],
-    listEmployeeAll,
-  }),
-)
+@connect(({ employee: { dataOrgChart = {}, listEmployeeAll = [] } = {}, loading }) => ({
+  dataOrgChart,
+  loading: loading.effects['employee/fetchDataOrgChart'],
+  listEmployeeAll,
+}))
 class OrganizationChart extends Component {
   constructor(props) {
     super(props);
@@ -35,6 +29,13 @@ class OrganizationChart extends Component {
       itemSelected: '',
     };
     this.userRef = React.createRef();
+    this.managerRef = React.createRef();
+
+    this.employeeRef = React.createRef([]); // list employees => to store employee refs.
+    this.employeeRef.current = [];
+
+    this.refTemp = React.createRef([]); // temp => to handle/set condition.
+    this.refTemp.current = [];
   }
 
   componentDidMount = () => {
@@ -53,6 +54,7 @@ class OrganizationChart extends Component {
   };
 
   autoFocusNodeById = (id) => {
+    // auto focus on the node when select user
     this.setState({ itemSelected: id });
   };
 
@@ -73,13 +75,50 @@ class OrganizationChart extends Component {
     }
   };
 
-  clickCardInfo = (userData) => {
+  handleScrollView = (userData, name) => {
+    const { _id: userId = '' } = userData;
+    const arrEmployeeRef = this.employeeRef.current;
+    let userRef = [];
+
+    switch (name) {
+      case 'user':
+        this.userRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'center',
+        });
+        break;
+      case 'manager':
+        this.managerRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+          inline: 'center',
+        });
+        break;
+      default:
+        userRef = arrEmployeeRef?.map((item) => (item.id === userId ? item.ref : null));
+        userRef = userRef.filter((item) => item !== null);
+        userRef = [...new Set(userRef)];
+
+        if (userRef.length > 0) {
+          userRef[0].scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'center',
+          });
+        }
+        break;
+    }
+  };
+
+  clickCardInfo = (userData, name) => {
     const { handleClickNode = () => {} } = this.props;
     handleClickNode(userData);
     this.setState({ itemSelected: userData._id });
+    this.handleScrollView(userData, name);
   };
 
-  renderCardInfo = (userData) => {
+  renderCardInfo = (userData, name) => {
     const {
       generalInfo: {
         avatar = '',
@@ -95,7 +134,7 @@ class OrganizationChart extends Component {
     } = userData;
     const legalName = `${userFirstName} ${userMiddleName} ${userLastName}`;
     return (
-      <div className={styles.node__card} onClick={() => this.clickCardInfo(userData)}>
+      <div className={styles.node__card} onClick={() => this.clickCardInfo(userData, name)}>
         <Avatar className={styles.avatar} src={avatar} size={42} icon={<UserOutlined />} />
         <div className={styles.node__card__info}>
           <div className={styles.legalName}>{legalName}</div>
@@ -106,76 +145,42 @@ class OrganizationChart extends Component {
     );
   };
 
-  renderParentNode = () => {
-    const { dataOrgChart } = this.props;
+  renderManagerNode = () => {
+    const { dataOrgChart: { manager = {} } = {} } = this.props;
     const { isCollapsed, itemSelected = '' } = this.state;
-    const { manager = {}, manager: { _id: idManager = '' } = {} } = dataOrgChart;
-    const isActive = itemSelected === idManager;
-    const className = isActive ? styles.selectNode : styles.node;
+    const propsState = { itemSelected, isCollapsed };
+
     return (
       <>
         {isEmpty(manager) ? null : (
-          <>
-            <div
-              id={idManager || ''}
-              className={`${styles.parentNode} ${styles.node} ${className}`}
-            >
-              {this.renderCardInfo(manager)}
-              <div className={styles.node__bottom}>
-                <div
-                  onClick={() => this.handleCollapse('parent')}
-                  className={
-                    isCollapsed
-                      ? styles.node__bottom_reporteesExpand
-                      : styles.node__bottom_reporteesCollapse
-                  }
-                >
-                  {isCollapsed ? `- 1 reportee` : `+ 1 reportee`}
-                </div>
-              </div>
-            </div>
-          </>
+          <ManagerNode
+            renderCardInfo={this.renderCardInfo}
+            handleCollapse={this.handleCollapse}
+            propsState={propsState}
+            manager={manager}
+            managerRef={this.managerRef}
+          />
         )}
       </>
     );
   };
 
   renderUserNode = () => {
-    const { dataOrgChart, idCurrentUser = '' } = this.props;
+    const { dataOrgChart } = this.props;
     const { isCollapsedChild = false, itemSelected = '' } = this.state;
 
-    const {
-      user: { _id: idUser = '' } = {},
-      user = {},
-      employees: listEmployees = [],
-    } = dataOrgChart;
+    const propsState = { itemSelected, isCollapsedChild };
 
-    const isActive = itemSelected === idUser;
-    const className = isActive ? styles.selectNode : styles.node;
+    if (isEmpty(dataOrgChart)) return null;
 
     return (
-      <div
-        id={idUser}
-        className={`${styles.userNode} ${styles.node} ${className}`}
-        ref={this.userRef}
-      >
-        {this.renderCardInfo(user)}
-        <div className={styles.node__bottom}>
-          <div
-            onClick={() => this.handleCollapse('user')}
-            className={
-              isCollapsedChild
-                ? styles.node__bottom_reporteesExpand
-                : styles.node__bottom_reporteesCollapse
-            }
-          >
-            {isCollapsedChild
-              ? `- ${listEmployees.length} reportees`
-              : `+ ${listEmployees.length} reportees`}
-          </div>
-          {idUser === idCurrentUser ? <div className={styles.node__bottom_you}>You</div> : null}
-        </div>
-      </div>
+      <UserNode
+        renderCardInfo={this.renderCardInfo}
+        handleCollapse={this.handleCollapse}
+        propsState={propsState}
+        dataOrgChart={dataOrgChart}
+        userRef={this.userRef}
+      />
     );
   };
 
@@ -184,12 +189,19 @@ class OrganizationChart extends Component {
     const { isCollapsedChild = false, itemSelected = '' } = this.state;
     const { employees: listEmployees = [] } = dataOrgChart;
 
+    const handleGetLine = (length) => {
+      if (length === 1) return line;
+      if (length > 2) return bigLines;
+      return lines;
+    };
+
+    if (listEmployees.length === 0) return null;
     return (
       <Collapse isOpened={isCollapsedChild}>
         <div className={styles.nodesTree}>
           <div className={styles.lineNode}>
             <div style={{ margin: '0 auto', width: 'fit-content' }}>
-              <img alt="lines" src={listEmployees.length > 2 ? bigLines : lines} />
+              <img alt="lines" src={handleGetLine(listEmployees.length)} />
             </div>
           </div>
           <div className={styles.childrenList}>
@@ -200,6 +212,8 @@ class OrganizationChart extends Component {
                   itemSelected={itemSelected}
                   employee={employee}
                   renderCardInfo={this.renderCardInfo}
+                  employeeRef={this.employeeRef.current}
+                  refTemp={this.refTemp.current}
                 />
               );
             })}
@@ -210,23 +224,31 @@ class OrganizationChart extends Component {
   };
 
   render() {
-    const { dataOrgChart } = this.props;
+    const { dataOrgChart, loading } = this.props;
     const { isCollapsed } = this.state;
-    const { employees: listEmployees = [] } = dataOrgChart;
+    const { manager = {} } = dataOrgChart;
 
-    if (listEmployees.length === 0) return null;
     return (
       <div className={styles.orgChartRoot}>
-        <div className={styles.charts}>
-          {this.renderParentNode() /* Manager */}
-          <Collapse isOpened={isCollapsed} hasNestedCollapse>
-            <div style={{ margin: '0 auto', width: 'fit-content' }}>
-              <img alt="line" src={line} />
-            </div>
-            {this.renderUserNode() /* Current User */}
-            {this.renderChildrenList() /* List Employees */}
-          </Collapse>
-        </div>
+        {loading ? (
+          <div className={styles.viewLoading}>
+            <Spin size="large" />
+          </div>
+        ) : (
+          <div className={styles.charts}>
+            {this.renderManagerNode()}
+
+            <Collapse isOpened={isCollapsed} hasNestedCollapse>
+              {isEmpty(manager) ? null : (
+                <div style={{ margin: '0 auto', width: 'fit-content' }}>
+                  <img alt="line" src={line} />
+                </div>
+              )}
+              {this.renderUserNode()}
+              {this.renderChildrenList()}
+            </Collapse>
+          </div>
+        )}
       </div>
     );
   }

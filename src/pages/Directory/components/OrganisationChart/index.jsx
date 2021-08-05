@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Spin } from 'antd';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/times';
 import { connect } from 'umi';
 import moment from 'moment';
 
+import { isEmpty } from 'lodash';
 import OrganizationChart from './components/OrganizationChart';
 import DetailEmployeeChart from './components/EmployeeBox';
 import styles from './index.less';
@@ -43,12 +42,10 @@ class OrganisationChart extends Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    const tenantId = getCurrentTenant();
-    const company = getCurrentCompany();
+    const { dispatch, myEmployeeId = '' } = this.props;
     dispatch({
       type: 'employee/fetchDataOrgChart',
-      payload: { tenantId, company },
+      payload: { employee: myEmployeeId },
     });
 
     this.fetchAllListUser();
@@ -56,14 +53,43 @@ class OrganisationChart extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { listLocationsByCompany = [] } = this.props;
+    const { listLocationsByCompany = [], dataOrgChart = {}, listEmployeeAll } = this.props;
     if (
       JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {
       this.fetchAllListUser();
       this.fetchTimezone();
     }
+    if (JSON.stringify(prevProps.listEmployeeAll) !== JSON.stringify(listEmployeeAll)) {
+      this.getInitUserInformation(dataOrgChart);
+    }
   }
+
+  getInitUserInformation = (data) => {
+    const { listEmployeeAll } = this.props;
+    const { timezoneList, currentTime } = this.state;
+
+    const { user: { _id: userId = '' } = {} } = data;
+    const getData = listEmployeeAll.filter((item) => item._id === userId);
+    const convertData = getData.map((item) => {
+      const { _id, generalInfo, department, location, title } = item;
+      const findTimezone =
+        timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+      const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
+      return {
+        _id,
+        generalInfo,
+        department,
+        title,
+        location,
+        localTime: timeData,
+      };
+    });
+
+    const convertFinal = { ...convertData[0] };
+    this.setState({ idSelect: userId });
+    this.setState({ chartDetails: convertFinal });
+  };
 
   fetchAllListUser = () => {
     const { listLocationsByCompany = [], companiesOfUser = [], dispatch } = this.props;
@@ -119,127 +145,29 @@ class OrganisationChart extends Component {
   //   }
   // };
 
-  // handleClickUserCard = async (nodeData) => {
-  //   const { dataOrgChart = {} } = this.props;
-  //   const { timezoneList, currentTime } = this.state;
-  //   let check = false;
-
-  //   const { user: { location } = {}, id: userId = '' } = nodeData;
-  //   const arrRef = this.userRef.current;
-
-  //   const newData = this.deepSearchCurrentUser(dataOrgChart.children, userId, 'user', 'children');
-  //   const { children = [] } = newData || {};
-
-  //   const findTimezone =
-  //     timezoneList.find((timezone) => timezone.locationId === location._id) || {};
-  //   const timeData = getCurrentTimeOfTimezone(currentTime, findTimezone.timezone);
-  //   const addTimeData = { user: { ...nodeData.user, localTime: timeData } };
-
-  //   // when click on this node will control the org chart move to the center of the screen.
-  //   children.forEach((item) => {
-  //     if (item.user._id === userId) {
-  //       check = true;
-  //     }
-  //   });
-  //   if (check) {
-  //     this.handleFocusUserCard(arrRef, userId);
-  //   }
-
-  //   this.setState({ chartDetails: addTimeData });
-  // };
   handleClickNode = async (nodeData) => {
+    const { dispatch } = this.props;
     const { timezoneList, currentTime } = this.state;
 
-    const { location = {} } = nodeData;
+    const { location = {}, _id = '' } = nodeData;
+    if (!isEmpty(location)) {
+      const findTimezone =
+        timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+      const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
+      const addTimeData = { ...nodeData, localTime: timeData };
 
-    const findTimezone =
-      timezoneList.find((timezone) => timezone.locationId === location._id) || {};
-    const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
-    const addTimeData = { ...nodeData, localTime: timeData };
+      dispatch({
+        type: 'employee/fetchDataOrgChart',
+        payload: { employee: _id },
+      });
 
-    this.setState({ chartDetails: addTimeData });
+      this.setState({ chartDetails: addTimeData });
+    }
   };
 
   closeDetailEmployee = () => {
     this.setState({ chartDetails: {} });
   };
-
-  // addToRefs = (el, id) => {
-  //   if (el && !this.userRef.current.includes(el)) {
-  //     this.userRef.current.push({
-  //       ref: el,
-  //       id,
-  //     });
-  //   }
-
-  //   return el;
-  // };
-
-  // handleFocusUserCard = (arrRef, userId) => {
-  //   let arrTemp = arrRef?.map((item) => (item.id === userId ? item.ref : null));
-  //   arrTemp = arrTemp.filter((item) => item !== null);
-  //   arrTemp = [...new Set(arrTemp)];
-
-  //   arrTemp[0].scrollIntoView({
-  //     behavior: 'smooth',
-  //     block: 'center',
-  //     inline: 'center',
-  //   });
-  // };
-
-  // renderNode = ({ nodeData }) => {
-  //   const { idChart } = this.state;
-  //   const { myEmployeeId = '' } = this.props;
-  //   const { user = {}, children = [] } = nodeData;
-  //   const {
-  //     _id = '',
-  //     generalInfo: { avatar = '', firstName = '' } = {},
-  //     department: { name = '' } = {},
-  //     location: { name: nameLocation = '' } = {},
-  //     // title: { name: title = '' } = {},
-  //   } = user;
-  //   const check = _id === myEmployeeId;
-
-  //   return (
-  //     <div
-  //       className={styles.chartNode}
-  //       style={check ? { border: '1px solid #00C598' } : {}}
-  //       ref={(el) => this.addToRefs(el, _id)}
-  //     >
-  //       <div className={styles.chartAvt}>
-  //         <Avatar src={avatar} size={64} icon={<UserOutlined />} />
-  //       </div>
-  //       <div className={styles.chartDetails}>
-  //         <p className={styles.chartNode__textName}>{firstName}</p>
-  //         {/* <div className={styles.chartNode__textInfo}>{title}</div> */}
-  //         <div className={styles.chartNode__textInfo}>{name}</div>
-  //         <div className={styles.chartNode__textInfo}>{nameLocation}</div>
-  //       </div>
-  //       <div className={styles.chartNode__subInfo} onClick={this.handleOnClick}>
-  //         {children.length > 0 ? (
-  //           <div
-  //             id={_id}
-  //             className={
-  //               idChart === _id
-  //                 ? styles.chartNode__subInfo__amountCollap
-  //                 : styles.chartNode__subInfo__amount
-  //             }
-  //           >
-  //             {`+${children.length} reportees`}
-  //           </div>
-  //         ) : (
-  //           ''
-  //         )}
-
-  //         {check && (
-  //           <div ref={this.myRef} className={styles.chartNode__subInfo__you}>
-  //             You
-  //           </div>
-  //         )}
-  //       </div>
-  //     </div>
-  //   );
-  // };
 
   handleSelect = (value) => {
     const { listEmployeeAll } = this.props;
@@ -287,35 +215,23 @@ class OrganisationChart extends Component {
   };
 
   render() {
-    const {
-      loading,
-      // dataOrgChart,
-      listEmployeeAll,
-      loadingFetchListAll,
-      companiesOfUser = [],
-    } = this.props;
+    const { listEmployeeAll, loadingFetchListAll, companiesOfUser = [] } = this.props;
     const { chartDetails, idSelect } = this.state;
     return (
       <div className={styles.container}>
-        {loading ? (
-          <div className={styles.viewLoading}>
-            <Spin size="large" />
+        <div className={styles.orgChart}>
+          <OrganizationChart idSelect={idSelect} handleClickNode={this.handleClickNode} />
+          <div className={styles.orgChart__detailEmplChart}>
+            <DetailEmployeeChart
+              chartDetails={chartDetails}
+              handleSelectSearch={this.handleSelect}
+              listEmployeeAll={listEmployeeAll}
+              loadingFetchListAll={loadingFetchListAll}
+              closeDetailEmployee={this.closeDetailEmployee}
+              companiesOfUser={companiesOfUser}
+            />
           </div>
-        ) : (
-          <div className={styles.orgChart}>
-            <OrganizationChart idSelect={idSelect} handleClickNode={this.handleClickNode} />
-            <div className={styles.orgChart__detailEmplChart}>
-              <DetailEmployeeChart
-                chartDetails={chartDetails}
-                handleSelectSearch={this.handleSelect}
-                listEmployeeAll={listEmployeeAll}
-                loadingFetchListAll={loadingFetchListAll}
-                closeDetailEmployee={this.closeDetailEmployee}
-                companiesOfUser={companiesOfUser}
-              />
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     );
   }

@@ -62,7 +62,7 @@ class ChangePassword extends Component {
     const arrText = [
       'Use a minimum of 8 characters.',
       'Avoid common words and repetition (eg. password, 12121212)',
-      'Avoid keyboard patterns (eg. Asdf )',
+      'At least one letter, one number and special character!',
     ];
     return (
       <PageContainer>

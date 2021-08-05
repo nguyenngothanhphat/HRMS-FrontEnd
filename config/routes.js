@@ -74,6 +74,15 @@ const routes = [
     ],
   },
   {
+    path: '/candidate-by-link/:tokenId',
+    routes: [
+      {
+        path: '/candidate-by-link/:tokenId',
+        component: './CandidateLink',
+      },
+    ],
+  },
+  {
     path: '/first-change-password',
     component: '../layouts/AccountSetupLayout',
     routes: [

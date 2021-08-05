@@ -13,25 +13,21 @@ class CollapseNode extends Component {
   }
 
   componentDidMount() {
-    this.initialGetContentHeigh('init');
+    this.initialGetContentHeigh();
   }
 
   componentDidUpdate() {
     const refChanged = this.oldRef.current.clientHeight !== this.content.current.clientHeight;
     if (refChanged) {
-      this.initialGetContentHeigh('update');
+      this.initialGetContentHeigh();
     }
   }
 
-  initialGetContentHeigh = (key) => {
+  initialGetContentHeigh = () => {
     const initHeight = this.content.current.clientHeight;
     this.oldRef.current.clientHeight = initHeight;
-    let childHeight = '';
-    if (key === 'init') {
-      childHeight = `100vh`;
-    } else {
-      childHeight = `${initHeight}px`;
-    }
+    const childHeightRaw = this.content.current.clientHeight;
+    const childHeight = `${childHeightRaw}px`;
     this.setState({ childHeight });
   };
 

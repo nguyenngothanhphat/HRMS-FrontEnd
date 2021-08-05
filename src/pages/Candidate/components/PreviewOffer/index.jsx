@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect, formatMessage } from 'umi';
 
-import { Button, Form } from 'antd';
+import { Button, Col, Form, Row, Select, Popover, Radio, Space, Input } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 // import logo from './components/images/brand-logo.png';
 import CustomModal from '@/components/CustomModal';
@@ -9,6 +9,7 @@ import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
 import { isEmpty } from 'lodash';
 import { PROCESS_STATUS } from '@/utils/onboarding';
+import moment from 'moment';
 import whiteImg from './components/images/whiteImg.png';
 
 import CancelIcon from './components/CancelIcon';
@@ -18,6 +19,17 @@ import FileContent from './components/FileContent';
 import ModalContent from './components/ModalContent';
 
 import styles from './index.less';
+import TextSignature from '../../../../components/TextSignature';
+import ModalDrawSignature from '../../../../components/ModalDrawSignature';
+
+const { Option } = Select;
+const compare = (dateTimeA, dateTimeB) => {
+  const momentA = moment(dateTimeA, 'DD/MM/YYYY');
+  const momentB = moment(dateTimeB, 'DD/MM/YYYY');
+  if (momentA > momentB) return 1;
+  if (momentA < momentB) return -1;
+  return 0;
+};
 
 const PreviewOffer = (props) => {
   const { dispatch, tempData = {}, data = {}, candidate, loading1 } = props;
@@ -29,9 +41,12 @@ const PreviewOffer = (props) => {
     privateEmail: candidateEmailProp = '',
     firstName: candidateFirstName = '',
     middleName: candidateMiddleName = '',
-    lastName: candidateLastame = '',
+    lastName: candidateLastName = '',
     offerLetter: offerLetterProp = {},
     staticOfferLetter: staticOfferLetterProp = {},
+    expiryDate: expiryDateProp = '',
+    assignTo: assignToProp = {},
+    assigneeManager: assigneeManagerProp = {},
   } = data;
 
   // const inputRefs = [];
@@ -47,13 +62,14 @@ const PreviewOffer = (props) => {
   //     ? offerLetterProp.attachment.url
   //     : '',
   // );
+  // eslint-disable-next-line no-unused-vars
   const [offerLetter, setOfferLetter] = useState(
     offerLetterProp && !isEmpty(offerLetterProp)
       ? offerLetterProp.attachment?.url || offerLetterProp.url || ''
       : staticOfferLetterProp.attachment?.url || staticOfferLetterProp.url || '',
   );
 
-  const [uploadVisible1, setUploadVisible1] = useState(false);
+  // const [uploadVisible1, setUploadVisible1] = useState(false);
   // eslint-disable-next-line no-unused-vars
   const [uploadVisible2, setUploadVisible2] = useState(false);
 
@@ -64,8 +80,14 @@ const PreviewOffer = (props) => {
 
   // const [role, setRole] = useState('');
 
-  const [openModal, setOpenModal] = useState(false);
+  const [openModalCus, setOpenModalCus] = useState(false);
 
+  const [nameSignature, setNameSignature] = useState('');
+  const [optionSignature, setOptionSignature] = useState('upload');
+  const [openModal, setOpenModal] = useState('');
+  const [valueDigitalSignature, setValueDigitalSignature] = useState(0);
+  const [arrImgBase64, setArrImgBase64] = useState([]);
+  const [openDigital, setOpenDigital] = useState(false);
   // const resetForm = () => {
   //   mailForm.resetFields();
   // };
@@ -151,27 +173,6 @@ const PreviewOffer = (props) => {
     });
   };
 
-  const handleFinalSubmit = () => {
-    if (!dispatch) {
-      return;
-    }
-    handleCandidateSubmit();
-    dispatch({
-      type: 'candidateProfile/submitCandidateFinalOffer',
-      payload: {
-        candidate,
-        candidateFinalSignature: candidateSignature.id,
-        options: 1,
-        tenantId: getCurrentTenant(),
-      },
-    }).then(({ statusCode }) => {
-      if (statusCode === 200) {
-        setOpenModal(true);
-      }
-    });
-    // submitCandidateFinalOffer
-  };
-
   useEffect(() => {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
   }, []);
@@ -205,7 +206,189 @@ const PreviewOffer = (props) => {
   }, [candidateSignature]);
 
   const closeModal = () => {
-    setOpenModal(false);
+    setOpenModalCus(false);
+  };
+
+  const isExpired = compare(moment(), moment(expiryDateProp)) === 1;
+  const emails = () => {
+    const assignToMail = assignToProp?.generalInfo?.workEmail || '';
+    const assigneeManagerMail = assigneeManagerProp?.generalInfo?.workEmail || '';
+
+    return [...new Set([assignToMail, assigneeManagerMail])];
+  };
+
+  // signature candidate
+  const dataURItoBlob = (dataURI) => {
+    const binary = atob(dataURI.split(',')[1]);
+    const array = [];
+    for (let i = 0; i < binary.length; i += 1) {
+      array.push(binary.charCodeAt(i));
+    }
+    // eslint-disable-next-line compat/compat
+    return new Blob([new Uint8Array(array)], { type: 'image/png' });
+  };
+  const resetDefaultState = () => {
+    setValueDigitalSignature(0);
+    setNameSignature('');
+    setArrImgBase64([]);
+    setOptionSignature('upload');
+    setOpenDigital(false);
+  };
+
+  const saveDrawSignature = async (imageBase64) => {
+    const formData = new FormData();
+    if (!imageBase64) {
+      setOpenModal('');
+      return;
+    }
+    const file = dataURItoBlob(imageBase64);
+    formData.append('blob', file, 'signatureCandidate.png');
+    const responsive = await dispatch({
+      type: 'upload/uploadFile',
+      payload: formData,
+    });
+    loadImage(responsive);
+    setOpenModal('');
+  };
+
+  const getImg = (e) => {
+    const arr = arrImgBase64;
+    arr.push(e);
+    setArrImgBase64(arr);
+  };
+  const changeName = (e) => {
+    setOpenDigital(true);
+    setArrImgBase64([]);
+    setNameSignature(e.target.value);
+  };
+
+  const handleFinalSubmit = async () => {
+    if (!dispatch) {
+      return;
+    }
+    if (optionSignature === 'digital') {
+      if (arrImgBase64.length > 0) {
+        const formData = new FormData();
+        if (!arrImgBase64[valueDigitalSignature]) {
+          setOpenModal('');
+          return;
+        }
+        const file = dataURItoBlob(arrImgBase64[valueDigitalSignature]);
+        formData.append('blob', file, 'signatureCandidate.jpeg');
+        const responsive = await dispatch({
+          type: 'upload/uploadFile',
+          payload: formData,
+        });
+        const { data: imageData = [] } = responsive;
+        const { id = '' } = imageData[0];
+
+        dispatch({
+          type: 'candidateProfile/updateByCandidateEffect',
+          payload: {
+            candidateSignature: id,
+            candidate,
+            tenantId: getCurrentTenant(),
+          },
+        });
+        dispatch({
+          type: 'candidateProfile/submitCandidateFinalOffer',
+          payload: {
+            candidate,
+            candidateFinalSignature: candidateSignature.id,
+            options: 1,
+            tenantId: getCurrentTenant(),
+          },
+        }).then(({ statusCode }) => {
+          if (statusCode === 200) {
+            setOpenModalCus(true);
+          }
+        });
+        resetDefaultState();
+      }
+    } else {
+      handleCandidateSubmit();
+      dispatch({
+        type: 'candidateProfile/submitCandidateFinalOffer',
+        payload: {
+          candidate,
+          candidateFinalSignature: candidateSignature.id,
+          options: 1,
+          tenantId: getCurrentTenant(),
+        },
+      }).then(({ statusCode }) => {
+        if (statusCode === 200) {
+          setOpenModalCus(true);
+        }
+      });
+    }
+    // submitCandidateFinalOffer
+  };
+  const renderSignature = () => {
+    if (optionSignature === 'digital' && !disableCandidateSubmit())
+      return (
+        <>
+          <div>
+            <p>Digital Signature</p>
+          </div>
+          <Row>
+            <Col span={24}>
+              <Popover
+                content={
+                  <Radio.Group
+                    onChange={(e) => {
+                      setValueDigitalSignature(e.target.value);
+                    }}
+                    value={valueDigitalSignature}
+                  >
+                    <Space direction="vertical">
+                      {['Airin', 'GermanyScript', 'Bestlife', 'AudreyAndReynold'].map(
+                        (item, index) => (
+                          <Radio value={index} style={{ display: 'flex', alignItems: 'center' }}>
+                            <TextSignature
+                              name={nameSignature}
+                              getImage={getImg}
+                              x={10}
+                              y={75}
+                              height={100}
+                              font={`60px ${item}`}
+                            />
+                          </Radio>
+                          // </Col>
+                        ),
+                      )}
+                    </Space>
+                  </Radio.Group>
+                }
+                placement="left"
+                trigger="hover"
+                visible={nameSignature && openDigital}
+              >
+                <Input placeholder="Enter your name" onChange={changeName} value={nameSignature} />
+              </Popover>
+            </Col>
+          </Row>
+        </>
+      );
+    return (
+      <div className={styles.upload}>
+        {candidateSignature !== null && candidateSignature.url ? (
+          // Default image
+          <img className={styles.signatureImg} src={candidateSignature.url} alt="" />
+        ) : (
+          <img className={styles.signatureImg} src={whiteImg} alt="" />
+        )}
+
+        {!disableCandidateSubmit() && (
+          <>
+            <button type="submit" onClick={() => setOpenModal(optionSignature)}>
+              {formatMessage({ id: 'component.previewOffer.uploadNew' })}
+            </button>
+
+            <CancelIcon resetImg={() => resetImg()} />
+          </>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -298,41 +481,62 @@ const PreviewOffer = (props) => {
 
           {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
           <p>
-            Undersigned - {candidateFirstName} {candidateLastame} {candidateMiddleName}
+            Undersigned - {candidateFirstName} {candidateLastName} {candidateMiddleName}
           </p>
 
-          <div className={styles.upload}>
-            {candidateSignature !== null && candidateSignature.url ? (
-              // Default image
-              <img className={styles.signatureImg} src={candidateSignature.url} alt="" />
-            ) : (
-              <img className={styles.signatureImg} src={whiteImg} alt="" />
-            )}
+          {!disableCandidateSubmit() && (
+            <>
+              <p>Choose your options for Signature</p>
+              <Row>
+                <Col span={24}>
+                  <Select
+                    value={optionSignature}
+                    style={{ width: '100%', marginBottom: '5px' }}
+                    onChange={(e) => {
+                      setOptionSignature(e);
+                    }}
+                  >
+                    <Option value="upload">Upload</Option>
+                    <Option value="draw">Draw</Option>
+                    <Option value="digital">Digital Signature</Option>
+                  </Select>
+                </Col>
+              </Row>
+            </>
+          )}
 
-            {!disableCandidateSubmit() && (
-              <>
-                <button
-                  type="submit"
-                  onClick={() => {
-                    setUploadVisible1(true);
-                  }}
-                >
-                  {formatMessage({ id: 'component.previewOffer.uploadNew' })}
-                </button>
+          {renderSignature()}
 
-                <CancelIcon resetImg={() => resetImg()} />
-              </>
-            )}
-          </div>
+          {isExpired && (
+            <div className={styles.expiredMessage}>
+              <span className={styles.subtitle}>This offer is expired. Please contact HR.</span>
+              <div className={styles.emails}>
+                {emails().map((em) => (
+                  <>
+                    <a href={`mailto:${em}`}>{em}</a>
+                  </>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* <div className={styles.submitContainer} /> */}
           <Button
             type="primary"
             disabled={
-              !(candidateSignature.url && hrManagerSignature.url && !disableCandidateSubmit())
+              !(
+                !isExpired &&
+                candidateSignature.url &&
+                hrManagerSignature.url &&
+                !disableCandidateSubmit() &&
+                optionSignature === 'digital'
+              )
             }
             className={
-              candidateSignature.url && hrManagerSignature.url && !disableCandidateSubmit()
+              candidateSignature.url &&
+              hrManagerSignature.url &&
+              !disableCandidateSubmit() &&
+              optionSignature === 'digital'
                 ? `${styles.proceed}`
                 : `${styles.proceed} ${styles.disabled}`
             }
@@ -345,21 +549,25 @@ const PreviewOffer = (props) => {
 
         {/* Send final offer */}
         <ModalUpload
-          visible={uploadVisible1}
+          visible={openModal === 'upload'}
           getResponse={(response) => {
             loadImage(response);
-            const { statusCode } = response;
+            const { statusCode = 1 } = response;
             if (statusCode === 200) {
-              setUploadVisible1(false);
+              setOpenModal('');
             }
           }}
-          handleCancel={() => {
-            setUploadVisible1(false);
-          }}
+          handleCancel={() => setOpenModal('')}
+        />
+        <ModalDrawSignature
+          visible={openModal === 'draw'}
+          title="Draw your signature"
+          onOk={saveDrawSignature}
+          onCancel={() => setOpenModal('')}
         />
 
         <CustomModal
-          open={openModal}
+          open={openModalCus}
           closeModal={closeModal}
           content={
             <ModalContent

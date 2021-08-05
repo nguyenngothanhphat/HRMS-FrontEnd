@@ -21,9 +21,10 @@ import {
   addManagerSignature,
   getDocumentByCandidate,
   getWorkHistory,
+  generateLink,
 } from '@/services/addNewMember';
 import { history } from 'umi';
-import { notification } from 'antd';
+import { message, notification } from 'antd';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
 
@@ -49,7 +50,7 @@ const candidateInfo = {
       filledBasicInformation: false,
       filledJobDetail: false,
       filledCustomField: false,
-      filledBackgroundCheck: false,
+      filledDocumentVerification: false,
       filledOfferDetail: false,
       filledSalaryStructure: false,
       filledAdditionalQuestion: false,
@@ -67,7 +68,7 @@ const candidateInfo = {
         filledBasicInformation: false,
         filledJobDetail: false,
         filledSalaryCheck: false,
-        filledBackgroundCheck: false,
+        filledDocumentVerification: false,
         offerDetailCheck: false,
         payrollSettingCheck: false,
         benefitsCheck: false,
@@ -136,21 +137,6 @@ const candidateInfo = {
         // phd: false,
         checkedList: [],
         // isChecked: false,
-      },
-      previousEmployment: {
-        poe: [
-          // {
-          //   employer: '',
-          //   offerLetter: false,
-          //   appraisalLetter: false,
-          //   paystubs: false,
-          //   form16: false,
-          //   relievingLetter: false,
-          //   checkedList: [],
-          //   isChecked: false,
-          // },
-        ],
-        addSchedule,
       },
 
       candidateSignature: {
@@ -710,6 +696,25 @@ const candidateInfo = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { test: data } });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *generateLink({ payload }, { call, put }) {
+      let response = {};
+      const loading = message.loading('Generating...', 0);
+      try {
+        response = yield call(generateLink, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        loading();
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { test: data } });

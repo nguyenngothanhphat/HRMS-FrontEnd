@@ -14,14 +14,17 @@ import {
   removeDepartment,
   getRolesByCompany,
   setupComplete,
+  countEmployee,
 } from '../services/adminSetting';
 
 const adminSetting = {
   namespace: 'adminSetting',
   state: {
     listRoleByCompany: [],
+    countEmployee: 0,
     idRoles: '',
     originData: {
+      totalTitle: 0,
       listTitle: [],
       listRoles: [],
       listPermission: [],
@@ -29,6 +32,7 @@ const adminSetting = {
     },
     tempData: {
       listTitle: [],
+      totalTitle: 0,
       formatData: [],
       listPermission: [],
       department: [],
@@ -55,25 +59,41 @@ const adminSetting = {
         dialog(errors);
       }
     },
-    *fetchListTitle(_, { call, put }) {
+    *fetchListTitle({ payload: { page, limit } }, { call, put }) {
       let resp = [];
       try {
         const response = yield call(getListTitle, {
+          page,
+          limit,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data: listTitle = [] } = response;
+        const { statusCode, data: listTitle = [], total: totalTitle } = response;
         if (statusCode !== 200) throw response;
         resp = listTitle;
-        yield put({ type: 'saveOrigin', payload: { listTitle } });
-        yield put({ type: 'saveTemp', payload: { listTitle } });
+        yield put({ type: 'saveOrigin', payload: { listTitle, totalTitle } });
+        yield put({ type: 'saveTemp', payload: { listTitle, totalTitle } });
       } catch (errors) {
         dialog(errors);
       }
       return resp;
     },
+    *countEmployeeInPosition({ payload: { title } }, { call, put }) {
+      try {
+        const response = yield call(countEmployee, {
+          title,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
 
-    *removeTitle({ payload: { id = '' } }, { call, put }) {
+        yield put({ type: 'save', payload: { countEmployee: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *removeTitle({ payload: { id = '' } }, { call }) {
       try {
         const response = yield call(removeTitle, {
           id,
@@ -85,9 +105,9 @@ const adminSetting = {
         notification.success({
           message,
         });
-        yield put({
-          type: 'fetchListTitle',
-        });
+        // yield put({
+        //   type: 'fetchListTitle',
+        // });
         return statusCode;
       } catch (errors) {
         dialog(errors);
@@ -157,10 +177,11 @@ const adminSetting = {
         dialog(errors);
       }
     },
-    *addPosition({ payload: { name = '', department = '' } }, { call, put }) {
+    *addPosition({ payload: { name = '', grade = 1, department = '' } }, { call }) {
       try {
         const response = yield call(addPosition, {
           name,
+          grade,
           department,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -170,15 +191,18 @@ const adminSetting = {
         notification.success({
           message,
         });
-        yield put({ type: 'fetchListTitle' });
+        // yield put({ type: 'fetchListTitle' });
+        // return
+        return statusCode;
       } catch (errors) {
         dialog(errors);
+        return 0;
       }
     },
-    *addDepartment({ payload: { name = '' } }, { call, put }) {
+    *addDepartment({ payload }, { call, put }) {
       try {
         const response = yield call(addDepartment, {
-          name,
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });

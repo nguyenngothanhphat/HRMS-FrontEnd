@@ -28,6 +28,13 @@ export async function reassignTicket(payload) {
   });
 }
 
+export async function handleExpiryTicket(payload) {
+  return request('/api/candidatetenant/handle-expiry-ticket', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function inititateBackgroundCheck(payload) {
   return request('/api/candidatetenant/initiate-background-check', {
     method: 'POST',

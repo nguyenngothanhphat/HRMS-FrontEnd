@@ -1,0 +1,114 @@
+// color:
+@background-grey: #f6f7f9;
+@spacing-xxs: 4px;
+.DocumentVerification {
+  .leftWrapper {
+    .eliContainer {
+      width: 100%;
+      padding-left: 0px;
+      font-family: Roboto, sans-serif;
+    }
+  }
+  .rightWrapper {
+    .boldText {
+      margin-top: 16px;
+      font-weight: 700;
+    }
+  }
+  .refreshBlockD {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+  }
+  .bottomBar {
+    padding: 4 * @spacing-xxs;
+    background-color: #ffffff;
+    border: solid 1px #d6dce0;
+    // position: fixed;
+    // bottom: 0;
+    // width: inherit;
+    // height: 72px;
+    border-radius: 5px;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
+
+    .normalText {
+      display: flex;
+      color: #707177;
+      font-size: 13px;
+      font-family: Roboto;
+      font-style: italic;
+    }
+
+    .redText {
+      color: #ff4949;
+      font-size: 13px;
+      font-family: Roboto;
+      font-style: italic;
+    }
+
+    .greenText {
+      color: #47c97f;
+      font-size: 13px;
+      font-family: Roboto;
+      font-style: italic;
+    }
+
+    &__button {
+      text-align: right;
+      &__disabled {
+        opacity: 0.3;
+      }
+      :global {
+        .ant-btn-primary {
+          width: 94px;
+          height: 40px;
+          object-fit: contain;
+          color: #ffffff;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: Roboto;
+          letter-spacing: 0.13px;
+          // display: none;
+          text-shadow: none;
+          background-color: #ffa100;
+          border: solid 1px #ffa100;
+          border-radius: 25px;
+          box-shadow: none;
+          &:hover {
+            color: #ffffff;
+            background-color: #ffa100;
+          }
+        }
+        .ant-btn-secondary {
+          width: 94px;
+          height: 40px;
+          padding-right: 41px;
+          object-fit: contain;
+          color: #ffa100;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: Roboto;
+          letter-spacing: 0.13px;
+          border: solid 0;
+          border-radius: 25px;
+        }
+      }
+    }
+  }
+  .displayButtonChangeEmail {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+  }
+  .buttonChangeEmailFilled {
+    border-radius: 4px;
+  }
+}
+.viewLoading {
+  width: 300px;
+  height: 500px;
+  margin: 0 auto;
+}
