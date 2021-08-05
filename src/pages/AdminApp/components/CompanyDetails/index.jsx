@@ -465,6 +465,14 @@ class CompanyDetails extends Component {
     }
   };
 
+  onChangeState = (value) => {
+    if (value) {
+      this.formRef.current.setFieldsValue({
+        zipHeadquarter: '',
+      });
+    }
+  };
+
   render() {
     const {
       countryHeadquarter = '',
@@ -900,6 +908,7 @@ class CompanyDetails extends Component {
                     >
                       <Select
                         placeholder="Select State"
+                        onChange={this.onChangeState}
                         showArrow
                         showSearch
                         disabled={!countryHeadquarter || !isEditAddresses}
