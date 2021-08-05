@@ -113,7 +113,7 @@ class FormWorkLocation extends Component {
                 rules={[
                   {
                     required: true,
-                    message: 'Please enter location name',
+                    message: 'Please enter location name!',
                   },
                   ({ getFieldValue }) => ({
                     validator(_, value) {
