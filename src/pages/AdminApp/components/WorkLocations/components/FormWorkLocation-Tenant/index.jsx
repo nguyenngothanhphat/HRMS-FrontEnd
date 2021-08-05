@@ -79,7 +79,7 @@ class FormWorkLocationTenant extends Component {
       name: locationName || name,
       addressLine1,
       addressLine2,
-      city,
+      city: city || undefined,
       country,
       state,
       zipCode,
@@ -402,7 +402,8 @@ class FormWorkLocationTenant extends Component {
                     disabled={disableInput}
                     onChange={this.onChangeCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     {listCountry.map((item) => (
                       <Option key={item._id}>{item.name}</Option>
@@ -422,7 +423,8 @@ class FormWorkLocationTenant extends Component {
                     showSearch
                     disabled={disableInput || !newCountry}
                     filterOption={(input, option) =>
-                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     {listState.map((item) => (
                       <Option key={item}>{item}</Option>
