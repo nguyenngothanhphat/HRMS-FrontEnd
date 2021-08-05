@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Table } from 'antd';
-import { formatMessage, Link } from 'umi';
+import { formatMessage, Link, history } from 'umi';
 import moment from 'moment';
 import styles from './index.less';
 
@@ -75,8 +75,8 @@ class TableOffBoarding extends PureComponent {
       title: 'Action',
       dataIndex: 'action',
       align: 'left',
-      render: () => (
-        <div className={styles.documentAction}>
+      render: (_, record) => (
+        <div className={styles.documentAction} onClick={() => this.viewRequest(record._id)}>
           <Link>View Request</Link>
         </div>
       ),
@@ -89,6 +89,10 @@ class TableOffBoarding extends PureComponent {
       pageSelected: 1,
       selectedRowKeys: [],
     };
+  }
+
+  viewRequest = (_id) => {
+    history.push(`/offboarding/list/review/${_id}`)
   }
 
   // pagination
