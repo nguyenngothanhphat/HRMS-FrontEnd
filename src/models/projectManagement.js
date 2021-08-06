@@ -1,11 +1,15 @@
 import { dialog } from '@/utils/utils';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { notification } from 'antd';
 import {
   listProjectByCompany,
   addProjectMember,
   listProjectRole,
   addProject,
   getReportingManagerList,
+  removeProjectMember,
+  getProjectById,
+  updateProject,
 } from '../services/projectManagement';
 // import { getRoleList } from '../services/usersManagement';
 // import { getListEmployee } from '../services/employee';
@@ -94,6 +98,7 @@ const projectManagement = {
     employeeList: [],
     totalActive: '',
     totalInactive: '',
+    projectMembers: [],
   },
   effects: {
     *getProjectByCompany({ payload }, { call, put }) {
@@ -111,7 +116,7 @@ const projectManagement = {
             _id,
             name: projectName,
             createdAt: createdDate,
-            manager: { generalInfo: { legalName: managerName } = {} } = {},
+            manager,
             beginDate,
             projectHealth,
             company,
@@ -121,7 +126,7 @@ const projectManagement = {
             projectId: _id,
             projectName: projectName || '',
             createdDate: formatCreatedDate(createdDate) || '',
-            projectManager: managerName || '',
+            projectManager: manager,
             startDate: formatStartDate(beginDate) || '',
             projectHealth: (projectHealth && `${projectHealth}%`) || '',
             company,
@@ -165,6 +170,47 @@ const projectManagement = {
       return response;
     },
 
+    *getProjectById({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(getProjectById, { ...payload, tenantId: getCurrentTenant() });
+        if (response.statusCode !== 200) {
+          dialog(response);
+        }
+        yield put({
+          type: 'save',
+          payload: {
+            projectMembers: response.data.resource,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *updateProject({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(updateProject, { ...payload, tenantId: getCurrentTenant() });
+        if (response.statusCode !== 200) {
+          dialog(response);
+        }
+        notification.success({
+          message: response.message,
+        });
+        yield put({
+          type: 'getProjectByCompany',
+          payload: {
+            company: getCurrentCompany(),
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
     *addNewProject({ payload }, { call }) {
       let response;
       try {
@@ -182,6 +228,19 @@ const projectManagement = {
       let response;
       try {
         response = yield call(addProjectMember, { ...payload, tenantId: getCurrentTenant() });
+        if (response.statusCode !== 200) {
+          dialog(response);
+        }
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *removeMember({ payload }, { call }) {
+      let response;
+      try {
+        response = yield call(removeProjectMember, { ...payload, tenantId: getCurrentTenant() });
         if (response.statusCode !== 200) {
           dialog(response);
         }
