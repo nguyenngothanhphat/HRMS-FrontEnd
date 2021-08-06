@@ -98,6 +98,7 @@ class ModalUpload extends Component {
       payload: formData,
       isUploadAvatar: true,
     }).then((resp) => {
+      this.setState({ imageUrl: '' });
       getResponse(resp);
     });
   };
