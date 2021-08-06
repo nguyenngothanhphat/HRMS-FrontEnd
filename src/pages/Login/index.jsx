@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button, Checkbox, Spin } from 'antd';
 import { EyeFilled } from '@ant-design/icons';
 import logoGoogle from '@/assets/logo_google.png';
 import GoogleLogin from 'react-google-login';
@@ -28,29 +28,19 @@ class FormLogin extends Component {
   componentDidMount = () => {
     const { location: { state: { autoFillEmail = '' } = {} } = {} } = this.props;
     removeLocalStorage();
-    this.formRef.current.setFieldsValue({
-      email: autoFillEmail,
-    });
+    // this.formRef.current.setFieldsValue({
+    //   email: autoFillEmail,
+    // });
     history.replace();
   };
 
-  onFinish = ({ userEmail: email, password, remember }) => {
-    const payload = { email, password };
-    this.handleSubmit(payload, remember);
+  onFinish = ({ userEmail: email, password, keepSignIn }) => {
+    const payload = { email, password, keepSignIn };
+    this.handleSubmit(payload);
   };
 
-  handleSubmit = (values, remember) => {
+  handleSubmit = (values) => {
     const { dispatch } = this.props;
-
-    if (remember) {
-      const data = JSON.stringify({
-        userEmail: values.email,
-        password: values.password,
-      });
-      localStorage.setItem('authData', data);
-    } else {
-      localStorage.clear();
-    }
 
     dispatch({
       type: 'login/login',
@@ -122,13 +112,6 @@ class FormLogin extends Component {
     const messageValidationPsw =
       messageError === 'Invalid password' ? 'Incorrect password. Try again' : undefined;
 
-    const getAuthData = JSON.parse(localStorage.getItem('authData'));
-
-    const getEmailsLocalStr = getAuthData?.userEmail;
-    const getPasswordLocalStr = getAuthData?.password;
-
-    const checkedBox = this.checkBoxValue(getEmailsLocalStr, getPasswordLocalStr);
-
     return (
       <div className={styles.formWrapper}>
         <p className={styles.formWrapper__title}>
@@ -138,9 +121,7 @@ class FormLogin extends Component {
           layout="vertical"
           name="basic"
           initialValues={{
-            remember: checkedBox,
-            userEmail: getEmailsLocalStr,
-            password: getPasswordLocalStr,
+            keepSignIn: false,
           }}
           onFinish={this.onFinish}
           onValuesChange={this.onValuesChange}
@@ -184,7 +165,7 @@ class FormLogin extends Component {
               className={styles.inputPassword}
             />
           </Form.Item>
-          <Form.Item className={styles.checkbox} name="remember" valuePropName="checked">
+          <Form.Item className={styles.checkbox} name="keepSignIn" valuePropName="checked">
             <Checkbox>
               <span>{formatMessage({ id: 'pages.login.keepMeSignedIn' })}</span>
             </Checkbox>

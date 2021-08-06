@@ -15,11 +15,11 @@ class ResignationRequest extends PureComponent {
           <Affix offsetTop={30}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>Terminate work relationship with the company</p>
-              <div>
+              {/* <div>
                 <div className={styles.viewActivityLogs}>
                   <span>View Activity log (15)</span>
                 </div>
-              </div>
+              </div> */}
             </div>
           </Affix>
           <Row className={styles.content} gutter={[24, 24]}>
