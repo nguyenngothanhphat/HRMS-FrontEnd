@@ -4,6 +4,7 @@ import { Form, Input, Skeleton, Select, Button, Checkbox, Row, Col } from 'antd'
 import classnames from 'classnames';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { connect } from 'umi';
+import { CloseOutlined } from '@ant-design/icons';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import s from './index.less';
 
@@ -392,7 +393,7 @@ class CompanyDetails extends Component {
         hrContactEmail: hrEmail,
         hrContactName: hrName,
         hrContactPhone: hrPhone,
-        childOfCompany = '',
+        childOfCompany = undefined,
         // isHeadquarter,
       } = {},
     } = companyDetails;
@@ -462,6 +463,14 @@ class CompanyDetails extends Component {
         break;
       default:
         break;
+    }
+  };
+
+  onChangeState = (value) => {
+    if (value) {
+      this.formRef.current.setFieldsValue({
+        zipHeadquarter: '',
+      });
     }
   };
 
@@ -633,7 +642,7 @@ class CompanyDetails extends Component {
               hrPhone,
               isNewTenant: false,
               isHeadquarter: true,
-              parentCompany: childOfCompany || null,
+              parentCompany: childOfCompany || undefined,
               // logoUrl,
             }}
           >
@@ -643,6 +652,7 @@ class CompanyDetails extends Component {
                 <div className={s.editBtn} onClick={() => this.handleEdit(1)}>
                   {isEditCompanyDetails ? (
                     <div className={s.wrapBtn}>
+                      <CloseOutlined className={s.buttonIcon} />
                       <span className={s.cancelText}>Cancel</span>
                     </div>
                   ) : (
@@ -747,9 +757,6 @@ class CompanyDetails extends Component {
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
                       >
-                        <Option style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}>
-                          None
-                        </Option>
                         {listCompany.map((item) => (
                           <Option
                             disabled={
@@ -772,6 +779,7 @@ class CompanyDetails extends Component {
                 <div className={s.editBtn} onClick={() => this.handleEdit(2)}>
                   {isEditAddresses ? (
                     <div className={s.wrapBtn}>
+                      <CloseOutlined className={s.buttonIcon} />
                       <span className={s.cancelText}>Cancel</span>
                     </div>
                   ) : (
@@ -897,6 +905,7 @@ class CompanyDetails extends Component {
                     >
                       <Select
                         placeholder="Select State"
+                        onChange={this.onChangeState}
                         showArrow
                         showSearch
                         disabled={!countryHeadquarter || !isEditAddresses}
@@ -1115,6 +1124,7 @@ class CompanyDetails extends Component {
                 <div className={s.editBtn} onClick={() => this.handleEdit(3)}>
                   {isEditContactInfomation ? (
                     <div className={s.wrapBtn}>
+                      <CloseOutlined className={s.buttonIcon} />
                       <span className={s.cancelText}>Cancel</span>
                     </div>
                   ) : (

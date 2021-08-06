@@ -1,16 +1,17 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-param-reassign */
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import { PROCESS_STATUS } from '@/utils/onboarding';
+import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import BasicInformationHeader from './components/BasicInformationHeader';
-import BasicInformationReminder from './components/BasicInformationReminder';
+// import BasicInformationReminder from './components/BasicInformationReminder';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
-
 import styles from './index.less';
+import { Page } from '../../utils';
 
 @connect(({ candidateInfo: { data, checkMandatory, currentStep, tempData } = {} }) => ({
   data,
@@ -18,7 +19,7 @@ import styles from './index.less';
   currentStep,
   tempData,
 }))
-class BasicInformation extends Component {
+class BasicInformation extends PureComponent {
   formRef = React.createRef();
 
   constructor(props) {
@@ -53,7 +54,14 @@ class BasicInformation extends Component {
     window.scrollTo({ top: 77, behavior: 'smooth' });
 
     this.checkBottomBar();
-
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Basic_Information,
+        candidate,
+        data: {},
+      },
+    });
     if (processStatus === 'DRAFT') {
       // const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
       // console.log(candidate, currentStepLocal);
@@ -236,6 +244,7 @@ class BasicInformation extends Component {
 
   _renderEmployeeId = () => {
     const { isOpenReminder = {} } = this.state;
+    console.log(isOpenReminder);
     const { data } = this.props;
     const { processStatus } = data;
     if (processStatus === 'ACCEPT-FINAL-OFFER') {
@@ -461,6 +470,7 @@ class BasicInformation extends Component {
             </Form.Item>
           </Col>
         </Row>
+        <RenderAddQuestion />
       </div>
     );
   };
@@ -487,7 +497,7 @@ class BasicInformation extends Component {
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
-          <Col span={16}>
+          <Col span={12}>
             <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
           </Col>
           <Col span={8}>
@@ -564,6 +574,7 @@ class BasicInformation extends Component {
                     <hr />
                     {this._renderForm()}
                   </div>
+
                   {this._renderBottomBar()}
                 </Form>
               </div>

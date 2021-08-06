@@ -6,12 +6,14 @@ import { formatMessage, connect } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
 import { PROCESS_STATUS } from '@/utils/onboarding';
+import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import NoteComponent from '../NoteComponent';
 import Feedback from './components/Feedback';
 import CollapseField from './components/CollapseField';
 import styles from './index.less';
 import SendEmail from '../PreviewOffer/components/SendEmail';
 import CloseCandidateModal from './components/CloseCandidateModal';
+import { Page } from '../../utils';
 import PreviousEmployment from './components/PreviousEmployment';
 
 @connect(
@@ -71,7 +73,14 @@ class BackgroundRecheck extends Component {
     const { PROVISIONAL_OFFER_DRAFT, SENT_PROVISIONAL_OFFERS, PENDING } = PROCESS_STATUS;
 
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
-
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Eligibility_documents,
+        candidate,
+        data: {},
+      },
+    });
     if (documentsByCandidate.length > 0) {
       await dispatch({
         type: 'candidateInfo/fetchWorkHistory',
@@ -543,6 +552,13 @@ class BackgroundRecheck extends Component {
             </p>
             <div className={styles.backgroundRecheck__left}>
               <>{this.renderCollapseFields()}</>
+            </div>
+            <div className={styles.bottomBar} style={{ marginBottom: '20px' }}>
+              <Row>
+                <Col>
+                  <RenderAddQuestion />
+                </Col>
+              </Row>
             </div>
             {this._renderBottomBar()}
           </Col>

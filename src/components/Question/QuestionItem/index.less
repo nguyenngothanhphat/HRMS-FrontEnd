@@ -129,6 +129,7 @@
     position: relative;
     display: flex !important;
     align-items: center !important;
+    justify-content: space-between;
     // padding-top: 12px !important;
     padding-top: 24px !important;
     input {
@@ -142,5 +143,30 @@
       margin-left: 15px;
       cursor: pointer;
     }
+  }
+  &__answer2 {
+    position: relative;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: left;
+    // padding-top: 12px !important;
+    // padding-top: 24px !important;
+    input {
+      width: 100% !important;
+      margin-left: 8px !important;
+      border: none !important;
+      outline: none !important;
+      all: unset !important;
+    }
+    &__remove {
+      margin-left: 15px;
+      cursor: pointer;
+    }
+  }
+  .addRating {
+    color: #161c29;
+    font-weight: 500;
+    text-decoration: underline;
+    cursor: pointer;
   }
 }

@@ -3,11 +3,13 @@ import { Row, Col, Typography, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 // import PreviewOffer from '@/pages/FormTeamMember/components/PreviewOffer/index';
 import { getCurrentTenant } from '@/utils/authority';
+import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import Header from './components/Header';
 import GlobalEmployeeComponent from './components/GlobalEmployeeComponent';
 import IndiaEmployeeComponent from './components/IndiaEmployeeComponent';
 import NoteComponent from '../NoteComponent';
 import styles from './index.less';
+import { Page } from '../../utils';
 
 @connect(
   ({
@@ -33,7 +35,14 @@ class Benefit extends PureComponent {
     const { candidate = '', processStatus = '' } = data;
 
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
-
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Benefits,
+        candidate,
+        data: {},
+      },
+    });
     if (processStatus === 'DRAFT') {
       if (dispatch && candidate) {
         dispatch({
@@ -424,7 +433,11 @@ class Benefit extends PureComponent {
                 handleChange={this.handleChange}
                 benefits={benefits}
               />
+              <div style={{ margin: '32px' }}>
+                <RenderAddQuestion />
+              </div>
             </div>
+
             <div className={styles.bars}>{this._renderBottomBar()}</div>
           </Col>
 
