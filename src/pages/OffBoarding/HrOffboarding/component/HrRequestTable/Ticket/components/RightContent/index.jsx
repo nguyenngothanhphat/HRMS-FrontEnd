@@ -14,8 +14,7 @@ const array = [
     info: ' Accounts Aditya handled brought over 25 cr revenue for the company',
   },
   {
-    info:
-      'Aditya handled 6 of the biggest accounts for Terralogic namely: Bajaj DRx, NJ Group, Hukoomi, Udaan & Intel',
+    info: 'Aditya handled 6 of the biggest accounts for Terralogic namely: Bajaj DRx, NJ Group, Hukoomi, Udaan & Intel',
   },
 ];
 
@@ -34,10 +33,10 @@ export default class InfoEmployee extends PureComponent {
               <span>{info}</span>
             </div>
           ))}
-          <div className={styles.viewDetail}>
+          {/* <div className={styles.viewDetail}>
             View Aditya’s Career graph
             <img style={{ marginLeft: '5px' }} src={LaunchIcon} alt="launch icon" />
-          </div>
+          </div> */}
         </div>
       </div>
     );
