@@ -5,6 +5,8 @@
   background-color: #fff;
   border: 1px solid #d6dce0;
   border-radius: 5px;
+
+
   :global {
     textarea {
       background: #ffffff;
@@ -13,11 +15,13 @@
       resize: none;
     }
   }
+
   &__manage {
     position: absolute;
     top: 24px;
     right: 24px;
     display: flex;
+
     &__edit {
       color: #ffa100;
       border: 1px solid #ffa100;
@@ -27,12 +31,14 @@
       margin-left: 10px;
     }
   }
+
   &__question {
     // display: flex;
     margin-bottom: 10px;
     font-weight: 500;
     font-size: 1.001rem;
   }
+
   &__answers {
     position: relative;
     display: flex !important;
@@ -51,14 +57,17 @@
     color: #161c29;
     font-size: 13px;
     line-height: 15px;
+
     :global {
       .ant-radio-wrapper:last-child {
         margin-right: 40px;
       }
+
       .ant-radio-wrapper {
         position: relative;
         margin-left: 40px;
-        & > span:last-child {
+
+        &>span:last-child {
           position: absolute;
           top: -100%;
           left: -25%;
@@ -75,15 +84,18 @@
     line-height: 1.5715;
   }
 }
+
 .ant-row.ant-col .ant-radio-group {
   width: 100% !important;
 }
+
 .radioGroup {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   width: 100%;
 }
+
 .contentColumns {
   display: flex;
   justify-content: center;

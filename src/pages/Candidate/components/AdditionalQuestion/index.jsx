@@ -19,8 +19,15 @@ const Note = {
 };
 
 const AdditionalQuestion = (props) => {
-  const { checkCandidateMandatory, dispatch, localStep, questionOnBoarding, candidate, loading1 } =
-    props;
+  const {
+    listPage,
+    checkCandidateMandatory,
+    dispatch,
+    localStep,
+    questionOnBoarding,
+    candidate,
+    loading1,
+  } = props;
 
   const checkAllFieldsValidate = () => {
     const valid = questionOnBoarding.every((question) => {
@@ -231,6 +238,7 @@ const AdditionalQuestion = (props) => {
 
 export default connect(
   ({
+    optionalQuestion: { listPage = [] },
     candidateProfile: {
       checkCandidateMandatory = {},
       localStep = 7,
@@ -239,6 +247,7 @@ export default connect(
     } = {},
     loading,
   }) => ({
+    listPage,
     checkCandidateMandatory,
     localStep,
     hidePreviewOffer,

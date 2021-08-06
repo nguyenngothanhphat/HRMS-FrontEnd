@@ -18,21 +18,11 @@ const optionalQuestion = {
   state: {
     candidate: '',
     optionalQuestionId: '',
+    prevPage: '',
     pageName: '',
-    data: {
-      // _id: '',
-      // candidate: '',
-      // name: '',
-      // isDefault: false,
-      // position: {
-      //   move_to: 'IN-PAGE',
-      //   page: '',
-      // },
-      // settings: [],
-      // company: '',
-      // location: '',
-    },
+    data: {},
     listPage: [],
+    messageErrors: [],
   },
 
   effects: {
@@ -41,9 +31,10 @@ const optionalQuestion = {
         const response = yield call(getListPage, { ...payload, tenantId: getCurrentTenant() });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
+
         yield put({
           type: 'save',
-          payload: { listPage: data.listPage },
+          payload: { listPage: data.listPage, candidate: payload.candidate },
         });
       } catch (error) {
         dialog(error);
@@ -78,10 +69,11 @@ const optionalQuestion = {
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
+
         if (data) {
           yield put({
             type: 'save',
-            payload: { data },
+            payload: { data, messageErrors: [], prevPage: payload.page },
           });
         } else
           yield put({
@@ -102,7 +94,7 @@ const optionalQuestion = {
         if (data) {
           yield put({
             type: 'save',
-            payload: { data },
+            payload: { data, messageErrors: [] },
           });
         } else
           yield put({
@@ -148,18 +140,18 @@ const optionalQuestion = {
         dialog(error);
       }
     },
-    *updateQuestionByCandidate({ payload }, { call, put }) {
+    *updateQuestionByCandidate({ payload }, { call }) {
       try {
         const response = yield call(updateQuestionByCandidate, {
           ...payload,
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, data } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        yield put({
-          type: 'save',
-          payload: { data },
-        });
+        // yield put({
+        //   type: 'save',
+        //   payload: { pageName: '', data: {}, messageErrors: [] },
+        // });
       } catch (error) {
         dialog(error);
       }
@@ -190,22 +182,10 @@ const optionalQuestion = {
     resetDefault(state) {
       return {
         ...state,
-        // candidate: '',
+        messageErrors: [],
+        tempSettings: [],
         optionalQuestionId: '',
-        data: {
-          // _id: '',
-          // candidate: '',
-          // name: '',
-          // isDefault: false,
-          // position: {
-          //   move_to: 'IN-PAGE',
-          //   page: '',
-          // },
-          // settings: [],
-          // company: '',
-          // location: '',
-        },
-        // listPage: [],
+        data: {},
       };
     },
   },

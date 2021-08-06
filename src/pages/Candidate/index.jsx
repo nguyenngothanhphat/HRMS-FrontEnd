@@ -83,22 +83,23 @@ const Candidate = (props) => {
         return null;
     }
   };
-  console.log('reRender', listPage);
   // if (loadingFetchDocumentsByCandidate || loadingFetchWorkHistory) return <Skeleton />;
   return <div>{_renderScreen(listPage[screen - 1])}</div>;
 };
 
 // export default Candidate;
-export default connect(
-  ({
-    optionalQuestion: { listPage = [] },
-    candidateProfile: { localStep, data, tempData } = {},
-    user: { currentUser: { candidate = '' } = {} } = {},
-  }) => ({
-    listPage,
-    localStep,
-    data,
-    tempData,
-    candidate,
-  }),
-)(Candidate);
+export default React.memo(
+  connect(
+    ({
+      optionalQuestion: { listPage = [] },
+      candidateProfile: { localStep, data, tempData } = {},
+      user: { currentUser: { candidate = '' } = {} } = {},
+    }) => ({
+      listPage,
+      localStep,
+      data,
+      tempData,
+      candidate,
+    }),
+  )(Candidate),
+);

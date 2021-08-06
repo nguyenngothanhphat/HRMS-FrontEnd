@@ -23,16 +23,17 @@ const RenderAddQuestion = (props) => {
     data: { _id, settings = [] },
     dispatch,
     pageName,
+    prevPage,
   } = props;
   const [openModal, setOpenModal] = useState('');
   const [questionItem, setQuestionItem] = useState({});
   const [tempSetting, setTempSetting] = useState([]);
-  const [action, setAction] = useState('Add');
+  const [action, setAction] = useState('');
   const [title, setTitle] = useState('');
   const [firstOpen, setFirstOpen] = useState(true);
   const [mode, setMode] = useState(MODE.EDIT);
   useEffect(() => {
-    if (candidate !== '' && pageName !== '')
+    if (candidate !== '' && pageName !== '' && pageName !== prevPage) {
       dispatch({
         type: 'optionalQuestion/getQuestionByPage',
         payload: {
@@ -40,29 +41,31 @@ const RenderAddQuestion = (props) => {
           page: pageName,
         },
       });
+    }
   }, [candidate, pageName]);
   const openModalAdd = () => {
     setOpenModal('AddQuestion');
     // openModalList: false,
     setMode(MODE.EDIT);
     setQuestionItem(defaultQuestion);
-    setAction('Add');
+    // setAction('Add');
     setTitle('Add question');
   };
   const closeModalAdd = () => {
     if (firstOpen) setOpenModal('');
     else setOpenModal('ListQuestion');
+    setAction('');
   };
 
   const closeModalList = () => {
     setOpenModal('');
     setTempSetting([]);
+    setAction('');
   };
 
   const openModalEdit = (Item) => {
     setOpenModal('AddQuestion');
     setQuestionItem(Item);
-    // openModalList: false,
     setAction('Save');
     setTitle('Edit question');
   };
@@ -71,6 +74,7 @@ const RenderAddQuestion = (props) => {
     setMode(valueMode);
     setFirstOpen(false);
     setTempSetting(settings);
+    setAction('Save');
   };
   const openModalRemove = (_questionItem, keyQuestion) => {
     const temp = tempSetting;
@@ -103,28 +107,34 @@ const RenderAddQuestion = (props) => {
     }
     setTempSetting(tempSettings);
     setOpenModal('ListQuestion');
+    // setAction('Add');
     setFirstOpen(false);
   };
 
-  const onSaveList = async () => {
-    // const { _id } = data;
-    // fetch list optional onboarding question
-    dispatch({
-      type: 'optionalQuestion/addQuestion',
-      payload: {
-        isDefault: false,
-        position: {
-          move_to: 'IN-PAGE',
-          page: pageName,
+  const onSaveList = () => {
+    if (action === 'Add')
+      dispatch({
+        type: 'optionalQuestion/addQuestion',
+        payload: {
+          isDefault: false,
+          position: {
+            move_to: 'IN-PAGE',
+            page: pageName,
+          },
+          candidate,
+          settings: tempSetting,
         },
-        candidate,
-        settings: tempSetting,
-      },
-    });
-    // if (result.statusCode === 200) {
+      });
+    if (action === 'Save')
+      dispatch({
+        type: 'optionalQuestion/updateQuestionByHR',
+        payload: {
+          questionOnboarding: _id,
+          settings: tempSetting,
+        },
+      });
     setOpenModal('');
     setTempSetting([]);
-    // }
   };
 
   const removeQuestionList = () => {
@@ -170,7 +180,10 @@ const RenderAddQuestion = (props) => {
           <Button
             type="link"
             // style={{ display: 'flex', alignItems: 'center', paddingLeft: '0px' }}
-            onClick={openModalAdd}
+            onClick={() => {
+              openModalAdd();
+              setAction('Add');
+            }}
           >
             <img src={AddIcon} alt="Add icon" style={{ width: '18px', marginRight: '15px' }} />
             Add optional onboarding questions
@@ -205,9 +218,16 @@ export default connect(
   ({
     dispatch,
     loading,
-    optionalQuestion: { candidate = '', optionalQuestionId = '', pageName = '', data = {} } = {},
+    optionalQuestion: {
+      prevPage,
+      candidate = '',
+      optionalQuestionId = '',
+      pageName = '',
+      data = {},
+    } = {},
   }) => ({
     dispatch,
+    prevPage,
     candidate,
     optionalQuestionId,
     pageName,

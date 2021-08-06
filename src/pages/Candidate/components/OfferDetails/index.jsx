@@ -3,6 +3,7 @@ import ModalUpload from '@/components/ModalUpload';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import CancelIcon from '@/pages/FormTeamMember/components/PreviewOffer/components/CancelIcon';
 import whiteImg from '@/pages/FormTeamMember/components/PreviewOffer/components/images/whiteImg.png';
+import AnswerQuestion from '@/components/Question/AnswerQuestion';
 import { getCurrentTenant } from '@/utils/authority';
 import { Button, Col, Row, Select, Typography, Input, Popover, Radio, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -12,6 +13,7 @@ import TextSignature from '@/components/TextSignature';
 import NoteComponent from '../NoteComponent';
 import Alert from './components/Alert';
 import s from './index.less';
+import { Page } from '../../../FormTeamMember/utils';
 
 const { Option } = Select;
 
@@ -37,7 +39,8 @@ const FileInfo = [
 ];
 
 const OfferDetails = (props) => {
-  const { dispatch, checkCandidateMandatory, localStep, tempData, data, loading1 } = props;
+  const { dispatch, checkCandidateMandatory, localStep, tempData, data, loading1, question } =
+    props;
   const { filledOfferDetails = false } = checkCandidateMandatory;
   const {
     candidateSignature: candidateSignatureProp = {},
@@ -58,6 +61,14 @@ const OfferDetails = (props) => {
   const [openDigital, setOpenDigital] = useState(false);
   useEffect(() => {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Offer_Details,
+        // candidate: data.candidate,
+        data: {},
+      },
+    });
   }, []);
 
   useEffect(() => {
@@ -133,7 +144,14 @@ const OfferDetails = (props) => {
       return;
     }
     const { id, url } = signature;
-
+    if (question._id !== '' && question.settings && question.settings.length)
+      dispatch({
+        type: 'optionalQuestion/updateQuestionByCandidate',
+        payload: {
+          id: question._id,
+          settings: question.settings,
+        },
+      });
     dispatch({
       type: 'candidateProfile/save',
       payload: {
@@ -499,6 +517,7 @@ const OfferDetails = (props) => {
               </p>
               {_renderViewFile(FileInfo[1])}
             </div>
+            <AnswerQuestion />
           </div>
 
           {renderBottomBar()}
@@ -534,6 +553,7 @@ const OfferDetails = (props) => {
 
 export default connect(
   ({
+    optionalQuestion: { data: question },
     candidateProfile: {
       localStep = 4,
       checkCandidateMandatory = {},
@@ -542,6 +562,7 @@ export default connect(
     } = {},
     loading,
   }) => ({
+    question,
     checkCandidateMandatory,
     localStep,
     tempData,

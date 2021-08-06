@@ -2,19 +2,32 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
+import AnswerQuestion from '@/components/Question/AnswerQuestion';
 import BasicInformationHeader from './components/BasicInformationHeader';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
-
 import styles from './index.less';
+import { Page } from '../../../FormTeamMember/utils';
 
-@connect(({ candidateProfile: { data, checkMandatory, localStep, tempData } = {}, loading }) => ({
-  data,
-  checkMandatory,
-  localStep,
-  tempData,
-  loading: loading.effects['candidateProfile/fetchCandidateById'],
-}))
+@connect(
+  ({
+    optionalQuestion: {
+      messageError,
+      data: { _id, settings },
+    },
+    candidateProfile: { data, checkMandatory, localStep, tempData } = {},
+    loading,
+  }) => ({
+    data,
+    _id,
+    settings,
+    messageError,
+    checkMandatory,
+    localStep,
+    tempData,
+    loading: loading.effects['candidateProfile/fetchCandidateById'],
+  }),
+)
 class BasicInformation extends PureComponent {
   static getDerivedStateFromProps(props) {
     if ('data' in props) {
@@ -28,7 +41,16 @@ class BasicInformation extends PureComponent {
   }
 
   componentDidMount() {
+    const { dispatch } = this.props;
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Basic_Information,
+        // candidate: data.candidate,
+        data: {},
+      },
+    });
   }
 
   handleChange = (e) => {
@@ -73,8 +95,16 @@ class BasicInformation extends PureComponent {
 
   onFinish = (values) => {
     const { data } = this.state;
-    const { dispatch, localStep } = this.props;
+    const { dispatch, localStep, _id: id, settings } = this.props;
     const { _id } = data;
+    if (id !== '' && settings && settings.length)
+      dispatch({
+        type: 'optionalQuestion/updateQuestionByCandidate',
+        payload: {
+          id,
+          settings,
+        },
+      });
     dispatch({
       type: 'candidateProfile/save',
       payload: {
@@ -205,6 +235,7 @@ class BasicInformation extends PureComponent {
               <Input disabled="true" className={styles.formInput} name="previousExperience" />
             </Form.Item>
           </Col>
+          <AnswerQuestion />
         </Row>
       </div>
     );

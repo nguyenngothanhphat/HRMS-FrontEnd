@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react';
 import { Form, Table, Button, Input, Row, Col, InputNumber } from 'antd';
 import { formatMessage, connect } from 'umi';
+import AnswerQuestion from '@/components/Question/AnswerQuestion';
 import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(
   ({
+    optionalQuestion: { data: question },
     candidateProfile: {
       listTitle = [],
       checkMandatory = {},
@@ -17,6 +19,7 @@ import styles from './index.less';
     },
     user: { currentUser: { company: { _id = '' } = {} } = {} },
   }) => ({
+    question,
     listTitle,
     checkMandatory,
     localStep,
@@ -57,8 +60,15 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   onClickNext = () => {
-    const { dispatch, options, tempData, localStep, checkMandatory } = this.props;
-
+    const { dispatch, options, tempData, localStep, checkMandatory, question } = this.props;
+    if (question._id !== '' && question.settings && question.settings.length)
+      dispatch({
+        type: 'optionalQuestion/updateQuestionByCandidate',
+        payload: {
+          id: question._id,
+          settings: question.settings,
+        },
+      });
     dispatch({
       type: 'candidateProfile/updateByCandidateEffect',
       payload: {
@@ -315,6 +325,9 @@ class SalaryStructureTemplate extends PureComponent {
               // size="large"
               pagination={false}
             />
+            <Row style={{ margin: '32px' }}>
+              <AnswerQuestion />
+            </Row>
           </div>
           {/* {this._renderFooter()} */}
           {options === 1 ? this._renderBottomBar() : null}

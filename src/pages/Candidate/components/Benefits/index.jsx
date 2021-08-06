@@ -4,10 +4,11 @@ import { formatMessage, connect } from 'umi';
 import FileIcon from '@/assets/pdf_icon.png';
 import { Row, Col, Typography, Button } from 'antd';
 import CustomModal from '@/components/CustomModal/index';
+import AnswerQuestion from '@/components/Question/AnswerQuestion';
 import NoteComponent from '../NoteComponent';
 import FileContent from '../FileContent';
 import mockFiles from './components/utils';
-
+import { Page } from '../../../FormTeamMember/utils';
 import s from './index.less';
 
 // pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -23,7 +24,7 @@ const Note = {
 };
 
 const Benefits = (props) => {
-  const { checkCandidateMandatory, localStep, dispatch } = props;
+  const { checkCandidateMandatory, localStep, dispatch, question } = props;
   const [fileUrl, setFileUrl] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [allFieldFilled, setAllFieldFilled] = useState(false);
@@ -31,7 +32,14 @@ const Benefits = (props) => {
 
   useEffect(() => {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
-
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Benefits,
+        // candidate: data.candidate,
+        data: {},
+      },
+    });
     setAllFieldFilled(true);
   }, []);
 
@@ -100,6 +108,14 @@ const Benefits = (props) => {
     if (!dispatch) {
       return;
     }
+    if (question._id !== '' && question.settings && question.settings.length)
+      dispatch({
+        type: 'optionalQuestion/updateQuestionByCandidate',
+        payload: {
+          id: question._id,
+          settings: question.settings,
+        },
+      });
     dispatch({
       type: 'candidateProfile/save',
       payload: {
@@ -201,6 +217,7 @@ const Benefits = (props) => {
                 {_renderFiles(fund)}
               </div>
             </main>
+            <AnswerQuestion />
           </div>
 
           {renderBottomBar()}
@@ -222,7 +239,11 @@ const Benefits = (props) => {
 };
 
 export default connect(
-  ({ candidateProfile: { localStep = 5, checkCandidateMandatory = {} } = {} }) => ({
+  ({
+    optionalQuestion: { data: question },
+    candidateProfile: { localStep = 5, checkCandidateMandatory = {} } = {},
+  }) => ({
+    question,
     checkCandidateMandatory,
     localStep,
   }),

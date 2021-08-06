@@ -2,18 +2,27 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Typography, Button, notification } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
+import AnswerQuestion from '@/components/Question/AnswerQuestion';
 import Header from './components/Header';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
 import FieldsComponent from './components/FieldsComponent';
+import { Page } from '../../../FormTeamMember/utils';
 
 import styles from './index.less';
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
 @connect(
   ({
+    optionalQuestion: {
+      messageError,
+      data: { _id, settings },
+    },
     candidateProfile: { data, jobDetails, checkMandatory, localStep, isCandidateAcceptDOJ } = {},
   }) => ({
     jobDetails,
+    messageError,
+    _id,
+    settings,
     checkMandatory,
     data,
     localStep,
@@ -46,6 +55,14 @@ class JobDetails extends PureComponent {
       isCandidateAcceptDOJ = true,
       jobDetails: { candidatesNoticePeriod = 0, prefferedDateOfJoining = '' } = {},
     } = this.props;
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Job_Details,
+        // candidate: data.candidate,
+        data: {},
+      },
+    });
     // console.log('dateOfJoining', dateOfJoining);
     // console.log('prefferedDateOfJoining', prefferedDateOfJoining);
     // console.log('isCandidateAcceptDOJ', isCandidateAcceptDOJ);
@@ -149,8 +166,17 @@ class JobDetails extends PureComponent {
       data,
       localStep,
       checkMandatory,
+      settings,
+      _id: id,
     } = this.props;
-
+    if (id !== '' && settings && settings.length)
+      dispatch({
+        type: 'optionalQuestion/updateQuestionByCandidate',
+        payload: {
+          id,
+          settings,
+        },
+      });
     // const convert = (str) => {
     //   const date = new Date(str);
     //   const mnth = `0 ${date.getMonth() + 1}`.slice(-2);
@@ -334,6 +360,9 @@ class JobDetails extends PureComponent {
                 candidateField={candidateField}
                 _handleSelect={this._handleSelect}
               />
+              <Row style={{ margin: '32px' }}>
+                <AnswerQuestion />
+              </Row>
               {this._renderBottomBar()}
             </div>
           </Col>

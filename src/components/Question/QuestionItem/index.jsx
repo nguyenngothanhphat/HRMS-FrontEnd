@@ -72,7 +72,7 @@ export default function QuestionItem({
       case TYPE_QUESTION.MULTI_RATING_CHOICE.key:
         if (!rating.columns && !rating.rows)
           onChangeQuestionItem({
-            defaultAnswers: [],
+            defaultAnswers: new Array(1),
             multiChoice: {},
             rating: {
               columns: ['Column 1'],
@@ -117,6 +117,7 @@ export default function QuestionItem({
               ...rating.rows.slice(indexOfAnswer + 1),
             ],
           },
+          defaultAnswers: new Array(rating.row.length),
         });
         break;
       case 'col':

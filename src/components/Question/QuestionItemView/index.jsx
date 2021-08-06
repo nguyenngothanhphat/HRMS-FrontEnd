@@ -43,7 +43,10 @@ export default function QuestionItemView({
     }
     return true;
   };
-  const onChangeRating = () => {};
+  const onChangeRating = (e, i) => {
+    defaultAnswers[i] = e.target.value;
+    onChangeEmployeeAnswers(defaultAnswers, keyQuestion);
+  };
   const _renderAnswer = () => {
     switch (answerType) {
       case TYPE_QUESTION.SINGLE_CHOICE.key:
@@ -107,7 +110,7 @@ export default function QuestionItemView({
         return (
           <div>
             <Row>
-              <Col flex="50px" key={0} />
+              <Col flex="100px" key={0} />
               {rating.columns?.map((item) => (
                 <Col flex={1}>
                   <div className={styles.contentColumns}>{item}</div>
@@ -116,12 +119,12 @@ export default function QuestionItemView({
             </Row>
             {rating.rows?.map((item, i) => (
               <Row>
-                <Col flex="50px">{item}</Col>
+                <Col flex="100px">{item}</Col>
                 <Col flex="auto">
                   <Radio.Group
                     style={{ width: '100%' }}
                     onChange={(e) => onChangeRating(e, i)}
-                    value={employeeAnswers[i] || null}
+                    value={parseInt(employeeAnswers[i], 10)}
                     disabled={mode !== MODE.ANSWER}
                   >
                     <Space direction="horizontal" className={styles.radioGroup}>
@@ -138,7 +141,7 @@ export default function QuestionItemView({
       case TYPE_QUESTION.SELECT_OPTION.key:
         return (
           <Select
-            defaultValue={employeeAnswers[0] && employeeAnswers[0]}
+            value={employeeAnswers[0] && employeeAnswers[0]}
             placeholder="Select a option"
             onChange={(value) => onChangeEmployeeAnswers([value], keyQuestion)}
             style={{ width: '100%' }}
@@ -162,7 +165,7 @@ export default function QuestionItemView({
           {keyQuestion + 1}. {question} {isRequired && <span className={styles.required}>(*)</span>}
         </div>
         <Col className={styles.questionItem__answer}>
-          {_renderAnswer()}{' '}
+          {_renderAnswer()}
           {errMessage && (
             <div className={styles.errorMessage} role="alert">
               {errMessage}
