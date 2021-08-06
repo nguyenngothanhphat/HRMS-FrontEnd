@@ -3,15 +3,19 @@ import { Divider, Spin, Avatar } from 'antd';
 import { connect } from 'umi';
 import ModalUpload from '@/components/ModalUpload';
 import noLogo from '@/assets/no-photo-available-icon.png';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from '../../index.less';
 
 @connect(
   ({
     companiesManagement: {
-      originData: { companyDetails: { company: companyDetailsOrigin = {} } = {} },
+      originData: {
+        companyDetails: originCompanyDetails = {},
+        companyDetails: { company: companyDetailsOrigin = {} } = {},
+      },
       tempData: { companyDetails: { company: companyDetails = {} } = {} },
     } = {},
-  }) => ({ companyDetailsOrigin, companyDetails }),
+  }) => ({ companyDetailsOrigin, companyDetails, originCompanyDetails }),
 )
 class ViewInformation extends Component {
   constructor(props) {
@@ -34,21 +38,40 @@ class ViewInformation extends Component {
   };
 
   getResponse = (resp) => {
-    const { dispatch, companyDetailsOrigin } = this.props;
+    const {
+      dispatch,
+      originCompanyDetails = {},
+      originCompanyDetails: { company: { _id: id = '' } = {} } = {},
+    } = this.props;
     const { statusCode, data = [] } = resp;
+    const tenantId = getCurrentTenant();
+
     if (statusCode === 200) {
       const [first] = data;
-      this.handleCancel();
-      const payload = {
-        ...companyDetailsOrigin,
-        id: companyDetailsOrigin._id,
-        logoUrl: first.url,
-      };
-      delete payload._id;
-      dispatch({
-        type: 'companiesManagement/updateCompany',
-        payload,
-      });
+      if (id) {
+        const payload = {
+          id,
+          logoUrl: first?.url,
+          tenantId,
+        };
+        delete payload._id;
+        dispatch({
+          type: 'companiesManagement/updateCompany',
+          payload,
+        }).then(({ statusCode: check }) => {
+          if (check === 200) {
+            this.handleCancel();
+          }
+        });
+      } else {
+        dispatch({
+          type: 'companiesManagement/saveCompanyDetails',
+          payload: { ...originCompanyDetails?.company, logoUrl: first?.url },
+          // dataTempKept: {},
+          // isAccountSetup: true,
+        });
+        this.handleCancel();
+      }
     }
   };
 
