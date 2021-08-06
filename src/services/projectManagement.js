@@ -14,6 +14,20 @@ export async function addProjectMember(payload) {
   });
 }
 
+export async function getProjectById(payload) {
+  return request('/api/projecttenant/get-by-id', {
+    method: 'POST',
+    data: payload, //
+  });
+}
+
+export async function updateProject(payload) {
+  return request('/api/projecttenant/update', {
+    method: 'POST',
+    data: payload, //
+  });
+}
+
 export async function listProjectRole() {
   return request('/api/projecttenant/list-role', {
     method: 'POST',
@@ -22,6 +36,13 @@ export async function listProjectRole() {
 
 export async function addProject(payload) {
   return request('/api/projecttenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function removeProjectMember(payload) {
+  return request('/api/projecttenant/remove-member', {
     method: 'POST',
     data: payload,
   });

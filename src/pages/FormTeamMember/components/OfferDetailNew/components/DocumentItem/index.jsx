@@ -43,7 +43,7 @@ class DocumentItem extends PureComponent {
   render() {
     const { item = {}, onRemove = () => {}, disableAll = false } = this.props;
     const { name = '', attachmentName = '', attachmentUrl = '', attachment = '' } = item || {};
-    const renderName = attachmentName || attachment?.name;
+    const renderName = attachmentName || attachment?.name || '';
     const { viewDocumentModal = false } = this.state;
     return (
       <div className={styles.DocumentItem}>
