@@ -49,30 +49,30 @@ class LeaveHistoryAndHoliday extends PureComponent {
     const { activeShowType } = this.state;
     return (
       <div className={styles.menu}>
-        {activeShowType === 2 && (
-          <Tooltip title="List View">
-            <div className={styles.iconContainer}>
-              <img
-                src={ListIcon}
-                className={activeShowType === 1 ? styles.activeShowType : ''}
-                onClick={() => this.handleSelectShowType(1)}
-                alt="list"
-              />
-            </div>
-          </Tooltip>
-        )}
-        {activeShowType === 1 && (
-          <Tooltip title="Calendar View">
-            <div className={styles.iconContainer}>
-              <img
-                src={CalendarIcon}
-                className={activeShowType === 2 ? styles.activeShowType : ''}
-                onClick={() => this.handleSelectShowType(2)}
-                alt="calendar"
-              />
-            </div>
-          </Tooltip>
-        )}
+        {/* {activeShowType === 2 && ( */}
+        <Tooltip title="List View">
+          <div className={styles.iconContainer}>
+            <img
+              src={ListIcon}
+              className={activeShowType === 1 ? styles.activeShowType : ''}
+              onClick={() => this.handleSelectShowType(1)}
+              alt="list"
+            />
+          </div>
+        </Tooltip>
+        {/* )} */}
+        {/* {activeShowType === 1 && ( */}
+        <Tooltip title="Calendar View">
+          <div className={styles.iconContainer}>
+            <img
+              src={CalendarIcon}
+              className={activeShowType === 2 ? styles.activeShowType : ''}
+              onClick={() => this.handleSelectShowType(2)}
+              alt="calendar"
+            />
+          </div>
+        </Tooltip>
+        {/* )} */}
       </div>
     );
   };
