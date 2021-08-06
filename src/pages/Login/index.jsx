@@ -22,62 +22,25 @@ class FormLogin extends Component {
     this.state = {
       checkValidationEmail: undefined,
       isMessageValidationEmail: true,
-      loadingAutoLogin: true,
     };
   }
 
   componentDidMount = () => {
     const { location: { state: { autoFillEmail = '' } = {} } = {} } = this.props;
-    this.keepMeSignedIn();
+    removeLocalStorage();
     // this.formRef.current.setFieldsValue({
     //   email: autoFillEmail,
     // });
     history.replace();
   };
 
-  keepMeSignedIn = () => {
-    const { dispatch } = this.props;
-    const getAuthData = JSON.parse(localStorage.getItem('authData'));
-
-    if (getAuthData) {
-      const email = getAuthData?.userEmail;
-      const password = getAuthData?.password;
-      const payload = {
-        email,
-        password,
-      };
-
-      this.setState({ loadingAutoLogin: true });
-
-      dispatch({
-        type: 'login/login',
-        payload,
-      }).then(() => {
-        this.setState({ loadingAutoLogin: false });
-      });
-    } else {
-      removeLocalStorage();
-      this.setState({ loadingAutoLogin: false });
-    }
+  onFinish = ({ userEmail: email, password, keepSignIn }) => {
+    const payload = { email, password, keepSignIn };
+    this.handleSubmit(payload);
   };
 
-  onFinish = ({ userEmail: email, password, remember }) => {
-    const payload = { email, password };
-    this.handleSubmit(payload, remember);
-  };
-
-  handleSubmit = (values, remember) => {
+  handleSubmit = (values) => {
     const { dispatch } = this.props;
-
-    if (remember) {
-      const data = JSON.stringify({
-        userEmail: values.email,
-        password: values.password,
-      });
-      localStorage.setItem('authData', data);
-    } else {
-      localStorage.clear();
-    }
 
     dispatch({
       type: 'login/login',
@@ -141,7 +104,7 @@ class FormLogin extends Component {
 
   render() {
     const { loadingLoginThirdParty, messageError = '' } = this.props;
-    const { checkValidationEmail, isMessageValidationEmail, loadingAutoLogin } = this.state;
+    const { checkValidationEmail, isMessageValidationEmail } = this.state;
 
     const messageValidationEmail = this.returnMessageValidationEmail(messageError);
 
@@ -149,16 +112,6 @@ class FormLogin extends Component {
     const messageValidationPsw =
       messageError === 'Invalid password' ? 'Incorrect password. Try again' : undefined;
 
-    const getAuthData = JSON.parse(localStorage.getItem('authData'));
-
-    const getEmailsLocalStr = getAuthData?.userEmail;
-    const getPasswordLocalStr = getAuthData?.password;
-
-    const checkedBox = this.checkBoxValue(getEmailsLocalStr, getPasswordLocalStr);
-
-    if (loadingAutoLogin) {
-      return <Spin />;
-    }
     return (
       <div className={styles.formWrapper}>
         <p className={styles.formWrapper__title}>
@@ -167,11 +120,13 @@ class FormLogin extends Component {
         <Form
           layout="vertical"
           name="basic"
-          initialValues={{
-            remember: checkedBox,
-            userEmail: getEmailsLocalStr,
-            password: getPasswordLocalStr,
-          }}
+          initialValues={
+            {
+              // keepSignIn: checkedBox,
+              // userEmail: getEmailsLocalStr,
+              // password: getPasswordLocalStr,
+            }
+          }
           onFinish={this.onFinish}
           onValuesChange={this.onValuesChange}
           requiredMark={false}
@@ -214,7 +169,7 @@ class FormLogin extends Component {
               className={styles.inputPassword}
             />
           </Form.Item>
-          <Form.Item className={styles.checkbox} name="remember" valuePropName="checked">
+          <Form.Item className={styles.checkbox} name="keepSignIn" valuePropName="checked">
             <Checkbox>
               <span>{formatMessage({ id: 'pages.login.keepMeSignedIn' })}</span>
             </Checkbox>
