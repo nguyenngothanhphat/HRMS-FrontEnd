@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 
 import { formatMessage, history } from 'umi';
 import { Table } from 'antd';
-import CustomModal from '@/components/CustomModal';
 import moment from 'moment';
-import ModalContent from '../ModalContent';
+import MemberModal from '../MemberModal';
 import dropbox from '../assets/dropbox.png';
 
 import s from './index.less';
@@ -214,21 +213,15 @@ const TableComponent = (props) => {
         //   };
         // }}
       />
-      <CustomModal
-        open={open}
+      <MemberModal
+        visible={open}
         closeModal={closeModal}
-        content={
-          <ModalContent
-            dispatch={dispatch}
-            projectInfo={projectInfo}
-            roleList={roleList}
-            employeeList={employeeList}
-            user={user}
-            loading={loading}
-            closeModal={closeModal}
-          />
-        }
-        // width={750}
+        dispatch={dispatch}
+        projectInfo={projectInfo}
+        roleList={roleList}
+        employeeList={employeeList}
+        user={user}
+        loading={loading}
       />
     </div>
   );
