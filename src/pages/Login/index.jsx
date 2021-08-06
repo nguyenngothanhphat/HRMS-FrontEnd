@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button, Checkbox, Spin } from 'antd';
 import { EyeFilled } from '@ant-design/icons';
 import logoGoogle from '@/assets/logo_google.png';
 import GoogleLogin from 'react-google-login';
@@ -22,16 +22,43 @@ class FormLogin extends Component {
     this.state = {
       checkValidationEmail: undefined,
       isMessageValidationEmail: true,
+      loadingAutoLogin: true,
     };
   }
 
   componentDidMount = () => {
     const { location: { state: { autoFillEmail = '' } = {} } = {} } = this.props;
-    removeLocalStorage();
-    this.formRef.current.setFieldsValue({
-      email: autoFillEmail,
-    });
+    this.keepMeSignedIn();
+    // this.formRef.current.setFieldsValue({
+    //   email: autoFillEmail,
+    // });
     history.replace();
+  };
+
+  keepMeSignedIn = () => {
+    const { dispatch } = this.props;
+    const getAuthData = JSON.parse(localStorage.getItem('authData'));
+
+    if (getAuthData) {
+      const email = getAuthData?.userEmail;
+      const password = getAuthData?.password;
+      const payload = {
+        email,
+        password,
+      };
+
+      this.setState({ loadingAutoLogin: true });
+
+      dispatch({
+        type: 'login/login',
+        payload,
+      }).then(() => {
+        this.setState({ loadingAutoLogin: false });
+      });
+    } else {
+      removeLocalStorage();
+      this.setState({ loadingAutoLogin: false });
+    }
   };
 
   onFinish = ({ userEmail: email, password, remember }) => {
@@ -114,7 +141,7 @@ class FormLogin extends Component {
 
   render() {
     const { loadingLoginThirdParty, messageError = '' } = this.props;
-    const { checkValidationEmail, isMessageValidationEmail } = this.state;
+    const { checkValidationEmail, isMessageValidationEmail, loadingAutoLogin } = this.state;
 
     const messageValidationEmail = this.returnMessageValidationEmail(messageError);
 
@@ -129,6 +156,9 @@ class FormLogin extends Component {
 
     const checkedBox = this.checkBoxValue(getEmailsLocalStr, getPasswordLocalStr);
 
+    if (loadingAutoLogin) {
+      return <Spin />;
+    }
     return (
       <div className={styles.formWrapper}>
         <p className={styles.formWrapper__title}>
