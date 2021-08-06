@@ -120,13 +120,9 @@ class FormLogin extends Component {
         <Form
           layout="vertical"
           name="basic"
-          initialValues={
-            {
-              // keepSignIn: checkedBox,
-              // userEmail: getEmailsLocalStr,
-              // password: getPasswordLocalStr,
-            }
-          }
+          initialValues={{
+            keepSignIn: false,
+          }}
           onFinish={this.onFinish}
           onValuesChange={this.onValuesChange}
           requiredMark={false}
