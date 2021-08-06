@@ -393,7 +393,7 @@ class CompanyDetails extends Component {
         hrContactEmail: hrEmail,
         hrContactName: hrName,
         hrContactPhone: hrPhone,
-        childOfCompany = 'none',
+        childOfCompany = undefined,
         // isHeadquarter,
       } = {},
     } = companyDetails;
@@ -642,7 +642,7 @@ class CompanyDetails extends Component {
               hrPhone,
               isNewTenant: false,
               isHeadquarter: true,
-              parentCompany: childOfCompany || null || 'none',
+              parentCompany: childOfCompany || undefined,
               // logoUrl,
             }}
           >
@@ -757,12 +757,6 @@ class CompanyDetails extends Component {
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
                       >
-                        <Option
-                          value="none"
-                          style={{ borderBottom: 'solid 1px #e6e6e6', color: '#666' }}
-                        >
-                          None
-                        </Option>
                         {listCompany.map((item) => (
                           <Option
                             disabled={
@@ -1187,18 +1181,17 @@ class CompanyDetails extends Component {
                 )}
               </div>
             </div>
-            {(isEditAddresses || isEditCompanyDetails || isEditContactInfomation) && (
-              <div className={s.viewBtn}>
-                <Button
-                  className={s.btnSubmit}
-                  htmlType="submit"
-                  loading={companyId ? loadingUpdate : loadingAdd}
-                  // disabled={!isEditAddresses && !isEditCompanyDetails && !isEditContactInfomation}
-                >
-                  Save
-                </Button>
-              </div>
-            )}
+
+            <div className={s.viewBtn}>
+              <Button
+                className={s.btnSubmit}
+                htmlType="submit"
+                disabled={!(isEditAddresses || isEditCompanyDetails || isEditContactInfomation)}
+                loading={companyId ? loadingUpdate : loadingAdd}
+              >
+                Save
+              </Button>
+            </div>
           </Form>
         ) : (
           <div>

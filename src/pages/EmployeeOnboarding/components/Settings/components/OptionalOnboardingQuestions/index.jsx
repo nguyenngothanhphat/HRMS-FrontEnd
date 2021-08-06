@@ -1,15 +1,15 @@
 import AddIcon from '@/assets/add-symbols.svg';
-import CustomModal from '@/components/CustomModal';
-import ModalQuestionItem from '@/components/Question/ModalQuestionItem';
-import QuestionItemView from '@/components/Question/QuestionItemView';
 import { TYPE_QUESTION } from '@/components/Question/utils';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { Button, Col, notification, Row } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
+import ModalAddQuestion from '@/components/ModalAddQuestion/index';
+import ModalListQuestion from '@/components/ModalListQuestion/index';
+import ModalAddNewPage from '@/components/ModalAddNewPage/index';
 import styles from './index.less';
 
 const defaultQuestion = {
+  index: null,
   answerType: TYPE_QUESTION.TEXT_ANSWER.key,
   question: 'Type your question',
   defaultAnswers: [],
@@ -17,126 +17,80 @@ const defaultQuestion = {
   rating: {},
   multiChoice: {},
 };
-
-@connect(({ employeeSetting: { optionalOnboardQuestionList = [] } }) => ({
-  optionalOnboardQuestionList,
+const defaultPage = {
+  index: null,
+  name: '',
+  moveTo: 'BEFORE',
+  page: '',
+};
+@connect(({ employeeSetting: { listPageOnboarding = [] } }) => ({
+  listPageOnboarding,
 }))
 class OptionalOnboardingQuestions extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      openModal: false,
-      currentModal: null,
+      openModal: '',
       questionItem: {},
-      action: 'Edit',
+      newPage: {},
+      action: 'Add',
+      settings: [],
+      title: '',
+      firstOpen: true,
     };
   }
 
-  componentDidMount = () => {
-    const { dispatch } = this.props;
-    // fetch list optional onboarding question
-    dispatch({
-      type: 'employeeSetting/fetchListOptionalOnboardQuestions',
-      payload: {
-        tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
-      },
-    });
-  };
+  // componentDidMount = () => {
+  //   const { dispatch } = this.props;
+  //   // fetch list optional onboarding question
+  //   dispatch({
+  //     type: 'employeeSetting/fetchListPageOnboard',
+  //   });
+  // };
 
-  componentDidUpdate = (prevProps, prevState) => {
-    const { questionItem, action } = this.state;
-    if (prevState.questionItem !== questionItem)
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({
-        currentModal: (
-          <ModalQuestionItem
-            closeModal={this.closeModal}
-            onChangeQuestionItem={this.onChangeQuestionItem}
-            questionItem={questionItem}
-            action={action}
-            onSaveClick={this.onSaveQuestion}
-          />
-        ),
-      });
-  };
+  // componentDidUpdate = (prevProps, prevState) => {};
 
-  /**
-   * close modal
-   */
-  closeModal = () => {
-    this.setState({
-      openModal: false,
-      questionItem: {},
-    });
-  };
-
-  /**
-   * open modal add question
-   */
   openModalAdd = () => {
     this.setState({
-      openModal: true,
+      openModal: 'AddQuestion',
+      // openModalList: false,
       questionItem: defaultQuestion,
       action: 'Add',
+      title: 'Add question',
     });
   };
 
-  /**
-   * open modal edit question
-   */
-  openModalEdit = (question) => {
+  closeModalAdd = () => {
+    const { firstOpen } = this.state;
+    if (firstOpen) this.setState({ openModal: '' });
+    else this.setState({ openModal: 'ListQuestion' });
+  };
+
+  closeModalList = () => {
+    this.setState({ openModal: '', settings: [] });
+  };
+
+  openModalEdit = () => {
     this.setState({
-      openModal: true,
-      questionItem: question,
-      action: 'Edit',
+      openModal: 'AddQuestion',
+      // openModalList: false,
+      title: 'Edit question',
+      action: 'Save',
     });
   };
 
-  /**
-   * Open modal remove
-   * @param {*} question
-   */
-  openModalRemove = (question) => {
+  openModalRemove = (_questionItem, keyQuestion) => {
+    const { settings } = this.state;
+
     this.setState({
-      openModal: true,
-      currentModal: (
-        <Row className={styles.modalRemoveQuestion}>
-          <Col span={18} offset={3}>
-            <h2>Are you sure you want to remove this question?</h2>
-            <div className={styles.modalRemoveQuestion__control}>
-              <Button onClick={this.closeModal}>Cancel</Button>
-              <Button
-                onClick={() => this.onRemoveQuestion(question)}
-                style={{ marginLeft: '15px' }}
-                type="danger"
-              >
-                Remove
-              </Button>
-            </div>
-          </Col>
-        </Row>
-      ),
+      settings: [...settings.slice(0, keyQuestion), ...settings.slice(keyQuestion + 1)],
+      // questionItem: {},
     });
   };
 
-  // ================ handle event remove question
-  onRemoveQuestion = (questionItem) => {
-    const { dispatch } = this.props;
-    // remove question item
-    dispatch({
-      type: 'employeeSetting/removeOptionalOnboardQuestions',
-      payload: questionItem,
-    }).then(() => {
-      this.closeModal();
-    });
-  };
-
-  // ================ handle event add question or edit question
-  onSaveQuestion = () => {
-    const { questionItem } = this.state;
-    const { dispatch } = this.props;
+  onSave = () => {
+    const { questionItem, settings } = this.state;
     // remove empty answer
     const question = {
       ...questionItem,
@@ -146,26 +100,54 @@ class OptionalOnboardingQuestions extends PureComponent {
     // check the number of answers
     if (
       (question.answerType === TYPE_QUESTION.SINGLE_CHOICE.key ||
-        question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key) &&
+        question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key ||
+        question.answerType === TYPE_QUESTION.SELECT_OPTION.key) &&
       question.defaultAnswers.length < 1
     ) {
-      return notification.error({
+      notification.error({
         message: `This type of question must have at least one answer!`,
       });
     }
-
-    let action = 'employeeSetting/addOptionalOnboardQuestions';
-    // if edit question
-    if (question._id) {
-      action = 'employeeSetting/updateOptionalOnboardQuestions';
+    if (questionItem.index === null) {
+      questionItem.index = settings.length;
+      settings.push(questionItem);
+    } else {
+      settings[questionItem.index] = questionItem;
     }
 
-    return dispatch({
-      type: action,
-      payload: questionItem,
-    }).then(() => {
-      this.closeModal();
+    this.setState({ settings, openModal: 'ListQuestion', firstOpen: false });
+  };
+
+  onSaveList = () => {
+    const { dispatch } = this.props;
+    // fetch list optional onboarding question
+    dispatch({
+      type: 'employeeSetting/fetchListPageOnboard',
     });
+    this.setState({ openModal: 'AddNewPage', newPage: defaultPage });
+  };
+
+  onSaveAddPage = async () => {
+    const { dispatch } = this.props;
+    const { newPage, settings } = this.state;
+    if (newPage.name === '')
+      notification.error({
+        message: `Name cannot be empty!`,
+        duration: 3,
+      });
+    const result = await dispatch({
+      type: 'employeeSetting/addOptionalOnboardQuestions',
+      payload: {
+        name: newPage.name,
+        isDefault: true,
+        position: {
+          move_to: newPage.moveTo,
+          page: newPage.page,
+        },
+        settings,
+      },
+    });
+    if (result.statusCode === 200) this.setState({ openModal: '', newPage: {}, settings: [] });
   };
 
   onChangeQuestionItem = (data) => {
@@ -178,17 +160,16 @@ class OptionalOnboardingQuestions extends PureComponent {
     });
   };
 
+  onChangeNewPage = (data) => {
+    const { newPage } = this.state;
+    this.setState({ newPage: { ...newPage, ...data } });
+  };
+
   render() {
-    const { openModal, currentModal } = this.state;
-    const { optionalOnboardQuestionList } = this.props;
+    const { openModal, questionItem, action, title, settings, newPage } = this.state;
+    const { listPageOnboarding } = this.props;
     return (
       <div className={styles.OptionalOnboardingQuestions}>
-        <CustomModal
-          width={646}
-          open={openModal}
-          closeModal={this.closeModal}
-          content={currentModal}
-        />
         <div className={styles.OptionalOnboardingQuestions__box}>
           <div className={styles.OptionalOnboardingQuestions_title}>
             {formatMessage({ id: 'component.optionalOnboardingQuestions.title' })}
@@ -200,9 +181,7 @@ class OptionalOnboardingQuestions extends PureComponent {
         <Row
           align="space-between"
           style={{ marginTop: '24px' }}
-          className={
-            optionalOnboardQuestionList.length < 1 && styles.OptionalOnboardingQuestions__buttonAdd
-          }
+          className={styles.OptionalOnboardingQuestions__buttonAdd}
         >
           <Col>
             <Button
@@ -215,17 +194,36 @@ class OptionalOnboardingQuestions extends PureComponent {
             </Button>
           </Col>
         </Row>
-        {optionalOnboardQuestionList.map((question, keyQuestion) => (
-          <QuestionItemView
-            openModalEdit={this.openModalEdit}
-            keyQuestion={keyQuestion}
-            questionItem={question}
-            openModalRemove={this.openModalRemove}
-          />
-        ))}
+        <ModalAddQuestion
+          openModal={openModal === 'AddQuestion'}
+          title={title}
+          onSave={this.onSave}
+          onCancel={this.closeModalAdd}
+          onChangeQuestionItem={this.onChangeQuestionItem}
+          questionItem={questionItem}
+          action={action}
+        />
+        <ModalListQuestion
+          openModalList={openModal === 'ListQuestion'}
+          title={title}
+          onSave={this.onSaveList}
+          onCancel={this.closeModalList}
+          openModalEdit={this.openModalEdit}
+          openModalRemove={this.openModalRemove}
+          openModalAdd={this.openModalAdd}
+          settings={settings}
+          // action={action}
+        />
+        <ModalAddNewPage
+          openModal={openModal === 'AddNewPage'}
+          onSave={this.onSaveAddPage}
+          onCancel={this.closeModalAdd}
+          onChangeNewPage={this.onChangeNewPage}
+          newPage={newPage}
+          listPage={listPageOnboarding}
+        />
       </div>
     );
   }
 }
-
 export default OptionalOnboardingQuestions;

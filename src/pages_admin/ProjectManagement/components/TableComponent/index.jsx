@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 
-import { formatMessage } from 'umi';
+import { formatMessage, history } from 'umi';
 import { Table } from 'antd';
-import CustomModal from '@/components/CustomModal';
 import moment from 'moment';
-import ModalContent from '../ModalContent';
+import MemberModal from '../MemberModal';
 import dropbox from '../assets/dropbox.png';
 
 import s from './index.less';
@@ -23,74 +22,7 @@ const {
   ACTION,
 } = COLUMN_NAME;
 
-const columns = [
-  {
-    title: PROJECT_ID,
-    dataIndex: 'projectId',
-    key: 'projectId',
-    align: 'center',
-  },
-  {
-    title: PROJECT_NAME,
-    dataIndex: 'projectName',
-    key: 'projectName',
-  },
-  {
-    title: CREATED_DATE,
-    dataIndex: 'createdDate',
-    key: 'createdDate',
-    render: (createdDate) => <span>{moment(createdDate).format('MM.DD.YY')}</span>,
-  },
-  {
-    title: PROJECT_MANAGER,
-    dataIndex: 'projectManager',
-    key: 'projectManager',
-  },
-  {
-    title: DURATION,
-    dataIndex: 'duration',
-    key: 'duration',
-  },
-  {
-    title: START_DATE,
-    dataIndex: 'startDate',
-    key: 'startDate',
-    align: 'center',
-  },
-  {
-    title: MEMBERS,
-    dataIndex: 'members',
-    key: 'members',
-    align: 'center',
-    render() {
-      return (
-        <>
-          <img style={{ cursor: 'pointer' }} src={dropbox} alt="dropbox" />
-        </>
-      );
-    },
-  },
-  {
-    title: PROJECT_HEALTH,
-    dataIndex: 'projectHealth',
-    key: 'projectHealth',
-  },
-  {
-    title: ACTION,
-    dataIndex: 'action',
-    key: 'action',
-
-    render() {
-      return (
-        <>
-          <span className={s.action}>view project</span>
-        </>
-      );
-    },
-  },
-];
-
-const rowSize = 10;
+// const rowSize = 10;
 
 const TableComponent = (props) => {
   const {
@@ -117,6 +49,129 @@ const TableComponent = (props) => {
   // const onChangePagination = (pageNumber) => {
   //   setPageSelected(pageNumber);
   // };
+
+  const assignMember = (record) => {
+    const { projectName = '', projectId = '', projectManager, company } = record;
+    setOpen(true);
+    setProjectInfo({ projectName, projectId, projectManager, company });
+
+    const locationPayload = listLocationsByCompany.map(
+      ({ headQuarterAddress: { country: countryItem1 = '' } = {} }) => {
+        let stateList = [];
+        listLocationsByCompany.forEach(
+          ({ headQuarterAddress: { country: countryItem2 = '', state: stateItem2 = '' } = {} }) => {
+            if (countryItem1 === countryItem2) {
+              stateList = [...stateList, stateItem2];
+            }
+          },
+        );
+        return {
+          country: countryItem1,
+          state: stateList,
+        };
+      },
+    );
+
+    dispatch({
+      type: 'projectManagement/getEmployees',
+      payload: {
+        company,
+        location: locationPayload,
+        status: ['ACTIVE'],
+      },
+    });
+  };
+
+  const columns = [
+    {
+      title: PROJECT_ID,
+      dataIndex: 'projectId',
+      key: 'projectId',
+      align: 'left',
+    },
+    {
+      title: PROJECT_NAME,
+      dataIndex: 'projectName',
+      key: 'projectName',
+    },
+    {
+      title: CREATED_DATE,
+      dataIndex: 'createdDate',
+      key: 'createdDate',
+      render: (createdDate) => <span>{moment(createdDate).format('MM.DD.YY')}</span>,
+    },
+    {
+      title: PROJECT_MANAGER,
+      dataIndex: 'projectManager',
+      key: 'projectManager',
+      render: (projectManager) => {
+        const {
+          generalInfo: { firstName = '', middleName = '', lastName = '', userId = '' } = {},
+        } = projectManager || {};
+        let fullName = `${firstName} ${middleName} ${lastName}`;
+        if (!middleName) fullName = `${firstName} ${lastName}`;
+        return (
+          <span
+            className={s.manager}
+            onClick={() => {
+              history.push(`/employees/employee-profile/${userId}`);
+            }}
+          >
+            {fullName}
+          </span>
+        );
+      },
+    },
+    {
+      title: DURATION,
+      dataIndex: 'duration',
+      key: 'duration',
+    },
+    {
+      title: START_DATE,
+      dataIndex: 'startDate',
+      key: 'startDate',
+      align: 'left',
+    },
+    {
+      title: MEMBERS,
+      dataIndex: 'members',
+      key: 'members',
+      align: 'center',
+      render: (_, record) => {
+        return (
+          <>
+            <img
+              style={{ cursor: 'pointer' }}
+              src={dropbox}
+              alt="dropbox"
+              onClick={() => {
+                assignMember(record);
+              }}
+            />
+          </>
+        );
+      },
+    },
+    {
+      title: PROJECT_HEALTH,
+      dataIndex: 'projectHealth',
+      key: 'projectHealth',
+    },
+    {
+      title: ACTION,
+      dataIndex: 'action',
+      key: 'action',
+
+      render: () => {
+        return (
+          <>
+            <span className={s.action}>view project</span>
+          </>
+        );
+      },
+    },
+  ];
 
   const pagination = {
     position: ['bottomLeft'],
@@ -151,62 +206,22 @@ const TableComponent = (props) => {
         columns={columns}
         pagination={pagination}
         loading={loadingFetchProject}
-        onRow={(record) => {
-          return {
-            onClick: () => {
-              const { projectName = '', projectId = '', projectManager, company } = record;
-              setOpen(true);
-              setProjectInfo({ projectName, projectId, projectManager, company });
-
-              const locationPayload = listLocationsByCompany.map(
-                ({ headQuarterAddress: { country: countryItem1 = '' } = {} }) => {
-                  let stateList = [];
-                  listLocationsByCompany.forEach(
-                    ({
-                      headQuarterAddress: {
-                        country: countryItem2 = '',
-                        state: stateItem2 = '',
-                      } = {},
-                    }) => {
-                      if (countryItem1 === countryItem2) {
-                        stateList = [...stateList, stateItem2];
-                      }
-                    },
-                  );
-                  return {
-                    country: countryItem1,
-                    state: stateList,
-                  };
-                },
-              );
-
-              dispatch({
-                type: 'projectManagement/getEmployees',
-                payload: {
-                  company,
-                  location: locationPayload,
-                  status: ['ACTIVE'],
-                },
-              });
-            },
-          };
-        }}
+        // onRow={(record) => {
+        //   return {
+        //     onClick: () => {
+        //     },
+        //   };
+        // }}
       />
-      <CustomModal
-        open={open}
+      <MemberModal
+        visible={open}
         closeModal={closeModal}
-        content={
-          <ModalContent
-            dispatch={dispatch}
-            projectInfo={projectInfo}
-            roleList={roleList}
-            employeeList={employeeList}
-            user={user}
-            loading={loading}
-            closeModal={closeModal}
-          />
-        }
-        width={750}
+        dispatch={dispatch}
+        projectInfo={projectInfo}
+        roleList={roleList}
+        employeeList={employeeList}
+        user={user}
+        loading={loading}
       />
     </div>
   );

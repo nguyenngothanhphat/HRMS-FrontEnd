@@ -9,7 +9,9 @@ import { RightOutlined } from '@ant-design/icons';
 import { getCurrentCompany } from '@/utils/authority';
 import avtDefault from '@/assets/avtDefault.jpg';
 // import BottomBar from '../components/BottomBar';
+import { indexOf } from 'lodash';
 import s from './CandidateLayout.less';
+import { Page } from '../pages/FormTeamMember/utils';
 
 const { Header, Content } = Layout;
 const { Step } = Steps;
@@ -27,28 +29,30 @@ const noMatch = (
   />
 );
 
-const getLineWidth = (value) => {
-  switch (value) {
-    case 1:
-      return s.one;
-    case 2:
-      return s.two;
-    case 3:
-      return s.three;
-    case 4:
-      return s.four;
-    case 5:
-      return s.five;
-    case 6:
-      return s.six;
+// const getLineWidth = (value) => {
+//   switch (value) {
+//     case 1:
+//       return s.one;
+//     case 2:
+//       return s.two;
+//     case 3:
+//       return s.three;
+//     case 4:
+//       return s.four;
+//     case 5:
+//       return s.five;
+//     case 6:
+//       return s.six;
 
-    default:
-      return '';
-  }
-};
+//     default:
+//       return '';
+//   }
+// };
 
 const CandidateLayout = (props) => {
   const {
+    listPage,
+    candidate,
     children,
     localStep,
     location = {
@@ -69,51 +73,34 @@ const CandidateLayout = (props) => {
   } = props;
 
   const [current, setCurrent] = useState(1);
-
-  const steps = [
-    {
-      id: 1,
-      title: 'Basic Infomation',
-      content: 'First-content',
-      disabled: !filledBasicInformation,
-    },
-    {
-      id: 2,
-      title: 'Job Details',
-      content: 'Second-content',
-      disabled: !filledJobDetail,
-    },
-    {
-      id: 3,
-      title: 'Salary Structure',
-      content: 'Third-content',
-      disabled: !filledSalaryStructure,
-    },
-    {
-      id: 4,
-      title: 'Document Verification',
-      content: 'Fourth-content',
-      disabled: !filledDocumentVerification,
-    },
-    {
-      id: 5,
-      title: 'Offer Details',
-      content: 'Fifth-content',
-      // disabled: !filledBasicInformation,
-    },
-    {
-      id: 6,
-      title: 'Benefits',
-      content: 'Sixth-content',
-      // disabled: !filledBasicInformation,
-    },
-    {
-      id: 7,
-      title: 'Additional Questions',
-      content: 'Last-content',
-      // disabled: !filledBasicInformation,
-    },
-  ];
+  useEffect(() => {
+    if (candidate._id !== '') {
+      dispatch({
+        type: 'optionalQuestion/getListPage',
+        payload: {
+          candidate: candidate._id,
+        },
+      });
+    }
+  }, [candidate]);
+  const [steps, setSteps] = useState([]);
+  useEffect(() => {
+    const tempStep = listPage.map((namePage, index) => {
+      switch (namePage) {
+        case Page.Basic_Information:
+          return { id: index + 1, title: namePage, disabled: !filledBasicInformation };
+        case Page.Job_Details:
+          return { id: index + 1, title: namePage, disabled: !filledJobDetail };
+        case Page.Salary_Structure:
+          return { id: index + 1, title: namePage, disabled: !filledSalaryStructure };
+        case Page.Eligibility_documents:
+          return { id: index + 1, title: namePage, disabled: !filledDocumentVerification };
+        default:
+          return { id: index + 1, title: namePage };
+      }
+    });
+    setSteps(tempStep);
+  }, [listPage]);
 
   useEffect(() => {
     setCurrent(localStep);
@@ -132,7 +119,7 @@ const CandidateLayout = (props) => {
         'REJECT-FINAL-OFFER-CANDIDATE',
       ].includes(processStatus)
     ) {
-      lcStep = 5;
+      lcStep = indexOf(listPage, Page.Offer_Details);
     }
     if (
       [
@@ -141,10 +128,10 @@ const CandidateLayout = (props) => {
         'PENDING-APPROVAL-FINAL-OFFER',
       ].includes(processStatus)
     ) {
-      lcStep = 4;
+      lcStep = indexOf(listPage, Page.Eligibility_documents);
     }
     if (['RENEGOTIATE-PROVISONAL-OFFER'].includes(processStatus)) {
-      lcStep = 3;
+      lcStep = indexOf(listPage, Page.Salary_Structure);
     }
     dispatch({
       type: 'candidateProfile/save',
@@ -171,7 +158,12 @@ const CandidateLayout = (props) => {
     if (!dispatch) {
       return;
     }
-
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        listPage: [],
+      },
+    });
     dispatch({
       type: 'login/logout',
     });
@@ -184,7 +176,7 @@ const CandidateLayout = (props) => {
     dispatch({
       type: 'candidateProfile/save',
       payload: {
-        localStep: 8,
+        localStep: listPage.length + 1,
       },
     });
   };
@@ -224,13 +216,13 @@ const CandidateLayout = (props) => {
       processStatus === 'ACCEPT-PROVISIONAL-OFFER' ||
       processStatus === 'PENDING-APPROVAL-FINAL-OFFER'
     ) {
-      return steps.slice(0, 4);
+      return steps.slice(0, indexOf(listPage, Page.Offer_Details));
     }
     return steps;
   };
 
   const isPhase1 = (stepArr) => {
-    return stepArr.length === 4;
+    return stepArr.length === indexOf(listPage, Page.Offer_Details);
   };
 
   const newSteps = getSteps();
@@ -244,7 +236,10 @@ const CandidateLayout = (props) => {
   return (
     <div className={s.candidate}>
       {/* <Header className={`${s.header} ${s.one}`}> */}
-      <Header className={`${s.header} ${getLineWidth(current - 1)}`}>
+      <Header
+        className={`${s.header} `}
+        style={{ width: `calc(100% / ${listPage.length})*${current - 1}` }}
+      >
         <div className={s.headerLeft}>
           <div className={s.imgContainer}>
             <img src={companyLogo()} alt="logo" />
@@ -290,7 +285,9 @@ const CandidateLayout = (props) => {
                   {!isPhase1(newSteps) && (
                     <button
                       type="submit"
-                      className={localStep === 8 ? `${s.btn} ${s.active}` : `${s.btn}`}
+                      className={
+                        localStep === listPage.length + 1 ? `${s.btn} ${s.active}` : `${s.btn}`
+                      }
                       onClick={renderPreviewOffer}
                     >
                       Preview offer letter
@@ -310,7 +307,9 @@ const CandidateLayout = (props) => {
 // export default CandidateLayout;
 export default connect(
   ({
+    optionalQuestion: { listPage },
     candidateProfile: {
+      data,
       localStep,
       title: { name: titleName = '' } = {},
       ticketId,
@@ -318,8 +317,11 @@ export default connect(
       checkMandatory,
       processStatus = '',
     } = {},
-    user: { companiesOfUser = [] } = {},
+    user: { companiesOfUser = [], currentUser: { candidate = '' } = {} } = {},
   }) => ({
+    listPage,
+    data,
+    candidate,
     localStep,
     checkCandidateMandatory,
     checkMandatory,

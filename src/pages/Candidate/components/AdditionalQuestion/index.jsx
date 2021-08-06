@@ -204,8 +204,7 @@ const AdditionalQuestion = (props) => {
                     ))}
                     {questionOnBoarding.length === 0 && (
                       <div>
-                        You don&apos;t have any onboarding questions, so you can press next to
-                        continue
+                        You don't have any onboarding questions, so you can press next to continue
                       </div>
                     )}
                   </Col>

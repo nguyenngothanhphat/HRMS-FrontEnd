@@ -3,7 +3,7 @@ import { connect } from 'umi';
 import { getCurrentCompany } from '@/utils/authority';
 import { PageContainer } from '@/layouts/layout/src';
 import { Tabs, Affix } from 'antd';
-import AddIcon from '@/assets/plusIcon1.svg';
+import AddIcon from '../../../public/assets/images/addMemberIcon.svg';
 import ActiveProject from './components/ActiveProject';
 import InactiveProject from './components/InactiveProject';
 import AddProjectModal from './components/AddProjectModal';
@@ -72,7 +72,7 @@ const ProjectManagement = (props) => {
     return (
       <div className={s.addNewProject} onClick={handleAddNewProject}>
         <img src={AddIcon} alt="add" />
-        <span>Add new project</span>
+        <span className={s.titleText}>Add project</span>
       </div>
     );
   };
@@ -101,7 +101,7 @@ const ProjectManagement = (props) => {
             <Tabs onTabClick={onTabClick} defaultActiveKey="1" tabBarExtraContent={addNewProject()}>
               <TabPane
                 // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
-                tab="Active"
+                tab="Active Project"
                 key="1"
               >
                 {/* <ProvisionalOfferDrafts list={provisionalOfferDrafts} /> */}
@@ -134,7 +134,7 @@ const ProjectManagement = (props) => {
               </TabPane>
               <TabPane
                 // tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
-                tab="Inactive"
+                tab="Inactive Project"
                 key="2"
               >
                 {/* <FinalOfferDrafts list={finalOfferDrafts} /> */}
