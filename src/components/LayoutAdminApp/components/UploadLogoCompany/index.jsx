@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import logoDefault from '@/assets/companyDefault.png';
-import { Button, Image } from 'antd';
+import { Button, Image, Spin } from 'antd';
 import { connect } from 'umi';
 import ModalUpload from '@/components/ModalUpload';
 import { getCurrentTenant } from '@/utils/authority';
+import { DeleteOutlined } from '@ant-design/icons';
 import s from './index.less';
+import ModalRemoveLogo from './components/ModalRemoveLogo';
 
 @connect(
   ({
@@ -17,7 +19,7 @@ import s from './index.less';
     currentUser,
     logoUrl,
     companyDetails,
-    loadingUpdate: loading.effects['companiesManagement/updateCompany'],
+    loadingSave: loading.effects['companiesManagement/saveOrigin'],
   }),
 )
 class UploadLogoCompany extends Component {
@@ -25,13 +27,20 @@ class UploadLogoCompany extends Component {
     super(props);
     this.state = {
       visible: false,
+      openModal: false,
     };
   }
 
-  openModalUpload = () => {
-    this.setState({
-      visible: true,
-    });
+  openModalUpload = (key) => {
+    if (key === 'remove') {
+      this.setState({
+        openModal: true,
+      });
+    } else {
+      this.setState({
+        visible: true,
+      });
+    }
   };
 
   handleCancel = () => {
@@ -74,10 +83,26 @@ class UploadLogoCompany extends Component {
     }
   };
 
-  render() {
-    const { visible } = this.state;
-    const { logoUrl = '' } = this.props;
+  handleCancelModalRemove = () => {
+    this.setState({
+      openModal: false,
+    });
+  };
 
+  render() {
+    const { visible, openModal } = this.state;
+    const {
+      companyDetails: { company: { _id: id = '' } = {} } = {},
+      logoUrl = '',
+      loadingSave = false,
+    } = this.props;
+
+    if (loadingSave)
+      return (
+        <div className={s.loadingSpin}>
+          <Spin />
+        </div>
+      );
     return (
       <>
         <div className={s.root}>
@@ -90,13 +115,20 @@ class UploadLogoCompany extends Component {
           ) : (
             <div className={s.viewLogo}>
               <Image width="100%" height="auto" src={logoUrl} />
+              <DeleteOutlined onClick={() => this.openModalUpload('remove')} />
             </div>
           )}
 
-          <Button className={s.btnUpload} onClick={this.openModalUpload}>
+          <Button className={s.btnUpload} onClick={() => this.openModalUpload('open')}>
             {logoUrl ? 'Change Logo' : 'Upload company logo'}
           </Button>
         </div>
+        <ModalRemoveLogo
+          titleModal="Remove Logo"
+          visible={openModal}
+          handleCancel={this.handleCancelModalRemove}
+          companyId={id}
+        />
         <ModalUpload
           titleModal="Upload Logo"
           visible={visible}
