@@ -1,16 +1,16 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useState, useEffect } from 'react';
 
-import { Radio, Select, Checkbox, Form, Row, Col, Button, Typography } from 'antd';
+import { Radio, Select, Checkbox, Form, Row, Col, Button } from 'antd';
 
 import { connect, formatMessage } from 'umi';
 // import UploadImage from '@/pages/Candidate/components/EligibilityDocs/components/UploadImage';
 import UploadImage from '@/components/UploadImage';
 import { getCurrentTenant } from '@/utils/authority';
+import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { currencyArr, timeoffArr } from './mockData';
-
 import styles from './index.less';
-
+import { Page } from '../../utils';
 import FileIcon from './components/FileIcon/index';
 import Template from './components/Template/index';
 import Alert from './components/Alert/index';
@@ -87,7 +87,16 @@ const OfferDetail = (props) => {
 
     return valid;
   };
-
+  useEffect(() => {
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Offer_Details,
+        candidate: data.candidate,
+        data: {},
+      },
+    });
+  }, [data.candidate]);
   useEffect(() => {
     const formValues = form.getFieldsValue();
     checkAllFieldsValid({ ...formValues, agreement, handbook });
@@ -709,6 +718,9 @@ const OfferDetail = (props) => {
               <Alert display={displayTimeoffAlert} type="caution">
                 <p>{formatMessage({ id: 'component.offerDetail.alertContent5' })}</p>
               </Alert>
+            </div>
+            <div style={{ marginTop: '32px' }}>
+              <RenderAddQuestion />
             </div>
           </div>
 

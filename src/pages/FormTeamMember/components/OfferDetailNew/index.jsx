@@ -4,9 +4,11 @@ import { Button, Col, DatePicker, Form, Row, Select } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
+import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { PROCESS_STATUS } from '@/utils/onboarding';
 import AddDocumentModal from './components/AddDocumentModal';
 import DocumentItem from './components/DocumentItem';
+import { Page } from '../../utils';
 import Template from './components/Template/index';
 import AddTemplateModal from './components/AddTemplateModal';
 import styles from './index.less';
@@ -14,7 +16,7 @@ import styles from './index.less';
 const { Option } = Select;
 
 const OfferDetail = (props) => {
-  const { dispatch, checkMandatory, currentStep, data, tempData, loading1, loading2 } = props;
+  const { dispatch, checkMandatory, currentStep, data, tempData, loading1 } = props;
   const { processStatus = '' } = tempData;
   const previousStep = currentStep - 1;
   const nextStep = currentStep + 1;
@@ -88,7 +90,16 @@ const OfferDetail = (props) => {
 
     return valid;
   };
-
+  useEffect(() => {
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Offer_Details,
+        candidate: data.candidate,
+        data: {},
+      },
+    });
+  }, [data.candidate]);
   useEffect(() => {
     const formValues = form.getFieldsValue();
     checkAllFieldsValid({ ...formValues });
@@ -154,7 +165,7 @@ const OfferDetail = (props) => {
   }, []);
 
   useEffect(() => {
-    const { processStatus = '' } = data;
+    // const { processStatus = '' } = data;
     if (processStatus !== 'DRAFT') {
       return;
     }
@@ -382,6 +393,7 @@ const OfferDetail = (props) => {
     );
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handleUploadResponse = (res) => {
     const { data: uploadFileData = [] } = res;
     if (uploadFileData.length === 0) {
@@ -630,6 +642,9 @@ const OfferDetail = (props) => {
                   </div>
                 )}
               </div>
+              <div style={{ marginTop: '32px' }}>
+                <RenderAddQuestion />
+              </div>
             </div>
             {_renderBottomBar()}
           </div>
@@ -638,7 +653,12 @@ const OfferDetail = (props) => {
             {/* <Template type="default" files={['Offer letter 1', 'Offer letter 2', 'Offer letter 3']} /> */}
             {/* <Template files={['Offer letter 4', 'Offer letter 5', 'Offer letter 6']} /> */}
             <Template dispatch={dispatch} type="default" files={defaultTemplates} />
-            <Template dispatch={dispatch} type="custom" files={customTemplates} handleAdd={handleAddDocument} />
+            <Template
+              dispatch={dispatch}
+              type="custom"
+              files={customTemplates}
+              handleAdd={handleAddDocument}
+            />
           </div>
         </div>
       </Form>

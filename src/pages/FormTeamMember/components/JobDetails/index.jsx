@@ -4,11 +4,13 @@ import { connect, formatMessage } from 'umi';
 import { isEmpty, isObject } from 'lodash';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { PROCESS_STATUS } from '@/utils/onboarding';
+import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
+import { Page } from '../../utils';
 import styles from './index.less';
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
 @connect(
@@ -57,7 +59,14 @@ class JobDetails extends PureComponent {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
 
     this.checkBottomBar();
-
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Job_Details,
+        candidate,
+        data: {},
+      },
+    });
     // get work location list
     dispatch({
       type: 'candidateInfo/fetchLocationList',
@@ -714,6 +723,10 @@ class JobDetails extends PureComponent {
                     tempData={tempData}
                     disabled={this.disableEdit()}
                   />
+                  <Row style={{ margin: '0 32px 32px' }}>
+                    <RenderAddQuestion />
+                  </Row>
+
                   {this._renderBottomBar()}
                 </div>
               </Col>

@@ -11,7 +11,7 @@ import SalaryStructureHeader from './components/SalaryStructureHeader';
 import SalaryStructureTemplate from './components/SalaryStructureTemplate';
 import NoteComponent from '../NoteComponent';
 import SalaryAcceptance from './components/SalaryAcceptance';
-
+import { Page } from '../../utils';
 import styles from './index.less';
 
 // const DRAFT = 'DRAFT';
@@ -52,6 +52,14 @@ class SalaryStructure extends PureComponent {
 
   componentDidMount() {
     const { candidate = '', dispatch, processStatus } = this.props;
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Salary_Structure,
+        candidate,
+        data: {},
+      },
+    });
     if (processStatus === 'DRAFT') {
       if (dispatch && candidate) {
         dispatch({
