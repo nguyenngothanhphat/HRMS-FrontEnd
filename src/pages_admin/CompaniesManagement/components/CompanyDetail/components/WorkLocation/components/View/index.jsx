@@ -76,6 +76,7 @@ class View extends PureComponent {
         country = {},
         state = '',
         zipCode = '',
+        city = '',
       } = {},
     } = location;
 
@@ -87,6 +88,10 @@ class View extends PureComponent {
       {
         label: formatMessage({ id: 'pages_admin.company.location.addressLine2' }),
         value: headAddressLine2,
+      },
+      {
+        label: formatMessage({ id: 'pages_admin.company.location.cityName' }),
+        value: city,
       },
       {
         label: formatMessage({ id: 'pages_admin.company.location.country' }),
