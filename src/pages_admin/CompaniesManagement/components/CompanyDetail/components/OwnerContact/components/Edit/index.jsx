@@ -13,8 +13,29 @@ import styles from '../../../CompanyInformation/components/Information/Edit/inde
 class Edit extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      isNothingChanged: false,
+    };
   }
+
+  compareValues = (newValues) => {
+    const {
+      companyDetails: {
+        company: { hrContactName = '', hrContactEmail = '', hrContactPhone = '' } = {},
+      } = {},
+    } = this.props;
+    const {
+      hrContactName: newHrContactName = '',
+      hrContactEmail: newHrContactEmail = '',
+      hrContactPhone: newHrContactPhone = '',
+    } = newValues;
+
+    return (
+      hrContactName === newHrContactName &&
+      hrContactEmail === newHrContactEmail &&
+      hrContactPhone === newHrContactPhone
+    );
+  };
 
   onFinish = (values) => {
     const {
@@ -25,7 +46,19 @@ class Edit extends PureComponent {
     } = this.props;
     const tenantId = getCurrentTenant();
 
-    if (id) {
+    const checkTheSame = this.compareValues(values);
+
+    if (checkTheSame) {
+      this.setState({
+        isNothingChanged: true,
+      });
+      setTimeout(() => {
+        this.setState({
+          isNothingChanged: false,
+        });
+        handleCancelEdit();
+      }, 2500);
+    } else if (id) {
       dispatch({
         type: 'companiesManagement/updateCompany',
         payload: { id, ...values, tenantId },
@@ -50,7 +83,9 @@ class Edit extends PureComponent {
       } = {},
       loadingUpdate,
       loadingSave,
+      handleCancelEdit = () => {},
     } = this.props;
+    const { isNothingChanged } = this.state;
 
     const formItemLayout = {
       labelCol: {
@@ -62,9 +97,14 @@ class Edit extends PureComponent {
         sm: { span: 9 },
       },
     };
-    const { handleCancelEdit = () => {} } = this.props;
+
     return (
       <div className={styles.edit}>
+        {isNothingChanged && (
+          <div className={styles.nothingChangedBanner}>
+            <span>Nothing changed !</span>
+          </div>
+        )}
         <Form
           className={styles.Form}
           initialValues={{
@@ -118,6 +158,7 @@ class Edit extends PureComponent {
               className={styles.edit_btn_cancel}
               onClick={handleCancelEdit}
               // loading={loading}
+              disabled={isNothingChanged}
             >
               Cancel
             </Button>
@@ -126,6 +167,7 @@ class Edit extends PureComponent {
               htmlType="submit"
               className={styles.edit_btn_save}
               loading={loadingUpdate || loadingSave}
+              disabled={isNothingChanged}
             >
               Save
             </Button>
