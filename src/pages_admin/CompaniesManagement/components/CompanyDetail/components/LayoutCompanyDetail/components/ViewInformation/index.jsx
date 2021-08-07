@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Divider, Spin, Avatar } from 'antd';
+import { Divider, Spin, Avatar, Tooltip } from 'antd';
 import { connect } from 'umi';
 import ModalUpload from '@/components/ModalUpload';
 import noLogo from '@/assets/no-photo-available-icon.png';
@@ -106,9 +106,22 @@ class ViewInformation extends Component {
         </div>
         <div className={styles.infoCompany__viewBottom}>
           <Divider />
-          <div>
-            <img src="/assets/images/iconLinkedin.svg" alt="img-arrow" />
-            <img src="/assets/images/iconMail.svg" alt="img-arrow" style={{ marginLeft: '5px' }} />
+          <div className={styles.infoCompany__viewBottom__iconLinks}>
+            <Tooltip title="Linkedin">
+              <img
+                src="/assets/images/iconLinkedin.svg"
+                alt="img-arrow"
+                onClick={() => window.open('https://www.linkedin.com/')}
+              />
+            </Tooltip>
+            <Tooltip title="Mail">
+              <img
+                src="/assets/images/iconMail.svg"
+                alt="img-arrow"
+                style={{ marginLeft: '8px' }}
+                onClick={() => window.open('http://gmail.com/')}
+              />
+            </Tooltip>
           </div>
         </div>
         <ModalUpload
