@@ -1,20 +1,57 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { Button, Form, Input } from 'antd';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from '../../../CompanyInformation/components/Information/Edit/index.less';
 
-// @connect(({ companiesManagement: { editCompany: { isOpenEditDetail = false } } = {} }) => ({
-//   isOpenEditDetail,
-// }))
+@connect(({ companiesManagement: { originData: { companyDetails = {} } = {} } = {}, loading }) => ({
+  companyDetails,
+  loadingUpdate: loading.effects['companiesManagement/updateCompany'],
+  loadingSave: loading.effects['companiesManagement/saveCompanyDetails'],
+}))
 class Edit extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  onFinish = (values) => {
+    const {
+      dispatch,
+      companyDetails = {},
+      companyDetails: { company: { _id: id = '' } = {} } = {},
+      handleCancelEdit = () => {},
+    } = this.props;
+    const tenantId = getCurrentTenant();
+
+    if (id) {
+      dispatch({
+        type: 'companiesManagement/updateCompany',
+        payload: { id, ...values, tenantId },
+      }).then(({ statusCode: check }) => {
+        if (check === 200) {
+          handleCancelEdit();
+        }
+      });
+    } else {
+      dispatch({
+        type: 'companiesManagement/saveCompanyDetails',
+        payload: { ...companyDetails?.company, ...values },
+      });
+      handleCancelEdit();
+    }
+  };
+
   render() {
-    const companyDetail = {
-      name: 'Nguyen Van A',
-      email: 'terralogic@terralogic.com',
-      phoneNumber: '0123456789',
-    };
-    const { name, email, phoneNumber } = companyDetail;
+    const {
+      companyDetails: {
+        company: { hrContactName = '', hrContactEmail = '', hrContactPhone = '' } = {},
+      } = {},
+      loadingUpdate,
+      loadingSave,
+    } = this.props;
+
     const formItemLayout = {
       labelCol: {
         xs: { span: 6 },
@@ -31,14 +68,15 @@ class Edit extends PureComponent {
         <Form
           className={styles.Form}
           initialValues={{
-            name,
-            email,
-            phoneNumber,
+            hrContactName,
+            hrContactEmail,
+            hrContactPhone,
           }}
+          onFinish={this.onFinish}
         >
           <Form.Item
             label={formatMessage({ id: 'pages_admin.owner.fullName' })}
-            name="name"
+            name="hrContactName"
             {...formItemLayout}
             rules={[
               {
@@ -51,7 +89,7 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'pages_admin.owner.email' })}
-            name="email"
+            name="hrContactEmail"
             {...formItemLayout}
             rules={[
               {
@@ -63,14 +101,14 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'pages_admin.owner.phone' })}
-            name="phoneNumber"
+            name="hrContactPhone"
             {...formItemLayout}
-            // rules={[
-            //   {
-            //     pattern: /^[+]*[\d]{0,10}$/,
-            //     message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
-            //   },
-            // ]}
+            rules={[
+              {
+                pattern: /^[+]*[\d]{0,10}$/,
+                message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
+              },
+            ]}
           >
             <Input className={styles.inputForm} />
           </Form.Item>
@@ -87,7 +125,7 @@ class Edit extends PureComponent {
               type="primary"
               htmlType="submit"
               className={styles.edit_btn_save}
-              // loading={loading}
+              loading={loadingUpdate || loadingSave}
             >
               Save
             </Button>
