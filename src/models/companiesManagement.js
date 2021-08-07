@@ -16,6 +16,7 @@ import {
 } from '@/services/companiesManangement';
 import { history } from 'umi';
 import { notification } from 'antd';
+import { getCurrentCompany } from '@/utils/authority';
 
 const companiesManagement = {
   namespace: 'companiesManagement',
@@ -238,6 +239,7 @@ const companiesManagement = {
     *updateLocation({ payload = {} }, { call, put }) {
       let resp = '';
       try {
+        const company = getCurrentCompany();
         const response = yield call(updateLocation, payload);
         const { statusCode, message } = response;
         if (statusCode !== 200) throw response;
@@ -246,7 +248,7 @@ const companiesManagement = {
         });
         yield put({
           type: 'fetchLocationsList',
-          payload: { company: payload.company },
+          payload: { company },
         });
         resp = response;
       } catch (errors) {

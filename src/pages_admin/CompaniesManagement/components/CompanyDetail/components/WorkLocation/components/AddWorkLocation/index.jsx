@@ -165,17 +165,6 @@ class AddWorkLocationForm extends PureComponent {
                     pattern: /^([a-zA-Z0-9]((?!__|--)[a-zA-Z0-9_\-\s])+[a-zA-Z0-9])$/,
                     message: 'Name is not a validate name!',
                   },
-                  // ({ getFieldValue }) => ({
-                  //   validator(_, value) {
-                  //     const checkUnique = getFieldValue('workLocations').filter(
-                  //       (item) => item?.name && item?.name === value,
-                  //     );
-                  //     if (checkUnique.length <= 1) {
-                  //       return Promise.resolve();
-                  //     }
-                  //     return Promise.reject('This name has already been used!');
-                  //   },
-                  // }),
                 ]}
               >
                 <Input placeholder="Location Name" />
@@ -213,6 +202,7 @@ class AddWorkLocationForm extends PureComponent {
                 rules={[
                   {
                     required: true,
+                    message: 'Please select Country!',
                   },
                 ]}
               >
@@ -236,6 +226,7 @@ class AddWorkLocationForm extends PureComponent {
                 rules={[
                   {
                     required: true,
+                    message: 'Please select State!',
                   },
                 ]}
               >
