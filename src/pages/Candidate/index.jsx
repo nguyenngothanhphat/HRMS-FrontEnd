@@ -8,7 +8,7 @@ import OfferDetails from './components/OfferDetails';
 import JobDetails from './components/JobDetails';
 import Benefits from './components/Benefits';
 import SalaryStructure from './components/SalaryStructure';
-// import AdditionalQuestion from './components/AdditionalQuestion';
+import AdditionalQuestion from './components/AdditionalQuestion';
 import PreviewOffer from './components/PreviewOffer';
 import { Page } from '../FormTeamMember/utils';
 
@@ -80,7 +80,7 @@ const Candidate = (props) => {
       case undefined:
         return <PreviewOffer />;
       default:
-        return null;
+        return <AdditionalQuestion />;
     }
   };
   // if (loadingFetchDocumentsByCandidate || loadingFetchWorkHistory) return <Skeleton />;

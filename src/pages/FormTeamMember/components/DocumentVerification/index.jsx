@@ -580,6 +580,7 @@ class DocumentVerification extends Component {
     // console.log(filledDocumentVerification);
     return (
       <div className={styles.bottomBar}>
+        <RenderAddQuestion />
         <Row align="middle">
           <Col span={16}>
             <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
@@ -1533,13 +1534,7 @@ class DocumentVerification extends Component {
                 previousEmployment={documentCLSTByCountryTypeE}
                 refresh={refreshBlockE}
               />
-              <div className={styles.bottomBar} style={{ marginBottom: '20px' }}>
-                <Row>
-                  <Col>
-                    <RenderAddQuestion />
-                  </Col>
-                </Row>
-              </div>
+
               {this._renderBottomBar()}
             </div>
           </Col>

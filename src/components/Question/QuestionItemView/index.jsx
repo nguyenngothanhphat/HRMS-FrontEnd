@@ -1,7 +1,7 @@
 import EditIcon from '@/assets/editBtnBlue.svg';
 import RemoveIcon from '@/assets/remove.svg';
 import { Button, Checkbox, Col, Input, Radio, Row, Space, Select } from 'antd';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TYPE_QUESTION, SPECIFY, MODE } from '../utils';
 import styles from './index.less';
 
@@ -11,6 +11,7 @@ export default function QuestionItemView({
   openModalEdit,
   openModalRemove,
   mode = MODE.EDIT,
+  errorMessage,
   onChangeEmployeeAnswers = () => {},
 }) {
   const {
@@ -21,11 +22,13 @@ export default function QuestionItemView({
     rating = {},
     defaultAnswers = [],
     employeeAnswers = [],
-    errorMessage = '',
+    // errorMessage = '',
   } = questionItem;
 
   const [errMessage, setErrMessage] = useState(errorMessage);
-
+  useEffect(() => {
+    setErrMessage(errorMessage);
+  }, [errorMessage]);
   const changeMultiChoice = (values) => {
     const { specify = {}, num } = multiChoice || {};
     onChangeEmployeeAnswers(values, keyQuestion);
@@ -44,7 +47,7 @@ export default function QuestionItemView({
     return true;
   };
   const onChangeRating = (e, i) => {
-    defaultAnswers[i] = e.target.value;
+    defaultAnswers[i] = `${e.target.value}`;
     onChangeEmployeeAnswers(defaultAnswers, keyQuestion);
   };
   const _renderAnswer = () => {

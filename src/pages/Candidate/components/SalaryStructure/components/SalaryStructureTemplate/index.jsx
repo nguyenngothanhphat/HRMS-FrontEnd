@@ -3,6 +3,8 @@ import { Form, Table, Button, Input, Row, Col, InputNumber } from 'antd';
 import { formatMessage, connect } from 'umi';
 import AnswerQuestion from '@/components/Question/AnswerQuestion';
 import { getCurrentTenant } from '@/utils/authority';
+import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
+import { every } from 'lodash';
 import styles from './index.less';
 
 @connect(
@@ -59,9 +61,54 @@ class SalaryStructureTemplate extends PureComponent {
     });
   };
 
+  checkAllFieldsValidate = () => {
+    const { settings, dispatch } = this.props;
+    const valid = settings?.map((question) => {
+      const employeeAnswers = question.employeeAnswers.filter((answer) => answer);
+
+      if (question.isRequired) {
+        if (question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key) {
+          const { specify = {}, num } = question?.multiChoice || {};
+          switch (specify) {
+            case SPECIFY.AT_LEAST.key:
+              return employeeAnswers.length >= num
+                ? null
+                : `This question must have at least ${num} answer`;
+            case SPECIFY.AT_MOST.key:
+              return employeeAnswers.length <= num
+                ? null
+                : `This question must have at most ${num} answer`;
+            case SPECIFY.EXACTLY.key:
+              return employeeAnswers.length !== num
+                ? null
+                : `This question must have exactly ${num} answer`;
+            default:
+              break;
+          }
+        }
+        if (question.answerType === TYPE_QUESTION.MULTI_RATING_CHOICE.key) {
+          const { rows = [] } = question?.rating || {};
+          return employeeAnswers.length === rows.length ? null : 'You must rating all';
+        }
+        return employeeAnswers.length > 0 ? null : 'You must answer this question';
+      }
+      return null;
+    });
+
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        messageErrors: valid,
+      },
+    });
+    return valid;
+  };
+
   onClickNext = () => {
     const { dispatch, options, tempData, localStep, checkMandatory, question } = this.props;
-    if (question._id !== '' && question.settings && question.settings.length)
+    const messageErr = this.checkAllFieldsValidate();
+    if (!every(messageErr, (message) => message === null)) return;
+    if (question._id !== '' && question.settings && question.settings.length) {
       dispatch({
         type: 'optionalQuestion/updateQuestionByCandidate',
         payload: {
@@ -69,6 +116,7 @@ class SalaryStructureTemplate extends PureComponent {
           settings: question.settings,
         },
       });
+    }
     dispatch({
       type: 'candidateProfile/updateByCandidateEffect',
       payload: {

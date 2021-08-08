@@ -10,6 +10,8 @@ import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
 import ModalDrawSignature from '@/components/ModalDrawSignature/index';
 import TextSignature from '@/components/TextSignature';
+import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
+import { every } from 'lodash';
 import NoteComponent from '../NoteComponent';
 import Alert from './components/Alert';
 import s from './index.less';
@@ -139,12 +141,55 @@ const OfferDetails = (props) => {
     );
   };
 
+  const checkAllFieldsValidate = () => {
+    const valid = question?.settings?.map((item) => {
+      const employeeAnswers = item.employeeAnswers.filter((answer) => answer);
+
+      if (question.isRequired) {
+        if (question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key) {
+          const { specify = {}, num } = item?.multiChoice || {};
+          switch (specify) {
+            case SPECIFY.AT_LEAST.key:
+              return employeeAnswers.length >= num
+                ? null
+                : `This question must have at least ${num} answer`;
+            case SPECIFY.AT_MOST.key:
+              return employeeAnswers.length <= num
+                ? null
+                : `This question must have at most ${num} answer`;
+            case SPECIFY.EXACTLY.key:
+              return employeeAnswers.length !== num
+                ? null
+                : `This question must have exactly ${num} answer`;
+            default:
+              break;
+          }
+        }
+        if (item.answerType === TYPE_QUESTION.MULTI_RATING_CHOICE.key) {
+          const { rows = [] } = item?.rating || {};
+          return employeeAnswers.length === rows.length ? null : 'You must rating all';
+        }
+        return employeeAnswers.length > 0 ? null : 'You must answer this question';
+      }
+      return null;
+    });
+
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        messageErrors: valid,
+      },
+    });
+    return valid;
+  };
   const onClickNext = () => {
     if (!dispatch) {
       return;
     }
+    const messageErr = checkAllFieldsValidate();
+    if (!every(messageErr, (message) => message === null)) return;
     const { id, url } = signature;
-    if (question._id !== '' && question.settings && question.settings.length)
+    if (question._id !== '' && question.settings && question.settings.length) {
       dispatch({
         type: 'optionalQuestion/updateQuestionByCandidate',
         payload: {
@@ -152,6 +197,7 @@ const OfferDetails = (props) => {
           settings: question.settings,
         },
       });
+    }
     dispatch({
       type: 'candidateProfile/save',
       payload: {

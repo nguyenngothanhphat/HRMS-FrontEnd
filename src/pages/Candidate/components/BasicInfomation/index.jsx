@@ -3,6 +3,8 @@ import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import AnswerQuestion from '@/components/Question/AnswerQuestion';
+import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
+import { every } from 'lodash';
 import BasicInformationHeader from './components/BasicInformationHeader';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
@@ -12,7 +14,7 @@ import { Page } from '../../../FormTeamMember/utils';
 @connect(
   ({
     optionalQuestion: {
-      messageError,
+      messageErrors,
       data: { _id, settings },
     },
     candidateProfile: { data, checkMandatory, localStep, tempData } = {},
@@ -21,7 +23,7 @@ import { Page } from '../../../FormTeamMember/utils';
     data,
     _id,
     settings,
-    messageError,
+    messageErrors,
     checkMandatory,
     localStep,
     tempData,
@@ -52,6 +54,49 @@ class BasicInformation extends PureComponent {
       },
     });
   }
+
+  checkAllFieldsValidate = () => {
+    const { settings, dispatch } = this.props;
+    const valid = settings?.map((question) => {
+      const employeeAnswers = question.employeeAnswers.filter((answer) => answer);
+
+      if (question.isRequired) {
+        if (question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key) {
+          const { specify = {}, num } = question?.multiChoice || {};
+          switch (specify) {
+            case SPECIFY.AT_LEAST.key:
+              return employeeAnswers.length >= num
+                ? null
+                : `This question must have at least ${num} answer`;
+            case SPECIFY.AT_MOST.key:
+              return employeeAnswers.length <= num
+                ? null
+                : `This question must have at most ${num} answer`;
+            case SPECIFY.EXACTLY.key:
+              return employeeAnswers.length !== num
+                ? null
+                : `This question must have exactly ${num} answer`;
+            default:
+              break;
+          }
+        }
+        if (question.answerType === TYPE_QUESTION.MULTI_RATING_CHOICE.key) {
+          const { rows = [] } = question?.rating || {};
+          return employeeAnswers.length === rows.length ? null : 'You must rating all';
+        }
+        return employeeAnswers.length > 0 ? null : 'You must answer this question';
+      }
+      return null;
+    });
+
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        messageErrors: valid,
+      },
+    });
+    return valid;
+  };
 
   handleChange = (e) => {
     const name = Object.keys(e).find((x) => x);
@@ -97,7 +142,9 @@ class BasicInformation extends PureComponent {
     const { data } = this.state;
     const { dispatch, localStep, _id: id, settings } = this.props;
     const { _id } = data;
-    if (id !== '' && settings && settings.length)
+    const messageErr = this.checkAllFieldsValidate();
+    if (!every(messageErr, (message) => message === null)) return;
+    if (id !== '' && settings && settings.length) {
       dispatch({
         type: 'optionalQuestion/updateQuestionByCandidate',
         payload: {
@@ -105,6 +152,7 @@ class BasicInformation extends PureComponent {
           settings,
         },
       });
+    }
     dispatch({
       type: 'candidateProfile/save',
       payload: {

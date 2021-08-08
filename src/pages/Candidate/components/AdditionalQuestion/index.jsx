@@ -1,9 +1,10 @@
 import QuestionItemView from '@/components/Question/QuestionItemView';
-import { getCurrentTenant } from '@/utils/authority';
 import { Button, Col, Row, Typography } from 'antd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
-import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
+import { TYPE_QUESTION, SPECIFY, MODE } from '@/components/Question/utils';
+import { every } from 'lodash';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
 import s from './index.less';
@@ -21,16 +22,18 @@ const Note = {
 const AdditionalQuestion = (props) => {
   const {
     listPage,
+    data: { settings },
+    data,
     checkCandidateMandatory,
     dispatch,
     localStep,
-    questionOnBoarding,
+    messageErrors,
     candidate,
-    loading1,
+    processStatus,
   } = props;
 
   const checkAllFieldsValidate = () => {
-    const valid = questionOnBoarding.every((question) => {
+    const valid = settings.map((question) => {
       const employeeAnswers = question.employeeAnswers.filter((answer) => answer);
 
       if (question.isRequired) {
@@ -38,66 +41,62 @@ const AdditionalQuestion = (props) => {
           const { specify = {}, num } = question?.multiChoice || {};
           switch (specify) {
             case SPECIFY.AT_LEAST.key:
-              return employeeAnswers.length >= num;
+              return employeeAnswers.length >= num
+                ? null
+                : `This question must have at least ${num} answer`;
             case SPECIFY.AT_MOST.key:
-              return employeeAnswers.length <= num;
+              return employeeAnswers.length <= num
+                ? null
+                : `This question must have at most ${num} answer`;
             case SPECIFY.EXACTLY.key:
-              return employeeAnswers.length !== num;
+              return employeeAnswers.length !== num
+                ? null
+                : `This question must have exactly ${num} answer`;
             default:
               break;
           }
         }
-        return employeeAnswers.length > 0;
+        if (question.answerType === TYPE_QUESTION.MULTI_RATING_CHOICE.key) {
+          const { rows = [] } = question?.rating || {};
+          return employeeAnswers.length === rows.length ? null : 'You must rating all';
+        }
+        return employeeAnswers.length > 0 ? null : 'You must answer this question';
       }
-      return true;
+      return null;
     });
-    // console.log('valid', valid);
-    if (!dispatch) {
-      return;
-    }
 
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'optionalQuestion/save',
       payload: {
-        checkCandidateMandatory: {
-          ...checkCandidateMandatory,
-          filledAdditionalQuestion: valid,
-        },
+        messageErrors: valid,
       },
     });
+    return valid;
   };
-
+  const [disable, setDisable] = useState(false);
   useEffect(() => {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+    if (candidate !== '') {
+      dispatch({
+        type: 'optionalQuestion/getQuestionByName',
+        payload: {
+          candidate,
+          name: listPage[localStep - 1],
+        },
+      });
+    }
+    setDisable(processStatus === PROCESS_STATUS.ACCEPTED_FINAL_OFFERS);
   }, []);
 
   /**
    * Check if all the questions have been answered or not
    */
-  useEffect(() => {
-    checkAllFieldsValidate();
-  }, [questionOnBoarding]);
 
   /**
    * Change the employee's answers in a sentence through the key of the question
    * @param {*} employeeAnswers
    * @param {*} keyOfQuestion
    */
-  const onChangeEmployeeAnswers = (employeeAnswers, keyOfQuestion) => {
-    dispatch({
-      type: 'candidateProfile/saveTemp',
-      payload: {
-        questionOnBoarding: [
-          ...questionOnBoarding.slice(0, keyOfQuestion),
-          {
-            ...questionOnBoarding[keyOfQuestion],
-            employeeAnswers,
-          },
-          ...questionOnBoarding.slice(keyOfQuestion + 1),
-        ],
-      },
-    });
-  };
 
   const onClickPrevious = () => {
     const prevStep = localStep - 1;
@@ -109,31 +108,25 @@ const AdditionalQuestion = (props) => {
     });
   };
 
-  const onClickNext = async () => {
-    const response = await dispatch({
-      type: 'candidateProfile/updateByCandidateEffect',
-      payload: {
-        questionOnBoarding,
-        candidate,
-        tenantId: getCurrentTenant(),
-      },
-    });
+  const onClickNext = () => {
+    const messageErr = checkAllFieldsValidate();
+    if (every(messageErr, (message) => message === null)) {
+      dispatch({
+        type: 'optionalQuestion/updateQuestionByCandidate',
+        payload: {
+          id: data._id,
+          settings,
+        },
+      });
 
-    const { statusCode = 1 } = response;
-    if (statusCode !== 200) {
-      return;
+      const nextStep = localStep + 1;
+      dispatch({
+        type: 'candidateProfile/save',
+        payload: {
+          localStep: nextStep,
+        },
+      });
     }
-    // if (hidePreviewOffer) {
-    //   return;
-    // }
-
-    const nextStep = localStep + 1;
-    dispatch({
-      type: 'candidateProfile/save',
-      payload: {
-        localStep: nextStep,
-      },
-    });
   };
 
   const _renderStatus = () => {
@@ -151,8 +144,6 @@ const AdditionalQuestion = (props) => {
   };
 
   const _renderBottomBar = () => {
-    const { filledAdditionalQuestion } = checkCandidateMandatory;
-
     return (
       <div className={s.bottomBar}>
         <Row align="middle">
@@ -172,11 +163,7 @@ const AdditionalQuestion = (props) => {
                 type="primary"
                 htmlType="submit"
                 onClick={onClickNext}
-                className={`${s.bottomBar__button__primary} ${
-                  !filledAdditionalQuestion ? s.bottomBar__button__disabled : ''
-                }`}
-                loading={loading1}
-                disabled={!filledAdditionalQuestion}
+                className={s.bottomBar__button__primary}
               >
                 Next
               </Button>
@@ -186,35 +173,46 @@ const AdditionalQuestion = (props) => {
       </div>
     );
   };
-
+  const onChangeEmployeeAnswers = (value, key) => {
+    const temp = [...settings];
+    temp[key].employeeAnswers = value;
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        data: {
+          ...data,
+          settings: temp,
+        },
+      },
+    });
+  };
+  // main
   return (
     <div className={s.additionalQuestion}>
       <Row gutter={[24, 0]}>
         <Col xs={24} sm={24} md={24} lg={16} xl={16}>
           <div className={s.left}>
             <header>
-              <h1>Additional Question</h1>
-              <p>Additional Question</p>
+              <h1>{data && data.name}</h1>
+              {/* <p>Additional Question</p> */}
             </header>
 
             <div className={s.mainContent}>
               <div className={s.form}>
                 <Row>
-                  <Col md={24}>
-                    {questionOnBoarding.map((questionItem, key) => (
-                      <QuestionItemView
-                        control={false}
-                        questionItem={questionItem}
-                        keyQuestion={key}
-                        onChangeEmployeeAnswers={onChangeEmployeeAnswers}
-                      />
-                    ))}
-                    {questionOnBoarding.length === 0 && (
-                      <div>
-                        You don't have any onboarding questions, so you can press next to continue
-                      </div>
-                    )}
-                  </Col>
+                  {settings && settings.length > 0 && (
+                    <Col md={24}>
+                      {settings.map((questionItem, key) => (
+                        <QuestionItemView
+                          mode={disable ? MODE.VIEW : MODE.ANSWER}
+                          questionItem={questionItem}
+                          keyQuestion={key}
+                          onChangeEmployeeAnswers={onChangeEmployeeAnswers}
+                          errorMessage={messageErrors[key]}
+                        />
+                      ))}
+                    </Col>
+                  )}
                 </Row>
               </div>
             </div>
@@ -238,8 +236,9 @@ const AdditionalQuestion = (props) => {
 
 export default connect(
   ({
-    optionalQuestion: { listPage = [] },
+    optionalQuestion: { listPage = [], data = {}, messageErrors = [] },
     candidateProfile: {
+      processStatus,
       checkCandidateMandatory = {},
       localStep = 7,
       data: { _id: candidate = '' } = {},
@@ -248,8 +247,11 @@ export default connect(
     loading,
   }) => ({
     listPage,
+    data,
+    messageErrors,
     checkCandidateMandatory,
     localStep,
+    processStatus,
     hidePreviewOffer,
     questionOnBoarding,
     candidate,

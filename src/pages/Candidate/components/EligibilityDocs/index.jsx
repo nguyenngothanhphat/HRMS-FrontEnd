@@ -5,6 +5,8 @@ import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
 import AnswerQuestion from '@/components/Question/AnswerQuestion';
+import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
+import { every } from 'lodash';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
 import PreviousEmployment from './components/PreviousEmployment';
@@ -379,6 +381,8 @@ class EligibilityDocs extends PureComponent {
   handleSendEmail = () => {
     const { hrEmail } = this.state;
     const { dispatch, _id, settings } = this.props;
+    const messageErr = this.checkAllFieldsValidate();
+    if (!every(messageErr, (message) => message === null)) return;
     if (_id !== '' && settings && settings.length) {
       dispatch({
         type: 'optionalQuestion/updateQuestionByCandidate',
@@ -487,8 +491,53 @@ class EligibilityDocs extends PureComponent {
     });
   };
 
+  checkAllFieldsValidate = () => {
+    const { settings, dispatch } = this.props;
+    const valid = settings?.map((question) => {
+      const employeeAnswers = question.employeeAnswers.filter((answer) => answer);
+
+      if (question.isRequired) {
+        if (question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key) {
+          const { specify = {}, num } = question?.multiChoice || {};
+          switch (specify) {
+            case SPECIFY.AT_LEAST.key:
+              return employeeAnswers.length >= num
+                ? null
+                : `This question must have at least ${num} answer`;
+            case SPECIFY.AT_MOST.key:
+              return employeeAnswers.length <= num
+                ? null
+                : `This question must have at most ${num} answer`;
+            case SPECIFY.EXACTLY.key:
+              return employeeAnswers.length !== num
+                ? null
+                : `This question must have exactly ${num} answer`;
+            default:
+              break;
+          }
+        }
+        if (question.answerType === TYPE_QUESTION.MULTI_RATING_CHOICE.key) {
+          const { rows = [] } = question?.rating || {};
+          return employeeAnswers.length === rows.length ? null : 'You must rating all';
+        }
+        return employeeAnswers.length > 0 ? null : 'You must answer this question';
+      }
+      return null;
+    });
+
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        messageErrors: valid,
+      },
+    });
+    return valid;
+  };
+
   onClickNext = () => {
     const { dispatch, localStep, _id, settings } = this.props;
+    const messageErr = this.checkAllFieldsValidate();
+    if (!every(messageErr, (message) => message === null)) return;
     if (_id !== '' && settings && settings.length) {
       dispatch({
         type: 'optionalQuestion/updateQuestionByCandidate',
@@ -526,7 +575,9 @@ class EligibilityDocs extends PureComponent {
                 type="primary"
                 htmlType="submit"
                 onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary} ${styles.bottomBar__button__disabled}`}
+                className={`${styles.bottomBar__button__primary} ${
+                  currentStep < 5 ? styles.bottomBar__button__disabled : ''
+                }`}
                 disabled={currentStep < 5}
               >
                 Next
