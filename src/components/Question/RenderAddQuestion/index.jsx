@@ -7,6 +7,8 @@ import ModalAddQuestion from '@/components/ModalAddQuestion';
 import ModalListQuestion from '@/components/ModalListQuestion';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import RemoveIcon from '@/assets/remove.svg';
+import { PROCESS_STATUS } from '@/utils/onboarding';
+import { Page } from '../../../pages/FormTeamMember/utils';
 
 const defaultQuestion = {
   index: null,
@@ -23,16 +25,41 @@ const RenderAddQuestion = (props) => {
     data: { _id, settings = [] },
     dispatch,
     pageName,
+    prevPage,
+    processStatus,
   } = props;
   const [openModal, setOpenModal] = useState('');
   const [questionItem, setQuestionItem] = useState({});
   const [tempSetting, setTempSetting] = useState([]);
-  const [action, setAction] = useState('Add');
+  const [action, setAction] = useState('');
   const [title, setTitle] = useState('');
   const [firstOpen, setFirstOpen] = useState(true);
   const [mode, setMode] = useState(MODE.EDIT);
+  const [isDisable, setIsDisable] = useState(false);
+
+  const checkEdit = (page) => {
+    // const current = indexOf(listPage, page);
+    // const breakPoin = indexOf(listPage, Page.Eligibility_documents);
+    if (
+      page === Page.Basic_Information ||
+      page === Page.Job_Details ||
+      page === Page.Salary_Structure ||
+      page === Page.Eligibility_documents
+    )
+      setIsDisable(
+        processStatus !== 'DRAFT' && processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT,
+      );
+    else
+      setIsDisable(
+        !(
+          processStatus === PROCESS_STATUS.ACCEPTED_PROVISIONAL_OFFERS ||
+          processStatus === PROCESS_STATUS.FINAL_OFFERS_DRAFT
+        ),
+      );
+  };
+
   useEffect(() => {
-    if (candidate !== '' && pageName !== '')
+    if (candidate !== '' && pageName !== '' && pageName !== prevPage) {
       dispatch({
         type: 'optionalQuestion/getQuestionByPage',
         payload: {
@@ -40,29 +67,32 @@ const RenderAddQuestion = (props) => {
           page: pageName,
         },
       });
+      checkEdit(pageName);
+    }
   }, [candidate, pageName]);
   const openModalAdd = () => {
     setOpenModal('AddQuestion');
     // openModalList: false,
     setMode(MODE.EDIT);
     setQuestionItem(defaultQuestion);
-    setAction('Add');
+    // setAction('Add');
     setTitle('Add question');
   };
   const closeModalAdd = () => {
     if (firstOpen) setOpenModal('');
     else setOpenModal('ListQuestion');
+    setAction('');
   };
 
   const closeModalList = () => {
     setOpenModal('');
     setTempSetting([]);
+    setAction('');
   };
 
   const openModalEdit = (Item) => {
     setOpenModal('AddQuestion');
     setQuestionItem(Item);
-    // openModalList: false,
     setAction('Save');
     setTitle('Edit question');
   };
@@ -71,6 +101,7 @@ const RenderAddQuestion = (props) => {
     setMode(valueMode);
     setFirstOpen(false);
     setTempSetting(settings);
+    setAction('Save');
   };
   const openModalRemove = (_questionItem, keyQuestion) => {
     const temp = tempSetting;
@@ -103,28 +134,34 @@ const RenderAddQuestion = (props) => {
     }
     setTempSetting(tempSettings);
     setOpenModal('ListQuestion');
+    // setAction('Add');
     setFirstOpen(false);
   };
 
-  const onSaveList = async () => {
-    // const { _id } = data;
-    // fetch list optional onboarding question
-    dispatch({
-      type: 'optionalQuestion/addQuestion',
-      payload: {
-        isDefault: false,
-        position: {
-          move_to: 'IN-PAGE',
-          page: pageName,
+  const onSaveList = () => {
+    if (action === 'Add')
+      dispatch({
+        type: 'optionalQuestion/addQuestion',
+        payload: {
+          isDefault: false,
+          position: {
+            move_to: 'IN-PAGE',
+            page: pageName,
+          },
+          candidate,
+          settings: tempSetting,
         },
-        candidate,
-        settings: tempSetting,
-      },
-    });
-    // if (result.statusCode === 200) {
+      });
+    if (action === 'Save')
+      dispatch({
+        type: 'optionalQuestion/updateQuestionByHR',
+        payload: {
+          questionOnboarding: _id,
+          settings: tempSetting,
+        },
+      });
     setOpenModal('');
     setTempSetting([]);
-    // }
   };
 
   const removeQuestionList = () => {
@@ -140,78 +177,107 @@ const RenderAddQuestion = (props) => {
     setQuestionItem({ ...questionItem, ...item });
   };
   return (
-    <Row>
-      {settings && settings.length > 0 ? (
-        <Col>
-          <Button type="link" onClick={() => openModalEditList(MODE.VIEW)}>
-            Optional Question Onboarding
-          </Button>
-          <Space>
-            <Button type="link" onClick={() => openModalEditList(MODE.EDIT)}>
-              <img src={EditIcon} alt="Edit icon" style={{ width: '16px', marginRight: '8px' }} />
-              <span style={{ paddingRight: '16px', borderRight: '1px solid #B5B8BD' }}> Edit </span>
+    <>
+      <Row>
+        {settings && settings.length > 0 ? (
+          <Col>
+            <Button type="link" onClick={() => openModalEditList(MODE.VIEW)}>
+              Optional Question Onboarding
             </Button>
-            <Button
-              type="link"
-              style={{ display: 'flex', alignItems: 'center', paddingLeft: '16px' }}
-              onClick={removeQuestionList}
-            >
-              <img
-                src={RemoveIcon}
-                alt="Remove icon"
-                style={{ width: '16px', marginRight: '8px' }}
-              />
-              <span style={{ color: '#FF6565' }}> Delete </span>
-            </Button>
-          </Space>
-        </Col>
-      ) : (
-        <Col>
-          <Button
-            type="link"
-            // style={{ display: 'flex', alignItems: 'center', paddingLeft: '0px' }}
-            onClick={openModalAdd}
-          >
-            <img src={AddIcon} alt="Add icon" style={{ width: '18px', marginRight: '15px' }} />
-            Add optional onboarding questions
-          </Button>
-        </Col>
-      )}
-      <ModalAddQuestion
-        openModal={openModal === 'AddQuestion'}
-        title={title}
-        onSave={onSave}
-        onCancel={closeModalAdd}
-        onChangeQuestionItem={onChangeQuestionItem}
-        questionItem={questionItem}
-        action={action}
-      />
-      <ModalListQuestion
-        openModalList={openModal === 'ListQuestion'}
-        title={title}
-        action="Save"
-        onSave={onSaveList}
-        onCancel={closeModalList}
-        openModalEdit={openModalEdit}
-        openModalRemove={openModalRemove}
-        openModalAdd={openModalAdd}
-        settings={tempSetting}
-        mode={mode}
-      />
-    </Row>
+            {!isDisable && (
+              <Space>
+                <Button type="link" onClick={() => openModalEditList(MODE.EDIT)}>
+                  <img
+                    src={EditIcon}
+                    alt="Edit icon"
+                    style={{ width: '16px', marginRight: '8px' }}
+                  />
+                  <span style={{ paddingRight: '16px', borderRight: '1px solid #B5B8BD' }}>
+                    {' '}
+                    Edit{' '}
+                  </span>
+                </Button>
+                <Button
+                  type="link"
+                  style={{ display: 'flex', alignItems: 'center', paddingLeft: '16px' }}
+                  onClick={removeQuestionList}
+                >
+                  <img
+                    src={RemoveIcon}
+                    alt="Remove icon"
+                    style={{ width: '16px', marginRight: '8px' }}
+                  />
+                  <span style={{ color: '#FF6565' }}> Delete </span>
+                </Button>
+              </Space>
+            )}
+          </Col>
+        ) : (
+          !isDisable && (
+            <Col>
+              <Button
+                type="link"
+                // style={{ display: 'flex', alignItems: 'center', paddingLeft: '0px' }}
+                onClick={() => {
+                  openModalAdd();
+                  setAction('Add');
+                }}
+              >
+                <img src={AddIcon} alt="Add icon" style={{ width: '18px', marginRight: '15px' }} />
+                Add optional onboarding questions
+              </Button>
+            </Col>
+          )
+        )}
+        <ModalAddQuestion
+          openModal={openModal === 'AddQuestion'}
+          title={title}
+          onSave={onSave}
+          onCancel={closeModalAdd}
+          onChangeQuestionItem={onChangeQuestionItem}
+          questionItem={questionItem}
+          action={action}
+        />
+        <ModalListQuestion
+          openModalList={openModal === 'ListQuestion'}
+          title={title}
+          action="Save"
+          onSave={onSaveList}
+          onCancel={closeModalList}
+          openModalEdit={openModalEdit}
+          openModalRemove={openModalRemove}
+          openModalAdd={openModalAdd}
+          settings={tempSetting}
+          mode={mode}
+        />
+      </Row>
+    </>
   );
 };
 export default connect(
   ({
     dispatch,
     loading,
-    optionalQuestion: { candidate = '', optionalQuestionId = '', pageName = '', data = {} } = {},
+    optionalQuestion: {
+      listPage,
+      prevPage,
+      candidate = '',
+      optionalQuestionId = '',
+      pageName = '',
+      data = {},
+    } = {},
+    candidateInfo: {
+      data: { processStatus },
+    },
   }) => ({
     dispatch,
+    listPage,
+    prevPage,
     candidate,
     optionalQuestionId,
     pageName,
     data,
+    processStatus,
     loading: loading.effects['optionalQuestion/getQuestionByPage'],
   }),
 )(RenderAddQuestion);

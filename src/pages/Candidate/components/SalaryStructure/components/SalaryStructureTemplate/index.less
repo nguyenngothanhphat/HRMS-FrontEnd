@@ -1,7 +1,9 @@
 @spacing-xxs: 4px;
+
 .firstColumn {
   padding-left: 62px;
 }
+
 .salaryStructureTemplate {
   :global {
     .ant-input {
@@ -21,6 +23,7 @@
       margin-top: 5px;
       padding-left: 15px;
     }
+
     // .ant-form-item-control {
     //   height: 0;
     // }
@@ -32,6 +35,7 @@
     .ant-form-item {
       margin-bottom: 0;
     }
+
     .ant-btn-primary {
       position: absolute;
       top: -5px;
@@ -49,6 +53,7 @@
       border-radius: 25px;
       box-shadow: none;
       box-shadow: none;
+
       &:hover {
         color: #ffa100;
         background-color: transparent;
@@ -63,35 +68,43 @@
     .ant-table-thead {
       display: none;
     }
+
     .ant-table table {
       border-collapse: collapse;
     }
+
     .ant-table-tbody {
       tr {
         td {
           border: none;
           // padding-left: 30px;
         }
+
         td:first-child {
           padding-left: 50px;
         }
+
         td:nth-child(2) {
           font-weight: bold;
           text-align: center;
           border-right: 1px solid #d6dce0;
           border-left: 1px solid #d6dce0;
         }
+
         td:last-child {
           padding-left: 62px;
         }
       }
-      tr:first-child {
-      }
+
+      tr:first-child {}
+
       tr:last-child {
         box-sizing: border-box;
         height: 80px;
         border-top: 1px solid #d6dce0;
+        border-bottom: 1px solid #d6dce0;
         border-collapse: collapse;
+
         td:first-child {
           color: #2c6df9;
           font-weight: bold;
@@ -99,13 +112,16 @@
       }
     }
   }
+
   &_select {
+
     // margin-bottom: 30px;
     :global {
       .ant-form-item {
         display: block;
       }
     }
+
     p {
       color: #464646;
       font-size: 13px;
@@ -113,11 +129,13 @@
       line-height: 19px;
     }
   }
+
   .buttons {
     img {
       margin-right: 5px;
     }
   }
+
   &_table {
     // margin-bottom: 8 * @spacing-xxs;
     // min-height: 570px;
@@ -156,6 +174,7 @@
     border: solid 1px #d6dce0;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
+
     &_info {
       .title {
         margin-bottom: 10px;
@@ -164,6 +183,7 @@
         font-size: 18px;
         line-height: 21px;
       }
+
       .value {
         color: #707177;
         font-weight: 500;
@@ -172,6 +192,7 @@
       }
     }
   }
+
   // Custom table
   .bottomBar {
     // position: fixed;
@@ -212,9 +233,11 @@
       display: flex;
       align-items: center;
       text-align: right;
+
       &__disabled {
         opacity: 0.3;
       }
+
       :global {
         .ant-btn-primary {
           top: 0;
@@ -234,11 +257,13 @@
           border: solid 1px #ffa100;
           border-radius: 25px;
           box-shadow: none;
+
           &:hover {
             color: #ffffff;
             background-color: #ffa100;
           }
         }
+
         .ant-btn-secondary {
           width: 94px;
           height: 40px;
@@ -261,6 +286,7 @@
       display: none !important;
       width: 100% !important;
     }
+
     .ant-table-placeholder {
       display: none !important;
       width: 100% !important;
@@ -273,20 +299,24 @@
       }
     }
   }
+
   .salaryNote {
     margin-bottom: 24px;
     padding: 24px;
     background-color: #fff;
     border: solid 1px #d6dce0;
     border-radius: 5px;
+
     :global {
       .ant-input {
         font-size: 14px;
       }
+
       .ant-input-disabled {
         color: rgba(0, 0, 2, 0.755);
       }
     }
+
     .title {
       display: block;
       margin-bottom: 10px;
@@ -301,6 +331,7 @@
     display: none !important;
     width: 100% !important;
   }
+
   .ant-table-placeholder {
     display: none !important;
     width: 100% !important;

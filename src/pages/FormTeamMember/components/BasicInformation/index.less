@@ -1,42 +1,42 @@
 @spacing-xxs: 4px;
 
 .basicInformation {
-  position: relative;
+  font-family: 'Roboto', sans-serif;
   width: 100%;
   min-height: 216px;
-  font-family: 'Roboto', sans-serif;
+  position: relative;
 
   .bottomBar {
-    padding: 4 * @spacing-xxs;
-    background-color: #ffffff;
-    border: solid 1px #d6dce0;
     // position: fixed;
     // bottom: 0;
     // width: inherit;
     // height: 72px;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
+    border: solid 1px #d6dce0;
+    background-color: #ffffff;
+    padding: 4 * @spacing-xxs;
 
     .normalText {
       display: flex;
-      color: #707177;
-      font-size: 13px;
       font-family: 'Roboto';
+      font-size: 13px;
       font-style: italic;
+      color: #707177;
     }
 
     .redText {
-      color: #ff4949;
-      font-size: 13px;
       font-family: 'Roboto';
+      font-size: 13px;
       font-style: italic;
+      color: #ff4949;
     }
 
     .greenText {
-      color: #47c97f;
-      font-size: 13px;
       font-family: 'Roboto';
+      font-size: 13px;
       font-style: italic;
+      color: #47c97f;
     }
 
     &__button {
@@ -48,39 +48,39 @@
 
       :global {
         .ant-btn-primary {
+          box-shadow: none;
+          text-shadow: none;
           // display: none;
           width: 94px;
           height: 40px;
           object-fit: contain;
-          color: #ffffff;
-          font-weight: 500;
-          font-size: 14px;
-          font-family: 'Roboto';
-          letter-spacing: 0.13px;
-          text-shadow: none;
-          background-color: #ffa100;
-          border: solid 1px #ffa100;
           border-radius: 25px;
-          box-shadow: none;
+          border: solid 1px #ffa100;
+          background-color: #ffa100;
+          font-family: 'Roboto';
+          font-size: 14px;
+          font-weight: 500;
+          letter-spacing: 0.13px;
+          color: #ffffff;
 
           &:hover {
-            color: #ffffff;
             background-color: #ffa100;
+            color: #ffffff;
           }
         }
 
         .ant-btn-secondary {
           width: 94px;
           height: 40px;
-          padding-right: 41px;
           object-fit: contain;
-          color: #ffa100;
-          font-weight: 500;
-          font-size: 14px;
-          font-family: 'Roboto';
-          letter-spacing: 0.13px;
-          border: solid 0;
           border-radius: 25px;
+          border: solid 0;
+          font-family: 'Roboto';
+          font-size: 14px;
+          font-weight: 500;
+          letter-spacing: 0.13px;
+          color: #ffa100;
+          padding-right: 41px;
         }
       }
     }
@@ -88,16 +88,16 @@
 
   &__bottom {
     position: fixed;
+    height: 72px;
     bottom: 0;
     width: inherit;
-    height: 72px;
   }
 
   &__top {
     object-fit: contain;
-    background-color: #ffffff;
-    border: solid 0.5px #d6dce0;
     border-radius: 2.5px;
+    border: solid 0.5px #d6dce0;
+    background-color: #ffffff;
     // margin-bottom: 50px;
 
     hr {
@@ -107,68 +107,69 @@
       border-top: solid 0.5px #d6dce0;
       border-bottom: none;
     }
+  }
 
-    .basicInformation__form {
-      width: 100%;
-      padding: 8 * @spacing-xxs;
+  .basicInformation__form {
+    padding: 8 * @spacing-xxs;
 
-      :global {
-        .ant-form-item-has-success {
-          .ant-input {
-            border: solid 1px #47c97f;
-          }
-        }
-
-        .ant-form-item-label {
-          padding-bottom: 0;
-
-          label {
-            color: #707177;
-            font-size: 13px;
-          }
-        }
-      }
-
-      .formInput__email {
-        position: relative;
-
-        .formInput__domain {
-          position: absolute;
-          top: 10px;
-          right: 4 * @spacing-xxs;
-          z-index: 1000;
-          color: #707177;
-        }
-      }
-
-      .formInput {
-        height: 42px;
-        object-fit: contain;
-        font-family: 'Roboto', sans-serif;
-        //   border: solid 0.5px #d6dce4;
-        background-color: #ffffff;
-        border-radius: 8px;
-      }
-    }
+    width: 100%;
 
     :global {
-      .ant-input {
-        box-shadow: none !important;
+      .ant-form-item-has-success {
+        .ant-input {
+          border: solid 1px #47c97f;
+        }
+      }
+
+      .ant-form-item-label {
+        padding-bottom: 0;
+
+        label {
+          color: #707177;
+          font-size: 13px;
+        }
       }
     }
-  }
 
-  .RightComponents {
-    width: 322px;
+    .formInput__email {
+      position: relative;
 
-    .stepRow {
-      width: 100%;
+      .formInput__domain {
+        position: absolute;
+        right: 4 * @spacing-xxs;
+        top: 10px;
+        z-index: 1000;
+        color: #707177;
+      }
+    }
+
+    .formInput {
+      font-family: 'Roboto', sans-serif;
+      height: 42px;
+      object-fit: contain;
+      border-radius: 8px;
+      //   border: solid 0.5px #d6dce4;
+      background-color: #ffffff;
     }
   }
 
-  .viewLoading {
-    width: 300px;
-    height: 500px;
-    margin: 0 auto;
+  :global {
+    .ant-input {
+      box-shadow: none !important;
+    }
   }
+}
+
+.RightComponents {
+  width: 322px;
+
+  .stepRow {
+    width: 100%;
+  }
+}
+
+.viewLoading {
+  margin: 0 auto;
+  height: 500px;
+  width: 300px;
 }

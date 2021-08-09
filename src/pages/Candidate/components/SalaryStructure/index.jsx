@@ -6,6 +6,7 @@ import SalaryAcceptance from './components/SalaryAcceptance';
 import SalaryStructureHeader from './components/SalaryStructureHeader';
 import SalaryStructureTemplate from './components/SalaryStructureTemplate';
 import styles from './index.less';
+import { Page } from '../../../FormTeamMember/utils';
 
 // const DRAFT = 'DRAFT';
 // const SENT_PROVISIONAL_OFFER = 'SENT-PROVISIONAL-OFFER';
@@ -33,7 +34,16 @@ import styles from './index.less';
 )
 class SalaryStructure extends PureComponent {
   componentDidMount() {
+    const { dispatch } = this.props;
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Salary_Structure,
+        // candidate: data.candidate,
+        data: {},
+      },
+    });
   }
 
   _renderTable = () => {

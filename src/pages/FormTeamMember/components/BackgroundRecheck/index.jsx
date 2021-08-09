@@ -445,6 +445,7 @@ class BackgroundRecheck extends Component {
         <Row align="middle">
           <Col span={16}>
             <div className={styles.greenText}>
+              <RenderAddQuestion />
               {/* * All mandatory details must be filled to proceed */}
             </div>
           </Col>
@@ -553,13 +554,7 @@ class BackgroundRecheck extends Component {
             <div className={styles.backgroundRecheck__left}>
               <>{this.renderCollapseFields()}</>
             </div>
-            <div className={styles.bottomBar} style={{ marginBottom: '20px' }}>
-              <Row>
-                <Col>
-                  <RenderAddQuestion />
-                </Col>
-              </Row>
-            </div>
+
             {this._renderBottomBar()}
           </Col>
           <Col className={styles.backgroundRecheck__right} xs={24} sm={24} md={24} lg={8} xl={8}>

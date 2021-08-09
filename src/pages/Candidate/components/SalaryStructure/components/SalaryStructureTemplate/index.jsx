@@ -1,11 +1,15 @@
 import React, { PureComponent } from 'react';
 import { Form, Table, Button, Input, Row, Col, InputNumber } from 'antd';
 import { formatMessage, connect } from 'umi';
+import AnswerQuestion from '@/components/Question/AnswerQuestion';
 import { getCurrentTenant } from '@/utils/authority';
+import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
+import { every } from 'lodash';
 import styles from './index.less';
 
 @connect(
   ({
+    optionalQuestion: { data: question },
     candidateProfile: {
       listTitle = [],
       checkMandatory = {},
@@ -17,6 +21,7 @@ import styles from './index.less';
     },
     user: { currentUser: { company: { _id = '' } = {} } = {} },
   }) => ({
+    question,
     listTitle,
     checkMandatory,
     localStep,
@@ -56,9 +61,62 @@ class SalaryStructureTemplate extends PureComponent {
     });
   };
 
-  onClickNext = () => {
-    const { dispatch, options, tempData, localStep, checkMandatory } = this.props;
+  checkAllFieldsValidate = () => {
+    const { settings, dispatch } = this.props;
+    const valid = settings?.map((question) => {
+      const employeeAnswers = question.employeeAnswers.filter((answer) => answer);
 
+      if (question.isRequired) {
+        if (question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key) {
+          const { specify = {}, num } = question?.multiChoice || {};
+          switch (specify) {
+            case SPECIFY.AT_LEAST.key:
+              return employeeAnswers.length >= num
+                ? null
+                : `This question must have at least ${num} answer`;
+            case SPECIFY.AT_MOST.key:
+              return employeeAnswers.length <= num
+                ? null
+                : `This question must have at most ${num} answer`;
+            case SPECIFY.EXACTLY.key:
+              return employeeAnswers.length !== num
+                ? null
+                : `This question must have exactly ${num} answer`;
+            default:
+              break;
+          }
+        }
+        if (question.answerType === TYPE_QUESTION.MULTI_RATING_CHOICE.key) {
+          const { rows = [] } = question?.rating || {};
+          return employeeAnswers.length === rows.length ? null : 'You must rating all';
+        }
+        return employeeAnswers.length > 0 ? null : 'You must answer this question';
+      }
+      return null;
+    });
+
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        messageErrors: valid,
+      },
+    });
+    return valid;
+  };
+
+  onClickNext = () => {
+    const { dispatch, options, tempData, localStep, checkMandatory, question } = this.props;
+    const messageErr = this.checkAllFieldsValidate();
+    if (!every(messageErr, (message) => message === null)) return;
+    if (question._id !== '' && question.settings && question.settings.length) {
+      dispatch({
+        type: 'optionalQuestion/updateQuestionByCandidate',
+        payload: {
+          id: question._id,
+          settings: question.settings,
+        },
+      });
+    }
     dispatch({
       type: 'candidateProfile/updateByCandidateEffect',
       payload: {
@@ -315,6 +373,9 @@ class SalaryStructureTemplate extends PureComponent {
               // size="large"
               pagination={false}
             />
+            <Row style={{ margin: '32px' }}>
+              <AnswerQuestion />
+            </Row>
           </div>
           {/* {this._renderFooter()} */}
           {options === 1 ? this._renderBottomBar() : null}

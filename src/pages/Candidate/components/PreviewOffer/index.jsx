@@ -525,17 +525,15 @@ const PreviewOffer = (props) => {
             type="primary"
             disabled={
               !(
-                !isExpired &&
-                candidateSignature.url &&
-                hrManagerSignature.url &&
-                !disableCandidateSubmit() &&
+                (!isExpired &&
+                  candidateSignature.url &&
+                  hrManagerSignature.url &&
+                  !disableCandidateSubmit()) ||
                 optionSignature === 'digital'
               )
             }
             className={
-              candidateSignature.url &&
-              hrManagerSignature.url &&
-              !disableCandidateSubmit() &&
+              (candidateSignature.url && hrManagerSignature.url && !disableCandidateSubmit()) ||
               optionSignature === 'digital'
                 ? `${styles.proceed}`
                 : `${styles.proceed} ${styles.disabled}`
