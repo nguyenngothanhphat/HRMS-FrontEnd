@@ -1,9 +1,10 @@
 /* eslint-disable react/jsx-no-target-blank */
 import React, { PureComponent } from 'react';
 import { Row, Col, Pagination } from 'antd';
-import documentIcon from './assets/documentIcon.png';
-import emailIcon from './assets/emailIcon.png';
-import editIcon from './assets/editIcon.png';
+import relievingTemlateIcon from '@/assets/relievingTemlate.svg';
+import templateIcon from '@/assets/templateIcon.svg';
+import emailIcon from '@/assets/relievingMail.svg';
+import editIcon from '@/assets/relievingEdit.svg';
 import styles from './index.less';
 
 class RelievingTemplates extends PureComponent {
@@ -27,19 +28,26 @@ class RelievingTemplates extends PureComponent {
           <Row gutter={24} align="middle">
             <Col span={2}>
               {' '}
-              <img src={documentIcon} alt="icon" />
+              <img src={relievingTemlateIcon} alt="icon" />
             </Col>
-            <Col span={22}>Exit interview package (System Defaults)</Col>
+            <Col span={22} style={{ paddingLeft: '4px' }}>
+              <div className={styles.title__text}>
+                Exit interview package <span>(System Defaults)</span>
+              </div>
+            </Col>
           </Row>
         </div>
         <div className={styles.list}>
-          <Row gutter={24} justify="center">
+          <Row justify="center">
             <Col span={22} offset={2}>
               {exitPackageTemplates.map((template) => {
                 return (
                   <div key={template._id} className={styles.template}>
                     <Row justify="space-between">
-                      <Col span={18}>
+                      <Col span={2}>
+                        <img src={templateIcon} alt="template-icon" />
+                      </Col>
+                      <Col span={12}>
                         <a
                           // href={template.attachment.url}
                           // target="_blank"
@@ -48,13 +56,14 @@ class RelievingTemplates extends PureComponent {
                           {template.name}
                         </a>
                       </Col>
-                      <Col className={styles.icons} align="right" span={6}>
+                      <Col className={styles.icons} align="right" span={10}>
                         <img src={emailIcon} alt="icon" />
                         <img
                           src={editIcon}
                           alt="icon"
                           onClick={() =>
-                            this.onClickEdit(template._id, template.templateType === 'DEFAULT')}
+                            this.onClickEdit(template._id, template.templateType === 'DEFAULT')
+                          }
                         />
                       </Col>
                     </Row>
@@ -81,9 +90,13 @@ class RelievingTemplates extends PureComponent {
             <Row gutter={24} align="middle">
               <Col span={2}>
                 {' '}
-                <img src={documentIcon} alt="icon" />
+                <img src={relievingTemlateIcon} alt="icon" />
               </Col>
-              <Col span={22}>Closing package (System Defaults)</Col>
+              <Col style={{ paddingLeft: '4px' }} span={22}>
+                <div className={styles.title__text}>
+                  Closing package <span>(System Defaults)</span>
+                </div>
+              </Col>
             </Row>
           </div>
           <div className={styles.list}>
@@ -93,7 +106,10 @@ class RelievingTemplates extends PureComponent {
                   return (
                     <div key={template._id} className={styles.template}>
                       <Row justify="space-between">
-                        <Col span={18}>
+                        <Col span={2}>
+                          <img src={templateIcon} alt="template-icon" />
+                        </Col>
+                        <Col span={12}>
                           <a
                             // href={template.attachment.url}
                             // target="_blank"
@@ -102,13 +118,14 @@ class RelievingTemplates extends PureComponent {
                             {template.name}
                           </a>
                         </Col>
-                        <Col className={styles.icons} align="right" span={6}>
+                        <Col className={styles.icons} align="right" span={10}>
                           <img src={emailIcon} alt="icon" />
                           <img
                             src={editIcon}
                             alt="icon"
                             onClick={() =>
-                              this.onClickEdit(template._id, template.templateType === 'DEFAULT')}
+                              this.onClickEdit(template._id, template.templateType === 'DEFAULT')
+                            }
                           />
                         </Col>
                       </Row>
