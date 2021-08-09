@@ -4,10 +4,13 @@ import { formatMessage, connect } from 'umi';
 import FileIcon from '@/assets/pdf_icon.png';
 import { Row, Col, Typography, Button } from 'antd';
 import CustomModal from '@/components/CustomModal/index';
+import AnswerQuestion from '@/components/Question/AnswerQuestion';
+import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
+import { every } from 'lodash';
 import NoteComponent from '../NoteComponent';
 import FileContent from '../FileContent';
 import mockFiles from './components/utils';
-
+import { Page } from '../../../FormTeamMember/utils';
 import s from './index.less';
 
 // pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
@@ -23,7 +26,7 @@ const Note = {
 };
 
 const Benefits = (props) => {
-  const { checkCandidateMandatory, localStep, dispatch } = props;
+  const { checkCandidateMandatory, localStep, dispatch, question } = props;
   const [fileUrl, setFileUrl] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const [allFieldFilled, setAllFieldFilled] = useState(false);
@@ -31,7 +34,14 @@ const Benefits = (props) => {
 
   useEffect(() => {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
-
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Benefits,
+        // candidate: data.candidate,
+        data: {},
+      },
+    });
     setAllFieldFilled(true);
   }, []);
 
@@ -96,9 +106,62 @@ const Benefits = (props) => {
     );
   };
 
+  const checkAllFieldsValidate = () => {
+    const valid = question?.settings?.map((item) => {
+      const employeeAnswers = item.employeeAnswers.filter((answer) => answer);
+
+      if (question.isRequired) {
+        if (question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key) {
+          const { specify = {}, num } = item?.multiChoice || {};
+          switch (specify) {
+            case SPECIFY.AT_LEAST.key:
+              return employeeAnswers.length >= num
+                ? null
+                : `This question must have at least ${num} answer`;
+            case SPECIFY.AT_MOST.key:
+              return employeeAnswers.length <= num
+                ? null
+                : `This question must have at most ${num} answer`;
+            case SPECIFY.EXACTLY.key:
+              return employeeAnswers.length !== num
+                ? null
+                : `This question must have exactly ${num} answer`;
+            default:
+              break;
+          }
+        }
+        if (item.answerType === TYPE_QUESTION.MULTI_RATING_CHOICE.key) {
+          const { rows = [] } = item?.rating || {};
+          return employeeAnswers.length === rows.length ? null : 'You must rating all';
+        }
+        return employeeAnswers.length > 0 ? null : 'You must answer this question';
+      }
+      return null;
+    });
+
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        messageErrors: valid,
+      },
+    });
+    return valid;
+  };
+
   const onClickNext = () => {
     if (!dispatch) {
       return;
+    }
+    const messageErr = checkAllFieldsValidate();
+    if (!every(messageErr, (message) => message === null)) return;
+    if (question._id !== '' && question.settings && question.settings.length) {
+      dispatch({
+        type: 'optionalQuestion/updateQuestionByCandidate',
+        payload: {
+          id: question._id,
+          settings: question.settings,
+        },
+      });
     }
     dispatch({
       type: 'candidateProfile/save',
@@ -201,6 +264,9 @@ const Benefits = (props) => {
                 {_renderFiles(fund)}
               </div>
             </main>
+            <Row style={{ margin: '32px' }}>
+              <AnswerQuestion />
+            </Row>
           </div>
 
           {renderBottomBar()}
@@ -222,7 +288,11 @@ const Benefits = (props) => {
 };
 
 export default connect(
-  ({ candidateProfile: { localStep = 5, checkCandidateMandatory = {} } = {} }) => ({
+  ({
+    optionalQuestion: { data: question },
+    candidateProfile: { localStep = 5, checkCandidateMandatory = {} } = {},
+  }) => ({
+    question,
     checkCandidateMandatory,
     localStep,
   }),

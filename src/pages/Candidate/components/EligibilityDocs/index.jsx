@@ -4,6 +4,9 @@ import { Typography, Row, Col, Button, Spin, notification } from 'antd';
 import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
+import AnswerQuestion from '@/components/Question/AnswerQuestion';
+import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
+import { every } from 'lodash';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
 import PreviousEmployment from './components/PreviousEmployment';
@@ -11,6 +14,7 @@ import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
 import SendEmail from './components/SendEmail';
 import ModalContentComponent from './components/ModalContentComponent';
+import { Page } from '../../../FormTeamMember/utils';
 import styles from './index.less';
 
 const Note = {
@@ -25,6 +29,9 @@ const Note = {
 
 @connect(
   ({
+    optionalQuestion: {
+      data: { _id, settings },
+    },
     candidateProfile: {
       data,
       data: { checkMandatory = {} } = {},
@@ -35,6 +42,8 @@ const Note = {
     loading,
     user: { currentUser: { candidate = {} } = {} },
   }) => ({
+    _id,
+    settings,
     data,
     localStep,
     currentStep,
@@ -58,7 +67,16 @@ class EligibilityDocs extends PureComponent {
   }
 
   componentDidMount() {
-    window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+    const { dispatch } = this.props;
+    window.scrollTo({ top: 77, behavior: 'smooth' });
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Eligibility_documents,
+        // candidate: data.candidate,
+        data: {},
+      },
+    }); // Back to top of the page
     this.processData();
     this.fetchCandidateAgain();
     const { data: { processStatus = '' } = {} } = this.props;
@@ -362,6 +380,18 @@ class EligibilityDocs extends PureComponent {
 
   handleSendEmail = () => {
     const { hrEmail } = this.state;
+    const { dispatch, _id, settings } = this.props;
+    const messageErr = this.checkAllFieldsValidate();
+    if (!every(messageErr, (message) => message === null)) return;
+    if (_id !== '' && settings && settings.length) {
+      dispatch({
+        type: 'optionalQuestion/updateQuestionByCandidate',
+        payload: {
+          id: _id,
+          settings,
+        },
+      });
+    }
 
     if (hrEmail) {
       this.sendEmailAgain(hrEmail);
@@ -461,8 +491,62 @@ class EligibilityDocs extends PureComponent {
     });
   };
 
+  checkAllFieldsValidate = () => {
+    const { settings, dispatch } = this.props;
+    const valid = settings?.map((question) => {
+      const employeeAnswers = question.employeeAnswers.filter((answer) => answer);
+
+      if (question.isRequired) {
+        if (question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key) {
+          const { specify = {}, num } = question?.multiChoice || {};
+          switch (specify) {
+            case SPECIFY.AT_LEAST.key:
+              return employeeAnswers.length >= num
+                ? null
+                : `This question must have at least ${num} answer`;
+            case SPECIFY.AT_MOST.key:
+              return employeeAnswers.length <= num
+                ? null
+                : `This question must have at most ${num} answer`;
+            case SPECIFY.EXACTLY.key:
+              return employeeAnswers.length !== num
+                ? null
+                : `This question must have exactly ${num} answer`;
+            default:
+              break;
+          }
+        }
+        if (question.answerType === TYPE_QUESTION.MULTI_RATING_CHOICE.key) {
+          const { rows = [] } = question?.rating || {};
+          return employeeAnswers.length === rows.length ? null : 'You must rating all';
+        }
+        return employeeAnswers.length > 0 ? null : 'You must answer this question';
+      }
+      return null;
+    });
+
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        messageErrors: valid,
+      },
+    });
+    return valid;
+  };
+
   onClickNext = () => {
-    const { dispatch, localStep } = this.props;
+    const { dispatch, localStep, _id, settings } = this.props;
+    const messageErr = this.checkAllFieldsValidate();
+    if (!every(messageErr, (message) => message === null)) return;
+    if (_id !== '' && settings && settings.length) {
+      dispatch({
+        type: 'optionalQuestion/updateQuestionByCandidate',
+        payload: {
+          id: _id,
+          settings,
+        },
+      });
+    }
     dispatch({
       type: 'candidateProfile/save',
       payload: {
@@ -475,6 +559,9 @@ class EligibilityDocs extends PureComponent {
     const { currentStep = 0 } = this.props;
     return (
       <div className={styles.bottomBar}>
+        <Row style={{ margin: '0 16px 32px 16px' }}>
+          <AnswerQuestion />
+        </Row>
         <Row align="middle">
           <Col span={16}>
             <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
@@ -488,7 +575,9 @@ class EligibilityDocs extends PureComponent {
                 type="primary"
                 htmlType="submit"
                 onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary} ${styles.bottomBar__button__disabled}`}
+                className={`${styles.bottomBar__button__primary} ${
+                  currentStep < 5 ? styles.bottomBar__button__disabled : ''
+                }`}
                 disabled={currentStep < 5}
               >
                 Next

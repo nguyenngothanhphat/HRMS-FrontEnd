@@ -49,7 +49,7 @@ const noMatch = (
 //   }
 // };
 
-const CandidateLayout = (props) => {
+const CandidateLayout = React.memo((props) => {
   const {
     listPage,
     candidate,
@@ -302,7 +302,7 @@ const CandidateLayout = (props) => {
       </Authorized>
     </div>
   );
-};
+});
 
 // export default CandidateLayout;
 export default connect(
