@@ -32,20 +32,22 @@ const ModalGenerateSignature = (props) => {
             value={valueDigitalSignature}
           >
             <Space direction="vertical">
-              {['Airin', 'GermanyScript', 'Bestlife', 'AudreyAndReynold'].map((item, index) => (
-                // <Col span={12}>
-                <Radio value={index} style={{ display: 'flex', alignItems: 'center' }}>
-                  <TextSignature
-                    name={nameSignature}
-                    getImage={getImg}
-                    x={10}
-                    y={75}
-                    height={100}
-                    font={`60px ${item}`}
-                  />
-                </Radio>
-                // </Col>
-              ))}
+              {['Airin', 'GermanyScript', 'SH Imogen Agnes', 'AudreyAndReynold'].map(
+                (item, index) => (
+                  // <Col span={12}>
+                  <Radio value={index} style={{ display: 'flex', alignItems: 'center' }}>
+                    <TextSignature
+                      name={nameSignature}
+                      getImage={getImg}
+                      x={10}
+                      y={75}
+                      height={100}
+                      font={item === 'Airin' ? `48px ${item}` : `60px ${item}`}
+                    />
+                  </Radio>
+                  // </Col>
+                ),
+              )}
             </Space>
           </Radio.Group>
         </Row>
