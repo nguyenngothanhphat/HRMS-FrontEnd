@@ -1,13 +1,13 @@
 import React, { PureComponent } from 'react';
-// import { Card, Row, Col } from 'antd';
-import { formatMessage } from 'umi';
+import { Spin } from 'antd';
+import { formatMessage, connect } from 'umi';
 import Edit from './components/Edit';
 import View from './components/View';
 import styles from './index.less';
 
-// @connect(({ companiesManagement: { editCompany: { isOpenEditDetail = false } } = {} }) => ({
-//   isOpenEditDetail,
-// }))
+@connect(({ loading }) => ({
+  loading: loading.effects['companiesManagement/fetchCompanyDetails'],
+}))
 class OwnerContact extends PureComponent {
   constructor(props) {
     super(props);
@@ -30,6 +30,7 @@ class OwnerContact extends PureComponent {
 
   render() {
     const { isOpenEditOwnerContact } = this.state;
+    const { loading } = this.props;
 
     const renderContentCompanyDetail = isOpenEditOwnerContact ? (
       <Edit handleCancelEdit={this.handleCancelEdit} />
@@ -37,6 +38,12 @@ class OwnerContact extends PureComponent {
       <View />
     );
 
+    if (loading)
+      return (
+        <div className={styles.viewLoading}>
+          <Spin />
+        </div>
+      );
     return (
       <div className={styles.ownerContact}>
         <div className={styles.spaceTitle}>

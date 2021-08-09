@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Button, Spin } from 'antd';
 import { connect } from 'umi';
-// import exclamationIcon from '@/assets/exclamation-custom-icon.svg';
+import exclamationIcon from '@/assets/relievingRecord.svg';
 import EmployeeDetail from './components/EmployeeDetail';
 import ResignationOverview from './components/ResignationOverview';
 import MailExit from './components/MailExit';
@@ -74,6 +74,7 @@ class RelievingDetails extends PureComponent {
       employee: { employeeId = '', generalInfo: { firstName = '' } = {} } = {},
       ticketID = '',
       closingPackage: { isSent = false } = {},
+      relievingStatus,
     } = relievingDetails;
     const itemScheduleIsRelieving = list1On1.find(({ isRelieving }) => isRelieving) || {};
     const checkStatusSchedule = itemScheduleIsRelieving.status === 'COMPLETED';
@@ -106,18 +107,24 @@ class RelievingDetails extends PureComponent {
                 />
               )}
               <ClosePackage />
-              <Button
-                disabled={!isSent}
-                className={styles.relievingDetail__btnClose}
-                onClick={this.onCloseEmployeeRecord}
-                loading={loading}
-              >
-                Close employee record
-              </Button>
-              {/* <div className={styles.relievingDetail__closeRecord}>
-                <img src={exclamationIcon} alt="exclamation-icon" />
-                <span> The employee record for this employee has been closed </span>
-              </div> */}
+
+              {relievingStatus === 'CLOSE-RECORDS' ? null : (
+                <Button
+                  disabled={!isSent}
+                  className={styles.relievingDetail__btnClose}
+                  onClick={this.onCloseEmployeeRecord}
+                  loading={loading}
+                >
+                  Close employee record
+                </Button>
+              )}
+
+              {relievingStatus === 'CLOSE-RECORDS' ? (
+                <div className={styles.relievingDetail__closeRecord}>
+                  <img src={exclamationIcon} alt="exclamation-icon" />
+                  <span> The employee record for this employee has been closed </span>
+                </div>
+              ) : null}
             </Col>
           </Row>
         </div>

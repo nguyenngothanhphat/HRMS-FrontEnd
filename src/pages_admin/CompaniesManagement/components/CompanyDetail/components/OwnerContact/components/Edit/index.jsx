@@ -1,20 +1,92 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { PureComponent } from 'react';
 import { Button, Form, Input } from 'antd';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from '../../../CompanyInformation/components/Information/Edit/index.less';
 
-// @connect(({ companiesManagement: { editCompany: { isOpenEditDetail = false } } = {} }) => ({
-//   isOpenEditDetail,
-// }))
+@connect(({ companiesManagement: { originData: { companyDetails = {} } = {} } = {}, loading }) => ({
+  companyDetails,
+  loadingUpdate: loading.effects['companiesManagement/updateCompany'],
+  loadingSave: loading.effects['companiesManagement/saveCompanyDetails'],
+}))
 class Edit extends PureComponent {
-  render() {
-    const companyDetail = {
-      name: 'Nguyen Van A',
-      email: 'terralogic@terralogic.com',
-      phoneNumber: '0123456789',
+  constructor(props) {
+    super(props);
+    this.state = {
+      isNothingChanged: false,
     };
-    const { name, email, phoneNumber } = companyDetail;
+  }
+
+  compareValues = (newValues) => {
+    const {
+      companyDetails: {
+        company: { hrContactName = '', hrContactEmail = '', hrContactPhone = '' } = {},
+      } = {},
+    } = this.props;
+    const {
+      hrContactName: newHrContactName = '',
+      hrContactEmail: newHrContactEmail = '',
+      hrContactPhone: newHrContactPhone = '',
+    } = newValues;
+
+    return (
+      hrContactName === newHrContactName &&
+      hrContactEmail === newHrContactEmail &&
+      hrContactPhone === newHrContactPhone
+    );
+  };
+
+  onFinish = (values) => {
+    const {
+      dispatch,
+      companyDetails = {},
+      companyDetails: { company: { _id: id = '' } = {} } = {},
+      handleCancelEdit = () => {},
+    } = this.props;
+    const tenantId = getCurrentTenant();
+
+    const checkTheSame = this.compareValues(values);
+
+    if (checkTheSame) {
+      this.setState({
+        isNothingChanged: true,
+      });
+      setTimeout(() => {
+        this.setState({
+          isNothingChanged: false,
+        });
+        handleCancelEdit();
+      }, 2500);
+    } else if (id) {
+      dispatch({
+        type: 'companiesManagement/updateCompany',
+        payload: { id, ...values, tenantId },
+      }).then(({ statusCode: check }) => {
+        if (check === 200) {
+          handleCancelEdit();
+        }
+      });
+    } else {
+      dispatch({
+        type: 'companiesManagement/saveCompanyDetails',
+        payload: { ...companyDetails?.company, ...values },
+      });
+      handleCancelEdit();
+    }
+  };
+
+  render() {
+    const {
+      companyDetails: {
+        company: { hrContactName = '', hrContactEmail = '', hrContactPhone = '' } = {},
+      } = {},
+      loadingUpdate,
+      loadingSave,
+      handleCancelEdit = () => {},
+    } = this.props;
+    const { isNothingChanged } = this.state;
+
     const formItemLayout = {
       labelCol: {
         xs: { span: 6 },
@@ -25,20 +97,26 @@ class Edit extends PureComponent {
         sm: { span: 9 },
       },
     };
-    const { handleCancelEdit = () => {} } = this.props;
+
     return (
       <div className={styles.edit}>
+        {isNothingChanged && (
+          <div className={styles.nothingChangedBanner}>
+            <span>Nothing changed !</span>
+          </div>
+        )}
         <Form
           className={styles.Form}
           initialValues={{
-            name,
-            email,
-            phoneNumber,
+            hrContactName,
+            hrContactEmail,
+            hrContactPhone,
           }}
+          onFinish={this.onFinish}
         >
           <Form.Item
             label={formatMessage({ id: 'pages_admin.owner.fullName' })}
-            name="name"
+            name="hrContactName"
             {...formItemLayout}
             rules={[
               {
@@ -51,7 +129,7 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'pages_admin.owner.email' })}
-            name="email"
+            name="hrContactEmail"
             {...formItemLayout}
             rules={[
               {
@@ -63,14 +141,14 @@ class Edit extends PureComponent {
           </Form.Item>
           <Form.Item
             label={formatMessage({ id: 'pages_admin.owner.phone' })}
-            name="phoneNumber"
+            name="hrContactPhone"
             {...formItemLayout}
-            // rules={[
-            //   {
-            //     pattern: /^[+]*[\d]{0,10}$/,
-            //     message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
-            //   },
-            // ]}
+            rules={[
+              {
+                pattern: /^[+]*[\d]{0,10}$/,
+                message: formatMessage({ id: 'pages.employeeProfile.validateWorkNumber' }),
+              },
+            ]}
           >
             <Input className={styles.inputForm} />
           </Form.Item>
@@ -80,6 +158,7 @@ class Edit extends PureComponent {
               className={styles.edit_btn_cancel}
               onClick={handleCancelEdit}
               // loading={loading}
+              disabled={isNothingChanged}
             >
               Cancel
             </Button>
@@ -87,7 +166,8 @@ class Edit extends PureComponent {
               type="primary"
               htmlType="submit"
               className={styles.edit_btn_save}
-              // loading={loading}
+              loading={loadingUpdate || loadingSave}
+              disabled={isNothingChanged}
             >
               Save
             </Button>

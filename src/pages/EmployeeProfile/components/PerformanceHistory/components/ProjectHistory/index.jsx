@@ -47,7 +47,11 @@ class ProjectHistory extends PureComponent {
             </Button>
           </div>
         </Dropdown>
-        <Search disabled={!(projectHistoryList > 0)} className={classNameSearch} />
+        <Search
+          placeholder="Search.."
+          disabled={!(projectHistoryList > 0)}
+          className={classNameSearch}
+        />
       </Row>
     );
     return extraCard;

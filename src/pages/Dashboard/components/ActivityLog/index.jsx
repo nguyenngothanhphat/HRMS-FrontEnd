@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ReactComponent as SortIcon } from '@/assets/dashboard_sort.svg';
-// import { ReactComponent as FilterIcon } from '@/assets/dashboard_filter.svg';
+import { ReactComponent as FilterIcon } from '@/assets/dashboard_filter.svg';
 import { formatMessage } from 'umi';
 import { Tabs } from 'antd';
 
@@ -139,9 +139,9 @@ const ActivityLog = () => {
     setAscending((prevState) => !prevState);
   };
 
-  // const filter = () => {
-  //   console.log('FILTER');
-  // };
+  const filter = () => {
+    console.log('FILTER');
+  };
 
   return (
     <div className={s.container}>
@@ -153,10 +153,10 @@ const ActivityLog = () => {
           <span>{formatMessage({ id: 'pages.dashboard.activityLog.sort' })}</span>
         </div>
 
-        {/* <div className={s.action} onClick={() => filter()}>
+        <div className={s.action} onClick={() => filter()}>
           <FilterIcon />
           <span>{formatMessage({ id: 'pages.dashboard.activityLog.filter' })}</span>
-        </div> */}
+        </div>
       </div>
 
       <Tabs defaultActiveKey="1" onChange={(key) => setActiveTab(key)}>

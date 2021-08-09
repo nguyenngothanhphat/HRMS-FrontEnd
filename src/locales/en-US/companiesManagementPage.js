@@ -25,6 +25,7 @@ export default {
   'pages_admin.company.paymentInfo': 'Payment Info',
   'pages_admin.company.location.addressLine1': 'Address line 1',
   'pages_admin.company.location.addressLine2': 'Address line 2',
+  'pages_admin.company.location.cityName': 'City Name',
   'pages_admin.company.location.country': 'Country',
   'pages_admin.company.location.state': 'State',
   'pages_admin.company.location.zipCode': 'Zip/Postal Code',

@@ -14,6 +14,7 @@ class ClosedTable extends PureComponent {
     this.state = {
       dataCloseList: [],
       loadingFilter: false,
+      isClosedTable: true,
     };
     this.setDebounce = debounce((query) => {
       this.setState({
@@ -82,14 +83,14 @@ class ClosedTable extends PureComponent {
 
   render() {
     const { loadingSearchList } = this.props;
-    const { dataCloseList, loadingFilter } = this.state;
+    const { dataCloseList, loadingFilter, isClosedTable } = this.state;
 
     return (
       <div className={styles.closedTable}>
         <TableComponent
           loadingSearchList={loadingSearchList || loadingFilter}
           data={dataCloseList}
-          isClosedTable
+          isClosedTable={isClosedTable}
         />
       </div>
     );

@@ -214,6 +214,14 @@ const candidateInfo = {
       salaryTitle: null,
       salaryDepartment: null,
       salaryLocation: null,
+      settings: [],
+      salaryStructure: {
+        salaryDepartment: '',
+        salaryLocation: '',
+        salaryPosition: '',
+        settings: [],
+        title: '',
+      },
     },
     data: {
       firstName: null,
@@ -226,6 +234,7 @@ const candidateInfo = {
       employeeType: null,
       department: null,
       title: null,
+      grade: null,
       company: null,
       joineeEmail: '',
       previousExperience: null,
@@ -240,6 +249,8 @@ const candidateInfo = {
         salaryDepartment: '',
         salaryLocation: '',
         salaryPosition: '',
+        settings: [],
+        title: '',
       },
       id: '',
       candidate: '',
@@ -946,6 +957,14 @@ const candidateInfo = {
             ...data,
             candidate: _id,
             _id,
+          },
+        });
+        yield put({
+          type: 'saveSalaryStructure',
+          payload: {
+            settings: data.salaryStructure.settings,
+            // candidate: _id,
+            // _id,
           },
         });
         const {

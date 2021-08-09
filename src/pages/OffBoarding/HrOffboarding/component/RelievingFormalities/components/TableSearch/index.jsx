@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Input } from 'antd';
+import { Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import filterIcon from '@/assets/offboarding-filter.svg';
 import styles from '../RelievingTables/index.less';
@@ -23,12 +23,7 @@ class TableSearch extends Component {
   render() {
     return (
       <div className={styles.searchFilter}>
-        <Button
-          type="link"
-          shape="round"
-          icon={<img src={filterIcon} alt="" className={styles.searchFilter__icon} />}
-          size="small"
-        />
+        <img src={filterIcon} alt="" className={styles.searchFilter__icon} />
 
         <Input
           size="large"
