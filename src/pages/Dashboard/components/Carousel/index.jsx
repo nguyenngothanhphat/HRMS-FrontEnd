@@ -21,8 +21,28 @@ export default class Panner extends PureComponent {
               <div className={s.content1__text3}>View Message</div>
             </div>
           </div>
-          <div className={`${s.content} ${s.bg1}`} />
-          <div className={`${s.content} ${s.bg1}`} />
+          <div className={`${s.content} ${s.bg1}`}>
+            <div className={s.content1}>
+              <div className={s.content1__text1}>
+                {formatMessage({ id: 'pages.dashboard.carousel.welcome' })} Jason!
+              </div>
+              <div className={s.content1__text2}>
+                He has joined our studio as an Illustrator. Here’s a message from him.
+              </div>
+              <div className={s.content1__text3}>View Message</div>
+            </div>
+          </div>
+          <div className={`${s.content} ${s.bg1}`}>
+            <div className={s.content1}>
+              <div className={s.content1__text1}>
+                {formatMessage({ id: 'pages.dashboard.carousel.welcome' })} Jason!
+              </div>
+              <div className={s.content1__text2}>
+                He has joined our studio as an Illustrator. Here’s a message from him.
+              </div>
+              <div className={s.content1__text3}>View Message</div>
+            </div>
+          </div>
         </Carousel>
       </div>
     );
