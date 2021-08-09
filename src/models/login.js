@@ -44,7 +44,7 @@ const Model = {
             type: 'saveCandidateId',
             payload: response,
           });
-          history.replace('/candidate');
+          history.replace('/candidate-portal');
         }
         // ELSE
         let isAdminOrOwner = false;

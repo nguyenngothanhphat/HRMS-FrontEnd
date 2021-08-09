@@ -57,7 +57,7 @@ const UserModel = {
           setTenantId(candidate.tenant);
           setCurrentCompany(candidate.company);
           setCurrentLocation(candidate.location);
-          history.replace('/candidate');
+          history.replace('/candidate-portal');
           yield put({
             type: 'saveCurrentUser',
             payload: {

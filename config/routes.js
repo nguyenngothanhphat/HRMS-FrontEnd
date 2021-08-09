@@ -93,6 +93,20 @@ const routes = [
     ],
   },
   {
+    path: '/candidate-portal',
+    component: '../layouts/CandidatePortalLayout',
+    authority: ['candidate'],
+    routes: [
+      {
+        path: '/candidate-portal',
+        name: 'Candidate Portal',
+        icon: '/assets/images/menuIcons/dashboard.svg',
+        hideInMenu: true,
+        component: './CandidatePortal',
+      },
+    ]
+  },
+  {
     path: '/',
     component: '../layouts/SecurityLayout',
     routes: [
