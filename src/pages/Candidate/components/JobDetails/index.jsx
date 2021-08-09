@@ -2,18 +2,29 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Typography, Button, notification } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
+import AnswerQuestion from '@/components/Question/AnswerQuestion';
+import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
+import { every } from 'lodash';
 import Header from './components/Header';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
 import FieldsComponent from './components/FieldsComponent';
+import { Page } from '../../../FormTeamMember/utils';
 
 import styles from './index.less';
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
 @connect(
   ({
+    optionalQuestion: {
+      messageError,
+      data: { _id, settings },
+    },
     candidateProfile: { data, jobDetails, checkMandatory, localStep, isCandidateAcceptDOJ } = {},
   }) => ({
     jobDetails,
+    messageError,
+    _id,
+    settings,
     checkMandatory,
     data,
     localStep,
@@ -46,6 +57,14 @@ class JobDetails extends PureComponent {
       isCandidateAcceptDOJ = true,
       jobDetails: { candidatesNoticePeriod = 0, prefferedDateOfJoining = '' } = {},
     } = this.props;
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Job_Details,
+        // candidate: data.candidate,
+        data: {},
+      },
+    });
     // console.log('dateOfJoining', dateOfJoining);
     // console.log('prefferedDateOfJoining', prefferedDateOfJoining);
     // console.log('isCandidateAcceptDOJ', isCandidateAcceptDOJ);
@@ -140,6 +159,49 @@ class JobDetails extends PureComponent {
     });
   };
 
+  checkAllFieldsValidate = () => {
+    const { settings, dispatch } = this.props;
+    const valid = settings?.map((question) => {
+      const employeeAnswers = question.employeeAnswers.filter((answer) => answer);
+
+      if (question.isRequired) {
+        if (question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key) {
+          const { specify = {}, num } = question?.multiChoice || {};
+          switch (specify) {
+            case SPECIFY.AT_LEAST.key:
+              return employeeAnswers.length >= num
+                ? null
+                : `This question must have at least ${num} answer`;
+            case SPECIFY.AT_MOST.key:
+              return employeeAnswers.length <= num
+                ? null
+                : `This question must have at most ${num} answer`;
+            case SPECIFY.EXACTLY.key:
+              return employeeAnswers.length !== num
+                ? null
+                : `This question must have exactly ${num} answer`;
+            default:
+              break;
+          }
+        }
+        if (question.answerType === TYPE_QUESTION.MULTI_RATING_CHOICE.key) {
+          const { rows = [] } = question?.rating || {};
+          return employeeAnswers.length === rows.length ? null : 'You must rating all';
+        }
+        return employeeAnswers.length > 0 ? null : 'You must answer this question';
+      }
+      return null;
+    });
+
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        messageErrors: valid,
+      },
+    });
+    return valid;
+  };
+
   onClickNext = () => {
     const { jobDetails } = this.state;
     const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetails;
@@ -149,7 +211,20 @@ class JobDetails extends PureComponent {
       data,
       localStep,
       checkMandatory,
+      settings,
+      _id: id,
     } = this.props;
+    const messageErr = this.checkAllFieldsValidate();
+    if (!every(messageErr, (message) => message === null)) return;
+    if (id !== '' && settings && settings.length) {
+      dispatch({
+        type: 'optionalQuestion/updateQuestionByCandidate',
+        payload: {
+          id,
+          settings,
+        },
+      });
+    }
 
     // const convert = (str) => {
     //   const date = new Date(str);
@@ -334,6 +409,9 @@ class JobDetails extends PureComponent {
                 candidateField={candidateField}
                 _handleSelect={this._handleSelect}
               />
+              <Row style={{ margin: '32px' }}>
+                <AnswerQuestion />
+              </Row>
               {this._renderBottomBar()}
             </div>
           </Col>

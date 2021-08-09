@@ -2,19 +2,34 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
 import { connect, formatMessage } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
+import AnswerQuestion from '@/components/Question/AnswerQuestion';
+import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
+import { every } from 'lodash';
 import BasicInformationHeader from './components/BasicInformationHeader';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
-
 import styles from './index.less';
+import { Page } from '../../../FormTeamMember/utils';
 
-@connect(({ candidateProfile: { data, checkMandatory, localStep, tempData } = {}, loading }) => ({
-  data,
-  checkMandatory,
-  localStep,
-  tempData,
-  loading: loading.effects['candidateProfile/fetchCandidateById'],
-}))
+@connect(
+  ({
+    optionalQuestion: {
+      messageErrors,
+      data: { _id, settings },
+    },
+    candidateProfile: { data, checkMandatory, localStep, tempData } = {},
+    loading,
+  }) => ({
+    data,
+    _id,
+    settings,
+    messageErrors,
+    checkMandatory,
+    localStep,
+    tempData,
+    loading: loading.effects['candidateProfile/fetchCandidateById'],
+  }),
+)
 class BasicInformation extends PureComponent {
   static getDerivedStateFromProps(props) {
     if ('data' in props) {
@@ -28,8 +43,60 @@ class BasicInformation extends PureComponent {
   }
 
   componentDidMount() {
+    const { dispatch } = this.props;
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        pageName: Page.Basic_Information,
+        // candidate: data.candidate,
+        data: {},
+      },
+    });
   }
+
+  checkAllFieldsValidate = () => {
+    const { settings, dispatch } = this.props;
+    const valid = settings?.map((question) => {
+      const employeeAnswers = question.employeeAnswers.filter((answer) => answer);
+
+      if (question.isRequired) {
+        if (question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key) {
+          const { specify = {}, num } = question?.multiChoice || {};
+          switch (specify) {
+            case SPECIFY.AT_LEAST.key:
+              return employeeAnswers.length >= num
+                ? null
+                : `This question must have at least ${num} answer`;
+            case SPECIFY.AT_MOST.key:
+              return employeeAnswers.length <= num
+                ? null
+                : `This question must have at most ${num} answer`;
+            case SPECIFY.EXACTLY.key:
+              return employeeAnswers.length !== num
+                ? null
+                : `This question must have exactly ${num} answer`;
+            default:
+              break;
+          }
+        }
+        if (question.answerType === TYPE_QUESTION.MULTI_RATING_CHOICE.key) {
+          const { rows = [] } = question?.rating || {};
+          return employeeAnswers.length === rows.length ? null : 'You must rating all';
+        }
+        return employeeAnswers.length > 0 ? null : 'You must answer this question';
+      }
+      return null;
+    });
+
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        messageErrors: valid,
+      },
+    });
+    return valid;
+  };
 
   handleChange = (e) => {
     const name = Object.keys(e).find((x) => x);
@@ -73,8 +140,19 @@ class BasicInformation extends PureComponent {
 
   onFinish = (values) => {
     const { data } = this.state;
-    const { dispatch, localStep } = this.props;
+    const { dispatch, localStep, _id: id, settings } = this.props;
     const { _id } = data;
+    const messageErr = this.checkAllFieldsValidate();
+    if (!every(messageErr, (message) => message === null)) return;
+    if (id !== '' && settings && settings.length) {
+      dispatch({
+        type: 'optionalQuestion/updateQuestionByCandidate',
+        payload: {
+          id,
+          settings,
+        },
+      });
+    }
     dispatch({
       type: 'candidateProfile/save',
       payload: {
@@ -205,6 +283,7 @@ class BasicInformation extends PureComponent {
               <Input disabled="true" className={styles.formInput} name="previousExperience" />
             </Form.Item>
           </Col>
+          <AnswerQuestion />
         </Row>
       </div>
     );

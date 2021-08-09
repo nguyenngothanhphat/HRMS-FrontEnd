@@ -497,7 +497,7 @@ class BasicInformation extends PureComponent {
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
-          <Col span={12}>
+          <Col span={16}>
             <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
           </Col>
           <Col span={8}>
