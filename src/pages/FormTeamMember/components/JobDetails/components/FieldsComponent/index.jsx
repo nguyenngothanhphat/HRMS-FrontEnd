@@ -16,6 +16,7 @@ class FieldsComponent extends PureComponent {
       _handleSelect,
       department,
       title,
+      grade,
       workLocation,
       reportingManager,
       candidatesNoticePeriod,
@@ -41,6 +42,7 @@ class FieldsComponent extends PureComponent {
           _handleSelect={_handleSelect}
           department={department}
           title={title}
+          grade={grade}
           workLocation={workLocation}
           reportingManager={reportingManager}
           loading1={loading1}

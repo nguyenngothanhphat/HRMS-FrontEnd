@@ -21,6 +21,7 @@ import styles from './index.less';
       data: {
         listTitle = [],
         title = {},
+        grade = 0,
         department = '',
         workLocation = '',
         processStatus = '',
@@ -52,6 +53,7 @@ import styles from './index.less';
     loadingTitleList: loading.effects['candidateInfo/fetchTitleList'],
     listTitle,
     titleList,
+    grade,
     cancelCandidate,
     location,
     checkMandatory,
@@ -118,51 +120,23 @@ class SalaryStructureTemplate extends PureComponent {
   componentDidMount = () => {
     const {
       dispatch,
+      // settingsOriginData,
       settingsTempData: settings = [],
       title,
       workLocation: { headQuarterAddress: { country = {} } = {}, _id } = {},
     } = this.props;
     const tempTableData = [...settings];
     const isFilled = tempTableData.filter((item) => item.value === '');
-
-    // Fetch Salary structure table when user click other tab (Ex: Job Details, Basic Information,...) then click Salary structure
-    // this.fetchSalaryStructure();
-
-    // if (processStatus !== 'DRAFT') {
-    //   dispatch({
-    //     type: 'candidateInfo/fetchTitleListByCompany',
-    //     payload: { company: _id },
-    //   });
-    //
-
-    // dispatch({
-    //   type: 'candidateInfo/saveTemp',
-    //   payload: {
-    //     salaryTitle: '',
-    //   },
-    // });
-    // this.setState({
-    //   dataSettings: settings,
-    // });
-
-    // const { processStatus } = this.props;
-    // const tempTableData = [...settings];
-
-    // if (processStatus === 'DRAFT') {
-
-    // dispatch({
-    //   type: 'candidateInfo/fetchTitleListByCompany',
-    //   payload: { company: getCurrentCompany(), tenantId: getCurrentTenant() },
-    // });
-    dispatch({
-      type: 'candidateInfo/fetchTableData',
-      payload: {
-        title: title._id,
-        tenantId: getCurrentTenant(),
-        country: country._id || country,
-        location: _id,
-      },
-    });
+    if (settings.length === 0)
+      dispatch({
+        type: 'candidateInfo/fetchTableData',
+        payload: {
+          title: title._id,
+          tenantId: getCurrentTenant(),
+          country: country._id || country,
+          location: _id,
+        },
+      });
     dispatch({
       type: 'candidateInfo/fetchDepartmentList',
       payload: { company: getCurrentCompany(), tenantId: getCurrentTenant() },
@@ -189,7 +163,7 @@ class SalaryStructureTemplate extends PureComponent {
         },
       });
     }
-    this.handleChangeSelect(title._id);
+    // this.handleChangeSelect(title._id);
   };
 
   componentDidUpdate = (prevProps) => {
@@ -294,7 +268,7 @@ class SalaryStructureTemplate extends PureComponent {
     const {
       dispatch,
       currentStep,
-      settingsOriginData: settings = [],
+      settingsTempData: settings = [],
       // salaryPosition,
       data: { _id },
       tempData: { salaryTitle = '' } = {},
@@ -547,14 +521,6 @@ class SalaryStructureTemplate extends PureComponent {
     });
   };
 
-  handleChangeGrade = (value) => {
-    console.log(value);
-  };
-
-  handleChangeLocation = (value) => {
-    console.log(value);
-  };
-
   _renderTableTitle = (record) => {
     const { settingsTempData: settings = [] } = this.props;
     const data = settings.find((item) => item === record) || {};
@@ -796,6 +762,7 @@ class SalaryStructureTemplate extends PureComponent {
       workLocation,
       loadingFetchTable,
       settingsTempData: settings,
+      grade,
       title,
     } = this.props;
     const { processStatus } = this.props;
@@ -816,11 +783,7 @@ class SalaryStructureTemplate extends PureComponent {
               <Col xs={24} sm={24} md={6} lg={6}>
                 <p className={styles.p_title_select}>Grade</p>
                 <div className={styles.salaryStructureTemplate_select}>
-                  <Input
-                    value={Object.keys(title).length !== 0 ? title.grade : null}
-                    size="large"
-                    disabled
-                  />
+                  <Input value={grade} size="large" disabled />
                 </div>
               </Col>
               <Col xs={24} sm={24} md={6} lg={6}>
