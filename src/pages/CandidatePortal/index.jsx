@@ -23,7 +23,7 @@ class CandidatePortal extends PureComponent {
                 <EmployeeDetails />
               </Col>
             </Row>
-            <Row span={24} gutter={['24', '24']}>
+            <Row span={24} gutter={['24', '24']} style={{ marginTop: '24px' }}>
               <Col span={14}>
                 <YourActivity />
               </Col>

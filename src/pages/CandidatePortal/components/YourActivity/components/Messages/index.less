@@ -1,0 +1,40 @@
+
+@darkColour: #161C29;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@borderColor: #D6DCE0;
+
+.Messages {
+  .eachItem {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    padding-block: @commonPadding;
+    .messageIcon {
+      width: 50px;
+      margin-right: 10px;
+    }
+    .messageContent {
+      font-size: 13px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: flex-start;
+      span {
+        display: block;
+      }
+      .messageTitle {
+        font-weight: 500;
+        line-height: 20px;
+        color: #000000;
+      }
+      .message {
+        color: @lightGrayColor;
+      }
+    }
+  }
+  .divider {
+    border-bottom: 1px solid @borderColor;
+  }
+}

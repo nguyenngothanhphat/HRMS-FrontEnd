@@ -1,3 +1,59 @@
-.YourActivity {
+@darkColour: #161C29;
+@blueColour: #2C6DF9;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@borderColor: #D6DCE0;
 
+.YourActivity {
+  border: 1px solid @borderColor;
+  background: #fff;
+  box-sizing: border-box;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  :global {
+    .ant-tabs-nav {
+      height: 44px;
+      padding-left: @commonPadding;
+      .ant-tabs-tab-btn {
+        font-size: 13px;
+        font-weight: normal;
+      }
+      .ant-tabs-tab-active {
+        .ant-tabs-tab-btn {
+          font-weight: 500;
+          color: @blueColour;
+        }
+      }
+    }
+    .ant-tabs-content-holder {
+      padding-inline: @commonPadding;
+    }
+  }
+  .header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: @commonPadding;
+    span {
+      color: @darkColour;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 16px;
+    }
+    border-bottom: 1px solid @borderColor;
+  }
+  .content {
+  }
+  .viewMoreBtn {
+    border-top: 1px solid @borderColor;
+    display: flex;
+    padding: @commonPadding;
+    justify-content: center;
+    align-items: center;
+    color: @lightGrayColor;
+    font-weight: 500;
+  }
 }

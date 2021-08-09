@@ -1,0 +1,28 @@
+
+@darkColour: #161C29;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@borderColor: #D6DCE0;
+
+.UpcomingEvents {
+  .eachItem {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    padding-block: @commonPadding;
+    .eventIcon {
+      width: 50px;
+      margin-right: 10px;
+    }
+    .eventContent {
+      font-size: 13px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+    }
+  }
+  .divider {
+    border-bottom: 1px solid @borderColor;
+  }
+}
