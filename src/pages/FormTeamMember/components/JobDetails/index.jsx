@@ -257,7 +257,7 @@ class JobDetails extends PureComponent {
 
     if (name === 'jobGradeLevel') {
       // const changedGrade = JSON.parse(JSON.stringify(jobGradeLevelList));
-      const selectedGrade = jobGradeLevelList.find((data) => data._id === value);
+      const selectedGrade = jobGradeLevelList.find((data) => data === value);
 
       if (value === undefined) {
         await dispatch({

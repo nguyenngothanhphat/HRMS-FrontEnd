@@ -25,8 +25,8 @@ class FirstFieldsComponent extends PureComponent {
     } = this.props;
     switch (fieldName) {
       case 'jobGradeLevel': {
-        const getDataGrade = jobGradeList.filter((item) => item.grade === value);
-        _handleSelect(getDataGrade[0]._id, fieldName);
+        const getDataGrade = jobGradeList.filter((item) => item === value);
+        _handleSelect(getDataGrade[0], fieldName);
         break;
       }
       case 'department': {
@@ -127,7 +127,6 @@ class FirstFieldsComponent extends PureComponent {
             return 0;
           })
         : [];
-
     return (
       <>
         <div className={InternalStyle.listFields}>
@@ -196,8 +195,8 @@ class FirstFieldsComponent extends PureComponent {
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'jobGradeLevel' &&
-                          !isEmpty(grade) && {
-                            defaultValue: grade.grade,
+                          grade !== null && {
+                            defaultValue: grade,
                           })}
                         showSearch={
                           item.title === 'jobGradeLevel' ||
@@ -215,8 +214,8 @@ class FirstFieldsComponent extends PureComponent {
                       >
                         {item.title === 'jobGradeLevel' ? (
                           jobGradeList.map((data) => (
-                            <Option value={data.grade} key={data._id}>
-                              <Typography.Text>{data.grade}</Typography.Text>
+                            <Option value={data} key={data}>
+                              <Typography.Text>{data}</Typography.Text>
                             </Option>
                           ))
                         ) : item.title === 'workLocation' ? (

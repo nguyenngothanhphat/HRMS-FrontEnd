@@ -1,17 +1,6 @@
 import request from '@/utils/request';
 
-const jobGradeLevelList = [
-  { _id: 1, grade: 1 },
-  { _id: 2, grade: 2 },
-  { _id: 3, grade: 3 },
-  { _id: 4, grade: 4 },
-  { _id: 5, grade: 5 },
-  { _id: 6, grade: 6 },
-  { _id: 7, grade: 7 },
-  { _id: 8, grade: 8 },
-  { _id: 9, grade: 9 },
-  { _id: 10, grade: 10 },
-];
+const jobGradeLevelList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
 export function getGradeList() {
   return jobGradeLevelList;
