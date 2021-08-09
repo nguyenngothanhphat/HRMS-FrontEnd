@@ -12,31 +12,33 @@ class CandidatePortal extends PureComponent {
   render() {
     return (
       <div className={styles.CandidatePortal}>
-        <span className={styles.CandidatePortal__header}>Candidate Portal Dashboard</span>
-        <Row span={24} gutter={['24', '24']}>
-          <Col span={16}>
-            <Row span={24} gutter={['24', '24']}>
-              <Col span={8}>
+        <p className={styles.CandidatePortal__header}>Candidate Portal Dashboard</p>
+        <Row span={24} gutter={[24, 24]} style={{ marginBottom: '24px' }}>
+          <Col sm={24} lg={16} gutter={[24, 24]}>
+            <Row span={24} gutter={[24, 24]} style={{ marginBottom: '24px' }}>
+              <Col xs={24} sm={8} lg={8}>
                 <ApplicationStatus />
               </Col>
-              <Col span={16}>
+              <Col xs={24} sm={16} lg={16}>
                 <EmployeeDetails />
               </Col>
             </Row>
-            <Row span={24} gutter={['24', '24']} style={{ marginTop: '24px' }}>
-              <Col span={14}>
+
+            <Row span={24} gutter={[24, 24]}>
+              <Col xs={24} lg={14}>
                 <YourActivity />
               </Col>
-              <Col span={10}>
+              <Col xs={24} lg={10}>
                 <PendingTasks />
               </Col>
             </Row>
           </Col>
-          <Col span={8}>
+
+          <Col sm={24} lg={8}>
             <CompanyProfile />
           </Col>
         </Row>
-        <Row span={24} gutter={['24', '24']}>
+        <Row span={24} gutter={[24, 24]}>
           <Col span={24}>
             <QueryBar />
           </Col>

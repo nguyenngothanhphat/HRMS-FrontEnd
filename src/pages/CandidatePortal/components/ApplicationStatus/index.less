@@ -9,6 +9,7 @@
   box-sizing: border-box;
   border-radius: 5px;
   height: 100%;
+  position: relative;
   .header {
     display: flex;
     justify-content: flex-start;
@@ -24,12 +25,8 @@
   }
   .content {
     padding: @commonPadding;
-    background-repeat: no-repeat;
-    background-size: 120px auto;
-    background-position: 92% ;
-
-    background-image: url(../../../../../public/assets/images/twoManTalking.svg);
-    height: 100%;
+    z-index: 1;
+    position: relative;
     span {
       display: block;
       font-size: 13px;
@@ -41,6 +38,15 @@
     .dateOfJoining {
       color: @lightGrayColor;
       margin-bottom: 10px;
+    }
+  }
+  .backgroundImage {
+    position: absolute;
+    right: 10px;
+    bottom: 0;
+    z-index: 0;
+    img {
+      height: 130px;
     }
   }
 }
