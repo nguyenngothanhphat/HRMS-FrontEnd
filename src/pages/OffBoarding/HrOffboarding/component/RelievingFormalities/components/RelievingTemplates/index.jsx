@@ -40,14 +40,8 @@ class RelievingTemplates extends PureComponent {
                         <Col span={2}>
                           <img src={templateIcon} alt="template-icon" />
                         </Col>
-                        <Col span={12}>
-                          <a
-                            // href={template.attachment.url}
-                            // target="_blank"
-                            className={styles.templateName}
-                          >
-                            {template.name}
-                          </a>
+                        <Col span={12} className={styles.template__text}>
+                          <div className={styles.templateName}>{template.name}</div>
                         </Col>
                         <Col className={styles.icons} align="right" span={10}>
                           <img src={emailIcon} alt="icon" />
@@ -95,14 +89,8 @@ class RelievingTemplates extends PureComponent {
                       <Col span={2}>
                         <img src={templateIcon} alt="template-icon" />
                       </Col>
-                      <Col span={12}>
-                        <a
-                          // href={template.attachment.url}
-                          // target="_blank"
-                          className={styles.templateName}
-                        >
-                          {template.name}
-                        </a>
+                      <Col span={12} className={styles.template__text}>
+                        <div className={styles.templateName}>{template.name}</div>
                       </Col>
                       <Col className={styles.icons} align="right" span={10}>
                         <img src={emailIcon} alt="icon" />
@@ -144,14 +132,8 @@ class RelievingTemplates extends PureComponent {
                         <Col span={2}>
                           <img src={templateIcon} alt="template-icon" />
                         </Col>
-                        <Col span={12}>
-                          <a
-                            // href={template.attachment.url}
-                            // target="_blank"
-                            className={styles.templateName}
-                          >
-                            {template.name}
-                          </a>
+                        <Col span={12} className={styles.template__text}>
+                          <div className={styles.templateName}>{template.name}</div>
                         </Col>
                         <Col className={styles.icons} align="right" span={10}>
                           <img src={emailIcon} alt="icon" />
@@ -201,14 +183,8 @@ class RelievingTemplates extends PureComponent {
                         <Col span={2}>
                           <img src={templateIcon} alt="template-icon" />
                         </Col>
-                        <Col span={12}>
-                          <a
-                            // href={template.attachment.url}
-                            // target="_blank"
-                            className={styles.templateName}
-                          >
-                            {template.name}
-                          </a>
+                        <Col span={12} className={styles.template__text}>
+                          <div className={styles.templateName}>{template.name}</div>
                         </Col>
                         <Col className={styles.icons} align="right" span={10}>
                           <img src={emailIcon} alt="icon" />
