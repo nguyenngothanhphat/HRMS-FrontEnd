@@ -1,17 +1,21 @@
 import React, { Component } from 'react';
-import { Divider, Spin, Avatar } from 'antd';
+import { Divider, Spin, Avatar, Tooltip } from 'antd';
 import { connect } from 'umi';
 import ModalUpload from '@/components/ModalUpload';
 import noLogo from '@/assets/no-photo-available-icon.png';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from '../../index.less';
 
 @connect(
   ({
     companiesManagement: {
-      originData: { companyDetails: { company: companyDetailsOrigin = {} } = {} },
+      originData: {
+        companyDetails: originCompanyDetails = {},
+        companyDetails: { company: companyDetailsOrigin = {} } = {},
+      },
       tempData: { companyDetails: { company: companyDetails = {} } = {} },
     } = {},
-  }) => ({ companyDetailsOrigin, companyDetails }),
+  }) => ({ companyDetailsOrigin, companyDetails, originCompanyDetails }),
 )
 class ViewInformation extends Component {
   constructor(props) {
@@ -34,21 +38,40 @@ class ViewInformation extends Component {
   };
 
   getResponse = (resp) => {
-    const { dispatch, companyDetailsOrigin } = this.props;
+    const {
+      dispatch,
+      originCompanyDetails = {},
+      originCompanyDetails: { company: { _id: id = '' } = {} } = {},
+    } = this.props;
     const { statusCode, data = [] } = resp;
+    const tenantId = getCurrentTenant();
+
     if (statusCode === 200) {
       const [first] = data;
-      this.handleCancel();
-      const payload = {
-        ...companyDetailsOrigin,
-        id: companyDetailsOrigin._id,
-        logoUrl: first.url,
-      };
-      delete payload._id;
-      dispatch({
-        type: 'companiesManagement/updateCompany',
-        payload,
-      });
+      if (id) {
+        const payload = {
+          id,
+          logoUrl: first?.url,
+          tenantId,
+        };
+        delete payload._id;
+        dispatch({
+          type: 'companiesManagement/updateCompany',
+          payload,
+        }).then(({ statusCode: check }) => {
+          if (check === 200) {
+            this.handleCancel();
+          }
+        });
+      } else {
+        dispatch({
+          type: 'companiesManagement/saveCompanyDetails',
+          payload: { ...originCompanyDetails?.company, logoUrl: first?.url },
+          // dataTempKept: {},
+          // isAccountSetup: true,
+        });
+        this.handleCancel();
+      }
     }
   };
 
@@ -83,9 +106,22 @@ class ViewInformation extends Component {
         </div>
         <div className={styles.infoCompany__viewBottom}>
           <Divider />
-          <div>
-            <img src="/assets/images/iconLinkedin.svg" alt="img-arrow" />
-            <img src="/assets/images/iconMail.svg" alt="img-arrow" style={{ marginLeft: '5px' }} />
+          <div className={styles.infoCompany__viewBottom__iconLinks}>
+            <Tooltip title="Linkedin">
+              <img
+                src="/assets/images/iconLinkedin.svg"
+                alt="img-arrow"
+                onClick={() => window.open('https://www.linkedin.com/')}
+              />
+            </Tooltip>
+            <Tooltip title="Mail">
+              <img
+                src="/assets/images/iconMail.svg"
+                alt="img-arrow"
+                style={{ marginLeft: '8px' }}
+                onClick={() => window.open('http://gmail.com/')}
+              />
+            </Tooltip>
           </div>
         </div>
         <ModalUpload

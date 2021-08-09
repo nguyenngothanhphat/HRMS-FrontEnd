@@ -48,7 +48,7 @@ class HRrequestTable extends Component {
       tabId: '1',
     };
     this.setDebounce = debounce((query, key) => {
-      if (key === 1) {
+      if (key === '1') {
         this.setState({
           dataListTeamRequest: query,
           loadingSearch: false,
@@ -148,10 +148,12 @@ class HRrequestTable extends Component {
         fortmatEmployeeID.includes(formatValue) ||
         formatFirstName.includes(formatValue) ||
         formatLastName.includes(formatValue)
-      )
+      ) {
         return item;
+      }
       return 0;
     });
+
     this.setState({ loadingSearch: true });
 
     this.setDebounce(filterData, tabId);

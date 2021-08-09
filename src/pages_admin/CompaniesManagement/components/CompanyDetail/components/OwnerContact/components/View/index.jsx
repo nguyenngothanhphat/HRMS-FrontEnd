@@ -1,25 +1,33 @@
 import React, { PureComponent, Fragment } from 'react';
 import { Row, Col } from 'antd';
-import { formatMessage } from 'umi';
+import { formatMessage, connect } from 'umi';
 import styles from '../../../CompanyInformation/components/HeadquaterAddress/View/index.less';
 
+@connect(({ companiesManagement: { originData: { companyDetails = {} } = {} } = {} }) => ({
+  companyDetails,
+}))
 class View extends PureComponent {
   render() {
+    const {
+      companyDetails: {
+        company: { hrContactName = '', hrContactEmail = '', hrContactPhone = '' } = {},
+      } = {},
+    } = this.props;
     const companyDetail = [
       {
         id: 1,
         label: formatMessage({ id: 'pages_admin.owner.fullName' }),
-        value: 'Nguyen Van A',
+        value: hrContactName,
       },
       {
         id: 2,
         label: formatMessage({ id: 'pages_admin.owner.email' }),
-        value: 'Terralogic@terralogic.com',
+        value: hrContactEmail,
       },
       {
         id: 3,
         label: formatMessage({ id: 'pages_admin.owner.phone' }),
-        value: '0123456789',
+        value: hrContactPhone,
       },
     ];
 
