@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect, Link } from 'umi';
 
 import { Layout, Button, Result } from 'antd';
@@ -6,6 +6,10 @@ import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { getCurrentCompany } from '@/utils/authority';
 import avtDefault from '@/assets/avtDefault.jpg';
+
+import LogoutIcon from '@/assets/candidatePortal/logout.svg';
+import CalendarIcon from '@/assets/candidatePortal/leave-application.svg';
+import MessageIcon from '@/assets/candidatePortal/message-circle.svg';
 // import BottomBar from '../components/BottomBar';
 import s from './CandidatePortalLayout.less';
 
@@ -33,11 +37,20 @@ const CandidatePortalLayout = React.memo((props) => {
     route: { routes } = {},
     dispatch,
     companiesOfUser = [],
+    candidate = '',
   } = props;
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
   };
+
+  useEffect(() => {
+    if (!candidate) {
+      dispatch({
+        type: 'user/fetchCurrent',
+      });
+    }
+  }, [candidate]);
 
   const handleCancel = () => {
     if (!dispatch) {
@@ -71,9 +84,16 @@ const CandidatePortalLayout = React.memo((props) => {
         </div>
 
         <div className={s.headerRight}>
-          <Button type="link" block onClick={handleCancel}>
-            Logout
-          </Button>
+          <div className={s.headerIcon}>
+            <img src={CalendarIcon} alt="calendar" />
+          </div>
+          <div className={s.headerIcon}>
+            <img src={MessageIcon} alt="message" />
+            <div className={s.badgeNumber}>4</div>
+          </div>
+          <div className={s.headerIcon} onClick={handleCancel}>
+            <img src={LogoutIcon} alt="logout" />
+          </div>
         </div>
       </Header>
       <Authorized authority={authorized.authority} noMatch={noMatch}>
