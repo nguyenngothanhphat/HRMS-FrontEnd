@@ -108,8 +108,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
         duration = 0,
         fromDate: from = '',
         toDate: to = '',
-        subject = '',
-        type: { shortType = '' } = {},
+        type: { name: typeName = '' } = {},
         _id = '',
       } = each;
 
@@ -134,11 +133,10 @@ class LeaveHistoryAndHoliday extends PureComponent {
         // }
         return {
           _id,
-          name: subject,
           fromDate,
           toDate,
           duration,
-          type: shortType,
+          typeName,
           status,
         };
       }
@@ -156,6 +154,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
     } = this.props;
     // const formatHolidayLists = this.formatHolidayLists(holidaysList);
     const formatLeavingList = this.formatLeavingList(items);
+    console.log(items);
 
     return (
       <div className={styles.LeaveHistoryAndHoliday}>
