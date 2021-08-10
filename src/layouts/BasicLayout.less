@@ -1,5 +1,4 @@
 .root {
-  // margin-bottom: 24px;
   .titleHeader {
     display: flex;
     align-items: center;
@@ -46,10 +45,14 @@
       > span:nth-child(n):not(:last-child):not(:first-child) {
         a {
           display: inline-block;
-          padding: 8px 14px;
-          color: #000;
+          padding: 8px;
+          font-family: Roboto;
+          font-style: normal;
           font-weight: 500;
-          opacity: 1;
+          font-size: 13px;
+          line-height: 15px;
+
+          color: #707177;
         }
         span.ant-breadcrumb-link {
           position: relative;
@@ -57,19 +60,12 @@
           align-items: center;
           justify-content: center;
           height: 30px;
-          padding: 4px 14px;
 
           &::after {
-            position: absolute;
-            top: 0px;
-            left: 0;
-            z-index: 0;
             display: block;
             width: 100%;
-            height: 30px;
-            border: 1px solid #ccc;
-            transform: skewX(-32deg);
-            content: '';
+            height: 16px;
+            content: url('../../public/assets/images/arrowBreakcum.svg');
           }
         }
         span.ant-breadcrumb-separator {
@@ -83,10 +79,15 @@
       > span:first-child {
         a {
           display: inline-block;
-          padding: 8px 20px;
-          color: #000;
+          padding: 8px;
+          padding-left: 20px;
+          font-family: Roboto;
+          font-style: normal;
           font-weight: 500;
-          opacity: 1;
+          font-size: 13px;
+          line-height: 15px;
+
+          color: #707177;
         }
         span.ant-breadcrumb-link {
           position: relative;
@@ -97,19 +98,10 @@
           padding: 4px 0px;
 
           &::after {
-            position: absolute;
-            top: 0px;
-            left: 0px;
-            z-index: 0;
             display: block;
             width: 100%;
-            height: 34px;
-            border: 1px solid #ccc;
-            border-right: none !important;
-            border-left: none !important;
-            transform: perspective(63px) rotateX(-30deg);
-            transform-origin: left center;
-            content: '';
+            height: 16px;
+            content: url('../../public/assets/images/arrowBreakcum.svg');
           }
         }
         span.ant-breadcrumb-separator {
@@ -359,7 +351,6 @@
   .rootLogo{
     display: flex;
     align-items: center;
-    // justify-content: center;
     width: auto;
     height: 76px;
 
@@ -384,21 +375,6 @@
         height: 100%;
         margin-bottom: 2px;
       }
-  
-      // &__button{
-      //   width: 70px;
-      //   min-width: 70px;
-      //   max-width: 70px;
-      //   height: 76px;
-      //   background-color: #161c29;
-      //   border: none;
-      //   border-radius: 0;
-  
-      //   img{
-      //     width: 19.7px;
-      //     height: 18.8px;
-      //   }
-      // }
     }
   }
 
@@ -483,9 +459,7 @@
       color: #161c29;
       font-weight: 500;
       font-size: 13px;
-      background-color: #fff;
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
+      background: none;
       opacity: 1;
     }
   }
@@ -494,32 +468,34 @@
 .breadCrumbB {
   :global {
     .ant-breadcrumb > span:last-child a {
-      position: relative;
       display: flex;
       align-items: center;
       height: 30px;
-      padding: 4px 28px;
-      color: #161c29;
-      color: rgb(44, 109, 249);
+      padding: 8px;
+      font-family: Roboto;
+      font-style: normal;
       font-weight: 500;
       font-size: 13px;
-      border-top-left-radius: 5px;
-      border-top-right-radius: 5px;
+      line-height: 15px;
+
+      color: #161C29;
+      background: none;
+
       opacity: 1;
 
-      &::after {
-        position: absolute;
-        top: 0;
-        left: 0;
-        display: block;
-        width: 100%;
-        height: 30px;
-        border: 1px solid rgb(44, 109, 249);
-        border-radius: 0 0 20px 0;
+      // &::after {
+      //   position: absolute;
+      //   top: 0;
+      //   left: 0;
+      //   display: block;
+      //   width: 100%;
+      //   height: 30px;
+      //   border: 1px solid rgb(44, 109, 249);
+      //   border-radius: 0 0 20px 0;
 
-        transform: skewX(-32deg);
-        content: '';
-      }
+      //   transform: skewX(-32deg);
+      //   content: '';
+      // }
     }
   }
 }
