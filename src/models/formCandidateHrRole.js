@@ -969,8 +969,8 @@ const candidateInfo = {
           type: 'saveSalaryStructure',
           payload: {
             // salaryDepartment: department?._id,
-            salaryLocation: workLocation._id,
-            salaryTitle: title._id,
+            salaryLocation: workLocation?._id,
+            salaryTitle: title?._id,
             settings,
             grade,
           },
