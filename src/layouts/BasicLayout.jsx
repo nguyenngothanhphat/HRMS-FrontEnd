@@ -126,7 +126,9 @@ const BasicLayout = (props) => {
             </Link>
           ) : null}
         </div>
-        <div className={styles.currentName}>{currentName}</div>
+        <Link to="/">
+          <div className={styles.currentName}>{currentName}</div>
+        </Link>
       </div>
     );
   };
