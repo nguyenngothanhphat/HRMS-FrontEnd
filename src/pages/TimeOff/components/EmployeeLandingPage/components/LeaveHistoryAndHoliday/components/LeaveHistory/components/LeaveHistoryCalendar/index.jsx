@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { Tooltip } from 'antd';
 import EventDetailBox from './EventDetailBox';
 
 import styles from './index.less';
@@ -131,6 +132,7 @@ export default class LeaveHistoryCalendar extends PureComponent {
   renderCalendar = () => {
     const { leavingList = [] } = this.props;
     const daysInMonth = [];
+
     for (let d = 1; d <= this.daysInMonth(); d += 1) {
       let eventMarkBeginClassName = '';
       let colorClassName = '';
@@ -138,9 +140,10 @@ export default class LeaveHistoryCalendar extends PureComponent {
       const weekDayCheckClassName = '';
       const className = `${styles.day}`;
       let activeClassName = '';
+      let dateName = '';
 
       leavingList.forEach((value) => {
-        const { fromDate: from = '', toDate: to = '', status = '' } = value;
+        const { fromDate: from = '', toDate: to = '', status = '', typeName = '' } = value;
         const eventFromDay = moment(from).format('D');
         const eventFromMonth = moment(from).format('M');
         const eventFromYear = moment(from).format('Y');
@@ -173,6 +176,7 @@ export default class LeaveHistoryCalendar extends PureComponent {
 
           eventMarkSingleClassName = styles.eventMarkSingleClassName;
           activeClassName = styles.activeDate;
+          dateName = typeName;
         } else if (
           d === eventFromDay * 1 &&
           this.selectedMonth() * 1 === eventFromMonth * 1 &&
@@ -182,18 +186,21 @@ export default class LeaveHistoryCalendar extends PureComponent {
 
           eventMarkBeginClassName = styles.markEventBegin;
           activeClassName = styles.activeDate;
+          dateName = typeName;
         }
       });
 
       daysInMonth.push(
-        <td
-          key={d}
-          className={`${className} ${eventMarkSingleClassName} ${eventMarkBeginClassName} ${colorClassName} `}
-        >
-          <div className={activeClassName}>
-            <span className={`${weekDayCheckClassName}`}>{d}</span>
-          </div>
-        </td>,
+        <Tooltip title={dateName}>
+          <td
+            key={d}
+            className={`${className} ${eventMarkSingleClassName} ${eventMarkBeginClassName} ${colorClassName} `}
+          >
+            <div className={activeClassName}>
+              <span className={`${weekDayCheckClassName}`}>{d}</span>
+            </div>
+          </td>
+        </Tooltip>,
       );
     }
     return daysInMonth;
