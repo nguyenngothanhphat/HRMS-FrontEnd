@@ -129,17 +129,17 @@ export default class LeaveHistoryCalendar extends PureComponent {
   };
 
   renderCalendar = () => {
-    const { currentMonth, currentDay, currentYear } = this.state;
+    // const { currentMonth, currentDay, currentYear } = this.state;
     const { leavingList = [] } = this.props;
     const daysInMonth = [];
     for (let d = 1; d <= this.daysInMonth(); d += 1) {
       const className = `${styles.day}`;
-      const currentDayClassName =
-        d === currentDay * 1 &&
-        currentMonth === this.selectedMonth() &&
-        currentYear === this.selectedYear()
-          ? `${styles.currentDay}`
-          : '';
+      // const currentDayClassName =
+      //   d === currentDay * 1 &&
+      //   currentMonth === this.selectedMonth() &&
+      //   currentYear === this.selectedYear()
+      //     ? `${styles.currentDay}`
+      //     : '';
 
       let eventMarkBeginClassName = '';
       let colorClassName = '';
@@ -156,6 +156,19 @@ export default class LeaveHistoryCalendar extends PureComponent {
         const eventToMonth = moment(to).format('M');
         const eventToYear = moment(to).format('Y');
 
+        const checkStatus = (statusName) => {
+          if (statusName === TIMEOFF_STATUS.accepted) {
+            colorClassName = styles.accepted;
+          } else if (statusName === TIMEOFF_STATUS.rejected) {
+            colorClassName = styles.rejected;
+          } else if (
+            statusName === TIMEOFF_STATUS.inProgress ||
+            statusName === TIMEOFF_STATUS.inProgressNext
+          ) {
+            colorClassName = styles.applied;
+          } else colorClassName = styles.allLeaves;
+        };
+
         if (
           d === eventFromDay * 1 &&
           d === eventToDay * 1 &&
@@ -164,13 +177,8 @@ export default class LeaveHistoryCalendar extends PureComponent {
           eventFromMonth * 1 === this.selectedMonth() * 1 &&
           eventFromYear * 1 === this.selectedYear() * 1
         ) {
-          if (status === TIMEOFF_STATUS.accepted) {
-            colorClassName = styles.accepted;
-          } else if (status === TIMEOFF_STATUS.rejected) {
-            colorClassName = styles.rejected;
-          } else colorClassName = styles.applied;
+          checkStatus(status); // check status to change color of the dots
 
-          // eslint-disable-next-line prefer-destructuring
           eventMarkSingleClassName = styles.eventMarkSingleClassName;
           activeClassName = styles.activeDate;
         } else if (
@@ -178,11 +186,7 @@ export default class LeaveHistoryCalendar extends PureComponent {
           this.selectedMonth() * 1 === eventFromMonth * 1 &&
           this.selectedYear() * 1 === eventFromYear * 1
         ) {
-          if (status === TIMEOFF_STATUS.accepted) {
-            colorClassName = styles.accepted;
-          } else if (status === TIMEOFF_STATUS.rejected) {
-            colorClassName = styles.rejected;
-          } else colorClassName = styles.applied;
+          checkStatus(status);
 
           eventMarkBeginClassName = styles.markEventBegin;
           activeClassName = styles.activeDate;

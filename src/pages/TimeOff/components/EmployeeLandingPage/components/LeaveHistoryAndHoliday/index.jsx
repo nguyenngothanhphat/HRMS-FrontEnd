@@ -147,6 +147,36 @@ class LeaveHistoryAndHoliday extends PureComponent {
     return result;
   };
 
+  formatLeavingListCalendar = (allLeaveRequests) => {
+    let result = allLeaveRequests.map((each) => {
+      const {
+        status = '',
+        duration = 0,
+        fromDate: from = '',
+        toDate: to = '',
+        type: { name: typeName = '' } = {},
+        _id = '',
+      } = each;
+
+      if (status) {
+        const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
+        const toDate = moment(to).locale('en').format('MM/DD/YYYY');
+        return {
+          _id,
+          fromDate,
+          toDate,
+          duration,
+          typeName,
+          status,
+        };
+      }
+      return null;
+    });
+    result = result.filter((value) => value !== null);
+    result = result.sort(this.compareDates);
+    return result;
+  };
+
   render() {
     const { activeShowType } = this.state;
     const {
@@ -154,13 +184,17 @@ class LeaveHistoryAndHoliday extends PureComponent {
     } = this.props;
     // const formatHolidayLists = this.formatHolidayLists(holidaysList);
     const formatLeavingList = this.formatLeavingList(items);
-    // console.log(items);
+    const formatLeavingListCalendar = this.formatLeavingListCalendar(items);
 
     return (
       <div className={styles.LeaveHistoryAndHoliday}>
         <Tabs destroyInactiveTabPane defaultActiveKey="1" tabBarExtraContent={this.operations()}>
           <TabPane tab="Time off Calendar" key="1">
-            <LeaveHistory leavingList={formatLeavingList} activeShowType={activeShowType} />
+            <LeaveHistory
+              leavingListCalendar={formatLeavingListCalendar}
+              leavingList={formatLeavingList}
+              activeShowType={activeShowType}
+            />
           </TabPane>
           <TabPane tab="Holidays" key="2">
             <Holiday holidaysList={holidaysListByLocation} activeShowType={activeShowType} />
