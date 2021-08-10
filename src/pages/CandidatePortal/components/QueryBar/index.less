@@ -1,3 +1,44 @@
-.QueryBar {
+@darkColour: #161C29;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@borderColor: #D6DCE0;
 
+.QueryBar {
+  border: 1px solid @borderColor;
+  background: #fff;
+  box-sizing: border-box;
+  border-radius: 5px;
+  height: 100%;
+  position: relative;
+  padding: @commonPadding;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .text {
+    font-weight: 500;
+    font-size: 16px;
+    color: @darkColour;
+  }
+  :global {
+    .ant-btn-primary {
+      padding: 0 30px;
+      height: 40px;
+      object-fit: contain;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: Roboto;
+      letter-spacing: 0.13px;
+
+      text-shadow: none;
+      background-color: #ffa100;
+      border: solid 1px #ffa100;
+      border-radius: 25px;
+      box-shadow: none;
+      &:hover {
+        color: #ffffff;
+        background-color: #ffa100;
+      }
+    }
+  }
 }

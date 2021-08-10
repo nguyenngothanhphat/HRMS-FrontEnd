@@ -14,7 +14,12 @@ class CandidatePortal extends PureComponent {
       <div className={styles.CandidatePortal}>
         <p className={styles.CandidatePortal__header}>Candidate Portal Dashboard</p>
         <Row span={24} gutter={[24, 24]} style={{ marginBottom: '24px' }}>
-          <Col sm={24} lg={16} gutter={[24, 24]}>
+          <Col
+            sm={24}
+            lg={16}
+            gutter={[24, 24]}
+            style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
+          >
             <Row span={24} gutter={[24, 24]} style={{ marginBottom: '24px' }}>
               <Col xs={24} sm={8} lg={8}>
                 <ApplicationStatus />
@@ -24,7 +29,7 @@ class CandidatePortal extends PureComponent {
               </Col>
             </Row>
 
-            <Row span={24} gutter={[24, 24]}>
+            <Row span={24} gutter={[24, 24]} style={{ height: '100%' }}>
               <Col xs={24} lg={14}>
                 <YourActivity />
               </Col>
