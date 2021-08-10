@@ -69,7 +69,7 @@ July 06, 2021 6PM - 7PM (IST)`,
 const messages = [
   {
     title: `What’s next?`,
-    content: `Hello! We are excited to have you onboard on this amazing journey with...`,
+    content: `Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with...`,
   },
   {
     title: 'Welcome to Lollypop Design Studio!',
