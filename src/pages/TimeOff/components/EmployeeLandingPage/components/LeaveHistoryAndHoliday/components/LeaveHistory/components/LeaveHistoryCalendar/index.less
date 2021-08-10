@@ -117,7 +117,7 @@
     width: 50%;
     bottom: 0;
     margin-bottom: -1px;
-    // border-bottom: 2px solid #d6dce0;
+    // border-bottom: 2px solid #E2E4E8;
   }
   .markEventEnd {
     position: relative;
@@ -138,18 +138,72 @@
     width: 50%;
     bottom: 0;
     margin-bottom: -1px;
-    // border-bottom: 2px solid #d6dce0;
+    // border-bottom: 2px solid #E2E4E8;
   }
 
   // .lineClassName {
-  //   border-bottom: 2px solid #d6dce0;
+  //   border-bottom: 2px solid #E2E4E8;
   //   bottom: 0;
   // }
 
   // eventDetailContainer
+
+  .listStatus{
+    border-top: 1px solid #E2E4E8;
+    width: 100%;
+
+    .dots{
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .dotAll{
+      background-color: #2C6DF9;
+    }
+    .dotApplied{
+      background-color: #FFA100;
+    }
+    .dotApproved{
+      background-color: #00C598;
+    }
+    .dotRejected{
+      background-color: #F04B37;
+    }
+
+    &__text{
+      padding-left: 8px;
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 15px;
+
+      color: #6C717A;
+    }
+    
+    &__top, &__status{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    &__top{
+      padding: 16px;
+      justify-content: flex-start;
+    }
+    &__bottom {
+      padding: 16px;
+      border-top: 1px solid #E2E4E8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
   .eventDetailContainer {
-    border-top: 1px solid #d6dce0;
-    margin-top: 30px;
+    border-top: 1px solid #E2E4E8;
+    // margin-top: 30px;
     .eventDetailPart {
       .eventsContainer {
         max-height: 250px;
