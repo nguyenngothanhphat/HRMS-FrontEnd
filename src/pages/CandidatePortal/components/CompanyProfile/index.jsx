@@ -16,7 +16,7 @@ const Card1 = () => {
         <br /> <br />
         Our development roadmap tracks progress and execution, with intuitive design practices to
         achieve our clients’ organizational goals and create products and services that users love.
-        <br /> <br />
+        <br />
       </p>
       <span className={styles.contentTitle}>
         Read more about us at-{' '}

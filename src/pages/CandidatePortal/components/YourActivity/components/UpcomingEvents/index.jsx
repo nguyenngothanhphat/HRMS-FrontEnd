@@ -19,11 +19,18 @@ class UpcomingEvents extends PureComponent {
     );
   };
 
+  getData = () => {
+    const { events = [], sliceNumber = 0 } = this.props;
+    if (sliceNumber === 0 || !sliceNumber) return events;
+    return events.slice(0, sliceNumber);
+  };
+
   render() {
-    const { events = [] } = this.props;
+    const data = this.getData();
+
     return (
       <div className={styles.UpcomingEvents}>
-        {events.map((val, index) => this.renderItem(val, events.length, index))}
+        {data.map((val, index) => this.renderItem(val, data.length, index))}
       </div>
     );
   }

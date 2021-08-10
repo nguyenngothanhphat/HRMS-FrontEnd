@@ -19,11 +19,17 @@ class NextSteps extends PureComponent {
     );
   };
 
+  getData = () => {
+    const { steps = [], sliceNumber = 0 } = this.props;
+    if (sliceNumber === 0 || !sliceNumber) return steps;
+    return steps.slice(0, sliceNumber);
+  };
+
   render() {
-    const { steps = [] } = this.props;
+    const data = this.getData();
     return (
       <div className={styles.NextSteps}>
-        {steps.map((val, index) => this.renderItem(val, steps.length, index))}
+        {data.map((val, index) => this.renderItem(val, data.length, index))}
       </div>
     );
   }

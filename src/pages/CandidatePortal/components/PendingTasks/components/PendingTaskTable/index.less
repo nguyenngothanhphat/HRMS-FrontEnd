@@ -1,0 +1,35 @@
+
+@darkColour: #161C29;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@contentPadding: 32px;
+@borderColor: #D6DCE0;
+
+.PendingTaskTable {
+  .taskContainer {
+    span {
+      font-size: 13px;
+    }
+    .taskTableHeader {
+      padding-inline: @contentPadding;
+      background: #F6F7F9;
+      height: 44px;
+      border-bottom: 1px solid @borderColor;
+      span {
+        color: @lightGrayColor !important;
+      }
+    }
+    .taskTableContent {
+      padding-inline: @contentPadding;
+      .eachItem {
+        padding-block: @commonPadding;
+      }
+      .divider {
+        border-bottom: 1px solid @borderColor;
+      }
+    }
+    .divider {
+      border-bottom: 1px solid @borderColor;
+    }
+  }
+}

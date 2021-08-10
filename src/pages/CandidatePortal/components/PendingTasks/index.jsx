@@ -1,5 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
+import ArrowDownIcon from '@/assets/candidatePortal/arrowDown.svg';
+import CommonModal from '../CommonModal';
+import PendingTaskTable from './components/PendingTaskTable';
 import styles from './index.less';
 
 const pendingTasks = [
@@ -22,6 +25,13 @@ const pendingTasks = [
 ];
 
 class PendingTasks extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openModal: false,
+    };
+  }
+
   renderItem = (item, listLength, index) => {
     return (
       <>
@@ -38,7 +48,14 @@ class PendingTasks extends PureComponent {
     );
   };
 
+  openModal = (value) => {
+    this.setState({
+      openModal: value,
+    });
+  };
+
   render() {
+    const { openModal } = this.state;
     return (
       <div className={styles.PendingTasks}>
         <div>
@@ -46,24 +63,20 @@ class PendingTasks extends PureComponent {
             <span>Pending Tasks</span>
           </div>
           <div className={styles.content}>
-            <div className={styles.taskContainer}>
-              <Row className={styles.taskTableHeader} align="middle">
-                <Col span={16}>
-                  <span>Name</span>
-                </Col>
-                <Col span={8}>
-                  <span>Due Date</span>
-                </Col>
-              </Row>
-              <div className={styles.taskTableContent}>
-                {pendingTasks.map((val, index) => this.renderItem(val, pendingTasks.length, index))}
-              </div>
-            </div>
+            <PendingTaskTable tasks={pendingTasks} />
           </div>
         </div>
-        <div className={styles.viewMoreBtn}>
+        <div className={styles.viewMoreBtn} onClick={() => this.openModal(true)}>
           <span>View All</span>
+          <img src={ArrowDownIcon} alt="expand" />
         </div>
+        <CommonModal
+          title="Pending Tasks"
+          content={pendingTasks}
+          visible={openModal}
+          onClose={() => this.openModal(false)}
+          type="pending-tasks"
+        />
       </div>
     );
   }

@@ -24,11 +24,18 @@ class Messages extends PureComponent {
     );
   };
 
+  getData = () => {
+    const { messages = [], sliceNumber = 0 } = this.props;
+    if (sliceNumber === 0 || !sliceNumber) return messages;
+    return messages.slice(0, sliceNumber);
+  };
+
   render() {
-    const { messages = [] } = this.props;
+    const data = this.getData();
+
     return (
       <div className={styles.Messages}>
-        {messages.map((val, index) => this.renderItem(val, messages.length, index))}
+        {data.map((val, index) => this.renderItem(val, data.length, index))}
       </div>
     );
   }
