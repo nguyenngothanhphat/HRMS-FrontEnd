@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
+import { connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import ApplicationStatus from './components/ApplicationStatus';
 import CompanyProfile from './components/CompanyProfile';
 import EmployeeDetails from './components/EmployeeDetails';
@@ -9,6 +11,19 @@ import QueryBar from './components/QueryBar';
 import WelcomeModal from './components/WelcomeModal';
 import styles from './index.less';
 
+@connect(
+  ({
+    candidatePortal: { localStep, data, tempData } = {},
+    user: { currentUser: { candidate = '' } = {} } = {},
+    loading,
+  }) => ({
+    localStep,
+    data,
+    tempData,
+    candidate,
+    loadingFetchCandidate: loading.effects['candidatePortal/fetchCandidateById'],
+  }),
+)
 class CandidatePortal extends PureComponent {
   constructor(props) {
     super(props);
@@ -16,6 +31,21 @@ class CandidatePortal extends PureComponent {
       openWelcomeModal: true,
     };
   }
+
+  componentDidMount = () => {
+    const { dispatch, candidate = '' } = this.props;
+    if (!dispatch) {
+      return;
+    }
+    dispatch({
+      type: 'candidatePortal/fetchCandidateById',
+      payload: {
+        candidate: candidate._id,
+        tenantId: getCurrentTenant(),
+        rookieID: candidate.ticketID,
+      },
+    });
+  };
 
   handleWelcomeModal = (value) => {
     this.setState({
@@ -25,6 +55,8 @@ class CandidatePortal extends PureComponent {
 
   render() {
     const { openWelcomeModal } = this.state;
+    const { loadingFetchCandidate, data = {} } = this.props;
+
     return (
       <div className={styles.CandidatePortal}>
         <p className={styles.CandidatePortal__header}>Candidate Portal Dashboard</p>
@@ -37,10 +69,10 @@ class CandidatePortal extends PureComponent {
           >
             <Row span={24} gutter={[24, 24]} style={{ marginBottom: '24px' }}>
               <Col xs={24} sm={8} lg={8}>
-                <ApplicationStatus />
+                <ApplicationStatus loading={loadingFetchCandidate} data={data} />
               </Col>
               <Col xs={24} sm={16} lg={16}>
-                <EmployeeDetails />
+                <EmployeeDetails loading={loadingFetchCandidate} data={data} />
               </Col>
             </Row>
 

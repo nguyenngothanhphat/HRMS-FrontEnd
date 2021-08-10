@@ -19,7 +19,7 @@ import styles from './index.less';
       messageError,
       data: { _id, settings },
     },
-    candidateProfile: { data, jobDetails, checkMandatory, localStep, isCandidateAcceptDOJ } = {},
+    candidatePortal: { data, jobDetails, checkMandatory, localStep, isCandidateAcceptDOJ } = {},
   }) => ({
     jobDetails,
     messageError,
@@ -75,7 +75,7 @@ class JobDetails extends PureComponent {
       ((prefferedDateOfJoining || dateOfJoining) && !isCandidateAcceptDOJ && candidatesNoticePeriod)
     ) {
       dispatch({
-        type: 'candidateProfile/save',
+        type: 'candidatePortal/save',
         payload: {
           checkMandatory: {
             ...checkMandatory,
@@ -100,7 +100,7 @@ class JobDetails extends PureComponent {
 
     if (prevProps.checkMandatory.filledJobDetail !== valid) {
       dispatch({
-        type: 'candidateProfile/save',
+        type: 'candidatePortal/save',
         payload: {
           checkMandatory: {
             ...checkMandatory,
@@ -124,7 +124,7 @@ class JobDetails extends PureComponent {
       if (!value) {
         newNoticePeriod = null;
         dispatch({
-          type: 'candidateProfile/save',
+          type: 'candidatePortal/save',
           payload: {
             // jobDetails,
             checkMandatory: {
@@ -147,7 +147,7 @@ class JobDetails extends PureComponent {
     }
 
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         // jobDetails,
         data: {
@@ -236,7 +236,7 @@ class JobDetails extends PureComponent {
     const converted = prefferedDateOfJoining || dateOfJoining;
 
     dispatch({
-      type: 'candidateProfile/updateByCandidateEffect',
+      type: 'candidatePortal/updateByCandidateEffect',
       payload: {
         noticePeriod: candidatesNoticePeriod || noticePeriod,
         dateOfJoining: converted,
@@ -245,7 +245,7 @@ class JobDetails extends PureComponent {
       },
     });
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         localStep: localStep + 1,
         data: {
@@ -265,7 +265,7 @@ class JobDetails extends PureComponent {
     const { localStep } = this.state;
     const { dispatch } = this.props;
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         localStep: localStep - 1,
       },

@@ -17,7 +17,7 @@ import { Page } from '../../../FormTeamMember/utils';
       messageErrors,
       data: { _id, settings },
     },
-    candidateProfile: { data, checkMandatory, localStep, tempData } = {},
+    candidatePortal: { data, checkMandatory, localStep, tempData } = {},
     loading,
   }) => ({
     data,
@@ -27,7 +27,7 @@ import { Page } from '../../../FormTeamMember/utils';
     checkMandatory,
     localStep,
     tempData,
-    loading: loading.effects['candidateProfile/fetchCandidateById'],
+    loading: loading.effects['candidatePortal/fetchCandidateById'],
   }),
 )
 class BasicInformation extends PureComponent {
@@ -125,7 +125,7 @@ class BasicInformation extends PureComponent {
       checkStatus.filledBasicInformation = false;
     }
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         tempData: {
           ...tempData,
@@ -154,13 +154,13 @@ class BasicInformation extends PureComponent {
       });
     }
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         localStep: localStep + 1,
       },
     });
     dispatch({
-      type: 'candidateProfile/updateByCandidateEffect',
+      type: 'candidatePortal/updateByCandidateEffect',
       payload: {
         firstName: values.firstName,
         middleName: values.middleName,
@@ -170,7 +170,7 @@ class BasicInformation extends PureComponent {
       },
     });
     dispatch({
-      type: 'candidateProfile/saveOrigin',
+      type: 'candidatePortal/saveOrigin',
       payload: {
         firstName: values.firstName,
         middleName: values.middleName,

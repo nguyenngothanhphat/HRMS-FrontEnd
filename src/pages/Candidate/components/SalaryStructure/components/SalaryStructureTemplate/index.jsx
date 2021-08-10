@@ -10,7 +10,7 @@ import styles from './index.less';
 @connect(
   ({
     optionalQuestion: { data: question },
-    candidateProfile: {
+    candidatePortal: {
       listTitle = [],
       checkMandatory = {},
       localStep,
@@ -54,7 +54,7 @@ class SalaryStructureTemplate extends PureComponent {
   onClickPrev = () => {
     const { dispatch, localStep } = this.props;
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         localStep: localStep - 1,
       },
@@ -118,20 +118,20 @@ class SalaryStructureTemplate extends PureComponent {
       });
     }
     dispatch({
-      type: 'candidateProfile/updateByCandidateEffect',
+      type: 'candidatePortal/updateByCandidateEffect',
       payload: {
         options,
         tenantId: getCurrentTenant(),
       },
     });
     dispatch({
-      type: 'candidateProfile/saveOrigin',
+      type: 'candidatePortal/saveOrigin',
       payload: {
         options: tempData.options,
       },
     });
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         localStep: localStep + 1,
         checkMandatory: {

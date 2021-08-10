@@ -101,7 +101,7 @@ const AdditionalQuestion = (props) => {
   const onClickPrevious = () => {
     const prevStep = localStep - 1;
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         localStep: prevStep,
       },
@@ -121,7 +121,7 @@ const AdditionalQuestion = (props) => {
 
       const nextStep = localStep + 1;
       dispatch({
-        type: 'candidateProfile/save',
+        type: 'candidatePortal/save',
         payload: {
           localStep: nextStep,
         },
@@ -237,7 +237,7 @@ const AdditionalQuestion = (props) => {
 export default connect(
   ({
     optionalQuestion: { listPage = [], data = {}, messageErrors = [] },
-    candidateProfile: {
+    candidatePortal: {
       processStatus,
       checkCandidateMandatory = {},
       localStep = 7,
@@ -255,6 +255,6 @@ export default connect(
     hidePreviewOffer,
     questionOnBoarding,
     candidate,
-    loading1: loading.effects['candidateProfile/updateByCandidateEffect'],
+    loading1: loading.effects['candidatePortal/updateByCandidateEffect'],
   }),
 )(AdditionalQuestion);

@@ -51,7 +51,7 @@ const Benefits = (props) => {
     }
     if (allFieldFilled) {
       dispatch({
-        type: 'candidateProfile/save',
+        type: 'candidatePortal/save',
         payload: {
           checkCandidateMandatory: {
             ...checkCandidateMandatory,
@@ -164,7 +164,7 @@ const Benefits = (props) => {
       });
     }
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         localStep: localStep + 1,
       },
@@ -176,7 +176,7 @@ const Benefits = (props) => {
       return;
     }
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         localStep: localStep - 1,
       },
@@ -290,7 +290,7 @@ const Benefits = (props) => {
 export default connect(
   ({
     optionalQuestion: { data: question },
-    candidateProfile: { localStep = 5, checkCandidateMandatory = {} } = {},
+    candidatePortal: { localStep = 5, checkCandidateMandatory = {} } = {},
   }) => ({
     question,
     checkCandidateMandatory,

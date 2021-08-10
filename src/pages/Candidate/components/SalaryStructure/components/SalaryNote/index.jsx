@@ -5,7 +5,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ candidateProfile: { salaryNote = '' } = {} }) => ({
+@connect(({ candidatePortal: { salaryNote = '' } = {} }) => ({
   salaryNote,
 }))
 class SalaryNote extends PureComponent {

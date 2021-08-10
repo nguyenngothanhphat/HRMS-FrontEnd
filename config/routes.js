@@ -138,13 +138,13 @@ const routes = [
       {
         path: '/control-panel',
         component: '../layouts/AccountSetupLayout',
-        authority: ['admin', 'owner', 'employee'],
+        authority: ['admin', 'owner', 'employee', 'candidate'],
         routes: [
           {
             path: '/control-panel',
             component: './ControlPanel',
             name: 'Control Panel',
-            authority: ['admin', 'owner', 'employee'],
+            authority: ['admin', 'owner', 'employee', 'candidate'],
           },
           {
             path: '/control-panel/company-profile/:id',

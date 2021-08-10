@@ -3,7 +3,7 @@ import { Upload, message, Spin } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ candidateProfile: { data } = {}, loading }) => ({
+@connect(({ candidatePortal: { data } = {}, loading }) => ({
   data,
   loading: loading.effects['upload/uploadFile'],
 
@@ -44,7 +44,7 @@ class UploadImage extends Component {
       const newArrToAdjust = JSON.parse(JSON.stringify(documentListToRender));
       newArrToAdjust[typeIndex].data[nestedIndex].isValidated = false;
       dispatch({
-        type: 'candidateProfile/saveOrigin',
+        type: 'candidatePortal/saveOrigin',
         payload: {
           documentListToRender: newArrToAdjust,
         },

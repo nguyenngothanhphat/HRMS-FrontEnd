@@ -130,7 +130,7 @@ const PreviewOffer = (props) => {
 
     // save to Store
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         tempData: {
           ...tempData,
@@ -143,7 +143,7 @@ const PreviewOffer = (props) => {
     });
 
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         data: {
           ...data,
@@ -164,7 +164,7 @@ const PreviewOffer = (props) => {
     }
     const { id } = candidateSignature;
     dispatch({
-      type: 'candidateProfile/updateByCandidateEffect',
+      type: 'candidatePortal/updateByCandidateEffect',
       payload: {
         candidateSignature: id,
         candidate,
@@ -191,7 +191,7 @@ const PreviewOffer = (props) => {
   useEffect(() => {
     const { url = '', id = '' } = candidateSignature;
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         tempData: {
           ...tempData,
@@ -283,7 +283,7 @@ const PreviewOffer = (props) => {
         const { id = '' } = imageData[0];
 
         dispatch({
-          type: 'candidateProfile/updateByCandidateEffect',
+          type: 'candidatePortal/updateByCandidateEffect',
           payload: {
             candidateSignature: id,
             candidate,
@@ -291,7 +291,7 @@ const PreviewOffer = (props) => {
           },
         });
         dispatch({
-          type: 'candidateProfile/submitCandidateFinalOffer',
+          type: 'candidatePortal/submitCandidateFinalOffer',
           payload: {
             candidate,
             candidateFinalSignature: candidateSignature.id,
@@ -308,7 +308,7 @@ const PreviewOffer = (props) => {
     } else {
       handleCandidateSubmit();
       dispatch({
-        type: 'candidateProfile/submitCandidateFinalOffer',
+        type: 'candidatePortal/submitCandidateFinalOffer',
         payload: {
           candidate,
           candidateFinalSignature: candidateSignature.id,
@@ -588,7 +588,7 @@ export default connect(
     loading,
     user: { currentUser = {} } = {},
     // candidateInfo: { rookieId = '', tempData = {}, data = {} } = {},
-    candidateProfile: { tempData = {}, data = {}, candidate = '' } = {},
+    candidatePortal: { tempData = {}, data = {}, candidate = '' } = {},
   }) => ({
     previewOffer,
     loading: loading.effects['upload/uploadFile'],
@@ -597,6 +597,6 @@ export default connect(
     data,
     candidate,
     // rookieId,
-    loading1: loading.effects['candidateProfile/submitCandidateFinalOffer'],
+    loading1: loading.effects['candidatePortal/submitCandidateFinalOffer'],
   }),
 )(PreviewOffer);

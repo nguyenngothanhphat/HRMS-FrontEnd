@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect, Link } from 'umi';
 
-import { Layout, Button, Result } from 'antd';
+import { Layout, Button, Result, Skeleton } from 'antd';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { getCurrentCompany } from '@/utils/authority';
@@ -38,6 +38,7 @@ const CandidatePortalLayout = React.memo((props) => {
     dispatch,
     companiesOfUser = [],
     candidate = '',
+    loadingFetchCurrent = false,
   } = props;
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
@@ -97,7 +98,7 @@ const CandidatePortalLayout = React.memo((props) => {
         </div>
       </Header>
       <Authorized authority={authorized.authority} noMatch={noMatch}>
-        <Content className={s.main}>{children}</Content>
+        {loadingFetchCurrent ? <Skeleton /> : <Content className={s.main}>{children}</Content>}
       </Authorized>
     </div>
   );
@@ -107,7 +108,7 @@ const CandidatePortalLayout = React.memo((props) => {
 export default connect(
   ({
     optionalQuestion: { listPage },
-    candidateProfile: {
+    candidatePortal: {
       data,
       localStep,
       title: { name: titleName = '' } = {},
@@ -117,6 +118,7 @@ export default connect(
       processStatus = '',
     } = {},
     user: { companiesOfUser = [], currentUser: { candidate = '' } = {} } = {},
+    loading,
   }) => ({
     listPage,
     data,
@@ -128,5 +130,6 @@ export default connect(
     processStatus,
     titleName,
     companiesOfUser,
+    loadingFetchCurrent: loading.effects['user/fetchCurrent'],
   }),
 )(CandidatePortalLayout);

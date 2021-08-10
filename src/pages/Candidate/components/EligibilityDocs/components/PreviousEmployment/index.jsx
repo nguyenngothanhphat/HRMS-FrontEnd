@@ -11,7 +11,7 @@ import UploadImage from '../UploadImage';
 import InputField from '../InputField';
 import styles from './index.less';
 
-@connect(({ candidateProfile: { candidate = '', data, tempData } = {} }) => ({
+@connect(({ candidatePortal: { candidate = '', data, tempData } = {} }) => ({
   data,
   tempData,
   candidate,
@@ -82,7 +82,7 @@ class PreviousEmployment extends Component {
     }
     const { dispatch, candidate, renderData = () => {} } = this.props;
     await dispatch({
-      type: 'candidateProfile/updateWorkHistory',
+      type: 'candidatePortal/updateWorkHistory',
       payload: {
         tenantId: getCurrentTenant(),
         candidate,
@@ -91,7 +91,7 @@ class PreviousEmployment extends Component {
       },
     });
     await dispatch({
-      type: 'candidateProfile/fetchDocumentByCandidate',
+      type: 'candidatePortal/fetchDocumentByCandidate',
       payload: {
         candidate,
         tenantId: getCurrentTenant(),
@@ -104,7 +104,7 @@ class PreviousEmployment extends Component {
     const { dispatch, candidate } = this.props;
 
     await dispatch({
-      type: 'candidateProfile/updateWorkHistory',
+      type: 'candidatePortal/updateWorkHistory',
       payload: {
         tenantId: getCurrentTenant(),
         candidate,
@@ -114,7 +114,7 @@ class PreviousEmployment extends Component {
     });
 
     dispatch({
-      type: 'candidateProfile/saveOrigin',
+      type: 'candidatePortal/saveOrigin',
       payload: {
         [type]: val,
       },

@@ -7,12 +7,12 @@ import {
   updateWorkHistory,
   sendEmailByCandidateModel,
   updateByCandidate,
-} from '@/services/candidate';
+} from '@/services/candidatePortal';
 import { dialog } from '@/utils/utils';
 import { history } from 'umi';
 
-const candidateProfile = {
-  namespace: 'candidateProfile',
+const candidatePortal = {
+  namespace: 'candidatePortal',
   state: {
     candidate: '',
     ticketId: '',
@@ -209,7 +209,7 @@ const candidateProfile = {
     *updateByCandidateEffect({ payload }, { call, select }) {
       let response;
       try {
-        const { candidate } = yield select((state) => state.candidateProfile);
+        const { candidate } = yield select((state) => state.candidatePortal);
         response = yield call(updateByCandidate, { ...payload, candidate });
 
         const { statusCode } = response;
@@ -223,7 +223,7 @@ const candidateProfile = {
     *addAttachmentCandidate({ payload }, { call, put, select }) {
       let response = {};
       try {
-        const { candidate } = yield select((state) => state.candidateProfile);
+        const { candidate } = yield select((state) => state.candidatePortal);
 
         response = yield call(addAttachmentService, { ...payload, candidate });
         const { data, statusCode } = response;
@@ -275,7 +275,7 @@ const candidateProfile = {
     *sendEmailByCandidate({ payload }, { call, select }) {
       let response = {};
       try {
-        const { candidate } = yield select((state) => state.candidateProfile);
+        const { candidate } = yield select((state) => state.candidatePortal);
         response = yield call(sendEmailByCandidateModel, { ...payload, candidate });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
@@ -480,4 +480,4 @@ const candidateProfile = {
     },
   },
 };
-export default candidateProfile;
+export default candidatePortal;

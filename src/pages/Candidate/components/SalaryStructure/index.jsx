@@ -22,7 +22,7 @@ import { Page } from '../../../FormTeamMember/utils';
       checkMandatory = {},
       salaryNote = '',
     } = {},
-    candidateProfile: { title: { name: titleName = '' } = {} } = {},
+    candidatePortal: { title: { name: titleName = '' } = {} } = {},
   }) => ({
     titleName,
     processStatus,

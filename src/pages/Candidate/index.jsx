@@ -31,7 +31,7 @@ const Candidate = (props) => {
       return;
     }
     dispatch({
-      type: 'candidateProfile/fetchCandidateById',
+      type: 'candidatePortal/fetchCandidateById',
       payload: {
         candidate: candidate._id,
         tenantId: getCurrentTenant(),
@@ -45,7 +45,7 @@ const Candidate = (props) => {
         } = data;
         // const { employer } = documentChecklistSetting[3];
         dispatch({
-          type: 'candidateProfile/fetchDocumentByCandidate',
+          type: 'candidatePortal/fetchDocumentByCandidate',
           payload: {
             candidate: _id,
             tenantId: getCurrentTenant(),
@@ -53,7 +53,7 @@ const Candidate = (props) => {
         });
         // if (employer !== undefined && employer.length > 0) {
         dispatch({
-          type: 'candidateProfile/fetchWorkHistory',
+          type: 'candidatePortal/fetchWorkHistory',
           payload: {
             candidate: _id,
             tenantId: getCurrentTenant(),
@@ -92,7 +92,7 @@ export default React.memo(
   connect(
     ({
       optionalQuestion: { listPage = [] },
-      candidateProfile: { localStep, data, tempData } = {},
+      candidatePortal: { localStep, data, tempData } = {},
       user: { currentUser: { candidate = '' } = {} } = {},
     }) => ({
       listPage,

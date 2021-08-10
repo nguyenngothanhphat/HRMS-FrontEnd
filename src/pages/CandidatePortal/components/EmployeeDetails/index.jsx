@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
+import moment from 'moment';
 import styles from './index.less';
 
 class EmployeeDetails extends PureComponent {
@@ -13,26 +14,39 @@ class EmployeeDetails extends PureComponent {
   };
 
   render() {
+    const {
+      data: {
+        title: { name: titleName = '' } = {} || {},
+        assignTo: {
+          generalInfo: { firstName = '', lastName = '', middleName = '' } = {} || {},
+        } = {} || {},
+        dateOfJoining = '',
+        department: { name: departmentName = '' } = {} || {},
+      } = {} || {},
+    } = this.props;
+
+    let fullName = `${firstName} ${middleName} ${lastName}`;
+    if (!middleName) fullName = `${firstName} ${lastName}`;
     const items = [
       {
         name: 'Designation',
-        value: 'Associate Sr. UX Designer',
+        value: titleName || '-',
       },
       {
         name: 'Hiring Manager',
-        value: 'John Doe',
+        value: fullName || '-',
       },
       {
         name: 'Joining Date',
-        value: '12 Aug 2021',
+        value: dateOfJoining ? moment(dateOfJoining).format('DD.MM.YY') : '-',
       },
       {
         name: 'Department',
-        value: 'UX Department',
+        value: departmentName || '-',
       },
       {
         name: 'Grade',
-        value: '8',
+        value: '-',
       },
     ];
     return (

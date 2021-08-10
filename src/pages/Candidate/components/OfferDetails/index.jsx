@@ -83,7 +83,7 @@ const OfferDetails = (props) => {
     }
     const { url = '', id = '' } = signature;
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         tempData: {
           ...tempData,
@@ -103,7 +103,7 @@ const OfferDetails = (props) => {
     }
     if (allFieldFilled) {
       dispatch({
-        type: 'candidateProfile/save',
+        type: 'candidatePortal/save',
         payload: {
           checkCandidateMandatory: {
             ...checkCandidateMandatory,
@@ -199,14 +199,14 @@ const OfferDetails = (props) => {
       });
     }
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         localStep: localStep + 1,
       },
     });
 
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         data: {
           ...data,
@@ -225,7 +225,7 @@ const OfferDetails = (props) => {
       return;
     }
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         localStep: localStep - 1,
       },
@@ -329,7 +329,7 @@ const OfferDetails = (props) => {
     const { id, url, fileName } = signature;
     const { candidate } = data;
     const res = await dispatch({
-      type: 'candidateProfile/updateByCandidateEffect',
+      type: 'candidatePortal/updateByCandidateEffect',
       payload: {
         candidateSignature: id,
         candidate,
@@ -340,7 +340,7 @@ const OfferDetails = (props) => {
     if (statusCode === 200) {
       setSignatureSubmit(true);
       dispatch({
-        type: 'candidateProfile/save',
+        type: 'candidatePortal/save',
         payload: {
           data: {
             ...data,
@@ -376,7 +376,7 @@ const OfferDetails = (props) => {
 
         const { candidate } = data;
         const res = await dispatch({
-          type: 'candidateProfile/updateByCandidateEffect',
+          type: 'candidatePortal/updateByCandidateEffect',
           payload: {
             candidateSignature: id,
             candidate,
@@ -387,7 +387,7 @@ const OfferDetails = (props) => {
         if (statusCode === 200) {
           setSignatureSubmit(true);
           dispatch({
-            type: 'candidateProfile/save',
+            type: 'candidatePortal/save',
             payload: {
               data: {
                 ...data,
@@ -600,7 +600,7 @@ const OfferDetails = (props) => {
 export default connect(
   ({
     optionalQuestion: { data: question },
-    candidateProfile: {
+    candidatePortal: {
       localStep = 4,
       checkCandidateMandatory = {},
       tempData = {},
@@ -613,6 +613,6 @@ export default connect(
     localStep,
     tempData,
     data,
-    loading1: loading.effects['candidateProfile/updateByCandidateEffect'],
+    loading1: loading.effects['candidatePortal/updateByCandidateEffect'],
   }),
 )(OfferDetails);

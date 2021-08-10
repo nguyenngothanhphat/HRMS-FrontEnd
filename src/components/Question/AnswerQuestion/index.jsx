@@ -67,7 +67,7 @@ export default connect(
   ({
     dispatch,
     optionalQuestion: { prevPage, messageErrors, candidate = '', pageName = '', data = {} } = {},
-    candidateProfile: { processStatus },
+    candidatePortal: { processStatus },
   }) => ({
     dispatch,
     messageErrors,

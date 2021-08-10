@@ -5,7 +5,7 @@ import moment from 'moment';
 import InternalStyle from './FilledByCandidate.less';
 
 const dateFormat = 'MM.DD.YY';
-@connect(({ candidateProfile: { data, checkMandatory } = {} }) => ({
+@connect(({ candidatePortal: { data, checkMandatory } = {} }) => ({
   data,
   checkMandatory,
 }))
@@ -32,7 +32,7 @@ class FilledByCandidate extends PureComponent {
     }
 
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         // jobDetails,
         data: {
@@ -59,7 +59,7 @@ class FilledByCandidate extends PureComponent {
     const { value } = e.target;
     this.setState({ checkWouldNewDate: value });
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         // jobDetails,
         checkMandatory: {

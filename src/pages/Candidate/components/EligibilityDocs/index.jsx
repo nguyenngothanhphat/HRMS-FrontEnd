@@ -32,7 +32,7 @@ const Note = {
     optionalQuestion: {
       data: { _id, settings },
     },
-    candidateProfile: {
+    candidatePortal: {
       data,
       data: { checkMandatory = {} } = {},
       localStep,
@@ -51,8 +51,8 @@ const Note = {
     checkMandatory,
     candidate,
     loading: loading.effects['upload/uploadFile'],
-    loading1: loading.effects['candidateProfile/sendEmailByCandidate'],
-    loading2: loading.effects['candidateProfile/fetchCandidateById'],
+    loading1: loading.effects['candidatePortal/sendEmailByCandidate'],
+    loading2: loading.effects['candidatePortal/fetchCandidateById'],
   }),
 )
 class EligibilityDocs extends PureComponent {
@@ -105,7 +105,7 @@ class EligibilityDocs extends PureComponent {
 
     // fetch data candidate by id to update the newest data (especially the Email HR)
     dispatch({
-      type: 'candidateProfile/fetchCandidateById',
+      type: 'candidatePortal/fetchCandidateById',
       payload: {
         candidate: candidate._id,
         tenantId: getCurrentTenant(),
@@ -179,7 +179,7 @@ class EligibilityDocs extends PureComponent {
       ...groupMultiE,
     ];
     await dispatch({
-      type: 'candidateProfile/saveOrigin',
+      type: 'candidatePortal/saveOrigin',
       payload: {
         documentListToRender: [...docList],
       },
@@ -198,7 +198,7 @@ class EligibilityDocs extends PureComponent {
       const attachment1 = data.find((x) => x);
       if (statusCode === 200) {
         dispatch({
-          type: 'candidateProfile/addAttachmentCandidate',
+          type: 'candidatePortal/addAttachmentCandidate',
           payload: {
             attachment: attachment1.id,
             document: documentId,
@@ -211,7 +211,7 @@ class EligibilityDocs extends PureComponent {
               attachment,
             });
             dispatch({
-              type: 'candidateProfile/saveOrigin',
+              type: 'candidatePortal/saveOrigin',
               payload: {
                 documentListToRender: arrToAdjust,
               },
@@ -238,7 +238,7 @@ class EligibilityDocs extends PureComponent {
       const attachment1 = data.find((x) => x);
       if (statusCode === 200) {
         dispatch({
-          type: 'candidateProfile/addAttachmentCandidate',
+          type: 'candidatePortal/addAttachmentCandidate',
           payload: {
             attachment: attachment1.id,
             document: documentId,
@@ -252,7 +252,7 @@ class EligibilityDocs extends PureComponent {
             });
 
             dispatch({
-              type: 'candidateProfile/saveOrigin',
+              type: 'candidatePortal/saveOrigin',
               payload: {
                 documentListToRender: [...otherDocs, ...arrToAdjust],
               },
@@ -278,7 +278,7 @@ class EligibilityDocs extends PureComponent {
         isValidated: !isValidated,
       });
       dispatch({
-        type: 'candidateProfile/saveOrigin',
+        type: 'candidatePortal/saveOrigin',
         payload: {
           documentListToRender: arrToAdjust,
         },
@@ -293,7 +293,7 @@ class EligibilityDocs extends PureComponent {
     } = this.props;
 
     dispatch({
-      type: 'candidateProfile/sendEmailByCandidate',
+      type: 'candidatePortal/sendEmailByCandidate',
       payload: {
         dateOfJoining,
         options: 1,
@@ -334,7 +334,7 @@ class EligibilityDocs extends PureComponent {
     this.setState({ isSending: true });
     // fetch data candidate by id to update the newest data (especially the Email HR)
     dispatch({
-      type: 'candidateProfile/fetchCandidateById',
+      type: 'candidatePortal/fetchCandidateById',
       payload: {
         candidate: candidate._id,
         tenantId: getCurrentTenant(),
@@ -347,7 +347,7 @@ class EligibilityDocs extends PureComponent {
       if (newestEmailHr === email) {
         // if true, the email is still not change
         dispatch({
-          type: 'candidateProfile/sendEmailByCandidate',
+          type: 'candidatePortal/sendEmailByCandidate',
           payload: {
             dateOfJoining,
             options: 1,
@@ -410,7 +410,7 @@ class EligibilityDocs extends PureComponent {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'candidateProfile/saveOrigin',
+      type: 'candidatePortal/saveOrigin',
       payload: {
         [type]: val,
       },
@@ -424,7 +424,7 @@ class EligibilityDocs extends PureComponent {
     } = this.props;
     const { user = {} } = generatedBy;
     dispatch({
-      type: 'candidateProfile/saveOrigin',
+      type: 'candidatePortal/saveOrigin',
       payload: {
         generatedBy: {
           ...generatedBy,
@@ -440,7 +440,7 @@ class EligibilityDocs extends PureComponent {
       openModal: false,
     });
     dispatch({
-      type: 'candidateProfile/refreshPage',
+      type: 'candidatePortal/refreshPage',
     });
   };
 
@@ -484,7 +484,7 @@ class EligibilityDocs extends PureComponent {
   onClickPrev = () => {
     const { dispatch, localStep } = this.props;
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         localStep: localStep - 1,
       },
@@ -548,7 +548,7 @@ class EligibilityDocs extends PureComponent {
       });
     }
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         localStep: localStep + 1,
       },

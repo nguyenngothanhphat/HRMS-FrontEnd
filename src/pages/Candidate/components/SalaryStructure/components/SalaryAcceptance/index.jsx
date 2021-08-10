@@ -12,7 +12,7 @@ import styles from './index.less';
 @connect(
   ({
     loading,
-    candidateProfile: {
+    candidatePortal: {
       tempData: { options = 1 },
       assignTo: { generalInfo: { workEmail: email = '' } = {} } = {},
       salaryNote = '',
@@ -23,7 +23,7 @@ import styles from './index.less';
     options,
     email,
     salaryNote,
-    loadingSendEmail: loading.effects['candidateProfile/sendEmailByCandidate'],
+    loadingSendEmail: loading.effects['candidatePortal/sendEmailByCandidate'],
   }),
 )
 class SalaryAcceptance extends PureComponent {
@@ -63,7 +63,7 @@ class SalaryAcceptance extends PureComponent {
 
     if (selectValue && selectValue.options) {
       dispatch({
-        type: 'candidateProfile/saveTemp',
+        type: 'candidatePortal/saveTemp',
         payload: {
           options: selectValue.options,
         },
@@ -109,7 +109,7 @@ class SalaryAcceptance extends PureComponent {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'candidateProfile/saveTemp',
+      type: 'candidatePortal/saveTemp',
       payload: {
         options: value,
       },
@@ -158,7 +158,7 @@ class SalaryAcceptance extends PureComponent {
     const { dispatch, email, options } = this.props;
 
     dispatch({
-      type: 'candidateProfile/sendEmailByCandidate',
+      type: 'candidatePortal/sendEmailByCandidate',
       payload: {
         options,
         hrEmail: email,
