@@ -154,7 +154,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
     } = this.props;
     // const formatHolidayLists = this.formatHolidayLists(holidaysList);
     const formatLeavingList = this.formatLeavingList(items);
-    console.log(items);
+    // console.log(items);
 
     return (
       <div className={styles.LeaveHistoryAndHoliday}>
