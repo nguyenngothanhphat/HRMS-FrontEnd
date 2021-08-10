@@ -1,7 +1,9 @@
-import { Button, Modal } from 'antd';
+import { Button, Modal, Input } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
+
+const { TextArea } = Input;
 
 @connect(() => ({}))
 class SendQueryModal extends PureComponent {
@@ -13,7 +15,7 @@ class SendQueryModal extends PureComponent {
   componentDidMount = async () => {};
 
   renderModalHeader = () => {
-    const { title = '' } = this.props;
+    const { title = 'Send Query' } = this.props;
     return (
       <div className={styles.header}>
         <p className={styles.header__text}>{title}</p>
@@ -27,7 +29,15 @@ class SendQueryModal extends PureComponent {
   };
 
   renderModalContent = () => {
-    return '';
+    return (
+      <div className={styles.queryContent}>
+        <span className={styles.describeText}>
+          Please list your query and we’ll get back to you soon.
+        </span>
+
+        <TextArea autoSize={{ minRows: 4, maxRows: 10 }} />
+      </div>
+    );
   };
 
   render() {
@@ -50,7 +60,7 @@ class SendQueryModal extends PureComponent {
               key="submit"
               htmlType="submit"
             >
-              Okay
+              Send
             </Button>,
           ]}
           title={this.renderModalHeader()}
