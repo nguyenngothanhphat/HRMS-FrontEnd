@@ -6,10 +6,25 @@ import EmployeeDetails from './components/EmployeeDetails';
 import YourActivity from './components/YourActivity';
 import PendingTasks from './components/PendingTasks';
 import QueryBar from './components/QueryBar';
+import WelcomeModal from './components/WelcomeModal';
 import styles from './index.less';
 
 class CandidatePortal extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openWelcomeModal: true,
+    };
+  }
+
+  handleWelcomeModal = (value) => {
+    this.setState({
+      openWelcomeModal: value,
+    });
+  };
+
   render() {
+    const { openWelcomeModal } = this.state;
     return (
       <div className={styles.CandidatePortal}>
         <p className={styles.CandidatePortal__header}>Candidate Portal Dashboard</p>
@@ -48,6 +63,7 @@ class CandidatePortal extends PureComponent {
             <QueryBar />
           </Col>
         </Row>
+        <WelcomeModal visible={openWelcomeModal} onClose={() => this.handleWelcomeModal(false)} />
       </div>
     );
   }
