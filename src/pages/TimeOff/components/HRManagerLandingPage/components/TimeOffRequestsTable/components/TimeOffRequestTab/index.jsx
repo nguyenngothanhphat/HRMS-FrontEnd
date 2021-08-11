@@ -221,42 +221,42 @@ class TimeOffRequestTab extends PureComponent {
   };
 
   countTotal = (newData) => {
-    const inProgressLength = [];
-    const approvedLength = [];
-    const rejectedLength = [];
-    const draftLength = [];
-    const onHoldLength = [];
-    const deletedLength = [];
+    let inProgressLength = 0;
+    let approvedLength = 0;
+    let rejectedLength = 0;
+    let draftLength = 0;
+    let onHoldLength = 0;
+    let deletedLength = 0;
 
     newData.forEach((row) => {
       const { status = '' } = row;
       switch (status) {
         case TIMEOFF_STATUS.inProgress: {
-          inProgressLength.push(row);
+          inProgressLength += 1;
           break;
         }
         case TIMEOFF_STATUS.inProgressNext: {
-          inProgressLength.push(row);
+          inProgressLength += 1;
           break;
         }
         case TIMEOFF_STATUS.accepted: {
-          approvedLength.push(row);
+          approvedLength += 1;
           break;
         }
         case TIMEOFF_STATUS.rejected: {
-          rejectedLength.push(row);
+          rejectedLength += 1;
           break;
         }
         case TIMEOFF_STATUS.drafts: {
-          draftLength.push(row);
+          draftLength += 1;
           break;
         }
         case TIMEOFF_STATUS.onHold: {
-          onHoldLength.push(row);
+          onHoldLength += 1;
           break;
         }
         case TIMEOFF_STATUS.deleted: {
-          deletedLength.push(row);
+          deletedLength += 1;
           break;
         }
         default:
@@ -264,12 +264,12 @@ class TimeOffRequestTab extends PureComponent {
       }
     });
     this.setState({
-      inProgressLength: inProgressLength.length,
-      approvedLength: approvedLength.length,
-      rejectedLength: rejectedLength.length,
-      draftLength: draftLength.length,
-      onHoldLength: onHoldLength.length,
-      deletedLength: deletedLength.length,
+      inProgressLength,
+      approvedLength,
+      rejectedLength,
+      draftLength,
+      onHoldLength,
+      deletedLength,
     });
   };
 

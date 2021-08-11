@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
-import { debounce } from 'lodash';
+// import { debounce } from 'lodash';
 import { history, connect } from 'umi';
 import REACT_APP_TINYMCE_KEY from '@/utils/editor';
 
@@ -13,7 +13,7 @@ class EditorQuill extends Component {
   constructor(props) {
     super(props);
     this.mapValues = {};
-    // this.handleChangeContent = debounce(this.handleChangeContent.bind(this), 1000);
+    // this.handleChangeContent = debounce(this.handleChangeContent.bind(this), 100);
   }
 
   imageType = (fileName) => {

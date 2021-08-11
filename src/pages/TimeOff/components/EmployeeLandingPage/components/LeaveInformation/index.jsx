@@ -2,7 +2,7 @@ import React, { PureComponent, useState } from 'react';
 import { Row, Col, Collapse, Tooltip, Progress } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import ShowBreakdownIcon from '@/assets/iconViewBreakdown.svg';
-import { connect, history } from 'umi';
+import { connect } from 'umi';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import LeaveProgressBar from './components/LeaveProgressBar';
 import SpecialLeaveBox from './components/SpecialLeaveBox';
@@ -68,11 +68,7 @@ const CollapseInformation = (props) => {
                       stepNumber={currentAllowance}
                       limitNumber={time}
                     />
-                    {index + 1 !== typesOfCommonLeaves.length
-                      ? typesOfCommonLeaves[index + 1].defaultSettings.type === 'A' && (
-                      <div className={styles.hr} />
-                        )
-                      : ''}
+                    {index + 1 !== typesOfCommonLeaves.length && <div className={styles.hr} />}
                   </div>
                 );
               }
