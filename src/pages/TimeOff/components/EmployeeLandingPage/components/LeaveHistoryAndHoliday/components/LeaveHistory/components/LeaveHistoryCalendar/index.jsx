@@ -2,6 +2,8 @@
 import React, { PureComponent } from 'react';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
+import { Tooltip } from 'antd';
 import EventDetailBox from './EventDetailBox';
 
 import styles from './index.less';
@@ -128,33 +130,39 @@ export default class LeaveHistoryCalendar extends PureComponent {
   };
 
   renderCalendar = () => {
-    const { currentMonth, currentDay, currentYear } = this.state;
     const { leavingList = [] } = this.props;
     const daysInMonth = [];
-    for (let d = 1; d <= this.daysInMonth(); d += 1) {
-      const className = `${styles.day}`;
-      const currentDayClassName =
-        d === currentDay * 1 &&
-        currentMonth === this.selectedMonth() &&
-        currentYear === this.selectedYear()
-          ? `${styles.currentDay}`
-          : '';
 
+    for (let d = 1; d <= this.daysInMonth(); d += 1) {
       let eventMarkBeginClassName = '';
-      let eventMarkEndClassName = '';
-      let lineClassName = '';
       let colorClassName = '';
       let eventMarkSingleClassName = '';
       const weekDayCheckClassName = '';
+      const className = `${styles.day}`;
+      let activeClassName = '';
+      let dateName = '';
 
       leavingList.forEach((value) => {
-        const { fromDate: from = '', toDate: to = '' } = value;
+        const { fromDate: from = '', toDate: to = '', status = '', typeName = '' } = value;
         const eventFromDay = moment(from).format('D');
         const eventFromMonth = moment(from).format('M');
         const eventFromYear = moment(from).format('Y');
         const eventToDay = moment(to).format('D');
         const eventToMonth = moment(to).format('M');
         const eventToYear = moment(to).format('Y');
+
+        const checkStatus = (statusName) => {
+          if (statusName === TIMEOFF_STATUS.accepted) {
+            colorClassName = styles.accepted;
+          } else if (statusName === TIMEOFF_STATUS.rejected) {
+            colorClassName = styles.rejected;
+          } else if (
+            statusName === TIMEOFF_STATUS.inProgress ||
+            statusName === TIMEOFF_STATUS.inProgressNext
+          ) {
+            colorClassName = styles.applied;
+          } else colorClassName = styles.allLeaves;
+        };
 
         if (
           d === eventFromDay * 1 &&
@@ -164,59 +172,129 @@ export default class LeaveHistoryCalendar extends PureComponent {
           eventFromMonth * 1 === this.selectedMonth() * 1 &&
           eventFromYear * 1 === this.selectedYear() * 1
         ) {
-          if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
-            colorClassName = styles.upcomingColor;
-          } else colorClassName = styles.leaveTakenColor;
+          checkStatus(status); // check status to change color of the dots
 
-          // eslint-disable-next-line prefer-destructuring
           eventMarkSingleClassName = styles.eventMarkSingleClassName;
-        } else {
-          if (
-            d === eventFromDay * 1 &&
-            this.selectedMonth() * 1 === eventFromMonth * 1 &&
-            this.selectedYear() * 1 === eventFromYear * 1
-          ) {
-            if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
-              colorClassName = styles.upcomingColor;
-            } else colorClassName = styles.leaveTakenColor;
-            eventMarkBeginClassName = styles.markEventBegin;
-          }
+          activeClassName = styles.activeDate;
+          dateName = typeName;
+        } else if (
+          d === eventFromDay * 1 &&
+          this.selectedMonth() * 1 === eventFromMonth * 1 &&
+          this.selectedYear() * 1 === eventFromYear * 1
+        ) {
+          checkStatus(status);
 
-          if (
-            d === eventToDay * 1 &&
-            this.selectedMonth() * 1 === eventToMonth * 1 &&
-            this.selectedYear() * 1 === eventToYear * 1
-          ) {
-            if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
-              colorClassName = styles.upcomingColor;
-            } else colorClassName = styles.leaveTakenColor;
-            eventMarkEndClassName = styles.markEventEnd;
-          }
-
-          if (
-            d > eventFromDay * 1 &&
-            d < eventToDay * 1 &&
-            this.selectedYear() * 1 === eventFromYear * 1 &&
-            this.selectedYear() * 1 === eventToYear * 1 &&
-            this.selectedMonth() * 1 === eventFromMonth * 1 &&
-            this.selectedMonth() * 1 === eventToMonth * 1
-          )
-            // eslint-disable-next-line prefer-destructuring
-            lineClassName = styles.lineClassName;
+          eventMarkBeginClassName = styles.markEventBegin;
+          activeClassName = styles.activeDate;
+          dateName = typeName;
         }
       });
 
       daysInMonth.push(
-        <td
-          key={d}
-          className={`${className} ${eventMarkSingleClassName} ${lineClassName} ${eventMarkBeginClassName} ${eventMarkEndClassName} ${colorClassName} `}
-        >
-          <span className={`${weekDayCheckClassName} ${currentDayClassName}`}>{d}</span>
-        </td>,
+        <Tooltip title={dateName}>
+          <td
+            key={d}
+            className={`${className} ${eventMarkSingleClassName} ${eventMarkBeginClassName} ${colorClassName} `}
+          >
+            <div className={activeClassName}>
+              <span className={`${weekDayCheckClassName}`}>{d}</span>
+            </div>
+          </td>
+        </Tooltip>,
       );
     }
     return daysInMonth;
   };
+  // renderCalendar = () => {
+  //   const { currentMonth, currentDay, currentYear } = this.state;
+  //   const { leavingList = [] } = this.props;
+  //   const daysInMonth = [];
+  //   for (let d = 1; d <= this.daysInMonth(); d += 1) {
+  //     const className = `${styles.day}`;
+  //     const currentDayClassName =
+  //       d === currentDay * 1 &&
+  //       currentMonth === this.selectedMonth() &&
+  //       currentYear === this.selectedYear()
+  //         ? `${styles.currentDay}`
+  //         : '';
+
+  //     let eventMarkBeginClassName = '';
+  //     let eventMarkEndClassName = '';
+  //     let lineClassName = '';
+  //     let colorClassName = '';
+  //     let eventMarkSingleClassName = '';
+  //     const weekDayCheckClassName = '';
+
+  //     leavingList.forEach((value) => {
+  //       const { fromDate: from = '', toDate: to = '' } = value;
+  //       const eventFromDay = moment(from).format('D');
+  //       const eventFromMonth = moment(from).format('M');
+  //       const eventFromYear = moment(from).format('Y');
+  //       const eventToDay = moment(to).format('D');
+  //       const eventToMonth = moment(to).format('M');
+  //       const eventToYear = moment(to).format('Y');
+
+  //       if (
+  //         d === eventFromDay * 1 &&
+  //         d === eventToDay * 1 &&
+  //         eventFromMonth * 1 === eventToMonth * 1 &&
+  //         eventFromYear * 1 === eventToYear * 1 &&
+  //         eventFromMonth * 1 === this.selectedMonth() * 1 &&
+  //         eventFromYear * 1 === this.selectedYear() * 1
+  //       ) {
+  //         if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
+  //           colorClassName = styles.upcomingColor;
+  //         } else colorClassName = styles.leaveTakenColor;
+
+  //         // eslint-disable-next-line prefer-destructuring
+  //         eventMarkSingleClassName = styles.eventMarkSingleClassName;
+  //       } else {
+  //         if (
+  //           d === eventFromDay * 1 &&
+  //           this.selectedMonth() * 1 === eventFromMonth * 1 &&
+  //           this.selectedYear() * 1 === eventFromYear * 1
+  //         ) {
+  //           if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
+  //             colorClassName = styles.upcomingColor;
+  //           } else colorClassName = styles.leaveTakenColor;
+  //           eventMarkBeginClassName = styles.markEventBegin;
+  //         }
+
+  //         if (
+  //           d === eventToDay * 1 &&
+  //           this.selectedMonth() * 1 === eventToMonth * 1 &&
+  //           this.selectedYear() * 1 === eventToYear * 1
+  //         ) {
+  //           if (this.checkASingleDay(d, this.selectedMonth(), this.selectedYear()) === 1) {
+  //             colorClassName = styles.upcomingColor;
+  //           } else colorClassName = styles.leaveTakenColor;
+  //           eventMarkEndClassName = styles.markEventEnd;
+  //         }
+
+  //         if (
+  //           d > eventFromDay * 1 &&
+  //           d < eventToDay * 1 &&
+  //           this.selectedYear() * 1 === eventFromYear * 1 &&
+  //           this.selectedYear() * 1 === eventToYear * 1 &&
+  //           this.selectedMonth() * 1 === eventFromMonth * 1 &&
+  //           this.selectedMonth() * 1 === eventToMonth * 1
+  //         )
+  //           // eslint-disable-next-line prefer-destructuring
+  //           lineClassName = styles.lineClassName;
+  //       }
+  //     });
+
+  //     daysInMonth.push(
+  //       <td
+  //         key={d}
+  //         className={`${className} ${eventMarkSingleClassName} ${lineClassName} ${eventMarkBeginClassName} ${eventMarkEndClassName} ${colorClassName} `}
+  //       >
+  //         <span className={`${weekDayCheckClassName} ${currentDayClassName}`}>{d}</span>
+  //       </td>,
+  //     );
+  //   }
+  //   return daysInMonth;
+  // };
 
   checkASingleDay = (day, month, year) => {
     const { currentMonth, currentDay, currentYear } = this.state;
@@ -333,6 +411,26 @@ export default class LeaveHistoryCalendar extends PureComponent {
             <tr className={styles.daysInMonth}>{weekdays}</tr>
             {trElems}
           </table>
+        </div>
+        <div className={styles.listStatus}>
+          <div className={styles.listStatus__top}>
+            <div className={`${styles.dots} ${styles.dotAll}`} />
+            <span className={styles.listStatus__text}>All Leaves</span>
+          </div>
+          <div className={styles.listStatus__bottom}>
+            <div className={styles.listStatus__status}>
+              <div className={`${styles.dots} ${styles.dotApplied}`} />
+              <span className={styles.listStatus__text}>Applied</span>
+            </div>
+            <div className={styles.listStatus__status}>
+              <div className={`${styles.dots} ${styles.dotApproved}`} />
+              <span className={styles.listStatus__text}>Approved</span>
+            </div>
+            <div className={styles.listStatus__status}>
+              <div className={`${styles.dots} ${styles.dotRejected}`} />
+              <span className={styles.listStatus__text}>Rejected</span>
+            </div>
+          </div>
         </div>
         <div className={styles.eventDetailContainer}>
           <div className={styles.eventDetailPart}>
