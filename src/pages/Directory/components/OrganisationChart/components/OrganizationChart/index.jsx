@@ -64,7 +64,7 @@ class OrganizationChart extends Component {
 
   handleClickOutSide = (event) => {
     const { target } = event;
-    if (!this.userRef.current.contains(target)) {
+    if (!this.userRef.current?.contains(target)) {
       this.setState({ itemSelected: '' });
     }
   };
