@@ -214,6 +214,14 @@ const candidateInfo = {
       salaryTitle: null,
       salaryDepartment: null,
       salaryLocation: null,
+      settings: [],
+      salaryStructure: {
+        salaryDepartment: '',
+        salaryLocation: '',
+        salaryTitle: '',
+        settings: [],
+        // title: '',
+      },
     },
     data: {
       firstName: null,
@@ -226,6 +234,7 @@ const candidateInfo = {
       employeeType: null,
       department: null,
       title: null,
+      grade: null,
       company: null,
       joineeEmail: '',
       previousExperience: null,
@@ -240,6 +249,8 @@ const candidateInfo = {
         salaryDepartment: '',
         salaryLocation: '',
         salaryPosition: '',
+        settings: [],
+        title: '',
       },
       id: '',
       candidate: '',
@@ -620,9 +631,9 @@ const candidateInfo = {
         yield put({
           type: 'saveSalaryStructure',
           payload: {
-            department: payload.department,
-            workLocation: payload.workLocation,
-            title: payload.title,
+            salaryDepartment: payload.department,
+            salaryLocation: payload.location,
+            salaryTitle: payload.title,
             settings: setting,
           },
         });
@@ -672,7 +683,7 @@ const candidateInfo = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, message } = response;
+        const { statusCode, message: messages } = response;
         const candidate = payload._id;
         if (statusCode !== 200) throw response;
         yield put({
@@ -681,7 +692,7 @@ const candidateInfo = {
         });
 
         notification.success({
-          message,
+          messages,
         });
       } catch (errors) {
         dialog(errors);
@@ -933,7 +944,13 @@ const candidateInfo = {
         const { data, statusCode } = response;
 
         if (statusCode !== 200) throw response;
-        const { _id } = data;
+        const {
+          _id,
+          title,
+          workLocation,
+          salaryStructure: { settings },
+          grade,
+        } = data;
         yield put({
           type: 'save',
           payload: {
@@ -946,6 +963,16 @@ const candidateInfo = {
             ...data,
             candidate: _id,
             _id,
+          },
+        });
+        yield put({
+          type: 'saveSalaryStructure',
+          payload: {
+            // salaryDepartment: department?._id,
+            salaryLocation: workLocation?._id,
+            salaryTitle: title?._id,
+            settings,
+            grade,
           },
         });
         const {
@@ -1048,7 +1075,7 @@ const candidateInfo = {
             timeOffPolicy: data.timeOffPolicy || '',
             compensationType: data.compensationType || '',
             salaryTitle: data.salaryStructure?.title?._id,
-            salaryStructure: data.salaryStructure,
+            // salaryStructure: data.salaryStructure,
             salaryNote: data.salaryNote,
             includeOffer: data.includeOffer || 1,
             // hidePreviewOffer: !!(data.staticOfferLetter && data.staticOfferLetter.url), // Hide preview offer screen if there's already static offer

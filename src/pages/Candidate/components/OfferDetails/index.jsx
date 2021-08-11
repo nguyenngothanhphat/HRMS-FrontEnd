@@ -423,7 +423,7 @@ const OfferDetails = (props) => {
                     value={valueDigitalSignature}
                   >
                     <Space direction="vertical">
-                      {['Airin', 'GermanyScript', 'Bestlife', 'AudreyAndReynold'].map(
+                      {['Airin', 'GermanyScript', 'SH Imogen Agnes', 'AudreyAndReynold'].map(
                         (item, index) => (
                           <Radio value={index} style={{ display: 'flex', alignItems: 'center' }}>
                             <TextSignature
@@ -432,7 +432,7 @@ const OfferDetails = (props) => {
                               x={10}
                               y={75}
                               height={100}
-                              font={`60px ${item}`}
+                              font={item === 'Airin' ? `48px ${item}` : `60px ${item}`}
                             />
                           </Radio>
                           // </Col>

@@ -55,7 +55,6 @@ class ModalUpload extends Component {
   };
 
   onChange = (info) => {
-    console.log('info', info);
     const { status } = info.file;
     if (status === 'done') {
       // message.success(`${info.file.name} file uploaded successfully.`);
@@ -99,6 +98,7 @@ class ModalUpload extends Component {
       payload: formData,
       isUploadAvatar: true,
     }).then((resp) => {
+      this.setState({ imageUrl: '' });
       getResponse(resp);
     });
   };

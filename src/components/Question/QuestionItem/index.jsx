@@ -195,7 +195,7 @@ export default function QuestionItem({
       case TYPE_QUESTION.MULTIPLE_CHOICE.key:
         return defaultAnswers.map((answer, key) => (
           <Col className={styles.questionItem__answer}>
-            <div>
+            <div className={styles.questionItem__answer__display}>
               <img
                 style={{ width: '18px', height: '18px', marginRight: '10px' }}
                 src={Icon}

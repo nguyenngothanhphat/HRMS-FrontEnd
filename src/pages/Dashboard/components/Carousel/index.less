@@ -1,5 +1,6 @@
 .root {
   margin-bottom: 12px;
+
   .content {
     position: relative;
     width: 100%;
@@ -8,21 +9,25 @@
     background: #fff;
     border-radius: 6px;
   }
+
   .bg1 {
     background-image: url(../../../../assets/BG_Carousel1.png);
     background-repeat: no-repeat;
   }
+
   :global {
     .ant-carousel .slick-dots-bottom {
       bottom: 46px;
-      left: 27%;
+      left: 20%;
     }
+
     .ant-carousel .slick-dots li.slick-active button {
       width: 10px;
       height: 5px;
       background: #ffa100;
       border-radius: 10px;
     }
+
     .ant-carousel .slick-dots li button {
       width: 6px;
       height: 5px;
@@ -34,9 +39,11 @@
       .arrow();
       margin-left: 56px;
       padding: 8px 8px 8px 12px;
+
       &:active {
         transform: translateY(-1px);
       }
+
       &::before {
         content: '';
       }
@@ -46,25 +53,30 @@
       .arrow();
       margin-right: 62px;
       padding: 8px 10px 8px 10px;
+
       &:active {
         transform: translateY(-1px);
       }
+
       &::before {
         content: '';
       }
     }
   }
+
   .content1 {
     position: absolute;
     top: 40%;
     right: 18%;
     width: 255px;
+
     &__text1 {
       color: #161c29;
       font-weight: 700;
       font-size: 20px;
       line-height: 23px;
     }
+
     &__text2 {
       margin: 8px 0;
       color: #707177;
@@ -72,6 +84,7 @@
       font-size: 13px;
       line-height: 20px;
     }
+
     &__text3 {
       color: #ffa100;
       font-weight: 500;

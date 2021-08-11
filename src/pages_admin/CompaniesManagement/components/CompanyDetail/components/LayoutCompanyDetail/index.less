@@ -52,10 +52,10 @@
             margin: auto;
             left: 0;
             top: 120px;
-            &:active,
-            &:hover {
-              opacity: 0.5;
-            }
+            // &:active,
+            // &:hover {
+            //   opacity: 0.5;
+            // }
           }
         }
         &__textNameAndTitle {
@@ -79,6 +79,16 @@
         }
         &__viewBottom {
           padding: 7.5px 16px;
+
+          &__iconLinks{
+            display: flex;
+            // justify-content: center;
+            align-items: center;
+            img{
+              cursor: pointer;
+            }
+          }
+
           &__row {
             display: flex;
             flex-direction: row;

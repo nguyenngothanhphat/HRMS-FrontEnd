@@ -109,7 +109,7 @@ class TemplateTable extends Component {
 
   onEdit = (id) => {
     // eslint-disable-next-line no-alert
-    history.push(`offboarding/forms/form-detail/${id}/edit`);
+    history.push(`/offboarding/settings/forms/form-detail/${id}/edit`);
   };
 
   onDelete = (id) => {
@@ -184,6 +184,7 @@ class TemplateTable extends Component {
     };
 
     const { columnArr, type, inTab, hasCheckbox } = this.props;
+    console.log(this.parseList());
     return (
       <>
         <div className={`${styles.TemplateTable} ${inTab ? styles.inTab : ''}`}>

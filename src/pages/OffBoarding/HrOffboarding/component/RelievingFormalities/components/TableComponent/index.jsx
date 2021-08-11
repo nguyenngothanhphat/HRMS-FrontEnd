@@ -225,12 +225,37 @@ class TableComponent extends PureComponent {
     };
 
     const columns = [
+      // {
+      //   title: <span className={styles.title}>Ticket ID </span>,
+      //   dataIndex: 'ticketID',
+      //   fixed: 'left',
+      //   width: 150,
+      //   render: (ticketID) => <span className={styles.ticketId}>{ticketID}</span>,
+      // },
       {
         title: <span className={styles.title}>Ticket ID </span>,
         dataIndex: 'ticketID',
         fixed: 'left',
         width: 150,
-        render: (ticketID) => <span className={styles.ticketId}>{ticketID}</span>,
+        render: (ticketID) => {
+          let getId = '';
+          data.forEach((item) => {
+            if (item.ticketID === ticketID) getId = item._id;
+          });
+          if (isClosedTable)
+            return (
+              <span
+                onClick={() =>
+                  history.push(`/offboarding/hr-relieving-formalities/relieving-detail/${getId}`)
+                }
+                className={styles.ticketId}
+              >
+                {ticketID}
+              </span>
+            );
+
+          return <span className={styles.ticketId}>{ticketID}</span>;
+        },
       },
       {
         title: <span className={styles.title}>Employee ID </span>,

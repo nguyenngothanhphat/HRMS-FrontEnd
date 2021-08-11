@@ -47,22 +47,27 @@ class FormWorkLocationTenant extends Component {
   }
 
   handleEdit = () => {
+    const { trackingEditButton = () => {} } = this.props;
     const { isEditing, locationName } = this.state;
     if (!isEditing) {
       this.formRef.current.setFieldsValue({
         name: locationName,
       });
     }
+    trackingEditButton(!isEditing);
     this.setState({
       isEditing: !isEditing,
     });
   };
 
   handleCancel = () => {
+    const { trackingEditButton = () => {} } = this.props;
     const { isEditing, locationName } = this.state;
     this.setState({
       isEditing: !isEditing,
     });
+
+    trackingEditButton(!isEditing);
 
     const {
       locationInfo: {
@@ -158,7 +163,12 @@ class FormWorkLocationTenant extends Component {
   };
 
   saveLocationAPI = async (values, locationId) => {
-    const { dispatch, manageTenant = [], locationInfo = {} } = this.props;
+    const {
+      dispatch,
+      manageTenant = [],
+      locationInfo = {},
+      trackingEditButton = () => {},
+    } = this.props;
     const tenantId = getCurrentTenant();
     const companyId = getCurrentCompany();
 
@@ -230,6 +240,7 @@ class FormWorkLocationTenant extends Component {
           this.setState({
             isSaved: false,
           });
+          trackingEditButton(false);
         }, 2500);
       }
     }
