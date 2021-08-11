@@ -114,7 +114,7 @@ class EditForm extends Component {
             ],
             toolbar:
               'undo redo formatselect bold italic backcolor  alignleft aligncenter alignright alignjustify bullist numlist outdent indent removeformat help variable',
-            content_style: 'body { margin: 1rem auto; max-width: 900px; }',
+            content_style: 'body { margin: 1rem; max-width: 900px; }',
             setup(ed) {
               window.tester = ed;
               ed.ui.registry.addMenuButton('variable', {
