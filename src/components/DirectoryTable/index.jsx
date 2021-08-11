@@ -114,7 +114,7 @@ class DirectoryTable extends Component {
           <Avatar className={styles.avatar_emptySrc} alt="avatar" />
         )}
         <p onClick={() => this.handleProfileEmployee(_id, tenant, generalInfo?.userId)}>
-          {`${generalInfo?.firstName} ${generalInfo?.lastName}`}
+          {generalInfo?.legalName}
         </p>
       </div>
     );
@@ -348,7 +348,8 @@ class DirectoryTable extends Component {
                 managerPack._id,
                 managerPack.tenant,
                 managerPack.generalInfo?.userId,
-              )}
+              )
+            }
           >
             {managerPack.generalInfo
               ? `${managerPack?.generalInfo?.firstName} ${managerPack?.generalInfo?.lastName}`

@@ -21,7 +21,7 @@ class TimeOffTypesInfo extends PureComponent {
       type: 'timeOff/fetchTimeOffTypes',
       payload: {
         tenantId: getCurrentTenant(),
-      }
+      },
     });
   };
 
@@ -40,6 +40,13 @@ class TimeOffTypesInfo extends PureComponent {
   renderTimeOffTypeInfo = (value) => {
     return this.renderData().map((data, index) => {
       const { name = '', description = '', shortType = '', type = '' } = data;
+      const tempData = `
+        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+        invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
+        accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata
+        sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur
+        sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut.
+      `;
       if (type === value) {
         return (
           <Panel
@@ -47,7 +54,7 @@ class TimeOffTypesInfo extends PureComponent {
             header={`${name} ${shortType !== '' ? `(${shortType})` : ''}`}
             key={`${index + 1}`}
           >
-            <p>{description}</p>
+            <p>{description || tempData}</p>
           </Panel>
         );
       }
