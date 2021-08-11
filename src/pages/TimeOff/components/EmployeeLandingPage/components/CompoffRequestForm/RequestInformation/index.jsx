@@ -434,7 +434,7 @@ class RequestInformation extends PureComponent {
 
     const formatListEmail = this.renderEmailsList() || [];
 
-    const dateFormat = 'MM.DD.YY';
+    const dateFormat = 'DD.MM.YY';
 
     const {
       showSuccessModal,
