@@ -23,7 +23,7 @@ const mockData = [
   },
   {
     id: 4,
-    link: '#http://api-stghrms.paxanimi.ai/api/attachments/60c6ff9d5c94a70561aaca47/LWOP%2520Guidelines.pdf',
+    link: 'http://api-stghrms.paxanimi.ai/api/attachments/60c6ff9d5c94a70561aaca47/LWOP%2520Guidelines.pdf',
     text: 'Leave without Pay Policy',
   },
 ];

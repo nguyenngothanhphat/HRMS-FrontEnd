@@ -58,10 +58,8 @@ class RequestInformation extends PureComponent {
 
   // FETCH EMAIL LIST AND PROJECT LIST OF COMPANY
   fetchEmailsListByCompany = () => {
-    const {
-      dispatch,
-      user: { currentUser: { company: { _id: company = '' } = {} } = {} } = {},
-    } = this.props;
+    const { dispatch, user: { currentUser: { company: { _id: company = '' } = {} } = {} } = {} } =
+      this.props;
     dispatch({
       type: 'timeOff/fetchEmailsListByCompany',
       payload: [company],
@@ -69,10 +67,8 @@ class RequestInformation extends PureComponent {
   };
 
   fetchProjectsListByEmployee = () => {
-    const {
-      dispatch,
-      user: { currentUser: { employee: { _id: employee = '' } = {} } = {} } = {},
-    } = this.props;
+    const { dispatch, user: { currentUser: { employee: { _id: employee = '' } = {} } = {} } = {} } =
+      this.props;
     dispatch({
       type: 'timeOff/fetchProjectsListByEmployee',
       payload: { employee },
@@ -155,6 +151,7 @@ class RequestInformation extends PureComponent {
   // GENERATE PROJECT LIST DATA
   generateProjectsList = () => {
     const { timeOff: { projectsList = [] } = {} } = this.props;
+    console.log(projectsList);
     return projectsList.map((project) => {
       const { _id = '', name = '' } = project;
       return {
@@ -187,10 +184,8 @@ class RequestInformation extends PureComponent {
       projectManagerName,
     });
 
-    const {
-      dispatch,
-      user: { currentUser: { employee: { _id: userId } = {} } = {} } = {},
-    } = this.props;
+    const { dispatch, user: { currentUser: { employee: { _id: userId } = {} } = {} } = {} } =
+      this.props;
 
     dispatch({
       type: 'timeOff/getCompoffApprovalFlow',
@@ -263,8 +258,7 @@ class RequestInformation extends PureComponent {
     });
   };
 
-  onFinishFailed = (errorInfo) => {
-  };
+  onFinishFailed = (errorInfo) => {};
 
   // DATE PICKER ON CHANGE
   fromDateOnChange = (value) => {
@@ -440,7 +434,7 @@ class RequestInformation extends PureComponent {
 
     const formatListEmail = this.renderEmailsList() || [];
 
-    const dateFormat = 'MM.DD.YY';
+    const dateFormat = 'DD.MM.YY';
 
     const {
       showSuccessModal,
