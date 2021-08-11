@@ -52,6 +52,9 @@ class UserNode extends Component {
             {isCurrentUser ? <div className={styles.node__bottom_you}>You</div> : null}
           </div>
         )}
+        {isCurrentUser && listEmployees.length === 0 ? (
+          <div className={styles.node__bottom_you2}>You</div>
+        ) : null}
       </div>
     );
   }
