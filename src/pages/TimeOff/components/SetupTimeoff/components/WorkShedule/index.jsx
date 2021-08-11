@@ -279,6 +279,7 @@ class WorkShedule extends Component {
                                 value={moment(startTime, format)}
                                 disabled={edit}
                                 suffixIcon={this.renderIcons()}
+                                allowClear={false}
                               />
                             </Form.Item>
                           </Col>
@@ -311,6 +312,7 @@ class WorkShedule extends Component {
                                 onChange={this.selectEndTime}
                                 value={moment(endTime, format)}
                                 suffixIcon={this.renderIcons()}
+                                allowClear={false}
                               />
                             </Form.Item>
                           </Col>

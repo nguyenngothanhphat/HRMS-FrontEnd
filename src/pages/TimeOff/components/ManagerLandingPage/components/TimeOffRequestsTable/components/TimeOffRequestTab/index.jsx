@@ -224,18 +224,18 @@ class TimeOffRequestTab extends PureComponent {
 
   countTotal = (newData) => {
     const { currentUserRole = '' } = this.props;
-    const inProgressLength = [];
-    const approvedLength = [];
-    const rejectedLength = [];
-    const draftLength = [];
-    const onHoldLength = [];
+    let inProgressLength = 0;
+    let approvedLength = 0;
+    let rejectedLength = 0;
+    let draftLength = 0;
+    let onHoldLength = 0;
 
     newData.forEach((row) => {
       const { status = '' } = row;
       if (currentUserRole === 'REGION-HEAD') {
         switch (status) {
           case TIMEOFF_STATUS.inProgressNext: {
-            inProgressLength.push(row);
+            inProgressLength += 1;
             break;
           }
           default:
@@ -244,7 +244,7 @@ class TimeOffRequestTab extends PureComponent {
       } else if (currentUserRole !== 'REGION-HEAD') {
         switch (status) {
           case TIMEOFF_STATUS.inProgressNext: {
-            approvedLength.push(row);
+            approvedLength += 1;
             break;
           }
           default:
@@ -254,23 +254,23 @@ class TimeOffRequestTab extends PureComponent {
 
       switch (status) {
         case TIMEOFF_STATUS.inProgress: {
-          inProgressLength.push(row);
+          inProgressLength += 1;
           break;
         }
         case TIMEOFF_STATUS.accepted: {
-          approvedLength.push(row);
+          approvedLength += 1;
           break;
         }
         case TIMEOFF_STATUS.rejected: {
-          rejectedLength.push(row);
+          rejectedLength += 1;
           break;
         }
         case TIMEOFF_STATUS.drafts: {
-          draftLength.push(row);
+          draftLength += 1;
           break;
         }
         case TIMEOFF_STATUS.onHold: {
-          onHoldLength.push(row);
+          onHoldLength += 1;
           break;
         }
         default:
@@ -278,11 +278,11 @@ class TimeOffRequestTab extends PureComponent {
       }
     });
     this.setState({
-      inProgressLength: inProgressLength.length,
-      approvedLength: approvedLength.length,
-      rejectedLength: rejectedLength.length,
-      draftLength: draftLength.length,
-      onHoldLength: onHoldLength.length,
+      inProgressLength,
+      approvedLength,
+      rejectedLength,
+      draftLength,
+      onHoldLength,
     });
   };
 
