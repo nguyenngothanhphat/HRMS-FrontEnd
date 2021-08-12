@@ -158,7 +158,7 @@ class LeaveHistoryAndHoliday extends PureComponent {
         _id = '',
       } = each;
 
-      if (status) {
+      if (status !== TIMEOFF_STATUS.drafts) {
         const fromDate = moment(from).locale('en').format('MM/DD/YYYY');
         const toDate = moment(to).locale('en').format('MM/DD/YYYY');
         return {

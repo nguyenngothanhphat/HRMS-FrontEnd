@@ -10,11 +10,11 @@ export default class index extends PureComponent {
         text: 'In-progress',
       },
       ACCEPTED: {
-        color: '#006600',
+        color: '#00C598',
         text: 'Accepted',
       },
       REJECTED: {
-        color: '#ff0000',
+        color: '#F04B37',
         text: 'Rejected',
       },
       'ON-HOLD': {

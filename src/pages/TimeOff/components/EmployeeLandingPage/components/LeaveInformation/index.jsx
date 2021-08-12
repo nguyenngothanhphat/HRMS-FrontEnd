@@ -19,6 +19,7 @@ const CollapseInformation = (props) => {
     typesOfSpecialLeaves = [],
     policyCommonLeaves = {},
     policySpecialLeaves = {},
+    timeOffTypes = [],
   } = props;
 
   const [viewDocumentModal, setViewDocumentModal] = useState(false);
@@ -51,14 +52,10 @@ const CollapseInformation = (props) => {
         <div className={styles.leaveProgressBars}>
           {typesOfCommonLeaves.map((type, index) => {
             const { currentAllowance = 0, defaultSettings = {} } = type;
-            if (defaultSettings !== null) {
-              const {
-                name = '',
-                shortType = '',
-                baseAccrual: { time = 0 } = {},
-                type: type1 = '',
-              } = defaultSettings;
+            if (defaultSettings) {
+              const { name = '', shortType = '', type: type1 = '', _id = '' } = defaultSettings;
               if (type1 === 'A') {
+                const foundType = timeOffTypes.find((t) => t._id === _id) || {};
                 return (
                   <div key={`${index + 1}`}>
                     <LeaveProgressBar
@@ -66,7 +63,7 @@ const CollapseInformation = (props) => {
                       title={name}
                       shortType={shortType}
                       stepNumber={currentAllowance}
-                      limitNumber={time}
+                      limitNumber={foundType.noOfDays}
                     />
                     {index + 1 !== typesOfCommonLeaves.length && <div className={styles.hr} />}
                   </div>
@@ -211,7 +208,10 @@ class LeaveInformation extends PureComponent {
     const { remaining, percentMainCircle } = this.state;
     const {
       onInformationClick = () => {},
-      timeOff: { totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {} } = {},
+      timeOff: {
+        timeOffTypes = [],
+        totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {},
+      } = {},
       viewDocumentVisible = false,
     } = this.props;
     const { timeOffTypes: typesOfCommonLeaves = [], policy: policyCommonLeaves = {} } =
@@ -251,6 +251,7 @@ class LeaveInformation extends PureComponent {
                 typesOfSpecialLeaves={typesOfSpecialLeaves}
                 policyCommonLeaves={policyCommonLeaves}
                 policySpecialLeaves={policySpecialLeaves}
+                timeOffTypes={timeOffTypes}
               />
             </Panel>
           </Collapse>

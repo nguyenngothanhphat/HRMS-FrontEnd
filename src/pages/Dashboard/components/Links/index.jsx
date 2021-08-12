@@ -40,10 +40,10 @@ export default class Links extends Component {
   };
 
   renderLink = (item) => {
-    const { question } = item;
+    const { name } = item;
     return (
       <div style={{ display: 'flex' }} key={item} onClick={() => this.mapItemMenu(item)}>
-        <div className={s.link}> {question}</div>
+        <div className={s.link}> {name}</div>
       </div>
     );
   };
@@ -51,7 +51,7 @@ export default class Links extends Component {
   renderViewPDF = (item) => {
     const { name = '', href = '', isNew = false } = item;
     return (
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex' }} key={item}>
         <p onClick={() => this.openModalViewPDF(href, name)}>{name}</p>
         {isNew && <div className={s.new}>New</div>}
       </div>

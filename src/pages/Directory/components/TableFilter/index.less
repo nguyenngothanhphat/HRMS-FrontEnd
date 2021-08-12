@@ -16,7 +16,23 @@
       height: 100%;
       overflow-y: auto;
       &::-webkit-scrollbar {
-        display: none;
+        display: block;
+        width: 7px;
+        height: 7px;
+      }
+      /* Track */
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      /* Handle */
+      &::-webkit-scrollbar-thumb {
+        background: rgb(218, 218, 218);
+      }
+
+      /* Handle on hover */
+      &::-webkit-scrollbar-thumb:hover {
+        background: #555;
       }
     }
 
