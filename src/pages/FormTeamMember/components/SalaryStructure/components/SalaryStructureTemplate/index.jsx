@@ -320,7 +320,7 @@ class SalaryStructureTemplate extends PureComponent {
     const { isEdited } = this.state;
     const { settingsTempData: settings = [] } = this.props;
     const data = settings.find((item) => item === record) || {};
-    const { value = '', key, number = {} } = data;
+    const { value = '', key, number = {}, prefix, suffix } = data;
     const isNumber = Object.keys(number).length > 0;
 
     const valueKey = () => {
@@ -383,7 +383,7 @@ class SalaryStructureTemplate extends PureComponent {
           data.order === ' ' ? `big-text` : null
         }`}
       >
-        {value}
+        {`${prefix} ${value} `} <span style={{ color: 'rgba(22, 28, 41, 0.5)' }}>{suffix}</span>
       </span>
     );
   };
