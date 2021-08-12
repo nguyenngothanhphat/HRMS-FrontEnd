@@ -82,8 +82,14 @@
             }
 
             &__title{
-                font-weight: 600;
-                font: 18px;
+                font-family: Roboto;
+                font-size: 16px;
+                font-weight: bold;
+                font-stretch: normal;
+                font-style: normal;
+                line-height: normal;
+                letter-spacing: normal;
+                color: #161c29;
             }
 
             .raiseTerminationForm{
@@ -118,18 +124,58 @@
                         display: flex;
                         align-items: center;
 
+                        :global{
+                            .ant-tag, .ant-tag a, .ant-tag a:hover{
+                                font-family: Roboto;
+                                font-size: 12px;
+                                font-weight: normal;
+                                font-stretch: normal;
+                                font-style: normal;
+                                line-height: normal;
+                                letter-spacing: 0.11px;
+                                color: #676767;
+
+                                padding: 3px;
+                                display: flex;
+                                align-items: center;
+                            }
+                        }
+
                         .terminationText{
+                            font-family: Roboto;
+                            font-size: 13px;
+                            font-weight: normal;
+                            font-stretch: normal;
                             font-style: normal;
-                            font-weight: 600;
-                            color: #161c29;
+                            line-height: normal;
+                            letter-spacing: normal;
+                            color: #000;
                         }
 
                         .iconClose {
                             cursor: pointer;
                         }
+
+                        .fieldModal{
+                             border-radius: 5px;
+                            border: solid 1px #d6dce4;
+                            background-color: #fff;
+                        }
                     }
 
                     :global{
+
+                        .ant-radio-wrapper{
+                            font-family: Roboto;
+                            font-size: 14px;
+                            font-weight: normal;
+                            font-stretch: normal;
+                            font-style: normal;
+                            line-height: normal;
+                            letter-spacing: normal;
+                            color: #707177;
+                        }
+
                         .ant-form-item{
                             margin-bottom: 0;
                             width: 299px;

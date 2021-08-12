@@ -1,6 +1,18 @@
 import React, { Component } from 'react';
-import { Form, DatePicker, Row, Col, Input, Select, Divider, Button, Radio, Modal } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import {
+  Form,
+  DatePicker,
+  Row,
+  Col,
+  Input,
+  Select,
+  Divider,
+  Button,
+  Radio,
+  Modal,
+  Tag,
+} from 'antd';
+import { CloseCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import path from '@/assets/path.svg';
 import modalSuccess from '@/assets/modal_img_1.png';
 
@@ -75,6 +87,16 @@ class RaiseTermination extends Component {
   onFinish = (value) => {
     console.log(value);
     this.openFeedback();
+  };
+
+  tagRender = (props) => {
+    const { label, onClose } = props;
+
+    return (
+      <Tag icon={<CloseCircleOutlined className={styles.iconClose} onClick={onClose} />}>
+        {label}
+      </Tag>
+    );
   };
 
   render() {
