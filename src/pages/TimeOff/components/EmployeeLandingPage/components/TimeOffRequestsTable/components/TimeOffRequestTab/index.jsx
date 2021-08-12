@@ -104,7 +104,6 @@ class TimeOffRequestTab extends PureComponent {
       const { data: { items = [] } = {}, statusCode } = res;
       if (statusCode === 200) {
         const newData = this.getDataByType(items, tab);
-        this.countTotal(items);
         this.setState({
           formatData: newData,
         });
@@ -124,8 +123,31 @@ class TimeOffRequestTab extends PureComponent {
     });
   };
 
+  fetchAllData = () => {
+    const { dispatch, tab = 0, type: tabType = 0 } = this.props;
+    let type = '';
+    if (tabType === 1) {
+      type = 'timeOff/fetchLeaveRequestOfEmployee';
+    } else type = 'timeOff/fetchMyCompoffRequests';
+
+    dispatch({
+      type,
+    }).then((res) => {
+      const { data: { items = [] } = {}, statusCode } = res;
+      if (statusCode === 200) {
+        const newData = this.getDataByType(items, tab);
+        this.countTotal(newData);
+        const formatMainTabData = newData.filter((data) => data.status !== TIMEOFF_STATUS.deleted);
+        this.setState({
+          formatMainTabData,
+        });
+      }
+    });
+  };
+
   componentDidMount = () => {
     const { timeOff: { currentFilterTab } = {} } = this.props;
+    this.fetchAllData();
     this.fetchFilteredDataFromServer(currentFilterTab);
   };
 
@@ -140,6 +162,7 @@ class TimeOffRequestTab extends PureComponent {
   };
 
   setSelectedFilterTab = (id) => {
+    this.fetchAllData();
     this.fetchFilteredDataFromServer(id);
     this.saveCurrentTab(id);
   };

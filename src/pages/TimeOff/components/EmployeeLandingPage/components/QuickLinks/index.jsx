@@ -65,7 +65,7 @@ export default class QuickLinks extends PureComponent {
         <ViewDocumentModal
           url={link}
           visible={viewDocumentModal}
-          onClose={this.setViewDocumentModal}
+          onClose={() => this.setViewDocumentModal(false)}
         />
       </div>
     );
