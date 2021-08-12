@@ -151,7 +151,7 @@ class ViewDocumentModal extends PureComponent {
         width={viewType === 0 ? 500 : 900}
         visible={visible}
         footer={null}
-        onCancel={onClose}
+        onCancel={() => onClose(false)}
         centered
         maskClosable
       >

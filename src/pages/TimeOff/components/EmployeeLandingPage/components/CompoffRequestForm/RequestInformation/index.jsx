@@ -419,7 +419,7 @@ class RequestInformation extends PureComponent {
   // ON CANCEL EDIT
   onCancelEdit = () => {
     const { viewingCompoffRequestId: id } = this.state;
-    history.push(`/time-off/overview/personal-timeoff/view/${id}`);
+    history.push(`/time-off/overview/personal-compoff/view/${id}`);
   };
 
   render() {
