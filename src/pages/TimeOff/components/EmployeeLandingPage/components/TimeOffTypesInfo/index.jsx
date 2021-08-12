@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import { Collapse, Tooltip, Modal } from 'antd';
 import { CloseOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
-import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -15,19 +14,9 @@ class TimeOffTypesInfo extends PureComponent {
     this.state = {};
   }
 
-  componentDidMount = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'timeOff/fetchTimeOffTypes',
-      payload: {
-        tenantId: getCurrentTenant(),
-      }
-    });
-  };
-
   renderData = () => {
-    const { timeOff: { timeOffTypes = [] } = {} } = this.props;
-    return timeOffTypes;
+    const { timeOff: { timeOffTypesByCountry = [] } = {} } = this.props;
+    return timeOffTypesByCountry;
   };
 
   renderExpandIcon = (isActive) =>
