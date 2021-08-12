@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Form, DatePicker, Row, Col, Input, Select, Divider, Button, Tag, Modal } from 'antd';
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import moment from 'moment';
 import warning from '@/assets/warning_filled.svg';
 import modalSuccess from '@/assets/modal_img_1.png';
 import path from '@/assets/path.svg';
@@ -15,6 +16,8 @@ class PutOnLeave extends Component {
     super(props);
     this.state = {
       visible: false,
+      durationFrom: '',
+      durationTo: '',
     };
   }
 
@@ -54,6 +57,46 @@ class PutOnLeave extends Component {
         {label}
       </Tag>
     );
+  };
+
+  disabledFromDate = (current) => {
+    const { durationTo } = this.state;
+    return (
+      (current && current > moment(durationTo)) ||
+      moment(current).day() === 0 ||
+      moment(current).day() === 6
+    );
+  };
+
+  disabledToDate = (current) => {
+    const { durationFrom } = this.state;
+    return (
+      (current && current < moment(durationFrom)) ||
+      moment(current).day() === 0 ||
+      moment(current).day() === 6
+    );
+  };
+
+  dateOnChange = (value, name) => {
+    if (name === 'fromDate') {
+      if (value === null) {
+        this.setState({
+          durationFrom: '',
+        });
+      } else {
+        this.setState({
+          durationFrom: value,
+        });
+      }
+    } else if (value === null) {
+      this.setState({
+        durationTo: '',
+      });
+    } else {
+      this.setState({
+        durationTo: value,
+      });
+    }
   };
 
   render() {
@@ -103,11 +146,14 @@ class PutOnLeave extends Component {
                         ]}
                       >
                         <DatePicker
+                          disabledDate={this.disabledFromDate}
                           className={styles}
                           placeholder="DD-MM-YYYY"
                           picker="date"
                           format="DD.MM.YYYY"
-                          // onChange={(value) => _handleSelect(value, candidateField[1].title)}
+                          onChange={(value) => {
+                            this.dateOnChange(value, 'fromDate');
+                          }}
                         />
                       </Form.Item>
                     </Col>
@@ -134,11 +180,14 @@ class PutOnLeave extends Component {
                         ]}
                       >
                         <DatePicker
+                          disabledDate={this.disabledToDate}
                           className={styles}
                           placeholder="DD-MM-YYYY"
                           picker="date"
                           format="DD.MM.YYYY"
-                          // onChange={(value) => _handleSelect(value, candidateField[1].title)}
+                          onChange={(value) => {
+                            this.dateOnChange(value, 'toDate');
+                          }}
                         />
                       </Form.Item>
                     </Col>
