@@ -4,6 +4,7 @@ import { CloseCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import path from '@/assets/path.svg';
 import modalSuccess from '@/assets/modal_img_1.png';
 
+import Checkbox from 'antd/lib/checkbox/Checkbox';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -12,6 +13,7 @@ class RequestDetails extends Component {
     super(props);
     this.state = {
       visible: false,
+      reqType: '',
     };
   }
 
@@ -42,8 +44,12 @@ class RequestDetails extends Component {
     );
   };
 
+  onChangeSelect = (value) => {
+    this.setState({ reqType: value });
+  };
+
   render() {
-    const { visible } = this.state;
+    const { visible, reqType } = this.state;
 
     return (
       <div className={styles.requestDetail}>
@@ -86,21 +92,44 @@ class RequestDetails extends Component {
                         showSearch
                         allowClear
                         suffixIcon={<SearchOutlined />}
+                        onChange={this.onChangeSelect}
                         tagRender={this.tagRender}
                         filterOption={(input, option) =>
                           option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                         }
                       >
-                        <Option value="manager">Manager</Option>
-                        <Option value="manager1">Manager1</Option>
-                        <Option value="manager2">Manager2</Option>
-                        <Option value="manager3">Manager2</Option>
-                        <Option value="manager4">Manager2</Option>
-                        <Option value="manager5">Manager2</Option>
+                        <Option value="1">Eligibility Documents</Option>
+                        <Option value="2">Bank Details</Option>
+                        <Option value="3">Adhaar ID Details</Option>
+                        <Option value="4">Passport Information</Option>
+                        <Option value="5">TDS Certificate</Option>
                       </Select>
                     </Form.Item>
                   </Col>
                 </Row>
+                {reqType ? (
+                  <Row
+                    style={{ marginTop: '24px' }}
+                    className={styles.lwpForm__form__row}
+                    gutter={[24, 0]}
+                  >
+                    <Col className={styles.lwpForm__form__col} xs={24} sm={24} md={6} lg={6} xl={6}>
+                      <div className={styles.lwpText}>Additional Info</div>
+                    </Col>
+                    <Col
+                      className={styles.lwpForm__form__col}
+                      xs={24}
+                      sm={24}
+                      md={18}
+                      lg={18}
+                      xl={18}
+                    >
+                      <Form.Item name="additionalInfo">
+                        <Checkbox>Request Proof of Eligibility</Checkbox>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                ) : null}
               </div>
               <Divider className={styles.divider} />
               <div className={styles.btnGroup}>
