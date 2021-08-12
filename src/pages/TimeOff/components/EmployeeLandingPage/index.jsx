@@ -43,6 +43,7 @@ export default class EmployeeLandingPage extends PureComponent {
   };
 
   onInformationClick = () => {
+    window.scroll({ top: 150, left: 0, behavior: 'smooth' });
     const { viewInformation } = this.state;
     this.setState({
       viewInformation: !viewInformation,
@@ -62,7 +63,10 @@ export default class EmployeeLandingPage extends PureComponent {
             <Col xs={24} md={6}>
               <Row gutter={[20, 20]}>
                 <Col span={24}>
-                  <LeaveInformation onInformationClick={this.onInformationClick} />
+                  <LeaveInformation
+                    viewDocumentVisible={viewInformation}
+                    onInformationClick={this.onInformationClick}
+                  />
                 </Col>
                 <Col span={24}>
                   <LeaveHistoryAndHoliday />

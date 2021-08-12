@@ -161,6 +161,7 @@ class RequestInformation extends PureComponent {
       // generate date lists and leave time
       const dateLists = this.getDateLists(fromDate, toDate);
       const resultDates = [];
+
       let check = false;
       dateLists.forEach((val1) => {
         check = false;
@@ -188,6 +189,14 @@ class RequestInformation extends PureComponent {
       });
 
       // set notice
+      if (type === 'C') {
+        this.autoValueForToDate(type, name, moment(fromDate), '');
+      }
+
+      if (type === 'D') {
+        this.setSecondNotice(`${name} applied for: ${dateLists.length} days`);
+      }
+
       // this.autoValueForToDate(type, shortType, moment(fromDate), '');
       if (
         type === 'A' &&
@@ -214,9 +223,8 @@ class RequestInformation extends PureComponent {
       timeOff: {
         totalLeaveBalance: {
           commonLeaves: { timeOffTypes: timeOffTypesAB = [] } = {},
-          specialLeaves: { timeOffTypes: timeOffTypesC = [] } = {},
+          specialLeaves: { timeOffTypes: timeOffTypesCD = [] } = {},
         } = {},
-        timeOffTypes = [],
       } = {},
     } = this.props;
 
@@ -241,7 +249,7 @@ class RequestInformation extends PureComponent {
     });
 
     if (!check)
-      timeOffTypesC.forEach((value) => {
+      timeOffTypesCD.forEach((value) => {
         const {
           defaultSettings: {
             // baseAccrual: { time = 0 } = {},
@@ -253,15 +261,6 @@ class RequestInformation extends PureComponent {
           count = currentAllowance;
           // total = time;
           check = true;
-        }
-      });
-
-    if (!check)
-      timeOffTypes.forEach((value) => {
-        const { noOfDays = 0, name: name1 = '', type = '' } = value;
-        if (typeName === name1 && type === 'D') {
-          count = noOfDays;
-          // total = time;
         }
       });
 
@@ -277,9 +276,8 @@ class RequestInformation extends PureComponent {
       timeOff: {
         totalLeaveBalance: {
           commonLeaves: { timeOffTypes: timeOffTypesAB = [] } = {},
-          specialLeaves: { timeOffTypes: timeOffTypeC = [] } = {},
+          specialLeaves: { timeOffTypes: timeOffTypesCD = [] } = {},
         } = {},
-        timeOffTypes = [],
       } = {},
     } = this.props;
 
@@ -292,17 +290,10 @@ class RequestInformation extends PureComponent {
       }
     });
 
-    timeOffTypeC.forEach((value) => {
+    timeOffTypesCD.forEach((value) => {
       const { defaultSettings: { _id: _id1 = '' } = {}, currentAllowance = 0 } = value;
       if (_id1 === _id) {
         count = currentAllowance;
-      }
-    });
-
-    timeOffTypes.forEach((value) => {
-      const { _id: _id1 = '', type = '' } = value;
-      if (_id1 === _id && type === 'D') {
-        count = 'VALID';
       }
     });
 
@@ -382,7 +373,7 @@ class RequestInformation extends PureComponent {
   };
 
   // GENERATE LEAVE DATES FOR API
-  generateLeaveDates = (from, to, leaveTimeLists) => {
+  generateLeaveDates = (from, to, leaveTimeLists, selectedType) => {
     const dateLists = this.getDateLists(from, to);
     let result = [];
     if (leaveTimeLists.length === 0) {
@@ -401,12 +392,16 @@ class RequestInformation extends PureComponent {
         };
       });
     }
-    result = result.filter(
-      (value) =>
-        moment(value.date).weekday() !== 6 &&
-        moment(value.date).weekday() !== 0 &&
-        Object.keys(value).length !== 0,
-    );
+    if (selectedType !== 'C' && selectedType !== 'D') {
+      result = result.filter(
+        (value) =>
+          moment(value.date).weekday() !== 6 &&
+          moment(value.date).weekday() !== 0 &&
+          Object.keys(value).length !== 0,
+      );
+    } else {
+      result = result.filter((value) => Object.keys(value).length !== 0);
+    }
 
     return result;
   };
@@ -418,7 +413,7 @@ class RequestInformation extends PureComponent {
       isEditingDrafts,
       viewingLeaveRequestId,
       // totalDayOfSelectedType,
-      // selectedType,
+      selectedType,
     } = this.state;
     if (buttonState === 1) {
       const { dispatch, user: { currentUser: { employee = {} } = {} } = {} } = this.props;
@@ -436,7 +431,12 @@ class RequestInformation extends PureComponent {
       if (timeOffType === '') {
         message.error('Please fill required fields!');
       } else {
-        const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
+        const leaveDates = this.generateLeaveDates(
+          durationFrom,
+          durationTo,
+          leaveTimeLists,
+          selectedType,
+        );
 
         // let duration = 0;
         // if (selectedType !== 'C') duration = this.calculateNumberOfLeaveDay(leaveDates);
@@ -507,7 +507,12 @@ class RequestInformation extends PureComponent {
       leaveTimeLists = [],
     } = values;
 
-    const leaveDates = this.generateLeaveDates(durationFrom, durationTo, leaveTimeLists);
+    const leaveDates = this.generateLeaveDates(
+      durationFrom,
+      durationTo,
+      leaveTimeLists,
+      selectedType,
+    );
     // console.log('leaveDates', leaveDates);
 
     const { buttonState } = this.state;
@@ -578,41 +583,39 @@ class RequestInformation extends PureComponent {
   // AUTO VALUE FOR TODATE of DATE PICKER DEPENDING ON SELECTED TYPE
   autoValueForToDate = (selectedType, selectedTypeName, durationFrom, prevType) => {
     let autoToDate = null;
-    if (prevType !== 'A' || (prevType === 'A' && selectedType !== 'A')) {
-      if (
-        durationFrom !== null &&
-        durationFrom !== '' &&
-        (selectedType === 'C' || selectedType === 'D')
-      ) {
+    const typeAB = ['A', 'B'];
+    const typeCD = ['C', 'D'];
+
+    // console.log('durationFrom', durationFrom);
+    // console.log('selectedType', selectedType);
+    // console.log('prevType', prevType);
+    if (
+      !typeAB.includes(prevType) ||
+      (typeAB.includes(prevType) && !typeAB.includes(selectedType))
+    ) {
+      if (durationFrom && typeCD.includes(selectedType)) {
         const {
-          timeOff: { timeOffTypes = [] },
+          timeOff: {
+            // timeOffTypes = [],
+            totalLeaveBalance: { specialLeaves = {} || {} } = {} || {},
+          } = {},
         } = this.props;
 
-        if (selectedType === 'C' || selectedType === 'D') {
-          const foundType = timeOffTypes.find((value) => value.type === selectedType);
-          const { name = '', noOfDays = 0 } = foundType;
-          console.log('foundType', foundType);
+        const { timeOffTypes = [] } = specialLeaves;
 
-          if (noOfDays !== 0) autoToDate = moment(durationFrom).add(noOfDays - 1, 'day');
-          else autoToDate = moment(durationFrom).add(noOfDays, 'day');
+        if (selectedType === 'C') {
+          const foundType = timeOffTypes.find(
+            (value) => value.defaultSettings.name === selectedTypeName,
+          );
+          const { currentAllowance = 0 } = foundType || {};
 
-          if (selectedType === 'D') {
-            this.setSecondNotice(`${name} applied for: ${noOfDays} days`);
-            if (noOfDays !== 0) {
-              let tempTime = noOfDays;
-              for (let i = 1; i <= noOfDays; i += 1) {
-                if (moment(moment(durationFrom).add(i, 'day')).weekday() === 0) {
-                  tempTime += 2;
-                }
-              }
-              autoToDate = moment(durationFrom).add(tempTime - 1, 'day');
-            }
-          }
-          if (selectedType === 'C') {
-            this.setSecondNotice(
-              `A 'To date' will be set automatically as per a duration of ${noOfDays} days from the selected 'From date'`,
-            );
-          }
+          if (currentAllowance !== 0)
+            autoToDate = moment(durationFrom).add(currentAllowance - 1, 'day');
+          else autoToDate = moment(durationFrom).add(currentAllowance, 'day');
+
+          this.setSecondNotice(
+            `A 'To date' will be set automatically as per a duration of ${currentAllowance} days from the selected 'From date'`,
+          );
 
           const dateLists = this.getDateLists(durationFrom, autoToDate);
           const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
@@ -626,7 +629,19 @@ class RequestInformation extends PureComponent {
             leaveTimeLists: initialValuesForLeaveTimesList,
           });
         }
-      } else if (prevType !== '') {
+        if (selectedType === 'D') {
+          this.setSecondNotice('');
+
+          this.setState({
+            durationTo: null,
+          });
+
+          this.formRef.current.setFieldsValue({
+            durationTo: null,
+            leaveTimeLists: [],
+          });
+        }
+      } else if (prevType) {
         this.formRef.current.setFieldsValue({
           leaveTimeLists: [],
           durationTo: null,
@@ -678,14 +693,20 @@ class RequestInformation extends PureComponent {
         durationTo: value,
       });
     }
-    const { selectedTypeName, selectedType } = this.state;
+    const { selectedTypeName, selectedType, durationFrom } = this.state;
     if (selectedType === 'A' && selectedTypeName === 'Casual Leave')
       this.setSecondNotice(`${selectedTypeName}s gets credited each month.`);
 
     // initial value for leave dates list
-    const { durationFrom } = this.state;
     const dateLists = this.getDateLists(durationFrom, value);
     const initialValuesForLeaveTimesList = dateLists.map(() => 'WHOLE-DAY');
+
+    if (selectedType === 'D') {
+      this.setSecondNotice(
+        `${selectedTypeName} applied for: ${initialValuesForLeaveTimesList.length} days`,
+      );
+    }
+
     this.formRef.current.setFieldsValue({
       leaveTimeLists: initialValuesForLeaveTimesList,
     });
@@ -693,20 +714,14 @@ class RequestInformation extends PureComponent {
 
   // RENDER SELECT BOX
   // GET DATA FOR SELECT BOX TYPE 1,2
-  renderTimeOffTypes1 = (data) => {
+  renderTimeOffTypes = (data) => {
     const result = data.map((type) => {
       const { currentAllowance = 0, defaultSettings = {} } = type;
-      if (defaultSettings !== null) {
-        const {
-          _id = '',
-          name = '',
-          type: type1 = '',
-          baseAccrual: { time = 0 } = {},
-        } = defaultSettings;
+      if (defaultSettings) {
+        const { _id = '', name = '', type: type1 = '' } = defaultSettings;
         return {
           name,
           remaining: currentAllowance,
-          total: time,
           type: type1,
           _id,
         };
@@ -716,33 +731,17 @@ class RequestInformation extends PureComponent {
     return result.filter((val) => val !== '');
   };
 
-  // GET DATA FOR SELECT BOX TYPE 3 (WFH/CP...)
-  renderTimeOffTypes2 = (data) => {
-    let result = data.map((eachType) => {
-      const { _id = '', name = '', type = '' } = eachType;
-      if (type === 'D') {
-        return {
-          name,
-          _id,
-        };
-      }
-      return null;
-    });
-    result = result.filter((value) => value !== null);
-    return result;
-  };
-
   // RENDER OPTIONS
-  // TYPE A: PAID LEAVES & UNPAID LEAVES
+  // TYPE A & B: PAID LEAVES & UNPAID LEAVES
   renderType1 = (data) => {
     const {
       timeOff: { timeOffTypes = [] },
     } = this.props;
 
     return data.map((value) => {
-      const { name = '', type = '', remaining = 0, total = 0, _id = '' } = value;
+      const { name = '', type = '', remaining = 0, _id = '' } = value;
 
-      const foundType = timeOffTypes.find((t) => t.name === name && t.type === type);
+      const foundType = timeOffTypes.find((t) => t._id === _id);
 
       const defaultCss = {
         fontSize: 12,
@@ -793,10 +792,17 @@ class RequestInformation extends PureComponent {
     });
   };
 
-  // TYPE C: SPECIAL LEAVES
+  // TYPE C: SPECIAL LEAVES & TYPE D: WORKING OUT OF OFFICE
   renderType2 = (data) => {
+    const {
+      timeOff: { timeOffTypes = [] },
+    } = this.props;
+
     return data.map((value) => {
       const { name = '', remaining = 0, _id } = value;
+
+      const foundType = timeOffTypes.find((t) => t._id === _id);
+
       return (
         <Option value={_id}>
           <div className={styles.timeOffTypeOptions}>
@@ -804,33 +810,19 @@ class RequestInformation extends PureComponent {
               {`${name}`}
             </span>
 
-            <span style={{ float: 'right', fontSize: 12, fontWeight: 'bold' }}>
-              <span
-                style={
-                  remaining === 0
-                    ? { fontSize: 12, color: '#FD4546' }
-                    : { fontSize: 12, color: 'black' }
-                }
-              >
-                {remaining} days
+            {foundType.type === 'C' && (
+              <span style={{ float: 'right', fontSize: 12, fontWeight: 'bold' }}>
+                <span
+                  style={
+                    remaining === 0
+                      ? { fontSize: 12, color: '#FD4546' }
+                      : { fontSize: 12, color: 'black' }
+                  }
+                >
+                  {remaining} days
+                </span>
               </span>
-            </span>
-          </div>
-        </Option>
-      );
-    });
-  };
-
-  // TYPE D: WORKING OUT OF OFFICE
-  renderType3 = (data) => {
-    return data.map((value) => {
-      const { name = '', _id = '' } = value;
-      return (
-        <Option key={_id} value={_id}>
-          <div className={styles.timeOffTypeOptions}>
-            <span style={{ fontSize: 13 }} className={styles.name}>
-              {`${name}`}
-            </span>
+            )}
           </div>
         </Option>
       );
@@ -975,7 +967,7 @@ class RequestInformation extends PureComponent {
 
     const {
       timeOff: {
-        timeOffTypes = [],
+        // timeOffTypes = [],
         totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {},
       } = {},
       loadingAddLeaveRequest = false,
@@ -986,9 +978,8 @@ class RequestInformation extends PureComponent {
     } = this.props;
     const { timeOffTypes: typesOfCommonLeaves = [] } = commonLeaves;
     const { timeOffTypes: typesOfSpecialLeaves = [] } = specialLeaves;
-    const dataTimeOffTypes1 = this.renderTimeOffTypes1(typesOfCommonLeaves);
-    const dataTimeOffTypes2 = this.renderTimeOffTypes1(typesOfSpecialLeaves);
-    const dataTimeOffTypes3 = this.renderTimeOffTypes2(timeOffTypes);
+    const dataTimeOffTypes1 = this.renderTimeOffTypes(typesOfCommonLeaves);
+    const dataTimeOffTypes2 = this.renderTimeOffTypes(typesOfSpecialLeaves);
 
     // DYNAMIC ROW OF DATE LISTS
     const dateLists = this.getDateLists(durationFrom, durationTo);
@@ -1038,7 +1029,6 @@ class RequestInformation extends PureComponent {
                 >
                   {this.renderType1(dataTimeOffTypes1)}
                   {this.renderType2(dataTimeOffTypes2)}
-                  {this.renderType3(dataTimeOffTypes3)}
                 </Select>
               </Form.Item>
             </Col>
@@ -1133,7 +1123,7 @@ class RequestInformation extends PureComponent {
             </Col>
           </Row>
 
-          {selectedType !== 'C' && (
+          {selectedType !== 'C' && selectedType !== 'D' && (
             <>
               <Row className={styles.eachRow}>
                 <Col className={styles.label} span={6}>

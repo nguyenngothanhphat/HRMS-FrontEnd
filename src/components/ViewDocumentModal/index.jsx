@@ -70,7 +70,7 @@ class ViewDocumentModal extends PureComponent {
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
     return (
       <div className={styles.loading}>
-        <Spin indicator={antIcon} />,
+        <Spin indicator={antIcon} />
       </div>
     );
   };

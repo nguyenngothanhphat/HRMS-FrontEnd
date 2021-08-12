@@ -212,6 +212,7 @@ class LeaveInformation extends PureComponent {
     const {
       onInformationClick = () => {},
       timeOff: { totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {} } = {},
+      viewDocumentVisible = false,
     } = this.props;
     const { timeOffTypes: typesOfCommonLeaves = [], policy: policyCommonLeaves = {} } =
       commonLeaves;
@@ -221,7 +222,10 @@ class LeaveInformation extends PureComponent {
     // this.calculateValueForCircleProgress(typesOfCommonLeaves);
 
     return (
-      <div className={styles.LeaveInformation}>
+      <div
+        className={styles.LeaveInformation}
+        style={viewDocumentVisible ? { zIndex: '1002' } : {}}
+      >
         <div className={styles.totalLeaveBalance}>
           <div className={styles.aboveContainer}>
             <span className={styles.title}>Total Leave Balance</span>
