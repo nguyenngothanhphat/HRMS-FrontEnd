@@ -192,21 +192,25 @@ class DetailEmployeeChart extends Component {
               </Text>
               <div className={styles.chartDetail__Bottom_actions}>
                 <Tooltip title="Message">
-                  <img
-                    src="/assets/images/messageIcon.svg"
-                    alt="img-arrow"
-                    style={{ cursor: 'pointer' }}
-                  />
+                  <a href="https://chat.google.com" target="_blank" rel="noreferrer">
+                    <img
+                      src="/assets/images/messageIcon.svg"
+                      alt="img-arrow"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </a>
                 </Tooltip>
                 <Tooltip title="Email">
-                  <img
-                    src="/assets/images/iconMail.svg"
-                    alt="img-mail"
-                    style={{ cursor: 'pointer' }}
-                  />
+                  <a href={`mailto:${workEmail}`}>
+                    <img
+                      src="/assets/images/iconMail.svg"
+                      alt="img-mail"
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </a>
                 </Tooltip>
                 <Tooltip title="LinkedIn">
-                  <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
+                  <a href={linkedIn} target="_blank" rel="noopener noreferrer">
                     <img
                       src="/assets/images/iconLinkedin.svg"
                       alt="img-arrow"

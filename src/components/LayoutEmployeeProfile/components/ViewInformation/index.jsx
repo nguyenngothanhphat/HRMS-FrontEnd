@@ -451,11 +451,13 @@ class ViewInformation extends Component {
               </a>
             </Tooltip>
             <Tooltip title="Email">
-              <img
-                src="/assets/images/iconMail.svg"
-                alt="img-arrow"
-                style={{ marginLeft: '5px', cursor: 'pointer' }}
-              />
+              <a href={`mailto:${workEmail}`}>
+                <img
+                  src="/assets/images/iconMail.svg"
+                  alt="img-arrow"
+                  style={{ marginLeft: '5px', cursor: 'pointer' }}
+                />
+              </a>
             </Tooltip>
           </div>
           <div className={s.viewBtnAction}>{this.btnAction(permissions, profileOwner)}</div>
