@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { Row, Col, Affix, Button } from 'antd';
-import { FormOutlined } from '@ant-design/icons';
+import { Row, Col, Affix } from 'antd';
+// import { FormOutlined } from '@ant-design/icons';
 
 import { connect } from 'umi';
 import { isAdmin, isOwner } from '@/utils/authority';
@@ -38,6 +38,35 @@ const listQuickLinks = [
   },
   {
     name: 'Submit Commuter Claim',
+    href: 'http://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf',
+  },
+];
+
+const listQuestion = [
+  {
+    name: 'I cannot access an app?',
+    href: 'http://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf',
+    isNew: true,
+  },
+  {
+    name: 'How do I integrate google calendar with the portal?',
+    href: 'http://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf',
+    isNew: true,
+  },
+  {
+    name: 'I cannot access an app?',
+    href: 'http://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf',
+  },
+  {
+    name: 'How do I integrate google calendar with the portal?',
+    href: 'http://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf',
+  },
+  {
+    name: 'How do I remove an app from the list of apps?',
+    href: 'http://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf',
+  },
+  {
+    name: 'How do I remove an app from the list of apps?',
     href: 'http://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf',
   },
 ];
@@ -139,7 +168,6 @@ class Dashboard extends PureComponent {
     } = this.props;
     const { faq = [] } = getListByCompany;
 
-    const listQuestion = [];
     faq.forEach(({ questionAndAnswer, category }) => {
       const listQAs = questionAndAnswer.map((qa) => ({ ...qa, category }));
       listQuestion.push(...listQAs);
