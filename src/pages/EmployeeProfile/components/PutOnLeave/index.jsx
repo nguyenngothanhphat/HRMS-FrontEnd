@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Form, DatePicker, Row, Col, Input, Select, Divider, Button, Tag, Modal } from 'antd';
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import { connect } from 'umi';
+
 import warning from '@/assets/warning_filled.svg';
 import modalSuccess from '@/assets/modal_img_1.png';
 import path from '@/assets/path.svg';
@@ -11,6 +13,9 @@ import styles from './index.less';
 const { TextArea } = Input;
 const { Option } = Select;
 
+@connect(({ employeeProfile: { tempData: { generalData = {} } = {} } = {} }) => ({
+  generalData,
+}))
 class PutOnLeave extends Component {
   constructor(props) {
     super(props);
@@ -101,6 +106,9 @@ class PutOnLeave extends Component {
 
   render() {
     const { visible } = this.state;
+    const { generalData: { firstName = '', lastName = '' } = {} } = this.props;
+    const fullName = `${firstName} ${lastName}`;
+
     return (
       <div className={styles.putOnLeaveRoot}>
         <div className={styles.putOnLeaveRoot__titleSection}>
@@ -116,7 +124,7 @@ class PutOnLeave extends Component {
               <div className={styles.notification}>
                 <img alt="warning" src={warning} />
                 <div className={styles.notification__text}>
-                  This will put Aditya Venkatesh on leave for the days selected without pay, a
+                  This will put {fullName} on leave for the days selected without pay, a
                   Notification for the update will be sent to the employee as well.
                 </div>
               </div>
