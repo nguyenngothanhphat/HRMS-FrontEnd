@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Form, Row, Col, Select, Divider, Button, Modal } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Form, Row, Col, Select, Divider, Button, Modal, Tag } from 'antd';
+import { CloseCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import path from '@/assets/path.svg';
 import modalSuccess from '@/assets/modal_img_1.png';
 
@@ -15,6 +15,11 @@ class RequestDetails extends Component {
     };
   }
 
+  handleCancel = () => {
+    const { cancel = () => {} } = this.props;
+    cancel();
+  };
+
   openFeedback = () => {
     this.setState({
       visible: true,
@@ -25,6 +30,16 @@ class RequestDetails extends Component {
     this.setState({
       visible: false,
     });
+  };
+
+  tagRender = (props) => {
+    const { label, onClose } = props;
+
+    return (
+      <Tag icon={<CloseCircleOutlined className={styles.iconClose} onClick={onClose} />}>
+        {label}
+      </Tag>
+    );
   };
 
   render() {
@@ -79,6 +94,9 @@ class RequestDetails extends Component {
                         <Option value="manager">Manager</Option>
                         <Option value="manager1">Manager1</Option>
                         <Option value="manager2">Manager2</Option>
+                        <Option value="manager3">Manager2</Option>
+                        <Option value="manager4">Manager2</Option>
+                        <Option value="manager5">Manager2</Option>
                       </Select>
                     </Form.Item>
                   </Col>

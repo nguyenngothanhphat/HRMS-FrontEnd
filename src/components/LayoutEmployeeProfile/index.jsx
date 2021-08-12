@@ -95,7 +95,7 @@ class CommonLayout extends PureComponent {
       },
       {
         key: '2',
-        component: <RequestDetails />,
+        component: <RequestDetails cancel={this.cancelDisplayItemAction} />,
       },
     ];
 
