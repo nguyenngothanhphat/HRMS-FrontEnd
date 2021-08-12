@@ -8,22 +8,22 @@ const { TabPane } = Tabs;
 const mockData = [
   {
     id: 1,
-    link: 'http://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf',
+    link: 'https://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf',
     text: 'Casual Leave Policy',
   },
   {
     id: 2,
-    link: 'http://api-stghrms.paxanimi.ai/api/attachments/60c6fe575c94a70561aaca35/ModelMaternityPolicy.pdf',
+    link: 'https://api-stghrms.paxanimi.ai/api/attachments/60c6fe575c94a70561aaca35/ModelMaternityPolicy.pdf',
     text: 'Maternity Leave Policy',
   },
   {
     id: 3,
-    link: 'http://api-stghrms.paxanimi.ai/api/attachments/60c6ff445c94a70561aaca44/sampleBereavementLeavePolicy.pdf',
+    link: 'https://api-stghrms.paxanimi.ai/api/attachments/60c6ff445c94a70561aaca44/sampleBereavementLeavePolicy.pdf',
     text: 'Bereavement Leave Policy',
   },
   {
     id: 4,
-    link: 'http://api-stghrms.paxanimi.ai/api/attachments/60c6ff9d5c94a70561aaca47/LWOP%2520Guidelines.pdf',
+    link: 'https://api-stghrms.paxanimi.ai/api/attachments/60c6ff9d5c94a70561aaca47/LWOP%2520Guidelines.pdf',
     text: 'Leave without Pay Policy',
   },
 ];
