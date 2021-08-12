@@ -47,7 +47,6 @@ class Reason extends PureComponent {
     // const marginTop = lastWorkingDate ? '0px' : '60px';
     const dateValue = moment(lastWorkingDate).format('MM.DD.YY');
     const { viewDocumentModal } = this.state;
-
     const link =
       'https://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf';
 
@@ -154,7 +153,7 @@ class Reason extends PureComponent {
         <ViewDocumentModal
           url={link}
           visible={viewDocumentModal}
-          onClose={this.setViewDocumentModal}
+          onClose={() => this.setViewDocumentModal(false)}
         />
       </div>
     );

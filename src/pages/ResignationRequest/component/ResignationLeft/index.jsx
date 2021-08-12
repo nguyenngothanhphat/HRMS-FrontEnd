@@ -1,4 +1,5 @@
 import icon from '@/assets/lightIcon.svg';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { Button, Input, Spin } from 'antd';
 // import Checkbox from 'antd/lib/checkbox/Checkbox';
@@ -15,6 +16,7 @@ class ResigationLeft extends Component {
       reasonForLeaving: '',
       sendleaveRequest: false,
       changeLWD: '',
+      viewDocumentModal: false,
     };
   }
 
@@ -37,6 +39,16 @@ class ResigationLeft extends Component {
       },
     });
   }
+
+  setViewDocumentModal = (value) => {
+    this.setState({
+      viewDocumentModal: value,
+    });
+  };
+
+  onLinkClick = () => {
+    this.setViewDocumentModal(true);
+  };
 
   submitForm = (action) => {
     const { dispatch, approvalflow = [] } = this.props;
@@ -98,13 +110,15 @@ class ResigationLeft extends Component {
   };
 
   render() {
-    const { reasonForLeaving = '', sendleaveRequest, changeLWD } = this.state;
+    const { reasonForLeaving = '', sendleaveRequest, changeLWD, viewDocumentModal } = this.state;
     const { loading, totalList = [], loadingFetchListRequest } = this.props;
     const checkInprogress = totalList.find(({ _id }) => _id === 'IN-PROGRESS') || {};
     const checkAccepted = totalList.find(({ _id }) => _id === 'ACCEPTED') || {};
     const checkSendRequest = checkInprogress.count > 0 || checkAccepted.count > 0;
 
     const companyName = this.getCurrentCompanyName() || '';
+    const link =
+      'https://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf';
 
     if (loadingFetchListRequest)
       return (
@@ -118,9 +132,12 @@ class ResigationLeft extends Component {
           <img src={icon} alt="iconCheck" className={styles.icon} />
           <span className={styles.title_Text}>
             Your Last Working Day (LWD) will be 90 day from the submission of this request. Check
-            our <span className={styles.offboardingPolicy}>Offboarding policy</span> to learn more.
-            The LWD is system generated. Any change request has to be approved by the HR manager to
-            come into effect.
+            our{' '}
+            <span onClick={this.onLinkClick} className={styles.offboardingPolicy}>
+              Offboarding policy
+            </span>{' '}
+            to learn more. The LWD is system generated. Any change request has to be approved by the
+            HR manager to come into effect.
           </span>
         </div>
         <div className={styles.titleBody}>
@@ -193,6 +210,11 @@ class ResigationLeft extends Component {
             </Button>
           </div>
         )}
+        <ViewDocumentModal
+          url={link}
+          visible={viewDocumentModal}
+          onClose={() => this.setViewDocumentModal(false)}
+        />
       </div>
     );
   }
