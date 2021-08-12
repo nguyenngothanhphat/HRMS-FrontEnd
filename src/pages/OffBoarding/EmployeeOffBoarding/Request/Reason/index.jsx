@@ -3,6 +3,7 @@ import { Input, Row, Col, DatePicker } from 'antd';
 import { connect } from 'umi';
 import icon from '@/assets/offboarding-bulb.svg';
 import moment from 'moment';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 // import Checkbox from 'antd/lib/checkbox/Checkbox';
 import styles from './index.less';
 
@@ -14,6 +15,23 @@ const dateFormat = 'MM.DD.YY';
   myRequest,
 }))
 class Reason extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      viewDocumentModal: false,
+    };
+  }
+
+  setViewDocumentModal = (value) => {
+    this.setState({
+      viewDocumentModal: value,
+    });
+  };
+
+  onLinkClick = () => {
+    this.setViewDocumentModal(true);
+  };
+
   render() {
     const {
       myRequest: {
@@ -28,6 +46,10 @@ class Reason extends PureComponent {
     } = this.props;
     // const marginTop = lastWorkingDate ? '0px' : '60px';
     const dateValue = moment(lastWorkingDate).format('MM.DD.YY');
+    const { viewDocumentModal } = this.state;
+
+    const link =
+      'https://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf';
 
     return (
       <div className={styles.stepContain}>
@@ -75,8 +97,11 @@ class Reason extends PureComponent {
               <img src={icon} alt="iconBulb" className={styles.icon} />
               <div className={styles.title_Text}>
                 Your Last Working Day (LWD) will be 90 day from the submission of this request.
-                Check our <span className={styles.title_Text_span}>Offboarding policy</span> to
-                learn more. The LWD is system generated. Any change request has to be approved by
+                Check our{' '}
+                <span onClick={this.onLinkClick} className={styles.title_Text_span}>
+                  Offboarding policy
+                </span>{' '}
+                to learn more. The LWD is system generated. Any change request has to be approved by
                 the HR manager to come into effect.
               </div>
             </div>
@@ -126,6 +151,11 @@ class Reason extends PureComponent {
             )}
           </div> */}
         </div>
+        <ViewDocumentModal
+          url={link}
+          visible={viewDocumentModal}
+          onClose={this.setViewDocumentModal}
+        />
       </div>
     );
   }
