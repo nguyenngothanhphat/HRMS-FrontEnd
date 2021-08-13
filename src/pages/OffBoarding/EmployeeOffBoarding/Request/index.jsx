@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Affix, Spin, Skeleton, DatePicker } from 'antd';
+import { Row, Col, Affix, Spin, Skeleton, DatePicker, Button } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import ModalSet1On1 from '@/components/ModalSet1On1';
 import StatusRequest from '@/components/StatusRequest';
@@ -118,6 +118,14 @@ class ResignationRequest extends Component {
     return 0;
   };
 
+  handleSubmitTicket = () => {
+    const { dispatch, myRequest: { _id = '' } = {} } = this.props;
+    dispatch({
+      type: 'offboarding/sendRequestUpdate',
+      payload: { id: _id },
+    });
+  };
+
   render() {
     const {
       myRequest = {},
@@ -185,8 +193,13 @@ class ResignationRequest extends Component {
                 status={status}
               />
               {arrStatus.indexOf(status) > -1 && (
-                <div className={styles.viewWithDraw}>
-                  <WithDraw />
+                <div className={styles.btn}>
+                  <div className={styles.viewWithDraw}>
+                    <WithDraw />
+                  </div>
+                  {/* <div className={styles.btn__submit}>
+                    <Button onClick={this.handleSubmitTicket}>Submit</Button>
+                  </div> */}
                 </div>
               )}
             </Col>
