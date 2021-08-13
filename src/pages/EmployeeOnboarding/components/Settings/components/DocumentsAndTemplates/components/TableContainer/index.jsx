@@ -2,10 +2,12 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { Input, Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import CommonTable from './components/CommonTable';
+import TemplateTable from './components/TemplateTable';
+import DocumentTable from './components/DocumentTable';
 import SearchIcon from './images/search.svg';
 import SortIcon from './images/sort.svg';
 import ViewModeIcon from './images/view.svg';
+import AddDocumentModal from './components/AddDocumentModal';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
@@ -13,13 +15,23 @@ const { TabPane } = Tabs;
 @connect(
   ({
     loading,
-    employeeSetting: { defaultTemplateListOnboarding = [], customTemplateListOnboarding = [] },
+    user: { currentUser = {} } = {},
+    employeeSetting: {
+      documentListOnboarding = [],
+      defaultTemplateListOnboarding = [],
+      customTemplateListOnboarding = [],
+      uploadDocumentModalVisible = false,
+    },
   }) => ({
+    currentUser,
+    documentListOnboarding,
     defaultTemplateListOnboarding,
     customTemplateListOnboarding,
+    loadingDocumentList: loading.effects['employeeSetting/fetchDocumentListOnboarding'],
     loadingDefaultTemplateList:
       loading.effects['employeeSetting/fetchDefaultTemplateListOnboarding'],
     loadingCustomTemplateList: loading.effects['employeeSetting/fetchCustomTemplateListOnboarding'],
+    uploadDocumentModalVisible,
   }),
 )
 class TableContainer extends PureComponent {
@@ -72,6 +84,45 @@ class TableContainer extends PureComponent {
     );
   };
 
+  // handle upload document setting modal
+
+  onCloseUploadDocument = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'employeeSetting/save',
+      payload: {
+        uploadDocumentModalVisible: false,
+      },
+    });
+  };
+
+  onAddDocument = async (values) => {
+    const { key = '', uploadedFile: { id: attachment = '' } = {} } = values || {};
+    const {
+      dispatch,
+      currentUser: { _id: userMap = '' },
+    } = this.props;
+
+    const payload = {
+      tenantId: getCurrentTenant(),
+      company: getCurrentCompany(),
+      key, // file name
+      attachment,
+      documentType: '',
+      module: 'ON_BOARDING',
+      userMap,
+    };
+
+    const res = await dispatch({
+      type: 'employeeSetting/addDocumentSetting',
+      payload,
+    });
+    if (res?.statusCode === 200) {
+      this.onCloseUploadDocument();
+      this.fetchData('1');
+    }
+  };
+
   render() {
     const {
       defaultTemplateListOnboarding = [],
@@ -79,6 +130,8 @@ class TableContainer extends PureComponent {
       customTemplateListOnboarding = [],
       loadingCustomTemplateList = false,
       documentListOnboarding = [],
+      loadingDocumentList = false,
+      uploadDocumentModalVisible = false,
     } = this.props;
 
     return (
@@ -86,17 +139,17 @@ class TableContainer extends PureComponent {
         <div className={styles.tabs}>
           <Tabs defaultActiveKey="1" onTabClick={(key) => this.fetchData(key)}>
             <TabPane tab="Documents" key="1">
-              <CommonTable list={documentListOnboarding} loading={false} inTab />
+              <DocumentTable list={documentListOnboarding} loading={loadingDocumentList} refreshData={() => this.fetchData('1')} />
             </TabPane>
             <TabPane tab="System Default Templates" key="2">
-              <CommonTable
+              <TemplateTable
                 list={defaultTemplateListOnboarding}
                 loading={loadingDefaultTemplateList}
                 inTab
               />
             </TabPane>
             <TabPane tab="Custom templates" key="3">
-              <CommonTable
+              <TemplateTable
                 list={customTemplateListOnboarding}
                 loading={loadingCustomTemplateList}
                 inTab
@@ -104,6 +157,12 @@ class TableContainer extends PureComponent {
             </TabPane>
           </Tabs>
         </div>
+
+        <AddDocumentModal
+          visible={uploadDocumentModalVisible}
+          onClose={this.onCloseUploadDocument}
+          onAdd={this.onAddDocument}
+        />
       </div>
     );
   }

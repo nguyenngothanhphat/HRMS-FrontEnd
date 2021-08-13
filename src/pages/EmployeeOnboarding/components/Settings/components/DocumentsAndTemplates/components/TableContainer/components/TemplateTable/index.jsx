@@ -10,7 +10,7 @@ import DeleteIcon from './images/delete.svg';
 import DocIcon from './images/doc.svg';
 import styles from './index.less';
 
-class CommonTable extends Component {
+class TemplateTable extends Component {
   constructor(props) {
     super(props);
     this.state = { pageSelected: 1 };
@@ -185,7 +185,7 @@ class CommonTable extends Component {
     const { columnArr, type, inTab, hasCheckbox } = this.props;
     return (
       <>
-        <div className={`${styles.CommonTable} ${inTab ? styles.inTab : ''}`}>
+        <div className={`${styles.TemplateTable} ${inTab ? styles.inTab : ''}`}>
           <Table
             size="small"
             rowSelection={
@@ -217,7 +217,7 @@ class CommonTable extends Component {
   }
 }
 
-// export default CommonTable;
+// export default TemplateTable;
 export default connect(({ candidateInfo }) => ({
   candidateInfo,
-}))(CommonTable);
+}))(TemplateTable);

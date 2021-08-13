@@ -36,6 +36,7 @@ import {
 
   // setting > document
   addDocumentSetting,
+  removeDocumentSetting,
   getDocumentSettingList,
 } from '../services/employeeSetting';
 
@@ -381,6 +382,26 @@ const employeeSetting = {
         return 0;
       }
     },
+
+    *removeDocumentSettingById({ payload = {} }, { call }) {
+      try {
+        const response = yield call(removeDocumentSetting, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Remove document successfully',
+        });
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return 0;
+      }
+    },
+
     *uploadFile({ payload, isUploadSignature = false }, { call, put }) {
       let response = {};
       try {
@@ -422,8 +443,9 @@ const employeeSetting = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, data } = response;
+        const { statusCode, message, data } = response;
         if (statusCode !== 200) throw response;
+        notification.success({ message });
         yield put({ type: 'save', payload: { newDocument: data } });
         return response;
       } catch (errors) {
@@ -431,6 +453,7 @@ const employeeSetting = {
         return {};
       }
     },
+
     *addCustomTemplate({ payload = {} }, { call, put }) {
       try {
         const response = yield call(addCustomTemplate, {

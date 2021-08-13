@@ -7,6 +7,13 @@ export async function addDocumentSetting(payload) {
   });
 }
 
+export async function removeDocumentSetting(payload) {
+  return request('/api/documentcompanytenant/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getDocumentSettingList(payload) {
   return request('/api/documentcompanytenant/list', {
     method: 'POST',

@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
-import { DownloadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { Tabs, Button, Row, Col } from 'antd';
 import { connect, formatMessage, history } from 'umi';
 import exportToExcel from '@/utils/exportAsExcel';
 // import { isAdmin, isOwner } from '@/utils/authority';
-import { getCurrentCompany } from '@/utils/authority';
+// import UploadIcon from '@/assets/uploadYellow.svg';
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
 // import CustomFields from './components/CustomFields';
@@ -94,34 +94,45 @@ class EmployeeOnboarding extends PureComponent {
   onUploadDocument = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'onboard/save',
+      type: 'employeeSetting/save',
       payload: {
-        isUploadingDocument: true,
+        uploadDocumentModalVisible: true,
       },
     });
   };
 
-  renderActionButton = (tabName) => {
+  renderActionButton = (tabName, type) => {
     return (
       <div className={styles.options}>
         <Row gutter={[24, 0]}>
-          <Col>
-            <Button
-              icon={<DownloadOutlined />}
-              className={styles.generate}
-              type="text"
-              onClick={this.downloadTemplate}
-              style={tabName === 'settings' ? { display: 'none' } : {}}
-            >
-              {formatMessage({ id: 'component.employeeOnboarding.generate' })}
-            </Button>
-          </Col>
+          {tabName !== 'settings' && (
+            <Col>
+              <Button
+                icon={<DownloadOutlined />}
+                className={styles.generate}
+                type="text"
+                onClick={this.downloadTemplate}
+              >
+                {formatMessage({ id: 'component.employeeOnboarding.generate' })}
+              </Button>
+            </Col>
+          )}
+
+          {tabName === 'settings' && (type === '' || type === 'documents-templates') && (
+            <Col>
+              <Button
+                icon={<UploadOutlined />}
+                className={styles.generate}
+                type="text"
+                onClick={this.onUploadDocument}
+              >
+                Upload
+              </Button>
+            </Col>
+          )}
           <Col>
             <Button className={styles.view} type="link">
               {formatMessage({ id: 'component.employeeOnboarding.viewActivityLogs' })} (15)
-            </Button>
-            <Button className={styles.uploadDocumentBtn} onClick={this.onUploadDocument}>
-              Upload
             </Button>
           </Col>
         </Row>
@@ -151,7 +162,7 @@ class EmployeeOnboarding extends PureComponent {
               onChange={(key) => {
                 history.push(`/employee-onboarding/${key}`);
               }}
-              tabBarExtraContent={this.renderActionButton(tabName)}
+              tabBarExtraContent={this.renderActionButton(tabName, type)}
             >
               {viewOnboardingOverviewTab && (
                 <TabPane

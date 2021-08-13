@@ -101,11 +101,11 @@ class AddDocumentModal extends PureComponent {
   onFinish = async (values) => {
     const { onAdd = () => {} } = this.props;
 
-    const { name = '' } = values;
+    const { key = '' } = values;
     const { uploadedFile = {} } = this.state;
 
     const payload = {
-      name,
+      key,
       uploadedFile,
     };
 
@@ -118,10 +118,10 @@ class AddDocumentModal extends PureComponent {
   };
 
   handleCancel = () => {
-    const { handleModalVisible = () => {} } = this.props;
+    const { onClose = () => {} } = this.props;
     this.setState({ uploadedFile: {} });
     this.handlePreview('');
-    handleModalVisible(false);
+    onClose();
   };
 
   render() {
@@ -147,7 +147,7 @@ class AddDocumentModal extends PureComponent {
               disabled={!fileName}
               // loading={loadingReassign}
             >
-              Add
+              Upload
             </Button>,
           ]}
           title={this.renderHeaderModal()}
@@ -209,9 +209,14 @@ class AddDocumentModal extends PureComponent {
                       <Spin />
                     ) : (
                       <>
-                        <img className={styles.uploadIcon} src={AttachmentIcon} alt="upload" />
-                        <span className={styles.chooseFileText}>Choose file</span>
-                        <span className={styles.uploadText}>or drop file here</span>
+                        {/* <img className={styles.uploadIcon} src={AttachmentIcon} alt="upload" /> */}
+                        <div className={styles.aboveText}>
+                          <span className={styles.uploadText}>Drop file here or</span>
+                          <span className={styles.browseText}> browse</span>
+                        </div>
+                        <span className={styles.belowText}>
+                          Maximum file size 300 mb, Supported file format png, jpeg, pdf.
+                        </span>
                       </>
                     )}
                   </div>
