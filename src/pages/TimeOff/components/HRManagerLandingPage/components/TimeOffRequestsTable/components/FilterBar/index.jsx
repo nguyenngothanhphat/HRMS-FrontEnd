@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Tabs, Badge } from 'antd';
 // import moment from 'moment';
 import { connect } from 'umi';
@@ -9,7 +9,7 @@ const { TabPane } = Tabs;
 @connect(({ timeOff }) => ({
   timeOff,
 }))
-class FilterBar extends PureComponent {
+class FilterBar extends Component {
   saveCurrentTab = (type) => {
     const { dispatch } = this.props;
     dispatch({
@@ -21,9 +21,13 @@ class FilterBar extends PureComponent {
   };
 
   onChangeTab = (activeKey) => {
-    const { setSelectedFilterTab } = this.props;
+    const { setSelectedFilterTab, dispatch } = this.props;
     setSelectedFilterTab(activeKey);
     this.saveCurrentTab(activeKey);
+    dispatch({
+      type: 'timeOff/savePaging',
+      payload: { page: 1 },
+    });
   };
 
   addZeroToNumber = (number) => {

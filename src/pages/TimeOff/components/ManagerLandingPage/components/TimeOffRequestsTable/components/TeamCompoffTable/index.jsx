@@ -12,7 +12,9 @@ import RejectCommentModal from '../RejectCommentModal';
 
 import styles from './index.less';
 
-@connect(({ loading }) => ({
+@connect(({ dispatch, timeOff: { paging }, loading }) => ({
+  dispatch,
+  paging,
   // loading2: loading.effects['timeOff/fetchMyCompoffRequests'],
   loading1: loading.effects['timeOff/fetchTeamCompoffRequests'],
   loading3: loading.effects['timeOff/approveMultipleCompoffRequest'],
@@ -151,7 +153,7 @@ class TeamCompoffTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      pageSelected: 1,
+      // pageSelected: 1,
       selectedRowKeys: [],
       commentModalVisible: false,
       rejectingId: '',
@@ -226,16 +228,18 @@ class TeamCompoffTable extends PureComponent {
 
   // pagination
   onChangePagination = (pageNumber) => {
-    this.setState({
-      pageSelected: pageNumber,
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/savePaging',
+      payload: { page: pageNumber },
     });
   };
 
-  setFirstPage = () => {
-    this.setState({
-      pageSelected: 1,
-    });
-  };
+  // setFirstPage = () => {
+  //   this.setState({
+  //     pageSelected: 1,
+  //   });
+  // };
 
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
@@ -381,15 +385,16 @@ class TeamCompoffTable extends PureComponent {
       loading5 = false,
       loading6 = false,
       selectedTab = '',
+      paging: { page, limit, total },
     } = this.props;
     const {
       selectedRowKeys,
-      pageSelected,
+      // pageSelected,
       commentModalVisible,
       rejectingTicketID,
       rejectMultiple,
     } = this.state;
-    const rowSize = 10;
+    // const rowSize = 10;
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -403,19 +408,19 @@ class TeamCompoffTable extends PureComponent {
     const pagination = {
       hideOnSinglePage: false,
       position: ['bottomLeft'],
-      total: parsedData.length,
-      showTotal: (total, range) => (
+      total,
+      showTotal: (totals, range) => (
         <span>
           {' '}
           Showing{'  '}
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
-          of {total}{' '}
+          of {totals}{' '}
         </span>
       ),
-      pageSize: rowSize,
-      current: pageSelected,
+      pageSize: limit,
+      current: page,
       onChange: this.onChangePagination,
     };
 
@@ -441,7 +446,7 @@ class TeamCompoffTable extends PureComponent {
           size="middle"
           loading={tableLoading}
           rowSelection={rowSelection}
-          pagination={{ ...pagination, total: parsedData.length }}
+          pagination={{ ...pagination, total }}
           columns={tableByRole}
           dataSource={parsedData}
           scroll={scroll}
