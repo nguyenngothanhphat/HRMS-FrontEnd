@@ -1,4 +1,4 @@
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant, getCurrentLocation } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { notification } from 'antd';
 import {
@@ -58,6 +58,7 @@ import {
   addHoliday,
   updateEmployeeSchedule,
   getLocationByCompany,
+  getLocationById,
 } from '../services/timeOff';
 
 const timeOff = {
@@ -88,6 +89,14 @@ const timeOff = {
     urlExcel: undefined,
     updateSchedule: {},
     balances: {},
+    filter: {
+      type: [],
+      search: '',
+      formDate: '',
+      toDate: '',
+      isSearch: false,
+    },
+
     allTeamLeaveRequests: {},
     allTeamCompoffRequests: {},
     compoffApprovalFlow: {},
@@ -117,8 +126,25 @@ const timeOff = {
       countrySelected: '',
       countryHoliday: '',
     },
+    paging: {
+      page: 1,
+      limit: 10,
+      total: 0,
+    },
   },
   effects: {
+    *getTimeOffTypeByLocation(_, { call }) {
+      try {
+        const response = yield call(getLocationById, {
+          id: getCurrentLocation(),
+        });
+        return response;
+      } catch (error) {
+        dialog(error);
+        return error;
+      }
+    },
+
     *addTimeOffType({ payload }, { call, put }) {
       try {
         const response = yield call(addTimeOffType, payload);
@@ -243,36 +269,44 @@ const timeOff = {
         // dialog(errors);
       }
     },
-    *fetchLeaveRequestOfEmployee({ employee = '', status = '' }, { call, put }) {
+    *fetchLeaveRequestOfEmployee({ payload }, { call, put }) {
+      const { status = '' } = payload;
       try {
         const tenantId = getCurrentTenant();
         if (status !== '') {
           const response = yield call(getLeaveRequestOfEmployee, {
-            employee,
-            status,
+            ...payload,
             tenantId,
             company: getCurrentCompany(),
           });
-          const { statusCode, data: leaveRequests = [] } = response;
+          const { statusCode, data: leaveRequests = [], total } = response;
           if (statusCode !== 200) throw response;
 
           yield put({
             type: 'save',
             payload: { leaveRequests },
           });
+          yield put({
+            type: 'savePaging',
+            payload: { total },
+          });
           return response;
         }
         if (status === '') {
           const response = yield call(getLeaveRequestOfEmployee, {
-            employee,
+            ...payload,
             tenantId,
             company: getCurrentCompany(),
           });
-          const { statusCode, data: allMyLeaveRequests = [] } = response;
+          const { statusCode, data: allMyLeaveRequests = [], total } = response;
           if (statusCode !== 200) throw response;
           yield put({
             type: 'save',
             payload: { allMyLeaveRequests },
+          });
+          yield put({
+            type: 'savePaging',
+            payload: { total },
           });
           return response;
         }
@@ -495,32 +529,41 @@ const timeOff = {
         return {};
       }
     },
-    *fetchMyCompoffRequests({ status = [] }, { call, put }) {
+    *fetchMyCompoffRequests({ payload }, { call, put }) {
+      const { status = [] } = payload;
       try {
         if (status !== '') {
           const response = yield call(getMyCompoffRequests, {
-            status,
+            ...payload,
             tenantId: getCurrentTenant(),
           });
-          const { statusCode, data: compoffRequests = {} } = response;
+          const { statusCode, data: compoffRequests = {}, total } = response;
           // console.log('response', response);
           if (statusCode !== 200) throw response;
           yield put({
             type: 'save',
             payload: { compoffRequests },
           });
+          yield put({
+            type: 'savePaging',
+            payload: { total },
+          });
           return response;
         }
         if (status === '') {
           const response = yield call(getMyCompoffRequests, {
-            status,
+            ...payload,
             tenantId: getCurrentTenant(),
           });
-          const { statusCode, data: allMyCompoffRequests = {} } = response;
+          const { statusCode, data: allMyCompoffRequests = {}, total } = response;
           if (statusCode !== 200) throw response;
           yield put({
             type: 'save',
             payload: { allMyCompoffRequests },
+          });
+          yield put({
+            type: 'savePaging',
+            payload: { total },
           });
           return response;
         }
@@ -598,24 +641,32 @@ const timeOff = {
     },
 
     // MANAGER
-    *fetchTeamCompoffRequests({ status = [] }, { call, put }) {
+    *fetchTeamCompoffRequests({ payload }, { call, put }) {
+      const { status = [] } = payload;
       try {
         if (status !== '') {
           const response = yield call(getTeamCompoffRequests, {
-            status,
+            ...payload,
             tenantId: getCurrentTenant(),
           });
-          const { statusCode, data: teamCompoffRequests = {} } = response;
+          const { statusCode, data: teamCompoffRequests = {}, total } = response;
           // console.log('response', response);
           if (statusCode !== 200) throw response;
           yield put({
             type: 'save',
             payload: { teamCompoffRequests },
           });
+          yield put({
+            type: 'savePaging',
+            payload: { total },
+          });
           return response;
         }
         if (status === '') {
-          const response = yield call(getTeamCompoffRequests, { tenantId: getCurrentTenant() });
+          const response = yield call(getTeamCompoffRequests, {
+            ...payload,
+            tenantId: getCurrentTenant(),
+          });
           const { statusCode, data: allTeamCompoffRequests = {} } = response;
           // console.log('response', response);
           if (statusCode !== 200) throw response;
@@ -631,34 +682,44 @@ const timeOff = {
       return {};
     },
 
-    *fetchTeamLeaveRequests({ status = '' }, { call, put }) {
+    *fetchTeamLeaveRequests({ payload }, { call, put }) {
+      const { status = '' } = payload;
       try {
         if (status !== '') {
           const response = yield call(getTeamLeaveRequests, {
-            status,
+            ...payload,
             tenantId: getCurrentTenant(),
             company: getCurrentCompany(),
           });
-          const { statusCode, data: teamLeaveRequests = {} } = response;
+          const { statusCode, data: teamLeaveRequests = {}, total } = response;
           // console.log('response', response);
           if (statusCode !== 200) throw response;
           yield put({
             type: 'save',
             payload: { teamLeaveRequests },
           });
+          yield put({
+            type: 'savePaging',
+            payload: { total },
+          });
           return response;
         }
         if (status === '') {
           const response = yield call(getTeamLeaveRequests, {
+            ...payload,
             tenantId: getCurrentTenant(),
             company: getCurrentCompany(),
           });
-          const { statusCode, data: allTeamLeaveRequests = {} } = response;
+          const { statusCode, data: allTeamLeaveRequests = {}, total } = response;
           // console.log('response', response);
           if (statusCode !== 200) throw response;
           yield put({
             type: 'save',
             payload: { allTeamLeaveRequests },
+          });
+          yield put({
+            type: 'savePaging',
+            payload: { total },
           });
           return response;
         }
@@ -1108,6 +1169,26 @@ const timeOff = {
         ...state,
         tempData: {
           ...tempData,
+          ...action.payload,
+        },
+      };
+    },
+    saveFilter(state, action) {
+      const { filter } = state;
+      return {
+        ...state,
+        filter: {
+          ...filter,
+          ...action.payload,
+        },
+      };
+    },
+    savePaging(state, action) {
+      const { paging } = state;
+      return {
+        ...state,
+        paging: {
+          ...paging,
           ...action.payload,
         },
       };

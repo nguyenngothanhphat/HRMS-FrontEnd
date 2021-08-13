@@ -3,11 +3,13 @@ import { Tabs } from 'antd';
 import { connect } from 'umi';
 import TimeOffRequestTab from '../TimeOffRequestTab';
 import styles from './index.less';
+import SearchTimeOff from '../../../../../SearchTimeOff/index';
 
 const { TabPane } = Tabs;
 
-@connect(({ timeOff }) => ({
+@connect(({ timeOff, timeOff: { filter = {} } }) => ({
   timeOff,
+  filter,
 }))
 class MineOrTeamTabs extends PureComponent {
   saveCurrentTab = (type) => {
@@ -20,6 +22,10 @@ class MineOrTeamTabs extends PureComponent {
           currentFilterTab: '1',
         },
       });
+    dispatch({
+      type: 'timeOff/savePaging',
+      payload: { page: 1 },
+    });
   };
 
   render() {
@@ -29,12 +35,16 @@ class MineOrTeamTabs extends PureComponent {
       tabName = '',
       timeOff: { currentMineOrTeamTab = '' } = {},
     } = this.props;
+    const renderTableTitle = {
+      right: <SearchTimeOff />,
+    };
     return (
       <div className={styles.MineOrTeamTabs}>
         <Tabs
           destroyInactiveTabPane
           tabPosition="top"
           // tabBarGutter={40}
+          tabBarExtraContent={renderTableTitle}
           onTabClick={(activeKey) => this.saveCurrentTab(activeKey)}
           activeKey={currentMineOrTeamTab}
         >

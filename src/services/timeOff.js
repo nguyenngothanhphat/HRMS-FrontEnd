@@ -371,3 +371,9 @@ export async function updateEmployeeSchedule(payload) {
     data: payload,
   });
 }
+export async function getLocationById(payload) {
+  return request('/api/locationtenant/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
