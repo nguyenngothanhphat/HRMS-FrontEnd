@@ -26,14 +26,14 @@ export default class LeaveHistoryList extends PureComponent {
     return (
       <div className={styles.LeaveHistoryList}>
         {leavingList.map((row, index) => {
-          const { fromDate = '', toDate = '', name = '', _id, status } = row;
+          const { fromDate = '', toDate = '', typeName = '', _id, status } = row;
           return (
             <Row
               key={`${index + 1}`}
               className={styles.eachRow}
               onClick={() => this.goToLeaveRequest(_id)}
             >
-              {fromDate === toDate && (
+              {/* {fromDate === toDate && (
                 <>
                   <Col xs={4} className={styles.dateAndMonth} style={{ justifyContent: 'center' }}>
                     <span className={styles.container}>
@@ -46,38 +46,34 @@ export default class LeaveHistoryList extends PureComponent {
                     </span>
                   </Col>
                   <Col xs={14} className={styles.eventOfDay}>
-                    {name}
+                    {typeName}
                   </Col>
                 </>
-              )}
-              {fromDate !== toDate && (
-                <>
-                  <Col
-                    xs={8}
-                    className={styles.dateAndMonth}
-                    style={{ justifyContent: 'space-evenly' }}
-                  >
-                    <span className={styles.container}>
-                      <span className={styles.day}>
-                        {moment(fromDate).locale('en').format('DD')}
-                      </span>
-                      <span className={styles.month}>
-                        {moment(fromDate).locale('en').format('MMM')}
-                      </span>
-                    </span>
-                    <span className={styles.subtractSymbol}>-</span>
-                    <span className={styles.container}>
-                      <span className={styles.day}>{moment(toDate).locale('en').format('DD')}</span>
-                      <span className={styles.month}>
-                        {moment(toDate).locale('en').format('MMM')}
-                      </span>
-                    </span>
-                  </Col>
-                  <Col xs={10} className={styles.eventOfDay}>
-                    {name}
-                  </Col>
-                </>
-              )}
+              )} */}
+              {/* {fromDate !== toDate && (
+                <> */}
+              <Col
+                xs={8}
+                className={styles.dateAndMonth}
+                style={{ justifyContent: 'space-evenly' }}
+              >
+                <span className={styles.container}>
+                  <span className={styles.day}>{moment(fromDate).locale('en').format('DD')}</span>
+                  <span className={styles.month}>
+                    {moment(fromDate).locale('en').format('MMM')}
+                  </span>
+                </span>
+                <span className={styles.subtractSymbol}>-</span>
+                <span className={styles.container}>
+                  <span className={styles.day}>{moment(toDate).locale('en').format('DD')}</span>
+                  <span className={styles.month}>{moment(toDate).locale('en').format('MMM')}</span>
+                </span>
+              </Col>
+              <Col xs={10} className={styles.eventOfDay}>
+                {typeName}
+              </Col>
+              {/* </>
+              )} */}
 
               <Col className={styles.text} xs={6}>
                 {this.getStatus(status)}

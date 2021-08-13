@@ -93,6 +93,17 @@ class TimeOff extends PureComponent {
       match: { params: { tabName = '' } = {} },
       location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
     } = this.props;
+
+    if (!tabName) {
+      history.replace(`/time-off/overview`);
+    } else {
+      const listRole = localStorage.getItem('antd-pro-authority');
+      const role = this.findRole(JSON.parse(listRole));
+      this.setState({
+        role,
+      });
+    }
+
     const { dispatch } = this.props;
     const response = await dispatch({
       type: 'timeOff/getTimeOffTypeByLocation',
@@ -138,16 +149,6 @@ class TimeOff extends PureComponent {
         });
       }
       history.replace();
-    }
-
-    if (!tabName) {
-      history.replace(`/time-off/overview`);
-    } else {
-      const listRole = localStorage.getItem('antd-pro-authority');
-      const role = this.findRole(JSON.parse(listRole));
-      this.setState({
-        role,
-      });
     }
   };
 

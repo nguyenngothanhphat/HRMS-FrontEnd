@@ -1001,40 +1001,33 @@ const candidateInfo = {
           privateEmail = '',
           previousExperience = '',
           salaryStructure = {},
-          documentChecklistSetting = [],
+          // documentChecklistSetting = [],
           amountIn,
           timeOffPolicy,
           currentStep,
         } = data;
 
-        const filterValue = (arr) => {
-          let listCheck = arr.map((item) => item.value);
-          listCheck = listCheck.filter((item) => item === true);
+        // const filterValue = (arr) => {
+        //   let listCheck = arr.map((item) => item.value);
+        //   listCheck = listCheck.filter((item) => item === true);
 
-          return listCheck;
-        };
-        const identityProof = documentChecklistSetting[0]?.data || [];
-        const addressProof = documentChecklistSetting[1]?.data || [];
-        const educational = documentChecklistSetting[2]?.data || [];
-        const technicalCertification = documentChecklistSetting[3]?.data || [];
+        //   return listCheck;
+        // };
+        // const identityProof = documentChecklistSetting[0]?.data || [];
+        // const addressProof = documentChecklistSetting[1]?.data || [];
+        // const educational = documentChecklistSetting[2]?.data || [];
+        // const technicalCertification = documentChecklistSetting[3]?.data || [];
+        // const prevEmployee = documentChecklistSetting[4]?.data || [];
 
-        const prevEmployee = documentChecklistSetting[4]?.data || [];
-
-        const checkStatusTypeA = filterValue(identityProof);
-        const checkStatusTypeB = filterValue(addressProof);
-        const checkStatusTypeC = filterValue(educational);
-        const checkStatusTypeD = filterValue(technicalCertification);
-        const checkStatusTypeE = filterValue(prevEmployee);
+        // const checkStatusTypeA = filterValue(identityProof);
+        // const checkStatusTypeB = filterValue(addressProof);
+        // const checkStatusTypeC = filterValue(educational);
+        // const checkStatusTypeD = filterValue(technicalCertification);
+        // const checkStatusTypeE = filterValue(prevEmployee);
 
         const checkStatus = {};
-        if (
-          checkStatusTypeA.length > 4 ||
-          checkStatusTypeB.length > 1 ||
-          checkStatusTypeC.length > 4 ||
-          checkStatusTypeD.length > 0 ||
-          checkStatusTypeE.length > 0 ||
-          'employer' in (documentChecklistSetting[4] ? documentChecklistSetting[4] : {})
-        ) {
+
+        if (currentStep >= 3) {
           checkStatus.filledBgCheck = true;
         }
 
@@ -1408,7 +1401,7 @@ const candidateInfo = {
         },
       };
     },
-    saveFilledSalaryStructure(state, action) {
+    saveCheckMandatory(state, action) {
       const { checkMandatory } = state;
       return {
         ...state,

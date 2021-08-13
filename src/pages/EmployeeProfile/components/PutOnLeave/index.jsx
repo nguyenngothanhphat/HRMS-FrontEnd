@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Form, DatePicker, Row, Col, Input, Select, Divider, Button, Tag, Modal } from 'antd';
 import { SearchOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import moment from 'moment';
+import { connect } from 'umi';
+
 import warning from '@/assets/warning_filled.svg';
 import modalSuccess from '@/assets/modal_img_1.png';
 import path from '@/assets/path.svg';
@@ -10,11 +13,16 @@ import styles from './index.less';
 const { TextArea } = Input;
 const { Option } = Select;
 
+@connect(({ employeeProfile: { tempData: { generalData = {} } = {} } = {} }) => ({
+  generalData,
+}))
 class PutOnLeave extends Component {
   constructor(props) {
     super(props);
     this.state = {
       visible: false,
+      durationFrom: '',
+      durationTo: '',
     };
   }
 
@@ -56,8 +64,51 @@ class PutOnLeave extends Component {
     );
   };
 
+  disabledFromDate = (current) => {
+    const { durationTo } = this.state;
+    return (
+      (current && current > moment(durationTo)) ||
+      moment(current).day() === 0 ||
+      moment(current).day() === 6
+    );
+  };
+
+  disabledToDate = (current) => {
+    const { durationFrom } = this.state;
+    return (
+      (current && current < moment(durationFrom)) ||
+      moment(current).day() === 0 ||
+      moment(current).day() === 6
+    );
+  };
+
+  dateOnChange = (value, name) => {
+    if (name === 'fromDate') {
+      if (value === null) {
+        this.setState({
+          durationFrom: '',
+        });
+      } else {
+        this.setState({
+          durationFrom: value,
+        });
+      }
+    } else if (value === null) {
+      this.setState({
+        durationTo: '',
+      });
+    } else {
+      this.setState({
+        durationTo: value,
+      });
+    }
+  };
+
   render() {
     const { visible } = this.state;
+    const { generalData: { firstName = '', lastName = '' } = {} } = this.props;
+    const fullName = `${firstName} ${lastName}`;
+
     return (
       <div className={styles.putOnLeaveRoot}>
         <div className={styles.putOnLeaveRoot__titleSection}>
@@ -73,7 +124,7 @@ class PutOnLeave extends Component {
               <div className={styles.notification}>
                 <img alt="warning" src={warning} />
                 <div className={styles.notification__text}>
-                  This will put Aditya Venkatesh on leave for the days selected without pay, a
+                  This will put {fullName} on leave for the days selected without pay, a
                   Notification for the update will be sent to the employee as well.
                 </div>
               </div>
@@ -103,11 +154,14 @@ class PutOnLeave extends Component {
                         ]}
                       >
                         <DatePicker
+                          disabledDate={this.disabledFromDate}
                           className={styles}
                           placeholder="DD-MM-YYYY"
                           picker="date"
                           format="DD.MM.YYYY"
-                          // onChange={(value) => _handleSelect(value, candidateField[1].title)}
+                          onChange={(value) => {
+                            this.dateOnChange(value, 'fromDate');
+                          }}
                         />
                       </Form.Item>
                     </Col>
@@ -134,11 +188,14 @@ class PutOnLeave extends Component {
                         ]}
                       >
                         <DatePicker
+                          disabledDate={this.disabledToDate}
                           className={styles}
                           placeholder="DD-MM-YYYY"
                           picker="date"
                           format="DD.MM.YYYY"
-                          // onChange={(value) => _handleSelect(value, candidateField[1].title)}
+                          onChange={(value) => {
+                            this.dateOnChange(value, 'toDate');
+                          }}
                         />
                       </Form.Item>
                     </Col>

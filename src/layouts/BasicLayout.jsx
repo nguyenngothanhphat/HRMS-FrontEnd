@@ -61,7 +61,6 @@ const BasicLayout = (props) => {
     currentUser,
     companies = {},
     logoCompany,
-    expandMenuSidebar,
   } = props;
 
   // const [openMenu, setOpenMenu] = useState(false);
@@ -126,7 +125,9 @@ const BasicLayout = (props) => {
             </Link>
           ) : null}
         </div>
-        <div className={styles.currentName}>{currentName}</div>
+        <Link to="/">
+          <div className={styles.currentName}>{currentName}</div>
+        </Link>
       </div>
     );
   };
@@ -166,13 +167,9 @@ const BasicLayout = (props) => {
   return (
     <>
       <div
-        className={classnames(
-          `${styles.root} ${expandMenuSidebar ? styles.expandMenu : styles.collapseMenu}`,
-          classNameBreadCrumb,
-          {
-            [styles.hiddenBreadCrumb]: pathname === '/dashboard',
-          },
-        )}
+        className={classnames(`${styles.root}`, classNameBreadCrumb, {
+          [styles.hiddenBreadCrumb]: pathname === '/dashboard',
+        })}
       >
         <ProLayout
           logo={getCurrentLogo() || logo}
@@ -236,13 +233,10 @@ const BasicLayout = (props) => {
   );
 };
 
-export default connect(
-  ({ global, settings, user, companiesManagement: { logoCompany = '' } = {} }) => ({
-    // collapsed: global.collapsed,
-    expandMenuSidebar: global.expandMenuSidebar,
-    settings,
-    currentUser: user.currentUser,
-    companies: user.companiesOfUser,
-    logoCompany,
-  }),
-)(BasicLayout);
+export default connect(({ settings, user, companiesManagement: { logoCompany = '' } = {} }) => ({
+  // collapsed: global.collapsed,
+  settings,
+  currentUser: user.currentUser,
+  companies: user.companiesOfUser,
+  logoCompany,
+}))(BasicLayout);

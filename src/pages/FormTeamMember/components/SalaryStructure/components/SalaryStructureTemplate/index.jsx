@@ -120,7 +120,7 @@ class SalaryStructureTemplate extends PureComponent {
       });
 
     dispatch({
-      type: 'candidateInfo/saveFilledSalaryStructure',
+      type: 'candidateInfo/saveCheckMandatory',
       payload: {
         filledSalaryStructure: true,
       },
@@ -265,14 +265,14 @@ class SalaryStructureTemplate extends PureComponent {
     // const isFilled = tempTableData.filter((item) => item.value === '');
     // if (isFilled.length === 0 && tempTableData.length > 0) {
     //   dispatch({
-    //     type: 'candidateInfo/saveFilledSalaryStructure',
+    //     type: 'candidateInfo/saveCheckMandatory',
     //     payload: {
     //       filledSalaryStructure: true,
     //     },
     //   });
     // } else {
     //   dispatch({
-    //     type: 'candidateInfo/saveFilledSalaryStructure',
+    //     type: 'candidateInfo/saveCheckMandatory',
     //     payload: {
     //       filledSalaryStructure: false,
     //     },
@@ -296,14 +296,14 @@ class SalaryStructureTemplate extends PureComponent {
     // const isFilled = tempTableData.filter((item) => item.value === '');
     // if (isFilled.length === 0 && tempTableData.length > 0) {
     //   dispatch({
-    //     type: 'candidateInfo/saveFilledSalaryStructure',
+    //     type: 'candidateInfo/saveCheckMandatory',
     //     payload: {
     //       filledSalaryStructure: true,
     //     },
     //   });
     // } else {
     //   dispatch({
-    //     type: 'candidateInfo/saveFilledSalaryStructure',
+    //     type: 'candidateInfo/saveCheckMandatory',
     //     payload: {
     //       filledSalaryStructure: false,
     //     },

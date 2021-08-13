@@ -4,13 +4,13 @@ import LeaveHistoryCalendar from './components/LeaveHistoryCalendar';
 
 export default class LeaveHistory extends PureComponent {
   render() {
-    const { activeShowType = 1, leavingList = [] } = this.props;
+    const { activeShowType = 1, leavingList = [], leavingListCalendar = [] } = this.props;
     return (
       <div>
         {activeShowType === 1 ? (
           <LeaveHistoryList leavingList={leavingList} />
         ) : (
-          <LeaveHistoryCalendar leavingList={leavingList} />
+          <LeaveHistoryCalendar leavingList={leavingListCalendar} />
         )}
       </div>
     );

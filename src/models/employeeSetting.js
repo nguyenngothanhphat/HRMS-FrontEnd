@@ -33,6 +33,11 @@ import {
   // optional on boarding question
   addOptionalOnboardQuestions,
   getListPageOnboarding,
+
+  // setting > document
+  addDocumentSetting,
+  removeDocumentSetting,
+  getDocumentSettingList,
 } from '../services/employeeSetting';
 
 const employeeSetting = {
@@ -40,12 +45,15 @@ const employeeSetting = {
   state: {
     triggerEventList: [],
     isAbleToSubmit: false,
+    documentListOnboarding: [],
     defaultTemplateListOnboarding: [],
     customTemplateListOnboarding: [],
+    documentListOffboarding: [],
     defaultTemplateListOffboarding: [],
     customTemplateListOffboarding: [],
     currentTemplate: {},
     tempSettings: [],
+    newDocument: {},
     newTemplate: {},
     newTemplateData: {
       settings: [],
@@ -255,6 +263,28 @@ const employeeSetting = {
         dialog(errors);
       }
     },
+    *fetchDocumentListOnboarding({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getDocumentSettingList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            // defaultTemplateListOnboarding: data.filter((value) =>
+            //   value.type.includes('ON_BOARDING'),
+            // ),
+            documentListOnboarding: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *fetchCustomTemplateListOnboarding({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getCustomTemplateList, {
@@ -352,6 +382,26 @@ const employeeSetting = {
         return 0;
       }
     },
+
+    *removeDocumentSettingById({ payload = {} }, { call }) {
+      try {
+        const response = yield call(removeDocumentSetting, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: 'Remove document successfully',
+        });
+        return statusCode;
+      } catch (errors) {
+        dialog(errors);
+        return 0;
+      }
+    },
+
     *uploadFile({ payload, isUploadSignature = false }, { call, put }) {
       let response = {};
       try {
@@ -384,6 +434,26 @@ const employeeSetting = {
       }
       return response;
     },
+
+    // upload document & add template
+    *addDocumentSetting({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(addDocumentSetting, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, message, data } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({ message });
+        yield put({ type: 'save', payload: { newDocument: data } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
+
     *addCustomTemplate({ payload = {} }, { call, put }) {
       try {
         const response = yield call(addCustomTemplate, {
@@ -400,6 +470,8 @@ const employeeSetting = {
         return {};
       }
     },
+
+    // custom emails
     *fetchTriggerEventList({ payload }, { call, put }) {
       try {
         const response = yield call(getTriggerEventList, {

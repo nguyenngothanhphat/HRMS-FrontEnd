@@ -2,7 +2,7 @@ import React, { PureComponent, useState } from 'react';
 import { Row, Col, Collapse, Tooltip, Progress } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import ShowBreakdownIcon from '@/assets/iconViewBreakdown.svg';
-import { connect, history } from 'umi';
+import { connect } from 'umi';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import LeaveProgressBar from './components/LeaveProgressBar';
 import SpecialLeaveBox from './components/SpecialLeaveBox';
@@ -19,6 +19,7 @@ const CollapseInformation = (props) => {
     typesOfSpecialLeaves = [],
     policyCommonLeaves = {},
     policySpecialLeaves = {},
+    timeOffTypes = [],
   } = props;
 
   const [viewDocumentModal, setViewDocumentModal] = useState(false);
@@ -51,14 +52,10 @@ const CollapseInformation = (props) => {
         <div className={styles.leaveProgressBars}>
           {typesOfCommonLeaves.map((type, index) => {
             const { currentAllowance = 0, defaultSettings = {} } = type;
-            if (defaultSettings !== null) {
-              const {
-                name = '',
-                shortType = '',
-                baseAccrual: { time = 0 } = {},
-                type: type1 = '',
-              } = defaultSettings;
+            if (defaultSettings) {
+              const { name = '', shortType = '', type: type1 = '', _id = '' } = defaultSettings;
               if (type1 === 'A') {
+                const foundType = timeOffTypes.find((t) => t._id === _id) || {};
                 return (
                   <div key={`${index + 1}`}>
                     <LeaveProgressBar
@@ -66,13 +63,9 @@ const CollapseInformation = (props) => {
                       title={name}
                       shortType={shortType}
                       stepNumber={currentAllowance}
-                      limitNumber={time}
+                      limitNumber={foundType.noOfDays}
                     />
-                    {index + 1 !== typesOfCommonLeaves.length
-                      ? typesOfCommonLeaves[index + 1].defaultSettings.type === 'A' && (
-                      <div className={styles.hr} />
-                        )
-                      : ''}
+                    {index + 1 !== typesOfCommonLeaves.length && <div className={styles.hr} />}
                   </div>
                 );
               }
@@ -215,7 +208,11 @@ class LeaveInformation extends PureComponent {
     const { remaining, percentMainCircle } = this.state;
     const {
       onInformationClick = () => {},
-      timeOff: { totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {} } = {},
+      timeOff: {
+        timeOffTypesByCountry = [],
+        totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {},
+      } = {},
+      viewDocumentVisible = false,
     } = this.props;
     const { timeOffTypes: typesOfCommonLeaves = [], policy: policyCommonLeaves = {} } =
       commonLeaves;
@@ -225,7 +222,10 @@ class LeaveInformation extends PureComponent {
     // this.calculateValueForCircleProgress(typesOfCommonLeaves);
 
     return (
-      <div className={styles.LeaveInformation}>
+      <div
+        className={styles.LeaveInformation}
+        style={viewDocumentVisible ? { zIndex: '1002' } : {}}
+      >
         <div className={styles.totalLeaveBalance}>
           <div className={styles.aboveContainer}>
             <span className={styles.title}>Total Leave Balance</span>
@@ -251,6 +251,7 @@ class LeaveInformation extends PureComponent {
                 typesOfSpecialLeaves={typesOfSpecialLeaves}
                 policyCommonLeaves={policyCommonLeaves}
                 policySpecialLeaves={policySpecialLeaves}
+                timeOffTypes={timeOffTypesByCountry}
               />
             </Panel>
           </Collapse>
