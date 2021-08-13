@@ -1,14 +1,14 @@
 import React, { PureComponent } from 'react';
-import DocumentsAndTemplatesHeader from './components/DocumentsAndTemplatesHeader';
-import Documents from './components/Documents';
+import Header from './components/Header';
+import TableContainer from './components/TableContainer';
 import styles from './index.less';
 
 class DocumentsAndTemplates extends PureComponent {
   render() {
     return (
       <div className={styles.DocumentsAndTemplates}>
-        <DocumentsAndTemplatesHeader />
-        <Documents />
+        <Header />
+        <TableContainer />
       </div>
     );
   }
