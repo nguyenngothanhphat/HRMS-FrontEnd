@@ -21,9 +21,13 @@ class FilterBar extends PureComponent {
   };
 
   onChangeTab = (activeKey) => {
-    const { setSelectedFilterTab } = this.props;
+    const { setSelectedFilterTab, dispatch } = this.props;
     setSelectedFilterTab(activeKey);
     this.saveCurrentTab(activeKey);
+    dispatch({
+      type: 'timeOff/savePaging',
+      payload: { page: 1 },
+    });
   };
 
   addZeroToNumber = (number) => {

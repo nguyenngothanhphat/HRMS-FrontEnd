@@ -6,10 +6,11 @@ import { LoadingOutlined } from '@ant-design/icons';
 
 import styles from './index.less';
 
-@connect(({ timeOff, loading, user }) => ({
+@connect(({ dispatch, timeOff, loading, user }) => ({
   loadingFetchMyCompoffRequests: loading.effects['timeOff/fetchMyCompoffRequests'],
   timeOff,
   user,
+  dispatch,
 }))
 class MyCompoffTable extends PureComponent {
   columns = [
@@ -42,7 +43,7 @@ class MyCompoffTable extends PureComponent {
       render: (duration) => <span>{duration !== 0 ? duration : '-'}</span>,
     },
     {
-      title: `Req’ted on `,
+      title: `Requested on `,
       dataIndex: 'onDate',
       align: 'left',
       render: (onDate) => <span>{moment(onDate).locale('en').format('MM.DD.YY')}</span>,
@@ -94,7 +95,7 @@ class MyCompoffTable extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      pageSelected: 1,
+      // pageSelected: 1,
       selectedRowKeys: [],
     };
   }
@@ -109,16 +110,20 @@ class MyCompoffTable extends PureComponent {
 
   // pagination
   onChangePagination = (pageNumber) => {
-    this.setState({
-      pageSelected: pageNumber,
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/savePaging',
+      payload: {
+        page: pageNumber,
+      },
     });
   };
 
-  setFirstPage = () => {
-    this.setState({
-      pageSelected: 1,
-    });
-  };
+  // setFirstPage = () => {
+  //   this.setState({
+  //     pageSelected: 1,
+  //   });
+  // };
 
   onSelectChange = (selectedRowKeys) => {
     this.setState({ selectedRowKeys });
@@ -166,9 +171,15 @@ class MyCompoffTable extends PureComponent {
   };
 
   render() {
-    const { data = [], loadingFetchMyCompoffRequests = false } = this.props;
-    const { selectedRowKeys, pageSelected } = this.state;
-    const rowSize = 10;
+    const {
+      data = [],
+      loadingFetchMyCompoffRequests = false,
+      timeOff: {
+        paging: { page, limit, total },
+      },
+    } = this.props;
+    const { selectedRowKeys } = this.state;
+    // const rowSize = 10;
 
     const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
@@ -180,19 +191,19 @@ class MyCompoffTable extends PureComponent {
     const parsedData = this.processData(data);
     const pagination = {
       position: ['bottomLeft'],
-      total: parsedData.length,
-      showTotal: (total, range) => (
+      total,
+      showTotal: (totals, range) => (
         <span>
           {' '}
           Showing{'  '}
           <b>
             {range[0]} - {range[1]}
           </b>{' '}
-          of {total}{' '}
+          of {totals}{' '}
         </span>
       ),
-      pageSize: rowSize,
-      current: pageSelected,
+      pageSize: limit,
+      current: page,
       onChange: this.onChangePagination,
     };
 
@@ -212,7 +223,7 @@ class MyCompoffTable extends PureComponent {
           size="middle"
           rowSelection={rowSelection}
           loading={tableLoading}
-          pagination={{ ...pagination, total: parsedData.length }}
+          pagination={{ ...pagination, total }}
           columns={this.columns}
           dataSource={parsedData}
           scroll={scroll}

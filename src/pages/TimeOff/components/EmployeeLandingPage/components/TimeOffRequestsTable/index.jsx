@@ -18,11 +18,47 @@ class TimeOffRequestsTable extends PureComponent {
   }
 
   saveCurrentTypeTab = (type) => {
-    const { dispatch } = this.props;
+    const {
+      dispatch,
+      timeOff: { timeOffTypesByCountry = [] },
+    } = this.props;
     dispatch({
       type: 'timeOff/save',
       payload: {
         currentLeaveTypeTab: String(type),
+        currentFilterTab: '1',
+      },
+    });
+    let arr = [];
+    switch (type) {
+      case '1':
+        arr = timeOffTypesByCountry.filter((timeOffType) => timeOffType.type === 'A');
+        break;
+      case '2':
+        arr = timeOffTypesByCountry.filter((timeOffType) => timeOffType.type === 'C');
+        break;
+      case '3':
+        arr = timeOffTypesByCountry.filter((timeOffType) => timeOffType.type === 'B');
+        break;
+      case '4':
+        arr = timeOffTypesByCountry.filter((timeOffType) => timeOffType.type === 'D');
+        break;
+      default:
+        arr = [];
+        break;
+    }
+    arr = arr.map((item) => item._id);
+    dispatch({
+      type: 'timeOff/saveFilter',
+      payload: {
+        type: arr,
+        isSearch: true,
+      },
+    });
+    dispatch({
+      type: 'timeOff/savePaging',
+      payload: {
+        page: 1,
       },
     });
   };
