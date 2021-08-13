@@ -43,16 +43,16 @@ class BasicInformation extends PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
+    // const { dispatch } = this.props;
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
-    dispatch({
-      type: 'optionalQuestion/save',
-      payload: {
-        pageName: Page.Basic_Information,
-        // candidate: data.candidate,
-        data: {},
-      },
-    });
+    // dispatch({
+    //   type: 'optionalQuestion/save',
+    //   payload: {
+    //     pageName: Page.Basic_Information,
+    //     // candidate: data.candidate,
+    //     data: {},
+    //   },
+    // });
   }
 
   checkAllFieldsValidate = () => {
@@ -283,7 +283,7 @@ class BasicInformation extends PureComponent {
               <Input disabled="true" className={styles.formInput} name="previousExperience" />
             </Form.Item>
           </Col>
-          <AnswerQuestion />
+          <AnswerQuestion page={Page.Basic_Information} />
         </Row>
       </div>
     );

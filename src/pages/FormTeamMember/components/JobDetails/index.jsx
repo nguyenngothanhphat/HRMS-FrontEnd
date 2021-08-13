@@ -59,14 +59,7 @@ class JobDetails extends PureComponent {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
 
     this.checkBottomBar();
-    dispatch({
-      type: 'optionalQuestion/save',
-      payload: {
-        pageName: Page.Job_Details,
-        candidate,
-        data: {},
-      },
-    });
+
     // get work location list
     dispatch({
       type: 'candidateInfo/fetchLocationList',
@@ -724,7 +717,7 @@ class JobDetails extends PureComponent {
                     disabled={this.disableEdit()}
                   />
                   <Row style={{ margin: '0 32px 32px' }}>
-                    <RenderAddQuestion />
+                    <RenderAddQuestion page={Page.Job_Details} />
                   </Row>
 
                   {this._renderBottomBar()}

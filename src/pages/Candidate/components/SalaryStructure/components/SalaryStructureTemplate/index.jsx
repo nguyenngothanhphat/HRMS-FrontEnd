@@ -6,6 +6,7 @@ import { getCurrentTenant } from '@/utils/authority';
 import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
 import { every } from 'lodash';
 import styles from './index.less';
+import { Page } from '../../../../../FormTeamMember/utils';
 
 @connect(
   ({
@@ -374,7 +375,7 @@ class SalaryStructureTemplate extends PureComponent {
               pagination={false}
             />
             <Row style={{ margin: '32px' }}>
-              <AnswerQuestion />
+              <AnswerQuestion page={Page.Salary_Structure} />
             </Row>
           </div>
           {/* {this._renderFooter()} */}
