@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Typography, Space, Radio, Button, message } from 'antd';
 import CustomModal from '@/components/CustomModal';
-import ModalEmail from './components/ModalEmail';
-import send from './Assets/group-11.svg';
+import { Button, message, Space, Typography } from 'antd';
+import React, { useEffect, useState } from 'react';
 import sent from './Assets/sent.svg';
+import ModalEmail from './components/ModalEmail';
 import style from './index.less';
 
 const index = ({
@@ -19,7 +18,7 @@ const index = ({
   handleValueChange = () => {},
   // valueToFinalOffer,
   // changeValueToFinalOffer = () => {},
-  checkValidation,
+  filledDocumentVerification,
   loading4,
   openModalEmail,
   closeModalEmail = () => {},
@@ -41,6 +40,7 @@ const index = ({
   };
 
   const handleGenerate = () => {
+    // eslint-disable-next-line compat/compat
     navigator.clipboard.writeText(generateLink);
     message.success('Copied to clipboard');
   };
@@ -92,7 +92,7 @@ const index = ({
         content={
           <ModalEmail
             isSentEmail={isSentEmail}
-            checkValidation={checkValidation}
+            filledDocumentVerification={filledDocumentVerification}
             handleEmailClick={handleEmailClick}
             isEnable={isEnable}
             handleSendEmail={handleSendEmail}
