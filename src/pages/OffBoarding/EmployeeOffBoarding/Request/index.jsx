@@ -182,6 +182,7 @@ class ResignationRequest extends Component {
                 handleRequestToChange={this.handleRequestToChange}
                 changeLWD={changeLWD}
                 handleLWD={this.handleLWD}
+                status={status}
               />
               {arrStatus.indexOf(status) > -1 && (
                 <div className={styles.viewWithDraw}>
