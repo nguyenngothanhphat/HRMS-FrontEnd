@@ -352,6 +352,7 @@ class OnboardTable extends Component {
         dataIndex: 'actions',
         key: 'actions',
         width: getColumnWidth('actions', type),
+        fixed: 'right',
         align: 'center',
         render: (_, row) => {
           const { currentUser: { employee: { _id: empId = '' } = {} } = {} } = this.props;
@@ -392,7 +393,6 @@ class OnboardTable extends Component {
           return '';
         },
         columnName: ACTION,
-        // fixed: 'right',
       },
     ];
 
@@ -597,7 +597,8 @@ class OnboardTable extends Component {
           <Menu.Item>
             <div
               onClick={() =>
-                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)}
+                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)
+              }
             >
               Re-assign
             </div>
@@ -756,7 +757,12 @@ class OnboardTable extends Component {
                 }, // Hover mouse on row
               };
             }}
-            scroll={list.length > 0 ? { x: 'max-content', y: 'max-content' } : {}}
+            scroll={
+              list.length > 0
+                ? { x: 'max-content', y: 'max-content' }
+                : { x: '80vw', y: 'max-content' }
+            }
+            // scroll={{ x: 'max-content', y: 'max-content' }}
           />
         </div>
         <CustomModal

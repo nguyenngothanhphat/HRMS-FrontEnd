@@ -1,0 +1,198 @@
+@border-color: #d6dce0;
+@orange: #fe5d27;
+@new-background: #fff4f1;
+@border-color: #d6dce0;
+@checkbox-background: #e7eaee;
+@checkbox-border: #707177;
+@gray: #707177;
+@red: #ff5252;
+@blue: #2c6df9;
+
+.mixin-border-bottom-row {
+  border-bottom: solid 1px #d6dce0;
+}
+
+.DocumentTable {
+  padding: 24px;
+  // padding-bottom: 0;
+  background-color: #ffffff;
+  border-radius: 8px;
+  border: none;
+
+  table {
+    // border-bottom: 1px solid @border-color;
+  }
+
+  .tableActions {
+    display: flex;
+    align-items: center;
+
+    span {
+      cursor: pointer;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      margin: 0;
+      letter-spacing: 0.12px;
+      color: @blue;
+      font-weight: 500;
+      // margin-right: 10px;
+      text-transform: capitalize;
+
+      svg {
+        transform: rotate(90deg);
+      }
+    }
+
+    .viewDraft {
+      margin-left: 13px;
+    }
+  }
+
+  p,
+  span {
+    margin: 0;
+  }
+
+  .new {
+    color: @orange;
+    font-size: 11px;
+    font-weight: 500;
+    margin-left: 8px;
+    text-transform: capitalize;
+    font-family: 'Roboto';
+    display: inline-block;
+    background-color: @new-background;
+    padding: 0 8px;
+  }
+
+  svg {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  :global {
+    .ant-table-row {
+      height: 55px;
+    }
+
+    .anticon-delete {
+      margin-left: 6px !important;
+
+      &:hover {
+        svg {
+          path {
+            fill: @red !important;
+          }
+        }
+        // color: @red !important;
+      }
+      svg {
+        transform: initial !important;
+        color: @blue !important;
+      }
+    }
+
+    td.ant-table-cell {
+      width: 84px;
+      height: 15px;
+      font-size: 13px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: 0.12px;
+      color: #464646;
+    }
+    .ant-table-tbody {
+      // tr:last-child td {
+      //   border-bottom: solid 1px white;
+      // }
+    }
+    .ant-table-tbody > tr > td {
+      border-bottom: none;
+    }
+    .ant-table-small .ant-table-thead > tr > th {
+      background-color: @blue;
+    }
+
+    th.ant-table-selection-column {
+      width: 5%;
+    }
+
+    .ant-checkbox-inner {
+      background-color: @checkbox-background;
+
+      &:after {
+        border-color: blue;
+      }
+    }
+
+    .ant-checkbox-wrapper {
+      border-color: @checkbox-border;
+    }
+
+    .ant-table-selection,
+    .ant-table-selection-column {
+      height: fit-content;
+      // width: fit-content;
+    }
+
+    thead {
+      tr {
+        height: 35px;
+      }
+
+      .ant-table-selection {
+        height: 18px;
+      }
+    }
+
+    .ant-tabs-nav {
+      height: 56px;
+    }
+
+    .ant-dropdown-button {
+      display: flex;
+      align-items: center;
+
+      button {
+        font-size: 13px !important;
+        border: none !important;
+        padding: 0 !important;
+        background-color: transparent !important;
+        box-shadow: none !important;
+        height: 20px;
+      }
+    }
+
+    .ant-menu-item {
+      color: #2c6df9;
+      font-weight: 500;
+      letter-spacing: 0.12px;
+    }
+  }
+
+  .fileName {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    img {
+      margin-right: 10px;
+    }
+    span {
+      font-weight: 700;
+      color: #2c6df9;
+    }
+  }
+  .actionsButton {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    &:hover {
+      transition: 0.3s;
+      opacity: 0.9;
+    }
+  }
+}

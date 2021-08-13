@@ -87,8 +87,8 @@ class DocumentVerification extends Component {
       data: { candidate },
     } = this.props;
     this.getDataFromServer();
-    this.checkBottomBar();
     window.scrollTo({ top: 77, behavior: 'smooth' });
+    this.validateFields();
     dispatch({
       type: 'optionalQuestion/save',
       payload: {
@@ -100,65 +100,70 @@ class DocumentVerification extends Component {
   };
 
   componentWillUnmount() {
-    const { dispatch, tempData = {}, processStatus = [] } = this.props;
+    const { dispatch, tempData = {}, checkMandatory = {}, processStatus = [] } = this.props;
     if (processStatus === 'SENT-PROVISIONAL-OFFER') {
       dispatch({
-        type: 'candidateInfo/saveTemp',
+        type: 'candidateInfo/save',
         payload: {
-          ...tempData,
-          checkValidation: undefined,
-          isSentEmail: true,
+          tempData: {
+            ...tempData,
+            isSentEmail: true,
+          },
+          checkMandatory: {
+            ...checkMandatory,
+            filledDocumentVerification: false,
+          },
         },
       });
     } else if (processStatus === 'DRAFT') {
       dispatch({
-        type: 'candidateInfo/saveTemp',
+        type: 'candidateInfo/save',
         payload: {
-          ...tempData,
-          checkValidation: undefined,
-          isSentEmail: false,
+          tempData: {
+            ...tempData,
+            isSentEmail: false,
+          },
+          checkMandatory: {
+            ...checkMandatory,
+            filledDocumentVerification: false,
+          },
         },
       });
     }
-
-    // dispatch({
-    //   type: 'candidateInfo/saveTemp',
-    //   payload: {
-    //     previousEmployment: {
-    //       poe: [],
-    //     },
-    //   },
-    // });
-    // this.handleUpdateByHR();
   }
 
   componentDidUpdate = (prevProps) => {
-    const { tempData: { documentChecklistSetting = [] } = {}, dispatch } = this.props;
+    const { tempData: { documentChecklistSetting = [] } = {} } = this.props;
 
     if (
       JSON.stringify(prevProps.tempData.documentChecklistSetting) !==
       JSON.stringify(documentChecklistSetting)
     ) {
-      let validation = true;
-      documentChecklistSetting.forEach((item) => {
-        if (item.type === 'D') {
-          const aliases = item.data
-            .map((v) => v.alias)
-            .filter((f) => f !== null && f !== undefined && f !== '');
-          if (aliases.length !== item.data.length) validation = false;
-        }
-        if (item.type === 'E') {
-          if (!item.employer) validation = false;
-        }
-      });
-
-      dispatch({
-        type: 'candidateInfo/saveTemp',
-        payload: {
-          checkValidation: validation,
-        },
-      });
+      this.validateFields();
     }
+  };
+
+  validateFields = () => {
+    const { tempData: { documentChecklistSetting = [] } = {}, dispatch } = this.props;
+    let validation = true;
+    documentChecklistSetting.forEach((item) => {
+      if (item.type === 'D' && item.data.length > 0) {
+        const aliases = item.data
+          .map((v) => v.alias)
+          .filter((f) => f !== null && f !== undefined && f !== '');
+        if (aliases.length !== item.data.length) validation = false;
+      }
+      if (item.type === 'E' && item.data.length > 0) {
+        if (!item.employer) validation = false;
+      }
+    });
+
+    dispatch({
+      type: 'candidateInfo/saveCheckMandatory',
+      payload: {
+        filledDocumentVerification: validation,
+      },
+    });
   };
 
   // GET DATA FROM SERVER
@@ -202,61 +207,22 @@ class DocumentVerification extends Component {
         ? JSON.parse(JSON.stringify(data.documentChecklistSetting))
         : JSON.parse(JSON.stringify(tempData.documentChecklistSetting));
 
-    // console.log('arrToAdjust', arrToAdjust);
-    // const arrToAdjust = JSON.parse(JSON.stringify(data.documentChecklistSetting));
-
-    // -----------------------------------------------------------------------------------------
-    // initial value for send email/generate link
-    // let originalArrE =
-    //   arrToAdjust.length > 0 &&
-    //   arrToAdjust.map((value) => {
-    //     const { type = '', data: dataE = {} } = value;
-    //     if (type === 'E') return dataE.map((x) => x);
-    //     return null;
-    //   });
-    // originalArrE = originalArrE.filter((value) => value !== null);
     this.setState({
       identityProof: arrToAdjust[0].data,
       addressProof: arrToAdjust[1].data,
       educational: arrToAdjust[2].data,
-      // previousEmployment: originalArrE,
     });
 
     // -----------------------------------------------------------------------------------------
     const arrA = arrToAdjust.length > 0 && arrToAdjust[0].data.filter((x) => x.value === true);
     const arrB = arrToAdjust.length > 0 && arrToAdjust[1].data.filter((x) => x.value === true);
     const arrC = arrToAdjust.length > 0 && arrToAdjust[2].data.filter((x) => x.value === true);
-    // const arrD = documentChecklistSetting.find((val) => val.type === 'D')?.data || [];
-
-    // let arrE =
-    //   arrToAdjust.map((value) => {
-    //     const { type = '', data: dataE = {} } = value;
-    //     if (type === 'E') return dataE.filter((x) => x.value === true);
-    //     return null;
-    //   }) || [];
-
-    // arrE = arrE.filter((value) => value !== null);
-
-    // GET 'EMPLOYER' FIELDS
-    // const employerData = arrToAdjust.filter((emp) => emp.type === 'E');
 
     // FINAL LIST OF CHECKED CHECKBOXES
     const listSelectedA = arrA.map((x) => x.alias);
     const listSelectedB = arrB.map((x) => x.alias);
     const listSelectedC = arrC.map((x) => x.alias);
 
-    // const listSelectedD = arrD.map((x) => x.alias);
-    // const listSelectedE = arrE.map((value) => value && value.map((x) => x.alias));
-
-    // const listSelectedEFinal = listSelectedE.map((value, index) => {
-    //   return {
-    //     employer: employerData[index].employer,
-    //     checkedList: value,
-    //     startDate: employerData[index].startDate,
-    //     endDate: employerData[index].endDate,
-    //     toPresent: employerData[index].toPresent,
-    //   };
-    // });
     // SAVE TO REDUX
     dispatch({
       type: 'candidateInfo/saveTemp',
@@ -273,14 +239,6 @@ class DocumentVerification extends Component {
           ...educational,
           checkedList: listSelectedC,
         },
-        // technicalCertifications: {
-        //   ...technicalCertifications,
-        //   checkedList: listSelectedD,
-        // },
-        // previousEmployment: {
-        //   ...previousEmployment,
-        //   poe: listSelectedEFinal,
-        // },
       },
     });
 
@@ -300,7 +258,6 @@ class DocumentVerification extends Component {
       checkedListC,
       docsListD,
     );
-    // console.log('documentChecklistSetting', documentChecklistSetting);
 
     dispatch({
       type: 'candidateInfo/updateByHR',
@@ -534,34 +491,9 @@ class DocumentVerification extends Component {
     this.setState({ checkRadioSendMail: e.target.value });
   };
 
-  checkBottomBar = () => {
-    const {
-      tempData: { valueToFinalOffer, checkStatus },
-      checkMandatory,
-      dispatch,
-    } = this.props;
-    if (valueToFinalOffer === 1) {
-      checkStatus.filledDocumentVerification = true;
-      // console.log('a');
-    } else {
-      checkStatus.filledDocumentVerification = false;
-      // console.log('b');
-    }
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        checkMandatory: {
-          ...checkMandatory,
-          filledDocumentVerification: checkStatus.filledDocumentVerification,
-        },
-      },
-    });
-  };
-
   // added
   _renderStatus = () => {
-    const { checkMandatory } = this.props;
-    const { filledDocumentVerification } = checkMandatory;
+    const { checkMandatory: { filledDocumentVerification = false } = {} } = this.props;
     return !filledDocumentVerification ? (
       <div className={styles.normalText}>
         <div className={styles.redText}>*</div>
@@ -575,9 +507,11 @@ class DocumentVerification extends Component {
   };
 
   _renderBottomBar = () => {
-    // const { checkMandatory } = this.props;
-    // const { filledDocumentVerification } = checkMandatory;
-    // console.log(filledDocumentVerification);
+    const {
+      tempData: { isSentEmail = false } = {},
+      checkMandatory: { filledDocumentVerification = false } = {},
+    } = this.props;
+
     return (
       <div className={styles.bottomBar}>
         <RenderAddQuestion />
@@ -598,14 +532,12 @@ class DocumentVerification extends Component {
               <Button
                 type="primary"
                 onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary} `}
-                // ${
-                //   !filledDocumentVerification ? styles.bottomBar__button__disabled : ''
-                // }
-
-                // disabled={!filledDocumentVerification}
+                className={`${styles.bottomBar__button__primary} ${
+                  !filledDocumentVerification ? styles.bottomBar__button__disabled : ''
+                }`}
+                disabled={!filledDocumentVerification}
               >
-                Send
+                {isSentEmail ? 'Resend' : 'Send'}
               </Button>
             </div>
           </Col>
@@ -812,9 +744,9 @@ class DocumentVerification extends Component {
       }
     });
     dispatch({
-      type: 'candidateInfo/saveTemp',
+      type: 'candidateInfo/saveCheckMandatory',
       payload: {
-        checkValidation: true,
+        filledDocumentVerification: true,
       },
     });
 
@@ -1451,11 +1383,11 @@ class DocumentVerification extends Component {
           middleName,
           lastName,
           valueToFinalOffer,
-          checkValidation,
           isMarkAsDone,
           documentChecklistSetting = [],
         },
         data: { privateEmail, processStatus: processStatusFilled = '', candidate = '' },
+        checkMandatory: { filledDocumentVerification = false } = {},
       } = {},
       processStatus,
       loading4,
@@ -1524,16 +1456,19 @@ class DocumentVerification extends Component {
                 disabled={this.disableEdit()}
               />
 
-              <CollapseFieldsTypeE
-                handleChangeName={this.handleChangeNameBlockE}
-                handleCheck={this.handleCheckBlockE}
-                processStatus={processStatus}
-                removeBlockE={this.removeBlockE}
-                addBlockE={this.addBlockE}
-                disabled={this.disableEdit()}
-                previousEmployment={documentCLSTByCountryTypeE}
-                refresh={refreshBlockE}
-              />
+              {(processStatus === PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT ||
+                documentCLSTByCountryTypeE.length > 0) && (
+                <CollapseFieldsTypeE
+                  handleChangeName={this.handleChangeNameBlockE}
+                  handleCheck={this.handleCheckBlockE}
+                  processStatus={processStatus}
+                  removeBlockE={this.removeBlockE}
+                  addBlockE={this.addBlockE}
+                  disabled={this.disableEdit()}
+                  previousEmployment={documentCLSTByCountryTypeE}
+                  refresh={refreshBlockE}
+                />
+              )}
 
               {this._renderBottomBar()}
             </div>
@@ -1560,7 +1495,7 @@ class DocumentVerification extends Component {
                 privateEmail={privateEmail}
                 processStatusFilled={processStatusFilled}
                 processStatus={processStatusFilled}
-                checkValidation={checkValidation}
+                filledDocumentVerification={filledDocumentVerification}
                 valueToFinalOffer={valueToFinalOffer}
                 changeValueToFinalOffer={this.changeValueToFinalOffer}
                 dispatch={dispatch}

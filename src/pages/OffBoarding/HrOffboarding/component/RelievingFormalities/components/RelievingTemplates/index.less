@@ -1,35 +1,42 @@
 .relievingTemplates {
+  position: relative;
+  box-sizing: border-box;
+  margin-bottom: 30px;
+  padding: 20px;
+  overflow: hidden;
   background: #ffffff;
   border: 1px solid #d6dce0;
-  box-sizing: border-box;
   border-radius: 5px;
-  overflow: hidden;
-  padding: 20px;
-  position: relative;
-  margin-bottom: 30px;
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
 
     p {
+      margin-bottom: 15px;
+      color: #464646;
       font-weight: 700;
       font-size: 18px;
       line-height: 21px;
-      color: #464646;
-      margin-bottom: 15px;
     }
 
-    .actions{
+    .actions {
       display: flex;
       align-items: center;
       justify-content: center;
+      margin-top: -11px;
+      img {
+        cursor: pointer;
+        &:hover {
+          opacity: 0.9;
+        }
+      }
     }
   }
   .border {
     position: absolute;
-    width: 100%;
     left: 0;
+    width: 100%;
     border-top: 1px solid #d6dce0;
     border-bottom: none;
   }
@@ -41,44 +48,43 @@
     padding-top: 20px;
 
     .title {
-      font-family: Roboto;
-      font-style: normal;
+      align-items: baseline;
+      color: #161c29;
       font-weight: 500;
       font-size: 14px;
+      font-family: Roboto;
+      font-style: normal;
       line-height: 16px;
-      color: #161C29;
-      align-items: baseline;
 
-      &__text{
-        span{
+      &__text {
+        span {
           color: #707177;
         }
       }
     }
     .list {
       .template {
-        margin-bottom: 10px;
         margin-top: 10px;
+        margin-bottom: 10px;
 
-        &__text{
+        &__text {
           display: flex;
           align-items: center;
         }
 
         .templateName {
-          font-family: Roboto;
-          font-style: normal;
+          color: #707177;
           font-weight: 500;
           font-size: 13px;
+          font-family: Roboto;
+          font-style: normal;
           line-height: 15px;
-          color: #707177;
         }
         .icons {
           display: flex;
-          // grid-template-columns: 50% 50%;
           align-items: center;
 
-          img{
+          img {
             margin-right: 12px;
           }
 
