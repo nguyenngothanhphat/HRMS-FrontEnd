@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Select, DatePicker, Input, Button, Row, Col, Form, message } from 'antd';
+import { Select, DatePicker, Input, Button, Row, Col, Form, message, Skeleton } from 'antd';
 import { connect, history } from 'umi';
 import moment from 'moment';
 import TimeOffModal from '@/components/TimeOffModal';
@@ -21,6 +21,10 @@ const { TextArea } = Input;
   loadingUpdatingLeaveRequest: loading.effects['timeOff/updateLeaveRequestById'],
   loadingSaveDraft: loading.effects['timeOff/saveDraftLeaveRequest'],
   loadingUpdateDraft: loading.effects['timeOff/updateDraftLeaveRequest'],
+  loadingMain:
+    loading.effects['timeOff/getTimeOffTypeByLocation'] ||
+    loading.effects['timeOff/fetchLeaveBalanceOfUser'] ||
+    loading.effects['timeOff/fetchTimeOffTypesByCountry'],
 }))
 class RequestInformation extends PureComponent {
   formRef = React.createRef();
@@ -102,7 +106,7 @@ class RequestInformation extends PureComponent {
   };
 
   // FETCH LEAVE BALANCE INFO (REMAINING, TOTAL,...)
-  componentDidMount = () => {
+  componentDidMount = async () => {
     const {
       dispatch,
       action = '',
@@ -115,19 +119,37 @@ class RequestInformation extends PureComponent {
         location: _id,
       },
     });
-    dispatch({
-      type: 'timeOff/fetchTimeOffTypes',
-      payload: {
-        tenantId: getCurrentTenant(),
-      },
+    // dispatch({
+    //   type: 'timeOff/fetchTimeOffTypes',
+    //   payload: {
+    //     tenantId: getCurrentTenant(),
+    //   },
+    // });
+
+    const response = await dispatch({
+      type: 'timeOff/getTimeOffTypeByLocation',
     });
+    const {
+      statusCode,
+      data: { headQuarterAddress: { country: { _id: countryId = '' } = {} || {} } = {} || {} } = {},
+    } = response;
+    if (statusCode === 200)
+      await dispatch({
+        type: 'timeOff/fetchTimeOffTypesByCountry',
+        payload: {
+          country: countryId,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        },
+      });
+
     this.fetchEmailsListByCompany();
 
     if (action === TIMEOFF_LINK_ACTION.editLeaveRequest) {
       const { viewingLeaveRequest = {} } = this.props;
       // console.log('viewingLeaveRequest', viewingLeaveRequest);
       const {
-        type: { _id: typeId = '', type = '', name = '' } = {},
+        type: { _id: typeId = '', type = '', name = '' } = {} || {},
         subject = '',
         fromDate = '',
         toDate = '',
@@ -303,8 +325,8 @@ class RequestInformation extends PureComponent {
   // GET TIME OFF TYPE BY ID
   onSelectTimeOffTypeChange = (id) => {
     const { durationFrom, selectedType } = this.state;
-    const { timeOff: { timeOffTypes = [] } = {} } = this.props;
-    const foundType = timeOffTypes.find((t) => t._id === id);
+    const { timeOff: { timeOffTypesByCountry = [] } = {} } = this.props;
+    const foundType = timeOffTypesByCountry.find((t) => t._id === id);
 
     if (foundType) {
       const { type = '', name = '' } = foundType;
@@ -596,7 +618,7 @@ class RequestInformation extends PureComponent {
       if (durationFrom && typeCD.includes(selectedType)) {
         const {
           timeOff: {
-            // timeOffTypes = [],
+            // timeOffTypesByCountry = [],
             totalLeaveBalance: { specialLeaves = {} || {} } = {} || {},
           } = {},
         } = this.props;
@@ -735,13 +757,13 @@ class RequestInformation extends PureComponent {
   // TYPE A & B: PAID LEAVES & UNPAID LEAVES
   renderType1 = (data) => {
     const {
-      timeOff: { timeOffTypes = [] },
+      timeOff: { timeOffTypesByCountry = [] },
     } = this.props;
 
     return data.map((value) => {
       const { name = '', type = '', remaining = 0, _id = '' } = value;
 
-      const foundType = timeOffTypes.find((t) => t._id === _id);
+      const foundType = timeOffTypesByCountry.find((t) => t._id === _id) || {};
 
       const defaultCss = {
         fontSize: 12,
@@ -795,13 +817,12 @@ class RequestInformation extends PureComponent {
   // TYPE C: SPECIAL LEAVES & TYPE D: WORKING OUT OF OFFICE
   renderType2 = (data) => {
     const {
-      timeOff: { timeOffTypes = [] },
+      timeOff: { timeOffTypesByCountry = [] },
     } = this.props;
-
     return data.map((value) => {
       const { name = '', remaining = 0, _id } = value;
 
-      const foundType = timeOffTypes.find((t) => t._id === _id);
+      const foundType = timeOffTypesByCountry.find((t) => t._id === _id) || {};
 
       return (
         <Option value={_id}>
@@ -974,6 +995,7 @@ class RequestInformation extends PureComponent {
       loadingUpdatingLeaveRequest = false,
       loadingSaveDraft = false,
       loadingUpdateDraft = false,
+      loadingMain = false,
       action = '',
     } = this.props;
     const { timeOffTypes: typesOfCommonLeaves = [] } = commonLeaves;
@@ -988,6 +1010,7 @@ class RequestInformation extends PureComponent {
     // if save as draft, no need to validate forms
     const needValidate = buttonState === 2;
 
+    if (loadingMain) return <Skeleton />;
     return (
       <div className={styles.RequestInformation}>
         <div className={styles.formTitle}>
