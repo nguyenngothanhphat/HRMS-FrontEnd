@@ -43,11 +43,11 @@ class Reason extends PureComponent {
       // changeLWD = false,
       // handleLWD = () => {},
       // handleRequestToChange = () => {},
+      status = false,
     } = this.props;
     // const marginTop = lastWorkingDate ? '0px' : '60px';
     const dateValue = moment(lastWorkingDate).format('MM.DD.YY');
     const { viewDocumentModal } = this.state;
-
     const link =
       'https://api-stghrms.paxanimi.ai/api/attachments/60c6fda05c94a70561aaca2b/Revised_AIS_Rule_Vol_I_Rule_03.pdf';
 
@@ -112,7 +112,11 @@ class Reason extends PureComponent {
               {requestDate && moment(requestDate).format('DD.MM.YY | h:mm A')}
             </p> */}
           </div>
-          <TextArea className={styles.boxReason} defaultValue={reasonForLeaving} disabled />
+          <TextArea
+            className={`${styles.boxReason} ${status === 'DRAFT' ? styles.boxReasonDraft : ''}`}
+            defaultValue={reasonForLeaving}
+            disabled={status !== 'DRAFT'}
+          />
           {/* <div className={styles.lastWorkingDay}>
             <span className={styles.title}>Last working date (System generated)</span>
             <div className={styles.datePicker}>
@@ -154,7 +158,7 @@ class Reason extends PureComponent {
         <ViewDocumentModal
           url={link}
           visible={viewDocumentModal}
-          onClose={this.setViewDocumentModal}
+          onClose={() => this.setViewDocumentModal(false)}
         />
       </div>
     );

@@ -35,6 +35,7 @@ import {
   submitToHr,
   getListAssigneeHr,
   assignToHr,
+  sendRequestUpdate,
 } from '../services/offboarding';
 
 const offboarding = {
@@ -148,6 +149,26 @@ const offboarding = {
         response = yield call(sendRequest, {
           ...payload,
           company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data: request = [] } = response;
+
+        if (statusCode !== 200) throw response;
+
+        yield put({ type: 'save', payload: { request, sendrequest: true } });
+        notification.success({ message: `Submit Request successfully!` });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *sendRequestUpdate({ payload }, { call, put }) {
+      let response;
+      try {
+        response = yield call(sendRequestUpdate, {
+          ...payload,
+          // company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
         const { statusCode, data: request = [] } = response;

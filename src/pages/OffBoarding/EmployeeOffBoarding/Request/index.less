@@ -84,10 +84,30 @@
       }
     }
   }
-  .viewWithDraw {
+
+  .btn{
     display: flex;
+    align-items: center;
     justify-content: flex-end;
-    margin-top: 20px;
+
+    &__submit{
+      margin-top: 20px;
+      padding-left: 24px;
+      :global{
+        .ant-btn{
+          padding: 0 30px;
+          height: 40px;
+          color: #fff;
+          font-weight: 700;
+          background: #ffa100;
+          border: none;
+          border-radius: 25px;
+        }
+      }
+    }
+    .viewWithDraw {
+      margin-top: 20px;
+    }
   }
   .viewSet1On1 {
     display: flex;
