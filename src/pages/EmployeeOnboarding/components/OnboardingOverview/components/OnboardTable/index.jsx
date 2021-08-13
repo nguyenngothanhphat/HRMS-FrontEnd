@@ -352,6 +352,7 @@ class OnboardTable extends Component {
         dataIndex: 'actions',
         key: 'actions',
         width: getColumnWidth('actions', type),
+        fixed: 'right',
         align: 'center',
         render: (_, row) => {
           const { currentUser: { employee: { _id: empId = '' } = {} } = {} } = this.props;
@@ -392,7 +393,6 @@ class OnboardTable extends Component {
           return '';
         },
         columnName: ACTION,
-        // fixed: 'right',
       },
     ];
 
