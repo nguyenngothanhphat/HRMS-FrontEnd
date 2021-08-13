@@ -203,7 +203,7 @@ class HandleForm extends PureComponent {
             </div>
             <Divider />
             <div>
-              <div>
+              <div style={{ marginBottom: '5px' }}>
                 <strong>Name of form:</strong>
               </div>
               <Input
@@ -214,7 +214,7 @@ class HandleForm extends PureComponent {
               />
             </div>
             <div>
-              <div>
+              <div style={{ marginBottom: '5px' }}>
                 <strong>Description:</strong>
               </div>
               <Input
@@ -225,7 +225,7 @@ class HandleForm extends PureComponent {
               />
             </div>
             <div>
-              <div>
+              <div style={{ marginBottom: '5px' }}>
                 <strong>Department:</strong>
               </div>
               {department && (
