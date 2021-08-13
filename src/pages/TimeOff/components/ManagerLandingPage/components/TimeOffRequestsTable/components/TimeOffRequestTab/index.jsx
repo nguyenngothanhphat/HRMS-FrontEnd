@@ -202,6 +202,7 @@ class TimeOffRequestTab extends PureComponent {
 
     this.setState({
       selectedTab,
+      selectedTabNumber: id,
     });
   };
 
