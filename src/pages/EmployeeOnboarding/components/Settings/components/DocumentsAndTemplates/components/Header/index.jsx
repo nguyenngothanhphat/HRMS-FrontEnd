@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { history } from 'umi';
 import styles from './index.less';
 
-class DocumentsAndTemplatesHeader extends PureComponent {
+class Header extends PureComponent {
   createNewTemplate = () => {
     history.push({
       pathname: `/create-new-template`,
@@ -12,7 +12,7 @@ class DocumentsAndTemplatesHeader extends PureComponent {
 
   render() {
     return (
-      <div className={styles.DocumentsAndTemplatesHeader}>
+      <div className={styles.Header}>
         <div className={styles.leftPart}>
           <div className={styles.title}>Document & Templates</div>
           <div className={styles.subTitle}>
@@ -30,4 +30,4 @@ class DocumentsAndTemplatesHeader extends PureComponent {
   }
 }
 
-export default DocumentsAndTemplatesHeader;
+export default Header;

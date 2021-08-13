@@ -1,5 +1,19 @@
 import request from '@/utils/request';
 
+export async function addDocumentSetting(payload) {
+  return request('/api/documentcompanytenant/add', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getDocumentSettingList(payload) {
+  return request('/api/documentcompanytenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getDefaultTemplateList(payload) {
   return request('/api/templatetenant/get-default', {
     method: 'POST',

@@ -91,6 +91,16 @@ class EmployeeOnboarding extends PureComponent {
     return dataExport;
   };
 
+  onUploadDocument = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'onboard/save',
+      payload: {
+        isUploadingDocument: true,
+      },
+    });
+  };
+
   renderActionButton = (tabName) => {
     return (
       <div className={styles.options}>
@@ -109,6 +119,9 @@ class EmployeeOnboarding extends PureComponent {
           <Col>
             <Button className={styles.view} type="link">
               {formatMessage({ id: 'component.employeeOnboarding.viewActivityLogs' })} (15)
+            </Button>
+            <Button className={styles.uploadDocumentBtn} onClick={this.onUploadDocument}>
+              Upload
             </Button>
           </Col>
         </Row>

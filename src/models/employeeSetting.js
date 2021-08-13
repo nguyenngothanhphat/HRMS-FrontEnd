@@ -33,6 +33,10 @@ import {
   // optional on boarding question
   addOptionalOnboardQuestions,
   getListPageOnboarding,
+
+  // setting > document
+  addDocumentSetting,
+  getDocumentSettingList,
 } from '../services/employeeSetting';
 
 const employeeSetting = {
@@ -40,12 +44,15 @@ const employeeSetting = {
   state: {
     triggerEventList: [],
     isAbleToSubmit: false,
+    documentListOnboarding: [],
     defaultTemplateListOnboarding: [],
     customTemplateListOnboarding: [],
+    documentListOffboarding: [],
     defaultTemplateListOffboarding: [],
     customTemplateListOffboarding: [],
     currentTemplate: {},
     tempSettings: [],
+    newDocument: {},
     newTemplate: {},
     newTemplateData: {
       settings: [],
@@ -255,6 +262,28 @@ const employeeSetting = {
         dialog(errors);
       }
     },
+    *fetchDocumentListOnboarding({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getDocumentSettingList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            // defaultTemplateListOnboarding: data.filter((value) =>
+            //   value.type.includes('ON_BOARDING'),
+            // ),
+            documentListOnboarding: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
     *fetchCustomTemplateListOnboarding({ payload = {} }, { call, put }) {
       try {
         const response = yield call(getCustomTemplateList, {
@@ -384,6 +413,24 @@ const employeeSetting = {
       }
       return response;
     },
+
+    // upload document & add template
+    *addDocumentSetting({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(addDocumentSetting, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { newDocument: data } });
+        return response;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
+    },
     *addCustomTemplate({ payload = {} }, { call, put }) {
       try {
         const response = yield call(addCustomTemplate, {
@@ -400,6 +447,8 @@ const employeeSetting = {
         return {};
       }
     },
+
+    // custom emails
     *fetchTriggerEventList({ payload }, { call, put }) {
       try {
         const response = yield call(getTriggerEventList, {
