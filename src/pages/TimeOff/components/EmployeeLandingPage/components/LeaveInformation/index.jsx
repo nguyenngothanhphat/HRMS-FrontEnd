@@ -209,7 +209,7 @@ class LeaveInformation extends PureComponent {
     const {
       onInformationClick = () => {},
       timeOff: {
-        timeOffTypes = [],
+        timeOffTypesByCountry = [],
         totalLeaveBalance: { commonLeaves = {}, specialLeaves = {} } = {},
       } = {},
       viewDocumentVisible = false,
@@ -251,7 +251,7 @@ class LeaveInformation extends PureComponent {
                 typesOfSpecialLeaves={typesOfSpecialLeaves}
                 policyCommonLeaves={policyCommonLeaves}
                 policySpecialLeaves={policySpecialLeaves}
-                timeOffTypes={timeOffTypes}
+                timeOffTypes={timeOffTypesByCountry}
               />
             </Panel>
           </Collapse>
