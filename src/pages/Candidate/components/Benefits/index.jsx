@@ -34,14 +34,6 @@ const Benefits = (props) => {
 
   useEffect(() => {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
-    // dispatch({
-    //   type: 'optionalQuestion/save',
-    //   payload: {
-    //     pageName: Page.Benefits,
-    //     // candidate: data.candidate,
-    //     data: {},
-    //   },
-    // });
     setAllFieldFilled(true);
   }, []);
 
