@@ -10,6 +10,7 @@ import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import doneIcon from './assets/doneIcon.png';
 import editIcon from './assets/editIcon.png';
 import styles from './index.less';
+import { Page } from '../../../../utils';
 
 @connect(
   ({
@@ -627,7 +628,7 @@ class SalaryStructureTemplate extends PureComponent {
                   />
                   <Row style={{ margin: '32px' }}>
                     <Col>
-                      <RenderAddQuestion />
+                      <RenderAddQuestion page={Page.Salary_Structure} />
                     </Col>
                   </Row>
                 </div>

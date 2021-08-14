@@ -24,9 +24,8 @@ const RenderAddQuestion = (props) => {
     candidate,
     data: { _id, settings = [] },
     dispatch,
-    pageName,
-    prevPage,
     processStatus,
+    page,
   } = props;
   const [openModal, setOpenModal] = useState('');
   const [questionItem, setQuestionItem] = useState({});
@@ -37,14 +36,12 @@ const RenderAddQuestion = (props) => {
   const [mode, setMode] = useState(MODE.EDIT);
   const [isDisable, setIsDisable] = useState(false);
 
-  const checkEdit = (page) => {
-    // const current = indexOf(listPage, page);
-    // const breakPoin = indexOf(listPage, Page.Eligibility_documents);
+  const checkEdit = (value) => {
     if (
-      page === Page.Basic_Information ||
-      page === Page.Job_Details ||
-      page === Page.Salary_Structure ||
-      page === Page.Eligibility_documents
+      value === Page.Basic_Information ||
+      value === Page.Job_Details ||
+      value === Page.Salary_Structure ||
+      value === Page.Eligibility_documents
     )
       setIsDisable(
         processStatus !== 'DRAFT' && processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT,
@@ -59,23 +56,21 @@ const RenderAddQuestion = (props) => {
   };
 
   useEffect(() => {
-    if (candidate !== '' && pageName !== '' && pageName !== prevPage) {
+    if (candidate) {
       dispatch({
         type: 'optionalQuestion/getQuestionByPage',
         payload: {
           candidate,
-          page: pageName,
+          page,
         },
       });
-      checkEdit(pageName);
+      checkEdit(page);
     }
-  }, [candidate, pageName]);
+  }, [candidate]);
   const openModalAdd = () => {
     setOpenModal('AddQuestion');
-    // openModalList: false,
     setMode(MODE.EDIT);
     setQuestionItem(defaultQuestion);
-    // setAction('Add');
     setTitle('Add question');
   };
   const closeModalAdd = () => {
@@ -146,7 +141,7 @@ const RenderAddQuestion = (props) => {
           isDefault: false,
           position: {
             move_to: 'IN-PAGE',
-            page: pageName,
+            page,
           },
           candidate,
           settings: tempSetting,
@@ -258,24 +253,15 @@ export default connect(
   ({
     dispatch,
     loading,
-    optionalQuestion: {
-      listPage,
-      prevPage,
-      candidate = '',
-      optionalQuestionId = '',
-      pageName = '',
-      data = {},
-    } = {},
+    optionalQuestion: { listPage, candidate = '', optionalQuestionId = '', data = {} } = {},
     candidateInfo: {
       data: { processStatus },
     },
   }) => ({
     dispatch,
     listPage,
-    prevPage,
     candidate,
     optionalQuestionId,
-    pageName,
     data,
     processStatus,
     loading: loading.effects['optionalQuestion/getQuestionByPage'],
