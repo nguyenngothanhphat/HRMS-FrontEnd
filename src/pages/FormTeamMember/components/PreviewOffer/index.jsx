@@ -588,7 +588,7 @@ const PreviewOffer = (props) => {
         type: 'candidateInfo/addManagerSignatureEffect',
         payload: {
           candidate: _id,
-          hrManagerSignature: hrManagerSignatureProp.id,
+          hrManagerSignature: id,
           tenantId: getCurrentTenant(),
           // currentStep: 6,
         },
