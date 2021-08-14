@@ -82,21 +82,8 @@ class DocumentVerification extends Component {
   }
 
   componentDidMount = () => {
-    const {
-      dispatch,
-      data: { candidate },
-    } = this.props;
     this.getDataFromServer();
     window.scrollTo({ top: 77, behavior: 'smooth' });
-    this.validateFields();
-    dispatch({
-      type: 'optionalQuestion/save',
-      payload: {
-        pageName: Page.Eligibility_documents,
-        candidate,
-        data: {},
-      },
-    });
   };
 
   componentWillUnmount() {
@@ -514,7 +501,7 @@ class DocumentVerification extends Component {
 
     return (
       <div className={styles.bottomBar}>
-        <RenderAddQuestion />
+        <RenderAddQuestion page={Page.Eligibility_documents} />
         <Row align="middle">
           <Col span={16}>
             <div className={styles.bottomBar__status}>{this._renderStatus()}</div>

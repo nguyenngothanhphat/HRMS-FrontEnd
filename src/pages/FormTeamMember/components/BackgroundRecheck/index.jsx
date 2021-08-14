@@ -73,14 +73,7 @@ class BackgroundRecheck extends Component {
     const { PROVISIONAL_OFFER_DRAFT, SENT_PROVISIONAL_OFFERS, PENDING } = PROCESS_STATUS;
 
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
-    dispatch({
-      type: 'optionalQuestion/save',
-      payload: {
-        pageName: Page.Eligibility_documents,
-        candidate,
-        data: {},
-      },
-    });
+
     if (documentsByCandidate.length > 0) {
       await dispatch({
         type: 'candidateInfo/fetchWorkHistory',
@@ -445,7 +438,7 @@ class BackgroundRecheck extends Component {
         <Row align="middle">
           <Col span={16}>
             <div className={styles.greenText}>
-              <RenderAddQuestion />
+              <RenderAddQuestion page={Page.Eligibility_documents} />
               {/* * All mandatory details must be filled to proceed */}
             </div>
           </Col>

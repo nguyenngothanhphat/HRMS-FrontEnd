@@ -57,14 +57,7 @@ class JobDetails extends PureComponent {
       isCandidateAcceptDOJ = true,
       jobDetails: { candidatesNoticePeriod = 0, prefferedDateOfJoining = '' } = {},
     } = this.props;
-    dispatch({
-      type: 'optionalQuestion/save',
-      payload: {
-        pageName: Page.Job_Details,
-        // candidate: data.candidate,
-        data: {},
-      },
-    });
+
     // console.log('dateOfJoining', dateOfJoining);
     // console.log('prefferedDateOfJoining', prefferedDateOfJoining);
     // console.log('isCandidateAcceptDOJ', isCandidateAcceptDOJ);
@@ -410,7 +403,7 @@ class JobDetails extends PureComponent {
                 _handleSelect={this._handleSelect}
               />
               <Row style={{ margin: '32px' }}>
-                <AnswerQuestion />
+                <AnswerQuestion page={Page.Job_Details} />
               </Row>
               {this._renderBottomBar()}
             </div>

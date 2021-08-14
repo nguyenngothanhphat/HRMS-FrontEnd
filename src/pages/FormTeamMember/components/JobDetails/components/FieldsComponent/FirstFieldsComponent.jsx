@@ -3,7 +3,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
 import { Row, Col, Select, Typography, Spin, Form } from 'antd';
-import { isNull, isEmpty } from 'lodash';
+import { isNull } from 'lodash';
 import { connect } from 'umi';
 import InternalStyle from './FirstFieldsComponent.less';
 
@@ -168,6 +168,7 @@ class FirstFieldsComponent extends PureComponent {
                           (item.title === 'reportingManager' && managerList.length <= 0) ||
                           (item.title === 'department' && departmentList.length <= 0) ||
                           (item.title === 'title' && titleList.length <= 0) ||
+                          (item.title === 'jobGradeLevel' && disabled) ||
                           (item.title === 'workLocation' && disabled) ||
                           (item.title === 'reportingManager' && disabled) ||
                           (item.title === 'department' && disabled) ||

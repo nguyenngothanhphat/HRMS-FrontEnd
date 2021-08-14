@@ -54,14 +54,7 @@ class BasicInformation extends PureComponent {
     window.scrollTo({ top: 77, behavior: 'smooth' });
 
     this.checkBottomBar();
-    dispatch({
-      type: 'optionalQuestion/save',
-      payload: {
-        pageName: Page.Basic_Information,
-        candidate,
-        data: {},
-      },
-    });
+
     if (processStatus === 'DRAFT') {
       // const currentStepLocal = localStorage.getItem('currentStep') || currentStep;
       // console.log(candidate, currentStepLocal);
@@ -470,7 +463,7 @@ class BasicInformation extends PureComponent {
             </Form.Item>
           </Col>
         </Row>
-        <RenderAddQuestion />
+        <RenderAddQuestion page={Page.Basic_Information} />
       </div>
     );
   };

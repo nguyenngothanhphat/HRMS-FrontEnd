@@ -8,17 +8,12 @@ import { PROCESS_STATUS } from '@/utils/onboarding';
 import BasicInformation from './components/BasicInformation';
 import JobDetails from './components/JobDetails';
 import OfferDetail from './components/OfferDetail';
-// import CustomField from './components/CustomField';
 import Benefit from './components/Benefit';
 import styles from './index.less';
 import SalaryStructure from './components/SalaryStructure';
-// import BackgroundCheck from './components/BackgroundCheck';
 import DocumentVerification from './components/DocumentVerification';
 import BackgroundRecheck from './components/BackgroundRecheck';
 import Payroll from './components/Payroll';
-// import AdditionalQuestion from './components/AdditionalQuestion';
-// import Additional from './components/Additional';
-// import PreviewOffer from './components/PreviewOffer';
 
 @connect(({ candidateInfo = {}, user, loading }) => ({
   candidateInfo,
@@ -30,9 +25,8 @@ class FormTeamMember extends PureComponent {
     const {
       match: { params: { action = '', reId } = {} },
       dispatch,
-      // user: { companiesOfUser = [] },
-      // candidateInfo,
     } = this.props;
+
     // check action is add or review. If isReview fetch candidate by reID
     // console.log(candidateInfo.currentStep);
     if (action === 'review' || action === 'add' || action === 'candidate-detail') {
@@ -46,8 +40,14 @@ class FormTeamMember extends PureComponent {
         if (!data) {
           return;
         }
-        const { currentStep = 0 } = data;
-
+        const { currentStep = 0, _id } = data;
+        dispatch({
+          type: 'optionalQuestion/save',
+          payload: {
+            candidate: _id,
+            data: {},
+          },
+        });
         if (currentStep >= 4) {
           dispatch({
             type: 'candidateInfo/saveTemp',
@@ -57,14 +57,7 @@ class FormTeamMember extends PureComponent {
           });
         }
       });
-      // if (company._id.length > 0) {
-      //   dispatch({
-      //     type: 'candidateInfo/fetchLocationListByCompany',
-      //     payload: {
-      //       company: company._id,
-      //     },
-      //   });
-      // }
+
       dispatch({
         type: 'candidateInfo/fetchEmployeeTypeList',
       });
@@ -96,6 +89,13 @@ class FormTeamMember extends PureComponent {
   resetFormMember = () => {
     const { dispatch, candidateInfo = {} } = this.props;
     const { listTitle } = candidateInfo;
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        candidate: null,
+        data: {},
+      },
+    });
     dispatch({
       type: 'candidateInfo/saveOrigin',
       payload: {

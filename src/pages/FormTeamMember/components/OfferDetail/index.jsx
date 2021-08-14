@@ -90,16 +90,7 @@ const OfferDetail = (props) => {
 
     return valid;
   };
-  useEffect(() => {
-    dispatch({
-      type: 'optionalQuestion/save',
-      payload: {
-        pageName: Page.Offer_Details,
-        candidate: data.candidate,
-        data: {},
-      },
-    });
-  }, [data.candidate]);
+
   useEffect(() => {
     const formValues = form.getFieldsValue();
     checkAllFieldsValid({ ...formValues });
@@ -643,7 +634,7 @@ const OfferDetail = (props) => {
                 )}
               </div>
               <div style={{ marginTop: '32px' }}>
-                <RenderAddQuestion />
+                <RenderAddQuestion page={Page.Offer_Details} />
               </div>
             </div>
             {_renderBottomBar()}
