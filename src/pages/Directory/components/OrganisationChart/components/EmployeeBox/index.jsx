@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
-import { Avatar, Row, Col, Typography, Select, Spin, Divider, Tooltip } from 'antd';
+import { Avatar, Row, Col, Select, Spin, Divider, Tooltip } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import { history } from 'umi';
+import { Link } from 'umi';
 import { isEmpty } from 'lodash';
 
 import SearchIcon from '@/assets/searchOrgChart.svg';
 import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
 
-const { Text } = Typography;
 const { Option } = Select;
 class DetailEmployeeChart extends Component {
   constructor(props) {
@@ -29,10 +28,6 @@ class DetailEmployeeChart extends Component {
 
   updateValueSelect = (valueInput) => {
     this.setState({ valueInput });
-  };
-
-  handleViewFullProfile = (id) => {
-    history.push(`employee-profile/${id}`);
   };
 
   handleSelect = (value) => {
@@ -183,13 +178,12 @@ class DetailEmployeeChart extends Component {
             </div>
             <Divider />
             <div className={styles.chartDetail__Bottom_flexBottom}>
-              <Text
+              <Link
                 className={styles.chartDetail__Bottom_ViewProfile}
-                underline
-                onClick={() => this.handleViewFullProfile(userId)}
+                to={`employee-profile/${userId}`}
               >
                 View full profile
-              </Text>
+              </Link>
               <div className={styles.chartDetail__Bottom_actions}>
                 <Tooltip title="Message">
                   <a href="https://chat.google.com" target="_blank" rel="noreferrer">
