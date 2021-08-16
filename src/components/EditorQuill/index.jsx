@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
+// import { debounce } from 'lodash';
 import { history, connect } from 'umi';
 import REACT_APP_TINYMCE_KEY from '@/utils/editor';
 
@@ -12,6 +13,7 @@ class EditorQuill extends Component {
   constructor(props) {
     super(props);
     this.mapValues = {};
+    // this.handleChangeContent = debounce(this.handleChangeContent.bind(this), 100);
   }
 
   imageType = (fileName) => {
@@ -66,13 +68,18 @@ class EditorQuill extends Component {
     }
   };
 
+  handleChangeContent = (value) => {
+    const { handleChangeEmail = () => {} } = this.props;
+    handleChangeEmail(value);
+  };
+
   render() {
-    const { messages = '', handleChangeEmail, listAutoText = [] } = this.props;
+    const { messages = '', listAutoText = [] } = this.props;
 
     return (
       <div className={styles.EditorQuill}>
         <Editor
-          initialValue={messages}
+          value={messages}
           apiKey={REACT_APP_TINYMCE_KEY}
           init={{
             height: '100%',
@@ -88,6 +95,7 @@ class EditorQuill extends Component {
               'undo redo formatselect bold italic size backcolor  alignleft aligncenter alignright alignjustify bullist numlist outdent indent removeformat help variable custom-preview',
             content_style: 'body { margin: 1rem; max-width: 900px; padding: 0 13px; }',
             setup(ed) {
+              window.tester = ed;
               ed.ui.registry.addButton('custom-preview', {
                 text: 'Preview',
                 onAction() {
@@ -138,7 +146,7 @@ class EditorQuill extends Component {
             },
             images_upload_handler: this.uploadImageHandle,
           }}
-          onEditorChange={handleChangeEmail}
+          onEditorChange={this.handleChangeContent}
           outputFormat="raw"
         />
       </div>

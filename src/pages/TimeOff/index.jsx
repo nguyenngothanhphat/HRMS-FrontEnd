@@ -9,10 +9,12 @@ import HRManagerLandingPage from './components/HRManagerLandingPage';
 import SetupTimeoff from './components/SetupTimeoff';
 
 import styles from './index.less';
+import { getCurrentCompany, getCurrentTenant } from '../../utils/authority';
 
 const { TabPane } = Tabs;
-@connect(({ timeOff }) => ({
+@connect(({ dispatch, timeOff }) => ({
   timeOff,
+  dispatch,
 }))
 class TimeOff extends PureComponent {
   constructor(props) {
@@ -86,12 +88,47 @@ class TimeOff extends PureComponent {
     });
   };
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     const {
       match: { params: { tabName = '' } = {} },
       location: { state: { status = '', tickedId = '', typeName = '', category = '' } = {} } = {},
     } = this.props;
 
+    if (!tabName) {
+      history.replace(`/time-off/overview`);
+    } else {
+      const listRole = localStorage.getItem('antd-pro-authority');
+      const role = this.findRole(JSON.parse(listRole));
+      this.setState({
+        role,
+      });
+    }
+
+    const { dispatch } = this.props;
+    const response = await dispatch({
+      type: 'timeOff/getTimeOffTypeByLocation',
+    });
+    const {
+      statusCode,
+      data: {
+        headQuarterAddress: {
+          country: { _id },
+        },
+      },
+    } = response;
+    if (statusCode === 200)
+      dispatch({
+        type: 'timeOff/fetchTimeOffTypesByCountry',
+        payload: {
+          country: _id,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        },
+      });
+    dispatch({
+      type: 'timeOff/savePaging',
+      payload: { page: 1 },
+    });
     if (status === 'WITHDRAW') {
       if (category === 'TIMEOFF') {
         notification.success({
@@ -112,16 +149,6 @@ class TimeOff extends PureComponent {
         });
       }
       history.replace();
-    }
-
-    if (!tabName) {
-      history.replace(`/time-off/overview`);
-    } else {
-      const listRole = localStorage.getItem('antd-pro-authority');
-      const role = this.findRole(JSON.parse(listRole));
-      this.setState({
-        role,
-      });
     }
   };
 

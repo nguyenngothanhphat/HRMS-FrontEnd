@@ -1,40 +1,40 @@
-/* eslint-disable react/no-array-index-key */
-import React, { useState, useEffect } from 'react';
-
-import { Radio, Select, Checkbox, Form, Row, Col, Button } from 'antd';
-
-import { connect, formatMessage } from 'umi';
-// import UploadImage from '@/pages/Candidate/components/EligibilityDocs/components/UploadImage';
-import UploadImage from '@/components/UploadImage';
 import { getCurrentTenant } from '@/utils/authority';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, Col, DatePicker, Form, Row, Select } from 'antd';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
+import { connect, formatMessage } from 'umi';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import { currencyArr, timeoffArr } from './mockData';
-import styles from './index.less';
+import { PROCESS_STATUS } from '@/utils/onboarding';
+import AddDocumentModal from './components/AddDocumentModal';
+import DocumentItem from './components/DocumentItem';
 import { Page } from '../../utils';
-import FileIcon from './components/FileIcon/index';
 import Template from './components/Template/index';
-import Alert from './components/Alert/index';
-import { getFileType } from './components/utils';
+import AddTemplateModal from './components/AddTemplateModal';
+import styles from './index.less';
 
 const { Option } = Select;
 
 const OfferDetail = (props) => {
-  const { dispatch, checkMandatory, currentStep, data, tempData, loading1, loading2 } = props;
+  const { dispatch, checkMandatory, currentStep, data, tempData, loading1 } = props;
+  const { processStatus = '' } = tempData;
   const previousStep = currentStep - 1;
   const nextStep = currentStep + 1;
   // Get default value from "candidateInfo" store
   const {
-    compensationType: compensationProp,
-    amountIn: currencyProp,
-    timeOffPolicy: timeoffProp,
-    hiringAgreements: agreementProp,
-    companyHandbook: handbookProp,
     template: templateProp,
     includeOffer: includeOfferProp,
     defaultTemplates: defaultTemplatesProp,
     customTemplates: customTemplatesProp,
     staticOfferLetter: staticOfferLetterProp,
+    offerDocuments: offerDocumentsProp = [],
+    offerLetterTemplate: offerLetterTemplateProp,
+    expiryDate: expiryDateProp,
   } = tempData;
+  const [isAddModalVisible, setAddModalVisible] = useState(false);
+  const [isAddTemplateModalVisible, setAddTemplateModalVisible] = useState(false);
+
+  const [uploadedOfferTemplate, setUploadedOfferTemplate] = useState(offerLetterTemplateProp);
 
   const [defaultTemplates, setDefaultTemplates] = useState(defaultTemplatesProp || []);
   const [customTemplates, setCustomTemplates] = useState(customTemplatesProp || []);
@@ -45,20 +45,23 @@ const OfferDetail = (props) => {
 
   // const [includeOffer, setIncludeOffer] = useState(includeOfferProp);
   const [file, setFile] = useState(templateProp || {});
-  const [agreement, setAgreement] = useState(agreementProp);
-  const [handbook, setHandbook] = useState(handbookProp);
-  // const [compensation, setCompensation] = useState(compensationProp);
-  // const [currency, setCurrency] = useState(currencyProp);
-  // const [timeoff, setTimeoff] = useState(timeoffProp);
   // const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(timeoff !== 'can');
   const [displayTemplate, setDisplayTemplate] = useState(includeOfferProp === 3);
-  const [displayTimeoffAlert, setDisplayTimeoffAlert] = useState(false);
   const [uploadedOffer, setUploadedOffer] = useState(staticOfferLetterProp || {});
-  const [displayUploadedOffer, setDisplayUploadedOffer] = useState(includeOfferProp === 2);
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
   // const [disableAll, setDisableAll] = useState(processStatus === 'SENT-PROVISIONAL-OFFER');
   // eslint-disable-next-line no-unused-vars
-  const [disableAll, setDisableAll] = useState(false);
+  const [disableAll, setDisableAll] = useState(
+    [
+      PROCESS_STATUS.APPROVED_OFFERS,
+      PROCESS_STATUS.SENT_FINAL_OFFERS,
+      PROCESS_STATUS.ACCEPTED_FINAL_OFFERS,
+      PROCESS_STATUS.RENEGOTIATE_FINAL_OFFERS,
+      PROCESS_STATUS.FINAL_OFFERS,
+      PROCESS_STATUS.FINAL_OFFERS_HR,
+      PROCESS_STATUS.FINAL_OFFERS_CANDIDATE,
+    ].includes(processStatus),
+  );
 
   const checkAllFieldsValid = (allFieldsValues) => {
     const keys = Object.keys(allFieldsValues);
@@ -87,19 +90,10 @@ const OfferDetail = (props) => {
 
     return valid;
   };
-  useEffect(() => {
-    dispatch({
-      type: 'optionalQuestion/save',
-      payload: {
-        pageName: Page.Offer_Details,
-        candidate: data.candidate,
-        data: {},
-      },
-    });
-  }, [data.candidate]);
+
   useEffect(() => {
     const formValues = form.getFieldsValue();
-    checkAllFieldsValid({ ...formValues, agreement, handbook });
+    checkAllFieldsValid({ ...formValues });
   }, [displayTemplate]);
 
   useEffect(() => {
@@ -128,13 +122,7 @@ const OfferDetail = (props) => {
   }, [uploadedOffer]);
 
   const handleFormChange = (changedValues, allFieldsValues) => {
-    const { includeOffer, compensation, currency, timeoff } = allFieldsValues;
-
-    if (timeoff === 'can not') {
-      setDisplayTimeoffAlert(true);
-    } else {
-      setDisplayTimeoffAlert(false);
-    }
+    const { includeOffer } = allFieldsValues;
 
     checkAllFieldsValid(allFieldsValues);
 
@@ -143,7 +131,6 @@ const OfferDetail = (props) => {
     }
 
     setDisplayTemplate(includeOffer === 3);
-    setDisplayUploadedOffer(includeOffer === 2);
 
     const { _id = '' } = data;
 
@@ -153,11 +140,6 @@ const OfferDetail = (props) => {
         tempData: {
           ...tempData,
           includeOffer,
-          compensationType: compensation,
-          amountIn: currency,
-          timeOffPolicy: timeoff,
-          hiringAgreements: agreement,
-          companyHandbook: handbook,
           template: file,
           candidate: _id,
           hidePreviewOffer: includeOffer === 1,
@@ -170,11 +152,11 @@ const OfferDetail = (props) => {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
 
     const formValues = form.getFieldsValue();
-    checkAllFieldsValid({ ...formValues, agreement, handbook });
+    checkAllFieldsValid({ ...formValues });
   }, []);
 
   useEffect(() => {
-    const { processStatus = '' } = data;
+    // const { processStatus = '' } = data;
     if (processStatus !== 'DRAFT') {
       return;
     }
@@ -196,7 +178,7 @@ const OfferDetail = (props) => {
     const allFormValues = form.getFieldsValue();
     handleFormChange(null, allFormValues);
     checkAllFieldsValid(allFormValues);
-  }, [file, agreement, handbook]);
+  }, [file]);
 
   useEffect(() => {
     setDefaultTemplates(defaultTemplatesProp);
@@ -210,7 +192,7 @@ const OfferDetail = (props) => {
 
   const handleTemplateChange = (_, option) => {
     const { value = '', key = '' } = option;
-
+    setUploadedOfferTemplate(key);
     setFile({
       name: value,
       id: key,
@@ -219,16 +201,21 @@ const OfferDetail = (props) => {
       type: 'candidateInfo/saveTemp',
       payload: {
         template: value,
+        offerLetterTemplate: key,
       },
     });
-  };
 
-  const handleAgreementChange = () => {
-    setAgreement((prevState) => !prevState);
-  };
+    const { candidate } = data;
 
-  const handleHandbookChange = () => {
-    setHandbook((prevState) => !prevState);
+    dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate,
+        includeOffer: 3,
+        tenantId: getCurrentTenant(),
+        offerLetterTemplate: key,
+      },
+    });
   };
 
   const onClickPrev = () => {
@@ -244,9 +231,6 @@ const OfferDetail = (props) => {
     if (!dispatch) {
       return;
     }
-
-    const allFormValues = form.getFieldsValue();
-    const { includeOffer = 1 } = allFormValues;
 
     const { id: templateId = '' } = file;
 
@@ -265,20 +249,13 @@ const OfferDetail = (props) => {
         generalInfo: { firstName: managerFirstName = '', lastName: managerLastnName = '' } = {},
       } = {},
     } = data;
-    const formValues = form.getFieldsValue();
-    const { compensation, currency, timeoff } = formValues;
 
     dispatch({
       type: 'candidateInfo/updateByHR',
       payload: {
-        compensationType: compensation,
-        amountIn: currency,
-        timeOffPolicy: timeoff,
-        hiringAgreements: agreement,
-        companyHandbook: handbook,
         candidate: _id,
         currentStep: nextStep,
-        includeOffer,
+        includeOffer: 3,
         tenantId: getCurrentTenant(),
 
         // offerLetter: templateId,
@@ -290,25 +267,48 @@ const OfferDetail = (props) => {
       payload: {
         data: {
           ...data,
-          compensationType: compensation,
-          amountIn: currency,
-          timeOffPolicy: timeoff,
-          hiringAgreements: agreement,
-          companyHandbook: handbook,
           candidate: _id,
-          includeOffer,
+          includeOffer: 3,
         },
       },
     });
 
-    if (includeOffer === 1) {
-      // Do not include offer
+    // Use existing offer letter
+
+    const offerData = {
+      candidateId: candidate,
+      templateId: templateId || offerLetterTemplateProp,
+      firstName,
+      middleName,
+      lastName,
+      position,
+      classification: classificationName,
+      workLocation: workLocationName,
+      department: departmentName,
+      jobTitle,
+      reportManager: `${managerFirstName} ${managerLastnName}`,
+      includeOffer: 3,
+      tenantId: getCurrentTenant(),
+    };
+
+    dispatch({
+      type: 'candidateInfo/createFinalOfferEffect',
+      payload: offerData,
+    }).then((res) => {
+      const { statusCode, data: { _id: templateID = '', attachment = {} } = {} } = res;
+      if (statusCode !== 200) {
+        return;
+      }
+
       dispatch({
         type: 'candidateInfo/updateByHR',
         payload: {
           candidate,
           currentStep: nextStep,
+          offerLetter: templateID,
           tenantId: getCurrentTenant(),
+
+          // offerTemplate: templateId,
         },
       });
 
@@ -319,122 +319,21 @@ const OfferDetail = (props) => {
           currentStep: nextStep,
         },
       });
-    }
 
-    if (includeOffer === 2) {
-      // Upload offer letter
-      const { id: offerId } = uploadedOffer;
+      // Enable preview offer
       dispatch({
-        type: 'candidateInfo/updateByHR',
+        type: 'candidateInfo/saveTemp',
         payload: {
-          candidate,
-          currentStep: nextStep,
-          staticOfferLetter: offerId,
-          tenantId: getCurrentTenant(),
-          includeOffer,
+          disablePreviewOffer: false,
         },
-      }).then((res) => {
-        const { statusCode = 1 } = res;
-        if (statusCode !== 200) {
-          return;
-        }
-
-        dispatch({
-          type: 'candidateInfo/updateByHR',
-          payload: {
-            candidate,
-            currentStep: nextStep,
-            tenantId: getCurrentTenant(),
-          },
-        });
-
-        // Save next step
-        dispatch({
-          type: 'candidateInfo/save',
-          payload: {
-            currentStep: nextStep,
-          },
-        });
-
-        // Enable preview offer
-        dispatch({
-          type: 'candidateInfo/saveTemp',
-          payload: {
-            disablePreviewOffer: false,
-          },
-        });
-
-        // Save offer letter
-        dispatch({
-          type: 'candidateInfo/updateOfferLetter',
-          payload: uploadedOffer,
-        });
       });
-    }
 
-    if (includeOffer === 3) {
-      // Use existing offer letter
-
-      const offerData = {
-        candidateId: candidate,
-        templateId,
-        firstName,
-        middleName,
-        lastName,
-        position,
-        classification: classificationName,
-        workLocation: workLocationName,
-        department: departmentName,
-        jobTitle,
-        reportManager: `${managerFirstName} ${managerLastnName}`,
-        includeOffer,
-        tenantId: getCurrentTenant(),
-      };
-
+      // Save offer letter
       dispatch({
-        type: 'candidateInfo/createFinalOfferEffect',
-        payload: offerData,
-      }).then((res) => {
-        const { statusCode, data: { _id: templateID = '', attachment = {} } = {} } = res;
-        if (statusCode !== 200) {
-          return;
-        }
-
-        dispatch({
-          type: 'candidateInfo/updateByHR',
-          payload: {
-            candidate,
-            currentStep: nextStep,
-            offerLetter: templateID,
-            tenantId: getCurrentTenant(),
-
-            // offerTemplate: templateId,
-          },
-        });
-
-        // Save next step
-        dispatch({
-          type: 'candidateInfo/save',
-          payload: {
-            currentStep: nextStep,
-          },
-        });
-
-        // Enable preview offer
-        dispatch({
-          type: 'candidateInfo/saveTemp',
-          payload: {
-            disablePreviewOffer: false,
-          },
-        });
-
-        // Save offer letter
-        dispatch({
-          type: 'candidateInfo/updateOfferLetter',
-          payload: attachment,
-        });
+        type: 'candidateInfo/updateOfferLetter',
+        payload: attachment,
       });
-    }
+    });
   };
 
   const _renderStatus = () => {
@@ -454,35 +353,30 @@ const OfferDetail = (props) => {
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
-          <Col span={16}>
+          <Col span={12}>
             <div className={styles.bottomBar__status}>{_renderStatus()}</div>
           </Col>
-          <Col span={8}>
+          <Col span={12}>
             <div className={styles.bottomBar__button}>
-              <Row gutter={12}>
-                <Col span={12}>
-                  <Button
-                    type="secondary"
-                    onClick={onClickPrev}
-                    className={styles.bottomBar__button__secondary}
-                  >
-                    Previous
-                  </Button>
-                </Col>
-                <Col span={12}>
-                  <Button
-                    type="primary"
-                    onClick={onClickNext}
-                    loading={loading1}
-                    className={`${styles.bottomBar__button__primary} ${
-                      !allFieldsFilled ? styles.bottomBar__button__disabled : ''
-                    }`}
-                    disabled={!allFieldsFilled}
-                  >
-                    Proceed
-                  </Button>
-                </Col>
-              </Row>
+              <Button
+                type="secondary"
+                onClick={onClickPrev}
+                className={styles.bottomBar__button__secondary}
+              >
+                Previous
+              </Button>
+
+              <Button
+                type="primary"
+                onClick={onClickNext}
+                loading={loading1}
+                className={`${styles.bottomBar__button__primary} ${
+                  !allFieldsFilled ? styles.bottomBar__button__disabled : ''
+                }`}
+                disabled={!allFieldsFilled}
+              >
+                Proceed
+              </Button>
             </div>
           </Col>
         </Row>
@@ -490,6 +384,7 @@ const OfferDetail = (props) => {
     );
   };
 
+  // eslint-disable-next-line no-unused-vars
   const handleUploadResponse = (res) => {
     const { data: uploadFileData = [] } = res;
     if (uploadFileData.length === 0) {
@@ -515,232 +410,267 @@ const OfferDetail = (props) => {
     });
   };
 
+  const handleAddDocument = (type = 'document') => {
+    if (type === 'document') setAddModalVisible(true);
+    else {
+      setAddTemplateModalVisible(true);
+      // const win = window.open('/create-new-template', '_blank');
+      // win.focus();
+    }
+  };
+
+  const handleModalVisible = (value) => {
+    setAddModalVisible(value);
+  };
+
+  const handleTemplateModalVisible = (value) => {
+    setAddTemplateModalVisible(value);
+  };
+
+  // refresh template list
+  const refreshTemplateList = async (value, key) => {
+    await dispatch({
+      type: 'candidateInfo/fetchDefaultTemplateList',
+      payload: {
+        tenantId: getCurrentTenant(),
+        type: 'ON_BOARDING',
+      },
+    });
+    await dispatch({
+      type: 'candidateInfo/fetchCustomTemplateList',
+      payload: {
+        tenantId: getCurrentTenant(),
+        type: 'ON_BOARDING',
+      },
+    });
+    const option = { value, key };
+    handleTemplateChange('', option);
+    setUploadedOfferTemplate(key);
+  };
+  // DISABLE DATE OF DATE PICKER
+  const disabledDate = (current) => {
+    return current && current < moment();
+  };
+
+  const onAddDocument = async (payload) => {
+    const { name = '', uploadedFile = {} } = payload;
+
+    let newOfferDocumentsProp = [...offerDocumentsProp];
+    const payloadNew = [
+      {
+        name,
+        attachmentName: uploadedFile.name,
+        attachmentUrl: uploadedFile.url,
+        attachment: uploadedFile.id,
+      },
+    ];
+
+    newOfferDocumentsProp = [...newOfferDocumentsProp, ...payloadNew];
+
+    await dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        tempData: {
+          ...tempData,
+          offerDocuments: newOfferDocumentsProp,
+        },
+      },
+    });
+
+    const { candidate } = data;
+    await dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate,
+        tenantId: getCurrentTenant(),
+        offerDocuments: newOfferDocumentsProp,
+      },
+    });
+    handleModalVisible(false);
+  };
+
+  const onRemove = async (attachmentId) => {
+    const newOfferDocumentsProp = offerDocumentsProp.filter(
+      (doc) => doc.attachment !== attachmentId && doc.attachment?._id !== attachmentId,
+    );
+
+    await dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        tempData: {
+          ...tempData,
+          offerDocuments: newOfferDocumentsProp,
+        },
+      },
+    });
+
+    const { candidate } = data;
+    await dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate,
+        tenantId: getCurrentTenant(),
+        offerDocuments: newOfferDocumentsProp,
+      },
+    });
+  };
+
+  const renderDocuments = () => {
+    return offerDocumentsProp.map((doc) => (
+      <DocumentItem disableAll={disableAll} onRemove={onRemove} item={doc} />
+    ));
+  };
+
+  const handleExpiryDay = async (val) => {
+    const { candidate } = data;
+    await dispatch({
+      type: 'candidateInfo/save',
+      payload: {
+        tempData: {
+          ...tempData,
+          expiryDate: val,
+        },
+      },
+    });
+
+    await dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate,
+        tenantId: getCurrentTenant(),
+        expiryDate: val,
+      },
+    });
+  };
+
   return (
-    <Form
-      form={form}
-      initialValues={{
-        includeOffer: includeOfferProp,
-        agreement: agreementProp,
-        compensation: compensationProp,
-        handbook: handbookProp,
-        currency: currencyProp,
-        timeoff: timeoffProp,
-        // template: templateProp,
-      }}
-      onValuesChange={handleFormChange}
-    >
-      <div className={styles.offerDetailContainer}>
-        <div className={styles.offerDetail}>
-          <div className={styles.top}>
-            <h3 className={styles.header}>
-              {formatMessage({ id: 'component.offerDetail.title' })}
-            </h3>
+    <>
+      <Form form={form} onValuesChange={handleFormChange}>
+        <div className={styles.offerDetailContainer}>
+          <div className={styles.offerDetail}>
+            <div className={styles.top}>
+              <h3 className={styles.header}>
+                {formatMessage({ id: 'component.offerDetail.title' })}
+              </h3>
 
-            <p>{formatMessage({ id: 'component.offerDetail.subtitle' })}</p>
-          </div>
+              <p>{formatMessage({ id: 'component.offerDetail.subtitle' })}</p>
+            </div>
 
-          <div className={styles.middle}>
-            <p>{formatMessage({ id: 'component.offerDetail.offerLetter' })}</p>
+            <div className={styles.middle}>
+              <div className={styles.offerLetterBlock}>
+                <p className={styles.title}>Offer Letter</p>
+                <Row gutter={['24']}>
+                  <Col span={12}>
+                    <p>Use an existing offer letter</p>
 
-            <Form.Item name="includeOffer" className={styles.radioForm}>
-              <Radio.Group className={styles.radioGroup} disabled={disableAll}>
-                <Row className={styles.radioRow}>
-                  <Radio value={1}>
-                    {formatMessage({ id: 'component.offerDetail.notInclude' })}
-                  </Radio>
-                </Row>
-                <Row className={styles.radioRow} align="middle">
-                  <Col sm={8} md={10}>
-                    <Radio value={2}>
-                      {formatMessage({ id: 'component.offerDetail.uploadOffer' })}
-                    </Radio>
+                    <div className={styles.wrapper1}>
+                      {/* <Form.Item name="template"> */}
+                      <Select
+                        defaultValue={uploadedOfferTemplate}
+                        value={uploadedOfferTemplate}
+                        placeholder="Select file"
+                        className={styles.select}
+                        onChange={(value, option) => handleTemplateChange(value, option)}
+                        disabled={disableAll}
+                      >
+                        {templateList.map((fileItem) => {
+                          const { _id = '', attachment = {} } = fileItem;
+                          return (
+                            <Option value={attachment?._id} key={_id}>
+                              <div className={styles.iconWrapper}>
+                                <span>{attachment?.name}</span>
+                              </div>
+                            </Option>
+                          );
+                        })}
+                      </Select>
+                    </div>
                   </Col>
-                  <Col sm={8} md={14} style={{ textAlign: 'left' }}>
-                    {/* If user choose upload offer then display upload section */}
-                    {displayUploadedOffer && (
+                  <Col span={12}>
+                    {!disableAll && (
                       <>
-                        {uploadedOffer.url ? (
-                          // If file uploaded succesfully
-                          <>
-                            <Button
-                              className={styles.uploadFile}
-                              type="link"
-                              style={{ marginRight: '15px' }}
-                            >
-                              {uploadedOffer.name}
-                            </Button>
-                            <UploadImage
-                              maxFileSize={2}
-                              isUploadPDF
-                              content="Choose file"
-                              getResponse={(res) => handleUploadResponse(res)}
-                              loading={loading2}
-                              hideValidation
-                            />
-                          </>
-                        ) : (
-                          // <span>{uploadedOffer.url}</span>
-                          <UploadImage
-                            maxFileSize={2}
-                            isUploadPDF
-                            content="Choose file"
-                            getResponse={(res) => handleUploadResponse(res)}
-                            loading={loading2}
-                            hideValidation
+                        <p>Add Expiry Date</p>
+                        <div className={styles.wrapper1}>
+                          <DatePicker
+                            className={styles.inputDate}
+                            format="DD.MM.YY"
+                            placeholder="Select expiry date"
+                            disabledDate={disabledDate}
+                            defaultValue={
+                              expiryDateProp ? moment(expiryDateProp) : moment().add('15', 'days')
+                            }
+                            onChange={(val) => handleExpiryDay(val)}
                           />
-                        )}
+                        </div>
                       </>
                     )}
                   </Col>
                 </Row>
-                <Row className={styles.radioRow}>
-                  <Radio value={3}>{formatMessage({ id: 'component.offerDetail.include' })}</Radio>
-                </Row>
-              </Radio.Group>
-            </Form.Item>
-
-            {displayTemplate && (
-              <div className={styles.wrapper1}>
-                {/* <Form.Item name="template"> */}
-                <Select
-                  value={
-                    <>
-                      <FileIcon type={getFileType(file.name)} />
-                      {file.name}
-                    </>
-                  }
-                  className={styles.select}
-                  onChange={(value, option) => handleTemplateChange(value, option)}
-                  disabled={disableAll}
-                >
-                  {templateList.map((fileItem) => {
-                    const { _id = '123', attachment = {} } = fileItem;
-                    return (
-                      <Option value={attachment?.name} key={_id}>
-                        <div className={styles.iconWrapper}>
-                          <span>{attachment?.name}</span>
-                        </div>
-                      </Option>
-                    );
-                  })}
-                </Select>
-                {/* </Form.Item> */}
-
-                <Alert display type="remind" header="reminder">
-                  <p>
-                    {formatMessage({ id: 'component.offerDetail.alertContent1' })}
-                    <strong>{formatMessage({ id: 'component.offerDetail.phase3' })}</strong>
-                    {formatMessage({ id: 'component.offerDetail.alertContent2' })}
-                  </p>
-                </Alert>
-              </div>
-            )}
-
-            <p className={styles.agreement}>
-              {formatMessage({ id: 'component.offerDetail.agreementTitle' })}
-            </p>
-
-            <Checkbox
-              className="checkbox"
-              checked={agreement}
-              onChange={(e) => handleAgreementChange(e.target.value)}
-              disabled={disableAll}
-            >
-              {formatMessage({ id: 'component.offerDetail.agreement' })}
-            </Checkbox>
-
-            <p className={styles.handbook}>
-              {formatMessage({ id: 'component.offerDetail.handbookTitle' })}
-            </p>
-
-            <Checkbox
-              checked={handbook}
-              onChange={(e) => handleHandbookChange(e.target.value)}
-              disabled={disableAll}
-            >
-              {formatMessage({ id: 'component.offerDetail.handbook' })}
-            </Checkbox>
-
-            <div className={styles.wrapper2}>
-              <div className={styles.compensationWrapper}>
-                <p className={styles.compensation}>
-                  {formatMessage({ id: 'component.offerDetail.compensationTitle' })}
-                </p>
-
-                <Form.Item name="compensation">
-                  <Select className={styles.select} disabled={disableAll}>
-                    <Option value="salary">Salary</Option>
-                    <Option value="stock">Stock</Option>
-                    <Option value="other">Other Non-cash benefit</Option>
-                  </Select>
-                </Form.Item>
-              </div>
-              <Alert display type="info">
-                <p>
-                  {formatMessage({ id: 'component.offerDetail.alertContent3' })}
-                  <a> {formatMessage({ id: 'component.offerDetail.alertContent4' })}</a>
-                </p>
-              </Alert>
-            </div>
-
-            <p className={styles.amount}>
-              {formatMessage({ id: 'component.offerDetail.amountTitle' })}
-            </p>
-
-            <Form.Item name="currency">
-              <Select className={styles.select} disabled={disableAll}>
-                {currencyArr.map(({ name, value }, index) => (
-                  <Option value={value} key={index}>
-                    {name}
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-
-            <div className={styles.wrapper3}>
-              <div className={styles.timeoffWrapper}>
-                <p className={styles.timeoff}>
-                  {' '}
-                  {formatMessage({ id: 'component.offerDetail.timeoffTitle' })}
-                </p>
-
-                <Form.Item name="timeoff">
-                  <Select className={styles.select} disabled={disableAll}>
-                    {timeoffArr.map(({ name, value }, index) => (
-                      <Option value={value} key={index}>
-                        {name}
-                      </Option>
-                    ))}
-                  </Select>
-                </Form.Item>
+                {!disableAll ? (
+                  <div className={styles.addButton} onClick={() => handleAddDocument('template')}>
+                    <PlusOutlined className={styles.plusIcon} />
+                    <span className={styles.buttonTitle}>Add Template</span>
+                  </div>
+                ) : (
+                  <span className={styles.expiryDate}>
+                    Document Expires on {moment(expiryDateProp).locale('en').format('MM.DD.YY')}
+                  </span>
+                )}
               </div>
 
-              <Alert display={displayTimeoffAlert} type="caution">
-                <p>{formatMessage({ id: 'component.offerDetail.alertContent5' })}</p>
-              </Alert>
+              <div className={styles.documentBlock}>
+                <p className={styles.title}>Documents</p>
+                <p className={styles.subTitle}>
+                  {offerDocumentsProp.length === 0 ? 'Upload all documents' : 'Uploaded Documents'}
+                </p>
+
+                {renderDocuments()}
+
+                {!disableAll && (
+                  <div className={styles.addButton} onClick={() => handleAddDocument('document')}>
+                    <PlusOutlined className={styles.plusIcon} />
+                    <span className={styles.buttonTitle}>Add Document</span>
+                  </div>
+                )}
+              </div>
+              <div style={{ marginTop: '32px' }}>
+                <RenderAddQuestion page={Page.Offer_Details} />
+              </div>
             </div>
-            <div style={{ marginTop: '32px' }}>
-              <RenderAddQuestion />
-            </div>
+            {_renderBottomBar()}
           </div>
 
-          {_renderBottomBar()}
+          <div className={styles.rightCol}>
+            {/* <Template type="default" files={['Offer letter 1', 'Offer letter 2', 'Offer letter 3']} /> */}
+            {/* <Template files={['Offer letter 4', 'Offer letter 5', 'Offer letter 6']} /> */}
+            <Template dispatch={dispatch} type="default" files={defaultTemplates} />
+            <Template
+              dispatch={dispatch}
+              type="custom"
+              files={customTemplates}
+              handleAdd={handleAddDocument}
+            />
+          </div>
         </div>
+      </Form>
 
-        <div className={styles.rightCol}>
-          {/* <Template type="default" files={['Offer letter 1', 'Offer letter 2', 'Offer letter 3']} /> */}
-          {/* <Template files={['Offer letter 4', 'Offer letter 5', 'Offer letter 6']} /> */}
-          <Template dispatch={dispatch} type="default" files={defaultTemplates} />
-          <Template dispatch={dispatch} files={customTemplates} />
-        </div>
-      </div>
-    </Form>
+      <AddDocumentModal
+        visible={isAddModalVisible}
+        handleModalVisible={handleModalVisible}
+        defaultTemplates={defaultTemplatesProp}
+        customTemplates={customTemplatesProp}
+        onAdd={onAddDocument}
+      />
+      <AddTemplateModal
+        visible={isAddTemplateModalVisible}
+        handleModalVisible={handleTemplateModalVisible}
+        // onAdd={onAddTemplate}
+        refreshTemplateList={refreshTemplateList}
+      />
+    </>
   );
 };
 
-// export default connect(({ info: { offerDetail = {} } = {} }) => ({
-//   offerDetail,
-// }))(OfferDetail);
 export default connect(
   ({ candidateInfo: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
     data,

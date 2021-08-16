@@ -10,15 +10,25 @@ import FilterBar from '../FilterBar';
 
 import styles from './index.less';
 
-@connect(({ timeOff, loading, user, timeOff: { currentUserRole = '' } = {} }) => ({
-  timeOff,
-  user,
-  currentUserRole,
-  loading1: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
-  loading2: loading.effects['timeOff/fetchTeamLeaveRequests'],
-  loading3: loading.effects['timeOff/fetchMyCompoffRequests'],
-  loading4: loading.effects['timeOff/fetchTeamCompoffRequests'],
-}))
+@connect(
+  ({
+    timeOff,
+    loading,
+    user,
+    timeOff: { currentUserRole = '', filter = {}, timeOffTypesByCountry, paging } = {},
+  }) => ({
+    timeOff,
+    paging,
+    user,
+    filter,
+    timeOffTypesByCountry,
+    currentUserRole,
+    loading1: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
+    loading2: loading.effects['timeOff/fetchTeamLeaveRequests'],
+    loading3: loading.effects['timeOff/fetchMyCompoffRequests'],
+    loading4: loading.effects['timeOff/fetchTeamCompoffRequests'],
+  }),
+)
 class TimeOffRequestTab extends PureComponent {
   constructor(props) {
     super(props);
@@ -35,48 +45,59 @@ class TimeOffRequestTab extends PureComponent {
     };
   }
 
-  getDataByType = (requests, key) => {
-    if (key === 1)
-      return requests.filter((req) => {
-        const { type: { type = '' } = {} } = req;
-        return type === 'A';
+  componentDidMount = () => {
+    const {
+      dispatch,
+      timeOff: { currentFilterTab, currentLeaveTypeTab, timeOffTypesByCountry } = {},
+    } = this.props;
+    if (currentLeaveTypeTab === '1') {
+      let arr = timeOffTypesByCountry.filter((timeOffType) => timeOffType.type === 'A');
+      arr = arr.map((item) => item._id);
+      dispatch({
+        type: 'timeOff/saveFilter',
+        payload: {
+          type: arr,
+          isSearch: true,
+        },
       });
-
-    if (key === 2)
-      return requests.filter((req) => {
-        const { type: { type = '' } = {} } = req;
-        return type === 'C';
-      });
-
-    if (key === 3)
-      return requests.filter((req) => {
-        const { type: { type = '' } = {} } = req;
-        return type === 'B';
-      });
-
-    if (key === 4)
-      return requests.filter((req) => {
-        const { type: { type = '' } = {} } = req;
-        return type === 'D';
-      });
-
-    // compoff requests
-    if (key === 5) {
-      return requests;
     }
-
-    return [];
+    this.setState({ selectedTabNumber: '1' });
+    // this.fetchFilteredDataFromServer('1');
+    this.setSelectedFilterTab(currentFilterTab);
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    const { selectedTabNumber } = this.state;
+    const {
+      filter: { isSearch },
+      dispatch,
+      paging: { page },
+    } = this.props;
+
+    if (
+      isSearch ||
+      selectedTabNumber !== prevState.selectedTabNumber ||
+      page !== prevProps.paging.page
+    ) {
+      this.fetchFilteredDataFromServer(selectedTabNumber);
+      this.saveCurrentTab(selectedTabNumber);
+      dispatch({
+        type: 'timeOff/saveFilter',
+        payload: { isSearch: false },
+      });
+    }
+  }
 
   fetchFilteredDataFromServer = (filterTab) => {
     const {
       dispatch,
-      tab = 0,
       type: tabType = 0,
       category = '',
       currentUserRole = '',
+      filter: { search, fromDate, toDate, type: timeOffTypes },
+      paging: { page, limit },
     } = this.props;
-    const { user: { currentUser: { employee: { _id = '' } = {} } = {} } = {} } = this.props;
+    // const { user: { currentUser: { employee: { _id = '' } = {} } = {} } = {} } = this.props;
 
     let status = '';
     if (tabType === 1) {
@@ -119,76 +140,42 @@ class TimeOffRequestTab extends PureComponent {
     }
 
     const commonFunction = (res = {}) => {
-      const { data: { items = [] } = {}, statusCode } = res;
+      const { data: { items = [], total = [] } = {}, statusCode } = res;
       if (statusCode === 200) {
-        const newData = this.getDataByType(items, tab);
+        const newData = items;
+
+        this.countTotal(total);
+        const formatMainTabData = newData;
         this.setState({
+          formatMainTabData,
           formatData: newData,
         });
       }
     };
 
-    let type = '';
+    let types = '';
     if (tabType === 1) {
-      if (category === 'MY') type = 'timeOff/fetchLeaveRequestOfEmployee';
-      else type = 'timeOff/fetchTeamLeaveRequests';
+      if (category === 'MY') types = 'timeOff/fetchLeaveRequestOfEmployee';
+      else types = 'timeOff/fetchTeamLeaveRequests';
     }
     if (tabType === 2) {
-      if (category === 'MY') type = 'timeOff/fetchMyCompoffRequests';
-      else type = 'timeOff/fetchTeamCompoffRequests';
+      if (category === 'MY') types = 'timeOff/fetchMyCompoffRequests';
+      else types = 'timeOff/fetchTeamCompoffRequests';
     }
     dispatch({
-      type,
-      employee: _id,
-      status,
+      type: types,
+      payload: {
+        status,
+        type: timeOffTypes,
+        search,
+        fromDate,
+        toDate,
+        page,
+        limit,
+      },
     }).then((res) => {
       commonFunction(res);
     });
-  };
-
-  fetchAllData = () => {
-    const { dispatch, tab = 0, type: tabType = 0, category = '' } = this.props;
-
-    let type = '';
-    if (tabType === 1) {
-      if (category === 'MY') type = 'timeOff/fetchLeaveRequestOfEmployee';
-      else type = 'timeOff/fetchTeamLeaveRequests';
-    }
-    if (tabType === 2) {
-      if (category === 'MY') type = 'timeOff/fetchMyCompoffRequests';
-      else type = 'timeOff/fetchTeamCompoffRequests';
-    }
-    dispatch({
-      type,
-    }).then((res) => {
-      const { data: { items = [] } = {}, statusCode } = res;
-      if (statusCode === 200) {
-        const newData = this.getDataByType(items, tab);
-        this.countTotal(newData);
-        let formatMainTabData = newData;
-        if (category === 'TEAM') {
-          formatMainTabData = formatMainTabData.filter(
-            (data) =>
-              data.status !== TIMEOFF_STATUS.deleted && data.status !== TIMEOFF_STATUS.drafts,
-          );
-        }
-        if (category === 'MY') {
-          formatMainTabData = formatMainTabData.filter(
-            (data) => data.status !== TIMEOFF_STATUS.deleted,
-          );
-        }
-        this.setState({
-          formatMainTabData,
-        });
-      }
-    });
-  };
-
-  componentDidMount = () => {
-    const { timeOff: { currentFilterTab } = {} } = this.props;
-    // this.fetchAllData();
-    // this.fetchFilteredDataFromServer(currentFilterTab);
-    this.setSelectedFilterTab(currentFilterTab);
   };
 
   saveCurrentTab = (type) => {
@@ -202,10 +189,6 @@ class TimeOffRequestTab extends PureComponent {
   };
 
   setSelectedFilterTab = (id) => {
-    this.fetchAllData();
-    this.fetchFilteredDataFromServer(id);
-    this.saveCurrentTab(id);
-
     let selectedTab = TIMEOFF_STATUS.inProgress;
     if (id === '2') {
       selectedTab = TIMEOFF_STATUS.accepted;
@@ -219,23 +202,24 @@ class TimeOffRequestTab extends PureComponent {
 
     this.setState({
       selectedTab,
+      selectedTabNumber: id,
     });
   };
 
   countTotal = (newData) => {
     const { currentUserRole = '' } = this.props;
-    const inProgressLength = [];
-    const approvedLength = [];
-    const rejectedLength = [];
-    const draftLength = [];
-    const onHoldLength = [];
+    let inProgressLength = 0;
+    let approvedLength = 0;
+    let rejectedLength = 0;
+    let draftLength = 0;
+    let onHoldLength = 0;
 
-    newData.forEach((row) => {
-      const { status = '' } = row;
+    newData.forEach((item) => {
+      const { status = '' } = item;
       if (currentUserRole === 'REGION-HEAD') {
         switch (status) {
           case TIMEOFF_STATUS.inProgressNext: {
-            inProgressLength.push(row);
+            inProgressLength = item.count;
             break;
           }
           default:
@@ -244,7 +228,7 @@ class TimeOffRequestTab extends PureComponent {
       } else if (currentUserRole !== 'REGION-HEAD') {
         switch (status) {
           case TIMEOFF_STATUS.inProgressNext: {
-            approvedLength.push(row);
+            approvedLength = item.count;
             break;
           }
           default:
@@ -254,23 +238,23 @@ class TimeOffRequestTab extends PureComponent {
 
       switch (status) {
         case TIMEOFF_STATUS.inProgress: {
-          inProgressLength.push(row);
+          inProgressLength = item.count;
           break;
         }
         case TIMEOFF_STATUS.accepted: {
-          approvedLength.push(row);
+          approvedLength = item.count;
           break;
         }
         case TIMEOFF_STATUS.rejected: {
-          rejectedLength.push(row);
+          rejectedLength = item.count;
           break;
         }
         case TIMEOFF_STATUS.drafts: {
-          draftLength.push(row);
+          draftLength = item.count;
           break;
         }
         case TIMEOFF_STATUS.onHold: {
-          onHoldLength.push(row);
+          onHoldLength = item.count;
           break;
         }
         default:
@@ -278,11 +262,11 @@ class TimeOffRequestTab extends PureComponent {
       }
     });
     this.setState({
-      inProgressLength: inProgressLength.length,
-      approvedLength: approvedLength.length,
-      rejectedLength: rejectedLength.length,
-      draftLength: draftLength.length,
-      onHoldLength: onHoldLength.length,
+      inProgressLength,
+      approvedLength,
+      rejectedLength,
+      draftLength,
+      onHoldLength,
     });
   };
 

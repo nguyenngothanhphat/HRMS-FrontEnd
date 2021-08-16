@@ -63,14 +63,6 @@ const OfferDetails = (props) => {
   const [openDigital, setOpenDigital] = useState(false);
   useEffect(() => {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
-    dispatch({
-      type: 'optionalQuestion/save',
-      payload: {
-        pageName: Page.Offer_Details,
-        // candidate: data.candidate,
-        data: {},
-      },
-    });
   }, []);
 
   useEffect(() => {
@@ -563,7 +555,7 @@ const OfferDetails = (props) => {
               </p>
               {_renderViewFile(FileInfo[1])}
             </div>
-            <AnswerQuestion />
+            <AnswerQuestion page={Page.Offer_Details} />
           </div>
 
           {renderBottomBar()}

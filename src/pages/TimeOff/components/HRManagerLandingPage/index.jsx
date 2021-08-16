@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { Row, Col } from 'antd';
 import { history } from 'umi';
 import LeaveInformation from '../EmployeeLandingPage/components/LeaveInformation';
@@ -11,7 +11,7 @@ import TimeOffTypesInfo from '../EmployeeLandingPage/components/TimeOffTypesInfo
 
 import styles from './index.less';
 
-export default class HRManagerLandingPage extends PureComponent {
+export default class HRManagerLandingPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,6 +43,7 @@ export default class HRManagerLandingPage extends PureComponent {
   };
 
   onInformationClick = () => {
+    window.scroll({ top: 150, left: 0, behavior: 'smooth' });
     const { viewInformation } = this.state;
     this.setState({
       viewInformation: !viewInformation,
@@ -66,7 +67,10 @@ export default class HRManagerLandingPage extends PureComponent {
             <Col xs={24} md={6}>
               <Row gutter={[20, 20]}>
                 <Col span={24}>
-                  <LeaveInformation onInformationClick={this.onInformationClick} />
+                  <LeaveInformation
+                    viewDocumentVisible={viewInformation}
+                    onInformationClick={this.onInformationClick}
+                  />
                 </Col>
                 <Col span={24}>
                   <LeaveHistoryAndHoliday />

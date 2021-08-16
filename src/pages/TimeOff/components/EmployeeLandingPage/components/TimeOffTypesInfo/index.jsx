@@ -2,12 +2,12 @@ import React, { PureComponent } from 'react';
 import { Collapse, Tooltip, Modal } from 'antd';
 import { CloseOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
-import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 const { Panel } = Collapse;
-@connect(({ timeOff }) => ({
+@connect(({ timeOff, user: { currentUser = {} } = {} }) => ({
   timeOff,
+  currentUser,
 }))
 class TimeOffTypesInfo extends PureComponent {
   constructor(props) {
@@ -15,19 +15,9 @@ class TimeOffTypesInfo extends PureComponent {
     this.state = {};
   }
 
-  componentDidMount = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'timeOff/fetchTimeOffTypes',
-      payload: {
-        tenantId: getCurrentTenant(),
-      }
-    });
-  };
-
   renderData = () => {
-    const { timeOff: { timeOffTypes = [] } = {} } = this.props;
-    return timeOffTypes;
+    const { timeOff: { timeOffTypesByCountry = [] } = {} } = this.props;
+    return timeOffTypesByCountry;
   };
 
   renderExpandIcon = (isActive) =>
@@ -40,6 +30,7 @@ class TimeOffTypesInfo extends PureComponent {
   renderTimeOffTypeInfo = (value) => {
     return this.renderData().map((data, index) => {
       const { name = '', description = '', shortType = '', type = '' } = data;
+      const tempData = `No data`;
       if (type === value) {
         return (
           <Panel
@@ -47,7 +38,7 @@ class TimeOffTypesInfo extends PureComponent {
             header={`${name} ${shortType !== '' ? `(${shortType})` : ''}`}
             key={`${index + 1}`}
           >
-            <p>{description}</p>
+            <p>{description || tempData}</p>
           </Panel>
         );
       }
@@ -61,12 +52,11 @@ class TimeOffTypesInfo extends PureComponent {
       <div>
         <Modal
           className={styles.TimeOffTypesInfo}
-          centered
           visible={visible}
           footer={null}
-          width={700}
           onCancel={onClose}
         >
+          <div className={styles.arrow} />
           <div className={styles.container}>
             <div className={styles.title}>
               <span>All you need to know about Leave balances</span>
@@ -90,7 +80,7 @@ class TimeOffTypesInfo extends PureComponent {
                 expandIcon={({ isActive }) => this.renderExpandIcon(isActive)}
               >
                 {this.renderTimeOffTypeInfo('A')}
-                {/* {this.renderTimeOffTypeInfo('B')} */}
+                {this.renderTimeOffTypeInfo('B')}
                 {this.renderTimeOffTypeInfo('C')}
                 {this.renderTimeOffTypeInfo('D')}
               </Collapse>

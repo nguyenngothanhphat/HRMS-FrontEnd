@@ -73,7 +73,7 @@ const optionalQuestion = {
         if (data) {
           yield put({
             type: 'save',
-            payload: { data, messageErrors: [], prevPage: payload.page },
+            payload: { data, messageErrors: [] },
           });
         } else
           yield put({

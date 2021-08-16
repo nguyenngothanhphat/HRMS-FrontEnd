@@ -25,6 +25,13 @@ export async function sendRequest(payload) {
   });
 }
 
+export async function sendRequestUpdate(payload) {
+  return request('/api/offboardingrequesttenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getList1On1(payload) {
   return request('/api/offboardingrequesttenant/get-1-on-1-by-off-boarding-id', {
     method: 'POST',

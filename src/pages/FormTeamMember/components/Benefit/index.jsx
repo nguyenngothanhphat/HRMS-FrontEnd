@@ -35,14 +35,7 @@ class Benefit extends PureComponent {
     const { candidate = '', processStatus = '' } = data;
 
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
-    dispatch({
-      type: 'optionalQuestion/save',
-      payload: {
-        pageName: Page.Benefits,
-        candidate,
-        data: {},
-      },
-    });
+
     if (processStatus === 'DRAFT') {
       if (dispatch && candidate) {
         dispatch({
@@ -434,7 +427,7 @@ class Benefit extends PureComponent {
                 benefits={benefits}
               />
               <div style={{ margin: '32px' }}>
-                <RenderAddQuestion />
+                <RenderAddQuestion page={Page.Benefits} />
               </div>
             </div>
 

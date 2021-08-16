@@ -6,6 +6,7 @@ import { getCurrentTenant } from '@/utils/authority';
 import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
 import { every } from 'lodash';
 import styles from './index.less';
+import { Page } from '../../../../../FormTeamMember/utils';
 
 @connect(
   ({
@@ -178,7 +179,7 @@ class SalaryStructureTemplate extends PureComponent {
     const { isEdited } = this.state;
     const { salaryStructure = [] } = this.props;
     const data = salaryStructure?.find((item) => item === record) || {};
-    const { value = '', key, edit = false, number = {} } = data;
+    const { value = '', key, edit = false, number = {}, prefix, suffix } = data;
     const isNumber = Object.keys(number).length > 0;
 
     // return null;
@@ -228,7 +229,7 @@ class SalaryStructureTemplate extends PureComponent {
           data.order === ' ' ? `big-text` : null
         }`}
       >
-        {value}
+        {`${prefix} ${value} `} <span style={{ color: 'rgba(22, 28, 41, 0.5)' }}>{suffix}</span>
       </span>
     );
   };
@@ -374,7 +375,7 @@ class SalaryStructureTemplate extends PureComponent {
               pagination={false}
             />
             <Row style={{ margin: '32px' }}>
-              <AnswerQuestion />
+              <AnswerQuestion page={Page.Salary_Structure} />
             </Row>
           </div>
           {/* {this._renderFooter()} */}

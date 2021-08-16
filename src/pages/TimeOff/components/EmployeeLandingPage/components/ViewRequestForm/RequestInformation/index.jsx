@@ -170,7 +170,7 @@ class RequestInformation extends PureComponent {
       duration = '',
       // onDate = '',
       description = '',
-      type: { name = '', type = '', shortType = '' } = {},
+      type: { name = '', type = '' } = {},
       comment = '',
     } = viewingLeaveRequest;
 
@@ -209,31 +209,33 @@ class RequestInformation extends PureComponent {
               <Row>
                 <Col span={6}>Timeoff Type</Col>
                 <Col span={18} className={styles.detailColumn}>
-                  <span className={styles.fieldValue}>{`${name} (${shortType})`}</span>
+                  <span className={styles.fieldValue}>{`${name}`}</span>
                   {type === 'A' && (
                     <span className={styles.smallNotice}>
                       <span className={styles.normalText}>
-                        {shortType}s are covered under{' '}
+                        {name}s are covered under{' '}
                         <span className={styles.link} onClick={this.onLinkClick}>
                           Standard Policy
                         </span>
                       </span>
                     </span>
                   )}
-                  {type === 'B' && (
-                    <span
-                      style={{
-                        marginLeft: '10px',
-                        color: '#00C598',
-                        padding: '5px 10px',
-                        fontSize: '10px',
-                        boxShadow: '0px 1px 5px rgba(0, 0, 0, 0.14)',
-                        borderRadius: '4px',
-                      }}
-                    >
-                      Advanced leave activated
-                    </span>
-                  )}
+                  {
+                    //   type === 'B' && (
+                    //   <span
+                    //     style={{
+                    //       marginLeft: '10px',
+                    //       color: '#00C598',
+                    //       padding: '5px 10px',
+                    //       fontSize: '10px',
+                    //       boxShadow: '0px 1px 5px rgba(0, 0, 0, 0.14)',
+                    //       borderRadius: '4px',
+                    //     }}
+                    //   >
+                    //     Advanced leave activated
+                    //   </span>
+                    // )
+                  }
                 </Col>
               </Row>
               <Row>

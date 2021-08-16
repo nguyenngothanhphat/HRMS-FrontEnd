@@ -115,7 +115,7 @@ class LeaveRequestForm extends PureComponent {
                 padding: '100px 0',
               }}
             >
-              <Spin size="medium" />
+              <Spin size="large" />
             </div>
           )}
           {!loadingFetchLeaveRequestById &&
@@ -137,21 +137,21 @@ class LeaveRequestForm extends PureComponent {
             (action === TIMEOFF_LINK_ACTION.editLeaveRequest &&
               !loadingFetchLeaveRequestById &&
               (status === TIMEOFF_STATUS.drafts || status === TIMEOFF_STATUS.inProgress))) && (
-            <>
-              <Row className={styles.container} gutter={[20, 20]}>
-                <Col xs={24} lg={16}>
-                  <RequestInformation
-                    action={action}
-                    status={status}
-                    ticketID={ticketID}
-                    viewingLeaveRequest={viewingLeaveRequest}
-                  />
-                </Col>
-                <Col xs={24} lg={8}>
-                  <RightContent />
-                </Col>
-              </Row>
-            </>
+              <>
+                <Row className={styles.container} gutter={[20, 20]}>
+                  <Col xs={24} lg={16}>
+                    <RequestInformation
+                      action={action}
+                      status={status}
+                      ticketID={ticketID}
+                      viewingLeaveRequest={viewingLeaveRequest}
+                    />
+                  </Col>
+                  <Col xs={24} lg={8}>
+                    <RightContent />
+                  </Col>
+                </Row>
+              </>
           )}
         </div>
       </PageContainer>

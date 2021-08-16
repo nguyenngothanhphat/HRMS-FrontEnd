@@ -10,24 +10,23 @@ const AnswerQuestion = React.memo((props) => {
     data: { settings = [] },
     data,
     dispatch,
-    prevPage,
-    pageName,
     processStatus,
     messageErrors = [],
+    page,
   } = props;
 
   const [disable, setDisable] = useState(false);
   useEffect(() => {
-    if (candidate !== '' && pageName !== '' && pageName !== prevPage) {
+    if (candidate !== '') {
       dispatch({
         type: 'optionalQuestion/getQuestionByPage',
         payload: {
           candidate,
-          page: pageName,
+          page,
         },
       });
     }
-  }, [pageName]);
+  }, [candidate]);
 
   useEffect(() => {
     setDisable(processStatus === 'ACCEPT-FINAL-OFFER');
@@ -66,15 +65,13 @@ const AnswerQuestion = React.memo((props) => {
 export default connect(
   ({
     dispatch,
-    optionalQuestion: { prevPage, messageErrors, candidate = '', pageName = '', data = {} } = {},
-    candidatePortal: { processStatus },
+    optionalQuestion: { messageErrors, candidate = '', data = {} } = {},
+    candidateProfile: { processStatus },
   }) => ({
     dispatch,
     messageErrors,
     processStatus,
-    prevPage,
     candidate,
-    pageName,
     data,
   }),
 )(AnswerQuestion);

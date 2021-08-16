@@ -116,18 +116,29 @@ class HollidayCalendar extends Component {
     };
   }
 
+  // componentDidMount = () => {
+  // const d = new Date();
+  // const year = d.getFullYear();
+  // const formatYear = year.toString();
+  // this.initListHoliday(formatYear);
+  // dispatch({
+  //   type: 'timeOff/fetchHolidaysListBylocation',
+  //   payload: {
+  //     location: getCurrentLocation(),
+  //     country: location.headQuarterAddress.country._id,
+  //   },
+  // });
+  // };
+
   componentDidMount = () => {
-    // const d = new Date();
-    // const year = d.getFullYear();
-    // const formatYear = year.toString();
-    // this.initListHoliday(formatYear);
-    // dispatch({
-    //   type: 'timeOff/fetchHolidaysListBylocation',
-    //   payload: {
-    //     location: getCurrentLocation(),
-    //     country: location.headQuarterAddress.country._id,
-    //   },
-    // });
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'timeOff/getCountryListByCompany',
+      payload: {
+        tenantIds: [getCurrentTenant()],
+        company: getCurrentCompany(),
+      },
+    });
   };
 
   componentWillUnmount = () => {
@@ -180,12 +191,14 @@ class HollidayCalendar extends Component {
     e.preventDefault();
     const { data } = this.state;
     const refComponent = data.find((item) => item.text === value);
-    refComponent.ref.current.scrollIntoView(true);
-    window.scrollBy({
-      top: -60,
-      left: 0,
-      behavior: 'smooth',
-    });
+    if (refComponent.ref.current) {
+      refComponent.ref.current.scrollIntoView(true);
+      window.scrollBy({
+        top: -60,
+        left: 0,
+        behavior: 'smooth',
+      });
+    }
 
     this.setState({ isActive: value });
   };
@@ -318,7 +331,6 @@ class HollidayCalendar extends Component {
       const arrID = children.map((subChild) => subChild._id);
       listID.push(...arrID);
     });
-
     this.setState({ data: result, plainOptions: listID });
   };
 
@@ -494,6 +506,8 @@ class HollidayCalendar extends Component {
       loadingAddHoliday,
       countryHoliday,
     } = this.props;
+
+    const newData = data.filter((item) => item.children.length > 0);
     return (
       <div className={s.root}>
         <div className={s.setUpWrap}>
@@ -522,7 +536,6 @@ class HollidayCalendar extends Component {
                 return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
               }}
               className={s.selectCountry}
-              // defaultValue="India"
               onChange={(value) => this.changeCountry(value)}
             >
               {this.renderCountry()}
@@ -531,8 +544,8 @@ class HollidayCalendar extends Component {
         </div>
         {countryHoliday !== '' && (
           <div className={s.container}>
-            <Row>
-              <Col span={20} className={s.listHoliday}>
+            <Row gutter={[24, 24]}>
+              <Col span={18} className={s.listHoliday}>
                 <div>
                   <div span={24} className={s.flex}>
                     <div>
@@ -547,6 +560,7 @@ class HollidayCalendar extends Component {
                         }}
                         checked={checkAll}
                         indeterminate={indeterminate}
+                        disabled={newData.length === 0}
                       >
                         Select All
                       </Checkbox>
@@ -582,7 +596,7 @@ class HollidayCalendar extends Component {
                   )}
                 </div>
               </Col>
-              <Col span={4}>
+              <Col span={6} justify="center">
                 <Affix offsetTop={30} className={s.affix}>
                   <div className={s.rightSection}>
                     <InputNumber

@@ -8,7 +8,7 @@ import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 const Template = (props) => {
-  const { type, files, dispatch } = props;
+  const { type, files, dispatch, handleAdd = () => {} } = props;
 
   const editTemplate = (id) => {
     dispatch({
@@ -41,7 +41,7 @@ const Template = (props) => {
           <>
             <h3>Template</h3>
             <span>(Custom created)</span>
-            <div className={styles.newIcon}>
+            <div className={styles.newIcon} onClick={() => handleAdd('template')}>
               <span>+ New</span>
             </div>
           </>

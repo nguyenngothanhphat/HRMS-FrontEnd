@@ -67,16 +67,8 @@ class EligibilityDocs extends PureComponent {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
     window.scrollTo({ top: 77, behavior: 'smooth' });
-    dispatch({
-      type: 'optionalQuestion/save',
-      payload: {
-        pageName: Page.Eligibility_documents,
-        // candidate: data.candidate,
-        data: {},
-      },
-    }); // Back to top of the page
+    // Back to top of the page
     this.processData();
     this.fetchCandidateAgain();
     const { data: { processStatus = '' } = {} } = this.props;
@@ -560,7 +552,7 @@ class EligibilityDocs extends PureComponent {
     return (
       <div className={styles.bottomBar}>
         <Row style={{ margin: '0 16px 32px 16px' }}>
-          <AnswerQuestion />
+          <AnswerQuestion page={Page.Eligibility_documents} />
         </Row>
         <Row align="middle">
           <Col span={16}>

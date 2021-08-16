@@ -181,7 +181,7 @@ export default function QuestionItem({
     switch (answerType) {
       case TYPE_QUESTION.TEXT_ANSWER.key:
         return (
-          <Col style={{ marginTop: '32px' }}>
+          <Col>
             <Input.TextArea rows={4} placeholder="Answer here" />
             <div
               className="label-input"

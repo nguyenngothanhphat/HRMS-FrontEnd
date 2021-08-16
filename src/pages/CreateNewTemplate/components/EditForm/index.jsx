@@ -1,6 +1,5 @@
 import REACT_APP_TINYMCE_KEY from '@/utils/editor';
 import { Editor } from '@tinymce/tinymce-react';
-import { message } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
 import styles from './index.less';
@@ -42,7 +41,7 @@ class EditForm extends Component {
     return checkType && isLt5M;
   };
 
-  uploadImageHandle = (blobInfo, success, failure, progress) => {
+  uploadImageHandle = (blobInfo, success, failure) => {
     const { dispatch } = this.props;
     const check = this.beforeUpload(blobInfo.blob());
     if (check) {
@@ -88,7 +87,7 @@ class EditForm extends Component {
             ],
             toolbar:
               'undo redo formatselect bold italic backcolor  alignleft aligncenter alignright alignjustify bullist numlist outdent indent removeformat help variable',
-            content_style: 'body { margin: 1rem auto; max-width: 900px; }',
+            content_style: 'body { margin: 1rem; max-width: 900px; }',
             setup(ed) {
               window.tester = ed;
               ed.ui.registry.addMenuButton('variable', {
