@@ -32,6 +32,7 @@ class DetailEmployeeChart extends Component {
 
   handleSelect = (value) => {
     const { handleSelectSearch } = this.props;
+    this.setState({ valueInput: value });
     handleSelectSearch(value);
     this.inputRef.current.blur();
   };
