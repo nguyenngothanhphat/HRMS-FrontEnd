@@ -638,7 +638,7 @@ class DirectoryTable extends Component {
       defaultPageSize: rowSize,
       showSizeChanger: true,
       pageSizeOptions: ['10', '25', '50', '100'],
-      // pageSize: rowSize,
+      pageSize: rowSize,
       current: pageSelected,
       onChange: (page, pageSize) => {
         const { getPageSelected, getSize } = this.props;
