@@ -215,7 +215,7 @@ class DirectoryTable extends Component {
         dataIndex: 'generalInfo',
         key: 'workEmail',
         render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
-        width: '20%',
+        width: '16%',
         align: 'left',
         sorter: (a, b) => {
           return a.generalInfo && a.generalInfo?.workEmail
@@ -233,7 +233,7 @@ class DirectoryTable extends Component {
             {`${generalInfo?.legalName} (${generalInfo?.userId})`}
           </span>
         ),
-        width: '12%',
+        width: '16%',
         align: 'left',
         sorter: (a, b) => {
           return a.generalInfo && a.generalInfo?.legalName
