@@ -329,10 +329,16 @@ class DirectoryTable extends Component {
             title={location.name}
             trigger="hover"
           >
-            <span onMouseEnter={this.setCurrentTime}>{location ? location.name : ''}</span>
+            <span
+              style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
+              onMouseEnter={this.setCurrentTime}
+            >
+              {location ? location.name : ''}
+            </span>
           </Popover>
         ),
-        width: '14%',
+        width: '10%',
+        ellipsis: true,
         align: 'left',
         sorter: (a, b) => {
           return a.location && a.location?.name
