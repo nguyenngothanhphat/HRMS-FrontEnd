@@ -147,13 +147,15 @@ class OrganisationChart extends Component {
 
   handleClickNode = async (nodeData) => {
     const { dispatch } = this.props;
-    const { timezoneList, currentTime } = this.state;
+    const { timezoneList } = this.state;
+    const currentTime = moment();
 
     const { location = {}, _id = '' } = nodeData;
     if (!isEmpty(location)) {
       const findTimezone =
         timezoneList.find((timezone) => timezone.locationId === location._id) || {};
       const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
+
       const addTimeData = { ...nodeData, localTime: timeData };
 
       dispatch({
