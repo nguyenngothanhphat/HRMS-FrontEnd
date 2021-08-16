@@ -13,6 +13,7 @@ const AnswerQuestion = React.memo((props) => {
     data: { settings = [] },
     data,
     dispatch,
+    listPage,
     processStatus,
     messageErrors = [],
     page,
@@ -32,7 +33,7 @@ const AnswerQuestion = React.memo((props) => {
   }, [candidate]);
 
   useEffect(() => {
-    if (indexOf(page) <= indexOf(Page.Eligibility_documents)) {
+    if (indexOf(listPage, page) <= indexOf(listPage, Page.Eligibility_documents)) {
       setDisable(processStatus !== PROCESS_STATUS.SENT_PROVISIONAL_OFFERS);
     } else setDisable(processStatus === PROCESS_STATUS.ACCEPTED_FINAL_OFFERS);
   }, []);
@@ -70,13 +71,14 @@ const AnswerQuestion = React.memo((props) => {
 export default connect(
   ({
     dispatch,
-    optionalQuestion: { messageErrors, candidate = '', data = {} } = {},
+    optionalQuestion: { messageErrors, candidate = '', data = {}, listPage } = {},
     candidateProfile: { processStatus },
   }) => ({
     dispatch,
     messageErrors,
     processStatus,
     candidate,
+    listPage,
     data,
   }),
 )(AnswerQuestion);
