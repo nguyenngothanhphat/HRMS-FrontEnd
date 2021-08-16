@@ -57,6 +57,8 @@ class DetailEmployeeChart extends Component {
     const {
       generalInfo: {
         firstName = '',
+        middleName = '',
+        lastName = '',
         avatar = '',
         workEmail = '',
         employeeId = '',
@@ -74,6 +76,7 @@ class DetailEmployeeChart extends Component {
       localTime = '',
     } = chartDetails;
 
+    const fullName = `${firstName} ${middleName} ${lastName}`;
     const locationName = `${state}, ${countryName}`;
 
     const getCurrentCompanyName = this.getCurrentFirm();
@@ -104,12 +107,16 @@ class DetailEmployeeChart extends Component {
                   _id: idSearch = '',
                   generalInfo: {
                     avatar: avatarSearch = '',
-                    firstName: nameSearch = '',
+                    firstName: firstNameSearch = '',
+                    middleName: middleNameSearch = '',
+                    lastName: lastNameSearch = '',
                     employeeId: employeeIdSearch = '',
                     userId: userIdSearch = '',
                   } = {},
                 } = value;
-                const emplName = `${nameSearch} (${employeeIdSearch}) (${userIdSearch})`;
+                const fullNameSearch = `${firstNameSearch} ${middleNameSearch} ${lastNameSearch}`;
+
+                const emplName = `${fullNameSearch} (${employeeIdSearch}) (${userIdSearch})`;
                 return (
                   <Option key={idSearch} value={idSearch}>
                     <div style={{ display: 'inline', marginRight: '10px' }}>
@@ -138,7 +145,7 @@ class DetailEmployeeChart extends Component {
             <div className={styles.chartDetail__Top}>
               <Avatar src={avatar || ''} size={55} icon={<UserOutlined />} />
               <div className={styles.chartDetail__Top_name}>
-                <p className={styles.chartDetail__Top_firstName}>{firstName || ''}</p>
+                <p className={styles.chartDetail__Top_firstName}>{fullName || ''}</p>
                 <div className={styles.chartDetail__Top_department}>
                   {`${titleName}, ${deptName} Dept.`}
                 </div>
