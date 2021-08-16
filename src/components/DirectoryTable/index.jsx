@@ -5,7 +5,7 @@ import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { Avatar, Button, Popover, Table, Tag, Tooltip } from 'antd';
 import moment from 'moment';
 import React, { Component } from 'react';
-import { connect, formatMessage, history } from 'umi';
+import { connect, formatMessage, history, Link } from 'umi';
 import ModalTerminate from './components/ModalTerminate';
 import styles from './index.less';
 
@@ -102,6 +102,8 @@ class DirectoryTable extends Component {
     return avtDefault;
   };
 
+  ac = (val) => `/time-off/${val}`;
+
   renderUser = (employeePack) => {
     const { _id = '', generalInfo = {}, tenant = '' } = employeePack;
     const { isShowAvatar = true, avatar = '' } = generalInfo;
@@ -113,9 +115,12 @@ class DirectoryTable extends Component {
         ) : (
           <Avatar className={styles.avatar_emptySrc} alt="avatar" />
         )}
-        <p onClick={() => this.handleProfileEmployee(_id, tenant, generalInfo?.userId)}>
+        <Link
+          className={styles.directoryTableName__name}
+          to={() => this.handleProfileEmployee(_id, tenant, generalInfo?.userId)}
+        >
           {generalInfo?.legalName}
-        </p>
+        </Link>
       </div>
     );
   };
@@ -440,7 +445,7 @@ class DirectoryTable extends Component {
     });
   };
 
-  handleProfileEmployee = async (_id, tenant, userId) => {
+  handleProfileEmployee = (_id, tenant, userId) => {
     // const { _id = '', location: { name = '' } = {}, tenant = '', company = {} } = row;
     // const { dispatch } = this.props;
     // await dispatch({
@@ -457,12 +462,14 @@ class DirectoryTable extends Component {
     const pathname = isOwner()
       ? `/employees/employee-profile/${userId}`
       : `/directory/employee-profile/${userId}`;
-    setTimeout(() => {
-      history.push({
-        pathname,
-        // state: { location: name },
-      });
-    }, 200);
+    // setTimeout(() => {
+    //   history.push({
+    //     pathname,
+    //     // state: { location: name },
+    //   });
+
+    // }, 200);
+    return pathname;
   };
 
   checkPermissionViewProfile = (permissions) => {
