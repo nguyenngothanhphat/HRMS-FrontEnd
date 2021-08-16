@@ -310,7 +310,7 @@ class DirectoryTable extends Component {
           //   {department ? department.name : ''}
           // </span>
         },
-        width: '14%',
+        width: '10%',
         align: 'left',
         sorter: (a, b) => {
           return a.department && a.department?.name
@@ -384,7 +384,7 @@ class DirectoryTable extends Component {
         key: 'employmentType',
         render: (employeeType) => <span>{employeeType ? employeeType.name : ''}</span>,
         align: 'left',
-        width: '14%',
+        width: '10%',
         sorter: (a, b) => {
           return a.employmentType && a.employmentType?.name
             ? a.employmentType?.name.localeCompare(`${b.employmentType?.name}`)
