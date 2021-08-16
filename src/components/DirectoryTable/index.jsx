@@ -197,9 +197,9 @@ class DirectoryTable extends Component {
         render: (employeePack) => (employeePack ? this.renderUser(employeePack) : ''),
         align: 'left',
         sorter: (a, b) => {
-          return a.employeePack.generalInfo && a.employeePack.generalInfo?.firstName
-            ? `${a.employeePack.generalInfo?.firstName} ${a.employeePack.generalInfo?.lastName}`.localeCompare(
-                `${b.employeePack.generalInfo?.firstName} ${b.employeePack.generalInfo?.lastName}`,
+          return a.employeePack.generalInfo && a.employeePack.generalInfo?.legalName
+            ? a.employeePack.generalInfo?.legalName.localeCompare(
+                `${b.employeePack.generalInfo?.legalName}`,
               )
             : null;
         },
@@ -225,15 +225,19 @@ class DirectoryTable extends Component {
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
-        title: formatMessage({ id: 'component.directory.table.userId' }),
+        title: formatMessage({ id: 'component.directory.table.userName' }),
         dataIndex: 'generalInfo',
-        key: 'userId',
-        render: (generalInfo) => <span>{generalInfo?.userId}</span>,
+        key: 'userName',
+        render: (generalInfo) => (
+          <span style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}>
+            {`${generalInfo?.legalName} (${generalInfo?.userId})`}
+          </span>
+        ),
         width: '12%',
         align: 'left',
         sorter: (a, b) => {
-          return a.generalInfo && a.generalInfo?.userId
-            ? a.generalInfo?.userId.localeCompare(`${b.generalInfo?.userId}`)
+          return a.generalInfo && a.generalInfo?.legalName
+            ? a.generalInfo?.legalName.localeCompare(`${b.generalInfo?.legalName}`)
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
