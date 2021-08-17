@@ -9,18 +9,22 @@ const pendingTasks = [
   {
     name: 'Review Profile',
     dueDate: '30 July 2021',
+    link: 'review-profile',
   },
   {
     name: 'Upload Documents ',
     dueDate: '30 July 2021',
+    link: 'upload-documents',
   },
   {
     name: 'Employee Details form',
     dueDate: '30 July 2021',
+    link: 'employee-details',
   },
   {
     name: 'Offer Acceptance Form',
     dueDate: '30 July 2021',
+    link: 'offer-acceptance-form',
   },
 ];
 

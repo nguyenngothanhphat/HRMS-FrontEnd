@@ -104,10 +104,22 @@ const routes = [
         hideInMenu: true,
         component: './CandidatePortal',
       },
+      // for 2 main tab
       {
         path: '/candidate-portal/:tabName',
         hideInMenu: true,
         component: './CandidatePortal',
+      },
+      // for candidate in ticket
+      {
+        path: '/candidate-portal/ticket/:action/',
+        hideInMenu: true,
+        component: './Candidate',
+      },
+      {
+        path: '/candidate-portal/ticket/:action/:tabName',
+        hideInMenu: true,
+        component: './Candidate',
       },
     ],
   },

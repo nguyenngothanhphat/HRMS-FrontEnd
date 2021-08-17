@@ -1,12 +1,11 @@
-import { Button, Modal, Input } from 'antd';
+import { Button, Modal } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import WelcomeImage from '@/assets/candidatePortal/welcome.svg';
+import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
 
-const { TextArea } = Input;
-
-@connect(() => ({}))
+@connect(({ user: { companiesOfUser = [] } }) => ({ companiesOfUser }))
 class WelcomeModal extends PureComponent {
   constructor(props) {
     super(props);
@@ -21,10 +20,19 @@ class WelcomeModal extends PureComponent {
   };
 
   renderModalContent = () => {
+    const { companiesOfUser = [] } = this.props;
+    const companyName = () => {
+      const currentCompany =
+        companiesOfUser.find((company) => company?._id === getCurrentCompany()) || {};
+      return currentCompany.name || '';
+    };
+
     return (
       <div className={styles.welcomeContent}>
         <img src={WelcomeImage} alt="welcome" />
-        <span className={styles.welcomeText}>Welcome to Terralogic!</span>
+        <span className={styles.welcomeText}>
+          Welcome{companyName() ? ` to ${companyName()}` : ''}!
+        </span>
         <span className={styles.describeText}>
           We are excited to have you here. Here are a list of tasks for you to complete to proceed
           ahead!

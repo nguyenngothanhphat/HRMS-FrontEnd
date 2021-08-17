@@ -6,7 +6,7 @@ import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { getCurrentCompany } from '@/utils/authority';
 import avtDefault from '@/assets/avtDefault.jpg';
-
+import Footer from '@/components/Footer';
 import LogoutIcon from '@/assets/candidatePortal/logout.svg';
 import CalendarIcon from '@/assets/candidatePortal/leave-application.svg';
 import MessageIcon from '@/assets/candidatePortal/message-circle.svg';
@@ -84,7 +84,12 @@ const CandidatePortalLayout = React.memo((props) => {
     <div className={s.candidate}>
       {/* <Header className={`${s.header} ${s.one}`}> */}
       <Header className={`${s.header} `}>
-        <div className={s.headerLeft}>
+        <div
+          className={s.headerLeft}
+          onClick={() => {
+            history.push(`/candidate-portal/dashboard`);
+          }}
+        >
           <div className={s.imgContainer}>
             <img src={companyLogo()} alt="logo" />
           </div>
@@ -110,8 +115,15 @@ const CandidatePortalLayout = React.memo((props) => {
         </div>
       </Header>
       <Authorized authority={authorized.authority} noMatch={noMatch}>
-        {loadingFetchCurrent ? <Skeleton /> : <Content className={s.main}>{children}</Content>}
+        {loadingFetchCurrent ? (
+          <div style={{ margin: '32px 89px' }}>
+            <Skeleton />
+          </div>
+        ) : (
+          <Content className={s.main}>{children}</Content>
+        )}
       </Authorized>
+      <Footer />
     </div>
   );
 });

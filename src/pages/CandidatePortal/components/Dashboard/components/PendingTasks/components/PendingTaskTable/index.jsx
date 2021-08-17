@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
+import { Link } from 'umi';
 import styles from './index.less';
 
 class PendingTaskTable extends PureComponent {
@@ -8,7 +9,7 @@ class PendingTaskTable extends PureComponent {
       <div key={index}>
         <Row span={24} className={styles.eachItem} align="middle">
           <Col span={16}>
-            <span>{item.name}</span>
+            <Link to={`/candidate-portal/ticket/${item.link}`}>{item.name}</Link>
           </Col>
           <Col span={8}>
             <span>{item.dueDate}</span>
