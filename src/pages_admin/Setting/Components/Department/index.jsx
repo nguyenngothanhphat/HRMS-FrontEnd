@@ -16,8 +16,7 @@ class Department extends Component {
       selectedRowKeys: [],
       visible: false,
       testRecord: {},
-      // data2: [],
-      newDepartment: { name: '', departmentParentId: '' },
+      newDepartment: { name: '', departmentParentName: '' },
     };
   }
 
@@ -113,7 +112,7 @@ class Department extends Component {
       type: 'adminSetting/addDepartment',
       payload: newDepartment,
     });
-    this.setState({ newDepartment: { name: '', departmentParentId: '' } });
+    this.setState({ newDepartment: { name: '', departmentParentName: '' } });
   };
 
   render() {
@@ -148,40 +147,12 @@ class Department extends Component {
       {
         key: 3,
         title: 'Department Parent Name',
-        dataIndex: '_id',
+        dataIndex: 'departmentParentName',
         align: 'left',
         width: '35%',
-        render: (_id, record) => {
-          const dataChild = department.filter((item) => item._id === record?.departmentParentId);
-          const getDeptParentName = department.find((item) => item._id === _id);
-
-          if (dataChild.length > 0) {
-            return dataChild[0].name;
-          }
-
-          if (getDeptParentName?._id) {
-            return <>{getDeptParentName.name}</>;
-          }
-
-          return (
-            <Select
-              onChange={
-                (value) =>
-                  this.handleChangeValue({
-                    departmentParentId: value,
-                  })
-                // eslint-disable-next-line react/jsx-curly-newline
-              }
-              placeholder="Parent Department Name"
-            >
-              <Select.Option value="">None</Select.Option>
-              {department.map((d) => (
-                <Select.Option key={d._id} value={d.departmentId}>
-                  {d.name}
-                </Select.Option>
-              ))}
-            </Select>
-          );
+        render: (departmentParentName) => {
+          if (departmentParentName) return <span>{departmentParentName}</span>;
+          return '';
         },
       },
       {
@@ -229,6 +200,25 @@ class Department extends Component {
           onChange={(e) => this.handleChangeValue({ name: e.target.value })}
           value={newDepartment.name}
         />
+      ),
+      departmentParentName: (
+        <Select
+          onChange={
+            (value) =>
+              this.handleChangeValue({
+                departmentParentName: value,
+              })
+            // eslint-disable-next-line react/jsx-curly-newline
+          }
+          placeholder="Parent Department Name"
+        >
+          <Select.Option value="">None</Select.Option>
+          {department.map((d) => (
+            <Select.Option key={d._id} value={d.name}>
+              {d.name}
+            </Select.Option>
+          ))}
+        </Select>
       ),
     };
     const renderAdd = [...department, add];
