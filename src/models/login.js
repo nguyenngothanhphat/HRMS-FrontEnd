@@ -39,38 +39,42 @@ const Model = {
         }
 
         // CANDIDATE
-        if (formatRole.indexOf('candidate') > -1) {
+        const isCandidate = formatRole.indexOf('candidate') > -1;
+        const isOnlyCandidate = isCandidate && formatRole.length === 1;
+
+        if (isOnlyCandidate) {
           yield put({
             type: 'saveCandidateId',
             payload: response,
           });
           history.replace('/candidate-portal');
-        }
-        // ELSE
-        let isAdminOrOwner = false;
-        if (formatRole.includes('owner')) {
-          isAdminOrOwner = true;
-        }
-        // if (formatRole.includes('admin')) {
-        //   isAdminOrOwner = true;
-        // }
-        formatArrRoles = [...formatArrRoles, ...formatRole];
-        setAuthority(formatArrRoles);
-
-        // redirect
-        if (isAdminOrOwner) {
-          history.replace('/control-panel');
-        } else if (listCompany.length === 1) {
-          const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
-          setTenantId(tenantId);
-          setCurrentCompany(selectedCompany);
-          yield put({
-            type: 'user/fetchCurrent',
-            refreshCompanyList: false,
-          });
-          history.push('/');
         } else {
-          history.replace('/control-panel');
+          // ELSE
+          let isAdminOrOwner = false;
+          if (formatRole.includes('owner')) {
+            isAdminOrOwner = true;
+          }
+          // if (formatRole.includes('admin')) {
+          //   isAdminOrOwner = true;
+          // }
+          formatArrRoles = [...formatArrRoles, ...formatRole];
+          setAuthority(formatArrRoles);
+
+          // redirect
+          if (isAdminOrOwner || isCandidate) {
+            history.replace('/control-panel');
+          } else if (listCompany.length === 1) {
+            const { tenant: tenantId = '', _id: selectedCompany = '' } = listCompany[0];
+            setTenantId(tenantId);
+            setCurrentCompany(selectedCompany);
+            yield put({
+              type: 'user/fetchCurrent',
+              refreshCompanyList: false,
+            });
+            history.push('/');
+          } else {
+            history.replace('/control-panel');
+          }
         }
       } catch (errors) {
         const { data = [] } = errors;

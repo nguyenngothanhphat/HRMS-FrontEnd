@@ -52,7 +52,10 @@ const UserModel = {
           return {};
         }
 
-        if (formatRole.indexOf('candidate') > -1) {
+        const isCandidate = formatRole.indexOf('candidate') > -1;
+        const isOnlyCandidate = isCandidate && formatRole.length === 1;
+
+        if (isOnlyCandidate) {
           setAuthority(...formatRole);
           setTenantId(candidate.tenant);
           setCurrentCompany(candidate.company);
