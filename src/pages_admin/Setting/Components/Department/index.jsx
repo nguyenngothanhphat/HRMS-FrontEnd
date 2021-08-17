@@ -83,7 +83,7 @@ class Department extends Component {
 
     let hasChildDept = false;
     department.forEach((item) => {
-      if (item?.departmentParentId === record._id) {
+      if (item?.departmentParentName === record.name) {
         hasChildDept = true;
       }
     });
