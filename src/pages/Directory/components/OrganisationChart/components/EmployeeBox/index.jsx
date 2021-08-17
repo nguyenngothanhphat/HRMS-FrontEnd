@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Avatar, Row, Col, Select, Spin, Divider, Tooltip } from 'antd';
+import { Avatar, Row, Col, Select, Spin, Divider, Tooltip, Popover } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { Link } from 'umi';
 import { isEmpty } from 'lodash';
@@ -47,6 +47,14 @@ class DetailEmployeeChart extends Component {
     const idFirm = getCurrentCompany();
     const currentFirm = companiesOfUser.filter((item) => item._id === idFirm);
     return currentFirm[0]?.name;
+  };
+
+  popupImage = (ava) => {
+    return (
+      <div className={styles.avatarPopup}>
+        <img src={ava} alt="avatar" />
+      </div>
+    );
   };
 
   render() {
@@ -143,7 +151,9 @@ class DetailEmployeeChart extends Component {
         {checkObj ? (
           <div className={styles.chartDetail}>
             <div className={styles.chartDetail__Top}>
-              <Avatar src={avatar || ''} size={55} icon={<UserOutlined />} />
+              <Popover placement="rightTop" content={() => this.popupImage(avatar)} trigger="hover">
+                <Avatar src={avatar || ''} size={55} icon={<UserOutlined />} />
+              </Popover>
               <div className={styles.chartDetail__Top_name}>
                 <p className={styles.chartDetail__Top_firstName}>{fullName || ''}</p>
                 <div className={styles.chartDetail__Top_department}>
