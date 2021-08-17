@@ -5,7 +5,7 @@ import styles from './index.less';
 class PendingTaskTable extends PureComponent {
   renderItem = (item, listLength, index) => {
     return (
-      <>
+      <div key={index}>
         <Row span={24} className={styles.eachItem} align="middle">
           <Col span={16}>
             <span>{item.name}</span>
@@ -15,7 +15,7 @@ class PendingTaskTable extends PureComponent {
           </Col>
         </Row>
         {index + 1 < listLength && <div className={styles.divider} />}
-      </>
+      </div>
     );
   };
 

@@ -4,9 +4,9 @@ import moment from 'moment';
 import styles from './index.less';
 
 class EmployeeDetails extends PureComponent {
-  itemBox = (item) => {
+  itemBox = (item, index) => {
     return (
-      <Col span={8} className={styles.itemBox}>
+      <Col key={index} span={8} className={styles.itemBox}>
         <span className={styles.status}>{item.name}:</span>
         <span className={styles.dateOfJoining}>{item.value}</span>
       </Col>
@@ -51,7 +51,7 @@ class EmployeeDetails extends PureComponent {
         value: grade || '-',
       },
       {
-        name: 'Location',
+        name: 'Work Location',
         value: workLocation?.name || '-',
       },
     ];
@@ -61,7 +61,7 @@ class EmployeeDetails extends PureComponent {
           <span>Employee Details</span>
         </div>
         <Row gutter={['24', '24']} className={styles.content}>
-          {items.map((val) => this.itemBox(val))}
+          {items.map((val, index) => this.itemBox(val, index))}
         </Row>
       </div>
     );

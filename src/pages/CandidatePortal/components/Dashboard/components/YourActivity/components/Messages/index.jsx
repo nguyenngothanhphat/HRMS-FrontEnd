@@ -33,6 +33,7 @@ class Messages extends PureComponent {
     return (
       <>
         <div
+          key={index}
           className={styles.eachItem}
           onClick={() => {
             this.setState({

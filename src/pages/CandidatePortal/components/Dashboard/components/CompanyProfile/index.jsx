@@ -41,6 +41,7 @@ class CompanyProfile extends PureComponent {
       <div
         className={`${styles.customDot} ${isActive ? styles.active : ''}`}
         onClick={() => this.onChangePage(index)}
+        key={index}
       />
     );
   };

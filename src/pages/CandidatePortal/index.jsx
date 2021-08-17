@@ -8,34 +8,6 @@ import WelcomeModal from './components/WelcomeModal';
 import styles from './index.less';
 
 const { TabPane } = Tabs;
-
-const messages = [
-  {
-    title: `What’s next?`,
-    content: `Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with...`,
-  },
-  {
-    title: 'Welcome to Lollypop Design Studio!',
-    content: `Hello! We are excited to have you onboard on this amazing journey with...`,
-  },
-  {
-    title: 'Welcome to Terralogic Family!',
-    content: `Hello! We are excited to have you onboard on this amazing journey with...`,
-  },
-  {
-    title: `What’s next?`,
-    content: `Hello! We are excited to have you onboard on this amazing journey with...`,
-  },
-  {
-    title: 'Welcome to Lollypop Design Studio!',
-    content: `Hello! We are excited to have you onboard on this amazing journey with...`,
-  },
-  {
-    title: 'Welcome to Terralogic Family!',
-    content: `Hello! We are excited to have you onboard on this amazing journey with...`,
-  },
-];
-
 @connect(
   ({
     candidatePortal: { localStep, data, tempData } = {},
@@ -53,12 +25,21 @@ class CandidatePortal extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      openWelcomeModal: true,
+      openWelcomeModal: false,
     };
   }
 
   componentDidMount = () => {
-    const { dispatch, candidate = '' } = this.props;
+    const {
+      dispatch,
+      candidate = '',
+      match: { params: { tabName = '' } = {} },
+    } = this.props;
+
+    if (!tabName) {
+      history.replace(`/candidate-portal/dashboard`);
+    }
+
     if (!dispatch) {
       return;
     }
@@ -78,15 +59,16 @@ class CandidatePortal extends PureComponent {
     });
   };
 
-  renderMessageTitle = (data) => {
-    const addZeroToNumber = (number) => {
-      if (number < 10 && number >= 0) return `0${number}`.slice(-2);
-      return number;
-    };
+  renderMessageTitle = () => {
+    // const addZeroToNumber = (number) => {
+    //   if (number < 10 && number >= 0) return `0${number}`.slice(-2);
+    //   return number;
+    // };
 
     return (
       <span className={styles.messageTitle}>
-        Messages <span className={styles.messageIndex}>{addZeroToNumber(data.length)}</span>
+        Messages{' '}
+        <span className={styles.messageIndex}>{/* {addZeroToNumber(data.length)} */}06</span>
       </span>
     );
   };
@@ -96,7 +78,7 @@ class CandidatePortal extends PureComponent {
     const {
       match: { params: { tabName = '' } = {} },
     } = this.props;
-
+    console.log('tabName', tabName);
     return (
       <div className={styles.CandidatePortal}>
         <Tabs
@@ -108,8 +90,8 @@ class CandidatePortal extends PureComponent {
           <TabPane tab="Dashboard" key="dashboard">
             <Dashboard />
           </TabPane>
-          <TabPane tab={this.renderMessageTitle(messages)} key="messages">
-            <Messages messages={messages} />
+          <TabPane tab={this.renderMessageTitle()} key="messages">
+            <Messages />
           </TabPane>
         </Tabs>
         <WelcomeModal visible={openWelcomeModal} onClose={() => this.handleWelcomeModal(false)} />

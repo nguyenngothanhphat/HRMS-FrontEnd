@@ -5,7 +5,7 @@ import styles from './index.less';
 class UpcomingEvents extends PureComponent {
   renderItem = (item, listLength, index) => {
     return (
-      <>
+      <div key={index}>
         <div className={styles.eachItem}>
           <div className={styles.eventIcon}>
             <img src={EventIcon} alt="event" />
@@ -15,7 +15,7 @@ class UpcomingEvents extends PureComponent {
           </div>
         </div>
         {index + 1 < listLength && <div className={styles.divider} />}
-      </>
+      </div>
     );
   };
 

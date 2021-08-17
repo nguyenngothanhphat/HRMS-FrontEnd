@@ -6,7 +6,7 @@ class NextSteps extends PureComponent {
   renderItem = (item, listLength, index) => {
     return (
       <>
-        <div className={styles.eachItem}>
+        <div className={styles.eachItem} key={index}>
           <div className={styles.stepIcon}>
             <img src={StepIcon} alt="step" />
           </div>
