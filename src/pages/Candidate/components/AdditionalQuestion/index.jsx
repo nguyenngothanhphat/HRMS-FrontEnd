@@ -3,11 +3,12 @@ import { Button, Col, Row, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
 import { TYPE_QUESTION, SPECIFY, MODE } from '@/components/Question/utils';
-import { every } from 'lodash';
+import { every, indexOf } from 'lodash';
 import { PROCESS_STATUS } from '@/utils/onboarding';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
 import s from './index.less';
+import { Page } from '../../../FormTeamMember/utils';
 
 const Note = {
   title: 'Note',
@@ -31,6 +32,7 @@ const AdditionalQuestion = (props) => {
     candidate,
     processStatus,
   } = props;
+  const [disable, setDisable] = useState(false);
 
   const checkAllFieldsValidate = () => {
     const valid = settings.map((question) => {
@@ -73,7 +75,15 @@ const AdditionalQuestion = (props) => {
     });
     return valid;
   };
-  const [disable, setDisable] = useState(false);
+
+  const checkDisable = () => {
+    if (indexOf(Page.Eligibility_documents) >= localStep - 1) {
+      setDisable(processStatus !== PROCESS_STATUS.SENT_PROVISIONAL_OFFERS);
+    } else {
+      setDisable(processStatus === PROCESS_STATUS.ACCEPTED_FINAL_OFFERS);
+    }
+  };
+
   useEffect(() => {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
     if (candidate !== '') {
@@ -85,12 +95,8 @@ const AdditionalQuestion = (props) => {
         },
       });
     }
-    setDisable(processStatus === PROCESS_STATUS.ACCEPTED_FINAL_OFFERS);
+    checkDisable();
   }, []);
-
-  /**
-   * Check if all the questions have been answered or not
-   */
 
   /**
    * Change the employee's answers in a sentence through the key of the question

@@ -102,8 +102,8 @@ const Benefits = (props) => {
     const valid = question?.settings?.map((item) => {
       const employeeAnswers = item.employeeAnswers.filter((answer) => answer);
 
-      if (question.isRequired) {
-        if (question.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key) {
+      if (item.isRequired) {
+        if (item.answerType === TYPE_QUESTION.MULTIPLE_CHOICE.key) {
           const { specify = {}, num } = item?.multiChoice || {};
           switch (specify) {
             case SPECIFY.AT_LEAST.key:
