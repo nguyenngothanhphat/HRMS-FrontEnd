@@ -6,7 +6,7 @@ import styles from './index.less';
 class EmployeeDetails extends PureComponent {
   itemBox = (item, index) => {
     return (
-      <Col key={index} span={8} className={styles.itemBox}>
+      <Col key={index} xs={12} md={8} className={styles.itemBox}>
         <span className={styles.status}>{item.name}:</span>
         <span className={styles.dateOfJoining}>{item.value}</span>
       </Col>
@@ -22,7 +22,7 @@ class EmployeeDetails extends PureComponent {
         } = {} || {},
         dateOfJoining = '',
         department: { name: departmentName = '' } = {} || {},
-        workLocation = {},
+        workLocation = {} || {},
         grade = '',
       } = {} || {},
     } = this.props;

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { connect, Link } from 'umi';
+import { connect, Link, history } from 'umi';
 
 import { Layout, Button, Result, Skeleton } from 'antd';
 import Authorized from '@/utils/Authorized';
@@ -74,6 +74,12 @@ const CandidatePortalLayout = React.memo((props) => {
     return currentCompany.logoUrl || avtDefault;
   };
 
+  const companyName = () => {
+    const currentCompany =
+      companiesOfUser.find((company) => company?._id === getCurrentCompany()) || {};
+    return currentCompany.name || '';
+  };
+
   return (
     <div className={s.candidate}>
       {/* <Header className={`${s.header} ${s.one}`}> */}
@@ -82,15 +88,21 @@ const CandidatePortalLayout = React.memo((props) => {
           <div className={s.imgContainer}>
             <img src={companyLogo()} alt="logo" />
           </div>
+          <span className={s.companyName}>{companyName()}</span>
         </div>
 
         <div className={s.headerRight}>
           <div className={s.headerIcon}>
             <img src={CalendarIcon} alt="calendar" />
           </div>
-          <div className={s.headerIcon}>
+          <div
+            className={s.headerIcon}
+            onClick={() => {
+              history.push(`/candidate-portal/messages/`);
+            }}
+          >
             <img src={MessageIcon} alt="message" />
-            <div className={s.badgeNumber}>4</div>
+            <div className={s.badgeNumber}>6</div>
           </div>
           <div className={s.headerIcon} onClick={handleCancel}>
             <img src={LogoutIcon} alt="logout" />

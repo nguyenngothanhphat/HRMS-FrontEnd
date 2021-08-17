@@ -8,7 +8,26 @@ class ActiveChat extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
+    this.mesRef = React.createRef();
   }
+
+  componentDidMount() {
+    this.scrollToBottom();
+  }
+
+  componentDidUpdate = (prevProps) => {
+    const { activeId = '' } = this.props;
+    if (
+      prevProps.activeId !== activeId
+      // JSON.stringify(messages) !== JSON.stringify(prevProps.messages)
+    ) {
+      this.scrollToBottom();
+    }
+  };
+
+  scrollToBottom = () => {
+    this.mesRef.current.scrollTop = this.mesRef.current?.scrollHeight;
+  };
 
   // chat container
   renderSender = (message) => {
@@ -69,7 +88,7 @@ class ActiveChat extends PureComponent {
     };
 
     return (
-      <div className={styles.contentContainer}>
+      <div className={styles.contentContainer} ref={this.mesRef}>
         {chat.map((item, index) => {
           if (item.sender) {
             return senderMessage(item, index);
@@ -89,9 +108,13 @@ class ActiveChat extends PureComponent {
           maxLength={255}
           placeholder="Type a message..."
         />
-        <Button>Send</Button>
+        <Button onClick={this.onSendClick}>Send</Button>
       </div>
     );
+  };
+
+  onSendClick = () => {
+    this.scrollToBottom();
   };
 
   render() {

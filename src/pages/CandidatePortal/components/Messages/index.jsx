@@ -49,6 +49,31 @@ const messages = [
         sender: false,
         content: `I know`,
       },
+      {
+        _id: 4,
+        sender: false,
+        content: `I know`,
+      },
+      {
+        _id: 5,
+        sender: false,
+        content: `I know`,
+      },
+      {
+        _id: 6,
+        sender: false,
+        content: `I know`,
+      },
+      {
+        _id: 7,
+        sender: true,
+        content: `I know`,
+      },
+      {
+        _id: 8,
+        sender: false,
+        content: `I know`,
+      },
     ],
     icon: HRIcon2,
     time: 'July 15th',

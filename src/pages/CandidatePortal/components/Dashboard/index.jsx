@@ -23,21 +23,6 @@ import YourActivity from './components/YourActivity';
   }),
 )
 class Dashboard extends PureComponent {
-  componentDidMount = () => {
-    const { dispatch, candidate = '' } = this.props;
-    if (!dispatch) {
-      return;
-    }
-    dispatch({
-      type: 'candidatePortal/fetchCandidateById',
-      payload: {
-        candidate: candidate._id,
-        tenantId: getCurrentTenant(),
-        rookieID: candidate.ticketID,
-      },
-    });
-  };
-
   render() {
     const { loadingFetchCandidate, data = {} } = this.props;
 

@@ -1,6 +1,7 @@
 @darkColor: #161c29;
 @lightGrayColor: #707177;
 @commonPadding: 15px;
+@inlinePadding: 32px;
 @borderColor: #d6dce0;
 @blueColor: #2c6df9;
 @lightBlueColor: #eaf0fe;
@@ -17,11 +18,12 @@
   border: 1px solid @borderColor;
   border-radius: 5px;
   .chatContainer {
+    position: relative;
     .senderContainer {
       display: flex;
       align-items: center;
       justify-content: flex-start;
-      padding: @commonPadding;
+      padding: @commonPadding @inlinePadding;
       border-bottom: 1px solid @borderColor;
 
       .info {
@@ -49,7 +51,7 @@
       min-height: 40vh;
       max-height: 60vh;
       overflow-y: auto;
-      padding-inline: @commonPadding;
+      padding-inline: @inlinePadding;
       .senderMessage {
         width: 100%;
         max-width: 700px;
@@ -127,6 +129,7 @@
         }
       }
     }
+    
   }
 
   .inputContainer {
@@ -134,7 +137,7 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    padding: @commonPadding;
+    padding: @commonPadding @inlinePadding;
     border-top: 1px solid @borderColor;
     :global {
       .ant-input {

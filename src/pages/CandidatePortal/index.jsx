@@ -11,7 +11,7 @@ const { TabPane } = Tabs;
 @connect(
   ({
     candidatePortal: { localStep, data, tempData } = {},
-    user: { currentUser: { candidate = '' } = {} } = {},
+    user: { currentUser: { candidate = {} } = {} } = {},
     loading,
   }) => ({
     localStep,
@@ -40,9 +40,10 @@ class CandidatePortal extends PureComponent {
       history.replace(`/candidate-portal/dashboard`);
     }
 
-    if (!dispatch) {
+    if (!dispatch || !getCurrentTenant() || !candidate?._id) {
       return;
     }
+
     dispatch({
       type: 'candidatePortal/fetchCandidateById',
       payload: {
@@ -78,7 +79,7 @@ class CandidatePortal extends PureComponent {
     const {
       match: { params: { tabName = '' } = {} },
     } = this.props;
-    console.log('tabName', tabName);
+
     return (
       <div className={styles.CandidatePortal}>
         <Tabs
