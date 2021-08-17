@@ -108,13 +108,24 @@ class DirectoryTable extends Component {
     const { _id = '', generalInfo = {}, tenant = '' } = employeePack;
     const { isShowAvatar = true, avatar = '' } = generalInfo;
     const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
+
+    const popupImg = () => {
+      return (
+        <div className={styles.popupImg}>
+          <img src={avatarUrl} alt="avatar" />
+        </div>
+      );
+    };
+
     return (
       <div className={styles.directoryTableName}>
-        {avatarUrl ? (
-          <Avatar size="medium" className={styles.avatar} src={avatarUrl} alt="avatar" />
-        ) : (
-          <Avatar className={styles.avatar_emptySrc} alt="avatar" />
-        )}
+        <Popover placement="rightTop" content={popupImg} trigger="hover">
+          {avatarUrl ? (
+            <Avatar size="medium" className={styles.avatar} src={avatarUrl} alt="avatar" />
+          ) : (
+            <Avatar className={styles.avatar_emptySrc} alt="avatar" />
+          )}
+        </Popover>
         <Link
           className={styles.directoryTableName__name}
           to={() => this.handleProfileEmployee(_id, tenant, generalInfo?.userId)}
