@@ -147,13 +147,15 @@ class OrganisationChart extends Component {
 
   handleClickNode = async (nodeData) => {
     const { dispatch } = this.props;
-    const { timezoneList, currentTime } = this.state;
+    const { timezoneList } = this.state;
+    const currentTime = moment();
 
     const { location = {}, _id = '' } = nodeData;
     if (!isEmpty(location)) {
       const findTimezone =
         timezoneList.find((timezone) => timezone.locationId === location._id) || {};
       const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
+
       const addTimeData = { ...nodeData, localTime: timeData };
 
       dispatch({
@@ -170,27 +172,29 @@ class OrganisationChart extends Component {
   };
 
   handleSelect = (value) => {
-    const { listEmployeeAll } = this.props;
-    const { timezoneList, currentTime } = this.state;
-    const getData = listEmployeeAll.filter((item) => item._id === value);
-    const convertData = getData.map((item) => {
-      const { _id, generalInfo, department, location, title } = item;
-      const findTimezone =
-        timezoneList.find((timezone) => timezone.locationId === location._id) || {};
-      const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
-      return {
-        _id,
-        generalInfo,
-        department,
-        title,
-        location,
-        localTime: timeData,
-      };
-    });
+    // const { listEmployeeAll } = this.props;
+    // const { timezoneList, currentTime } = this.state;
+    // const getData = listEmployeeAll.filter((item) => item._id === value);
+    // const convertData = getData.map((item) => {
+    //   const { _id, generalInfo, department, location, title } = item;
+    //   const findTimezone =
+    //     timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+    //   const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
+    //   return {
+    //     _id,
+    //     generalInfo,
+    //     department,
+    //     title,
+    //     location,
+    //     localTime: timeData,
+    //   };
+    // });
+    // const convertFinal = { ...convertData[0] };
+    // this.setState({ chartDetails: convertFinal });
 
-    const convertFinal = { ...convertData[0] };
+    /** AFTER SEARCHING USER, THE CODE ABOVE IS TO SHOW SEARCH BOX INFORMATION  */
+
     this.setState({ idSelect: value });
-    this.setState({ chartDetails: convertFinal });
   };
 
   fetchTimezone = () => {
