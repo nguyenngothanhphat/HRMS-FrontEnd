@@ -3,7 +3,7 @@ import { Tabs } from 'antd';
 import ArrowDownIcon from '@/assets/candidatePortal/arrowDown.svg';
 import UpcomingEvents from './components/UpcomingEvents';
 import NextSteps from './components/NextSteps';
-import Messages from './components/Messages';
+// import Messages from './components/Messages';
 import CommonModal from '../CommonModal';
 import styles from './index.less';
 
@@ -158,9 +158,9 @@ class YourActivity extends PureComponent {
               <TabPane tab={nextStepsTabName} key="2">
                 <NextSteps steps={steps} sliceNumber={3} />
               </TabPane>
-              <TabPane tab={messageTabName} key="3">
+              {/* <TabPane tab={messageTabName} key="3">
                 <Messages messages={messages} sliceNumber={3} />
-              </TabPane>
+              </TabPane> */}
             </Tabs>
           </div>
         </div>

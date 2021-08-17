@@ -22,6 +22,8 @@ class EmployeeDetails extends PureComponent {
         } = {} || {},
         dateOfJoining = '',
         department: { name: departmentName = '' } = {} || {},
+        workLocation = {},
+        grade = '',
       } = {} || {},
     } = this.props;
 
@@ -46,7 +48,11 @@ class EmployeeDetails extends PureComponent {
       },
       {
         name: 'Grade',
-        value: '-',
+        value: grade || '-',
+      },
+      {
+        name: 'Location',
+        value: workLocation?.name || '-',
       },
     ];
     return (

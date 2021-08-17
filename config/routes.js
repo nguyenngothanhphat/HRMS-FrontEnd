@@ -104,7 +104,12 @@ const routes = [
         hideInMenu: true,
         component: './CandidatePortal',
       },
-    ]
+      {
+        path: '/candidate-portal/:tabName',
+        hideInMenu: true,
+        component: './CandidatePortal',
+      },
+    ],
   },
   {
     path: '/',

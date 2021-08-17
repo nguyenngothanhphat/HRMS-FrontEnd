@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import moment from 'moment';
-import BackgroundImage from '../../../../../public/assets/images/twoManTalking.svg';
+import BackgroundImage from '../../../../../../../public/assets/images/twoManTalking.svg';
 import styles from './index.less';
 
 class ApplicationStatus extends PureComponent {

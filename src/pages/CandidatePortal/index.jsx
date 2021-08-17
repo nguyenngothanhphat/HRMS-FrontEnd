@@ -1,15 +1,40 @@
-import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
-import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
-import ApplicationStatus from './components/ApplicationStatus';
-import CompanyProfile from './components/CompanyProfile';
-import EmployeeDetails from './components/EmployeeDetails';
-import YourActivity from './components/YourActivity';
-import PendingTasks from './components/PendingTasks';
-import QueryBar from './components/QueryBar';
+import { Tabs } from 'antd';
+import React, { PureComponent } from 'react';
+import { connect, history } from 'umi';
+import Dashboard from './components/Dashboard';
+import Messages from './components/Messages';
 import WelcomeModal from './components/WelcomeModal';
 import styles from './index.less';
+
+const { TabPane } = Tabs;
+
+const messages = [
+  {
+    title: `What’s next?`,
+    content: `Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with...`,
+  },
+  {
+    title: 'Welcome to Lollypop Design Studio!',
+    content: `Hello! We are excited to have you onboard on this amazing journey with...`,
+  },
+  {
+    title: 'Welcome to Terralogic Family!',
+    content: `Hello! We are excited to have you onboard on this amazing journey with...`,
+  },
+  {
+    title: `What’s next?`,
+    content: `Hello! We are excited to have you onboard on this amazing journey with...`,
+  },
+  {
+    title: 'Welcome to Lollypop Design Studio!',
+    content: `Hello! We are excited to have you onboard on this amazing journey with...`,
+  },
+  {
+    title: 'Welcome to Terralogic Family!',
+    content: `Hello! We are excited to have you onboard on this amazing journey with...`,
+  },
+];
 
 @connect(
   ({
@@ -53,48 +78,40 @@ class CandidatePortal extends PureComponent {
     });
   };
 
+  renderMessageTitle = (data) => {
+    const addZeroToNumber = (number) => {
+      if (number < 10 && number >= 0) return `0${number}`.slice(-2);
+      return number;
+    };
+
+    return (
+      <span className={styles.messageTitle}>
+        Messages <span className={styles.messageIndex}>{addZeroToNumber(data.length)}</span>
+      </span>
+    );
+  };
+
   render() {
     const { openWelcomeModal } = this.state;
-    const { loadingFetchCandidate, data = {} } = this.props;
+    const {
+      match: { params: { tabName = '' } = {} },
+    } = this.props;
 
     return (
       <div className={styles.CandidatePortal}>
-        <p className={styles.CandidatePortal__header}>Candidate Portal Dashboard</p>
-        <Row span={24} gutter={[24, 24]} style={{ marginBottom: '24px' }}>
-          <Col
-            sm={24}
-            lg={16}
-            gutter={[24, 24]}
-            style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
-          >
-            <Row span={24} gutter={[24, 24]} style={{ marginBottom: '24px' }}>
-              <Col xs={24} sm={8} lg={8}>
-                <ApplicationStatus loading={loadingFetchCandidate} data={data} />
-              </Col>
-              <Col xs={24} sm={16} lg={16}>
-                <EmployeeDetails loading={loadingFetchCandidate} data={data} />
-              </Col>
-            </Row>
-
-            <Row span={24} gutter={[24, 24]} style={{ height: '100%' }}>
-              <Col xs={24} lg={14}>
-                <YourActivity />
-              </Col>
-              <Col xs={24} lg={10}>
-                <PendingTasks />
-              </Col>
-            </Row>
-          </Col>
-
-          <Col sm={24} lg={8}>
-            <CompanyProfile />
-          </Col>
-        </Row>
-        <Row span={24} gutter={[24, 24]}>
-          <Col span={24}>
-            <QueryBar />
-          </Col>
-        </Row>
+        <Tabs
+          activeKey={tabName || 'dashboard'}
+          onChange={(key) => {
+            history.push(`/candidate-portal/${key}`);
+          }}
+        >
+          <TabPane tab="Dashboard" key="dashboard">
+            <Dashboard />
+          </TabPane>
+          <TabPane tab={this.renderMessageTitle(messages)} key="messages">
+            <Messages messages={messages} />
+          </TabPane>
+        </Tabs>
         <WelcomeModal visible={openWelcomeModal} onClose={() => this.handleWelcomeModal(false)} />
       </div>
     );
