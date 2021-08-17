@@ -2,7 +2,10 @@ import { connect } from 'umi';
 import { Col } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { MODE } from '@/components/Question/utils';
+import { indexOf } from 'lodash';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import QuestionItemView from '../QuestionItemView/index';
+import { Page } from '../../../pages/FormTeamMember/utils';
 
 const AnswerQuestion = React.memo((props) => {
   const {
@@ -10,6 +13,7 @@ const AnswerQuestion = React.memo((props) => {
     data: { settings = [] },
     data,
     dispatch,
+    listPage,
     processStatus,
     messageErrors = [],
     page,
@@ -29,7 +33,9 @@ const AnswerQuestion = React.memo((props) => {
   }, [candidate]);
 
   useEffect(() => {
-    setDisable(processStatus === 'ACCEPT-FINAL-OFFER');
+    if (indexOf(listPage, page) <= indexOf(listPage, Page.Eligibility_documents)) {
+      setDisable(processStatus !== PROCESS_STATUS.SENT_PROVISIONAL_OFFERS);
+    } else setDisable(processStatus === PROCESS_STATUS.ACCEPTED_FINAL_OFFERS);
   }, []);
   const onChangeEmployeeAnswers = async (value, key) => {
     const temp = [...settings];
@@ -65,13 +71,14 @@ const AnswerQuestion = React.memo((props) => {
 export default connect(
   ({
     dispatch,
-    optionalQuestion: { messageErrors, candidate = '', data = {} } = {},
+    optionalQuestion: { messageErrors, candidate = '', data = {}, listPage } = {},
     candidateProfile: { processStatus },
   }) => ({
     dispatch,
     messageErrors,
     processStatus,
     candidate,
+    listPage,
     data,
   }),
 )(AnswerQuestion);

@@ -5,6 +5,13 @@ import styles from './index.less';
 export default class ModalAddType extends PureComponent {
   formRef = React.createRef();
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      isDisable: true,
+    };
+  }
+
   onCancel = () => {
     this.formRef.current.resetFields();
     const { closeModal } = this.props;
@@ -20,8 +27,24 @@ export default class ModalAddType extends PureComponent {
     }
   };
 
+  onFieldsChange = (field) => {
+    const { name = [], value = '' } = field[0] || {};
+    if (name.indexOf('accrualMethod') > -1) {
+      if (value === 'Unlimited') {
+        this.setState({
+          isDisable: true,
+        });
+      } else {
+        this.setState({
+          isDisable: false,
+        });
+      }
+    }
+  };
+
   render() {
     const { isVisible, loadingAddType } = this.props;
+    const { isDisable = false } = this.state;
     return (
       <>
         <Modal
@@ -34,6 +57,7 @@ export default class ModalAddType extends PureComponent {
           <Form
             onFinish={this.onSubmit}
             className={styles.modal__form}
+            onFieldsChange={this.onFieldsChange}
             ref={this.formRef}
             layout="vertical"
           >
@@ -51,12 +75,12 @@ export default class ModalAddType extends PureComponent {
                 <Space direction="vertical">
                   <Radio value="Unlimited">Unlimited</Radio>
                   <Radio value="Days Per Year">Days Per Year </Radio>
-                  <Radio value="Hours per hours worked">Hours per hours worked</Radio>
+                  <Radio value="Hours per hours worked">Hours per week</Radio>
                 </Space>
               </Radio.Group>
             </Form.Item>
             <Form.Item className={styles.noOfDay} label="Vacation Accrual Rate" name="accrualRate">
-              <Input addonAfter="Days per year" placeholder="0" />
+              <Input disabled={isDisable} addonAfter="Days per year" placeholder="0" />
             </Form.Item>
             <Form.Item className={styles.lastFormItem}>
               <Button className={styles.btnCancel} htmlType="reset" onClick={this.onCancel}>

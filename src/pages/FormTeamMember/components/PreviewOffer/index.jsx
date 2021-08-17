@@ -588,7 +588,7 @@ const PreviewOffer = (props) => {
         type: 'candidateInfo/addManagerSignatureEffect',
         payload: {
           candidate: _id,
-          hrManagerSignature: hrManagerSignatureProp.id,
+          hrManagerSignature: id,
           tenantId: getCurrentTenant(),
           // currentStep: 6,
         },
@@ -843,7 +843,7 @@ const PreviewOffer = (props) => {
                 <Row>
                   <Col span={24}>
                     <Select
-                      defaultValue={optionSignatureHRManager}
+                      vaule={optionSignatureHRManager}
                       style={{ width: '100%', marginBottom: '5px' }}
                       onChange={(e) => {
                         setOptionSignatureHRManager(e);
