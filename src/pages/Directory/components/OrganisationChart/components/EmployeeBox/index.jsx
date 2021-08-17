@@ -152,7 +152,12 @@ class DetailEmployeeChart extends Component {
           <div className={styles.chartDetail}>
             <div className={styles.chartDetail__Top}>
               <Popover placement="rightTop" content={() => this.popupImage(avatar)} trigger="hover">
-                <Avatar src={avatar || ''} size={55} icon={<UserOutlined />} />
+                <Avatar
+                  style={{ cursor: 'pointer' }}
+                  src={avatar || ''}
+                  size={55}
+                  icon={<UserOutlined />}
+                />
               </Popover>
               <div className={styles.chartDetail__Top_name}>
                 <p className={styles.chartDetail__Top_firstName}>{fullName || ''}</p>
