@@ -108,6 +108,7 @@ class Department extends Component {
     const { dispatch } = this.props;
     const { newDepartment } = this.state;
     if (newDepartment.name === '') return;
+
     await dispatch({
       type: 'adminSetting/addDepartment',
       payload: newDepartment,
@@ -175,7 +176,9 @@ class Department extends Component {
             >
               <Select.Option value="">None</Select.Option>
               {department.map((d) => (
-                <Select.Option value={d.departmentId}>{d.name}</Select.Option>
+                <Select.Option key={d._id} value={d.departmentId}>
+                  {d.name}
+                </Select.Option>
               ))}
             </Select>
           );

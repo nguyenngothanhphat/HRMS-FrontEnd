@@ -204,7 +204,7 @@ const adminSetting = {
     *addDepartment({ payload }, { call, put }) {
       try {
         const response = yield call(addDepartment, {
-          ...payload,
+          payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
