@@ -360,6 +360,8 @@ class Edit extends PureComponent {
     const formatDate = DOB && moment(DOB);
     const dateFormat = 'MM.DD.YY';
     const checkIndiaLocation = country === 'IN';
+    const checkVietNamLocation = country === 'VN';
+    const checkUSALocation = country === 'US';
 
     const permissions = checkPermissions(roles);
 
@@ -500,6 +502,36 @@ class Edit extends PureComponent {
           {checkIndiaLocation ? (
             <Form.Item
               label="UAN Number"
+              name="uanNumber"
+              rules={[
+                {
+                  pattern: /^[+]*[\d]{12,12}$/,
+                  message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
+                },
+              ]}
+            >
+              <Input className={styles.inputForm} />
+            </Form.Item>
+          ) : null}
+
+          {checkVietNamLocation ? (
+            <Form.Item
+              label="National Identification Number"
+              name="uanNumber"
+              rules={[
+                {
+                  pattern: /^[+]*[\d]{12,12}$/,
+                  message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
+                },
+              ]}
+            >
+              <Input className={styles.inputForm} />
+            </Form.Item>
+          ) : null}
+
+          {checkUSALocation ? (
+            <Form.Item
+              label="Social Security Number"
               name="uanNumber"
               rules={[
                 {

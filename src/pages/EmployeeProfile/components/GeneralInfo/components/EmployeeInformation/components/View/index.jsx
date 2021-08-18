@@ -86,6 +86,8 @@ class View extends PureComponent {
       idCurrentEmployee === idEmployee || permissions.viewOtherInformation !== -1;
 
     const checkIndiaLocation = country === 'IN';
+    const checkVietNamLocation = country === 'VN';
+    const checkUSALocation = country === 'US';
 
     const dummyData = [
       { label: 'Legal Name', value: dataAPI.legalName },
@@ -102,6 +104,14 @@ class View extends PureComponent {
         value: dataAPI.adhaarCardNumber,
       },
       { label: checkVisible && checkIndiaLocation ? 'UAN Number' : null, value: dataAPI.uanNumber },
+      {
+        label: checkVisible && checkVietNamLocation ? 'National Identification Number' : null,
+        value: dataAPI.uanNumber,
+      },
+      {
+        label: checkVisible && checkUSALocation ? 'Social Security Number' : null,
+        value: dataAPI.uanNumber,
+      },
     ];
     const newdata = dummyData.filter((item) => item.label !== null);
     const content = 'We require your gender for legal reasons.';
