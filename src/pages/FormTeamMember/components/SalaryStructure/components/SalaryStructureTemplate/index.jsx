@@ -384,7 +384,8 @@ class SalaryStructureTemplate extends PureComponent {
           data.order === ' ' ? `big-text` : null
         }`}
       >
-        {`${prefix} ${value} `} <span style={{ color: 'rgba(22, 28, 41, 0.5)' }}>{suffix}</span>
+        {`${prefix && prefix} ${value} `}{' '}
+        <span style={{ color: 'rgba(22, 28, 41, 0.5)' }}>{suffix && suffix}</span>
       </span>
     );
   };

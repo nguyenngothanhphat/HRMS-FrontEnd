@@ -204,7 +204,7 @@ class OrganizationChart extends Component {
       <Collapse isOpened={isCollapsedChild}>
         <div className={styles.nodesTree}>
           <div className={styles.lineNode}>
-            <div style={{ margin: '0 auto', width: 'fit-content' }}>
+            <div className={styles.lineNode__line}>
               <img alt="lines" src={handleGetLine(listEmployees.length)} />
             </div>
           </div>
@@ -244,7 +244,7 @@ class OrganizationChart extends Component {
 
             <Collapse isOpened={isCollapsed} hasNestedCollapse>
               {isEmpty(manager) ? null : (
-                <div style={{ margin: '0 auto', width: 'fit-content' }}>
+                <div className={styles.charts__line}>
                   <img alt="line" src={line} />
                 </div>
               )}

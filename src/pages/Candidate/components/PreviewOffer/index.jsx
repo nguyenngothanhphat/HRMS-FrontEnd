@@ -294,7 +294,7 @@ const PreviewOffer = (props) => {
           type: 'candidatePortal/submitCandidateFinalOffer',
           payload: {
             candidate,
-            candidateFinalSignature: candidateSignature.id,
+            candidateFinalSignature: id,
             options: 1,
             tenantId: getCurrentTenant(),
           },
