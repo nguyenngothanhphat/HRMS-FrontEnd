@@ -195,7 +195,9 @@ class EmployeeProfile extends Component {
       listMenu.push({
         id: 2,
         name: `Employment & Compensation`,
-        component: <EmploymentTab listEmployeeActive={listEmployeeActive} />,
+        component: (
+          <EmploymentTab listEmployeeActive={listEmployeeActive} profileOwner={profileOwner} />
+        ),
         link: 'employment-compensation',
       });
     }

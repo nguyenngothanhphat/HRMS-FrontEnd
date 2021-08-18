@@ -36,7 +36,11 @@ class GeneralInfo extends Component {
             <VisaDetails profileOwner={profileOwner} />
           </>
         )}
-        {checkVisible ? <EmergencyContact permissions={permissions} /> : ''}
+        {checkVisible ? (
+          <EmergencyContact permissions={permissions} profileOwner={profileOwner} />
+        ) : (
+          ''
+        )}
         {checkVisible ? (
           <ProfessionalAcademicBackground permissions={permissions} profileOwner={profileOwner} />
         ) : (
