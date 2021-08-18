@@ -3,6 +3,7 @@ import avtDefault from '@/assets/avtDefault.jpg';
 import { isOwner } from '@/utils/authority';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { Avatar, Button, Popover, Table, Tag, Tooltip } from 'antd';
+import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { Component } from 'react';
 import { connect, formatMessage, history, Link } from 'umi';
@@ -364,31 +365,23 @@ class DirectoryTable extends Component {
       },
       {
         title: formatMessage({ id: 'component.directory.table.reportingManager' }),
-        dataIndex: 'managerPack',
-        key: 'managerPack',
-        render: (managerPack) => (
+        dataIndex: 'manager',
+        key: 'manager',
+        render: (manager) => (
           <span
             className={styles.managerName}
             onClick={() =>
-              this.handleProfileEmployee(
-                managerPack._id,
-                managerPack.tenant,
-                managerPack.generalInfo?.userId,
-              )
+              this.handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
             }
           >
-            {managerPack.generalInfo
-              ? `${managerPack?.generalInfo?.firstName} ${managerPack?.generalInfo?.lastName}`
-              : ''}
+            {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
           </span>
         ),
         align: 'left',
         width: '14%',
         sorter: (a, b) => {
-          return a.managerPack.generalInfo && a.managerPack.generalInfo?.firstName
-            ? `${a.managerPack.generalInfo?.firstName} ${a.managerPack.generalInfo?.lastName}`.localeCompare(
-                `${b.managerPack.generalInfo?.firstName} ${b.managerPack.generalInfo?.lastName}`,
-              )
+          return a.manager.generalInfo && a.manager.generalInfo?.legalName
+            ? a.manager.generalInfo?.legalName.localeCompare(`${b.manager.generalInfo?.legalName}`)
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
