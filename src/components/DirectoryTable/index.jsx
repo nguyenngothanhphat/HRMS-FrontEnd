@@ -3,9 +3,10 @@ import avtDefault from '@/assets/avtDefault.jpg';
 import { isOwner } from '@/utils/authority';
 import { getCurrentTimeOfTimezone, getTimezoneViaCity } from '@/utils/times';
 import { Avatar, Button, Popover, Table, Tag, Tooltip } from 'antd';
+import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { Component } from 'react';
-import { connect, formatMessage, history } from 'umi';
+import { connect, formatMessage, history, Link } from 'umi';
 import ModalTerminate from './components/ModalTerminate';
 import styles from './index.less';
 
@@ -102,20 +103,36 @@ class DirectoryTable extends Component {
     return avtDefault;
   };
 
+  ac = (val) => `/time-off/${val}`;
+
   renderUser = (employeePack) => {
     const { _id = '', generalInfo = {}, tenant = '' } = employeePack;
     const { isShowAvatar = true, avatar = '' } = generalInfo;
     const avatarUrl = this.getAvatarUrl(avatar, isShowAvatar);
+
+    const popupImg = () => {
+      return (
+        <div className={styles.popupImg}>
+          <img src={avatarUrl} alt="avatar" />
+        </div>
+      );
+    };
+
     return (
       <div className={styles.directoryTableName}>
-        {avatarUrl ? (
-          <Avatar size="medium" className={styles.avatar} src={avatarUrl} alt="avatar" />
-        ) : (
-          <Avatar className={styles.avatar_emptySrc} alt="avatar" />
-        )}
-        <p onClick={() => this.handleProfileEmployee(_id, tenant, generalInfo?.userId)}>
+        <Popover placement="rightTop" content={popupImg} trigger="hover">
+          {avatarUrl ? (
+            <Avatar size="medium" className={styles.avatar} src={avatarUrl} alt="avatar" />
+          ) : (
+            <Avatar className={styles.avatar_emptySrc} alt="avatar" />
+          )}
+        </Popover>
+        <Link
+          className={styles.directoryTableName__name}
+          to={() => this.handleProfileEmployee(_id, tenant, generalInfo?.userId)}
+        >
           {generalInfo?.legalName}
-        </p>
+        </Link>
       </div>
     );
   };
@@ -192,9 +209,9 @@ class DirectoryTable extends Component {
         render: (employeePack) => (employeePack ? this.renderUser(employeePack) : ''),
         align: 'left',
         sorter: (a, b) => {
-          return a.employeePack.generalInfo && a.employeePack.generalInfo?.firstName
-            ? `${a.employeePack.generalInfo?.firstName} ${a.employeePack.generalInfo?.lastName}`.localeCompare(
-                `${b.employeePack.generalInfo?.firstName} ${b.employeePack.generalInfo?.lastName}`,
+          return a.employeePack.generalInfo && a.employeePack.generalInfo?.legalName
+            ? a.employeePack.generalInfo?.legalName.localeCompare(
+                `${b.employeePack.generalInfo?.legalName}`,
               )
             : null;
         },
@@ -210,7 +227,7 @@ class DirectoryTable extends Component {
         dataIndex: 'generalInfo',
         key: 'workEmail',
         render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
-        width: '20%',
+        width: '16%',
         align: 'left',
         sorter: (a, b) => {
           return a.generalInfo && a.generalInfo?.workEmail
@@ -220,15 +237,19 @@ class DirectoryTable extends Component {
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
-        title: formatMessage({ id: 'component.directory.table.userId' }),
+        title: formatMessage({ id: 'component.directory.table.userName' }),
         dataIndex: 'generalInfo',
-        key: 'userId',
-        render: (generalInfo) => <span>{generalInfo?.userId}</span>,
-        width: '12%',
+        key: 'userName',
+        render: (generalInfo) => (
+          <span style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}>
+            {`${generalInfo?.legalName} (${generalInfo?.userId})`}
+          </span>
+        ),
+        width: '16%',
         align: 'left',
         sorter: (a, b) => {
-          return a.generalInfo && a.generalInfo?.userId
-            ? a.generalInfo?.userId.localeCompare(`${b.generalInfo?.userId}`)
+          return a.generalInfo && a.generalInfo?.legalName
+            ? a.generalInfo?.legalName.localeCompare(`${b.generalInfo?.legalName}`)
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
@@ -305,7 +326,7 @@ class DirectoryTable extends Component {
           //   {department ? department.name : ''}
           // </span>
         },
-        width: '14%',
+        width: '10%',
         align: 'left',
         sorter: (a, b) => {
           return a.department && a.department?.name
@@ -324,10 +345,16 @@ class DirectoryTable extends Component {
             title={location.name}
             trigger="hover"
           >
-            <span onMouseEnter={this.setCurrentTime}>{location ? location.name : ''}</span>
+            <span
+              style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
+              onMouseEnter={this.setCurrentTime}
+            >
+              {location ? location.name : ''}
+            </span>
           </Popover>
         ),
-        width: '14%',
+        width: '10%',
+        ellipsis: true,
         align: 'left',
         sorter: (a, b) => {
           return a.location && a.location?.name
@@ -338,31 +365,23 @@ class DirectoryTable extends Component {
       },
       {
         title: formatMessage({ id: 'component.directory.table.reportingManager' }),
-        dataIndex: 'managerPack',
-        key: 'managerPack',
-        render: (managerPack) => (
+        dataIndex: 'manager',
+        key: 'manager',
+        render: (manager) => (
           <span
             className={styles.managerName}
             onClick={() =>
-              this.handleProfileEmployee(
-                managerPack._id,
-                managerPack.tenant,
-                managerPack.generalInfo?.userId,
-              )
+              this.handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
             }
           >
-            {managerPack.generalInfo
-              ? `${managerPack?.generalInfo?.firstName} ${managerPack?.generalInfo?.lastName}`
-              : ''}
+            {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
           </span>
         ),
         align: 'left',
         width: '14%',
         sorter: (a, b) => {
-          return a.managerPack.generalInfo && a.managerPack.generalInfo?.firstName
-            ? `${a.managerPack.generalInfo?.firstName} ${a.managerPack.generalInfo?.lastName}`.localeCompare(
-                `${b.managerPack.generalInfo?.firstName} ${b.managerPack.generalInfo?.lastName}`,
-              )
+          return a.manager.generalInfo && a.manager.generalInfo?.legalName
+            ? a.manager.generalInfo?.legalName.localeCompare(`${b.manager.generalInfo?.legalName}`)
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
@@ -373,7 +392,7 @@ class DirectoryTable extends Component {
         key: 'employmentType',
         render: (employeeType) => <span>{employeeType ? employeeType.name : ''}</span>,
         align: 'left',
-        width: '14%',
+        width: '10%',
         sorter: (a, b) => {
           return a.employmentType && a.employmentType?.name
             ? a.employmentType?.name.localeCompare(`${b.employmentType?.name}`)
@@ -440,7 +459,7 @@ class DirectoryTable extends Component {
     });
   };
 
-  handleProfileEmployee = async (_id, tenant, userId) => {
+  handleProfileEmployee = (_id, tenant, userId) => {
     // const { _id = '', location: { name = '' } = {}, tenant = '', company = {} } = row;
     // const { dispatch } = this.props;
     // await dispatch({
@@ -457,12 +476,14 @@ class DirectoryTable extends Component {
     const pathname = isOwner()
       ? `/employees/employee-profile/${userId}`
       : `/directory/employee-profile/${userId}`;
-    setTimeout(() => {
-      history.push({
-        pathname,
-        // state: { location: name },
-      });
-    }, 200);
+    // setTimeout(() => {
+    //   history.push({
+    //     pathname,
+    //     // state: { location: name },
+    //   });
+
+    // }, 200);
+    return pathname;
   };
 
   checkPermissionViewProfile = (permissions) => {
@@ -638,7 +659,7 @@ class DirectoryTable extends Component {
       defaultPageSize: rowSize,
       showSizeChanger: true,
       pageSizeOptions: ['10', '25', '50', '100'],
-      // pageSize: rowSize,
+      pageSize: rowSize,
       current: pageSelected,
       onChange: (page, pageSize) => {
         const { getPageSelected, getSize } = this.props;
