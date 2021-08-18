@@ -11,6 +11,7 @@ import LogoutIcon from '@/assets/candidatePortal/logout.svg';
 import CalendarIcon from '@/assets/candidatePortal/leave-application.svg';
 import MessageIcon from '@/assets/candidatePortal/message-circle.svg';
 // import BottomBar from '../components/BottomBar';
+import { RightOutlined } from '@ant-design/icons';
 import s from './CandidatePortalLayout.less';
 
 const { Header, Content } = Layout;
@@ -39,6 +40,8 @@ const CandidatePortalLayout = React.memo((props) => {
     companiesOfUser = [],
     candidate = '',
     loadingFetchCurrent = false,
+    ticketId = '',
+    data: { title: { name: titleName = '' } = {} } = {},
   } = props;
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
@@ -49,6 +52,14 @@ const CandidatePortalLayout = React.memo((props) => {
     if (!candidate) {
       dispatch({
         type: 'user/fetchCurrent',
+      });
+    }
+    if (candidate) {
+      dispatch({
+        type: 'optionalQuestion/getListPage',
+        payload: {
+          candidate: candidate._id,
+        },
       });
     }
   }, [candidate]);
@@ -94,9 +105,16 @@ const CandidatePortalLayout = React.memo((props) => {
             <img src={companyLogo()} alt="logo" />
           </div>
           <span className={s.companyName}>{companyName()}</span>
+          <RightOutlined className={s.icon} />
+
+          {titleName && <span className={s.description}>Candidature for {titleName}</span>}
         </div>
 
         <div className={s.headerRight}>
+          <div className={s.headerText}>
+            <span>Candidate ID: {ticketId}</span>
+          </div>
+
           <div className={s.headerIcon}>
             <img src={CalendarIcon} alt="calendar" />
           </div>
@@ -135,7 +153,6 @@ export default connect(
     candidatePortal: {
       data,
       localStep,
-      title: { name: titleName = '' } = {},
       ticketId,
       checkCandidateMandatory,
       checkMandatory,
@@ -152,7 +169,6 @@ export default connect(
     checkMandatory,
     ticketId,
     processStatus,
-    titleName,
     companiesOfUser,
     loadingFetchCurrent: loading.effects['user/fetchCurrent'],
   }),

@@ -60,7 +60,9 @@ const UserModel = {
           setTenantId(candidate.tenant);
           setCurrentCompany(candidate.company);
           setCurrentLocation(candidate.location);
-          // history.replace('/candidate-portal');
+          if (!window.location.href.includes('candidate')) {
+            history.replace('/candidate-portal');
+          }
           yield put({
             type: 'saveCurrentUser',
             payload: {

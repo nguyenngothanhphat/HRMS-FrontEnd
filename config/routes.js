@@ -114,12 +114,12 @@ const routes = [
       {
         path: '/candidate-portal/ticket/:action/',
         hideInMenu: true,
-        component: './Candidate',
+        component: './CandidatePortal/components/Candidate',
       },
       {
         path: '/candidate-portal/ticket/:action/:tabName',
         hideInMenu: true,
-        component: './Candidate',
+        component: './CandidatePortal/components/Candidate',
       },
     ],
   },
