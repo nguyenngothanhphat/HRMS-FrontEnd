@@ -83,13 +83,13 @@ class View extends Component {
   };
 
   _renderListCertification = (list) => {
-    return list.map((item, index) => {
+    return list.map((item) => {
       const { name = '', urlFile = '', _id = '' } = item;
       const nameFile = urlFile.split('/').pop();
 
       return (
         <div key={_id} className={styles.viewRow} style={{ marginBottom: '6px' }}>
-          <div className={styles.textValue}>{`${index + 1} - ${name}`}</div>
+          <div className={styles.textValue}>{name}</div>
           {urlFile && (
             <div className={styles.viewRow}>
               <p

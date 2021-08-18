@@ -266,11 +266,11 @@ class ViewInformation extends Component {
   };
 
   _renderListCertification = (list) => {
-    return list.map((item, index) => {
+    return list.map((item) => {
       const { name = '', _id = '' } = item;
       return (
         <div key={_id} className={s.infoEmployee__textNameAndTitle__title}>
-          <div className={s.textValue}>{`${index + 1} - ${name}`}</div>
+          <div className={s.textValue}>{name}</div>
         </div>
       );
     });
