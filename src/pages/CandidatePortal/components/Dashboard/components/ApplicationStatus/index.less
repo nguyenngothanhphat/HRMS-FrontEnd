@@ -1,32 +1,33 @@
-@darkColour: #161C29;
+@darkColour: #161c29;
 @lightGrayColor: #707177;
 @commonPadding: 15px;
-@borderColor: #D6DCE0;
+@borderColor: #d6dce0;
+@orangeColor: #ffa100;
 
 .ApplicationStatus {
-  border: 1px solid @borderColor;
-  background: #fff;
-  box-sizing: border-box;
-  border-radius: 5px;
-  height: 100%;
   position: relative;
+  box-sizing: border-box;
+  height: 100%;
+  background: #fff;
+  border: 1px solid @borderColor;
+  border-radius: 5px;
   .header {
     display: flex;
-    justify-content: flex-start;
     align-items: center;
+    justify-content: flex-start;
     padding: @commonPadding;
+    border-bottom: 1px solid @borderColor;
     span {
       color: @darkColour;
       font-weight: 700;
       font-size: 14px;
       line-height: 16px;
     }
-    border-bottom: 1px solid @borderColor;
   }
   .content {
-    padding: @commonPadding;
-    z-index: 1;
     position: relative;
+    z-index: 1;
+    padding: @commonPadding;
     span {
       display: block;
       font-size: 13px;
@@ -34,10 +35,11 @@
     }
     .status {
       margin-bottom: 5px;
+      color: @orangeColor;
     }
     .dateOfJoining {
-      color: @lightGrayColor;
       margin-bottom: 10px;
+      color: @lightGrayColor;
     }
   }
   .backgroundImage {

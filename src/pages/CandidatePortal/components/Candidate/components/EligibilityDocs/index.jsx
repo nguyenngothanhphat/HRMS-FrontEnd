@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import React, { PureComponent } from 'react';
-import { Typography, Row, Col, Button, Spin, notification } from 'antd';
+import { Typography, Row, Col, Button, Spin, notification, Skeleton } from 'antd';
 import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
@@ -67,7 +67,7 @@ class EligibilityDocs extends PureComponent {
   }
 
   componentDidMount() {
-    window.scrollTo({ top: 77, behavior: 'smooth' });
+    // window.scrollTo({ top: 77, behavior: 'smooth' });
     // Back to top of the page
     this.processData();
     this.fetchCandidateAgain();
@@ -551,9 +551,6 @@ class EligibilityDocs extends PureComponent {
     const { currentStep = 0 } = this.props;
     return (
       <div className={styles.bottomBar}>
-        <Row style={{ margin: '0 16px 32px 16px' }}>
-          <AnswerQuestion page={Page.Eligibility_documents} />
-        </Row>
         <Row align="middle">
           <Col span={16}>
             <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
@@ -606,7 +603,7 @@ class EligibilityDocs extends PureComponent {
     if (loading2 && !isSending)
       return (
         <div className={styles.viewLoading}>
-          <Spin />
+          <Skeleton />
         </div>
       );
     return (
@@ -651,6 +648,10 @@ class EligibilityDocs extends PureComponent {
                 renderData={this.processData}
               />
             </div>
+            <Row>
+              <AnswerQuestion page={Page.Eligibility_documents} />
+            </Row>
+
             {this._renderBottomBar()}
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>

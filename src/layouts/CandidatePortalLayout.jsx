@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, Link, history } from 'umi';
 
 import { Layout, Button, Result, Skeleton } from 'antd';
@@ -44,6 +44,9 @@ const CandidatePortalLayout = React.memo((props) => {
     data: { title: { name: titleName = '' } = {} } = {},
   } = props;
 
+  // if link contains "ticket", it means that candidate is in candidate progress page
+  const [isCandidateMode, setCandidateMode] = useState(false);
+
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
   };
@@ -63,6 +66,11 @@ const CandidatePortalLayout = React.memo((props) => {
       });
     }
   }, [candidate]);
+
+  useEffect(() => {
+    setCandidateMode(window.location.href.includes('ticket'));
+    return () => {};
+  }, [window.location.href]);
 
   const handleCancel = () => {
     if (!dispatch) {
@@ -105,15 +113,20 @@ const CandidatePortalLayout = React.memo((props) => {
             <img src={companyLogo()} alt="logo" />
           </div>
           <span className={s.companyName}>{companyName()}</span>
-          <RightOutlined className={s.icon} />
-
-          {titleName && <span className={s.description}>Candidature for {titleName}</span>}
+          {isCandidateMode && (
+            <>
+              <RightOutlined className={s.icon} />
+              {titleName && <span className={s.description}>Candidature for {titleName}</span>}
+            </>
+          )}
         </div>
 
         <div className={s.headerRight}>
-          <div className={s.headerText}>
-            <span>Candidate ID: {ticketId}</span>
-          </div>
+          {isCandidateMode && (
+            <div className={s.headerText}>
+              <span>Candidate ID: {ticketId}</span>
+            </div>
+          )}
 
           <div className={s.headerIcon}>
             <img src={CalendarIcon} alt="calendar" />

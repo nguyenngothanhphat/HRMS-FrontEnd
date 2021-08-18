@@ -33,7 +33,7 @@ const Benefits = (props) => {
   const { filledBenefits = false } = checkCandidateMandatory;
 
   useEffect(() => {
-    window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+    // window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
     setAllFieldFilled(true);
   }, []);
 

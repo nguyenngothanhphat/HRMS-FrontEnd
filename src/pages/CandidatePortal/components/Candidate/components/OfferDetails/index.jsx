@@ -62,7 +62,7 @@ const OfferDetails = (props) => {
   const [arrImgBase64, setArrImgBase64] = useState([]);
   const [openDigital, setOpenDigital] = useState(false);
   useEffect(() => {
-    window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+    // window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
   }, []);
 
   useEffect(() => {

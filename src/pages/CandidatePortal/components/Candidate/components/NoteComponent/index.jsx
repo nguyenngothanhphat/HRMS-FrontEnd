@@ -9,7 +9,7 @@ const NoteComponent = ({ note = {} }) => {
   // };
   return (
     <div className={styles.NoteComponent}>
-      <Space size="middle">
+      <Space style={{ marginBottom: '24px' }} size="middle">
         <div>
           <img src={lightning} alt="lightning icon" />
         </div>

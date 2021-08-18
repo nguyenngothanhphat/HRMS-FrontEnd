@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import { Button, Col, Row, Steps } from 'antd';
-import BasicInformation from './components/BasicInfomation';
-import EligibilityDocs from './components/EligibilityDocs';
-import OfferDetails from './components/OfferDetails';
-import JobDetails from './components/JobDetails';
-import Benefits from './components/Benefits';
-import SalaryStructure from './components/SalaryStructure';
+import React, { useEffect, useState } from 'react';
+import { connect, history } from 'umi';
 import AdditionalQuestion from './components/AdditionalQuestion';
+import BasicInformation from './components/BasicInfomation';
+import Benefits from './components/Benefits';
+import EligibilityDocs from './components/EligibilityDocs';
+import JobDetails from './components/JobDetails';
+import OfferDetails from './components/OfferDetails';
 import PreviewOffer from './components/PreviewOffer';
-import { Page } from '../../../FormTeamMember/utils';
-
+import SalaryStructure from './components/SalaryStructure';
 import styles from './index.less';
 
 const Candidate = (props) => {
@@ -60,9 +58,9 @@ const Candidate = (props) => {
       case 2:
         return <JobDetails />;
       case 3:
-        return <SalaryStructure />;
-      case 4:
         return <EligibilityDocs />;
+      case 4:
+        return <SalaryStructure />;
       case 5:
         return <OfferDetails />;
       case 6:
@@ -99,13 +97,21 @@ const Candidate = (props) => {
 
   const steps = getSteps();
 
+  const onBack = () => {
+    history.push('/candidate-portal/dashboard');
+  };
+
   return (
     <div className={styles.Candidate}>
       <div className={styles.headerBar}>
         <span className={styles.title}>Candidature for {title?.name}</span>
         <div className={styles.actionBtn}>
-          <Button className={styles.finishLaterBtn}>Finish Later</Button>
-          <Button className={styles.cancelButton}>Cancel</Button>
+          <Button className={styles.finishLaterBtn} onClick={onBack}>
+            Finish Later
+          </Button>
+          <Button className={styles.cancelBtn} onClick={onBack}>
+            Cancel
+          </Button>
         </div>
       </div>
       <div className={styles.content}>

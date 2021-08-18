@@ -48,7 +48,7 @@ class JobDetails extends PureComponent {
   }
 
   componentDidMount() {
-    window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+    // window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
 
     const {
       data: { dateOfJoining = '' },
@@ -123,7 +123,7 @@ class JobDetails extends PureComponent {
             checkMandatory: {
               ...checkMandatory,
               filledJobDetail: value,
-              isCandidateAcceptDOJ: !value,
+              isCandidateAcceptDOJ: value,
             },
           },
         });

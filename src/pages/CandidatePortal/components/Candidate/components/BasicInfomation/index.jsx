@@ -44,7 +44,7 @@ class BasicInformation extends PureComponent {
   }
 
   componentDidMount() {
-    window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+    // window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
   }
 
   checkAllFieldsValidate = () => {
@@ -385,9 +385,7 @@ class BasicInformation extends PureComponent {
         </Col>
         <Col className={styles.RightComponents} lg={24} xl={8}>
           <div className={styles.rightWrapper}>
-            <Row>
-              <NoteComponent note={Note} />
-            </Row>
+            <NoteComponent note={Note} />
           </div>
         </Col>
       </Row>
