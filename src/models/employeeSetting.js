@@ -81,6 +81,11 @@ const employeeSetting = {
     // optional on boarding question
     optionalOnboardQuestion: {},
     listPageOnboarding: [],
+
+    // Document & Templates
+    activeTabDocument: '1',
+    // Custom Email
+    activeTabCustomEmail: '1',
   },
   effects: {
     // list page on boarding
