@@ -237,7 +237,6 @@ class BasicInformation extends PureComponent {
 
   _renderEmployeeId = () => {
     const { isOpenReminder = {} } = this.state;
-    console.log(isOpenReminder);
     const { data } = this.props;
     const { processStatus } = data;
     if (processStatus === 'ACCEPT-FINAL-OFFER') {
