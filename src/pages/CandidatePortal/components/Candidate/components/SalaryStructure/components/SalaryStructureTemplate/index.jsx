@@ -328,25 +328,13 @@ class SalaryStructureTemplate extends PureComponent {
           </Col>
           <Col span={8}>
             <div className={styles.bottomBar__button}>
-              {' '}
               {/* <Button
-                type="primary"
-            salaryTemplate    htmlType="submit"
-                // onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary} ${
-                  !filledBasicInformation ? styles.bottomBar__button__disabled : ''
-                }`}
-                disabled={!filledBasicInformation}
-              >
-                Next
-              </Button> */}
-              <Button
                 type="secondary"
                 onClick={this.onClickPrev}
                 className={styles.bottomBar__button__secondary}
               >
                 Previous
-              </Button>
+              </Button> */}
               <Button
                 type="primary"
                 // htmlType="submit"

@@ -1,16 +1,15 @@
-import React, { PureComponent } from 'react';
-import { Row, Col, Form, Input, Typography, Button, Spin } from 'antd';
-import { connect, formatMessage } from 'umi';
-import { getCurrentTenant } from '@/utils/authority';
 import AnswerQuestion from '@/components/Question/AnswerQuestion';
-import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
-import { every } from 'lodash';
+import { SPECIFY, TYPE_QUESTION } from '@/components/Question/utils';
+import { getCurrentTenant } from '@/utils/authority';
+import { Button, Col, Form, Input, Row, Skeleton, Typography } from 'antd';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
-import BasicInformationHeader from './components/BasicInformationHeader';
-import NoteComponent from '../NoteComponent';
-import StepsComponent from '../StepsComponent';
-import styles from './index.less';
+import { every } from 'lodash';
+import React, { PureComponent } from 'react';
+import { connect, formatMessage } from 'umi';
 import { Page } from '../../../../../FormTeamMember/utils';
+import NoteComponent from '../NoteComponent';
+import BasicInformationHeader from './components/BasicInformationHeader';
+import styles from './index.less';
 
 @connect(
   ({
@@ -172,6 +171,7 @@ class BasicInformation extends PureComponent {
   };
 
   _renderForm = () => {
+    const { data: { isVerifiedBasicInfo = false } = {} } = this.state;
     return (
       <div className={styles.basicInformation__form}>
         <Row gutter={[24, 24]}>
@@ -247,20 +247,6 @@ class BasicInformation extends PureComponent {
               <Input className={styles.formInput} name="privateEmail" disabled />
             </Form.Item>
           </Col>
-          {/* <Col xs={24} sm={24} md={24} lg={12} xl={12}>
-            <Form.Item
-              labelCol={{ span: 24 }}
-              wrapperCol={{ span: 24 }}
-              required={false}
-              label={formatMessage({ id: 'component.basicInformation.workEmail' })}
-              className={styles.formInput__email}
-              name="workEmail"
-            >
-              <Input className={styles.formInput} name="workEmail" disabled="true" />
-            </Form.Item>
-          </Col> */}
-          {/* </Row>
-        <Row gutter={[48, 0]}> */}
           <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
               labelCol={{ span: 24 }}
@@ -279,7 +265,9 @@ class BasicInformation extends PureComponent {
             </Form.Item>
           </Col>
           <Col span={24} className={styles.verifyCheckbox}>
-            <Checkbox>I have verified the other details are correct</Checkbox>
+            <Checkbox checked={isVerifiedBasicInfo} onChange={this.onVerifyThisForm}>
+              I have verified the other details are correct
+            </Checkbox>
           </Col>
           <AnswerQuestion page={Page.Basic_Information} />
         </Row>
@@ -304,6 +292,7 @@ class BasicInformation extends PureComponent {
 
   _renderBottomBar = () => {
     const { checkMandatory } = this.props;
+    const { data: { isVerifiedBasicInfo = false } = {} } = this.state;
     const { filledBasicInformation } = checkMandatory;
 
     return (
@@ -322,7 +311,7 @@ class BasicInformation extends PureComponent {
                 className={`${styles.bottomBar__button__primary} ${
                   !filledBasicInformation ? styles.bottomBar__button__disabled : ''
                 }`}
-                disabled={!filledBasicInformation}
+                disabled={!filledBasicInformation || !isVerifiedBasicInfo}
               >
                 Next
               </Button>
@@ -331,6 +320,21 @@ class BasicInformation extends PureComponent {
         </Row>
       </div>
     );
+  };
+
+  // checkbox verify this form
+  onVerifyThisForm = (e) => {
+    const {
+      target: { checked = false },
+    } = e;
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'candidatePortal/saveOrigin',
+      payload: {
+        isVerifiedBasicInfo: checked,
+      },
+    });
   };
 
   render() {
@@ -349,7 +353,7 @@ class BasicInformation extends PureComponent {
     if (loading) {
       return (
         <div className={styles.viewLoading}>
-          <Spin />
+          <Skeleton />
         </div>
       );
     }

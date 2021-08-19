@@ -5,7 +5,7 @@ import { Button, Col, notification, Row, Typography } from 'antd';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { every } from 'lodash';
 import React, { PureComponent } from 'react';
-import { connect, formatMessage } from 'umi';
+import { connect, formatMessage, history } from 'umi';
 import { Page } from '../../../../../FormTeamMember/utils';
 import NoteComponent from '../NoteComponent';
 import FieldsComponent from './components/FieldsComponent';
@@ -19,9 +19,8 @@ import styles from './index.less';
       messageError,
       data: { _id, settings },
     },
-    candidatePortal: { data, jobDetails, checkMandatory, localStep, isCandidateAcceptDOJ } = {},
+    candidatePortal: { data, checkMandatory, localStep, isCandidateAcceptDOJ } = {},
   }) => ({
-    jobDetails,
     messageError,
     _id,
     settings,
@@ -38,9 +37,8 @@ class JobDetails extends PureComponent {
   }
 
   static getDerivedStateFromProps(props) {
-    if ('jobDetails' in props) {
+    if ('localStep' in props) {
       return {
-        jobDetails: props.jobDetails,
         localStep: props.localStep,
       };
     }
@@ -55,7 +53,6 @@ class JobDetails extends PureComponent {
       dispatch,
       checkMandatory,
       isCandidateAcceptDOJ = true,
-      jobDetails: { candidatesNoticePeriod = 0, prefferedDateOfJoining = '' } = {},
     } = this.props;
 
     // console.log('dateOfJoining', dateOfJoining);
@@ -63,10 +60,7 @@ class JobDetails extends PureComponent {
     // console.log('isCandidateAcceptDOJ', isCandidateAcceptDOJ);
     // console.log('candidatesNoticePeriod', candidatesNoticePeriod);
 
-    if (
-      (dateOfJoining && isCandidateAcceptDOJ) ||
-      ((prefferedDateOfJoining || dateOfJoining) && !isCandidateAcceptDOJ && candidatesNoticePeriod)
-    ) {
+    if (dateOfJoining && isCandidateAcceptDOJ) {
       dispatch({
         type: 'candidatePortal/save',
         payload: {
@@ -82,10 +76,10 @@ class JobDetails extends PureComponent {
   componentDidUpdate(prevProps) {
     const { dispatch, checkMandatory, data } = this.props;
 
-    const { dateOfJoining = '', noticePeriod = '' } = data;
+    const { dateOfJoining = '' } = data;
 
     let valid = false;
-    if (dateOfJoining && noticePeriod) {
+    if (dateOfJoining) {
       valid = true;
     } else {
       valid = false;
@@ -105,27 +99,11 @@ class JobDetails extends PureComponent {
   }
 
   _handleSelect = (value, name) => {
-    const { dispatch, data, checkMandatory } = this.props;
-    const { jobDetails = {} } = this.state;
-    jobDetails[name] = value;
+    const { dispatch, data } = this.props;
     const { dateOfJoining } = data;
 
     let newDateOfJoining = dateOfJoining;
 
-    if (name === 'noPropose') {
-      if (!value) {
-        dispatch({
-          type: 'candidatePortal/save',
-          payload: {
-            // jobDetails,
-            checkMandatory: {
-              ...checkMandatory,
-              filledJobDetail: value,
-            },
-          },
-        });
-      }
-    }
     if (name === 'dateOfJoining') {
       newDateOfJoining = value;
       notification.success({
@@ -188,14 +166,11 @@ class JobDetails extends PureComponent {
     return valid;
   };
 
-  onClickNext = () => {
-    const { jobDetails } = this.state;
-    const { candidatesNoticePeriod, prefferedDateOfJoining } = jobDetails;
+  onClickNext = async () => {
     const {
       dispatch,
-      data: { _id, dateOfJoining = '', noticePeriod = '' },
+      data: { _id, dateOfJoining = '' },
       data,
-      localStep,
       checkMandatory,
       settings,
       _id: id,
@@ -212,19 +187,11 @@ class JobDetails extends PureComponent {
       });
     }
 
-    // const convert = (str) => {
-    //   const date = new Date(str);
-    //   const mnth = `0 ${date.getMonth() + 1}`.slice(-2);
-    //   const day = `0 ${date.getDate() + 1}`.slice(-2);
-    //   return [mnth, day, date.getFullYear()].join('/');
-    // };
+    const converted = dateOfJoining;
 
-    const converted = prefferedDateOfJoining || dateOfJoining;
-
-    dispatch({
+    await dispatch({
       type: 'candidatePortal/updateByCandidateEffect',
       payload: {
-        noticePeriod: candidatesNoticePeriod || noticePeriod,
         dateOfJoining: converted,
         candidate: _id,
         tenantId: getCurrentTenant(),
@@ -233,10 +200,9 @@ class JobDetails extends PureComponent {
     dispatch({
       type: 'candidatePortal/save',
       payload: {
-        localStep: localStep + 1,
+        // localStep: localStep + 1,
         data: {
           ...data,
-          noticePeriod: candidatesNoticePeriod || noticePeriod,
           dateOfJoining: converted,
         },
         checkMandatory: {
@@ -245,6 +211,8 @@ class JobDetails extends PureComponent {
         },
       },
     });
+
+    history.push('/candidate-portal/dashboard');
   };
 
   onClickPrev = () => {
@@ -274,13 +242,12 @@ class JobDetails extends PureComponent {
   };
 
   handleDisabled = () => {
-    const { checkMandatory } = this.props;
-    const { filledJobDetail, isCandidateAcceptDOJ } = checkMandatory;
-    if (isCandidateAcceptDOJ) {
-      return !isCandidateAcceptDOJ;
-    }
-
-    return !filledJobDetail;
+    const {
+      checkMandatory,
+      data: { isVerifiedJobDetail = false, isVerifiedBasicInfo = false } = {},
+    } = this.props;
+    const { filledJobDetail } = checkMandatory;
+    return !filledJobDetail || !isVerifiedJobDetail || !isVerifiedBasicInfo;
   };
 
   _renderBottomBar = () => {
@@ -317,13 +284,28 @@ class JobDetails extends PureComponent {
                 className={`${styles.bottomBar__button__primary} ${className()}`}
                 disabled={this.handleDisabled()}
               >
-                Next
+                Submit
               </Button>
             </div>
           </Col>
         </Row>
       </div>
     );
+  };
+
+  // checkbox verify this form
+  onVerifyThisForm = (e) => {
+    const {
+      target: { checked = false },
+    } = e;
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'candidatePortal/saveOrigin',
+      payload: {
+        isVerifiedJobDetail: checked,
+      },
+    });
   };
 
   render() {
@@ -391,11 +373,11 @@ class JobDetails extends PureComponent {
         </Typography.Text>
       ),
     };
-    const { data = {} } = this.props;
+    const { data = {}, data: { isVerifiedJobDetail } = {} || {} } = this.props;
     return (
       <div>
         <Row gutter={[24, 0]}>
-          <Col xs={24} sm={24} md={24} lg={16} xl={16}>
+          <Col lg={24} xl={16}>
             <div className={styles.JobDetailsComponent}>
               <Header />
               <FieldsComponent
@@ -410,13 +392,15 @@ class JobDetails extends PureComponent {
                   <AnswerQuestion page={Page.Job_Details} />
                 </Col>
                 <Col span={24} className={styles.verifyCheckbox}>
-                  <Checkbox>I have verified the other details are correct</Checkbox>
+                  <Checkbox checked={isVerifiedJobDetail} onChange={this.onVerifyThisForm}>
+                    I have verified the other details are correct
+                  </Checkbox>
                 </Col>
               </Row>
             </div>
             {this._renderBottomBar()}
           </Col>
-          <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
+          <Col className={styles.RightComponents} lg={24} xl={8}>
             <div className={styles.rightWrapper}>
               <Row>
                 <NoteComponent note={Note} />

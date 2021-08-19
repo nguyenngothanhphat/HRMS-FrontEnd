@@ -25,7 +25,7 @@ class CandidatePortal extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      openWelcomeModal: true,
+      openWelcomeModal: false,
     };
   }
 
@@ -52,12 +52,21 @@ class CandidatePortal extends PureComponent {
         rookieID: candidate.ticketID,
       },
     });
+
+    // get welcome modal from localstorage
+    const openWelcomeModal = localStorage.getItem('openWelcomeModal');
+    if (openWelcomeModal !== 'false') {
+      this.setState({
+        openWelcomeModal: true,
+      });
+    }
   };
 
   handleWelcomeModal = (value) => {
     this.setState({
       openWelcomeModal: value,
     });
+    localStorage.setItem('openWelcomeModal', value);
   };
 
   renderMessageTitle = () => {

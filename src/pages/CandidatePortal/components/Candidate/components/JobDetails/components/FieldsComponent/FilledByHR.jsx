@@ -5,16 +5,16 @@ import styles1 from './FilledByHR.less';
 
 class FilledByHR extends PureComponent {
   render() {
-    const { Tab, styles, HRField, data } = this.props;
+    const { Tab, styles, HRField, data = {} } = this.props;
     const {
-      department,
+      department = {},
       title,
       workLocation,
-      reportingManager,
-      employeeType,
-      position,
+      reportingManager = {},
+      employeeType = {},
+      position = {},
       grade = '',
-    } = data;
+    } = data || {};
     return (
       <div>
         <div className={styles1.FilledByHR}>
@@ -25,11 +25,11 @@ class FilledByHR extends PureComponent {
             </Col>
           </Row>
           <div className={styles1.paddingBotTitle}>
-            <Typography.Title level={5}>{Tab.classificationTab.title}</Typography.Title>
+            <Typography.Title level={5}>{Tab.classificationTab?.title}</Typography.Title>
           </div>
           <Row gutter={[24, 0]}>
             <Col xs={24} sm={24} md={8} lg={8} xl={8} className={styles1.Padding}>
-              <Typography.Text className={styles1.text}>{employeeType.name}</Typography.Text>
+              <Typography.Text className={styles1.text}>{employeeType?.name}</Typography.Text>
             </Col>
           </Row>
         </div>
@@ -40,7 +40,7 @@ class FilledByHR extends PureComponent {
                 <Typography.Title level={5}>{item.name}</Typography.Title>
                 <Input
                   className={styles}
-                  disabled="true"
+                  disabled
                   defaultValue={
                     item.title === 'department'
                       ? department.name

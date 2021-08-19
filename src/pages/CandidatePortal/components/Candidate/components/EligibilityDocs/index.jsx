@@ -539,12 +539,12 @@ class EligibilityDocs extends PureComponent {
         },
       });
     }
-    dispatch({
-      type: 'candidatePortal/save',
-      payload: {
-        localStep: localStep + 1,
-      },
-    });
+    // dispatch({
+    //   type: 'candidatePortal/save',
+    //   payload: {
+    //     localStep: localStep + 1,
+    //   },
+    // });
   };
 
   _renderBottomBar = () => {
@@ -557,9 +557,9 @@ class EligibilityDocs extends PureComponent {
           </Col>
           <Col span={8}>
             <div className={styles.bottomBar__button}>
-              <Button type="secondary" onClick={this.onClickPrev}>
+              {/* <Button type="secondary" onClick={this.onClickPrev}>
                 Previous
-              </Button>
+              </Button> */}
               <Button
                 type="primary"
                 htmlType="submit"
@@ -592,9 +592,7 @@ class EligibilityDocs extends PureComponent {
       } = {},
     } = this.props;
     const { openModal, isSentEmail, isSending, hrEmail } = this.state;
-    const {
-      generalInfo: { workEmail },
-    } = generatedBy;
+    const { generalInfo: { workEmail } = {} || {} } = generatedBy || {};
     // const {  } = user;
     // console.log(processStatus);
 

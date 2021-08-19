@@ -46,12 +46,12 @@ class SalaryAcceptance extends PureComponent {
           processStatus: 'RENEGOTIATE-PROVISONAL-OFFER',
           options: 2,
         },
-        {
-          title: 'I would like to reject this offer.',
-          note: 'You have gone through all the contents of the table and do not accept the offer given to me.',
-          processStatus: 'DISCARDED-PROVISONAL-OFFER',
-          options: 3,
-        },
+        // {
+        //   title: 'I would like to reject this offer.',
+        //   note: 'You have gone through all the contents of the table and do not accept the offer given to me.',
+        //   processStatus: 'DISCARDED-PROVISONAL-OFFER',
+        //   options: 3,
+        // },
       ],
     };
   }

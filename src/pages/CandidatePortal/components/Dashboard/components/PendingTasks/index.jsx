@@ -1,30 +1,32 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
 import ArrowDownIcon from '@/assets/candidatePortal/arrowDown.svg';
+import { candidateLink } from '@/utils/candidatePortal';
 import CommonModal from '../CommonModal';
 import PendingTaskTable from './components/PendingTaskTable';
+
 import styles from './index.less';
 
 const pendingTasks = [
   {
     name: 'Review Profile',
     dueDate: '30 July 2021',
-    link: 'review-profile',
+    link: candidateLink.reviewProfile,
   },
   {
     name: 'Upload Documents ',
     dueDate: '30 July 2021',
-    link: 'upload-documents',
+    link: candidateLink.uploadDocuments,
   },
   {
-    name: 'Employee Details form',
+    name: 'Salary Negotiation',
     dueDate: '30 July 2021',
-    link: 'employee-details',
+    link: candidateLink.salaryNegotiation,
   },
   {
-    name: 'Offer Acceptance Form',
+    name: 'Accept Offer',
     dueDate: '30 July 2021',
-    link: 'offer-acceptance-form',
+    link: candidateLink.acceptOffer,
   },
 ];
 

@@ -69,7 +69,7 @@ const index = ({
               onValuesChange={onValuesChangeEmail}
             >
               <Form.Item name="email" label="HR Email" className={style.marginBottom}>
-                <Input disabled="true" />
+                <Input disabled />
               </Form.Item>
               <Form.Item>
                 <Button disabled={disabled} htmlType="submit" loading={loading}>

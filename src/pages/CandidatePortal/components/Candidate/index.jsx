@@ -2,6 +2,7 @@ import { getCurrentTenant } from '@/utils/authority';
 import { Button, Col, Row, Steps } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
+import { candidateLink } from '@/utils/candidatePortal';
 import AdditionalQuestion from './components/AdditionalQuestion';
 import BasicInformation from './components/BasicInfomation';
 import Benefits from './components/Benefits';
@@ -10,14 +11,60 @@ import JobDetails from './components/JobDetails';
 import OfferDetails from './components/OfferDetails';
 import PreviewOffer from './components/PreviewOffer';
 import SalaryStructure from './components/SalaryStructure';
+
+// list:
+// 1: BasicInformation
+// 2: JobDetails
+// 3: EligibilityDocs
+// 4: SalaryStructure
+// 5: OfferDetails
+// 6: PreviewOffer
+
 import styles from './index.less';
 
 const Candidate = (props) => {
-  const { dispatch, listPage, localStep, candidate, data: { title = {} } = {} } = props;
+  const { dispatch, listPage, localStep, candidate, data: { title = {} } = {}, match } = props;
 
   const [screen, setScreen] = useState(localStep);
+
+  const getScreenToShow = () => {
+    const { params: { action = '' } = {} } = match;
+    switch (action) {
+      case candidateLink.reviewProfile:
+        if (localStep === 1) setScreen(1);
+        else setScreen(localStep);
+        break;
+      case candidateLink.uploadDocuments:
+        setScreen(3);
+        break;
+      case candidateLink.salaryNegotiation:
+        setScreen(4);
+        break;
+      case candidateLink.acceptOffer:
+        setScreen(6);
+        break;
+
+      default:
+        setScreen(1);
+        break;
+    }
+  };
+
   useEffect(() => {
-    setScreen(localStep);
+    // setScreen(localStep);
+    getScreenToShow();
+
+    // return localStep to 1 when unmount
+    return () => {
+      if (localStep !== 1) {
+        dispatch({
+          type: 'candidatePortal/save',
+          payload: {
+            localStep: 1,
+          },
+        });
+      }
+    };
   }, [localStep]);
 
   useEffect(() => {
@@ -51,6 +98,7 @@ const Candidate = (props) => {
       }
     });
   }, []);
+
   const _renderScreen = (id) => {
     switch (id) {
       case 1:
@@ -64,22 +112,40 @@ const Candidate = (props) => {
       case 5:
         return <OfferDetails />;
       case 6:
-        return <Benefits />;
-      case 7:
         return <PreviewOffer />;
-      case 8:
-        return <AdditionalQuestion />;
       default:
         return <div />;
     }
   };
 
   const getSteps = () => {
-    return [
+    const { params: { action = '' } = {} } = match;
+    const defaultSet = [
       { id: 1, title: 'Basic Information', disabled: false },
       { id: 2, title: 'Job Details', disabled: false },
-      { id: 3, title: 'Eligibility documents', disabled: false },
+      { id: 3, title: 'Eligibility documents', disabled: true },
     ];
+    switch (action) {
+      case candidateLink.reviewProfile:
+        return [
+          { id: 1, title: 'Basic Information', disabled: false },
+          { id: 2, title: 'Job Details', disabled: false },
+          { id: 3, title: 'Eligibility documents', disabled: true },
+        ];
+      case candidateLink.uploadDocuments:
+        return [
+          { id: 1, title: 'Basic Information', disabled: true },
+          { id: 2, title: 'Job Details', disabled: true },
+          { id: 3, title: 'Eligibility documents', disabled: false },
+        ];
+      case candidateLink.salaryNegotiation:
+        return [{ id: 4, title: 'Salary Negotiation', disabled: false }];
+      case candidateLink.acceptOffer:
+        return [{ id: 6, title: 'Offer Letter', disabled: false }];
+
+      default:
+        return defaultSet;
+    }
   };
 
   const handleStepClick = (id) => {
@@ -120,9 +186,14 @@ const Candidate = (props) => {
             <div className={styles.stepContainer}>
               <Steps current={screen - 1} direction="vertical">
                 {steps.map((item) => {
-                  const { title: title1, id } = item;
+                  const { title: title1, id, disabled } = item;
                   return (
-                    <Steps.Step key={title} title={title1} onClick={() => handleStepClick(id)} />
+                    <Steps.Step
+                      disabled={disabled}
+                      key={title}
+                      title={title1}
+                      onClick={disabled ? () => {} : () => handleStepClick(id)}
+                    />
                   );
                 })}
               </Steps>
