@@ -354,7 +354,7 @@ class Edit extends PureComponent {
               <Input className={styles.inputForm} />
             </Form.Item>
             <Form.Item label="Blood Group" name="Blood">
-              <Select disabled={profileOwner} showArrow className={styles.selectForm}>
+              <Select showArrow className={styles.selectForm}>
                 <Option value="O-">O-</Option>
                 <Option value="O+">O+</Option>
                 <Option value="A-">A-</Option>

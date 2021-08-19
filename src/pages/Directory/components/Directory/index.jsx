@@ -492,8 +492,8 @@ class DirectoryComponent extends PureComponent {
       tabId,
       changeTab: true,
       filterName: '',
-      pageSelected: 1,
-      size: 10,
+      // pageSelected: 1,
+      // size: 10,
     });
     const { dispatch } = this.props;
     await dispatch({

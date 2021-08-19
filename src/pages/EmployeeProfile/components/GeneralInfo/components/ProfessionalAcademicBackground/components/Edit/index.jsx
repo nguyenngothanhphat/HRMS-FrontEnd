@@ -142,6 +142,7 @@ class Edit extends PureComponent {
         dispatch({
           type: 'employeeProfile/updateCertification',
           payload: {
+            name: element?.name,
             id: element?._id,
             urlFile: element?.urlFile,
             tenantId,

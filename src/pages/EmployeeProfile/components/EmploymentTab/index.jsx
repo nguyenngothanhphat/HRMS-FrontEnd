@@ -143,6 +143,7 @@ class EmploymentTab extends Component {
         employee: { company = {} } = {},
         permissions = {},
       },
+      profileOwner = false,
     } = this.props;
     // const permissions = checkPermissions(roles);
     return (
@@ -169,6 +170,7 @@ class EmploymentTab extends Component {
             <EditCurrentInfo
               handleCancel={this.handleEditCurrentInfo}
               listEmployeeActive={listEmployeeActive}
+              profileOwner={profileOwner}
             />
           ) : (
             <CurrentInfo isChanging={isChanging} dispatch={dispatch} data={currentData} />

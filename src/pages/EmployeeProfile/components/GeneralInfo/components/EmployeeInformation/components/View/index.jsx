@@ -13,7 +13,10 @@ import styles from './index.less';
     upload: { employeeInformationURL = '' } = {},
     employeeProfile: {
       AdhaarCard = {},
-      originData: { generalData: generalDataOrigin = {} } = {},
+      originData: {
+        generalData: generalDataOrigin = {},
+        employmentData: { location: locationEmpl = {} } = {},
+      } = {},
       tempData: { generalData = {} } = {},
       idCurrentEmployee = '',
     } = {},
@@ -26,6 +29,7 @@ import styles from './index.less';
     currentUser,
     permissions,
     idCurrentEmployee,
+    locationEmpl,
   }),
 )
 class View extends PureComponent {
@@ -65,6 +69,7 @@ class View extends PureComponent {
       },
       permissions = [],
       idCurrentEmployee = '',
+      locationEmpl: { headQuarterAddress: { country = '' } = {} } = {},
     } = this.props;
 
     let splitUrl = '';
@@ -80,6 +85,10 @@ class View extends PureComponent {
     const checkVisible =
       idCurrentEmployee === idEmployee || permissions.viewOtherInformation !== -1;
 
+    const checkIndiaLocation = country === 'IN';
+    const checkVietNamLocation = country === 'VN';
+    const checkUSALocation = country === 'US';
+
     const dummyData = [
       { label: 'Legal Name', value: dataAPI.legalName },
       {
@@ -90,8 +99,19 @@ class View extends PureComponent {
       { label: 'Employee ID', value: dataAPI.employeeId },
       { label: 'Work Email', value: dataAPI.workEmail },
       { label: 'Work Number', value: dataAPI.workNumber },
-      { label: checkVisible ? 'Adhaar Card Number' : null, value: dataAPI.adhaarCardNumber },
-      { label: checkVisible ? 'UAN Number' : null, value: dataAPI.uanNumber },
+      {
+        label: checkVisible && checkIndiaLocation ? 'Adhaar Card Number' : null,
+        value: dataAPI.adhaarCardNumber,
+      },
+      { label: checkVisible && checkIndiaLocation ? 'UAN Number' : null, value: dataAPI.uanNumber },
+      {
+        label: checkVisible && checkVietNamLocation ? 'National Identification Number' : null,
+        value: dataAPI.uanNumber,
+      },
+      {
+        label: checkVisible && checkUSALocation ? 'Social Security Number' : null,
+        value: dataAPI.uanNumber,
+      },
     ];
     const newdata = dummyData.filter((item) => item.label !== null);
     const content = 'We require your gender for legal reasons.';

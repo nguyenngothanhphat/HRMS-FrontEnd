@@ -15,7 +15,10 @@ import styles from './index.less';
     employeeProfile: {
       AdhaarCard = {},
       idCurrentEmployee = '',
-      originData: { generalData: generalDataOrigin = {} } = {},
+      originData: {
+        generalData: generalDataOrigin = {},
+        employmentData: { location: locationEmpl = {} } = {},
+      } = {},
       tempData: { generalData = {} } = {},
       tenantCurrentEmployee = '',
       documentCategories = [],
@@ -35,6 +38,7 @@ import styles from './index.less';
     tenantCurrentEmployee,
     documentCategories,
     companyCurrentEmployee,
+    locationEmpl,
   }),
 )
 class Edit extends PureComponent {
@@ -328,6 +332,7 @@ class Edit extends PureComponent {
       handleCancel = () => {},
       loadingAdhaarCard,
       currentUser: { roles = [] },
+      locationEmpl: { headQuarterAddress: { country = '' } = {} } = {},
     } = this.props;
     const {
       urlFile = '',
@@ -354,8 +359,12 @@ class Edit extends PureComponent {
     };
     const formatDate = DOB && moment(DOB);
     const dateFormat = 'MM.DD.YY';
+    const checkIndiaLocation = country === 'IN';
+    const checkVietNamLocation = country === 'VN';
+    const checkUSALocation = country === 'US';
 
     const permissions = checkPermissions(roles);
+
     return (
       <Row gutter={[0, 16]} className={styles.root}>
         <Form
@@ -428,10 +437,72 @@ class Edit extends PureComponent {
           >
             <Input className={styles.inputForm} />
           </Form.Item>
-          <div className={styles.styleUpLoad}>
+
+          {checkIndiaLocation ? (
+            <>
+              <div className={styles.styleUpLoad}>
+                <Form.Item
+                  label="Adhaar Card Number"
+                  name="adhaarCardNumber"
+                  rules={[
+                    {
+                      pattern: /^[+]*[\d]{12,12}$/,
+                      message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
+                    },
+                  ]}
+                >
+                  <Input className={isLt5M ? styles.inputForm : styles.inputFormImageValidate} />
+                </Form.Item>
+                <>
+                  {urlFile === '' ? (
+                    <div className={styles.textUpload}>
+                      <UploadImage
+                        content={isLt5M ? 'Choose file' : `Retry`}
+                        name="adhaarCard"
+                        setSizeImageMatch={(isImage5M) => this.handleGetSetSizeImage(isImage5M)}
+                        getResponse={(resp) => this.handleGetUpLoad(resp)}
+                        loading={loadingAdhaarCard}
+                      />
+                    </div>
+                  ) : (
+                    <div className={styles.viewUpLoadData}>
+                      <p
+                        onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
+                        className={styles.viewUpLoadDataURL}
+                      >
+                        fileName
+                      </p>
+
+                      <p className={styles.viewUpLoadDataText}>Uploaded</p>
+                      <img
+                        src={cancelIcon}
+                        alt=""
+                        onClick={this.handleCanCelIcon}
+                        className={styles.viewUpLoadDataIconCancel}
+                      />
+                    </div>
+                  )}
+                </>
+              </div>
+              {urlFile !== '' ? (
+                <Form.Item label="Adhaar Card:" className={styles.labelUpload}>
+                  <p
+                    onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
+                    className={styles.urlUpload}
+                  >
+                    {splitURL}
+                  </p>
+                </Form.Item>
+              ) : (
+                ''
+              )}
+            </>
+          ) : null}
+
+          {checkIndiaLocation ? (
             <Form.Item
-              label="Adhaar Card Number"
-              name="adhaarCardNumber"
+              label="UAN Number"
+              name="uanNumber"
               rules={[
                 {
                   pattern: /^[+]*[\d]{12,12}$/,
@@ -439,64 +510,40 @@ class Edit extends PureComponent {
                 },
               ]}
             >
-              <Input className={isLt5M ? styles.inputForm : styles.inputFormImageValidate} />
+              <Input className={styles.inputForm} />
             </Form.Item>
-            <>
-              {urlFile === '' ? (
-                <div className={styles.textUpload}>
-                  <UploadImage
-                    content={isLt5M ? 'Choose file' : `Retry`}
-                    name="adhaarCard"
-                    setSizeImageMatch={(isImage5M) => this.handleGetSetSizeImage(isImage5M)}
-                    getResponse={(resp) => this.handleGetUpLoad(resp)}
-                    loading={loadingAdhaarCard}
-                  />
-                </div>
-              ) : (
-                <div className={styles.viewUpLoadData}>
-                  <p
-                    onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
-                    className={styles.viewUpLoadDataURL}
-                  >
-                    fileName
-                  </p>
+          ) : null}
 
-                  <p className={styles.viewUpLoadDataText}>Uploaded</p>
-                  <img
-                    src={cancelIcon}
-                    alt=""
-                    onClick={this.handleCanCelIcon}
-                    className={styles.viewUpLoadDataIconCancel}
-                  />
-                </div>
-              )}
-            </>
-          </div>
-
-          {urlFile !== '' ? (
-            <Form.Item label="Adhaar Card:" className={styles.labelUpload}>
-              <p
-                onClick={() => this.handleOpenModalReview(urlFile ? urlFile.url : '')}
-                className={styles.urlUpload}
-              >
-                {splitURL}
-              </p>
+          {checkVietNamLocation ? (
+            <Form.Item
+              label="National Identification Number"
+              name="uanNumber"
+              rules={[
+                {
+                  pattern: /^[+]*[\d]{12,12}$/,
+                  message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
+                },
+              ]}
+            >
+              <Input className={styles.inputForm} />
             </Form.Item>
-          ) : (
-            ''
-          )}
-          <Form.Item
-            label="UAN Number"
-            name="uanNumber"
-            rules={[
-              {
-                pattern: /^[+]*[\d]{12,12}$/,
-                message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
-              },
-            ]}
-          >
-            <Input className={styles.inputForm} />
-          </Form.Item>
+          ) : null}
+
+          {checkUSALocation ? (
+            <Form.Item
+              label="Social Security Number"
+              name="uanNumber"
+              rules={[
+                {
+                  pattern: /^[+]*[\d]{12,12}$/,
+                  message: formatMessage({ id: 'pages.employeeProfile.validateNumber' }),
+                },
+              ]}
+            >
+              <Input className={styles.inputForm} />
+            </Form.Item>
+          ) : null}
+
           <div className={styles.spaceFooter}>
             <div className={styles.cancelFooter} onClick={handleCancel}>
               Cancel
