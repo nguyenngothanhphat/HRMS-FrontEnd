@@ -1,4 +1,4 @@
-import { Col, DatePicker, InputNumber, Radio, Row, Typography } from 'antd';
+import { Col, DatePicker, Radio, Row, Typography } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
@@ -14,53 +14,21 @@ class FilledByCandidate extends PureComponent {
     super(props);
     this.state = {
       isHidden: false,
-      newDate: moment(new Date()).locale('en').format(dateFormat),
       acceptDOJ: false,
     };
   }
 
   componentDidMount = () => {
-    const {
-      dateOfJoining = '',
-      dispatch,
-      data = {},
-      data: { noticePeriod = '' } = {},
-      checkMandatory = {},
-    } = this.props;
-    const { newDate } = this.state;
-    let newDateTemp = newDate;
-
-    if (dateOfJoining) {
-      newDateTemp = moment(dateOfJoining).locale('en').format(dateFormat);
-      this.setState({
-        newDate: newDateTemp,
-      });
-    }
-
-    if (!noticePeriod) {
+    const { data: { acceptDOJ = true, dateOfJoining = '' } = {} } = this.props;
+    if (acceptDOJ && dateOfJoining) {
       this.setState({
         acceptDOJ: true,
       });
-      dispatch({
-        type: 'candidatePortal/save',
-        payload: {
-          checkMandatory: {
-            ...checkMandatory,
-            isCandidateAcceptDOJ: true,
-          },
-        },
+    } else {
+      this.setState({
+        acceptDOJ: false,
       });
     }
-    dispatch({
-      type: 'candidatePortal/save',
-      payload: {
-        // jobDetails,
-        data: {
-          ...data,
-          dateOfJoining: newDateTemp,
-        },
-      },
-    });
   };
 
   handleClick = () => {
@@ -75,17 +43,13 @@ class FilledByCandidate extends PureComponent {
   };
 
   checkChange = (e) => {
-    const { dispatch, checkMandatory, _handleSelect = () => {} } = this.props;
+    const {
+      // dispatch, checkMandatory,
+      _handleSelect = () => {},
+    } = this.props;
     const { value } = e.target;
-    this.setState({ acceptDOJ: value });
-    dispatch({
-      type: 'candidatePortal/save',
-      payload: {
-        checkMandatory: {
-          ...checkMandatory,
-          isCandidateAcceptDOJ: value,
-        },
-      },
+    this.setState({
+      acceptDOJ: value,
     });
     _handleSelect(value, 'noPropose');
   };
@@ -95,28 +59,30 @@ class FilledByCandidate extends PureComponent {
       styles,
       candidateField,
       _handleSelect = () => {},
-      noticePeriod = '',
-      // dateOfJoining = '',
+      data: { dateOfJoining = '' },
     } = this.props;
+    const { acceptDOJ } = this.state;
 
-    const { newDate, acceptDOJ } = this.state;
     return (
       <div className={InternalStyle.CandidateFields}>
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
-            <Typography.Title level={5}>{candidateField[1].name}*</Typography.Title>
+            <Typography.Title level={5}>
+              {acceptDOJ ? candidateField[1].name : candidateField[2].name}*
+            </Typography.Title>
             <DatePicker
               className={styles}
+              allowClear={false}
               disabledDate={this.disabledDate}
               placeholder=""
               picker="date"
               format={dateFormat}
               disabled={acceptDOJ}
-              onChange={(value) => _handleSelect(value, candidateField[1].title)}
-              defaultValue={moment(newDate, dateFormat)}
+              onChange={(value) => _handleSelect(value, candidateField[2].title)}
+              value={dateOfJoining ? moment(dateOfJoining) : undefined}
             />
           </Col>
-          {!acceptDOJ && (
+          {/* {!acceptDOJ && (
             <Col xs={24} sm={24} md={12} lg={12} xl={12}>
               <Typography.Title level={5}>{candidateField[0].name}</Typography.Title>
               <InputNumber
@@ -127,7 +93,7 @@ class FilledByCandidate extends PureComponent {
                 defaultValue={noticePeriod}
               />
             </Col>
-          )}
+          )} */}
         </Row>
 
         <Row gutter={[24, 0]} className={InternalStyle.RadioNewDate}>

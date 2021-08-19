@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect, Link, history } from 'umi';
 
-import { Layout, Button, Result, Skeleton } from 'antd';
+import { Layout, Button, Result, Skeleton, Breadcrumb } from 'antd';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { getCurrentCompany } from '@/utils/authority';
@@ -151,7 +151,21 @@ const CandidatePortalLayout = React.memo((props) => {
             <Skeleton />
           </div>
         ) : (
-          <Content className={s.main}>{children}</Content>
+          <>
+            {isCandidateMode && (
+              <div className={s.customBreadcrumb}>
+                <Breadcrumb>
+                  <Breadcrumb.Item>
+                    <a href="/candidate-portal">Home</a>
+                  </Breadcrumb.Item>
+                  <Breadcrumb.Item>
+                    <a href="">Employee Onboarding</a>
+                  </Breadcrumb.Item>
+                </Breadcrumb>
+              </div>
+            )}
+            <Content className={s.main}>{children}</Content>
+          </>
         )}
       </Authorized>
       <Footer />

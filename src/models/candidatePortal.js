@@ -179,7 +179,7 @@ const candidatePortal = {
         yield put({
           type: 'save',
           payload: {
-            ...data,
+            // ...data,
             candidate: data._id,
             ticketId: data.ticketID,
             salaryStructure: data.salaryStructure.settings,

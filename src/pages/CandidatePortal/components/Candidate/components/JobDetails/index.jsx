@@ -108,14 +108,12 @@ class JobDetails extends PureComponent {
     const { dispatch, data, checkMandatory } = this.props;
     const { jobDetails = {} } = this.state;
     jobDetails[name] = value;
-    const { dateOfJoining, noticePeriod } = data;
+    const { dateOfJoining } = data;
 
-    let newNoticePeriod = noticePeriod;
     let newDateOfJoining = dateOfJoining;
 
     if (name === 'noPropose') {
       if (!value) {
-        newNoticePeriod = null;
         dispatch({
           type: 'candidatePortal/save',
           payload: {
@@ -123,16 +121,12 @@ class JobDetails extends PureComponent {
             checkMandatory: {
               ...checkMandatory,
               filledJobDetail: value,
-              isCandidateAcceptDOJ: value,
             },
           },
         });
       }
     }
-    if (name === 'candidatesNoticePeriod') {
-      newNoticePeriod = value;
-    }
-    if (name === 'prefferedDateOfJoining') {
+    if (name === 'dateOfJoining') {
       newDateOfJoining = value;
       notification.success({
         message: 'New Joining Date has been saved and the HR has been notified.',
@@ -146,7 +140,6 @@ class JobDetails extends PureComponent {
         data: {
           ...data,
           dateOfJoining: newDateOfJoining,
-          noticePeriod: newNoticePeriod,
         },
       },
     });
@@ -381,6 +374,11 @@ class JobDetails extends PureComponent {
         title: 'prefferedDateOfJoining',
         name: formatMessage({ id: 'component.jobDetail.prefferedDateOfJoining' }),
         id: 2,
+      },
+      {
+        title: 'dateOfJoining', // candidate changed
+        name: 'Date of joining',
+        id: 3,
       },
     ];
 
