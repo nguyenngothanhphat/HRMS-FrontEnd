@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { connect, formatMessage, NavLink } from 'umi';
+import { connect, formatMessage, Link, history } from 'umi';
 import { Tabs, Layout } from 'antd';
 import { getCurrentTenant } from '@/utils/authority';
 import TableCompanies from '../TableCompanies';
@@ -41,17 +41,27 @@ class TableContainer extends PureComponent {
     });
   };
 
+  handleRedirect = () => {
+    const { dispatch } = this.props;
+    const location = history.location.pathname;
+    dispatch({
+      type: 'global/save',
+      payload: { fromCompanyManagement: location },
+    });
+    history.push('/control-panel/add-company');
+  };
+
   rightButton = (collapsed) => {
     return (
       <div className={styles.tabBarExtra}>
-        <NavLink to="/control-panel/add-company">
+        <div onClick={this.handleRedirect}>
           <div className={styles.buttonAddImport}>
             <img src="/assets/images/addMemberIcon.svg" alt="Add Company" />
             <p className={styles.buttonAddImport_text}>
               {formatMessage({ id: 'pages_admin.companies.table.addEmployee' })}
             </p>
           </div>
-        </NavLink>
+        </div>
         <div className={styles.filterSider} onClick={this.handleToggle}>
           <div
             className={`${styles.filterButton} ${

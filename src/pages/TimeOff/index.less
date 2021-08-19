@@ -1,12 +1,21 @@
 .TimeOff {
   // font-family: 'Roboto' !important;
   :global {
+
     .ant-tabs-tab-btn {
-      font-weight: bold !important;
       // font-size: 18px;
       color: #707177;
       opacity: 1;
     }
+
+    .ant-tabs-tab-active .ant-tabs-tab-btn {
+      font-weight: bold;
+    }
+    
+    .ant-tabs-tab-active .ant-tabs-tab-disabled{
+      font-weight: 500;
+    }
+
     .ant-tabs-ink-bar {
       display: none;
     }

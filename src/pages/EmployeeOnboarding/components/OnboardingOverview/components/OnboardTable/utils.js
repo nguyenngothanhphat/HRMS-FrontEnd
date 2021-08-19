@@ -162,7 +162,7 @@ const getColumnWidth = (columnName, tableType) => {
   if (tableType === ELIGIBLE_CANDIDATES) {
     switch (columnName) {
       case 'rookieId':
-        return '15';
+        return '15%';
       case 'rookieName':
         return '23%';
       case 'position':
@@ -194,7 +194,7 @@ const getColumnWidth = (columnName, tableType) => {
       case 'position':
         return '16%';
       case 'location':
-        return '';
+        return '10%';
       case 'comments':
         return '24%';
       case 'actions':
@@ -272,7 +272,7 @@ const getColumnWidth = (columnName, tableType) => {
       case 'position':
         return '17%';
       case 'location':
-        return '';
+        return '10%';
       case 'document':
         return '23%';
       case 'actions':

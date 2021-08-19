@@ -21,6 +21,7 @@ const { TabPane } = Tabs;
       defaultTemplateListOnboarding = [],
       customTemplateListOnboarding = [],
       uploadDocumentModalVisible = false,
+      activeTabDocument,
     },
   }) => ({
     currentUser,
@@ -32,6 +33,7 @@ const { TabPane } = Tabs;
       loading.effects['employeeSetting/fetchDefaultTemplateListOnboarding'],
     loadingCustomTemplateList: loading.effects['employeeSetting/fetchCustomTemplateListOnboarding'],
     uploadDocumentModalVisible,
+    activeTabDocument,
   }),
 )
 class TableContainer extends PureComponent {
@@ -62,10 +64,18 @@ class TableContainer extends PureComponent {
           type: 'ON_BOARDING',
         },
       });
+
+    dispatch({
+      type: 'employeeSetting/save',
+      payload: {
+        activeTabDocument: key,
+      },
+    });
   };
 
   componentDidMount = () => {
-    this.fetchData('1');
+    const { activeTabDocument = '1' } = this.props;
+    this.fetchData(activeTabDocument);
   };
 
   operations = () => {
@@ -132,14 +142,19 @@ class TableContainer extends PureComponent {
       documentListOnboarding = [],
       loadingDocumentList = false,
       uploadDocumentModalVisible = false,
+      activeTabDocument = '',
     } = this.props;
 
     return (
       <div className={styles.TableContainer}>
         <div className={styles.tabs}>
-          <Tabs defaultActiveKey="1" onTabClick={(key) => this.fetchData(key)}>
+          <Tabs defaultActiveKey={activeTabDocument} onTabClick={(key) => this.fetchData(key)}>
             <TabPane tab="Documents" key="1">
-              <DocumentTable list={documentListOnboarding} loading={loadingDocumentList} refreshData={() => this.fetchData('1')} />
+              <DocumentTable
+                list={documentListOnboarding}
+                loading={loadingDocumentList}
+                refreshData={() => this.fetchData('1')}
+              />
             </TabPane>
             <TabPane tab="System Default Templates" key="2">
               <TemplateTable

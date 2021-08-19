@@ -10,7 +10,17 @@ import OnboardingEmpty from './components/OnboardingEmpty';
 }))
 class OnboardingOverview extends Component {
   componentDidMount() {
-    // const { dispatch } = this.props;
+    const { dispatch } = this.props;
+
+    // reset activeTab from Setting pages if we go to this OnboardingOverview page
+    dispatch({
+      type: 'employeeSetting/save',
+      payload: {
+        activeTabDocument: '1',
+        activeTabCustomEmail: '1',
+      },
+    });
+
     // if (!dispatch) {
     // }
     // dispatch({

@@ -683,7 +683,7 @@ const candidateInfo = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, message: messages } = response;
+        const { statusCode, message } = response;
         const candidate = payload._id;
         if (statusCode !== 200) throw response;
         yield put({
@@ -692,7 +692,7 @@ const candidateInfo = {
         });
 
         notification.success({
-          messages,
+          message,
         });
       } catch (errors) {
         dialog(errors);
