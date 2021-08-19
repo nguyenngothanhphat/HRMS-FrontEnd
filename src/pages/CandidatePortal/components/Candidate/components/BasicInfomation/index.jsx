@@ -28,6 +28,7 @@ import styles from './index.less';
     localStep,
     tempData,
     loading: loading.effects['candidatePortal/fetchCandidateById'],
+    loadingUpdateCandidate: loading.effects['candidatePortal/updateByCandidateEffect'],
   }),
 )
 class BasicInformation extends PureComponent {
@@ -129,7 +130,7 @@ class BasicInformation extends PureComponent {
     });
   };
 
-  onFinish = (values) => {
+  onFinish = async (values) => {
     const { data } = this.state;
     const { dispatch, localStep, _id: id, settings } = this.props;
     const { _id } = data;
@@ -144,13 +145,8 @@ class BasicInformation extends PureComponent {
         },
       });
     }
-    dispatch({
-      type: 'candidatePortal/save',
-      payload: {
-        localStep: localStep + 1,
-      },
-    });
-    dispatch({
+
+    await dispatch({
       type: 'candidatePortal/updateByCandidateEffect',
       payload: {
         firstName: values.firstName,
@@ -158,6 +154,12 @@ class BasicInformation extends PureComponent {
         lastName: values.lastName,
         candidate: _id,
         tenantId: getCurrentTenant(),
+      },
+    });
+    dispatch({
+      type: 'candidatePortal/save',
+      payload: {
+        localStep: localStep + 1,
       },
     });
     dispatch({
@@ -291,7 +293,7 @@ class BasicInformation extends PureComponent {
   };
 
   _renderBottomBar = () => {
-    const { checkMandatory } = this.props;
+    const { checkMandatory, loadingUpdateCandidate = false } = this.props;
     const { data: { isVerifiedBasicInfo = false } = {} } = this.state;
     const { filledBasicInformation } = checkMandatory;
 
@@ -312,6 +314,7 @@ class BasicInformation extends PureComponent {
                   !filledBasicInformation ? styles.bottomBar__button__disabled : ''
                 }`}
                 disabled={!filledBasicInformation || !isVerifiedBasicInfo}
+                loading={loadingUpdateCandidate}
               >
                 Next
               </Button>

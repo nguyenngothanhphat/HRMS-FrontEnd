@@ -127,18 +127,18 @@ const routes = [
     path: '/',
     component: '../layouts/SecurityLayout',
     routes: [
-      {
-        path: '/candidate',
-        component: '../layouts/CandidateLayout',
-        authority: ['candidate'],
-        routes: [
-          {
-            path: '/candidate',
-            component: './Candidate',
-            authority: ['candidate'],
-          },
-        ],
-      },
+      // {
+      //   path: '/candidate',
+      //   component: '../layouts/CandidateLayout',
+      //   authority: ['candidate'],
+      //   routes: [
+      //     {
+      //       path: '/candidate',
+      //       component: './Candidate',
+      //       authority: ['candidate'],
+      //     },
+      //   ],
+      // },
       // {
       //   path: '/select-location',
       //   component: '../layouts/AccountSetupLayout',

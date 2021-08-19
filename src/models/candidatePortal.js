@@ -94,9 +94,9 @@ const candidatePortal = {
       let response = {};
       const checkMandatory = {
         filledBasicInformation: true,
-        filledJobDetail: false,
+        filledJobDetail: true,
         filledSalaryStructure: false,
-        filledDocumentVerification: false,
+        filledDocumentVerification: true,
         isCandidateAcceptDOJ: true,
       };
       try {
@@ -241,7 +241,7 @@ const candidatePortal = {
 
     *refreshPage() {
       try {
-        history.push('/candidate');
+        history.push('/candidate-portal/dashboard');
         yield null;
       } catch (error) {
         dialog(error);

@@ -20,6 +20,7 @@ import styles from './index.less';
       data: { _id, settings },
     },
     candidatePortal: { data, checkMandatory, localStep, isCandidateAcceptDOJ } = {},
+    loading,
   }) => ({
     messageError,
     _id,
@@ -28,6 +29,7 @@ import styles from './index.less';
     data,
     localStep,
     isCandidateAcceptDOJ,
+    loadingUpdateCandidate: loading.effects['candidatePortal/updateByCandidateEffect'],
   }),
 )
 class JobDetails extends PureComponent {
@@ -251,7 +253,7 @@ class JobDetails extends PureComponent {
   };
 
   _renderBottomBar = () => {
-    const { checkMandatory } = this.props;
+    const { checkMandatory, loadingUpdateCandidate = false } = this.props;
     const { filledJobDetail, isCandidateAcceptDOJ } = checkMandatory;
 
     const className = () => {
@@ -283,6 +285,7 @@ class JobDetails extends PureComponent {
                 onClick={this.onClickNext}
                 className={`${styles.bottomBar__button__primary} ${className()}`}
                 disabled={this.handleDisabled()}
+                loading={loadingUpdateCandidate}
               >
                 Submit
               </Button>
