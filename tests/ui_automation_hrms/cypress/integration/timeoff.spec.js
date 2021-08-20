@@ -184,11 +184,6 @@ describe ('Timeoff Automation', ()=>{
 
 
 
-        // cy.get("#basic_leaveTimeLists_0", {timeout:4000}).trigger('mousedown', {force: true}).click({force: true}).then(()=>{
-        //     cy.contains("Whole day").click({force: true});
-        // });
-
-
         cy.get("#basic_leaveTimeLists_1", {timeout:4000}).trigger('mousedown', {force: true}).click({force: true}).then(()=>{
             cy.contains("Morning").click({force: true});
         });
