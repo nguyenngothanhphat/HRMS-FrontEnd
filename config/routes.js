@@ -682,7 +682,7 @@ const routes = [
             component: './TemplateDetails',
           },
           {
-            path: '/create-new-template/',
+            path: '/employee-onboarding/:tabName/:type/create-new-template',
             name: 'createNewTemplate',
             hideInMenu: true,
             component: './CreateNewTemplate',

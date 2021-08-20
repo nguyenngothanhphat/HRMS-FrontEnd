@@ -14,6 +14,7 @@ const { TabPane } = Tabs;
   ({
     loading,
     user: { currentUser = {} } = {},
+    global: { fromCompanyManagement = '' } = {},
     departmentManagement: { listByCompany: listDepartment = [] } = {},
     companiesManagement: {
       originData: { companyDetails: { company: companyDetails = {} } = {} } = {},
@@ -23,14 +24,21 @@ const { TabPane } = Tabs;
     listDepartment,
     loading: loading.effects['companiesManagement/fetchCompanyDetails'],
     companyDetails,
+    fromCompanyManagement,
   }),
 )
 class CompanyProfile extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
   componentDidMount() {
     const {
       dispatch,
       // match: { params: { id = '' } = {} },
     } = this.props;
+
     dispatch({
       type: 'country/fetchListCountry',
     });
@@ -72,7 +80,16 @@ class CompanyProfile extends Component {
   };
 
   onCancel = () => {
-    history.push('/control-panel');
+    const { fromCompanyManagement = '', dispatch } = this.props;
+    if (fromCompanyManagement) {
+      dispatch({
+        type: 'global/save',
+        payload: { fromCompanyManagement: '' },
+      });
+      history.push(fromCompanyManagement);
+    } else {
+      history.push('/control-panel');
+    }
   };
 
   cancelButton = () => {
@@ -89,6 +106,7 @@ class CompanyProfile extends Component {
       match: { params: { id = '' } = {} },
       loading = false,
     } = this.props;
+
     const routes = [
       { name: 'Control Panel', path: '/control-panel' },
       {
