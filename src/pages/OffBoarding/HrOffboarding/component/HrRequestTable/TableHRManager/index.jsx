@@ -11,6 +11,7 @@ import {
   Tooltip,
   Dropdown,
   Menu,
+  message,
 } from 'antd';
 import { UserOutlined, MoreOutlined } from '@ant-design/icons';
 import moment from 'moment';
@@ -200,21 +201,37 @@ class HrTable extends PureComponent {
           </div>
           <div className={styles.popupActions__actions}>
             <Tooltip title="Message">
+              {/* <a href={linkedIn === '' ? null : linkedIn} target="_blank" rel="noopener noreferrer"> */}
               <img
                 src="/assets/images/messageIcon.svg"
                 alt="img-arrow"
                 style={{ cursor: 'pointer' }}
               />
+              {/* </a> */}
             </Tooltip>
             <Tooltip title="Email">
-              <img
-                src="/assets/images/iconMail.svg"
-                alt="img-arrow"
-                style={{ cursor: 'pointer' }}
-              />
+              <a
+                disabled={!workEmail}
+                href={`mailto:${workEmail}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="/assets/images/iconMail.svg"
+                  alt="img-arrow"
+                  style={{ cursor: 'pointer' }}
+                />
+              </a>
             </Tooltip>
             <Tooltip title="LinkedIn">
-              <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
+              <a
+                onClick={() => {
+                  if (linkedIn === '') message.warning('LinkedIn is empty');
+                }}
+                href={linkedIn === '' ? null : linkedIn}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img
                   src="/assets/images/iconLinkedin.svg"
                   alt="img-arrow"
@@ -318,21 +335,37 @@ class HrTable extends PureComponent {
           </div>
           <div className={styles.popupActions__actions}>
             <Tooltip title="Message">
+              {/* <a href={linkedIn === '' ? null : linkedIn} target="_blank" rel="noopener noreferrer"> */}
               <img
                 src="/assets/images/messageIcon.svg"
                 alt="img-arrow"
                 style={{ cursor: 'pointer' }}
               />
+              {/* </a> */}
             </Tooltip>
             <Tooltip title="Email">
-              <img
-                src="/assets/images/iconMail.svg"
-                alt="img-arrow"
-                style={{ cursor: 'pointer' }}
-              />
+              <a
+                disabled={!workEmail}
+                href={`mailto:${workEmail}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="/assets/images/iconMail.svg"
+                  alt="img-arrow"
+                  style={{ cursor: 'pointer' }}
+                />
+              </a>
             </Tooltip>
             <Tooltip title="LinkedIn">
-              <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
+              <a
+                onClick={() => {
+                  if (linkedIn === '') message.warning('LinkedIn is empty');
+                }}
+                href={linkedIn === '' ? null : linkedIn}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img
                   src="/assets/images/iconLinkedin.svg"
                   alt="img-arrow"

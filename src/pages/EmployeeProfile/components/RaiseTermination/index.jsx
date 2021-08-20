@@ -162,9 +162,9 @@ class RaiseTermination extends Component {
                                 className={styles.radioRow__col}
                                 xs={24}
                                 sm={24}
-                                md={8}
-                                lg={8}
-                                xl={8}
+                                md={7}
+                                lg={7}
+                                xl={7}
                               >
                                 <Radio value={item.value}>{item.optionName}</Radio>
                               </Col>
@@ -173,9 +173,9 @@ class RaiseTermination extends Component {
                                   className={styles.radioRow__col}
                                   xs={24}
                                   sm={24}
-                                  md={16}
-                                  lg={16}
-                                  xl={16}
+                                  md={17}
+                                  lg={17}
+                                  xl={17}
                                 >
                                   <Form.Item
                                     name="dateChanged"
@@ -206,9 +206,9 @@ class RaiseTermination extends Component {
                       className={styles.raiseTerminationForm__form__col}
                       xs={24}
                       sm={24}
-                      md={6}
-                      lg={6}
-                      xl={6}
+                      md={7}
+                      lg={7}
+                      xl={7}
                     >
                       <div className={styles.terminationText}>Reason</div>
                     </Col>
@@ -216,9 +216,9 @@ class RaiseTermination extends Component {
                       className={styles.raiseTerminationForm__form__col}
                       xs={24}
                       sm={24}
-                      md={18}
-                      lg={18}
-                      xl={18}
+                      md={17}
+                      lg={17}
+                      xl={17}
                     >
                       <Form.Item
                         name="reason"
@@ -242,9 +242,9 @@ class RaiseTermination extends Component {
                       className={styles.raiseTerminationForm__form__col}
                       xs={24}
                       sm={24}
-                      md={6}
-                      lg={6}
-                      xl={6}
+                      md={7}
+                      lg={7}
+                      xl={7}
                     >
                       <div className={styles.terminationText}>Set Approval Chain</div>
                     </Col>
@@ -252,9 +252,9 @@ class RaiseTermination extends Component {
                       className={styles.raiseTerminationForm__form__col}
                       xs={24}
                       sm={24}
-                      md={18}
-                      lg={18}
-                      xl={18}
+                      md={17}
+                      lg={17}
+                      xl={17}
                     >
                       <Form.Item
                         name="approvalChain"

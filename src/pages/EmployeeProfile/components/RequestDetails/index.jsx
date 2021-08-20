@@ -91,7 +91,7 @@ class RequestDetails extends Component {
                         showArrow
                         showSearch
                         allowClear
-                        suffixIcon={<SearchOutlined />}
+                        suffixIcon={reqType ? null : <SearchOutlined />}
                         onChange={this.onChangeSelect}
                         tagRender={this.tagRender}
                         filterOption={(input, option) =>
