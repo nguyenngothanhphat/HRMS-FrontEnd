@@ -480,6 +480,10 @@ class Edit extends PureComponent {
                       },
                     ]}
                     showArrow
+                    showSearch
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     {formatCountryList.map((itemCountry) => {
                       return (
@@ -499,6 +503,10 @@ class Edit extends PureComponent {
                     // eslint-disable-next-line camelcase
                     defaultValue={r_state}
                     onChange={(e) => this.handleChangeAddress('r_state', e)}
+                    showSearch
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     {loadingStates ? (
                       <div className={styles.selectForm_loading}>
@@ -568,6 +576,10 @@ class Edit extends PureComponent {
                     defaultValue={c_countryName}
                     onChange={(value) => this.handleChangeAddress('c_countryName', value)}
                     disabled={profileOwner}
+                    showSearch
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     {formatCountryList.map((itemCountry) => {
                       return (
@@ -588,6 +600,10 @@ class Edit extends PureComponent {
                     defaultValue={c_state}
                     onChange={(value) => this.handleChangeAddress('c_state', value)}
                     disabled={profileOwner}
+                    showSearch
+                    filterOption={(input, option) =>
+                      option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     {loadingStates ? (
                       <div className={styles.selectForm_loading}>
