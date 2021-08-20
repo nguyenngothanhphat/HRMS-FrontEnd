@@ -84,6 +84,17 @@ class DocumentVerification extends Component {
   componentDidMount = () => {
     this.getDataFromServer();
     window.scrollTo({ top: 77, behavior: 'smooth' });
+    const { tempData: { documentChecklistSetting = [], documentList = [] } = {} || {}, dispatch } =
+      this.props;
+    const listA = this.getDocumentListByCountry(documentChecklistSetting);
+    const listB = this.getDocumentListByCountry(documentList);
+    dispatch({
+      type: 'candidateInfo/saveTemp',
+      payload: {
+        documentChecklistSetting: listA,
+        documentList: listB,
+      },
+    });
   };
 
   componentWillUnmount() {

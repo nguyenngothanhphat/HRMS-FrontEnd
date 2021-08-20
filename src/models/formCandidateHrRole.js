@@ -950,11 +950,13 @@ const candidateInfo = {
           workLocation,
           salaryStructure: { settings },
           grade,
+          ticketID: rookieId = '',
         } = data;
         yield put({
           type: 'save',
           payload: {
             currentStep: data.currentStep,
+            rookieId,
           },
         });
         yield put({
@@ -1108,6 +1110,33 @@ const candidateInfo = {
             },
           });
         }
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *fetchAndChangeDocumentSet({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getById, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { data, statusCode } = response;
+
+        if (statusCode !== 200) throw response;
+        const { documentChecklistSetting = [] } = data;
+        yield put({
+          type: 'saveTemp',
+          payload: {
+            documentChecklistSetting,
+          },
+        });
+        yield put({
+          type: 'fetchDocumentList',
+        });
       } catch (error) {
         dialog(error);
       }
