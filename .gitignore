@@ -38,4 +38,7 @@ screenshot
 .firebase
 .eslintcache
 
+# cypress
+cypress/downloads
+
 build

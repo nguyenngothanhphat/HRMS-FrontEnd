@@ -1,0 +1,4 @@
+Employee Id,First Name,Last Name,Joined Date,Location,Department,Employment Type,Job Title,Work Email,Personal Email,Manager Work Email,Personal Number
+emp-info-1,Nguyen Ngoc Tuan,,2021-05-13,Headquarter,Engineering,Full Time,Software engineer II,tuan.ngoc.info1@mailinator.com,nguyenngoctuan@mailinator.com,manager@mailinator.com,012345678
+emp-info-2,Luong Huu Tuan,,2021-05-13,Headquarter,Engineering,Full Time,Software engineer II,tuan.luong.info2@mailinator.com,luonghuutuan@mailinator.com,manager@mailinator.com,023958121
+emp-info-3,Vo Kim Ban,,2021-05-13,Headquarter,Engineering,Full Time,Software engineer II,ban.vo.info3@mailinator.com,vokimban@mailinator.com,manager@mailinator.com,094831271
