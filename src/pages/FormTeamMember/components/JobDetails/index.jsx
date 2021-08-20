@@ -468,6 +468,7 @@ class JobDetails extends PureComponent {
         title,
         reportingManager,
         dateOfJoining,
+        documentChecklistSetting,
       },
     } = this.state;
     const { dispatch } = this.props;
@@ -485,6 +486,7 @@ class JobDetails extends PureComponent {
         candidate: _id,
         currentStep: currentStep + 1,
         tenantId: getCurrentTenant(),
+        documentChecklistSetting,
       },
     }).then(({ data, statusCode }) => {
       if (statusCode === 200) {

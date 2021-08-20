@@ -310,7 +310,7 @@ const candidateInfo = {
         dialog(error);
       }
     },
-    *fetchDocumentList(_, { call, put }) {
+    *fetchDocumentList({ replaceMode = false }, { call, put }) {
       try {
         const response = yield call(getDocumentList);
         const { statusCode, data } = response;
@@ -319,6 +319,12 @@ const candidateInfo = {
           type: 'saveTemp',
           payload: { documentList: data },
         });
+        if (replaceMode) {
+          yield put({
+            type: 'saveTemp',
+            payload: { documentChecklistSetting: data },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }
@@ -1136,6 +1142,7 @@ const candidateInfo = {
         });
         yield put({
           type: 'fetchDocumentList',
+          replaceMode: true,
         });
       } catch (error) {
         dialog(error);
