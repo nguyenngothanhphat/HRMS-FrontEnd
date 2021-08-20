@@ -74,13 +74,14 @@ class EditorQuill extends Component {
   };
 
   render() {
-    const { messages = '', listAutoText = [] } = this.props;
+    const { messages = '', listAutoText = [], _isDefault } = this.props;
 
     return (
       <div className={styles.EditorQuill}>
         <Editor
           value={messages}
           apiKey={REACT_APP_TINYMCE_KEY}
+          disabled={_isDefault}
           init={{
             height: '100%',
             menubar: true,

@@ -116,6 +116,7 @@ export default {
   'component.editEmailNote.note3':
     'You can use the Auto Text feature to generate personalized emails from a template.',
   'component.customEmailsTableField.editEmail': 'Edit email',
+  'component.editEmailHeader.defaultTitle': 'View a system default email',
   'component.editEmailHeader.title': 'Edit a custom email reminder',
   'component.editEmailForm.addCondition': '+ Add another condition',
   'component.editEmailForm.triggerNote': 'You can add additional events with',

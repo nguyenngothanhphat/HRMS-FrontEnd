@@ -112,19 +112,19 @@ const getColumnWidth = (columnName, tableType) => {
       case 'rookieId':
         return '13%';
       case 'rookieName':
-        return '25%';
+        return '16%';
       case 'position':
-        return '16%';
+        return '12%';
       case 'location':
-        return '16%';
+        return '10%';
       case 'dateJoin':
-        return '18%';
+        return '10%';
       case 'actions':
-        return '15%';
+        return '2%';
       case 'assignTo':
-        return '15%';
+        return '10%';
       case 'assigneeManager':
-        return '15%';
+        return '10%';
       case 'processStatus':
         return '8%';
       default:
@@ -134,25 +134,45 @@ const getColumnWidth = (columnName, tableType) => {
   // .
   if (tableType === PROVISIONAL_OFFERS_DRAFTS) {
     switch (columnName) {
+      // case 'rookieId':
+      //   return '13%';
+      // case 'rookieName':
+      //   return '25%';
+      // case 'position':
+      //   return '16%';
+      // case 'location':
+      //   return '16%';
+      // case 'dateJoin':
+      //   return '18%';
+      // case 'actions':
+      //   return '15%';
+      // case 'assignTo':
+      //   return '15%';
+      // case 'assigneeManager':
+      //   return '15%';
+      // case 'processStatus':
+      //   return '8%';
+
+      // default:
+      //   return '';
       case 'rookieId':
         return '13%';
       case 'rookieName':
-        return '25%';
+        return '16%';
       case 'position':
-        return '16%';
+        return '12%';
       case 'location':
-        return '16%';
+        return '10%';
       case 'dateJoin':
-        return '18%';
+        return '10%';
       case 'actions':
-        return '15%';
+        return '2%';
       case 'assignTo':
-        return '15%';
+        return '10%';
       case 'assigneeManager':
-        return '15%';
+        return '10%';
       case 'processStatus':
         return '8%';
-
       default:
         return '';
     }
@@ -161,24 +181,44 @@ const getColumnWidth = (columnName, tableType) => {
   // .
   if (tableType === ELIGIBLE_CANDIDATES) {
     switch (columnName) {
+      // case 'rookieId':
+      //   return '15%';
+      // case 'rookieName':
+      //   return '23%';
+      // case 'position':
+      //   return '17%';
+      // case 'location':
+      //   return '10%';
+      // case 'resubmit':
+      //   return '24%';
+      // case 'actions':
+      //   return '14%';
+      // case 'assignTo':
+      //   return '8%';
+      // case 'assigneeManager':
+      //   return '8%';
+      // case 'processStatus':
+      //   return '12%';
+      // default:
+      //   return '';
       case 'rookieId':
-        return '15%';
+        return '13%';
       case 'rookieName':
-        return '23%';
+        return '16%';
       case 'position':
-        return '17%';
+        return '12%';
       case 'location':
         return '10%';
-      case 'resubmit':
-        return '24%';
+      case 'dateJoin':
+        return '10%';
       case 'actions':
-        return '14%';
+        return '2%';
       case 'assignTo':
-        return '8%';
+        return '10%';
       case 'assigneeManager':
-        return '8%';
+        return '10%';
       case 'processStatus':
-        return '12%';
+        return '8%';
       default:
         return '';
     }
@@ -187,24 +227,44 @@ const getColumnWidth = (columnName, tableType) => {
   // .
   if (tableType === INELIGIBLE_CANDIDATES) {
     switch (columnName) {
+      // case 'rookieId':
+      //   return '13%';
+      // case 'rookieName':
+      //   return '19%';
+      // case 'position':
+      //   return '16%';
+      // case 'location':
+      //   return '10%';
+      // case 'comments':
+      //   return '24%';
+      // case 'actions':
+      //   return '13%';
+      // case 'assignTo':
+      //   return '8%';
+      // case 'assigneeManager':
+      //   return '8%';
+      // case 'processStatus':
+      //   return '12%';
+      // default:
+      //   return '';
       case 'rookieId':
         return '13%';
       case 'rookieName':
-        return '19%';
-      case 'position':
         return '16%';
+      case 'position':
+        return '12%';
       case 'location':
         return '10%';
-      case 'comments':
-        return '24%';
+      case 'dateJoin':
+        return '10%';
       case 'actions':
-        return '13%';
+        return '2%';
       case 'assignTo':
-        return '8%';
+        return '10%';
       case 'assigneeManager':
-        return '8%';
+        return '10%';
       case 'processStatus':
-        return '12%';
+        return '8%';
       default:
         return '';
     }
@@ -213,26 +273,46 @@ const getColumnWidth = (columnName, tableType) => {
   // .
   if (tableType === SENT_PROVISIONAL_OFFERS) {
     switch (columnName) {
+      // case 'rookieId':
+      //   return '12%';
+      // case 'rookieName':
+      //   return '19%';
+      // case 'position':
+      //   return '16%';
+      // case 'location':
+      //   return '';
+      // case 'dateSent':
+      //   return '16%';
+      // case 'expire':
+      //   return '14%';
+      // case 'actions':
+      //   return '11%';
+      // case 'assignTo':
+      //   return '8%';
+      // case 'assigneeManager':
+      //   return '8%';
+      // case 'processStatus':
+      //   return '12%';
+      // default:
+      //   return '';
       case 'rookieId':
-        return '12%';
+        return '13%';
       case 'rookieName':
-        return '19%';
+        return '16%';
       case 'position':
-        return '16%';
-      case 'location':
-        return '';
-      case 'dateSent':
-        return '16%';
-      case 'expire':
-        return '14%';
-      case 'actions':
-        return '11%';
-      case 'assignTo':
-        return '8%';
-      case 'assigneeManager':
-        return '8%';
-      case 'processStatus':
         return '12%';
+      case 'location':
+        return '10%';
+      case 'dateJoin':
+        return '10%';
+      case 'actions':
+        return '2%';
+      case 'assignTo':
+        return '10%';
+      case 'assigneeManager':
+        return '10%';
+      case 'processStatus':
+        return '8%';
       default:
         return '';
     }
@@ -241,22 +321,42 @@ const getColumnWidth = (columnName, tableType) => {
   // .
   if (tableType === ACCEPTED__PROVISIONAL_OFFERS || tableType === RENEGOTIATE_PROVISIONAL_OFFERS) {
     switch (columnName) {
+      // case 'rookieId':
+      //   return '14%';
+      // case 'rookieName':
+      //   return '24%';
+      // case 'position':
+      //   return '20%';
+      // case 'location':
+      //   return '';
+      // case 'actions':
+      //   return '23%';
+      // case 'assignTo':
+      //   return '8%';
+      // case 'assigneeManager':
+      //   return '8%';
+      // case 'processStatus':
+      //   return '12%';
+      // default:
+      //   return '';
       case 'rookieId':
-        return '14%';
+        return '13%';
       case 'rookieName':
-        return '24%';
+        return '16%';
       case 'position':
-        return '20%';
-      case 'location':
-        return '';
-      case 'actions':
-        return '23%';
-      case 'assignTo':
-        return '8%';
-      case 'assigneeManager':
-        return '8%';
-      case 'processStatus':
         return '12%';
+      case 'location':
+        return '10%';
+      case 'dateJoin':
+        return '10%';
+      case 'actions':
+        return '2%';
+      case 'assignTo':
+        return '10%';
+      case 'assigneeManager':
+        return '10%';
+      case 'processStatus':
+        return '8%';
       default:
         return '';
     }
@@ -265,24 +365,44 @@ const getColumnWidth = (columnName, tableType) => {
   // .
   if (tableType === PENDING) {
     switch (columnName) {
+      // case 'rookieId':
+      //   return '14%';
+      // case 'rookieName':
+      //   return '21%';
+      // case 'position':
+      //   return '17%';
+      // case 'location':
+      //   return '10%';
+      // case 'document':
+      //   return '23%';
+      // case 'actions':
+      //   return '14%';
+      // case 'assignTo':
+      //   return '8%';
+      // case 'assigneeManager':
+      //   return '8%';
+      // case 'processStatus':
+      //   return '12%';
+      // default:
+      //   return '';
       case 'rookieId':
-        return '14%';
+        return '13%';
       case 'rookieName':
-        return '21%';
+        return '16%';
       case 'position':
-        return '17%';
+        return '12%';
       case 'location':
         return '10%';
-      case 'document':
-        return '23%';
+      case 'dateJoin':
+        return '10%';
       case 'actions':
-        return '14%';
+        return '2%';
       case 'assignTo':
-        return '8%';
+        return '10%';
       case 'assigneeManager':
-        return '8%';
+        return '10%';
       case 'processStatus':
-        return '12%';
+        return '8%';
       default:
         return '';
     }
@@ -291,24 +411,44 @@ const getColumnWidth = (columnName, tableType) => {
   // .
   if (tableType === APPROVED_OFFERS) {
     switch (columnName) {
+      // case 'rookieId':
+      //   return '13%';
+      // case 'rookieName':
+      //   return '18%';
+      // case 'position':
+      //   return '15%';
+      // case 'location':
+      //   return '';
+      // case 'dateJoin':
+      //   return '16%';
+      // case 'actions':
+      //   return '24%';
+      // case 'assignTo':
+      //   return '8%';
+      // case 'assigneeManager':
+      //   return '8%';
+      // case 'processStatus':
+      //   return '12%';
+      // default:
+      //   return '';
       case 'rookieId':
         return '13%';
       case 'rookieName':
-        return '18%';
-      case 'position':
-        return '15%';
-      case 'location':
-        return '';
-      case 'dateJoin':
         return '16%';
-      case 'actions':
-        return '24%';
-      case 'assignTo':
-        return '8%';
-      case 'assigneeManager':
-        return '8%';
-      case 'processStatus':
+      case 'position':
         return '12%';
+      case 'location':
+        return '10%';
+      case 'dateJoin':
+        return '10%';
+      case 'actions':
+        return '2%';
+      case 'assignTo':
+        return '10%';
+      case 'assigneeManager':
+        return '10%';
+      case 'processStatus':
+        return '8%';
       default:
         return '';
     }
@@ -316,24 +456,44 @@ const getColumnWidth = (columnName, tableType) => {
 
   if (tableType === PENDING_APPROVALS) {
     switch (columnName) {
+      // case 'rookieId':
+      //   return '14%';
+      // case 'rookieName':
+      //   return '15%';
+      // case 'position':
+      //   return '17%';
+      // case 'location':
+      //   return '';
+      // case 'dateJoin':
+      //   return '20%';
+      // case 'actions':
+      //   return '13%';
+      // case 'assignTo':
+      //   return '8%';
+      // case 'assigneeManager':
+      //   return '8%';
+      // case 'processStatus':
+      //   return '12%';
+      // default:
+      //   return '';
       case 'rookieId':
-        return '14%';
-      case 'rookieName':
-        return '15%';
-      case 'position':
-        return '17%';
-      case 'location':
-        return '';
-      case 'dateJoin':
-        return '20%';
-      case 'actions':
         return '13%';
-      case 'assignTo':
-        return '8%';
-      case 'assigneeManager':
-        return '8%';
-      case 'processStatus':
+      case 'rookieName':
+        return '16%';
+      case 'position':
         return '12%';
+      case 'location':
+        return '10%';
+      case 'dateJoin':
+        return '10%';
+      case 'actions':
+        return '2%';
+      case 'assignTo':
+        return '10%';
+      case 'assigneeManager':
+        return '10%';
+      case 'processStatus':
+        return '8%';
       default:
         return '';
     }
@@ -341,24 +501,44 @@ const getColumnWidth = (columnName, tableType) => {
 
   if (tableType === APPROVED_FINAL_OFFERS) {
     switch (columnName) {
+      // case 'rookieId':
+      //   return '14%';
+      // case 'rookieName':
+      //   return '15%';
+      // case 'position':
+      //   return '17%';
+      // case 'location':
+      //   return '';
+      // case 'dateJoin':
+      //   return '20%';
+      // case 'actions':
+      //   return '13%';
+      // case 'assignTo':
+      //   return '8%';
+      // case 'assigneeManager':
+      //   return '8%';
+      // case 'processStatus':
+      //   return '12%';
+      // default:
+      //   return '';
       case 'rookieId':
-        return '14%';
-      case 'rookieName':
-        return '15%';
-      case 'position':
-        return '17%';
-      case 'location':
-        return '';
-      case 'dateJoin':
-        return '20%';
-      case 'actions':
         return '13%';
-      case 'assignTo':
-        return '8%';
-      case 'assigneeManager':
-        return '8%';
-      case 'processStatus':
+      case 'rookieName':
+        return '16%';
+      case 'position':
         return '12%';
+      case 'location':
+        return '10%';
+      case 'dateJoin':
+        return '10%';
+      case 'actions':
+        return '2%';
+      case 'assignTo':
+        return '10%';
+      case 'assigneeManager':
+        return '10%';
+      case 'processStatus':
+        return '8%';
       default:
         return '';
     }
@@ -367,26 +547,46 @@ const getColumnWidth = (columnName, tableType) => {
   // .
   if (tableType === SENT_FINAL_OFFERS) {
     switch (columnName) {
+      // case 'rookieId':
+      //   return '12%';
+      // case 'rookieName':
+      //   return '21%';
+      // case 'position':
+      //   return '16%';
+      // case 'location':
+      //   return '';
+      // case 'dateSent':
+      //   return '14%';
+      // case 'expire':
+      //   return '14%';
+      // case 'actions':
+      //   return '12%';
+      // case 'assignTo':
+      //   return '8%';
+      // case 'assigneeManager':
+      //   return '8%';
+      // case 'processStatus':
+      //   return '12%';
+      // default:
+      //   return '';
       case 'rookieId':
-        return '12%';
+        return '13%';
       case 'rookieName':
-        return '21%';
-      case 'position':
         return '16%';
+      case 'position':
+        return '12%';
       case 'location':
-        return '';
-      case 'dateSent':
-        return '14%';
-      case 'expire':
-        return '14%';
+        return '10%';
+      case 'dateJoin':
+        return '10%';
       case 'actions':
-        return '12%';
+        return '2%';
       case 'assignTo':
-        return '8%';
+        return '10%';
       case 'assigneeManager':
-        return '8%';
+        return '10%';
       case 'processStatus':
-        return '12%';
+        return '8%';
       default:
         return '';
     }
@@ -395,26 +595,46 @@ const getColumnWidth = (columnName, tableType) => {
   // .
   if (tableType === ACCEPTED_FINAL_OFFERS) {
     switch (columnName) {
+      // case 'rookieId':
+      //   return '10%';
+      // case 'rookieName':
+      //   return '18%';
+      // case 'position':
+      //   return '13%';
+      // case 'location':
+      //   return '';
+      // case 'dateJoin':
+      //   return '10%';
+      // case 'changeRequest':
+      //   return '22%';
+      // case 'actions':
+      //   return '14%';
+      // case 'assignTo':
+      //   return '8%';
+      // case 'assigneeManager':
+      //   return '8%';
+      // // case 'processStatus':
+      // //   return '15%';
+      // default:
+      //   return '';
       case 'rookieId':
-        return '10%';
-      case 'rookieName':
-        return '18%';
-      case 'position':
         return '13%';
+      case 'rookieName':
+        return '16%';
+      case 'position':
+        return '12%';
       case 'location':
-        return '';
+        return '10%';
       case 'dateJoin':
         return '10%';
-      case 'changeRequest':
-        return '22%';
       case 'actions':
-        return '14%';
+        return '2%';
       case 'assignTo':
-        return '8%';
+        return '10%';
       case 'assigneeManager':
+        return '10%';
+      case 'processStatus':
         return '8%';
-      // case 'processStatus':
-      //   return '15%';
       default:
         return '';
     }
@@ -423,24 +643,44 @@ const getColumnWidth = (columnName, tableType) => {
   // .
   if (tableType === RENEGOTIATE_FINAL_OFFERS) {
     switch (columnName) {
+      // case 'rookieId':
+      //   return '12%';
+      // case 'rookieName':
+      //   return '20%';
+      // case 'position':
+      //   return '15%';
+      // case 'location':
+      //   return '10%';
+      // case 'dateRequest':
+      //   return '15%';
+      // case 'actions':
+      //   return '25%';
+      // case 'assignTo':
+      //   return '12%';
+      // case 'assigneeManager':
+      //   return '12%';
+      // case 'processStatus':
+      //   return '12%';
+      // default:
+      //   return '';
       case 'rookieId':
-        return '12%';
+        return '13%';
       case 'rookieName':
-        return '20%';
+        return '16%';
       case 'position':
-        return '15%';
+        return '12%';
       case 'location':
         return '10%';
-      case 'dateRequest':
-        return '15%';
+      case 'dateJoin':
+        return '10%';
       case 'actions':
-        return '25%';
+        return '2%';
       case 'assignTo':
-        return '12%';
+        return '10%';
       case 'assigneeManager':
-        return '12%';
+        return '10%';
       case 'processStatus':
-        return '12%';
+        return '8%';
       default:
         return '';
     }
@@ -449,24 +689,44 @@ const getColumnWidth = (columnName, tableType) => {
   // .
   if (tableType === PROVISIONAL_OFFERS) {
     switch (columnName) {
+      // case 'rookieId':
+      //   return '13%';
+      // case 'rookieName':
+      //   return '21%';
+      // case 'position':
+      //   return '15%';
+      // case 'location':
+      //   return '';
+      // case 'comments':
+      //   return '26%';
+      // case 'actions':
+      //   return '13%';
+      // case 'assignTo':
+      //   return '8%';
+      // case 'assigneeManager':
+      //   return '8%';
+      // case 'processStatus':
+      //   return '12%';
+      // default:
+      //   return '';
       case 'rookieId':
         return '13%';
       case 'rookieName':
-        return '21%';
+        return '16%';
       case 'position':
-        return '15%';
-      case 'location':
-        return '';
-      case 'comments':
-        return '26%';
-      case 'actions':
-        return '13%';
-      case 'assignTo':
-        return '8%';
-      case 'assigneeManager':
-        return '8%';
-      case 'processStatus':
         return '12%';
+      case 'location':
+        return '10%';
+      case 'dateJoin':
+        return '10%';
+      case 'actions':
+        return '2%';
+      case 'assignTo':
+        return '10%';
+      case 'assigneeManager':
+        return '10%';
+      case 'processStatus':
+        return '8%';
       default:
         return '';
     }
@@ -475,24 +735,44 @@ const getColumnWidth = (columnName, tableType) => {
   // .
   if (tableType === FINAL_OFFERS) {
     switch (columnName) {
+      // case 'rookieId':
+      //   return '13%';
+      // case 'rookieName':
+      //   return '21%';
+      // case 'position':
+      //   return '15%';
+      // case 'location':
+      //   return '';
+      // case 'comments':
+      //   return '26%';
+      // case 'actions':
+      //   return '13%';
+      // case 'assignTo':
+      //   return '8%';
+      // case 'assigneeManager':
+      //   return '8%';
+      // case 'processStatus':
+      //   return '12%';
+      // default:
+      //   return '';
       case 'rookieId':
         return '13%';
       case 'rookieName':
-        return '21%';
+        return '16%';
       case 'position':
-        return '15%';
-      case 'location':
-        return '';
-      case 'comments':
-        return '26%';
-      case 'actions':
-        return '13%';
-      case 'assignTo':
-        return '8%';
-      case 'assigneeManager':
-        return '8%';
-      case 'processStatus':
         return '12%';
+      case 'location':
+        return '10%';
+      case 'dateJoin':
+        return '10%';
+      case 'actions':
+        return '2%';
+      case 'assignTo':
+        return '10%';
+      case 'assigneeManager':
+        return '10%';
+      case 'processStatus':
+        return '8%';
       default:
         return '';
     }
@@ -501,22 +781,42 @@ const getColumnWidth = (columnName, tableType) => {
   // .
   if (tableType === FINAL_OFFERS_DRAFTS) {
     switch (columnName) {
+      // case 'rookieId':
+      //   return '13%';
+      // case 'rookieName':
+      //   return '25%';
+      // case 'position':
+      //   return '16%';
+      // case 'location':
+      //   return '16%';
+      // case 'dateJoin':
+      //   return '18%';
+      // case 'actions':
+      //   return '15%';
+      // case 'assignTo':
+      //   return '15%';
+      // case 'assigneeManager':
+      //   return '15%';
+      // case 'processStatus':
+      //   return '8%';
+      // default:
+      //   return '';
       case 'rookieId':
         return '13%';
       case 'rookieName':
-        return '25%';
+        return '16%';
       case 'position':
-        return '16%';
+        return '12%';
       case 'location':
-        return '16%';
+        return '10%';
       case 'dateJoin':
-        return '18%';
+        return '10%';
       case 'actions':
-        return '15%';
+        return '2%';
       case 'assignTo':
-        return '15%';
+        return '10%';
       case 'assigneeManager':
-        return '15%';
+        return '10%';
       case 'processStatus':
         return '8%';
       default:

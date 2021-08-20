@@ -82,6 +82,7 @@ class CustomEmailsTableField extends PureComponent {
 
       newList.push({
         idCustomEmail: item._id,
+        isDefault: item.isDefault,
         emailSubject: item.subject !== undefined ? item.subject : 'Onboarding email',
         createdOn: formatDate !== undefined ? formatDate : '08.24.20',
         triggerEvent:
@@ -124,10 +125,14 @@ class CustomEmailsTableField extends PureComponent {
         width: '30%',
         render: (emailSubject) => {
           const { currentRecord = {} } = this.state;
-          const { idCustomEmail = '' } = currentRecord;
+          const { idCustomEmail = '', isDefault = false } = currentRecord;
+
+          const link = isDefault
+            ? `/employee-onboarding/settings/view-email/${idCustomEmail}`
+            : `/employee-onboarding/settings/edit-email/${idCustomEmail}`;
 
           return (
-            <Link to={`/employee-onboarding/settings/edit-email/${idCustomEmail}`}>
+            <Link to={link}>
               <div className={styles.fileName}>
                 <img src={FileIcon} alt="name" />
                 <span>{emailSubject}</span>
@@ -160,11 +165,14 @@ class CustomEmailsTableField extends PureComponent {
         key: 'idCustomEmail',
         width: '15%',
         render: (idCustomEmail) => {
+          const { currentRecord = {} } = this.state;
+          const { isDefault = false } = currentRecord;
+          const link = isDefault
+            ? `/employee-onboarding/settings/view-email/${idCustomEmail}`
+            : `/employee-onboarding/settings/edit-email/${idCustomEmail}`;
           return (
             <div className={styles.actions}>
-              <Link to={`/employee-onboarding/settings/edit-email/${idCustomEmail}`}>
-                View mail
-              </Link>
+              <Link to={link}>View mail</Link>
               {activeTabCustomEmail !== '1' && (
                 <Tooltip title="Delete">
                   <img
