@@ -24,7 +24,10 @@ export default class RejectTable extends PureComponent {
       if (countdata.length === 1) {
         total = countdata[0].count;
       } else {
-        total = countdata.reduce((a, b) => a.count + b.count);
+        total = countdata.reduce((a, b) => {
+          if (a._id === 'WITHDRAW' || b._id === 'WITHDRAW') return 0;
+          return a + b.count;
+        }, 0);
       }
     }
 
