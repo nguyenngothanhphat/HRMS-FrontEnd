@@ -101,6 +101,7 @@ class OrganisationChart extends Component {
         state: [state],
       };
     });
+
     dispatch({
       type: 'employee/fetchAllListUser',
       payload: { company: companiesOfUser, location: convertLocation },
@@ -219,8 +220,9 @@ class OrganisationChart extends Component {
   };
 
   render() {
-    const { listEmployeeAll, loadingFetchListAll, companiesOfUser = [] } = this.props;
+    const { loadingFetchListAll } = this.props;
     const { chartDetails, idSelect } = this.state;
+
     return (
       <div className={styles.container}>
         <div className={styles.orgChart}>
@@ -229,10 +231,8 @@ class OrganisationChart extends Component {
             <DetailEmployeeChart
               chartDetails={chartDetails}
               handleSelectSearch={this.handleSelect}
-              listEmployeeAll={listEmployeeAll}
               loadingFetchListAll={loadingFetchListAll}
               closeDetailEmployee={this.closeDetailEmployee}
-              companiesOfUser={companiesOfUser}
             />
           </div>
         </div>
