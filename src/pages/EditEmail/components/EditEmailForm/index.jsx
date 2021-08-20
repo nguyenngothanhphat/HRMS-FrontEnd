@@ -828,7 +828,8 @@ class EditEmailForm extends PureComponent {
                         // mode={valueToBeVerb === 'is' ? '' : 'multiple'}
                         showArrow
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                         placeholder="Please select a choice"
                         onChange={(value) => this.onChangeCondition(index, 'value', value)}
                         onClick={() => this.onClickCondition(index)}
@@ -1063,7 +1064,7 @@ class EditEmailForm extends PureComponent {
                 <Form.Item name="subject" label="Email subject">
                   <Input
                     defaultValue={subject}
-                    // disabled
+                    disabled={_isDefault}
                     onChange={(e) => this.onChangeEmailSubject(e.target.value)}
                   />
                 </Form.Item>
@@ -1074,6 +1075,7 @@ class EditEmailForm extends PureComponent {
                 {/* <Form.Item name="message" label="Email message"> */}
                 <p className={styles.label}>Email message :</p>
                 <EditorQuill
+                  _isDefault={_isDefault}
                   messages={messages}
                   handleChangeEmail={this.handleChangeEmail}
                   listAutoText={listAutoText}
@@ -1095,7 +1097,7 @@ class EditEmailForm extends PureComponent {
                   <Button
                     type="primary"
                     htmlType="submit"
-                    disabled={disabled}
+                    disabled={disabled || _isDefault}
                     loading={loadingUpdateCustomEmail}
                   >
                     {formatMessage({ id: 'component.editEmailForm.submit' })}
