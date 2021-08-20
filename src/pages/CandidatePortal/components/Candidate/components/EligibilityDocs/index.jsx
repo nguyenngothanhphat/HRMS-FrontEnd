@@ -255,11 +255,39 @@ class EligibilityDocs extends PureComponent {
     }
   };
 
-  handleCanCelIcon = (index, id, docList) => {
+  handleCanCelIcon = async (index, id, docList) => {
     const { dispatch } = this.props;
     const arrToAdjust = JSON.parse(JSON.stringify(docList));
     const typeIndex = arrToAdjust.findIndex((item, index1) => index1 === index);
     const { isValidated } = docList;
+    if (arrToAdjust[typeIndex].data.length > 0) {
+      const nestedIndex = arrToAdjust[typeIndex].data.findIndex((item, id1) => id1 === id);
+      const attach = null;
+      const Obj = arrToAdjust[typeIndex].data[nestedIndex];
+
+      arrToAdjust[typeIndex].data.splice(nestedIndex, 1, {
+        ...Obj,
+        attachment: attach,
+        isValidated: !isValidated,
+      });
+      dispatch({
+        type: 'candidatePortal/saveOrigin',
+        payload: {
+          documentListToRender: arrToAdjust,
+        },
+      });
+    }
+  };
+
+  handleCanCelIconForTypeE = (index, id, docList, docListEFilter) => {
+    const { dispatch } = this.props;
+
+    const otherDocs = docList.filter((d) => d.type !== 'E');
+    const arrToAdjust = JSON.parse(JSON.stringify(docListEFilter));
+    const typeIndex = arrToAdjust.findIndex((item, index1) => index1 === index);
+
+    const { isValidated } = docList;
+
     if (arrToAdjust[typeIndex].data.length > 0) {
       const nestedIndex = arrToAdjust[typeIndex].data.findIndex((item, id1) => id1 === id);
       const attach = null;
@@ -272,7 +300,7 @@ class EligibilityDocs extends PureComponent {
       dispatch({
         type: 'candidatePortal/saveOrigin',
         payload: {
-          documentListToRender: arrToAdjust,
+          documentListToRender: [...otherDocs, ...arrToAdjust],
         },
       });
     }
@@ -636,7 +664,7 @@ class EligibilityDocs extends PureComponent {
               {/* type E */}
               <PreviousEmployment
                 onValuesChange={this.onValuesChange}
-                handleCanCelIcon={this.handleCanCelIcon}
+                handleCancelIcon={this.handleCanCelIconForTypeE}
                 handleFile={this.handleFileForTypeE}
                 loading={loading}
                 attachments={attachments}

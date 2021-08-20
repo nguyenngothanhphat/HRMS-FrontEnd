@@ -31,6 +31,9 @@ class UploadImage extends Component {
       typeIndex,
       nestedIndex,
       dispatch,
+      isTypeE = false,
+      docList = [],
+      docListEFilter = [],
     } = this.props;
     const checkType =
       file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'application/pdf';
@@ -41,12 +44,22 @@ class UploadImage extends Component {
     if (!isLt5M) {
       message.error('Image must smaller than 5MB!');
       setSizeImageMatch(isLt5M);
-      const newArrToAdjust = JSON.parse(JSON.stringify(documentListToRender));
-      newArrToAdjust[typeIndex].data[nestedIndex].isValidated = false;
+      let newArrToAdjust = [];
+      const otherDocs = docList.filter((d) => d.type !== 'E');
+
+      if (!isTypeE) {
+        newArrToAdjust = JSON.parse(JSON.stringify(documentListToRender));
+        newArrToAdjust[typeIndex].data[nestedIndex].isValidated = false;
+      } else {
+        newArrToAdjust = JSON.parse(JSON.stringify(docListEFilter));
+        newArrToAdjust[typeIndex].data[nestedIndex].isValidated = false;
+
+        // const nestedIndex = arrToAdjust[typeIndex].data.findIndex((item, id1) => id1 === id);
+      }
       dispatch({
         type: 'candidatePortal/saveOrigin',
         payload: {
-          documentListToRender: newArrToAdjust,
+          documentListToRender: !isTypeE ? newArrToAdjust : [...otherDocs, ...newArrToAdjust],
         },
       });
     }
