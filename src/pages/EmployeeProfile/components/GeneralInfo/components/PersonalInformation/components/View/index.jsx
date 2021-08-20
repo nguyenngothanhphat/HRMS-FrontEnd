@@ -81,14 +81,16 @@ class View extends PureComponent {
     return null;
   };
 
-  formatAddress = (address, country, state, zipCode) => {
+  formatAddress = (addressLine1, addressLine2, city, country, state, zipCode) => {
     const formatAd = {
-      address: address ? `${address}, ` : '',
+      addressLine1: addressLine1 ? `${addressLine1}, ` : '',
+      addressLine2: addressLine2 ? `${addressLine2}, ` : '',
+      city: city ? `${city}, ` : '',
       country: country ? `${country}, ` : '',
       zipCode: zipCode ? `${zipCode}, ` : '',
       state: state ? `${state}, ` : '',
     };
-    const renderValue = `${formatAd.address}${formatAd.state}${formatAd.zipCode}${formatAd.country}`;
+    const renderValue = `${formatAd.addressLine1}${formatAd.addressLine2}${formatAd.city}${formatAd.state}${formatAd.zipCode}${formatAd.country}`;
     return renderValue.replace(/,\s*$/, ''); // remove the last comma and spaces in string
   };
 
@@ -107,13 +109,17 @@ class View extends PureComponent {
 
     const {
       residentAddress: {
-        address: r_Address = '',
+        addressLine1: r_Addressline1 = '',
+        addressLine2: r_Addressline2 = '',
+        city: r_city = '',
         country: { name: r_countryName = '' } = {},
         state: r_state = '',
         zipCode: r_zipCode = '',
       } = {},
       currentAddress: {
-        address: c_Address = '',
+        addressLine1: c_Addressline1 = '',
+        addressLine2: c_Addressline2 = '',
+        city: c_city = '',
         country: { name: c_countryName = '' } = {},
         state: c_state = '',
         zipCode: c_zipCode = '',
@@ -131,11 +137,25 @@ class View extends PureComponent {
       { label: 'Linkedin', value: dataAPI.linkedIn },
       {
         label: checkVisible ? 'Residence Address' : null,
-        value: this.formatAddress(r_Address, r_countryName, r_state, r_zipCode),
+        value: this.formatAddress(
+          r_Addressline1,
+          r_Addressline2,
+          r_city,
+          r_countryName,
+          r_state,
+          r_zipCode,
+        ),
       },
       {
         label: 'Current Address',
-        value: this.formatAddress(c_Address, c_countryName, c_state, c_zipCode),
+        value: this.formatAddress(
+          c_Addressline1,
+          c_Addressline2,
+          c_city,
+          c_countryName,
+          c_state,
+          c_zipCode,
+        ),
       },
     ];
 

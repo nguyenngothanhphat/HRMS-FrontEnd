@@ -31,22 +31,26 @@ class Edit extends PureComponent {
       reListStates: [],
       curListStates: [],
       residentAddress: {
-        address: '',
+        addressLine1: '',
+        addressLine2: '',
         country: {
           _id: '',
           name: '',
         },
         state: '',
         zipCode: '',
+        city: '',
       },
       currentAddress: {
-        address: '',
+        addressLine1: '',
+        addressLine2: '',
         country: {
           _id: '',
           name: '',
         },
         state: '',
         zipCode: '',
+        city: '',
       },
     };
   }
@@ -100,11 +104,27 @@ class Edit extends PureComponent {
     const { dispatch } = this.props;
 
     switch (name) {
-      case 'r_Address':
+      case 'r_Addressline1':
         this.setState((prevState) => ({
           residentAddress: {
             ...prevState.residentAddress,
-            address: value,
+            addressLine1: value,
+          },
+        }));
+        break;
+      case 'r_Addressline2':
+        this.setState((prevState) => ({
+          residentAddress: {
+            ...prevState.residentAddress,
+            addressLine2: value,
+          },
+        }));
+        break;
+      case 'r_city':
+        this.setState((prevState) => ({
+          residentAddress: {
+            ...prevState.residentAddress,
+            city: value,
           },
         }));
         break;
@@ -118,12 +138,18 @@ class Edit extends PureComponent {
           this.setState({ reListStates: data });
         });
         // eslint-disable-next-line no-case-declarations
-        const reCountry = this.getCountryObjData(value);
+        // const reCountry = this.getCountryObjData(value);
 
+        // this.setState((prevState) => ({
+        //   residentAddress: {
+        //     ...prevState.residentAddress,
+        //     country: reCountry,
+        //   },
+        // }));
         this.setState((prevState) => ({
           residentAddress: {
             ...prevState.residentAddress,
-            country: reCountry,
+            country: value,
           },
         }));
         break;
@@ -143,11 +169,27 @@ class Edit extends PureComponent {
           },
         }));
         break;
-      case 'c_Address':
+      case 'c_Addressline1':
         this.setState((prevState) => ({
           currentAddress: {
             ...prevState.currentAddress,
-            address: value,
+            addressLine1: value,
+          },
+        }));
+        break;
+      case 'c_Addressline2':
+        this.setState((prevState) => ({
+          currentAddress: {
+            ...prevState.currentAddress,
+            addressLine2: value,
+          },
+        }));
+        break;
+      case 'c_city':
+        this.setState((prevState) => ({
+          currentAddress: {
+            ...prevState.currentAddress,
+            city: value,
           },
         }));
         break;
@@ -162,12 +204,12 @@ class Edit extends PureComponent {
         });
 
         // eslint-disable-next-line no-case-declarations
-        const curCountry = this.getCountryObjData(value);
+        // const curCountry = this.getCountryObjData(value);
 
         this.setState((prevState) => ({
           currentAddress: {
             ...prevState.currentAddress,
-            country: curCountry,
+            country: value,
           },
         }));
         break;
@@ -297,13 +339,17 @@ class Edit extends PureComponent {
       maritalStatus = '',
       linkedIn = '',
       residentAddress: {
-        address: r_Address = '',
+        addressLine1: r_Addressline1 = '',
+        addressLine2: r_Addressline2 = '',
+        city: r_City = '',
         country: { name: r_countryName = '' } = {},
         state: r_state = '',
         zipCode: r_zipCode = '',
       } = {},
       currentAddress: {
-        address: c_Address = '',
+        addressLine1: c_Addressline1 = '',
+        addressLine2: c_Addressline2 = '',
+        city: c_City = '',
         country: { name: c_countryName = '' } = {},
         state: c_state = '',
         zipCode: c_zipCode = '',
@@ -384,13 +430,14 @@ class Edit extends PureComponent {
             >
               <Input className={styles.inputForm} />
             </Form.Item>
-            <Form.Item label="Residence Address">
+            <div>Residence Address</div>
+            <Form.Item label="Address line 1">
               <TextArea
                 autoSize={{ minRows: 2, maxRows: 6 }}
                 className={styles.areaForm}
                 // eslint-disable-next-line camelcase
-                defaultValue={r_Address}
-                onChange={(e) => this.handleChangeAddress('r_Address', e.target.value)}
+                defaultValue={r_Addressline1}
+                onChange={(e) => this.handleChangeAddress('r_Addressline1', e.target.value)}
                 rules={[
                   {
                     required: true,
@@ -399,7 +446,22 @@ class Edit extends PureComponent {
                 ]}
               />
             </Form.Item>
-
+            <Form.Item label="Address line 2">
+              <TextArea
+                autoSize={{ minRows: 2, maxRows: 6 }}
+                className={styles.areaForm}
+                // eslint-disable-next-line camelcase
+                defaultValue={r_Addressline2}
+                onChange={(e) => this.handleChangeAddress('r_Addressline2', e.target.value)}
+              />
+            </Form.Item>
+            <Form.Item label="City name">
+              <Input
+                // eslint-disable-next-line camelcase
+                defaultValue={r_City}
+                onChange={(e) => this.handleChangeAddress('r_city', e.target.value)}
+              />
+            </Form.Item>
             <Row gutter={[12, 24]} align="left">
               <Col span={8} className={styles.address}>
                 <Form.Item label="Country" className={styles.addressSection}>
@@ -467,15 +529,33 @@ class Edit extends PureComponent {
                 </Form.Item>
               </Col>
             </Row>
-
-            <Form.Item label="Current Address">
+            {/* ///////////////////////////////////////////////////////// */}
+            <div>Current Address</div>
+            <Form.Item label="Address line 1">
               <TextArea
                 autoSize={{ minRows: 2, maxRows: 6 }}
                 className={styles.areaForm}
                 // eslint-disable-next-line camelcase
-                defaultValue={c_Address}
-                onChange={(e) => this.handleChangeAddress('c_Address', e.target.value)}
+                defaultValue={c_Addressline1}
+                onChange={(e) => this.handleChangeAddress('c_Addressline1', e.target.value)}
                 disabled={profileOwner}
+              />
+            </Form.Item>
+            <Form.Item label="Address line 2">
+              <TextArea
+                autoSize={{ minRows: 2, maxRows: 6 }}
+                className={styles.areaForm}
+                // eslint-disable-next-line camelcase
+                defaultValue={c_Addressline2}
+                onChange={(e) => this.handleChangeAddress('c_Addressline2', e.target.value)}
+                disabled={profileOwner}
+              />
+            </Form.Item>
+            <Form.Item label="City name">
+              <Input
+                // eslint-disable-next-line camelcase
+                defaultValue={c_City}
+                onChange={(e) => this.handleChangeAddress('c_city', e.target.value)}
               />
             </Form.Item>
             <Row gutter={[12, 24]} align="left">
