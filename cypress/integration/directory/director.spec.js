@@ -23,7 +23,7 @@ describe('Directory Automation', () => {
     cy.visit('https://stghrms.paxanimi.ai/login');
   });
 
-  it('Search and Add employee', () => {
+  it.only('Search and Add employee', () => {
     cy.loginAsSomeone(owner_email, password);
     cy.get(':nth-child(7) > .viewAction___2wj7D > .btnOutline___3sCPv > span').click();
     cy.contains('Employees Management', { timeout: 10000 }).click({
@@ -92,10 +92,10 @@ describe('Directory Automation', () => {
     const file = 'ImportTenantEmpl2.csv';
     cy.get('.fileUploadForm___33QtN > :nth-child(1) > input').attachFile(file);
     cy.contains('Submit').click();
-    cy.pause();
-    cy.wait(5000);
+    // cy.pause();
+    // cy.wait(5000);
   });
-  it.only('add infomation employee', () => {
+  it('add infomation employee', () => {
     // add infomation employee
     // cy.contains("Filter", { timeout: 10000 }).click();
     cy.loginAsSomeone(owner_email, password);
