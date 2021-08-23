@@ -2,9 +2,10 @@ import { getCurrentTenant } from '@/utils/authority';
 import { Col, Row } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import ApplicationStatus from './components/ApplicationStatus';
+// import ApplicationStatus from './components/ApplicationStatus';
+import ApplicationStatus from './components/NewApplicationStatus';
 import CompanyProfile from './components/CompanyProfile';
-import EmployeeDetails from './components/EmployeeDetails';
+// import EmployeeDetails from './components/EmployeeDetails';
 import styles from './index.less';
 import PendingTasks from './components/PendingTasks';
 import YourActivity from './components/YourActivity';
@@ -36,12 +37,12 @@ class Dashboard extends PureComponent {
             style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}
           >
             <Row span={24} gutter={[24, 24]} style={{ marginBottom: '24px' }}>
-              <Col xs={24} sm={8} lg={8}>
+              <Col xs={24}>
                 <ApplicationStatus loading={loadingFetchCandidate} data={data} />
               </Col>
-              <Col xs={24} sm={16} lg={16}>
+              {/* <Col xs={24} sm={16} lg={16}>
                 <EmployeeDetails loading={loadingFetchCandidate} data={data} />
-              </Col>
+              </Col> */}
             </Row>
 
             <Row span={24} gutter={[24, 24]} style={{ height: '100%' }}>

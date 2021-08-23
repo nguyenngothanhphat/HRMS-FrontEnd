@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect, Link, history } from 'umi';
 
-import { Layout, Button, Result, Skeleton, Breadcrumb } from 'antd';
+import { Layout, Button, Result, Skeleton, Breadcrumb, Menu, Dropdown } from 'antd';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import { getCurrentCompany } from '@/utils/authority';
@@ -11,7 +11,6 @@ import LogoutIcon from '@/assets/candidatePortal/logout.svg';
 import CalendarIcon from '@/assets/candidatePortal/leave-application.svg';
 import MessageIcon from '@/assets/candidatePortal/message-circle.svg';
 // import BottomBar from '../components/BottomBar';
-import { RightOutlined } from '@ant-design/icons';
 import s from './CandidatePortalLayout.less';
 
 const { Header, Content } = Layout;
@@ -41,8 +40,12 @@ const CandidatePortalLayout = React.memo((props) => {
     candidate = '',
     loadingFetchCurrent = false,
     ticketId = '',
-    data: { title: { name: titleName = '' } = {} } = {},
+    // data: { title: { name: titleName = '' } = {} } = {},
+    data: { firstName = '', lastName = '', middleName = '' },
   } = props;
+
+  let candidateFullName = `${firstName} ${middleName} ${lastName}`;
+  if (!middleName) candidateFullName = `${firstName} ${lastName}`;
 
   // if link contains "ticket", it means that candidate is in candidate progress page
   const [isCandidateMode, setCandidateMode] = useState(false);
@@ -99,6 +102,37 @@ const CandidatePortalLayout = React.memo((props) => {
     return currentCompany.name || '';
   };
 
+  const avatarMenu = (
+    <Menu className={s.dropdownMenu} style={{ padding: '8px 0 0', borderRadius: '12px' }}>
+      <Menu.Item style={{ color: '#707177', paddingBlock: '5px', pointerEvents: 'none' }}>
+        {candidateFullName}
+      </Menu.Item>
+      <Menu.Item
+        style={{
+          color: '#707177',
+          fontWeight: 500,
+          paddingTop: '5px',
+          paddingBottom: '10px',
+          pointerEvents: 'none',
+        }}
+      >
+        Candidate ID: {ticketId}
+      </Menu.Item>
+      <Menu.Item
+        onClick={handleCancel}
+        style={{
+          borderTop: '1px solid #E2E4E8',
+          paddingBlock: '10px',
+          borderRadius: '0 0 12px 12px',
+        }}
+      >
+        <span style={{ color: '#FD4546' }} className={s.logoutText}>
+          Logout
+        </span>
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
     <div className={s.candidate}>
       {/* <Header className={`${s.header} ${s.one}`}> */}
@@ -140,9 +174,24 @@ const CandidatePortalLayout = React.memo((props) => {
             <img src={MessageIcon} alt="message" />
             <div className={s.badgeNumber}>6</div>
           </div>
-          <div className={s.headerIcon} onClick={handleCancel}>
-            <img src={LogoutIcon} alt="logout" />
-          </div>
+
+          <Dropdown
+            style={{
+              borderRadius: '15px',
+              background: 'red',
+            }}
+            overlayClassName={s.dropdownMenu}
+            overlay={avatarMenu}
+            placement="bottomRight"
+          >
+            <div className={`${s.headerIcon} ${s.avatarIcon}`}>
+              {/* <img src={LogoutIcon} alt="logout" /> */}
+              <span>
+                {firstName.charAt(0)}
+                {lastName.charAt(0)}
+              </span>
+            </div>
+          </Dropdown>
         </div>
       </Header>
       <Authorized authority={authorized.authority} noMatch={noMatch}>

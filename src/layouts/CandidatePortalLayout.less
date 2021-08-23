@@ -150,6 +150,10 @@
         align-items: center;
         position: relative;
         cursor: pointer;
+        span {
+          font-weight: 500;
+          color: #2C6DF9;
+        }
         &:hover {
           background: transparent;
           border: 1px solid #00c598;
@@ -176,7 +180,10 @@
           font-size: 12px;
         }
       }
-
+      .avatarIcon {
+        background: #E4EDFF;
+        transition: 0.3s;
+      }
       .headerText {
         outline: none;
         height: 44px;
@@ -192,6 +199,39 @@
         span {
           font-weight: 500;
         }
+      }
+    }
+    :global(.anticon) {
+      margin-right: 8px;
+    }
+  
+    :global(.ant-dropdown-menu-item) {
+      min-width: 160px;
+    }
+  
+    :global {
+      .ant-dropdown-menu-item-divider {
+        background-color: #d6dce0;
+      }
+    }
+  
+    :global {
+      .ant-dropdown-menu-item,
+      .ant-dropdown-menu-submenu-title {
+        padding: 8px 24px;
+        color: #000;
+        font-weight: 500;
+        font-size: 13px;
+        line-height: 15.23px;
+        text-align: left;
+      }
+      .ant-dropdown-menu-item-group-list {
+        margin: 0 0 10px 0;
+        padding: 0;
+      }
+  
+      .ant-dropdown-menu-item-group-title {
+        padding: 0;
       }
     }
   }
@@ -310,15 +350,12 @@
   }
 
   .main {
-    // padding: 0 72px 24px;
     padding-bottom: 24px;
   }
 
   .stepContainer {
     margin-left: auto;
     padding: 28px;
-    // width: 262px;
-    // height: 424px;
     object-fit: contain;
     border-radius: 5px;
     border: solid 1px #d6dce0;
@@ -357,7 +394,6 @@
     }
 
     .ant-steps {
-      // height: 400px !important;
     }
 
     .ant-steps-item {

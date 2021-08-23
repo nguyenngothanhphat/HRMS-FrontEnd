@@ -1,38 +1,39 @@
-@darkColour: #161C29;
-@blueColour: #2C6DF9;
+@darkColour: #161c29;
+@blueColour: #2c6df9;
 @lightGrayColor: #707177;
 @commonPadding: 15px;
-@borderColor: #D6DCE0;
+@borderColor: #d6dce0;
 
 .CompanyProfile {
-  border: 1px solid @borderColor;
-  background: #fff;
-  box-sizing: border-box;
-  border-radius: 5px;
-  max-height: 100%;
-  min-height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-sizing: border-box;
+  min-height: 100%;
+  max-height: 100%;
+  background: #fff;
+  border: 1px solid @borderColor;
+  border-radius: 5px;
   .header {
     display: flex;
-    justify-content: flex-start;
     align-items: center;
+    justify-content: flex-start;
     padding: @commonPadding;
+    border-bottom: 1px solid @borderColor;
     span {
       color: @darkColour;
       font-weight: 700;
       font-size: 14px;
       line-height: 16px;
     }
-    border-bottom: 1px solid @borderColor;
   }
   .content {
     position: relative;
-    padding: @commonPadding;
     max-height: 520px;
+    padding: @commonPadding;
     overflow-y: auto;
-    span, p {
+    span,
+    p {
       display: block;
       font-size: 13px;
       line-height: 20px;
@@ -48,26 +49,26 @@
       margin-bottom: 5px;
     }
     .contentBody {
-      color: @lightGrayColor;
       margin-bottom: 10px;
+      color: @lightGrayColor;
     }
   }
   .sliderHandle {
-    border-top: 1px solid @borderColor;
     display: flex;
-    padding: @commonPadding;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    padding: 10px @commonPadding;
     color: @lightGrayColor;
     font-weight: 500;
+    border-top: 1px solid @borderColor;
     .customDot {
-      outline: none;
-      border: 1px solid rgba(0, 0, 0, 0.3);
       width: 13px;
       height: 13px;
       margin: 8px;
-      border-radius: 50%;
       background-color: #fff;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+      border-radius: 50%;
+      outline: none;
       cursor: pointer;
       &:hover {
         background-color: @blueColour;
