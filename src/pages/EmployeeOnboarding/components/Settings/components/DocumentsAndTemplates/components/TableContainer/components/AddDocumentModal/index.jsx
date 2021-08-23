@@ -1,4 +1,4 @@
-import AttachmentIcon from '@/assets/attachment.svg';
+// import AttachmentIcon from '@/assets/attachment.svg';
 import ImageIcon from '@/assets/image_icon.png';
 import PDFIcon from '@/assets/pdf_icon.png';
 import { Button, Form, Input, message, Modal, Spin, Tooltip, Upload } from 'antd';
@@ -9,12 +9,15 @@ import styles from './index.less';
 
 const { Dragger } = Upload;
 
-@connect(({ loading }) => ({ loadingUploadAttachment: loading.effects['upload/uploadFile'] }))
+@connect(({ loading }) => ({
+  loadingUploadAttachment: loading.effects['upload/uploadFile'],
+}))
 class AddDocumentModal extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       uploadedFile: {},
+      fileName: '',
     };
   }
 
@@ -112,8 +115,8 @@ class AddDocumentModal extends PureComponent {
     if (!uploadedFile || Object.keys(uploadedFile).length === 0) {
       message.error('Invalid file');
     } else {
-      this.setState({ uploadedFile: {} });
       onAdd(payload);
+      this.setState({ uploadedFile: {}, fileName: '' });
     }
   };
 

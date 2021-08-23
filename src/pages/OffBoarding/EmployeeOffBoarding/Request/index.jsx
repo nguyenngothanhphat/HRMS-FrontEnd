@@ -197,9 +197,9 @@ class ResignationRequest extends Component {
                   <div className={styles.viewWithDraw}>
                     <WithDraw />
                   </div>
-                  {/* <div className={styles.btn__submit}>
+                  <div className={styles.btn__submit}>
                     <Button onClick={this.handleSubmitTicket}>Submit</Button>
-                  </div> */}
+                  </div>
                 </div>
               )}
             </Col>

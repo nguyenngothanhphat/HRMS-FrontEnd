@@ -1,6 +1,6 @@
 /* eslint-disable react/no-array-index-key */
 import React, { PureComponent } from 'react';
-import { Table, Popover, Divider, Row, Col, Avatar, Tooltip } from 'antd';
+import { Table, Popover, Divider, Row, Col, Avatar, Tooltip, message } from 'antd';
 import moment from 'moment';
 import { history, connect } from 'umi';
 import { getCurrentTimeOfTimezoneOption } from '@/utils/times';
@@ -163,21 +163,37 @@ class TableManager extends PureComponent {
           </div>
           <div className={t.popupActions__actions}>
             <Tooltip title="Message">
+              {/* <a href={linkedIn === '' ? null : linkedIn} target="_blank" rel="noopener noreferrer"> */}
               <img
                 src="/assets/images/messageIcon.svg"
                 alt="img-arrow"
                 style={{ cursor: 'pointer' }}
               />
+              {/* </a> */}
             </Tooltip>
             <Tooltip title="Email">
-              <img
-                src="/assets/images/iconMail.svg"
-                alt="img-arrow"
-                style={{ cursor: 'pointer' }}
-              />
+              <a
+                disabled={!workEmail}
+                href={`mailto:${workEmail}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <img
+                  src="/assets/images/iconMail.svg"
+                  alt="img-arrow"
+                  style={{ cursor: 'pointer' }}
+                />
+              </a>
             </Tooltip>
             <Tooltip title="LinkedIn">
-              <a disabled={!linkedIn} href={linkedIn} target="_blank" rel="noopener noreferrer">
+              <a
+                onClick={() => {
+                  if (linkedIn === '') message.warning('LinkedIn is empty');
+                }}
+                href={linkedIn === '' ? null : linkedIn}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <img
                   src="/assets/images/iconLinkedin.svg"
                   alt="img-arrow"

@@ -758,9 +758,7 @@ class OnboardTable extends Component {
               };
             }}
             scroll={
-              list.length > 0
-                ? { x: 'max-content', y: 'max-content' }
-                : { x: '80vw', y: 'max-content' }
+              list.length > 0 ? { x: '100vw', y: 'max-content' } : { x: '80vw', y: 'max-content' }
             }
             // scroll={{ x: 'max-content', y: 'max-content' }}
           />

@@ -676,6 +676,12 @@ const routes = [
             hideInMenu: true,
           },
           {
+            path: '/employee-onboarding/:tabName/view-email/:reId',
+            name: 'View Email',
+            component: './EditEmail',
+            hideInMenu: true,
+          },
+          {
             path: '/template-details/:templateId',
             name: 'templateDetails',
             hideInMenu: true,

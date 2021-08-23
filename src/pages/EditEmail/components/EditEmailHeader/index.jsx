@@ -6,6 +6,7 @@ import styles from './index.less';
 
 class EditEmailHeader extends PureComponent {
   render() {
+    const { isDefault = false } = this.props;
     return (
       <div className={styles.EditEmailHeader}>
         <Link
@@ -17,7 +18,11 @@ class EditEmailHeader extends PureComponent {
           <img src={blueBackIcon} alt="back icon" />
         </Link>
 
-        <p>{formatMessage({ id: 'component.editEmailHeader.title' })}</p>
+        {isDefault ? (
+          <p>{formatMessage({ id: 'component.editEmailHeader.defaultTitle' })}</p>
+        ) : (
+          <p>{formatMessage({ id: 'component.editEmailHeader.title' })}</p>
+        )}
       </div>
     );
   }
