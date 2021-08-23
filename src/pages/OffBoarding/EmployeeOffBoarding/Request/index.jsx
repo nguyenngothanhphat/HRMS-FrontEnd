@@ -223,7 +223,9 @@ class ResignationRequest extends Component {
                     <WithDraw />
                   </div>
                   <div className={styles.btn__submit}>
-                    <Button onClick={this.handleSubmitTicket}>Submit</Button>
+                    <Button disabled={status !== 'DRAFT'} onClick={this.handleSubmitTicket}>
+                      Submit
+                    </Button>
                   </div>
                 </div>
               )}
