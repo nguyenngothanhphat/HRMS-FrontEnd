@@ -212,6 +212,7 @@ class OrganizationChart extends Component {
             {listEmployees.map((employee) => {
               return (
                 <EmployeeNode
+                  isCollapsedChild={isCollapsedChild}
                   key={employee._id}
                   itemSelected={itemSelected}
                   employee={employee}
