@@ -53,6 +53,9 @@ const Note = {
     loading: loading.effects['upload/uploadFile'],
     loading1: loading.effects['candidatePortal/sendEmailByCandidate'],
     loading2: loading.effects['candidatePortal/fetchCandidateById'],
+    loadingFile:
+      loading.effects['candidatePortal/fetchDocumentByCandidate'] ||
+      loading.effects['candidatePortal/fetchWorkHistory'],
   }),
 )
 class EligibilityDocs extends PureComponent {
@@ -66,11 +69,11 @@ class EligibilityDocs extends PureComponent {
     };
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     // window.scrollTo({ top: 77, behavior: 'smooth' });
     // Back to top of the page
+    // this.fetchCandidateAgain();
     this.processData();
-    this.fetchCandidateAgain();
     const { data: { processStatus = '' } = {} } = this.props;
     if (
       [
@@ -90,7 +93,7 @@ class EligibilityDocs extends PureComponent {
         isSentEmail: true,
       });
     }
-  }
+  };
 
   fetchCandidateAgain = () => {
     const { dispatch, candidate } = this.props;
@@ -108,74 +111,98 @@ class EligibilityDocs extends PureComponent {
 
   processData = async () => {
     const {
-      data: { documentList = [], workHistory = [] },
+      candidate = {},
       dispatch,
     } = this.props;
 
-    const groupA = [];
-    const groupB = [];
-    const groupC = [];
-    const groupD = [];
-
-    documentList.forEach((item) => {
-      const { candidateGroup } = item;
-      item.isValidated = true;
-      switch (candidateGroup) {
-        case 'A':
-          groupA.push(item);
-          break;
-        case 'B':
-          groupB.push(item);
-          break;
-        case 'C':
-          groupC.push(item);
-          break;
-        case 'D':
-          if (item.isCandidateUpload) item.displayName += '*';
-          groupD.push(item);
-          break;
-        default:
-          break;
-      }
-    });
-
-    // const countGroupE = documentChecklistSetting.filter((doc) => doc.type === 'E').length || 0;
-    let groupMultiE = [];
-
-    groupMultiE = workHistory.map((em) => {
-      let groupE = [];
-      documentList.forEach((item) => {
-        const { candidateGroup, employer } = item;
-        item.isValidated = true;
-        if (candidateGroup === 'E' && employer === em.employer) {
-          groupE = [...groupE, item];
-        }
+    if (candidate) {
+      const res = await dispatch({
+        type: 'candidatePortal/fetchDocumentByCandidate',
+        payload: {
+          candidate: candidate._id,
+          tenantId: getCurrentTenant(),
+        },
       });
-      return {
-        type: 'E',
-        name: 'Previous Employment',
-        employer: em.employer,
-        toPresent: em.toPresent,
-        startDate: em.startDate,
-        endDate: em.endDate,
-        workHistoryId: em._id,
-        data: [...groupE],
-      };
-    });
+      const documentList = res.statusCode === 200 ? res.data : [];
 
-    const docList = [
-      { type: 'A', name: 'Identity Proof', data: [...groupA] },
-      { type: 'B', name: 'Address Proof', data: [...groupB] },
-      { type: 'C', name: 'Educational', data: [...groupC] },
-      { type: 'D', name: 'Technical Certifications', data: [...groupD] },
-      ...groupMultiE,
-    ];
-    await dispatch({
-      type: 'candidatePortal/saveOrigin',
-      payload: {
-        documentListToRender: [...docList],
-      },
-    });
+      const res1 = await dispatch({
+        type: 'candidatePortal/fetchWorkHistory',
+        payload: {
+          candidate: candidate._id,
+          tenantId: getCurrentTenant(),
+        },
+      });
+
+      if (res1.statusCode === 200) {
+        const workHistory = res1.data;
+
+        const groupA = [];
+        const groupB = [];
+        const groupC = [];
+        const groupD = [];
+
+        documentList.forEach((item) => {
+          const { candidateGroup } = item;
+          item.isValidated = true;
+          switch (candidateGroup) {
+            case 'A':
+              groupA.push(item);
+              break;
+            case 'B':
+              groupB.push(item);
+              break;
+            case 'C':
+              groupC.push(item);
+              break;
+            case 'D':
+              if (item.isCandidateUpload) item.displayName += '*';
+              groupD.push(item);
+              break;
+            default:
+              break;
+          }
+        });
+
+        // const countGroupE = documentChecklistSetting.filter((doc) => doc.type === 'E').length || 0;
+        let groupMultiE = [];
+
+        groupMultiE = workHistory.map((em) => {
+          let groupE = [];
+          documentList.forEach((item) => {
+            const { candidateGroup, employer } = item;
+            item.isValidated = true;
+            if (candidateGroup === 'E' && employer === em.employer) {
+              groupE = [...groupE, item];
+            }
+          });
+          return {
+            type: 'E',
+            name: 'Previous Employment',
+            employer: em.employer,
+            toPresent: em.toPresent,
+            startDate: em.startDate,
+            endDate: em.endDate,
+            workHistoryId: em._id,
+            data: [...groupE],
+          };
+        });
+
+        const docList = [
+          { type: 'A', name: 'Identity Proof', data: [...groupA] },
+          { type: 'B', name: 'Address Proof', data: [...groupB] },
+          { type: 'C', name: 'Educational', data: [...groupC] },
+          { type: 'D', name: 'Technical Certifications', data: [...groupD] },
+          ...groupMultiE,
+        ];
+
+        await dispatch({
+          type: 'candidatePortal/saveOrigin',
+          payload: {
+            documentListToRender: [...docList],
+          },
+        });
+      }
+    }
   };
 
   handleFile = (res, index, id, docList) => {
@@ -611,6 +638,7 @@ class EligibilityDocs extends PureComponent {
       loading,
       loading1,
       loading2,
+      loadingFile,
       data: {
         attachments,
         documentListToRender,
@@ -626,7 +654,7 @@ class EligibilityDocs extends PureComponent {
 
     const checkFull = this.checkFull();
 
-    if (loading2 && !isSending)
+    if ((loading2 && !isSending) || loadingFile)
       return (
         <div className={styles.viewLoading}>
           <Skeleton />
@@ -662,17 +690,19 @@ class EligibilityDocs extends PureComponent {
                 })}
 
               {/* type E */}
-              <PreviousEmployment
-                onValuesChange={this.onValuesChange}
-                handleCancelIcon={this.handleCanCelIconForTypeE}
-                handleFile={this.handleFileForTypeE}
-                loading={loading}
-                attachments={attachments}
-                validateFileSize={validateFileSize}
-                checkLength={this.checkLength}
-                processStatus={processStatus}
-                renderData={this.processData}
-              />
+              {documentListToRender.length > 0 && (
+                <PreviousEmployment
+                  onValuesChange={this.onValuesChange}
+                  handleCancelIcon={this.handleCanCelIconForTypeE}
+                  handleFile={this.handleFileForTypeE}
+                  loading={loading}
+                  attachments={attachments}
+                  validateFileSize={validateFileSize}
+                  checkLength={this.checkLength}
+                  processStatus={processStatus}
+                  renderData={this.processData}
+                />
+              )}
             </div>
             <Row>
               <AnswerQuestion page={Page.Eligibility_documents} />

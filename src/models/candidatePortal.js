@@ -135,8 +135,9 @@ const candidatePortal = {
     },
 
     *fetchDocumentByCandidate({ payload }, { call, put }) {
+      let response = '';
       try {
-        const response = yield call(getDocumentByCandidate, payload);
+        response = yield call(getDocumentByCandidate, payload);
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -146,6 +147,7 @@ const candidatePortal = {
       } catch (error) {
         dialog(error);
       }
+      return response;
     },
 
     *updateByCandidateEffect({ payload }, { call, select }) {

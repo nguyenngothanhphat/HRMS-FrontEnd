@@ -1,5 +1,5 @@
 import { getCurrentTenant } from '@/utils/authority';
-import { Button, Col, Row, Steps } from 'antd';
+import { Button, Col, Row, Skeleton, Steps } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import { candidateLink } from '@/utils/candidatePortal';
@@ -23,7 +23,15 @@ import SalaryStructure from './components/SalaryStructure';
 import styles from './index.less';
 
 const Candidate = (props) => {
-  const { dispatch, listPage, localStep, candidate, data: { title = {} } = {}, match } = props;
+  const {
+    dispatch,
+    loadingFetchCandidate,
+    listPage,
+    localStep,
+    candidate,
+    data: { title = {} } = {},
+    match,
+  } = props;
 
   const [screen, setScreen] = useState(localStep);
 
@@ -78,24 +86,6 @@ const Candidate = (props) => {
         tenantId: getCurrentTenant(),
         rookieID: candidate.ticketID,
       },
-    }).then(({ data, statusCode }) => {
-      if (statusCode === 200) {
-        const { _id } = data;
-        dispatch({
-          type: 'candidatePortal/fetchDocumentByCandidate',
-          payload: {
-            candidate: _id,
-            tenantId: getCurrentTenant(),
-          },
-        });
-        dispatch({
-          type: 'candidatePortal/fetchWorkHistory',
-          payload: {
-            candidate: _id,
-            tenantId: getCurrentTenant(),
-          },
-        });
-      }
     });
   }, []);
 
@@ -175,9 +165,9 @@ const Candidate = (props) => {
           <Button className={styles.finishLaterBtn} onClick={onBack}>
             Finish Later
           </Button>
-          <Button className={styles.cancelBtn} onClick={onBack}>
+          {/* <Button className={styles.cancelBtn} onClick={onBack}>
             Cancel
-          </Button>
+          </Button> */}
         </div>
       </div>
       <div className={styles.content}>
@@ -200,7 +190,7 @@ const Candidate = (props) => {
             </div>
           </Col>
           <Col xs={24} lg={17} xl={18} style={{ paddingBlock: '24px' }}>
-            {_renderScreen(screen)}
+            {loadingFetchCandidate ? <Skeleton /> : _renderScreen(screen)}
           </Col>
         </Row>
       </div>
@@ -214,11 +204,13 @@ export default connect(
     optionalQuestion: { listPage = [] },
     candidatePortal: { localStep, data, tempData } = {},
     user: { currentUser: { candidate = '' } = {} } = {},
+    loading,
   }) => ({
     listPage,
     localStep,
     data,
     tempData,
     candidate,
+    loadingFetchCandidate: loading.effects['candidatePortal/fetchCandidateById'],
   }),
 )(Candidate);
