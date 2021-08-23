@@ -4,6 +4,7 @@ import { connect, formatMessage } from 'umi';
 // import NoteComponent from '../NoteComponent';
 import SalaryAcceptance from './components/SalaryAcceptance';
 import SalaryStructureHeader from './components/SalaryStructureHeader';
+import SalaryStructureInfoBoxes from './components/SalaryStructureInfoBoxes';
 import SalaryStructureTemplate from './components/SalaryStructureTemplate';
 import styles from './index.less';
 
@@ -53,6 +54,7 @@ class SalaryStructure extends PureComponent {
             <Form wrapperCol={{ span: 24 }} name="basic" onFinish={this.onFinish}>
               <div className={styles.salaryStructure__top}>
                 <SalaryStructureHeader titleName={titleName} />
+                <SalaryStructureInfoBoxes />
                 {/* <hr /> */}
                 <SalaryStructureTemplate />
               </div>

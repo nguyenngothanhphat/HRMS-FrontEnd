@@ -207,12 +207,21 @@ class SalaryAcceptance extends PureComponent {
 
   render() {
     const { openModal } = this.state;
-    const { options, salaryNote = '' } = this.props;
+    const {
+      // options,
+      salaryNote = '',
+    } = this.props;
     const Note = {
       title: 'Note',
       data: (
         <Typography.Text>
-          {formatMessage({ id: 'component.salaryAcceptance.note' })}
+          The Salary structure will be sent as a <span>provisional offer</span>. The candidate must
+          accept the and acknowledge the salary structure as a part of final negotiation.
+          <br />
+          <br />
+          <span style={{ fontWeight: 'bold', color: '#707177' }}>
+            Post acceptance of salary structure, the final offer letter will be sent.
+          </span>
         </Typography.Text>
       ),
     };
@@ -220,10 +229,10 @@ class SalaryAcceptance extends PureComponent {
       <div className={styles.salaryAcceptance}>
         <NoteComponent note={Note} />
         {salaryNote && <SalaryNote />}
-        <div className={styles.salaryAcceptanceWrapper}>{this._renderSelect()}</div>
+        {/* <div className={styles.salaryAcceptanceWrapper}>{this._renderSelect()}</div>
         {options !== 1 && (
           <div className={styles.salaryAcceptanceWrapper}>{this._renderSubmitForm()}</div>
-        )}
+        )} */}
         <CustomModal
           open={openModal}
           closeModal={this.closeModal}

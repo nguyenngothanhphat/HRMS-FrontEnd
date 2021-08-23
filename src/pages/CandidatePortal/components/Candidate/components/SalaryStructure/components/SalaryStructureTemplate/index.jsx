@@ -316,32 +316,30 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   _renderBottomBar = () => {
-    const { processStatus } = this.props;
+    // const { processStatus } = this.props;
 
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
           <Col span={16}>
-            <div className={styles.bottomBar__status}>
-              {processStatus === 'DRAFT' ? this._renderStatus() : null}
-            </div>
+            {/* <div className={styles.bottomBar__status}>{this._renderStatus()}</div> */}
           </Col>
           <Col span={8}>
             <div className={styles.bottomBar__button}>
-              {/* <Button
+              <Button
                 type="secondary"
                 onClick={this.onClickPrev}
                 className={styles.bottomBar__button__secondary}
               >
-                Previous
-              </Button> */}
+                Re Negotiate
+              </Button>
               <Button
                 type="primary"
                 // htmlType="submit"
                 onClick={this.onClickNext}
                 className={`${styles.bottomBar__button__primary} `}
               >
-                Next
+                Accept
               </Button>
             </div>
           </Col>
@@ -363,7 +361,7 @@ class SalaryStructureTemplate extends PureComponent {
               // size="large"
               pagination={false}
             />
-            <Row style={{ margin: '32px' }}>
+            <Row>
               <AnswerQuestion page={Page.Salary_Structure} />
             </Row>
           </div>
