@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import FileContent from '../FileContent';
 import AcceptOfferModal from './components/AcceptOfferModal';
+import RejectOfferModal from './components/RejectOfferModal';
 import styles from './index.less';
 
 const OfferLetter = (props) => {
@@ -48,6 +49,7 @@ const OfferLetter = (props) => {
   const [openModalCus, setOpenModalCus] = useState(false);
 
   const [acceptOfferModalVisible, setAcceptOfferModalVisible] = useState(false);
+  const [rejectOfferModalVisible, setRejectOfferModalVisible] = useState(false);
 
   const saveChanges = () => {
     // Save changes to redux store
@@ -146,7 +148,13 @@ const OfferLetter = (props) => {
           <Col span={8} />
           <Col span={16}>
             <div className={styles.bottomBar__button}>
-              <Button type="secondary" className={styles.bottomBar__button__secondary}>
+              <Button
+                type="secondary"
+                onClick={() => {
+                  setRejectOfferModalVisible(true);
+                }}
+                className={styles.bottomBar__button__secondary}
+              >
                 Reject
               </Button>
               <Button
@@ -199,6 +207,10 @@ const OfferLetter = (props) => {
         visible={acceptOfferModalVisible}
         onClose={() => setAcceptOfferModalVisible(false)}
         onFinish={handleFinalSubmit}
+      />
+      <RejectOfferModal
+        visible={rejectOfferModalVisible}
+        onClose={() => setRejectOfferModalVisible(false)}
       />
     </Row>
   );
