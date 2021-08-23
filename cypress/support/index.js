@@ -14,45 +14,53 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import "./commands";
+import './commands';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
 // code to ignore resize observer loop errors
 const resizeObserverLoopErrRe = /^[^(ResizeObserver loop limit exceeded)]/;
-Cypress.on("uncaught:exception", (err) => {
+Cypress.on('uncaught:exception', (err) => {
   /* returning false here prevents Cypress from failing the test */
   if (resizeObserverLoopErrRe.test(err.message)) {
     return false;
   }
 });
 
-Cypress.Commands.add("loginAsSomeone", (email, password) => {
-  cy.get("#basic_userEmail.ant-input", { timeout: 8000 }).type(email);
-  cy.get("#basic_password.ant-input", { timeout: 8000 }).type(password);
+Cypress.Commands.add('loginAsSomeone', (email, password) => {
+  cy.get('#basic_userEmail.ant-input', { timeout: 8000 }).type(email);
+  cy.get('#basic_password.ant-input', { timeout: 8000 }).type(password);
   cy.get('button[type="submit"]', { timeout: 8000 }).click();
 });
 
-Cypress.Commands.add("logout", () => {
-  cy.get(".ant-dropdown-trigger", { timeout: 8000 }).then((resp) => {
-    cy.get(resp[1]).trigger("mousemove").click();
-    cy.contains("Logout").click();
+Cypress.Commands.add('logout', () => {
+  cy.get('.ant-dropdown-trigger', { timeout: 8000 }).then((resp) => {
+    cy.get(resp[1]).trigger('mousemove').click();
+    cy.contains('Logout').click();
   });
 });
 
-Cypress.Commands.add(
-  "iframe",
-  { prevSubject: "element" },
-  ($iframe, callback = () => {}) => {
-    // For more info on targeting inside iframes refer to this GitHub issue:
-    // https://github.com/cypress-io/cypress/issues/136
-    cy.log("Getting iframe body");
+Cypress.Commands.add('iframe', { prevSubject: 'element' }, ($iframe, callback = () => {}) => {
+  // For more info on targeting inside iframes refer to this GitHub issue:
+  // https://github.com/cypress-io/cypress/issues/136
+  cy.log('Getting iframe body');
 
-    return cy
-      .wrap($iframe)
-      .should((iframe) => expect(iframe.contents().find("body")).to.exist)
-      .then((iframe) => cy.wrap(iframe.contents().find("body")))
-      .within({}, callback);
-  }
+  return cy
+    .wrap($iframe)
+    .should((iframe) => expect(iframe.contents().find('body')).to.exist)
+    .then((iframe) => cy.wrap(iframe.contents().find('body')))
+    .within({}, callback);
+});
+
+Cypress.Commands.add(
+  'isVisible',
+  {
+    prevSubject: true,
+  },
+  (subject) => {
+    const isVisible = (elem) =>
+      !!(elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length);
+    expect(isVisible(subject[0])).to.be.true;
+  },
 );
