@@ -3,7 +3,7 @@ import { Row, Col, Affix, Spin, Skeleton, DatePicker, Button } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import ModalSet1On1 from '@/components/ModalSet1On1';
 import StatusRequest from '@/components/StatusRequest';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 
 import icon1 from '@/assets/offboarding-meeting.svg';
 import icon2 from '@/assets/offboarding-close.svg';
@@ -37,6 +37,7 @@ class ResignationRequest extends Component {
       keyModal: '',
       changeLWD: '',
       lastWorkingDay: '',
+      reason: '',
     };
   }
 
@@ -102,6 +103,12 @@ class ResignationRequest extends Component {
     });
   };
 
+  onChangeReason = (reason) => {
+    this.setState({
+      reason,
+    });
+  };
+
   handleLWD = (value) => {
     this.setState({
       lastLWD: value,
@@ -119,10 +126,27 @@ class ResignationRequest extends Component {
   };
 
   handleSubmitTicket = () => {
-    const { dispatch, myRequest: { _id = '' } = {} } = this.props;
+    const { dispatch, myRequest: { _id = '', reasonForLeaving = '' } = {} } = this.props;
+    const { reason } = this.state;
+
+    let newReason = reasonForLeaving;
+    if (reason) {
+      newReason = reason;
+    }
+
     dispatch({
       type: 'offboarding/sendRequestUpdate',
-      payload: { id: _id },
+      payload: {
+        id: _id,
+        reasonForLeaving: newReason,
+        action: 'submit',
+        status: 'IN-PROGRESS',
+      },
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        history.replace('/offboarding/list');
+      }
     });
   };
 
@@ -191,6 +215,7 @@ class ResignationRequest extends Component {
                 changeLWD={changeLWD}
                 handleLWD={this.handleLWD}
                 status={status}
+                onChangeReason={this.onChangeReason}
               />
               {arrStatus.indexOf(status) > -1 && (
                 <div className={styles.btn}>
