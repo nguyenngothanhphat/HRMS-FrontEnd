@@ -1,9 +1,8 @@
+@spacing-xxs: 4px;
 @black: rgb(48, 48, 48);
 @header-color: #161c29;
 @gray: #707177;
-// @small-glow: #e4edff;
 @small-glow: #e9f0ff;
-// @big-glow: #e9f0ff;
 @big-glow: #f6f7f9;
 @blue: #2c6df9;
 @orange: #ffa100;
@@ -11,16 +10,33 @@
 @border-color: #d6dce0;
 
 .previewContainer {
-  display: flex;
-
   .left {
-    flex: 1;
-    min-width: 475px;
-    // padding: 63px 55px 78px 55px;
     height: fit-content;
-    background-color: white;
-    border: solid 1px @border-color;
-    border-radius: 5px;
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      span {
+        display: block;
+      }
+      .title {
+        color: #161c29;
+
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .expiryDate {
+        color: #ff5252;
+        font-size: 13px;
+      }
+    }
+    .leftContent {
+      background-color: white;
+      border: solid 1px @border-color;
+      border-radius: 5px;
+    }
 
     .leftContainer {
       header {
@@ -59,11 +75,8 @@
         font-size: 12px;
 
         div {
-          //   border-bottom: 1px solid @black;
           position: relative;
           display: inline-block;
-          //   margin: 0 5px;
-          //   width: 200px;
 
           input {
             width: 100%;
@@ -105,12 +118,81 @@
       width: 0px;
       background: transparent;
     }
+
+    .bottomBar {
+      padding: 4 * @spacing-xxs 32px;
+      background-color: #ffffff;
+      border: solid 1px #d6dce0;
+      border-radius: 5px;
+      box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
+      margin-block: 6 * @spacing-xxs;
+
+      .normalText {
+        display: flex;
+        color: #707177;
+        font-size: 13px;
+        font-family: 'Roboto';
+        font-style: italic;
+      }
+
+      .redText {
+        color: #ff4949;
+        font-size: 13px;
+        font-family: 'Roboto';
+        font-style: italic;
+      }
+
+      .greenText {
+        color: #47c97f;
+        font-size: 13px;
+        font-family: 'Roboto';
+        font-style: italic;
+      }
+
+      &__button {
+        text-align: right;
+        &__disabled {
+          opacity: 0.3;
+        }
+        :global {
+          .ant-btn-primary {
+            height: 40px;
+            object-fit: contain;
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 14px;
+            font-family: 'Roboto';
+            letter-spacing: 0.13px;
+            text-shadow: none;
+            background-color: #ffa100;
+            border: solid 1px #ffa100;
+            border-radius: 25px;
+            box-shadow: none;
+            padding-inline: 30px;
+            &:hover {
+              color: #ffffff;
+              background-color: #ffa100;
+            }
+          }
+          .ant-btn-secondary {
+            height: 40px;
+            padding-right: 41px;
+            object-fit: contain;
+            color: #ffa100;
+            font-weight: 500;
+            font-size: 14px;
+            font-family: 'Roboto';
+            letter-spacing: 0.13px;
+            border: solid 0;
+            border-radius: 25px;
+            padding-inline: 30px;
+          }
+        }
+      }
+    }
   }
 
   .right {
-    width: 321px;
-    margin-left: 24px;
-
     .signature,
     .send {
       margin-bottom: 16px;
@@ -147,7 +229,6 @@
         }
 
         .icon {
-
           .bigGlow,
           .smallGlow {
             border-radius: 50%;
@@ -234,7 +315,6 @@
         margin-top: 24px;
 
         button {
-          // padding: 12px 24px;
           width: 94px;
           height: 40px;
           background-color: @orange;
@@ -311,7 +391,6 @@
           position: absolute;
           bottom: -31px;
           left: 0;
-          // width: 288px;
           width: 100%;
           height: 2px;
           background-color: @border-color;
@@ -323,7 +402,6 @@
         span {
           color: @gray;
           font-size: 15px;
-          // margin-bottom: 8px;
         }
 
         input {
@@ -355,7 +433,6 @@
 
       .emails {
         display: block;
-        // color: #2c6df9;
       }
     }
   }

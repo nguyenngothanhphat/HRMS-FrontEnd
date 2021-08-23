@@ -18,17 +18,13 @@ class FilledByHR extends PureComponent {
     return (
       <div>
         <div className={styles1.FilledByHR}>
-          <Typography.Title level={5}>{Tab.positionTab.title}</Typography.Title>
           <Row gutter={[24, 0]}>
-            <Col xs={24} sm={24} md={8} lg={8} xl={8} className={styles1.Padding}>
+            <Col xs={24} md={12} className={styles1.Padding}>
+              <Typography.Title level={5}>{Tab.positionTab.title}</Typography.Title>
               <Typography.Text className={styles1.text}>{position}</Typography.Text>
             </Col>
-          </Row>
-          <div className={styles1.paddingBotTitle}>
-            <Typography.Title level={5}>{Tab.classificationTab?.title}</Typography.Title>
-          </div>
-          <Row gutter={[24, 0]}>
-            <Col xs={24} sm={24} md={8} lg={8} xl={8} className={styles1.Padding}>
+            <Col xs={24} md={12} className={styles1.Padding}>
+              <Typography.Title level={5}>{Tab.classificationTab?.title}</Typography.Title>
               <Typography.Text className={styles1.text}>{employeeType?.name}</Typography.Text>
             </Col>
           </Row>

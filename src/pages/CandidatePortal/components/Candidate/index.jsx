@@ -9,7 +9,7 @@ import Benefits from './components/Benefits';
 import EligibilityDocs from './components/EligibilityDocs';
 import JobDetails from './components/JobDetails';
 import OfferDetails from './components/OfferDetails';
-import PreviewOffer from './components/PreviewOffer';
+import OfferLetter from './components/OfferLetter';
 import SalaryStructure from './components/SalaryStructure';
 
 // list:
@@ -18,7 +18,7 @@ import SalaryStructure from './components/SalaryStructure';
 // 3: EligibilityDocs
 // 4: SalaryStructure
 // 5: OfferDetails
-// 6: PreviewOffer
+// 6: OfferLetter
 
 import styles from './index.less';
 
@@ -102,7 +102,7 @@ const Candidate = (props) => {
       case 5:
         return <OfferDetails />;
       case 6:
-        return <PreviewOffer />;
+        return <OfferLetter />;
       default:
         return <div />;
     }
@@ -113,21 +113,15 @@ const Candidate = (props) => {
     const defaultSet = [
       { id: 1, title: 'Basic Information', disabled: false },
       { id: 2, title: 'Job Details', disabled: false },
-      { id: 3, title: 'Eligibility documents', disabled: true },
     ];
     switch (action) {
       case candidateLink.reviewProfile:
         return [
           { id: 1, title: 'Basic Information', disabled: false },
           { id: 2, title: 'Job Details', disabled: false },
-          { id: 3, title: 'Eligibility documents', disabled: true },
         ];
       case candidateLink.uploadDocuments:
-        return [
-          { id: 1, title: 'Basic Information', disabled: true },
-          { id: 2, title: 'Job Details', disabled: true },
-          { id: 3, title: 'Eligibility documents', disabled: false },
-        ];
+        return [{ id: 3, title: 'Eligibility documents', disabled: false }];
       case candidateLink.salaryNegotiation:
         return [{ id: 4, title: 'Salary Negotiation', disabled: false }];
       case candidateLink.acceptOffer:

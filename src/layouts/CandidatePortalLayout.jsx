@@ -113,20 +113,20 @@ const CandidatePortalLayout = React.memo((props) => {
             <img src={companyLogo()} alt="logo" />
           </div>
           <span className={s.companyName}>{companyName()}</span>
-          {isCandidateMode && (
+          {/* {isCandidateMode && (
             <>
               <RightOutlined className={s.icon} />
               {titleName && <span className={s.description}>Candidature for {titleName}</span>}
             </>
-          )}
+          )} */}
         </div>
 
         <div className={s.headerRight}>
-          {isCandidateMode && (
+          {/* {isCandidateMode && (
             <div className={s.headerText}>
               <span>Candidate ID: {ticketId}</span>
             </div>
-          )}
+          )} */}
 
           <div className={s.headerIcon}>
             <img src={CalendarIcon} alt="calendar" />

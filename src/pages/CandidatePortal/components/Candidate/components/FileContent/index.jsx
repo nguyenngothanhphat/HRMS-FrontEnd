@@ -49,7 +49,7 @@ const FileContent = (props) => {
         <Page pageNumber={currentPage} />
       </Document>
 
-      <div className={s.control}>
+      {/* <div className={s.control}>
         <span>
           Page: <span className={s.current}>{currentPage}</span>/
           <span className={s.total}>{numPages}</span>
@@ -59,7 +59,7 @@ const FileContent = (props) => {
           <img src={LeftArrow} alt="back" className={s.back} onClick={() => back()} />
           <img src={RightArrow} alt="next" onClick={() => next()} />
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
