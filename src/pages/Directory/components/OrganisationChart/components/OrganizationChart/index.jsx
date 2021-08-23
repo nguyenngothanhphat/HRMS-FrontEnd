@@ -190,13 +190,24 @@ class OrganizationChart extends Component {
 
   renderChildrenList = () => {
     const { dataOrgChart } = this.props;
-    const { isCollapsedChild = false, itemSelected = '' } = this.state;
+    const { isCollapsedChild = false, isCollapsed = false, itemSelected = '' } = this.state;
     const { employees: listEmployees = [] } = dataOrgChart;
 
     const handleGetLine = (length) => {
       if (length === 1) return line;
       if (length > 2) return bigLines;
       return lines;
+    };
+
+    const checkCollapse = () => {
+      let collapse = false;
+      if (isCollapsed) {
+        if (isCollapsedChild) {
+          collapse = isCollapsedChild;
+        }
+      }
+
+      return collapse;
     };
 
     if (listEmployees.length === 0) return null;
@@ -212,7 +223,7 @@ class OrganizationChart extends Component {
             {listEmployees.map((employee) => {
               return (
                 <EmployeeNode
-                  isCollapsedChild={isCollapsedChild}
+                  isCollapsed={checkCollapse()}
                   key={employee._id}
                   itemSelected={itemSelected}
                   employee={employee}
