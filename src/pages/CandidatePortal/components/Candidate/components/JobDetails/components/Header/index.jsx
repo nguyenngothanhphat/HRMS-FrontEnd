@@ -20,9 +20,9 @@ class Header extends PureComponent {
           <Typography.Title level={4} className={styles.HeaderTitle}>
             {title}
           </Typography.Title>
-          <Typography.Title level={5} className={styles.HeaderText}>
+          {/* <Typography.Title level={5} className={styles.HeaderText}>
             {text}
-          </Typography.Title>
+          </Typography.Title> */}
         </div>
       </>
     );
