@@ -1,4 +1,5 @@
 import AttachmentIcon from '@/assets/attachment.svg';
+import InfoIcon from '@/assets/candidatePortal/infoIcon.svg';
 import TextSignature from '@/components/TextSignature';
 import { Button, Form, Input, message, Modal, Radio, Row, Select, Space, Spin, Upload } from 'antd';
 import React, { PureComponent } from 'react';
@@ -241,7 +242,12 @@ class AcceptOfferModal extends PureComponent {
             }
           >
             <Form.Item
-              label="Choose your options for Signature"
+              label={
+                <span>
+                  Choose your options for Signature
+                  <img style={{ marginLeft: '10px' }} src={InfoIcon} alt="info" />
+                </span>
+              }
               name="mode"
               labelCol={{ span: 24 }}
             >
@@ -295,12 +301,17 @@ class AcceptOfferModal extends PureComponent {
               <div className={styles.digitalSignatureZone}>
                 <Form.Item
                   rules={[{ required: true, message: 'Please enter name' }]}
-                  label="Digital Signature"
+                  label={
+                    <span>
+                      Digital Signature
+                      <img style={{ marginLeft: '10px' }} src={InfoIcon} alt="info" />
+                    </span>
+                  }
                   name="name"
                   labelCol={{ span: 24 }}
                 >
                   <Input
-                    placeholder="Digital Signature"
+                    placeholder="Enter your name"
                     value={digitalSignatureName}
                     autoComplete="off"
                     defaultValue={digitalSignatureName}

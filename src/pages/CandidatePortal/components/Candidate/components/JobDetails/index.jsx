@@ -228,6 +228,10 @@ class JobDetails extends PureComponent {
     });
   };
 
+  onCancel = () => {
+    history.push('/candidate-portal/dashboard');
+  };
+
   _renderStatus = () => {
     const { checkMandatory } = this.props;
     const { filledJobDetail } = checkMandatory;
@@ -268,17 +272,18 @@ class JobDetails extends PureComponent {
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
-          <Col span={16}>
-            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
-          </Col>
           <Col span={8}>
+            {/* <div className={styles.bottomBar__status}>{this._renderStatus()}</div> */}
+          </Col>
+          <Col span={16}>
             <div className={styles.bottomBar__button}>
               <Button
                 type="secondary"
-                onClick={this.onClickPrev}
+                // onClick={this.onClickPrev}
+                onClick={this.onCancel}
                 className={styles.bottomBar__button__secondary}
               >
-                Previous
+                Cancel
               </Button>
               <Button
                 type="primary"
@@ -357,7 +362,7 @@ class JobDetails extends PureComponent {
       },
       {
         title: 'prefferedDateOfJoining',
-        name: formatMessage({ id: 'component.jobDetail.prefferedDateOfJoining' }),
+        name: 'Please select your preferred Date of Joining',
         id: 2,
       },
       {
@@ -371,8 +376,8 @@ class JobDetails extends PureComponent {
       title: formatMessage({ id: 'component.noteComponent.title' }),
       data: (
         <Typography.Text>
-          Onboarding is a step-by-step process. It takes anywhere around <span>9-12 standard</span>{' '}
-          working days for entire process to complete
+          Please verify the job details that have been added. In case of incorrect details, please
+          send a note in the text box below.
         </Typography.Text>
       ),
     };

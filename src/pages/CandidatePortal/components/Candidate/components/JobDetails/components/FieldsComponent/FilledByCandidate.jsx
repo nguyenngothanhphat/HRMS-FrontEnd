@@ -1,7 +1,8 @@
-import { Col, DatePicker, Radio, Row, Typography } from 'antd';
+import { Col, DatePicker, Popover, Radio, Row, Tooltip, Typography } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import WarningIcon from '@/assets/candidatePortal/warningIcon.svg';
 import InternalStyle from './FilledByCandidate.less';
 
 const dateFormat = 'MM.DD.YY';
@@ -15,6 +16,7 @@ class FilledByCandidate extends PureComponent {
     this.state = {
       isHidden: false,
       acceptDOJ: false,
+      originalDOJ: '',
     };
   }
 
@@ -23,10 +25,12 @@ class FilledByCandidate extends PureComponent {
     if (acceptDOJ && dateOfJoining) {
       this.setState({
         acceptDOJ: true,
+        originalDOJ: dateOfJoining,
       });
     } else {
       this.setState({
         acceptDOJ: false,
+        originalDOJ: dateOfJoining,
       });
     }
   };
@@ -61,14 +65,40 @@ class FilledByCandidate extends PureComponent {
       _handleSelect = () => {},
       data: { dateOfJoining = '' },
     } = this.props;
-    const { acceptDOJ } = this.state;
+    const { acceptDOJ, originalDOJ } = this.state;
 
     return (
       <div className={InternalStyle.CandidateFields}>
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <Typography.Title level={5}>
-              {acceptDOJ ? candidateField[1].name : candidateField[2].name}*
+              {candidateField[2].name}
+              <Popover
+                placement="right"
+                content={
+                  <span
+                    style={{
+                      color: '#707177',
+                      display: 'inline-block',
+                      maxWidth: '300px',
+                      fontSize: '13px',
+                    }}
+                  >
+                    This is our suggested Joining Date. If you cant join on this date, please select
+                    'No' below to input your preferred Joining Date.
+                  </span>
+                }
+                trigger="hover"
+              >
+                <span
+                  style={{
+                    marginLeft: '10px',
+                    marginTop: '-2px',
+                  }}
+                >
+                  <img src={WarningIcon} alt="info" />
+                </span>
+              </Popover>
             </Typography.Title>
             <DatePicker
               className={styles}
@@ -77,9 +107,9 @@ class FilledByCandidate extends PureComponent {
               placeholder=""
               picker="date"
               format={dateFormat}
-              disabled={acceptDOJ}
-              onChange={(value) => _handleSelect(value, candidateField[2].title)}
-              value={dateOfJoining ? moment(dateOfJoining) : undefined}
+              disabled
+              // onChange={(value) => _handleSelect(value, candidateField[2].title)}
+              value={originalDOJ ? moment(originalDOJ) : undefined}
             />
           </Col>
           {/* {!acceptDOJ && (
@@ -107,6 +137,24 @@ class FilledByCandidate extends PureComponent {
             </Radio.Group>
           </Col>
         </Row>
+
+        {!acceptDOJ && (
+          <Row gutter={[24, 0]}>
+            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+              <Typography.Title level={5}>{candidateField[1].name}</Typography.Title>
+              <DatePicker
+                className={styles}
+                allowClear={false}
+                disabledDate={this.disabledDate}
+                placeholder=""
+                picker="date"
+                format={dateFormat}
+                onChange={(value) => _handleSelect(value, candidateField[2].title)}
+                value={dateOfJoining ? moment(dateOfJoining) : undefined}
+              />
+            </Col>
+          </Row>
+        )}
       </div>
     );
   }

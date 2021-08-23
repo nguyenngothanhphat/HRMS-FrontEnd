@@ -300,10 +300,10 @@ class BasicInformation extends PureComponent {
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
-          <Col span={16}>
-            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
-          </Col>
           <Col span={8}>
+            {/* <div className={styles.bottomBar__status}>{this._renderStatus()}</div> */}
+          </Col>
+          <Col span={16}>
             <div className={styles.bottomBar__button}>
               {' '}
               <Button
@@ -348,8 +348,8 @@ class BasicInformation extends PureComponent {
       title: 'Note',
       data: (
         <Typography.Text>
-          Onboarding is a step-by-step process. It takes anywhere around <span>9-12 standard</span>{' '}
-          working days for entire process to complete
+          Please verify the profile details that have been added. In case of incorrect details,
+          please send a note in the text box below.
         </Typography.Text>
       ),
     };

@@ -103,7 +103,10 @@ const CandidatePortalLayout = React.memo((props) => {
   };
 
   const avatarMenu = (
-    <Menu className={s.dropdownMenu} style={{ padding: '8px 0 0', borderRadius: '12px' }}>
+    <Menu
+      className={s.dropdownMenu}
+      style={{ padding: '8px 0 0', borderRadius: '12px', marginTop: '11px' }}
+    >
       <Menu.Item style={{ color: '#707177', paddingBlock: '5px', pointerEvents: 'none' }}>
         {candidateFullName}
       </Menu.Item>

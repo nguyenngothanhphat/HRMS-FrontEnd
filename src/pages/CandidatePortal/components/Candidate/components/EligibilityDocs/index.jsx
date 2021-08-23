@@ -110,10 +110,7 @@ class EligibilityDocs extends PureComponent {
   };
 
   processData = async () => {
-    const {
-      candidate = {},
-      dispatch,
-    } = this.props;
+    const { candidate = {}, dispatch } = this.props;
 
     if (candidate) {
       const res = await dispatch({
@@ -604,13 +601,17 @@ class EligibilityDocs extends PureComponent {
 
   _renderBottomBar = () => {
     const { currentStep = 0 } = this.props;
+    const { loading1 } = this.props;
+    const { isSending, isSentEmail } = this.state;
+    const checkFull = this.checkFull();
+
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
-          <Col span={16}>
-            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
-          </Col>
           <Col span={8}>
+            {/* <div className={styles.bottomBar__status}>{this._renderStatus()}</div> */}
+          </Col>
+          <Col span={16}>
             <div className={styles.bottomBar__button}>
               {/* <Button type="secondary" onClick={this.onClickPrev}>
                 Previous
@@ -618,13 +619,17 @@ class EligibilityDocs extends PureComponent {
               <Button
                 type="primary"
                 htmlType="submit"
-                onClick={this.onClickNext}
+                onClick={this.handleSendEmail}
+                // className={`${styles.bottomBar__button__primary} ${
+                //   currentStep < 5 ? styles.bottomBar__button__disabled : ''
+                // }`}
                 className={`${styles.bottomBar__button__primary} ${
-                  currentStep < 5 ? styles.bottomBar__button__disabled : ''
+                  !checkFull ? styles.bottomBar__button__disabled : ''
                 }`}
-                disabled={currentStep < 5}
+                disabled={!checkFull}
+                loading={loading1 || isSending}
               >
-                Next
+                {isSentEmail ? 'Submit Again' : 'Submit'}
               </Button>
             </div>
           </Col>
@@ -636,23 +641,24 @@ class EligibilityDocs extends PureComponent {
   render() {
     const {
       loading,
-      loading1,
       loading2,
       loadingFile,
       data: {
         attachments,
         documentListToRender,
         validateFileSize,
-        generatedBy,
+        // generatedBy,
         processStatus,
       } = {},
     } = this.props;
-    const { openModal, isSentEmail, isSending, hrEmail } = this.state;
-    const { generalInfo: { workEmail } = {} || {} } = generatedBy || {};
+    const {
+      openModal,
+      // isSentEmail,
+      isSending,
+    } = this.state;
+    // const { generalInfo: { workEmail } = {} || {} } = generatedBy || {};
     // const {  } = user;
     // console.log(processStatus);
-
-    const checkFull = this.checkFull();
 
     if ((loading2 && !isSending) || loadingFile)
       return (
@@ -712,7 +718,7 @@ class EligibilityDocs extends PureComponent {
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={Note} />
-            {documentListToRender.length > 0 ? (
+            {/* {documentListToRender.length > 0 ? (
               <>
                 {hrEmail ? (
                   <SendEmail
@@ -740,7 +746,7 @@ class EligibilityDocs extends PureComponent {
               </>
             ) : (
               <StepsComponent />
-            )}
+            )} */}
           </Col>
         </Row>
         <CustomModal

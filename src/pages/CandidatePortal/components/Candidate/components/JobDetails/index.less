@@ -5,7 +5,7 @@
   border-radius: 5px;
 
   .belowPart {
-    margin: 32px;
+    margin: 0 32px 32px;
     border-top: 1px solid #d6dce0;
 
     .verifyCheckbox {
@@ -23,76 +23,6 @@
     }
   }
 
-  .bottomBar {
-    padding: 4 * @spacing-xxs 32px;
-    background-color: #ffffff;
-    border: solid 1px #d6dce0;
-    border-radius: 5px;
-    box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
-
-    .normalText {
-      display: flex;
-      color: #707177;
-      font-size: 13px;
-      font-family: 'Roboto';
-      font-style: italic;
-    }
-
-    .redText {
-      color: #ff4949;
-      font-size: 13px;
-      font-family: 'Roboto';
-      font-style: italic;
-    }
-
-    .greenText {
-      color: #47c97f;
-      font-size: 13px;
-      font-family: 'Roboto';
-      font-style: italic;
-    }
-
-    &__button {
-      text-align: right;
-      &__disabled {
-        opacity: 0.3;
-      }
-      :global {
-        .ant-btn-primary {
-          height: 40px;
-          object-fit: contain;
-          color: #ffffff;
-          font-weight: 500;
-          font-size: 14px;
-          font-family: 'Roboto';
-          letter-spacing: 0.13px;
-          text-shadow: none;
-          background-color: #ffa100;
-          border: solid 1px #ffa100;
-          border-radius: 25px;
-          box-shadow: none;
-          padding-inline: 30px;
-          &:hover {
-            color: #ffffff;
-            background-color: #ffa100;
-          }
-        }
-        .ant-btn-secondary {
-          width: 94px;
-          height: 40px;
-          padding-right: 41px;
-          object-fit: contain;
-          color: #ffa100;
-          font-weight: 500;
-          font-size: 14px;
-          font-family: 'Roboto';
-          letter-spacing: 0.13px;
-          border: solid 0;
-          border-radius: 25px;
-        }
-      }
-    }
-  }
   :global {
     h5.ant-typography {
       margin: 0;
@@ -195,7 +125,7 @@
         border: solid 1px #ffa100;
         border-radius: 25px;
         box-shadow: none;
-        padding-inline: 30px;
+        padding-inline: 25px;
         &:hover {
           color: #ffffff;
           background-color: #ffa100;
@@ -206,7 +136,7 @@
         height: 40px;
         padding-right: 41px;
         object-fit: contain;
-        color: #ffa100;
+        color: #fd4546;
         font-weight: 500;
         font-size: 14px;
         font-family: 'Roboto';

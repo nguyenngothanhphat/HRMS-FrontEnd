@@ -121,7 +121,7 @@ const Candidate = (props) => {
           { id: 2, title: 'Job Details', disabled: false },
         ];
       case candidateLink.uploadDocuments:
-        return [{ id: 3, title: 'Eligibility documents', disabled: false }];
+        return [{ id: 3, title: 'Upload Documents', disabled: false }];
       case candidateLink.salaryNegotiation:
         return [{ id: 4, title: 'Salary Negotiation', disabled: false }];
       case candidateLink.acceptOffer:
