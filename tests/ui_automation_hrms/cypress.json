@@ -1,9 +1,18 @@
 {
     "env": {
-        "employee_email": "adidashrguy@mailinator.com",
-        "manager_email" : "adidashrman@mailinator.com",
+        "owner_email":"comp1-superad@mailinator.com",
+        "hrManager_email":"comp1-hr-manager@mailinator.com",
+        "hr_email":"comp1-employee-hre1@mailinator.com",
+        "employee_email": "huu.nguyen@mailinator.com",
+        "manager_email" : "ngoc.nguyen@mailinator.com",
         "password" : "12345678@Tc",
         "fromDate" : "09.29.21",
         "toDate" : "09.30.21"
-    }
+    },
+    "watchForFileChanges":true,
+    "defaultComandTimeout": 4000,
+    "viewportWidth": 1280,
+    "viewportHeight": 768,
+    "chromeWebSecurity": false
+
 }
