@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable camelcase */
 /// <reference types="cypress" />
-
+const host_url = Cypress.env('HOST_URL');
 const owner_email = Cypress.env('owner_email');
 const password = Cypress.env('password');
 const id = 1000 + Math.floor(Math.random() * 9000);
@@ -25,17 +25,17 @@ const employee = {
   personalEmail: 'nva@mailinator.com',
   BloodGroup: 'O+',
   MaritalStatus: 'Single',
-  linkedin: 'https://www.linkedin.co/,',
+  linkedin: 'https://www.linkedin.com/',
   address: '102 Phan Van Hon',
-  CityName: 'Binh Duong',
+  CityName: 'Ho Chi Minh',
   country: 'Viet Nam',
-  state: 'Binh Duong',
+  state: 'Thanh Pho Ho Chi Minh',
   zipcode: '70000',
 };
 
 describe('Directory Automation', () => {
   before(() => {
-    cy.visit('https://stghrms.paxanimi.ai/login');
+    cy.visit(host_url);
   });
 
   it('Search and Add employee', () => {
@@ -88,7 +88,7 @@ describe('Directory Automation', () => {
       force: true,
     });
 
-    cy.wait(1000);
+    cy.wait(2000);
     cy.get('#formAddEmployee_roles').type('EMPLOYEE{enter}', {
       force: true,
     });
@@ -141,7 +141,7 @@ describe('Directory Automation', () => {
 
     // cy.pause();
     cy.wait(3000);
-    cy.contains(employee.name).click();
+    cy.get('.directoryTableName___UAFj4').click();
     cy.wait(10000);
     cy.get('.flexEdit___1-A4Q').click();
     cy.wait(1000);
@@ -211,18 +211,19 @@ describe('Directory Automation', () => {
         force: true,
       })
       .then(() => {
-        cy.get('[title="Viet Nam"]').first().click({
+        cy.get('[title="Viet Nam"]').last().click({
           force: true,
         });
       });
+    cy.wait(1000);
     cy.get(
       ':nth-child(10) > .ant-col-18 > [style="margin-left: -6px; margin-right: -6px; row-gap: 24px;"] > :nth-child(2) > .ant-row > .ant-form-item-control > .ant-form-item-control-input > .ant-form-item-control-input-content > .ant-select > .ant-select-selector > .ant-select-selection-search>.ant-select-selection-search-input',
     )
       .trigger('mousemove', { force: true })
       .click({ force: true })
-      // .type('thanh', { force: true })
+      .type('thanh', { force: true })
       .then(() => {
-        cy.get('[title="Da Nang"]').first().click({
+        cy.get('[title="Thanh Pho Ho Chi Minh"]').last().click({
           force: true,
         });
       });
@@ -255,14 +256,15 @@ describe('Directory Automation', () => {
           force: true,
         });
       });
+    cy.wait(1000);
     cy.get(
       ':nth-child(15) > .ant-col-18 > [style="margin-left: -6px; margin-right: -6px; row-gap: 24px;"] > :nth-child(2) > .ant-row > .ant-form-item-control > .ant-form-item-control-input > .ant-form-item-control-input-content > .ant-select > .ant-select-selector > .ant-select-selection-search>.ant-select-selection-search-input',
     )
       .trigger('mousemove', { force: true })
       .click({ force: true })
-      // .type('thanh', { force: true })
+      .type('thanh', { force: true })
       .then(() => {
-        cy.get('[title="Binh Duong"]').last().click({
+        cy.get('[title="Thanh Pho Ho Chi Minh"]').last().click({
           force: true,
         });
       });

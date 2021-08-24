@@ -1,10 +1,11 @@
 {
     "env": {
+        "HOST_URL": "http://localhost:8000",
         "owner_email":"comp1-superad@mailinator.com",
         "hrManager_email":"comp1-hr-manager@mailinator.com",
         "hr_email":"comp1-employee-hre1@mailinator.com",
         "employee_email": "huu.nguyen@mailinator.com",
-        "manager_email" : "ngoc.nguyen@mailinator.com",
+        "manager_email" : "dan.nguyen@mailinator.com",
         "password" : "12345678@Tc",
         "fromDate" : "09.29.21",
         "toDate" : "09.30.21"

@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable camelcase */
 /// <reference types="cypress" />
-
+const host_url = Cypress.env('HOST_URL');
 const hr_email = Cypress.env('hr_email');
 const hrManager_email = Cypress.env('hrManager_email');
 const password = Cypress.env('password');
@@ -31,7 +31,7 @@ const candidate = {
 
 describe('Onboarding Automation', () => {
   it('Add candidate', () => {
-    cy.visit('https://stghrms.paxanimi.ai/login');
+    cy.visit(host_url);
     cy.wait(1000);
     cy.loginAsSomeone(hr_email, password);
     // cy.contains('Please select a company profile to proceed', {
@@ -102,8 +102,8 @@ describe('Onboarding Automation', () => {
         cy.get('#title_list').next().contains(candidate.title).click({ force: true });
       });
     // cy.wait(2000);
-    cy.get('#reportingManager', { timeout: 10000 })
-      .should('be.enabled', { timeout: 10000 })
+    cy.get('#reportingManager', { timeout: 15000 })
+      .should('be.enabled', { timeout: 15000 })
       .type(candidate.manager)
       .then(() => {
         cy.get('#reportingManager_list')
@@ -151,7 +151,6 @@ describe('Onboarding Automation', () => {
               .invoke('text')
               .then((text) => {
                 const parts = text.split(' ');
-                // const moreparts = parts[1].split(']');
                 const password_candidate = parts[1];
 
                 cy.writeFile('cypress/fixtures/onboarding_ticket.json', {
@@ -166,7 +165,7 @@ describe('Onboarding Automation', () => {
 
   // candidate login
   it('Candidate Login', () => {
-    cy.visit('https://stghrms.paxanimi.ai/login');
+    cy.visit(host_url);
     cy.readFile('cypress/fixtures/onboarding_ticket.json').then((item) => {
       cy.loginAsSomeone(item.email, item.password);
       cy.wait(2000);
@@ -233,7 +232,7 @@ describe('Onboarding Automation', () => {
 
   // hr verify document
   it('HR verify document', () => {
-    cy.visit('https://stghrms.paxanimi.ai/login');
+    cy.visit(host_url);
     cy.wait(1000);
     cy.loginAsSomeone(hr_email, password);
     // cy.contains('Please select a company profile to proceed', {
@@ -350,8 +349,7 @@ describe('Onboarding Automation', () => {
 
   // hr manager
   it('HR Manager verify', () => {
-    cy.visit('https://stghrms.paxanimi.ai/login');
-    // cy.contains('Sign in to your account', { timeout: 10000 });
+    cy.visit(host_url);
     cy.wait(1000);
     cy.loginAsSomeone(hrManager_email, password);
     // cy.contains('Please select a company profile to proceed', {
@@ -374,7 +372,7 @@ describe('Onboarding Automation', () => {
       cy.contains(item.ticketId).click();
     });
     cy.wait(7000);
-    cy.get('#rc_select_3')
+    cy.get('.ant-select-selection-item')
       .trigger('mousedown')
       .then(() => {
         cy.get('[title="Digital Signature"]').click({ force: true });
@@ -382,14 +380,14 @@ describe('Onboarding Automation', () => {
     cy.get(':nth-child(2) > :nth-child(5) > .ant-col > .ant-input').type('Hr Manager', {
       force: true,
     });
-    cy.get(':nth-child(2) > :nth-child(5) > .ant-col > .ant-input')
-      .clear()
-      .type('Hr Manager', { force: true });
+    // cy.get(':nth-child(2) > :nth-child(5) > .ant-col > .ant-input')
+    //   .clear()
+    //   .type('Hr Manager', { force: true });
 
     cy.get(':nth-child(4) > .ant-radio-wrapper > .ant-radio > .ant-radio-inner').click({
       force: true,
     });
-    cy.get(':nth-child(2) > .submitContainer___2fKdz > .ant-btn').click();
+    cy.get('.submitContainer___2fKdz > .ant-btn').click();
     cy.wait(2000);
     cy.get('.ant-form-item-control-input-content > .ant-btn').should('be.enabled').click();
     cy.get('.contentContainer___3-OXs > div > .ant-btn', { timeout: 10000 }).click();
@@ -398,16 +396,9 @@ describe('Onboarding Automation', () => {
   });
 
   // candidate
-  it.only('Candidate accept final offer', () => {
-    cy.visit('https://stghrms.paxanimi.ai/login');
+  it('Candidate accept final offer', () => {
+    cy.visit(host_url);
     cy.readFile('cypress/fixtures/onboarding_ticket.json').then((item) => {
-      // cy.loginAsSomeone(item.email, item.password);
-      // cy.wait(2000);
-      // cy.get('#basic_currentPassword').type(item.password);
-      // cy.get('#basic_newPassword').type(password);
-      // cy.get('#basic_confirmPassword').type(password);
-      // cy.get('.ant-btn').click();
-      // cy.wait(2000);
       cy.loginAsSomeone(item.email, password);
     });
     cy.wait(7000);
