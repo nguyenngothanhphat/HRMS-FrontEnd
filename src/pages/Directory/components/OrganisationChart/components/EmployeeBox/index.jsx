@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Avatar, Row, Col, Select, Spin, Divider, Tooltip, Popover } from 'antd';
+import { Avatar, Row, Col, Select, Spin, Divider, Tooltip, Popover, Form } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { Link, connect } from 'umi';
-import { isEmpty } from 'lodash';
+import { isEmpty, debounce } from 'lodash';
 
 import SearchIcon from '@/assets/searchOrgChart.svg';
 import avtDefault from '@/assets/avtDefault.jpg';
@@ -11,24 +11,47 @@ import styles from './index.less';
 
 const { Option } = Select;
 
-@connect(({ employee: { listEmployeeAll = [] } = {}, user: { companiesOfUser = [] } = {} }) => ({
-  listEmployeeAll,
-  companiesOfUser,
-}))
+@connect(
+  ({
+    employee: { listEmployeeAll = [] } = {},
+    user: { companiesOfUser = [] } = {},
+    locationSelection: { listLocationsByCompany = [] } = {},
+    loading,
+  }) => ({
+    listEmployeeAll,
+    companiesOfUser,
+    listLocationsByCompany,
+    loadingFetchListAll: loading.effects['employee/fetchAllListUser'],
+  }),
+)
 class DetailEmployeeChart extends Component {
   constructor(props) {
     super(props);
     this.state = {
       valueInput: undefined,
+      valueSearch: '',
     };
+
+    this.setDebounce = debounce((valueSearch) => {
+      this.setState({
+        valueSearch,
+      });
+    }, 1000);
+
     this.inputRef = React.createRef();
+    this.formRef = React.createRef();
   }
 
-  componentDidUpdate = (prevProp) => {
-    const { chartDetails = {} } = this.props;
+  componentDidUpdate = (prevProp, prevState) => {
+    const { chartDetails = {}, fetchAllListUser = () => {} } = this.props;
+    const { valueSearch } = this.state;
     const { _id = undefined } = chartDetails;
-    if (JSON.stringify(prevProp.chartDetails) !== JSON.stringify(chartDetails)) {
-      this.updateValueSelect(_id);
+    // if (JSON.stringify(prevProp.chartDetails) !== JSON.stringify(chartDetails)) {
+    //   this.updateValueSelect(_id);
+    // }
+
+    if (prevState.valueSearch !== valueSearch) {
+      fetchAllListUser(valueSearch);
     }
   };
 
@@ -37,10 +60,19 @@ class DetailEmployeeChart extends Component {
   };
 
   handleSelect = (value) => {
-    const { handleSelectSearch } = this.props;
-    this.setState({ valueInput: value });
-    handleSelectSearch(value);
+    const { handleSelectSearch, closeDetailEmployee = () => {} } = this.props;
+    // this.setState({ valueInput: value });
     this.inputRef.current.blur();
+    this.formRef.current.resetFields(['search']);
+    handleSelectSearch(value);
+    closeDetailEmployee();
+  };
+
+  onSearch = (value) => {
+    if (value) {
+      const formatValue = value.toLowerCase();
+      this.setDebounce(formatValue);
+    }
   };
 
   handleClick = () => {
@@ -94,65 +126,84 @@ class DetailEmployeeChart extends Component {
     const locationName = `${state}, ${countryName}`;
 
     const getCurrentCompanyName = this.getCurrentFirm();
+
     return (
       <>
-        <div className={styles.chartSearch} onClick={checkObj ? this.handleClick : null}>
-          <div className={styles.chartSearch__name}>{getCurrentCompanyName}</div>
-          {loadingFetchListAll ? (
-            <div className={styles.viewLoading}>
-              <Spin size="large" />
-            </div>
-          ) : (
-            <Select
-              ref={this.inputRef}
-              showSearch
-              placeholder="Search for employee, department"
-              filterOption={(input, option) => {
-                return (
-                  option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                );
-              }}
-              onSelect={this.handleSelect}
-              suffixIcon={valueInput ? null : <img alt="search" src={SearchIcon} />}
-              value={valueInput}
-            >
-              {listEmployeeAll.map((value) => {
-                const {
-                  _id: idSearch = '',
-                  generalInfo: {
-                    avatar: avatarSearch = '',
-                    firstName: firstNameSearch = '',
-                    middleName: middleNameSearch = '',
-                    lastName: lastNameSearch = '',
-                    employeeId: employeeIdSearch = '',
-                    userId: userIdSearch = '',
-                  } = {},
-                } = value;
-                const fullNameSearch = `${firstNameSearch} ${middleNameSearch} ${lastNameSearch}`;
-
-                const emplName = `${fullNameSearch} (${employeeIdSearch}) (${userIdSearch})`;
-                return (
-                  <Option key={idSearch} value={idSearch}>
-                    <div style={{ display: 'inline', marginRight: '10px' }}>
-                      <Avatar
-                        src={avatarSearch || ''}
-                        size={30}
-                        icon={<UserOutlined />}
-                        style={{
-                          fontSize: 'initial',
-                          width: '25px',
-                          height: '25px',
-                        }}
-                      />
-                    </div>
-                    <span style={{ fontSize: '13px', color: '#161C29' }} className={styles.ccEmail}>
-                      {emplName}
-                    </span>
+        <div className={styles.chartSearch}>
+          <div className={styles.chartSearch__name} onClick={checkObj ? this.handleClick : null}>
+            {getCurrentCompanyName}
+          </div>
+          <Form ref={this.formRef}>
+            <Form.Item name="search">
+              <Select
+                ref={this.inputRef}
+                showSearch
+                placeholder="Search for employee, department"
+                filterOption={false}
+                notFoundContent={null}
+                defaultActiveFirstOption={false}
+                suffixIcon={valueInput ? null : <img alt="search" src={SearchIcon} />}
+                onSelect={this.handleSelect}
+                onSearch={this.onSearch}
+                onChange={() => this.setState({ valueInput: undefined })}
+              >
+                {loadingFetchListAll ? (
+                  <Option className={styles.viewLoading}>
+                    <Spin
+                      size="large"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '20px',
+                      }}
+                    />
                   </Option>
-                );
-              })}
-            </Select>
-          )}
+                ) : (
+                  <>
+                    {listEmployeeAll.map((value) => {
+                      const {
+                        _id: idSearch = '',
+                        generalInfo: {
+                          avatar: avatarSearch = '',
+                          firstName: firstNameSearch = '',
+                          middleName: middleNameSearch = '',
+                          lastName: lastNameSearch = '',
+                          employeeId: employeeIdSearch = '',
+                          userId: userIdSearch = '',
+                        } = {},
+                      } = value;
+                      const fullNameSearch = `${firstNameSearch} ${middleNameSearch} ${lastNameSearch}`;
+
+                      const emplName = `${fullNameSearch} (${employeeIdSearch}) (${userIdSearch})`;
+                      return (
+                        <Option key={idSearch} value={idSearch}>
+                          <div style={{ display: 'inline', marginRight: '10px' }}>
+                            <Avatar
+                              src={avatarSearch || ''}
+                              size={30}
+                              icon={<UserOutlined />}
+                              style={{
+                                fontSize: 'initial',
+                                width: '25px',
+                                height: '25px',
+                              }}
+                            />
+                          </div>
+                          <span
+                            style={{ fontSize: '13px', color: '#161C29' }}
+                            className={styles.ccEmail}
+                          >
+                            {emplName}
+                          </span>
+                        </Option>
+                      );
+                    })}
+                  </>
+                )}
+              </Select>
+            </Form.Item>
+          </Form>
         </div>
         {checkObj ? (
           <div className={styles.chartDetail}>
