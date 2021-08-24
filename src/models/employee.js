@@ -315,7 +315,7 @@ const employee = {
         if (statusCode !== 200) throw response;
 
         yield put({ type: 'listEmployeeAll', payload: { listEmployeeAll } });
-        return listEmployeeAll;
+        return response;
       } catch (errors) {
         dialog(errors);
         return 0;

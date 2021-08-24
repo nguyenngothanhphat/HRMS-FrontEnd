@@ -51,28 +51,28 @@ class OrganisationChart extends Component {
       payload: { tenantId: getCurrentTenant() },
     });
 
-    dispatch({
-      type: 'employee/fetchDataOrgChart',
-      payload: { employee: myEmployeeId },
-    }).then((response) => {
-      const { statusCode, data: dataOrgChart = {} } = response;
-      if (statusCode === 200) this.getInitUserInformation(dataOrgChart);
+    this.fetchAllListUser().then((status) => {
+      if (status === 200) {
+        dispatch({
+          type: 'employee/fetchDataOrgChart',
+          payload: { employee: myEmployeeId },
+        }).then((response) => {
+          const { statusCode, data: dataOrgChart = {} } = response;
+          if (statusCode === 200) this.getInitUserInformation(dataOrgChart);
+        });
+      }
     });
 
-    this.fetchAllListUser();
     this.fetchTimezone();
   }
 
   componentDidUpdate(prevProps) {
-    const { listLocationsByCompany = [], dataOrgChart = {}, listEmployeeAll } = this.props;
+    const { listLocationsByCompany = [] } = this.props;
     if (
       JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {
       this.fetchAllListUser();
       this.fetchTimezone();
-    }
-    if (JSON.stringify(prevProps.listEmployeeAll) !== JSON.stringify(listEmployeeAll)) {
-      this.getInitUserInformation(dataOrgChart);
     }
   }
 
@@ -131,7 +131,8 @@ class OrganisationChart extends Component {
     }
   };
 
-  fetchAllListUser = (name = '') => {
+  fetchAllListUser = async (name = '') => {
+    let status = 0;
     const { listLocationsByCompany = [], companiesOfUser = [], dispatch } = this.props;
 
     const convertLocation = listLocationsByCompany.map((item) => {
@@ -142,10 +143,14 @@ class OrganisationChart extends Component {
       };
     });
 
-    dispatch({
+    await dispatch({
       type: 'employee/fetchAllListUser',
       payload: { company: companiesOfUser, location: convertLocation, limit: 10, page: 1, name },
+    }).then((response) => {
+      const { statusCode = 0 } = response;
+      if (statusCode === 200) status = statusCode;
     });
+    return status;
   };
 
   // deepSearchCurrentUser = (data, myEmployeeId, key, sub) => {

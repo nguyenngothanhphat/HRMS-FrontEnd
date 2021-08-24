@@ -36,7 +36,7 @@ class DetailEmployeeChart extends Component {
       this.setState({
         valueSearch,
       });
-    }, 500);
+    }, 1000);
 
     this.inputRef = React.createRef();
     this.formRef = React.createRef();
@@ -69,8 +69,10 @@ class DetailEmployeeChart extends Component {
   };
 
   onSearch = (value) => {
-    const formatValue = value.toLowerCase();
-    this.setDebounce(formatValue);
+    if (value) {
+      const formatValue = value.toLowerCase();
+      this.setDebounce(formatValue);
+    }
   };
 
   handleClick = () => {
