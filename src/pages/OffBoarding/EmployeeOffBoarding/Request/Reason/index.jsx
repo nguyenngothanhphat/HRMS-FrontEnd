@@ -32,6 +32,11 @@ class Reason extends PureComponent {
     this.setViewDocumentModal(true);
   };
 
+  onChangeContent = (e) => {
+    const { onChangeReason = () => {} } = this.props;
+    onChangeReason(e.target.value);
+  };
+
   render() {
     const {
       myRequest: {
@@ -116,6 +121,7 @@ class Reason extends PureComponent {
             className={`${styles.boxReason} ${status === 'DRAFT' ? styles.boxReasonDraft : ''}`}
             defaultValue={reasonForLeaving}
             disabled={status !== 'DRAFT'}
+            onChange={this.onChangeContent}
           />
           {/* <div className={styles.lastWorkingDay}>
             <span className={styles.title}>Last working date (System generated)</span>
