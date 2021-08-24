@@ -148,7 +148,7 @@ class DetailEmployeeChart extends Component {
                 onChange={() => this.setState({ valueInput: undefined })}
               >
                 {loadingFetchListAll ? (
-                  <div className={styles.viewLoading}>
+                  <Option className={styles.viewLoading}>
                     <Spin
                       size="large"
                       style={{
@@ -158,7 +158,7 @@ class DetailEmployeeChart extends Component {
                         padding: '20px',
                       }}
                     />
-                  </div>
+                  </Option>
                 ) : (
                   <>
                     {listEmployeeAll.map((value) => {
