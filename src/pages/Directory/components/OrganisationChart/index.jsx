@@ -37,6 +37,7 @@ class OrganisationChart extends Component {
       chartDetails: {},
       timezoneList: [],
       currentTime: moment(),
+      status: 0,
     };
     this.myRef = React.createRef();
     this.userRef = React.createRef([]);
@@ -44,7 +45,7 @@ class OrganisationChart extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, myEmployeeId = '' } = this.props;
+    const { dispatch } = this.props;
 
     dispatch({
       type: 'employeeProfile/fetchEmployeeTypes',
@@ -53,28 +54,38 @@ class OrganisationChart extends Component {
 
     this.fetchAllListUser().then((status) => {
       if (status === 200) {
-        dispatch({
-          type: 'employee/fetchDataOrgChart',
-          payload: { employee: myEmployeeId },
-        }).then((response) => {
-          const { statusCode, data: dataOrgChart = {} } = response;
-          if (statusCode === 200) this.getInitUserInformation(dataOrgChart);
-        });
+        this.fetchDataOrgChart();
       }
     });
 
     this.fetchTimezone();
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     const { listLocationsByCompany = [] } = this.props;
+    const { status } = this.state;
     if (
       JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {
       this.fetchAllListUser();
       this.fetchTimezone();
     }
+
+    if (prevState.status !== status) {
+      this.fetchDataOrgChart();
+    }
   }
+
+  fetchDataOrgChart = () => {
+    const { dispatch, myEmployeeId = '' } = this.props;
+    dispatch({
+      type: 'employee/fetchDataOrgChart',
+      payload: { employee: myEmployeeId },
+    }).then((response) => {
+      const { statusCode, data: dataOrgChart = {} } = response;
+      if (statusCode === 200) this.getInitUserInformation(dataOrgChart);
+    });
+  };
 
   getDataCurrentUser = () => {
     const { timezoneList, currentTime } = this.state;
@@ -132,7 +143,7 @@ class OrganisationChart extends Component {
   };
 
   fetchAllListUser = async (name = '') => {
-    let status = 0;
+    let _status = 0;
     const { listLocationsByCompany = [], companiesOfUser = [], dispatch } = this.props;
 
     const convertLocation = listLocationsByCompany.map((item) => {
@@ -148,9 +159,13 @@ class OrganisationChart extends Component {
       payload: { company: companiesOfUser, location: convertLocation, limit: 10, page: 1, name },
     }).then((response) => {
       const { statusCode = 0 } = response;
-      if (statusCode === 200) status = statusCode;
+      if (statusCode === 200) {
+        _status = statusCode;
+        this.setState({ status: statusCode });
+      }
     });
-    return status;
+
+    return _status;
   };
 
   // deepSearchCurrentUser = (data, myEmployeeId, key, sub) => {
