@@ -5,6 +5,7 @@ import { Link, connect } from 'umi';
 import { isEmpty } from 'lodash';
 
 import SearchIcon from '@/assets/searchOrgChart.svg';
+import avtDefault from '@/assets/avtDefault.jpg';
 import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
 
@@ -57,7 +58,7 @@ class DetailEmployeeChart extends Component {
   popupImage = (ava) => {
     return (
       <div className={styles.avatarPopup}>
-        <img src={ava} alt="avatar" />
+        <img src={ava || avtDefault} alt="avatar" />
       </div>
     );
   };
