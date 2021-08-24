@@ -6,8 +6,9 @@ import WarningIcon from '@/assets/candidatePortal/warningIcon.svg';
 import InternalStyle from './FilledByCandidate.less';
 
 const dateFormat = 'MM.DD.YY';
-@connect(({ candidatePortal: { data, checkMandatory } = {} }) => ({
+@connect(({ candidatePortal: { data, tempData = {}, checkMandatory } = {} }) => ({
   data,
+  tempData,
   checkMandatory,
 }))
 class FilledByCandidate extends PureComponent {
@@ -63,7 +64,7 @@ class FilledByCandidate extends PureComponent {
       styles,
       candidateField,
       _handleSelect = () => {},
-      data: { dateOfJoining = '' },
+      tempData: { dateOfJoining: tempDOJ = '' } = {},
     } = this.props;
     const { acceptDOJ, originalDOJ } = this.state;
 
@@ -146,11 +147,11 @@ class FilledByCandidate extends PureComponent {
                 className={styles}
                 allowClear={false}
                 disabledDate={this.disabledDate}
-                placeholder=""
+                placeholder="Select a date"
                 picker="date"
                 format={dateFormat}
                 onChange={(value) => _handleSelect(value, candidateField[2].title)}
-                value={dateOfJoining ? moment(dateOfJoining) : undefined}
+                value={tempDOJ ? moment(tempDOJ) : null}
               />
             </Col>
           </Row>

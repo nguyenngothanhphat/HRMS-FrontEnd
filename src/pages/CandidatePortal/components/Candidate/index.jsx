@@ -111,14 +111,14 @@ const Candidate = (props) => {
   const getSteps = () => {
     const { params: { action = '' } = {} } = match;
     const defaultSet = [
-      { id: 1, title: 'Basic Information', disabled: false },
-      { id: 2, title: 'Job Details', disabled: false },
+      { id: 1, title: 'Basic Information', disabled: true },
+      { id: 2, title: 'Job Details', disabled: true },
     ];
     switch (action) {
       case candidateLink.reviewProfile:
         return [
-          { id: 1, title: 'Basic Information', disabled: false },
-          { id: 2, title: 'Job Details', disabled: false },
+          { id: 1, title: 'Basic Information', disabled: true },
+          { id: 2, title: 'Job Details', disabled: true },
         ];
       case candidateLink.uploadDocuments:
         return [{ id: 3, title: 'Upload Documents', disabled: false }];

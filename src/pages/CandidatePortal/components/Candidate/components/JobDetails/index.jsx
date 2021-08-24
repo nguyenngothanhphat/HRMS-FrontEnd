@@ -19,7 +19,7 @@ import styles from './index.less';
       messageError,
       data: { _id, settings },
     },
-    candidatePortal: { data, checkMandatory, localStep, isCandidateAcceptDOJ } = {},
+    candidatePortal: { data, tempData, checkMandatory, localStep, isCandidateAcceptDOJ } = {},
     loading,
   }) => ({
     messageError,
@@ -27,6 +27,7 @@ import styles from './index.less';
     settings,
     checkMandatory,
     data,
+    tempData,
     localStep,
     isCandidateAcceptDOJ,
     loadingUpdateCandidate: loading.effects['candidatePortal/updateByCandidateEffect'],
@@ -108,21 +109,16 @@ class JobDetails extends PureComponent {
 
     if (name === 'dateOfJoining') {
       newDateOfJoining = value;
-      notification.success({
-        message: 'New Joining Date has been saved and the HR has been notified.',
-      });
-    }
-
-    dispatch({
-      type: 'candidatePortal/save',
-      payload: {
-        // jobDetails,
-        data: {
-          ...data,
+      // notification.success({
+      //   message: 'New Joining Date has been saved and the HR has been notified.',
+      // });
+      dispatch({
+        type: 'candidatePortal/saveTemp',
+        payload: {
           dateOfJoining: newDateOfJoining,
         },
-      },
-    });
+      });
+    }
   };
 
   checkAllFieldsValidate = () => {
@@ -168,10 +164,11 @@ class JobDetails extends PureComponent {
     return valid;
   };
 
-  onClickNext = async () => {
+  onClickSubmit = async () => {
     const {
       dispatch,
       data: { _id, dateOfJoining = '' },
+      tempData: { dateOfJoining: tempDOJ = '' } = {},
       data,
       checkMandatory,
       settings,
@@ -189,7 +186,7 @@ class JobDetails extends PureComponent {
       });
     }
 
-    const converted = dateOfJoining;
+    const converted = tempDOJ || dateOfJoining;
 
     await dispatch({
       type: 'candidatePortal/updateByCandidateEffect',
@@ -287,7 +284,7 @@ class JobDetails extends PureComponent {
               </Button>
               <Button
                 type="primary"
-                onClick={this.onClickNext}
+                onClick={this.onClickSubmit}
                 className={`${styles.bottomBar__button__primary} ${className()}`}
                 disabled={this.handleDisabled()}
                 loading={loadingUpdateCandidate}
