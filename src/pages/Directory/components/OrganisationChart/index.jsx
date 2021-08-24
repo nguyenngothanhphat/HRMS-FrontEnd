@@ -71,9 +71,9 @@ class OrganisationChart extends Component {
       this.fetchAllListUser();
       this.fetchTimezone();
     }
-    if (JSON.stringify(prevProps.listEmployeeAll) !== JSON.stringify(listEmployeeAll)) {
-      this.getInitUserInformation(dataOrgChart);
-    }
+    // if (JSON.stringify(prevProps.listEmployeeAll) !== JSON.stringify(listEmployeeAll)) {
+    //   this.getInitUserInformation(dataOrgChart);
+    // }
   }
 
   getDataCurrentUser = () => {
@@ -260,9 +260,7 @@ class OrganisationChart extends Component {
   };
 
   render() {
-    const { loadingFetchListAll } = this.props;
     const { chartDetails, idSelect } = this.state;
-
     return (
       <div className={styles.container}>
         <div className={styles.orgChart}>
@@ -271,7 +269,6 @@ class OrganisationChart extends Component {
             <DetailEmployeeChart
               chartDetails={chartDetails}
               handleSelectSearch={this.handleSelect}
-              loadingFetchListAll={loadingFetchListAll}
               closeDetailEmployee={this.closeDetailEmployee}
             />
           </div>
