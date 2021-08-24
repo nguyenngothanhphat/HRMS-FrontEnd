@@ -138,7 +138,7 @@ class BasicInformation extends PureComponent {
       localStep,
       // _id: id, settings
     } = this.props;
-    const { _id } = data;
+    const { _id, isVerifiedBasicInfo } = data;
     // const messageErr = this.checkAllFieldsValidate();
     // if (!every(messageErr, (message) => message === null)) return;
     // if (id !== '' && settings && settings.length) {
@@ -159,6 +159,7 @@ class BasicInformation extends PureComponent {
         lastName: values.lastName,
         candidate: _id,
         tenantId: getCurrentTenant(),
+        isVerifiedBasicInfo,
       },
     });
     dispatch({

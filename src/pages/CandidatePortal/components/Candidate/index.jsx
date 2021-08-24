@@ -155,14 +155,16 @@ const Candidate = (props) => {
     <div className={styles.Candidate}>
       <div className={styles.headerBar}>
         <span className={styles.title}>Candidature for {title?.name}</span>
-        <div className={styles.actionBtn}>
-          <Button className={styles.finishLaterBtn} onClick={onBack}>
-            Finish Later
-          </Button>
-          {/* <Button className={styles.cancelBtn} onClick={onBack}>
+        {!window.location.href.includes(candidateLink.acceptOffer) && (
+          <div className={styles.actionBtn}>
+            <Button className={styles.finishLaterBtn} onClick={onBack}>
+              Finish Later
+            </Button>
+            {/* <Button className={styles.cancelBtn} onClick={onBack}>
             Cancel
           </Button> */}
-        </div>
+          </div>
+        )}
       </div>
       <div className={styles.content}>
         <Row gutter={24}>

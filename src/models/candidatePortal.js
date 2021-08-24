@@ -9,7 +9,41 @@ import {
   updateByCandidate,
 } from '@/services/candidatePortal';
 import { dialog } from '@/utils/utils';
+import { candidateLink, taskStatus } from '@/utils/candidatePortal';
 import { history } from 'umi';
+import { PROCESS_STATUS } from '@/utils/onboarding';
+import moment from 'moment';
+
+const pendingTaskDefault = [
+  {
+    id: candidateLink.reviewProfile,
+    name: 'Review Profile',
+    dueDate: '-',
+    link: candidateLink.reviewProfile,
+    status: taskStatus.UPCOMING,
+  },
+  {
+    id: candidateLink.uploadDocuments,
+    name: 'Upload Documents',
+    dueDate: '-',
+    link: candidateLink.uploadDocuments,
+    status: taskStatus.UPCOMING,
+  },
+  {
+    id: candidateLink.salaryNegotiation,
+    name: 'Salary Negotiation',
+    dueDate: '-',
+    link: candidateLink.salaryNegotiation,
+    status: taskStatus.UPCOMING,
+  },
+  {
+    id: candidateLink.acceptOffer,
+    name: 'Accept Offer',
+    dueDate: '-',
+    link: candidateLink.acceptOffer,
+    status: taskStatus.UPCOMING,
+  },
+];
 
 const candidatePortal = {
   namespace: 'candidatePortal',
@@ -88,6 +122,8 @@ const candidatePortal = {
     },
     // questionOnBoarding: [],
     isCandidateAcceptDOJ: true,
+    // pending tasks
+    pendingTasks: [],
   },
   effects: {
     *fetchCandidateById({ payload }, { call, put }) {
@@ -128,6 +164,9 @@ const candidatePortal = {
             checkMandatory: { ...checkMandatory },
           },
         });
+        // yield put({
+        //   type: 'candidatePortal/refreshPendingTasks',
+        // });
       } catch (error) {
         dialog(error);
       }
@@ -143,6 +182,10 @@ const candidatePortal = {
         yield put({
           type: 'saveOrigin',
           payload: { documentList: [...data] },
+        });
+        // if there are any resubmit documents, show resubmit tasks
+        yield put({
+          type: 'refreshPendingTasks',
         });
       } catch (error) {
         dialog(error);
@@ -245,6 +288,84 @@ const candidatePortal = {
       try {
         history.push('/candidate-portal/dashboard');
         yield null;
+      } catch (error) {
+        dialog(error);
+      }
+    },
+
+    // pending tasks
+    *refreshPendingTasks(_, { put, select }) {
+      try {
+        const dateFormat = 'MM.DD.YY';
+        const tempPendingTasks = pendingTaskDefault;
+        const {
+          // candidate = '',
+          // ticketId = '',
+          data = {},
+        } = yield select((state) => state.candidatePortal);
+        const { currentStep, processStatus = '', expiryDate = '', documentList = [] } = data || {};
+
+        // if there are any resubmit documents, show resubmit tasks
+        if (processStatus === PROCESS_STATUS.PENDING && documentList.length > 0) {
+          const checkDocumentVerified = !documentList.some(
+            (x) => x.candidateDocumentStatus === 'RE-SUBMIT',
+          );
+
+          if (!checkDocumentVerified) {
+            tempPendingTasks[1].status = taskStatus.IN_PROGRESS;
+            tempPendingTasks[1].name = 'Resubmit Documents';
+          } else {
+            // salary structure
+            tempPendingTasks[2].status = taskStatus.IN_PROGRESS;
+          }
+        }
+
+        switch (processStatus) {
+          case PROCESS_STATUS.SENT_PROVISIONAL_OFFERS:
+            if (currentStep < 6) {
+              // review profile
+              tempPendingTasks[0].status = taskStatus.IN_PROGRESS;
+              // uploading documents
+              tempPendingTasks[1].status = taskStatus.IN_PROGRESS;
+            }
+            if (currentStep > 5) {
+              // salary structure
+              tempPendingTasks[2].status = taskStatus.IN_PROGRESS;
+            }
+            break;
+
+          // case PROCESS_STATUS.ACCEPTED_PROVISIONAL_OFFERS:
+          // case PROCESS_STATUS.RENEGOTIATE_PROVISIONAL_OFFERS:
+          //   // uploading documents
+          //   tempPendingTasks[1].status = taskStatus.IN_PROGRESS;
+          //   tempPendingTasks[1].name = 'Resubmit Documents';
+          //   break;
+
+          // case PROCESS_STATUS.PENDING:
+          case PROCESS_STATUS.ELIGIBLE_CANDIDATES:
+          case PROCESS_STATUS.INELIGIBLE_CANDIDATES:
+          case PROCESS_STATUS.RENEGOTIATE_PROVISIONAL_OFFERS:
+            // salary structure
+            tempPendingTasks[2].status = taskStatus.IN_PROGRESS;
+            break;
+
+          case PROCESS_STATUS.SENT_FINAL_OFFERS:
+          case PROCESS_STATUS.ACCEPTED_FINAL_OFFERS:
+          case PROCESS_STATUS.RENEGOTIATE_FINAL_OFFERS:
+            // offer letter
+            tempPendingTasks[3].status = taskStatus.IN_PROGRESS;
+            tempPendingTasks[3].dueDate = expiryDate ? moment(expiryDate).format(dateFormat) : '';
+            break;
+
+          default:
+            break;
+        }
+        yield put({
+          type: 'candidatePortal/save',
+          payload: {
+            pendingTasks: [...tempPendingTasks],
+          },
+        });
       } catch (error) {
         dialog(error);
       }

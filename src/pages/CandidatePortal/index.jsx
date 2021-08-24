@@ -29,7 +29,7 @@ class CandidatePortal extends PureComponent {
     };
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
     const {
       dispatch,
       candidate = '',
@@ -44,12 +44,19 @@ class CandidatePortal extends PureComponent {
       return;
     }
 
-    dispatch({
+    await dispatch({
       type: 'candidatePortal/fetchCandidateById',
       payload: {
         candidate: candidate._id,
         tenantId: getCurrentTenant(),
         rookieID: candidate.ticketID,
+      },
+    });
+    await dispatch({
+      type: 'candidatePortal/fetchDocumentByCandidate',
+      payload: {
+        candidate: candidate._id,
+        tenantId: getCurrentTenant(),
       },
     });
 

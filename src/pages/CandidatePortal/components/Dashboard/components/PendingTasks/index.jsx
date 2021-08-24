@@ -1,35 +1,20 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
 import ArrowDownIcon from '@/assets/candidatePortal/arrowDown.svg';
-import { candidateLink } from '@/utils/candidatePortal';
+import { connect } from 'umi';
 import CommonModal from '../CommonModal';
 import PendingTaskTable from './components/PendingTaskTable';
-
 import styles from './index.less';
 
-const pendingTasks = [
-  {
-    name: 'Review Profile',
-    dueDate: '30 July 2021',
-    link: candidateLink.reviewProfile,
-  },
-  {
-    name: 'Upload Documents ',
-    dueDate: '30 July 2021',
-    link: candidateLink.uploadDocuments,
-  },
-  {
-    name: 'Salary Negotiation',
-    dueDate: '30 July 2021',
-    link: candidateLink.salaryNegotiation,
-  },
-  {
-    name: 'Accept Offer',
-    dueDate: '30 July 2021',
-    link: candidateLink.acceptOffer,
-  },
-];
-
+@connect(
+  ({
+    candidatePortal: { pendingTasks = [], data = {}, data: { processStatus = '' } = {} } = {},
+  }) => ({
+    pendingTasks,
+    processStatus,
+    data,
+  }),
+)
 class PendingTasks extends PureComponent {
   constructor(props) {
     super(props);
@@ -37,6 +22,16 @@ class PendingTasks extends PureComponent {
       openModal: false,
     };
   }
+
+  // no need here, refresh in fetch candidate
+  // componentDidUpdate = (prevProps) => {
+  //   const { dispatch, processStatus = '' } = this.props;
+  //   if (processStatus !== prevProps.data.processStatus) {
+  //     dispatch({
+  //       type: 'candidatePortal/refreshPendingTasks',
+  //     });
+  //   }
+  // };
 
   renderItem = (item, listLength, index) => {
     return (
@@ -62,6 +57,7 @@ class PendingTasks extends PureComponent {
 
   render() {
     const { openModal } = this.state;
+    const { pendingTasks = [] } = this.props;
     return (
       <div className={styles.PendingTasks}>
         <div>

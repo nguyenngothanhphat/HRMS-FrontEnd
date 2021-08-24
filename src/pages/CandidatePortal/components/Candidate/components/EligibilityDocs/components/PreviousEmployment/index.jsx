@@ -90,7 +90,9 @@ class PreviousEmployment extends Component {
         currentCompany: null,
       });
     }
-    const { dispatch, candidate, renderData = () => {} } = this.props;
+    const { dispatch, candidate,
+      //  renderData = () => {}
+       } = this.props;
     await dispatch({
       type: 'candidatePortal/updateWorkHistory',
       payload: {
@@ -107,7 +109,7 @@ class PreviousEmployment extends Component {
         tenantId: getCurrentTenant(),
       },
     });
-    renderData();
+    // renderData(false);
   };
 
   onValuesChange = async (val, type, workHistoryId) => {

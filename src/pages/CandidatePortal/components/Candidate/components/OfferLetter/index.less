@@ -137,16 +137,16 @@
 
       .redText {
         color: #ff4949;
-        font-size: 13px;
-        font-family: 'Roboto';
-        font-style: italic;
+        font-size: 14px;
+        font-weight: 500;
       }
 
       .greenText {
         color: #47c97f;
-        font-size: 13px;
-        font-family: 'Roboto';
-        font-style: italic;
+        font-size: 14px;
+        // font-family: 'Roboto';
+        // font-style: italic;
+        font-weight: 500;
       }
 
       &__button {
@@ -193,6 +193,7 @@
   }
 
   .right {
+    width: 100%;
     .signature,
     .send {
       margin-bottom: 16px;
@@ -433,24 +434,6 @@
 
       .emails {
         display: block;
-      }
-    }
-  }
-
-  @media (max-width: 1165px) {
-    flex-direction: column;
-
-    .right {
-      width: 100%;
-      margin-top: 16px;
-      margin-left: 0;
-
-      .signature {
-        .upload {
-          img {
-            margin: 0 auto;
-          }
-        }
       }
     }
   }

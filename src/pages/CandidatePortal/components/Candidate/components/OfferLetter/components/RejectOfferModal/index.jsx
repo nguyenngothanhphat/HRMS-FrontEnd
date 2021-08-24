@@ -5,7 +5,9 @@ import styles from './index.less';
 
 const { TextArea } = Input;
 
-@connect(() => ({}))
+@connect(({ loading }) => ({
+  loadingReject: loading.effects['candidatePortal/submitCandidateFinalOffer'],
+}))
 class RejectOfferModal extends PureComponent {
   constructor(props) {
     super(props);
@@ -45,8 +47,15 @@ class RejectOfferModal extends PureComponent {
     );
   };
 
+  // on finish
+  onFinish = () => {
+    const { onFinish = () => {} } = this.props;
+    const { message } = this.state;
+    onFinish(message);
+  };
+
   render() {
-    const { visible = false } = this.props;
+    const { visible = false, loadingReject } = this.props;
     const { message } = this.state;
 
     return (
@@ -65,7 +74,9 @@ class RejectOfferModal extends PureComponent {
               form="myForm"
               key="submit"
               htmlType="submit"
+              onClick={this.onFinish}
               disabled={!message}
+              loading={loadingReject}
             >
               Submit
             </Button>,

@@ -1,5 +1,4 @@
 .viewFile {
-  min-width: 700px;
   padding: 17px 20px;
 
   .control {
@@ -36,10 +35,12 @@
 :global {
   .react-pdf__Document {
     min-height: 400px;
-    overflow-y: scroll;
+    overflow-y: auto;
 
     .react-pdf__Page__canvas {
+      width: 100% !important;
       max-width: 100%;
+      height: unset !important;
       margin: 0 auto;
     }
 

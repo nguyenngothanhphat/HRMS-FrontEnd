@@ -112,7 +112,6 @@ class EligibilityDocs extends PureComponent {
 
   processData = async () => {
     const { candidate = {}, dispatch } = this.props;
-
     if (candidate) {
       const res = await dispatch({
         type: 'candidatePortal/fetchDocumentByCandidate',
@@ -378,49 +377,49 @@ class EligibilityDocs extends PureComponent {
     const { workEmail: email = '' } = generalInfo;
     this.setState({ isSending: true });
     // fetch data candidate by id to update the newest data (especially the Email HR)
-    dispatch({
-      type: 'candidatePortal/fetchCandidateById',
-      payload: {
-        candidate: candidate._id,
-        tenantId: getCurrentTenant(),
-        rookieID: candidate.ticketID,
-      },
-    }).then((response) => {
-      const { generatedBy: { generalInfo: newGeneralInfo = {} } = {} } = response.data;
-      const { workEmail: newestEmailHr = '' } = newGeneralInfo;
+    // dispatch({
+    //   type: 'candidatePortal/fetchCandidateById',
+    //   payload: {
+    //     candidate: candidate._id,
+    //     tenantId: getCurrentTenant(),
+    //     rookieID: candidate.ticketID,
+    //   },
+    // }).then((response) => {
+    //   const { generatedBy: { generalInfo: newGeneralInfo = {} } = {} } = response.data;
+    //   const { workEmail: newestEmailHr = '' } = newGeneralInfo;
 
-      if (newestEmailHr === email) {
-        // if true, the email is still not change
-        dispatch({
-          type: 'candidatePortal/sendEmailByCandidate',
-          payload: {
-            dateOfJoining,
-            options: 1,
-            firstName,
-            middleName,
-            lastName,
-            noticePeriod,
-            hrEmail: email,
-            workHistories: workHistory,
-            tenantId: getCurrentTenant(),
-          },
-        }).then(({ statusCode }) => {
-          if (statusCode === 200) {
-            this.setState({
-              openModal: true,
-              isSentEmail: true,
-            });
-          }
-        });
-      } else {
-        // else, it means the email was changed/assigned to other HR while the candidate is updating document files.
-        this.setState({ hrEmail: newestEmailHr, isSentEmail: true });
-        notification.warning({
-          message: 'The Email HR was changed/re-assigned. Please send mail again !',
+    //   if (newestEmailHr === email) {
+    // if true, the email is still not change
+    dispatch({
+      type: 'candidatePortal/sendEmailByCandidate',
+      payload: {
+        dateOfJoining,
+        options: 1,
+        firstName,
+        middleName,
+        lastName,
+        noticePeriod,
+        hrEmail: email,
+        workHistories: workHistory,
+        tenantId: getCurrentTenant(),
+      },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        this.setState({
+          openModal: true,
+          isSentEmail: true,
         });
       }
-      this.setState({ isSending: false });
     });
+    // } else {
+    //   // else, it means the email was changed/assigned to other HR while the candidate is updating document files.
+    //   this.setState({ hrEmail: newestEmailHr, isSentEmail: true });
+    //   notification.warning({
+    //     message: 'The Email HR was changed/re-assigned. Please send mail again !',
+    //   });
+    // }
+    //   this.setState({ isSending: false });
+    // });
   };
 
   handleSendEmail = () => {
@@ -506,7 +505,11 @@ class EligibilityDocs extends PureComponent {
     let checkFull = true;
     documentListToRender.forEach((doc) => {
       doc.data.forEach((doc1) => {
-        if (!doc1.attachment && !doc1.isMandatoryBySystem && doc1.isCandidateUpload) {
+        if (
+          !doc1.attachment &&
+          doc1.isCandidateUpload
+          // || (!doc1.attachment && doc1.isMandatoryBySystem)
+        ) {
           checkFull = false;
         }
       });
@@ -661,12 +664,12 @@ class EligibilityDocs extends PureComponent {
     // const {  } = user;
     // console.log(processStatus);
 
-    if ((loading2 && !isSending) || loadingFile)
-      return (
-        <div className={styles.viewLoading}>
-          <Skeleton />
-        </div>
-      );
+    // if (((loading2 && !isSending) || loadingFile))
+    //   return (
+    //     <div className={styles.viewLoading}>
+    //       <Skeleton />
+    //     </div>
+    //   );
     return (
       <div className={styles.EligibilityDocs}>
         <Row gutter={[24, 0]} className={styles.EligibilityDocs}>

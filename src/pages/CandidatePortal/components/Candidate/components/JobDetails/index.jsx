@@ -168,7 +168,7 @@ class JobDetails extends PureComponent {
   onClickSubmit = async () => {
     const {
       dispatch,
-      data: { _id, dateOfJoining = '' },
+      data: { _id, dateOfJoining = '', isVerifiedJobDetail },
       tempData: { dateOfJoining: tempDOJ = '' } = {},
       data,
       checkMandatory,
@@ -195,6 +195,8 @@ class JobDetails extends PureComponent {
         dateOfJoining: converted,
         candidate: _id,
         tenantId: getCurrentTenant(),
+        isVerifiedJobDetail,
+        isAcceptedJoiningDate: true,
       },
     });
     dispatch({

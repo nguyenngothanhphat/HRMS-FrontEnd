@@ -16,22 +16,30 @@ import styles from './index.less';
       listTitle = [],
       checkMandatory = {},
       localStep,
-      data: { processStatus = '' } = {},
+      data: {
+        processStatus = '',
+        assignTo: { generalInfo: { workEmail: hrEmail = '' } = {} } = {},
+        dateOfJoining = '',
+      } = {},
       tempData: { options = 1 },
       tempData,
       salaryStructure = [],
     },
     user: { currentUser: { company: { _id = '' } = {} } = {} },
+    loading,
   }) => ({
     question,
     listTitle,
     checkMandatory,
+    dateOfJoining,
     localStep,
     processStatus,
     _id,
     salaryStructure,
     options,
     tempData,
+    hrEmail,
+    loadingSendEmail: loading.effects['candidatePortal/sendEmailByCandidate'],
   }),
 )
 class SalaryStructureTemplate extends PureComponent {
@@ -55,17 +63,22 @@ class SalaryStructureTemplate extends PureComponent {
   }
 
   onClickReNegotiate = () => {
+    const { dispatch, hrEmail = '' } = this.props;
     this.setState({
       actionType: 're-negotiate',
     });
-    this.handleNotifyModalVisible(true);
-    // const { dispatch, localStep } = this.props;
-    // dispatch({
-    //   type: 'candidatePortal/save',
-    //   payload: {
-    //     localStep: localStep - 1,
-    //   },
-    // });
+    dispatch({
+      type: 'candidatePortal/sendEmailByCandidate',
+      payload: {
+        options: 2,
+        hrEmail,
+        tenantId: getCurrentTenant(),
+      },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        this.handleNotifyModalVisible(true);
+      }
+    });
   };
 
   checkAllFieldsValidate = () => {
@@ -112,7 +125,16 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   onClickNext = () => {
-    const { dispatch, options, tempData, localStep, checkMandatory, question } = this.props;
+    const {
+      dispatch,
+      options,
+      tempData,
+      localStep,
+      checkMandatory,
+      question,
+      // hrEmail = '',
+      // dateOfJoining = '',
+    } = this.props;
     const messageErr = this.checkAllFieldsValidate();
     if (!every(messageErr, (message) => message === null)) return;
     if (question._id !== '' && question.settings && question.settings.length) {
@@ -124,6 +146,28 @@ class SalaryStructureTemplate extends PureComponent {
         },
       });
     }
+
+    this.setState({
+      actionType: 'accept',
+    });
+
+    // wrong API accept salary
+    // dispatch({
+    //   type: 'candidatePortal/sendEmailByCandidate',
+    //   payload: {
+    //     options: 1,
+    //     hrEmail,
+    //     tenantId: getCurrentTenant(),
+    //     noticePeriod: '',
+    //     workHistories: [],
+    //     dateOfJoining,
+    //   },
+    // }).then(({ statusCode }) => {
+    //   if (statusCode === 200) {
+    this.handleNotifyModalVisible(true);
+    //   }
+    // });
+
     dispatch({
       type: 'candidatePortal/updateByCandidateEffect',
       payload: {
@@ -147,12 +191,6 @@ class SalaryStructureTemplate extends PureComponent {
         },
       },
     });
-
-    // open modal
-    this.setState({
-      actionType: 'accept',
-    });
-    this.handleNotifyModalVisible(true);
   };
 
   handleNotifyModalVisible = (value) => {
@@ -334,8 +372,8 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   _renderBottomBar = () => {
-    // const { processStatus } = this.props;
-
+    const { loadingSendEmail } = this.props;
+    const { actionType } = this.state;
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
@@ -348,6 +386,7 @@ class SalaryStructureTemplate extends PureComponent {
                 type="secondary"
                 onClick={this.onClickReNegotiate}
                 className={styles.bottomBar__button__secondary}
+                loading={loadingSendEmail && actionType === 're-negotiate'}
               >
                 Re Negotiate
               </Button>
@@ -356,6 +395,7 @@ class SalaryStructureTemplate extends PureComponent {
                 // htmlType="submit"
                 onClick={this.onClickNext}
                 className={`${styles.bottomBar__button__primary} `}
+                loading={loadingSendEmail && actionType === 'accept'}
               >
                 Accept
               </Button>

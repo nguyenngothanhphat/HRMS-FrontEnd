@@ -24,6 +24,16 @@ import YourActivity from './components/YourActivity';
   }),
 )
 class Dashboard extends PureComponent {
+  // no need here, refresh in fetch candidate
+  componentDidUpdate = async (prevProps) => {
+    const { dispatch, data: { processStatus = '' } = {} || {} } = this.props;
+    if (processStatus !== prevProps.data.processStatus) {
+      dispatch({
+        type: 'candidatePortal/refreshPendingTasks',
+      });
+    }
+  };
+
   render() {
     const { loadingFetchCandidate, data = {} } = this.props;
 

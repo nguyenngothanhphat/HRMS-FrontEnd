@@ -2,7 +2,8 @@
 import NoteComponent from '@/pages/FormTeamMember/components/NoteComponent';
 import { getCurrentTenant } from '@/utils/authority';
 import { PROCESS_STATUS } from '@/utils/onboarding';
-import { Button, Col, Form, Row, Select, Typography } from 'antd';
+import { Button, Col, Form, message, Row, Select, Typography } from 'antd';
+import axios from 'axios';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
@@ -13,7 +14,7 @@ import RejectOfferModal from './components/RejectOfferModal';
 import styles from './index.less';
 
 const OfferLetter = (props) => {
-  const { dispatch, tempData = {}, data = {}, candidate, loading1 } = props;
+  const { dispatch, tempData = {}, data = {}, candidate, loading1, processStatus = '' } = props;
 
   const {
     hrSignature: hrSignatureProp,
@@ -112,7 +113,8 @@ const OfferLetter = (props) => {
         tenantId: getCurrentTenant(),
       },
     });
-    dispatch({
+    setAcceptOfferModalVisible(false);
+    const res = await dispatch({
       type: 'candidatePortal/submitCandidateFinalOffer',
       payload: {
         candidate,
@@ -121,7 +123,38 @@ const OfferLetter = (props) => {
         tenantId: getCurrentTenant(),
       },
     });
-    setAcceptOfferModalVisible(false);
+    if (res.statusCode === 200) {
+      dispatch({
+        type: 'candidatePortal/saveOrigin',
+        payload: {
+          processStatus: PROCESS_STATUS.ACCEPTED_FINAL_OFFERS,
+        },
+      });
+    }
+  };
+
+  const handleFinalReject = async (reason) => {
+    if (!dispatch) {
+      return;
+    }
+    setRejectOfferModalVisible(false);
+    const res = await dispatch({
+      type: 'candidatePortal/submitCandidateFinalOffer',
+      payload: {
+        candidate,
+        options: 2,
+        tenantId: getCurrentTenant(),
+        reasonForRejection: reason,
+      },
+    });
+    if (res.statusCode === 200) {
+      dispatch({
+        type: 'candidatePortal/saveOrigin',
+        payload: {
+          processStatus: PROCESS_STATUS.FINAL_OFFERS_CANDIDATE,
+        },
+      });
+    }
   };
 
   const Note = {
@@ -139,35 +172,79 @@ const OfferLetter = (props) => {
     ),
   };
 
+  const onDownload = (url) => {
+    const fileName = url.split('/').pop();
+    message.loading('Downloading file. Please wait...');
+    axios({
+      url,
+      method: 'GET',
+      responseType: 'blob',
+    }).then((resp) => {
+      // eslint-disable-next-line compat/compat
+      const urlDownload = window.URL.createObjectURL(new Blob([resp.data]));
+      const link = document.createElement('a');
+      link.href = urlDownload;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+    });
+  };
+
   const _renderBottomBar = () => {
     const { loadingUpdateCandidate = false } = props;
 
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
-          <Col span={8} />
+          <Col span={8}>
+            {processStatus === PROCESS_STATUS.ACCEPTED_FINAL_OFFERS && (
+              <span className={styles.greenText}>Offer Accepted</span>
+            )}
+            {(processStatus === PROCESS_STATUS.FINAL_OFFERS_CANDIDATE ||
+              processStatus === PROCESS_STATUS.FINAL_OFFERS_HR) && (
+              <span className={styles.redText}>Offer Rejected</span>
+            )}
+          </Col>
           <Col span={16}>
             <div className={styles.bottomBar__button}>
-              <Button
-                type="secondary"
-                onClick={() => {
-                  setRejectOfferModalVisible(true);
-                }}
-                className={styles.bottomBar__button__secondary}
-              >
-                Reject
-              </Button>
-              <Button
-                type="primary"
-                onClick={() => {
-                  setAcceptOfferModalVisible(true);
-                }}
-                className={styles.bottomBar__button__primary}
-                // disabled={!filledBasicInformation || !isVerifiedBasicInfo}
-                loading={loadingUpdateCandidate}
-              >
-                Accept Offer
-              </Button>
+              {processStatus === PROCESS_STATUS.SENT_FINAL_OFFERS && (
+                <>
+                  <Button
+                    type="secondary"
+                    onClick={() => {
+                      setRejectOfferModalVisible(true);
+                    }}
+                    className={styles.bottomBar__button__secondary}
+                  >
+                    Reject
+                  </Button>
+                  <Button
+                    type="primary"
+                    onClick={() => {
+                      setAcceptOfferModalVisible(true);
+                    }}
+                    className={styles.bottomBar__button__primary}
+                    // disabled={!filledBasicInformation || !isVerifiedBasicInfo}
+                    loading={loadingUpdateCandidate || loading1}
+                  >
+                    Accept Offer
+                  </Button>
+                </>
+              )}
+
+              {(processStatus === PROCESS_STATUS.ACCEPTED_FINAL_OFFERS ||
+                processStatus === PROCESS_STATUS.FINAL_OFFERS_CANDIDATE ||
+                processStatus === PROCESS_STATUS.FINAL_OFFERS_HR) && (
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    onDownload(offerLetter);
+                  }}
+                  className={styles.bottomBar__button__primary}
+                >
+                  Download Offer Letter
+                </Button>
+              )}
             </div>
           </Col>
         </Row>
@@ -177,7 +254,7 @@ const OfferLetter = (props) => {
 
   return (
     <Row gutter={[24, 24]} className={styles.previewContainer}>
-      <Col span={16} className={styles.left}>
+      <Col xs={24} xl={16} className={styles.left}>
         <div className={styles.header}>
           <span className={styles.title}>Offer Letter</span>
           <span className={styles.expiryDate}>
@@ -192,7 +269,7 @@ const OfferLetter = (props) => {
         {_renderBottomBar()}
       </Col>
 
-      <Col span={8} className={styles.right}>
+      <Col xs={24} xl={8} className={styles.right}>
         <NoteComponent note={Note} />
         {/* <CustomModal
           open={openModalCus}
@@ -211,6 +288,7 @@ const OfferLetter = (props) => {
       <RejectOfferModal
         visible={rejectOfferModalVisible}
         onClose={() => setRejectOfferModalVisible(false)}
+        onFinish={handleFinalReject}
       />
     </Row>
   );
@@ -223,13 +301,19 @@ export default connect(
     loading,
     user: { currentUser = {} } = {},
     // candidateInfo: { rookieId = '', tempData = {}, data = {} } = {},
-    candidatePortal: { tempData = {}, data = {}, candidate = '' } = {},
+    candidatePortal: {
+      data: { processStatus = '' } = {},
+      tempData = {},
+      data = {},
+      candidate = '',
+    } = {},
   }) => ({
     previewOffer,
     loading: loading.effects['upload/uploadFile'],
     currentUser,
     tempData,
     data,
+    processStatus,
     candidate,
     // rookieId,
     loading1: loading.effects['candidatePortal/submitCandidateFinalOffer'],
