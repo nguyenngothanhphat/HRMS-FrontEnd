@@ -71,9 +71,9 @@ class OrganisationChart extends Component {
       this.fetchAllListUser();
       this.fetchTimezone();
     }
-    // if (JSON.stringify(prevProps.listEmployeeAll) !== JSON.stringify(listEmployeeAll)) {
-    //   this.getInitUserInformation(dataOrgChart);
-    // }
+    if (JSON.stringify(prevProps.listEmployeeAll) !== JSON.stringify(listEmployeeAll)) {
+      this.getInitUserInformation(dataOrgChart);
+    }
   }
 
   getDataCurrentUser = () => {
@@ -131,7 +131,7 @@ class OrganisationChart extends Component {
     }
   };
 
-  fetchAllListUser = () => {
+  fetchAllListUser = (name = '') => {
     const { listLocationsByCompany = [], companiesOfUser = [], dispatch } = this.props;
 
     const convertLocation = listLocationsByCompany.map((item) => {
@@ -144,7 +144,7 @@ class OrganisationChart extends Component {
 
     dispatch({
       type: 'employee/fetchAllListUser',
-      payload: { company: companiesOfUser, location: convertLocation, limit: 10, page: 1 },
+      payload: { company: companiesOfUser, location: convertLocation, limit: 10, page: 1, name },
     });
   };
 
@@ -269,6 +269,7 @@ class OrganisationChart extends Component {
             <DetailEmployeeChart
               chartDetails={chartDetails}
               handleSelectSearch={this.handleSelect}
+              fetchAllListUser={this.fetchAllListUser}
               closeDetailEmployee={this.closeDetailEmployee}
             />
           </div>

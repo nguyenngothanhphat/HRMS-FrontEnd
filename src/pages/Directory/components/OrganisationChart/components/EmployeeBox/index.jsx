@@ -42,7 +42,7 @@ class DetailEmployeeChart extends Component {
   }
 
   componentDidUpdate = (prevProp, prevState) => {
-    const { chartDetails = {} } = this.props;
+    const { chartDetails = {}, fetchAllListUser = () => {} } = this.props;
     const { valueSearch } = this.state;
     const { _id = undefined } = chartDetails;
     if (JSON.stringify(prevProp.chartDetails) !== JSON.stringify(chartDetails)) {
@@ -50,25 +50,8 @@ class DetailEmployeeChart extends Component {
     }
 
     if (prevState.valueSearch !== valueSearch) {
-      this.fetchAllListUser(valueSearch);
+      fetchAllListUser(valueSearch);
     }
-  };
-
-  fetchAllListUser = (name = '') => {
-    const { listLocationsByCompany = [], companiesOfUser = [], dispatch } = this.props;
-
-    const convertLocation = listLocationsByCompany.map((item) => {
-      const { headQuarterAddress: { country: { _id = '' } = {}, state = '' } = {} } = item;
-      return {
-        country: _id,
-        state: [state],
-      };
-    });
-
-    dispatch({
-      type: 'employee/fetchAllListUser',
-      payload: { company: companiesOfUser, location: convertLocation, limit: 10, page: 1, name },
-    });
   };
 
   updateValueSelect = (valueInput) => {
@@ -76,10 +59,12 @@ class DetailEmployeeChart extends Component {
   };
 
   handleSelect = (value) => {
-    const { handleSelectSearch } = this.props;
+    const { handleSelectSearch, closeDetailEmployee = () => {} } = this.props;
     this.setState({ valueInput: value });
-    handleSelectSearch(value);
     this.inputRef.current.blur();
+
+    handleSelectSearch(value);
+    closeDetailEmployee();
   };
 
   onSearch = (value) => {
@@ -141,8 +126,10 @@ class DetailEmployeeChart extends Component {
 
     return (
       <>
-        <div className={styles.chartSearch} onClick={checkObj ? this.handleClick : null}>
-          <div className={styles.chartSearch__name}>{getCurrentCompanyName}</div>
+        <div className={styles.chartSearch}>
+          <div className={styles.chartSearch__name} onClick={checkObj ? this.handleClick : null}>
+            {getCurrentCompanyName}
+          </div>
           <Select
             ref={this.inputRef}
             onSearch={this.onSearch}
