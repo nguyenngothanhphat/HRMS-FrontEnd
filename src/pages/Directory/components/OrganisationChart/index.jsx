@@ -4,6 +4,7 @@ import { connect } from 'umi';
 import moment from 'moment';
 
 import { isEmpty } from 'lodash';
+import { getCurrentTenant } from '@/utils/authority';
 import OrganizationChart from './components/OrganizationChart';
 import DetailEmployeeChart from './components/EmployeeBox';
 import styles from './index.less';
@@ -14,7 +15,7 @@ import styles from './index.less';
     loading,
     locationSelection: { listLocationsByCompany = [] } = {},
     user: {
-      currentUser: { employee: { _id: myEmployeeId = '' } = {} } = {},
+      currentUser: { employee: { _id: myEmployeeId = '' } = {}, employee = {} } = {},
       companiesOfUser = [],
     } = {},
   }) => ({
@@ -25,6 +26,7 @@ import styles from './index.less';
     companiesOfUser,
     listLocationsByCompany,
     listEmployeeAll,
+    employee,
   }),
 )
 class OrganisationChart extends Component {
@@ -43,9 +45,18 @@ class OrganisationChart extends Component {
 
   componentDidMount() {
     const { dispatch, myEmployeeId = '' } = this.props;
+
+    dispatch({
+      type: 'employeeProfile/fetchEmployeeTypes',
+      payload: { tenantId: getCurrentTenant() },
+    });
+
     dispatch({
       type: 'employee/fetchDataOrgChart',
       payload: { employee: myEmployeeId },
+    }).then((response) => {
+      const { statusCode, data: dataOrgChart = {} } = response;
+      if (statusCode === 200) this.getInitUserInformation(dataOrgChart);
     });
 
     this.fetchAllListUser();
@@ -65,30 +76,59 @@ class OrganisationChart extends Component {
     }
   }
 
+  getDataCurrentUser = () => {
+    const { timezoneList, currentTime } = this.state;
+    const {
+      employee: { _id = '', title = {}, department = {}, generalInfo = {}, location = {} } = {},
+    } = this.props;
+
+    const findTimezone =
+      timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+    const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
+
+    return {
+      _id,
+      generalInfo,
+      department,
+      title,
+      location,
+      localTime: timeData,
+    };
+  };
+
   getInitUserInformation = (data) => {
     const { listEmployeeAll } = this.props;
     const { timezoneList, currentTime } = this.state;
 
     const { user: { _id: userId = '' } = {} } = data;
     const getData = listEmployeeAll.filter((item) => item._id === userId);
-    const convertData = getData.map((item) => {
-      const { _id, generalInfo, department, location, title } = item;
-      const findTimezone =
-        timezoneList.find((timezone) => timezone.locationId === location._id) || {};
-      const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
-      return {
-        _id,
-        generalInfo,
-        department,
-        title,
-        location,
-        localTime: timeData,
-      };
-    });
 
-    const convertFinal = { ...convertData[0] };
-    this.setState({ idSelect: userId });
-    this.setState({ chartDetails: convertFinal });
+    if (getData.length === 0) {
+      const { employee: { _id: currentUserId = '' } = {} } = this.props;
+      const getCurrentUserdata = this.getDataCurrentUser();
+
+      this.setState({ idSelect: currentUserId });
+      this.setState({ chartDetails: getCurrentUserdata });
+    } else {
+      const convertData = getData.map((item) => {
+        const { _id, generalInfo, department, location, title } = item;
+        const findTimezone =
+          timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+        const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
+        return {
+          _id,
+          generalInfo,
+          department,
+          title,
+          location,
+          localTime: timeData,
+        };
+      });
+
+      const convertFinal = { ...convertData[0] };
+      this.setState({ idSelect: userId });
+      this.setState({ chartDetails: convertFinal });
+    }
   };
 
   fetchAllListUser = () => {
