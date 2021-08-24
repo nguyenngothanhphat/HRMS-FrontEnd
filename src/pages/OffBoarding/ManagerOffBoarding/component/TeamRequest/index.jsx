@@ -19,7 +19,7 @@ class TeamRequest extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { selectedFilterTab, pageSelected, size } = this.state;
-    const { dispatch } = this.props;
+    const { dispatch, location = [] } = this.props;
     if (prevState.pageSelected !== pageSelected || prevState.size !== size) {
       this.initDataTable(selectedFilterTab);
     }
@@ -30,6 +30,7 @@ class TeamRequest extends Component {
           payload: {
             page: 1,
             limit: size,
+            location,
           },
         });
       }
@@ -40,6 +41,7 @@ class TeamRequest extends Component {
             status: 'IN-PROGRESS',
             page: 1,
             limit: size,
+            location,
           },
         });
       }
@@ -50,6 +52,7 @@ class TeamRequest extends Component {
             status: 'ON-HOLD',
             page: 1,
             limit: size,
+            location,
           },
         });
       }
@@ -60,6 +63,7 @@ class TeamRequest extends Component {
             status: 'ACCEPTED',
             page: 1,
             limit: size,
+            location,
           },
         });
       }
@@ -70,6 +74,7 @@ class TeamRequest extends Component {
             status: 'REJECTED',
             page: 1,
             limit: size,
+            location,
           },
         });
       }
@@ -95,6 +100,7 @@ class TeamRequest extends Component {
         type: 'offboarding/fetchListTeamRequest',
         payload: {
           status: 'IN-PROGRESS',
+          limit: size,
           location,
         },
       });
