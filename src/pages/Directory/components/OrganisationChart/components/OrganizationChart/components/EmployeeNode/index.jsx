@@ -31,6 +31,7 @@ class EmployeeNode extends Component {
       itemSelected = '',
       renderCardInfo = () => {},
       idCurrentUser = '',
+      isCollapsed = false,
     } = this.props;
     const { _id: idEmpl = '', employees: listEmployees = [] } = employee;
 
@@ -47,7 +48,7 @@ class EmployeeNode extends Component {
         className={`${className2} ${styles.node} ${className}`}
       >
         {renderCardInfo(employee, 'employee')}
-        {listEmployees.length > 0 ? (
+        {listEmployees.length > 0 && isCollapsed ? (
           <div className={styles.node__bottom_reportees}>{`${listEmployees.length} reportees`}</div>
         ) : null}
         {isCurrentUser ? <div className={styles.node__bottom_you1}>You</div> : null}

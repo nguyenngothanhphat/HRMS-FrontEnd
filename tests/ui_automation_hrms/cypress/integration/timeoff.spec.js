@@ -1,12 +1,12 @@
-///<reference types="cypress" />
+/// <reference types="cypress" />
 
 // let all_env_vars = Cypress.env(); // can store all vars in the env in a variable as a JSON object this way
 
-let employee_email = Cypress.env("employee_email");
-let manager_email = Cypress.env("manager_email");
-let password = Cypress.env("password");
-let fromDate = Cypress.env("fromDate");
-let toDate = Cypress.env("toDate");
+const employee_email = Cypress.env("employee_email");
+const manager_email = Cypress.env("manager_email");
+const password = Cypress.env("password");
+const fromDate = Cypress.env("fromDate");
+const toDate = Cypress.env("toDate");
 
 
 
@@ -31,9 +31,9 @@ describe ('Timeoff Automation', ()=>{
         cy.get("#basic_subject", {timeout:3000}).type("Leave Application");
 
 
-        cy.get("#basic_durationFrom", {timeout:3000}).type(fromDate + '{enter}', {force: true});
+        cy.get("#basic_durationFrom", {timeout:3000}).type(`${fromDate  }{enter}`, {force: true});
 
-        cy.get("#basic_durationTo", {timeout:3000}).type(toDate + '{enter}', {force: true});
+        cy.get("#basic_durationTo", {timeout:3000}).type(`${toDate  }{enter}`, {force: true});
 
         cy.get("#basic_description", {timeout:3000}).type("Renovating house. Would appreciate 2 days off.");
 
@@ -47,9 +47,9 @@ describe ('Timeoff Automation', ()=>{
             cy.wait(3000); // waiting for page to fully load
             cy.get("p", {timeout:10000}).then((response)=>{
                 cy.get(response[0]).invoke('text').then((text)=>{
-                    let parts = text.split(' ');
-                    let moreparts = parts[2].split(']');
-                    let id_latest = moreparts[0];
+                    const parts = text.split(' ');
+                    const moreparts = parts[2].split(']');
+                    const id_latest = moreparts[0];
 
                     cy.writeFile("latest_id_timeoff.txt", id_latest);
                 });
@@ -158,9 +158,9 @@ describe ('Timeoff Automation', ()=>{
         cy.get("#basic_subject", {timeout:3000}).type("Leave Application");
 
 
-        cy.get("#basic_durationFrom", {timeout:3000}).type(fromDate + '{enter}', {force: true});
+        cy.get("#basic_durationFrom", {timeout:3000}).type(`${fromDate  }{enter}`, {force: true});
 
-        cy.get("#basic_durationTo", {timeout:3000}).type(toDate + '{enter}', {force: true});
+        cy.get("#basic_durationTo", {timeout:3000}).type(`${toDate  }{enter}`, {force: true});
 
         cy.get("#basic_description", {timeout:3000}).type("Need casual leave to attend a friend's marriage.");
 
@@ -172,9 +172,9 @@ describe ('Timeoff Automation', ()=>{
             cy.wait(3000); // waiting for page to fully load
             cy.get("p", {timeout:10000}).then((response)=>{
                 cy.get(response[0]).invoke('text').then((text)=>{
-                    let parts = text.split(' ');
-                    let moreparts = parts[2].split(']');
-                    let id_latest = moreparts[0];
+                    const parts = text.split(' ');
+                    const moreparts = parts[2].split(']');
+                    const id_latest = moreparts[0];
 
                     cy.writeFile("latest_id_timeoff.txt", id_latest);
                 });
@@ -182,11 +182,6 @@ describe ('Timeoff Automation', ()=>{
             cy.contains("Edit").click();
         });
 
-
-
-        // cy.get("#basic_leaveTimeLists_0", {timeout:4000}).trigger('mousedown', {force: true}).click({force: true}).then(()=>{
-        //     cy.contains("Whole day").click({force: true});
-        // });
 
 
         cy.get("#basic_leaveTimeLists_1", {timeout:4000}).trigger('mousedown', {force: true}).click({force: true}).then(()=>{

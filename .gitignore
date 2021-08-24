@@ -39,6 +39,6 @@ screenshot
 .eslintcache
 
 # cypress
-cypress/downloads
+tests/ui_automation_hrms/cypress/downloads
 
 build
