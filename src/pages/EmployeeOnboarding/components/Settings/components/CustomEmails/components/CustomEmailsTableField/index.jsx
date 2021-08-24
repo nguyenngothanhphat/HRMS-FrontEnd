@@ -9,11 +9,19 @@ import FileIcon from './images/doc.svg';
 import styles from './index.less';
 
 @connect(
-  ({ employeeSetting: { dataSubmit = {}, listCustomEmailOnboarding = [] } = {}, loading }) => ({
+  ({
+    employeeSetting: {
+      activeTabCustomEmail = '',
+      dataSubmit = {},
+      listCustomEmailOnboarding = [],
+    } = {},
+    loading,
+  }) => ({
     dataSubmit,
     listCustomEmailOnboarding,
     loading: loading.effects['employeeSetting/deleteCustomEmailItem'],
     loadingFetchList: loading.effects['employeeSetting/fetchListCustomEmailOnboarding'],
+    activeTabCustomEmail,
   }),
 )
 class CustomEmailsTableField extends PureComponent {
@@ -23,7 +31,6 @@ class CustomEmailsTableField extends PureComponent {
       pageSelected: 1,
       size: 10,
       currentRecord: {},
-      activeKey: '1',
     };
   }
 
@@ -43,8 +50,11 @@ class CustomEmailsTableField extends PureComponent {
   fetchData = async (tabId) => {
     const { dispatch } = this.props;
     const { pageSelected, size } = this.state;
-    this.setState({
-      activeKey: tabId,
+    dispatch({
+      type: 'employeeSetting/save',
+      payload: {
+        activeTabCustomEmail: tabId,
+      },
     });
 
     await dispatch({
@@ -59,7 +69,8 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   componentDidMount = () => {
-    this.fetchData('1');
+    const { activeTabCustomEmail = '1' } = this.props;
+    this.fetchData(activeTabCustomEmail);
   };
 
   _renderData = (list) => {
@@ -71,6 +82,7 @@ class CustomEmailsTableField extends PureComponent {
 
       newList.push({
         idCustomEmail: item._id,
+        isDefault: item.isDefault,
         emailSubject: item.subject !== undefined ? item.subject : 'Onboarding email',
         createdOn: formatDate !== undefined ? formatDate : '08.24.20',
         triggerEvent:
@@ -104,7 +116,7 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   _renderColumns = () => {
-    const { activeKey } = this.state;
+    const { activeTabCustomEmail } = this.props;
     const columns = [
       {
         title: formatMessage({ id: 'component.customEmailsTableField.emailSubject' }),
@@ -113,10 +125,14 @@ class CustomEmailsTableField extends PureComponent {
         width: '30%',
         render: (emailSubject) => {
           const { currentRecord = {} } = this.state;
-          const { idCustomEmail = '' } = currentRecord;
+          const { idCustomEmail = '', isDefault = false } = currentRecord;
+
+          const link = isDefault
+            ? `/employee-onboarding/settings/view-email/${idCustomEmail}`
+            : `/employee-onboarding/settings/edit-email/${idCustomEmail}`;
 
           return (
-            <Link to={`/employee-onboarding/settings/edit-email/${idCustomEmail}`}>
+            <Link to={link}>
               <div className={styles.fileName}>
                 <img src={FileIcon} alt="name" />
                 <span>{emailSubject}</span>
@@ -149,12 +165,15 @@ class CustomEmailsTableField extends PureComponent {
         key: 'idCustomEmail',
         width: '15%',
         render: (idCustomEmail) => {
+          const { currentRecord = {} } = this.state;
+          const { isDefault = false } = currentRecord;
+          const link = isDefault
+            ? `/employee-onboarding/settings/view-email/${idCustomEmail}`
+            : `/employee-onboarding/settings/edit-email/${idCustomEmail}`;
           return (
             <div className={styles.actions}>
-              <Link to={`/employee-onboarding/settings/edit-email/${idCustomEmail}`}>
-                View mail
-              </Link>
-              {activeKey !== '1' && (
+              <Link to={link}>View mail</Link>
+              {activeTabCustomEmail !== '1' && (
                 <Tooltip title="Delete">
                   <img
                     src={DeleteIcon}
@@ -215,8 +234,7 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   render() {
-    const { listCustomEmailOnboarding } = this.props;
-    const { activeKey } = this.state;
+    const { listCustomEmailOnboarding, activeTabCustomEmail } = this.props;
 
     return (
       <div className={styles.CustomEmailsTableField}>
@@ -236,7 +254,7 @@ class CustomEmailsTableField extends PureComponent {
                 </>
               ) : (
                 <> */}
-        <Tabs onTabClick={this.fetchData} activeKey={activeKey}>
+        <Tabs onTabClick={this.fetchData} activeKey={activeTabCustomEmail}>
           <Tabs.TabPane tab="System Default Emails" key="1">
             <div className={styles.CustomEmailsTableField_table}>
               {this._renderTable(listCustomEmailOnboarding)}

@@ -190,7 +190,7 @@ class OrganizationChart extends Component {
 
   renderChildrenList = () => {
     const { dataOrgChart } = this.props;
-    const { isCollapsedChild = false, itemSelected = '' } = this.state;
+    const { isCollapsedChild = false, isCollapsed = false, itemSelected = '' } = this.state;
     const { employees: listEmployees = [] } = dataOrgChart;
 
     const handleGetLine = (length) => {
@@ -199,12 +199,23 @@ class OrganizationChart extends Component {
       return lines;
     };
 
+    const checkCollapse = () => {
+      let collapse = false;
+      if (isCollapsed) {
+        if (isCollapsedChild) {
+          collapse = isCollapsedChild;
+        }
+      }
+
+      return collapse;
+    };
+
     if (listEmployees.length === 0) return null;
     return (
       <Collapse isOpened={isCollapsedChild}>
         <div className={styles.nodesTree}>
           <div className={styles.lineNode}>
-            <div style={{ margin: '0 auto', width: 'fit-content' }}>
+            <div className={styles.lineNode__line}>
               <img alt="lines" src={handleGetLine(listEmployees.length)} />
             </div>
           </div>
@@ -212,6 +223,7 @@ class OrganizationChart extends Component {
             {listEmployees.map((employee) => {
               return (
                 <EmployeeNode
+                  isCollapsed={checkCollapse()}
                   key={employee._id}
                   itemSelected={itemSelected}
                   employee={employee}
@@ -244,7 +256,7 @@ class OrganizationChart extends Component {
 
             <Collapse isOpened={isCollapsed} hasNestedCollapse>
               {isEmpty(manager) ? null : (
-                <div style={{ margin: '0 auto', width: 'fit-content' }}>
+                <div className={styles.charts__line}>
                   <img alt="line" src={line} />
                 </div>
               )}

@@ -55,8 +55,15 @@ class ViewInformation extends Component {
       visible: false,
       openEditBio: false,
       bio: '',
+      placementText: 'topCenter',
     };
+
+    this.actionBtnRef = React.createRef();
   }
+
+  componentDidMount = () => {
+    this.onScroll('addEventListener');
+  };
 
   shouldComponentUpdate(nextProps) {
     const { generalData: { bioInfo = '' } = {} } = this.props;
@@ -68,6 +75,42 @@ class ViewInformation extends Component {
     }
     return true;
   }
+
+  componentDidUpdate = () => {
+    this.onScroll('addEventListener');
+  };
+
+  componentWillUnmount = () => {
+    this.onScroll('removeEventListener');
+  };
+
+  onScroll = (name) => {
+    if (name === 'addEventListener') {
+      window.addEventListener('scroll', this.handleScroll, { passive: true });
+    } else {
+      window.removeEventListener('scroll', this.handleScroll);
+    }
+  };
+
+  handleScroll = () => {
+    const positionY = window.scrollY;
+
+    if (positionY > 300) {
+      this.setState({
+        placementText: 'bottomCenter',
+      });
+    } else {
+      this.setState({
+        placementText: 'topCenter',
+      });
+    }
+  };
+
+  getPlacement = (placement) => {
+    this.setState({
+      placementText: placement,
+    });
+  };
 
   handleEditBio = () => {
     const { openEditBio } = this.state;
@@ -226,6 +269,8 @@ class ViewInformation extends Component {
   };
 
   btnAction = (permissions, profileOwner) => {
+    const { placementText } = this.state;
+
     const subDropdown = (
       <SubMenu className={s.subMenu} key="sub1" title="Job Change">
         <Menu.Item key="offboarding" className={s.menuItem} onClick={this.redirectOffboarding}>
@@ -254,10 +299,17 @@ class ViewInformation extends Component {
       </Menu>
     );
 
+    console.log(placementText);
+
     return (
       <>
-        <Dropdown className={s.actionBtn} overlay={menu} trigger={['click']}>
-          <div onClick={(e) => e.preventDefault()}>
+        <Dropdown
+          className={s.actionBtn}
+          overlay={menu}
+          trigger={['click']}
+          placement={placementText}
+        >
+          <div ref={this.actionBtnRef} onClick={(e) => e.preventDefault()}>
             Actions <img alt="bio" src={bioSvg} />
           </div>
         </Dropdown>
@@ -266,11 +318,11 @@ class ViewInformation extends Component {
   };
 
   _renderListCertification = (list) => {
-    return list.map((item, index) => {
+    return list.map((item) => {
       const { name = '', _id = '' } = item;
       return (
         <div key={_id} className={s.infoEmployee__textNameAndTitle__title}>
-          <div className={s.textValue}>{`${index + 1} - ${name}`}</div>
+          <div className={s.textValue}>{name}</div>
         </div>
       );
     });

@@ -645,13 +645,19 @@ const routes = [
             hideInMenu: true,
           },
           {
+            path: '/employee-onboarding/:tabName/view-email/:reId',
+            name: 'View Email',
+            component: './EditEmail',
+            hideInMenu: true,
+          },
+          {
             path: '/template-details/:templateId',
             name: 'templateDetails',
             hideInMenu: true,
             component: './TemplateDetails',
           },
           {
-            path: '/create-new-template/',
+            path: '/employee-onboarding/:tabName/:type/create-new-template',
             name: 'createNewTemplate',
             hideInMenu: true,
             component: './CreateNewTemplate',

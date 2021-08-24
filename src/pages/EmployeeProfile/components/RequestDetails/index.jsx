@@ -17,6 +17,18 @@ class RequestDetails extends Component {
     };
   }
 
+  componentDidMount = () => {
+    this.scroppTopView();
+  };
+
+  scroppTopView = () => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+  };
+
   handleCancel = () => {
     const { cancel = () => {} } = this.props;
     cancel();
@@ -91,7 +103,7 @@ class RequestDetails extends Component {
                         showArrow
                         showSearch
                         allowClear
-                        suffixIcon={<SearchOutlined />}
+                        suffixIcon={reqType ? null : <SearchOutlined />}
                         onChange={this.onChangeSelect}
                         tagRender={this.tagRender}
                         filterOption={(input, option) =>

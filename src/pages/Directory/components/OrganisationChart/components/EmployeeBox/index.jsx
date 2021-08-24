@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
-import { Avatar, Row, Col, Typography, Select, Spin, Divider, Tooltip } from 'antd';
+import { Avatar, Row, Col, Select, Spin, Divider, Tooltip, Popover } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-import { history } from 'umi';
+import { Link, connect } from 'umi';
 import { isEmpty } from 'lodash';
 
 import SearchIcon from '@/assets/searchOrgChart.svg';
+import avtDefault from '@/assets/avtDefault.jpg';
 import { getCurrentCompany } from '@/utils/authority';
 import styles from './index.less';
 
-const { Text } = Typography;
 const { Option } = Select;
+
+@connect(({ employee: { listEmployeeAll = [] } = {}, user: { companiesOfUser = [] } = {} }) => ({
+  listEmployeeAll,
+  companiesOfUser,
+}))
 class DetailEmployeeChart extends Component {
   constructor(props) {
     super(props);
@@ -31,12 +36,9 @@ class DetailEmployeeChart extends Component {
     this.setState({ valueInput });
   };
 
-  handleViewFullProfile = (id) => {
-    history.push(`employee-profile/${id}`);
-  };
-
   handleSelect = (value) => {
     const { handleSelectSearch } = this.props;
+    this.setState({ valueInput: value });
     handleSelectSearch(value);
     this.inputRef.current.blur();
   };
@@ -53,6 +55,14 @@ class DetailEmployeeChart extends Component {
     return currentFirm[0]?.name;
   };
 
+  popupImage = (ava) => {
+    return (
+      <div className={styles.avatarPopup}>
+        <img src={ava || avtDefault} alt="avatar" />
+      </div>
+    );
+  };
+
   render() {
     const { chartDetails = {}, listEmployeeAll, loadingFetchListAll } = this.props;
     const { valueInput } = this.state;
@@ -61,6 +71,8 @@ class DetailEmployeeChart extends Component {
     const {
       generalInfo: {
         firstName = '',
+        middleName = '',
+        lastName = '',
         avatar = '',
         workEmail = '',
         employeeId = '',
@@ -78,6 +90,7 @@ class DetailEmployeeChart extends Component {
       localTime = '',
     } = chartDetails;
 
+    const fullName = `${firstName} ${middleName} ${lastName}`;
     const locationName = `${state}, ${countryName}`;
 
     const getCurrentCompanyName = this.getCurrentFirm();
@@ -108,12 +121,16 @@ class DetailEmployeeChart extends Component {
                   _id: idSearch = '',
                   generalInfo: {
                     avatar: avatarSearch = '',
-                    firstName: nameSearch = '',
+                    firstName: firstNameSearch = '',
+                    middleName: middleNameSearch = '',
+                    lastName: lastNameSearch = '',
                     employeeId: employeeIdSearch = '',
                     userId: userIdSearch = '',
                   } = {},
                 } = value;
-                const emplName = `${nameSearch} (${employeeIdSearch}) (${userIdSearch})`;
+                const fullNameSearch = `${firstNameSearch} ${middleNameSearch} ${lastNameSearch}`;
+
+                const emplName = `${fullNameSearch} (${employeeIdSearch}) (${userIdSearch})`;
                 return (
                   <Option key={idSearch} value={idSearch}>
                     <div style={{ display: 'inline', marginRight: '10px' }}>
@@ -140,9 +157,16 @@ class DetailEmployeeChart extends Component {
         {checkObj ? (
           <div className={styles.chartDetail}>
             <div className={styles.chartDetail__Top}>
-              <Avatar src={avatar || ''} size={55} icon={<UserOutlined />} />
+              <Popover placement="rightTop" content={() => this.popupImage(avatar)} trigger="hover">
+                <Avatar
+                  style={{ cursor: 'pointer' }}
+                  src={avatar || ''}
+                  size={55}
+                  icon={<UserOutlined />}
+                />
+              </Popover>
               <div className={styles.chartDetail__Top_name}>
-                <p className={styles.chartDetail__Top_firstName}>{firstName || ''}</p>
+                <p className={styles.chartDetail__Top_firstName}>{fullName || ''}</p>
                 <div className={styles.chartDetail__Top_department}>
                   {`${titleName}, ${deptName} Dept.`}
                 </div>
@@ -183,13 +207,12 @@ class DetailEmployeeChart extends Component {
             </div>
             <Divider />
             <div className={styles.chartDetail__Bottom_flexBottom}>
-              <Text
+              <Link
                 className={styles.chartDetail__Bottom_ViewProfile}
-                underline
-                onClick={() => this.handleViewFullProfile(userId)}
+                to={`employee-profile/${userId}`}
               >
                 View full profile
-              </Text>
+              </Link>
               <div className={styles.chartDetail__Bottom_actions}>
                 <Tooltip title="Message">
                   <a href="https://chat.google.com" target="_blank" rel="noreferrer">

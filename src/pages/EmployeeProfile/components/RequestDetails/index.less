@@ -96,6 +96,7 @@
                                 color: #676767;
 
                                 padding: 3px;
+                                margin: 3px;
                                 display: flex;
                                 align-items: center;
                             }
@@ -144,7 +145,13 @@
                         }
                         
                         .ant-checkbox-checked .ant-checkbox-inner{
+                            width: 18px;
+                            height: 18px;
                             border: solid 1px #2c6df9;
+                        }
+                        
+                        .ant-checkbox-checked::after{
+                            border: none;
                         }
 
                         .ant-checkbox-checked .ant-checkbox-inner::after{

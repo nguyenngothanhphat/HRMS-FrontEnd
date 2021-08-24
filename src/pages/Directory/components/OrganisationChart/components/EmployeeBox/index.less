@@ -125,6 +125,7 @@
       font-size: 18px;
       line-height: 21px;
       color: #161C29;
+      word-break: break-all;
 
       padding-bottom: 6px;
     }
@@ -158,6 +159,7 @@
       line-height: 16px;
 
       color: #161C29;
+      overflow-wrap: break-word;
 
       opacity: 0.91;
     }
@@ -177,6 +179,13 @@
       text-align: center;
       cursor: pointer;
       color: #2C6DF9;
+      text-decoration: underline;
+      
+      &:hover{
+        cursor: pointer;
+        color: #2C6DF9;
+        text-decoration: underline;
+      }
     }
     &_actions{
       width: 106px;
@@ -184,6 +193,13 @@
       justify-content: space-between;
       align-items: center;
     }
+  }
+}
+
+.avatarPopup{
+  img{
+    width: 300px;
+    height: 300px;
   }
 }
 

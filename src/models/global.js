@@ -6,6 +6,7 @@ const GlobalModel = {
     collapsed: false,
     expandMenuSidebar: false,
     notices: [],
+    fromCompanyManagement: '',
   },
   effects: {
     *fetchNotices(_, { call, put, select }) {
@@ -70,6 +71,17 @@ const GlobalModel = {
     },
   },
   reducers: {
+    save(
+      state = {
+        collapsed: false,
+        expandMenuSidebar: false,
+        notices: [],
+        fromCompanyManagement: '',
+      },
+      { payload },
+    ) {
+      return { ...state, ...payload };
+    },
     changeLayoutCollapsed(
       state = {
         notices: [],

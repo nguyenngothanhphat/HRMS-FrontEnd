@@ -67,17 +67,10 @@ class RelievingTemplates extends PureComponent {
     return (
       <div className={styles.templateList} style={{ paddingTop: '30px' }}>
         <div className={styles.title}>
-          <Row gutter={24} align="middle">
-            <Col span={2}>
-              {' '}
-              <img src={relievingTemlateIcon} alt="icon" />
-            </Col>
-            <Col span={22} style={{ paddingLeft: '4px' }}>
-              <div className={styles.title__text}>
-                Exit interview package <span>(System Defaults)</span>
-              </div>
-            </Col>
-          </Row>
+          <img src={relievingTemlateIcon} alt="icon" />
+          <div className={styles.title__text}>
+            Exit interview package <span>(System Defaults)</span>
+          </div>
         </div>
         <div className={styles.list}>
           <Row justify="center">
@@ -161,17 +154,10 @@ class RelievingTemplates extends PureComponent {
         <hr style={listTitle === 'Custom Templates' ? { display: 'none' } : {}} />
         <div className={styles.templateList}>
           <div className={styles.title}>
-            <Row gutter={24} align="middle">
-              <Col span={2}>
-                {' '}
-                <img src={relievingTemlateIcon} alt="icon" />
-              </Col>
-              <Col style={{ paddingLeft: '4px' }} span={22}>
-                <div className={styles.title__text}>
-                  Closing package <span>(System Defaults)</span>
-                </div>
-              </Col>
-            </Row>
+            <img src={relievingTemlateIcon} alt="icon" />
+            <div className={styles.title__text}>
+              Closing package <span>(System Defaults)</span>
+            </div>
           </div>
           <div className={styles.list}>
             <Row gutter={24} justify="center">

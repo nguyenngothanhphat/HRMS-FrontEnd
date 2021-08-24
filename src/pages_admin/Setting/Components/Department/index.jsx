@@ -1,5 +1,5 @@
 import { DeleteOutlined, PlusCircleFilled } from '@ant-design/icons';
-import { Input, Select, Spin, Table } from 'antd';
+import { Button, Input, Select, Spin, Table, message } from 'antd';
 import { connect } from 'umi';
 import Modal from 'antd/lib/modal/Modal';
 import React, { Component } from 'react';
@@ -16,8 +16,7 @@ class Department extends Component {
       selectedRowKeys: [],
       visible: false,
       testRecord: {},
-      // data2: [],
-      newDepartment: { name: '', departmentParentId: '' },
+      newDepartment: { name: '', departmentParentName: '' },
     };
   }
 
@@ -79,11 +78,24 @@ class Department extends Component {
     });
   };
 
-  handleClickDelete = (text, record) => {
-    this.setState({
-      visible: true,
-      testRecord: record,
+  handleClickDelete = (_, record) => {
+    const { department } = this.props;
+
+    let hasChildDept = false;
+    department.forEach((item) => {
+      if (item?.departmentParentName === record.name) {
+        hasChildDept = true;
+      }
     });
+
+    if (!hasChildDept) {
+      this.setState({
+        visible: true,
+        testRecord: record,
+      });
+    } else {
+      message.error('This department cannot be deleted');
+    }
   };
 
   handleChangeValue = (value) => {
@@ -95,11 +107,12 @@ class Department extends Component {
     const { dispatch } = this.props;
     const { newDepartment } = this.state;
     if (newDepartment.name === '') return;
+
     await dispatch({
       type: 'adminSetting/addDepartment',
       payload: newDepartment,
     });
-    this.setState({ newDepartment: { name: '', departmentParentId: '' } });
+    this.setState({ newDepartment: { name: '', departmentParentName: '' } });
   };
 
   render() {
@@ -115,6 +128,7 @@ class Department extends Component {
       selectedRowKeys,
       onChange: this.onSelectChange,
     };
+
     const columns = [
       {
         key: 1,
@@ -133,33 +147,52 @@ class Department extends Component {
       {
         key: 3,
         title: 'Department Parent Name',
-        dataIndex: 'departmentParent',
+        dataIndex: 'departmentParentName',
         align: 'left',
         width: '35%',
-        render: (text, record) => {
-          if (!record.departmentParent) {
-            const data = department.find((item) => item.departmentId === record.departmentParentId);
-            return <>{data && data.name}</>;
-          }
-          return text;
-          // return ({record.DepartmentParentName});
+        render: (departmentParentName) => {
+          if (departmentParentName) return <span>{departmentParentName}</span>;
+          return '';
         },
       },
       {
         key: 4,
         title: 'Action',
-        dataIndex: 'Action',
-        render: (text, record) =>
-          record._id !== '' ? (
-            <DeleteOutlined onClick={() => this.handleClickDelete(text, record)} />
-          ) : (
-            <PlusCircleFilled onClick={() => this.handleAddNewValue()} />
-          ),
+        dataIndex: 'action',
+        render: (_, record) => {
+          const disabled =
+            record.name === 'Engineering' ||
+            record.name === 'Finance' ||
+            record.name === 'Legal' ||
+            record.name === 'HR' ||
+            record.name === 'Sales' ||
+            record.name === 'Marketing' ||
+            record.name === 'Operations & Facility management';
+
+          return (
+            <>
+              {record._id ? (
+                <>
+                  {!disabled ? (
+                    <Button
+                      disabled={disabled}
+                      shape="circle"
+                      icon={<DeleteOutlined />}
+                      onClick={() => this.handleClickDelete(_, record)}
+                    />
+                  ) : null}
+                </>
+              ) : (
+                <PlusCircleFilled onClick={() => this.handleAddNewValue()} />
+              )}
+            </>
+          );
+        },
         align: 'center',
       },
     ];
     const add = {
-      _id: '',
+      // _id: '',
       departmentId: '',
       name: (
         <Input
@@ -168,12 +201,12 @@ class Department extends Component {
           value={newDepartment.name}
         />
       ),
-      departmentParent: (
+      departmentParentName: (
         <Select
           onChange={
             (value) =>
               this.handleChangeValue({
-                departmentParentId: value,
+                departmentParentName: value,
               })
             // eslint-disable-next-line react/jsx-curly-newline
           }
@@ -181,7 +214,9 @@ class Department extends Component {
         >
           <Select.Option value="">None</Select.Option>
           {department.map((d) => (
-            <Select.Option value={d.departmentId}>{d.name}</Select.Option>
+            <Select.Option key={d._id} value={d.name}>
+              {d.name}
+            </Select.Option>
           ))}
         </Select>
       ),

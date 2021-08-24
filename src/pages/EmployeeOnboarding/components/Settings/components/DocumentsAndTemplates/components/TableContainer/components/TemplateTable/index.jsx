@@ -17,7 +17,7 @@ class TemplateTable extends Component {
   }
 
   generateColumns = () => {
-    const { isDefaultTemplate = false } = this.props;
+    const { list } = this.props;
     const columns = [
       {
         title: 'Template Name',
@@ -53,6 +53,13 @@ class TemplateTable extends Component {
         dataIndex: 'fileInfo',
         key: 'fileInfo',
         render: (fileInfo) => {
+          let isDefault = false;
+          list.forEach((item) => {
+            if (item._id === fileInfo._id) {
+              isDefault = item.default;
+            }
+          });
+
           return (
             <div className={styles.actionsButton}>
               <img
@@ -61,7 +68,7 @@ class TemplateTable extends Component {
                 alt="download"
               />
               <img src={EditIcon} onClick={() => this.onEdit(fileInfo?._id)} alt="edit" />
-              {!isDefaultTemplate && (
+              {!isDefault && (
                 <img src={DeleteIcon} onClick={() => this.onDelete(fileInfo?._id)} alt="delete" />
               )}
             </div>

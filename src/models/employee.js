@@ -297,7 +297,8 @@ const employee = {
     ) {
       try {
         const response = yield call(getListEmployee, {
-          status: ['ACTIVE', 'INACTIVE'],
+          // status: ['ACTIVE', 'INACTIVE'],
+          status: ['ACTIVE'],
           company,
           department,
           location,
