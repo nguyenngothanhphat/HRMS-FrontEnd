@@ -69,20 +69,28 @@ class ClosingPackage extends PureComponent {
     const { toEmail } = value;
     const { dispatch, ticketId, closingPackage: { isSent = false } = {} } = this.props;
 
-    if (isSent) {
-      dispatch({
-        type: 'offboarding/sendClosePackage',
-        payload: {
-          packageType: 'CLOSING-PACKAGE',
-          ticketId,
-          toEmail,
-        },
-      });
-    } else {
-      notification.warn({
-        message: 'Cannot closing package!',
-      });
-    }
+    // if (isSent) {
+    //   dispatch({
+    //     type: 'offboarding/sendClosePackage',
+    //     payload: {
+    //       packageType: 'CLOSING-PACKAGE',
+    //       ticketId,
+    //       toEmail,
+    //     },
+    //   });
+    // } else {
+    //   notification.warn({
+    //     message: 'Cannot closing package!',
+    //   });
+    // }
+    dispatch({
+      type: 'offboarding/sendClosePackage',
+      payload: {
+        packageType: 'CLOSING-PACKAGE',
+        ticketId,
+        toEmail,
+      },
+    });
   };
 
   onValueChange = (value) => {
