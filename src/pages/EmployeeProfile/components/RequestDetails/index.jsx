@@ -17,6 +17,18 @@ class RequestDetails extends Component {
     };
   }
 
+  componentDidMount = () => {
+    this.scroppTopView();
+  };
+
+  scroppTopView = () => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+  };
+
   handleCancel = () => {
     const { cancel = () => {} } = this.props;
     cancel();

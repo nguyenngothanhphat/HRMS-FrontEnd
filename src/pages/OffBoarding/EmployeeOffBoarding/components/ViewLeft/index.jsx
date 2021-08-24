@@ -101,13 +101,18 @@ class ViewLeft extends Component {
   };
 
   operations = (countdata = []) => {
+    const { data = [] } = this.props;
+    const { status } = data[0];
+
+    const getCurrentStatus = countdata.filter((item) => item._id === status);
+
     if (countdata.length > 0) {
       return (
         <div className={styles.status}>
           <div className={styles.status__text}>Status: </div>
           <div className={styles.action}>
             <div className={styles.action__dot} />
-            <div className={styles.action__text}>{countdata[0]._id}</div>
+            <div className={styles.action__text}>{getCurrentStatus[0]?._id}</div>
           </div>
         </div>
       );

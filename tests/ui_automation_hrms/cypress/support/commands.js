@@ -23,15 +23,11 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-
-
-import 'cypress-file-upload';
-
+import "cypress-file-upload";
 
 // code that terminates all subsequent tests if one fails
-afterEach(function() {
-    if (this.currentTest.state === 'failed') {
-      Cypress.runner.stop()
-    }
+afterEach(function () {
+  if (this.currentTest.state === "failed") {
+    Cypress.runner.stop();
+  }
 });
-
