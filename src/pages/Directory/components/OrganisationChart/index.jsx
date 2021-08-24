@@ -4,6 +4,7 @@ import { connect } from 'umi';
 import moment from 'moment';
 
 import { isEmpty } from 'lodash';
+import { getCurrentTenant } from '@/utils/authority';
 import OrganizationChart from './components/OrganizationChart';
 import DetailEmployeeChart from './components/EmployeeBox';
 import styles from './index.less';
@@ -14,7 +15,7 @@ import styles from './index.less';
     loading,
     locationSelection: { listLocationsByCompany = [] } = {},
     user: {
-      currentUser: { employee: { _id: myEmployeeId = '' } = {} } = {},
+      currentUser: { employee: { _id: myEmployeeId = '' } = {}, employee = {} } = {},
       companiesOfUser = [],
     } = {},
   }) => ({
@@ -25,6 +26,7 @@ import styles from './index.less';
     companiesOfUser,
     listLocationsByCompany,
     listEmployeeAll,
+    employee,
   }),
 )
 class OrganisationChart extends Component {
@@ -43,27 +45,56 @@ class OrganisationChart extends Component {
 
   componentDidMount() {
     const { dispatch, myEmployeeId = '' } = this.props;
+
     dispatch({
-      type: 'employee/fetchDataOrgChart',
-      payload: { employee: myEmployeeId },
+      type: 'employeeProfile/fetchEmployeeTypes',
+      payload: { tenantId: getCurrentTenant() },
     });
 
-    this.fetchAllListUser();
+    this.fetchAllListUser().then((status) => {
+      if (status === 200) {
+        dispatch({
+          type: 'employee/fetchDataOrgChart',
+          payload: { employee: myEmployeeId },
+        }).then((response) => {
+          const { statusCode, data: dataOrgChart = {} } = response;
+          if (statusCode === 200) this.getInitUserInformation(dataOrgChart);
+        });
+      }
+    });
+
     this.fetchTimezone();
   }
 
   componentDidUpdate(prevProps) {
-    const { listLocationsByCompany = [], dataOrgChart = {}, listEmployeeAll } = this.props;
+    const { listLocationsByCompany = [] } = this.props;
     if (
       JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {
       this.fetchAllListUser();
       this.fetchTimezone();
     }
-    if (JSON.stringify(prevProps.listEmployeeAll) !== JSON.stringify(listEmployeeAll)) {
-      this.getInitUserInformation(dataOrgChart);
-    }
   }
+
+  getDataCurrentUser = () => {
+    const { timezoneList, currentTime } = this.state;
+    const {
+      employee: { _id = '', title = {}, department = {}, generalInfo = {}, location = {} } = {},
+    } = this.props;
+
+    const findTimezone =
+      timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+    const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
+
+    return {
+      _id,
+      generalInfo,
+      department,
+      title,
+      location,
+      localTime: timeData,
+    };
+  };
 
   getInitUserInformation = (data) => {
     const { listEmployeeAll } = this.props;
@@ -71,27 +102,37 @@ class OrganisationChart extends Component {
 
     const { user: { _id: userId = '' } = {} } = data;
     const getData = listEmployeeAll.filter((item) => item._id === userId);
-    const convertData = getData.map((item) => {
-      const { _id, generalInfo, department, location, title } = item;
-      const findTimezone =
-        timezoneList.find((timezone) => timezone.locationId === location._id) || {};
-      const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
-      return {
-        _id,
-        generalInfo,
-        department,
-        title,
-        location,
-        localTime: timeData,
-      };
-    });
 
-    const convertFinal = { ...convertData[0] };
-    this.setState({ idSelect: userId });
-    this.setState({ chartDetails: convertFinal });
+    if (getData.length === 0) {
+      const { employee: { _id: currentUserId = '' } = {} } = this.props;
+      const getCurrentUserdata = this.getDataCurrentUser();
+
+      this.setState({ idSelect: currentUserId });
+      this.setState({ chartDetails: getCurrentUserdata });
+    } else {
+      const convertData = getData.map((item) => {
+        const { _id, generalInfo, department, location, title } = item;
+        const findTimezone =
+          timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+        const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
+        return {
+          _id,
+          generalInfo,
+          department,
+          title,
+          location,
+          localTime: timeData,
+        };
+      });
+
+      const convertFinal = { ...convertData[0] };
+      this.setState({ idSelect: userId });
+      this.setState({ chartDetails: convertFinal });
+    }
   };
 
-  fetchAllListUser = () => {
+  fetchAllListUser = async (name = '') => {
+    let status = 0;
     const { listLocationsByCompany = [], companiesOfUser = [], dispatch } = this.props;
 
     const convertLocation = listLocationsByCompany.map((item) => {
@@ -102,10 +143,14 @@ class OrganisationChart extends Component {
       };
     });
 
-    dispatch({
+    await dispatch({
       type: 'employee/fetchAllListUser',
-      payload: { company: companiesOfUser, location: convertLocation },
+      payload: { company: companiesOfUser, location: convertLocation, limit: 10, page: 1, name },
+    }).then((response) => {
+      const { statusCode = 0 } = response;
+      if (statusCode === 200) status = statusCode;
     });
+    return status;
   };
 
   // deepSearchCurrentUser = (data, myEmployeeId, key, sub) => {
@@ -220,9 +265,7 @@ class OrganisationChart extends Component {
   };
 
   render() {
-    const { loadingFetchListAll } = this.props;
     const { chartDetails, idSelect } = this.state;
-
     return (
       <div className={styles.container}>
         <div className={styles.orgChart}>
@@ -231,7 +274,7 @@ class OrganisationChart extends Component {
             <DetailEmployeeChart
               chartDetails={chartDetails}
               handleSelectSearch={this.handleSelect}
-              loadingFetchListAll={loadingFetchListAll}
+              fetchAllListUser={this.fetchAllListUser}
               closeDetailEmployee={this.closeDetailEmployee}
             />
           </div>
