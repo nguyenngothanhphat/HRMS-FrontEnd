@@ -1,5 +1,8 @@
 ///<reference types="cypress" />
 
+let employee_email = Cypress.env("employee_email");
+let manager_email = Cypress.env("manager_email");
+let password = Cypress.env("password");
 
 describe('Simple examples of cypress code', () => {
 
@@ -15,29 +18,16 @@ describe('Simple examples of cypress code', () => {
     it ('Login as an employee', ()=> {
         cy.pause();
 
-        cy.get('#basic_email.ant-input').type(employee_email);
-        cy.get('#basic_password.ant-input').type(password);
-        cy.get('button[type="submit"]').click();
+		cy.loginAsSomeone(employee_email, password);
 
-        // cy.pause();
+        cy.contains("Book Flight Tickets", {timeout:5000}); // fails and stops running everything else because this content does not exist on the page
 
-        cy.wait(2000); // wait for the page to load
-
-        cy.contains("Book Flight Tickets"); // fails and stops running everything else because this content does not exist on the page
-
-        cy.get(".ant-dropdown-trigger").then((resp)=>{
-            cy.get(resp[1]).trigger('mousedown').click();
-            cy.contains("Logout").click();
-        });
-
+		cy.logout();
     });
 
     it ("Login as manager", ()=>{
         cy.pause();
-        cy.get('#basic_email.ant-input').type(manager_email);
-        cy.get('#basic_password.ant-input').type(password);
-        cy.get('button[type="submit"]').click();
-    });
+		cy.loginAsSomeone(manager_email, password);    
+	});
 });
-
 
