@@ -104,7 +104,7 @@ class OrganisationChart extends Component {
 
     dispatch({
       type: 'employee/fetchAllListUser',
-      payload: { company: companiesOfUser, location: convertLocation },
+      payload: { company: companiesOfUser, location: convertLocation, limit: 10, page: 1 },
     });
   };
 

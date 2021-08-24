@@ -291,6 +291,8 @@ const employee = {
           name = '',
           title = [],
           skill = [],
+          limit = 10,
+          page = 1,
         } = {},
       },
       { call, put },
@@ -306,6 +308,8 @@ const employee = {
           name,
           title,
           skill,
+          limit,
+          page,
         });
         const { statusCode, data: listEmployeeAll = [] } = response;
         if (statusCode !== 200) throw response;
