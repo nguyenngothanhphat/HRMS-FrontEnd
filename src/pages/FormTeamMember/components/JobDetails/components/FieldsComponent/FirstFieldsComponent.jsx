@@ -2,7 +2,7 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
-import { Row, Col, Select, Typography, Spin, Form } from 'antd';
+import { Row, Col, Select, Spin, Form } from 'antd';
 import { isNull } from 'lodash';
 import { connect } from 'umi';
 import InternalStyle from './FirstFieldsComponent.less';
@@ -206,6 +206,7 @@ class FirstFieldsComponent extends PureComponent {
                           item.title === 'title' ||
                           item.title === 'department'
                         }
+                        showArrow
                         allowClear
                         filterOption={(input, option) => {
                           if (item.title === 'jobGradeLevel')
@@ -216,19 +217,19 @@ class FirstFieldsComponent extends PureComponent {
                         {item.title === 'jobGradeLevel' ? (
                           jobGradeList.map((data) => (
                             <Option value={data} key={data}>
-                              <Typography.Text>{data}</Typography.Text>
+                              {data}
                             </Option>
                           ))
                         ) : item.title === 'workLocation' ? (
                           showWorkLocationAB.map((data, index) => (
                             <Option value={data.name} key={index}>
-                              <Typography.Text>{data.name}</Typography.Text>
+                              {data.name}
                             </Option>
                           ))
                         ) : item.title === 'department' && departmentList.length > 0 ? (
                           showDepartmentAB.map((data, index) => (
                             <Option value={data.name} key={index}>
-                              <Typography.Text>{data.name}</Typography.Text>
+                              {data.name}
                             </Option>
                           ))
                         ) : item.title === 'title' && titleList.length > 0 ? (
@@ -241,7 +242,7 @@ class FirstFieldsComponent extends PureComponent {
                               <>
                                 {showTitleAB.map((data, index) => (
                                   <Option value={data.name} key={index}>
-                                    <Typography.Text>{data.name}</Typography.Text>
+                                    {data.name}
                                   </Option>
                                 ))}
                               </>
@@ -250,11 +251,9 @@ class FirstFieldsComponent extends PureComponent {
                         ) : item.title === 'reportingManager' && showManagerListAB.length > 0 ? (
                           showManagerListAB.map((data, index) => (
                             <Option value={data.generalInfo.firstName} key={index}>
-                              <Typography.Text>
-                                {data.generalInfo && data.generalInfo?.firstName
-                                  ? `${data.generalInfo?.firstName} (${data.generalInfo?.workEmail})`
-                                  : ''}
-                              </Typography.Text>
+                              {data.generalInfo && data.generalInfo?.firstName
+                                ? `${data.generalInfo?.firstName} (${data.generalInfo?.workEmail})`
+                                : ''}
                             </Option>
                           ))
                         ) : null}
