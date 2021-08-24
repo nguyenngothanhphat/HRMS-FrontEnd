@@ -1,12 +1,13 @@
 import React, { PureComponent } from 'react';
 import { Form, Table, Button, Input, Row, Col, InputNumber } from 'antd';
 import { formatMessage, connect } from 'umi';
-import AnswerQuestion from '@/components/Question/AnswerQuestion';
+// import AnswerQuestion from '@/components/Question/AnswerQuestion';
 import { getCurrentTenant } from '@/utils/authority';
 import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
 import { every } from 'lodash';
+import NotifyModal from '../NotifyModal';
 import styles from './index.less';
-import { Page } from '../../../../../../../FormTeamMember/utils';
+// import { Page } from '../../../../../../../FormTeamMember/utils';
 
 @connect(
   ({
@@ -49,17 +50,22 @@ class SalaryStructureTemplate extends PureComponent {
           value: '3.75% of Gross',
         },
       ],
+      notifyModalVisible: false,
     };
   }
 
-  onClickPrev = () => {
-    const { dispatch, localStep } = this.props;
-    dispatch({
-      type: 'candidatePortal/save',
-      payload: {
-        localStep: localStep - 1,
-      },
+  onClickReNegotiate = () => {
+    this.setState({
+      actionType: 're-negotiate',
     });
+    this.handleNotifyModalVisible(true);
+    // const { dispatch, localStep } = this.props;
+    // dispatch({
+    //   type: 'candidatePortal/save',
+    //   payload: {
+    //     localStep: localStep - 1,
+    //   },
+    // });
   };
 
   checkAllFieldsValidate = () => {
@@ -140,6 +146,18 @@ class SalaryStructureTemplate extends PureComponent {
           filledDocumentVerification: true,
         },
       },
+    });
+
+    // open modal
+    this.setState({
+      actionType: 'accept',
+    });
+    this.handleNotifyModalVisible(true);
+  };
+
+  handleNotifyModalVisible = (value) => {
+    this.setState({
+      notifyModalVisible: value,
     });
   };
 
@@ -328,7 +346,7 @@ class SalaryStructureTemplate extends PureComponent {
             <div className={styles.bottomBar__button}>
               <Button
                 type="secondary"
-                onClick={this.onClickPrev}
+                onClick={this.onClickReNegotiate}
                 className={styles.bottomBar__button__secondary}
               >
                 Re Negotiate
@@ -350,6 +368,16 @@ class SalaryStructureTemplate extends PureComponent {
 
   render() {
     const { salaryStructure = [], options } = this.props;
+    const { notifyModalVisible, actionType } = this.state;
+
+    const modalTitle =
+      actionType === 'accept'
+        ? 'The acceptance of the provisional salary offer has been mailed to the HR.'
+        : 'Thank you!';
+    const modalContent =
+      actionType === 'accept'
+        ? 'Upon reviewing, the HR team shall get it touch with you for the final phase of discussions.'
+        : 'Your response has been noted. The HR will get back to you 1-2 days to neogotiate the offer.';
 
     return (
       <div className={styles.salaryStructureTemplate}>
@@ -361,13 +389,20 @@ class SalaryStructureTemplate extends PureComponent {
               // size="large"
               pagination={false}
             />
-            <Row>
+            {/* <Row>
               <AnswerQuestion page={Page.Salary_Structure} />
-            </Row>
+            </Row> */}
           </div>
           {/* {this._renderFooter()} */}
           {options === 1 ? this._renderBottomBar() : null}
         </Form>
+
+        <NotifyModal
+          visible={notifyModalVisible}
+          onClose={() => this.handleNotifyModalVisible(false)}
+          title={modalTitle}
+          content={modalContent}
+        />
       </div>
     );
   }

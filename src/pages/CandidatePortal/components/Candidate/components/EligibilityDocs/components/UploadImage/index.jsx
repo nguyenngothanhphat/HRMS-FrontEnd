@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Upload, message, Spin } from 'antd';
+import { Upload, message, Spin, Progress } from 'antd';
 import { connect } from 'umi';
 import styles from './index.less';
 
@@ -103,7 +103,15 @@ class UploadImage extends Component {
     } = this.props;
 
     if (loading && typeIndex === selectedOuter && nestedIndex === selectedInner) {
-      return <Spin loading={loading} active="true" />;
+      return (
+        <Progress
+          percent={100}
+          size="small"
+          status="active"
+          strokeColor="#3DDF82"
+          showInfo={false}
+        />
+      );
     }
 
     const props = {

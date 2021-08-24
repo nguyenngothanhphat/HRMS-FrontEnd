@@ -396,9 +396,9 @@ class JobDetails extends PureComponent {
                 _handleSelect={this._handleSelect}
               />
               <Row className={styles.belowPart}>
-                <Col span={24}>
+                {/* <Col span={24}>
                   <AnswerQuestion page={Page.Job_Details} />
-                </Col>
+                </Col> */}
                 <Col span={24} className={styles.verifyCheckbox}>
                   <Checkbox checked={isVerifiedJobDetail} onChange={this.onVerifyThisForm}>
                     I have verified the other details are correct

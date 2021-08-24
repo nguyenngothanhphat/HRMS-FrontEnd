@@ -10,9 +10,10 @@ import { every } from 'lodash';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
 import PreviousEmployment from './components/PreviousEmployment';
-import StepsComponent from '../StepsComponent';
+import MessageBox from '../MessageBox';
+// import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
-import SendEmail from './components/SendEmail';
+// import SendEmail from './components/SendEmail';
 import ModalContentComponent from './components/ModalContentComponent';
 import { Page } from '../../../../../FormTeamMember/utils';
 import styles from './index.less';
@@ -718,6 +719,7 @@ class EligibilityDocs extends PureComponent {
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={Note} />
+            <MessageBox />
             {/* {documentListToRender.length > 0 ? (
               <>
                 {hrEmail ? (

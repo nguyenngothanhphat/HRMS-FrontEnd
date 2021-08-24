@@ -13,7 +13,9 @@ const NoteComponent = ({ note = {} }) => {
         <div>
           <img src={lightning} alt="lightning icon" />
         </div>
-        <Typography.Title level={5}>{note.title}</Typography.Title>
+        <Typography.Title level={5} className={styles.titleText}>
+          {note.title}
+        </Typography.Title>
       </Space>
       <div>{note.data}</div>
     </div>

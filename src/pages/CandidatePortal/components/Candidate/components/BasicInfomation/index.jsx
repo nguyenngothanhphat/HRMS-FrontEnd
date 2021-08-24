@@ -7,6 +7,7 @@ import { every } from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
 import { Page } from '../../../../../FormTeamMember/utils';
+import MessageBox from '../MessageBox';
 import NoteComponent from '../NoteComponent';
 import BasicInformationHeader from './components/BasicInformationHeader';
 import styles from './index.less';
@@ -132,19 +133,23 @@ class BasicInformation extends PureComponent {
 
   onFinish = async (values) => {
     const { data } = this.state;
-    const { dispatch, localStep, _id: id, settings } = this.props;
+    const {
+      dispatch,
+      localStep,
+      // _id: id, settings
+    } = this.props;
     const { _id } = data;
-    const messageErr = this.checkAllFieldsValidate();
-    if (!every(messageErr, (message) => message === null)) return;
-    if (id !== '' && settings && settings.length) {
-      dispatch({
-        type: 'optionalQuestion/updateQuestionByCandidate',
-        payload: {
-          id,
-          settings,
-        },
-      });
-    }
+    // const messageErr = this.checkAllFieldsValidate();
+    // if (!every(messageErr, (message) => message === null)) return;
+    // if (id !== '' && settings && settings.length) {
+    //   dispatch({
+    //     type: 'optionalQuestion/updateQuestionByCandidate',
+    //     payload: {
+    //       id,
+    //       settings,
+    //     },
+    //   });
+    // }
 
     await dispatch({
       type: 'candidatePortal/updateByCandidateEffect',
@@ -266,12 +271,12 @@ class BasicInformation extends PureComponent {
               <Input disabled className={styles.formInput} name="previousExperience" />
             </Form.Item>
           </Col>
+          {/* <AnswerQuestion page={Page.Basic_Information} /> */}
           <Col span={24} className={styles.verifyCheckbox}>
             <Checkbox checked={isVerifiedBasicInfo} onChange={this.onVerifyThisForm}>
               I have verified the other details are correct
             </Checkbox>
           </Col>
-          <AnswerQuestion page={Page.Basic_Information} />
         </Row>
       </div>
     );
@@ -305,7 +310,6 @@ class BasicInformation extends PureComponent {
           </Col>
           <Col span={16}>
             <div className={styles.bottomBar__button}>
-              {' '}
               <Button
                 type="primary"
                 htmlType="submit"
@@ -393,6 +397,7 @@ class BasicInformation extends PureComponent {
         <Col className={styles.RightComponents} lg={24} xl={8}>
           <div className={styles.rightWrapper}>
             <NoteComponent note={Note} />
+            <MessageBox />
           </div>
         </Col>
       </Row>
