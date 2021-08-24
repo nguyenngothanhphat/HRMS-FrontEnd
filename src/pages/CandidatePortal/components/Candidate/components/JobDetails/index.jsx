@@ -8,6 +8,7 @@ import React, { PureComponent } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import { Page } from '../../../../../FormTeamMember/utils';
 import NoteComponent from '../NoteComponent';
+import MessageBox from '../MessageBox';
 import FieldsComponent from './components/FieldsComponent';
 import Header from './components/Header';
 import styles from './index.less';
@@ -409,6 +410,7 @@ class JobDetails extends PureComponent {
             <div className={styles.rightWrapper}>
               <Row>
                 <NoteComponent note={Note} />
+                <MessageBox />
               </Row>
             </div>
           </Col>
