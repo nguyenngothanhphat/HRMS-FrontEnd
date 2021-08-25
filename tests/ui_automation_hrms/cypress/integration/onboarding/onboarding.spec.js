@@ -1,37 +1,37 @@
 /* eslint-disable no-undef */
 /* eslint-disable camelcase */
 /// <reference types="cypress" />
-const host_url = Cypress.env('HOST_URL');
 const hr_email = Cypress.env('hr_email');
 const hrManager_email = Cypress.env('hrManager_email');
 const password = Cypress.env('password');
-const id = 1000 + Math.floor(Math.random() * 9000);
+const id = 10000 + Math.floor(Math.random() * 90000);
+// create joning date
+const date = new Date();
+date.setDate(date.getDate() + 14);
 // info employee
 const candidate = {
   company: 'TERRALOGIC',
   id,
-  firstName: 'Nguyen',
-  middleName: 'Van',
-  lastName: 'B',
+  firstName: 'Candidate',
+  middleName: 'Auto',
+  lastName: 'Test',
   // personalEmail: `nva.9541@mailinator.com`,
-  personalEmail: `nva.${id}@mailinator.com`,
-
+  personalEmail: `candidate.${id}@mailinator.com`,
   previousExperience: '1',
-  join_date: '08.30.21', // MM.DD.YY
-  email: `nva.${id}@mailinator.com`,
-  work_email: `nva.${id}@mailinator.com`,
+  join_date: Cypress.moment(date).format('MM.DD.YY'), // MM.DD.YY
+  email: `candidate.${id}@mailinator.com`,
   type: 'Full Time',
   grade: '5',
   location: 'Headquarter',
   title: 'Software engineer I',
   department: 'Engineering',
-  manager: 'dan',
-  manager_email: 'dan.nguyen1@mailinator.com',
+  manager: 'Uy Manager',
+  manager_email: 'comp1-manager@mailinator.com',
 };
 
 describe('Onboarding Automation', () => {
   it('Add candidate', () => {
-    cy.visit(host_url);
+    cy.visit('/');
     cy.wait(1000);
     cy.loginAsSomeone(hr_email, password);
     // cy.contains('Please select a company profile to proceed', {
@@ -92,24 +92,23 @@ describe('Onboarding Automation', () => {
       .should('be.enabled')
       .type(candidate.department)
       .then(() => {
-        cy.get('#department_list').next().contains(candidate.department).click({ force: true });
+        cy.get(`[title="${candidate.department}"]`).click({ force: true });
       });
     // cy.wait(1000);
     cy.get('#title')
       .should('be.enabled')
       .type(candidate.title)
       .then(() => {
-        cy.get('#title_list').next().contains(candidate.title).click({ force: true });
+        cy.get(`[title="${candidate.title}"]`).click({ force: true });
       });
     // cy.wait(2000);
     cy.get('#reportingManager', { timeout: 15000 })
       .should('be.enabled', { timeout: 15000 })
       .type(candidate.manager)
       .then(() => {
-        cy.get('#reportingManager_list')
-          .next()
-          .contains(`${candidate.manager} (${candidate.manager_email}`)
-          .click({ force: true });
+        cy.get(`[title="${candidate.manager} (${candidate.manager_email})"]`).click({
+          force: true,
+        });
       });
     cy.get('.ant-picker-input > input').type(`${candidate.join_date}{enter}`, { force: true });
     cy.contains('Next').should('have.attr', 'type', 'button').click();
@@ -131,7 +130,7 @@ describe('Onboarding Automation', () => {
     cy.logout();
   });
 
-  // candidate login
+  // Get password candidate
   it('Get password candidate', () => {
     cy.visit('https://www.mailinator.com/');
     cy.readFile('cypress/fixtures/onboarding_ticket.json').then((item) => {
@@ -165,7 +164,7 @@ describe('Onboarding Automation', () => {
 
   // candidate login
   it('Candidate Login', () => {
-    cy.visit(host_url);
+    cy.visit('/');
     cy.readFile('cypress/fixtures/onboarding_ticket.json').then((item) => {
       cy.loginAsSomeone(item.email, item.password);
       cy.wait(2000);
@@ -232,7 +231,7 @@ describe('Onboarding Automation', () => {
 
   // hr verify document
   it('HR verify document', () => {
-    cy.visit(host_url);
+    cy.visit('/');
     cy.wait(1000);
     cy.loginAsSomeone(hr_email, password);
     // cy.contains('Please select a company profile to proceed', {
@@ -251,7 +250,10 @@ describe('Onboarding Automation', () => {
     cy.wait(5000);
     cy.get(':nth-child(2) > .menuWrapper___1SS2k > .menuItem___3aW6J').click();
     cy.wait(3000);
-
+    cy.get(
+      '.PendingEligibilityChecks___HKsyD > :nth-child(1) > .ant-tabs > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > :nth-child(3)',
+    ).click();
+    cy.wait(3000);
     cy.readFile('cypress/fixtures/onboarding_ticket.json').then((item) => {
       cy.contains(item.ticketId).click();
     });
@@ -349,7 +351,7 @@ describe('Onboarding Automation', () => {
 
   // hr manager
   it('HR Manager verify', () => {
-    cy.visit(host_url);
+    cy.visit('/');
     cy.wait(1000);
     cy.loginAsSomeone(hrManager_email, password);
     // cy.contains('Please select a company profile to proceed', {
@@ -396,8 +398,8 @@ describe('Onboarding Automation', () => {
   });
 
   // candidate
-  it('Candidate accept final offer', () => {
-    cy.visit(host_url);
+  it.only('Candidate accept final offer', () => {
+    cy.visit('/');
     cy.readFile('cypress/fixtures/onboarding_ticket.json').then((item) => {
       cy.loginAsSomeone(item.email, password);
     });
@@ -411,10 +413,10 @@ describe('Onboarding Automation', () => {
       .then(() => {
         cy.get('[title="Digital Signature"]').click({ force: true });
       });
-    cy.get('.ant-input').type('B Nguyen', {
+    cy.get('.ant-input').type(candidate.firstName, {
       force: true,
     });
-    cy.get('.ant-input').clear().type('B Nguyen', { force: true });
+    // cy.get('.ant-input').clear().type(candidate.firstName, { force: true });
 
     cy.get(':nth-child(1) > .ant-radio-wrapper > .ant-radio').click({
       force: true,
