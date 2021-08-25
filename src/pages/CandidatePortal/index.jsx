@@ -1,7 +1,7 @@
-import { getCurrentTenant } from '@/utils/authority';
 import { Tabs } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, history } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import Dashboard from './components/Dashboard';
 import Messages from './components/Messages';
 import WelcomeModal from './components/WelcomeModal';

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, Skeleton } from 'antd';
 import { Link } from 'umi';
 import { taskStatus } from '@/utils/candidatePortal';
 import styles from './index.less';
@@ -36,6 +36,7 @@ class PendingTaskTable extends PureComponent {
 
   render() {
     const data = this.getData();
+    const { loading } = this.props;
 
     return (
       <div className={styles.PendingTaskTable}>
@@ -49,7 +50,11 @@ class PendingTaskTable extends PureComponent {
             </Col>
           </Row>
           <div className={styles.taskTableContent}>
-            {data.map((val, index) => this.renderItem(val, data.length, index))}
+            {loading ? (
+              <Skeleton />
+            ) : (
+              data.map((val, index) => this.renderItem(val, data.length, index))
+            )}
           </div>
         </div>
       </div>

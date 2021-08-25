@@ -1,11 +1,11 @@
-import AnswerQuestion from '@/components/Question/AnswerQuestion';
-import { SPECIFY, TYPE_QUESTION } from '@/components/Question/utils';
-import { getCurrentTenant } from '@/utils/authority';
 import { Button, Col, notification, Row, Typography } from 'antd';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { every } from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage, history } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
+import { SPECIFY, TYPE_QUESTION } from '@/components/Question/utils';
+import AnswerQuestion from '@/components/Question/AnswerQuestion';
 import { Page } from '../../../../../FormTeamMember/utils';
 import NoteComponent from '../NoteComponent';
 import MessageBox from '../MessageBox';
@@ -78,16 +78,19 @@ class JobDetails extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { dispatch, checkMandatory, data } = this.props;
+    const { dispatch, checkMandatory, data, tempData } = this.props;
 
     const { dateOfJoining = '' } = data;
+    const { dateOfJoining: tempDOJ = '' } = tempData;
 
     let valid = false;
     if (dateOfJoining) {
       valid = true;
-    } else {
+    } else if (tempDOJ) {
+      valid = true;
+
+      } else
       valid = false;
-    }
 
     if (prevProps.checkMandatory.filledJobDetail !== valid) {
       dispatch({

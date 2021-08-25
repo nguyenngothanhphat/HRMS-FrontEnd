@@ -3,10 +3,10 @@
 import React, { Component } from 'react';
 import { Collapse, Space, Checkbox, Typography, Row, Col } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
 import cancelIcon from '@/assets/cancel-symbols-copy.svg';
 import undo from '@/assets/candidatePortal/undo-signs.svg';
 import doneIcon from '@/assets/candidatePortal/doneSign.svg';
-import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import UploadImage from '../UploadImage';
 import InputField from '../InputField';
@@ -90,9 +90,11 @@ class PreviousEmployment extends Component {
         currentCompany: null,
       });
     }
-    const { dispatch, candidate,
+    const {
+      dispatch,
+      candidate,
       //  renderData = () => {}
-       } = this.props;
+    } = this.props;
     await dispatch({
       type: 'candidatePortal/updateWorkHistory',
       payload: {
@@ -324,7 +326,7 @@ class PreviousEmployment extends Component {
             })}
           </div>
         </Space>
-        {index + 1 < docListE.length && <hr />}
+        {index + 1 < docListE.length && <div className={styles.divider} />}
       </>
     );
   };

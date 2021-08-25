@@ -313,35 +313,15 @@ const candidatePortal = {
           // isAcceptedJoiningDate,
         } = data || {};
 
-        // if there are any resubmit documents, show resubmit tasks
-        if (processStatus === PROCESS_STATUS.PENDING && documentList.length > 0) {
-          const checkDocumentResubmit = documentList.some(
-            (x) => x.candidateDocumentStatus === 'RE-SUBMIT',
-          );
-          const checkDocumentVerified = documentList.some(
-            (x) =>
-              (x.candidateGroup !== 'E' && x.candidateDocumentStatus === 'PENDING') ||
-              (x.candidateGroup === 'E' && x.employer && x.candidateDocumentStatus === 'PENDING'),
-          );
-
-          if (checkDocumentResubmit) {
-            tempPendingTasks[1].status = taskStatus.IN_PROGRESS;
-            tempPendingTasks[1].name = 'Resubmit Documents';
-          } else if (!checkDocumentVerified) {
-            // salary structure
-            tempPendingTasks[2].status = taskStatus.IN_PROGRESS;
-          }
-        }
-
         switch (processStatus) {
           case PROCESS_STATUS.SENT_PROVISIONAL_OFFERS:
-            if (currentStep < 3) {
+            if (currentStep <= 3) {
               // review profile
               tempPendingTasks[0].status = taskStatus.IN_PROGRESS;
               // uploading documents
               tempPendingTasks[1].status = taskStatus.IN_PROGRESS;
             }
-            if (currentStep >= 3) {
+            if (currentStep > 3) {
               // salary structure
               tempPendingTasks[2].status = taskStatus.IN_PROGRESS;
             }
@@ -357,7 +337,30 @@ const candidatePortal = {
             tempPendingTasks[1].status = taskStatus.DONE;
             break;
 
-          // case PROCESS_STATUS.PENDING:
+          case PROCESS_STATUS.PENDING:
+            // if there are any resubmit documents, show resubmit tasks
+            if (documentList.length > 0) {
+              const checkDocumentResubmit = documentList.some(
+                (x) => x.candidateDocumentStatus === 'RE-SUBMIT',
+              );
+              const checkDocumentVerified = documentList.some(
+                (x) =>
+                  (x.candidateGroup !== 'E' && x.candidateDocumentStatus === 'PENDING') ||
+                  (x.candidateGroup === 'E' &&
+                    x.employer &&
+                    x.candidateDocumentStatus === 'PENDING'),
+              );
+
+              if (checkDocumentResubmit) {
+                tempPendingTasks[1].status = taskStatus.IN_PROGRESS;
+                tempPendingTasks[1].name = 'Resubmit Documents';
+              } else if (!checkDocumentVerified) {
+                // salary structure
+                tempPendingTasks[2].status = taskStatus.IN_PROGRESS;
+              }
+            }
+            break;
+
           case PROCESS_STATUS.ELIGIBLE_CANDIDATES:
           case PROCESS_STATUS.INELIGIBLE_CANDIDATES:
           case PROCESS_STATUS.RENEGOTIATE_PROVISIONAL_OFFERS:

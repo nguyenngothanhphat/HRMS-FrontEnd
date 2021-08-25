@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
-import ArrowDownIcon from '@/assets/candidatePortal/arrowDown.svg';
 import { connect } from 'umi';
+import ArrowDownIcon from '@/assets/candidatePortal/arrowDown.svg';
 import CommonModal from '../CommonModal';
 import PendingTaskTable from './components/PendingTaskTable';
 import styles from './index.less';
@@ -9,10 +9,12 @@ import styles from './index.less';
 @connect(
   ({
     candidatePortal: { pendingTasks = [], data = {}, data: { processStatus = '' } = {} } = {},
+    loading
   }) => ({
     pendingTasks,
     processStatus,
     data,
+    loadingFetchDocument: loading.effects['candidatePortal/fetchDocumentByCandidate']
   }),
 )
 class PendingTasks extends PureComponent {
@@ -57,7 +59,7 @@ class PendingTasks extends PureComponent {
 
   render() {
     const { openModal } = this.state;
-    const { pendingTasks = [] } = this.props;
+    const { pendingTasks = [], loadingFetchDocument } = this.props;
     return (
       <div className={styles.PendingTasks}>
         <div>
@@ -65,7 +67,7 @@ class PendingTasks extends PureComponent {
             <span>Pending Tasks</span>
           </div>
           <div className={styles.content}>
-            <PendingTaskTable tasks={pendingTasks} />
+            <PendingTaskTable tasks={pendingTasks} loading={loadingFetchDocument} />
           </div>
         </div>
         <div className={styles.viewMoreBtn} onClick={() => this.openModal(true)}>

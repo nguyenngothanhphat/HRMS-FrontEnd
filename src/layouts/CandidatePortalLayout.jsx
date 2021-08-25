@@ -71,6 +71,10 @@ const CandidatePortalLayout = React.memo((props) => {
   }, [candidate]);
 
   useEffect(() => {
+    const {
+      match: { params = '' },
+    } = props;
+    console.log('params', params);
     setCandidateMode(window.location.href.includes('ticket'));
     return () => {};
   }, [window.location.href]);
