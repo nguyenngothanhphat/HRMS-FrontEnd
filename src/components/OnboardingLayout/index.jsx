@@ -6,7 +6,7 @@ import { formatMessage, connect, history } from 'umi';
 import AwaitingApprovals from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/AwaitingApprovals';
 import DiscardedProvisionalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedProvisionalOffers';
 import EligibleCandidates from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/EligibleCandidates';
-import AllDrafts from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/AllDrafts';
+import Drafts from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/Drafts';
 import FinalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/FinalOffers';
 import IneligibleCandidates from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/IneligibleCandidates';
 import PendingEligibilityChecks from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/PendingEligibilityChecks';
@@ -14,6 +14,7 @@ import ProvisionalOffers from '@/pages/EmployeeOnboarding/components/OnboardingO
 import DiscardedFinalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedFinalOffers';
 import BackgroundCheck from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/BackgroundCheck';
 import DiscardedOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedOffers';
+import OnboardingAll from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/All';
 
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import MenuItem from './components/MenuItem';
@@ -22,6 +23,8 @@ import styles from './index.less';
 
 const getComponent = (name) => {
   switch (name) {
+    case 'All':
+      return <OnboardingAll />;
     case 'PendingEligibilityChecks':
       return <PendingEligibilityChecks />;
     case 'EligibleCandidates':
@@ -36,8 +39,8 @@ const getComponent = (name) => {
       return <AwaitingApprovals />;
     case 'FinalOffers':
       return <FinalOffers />;
-    case 'AllDrafts':
-      return <AllDrafts />;
+    case 'Drafts':
+      return <Drafts />;
     case 'DiscardedFinalOffers': // del
       return <DiscardedFinalOffers />; // del
     case 'DocumentVerification':

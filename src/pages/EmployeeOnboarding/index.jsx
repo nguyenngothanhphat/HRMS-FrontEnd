@@ -4,11 +4,8 @@ import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { Tabs, Button, Row, Col } from 'antd';
 import { connect, formatMessage, history } from 'umi';
 import exportToExcel from '@/utils/exportAsExcel';
-// import { isAdmin, isOwner } from '@/utils/authority';
-// import UploadIcon from '@/assets/uploadYellow.svg';
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';
-// import CustomFields from './components/CustomFields';
 import styles from './index.less';
 
 @connect(
@@ -191,9 +188,6 @@ class EmployeeOnboarding extends PureComponent {
             </Tabs>
           </div>
         </div>
-        {/* ) : (
-          ''
-        )} */}
       </PageContainer>
     );
   }

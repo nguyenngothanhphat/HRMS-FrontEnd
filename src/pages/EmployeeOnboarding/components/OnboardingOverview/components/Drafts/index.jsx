@@ -20,7 +20,7 @@ const { TabPane } = Tabs;
 // const { ID, NAME, POSITION, LOCATION, DATE_JOIN, ASSIGN_TO, ASSIGNEE_MANAGER, ACTION } = COLUMN_NAME;
 // const { FINAL_OFFERS_DRAFTS } = TABLE_TYPE;
 
-class AllDrafts extends PureComponent {
+class Drafts extends PureComponent {
   // static getDerivedStateFromProps(nextProps, prevState) {
   //   console.log(prevState);
   //   console.log(nextProps);
@@ -199,4 +199,4 @@ export default connect((state) => {
     dataAll,
     loadingAll: loading.effects['onboard/fetchOnboardListAll'],
   };
-})(React.memo(AllDrafts));
+})(React.memo(Drafts));

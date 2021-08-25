@@ -50,15 +50,24 @@ const pendingData = []; // Background Checks
 const MENU_DATA = [
   {
     id: 1,
-    name: 'All Drafts',
-    key: 'allDrafts',
-    component: 'AllDrafts',
+    name: 'All',
+    key: 'all',
+    component: 'All',
     // quantity: finalOfferDraftsData.length,
     quantity: provisionalOfferDraftsData.length,
-    link: 'all-drafts',
+    link: 'all',
   },
   {
     id: 2,
+    name: 'Drafts',
+    key: 'drafts',
+    component: 'Drafts',
+    // quantity: finalOfferDraftsData.length,
+    quantity: provisionalOfferDraftsData.length,
+    link: 'drafts',
+  },
+  {
+    id: 3,
     name: 'Provisional offers',
     key: 'provisionalOffers',
     component: 'ProvisionalOffers',
@@ -67,7 +76,7 @@ const MENU_DATA = [
     link: 'provisional-offers',
   },
   {
-    id: 3,
+    id: 4,
     name: 'Document Verification',
     key: 'backgroundChecks',
     component: 'DocumentVerification',
@@ -76,7 +85,7 @@ const MENU_DATA = [
     link: 'document-verification',
   },
   {
-    id: 4,
+    id: 5,
     name: 'Awaiting approvals',
     key: 'awaitingApprovals',
     component: 'AwaitingApprovals',
@@ -84,7 +93,7 @@ const MENU_DATA = [
     link: 'awaiting-approvals',
   },
   {
-    id: 5,
+    id: 6,
     name: 'Final offers',
     key: 'finalOffers',
     component: 'FinalOffers',
@@ -92,13 +101,12 @@ const MENU_DATA = [
     link: 'final-offers',
   },
   {
-    id: 6,
+    id: 7,
     name: 'Discarded offers',
     key: 'discardedOffers',
     component: 'DiscardedOffers',
     quantity: provisionalOffersData.length,
     link: 'discarded-offers',
-    // quantity: 5,
   },
 ];
 
@@ -225,7 +233,7 @@ const onboard = {
         renegotiateFinalOffers: renegotiateFinalOffersData,
       },
       finalOfferDrafts: finalOfferDraftsData,
-      allDrafts: {
+      drafts: {
         provisionalOfferDrafts: provisionalOfferDraftsData,
         finalOfferDrafts: finalOfferDraftsData,
       },
@@ -804,8 +812,8 @@ const onboard = {
         ...state,
         onboardingOverview: {
           ...state.onboardingOverview,
-          allDrafts: {
-            ...state.onboardingOverview.allDrafts,
+          drafts: {
+            ...state.onboardingOverview.drafts,
             provisionalOfferDrafts: action.payload,
           },
         },
@@ -817,8 +825,8 @@ const onboard = {
         ...state,
         onboardingOverview: {
           ...state.onboardingOverview,
-          allDrafts: {
-            ...state.onboardingOverview.allDrafts,
+          drafts: {
+            ...state.onboardingOverview.drafts,
             finalOfferDrafts: action.payload,
           },
         },
@@ -1003,7 +1011,7 @@ const onboard = {
       const { listMenu } = state.menu.onboardingOverviewTab;
       const { totalNumber } = action.payload;
       const newTotalNumber = {
-        allDrafts: 0,
+        drafts: 0,
         provisionalOffers: 0,
         backgroundChecks: 0,
         awaitingApprovals: 0,
@@ -1015,10 +1023,10 @@ const onboard = {
         const { _id = '', count = 0 } = status;
         switch (_id) {
           case 'DRAFT':
-            newTotalNumber.allDrafts += count;
+            newTotalNumber.drafts += count;
             break;
           case 'FINAL-OFFER-DRAFT':
-            newTotalNumber.allDrafts += count;
+            newTotalNumber.drafts += count;
             break;
 
           case 'SENT-PROVISIONAL-OFFER':
@@ -1080,10 +1088,19 @@ const onboard = {
         let newItem = item;
         let newQuantity = item.quantity;
         let dataLength = 0;
-        if (key === 'allDrafts') {
-          dataLength = newTotalNumber.allDrafts;
-          // state.onboardingOverview.allDrafts.provisionalOfferDrafts.length +
-          // state.onboardingOverview.allDrafts.finalOfferDrafts.length;
+        if (key === 'all') {
+          dataLength =
+            newTotalNumber.drafts +
+            newTotalNumber.provisionalOffers +
+            newTotalNumber.backgroundChecks +
+            newTotalNumber.awaitingApprovals +
+            newTotalNumber.finalOffers +
+            newTotalNumber.discardedOffers;
+        }
+        if (key === 'drafts') {
+          dataLength = newTotalNumber.drafts;
+          // state.onboardingOverview.drafts.provisionalOfferDrafts.length +
+          // state.onboardingOverview.drafts.finalOfferDrafts.length;
         }
         if (key === 'provisionalOffers') {
           dataLength = newTotalNumber.provisionalOffers;
@@ -1147,7 +1164,7 @@ const onboard = {
     deleteTicket(state, action) {
       const { payload } = action;
       const {
-        onboardingOverview: { dataAll = [], allDrafts: { provisionalOfferDrafts = [] } = {} } = {},
+        onboardingOverview: { dataAll = [], drafts: { provisionalOfferDrafts = [] } = {} } = {},
       } = state;
       const newList = provisionalOfferDrafts.filter((item) => {
         const { rookieId } = item;
@@ -1161,8 +1178,8 @@ const onboard = {
         ...state,
         onboardingOverview: {
           ...state.onboardingOverview,
-          allDrafts: {
-            ...state.onboardingOverview.allDrafts,
+          drafts: {
+            ...state.onboardingOverview.drafts,
             provisionalOfferDrafts: newList,
           },
           dataAll: newAllList,
