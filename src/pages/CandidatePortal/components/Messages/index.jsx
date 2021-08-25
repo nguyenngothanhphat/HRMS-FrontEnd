@@ -9,167 +9,6 @@ import MessageList from './components/MessageList';
 
 import styles from './index.less';
 
-const messages = [
-  {
-    _id: 1,
-    sender: 'HR Lolypop',
-    title: `What’s next?`,
-    time: 'Today',
-    chat: [
-      {
-        _id: 1,
-        sender: true,
-        content: `Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with...`,
-      },
-      {
-        _id: 2,
-        sender: false,
-        content: `Thank you for the warm welcome! Looking forward to working 
-        with everyone! Thank you for the warm welcome! Looking forward
-        to working with everyone! Great meeting you!`,
-      },
-    ],
-    icon: HRIcon1,
-  },
-  {
-    _id: 2,
-    sender: 'HR Lolypop',
-    title: 'Welcome to Lollypop Design Studio!',
-    chat: [
-      {
-        _id: 1,
-        sender: true,
-        content: `Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with...`,
-      },
-      {
-        _id: 2,
-        sender: false,
-        content: `Hhehe`,
-      },
-      {
-        _id: 3,
-        sender: false,
-        content: `I know`,
-      },
-      {
-        _id: 4,
-        sender: false,
-        content: `I know`,
-      },
-      {
-        _id: 5,
-        sender: false,
-        content: `I know`,
-      },
-      {
-        _id: 6,
-        sender: false,
-        content: `I know`,
-      },
-      {
-        _id: 7,
-        sender: true,
-        content: `I know`,
-      },
-      {
-        _id: 8,
-        sender: false,
-        content: `I know`,
-      },
-    ],
-    icon: HRIcon2,
-    time: 'July 15th',
-  },
-  {
-    _id: 3,
-    sender: 'HR Lolypop',
-    title: 'Welcome to Terralogic Family!',
-    chat: [
-      {
-        _id: 1,
-        sender: true,
-        content: `Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with...`,
-      },
-      {
-        _id: 2,
-        sender: true,
-        content: `Nice to meet you!`,
-      },
-      {
-        _id: 3,
-        sender: false,
-        content: `Thank you for the warm welcome! Looking forward to working 
-        with everyone! Thank you for the warm welcome! Looking forward
-        to working with everyone! Great meeting you!`,
-      },
-    ],
-    icon: HRIcon3,
-    time: 'Yesterday',
-  },
-  {
-    _id: 4,
-    sender: 'HR Lolypop',
-    title: `What’s next?`,
-    chat: [
-      {
-        _id: 1,
-        sender: true,
-        content: `Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with...`,
-      },
-      {
-        _id: 2,
-        sender: false,
-        content: `Thank you for the warm welcome! Looking forward to working 
-        with everyone! Thank you for the warm welcome! Looking forward
-        to working with everyone! Great meeting you!`,
-      },
-    ],
-    icon: HRIcon1,
-    time: 'Yesterday',
-  },
-  {
-    _id: 5,
-    sender: 'HR Lolypop',
-    title: 'Welcome to Lollypop Design Studio!',
-    chat: [
-      {
-        _id: 1,
-        sender: true,
-        content: `Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with...`,
-      },
-      {
-        _id: 2,
-        sender: false,
-        content: `Thank you for the warm welcome! Looking forward to working 
-        with everyone! Thank you for the warm welcome! Looking forward
-        to working with everyone! Great meeting you!`,
-      },
-    ],
-    icon: HRIcon2,
-    time: 'Yesterday',
-  },
-  {
-    _id: 6,
-    sender: 'HR Lolypop',
-    title: 'Welcome to Terralogic Family!',
-    chat: [
-      {
-        _id: 1,
-        sender: true,
-        content: `Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with... Hello! We are excited to have you onboard on this amazing journey with...`,
-      },
-      {
-        _id: 2,
-        sender: false,
-        content: `Thank you for the warm welcome! Looking forward to working 
-        with everyone! Thank you for the warm welcome! Looking forward
-        to working with everyone! Great meeting you!`,
-      },
-    ],
-    icon: HRIcon3,
-    time: 'Yesterday',
-  },
-];
 @connect(
   ({
     conversation: { conversationList = [] } = {},
@@ -187,7 +26,7 @@ class Messages extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      activeId: messages[0]?._id || '',
+      activeId: '',
     };
   }
 
@@ -221,7 +60,10 @@ class Messages extends PureComponent {
         });
         if (res1.statusCode === 200) {
           getConversationList();
+          this.setState({ activeId: res1.data[0]._id });
         }
+      } else {
+        this.setState({ activeId: res.data[0]._id });
       }
     }
   };

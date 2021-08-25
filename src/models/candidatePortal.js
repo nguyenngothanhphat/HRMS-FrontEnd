@@ -380,7 +380,7 @@ const candidatePortal = {
             break;
         }
         yield put({
-          type: 'candidatePortal/save',
+          type: 'save',
           payload: {
             pendingTasks: [...tempPendingTasks],
           },

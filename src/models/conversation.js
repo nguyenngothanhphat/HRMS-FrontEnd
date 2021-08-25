@@ -7,13 +7,15 @@ import {
   getConversationMessage,
 } from '@/services/conversation';
 
+const defaultState = {
+  activeConversation: {},
+  conversationList: [],
+  activeConversationMessages: [],
+};
+
 const country = {
   namespace: 'conversation',
-  state: {
-    activeConversation: {},
-    conversationList: [],
-    activeConversationMessages: [],
-  },
+  state: defaultState,
   effects: {
     //   CONVERSATION
     *addNewConversationEffect({ payload }, { call }) {
@@ -104,6 +106,11 @@ const country = {
       return {
         ...state,
         activeConversationMessages: [...activeConversationMessages, action.payload],
+      };
+    },
+    clearState() {
+      return {
+        state: defaultState,
       };
     },
   },

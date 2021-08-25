@@ -1,12 +1,17 @@
 import { Button, Input, Skeleton } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { debounce } from 'lodash';
 import moment from 'moment';
+import { io } from 'socket.io-client';
+import ChatEvent from '@/utils/chatSocket';
+
 import SeenIcon from '@/assets/candidatePortal/seen.svg';
 import UnseenIcon from '@/assets/candidatePortal/unseen.svg';
 import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
+
 import styles from './index.less';
+
+const socket = io('ws://file-stghrms.paxanimi.ai');
 
 @connect(
   ({
@@ -29,12 +34,40 @@ class ActiveChat extends PureComponent {
     super(props);
     this.state = { message: '' };
     this.mesRef = React.createRef();
+    this.socket = React.createRef();
     // this.onMessageChange = debounce(this.onMessageChange, 250);
   }
 
   componentDidMount() {
     this.scrollToBottom();
+    // realtime get message
+    const { candidate } = this.props;
+    socket.emit('addUser', candidate);
+    socket.on('getUsers', () => {});
+
+    socket.on(ChatEvent.GET_MESSAGE, (data) => {
+      this.saveNewMessage(data);
+    });
   }
+
+  componentWillUnmount = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'conversation/clearState',
+    });
+  };
+
+  saveNewMessage = (message) => {
+    console.log('message', message);
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'conversation/saveNewMessage',
+      payload: message,
+    });
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 200);
+  };
 
   fetchMessages = async () => {
     const { dispatch, activeId = '' } = this.props;
@@ -52,10 +85,7 @@ class ActiveChat extends PureComponent {
 
   componentDidUpdate = (prevProps) => {
     const { activeId = '' } = this.props;
-    if (
-      prevProps.activeId !== activeId
-      // JSON.stringify(messages) !== JSON.stringify(prevProps.messages)
-    ) {
+    if (prevProps.activeId !== activeId) {
       this.fetchMessages();
     }
   };
@@ -186,6 +216,7 @@ class ActiveChat extends PureComponent {
       activeId = '',
       loadingMessages = false,
     } = this.props;
+
     if (!activeId) {
       return (
         <div className={styles.ActiveChat}>
