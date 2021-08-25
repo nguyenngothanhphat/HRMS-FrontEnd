@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { PageContainer } from '@/layouts/layout/src';
 import { Affix, Row, Col, Button, Spin } from 'antd';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import exclamationIcon from '@/assets/relievingRecord.svg';
 import EmployeeDetail from './components/EmployeeDetail';
 import ResignationOverview from './components/ResignationOverview';
@@ -59,6 +59,8 @@ class RelievingDetails extends PureComponent {
       payload: {
         offBoardingId: id,
       },
+    }).then(() => {
+      history.push('/offboarding/hr-relieving-formalities');
     });
   };
 

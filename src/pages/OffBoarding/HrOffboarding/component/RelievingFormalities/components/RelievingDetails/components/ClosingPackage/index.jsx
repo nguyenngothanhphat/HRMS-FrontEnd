@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Input, Button, Popconfirm, Form } from 'antd';
+import { Row, Col, Input, Button, Popconfirm, Form, notification } from 'antd';
 import { formatMessage, connect } from 'umi';
 import templateIcon from '@/assets/template-icon.svg';
 import editIcon from '@/assets/edit-template-icon.svg';
@@ -14,11 +14,12 @@ import styles from './index.less';
 @connect(
   ({
     offboarding: {
-      relievingDetails: { closingPackage = {}, _id = '', employee = {} },
+      relievingDetails: { closingPackage = {}, _id = '', employee = {}, exitPackage = {} },
     },
     loading,
   }) => ({
     closingPackage,
+    exitPackage,
     employee,
     ticketId: _id,
     loading: loading.effects['offboarding/sendClosePackage'],
@@ -66,7 +67,22 @@ class ClosingPackage extends PureComponent {
 
   handleSendMail = (value) => {
     const { toEmail } = value;
-    const { dispatch, ticketId } = this.props;
+    const { dispatch, ticketId, closingPackage: { isSent = false } = {} } = this.props;
+
+    // if (isSent) {
+    //   dispatch({
+    //     type: 'offboarding/sendClosePackage',
+    //     payload: {
+    //       packageType: 'CLOSING-PACKAGE',
+    //       ticketId,
+    //       toEmail,
+    //     },
+    //   });
+    // } else {
+    //   notification.warn({
+    //     message: 'Cannot closing package!',
+    //   });
+    // }
     dispatch({
       type: 'offboarding/sendClosePackage',
       payload: {
@@ -158,7 +174,11 @@ class ClosingPackage extends PureComponent {
 
   renderBeforeSendMail = () => {
     const { closingPackage, customDocuments, emailInput } = this.state;
-    const { employee: { generalInfo: { workEmail = '' } = {} } = {}, loading } = this.props;
+    const {
+      employee: { generalInfo: { workEmail = '' } = {} } = {},
+      loading,
+      exitPackage: { isSent = false } = {},
+    } = this.props;
 
     return (
       <>
@@ -276,7 +296,7 @@ class ClosingPackage extends PureComponent {
                   htmlType="submit"
                   className={styles.closingPackage__btn}
                   form="packageToEmail"
-                  disabled={emailInput === ''}
+                  disabled={emailInput === '' || !isSent}
                   loading={loading}
                 >
                   {formatMessage({ id: 'pages.relieving.btn.sendMail' })}
