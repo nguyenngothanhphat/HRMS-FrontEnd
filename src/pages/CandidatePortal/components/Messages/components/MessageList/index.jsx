@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
 import styles from './index.less';
 
 class MessageList extends PureComponent {
@@ -15,9 +16,9 @@ class MessageList extends PureComponent {
   };
 
   renderItem = (item, listLength, index) => {
-    const { icon } = item;
-    const lastMessage = item.chat[item.chat.length - 1].content || '';
-    const { activeId = '', messages } = this.props;
+    // const { icon } = item;
+    // const lastMessage = item.chat[item.chat.length - 1].content || '';
+    const { activeId = '', messages = [] } = this.props;
     const isActive = activeId === item._id;
 
     const activeIndex = messages.findIndex((val) => val._id === activeId);
@@ -29,14 +30,16 @@ class MessageList extends PureComponent {
           onClick={() => this.onListClick(item._id)}
         >
           <div className={styles.messageIcon}>
-            <img src={icon} alt="message" />
+            <img src={HRIcon1} alt="message" />
           </div>
           <div className={styles.messageContent}>
             <div className={styles.messageTitleContainer}>
-              <span className={styles.messageTitle}>{item?.title || ''}</span>
-              <span className={styles.messageDate}>{item?.time || ''}</span>
+              <span className={styles.messageTitle}>HR</span>
+              <span className={styles.messageDate}>Today</span>
             </div>
-            <span className={styles.message}>{this.handleLongString(lastMessage) || ''}</span>
+            <span className={styles.message}>
+              {this.handleLongString('Text last message') || ''}
+            </span>
           </div>
         </div>
         {index + 1 < listLength && !isActive && index + 1 !== activeIndex ? (
