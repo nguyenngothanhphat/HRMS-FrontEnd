@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react';
 import { Form, Table, Button, Input, Row, Col, InputNumber } from 'antd';
 import { formatMessage, connect } from 'umi';
 // import AnswerQuestion from '@/components/Question/AnswerQuestion';
+import { every } from 'lodash';
 import { getCurrentTenant } from '@/utils/authority';
 import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
-import { every } from 'lodash';
 import NotifyModal from '../NotifyModal';
 import styles from './index.less';
 // import { Page } from '../../../../../../../FormTeamMember/utils';
@@ -132,7 +132,7 @@ class SalaryStructureTemplate extends PureComponent {
       localStep,
       checkMandatory,
       question,
-      // hrEmail = '',
+      hrEmail = '',
       // dateOfJoining = '',
     } = this.props;
     const messageErr = this.checkAllFieldsValidate();
@@ -151,22 +151,18 @@ class SalaryStructureTemplate extends PureComponent {
       actionType: 'accept',
     });
 
-    // wrong API accept salary
-    // dispatch({
-    //   type: 'candidatePortal/sendEmailByCandidate',
-    //   payload: {
-    //     options: 1,
-    //     hrEmail,
-    //     tenantId: getCurrentTenant(),
-    //     noticePeriod: '',
-    //     workHistories: [],
-    //     dateOfJoining,
-    //   },
-    // }).then(({ statusCode }) => {
-    //   if (statusCode === 200) {
-    this.handleNotifyModalVisible(true);
-    //   }
-    // });
+    dispatch({
+      type: 'candidatePortal/sendEmailByCandidate',
+      payload: {
+        options: 5,
+        hrEmail,
+        tenantId: getCurrentTenant(),
+      },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        this.handleNotifyModalVisible(true);
+      }
+    });
 
     dispatch({
       type: 'candidatePortal/updateByCandidateEffect',

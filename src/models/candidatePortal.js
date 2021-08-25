@@ -1,3 +1,5 @@
+import { history } from 'umi';
+import moment from 'moment';
 import {
   addAttachmentService,
   candidateFinalOffer,
@@ -10,9 +12,7 @@ import {
 } from '@/services/candidatePortal';
 import { dialog } from '@/utils/utils';
 import { candidateLink, taskStatus } from '@/utils/candidatePortal';
-import { history } from 'umi';
 import { PROCESS_STATUS } from '@/utils/onboarding';
-import moment from 'moment';
 
 const pendingTaskDefault = [
   {
@@ -303,18 +303,31 @@ const candidatePortal = {
           // ticketId = '',
           data = {},
         } = yield select((state) => state.candidatePortal);
-        const { currentStep, processStatus = '', expiryDate = '', documentList = [] } = data || {};
+        const {
+          currentStep,
+          processStatus = '',
+          expiryDate = '',
+          documentList = [],
+          isVerifiedJobDetail,
+          isVerifiedBasicInfo,
+          // isAcceptedJoiningDate,
+        } = data || {};
 
         // if there are any resubmit documents, show resubmit tasks
         if (processStatus === PROCESS_STATUS.PENDING && documentList.length > 0) {
-          const checkDocumentVerified = !documentList.some(
+          const checkDocumentResubmit = documentList.some(
             (x) => x.candidateDocumentStatus === 'RE-SUBMIT',
           );
+          const checkDocumentVerified = documentList.some(
+            (x) =>
+              (x.candidateGroup !== 'E' && x.candidateDocumentStatus === 'PENDING') ||
+              (x.candidateGroup === 'E' && x.employer && x.candidateDocumentStatus === 'PENDING'),
+          );
 
-          if (!checkDocumentVerified) {
+          if (checkDocumentResubmit) {
             tempPendingTasks[1].status = taskStatus.IN_PROGRESS;
             tempPendingTasks[1].name = 'Resubmit Documents';
-          } else {
+          } else if (!checkDocumentVerified) {
             // salary structure
             tempPendingTasks[2].status = taskStatus.IN_PROGRESS;
           }
@@ -322,24 +335,27 @@ const candidatePortal = {
 
         switch (processStatus) {
           case PROCESS_STATUS.SENT_PROVISIONAL_OFFERS:
-            if (currentStep < 6) {
+            if (currentStep < 3) {
               // review profile
               tempPendingTasks[0].status = taskStatus.IN_PROGRESS;
               // uploading documents
               tempPendingTasks[1].status = taskStatus.IN_PROGRESS;
             }
-            if (currentStep > 5) {
+            if (currentStep >= 3) {
               // salary structure
               tempPendingTasks[2].status = taskStatus.IN_PROGRESS;
             }
+            if (isVerifiedJobDetail && isVerifiedBasicInfo) {
+              // review profile
+              tempPendingTasks[0].status = taskStatus.DONE;
+            }
             break;
 
-          // case PROCESS_STATUS.ACCEPTED_PROVISIONAL_OFFERS:
-          // case PROCESS_STATUS.RENEGOTIATE_PROVISIONAL_OFFERS:
-          //   // uploading documents
-          //   tempPendingTasks[1].status = taskStatus.IN_PROGRESS;
-          //   tempPendingTasks[1].name = 'Resubmit Documents';
-          //   break;
+          case PROCESS_STATUS.ACCEPTED_PROVISIONAL_OFFERS:
+            // case PROCESS_STATUS.RENEGOTIATE_PROVISIONAL_OFFERS:
+            // uploading documents
+            tempPendingTasks[1].status = taskStatus.DONE;
+            break;
 
           // case PROCESS_STATUS.PENDING:
           case PROCESS_STATUS.ELIGIBLE_CANDIDATES:
