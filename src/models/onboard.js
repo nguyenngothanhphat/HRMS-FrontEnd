@@ -46,6 +46,7 @@ const provisionalOffersData = []; // Discarded Offers
 const finalOffersData = []; // Discarded Offers
 
 const pendingData = []; // Background Checks
+const profileVerificationData = []; // Provisional Offers
 
 const MENU_DATA = [
   {
@@ -68,6 +69,15 @@ const MENU_DATA = [
   },
   {
     id: 3,
+    name: 'Profile Verification',
+    key: 'profileVerification',
+    component: 'ProfileVerification',
+    // quantity: sentProvisionalOffersData.length,
+    quantity: profileVerificationData.length,
+    link: 'profile-verification',
+  },
+  {
+    id: 4,
     name: 'Provisional offers',
     key: 'provisionalOffers',
     component: 'ProvisionalOffers',
@@ -76,7 +86,7 @@ const MENU_DATA = [
     link: 'provisional-offers',
   },
   {
-    id: 4,
+    id: 5,
     name: 'Document Verification',
     key: 'backgroundChecks',
     component: 'DocumentVerification',
@@ -85,7 +95,7 @@ const MENU_DATA = [
     link: 'document-verification',
   },
   {
-    id: 5,
+    id: 6,
     name: 'Awaiting approvals',
     key: 'awaitingApprovals',
     component: 'AwaitingApprovals',
@@ -93,7 +103,7 @@ const MENU_DATA = [
     link: 'awaiting-approvals',
   },
   {
-    id: 6,
+    id: 7,
     name: 'Final offers',
     key: 'finalOffers',
     component: 'FinalOffers',
@@ -101,7 +111,7 @@ const MENU_DATA = [
     link: 'final-offers',
   },
   {
-    id: 7,
+    id: 8,
     name: 'Discarded offers',
     key: 'discardedOffers',
     component: 'DiscardedOffers',
@@ -208,6 +218,9 @@ const onboard = {
       },
       eligibleCandidates: eligibleCandidatesData,
       ineligibleCandidates: ineligibleCandidatesData,
+      profileVerification: {
+        profileVerificationTotal: profileVerificationData,
+      },
       provisionalOffers: {
         sentProvisionalOffers: sentProvisionalOffersData,
         acceptedProvisionalOffers: acceptedProvisionalOffersData,

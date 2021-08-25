@@ -15,6 +15,7 @@ import DiscardedFinalOffers from '@/pages/EmployeeOnboarding/components/Onboardi
 import BackgroundCheck from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/BackgroundCheck';
 import DiscardedOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedOffers';
 import OnboardingAll from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/All';
+import ProfileVerification from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/ProfileVerification';
 
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import MenuItem from './components/MenuItem';
@@ -33,6 +34,8 @@ const getComponent = (name) => {
       return <IneligibleCandidates />;
     case 'ProvisionalOffers':
       return <ProvisionalOffers />;
+    case 'ProfileVerification':
+      return <ProfileVerification />;
     case 'DiscardedProvisionalOffers':
       return <DiscardedProvisionalOffers />;
     case 'AwaitingApprovals':
