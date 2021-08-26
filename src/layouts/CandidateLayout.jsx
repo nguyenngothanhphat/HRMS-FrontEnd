@@ -134,7 +134,7 @@ const CandidateLayout = React.memo((props) => {
       lcStep = indexOf(listPage, Page.Salary_Structure);
     }
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         localStep: lcStep,
       },
@@ -145,7 +145,7 @@ const CandidateLayout = React.memo((props) => {
   useEffect(() => {
     return () => {
       dispatch({
-        type: 'candidateProfile/clearAll',
+        type: 'candidatePortal/clearAll',
       });
     };
   }, []);
@@ -174,7 +174,7 @@ const CandidateLayout = React.memo((props) => {
       return;
     }
     dispatch({
-      type: 'candidateProfile/save',
+      type: 'candidatePortal/save',
       payload: {
         localStep: listPage.length + 1,
       },
@@ -199,7 +199,7 @@ const CandidateLayout = React.memo((props) => {
 
     if (!isDisabled) {
       dispatch({
-        type: 'candidateProfile/save',
+        type: 'candidatePortal/save',
         payload: {
           localStep: id,
         },
@@ -308,7 +308,7 @@ const CandidateLayout = React.memo((props) => {
 export default connect(
   ({
     optionalQuestion: { listPage },
-    candidateProfile: {
+    candidatePortal: {
       data,
       localStep,
       title: { name: titleName = '' } = {},

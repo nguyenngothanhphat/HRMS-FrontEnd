@@ -10,16 +10,18 @@ import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
+import MessageBox from '../MessageBox';
 import { Page } from '../../utils';
 import styles from './index.less';
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
 @connect(
   ({
-    candidateInfo: { data, checkMandatory, currentStep, tempData } = {},
+    candidateInfo: { rookieId = '', data, checkMandatory, currentStep, tempData } = {},
     loading,
     locationSelection: { listLocationsByCompany = [] } = {},
     user: { companiesOfUser = [] } = {},
   }) => ({
+    rookieId,
     data,
     checkMandatory,
     currentStep,
@@ -224,7 +226,7 @@ class JobDetails extends PureComponent {
   };
 
   _handleSelect = async (value, name) => {
-    const { dispatch, locationList } = this.props;
+    const { dispatch, locationList, rookieId } = this.props;
     const { tempData = {} } = this.state;
     tempData[name] = value;
     const { grade, department, workLocation, title, jobGradeLevelList } = tempData;
@@ -321,6 +323,13 @@ class JobDetails extends PureComponent {
               tenantId,
             },
           });
+          // dispatch({
+          //   type: 'candidateInfo/fetchAndChangeDocumentSet',
+          //   payload: {
+          //     rookieID: rookieId,
+          //     tenantId: getCurrentTenant(),
+          //   },
+          // });
         }
       }
     } else if (name === 'title') {
@@ -460,6 +469,7 @@ class JobDetails extends PureComponent {
         title,
         reportingManager,
         dateOfJoining,
+        documentChecklistSetting,
       },
     } = this.state;
     const { dispatch } = this.props;
@@ -477,6 +487,7 @@ class JobDetails extends PureComponent {
         candidate: _id,
         currentStep: currentStep + 1,
         tenantId: getCurrentTenant(),
+        documentChecklistSetting,
       },
     }).then(({ data, statusCode }) => {
       if (statusCode === 200) {
@@ -730,6 +741,9 @@ class JobDetails extends PureComponent {
                   </Row>
                   <Row className={styles.stepRow}>
                     <StepsComponent />
+                  </Row>
+                  <Row>
+                    <MessageBox />
                   </Row>
                 </div>
               </Col>

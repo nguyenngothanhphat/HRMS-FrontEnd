@@ -83,7 +83,7 @@ const AdditionalQuestion = (props) => {
     // console.log(dataToSend);
 
     dispatch({
-      type: 'candidateProfile/updateByCandidateEffect',
+      type: 'candidatePortal/updateByCandidateEffect',
       payload: {
         additionalQuestions: dataToSend,
         candidate,

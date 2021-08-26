@@ -1,0 +1,243 @@
+@color-grey: #707177;
+@color-blue: #2c6df9;
+
+.PreviousEmployment {
+  margin-bottom: 1rem;
+  .divider {
+    border-bottom: 1px solid @color-grey;
+    margin-inline: 16px;
+    opacity: 0.2;
+  }
+  :global {
+    .ant-collapse-extra {
+      font-size: 12px;
+      float: none !important;
+      display: inline;
+      color: @color-grey;
+    }
+    .ant-collapse-arrow {
+      padding: 0px !important
+    }
+    svg {
+      width: 20px;
+      height: 20px;
+      color: @color-blue;
+      margin-right: 21px !important;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+    .ant-collapse-content-box {
+      padding: 16px 16px 6px;
+    }
+    .ant-collapse {
+      border-radius: 5px;
+      // border: solid 1px #d6dce0;
+      overflow: hidden;
+      .ant-collapse-item > .ant-collapse-header {
+        background-color: #fff;
+        padding: 32px;
+      }
+    }
+    .ant-checkbox-disabled + span {
+      color: #161c29 !important;
+    }
+    .ant-checkbox-disabled {
+      opacity: 0.5;
+    }
+    span.anticon-calendar {
+      svg {
+        color: #000;
+        margin-right: 0 !important;
+        width: 14px;
+        height: 14px;
+      }
+    }
+    .ant-space-horizontal {
+      padding-left: 16px;
+      .ant-space-item {
+        margin-right: 0 !important;
+      }
+    }
+    .anticon-plus,
+    .anticon-minus {
+      top: 15px !important;
+    }
+  }
+  .checkbox {
+    color: #161c29;
+    padding-right: 1rem;
+    font-size: 14px;
+    &:hover {
+      border-radius: 5px;
+    }
+    :global {
+      .ant-checkbox-checked {
+        &:hover {
+          border-radius: 4px;
+        }
+        .ant-checkbox-inner {
+          background: #f6f7f9;
+          border-radius: 4px;
+
+          &:hover {
+            border-radius: 4px;
+          }
+          &:after {
+            border: 2px solid #2c6df9;
+            border-top: 0;
+            border-left: 0;
+          }
+        }
+      }
+      .ant-checkbox {
+        .ant-checkbox-inner {
+          background: #f6f7f9;
+          border-radius: 4px;
+        }
+      }
+    }
+    span {
+      &:last-child {
+        padding-left: 1rem;
+        // padding-top: 1rem;
+      }
+    }
+  }
+  .Space {
+    width: 100%;
+    .checkboxItem {
+      display: flex;
+      color: #161c29;
+      margin-bottom: 1rem;
+      padding: 5px 2px;
+      .viewLoading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+      }
+      .Padding {
+        // margin-left: 14px;
+      }
+      .textAlign {
+        text-align: left;
+        .viewUpLoadDataText {
+          color: #47c97f;
+          font-weight: 500;
+        }
+        .modify {
+          font-weight: 500;
+          color: #47c97f;
+        }
+        .upload {
+          font-weight: 500;
+          color: #2C6DF9;
+        }
+      }
+      .textAlignCenter {
+        text-align: center;
+      }
+      :global {
+        .ant-upload {
+          color: #2c6df9;
+          font-weight: 700;
+          cursor: pointer;
+        }
+        .ant-checkbox-checked {
+          &:hover {
+            border-radius: 4px;
+          }
+          .ant-checkbox-inner {
+            background: #f6f7f9;
+            border-radius: 4px;
+            &:hover {
+              border-radius: 4px;
+            }
+            &:after {
+              border: 2px solid #2c6df9;
+              border-top: 0;
+              border-left: 0;
+            }
+          }
+        }
+        .ant-checkbox {
+          .ant-checkbox-inner {
+            background: #f6f7f9;
+            border-radius: 4px;
+          }
+        }
+        .ant-checkbox-group-item {
+          display: block;
+          margin-bottom: 1rem;
+          &:last-child {
+            margin-bottom: 0;
+          }
+        }
+      }
+    }
+    .checkboxItemError {
+      display: flex;
+      background-color: rgba(255, 108, 108, 0.2);
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      padding: 5px 2px;
+
+      .textAlign {
+         text-align: left;
+        letter-spacing: 0.13px;
+        .textLeft {
+          text-align: left;
+        }
+        .boldText {
+          font-weight: 500;
+          cursor: pointer;
+        }
+      }
+      .textAlignCenter {
+        text-align: center;
+        cursor: pointer;
+      }
+      :global {
+        .ant-typography {
+          color: #ff6c6c;
+          font-size: 14px;
+        }
+      }
+    }
+    span {
+      &:last-child {
+        padding-top: 1rem;
+        padding-left: 1rem;
+      }
+      &:first {
+        input {
+          width: 18px;
+          height: 18px;
+        }
+      }
+    }
+  }
+  .plusIcon {
+    cursor: pointer;
+  }
+  .addMore {
+    color: @color-blue;
+    cursor: pointer;
+    font-weight: 500;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: 0.12px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .CollapseField {
+    :global {
+      .ant-collapse-extra {
+        display: none;
+      }
+    }
+  }
+}

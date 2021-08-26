@@ -417,14 +417,24 @@ class BackgroundRecheck extends Component {
     });
   };
 
-  onClickNext = () => {
+  onClickNext = async () => {
     const { currentStep } = this.state;
-    const { dispatch } = this.props;
+    const { dispatch, candidate } = this.props;
 
     dispatch({
       type: 'candidateInfo/save',
       payload: {
         currentStep: currentStep + 1,
+      },
+    });
+
+    await dispatch({
+      type: 'candidateInfo/updateByHR',
+      payload: {
+        candidate,
+        tenantId: getCurrentTenant(),
+        currentStep: currentStep + 1,
+        processStatus: PROCESS_STATUS.ELIGIBLE_CANDIDATES,
       },
     });
   };

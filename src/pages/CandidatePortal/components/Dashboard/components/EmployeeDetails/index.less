@@ -1,0 +1,40 @@
+@darkColour: #161C29;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@borderColor: #D6DCE0;
+
+.EmployeeDetails {
+  border: 1px solid @borderColor;
+  background: #fff;
+  box-sizing: border-box;
+  border-radius: 5px;
+  .header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: @commonPadding;
+    span {
+      color: @darkColour;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 16px;
+    }
+    border-bottom: 1px solid @borderColor;
+  }
+  .content {
+    padding: @commonPadding;
+    height: 100%;
+    span {
+      display: block;
+      font-size: 13px;
+      line-height: 20px;
+    }
+    .status {
+      margin-bottom: 5px;
+    }
+    .dateOfJoining {
+      color: @lightGrayColor;
+      margin-bottom: 10px;
+    }
+  }
+}

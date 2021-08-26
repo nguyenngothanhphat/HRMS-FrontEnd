@@ -349,7 +349,7 @@ class BottomBar extends PureComponent {
 
 // export default BottomBar;
 export default connect(
-  ({ info: { checkMandatory = {} } = {}, candidateProfile: { checkCandidateMandatory = {} } }) => ({
+  ({ info: { checkMandatory = {} } = {}, candidatePortal: { checkCandidateMandatory = {} } }) => ({
     checkMandatory,
     checkCandidateMandatory,
   }),

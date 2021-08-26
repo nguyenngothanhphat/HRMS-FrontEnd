@@ -11,6 +11,7 @@ import SalaryStructureHeader from './components/SalaryStructureHeader';
 import SalaryStructureTemplate from './components/SalaryStructureTemplate';
 import NoteComponent from '../NoteComponent';
 import SalaryAcceptance from './components/SalaryAcceptance';
+import MessageBox from '../MessageBox';
 import styles from './index.less';
 
 // const DRAFT = 'DRAFT';
@@ -165,6 +166,10 @@ class SalaryStructure extends PureComponent {
             <Row>
               {processStatus !== 'DRAFT' ? <SalaryAcceptance /> : <NoteComponent note={Note} />}
             </Row>
+            <Row>
+              <MessageBox />
+            </Row>
+
             <Row>{this._renderSalaryNote()}</Row>
             {/* <Row>{processStatus === 'DRAFT' ? '' : <SalaryAcceptance />}</Row> */}
           </div>

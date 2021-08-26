@@ -10,6 +10,7 @@ import BasicInformationHeader from './components/BasicInformationHeader';
 // import BasicInformationReminder from './components/BasicInformationReminder';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
+import MessageBox from '../MessageBox';
 import styles from './index.less';
 import { Page } from '../../utils';
 
@@ -578,6 +579,9 @@ class BasicInformation extends PureComponent {
                 </Row>
                 <Row className={styles.stepRow}>
                   <StepsComponent />
+                </Row>
+                <Row>
+                  <MessageBox />
                 </Row>
               </div>
             </Col>

@@ -15,7 +15,7 @@ const NoteComponent = ({ note = {} }) => {
         </div>
         <Typography.Title level={5}>{note.title}</Typography.Title>
       </Space>
-      <div>{note.data}</div>
+      <div className={styles.noteData}>{note.data}</div>
     </div>
   );
 };
