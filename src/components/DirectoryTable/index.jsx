@@ -223,20 +223,6 @@ class DirectoryTable extends Component {
         // className: `${styles.col} `,
       },
       {
-        title: formatMessage({ id: 'component.directory.table.email' }),
-        dataIndex: 'generalInfo',
-        key: 'workEmail',
-        render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
-        width: '16%',
-        align: 'left',
-        sorter: (a, b) => {
-          return a.generalInfo && a.generalInfo?.workEmail
-            ? a.generalInfo?.workEmail.localeCompare(`${b.generalInfo?.workEmail}`)
-            : null;
-        },
-        sortDirections: ['ascend', 'descend', 'ascend'],
-      },
-      {
         title: formatMessage({ id: 'component.directory.table.userName' }),
         dataIndex: 'generalInfo',
         key: 'userName',
@@ -250,6 +236,21 @@ class DirectoryTable extends Component {
         sorter: (a, b) => {
           return a.generalInfo && a.generalInfo?.legalName
             ? a.generalInfo?.legalName.localeCompare(`${b.generalInfo?.legalName}`)
+            : null;
+        },
+        sortDirections: ['ascend', 'descend', 'ascend'],
+      },
+      {
+        title: formatMessage({ id: 'component.directory.table.employeeID' }),
+        dataIndex: 'generalInfo',
+        key: 'employeeId',
+        className: `${styles.employeeId} `,
+        render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
+        width: '12%',
+        align: 'left',
+        sorter: (a, b) => {
+          return a.generalInfo && a.generalInfo?.employeeId
+            ? a.generalInfo?.employeeId.localeCompare(`${b.generalInfo?.employeeId}`)
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
@@ -273,16 +274,15 @@ class DirectoryTable extends Component {
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
       {
-        title: formatMessage({ id: 'component.directory.table.employeeID' }),
+        title: formatMessage({ id: 'component.directory.table.email' }),
         dataIndex: 'generalInfo',
-        key: 'employeeId',
-        className: `${styles.employeeId} `,
-        render: (generalInfo) => <span>{generalInfo ? generalInfo.employeeId : ''}</span>,
-        width: '12%',
+        key: 'workEmail',
+        render: (generalInfo) => <span>{generalInfo?.workEmail}</span>,
+        width: '16%',
         align: 'left',
         sorter: (a, b) => {
-          return a.generalInfo && a.generalInfo?.employeeId
-            ? a.generalInfo?.employeeId.localeCompare(`${b.generalInfo?.employeeId}`)
+          return a.generalInfo && a.generalInfo?.workEmail
+            ? a.generalInfo?.workEmail.localeCompare(`${b.generalInfo?.workEmail}`)
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
@@ -302,6 +302,57 @@ class DirectoryTable extends Component {
         align: 'left',
         sorter: (a, b) => {
           return a.title && a.title?.name ? a.title?.name.localeCompare(`${b.title?.name}`) : null;
+        },
+        sortDirections: ['ascend', 'descend', 'ascend'],
+      },
+      // {
+      //   title: formatMessage({ id: 'component.directory.table.location' }),
+      //   dataIndex: 'location',
+      //   key: 'location',
+      //   render: (location) => (
+      //     <Popover
+      //       content={() => this.locationContent(location)}
+      //       title={location.name}
+      //       trigger="hover"
+      //     >
+      //       <span
+      //         style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
+      //         onMouseEnter={this.setCurrentTime}
+      //       >
+      //         {location ? location.name : ''}
+      //       </span>
+      //     </Popover>
+      //   ),
+      //   width: '10%',
+      //   ellipsis: true,
+      //   align: 'left',
+      //   sorter: (a, b) => {
+      //     return a.location && a.location?.name
+      //       ? a.location?.name.localeCompare(`${b.location?.name}`)
+      //       : null;
+      //   },
+      //   sortDirections: ['ascend', 'descend', 'ascend'],
+      // },
+      {
+        title: formatMessage({ id: 'component.directory.table.reportingManager' }),
+        dataIndex: 'manager',
+        key: 'manager',
+        render: (manager) => (
+          <span
+            className={styles.managerName}
+            onClick={() =>
+              this.handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
+            }
+          >
+            {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
+          </span>
+        ),
+        align: 'left',
+        width: '14%',
+        sorter: (a, b) => {
+          return a.manager.generalInfo && a.manager.generalInfo?.legalName
+            ? a.manager.generalInfo?.legalName.localeCompare(`${b.manager.generalInfo?.legalName}`)
+            : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
       },
@@ -331,57 +382,6 @@ class DirectoryTable extends Component {
         sorter: (a, b) => {
           return a.department && a.department?.name
             ? a.department?.name.localeCompare(`${b.department?.name}`)
-            : null;
-        },
-        sortDirections: ['ascend', 'descend', 'ascend'],
-      },
-      {
-        title: formatMessage({ id: 'component.directory.table.location' }),
-        dataIndex: 'location',
-        key: 'location',
-        render: (location) => (
-          <Popover
-            content={() => this.locationContent(location)}
-            title={location.name}
-            trigger="hover"
-          >
-            <span
-              style={{ wordWrap: 'break-word', wordBreak: 'break-word' }}
-              onMouseEnter={this.setCurrentTime}
-            >
-              {location ? location.name : ''}
-            </span>
-          </Popover>
-        ),
-        width: '10%',
-        ellipsis: true,
-        align: 'left',
-        sorter: (a, b) => {
-          return a.location && a.location?.name
-            ? a.location?.name.localeCompare(`${b.location?.name}`)
-            : null;
-        },
-        sortDirections: ['ascend', 'descend', 'ascend'],
-      },
-      {
-        title: formatMessage({ id: 'component.directory.table.reportingManager' }),
-        dataIndex: 'manager',
-        key: 'manager',
-        render: (manager) => (
-          <span
-            className={styles.managerName}
-            onClick={() =>
-              this.handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
-            }
-          >
-            {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
-          </span>
-        ),
-        align: 'left',
-        width: '14%',
-        sorter: (a, b) => {
-          return a.manager.generalInfo && a.manager.generalInfo?.legalName
-            ? a.manager.generalInfo?.legalName.localeCompare(`${b.manager.generalInfo?.legalName}`)
             : null;
         },
         sortDirections: ['ascend', 'descend', 'ascend'],
