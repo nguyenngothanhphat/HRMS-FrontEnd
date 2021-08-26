@@ -136,11 +136,11 @@ describe('Onboarding Automation', () => {
     cy.readFile('cypress/fixtures/onboarding_ticket.json').then((item) => {
       cy.get('#addOverlay').type(`${item.email}{enter}`);
 
-      cy.wait(2000);
+      cy.wait(5000);
       cy.get(
         '.wrapper-table > .os-padding > .os-viewport > .os-content>table>tbody>tr:first',
       ).click();
-      cy.wait(2000);
+      cy.wait(5000);
       cy.get('#html_msg_body').within(($iframe) => {
         const iFrameContent = $iframe.contents().find('body');
         cy.wrap(iFrameContent)
@@ -250,10 +250,10 @@ describe('Onboarding Automation', () => {
     cy.wait(5000);
     cy.get(':nth-child(2) > .menuWrapper___1SS2k > .menuItem___3aW6J').click();
     cy.wait(3000);
-    cy.get(
-      '.PendingEligibilityChecks___HKsyD > :nth-child(1) > .ant-tabs > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > :nth-child(3)',
-    ).click();
-    cy.wait(3000);
+    // cy.get(
+    //   '.PendingEligibilityChecks___HKsyD > :nth-child(1) > .ant-tabs > .ant-tabs-nav > .ant-tabs-nav-wrap > .ant-tabs-nav-list > :nth-child(3)',
+    // ).click();
+    // cy.wait(3000);
     cy.readFile('cypress/fixtures/onboarding_ticket.json').then((item) => {
       cy.contains(item.ticketId).click();
     });
@@ -336,7 +336,7 @@ describe('Onboarding Automation', () => {
         cy.get('[title="Digital Signature"]').click({ force: true });
       });
     cy.get('.ant-col > .ant-input').type('Uyen Lam', { force: true });
-    cy.get('.ant-col > .ant-input').clear().type('Uyen Lam', { force: true });
+    // cy.get('.ant-col > .ant-input').clear().type('Uyen Lam', { force: true });
 
     cy.get(':nth-child(4) > .ant-radio-wrapper > .ant-radio > .ant-radio-inner').click({
       force: true,
@@ -398,7 +398,7 @@ describe('Onboarding Automation', () => {
   });
 
   // candidate
-  it.only('Candidate accept final offer', () => {
+  it('Candidate accept final offer', () => {
     cy.visit('/');
     cy.readFile('cypress/fixtures/onboarding_ticket.json').then((item) => {
       cy.loginAsSomeone(item.email, password);
