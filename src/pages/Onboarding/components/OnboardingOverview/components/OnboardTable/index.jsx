@@ -73,6 +73,12 @@ class OnboardTable extends Component {
     });
   };
 
+  openModal = () => {
+    this.setState({
+      openModal: true,
+    });
+  };
+
   // getModalContent = () => {
   //   const { dispatch } = this.props;
   //   const { currentRecord } = this.state;
@@ -82,12 +88,6 @@ class OnboardTable extends Component {
   //   );
   //   // return <ModalContent closeModal={this.closeModal} />;
   // };
-
-  openModal = () => {
-    this.setState({
-      openModal: true,
-    });
-  };
 
   renderRookieId = (rookieId, type) => {
     const id = rookieId.replace('#', '') || '';
@@ -162,7 +162,7 @@ class OnboardTable extends Component {
     return check;
   };
 
-  generateColumns = (columnArr = ['id'], type = TABLE_TYPE.PROVISIONAL_OFFER) => {
+  generateColumns = (columnArr = ['id'], type = TABLE_TYPE.ALL) => {
     const {
       ID,
       NAME,
@@ -187,7 +187,7 @@ class OnboardTable extends Component {
     const columns = [
       {
         // title: 'Rookie Id',
-        title: formatMessage({ id: 'component.onboardingOverview.rookieId' }),
+        title: formatMessage({ id: 'component.onboardingOverview.candidateId' }),
         dataIndex: 'rookieId',
         key: 'rookieId',
         width: getColumnWidth('rookieId', type),
@@ -197,7 +197,7 @@ class OnboardTable extends Component {
       },
       {
         // title: 'Rookie Name',
-        title: formatMessage({ id: 'component.onboardingOverview.rookieName' }),
+        title: formatMessage({ id: 'component.onboardingOverview.candidateName' }),
         dataIndex: 'rookieId',
         key: 'rookieID2',
         render: (rookieId) => this.renderName(rookieId),
@@ -662,12 +662,6 @@ class OnboardTable extends Component {
   viewProfile = (_id) => {
     history.push(`/directory/employee-profile/${_id}`);
   };
-
-  // onChangePagination = (pageNumber) => {
-  //   this.setState({
-  //     pageSelected: pageNumber,
-  //   });
-  // };
 
   render() {
     // const { pageSelected } = this.state;

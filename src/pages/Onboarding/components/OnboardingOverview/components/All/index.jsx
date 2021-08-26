@@ -67,7 +67,6 @@ class OnboardingAll extends Component {
                 getPageAndSize={this.getPageAndSize}
                 total={total}
               />
-              abc
             </TabPane>
           </Tabs>
         </div>

@@ -9,8 +9,8 @@ export default {
   'component.onboardingOverview.receivedSubmittedDocuments': 'Received Submitted Documents',
   'component.receivedSubmittedDocuments.rookieId': 'Rookie Id',
   // Onboard Table
-  'component.onboardingOverview.rookieId': 'Rookie Id',
-  'component.onboardingOverview.rookieName': 'Rookie Name',
+  'component.onboardingOverview.candidateId': 'Candidate Id',
+  'component.onboardingOverview.candidateName': 'Candidate Name',
   'component.onboardingOverview.position': 'Position',
   'component.onboardingOverview.location': 'Location',
   'component.onboardingOverview.dateSent': 'Date sent',
