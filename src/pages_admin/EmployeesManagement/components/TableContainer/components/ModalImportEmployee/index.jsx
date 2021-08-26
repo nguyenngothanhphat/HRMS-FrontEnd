@@ -172,7 +172,7 @@ class ModalImportEmployee extends Component {
         personalEmail: item['Personal Email'],
         employeeType: item['Employment Type'],
         managerWorkEmail: item['Manager Work Email'],
-        title: item['Job Title'],
+        title: item.Title,
         personalNumber: item['Personal Number'],
       };
     });
