@@ -109,9 +109,13 @@ const PreviewOffer = (props) => {
       // setFile2('');
     }
   };
-  const isOfferAccepted = () => {
-    const { ACCEPTED_FINAL_OFFERS } = PROCESS_STATUS;
-    return processStatus === ACCEPTED_FINAL_OFFERS;
+  // const isOfferAccepted = () => {
+  //   const { ACCEPTED_FINAL_OFFERS } = PROCESS_STATUS;
+  //   return processStatus === ACCEPTED_FINAL_OFFERS;
+  // };
+  const isRenderAddSignature = (value) => {
+    if (value === 'hr') return processStatus === PROCESS_STATUS.ACCEPTED_PROVISIONAL_OFFERS;
+    return processStatus === PROCESS_STATUS.SENT_FOR_APPROVAL;
   };
   const saveChanges = () => {
     // Save changes to redux store
@@ -514,7 +518,7 @@ const PreviewOffer = (props) => {
           // Default image
           <>
             <img className={styles.signatureImg} src={whiteImg} alt="" />
-            {!isOfferAccepted() && (
+            {isRenderAddSignature('hr') && (
               <button type="submit" onClick={openModalUploadSignature}>
                 {formatMessage({ id: 'component.previewOffer.upload' })}
               </button>
@@ -523,7 +527,7 @@ const PreviewOffer = (props) => {
         ) : (
           <>
             <img className={styles.signatureImg} src={hrSignature.url} alt="" />
-            {!isOfferAccepted() && (
+            {isRenderAddSignature('hr') && (
               <>
                 <button type="submit" onClick={openModalUploadSignature}>
                   {formatMessage({ id: 'component.previewOffer.uploadNew' })}
@@ -669,7 +673,7 @@ const PreviewOffer = (props) => {
           <img className={styles.signatureImg} src={hrManagerSignature.url} alt="" />
         )}
 
-        {!isOfferAccepted() && (
+        {isRenderAddSignature('hrManager') && (
           <>
             <button
               type="submit"
@@ -718,7 +722,7 @@ const PreviewOffer = (props) => {
           ) : (
             <p>Undersigned</p>
           )}
-          {!isOfferAccepted() && (
+          {isRenderAddSignature('hr') && (
             <Row>
               <Col span={24}>
                 <Select
@@ -736,14 +740,16 @@ const PreviewOffer = (props) => {
             </Row>
           )}
           {renderSignatureHr()}
-          {!isOfferAccepted() && (
+          {isRenderAddSignature('hr') && (
             <div className={styles.submitContainer}>
               <Button
                 type="primary"
                 onClick={handleHrSignatureSubmit}
-                disabled={!hrSignature.url && isOfferAccepted() && optionSignature !== 'digital'}
+                disabled={
+                  !hrSignature.url && !isRenderAddSignature('hr') && optionSignature !== 'digital'
+                }
                 className={`${
-                  (hrSignature.url && !isOfferAccepted()) || optionSignature === 'digital'
+                  (hrSignature.url && isRenderAddSignature('hr')) || optionSignature === 'digital'
                     ? styles.active
                     : styles.disable
                 }`}
@@ -839,11 +845,11 @@ const PreviewOffer = (props) => {
               ) : (
                 <p>Undersigned</p>
               )}
-              {!isOfferAccepted() && (
+              {isRenderAddSignature('hrManager') && (
                 <Row>
                   <Col span={24}>
                     <Select
-                      vaule={optionSignatureHRManager}
+                      value={optionSignatureHRManager}
                       style={{ width: '100%', marginBottom: '5px' }}
                       onChange={(e) => {
                         setOptionSignatureHRManager(e);
@@ -857,18 +863,18 @@ const PreviewOffer = (props) => {
                 </Row>
               )}
               {renderSignatureHrManager()}
-              {!isOfferAccepted() && (
+              {isRenderAddSignature('hrManager') && (
                 <div className={styles.submitContainer}>
                   <Button
                     type="primary"
                     disabled={
                       !hrManagerSignature.url &&
-                      isOfferAccepted() &&
+                      !isRenderAddSignature('hrManager') &&
                       optionSignatureHRManager !== 'digital'
                     }
                     onClick={handleHrManagerSignatureSubmit}
                     className={`${
-                      (hrManagerSignature.url && !isOfferAccepted()) ||
+                      (hrManagerSignature.url && isRenderAddSignature('hrManager')) ||
                       optionSignatureHRManager === 'digital'
                         ? styles.active
                         : styles.disable
@@ -919,7 +925,7 @@ const PreviewOffer = (props) => {
             )}
 
             {/* Send final offer */}
-            {!isOfferAccepted() && (
+            {isRenderAddSignature('hrManager') && (
               <div style={{ marginBottom: '16px' }}>
                 <SendEmail
                   title="Send final offer to the candidate"
