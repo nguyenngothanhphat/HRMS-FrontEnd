@@ -141,12 +141,12 @@ describe('Directory Automation', () => {
     //   '.wrapper-table > .os-padding > .os-viewport > .os-content>table>tbody>tr:first',
     // ).click();
     cy.contains('[HRMS] - Verify User').click();
-    cy.wait(2000);
+    cy.wait(5000);
     cy.get('#html_msg_body').within(($iframe) => {
       const iFrameContent = $iframe.contents().find('body');
       cy.wrap(iFrameContent).contains('VERIFY EMAIL').click();
     });
-    cy.wait(5000);
+    cy.wait(10000);
     // cy.pause();
   });
 
@@ -155,9 +155,9 @@ describe('Directory Automation', () => {
     cy.readFile('cypress/fixtures/directory.json').then((item) => {
       cy.get('#addOverlay').type(`${item.email}{enter}`);
 
-      cy.wait(2000);
+      cy.wait(5000);
       cy.contains('[HRMS] - Active User').click();
-      cy.wait(2000);
+      cy.wait(5000);
       cy.get('#html_msg_body').within(($iframe) => {
         const iFrameContent = $iframe.contents().find('body');
         cy.wrap(iFrameContent)
@@ -189,7 +189,7 @@ describe('Directory Automation', () => {
       cy.get('#basic_newPassword').type(password);
       cy.get('#basic_confirmPassword').type(password);
       cy.get('.ant-btn').click();
-      cy.wait(2000);
+      cy.wait(5000);
       cy.writeFile('cypress/fixtures/directory.json', { ...item, password });
       cy.loginAsSomeone(item.email, password);
     });
@@ -200,7 +200,7 @@ describe('Directory Automation', () => {
       .then(() => {
         cy.contains('View profile').click({ force: true });
       });
-    cy.wait(3000);
+    cy.wait(5000);
     cy.get('.flexEdit___2Kt_Y').should('have.text', 'Edit').click();
     cy.wait(1000);
     cy.get('input#personal_information_personalNumber').clear().type(employee.personalNumber, {
