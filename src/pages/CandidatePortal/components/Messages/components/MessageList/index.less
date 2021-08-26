@@ -1,0 +1,116 @@
+@darkColor: #161c29;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@borderColor: #d6dce0;
+@blueColor: #2c6df9;
+@activeColor: #eaf0fe;
+
+.MessageList {
+  position: relative;
+  box-sizing: border-box;
+  background: #fff;
+  height: 100%;
+  border: 1px solid @borderColor;
+  border-radius: 5px;
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: @commonPadding;
+    border-bottom: 1px solid @borderColor;
+    span {
+      color: @darkColor;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 16px;
+    }
+  }
+  .searchBox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: @commonPadding;
+    border-bottom: 1px solid @borderColor;
+    :global {
+      .ant-input-affix-wrapper {
+        box-sizing: border-box;
+        padding: 8px @commonPadding;
+        background: #fffefe;
+        border: 1px solid #d6dce0;
+        border-radius: 33px;
+      }
+      .ant-input-affix-wrapper-focused {
+        border-color: @blueColor;
+        box-shadow: none;
+      }
+    }
+  }
+  .content {
+    position: relative;
+    z-index: 1;
+    overflow-y: auto;
+    max-height: 60vh;
+    // -moz-box-shadow: inset 0 -20px 20px -20px #00000013;
+    // -webkit-box-shadow: inset 0 -20px 20px -20px #00000013;
+    // box-shadow: inset 0 -20px 20px -20px #00000013;
+
+    .active {
+      background-color: @activeColor;
+      border: none !important;
+      transition: 0.3s;
+    }
+    .eachItem {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: @commonPadding;
+      cursor: pointer;
+      &:hover {
+        opacity: 0.9;
+      }
+      .messageIcon {
+        width: 50px;
+        margin-right: 10px;
+      }
+      .messageContent {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        width: 100%;
+        font-size: 13px;
+        span {
+          display: block;
+        }
+        .messageTitleContainer {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+
+          .messageTitle {
+            color: #000000;
+            font-weight: 500;
+            line-height: 20px;
+          }
+          .messageDate {
+            color: @lightGrayColor;
+            font-weight: 500;
+            font-size: 11px;
+            text-align: right;
+          }
+        }
+        .message {
+          color: @lightGrayColor;
+        }
+      }
+    }
+    .divider {
+      border-bottom: 1px solid @borderColor;
+      margin-inline: @commonPadding;
+    }
+    .dividerTransparent {
+      border-bottom: 1px solid transparent;
+    }
+  }
+}

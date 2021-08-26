@@ -1,0 +1,257 @@
+@darkColor: #161c29;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@inlinePadding: 32px;
+@borderColor: #d6dce0;
+@blueColor: #2c6df9;
+@lightBlueColor: #eaf0fe;
+@lightBlueColor2: #e4edff;
+
+.MessageBox {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 300px;
+  max-height: 500px;
+  margin-top: 24px;
+  background: #fff;
+  border: 1px solid @borderColor;
+  border-radius: 5px;
+  .chatContainer {
+    position: relative;
+    .senderContainer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: @commonPadding @inlinePadding;
+      border-bottom: 1px solid @borderColor;
+
+      .info {
+        padding-left: @commonPadding;
+        span {
+          display: block;
+          line-height: 30px;
+        }
+        .name {
+          color: @darkColor;
+          font-weight: 700;
+          font-size: 14px;
+          line-height: 16px;
+        }
+        .time {
+          color: @lightGrayColor;
+          font-size: 13px;
+          line-height: 21px;
+        }
+      }
+    }
+    .contentContainer {
+      position: relative;
+      z-index: 1;
+      max-height: 250px;
+      overflow-y: auto;
+      padding-inline: @commonPadding;
+      .candidateMessage {
+        width: 100%;
+        max-width: 700px;
+        margin-block: @commonPadding;
+        .above {
+          display: flex;
+          align-items: flex-end;
+          .avatar {
+            width: 32px;
+            margin-right: @commonPadding;
+          }
+          .textAvatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            margin-right: @commonPadding;
+            color: @blueColor;
+            font-weight: 700;
+            font-size: 13px;
+            background-color: #e4edff;
+            border-radius: 50%;
+          }
+          .messageBody {
+            padding: @commonPadding;
+            background-color: @lightBlueColor2;
+            border-radius: 16px;
+            span {
+              color: @blueColor;
+              font-size: 14px;
+              line-height: 21px;
+            }
+          }
+        }
+        .seenDate {
+          display: flex;
+          align-items: center;
+          margin-top: 10px;
+          margin-left: 58px;
+          color: @lightGrayColor;
+          font-size: 11px;
+          letter-spacing: 0.1625px;
+          img {
+            margin-right: 10px;
+          }
+        }
+      }
+      .senderMessage {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        margin-block: @commonPadding;
+        .above {
+          display: flex;
+          flex-direction: row-reverse;
+          align-items: flex-end;
+          .avatar {
+            display: flex;
+            justify-content: flex-end;
+            margin-left: @commonPadding;
+          }
+
+          .messageBody {
+            width: 100%;
+            max-width: 700px;
+            padding: @commonPadding;
+            background-color: @blueColor;
+            border-radius: 16px;
+            span {
+              color: #fff;
+              font-size: 14px;
+              line-height: 21px;
+            }
+          }
+        }
+        .seenDate {
+          display: flex;
+          align-items: center;
+          margin-top: 10px;
+          margin-right: 58px;
+          color: @lightGrayColor;
+          font-size: 11px;
+          letter-spacing: 0.1625px;
+          img {
+            margin-right: 10px;
+          }
+        }
+      }
+    }
+  }
+
+  .inputContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: @commonPadding @inlinePadding;
+    border-top: 1px solid @borderColor;
+    form {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+    :global {
+      .ant-form-item {
+        margin-bottom: 0 !important;
+      }
+      .ant-form-item:first-child {
+        width: 100%;
+      }
+      .ant-col {
+        width: 100%;
+      }
+      .ant-input {
+        margin-right: @commonPadding;
+        border: none;
+        outline: none;
+        box-shadow: none;
+      }
+      .ant-btn {
+        background: @blueColor;
+        border: none;
+        border-radius: 45px;
+        outline: none;
+        padding-inline: 24px;
+        span {
+          color: #fff;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+
+  .queryContent {
+    textarea:focus {
+      outline: none !important;
+    }
+
+    padding: @commonPadding @inlinePadding 0 @inlinePadding;
+    .describeText {
+      display: block;
+      margin-bottom: @commonPadding / 2;
+      color: @lightGrayColor;
+      font-size: 13px;
+      line-height: 20px;
+    }
+    .emptySendButton {
+      margin-top: @commonPadding;
+      :global {
+        .ant-btn-primary {
+          height: 40px;
+          padding: 0 30px;
+          object-fit: contain;
+          color: @blueColor;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: Roboto;
+          letter-spacing: 0.13px;
+
+          text-shadow: none;
+          background-color: @lightBlueColor2;
+          border: solid 1px @lightBlueColor2;
+          border-radius: 25px;
+          box-shadow: none;
+          &:hover {
+            background-color: @lightBlueColor;
+          }
+        }
+      }
+    }
+  }
+
+  :global {
+    .ant-form-item-explain {
+      div {
+        font-size: 13px;
+      }
+    }
+    .ant-select-selection-item {
+      color: #161c29 !important;
+    }
+    .ant-input {
+      width: 100%;
+      padding: 5px 11px !important;
+      background: transparent !important;
+      border-color: @borderColor;
+      border-radius: 5px !important;
+    }
+    .ant-form-item-label
+      > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+      display: none;
+    }
+    .ant-form-item-label label {
+      height: 0;
+      color: #707177;
+      font-size: 12px;
+    }
+  }
+}

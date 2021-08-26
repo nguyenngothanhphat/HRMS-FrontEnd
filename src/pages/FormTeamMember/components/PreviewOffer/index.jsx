@@ -114,7 +114,11 @@ const PreviewOffer = (props) => {
   //   return processStatus === ACCEPTED_FINAL_OFFERS;
   // };
   const isRenderAddSignature = (value) => {
-    if (value === 'hr') return processStatus === PROCESS_STATUS.ACCEPTED_PROVISIONAL_OFFERS;
+    if (value === 'hr')
+      return (
+        processStatus === PROCESS_STATUS.ACCEPTED_PROVISIONAL_OFFERS ||
+        processStatus === PROCESS_STATUS.PENDING
+      );
     return processStatus === PROCESS_STATUS.SENT_FOR_APPROVAL;
   };
   const saveChanges = () => {

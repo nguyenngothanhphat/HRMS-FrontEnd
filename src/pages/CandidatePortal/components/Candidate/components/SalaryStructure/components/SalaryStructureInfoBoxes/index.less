@@ -1,0 +1,167 @@
+@spacing-xxs: 4px;
+
+.SalaryStructureInfoBoxes {
+  margin-bottom: 8 * @spacing-xxs;
+  :global {
+    .ant-input-disabled {
+      background-color: rgba(226, 228, 232, 0.5);
+    }
+
+    .ant-btn.ant-btn-primary {
+      display: flex;
+      align-items: center;
+    }
+
+    .ant-table-placeholder {
+
+      // display: none;
+      td.ant-table-cell {
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+      }
+
+      .ant-empty-description {
+        // margin: 0 !important;
+        width: unset !important;
+      }
+    }
+
+    .ant-input {
+      box-sizing: border-box;
+      font-size: 14px;
+      padding: 13px 20px;
+      height: 42px;
+      border: 1px solid #D6DCE4;
+      border-radius: 5px;
+    }
+
+    .ant-input:disabled {
+      color: #161C29;
+    }
+
+    .ant-input-number {
+      max-width: 50px;
+      margin-right: 5px;
+    }
+
+    .ant-input-number-handler-wrap {
+      display: none;
+    }
+
+    .blue-text {
+      color: #2c6df9;
+    }
+
+    .big-text {
+      margin-top: 5px;
+      padding-left: 15px;
+    }
+
+    // .ant-form-item-control {
+    //   height: 0;
+    // }
+
+    .ant-btn:focus .ant-btn.focus {
+      background-color: red !important;
+    }
+
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+
+    .ant-btn-primary {
+      position: absolute;
+      top: -5px;
+      right: 0;
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      color: #ffa100;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.13px;
+      text-shadow: none;
+      background-color: transparent;
+      border: none;
+      border-radius: 25px;
+      box-shadow: none;
+      box-shadow: none;
+
+      &:hover {
+        color: #ffa100;
+        background-color: transparent;
+      }
+    }
+
+    .ant-table-cell.thirdColumn {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
+    .ant-table-thead {
+      display: none;
+    }
+
+    .ant-table table {
+      border-collapse: collapse;
+    }
+
+    .ant-table-tbody {
+      tr {
+        td {
+          border: none;
+        }
+
+        td:first-child {
+          padding-left: 50px;
+        }
+
+        td:nth-child(2) {
+          font-weight: bold;
+          text-align: center;
+          border-right: 1px solid #d6dce0;
+          border-left: 1px solid #d6dce0;
+        }
+
+        td:last-child {
+          padding-left: 62px;
+        }
+      }
+
+      tr:last-child {
+        box-sizing: border-box;
+        height: 80px;
+        border-top: 1px solid #d6dce0;
+        border-bottom: 1px solid #d6dce0;
+        border-collapse: collapse;
+
+        td:first-child {
+          color: #2c6df9;
+          font-weight: bold;
+        }
+      }
+    }
+
+    .ant-form-item-label>label {
+      color: #464646;
+      font-weight: normal;
+      font-size: 13px;
+      font-style: normal;
+      line-height: 19px;
+    }
+
+    .ant-select {
+      // width: 245px;
+    }
+
+    .ant-select-placeholder {
+      color: red !important;
+      font-weight: bolder;
+    }
+  }
+  .p_title_select {
+    color: #707177;
+    font-weight: 400;
+    font-size: 13px;
+  }
+}

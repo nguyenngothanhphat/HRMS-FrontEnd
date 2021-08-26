@@ -1,0 +1,76 @@
+@darkColour: #161c29;
+@blueColour: #2c6df9;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@borderColor: #d6dce0;
+
+.YourActivity {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  height: 100%;
+  background: #fff;
+  border: 1px solid @borderColor;
+  border-radius: 5px;
+  :global {
+    .ant-tabs-nav {
+      height: 44px;
+      padding-left: @commonPadding;
+      padding-inline: @commonPadding !important;
+      .ant-tabs-tab-btn {
+        font-weight: normal;
+        font-size: 13px;
+      }
+      .ant-tabs-tab-active {
+        .ant-tabs-tab-btn {
+          color: @blueColour;
+          font-weight: 500;
+        }
+      }
+    }
+    .ant-tabs-content-holder {
+      padding: 0 @commonPadding !important;
+    }
+    // .ant-tabs-content-holder {
+    //   padding-inline: @commonPadding;
+    // }
+    .ant-tabs-top > .ant-tabs-nav::before,
+    .ant-tabs-bottom > .ant-tabs-nav::before,
+    .ant-tabs-top > div > .ant-tabs-nav::before,
+    .ant-tabs-bottom > div > .ant-tabs-nav::before {
+      border-color: @borderColor;
+    }
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: @commonPadding;
+    border-bottom: 1px solid @borderColor;
+    span {
+      color: @darkColour;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 16px;
+    }
+  }
+  .content {
+  }
+  .viewMoreBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: @commonPadding;
+    color: @lightGrayColor;
+    font-weight: 500;
+    border-top: 1px solid @borderColor;
+    cursor: pointer;
+    img {
+      margin-left: 10px;
+    }
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
