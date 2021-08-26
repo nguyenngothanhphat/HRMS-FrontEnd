@@ -93,21 +93,52 @@ const routes = [
     ],
   },
   {
+    path: '/candidate-portal',
+    component: '../layouts/CandidatePortalLayout',
+    authority: ['candidate'],
+    routes: [
+      {
+        path: '/candidate-portal',
+        name: 'Candidate Portal',
+        icon: '/assets/images/menuIcons/dashboard.svg',
+        hideInMenu: true,
+        component: './CandidatePortal',
+      },
+      // for 2 main tab
+      {
+        path: '/candidate-portal/:tabName',
+        hideInMenu: true,
+        component: './CandidatePortal',
+      },
+      // for candidate in ticket
+      {
+        path: '/candidate-portal/ticket/:action/',
+        hideInMenu: true,
+        component: './CandidatePortal/components/Candidate',
+      },
+      {
+        path: '/candidate-portal/ticket/:action/:tabName',
+        hideInMenu: true,
+        component: './CandidatePortal/components/Candidate',
+      },
+    ],
+  },
+  {
     path: '/',
     component: '../layouts/SecurityLayout',
     routes: [
-      {
-        path: '/candidate',
-        component: '../layouts/CandidateLayout',
-        authority: ['candidate'],
-        routes: [
-          {
-            path: '/candidate',
-            component: './Candidate',
-            authority: ['candidate'],
-          },
-        ],
-      },
+      // {
+      //   path: '/candidate',
+      //   component: '../layouts/CandidateLayout',
+      //   authority: ['candidate'],
+      //   routes: [
+      //     {
+      //       path: '/candidate',
+      //       component: './Candidate',
+      //       authority: ['candidate'],
+      //     },
+      //   ],
+      // },
       // {
       //   path: '/select-location',
       //   component: '../layouts/AccountSetupLayout',
@@ -124,13 +155,13 @@ const routes = [
       {
         path: '/control-panel',
         component: '../layouts/AccountSetupLayout',
-        authority: ['admin', 'owner', 'employee'],
+        authority: ['admin', 'owner', 'employee', 'candidate'],
         routes: [
           {
             path: '/control-panel',
             component: './ControlPanel',
             name: 'Control Panel',
-            authority: ['admin', 'owner', 'employee'],
+            authority: ['admin', 'owner', 'employee', 'candidate'],
           },
           {
             path: '/control-panel/company-profile/:id',

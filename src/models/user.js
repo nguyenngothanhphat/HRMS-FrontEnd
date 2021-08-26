@@ -1,3 +1,4 @@
+import { history } from 'umi';
 import { queryCurrent, query as queryUsers, fetchCompanyOfUser } from '@/services/user';
 import {
   getCurrentCompany,
@@ -10,7 +11,6 @@ import {
   setCurrentCompany,
 } from '@/utils/authority';
 
-import { history } from 'umi';
 import { checkPermissions } from '@/utils/permissions';
 
 const UserModel = {
@@ -39,7 +39,10 @@ const UserModel = {
         };
         const response = yield call(queryCurrent, payload);
         const { statusCode, data = {} } = response;
-        if (statusCode !== 200) throw response;
+        if (statusCode !== 200) {
+          history.push('/login');
+          throw response;
+        }
 
         let formatArrRoles = [];
         let switchRoleAbility = false;
@@ -52,12 +55,17 @@ const UserModel = {
           return {};
         }
 
-        if (formatRole.indexOf('candidate') > -1) {
+        const isCandidate = formatRole.indexOf('candidate') > -1;
+        const isOnlyCandidate = isCandidate && formatRole.length === 1;
+
+        if (isOnlyCandidate) {
           setAuthority(...formatRole);
           setTenantId(candidate.tenant);
           setCurrentCompany(candidate.company);
           setCurrentLocation(candidate.location);
-          history.replace('/candidate');
+          if (!window.location.href.includes('candidate')) {
+            history.replace('/candidate-portal');
+          }
           yield put({
             type: 'saveCurrentUser',
             payload: {

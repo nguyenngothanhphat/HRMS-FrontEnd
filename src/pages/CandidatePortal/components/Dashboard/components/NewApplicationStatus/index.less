@@ -1,0 +1,47 @@
+@darkColour: #161c29;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@borderColor: #d6dce0;
+
+.ApplicationStatus {
+  box-sizing: border-box;
+  background: #fff;
+  border: 1px solid @borderColor;
+  border-radius: 5px;
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: @commonPadding;
+    border-bottom: 1px solid @borderColor;
+    span {
+      color: @darkColour;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 16px;
+    }
+    .status {
+      display: block;
+      margin-left: @commonPadding;
+      color: #ffa100;
+      font-weight: 500;
+      font-size: 14px;
+    }
+  }
+  .content {
+    height: 100%;
+    padding: @commonPadding;
+    span {
+      display: block;
+      font-size: 13px;
+      line-height: 20px;
+    }
+    .status {
+      margin-bottom: 5px;
+    }
+    .dateOfJoining {
+      margin-bottom: 10px;
+      color: @lightGrayColor;
+    }
+  }
+}

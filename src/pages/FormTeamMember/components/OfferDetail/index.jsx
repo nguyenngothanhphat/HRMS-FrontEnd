@@ -1,9 +1,9 @@
-import { getCurrentTenant } from '@/utils/authority';
 import { PlusOutlined } from '@ant-design/icons';
 import { Button, Col, DatePicker, Form, Row, Select } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { PROCESS_STATUS } from '@/utils/onboarding';
 import AddDocumentModal from './components/AddDocumentModal';

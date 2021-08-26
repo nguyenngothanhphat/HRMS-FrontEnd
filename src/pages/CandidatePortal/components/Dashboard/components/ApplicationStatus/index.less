@@ -1,0 +1,54 @@
+@darkColour: #161c29;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@borderColor: #d6dce0;
+@orangeColor: #ffa100;
+
+.ApplicationStatus {
+  position: relative;
+  box-sizing: border-box;
+  height: 100%;
+  background: #fff;
+  border: 1px solid @borderColor;
+  border-radius: 5px;
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding: @commonPadding;
+    border-bottom: 1px solid @borderColor;
+    span {
+      color: @darkColour;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 16px;
+    }
+  }
+  .content {
+    position: relative;
+    z-index: 1;
+    padding: @commonPadding;
+    span {
+      display: block;
+      font-size: 13px;
+      line-height: 20px;
+    }
+    .status {
+      margin-bottom: 5px;
+      color: @orangeColor;
+    }
+    .dateOfJoining {
+      margin-bottom: 10px;
+      color: @lightGrayColor;
+    }
+  }
+  .backgroundImage {
+    position: absolute;
+    right: 10px;
+    bottom: 0;
+    z-index: 0;
+    img {
+      height: 130px;
+    }
+  }
+}

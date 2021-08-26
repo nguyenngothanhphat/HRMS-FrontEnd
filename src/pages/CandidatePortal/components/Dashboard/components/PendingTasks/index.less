@@ -1,0 +1,49 @@
+@darkColour: #161C29;
+@blueColour: #2C6DF9;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@borderColor: #D6DCE0;
+
+.PendingTasks {
+  border: 1px solid @borderColor;
+  background: #fff;
+  box-sizing: border-box;
+  border-radius: 5px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: @commonPadding;
+    span {
+      color: @darkColour;
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 16px;
+    }
+    border-bottom: 1px solid @borderColor;
+  }
+  .content {
+
+  }
+  .viewMoreBtn {
+    border-top: 1px solid @borderColor;
+    display: flex;
+    padding: @commonPadding;
+    justify-content: center;
+    align-items: center;
+    color: @lightGrayColor;
+    font-weight: 500;
+    cursor: pointer;
+    img {
+      margin-left: 10px
+    }
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
