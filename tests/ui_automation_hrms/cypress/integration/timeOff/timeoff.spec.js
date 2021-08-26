@@ -70,12 +70,12 @@ describe('Timeoff Automation', () => {
 
     cy.readFile('cypress/fixtures/timeOff_ticket.json').then((item) => {
       cy.contains(item.ticketId).click();
-
+      cy.wait(3000);
       // cy.pause(); // Login as manager and approve it.
 
       cy.contains('Approve').click();
     });
-
+    cy.wait(3000);
     cy.logout();
   });
 
