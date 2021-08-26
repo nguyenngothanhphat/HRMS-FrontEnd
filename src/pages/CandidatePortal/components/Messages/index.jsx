@@ -12,14 +12,16 @@ import styles from './index.less';
 @connect(
   ({
     conversation: { conversationList = [] } = {},
-    // user: { currentUser: { candidate = {} } } = {},
-    candidatePortal: { candidate = '', data: { assignTo = {} } } = {},
+    user: { currentUser: { candidate: { _id: candidate = '' } = {} } } = {},
+    candidatePortal: { data: { assignTo = {} } } = {},
     candidatePortal = {},
+    loading,
   }) => ({
     conversationList,
     candidate,
     assignTo,
     candidatePortal,
+    loadingFetchConversations: loading.effects['conversation/getUserConversationsEffect'],
   }),
 )
 class Messages extends PureComponent {
@@ -30,11 +32,8 @@ class Messages extends PureComponent {
     };
   }
 
-  componentDidUpdate = (prevProps) => {
-    const { candidate = '' } = this.props;
-    if (prevProps.candidate !== candidate) {
-      this.fetchConversations();
-    }
+  componentDidMount = () => {
+    this.fetchConversations();
   };
 
   // fetch data
@@ -81,7 +80,7 @@ class Messages extends PureComponent {
 
   render() {
     const { activeId } = this.state;
-    const { conversationList = [] } = this.props;
+    const { conversationList = [], loadingFetchConversations = false } = this.props;
     return (
       <div className={styles.Messages}>
         <Row type="flex" gutter={[24, 24]}>
@@ -90,6 +89,7 @@ class Messages extends PureComponent {
               messages={conversationList}
               activeId={activeId}
               onChangeActiveId={this.onChangeActiveId}
+              loading={loadingFetchConversations}
             />
           </Col>
           <Col xs={24} lg={16}>

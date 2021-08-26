@@ -110,7 +110,7 @@ const country = {
     },
     clearState() {
       return {
-        state: defaultState,
+        ...defaultState,
       };
     },
   },

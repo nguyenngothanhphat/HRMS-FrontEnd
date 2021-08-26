@@ -1,12 +1,12 @@
 /* eslint-disable no-param-reassign */
-import CustomModal from '@/components/CustomModal';
-import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { PROCESS_STATUS } from '@/utils/onboarding';
 // import Warning from './components/Warning';
 import { Button, Col, notification, Row, Typography } from 'antd';
 import { map } from 'lodash';
 import React, { Component } from 'react';
 import { connect, formatMessage } from 'umi';
+import { PROCESS_STATUS } from '@/utils/onboarding';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import CustomModal from '@/components/CustomModal';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import NoteComponent from '../NoteComponent';
 import CollapseFieldsTypeABC from './components/CollapseFieldsTypeABC';
@@ -14,6 +14,7 @@ import CollapseFieldsTypeD from './components/CollapseFieldsTypeD';
 import CollapseFieldsTypeE from './components/CollapseFieldsTypeE';
 import ModalContentComponent from './components/ModalContentComponent';
 import SendEmail from './components/SendEmail';
+import MessageBox from '../MessageBox';
 import { Page } from '../../utils';
 import Title from './components/Title';
 import styles from './styles.less';
@@ -1473,6 +1474,9 @@ class DocumentVerification extends Component {
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={note} />
+            <Row>
+              <MessageBox />
+            </Row>
 
             {processStatus === PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT ||
             processStatusFilled === PROCESS_STATUS.SENT_PROVISIONAL_OFFERS ? (

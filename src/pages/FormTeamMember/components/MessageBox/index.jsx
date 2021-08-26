@@ -1,76 +1,146 @@
-import { Button, Input } from 'antd';
+import { Button, Input, Skeleton, Form } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import moment from 'moment';
 import { io } from 'socket.io-client';
+import ChatEvent from '@/utils/chatSocket';
+
 import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
 import MessageIcon from '@/assets/candidatePortal/messageIcon.svg';
-import ChatEvent from '@/utils/chatSocket';
+
 import styles from './index.less';
-
-const { TextArea } = Input;
-
-const messages = [
-  {
-    _id: 1,
-    sender: 'HR Lolypop',
-    title: `What’s next?`,
-    time: 'Today',
-    chat: [
-      {
-        _id: 1,
-        sender: true,
-        content: `Hello! We are excited to have you onboard on this amazing journey with...`,
-      },
-      {
-        _id: 2,
-        sender: false,
-        content: `Thank you for the warm welcome!`,
-      },
-      {
-        _id: 3,
-        sender: false,
-        content: `Thank you!`,
-      },
-    ],
-    icon: HRIcon1,
-  },
-];
 
 const socket = io('ws://file-stghrms.paxanimi.ai');
 
-@connect(() => ({}))
+const { TextArea } = Input;
+
+@connect(
+  ({
+    conversation: { conversationList = [], activeConversationMessages = [] } = {},
+    // user: { currentUser: { candidate = {} } } = {},
+    candidateInfo: {
+      data: {
+        candidate = '',
+        assignTo = '',
+        firstName: candidateFN = '',
+        lastName: candidateLN = '',
+      },
+    } = {},
+    conversation = {},
+    loading,
+  }) => ({
+    conversation,
+    conversationList,
+    candidate,
+    candidateFN,
+    candidateLN,
+    assignTo,
+    activeConversationMessages,
+    loadingMessages: loading.effects['conversation/getConversationMessageEffect'],
+    loadingAddMessage: loading.effects['conversation/addNewMessageEffect'],
+  }),
+)
 class MessageBox extends PureComponent {
+  formRef = React.createRef();
+
+  formRefEmptyChat = React.createRef();
+
   constructor(props) {
     super(props);
-    this.state = { message: '' };
+    this.state = { activeId: '' };
     this.mesRef = React.createRef();
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     this.scrollToBottom();
-    // realtime get message
-    socket.emit('addUser', '60c9b3a3f7094a20ec07c0cc');
-    socket.on('getUsers', (users) => {
-      console.log('users hr', users);
-    });
+    const { dispatch, candidate, assignTo: hrId = '' } = this.props;
 
-    socket.on(ChatEvent.GET_MESSAGE, (data) => {
-      console.log('data hr', data);
-      // this.setState({
-      //   arrivalMessage: {
-      //     sender: data.senderId,
-      //     text: data.text,
-      //     createdAt: Date.now(),
-      //   },
-      // });
-    });
-  }
+    if (candidate) {
+      const getConversationList = () => {
+        return dispatch({
+          type: 'conversation/getUserConversationsEffect',
+          payload: {
+            userId: candidate,
+          },
+        });
+      };
 
-  componentDidUpdate = () => {};
+      const res = await getConversationList();
+      const { statusCode, data = [] } = res || {};
+      if (statusCode === 200) {
+        if (data.length > 0) {
+          this.setState({
+            activeId: res.data[0]._id,
+          });
+          this.fetchMessages();
+        } else {
+          const res1 = await dispatch({
+            type: 'conversation/addNewConversationEffect',
+            payload: {
+              senderId: hrId,
+              receiverId: candidate,
+            },
+          });
+          if (res1.statusCode === 200) {
+            await getConversationList();
+            this.setState({ activeId: res1.data._id });
+          }
+        }
+      }
+
+      // realtime get message
+      socket.emit(ChatEvent.ADD_USER, candidate);
+      socket.on(ChatEvent.GET_USER, () => {});
+
+      socket.on(ChatEvent.GET_MESSAGE, (newMessage) => {
+        this.saveNewMessage(newMessage);
+      });
+    }
+  };
+
+  componentDidUpdate = (prevProps) => {
+    const { activeConversationMessages = [] } = this.props;
+    if (
+      JSON.stringify(activeConversationMessages) !==
+      JSON.stringify(prevProps.conversation.activeConversationMessages)
+    ) {
+      this.scrollToBottom();
+    }
+  };
+
+  componentWillUnmount = () => {
+    socket.on(ChatEvent.DISCONNECT);
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'conversation/clearState',
+    });
+  };
+
+  saveNewMessage = (message) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'conversation/saveNewMessage',
+      payload: message,
+    });
+  };
 
   scrollToBottom = () => {
-    if (messages.length > 0) {
-      this.mesRef.current.scrollTop = this.mesRef.current?.scrollHeight;
+    if (this.mesRef.current) {
+      this.mesRef.current.scrollTop = this.mesRef.current.scrollHeight;
+    }
+  };
+
+  fetchMessages = async () => {
+    const { dispatch } = this.props;
+    const { activeId } = this.state;
+    if (activeId) {
+      await dispatch({
+        type: 'conversation/getConversationMessageEffect',
+        payload: {
+          conversationId: activeId,
+        },
+      });
+      this.scrollToBottom();
     }
   };
 
@@ -88,40 +158,41 @@ class MessageBox extends PureComponent {
     );
   };
 
-  renderChatContent = (message) => {
-    const { chat = [], icon = '' } = message;
-
+  renderChatContent = (chat = []) => {
+    const { candidate = '' } = this.props;
+    const { candidateFN = '', candidateLN = '' } = this.props;
+    const candidateMessage = (item, index) => {
+      return (
+        <div key={index} className={styles.candidateMessage}>
+          <div className={styles.above}>
+            <div className={styles.textAvatar}>
+              {`${candidateFN ? candidateFN.charAt(0) : 'U'}${
+                candidateLN ? candidateLN.charAt(0) : 'S'
+              }`}
+            </div>
+            <div className={styles.messageBody}>
+              <span className={styles.name}>{item.text || ''}</span>
+            </div>
+          </div>
+          <div className={styles.seenDate}>
+            <span className={styles.name}>{moment(item.createdAt).locale('en').format('LT')}</span>
+          </div>
+        </div>
+      );
+    };
     const senderMessage = (item, index) => {
       return (
         <div key={index} className={styles.senderMessage}>
           <div className={styles.above}>
             <div className={styles.avatar}>
-              <img src={icon} alt="sender-avatar" />
+              <img src={HRIcon1} alt="sender-avatar" />
             </div>
             <div className={styles.messageBody}>
-              <span className={styles.name}>{item.content || ''}</span>
+              <span className={styles.name}>{item.text || ''}</span>
             </div>
           </div>
           <div className={styles.seenDate}>
-            <span className={styles.name}>03:02pm</span>
-          </div>
-        </div>
-      );
-    };
-
-    const candidateMessage = (item, index) => {
-      return (
-        <div key={index} className={styles.candidateMessage}>
-          <div className={styles.above}>
-            <div className={styles.avatar}>
-              <img src={icon} alt="sender-avatar" />
-            </div>
-            <div className={styles.messageBody}>
-              <span className={styles.name}>{item.content || ''}</span>
-            </div>
-          </div>
-          <div className={styles.seenDate}>
-            <span className={styles.name}>03:02pm</span>
+            <span className={styles.name}>{moment(item.createdAt).locale('en').format('LT')}</span>
           </div>
         </div>
       );
@@ -130,10 +201,10 @@ class MessageBox extends PureComponent {
     return (
       <div className={styles.contentContainer} ref={this.mesRef}>
         {chat.map((item, index) => {
-          if (item.sender) {
-            return senderMessage(item, index);
+          if (item.sender === candidate) {
+            return candidateMessage(item, index);
           }
-          return candidateMessage(item, index);
+          return senderMessage(item, index);
         })}
       </div>
     );
@@ -141,49 +212,57 @@ class MessageBox extends PureComponent {
 
   // chat input
   renderInput = () => {
-    const { message } = this.state;
+    const { loadingMessages } = this.props;
+    const { activeId } = this.state;
+
     return (
       <div className={styles.inputContainer}>
-        <Input.TextArea
-          autoSize={{ minRows: 1, maxRows: 4 }}
-          maxLength={255}
-          placeholder="Type a message..."
-          onChange={this.onMessageChange}
-          value={message}
-        />
-        <Button onClick={this.onSendClick}>Reply</Button>
+        <Form ref={this.formRef} name="inputChat" onFinish={this.onSendClick}>
+          <Form.Item name="message">
+            <Input.TextArea
+              autoSize={{ minRows: 1, maxRows: 4 }}
+              maxLength={255}
+              placeholder="Type a message..."
+              disabled={loadingMessages || !activeId}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button disabled={loadingMessages || !activeId} htmlType="submit">
+              Reply
+            </Button>
+          </Form.Item>
+        </Form>
       </div>
     );
   };
 
-  onMessageChange = (e) => {
-    this.setState({
-      message: e.target?.value || '',
-    });
-  };
+  onSendClick = async (values) => {
+    const { dispatch, assignTo: hrId = '' } = this.props;
+    const { activeId } = this.state;
+    const { message } = values;
+    if (activeId && message) {
+      const res = await dispatch({
+        type: 'conversation/addNewMessageEffect',
+        payload: {
+          conversationId: activeId,
+          sender: hrId,
+          text: message,
+        },
+      });
 
-  onSendClick = async () => {
-    const { dispatch } = this.props;
-    const { message } = this.state;
-
-    socket.emit('sendMessage', {
-      senderId: '60c9b3a3f7094a20ec07c0cc',
-      receiverId: '6125c0a937cf1e0eea71f4e6',
-      text: message,
-    });
-
-    const res = await dispatch({
-      type: 'conversation/addNewMessageEffect',
-      payload: {
-        conversationId: '6125f41cc452fb3ebf3ec133',
-        sender: '60c9b3a3f7094a20ec07c0cc',
-        text: message,
-      },
-    });
-
-    if (res.statusCode === 200) {
-      this.setState({ message: '' });
-      this.scrollToBottom();
+      if (res.statusCode === 200) {
+        this.scrollToBottom();
+        if (this.formRef?.current) {
+          this.formRef.current.setFieldsValue({
+            message: '',
+          });
+        }
+        if (this.formRefEmptyChat?.current) {
+          this.formRefEmptyChat.current.setFieldsValue({
+            message: '',
+          });
+        }
+      }
     }
   };
 
@@ -202,20 +281,40 @@ class MessageBox extends PureComponent {
   };
 
   renderFirstMessageTextArea = () => {
+    const { loadingAddMessage = false } = this.props;
     return (
       <div className={styles.queryContent}>
         <span className={styles.describeText}>Message</span>
 
-        <TextArea placeholder="Type a message..." autoSize={{ minRows: 4, maxRows: 10 }} />
-        <div className={styles.emptySendButton}>
-          <Button type="primary">Send</Button>
-        </div>
+        <Form ref={this.formRef1} name="inputChatEmpty" onFinish={this.onSendClick}>
+          <Form.Item name="message">
+            <TextArea placeholder="Type a message..." autoSize={{ minRows: 4, maxRows: 10 }} />
+          </Form.Item>
+          <div className={styles.emptySendButton}>
+            <Form.Item>
+              <Button loading={loadingAddMessage} htmlType="submit" type="primary">
+                Send
+              </Button>
+            </Form.Item>
+          </div>
+        </Form>
       </div>
     );
   };
 
   render() {
-    const message = messages[0];
+    const { activeConversationMessages: messages = [], loadingMessages = false } = this.props;
+
+    if (loadingMessages) {
+      return (
+        <div className={styles.MessageBox}>
+          <div style={{ margin: '32px' }}>
+            <Skeleton />
+          </div>
+        </div>
+      );
+    }
+
     if (messages.length === 0) {
       return (
         <div className={styles.MessageBox}>
@@ -229,8 +328,8 @@ class MessageBox extends PureComponent {
     return (
       <div className={styles.MessageBox}>
         <div className={styles.chatContainer}>
-          {this.renderSender(message)}
-          {this.renderChatContent(message)}
+          {this.renderSender(messages)}
+          {this.renderChatContent(messages)}
         </div>
         {this.renderInput()}
       </div>

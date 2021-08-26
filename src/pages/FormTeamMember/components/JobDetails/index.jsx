@@ -10,6 +10,7 @@ import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
 import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
+import MessageBox from '../MessageBox';
 import { Page } from '../../utils';
 import styles from './index.less';
 // Thứ tự Fields Work Location Job Title Department Reporting Manager
@@ -741,6 +742,7 @@ class JobDetails extends PureComponent {
                   <Row className={styles.stepRow}>
                     <StepsComponent />
                   </Row>
+                  <Row><MessageBox /></Row>
                 </div>
               </Col>
             </>

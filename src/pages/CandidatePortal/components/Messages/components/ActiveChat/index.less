@@ -12,8 +12,8 @@
   flex-direction: column;
   justify-content: space-between;
   box-sizing: border-box;
-  min-height: 75vh;
   height: 100%;
+  min-height: 75vh;
   background: #fff;
   border: 1px solid @borderColor;
   border-radius: 5px;
@@ -60,7 +60,7 @@
           display: flex;
           align-items: flex-end;
           .avatar {
-            width: 50px;
+            width: 40px;
             margin-right: @commonPadding;
           }
           .messageBody {
@@ -91,7 +91,6 @@
         display: flex;
         flex-direction: column;
         align-items: flex-end;
-        // max-width: 700px;
         margin-block: @commonPadding;
         .above {
           display: flex;
@@ -101,6 +100,19 @@
             display: flex;
             justify-content: flex-end;
             margin-left: @commonPadding;
+          }
+          .textAvatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 44px;
+            height: 44px;
+            margin-left: @commonPadding;
+            color: @blueColor;
+            font-weight: 700;
+            font-size: 13px;
+            background-color: #e4edff;
+            border-radius: 50%;
           }
           .messageBody {
             width: 100%;
@@ -119,9 +131,9 @@
           display: flex;
           align-items: center;
           margin-top: 10px;
+          margin-right: 58px;
           color: @lightGrayColor;
           font-size: 11px;
-          margin-right: 58px;
           letter-spacing: 0.1625px;
           img {
             margin-right: 10px;
@@ -129,17 +141,30 @@
         }
       }
     }
-    
   }
 
   .inputContainer {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     width: 100%;
     padding: @commonPadding @inlinePadding;
     border-top: 1px solid @borderColor;
+    form {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
     :global {
+      .ant-form-item {
+        margin-bottom: 0 !important;
+      }
+      .ant-form-item:first-child {
+        width: 100%;
+      }
+      .ant-col {
+        width: 100%;
+      }
       .ant-input {
         margin-right: @commonPadding;
         border: none;
@@ -155,6 +180,9 @@
         span {
           color: #fff;
           font-weight: 500;
+        }
+        &:hover {
+          opacity: 0.7;
         }
       }
     }

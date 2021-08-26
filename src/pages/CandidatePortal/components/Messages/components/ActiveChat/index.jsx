@@ -1,4 +1,4 @@
-import { Button, Input, Skeleton } from 'antd';
+import { Button, Input, Skeleton, Form } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
@@ -17,12 +17,19 @@ const socket = io('ws://file-stghrms.paxanimi.ai');
   ({
     conversation: { conversationList = [], activeConversationMessages = [] } = {},
     // user: { currentUser: { candidate = {} } } = {},
-    candidatePortal: { candidate = '', data: { assignTo = {} } } = {},
+    candidatePortal: {
+      candidate = '',
+      data: { assignTo = {}, firstName: candidateFN = '', lastName: candidateLN = '' },
+    } = {},
+    conversation = {},
     candidatePortal = {},
     loading,
   }) => ({
+    conversation,
     conversationList,
     candidate,
+    candidateFN,
+    candidateLN,
     assignTo,
     candidatePortal,
     activeConversationMessages,
@@ -30,11 +37,12 @@ const socket = io('ws://file-stghrms.paxanimi.ai');
   }),
 )
 class ActiveChat extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
-    this.state = { message: '' };
+    this.state = {};
     this.mesRef = React.createRef();
-    this.socket = React.createRef();
     // this.onMessageChange = debounce(this.onMessageChange, 250);
   }
 
@@ -42,8 +50,8 @@ class ActiveChat extends PureComponent {
     this.scrollToBottom();
     // realtime get message
     const { candidate } = this.props;
-    socket.emit('addUser', candidate);
-    socket.on('getUsers', () => {});
+    socket.emit(ChatEvent.ADD_USER, candidate);
+    socket.on(ChatEvent.GET_USER, () => {});
 
     socket.on(ChatEvent.GET_MESSAGE, (data) => {
       this.saveNewMessage(data);
@@ -51,6 +59,8 @@ class ActiveChat extends PureComponent {
   }
 
   componentWillUnmount = () => {
+    socket.on(ChatEvent.DISCONNECT);
+
     const { dispatch } = this.props;
     dispatch({
       type: 'conversation/clearState',
@@ -58,15 +68,11 @@ class ActiveChat extends PureComponent {
   };
 
   saveNewMessage = (message) => {
-    console.log('message', message);
     const { dispatch } = this.props;
     dispatch({
       type: 'conversation/saveNewMessage',
       payload: message,
     });
-    setTimeout(() => {
-      this.scrollToBottom();
-    }, 200);
   };
 
   fetchMessages = async () => {
@@ -88,11 +94,19 @@ class ActiveChat extends PureComponent {
     if (prevProps.activeId !== activeId) {
       this.fetchMessages();
     }
+
+    const { activeConversationMessages = [] } = this.props;
+    if (
+      JSON.stringify(activeConversationMessages) !==
+      JSON.stringify(prevProps.conversation.activeConversationMessages)
+    ) {
+      this.scrollToBottom();
+    }
   };
 
   scrollToBottom = () => {
     if (this.mesRef.current) {
-      this.mesRef.current.scrollTop = this.mesRef.current?.scrollHeight;
+      this.mesRef.current.scrollTop = this.mesRef.current.scrollHeight;
     }
   };
 
@@ -133,11 +147,12 @@ class ActiveChat extends PureComponent {
     };
 
     const candidateMessage = (item, index) => {
+      const { candidateFN = '', candidateLN = '' } = this.props;
       return (
         <div key={index} className={styles.candidateMessage}>
           <div className={styles.above}>
-            <div className={styles.avatar}>
-              <img src={HRIcon1} alt="sender-avatar" />
+            <div className={styles.textAvatar}>
+              {`${candidateFN.charAt(0)}${candidateLN.charAt(0)}` || 'U'}
             </div>
             <div className={styles.messageBody}>
               <span className={styles.name}>{item.text || ''}</span>
@@ -165,35 +180,32 @@ class ActiveChat extends PureComponent {
 
   // chat input
   renderInput = () => {
-    const { loadingMessages } = this.props;
-    const { message } = this.state;
+    const { loadingMessages, activeId = '' } = this.props;
     return (
       <div className={styles.inputContainer}>
-        <Input.TextArea
-          autoSize={{ minRows: 1, maxRows: 4 }}
-          maxLength={255}
-          placeholder="Type a message..."
-          onChange={this.onMessageChange}
-          disabled={loadingMessages}
-          value={message}
-        />
-        <Button disabled={loadingMessages} onClick={this.onSendClick}>
-          Send
-        </Button>
+        <Form ref={this.formRef} name="inputChat" onFinish={this.onSendClick}>
+          <Form.Item name="message">
+            <Input.TextArea
+              autoSize={{ minRows: 1, maxRows: 4 }}
+              maxLength={255}
+              placeholder="Type a message..."
+              disabled={loadingMessages || !activeId}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button disabled={loadingMessages || !activeId} htmlType="submit">
+              Send
+            </Button>
+          </Form.Item>
+        </Form>
       </div>
     );
   };
 
-  onMessageChange = (e) => {
-    this.setState({
-      message: e.target?.value || '',
-    });
-  };
-
-  onSendClick = async () => {
+  onSendClick = async (values) => {
     const { dispatch, activeId = '', candidate: candidateId = '' } = this.props;
-    const { message } = this.state;
-    if (activeId) {
+    const { message } = values;
+    if (activeId && message) {
       const res = await dispatch({
         type: 'conversation/addNewMessageEffect',
         payload: {
@@ -204,8 +216,10 @@ class ActiveChat extends PureComponent {
       });
 
       if (res.statusCode === 200) {
-        this.setState({ message: '' });
         this.scrollToBottom();
+        this.formRef.current.setFieldsValue({
+          message: '',
+        });
       }
     }
   };
@@ -220,7 +234,9 @@ class ActiveChat extends PureComponent {
     if (!activeId) {
       return (
         <div className={styles.ActiveChat}>
-          <div className={styles.chatContainer}>No messages</div>
+          <div className={styles.chatContainer}>
+            <div style={{ margin: '32px' }}>No active conversation</div>
+          </div>
           {this.renderInput()}
         </div>
       );

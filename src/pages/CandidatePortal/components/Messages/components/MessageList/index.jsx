@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Input } from 'antd';
+import { Input, Spin } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
 import styles from './index.less';
@@ -72,7 +72,7 @@ class MessageList extends PureComponent {
 
   render() {
     const data = this.getData();
-
+    const { loading = false } = this.props;
     return (
       <div className={styles.MessageList}>
         <div className={styles.header}>
@@ -86,7 +86,13 @@ class MessageList extends PureComponent {
           />
         </div>
         <div className={styles.content}>
-          {data.map((val, index) => this.renderItem(val, data.length, index))}
+          {loading ? (
+            <div style={{ margin: '15px', display: 'flex', justifyContent: 'center' }}>
+              <Spin />
+            </div>
+          ) : (
+            data.map((val, index) => this.renderItem(val, data.length, index))
+          )}
         </div>
       </div>
     );

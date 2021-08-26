@@ -13,7 +13,8 @@
   flex-direction: column;
   justify-content: space-between;
   box-sizing: border-box;
-  // height: 100%;
+  width: 100%;
+  min-height: 300px;
   max-height: 500px;
   margin-top: 24px;
   background: #fff;
@@ -52,8 +53,8 @@
       z-index: 1;
       max-height: 250px;
       overflow-y: auto;
-      padding-inline: @inlinePadding;
-      .senderMessage {
+      padding-inline: @commonPadding;
+      .candidateMessage {
         width: 100%;
         max-width: 700px;
         margin-block: @commonPadding;
@@ -61,8 +62,21 @@
           display: flex;
           align-items: flex-end;
           .avatar {
-            width: 50px;
+            width: 32px;
             margin-right: @commonPadding;
+          }
+          .textAvatar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 32px;
+            margin-right: @commonPadding;
+            color: @blueColor;
+            font-weight: 700;
+            font-size: 13px;
+            background-color: #e4edff;
+            border-radius: 50%;
           }
           .messageBody {
             padding: @commonPadding;
@@ -88,7 +102,7 @@
           }
         }
       }
-      .candidateMessage {
+      .senderMessage {
         display: flex;
         flex-direction: column;
         align-items: flex-end;
@@ -102,6 +116,7 @@
             justify-content: flex-end;
             margin-left: @commonPadding;
           }
+
           .messageBody {
             width: 100%;
             max-width: 700px;
@@ -138,7 +153,22 @@
     width: 100%;
     padding: @commonPadding @inlinePadding;
     border-top: 1px solid @borderColor;
+    form {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
     :global {
+      .ant-form-item {
+        margin-bottom: 0 !important;
+      }
+      .ant-form-item:first-child {
+        width: 100%;
+      }
+      .ant-col {
+        width: 100%;
+      }
       .ant-input {
         margin-right: @commonPadding;
         border: none;
@@ -164,7 +194,7 @@
       outline: none !important;
     }
 
-    padding: @commonPadding @inlinePadding @inlinePadding;
+    padding: @commonPadding @inlinePadding 0 @inlinePadding;
     .describeText {
       display: block;
       margin-bottom: @commonPadding / 2;
