@@ -1,0 +1,53 @@
+.TableContainer {
+  // max-height: 500px;
+  font-family: 'Roboto';
+  // position: absolute;
+  margin-top: 24px;
+  width: 100%;
+  border-radius: 8px;
+  border: solid 1px #d6dce0;
+  background-color: #ffffff;
+  overflow: hidden;
+  .title {
+    font-family: 'Roboto';
+    font-size: 16px;
+    font-weight: 500;
+    color: #000000;
+  }
+  :global {
+    .ant-tabs-tab {
+      text-transform: capitalize;
+
+      .ant-tabs-tab-btn {
+        font-size: 14px;
+        font-weight: 700;
+      }
+    }
+    .ant-tabs-nav-wrap {
+      height: 56px;
+    }
+    // search box
+    .ant-input-affix-wrapper {
+      height: 100%;
+      border: 1px solid #d6dce0 !important;
+      border-radius: 4px;
+    }
+    .ant-input {
+      font-weight: 500;
+    }
+  }
+  .operations {
+    display: flex;
+    margin-right: 24px;
+    & > div {
+      margin-left: 16px;
+    }
+    .sortIcon,
+    .viewModeIcon {
+      cursor: pointer;
+      &:hover {
+        opacity: 0.8;
+      }
+    }
+  }
+}

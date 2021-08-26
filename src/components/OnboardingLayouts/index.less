@@ -1,0 +1,112 @@
+@orange: #ffa100;
+@blue: #2c6df9;
+@gray: #707177;
+@border-color: #e4e7eb;
+@scrollbar-color: #e0e4e9;
+
+.overviewContainer {
+  display: flex;
+  width: 100% !important;
+  // max-width: 100%;
+  .viewLeft {
+    width: 250px;
+    height: fit-content;
+    padding-bottom: 24px;
+    background-color: white;
+    border-right: 1px solid rgba(0, 0, 2, 0.15);
+    border-bottom: 1px solid rgba(0, 0, 2, 0.15);
+    border-radius: 0 0 5px 0;
+
+    // border-bottom: 1px solid rgba(0, 0, 2, 0.15);
+    // height: 100vh;
+    :global {
+      .ant-btn-primary {
+        box-shadow: none;
+        span {
+          text-shadow: none;
+        }
+      }
+    }
+    .addMember {
+      background-color: white;
+      border-radius: 21px;
+      border: 1px solid @orange;
+      outline: none;
+      color: @orange;
+      height: 40px;
+      // width: 100%;
+      margin: 24px;
+      width: 200px;
+      //   padding: 13px 24px;
+   
+      span.title {
+        margin-left: 10px;
+        font-weight: 500;
+        display: inline-block;
+        // flex-direction: row
+      }
+
+      // &:hover {
+      //   color: white;
+      //   background-color: @orange;
+      // }
+    }
+
+    .divider {
+      // height: 1px;
+      // width: 100%;
+      // background-color: #e4e7eb;
+      border-bottom: 1px solid #e4e7eb;
+    }
+
+    .leftMenu {
+      background-color: white;
+      padding-top: 20px;
+      // height: 482px;
+
+      // &::-webkit-scrollbar {
+      //   width: 4px;
+      // }
+
+      // &::-webkit-scrollbar-thumb {
+      //   background-color: @scrollbar-color;
+      //   border-radius: 3px;
+      // }
+    }
+  }
+
+  .viewRight {
+    // max-width: 82%;
+    // flex: 1;
+    width: 80% !important;
+    padding: 24px;
+    height: 100%;
+
+    .pageTitle {
+      font-size: 16px;
+      font-weight: 500;
+      color: #000000;
+    }
+  }
+
+  :global {
+    .ant-table-body {
+      // &::-webkit-scrollbar {
+      //   width: 1px !important;
+      // }
+
+      // &::-webkit-scrollbar-thumb {
+      //   background-color: @scrollbar-color;
+      //   // border-radius: 3px;
+      // }
+    }
+
+    .ant-tabs-nav {
+      height: 56px;
+    }
+
+    .ant-tabs-tab {
+      padding: 13px 0 6px 0;
+    }
+  }
+}

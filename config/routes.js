@@ -218,6 +218,25 @@ const routes = [
             authority: ['owner'],
           },
           {
+            path: '/onboarding',
+            name: 'onboarding',
+            icon: '/assets/images/menuIcons/onboarding.svg',
+            component: './Onboarding',
+            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'hr', 'hr-manager'],
+          },
+          {
+            path: '/onboarding/:tabName',
+            hideInMenu: true,
+            component: './Onboarding',
+            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'hr', 'hr-manager'],
+          },
+          {
+            path: '/onboarding/:tabName/:type',
+            hideInMenu: true,
+            component: './Onboarding',
+            authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'hr', 'hr-manager'],
+          },
+          {
             path: '/employee-onboarding',
             name: 'employeeOnboarding',
             icon: '/assets/images/menuIcons/onboarding.svg',

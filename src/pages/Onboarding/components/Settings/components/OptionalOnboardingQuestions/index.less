@@ -1,0 +1,88 @@
+.OptionalOnboardingQuestions {
+  &__box {
+    padding: 32px 24px;
+    background-color: #fff;
+    border: 1px solid #d6dce0;
+    border-radius: 5px;
+  }
+  padding: 24px;
+  font-family: 'Roboto';
+  :global {
+    .ant-btn-primary {
+      // display: none;
+      width: 94px;
+      height: 40px;
+      object-fit: contain;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      font-family: 'Roboto';
+      letter-spacing: 0.13px;
+      text-shadow: none;
+      background-color: #ffa100;
+      border: solid 1px #ffa100;
+      border-radius: 25px;
+      box-shadow: none;
+      &:hover {
+        color: #ffffff;
+        background-color: #ffa100;
+      }
+    }
+    .ant-btn-link {
+      background-color: transparent;
+      border: none;
+      box-shadow: none;
+      span {
+        color: #2c6df9;
+        font-weight: 500;
+        font-size: 16px;
+        line-height: 1.19;
+        text-align: left;
+      }
+    }
+  }
+  &__buttonAdd {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 66px;
+    color: #2c6df9;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 15px;
+    letter-spacing: 0.121875px;
+    border: 1px dashed #b5b8bd;
+    border-radius: 5px;
+  }
+  &_title {
+    margin-bottom: 12px;
+    color: #161c29;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1.17;
+    letter-spacing: 0.3px;
+  }
+  &_subTitle {
+    color: #707177;
+    font-size: 13px;
+    line-height: 1.31;
+    letter-spacing: 0.12px;
+    text-align: left;
+    a {
+      color: #2c6df9;
+    }
+  }
+  &_list {
+    width: 100%;
+    margin-top: 32px;
+  }
+}
+
+.modalRemoveQuestion {
+  padding: 50px;
+  &__control {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+  }
+}
