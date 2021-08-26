@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -23,11 +24,13 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-import "cypress-file-upload";
+import 'cypress-file-upload';
+import moment from 'moment';
 
+Cypress.moment = moment;
 // code that terminates all subsequent tests if one fails
 afterEach(function () {
-  if (this.currentTest.state === "failed") {
+  if (this.currentTest.state === 'failed') {
     Cypress.runner.stop();
   }
 });
