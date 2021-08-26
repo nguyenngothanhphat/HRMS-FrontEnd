@@ -32,7 +32,7 @@ class Onboarding extends PureComponent {
       match: { params: { tabName = '' } = {} },
     } = this.props;
     if (!tabName) {
-      history.replace(`/employee-onboarding/list`);
+      history.replace(`/onboarding/list`);
     }
   };
 

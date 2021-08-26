@@ -219,7 +219,7 @@ const routes = [
           },
           {
             path: '/onboarding',
-            name: 'onboarding',
+            name: 'Onboarding',
             icon: '/assets/images/menuIcons/onboarding.svg',
             component: './Onboarding',
             authority: ['M_ONBOARDING_VIEW', 'P_ONBOARDING_VIEW', 'hr', 'hr-manager'],
