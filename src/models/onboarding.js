@@ -131,6 +131,9 @@ const onboarding = {
         totalNumber: [],
       },
     },
+    onboardingOverview: {
+      dataAll: [],
+    },
   },
   effects: {
     // eslint-disable-next-line no-shadow
@@ -158,6 +161,10 @@ const onboarding = {
     /* ////////////////////////////////////////////////////////////////////////////////////////////// */
     *fetchOnboardListAll({ payload }, { call, put }) {
       try {
+        yield put({
+          type: 'fetchTotalNumberOfOnboardingListEffect',
+        });
+
         const { processStatus = '', page, limit, name } = payload;
         const tenantId = getCurrentTenant();
         const req = {
@@ -172,9 +179,6 @@ const onboarding = {
         if (statusCode !== 200) throw response;
         // const returnedData = formatData(response.data[0].paginatedResults);
         const returnedData = formatData(response.data);
-        yield put({
-          type: 'fetchTotalNumberOfOnboardingListEffect',
-        });
 
         yield put({
           type: 'saveAll',

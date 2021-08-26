@@ -3,16 +3,28 @@ import { Tabs, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 
-import { PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import AllTab from './components/AllTab';
+
 import styles from './index.less';
 
 const { TabPane } = Tabs;
 
-@connect()
+@connect(
+  ({ loading, onboarding: { onboardingOverview: { dataAll = [], total = 0 } = {} } = {} }) => ({
+    dataAll,
+    total,
+    loadingAll: loading.effects['onboarding/fetchOnboardListAll'],
+  }),
+)
 class OnboardingAll extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      pageSelected: 1,
+      size: 10,
+      // nameSearch: '',
+    };
   }
 
   componentDidMount = () => {
@@ -26,7 +38,7 @@ class OnboardingAll extends Component {
       dispatch({
         type: 'onboarding/fetchOnboardListAll',
         payload: {
-          processStatus: PROCESS_STATUS.ALL,
+          processStatus: NEW_PROCESS_STATUS.ALL_TEMP,
           //   name: nameSearch,
         },
       });
@@ -34,28 +46,27 @@ class OnboardingAll extends Component {
   };
 
   render() {
+    const { dataAll = [], total = 0, loadingAll } = this.props;
+    const { pageSelected, size } = this.state;
+
     return (
-      <div className={styles.AllDrafts}>
+      <div className={styles.onboardingAll}>
         <div className={styles.tabs}>
           <Tabs
             defaultActiveKey="all"
             tabBarExtraContent={
-              <Input
-                onChange={this.onChange}
-                placeholder="Search by candidate ID"
-                prefix={<SearchOutlined />}
-              />
+              <Input onChange={this.onChange} placeholder="Search" prefix={<SearchOutlined />} />
             }
           >
             <TabPane tab="all" key="1">
-              {/* <AllTab
+              <AllTab
                 list={dataAll}
                 loading={loadingAll}
                 pageSelected={pageSelected}
                 size={size}
                 getPageAndSize={this.getPageAndSize}
                 total={total}
-              /> */}
+              />
               abc
             </TabPane>
           </Tabs>
