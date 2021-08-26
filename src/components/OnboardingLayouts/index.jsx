@@ -3,9 +3,9 @@ import React, { PureComponent } from 'react';
 import { Button } from 'antd';
 import { formatMessage, connect, history } from 'umi';
 
-import Drafts from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/Drafts';
-import OnboardingAll from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/All';
-import ProfileVerification from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/ProfileVerification';
+import Draft from '@/pages/Onboarding/components/OnboardingOverview/components/Draft';
+import OnboardingAll from '@/pages/Onboarding/components/OnboardingOverview/components/All';
+import ProfileVerification from '@/pages/Onboarding/components/OnboardingOverview/components/ProfileVerification';
 
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import MenuItem from './components/MenuItem';
@@ -17,7 +17,7 @@ const getComponent = (name) => {
     case 'All':
       return <OnboardingAll />;
     case 'Drafts':
-      return <Drafts />;
+      return <Draft />;
     default:
       return <ProfileVerification />;
   }
@@ -51,7 +51,7 @@ class OnboardingLayout extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { dispatch, tabName = 'all-drafts' } = this.props;
+    const { dispatch, tabName = 'all' } = this.props;
     if (prevProps.data._id) {
       dispatch({
         type: 'candidateInfo/save',
@@ -67,7 +67,7 @@ class OnboardingLayout extends PureComponent {
   }
 
   fetchTab = () => {
-    const { listMenu = [], tabName = 'all-drafts' } = this.props;
+    const { listMenu = [], tabName = 'all' } = this.props;
     const findTab = listMenu.find((menu) => menu.link === tabName) || listMenu[0];
 
     const firstComponent = findTab.component;
@@ -80,7 +80,7 @@ class OnboardingLayout extends PureComponent {
 
   handleClick = (item) => {
     const { link = '' } = item;
-    history.push(`/employee-onboarding/list/${link}`);
+    history.push(`/onboarding/list/${link}`);
   };
 
   handleAddBtn = () => {

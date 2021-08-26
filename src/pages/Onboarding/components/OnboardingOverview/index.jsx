@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
-import OnboardingLayout from '@/components/OnboardingLayout';
+import OnboardingLayout from '@/components/OnboardingLayouts';
 import OnboardingEmpty from './components/OnboardingEmpty';
 
-@connect(({ onboard: { menu = {} } = {}, loading }) => ({
+@connect(({ onboarding: { menu = {} } = {} }) => ({
   menu,
-  loading: loading.effects['onboard/fetchOnboardList'],
 }))
 class OnboardingOverview extends Component {
   componentDidMount() {

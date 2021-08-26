@@ -153,7 +153,7 @@ class Onboarding extends PureComponent {
             <Tabs
               activeKey={tabName || 'list'}
               onChange={(key) => {
-                history.push(`/employee-onboarding/${key}`);
+                history.push(`/onboarding/${key}`);
               }}
               tabBarExtraContent={this.renderActionButton(tabName, type)}
             >
