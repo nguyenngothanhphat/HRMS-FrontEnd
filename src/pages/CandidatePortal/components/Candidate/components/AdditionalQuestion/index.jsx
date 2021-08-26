@@ -96,7 +96,7 @@ const AdditionalQuestion = (props) => {
       });
     }
     checkDisable();
-  }, []);
+  }, [candidate]);
 
   /**
    * Change the employee's answers in a sentence through the key of the question

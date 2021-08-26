@@ -337,7 +337,7 @@ const OfferDetails = (props) => {
           data: {
             ...data,
             candidateSignature: {
-              _id: id,
+              id,
               url,
               fileName,
             },
@@ -384,7 +384,7 @@ const OfferDetails = (props) => {
               data: {
                 ...data,
                 candidateSignature: {
-                  _id: id,
+                  id,
                   url,
                   fileName,
                 },

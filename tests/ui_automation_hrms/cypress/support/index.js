@@ -33,6 +33,7 @@ Cypress.on('uncaught:exception', (err) => {
 Cypress.Commands.add('loginAsSomeone', (email, password) => {
   cy.get('#basic_userEmail.ant-input', { timeout: 8000 }).type(email);
   cy.get('#basic_password.ant-input', { timeout: 8000 }).type(password);
+  cy.get('#basic_keepSignIn', { timeout: 8000 }).click();
   cy.get('button[type="submit"]', { timeout: 8000 }).click();
 });
 
