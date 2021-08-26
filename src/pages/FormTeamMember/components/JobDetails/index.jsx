@@ -323,13 +323,13 @@ class JobDetails extends PureComponent {
               tenantId,
             },
           });
-          dispatch({
-            type: 'candidateInfo/fetchAndChangeDocumentSet',
-            payload: {
-              rookieID: rookieId,
-              tenantId: getCurrentTenant(),
-            },
-          });
+          // dispatch({
+          //   type: 'candidateInfo/fetchAndChangeDocumentSet',
+          //   payload: {
+          //     rookieID: rookieId,
+          //     tenantId: getCurrentTenant(),
+          //   },
+          // });
         }
       }
     } else if (name === 'title') {
@@ -742,7 +742,9 @@ class JobDetails extends PureComponent {
                   <Row className={styles.stepRow}>
                     <StepsComponent />
                   </Row>
-                  <Row><MessageBox /></Row>
+                  <Row>
+                    <MessageBox />
+                  </Row>
                 </div>
               </Col>
             </>

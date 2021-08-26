@@ -1,17 +1,16 @@
+import { Breadcrumb, Button, Dropdown, Layout, Menu, Result, Skeleton } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { connect, Link, history } from 'umi';
-
-import { Layout, Button, Result, Skeleton, Breadcrumb, Menu, Dropdown } from 'antd';
-import Authorized from '@/utils/Authorized';
-import { getAuthorityFromRouter } from '@/utils/utils';
-import { getCurrentCompany } from '@/utils/authority';
+import { connect, history, Link } from 'umi';
 import avtDefault from '@/assets/avtDefault.jpg';
-import Footer from '@/components/Footer';
-import LogoutIcon from '@/assets/candidatePortal/logout.svg';
 import CalendarIcon from '@/assets/candidatePortal/leave-application.svg';
 import MessageIcon from '@/assets/candidatePortal/message-circle.svg';
+import Footer from '@/components/Footer';
+import { getCurrentCompany } from '@/utils/authority';
+import Authorized from '@/utils/Authorized';
+import { getAuthorityFromRouter } from '@/utils/utils';
 // import BottomBar from '../components/BottomBar';
 import s from './CandidatePortalLayout.less';
+import { taskStatus } from '@/utils/candidatePortal';
 
 const { Header, Content } = Layout;
 
@@ -42,6 +41,8 @@ const CandidatePortalLayout = React.memo((props) => {
     ticketId = '',
     // data: { title: { name: titleName = '' } = {} } = {},
     data: { firstName = '', lastName = '', middleName = '' },
+    conversation: { conversationList = [] } = {},
+    pendingTasks = [],
   } = props;
 
   let candidateFullName = `${firstName} ${middleName} ${lastName}`;
@@ -74,6 +75,15 @@ const CandidatePortalLayout = React.memo((props) => {
     setCandidateMode(window.location.href.includes('ticket'));
     return () => {};
   }, [window.location.href]);
+
+  useEffect(() => {
+    const currentLink = window.location.href;
+    const viewingTask = pendingTasks.find((task) => currentLink.includes(task.id));
+    if (viewingTask && [taskStatus.DONE, taskStatus.UPCOMING].includes(viewingTask?.status)) {
+      history.replace('/candidate-portal');
+    }
+    return () => {};
+  }, [pendingTasks, window.location.href]);
 
   const handleCancel = () => {
     if (!dispatch) {
@@ -175,7 +185,9 @@ const CandidatePortalLayout = React.memo((props) => {
             }}
           >
             <img src={MessageIcon} alt="message" />
-            <div className={s.badgeNumber}>6</div>
+            {conversationList.length > 0 && (
+              <div className={s.badgeNumber}>{conversationList.length}</div>
+            )}
           </div>
 
           <Dropdown
@@ -236,10 +248,13 @@ export default connect(
       checkCandidateMandatory,
       checkMandatory,
       processStatus = '',
+      pendingTasks = [],
     } = {},
+    conversation,
     user: { companiesOfUser = [], currentUser: { candidate = '' } = {} } = {},
     loading,
   }) => ({
+    conversation,
     listPage,
     data,
     candidate,
@@ -249,6 +264,7 @@ export default connect(
     ticketId,
     processStatus,
     companiesOfUser,
+    pendingTasks,
     loadingFetchCurrent: loading.effects['user/fetchCurrent'],
   }),
 )(CandidatePortalLayout);

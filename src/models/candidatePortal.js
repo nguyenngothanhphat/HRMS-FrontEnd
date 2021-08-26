@@ -164,9 +164,9 @@ const candidatePortal = {
             checkMandatory: { ...checkMandatory },
           },
         });
-        // yield put({
-        //   type: 'candidatePortal/refreshPendingTasks',
-        // });
+        yield put({
+          type: 'refreshPendingTasks',
+        });
       } catch (error) {
         dialog(error);
       }

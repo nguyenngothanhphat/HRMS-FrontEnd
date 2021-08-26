@@ -38,7 +38,7 @@ class MessageList extends PureComponent {
               <span className={styles.messageDate}>Today</span>
             </div>
             <span className={styles.message}>
-              {this.handleLongString('Text last message') || ''}
+              {this.handleLongString('the last message here') || ''}
             </span>
           </div>
         </div>

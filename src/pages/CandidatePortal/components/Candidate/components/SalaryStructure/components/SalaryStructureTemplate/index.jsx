@@ -1,10 +1,10 @@
-import React, { PureComponent } from 'react';
-import { Form, Table, Button, Input, Row, Col, InputNumber } from 'antd';
-import { formatMessage, connect } from 'umi';
+import { Button, Col, Form, Input, InputNumber, Row, Table } from 'antd';
 // import AnswerQuestion from '@/components/Question/AnswerQuestion';
 import { every } from 'lodash';
+import React, { PureComponent } from 'react';
+import { connect, formatMessage } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
-import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
+import { SPECIFY, TYPE_QUESTION } from '@/components/Question/utils';
 import NotifyModal from '../NotifyModal';
 import styles from './index.less';
 // import { Page } from '../../../../../../../FormTeamMember/utils';
@@ -128,9 +128,9 @@ class SalaryStructureTemplate extends PureComponent {
     const {
       dispatch,
       options,
-      tempData,
-      localStep,
-      checkMandatory,
+      // tempData,
+      // localStep,
+      // checkMandatory,
       question,
       hrEmail = '',
       // dateOfJoining = '',
@@ -147,6 +147,31 @@ class SalaryStructureTemplate extends PureComponent {
       });
     }
 
+    dispatch({
+      type: 'candidatePortal/updateByCandidateEffect',
+      payload: {
+        options,
+        tenantId: getCurrentTenant(),
+      },
+    });
+    // dispatch({
+    //   type: 'candidatePortal/saveOrigin',
+    //   payload: {
+    //     options: tempData.options,
+    //   },
+    // });
+
+    // dispatch({
+    //   type: 'candidatePortal/save',
+    //   payload: {
+    //     localStep: localStep + 1,
+    //     checkMandatory: {
+    //       ...checkMandatory,
+    //       filledDocumentVerification: true,
+    //     },
+    //   },
+    // });
+
     this.setState({
       actionType: 'accept',
     });
@@ -162,30 +187,6 @@ class SalaryStructureTemplate extends PureComponent {
       if (statusCode === 200) {
         this.handleNotifyModalVisible(true);
       }
-    });
-
-    dispatch({
-      type: 'candidatePortal/updateByCandidateEffect',
-      payload: {
-        options,
-        tenantId: getCurrentTenant(),
-      },
-    });
-    dispatch({
-      type: 'candidatePortal/saveOrigin',
-      payload: {
-        options: tempData.options,
-      },
-    });
-    dispatch({
-      type: 'candidatePortal/save',
-      payload: {
-        localStep: localStep + 1,
-        checkMandatory: {
-          ...checkMandatory,
-          filledDocumentVerification: true,
-        },
-      },
     });
   };
 
@@ -373,10 +374,10 @@ class SalaryStructureTemplate extends PureComponent {
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
-          <Col span={16}>
+          <Col span={8}>
             {/* <div className={styles.bottomBar__status}>{this._renderStatus()}</div> */}
           </Col>
-          <Col span={8}>
+          <Col span={16}>
             <div className={styles.bottomBar__button}>
               <Button
                 type="secondary"
@@ -430,7 +431,7 @@ class SalaryStructureTemplate extends PureComponent {
             </Row> */}
           </div>
           {/* {this._renderFooter()} */}
-          {options === 1 ? this._renderBottomBar() : null}
+          {this._renderBottomBar()}
         </Form>
 
         <NotifyModal

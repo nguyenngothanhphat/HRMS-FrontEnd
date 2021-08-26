@@ -1,6 +1,6 @@
 import { Button, Modal } from 'antd';
 import React, { PureComponent } from 'react';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import DoneImage from '@/assets/candidatePortal/imgDone.png';
 import styles from './index.less';
 
@@ -18,6 +18,10 @@ class NotifyModal extends PureComponent {
     onClose();
   };
 
+  handleBack = () => {
+    history.push('/candidate-portal/dashboard');
+  };
+
   renderModalContent = () => {
     const { title = '', content = '' } = this.props;
     return (
@@ -25,7 +29,7 @@ class NotifyModal extends PureComponent {
         <img src={DoneImage} alt="welcome" />
         <span className={styles.welcomeText}>{title}</span>
         <span className={styles.describeText}>{content}</span>
-        <Button className={styles.btnSubmit} type="primary" onClick={this.handleCancel}>
+        <Button className={styles.btnSubmit} type="primary" onClick={this.handleBack}>
           Okay
         </Button>
       </div>

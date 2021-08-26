@@ -1,12 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Row, Col } from 'antd';
 import { connect } from 'umi';
-import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
-import HRIcon2 from '@/assets/candidatePortal/HRViolet.svg';
-import HRIcon3 from '@/assets/candidatePortal/HRRed.svg';
 import ActiveChat from './components/ActiveChat';
 import MessageList from './components/MessageList';
-
 import styles from './index.less';
 
 @connect(
@@ -59,9 +55,11 @@ class Messages extends PureComponent {
         });
         if (res1.statusCode === 200) {
           getConversationList();
-          this.setState({ activeId: res1.data[0]._id });
+          // set active to created conversation
+          this.setState({ activeId: res1.data?._id });
         }
       } else {
+        // set active to first message
         this.setState({ activeId: res.data[0]._id });
       }
     }

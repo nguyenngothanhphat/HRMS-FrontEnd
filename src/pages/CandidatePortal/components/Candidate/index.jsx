@@ -1,7 +1,7 @@
-import { getCurrentTenant } from '@/utils/authority';
 import { Button, Col, Row, Skeleton, Steps } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 import { candidateLink } from '@/utils/candidatePortal';
 import AdditionalQuestion from './components/AdditionalQuestion';
 import BasicInformation from './components/BasicInfomation';
@@ -34,6 +34,7 @@ const Candidate = (props) => {
   } = props;
 
   const [screen, setScreen] = useState(localStep);
+  const [loadingFinishLater, setLoadingFinishLater] = useState(false);
 
   const getScreenToShow = () => {
     const { params: { action = '' } = {} } = match;
@@ -56,6 +57,13 @@ const Candidate = (props) => {
         setScreen(1);
         break;
     }
+  };
+
+  const wait = (delay, ...args) => {
+    // eslint-disable-next-line compat/compat
+    return new Promise((resolve) => {
+      setTimeout(resolve, delay, ...args);
+    });
   };
 
   useEffect(() => {
@@ -147,7 +155,9 @@ const Candidate = (props) => {
 
   const steps = getSteps();
 
-  const onBack = () => {
+  const onBack = async () => {
+    setLoadingFinishLater(true);
+    await wait(1000).then(() => setLoadingFinishLater(false));
     history.push('/candidate-portal/dashboard');
   };
 
@@ -157,7 +167,7 @@ const Candidate = (props) => {
         <span className={styles.title}>Candidature for {title?.name}</span>
         {!window.location.href.includes(candidateLink.acceptOffer) && (
           <div className={styles.actionBtn}>
-            <Button className={styles.finishLaterBtn} onClick={onBack}>
+            <Button loading={loadingFinishLater} className={styles.finishLaterBtn} onClick={onBack}>
               Finish Later
             </Button>
             {/* <Button className={styles.cancelBtn} onClick={onBack}>

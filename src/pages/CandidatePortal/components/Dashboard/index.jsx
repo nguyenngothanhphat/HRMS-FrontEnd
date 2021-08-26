@@ -1,7 +1,7 @@
-import { getCurrentTenant } from '@/utils/authority';
 import { Col, Row } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
 // import ApplicationStatus from './components/ApplicationStatus';
 import ApplicationStatus from './components/NewApplicationStatus';
 import CompanyProfile from './components/CompanyProfile';
@@ -24,7 +24,6 @@ import YourActivity from './components/YourActivity';
   }),
 )
 class Dashboard extends PureComponent {
-  // no need here, refresh in fetch candidate
   componentDidUpdate = async (prevProps) => {
     const { dispatch, data: { processStatus = '' } = {} || {} } = this.props;
     if (processStatus !== prevProps.data.processStatus) {

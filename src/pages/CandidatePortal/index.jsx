@@ -13,11 +13,13 @@ const { TabPane } = Tabs;
     candidatePortal: { localStep, data, tempData } = {},
     user: { currentUser: { candidate = {} } = {} } = {},
     loading,
+    conversation: { conversationList = [] } = {},
   }) => ({
     localStep,
     data,
     tempData,
     candidate,
+    conversationList,
     loadingFetchCandidate: loading.effects['candidatePortal/fetchCandidateById'],
   }),
 )
@@ -52,11 +54,17 @@ class CandidatePortal extends PureComponent {
         rookieID: candidate.ticketID,
       },
     });
-    await dispatch({
+    dispatch({
       type: 'candidatePortal/fetchDocumentByCandidate',
       payload: {
         candidate: candidate._id,
         tenantId: getCurrentTenant(),
+      },
+    });
+    dispatch({
+      type: 'conversation/getUserConversationsEffect',
+      payload: {
+        userId: candidate._id,
       },
     });
 
@@ -77,15 +85,18 @@ class CandidatePortal extends PureComponent {
   };
 
   renderMessageTitle = () => {
-    // const addZeroToNumber = (number) => {
-    //   if (number < 10 && number >= 0) return `0${number}`.slice(-2);
-    //   return number;
-    // };
+    const { conversationList = [] } = this.props;
+    const addZeroToNumber = (number) => {
+      if (number < 10 && number >= 0) return `0${number}`.slice(-2);
+      return number;
+    };
 
     return (
       <span className={styles.messageTitle}>
         Messages{' '}
-        <span className={styles.messageIndex}>{/* {addZeroToNumber(data.length)} */}06</span>
+        {conversationList.length > 0 && (
+          <span className={styles.messageIndex}>{addZeroToNumber(conversationList.length)}</span>
+        )}
       </span>
     );
   };

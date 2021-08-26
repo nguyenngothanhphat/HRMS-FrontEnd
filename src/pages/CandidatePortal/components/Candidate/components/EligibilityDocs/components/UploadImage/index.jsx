@@ -122,14 +122,19 @@ class UploadImage extends Component {
     return (
       <Upload
         {...props}
-        beforeUpload={this.beforeUpload}
-        action={(fileData) => {
-          this.handleUpload();
-          this.setState({
-            file: fileData,
-          });
-        }}
-        className={styles.UploadImageFile}
+        beforeUpload={loading ? () => {} : this.beforeUpload}
+        disabled={loading}
+        action={
+          loading
+            ? () => {}
+            : (fileData) => {
+                this.handleUpload();
+                this.setState({
+                  file: fileData,
+                });
+              }
+        }
+        className={`${styles.UploadImageFile} ${loading ? styles.disableButton : ''}`}
       >
         {content}
       </Upload>

@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 import { io } from 'socket.io-client';
+import SOCKET_URL from '@/utils/socket';
 import ChatEvent from '@/utils/chatSocket';
 
 import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
@@ -10,7 +11,7 @@ import MessageIcon from '@/assets/candidatePortal/messageIcon.svg';
 
 import styles from './index.less';
 
-const socket = io('ws://file-stghrms.paxanimi.ai');
+const socket = io(SOCKET_URL);
 
 const { TextArea } = Input;
 
@@ -235,12 +236,12 @@ class MessageBox extends PureComponent {
       });
 
       if (res.statusCode === 200) {
-        this.scrollToBottom();
         this.formRef.current.setFieldsValue({
           message: '',
         });
       }
     }
+    this.scrollToBottom();
   };
 
   // for empty chat
@@ -281,7 +282,7 @@ class MessageBox extends PureComponent {
 
   render() {
     const { activeConversationMessages: messages = [], loadingMessages = false } = this.props;
-
+    console.log('SOCKET_URL', SOCKET_URL);
     if (loadingMessages) {
       return (
         <div className={styles.MessageBox}>

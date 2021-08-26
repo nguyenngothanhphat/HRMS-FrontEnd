@@ -2,7 +2,9 @@ import { Button, Input, Skeleton, Form } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
+
 import { io } from 'socket.io-client';
+import SOCKET_URL from '@/utils/socket';
 import ChatEvent from '@/utils/chatSocket';
 
 import SeenIcon from '@/assets/candidatePortal/seen.svg';
@@ -11,7 +13,7 @@ import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
 
 import styles from './index.less';
 
-const socket = io('ws://file-stghrms.paxanimi.ai');
+const socket = io(SOCKET_URL);
 
 @connect(
   ({
@@ -216,12 +218,12 @@ class ActiveChat extends PureComponent {
       });
 
       if (res.statusCode === 200) {
-        this.scrollToBottom();
         this.formRef.current.setFieldsValue({
           message: '',
         });
       }
     }
+    this.scrollToBottom();
   };
 
   render() {

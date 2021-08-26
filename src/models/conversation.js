@@ -108,9 +108,11 @@ const country = {
         activeConversationMessages: [...activeConversationMessages, action.payload],
       };
     },
-    clearState() {
+    clearState(state) {
       return {
-        ...defaultState,
+        ...state,
+        activeConversation: {},
+        activeConversationMessages: [],
       };
     },
   },

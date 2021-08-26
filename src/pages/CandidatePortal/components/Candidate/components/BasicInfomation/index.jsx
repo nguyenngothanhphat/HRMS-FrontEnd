@@ -1,11 +1,11 @@
-import AnswerQuestion from '@/components/Question/AnswerQuestion';
-import { SPECIFY, TYPE_QUESTION } from '@/components/Question/utils';
-import { getCurrentTenant } from '@/utils/authority';
 import { Button, Col, Form, Input, Row, Skeleton, Typography } from 'antd';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { every } from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage } from 'umi';
+import { getCurrentTenant } from '@/utils/authority';
+import { SPECIFY, TYPE_QUESTION } from '@/components/Question/utils';
+import AnswerQuestion from '@/components/Question/AnswerQuestion';
 import { Page } from '../../../../../FormTeamMember/utils';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NoteComponent';
@@ -348,7 +348,7 @@ class BasicInformation extends PureComponent {
   render() {
     const { data = {} } = this.state;
     const { workEmail, firstName, middleName, lastName, privateEmail, previousExperience } = data;
-    const { loading } = this.props;
+    const { loading = false } = this.props;
     const Note = {
       title: 'Note',
       data: (
