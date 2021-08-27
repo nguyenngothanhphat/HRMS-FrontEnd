@@ -665,7 +665,7 @@ class OnboardTable extends Component {
                 }, // Hover mouse on row
               };
             }}
-            scroll={list.length > 0 ? { x: '80vw', y: 'max-content' } : {}}
+            // scroll={list.length > 0 ? { x: '80vw', y: 'max-content' } : {}}
           />
         </div>
         {/* <CustomModal
