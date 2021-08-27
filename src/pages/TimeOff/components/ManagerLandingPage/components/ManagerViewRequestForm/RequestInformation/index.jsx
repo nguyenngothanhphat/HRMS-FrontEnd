@@ -1,17 +1,18 @@
 import React, { PureComponent } from 'react';
 import { Button, Row, Col, Spin, Input } from 'antd';
-import TimeOffModal from '@/components/TimeOffModal';
-import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import { connect, history } from 'umi';
 import moment from 'moment';
+import TimeOffModal from '@/components/TimeOffModal';
+import { TIMEOFF_STATUS } from '@/utils/timeOff';
 import Project from './components/Project';
 
 import styles from './index.less';
 
 const { TextArea } = Input;
 
-@connect(({ timeOff, loading }) => ({
+@connect(({ timeOff, user: { currentUser = {} } = {}, loading }) => ({
   timeOff,
+  currentUser,
   loadingFetchLeaveRequestById: loading.effects['timeOff/fetchLeaveRequestById'],
   loadingWithdrawLeaveRequest: loading.effects['timeOff/withdrawLeaveRequest'],
   loadingApproveRequest: loading.effects['timeOff/reportingManagerApprove'],
@@ -186,6 +187,7 @@ class RequestInformation extends PureComponent {
     const { showModal, showWithdrawModal, isReject, acceptWithdraw } = this.state;
     const {
       timeOff: { viewingLeaveRequest = {}, projectsList = [] } = {},
+      currentUser: { employee: { _id: myId = '' } = {} } = {},
       loadingFetchLeaveRequestById,
       loadingApproveRequest,
       loadingRejectRequest,
@@ -202,7 +204,7 @@ class RequestInformation extends PureComponent {
       duration = '',
       // onDate = '',
       description = '',
-      type: { name = '', shortType = '' } = {},
+      type: { name = '' } = {},
       employee: {
         // _id: employeeId = '',
         generalInfo: { firstName = '', lastName = '', userId = '' } = {},
@@ -215,9 +217,13 @@ class RequestInformation extends PureComponent {
         reason = '',
       } = {},
       withdraw = {},
+      approvalManager: { _id: managerId = '' } = {},
     } = viewingLeaveRequest;
 
     const formatDurationTime = this.formatDurationTime(fromDate, toDate);
+
+    // only manager accept/reject a ticket
+    const isMyTicket = myId === managerId;
 
     return (
       <div className={styles.RequestInformation}>
@@ -333,7 +339,7 @@ class RequestInformation extends PureComponent {
                 <Row>
                   <Col span={6}>Timeoff Type</Col>
                   <Col span={18} className={styles.detailColumn}>
-                    <span className={styles.fieldValue}>{`${name} (${shortType})`}</span>
+                    <span className={styles.fieldValue}>{name}</span>
                   </Col>
                 </Row>
                 <Row>
@@ -429,7 +435,7 @@ class RequestInformation extends PureComponent {
         )}
 
         {/* IN PROGRESS */}
-        {!isReject && status === TIMEOFF_STATUS.inProgress && (
+        {!isReject && status === TIMEOFF_STATUS.inProgress && isMyTicket && (
           <div className={styles.footer}>
             <span className={styles.note}>
               By default notifications will be sent to HR, your manager and recursively loop to your
