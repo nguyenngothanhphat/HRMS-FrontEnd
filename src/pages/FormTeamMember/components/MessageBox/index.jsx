@@ -55,7 +55,16 @@ class MessageBox extends PureComponent {
 
   componentDidMount = async () => {
     this.scrollToBottom();
-    const { dispatch, candidate, assignTo: hrId = '' } = this.props;
+
+    const { dispatch, candidate, assignTo: hrId } = this.props;
+
+    // realtime get message
+    socket.on(ChatEvent.DISCONNECT);
+    socket.emit(ChatEvent.ADD_USER, hrId?._id || hrId || '');
+    socket.on(ChatEvent.GET_USER, () => {});
+    socket.on(ChatEvent.GET_MESSAGE, (data) => {
+      this.saveNewMessage(data);
+    });
 
     if (candidate) {
       const getConversationList = () => {
@@ -89,14 +98,6 @@ class MessageBox extends PureComponent {
           }
         }
       }
-
-      // realtime get message
-      socket.emit(ChatEvent.ADD_USER, candidate);
-      socket.on(ChatEvent.GET_USER, () => {});
-
-      socket.on(ChatEvent.GET_MESSAGE, (newMessage) => {
-        this.saveNewMessage(newMessage);
-      });
     }
   };
 
@@ -203,7 +204,7 @@ class MessageBox extends PureComponent {
     return (
       <div className={styles.contentContainer} ref={this.mesRef}>
         {chat.map((item, index) => {
-          if (item.sender === candidate) {
+          if (item.sender === candidate || item.senderId === candidate) {
             return candidateMessage(item, index);
           }
           return senderMessage(item, index);
@@ -239,10 +240,16 @@ class MessageBox extends PureComponent {
   };
 
   onSendClick = async (values) => {
-    const { dispatch, assignTo: hrId = '' } = this.props;
+    const { dispatch, assignTo: hrId, candidate = '' } = this.props;
     const { activeId } = this.state;
     const { message } = values;
     if (activeId && message) {
+      socket.emit(ChatEvent.SEND_MESSAGE, {
+        senderId: hrId?._id || hrId || '',
+        receiverId: candidate,
+        text: message,
+      });
+
       const res = await dispatch({
         type: 'conversation/addNewMessageEffect',
         payload: {
