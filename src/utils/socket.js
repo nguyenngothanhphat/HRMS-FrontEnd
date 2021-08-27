@@ -1,3 +1,3 @@
-const SOCKET = 'ws://file-stghrms.paxanimi.ai';
+const SOCKET = 'https://file-stghrms.paxanimi.ai';
 
 export default SOCKET;
