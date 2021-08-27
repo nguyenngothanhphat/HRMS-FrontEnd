@@ -168,16 +168,8 @@ class OnboardTable extends Component {
       NAME,
       POSITION,
       LOCATION,
-      COMMENT,
-      DATE_SENT,
-      DATE_RECEIVED,
       DATE_JOIN,
       ACTION,
-      EXPIRE,
-      DOCUMENT,
-      RESUBMIT,
-      CHANGE_REQUEST,
-      DATE_REQUEST,
       ASSIGN_TO,
       ASSIGNEE_MANAGER,
       PROCESS_STATUS: PROCESS_STATUS_1,
@@ -203,6 +195,7 @@ class OnboardTable extends Component {
         render: (rookieId) => this.renderName(rookieId),
         columnName: NAME,
         width: getColumnWidth('rookieName', type),
+        align: 'left',
       },
       {
         // title: 'Position',
@@ -212,6 +205,7 @@ class OnboardTable extends Component {
         render: (position) => <span>{position || '-'}</span>,
         columnName: POSITION,
         width: getColumnWidth('position', type),
+        align: 'left',
       },
       {
         // title: 'Location',
@@ -221,24 +215,7 @@ class OnboardTable extends Component {
         render: (location) => <span>{location || '-'}</span>,
         columnName: LOCATION,
         width: getColumnWidth('location', type),
-      },
-      {
-        // title: 'Date sent',
-        title: formatMessage({ id: 'component.onboardingOverview.dateSent' }),
-        dataIndex: 'dateSent',
-        key: 'dateSent',
-        render: (dateSent) => <span>{dateSent || '-'}</span>,
-        columnName: DATE_SENT,
-        width: getColumnWidth('dateSent', type),
-      },
-      {
-        // title: 'Date received',
-        title: formatMessage({ id: 'component.onboardingOverview.dateReceived' }),
-        dataIndex: 'dateReceived',
-        key: 'dateReceived',
-        render: (dateReceived) => <span>{dateReceived || '-'}</span>,
-        columnName: DATE_RECEIVED,
-        width: getColumnWidth('dateReceived', type),
+        align: 'left',
       },
       {
         // title: 'Date of Joining',
@@ -248,62 +225,7 @@ class OnboardTable extends Component {
         render: (dateJoin) => <span>{dateJoin || '-'}</span>,
         columnName: DATE_JOIN,
         width: getColumnWidth('dateJoin', type),
-      },
-      {
-        // title: 'No. Of documents verified',
-        title: formatMessage({ id: 'component.onboardingOverview.documentVerified' }),
-        dataIndex: 'documentVerified',
-        key: 'document',
-        render: (documentVerified) => <span>{documentVerified || '-'}</span>,
-        columnName: DOCUMENT,
-        width: getColumnWidth('document', type),
-        align: 'center',
-      },
-      {
-        // title: 'Resubmits',
-        title: formatMessage({ id: 'component.onboardingOverview.resubmit' }),
-        dataIndex: 'resubmit',
-        key: 'resubmit',
-        render: (resubmit) => <span>{resubmit || '-'}</span>,
-        columnName: RESUBMIT,
-        width: getColumnWidth('resubmit', type),
-        align: 'center',
-      },
-      {
-        // title: 'Expires on',
-        title: formatMessage({ id: 'component.onboardingOverview.expire' }),
-        dataIndex: 'expire',
-        key: 'expire',
-        render: (expire) => <span>{expire || '-'}</span>,
-        columnName: EXPIRE,
-        width: getColumnWidth('expire', type),
-      },
-      {
-        // title: 'Change request',
-        title: formatMessage({ id: 'component.onboardingOverview.changeRequest' }),
-        dataIndex: 'changeRequest',
-        key: 'changeRequest',
-        render: (changeRequest) => <span>{changeRequest || '-'}</span>,
-        columnName: CHANGE_REQUEST,
-        width: getColumnWidth('changeRequest', type),
-      },
-      {
-        // title: 'Request date',
-        title: formatMessage({ id: 'component.onboardingOverview.requestDate' }),
-        dataIndex: 'dateRequest',
-        key: 'dateRequest',
-        render: (dateRequest) => <span>{dateRequest || '-'}</span>,
-        columnName: DATE_REQUEST,
-        width: getColumnWidth('dateRequest', type),
-      },
-      {
-        // title: 'Comments',
-        title: formatMessage({ id: 'component.onboardingOverview.comments' }),
-        dataIndex: 'comments',
-        key: 'comments',
-        render: (comments) => <span>{comments || '-'}</span>,
-        width: getColumnWidth('comments', type),
-        columnName: COMMENT,
+        align: 'left',
       },
       {
         title: 'Assign To',
@@ -319,6 +241,7 @@ class OnboardTable extends Component {
         ),
         columnName: ASSIGN_TO,
         width: getColumnWidth('assignTo', type),
+        align: 'left',
       },
       {
         title: 'HR Manager',
@@ -335,6 +258,7 @@ class OnboardTable extends Component {
         ),
         columnName: ASSIGNEE_MANAGER,
         width: getColumnWidth('assigneeManager', type),
+        align: 'left',
       },
       {
         title: 'Status',
@@ -343,11 +267,9 @@ class OnboardTable extends Component {
         render: (processStatus) => <Tag color="geekblue">{processStatus}</Tag>,
         columnName: PROCESS_STATUS_1,
         width: getColumnWidth('processStatus', type),
-        // fixed: 'right',
+        align: 'left',
       },
       {
-        // title: 'Actions',
-        // title: formatMessage({ id: 'component.onboardingOverview.actions' }),
         dataIndex: 'actions',
         key: 'actions',
         width: getColumnWidth('actions', type),
@@ -368,8 +290,6 @@ class OnboardTable extends Component {
             this.checkPermission('hr-manager') ||
             assignTo._id === empId ||
             assigneeManager._id === empId;
-          // if (checkPermission) return this.renderAction(id, type, actionText);
-          // return '';
 
           const payload = {
             id,
@@ -664,9 +584,8 @@ class OnboardTable extends Component {
   };
 
   render() {
-    // const { pageSelected } = this.state;
     const { list = [], pageSelected, size, getPageAndSize, total: totalData } = this.props;
-    // const rowSize = 10;
+
     const {
       reassignModalVisible = false,
       currentEmpId = '',
@@ -680,9 +599,6 @@ class OnboardTable extends Component {
     } = this.state;
 
     const rowSelection = {
-      // onChange: (selectedRowKeys, selectedRows) => {
-      // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-      // },
       getCheckboxProps: (record) => ({
         disabled: record.name === 'Disabled User',
         // Column configuration not to be checked
@@ -739,7 +655,6 @@ class OnboardTable extends Component {
             columns={this.generateColumns(columnArr, type)}
             dataSource={list}
             loading={loading || loadingFetch}
-            // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
             pagination={pagination}
             onRow={(record) => {
               return {
@@ -750,10 +665,7 @@ class OnboardTable extends Component {
                 }, // Hover mouse on row
               };
             }}
-            scroll={
-              list.length > 0 ? { x: '100vw', y: 'max-content' } : { x: '80vw', y: 'max-content' }
-            }
-            // scroll={{ x: 'max-content', y: 'max-content' }}
+            scroll={list.length > 0 ? { x: '80vw', y: 'max-content' } : {}}
           />
         </div>
         {/* <CustomModal

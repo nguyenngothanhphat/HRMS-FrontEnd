@@ -126,7 +126,7 @@ const getColumnWidth = (columnName, tableType) => {
       case 'assigneeManager':
         return '10%';
       case 'processStatus':
-        return '8%';
+        return '14%';
       default:
         return '';
     }
