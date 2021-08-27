@@ -23,11 +23,6 @@ const getComponent = (name) => {
   }
 };
 
-@connect(({ loading }) => ({
-  loadingAddTeamMember:
-    loading.effects['info/fetchCandidateInfo'] ||
-    loading.effects['candidateInfo/fetchCandidateInfo'],
-}))
 class OnboardingLayout extends PureComponent {
   constructor(props) {
     super(props);
@@ -115,7 +110,6 @@ class OnboardingLayout extends PureComponent {
               </span>
             </Button>
           )}
-          {/* </Link> */}
 
           <div className={styles.divider} />
 
@@ -151,9 +145,12 @@ class OnboardingLayout extends PureComponent {
 
 // export default OnboardingLayout;
 export default connect(
-  ({ info, user: { permissions = {} } = {}, candidateInfo: { data = {} } = {} }) => ({
+  ({ loading, info, user: { permissions = {} } = {}, candidateInfo: { data = {} } = {} }) => ({
     info,
     data,
     permissions,
+    loadingAddTeamMember:
+      loading.effects['info/fetchCandidateInfo'] ||
+      loading.effects['candidateInfo/fetchCandidateInfo'],
   }),
 )(OnboardingLayout);

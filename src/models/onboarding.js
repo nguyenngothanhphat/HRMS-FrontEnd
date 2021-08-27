@@ -237,9 +237,6 @@ const onboarding = {
           case 'DRAFT':
             newTotalNumber.drafts += count;
             break;
-          case 'FINAL-OFFER-DRAFT':
-            newTotalNumber.drafts += count;
-            break;
           default:
             break;
         }
