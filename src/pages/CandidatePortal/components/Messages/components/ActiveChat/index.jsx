@@ -18,9 +18,9 @@ const socket = io(SOCKET_URL);
 @connect(
   ({
     conversation: { conversationList = [], activeConversationMessages = [] } = {},
-    // user: { currentUser: { candidate = {} } } = {},
+    user: { currentUser: { candidate = {} } } = {},
     candidatePortal: {
-      candidate = '',
+      // candidate = '',
       data: { assignTo = {}, firstName: candidateFN = '', lastName: candidateLN = '' },
     } = {},
     conversation = {},
@@ -52,13 +52,15 @@ class ActiveChat extends PureComponent {
     this.scrollToBottom();
     // realtime get message
     const { candidate } = this.props;
-    socket.emit(ChatEvent.ADD_USER, candidate);
+    socket.on(ChatEvent.DISCONNECT);
+    socket.emit(ChatEvent.ADD_USER, candidate._id);
     socket.on(ChatEvent.GET_USER, () => {});
-
     socket.on(ChatEvent.GET_MESSAGE, (data) => {
       this.saveNewMessage(data);
     });
   }
+
+  componentDidUpdate = () => {};
 
   componentWillUnmount = () => {
     socket.on(ChatEvent.DISCONNECT);
@@ -128,7 +130,7 @@ class ActiveChat extends PureComponent {
   };
 
   renderChatContent = (chat = []) => {
-    const { candidate = '' } = this.props;
+    const { candidate: { _id: candidateId = '' } = {} } = this.props;
     const senderMessage = (item, index) => {
       return (
         <div key={index} className={styles.senderMessage}>
@@ -171,7 +173,7 @@ class ActiveChat extends PureComponent {
     return (
       <div className={styles.contentContainer} ref={this.mesRef}>
         {chat.map((item, index) => {
-          if (item.sender === candidate) {
+          if (item.sender === candidateId || item.senderId === candidateId) {
             return candidateMessage(item, index);
           }
           return senderMessage(item, index);
@@ -205,9 +207,20 @@ class ActiveChat extends PureComponent {
   };
 
   onSendClick = async (values) => {
-    const { dispatch, activeId = '', candidate: candidateId = '' } = this.props;
+    const {
+      dispatch,
+      activeId = '',
+      candidate: { _id: candidateId = '' } = {},
+      assignTo = '',
+    } = this.props;
     const { message } = values;
     if (activeId && message) {
+      socket.emit(ChatEvent.SEND_MESSAGE, {
+        senderId: candidateId,
+        receiverId: assignTo?._id || assignTo || '',
+        text: message,
+      });
+
       const res = await dispatch({
         type: 'conversation/addNewMessageEffect',
         payload: {

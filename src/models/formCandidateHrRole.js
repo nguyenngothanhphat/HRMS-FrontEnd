@@ -1,3 +1,5 @@
+import { history } from 'umi';
+import { message, notification } from 'antd';
 import {
   getGradeList,
   getDocumentList,
@@ -23,8 +25,6 @@ import {
   getWorkHistory,
   generateLink,
 } from '@/services/addNewMember';
-import { history } from 'umi';
-import { message, notification } from 'antd';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
 
@@ -1107,15 +1107,15 @@ const candidateInfo = {
           type: 'updateSignature',
           payload: data,
         });
-        if (_id) {
-          yield put({
-            type: 'fetchDocumentByCandidateID',
-            payload: {
-              candidate: _id,
-              tenantId: payload.tenantId,
-            },
-          });
-        }
+        // if (_id) {
+        //   yield put({
+        //     type: 'fetchDocumentByCandidateID',
+        //     payload: {
+        //       candidate: _id,
+        //       tenantId: payload.tenantId,
+        //     },
+        //   });
+        // }
       } catch (error) {
         dialog(error);
       }
