@@ -10,12 +10,9 @@ import styles from './index.less';
 
 @connect(
   ({
-    loading,
     user: { permissions = [] } = {},
     onboard: { onboardingOverview: { dataAll = [] } = {} } = {},
   }) => ({
-    loading: loading.effects['login/login'],
-    loadingFetchList: loading.effects['onboard/fetchOnboardList'],
     permissions,
     dataAll,
   }),
@@ -39,7 +36,7 @@ class Onboarding extends PureComponent {
   componentWillUnmount = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'onboard/save',
+      type: 'onboarding/save',
       payload: {},
     });
   };
