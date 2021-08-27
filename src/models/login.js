@@ -47,6 +47,7 @@ const Model = {
             type: 'saveCandidateId',
             payload: response,
           });
+          setAuthority([...formatArrRoles, ...formatRole]);
           history.replace('/candidate-portal');
         } else {
           // ELSE

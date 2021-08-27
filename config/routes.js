@@ -102,6 +102,7 @@ const routes = [
         name: 'Candidate Portal',
         icon: '/assets/images/menuIcons/dashboard.svg',
         hideInMenu: true,
+        authority: ['candidate'],
         component: './CandidatePortal',
       },
       // for 2 main tab
@@ -109,17 +110,14 @@ const routes = [
         path: '/candidate-portal/:tabName',
         hideInMenu: true,
         component: './CandidatePortal',
+        authority: ['candidate'],
       },
       // for candidate in ticket
       {
-        path: '/candidate-portal/ticket/:action/',
+        path: '/candidate-portal/ticket/:action',
         hideInMenu: true,
         component: './CandidatePortal/components/Candidate',
-      },
-      {
-        path: '/candidate-portal/ticket/:action/:tabName',
-        hideInMenu: true,
-        component: './CandidatePortal/components/Candidate',
+        authority: ['candidate'],
       },
     ],
   },

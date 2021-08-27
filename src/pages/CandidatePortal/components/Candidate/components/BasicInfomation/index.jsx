@@ -275,7 +275,7 @@ class BasicInformation extends PureComponent {
           {/* <AnswerQuestion page={Page.Basic_Information} /> */}
           <Col span={24} className={styles.verifyCheckbox}>
             <Checkbox checked={isVerifiedBasicInfo} onChange={this.onVerifyThisForm}>
-              I have verified the other details are correct
+              I have verified that the above details are correct
             </Checkbox>
           </Col>
         </Row>

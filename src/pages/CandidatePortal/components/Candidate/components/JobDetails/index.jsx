@@ -88,9 +88,7 @@ class JobDetails extends PureComponent {
       valid = true;
     } else if (tempDOJ) {
       valid = true;
-
-      } else
-      valid = false;
+    } else valid = false;
 
     if (prevProps.checkMandatory.filledJobDetail !== valid) {
       dispatch({
@@ -404,7 +402,7 @@ class JobDetails extends PureComponent {
                 </Col> */}
                 <Col span={24} className={styles.verifyCheckbox}>
                   <Checkbox checked={isVerifiedJobDetail} onChange={this.onVerifyThisForm}>
-                    I have verified the other details are correct
+                    I have verified that the above details are correct
                   </Checkbox>
                 </Col>
               </Row>
