@@ -1,0 +1,119 @@
+.NonExtempNoticeForm {
+  padding: 24px 24px 0;
+  font-family: 'Roboto';
+  background-color: #ffffff;
+  border-radius: 5px;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 150px;
+    padding-top: 20px;
+  }
+  :global {
+    .ant-input-disabled {
+      color: rgb(49, 49, 49) !important;
+    }
+    .ant-btn-primary {
+      right: 10px;
+      // display: none;
+      width: 94px;
+      height: 40px;
+      object-fit: contain;
+      color: #ffffff;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.13px;
+      text-shadow: none;
+      background-color: #ffa100;
+      border: solid 1px #ffa100;
+      border-radius: 25px;
+      box-shadow: none;
+      &:hover {
+        color: #ffffff;
+        background-color: #ffa100;
+      }
+    }
+    .ant-btn-secondary {
+      width: 94px;
+      height: 40px;
+      margin-right: 41px;
+      color: #ffa100;
+      font-weight: 500;
+      font-size: 14px;
+      letter-spacing: 0.13px;
+      border: solid 0;
+      border: 1px solid #ffa100;
+      border-radius: 25px;
+    }
+    .ant-radio-wrapper {
+      span {
+        color: #707177;
+        font-size: 14px;
+        line-height: 1.14;
+        text-align: left;
+      }
+    }
+    .ant-radio-wrapper-checked {
+      span {
+        color: #161c29;
+        font-size: 14px;
+        line-height: 1.14;
+        text-align: left;
+      }
+    }
+    .ant-form-item-control-input {
+      input {
+        height: 42px;
+        background-color: #ffffff;
+        border: solid 1px #d6dce4;
+      }
+    }
+    .ant-form-item-label {
+      padding-bottom: 0;
+      label {
+        color: #707177;
+        font-size: 13px;
+        line-height: 1.15;
+        letter-spacing: 0.12px;
+      }
+    }
+    .ant-radio-group {
+      padding-top: 15px;
+    }
+    .ant-form-item {
+      display: block;
+    }
+  }
+  &_form {
+    margin-top: 24px;
+  }
+  &_title {
+    // margin-bottom: 17px;
+    display: flex;
+    justify-content: space-between;
+    color: #161c29;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.14;
+    text-align: left;
+    .editButton {
+      display: flex;
+      justify-content: space-between;
+      color: #2c6df9;
+      cursor: pointer;
+      p {
+        margin-left: 10px;
+      }
+    }
+  }
+  hr {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    margin-bottom: 32px;
+    border-top: none;
+    border-bottom: solid 1px #e4e7eb;
+  }
+}

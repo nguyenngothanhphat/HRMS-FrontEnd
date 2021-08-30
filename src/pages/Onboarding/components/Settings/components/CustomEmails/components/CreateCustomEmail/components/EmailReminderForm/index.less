@@ -1,0 +1,192 @@
+.EmailReminderForm {
+  font-family: 'Roboto';
+  border-radius: 5px;
+  box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
+  background-color: #ffffff;
+  // padding: 24px;
+  position: relative;
+
+  :global {
+    .ql-mention-list-item {
+      background-color: #f5f5f5ed;
+      &:hover {
+        background-color: #2c6df9;
+      }
+    }
+    .ant-form-item {
+      margin-bottom: 0;
+    }
+    .ant-btn-primary {
+      box-shadow: none;
+      text-shadow: none;
+      width: 95px;
+      height: 40px;
+      object-fit: contain;
+      border-radius: 25px;
+      border: solid 1px #ffa100;
+      background-color: #ffa100;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.13px;
+      color: #ffffff;
+      margin-left: 24px;
+      &:hover {
+        background-color: #ffa100;
+        color: #ffffff;
+      }
+    }
+    .ant-btn-secondary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 94px;
+      height: 40px;
+      object-fit: contain;
+      border-radius: 25px;
+      border: solid 1px #ffa100;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.13px;
+      color: #ffa100;
+    }
+
+    .ant-select-selector {
+      cursor: pointer !important;
+    }
+
+    .ant-tag.ant-tag-red {
+      margin-bottom: 3px;
+    }
+  }
+
+  .iconClose {
+    cursor: pointer;
+  }
+
+  .label {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.14;
+    text-align: left;
+    color: #161c29;
+  }
+  .quill {
+    height: 478px;
+    margin-bottom: 48px;
+  }
+  .receipients {
+    padding: 0;
+  }
+  &_title {
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 19px;
+    color: #161c29;
+    padding: 24px;
+    text-align: left;
+    // position: relative;
+  }
+
+  &_loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    p {
+      font-weight: 500;
+    }
+  }
+
+  .divider {
+    width: 100%;
+    border-top: solid 1px #dfe3e8;
+  }
+  &_form {
+    padding: 24px;
+    .addNewButton {
+      :global {
+        .ant-btn {
+          height: 40px;
+          border-radius: 5px;
+          background-color: white;
+          border: none;
+          box-shadow: none;
+          font-size: 14px;
+          font-weight: 500;
+          letter-spacing: 0.13px;
+          color: #2c6df9;
+        }
+      }
+    }
+    .buttons {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .note {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      font-size: 13px;
+      line-height: 1.15;
+      letter-spacing: 0.12px;
+      text-align: left;
+      color: #707177;
+      margin-top: 14px;
+    }
+
+    .onAddConditionBtn {
+      :global {
+        width: 14px;
+        cursor: pointer;
+      }
+    }
+  }
+  :global {
+    .ant-form-item {
+      display: block;
+    }
+    .ant-form-item-control-input-content {
+      input {
+        height: 42px;
+      }
+    }
+    .ant-checkbox-wrapper {
+      span {
+        font-size: 14px;
+        line-height: 1.14;
+        text-align: left;
+        color: #707177;
+      }
+    }
+    .ant-form-item-label {
+      label {
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 1.14;
+        text-align: left;
+        color: #161c29;
+      }
+    }
+    .ant-select .ant-select-single .ant-select-show-arrow {
+      width: 100%;
+    }
+
+    .ant-radio-wrapper {
+      span {
+        font-size: 14px;
+        line-height: 1.14;
+        text-align: left;
+        color: #707177;
+      }
+    }
+    .ant-radio-wrapper-checked {
+      span {
+        font-size: 14px;
+        line-height: 1.14;
+        text-align: left;
+        color: #161c29;
+      }
+    }
+  }
+}

@@ -1,0 +1,202 @@
+.CreateACustomFieldSection {
+  .Title {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    height: 65px;
+    background-color: #ffffff;
+    padding-left: 16px;
+    margin-bottom: 50px;
+    h2 {
+      margin-left: 16px;
+      margin-top: 10px;
+      font-size: 18px;
+      font-weight: 700;
+      color: #161c29;
+    }
+  }
+  .boxFieldSection1 {
+    width: 868px;
+    height: 149px;
+    margin-left: 50px;
+    margin-bottom: 33px;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
+    background-color: #ffffff;
+    border-radius: 5px;
+    padding: 40px;
+    &__Title {
+      margin-bottom: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      color: #161c29;
+    }
+    :global {
+      .ant-input {
+        border-radius: 5px;
+        border: solid 1px #d6dce4;
+        box-shadow: none;
+      }
+    }
+  }
+  .boxFieldSection2 {
+    width: 868px;
+    padding-bottom: 32px;
+    margin-bottom: 30px;
+    margin-left: 50px;
+    border-radius: 5px;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.22);
+    background-color: #ffffff;
+    &__Title {
+      padding: 32px 40px;
+      border-bottom: solid 1px #d6dce0;
+      margin-bottom: 40px;
+      p {
+        margin-bottom: 0;
+        font-size: 16px;
+        font-weight: 700;
+        color: #161c29;
+      }
+    }
+    &__Content {
+      padding: 0 40px;
+    }
+    &__Content1 {
+      margin-bottom: 32px;
+      &__Text {
+        font-size: 13px;
+        color: #707177;
+      }
+      &__Text1 {
+        font-size: 14px;
+        color: #161c29;
+      }
+      &__Radio {
+        margin-top: 17px;
+        :global {
+          .ant-radio-wrapper {
+            font-size: 14px;
+            color: #707177;
+          }
+        }
+      }
+    }
+  }
+  .buttonFooter {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    align-items: center;
+    width: 868px;
+    margin-left: 50px;
+  }
+  .buttonFooterSave {
+    height: 35px;
+    font-size: 14px;
+    color: #ffffff;
+    border-radius: 25px;
+    border: solid 1px #ffa100;
+    background-color: #ffa100;
+    cursor: pointer;
+  }
+  .buttonFooterCancel {
+    height: 35px;
+    margin-left: 24px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #ffa100;
+    border-radius: 25px;
+    border: solid 1px #ffa100;
+    cursor: pointer;
+  }
+  .switchField {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    align-items: center;
+    width: 188px;
+    height: 34px;
+    margin-top: 34px;
+    margin-bottom: 25px;
+    background-image: url('../backgroundImage/Rectangle-customField.svg');
+  }
+  .switchField > .itemField1 {
+    width: 50%;
+  }
+  .switchField > .itemField1Active {
+    width: 50%;
+  }
+
+  .itemField1Active {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+    height: 36px;
+    width: 100%;
+    margin: 0 -15px;
+    font-size: 13px;
+    font-weight: 500;
+    background-image: url('../backgroundImage/Rectangle-item.svg');
+    background-repeat: no-repeat;
+    background-size: 99px 40px;
+    color: #ffffff;
+    transition: 0.35s ease-in-out 0s;
+    cursor: pointer;
+  }
+  .itemField1 {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+    align-items: center;
+    height: 36px;
+    width: 100%;
+    margin: 0 -15px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #161c29;
+    transition: 0.35s ease-in-out 0s;
+    cursor: pointer;
+  }
+  .selectFilter {
+    margin: 17px 0;
+    &1 {
+      width: 241px;
+    }
+    &2 {
+      width: 90px;
+      margin: 0 23.5px;
+    }
+    &3 {
+      width: 362px;
+      margin-right: 24px;
+    }
+    :global {
+      .ant-select-selector {
+        height: 42px;
+        border-radius: 5px;
+        border: solid 1px #d6dce0;
+        background-color: #ffffff;
+      }
+      .ant-select-selection-item {
+        padding-top: 5px;
+        font-size: 14px;
+        color: #161c29;
+      }
+      .ant-select-selection-placeholder {
+        padding-top: 5px;
+      }
+    }
+  }
+  .line {
+    opacity: 0.5;
+    border: solid 1px #d6dce0;
+  }
+  .line:last-child {
+    opacity: none;
+    border: none;
+  }
+}
