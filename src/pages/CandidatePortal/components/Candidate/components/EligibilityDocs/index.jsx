@@ -2,11 +2,11 @@
 import React, { PureComponent } from 'react';
 import { Typography, Row, Col, Button, Spin, notification, Skeleton } from 'antd';
 import { connect, formatMessage } from 'umi';
+import { every } from 'lodash';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
 import AnswerQuestion from '@/components/Question/AnswerQuestion';
 import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
-import { every } from 'lodash';
 import Title from './components/Title';
 import CollapseFields from './components/CollapseFields';
 import PreviousEmployment from './components/PreviousEmployment';
@@ -15,7 +15,7 @@ import MessageBox from '../MessageBox';
 import NoteComponent from '../NoteComponent';
 // import SendEmail from './components/SendEmail';
 import ModalContentComponent from './components/ModalContentComponent';
-import { Page } from '../../../../../FormTeamMember/utils';
+import { Page } from '../../../../../NewCandidateForm/utils';
 import styles from './index.less';
 
 const Note = {

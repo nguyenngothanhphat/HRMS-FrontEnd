@@ -1,21 +1,21 @@
-import FileIcon from '@/assets/pdf_icon.png';
-import ModalUpload from '@/components/ModalUpload';
-import ViewDocumentModal from '@/components/ViewDocumentModal';
-import CancelIcon from '@/pages/FormTeamMember/components/PreviewOffer/components/CancelIcon';
-import whiteImg from '@/pages/FormTeamMember/components/PreviewOffer/components/images/whiteImg.png';
-import AnswerQuestion from '@/components/Question/AnswerQuestion';
-import { getCurrentTenant } from '@/utils/authority';
 import { Button, Col, Row, Select, Typography, Input, Popover, Radio, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
+import { every } from 'lodash';
+import FileIcon from '@/assets/pdf_icon.png';
+import ModalUpload from '@/components/ModalUpload';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
+import CancelIcon from '@/pages/NewCandidateForm/components/PreviewOffer/components/CancelIcon';
+import whiteImg from '@/pages/NewCandidateForm/components/PreviewOffer/components/images/whiteImg.png';
+import AnswerQuestion from '@/components/Question/AnswerQuestion';
+import { getCurrentTenant } from '@/utils/authority';
 import ModalDrawSignature from '@/components/ModalDrawSignature/index';
 import TextSignature from '@/components/TextSignature';
 import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
-import { every } from 'lodash';
 import NoteComponent from '../NoteComponent';
 import Alert from './components/Alert';
 import s from './index.less';
-import { Page } from '../../../../../FormTeamMember/utils';
+import { Page } from '../../../../../NewCandidateForm/utils';
 
 const { Option } = Select;
 

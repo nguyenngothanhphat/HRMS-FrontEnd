@@ -7,7 +7,7 @@ import { getCurrentTenant } from '@/utils/authority';
 import { SPECIFY, TYPE_QUESTION } from '@/components/Question/utils';
 import NotifyModal from '../NotifyModal';
 import styles from './index.less';
-// import { Page } from '../../../../../../../FormTeamMember/utils';
+// import { Page } from '../../../../../../../NewCandidateForm/utils';
 
 @connect(
   ({

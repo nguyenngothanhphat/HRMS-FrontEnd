@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import { PROCESS_STATUS } from '@/utils/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
-import NoteComponent from '@/pages/FormTeamMember/components/NoteComponent';
+import NoteComponent from '@/pages/NewCandidateForm/components/NoteComponent';
 import FileContent from '../FileContent';
 import AcceptOfferModal from './components/AcceptOfferModal';
 import RejectOfferModal from './components/RejectOfferModal';

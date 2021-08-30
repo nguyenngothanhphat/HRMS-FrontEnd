@@ -3,8 +3,8 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Button } from 'antd';
 import { history } from 'umi';
 import ItemMenu from './components/ItemMenu';
-// import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
-import BasicInformation from '../../pages/FormTeamMember/components/BasicInformation';
+// import PreviewOffer from '../../pages/NewCandidateForm/components/PreviewOffer/index';
+import BasicInformation from '../../pages/NewCandidateForm/components/BasicInformation';
 // import BottomBar from '../BottomBar';
 
 import s from './index.less';

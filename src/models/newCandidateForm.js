@@ -24,7 +24,7 @@ import {
   getDocumentByCandidate,
   getWorkHistory,
   generateLink,
-} from '@/services/addNewMember';
+} from '@/services/newCandidateForm';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
 
@@ -114,29 +114,13 @@ const newCandidateForm = {
       company: '',
       email: '',
       identityProof: {
-        // aadharCard: true,
-        // PAN: true,
-        // passport: false,
-        // drivingLicense: false,
-        // voterCard: false,
         checkedList: [],
-        // isChecked: false,
       },
       addressProof: {
-        // rentalAgreement: false,
-        // electricityBill: false,
-        // telephoneBill: false,
         checkedList: [],
-        // isChecked: false,
       },
       educational: {
-        // sslc: true,
-        // diploma: true,
-        // graduation: true,
-        // postGraduate: false,
-        // phd: false,
         checkedList: [],
-        // isChecked: false,
       },
 
       candidateSignature: {
@@ -1595,27 +1579,6 @@ const newCandidateForm = {
         },
       };
     },
-
-    // removeTemplate(state, action) {
-    //   const { tempData } = state;
-    //   const data = action.payload;
-
-    //   if (!data) {
-    //     return state;
-    //   }
-
-    //   const defaultTemplates = data.filter((template) => template.default === true);
-    //   const customTemplates = data.filter((template) => template.default === false);
-
-    //   return {
-    //     ...state,
-    //     tempData: {
-    //       ...tempData,
-    //       defaultTemplates,
-    //       customTemplates,
-    //     },
-    //   };
-    // },
 
     updateOfferLetter(state, action) {
       const { tempData } = state;

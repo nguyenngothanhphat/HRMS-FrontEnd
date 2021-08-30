@@ -6,7 +6,7 @@ import { connect, formatMessage, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import { SPECIFY, TYPE_QUESTION } from '@/components/Question/utils';
 import AnswerQuestion from '@/components/Question/AnswerQuestion';
-import { Page } from '../../../../../FormTeamMember/utils';
+import { Page } from '../../../../../NewCandidateForm/utils';
 import NoteComponent from '../NoteComponent';
 import MessageBox from '../MessageBox';
 import FieldsComponent from './components/FieldsComponent';
