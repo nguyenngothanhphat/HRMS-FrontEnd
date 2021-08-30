@@ -1,42 +1,43 @@
 @spacing-xxs: 4px;
+@darkColour: #161c29;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@commonPadding2: 24px;
+@borderColor: #d6dce0;
 
 .basicInformation {
-  font-family: 'Roboto', sans-serif;
-  width: 100%;
-  min-height: 216px;
   position: relative;
+  width: 100%;
+  font-family: 'Roboto', sans-serif;
 
   .bottomBar {
-    // position: fixed;
-    // bottom: 0;
-    // width: inherit;
-    // height: 72px;
+    padding: @commonPadding;
+    background-color: #ffffff;
+    border: solid 1px #d6dce0;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
-    border: solid 1px #d6dce0;
-    background-color: #ffffff;
-    padding: 4 * @spacing-xxs;
+    margin-block: @commonPadding2;
 
     .normalText {
       display: flex;
-      font-family: 'Roboto';
+      color: @lightGrayColor;
       font-size: 13px;
+      font-family: 'Roboto';
       font-style: italic;
-      color: #707177;
     }
 
     .redText {
-      font-family: 'Roboto';
-      font-size: 13px;
-      font-style: italic;
       color: #ff4949;
+      font-size: 13px;
+      font-family: 'Roboto';
+      font-style: italic;
     }
 
     .greenText {
-      font-family: 'Roboto';
-      font-size: 13px;
-      font-style: italic;
       color: #47c97f;
+      font-size: 13px;
+      font-family: 'Roboto';
+      font-style: italic;
     }
 
     &__button {
@@ -48,39 +49,38 @@
 
       :global {
         .ant-btn-primary {
-          box-shadow: none;
-          text-shadow: none;
-          // display: none;
           width: 94px;
           height: 40px;
           object-fit: contain;
-          border-radius: 25px;
-          border: solid 1px #ffa100;
-          background-color: #ffa100;
-          font-family: 'Roboto';
-          font-size: 14px;
-          font-weight: 500;
-          letter-spacing: 0.13px;
           color: #ffffff;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: 'Roboto';
+          letter-spacing: 0.13px;
+          text-shadow: none;
+          background-color: #ffa100;
+          border: solid 1px #ffa100;
+          border-radius: 25px;
+          box-shadow: none;
 
           &:hover {
-            background-color: #ffa100;
             color: #ffffff;
+            background-color: #ffa100;
           }
         }
 
         .ant-btn-secondary {
           width: 94px;
           height: 40px;
-          object-fit: contain;
-          border-radius: 25px;
-          border: solid 0;
-          font-family: 'Roboto';
-          font-size: 14px;
-          font-weight: 500;
-          letter-spacing: 0.13px;
-          color: #ffa100;
           padding-right: 41px;
+          object-fit: contain;
+          color: #ffa100;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: 'Roboto';
+          letter-spacing: 0.13px;
+          border: solid 0;
+          border-radius: 25px;
         }
       }
     }
@@ -88,17 +88,17 @@
 
   &__bottom {
     position: fixed;
-    height: 72px;
     bottom: 0;
     width: inherit;
+    height: 72px;
   }
 
   &__top {
     object-fit: contain;
-    border-radius: 2.5px;
-    border: solid 0.5px #d6dce0;
     background-color: #ffffff;
-    // margin-bottom: 50px;
+    border: 1px solid #d6dce0;
+    border-radius: 5px;
+    border-radius: 2.5px;
 
     hr {
       width: 100%;
@@ -110,9 +110,8 @@
   }
 
   .basicInformation__form {
-    padding: 8 * @spacing-xxs;
-
     width: 100%;
+    padding: 8 * @spacing-xxs;
 
     :global {
       .ant-form-item-has-success {
@@ -136,20 +135,19 @@
 
       .formInput__domain {
         position: absolute;
-        right: 4 * @spacing-xxs;
         top: 10px;
+        right: 4 * @spacing-xxs;
         z-index: 1000;
         color: #707177;
       }
     }
 
     .formInput {
-      font-family: 'Roboto', sans-serif;
       height: 42px;
       object-fit: contain;
-      border-radius: 8px;
-      //   border: solid 0.5px #d6dce4;
+      font-family: 'Roboto', sans-serif;
       background-color: #ffffff;
+      border-radius: 8px;
     }
   }
 
@@ -161,7 +159,7 @@
 }
 
 .RightComponents {
-  width: 322px;
+  width: 100%;
 
   .stepRow {
     width: 100%;
@@ -169,7 +167,5 @@
 }
 
 .viewLoading {
-  margin: 0 auto;
-  height: 500px;
-  width: 300px;
+  width: 100%;
 }

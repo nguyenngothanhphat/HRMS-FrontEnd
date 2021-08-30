@@ -18,10 +18,10 @@ export default class ItemMenu extends PureComponent {
 
   render() {
     const { item = {}, handelClick = () => {}, selectedItemId, isDisabled = false } = this.props;
-    const { id = '', name = '', isComplete = false } = item;
 
-    // const className = isActive ? s.itemMenuActive : s.itemMenu;
-    const className = this.getClassName();
+    const { id = '', name = '', isComplete = false } = item;
+    const isActive = selectedItemId === id;
+    const className = isActive ? s.itemMenuActive : s.itemMenu;
     const isTabTopActive = id === selectedItemId - 1;
     return (
       <div
@@ -32,7 +32,7 @@ export default class ItemMenu extends PureComponent {
           handelClick(item);
         }}
         className={`${className}`}
-        style={isTabTopActive ? { borderBottom: 'none' } : {}}
+        style={isTabTopActive ? { borderBottomColor: '#fff' } : {}}
       >
         <p className={s.textName}>{name}</p>
         {isComplete && (

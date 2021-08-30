@@ -526,7 +526,7 @@ const newCandidateForm = {
         });
 
         history.push({
-          pathname: `/onboarding/list/add/${rookieId}`,
+          pathname: `/onboarding/list/view/${rookieId}/basic-information`,
           state: { isAddNew: true },
         });
       } catch (error) {
@@ -1331,7 +1331,7 @@ const newCandidateForm = {
       try {
         const { rookieId = '' } = payload;
         history.push({
-          pathname: `/onboarding/list/review/${rookieId}`,
+          pathname: `/onboarding/list/view/${rookieId}`,
           state: { isAddNew: true },
         });
         yield null;

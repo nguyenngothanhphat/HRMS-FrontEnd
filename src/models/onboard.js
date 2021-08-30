@@ -699,7 +699,7 @@ const onboard = {
     *redirectToReview({ payload }) {
       try {
         const { id } = payload;
-        history.push(`/onboarding/list/review/${id}`);
+        history.push(`/onboarding/list/view/${id}`);
         yield null;
       } catch (error) {
         dialog(error);

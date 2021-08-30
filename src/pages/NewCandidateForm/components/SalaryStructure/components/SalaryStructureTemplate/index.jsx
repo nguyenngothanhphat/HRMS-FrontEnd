@@ -23,8 +23,8 @@ import { Page } from '../../../../utils';
         listTitle = [],
         title = {},
         grade = 0,
-        department = '',
-        workLocation = '',
+        department = {},
+        workLocation = {},
         processStatus = '',
         salaryStructure: {
           settings: settingsOriginData = [],
@@ -549,12 +549,12 @@ class SalaryStructureTemplate extends PureComponent {
     const {
       loadingTable,
       salaryTitle: salaryTitleId,
-      department,
-      workLocation,
+      department = {},
+      workLocation = {},
       loadingFetchTable,
-      settingsTempData: settings,
-      grade,
-      title,
+      settingsTempData: settings = [],
+      grade = '',
+      title = {},
     } = this.props;
     const { processStatus } = this.props;
     return (
@@ -578,9 +578,7 @@ class SalaryStructureTemplate extends PureComponent {
                 <p className={styles.p_title_select}>Department</p>
                 <div className={styles.salaryStructureTemplate_select}>
                   <Input
-                    value={
-                      Object.keys(department).length !== 0 ? department.name : department || null
-                    }
+                    value={department ? department.name : department || null}
                     size="large"
                     disabled
                   />
@@ -590,11 +588,7 @@ class SalaryStructureTemplate extends PureComponent {
                 <p className={styles.p_title_select}>Location</p>
                 <div className={styles.salaryStructureTemplate_select}>
                   <Input
-                    value={
-                      Object.keys(workLocation).length !== 0
-                        ? workLocation.name
-                        : workLocation || null
-                    }
+                    value={workLocation ? workLocation.name : workLocation || null}
                     size="large"
                     // style={{ width: 280 }}
                     disabled
@@ -605,7 +599,7 @@ class SalaryStructureTemplate extends PureComponent {
                 <p className={styles.p_title_select}> Job title</p>
                 <div className={styles.salaryStructureTemplate_select}>
                   <Input
-                    value={Object.keys(title).length !== 0 ? title.name : title || null}
+                    value={title ? title.name : title || null}
                     size="large"
                     // style={{ width: 280 }}
                     disabled
