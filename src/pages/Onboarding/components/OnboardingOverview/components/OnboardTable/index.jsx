@@ -126,17 +126,6 @@ class OnboardTable extends Component {
     return <p>{name || '-'}</p>;
   };
 
-  fetchData = () => {
-    // const { dispatch } = this.props;
-    // if (!dispatch) {
-    //   return;
-    // }
-    // dispatch({
-    //   type: 'candidateInfo/fetchCandidateInfo',
-    // });
-    // console.log('abc');
-  };
-
   initiateBackgroundCheck = (id) => {
     const { dispatch } = this.props;
     if (!dispatch) {
@@ -631,6 +620,7 @@ class OnboardTable extends Component {
 
     const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch } = this.props;
     const { openModal } = this.state;
+
     return (
       <>
         <div className={`${styles.OnboardTable} ${inTab ? styles.inTab : ''}`}>
