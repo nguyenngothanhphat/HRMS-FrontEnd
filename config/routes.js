@@ -443,7 +443,7 @@ const routes = [
             name: 'Candidate Detail',
             icon: '/assets/images/menuIcons/candidate.svg',
             hideInMenu: true,
-            component: './FormTeamMember',
+            component: './NewCandidateForm',
             authority: ['M_CANDIDATE_MANAGEMENT_VIEW', 'owner'],
           },
           {
@@ -644,21 +644,21 @@ const routes = [
             path: '/employee-onboarding/list/:action(add)/:reId',
             name: 'addTeamMember',
             hideInMenu: true,
-            component: './FormTeamMember',
+            component: './NewCandidateForm',
             authority: ['hr-manager', 'hr', 'hr-global'],
           },
           {
             path: '/employee-onboarding/list/:action(review)/:reId',
             name: 'reviewTeamMember',
             hideInMenu: true,
-            component: './FormTeamMember',
+            component: './NewCandidateForm',
             authority: ['hr-manager', 'hr', 'hr-global'],
           },
           {
             path: '/employee-onboarding/list/:action(review)/:reId/:type',
             // name: 'reviewTeamMember',
             hideInMenu: true,
-            component: './FormTeamMember',
+            component: './NewCandidateForm',
             authority: ['hr-manager', 'hr', 'hr-global'],
           },
           {

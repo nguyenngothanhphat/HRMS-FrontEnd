@@ -1,0 +1,149 @@
+@spacing-xxs: 4px;
+
+.salaryStructure {
+  .bottomBar {
+    // position: fixed;
+    // bottom: 0;
+    // width: inherit;
+    // height: 72px;
+    border-radius: 5px;
+    box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
+    border: solid 1px #d6dce0;
+    background-color: #ffffff;
+    padding: 4 * @spacing-xxs;
+
+    .normalText {
+      display: flex;
+      font-family: 'Roboto';
+      font-size: 13px;
+      font-style: italic;
+      color: #707177;
+    }
+
+    .redText {
+      font-family: 'Roboto';
+      font-size: 13px;
+      font-style: italic;
+      color: #ff4949;
+    }
+
+    .greenText {
+      font-family: 'Roboto';
+      font-size: 13px;
+      font-style: italic;
+      color: #47c97f;
+    }
+
+    &__button {
+      text-align: right;
+      &__disabled {
+        opacity: 0.3;
+      }
+      :global {
+        .ant-btn-primary {
+          box-shadow: none;
+          text-shadow: none;
+          // display: none;
+          width: 94px;
+          height: 40px;
+          object-fit: contain;
+          border-radius: 25px;
+          border: solid 1px #ffa100;
+          background-color: #ffa100;
+          font-family: 'Roboto';
+          font-size: 14px;
+          font-weight: 500;
+          letter-spacing: 0.13px;
+          color: #ffffff;
+          &:hover {
+            background-color: #ffa100;
+            color: #ffffff;
+          }
+        }
+        .ant-btn-secondary {
+          width: 94px;
+          height: 40px;
+          object-fit: contain;
+          border-radius: 25px;
+          border: solid 0;
+          font-family: 'Roboto';
+          font-size: 14px;
+          font-weight: 500;
+          letter-spacing: 0.13px;
+          color: #ffa100;
+          padding-right: 41px;
+        }
+      }
+    }
+  }
+  &__top {
+    .tableWrapper {
+      height: 517px;
+      border-radius: 5px;
+      border: solid 1px #d6dce0;
+      background-color: #ffffff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      p {
+        width: 448px;
+        height: 36px;
+        font-family: 'Roboto';
+        font-size: 13px;
+        line-height: 1.38;
+        letter-spacing: 0.12px;
+        text-align: center;
+        color: #707177;
+      }
+    }
+  }
+}
+
+.rightWrapper {
+  .salaryNote {
+    margin-top: 24px;
+    border: solid 1px #d6dce0;
+    border-radius: 5px;
+    margin-bottom: 24px;
+    padding: 24px;
+    background-color: #fff;
+    width: 100%;
+    :global {
+      .ant-input {
+        font-size: 14px;
+        border-radius: 5px;
+        background-color: white;
+      }
+      .ant-input-disabled {
+        color:rgba(0, 0, 2, 0.755)
+      }
+      .ant-btn {
+        box-shadow: none;
+        text-shadow: none;
+        margin-top: 15px;
+        width: 100%;
+        height: 40px;
+        object-fit: contain;
+        border-radius: 25px;
+        border: solid 1px #ffa100;
+        background-color: #ffa100;
+        font-family: 'Roboto';
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 0.13px;
+        color: #ffffff;
+        &:hover {
+          background-color: #ffa100;
+          color: #ffffff;
+        }
+        max-width: 40%;
+      }
+    }
+    .title {
+      font-weight: 500;
+      font-size: 13px;
+      display: block;
+      margin-bottom: 10px;
+    }
+  }
+}

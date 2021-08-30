@@ -1,0 +1,307 @@
+@blue-background-inside: #e4edff;
+@blue-background-outside: #e9f0ff;
+.SendEmail {
+  width: 100%;
+  object-fit: contain;
+  border-radius: 5px;
+  border: solid 1px #d6dce0;
+  background-color: #ffffff;
+  padding: 32px;
+  padding-bottom: 0;
+  overflow: hidden;
+  margin-top: 1rem;
+  .header {
+    // .icon {
+    //   width: 64px;
+    //   height: 64px;
+    //   line-height: 64px;
+    //   text-align: center;
+    //   border-radius: 50%;
+    //   background: @blue-background-outside;
+    //   opacity: 0.55;
+    //   margin-right: 0.5rem;
+    //   .inside {
+    //     width: 47px;
+    //     height: 47px;
+    //     line-height: 47px;
+    //     margin: auto;
+    //     border-radius: 50%;
+    //     transform: translate(0, 20%);
+    //     background-color: @blue-background-inside;
+    //     .send {
+    //       transform: translate(12%, -6%);
+    //     }
+    //   }
+    // }
+    .text {
+      font-size: 14px;
+      font-size: 14px;
+      font-weight: 500;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      color: #161c29;
+    }
+  }
+  .body {
+    margin-top: 32px;
+    // padding-right: 100px;
+    .radioContainer {
+      width: 100%;
+      .radioItem {
+        height: 32px;
+        font-weight: 500;
+        font-size: 14px;
+        margin-bottom: 2rem;
+        margin-right: 0;
+        .radioHelper {
+          font-weight: normal;
+          font-size: 10px;
+          color: #707177;
+          padding-left: 25px;
+          white-space: pre-wrap;
+        }
+      }
+    }
+  }
+  .email {
+    display: none;
+    .emailForm {
+      position: relative;
+      :global {
+        .ant-form-item-label {
+          label {
+            font-size: 13px;
+            color: #707177;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: normal;
+            letter-spacing: normal;
+          }
+        }
+        .ant-form-item-control {
+          .ant-form-item-control-input {
+            .ant-form-item-control-input-content {
+              input {
+                border-radius: 5px;
+                color: #161c29;
+                height: 42px;
+                padding: 13px 0 13px 16px;
+                font-size: 14px;
+              }
+            }
+          }
+        }
+        .ant-typography {
+          position: absolute;
+          top: 2px;
+          right: 0;
+          font-size: 13px;
+          font-weight: 500;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: normal;
+          letter-spacing: 0.12px;
+          color: #2c6df9;
+          cursor: pointer;
+        }
+        .ant-btn {
+          background-color: #ffa100;
+          color: #fff;
+          border-radius: 25px;
+          height: 42px;
+          padding: 13px 24px;
+          line-height: 0.5715;
+          border-color: #ffa100;
+          font-size: 14px;
+          font-weight: 500;
+          margin-bottom: 2rem;
+          &:focus {
+            border-color: #ffa100;
+          }
+          &:hover {
+            border-color: #ffa100;
+          }
+        }
+      }
+    }
+  }
+  .link {
+    display: none;
+    .linkForm {
+      position: relative;
+      .wrapperInput {
+        position: relative;
+        .generateButton {
+          position: absolute;
+          top: 0;
+          right: 0;
+          .generateButtonItem {
+            border: 0;
+            background: transparent;
+            &::after {
+              animation: none !important;
+            }
+          }
+        }
+      }
+      :global {
+        .ant-form-item {
+          .ant-form-item-control {
+            .ant-form-item-control-input {
+              .ant-form-item-control-input-content {
+                input.ant-input {
+                  height: 42px;
+                  padding-right: 42px;
+                  margin-bottom: 32px;
+                  font-size: 14px;
+                  font-weight: normal;
+                  font-stretch: normal;
+                  font-style: normal;
+                  line-height: normal;
+                  letter-spacing: normal;
+                  color: #161c29;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  border-radius: 5px;
+                }
+              }
+            }
+          }
+        }
+      }
+      img {
+        position: absolute;
+        top: 10px;
+        right: 11px;
+      }
+    }
+    .textBottom {
+      :global {
+        .ant-row {
+          .ant-col-2 {
+            transform: translateY(-4%);
+            margin-bottom: 1rem;
+            span {
+              color: #2c6df9;
+              background-color: #c9dafe;
+              padding: 5px;
+              border-radius: 50%;
+              svg {
+                width: 9px;
+                height: 8px;
+              }
+            }
+          }
+          .ant-col-18,
+          .ant-col-22 {
+            span {
+              font-size: 10px;
+              font-weight: normal;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: normal;
+              letter-spacing: normal;
+              color: #707177;
+            }
+          }
+          .ant-col-4 {
+            span {
+              font-size: 11px;
+              font-weight: normal;
+              font-stretch: normal;
+              font-style: normal;
+              line-height: normal;
+              letter-spacing: normal;
+              color: #707177;
+            }
+          }
+        }
+        .ant-btn {
+          margin-top: 8px;
+          background-color: #ffa100;
+          color: #fff;
+          border-radius: 25px;
+          height: 42px;
+          padding: 13px 24px;
+          line-height: 0.5715;
+          border-color: #ffa100;
+          font-size: 14px;
+          font-weight: 500;
+          margin-bottom: 2rem;
+          &:focus {
+            border-color: #ffa100;
+          }
+          &:hover {
+            border-color: #ffa100;
+          }
+        }
+      }
+      .title {
+        font-weight: 700;
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        color: #161c29;
+      }
+      .helper {
+        font-size: 10px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+        color: #707177;
+        margin-bottom: 16px;
+      }
+    }
+  }
+  .open {
+    display: block;
+  }
+  .line {
+    width: 100%;
+    height: 1px;
+    background-color: #dbe1e4;
+    margin: auto;
+    margin-bottom: 32px;
+  }
+  .anotherBody {
+    margin-top: 24px;
+    margin-bottom: 32px;
+    .text {
+      font-size: 13px;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.77;
+      letter-spacing: normal;
+      color: #707177;
+      .specificText {
+        font-weight: 500;
+        color: #ffa100;
+      }
+    }
+
+    .buttonSend {
+      margin-top: 24px;
+      padding: 0;
+      .buttonText {
+        font-size: 13px;
+        font-weight: 500;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: 0.12px;
+        color: #2c6df9;
+        text-decoration: underline;
+      }
+    }
+  }
+}

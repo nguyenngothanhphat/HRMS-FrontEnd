@@ -1,0 +1,48 @@
+.RadioComponent {
+  padding-top: 32px;
+  padding-right: 32px;
+  padding-left: 32px;
+  .Radio {
+    display: block;
+    padding-bottom: 18px;
+    span {
+      font-size: 14px;
+    }
+  }
+  .Padding {
+    padding-top: 26px;
+    padding-bottom: 26px;
+  }
+  .paddingTopTitle {
+    padding-top: 26px;
+  }
+
+  .paddingBotTitle {
+    padding-bottom: 26px;
+  }
+
+  .paddingRadio {
+    width: 100%;
+    padding-bottom: 16px;
+    :global {
+      .ant-col {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-between;
+        width: 71%;
+      }
+    }
+  }
+
+  .paddingRightRadio {
+    padding-right: 32px;
+  }
+  :global {
+    label.ant-radio-wrapper-checked {
+      span.ant-typography {
+        color: #161c29;
+      }
+    }
+  }
+}

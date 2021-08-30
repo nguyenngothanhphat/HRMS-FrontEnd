@@ -1,0 +1,58 @@
+@spacing-xxs: 4px;
+
+.basicInformationReminder {
+  .reminderWrapper {
+    position: relative;
+    width: 278px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: 5px;
+    border: solid 1px #e9b551;
+    background-color: #fffdf7;
+    padding: 4 * @spacing-xxs;
+    &__close {
+      position: absolute;
+      font-size: 8px;
+      right: 8px;
+      top: 8px;
+      cursor: pointer;
+    }
+    &__header {
+      display: flex;
+      justify-content: flex-start;
+      align-items: baseline;
+      margin-bottom: 7px;
+      &__title {
+        height: 14px;
+        font-size: 12px;
+        font-weight: 500;
+        color: #000000;
+      }
+      &__icon {
+        width: 14px;
+        height: 14px;
+        background-color: #e9b551;
+        border-radius: 7px;
+        line-height: 14px;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        margin-right: 2 * @spacing-xxs;
+        p {
+          font-size: 10px;
+          color: white;
+          font-weight: 700;
+        }
+      }
+    }
+    &__content {
+      p {
+        width: 250px;
+        height: 48px;
+        font-size: 10px;
+        line-height: 1.6;
+        color: #808080;
+      }
+    }
+  }
+}

@@ -15,7 +15,7 @@ import s from './index.less';
 @connect(
   ({
     loading,
-    candidateInfo: {
+    newCandidateForm: {
       currentStep = 0,
       displayComponent = {},
       data: { processStatus = '' } = {},
@@ -29,7 +29,7 @@ import s from './index.less';
       checkMandatory = {},
     } = {},
   }) => ({
-    loadingUpdateByHr: loading.effects['candidateInfo/updateByHR'],
+    loadingUpdateByHr: loading.effects['newCandidateForm/updateByHR'],
     currentStep,
     displayComponent,
     processStatus,
@@ -177,7 +177,7 @@ class CommonLayout extends Component {
   _handlePreviewOffer = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'candidateInfo/save',
+      type: 'newCandidateForm/save',
       payload: {
         currentStep: 7,
         displayComponent: <PreviewOffer />,
@@ -188,7 +188,7 @@ class CommonLayout extends Component {
   _handleClick = (item) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'candidateInfo/save',
+      type: 'newCandidateForm/save',
       payload: {
         currentStep: item.id - 1,
         displayComponent: item.component,

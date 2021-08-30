@@ -43,7 +43,7 @@ class SettingLayout extends PureComponent {
   _handlePreviewOffer = () => {
     // const { dispatch } = this.props;
     // dispatch({
-    //   type: 'candidateInfo/save',
+    //   type: 'newCandidateForm/save',
     //   payload: {
     //     displayComponent: <PreviewOffer />,
     //   },

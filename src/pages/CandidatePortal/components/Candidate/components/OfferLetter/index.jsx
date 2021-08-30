@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
-import NoteComponent from '@/pages/FormTeamMember/components/NoteComponent';
-import { getCurrentTenant } from '@/utils/authority';
-import { PROCESS_STATUS } from '@/utils/onboarding';
 import { Button, Col, Form, message, Row, Select, Typography } from 'antd';
 import axios from 'axios';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
+import { PROCESS_STATUS } from '@/utils/onboarding';
+import { getCurrentTenant } from '@/utils/authority';
+import NoteComponent from '@/pages/FormTeamMember/components/NoteComponent';
 import FileContent from '../FileContent';
 import AcceptOfferModal from './components/AcceptOfferModal';
 import RejectOfferModal from './components/RejectOfferModal';
@@ -52,31 +52,31 @@ const OfferLetter = (props) => {
   const [acceptOfferModalVisible, setAcceptOfferModalVisible] = useState(false);
   const [rejectOfferModalVisible, setRejectOfferModalVisible] = useState(false);
 
-  const saveChanges = () => {
-    // Save changes to redux store
-    if (dispatch) {
-      dispatch({
-        type: 'candidateInfo/save',
-        payload: {
-          tempData: {
-            ...tempData,
-            email: mail,
-            hrSignature,
-            hrManagerSignature,
-          },
-        },
-      });
-    }
-  };
+  // const saveChanges = () => {
+  //   // Save changes to redux store
+  //   if (dispatch) {
+  //     dispatch({
+  //       type: 'newCandidateForm/save',
+  //       payload: {
+  //         tempData: {
+  //           ...tempData,
+  //           email: mail,
+  //           hrSignature,
+  //           hrManagerSignature,
+  //         },
+  //       },
+  //     });
+  //   }
+  // };
 
   useEffect(() => {
     // window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
   }, []);
 
-  useEffect(() => {
-    // Save changes to store whenever input fields change
-    saveChanges();
-  }, [mail, hrSignature, hrManagerSignature]);
+  // useEffect(() => {
+  //   // Save changes to store whenever input fields change
+  //   saveChanges();
+  // }, [mail, hrSignature, hrManagerSignature]);
 
   useEffect(() => {}, [hrSignatureProp, hrManagerSignatureProp]);
 
@@ -300,7 +300,7 @@ export default connect(
     info: { previewOffer = {} } = {},
     loading,
     user: { currentUser = {} } = {},
-    // candidateInfo: { rookieId = '', tempData = {}, data = {} } = {},
+    // newCandidateForm: { rookieId = '', tempData = {}, data = {} } = {},
     candidatePortal: {
       data: { processStatus = '' } = {},
       tempData = {},

@@ -1,21 +1,19 @@
+// import ModalContent from '../FinalOffers/components/ModalContent/index';
+import { Dropdown, Empty, Menu, Table, Tag } from 'antd';
+import moment from 'moment';
 import React, { Component } from 'react';
-import { Table, Empty, Dropdown, Menu, Tag } from 'antd';
-// import { EllipsisOutlined, DeleteOutlined } from '@ant-design/icons';
-import { formatMessage, Link, connect, history } from 'umi';
-
+import { connect, formatMessage, history, Link } from 'umi';
+import MenuIcon from '@/assets/menuDots.svg';
 import CustomModal from '@/components/CustomModal/index';
 import { getAuthority, getCurrentTenant } from '@/utils/authority';
-// import ModalContent from '../FinalOffers/components/ModalContent/index';
-import MenuIcon from '@/assets/menuDots.svg';
 import { PROCESS_STATUS } from '@/utils/onboarding';
-import moment from 'moment';
+// import { EllipsisOutlined, DeleteOutlined } from '@ant-design/icons';
 import ProfileModalContent from '../FinalOffers/components/ProfileModalContent';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 import ReassignModal from './components/ReassignModal';
 import RenewModal from './components/RenewModal';
-
-import { getActionText, getColumnWidth } from './utils';
 import styles from './index.less';
+import { getActionText, getColumnWidth } from './utils';
 
 const compare = (dateTimeA, dateTimeB) => {
   const momentA = moment(dateTimeA, 'DD/MM/YYYY');
@@ -133,7 +131,7 @@ class OnboardTable extends Component {
     //   return;
     // }
     // dispatch({
-    //   type: 'candidateInfo/fetchCandidateInfo',
+    //   type: 'newCandidateForm/fetchCandidateInfo',
     // });
     // console.log('abc');
   };
@@ -597,8 +595,7 @@ class OnboardTable extends Component {
           <Menu.Item>
             <div
               onClick={() =>
-                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)
-              }
+                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)}
             >
               Re-assign
             </div>
@@ -794,8 +791,8 @@ class OnboardTable extends Component {
 }
 
 // export default OnboardTable;
-export default connect(({ candidateInfo, loading, user: { currentUser = {} } = {} }) => ({
-  isAddNewMember: candidateInfo.isAddNewMember,
+export default connect(({ newCandidateForm, loading, user: { currentUser = {} } = {} }) => ({
+  isAddNewMember: newCandidateForm.isAddNewMember,
   loading: loading.effects['onboard/fetchOnboardList'],
   currentUser,
 }))(OnboardTable);

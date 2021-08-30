@@ -254,7 +254,7 @@ export default connect(
     dispatch,
     loading,
     optionalQuestion: { listPage, candidate = '', optionalQuestionId = '', data = {} } = {},
-    candidateInfo: {
+    newCandidateForm: {
       data: { processStatus },
     },
   }) => ({

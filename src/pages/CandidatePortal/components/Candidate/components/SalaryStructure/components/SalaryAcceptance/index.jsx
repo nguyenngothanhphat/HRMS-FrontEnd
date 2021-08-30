@@ -170,7 +170,7 @@ class SalaryAcceptance extends PureComponent {
           openModal: true,
         });
         // dispatch({
-        //   type: 'candidateInfo/redirectToOnboardList',
+        //   type: 'newCandidateForm/redirectToOnboardList',
         // });
       }
     });

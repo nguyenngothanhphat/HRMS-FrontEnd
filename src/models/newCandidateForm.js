@@ -42,8 +42,8 @@ import {
   getAdditionalQuestion,
 } from '@/services/formCandidate';
 
-const candidateInfo = {
-  namespace: 'candidateInfo',
+const newCandidateForm = {
+  namespace: 'newCandidateForm',
   state: {
     rookieId: '',
     checkMandatory: {
@@ -1673,4 +1673,4 @@ const candidateInfo = {
   },
 };
 
-export default candidateInfo;
+export default newCandidateForm;

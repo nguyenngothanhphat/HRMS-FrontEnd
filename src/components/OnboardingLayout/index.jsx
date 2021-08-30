@@ -52,7 +52,7 @@ const getComponent = (name) => {
 @connect(({ loading }) => ({
   loadingAddTeamMember:
     loading.effects['info/fetchCandidateInfo'] ||
-    loading.effects['candidateInfo/fetchCandidateInfo'],
+    loading.effects['newCandidateForm/fetchCandidateInfo'],
 }))
 class OnboardingLayout extends PureComponent {
   constructor(props) {
@@ -68,7 +68,7 @@ class OnboardingLayout extends PureComponent {
     this.fetchTab();
     const { dispatch } = this.props;
     dispatch({
-      type: 'candidateInfo/save',
+      type: 'newCandidateForm/save',
       payload: {
         a: 2,
         data: {},
@@ -80,7 +80,7 @@ class OnboardingLayout extends PureComponent {
     const { dispatch, tabName = 'all-drafts' } = this.props;
     if (prevProps.data._id) {
       dispatch({
-        type: 'candidateInfo/save',
+        type: 'newCandidateForm/save',
         payload: {
           data: {},
         },
@@ -112,7 +112,7 @@ class OnboardingLayout extends PureComponent {
   handleAddBtn = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'candidateInfo/fetchCandidateInfo',
+      type: 'newCandidateForm/fetchCandidateInfo',
       payload: {
         tenantId: getCurrentTenant(),
         company: getCurrentCompany(),
@@ -178,7 +178,7 @@ class OnboardingLayout extends PureComponent {
 
 // export default OnboardingLayout;
 export default connect(
-  ({ info, user: { permissions = {} } = {}, candidateInfo: { data = {} } = {} }) => ({
+  ({ info, user: { permissions = {} } = {}, newCandidateForm: { data = {} } = {} }) => ({
     info,
     data,
     permissions,
