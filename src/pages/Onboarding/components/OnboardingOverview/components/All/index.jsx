@@ -38,6 +38,7 @@ class OnboardingAll extends Component {
       dispatch({
         type: 'onboarding/fetchOnboardListAll',
         payload: {
+          processStatus: 'DRAFT',
           //   name: nameSearch,
         },
       });
