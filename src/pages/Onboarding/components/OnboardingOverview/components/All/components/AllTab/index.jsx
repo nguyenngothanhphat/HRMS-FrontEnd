@@ -21,7 +21,7 @@ const { ALL } = TABLE_TYPE;
 
 class AllTab extends PureComponent {
   render() {
-    const { list = [], loading, pageSelected, size, getPageAndSize = () => {}, total } = this.props;
+    const { list = [], loading, pageSelected, size, total } = this.props;
 
     return (
       <OnboardTable
@@ -43,7 +43,7 @@ class AllTab extends PureComponent {
         pageSelected={pageSelected}
         size={size}
         total={total}
-        getPageAndSize={getPageAndSize}
+        // getPageAndSize={getPageAndSize}
       />
     );
   }

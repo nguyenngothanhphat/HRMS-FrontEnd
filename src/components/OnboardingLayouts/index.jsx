@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 
-import { Button } from 'antd';
+import { Button, Col, Row } from 'antd';
 import { formatMessage, connect, history } from 'umi';
 
 import Draft from '@/pages/Onboarding/components/OnboardingOverview/components/Draft';
@@ -35,14 +35,14 @@ class OnboardingLayout extends PureComponent {
 
   componentDidMount() {
     this.fetchTab();
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        a: 2,
-        data: {},
-      },
-    });
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'candidateInfo/save',
+    //   payload: {
+    //     a: 2,
+    //     data: {},
+    //   },
+    // });
   }
 
   componentDidUpdate(prevProps) {
@@ -96,54 +96,58 @@ class OnboardingLayout extends PureComponent {
 
     return (
       <div className={styles.overviewContainer}>
-        <div className={styles.viewLeft}>
-          {checkPermissionAddTeamMember && (
-            <Button
-              icon={<img src="/assets/images/addMemberIcon.svg" alt="add member icon" />}
-              className={styles.addMember}
-              type="primary"
-              loading={loadingAddTeamMember}
-              onClick={this.handleAddBtn}
-            >
-              <span className={styles.title}>
-                {formatMessage({ id: 'component.onboardingOverview.addTeamMember' })}
-              </span>
-            </Button>
-          )}
+        <Row gutter={[12, 24]}>
+          <Col span={4}>
+            <div className={styles.viewLeft}>
+              {checkPermissionAddTeamMember && (
+                <Button
+                  icon={<img src="/assets/images/addMemberIcon.svg" alt="add member icon" />}
+                  className={styles.addMember}
+                  type="primary"
+                  loading={loadingAddTeamMember}
+                  onClick={this.handleAddBtn}
+                >
+                  <span className={styles.title}>
+                    {formatMessage({ id: 'component.onboardingOverview.addTeamMember' })}
+                  </span>
+                </Button>
+              )}
 
-          <div className={styles.divider} />
+              <div className={styles.divider} />
 
-          <div className={styles.leftMenu}>
-            {listMenu.map((item) => {
-              const { id, name, component, quantity, link } = item;
-              const { selectedId } = this.state;
-              return (
-                <div key={id}>
-                  <MenuItem
-                    selectedId={selectedId}
-                    id={id}
-                    name={name}
-                    component={component}
-                    quantity={quantity}
-                    link={link}
-                    handleClick={this.handleClick}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className={styles.viewRight}>
-          <p className={styles.pageTitle}>{pageTitle}</p>
-          {displayComponent}
-        </div>
+              <div className={styles.leftMenu}>
+                {listMenu.map((item) => {
+                  const { id, name, component, quantity, link } = item;
+                  const { selectedId } = this.state;
+                  return (
+                    <div key={id}>
+                      <MenuItem
+                        selectedId={selectedId}
+                        id={id}
+                        name={name}
+                        component={component}
+                        quantity={quantity}
+                        link={link}
+                        handleClick={this.handleClick}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </Col>
+          <Col span={20}>
+            <div className={styles.viewRight}>
+              <p className={styles.pageTitle}>{pageTitle}</p>
+              {displayComponent}
+            </div>
+          </Col>
+        </Row>
       </div>
     );
   }
 }
 
-// export default OnboardingLayout;
 export default connect(
   ({ loading, info, user: { permissions = {} } = {}, candidateInfo: { data = {} } = {} }) => ({
     info,

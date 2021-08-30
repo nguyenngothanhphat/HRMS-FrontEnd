@@ -3,7 +3,7 @@ import { Tabs, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+// import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import AllTab from './components/AllTab';
 
 import styles from './index.less';
@@ -38,7 +38,6 @@ class OnboardingAll extends Component {
       dispatch({
         type: 'onboarding/fetchOnboardListAll',
         payload: {
-          processStatus: NEW_PROCESS_STATUS.ALL_TEMP,
           //   name: nameSearch,
         },
       });
@@ -64,7 +63,7 @@ class OnboardingAll extends Component {
                 loading={loadingAll}
                 pageSelected={pageSelected}
                 size={size}
-                getPageAndSize={this.getPageAndSize}
+                // getPageAndSize={this.getPageAndSize}
                 total={total}
               />
             </TabPane>
