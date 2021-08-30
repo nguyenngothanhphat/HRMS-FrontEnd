@@ -20,7 +20,7 @@ import ModalContent from './components/ModalContent';
 import styles from './index.less';
 
 const { Option } = Select;
-// import { PROCESS_STATUS } from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/utils';
+// import { PROCESS_STATUS } from '@/pages/Onboarding/components/OnboardingOverview/components/utils';
 //
 
 // const ROLE = {

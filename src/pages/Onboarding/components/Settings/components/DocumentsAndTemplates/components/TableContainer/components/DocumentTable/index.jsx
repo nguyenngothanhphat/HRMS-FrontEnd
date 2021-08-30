@@ -212,6 +212,6 @@ class DocumentTable extends Component {
 }
 
 // export default DocumentTable;
-export default connect(({ candidateInfo }) => ({
-  candidateInfo,
+export default connect(({ newCandidateForm }) => ({
+  newCandidateForm,
 }))(DocumentTable);

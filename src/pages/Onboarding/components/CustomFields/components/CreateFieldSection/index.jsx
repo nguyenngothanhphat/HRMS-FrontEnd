@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect, formatMessage, history } from 'umi';
+import { Button, Input, Radio, Select } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import backArrow from '@/assets/createFieldArrow.svg';
-import { Button, Input, Radio, Select } from 'antd';
 import iconCancel from '@/assets/iconCancelCustomField.svg';
 import styles from './index.less';
 
@@ -80,13 +80,13 @@ class CreateFieldSection extends PureComponent {
       payload: data,
     }).then((resp) => {
       if (resp === 'Add item successfully') {
-        history.push('/employee-onboarding/');
+        history.push('/onboarding/');
       }
     });
   };
 
   handClickCancel = () => {
-    history.push('/employee-onboarding/');
+    history.push('/onboarding/');
   };
 
   render() {
@@ -100,14 +100,14 @@ class CreateFieldSection extends PureComponent {
             <img src={backArrow} alt="not Found" />
             <h2>
               {formatMessage({
-                id: 'pages.EmployeeOnboardingCustomField.createACustomFieldSection',
+                id: 'pages.OnboardingCustomField.createACustomFieldSection',
               })}
             </h2>
           </div>
           <div className={styles.boxFieldSection1}>
             <p className={styles.boxFieldSection1__Title}>
               {formatMessage({
-                id: 'pages.EmployeeOnboardingCustomField.CreateCustomFieldSection',
+                id: 'pages.OnboardingCustomField.CreateCustomFieldSection',
               })}
             </p>
             <Input onChange={(e) => this.handleChange('name', e)} />
@@ -116,7 +116,7 @@ class CreateFieldSection extends PureComponent {
             <div className={styles.boxFieldSection2__Title}>
               <p>
                 {formatMessage({
-                  id: 'pages.EmployeeOnboardingCustomField.fillingOutTheFields',
+                  id: 'pages.OnboardingCustomField.fillingOutTheFields',
                 })}
               </p>
             </div>
@@ -124,7 +124,7 @@ class CreateFieldSection extends PureComponent {
               <div className={styles.boxFieldSection2__Content1}>
                 <span className={styles.boxFieldSection2__Content1__Text}>
                   {formatMessage({
-                    id: 'pages.EmployeeOnboardingCustomField.text2',
+                    id: 'pages.OnboardingCustomField.text2',
                   })}
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
@@ -140,7 +140,7 @@ class CreateFieldSection extends PureComponent {
               <div className={styles.boxFieldSection2__Content1}>
                 <span className={styles.boxFieldSection2__Content1__Text1}>
                   {formatMessage({
-                    id: 'pages.EmployeeOnboardingCustomField.whoWillFillOutThisField',
+                    id: 'pages.OnboardingCustomField.whoWillFillOutThisField',
                   })}
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
@@ -156,7 +156,7 @@ class CreateFieldSection extends PureComponent {
               <div className={styles.boxFieldSection2__Content1}>
                 <span className={styles.boxFieldSection2__Content1__Text1}>
                   {formatMessage({
-                    id: 'pages.EmployeeOnboardingCustomField.completedDuringOnboarding',
+                    id: 'pages.OnboardingCustomField.completedDuringOnboarding',
                   })}
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
@@ -172,7 +172,7 @@ class CreateFieldSection extends PureComponent {
               <div className={styles.boxFieldSection2__Content1}>
                 <span className={styles.boxFieldSection2__Content1__Text1}>
                   {formatMessage({
-                    id: 'pages.EmployeeOnboardingCustomField.shouldTheIndividual',
+                    id: 'pages.OnboardingCustomField.shouldTheIndividual',
                   })}
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
@@ -188,7 +188,7 @@ class CreateFieldSection extends PureComponent {
               <div className={styles.boxFieldSection2__Content1}>
                 <span className={styles.boxFieldSection2__Content1__Text1}>
                   {formatMessage({
-                    id: 'pages.EmployeeOnboardingCustomField.shouldTheIndividualManager',
+                    id: 'pages.OnboardingCustomField.shouldTheIndividualManager',
                   })}
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
@@ -207,7 +207,7 @@ class CreateFieldSection extends PureComponent {
             <div className={styles.boxFieldSection2__Title}>
               <p>
                 {formatMessage({
-                  id: 'pages.EmployeeOnboardingCustomField.Filters',
+                  id: 'pages.OnboardingCustomField.Filters',
                 })}
               </p>
             </div>
@@ -215,7 +215,7 @@ class CreateFieldSection extends PureComponent {
               <div className={styles.boxFieldSection2__Content1}>
                 <span className={styles.boxFieldSection2__Content1__Text}>
                   {formatMessage({
-                    id: 'pages.EmployeeOnboardingCustomField.text3',
+                    id: 'pages.OnboardingCustomField.text3',
                   })}
                 </span>
                 <div
@@ -307,10 +307,10 @@ class CreateFieldSection extends PureComponent {
               onClick={() => this.handClick(data)}
               loading={loading}
             >
-              {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.Save&Return' })}
+              {formatMessage({ id: 'pages.OnboardingCustomField.Save&Return' })}
             </Button>
             <Button className={styles.buttonFooterCancel} onClick={this.handClickCancel}>
-              {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.Cancel' })}
+              {formatMessage({ id: 'pages.OnboardingCustomField.Cancel' })}
             </Button>
           </div>
         </div>

@@ -20,7 +20,7 @@ const appList = [
     id: 2,
     name: 'Onboarding',
     icon: <Onboarding />,
-    link: '/employee-onboarding',
+    link: '/onboarding',
   },
   {
     id: 3,

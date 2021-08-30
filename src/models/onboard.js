@@ -1,3 +1,7 @@
+import _ from 'lodash';
+import { history } from 'umi';
+import { notification } from 'antd';
+import moment from 'moment';
 import {
   getOnboardingList,
   deleteDraft,
@@ -9,13 +13,9 @@ import {
   getFilterList,
   handleExpiryTicket,
 } from '@/services/onboard';
-import _ from 'lodash';
-import { history } from 'umi';
 import { dialog } from '@/utils/utils';
 import { PROCESS_STATUS_TABLE_NAME, PROCESS_STATUS } from '@/utils/onboarding';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { notification } from 'antd';
-import moment from 'moment';
 
 // const employeeList = rookieList.filter(
 //   (rookie) => rookie.isNew === undefined || rookie.isNew === null,
@@ -699,7 +699,7 @@ const onboard = {
     *redirectToReview({ payload }) {
       try {
         const { id } = payload;
-        history.push(`/employee-onboarding/list/review/${id}`);
+        history.push(`/onboarding/list/review/${id}`);
         yield null;
       } catch (error) {
         dialog(error);

@@ -526,7 +526,7 @@ const newCandidateForm = {
         });
 
         history.push({
-          pathname: `/employee-onboarding/list/add/${rookieId}`,
+          pathname: `/onboarding/list/add/${rookieId}`,
           state: { isAddNew: true },
         });
       } catch (error) {
@@ -1331,7 +1331,7 @@ const newCandidateForm = {
       try {
         const { rookieId = '' } = payload;
         history.push({
-          pathname: `/employee-onboarding/list/review/${rookieId}`,
+          pathname: `/onboarding/list/review/${rookieId}`,
           state: { isAddNew: true },
         });
         yield null;
@@ -1343,7 +1343,7 @@ const newCandidateForm = {
     *redirectToOnboardList() {
       try {
         history.push({
-          pathname: `/employee-onboarding`,
+          pathname: `/onboarding`,
         });
         yield null;
       } catch (error) {

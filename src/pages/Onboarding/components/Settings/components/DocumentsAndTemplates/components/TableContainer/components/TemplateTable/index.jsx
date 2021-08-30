@@ -225,6 +225,6 @@ class TemplateTable extends Component {
 }
 
 // export default TemplateTable;
-export default connect(({ candidateInfo }) => ({
-  candidateInfo,
+export default connect(({ newCandidateForm }) => ({
+  newCandidateForm,
 }))(TemplateTable);

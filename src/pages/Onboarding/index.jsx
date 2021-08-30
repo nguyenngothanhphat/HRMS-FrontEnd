@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
-import { PageContainer } from '@/layouts/layout/src';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { Tabs, Button, Row, Col } from 'antd';
 import { connect, formatMessage, history } from 'umi';
+import { PageContainer } from '@/layouts/layout/src';
 import exportToExcel from '@/utils/exportAsExcel';
 import OnboardingOverview from './components/OnboardingOverview';
 import Settings from './components/Settings';

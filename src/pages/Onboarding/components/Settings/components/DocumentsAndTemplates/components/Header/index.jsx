@@ -5,7 +5,7 @@ import styles from './index.less';
 class Header extends PureComponent {
   createNewTemplate = () => {
     history.push({
-      pathname: `/employee-onboarding/settings/documents-templates/create-new-template`,
+      pathname: `/onboarding/settings/documents-templates/create-new-template`,
       state: { type: 'ON_BOARDING' },
     });
   };

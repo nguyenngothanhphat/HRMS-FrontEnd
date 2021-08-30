@@ -1,9 +1,9 @@
-import { getCurrentTenant } from '@/utils/authority';
-import REACT_APP_TINYMCE_KEY from '@/utils/editor';
 import { Editor } from '@tinymce/tinymce-react';
 import { Button } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
+import REACT_APP_TINYMCE_KEY from '@/utils/editor';
+import { getCurrentTenant } from '@/utils/authority';
 import styles from './index.less';
 
 @connect(({ employeeSetting, loading }) => ({
@@ -44,7 +44,7 @@ class EditForm extends Component {
       if (res.statusCode === 200) {
         onClose();
         history.push({
-          pathname: '/employee-onboarding/settings',
+          pathname: '/onboarding/settings',
         });
       }
     });

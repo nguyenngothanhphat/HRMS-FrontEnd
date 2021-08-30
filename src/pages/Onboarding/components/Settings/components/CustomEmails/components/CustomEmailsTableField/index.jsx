@@ -128,8 +128,8 @@ class CustomEmailsTableField extends PureComponent {
           const { idCustomEmail = '', isDefault = false } = currentRecord;
 
           const link = isDefault
-            ? `/employee-onboarding/settings/view-email/${idCustomEmail}`
-            : `/employee-onboarding/settings/edit-email/${idCustomEmail}`;
+            ? `/onboarding/settings/view-email/${idCustomEmail}`
+            : `/onboarding/settings/edit-email/${idCustomEmail}`;
 
           return (
             <Link to={link}>
@@ -168,8 +168,8 @@ class CustomEmailsTableField extends PureComponent {
           const { currentRecord = {} } = this.state;
           const { isDefault = false } = currentRecord;
           const link = isDefault
-            ? `/employee-onboarding/settings/view-email/${idCustomEmail}`
-            : `/employee-onboarding/settings/edit-email/${idCustomEmail}`;
+            ? `/onboarding/settings/view-email/${idCustomEmail}`
+            : `/onboarding/settings/edit-email/${idCustomEmail}`;
           return (
             <div className={styles.actions}>
               <Link to={link}>View mail</Link>
@@ -191,7 +191,7 @@ class CustomEmailsTableField extends PureComponent {
   };
 
   addNewEmailTemplate = () => {
-    history.push('/employee-onboarding/settings/custom-emails/create-email-reminder');
+    history.push('/onboarding/settings/custom-emails/create-email-reminder');
   };
 
   _renderTable = (list) => {

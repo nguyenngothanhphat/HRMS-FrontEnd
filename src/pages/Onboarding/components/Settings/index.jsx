@@ -72,7 +72,7 @@ class Settings extends PureComponent {
           listMenu={listMenu}
           currentPage="settings"
           tabName={type}
-          route="employee-onboarding"
+          route="onboarding"
         />
       </div>
     );

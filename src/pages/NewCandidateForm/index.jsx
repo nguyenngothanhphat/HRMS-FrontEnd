@@ -125,7 +125,7 @@ class NewCandidateForm extends PureComponent {
       //   },
       // });
       // this.resetFormMember();
-      history.push('/employee-onboarding/list');
+      history.push('/onboarding/list');
     }
   };
 
@@ -141,7 +141,7 @@ class NewCandidateForm extends PureComponent {
     });
     const { statusCode = 1 } = response;
     if (statusCode === 200) {
-      history.push('/employee-onboarding/list');
+      history.push('/onboarding/list');
     }
   };
 
