@@ -19,6 +19,7 @@ import { Page } from '../../utils';
   currentStep,
   tempData,
   loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
+  loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
 }))
 class BasicInformation extends PureComponent {
   formRef = React.createRef();
@@ -312,7 +313,7 @@ class BasicInformation extends PureComponent {
   };
 
   _renderBottomBar = () => {
-    const { checkMandatory } = this.props;
+    const { checkMandatory, loadingUpdateByHR = false } = this.props;
     const { filledBasicInformation } = checkMandatory;
 
     return (
@@ -327,6 +328,7 @@ class BasicInformation extends PureComponent {
                   !filledBasicInformation ? styles.bottomBar__button__disabled : ''
                 }`}
                 disabled={!filledBasicInformation}
+                loading={loadingUpdateByHR}
               >
                 Next
               </Button>
