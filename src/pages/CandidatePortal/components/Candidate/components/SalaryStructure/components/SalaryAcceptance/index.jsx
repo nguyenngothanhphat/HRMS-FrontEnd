@@ -3,7 +3,7 @@ import { Typography, Radio, Row, Col, Input, Button } from 'antd';
 import { connect, formatMessage } from 'umi';
 
 import CustomModal from '@/components/CustomModal';
-import NoteComponent from '@/pages/FormTeamMember/components/NoteComponent';
+import NoteComponent from '@/pages/NewCandidateForm/components/NoteComponent';
 import { getCurrentTenant } from '@/utils/authority';
 import ModalContentComponent from '../ModalContentComponent';
 import SalaryNote from '../SalaryNote';
@@ -170,7 +170,7 @@ class SalaryAcceptance extends PureComponent {
           openModal: true,
         });
         // dispatch({
-        //   type: 'candidateInfo/redirectToOnboardList',
+        //   type: 'newCandidateForm/redirectToOnboardList',
         // });
       }
     });

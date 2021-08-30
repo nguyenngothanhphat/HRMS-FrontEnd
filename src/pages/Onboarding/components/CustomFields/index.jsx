@@ -20,11 +20,11 @@ class CustomFields extends PureComponent {
   }
 
   handleAddNewSection = () => {
-    history.push('/employee-onboarding/CreateFieldSection');
+    history.push('/onboarding/CreateFieldSection');
   };
 
   handleAddNewField = () => {
-    history.push('/employee-onboarding/CreateNewField');
+    history.push('/onboarding/CreateNewField');
   };
 
   handleData = (data) => {
@@ -36,7 +36,7 @@ class CustomFields extends PureComponent {
   render() {
     const columns = [
       {
-        title: formatMessage({ id: 'pages.EmployeeOnboardingCustomField.sectionName' }),
+        title: formatMessage({ id: 'pages.OnboardingCustomField.sectionName' }),
         dataIndex: 'sectionName',
         key: 'sectionName',
         width: '230px',
@@ -56,14 +56,14 @@ class CustomFields extends PureComponent {
         },
       },
       {
-        title: formatMessage({ id: 'pages.EmployeeOnboardingCustomField.fieldName' }),
+        title: formatMessage({ id: 'pages.OnboardingCustomField.fieldName' }),
         dataIndex: 'fieldName',
         key: 'fieldName',
         width: '50%',
         padding: '16px',
       },
       {
-        title: formatMessage({ id: 'pages.EmployeeOnboardingCustomField.actions' }),
+        title: formatMessage({ id: 'pages.OnboardingCustomField.actions' }),
         dataIndex: 'actions',
         key: 'actions',
         render: () => {
@@ -112,17 +112,17 @@ class CustomFields extends PureComponent {
         <div className={styles.CustomFieldsTop}>
           <div className={styles.contentLeft}>
             <h2 className={styles.contentLeftTitle}>
-              {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.customFields' })}
+              {formatMessage({ id: 'pages.OnboardingCustomField.customFields' })}
             </h2>
             <p className={styles.contentLeftText}>
-              {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.text' })}
+              {formatMessage({ id: 'pages.OnboardingCustomField.text' })}
             </p>
             <div>
               <Button className={styles.buttonAddNewSection} onClick={this.handleAddNewSection}>
-                {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.addNewSection' })}
+                {formatMessage({ id: 'pages.OnboardingCustomField.addNewSection' })}
               </Button>
               <Button className={styles.buttonAddNewField} onClick={this.handleAddNewField}>
-                {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.addNewField' })}
+                {formatMessage({ id: 'pages.OnboardingCustomField.addNewField' })}
               </Button>
             </div>
           </div>
@@ -132,7 +132,7 @@ class CustomFields extends PureComponent {
         </div>
         <div className={styles.CustomFieldsBotBackGround}>
           <p className={styles.CustomFieldsBotTitle}>
-            {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.customSections&Fields' })}
+            {formatMessage({ id: 'pages.OnboardingCustomField.customSections&Fields' })}
           </p>
           <div className={styles.CustomFieldsBot}>
             <Table columns={columns} dataSource={mergedData} pagination={false} size="small" />

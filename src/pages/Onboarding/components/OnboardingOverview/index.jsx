@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'umi';
-import OnboardingLayout from '@/components/OnboardingLayouts';
+import OnboardingLayout from '@/components/OnboardingLayout';
 import OnboardingEmpty from './components/OnboardingEmpty';
 
 @connect(({ onboarding: { menu = {} } = {} }) => ({

@@ -52,7 +52,7 @@ class SetupTimeoff extends Component {
         key: 'hollidayCalander',
         component: <HollidayCalendar />,
         progress: 10,
-        link: 'hodiday-calendar',
+        link: 'holiday-calendar',
       },
       {
         id: 4,

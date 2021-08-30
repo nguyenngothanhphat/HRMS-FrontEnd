@@ -5,17 +5,17 @@ import { Button } from 'antd';
 import { connect } from 'umi';
 import { PROCESS_STATUS } from '@/utils/onboarding';
 import ItemMenu from './components/ItemMenu';
-import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
-import BasicInformation from '../../pages/FormTeamMember/components/BasicInformation';
-import BackgroundRecheck from '../../pages/FormTeamMember/components/BackgroundRecheck';
-import DocumentVerification from '../../pages/FormTeamMember/components/DocumentVerification';
+import PreviewOffer from '../../pages/NewCandidateForm/components/PreviewOffer/index';
+import BasicInformation from '../../pages/NewCandidateForm/components/BasicInformation';
+import BackgroundRecheck from '../../pages/NewCandidateForm/components/BackgroundRecheck';
+import DocumentVerification from '../../pages/NewCandidateForm/components/DocumentVerification';
 // import BottomBar from '../BottomBar';
 import s from './index.less';
 
 @connect(
   ({
     loading,
-    candidateInfo: {
+    newCandidateForm: {
       currentStep = 0,
       displayComponent = {},
       data: { processStatus = '' } = {},
@@ -29,7 +29,7 @@ import s from './index.less';
       checkMandatory = {},
     } = {},
   }) => ({
-    loadingUpdateByHr: loading.effects['candidateInfo/updateByHR'],
+    loadingUpdateByHr: loading.effects['newCandidateForm/updateByHR'],
     currentStep,
     displayComponent,
     processStatus,
@@ -177,7 +177,7 @@ class CommonLayout extends Component {
   _handlePreviewOffer = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'candidateInfo/save',
+      type: 'newCandidateForm/save',
       payload: {
         currentStep: 7,
         displayComponent: <PreviewOffer />,
@@ -188,7 +188,7 @@ class CommonLayout extends Component {
   _handleClick = (item) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'candidateInfo/save',
+      type: 'newCandidateForm/save',
       payload: {
         currentStep: item.id - 1,
         displayComponent: item.component,

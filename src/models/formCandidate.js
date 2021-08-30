@@ -1,25 +1,16 @@
-// import {
-//   LocationFilter,
-//   DepartmentFilter,
-//   EmployeeTypeFilter,
-//   getListEmployeeMyTeam,
-//   getListEmployeeActive,
-//   getListEmployeeInActive,
-// } from '../services/employee';
-import {
-  getDocumentList,
-  getDepartmentList,
-  getTitleListByDepartment,
-  getLocation,
-  getEmployeeTypeList,
-  getManagerList,
-  addCandidate,
-  updateByHR,
-} from '@/services/addNewMember';
 import { history } from 'umi';
-import { dialog } from '@/utils/utils';
-
 import { addTeamMember } from '@/services/formCandidate';
+import {
+  addCandidate,
+  getDepartmentList,
+  getDocumentList,
+  getEmployeeTypeList,
+  getLocation,
+  getManagerList,
+  getTitleListByDepartment,
+  updateByHR,
+} from '@/services/newCandidateForm';
+import { dialog } from '@/utils/utils';
 
 const info = {
   namespace: 'info',
@@ -316,7 +307,7 @@ const info = {
         const { ticketID = '', _id = '' } = data;
         const rookieId = ticketID;
         yield put({ type: 'save', payload: { rookieId, _id } });
-        history.push(`/employee-onboarding/list/review/${rookieId}`);
+        history.push(`/onboarding/list/review/${rookieId}`);
       } catch (error) {
         dialog(error);
       }

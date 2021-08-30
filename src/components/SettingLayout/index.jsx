@@ -3,8 +3,8 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Button } from 'antd';
 import { history } from 'umi';
 import ItemMenu from './components/ItemMenu';
-// import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
-import BasicInformation from '../../pages/FormTeamMember/components/BasicInformation';
+// import PreviewOffer from '../../pages/NewCandidateForm/components/PreviewOffer/index';
+import BasicInformation from '../../pages/NewCandidateForm/components/BasicInformation';
 // import BottomBar from '../BottomBar';
 
 import s from './index.less';
@@ -43,12 +43,12 @@ class SettingLayout extends PureComponent {
   _handlePreviewOffer = () => {
     // const { dispatch } = this.props;
     // dispatch({
-    //   type: 'candidateInfo/save',
+    //   type: 'newCandidateForm/save',
     //   payload: {
     //     displayComponent: <PreviewOffer />,
     //   },
     // });
-    // history.push(`/employee-onboarding/list/review/preview-offer`);
+    // history.push(`/onboarding/list/review/preview-offer`);
   };
 
   _handleClick = (item) => {

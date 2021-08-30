@@ -8,7 +8,7 @@ import ModalListQuestion from '@/components/ModalListQuestion';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import RemoveIcon from '@/assets/remove.svg';
 import { PROCESS_STATUS } from '@/utils/onboarding';
-import { Page } from '../../../pages/FormTeamMember/utils';
+import { Page } from '../../../pages/NewCandidateForm/utils';
 
 const defaultQuestion = {
   index: null,
@@ -254,7 +254,7 @@ export default connect(
     dispatch,
     loading,
     optionalQuestion: { listPage, candidate = '', optionalQuestionId = '', data = {} } = {},
-    candidateInfo: {
+    newCandidateForm: {
       data: { processStatus },
     },
   }) => ({

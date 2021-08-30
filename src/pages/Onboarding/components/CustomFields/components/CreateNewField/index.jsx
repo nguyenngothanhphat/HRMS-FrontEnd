@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import { formatMessage, connect, history } from 'umi';
+import { Button, Input, Radio, Select } from 'antd';
 import { PageContainer } from '@/layouts/layout/src';
 import backArrow from '@/assets/createFieldArrow.svg';
-import { Button, Input, Radio, Select } from 'antd';
 import iconCancel from '@/assets/iconCancelCustomField.svg';
 import DraggerUpLoad from './DraggerUpload';
 import styles from './index.less';
@@ -106,7 +106,7 @@ class CreateNewField extends PureComponent {
   };
 
   handClickCancel = () => {
-    history.push('/employee-onboarding/');
+    history.push('/onboarding/');
   };
 
   handClick = async (data) => {
@@ -115,7 +115,7 @@ class CreateNewField extends PureComponent {
       type: 'custormField/addSectionField',
       payload: data,
     });
-    history.push('/employee-onboarding/');
+    history.push('/onboarding/');
   };
 
   render() {
@@ -130,14 +130,14 @@ class CreateNewField extends PureComponent {
             <img src={backArrow} alt="not Found" />
             <h2>
               {formatMessage({
-                id: 'pages.EmployeeOnboardingCustomField.createACustomFieldSection',
+                id: 'pages.OnboardingCustomField.createACustomFieldSection',
               })}
             </h2>
           </div>
           <div className={styles.boxFieldSection1}>
             <p className={styles.boxFieldSection1__Title}>
               {formatMessage({
-                id: 'pages.EmployeeOnboardingCustomField.paragarph',
+                id: 'pages.OnboardingCustomField.paragarph',
               })}
             </p>
           </div>
@@ -146,7 +146,7 @@ class CreateNewField extends PureComponent {
             <div className={styles.boxFieldSection2__Title}>
               <p>
                 {formatMessage({
-                  id: 'pages.EmployeeOnboardingCustomField.FillingOutTheField',
+                  id: 'pages.OnboardingCustomField.FillingOutTheField',
                 })}
               </p>
             </div>
@@ -170,12 +170,12 @@ class CreateNewField extends PureComponent {
               <div className={styles.boxFieldSection2__Content1}>
                 <p className={styles.boxFieldSection2__textP}>
                   {formatMessage({
-                    id: 'pages.EmployeeOnboardingCustomField.Prompt',
+                    id: 'pages.OnboardingCustomField.Prompt',
                   })}
                 </p>
                 <span className={styles.boxFieldSection2__note}>
                   {formatMessage({
-                    id: 'pages.EmployeeOnboardingCustomField.note',
+                    id: 'pages.OnboardingCustomField.note',
                   })}
                 </span>
                 <Input
@@ -190,12 +190,12 @@ class CreateNewField extends PureComponent {
                   <div className={styles.boxFieldSection2__flexLeft}>
                     <p className={styles.boxFieldSection2__textP}>
                       {formatMessage({
-                        id: 'pages.EmployeeOnboardingCustomField.HelpText',
+                        id: 'pages.OnboardingCustomField.HelpText',
                       })}
                     </p>
                     <span className={styles.boxFieldSection2__note}>
                       {formatMessage({
-                        id: 'pages.EmployeeOnboardingCustomField.note2',
+                        id: 'pages.OnboardingCustomField.note2',
                       })}
                     </span>
                     <TextArea
@@ -209,12 +209,12 @@ class CreateNewField extends PureComponent {
                   <div className={styles.boxFieldSection2__flexRight}>
                     <p className={styles.boxFieldSection2__textP}>
                       {formatMessage({
-                        id: 'pages.EmployeeOnboardingCustomField.Helpmedia',
+                        id: 'pages.OnboardingCustomField.Helpmedia',
                       })}
                     </p>
                     <span className={styles.boxFieldSection2__note}>
                       {formatMessage({
-                        id: 'pages.EmployeeOnboardingCustomField.note3',
+                        id: 'pages.OnboardingCustomField.note3',
                       })}
                     </span>
                     <DraggerUpLoad
@@ -232,7 +232,7 @@ class CreateNewField extends PureComponent {
             <div className={styles.boxFieldSection2__Title}>
               <p>
                 {formatMessage({
-                  id: 'pages.EmployeeOnboardingCustomField.fillingOutTheFields',
+                  id: 'pages.OnboardingCustomField.fillingOutTheFields',
                 })}
               </p>
             </div>
@@ -240,7 +240,7 @@ class CreateNewField extends PureComponent {
               <div className={styles.boxFieldSection2__Content1}>
                 <span className={styles.boxFieldSection2__Content1__Text}>
                   {formatMessage({
-                    id: 'pages.EmployeeOnboardingCustomField.text2',
+                    id: 'pages.OnboardingCustomField.text2',
                   })}
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
@@ -259,7 +259,7 @@ class CreateNewField extends PureComponent {
               <div className={styles.boxFieldSection2__Content1}>
                 <span className={styles.boxFieldSection2__Content1__Text1}>
                   {formatMessage({
-                    id: 'pages.EmployeeOnboardingCustomField.whoWillFillOutThisField',
+                    id: 'pages.OnboardingCustomField.whoWillFillOutThisField',
                   })}
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
@@ -278,7 +278,7 @@ class CreateNewField extends PureComponent {
               <div className={styles.boxFieldSection2__Content1}>
                 <span className={styles.boxFieldSection2__Content1__Text1}>
                   {formatMessage({
-                    id: 'pages.EmployeeOnboardingCustomField.completedDuringOnboarding',
+                    id: 'pages.OnboardingCustomField.completedDuringOnboarding',
                   })}
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
@@ -297,7 +297,7 @@ class CreateNewField extends PureComponent {
               <div className={styles.boxFieldSection2__Content1}>
                 <span className={styles.boxFieldSection2__Content1__Text1}>
                   {formatMessage({
-                    id: 'pages.EmployeeOnboardingCustomField.shouldTheIndividual',
+                    id: 'pages.OnboardingCustomField.shouldTheIndividual',
                   })}
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
@@ -316,7 +316,7 @@ class CreateNewField extends PureComponent {
               <div className={styles.boxFieldSection2__Content1}>
                 <span className={styles.boxFieldSection2__Content1__Text1}>
                   {formatMessage({
-                    id: 'pages.EmployeeOnboardingCustomField.shouldTheIndividualManager',
+                    id: 'pages.OnboardingCustomField.shouldTheIndividualManager',
                   })}
                 </span>
                 <div className={styles.boxFieldSection2__Content1__Radio}>
@@ -338,7 +338,7 @@ class CreateNewField extends PureComponent {
             <div className={styles.boxFieldSection2__Title}>
               <p>
                 {formatMessage({
-                  id: 'pages.EmployeeOnboardingCustomField.Filters',
+                  id: 'pages.OnboardingCustomField.Filters',
                 })}
               </p>
             </div>
@@ -346,7 +346,7 @@ class CreateNewField extends PureComponent {
               <div className={styles.boxFieldSection2__Content1}>
                 <span className={styles.boxFieldSection2__Content1__Text}>
                   {formatMessage({
-                    id: 'pages.EmployeeOnboardingCustomField.text3',
+                    id: 'pages.OnboardingCustomField.text3',
                   })}
                 </span>
                 <div
@@ -441,10 +441,10 @@ class CreateNewField extends PureComponent {
               onClick={() => this.handClick(data)}
               loading={loading}
             >
-              {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.Save&Return' })}
+              {formatMessage({ id: 'pages.OnboardingCustomField.Save&Return' })}
             </Button>
             <Button className={styles.buttonFooterCancel} onClick={this.handClickCancel}>
-              {formatMessage({ id: 'pages.EmployeeOnboardingCustomField.Cancel' })}
+              {formatMessage({ id: 'pages.OnboardingCustomField.Cancel' })}
             </Button>
           </div>
         </div>

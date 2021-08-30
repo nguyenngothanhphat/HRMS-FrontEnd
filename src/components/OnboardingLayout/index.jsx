@@ -1,21 +1,11 @@
 import React, { PureComponent } from 'react';
 
-import { Button } from 'antd';
+import { Button, Col, Row } from 'antd';
 import { formatMessage, connect, history } from 'umi';
 
-import AwaitingApprovals from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/AwaitingApprovals';
-import DiscardedProvisionalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedProvisionalOffers';
-import EligibleCandidates from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/EligibleCandidates';
-import Drafts from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/Drafts';
-import FinalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/FinalOffers';
-import IneligibleCandidates from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/IneligibleCandidates';
-import PendingEligibilityChecks from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/PendingEligibilityChecks';
-import ProvisionalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/ProvisionalOffers';
-import DiscardedFinalOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedFinalOffers';
-import BackgroundCheck from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/BackgroundCheck';
-import DiscardedOffers from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/DiscardedOffers';
-import OnboardingAll from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/All';
-import ProfileVerification from '@/pages/EmployeeOnboarding/components/OnboardingOverview/components/ProfileVerification';
+import Draft from '@/pages/Onboarding/components/OnboardingOverview/components/Draft';
+import OnboardingAll from '@/pages/Onboarding/components/OnboardingOverview/components/All';
+import ProfileVerification from '@/pages/Onboarding/components/OnboardingOverview/components/ProfileVerification';
 
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import MenuItem from './components/MenuItem';
@@ -26,40 +16,13 @@ const getComponent = (name) => {
   switch (name) {
     case 'All':
       return <OnboardingAll />;
-    case 'PendingEligibilityChecks':
-      return <PendingEligibilityChecks />;
-    case 'EligibleCandidates':
-      return <EligibleCandidates />;
-    case 'IneligibleCandidates':
-      return <IneligibleCandidates />;
-    case 'ProvisionalOffers':
-      return <ProvisionalOffers />;
-    case 'ProfileVerification':
-      return <ProfileVerification />;
-    case 'DiscardedProvisionalOffers':
-      return <DiscardedProvisionalOffers />;
-    case 'AwaitingApprovals':
-      return <AwaitingApprovals />;
-    case 'FinalOffers':
-      return <FinalOffers />;
     case 'Drafts':
-      return <Drafts />;
-    case 'DiscardedFinalOffers': // del
-      return <DiscardedFinalOffers />; // del
-    case 'DocumentVerification':
-      return <BackgroundCheck />;
-    case 'DiscardedOffers':
-      return <DiscardedOffers />;
+      return <Draft />;
     default:
-      return <PendingEligibilityChecks />;
+      return <ProfileVerification />;
   }
 };
 
-@connect(({ loading }) => ({
-  loadingAddTeamMember:
-    loading.effects['info/fetchCandidateInfo'] ||
-    loading.effects['candidateInfo/fetchCandidateInfo'],
-}))
 class OnboardingLayout extends PureComponent {
   constructor(props) {
     super(props);
@@ -72,21 +35,21 @@ class OnboardingLayout extends PureComponent {
 
   componentDidMount() {
     this.fetchTab();
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'candidateInfo/save',
-      payload: {
-        a: 2,
-        data: {},
-      },
-    });
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'newCandidateForm/save',
+    //   payload: {
+    //     a: 2,
+    //     data: {},
+    //   },
+    // });
   }
 
   componentDidUpdate(prevProps) {
-    const { dispatch, tabName = 'all-drafts' } = this.props;
+    const { dispatch, tabName = 'all' } = this.props;
     if (prevProps.data._id) {
       dispatch({
-        type: 'candidateInfo/save',
+        type: 'newCandidateForm/save',
         payload: {
           data: {},
         },
@@ -99,7 +62,7 @@ class OnboardingLayout extends PureComponent {
   }
 
   fetchTab = () => {
-    const { listMenu = [], tabName = 'all-drafts' } = this.props;
+    const { listMenu = [], tabName = 'all' } = this.props;
     const findTab = listMenu.find((menu) => menu.link === tabName) || listMenu[0];
 
     const firstComponent = findTab.component;
@@ -112,13 +75,13 @@ class OnboardingLayout extends PureComponent {
 
   handleClick = (item) => {
     const { link = '' } = item;
-    history.push(`/employee-onboarding/list/${link}`);
+    history.push(`/onboarding/list/${link}`);
   };
 
   handleAddBtn = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'candidateInfo/fetchCandidateInfo',
+      type: 'newCandidateForm/fetchCandidateInfo',
       payload: {
         tenantId: getCurrentTenant(),
         company: getCurrentCompany(),
@@ -133,60 +96,67 @@ class OnboardingLayout extends PureComponent {
 
     return (
       <div className={styles.overviewContainer}>
-        <div className={styles.viewLeft}>
-          {/* <Link to="/employee-onboarding/list/add"> */}
-          {checkPermissionAddTeamMember && (
-            <Button
-              icon={<img src="/assets/images/addMemberIcon.svg" alt="add member icon" />}
-              className={styles.addMember}
-              type="primary"
-              loading={loadingAddTeamMember}
-              onClick={this.handleAddBtn}
-            >
-              <span className={styles.title}>
-                {formatMessage({ id: 'component.onboardingOverview.addTeamMember' })}
-              </span>
-            </Button>
-          )}
-          {/* </Link> */}
-
-          <div className={styles.divider} />
-
-          <div className={styles.leftMenu}>
-            {listMenu.map((item) => {
-              const { id, name, component, quantity, link } = item;
-              const { selectedId } = this.state;
-              return (
-                <div key={id}>
-                  <MenuItem
-                    selectedId={selectedId}
-                    id={id}
-                    name={name}
-                    component={component}
-                    quantity={quantity}
-                    link={link}
-                    handleClick={this.handleClick}
-                  />
+        <Row>
+          <Col lg={6} xl={5}>
+            <div className={styles.viewLeft}>
+              {checkPermissionAddTeamMember && (
+                <div className={styles.buttonContainer}>
+                  <Button
+                    icon={<img src="/assets/images/addMemberIcon.svg" alt="add member icon" />}
+                    className={styles.addMember}
+                    type="primary"
+                    loading={loadingAddTeamMember}
+                    onClick={this.handleAddBtn}
+                  >
+                    <span className={styles.title}>
+                      {formatMessage({ id: 'component.onboardingOverview.addTeamMember' })}
+                    </span>
+                  </Button>
                 </div>
-              );
-            })}
-          </div>
-        </div>
+              )}
 
-        <div className={styles.viewRight}>
-          <p className={styles.pageTitle}>{pageTitle}</p>
-          {displayComponent}
-        </div>
+              <div className={styles.divider} />
+
+              <div className={styles.leftMenu}>
+                {listMenu.map((item) => {
+                  const { id, name, component, quantity, link } = item;
+                  const { selectedId } = this.state;
+                  return (
+                    <div key={id}>
+                      <MenuItem
+                        selectedId={selectedId}
+                        id={id}
+                        name={name}
+                        component={component}
+                        quantity={quantity}
+                        link={link}
+                        handleClick={this.handleClick}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </Col>
+          <Col lg={18} xl={19}>
+            <div className={styles.viewRight}>
+              <p className={styles.pageTitle}>{pageTitle}</p>
+              {displayComponent}
+            </div>
+          </Col>
+        </Row>
       </div>
     );
   }
 }
 
-// export default OnboardingLayout;
 export default connect(
-  ({ info, user: { permissions = {} } = {}, candidateInfo: { data = {} } = {} }) => ({
+  ({ loading, info, user: { permissions = {} } = {}, newCandidateForm: { data = {} } = {} }) => ({
     info,
     data,
     permissions,
+    loadingAddTeamMember:
+      loading.effects['info/fetchCandidateInfo'] ||
+      loading.effects['newCandidateForm/fetchCandidateInfo'],
   }),
 )(OnboardingLayout);

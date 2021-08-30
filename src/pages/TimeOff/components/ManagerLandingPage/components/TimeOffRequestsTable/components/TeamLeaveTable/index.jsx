@@ -1,20 +1,21 @@
 import React, { PureComponent } from 'react';
 import { Table, Tag, Tooltip, Spin } from 'antd';
 import { history, connect } from 'umi';
+import moment from 'moment';
+import { LoadingOutlined } from '@ant-design/icons';
 import ApproveIcon from '@/assets/approveTR.svg';
 import OpenIcon from '@/assets/openTR.svg';
 import CancelIcon from '@/assets/cancelTR.svg';
-import moment from 'moment';
 import { TIMEOFF_STATUS } from '@/utils/timeOff';
 // import MultipleCheckTablePopup from '@/components/MultipleCheckTablePopup';
-import { LoadingOutlined } from '@ant-design/icons';
 
 import RejectCommentModal from '../RejectCommentModal';
 
 import styles from './index.less';
 
-@connect(({ dispatch, timeOff: { paging }, loading }) => ({
+@connect(({ dispatch, user: { currentUser = {} }, timeOff: { paging }, loading }) => ({
   dispatch,
+  currentUser,
   paging,
   loading1: loading.effects['timeOff/fetchTeamLeaveRequests'],
   // loading2: loading.effects['timeOff/fetchLeaveRequestOfEmployee'],
@@ -140,24 +141,33 @@ class TeamLeaveTable extends PureComponent {
       // fixed: 'right',
       // width: '20%',
       render: (id) => {
-        const { ticketID = '', _id = '' } = id;
-        const { selectedTab = '' } = this.props;
+        const { ticketID = '', _id = '', approvalManagerId = '' } = id;
+        const { selectedTab = '', currentUser: { employee: { _id: myId = '' } = {} } = {} } =
+          this.props;
+
+        // only manager accept/reject a ticket
+        const isMyTicket = myId === approvalManagerId;
+
         if (selectedTab === TIMEOFF_STATUS.inProgress)
           return (
             <div className={styles.rowAction}>
               <Tooltip title="View">
                 <img src={OpenIcon} onClick={() => this.onOpenClick(_id)} alt="open" />
               </Tooltip>
-              <Tooltip title="Approve">
-                <img src={ApproveIcon} onClick={() => this.onApproveClick(_id)} alt="approve" />
-              </Tooltip>
-              <Tooltip title="Reject">
-                <img
-                  src={CancelIcon}
-                  onClick={() => this.onCancelClick(_id, ticketID)}
-                  alt="cancel"
-                />
-              </Tooltip>
+              {isMyTicket && (
+                <>
+                  <Tooltip title="Approve">
+                    <img src={ApproveIcon} onClick={() => this.onApproveClick(_id)} alt="approve" />
+                  </Tooltip>
+                  <Tooltip title="Reject">
+                    <img
+                      src={CancelIcon}
+                      onClick={() => this.onCancelClick(_id, ticketID)}
+                      alt="cancel"
+                    />
+                  </Tooltip>
+                </>
+              )}
             </div>
           );
 
@@ -283,7 +293,7 @@ class TeamLeaveTable extends PureComponent {
         status = '',
         fromDate = '',
         toDate = '',
-        approvalManager: { generalInfo: generalInfoA = {} } = {},
+        approvalManager: { _id: approvalManagerId = '', generalInfo: generalInfoA = {} } = {},
         // cc = [],
         ticketID = '',
         _id = '',
@@ -316,6 +326,7 @@ class TeamLeaveTable extends PureComponent {
           _id,
           onDate,
           status,
+          approvalManagerId,
         },
         requestee: `${firstName} ${lastName}`,
       };
@@ -402,7 +413,9 @@ class TeamLeaveTable extends PureComponent {
       loading6 = false,
       selectedTab = '',
       paging: { page, limit, total },
+      // currentUser: { employee: { _id: myId = '' } = {} } = {},
     } = this.props;
+
     const {
       selectedRowKeys,
       // pageSelected,

@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { connect, Link } from 'umi';
 
 import { Row, Col, Layout, Button, Steps, Result } from 'antd';
+import { RightOutlined } from '@ant-design/icons';
+import { indexOf } from 'lodash';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 
-import { RightOutlined } from '@ant-design/icons';
 import { getCurrentCompany } from '@/utils/authority';
 import avtDefault from '@/assets/avtDefault.jpg';
 // import BottomBar from '../components/BottomBar';
-import { indexOf } from 'lodash';
 import s from './CandidateLayout.less';
-import { Page } from '../pages/FormTeamMember/utils';
+import { Page } from '../pages/NewCandidateForm/utils';
 
 const { Header, Content } = Layout;
 const { Step } = Steps;

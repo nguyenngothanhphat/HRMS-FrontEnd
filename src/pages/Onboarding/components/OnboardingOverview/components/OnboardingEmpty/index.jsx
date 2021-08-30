@@ -6,13 +6,13 @@ import s from './index.less';
 
 @connect(({ loading, user: { permissions = {} } = {} } = {}) => ({
   permissions,
-  loading: loading.effects['candidateInfo/fetchCandidateInfo'],
+  loading: loading.effects['newCandidateForm/fetchCandidateInfo'],
 }))
 class Empty extends Component {
   handleAddTeamMember = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'candidateInfo/fetchCandidateInfo',
+      type: 'newCandidateForm/fetchCandidateInfo',
       payload: {
         tenantId: getCurrentTenant(),
         company: getCurrentCompany(),

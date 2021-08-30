@@ -14,24 +14,9 @@ import styles from './index.less';
 // const RENEGOTIATE_PROVISIONAL_OFFER = 'RENEGOTIATE-PROVISIONAL-OFFER';
 // const DISCARDED_PROVISIONAL_OFFER = 'DISCARDED-PROVISIONAL-OFFER';
 
-@connect(
-  ({
-    candidateInfo: {
-      data: { processStatus = '' }, // tempData = {},
-      salaryStructure = {},
-      checkMandatory = {},
-      salaryNote = '',
-    } = {},
-    candidatePortal: { title: { name: titleName = '' } = {} } = {},
-  }) => ({
-    titleName,
-    processStatus,
-    salaryStructure,
-    checkMandatory,
-    salaryNote,
-    // tempData,
-  }),
-)
+@connect(({ candidatePortal: { title: { name: titleName = '' } = {} } = {} }) => ({
+  titleName,
+}))
 class SalaryStructure extends PureComponent {
   componentDidMount() {
     // window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page

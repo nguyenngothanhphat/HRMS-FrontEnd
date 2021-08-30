@@ -1,11 +1,11 @@
 import { connect } from 'umi';
 import { Col } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { MODE } from '@/components/Question/utils';
 import { indexOf } from 'lodash';
+import { MODE } from '@/components/Question/utils';
 import { PROCESS_STATUS } from '@/utils/onboarding';
 import QuestionItemView from '../QuestionItemView/index';
-import { Page } from '../../../pages/FormTeamMember/utils';
+import { Page } from '../../../pages/NewCandidateForm/utils';
 
 const AnswerQuestion = React.memo((props) => {
   const {
