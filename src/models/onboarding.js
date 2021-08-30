@@ -167,12 +167,14 @@ const onboarding = {
 
         const { processStatus = '', page, limit, name } = payload;
         const tenantId = getCurrentTenant();
+        const company = getCurrentCompany();
         const req = {
           processStatus,
           page,
           tenantId,
           limit,
           name,
+          company,
         };
         const response = yield call(getOnboardingList, req);
         const { statusCode } = response;

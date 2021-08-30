@@ -3,7 +3,6 @@ import { Tabs, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 
-// import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import AllTab from './components/AllTab';
 
 import styles from './index.less';
@@ -38,7 +37,6 @@ class OnboardingAll extends Component {
       dispatch({
         type: 'onboarding/fetchOnboardListAll',
         payload: {
-          processStatus: 'DRAFT',
           //   name: nameSearch,
         },
       });
