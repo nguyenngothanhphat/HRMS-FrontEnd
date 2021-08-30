@@ -82,26 +82,26 @@ class OnboardTable extends Component {
   // getModalContent = () => {
   //   const { dispatch } = this.props;
   //   const { currentRecord } = this.state;
-  //   const { rookieId = '' } = currentRecord;
+  //   const { candidateId = '' } = currentRecord;
   //   return (
-  //     <ProfileModalContent closeModal={this.closeModal} dispatch={dispatch} rookieId={rookieId} />
+  //     <ProfileModalContent closeModal={this.closeModal} dispatch={dispatch} candidateId={candidateId} />
   //   );
   //   // return <ModalContent closeModal={this.closeModal} />;
   // };
 
-  renderRookieId = (rookieId, type) => {
-    const id = rookieId.replace('#', '') || '';
+  renderCandidateId = (candidateId, type) => {
+    const id = candidateId.replace('#', '') || '';
     return (
       <Link to={`/onboarding/list/review/${id}`} onClick={() => this.fetchData(id)}>
-        <span onClick={() => this.handleActionClick(type)}>{rookieId}</span>
+        <span onClick={() => this.handleActionClick(type)}>{candidateId}</span>
       </Link>
     );
   };
 
   renderName = (id) => {
     const { list } = this.props;
-    const selectedPerson = list.find((item) => item.rookieId === id);
-    const { rookieName: name = '', isNew, offerExpiryDate = '' } = selectedPerson;
+    const selectedPerson = list.find((item) => item.candidateId === id);
+    const { candidateName: name = '', isNew, offerExpiryDate = '' } = selectedPerson;
     const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;
 
     if (isExpired) {
@@ -169,19 +169,19 @@ class OnboardTable extends Component {
       {
         // title: 'Rookie Id',
         title: formatMessage({ id: 'component.onboardingOverview.candidateId' }),
-        dataIndex: 'rookieId',
-        key: 'rookieId',
-        width: getColumnWidth('rookieId', type),
-        render: (rookieId) => this.renderRookieId(rookieId, type),
+        dataIndex: 'candidateId',
+        key: 'candidateId',
+        width: getColumnWidth('candidateId', type),
+        render: (candidateId) => this.renderCandidateId(candidateId, type),
         columnName: ID,
         fixed: 'left',
       },
       {
         // title: 'Rookie Name',
         title: formatMessage({ id: 'component.onboardingOverview.candidateName' }),
-        dataIndex: 'rookieId',
-        key: 'rookieID2',
-        render: (rookieId) => this.renderName(rookieId),
+        dataIndex: 'candidateId',
+        key: 'candidateID2',
+        render: (candidateId) => this.renderName(candidateId),
         columnName: NAME,
         width: getColumnWidth('rookieName', type),
         align: 'left',
@@ -268,12 +268,12 @@ class OnboardTable extends Component {
           const { currentUser: { employee: { _id: empId = '' } = {} } = {} } = this.props;
           const {
             processStatusId = '',
-            rookieId = '',
+            candidateId = '',
             assignTo = {},
             assigneeManager = {},
             offerExpiryDate = '',
           } = row;
-          const id = rookieId.replace('#', '') || '';
+          const id = candidateId.replace('#', '') || '';
 
           const checkPermission =
             this.checkPermission('hr-manager') ||
@@ -484,7 +484,8 @@ class OnboardTable extends Component {
           <Menu.Item>
             <div
               onClick={() =>
-                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)}
+                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)
+              }
             >
               Re-assign
             </div>
@@ -598,6 +599,7 @@ class OnboardTable extends Component {
 
     const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch } = this.props;
     const { openModal } = this.state;
+    console.log(list);
 
     return (
       <>

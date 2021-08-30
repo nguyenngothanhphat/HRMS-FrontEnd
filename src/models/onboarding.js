@@ -4,7 +4,7 @@ import _ from 'lodash';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { getOnboardingList, getTotalNumberOnboardingList } from '@/services/onboard';
-import { PROCESS_STATUS_TABLE_NAME } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS_TABLE_NAME } from '@/utils/onboarding';
 
 const allData = []; // ALL
 const draftData = []; // DRAFT
@@ -96,9 +96,9 @@ const formatData = (list = []) => {
 
     const rookie = {
       candidate: _id || '',
-      rookieId: `#${ticketID}`,
+      candidateId: `#${ticketID}`,
       isNew,
-      rookieName: fullName,
+      candidateName: fullName,
       position: title.name,
       location: workLocation.name || '',
       comments: comments || '',
@@ -112,7 +112,7 @@ const formatData = (list = []) => {
       changeRequest: '-',
       assignTo,
       assigneeManager,
-      processStatus: PROCESS_STATUS_TABLE_NAME[processStatus],
+      processStatus: NEW_PROCESS_STATUS_TABLE_NAME[processStatus],
       processStatusId: processStatus,
     };
     formatList.push(rookie);
