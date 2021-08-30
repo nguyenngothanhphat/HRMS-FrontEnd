@@ -44,6 +44,13 @@ class OnboardingAll extends Component {
     }
   };
 
+  getPageAndSize = (page, pageSize) => {
+    this.setState({
+      pageSelected: page,
+      size: pageSize,
+    });
+  };
+
   render() {
     const { dataAll = [], total = 0, loadingAll } = this.props;
     const { pageSelected, size } = this.state;
@@ -63,7 +70,7 @@ class OnboardingAll extends Component {
                 loading={loadingAll}
                 pageSelected={pageSelected}
                 size={size}
-                // getPageAndSize={this.getPageAndSize}
+                getPageAndSize={this.getPageAndSize}
                 total={total}
               />
             </TabPane>
