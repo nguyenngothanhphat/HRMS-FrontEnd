@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography, Button } from 'antd';
-import { connect, formatMessage } from 'umi';
+import { connect, history,formatMessage } from 'umi';
 // import PreviewOffer from '@/pages/NewCandidateForm/components/PreviewOffer/index';
 import { getCurrentTenant } from '@/utils/authority';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
@@ -10,6 +10,7 @@ import IndiaEmployeeComponent from './components/IndiaEmployeeComponent';
 import NoteComponent from '../NoteComponent';
 import styles from './index.less';
 import { Page } from '../../utils';
+import MessageBox from '../MessageBox';
 
 @connect(
   ({
@@ -18,15 +19,17 @@ import { Page } from '../../utils';
       data = {},
       currentStep = 0,
       tempData: { hidePreviewOffer = false } = {},
+      tempData = {},
     } = {},
   }) => ({
     benefits,
     data,
+    tempData,
     currentStep,
     hidePreviewOffer,
   }),
 )
-class Benefit extends PureComponent {
+class Benefits extends PureComponent {
   static getDerivedStateFromProps(props) {
     if ('benefits' in props) {
       return { benefits: props.benefits || {} };
@@ -228,15 +231,15 @@ class Benefit extends PureComponent {
       });
       return;
     }
-    const { currentStep } = this.props;
-    const nextStep = currentStep + 1;
+    // const { currentStep } = this.props;
+    // const nextStep = currentStep + 1;
 
-    dispatch({
-      type: 'newCandidateForm/save',
-      payload: {
-        currentStep: nextStep,
-      },
-    });
+    // dispatch({
+    //   type: 'newCandidateForm/save',
+    //   payload: {
+    //     currentStep: nextStep,
+    //   },
+    // });
     // dispatch({
     //   type: 'newCandidateForm/save',
     //   payload: {
@@ -244,16 +247,27 @@ class Benefit extends PureComponent {
     //     displayComponent: <PreviewOffer />,
     //   },
     // });
+
+    const { tempData = {} } = this.props;
+    const { ticketID = '' } = tempData;
+
+  
+        history.push(`/onboarding/list/view/${ticketID}/offer-details`);
+ 
   };
 
   onClickPrev = () => {
-    const { dispatch, currentStep } = this.props;
-    dispatch({
-      type: 'newCandidateForm/save',
-      payload: {
-        currentStep: currentStep - 1,
-      },
-    });
+    // const { dispatch, currentStep } = this.props;
+    // dispatch({
+    //   type: 'newCandidateForm/save',
+    //   payload: {
+    //     currentStep: currentStep - 1,
+    //   },
+    // });
+    const { tempData = {} } = this.props;
+    const { ticketID = '' } = tempData;
+ 
+        history.push(`/onboarding/list/view/${ticketID}/document-verification`);
   };
 
   _renderBottomBar = () => {
@@ -263,12 +277,8 @@ class Benefit extends PureComponent {
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
-          <Col span={16}>
-            {/* <div className={styles.bottomBar__status}>{this._renderStatus()}</div> */}
-          </Col>
-          <Col span={8}>
+          <Col span={24}>
             <div className={styles.bottomBar__button}>
-              {' '}
               <Row gutter={12}>
                 <Col span={12}>
                   <Button
@@ -412,7 +422,7 @@ class Benefit extends PureComponent {
       <>
         <Row gutter={[24, 0]}>
           <Col xs={24} sm={24} md={24} lg={16} xl={16}>
-            <div className={styles.BenefitComponent}>
+            <div className={styles.Benefits}>
               <Header />
               <GlobalEmployeeComponent
                 globalEmployeesCheckbox={globalEmployeesCheckbox}
@@ -442,6 +452,7 @@ class Benefit extends PureComponent {
             <div className={styles.rightWrapper}>
               <Row>
                 <NoteComponent note={Note} />
+                <MessageBox />
               </Row>
             </div>
           </Col>
@@ -451,4 +462,4 @@ class Benefit extends PureComponent {
   }
 }
 
-export default Benefit;
+export default Benefits;

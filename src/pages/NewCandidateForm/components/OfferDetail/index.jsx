@@ -353,10 +353,7 @@ const OfferDetail = (props) => {
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
-          <Col span={12}>
-            <div className={styles.bottomBar__status}>{_renderStatus()}</div>
-          </Col>
-          <Col span={12}>
+          <Col span={24}>
             <div className={styles.bottomBar__button}>
               <Button
                 type="secondary"
@@ -547,94 +544,97 @@ const OfferDetail = (props) => {
     <>
       <Form form={form} onValuesChange={handleFormChange}>
         <div className={styles.offerDetailContainer}>
-          <div className={styles.offerDetail}>
-            <div className={styles.top}>
-              <h3 className={styles.header}>
-                {formatMessage({ id: 'component.offerDetail.title' })}
-              </h3>
+          <div className={styles.leftContainer}>
+            <div className={styles.offerDetail}>
+              <div className={styles.top}>
+                <h3 className={styles.header}>
+                  {formatMessage({ id: 'component.offerDetail.title' })}
+                </h3>
 
-              <p>{formatMessage({ id: 'component.offerDetail.subtitle' })}</p>
-            </div>
+                <p>{formatMessage({ id: 'component.offerDetail.subtitle' })}</p>
+              </div>
 
-            <div className={styles.middle}>
-              <div className={styles.offerLetterBlock}>
-                <p className={styles.title}>Offer Letter</p>
-                <Row gutter={['24']}>
-                  <Col span={12}>
-                    <p>Use an existing offer letter</p>
-
-                    <div className={styles.wrapper1}>
-                      {/* <Form.Item name="template"> */}
-                      <Select
-                        defaultValue={uploadedOfferTemplate}
-                        value={uploadedOfferTemplate}
-                        placeholder="Select file"
-                        className={styles.select}
-                        onChange={(value, option) => handleTemplateChange(value, option)}
-                        disabled={disableAll}
-                      >
-                        {templateList.map((fileItem) => {
-                          const { _id = '', attachment = {} } = fileItem;
-                          return (
-                            <Option value={attachment?._id} key={_id}>
-                              <div className={styles.iconWrapper}>
-                                <span>{attachment?.name}</span>
-                              </div>
-                            </Option>
-                          );
-                        })}
-                      </Select>
+              <div className={styles.middle}>
+                <div className={styles.offerLetterBlock}>
+                  <p className={styles.title}>Offer Letter</p>
+                  <Row gutter={['24']}>
+                    <Col span={12}>
+                      <p>Use an existing offer letter</p>
+                      <div className={styles.wrapper1}>
+                        {/* <Form.Item name="template"> */}
+                        <Select
+                          defaultValue={uploadedOfferTemplate}
+                          value={uploadedOfferTemplate}
+                          placeholder="Select file"
+                          className={styles.select}
+                          onChange={(value, option) => handleTemplateChange(value, option)}
+                          disabled={disableAll}
+                        >
+                          {templateList.map((fileItem) => {
+                            const { _id = '', attachment = {} } = fileItem;
+                            return (
+                              <Option value={attachment?._id} key={_id}>
+                                <div className={styles.iconWrapper}>
+                                  <span>{attachment?.name}</span>
+                                </div>
+                              </Option>
+                            );
+                          })}
+                        </Select>
+                      </div>
+                    </Col>
+                    <Col span={12}>
+                      {!disableAll && (
+                        <>
+                          <p>Add Expiry Date</p>
+                          <div className={styles.wrapper1}>
+                            <DatePicker
+                              className={styles.inputDate}
+                              format="DD.MM.YY"
+                              placeholder="Select expiry date"
+                              disabledDate={disabledDate}
+                              defaultValue={
+                                expiryDateProp ? moment(expiryDateProp) : moment().add('15', 'days')
+                              }
+                              onChange={(val) => handleExpiryDay(val)}
+                            />
+                          </div>
+                        </>
+                      )}
+                    </Col>
+                  </Row>
+                  {!disableAll ? (
+                    <div className={styles.addButton} onClick={() => handleAddDocument('template')}>
+                      <PlusOutlined className={styles.plusIcon} />
+                      <span className={styles.buttonTitle}>Add Template</span>
                     </div>
-                  </Col>
-                  <Col span={12}>
-                    {!disableAll && (
-                      <>
-                        <p>Add Expiry Date</p>
-                        <div className={styles.wrapper1}>
-                          <DatePicker
-                            className={styles.inputDate}
-                            format="DD.MM.YY"
-                            placeholder="Select expiry date"
-                            disabledDate={disabledDate}
-                            defaultValue={
-                              expiryDateProp ? moment(expiryDateProp) : moment().add('15', 'days')
-                            }
-                            onChange={(val) => handleExpiryDay(val)}
-                          />
-                        </div>
-                      </>
-                    )}
-                  </Col>
-                </Row>
-                {!disableAll ? (
-                  <div className={styles.addButton} onClick={() => handleAddDocument('template')}>
-                    <PlusOutlined className={styles.plusIcon} />
-                    <span className={styles.buttonTitle}>Add Template</span>
-                  </div>
-                ) : (
-                  <span className={styles.expiryDate}>
-                    Document Expires on {moment(expiryDateProp).locale('en').format('MM.DD.YY')}
-                  </span>
-                )}
-              </div>
+                  ) : (
+                    <span className={styles.expiryDate}>
+                      Document Expires on {moment(expiryDateProp).locale('en').format('MM.DD.YY')}
+                    </span>
+                  )}
+                </div>
 
-              <div className={styles.documentBlock}>
-                <p className={styles.title}>Documents</p>
-                <p className={styles.subTitle}>
-                  {offerDocumentsProp.length === 0 ? 'Upload all documents' : 'Uploaded Documents'}
-                </p>
+                <div className={styles.documentBlock}>
+                  <p className={styles.title}>Documents</p>
+                  <p className={styles.subTitle}>
+                    {offerDocumentsProp.length === 0
+                      ? 'Upload all documents'
+                      : 'Uploaded Documents'}
+                  </p>
 
-                {renderDocuments()}
+                  {renderDocuments()}
 
-                {!disableAll && (
-                  <div className={styles.addButton} onClick={() => handleAddDocument('document')}>
-                    <PlusOutlined className={styles.plusIcon} />
-                    <span className={styles.buttonTitle}>Add Document</span>
-                  </div>
-                )}
-              </div>
-              <div style={{ marginTop: '32px' }}>
-                <RenderAddQuestion page={Page.Offer_Details} />
+                  {!disableAll && (
+                    <div className={styles.addButton} onClick={() => handleAddDocument('document')}>
+                      <PlusOutlined className={styles.plusIcon} />
+                      <span className={styles.buttonTitle}>Add Document</span>
+                    </div>
+                  )}
+                </div>
+                <div style={{ marginTop: '32px' }}>
+                  <RenderAddQuestion page={Page.Offer_Details} />
+                </div>
               </div>
             </div>
             {_renderBottomBar()}

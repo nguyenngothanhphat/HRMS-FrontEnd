@@ -6,7 +6,7 @@ import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentTenant } from '@/utils/authority';
 // import { PROCESS_STATUS } from '@/utils/onboarding';
 import BasicInformation from './components/BasicInformation';
-import Benefit from './components/Benefit';
+import Benefit from './components/Benefits';
 import DocumentVerification from './components/DocumentVerification';
 import JobDetails from './components/JobDetails';
 import OfferDetail from './components/OfferDetail';
@@ -91,8 +91,8 @@ class NewCandidateForm extends PureComponent {
   resetFormMember = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'newCandidateForm/clearState'
-    })
+      type: 'newCandidateForm/clearState',
+    });
     dispatch({
       type: 'optionalQuestion/save',
       payload: {
@@ -265,7 +265,7 @@ class NewCandidateForm extends PureComponent {
           <Affix offsetTop={30}>
             <div className={styles.titlePage}>
               <p className={styles.titlePage__text}>{title}</p>
-              {action === 'add' && (
+              {action === 'view' && (
                 <div className={styles.titlePage__viewBtn}>
                   <Button type="primary" ghost onClick={this.handleFinishLater}>
                     Finish Later
@@ -278,7 +278,12 @@ class NewCandidateForm extends PureComponent {
             </div>
           </Affix>
 
-          <LayoutAddCandidateForm listMenu={formatListMenu} tabName={tabName} reId={reId} />
+          <LayoutAddCandidateForm
+            listMenu={formatListMenu}
+            tabName={tabName}
+            reId={reId}
+            loading={loadingFetchCandidate}
+          />
         </div>
       </PageContainer>
     );

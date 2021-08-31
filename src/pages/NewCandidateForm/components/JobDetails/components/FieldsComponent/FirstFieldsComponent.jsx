@@ -32,7 +32,7 @@ class FirstFieldsComponent extends PureComponent {
         },
       });
     }
-    if (title) {
+    if (title && department) {
       dispatch({
         type: 'newCandidateForm/fetchTitleList',
         payload: {
@@ -66,7 +66,7 @@ class FirstFieldsComponent extends PureComponent {
   onChangeValue = (value, fieldName) => {
     const { _handleSelect = () => {} } = this.props;
     switch (fieldName) {
-      case 'jobGradeLevel': {
+      case 'grade': {
         _handleSelect(value, fieldName);
         break;
       }
@@ -195,11 +195,11 @@ class FirstFieldsComponent extends PureComponent {
                         // onChange={(value) => _handleSelect(value, item.title)}
                         onChange={(value) => this.onChangeValue(value, item.title)}
                         disabled={
-                          !!(item.title === 'jobGradeLevel' && jobGradeList.length <= 0) ||
+                          !!(item.title === 'grade' && jobGradeList.length <= 0) ||
                           (item.title === 'reportingManager' && managerList.length <= 0) ||
                           (item.title === 'department' && departmentList.length <= 0) ||
                           (item.title === 'title' && titleList.length <= 0) ||
-                          (item.title === 'jobGradeLevel' && disabled) ||
+                          (item.title === 'grade' && disabled) ||
                           (item.title === 'workLocation' && disabled) ||
                           (item.title === 'reportingManager' && disabled) ||
                           (item.title === 'department' && disabled) ||
@@ -226,12 +226,12 @@ class FirstFieldsComponent extends PureComponent {
                             defaultValue: reportingManager._id,
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
-                        {...(item.title === 'jobGradeLevel' &&
+                        {...(item.title === 'grade' &&
                           grade !== null && {
                             defaultValue: grade,
                           })}
                         showSearch={
-                          item.title === 'jobGradeLevel' ||
+                          item.title === 'grade' ||
                           item.title === 'reportingManager' ||
                           item.title === 'workLocation' ||
                           item.title === 'title' ||
@@ -240,12 +240,12 @@ class FirstFieldsComponent extends PureComponent {
                         showArrow
                         allowClear
                         filterOption={(input, option) => {
-                          if (item.title === 'jobGradeLevel')
+                          if (item.title === 'grade')
                             return option.value.toString().indexOf(input) > -1;
                           return option.value.toLowerCase().indexOf(input.toLowerCase()) > -1;
                         }}
                       >
-                        {item.title === 'jobGradeLevel' ? (
+                        {item.title === 'grade' ? (
                           jobGradeList.map((data) => (
                             <Option value={data} key={data}>
                               {data}

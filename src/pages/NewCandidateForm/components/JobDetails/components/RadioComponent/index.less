@@ -2,6 +2,24 @@
   padding-top: 32px;
   padding-right: 32px;
   padding-left: 32px;
+  :global {
+    .ant-radio-inner {
+      box-sizing: border-box;
+      border: 1px solid #2c6df9;
+      border-radius: 4px;
+      outline: none;
+      box-shadow: none;
+    }
+    .ant-radio-inner::after {
+      border-radius: 4px !important;
+    }
+    .ant-radio-checked .ant-radio-inner::after {
+      top: -3px;
+      left: 2px;
+      background-color: transparent;
+      content: url(../../../../../../assets/checkIcon.svg);
+    }
+  }
   .Radio {
     display: block;
     padding-bottom: 18px;

@@ -28,6 +28,11 @@ class CandidateFieldsComponent extends PureComponent {
     }));
   };
 
+  disabledDate = (current) => {
+    // Can not select days before today and today
+    return current && current < moment().startOf('day');
+  };
+
   render() {
     const {
       styles,
@@ -48,6 +53,7 @@ class CandidateFieldsComponent extends PureComponent {
               placeholder="Select a date"
               picker="date"
               format="MM.DD.YY"
+              disabledDate={this.disabledDate}
               disabled={!checkAuthor}
               onChange={(value) => _handleSelect(value, candidateField[1].title)}
               defaultValue={prefferedDateOfJoining ? moment(prefferedDateOfJoining) : ''}

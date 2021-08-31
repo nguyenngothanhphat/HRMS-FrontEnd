@@ -40,7 +40,7 @@ const UserModel = {
         const response = yield call(queryCurrent, payload);
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) {
-          history.push('/login');
+          history.replace('/login');
           throw response;
         }
 

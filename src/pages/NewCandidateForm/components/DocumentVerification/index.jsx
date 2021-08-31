@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 // import Warning from './components/Warning';
-import { Button, Col, notification, Row, Typography } from 'antd';
+import { Button, Col, notification, Row, Skeleton, Typography } from 'antd';
 import { map } from 'lodash';
 import React, { Component } from 'react';
 import { connect, formatMessage } from 'umi';
@@ -46,6 +46,7 @@ const camelize = (str) => {
     newCandidateForm,
     loading,
     newCandidateForm: { tempData, checkMandatory, data, tableData, currentStep },
+    locationSelection: { listLocationsByCompany = [] } = {},
   }) => ({
     tempData,
     data,
@@ -53,8 +54,10 @@ const camelize = (str) => {
     currentStep,
     checkMandatory,
     newCandidateForm,
+    listLocationsByCompany,
     loading4: loading.effects['newCandidateForm/submitPhase1Effect'],
     loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
+    loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
   }),
 )
 class DocumentVerification extends Component {
@@ -83,19 +86,14 @@ class DocumentVerification extends Component {
   }
 
   componentDidMount = () => {
-    this.getDataFromServer();
     window.scrollTo({ top: 77, behavior: 'smooth' });
-    const { tempData: { documentChecklistSetting = [], documentList = [] } = {} || {}, dispatch } =
-      this.props;
-    const listA = this.getDocumentListByCountry(documentChecklistSetting);
-    const listB = this.getDocumentListByCountry(documentList);
-    dispatch({
-      type: 'newCandidateForm/saveTemp',
-      payload: {
-        documentChecklistSetting: listA,
-        documentList: listB,
-      },
-    });
+    const {
+      data: { _id = '' },
+    } = this.props;
+
+    if (_id) {
+      this.firstInit();
+    }
   };
 
   componentWillUnmount() {
@@ -132,14 +130,38 @@ class DocumentVerification extends Component {
   }
 
   componentDidUpdate = (prevProps) => {
-    const { tempData: { documentChecklistSetting = [] } = {} } = this.props;
+    const {
+      tempData: { documentChecklistSetting = [] } = {} || {},
+      data: { _id = '' },
+    } = this.props;
 
     if (
+      _id &&
       JSON.stringify(prevProps.tempData.documentChecklistSetting) !==
-      JSON.stringify(documentChecklistSetting)
+        JSON.stringify(documentChecklistSetting)
     ) {
       this.validateFields();
     }
+
+    if (_id && _id !== prevProps.data._id) {
+      this.firstInit();
+    }
+  };
+
+  firstInit = () => {
+    const { tempData: { documentChecklistSetting = [], documentList = [] } = {} || {}, dispatch } =
+      this.props;
+
+    this.getDataFromServer();
+    const listA = this.getDocumentListByCountry(documentChecklistSetting);
+    const listB = this.getDocumentListByCountry(documentList);
+    dispatch({
+      type: 'newCandidateForm/saveTemp',
+      payload: {
+        documentChecklistSetting: listA,
+        documentList: listB,
+      },
+    });
   };
 
   validateFields = () => {
@@ -1163,16 +1185,19 @@ class DocumentVerification extends Component {
 
   // get document list by country
   getDocumentListByCountry = (list) => {
-    const { tempData = {} } = this.props;
+    const { tempData = {}, listLocationsByCompany = [] } = this.props;
     const { workLocation = {} } = tempData;
-
-    if (workLocation) {
+    let workLocation1 = workLocation;
+    if (typeof workLocation === 'string') {
+      workLocation1 = listLocationsByCompany.find((w) => w._id === workLocation);
+    }
+    if (workLocation1) {
       return list.map((item) => {
         const { data = [] } = item;
         const newData = data.filter(({ country = [] }) => {
           return (
-            country.includes(workLocation?.headQuarterAddress?.country?._id) ||
-            country.includes(workLocation?.headQuarterAddress?.country) ||
+            country.includes(workLocation1?.headQuarterAddress?.country?._id) ||
+            country.includes(workLocation1?.headQuarterAddress?.country) ||
             country.length === 0
           );
         });
@@ -1385,14 +1410,13 @@ class DocumentVerification extends Component {
           isMarkAsDone,
           documentChecklistSetting = [],
         },
-        data: { privateEmail, processStatus: processStatusFilled = '', candidate = '' },
+        data: { privateEmail, processStatus = '', candidate = '' },
         checkMandatory: { filledDocumentVerification = false } = {},
       } = {},
-      processStatus,
       loading4,
       loadingUpdateByHR,
+      loadingFetchCandidate,
     } = this.props;
-
     const documentCLSTByCountry = this.getDocumentListByCountry(documentChecklistSetting);
     // type A, B, C
     const documentCLSByCountryTypeABC = documentCLSTByCountry.filter((doc) =>
@@ -1408,6 +1432,7 @@ class DocumentVerification extends Component {
 
     const { openModalEmail, openModal, identityProof, addressProof, educational } = this.state;
 
+    if (loadingFetchCandidate) return <Skeleton />;
     return (
       <div>
         <Row gutter={[24, 0]} className={styles.DocumentVerification}>
@@ -1479,7 +1504,7 @@ class DocumentVerification extends Component {
             </Row>
 
             {processStatus === PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT ||
-            processStatusFilled === PROCESS_STATUS.SENT_PROVISIONAL_OFFERS ? (
+            processStatus === PROCESS_STATUS.SENT_PROVISIONAL_OFFERS ? (
               <SendEmail
                 openModalEmail={openModalEmail}
                 closeModalEmail={this.closeModalEmail}
@@ -1495,8 +1520,8 @@ class DocumentVerification extends Component {
                 lastName={lastName}
                 handleValueChange={this.handleValueChange}
                 privateEmail={privateEmail}
-                processStatusFilled={processStatusFilled}
-                processStatus={processStatusFilled}
+                processStatusFilled={processStatus}
+                processStatus={processStatus}
                 filledDocumentVerification={filledDocumentVerification}
                 valueToFinalOffer={valueToFinalOffer}
                 changeValueToFinalOffer={this.changeValueToFinalOffer}

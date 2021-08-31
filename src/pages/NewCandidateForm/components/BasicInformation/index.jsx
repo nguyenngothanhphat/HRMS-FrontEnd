@@ -1,17 +1,18 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-param-reassign */
+import { Button, Col, Form, Input, Row, Skeleton, Typography } from 'antd';
+import { debounce } from 'lodash';
 import React, { PureComponent } from 'react';
-import { Row, Col, Form, Input, Typography, Button, Spin, Skeleton } from 'antd';
 import { connect, formatMessage, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import BasicInformationHeader from './components/BasicInformationHeader';
+import { Page } from '../../utils';
+import MessageBox from '../MessageBox';
 // import BasicInformationReminder from './components/BasicInformationReminder';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
-import MessageBox from '../MessageBox';
+import BasicInformationHeader from './components/BasicInformationHeader';
 import styles from './index.less';
-import { Page } from '../../utils';
 
 @connect(({ newCandidateForm: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
   data,
@@ -28,12 +29,24 @@ class BasicInformation extends PureComponent {
     super(props);
 
     this.state = {};
+    // this.handleChange = debounce(this.handleChange, 250);
   }
 
   componentDidMount() {
     window.scrollTo({ top: 77, behavior: 'smooth' });
-    this.checkFilled();
+    // this.checkFilled();
   }
+
+  componentDidUpdate = (prevProps) => {
+    const { data = {}, tempData = {} } = this.props;
+
+    if (
+      JSON.stringify(prevProps.data) !== JSON.stringify(data) ||
+      JSON.stringify(prevProps.tempData) !== JSON.stringify(tempData)
+    ) {
+      this.checkFilled();
+    }
+  };
 
   handleUpdateByHR = () => {
     const {
@@ -69,12 +82,10 @@ class BasicInformation extends PureComponent {
 
   checkFilled = () => {
     const {
-      tempData: { firstName, middleName, lastName, privateEmail, workEmail },
+      tempData: { firstName, middleName, lastName, privateEmail, workEmail, checkStatus },
       checkMandatory,
       dispatch,
     } = this.props;
-
-    let checkStatus = false;
 
     const notSpace = RegExp(/[^\s-]/);
     const emailRegExp = RegExp(
@@ -93,16 +104,16 @@ class BasicInformation extends PureComponent {
       emailRegExp.test(privateEmail)
       // emailRegExp.test(workEmail)
     ) {
-      checkStatus = true;
+      checkStatus.filledBasicInformation = true;
     } else {
-      checkStatus = false;
+      checkStatus.filledBasicInformation = false;
     }
     dispatch({
       type: 'newCandidateForm/save',
       payload: {
         checkMandatory: {
           ...checkMandatory,
-          filledBasicInformation: checkStatus,
+          filledBasicInformation: checkStatus.filledBasicInformation,
         },
       },
     });

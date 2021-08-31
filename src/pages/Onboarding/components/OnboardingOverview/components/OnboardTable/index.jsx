@@ -88,11 +88,12 @@ class OnboardTable extends Component {
   //   );
   //   // return <ModalContent closeModal={this.closeModal} />;
   // };
+  fetchData = () => {};
 
   renderCandidateId = (candidateId, type) => {
     const id = candidateId.replace('#', '') || '';
     return (
-      <Link to={`/onboarding/list/review/${id}`} onClick={() => this.fetchData(id)}>
+      <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
         <span onClick={() => this.handleActionClick(type)}>{candidateId}</span>
       </Link>
     );
@@ -484,8 +485,7 @@ class OnboardTable extends Component {
           <Menu.Item>
             <div
               onClick={() =>
-                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)
-              }
+                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)}
             >
               Re-assign
             </div>

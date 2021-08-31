@@ -3,6 +3,7 @@ import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { Checkbox, Collapse } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import { PROCESS_STATUS } from '@/utils/onboarding';
 import Certification from './components/Certification';
 import styles from './index.less';
 
@@ -73,7 +74,8 @@ class CollapseFieldsTypeD extends PureComponent {
     const { processStatus = '', disabled = false, certifications = {} } = this.props;
     return (
       <div className={styles.CollapseFieldsTypeD}>
-        {(certifications?.data?.length > 0 || processStatus === 'DRAFT') && (
+        {(certifications?.data?.length > 0 ||
+          processStatus === PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT) && (
           <Collapse
             accordion
             expandIconPosition="right"
