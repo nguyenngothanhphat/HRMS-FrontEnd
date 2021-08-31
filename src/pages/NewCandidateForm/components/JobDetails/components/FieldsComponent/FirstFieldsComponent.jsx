@@ -6,49 +6,86 @@ import { Row, Col, Select, Spin, Form } from 'antd';
 import { isNull } from 'lodash';
 import { connect } from 'umi';
 import InternalStyle from './FirstFieldsComponent.less';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 const { Option } = Select;
 
-@connect(({ loading }) => ({
-  loadingTitle: loading.effects['newCandidateForm/fetchTitleList'],
-}))
+@connect(() => ({}))
 class FirstFieldsComponent extends PureComponent {
   formRef = React.createRef();
 
+  componentDidMount = () => {
+    this.fetchData();
+  };
+
+  fetchData = () => {
+    const { department, title, reportingManager, dispatch } = this.props;
+
+    const companyId = getCurrentCompany();
+    const tenantId = getCurrentTenant();
+    if (department) {
+      dispatch({
+        type: 'newCandidateForm/fetchDepartmentList',
+        payload: {
+          company: companyId,
+          tenantId,
+        },
+      });
+    }
+    if (title) {
+      dispatch({
+        type: 'newCandidateForm/fetchTitleList',
+        payload: {
+          department: department ? department._id : '',
+          tenantId,
+        },
+      });
+    }
+    if (department) {
+      dispatch({
+        type: 'newCandidateForm/fetchDepartmentList',
+        payload: {
+          company: companyId,
+          tenantId,
+        },
+      });
+    }
+    if (reportingManager && Object.keys(reportingManager).length > 0) {
+      dispatch({
+        type: 'newCandidateForm/fetchManagerList',
+        payload: {
+          company: companyId,
+          status: ['ACTIVE'],
+          // location: locationPayload,
+          tenantId: getCurrentTenant(),
+        },
+      });
+    }
+  };
+
   onChangeValue = (value, fieldName) => {
-    const {
-      _handleSelect = () => {},
-      jobGradeList = [],
-      locationList = [],
-      departmentList = [],
-      titleList = [],
-    } = this.props;
+    const { _handleSelect = () => {} } = this.props;
     switch (fieldName) {
       case 'jobGradeLevel': {
-        const getDataGrade = jobGradeList.filter((item) => item === value);
-        _handleSelect(getDataGrade[0], fieldName);
+        _handleSelect(value, fieldName);
         break;
       }
       case 'department': {
         this.formRef.current.setFieldsValue({
           title: null,
         });
-        const getDataDepartment = departmentList.filter((item) => item.name === value);
-        _handleSelect(getDataDepartment[0]._id, fieldName);
+        _handleSelect(value, fieldName);
         break;
       }
 
       case 'workLocation': {
-        const getDataLocation = locationList.filter((item) => item.name === value) || [];
-        if (getDataLocation.length > 0) {
-          _handleSelect(getDataLocation[0]._id, fieldName);
-        }
+        _handleSelect(value, fieldName);
+
         break;
       }
 
       case 'title': {
-        const getDataTitle = titleList.filter((item) => item.name === value);
-        _handleSelect(getDataTitle[0]._id, fieldName);
+        _handleSelect(value, fieldName);
         break;
       }
 
@@ -81,8 +118,8 @@ class FirstFieldsComponent extends PureComponent {
       loading2,
       loading3,
       disabled,
-      loadingTitle,
     } = this.props;
+
     const showManagerListAB =
       managerList.length > 0
         ? managerList.sort((a, b) => {
@@ -148,18 +185,12 @@ class FirstFieldsComponent extends PureComponent {
                     >
                       {/* <Typography.Title level={5}>{item.name}</Typography.Title> */}
                       <Select
-                        loading={item.title === 'title' ? loadingTitle : null}
-                        placeholder={
-                          (loading1 && item.name === 'Department') ||
-                          (loading2 && item.name === 'Job Title') ||
-                          (loading3 && item.name === 'Reporting Manager') ? (
-                            <div className={styles.viewLoading}>
-                              <Spin />
-                            </div>
-                          ) : (
-                            item.placeholder
-                          )
+                        loading={
+                          (item.title === 'title' ? loading2 : null) ||
+                          (item.title === 'reportingManager' ? loading3 : null) ||
+                          (item.title === 'department' ? loading1 : null)
                         }
+                        placeholder={item.placeholder}
                         className={styles}
                         // onChange={(value) => _handleSelect(value, item.title)}
                         onChange={(value) => this.onChangeValue(value, item.title)}
@@ -177,22 +208,22 @@ class FirstFieldsComponent extends PureComponent {
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'department' &&
                           !isNull(department) && {
-                            defaultValue: department?.name,
+                            defaultValue: department._id,
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'title' &&
                           !isNull(title) && {
-                            defaultValue: title?.name,
+                            defaultValue: title._id,
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'workLocation' &&
                           !isNull(workLocation) && {
-                            defaultValue: workLocation?.name,
+                            defaultValue: workLocation._id,
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'reportingManager' &&
                           !isNull(reportingManager) && {
-                            defaultValue: reportingManager?.generalInfo?.firstName,
+                            defaultValue: reportingManager._id,
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'jobGradeLevel' &&
@@ -222,26 +253,26 @@ class FirstFieldsComponent extends PureComponent {
                           ))
                         ) : item.title === 'workLocation' ? (
                           showWorkLocationAB.map((data, index) => (
-                            <Option value={data.name} key={index}>
+                            <Option value={data._id} key={index}>
                               {data.name}
                             </Option>
                           ))
                         ) : item.title === 'department' && departmentList.length > 0 ? (
                           showDepartmentAB.map((data, index) => (
-                            <Option value={data.name} key={index}>
+                            <Option value={data._id} key={index}>
                               {data.name}
                             </Option>
                           ))
                         ) : item.title === 'title' && titleList.length > 0 ? (
                           <>
-                            {loadingTitle ? (
+                            {loading2 ? (
                               <Option value="error">
                                 <Spin className={InternalStyle.spin} />
                               </Option>
                             ) : (
                               <>
                                 {showTitleAB.map((data, index) => (
-                                  <Option value={data.name} key={index}>
+                                  <Option value={data._id} key={index}>
                                     {data.name}
                                   </Option>
                                 ))}
@@ -250,7 +281,7 @@ class FirstFieldsComponent extends PureComponent {
                           </>
                         ) : item.title === 'reportingManager' && showManagerListAB.length > 0 ? (
                           showManagerListAB.map((data, index) => (
-                            <Option value={data.generalInfo.firstName} key={index}>
+                            <Option value={data._id} key={index}>
                               {data.generalInfo && data.generalInfo?.firstName
                                 ? `${data.generalInfo?.firstName} (${data.generalInfo?.workEmail})`
                                 : ''}

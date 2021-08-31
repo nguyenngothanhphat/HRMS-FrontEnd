@@ -48,7 +48,7 @@ class SettingLayout extends PureComponent {
     //     displayComponent: <PreviewOffer />,
     //   },
     // });
-    // history.push(`/onboarding/list/review/preview-offer`);
+    // history.push(`/onboarding/list/view/preview-offer`);
   };
 
   _handleClick = (item) => {

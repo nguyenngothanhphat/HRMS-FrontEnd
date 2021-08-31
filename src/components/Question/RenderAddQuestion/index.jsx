@@ -10,6 +10,8 @@ import RemoveIcon from '@/assets/remove.svg';
 import { PROCESS_STATUS } from '@/utils/onboarding';
 import { Page } from '../../../pages/NewCandidateForm/utils';
 
+import styles from './index.less';
+
 const defaultQuestion = {
   index: null,
   answerType: TYPE_QUESTION.TEXT_ANSWER.key,
@@ -173,7 +175,7 @@ const RenderAddQuestion = (props) => {
   };
   return (
     <>
-      <Row>
+      <Row className={styles.RenderAddQuestion}>
         {settings && settings.length > 0 ? (
           <Col>
             <Button type="link" onClick={() => openModalEditList(MODE.VIEW)}>

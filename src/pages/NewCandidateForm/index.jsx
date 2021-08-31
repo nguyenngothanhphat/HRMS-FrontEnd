@@ -1,7 +1,7 @@
 import { Affix, Button, Skeleton } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import CommonLayout from '@/components/CommonLayout';
+import LayoutAddCandidateForm from '@/components/LayoutAddCandidateForm';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentTenant } from '@/utils/authority';
 // import { PROCESS_STATUS } from '@/utils/onboarding';
@@ -18,7 +18,7 @@ import styles from './index.less';
 @connect(({ newCandidateForm = {}, user, loading }) => ({
   newCandidateForm,
   user,
-  loading1: loading.effects['newCandidateForm/fetchCandidateByRookie'],
+  loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
 }))
 class NewCandidateForm extends PureComponent {
   componentDidMount = () => {
@@ -29,7 +29,7 @@ class NewCandidateForm extends PureComponent {
 
     // check action is add or review. If isReview fetch candidate by reID
     // console.log(newCandidateForm.currentStep);
-    if (action === 'review' || action === 'add' || action === 'candidate-detail') {
+    if (action === 'view' || action === 'candidate-detail') {
       dispatch({
         type: 'newCandidateForm/fetchCandidateByRookie',
         payload: {
@@ -91,6 +91,9 @@ class NewCandidateForm extends PureComponent {
   resetFormMember = () => {
     const { dispatch } = this.props;
     dispatch({
+      type: 'newCandidateForm/clearState'
+    })
+    dispatch({
       type: 'optionalQuestion/save',
       payload: {
         candidate: null,
@@ -149,17 +152,10 @@ class NewCandidateForm extends PureComponent {
     const {
       match: { params: { action = '', reId = '', tabName = '' } = {} },
       newCandidateForm,
-      loading1 = false,
-      newCandidateForm: {
-        data: {
-          _id: candidateId = '',
-          // documentsByCandidate = []
-        },
-      } = {},
+      loadingFetchCandidate = false,
       location: { state: { isAddNew = false } = {} } = {},
     } = this.props;
-    const check = !loading1 && candidateId !== '';
-    // const checkDocument = !loading1 && documentsByCandidate.length > 0;
+
     const {
       tempData: { locationList, employeeTypeList, documentList, valueToFinalOffer = 0 } = {},
       data: { processStatus = '' } = {},
@@ -171,8 +167,12 @@ class NewCandidateForm extends PureComponent {
         id: 1,
         name: 'Basic Information',
         key: 'basicInformation',
-        component: !check ? null : (
-          <BasicInformation reId={reId} loading1={loading1} processStatus={processStatus} />
+        component: (
+          <BasicInformation
+            reId={reId}
+            loadingFetchCandidate={loadingFetchCandidate}
+            processStatus={processStatus}
+          />
         ),
         link: 'basic-information',
       },
@@ -185,7 +185,7 @@ class NewCandidateForm extends PureComponent {
             locationList={locationList}
             employeeTypeList={employeeTypeList}
             reId={reId}
-            loading={loading1}
+            loading={loadingFetchCandidate}
             processStatus={processStatus}
           />
         ),
@@ -195,7 +195,13 @@ class NewCandidateForm extends PureComponent {
         id: 3,
         name: 'Salary Structure',
         key: 'salaryStructure',
-        component: <SalaryStructure loading={loading1} reId={reId} processStatus={processStatus} />,
+        component: (
+          <SalaryStructure
+            loading={loadingFetchCandidate}
+            reId={reId}
+            processStatus={processStatus}
+          />
+        ),
         link: 'salary-structure',
       },
       {
@@ -210,7 +216,7 @@ class NewCandidateForm extends PureComponent {
           // ) :
           <DocumentVerification
             documentList={documentList}
-            loading={loading1}
+            loading={loadingFetchCandidate}
             reId={reId}
             processStatus={processStatus}
           />
@@ -271,13 +277,8 @@ class NewCandidateForm extends PureComponent {
               )}
             </div>
           </Affix>
-          {!check ? (
-            <div className={styles.viewLoading}>
-              <Skeleton active />
-            </div>
-          ) : (
-            <CommonLayout listMenu={formatListMenu} tabName={tabName} />
-          )}
+
+          <LayoutAddCandidateForm listMenu={formatListMenu} tabName={tabName} reId={reId} />
         </div>
       </PageContainer>
     );

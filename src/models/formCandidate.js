@@ -307,7 +307,7 @@ const info = {
         const { ticketID = '', _id = '' } = data;
         const rookieId = ticketID;
         yield put({ type: 'save', payload: { rookieId, _id } });
-        history.push(`/onboarding/list/review/${rookieId}`);
+        history.push(`/onboarding/list/view/${rookieId}/basic-information`);
       } catch (error) {
         dialog(error);
       }

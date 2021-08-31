@@ -660,22 +660,14 @@ const routes = [
           },
 
           {
-            path: '/onboarding/list/:action(add)/:reId',
+            path: '/onboarding/list/:action(view)/:reId',
             name: 'addTeamMember',
             hideInMenu: true,
             component: './NewCandidateForm',
             authority: ['hr-manager', 'hr', 'hr-global'],
           },
           {
-            path: '/onboarding/list/:action(review)/:reId',
-            name: 'reviewTeamMember',
-            hideInMenu: true,
-            component: './NewCandidateForm',
-            authority: ['hr-manager', 'hr', 'hr-global'],
-          },
-          {
-            path: '/onboarding/list/:action(review)/:reId/:type',
-            // name: 'reviewTeamMember',
+            path: '/onboarding/list/:action(view)/:reId/:tabName',
             hideInMenu: true,
             component: './NewCandidateForm',
             authority: ['hr-manager', 'hr', 'hr-global'],

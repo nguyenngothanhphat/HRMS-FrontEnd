@@ -1,9 +1,9 @@
 import moment from 'moment';
 import _ from 'lodash';
 
+import { getOnboardingList, getTotalNumberOnboardingList } from '@/services/onboard';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
-import { getOnboardingList, getTotalNumberOnboardingList } from '@/services/onboard';
 import { NEW_PROCESS_STATUS_TABLE_NAME } from '@/utils/onboarding';
 
 const allData = []; // ALL
