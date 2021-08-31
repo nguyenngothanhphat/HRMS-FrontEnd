@@ -1,7 +1,7 @@
-import { NEW_TABLE_TYPE } from '../utils';
+import { TABLE_TYPE } from '../utils';
 
 const getActionText = (type) => {
-  const { DRAFT } = NEW_TABLE_TYPE;
+  const { DRAFT } = TABLE_TYPE;
   switch (type) {
     case DRAFT:
       return 'Continue';
@@ -11,8 +11,8 @@ const getActionText = (type) => {
 };
 
 const getColumnWidth = (columnName, tableType) => {
-  const { ALL, DRAFT } = NEW_TABLE_TYPE;
-  if (tableType === ALL) {
+  const { ALL, DRAFT, PROFILE_VERIFICATION } = TABLE_TYPE;
+  if (tableType === ALL || tableType === PROFILE_VERIFICATION) {
     switch (columnName) {
       case 'candidateId':
         return '13%';

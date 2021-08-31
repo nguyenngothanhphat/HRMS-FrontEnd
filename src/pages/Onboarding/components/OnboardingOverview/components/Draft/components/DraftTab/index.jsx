@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 
 import {
   COLUMN_NAME,
-  NEW_TABLE_TYPE,
+  TABLE_TYPE,
 } from '@/pages/Onboarding/components/OnboardingOverview/components/utils';
 import OnboardTable from '@/pages/Onboarding/components/OnboardingOverview/components/OnboardTable';
 
@@ -17,7 +17,7 @@ const {
   PROCESS_STATUS,
   ACTION,
 } = COLUMN_NAME;
-const { DRAFT } = NEW_TABLE_TYPE;
+const { DRAFT } = TABLE_TYPE;
 
 class DraftTab extends PureComponent {
   render() {

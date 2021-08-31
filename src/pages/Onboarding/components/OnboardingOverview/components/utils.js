@@ -63,9 +63,10 @@ const COLUMN_NAME = {
 //   // FINAL_OFFERS
 // };
 
-const NEW_TABLE_TYPE = {
+const TABLE_TYPE = {
   ALL: 'ALL',
   DRAFT: 'DRAFT',
+  PROFILE_VERIFICATION: 'PROFILE_VERIFICATION',
 };
 
-export { rookieList, COLUMN_NAME, NEW_TABLE_TYPE };
+export { rookieList, COLUMN_NAME, TABLE_TYPE };

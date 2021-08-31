@@ -17,9 +17,9 @@ const {
   PROCESS_STATUS,
   ACTION,
 } = COLUMN_NAME;
-const { ALL } = TABLE_TYPE;
+const { PROFILE_VERIFICATION } = TABLE_TYPE;
 
-class AllTab extends PureComponent {
+class ProfileVerificationTab extends PureComponent {
   render() {
     const { list = [], loading, pageSelected, size, total, getPageAndSize = () => {} } = this.props;
 
@@ -37,7 +37,7 @@ class AllTab extends PureComponent {
           PROCESS_STATUS,
           ACTION,
         ]}
-        type={ALL}
+        type={PROFILE_VERIFICATION}
         inTab
         loadingFetch={loading}
         pageSelected={pageSelected}
@@ -49,4 +49,4 @@ class AllTab extends PureComponent {
   }
 }
 
-export default AllTab;
+export default ProfileVerificationTab;

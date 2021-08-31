@@ -6,6 +6,7 @@ import { formatMessage, connect, history } from 'umi';
 import Draft from '@/pages/Onboarding/components/OnboardingOverview/components/Draft';
 import OnboardingAll from '@/pages/Onboarding/components/OnboardingOverview/components/All';
 import ProfileVerification from '@/pages/Onboarding/components/OnboardingOverview/components/ProfileVerification';
+import DocumentVerification from '@/pages/Onboarding/components/OnboardingOverview/components/DocumentVerification';
 import WithdrawnOffers from '@/pages/Onboarding/components/OnboardingOverview/components/WithdrawnOffers';
 import RejectedOffers from '@/pages/Onboarding/components/OnboardingOverview/components/RejectedOffers';
 import OfferAccepted from '@/pages/Onboarding/components/OnboardingOverview/components/OfferAccepted';
@@ -27,7 +28,7 @@ const getComponent = (name) => {
     case 'ProfileVerification':
       return <ProfileVerification />;
     case 'DocumentVerification':
-      return <ProfileVerification />;
+      return <DocumentVerification />;
     case 'AwaitingApprovals':
       return <AwaitingApprovals />;
     case 'SalaryNegotiation':

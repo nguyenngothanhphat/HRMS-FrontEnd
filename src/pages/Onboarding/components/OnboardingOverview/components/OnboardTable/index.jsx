@@ -8,7 +8,7 @@ import moment from 'moment';
 import MenuIcon from '@/assets/menuDots.svg';
 import { PROCESS_STATUS } from '@/utils/onboarding';
 import { getAuthority, getCurrentTenant } from '@/utils/authority';
-import { COLUMN_NAME, NEW_TABLE_TYPE } from '../utils';
+import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 import { getActionText, getColumnWidth } from './utils';
 
 import ReassignModal from './components/ReassignModal';
@@ -151,7 +151,7 @@ class OnboardTable extends Component {
     return check;
   };
 
-  generateColumns = (columnArr = ['id'], type = NEW_TABLE_TYPE.ALL) => {
+  generateColumns = (columnArr = ['id'], type = TABLE_TYPE.ALL) => {
     const {
       ID,
       NAME,
