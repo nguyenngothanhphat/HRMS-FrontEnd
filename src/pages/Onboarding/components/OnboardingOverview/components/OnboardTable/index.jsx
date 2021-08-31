@@ -92,7 +92,7 @@ class OnboardTable extends Component {
   renderCandidateId = (candidateId, type) => {
     const id = candidateId.replace('#', '') || '';
     return (
-      <Link to={`/onboarding/list/review/${id}`} onClick={() => this.fetchData(id)}>
+      <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
         <span onClick={() => this.handleActionClick(type)}>{candidateId}</span>
       </Link>
     );
