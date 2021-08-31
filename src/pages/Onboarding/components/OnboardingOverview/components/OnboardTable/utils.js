@@ -11,8 +11,12 @@ const getActionText = (type) => {
 };
 
 const getColumnWidth = (columnName, tableType) => {
-  const { ALL, DRAFT, PROFILE_VERIFICATION } = TABLE_TYPE;
-  if (tableType === ALL || tableType === PROFILE_VERIFICATION) {
+  const { ALL, DRAFT, PROFILE_VERIFICATION, DOCUMENT_VERIFICATION } = TABLE_TYPE;
+  if (
+    tableType === ALL ||
+    tableType === PROFILE_VERIFICATION ||
+    tableType === DOCUMENT_VERIFICATION
+  ) {
     switch (columnName) {
       case 'candidateId':
         return '13%';
