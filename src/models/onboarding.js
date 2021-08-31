@@ -72,7 +72,6 @@ const MENU_DATA = [
     id: 8,
     name: 'Offer Accepted',
     key: 'offerAccepted',
-    key: 'offerAccepted',
     component: 'OfferAccepted',
     quantity: 0,
     link: 'offer-accepted',

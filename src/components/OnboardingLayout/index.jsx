@@ -6,6 +6,12 @@ import { formatMessage, connect, history } from 'umi';
 import Draft from '@/pages/Onboarding/components/OnboardingOverview/components/Draft';
 import OnboardingAll from '@/pages/Onboarding/components/OnboardingOverview/components/All';
 import ProfileVerification from '@/pages/Onboarding/components/OnboardingOverview/components/ProfileVerification';
+import WithdrawnOffers from '@/pages/Onboarding/components/OnboardingOverview/components/WithdrawnOffers';
+import RejectedOffers from '@/pages/Onboarding/components/OnboardingOverview/components/RejectedOffers';
+import OfferAccepted from '@/pages/Onboarding/components/OnboardingOverview/components/OfferAccepted';
+import OfferReleased from '@/pages/Onboarding/components/OnboardingOverview/components/OfferReleased';
+import SalaryNegotiation from '@/pages/Onboarding/components/OnboardingOverview/components/SalaryNegotiation';
+import AwaitingApprovals from '@/pages/Onboarding/components/OnboardingOverview/components/AwaitingApprovals';
 
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import MenuItem from './components/MenuItem';
@@ -18,8 +24,22 @@ const getComponent = (name) => {
       return <OnboardingAll />;
     case 'Drafts':
       return <Draft />;
-    default:
+    case 'ProfileVerification':
       return <ProfileVerification />;
+    case 'DocumentVerification':
+      return <ProfileVerification />;
+    case 'AwaitingApprovals':
+      return <AwaitingApprovals />;
+    case 'SalaryNegotiation':
+      return <SalaryNegotiation />;
+    case 'OfferReleased':
+      return <OfferReleased />;
+    case 'OfferAccepted':
+      return <OfferAccepted />;
+    case 'RejectedOffers':
+      return <RejectedOffers />;
+    default:
+      return <WithdrawnOffers />;
   }
 };
 
