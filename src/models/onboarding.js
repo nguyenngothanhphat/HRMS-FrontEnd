@@ -329,26 +329,30 @@ const onboarding = {
       };
     },
     updateMenuQuantity(state, action) {
+      const { DRAFT, PROFILE_VERIFICATION } = NEW_PROCESS_STATUS;
       const { listMenu } = state.menu.onboardingOverviewTab;
       const { totalNumber } = action.payload;
 
       const newTotalNumber = {
         all: 0,
         drafts: 0,
-        profileVerificationData: 0,
+        profileVerification: 0,
       };
 
       totalNumber.forEach((status) => {
         const { _id = '', count = 0 } = status;
         switch (_id) {
-          case 'DRAFT':
+          case DRAFT:
             newTotalNumber.drafts += count;
+            break;
+          case PROFILE_VERIFICATION:
+            newTotalNumber.profileVerification += count;
             break;
           default:
             break;
         }
 
-        newTotalNumber.all = newTotalNumber.drafts + newTotalNumber.profileVerificationData;
+        newTotalNumber.all = newTotalNumber.drafts + newTotalNumber.profileVerification;
       });
 
       const newListMenu = listMenu.map((item) => {
@@ -361,6 +365,9 @@ const onboarding = {
         }
         if (key === 'drafts') {
           dataLength = newTotalNumber.drafts;
+        }
+        if (key === 'profileVerification') {
+          dataLength = newTotalNumber.profileVerification;
         }
 
         newQuantity = dataLength;
