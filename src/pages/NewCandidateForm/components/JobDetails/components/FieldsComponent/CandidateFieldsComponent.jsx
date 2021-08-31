@@ -45,7 +45,7 @@ class CandidateFieldsComponent extends PureComponent {
             <Typography.Title level={5}>{candidateField[1].name}</Typography.Title>
             <DatePicker
               className={styles}
-              placeholder=""
+              placeholder="Select a date"
               picker="date"
               format="MM.DD.YY"
               disabled={!checkAuthor}

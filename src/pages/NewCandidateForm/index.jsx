@@ -91,6 +91,9 @@ class NewCandidateForm extends PureComponent {
   resetFormMember = () => {
     const { dispatch } = this.props;
     dispatch({
+      type: 'newCandidateForm/clearState'
+    })
+    dispatch({
       type: 'optionalQuestion/save',
       payload: {
         candidate: null,

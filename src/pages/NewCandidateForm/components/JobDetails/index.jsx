@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography, Button, Skeleton } from 'antd';
-import { connect, formatMessage } from 'umi';
+import { connect, formatMessage, history } from 'umi';
 import { isEmpty, isObject } from 'lodash';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { PROCESS_STATUS } from '@/utils/onboarding';
@@ -32,6 +32,7 @@ import styles from './index.less';
     loading2: loading.effects['newCandidateForm/fetchTitleList'],
     loading3: loading.effects['newCandidateForm/fetchManagerList'],
     loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
+    loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
   }),
 )
 class JobDetails extends PureComponent {
@@ -74,7 +75,6 @@ class JobDetails extends PureComponent {
     return false;
   };
 
- 
   checkFilled = () => {
     const {
       tempData: { grade, department, workLocation, title, reportingManager },
@@ -295,6 +295,7 @@ class JobDetails extends PureComponent {
         reportingManager,
         dateOfJoining,
         documentChecklistSetting,
+        ticketID = '',
       },
     } = this.state;
     const { dispatch } = this.props;
@@ -316,12 +317,13 @@ class JobDetails extends PureComponent {
       },
     }).then(({ data, statusCode }) => {
       if (statusCode === 200) {
-        dispatch({
-          type: 'newCandidateForm/save',
-          payload: {
-            currentStep: data.currentStep,
-          },
-        });
+        // dispatch({
+        //   type: 'newCandidateForm/save',
+        //   payload: {
+        //     currentStep: data.currentStep,
+        //   },
+        // });
+        history.push(`/onboarding/list/view/${ticketID}/salary-structure`);
       }
     });
   };
@@ -353,7 +355,7 @@ class JobDetails extends PureComponent {
   };
 
   _renderBottomBar = () => {
-    const { checkMandatory } = this.props;
+    const { checkMandatory, loadingUpdateByHR = false } = this.props;
     const { filledJobDetail } = checkMandatory;
 
     return (
@@ -374,6 +376,7 @@ class JobDetails extends PureComponent {
                 !filledJobDetail ? styles.bottomBar__button__disabled : ''
               }`}
               disabled={!filledJobDetail}
+              loading={loadingUpdateByHR}
             >
               Next
             </Button>

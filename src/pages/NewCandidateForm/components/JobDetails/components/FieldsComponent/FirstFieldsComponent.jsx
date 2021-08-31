@@ -36,7 +36,7 @@ class FirstFieldsComponent extends PureComponent {
       dispatch({
         type: 'newCandidateForm/fetchTitleList',
         payload: {
-          department: department? department._id : '',
+          department: department ? department._id : '',
           tenantId,
         },
       });
@@ -50,7 +50,7 @@ class FirstFieldsComponent extends PureComponent {
         },
       });
     }
-    if (reportingManager) {
+    if (reportingManager && Object.keys(reportingManager).length > 0) {
       dispatch({
         type: 'newCandidateForm/fetchManagerList',
         payload: {

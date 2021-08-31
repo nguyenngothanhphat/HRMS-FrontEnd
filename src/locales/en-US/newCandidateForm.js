@@ -30,7 +30,7 @@ export default {
     'Part-Time (Employee working less than 30 hours a week)',
   'component.jobDetail.classificationRadio3':
     'Internship (A student or trainee participating in an internship)',
-  'component.jobDetail.jobGrade': 'Job grade',
+  'component.jobDetail.jobGrade': 'Grade',
   'component.jobDetail.department': 'Department',
   'component.jobDetail.jobTitle': 'Job Title',
   'component.jobDetail.jobCategory': 'Job Category',
