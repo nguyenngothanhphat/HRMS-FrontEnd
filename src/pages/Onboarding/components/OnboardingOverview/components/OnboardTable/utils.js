@@ -18,13 +18,15 @@ const getColumnWidth = (columnName, tableType) => {
     DOCUMENT_VERIFICATION,
     SALARY_NEGOTIATION,
     AWAITING_APPROVALS,
+    OFFER_RELEASED,
   } = TABLE_TYPE;
   if (
     tableType === ALL ||
     tableType === PROFILE_VERIFICATION ||
     tableType === DOCUMENT_VERIFICATION ||
     tableType === SALARY_NEGOTIATION ||
-    tableType === AWAITING_APPROVALS
+    tableType === AWAITING_APPROVALS ||
+    tableType === OFFER_RELEASED
   ) {
     switch (columnName) {
       case 'candidateId':
@@ -44,7 +46,7 @@ const getColumnWidth = (columnName, tableType) => {
       case 'assigneeManager':
         return '10%';
       case 'processStatus':
-        return '14%';
+        return '10%';
       default:
         return '';
     }

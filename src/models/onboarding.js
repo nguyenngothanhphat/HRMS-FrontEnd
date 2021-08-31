@@ -270,6 +270,7 @@ const onboarding = {
           DOCUMENT_VERIFICATION,
           SALARY_NEGOTIATION,
           AWAITING_APPROVALS,
+          OFFER_RELEASED,
         } = NEW_PROCESS_STATUS;
 
         const { processStatus = '', page, limit, name } = payload;
@@ -330,6 +331,13 @@ const onboarding = {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { awaitingApprovals: returnedData },
+            });
+            return;
+          }
+          case OFFER_RELEASED: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { offerReleased: returnedData },
             });
             return;
           }
