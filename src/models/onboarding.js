@@ -193,6 +193,7 @@ const onboarding = {
       drafts: [],
       profileVerifications: [],
       documentVerifications: [],
+      salaryNegotiations: [],
       currentStatus: '',
     },
   },
@@ -263,7 +264,8 @@ const onboarding = {
           type: 'fetchTotalNumberOfOnboardingListEffect',
         });
 
-        const { DRAFT, PROFILE_VERIFICATION, DOCUMENT_VERIFICATION } = NEW_PROCESS_STATUS;
+        const { DRAFT, PROFILE_VERIFICATION, DOCUMENT_VERIFICATION, SALARY_NEGOTIATION } =
+          NEW_PROCESS_STATUS;
 
         const { processStatus = '', page, limit, name } = payload;
         const tenantId = getCurrentTenant();
@@ -309,6 +311,13 @@ const onboarding = {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { documentVerifications: returnedData },
+            });
+            return;
+          }
+          case SALARY_NEGOTIATION: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { salaryNegotiations: returnedData },
             });
             return;
           }

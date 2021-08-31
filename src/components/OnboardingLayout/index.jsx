@@ -21,25 +21,26 @@ import styles from './index.less';
 
 const getComponent = (name) => {
   switch (name) {
-    case 'All':
+    case 'All': // flow 1
       return <OnboardingAll />;
-    case 'Drafts':
+    case 'Drafts': // 2
       return <Draft />;
-    case 'ProfileVerification':
+    case 'ProfileVerification': // 3
       return <ProfileVerification />;
-    case 'DocumentVerification':
+    case 'DocumentVerification': // 4
       return <DocumentVerification />;
-    case 'AwaitingApprovals':
-      return <AwaitingApprovals />;
-    case 'SalaryNegotiation':
+    case 'SalaryNegotiation': // 5
       return <SalaryNegotiation />;
-    case 'OfferReleased':
+    case 'AwaitingApprovals': // 6
+      return <AwaitingApprovals />;
+    case 'OfferReleased': // 7
       return <OfferReleased />;
-    case 'OfferAccepted':
+    case 'OfferAccepted': // 8
       return <OfferAccepted />;
-    case 'RejectedOffers':
+    case 'RejectedOffers': // 9
       return <RejectedOffers />;
     default:
+      // 10
       return <WithdrawnOffers />;
   }
 };
