@@ -42,6 +42,14 @@ const NEW_PROCESS_STATUS = {
 
 const NEW_PROCESS_STATUS_TABLE_NAME = {
   DRAFT: 'Draft',
+  PROFILE_VERIFICATION: 'Profile-verification',
+  DOCUMENT_VERIFICATION: 'Document-verification',
+  SALARY_NEGOTIATION: 'Salary-negotiation',
+  AWAITING_APPROVALS: 'Awaiting-approvals',
+  OFFER_RELEASED: 'Offer-released',
+  OFFER_ACCEPTED: 'Offer-accepted',
+  OFFER_REJECTED: 'Offer-rejected',
+  OFFER_WITHDRAWN: 'Offer-withdrawn',
 };
 
 /// ////////////////////////// [END] NEW ONBOARDING /// //////////////////////////
