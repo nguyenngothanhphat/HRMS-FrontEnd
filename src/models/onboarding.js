@@ -36,6 +36,63 @@ const MENU_DATA = [
     quantity: 0,
     link: 'profile-verification',
   },
+  {
+    id: 4,
+    name: 'Document Verification',
+    key: 'documentVerification',
+    component: 'DocumentVerification',
+    quantity: 0,
+    link: 'document-verification',
+  },
+  {
+    id: 5,
+    name: 'Salary Negotiation',
+    key: 'salaryNegotiation',
+    component: 'SalaryNegotiation',
+    quantity: 0,
+    link: 'salary-negotiation',
+  },
+  {
+    id: 6,
+    name: 'Awaiting approvals',
+    key: 'awaitingApprovals',
+    component: 'AwaitingApprovals',
+    quantity: 0,
+    link: 'awaiting-approvals',
+  },
+  {
+    id: 7,
+    name: 'Offer Released',
+    key: 'offerReleased',
+    component: 'OfferReleased',
+    quantity: 0,
+    link: 'offer-released',
+  },
+  {
+    id: 8,
+    name: 'Offer Accepted',
+    key: 'offerAccepted',
+    key: 'offerAccepted',
+    component: 'OfferAccepted',
+    quantity: 0,
+    link: 'offer-accepted',
+  },
+  {
+    id: 9,
+    name: 'Rejected Offers',
+    key: 'rejectedOffers',
+    component: 'RejectedOffers',
+    quantity: 0,
+    link: 'rejected-offer',
+  },
+  {
+    id: 10,
+    name: 'Withdrawn Offers',
+    key: 'withdrawnOffers',
+    component: 'WithdrawnOffers',
+    quantity: 0,
+    link: 'withdrawn-offers',
+  },
 ];
 
 const formatDate = (date) => {
@@ -325,7 +382,17 @@ const onboarding = {
       };
     },
     updateMenuQuantity(state, action) {
-      const { DRAFT, PROFILE_VERIFICATION } = NEW_PROCESS_STATUS;
+      const {
+        DRAFT,
+        PROFILE_VERIFICATION,
+        DOCUMENT_VERIFICATION,
+        SALARY_NEGOTIATION,
+        AWAITING_APPROVALS,
+        OFFER_RELEASED,
+        OFFER_ACCEPTED,
+        OFFER_REJECTED,
+        OFFER_WITHDRAWN,
+      } = NEW_PROCESS_STATUS;
       const { listMenu } = state.menu.onboardingOverviewTab;
       const { totalNumber } = action.payload;
 
@@ -333,6 +400,13 @@ const onboarding = {
         all: 0,
         drafts: 0,
         profileVerification: 0,
+        documentVerification: 0,
+        salaryNegotiation: 0,
+        awaitingApprovals: 0,
+        offerReleased: 0,
+        offerAccepted: 0,
+        rejectedOffers: 0,
+        withdrawnOffers: 0,
       };
 
       totalNumber.forEach((status) => {
@@ -344,11 +418,41 @@ const onboarding = {
           case PROFILE_VERIFICATION:
             newTotalNumber.profileVerification += count;
             break;
+          case DOCUMENT_VERIFICATION:
+            newTotalNumber.documentVerification += count;
+            break;
+          case SALARY_NEGOTIATION:
+            newTotalNumber.salaryNegotiation += count;
+            break;
+          case AWAITING_APPROVALS:
+            newTotalNumber.awaitingApprovals += count;
+            break;
+          case OFFER_RELEASED:
+            newTotalNumber.offerReleased += count;
+            break;
+          case OFFER_ACCEPTED:
+            newTotalNumber.offerAccepted += count;
+            break;
+          case OFFER_REJECTED:
+            newTotalNumber.rejectedOffers += count;
+            break;
+          case OFFER_WITHDRAWN:
+            newTotalNumber.withdrawnOffers += count;
+            break;
           default:
             break;
         }
 
-        newTotalNumber.all = newTotalNumber.drafts + newTotalNumber.profileVerification;
+        newTotalNumber.all =
+          newTotalNumber.drafts +
+          newTotalNumber.profileVerification +
+          newTotalNumber.documentVerification +
+          newTotalNumber.salaryNegotiation +
+          newTotalNumber.awaitingApprovals +
+          newTotalNumber.offerReleased +
+          newTotalNumber.offerAccepted +
+          newTotalNumber.rejectedOffers +
+          newTotalNumber.withdrawnOffers;
       });
 
       const newListMenu = listMenu.map((item) => {
@@ -364,6 +468,27 @@ const onboarding = {
         }
         if (key === 'profileVerification') {
           dataLength = newTotalNumber.profileVerification;
+        }
+        if (key === 'documentVerification') {
+          dataLength = newTotalNumber.documentVerification;
+        }
+        if (key === 'salaryNegotiation') {
+          dataLength = newTotalNumber.salaryNegotiation;
+        }
+        if (key === 'awaitingApprovals') {
+          dataLength = newTotalNumber.awaitingApprovals;
+        }
+        if (key === 'offerReleased') {
+          dataLength = newTotalNumber.offerReleased;
+        }
+        if (key === 'offerAccepted') {
+          dataLength = newTotalNumber.offerAccepted;
+        }
+        if (key === 'rejectedOffers') {
+          dataLength = newTotalNumber.rejectedOffers;
+        }
+        if (key === 'withdrawnOffers') {
+          dataLength = newTotalNumber.withdrawnOffers;
         }
 
         newQuantity = dataLength;
