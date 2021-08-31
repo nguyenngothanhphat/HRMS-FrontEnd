@@ -11,13 +11,20 @@ const getActionText = (type) => {
 };
 
 const getColumnWidth = (columnName, tableType) => {
-  const { ALL, DRAFT, PROFILE_VERIFICATION, DOCUMENT_VERIFICATION, SALARY_NEGOTIATION } =
-    TABLE_TYPE;
+  const {
+    ALL,
+    DRAFT,
+    PROFILE_VERIFICATION,
+    DOCUMENT_VERIFICATION,
+    SALARY_NEGOTIATION,
+    AWAITING_APPROVALS,
+  } = TABLE_TYPE;
   if (
     tableType === ALL ||
     tableType === PROFILE_VERIFICATION ||
     tableType === DOCUMENT_VERIFICATION ||
-    tableType === SALARY_NEGOTIATION
+    tableType === SALARY_NEGOTIATION ||
+    tableType === AWAITING_APPROVALS
   ) {
     switch (columnName) {
       case 'candidateId':
