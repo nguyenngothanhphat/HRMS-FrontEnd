@@ -4,8 +4,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 
 import AllTab from './components/AllTab';
-
-import styles from './index.less';
+import styles from '../index.less';
 
 const { TabPane } = Tabs;
 
@@ -55,7 +54,7 @@ class OnboardingAll extends Component {
     const { pageSelected, size } = this.state;
 
     return (
-      <div className={styles.onboardingAll}>
+      <div className={styles.onboardingTab}>
         <div className={styles.tabs}>
           <Tabs
             defaultActiveKey="all"

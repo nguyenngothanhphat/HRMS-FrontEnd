@@ -3,7 +3,7 @@ import { connect } from 'umi';
 import { Tabs, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
-import ProfileVerificationTab from './components/ProfileVerificationTab';
+import RejectedOffersTab from './components/RejectedOffersTab';
 
 import styles from '../index.less';
 
@@ -12,14 +12,14 @@ const { TabPane } = Tabs;
 @connect(
   ({
     loading,
-    onboarding: { onboardingOverview: { profileVerifications = [], total = 0 } = {} } = {},
+    onboarding: { onboardingOverview: { rejectedOffers = [], total = 0 } = {} } = {},
   }) => ({
-    profileVerifications,
+    rejectedOffers,
     total,
     loading: loading.effects['onboarding/fetchOnboardList'],
   }),
 )
-class ProfileVerification extends PureComponent {
+class RejectedOffers extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,17 +30,17 @@ class ProfileVerification extends PureComponent {
   }
 
   componentDidMount = () => {
-    this.fetchOnboardingProfileVerification();
+    this.fetchOnboardingRejectedOffers();
   };
 
-  fetchOnboardingProfileVerification = () => {
+  fetchOnboardingRejectedOffers = () => {
     const { dispatch } = this.props;
 
     if (dispatch) {
       dispatch({
         type: 'onboarding/fetchOnboardList',
         payload: {
-          processStatus: NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
+          processStatus: NEW_PROCESS_STATUS.OFFER_REJECTED,
           //   name: nameSearch,
         },
       });
@@ -55,7 +55,7 @@ class ProfileVerification extends PureComponent {
   };
 
   render() {
-    const { profileVerifications: data = [], total = 0, loading } = this.props;
+    const { rejectedOffers: data = [], total = 0, loading } = this.props;
     const { tabId, pageSelected, size } = this.state;
     return (
       <div className={styles.onboardingTab}>
@@ -67,8 +67,8 @@ class ProfileVerification extends PureComponent {
               <Input onChange={this.onChange} placeholder="Search" prefix={<SearchOutlined />} />
             }
           >
-            <TabPane tab="Profile Verification" key="1">
-              <ProfileVerificationTab
+            <TabPane tab="Rejected Offers" key="1">
+              <RejectedOffersTab
                 list={data}
                 loading={loading}
                 pageSelected={pageSelected}
@@ -84,4 +84,4 @@ class ProfileVerification extends PureComponent {
   }
 }
 
-export default ProfileVerification;
+export default RejectedOffers;

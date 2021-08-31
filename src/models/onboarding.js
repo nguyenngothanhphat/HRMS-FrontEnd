@@ -1,14 +1,15 @@
 import moment from 'moment';
 import _ from 'lodash';
+import { notification } from 'antd';
 
-import { getOnboardingList, getTotalNumberOnboardingList } from '@/services/onboard';
+import {
+  getOnboardingList,
+  getTotalNumberOnboardingList,
+  handleExpiryTicket,
+} from '@/services/onboard';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
-import { NEW_PROCESS_STATUS_TABLE_NAME } from '@/utils/onboarding';
-
-const allData = []; // ALL
-const draftData = []; // DRAFT
-const profileVerificationData = []; // PROFILE VERFICATION
+import { NEW_PROCESS_STATUS_TABLE_NAME, NEW_PROCESS_STATUS } from '@/utils/onboarding';
 
 const MENU_DATA = [
   {
@@ -16,7 +17,7 @@ const MENU_DATA = [
     name: 'All',
     key: 'all',
     component: 'All',
-    quantity: allData.length,
+    quantity: 0,
     link: 'all',
   },
   {
@@ -24,7 +25,7 @@ const MENU_DATA = [
     name: 'Drafts',
     key: 'drafts',
     component: 'Drafts',
-    quantity: draftData.length,
+    quantity: 0,
     link: 'drafts',
   },
   {
@@ -32,8 +33,64 @@ const MENU_DATA = [
     name: 'Profile Verification',
     key: 'profileVerification',
     component: 'ProfileVerification',
-    quantity: profileVerificationData.length,
+    quantity: 0,
     link: 'profile-verification',
+  },
+  {
+    id: 4,
+    name: 'Document Verification',
+    key: 'documentVerification',
+    component: 'DocumentVerification',
+    quantity: 0,
+    link: 'document-verification',
+  },
+  {
+    id: 5,
+    name: 'Salary Negotiation',
+    key: 'salaryNegotiation',
+    component: 'SalaryNegotiation',
+    quantity: 0,
+    link: 'salary-negotiation',
+  },
+  {
+    id: 6,
+    name: 'Awaiting approvals',
+    key: 'awaitingApprovals',
+    component: 'AwaitingApprovals',
+    quantity: 0,
+    link: 'awaiting-approvals',
+  },
+  {
+    id: 7,
+    name: 'Offer Released',
+    key: 'offerReleased',
+    component: 'OfferReleased',
+    quantity: 0,
+    link: 'offer-released',
+  },
+  {
+    id: 8,
+    name: 'Offer Accepted',
+    key: 'offerAccepted',
+    component: 'OfferAccepted',
+    quantity: 0,
+    link: 'offer-accepted',
+  },
+  {
+    id: 9,
+    name: 'Rejected Offers',
+    key: 'rejectedOffers',
+    component: 'RejectedOffers',
+    quantity: 0,
+    link: 'rejected-offer',
+  },
+  {
+    id: 10,
+    name: 'Withdrawn Offers',
+    key: 'withdrawnOffers',
+    component: 'WithdrawnOffers',
+    quantity: 0,
+    link: 'withdrawn-offers',
   },
 ];
 
@@ -133,6 +190,16 @@ const onboarding = {
     },
     onboardingOverview: {
       dataAll: [],
+      drafts: [],
+      profileVerifications: [],
+      documentVerifications: [],
+      salaryNegotiations: [],
+      awaitingApprovals: [],
+      offerReleased: [],
+      offerAccepted: [],
+      rejectedOffers: [],
+      withdrawnOffers: [],
+      currentStatus: '',
     },
   },
   effects: {
@@ -179,7 +246,6 @@ const onboarding = {
         const response = yield call(getOnboardingList, req);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        // const returnedData = formatData(response.data[0].paginatedResults);
         const returnedData = formatData(response.data);
 
         yield put({
@@ -190,12 +256,177 @@ const onboarding = {
           type: 'saveOnboardingOverview',
           payload: {
             total: response.total,
-            currentStatusAll: processStatus,
+            currentStatus: processStatus || 'All',
           },
         });
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *fetchOnboardList({ payload }, { call, put }) {
+      try {
+        yield put({
+          type: 'fetchTotalNumberOfOnboardingListEffect',
+        });
+
+        const {
+          DRAFT,
+          PROFILE_VERIFICATION,
+          DOCUMENT_VERIFICATION,
+          SALARY_NEGOTIATION,
+          AWAITING_APPROVALS,
+          OFFER_RELEASED,
+          OFFER_ACCEPTED,
+          OFFER_REJECTED,
+          OFFER_WITHDRAWN,
+        } = NEW_PROCESS_STATUS;
+
+        const { processStatus = '', page, limit, name } = payload;
+        const tenantId = getCurrentTenant();
+        const company = getCurrentCompany();
+        const req = {
+          processStatus,
+          page,
+          limit,
+          tenantId,
+          name,
+          company,
+        };
+        const response = yield call(getOnboardingList, req);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        const returnedData = formatData(response.data);
+
+        yield put({
+          type: 'saveOnboardingOverview',
+          payload: {
+            total: response.total,
+            currentStatus: processStatus,
+          },
+        });
+
+        // Fetch data
+        switch (processStatus) {
+          case DRAFT: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { drafts: returnedData },
+            });
+            return;
+          }
+          case PROFILE_VERIFICATION: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { profileVerifications: returnedData },
+            });
+            return;
+          }
+          case DOCUMENT_VERIFICATION: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { documentVerifications: returnedData },
+            });
+            return;
+          }
+          case SALARY_NEGOTIATION: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { salaryNegotiations: returnedData },
+            });
+            return;
+          }
+          case AWAITING_APPROVALS: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { awaitingApprovals: returnedData },
+            });
+            return;
+          }
+          case OFFER_RELEASED: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { offerReleased: returnedData },
+            });
+            return;
+          }
+          case OFFER_ACCEPTED: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { offerAccepted: returnedData },
+            });
+            return;
+          }
+          case OFFER_REJECTED: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { rejectedOffers: returnedData },
+            });
+            return;
+          }
+          case OFFER_WITHDRAWN: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { withdrawnOffers: returnedData },
+            });
+            return;
+          }
+          default:
+            return;
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *handleExpiryTicket({ payload }, { call, put, select }) {
+      let response;
+      try {
+        const {
+          id = '',
+          tenantId = '',
+          expiryDate = '',
+          processStatus = '',
+          isAll = false,
+          page = '',
+          limit = '',
+          type = '',
+        } = payload;
+        const req = {
+          rookieID: id,
+          tenantId,
+          expiryDate,
+          type,
+        };
+        response = yield call(handleExpiryTicket, req);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        if (!isAll) {
+          yield put({
+            type: 'fetchOnboardList',
+            payload: {
+              tenantId,
+              processStatus,
+            },
+          });
+        } else {
+          const { currentStatusAll } = yield select((state) => state.onboard.onboardingOverview);
+
+          yield put({
+            type: 'fetchOnboardListAll',
+            payload: {
+              tenantId,
+              processStatus: currentStatusAll,
+              page,
+              limit,
+            },
+          });
+        }
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
   },
   reducers: {
@@ -224,26 +455,77 @@ const onboarding = {
       };
     },
     updateMenuQuantity(state, action) {
+      const {
+        DRAFT,
+        PROFILE_VERIFICATION,
+        DOCUMENT_VERIFICATION,
+        SALARY_NEGOTIATION,
+        AWAITING_APPROVALS,
+        OFFER_RELEASED,
+        OFFER_ACCEPTED,
+        OFFER_REJECTED,
+        OFFER_WITHDRAWN,
+      } = NEW_PROCESS_STATUS;
       const { listMenu } = state.menu.onboardingOverviewTab;
       const { totalNumber } = action.payload;
 
       const newTotalNumber = {
         all: 0,
         drafts: 0,
-        profileVerificationData: 0,
+        profileVerification: 0,
+        documentVerification: 0,
+        salaryNegotiation: 0,
+        awaitingApprovals: 0,
+        offerReleased: 0,
+        offerAccepted: 0,
+        rejectedOffers: 0,
+        withdrawnOffers: 0,
       };
 
       totalNumber.forEach((status) => {
         const { _id = '', count = 0 } = status;
         switch (_id) {
-          case 'DRAFT':
+          case DRAFT:
             newTotalNumber.drafts += count;
+            break;
+          case PROFILE_VERIFICATION:
+            newTotalNumber.profileVerification += count;
+            break;
+          case DOCUMENT_VERIFICATION:
+            newTotalNumber.documentVerification += count;
+            break;
+          case SALARY_NEGOTIATION:
+            newTotalNumber.salaryNegotiation += count;
+            break;
+          case AWAITING_APPROVALS:
+            newTotalNumber.awaitingApprovals += count;
+            break;
+          case OFFER_RELEASED:
+            newTotalNumber.offerReleased += count;
+            break;
+          case OFFER_ACCEPTED:
+            newTotalNumber.offerAccepted += count;
+            break;
+          case OFFER_REJECTED:
+            newTotalNumber.rejectedOffers += count;
+            break;
+          case OFFER_WITHDRAWN:
+            newTotalNumber.withdrawnOffers += count;
             break;
           default:
             break;
         }
 
-        newTotalNumber.all = newTotalNumber.drafts + newTotalNumber.profileVerificationData;
+        newTotalNumber.all =
+          newTotalNumber.drafts +
+          newTotalNumber.profileVerification +
+          newTotalNumber.documentVerification +
+          newTotalNumber.salaryNegotiation +
+          newTotalNumber.awaitingApprovals +
+          newTotalNumber.offerReleased +
+          newTotalNumber.offerAccepted +
+          newTotalNumber.rejectedOffers +
+          newTotalNumber.withdrawnOffers;
       });
 
       const newListMenu = listMenu.map((item) => {
@@ -256,6 +538,30 @@ const onboarding = {
         }
         if (key === 'drafts') {
           dataLength = newTotalNumber.drafts;
+        }
+        if (key === 'profileVerification') {
+          dataLength = newTotalNumber.profileVerification;
+        }
+        if (key === 'documentVerification') {
+          dataLength = newTotalNumber.documentVerification;
+        }
+        if (key === 'salaryNegotiation') {
+          dataLength = newTotalNumber.salaryNegotiation;
+        }
+        if (key === 'awaitingApprovals') {
+          dataLength = newTotalNumber.awaitingApprovals;
+        }
+        if (key === 'offerReleased') {
+          dataLength = newTotalNumber.offerReleased;
+        }
+        if (key === 'offerAccepted') {
+          dataLength = newTotalNumber.offerAccepted;
+        }
+        if (key === 'rejectedOffers') {
+          dataLength = newTotalNumber.rejectedOffers;
+        }
+        if (key === 'withdrawnOffers') {
+          dataLength = newTotalNumber.withdrawnOffers;
         }
 
         newQuantity = dataLength;

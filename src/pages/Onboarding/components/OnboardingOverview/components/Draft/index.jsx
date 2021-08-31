@@ -2,27 +2,60 @@ import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { Tabs, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import DraftTab from './components/DraftTab';
 
-import styles from './index.less';
+import styles from '../index.less';
 
 const { TabPane } = Tabs;
 
-@connect()
+@connect(
+  ({ loading, onboarding: { onboardingOverview: { drafts = [], total = 0 } = {} } = {} }) => ({
+    drafts,
+    total,
+    loading: loading.effects['onboarding/fetchOnboardList'],
+  }),
+)
 class Draft extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      tabId: '1',
       pageSelected: 1,
       size: 10,
       // nameSearch: '',
     };
   }
 
+  componentDidMount = () => {
+    this.fetchOnboardingDraft();
+  };
+
+  fetchOnboardingDraft = () => {
+    const { dispatch } = this.props;
+
+    if (dispatch) {
+      dispatch({
+        type: 'onboarding/fetchOnboardList',
+        payload: {
+          processStatus: NEW_PROCESS_STATUS.DRAFT,
+          //   name: nameSearch,
+        },
+      });
+    }
+  };
+
+  getPageAndSize = (page, pageSize) => {
+    this.setState({
+      pageSelected: page,
+      size: pageSize,
+    });
+  };
+
   render() {
+    const { drafts: data = [], total = 0, loading } = this.props;
     const { tabId, pageSelected, size } = this.state;
     return (
-      <div className={styles.AllDrafts}>
+      <div className={styles.onboardingTab}>
         <div className={styles.tabs}>
           <Tabs
             defaultActiveKey={tabId}
@@ -31,45 +64,16 @@ class Draft extends PureComponent {
               <Input onChange={this.onChange} placeholder="Search" prefix={<SearchOutlined />} />
             }
           >
-            {/* <TabPane
-              tab="draft"
-              key="1"
-            >
-              <AllTab
-                list={dataAll}
-                loading={loadingAll}
+            <TabPane tab="Draft" key="1">
+              <DraftTab
+                list={data}
+                loading={loading}
                 pageSelected={pageSelected}
                 size={size}
                 getPageAndSize={this.getPageAndSize}
                 total={total}
               />
-            </TabPane> */}
-            {/* <TabPane
-              // tab={formatMessage({ id: 'component.onboardingOverview.sentEligibilityForms' })}
-              tab="provisional offer drafts"
-              key="2"
-            >
-              <ProvisionalOfferDrafts
-                list={provisionalOfferDrafts}
-                pageSelected={pageSelected}
-                size={size}
-                getPageAndSize={this.getPageAndSize}
-                total={total}
-              />
-            </TabPane> */}
-            {/* <TabPane
-              // tab={formatMessage({ id: 'component.onboardingOverview.receivedSubmittedDocuments' })}
-              tab="final offers draft"
-              key="3"
-            >
-              <FinalOfferDrafts
-                list={finalOfferDrafts}
-                pageSelected={pageSelected}
-                size={size}
-                getPageAndSize={this.getPageAndSize}
-                total={total}
-              />
-            </TabPane> */}
+            </TabPane>
           </Tabs>
         </div>
       </div>

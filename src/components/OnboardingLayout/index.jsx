@@ -6,6 +6,13 @@ import { formatMessage, connect, history } from 'umi';
 import Draft from '@/pages/Onboarding/components/OnboardingOverview/components/Draft';
 import OnboardingAll from '@/pages/Onboarding/components/OnboardingOverview/components/All';
 import ProfileVerification from '@/pages/Onboarding/components/OnboardingOverview/components/ProfileVerification';
+import DocumentVerification from '@/pages/Onboarding/components/OnboardingOverview/components/DocumentVerification';
+import WithdrawnOffers from '@/pages/Onboarding/components/OnboardingOverview/components/WithdrawnOffers';
+import RejectedOffers from '@/pages/Onboarding/components/OnboardingOverview/components/RejectedOffers';
+import OfferAccepted from '@/pages/Onboarding/components/OnboardingOverview/components/OfferAccepted';
+import OfferReleased from '@/pages/Onboarding/components/OnboardingOverview/components/OfferReleased';
+import SalaryNegotiation from '@/pages/Onboarding/components/OnboardingOverview/components/SalaryNegotiation';
+import AwaitingApprovals from '@/pages/Onboarding/components/OnboardingOverview/components/AwaitingApprovals';
 
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import MenuItem from './components/MenuItem';
@@ -14,12 +21,27 @@ import styles from './index.less';
 
 const getComponent = (name) => {
   switch (name) {
-    case 'All':
+    case 'All': // flow 1
       return <OnboardingAll />;
-    case 'Drafts':
+    case 'Drafts': // 2
       return <Draft />;
-    default:
+    case 'ProfileVerification': // 3
       return <ProfileVerification />;
+    case 'DocumentVerification': // 4
+      return <DocumentVerification />;
+    case 'SalaryNegotiation': // 5
+      return <SalaryNegotiation />;
+    case 'AwaitingApprovals': // 6
+      return <AwaitingApprovals />;
+    case 'OfferReleased': // 7
+      return <OfferReleased />;
+    case 'OfferAccepted': // 8
+      return <OfferAccepted />;
+    case 'RejectedOffers': // 9
+      return <RejectedOffers />;
+    default:
+      // 10
+      return <WithdrawnOffers />;
   }
 };
 
@@ -35,14 +57,6 @@ class OnboardingLayout extends PureComponent {
 
   componentDidMount() {
     this.fetchTab();
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'newCandidateForm/save',
-    //   payload: {
-    //     a: 2,
-    //     data: {},
-    //   },
-    // });
   }
 
   componentDidUpdate(prevProps) {

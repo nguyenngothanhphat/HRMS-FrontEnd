@@ -184,7 +184,7 @@ class OnboardTable extends Component {
         key: 'candidateID2',
         render: (candidateId) => this.renderName(candidateId),
         columnName: NAME,
-        width: getColumnWidth('rookieName', type),
+        width: getColumnWidth('candidateName', type),
         align: 'left',
       },
       {
@@ -599,7 +599,6 @@ class OnboardTable extends Component {
 
     const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch } = this.props;
     const { openModal } = this.state;
-    console.log(list);
 
     return (
       <>
