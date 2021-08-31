@@ -57,14 +57,6 @@ class OnboardingLayout extends PureComponent {
 
   componentDidMount() {
     this.fetchTab();
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'newCandidateForm/save',
-    //   payload: {
-    //     a: 2,
-    //     data: {},
-    //   },
-    // });
   }
 
   componentDidUpdate(prevProps) {
