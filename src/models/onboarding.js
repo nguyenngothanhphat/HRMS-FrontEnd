@@ -194,6 +194,9 @@ const onboarding = {
       profileVerifications: [],
       documentVerifications: [],
       salaryNegotiations: [],
+      awaitingApprovals: [],
+      offerReleased: [],
+      offerAccepted: [],
       currentStatus: '',
     },
   },
@@ -271,6 +274,7 @@ const onboarding = {
           SALARY_NEGOTIATION,
           AWAITING_APPROVALS,
           OFFER_RELEASED,
+          OFFER_ACCEPTED,
         } = NEW_PROCESS_STATUS;
 
         const { processStatus = '', page, limit, name } = payload;
@@ -338,6 +342,13 @@ const onboarding = {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { offerReleased: returnedData },
+            });
+            return;
+          }
+          case OFFER_ACCEPTED: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { offerAccepted: returnedData },
             });
             return;
           }
