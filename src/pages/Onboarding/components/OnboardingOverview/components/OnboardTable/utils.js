@@ -20,6 +20,7 @@ const getColumnWidth = (columnName, tableType) => {
     AWAITING_APPROVALS,
     OFFER_RELEASED,
     OFFER_ACCEPTED,
+    OFFER_REJECTED,
   } = TABLE_TYPE;
   if (
     tableType === ALL ||
@@ -28,7 +29,8 @@ const getColumnWidth = (columnName, tableType) => {
     tableType === SALARY_NEGOTIATION ||
     tableType === AWAITING_APPROVALS ||
     tableType === OFFER_RELEASED ||
-    tableType === OFFER_ACCEPTED
+    tableType === OFFER_ACCEPTED ||
+    tableType === OFFER_REJECTED
   ) {
     switch (columnName) {
       case 'candidateId':

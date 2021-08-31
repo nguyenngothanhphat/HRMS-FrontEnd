@@ -197,6 +197,7 @@ const onboarding = {
       awaitingApprovals: [],
       offerReleased: [],
       offerAccepted: [],
+      rejectedOffers: [],
       currentStatus: '',
     },
   },
@@ -275,6 +276,7 @@ const onboarding = {
           AWAITING_APPROVALS,
           OFFER_RELEASED,
           OFFER_ACCEPTED,
+          OFFER_REJECTED,
         } = NEW_PROCESS_STATUS;
 
         const { processStatus = '', page, limit, name } = payload;
@@ -349,6 +351,13 @@ const onboarding = {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { offerAccepted: returnedData },
+            });
+            return;
+          }
+          case OFFER_REJECTED: {
+            yield put({
+              type: 'saveOnboardingOverview',
+              payload: { rejectedOffers: returnedData },
             });
             return;
           }
