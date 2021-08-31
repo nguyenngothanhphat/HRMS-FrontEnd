@@ -5,7 +5,7 @@ import { SearchOutlined } from '@ant-design/icons';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import DraftTab from './components/DraftTab';
 
-import styles from './index.less';
+import styles from '../index.less';
 
 const { TabPane } = Tabs;
 
@@ -52,10 +52,10 @@ class Draft extends PureComponent {
   };
 
   render() {
-    const { draft: data = [], total = 0, loading } = this.props;
+    const { drafts: data = [], total = 0, loading } = this.props;
     const { tabId, pageSelected, size } = this.state;
     return (
-      <div className={styles.AllDrafts}>
+      <div className={styles.onboardingTab}>
         <div className={styles.tabs}>
           <Tabs
             defaultActiveKey={tabId}
@@ -64,7 +64,7 @@ class Draft extends PureComponent {
               <Input onChange={this.onChange} placeholder="Search" prefix={<SearchOutlined />} />
             }
           >
-            <TabPane tab="draft" key="1">
+            <TabPane tab="Draft" key="1">
               <DraftTab
                 list={data}
                 loading={loading}

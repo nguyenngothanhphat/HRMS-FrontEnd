@@ -14,9 +14,9 @@ const getColumnWidth = (columnName, tableType) => {
   const { ALL, DRAFT } = NEW_TABLE_TYPE;
   if (tableType === ALL) {
     switch (columnName) {
-      case 'rookieId':
+      case 'candidateId':
         return '13%';
-      case 'rookieName':
+      case 'candidateName':
         return '16%';
       case 'position':
         return '12%';
@@ -39,9 +39,9 @@ const getColumnWidth = (columnName, tableType) => {
 
   if (tableType === DRAFT) {
     switch (columnName) {
-      case 'rookieId':
+      case 'candidateId':
         return '13%';
-      case 'rookieName':
+      case 'candidateName':
         return '16%';
       case 'position':
         return '12%';

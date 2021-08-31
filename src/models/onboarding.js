@@ -210,13 +210,16 @@ const onboarding = {
         });
 
         const { DRAFT } = NEW_PROCESS_STATUS;
-        const { processStatus = '', name } = payload;
+        const { processStatus = '', page, limit, name } = payload;
         const tenantId = getCurrentTenant();
+        const company = getCurrentCompany();
         const req = {
           processStatus,
-          page: 1,
+          page,
+          limit,
           tenantId,
           name,
+          company,
         };
         const response = yield call(getOnboardingList, req);
         const { statusCode } = response;
@@ -235,7 +238,7 @@ const onboarding = {
         switch (processStatus) {
           case DRAFT: {
             yield put({
-              type: 'save',
+              type: 'saveOnboardingOverview',
               payload: { drafts: returnedData },
             });
 

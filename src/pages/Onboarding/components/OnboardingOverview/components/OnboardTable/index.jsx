@@ -183,7 +183,7 @@ class OnboardTable extends Component {
         key: 'candidateID2',
         render: (candidateId) => this.renderName(candidateId),
         columnName: NAME,
-        width: getColumnWidth('rookieName', type),
+        width: getColumnWidth('candidateName', type),
         align: 'left',
       },
       {
