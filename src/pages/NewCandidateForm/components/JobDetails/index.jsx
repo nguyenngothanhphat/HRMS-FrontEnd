@@ -144,7 +144,7 @@ class JobDetails extends PureComponent {
     const { dispatch } = this.props;
     const { tempData = {} } = this.state;
     tempData[name] = value;
-    const { department, workLocation, title } = tempData;
+    const { department, workLocation, title, locationList = [] } = tempData;
     const companyId = getCurrentCompany();
     const tenantId = getCurrentTenant();
 
@@ -168,6 +168,9 @@ class JobDetails extends PureComponent {
         });
       }
     } else if (name === 'workLocation') {
+      const changedWorkLocation = JSON.parse(JSON.stringify(locationList));
+      const selectedWorkLocation = changedWorkLocation.find((data) => data._id === value);
+
       if (value === undefined) {
         await dispatch({
           type: 'newCandidateForm/save',
@@ -184,7 +187,7 @@ class JobDetails extends PureComponent {
           payload: {
             company: companyId,
             location: value,
-            workLocation: value,
+            workLocation: selectedWorkLocation,
           },
         });
 

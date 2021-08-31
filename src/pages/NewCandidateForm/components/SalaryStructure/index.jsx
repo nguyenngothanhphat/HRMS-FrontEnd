@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Typography, Form, Input, Button, notification } from 'antd';
+import { Row, Col, Typography, Form, Input, Button, notification, Skeleton } from 'antd';
 import {
   connect,
   // formatMessage
@@ -39,6 +39,7 @@ const { TextArea } = Input;
     currentStep,
     salaryTitle,
     loading2: loading.effects['newCandidateForm/fetchTitleList'],
+    loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
     salaryNoteTemp,
   }),
 )
@@ -134,7 +135,7 @@ class SalaryStructure extends PureComponent {
   };
 
   render() {
-    const { processStatus, salaryTitle = '' } = this.props;
+    const { processStatus, salaryTitle = '', loadingFetchCandidate = false } = this.props;
     const Note = {
       title: 'Note',
       data: (
@@ -148,6 +149,8 @@ class SalaryStructure extends PureComponent {
         </Typography.Text>
       ),
     };
+
+    if (loadingFetchCandidate) return <Skeleton />;
     return (
       <Row gutter={[24, 0]}>
         <Col xs={24} sm={24} md={24} lg={24} xl={16}>
