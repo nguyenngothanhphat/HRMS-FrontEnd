@@ -17,9 +17,9 @@ const {
   PROCESS_STATUS,
   ACTION,
 } = COLUMN_NAME;
-const { ALL } = NEW_TABLE_TYPE;
+const { DRAFT } = NEW_TABLE_TYPE;
 
-class AllTab extends PureComponent {
+class DraftTab extends PureComponent {
   render() {
     const { list = [], loading, pageSelected, size, total, getPageAndSize = () => {} } = this.props;
 
@@ -37,7 +37,7 @@ class AllTab extends PureComponent {
           PROCESS_STATUS,
           ACTION,
         ]}
-        type={ALL}
+        type={DRAFT}
         inTab
         loadingFetch={loading}
         pageSelected={pageSelected}
@@ -49,4 +49,4 @@ class AllTab extends PureComponent {
   }
 }
 
-export default AllTab;
+export default DraftTab;

@@ -1,10 +1,15 @@
 import moment from 'moment';
 import _ from 'lodash';
+import { notification } from 'antd';
 
-import { getOnboardingList, getTotalNumberOnboardingList } from '@/services/onboard';
+import {
+  getOnboardingList,
+  getTotalNumberOnboardingList,
+  handleExpiryTicket,
+} from '@/services/onboard';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
-import { NEW_PROCESS_STATUS_TABLE_NAME } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS_TABLE_NAME, NEW_PROCESS_STATUS } from '@/utils/onboarding';
 
 const allData = []; // ALL
 const draftData = []; // DRAFT
@@ -133,6 +138,8 @@ const onboarding = {
     },
     onboardingOverview: {
       dataAll: [],
+      drafts: [],
+      currentStatus: '',
     },
   },
   effects: {
@@ -179,7 +186,6 @@ const onboarding = {
         const response = yield call(getOnboardingList, req);
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
-        // const returnedData = formatData(response.data[0].paginatedResults);
         const returnedData = formatData(response.data);
 
         yield put({
@@ -190,12 +196,108 @@ const onboarding = {
           type: 'saveOnboardingOverview',
           payload: {
             total: response.total,
-            currentStatusAll: processStatus,
+            currentStatus: processStatus || 'All',
           },
         });
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *fetchOnboardList({ payload }, { call, put }) {
+      try {
+        yield put({
+          type: 'fetchTotalNumberOfOnboardingListEffect',
+        });
+
+        const { DRAFT } = NEW_PROCESS_STATUS;
+        const { processStatus = '', name } = payload;
+        const tenantId = getCurrentTenant();
+        const req = {
+          processStatus,
+          page: 1,
+          tenantId,
+          name,
+        };
+        const response = yield call(getOnboardingList, req);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        const returnedData = formatData(response.data);
+
+        yield put({
+          type: 'saveOnboardingOverview',
+          payload: {
+            total: response.total,
+            currentStatus: processStatus,
+          },
+        });
+
+        // Fetch data
+        switch (processStatus) {
+          case DRAFT: {
+            yield put({
+              type: 'save',
+              payload: { drafts: returnedData },
+            });
+
+            return;
+          }
+          default:
+            return;
+        }
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *handleExpiryTicket({ payload }, { call, put, select }) {
+      let response;
+      try {
+        const {
+          id = '',
+          tenantId = '',
+          expiryDate = '',
+          processStatus = '',
+          isAll = false,
+          page = '',
+          limit = '',
+          type = '',
+        } = payload;
+        const req = {
+          rookieID: id,
+          tenantId,
+          expiryDate,
+          type,
+        };
+        response = yield call(handleExpiryTicket, req);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        if (!isAll) {
+          yield put({
+            type: 'fetchOnboardList',
+            payload: {
+              tenantId,
+              processStatus,
+            },
+          });
+        } else {
+          const { currentStatusAll } = yield select((state) => state.onboard.onboardingOverview);
+
+          yield put({
+            type: 'fetchOnboardListAll',
+            payload: {
+              tenantId,
+              processStatus: currentStatusAll,
+              page,
+              limit,
+            },
+          });
+        }
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
     },
   },
   reducers: {
