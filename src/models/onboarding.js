@@ -11,17 +11,13 @@ import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import { NEW_PROCESS_STATUS_TABLE_NAME, NEW_PROCESS_STATUS } from '@/utils/onboarding';
 
-const allData = []; // ALL
-const draftData = []; // DRAFT
-const profileVerificationData = []; // PROFILE VERFICATION
-
 const MENU_DATA = [
   {
     id: 1,
     name: 'All',
     key: 'all',
     component: 'All',
-    quantity: allData.length,
+    quantity: 0,
     link: 'all',
   },
   {
@@ -29,7 +25,7 @@ const MENU_DATA = [
     name: 'Drafts',
     key: 'drafts',
     component: 'Drafts',
-    quantity: draftData.length,
+    quantity: 0,
     link: 'drafts',
   },
   {
@@ -37,7 +33,7 @@ const MENU_DATA = [
     name: 'Profile Verification',
     key: 'profileVerification',
     component: 'ProfileVerification',
-    quantity: profileVerificationData.length,
+    quantity: 0,
     link: 'profile-verification',
   },
 ];
