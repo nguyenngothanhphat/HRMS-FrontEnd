@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Typography, Button } from 'antd';
-import { connect, history,formatMessage } from 'umi';
+import { Row, Col, Typography, Button, Skeleton } from 'antd';
+import { connect, history, formatMessage } from 'umi';
 // import PreviewOffer from '@/pages/NewCandidateForm/components/PreviewOffer/index';
 import { getCurrentTenant } from '@/utils/authority';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
@@ -17,16 +17,19 @@ import MessageBox from '../MessageBox';
     info: { benefits } = {},
     newCandidateForm: {
       data = {},
-      currentStep = 0,
+      // currentStep = 0,
       tempData: { hidePreviewOffer = false } = {},
       tempData = {},
     } = {},
+    loading
   }) => ({
     benefits,
     data,
     tempData,
-    currentStep,
+    // currentStep,
     hidePreviewOffer,
+  loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
+
   }),
 )
 class Benefits extends PureComponent {
@@ -49,7 +52,7 @@ class Benefits extends PureComponent {
           type: 'newCandidateForm/updateByHR',
           payload: {
             candidate,
-            currentStep,
+            // currentStep,
             tenantId: getCurrentTenant(),
           },
         });
@@ -251,9 +254,7 @@ class Benefits extends PureComponent {
     const { tempData = {} } = this.props;
     const { ticketID = '' } = tempData;
 
-  
-        history.push(`/onboarding/list/view/${ticketID}/offer-details`);
- 
+    history.push(`/onboarding/list/view/${ticketID}/offer-details`);
   };
 
   onClickPrev = () => {
@@ -266,8 +267,8 @@ class Benefits extends PureComponent {
     // });
     const { tempData = {} } = this.props;
     const { ticketID = '' } = tempData;
- 
-        history.push(`/onboarding/list/view/${ticketID}/document-verification`);
+
+    history.push(`/onboarding/list/view/${ticketID}/document-verification`);
   };
 
   _renderBottomBar = () => {
@@ -418,6 +419,8 @@ class Benefits extends PureComponent {
       ),
     };
     const { benefits } = this.state;
+    const {loadingFetchCandidate} = this.props;
+    if (loadingFetchCandidate) return <Skeleton />
     return (
       <>
         <Row gutter={[24, 0]}>

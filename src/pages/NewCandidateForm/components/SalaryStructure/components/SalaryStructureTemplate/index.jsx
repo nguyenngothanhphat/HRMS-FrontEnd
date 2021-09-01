@@ -2,7 +2,7 @@
 import React, { PureComponent } from 'react';
 import { Form, Table, Button, Input, Row, Col, InputNumber, Spin } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
-import { formatMessage, connect } from 'umi';
+import { formatMessage, connect, history } from 'umi';
 // import { dialog } from '@/utils/utils';
 import { getCurrentTenant } from '@/utils/authority';
 // import { PROCESS_STATUS } from '@/utils/onboarding';
@@ -128,19 +128,22 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   onClickPrev = () => {
-    const { dispatch, currentStep } = this.props;
-    dispatch({
-      type: 'newCandidateForm/save',
-      payload: {
-        currentStep: currentStep - 1,
-      },
-    });
+    // const { dispatch, currentStep } = this.props;
+    // dispatch({
+    //   type: 'newCandidateForm/save',
+    //   payload: {
+    //     currentStep: currentStep - 1,
+    //   },
+    // });
+    const { tempData } = this.props;
+    const { ticketID = '' } = tempData;
+    history.push(`/onboarding/list/view/${ticketID}/job-details`);
   };
 
   onClickNext = () => {
     const {
       dispatch,
-      currentStep,
+      // currentStep,
       settingsTempData: settings = [],
       // salaryPosition,
       data: {
@@ -158,17 +161,20 @@ class SalaryStructureTemplate extends PureComponent {
           title: titleId,
         },
         candidate: _id,
-        currentStep: currentStep + 1,
+        // currentStep: currentStep + 1,
         tenantId: getCurrentTenant(),
       },
     }).then(({ data: data1, statusCode }) => {
       if (statusCode === 200) {
-        dispatch({
-          type: 'newCandidateForm/save',
-          payload: {
-            currentStep: data1.currentStep,
-          },
-        });
+        // dispatch({
+        //   type: 'newCandidateForm/save',
+        //   payload: {
+        //     currentStep: data1.currentStep,
+        //   },
+        // });
+        const { tempData } = this.props;
+        const { ticketID = '' } = tempData;
+        history.push(`/onboarding/list/view/${ticketID}/document-verification`);
       }
     });
   };

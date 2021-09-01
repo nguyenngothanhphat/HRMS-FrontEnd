@@ -72,13 +72,15 @@ class LayoutAddCandidateForm extends Component {
   };
 
   _handlePreviewOffer = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'newCandidateForm/save',
-      payload: {
-        displayComponent: <PreviewOffer />,
-      },
-    });
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'newCandidateForm/save',
+    //   payload: {
+    //     displayComponent: <PreviewOffer />,
+    //   },
+    // });
+    const { reId = '' } = this.props;
+    history.push(`/onboarding/list/view/${reId}/offer-letter`);
   };
 
   _handleClick = (item) => {
@@ -100,12 +102,12 @@ class LayoutAddCandidateForm extends Component {
     } = this.props;
 
     const { displayComponent, selectedItemId } = this.state;
-
+    const listMenuWithoutOfferLetter = listMenu.filter((l) => l.key !== 'offerLetter');
     return (
       <Row className={s.containerLayoutAddCandidateForm}>
         <Col sm={24} md={6} xl={4} className={s.viewLeft}>
           <div className={s.viewLeft__menu}>
-            {listMenu.map((item, index) => (
+            {listMenuWithoutOfferLetter.map((item, index) => (
               <ItemMenu
                 key={item.id}
                 item={item}

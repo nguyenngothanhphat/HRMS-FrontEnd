@@ -1,8 +1,8 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Col, DatePicker, Form, Row, Select } from 'antd';
+import { Button, Col, DatePicker, Form, Row, Select, Skeleton } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { connect, formatMessage } from 'umi';
+import { connect, formatMessage, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { PROCESS_STATUS } from '@/utils/onboarding';
@@ -16,10 +16,18 @@ import styles from './index.less';
 const { Option } = Select;
 
 const OfferDetail = (props) => {
-  const { dispatch, checkMandatory, currentStep, data, tempData, loading1 } = props;
+  const {
+    dispatch,
+    checkMandatory,
+    currentStep,
+    data,
+    tempData,
+    loading1,
+    loadingFetchCandidate = false,
+  } = props;
   const { processStatus = '' } = tempData;
-  const previousStep = currentStep - 1;
-  const nextStep = currentStep + 1;
+  // const previousStep = currentStep - 1;
+  // const nextStep = currentStep + 1;
   // Get default value from "newCandidateForm" store
   const {
     template: templateProp,
@@ -30,6 +38,7 @@ const OfferDetail = (props) => {
     offerDocuments: offerDocumentsProp = [],
     offerLetterTemplate: offerLetterTemplateProp,
     expiryDate: expiryDateProp,
+    ticketID = '',
   } = tempData;
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [isAddTemplateModalVisible, setAddTemplateModalVisible] = useState(false);
@@ -168,7 +177,7 @@ const OfferDetail = (props) => {
       type: 'newCandidateForm/updateByHR',
       payload: {
         candidate,
-        currentStep,
+        // currentStep,
         tenantId: getCurrentTenant(),
       },
     });
@@ -219,12 +228,13 @@ const OfferDetail = (props) => {
   };
 
   const onClickPrev = () => {
-    dispatch({
-      type: 'newCandidateForm/save',
-      payload: {
-        currentStep: previousStep,
-      },
-    });
+    // dispatch({
+    //   type: 'newCandidateForm/save',
+    //   payload: {
+    //     currentStep: previousStep,
+    //   },
+    // });
+    history.push(`/onboarding/list/view/${ticketID}/benefits`);
   };
 
   const onClickNext = () => {
@@ -254,7 +264,7 @@ const OfferDetail = (props) => {
       type: 'newCandidateForm/updateByHR',
       payload: {
         candidate: _id,
-        currentStep: nextStep,
+        // currentStep: nextStep,
         includeOffer: 3,
         tenantId: getCurrentTenant(),
 
@@ -304,7 +314,7 @@ const OfferDetail = (props) => {
         type: 'newCandidateForm/updateByHR',
         payload: {
           candidate,
-          currentStep: nextStep,
+          // currentStep: nextStep,
           offerLetter: templateID,
           tenantId: getCurrentTenant(),
 
@@ -313,12 +323,12 @@ const OfferDetail = (props) => {
       });
 
       // Save next step
-      dispatch({
-        type: 'newCandidateForm/save',
-        payload: {
-          currentStep: nextStep,
-        },
-      });
+      // dispatch({
+      //   type: 'newCandidateForm/save',
+      //   payload: {
+      //     currentStep: nextStep,
+      //   },
+      // });
 
       // Enable preview offer
       dispatch({
@@ -333,20 +343,9 @@ const OfferDetail = (props) => {
         type: 'newCandidateForm/updateOfferLetter',
         payload: attachment,
       });
-    });
-  };
 
-  const _renderStatus = () => {
-    return !allFieldsFilled ? (
-      <div className={styles.normalText}>
-        <div className={styles.redText}>*</div>
-        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
-      </div>
-    ) : (
-      <div className={styles.greenText}>
-        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
-      </div>
-    );
+      history.push(`/onboarding/list/view/${ticketID}/offer-letter`);
+    });
   };
 
   const _renderBottomBar = () => {
@@ -540,6 +539,7 @@ const OfferDetail = (props) => {
     });
   };
 
+  if (loadingFetchCandidate) return <Skeleton />;
   return (
     <>
       <Form form={form} onValuesChange={handleFormChange}>
@@ -679,5 +679,6 @@ export default connect(
     tempData,
     loading1: loading.effects['newCandidateForm/createFinalOfferEffect'], // Loading for generating offer service
     loading2: loading.effects['upload/uploadFile'],
+    loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
   }),
 )(OfferDetail);

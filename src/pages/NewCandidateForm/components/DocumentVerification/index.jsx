@@ -215,7 +215,7 @@ class DocumentVerification extends Component {
           type: 'newCandidateForm/updateByHR',
           payload: {
             candidate,
-            currentStep: 3,
+            // currentStep: 3,
             privateEmail,
             tenantId: getCurrentTenant(),
           },
@@ -285,7 +285,7 @@ class DocumentVerification extends Component {
       payload: {
         candidate: _id,
         documentChecklistSetting,
-        currentStep,
+        // currentStep,
         tenantId: getCurrentTenant(),
       },
     });
@@ -818,14 +818,14 @@ class DocumentVerification extends Component {
 
   // bottom bar
   onClickPrev = () => {
-    const { currentStep } = this.props;
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'newCandidateForm/save',
-      payload: {
-        currentStep: currentStep - 1,
-      },
-    });
+    // const { currentStep } = this.props;
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'newCandidateForm/save',
+    //   payload: {
+    //     currentStep: currentStep - 1,
+    //   },
+    // });
   };
 
   onClickNext = () => {
@@ -837,7 +837,7 @@ class DocumentVerification extends Component {
       dispatch({
         type: 'newCandidateForm/save',
         payload: {
-          currentStep: currentStep + 1,
+          // currentStep: currentStep + 1,
           valueToFinalOffer: 1,
         },
       });

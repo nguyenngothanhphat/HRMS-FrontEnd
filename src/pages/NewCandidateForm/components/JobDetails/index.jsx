@@ -41,7 +41,7 @@ class JobDetails extends PureComponent {
       return {
         data: props.data,
         checkMandatory: props.checkMandatory,
-        currentStep: props.currentStep,
+        // currentStep: props.currentStep,
         tempData: props.tempData,
       };
     }
@@ -293,7 +293,7 @@ class JobDetails extends PureComponent {
 
   onClickNext = () => {
     const {
-      currentStep,
+      // currentStep,
       data: { _id },
       tempData: {
         grade,
@@ -321,7 +321,7 @@ class JobDetails extends PureComponent {
         title,
         reportingManager,
         candidate: _id,
-        currentStep: currentStep + 1,
+        // currentStep: currentStep + 1,
         tenantId: getCurrentTenant(),
         documentChecklistSetting,
       },

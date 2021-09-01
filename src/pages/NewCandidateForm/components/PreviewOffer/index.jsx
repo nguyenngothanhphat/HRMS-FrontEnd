@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect, formatMessage } from 'umi';
 
-import { Button, Input, Form, Select, Row, Col, Popover, Radio, Space } from 'antd';
+import { Button, Input, Form, Select, Row, Col, Popover, Radio, Space, Skeleton } from 'antd';
 import { EditOutlined, SendOutlined } from '@ant-design/icons';
 // import logo from './components/images/brand-logo.png';
 import CustomModal from '@/components/CustomModal';
@@ -38,6 +38,7 @@ const PreviewOffer = (props) => {
     loading1,
     loading2,
     loading3,
+    loadingFetchCandidate = false,
   } = props;
 
   const {
@@ -278,7 +279,7 @@ const PreviewOffer = (props) => {
       type: 'newCandidateForm/updateByHR',
       payload: {
         candidate: _id,
-        currentStep: 7,
+        // currentStep: 7,
         tenantId: getCurrentTenant(),
       },
     });
@@ -445,7 +446,7 @@ const PreviewOffer = (props) => {
         payload: {
           candidate: _id,
           hrSignature: id,
-          currentStep: 7,
+          // currentStep: 7,
           tenantId: getCurrentTenant(),
         },
       }).then(({ statusCode }) => {
@@ -460,7 +461,7 @@ const PreviewOffer = (props) => {
         payload: {
           candidate: _id,
           hrSignature: hrSignatureProp.id,
-          currentStep: 7,
+          // currentStep: 7,
           tenantId: getCurrentTenant(),
         },
       }).then(({ statusCode }) => {
@@ -696,6 +697,7 @@ const PreviewOffer = (props) => {
     );
   };
 
+  if (loadingFetchCandidate) return <Skeleton />;
   // main
   return (
     <div className={styles.previewContainer}>
@@ -1033,5 +1035,6 @@ export default connect(
     loading1: loading.effects['newCandidateForm/sentForApprovalEffect'],
     loading2: loading.effects['newCandidateForm/approveFinalOfferEffect'],
     loading3: loading.effects['newCandidateForm/updateByHR'],
+    loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
   }),
 )(PreviewOffer);

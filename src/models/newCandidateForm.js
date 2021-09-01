@@ -947,7 +947,7 @@ const newCandidateForm = {
         yield put({
           type: 'save',
           payload: {
-            currentStep: data.currentStep,
+            // currentStep: data.currentStep,
             rookieId,
           },
         });
@@ -988,18 +988,18 @@ const newCandidateForm = {
           },
         });
 
-        const {
-          firstName = '',
-          middleName = '',
-          lastName = '',
-          privateEmail = '',
-          previousExperience = '',
-          salaryStructure = {},
-          // documentChecklistSetting = [],
-          amountIn,
-          timeOffPolicy,
-          currentStep,
-        } = data;
+        // const {
+        //   firstName = '',
+        //   middleName = '',
+        //   lastName = '',
+        //   privateEmail = '',
+        //   previousExperience = '',
+        //   salaryStructure = {},
+        //   // documentChecklistSetting = [],
+        //   amountIn,
+        //   timeOffPolicy,
+        //   currentStep,
+        // } = data;
 
         // const filterValue = (arr) => {
         //   let listCheck = arr.map((item) => item.value);
@@ -1019,41 +1019,41 @@ const newCandidateForm = {
         // const checkStatusTypeD = filterValue(technicalCertification);
         // const checkStatusTypeE = filterValue(prevEmployee);
 
-        const checkStatus = {};
+        // const checkStatus = {};
 
-        if (currentStep >= 3) {
-          checkStatus.filledBgCheck = true;
-        }
+        // if (currentStep >= 3) {
+        //   checkStatus.filledBgCheck = true;
+        // }
 
-        if (firstName && middleName && lastName && privateEmail && previousExperience) {
-          checkStatus.filledBasicInformation = true;
-        }
-        if ('title' in data && 'workLocation' in data && 'department' in data) {
-          checkStatus.filledJobDetail = true;
-        }
-        if ('title' in salaryStructure) {
-          checkStatus.filledSalaryCheck = true;
-        }
+        // if (firstName && middleName && lastName && privateEmail && previousExperience) {
+        //   checkStatus.filledBasicInformation = true;
+        // }
+        // if ('title' in data && 'workLocation' in data && 'department' in data) {
+        //   checkStatus.filledJobDetail = true;
+        // }
+        // if ('title' in salaryStructure) {
+        //   checkStatus.filledSalaryCheck = true;
+        // }
 
-        if (amountIn && timeOffPolicy) {
-          checkStatus.offerDetailCheck = true;
-        }
+        // if (amountIn && timeOffPolicy) {
+        //   checkStatus.offerDetailCheck = true;
+        // }
 
-        if (currentStep >= 5) {
-          checkStatus.payrollSettingCheck = true;
-        } else {
-          checkStatus.payrollSettingCheck = false;
-        }
+        // if (currentStep >= 5) {
+        //   checkStatus.payrollSettingCheck = true;
+        // } else {
+        //   checkStatus.payrollSettingCheck = false;
+        // }
 
-        if (currentStep >= 6) {
-          checkStatus.benefitsCheck = true;
-        }
+        // if (currentStep >= 6) {
+        //   checkStatus.benefitsCheck = true;
+        // }
 
         yield put({
           type: 'saveTemp',
           payload: {
             ...data,
-            checkStatus,
+            // checkStatus,
             valueToFinalOffer: 0,
             offerLetter: data.offerLetter,
             candidate: data._id,

@@ -97,7 +97,7 @@ class BackgroundRecheck extends Component {
         type: 'newCandidateForm/updateByHR',
         payload: {
           candidate,
-          currentStep: 3,
+          // currentStep: 3,
           tenantId: getCurrentTenant(),
         },
       });
@@ -407,33 +407,33 @@ class BackgroundRecheck extends Component {
   };
 
   onClickPrev = () => {
-    const { currentStep } = this.state;
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'newCandidateForm/save',
-      payload: {
-        currentStep: currentStep - 1,
-      },
-    });
+    // const { currentStep } = this.state;
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'newCandidateForm/save',
+    //   payload: {
+    //     currentStep: currentStep - 1,
+    //   },
+    // });
   };
 
   onClickNext = async () => {
-    const { currentStep } = this.state;
+    // const { currentStep } = this.state;
     const { dispatch, candidate } = this.props;
 
-    dispatch({
-      type: 'newCandidateForm/save',
-      payload: {
-        currentStep: currentStep + 1,
-      },
-    });
+    // dispatch({
+    //   type: 'newCandidateForm/save',
+    //   payload: {
+    //     currentStep: currentStep + 1,
+    //   },
+    // });
 
     await dispatch({
       type: 'newCandidateForm/updateByHR',
       payload: {
         candidate,
         tenantId: getCurrentTenant(),
-        currentStep: currentStep + 1,
+        // currentStep: currentStep + 1,
         processStatus: PROCESS_STATUS.ELIGIBLE_CANDIDATES,
       },
     });
