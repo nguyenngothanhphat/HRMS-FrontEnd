@@ -4,7 +4,7 @@ import { Button, Col, notification, Row, Skeleton, Typography } from 'antd';
 import { map } from 'lodash';
 import React, { Component } from 'react';
 import { connect, formatMessage } from 'umi';
-import { PROCESS_STATUS } from '@/utils/onboarding';
+import { PROCESS_STATUS, NEW_PROCESS_STATUS_TABLE_NAME } from '@/utils/onboarding';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import CustomModal from '@/components/CustomModal';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
@@ -1480,7 +1480,7 @@ class DocumentVerification extends Component {
                 disabled={this.disableEdit()}
               />
 
-              {(processStatus === PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT ||
+              {(processStatus === NEW_PROCESS_STATUS_TABLE_NAME.DRAFT ||
                 documentCLSTByCountryTypeE.length > 0) && (
                 <CollapseFieldsTypeE
                   handleChangeName={this.handleChangeNameBlockE}
