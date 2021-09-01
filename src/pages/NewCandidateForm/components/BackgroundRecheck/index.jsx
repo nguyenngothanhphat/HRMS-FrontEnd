@@ -393,14 +393,12 @@ class BackgroundRecheck extends Component {
 
     return (
       <>
-        {documentsCandidateList.map((document, index) => {
+        {documentsCandidateList.map((document) => {
           if (document.type !== 'E') {
             return (
               <CollapseField
                 item={document}
-                index={index}
-                //   docList={documentListToRender}
-                handleCheckDocument={this.handleCheckDocument}
+                // handleCheckDocument={this.handleCheckDocument}
               />
             );
           }

@@ -81,9 +81,9 @@ class CollapseField extends Component {
   };
 
   render() {
-    const { item = {}, index: indexGroupDoc = '', handleCheckDocument = () => {} } = this.props;
+    const { item = {} } = this.props;
     const { visible, url, displayName } = this.state;
-    console.log(item);
+
     return (
       <div className={styles.collapseField}>
         {item.data.length > 0 ? (
