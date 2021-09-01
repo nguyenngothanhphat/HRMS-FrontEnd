@@ -48,7 +48,7 @@ const AdditionalQuestion = (props) => {
   const {
     checkMandatory,
     dispatch,
-    currentStep,
+    // currentStep,
     hidePreviewOffer,
     additionalQuestion: additionalQuestionProp,
     additionalQuestions: additionalQuestionsProp,
@@ -65,13 +65,13 @@ const AdditionalQuestion = (props) => {
   const [form] = Form.useForm();
 
   const onClickPrevious = () => {
-    const prevStep = currentStep - 1;
-    dispatch({
-      type: 'newCandidateForm/save',
-      payload: {
-        currentStep: prevStep,
-      },
-    });
+    // const prevStep = currentStep - 1;
+    // dispatch({
+    //   type: 'newCandidateForm/save',
+    //   payload: {
+    //     currentStep: prevStep,
+    //   },
+    // });
   };
 
   const onClickNext = () => {
@@ -92,16 +92,15 @@ const AdditionalQuestion = (props) => {
     });
 
     if (hidePreviewOffer) {
-      return;
     }
 
-    const nextStep = currentStep + 1;
-    dispatch({
-      type: 'newCandidateForm/save',
-      payload: {
-        currentStep: nextStep,
-      },
-    });
+    // const nextStep = currentStep + 1;
+    // dispatch({
+    //   type: 'newCandidateForm/save',
+    //   payload: {
+    //     currentStep: nextStep,
+    //   },
+    // });
   };
 
   const _renderStatus = () => {

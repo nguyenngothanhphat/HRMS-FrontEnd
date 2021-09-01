@@ -57,7 +57,7 @@ export default {
   'menu.employeeOnboarding': 'Employee Onboarding',
   'menu.templateDetails': 'Template Details',
   'menu.createNewTemplate': 'Create New Template',
-  'menu.addTeamMember': 'Add team member',
+  'menu.addTeamMember': 'Add a team member',
   'menu.reviewTeamMember': 'Review team member',
   'menu.users': 'Users Management',
   'menu.employees': 'Employees Management',

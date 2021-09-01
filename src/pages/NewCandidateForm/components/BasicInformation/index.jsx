@@ -34,7 +34,10 @@ class BasicInformation extends PureComponent {
 
   componentDidMount() {
     window.scrollTo({ top: 77, behavior: 'smooth' });
-    // this.checkFilled();
+    const { data: { _id = '' } = {} } = this.props;
+    if (_id) {
+      this.checkFilled();
+    }
   }
 
   componentDidUpdate = (prevProps) => {
@@ -51,7 +54,7 @@ class BasicInformation extends PureComponent {
   handleUpdateByHR = () => {
     const {
       data,
-      currentStep,
+      // currentStep,
       tempData: { firstName, middleName, lastName, privateEmail, workEmail, previousExperience },
     } = this.props;
     const { dispatch } = this.props;
@@ -66,7 +69,7 @@ class BasicInformation extends PureComponent {
         workEmail,
         previousExperience,
         candidate: _id,
-        currentStep,
+        // currentStep,
         tenantId: getCurrentTenant(),
       },
     });
@@ -134,7 +137,7 @@ class BasicInformation extends PureComponent {
         workEmail: values.workEmail,
         previousExperience: values.previousExperience,
         candidate: _id,
-        currentStep: currentStep + 1,
+        // currentStep: currentStep + 1,
         tenantId: getCurrentTenant(),
       },
     }).then(({ statusCode }) => {

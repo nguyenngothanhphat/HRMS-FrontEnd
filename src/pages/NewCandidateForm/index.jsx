@@ -1,6 +1,6 @@
 import { Affix, Button, Skeleton } from 'antd';
 import React, { PureComponent } from 'react';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import LayoutAddCandidateForm from '@/components/LayoutAddCandidateForm';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentTenant } from '@/utils/authority';
@@ -12,6 +12,7 @@ import JobDetails from './components/JobDetails';
 import OfferDetail from './components/OfferDetail';
 import SalaryStructure from './components/SalaryStructure';
 import styles from './index.less';
+import PreviewOffer from './components/PreviewOffer';
 // import BackgroundRecheck from './components/BackgroundRecheck';
 // import Payroll from './components/Payroll';
 
@@ -133,19 +134,19 @@ class NewCandidateForm extends PureComponent {
   };
 
   handleFinishLater = async () => {
-    const { newCandidateForm: { data } = {}, dispatch, history } = this.props;
-    const response = await dispatch({
-      type: 'newCandidateForm/updateByHR',
-      payload: {
-        ...data,
-        tenantId: getCurrentTenant(),
-        // candidate: data.id
-      },
-    });
-    const { statusCode = 1 } = response;
-    if (statusCode === 200) {
-      history.push('/onboarding/list');
-    }
+    // const { newCandidateForm: { data } = {}, dispatch, history } = this.props;
+    // const response = await dispatch({
+    //   type: 'newCandidateForm/updateByHR',
+    //   payload: {
+    //     ...tempData,
+    //     tenantId: getCurrentTenant(),
+    //     // candidate: data.id
+    //   },
+    // });
+    // const { statusCode = 1 } = response;
+    // if (statusCode === 200) {
+    history.push('/onboarding/list');
+    // }
   };
 
   render() {
@@ -153,7 +154,7 @@ class NewCandidateForm extends PureComponent {
       match: { params: { action = '', reId = '', tabName = '' } = {} },
       newCandidateForm,
       loadingFetchCandidate = false,
-      location: { state: { isAddNew = false } = {} } = {},
+      // location: { state: { isAddNew = false } = {} } = {},
     } = this.props;
 
     const {
@@ -161,7 +162,9 @@ class NewCandidateForm extends PureComponent {
       data: { processStatus = '' } = {},
     } = newCandidateForm;
 
-    const title = isAddNew ? `Add team member [${reId}]` : `Review team member [${reId}]`;
+    // const title = isAddNew ? `Add a team member [${reId}]` : `Review team member [${reId}]`;
+    const title = `Add a team member`;
+
     const listMenu = [
       {
         id: 1,
@@ -239,6 +242,13 @@ class NewCandidateForm extends PureComponent {
         ),
         link: 'offer-details',
       },
+      {
+        id: 7,
+        name: 'Preview Offer Letter',
+        key: 'offerLetter',
+        component: <PreviewOffer />,
+        link: 'offer-letter',
+      },
     ];
 
     const candidateProcess = {
@@ -270,9 +280,9 @@ class NewCandidateForm extends PureComponent {
                   <Button type="primary" ghost onClick={this.handleFinishLater}>
                     Finish Later
                   </Button>
-                  <Button danger onClick={this.handleCancel}>
+                  {/* <Button danger onClick={this.handleCancel}>
                     Cancel
-                  </Button>
+                  </Button> */}
                 </div>
               )}
             </div>
