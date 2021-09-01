@@ -4,7 +4,7 @@ import { connect, history } from 'umi';
 import LayoutAddCandidateForm from '@/components/LayoutAddCandidateForm';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentTenant } from '@/utils/authority';
-// import { PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, PROCESS_STATUS } from '@/utils/onboarding';
 import BasicInformation from './components/BasicInformation';
 import Benefit from './components/Benefits';
 import DocumentVerification from './components/DocumentVerification';
@@ -13,7 +13,7 @@ import OfferDetail from './components/OfferDetail';
 import SalaryStructure from './components/SalaryStructure';
 import styles from './index.less';
 import PreviewOffer from './components/PreviewOffer';
-// import BackgroundRecheck from './components/BackgroundRecheck';
+import BackgroundRecheck from './components/BackgroundRecheck';
 // import Payroll from './components/Payroll';
 
 @connect(({ newCandidateForm = {}, user, loading }) => ({
@@ -212,18 +212,18 @@ class NewCandidateForm extends PureComponent {
         name: 'Eligibility documents',
         key: 'backgroundCheck',
         // key: 'eligibilityDocuments',
-        component: (
-          // processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT &&
-          // processStatus !== PROCESS_STATUS.SENT_PROVISIONAL_OFFERS ? (
-          //   <BackgroundRecheck />
-          // ) :
-          <DocumentVerification
-            documentList={documentList}
-            loading={loadingFetchCandidate}
-            reId={reId}
-            processStatus={processStatus}
-          />
-        ),
+        component:
+          processStatus !== NEW_PROCESS_STATUS.PROFILE_VERIFICATION &&
+          processStatus !== NEW_PROCESS_STATUS.DRAFT ? (
+            <BackgroundRecheck />
+          ) : (
+            <DocumentVerification
+              documentList={documentList}
+              loading={loadingFetchCandidate}
+              reId={reId}
+              processStatus={processStatus}
+            />
+          ),
         link: 'document-verification',
       },
       {
