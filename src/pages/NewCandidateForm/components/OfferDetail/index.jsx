@@ -371,7 +371,7 @@ const OfferDetail = (props) => {
                 }`}
                 disabled={!allFieldsFilled}
               >
-                Proceed
+                Next
               </Button>
             </div>
           </Col>
