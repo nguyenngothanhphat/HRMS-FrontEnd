@@ -346,7 +346,7 @@ class OnboardTable extends Component {
       case PROVISIONAL_OFFER_DRAFT:
         menuItem = (
           <Menu.Item>
-            <Link to={`/onboarding/list/review/${id}`} onClick={() => this.fetchData()}>
+            <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData()}>
               <span>Continue</span>
             </Link>
           </Menu.Item>
@@ -358,12 +358,12 @@ class OnboardTable extends Component {
         menuItem = (
           <>
             <Menu.Item>
-              <Link to={`/onboarding/list/review/${id}`} onClick={() => this.fetchData()}>
+              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData()}>
                 <span>Schedule 1-on-1</span>
               </Link>
             </Menu.Item>
             <Menu.Item>
-              <Link to={`/onboarding/list/review/${id}`} onClick={() => this.fetchData(id)}>
+              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
                 <span className={styles.viewDraft}>View Form</span>
               </Link>
             </Menu.Item>
@@ -375,7 +375,7 @@ class OnboardTable extends Component {
         menuItem = (
           <Menu.Item>
             <Link
-              to={`/onboarding/list/review/${id}`}
+              to={`/onboarding/list/view/${id}`}
               onClick={() => {
                 this.initiateBackgroundCheck(id);
               }}
@@ -390,17 +390,17 @@ class OnboardTable extends Component {
         menuItem = (
           <>
             <Menu.Item>
-              <Link to={`/onboarding/list/review/${id}`} onClick={() => this.fetchData(id)}>
+              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
                 Send for approval
               </Link>
             </Menu.Item>
             <Menu.Item>
-              <Link to={`/onboarding/list/review/${id}`} onClick={() => this.fetchData(id)}>
+              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
                 <span className={styles.viewDraft}>View Form</span>
               </Link>
             </Menu.Item>
             <Menu.Item>
-              <Link to={`/onboarding/list/review/${id}`} onClick={() => this.fetchData(id)}>
+              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
                 Discard offer
               </Link>
             </Menu.Item>
@@ -412,12 +412,12 @@ class OnboardTable extends Component {
         menuItem = (
           <>
             <Menu.Item>
-              <Link to={`/onboarding/list/review/${id}`} onClick={() => this.fetchData(id)}>
+              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
                 Send to candidate
               </Link>
             </Menu.Item>
             <Menu.Item>
-              <Link to={`/onboarding/list/review/${id}`} onClick={() => this.fetchData(id)}>
+              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
                 <span className={styles.viewDraft}>View Form</span>
               </Link>
             </Menu.Item>
@@ -429,7 +429,7 @@ class OnboardTable extends Component {
         menuItem = isExpired ? (
           <>
             <Menu.Item>
-              <Link to={`/onboarding/list/review/${id}`} onClick={() => this.fetchData(id)}>
+              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
                 <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
               </Link>
             </Menu.Item>
@@ -446,7 +446,7 @@ class OnboardTable extends Component {
           </>
         ) : (
           <Menu.Item>
-            <Link to={`/onboarding/list/review/${id}`} onClick={() => this.fetchData(id)}>
+            <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
               <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
             </Link>
           </Menu.Item>
@@ -470,7 +470,7 @@ class OnboardTable extends Component {
       default:
         menuItem = (
           <Menu.Item>
-            <Link to={`/onboarding/list/review/${id}`} onClick={() => this.fetchData(id)}>
+            <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
               <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
             </Link>
           </Menu.Item>
@@ -485,7 +485,8 @@ class OnboardTable extends Component {
           <Menu.Item>
             <div
               onClick={() =>
-                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)}
+                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)
+              }
             >
               Re-assign
             </div>
