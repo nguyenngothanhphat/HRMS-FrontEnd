@@ -4,7 +4,7 @@ import { Button, Col, notification, Row, Skeleton, Typography } from 'antd';
 import { map } from 'lodash';
 import React, { Component } from 'react';
 import { connect, formatMessage } from 'umi';
-import { PROCESS_STATUS, NEW_PROCESS_STATUS_TABLE_NAME } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import CustomModal from '@/components/CustomModal';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
@@ -207,9 +207,9 @@ class DocumentVerification extends Component {
     // save step
     const { candidate = '', processStatus } = data;
     const { privateEmail } = tempData;
-    const { PROVISIONAL_OFFER_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
+    const { DRAFT, PROFILE_VERIFICATION } = NEW_PROCESS_STATUS;
 
-    if (processStatus === PROVISIONAL_OFFER_DRAFT || processStatus === SENT_PROVISIONAL_OFFERS) {
+    if (processStatus === DRAFT || processStatus === PROFILE_VERIFICATION) {
       if (dispatch && candidate) {
         dispatch({
           type: 'newCandidateForm/updateByHR',
@@ -308,9 +308,9 @@ class DocumentVerification extends Component {
     const {
       data: { processStatus = '' },
     } = this.props;
-    // PROVISIONAL_OFFER_DRAFT
-    const { FINAL_OFFERS_DRAFT, SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
-    if (processStatus === FINAL_OFFERS_DRAFT || processStatus === SENT_PROVISIONAL_OFFERS) {
+
+    const { PROFILE_VERIFICATION } = NEW_PROCESS_STATUS;
+    if (processStatus === PROFILE_VERIFICATION) {
       return true;
     }
     return false;
@@ -473,11 +473,12 @@ class DocumentVerification extends Component {
 
   changeValueToFinalOffer = (e) => {
     const { dispatch, tempData, checkMandatory, data: { processStatus = '' } = {} } = this.props;
-    const { SENT_PROVISIONAL_OFFERS } = PROCESS_STATUS;
+    const { PROFILE_VERIFICATION } = NEW_PROCESS_STATUS;
     if (e.target.value === 1) {
-      if (processStatus === SENT_PROVISIONAL_OFFERS) {
+      if (processStatus === PROFILE_VERIFICATION) {
         notification.warning({
-          message: 'Waiting for candidate to upload the required documents.',
+          message:
+            'Waiting for candidate to complete the Profile Verification and upload the documents.',
         });
       } else {
         dispatch({
@@ -829,7 +830,7 @@ class DocumentVerification extends Component {
   };
 
   onClickNext = () => {
-    const { currentStep, dispatch } = this.props;
+    const { dispatch } = this.props;
     const { checkRadioSendMail } = this.state;
     if (checkRadioSendMail === 0) {
       this.setState({ openModalEmail: true });
@@ -1480,7 +1481,7 @@ class DocumentVerification extends Component {
                 disabled={this.disableEdit()}
               />
 
-              {(processStatus === NEW_PROCESS_STATUS_TABLE_NAME.DRAFT ||
+              {(processStatus === NEW_PROCESS_STATUS.DRAFT ||
                 documentCLSTByCountryTypeE.length > 0) && (
                 <CollapseFieldsTypeE
                   handleChangeName={this.handleChangeNameBlockE}
@@ -1503,8 +1504,8 @@ class DocumentVerification extends Component {
               <MessageBox />
             </Row>
 
-            {processStatus === PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT ||
-            processStatus === PROCESS_STATUS.SENT_PROVISIONAL_OFFERS ? (
+            {processStatus === NEW_PROCESS_STATUS.DRAFT ||
+            processStatus === NEW_PROCESS_STATUS.PROFILE_VERIFICATION ? (
               <SendEmail
                 openModalEmail={openModalEmail}
                 closeModalEmail={this.closeModalEmail}

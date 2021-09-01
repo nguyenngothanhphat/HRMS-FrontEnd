@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
-import { Collapse, Checkbox, Input, Form, Button, Row, Col, notification } from 'antd';
+import { Collapse, Checkbox, Input, Form, Button, Row, Col, notification, Divider } from 'antd';
 import { PlusOutlined, MinusOutlined, CloseOutlined, DeleteOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import styles from './index.less';
@@ -251,8 +251,11 @@ class CollapseFieldsTypeABC extends PureComponent {
                 className={!visible ? `${styles.hidden}` : `${styles.addBtn}`}
                 onClick={() => this.handleClick(type)}
               >
-                <PlusOutlined className={styles.plusIcon} />
-                <span className={styles.title}>Add New Field</span>
+                <Divider className={styles.addBtn__divider} />
+                <div className={styles.addBtn__text}>
+                  <PlusOutlined className={styles.plusIcon} />
+                  <span className={styles.title}>Add New Field</span>
+                </div>
               </div>
             )}
           </Panel>
