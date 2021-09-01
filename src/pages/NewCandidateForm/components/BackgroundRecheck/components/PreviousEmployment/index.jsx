@@ -162,7 +162,6 @@ class PreviousEmployment extends Component {
                   Type {docListE[0].type}: {docListE[0].name}
                 </Checkbox>
               }
-              extra="[All Mandatory documents will need to be submitted. One or more of the optional documents can be submitted]"
             >
               <Space direction="vertical" className={styles.space}>
                 {docList.map((doc, i) => {

@@ -27,7 +27,7 @@ const InputField = ({
       >
         <Row gutter={[48, 0]} className={style.form}>
           <Col span={24}>
-            <Form.Item label="Name of the employer*" name="employer">
+            <Form.Item label="Name of the employer" name="employer">
               <Input className={style.input} disabled />
             </Form.Item>
           </Col>
