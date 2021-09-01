@@ -572,10 +572,12 @@ class BackgroundRecheck extends Component {
             <Row>
               <NoteComponent note={Note} />
             </Row>
-            <Row className={styles.stepRow}>
+            {/* <Row className={styles.stepRow}>
               <Feedback checkStatus={this.checkStatus} docsList={docsList} />
-            </Row>
-            {feedbackStatus === 'RE-SUBMIT' && (
+            </Row> */}
+
+            {/** //////////////////////////////////////////////////////////////////////////////////////////////////// */}
+            {/* {feedbackStatus === 'RE-SUBMIT' && (
               <Row className={styles.stepRow}>
                 <SendEmail
                   title="Send final offer to the candidate"
@@ -587,11 +589,13 @@ class BackgroundRecheck extends Component {
                   // email={privateEmail}
                 />
               </Row>
-            )}
+            )} */}
+            {/** //////////////////////////////////////////////////////////////////////////////////////////////////// */}
+
             {/* <Row className={styles.stepRow}>
               <button className={styles.close}>close candidature</button>
             </Row> */}
-            {feedbackStatus === 'INELIGIBLE' && (
+            {/* {feedbackStatus === 'INELIGIBLE' && (
               <Row className={styles.stepRow}>
                 <div className={styles.closeWrapper}>
                   <h3>Acceptance of background check by HR</h3>
@@ -601,7 +605,7 @@ class BackgroundRecheck extends Component {
                   </button>
                 </div>
               </Row>
-            )}
+            )} */}
           </Col>
         </Row>
 
