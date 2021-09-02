@@ -11,6 +11,7 @@ import NoteComponent from '../NoteComponent';
 import styles from './index.less';
 import { Page } from '../../utils';
 import MessageBox from '../MessageBox';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 
 @connect(
   ({
@@ -275,6 +276,9 @@ class Benefits extends PureComponent {
     // const { checkMandatory } = this.props;
     // const { filledJobDetail } = checkMandatory;
 
+    const { tempData: {processStatus = ''} = {} } = this.props;
+    
+    const renderText = processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION ? 'Next' : 'Update';
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
@@ -299,7 +303,7 @@ class Benefits extends PureComponent {
                     // }`}
                     className={styles.bottomBar__button__primary}
                   >
-                    Next
+                    {renderText}
                   </Button>
                 </Col>
               </Row>

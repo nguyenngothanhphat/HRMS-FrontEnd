@@ -108,7 +108,7 @@ class EmployerComponent extends PureComponent {
         </Form>
         <Row gutter={['20', '20']}>
           <Col span={24}>
-            <span className={styles.title2}>Proof of employment</span>
+            <div className={styles.title2}>Proof of employment</div>
             <CheckboxGroup
               onChange={(list) => this.onChange(list, data)}
               // options={data.map((data) => data.alias)}

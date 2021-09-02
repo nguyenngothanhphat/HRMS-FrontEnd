@@ -122,6 +122,7 @@ const PreviewOffer = (props) => {
   const isAcceptedOffer = processStatus === NEW_PROCESS_STATUS.OFFER_ACCEPTED;
   const isRejectedOffer = processStatus === NEW_PROCESS_STATUS.OFFER_REJECTED;
   const isWithdrawnOffer = processStatus === NEW_PROCESS_STATUS.OFFER_WITHDRAWN;
+  const isSentOffer = processStatus === NEW_PROCESS_STATUS.OFFER_RELEASED;
 
   // MODALS
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
@@ -268,11 +269,6 @@ const PreviewOffer = (props) => {
         setOpenModal(true);
       }
     });
-  };
-
-  const getUserRole = () => {
-    const { roles } = currentUser;
-    setRole(roles);
   };
 
   useEffect(() => {
@@ -510,7 +506,7 @@ const PreviewOffer = (props) => {
           // Default image
           <>
             <img className={styles.signatureImg} src={whiteImg} alt="" />
-            {isTicketAssignee && !isAcceptedOffer && !isRejectedOffer && !isWithdrawnOffer && (
+            {isTicketAssignee && (isNewOffer || isAwaitingOffer) && (
               <button type="submit" onClick={openModalUploadSignature}>
                 {formatMessage({ id: 'component.previewOffer.upload' })}
               </button>
@@ -519,7 +515,7 @@ const PreviewOffer = (props) => {
         ) : (
           <>
             <img className={styles.signatureImg} src={hrSignature.url} alt="" />
-            {isTicketAssignee && !isAcceptedOffer && !isRejectedOffer && !isWithdrawnOffer && (
+            {isTicketAssignee && (isNewOffer || isAwaitingOffer) && (
               <>
                 <button type="submit" onClick={openModalUploadSignature}>
                   {formatMessage({ id: 'component.previewOffer.uploadNew' })}
@@ -665,7 +661,7 @@ const PreviewOffer = (props) => {
           <img className={styles.signatureImg} src={hrManagerSignature.url} alt="" />
         )}
 
-        {isTicketManager && !isAcceptedOffer && !isWithdrawnOffer && !isRejectedOffer && (
+        {isTicketManager && (isNewOffer || isAwaitingOffer) && (
           <>
             <button
               type="submit"
@@ -688,19 +684,10 @@ const PreviewOffer = (props) => {
     // HR IS ASSIGNEE
     if (isTicketAssignee && !isTicketManager) {
       const hrButtonText = () => {
-        if (isAcceptedOffer) {
-          return 'Accepted';
+        if (isNewOffer) {
+          return 'Send for approval';
         }
-        if (isRejectedOffer) {
-          return 'Rejected';
-        }
-        if (isWithdrawnOffer) {
-          return 'Withdrawn';
-        }
-        if (isAwaitingOffer) {
-          return 'Sent for approval';
-        }
-        return 'Send for approval';
+        return '';
       };
 
       const checkDisableButton = () => {
@@ -708,6 +695,12 @@ const PreviewOffer = (props) => {
           return false;
         }
         return true;
+      };
+
+      const onPrimaryButtonClick = () => {
+        if (isNewOffer) {
+          handleSentForApproval();
+        }
       };
       return (
         <div className={styles.bottomBar}>
@@ -717,13 +710,16 @@ const PreviewOffer = (props) => {
                 <Button type="secondary" className={styles.bottomBar__button__secondary}>
                   Previous
                 </Button>
-                <Button
-                  disabled={checkDisableButton()}
-                  type="primary"
-                  className={styles.bottomBar__button__primary}
-                >
-                  {hrButtonText()}
-                </Button>
+                {isNewOffer && (
+                  <Button
+                    disabled={checkDisableButton()}
+                    type="primary"
+                    className={styles.bottomBar__button__primary}
+                    onClick={onPrimaryButtonClick}
+                  >
+                    {hrButtonText()}
+                  </Button>
+                )}
               </div>
             </Col>
           </Row>
@@ -734,17 +730,17 @@ const PreviewOffer = (props) => {
     // HR MANAGER IS TICKET MANAGER or HR MANAGER IS BOTH ASSIGNEE & MANAGER
     if (isTicketManager) {
       const managerSecondaryButtonText = () => {
-        if (isAcceptedOffer) {
+        if (isSentOffer) {
           return 'Extend Offer Date';
         }
-        if (isAwaitingOffer) {
+        if (isAwaitingOffer || isNewOffer) {
           return 'Reject';
         }
         return 'Previous';
       };
 
       const managerPrimaryButtonText = () => {
-        if (isAcceptedOffer) {
+        if (isAcceptedOffer || isSentOffer) {
           return 'Withdraw';
         }
         if (isRejectedOffer) {
@@ -760,22 +756,19 @@ const PreviewOffer = (props) => {
         if (isAwaitingOffer) {
           setRejectModalVisible(true);
         }
-        if (isAcceptedOffer) {
+        if (isAcceptedOffer || isSentOffer) {
           setExtendOfferModalVisible(true);
         }
       };
 
       const onPrimaryButtonClick = () => {
-        if (isAcceptedOffer) {
+        if (isAcceptedOffer || isSentOffer) {
           setWithdrawOfferModalVisible(true);
         }
-        // if (isRejectedOffer) {
-        //   return 'Rejected';
-        // }
-        // if (isWithdrawnOffer) {
-        //   return 'Withdrawn';
-        // }
-        // return 'Approve';
+        if (isNewOffer || isAwaitingOffer) {
+          // HR MANAGER APPROVE A TICKET HERE
+          handleSendFinalOffer();
+        }
       };
 
       const checkDisablePrimaryButton = () => {
@@ -800,14 +793,16 @@ const PreviewOffer = (props) => {
                 >
                   {managerSecondaryButtonText()}
                 </Button>
-                <Button
-                  type="primary"
-                  onClick={onPrimaryButtonClick}
-                  className={styles.bottomBar__button__primary}
-                  disabled={checkDisablePrimaryButton()}
-                >
-                  {managerPrimaryButtonText()}
-                </Button>
+                {!isWithdrawnOffer && !isRejectedOffer && (
+                  <Button
+                    type="primary"
+                    onClick={onPrimaryButtonClick}
+                    className={styles.bottomBar__button__primary}
+                    disabled={checkDisablePrimaryButton()}
+                  >
+                    {managerPrimaryButtonText()}
+                  </Button>
+                )}
               </div>
             </Col>
           </Row>
@@ -840,6 +835,21 @@ const PreviewOffer = (props) => {
     ),
   };
 
+  const AcceptedNote = {
+    title: 'Offer Accepted',
+    data: <Typography.Text>The offer has been accepted by the candidate.</Typography.Text>,
+  };
+
+  const WithdrawnNote = {
+    title: 'Offer Withdrawn',
+    data: <Typography.Text>The offer has been withdrawn by the HR Manager.</Typography.Text>,
+  };
+
+  const RejectedNote = {
+    title: 'Offer Rejected',
+    data: <Typography.Text>The offer has been rejected.</Typography.Text>,
+  };
+
   if (loadingFetchCandidate) return <Skeleton />;
   // main
   return (
@@ -860,15 +870,39 @@ const PreviewOffer = (props) => {
 
       <Col xs={24} xl={8} className={styles.right}>
         {/* SENT OFFER  */}
-        {isTicketManager && isAcceptedOffer && (
+        {isTicketManager && isSentOffer && (
           <>
             <NoteComponent note={SentNote} />
             <div style={{ marginBottom: '24px' }} />
           </>
         )}
 
+        {/* ACCEPTED OFFER  */}
+        {isAcceptedOffer && (
+          <>
+            <NoteComponent note={AcceptedNote} />
+            <div style={{ marginBottom: '24px' }} />
+          </>
+        )}
+
+        {/* REJECTED OFFER  */}
+        {isRejectedOffer && (
+          <>
+            <NoteComponent note={RejectedNote} />
+            <div style={{ marginBottom: '24px' }} />
+          </>
+        )}
+
+        {/* WITHDRAWN OFFER  */}
+        {isWithdrawnOffer && (
+          <>
+            <NoteComponent note={WithdrawnNote} />
+            <div style={{ marginBottom: '24px' }} />
+          </>
+        )}
+
         {/* EXTENDED OFFER  */}
-        {/* {isTicketManager && isAcceptedOffer && (
+        {/* {isTicketManager && isSentOffer && (
           <>
             <NoteComponent note={ExtendedNote} />
             <div style={{ marginBottom: '24px' }} />
@@ -892,7 +926,7 @@ const PreviewOffer = (props) => {
               <p>Undersigned</p>
             )}
 
-            {isTicketAssignee && !isAcceptedOffer && !isRejectedOffer && !isWithdrawnOffer && (
+            {isTicketAssignee && (isNewOffer || isAwaitingOffer) && (
               <Row>
                 <Col span={24}>
                   <Select
@@ -912,7 +946,7 @@ const PreviewOffer = (props) => {
 
             {renderSignatureHr()}
 
-            {isTicketAssignee && !isAcceptedOffer && !isRejectedOffer && !isWithdrawnOffer && (
+            {isTicketAssignee && (isNewOffer || isAwaitingOffer) && (
               <div className={styles.submitContainer}>
                 <Button
                   type="primary"
@@ -1009,7 +1043,7 @@ const PreviewOffer = (props) => {
               <p>Undersigned</p>
             )}
 
-            {!isAcceptedOffer && !isRejectedOffer && !isWithdrawnOffer && (
+            {!isAcceptedOffer && (isNewOffer || isAwaitingOffer) && (
               <Row>
                 <Col span={24}>
                   <Select
@@ -1028,7 +1062,7 @@ const PreviewOffer = (props) => {
             )}
             {renderSignatureHrManager()}
 
-            {isTicketManager && !isAcceptedOffer && !isWithdrawnOffer && !isRejectedOffer && (
+            {isTicketManager && (isNewOffer || isAwaitingOffer) && (
               <div className={styles.submitContainer}>
                 <Button
                   type="primary"

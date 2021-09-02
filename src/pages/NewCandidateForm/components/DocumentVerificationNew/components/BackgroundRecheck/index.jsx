@@ -1,20 +1,16 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-param-reassign */
-import React, { Component, Fragment } from 'react';
-import { Row, Col, Typography, Skeleton, Button } from 'antd';
-import { formatMessage, connect } from 'umi';
+import { Button, Col, Row, Skeleton, Typography } from 'antd';
+import React, { Component } from 'react';
+import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
 import { PROCESS_STATUS } from '@/utils/onboarding';
-import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import NoteComponent from '../NoteComponent';
-import Feedback from './components/Feedback';
-import CollapseField from './components/CollapseField';
-import styles from './index.less';
-import SendEmail from '../PreviewOffer/components/SendEmail';
+import NoteComponent from '../../../NoteComponent';
 import CloseCandidateModal from './components/CloseCandidateModal';
-import { Page } from '../../utils';
+import CollapseField from './components/CollapseField';
 import PreviousEmployment from './components/PreviousEmployment';
+import styles from './index.less';
 
 @connect(
   ({
@@ -29,10 +25,12 @@ import PreviousEmployment from './components/PreviousEmployment';
         workHistory = [],
       },
       currentStep,
+      data = {},
     },
     loading,
   }) => ({
     tempData,
+    data,
     workHistory,
     privateEmail,
     candidate,
@@ -63,16 +61,58 @@ class BackgroundRecheck extends Component {
   }
 
   componentDidMount = async () => {
+    window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+    const { data: { _id = '' } = {} } = this.props;
+
+    if (_id) {
+      this.firstInit();
+    }
+  };
+
+  componentDidUpdate = async (prevProps) => {
+    const { docsList } = this.state;
+    const { tempData: { documentsByCandidateRD = '' } = {}, data: { _id = '' } = {} } = this.props;
+
+    if (_id && docsList.length === 0 && documentsByCandidateRD.length > 0) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        docsList: documentsByCandidateRD,
+      });
+    }
+
+    const { dispatch, candidate, tempData: { documentsByCandidate = [] } = {} } = this.props;
+    if (
+      _id &&
+      documentsByCandidate.length > 0 &&
+      JSON.stringify(documentsByCandidate) !==
+        JSON.stringify(prevProps.tempData.documentsByCandidate || [])
+    ) {
+      await dispatch({
+        type: 'newCandidateForm/fetchWorkHistory',
+        payload: {
+          candidate,
+          tenantId: getCurrentTenant(),
+        },
+      }).then((res) => {
+        if (res.statusCode === 200) {
+          this.processDocumentData(documentsByCandidate);
+        }
+      });
+    }
+
+    if (_id && _id !== prevProps.data._id) {
+      this.firstInit();
+    }
+  };
+
+  firstInit = async () => {
     const {
       dispatch,
       candidate,
       processStatus = '',
       tempData: { documentsByCandidate = [] } = {},
     } = this.props;
-
     const { PROVISIONAL_OFFER_DRAFT, SENT_PROVISIONAL_OFFERS, PENDING } = PROCESS_STATUS;
-
-    window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
 
     if (documentsByCandidate.length > 0) {
       await dispatch({
@@ -100,36 +140,6 @@ class BackgroundRecheck extends Component {
           // currentStep: 3,
           tenantId: getCurrentTenant(),
         },
-      });
-    }
-  };
-
-  componentDidUpdate = async (prevProps) => {
-    const { docsList } = this.state;
-    const { tempData: { documentsByCandidateRD = '' } = {} } = this.props;
-    if (docsList.length === 0 && documentsByCandidateRD.length > 0) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({
-        docsList: documentsByCandidateRD,
-      });
-    }
-
-    const { dispatch, candidate, tempData: { documentsByCandidate = [] } = {} } = this.props;
-    if (
-      documentsByCandidate.length > 0 &&
-      JSON.stringify(documentsByCandidate) !==
-        JSON.stringify(prevProps.tempData.documentsByCandidate || [])
-    ) {
-      await dispatch({
-        type: 'newCandidateForm/fetchWorkHistory',
-        payload: {
-          candidate,
-          tenantId: getCurrentTenant(),
-        },
-      }).then((res) => {
-        if (res.statusCode === 200) {
-          this.processDocumentData(documentsByCandidate);
-        }
       });
     }
   };
@@ -373,20 +383,18 @@ class BackgroundRecheck extends Component {
   renderCollapseFields = () => {
     const { docsList: documentsCandidateList = [] } = this.state;
     const { loadingGetById = false } = this.props;
-    if (documentsCandidateList.length === 0 || loadingGetById) {
+    if (loadingGetById) {
       return <Skeleton active />;
     }
 
     return (
       <>
-        {documentsCandidateList.map((document, index) => {
+        {documentsCandidateList.map((document) => {
           if (document.type !== 'E') {
             return (
               <CollapseField
                 item={document}
-                index={index}
-                //   docList={documentListToRender}
-                handleCheckDocument={this.handleCheckDocument}
+                // handleCheckDocument={this.handleCheckDocument}
               />
             );
           }
@@ -446,13 +454,7 @@ class BackgroundRecheck extends Component {
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
-          <Col span={16}>
-            <div className={styles.greenText}>
-              <RenderAddQuestion page={Page.Eligibility_documents} />
-              {/* * All mandatory details must be filled to proceed */}
-            </div>
-          </Col>
-          <Col className={styles.bottomBar__button} span={8}>
+          <Col className={styles.bottomBar__button} span={24}>
             <Button
               type="secondary"
               onClick={this.onClickPrev}
@@ -564,10 +566,12 @@ class BackgroundRecheck extends Component {
             <Row>
               <NoteComponent note={Note} />
             </Row>
-            <Row className={styles.stepRow}>
+            {/* <Row className={styles.stepRow}>
               <Feedback checkStatus={this.checkStatus} docsList={docsList} />
-            </Row>
-            {feedbackStatus === 'RE-SUBMIT' && (
+            </Row> */}
+
+            {/** //////////////////////////////////////////////////////////////////////////////////////////////////// */}
+            {/* {feedbackStatus === 'RE-SUBMIT' && (
               <Row className={styles.stepRow}>
                 <SendEmail
                   title="Send final offer to the candidate"
@@ -579,11 +583,13 @@ class BackgroundRecheck extends Component {
                   // email={privateEmail}
                 />
               </Row>
-            )}
+            )} */}
+            {/** //////////////////////////////////////////////////////////////////////////////////////////////////// */}
+
             {/* <Row className={styles.stepRow}>
               <button className={styles.close}>close candidature</button>
             </Row> */}
-            {feedbackStatus === 'INELIGIBLE' && (
+            {/* {feedbackStatus === 'INELIGIBLE' && (
               <Row className={styles.stepRow}>
                 <div className={styles.closeWrapper}>
                   <h3>Acceptance of background check by HR</h3>
@@ -593,7 +599,7 @@ class BackgroundRecheck extends Component {
                   </button>
                 </div>
               </Row>
-            )}
+            )} */}
           </Col>
         </Row>
 

@@ -160,28 +160,39 @@
     }
   }
   .addBtn {
-    display: flex;
-    align-content: center;
     padding-left: 24px;
+    padding-right: 24px;
     padding-bottom: 12px;
     padding-top: 12px;
     cursor: pointer;
-    .plusIcon,
-    .title {
-      color: #2c6df9 !important;
-      font-weight: bold !important;
+    
+    &__divider{
+      border-top: 1px solid #D6DCE0;
+      margin: 0;
+      margin-bottom: 24px;
     }
-    .plusIcon {
-      font-size: 24px !important;
-    }
-    .title {
-      margin-left: 24px;
-      padding-top: 2px;
-      font-weight: bold;
-      font-size: 13px;
-    }
-    &:hover {
-      opacity: 0.8 !important;
+    
+    &__text{
+      display: flex;
+      align-content: center;
+
+      .plusIcon,
+      .title {
+        color: #2c6df9 !important;
+        font-weight: bold !important;
+      }
+      .plusIcon {
+        font-size: 24px !important;
+      }
+      .title {
+        margin-left: 24px;
+        padding-top: 2px;
+        font-weight: bold;
+        font-size: 13px;
+      }
+      &:hover {
+        opacity: 0.8 !important;
+      }
     }
   }
   .removeIcon {

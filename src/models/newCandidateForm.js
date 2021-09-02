@@ -220,7 +220,7 @@ const defaultState = {
     company: null,
     joineeEmail: '',
     previousExperience: null,
-    processStatus: 'RENEGOTIATE-PROVISONAL-OFFER',
+    processStatus: '',
     noticePeriod: null,
     dateOfJoining: null,
     reportingManager: null,
@@ -1093,15 +1093,15 @@ const newCandidateForm = {
           type: 'updateSignature',
           payload: data,
         });
-        // if (_id) {
-        //   yield put({
-        //     type: 'fetchDocumentByCandidateID',
-        //     payload: {
-        //       candidate: _id,
-        //       tenantId: payload.tenantId,
-        //     },
-        //   });
-        // }
+        if (_id) {
+          yield put({
+            type: 'fetchDocumentByCandidateID',
+            payload: {
+              candidate: _id,
+              tenantId: payload.tenantId,
+            },
+          });
+        }
       } catch (error) {
         dialog(error);
       }

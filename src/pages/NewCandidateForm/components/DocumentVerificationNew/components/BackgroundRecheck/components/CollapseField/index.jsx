@@ -1,8 +1,11 @@
 /* eslint-disable react/no-array-index-key */
 import React, { Component } from 'react';
-import { Collapse, Checkbox, Space, Col, Row, Typography, Radio } from 'antd';
+import { Collapse, Checkbox, Space, Col, Row, Typography } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
+import ResubmitIcon from '@/assets/resubmit.svg';
+import VerifiedIcon from '@/assets/verified.svg';
+import WarningIcon from '@/assets/warning-filled.svg';
 import styles from './index.less';
 
 class CollapseField extends Component {
@@ -35,23 +38,52 @@ class CollapseField extends Component {
     });
   };
 
-  renderClassnameOfFile = (candidateDocumentStatus) => {
-    let className = `${styles.file__content} `;
-    if (candidateDocumentStatus === 'VERIFIED') {
-      className += `${styles.file__content__verified} `;
-    }
-    if (candidateDocumentStatus === 'RE-SUBMIT') {
-      className += `${styles.file__content__resubmit} `;
-    }
-    if (candidateDocumentStatus === 'INELIGIBLE') {
-      className += `${styles.file__content__ineligible} `;
-    }
-    return className;
+  // renderClassnameOfFile = (candidateDocumentStatus) => {
+  //   let className = `${styles.file__content} `;
+  //   if (candidateDocumentStatus === 'VERIFIED') {
+  //     className += `${styles.file__content__file} `;
+  //   }
+  //   if (candidateDocumentStatus === 'RE-SUBMIT') {
+  //     className += `${styles.file__content__resubmit} `;
+  //   }
+  //   if (candidateDocumentStatus === 'INELIGIBLE') {
+  //     className += `${styles.file__content__ineligible} `;
+  //   }
+  //   return className;
+  // };
+
+  renderStatusVerify = (fileName, candidateDocumentStatus) => {
+    const formatStatus = (status) => {
+      if (status === 'RE-SUBMIT') {
+        return (
+          <div className={styles.resubmit}>
+            <div>Resubmit</div>
+            <img src={ResubmitIcon} alt="re-submit" />
+          </div>
+        );
+      }
+      if (status === 'VERIFIED') {
+        return (
+          <div className={styles.verified}>
+            <div>Verified</div>
+            <img src={VerifiedIcon} alt="verified" />
+          </div>
+        );
+      }
+
+      return (
+        <div className={styles.pending}>
+          <div>Pending Verification</div>
+        </div>
+      );
+    };
+    return <>{fileName && <>{formatStatus(candidateDocumentStatus)}</>}</>;
   };
 
   render() {
-    const { item = {}, index: indexGroupDoc = '', handleCheckDocument = () => {} } = this.props;
+    const { item = {} } = this.props;
     const { visible, url, displayName } = this.state;
+
     return (
       <div className={styles.collapseField}>
         {item.data.length > 0 ? (
@@ -72,7 +104,6 @@ class CollapseField extends Component {
                   Type {item.type}: {item.name}
                 </Checkbox>
               }
-              extra="[All Mandatory documents will need to be submitted. One or more of the optional documents can be submitted]"
             >
               <Space direction="vertical" className={styles.space}>
                 {item.data.map((document, index) => {
@@ -80,10 +111,10 @@ class CollapseField extends Component {
                   const { name: fileName = '' } = attachment;
                   return (
                     <Row gutter={[16, 0]} className={styles.collapseField__row} key={index}>
-                      <Col span={6} className={styles.collapseField__row__name}>
+                      <Col span={17} className={styles.collapseField__row__name}>
                         <Typography.Text>{document.displayName}</Typography.Text>
                       </Col>
-                      <Col span={7} className={styles.collapseField__row__file}>
+                      <Col span={4} className={styles.collapseField__row__file}>
                         <div
                           onClick={() => {
                             if (!fileName) {
@@ -91,31 +122,14 @@ class CollapseField extends Component {
                             }
                             this.openViewDocument(document.displayName, attachment);
                           }}
-                          className={this.renderClassnameOfFile(candidateDocumentStatus)}
+                          className={styles.file__content__file}
                         >
-                          <span>{fileName}</span>
+                          <img src={WarningIcon} alt="warning" />
+                          <div className={styles.file__content__file__text}>{fileName}</div>
                         </div>
                       </Col>
-                      <Col span={11} className={styles.collapseField__row__radio}>
-                        {fileName && (
-                          <Radio.Group
-                            name="radiogroup"
-                            defaultValue={candidateDocumentStatus}
-                            onChange={(event) => {
-                              handleCheckDocument(event, indexGroupDoc, document);
-                            }}
-                          >
-                            <Radio value="VERIFIED" className={styles.verified}>
-                              Verified
-                            </Radio>
-                            <Radio value="RE-SUBMIT" className={styles.resubmit}>
-                              Re-submit
-                            </Radio>
-                            <Radio value="INELIGIBLE" className={styles.ineligible}>
-                              Ineligible
-                            </Radio>
-                          </Radio.Group>
-                        )}
+                      <Col span={3} className={styles.collapseField__row__statusVerify}>
+                        {this.renderStatusVerify(fileName, candidateDocumentStatus)}
                       </Col>
                     </Row>
                   );

@@ -3,6 +3,11 @@
 @red: #ff5252;
 @gray: #464646;
 @border-gray: #d6dce0;
+@spacing-xxs: 4px;
+@darkColour: #161c29;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@commonPadding2: 24px;
 
 .backgroundRecheck {
   font-size: 13px;
@@ -67,15 +72,12 @@
   }
 
   .bottomBar {
-    // position: fixed;
-    // bottom: 0;
-    // width: inherit;
-    // height: 72px;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
     border: solid 1px #d6dce0;
     background-color: #ffffff;
-    padding: 24px;
+    padding: @commonPadding;
+    margin-block: @commonPadding2;
 
     .normalText {
       display: flex;
@@ -112,7 +114,7 @@
           box-shadow: none;
           text-shadow: none;
           // display: none;
-          width: 94px;
+          padding-inline: 25px;
           height: 40px;
           object-fit: contain;
           border-radius: 25px;
@@ -129,7 +131,7 @@
           }
         }
         .ant-btn-secondary {
-          width: 94px;
+          padding-inline: 25px;
           height: 40px;
           object-fit: contain;
           border-radius: 25px;

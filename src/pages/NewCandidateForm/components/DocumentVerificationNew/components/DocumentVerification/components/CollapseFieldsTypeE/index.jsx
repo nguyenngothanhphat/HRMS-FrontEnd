@@ -29,10 +29,6 @@ class CollapseFieldsType2 extends PureComponent {
           disabled={disabled}
         />
         <span className={styles.titleText}>{title}</span>
-        <span className={styles.noteText}>
-          [All Mandatory documents will need to be submitted. One or more of the optional documents
-          can be submitted]
-        </span>
       </div>
     );
   };

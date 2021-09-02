@@ -1,14 +1,10 @@
 /* eslint-disable consistent-return */
 /* eslint-disable react/button-has-type */
-import React, { Component } from 'react';
 import { Button, Col, Row } from 'antd';
+import React, { Component } from 'react';
 import { connect, history } from 'umi';
-import { PROCESS_STATUS } from '@/utils/onboarding';
-import ItemMenu from './components/ItemMenu';
-import PreviewOffer from '../../pages/NewCandidateForm/components/PreviewOffer/index';
 import BasicInformation from '../../pages/NewCandidateForm/components/BasicInformation';
-import BackgroundRecheck from '../../pages/NewCandidateForm/components/BackgroundRecheck';
-import DocumentVerification from '../../pages/NewCandidateForm/components/DocumentVerification';
+import ItemMenu from './components/ItemMenu';
 // import BottomBar from '../BottomBar';
 import s from './index.less';
 
@@ -18,13 +14,13 @@ import s from './index.less';
     newCandidateForm: {
       currentStep = 0,
       displayComponent = {},
-      data: { processStatus = '' } = {},
       tempData: {
         skip = 0,
         backgroundRecheck: { allDocumentVerified = false } = {},
         hidePreviewOffer,
         disablePreviewOffer,
         checkStatus = {},
+        processStatus = '',
       } = {},
       checkMandatory = {},
     } = {},
@@ -72,13 +68,6 @@ class LayoutAddCandidateForm extends Component {
   };
 
   _handlePreviewOffer = () => {
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'newCandidateForm/save',
-    //   payload: {
-    //     displayComponent: <PreviewOffer />,
-    //   },
-    // });
     const { reId = '' } = this.props;
     history.push(`/onboarding/list/view/${reId}/offer-letter`);
   };
@@ -99,6 +88,7 @@ class LayoutAddCandidateForm extends Component {
       currentPage = '',
       hidePreviewOffer = false,
       disablePreviewOffer = false,
+      processStatus = '',
     } = this.props;
 
     const { displayComponent, selectedItemId } = this.state;
@@ -113,6 +103,7 @@ class LayoutAddCandidateForm extends Component {
                 item={item}
                 handelClick={this._handleClick}
                 selectedItemId={selectedItemId}
+                isDisabled={item.statusToLock.includes(processStatus)}
               />
             ))}
             <div className={s.viewLeft__menu__btnPreviewOffer}>

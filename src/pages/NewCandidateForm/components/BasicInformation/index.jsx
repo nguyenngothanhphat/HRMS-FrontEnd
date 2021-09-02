@@ -13,6 +13,7 @@ import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
 import BasicInformationHeader from './components/BasicInformationHeader';
 import styles from './index.less';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 
 @connect(({ newCandidateForm: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
   data,
@@ -327,8 +328,13 @@ class BasicInformation extends PureComponent {
   };
 
   _renderBottomBar = () => {
-    const { checkMandatory, loadingUpdateByHR = false } = this.props;
+    const {
+      checkMandatory,
+      loadingUpdateByHR = false,
+      tempData: { processStatus = '' } = {},
+    } = this.props;
     const { filledBasicInformation } = checkMandatory;
+    const renderText = processStatus === NEW_PROCESS_STATUS.DRAFT ? 'Next' : 'Update';
 
     return (
       <div className={styles.bottomBar}>
@@ -344,7 +350,7 @@ class BasicInformation extends PureComponent {
                 disabled={!filledBasicInformation}
                 loading={loadingUpdateByHR}
               >
-                Next
+                {renderText}
               </Button>
             </div>
           </Col>
