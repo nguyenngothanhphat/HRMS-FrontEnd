@@ -6,7 +6,7 @@ import moment from 'moment';
 // import CustomModal from '@/components/CustomModal/index';
 // import ProfileModalContent from '../FinalOffers/components/ProfileModalContent';
 import MenuIcon from '@/assets/menuDots.svg';
-import { PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, PROCESS_STATUS } from '@/utils/onboarding';
 import { getAuthority, getCurrentTenant } from '@/utils/authority';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 import { getActionText, getColumnWidth } from './utils';
@@ -65,6 +65,10 @@ class OnboardTable extends Component {
         tenantId: getCurrentTenant(),
       },
     });
+  };
+
+  handleActionWithDraw = (id) => {
+    console.log(id);
   };
 
   closeModal = () => {
@@ -322,7 +326,6 @@ class OnboardTable extends Component {
     } = payload;
 
     const {
-      PROVISIONAL_OFFER_DRAFT,
       FINAL_OFFERS_DRAFT,
 
       RENEGOTIATE_PROVISIONAL_OFFERS,
@@ -334,24 +337,26 @@ class OnboardTable extends Component {
       ACCEPTED_FINAL_OFFERS,
 
       SENT_FINAL_OFFERS,
-    } = PROCESS_STATUS;
-    const isRemovable =
-      processStatusId === PROVISIONAL_OFFER_DRAFT || processStatusId === FINAL_OFFERS_DRAFT;
+    } = PROCESS_STATUS; // old status
+
+    const { DRAFT } = NEW_PROCESS_STATUS; // new status
+
+    const isRemovable = processStatusId === DRAFT;
     const isHRManager = this.checkPermission('hr-manager');
 
     const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;
 
     let menuItem = '';
     switch (processStatusId) {
-      case PROVISIONAL_OFFER_DRAFT:
-        menuItem = (
-          <Menu.Item>
-            <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData()}>
-              <span>Continue</span>
-            </Link>
-          </Menu.Item>
-        );
-        break;
+      // case DRAFT:
+      //   menuItem = (
+      //     <Menu.Item>
+      //       <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData()}>
+      //         <span>Continue</span>
+      //       </Link>
+      //     </Menu.Item>
+      //   );
+      //   break;
 
       case RENEGOTIATE_PROVISIONAL_OFFERS:
       case RENEGOTIATE_FINAL_OFFERS:
@@ -492,9 +497,18 @@ class OnboardTable extends Component {
             </div>
           </Menu.Item>
         )}
-        <Menu.Item disabled={!isRemovable}>
-          <div onClick={isRemovable ? () => this.handleActionDelete(id) : () => {}}>Delete</div>
-        </Menu.Item>
+        {isRemovable && (
+          <Menu.Item disabled={!isRemovable}>
+            <div onClick={isRemovable ? () => this.handleActionDelete(id) : () => {}}>Delete</div>
+          </Menu.Item>
+        )}
+        {!isRemovable && (
+          <Menu.Item>
+            <div onClick={!isRemovable ? () => this.handleActionWithDraw(id) : () => {}}>
+              Withdraw
+            </div>
+          </Menu.Item>
+        )}
       </Menu>
     );
   };
