@@ -107,9 +107,7 @@ class BackgroundRecheck extends Component {
   };
 
   firstInit = async () => {
-    const { dispatch, candidate, processStatus = '', documentsByCandidate = [] } = this.props;
-    // const { PROVISIONAL_OFFER_DRAFT, SENT_PROVISIONAL_OFFERS, PENDING } = PROCESS_STATUS;
-    const { PROFILE_VERIFICATION, DOCUMENT_VERIFICATION } = NEW_PROCESS_STATUS;
+    const { dispatch, candidate, documentsByCandidate = [] } = this.props;
 
     if (documentsByCandidate.length > 0) {
       await dispatch({
@@ -122,23 +120,6 @@ class BackgroundRecheck extends Component {
         if (res.statusCode === 200) {
           this.processDocumentData(documentsByCandidate);
         }
-      });
-    }
-
-    if (
-      // processStatus === PROVISIONAL_OFFER_DRAFT ||
-      // processStatus === SENT_PROVISIONAL_OFFERS ||
-      // processStatus === PENDING
-      processStatus === PROFILE_VERIFICATION ||
-      processStatus === DOCUMENT_VERIFICATION
-    ) {
-      dispatch({
-        type: 'newCandidateForm/updateByHR',
-        payload: {
-          candidate,
-          // currentStep: 3,
-          tenantId: getCurrentTenant(),
-        },
       });
     }
   };

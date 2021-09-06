@@ -21,7 +21,6 @@ class VerifyDocumentModal extends Component {
     super(props);
     this.state = {
       openCommentForm: false,
-      comments: '',
     };
   }
 
@@ -40,16 +39,14 @@ class VerifyDocumentModal extends Component {
 
   destroyOnClose = () => {
     const { onClose = () => {} } = this.props;
+    this.setState({
+      openCommentForm: false,
+    });
     onClose();
   };
 
-  onSubmit = (comments = '') => {
-    const {
-      dispatch,
-      candidate,
-      docProps: { documentId: document = '' } = {},
-      onClose = () => {},
-    } = this.props;
+  onSubmit = (comment = '', option) => {
+    const { dispatch, candidate, docProps: { documentId: document = '' } = {} } = this.props;
     if (!dispatch) {
       return;
     }
@@ -57,48 +54,61 @@ class VerifyDocumentModal extends Component {
     dispatch({
       type: 'newCandidateForm/checkDocumentEffect',
       payload: {
+        comment,
         candidate,
         document,
-        candidateDocumentStatus: 1,
+        candidateDocumentStatus: option,
       },
     }).then((response) => {
       const { statusCode } = response;
       if (statusCode === 200) {
-        onClose();
+        this.destroyOnClose();
       }
     });
   };
 
   handleVerified = () => {
-    this.onSubmit();
+    this.onSubmit('', 1);
   };
 
-  handleReSubmit = () => {
-    const { comments } = this.state;
-    this.onSubmit(comments);
+  onReSubmit = (value) => {
+    const { comment } = value;
+    console.log(value);
+    this.onSubmit(comment, 2);
   };
 
-  openResubmitForm = () => {
+  openResubmitForm = (value) => {
     this.setState({
-      openCommentForm: true,
-    });
-  };
-
-  onValuesChange = (value) => {
-    const { comments = '' } = value;
-    this.setState({
-      comments,
+      openCommentForm: value,
     });
   };
 
   renderComments = () => {
     return (
       <div className={styles.commentForm}>
-        <Divider className={styles.divider} />
-        <Form onValuesChange={this.onValuesChange}>
-          <Form.Item label="Enter comments" name="comments">
-            <TextArea autoSize={{ minRows: 3, maxRows: 5 }} />
-          </Form.Item>
+        <div className={styles.commentForm__divider}>
+          <Divider className={styles.divider} />
+        </div>
+        <Form onFinish={this.onReSubmit}>
+          <div className={styles.commentForm__form}>
+            <Form.Item
+              label="Enter comments"
+              name="comment"
+              rules={[
+                {
+                  pattern: /^[\W\S_]{0,1000}$/,
+                  message: 'Only fill up to 1000 characters !',
+                },
+                {
+                  required: true,
+                  message: 'Please input field !',
+                },
+              ]}
+            >
+              <TextArea autoSize={{ minRows: 3, maxRows: 5 }} />
+            </Form.Item>
+          </div>
+          {this.renderSecondBtns()}
         </Form>
       </div>
     );
@@ -110,7 +120,10 @@ class VerifyDocumentModal extends Component {
     const { candidateDocStatus } = docProps;
     return (
       <div className={styles.verifyDocumentModal__bottom}>
-        <Button onClick={this.openResubmitForm} className={`${styles.btn} ${styles.resubmitBtn}`}>
+        <Button
+          onClick={() => this.openResubmitForm(true)}
+          className={`${styles.btn} ${styles.resubmitBtn}`}
+        >
           Resubmit
         </Button>
         <Button
@@ -128,11 +141,14 @@ class VerifyDocumentModal extends Component {
   renderSecondBtns = () => {
     return (
       <div className={styles.verifyDocumentModal__bottom}>
-        <Button onClick={this.handleResubmit} className={`${styles.btn} ${styles.resubmitBtn}`}>
+        <Button
+          onClick={() => this.openResubmitForm(false)}
+          className={`${styles.btn} ${styles.resubmitBtn}`}
+        >
           Cancel
         </Button>
         <Button
-          onClick={this.onReSubmit}
+          htmlType="submit"
           className={`${styles.btn} ${styles.verifiedBtn}`}
           //   loading={loadingVerified}
         >
@@ -162,7 +178,7 @@ class VerifyDocumentModal extends Component {
         </div>
         {openCommentForm && this.renderComments()}
 
-        {openCommentForm ? this.renderSecondBtns() : this.renderFirstBtns()}
+        {openCommentForm ? null : this.renderFirstBtns()}
       </Modal>
     );
   }
