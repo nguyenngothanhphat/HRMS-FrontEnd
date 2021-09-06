@@ -199,3 +199,18 @@ export function addSchedule(params) {
     data: params,
   });
 }
+
+// extend offer letter
+export function extendOfferLetter(params) {
+  return request('/api/candidatetenant/extend-offer-date', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+export function withdrawOffer(params) {
+  return request('/api/candidatetenant/withdraw-offer', {
+    method: 'POST',
+    data: params,
+  });
+}

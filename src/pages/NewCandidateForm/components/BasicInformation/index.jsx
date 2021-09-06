@@ -275,8 +275,6 @@ class BasicInformation extends PureComponent {
             </Form.Item>
           </Col>
 
-          {this._renderEmployeeId()}
-
           <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
               labelCol={{ span: 24 }}

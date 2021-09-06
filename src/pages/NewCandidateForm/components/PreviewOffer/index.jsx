@@ -49,6 +49,8 @@ const PreviewOffer = (props) => {
     loading2,
     loading3,
     loadingFetchCandidate = false,
+    loadingExtendOfferDate = false,
+    loadingWithdrawOffer = false,
   } = props;
 
   const {
@@ -271,6 +273,35 @@ const PreviewOffer = (props) => {
         setOpenModal(true);
       }
     });
+  };
+
+  const handleExtendOfferDate = async (newDate) => {
+    const { candidate } = data;
+    const res = await dispatch({
+      type: 'newCandidateForm/extendOfferLetterEffect',
+      payload: {
+        candidate,
+        expiryDate: newDate,
+        oldExpiryDate: expiryDateProp,
+      },
+    });
+    if (res.statusCode === 200) {
+      setExtendOfferModalVisible(false);
+    }
+  };
+
+  const handleWithdrawOffer = async (reason) => {
+    const { candidate } = data;
+    const res = await dispatch({
+      type: 'newCandidateForm/withdrawOfferEffect',
+      payload: {
+        candidate,
+        reasonForWithdraw: reason,
+      },
+    });
+    if (res.statusCode === 200) {
+      setWithdrawOfferModalVisible(false);
+    }
   };
 
   useEffect(() => {
@@ -751,7 +782,7 @@ const PreviewOffer = (props) => {
       };
 
       const managerPrimaryButtonText = () => {
-        if (isAcceptedOffer || isSentOffer) {
+        if (isSentOffer) {
           return 'Withdraw';
         }
         if (isRejectedOffer) {
@@ -773,7 +804,7 @@ const PreviewOffer = (props) => {
       };
 
       const onPrimaryButtonClick = () => {
-        if (isAcceptedOffer || isSentOffer) {
+        if (isSentOffer) {
           setWithdrawOfferModalVisible(true);
         }
         if (isNewOffer || isAwaitingOffer) {
@@ -804,7 +835,7 @@ const PreviewOffer = (props) => {
                 >
                   {managerSecondaryButtonText()}
                 </Button>
-                {!isWithdrawnOffer && !isRejectedOffer && (
+                {!isWithdrawnOffer && !isRejectedOffer && !isAcceptedOffer && (
                   <Button
                     type="primary"
                     onClick={onPrimaryButtonClick}
@@ -1223,6 +1254,9 @@ const PreviewOffer = (props) => {
           title="Extend offer letter date"
           visible={extendOfferModalVisible}
           onClose={() => setExtendOfferModalVisible(false)}
+          onFinish={handleExtendOfferDate}
+          currentExpiryDate={expiryDateProp}
+          loading={loadingExtendOfferDate}
         />
 
         {/* WITHDRAW MODAL  */}
@@ -1231,6 +1265,8 @@ const PreviewOffer = (props) => {
           title="Offer Withdraw"
           visible={withdrawOfferModalVisible}
           onClose={() => setWithdrawOfferModalVisible(false)}
+          loading={loadingWithdrawOffer}
+          onFinish={handleWithdrawOffer}
         />
       </Col>
     </Row>
@@ -1255,5 +1291,7 @@ export default connect(
     loading2: loading.effects['newCandidateForm/approveFinalOfferEffect'],
     loading3: loading.effects['newCandidateForm/updateByHR'],
     loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
+    loadingExtendOfferDate: loading.effects['newCandidateForm/extendOfferLetterEffect'],
+    loadingWithdrawOffer: loading.effects['newCandidateForm/withdrawOfferEffect'],
   }),
 )(PreviewOffer);

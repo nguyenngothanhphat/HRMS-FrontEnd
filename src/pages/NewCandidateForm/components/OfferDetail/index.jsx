@@ -216,6 +216,7 @@ const OfferDetail = (props) => {
         includeOffer: 3,
         tenantId: getCurrentTenant(),
         offerLetterTemplate: key,
+        currentStep: 6,
       },
     });
   };
@@ -236,6 +237,15 @@ const OfferDetail = (props) => {
         type: 'newCandidateForm/save',
         payload: {
           currentStep: 6,
+        },
+      });
+      const {candidate} = data
+      dispatch({
+        type: 'newCandidateForm/updateByHR',
+        payload: {
+          candidate,
+          currentStep: 6,
+          tenantId: getCurrentTenant()
         },
       });
     }
@@ -489,6 +499,7 @@ const OfferDetail = (props) => {
         candidate,
         tenantId: getCurrentTenant(),
         offerDocuments: newOfferDocumentsProp,
+        currentStep: 6,
       },
     });
     handleModalVisible(false);
@@ -516,6 +527,7 @@ const OfferDetail = (props) => {
         candidate,
         tenantId: getCurrentTenant(),
         offerDocuments: newOfferDocumentsProp,
+        currentStep: 6,
       },
     });
   };
@@ -544,6 +556,7 @@ const OfferDetail = (props) => {
         candidate,
         tenantId: getCurrentTenant(),
         expiryDate: val,
+        currentStep: 6,
       },
     });
   };

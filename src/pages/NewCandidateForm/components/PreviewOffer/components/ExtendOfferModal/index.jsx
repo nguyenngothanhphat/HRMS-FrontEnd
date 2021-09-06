@@ -4,9 +4,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ loading }) => ({
-  loadingReject: loading.effects['candidatePortal/submitCandidateFinalOffer'],
-}))
+@connect(() => ({}))
 class ExtendOfferModal extends PureComponent {
   constructor(props) {
     super(props);
@@ -36,6 +34,7 @@ class ExtendOfferModal extends PureComponent {
   };
 
   renderModalContent = () => {
+    const { currentExpiryDate = null } = this.props;
     return (
       <div className={styles.queryContent}>
         <span className={styles.titleText}>
@@ -58,6 +57,7 @@ class ExtendOfferModal extends PureComponent {
                     this.setState({
                       selectedDate: val,
                     })}
+                  defaultValue={currentExpiryDate ? moment(currentExpiryDate) : null}
                 />
               </Form.Item>
             </Col>
@@ -75,7 +75,7 @@ class ExtendOfferModal extends PureComponent {
   };
 
   render() {
-    const { visible = false, loadingReject } = this.props;
+    const { visible = false, loading } = this.props;
     const { selectedDate } = this.state;
 
     return (
@@ -96,7 +96,7 @@ class ExtendOfferModal extends PureComponent {
               htmlType="submit"
               onClick={this.onFinish}
               disabled={!selectedDate}
-              loading={loadingReject}
+              loading={loading}
             >
               Extend
             </Button>,

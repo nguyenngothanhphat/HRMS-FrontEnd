@@ -24,6 +24,8 @@ import {
   getDocumentByCandidate,
   getWorkHistory,
   generateLink,
+  extendOfferLetter,
+  withdrawOffer,
 } from '@/services/newCandidateForm';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
@@ -41,6 +43,7 @@ import {
   sendDocumentStatus,
   getAdditionalQuestion,
 } from '@/services/formCandidate';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 
 const defaultState = {
   rookieId: '',
@@ -1391,6 +1394,57 @@ const newCandidateForm = {
         });
       } catch (error) {
         dialog(error);
+      }
+      return response;
+    },
+
+    // Offer letter actions
+    *extendOfferLetterEffect({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(extendOfferLetter, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveTemp',
+          payload: {
+            oldExpiryDate: payload.oldExpiryDate,
+            expiryDate: payload.expiryDate,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *withdrawOfferEffect({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(withdrawOffer, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            processStatus: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+          },
+        });
+        yield put({
+          type: 'saveTemp',
+          payload: {
+            processStatus: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
       }
       return response;
     },
