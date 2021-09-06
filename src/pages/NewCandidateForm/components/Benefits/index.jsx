@@ -18,19 +18,18 @@ import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
     info: { benefits } = {},
     newCandidateForm: {
       data = {},
-      // currentStep = 0,
+      currentStep = 0,
       tempData: { hidePreviewOffer = false } = {},
       tempData = {},
     } = {},
-    loading
+    loading,
   }) => ({
     benefits,
     data,
     tempData,
-    // currentStep,
+    currentStep,
     hidePreviewOffer,
-  loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
-
+    loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
   }),
 )
 class Benefits extends PureComponent {
@@ -42,23 +41,7 @@ class Benefits extends PureComponent {
   }
 
   componentDidMount() {
-    const { data = {}, dispatch, currentStep } = this.props;
-    const { candidate = '', processStatus = '' } = data;
-
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
-
-    if (processStatus === 'DRAFT') {
-      if (dispatch && candidate) {
-        dispatch({
-          type: 'newCandidateForm/updateByHR',
-          payload: {
-            candidate,
-            // currentStep,
-            tenantId: getCurrentTenant(),
-          },
-        });
-      }
-    }
   }
 
   handleChange = (checkedList, arr, title) => {
@@ -228,29 +211,22 @@ class Benefits extends PureComponent {
   // };
 
   onClickNext = () => {
-    const { hidePreviewOffer, dispatch } = this.props;
+    const { hidePreviewOffer, dispatch, currentStep } = this.props;
     if (hidePreviewOffer) {
       dispatch({
         type: 'newCandidateForm/redirectToOnboardList',
       });
       return;
     }
-    // const { currentStep } = this.props;
-    // const nextStep = currentStep + 1;
 
-    // dispatch({
-    //   type: 'newCandidateForm/save',
-    //   payload: {
-    //     currentStep: nextStep,
-    //   },
-    // });
-    // dispatch({
-    //   type: 'newCandidateForm/save',
-    //   payload: {
-    //     currentStep: null,
-    //     displayComponent: <PreviewOffer />,
-    //   },
-    // });
+    if (currentStep === 4) {
+      dispatch({
+        type: 'newCandidateForm/save',
+        payload: {
+          currentStep: 5,
+        },
+      });
+    }
 
     const { tempData = {} } = this.props;
     const { ticketID = '' } = tempData;
@@ -276,8 +252,8 @@ class Benefits extends PureComponent {
     // const { checkMandatory } = this.props;
     // const { filledJobDetail } = checkMandatory;
 
-    const { tempData: {processStatus = ''} = {} } = this.props;
-    
+    const { tempData: { processStatus = '' } = {} } = this.props;
+
     const renderText = processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION ? 'Next' : 'Update';
     return (
       <div className={styles.bottomBar}>
@@ -423,8 +399,8 @@ class Benefits extends PureComponent {
       ),
     };
     const { benefits } = this.state;
-    const {loadingFetchCandidate} = this.props;
-    if (loadingFetchCandidate) return <Skeleton />
+    const { loadingFetchCandidate } = this.props;
+    if (loadingFetchCandidate) return <Skeleton />;
     return (
       <>
         <Row gutter={[24, 0]}>

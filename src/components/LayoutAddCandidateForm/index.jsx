@@ -89,13 +89,14 @@ class LayoutAddCandidateForm extends Component {
       hidePreviewOffer = false,
       disablePreviewOffer = false,
       processStatus = '',
+      currentStep,
     } = this.props;
 
     const { displayComponent, selectedItemId } = this.state;
     const listMenuWithoutOfferLetter = listMenu.filter((l) => l.key !== 'offerLetter');
     return (
       <Row className={s.containerLayoutAddCandidateForm}>
-        <Col sm={24} md={6} xl={4} className={s.viewLeft}>
+        <Col xs={24} md={6} xl={4} className={s.viewLeft}>
           <div className={s.viewLeft__menu}>
             {listMenuWithoutOfferLetter.map((item, index) => (
               <ItemMenu
@@ -103,7 +104,8 @@ class LayoutAddCandidateForm extends Component {
                 item={item}
                 handelClick={this._handleClick}
                 selectedItemId={selectedItemId}
-                isDisabled={item.statusToLock.includes(processStatus)}
+                // isDisabled={currentStep < index}
+                isCompleted={currentStep > index}
               />
             ))}
             <div className={s.viewLeft__menu__btnPreviewOffer}>

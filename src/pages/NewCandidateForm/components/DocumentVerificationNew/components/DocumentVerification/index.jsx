@@ -45,7 +45,13 @@ const camelize = (str) => {
   ({
     newCandidateForm,
     loading,
-    newCandidateForm: { tempData, checkMandatory, data, tableData, currentStep },
+    newCandidateForm: {
+      tempData,
+      checkMandatory,
+      data,
+      tableData,
+      tempData: { currentStep = '' },
+    },
     locationSelection: { listLocationsByCompany = [] } = {},
   }) => ({
     tempData,
@@ -206,22 +212,22 @@ class DocumentVerification extends Component {
 
     // save step
     const { candidate = '', processStatus } = data;
-    const { privateEmail } = tempData;
-    const { DRAFT, PROFILE_VERIFICATION } = NEW_PROCESS_STATUS;
+    // const { privateEmail } = tempData;
+    // const { DRAFT, PROFILE_VERIFICATION } = NEW_PROCESS_STATUS;
 
-    if (processStatus === DRAFT || processStatus === PROFILE_VERIFICATION) {
-      if (dispatch && candidate) {
-        dispatch({
-          type: 'newCandidateForm/updateByHR',
-          payload: {
-            candidate,
-            // currentStep: 3,
-            privateEmail,
-            tenantId: getCurrentTenant(),
-          },
-        });
-      }
-    }
+    // if (processStatus === DRAFT || processStatus === PROFILE_VERIFICATION) {
+    //   if (dispatch && candidate) {
+    //     dispatch({
+    //       type: 'newCandidateForm/updateByHR',
+    //       payload: {
+    //         candidate,
+    //         currentStep: 2,
+    //         privateEmail,
+    //         tenantId: getCurrentTenant(),
+    //       },
+    //     });
+    //   }
+    // }
 
     const arrToAdjust =
       processStatus === 'DRAFT'
@@ -270,7 +276,7 @@ class DocumentVerification extends Component {
   handleUpdateByHR = (docsListE, checkedListA, checkedListB, checkedListC, docsListD) => {
     const { data, currentStep } = this.props;
     const { dispatch } = this.props;
-    const { _id } = data;
+    const { _id, processStatus = '' } = data;
 
     const documentChecklistSetting = this.generateDocumentCheckListSettings(
       docsListE,
@@ -285,8 +291,22 @@ class DocumentVerification extends Component {
       payload: {
         candidate: _id,
         documentChecklistSetting,
-        // currentStep,
+        currentStep:
+          processStatus === NEW_PROCESS_STATUS.DRAFT ||
+          processStatus === NEW_PROCESS_STATUS.PROFILE_VERIFICATION
+            ? 2
+            : currentStep,
         tenantId: getCurrentTenant(),
+      },
+    });
+    dispatch({
+      type: 'newCandidateForm/save',
+      payload: {
+        currentStep:
+          processStatus === NEW_PROCESS_STATUS.DRAFT ||
+          processStatus === NEW_PROCESS_STATUS.PROFILE_VERIFICATION
+            ? 2
+            : currentStep,
       },
     });
   };

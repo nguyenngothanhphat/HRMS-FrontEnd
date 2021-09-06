@@ -281,9 +281,9 @@ class JobDetails extends PureComponent {
 
   onClickNext = () => {
     const {
-      // currentStep,
       data: { _id },
       tempData: {
+        processStatus = '',
         grade,
         position,
         employeeType,
@@ -295,6 +295,7 @@ class JobDetails extends PureComponent {
         documentChecklistSetting,
         ticketID = '',
       },
+      currentStep = '',
     } = this.props;
     const { dispatch } = this.props;
     dispatch({
@@ -309,18 +310,19 @@ class JobDetails extends PureComponent {
         title,
         reportingManager,
         candidate: _id,
-        // currentStep: currentStep + 1,
+        currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 2 : currentStep,
         tenantId: getCurrentTenant(),
         documentChecklistSetting,
       },
-    }).then(({ data, statusCode }) => {
+    }).then(({ statusCode }) => {
       if (statusCode === 200) {
-        // dispatch({
-        //   type: 'newCandidateForm/save',
-        //   payload: {
-        //     currentStep: data.currentStep,
-        //   },
-        // });
+        dispatch({
+          type: 'newCandidateForm/save',
+          payload: {
+            currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 2 : currentStep,
+          },
+        });
+
         history.push(`/onboarding/list/view/${ticketID}/document-verification`);
       }
     });
