@@ -2,10 +2,11 @@
 import React, { Component } from 'react';
 import { Collapse, Checkbox, Space, Col, Row, Typography } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
-import ViewDocumentModal from '@/components/ViewDocumentModal';
+// import ViewDocumentModal from '@/components/ViewDocumentModal';
 import ResubmitIcon from '@/assets/resubmit.svg';
 import VerifiedIcon from '@/assets/verified.svg';
 import WarningIcon from '@/assets/warning-filled.svg';
+import VerifyDocumentModal from '../VerifyDocumentModal';
 import styles from './index.less';
 
 class CollapseField extends Component {
@@ -13,29 +14,47 @@ class CollapseField extends Component {
     super(props);
     this.state = {
       visible: false,
+      openModal: false,
       url: '',
       displayName: '',
     };
   }
 
-  openViewDocument = (displayName, attachment) => {
+  openDocument = (displayName, attachment, key = '') => {
     const { url } = attachment;
     if (!attachment) {
       return;
     }
-    this.setState({
-      visible: true,
-      url,
-      displayName,
-    });
+
+    if (key === 'verify') {
+      this.setState({
+        openModal: true,
+        url,
+        displayName,
+      });
+    } else {
+      this.setState({
+        visible: true,
+        url,
+        displayName,
+      });
+    }
   };
 
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-      url: '',
-      displayName: '',
-    });
+  handleCancel = (key = 0) => {
+    if (key === 1) {
+      this.setState({
+        openModal: false,
+        url: '',
+        displayName: '',
+      });
+    } else {
+      this.setState({
+        visible: false,
+        url: '',
+        displayName: '',
+      });
+    }
   };
 
   // renderClassnameOfFile = (candidateDocumentStatus) => {
@@ -82,7 +101,7 @@ class CollapseField extends Component {
 
   render() {
     const { item = {} } = this.props;
-    const { visible, url, displayName } = this.state;
+    const { visible, url, displayName, openModal } = this.state;
 
     return (
       <div className={styles.collapseField}>
@@ -120,7 +139,8 @@ class CollapseField extends Component {
                             if (!fileName) {
                               return;
                             }
-                            this.openViewDocument(document.displayName, attachment);
+                            // this.openViewDocument(document.displayName, attachment);
+                            this.openDocument(document.displayName, attachment, 'verify');
                           }}
                           className={styles.file__content__file}
                         >
@@ -145,11 +165,19 @@ class CollapseField extends Component {
           handleCancel={this.handleCancel}
           url={url}
         /> */}
-        <ViewDocumentModal
+
+        {/* <ViewDocumentModal />
           visible={visible}
           fileName={displayName}
           url={url}
           onClose={this.handleCancel}
+        /> */}
+
+        <VerifyDocumentModal
+          visible={openModal}
+          fileName={displayName}
+          url={url}
+          onClose={() => this.handleCancel(1)}
         />
       </div>
     );
