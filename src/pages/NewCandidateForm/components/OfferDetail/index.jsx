@@ -23,6 +23,7 @@ const OfferDetail = (props) => {
     tempData,
     loading1,
     loadingFetchCandidate = false,
+    currentStep,
   } = props;
   const { processStatus = '' } = tempData;
   // const previousStep = currentStep - 1;
@@ -230,6 +231,14 @@ const OfferDetail = (props) => {
   };
 
   const onNextTab = () => {
+    if (currentStep === 5) {
+      dispatch({
+        type: 'newCandidateForm/save',
+        payload: {
+          currentStep: 6,
+        },
+      });
+    }
     history.push(`/onboarding/list/view/${ticketID}/offer-letter`);
   };
 
@@ -252,7 +261,7 @@ const OfferDetail = (props) => {
       department: { name: departmentName = '' } = {},
       title: { name: jobTitle = '' } = {},
       reportingManager: {
-        generalInfo: { firstName: managerFirstName = '', lastName: managerLastnName = '' } = {},
+        generalInfo: { firstName: managerFirstName = '', lastName: managerLastName = '' } = {},
       } = {},
     } = data;
 
@@ -260,7 +269,7 @@ const OfferDetail = (props) => {
       type: 'newCandidateForm/updateByHR',
       payload: {
         candidate: _id,
-        // currentStep: nextStep,
+        currentStep: 6,
         includeOffer: 3,
         tenantId: getCurrentTenant(),
 
@@ -276,6 +285,7 @@ const OfferDetail = (props) => {
           candidate: _id,
           includeOffer: 3,
         },
+        currentStep: 6,
       },
     });
 
@@ -292,7 +302,7 @@ const OfferDetail = (props) => {
       workLocation: workLocationName,
       department: departmentName,
       jobTitle,
-      reportManager: `${managerFirstName} ${managerLastnName}`,
+      reportManager: `${managerFirstName} ${managerLastName}`,
       includeOffer: 3,
       tenantId: getCurrentTenant(),
     };
@@ -310,7 +320,7 @@ const OfferDetail = (props) => {
         type: 'newCandidateForm/updateByHR',
         payload: {
           candidate,
-          // currentStep: nextStep,
+          currentStep: 6,
           offerLetter: templateID,
           tenantId: getCurrentTenant(),
 
