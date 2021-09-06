@@ -4,6 +4,9 @@ import { Collapse, Checkbox, Space, Col, Row, Typography, Radio } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
+import WarningIcon from '@/assets/warning-filled.svg';
+import ResubmitIcon from '@/assets/resubmit.svg';
+import VerifiedIcon from '@/assets/verified.svg';
 import InputField from '../InputField';
 import styles from './index.less';
 
@@ -56,9 +59,36 @@ class PreviousEmployment extends Component {
     return className;
   };
 
-  renderEmployer = (item, docListE, indexGroupDoc, firstIndex) => {
+  renderStatusVerify = (fileName, candidateDocumentStatus) => {
+    const formatStatus = (status) => {
+      if (status === 'RE-SUBMIT') {
+        return (
+          <div className={styles.resubmit}>
+            <div>Resubmit</div>
+            <img src={ResubmitIcon} alt="re-submit" />
+          </div>
+        );
+      }
+      if (status === 'VERIFIED') {
+        return (
+          <div className={styles.verified}>
+            <div>Verified</div>
+            <img src={VerifiedIcon} alt="verified" />
+          </div>
+        );
+      }
+
+      return (
+        <div className={styles.pending}>
+          <div>Pending Verification</div>
+        </div>
+      );
+    };
+    return <>{fileName && <>{formatStatus(candidateDocumentStatus)}</>}</>;
+  };
+
+  renderEmployer = (item, docListE, indexGroupDoc) => {
     const {
-      handleCheckDocument = () => {},
       data: { workHistory = [] },
     } = this.props;
 
@@ -92,10 +122,10 @@ class PreviousEmployment extends Component {
           const { name: fileName = '' } = attachment;
           return (
             <Row gutter={[16, 0]} className={styles.previousEmployment__row} key={index}>
-              <Col span={6} className={styles.previousEmployment__row__name}>
+              <Col span={12} className={styles.previousEmployment__row__name}>
                 <Typography.Text>{document.displayName}</Typography.Text>
               </Col>
-              <Col span={7} className={styles.previousEmployment__row__file}>
+              <Col span={8} className={styles.previousEmployment__row__file}>
                 <div
                   onClick={() => {
                     if (!fileName) {
@@ -103,31 +133,14 @@ class PreviousEmployment extends Component {
                     }
                     this.openViewDocument(document.displayName, attachment);
                   }}
-                  className={this.renderClassnameOfFile(candidateDocumentStatus)}
+                  className={styles.file__content__fileName}
                 >
-                  <span>{fileName}</span>
+                  <img src={WarningIcon} alt="warning" />
+                  <div className={styles.file__content__fileName__text}>{fileName}</div>
                 </div>
               </Col>
-              <Col span={11} className={styles.previousEmployment__row__radio}>
-                {fileName && (
-                  <Radio.Group
-                    name="radiogroup"
-                    defaultValue={candidateDocumentStatus}
-                    onChange={(event) => {
-                      handleCheckDocument(event, indexGroupDoc + firstIndex, document, 'E');
-                    }}
-                  >
-                    <Radio value="VERIFIED" className={styles.verified}>
-                      Verified
-                    </Radio>
-                    <Radio value="RE-SUBMIT" className={styles.resubmit}>
-                      Re-submit
-                    </Radio>
-                    <Radio value="INELIGIBLE" className={styles.ineligible}>
-                      Ineligible
-                    </Radio>
-                  </Radio.Group>
-                )}
+              <Col span={4} className={styles.previousEmployment__row__statusVerify}>
+                {this.renderStatusVerify(fileName, candidateDocumentStatus)}
               </Col>
             </Row>
           );
@@ -166,7 +179,7 @@ class PreviousEmployment extends Component {
               <Space direction="vertical" className={styles.space}>
                 {docList.map((doc, i) => {
                   if (doc.type === 'E') {
-                    return this.renderEmployer(doc, docListE, i - firstIndex, firstIndex);
+                    return this.renderEmployer(doc, docListE, i - firstIndex);
                   }
                   return '';
                 })}
