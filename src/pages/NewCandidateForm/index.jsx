@@ -29,9 +29,41 @@ class NewCandidateForm extends PureComponent {
 
   componentDidMount = () => {
     const {
-      match: { params: { action = '', reId } = {} },
+      match: { params: { action = '', reId, tabName = '' } = {} },
       dispatch,
     } = this.props;
+
+    // current step vs tab name
+    const linkSet = [
+      {
+        id: 1,
+        link: 'basic-information',
+      },
+      {
+        id: 2,
+        link: 'job-details',
+      },
+      {
+        id: 3,
+        link: 'document-verification',
+      },
+      {
+        id: 4,
+        link: 'salary-structure',
+      },
+      {
+        id: 5,
+        link: 'benefits',
+      },
+      {
+        id: 6,
+        link: 'offer-details',
+      },
+      {
+        id: 7,
+        link: 'offer-letter',
+      },
+    ];
 
     // check action is add or review. If isReview fetch candidate by reID
     if (action === 'view' || action === 'candidate-detail') {
@@ -45,8 +77,15 @@ class NewCandidateForm extends PureComponent {
         if (!data) {
           return;
         }
+        const { _id, currentStep = '' } = data;
+        const find = linkSet.find((l) => l.link === tabName) || {};
+        if (currentStep <= find.id - 1) {
+          const currentComponent = linkSet.find((l) => l.id === currentStep + 1);
+          if (currentComponent) {
+            history.push(`/onboarding/list/view/${reId}/${currentComponent.link}`);
+          }
+        }
         this.renderListMenu();
-        const { _id } = data;
         dispatch({
           type: 'optionalQuestion/save',
           payload: {
@@ -115,7 +154,6 @@ class NewCandidateForm extends PureComponent {
           />
         ),
         link: 'basic-information',
-        statusToLock: [],
       },
       {
         id: 2,
@@ -131,7 +169,6 @@ class NewCandidateForm extends PureComponent {
           />
         ),
         link: 'job-details',
-        statusToLock: [],
       },
       {
         id: 3,
@@ -140,7 +177,6 @@ class NewCandidateForm extends PureComponent {
         // key: 'eligibilityDocuments',
         component: <DocumentVerificationNew />,
         link: 'document-verification',
-        statusToLock: [],
       },
       {
         id: 4,
@@ -154,11 +190,6 @@ class NewCandidateForm extends PureComponent {
           />
         ),
         link: 'salary-structure',
-        statusToLock: [
-          NEW_PROCESS_STATUS.DRAFT,
-          NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
-          NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
-        ],
       },
       {
         id: 5,
@@ -166,11 +197,6 @@ class NewCandidateForm extends PureComponent {
         key: 'benefits',
         component: <Benefit processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />,
         link: 'benefits',
-        statusToLock: [
-          NEW_PROCESS_STATUS.DRAFT,
-          NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
-          NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
-        ],
       },
       {
         id: 6,
@@ -180,11 +206,6 @@ class NewCandidateForm extends PureComponent {
           <OfferDetail processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />
         ),
         link: 'offer-details',
-        statusToLock: [
-          NEW_PROCESS_STATUS.DRAFT,
-          NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
-          NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
-        ],
       },
       {
         id: 7,
@@ -192,11 +213,7 @@ class NewCandidateForm extends PureComponent {
         key: 'offerLetter',
         component: <PreviewOffer />,
         link: 'offer-letter',
-        statusToLock: [
-          NEW_PROCESS_STATUS.DRAFT,
-          NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
-          NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
-        ],
+
         isOfferLetter: !!offerLetterId,
       },
     ];

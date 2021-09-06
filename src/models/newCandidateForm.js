@@ -947,7 +947,7 @@ const newCandidateForm = {
         yield put({
           type: 'save',
           payload: {
-            // currentStep: data.currentStep,
+            currentStep: data.currentStep,
             rookieId,
           },
         });

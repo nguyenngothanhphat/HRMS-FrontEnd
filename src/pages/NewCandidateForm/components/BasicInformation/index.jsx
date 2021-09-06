@@ -52,30 +52,6 @@ class BasicInformation extends PureComponent {
     }
   };
 
-  handleUpdateByHR = () => {
-    const {
-      data,
-      // currentStep,
-      tempData: { firstName, middleName, lastName, privateEmail, workEmail, previousExperience },
-    } = this.props;
-    const { dispatch } = this.props;
-    const { _id } = data;
-    dispatch({
-      type: 'newCandidateForm/updateByHR',
-      payload: {
-        firstName,
-        middleName,
-        lastName,
-        privateEmail,
-        workEmail,
-        previousExperience,
-        candidate: _id,
-        // currentStep,
-        tenantId: getCurrentTenant(),
-      },
-    });
-  };
-
   handleChange = (e) => {
     const name = Object.keys(e).find((x) => x);
     const value = Object.values(e).find((x) => x);
@@ -125,8 +101,8 @@ class BasicInformation extends PureComponent {
 
   onFinish = (values) => {
     const { tempData } = this.props;
-    const { dispatch, currentStep } = this.props;
-    const { _id, ticketID = '' } = tempData;
+    const { dispatch } = this.props;
+    const { _id, ticketID = '', currentStep = '', processStatus = '' } = tempData;
 
     dispatch({
       type: 'newCandidateForm/updateByHR',
@@ -138,11 +114,17 @@ class BasicInformation extends PureComponent {
         workEmail: values.workEmail,
         previousExperience: values.previousExperience,
         candidate: _id,
-        // currentStep: currentStep + 1,
+        currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 1 : currentStep,
         tenantId: getCurrentTenant(),
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
+        dispatch({
+          type: 'newCandidateForm/save',
+          payload: {
+            currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 1 : currentStep,
+          },
+        });
         history.push(`/onboarding/list/view/${ticketID}/job-details`);
       }
     });
@@ -151,7 +133,7 @@ class BasicInformation extends PureComponent {
   _renderEmployeeId = () => {
     const { tempData } = this.props;
     const { processStatus } = tempData;
-    if (processStatus === 'ACCEPT-FINAL-OFFER') {
+    if (processStatus === NEW_PROCESS_STATUS.OFFER_ACCEPTED) {
       return (
         <Col xs={24} sm={24} md={24} lg={12} xl={12}>
           <Form.Item

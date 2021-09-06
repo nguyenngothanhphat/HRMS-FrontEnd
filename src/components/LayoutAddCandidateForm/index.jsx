@@ -89,6 +89,7 @@ class LayoutAddCandidateForm extends Component {
       hidePreviewOffer = false,
       disablePreviewOffer = false,
       processStatus = '',
+      currentStep,
     } = this.props;
 
     const { displayComponent, selectedItemId } = this.state;
@@ -103,7 +104,7 @@ class LayoutAddCandidateForm extends Component {
                 item={item}
                 handelClick={this._handleClick}
                 selectedItemId={selectedItemId}
-                isDisabled={item.statusToLock.includes(processStatus)}
+                isDisabled={currentStep < index}
               />
             ))}
             <div className={s.viewLeft__menu__btnPreviewOffer}>
