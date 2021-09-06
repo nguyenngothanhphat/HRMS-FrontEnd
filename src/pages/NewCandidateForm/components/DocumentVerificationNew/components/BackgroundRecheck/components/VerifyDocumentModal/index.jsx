@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Button, Modal } from 'antd';
+import { Button, Modal, Input, Form, Divider } from 'antd';
 import { connect } from 'umi';
 
 import styles from './index.less';
 
+const { TextArea } = Input;
 @connect(
   ({
     newCandidateForm: {
@@ -18,7 +19,9 @@ import styles from './index.less';
 class VerifyDocumentModal extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      openCommentForm: false,
+    };
   }
 
   renderTitle = (name) => <div className={styles.titleName}>{name}</div>;
@@ -54,8 +57,33 @@ class VerifyDocumentModal extends Component {
     });
   };
 
+  handleResubmit = () => {
+    this.setState({
+      openCommentForm: true,
+    });
+  };
+
+  onValuesChange = (value) => {
+    console.log(value);
+  };
+
+  renderComments = () => {
+    return (
+      <div className={styles.commentForm}>
+        <Divider className={styles.divider} />
+        <Form onFinish={this.onFinish} onValuesChange={this.onValuesChange}>
+          <Form.Item label="Enter comments" name="comments">
+            <TextArea autoSize={{ minRows: 3, maxRows: 5 }} />
+          </Form.Item>
+        </Form>
+      </div>
+    );
+  };
+
   render() {
     const { visible = false, docProps = {}, loadingVerified } = this.props;
+    const { openCommentForm } = this.state;
+
     const { candidateDocStatus, url, displayName: fileName } = docProps;
 
     return (
@@ -67,11 +95,12 @@ class VerifyDocumentModal extends Component {
         destroyOnClose={this.destroyOnClose}
         footer={false}
       >
-        <div className={styles.document}>
+        <div className={`${styles.document} ${openCommentForm ? styles.document1 : ''}`}>
           <img src={url} alt="document" />
         </div>
+        {openCommentForm && this.renderComments()}
         <div className={styles.verifyDocumentModal__bottom}>
-          <Button onClick={this.destroyOnClose} className={`${styles.btn} ${styles.resubmitBtn}`}>
+          <Button onClick={this.handleResubmit} className={`${styles.btn} ${styles.resubmitBtn}`}>
             Resubmit
           </Button>
           <Button
