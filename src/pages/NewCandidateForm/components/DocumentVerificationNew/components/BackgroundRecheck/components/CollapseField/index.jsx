@@ -111,10 +111,10 @@ class CollapseField extends Component {
                   const { name: fileName = '' } = attachment;
                   return (
                     <Row gutter={[16, 0]} className={styles.collapseField__row} key={index}>
-                      <Col span={17} className={styles.collapseField__row__name}>
+                      <Col span={12} className={styles.collapseField__row__name}>
                         <Typography.Text>{document.displayName}</Typography.Text>
                       </Col>
-                      <Col span={4} className={styles.collapseField__row__file}>
+                      <Col span={8} className={styles.collapseField__row__file}>
                         <div
                           onClick={() => {
                             if (!fileName) {
@@ -128,7 +128,7 @@ class CollapseField extends Component {
                           <div className={styles.file__content__file__text}>{fileName}</div>
                         </div>
                       </Col>
-                      <Col span={3} className={styles.collapseField__row__statusVerify}>
+                      <Col span={4} className={styles.collapseField__row__statusVerify}>
                         {this.renderStatusVerify(fileName, candidateDocumentStatus)}
                       </Col>
                     </Row>
