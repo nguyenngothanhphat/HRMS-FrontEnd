@@ -262,7 +262,7 @@ class BackgroundRecheck extends Component {
     });
   };
 
-  handleSendEmail = async () => {
+  handleVerifyDocuments = async () => {
     const { dispatch, candidate } = this.props;
     if (!dispatch) {
       return;
