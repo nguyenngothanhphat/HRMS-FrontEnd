@@ -1,14 +1,15 @@
 /* eslint-disable react/no-array-index-key */
 import React, { Component } from 'react';
-import { Collapse, Checkbox, Space, Col, Row, Typography, Radio } from 'antd';
+import { Collapse, Checkbox, Space, Col, Row, Typography } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
-import ViewDocumentModal from '@/components/ViewDocumentModal';
+// import ViewDocumentModal from '@/components/ViewDocumentModal';
 import WarningIcon from '@/assets/warning-filled.svg';
 import ResubmitIcon from '@/assets/resubmit.svg';
 import VerifiedIcon from '@/assets/verified.svg';
 import InputField from '../InputField';
 import styles from './index.less';
+import VerifyDocumentModal from '../VerifyDocumentModal';
 
 @connect(({ newCandidateForm: { candidate = '', data, tempData } = {} }) => ({
   data,
@@ -20,29 +21,52 @@ class PreviousEmployment extends Component {
     super(props);
     this.state = {
       visible: false,
+      openModal: false,
       url: '',
       displayName: '',
+      documentId: '',
+      candidateDocStatus: '',
     };
   }
 
-  openViewDocument = (displayName, attachment) => {
+  openDocument = (document = {}, key = '') => {
+    const { displayName, attachment, _id: documentId, candidateDocumentStatus } = document;
     const { url } = attachment;
     if (!attachment) {
       return;
     }
-    this.setState({
-      visible: true,
-      url,
-      displayName,
-    });
+
+    if (key === 'verify') {
+      this.setState({
+        openModal: true,
+        url,
+        displayName,
+        documentId,
+        candidateDocStatus: candidateDocumentStatus,
+      });
+    } else {
+      this.setState({
+        visible: true,
+        url,
+        displayName,
+      });
+    }
   };
 
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-      url: '',
-      displayName: '',
-    });
+  handleCancel = (key = 0) => {
+    if (key === 1) {
+      this.setState({
+        openModal: false,
+        url: '',
+        displayName: '',
+      });
+    } else {
+      this.setState({
+        visible: false,
+        url: '',
+        displayName: '',
+      });
+    }
   };
 
   renderClassnameOfFile = (candidateDocumentStatus) => {
@@ -131,7 +155,8 @@ class PreviousEmployment extends Component {
                     if (!fileName) {
                       return;
                     }
-                    this.openViewDocument(document.displayName, attachment);
+                    // this.openViewDocument(document.displayName, attachment);
+                    this.openDocument(document, 'verify');
                   }}
                   className={styles.file__content__fileName}
                 >
@@ -152,7 +177,7 @@ class PreviousEmployment extends Component {
 
   render() {
     const { docList = [] } = this.props;
-    const { visible, url, displayName } = this.state;
+    const { visible, url, displayName, openModal, documentId, candidateDocStatus } = this.state;
     const docListE = docList.filter((d) => d.type === 'E');
     const firstIndex = docList.findIndex((d) => d.type === 'E');
     return (
@@ -188,11 +213,21 @@ class PreviousEmployment extends Component {
           </Collapse>
         ) : null}
 
-        <ViewDocumentModal
+        {/* <ViewDocumentModal
           visible={visible}
           fileName={displayName}
           url={url}
           onClose={this.handleCancel}
+        /> */}
+        <VerifyDocumentModal
+          visible={openModal}
+          docProps={{
+            candidateDocStatus,
+            documentId,
+            url,
+            displayName,
+          }}
+          onClose={() => this.handleCancel(1)}
         />
       </div>
     );

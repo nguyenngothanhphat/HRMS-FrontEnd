@@ -73,7 +73,6 @@ class VerifyDocumentModal extends Component {
 
   onReSubmit = (value) => {
     const { comment } = value;
-    console.log(value);
     this.onSubmit(comment, 2);
   };
 
