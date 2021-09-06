@@ -17,10 +17,11 @@ class CollapseField extends Component {
       openModal: false,
       url: '',
       displayName: '',
+      documentId: '',
     };
   }
 
-  openDocument = (displayName, attachment, key = '') => {
+  openDocument = (displayName, attachment, documentId, key = '') => {
     const { url } = attachment;
     if (!attachment) {
       return;
@@ -31,6 +32,7 @@ class CollapseField extends Component {
         openModal: true,
         url,
         displayName,
+        documentId,
       });
     } else {
       this.setState({
@@ -101,7 +103,7 @@ class CollapseField extends Component {
 
   render() {
     const { item = {} } = this.props;
-    const { visible, url, displayName, openModal } = this.state;
+    const { visible, url, displayName, openModal, documentId } = this.state;
 
     return (
       <div className={styles.collapseField}>
@@ -126,8 +128,13 @@ class CollapseField extends Component {
             >
               <Space direction="vertical" className={styles.space}>
                 {item.data.map((document, index) => {
-                  const { attachment = { name: '' }, candidateDocumentStatus } = document;
+                  const {
+                    attachment = {},
+                    candidateDocumentStatus = '',
+                    _id: docId = '',
+                  } = document;
                   const { name: fileName = '' } = attachment;
+
                   return (
                     <Row gutter={[16, 0]} className={styles.collapseField__row} key={index}>
                       <Col span={12} className={styles.collapseField__row__name}>
@@ -140,12 +147,12 @@ class CollapseField extends Component {
                               return;
                             }
                             // this.openViewDocument(document.displayName, attachment);
-                            this.openDocument(document.displayName, attachment, 'verify');
+                            this.openDocument(document.displayName, attachment, docId, 'verify');
                           }}
-                          className={styles.file__content__file}
+                          className={styles.file__content__fileName}
                         >
                           <img src={WarningIcon} alt="warning" />
-                          <div className={styles.file__content__file__text}>{fileName}</div>
+                          <div className={styles.file__content__fileName__text}>{fileName}</div>
                         </div>
                       </Col>
                       <Col span={4} className={styles.collapseField__row__statusVerify}>
@@ -177,6 +184,7 @@ class CollapseField extends Component {
           visible={openModal}
           fileName={displayName}
           url={url}
+          document={documentId}
           onClose={() => this.handleCancel(1)}
         />
       </div>

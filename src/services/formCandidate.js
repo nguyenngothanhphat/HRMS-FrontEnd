@@ -64,7 +64,7 @@ export async function checkDocument(payload) {
 }
 
 export async function sendDocumentStatus(payload) {
-  return request('/api/candidatetenant/document-check', {
+  return request('/api/candidatetenant/background-check', {
     method: 'POST',
     data: payload, // {candidate: id, options: 1, comments: ''}
   });

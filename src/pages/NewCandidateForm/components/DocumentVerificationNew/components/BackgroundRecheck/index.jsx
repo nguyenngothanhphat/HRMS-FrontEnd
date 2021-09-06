@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
-import { PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, PROCESS_STATUS } from '@/utils/onboarding';
 import NoteComponent from '../../../NoteComponent';
 import CloseCandidateModal from './components/CloseCandidateModal';
 import CollapseField from './components/CollapseField';
@@ -16,8 +16,8 @@ import styles from './index.less';
   ({
     newCandidateForm: {
       tempData,
+      tempData: { documentsByCandidate = [] } = {},
       data: {
-        // documentsByCandidate = [],
         // documentsByCandidateRD = [],
         privateEmail = '',
         candidate = '',
@@ -30,6 +30,7 @@ import styles from './index.less';
     loading,
   }) => ({
     tempData,
+    documentsByCandidate,
     data,
     workHistory,
     privateEmail,
@@ -106,13 +107,9 @@ class BackgroundRecheck extends Component {
   };
 
   firstInit = async () => {
-    const {
-      dispatch,
-      candidate,
-      processStatus = '',
-      tempData: { documentsByCandidate = [] } = {},
-    } = this.props;
-    const { PROVISIONAL_OFFER_DRAFT, SENT_PROVISIONAL_OFFERS, PENDING } = PROCESS_STATUS;
+    const { dispatch, candidate, processStatus = '', documentsByCandidate = [] } = this.props;
+    // const { PROVISIONAL_OFFER_DRAFT, SENT_PROVISIONAL_OFFERS, PENDING } = PROCESS_STATUS;
+    const { PROFILE_VERIFICATION, DOCUMENT_VERIFICATION } = NEW_PROCESS_STATUS;
 
     if (documentsByCandidate.length > 0) {
       await dispatch({
@@ -129,9 +126,11 @@ class BackgroundRecheck extends Component {
     }
 
     if (
-      processStatus === PROVISIONAL_OFFER_DRAFT ||
-      processStatus === SENT_PROVISIONAL_OFFERS ||
-      processStatus === PENDING
+      // processStatus === PROVISIONAL_OFFER_DRAFT ||
+      // processStatus === SENT_PROVISIONAL_OFFERS ||
+      // processStatus === PENDING
+      processStatus === PROFILE_VERIFICATION ||
+      processStatus === DOCUMENT_VERIFICATION
     ) {
       dispatch({
         type: 'newCandidateForm/updateByHR',
@@ -307,78 +306,78 @@ class BackgroundRecheck extends Component {
     });
   };
 
-  handleCheckDocument = (event, indexGroupDoc, document) => {
-    const { tempData, dispatch } = this.props;
-    const { documentsByCandidateRD } = tempData;
-    // const { documentsByCandidateRD, dispatch } = this.props;
-    const candidateDocumentStatus = event.target.value;
+  // handleCheckDocument = (event, indexGroupDoc, document) => {
+  //   const { tempData, dispatch } = this.props;
+  //   const { documentsByCandidateRD } = tempData;
+  //   // const { documentsByCandidateRD, dispatch } = this.props;
+  //   const candidateDocumentStatus = event.target.value;
 
-    const docsByCandidateRDCheck = documentsByCandidateRD;
+  //   const docsByCandidateRDCheck = documentsByCandidateRD;
 
-    const checkedDocument = {
-      ...document,
-      candidateDocumentStatus,
-    };
-    const typeIndex = docsByCandidateRDCheck.findIndex((item, index) => index === indexGroupDoc);
-    const checkLength = docsByCandidateRDCheck[typeIndex].data.length;
-    if (checkLength > 0) {
-      const findIndexDoc = docsByCandidateRDCheck[typeIndex].data.findIndex(
-        (doc) => doc._id === document._id,
-      );
-      docsByCandidateRDCheck[typeIndex].data[findIndexDoc] = checkedDocument;
+  //   const checkedDocument = {
+  //     ...document,
+  //     candidateDocumentStatus,
+  //   };
+  //   const typeIndex = docsByCandidateRDCheck.findIndex((item, index) => index === indexGroupDoc);
+  //   const checkLength = docsByCandidateRDCheck[typeIndex].data.length;
+  //   if (checkLength > 0) {
+  //     const findIndexDoc = docsByCandidateRDCheck[typeIndex].data.findIndex(
+  //       (doc) => doc._id === document._id,
+  //     );
+  //     docsByCandidateRDCheck[typeIndex].data[findIndexDoc] = checkedDocument;
 
-      // ------------------- MODIFY
-      const newDocumentList = [];
-      docsByCandidateRDCheck.map((item) => {
-        const { data = [] } = item;
-        data.map((documentItem) => {
-          newDocumentList.push(documentItem);
-          return null;
-        });
-        return null;
-      });
+  //     // ------------------- MODIFY
+  //     const newDocumentList = [];
+  //     docsByCandidateRDCheck.map((item) => {
+  //       const { data = [] } = item;
+  //       data.map((documentItem) => {
+  //         newDocumentList.push(documentItem);
+  //         return null;
+  //       });
+  //       return null;
+  //     });
 
-      if (newDocumentList.length === 0) {
-        return;
-      }
-      let status = 'VERIFIED';
-      const newVerifiedDocs = [];
-      const newResubmitDocs = [];
-      const newIneligibleDocs = [];
+  //     if (newDocumentList.length === 0) {
+  //       return;
+  //     }
+  //     let status = 'VERIFIED';
+  //     const newVerifiedDocs = [];
+  //     const newResubmitDocs = [];
+  //     const newIneligibleDocs = [];
 
-      newDocumentList.forEach((doc) => {
-        const { candidateDocumentStatus: candidateDocStatus = '' } = doc;
-        if (candidateDocStatus === 'RE-SUBMIT') {
-          status = 'RE-SUBMIT';
-          newResubmitDocs.push(doc);
-          this.sendDocumentStatus(doc);
-          return null;
-        }
-        if (candidateDocStatus === 'INELIGIBLE') {
-          status = 'INELIGIBLE';
-          newIneligibleDocs.push(doc);
-          this.sendDocumentStatus(doc);
-          return null;
-        }
-        newVerifiedDocs.push(doc);
-        this.sendDocumentStatus(doc);
-        return null;
-      });
+  //     newDocumentList.forEach((doc) => {
+  //       const { candidateDocumentStatus: candidateDocStatus = '' } = doc;
+  //       if (candidateDocStatus === 'RE-SUBMIT') {
+  //         status = 'RE-SUBMIT';
+  //         newResubmitDocs.push(doc);
+  //         this.sendDocumentStatus(doc);
+  //         return null;
+  //       }
+  //       if (candidateDocStatus === 'INELIGIBLE') {
+  //         status = 'INELIGIBLE';
+  //         newIneligibleDocs.push(doc);
+  //         this.sendDocumentStatus(doc);
+  //         return null;
+  //       }
+  //       newVerifiedDocs.push(doc);
+  //       this.sendDocumentStatus(doc);
+  //       return null;
+  //     });
 
-      // -------------------  END MODIFY
-      this.setState({
-        docsList: [...docsByCandidateRDCheck],
-        feedbackStatus: status,
-      });
+  //     // -------------------  END MODIFY
+  //     this.setState({
+  //       docsList: [...docsByCandidateRDCheck],
+  //       feedbackStatus: status,
+  //     });
 
-      dispatch({
-        type: 'newCandidateForm/saveOrigin',
-        payload: {
-          documentsByCandidateRD: docsByCandidateRDCheck,
-        },
-      });
-    }
-  };
+  //     dispatch({
+  //       type: 'newCandidateForm/saveOrigin',
+  //       payload: {
+  //         documentsByCandidateRD: docsByCandidateRDCheck,
+  //       },
+  //     });
+  //   }
+  // };
 
   renderCollapseFields = () => {
     const { docsList: documentsCandidateList = [] } = this.state;
@@ -402,7 +401,7 @@ class BackgroundRecheck extends Component {
         })}
         <PreviousEmployment
           docList={documentsCandidateList}
-          handleCheckDocument={this.handleCheckDocument}
+          // handleCheckDocument={this.handleCheckDocument}
         />
       </>
     );

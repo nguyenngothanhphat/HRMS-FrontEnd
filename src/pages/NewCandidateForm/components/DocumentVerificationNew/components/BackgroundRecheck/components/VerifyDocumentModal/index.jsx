@@ -1,22 +1,22 @@
 import React, { Component } from 'react';
-import {
-  message,
-  Button,
-  Spin,
-  Modal,
-  Form,
-  Select,
-  DatePicker,
-  Input,
-  Upload,
-  Tooltip,
-} from 'antd';
+import { Button, Modal } from 'antd';
 import { connect } from 'umi';
-import moment from 'moment';
-import { isEmpty } from 'lodash';
 
 import styles from './index.less';
 
+@connect(
+  ({
+    newCandidateForm: {
+      data: { candidate = '' },
+      rookieId = '',
+    },
+    loading,
+  }) => ({
+    candidate,
+    rookieId,
+    loadingVerified: loading.effects['newCandidateForm/checkDocumentEffect'],
+  }),
+)
 class VerifyDocumentModal extends Component {
   constructor(props) {
     super(props);
@@ -30,8 +30,29 @@ class VerifyDocumentModal extends Component {
     onClose();
   };
 
+  handleVerified = () => {
+    const { dispatch, candidate, document, onClose = () => {} } = this.props;
+    if (!dispatch) {
+      return;
+    }
+
+    dispatch({
+      type: 'newCandidateForm/checkDocumentEffect',
+      payload: {
+        candidate,
+        document,
+        candidateDocumentStatus: 1,
+      },
+    }).then((response) => {
+      const { statusCode } = response;
+      if (statusCode === 200) {
+        onClose();
+      }
+    });
+  };
+
   render() {
-    const { visible = false, url = '', fileName = '' } = this.props;
+    const { visible = false, url = '', fileName = '', loadingVerified } = this.props;
 
     return (
       <Modal
@@ -50,9 +71,9 @@ class VerifyDocumentModal extends Component {
             Resubmit
           </Button>
           <Button
-            // onClick={}
+            onClick={this.handleVerified}
             className={`${styles.btn} ${styles.verifiedBtn}`}
-            // loading={loadingAddDocument}
+            loading={loadingVerified}
           >
             Verified
           </Button>
