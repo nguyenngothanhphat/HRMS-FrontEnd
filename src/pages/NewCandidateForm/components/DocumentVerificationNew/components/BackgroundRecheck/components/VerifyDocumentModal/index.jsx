@@ -8,12 +8,10 @@ import styles from './index.less';
   ({
     newCandidateForm: {
       data: { candidate = '' },
-      rookieId = '',
     },
     loading,
   }) => ({
     candidate,
-    rookieId,
     loadingVerified: loading.effects['newCandidateForm/checkDocumentEffect'],
   }),
 )
@@ -31,7 +29,12 @@ class VerifyDocumentModal extends Component {
   };
 
   handleVerified = () => {
-    const { dispatch, candidate, document, onClose = () => {} } = this.props;
+    const {
+      dispatch,
+      candidate,
+      docProps: { documentId: document = '' } = {},
+      onClose = () => {},
+    } = this.props;
     if (!dispatch) {
       return;
     }
@@ -52,7 +55,8 @@ class VerifyDocumentModal extends Component {
   };
 
   render() {
-    const { visible = false, url = '', fileName = '', loadingVerified } = this.props;
+    const { visible = false, docProps = {}, loadingVerified } = this.props;
+    const { candidateDocStatus, url, displayName: fileName } = docProps;
 
     return (
       <Modal
@@ -74,6 +78,7 @@ class VerifyDocumentModal extends Component {
             onClick={this.handleVerified}
             className={`${styles.btn} ${styles.verifiedBtn}`}
             loading={loadingVerified}
+            disabled={candidateDocStatus === 'VERIFIED'}
           >
             Verified
           </Button>

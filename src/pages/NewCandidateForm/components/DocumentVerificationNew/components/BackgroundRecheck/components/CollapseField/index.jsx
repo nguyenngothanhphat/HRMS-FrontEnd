@@ -18,10 +18,12 @@ class CollapseField extends Component {
       url: '',
       displayName: '',
       documentId: '',
+      candidateDocStatus: '',
     };
   }
 
-  openDocument = (displayName, attachment, documentId, key = '') => {
+  openDocument = (document = {}, key = '') => {
+    const { displayName, attachment, _id: documentId, candidateDocumentStatus } = document;
     const { url } = attachment;
     if (!attachment) {
       return;
@@ -33,6 +35,7 @@ class CollapseField extends Component {
         url,
         displayName,
         documentId,
+        candidateDocStatus: candidateDocumentStatus,
       });
     } else {
       this.setState({
@@ -103,7 +106,7 @@ class CollapseField extends Component {
 
   render() {
     const { item = {} } = this.props;
-    const { visible, url, displayName, openModal, documentId } = this.state;
+    const { visible, url, displayName, openModal, documentId, candidateDocStatus } = this.state;
 
     return (
       <div className={styles.collapseField}>
@@ -128,11 +131,7 @@ class CollapseField extends Component {
             >
               <Space direction="vertical" className={styles.space}>
                 {item.data.map((document, index) => {
-                  const {
-                    attachment = {},
-                    candidateDocumentStatus = '',
-                    _id: docId = '',
-                  } = document;
+                  const { attachment = {}, candidateDocumentStatus = '' } = document;
                   const { name: fileName = '' } = attachment;
 
                   return (
@@ -147,7 +146,7 @@ class CollapseField extends Component {
                               return;
                             }
                             // this.openViewDocument(document.displayName, attachment);
-                            this.openDocument(document.displayName, attachment, docId, 'verify');
+                            this.openDocument(document, 'verify');
                           }}
                           className={styles.file__content__fileName}
                         >
@@ -182,9 +181,12 @@ class CollapseField extends Component {
 
         <VerifyDocumentModal
           visible={openModal}
-          fileName={displayName}
-          url={url}
-          document={documentId}
+          docProps={{
+            candidateDocStatus,
+            documentId,
+            url,
+            displayName,
+          }}
           onClose={() => this.handleCancel(1)}
         />
       </div>
