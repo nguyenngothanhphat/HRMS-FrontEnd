@@ -21,17 +21,29 @@ class VerifyDocumentModal extends Component {
     super(props);
     this.state = {
       openCommentForm: false,
+      comments: '',
     };
   }
 
-  renderTitle = (name) => <div className={styles.titleName}>{name}</div>;
+  renderTitle = (name) => {
+    const { openCommentForm } = this.state;
+    return (
+      <>
+        {openCommentForm ? (
+          <div className={styles.titleName}>{`${name} for Resubmission`}</div>
+        ) : (
+          <div className={styles.titleName}>{name}</div>
+        )}
+      </>
+    );
+  };
 
   destroyOnClose = () => {
     const { onClose = () => {} } = this.props;
     onClose();
   };
 
-  handleVerified = () => {
+  onSubmit = (comments = '') => {
     const {
       dispatch,
       candidate,
@@ -57,21 +69,33 @@ class VerifyDocumentModal extends Component {
     });
   };
 
-  handleResubmit = () => {
+  handleVerified = () => {
+    this.onSubmit();
+  };
+
+  handleReSubmit = () => {
+    const { comments } = this.state;
+    this.onSubmit(comments);
+  };
+
+  openResubmitForm = () => {
     this.setState({
       openCommentForm: true,
     });
   };
 
   onValuesChange = (value) => {
-    console.log(value);
+    const { comments = '' } = value;
+    this.setState({
+      comments,
+    });
   };
 
   renderComments = () => {
     return (
       <div className={styles.commentForm}>
         <Divider className={styles.divider} />
-        <Form onFinish={this.onFinish} onValuesChange={this.onValuesChange}>
+        <Form onValuesChange={this.onValuesChange}>
           <Form.Item label="Enter comments" name="comments">
             <TextArea autoSize={{ minRows: 3, maxRows: 5 }} />
           </Form.Item>
@@ -80,11 +104,49 @@ class VerifyDocumentModal extends Component {
     );
   };
 
+  renderFirstBtns = () => {
+    const { docProps = {}, loadingVerified } = this.props;
+
+    const { candidateDocStatus } = docProps;
+    return (
+      <div className={styles.verifyDocumentModal__bottom}>
+        <Button onClick={this.openResubmitForm} className={`${styles.btn} ${styles.resubmitBtn}`}>
+          Resubmit
+        </Button>
+        <Button
+          onClick={this.handleVerified}
+          className={`${styles.btn} ${styles.verifiedBtn}`}
+          loading={loadingVerified}
+          disabled={candidateDocStatus === 'VERIFIED'}
+        >
+          Verified
+        </Button>
+      </div>
+    );
+  };
+
+  renderSecondBtns = () => {
+    return (
+      <div className={styles.verifyDocumentModal__bottom}>
+        <Button onClick={this.handleResubmit} className={`${styles.btn} ${styles.resubmitBtn}`}>
+          Cancel
+        </Button>
+        <Button
+          onClick={this.onReSubmit}
+          className={`${styles.btn} ${styles.verifiedBtn}`}
+          //   loading={loadingVerified}
+        >
+          Submit
+        </Button>
+      </div>
+    );
+  };
+
   render() {
-    const { visible = false, docProps = {}, loadingVerified } = this.props;
+    const { visible = false, docProps = {} } = this.props;
     const { openCommentForm } = this.state;
 
-    const { candidateDocStatus, url, displayName: fileName } = docProps;
+    const { url, displayName: fileName } = docProps;
 
     return (
       <Modal
@@ -99,19 +161,8 @@ class VerifyDocumentModal extends Component {
           <img src={url} alt="document" />
         </div>
         {openCommentForm && this.renderComments()}
-        <div className={styles.verifyDocumentModal__bottom}>
-          <Button onClick={this.handleResubmit} className={`${styles.btn} ${styles.resubmitBtn}`}>
-            Resubmit
-          </Button>
-          <Button
-            onClick={this.handleVerified}
-            className={`${styles.btn} ${styles.verifiedBtn}`}
-            loading={loadingVerified}
-            disabled={candidateDocStatus === 'VERIFIED'}
-          >
-            Verified
-          </Button>
-        </div>
+
+        {openCommentForm ? this.renderSecondBtns() : this.renderFirstBtns()}
       </Modal>
     );
   }
