@@ -8,6 +8,7 @@ import DocumentsAndTemplates from './components/DocumentsAndTemplates';
 import NonExtempNotice from './components/NonExtempNotice';
 import OptionalOnboardingQuestions from './components/OptionalOnboardingQuestions';
 import BenefitsManagement from './components/BenefitsManagement';
+import SalaryStructure from './components/SalaryStructure/index';
 
 export const listMenu = [
   {
@@ -53,6 +54,13 @@ export const listMenu = [
   },
   {
     id: 6,
+    name: 'Salary Structure',
+    key: 'salaryStructure',
+    component: <SalaryStructure />,
+    link: 'salary-structure',
+  },
+  {
+    id: 7,
     name: 'Benefits Management ',
     key: 'benefitsManagement',
     component: <BenefitsManagement />,

@@ -230,3 +230,28 @@ export async function getListPageOnboarding(payload) {
     data: payload,
   });
 }
+// salary setting
+export async function getListSalaryByLocation(payload) {
+  return request('/api/salarystructuretenant/list-by-location', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function getSalaryById(payload) {
+  return request('/api/salarystructuretenant/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function updateSalary(payload) {
+  return request('/api/salarystructuretenant/update-salary', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function importSalary(payload) {
+  return request('/api/salarystructuretenant/import', {
+    method: 'POST',
+    data: payload,
+  });
+}
