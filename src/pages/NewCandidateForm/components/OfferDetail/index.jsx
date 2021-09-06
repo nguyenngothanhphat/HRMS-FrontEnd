@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import { PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import AddDocumentModal from './components/AddDocumentModal';
 import DocumentItem from './components/DocumentItem';
 import { Page } from '../../utils';
@@ -19,7 +19,6 @@ const OfferDetail = (props) => {
   const {
     dispatch,
     checkMandatory,
-    currentStep,
     data,
     tempData,
     loading1,
@@ -60,17 +59,7 @@ const OfferDetail = (props) => {
   const [allFieldsFilled, setAllFieldsFilled] = useState(false);
   // const [disableAll, setDisableAll] = useState(processStatus === 'SENT-PROVISIONAL-OFFER');
   // eslint-disable-next-line no-unused-vars
-  const [disableAll, setDisableAll] = useState(
-    [
-      PROCESS_STATUS.APPROVED_OFFERS,
-      PROCESS_STATUS.SENT_FINAL_OFFERS,
-      PROCESS_STATUS.ACCEPTED_FINAL_OFFERS,
-      PROCESS_STATUS.RENEGOTIATE_FINAL_OFFERS,
-      PROCESS_STATUS.FINAL_OFFERS,
-      PROCESS_STATUS.FINAL_OFFERS_HR,
-      PROCESS_STATUS.FINAL_OFFERS_CANDIDATE,
-    ].includes(processStatus),
-  );
+  const [disableAll, setDisableAll] = useState(false);
 
   const checkAllFieldsValid = (allFieldsValues) => {
     const keys = Object.keys(allFieldsValues);
@@ -99,6 +88,28 @@ const OfferDetail = (props) => {
 
     return valid;
   };
+
+  useEffect(() => {
+    if (processStatus) {
+      setDisableAll(
+        [
+          NEW_PROCESS_STATUS.AWAITING_APPROVALS,
+          NEW_PROCESS_STATUS.OFFER_RELEASED,
+          NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+          NEW_PROCESS_STATUS.OFFER_ACCEPTED,
+          NEW_PROCESS_STATUS.OFFER_REJECTED,
+        ].includes(processStatus),
+      );
+    }
+    return () => {};
+  }, [processStatus]);
+
+  useEffect(() => {
+    if (offerLetterTemplateProp) {
+      setUploadedOfferTemplate(offerLetterTemplateProp);
+    }
+    return () => {};
+  }, [offerLetterTemplateProp]);
 
   useEffect(() => {
     const formValues = form.getFieldsValue();
@@ -165,25 +176,6 @@ const OfferDetail = (props) => {
   }, []);
 
   useEffect(() => {
-    // const { processStatus = '' } = data;
-    if (processStatus !== 'DRAFT') {
-      return;
-    }
-    const { candidate } = data;
-    if (!dispatch || !candidate) {
-      return;
-    }
-    dispatch({
-      type: 'newCandidateForm/updateByHR',
-      payload: {
-        candidate,
-        // currentStep,
-        tenantId: getCurrentTenant(),
-      },
-    });
-  }, [data.candidate]);
-
-  useEffect(() => {
     const allFormValues = form.getFieldsValue();
     handleFormChange(null, allFormValues);
     checkAllFieldsValid(allFormValues);
@@ -237,7 +229,11 @@ const OfferDetail = (props) => {
     history.push(`/onboarding/list/view/${ticketID}/benefits`);
   };
 
-  const onClickNext = () => {
+  const onNextTab = () => {
+    history.push(`/onboarding/list/view/${ticketID}/offer-letter`);
+  };
+
+  const onSubmitOfferDetails = () => {
     if (!dispatch) {
       return;
     }
@@ -344,11 +340,14 @@ const OfferDetail = (props) => {
         payload: attachment,
       });
 
-      history.push(`/onboarding/list/view/${ticketID}/offer-letter`);
+      onNextTab();
     });
   };
 
   const _renderBottomBar = () => {
+    const isNewOffer = processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION;
+    const handleButtonAction = isNewOffer ? onSubmitOfferDetails : onNextTab;
+
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
@@ -364,14 +363,14 @@ const OfferDetail = (props) => {
 
               <Button
                 type="primary"
-                onClick={onClickNext}
+                onClick={handleButtonAction}
                 loading={loading1}
                 className={`${styles.bottomBar__button__primary} ${
                   !allFieldsFilled ? styles.bottomBar__button__disabled : ''
                 }`}
                 disabled={!allFieldsFilled}
               >
-                Proceed
+                Next
               </Button>
             </div>
           </Col>

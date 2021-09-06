@@ -8,14 +8,14 @@ import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import CustomModal from '@/components/CustomModal';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import NoteComponent from '../NoteComponent';
+import NoteComponent from '../../../NoteComponent';
 import CollapseFieldsTypeABC from './components/CollapseFieldsTypeABC';
 import CollapseFieldsTypeD from './components/CollapseFieldsTypeD';
 import CollapseFieldsTypeE from './components/CollapseFieldsTypeE';
 import ModalContentComponent from './components/ModalContentComponent';
 import SendEmail from './components/SendEmail';
-import MessageBox from '../MessageBox';
-import { Page } from '../../utils';
+import MessageBox from '../../../MessageBox';
+import { Page } from '../../../../utils';
 import Title from './components/Title';
 import styles from './styles.less';
 
@@ -729,11 +729,11 @@ class DocumentVerification extends Component {
       middleName,
       lastName,
       position,
-      employeeType: employeeType._id,
-      department: department._id,
-      title: title._id,
-      workLocation: workLocation._id,
-      reportingManager: reportingManager._id,
+      employeeType: employeeType._id || employeeType,
+      department: department._id || department,
+      title: title._id || title,
+      workLocation: workLocation._id || workLocation,
+      reportingManager: reportingManager._id || reportingManager,
       privateEmail,
       workEmail,
       previousExperience,

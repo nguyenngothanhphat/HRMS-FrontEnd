@@ -37,7 +37,7 @@ const defaultItemRender: AntdBreadcrumbProps['itemRender'] = ({ breadcrumbName, 
     //   name = `${breadcrumbName} [${path.split('/').pop()}]`;
     //   break;
     case 'Add a team member':
-      name = `${breadcrumbName} [${path.split('/').pop()}]`;
+      name = `[${path.split('/').pop()}] ${breadcrumbName}`;
       break;
     default:
       name = breadcrumbName;

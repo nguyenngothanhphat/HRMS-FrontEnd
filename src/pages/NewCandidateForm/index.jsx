@@ -4,17 +4,15 @@ import { connect, history } from 'umi';
 import LayoutAddCandidateForm from '@/components/LayoutAddCandidateForm';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, PROCESS_STATUS } from '@/utils/onboarding';
 import BasicInformation from './components/BasicInformation';
 import Benefit from './components/Benefits';
-import DocumentVerification from './components/DocumentVerification';
+import DocumentVerificationNew from './components/DocumentVerificationNew';
 import JobDetails from './components/JobDetails';
 import OfferDetail from './components/OfferDetail';
+import PreviewOffer from './components/PreviewOffer';
 import SalaryStructure from './components/SalaryStructure';
 import styles from './index.less';
-import PreviewOffer from './components/PreviewOffer';
-import BackgroundRecheck from './components/BackgroundRecheck';
-// import Payroll from './components/Payroll';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 
 @connect(({ newCandidateForm = {}, user, loading }) => ({
   newCandidateForm,
@@ -22,6 +20,13 @@ import BackgroundRecheck from './components/BackgroundRecheck';
   loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
 }))
 class NewCandidateForm extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      listMenu: [],
+    };
+  }
+
   componentDidMount = () => {
     const {
       match: { params: { action = '', reId } = {} },
@@ -29,7 +34,6 @@ class NewCandidateForm extends PureComponent {
     } = this.props;
 
     // check action is add or review. If isReview fetch candidate by reID
-    // console.log(newCandidateForm.currentStep);
     if (action === 'view' || action === 'candidate-detail') {
       dispatch({
         type: 'newCandidateForm/fetchCandidateByRookie',
@@ -41,10 +45,8 @@ class NewCandidateForm extends PureComponent {
         if (!data) {
           return;
         }
-        const {
-          // currentStep = 0,
-          _id,
-        } = data;
+        this.renderListMenu();
+        const { _id } = data;
         dispatch({
           type: 'optionalQuestion/save',
           payload: {
@@ -52,14 +54,6 @@ class NewCandidateForm extends PureComponent {
             data: {},
           },
         });
-        // if (currentStep >= 4) {
-        //   dispatch({
-        //     type: 'newCandidateForm/saveTemp',
-        //     payload: {
-        //       valueToFinalOffer: 1,
-        //     },
-        //   });
-        // }
       });
 
       dispatch({
@@ -89,81 +83,24 @@ class NewCandidateForm extends PureComponent {
     this.resetFormMember();
   }
 
-  resetFormMember = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'newCandidateForm/clearState',
-    });
-    dispatch({
-      type: 'optionalQuestion/save',
-      payload: {
-        candidate: null,
-        data: {},
-      },
-    });
-  };
-
-  handleCancel = async () => {
+  renderListMenu = () => {
     const {
-      dispatch,
-      history,
-      newCandidateForm: { data: { ticketID = '' } = {} } = {},
-    } = this.props;
-    if (!dispatch) {
-      return;
-    }
-
-    const response = await dispatch({
-      type: 'onboard/deleteTicketDraft',
-      payload: {
-        id: ticketID,
-        tenantId: getCurrentTenant(),
-      },
-    });
-    const { statusCode = 1 } = response;
-    if (statusCode === 200) {
-      // dispatch({
-      //   type: 'newCandidateForm/saveTemp',
-      //   payload: {
-      //     cancelCandidate: true,
-      //   },
-      // });
-      // this.resetFormMember();
-      history.push('/onboarding/list');
-    }
-  };
-
-  handleFinishLater = async () => {
-    // const { newCandidateForm: { data } = {}, dispatch, history } = this.props;
-    // const response = await dispatch({
-    //   type: 'newCandidateForm/updateByHR',
-    //   payload: {
-    //     ...tempData,
-    //     tenantId: getCurrentTenant(),
-    //     // candidate: data.id
-    //   },
-    // });
-    // const { statusCode = 1 } = response;
-    // if (statusCode === 200) {
-    history.push('/onboarding/list');
-    // }
-  };
-
-  render() {
-    const {
-      match: { params: { action = '', reId = '', tabName = '' } = {} },
+      match: { params: { reId = '' } = {} },
       newCandidateForm,
       loadingFetchCandidate = false,
       // location: { state: { isAddNew = false } = {} } = {},
     } = this.props;
 
     const {
-      tempData: { locationList, employeeTypeList, documentList, valueToFinalOffer = 0 } = {},
-      data: { processStatus = '' } = {},
-    } = newCandidateForm;
+      tempData: {
+        offerLetter: { _id: offerLetterId = '' } = {} || {},
 
-    // const title = isAddNew ? `Add a team member [${reId}]` : `Review team member [${reId}]`;
-    const title = `Add a team member`;
+        processStatus = '',
+        locationList,
+        employeeTypeList,
+        valueToFinalOffer = 0,
+      } = {},
+    } = newCandidateForm;
 
     const listMenu = [
       {
@@ -178,6 +115,7 @@ class NewCandidateForm extends PureComponent {
           />
         ),
         link: 'basic-information',
+        statusToLock: [],
       },
       {
         id: 2,
@@ -193,9 +131,19 @@ class NewCandidateForm extends PureComponent {
           />
         ),
         link: 'job-details',
+        statusToLock: [],
       },
       {
         id: 3,
+        name: 'Eligibility documents',
+        key: 'backgroundCheck',
+        // key: 'eligibilityDocuments',
+        component: <DocumentVerificationNew />,
+        link: 'document-verification',
+        statusToLock: [],
+      },
+      {
+        id: 4,
         name: 'Salary Structure',
         key: 'salaryStructure',
         component: (
@@ -206,25 +154,11 @@ class NewCandidateForm extends PureComponent {
           />
         ),
         link: 'salary-structure',
-      },
-      {
-        id: 4,
-        name: 'Eligibility documents',
-        key: 'backgroundCheck',
-        // key: 'eligibilityDocuments',
-        component:
-          processStatus !== NEW_PROCESS_STATUS.PROFILE_VERIFICATION &&
-          processStatus !== NEW_PROCESS_STATUS.DRAFT ? (
-            <BackgroundRecheck />
-          ) : (
-            <DocumentVerification
-              documentList={documentList}
-              loading={loadingFetchCandidate}
-              reId={reId}
-              processStatus={processStatus}
-            />
-          ),
-        link: 'document-verification',
+        statusToLock: [
+          NEW_PROCESS_STATUS.DRAFT,
+          NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
+          NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
+        ],
       },
       {
         id: 5,
@@ -232,6 +166,11 @@ class NewCandidateForm extends PureComponent {
         key: 'benefits',
         component: <Benefit processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />,
         link: 'benefits',
+        statusToLock: [
+          NEW_PROCESS_STATUS.DRAFT,
+          NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
+          NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
+        ],
       },
       {
         id: 6,
@@ -241,6 +180,11 @@ class NewCandidateForm extends PureComponent {
           <OfferDetail processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />
         ),
         link: 'offer-details',
+        statusToLock: [
+          NEW_PROCESS_STATUS.DRAFT,
+          NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
+          NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
+        ],
       },
       {
         id: 7,
@@ -248,27 +192,67 @@ class NewCandidateForm extends PureComponent {
         key: 'offerLetter',
         component: <PreviewOffer />,
         link: 'offer-letter',
+        statusToLock: [
+          NEW_PROCESS_STATUS.DRAFT,
+          NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
+          NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
+        ],
+        isOfferLetter: !!offerLetterId,
       },
     ];
 
-    const candidateProcess = {
-      basicInformation: false,
-      jobDetails: false,
-      salaryStructure: false,
-      documentVerification: false,
-      benefits: false,
-      offerDetails: false,
-    };
+    this.setState({ listMenu });
+  };
 
-    const formatListMenu =
-      listMenu.map((item) => {
-        const { key } = item;
-        return {
-          ...item,
-          isComplete: candidateProcess[key],
-        };
-      }) || [];
+  resetFormMember = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'newCandidateForm/clearState',
+    });
+    dispatch({
+      type: 'optionalQuestion/save',
+      payload: {
+        candidate: null,
+        data: {},
+      },
+    });
+  };
 
+  handleCancel = async () => {
+    const { dispatch, newCandidateForm: { data: { ticketID = '' } = {} } = {} } = this.props;
+    if (!dispatch) {
+      return;
+    }
+
+    const response = await dispatch({
+      type: 'onboard/deleteTicketDraft',
+      payload: {
+        id: ticketID,
+        tenantId: getCurrentTenant(),
+      },
+    });
+    const { statusCode = 1 } = response;
+    if (statusCode === 200) {
+      history.push('/onboarding/list');
+    }
+  };
+
+  handleFinishLater = async () => {
+    history.push('/onboarding/list');
+  };
+
+  render() {
+    const {
+      match: { params: { action = '', reId = '', tabName = '' } = {} },
+      loadingFetchCandidate = false,
+      // location: { state: { isAddNew = false } = {} } = {},
+    } = this.props;
+
+    const { listMenu } = this.state;
+    // const title = isAddNew ? `Add a team member [${reId}]` : `Review team member [${reId}]`;
+    const title = `Add a team member`;
+
+    if (listMenu.length === 0) return <Skeleton />;
     return (
       <PageContainer>
         <div className={styles.containerNewCandidateForm}>
@@ -280,16 +264,13 @@ class NewCandidateForm extends PureComponent {
                   <Button type="primary" ghost onClick={this.handleFinishLater}>
                     Finish Later
                   </Button>
-                  {/* <Button danger onClick={this.handleCancel}>
-                    Cancel
-                  </Button> */}
                 </div>
               )}
             </div>
           </Affix>
 
           <LayoutAddCandidateForm
-            listMenu={formatListMenu}
+            listMenu={listMenu}
             tabName={tabName}
             reId={reId}
             loading={loadingFetchCandidate}

@@ -21,8 +21,10 @@ export default class ItemMenu extends PureComponent {
 
     const { id = '', name = '', isComplete = false } = item;
     const isActive = selectedItemId === id;
-    const className = isActive ? s.itemMenuActive : s.itemMenu;
+    // const className = isActive ? s.itemMenuActive : s.itemMenu;
     const isTabTopActive = id === selectedItemId - 1;
+
+    const className = this.getClassName();
     return (
       <div
         onClick={() => {

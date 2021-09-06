@@ -1,0 +1,9 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Group 16">
+<circle id="Oval" opacity="0.54741" cx="32" cy="32" r="32" fill="#E9F0FF"/>
+<circle id="Oval Copy" cx="32" cy="32" r="23" fill="#E4EDFF"/>
+<g id="pen">
+<path id="Shape" fill-rule="evenodd" clip-rule="evenodd" d="M39.6692 28.3007L40.3732 27.5966C41.0773 26.8853 41.0773 25.7397 40.3732 25.0282L38.8773 23.5322C38.1681 22.8226 37.018 22.8226 36.3088 23.5322L35.6048 24.2363L39.6692 28.3007ZM29.3073 38.6572L25.2482 34.5982L35.0657 24.7807L39.1248 28.8397L29.3073 38.6572ZM24.8688 35.3132L28.5923 39.0366L23.0098 40.8957L24.8688 35.3132Z" fill="#2C6DF9"/>
+</g>
+</g>
+</svg>

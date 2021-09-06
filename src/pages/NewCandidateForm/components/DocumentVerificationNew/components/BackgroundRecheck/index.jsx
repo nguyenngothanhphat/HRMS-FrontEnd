@@ -1,20 +1,16 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-param-reassign */
-import React, { Component, Fragment } from 'react';
-import { Row, Col, Typography, Skeleton, Button } from 'antd';
-import { formatMessage, connect } from 'umi';
+import { Button, Col, Row, Skeleton, Typography } from 'antd';
+import React, { Component } from 'react';
+import { connect, formatMessage } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
 import { PROCESS_STATUS } from '@/utils/onboarding';
-import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import NoteComponent from '../NoteComponent';
-import Feedback from './components/Feedback';
-import CollapseField from './components/CollapseField';
-import styles from './index.less';
-import SendEmail from '../PreviewOffer/components/SendEmail';
+import NoteComponent from '../../../NoteComponent';
 import CloseCandidateModal from './components/CloseCandidateModal';
-import { Page } from '../../utils';
+import CollapseField from './components/CollapseField';
 import PreviousEmployment from './components/PreviousEmployment';
+import styles from './index.less';
 
 @connect(
   ({

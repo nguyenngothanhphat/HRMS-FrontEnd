@@ -1,33 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { connect, formatMessage } from 'umi';
-
-import { Button, Input, Form, Select, Row, Col, Popover, Radio, Space, Skeleton } from 'antd';
-import { EditOutlined, SendOutlined } from '@ant-design/icons';
-// import logo from './components/images/brand-logo.png';
+import {
+  Button,
+  Input,
+  Form,
+  Select,
+  Row,
+  Col,
+  Popover,
+  Radio,
+  Space,
+  Skeleton,
+  Typography,
+} from 'antd';
+// import { SendOutlined } from '@ant-design/icons';
+import moment from 'moment';
+import BigEditVector from '@/assets/bigEditVector.svg';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
-import { PROCESS_STATUS } from '@/utils/onboarding';
-import ModalDrawSignature from '@/components/ModalDrawSignature/index';
-import ModalGenerateSignature from '@/components/ModalGenerateSignature/index';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import ModalDrawSignature from '@/components/ModalDrawSignature';
+import ModalGenerateSignature from '@/components/ModalGenerateSignature';
 import TextSignature from '@/components/TextSignature';
 import whiteImg from './components/images/whiteImg.png';
 import CancelIcon from './components/CancelIcon';
 import ModalUpload from '../../../../components/ModalUpload';
 import FileContent from './components/FileContent';
-import SendEmail from './components/SendEmail';
+// import SendEmail from './components/SendEmail';
 import ModalContent from './components/ModalContent';
-// import { PROCESS_STATUS } from '@/utils/onboarding';
+
+import RejectOfferModal from './components/RejectOfferModal';
+import ExtendOfferModal from './components/ExtendOfferModal';
+import WithdrawOfferModal from './components/WithdrawOfferModal';
+
+import NoteComponent from '../NoteComponent';
+
 import styles from './index.less';
 
 const { Option } = Select;
-// import { PROCESS_STATUS } from '@/pages/Onboarding/components/OnboardingOverview/components/utils';
-//
-
-// const ROLE = {
-//   HRMANAGER: 'HR-MANAGER',
-//   HR: 'HR',
-//   HRGLOBAL: 'HR-GLOBAL',
-// };
 
 const PreviewOffer = (props) => {
   const {
@@ -42,15 +52,16 @@ const PreviewOffer = (props) => {
   } = props;
 
   const {
-    // email: mailProp,
     hrSignature: hrSignatureProp,
     hrManagerSignature: hrManagerSignatureProp,
     offerLetter: offerLetterProp,
     staticOfferLetter: staticOfferLetterProp,
     candidateSignature: candidateSignatureProp,
+    expiryDate: expiryDateProp = '',
+    assignTo: { _id: assigneeId = '' } = {},
+    assigneeManager: { _id: assigneeManagerId = '' } = {},
   } = tempData;
   const {
-    // offerLetter: offerLetterProp,
     privateEmail: candidateEmailProp = '',
     firstName: candidateFirstName = '',
     middleName: candidateMiddleName = '',
@@ -58,8 +69,7 @@ const PreviewOffer = (props) => {
     processStatus,
   } = data;
 
-  // const inputRefs = [];
-
+  const { employee: { _id: currentUserId = '' } = {} || {} } = currentUser;
   const [hrSignature, setHrSignature] = useState(hrSignatureProp || '');
 
   const [hrSignatureSubmit, setHrSignatureSubmit] = useState(false);
@@ -69,7 +79,7 @@ const PreviewOffer = (props) => {
   const [candidateSignature, setCandidateSignature] = useState(candidateSignatureProp || '');
 
   const [mail, setMail] = useState(candidateEmailProp || '');
-  const [mailForm] = Form.useForm();
+  // const [mailForm] = Form.useForm();
 
   const [role, setRole] = useState([]);
 
@@ -84,9 +94,7 @@ const PreviewOffer = (props) => {
   const [arrImgBase64, setArrImgBase64] = useState([]);
   const [openDigital, setOpenDigital] = useState(false);
   const [nameSignature, setNameSignature] = useState('');
-  // const trim = () => {
-  //   setTrimDataURL(sigPad.getTrimmedCanvas().toDataURL('image/png'));
-  // };
+
   const getOfferLetterProp = () => {
     if (staticOfferLetterProp && staticOfferLetterProp.url) {
       return staticOfferLetterProp.url;
@@ -97,56 +105,58 @@ const PreviewOffer = (props) => {
     return '';
   };
 
-  // eslint-disable-next-line no-unused-vars
   const [offerLetter, setOfferLetter] = useState(getOfferLetterProp());
+
+  // const processStatus = NEW_PROCESS_STATUS.AWAITING_APPROVALS;
+  // const processStatus = NEW_PROCESS_STATUS.SALARY_NEGOTIATION;
+  // const processStatus = NEW_PROCESS_STATUS.OFFER_ACCEPTED;
+  // const processStatus = NEW_PROCESS_STATUS.OFFER_REJECTED;
+  // const processStatus = NEW_PROCESS_STATUS.OFFER_WITHDRAWN;
+
+  const isTicketAssignee = currentUserId === assigneeId;
+  // const isTicketAssignee = false;
+  const isTicketManager = currentUserId === assigneeManagerId;
+  // const isTicketManager = true;
+  const isNewOffer = processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION;
+  const isAwaitingOffer = processStatus === NEW_PROCESS_STATUS.AWAITING_APPROVALS;
+  const isAcceptedOffer = processStatus === NEW_PROCESS_STATUS.OFFER_ACCEPTED;
+  const isRejectedOffer = processStatus === NEW_PROCESS_STATUS.OFFER_REJECTED;
+  const isWithdrawnOffer = processStatus === NEW_PROCESS_STATUS.OFFER_WITHDRAWN;
+  const isSentOffer = processStatus === NEW_PROCESS_STATUS.OFFER_RELEASED;
+
+  // MODALS
+  const [rejectModalVisible, setRejectModalVisible] = useState(false);
+  const [extendOfferModalVisible, setExtendOfferModalVisible] = useState(false);
+  const [withdrawOfferModalVisible, setWithdrawOfferModalVisible] = useState(false);
+  // FUNCTIONS
 
   const resetImg = (type) => {
     if (type === 'hr') {
-      // setFile('');
       setHrSignature({});
     }
     if (type === 'hrManager') {
       setHrManagerSignature({});
-      // setFile2('');
     }
   };
-  // const isOfferAccepted = () => {
-  //   const { ACCEPTED_FINAL_OFFERS } = PROCESS_STATUS;
-  //   return processStatus === ACCEPTED_FINAL_OFFERS;
-  // };
-  const isRenderAddSignature = (value) => {
-    if (value === 'hr')
-      return (
-        processStatus === PROCESS_STATUS.ACCEPTED_PROVISIONAL_OFFERS ||
-        processStatus === PROCESS_STATUS.PENDING
-      );
-    return processStatus === PROCESS_STATUS.SENT_FOR_APPROVAL;
-  };
+
   const saveChanges = () => {
     // Save changes to redux store
-    if (dispatch) {
-      dispatch({
-        type: 'newCandidateForm/save',
-        payload: {
-          tempData: {
-            ...tempData,
-            email: mail,
-            hrSignature,
-            hrManagerSignature,
-          },
-        },
-      });
-    }
+    // if (dispatch) {
+    //   dispatch({
+    //     type: 'newCandidateForm/save',
+    //     payload: {
+    //       tempData: {
+    //         ...tempData,
+    //         email: mail,
+    //         hrSignature,
+    //         hrManagerSignature,
+    //       },
+    //     },
+    //   });
+    // }
   };
-  const isHr = role.indexOf('HR') > -1 || role.indexOf('hr') > -1;
-  const isHrManager = role.indexOf('HR-MANAGER') > -1 || role.indexOf('hr-manager') > -1;
-  const renderHRManagerSignature = () => {
-    return (
-      isHrManager &&
-      (processStatus === PROCESS_STATUS.SENT_FOR_APPROVAL ||
-        processStatus === PROCESS_STATUS.ACCEPTED_FINAL_OFFERS)
-    );
-  };
+  // const isHr = role.indexOf('HR') > -1 || role.indexOf('hr') > -1;
+  // const isHrManager = role.indexOf('HR-MANAGER') > -1 || role.indexOf('hr-manager') > -1;
 
   const loadImage = (response) => {
     const { data: responseData = [] } = response;
@@ -261,36 +271,22 @@ const PreviewOffer = (props) => {
     });
   };
 
-  const getUserRole = () => {
-    const { roles } = currentUser;
-    setRole(roles);
-  };
-
   useEffect(() => {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
-
-    getUserRole();
-    const { _id } = data;
-    if (!dispatch || !_id) {
-      return;
-    }
-
-    dispatch({
-      type: 'newCandidateForm/updateByHR',
-      payload: {
-        candidate: _id,
-        // currentStep: 7,
-        tenantId: getCurrentTenant(),
-      },
-    });
   }, []);
+
+  useEffect(() => {
+    setHrManagerSignature(hrManagerSignatureProp);
+  }, [hrManagerSignatureProp]);
+
+  useEffect(() => {
+    setHrSignature(hrSignatureProp);
+  }, [hrSignatureProp]);
 
   useEffect(() => {
     // Save changes to store whenever input fields change
     saveChanges();
   }, [mail, hrSignature, hrManagerSignature]);
-
-  useEffect(() => {}, [hrSignatureProp, hrManagerSignatureProp]);
 
   useEffect(() => {
     setCandidateSignature(candidateSignatureProp);
@@ -318,19 +314,6 @@ const PreviewOffer = (props) => {
       type: 'newCandidateForm/redirectToOnboardList',
     });
   };
-
-  // const disableHrSubmitActions = () => {
-  //   const { ACCEPTED_FINAL_OFFERS } = PROCESS_STATUS;
-  // };
-
-  // useEffect(() => {
-  //   dispatch({
-  //     type: 'newCandidateForm/saveTemp',
-  //     payload: {
-  //       offerLetter,
-  //     },
-  //   });
-  // }, [offerLetterProp]);
 
   const renderCandidateSignature = () => {
     return candidateSignature && candidateSignature.url;
@@ -523,7 +506,7 @@ const PreviewOffer = (props) => {
           // Default image
           <>
             <img className={styles.signatureImg} src={whiteImg} alt="" />
-            {isRenderAddSignature('hr') && (
+            {isTicketAssignee && (isNewOffer || isAwaitingOffer) && (
               <button type="submit" onClick={openModalUploadSignature}>
                 {formatMessage({ id: 'component.previewOffer.upload' })}
               </button>
@@ -532,7 +515,7 @@ const PreviewOffer = (props) => {
         ) : (
           <>
             <img className={styles.signatureImg} src={hrSignature.url} alt="" />
-            {isRenderAddSignature('hr') && (
+            {isTicketAssignee && (isNewOffer || isAwaitingOffer) && (
               <>
                 <button type="submit" onClick={openModalUploadSignature}>
                   {formatMessage({ id: 'component.previewOffer.uploadNew' })}
@@ -678,7 +661,7 @@ const PreviewOffer = (props) => {
           <img className={styles.signatureImg} src={hrManagerSignature.url} alt="" />
         )}
 
-        {isRenderAddSignature('hrManager') && (
+        {isTicketManager && (isNewOffer || isAwaitingOffer) && (
           <>
             <button
               type="submit"
@@ -697,254 +680,457 @@ const PreviewOffer = (props) => {
     );
   };
 
+  const _renderBottomBar = () => {
+    // HR IS ASSIGNEE
+    if (isTicketAssignee && !isTicketManager) {
+      const hrButtonText = () => {
+        if (isNewOffer) {
+          return 'Send for approval';
+        }
+        return '';
+      };
+
+      const checkDisableButton = () => {
+        if (isNewOffer && hrSignature.url) {
+          return false;
+        }
+        return true;
+      };
+
+      const onPrimaryButtonClick = () => {
+        if (isNewOffer) {
+          handleSentForApproval();
+        }
+      };
+      return (
+        <div className={styles.bottomBar}>
+          <Row align="middle">
+            <Col span={24}>
+              <div className={styles.bottomBar__button}>
+                <Button type="secondary" className={styles.bottomBar__button__secondary}>
+                  Previous
+                </Button>
+                {isNewOffer && (
+                  <Button
+                    disabled={checkDisableButton()}
+                    type="primary"
+                    className={styles.bottomBar__button__primary}
+                    onClick={onPrimaryButtonClick}
+                  >
+                    {hrButtonText()}
+                  </Button>
+                )}
+              </div>
+            </Col>
+          </Row>
+        </div>
+      );
+    }
+
+    // HR MANAGER IS TICKET MANAGER or HR MANAGER IS BOTH ASSIGNEE & MANAGER
+    if (isTicketManager) {
+      const managerSecondaryButtonText = () => {
+        if (isSentOffer) {
+          return 'Extend Offer Date';
+        }
+        if (isAwaitingOffer || isNewOffer) {
+          return 'Reject';
+        }
+        return 'Previous';
+      };
+
+      const managerPrimaryButtonText = () => {
+        if (isAcceptedOffer || isSentOffer) {
+          return 'Withdraw';
+        }
+        if (isRejectedOffer) {
+          return 'Rejected';
+        }
+        if (isWithdrawnOffer) {
+          return 'Withdrawn';
+        }
+        return 'Approve';
+      };
+
+      const onSecondaryButtonClick = () => {
+        if (isAwaitingOffer) {
+          setRejectModalVisible(true);
+        }
+        if (isAcceptedOffer || isSentOffer) {
+          setExtendOfferModalVisible(true);
+        }
+      };
+
+      const onPrimaryButtonClick = () => {
+        if (isAcceptedOffer || isSentOffer) {
+          setWithdrawOfferModalVisible(true);
+        }
+        if (isNewOffer || isAwaitingOffer) {
+          // HR MANAGER APPROVE A TICKET HERE
+          handleSendFinalOffer();
+        }
+      };
+
+      const checkDisablePrimaryButton = () => {
+        if (isAwaitingOffer || isNewOffer) {
+          if (!hrManagerSignature.url || !hrSignature.url) {
+            return true;
+          }
+        }
+
+        return false;
+      };
+
+      return (
+        <div className={styles.bottomBar}>
+          <Row align="middle">
+            <Col span={24}>
+              <div className={styles.bottomBar__button}>
+                <Button
+                  type="secondary"
+                  onClick={onSecondaryButtonClick}
+                  className={styles.bottomBar__button__secondary}
+                >
+                  {managerSecondaryButtonText()}
+                </Button>
+                {!isWithdrawnOffer && !isRejectedOffer && (
+                  <Button
+                    type="primary"
+                    onClick={onPrimaryButtonClick}
+                    className={styles.bottomBar__button__primary}
+                    disabled={checkDisablePrimaryButton()}
+                  >
+                    {managerPrimaryButtonText()}
+                  </Button>
+                )}
+              </div>
+            </Col>
+          </Row>
+        </div>
+      );
+    }
+
+    return '';
+  };
+
+  // sent offer information
+  const SentNote = {
+    title: 'Offer Sent',
+    data: (
+      <Typography.Text>
+        The offer has been sent to the candidate to accept. You can either <span>withdraw</span> the
+        offer or <span>extend</span> the offer letter date.
+      </Typography.Text>
+    ),
+  };
+
+  const ExtendedNote = {
+    title: 'Offer letter date extended',
+    data: (
+      <Typography.Text>
+        The offer letter date has been extended from{' '}
+        <span>{expiryDateProp ? moment(expiryDateProp).format('MM.DD.YY') : '-'}</span> to{' '}
+        <span>{expiryDateProp ? moment(expiryDateProp).format('MM.DD.YY') : '-'}</span>
+      </Typography.Text>
+    ),
+  };
+
+  const AcceptedNote = {
+    title: 'Offer Accepted',
+    data: <Typography.Text>The offer has been accepted by the candidate.</Typography.Text>,
+  };
+
+  const WithdrawnNote = {
+    title: 'Offer Withdrawn',
+    data: <Typography.Text>The offer has been withdrawn by the HR Manager.</Typography.Text>,
+  };
+
+  const RejectedNote = {
+    title: 'Offer Rejected',
+    data: <Typography.Text>The offer has been rejected.</Typography.Text>,
+  };
+
   if (loadingFetchCandidate) return <Skeleton />;
   // main
   return (
-    <div className={styles.previewContainer}>
-      <div className={styles.left}>
-        <FileContent url={offerLetter} />
-      </div>
+    <Row gutter={[24, 0]} className={styles.previewContainer}>
+      <Col xs={24} xl={16} className={styles.left}>
+        <div className={styles.header}>
+          {/* <span className={styles.title}>Offer Letter</span> */}
+          <span />
+          <span className={styles.expiryDate}>
+            Offer will Expires on {expiryDateProp ? moment(expiryDateProp).format('MM.DD.YY') : '-'}
+          </span>
+        </div>
+        <div className={styles.leftContent}>
+          <FileContent url={offerLetter} />
+        </div>
+        {_renderBottomBar()}
+      </Col>
 
-      <div className={styles.right}>
+      <Col xs={24} xl={8} className={styles.right}>
+        {/* SENT OFFER  */}
+        {isTicketManager && isSentOffer && (
+          <>
+            <NoteComponent note={SentNote} />
+            <div style={{ marginBottom: '24px' }} />
+          </>
+        )}
+
+        {/* ACCEPTED OFFER  */}
+        {isAcceptedOffer && (
+          <>
+            <NoteComponent note={AcceptedNote} />
+            <div style={{ marginBottom: '24px' }} />
+          </>
+        )}
+
+        {/* REJECTED OFFER  */}
+        {isRejectedOffer && (
+          <>
+            <NoteComponent note={RejectedNote} />
+            <div style={{ marginBottom: '24px' }} />
+          </>
+        )}
+
+        {/* WITHDRAWN OFFER  */}
+        {isWithdrawnOffer && (
+          <>
+            <NoteComponent note={WithdrawnNote} />
+            <div style={{ marginBottom: '24px' }} />
+          </>
+        )}
+
+        {/* EXTENDED OFFER  */}
+        {/* {isTicketManager && isSentOffer && (
+          <>
+            <NoteComponent note={ExtendedNote} />
+            <div style={{ marginBottom: '24px' }} />
+          </>
+        )} */}
+
         {/* HR signature */}
-        <div className={styles.signature}>
+        {(isTicketAssignee || isTicketManager) && (
+          <div className={styles.signature}>
+            <header>
+              <img src={BigEditVector} alt="" />
+              <h2>{formatMessage({ id: 'component.previewOffer.hrSignature' })}</h2>
+            </header>
+
+            {hrSignature.user ? (
+              <p>
+                Undersigned - {hrSignature.user.employee?.generalInfo?.firstName}{' '}
+                {hrSignature.user.employee?.generalInfo?.lastName}
+              </p>
+            ) : (
+              <p>Undersigned</p>
+            )}
+
+            {isTicketAssignee && (isNewOffer || isAwaitingOffer) && (
+              <Row>
+                <Col span={24}>
+                  <Select
+                    value={optionSignature}
+                    style={{ width: '100%', marginBottom: '5px' }}
+                    onChange={(e) => {
+                      setOptionSignature(e);
+                    }}
+                  >
+                    <Option value="upload">Upload</Option>
+                    <Option value="draw">Draw</Option>
+                    <Option value="digital">Digital Signature</Option>
+                  </Select>
+                </Col>
+              </Row>
+            )}
+
+            {renderSignatureHr()}
+
+            {isTicketAssignee && (isNewOffer || isAwaitingOffer) && (
+              <div className={styles.submitContainer}>
+                <Button
+                  type="primary"
+                  onClick={handleHrSignatureSubmit}
+                  disabled={!hrSignature.url && !isTicketAssignee && optionSignature !== 'digital'}
+                  className={`${
+                    (hrSignature.url && isTicketAssignee) || optionSignature === 'digital'
+                      ? styles.active
+                      : styles.disable
+                  }`}
+                  loading={loading3}
+                >
+                  Submit
+                </Button>
+
+                <span className={styles.submitMessage}>
+                  {hrSignatureSubmit ? 'Signature submitted' : ''}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* OLD SEND FOR APPROVAL */}
+        {/* {isHr && ( */}
+        {/* <div className={styles.send}>
           <header>
             <div className={styles.icon}>
               <div className={styles.bigGlow}>
                 <div className={styles.smallGlow}>
-                  <EditOutlined />
+                  <SendOutlined />
                 </div>
               </div>
             </div>
-            <h2>{formatMessage({ id: 'component.previewOffer.hrSignature' })}</h2>
+            <h2>{formatMessage({ id: 'component.previewOffer.send' })}</h2>
           </header>
 
-          {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
-          {hrSignature.user ? (
-            <p>
-              Undersigned - {hrSignature.user.employee?.generalInfo.firstName}{' '}
-              {hrSignature.user.employee?.generalInfo.lastName}
-            </p>
-          ) : (
-            <p>Undersigned</p>
-          )}
-          {isRenderAddSignature('hr') && (
-            <Row>
-              <Col span={24}>
-                <Select
-                  value={optionSignature}
-                  style={{ width: '100%', marginBottom: '5px' }}
-                  onChange={(e) => {
-                    setOptionSignature(e);
-                  }}
-                >
-                  <Option value="upload">Upload</Option>
-                  <Option value="draw">Draw</Option>
-                  <Option value="digital">Digital Signature</Option>
-                </Select>
-              </Col>
-            </Row>
-          )}
-          {renderSignatureHr()}
-          {isRenderAddSignature('hr') && (
-            <div className={styles.submitContainer}>
-              <Button
-                type="primary"
-                onClick={handleHrSignatureSubmit}
-                disabled={
-                  !hrSignature.url && !isRenderAddSignature('hr') && optionSignature !== 'digital'
-                }
-                className={`${
-                  (hrSignature.url && isRenderAddSignature('hr')) || optionSignature === 'digital'
-                    ? styles.active
-                    : styles.disable
-                }`}
-                loading={loading3}
+          <p>
+            {formatMessage({ id: 'component.previewOffer.note1' })}
+            <span>{formatMessage({ id: 'component.previewOffer.note2' })}</span>
+            {formatMessage({ id: 'component.previewOffer.note3' })}
+          </p>
+
+          <p>{formatMessage({ id: 'component.previewOffer.also' })}</p>
+
+          <div className={styles.mail}>
+            <span> {formatMessage({ id: 'component.previewOffer.hrMail' })}</span>
+
+            <Form form={mailForm} name="myForm" value={mail}>
+              <Form.Item
+                name="email"
+                rules={[
+                  {
+                    type: 'email',
+                    message: formatMessage({ id: 'component.previewOffer.invalidMailErr' }),
+                  },
+                  {
+                    required: true,
+                    message: formatMessage({ id: 'component.previewOffer.emptyMailErr' }),
+                  },
+                ]}
               >
-                {formatMessage({ id: 'component.previewOffer.submit' })}
+                <Input
+                  required={false}
+                  value={mail}
+                  placeholder="address@terraminds.com"
+                  onChange={(e) => setMail(e.target.value)}
+                />
+              </Form.Item>
+
+              <Button type="primary" loading={loading1} onClick={() => handleSentForApproval()}>
+                {formatMessage({ id: 'component.previewOffer.sendForApproval' })}
               </Button>
-
-              <span className={styles.submitMessage}>
-                {hrSignatureSubmit ? formatMessage({ id: 'component.previewOffer.submitted' }) : ''}
-              </span>
-            </div>
-          )}
-        </div>
-
-        {(isHr || isHrManager) &&
-          processStatus !== PROCESS_STATUS.SENT_FINAL_OFFERS &&
-          processStatus !== PROCESS_STATUS.SENT_FOR_APPROVAL &&
-          processStatus !== PROCESS_STATUS.ACCEPTED_FINAL_OFFERS && (
-            <div className={styles.send}>
-              <header>
-                <div className={styles.icon}>
-                  <div className={styles.bigGlow}>
-                    <div className={styles.smallGlow}>
-                      <SendOutlined />
-                    </div>
-                  </div>
-                </div>
-                <h2>{formatMessage({ id: 'component.previewOffer.send' })}</h2>
-              </header>
-
-              <p>
-                {formatMessage({ id: 'component.previewOffer.note1' })}
-                <span>{formatMessage({ id: 'component.previewOffer.note2' })}</span>
-                {formatMessage({ id: 'component.previewOffer.note3' })}
-              </p>
-
-              <p>{formatMessage({ id: 'component.previewOffer.also' })}</p>
-
-              <div className={styles.mail}>
-                <span> {formatMessage({ id: 'component.previewOffer.hrMail' })}</span>
-
-                <Form form={mailForm} name="myForm" value={mail}>
-                  <Form.Item
-                    name="email"
-                    rules={[
-                      {
-                        type: 'email',
-                        message: formatMessage({ id: 'component.previewOffer.invalidMailErr' }),
-                      },
-                      {
-                        required: true,
-                        message: formatMessage({ id: 'component.previewOffer.emptyMailErr' }),
-                      },
-                    ]}
-                  >
-                    <Input
-                      required={false}
-                      value={mail}
-                      placeholder="address@terraminds.com"
-                      onChange={(e) => setMail(e.target.value)}
-                    />
-                  </Form.Item>
-
-                  <Button type="primary" loading={loading1} onClick={() => handleSentForApproval()}>
-                    {formatMessage({ id: 'component.previewOffer.sendForApproval' })}
-                  </Button>
-                </Form>
-              </div>
-            </div>
-          )}
+            </Form>
+          </div>
+        </div> */}
+        {/* )} */}
+        {/* OLD SEND FOR APPROVAL */}
 
         {/* HR Manager signature */}
-        {renderHRManagerSignature() && (
-          <>
-            <div className={styles.signature}>
-              <header>
-                <div className={styles.icon}>
-                  <div className={styles.bigGlow}>
-                    <div className={styles.smallGlow}>
-                      <EditOutlined />
-                    </div>
-                  </div>
-                </div>
-                <h2>{formatMessage({ id: 'component.previewOffer.managerSignature' })}</h2>
-              </header>
-              {/* <p>{formatMessage({ id: 'component.previewOffer.managerUndersigned' })}</p> */}
-              {hrManagerSignature.user ? (
-                <p>
-                  Undersigned - {hrManagerSignature.user.employee?.generalInfo.firstName}{' '}
-                  {hrManagerSignature.user.employee?.generalInfo.lastName}
-                </p>
-              ) : (
-                <p>Undersigned</p>
-              )}
-              {isRenderAddSignature('hrManager') && (
-                <Row>
-                  <Col span={24}>
-                    <Select
-                      value={optionSignatureHRManager}
-                      style={{ width: '100%', marginBottom: '5px' }}
-                      onChange={(e) => {
-                        setOptionSignatureHRManager(e);
-                      }}
-                    >
-                      <Option value="upload">Upload</Option>
-                      <Option value="draw">Draw</Option>
-                      <Option value="digital">Digital Signature</Option>
-                    </Select>
-                  </Col>
-                </Row>
-              )}
-              {renderSignatureHrManager()}
-              {isRenderAddSignature('hrManager') && (
-                <div className={styles.submitContainer}>
-                  <Button
-                    type="primary"
-                    disabled={
-                      !hrManagerSignature.url &&
-                      !isRenderAddSignature('hrManager') &&
-                      optionSignatureHRManager !== 'digital'
-                    }
-                    onClick={handleHrManagerSignatureSubmit}
-                    className={`${
-                      (hrManagerSignature.url && isRenderAddSignature('hrManager')) ||
-                      optionSignatureHRManager === 'digital'
-                        ? styles.active
-                        : styles.disable
-                    }`}
-                  >
-                    {formatMessage({ id: 'component.previewOffer.submit' })}
-                  </Button>
+        {isTicketManager && (
+          <div className={styles.signature}>
+            <header>
+              <img src={BigEditVector} alt="" />
+              <h2>{formatMessage({ id: 'component.previewOffer.managerSignature' })}</h2>
+            </header>
 
-                  <span className={styles.submitMessage}>
-                    {hrManagerSignatureSubmit
-                      ? formatMessage({ id: 'component.previewOffer.submitted' })
-                      : ''}
-                  </span>
-                </div>
+            {hrManagerSignature.user ? (
+              <p>
+                Undersigned - {hrManagerSignature.user.employee?.generalInfo.firstName}{' '}
+                {hrManagerSignature.user.employee?.generalInfo.lastName}
+              </p>
+            ) : (
+              <p>Undersigned</p>
+            )}
+
+            {!isAcceptedOffer && (isNewOffer || isAwaitingOffer) && (
+              <Row>
+                <Col span={24}>
+                  <Select
+                    value={optionSignatureHRManager}
+                    style={{ width: '100%', marginBottom: '5px' }}
+                    onChange={(e) => {
+                      setOptionSignatureHRManager(e);
+                    }}
+                  >
+                    <Option value="upload">Upload</Option>
+                    <Option value="draw">Draw</Option>
+                    <Option value="digital">Digital Signature</Option>
+                  </Select>
+                </Col>
+              </Row>
+            )}
+            {renderSignatureHrManager()}
+
+            {isTicketManager && (isNewOffer || isAwaitingOffer) && (
+              <div className={styles.submitContainer}>
+                <Button
+                  type="primary"
+                  disabled={
+                    !hrManagerSignature.url &&
+                    !isTicketManager &&
+                    optionSignatureHRManager !== 'digital'
+                  }
+                  onClick={handleHrManagerSignatureSubmit}
+                  className={`${
+                    (hrManagerSignature.url && isTicketManager) ||
+                    optionSignatureHRManager === 'digital'
+                      ? styles.active
+                      : styles.disable
+                  }`}
+                >
+                  Submit
+                </Button>
+
+                <span className={styles.submitMessage}>
+                  {hrManagerSignatureSubmit ? 'Signature submitted' : ''}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Candidate Signature */}
+        {renderCandidateSignature() && (
+          <div className={styles.signature}>
+            <header>
+              <img src={BigEditVector} alt="" />
+              <h2>{formatMessage({ id: 'component.previewOffer.candidateSignature' })}</h2>
+            </header>
+
+            {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
+            <p>
+              Undersigned - {candidateFirstName} {candidateLastName} {candidateMiddleName}{' '}
+            </p>
+
+            <div className={styles.upload}>
+              {candidateSignature !== null && candidateSignature.url ? (
+                // Default image
+                <img className={styles.signatureImg} src={candidateSignature.url} alt="" />
+              ) : (
+                <img className={styles.signatureImg} src={whiteImg} alt="" />
               )}
             </div>
 
-            {/* Candidate Signature */}
-            {renderCandidateSignature() && (
-              <div className={styles.signature}>
-                <header>
-                  <div className={styles.icon}>
-                    <div className={styles.bigGlow}>
-                      <div className={styles.smallGlow}>
-                        <EditOutlined />
-                      </div>
-                    </div>
-                  </div>
-                  <h2>{formatMessage({ id: 'component.previewOffer.candidateSignature' })}</h2>
-                </header>
-
-                {/* <p>{formatMessage({ id: 'component.previewOffer.undersigned' })}</p> */}
-                <p>
-                  Undersigned - {candidateFirstName} {candidateLastName} {candidateMiddleName}{' '}
-                </p>
-
-                <div className={styles.upload}>
-                  {candidateSignature !== null && candidateSignature.url ? (
-                    // Default image
-                    <img className={styles.signatureImg} src={candidateSignature.url} alt="" />
-                  ) : (
-                    <img className={styles.signatureImg} src={whiteImg} alt="" />
-                  )}
-                </div>
-
-                <div className={styles.submitContainer} />
-              </div>
-            )}
-
-            {/* Send final offer */}
-            {isRenderAddSignature('hrManager') && (
-              <div style={{ marginBottom: '16px' }}>
-                <SendEmail
-                  title="Send final offer to the candidate"
-                  formatMessage={formatMessage}
-                  handleSendEmail={handleSendFinalOffer}
-                  loading={loading2}
-                  isSentEmail={false}
-                  privateEmail={candidateEmailProp}
-                />
-              </div>
-            )}
-          </>
+            <div className={styles.submitContainer} />
+          </div>
         )}
+
+        {/* Send final offer */}
+        {/* {isTicketManager && (
+          <div style={{ marginBottom: '16px' }}>
+            <SendEmail
+              title="Send final offer to the candidate"
+              formatMessage={formatMessage}
+              handleSendEmail={handleSendFinalOffer}
+              loading={loading2}
+              isSentEmail={false}
+              privateEmail={candidateEmailProp}
+            />
+          </div>
+        )} */}
+        {/* </>
+        )} */}
 
         <ModalUpload
           visible={modalSignature === 'upload'}
@@ -1009,12 +1195,33 @@ const PreviewOffer = (props) => {
               tempData={tempData}
               candidateEmail={mail}
               type="hr"
-              // privateEmail={privateEmail}
             />
           }
         />
-      </div>
-    </div>
+
+        {/* REJECT MODAL  */}
+        <RejectOfferModal
+          title="Reason for Offer Rejection"
+          visible={rejectModalVisible}
+          onClose={() => setRejectModalVisible(false)}
+        />
+
+        {/* EXTEND OFFER  */}
+        <ExtendOfferModal
+          title="Extend offer letter date"
+          visible={extendOfferModalVisible}
+          onClose={() => setExtendOfferModalVisible(false)}
+        />
+
+        {/* WITHDRAW MODAL  */}
+
+        <WithdrawOfferModal
+          title="Offer Withdraw"
+          visible={withdrawOfferModalVisible}
+          onClose={() => setWithdrawOfferModalVisible(false)}
+        />
+      </Col>
+    </Row>
   );
 };
 

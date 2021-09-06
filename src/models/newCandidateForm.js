@@ -220,7 +220,7 @@ const defaultState = {
     company: null,
     joineeEmail: '',
     previousExperience: null,
-    processStatus: 'RENEGOTIATE-PROVISONAL-OFFER',
+    processStatus: '',
     noticePeriod: null,
     dateOfJoining: null,
     reportingManager: null,

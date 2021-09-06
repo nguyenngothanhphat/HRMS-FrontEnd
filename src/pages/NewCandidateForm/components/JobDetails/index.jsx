@@ -3,7 +3,7 @@ import { Row, Col, Typography, Button, Skeleton } from 'antd';
 import { connect, formatMessage, history } from 'umi';
 import { isEmpty, isObject } from 'lodash';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, PROCESS_STATUS } from '@/utils/onboarding';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
@@ -36,18 +36,6 @@ import styles from './index.less';
   }),
 )
 class JobDetails extends PureComponent {
-  static getDerivedStateFromProps(props) {
-    if ('data' in props) {
-      return {
-        data: props.data,
-        checkMandatory: props.checkMandatory,
-        // currentStep: props.currentStep,
-        tempData: props.tempData,
-      };
-    }
-    return null;
-  }
-
   componentDidMount() {
     const { dispatch } = this.props;
 
@@ -120,7 +108,7 @@ class JobDetails extends PureComponent {
     const { target } = e;
     const { name, value } = target;
     const { dispatch } = this.props;
-    const { tempData = {} } = this.state;
+    const { tempData = {} } = this.props;
 
     if (name === 'position') {
       tempData[name] = value;
@@ -142,7 +130,7 @@ class JobDetails extends PureComponent {
 
   _handleSelect = async (value, name) => {
     const { dispatch } = this.props;
-    const { tempData = {} } = this.state;
+    const { tempData = {} } = this.props;
     tempData[name] = value;
     const { department, workLocation, title, locationList = [] } = tempData;
     const companyId = getCurrentCompany();
@@ -307,7 +295,7 @@ class JobDetails extends PureComponent {
         documentChecklistSetting,
         ticketID = '',
       },
-    } = this.state;
+    } = this.props;
     const { dispatch } = this.props;
     dispatch({
       type: 'newCandidateForm/updateByHR',
@@ -333,28 +321,13 @@ class JobDetails extends PureComponent {
         //     currentStep: data.currentStep,
         //   },
         // });
-        history.push(`/onboarding/list/view/${ticketID}/salary-structure`);
+        history.push(`/onboarding/list/view/${ticketID}/document-verification`);
       }
     });
   };
 
-  _renderStatus = () => {
-    const { checkMandatory } = this.props;
-    const { filledJobDetail } = checkMandatory;
-    return !filledJobDetail ? (
-      <div className={styles.normalText}>
-        <div className={styles.redText}>*</div>
-        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
-      </div>
-    ) : (
-      <div className={styles.greenText}>
-        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
-      </div>
-    );
-  };
-
   onClickPrev = () => {
-    // const { currentStep } = this.state;
+    // const { currentStep } = this.props;
     // const { dispatch } = this.props;
     // dispatch({
     //   type: 'newCandidateForm/save',
@@ -364,13 +337,19 @@ class JobDetails extends PureComponent {
     // });
     const {
       tempData: { ticketID = '' },
-    } = this.state;
+    } = this.props;
     history.push(`/onboarding/list/view/${ticketID}/basic-information`);
   };
 
   _renderBottomBar = () => {
-    const { checkMandatory, loadingUpdateByHR = false } = this.props;
+    const {
+      checkMandatory,
+      loadingUpdateByHR = false,
+      tempData: { processStatus = '' } = {},
+    } = this.props;
     const { filledJobDetail } = checkMandatory;
+
+    const renderText = processStatus === NEW_PROCESS_STATUS.DRAFT ? 'Next' : 'Update';
 
     return (
       <div className={styles.bottomBar}>
@@ -392,7 +371,7 @@ class JobDetails extends PureComponent {
               disabled={!filledJobDetail}
               loading={loadingUpdateByHR}
             >
-              Next
+              {renderText}
             </Button>
           </Col>
         </Row>
@@ -523,7 +502,7 @@ class JobDetails extends PureComponent {
         grade,
       },
       data,
-    } = this.state;
+    } = this.props;
     const { loading1, loading2, loading3, loading, loadingFetchCandidate, processStatus } =
       this.props;
     const { dateOfJoining } = data;

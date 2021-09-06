@@ -9,18 +9,57 @@
 @orange: #ffa100;
 @dark-orange: #e08e00;
 @border-color: #d6dce0;
+@spacing-xxs: 4px;
 
 .previewContainer {
-  display: flex;
 
+  :global {
+    .ant-select-selector,
+    .ant-picker, .ant-input {
+      height: 42px !important;
+      border-radius: 5px !important;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .ant-select-selection-search-input {
+      height: 42px !important;
+    }
+
+    .ant-select-selection-item {
+      height: 42px !important;
+      align-items: center !important;
+      display: inline-flex;
+    }
+  }
   .left {
-    flex: 1;
-    min-width: 475px;
-    // padding: 63px 55px 78px 55px;
     height: fit-content;
-    background-color: white;
-    border: solid 1px @border-color;
-    border-radius: 5px;
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      span {
+        display: block;
+      }
+      .title {
+        color: #161c29;
+
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .expiryDate {
+        color: #ff5252;
+        font-size: 13px;
+      }
+    }
+
+    .leftContent {
+      background-color: white;
+      border: solid 1px @border-color;
+      border-radius: 5px;
+    }
 
     .leftContainer {
       header {
@@ -105,11 +144,82 @@
       width: 0px;
       background: transparent;
     }
+
+    .bottomBar {
+      padding: 4 * @spacing-xxs 32px;
+      background-color: #ffffff;
+      border: solid 1px #d6dce0;
+      border-radius: 5px;
+      box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
+      margin-block: 6 * @spacing-xxs;
+
+      .normalText {
+        display: flex;
+        color: #707177;
+        font-size: 13px;
+        font-family: 'Roboto';
+        font-style: italic;
+      }
+
+      .redText {
+        color: #ff4949;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .greenText {
+        color: #47c97f;
+        font-size: 14px;
+        // font-family: 'Roboto';
+        // font-style: italic;
+        font-weight: 500;
+      }
+
+      &__button {
+        text-align: right;
+        &__disabled {
+          opacity: 0.3;
+        }
+        :global {
+          .ant-btn-primary {
+            height: 40px;
+            object-fit: contain;
+            color: #ffffff;
+            font-weight: 500;
+            font-size: 14px;
+            font-family: 'Roboto';
+            letter-spacing: 0.13px;
+            text-shadow: none;
+            background-color: #ffa100;
+            border: solid 1px #ffa100;
+            border-radius: 25px;
+            box-shadow: none;
+            padding-inline: 25px;
+            &:hover {
+              color: #ffffff;
+              background-color: #ffa100;
+            }
+          }
+          .ant-btn-secondary {
+            height: 40px;
+            padding-right: 41px;
+            object-fit: contain;
+            color: #ffa100;
+            font-weight: 500;
+            font-size: 14px;
+            font-family: 'Roboto';
+            letter-spacing: 0.13px;
+            border: solid 0;
+            border-radius: 25px;
+            padding-inline: 25px;
+          }
+        }
+      }
+    }
   }
 
   .right {
-    width: 321px;
-    margin-left: 24px;
+    width: 100%;
 
     .signature,
     .send {
@@ -185,7 +295,7 @@
     }
 
     .signature {
-      margin-bottom: 16px;
+      margin-bottom: 24px;
 
       p {
         margin-top: 24px;
@@ -201,7 +311,7 @@
         border: 1px solid #d6dce4;
         border-style: dashed;
         border-radius: 5px;
-
+        margin-top: 16px;
         .signatureImg {
           max-width: 100%;
           height: auto;
