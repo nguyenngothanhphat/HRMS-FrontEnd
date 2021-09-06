@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect, formatMessage } from 'umi';
+import { connect, formatMessage, history } from 'umi';
 import {
   Button,
   Input,
@@ -58,8 +58,10 @@ const PreviewOffer = (props) => {
     staticOfferLetter: staticOfferLetterProp,
     candidateSignature: candidateSignatureProp,
     expiryDate: expiryDateProp = '',
+    oldExpiryDate: oldExpiryDateProp = '',
     assignTo: { _id: assigneeId = '' } = {},
     assigneeManager: { _id: assigneeManagerId = '' } = {},
+    ticketID = '',
   } = tempData;
   const {
     privateEmail: candidateEmailProp = '',
@@ -114,9 +116,9 @@ const PreviewOffer = (props) => {
   // const processStatus = NEW_PROCESS_STATUS.OFFER_WITHDRAWN;
 
   const isTicketAssignee = currentUserId === assigneeId;
-  // const isTicketAssignee = false;
+  // const isTicketAssignee = true;
   const isTicketManager = currentUserId === assigneeManagerId;
-  // const isTicketManager = true;
+  // const isTicketManager = false;
   const isNewOffer = processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION;
   const isAwaitingOffer = processStatus === NEW_PROCESS_STATUS.AWAITING_APPROVALS;
   const isAcceptedOffer = processStatus === NEW_PROCESS_STATUS.OFFER_ACCEPTED;
@@ -702,12 +704,20 @@ const PreviewOffer = (props) => {
           handleSentForApproval();
         }
       };
+
+      const onSecondaryButtonClick = () => {
+        history.push(`/onboarding/list/view/${ticketID}/offer-details`);
+      };
       return (
         <div className={styles.bottomBar}>
           <Row align="middle">
             <Col span={24}>
               <div className={styles.bottomBar__button}>
-                <Button type="secondary" className={styles.bottomBar__button__secondary}>
+                <Button
+                  type="secondary"
+                  className={styles.bottomBar__button__secondary}
+                  onClick={onSecondaryButtonClick}
+                >
                   Previous
                 </Button>
                 {isNewOffer && (
@@ -716,6 +726,7 @@ const PreviewOffer = (props) => {
                     type="primary"
                     className={styles.bottomBar__button__primary}
                     onClick={onPrimaryButtonClick}
+                    loading={loading1}
                   >
                     {hrButtonText()}
                   </Button>
@@ -799,6 +810,7 @@ const PreviewOffer = (props) => {
                     onClick={onPrimaryButtonClick}
                     className={styles.bottomBar__button__primary}
                     disabled={checkDisablePrimaryButton()}
+                    loading={loading2}
                   >
                     {managerPrimaryButtonText()}
                   </Button>
@@ -829,7 +841,7 @@ const PreviewOffer = (props) => {
     data: (
       <Typography.Text>
         The offer letter date has been extended from{' '}
-        <span>{expiryDateProp ? moment(expiryDateProp).format('MM.DD.YY') : '-'}</span> to{' '}
+        <span>{oldExpiryDateProp ? moment(oldExpiryDateProp).format('MM.DD.YY') : '-'}</span> to{' '}
         <span>{expiryDateProp ? moment(expiryDateProp).format('MM.DD.YY') : '-'}</span>
       </Typography.Text>
     ),
@@ -902,12 +914,12 @@ const PreviewOffer = (props) => {
         )}
 
         {/* EXTENDED OFFER  */}
-        {/* {isTicketManager && isSentOffer && (
+        {isTicketManager && isSentOffer && oldExpiryDateProp && (
           <>
             <NoteComponent note={ExtendedNote} />
             <div style={{ marginBottom: '24px' }} />
           </>
-        )} */}
+        )}
 
         {/* HR signature */}
         {(isTicketAssignee || isTicketManager) && (

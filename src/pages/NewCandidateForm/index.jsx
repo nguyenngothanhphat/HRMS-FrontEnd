@@ -33,6 +33,9 @@ class NewCandidateForm extends PureComponent {
       dispatch,
     } = this.props;
 
+    if (!tabName) {
+      history.push(`/onboarding/list/view/${reId}/basic-information`);
+    }
     // current step vs tab name
     const linkSet = [
       {
@@ -172,7 +175,7 @@ class NewCandidateForm extends PureComponent {
       },
       {
         id: 3,
-        name: 'Eligibility documents',
+        name: 'Eligibility Documents',
         key: 'backgroundCheck',
         // key: 'eligibilityDocuments',
         component: <DocumentVerificationNew />,
