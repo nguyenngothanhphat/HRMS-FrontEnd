@@ -3,7 +3,6 @@
 import { Button, Col, Row, Skeleton, Typography } from 'antd';
 import React, { Component } from 'react';
 import { connect, formatMessage, history } from 'umi';
-// import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import NoteComponent from '../../../NoteComponent';

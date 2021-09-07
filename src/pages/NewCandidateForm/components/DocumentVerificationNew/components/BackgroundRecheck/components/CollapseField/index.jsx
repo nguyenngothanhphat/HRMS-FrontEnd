@@ -31,6 +31,7 @@ class CollapseField extends Component {
     }
 
     if (key === 'verify') {
+      // if processStatus = DOCUMENT_VERIFICATION, show modal verification
       this.setState({
         openModal: true,
         url,
@@ -39,6 +40,7 @@ class CollapseField extends Component {
         candidateDocStatus: candidateDocumentStatus,
       });
     } else {
+      // if not, just show modal to view the documents
       this.setState({
         visible: true,
         url,
