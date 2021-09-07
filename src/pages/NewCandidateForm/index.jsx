@@ -282,7 +282,7 @@ class NewCandidateForm extends PureComponent {
               {action === 'view' && (
                 <div className={styles.titlePage__viewBtn}>
                   <Button type="primary" ghost onClick={this.handleFinishLater}>
-                    Finish Later
+                    {tabName === 'offer-letter' ? 'Cancel' : 'Finish Later'}
                   </Button>
                 </div>
               )}

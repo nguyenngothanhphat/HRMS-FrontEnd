@@ -148,6 +148,9 @@ const candidatePortal = {
           },
         });
         yield put({
+          type: 'refreshPendingTasks',
+        });
+        yield put({
           type: 'saveTemp',
           payload: {
             candidateSignature: data.candidateSignature,
@@ -163,9 +166,6 @@ const candidatePortal = {
             salaryStructure: data.salaryStructure.settings,
             checkMandatory: { ...checkMandatory },
           },
-        });
-        yield put({
-          type: 'refreshPendingTasks',
         });
       } catch (error) {
         dialog(error);
@@ -297,7 +297,7 @@ const candidatePortal = {
     *refreshPendingTasks(_, { put, select }) {
       try {
         const dateFormat = 'MM.DD.YY';
-        const tempPendingTasks = pendingTaskDefault;
+        const tempPendingTasks = JSON.parse(JSON.stringify(pendingTaskDefault));
         const {
           // candidate = '',
           // ticketId = '',

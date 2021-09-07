@@ -89,6 +89,7 @@ const PreviewOffer = (props) => {
 
   const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
+  const [openModal3, setOpenModal3] = useState(false);
 
   const [modalSignature, setModalSignature] = useState('');
   const [isSignatureHR, setIsSignatureHR] = useState(false);
@@ -268,6 +269,7 @@ const PreviewOffer = (props) => {
     dispatch({
       type: 'newCandidateForm/approveFinalOfferEffect',
       payload: { hrManagerSignature: id, candidate, options: 1, tenantId: getCurrentTenant() },
+      action: 'accept',
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         setOpenModal(true);
@@ -304,6 +306,26 @@ const PreviewOffer = (props) => {
     }
   };
 
+  const handleRejectOffer = async (reason) => {
+    const { id } = hrManagerSignature;
+    const { candidate } = data;
+    const res = await dispatch({
+      type: 'newCandidateForm/approveFinalOfferEffect',
+      payload: {
+        candidate,
+        reasonForRejection: reason,
+        hrManagerSignature: id,
+        options: 2,
+        tenantId: getCurrentTenant(),
+      },
+      action: 'reject',
+    });
+    if (res.statusCode === 200) {
+      setRejectModalVisible(false);
+      setOpenModal3(true);
+    }
+  };
+
   useEffect(() => {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
   }, []);
@@ -335,17 +357,18 @@ const PreviewOffer = (props) => {
   const closeModal = () => {
     setOpenModal(false);
 
-    dispatch({
-      type: 'newCandidateForm/redirectToOnboardList',
-    });
+    history.push(`/onboarding/list/offer-released`);
   };
 
   const closeModal2 = () => {
     setOpenModal2(false);
+    history.push(`/onboarding/list/awaiting-approvals`);
+  };
 
-    dispatch({
-      type: 'newCandidateForm/redirectToOnboardList',
-    });
+  const closeModal3 = () => {
+    setOpenModal3(false);
+
+    history.push(`/onboarding/list/rejected-offer`);
   };
 
   const renderCandidateSignature = () => {
@@ -782,7 +805,7 @@ const PreviewOffer = (props) => {
       };
 
       const managerPrimaryButtonText = () => {
-        if (isSentOffer) {
+        if (isSentOffer || isAcceptedOffer) {
           return 'Withdraw';
         }
         if (isRejectedOffer) {
@@ -804,7 +827,7 @@ const PreviewOffer = (props) => {
       };
 
       const onPrimaryButtonClick = () => {
-        if (isSentOffer) {
+        if (isSentOffer || isAcceptedOffer) {
           setWithdrawOfferModalVisible(true);
         }
         if (isNewOffer || isAwaitingOffer) {
@@ -835,7 +858,7 @@ const PreviewOffer = (props) => {
                 >
                   {managerSecondaryButtonText()}
                 </Button>
-                {!isWithdrawnOffer && !isRejectedOffer && !isAcceptedOffer && (
+                {!isWithdrawnOffer && !isRejectedOffer && (
                   <Button
                     type="primary"
                     onClick={onPrimaryButtonClick}
@@ -898,13 +921,16 @@ const PreviewOffer = (props) => {
   return (
     <Row gutter={[24, 0]} className={styles.previewContainer}>
       <Col xs={24} xl={16} className={styles.left}>
-        <div className={styles.header}>
-          {/* <span className={styles.title}>Offer Letter</span> */}
-          <span />
-          <span className={styles.expiryDate}>
-            Offer will Expires on {expiryDateProp ? moment(expiryDateProp).format('MM.DD.YY') : '-'}
-          </span>
-        </div>
+        {(isAwaitingOffer || isNewOffer || isSentOffer) && (
+          <div className={styles.header}>
+            {/* <span className={styles.title}>Offer Letter</span> */}
+            <span />
+            <span className={styles.expiryDate}>
+              Offer will Expires on{' '}
+              {expiryDateProp ? moment(expiryDateProp).format('MM.DD.YY') : '-'}
+            </span>
+          </div>
+        )}
         <div className={styles.leftContent}>
           <FileContent url={offerLetter} />
         </div>
@@ -1224,7 +1250,7 @@ const PreviewOffer = (props) => {
               closeModal={closeModal}
               tempData={tempData}
               candidateEmail={mail}
-              type="hrManager"
+              type="release"
             />
           }
         />
@@ -1237,7 +1263,20 @@ const PreviewOffer = (props) => {
               closeModal={closeModal2}
               tempData={tempData}
               candidateEmail={mail}
-              type="hr"
+              type="send-for-approval"
+            />
+          }
+        />
+
+        <CustomModal
+          open={openModal3}
+          closeModal={closeModal3}
+          content={
+            <ModalContent
+              closeModal={closeModal3}
+              tempData={tempData}
+              candidateEmail={mail}
+              type="reject"
             />
           }
         />
@@ -1247,6 +1286,8 @@ const PreviewOffer = (props) => {
           title="Reason for Offer Rejection"
           visible={rejectModalVisible}
           onClose={() => setRejectModalVisible(false)}
+          onFinish={handleRejectOffer}
+          loading={loading2}
         />
 
         {/* EXTEND OFFER  */}
