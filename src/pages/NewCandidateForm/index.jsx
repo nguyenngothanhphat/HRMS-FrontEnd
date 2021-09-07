@@ -51,6 +51,7 @@ class NewCandidateForm extends PureComponent {
           return;
         }
         const { _id, currentStep = '' } = data;
+
         const find = ONBOARDING_STEP_LINK.find((l) => l.link === tabName) || {};
         if (currentStep <= find.id) {
           const currentComponent = ONBOARDING_STEP_LINK.find((l) => l.id === currentStep);

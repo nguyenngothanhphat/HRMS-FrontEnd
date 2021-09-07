@@ -1443,7 +1443,7 @@ const newCandidateForm = {
       }
       return response;
     },
-    *withdrawOfferEffect({ payload = {}, processStatus }, { call, put }) {
+    *withdrawOfferEffect({ payload = {} }, { call, put }) {
       let response = {};
       try {
         response = yield call(withdrawOffer, {
@@ -1463,20 +1463,6 @@ const newCandidateForm = {
           type: 'saveTemp',
           payload: {
             processStatus: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
-          },
-        });
-
-        // Refresh table tab OFFER_WITHDRAWN and current tab which has implemented action withdraw
-        yield put({
-          type: 'onboarding/fetchOnboardList',
-          payload: {
-            processStatus: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
-          },
-        });
-        yield put({
-          type: 'onboarding/fetchOnboardList',
-          payload: {
-            processStatus,
           },
         });
       } catch (errors) {

@@ -6,7 +6,12 @@ import moment from 'moment';
 // import CustomModal from '@/components/CustomModal/index';
 // import ProfileModalContent from '../FinalOffers/components/ProfileModalContent';
 import MenuIcon from '@/assets/menuDots.svg';
-import { NEW_PROCESS_STATUS, PROCESS_STATUS } from '@/utils/onboarding';
+import {
+  NEW_PROCESS_STATUS,
+  ONBOARDING_LINK,
+  ONBOARDING_STEP_LINK,
+  PROCESS_STATUS,
+} from '@/utils/onboarding';
 import { getAuthority, getCurrentTenant } from '@/utils/authority';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 import { getActionText, getColumnWidth } from './utils';
@@ -64,7 +69,7 @@ class OnboardTable extends Component {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'newCandidateForm/withdrawOfferEffect',
+      type: 'onboarding/withdrawTicket',
       payload: {
         candidate,
       },
@@ -94,10 +99,14 @@ class OnboardTable extends Component {
   //   // return <ModalContent closeModal={this.closeModal} />;
   // };
 
-  renderCandidateId = (candidateId) => {
+  renderCandidateId = (candidateId, row) => {
     const id = candidateId.replace('#', '') || '';
+    const { currentStep = 0 } = row;
+    const find = ONBOARDING_STEP_LINK.find((v) => v.id === currentStep) || {
+      link: ONBOARDING_LINK.BASIC_INFORMATION,
+    };
     return (
-      <Link to={`/onboarding/list/view/${id}`}>
+      <Link to={`/onboarding/list/view/${id}/${find.link}`}>
         <span>{candidateId}</span>
       </Link>
     );
@@ -177,7 +186,7 @@ class OnboardTable extends Component {
         dataIndex: 'candidateId',
         key: 'candidateId',
         width: getColumnWidth('candidateId', type),
-        render: (candidateId) => this.renderCandidateId(candidateId),
+        render: (candidateId, row) => this.renderCandidateId(candidateId, row),
         columnName: ID,
         fixed: 'left',
       },
@@ -278,6 +287,7 @@ class OnboardTable extends Component {
             assigneeManager = {},
             offerExpiryDate = '',
             candidate = '',
+            currentStep = 0,
           } = row;
 
           const id = candidateId.replace('#', '') || '';
@@ -294,6 +304,7 @@ class OnboardTable extends Component {
             actionText,
             processStatusId,
             offerExpiryDate,
+            currentStep,
           };
           if (checkPermission)
             return (
@@ -325,6 +336,7 @@ class OnboardTable extends Component {
       actionText = '',
       processStatusId = '',
       // offerExpiryDate = '',
+      currentStep = 0,
     } = payload;
 
     // const {
@@ -345,6 +357,9 @@ class OnboardTable extends Component {
 
     const isRemovable = processStatusId === DRAFT;
     const isHRManager = this.checkPermission('hr-manager');
+    const find = ONBOARDING_STEP_LINK.find((v) => v.id === currentStep) || {
+      link: ONBOARDING_LINK.BASIC_INFORMATION,
+    };
 
     // const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;
     let menuItem = '';
@@ -476,7 +491,7 @@ class OnboardTable extends Component {
       default:
         menuItem = (
           <Menu.Item>
-            <Link to={`/onboarding/list/view/${id}`}>
+            <Link to={`/onboarding/list/view/${id}/${find.link}`}>
               <span>{actionText}</span>
             </Link>
           </Menu.Item>
@@ -491,8 +506,7 @@ class OnboardTable extends Component {
           <Menu.Item>
             <div
               onClick={() =>
-                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)
-              }
+                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)}
             >
               Re-assign
             </div>

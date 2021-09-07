@@ -3,6 +3,7 @@
 import { Button, Col, Row } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
+import { ONBOARDING_LINK } from '@/utils/onboarding';
 import BasicInformation from '../../pages/NewCandidateForm/components/BasicInformation';
 import ItemMenu from './components/ItemMenu';
 // import BottomBar from '../BottomBar';
@@ -58,9 +59,9 @@ class LayoutAddCandidateForm extends Component {
   }
 
   fetchTab = () => {
-    const { listMenu, currentStep } = this.props;
-    const findTab = listMenu.find((menu, index) => currentStep === index) || listMenu[0];
+    const { listMenu = [], tabName = '' } = this.props;
 
+    const findTab = listMenu.find((menu) => menu.link === tabName) || listMenu[0];
     this.setState({
       selectedItemId: findTab.id || 1,
       displayComponent: findTab.component || <BasicInformation />,
@@ -69,17 +70,12 @@ class LayoutAddCandidateForm extends Component {
 
   _handlePreviewOffer = () => {
     const { reId = '' } = this.props;
-    history.push(`/onboarding/list/view/${reId}/offer-letter`);
+    history.push(`/onboarding/list/view/${reId}/${ONBOARDING_LINK.OFFER_LETTER}`);
   };
 
   _handleClick = (item) => {
     const { reId = '' } = this.props;
     history.push(`/onboarding/list/view/${reId}/${item.link}`);
-  };
-
-  disablePhase2 = () => {
-    const { processStatus, skip } = this.props;
-    return processStatus === 'DRAFT' && skip === 0;
   };
 
   render() {
