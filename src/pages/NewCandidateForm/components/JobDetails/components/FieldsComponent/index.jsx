@@ -28,6 +28,7 @@ class FieldsComponent extends PureComponent {
       tempData,
       processStatus,
       disabled,
+      reportees,
     } = this.props;
     return (
       <div className={styles.FieldsComponent}>
@@ -45,6 +46,7 @@ class FieldsComponent extends PureComponent {
           grade={grade}
           workLocation={workLocation}
           reportingManager={reportingManager}
+          reportees={reportees}
           loading1={loading1}
           loading2={loading2}
           loading3={loading3}

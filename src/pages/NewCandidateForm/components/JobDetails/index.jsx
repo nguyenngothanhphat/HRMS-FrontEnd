@@ -281,6 +281,13 @@ class JobDetails extends PureComponent {
           dateOfJoining: prefferedDateOfJoining,
         },
       });
+    } else if (name === 'reportees') {
+      dispatch({
+        type: 'newCandidateForm/saveTemp',
+        payload: {
+          reportees: value,
+        },
+      });
     }
     this.checkFilled();
   };
@@ -300,6 +307,7 @@ class JobDetails extends PureComponent {
         dateOfJoining,
         documentChecklistSetting,
         ticketID = '',
+        reportees = [],
       },
       currentStep = '',
     } = this.props;
@@ -319,6 +327,7 @@ class JobDetails extends PureComponent {
         currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 2 : currentStep,
         tenantId: getCurrentTenant(),
         documentChecklistSetting,
+        reportees,
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
@@ -508,6 +517,7 @@ class JobDetails extends PureComponent {
         reportingManager,
         candidatesNoticePeriod,
         grade,
+        reportees = [],
       },
       data,
     } = this.props;
@@ -553,6 +563,7 @@ class JobDetails extends PureComponent {
                       title={title}
                       grade={grade}
                       reportingManager={reportingManager}
+                      reportees={reportees}
                       candidatesNoticePeriod={candidatesNoticePeriod}
                       prefferedDateOfJoining={dateOfJoining}
                       _handleSelect={this._handleSelect}

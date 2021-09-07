@@ -94,6 +94,11 @@ class FirstFieldsComponent extends PureComponent {
         break;
       }
 
+      case 'reportees': {
+        _handleSelect(value, fieldName);
+        break;
+      }
+
       default: {
         break;
       }
@@ -114,6 +119,7 @@ class FirstFieldsComponent extends PureComponent {
       title,
       workLocation,
       reportingManager,
+      reportees,
       loading1,
       loading2,
       loading3,
@@ -226,12 +232,17 @@ class FirstFieldsComponent extends PureComponent {
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'reportingManager' &&
                           !isNull(reportingManager) && {
-                            defaultValue: reportingManager._id,
+                            defaultValue: reportingManager?._id,
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'grade' &&
                           grade !== null && {
                             defaultValue: grade,
+                          })}
+                        // eslint-disable-next-line react/jsx-props-no-spreading
+                        {...(item.title === 'reportees' &&
+                          !isNull(reportees) && {
+                            defaultValue: reportees,
                           })}
                         showSearch={
                           item.title === 'grade' ||
@@ -248,6 +259,7 @@ class FirstFieldsComponent extends PureComponent {
                             return option.value.toString().indexOf(input) > -1;
                           return option.value.toLowerCase().indexOf(input.toLowerCase()) > -1;
                         }}
+                        mode={item.title === 'reportees' ? 'multiple' : ''}
                       >
                         {item.title === 'grade' ? (
                           jobGradeList.map((data) => (
@@ -295,7 +307,7 @@ class FirstFieldsComponent extends PureComponent {
                           showManagerListAB.map((data, index) => (
                             <Option value={data._id} key={index}>
                               {data.generalInfo && data.generalInfo?.firstName
-                                ? `${data.generalInfo?.firstName} (${data.generalInfo?.workEmail})`
+                                ? `${data.generalInfo?.firstName}`
                                 : ''}
                             </Option>
                           ))
