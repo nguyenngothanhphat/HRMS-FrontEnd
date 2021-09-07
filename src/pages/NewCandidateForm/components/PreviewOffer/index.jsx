@@ -18,7 +18,7 @@ import moment from 'moment';
 import BigEditVector from '@/assets/bigEditVector.svg';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import ModalDrawSignature from '@/components/ModalDrawSignature';
 import ModalGenerateSignature from '@/components/ModalGenerateSignature';
 import TextSignature from '@/components/TextSignature';
@@ -760,7 +760,7 @@ const PreviewOffer = (props) => {
       };
 
       const onSecondaryButtonClick = () => {
-        history.push(`/onboarding/list/view/${ticketID}/offer-details`);
+        history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.OFFER_DETAILS}`);
       };
       return (
         <div className={styles.bottomBar}>

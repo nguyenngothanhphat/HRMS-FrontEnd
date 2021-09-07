@@ -3,7 +3,7 @@
 import { Button, Col, Row } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
-import { ONBOARDING_LINK } from '@/utils/onboarding';
+import { ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import BasicInformation from '../../pages/NewCandidateForm/components/BasicInformation';
 import ItemMenu from './components/ItemMenu';
 // import BottomBar from '../BottomBar';
@@ -70,7 +70,7 @@ class LayoutAddCandidateForm extends Component {
 
   _handlePreviewOffer = () => {
     const { reId = '' } = this.props;
-    history.push(`/onboarding/list/view/${reId}/${ONBOARDING_LINK.OFFER_LETTER}`);
+    history.push(`/onboarding/list/view/${reId}/${ONBOARDING_FORM_LINK.OFFER_LETTER}`);
   };
 
   _handleClick = (item) => {

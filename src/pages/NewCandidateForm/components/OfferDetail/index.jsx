@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import AddDocumentModal from './components/AddDocumentModal';
 import DocumentItem from './components/DocumentItem';
 import { Page } from '../../utils';
@@ -228,7 +228,7 @@ const OfferDetail = (props) => {
     //     currentStep: previousStep,
     //   },
     // });
-    history.push(`/onboarding/list/view/${ticketID}/benefits`);
+    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.BENEFITS}`);
   };
 
   const onNextTab = () => {
@@ -239,17 +239,17 @@ const OfferDetail = (props) => {
           currentStep: 6,
         },
       });
-      const {candidate} = data
+      const { candidate } = data;
       dispatch({
         type: 'newCandidateForm/updateByHR',
         payload: {
           candidate,
           currentStep: 6,
-          tenantId: getCurrentTenant()
+          tenantId: getCurrentTenant(),
         },
       });
     }
-    history.push(`/onboarding/list/view/${ticketID}/offer-letter`);
+    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.OFFER_LETTER}`);
   };
 
   const onSubmitOfferDetails = () => {

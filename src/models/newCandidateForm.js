@@ -44,7 +44,7 @@ import {
   sendDocumentStatus,
   getAdditionalQuestion,
 } from '@/services/formCandidate';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 
 const defaultState = {
   rookieId: '',
@@ -534,7 +534,7 @@ const newCandidateForm = {
         });
 
         history.push({
-          pathname: `/onboarding/list/view/${rookieId}/basic-information`,
+          pathname: `/onboarding/list/view/${rookieId}/${ONBOARDING_FORM_LINK.BASIC_INFORMATION}`,
           state: { isAddNew: true },
         });
       } catch (error) {

@@ -11,6 +11,7 @@ import doneIcon from './assets/doneIcon.png';
 import editIcon from './assets/editIcon.png';
 import styles from './index.less';
 import { Page } from '../../../../utils';
+import { ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 
 @connect(
   ({
@@ -137,7 +138,7 @@ class SalaryStructureTemplate extends PureComponent {
     // });
     const { tempData } = this.props;
     const { ticketID = '' } = tempData;
-    history.push(`/onboarding/list/view/${ticketID}/job-details`);
+    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.JOB_DETAILS}`);
   };
 
   onClickNext = () => {
@@ -174,7 +175,9 @@ class SalaryStructureTemplate extends PureComponent {
         // });
         const { tempData } = this.props;
         const { ticketID = '' } = tempData;
-        history.push(`/onboarding/list/view/${ticketID}/document-verification`);
+        history.push(
+          `/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.DOCUMENT_VERIFICATION}`,
+        );
       }
     });
   };
