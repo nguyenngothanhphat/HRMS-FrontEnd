@@ -71,7 +71,13 @@ class JobDetails extends PureComponent {
   };
 
   disableEdit = () => {
-    return false;
+    const { processStatus } = this.props;
+
+    return ![
+      NEW_PROCESS_STATUS.DRAFT,
+      NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
+      NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
+    ].includes(processStatus);
   };
 
   checkFilled = () => {
@@ -508,6 +514,7 @@ class JobDetails extends PureComponent {
     const { loading1, loading2, loading3, loading, loadingFetchCandidate, processStatus } =
       this.props;
     const { dateOfJoining } = data;
+
     return (
       <>
         <Row gutter={[24, 0]}>
