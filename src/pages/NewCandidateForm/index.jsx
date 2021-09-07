@@ -24,6 +24,7 @@ class NewCandidateForm extends PureComponent {
     super(props);
     this.state = {
       listMenu: [],
+      loadingFinishLater: false,
     };
   }
 
@@ -258,6 +259,21 @@ class NewCandidateForm extends PureComponent {
   };
 
   handleFinishLater = async () => {
+    const wait = (delay, ...args) => {
+      // eslint-disable-next-line compat/compat
+      return new Promise((resolve) => {
+        setTimeout(resolve, delay, ...args);
+      });
+    };
+
+    this.setState({
+      loadingFinishLater: true,
+    });
+    await wait(1000).then(() =>
+      this.setState({
+        loadingFinishLater: false,
+      }),
+    );
     history.push('/onboarding/list');
   };
 
@@ -268,7 +284,7 @@ class NewCandidateForm extends PureComponent {
       // location: { state: { isAddNew = false } = {} } = {},
     } = this.props;
 
-    const { listMenu } = this.state;
+    const { listMenu, loadingFinishLater } = this.state;
     // const title = isAddNew ? `Add a team member [${reId}]` : `Review team member [${reId}]`;
     const title = `Add a team member`;
 
@@ -281,7 +297,12 @@ class NewCandidateForm extends PureComponent {
               <p className={styles.titlePage__text}>{title}</p>
               {action === 'view' && (
                 <div className={styles.titlePage__viewBtn}>
-                  <Button type="primary" ghost onClick={this.handleFinishLater}>
+                  <Button
+                    type="primary"
+                    ghost
+                    loading={loadingFinishLater}
+                    onClick={this.handleFinishLater}
+                  >
                     {tabName === 'offer-letter' ? 'Cancel' : 'Finish Later'}
                   </Button>
                 </div>

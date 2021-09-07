@@ -34,6 +34,7 @@ const note = {
     </>
   ),
 };
+
 const camelize = (str) => {
   return str
     .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
@@ -80,7 +81,6 @@ class DocumentVerification extends Component {
     };
   }
 
-  // HMMMM
   static getDerivedStateFromProps(props) {
     if ('tempData' in props) {
       return {
@@ -181,7 +181,7 @@ class DocumentVerification extends Component {
     const { processStatus } = data;
 
     const arrToAdjust =
-      processStatus === 'DRAFT'
+      processStatus === NEW_PROCESS_STATUS.DRAFT
         ? JSON.parse(JSON.stringify(data.documentChecklistSetting))
         : JSON.parse(JSON.stringify(tempData.documentChecklistSetting));
 
