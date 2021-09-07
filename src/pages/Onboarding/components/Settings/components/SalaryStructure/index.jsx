@@ -157,7 +157,7 @@ const SalaryStructure = (props) => {
       title: 'Grade',
       dataIndex: 'grade',
       key: 'grade',
-      align: 'right',
+      align: 'center',
     },
     {
       title: 'Base Salary Range',
@@ -200,6 +200,11 @@ const SalaryStructure = (props) => {
       ),
     },
   ];
+
+  const getValueByKey = (settings, key) => {
+    const result = filter(settings, (item) => item.key === key);
+    return (result && result[0] && result[0].value) || 0;
+  };
   const columnsVN = [
     {
       title: 'Grade',
@@ -247,37 +252,34 @@ const SalaryStructure = (props) => {
     },
     {
       title: 'Lunch Allowance',
-      dataIndex: 'allowances',
+      dataIndex: 'settings',
       align: 'center',
       key: 'allowances_lunch',
       width: '20%',
-      render: (allowances) => {
-        if (!allowances) return 0;
-        const { lunch } = allowances;
+      render: (settings) => {
+        const lunch = getValueByKey(settings, 'lunch_allowance');
         return <div>{renderSingle(lunch)}</div>;
       },
     },
     {
       title: 'Petrol Allowance',
-      dataIndex: 'allowances',
+      dataIndex: 'settings',
       align: 'center',
       key: 'allowances_range',
       width: '20%',
-      render: (allowances) => {
-        if (!allowances) return 0;
-        const { petrol } = allowances;
+      render: (settings) => {
+        const petrol = getValueByKey(settings, 'petrol_allowance');
         return <div>{renderSingle(petrol)}</div>;
       },
     },
     {
       title: 'Mob & Internet Allowance',
-      dataIndex: 'allowances',
+      dataIndex: 'settings',
       align: 'center',
       key: 'allowances_range',
       width: '30%',
-      render: (allowances) => {
-        if (!allowances) return 0;
-        const { mobile_internet: mobileInternet } = allowances;
+      render: (settings) => {
+        const mobileInternet = getValueByKey(settings, 'mobile_internet_allowance');
         return <div>{renderSingle(mobileInternet)}</div>;
       },
     },

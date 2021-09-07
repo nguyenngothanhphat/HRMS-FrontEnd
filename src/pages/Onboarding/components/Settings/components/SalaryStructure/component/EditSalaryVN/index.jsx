@@ -1,7 +1,7 @@
 import { Modal, Button, Input, Checkbox } from 'antd';
 import React, { useState, useEffect } from 'react';
 import { formatMessage, connect } from 'umi';
-import { toNumber, toString, trimStart } from 'lodash';
+import { toNumber, toString, trimStart, filter } from 'lodash';
 import styles from './index.less';
 
 const EditSalaryVN = (props) => {
@@ -24,18 +24,28 @@ const EditSalaryVN = (props) => {
     }
   }, [salaryId]);
 
+  const getValueByKey = (settings, key) => {
+    const result = filter(settings, (item) => item.key === key);
+    return (result && result[0] && result[0].value) || 0;
+  };
   useEffect(() => {
     if (salaryData !== {} && !loadingData) {
       const {
         base_salary: BaseSalary,
         variable_pay_target: VariablePayTarget,
         total_compensation: TotalCompensation,
-        allowances: Allowances,
+        settings,
+        salary_13th: salary13th,
       } = salaryData;
       setBaseSalary(BaseSalary || 0);
       setTotalCompensation(TotalCompensation || 0);
       setVariablePay(VariablePayTarget || '0');
-      setAllowances(Allowances || 0);
+      setAllowances({
+        lunch: getValueByKey(settings, 'lunch_allowance'),
+        petrol: getValueByKey(settings, 'petrol_allowance'),
+        mobile_internet: getValueByKey(settings, 'mobile_internet_allowance'),
+      });
+      setSalary13(salary13th);
     }
   }, [loadingData]);
 
@@ -80,7 +90,7 @@ const EditSalaryVN = (props) => {
   const convertValue = (value) => {
     const str = toString(value);
     const list = str.split('.');
-    let num = list[0] !== '' ? trimStart(list[0], '0') : '0';
+    let num = list[0] !== '' && list[0] !== '0' ? trimStart(list[0], '0') : '0';
     let result = '';
     while (num.length > 3) {
       result = `,${num.slice(-3)}${result}`;
