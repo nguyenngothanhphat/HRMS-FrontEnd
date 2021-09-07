@@ -203,7 +203,8 @@ class FirstFieldsComponent extends PureComponent {
                           (item.title === 'workLocation' && disabled) ||
                           (item.title === 'reportingManager' && disabled) ||
                           (item.title === 'department' && disabled) ||
-                          (item.title === 'title' && disabled)
+                          (item.title === 'title' && disabled) ||
+                          (item.title === 'reportees' && disabled)
                         }
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'department' &&
@@ -235,7 +236,8 @@ class FirstFieldsComponent extends PureComponent {
                           item.title === 'reportingManager' ||
                           item.title === 'workLocation' ||
                           item.title === 'title' ||
-                          item.title === 'department'
+                          item.title === 'department' ||
+                          item.title === 'reportees'
                         }
                         showArrow
                         allowClear

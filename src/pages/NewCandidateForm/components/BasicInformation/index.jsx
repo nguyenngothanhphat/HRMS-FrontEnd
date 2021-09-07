@@ -163,6 +163,13 @@ class BasicInformation extends PureComponent {
   };
 
   _renderForm = () => {
+    const { tempData } = this.props;
+    const { processStatus = '' } = tempData;
+    const disabled = ![
+      NEW_PROCESS_STATUS.DRAFT,
+      NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
+      NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
+    ].includes(processStatus);
     return (
       <div className={styles.basicInformation__form}>
         <Row gutter={[48, 0]}>
@@ -182,6 +189,7 @@ class BasicInformation extends PureComponent {
               ]}
             >
               <Input
+                disabled={disabled}
                 autoComplete="off"
                 // onChange={(e) => this.handleChange(e)}
                 placeholder="First Name"
@@ -205,6 +213,7 @@ class BasicInformation extends PureComponent {
               ]}
             >
               <Input
+                disabled={disabled}
                 autoComplete="off"
                 // onChange={(e) => this.handleChange(e)}
                 placeholder="Middle Name"
@@ -229,6 +238,7 @@ class BasicInformation extends PureComponent {
               ]}
             >
               <Input
+                disabled={disabled}
                 autoComplete="off"
                 // onChange={(e) => this.handleChange(e)}
                 placeholder="Last Name"
@@ -264,6 +274,7 @@ class BasicInformation extends PureComponent {
               ]}
             >
               <Input
+                disabled={disabled}
                 autoComplete="off"
                 // onChange={(e) => this.handleChange(e)}
                 placeholder="Personal Email"
@@ -294,6 +305,7 @@ class BasicInformation extends PureComponent {
               ]}
             >
               <Input
+                disabled={disabled}
                 autoComplete="off"
                 placeholder="Relevant previous experience"
                 className={styles.formInput}
@@ -314,7 +326,12 @@ class BasicInformation extends PureComponent {
       tempData: { processStatus = '' } = {},
     } = this.props;
     const { filledBasicInformation } = checkMandatory;
-    const renderText = processStatus === NEW_PROCESS_STATUS.DRAFT ? 'Next' : 'Update';
+    const renderText = ![
+      NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
+      NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
+    ].includes(processStatus)
+      ? 'Next'
+      : 'Update';
 
     return (
       <div className={styles.bottomBar}>
