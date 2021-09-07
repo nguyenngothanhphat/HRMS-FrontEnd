@@ -126,7 +126,10 @@ class CollapseField extends Component {
                       <Col span={12} className={styles.collapseField__row__name}>
                         <Typography.Text>{document.displayName}</Typography.Text>
                       </Col>
-                      <Col span={8} className={styles.collapseField__row__file}>
+                      <Col
+                        span={candidateDocumentStatus === 'PENDING' ? 6 : 8}
+                        className={styles.collapseField__row__file}
+                      >
                         <div
                           onClick={() => {
                             if (!fileName) {
@@ -145,7 +148,10 @@ class CollapseField extends Component {
                           <div className={styles.file__content__fileName__text}>{fileName}</div>
                         </div>
                       </Col>
-                      <Col span={4} className={styles.collapseField__row__statusVerify}>
+                      <Col
+                        span={candidateDocumentStatus === 'PENDING' ? 6 : 4}
+                        className={styles.collapseField__row__statusVerify}
+                      >
                         {this.renderStatusVerify(fileName, candidateDocumentStatus)}
                       </Col>
                     </Row>
