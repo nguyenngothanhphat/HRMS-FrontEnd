@@ -220,7 +220,7 @@ class BackgroundRecheck extends Component {
 
   renderCollapseFields = () => {
     const { docsList: documentsCandidateList = [] } = this.state;
-    const { loadingGetById = false } = this.props;
+    const { loadingGetById = false, processStatus = '' } = this.props;
     if (loadingGetById) {
       return <Skeleton active />;
     }
@@ -229,11 +229,11 @@ class BackgroundRecheck extends Component {
       <>
         {documentsCandidateList.map((document) => {
           if (document.type !== 'E') {
-            return <CollapseField item={document} />;
+            return <CollapseField item={document} processStatus={processStatus} />;
           }
           return '';
         })}
-        <PreviousEmployment docList={documentsCandidateList} />
+        <PreviousEmployment docList={documentsCandidateList} processStatus={processStatus} />
       </>
     );
   };

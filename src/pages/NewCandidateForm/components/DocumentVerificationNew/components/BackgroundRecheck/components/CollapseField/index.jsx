@@ -2,10 +2,11 @@
 import React, { Component } from 'react';
 import { Collapse, Checkbox, Space, Col, Row, Typography } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
-// import ViewDocumentModal from '@/components/ViewDocumentModal';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import ResubmitIcon from '@/assets/resubmit.svg';
 import VerifiedIcon from '@/assets/verified.svg';
 import WarningIcon from '@/assets/warning-filled.svg';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import VerifyDocumentModal from '../VerifyDocumentModal';
 import styles from './index.less';
 
@@ -62,20 +63,6 @@ class CollapseField extends Component {
     }
   };
 
-  // renderClassnameOfFile = (candidateDocumentStatus) => {
-  //   let className = `${styles.file__content} `;
-  //   if (candidateDocumentStatus === 'VERIFIED') {
-  //     className += `${styles.file__content__file} `;
-  //   }
-  //   if (candidateDocumentStatus === 'RE-SUBMIT') {
-  //     className += `${styles.file__content__resubmit} `;
-  //   }
-  //   if (candidateDocumentStatus === 'INELIGIBLE') {
-  //     className += `${styles.file__content__ineligible} `;
-  //   }
-  //   return className;
-  // };
-
   renderStatusVerify = (fileName, candidateDocumentStatus) => {
     const formatStatus = (status) => {
       if (status === 'RE-SUBMIT') {
@@ -105,7 +92,7 @@ class CollapseField extends Component {
   };
 
   render() {
-    const { item = {} } = this.props;
+    const { item = {}, processStatus = '' } = this.props;
     const { visible, url, displayName, openModal, documentId, candidateDocStatus } = this.state;
 
     return (
@@ -145,8 +132,12 @@ class CollapseField extends Component {
                             if (!fileName) {
                               return;
                             }
-                            // this.openViewDocument(document.displayName, attachment);
-                            this.openDocument(document, 'verify');
+                            const status = processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION;
+                            if (status) {
+                              this.openDocument(document, 'view');
+                            } else {
+                              this.openDocument(document, 'verify');
+                            }
                           }}
                           className={styles.file__content__fileName}
                         >
@@ -172,12 +163,12 @@ class CollapseField extends Component {
           url={url}
         /> */}
 
-        {/* <ViewDocumentModal />
+        <ViewDocumentModal
           visible={visible}
           fileName={displayName}
           url={url}
           onClose={this.handleCancel}
-        /> */}
+        />
 
         <VerifyDocumentModal
           visible={openModal}
