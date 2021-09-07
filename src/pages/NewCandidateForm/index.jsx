@@ -34,9 +34,6 @@ class NewCandidateForm extends PureComponent {
       dispatch,
     } = this.props;
 
-    if (!tabName) {
-      history.push(`/onboarding/list/view/${reId}/basic-information`);
-    }
     // current step vs tab name
     const linkSet = [
       {
@@ -82,6 +79,10 @@ class NewCandidateForm extends PureComponent {
           return;
         }
         const { _id, currentStep = '' } = data;
+        const link = this.getLink(currentStep);
+        if (!tabName) {
+          history.push(`/onboarding/list/view/${reId}/${link}`);
+        }
         const find = linkSet.find((l) => l.link === tabName) || {};
         if (currentStep <= find.id - 1) {
           const currentComponent = linkSet.find((l) => l.id === currentStep + 1);
@@ -125,6 +126,24 @@ class NewCandidateForm extends PureComponent {
   componentWillUnmount() {
     this.resetFormMember();
   }
+
+  getLink = (currentStep) => {
+    switch (currentStep) {
+      case 1:
+        return 'job-details';
+      case 2:
+        return 'document-verification';
+      case 3:
+        return 'salary-structure';
+      case 4:
+        return 'benefits';
+      case 5:
+        return 'offer-details';
+
+      default:
+        return 'basic-information';
+    }
+  };
 
   renderListMenu = () => {
     const {
