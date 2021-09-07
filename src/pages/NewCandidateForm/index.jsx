@@ -4,7 +4,6 @@ import { connect, history } from 'umi';
 import LayoutAddCandidateForm from '@/components/LayoutAddCandidateForm';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import BasicInformation from './components/BasicInformation';
 import Benefit from './components/Benefits';
 import DocumentVerificationNew from './components/DocumentVerificationNew';
@@ -13,6 +12,7 @@ import OfferDetail from './components/OfferDetail';
 import PreviewOffer from './components/PreviewOffer';
 import SalaryStructure from './components/SalaryStructure';
 import styles from './index.less';
+import { ONBOARDING_LINK, ONBOARDING_STEP_LINK } from '@/utils/onboarding';
 
 @connect(({ newCandidateForm = {}, user, loading }) => ({
   newCandidateForm,
@@ -35,39 +35,8 @@ class NewCandidateForm extends PureComponent {
     } = this.props;
 
     if (!tabName) {
-      history.push(`/onboarding/list/view/${reId}/basic-information`);
+      history.push(`/onboarding/list/view/${reId}/${ONBOARDING_LINK.BASIC_INFORMATION}`);
     }
-    // current step vs tab name
-    const linkSet = [
-      {
-        id: 1,
-        link: 'basic-information',
-      },
-      {
-        id: 2,
-        link: 'job-details',
-      },
-      {
-        id: 3,
-        link: 'document-verification',
-      },
-      {
-        id: 4,
-        link: 'salary-structure',
-      },
-      {
-        id: 5,
-        link: 'benefits',
-      },
-      {
-        id: 6,
-        link: 'offer-details',
-      },
-      {
-        id: 7,
-        link: 'offer-letter',
-      },
-    ];
 
     // check action is add or review. If isReview fetch candidate by reID
     if (action === 'view' || action === 'candidate-detail') {
@@ -82,9 +51,9 @@ class NewCandidateForm extends PureComponent {
           return;
         }
         const { _id, currentStep = '' } = data;
-        const find = linkSet.find((l) => l.link === tabName) || {};
-        if (currentStep <= find.id - 1) {
-          const currentComponent = linkSet.find((l) => l.id === currentStep + 1);
+        const find = ONBOARDING_STEP_LINK.find((l) => l.link === tabName) || {};
+        if (currentStep <= find.id) {
+          const currentComponent = ONBOARDING_STEP_LINK.find((l) => l.id === currentStep);
           if (currentComponent) {
             history.push(`/onboarding/list/view/${reId}/${currentComponent.link}`);
           }
@@ -157,7 +126,7 @@ class NewCandidateForm extends PureComponent {
             processStatus={processStatus}
           />
         ),
-        link: 'basic-information',
+        link: ONBOARDING_LINK.BASIC_INFORMATION,
       },
       {
         id: 2,
@@ -172,7 +141,7 @@ class NewCandidateForm extends PureComponent {
             processStatus={processStatus}
           />
         ),
-        link: 'job-details',
+        link: ONBOARDING_LINK.JOB_DETAILS,
       },
       {
         id: 3,
@@ -180,7 +149,7 @@ class NewCandidateForm extends PureComponent {
         key: 'backgroundCheck',
         // key: 'eligibilityDocuments',
         component: <DocumentVerificationNew />,
-        link: 'document-verification',
+        link: ONBOARDING_LINK.DOCUMENT_VERIFICATION,
       },
       {
         id: 4,
@@ -193,14 +162,14 @@ class NewCandidateForm extends PureComponent {
             processStatus={processStatus}
           />
         ),
-        link: 'salary-structure',
+        link: ONBOARDING_LINK.SALARY_STRUCTURE,
       },
       {
         id: 5,
         name: 'Benefits',
         key: 'benefits',
         component: <Benefit processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />,
-        link: 'benefits',
+        link: ONBOARDING_LINK.BENEFITS,
       },
       {
         id: 6,
@@ -209,14 +178,14 @@ class NewCandidateForm extends PureComponent {
         component: (
           <OfferDetail processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />
         ),
-        link: 'offer-details',
+        link: ONBOARDING_LINK.OFFER_DETAILS,
       },
       {
         id: 7,
         name: 'Preview Offer Letter',
         key: 'offerLetter',
         component: <PreviewOffer />,
-        link: 'offer-letter',
+        link: ONBOARDING_LINK.OFFER_LETTER,
 
         isOfferLetter: !!offerLetterId,
       },
