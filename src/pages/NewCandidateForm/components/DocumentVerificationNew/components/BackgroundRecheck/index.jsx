@@ -2,7 +2,7 @@
 /* eslint-disable no-param-reassign */
 import { Button, Col, Row, Skeleton, Typography } from 'antd';
 import React, { Component } from 'react';
-import { connect, formatMessage } from 'umi';
+import { connect, formatMessage, history } from 'umi';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
 import { NEW_PROCESS_STATUS, PROCESS_STATUS } from '@/utils/onboarding';
@@ -406,29 +406,38 @@ class BackgroundRecheck extends Component {
   };
 
   onClickNext = async () => {
-    // const { currentStep } = this.state;
-    const { dispatch, candidate } = this.props;
-
-    // dispatch({
-    //   type: 'newCandidateForm/save',
-    //   payload: {
-    //     currentStep: currentStep + 1,
-    //   },
-    // });
+    const { currentStep } = this.state;
+    const {
+      dispatch,
+      candidate,
+      processStatus = '',
+      tempData: { ticketID = '' },
+    } = this.props;
 
     await dispatch({
       type: 'newCandidateForm/updateByHR',
       payload: {
         candidate,
         tenantId: getCurrentTenant(),
-        // currentStep: currentStep + 1,
-        processStatus: PROCESS_STATUS.ELIGIBLE_CANDIDATES,
+        currentStep: NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION ? 3 : currentStep,
+        processStatus: NEW_PROCESS_STATUS.SALARY_NEGOTIATION,
       },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        dispatch({
+          type: 'newCandidateForm/save',
+          payload: {
+            currentStep:
+              processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION ? 3 : currentStep,
+          },
+        });
+
+        history.push(`/onboarding/list/view/${ticketID}/salary-structure`);
+      }
     });
   };
 
   _renderBottomBar = () => {
-    // const { feedbackStatus } = this.state;
     const { docsList } = this.state;
     const checkStatus = this.checkStatus(docsList);
     return (
