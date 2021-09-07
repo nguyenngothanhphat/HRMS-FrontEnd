@@ -44,13 +44,6 @@ class OnboardTable extends Component {
     };
   }
 
-  handleActionClick = (ticketType) => {
-    const { SENT_FINAL_OFFERS, ACCEPTED_FINAL_OFFERS } = PROCESS_STATUS;
-    if (ticketType === SENT_FINAL_OFFERS || ticketType === ACCEPTED_FINAL_OFFERS) {
-      this.setState((prevState) => ({ openModal: !prevState.openModal }));
-    }
-  };
-
   handleActionDelete = (id) => {
     const { dispatch } = this.props;
 
@@ -92,13 +85,12 @@ class OnboardTable extends Component {
   //   );
   //   // return <ModalContent closeModal={this.closeModal} />;
   // };
-  fetchData = () => {};
 
-  renderCandidateId = (candidateId, type) => {
+  renderCandidateId = (candidateId) => {
     const id = candidateId.replace('#', '') || '';
     return (
-      <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-        <span onClick={() => this.handleActionClick(type)}>{candidateId}</span>
+      <Link to={`/onboarding/list/view/${id}`}>
+        <span>{candidateId}</span>
       </Link>
     );
   };
@@ -177,7 +169,7 @@ class OnboardTable extends Component {
         dataIndex: 'candidateId',
         key: 'candidateId',
         width: getColumnWidth('candidateId', type),
-        render: (candidateId) => this.renderCandidateId(candidateId, type),
+        render: (candidateId) => this.renderCandidateId(candidateId),
         columnName: ID,
         fixed: 'left',
       },
@@ -322,29 +314,29 @@ class OnboardTable extends Component {
       type = '',
       actionText = '',
       processStatusId = '',
-      offerExpiryDate = '',
+      // offerExpiryDate = '',
     } = payload;
 
-    const {
-      FINAL_OFFERS_DRAFT,
+    // const {
+    //   FINAL_OFFERS_DRAFT,
 
-      RENEGOTIATE_PROVISIONAL_OFFERS,
-      RENEGOTIATE_FINAL_OFFERS,
+    //   RENEGOTIATE_PROVISIONAL_OFFERS,
+    //   RENEGOTIATE_FINAL_OFFERS,
 
-      ACCEPTED_PROVISIONAL_OFFERS,
+    //   ACCEPTED_PROVISIONAL_OFFERS,
 
-      APPROVED_OFFERS,
-      ACCEPTED_FINAL_OFFERS,
+    //   APPROVED_OFFERS,
+    //   ACCEPTED_FINAL_OFFERS,
 
-      SENT_FINAL_OFFERS,
-    } = PROCESS_STATUS; // old status
+    //   SENT_FINAL_OFFERS,
+    // } = PROCESS_STATUS; // old status
 
     const { DRAFT } = NEW_PROCESS_STATUS; // new status
 
     const isRemovable = processStatusId === DRAFT;
     const isHRManager = this.checkPermission('hr-manager');
 
-    const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;
+    // const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;
 
     let menuItem = '';
     switch (processStatusId) {
@@ -358,125 +350,125 @@ class OnboardTable extends Component {
       //   );
       //   break;
 
-      case RENEGOTIATE_PROVISIONAL_OFFERS:
-      case RENEGOTIATE_FINAL_OFFERS:
-        menuItem = (
-          <>
-            <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData()}>
-                <span>Schedule 1-on-1</span>
-              </Link>
-            </Menu.Item>
-            <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-                <span className={styles.viewDraft}>View Form</span>
-              </Link>
-            </Menu.Item>
-          </>
-        );
-        break;
+      // case RENEGOTIATE_PROVISIONAL_OFFERS:
+      // case RENEGOTIATE_FINAL_OFFERS:
+      //   menuItem = (
+      //     <>
+      //       <Menu.Item>
+      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData()}>
+      //           <span>Schedule 1-on-1</span>
+      //         </Link>
+      //       </Menu.Item>
+      //       <Menu.Item>
+      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+      //           <span className={styles.viewDraft}>View Form</span>
+      //         </Link>
+      //       </Menu.Item>
+      //     </>
+      //   );
+      //   break;
 
-      case ACCEPTED_PROVISIONAL_OFFERS:
-        menuItem = (
-          <Menu.Item>
-            <Link
-              to={`/onboarding/list/view/${id}`}
-              onClick={() => {
-                this.initiateBackgroundCheck(id);
-              }}
-            >
-              <span>Initiate Background Check</span>
-            </Link>
-          </Menu.Item>
-        );
-        break;
+      // case ACCEPTED_PROVISIONAL_OFFERS:
+      //   menuItem = (
+      //     <Menu.Item>
+      //       <Link
+      //         to={`/onboarding/list/view/${id}`}
+      //         onClick={() => {
+      //           this.initiateBackgroundCheck(id);
+      //         }}
+      //       >
+      //         <span>Initiate Background Check</span>
+      //       </Link>
+      //     </Menu.Item>
+      //   );
+      //   break;
 
-      case FINAL_OFFERS_DRAFT:
-        menuItem = (
-          <>
-            <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-                Send for approval
-              </Link>
-            </Menu.Item>
-            <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-                <span className={styles.viewDraft}>View Form</span>
-              </Link>
-            </Menu.Item>
-            <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-                Discard offer
-              </Link>
-            </Menu.Item>
-          </>
-        );
-        break;
+      // case FINAL_OFFERS_DRAFT:
+      //   menuItem = (
+      //     <>
+      //       <Menu.Item>
+      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+      //           Send for approval
+      //         </Link>
+      //       </Menu.Item>
+      //       <Menu.Item>
+      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+      //           <span className={styles.viewDraft}>View Form</span>
+      //         </Link>
+      //       </Menu.Item>
+      //       <Menu.Item>
+      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+      //           Discard offer
+      //         </Link>
+      //       </Menu.Item>
+      //     </>
+      //   );
+      //   break;
 
-      case APPROVED_OFFERS:
-        menuItem = (
-          <>
-            <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-                Send to candidate
-              </Link>
-            </Menu.Item>
-            <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-                <span className={styles.viewDraft}>View Form</span>
-              </Link>
-            </Menu.Item>
-          </>
-        );
-        break;
+      // case APPROVED_OFFERS:
+      //   menuItem = (
+      //     <>
+      //       <Menu.Item>
+      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+      //           Send to candidate
+      //         </Link>
+      //       </Menu.Item>
+      //       <Menu.Item>
+      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+      //           <span className={styles.viewDraft}>View Form</span>
+      //         </Link>
+      //       </Menu.Item>
+      //     </>
+      //   );
+      //   break;
 
-      case SENT_FINAL_OFFERS:
-        menuItem = isExpired ? (
-          <>
-            <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-                <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
-              </Link>
-            </Menu.Item>
-            <Menu.Item>
-              <span onClick={() => this.handleExpiryTicket(id, 'renew', processStatusId, type)}>
-                Renew
-              </span>
-            </Menu.Item>
-            <Menu.Item>
-              <span onClick={() => this.handleExpiryTicket(id, 'discard', processStatusId, type)}>
-                Discard
-              </span>
-            </Menu.Item>
-          </>
-        ) : (
-          <Menu.Item>
-            <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-              <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
-            </Link>
-          </Menu.Item>
-        );
+      // case SENT_FINAL_OFFERS:
+      //   menuItem = isExpired ? (
+      //     <>
+      //       <Menu.Item>
+      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+      //           <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
+      //         </Link>
+      //       </Menu.Item>
+      //       <Menu.Item>
+      //         <span onClick={() => this.handleExpiryTicket(id, 'renew', processStatusId, type)}>
+      //           Renew
+      //         </span>
+      //       </Menu.Item>
+      //       <Menu.Item>
+      //         <span onClick={() => this.handleExpiryTicket(id, 'discard', processStatusId, type)}>
+      //           Discard
+      //         </span>
+      //       </Menu.Item>
+      //     </>
+      //   ) : (
+      //     <Menu.Item>
+      //       <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+      //         <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
+      //       </Link>
+      //     </Menu.Item>
+      //   );
 
-        break;
+      //   break;
 
-      case ACCEPTED_FINAL_OFFERS:
-        menuItem = (
-          <Menu.Item>
-            <span
-              onClick={() => {
-                this.openModal();
-              }}
-            >
-              Create Profile
-            </span>
-          </Menu.Item>
-        );
-        break;
+      // case ACCEPTED_FINAL_OFFERS:
+      //   menuItem = (
+      //     <Menu.Item>
+      //       <span
+      //         onClick={() => {
+      //           this.openModal();
+      //         }}
+      //       >
+      //         Create Profile
+      //       </span>
+      //     </Menu.Item>
+      //   );
+      //   break;
       default:
         menuItem = (
           <Menu.Item>
-            <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-              <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
+            <Link to={`/onboarding/list/view/${id}`}>
+              <span>{actionText}</span>
             </Link>
           </Menu.Item>
         );

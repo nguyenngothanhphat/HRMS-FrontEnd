@@ -58,8 +58,8 @@ class LayoutAddCandidateForm extends Component {
   }
 
   fetchTab = () => {
-    const { listMenu, tabName = '' } = this.props;
-    const findTab = listMenu.find((menu) => menu.link === tabName) || listMenu[0];
+    const { listMenu, currentStep } = this.props;
+    const findTab = listMenu.find((menu, index) => currentStep === index) || listMenu[0];
 
     this.setState({
       selectedItemId: findTab.id || 1,
@@ -94,6 +94,7 @@ class LayoutAddCandidateForm extends Component {
 
     const { displayComponent, selectedItemId } = this.state;
     const listMenuWithoutOfferLetter = listMenu.filter((l) => l.key !== 'offerLetter');
+
     return (
       <Row className={s.containerLayoutAddCandidateForm}>
         <Col xs={24} md={6} xl={4} className={s.viewLeft}>
