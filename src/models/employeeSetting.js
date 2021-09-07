@@ -38,6 +38,11 @@ import {
   addDocumentSetting,
   removeDocumentSetting,
   getDocumentSettingList,
+  // setting> salary structure
+  getListSalaryByLocation,
+  getSalaryById,
+  updateSalary,
+  importSalary,
 } from '../services/employeeSetting';
 
 const employeeSetting = {
@@ -86,6 +91,9 @@ const employeeSetting = {
     activeTabDocument: '1',
     // Custom Email
     activeTabCustomEmail: '1',
+    // salary structure
+    listSalary: [],
+    salaryData: {},
   },
   effects: {
     // list page on boarding
@@ -723,6 +731,72 @@ const employeeSetting = {
         });
       } catch (errors) {
         dialog(errors);
+      }
+      return response;
+    },
+    *fetchListSalaryByLocation({ payload = {} }, { call, put }) {
+      let response = '';
+      try {
+        response = yield call(getListSalaryByLocation, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { listSalary: data } });
+      } catch (errors) {
+        dialog(errors.message);
+      }
+      return response;
+    },
+    *getSalaryById({ payload = {} }, { call, put }) {
+      let response = '';
+      try {
+        response = yield call(getSalaryById, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { salaryData: data } });
+      } catch (errors) {
+        dialog(errors.message);
+      }
+      return response;
+    },
+    *updateSalary({ payload = {} }, { call, put }) {
+      let response = '';
+      try {
+        response = yield call(updateSalary, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: response.message,
+        });
+        yield put({ type: 'save', payload: {} });
+      } catch (errors) {
+        dialog(errors.message);
+      }
+      return response;
+    },
+    *importSalary({ payload = {} }, { call, put }) {
+      let response = '';
+      try {
+        response = yield call(importSalary, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message: response.message,
+        });
+        yield put({ type: 'save', payload: {} });
+      } catch (errors) {
+        dialog(errors.message);
       }
       return response;
     },
