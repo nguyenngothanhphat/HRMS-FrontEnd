@@ -6,6 +6,7 @@ import {
   getOnboardingList,
   getTotalNumberOnboardingList,
   handleExpiryTicket,
+  withdrawTicket,
 } from '@/services/onboard';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
@@ -425,6 +426,36 @@ const onboarding = {
         }
       } catch (error) {
         dialog(error);
+      }
+      return response;
+    },
+    *withdrawTicket({ payload = {}, processStatus = '' }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(withdrawTicket, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+
+        // Refresh table tab OFFER_WITHDRAWN and current tab which has implemented action withdraw
+
+        yield put({
+          type: 'onboarding/fetchOnboardList',
+          payload: {
+            processStatus: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+          },
+        });
+        yield put({
+          type: 'onboarding/fetchOnboardList',
+          payload: {
+            processStatus,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
       }
       return response;
     },

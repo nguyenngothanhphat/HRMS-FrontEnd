@@ -64,7 +64,7 @@ class OnboardTable extends Component {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'newCandidateForm/withdrawOfferEffect',
+      type: 'onboarding/withdrawTicket',
       payload: {
         candidate,
       },

@@ -61,3 +61,10 @@ export async function getFilterList(payload) {
     data: payload,
   });
 }
+
+export async function withdrawTicket(payload) {
+  return request('/api/candidatetenant/withdraw-ticket', {
+    method: 'POST',
+    data: payload,
+  });
+}
