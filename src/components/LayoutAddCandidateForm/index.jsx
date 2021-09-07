@@ -47,24 +47,32 @@ class LayoutAddCandidateForm extends Component {
   }
 
   componentDidMount() {
-    this.fetchTab();
+    this.fetchTab('init');
   }
 
   componentDidUpdate(prevProps) {
     const { tabName = '' } = this.props;
     if (prevProps.tabName !== tabName) {
-      this.fetchTab();
+      this.fetchTab('click');
     }
   }
 
-  fetchTab = () => {
-    const { listMenu, currentStep } = this.props;
-    const findTab = listMenu.find((menu, index) => currentStep === index) || listMenu[0];
+  fetchTab = (key = '') => {
+    const { listMenu, currentStep, tabName = '' } = this.props;
 
-    this.setState({
-      selectedItemId: findTab.id || 1,
-      displayComponent: findTab.component || <BasicInformation />,
-    });
+    if (key === 'init') {
+      const findTab = listMenu.find((menu, index) => currentStep === index) || listMenu[0];
+      this.setState({
+        selectedItemId: findTab.id || 1,
+        displayComponent: findTab.component || <BasicInformation />,
+      });
+    } else {
+      const findTab = listMenu.find((menu) => menu.link === tabName) || listMenu[0];
+      this.setState({
+        selectedItemId: findTab.id || 1,
+        displayComponent: findTab.component || <BasicInformation />,
+      });
+    }
   };
 
   _handlePreviewOffer = () => {
