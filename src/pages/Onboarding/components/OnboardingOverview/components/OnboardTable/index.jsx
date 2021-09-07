@@ -60,8 +60,16 @@ class OnboardTable extends Component {
     });
   };
 
-  handleActionWithDraw = (id) => {
-    console.log(id);
+  handleActionWithDraw = (candidate, processStatus) => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'newCandidateForm/withdrawOfferEffect',
+      payload: {
+        candidate,
+      },
+      processStatus,
+    });
   };
 
   closeModal = () => {
@@ -269,7 +277,9 @@ class OnboardTable extends Component {
             assignTo = {},
             assigneeManager = {},
             offerExpiryDate = '',
+            candidate = '',
           } = row;
+
           const id = candidateId.replace('#', '') || '';
 
           const checkPermission =
@@ -289,7 +299,7 @@ class OnboardTable extends Component {
             return (
               <Dropdown
                 className={styles.menuIcon}
-                overlay={this.actionMenu(payload)}
+                overlay={this.actionMenu(payload, candidate)}
                 placement="topLeft"
               >
                 <img src={MenuIcon} alt="menu" />
@@ -307,7 +317,7 @@ class OnboardTable extends Component {
     return newColumns;
   };
 
-  actionMenu = (payload = {}) => {
+  actionMenu = (payload = {}, candidate) => {
     const {
       id = '',
       assignToId: currentEmpId = '',
@@ -337,7 +347,6 @@ class OnboardTable extends Component {
     const isHRManager = this.checkPermission('hr-manager');
 
     // const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;
-
     let menuItem = '';
     switch (processStatusId) {
       // case DRAFT:
@@ -496,7 +505,13 @@ class OnboardTable extends Component {
         )}
         {!isRemovable && (
           <Menu.Item>
-            <div onClick={!isRemovable ? () => this.handleActionWithDraw(id) : () => {}}>
+            <div
+              onClick={
+                !isRemovable
+                  ? () => this.handleActionWithDraw(candidate, processStatusId)
+                  : () => {}
+              }
+            >
               Withdraw
             </div>
           </Menu.Item>
