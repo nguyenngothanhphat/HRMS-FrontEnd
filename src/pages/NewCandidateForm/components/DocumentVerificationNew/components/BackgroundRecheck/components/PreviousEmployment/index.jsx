@@ -3,10 +3,11 @@ import React, { Component } from 'react';
 import { Collapse, Checkbox, Space, Col, Row, Typography } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
-// import ViewDocumentModal from '@/components/ViewDocumentModal';
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import WarningIcon from '@/assets/warning-filled.svg';
 import ResubmitIcon from '@/assets/resubmit.svg';
 import VerifiedIcon from '@/assets/verified.svg';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import InputField from '../InputField';
 import styles from './index.less';
 import VerifyDocumentModal from '../VerifyDocumentModal';
@@ -69,20 +70,6 @@ class PreviousEmployment extends Component {
     }
   };
 
-  renderClassnameOfFile = (candidateDocumentStatus) => {
-    let className = `${styles.file__content} `;
-    if (candidateDocumentStatus === 'VERIFIED') {
-      className += `${styles.file__content__verified} `;
-    }
-    if (candidateDocumentStatus === 'RE-SUBMIT') {
-      className += `${styles.file__content__resubmit} `;
-    }
-    if (candidateDocumentStatus === 'INELIGIBLE') {
-      className += `${styles.file__content__ineligible} `;
-    }
-    return className;
-  };
-
   renderStatusVerify = (fileName, candidateDocumentStatus) => {
     const formatStatus = (status) => {
       if (status === 'RE-SUBMIT') {
@@ -114,6 +101,7 @@ class PreviousEmployment extends Component {
   renderEmployer = (item, docListE, indexGroupDoc) => {
     const {
       data: { workHistory = [] },
+      processStatus = '',
     } = this.props;
 
     const currentCompany = workHistory.filter((value) => value.toPresent) || [];
@@ -155,8 +143,12 @@ class PreviousEmployment extends Component {
                     if (!fileName) {
                       return;
                     }
-                    // this.openViewDocument(document.displayName, attachment);
-                    this.openDocument(document, 'verify');
+                    const status = processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION;
+                    if (status) {
+                      this.openDocument(document, 'view');
+                    } else {
+                      this.openDocument(document, 'verify');
+                    }
                   }}
                   className={styles.file__content__fileName}
                 >
@@ -213,12 +205,12 @@ class PreviousEmployment extends Component {
           </Collapse>
         ) : null}
 
-        {/* <ViewDocumentModal
+        <ViewDocumentModal
           visible={visible}
           fileName={displayName}
           url={url}
           onClose={this.handleCancel}
-        /> */}
+        />
         <VerifyDocumentModal
           visible={openModal}
           docProps={{
