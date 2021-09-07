@@ -1,5 +1,6 @@
 import { history } from 'umi';
 import { message, notification } from 'antd';
+
 import {
   getGradeList,
   getDocumentList,
@@ -747,7 +748,7 @@ const newCandidateForm = {
       return response;
     },
 
-    *approveFinalOfferEffect({ payload }, { call }) {
+    *approveFinalOfferEffect({ payload, action }, { call, put }) {
       let response = {};
       try {
         response = yield call(approveFinalOffer, {
@@ -757,6 +758,16 @@ const newCandidateForm = {
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
+        const processStatus =
+          action === 'accept'
+            ? NEW_PROCESS_STATUS.OFFER_RELEASED
+            : NEW_PROCESS_STATUS.OFFER_REJECTED;
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            processStatus,
+          },
+        });
         // yield put({ type: 'save', payload: { test: data } });
       } catch (error) {
         dialog(error);

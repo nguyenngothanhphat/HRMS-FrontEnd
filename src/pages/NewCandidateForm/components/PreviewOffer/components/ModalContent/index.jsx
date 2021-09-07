@@ -5,33 +5,51 @@ import img2 from './images/modal_img_2.png';
 
 class ModalContent extends PureComponent {
   getHeader = (type) => {
-    if (type === 'hr') {
+    if (type === 'send-for-approval') {
       return 'Final offer has been sent to HR Manager for approval';
     }
-    if (type === 'hrManager') {
+    if (type === 'release') {
       return 'Final offer has been sent to candidate';
     }
-    if (type === 'candidate') {
-      return 'Final offer has been sent HR';
+    // if (type === 'candidate') {
+    //   return 'Final offer has been sent HR';
+    // }
+    if (type === 'reject') {
+      return 'Final offer has been rejected';
+    }
+    if (type === 'withdraw') {
+      return 'Final offer has been withdrawn';
+    }
+    if (type === 'extend') {
+      return 'Final offer date has been extended';
     }
     return '';
   };
 
   getContent = (type, mail) => {
-    if (type === 'hr') {
+    if (type === 'send-for-approval') {
       return 'Final offer has been sent to HR Manager';
     }
-    if (type === 'hrManager') {
+    if (type === 'release') {
       return `Final offer has been sent to ${mail}`;
     }
-    if (type === 'candidate') {
-      return 'Final offer has been sent HR';
+    // if (type === 'candidate') {
+    //   return 'Final offer has been sent HR';
+    // }
+    if (type === 'reject') {
+      return 'Final offer has been rejected by HR Manager';
+    }
+    if (type === 'withdraw') {
+      return 'Final offer has been withdrawn by HR Manager';
+    }
+    if (type === 'extend') {
+      return 'Final offer date has been extended by HR Manager';
     }
     return '';
   };
 
   render() {
-    const { closeModal, candidateEmail, type = 'hr' } = this.props;
+    const { closeModal, candidateEmail, type = '' } = this.props;
 
     return (
       <div className={styles.modalContent}>

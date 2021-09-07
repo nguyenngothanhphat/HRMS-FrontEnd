@@ -209,7 +209,7 @@ export function extendOfferLetter(params) {
 }
 
 export function withdrawOffer(params) {
-  return request('/api/candidatetenant/withdraw-offer', {
+  return request('/api/candidatetenant/withdraw-ticket', {
     method: 'POST',
     data: params,
   });

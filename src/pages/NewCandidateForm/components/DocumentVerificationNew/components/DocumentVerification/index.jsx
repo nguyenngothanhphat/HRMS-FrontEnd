@@ -102,39 +102,6 @@ class DocumentVerification extends Component {
     }
   };
 
-  componentWillUnmount() {
-    const { dispatch, tempData = {}, checkMandatory = {}, processStatus = [] } = this.props;
-    if (processStatus === 'SENT-PROVISIONAL-OFFER') {
-      dispatch({
-        type: 'newCandidateForm/save',
-        payload: {
-          tempData: {
-            ...tempData,
-            isSentEmail: true,
-          },
-          checkMandatory: {
-            ...checkMandatory,
-            filledDocumentVerification: false,
-          },
-        },
-      });
-    } else if (processStatus === NEW_PROCESS_STATUS.DRAFT) {
-      dispatch({
-        type: 'newCandidateForm/save',
-        payload: {
-          tempData: {
-            ...tempData,
-            isSentEmail: false,
-          },
-          checkMandatory: {
-            ...checkMandatory,
-            filledDocumentVerification: false,
-          },
-        },
-      });
-    }
-  }
-
   componentDidUpdate = (prevProps) => {
     const {
       tempData: { documentChecklistSetting = [] } = {} || {},
@@ -212,22 +179,6 @@ class DocumentVerification extends Component {
 
     // save step
     const { processStatus } = data;
-    // const { privateEmail } = tempData;
-    // const { DRAFT, PROFILE_VERIFICATION } = NEW_PROCESS_STATUS;
-
-    // if (processStatus === DRAFT || processStatus === PROFILE_VERIFICATION) {
-    //   if (dispatch && candidate) {
-    //     dispatch({
-    //       type: 'newCandidateForm/updateByHR',
-    //       payload: {
-    //         candidate,
-    //         currentStep: 2,
-    //         privateEmail,
-    //         tenantId: getCurrentTenant(),
-    //       },
-    //     });
-    //   }
-    // }
 
     const arrToAdjust =
       processStatus === NEW_PROCESS_STATUS.DRAFT
