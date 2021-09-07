@@ -395,14 +395,10 @@ class BackgroundRecheck extends Component {
   };
 
   onClickPrev = () => {
-    // const { currentStep } = this.state;
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'newCandidateForm/save',
-    //   payload: {
-    //     currentStep: currentStep - 1,
-    //   },
-    // });
+    const {
+      tempData: { ticketID = '' },
+    } = this.props;
+    history.push(`/onboarding/list/view/${ticketID}/job-details`);
   };
 
   onClickNext = async () => {
