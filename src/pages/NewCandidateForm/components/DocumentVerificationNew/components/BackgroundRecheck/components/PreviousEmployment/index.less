@@ -5,9 +5,6 @@
 .PreviousEmployment {
   margin-bottom: 1rem;
   :global {
-    .ant-col {
-      // padding: 0 !important;
-    }
     .ant-collapse-arrow {
       padding: 0px !important;
     }
@@ -136,64 +133,63 @@
           border: 1px solid #d9d9d9;
           cursor: pointer;
 
-          &__verified {
-            color: #2c6df9;
-           
-            border: 1px solid #2c6df9;
-          }
-          &__resubmit {
-            color: red;
-            
-            border: 1px solid red;
-          }
-          &__ineligible {
-            color: @orange;
-            
-            border: 1px solid @orange;
+          &__fileName {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            cursor: pointer;
+            &__text{
+              color: #2c6df9;
+              text-decoration: underline;
+              padding-left: 8px;
+            }
           }
         }
       }
-      &__radio {
-        text-align: end;
+      &__statusVerify {
         display: flex;
+        justify-content: flex-end;
         align-items: center;
-        .verified {
+        padding: 0 !important;
+
+        .resubmit, .verified{
+          display: flex;
+          align-items: center;
+
+          img{
+            padding-left: 8px;
+          }
+        }
+
+        .verified{
+          font-family: Roboto;
+          font-style: normal;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 16px;
+          letter-spacing: 0.13125px;
+
+          color: #47C97F;
+        }
+        .resubmit{
+          font-family: Roboto;
+          font-style: normal;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 16px;
+          letter-spacing: 0.13125px;
+
+          color: #FFA100;
+        }
+        .pending{
+          font-family: Roboto;
+          font-style: normal;
+          font-weight: 500;
+          font-size: 14px;
+          line-height: 16px;
+          letter-spacing: 0.13125px;
+
           color: #2c6df9;
-          font-size: 13px;
-        }
-        .resubmit {
-          color: red;
-          font-size: 13px;
-          :global {
-            .ant-radio-checked .ant-radio-inner {
-              border-color: red !important ;
-            }
-
-            .ant-radio-checked .ant-radio-inner:after {
-              background-color: red;
-            }
-
-            .ant-radio:hover .ant-radio-inner {
-              border-color: red;
-            }
-          }
-        }
-        .ineligible {
-          font-size: 13px;
-          color: @orange;
-          :global {
-            .ant-radio-checked .ant-radio-inner {
-              border-color: @orange !important ;
-            }
-
-            .ant-radio-checked .ant-radio-inner:after {
-              background-color: @orange;
-            }
-
-            .ant-radio:hover .ant-radio-inner {
-              border-color: @orange;
-            }
-          }
         }
       }
       .viewLoading {

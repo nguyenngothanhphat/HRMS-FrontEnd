@@ -2,12 +2,12 @@
 /* eslint-disable no-param-reassign */
 import { Button, Col, Row, Skeleton, Typography } from 'antd';
 import React, { Component } from 'react';
-import { connect, formatMessage } from 'umi';
-import CustomModal from '@/components/CustomModal';
+import { connect, formatMessage, history } from 'umi';
+// import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
-import { PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import NoteComponent from '../../../NoteComponent';
-import CloseCandidateModal from './components/CloseCandidateModal';
+// import CloseCandidateModal from './components/CloseCandidateModal';
 import CollapseField from './components/CollapseField';
 import PreviousEmployment from './components/PreviousEmployment';
 import styles from './index.less';
@@ -16,27 +16,20 @@ import styles from './index.less';
   ({
     newCandidateForm: {
       tempData,
-      data: {
-        // documentsByCandidate = [],
-        // documentsByCandidateRD = [],
-        privateEmail = '',
-        candidate = '',
-        processStatus,
-        workHistory = [],
-      },
+      tempData: { documentsByCandidate = [] } = {},
+      data: { candidate = '', processStatus, workHistory = [] },
       currentStep,
       data = {},
     },
     loading,
   }) => ({
     tempData,
+    documentsByCandidate,
     data,
     workHistory,
-    privateEmail,
     candidate,
     currentStep,
     processStatus,
-    loading1: loading.effects['newCandidateForm/sendDocumentStatusEffect'],
     loadingGetById: loading.effects['newCandidateForm/fetchCandidateByRookie'],
   }),
 )
@@ -49,19 +42,15 @@ class BackgroundRecheck extends Component {
 
   constructor(props) {
     super(props);
-    // const {
-    //   tempData: { backgroundRecheck: { documentList: docsListProp = [] } = {} } = {},
-    // } = this.props;
     this.state = {
       docsList: [],
-      feedbackStatus: '',
-      openModal: false,
-      modalTitle: '',
+      // openModal: false,
+      // modalTitle: '',
     };
   }
 
   componentDidMount = async () => {
-    window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+    window.scrollTo({ top: 77, behavior: 'smooth' });
     const { data: { _id = '' } = {} } = this.props;
 
     if (_id) {
@@ -106,13 +95,7 @@ class BackgroundRecheck extends Component {
   };
 
   firstInit = async () => {
-    const {
-      dispatch,
-      candidate,
-      processStatus = '',
-      tempData: { documentsByCandidate = [] } = {},
-    } = this.props;
-    const { PROVISIONAL_OFFER_DRAFT, SENT_PROVISIONAL_OFFERS, PENDING } = PROCESS_STATUS;
+    const { dispatch, candidate, documentsByCandidate = [] } = this.props;
 
     if (documentsByCandidate.length > 0) {
       await dispatch({
@@ -125,21 +108,6 @@ class BackgroundRecheck extends Component {
         if (res.statusCode === 200) {
           this.processDocumentData(documentsByCandidate);
         }
-      });
-    }
-
-    if (
-      processStatus === PROVISIONAL_OFFER_DRAFT ||
-      processStatus === SENT_PROVISIONAL_OFFERS ||
-      processStatus === PENDING
-    ) {
-      dispatch({
-        type: 'newCandidateForm/updateByHR',
-        payload: {
-          candidate,
-          // currentStep: 3,
-          tenantId: getCurrentTenant(),
-        },
       });
     }
   };
@@ -229,160 +197,30 @@ class BackgroundRecheck extends Component {
     });
   };
 
-  sendDocumentStatus = (doc) => {
-    const { candidate = '', dispatch } = this.props;
-    // const { verifiedDocs = [], resubmitDocs = [], ineligibleDocs = [] } = this.state;
-    const { _id = '', candidateDocumentStatus = '' } = doc;
-    let newCandidateDocumentStatus = 0;
-    switch (candidateDocumentStatus) {
-      case 'VERIFIED': {
-        newCandidateDocumentStatus = 1;
-        break;
-      }
-      case 'RE-SUBMIT': {
-        newCandidateDocumentStatus = 2;
-        break;
-      }
-      case 'INELIGIBLE': {
-        newCandidateDocumentStatus = 3;
-        break;
-      }
-      default: {
-        break;
-      }
-    }
-    dispatch({
-      type: 'newCandidateForm/checkDocumentEffect',
-      payload: {
-        candidate,
-        document: _id,
-        candidateDocumentStatus: newCandidateDocumentStatus,
-        tenantId: getCurrentTenant(),
-      },
-    });
-  };
-
-  handleSendEmail = async () => {
-    const { dispatch, candidate } = this.props;
-    if (!dispatch) {
-      return;
-    }
-    const res = await dispatch({
-      type: 'newCandidateForm/sendDocumentStatusEffect',
-      payload: {
-        candidate,
-        options: 2,
-        tenantId: getCurrentTenant(),
-      },
-    });
-
-    const { statusCode } = res;
-    if (statusCode !== 200) {
-      return;
-    }
-    this.setState({
-      modalTitle: 'Sent re-submit mail to candidate',
-      openModal: true,
-    });
-  };
-
-  closeCandidate = async () => {
-    const { dispatch, candidate } = this.props;
-    if (!dispatch) {
-      return;
-    }
-    const res = await dispatch({
-      type: 'newCandidateForm/closeCandidate',
-      payload: {
-        candidate,
-      },
-    });
-    const { statusCode } = res;
-    if (statusCode !== 200) {
-      return;
-    }
-    this.setState({
-      modalTitle: 'Closed candidate',
-      openModal: true,
-    });
-  };
-
-  handleCheckDocument = (event, indexGroupDoc, document) => {
-    const { tempData, dispatch } = this.props;
-    const { documentsByCandidateRD } = tempData;
-    // const { documentsByCandidateRD, dispatch } = this.props;
-    const candidateDocumentStatus = event.target.value;
-
-    const docsByCandidateRDCheck = documentsByCandidateRD;
-
-    const checkedDocument = {
-      ...document,
-      candidateDocumentStatus,
-    };
-    const typeIndex = docsByCandidateRDCheck.findIndex((item, index) => index === indexGroupDoc);
-    const checkLength = docsByCandidateRDCheck[typeIndex].data.length;
-    if (checkLength > 0) {
-      const findIndexDoc = docsByCandidateRDCheck[typeIndex].data.findIndex(
-        (doc) => doc._id === document._id,
-      );
-      docsByCandidateRDCheck[typeIndex].data[findIndexDoc] = checkedDocument;
-
-      // ------------------- MODIFY
-      const newDocumentList = [];
-      docsByCandidateRDCheck.map((item) => {
-        const { data = [] } = item;
-        data.map((documentItem) => {
-          newDocumentList.push(documentItem);
-          return null;
-        });
-        return null;
-      });
-
-      if (newDocumentList.length === 0) {
-        return;
-      }
-      let status = 'VERIFIED';
-      const newVerifiedDocs = [];
-      const newResubmitDocs = [];
-      const newIneligibleDocs = [];
-
-      newDocumentList.forEach((doc) => {
-        const { candidateDocumentStatus: candidateDocStatus = '' } = doc;
-        if (candidateDocStatus === 'RE-SUBMIT') {
-          status = 'RE-SUBMIT';
-          newResubmitDocs.push(doc);
-          this.sendDocumentStatus(doc);
-          return null;
-        }
-        if (candidateDocStatus === 'INELIGIBLE') {
-          status = 'INELIGIBLE';
-          newIneligibleDocs.push(doc);
-          this.sendDocumentStatus(doc);
-          return null;
-        }
-        newVerifiedDocs.push(doc);
-        this.sendDocumentStatus(doc);
-        return null;
-      });
-
-      // -------------------  END MODIFY
-      this.setState({
-        docsList: [...docsByCandidateRDCheck],
-        feedbackStatus: status,
-      });
-
-      dispatch({
-        type: 'newCandidateForm/saveOrigin',
-        payload: {
-          documentsByCandidateRD: docsByCandidateRDCheck,
-        },
-      });
-    }
-  };
+  // closeCandidate = async () => {
+  //   const { dispatch, candidate } = this.props;
+  //   if (!dispatch) {
+  //     return;
+  //   }
+  //   const res = await dispatch({
+  //     type: 'newCandidateForm/closeCandidate',
+  //     payload: {
+  //       candidate,
+  //     },
+  //   });
+  //   const { statusCode } = res;
+  //   if (statusCode !== 200) {
+  //     return;
+  //   }
+  //   this.setState({
+  //     modalTitle: 'Closed candidate',
+  //     openModal: true,
+  //   });
+  // };
 
   renderCollapseFields = () => {
     const { docsList: documentsCandidateList = [] } = this.state;
-    const { loadingGetById = false } = this.props;
+    const { loadingGetById = false, processStatus = '' } = this.props;
     if (loadingGetById) {
       return <Skeleton active />;
     }
@@ -391,64 +229,61 @@ class BackgroundRecheck extends Component {
       <>
         {documentsCandidateList.map((document) => {
           if (document.type !== 'E') {
-            return (
-              <CollapseField
-                item={document}
-                // handleCheckDocument={this.handleCheckDocument}
-              />
-            );
+            return <CollapseField item={document} processStatus={processStatus} />;
           }
           return '';
         })}
-        <PreviousEmployment
-          docList={documentsCandidateList}
-          handleCheckDocument={this.handleCheckDocument}
-        />
+        <PreviousEmployment docList={documentsCandidateList} processStatus={processStatus} />
       </>
     );
   };
 
-  closeModal = () => {
-    this.setState({
-      openModal: false,
-    });
-  };
+  // closeModal = () => {
+  //   this.setState({
+  //     openModal: false,
+  //   });
+  // };
 
   onClickPrev = () => {
-    // const { currentStep } = this.state;
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'newCandidateForm/save',
-    //   payload: {
-    //     currentStep: currentStep - 1,
-    //   },
-    // });
+    const {
+      tempData: { ticketID = '' },
+    } = this.props;
+    history.push(`/onboarding/list/view/${ticketID}/job-details`);
   };
 
   onClickNext = async () => {
-    // const { currentStep } = this.state;
-    const { dispatch, candidate } = this.props;
-
-    // dispatch({
-    //   type: 'newCandidateForm/save',
-    //   payload: {
-    //     currentStep: currentStep + 1,
-    //   },
-    // });
+    const { currentStep } = this.state;
+    const {
+      dispatch,
+      candidate,
+      processStatus = '',
+      tempData: { ticketID = '' },
+    } = this.props;
 
     await dispatch({
       type: 'newCandidateForm/updateByHR',
       payload: {
         candidate,
         tenantId: getCurrentTenant(),
-        // currentStep: currentStep + 1,
-        processStatus: PROCESS_STATUS.ELIGIBLE_CANDIDATES,
+        currentStep: NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION ? 3 : currentStep,
+        processStatus: NEW_PROCESS_STATUS.SALARY_NEGOTIATION,
       },
+    }).then(({ statusCode }) => {
+      if (statusCode === 200) {
+        dispatch({
+          type: 'newCandidateForm/save',
+          payload: {
+            currentStep:
+              processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION ? 3 : currentStep,
+          },
+        });
+
+        history.push(`/onboarding/list/view/${ticketID}/salary-structure`);
+      }
     });
   };
 
   _renderBottomBar = () => {
-    // const { feedbackStatus } = this.state;
     const { docsList } = this.state;
     const checkStatus = this.checkStatus(docsList);
     return (
@@ -534,8 +369,6 @@ class BackgroundRecheck extends Component {
   };
 
   render() {
-    const { docsList, feedbackStatus, openModal, modalTitle } = this.state;
-    const { privateEmail, loading1 } = this.props;
     const Note = {
       title: formatMessage({ id: 'component.noteComponent.title' }),
       data: (
@@ -566,48 +399,14 @@ class BackgroundRecheck extends Component {
             <Row>
               <NoteComponent note={Note} />
             </Row>
-            {/* <Row className={styles.stepRow}>
-              <Feedback checkStatus={this.checkStatus} docsList={docsList} />
-            </Row> */}
-
-            {/** //////////////////////////////////////////////////////////////////////////////////////////////////// */}
-            {/* {feedbackStatus === 'RE-SUBMIT' && (
-              <Row className={styles.stepRow}>
-                <SendEmail
-                  title="Send final offer to the candidate"
-                  formatMessage={formatMessage}
-                  handleSendEmail={this.handleSendEmail}
-                  isSentEmail={false}
-                  privateEmail={privateEmail}
-                  loading={loading1}
-                  // email={privateEmail}
-                />
-              </Row>
-            )} */}
-            {/** //////////////////////////////////////////////////////////////////////////////////////////////////// */}
-
-            {/* <Row className={styles.stepRow}>
-              <button className={styles.close}>close candidature</button>
-            </Row> */}
-            {/* {feedbackStatus === 'INELIGIBLE' && (
-              <Row className={styles.stepRow}>
-                <div className={styles.closeWrapper}>
-                  <h3>Acceptance of background check by HR</h3>
-                  <p>The background check has been rejected by HR</p>
-                  <button type="button" className={styles.close} onClick={this.closeCandidate}>
-                    close candidature
-                  </button>
-                </div>
-              </Row>
-            )} */}
           </Col>
         </Row>
 
-        <CustomModal
+        {/* <CustomModal
           open={openModal}
           closeModal={this.closeModal}
           content={<CloseCandidateModal closeModal={this.closeModal} title={modalTitle} />}
-        />
+        /> */}
       </div>
     );
   }

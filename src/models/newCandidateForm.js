@@ -1300,16 +1300,25 @@ const newCandidateForm = {
       return response;
     },
 
-    *checkDocumentEffect({ payload }, { call }) {
+    *checkDocumentEffect({ payload }, { put, call }) {
       let response = {};
+
+      const { candidate } = payload;
       try {
         response = yield call(checkDocument, {
           ...payload,
           tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
+        yield put({
+          type: 'fetchDocumentByCandidateID',
+          payload: {
+            candidate,
+            tenantId: payload.tenantId,
+            document: payload.document,
+          },
+        });
       } catch (error) {
         dialog(error);
       }

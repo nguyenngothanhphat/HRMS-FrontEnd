@@ -6,6 +6,8 @@ import ViewDocumentModal from '@/components/ViewDocumentModal';
 import ResubmitIcon from '@/assets/resubmit.svg';
 import VerifiedIcon from '@/assets/verified.svg';
 import WarningIcon from '@/assets/warning-filled.svg';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import VerifyDocumentModal from '../VerifyDocumentModal';
 import styles from './index.less';
 
 class CollapseField extends Component {
@@ -13,44 +15,53 @@ class CollapseField extends Component {
     super(props);
     this.state = {
       visible: false,
+      openModal: false,
       url: '',
       displayName: '',
+      documentId: '',
+      candidateDocStatus: '',
     };
   }
 
-  openViewDocument = (displayName, attachment) => {
+  openDocument = (document = {}, key = '') => {
+    const { displayName, attachment, _id: documentId, candidateDocumentStatus } = document;
     const { url } = attachment;
     if (!attachment) {
       return;
     }
-    this.setState({
-      visible: true,
-      url,
-      displayName,
-    });
+
+    if (key === 'verify') {
+      this.setState({
+        openModal: true,
+        url,
+        displayName,
+        documentId,
+        candidateDocStatus: candidateDocumentStatus,
+      });
+    } else {
+      this.setState({
+        visible: true,
+        url,
+        displayName,
+      });
+    }
   };
 
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-      url: '',
-      displayName: '',
-    });
+  handleCancel = (key = 0) => {
+    if (key === 1) {
+      this.setState({
+        openModal: false,
+        url: '',
+        displayName: '',
+      });
+    } else {
+      this.setState({
+        visible: false,
+        url: '',
+        displayName: '',
+      });
+    }
   };
-
-  // renderClassnameOfFile = (candidateDocumentStatus) => {
-  //   let className = `${styles.file__content} `;
-  //   if (candidateDocumentStatus === 'VERIFIED') {
-  //     className += `${styles.file__content__file} `;
-  //   }
-  //   if (candidateDocumentStatus === 'RE-SUBMIT') {
-  //     className += `${styles.file__content__resubmit} `;
-  //   }
-  //   if (candidateDocumentStatus === 'INELIGIBLE') {
-  //     className += `${styles.file__content__ineligible} `;
-  //   }
-  //   return className;
-  // };
 
   renderStatusVerify = (fileName, candidateDocumentStatus) => {
     const formatStatus = (status) => {
@@ -81,8 +92,8 @@ class CollapseField extends Component {
   };
 
   render() {
-    const { item = {} } = this.props;
-    const { visible, url, displayName } = this.state;
+    const { item = {}, processStatus = '' } = this.props;
+    const { visible, url, displayName, openModal, documentId, candidateDocStatus } = this.state;
 
     return (
       <div className={styles.collapseField}>
@@ -107,28 +118,34 @@ class CollapseField extends Component {
             >
               <Space direction="vertical" className={styles.space}>
                 {item.data.map((document, index) => {
-                  const { attachment = { name: '' }, candidateDocumentStatus } = document;
+                  const { attachment = {}, candidateDocumentStatus = '' } = document;
                   const { name: fileName = '' } = attachment;
+
                   return (
                     <Row gutter={[16, 0]} className={styles.collapseField__row} key={index}>
-                      <Col span={17} className={styles.collapseField__row__name}>
+                      <Col span={12} className={styles.collapseField__row__name}>
                         <Typography.Text>{document.displayName}</Typography.Text>
                       </Col>
-                      <Col span={4} className={styles.collapseField__row__file}>
+                      <Col span={8} className={styles.collapseField__row__file}>
                         <div
                           onClick={() => {
                             if (!fileName) {
                               return;
                             }
-                            this.openViewDocument(document.displayName, attachment);
+                            const status = processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION;
+                            if (status) {
+                              this.openDocument(document, 'view');
+                            } else {
+                              this.openDocument(document, 'verify');
+                            }
                           }}
-                          className={styles.file__content__file}
+                          className={styles.file__content__fileName}
                         >
                           <img src={WarningIcon} alt="warning" />
-                          <div className={styles.file__content__file__text}>{fileName}</div>
+                          <div className={styles.file__content__fileName__text}>{fileName}</div>
                         </div>
                       </Col>
-                      <Col span={3} className={styles.collapseField__row__statusVerify}>
+                      <Col span={4} className={styles.collapseField__row__statusVerify}>
                         {this.renderStatusVerify(fileName, candidateDocumentStatus)}
                       </Col>
                     </Row>
@@ -145,11 +162,23 @@ class CollapseField extends Component {
           handleCancel={this.handleCancel}
           url={url}
         /> */}
+
         <ViewDocumentModal
           visible={visible}
           fileName={displayName}
           url={url}
           onClose={this.handleCancel}
+        />
+
+        <VerifyDocumentModal
+          visible={openModal}
+          docProps={{
+            candidateDocStatus,
+            documentId,
+            url,
+            displayName,
+          }}
+          onClose={() => this.handleCancel(1)}
         />
       </div>
     );

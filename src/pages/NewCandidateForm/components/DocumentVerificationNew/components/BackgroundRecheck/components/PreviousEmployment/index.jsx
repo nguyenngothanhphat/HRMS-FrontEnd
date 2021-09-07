@@ -1,11 +1,16 @@
 /* eslint-disable react/no-array-index-key */
 import React, { Component } from 'react';
-import { Collapse, Checkbox, Space, Col, Row, Typography, Radio } from 'antd';
+import { Collapse, Checkbox, Space, Col, Row, Typography } from 'antd';
 import { PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
+import WarningIcon from '@/assets/warning-filled.svg';
+import ResubmitIcon from '@/assets/resubmit.svg';
+import VerifiedIcon from '@/assets/verified.svg';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import InputField from '../InputField';
 import styles from './index.less';
+import VerifyDocumentModal from '../VerifyDocumentModal';
 
 @connect(({ newCandidateForm: { candidate = '', data, tempData } = {} }) => ({
   data,
@@ -17,49 +22,86 @@ class PreviousEmployment extends Component {
     super(props);
     this.state = {
       visible: false,
+      openModal: false,
       url: '',
       displayName: '',
+      documentId: '',
+      candidateDocStatus: '',
     };
   }
 
-  openViewDocument = (displayName, attachment) => {
+  openDocument = (document = {}, key = '') => {
+    const { displayName, attachment, _id: documentId, candidateDocumentStatus } = document;
     const { url } = attachment;
     if (!attachment) {
       return;
     }
-    this.setState({
-      visible: true,
-      url,
-      displayName,
-    });
+
+    if (key === 'verify') {
+      this.setState({
+        openModal: true,
+        url,
+        displayName,
+        documentId,
+        candidateDocStatus: candidateDocumentStatus,
+      });
+    } else {
+      this.setState({
+        visible: true,
+        url,
+        displayName,
+      });
+    }
   };
 
-  handleCancel = () => {
-    this.setState({
-      visible: false,
-      url: '',
-      displayName: '',
-    });
+  handleCancel = (key = 0) => {
+    if (key === 1) {
+      this.setState({
+        openModal: false,
+        url: '',
+        displayName: '',
+      });
+    } else {
+      this.setState({
+        visible: false,
+        url: '',
+        displayName: '',
+      });
+    }
   };
 
-  renderClassnameOfFile = (candidateDocumentStatus) => {
-    let className = `${styles.file__content} `;
-    if (candidateDocumentStatus === 'VERIFIED') {
-      className += `${styles.file__content__verified} `;
-    }
-    if (candidateDocumentStatus === 'RE-SUBMIT') {
-      className += `${styles.file__content__resubmit} `;
-    }
-    if (candidateDocumentStatus === 'INELIGIBLE') {
-      className += `${styles.file__content__ineligible} `;
-    }
-    return className;
+  renderStatusVerify = (fileName, candidateDocumentStatus) => {
+    const formatStatus = (status) => {
+      if (status === 'RE-SUBMIT') {
+        return (
+          <div className={styles.resubmit}>
+            <div>Resubmit</div>
+            <img src={ResubmitIcon} alt="re-submit" />
+          </div>
+        );
+      }
+      if (status === 'VERIFIED') {
+        return (
+          <div className={styles.verified}>
+            <div>Verified</div>
+            <img src={VerifiedIcon} alt="verified" />
+          </div>
+        );
+      }
+
+      return (
+        <div className={styles.pending}>
+          <div>Pending Verification</div>
+        </div>
+      );
+    };
+    return <>{fileName && <>{formatStatus(candidateDocumentStatus)}</>}</>;
   };
 
-  renderEmployer = (item, docListE, indexGroupDoc, firstIndex) => {
+  renderEmployer = (item, docListE, indexGroupDoc) => {
     const {
-      handleCheckDocument = () => {},
       data: { workHistory = [] },
+      processStatus = '',
     } = this.props;
 
     const currentCompany = workHistory.filter((value) => value.toPresent) || [];
@@ -92,42 +134,30 @@ class PreviousEmployment extends Component {
           const { name: fileName = '' } = attachment;
           return (
             <Row gutter={[16, 0]} className={styles.previousEmployment__row} key={index}>
-              <Col span={6} className={styles.previousEmployment__row__name}>
+              <Col span={12} className={styles.previousEmployment__row__name}>
                 <Typography.Text>{document.displayName}</Typography.Text>
               </Col>
-              <Col span={7} className={styles.previousEmployment__row__file}>
+              <Col span={8} className={styles.previousEmployment__row__file}>
                 <div
                   onClick={() => {
                     if (!fileName) {
                       return;
                     }
-                    this.openViewDocument(document.displayName, attachment);
+                    const status = processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION;
+                    if (status) {
+                      this.openDocument(document, 'view');
+                    } else {
+                      this.openDocument(document, 'verify');
+                    }
                   }}
-                  className={this.renderClassnameOfFile(candidateDocumentStatus)}
+                  className={styles.file__content__fileName}
                 >
-                  <span>{fileName}</span>
+                  <img src={WarningIcon} alt="warning" />
+                  <div className={styles.file__content__fileName__text}>{fileName}</div>
                 </div>
               </Col>
-              <Col span={11} className={styles.previousEmployment__row__radio}>
-                {fileName && (
-                  <Radio.Group
-                    name="radiogroup"
-                    defaultValue={candidateDocumentStatus}
-                    onChange={(event) => {
-                      handleCheckDocument(event, indexGroupDoc + firstIndex, document, 'E');
-                    }}
-                  >
-                    <Radio value="VERIFIED" className={styles.verified}>
-                      Verified
-                    </Radio>
-                    <Radio value="RE-SUBMIT" className={styles.resubmit}>
-                      Re-submit
-                    </Radio>
-                    <Radio value="INELIGIBLE" className={styles.ineligible}>
-                      Ineligible
-                    </Radio>
-                  </Radio.Group>
-                )}
+              <Col span={4} className={styles.previousEmployment__row__statusVerify}>
+                {this.renderStatusVerify(fileName, candidateDocumentStatus)}
               </Col>
             </Row>
           );
@@ -139,7 +169,7 @@ class PreviousEmployment extends Component {
 
   render() {
     const { docList = [] } = this.props;
-    const { visible, url, displayName } = this.state;
+    const { visible, url, displayName, openModal, documentId, candidateDocStatus } = this.state;
     const docListE = docList.filter((d) => d.type === 'E');
     const firstIndex = docList.findIndex((d) => d.type === 'E');
     return (
@@ -166,7 +196,7 @@ class PreviousEmployment extends Component {
               <Space direction="vertical" className={styles.space}>
                 {docList.map((doc, i) => {
                   if (doc.type === 'E') {
-                    return this.renderEmployer(doc, docListE, i - firstIndex, firstIndex);
+                    return this.renderEmployer(doc, docListE, i - firstIndex);
                   }
                   return '';
                 })}
@@ -180,6 +210,16 @@ class PreviousEmployment extends Component {
           fileName={displayName}
           url={url}
           onClose={this.handleCancel}
+        />
+        <VerifyDocumentModal
+          visible={openModal}
+          docProps={{
+            candidateDocStatus,
+            documentId,
+            url,
+            displayName,
+          }}
+          onClose={() => this.handleCancel(1)}
         />
       </div>
     );
