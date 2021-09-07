@@ -88,7 +88,7 @@ class JobDetails extends PureComponent {
     } = this.props;
 
     if (department && workLocation && title && reportingManager) {
-      if (typeof workLocation === 'string') {
+      if (typeof department === 'string') {
         if (typeof reportingManager === 'string') {
           checkStatus.filledJobDetail = true;
         }
@@ -458,7 +458,7 @@ class JobDetails extends PureComponent {
         title: 'reportees',
         name: 'Reportees',
         id: 6,
-        placeholder: 'Select reportees',
+        placeholder: 'Please select a choice',
       },
     ];
     const candidateField = [

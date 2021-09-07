@@ -178,7 +178,7 @@ class FirstFieldsComponent extends PureComponent {
                       label={item.name}
                       rules={[
                         {
-                          required: item.title !== 'reportingManager',
+                          required: item.title !== 'reportingManager' || item.title !== 'reportees',
                           message: `Please select the ${item.name}`,
                         },
                       ]}
@@ -188,6 +188,7 @@ class FirstFieldsComponent extends PureComponent {
                         loading={
                           (item.title === 'title' ? loading2 : null) ||
                           (item.title === 'reportingManager' ? loading3 : null) ||
+                          (item.title === 'reportees' ? loading3 : null) ||
                           (item.title === 'department' ? loading1 : null)
                         }
                         placeholder={item.placeholder}
@@ -197,6 +198,7 @@ class FirstFieldsComponent extends PureComponent {
                         disabled={
                           !!(item.title === 'grade' && jobGradeList.length <= 0) ||
                           (item.title === 'reportingManager' && managerList.length <= 0) ||
+                          (item.title === 'reportees' && managerList.length <= 0) ||
                           (item.title === 'department' && departmentList.length <= 0) ||
                           (item.title === 'title' && titleList.length <= 0) ||
                           (item.title === 'grade' && disabled) ||
@@ -282,6 +284,14 @@ class FirstFieldsComponent extends PureComponent {
                             )}
                           </>
                         ) : item.title === 'reportingManager' && showManagerListAB.length > 0 ? (
+                          showManagerListAB.map((data, index) => (
+                            <Option value={data._id} key={index}>
+                              {data.generalInfo && data.generalInfo?.firstName
+                                ? `${data.generalInfo?.firstName} (${data.generalInfo?.workEmail})`
+                                : ''}
+                            </Option>
+                          ))
+                        ) : item.title === 'reportees' && showManagerListAB.length > 0 ? (
                           showManagerListAB.map((data, index) => (
                             <Option value={data._id} key={index}>
                               {data.generalInfo && data.generalInfo?.firstName
