@@ -10,7 +10,7 @@ import DocumentVerification from './components/DocumentVerification';
   user,
   loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
 }))
-class MessageBox extends PureComponent {
+class EligibilityDocuments extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {};
@@ -35,4 +35,4 @@ class MessageBox extends PureComponent {
   }
 }
 
-export default MessageBox;
+export default EligibilityDocuments;

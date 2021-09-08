@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
+import MessageBox from '@/pages/CandidatePortal/components/Candidate/components/MessageBox';
 import NoteComponent from '../../../NoteComponent';
 // import CloseCandidateModal from './components/CloseCandidateModal';
 import CollapseField from './components/CollapseField';
@@ -397,6 +398,9 @@ class BackgroundRecheck extends Component {
           <Col className={styles.backgroundRecheck__right} xs={24} sm={24} md={24} lg={8} xl={8}>
             <Row>
               <NoteComponent note={Note} />
+            </Row>
+            <Row>
+              <MessageBox />
             </Row>
           </Col>
         </Row>
