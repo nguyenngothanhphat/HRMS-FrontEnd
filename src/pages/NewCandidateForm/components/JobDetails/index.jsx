@@ -82,12 +82,19 @@ class JobDetails extends PureComponent {
 
   checkFilled = () => {
     const {
-      tempData: { department, workLocation, title, reportingManager, checkStatus },
+      tempData: {
+        department,
+        workLocation,
+        title,
+        reportingManager,
+        checkStatus,
+        prefferedDateOfJoining,
+      },
       checkMandatory,
       dispatch,
     } = this.props;
 
-    if (department && workLocation && title && reportingManager) {
+    if (department && workLocation && title && reportingManager && prefferedDateOfJoining) {
       if (typeof department === 'string') {
         if (typeof reportingManager === 'string') {
           checkStatus.filledJobDetail = true;

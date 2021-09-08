@@ -41,7 +41,7 @@ class CollapseFieldsTypeD extends PureComponent {
     return (
       <div className={styles.header}>
         <Checkbox
-          checked
+          // checked
           disabled={disabled}
           // onClick={(event) => this.onCheckAllChange(event)}
         />
@@ -72,7 +72,7 @@ class CollapseFieldsTypeD extends PureComponent {
         <Collapse
           accordion
           expandIconPosition="right"
-          // defaultActiveKey="1"
+          defaultActiveKey={disabled ? '1' : ''}
           expandIcon={(props) => {
             return props.isActive ? (
               <MinusOutlined className={styles.alternativeExpandIcon} />

@@ -180,7 +180,7 @@ class CollapseFieldsTypeABC extends PureComponent {
         <Collapse
           accordion
           expandIconPosition="right"
-          // defaultActiveKey="1"
+          defaultActiveKey={disabled ? '1' : ''}
           expandIcon={(props) => {
             return props.isActive ? (
               <MinusOutlined className={styles.alternativeExpandIcon} />

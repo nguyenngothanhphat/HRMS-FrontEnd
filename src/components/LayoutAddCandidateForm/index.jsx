@@ -101,7 +101,7 @@ class LayoutAddCandidateForm extends Component {
                 item={item}
                 handelClick={this._handleClick}
                 selectedItemId={selectedItemId}
-                // isDisabled={currentStep < index}
+                isDisabled={currentStep < index}
                 isCompleted={currentStep > index}
               />
             ))}
