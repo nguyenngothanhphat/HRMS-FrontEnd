@@ -3,7 +3,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { PureComponent } from 'react';
 import { Row, Col, Select, Spin, Form, Checkbox, Dropdown, Input } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, LoadingOutlined } from '@ant-design/icons';
 import { isNull } from 'lodash';
 import { connect } from 'umi';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -155,7 +155,7 @@ class FirstFieldsComponent extends PureComponent {
   };
 
   reporteesField = (item, showManagerListAB) => {
-    const { styles, loading3, disabled, reportees } = this.props;
+    const { loading3, disabled, reportees } = this.props;
     const { visible, inputVal } = this.state;
 
     return (
@@ -172,8 +172,9 @@ class FirstFieldsComponent extends PureComponent {
           value={inputVal}
           placeholder={item.placeholder}
           onChange={this.onChangeInput}
-          suffix={<DownOutlined />}
+          suffix={loading3 ? <LoadingOutlined /> : <DownOutlined />}
           className={InternalStyle.rootDropdown__input}
+          loading
         />
       </Dropdown>
     );
