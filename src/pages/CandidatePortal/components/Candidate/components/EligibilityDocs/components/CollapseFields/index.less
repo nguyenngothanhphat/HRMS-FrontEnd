@@ -4,21 +4,26 @@
 .CollapseField {
   margin-bottom: 1rem;
   overflow: hidden;
+  border: 1px solid #d6dce0;
+  border-radius: 5px;
   :global {
+    .ant-collapse > .ant-collapse-item {
+      border: none;
+    }
     .ant-collapse-extra {
-      font-size: 12px;
-      float: none !important;
       display: inline;
+      float: none !important;
       color: @color-grey;
+      font-size: 12px;
     }
     .ant-collapse-arrow {
-      padding: 0px !important
+      padding: 0px !important;
     }
     svg {
       width: 20px;
       height: 20px;
-      color: @color-blue;
       margin-right: 21px !important;
+      color: @color-blue;
       &:last-child {
         margin-right: 0;
       }
@@ -27,12 +32,11 @@
       padding: 16px 16px 6px;
     }
     .ant-collapse {
-      border-radius: 5px;
-      // border: solid 1px #d6dce0;
       overflow: hidden;
+      border: none;
       .ant-collapse-item > .ant-collapse-header {
-        background-color: #fff;
         padding: 32px;
+        background-color: #fff;
       }
     }
     .ant-checkbox-disabled + span {
@@ -43,10 +47,10 @@
     }
     span.anticon-calendar {
       svg {
-        color: #000;
-        margin-right: 0 !important;
         width: 14px;
         height: 14px;
+        margin-right: 0 !important;
+        color: #000;
       }
     }
     .ant-space-horizontal {
@@ -61,8 +65,8 @@
     }
   }
   .checkbox {
-    color: #161c29;
     padding-right: 1rem;
+    color: #161c29;
     font-size: 14px;
     &:hover {
       border-radius: 5px;
@@ -96,7 +100,6 @@
     span {
       &:last-child {
         padding-left: 1rem;
-        // padding-top: 1rem;
       }
     }
   }
@@ -104,17 +107,16 @@
     width: 100%;
     .checkboxItem {
       display: flex;
-      color: #161c29;
       margin-bottom: 1rem;
       padding: 5px 2px;
+      color: #161c29;
       .viewLoading {
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
         height: 100%;
       }
       .Padding {
-        // margin-left: 14px;
       }
       .textAlign {
         text-align: left;
@@ -123,12 +125,12 @@
           font-weight: 500;
         }
         .modify {
-          font-weight: 500;
           color: #47c97f;
+          font-weight: 500;
         }
         .upload {
+          color: #2c6df9;
           font-weight: 500;
-          color: #2C6DF9;
         }
       }
       .textAlignCenter {
@@ -174,13 +176,13 @@
     }
     .checkboxItemError {
       display: flex;
-      background-color: rgba(255, 108, 108, 0.2);
       margin-bottom: 1rem;
-      border-radius: 5px;
       padding: 5px 2px;
+      background-color: rgba(255, 108, 108, 0.2);
+      border-radius: 5px;
       .textAlign {
-        text-align: left;
         letter-spacing: 0.13px;
+        text-align: left;
         .textLeft {
           text-align: left;
         }
@@ -202,7 +204,6 @@
     }
     span {
       &:last-child {
-        // padding-top: 1rem;
         padding-left: 1rem;
       }
       &:first {
@@ -218,12 +219,12 @@
   }
   .addMore {
     color: @color-blue;
-    cursor: pointer;
     font-weight: 500;
-    font-stretch: normal;
     font-style: normal;
+    font-stretch: normal;
     line-height: normal;
     letter-spacing: 0.12px;
+    cursor: pointer;
   }
 }
 

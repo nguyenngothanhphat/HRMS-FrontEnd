@@ -3,7 +3,6 @@ import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import { Checkbox, Collapse } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { PROCESS_STATUS } from '@/utils/onboarding';
 import Certification from './components/Certification';
 import styles from './index.less';
 
@@ -67,48 +66,50 @@ class CollapseFieldsTypeD extends PureComponent {
   };
 
   render() {
-    const { processStatus = '', disabled = false, certifications = {} } = this.props;
+    const { disabled = false, certifications = {} } = this.props;
     return (
       <div className={styles.CollapseFieldsTypeD}>
-        {(certifications?.data?.length > 0 ||
-          processStatus === PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT) && (
-          <Collapse
-            accordion
-            expandIconPosition="right"
-            defaultActiveKey="1"
-            expandIcon={(props) => {
-              return props.isActive ? (
-                <MinusOutlined className={styles.alternativeExpandIcon} />
-              ) : (
-                <PlusOutlined className={styles.alternativeExpandIcon} />
-              );
-            }}
-          >
-            <Panel header={this.renderHeader()} key="1">
-              {certifications?.data?.length > 0 && (
-                <>
-                  {certifications.data.map((cer, index) => (
-                    <Certification
-                      disabled={disabled}
-                      certification={cer}
-                      length={certifications.data.length}
-                      handleChange={this.handleChangeCertification}
-                      remove={this.handleRemoveCertification}
-                      index={index}
-                    />
-                  ))}
-                </>
-              )}
-              <div
-                className={disabled ? `${styles.disableButton} ${styles.addBtn}` : styles.addBtn}
-                onClick={disabled ? () => {} : this.handleAddCertification}
-              >
-                <PlusOutlined className={styles.plusIcon} />
-                <span className={styles.title}>Add other Certifications</span>
-              </div>
-            </Panel>
-          </Collapse>
-        )}
+        <Collapse
+          accordion
+          expandIconPosition="right"
+          // defaultActiveKey="1"
+          expandIcon={(props) => {
+            return props.isActive ? (
+              <MinusOutlined className={styles.alternativeExpandIcon} />
+            ) : (
+              <PlusOutlined className={styles.alternativeExpandIcon} />
+            );
+          }}
+        >
+          <Panel header={this.renderHeader()} key="1">
+            {certifications?.data?.length > 0 && (
+              <>
+                {certifications.data.map((cer, index) => (
+                  <Certification
+                    disabled={disabled}
+                    certification={cer}
+                    length={certifications.data.length}
+                    handleChange={this.handleChangeCertification}
+                    remove={this.handleRemoveCertification}
+                    index={index}
+                  />
+                ))}
+              </>
+            )}
+            {!disabled && (
+              <>
+                {certifications?.data?.length > 0 && <hr className={styles.divider} />}
+                <div
+                  className={disabled ? `${styles.disableButton} ${styles.addBtn}` : styles.addBtn}
+                  onClick={disabled ? () => {} : this.handleAddCertification}
+                >
+                  <PlusOutlined className={styles.plusIcon} />
+                  <span className={styles.title}>Add other Certifications</span>
+                </div>
+              </>
+            )}
+          </Panel>
+        </Collapse>
       </div>
     );
   }

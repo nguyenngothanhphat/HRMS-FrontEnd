@@ -707,7 +707,11 @@ const newCandidateForm = {
         });
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { test: data } });
+        // yield put({ type: 'save', payload: { test: data } });
+        yield put({
+          type: 'saveOrigin',
+          payload: { processStatus: data.processStatus || NEW_PROCESS_STATUS.PROFILE_VERIFICATION },
+        });
       } catch (error) {
         dialog(error);
       }
@@ -1086,6 +1090,7 @@ const newCandidateForm = {
             //   (data.offerLetter && data.offerLetter.attachment) ||
             //   (data.staticOfferLetter && data.staticOfferLetter.url),
             additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
+            isSentEmail: data.processStatus !== NEW_PROCESS_STATUS.DRAFT,
           },
         });
 

@@ -271,6 +271,7 @@ class OnboardTable extends Component {
         columnName: PROCESS_STATUS_1,
         width: getColumnWidth('processStatus', type),
         align: 'left',
+        fixed: 'right',
       },
       {
         dataIndex: 'actions',

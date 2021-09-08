@@ -344,14 +344,9 @@ class PreviousEmployment extends Component {
             <Collapse.Panel
               key="1"
               header={
-                <Checkbox
-                  className={styles.checkbox}
-                  onClick={(e) => e.stopPropagation()}
-                  // onChange={(e) => handleCheckAll(e, defaultArr, item)}
-                  checked
-                >
+                <span style={{ display: 'inline-block', marginRight: '20px' }}>
                   Type {docListE[0].type}: {docListE[0].name}
-                </Checkbox>
+                </span>
               }
               extra="[Can submit any of the below other than (*)mandatory]"
             >

@@ -1,7 +1,22 @@
-// color:
 @background-grey: #f6f7f9;
 @spacing-xxs: 4px;
 .DocumentVerification {
+  :global {
+    .ant-collapse {
+      border: none !important;
+      border-radius: 5px;
+    }
+    .ant-collapse-item {
+      border-radius: 5px;
+    }
+    .ant-collapse-content {
+      overflow: hidden;
+      border-radius: 0 0 5px 5px !important;
+    }
+    .ant-collapse > .ant-collapse-item {
+      border: none;
+    }
+  }
   .leftWrapper {
     .eliContainer {
       width: 100%;
@@ -25,10 +40,6 @@
     padding: 4 * @spacing-xxs;
     background-color: #ffffff;
     border: solid 1px #d6dce0;
-    // position: fixed;
-    // bottom: 0;
-    // width: inherit;
-    // height: 72px;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
 
@@ -69,7 +80,7 @@
           font-size: 14px;
           font-family: Roboto;
           letter-spacing: 0.13px;
-          // display: none;
+
           text-shadow: none;
           background-color: #ffa100;
           border: solid 1px #ffa100;

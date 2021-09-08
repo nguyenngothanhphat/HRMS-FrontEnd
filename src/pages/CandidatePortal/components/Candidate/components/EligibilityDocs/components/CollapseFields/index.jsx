@@ -214,14 +214,9 @@ class CollapseField extends Component {
             <Collapse.Panel
               key="1"
               header={
-                <Checkbox
-                  className={styles.checkbox}
-                  onClick={(e) => e.stopPropagation()}
-                  // onChange={(e) => handleCheckAll(e, defaultArr, item)}
-                  checked
-                >
+                <span style={{ display: 'inline-block', marginRight: '20px' }}>
                   Type {item.type}: {item.name}
-                </Checkbox>
+                </span>
               }
               extra="[Can submit any of the below other than (*)mandatory]"
             >

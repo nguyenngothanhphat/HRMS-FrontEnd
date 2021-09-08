@@ -48,7 +48,9 @@ class ModalEmail extends Component {
         <div className={style.body}>
           <Form no-style>
             <Radio.Group
-              disabled={filledDocumentVerification === false || filledDocumentVerification === undefined}
+              disabled={
+                filledDocumentVerification === false || filledDocumentVerification === undefined
+              }
               className={style.radioContainer}
             >
               {/* Email */}
@@ -86,9 +88,13 @@ class ModalEmail extends Component {
                     <Button
                       loading={loading4}
                       htmlType="submit"
-                      disabled={filledDocumentVerification === false || filledDocumentVerification === undefined}
+                      disabled={
+                        filledDocumentVerification === false ||
+                        filledDocumentVerification === undefined
+                      }
                       // eslint-disable-next-line react/jsx-props-no-spreading
-                      {...((filledDocumentVerification === false || filledDocumentVerification === undefined) && {
+                      {...((filledDocumentVerification === false ||
+                        filledDocumentVerification === undefined) && {
                         className: style.s,
                       })}
                     >
@@ -155,9 +161,13 @@ class ModalEmail extends Component {
 
                     <Form.Item className={style.s1}>
                       <Button
-                        disabled={filledDocumentVerification === false || filledDocumentVerification === undefined}
+                        disabled={
+                          filledDocumentVerification === false ||
+                          filledDocumentVerification === undefined
+                        }
                         // eslint-disable-next-line react/jsx-props-no-spreading
-                        {...((filledDocumentVerification === false || filledDocumentVerification === undefined) && {
+                        {...((filledDocumentVerification === false ||
+                          filledDocumentVerification === undefined) && {
                           className: style.s,
                         })}
                         loading={loading4}
