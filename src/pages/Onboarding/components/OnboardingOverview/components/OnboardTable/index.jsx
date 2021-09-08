@@ -177,7 +177,6 @@ class OnboardTable extends Component {
       ASSIGNEE_MANAGER,
       PROCESS_STATUS: PROCESS_STATUS_1,
     } = COLUMN_NAME;
-    const actionText = getActionText(type);
 
     const columns = [
       {
@@ -290,6 +289,7 @@ class OnboardTable extends Component {
             candidate = '',
             currentStep = 0,
           } = row;
+          const actionText = getActionText(type, processStatusId);
 
           const id = candidateId.replace('#', '') || '';
 
@@ -507,7 +507,8 @@ class OnboardTable extends Component {
           <Menu.Item>
             <div
               onClick={() =>
-                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)}
+                this.handleReassignModal(true, currentEmpId, id, processStatusId, type)
+              }
             >
               Re-assign
             </div>

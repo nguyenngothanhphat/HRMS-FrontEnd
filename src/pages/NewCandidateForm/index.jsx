@@ -4,6 +4,7 @@ import { connect, history } from 'umi';
 import LayoutAddCandidateForm from '@/components/LayoutAddCandidateForm';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentTenant } from '@/utils/authority';
+import { ONBOARDING_FORM_LINK, ONBOARDING_FORM_STEP_LINK } from '@/utils/onboarding';
 import BasicInformation from './components/BasicInformation';
 import Benefit from './components/Benefits';
 import DocumentVerificationNew from './components/DocumentVerificationNew';
@@ -12,7 +13,6 @@ import OfferDetail from './components/OfferDetail';
 import PreviewOffer from './components/PreviewOffer';
 import SalaryStructure from './components/SalaryStructure';
 import styles from './index.less';
-import { ONBOARDING_FORM_LINK, ONBOARDING_FORM_STEP_LINK } from '@/utils/onboarding';
 
 @connect(({ newCandidateForm = {}, user, loading }) => ({
   newCandidateForm,
