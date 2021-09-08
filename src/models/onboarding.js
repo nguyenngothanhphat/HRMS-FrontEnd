@@ -3,6 +3,7 @@ import _ from 'lodash';
 import { notification } from 'antd';
 
 import {
+  deleteDraft,
   getOnboardingList,
   getTotalNumberOnboardingList,
   handleExpiryTicket,
@@ -445,19 +446,59 @@ const onboarding = {
         // Refresh table tab OFFER_WITHDRAWN and current tab which has implemented action withdraw
 
         yield put({
-          type: 'onboarding/fetchOnboardList',
+          type: 'fetchOnboardList',
           payload: {
             processStatus: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
           },
         });
         yield put({
-          type: 'onboarding/fetchOnboardList',
+          type: 'fetchOnboardList',
           payload: {
             processStatus,
           },
         });
       } catch (errors) {
         dialog(errors);
+      }
+      return response;
+    },
+    *deleteTicketDraft({ payload = {}, processStatus = '' }, { call, put }) {
+      let response;
+      try {
+        const { id = '', tenantId = '' } = payload;
+        const req = {
+          rookieID: id,
+          tenantId,
+        };
+        response = yield call(deleteDraft, req);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+
+        // deleteTicket
+        yield put({
+          type: 'deleteTicket',
+          payload: id,
+        });
+        yield put({
+          type: 'fetchTotalNumberOfOnboardingListEffect',
+        });
+
+        if (processStatus === NEW_PROCESS_STATUS.DRAFT) {
+          yield put({
+            type: 'fetchOnboardList',
+            payload: {
+              processStatus,
+            },
+          });
+          yield put({
+            type: 'fetchOnboardListAll',
+            payload: {},
+          });
+        }
+
+        notification.success({ message: 'Delete ticket successfully.' });
+      } catch (error) {
+        dialog(error);
       }
       return response;
     },

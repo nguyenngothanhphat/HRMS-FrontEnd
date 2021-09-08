@@ -10,7 +10,6 @@ import {
   NEW_PROCESS_STATUS,
   ONBOARDING_FORM_LINK,
   ONBOARDING_FORM_STEP_LINK,
-  PROCESS_STATUS,
 } from '@/utils/onboarding';
 import { getAuthority, getCurrentTenant } from '@/utils/authority';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
@@ -49,7 +48,7 @@ class OnboardTable extends Component {
     };
   }
 
-  handleActionDelete = (id) => {
+  handleActionDelete = (id, processStatus) => {
     const { dispatch } = this.props;
 
     if (!dispatch) {
@@ -57,11 +56,12 @@ class OnboardTable extends Component {
     }
 
     dispatch({
-      type: 'onboard/deleteTicketDraft',
+      type: 'onboarding/deleteTicketDraft',
       payload: {
         id,
         tenantId: getCurrentTenant(),
       },
+      processStatus,
     });
   };
 
@@ -516,7 +516,11 @@ class OnboardTable extends Component {
         )}
         {isRemovable && (
           <Menu.Item disabled={!isRemovable}>
-            <div onClick={isRemovable ? () => this.handleActionDelete(id) : () => {}}>Delete</div>
+            <div
+              onClick={isRemovable ? () => this.handleActionDelete(id, processStatusId) : () => {}}
+            >
+              Delete
+            </div>
           </Menu.Item>
         )}
         {!isRemovable && (
