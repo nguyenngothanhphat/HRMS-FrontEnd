@@ -4,7 +4,7 @@ import { Button, Col, Row, Skeleton, Typography } from 'antd';
 import React, { Component } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import NoteComponent from '../../../NoteComponent';
 // import CloseCandidateModal from './components/CloseCandidateModal';
 import CollapseField from './components/CollapseField';
@@ -247,7 +247,7 @@ class BackgroundRecheck extends Component {
     const {
       tempData: { ticketID = '' },
     } = this.props;
-    history.push(`/onboarding/list/view/${ticketID}/job-details`);
+    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.JOB_DETAILS}`);
   };
 
   onClickNext = async () => {
@@ -277,7 +277,7 @@ class BackgroundRecheck extends Component {
           },
         });
 
-        history.push(`/onboarding/list/view/${ticketID}/salary-structure`);
+        history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`);
       }
     });
   };

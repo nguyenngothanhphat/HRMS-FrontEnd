@@ -8,8 +8,8 @@ import moment from 'moment';
 import MenuIcon from '@/assets/menuDots.svg';
 import {
   NEW_PROCESS_STATUS,
-  ONBOARDING_LINK,
-  ONBOARDING_STEP_LINK,
+  ONBOARDING_FORM_LINK,
+  ONBOARDING_FORM_STEP_LINK,
   PROCESS_STATUS,
 } from '@/utils/onboarding';
 import { getAuthority, getCurrentTenant } from '@/utils/authority';
@@ -102,8 +102,8 @@ class OnboardTable extends Component {
   renderCandidateId = (candidateId, row) => {
     const id = candidateId.replace('#', '') || '';
     const { currentStep = 0 } = row;
-    const find = ONBOARDING_STEP_LINK.find((v) => v.id === currentStep) || {
-      link: ONBOARDING_LINK.BASIC_INFORMATION,
+    const find = ONBOARDING_FORM_STEP_LINK.find((v) => v.id === currentStep) || {
+      link: ONBOARDING_FORM_LINK.BASIC_INFORMATION,
     };
     return (
       <Link to={`/onboarding/list/view/${id}/${find.link}`}>
@@ -357,8 +357,8 @@ class OnboardTable extends Component {
 
     const isRemovable = processStatusId === DRAFT;
     const isHRManager = this.checkPermission('hr-manager');
-    const find = ONBOARDING_STEP_LINK.find((v) => v.id === currentStep) || {
-      link: ONBOARDING_LINK.BASIC_INFORMATION,
+    const find = ONBOARDING_FORM_STEP_LINK.find((v) => v.id === currentStep) || {
+      link: ONBOARDING_FORM_LINK.BASIC_INFORMATION,
     };
 
     // const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;

@@ -3,7 +3,7 @@ import { Row, Col, Typography, Button, Skeleton } from 'antd';
 import { connect, formatMessage, history } from 'umi';
 import { isEmpty, isObject } from 'lodash';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, PROCESS_STATUS } from '@/utils/onboarding';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
@@ -338,7 +338,9 @@ class JobDetails extends PureComponent {
           },
         });
 
-        history.push(`/onboarding/list/view/${ticketID}/document-verification`);
+        history.push(
+          `/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.DOCUMENT_VERIFICATION}`,
+        );
       }
     });
   };
@@ -355,7 +357,7 @@ class JobDetails extends PureComponent {
     const {
       tempData: { ticketID = '' },
     } = this.props;
-    history.push(`/onboarding/list/view/${ticketID}/basic-information`);
+    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.BASIC_INFORMATION}`);
   };
 
   _renderBottomBar = () => {

@@ -13,7 +13,7 @@ import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
 import BasicInformationHeader from './components/BasicInformationHeader';
 import styles from './index.less';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 
 @connect(({ newCandidateForm: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
   data,
@@ -125,7 +125,7 @@ class BasicInformation extends PureComponent {
             currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 1 : currentStep,
           },
         });
-        history.push(`/onboarding/list/view/${ticketID}/job-details`);
+        history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.JOB_DETAILS}`);
       }
     });
   };

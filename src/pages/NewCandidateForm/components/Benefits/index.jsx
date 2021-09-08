@@ -11,7 +11,7 @@ import NoteComponent from '../NoteComponent';
 import styles from './index.less';
 import { Page } from '../../utils';
 import MessageBox from '../MessageBox';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 
 @connect(
   ({
@@ -231,7 +231,7 @@ class Benefits extends PureComponent {
     const { tempData = {} } = this.props;
     const { ticketID = '' } = tempData;
 
-    history.push(`/onboarding/list/view/${ticketID}/offer-details`);
+    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.OFFER_DETAILS}`);
   };
 
   onClickPrev = () => {
@@ -245,7 +245,7 @@ class Benefits extends PureComponent {
     const { tempData = {} } = this.props;
     const { ticketID = '' } = tempData;
 
-    history.push(`/onboarding/list/view/${ticketID}/document-verification`);
+    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.DOCUMENT_VERIFICATION}`);
   };
 
   _renderBottomBar = () => {

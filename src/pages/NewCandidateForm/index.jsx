@@ -12,7 +12,7 @@ import OfferDetail from './components/OfferDetail';
 import PreviewOffer from './components/PreviewOffer';
 import SalaryStructure from './components/SalaryStructure';
 import styles from './index.less';
-import { ONBOARDING_LINK, ONBOARDING_STEP_LINK } from '@/utils/onboarding';
+import { ONBOARDING_FORM_LINK, ONBOARDING_FORM_STEP_LINK } from '@/utils/onboarding';
 
 @connect(({ newCandidateForm = {}, user, loading }) => ({
   newCandidateForm,
@@ -35,7 +35,7 @@ class NewCandidateForm extends PureComponent {
     } = this.props;
 
     if (!tabName) {
-      history.push(`/onboarding/list/view/${reId}/${ONBOARDING_LINK.BASIC_INFORMATION}`);
+      history.push(`/onboarding/list/view/${reId}/${ONBOARDING_FORM_LINK.BASIC_INFORMATION}`);
     }
 
     // check action is add or review. If isReview fetch candidate by reID
@@ -52,9 +52,9 @@ class NewCandidateForm extends PureComponent {
         }
         const { _id, currentStep = '' } = data;
 
-        const find = ONBOARDING_STEP_LINK.find((l) => l.link === tabName) || {};
+        const find = ONBOARDING_FORM_STEP_LINK.find((l) => l.link === tabName) || {};
         if (currentStep <= find.id) {
-          const currentComponent = ONBOARDING_STEP_LINK.find((l) => l.id === currentStep);
+          const currentComponent = ONBOARDING_FORM_STEP_LINK.find((l) => l.id === currentStep);
           if (currentComponent) {
             history.push(`/onboarding/list/view/${reId}/${currentComponent.link}`);
           }
@@ -127,7 +127,7 @@ class NewCandidateForm extends PureComponent {
             processStatus={processStatus}
           />
         ),
-        link: ONBOARDING_LINK.BASIC_INFORMATION,
+        link: ONBOARDING_FORM_LINK.BASIC_INFORMATION,
       },
       {
         id: 2,
@@ -142,7 +142,7 @@ class NewCandidateForm extends PureComponent {
             processStatus={processStatus}
           />
         ),
-        link: ONBOARDING_LINK.JOB_DETAILS,
+        link: ONBOARDING_FORM_LINK.JOB_DETAILS,
       },
       {
         id: 3,
@@ -150,7 +150,7 @@ class NewCandidateForm extends PureComponent {
         key: 'backgroundCheck',
         // key: 'eligibilityDocuments',
         component: <DocumentVerificationNew />,
-        link: ONBOARDING_LINK.DOCUMENT_VERIFICATION,
+        link: ONBOARDING_FORM_LINK.DOCUMENT_VERIFICATION,
       },
       {
         id: 4,
@@ -163,14 +163,14 @@ class NewCandidateForm extends PureComponent {
             processStatus={processStatus}
           />
         ),
-        link: ONBOARDING_LINK.SALARY_STRUCTURE,
+        link: ONBOARDING_FORM_LINK.SALARY_STRUCTURE,
       },
       {
         id: 5,
         name: 'Benefits',
         key: 'benefits',
         component: <Benefit processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />,
-        link: ONBOARDING_LINK.BENEFITS,
+        link: ONBOARDING_FORM_LINK.BENEFITS,
       },
       {
         id: 6,
@@ -179,14 +179,14 @@ class NewCandidateForm extends PureComponent {
         component: (
           <OfferDetail processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />
         ),
-        link: ONBOARDING_LINK.OFFER_DETAILS,
+        link: ONBOARDING_FORM_LINK.OFFER_DETAILS,
       },
       {
         id: 7,
         name: 'Preview Offer Letter',
         key: 'offerLetter',
         component: <PreviewOffer />,
-        link: ONBOARDING_LINK.OFFER_LETTER,
+        link: ONBOARDING_FORM_LINK.OFFER_LETTER,
 
         isOfferLetter: !!offerLetterId,
       },
