@@ -44,6 +44,7 @@ import {
   checkDocument,
   sendDocumentStatus,
   getAdditionalQuestion,
+  verifyAllDocuments,
 } from '@/services/formCandidate';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 
@@ -1343,6 +1344,30 @@ const newCandidateForm = {
       const { candidate } = payload;
       try {
         response = yield call(checkDocument, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'fetchDocumentByCandidateID',
+          payload: {
+            candidate,
+            tenantId: payload.tenantId,
+            document: payload.document,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *verifyAllDocuments({ payload }, { put, call }) {
+      let response = {};
+      const { candidate } = payload;
+      try {
+        response = yield call(verifyAllDocuments, {
           ...payload,
           tenantId: getCurrentTenant(),
         });
