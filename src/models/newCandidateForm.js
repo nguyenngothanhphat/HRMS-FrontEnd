@@ -9,7 +9,7 @@ import {
   getEmployeeTypeList,
   getManagerList,
   submitBasicInfo,
-  getTableDataByTitle,
+  getTableDataByGrade,
   getTitleListByCompany,
   addCandidate,
   editSalaryStructure,
@@ -24,6 +24,7 @@ import {
   getDocumentByCandidate,
   getWorkHistory,
   generateLink,
+  getListCandidate,
 } from '@/services/newCandidateForm';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
@@ -198,6 +199,7 @@ const defaultState = {
     salaryLocation: null,
     settings: [],
     salaryStructure: {
+      salaryTemplate: {},
       salaryDepartment: '',
       salaryLocation: '',
       salaryTitle: '',
@@ -227,7 +229,9 @@ const defaultState = {
     compensationType: null,
     amountIn: null,
     timeOffPolicy: null,
+    listCandidate: [],
     salaryStructure: {
+      salaryTemplate: {},
       salaryDepartment: '',
       salaryLocation: '',
       salaryPosition: '',
@@ -290,7 +294,7 @@ const newCandidateForm = {
         const response = yield call(getGradeList);
         yield put({
           type: 'saveTemp',
-          payload: { jobGradeLevelList: response },
+          payload: { jobGradeLevelList: response.data },
         });
       } catch (error) {
         dialog(error);
@@ -612,35 +616,55 @@ const newCandidateForm = {
     *fetchTableData({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getTableDataByTitle, {
+        response = yield call(getTableDataByGrade, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
         const { statusCode, data } = response;
-        const { setting } = data;
+        const { settings } = data;
         if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveSalaryStructure',
-          payload: {
-            salaryDepartment: payload.department,
-            salaryLocation: payload.location,
-            salaryTitle: payload.title,
-            settings: setting,
-          },
-        });
-
-        yield put({
-          type: 'saveOrigin',
-          payload: {
-            salaryStructure: {
-              department: payload.department,
-              workLocation: payload.workLocation,
-              title: payload.title,
-              settings: setting,
+        if (payload.getSetting) {
+          let sum = 0;
+          const tempTableData = [...settings];
+          tempTableData.forEach((item) => {
+            if (item.key !== 'total_compensation') {
+              if (item.unit === '%') sum += (sum * item.value) / 100;
+              else sum += item.value;
+            }
+          });
+          const indexTotal = tempTableData.findIndex((item) => item.key === 'total_compensation');
+          tempTableData[indexTotal].value = Math.round(sum);
+          yield put({
+            type: 'saveSalaryStructure',
+            payload: {
+              salaryTemplate: data,
+              settings: tempTableData,
             },
-          },
-        });
+          });
+
+          yield put({
+            type: 'saveSalaryStructureOriginData',
+            payload: {
+              salaryTemplate: data,
+              settings: tempTableData,
+            },
+          });
+        } else {
+          yield put({
+            type: 'saveSalaryStructure',
+            payload: {
+              salaryTemplate: data,
+            },
+          });
+
+          yield put({
+            type: 'saveSalaryStructureOriginData',
+            payload: {
+              salaryTemplate: data,
+            },
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }
@@ -675,7 +699,7 @@ const newCandidateForm = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, message } = response;
+        const { statusCode, message: msg } = response;
         const candidate = payload._id;
         if (statusCode !== 200) throw response;
         yield put({
@@ -684,7 +708,7 @@ const newCandidateForm = {
         });
 
         notification.success({
-          message,
+          msg,
         });
       } catch (errors) {
         dialog(errors);
@@ -924,6 +948,25 @@ const newCandidateForm = {
     //   }
     //   return response;
     // },
+    *fetchListCandidate({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getListCandidate, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { data, statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: { listCandidate: data },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
 
     *fetchCandidateByRookie({ payload }, { call, put }) {
       let response = {};
@@ -957,6 +1000,13 @@ const newCandidateForm = {
             ...data,
             candidate: _id,
             _id,
+          },
+        });
+
+        yield put({
+          type: 'saveSalaryStructureOriginData',
+          payload: {
+            settings,
           },
         });
         yield put({
@@ -1447,7 +1497,19 @@ const newCandidateForm = {
         },
       };
     },
-
+    saveSalaryStructureOriginData(state, action) {
+      const { data } = state;
+      return {
+        ...state,
+        data: {
+          ...data,
+          salaryStructure: {
+            ...data.salaryStructure,
+            ...action.payload,
+          },
+        },
+      };
+    },
     updateSignature(state, action) {
       const { tempData } = state;
       const data = action.payload;

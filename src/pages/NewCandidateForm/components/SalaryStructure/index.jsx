@@ -24,7 +24,12 @@ const { TextArea } = Input;
   ({
     loading,
     newCandidateForm: {
-      data: { processStatus = '', candidate = '', _id: candidateId = '' },
+      data: {
+        processStatus = '',
+        candidate = '',
+        _id: candidateId = '',
+        salaryStructure: { settings = [] },
+      },
       tempData: { salaryTitle = '', salaryNote: salaryNoteTemp = '' } = {},
       salaryStructure = {},
       checkMandatory = {},
@@ -38,6 +43,7 @@ const { TextArea } = Input;
     candidate,
     currentStep,
     salaryTitle,
+    settings,
     loading2: loading.effects['newCandidateForm/fetchTitleList'],
     loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
     salaryNoteTemp,
@@ -135,7 +141,7 @@ class SalaryStructure extends PureComponent {
   };
 
   render() {
-    const { processStatus, salaryTitle = '', loadingFetchCandidate = false } = this.props;
+    const { processStatus, salaryTitle = '', loadingFetchCandidate = false, settings } = this.props;
     const Note = {
       title: 'Note',
       data: (
@@ -166,9 +172,7 @@ class SalaryStructure extends PureComponent {
         </Col>
         <Col xs={24} sm={24} md={24} lg={24} xl={8}>
           <div className={styles.rightWrapper}>
-            <Row>
-              {processStatus !== 'DRAFT' ? <SalaryAcceptance /> : <NoteComponent note={Note} />}
-            </Row>
+            <Row>{settings.length > 0 ? <SalaryAcceptance /> : <NoteComponent note={Note} />}</Row>
             <Row>
               <MessageBox />
             </Row>
