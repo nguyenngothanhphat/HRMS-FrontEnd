@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-param-reassign */
-import { Button, Col, Row, Skeleton, Typography } from 'antd';
+import { Button, Checkbox, Col, Row, Skeleton, Typography } from 'antd';
 import React, { Component } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
@@ -219,6 +219,12 @@ class BackgroundRecheck extends Component {
   //   });
   // };
 
+  // closeModal = () => {
+  //   this.setState({
+  //     openModal: false,
+  //   });
+  // };
+
   renderCollapseFields = () => {
     const { docsList: documentsCandidateList = [] } = this.state;
     const { loadingGetById = false, processStatus = '' } = this.props;
@@ -239,11 +245,19 @@ class BackgroundRecheck extends Component {
     );
   };
 
-  // closeModal = () => {
-  //   this.setState({
-  //     openModal: false,
-  //   });
-  // };
+  renderMarkAllDocument = () => {
+    return (
+      <div className={styles.markAllDocs}>
+        <Checkbox className={styles.checkbox} onChange={this.onCheckbox}>
+          <div className={styles.markAllDocs__text}>Mark all documents as verified</div>
+        </Checkbox>
+      </div>
+    );
+  };
+
+  onCheckbox = (value) => {
+    console.log(value);
+  };
 
   onClickPrev = () => {
     const {
@@ -389,7 +403,8 @@ class BackgroundRecheck extends Component {
               All documents supporting candidate's employment eligibility will be displayed here
             </p>
             <div className={styles.backgroundRecheck__left}>
-              <>{this.renderCollapseFields()}</>
+              {this.renderCollapseFields()}
+              {this.renderMarkAllDocument()}
             </div>
 
             {this._renderBottomBar()}

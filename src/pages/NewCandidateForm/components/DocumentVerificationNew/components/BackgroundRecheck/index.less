@@ -33,6 +33,70 @@
     margin-bottom: 32px;
   }
   &__left {
+    .markAllDocs{
+      border-radius: 5px;
+      border: solid 1px #d6dce0;
+      background-color: #fff;
+      padding: 32px;
+      margin-block: @commonPadding2;
+
+      .checkbox{
+        padding-right: 1rem;
+        color: #161c29;
+        font-size: 14px;
+        &:hover {
+          border-radius: 5px;
+        }
+
+        :global {
+          .ant-checkbox-checked {
+            &:hover {
+              border-radius: 4px;
+            }
+            .ant-checkbox-inner {
+              background: #f6f7f9;
+              border-radius: 4px;
+
+              &:hover {
+                border-radius: 4px;
+              }
+              &:after {
+                border: 2px solid #2c6df9;
+                border-top: 0;
+                border-left: 0;
+              }
+            }
+          }
+          .ant-checkbox {
+            .ant-checkbox-inner {
+              background: #f6f7f9;
+              border-radius: 4px;
+            }
+          }
+        }
+        span {
+          &:last-child {
+            // padding-top: 1rem;
+            padding-left: 1rem;
+          }
+        }
+      }
+
+      :global{
+        .ant-checkbox + span{
+          padding-left: 1rem;
+        }
+      }
+
+      &__text{
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 16px;
+        color: #161C29;
+      }
+    }
   }
   &__right {
     .boldText {
