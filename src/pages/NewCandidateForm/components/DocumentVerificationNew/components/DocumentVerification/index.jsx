@@ -22,16 +22,11 @@ import styles from './styles.less';
 const note = {
   title: 'Note',
   data: (
-    <>
-      <Typography.Text>
-        The candidate must upload all required documents. And, the<span> HR must approve </span>the
-        documents and mark candidate as eligible.
-      </Typography.Text>
-      <br />
-      <Typography.Paragraph className={styles.boldText}>
-        Post this approval, the remaining processes will open for onboarding.
-      </Typography.Paragraph>
-    </>
+    <Typography.Text>
+      Onboarding is a step-by-step process. It takes anywhere around{' '}
+      <span className={styles.textNote}>9-12 standard</span> working days for the entire process to
+      complete.
+    </Typography.Text>
   ),
 };
 

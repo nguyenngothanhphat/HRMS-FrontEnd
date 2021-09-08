@@ -1,10 +1,10 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-param-reassign */
 import { Button, Col, Form, Input, Row, Skeleton, Typography } from 'antd';
-import { debounce } from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { Page } from '../../utils';
 import MessageBox from '../MessageBox';
@@ -13,7 +13,6 @@ import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
 import BasicInformationHeader from './components/BasicInformationHeader';
 import styles from './index.less';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 
 @connect(({ newCandidateForm: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
   data,
