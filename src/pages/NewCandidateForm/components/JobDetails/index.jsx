@@ -233,8 +233,6 @@ class JobDetails extends PureComponent {
               status: ['ACTIVE'],
               // location: locationPayload,
               tenantId: getCurrentTenant(),
-              page: 1,
-              limit: 10,
             },
           });
         }

@@ -4,7 +4,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Select, Spin, Form, Checkbox, Dropdown, Input } from 'antd';
 import { DownOutlined, LoadingOutlined } from '@ant-design/icons';
-import { isNull } from 'lodash';
+import { isNull, debounce } from 'lodash';
 import { connect } from 'umi';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import InternalStyle from './FirstFieldsComponent.less';
@@ -21,10 +21,24 @@ class FirstFieldsComponent extends PureComponent {
       inputVal: '',
       visible: false,
     };
+
+    this.setDebounce = debounce((inputVal) => {
+      console.log(inputVal);
+      this.setState({
+        inputVal,
+      });
+    }, 500);
   }
 
   componentDidMount = () => {
     this.fetchData();
+  };
+
+  componentDidUpdate = (prepProps, prepStates) => {
+    const { inputVal } = this.state;
+    if (prepStates.inputVal !== inputVal) {
+      this.fetchReportees(inputVal);
+    }
   };
 
   fetchData = () => {
@@ -61,17 +75,28 @@ class FirstFieldsComponent extends PureComponent {
     }
     if (reportingManager && Object.keys(reportingManager).length > 0) {
       dispatch({
-        type: 'newCandidateForm/fetchManagerList',
+        type: 'newCandidateForm/fetchReporteesList',
         payload: {
-          company: companyId,
           status: ['ACTIVE'],
-          // location: locationPayload,
-          tenantId: getCurrentTenant(),
           page: 1,
           limit: 10,
         },
       });
     }
+  };
+
+  fetchReportees = (name = '') => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'newCandidateForm/fetchReporteesList',
+      payload: {
+        status: ['ACTIVE'],
+        page: 1,
+        limit: 10,
+        name,
+      },
+    });
   };
 
   onChangeValue = (value, fieldName) => {
@@ -117,16 +142,18 @@ class FirstFieldsComponent extends PureComponent {
   };
 
   onChangeInput = ({ target: { value } }) => {
-    this.setState({
-      inputVal: value,
-    });
+    // this.setState({
+    //   inputVal: value,
+    // });
+
+    this.setDebounce(value);
   };
 
   handleVisibleChange = (visible) => {
     this.setState({ visible });
   };
 
-  renderMenu = (item, showManagerListAB) => {
+  renderMenu = (item, showReporteesListAB) => {
     const style = (index) => {
       if (index % 2 === 0) return InternalStyle.evenClass;
 
@@ -136,8 +163,8 @@ class FirstFieldsComponent extends PureComponent {
     return (
       <div className={InternalStyle.dropdown}>
         <div className={InternalStyle.dropdownMenu}>
-          {item.title === 'reportees' && showManagerListAB.length > 0
-            ? showManagerListAB.map((data, index) => (
+          {item.title === 'reportees' && showReporteesListAB.length > 0
+            ? showReporteesListAB.map((data, index) => (
                 <div className={`${InternalStyle.dropdownMenu__menu} ${style(index)}`} key={index}>
                   <Checkbox>
                     <div className={InternalStyle.dropdownMenu__name}>
@@ -154,9 +181,9 @@ class FirstFieldsComponent extends PureComponent {
     );
   };
 
-  reporteesField = (item, showManagerListAB) => {
-    const { loading3, disabled, reportees } = this.props;
-    const { visible, inputVal } = this.state;
+  reporteesField = (item, showReporteesListAB) => {
+    const { loading3, disabled } = this.props;
+    const { visible } = this.state;
 
     return (
       <Dropdown
@@ -165,11 +192,11 @@ class FirstFieldsComponent extends PureComponent {
         visible={visible}
         onVisibleChange={this.handleVisibleChange}
         className={InternalStyle.rootDropdown}
-        overlay={() => this.renderMenu(item, showManagerListAB)}
+        overlay={() => this.renderMenu(item, showReporteesListAB)}
       >
         <Input
           disabled={item.title === 'reportees' && disabled}
-          value={inputVal}
+          // value={inputVal}
           placeholder={item.placeholder}
           onChange={this.onChangeInput}
           suffix={loading3 ? <LoadingOutlined /> : <DownOutlined />}
@@ -252,6 +279,17 @@ class FirstFieldsComponent extends PureComponent {
             return 0;
           })
         : [];
+    const showReporteesListAB =
+      reportees.length > 0
+        ? reportees.sort((a, b) => {
+            const nameA = a.generalInfo.firstName.toLowerCase();
+            const nameB = b.generalInfo.firstName.toLowerCase();
+            if (nameA < nameB) {
+              return -1;
+            }
+            return 0;
+          })
+        : [];
     const showWorkLocationAB =
       locationList.length > 0
         ? locationList.sort((a, b) => {
@@ -305,7 +343,7 @@ class FirstFieldsComponent extends PureComponent {
                       ]}
                     >
                       {item.title === 'reportees'
-                        ? this.reporteesField(item, showManagerListAB)
+                        ? this.reporteesField(item, showReporteesListAB)
                         : null}
                       {item.title !== 'reportees' ? (
                         <Select

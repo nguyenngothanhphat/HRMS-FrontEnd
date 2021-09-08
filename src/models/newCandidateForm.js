@@ -27,6 +27,7 @@ import {
   generateLink,
   extendOfferLetter,
   withdrawOffer,
+  getReporteesList,
 } from '@/services/newCandidateForm';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
@@ -419,6 +420,24 @@ const newCandidateForm = {
         yield put({
           type: 'saveTemp',
           payload: { managerList: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchReporteesList({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getReporteesList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: [getCurrentCompany()],
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveTemp',
+          payload: { reportees: data },
         });
       } catch (errors) {
         dialog(errors);
