@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography, Button, Skeleton } from 'antd';
 import { connect, formatMessage, history } from 'umi';
-import { isEmpty, isObject } from 'lodash';
+import { isEmpty } from 'lodash';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK, PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
@@ -233,6 +233,8 @@ class JobDetails extends PureComponent {
               status: ['ACTIVE'],
               // location: locationPayload,
               tenantId: getCurrentTenant(),
+              page: 1,
+              limit: 10,
             },
           });
         }
