@@ -1,10 +1,13 @@
 import { TABLE_TYPE } from '../utils';
 
-const getActionText = (type) => {
-  const { DRAFT } = TABLE_TYPE;
+const getActionText = (type, processStatus) => {
+  const { DRAFT, ALL } = TABLE_TYPE;
   switch (type) {
     case DRAFT:
       return 'Continue';
+    case ALL:
+      if (processStatus === DRAFT) return 'Continue';
+      return 'View Form';
     default:
       return 'View Form';
   }
