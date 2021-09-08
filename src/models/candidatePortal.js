@@ -81,6 +81,10 @@ const candidatePortal = {
         _id: '',
         url: '',
       },
+      salaryStructure: {
+        status: '',
+        settings: [],
+      },
       finalOfferCandidateSignature: {
         fileName: '',
         _id: '',
@@ -145,6 +149,7 @@ const candidatePortal = {
             ...data,
             candidate: data._id,
             _id: data._id,
+            salaryStructure: data.salaryStructure,
           },
         });
         yield put({

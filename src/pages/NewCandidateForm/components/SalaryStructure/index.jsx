@@ -141,7 +141,7 @@ class SalaryStructure extends PureComponent {
   };
 
   render() {
-    const { processStatus, salaryTitle = '', loadingFetchCandidate = false, settings } = this.props;
+    const { salaryTitle = '', loadingFetchCandidate = false, settings } = this.props;
     const Note = {
       title: 'Note',
       data: (
