@@ -11,37 +11,37 @@ import {
   updateByCandidate,
 } from '@/services/candidatePortal';
 import { dialog } from '@/utils/utils';
-import { candidateLink, taskStatus } from '@/utils/candidatePortal';
+import { CANDIDATE_TASK_LINK, CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 
 const pendingTaskDefault = [
   {
-    id: candidateLink.reviewProfile,
+    id: CANDIDATE_TASK_LINK.REVIEW_PROFILE,
     name: 'Review Profile',
     dueDate: '-',
-    link: candidateLink.reviewProfile,
-    status: taskStatus.UPCOMING,
+    link: CANDIDATE_TASK_LINK.REVIEW_PROFILE,
+    status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
   {
-    id: candidateLink.uploadDocuments,
+    id: CANDIDATE_TASK_LINK.UPLOAD_DOCUMENTS,
     name: 'Upload Documents',
     dueDate: '-',
-    link: candidateLink.uploadDocuments,
-    status: taskStatus.UPCOMING,
+    link: CANDIDATE_TASK_LINK.UPLOAD_DOCUMENTS,
+    status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
   {
-    id: candidateLink.salaryNegotiation,
+    id: CANDIDATE_TASK_LINK.SALARY_NEGOTIATION,
     name: 'Salary Negotiation',
     dueDate: '-',
-    link: candidateLink.salaryNegotiation,
-    status: taskStatus.UPCOMING,
+    link: CANDIDATE_TASK_LINK.SALARY_NEGOTIATION,
+    status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
   {
-    id: candidateLink.acceptOffer,
+    id: CANDIDATE_TASK_LINK.ACCEPT_OFFER,
     name: 'Accept Offer',
     dueDate: '-',
-    link: candidateLink.acceptOffer,
-    status: taskStatus.UPCOMING,
+    link: CANDIDATE_TASK_LINK.ACCEPT_OFFER,
+    status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
 ];
 
@@ -315,13 +315,13 @@ const candidatePortal = {
         switch (processStatus) {
           case NEW_PROCESS_STATUS.PROFILE_VERIFICATION:
             // review profile
-            tempPendingTasks[0].status = taskStatus.IN_PROGRESS;
+            tempPendingTasks[0].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
             // uploading documents
-            tempPendingTasks[1].status = taskStatus.IN_PROGRESS;
+            tempPendingTasks[1].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
 
             if (isVerifiedJobDetail && isVerifiedBasicInfo) {
               // review profile
-              tempPendingTasks[0].status = taskStatus.DONE;
+              tempPendingTasks[0].status = CANDIDATE_TASK_STATUS.DONE;
             }
             break;
 
@@ -332,25 +332,25 @@ const candidatePortal = {
                 (x) => x.candidateDocumentStatus === 'RE-SUBMIT',
               );
               if (checkDocumentResubmit) {
-                tempPendingTasks[1].status = taskStatus.IN_PROGRESS;
+                tempPendingTasks[1].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
                 tempPendingTasks[1].name = 'Resubmit Documents';
               }
             } else {
               // uploading documents
-              tempPendingTasks[1].status = taskStatus.DONE;
+              tempPendingTasks[1].status = CANDIDATE_TASK_STATUS.DONE;
             }
             break;
 
           case NEW_PROCESS_STATUS.SALARY_NEGOTIATION:
             // salary structure
-            tempPendingTasks[2].status = taskStatus.IN_PROGRESS;
+            tempPendingTasks[2].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
             break;
 
           case NEW_PROCESS_STATUS.OFFER_RELEASED:
           case NEW_PROCESS_STATUS.OFFER_ACCEPTED:
           case NEW_PROCESS_STATUS.OFFER_REJECTED:
             // offer letter
-            tempPendingTasks[3].status = taskStatus.IN_PROGRESS;
+            tempPendingTasks[3].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
             tempPendingTasks[3].dueDate = expiryDate ? moment(expiryDate).format(dateFormat) : '';
             break;
 
