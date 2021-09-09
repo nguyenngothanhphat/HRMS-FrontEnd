@@ -27,11 +27,8 @@ import {
   generateLink,
   extendOfferLetter,
   withdrawOffer,
-<<<<<<< HEAD
   getReporteesList,
-=======
   getListCandidate,
->>>>>>> 3bd35f802786dab05e5b21f7889a24d32069a683
 } from '@/services/newCandidateForm';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
