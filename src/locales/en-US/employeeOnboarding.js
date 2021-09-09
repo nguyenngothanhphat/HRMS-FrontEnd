@@ -36,7 +36,7 @@ export default {
   'component.onboardingOverview.noData': 'No data',
   // Left menu
   'component.onboardingOverview.pendingEligibilityChecks': 'Pending Eligibility Checks',
-  'component.onboardingOverview.addTeamMember': 'Add Team Member',
+  'component.onboardingOverview.addTeamMember': 'Add team member',
   // Settings document and templates
   'component.documentAndTemplates.title': 'Document & Templates',
   'component.documentAndTemplates.subTitle':

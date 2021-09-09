@@ -41,7 +41,7 @@ const getColumnWidth = (columnName, tableType, arrLength) => {
     ) {
       switch (columnName) {
         case 'candidateId':
-          return '13%';
+          return '10%';
         case 'candidateName':
           return '16%';
         case 'position':
@@ -57,7 +57,7 @@ const getColumnWidth = (columnName, tableType, arrLength) => {
         case 'assigneeManager':
           return '10%';
         case 'processStatus':
-          return '11%';
+          return '13%';
         default:
           return '';
       }
@@ -66,7 +66,7 @@ const getColumnWidth = (columnName, tableType, arrLength) => {
     if (tableType === DRAFT) {
       switch (columnName) {
         case 'candidateId':
-          return '13%';
+          return '10%';
         case 'candidateName':
           return '16%';
         case 'position':

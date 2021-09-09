@@ -232,7 +232,7 @@ class OnboardTable extends Component {
         align: 'left',
       },
       {
-        title: 'Assign To',
+        title: 'Assigned to',
         dataIndex: 'assignTo',
         key: 'assignTo',
         render: (assignTo) => (
