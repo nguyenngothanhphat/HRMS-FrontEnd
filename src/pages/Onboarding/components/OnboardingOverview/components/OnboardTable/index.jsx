@@ -312,7 +312,7 @@ class OnboardTable extends Component {
               <Dropdown
                 className={styles.menuIcon}
                 overlay={this.actionMenu(payload, candidate)}
-                placement="topLeft"
+                placement="bottomRight"
               >
                 <img src={MenuIcon} alt="menu" />
               </Dropdown>
@@ -501,7 +501,7 @@ class OnboardTable extends Component {
     }
 
     return (
-      <Menu>
+      <Menu className={styles.menu}>
         {menuItem}
         {isHRManager && (
           <Menu.Item>

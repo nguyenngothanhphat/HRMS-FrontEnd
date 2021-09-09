@@ -252,3 +252,26 @@
     padding-block: 10px;
   }
 }
+
+.menu{
+  background-color: #fff;
+  box-shadow: 1px 0px 6px rgba(0, 0, 0, 0.15);
+  padding: 8px;
+  border-radius: 5px;
+
+  &::after {
+        height: 8px;
+    width: 10px;
+    content: '';
+    background-color: #fff;
+    box-shadow: 1px 1px 3px -1px rgb(0 0 0 / 15%) !important;
+    position: absolute;
+    top: -3px;
+    right: 6px;
+    margin-left: -5px;
+    border-top: #fff solid 1px;
+    border-left: #fff solid 1px;
+    transform: rotate(225deg);
+    z-index: 1003 !important;
+  }
+}
