@@ -2,7 +2,7 @@
   padding: 0 32px 0px;
 
   :global {
-
+    
     .ant-select-selector,
     .ant-picker {
       height: 42px !important;
@@ -24,7 +24,30 @@
     .ant-form-item-label>label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
       display: none;
     }
-
+    .ant-select-disabled .ant-select-selector {
+      span {
+        color: #161c29 !important;
+      }
+      background: rgba(226, 228, 232, 0.5) !important;
+    }
+    
+    // multiple select
+    .ant-select-multiple {
+      .ant-select-selector {
+        width: 100%;
+        min-height: 42px;
+        height: auto !important;
+      }
+      .ant-select-selection-item {
+        height: 28px !important;
+      }
+      .ant-select-selection-search-input {
+        height: 28px !important;
+      }
+    }
+    // .ant-select-selection-overflow {
+    //   display: none;
+    // }
     // .ant-select-selection-item {
     //   margin-top: -3px !important;
     // }
@@ -50,6 +73,7 @@
     .ant-picker-disabled {
       background: #f5f5f5 !important;
     }
+    
   }
 }
 

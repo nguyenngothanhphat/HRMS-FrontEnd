@@ -4,6 +4,7 @@ import { connect, history } from 'umi';
 import LayoutAddCandidateForm from '@/components/LayoutAddCandidateForm';
 import { PageContainer } from '@/layouts/layout/src';
 import { getCurrentTenant } from '@/utils/authority';
+import { ONBOARDING_FORM_LINK, ONBOARDING_FORM_STEP_LINK } from '@/utils/onboarding';
 import BasicInformation from './components/BasicInformation';
 import Benefit from './components/Benefits';
 import DocumentVerificationNew from './components/DocumentVerificationNew';
@@ -12,7 +13,6 @@ import OfferDetail from './components/OfferDetail';
 import PreviewOffer from './components/PreviewOffer';
 import SalaryStructure from './components/SalaryStructure';
 import styles from './index.less';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 
 @connect(({ newCandidateForm = {}, user, loading }) => ({
   newCandidateForm,
@@ -24,6 +24,7 @@ class NewCandidateForm extends PureComponent {
     super(props);
     this.state = {
       listMenu: [],
+      loadingFinishLater: false,
     };
   }
 
@@ -33,37 +34,9 @@ class NewCandidateForm extends PureComponent {
       dispatch,
     } = this.props;
 
-    // current step vs tab name
-    const linkSet = [
-      {
-        id: 1,
-        link: 'basic-information',
-      },
-      {
-        id: 2,
-        link: 'job-details',
-      },
-      {
-        id: 3,
-        link: 'document-verification',
-      },
-      {
-        id: 4,
-        link: 'salary-structure',
-      },
-      {
-        id: 5,
-        link: 'benefits',
-      },
-      {
-        id: 6,
-        link: 'offer-details',
-      },
-      {
-        id: 7,
-        link: 'offer-letter',
-      },
-    ];
+    if (!tabName) {
+      history.push(`/onboarding/list/view/${reId}/${ONBOARDING_FORM_LINK.BASIC_INFORMATION}`);
+    }
 
     // check action is add or review. If isReview fetch candidate by reID
     if (action === 'view' || action === 'candidate-detail') {
@@ -78,9 +51,10 @@ class NewCandidateForm extends PureComponent {
           return;
         }
         const { _id, currentStep = '' } = data;
-        const find = linkSet.find((l) => l.link === tabName) || {};
-        if (currentStep <= find.id - 1) {
-          const currentComponent = linkSet.find((l) => l.id === currentStep + 1);
+
+        const find = ONBOARDING_FORM_STEP_LINK.find((l) => l.link === tabName) || {};
+        if (currentStep <= find.id) {
+          const currentComponent = ONBOARDING_FORM_STEP_LINK.find((l) => l.id === currentStep);
           if (currentComponent) {
             history.push(`/onboarding/list/view/${reId}/${currentComponent.link}`);
           }
@@ -153,7 +127,7 @@ class NewCandidateForm extends PureComponent {
             processStatus={processStatus}
           />
         ),
-        link: 'basic-information',
+        link: ONBOARDING_FORM_LINK.BASIC_INFORMATION,
       },
       {
         id: 2,
@@ -168,15 +142,15 @@ class NewCandidateForm extends PureComponent {
             processStatus={processStatus}
           />
         ),
-        link: 'job-details',
+        link: ONBOARDING_FORM_LINK.JOB_DETAILS,
       },
       {
         id: 3,
-        name: 'Eligibility documents',
+        name: 'Eligibility Documents',
         key: 'backgroundCheck',
         // key: 'eligibilityDocuments',
         component: <DocumentVerificationNew />,
-        link: 'document-verification',
+        link: ONBOARDING_FORM_LINK.DOCUMENT_VERIFICATION,
       },
       {
         id: 4,
@@ -189,14 +163,14 @@ class NewCandidateForm extends PureComponent {
             processStatus={processStatus}
           />
         ),
-        link: 'salary-structure',
+        link: ONBOARDING_FORM_LINK.SALARY_STRUCTURE,
       },
       {
         id: 5,
         name: 'Benefits',
         key: 'benefits',
         component: <Benefit processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />,
-        link: 'benefits',
+        link: ONBOARDING_FORM_LINK.BENEFITS,
       },
       {
         id: 6,
@@ -205,14 +179,14 @@ class NewCandidateForm extends PureComponent {
         component: (
           <OfferDetail processStatus={processStatus} valueToFinalOffer={valueToFinalOffer} />
         ),
-        link: 'offer-details',
+        link: ONBOARDING_FORM_LINK.OFFER_DETAILS,
       },
       {
         id: 7,
         name: 'Preview Offer Letter',
         key: 'offerLetter',
         component: <PreviewOffer />,
-        link: 'offer-letter',
+        link: ONBOARDING_FORM_LINK.OFFER_LETTER,
 
         isOfferLetter: !!offerLetterId,
       },
@@ -255,6 +229,21 @@ class NewCandidateForm extends PureComponent {
   };
 
   handleFinishLater = async () => {
+    const wait = (delay, ...args) => {
+      // eslint-disable-next-line compat/compat
+      return new Promise((resolve) => {
+        setTimeout(resolve, delay, ...args);
+      });
+    };
+
+    this.setState({
+      loadingFinishLater: true,
+    });
+    await wait(1000).then(() =>
+      this.setState({
+        loadingFinishLater: false,
+      }),
+    );
     history.push('/onboarding/list');
   };
 
@@ -265,7 +254,7 @@ class NewCandidateForm extends PureComponent {
       // location: { state: { isAddNew = false } = {} } = {},
     } = this.props;
 
-    const { listMenu } = this.state;
+    const { listMenu, loadingFinishLater } = this.state;
     // const title = isAddNew ? `Add a team member [${reId}]` : `Review team member [${reId}]`;
     const title = `Add a team member`;
 
@@ -278,8 +267,13 @@ class NewCandidateForm extends PureComponent {
               <p className={styles.titlePage__text}>{title}</p>
               {action === 'view' && (
                 <div className={styles.titlePage__viewBtn}>
-                  <Button type="primary" ghost onClick={this.handleFinishLater}>
-                    Finish Later
+                  <Button
+                    type="primary"
+                    ghost
+                    loading={loadingFinishLater}
+                    onClick={this.handleFinishLater}
+                  >
+                    {tabName === 'offer-letter' ? 'Cancel' : 'Finish Later'}
                   </Button>
                 </div>
               )}

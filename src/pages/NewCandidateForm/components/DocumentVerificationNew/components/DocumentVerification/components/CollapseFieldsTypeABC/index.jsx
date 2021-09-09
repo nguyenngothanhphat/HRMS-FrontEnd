@@ -180,7 +180,7 @@ class CollapseFieldsTypeABC extends PureComponent {
         <Collapse
           accordion
           expandIconPosition="right"
-          defaultActiveKey="1"
+          defaultActiveKey={disabled ? '1' : ''}
           expandIcon={(props) => {
             return props.isActive ? (
               <MinusOutlined className={styles.alternativeExpandIcon} />
@@ -222,6 +222,7 @@ class CollapseFieldsTypeABC extends PureComponent {
                 );
               })}
             </CheckboxGroup>
+            {!disabled && <div className={styles.addBtn__divider} />}
             <div
               className={
                 visible || disabled
@@ -251,7 +252,6 @@ class CollapseFieldsTypeABC extends PureComponent {
                 className={!visible ? `${styles.hidden}` : `${styles.addBtn}`}
                 onClick={() => this.handleClick(type)}
               >
-                <Divider className={styles.addBtn__divider} />
                 <div className={styles.addBtn__text}>
                   <PlusOutlined className={styles.plusIcon} />
                   <span className={styles.title}>Add New Field</span>

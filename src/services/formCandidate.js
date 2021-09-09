@@ -63,6 +63,13 @@ export async function checkDocument(payload) {
   });
 }
 
+export async function verifyAllDocuments(payload) {
+  return request('/api/candidatetenant/update-documents-status', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function sendDocumentStatus(payload) {
   return request('/api/candidatetenant/background-check', {
     method: 'POST',

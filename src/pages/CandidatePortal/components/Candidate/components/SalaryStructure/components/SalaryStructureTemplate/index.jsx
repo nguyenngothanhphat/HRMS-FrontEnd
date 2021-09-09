@@ -2,7 +2,7 @@ import { Button, Col, Row } from 'antd';
 // import AnswerQuestion from '@/components/Question/AnswerQuestion';
 import { trimStart, toString, trim } from 'lodash';
 import React, { PureComponent } from 'react';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import NotifyModal from '../NotifyModal';
 import styles from './index.less';
@@ -86,6 +86,9 @@ class SalaryStructureTemplate extends PureComponent {
     this.setState({
       notifyModalVisible: value,
     });
+    if (!value) {
+      history.push(`/candidate-portal/dashboard`);
+    }
   };
 
   onClickEdit = () => {

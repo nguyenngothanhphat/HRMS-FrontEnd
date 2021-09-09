@@ -52,6 +52,47 @@ const NEW_PROCESS_STATUS_TABLE_NAME = {
   OFFER_WITHDRAWN: 'Offer Withdrawn',
 };
 
+const ONBOARDING_FORM_LINK = {
+  BASIC_INFORMATION: 'basic-information',
+  JOB_DETAILS: 'job-details',
+  DOCUMENT_VERIFICATION: 'document-verification',
+  SALARY_STRUCTURE: 'salary-structure',
+  BENEFITS: 'benefits',
+  OFFER_DETAILS: 'offer-details',
+  OFFER_LETTER: 'offer-letter',
+};
+
+const ONBOARDING_FORM_STEP_LINK = [
+  {
+    id: 0,
+    link: ONBOARDING_FORM_LINK.BASIC_INFORMATION,
+  },
+  {
+    id: 1,
+    link: ONBOARDING_FORM_LINK.JOB_DETAILS,
+  },
+  {
+    id: 2,
+    link: ONBOARDING_FORM_LINK.DOCUMENT_VERIFICATION,
+  },
+  {
+    id: 3,
+    link: ONBOARDING_FORM_LINK.SALARY_STRUCTURE,
+  },
+  {
+    id: 4,
+    link: ONBOARDING_FORM_LINK.BENEFITS,
+  },
+  {
+    id: 5,
+    link: ONBOARDING_FORM_LINK.OFFER_DETAILS,
+  },
+  {
+    id: 6,
+    link: ONBOARDING_FORM_LINK.OFFER_LETTER,
+  },
+];
+
 /// ////////////////////////// [END] NEW ONBOARDING /// //////////////////////////
 
 const PROCESS_STATUS = {
@@ -132,4 +173,6 @@ export {
   PROCESS_STATUS,
   NEW_PROCESS_STATUS,
   NEW_PROCESS_STATUS_TABLE_NAME,
+  ONBOARDING_FORM_LINK,
+  ONBOARDING_FORM_STEP_LINK,
 };

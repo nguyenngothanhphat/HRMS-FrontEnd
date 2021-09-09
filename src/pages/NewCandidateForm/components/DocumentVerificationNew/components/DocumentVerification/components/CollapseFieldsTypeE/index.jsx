@@ -25,7 +25,7 @@ class CollapseFieldsType2 extends PureComponent {
           // checked={checkAll}
           // indeterminate={indeterminate}
           // onClick={(e) => this.onCheckAllChange(e)}
-          checked
+          checked={false}
           disabled={disabled}
         />
         <span className={styles.titleText}>{title}</span>
@@ -55,7 +55,7 @@ class CollapseFieldsType2 extends PureComponent {
         <Collapse
           accordion
           expandIconPosition="right"
-          defaultActiveKey="1"
+          defaultActiveKey={disabled ? '1' : ''}
           expandIcon={(props) => {
             return props.isActive ? (
               <MinusOutlined className={styles.alternativeExpandIcon} />
@@ -92,17 +92,22 @@ class CollapseFieldsType2 extends PureComponent {
                 })}
             </div>
 
-            <div
-              className={
-                disabled
-                  ? `${styles.disableButton} ${styles.addEmployerDetailBtn}`
-                  : styles.addEmployerDetailBtn
-              }
-              onClick={disabled ? () => {} : this.addComponent}
-            >
-              <PlusOutlined className={styles.plusIcon} />
-              <span className={styles.title}>Add Employer Detail</span>
-            </div>
+            {!disabled && (
+              <>
+                {previousEmployment.length > 0 && <hr className={styles.divider} />}
+                <div
+                  className={
+                    disabled
+                      ? `${styles.disableButton} ${styles.addEmployerDetailBtn}`
+                      : styles.addEmployerDetailBtn
+                  }
+                  onClick={disabled ? () => {} : this.addComponent}
+                >
+                  <PlusOutlined className={styles.plusIcon} />
+                  <span className={styles.title}>Add Employer Detail</span>
+                </div>
+              </>
+            )}
           </Panel>
         </Collapse>
       </div>

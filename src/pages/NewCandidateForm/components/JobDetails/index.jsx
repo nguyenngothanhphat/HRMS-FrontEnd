@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Typography, Button, Skeleton } from 'antd';
 import { connect, formatMessage, history } from 'umi';
-import { isEmpty, isObject } from 'lodash';
+import { isEmpty } from 'lodash';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS, PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
@@ -71,18 +71,31 @@ class JobDetails extends PureComponent {
   };
 
   disableEdit = () => {
-    return false;
+    const { processStatus } = this.props;
+
+    return ![
+      NEW_PROCESS_STATUS.DRAFT,
+      NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
+      NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
+    ].includes(processStatus);
   };
 
   checkFilled = () => {
     const {
-      tempData: { department, workLocation, title, reportingManager, checkStatus },
+      tempData: {
+        department,
+        workLocation,
+        title,
+        reportingManager,
+        checkStatus,
+        prefferedDateOfJoining,
+      },
       checkMandatory,
       dispatch,
     } = this.props;
 
-    if (department && workLocation && title && reportingManager) {
-      if (typeof workLocation === 'string') {
+    if (department && workLocation && title && reportingManager && prefferedDateOfJoining) {
+      if (typeof department === 'string') {
         if (typeof reportingManager === 'string') {
           checkStatus.filledJobDetail = true;
         }
@@ -275,6 +288,13 @@ class JobDetails extends PureComponent {
           dateOfJoining: prefferedDateOfJoining,
         },
       });
+    } else if (name === 'reportees') {
+      dispatch({
+        type: 'newCandidateForm/saveTemp',
+        payload: {
+          reportees: value,
+        },
+      });
     }
     this.checkFilled();
   };
@@ -294,6 +314,7 @@ class JobDetails extends PureComponent {
         dateOfJoining,
         documentChecklistSetting,
         ticketID = '',
+        reportees = [],
       },
       currentStep = '',
     } = this.props;
@@ -313,6 +334,7 @@ class JobDetails extends PureComponent {
         currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 2 : currentStep,
         tenantId: getCurrentTenant(),
         documentChecklistSetting,
+        reportees,
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
@@ -323,7 +345,9 @@ class JobDetails extends PureComponent {
           },
         });
 
-        history.push(`/onboarding/list/view/${ticketID}/document-verification`);
+        history.push(
+          `/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.DOCUMENT_VERIFICATION}`,
+        );
       }
     });
   };
@@ -340,7 +364,7 @@ class JobDetails extends PureComponent {
     const {
       tempData: { ticketID = '' },
     } = this.props;
-    history.push(`/onboarding/list/view/${ticketID}/basic-information`);
+    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.BASIC_INFORMATION}`);
   };
 
   _renderBottomBar = () => {
@@ -452,7 +476,7 @@ class JobDetails extends PureComponent {
         title: 'reportees',
         name: 'Reportees',
         id: 6,
-        placeholder: 'Select reportees',
+        placeholder: 'Please select a choice',
       },
     ];
     const candidateField = [
@@ -502,12 +526,14 @@ class JobDetails extends PureComponent {
         reportingManager,
         candidatesNoticePeriod,
         grade,
+        reportees = [],
       },
       data,
     } = this.props;
     const { loading1, loading2, loading3, loading, loadingFetchCandidate, processStatus } =
       this.props;
     const { dateOfJoining } = data;
+
     return (
       <>
         <Row gutter={[24, 0]}>
@@ -546,6 +572,7 @@ class JobDetails extends PureComponent {
                       title={title}
                       grade={grade}
                       reportingManager={reportingManager}
+                      reportees={reportees}
                       candidatesNoticePeriod={candidatesNoticePeriod}
                       prefferedDateOfJoining={dateOfJoining}
                       _handleSelect={this._handleSelect}

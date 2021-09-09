@@ -3,6 +3,7 @@
 import { Button, Col, Row } from 'antd';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
+import { ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import BasicInformation from '../../pages/NewCandidateForm/components/BasicInformation';
 import ItemMenu from './components/ItemMenu';
 // import BottomBar from '../BottomBar';
@@ -58,9 +59,9 @@ class LayoutAddCandidateForm extends Component {
   }
 
   fetchTab = () => {
-    const { listMenu, tabName = '' } = this.props;
-    const findTab = listMenu.find((menu) => menu.link === tabName) || listMenu[0];
+    const { listMenu = [], tabName = '' } = this.props;
 
+    const findTab = listMenu.find((menu) => menu.link === tabName) || listMenu[0];
     this.setState({
       selectedItemId: findTab.id || 1,
       displayComponent: findTab.component || <BasicInformation />,
@@ -69,17 +70,12 @@ class LayoutAddCandidateForm extends Component {
 
   _handlePreviewOffer = () => {
     const { reId = '' } = this.props;
-    history.push(`/onboarding/list/view/${reId}/offer-letter`);
+    history.push(`/onboarding/list/view/${reId}/${ONBOARDING_FORM_LINK.OFFER_LETTER}`);
   };
 
   _handleClick = (item) => {
     const { reId = '' } = this.props;
     history.push(`/onboarding/list/view/${reId}/${item.link}`);
-  };
-
-  disablePhase2 = () => {
-    const { processStatus, skip } = this.props;
-    return processStatus === 'DRAFT' && skip === 0;
   };
 
   render() {
@@ -94,9 +90,10 @@ class LayoutAddCandidateForm extends Component {
 
     const { displayComponent, selectedItemId } = this.state;
     const listMenuWithoutOfferLetter = listMenu.filter((l) => l.key !== 'offerLetter');
+
     return (
       <Row className={s.containerLayoutAddCandidateForm}>
-        <Col sm={24} md={6} xl={4} className={s.viewLeft}>
+        <Col xs={24} md={6} xl={4} className={s.viewLeft}>
           <div className={s.viewLeft__menu}>
             {listMenuWithoutOfferLetter.map((item, index) => (
               <ItemMenu
@@ -105,6 +102,7 @@ class LayoutAddCandidateForm extends Component {
                 handelClick={this._handleClick}
                 selectedItemId={selectedItemId}
                 isDisabled={currentStep < index}
+                isCompleted={currentStep > index}
               />
             ))}
             <div className={s.viewLeft__menu__btnPreviewOffer}>

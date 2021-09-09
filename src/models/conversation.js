@@ -6,6 +6,7 @@ import {
   addNewMessage,
   getConversationMessage,
 } from '@/services/conversation';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
 const defaultState = {
   activeConversation: {},
@@ -21,7 +22,11 @@ const country = {
     *addNewConversationEffect({ payload }, { call }) {
       let response = {};
       try {
-        response = yield call(addNewConversation, payload);
+        response = yield call(addNewConversation, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
       } catch (errors) {
@@ -32,7 +37,11 @@ const country = {
     *getUserConversationsEffect({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(getUserConversations, payload);
+        response = yield call(getUserConversations, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -48,7 +57,11 @@ const country = {
     },
     *getConversationEffect({ payload }, { call, put }) {
       try {
-        const response = yield call(getConversation, payload);
+        const response = yield call(getConversation, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -66,7 +79,11 @@ const country = {
     *addNewMessageEffect({ payload }, { call, put }) {
       let response = {};
       try {
-        response = yield call(addNewMessage, payload);
+        response = yield call(addNewMessage, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
         yield put({
@@ -80,7 +97,11 @@ const country = {
     },
     *getConversationMessageEffect({ payload }, { call, put }) {
       try {
-        const response = yield call(getConversationMessage, payload);
+        const response = yield call(getConversationMessage, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
         const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({

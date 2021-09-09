@@ -1,5 +1,6 @@
 import { history } from 'umi';
 import { message, notification } from 'antd';
+
 import {
   getGradeList,
   getDocumentList,
@@ -24,6 +25,9 @@ import {
   getDocumentByCandidate,
   getWorkHistory,
   generateLink,
+  extendOfferLetter,
+  withdrawOffer,
+  getReporteesList,
   getListCandidate,
 } from '@/services/newCandidateForm';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
@@ -41,7 +45,9 @@ import {
   checkDocument,
   sendDocumentStatus,
   getAdditionalQuestion,
+  verifyAllDocuments,
 } from '@/services/formCandidate';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 
 const defaultState = {
   rookieId: '',
@@ -88,6 +94,7 @@ const defaultState = {
     grade: null,
     department: null,
     workLocation: null,
+    reportees: [],
     title: null,
     reportingManager: null,
     valueToFinalOffer: 0,
@@ -217,6 +224,7 @@ const defaultState = {
     position: 'EMPLOYEE',
     employeeType: null,
     department: null,
+    reportees: [],
     title: null,
     grade: null,
     company: null,
@@ -282,6 +290,7 @@ const defaultState = {
     createdAt: '',
     updatedAt: '',
   },
+  isEditingSalary: false,
 };
 
 const newCandidateForm = {
@@ -423,6 +432,24 @@ const newCandidateForm = {
       }
     },
 
+    *fetchReporteesList({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getReporteesList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: [getCurrentCompany()],
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveTemp',
+          payload: { reportees: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
     *addCandidateByHR({ payload }, { call, put }) {
       try {
         const response = yield call(addCandidate, {
@@ -532,7 +559,7 @@ const newCandidateForm = {
         });
 
         history.push({
-          pathname: `/onboarding/list/view/${rookieId}/basic-information`,
+          pathname: `/onboarding/list/view/${rookieId}/${ONBOARDING_FORM_LINK.BASIC_INFORMATION}`,
           state: { isAddNew: true },
         });
       } catch (error) {
@@ -725,7 +752,11 @@ const newCandidateForm = {
         });
         const { data, statusCode } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { test: data } });
+        // yield put({ type: 'save', payload: { test: data } });
+        yield put({
+          type: 'saveOrigin',
+          payload: { processStatus: data.processStatus || NEW_PROCESS_STATUS.PROFILE_VERIFICATION },
+        });
       } catch (error) {
         dialog(error);
       }
@@ -768,7 +799,7 @@ const newCandidateForm = {
       return response;
     },
 
-    *approveFinalOfferEffect({ payload }, { call }) {
+    *approveFinalOfferEffect({ payload, action }, { call, put }) {
       let response = {};
       try {
         response = yield call(approveFinalOffer, {
@@ -778,6 +809,16 @@ const newCandidateForm = {
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
+        const processStatus =
+          action === 'accept'
+            ? NEW_PROCESS_STATUS.OFFER_RELEASED
+            : NEW_PROCESS_STATUS.OFFER_REJECTED;
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            processStatus,
+          },
+        });
         // yield put({ type: 'save', payload: { test: data } });
       } catch (error) {
         dialog(error);
@@ -1120,6 +1161,7 @@ const newCandidateForm = {
             //   (data.offerLetter && data.offerLetter.attachment) ||
             //   (data.staticOfferLetter && data.staticOfferLetter.url),
             additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
+            isSentEmail: data.processStatus !== NEW_PROCESS_STATUS.DRAFT,
           },
         });
 
@@ -1347,16 +1389,49 @@ const newCandidateForm = {
       return response;
     },
 
-    *checkDocumentEffect({ payload }, { call }) {
+    *checkDocumentEffect({ payload }, { put, call }) {
       let response = {};
+
+      const { candidate } = payload;
       try {
         response = yield call(checkDocument, {
           ...payload,
           tenantId: getCurrentTenant(),
-          company: getCurrentCompany(),
         });
         const { statusCode } = response;
         if (statusCode !== 200) throw response;
+        yield put({
+          type: 'fetchDocumentByCandidateID',
+          payload: {
+            candidate,
+            tenantId: payload.tenantId,
+            document: payload.document,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *verifyAllDocuments({ payload }, { put, call }) {
+      let response = {};
+      const { candidate } = payload;
+      try {
+        response = yield call(verifyAllDocuments, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'fetchDocumentByCandidateID',
+          payload: {
+            candidate,
+            tenantId: payload.tenantId,
+            document: payload.document,
+          },
+        });
       } catch (error) {
         dialog(error);
       }
@@ -1441,6 +1516,57 @@ const newCandidateForm = {
         });
       } catch (error) {
         dialog(error);
+      }
+      return response;
+    },
+
+    // Offer letter actions
+    *extendOfferLetterEffect({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(extendOfferLetter, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveTemp',
+          payload: {
+            oldExpiryDate: payload.oldExpiryDate,
+            expiryDate: payload.expiryDate,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *withdrawOfferEffect({ payload = {} }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(withdrawOffer, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveOrigin',
+          payload: {
+            processStatus: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+          },
+        });
+        yield put({
+          type: 'saveTemp',
+          payload: {
+            processStatus: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
       }
       return response;
     },

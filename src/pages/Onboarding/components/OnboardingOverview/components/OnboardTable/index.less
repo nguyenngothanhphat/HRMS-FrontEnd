@@ -97,6 +97,21 @@
     margin-right: 8px;
   }
 
+  .name, .position, .dateJoin, .location, .actionText {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 15px;
+    letter-spacing: 0.121875px;
+
+    color: #464646;
+  }
+
+  .actionText{
+    font-size: 11px;
+  }
+
   .ticketTag {
     font-size: 11px;
     font-weight: 500;
@@ -222,24 +237,67 @@
       font-weight: 500;
       letter-spacing: 0.12px;
     }
+
+    .ant-table-thead > tr > th {
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 15px;
+      letter-spacing: 0.121875px;
+
+      color: #FFFFFF;
+    }
   }
 
   .deleteIcon{
     padding-left: 20px;
   }
 
-  .renderAssignee {
-    color: #2c6df9;
+  .renderAssignee, .processStatus, .candidateId {
+    font-family: Roboto;
+    font-style: normal;
     font-weight: 500;
-    cursor: pointer;
+    font-size: 13px;
+    line-height: 15px;
+    letter-spacing: 0.121875px;
+
+    color: #2C6DF9;
     &:hover {
       opacity: 0.9;
     }
   }
-
+  
+  .renderAssignee, .candidateId{
+    cursor: pointer;
+  }
+  
   .menuIcon {
     cursor: pointer;
     width: 15px;
     padding-block: 10px;
+  }
+}
+
+.menu{
+  background-color: #fff;
+  box-shadow: 1px 0px 6px rgba(0, 0, 0, 0.15);
+  padding: 8px;
+  border-radius: 5px;
+
+  &::after {
+        height: 8px;
+    width: 10px;
+    content: '';
+    background-color: #fff;
+    box-shadow: 1px 1px 3px -1px rgb(0 0 0 / 15%) !important;
+    position: absolute;
+    top: -3px;
+    right: 6px;
+    margin-left: -5px;
+    border-top: #fff solid 1px;
+    border-left: #fff solid 1px;
+    transform: rotate(225deg);
+    z-index: 1003 !important;
   }
 }

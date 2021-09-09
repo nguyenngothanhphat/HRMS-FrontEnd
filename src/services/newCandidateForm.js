@@ -80,6 +80,13 @@ export function getManagerList(params) {
   // });
 }
 
+export function getReporteesList(params) {
+  return request('/api/employeetenant/list', {
+    method: 'POST',
+    data: params,
+  });
+}
+
 export async function getReportingManagerList(params) {
   return request('/api/employeetenant/list-manager', {
     method: 'POST',
@@ -203,6 +210,21 @@ export function addManagerSignature(params) {
 export function addSchedule(params) {
   // console.log(params);
   return request('/api/candidatetenant/schedule', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+// extend offer letter
+export function extendOfferLetter(params) {
+  return request('/api/candidatetenant/extend-offer-date', {
+    method: 'POST',
+    data: params,
+  });
+}
+
+export function withdrawOffer(params) {
+  return request('/api/candidatetenant/withdraw-ticket', {
     method: 'POST',
     data: params,
   });

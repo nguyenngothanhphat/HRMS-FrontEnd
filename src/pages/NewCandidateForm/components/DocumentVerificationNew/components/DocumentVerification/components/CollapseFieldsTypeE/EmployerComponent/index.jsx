@@ -93,7 +93,7 @@ class EmployerComponent extends PureComponent {
             // endDate: workDuration.endDate ? moment(workDuration.endDate) : '',
           }}
         >
-          <Row gutter={['20', '20']}>
+          <Row gutter={[5, 0]}>
             <Col span={24}>
               <Form.Item label="Name of the employer*" name="employer">
                 <Input
@@ -106,7 +106,7 @@ class EmployerComponent extends PureComponent {
             </Col>
           </Row>
         </Form>
-        <Row gutter={['20', '20']}>
+        <Row gutter={[5, 0]}>
           <Col span={24}>
             <div className={styles.title2}>Proof of employment</div>
             <CheckboxGroup
@@ -128,7 +128,7 @@ class EmployerComponent extends PureComponent {
           </Col>
         </Row>
 
-        {index + 1 <= listLength && <hr className={styles.divider} />}
+        {index + 1 < listLength && <hr className={styles.divider} />}
       </div>
     );
   }

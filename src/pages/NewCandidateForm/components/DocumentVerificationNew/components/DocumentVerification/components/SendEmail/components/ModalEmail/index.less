@@ -1,6 +1,5 @@
 .body {
   margin-top: 32px;
-  margin-left: 20px;
   // padding-right: 100px;
   .radioContainer {
     width: 100%;
@@ -42,6 +41,10 @@
       }
     }
     :global {
+      .ant-input-disabled {
+        color: #161c29;
+        background: rgba(226, 228, 232, 0.5) !important;
+      }
       .ant-form-item-label {
         label {
           color: #707177;
@@ -252,7 +255,7 @@
 }
 
 .header {
-  padding-left: 20px;
+
   .text {
     color: #161c29;
     font-weight: 500;

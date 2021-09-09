@@ -3,9 +3,11 @@ import _ from 'lodash';
 import { notification } from 'antd';
 
 import {
+  deleteDraft,
   getOnboardingList,
   getTotalNumberOnboardingList,
   handleExpiryTicket,
+  withdrawTicket,
 } from '@/services/onboard';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
@@ -54,7 +56,7 @@ const MENU_DATA = [
   },
   {
     id: 6,
-    name: 'Awaiting approvals',
+    name: 'Awaiting Approvals',
     key: 'awaitingApprovals',
     component: 'AwaitingApprovals',
     quantity: 0,
@@ -135,6 +137,7 @@ const formatData = (list = []) => {
       processStatus = '',
       verifiedDocument = 0,
       expiryDate = '',
+      currentStep = 0,
     } = item;
     const dateSent = formatDate(sentDate) || '';
     const dateReceived = formatDate(receiveDate) || '';
@@ -171,6 +174,7 @@ const formatData = (list = []) => {
       assigneeManager,
       processStatus: NEW_PROCESS_STATUS_TABLE_NAME[processStatus],
       processStatusId: processStatus,
+      currentStep,
     };
     formatList.push(rookie);
   });
@@ -259,8 +263,10 @@ const onboarding = {
             currentStatus: processStatus || 'All',
           },
         });
+        return response;
       } catch (errors) {
         dialog(errors);
+        return '';
       }
     },
     *fetchOnboardList({ payload }, { call, put }) {
@@ -312,69 +318,70 @@ const onboarding = {
               type: 'saveOnboardingOverview',
               payload: { drafts: returnedData },
             });
-            return;
+            return response;
           }
           case PROFILE_VERIFICATION: {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { profileVerifications: returnedData },
             });
-            return;
+            return response;
           }
           case DOCUMENT_VERIFICATION: {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { documentVerifications: returnedData },
             });
-            return;
+            return response;
           }
           case SALARY_NEGOTIATION: {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { salaryNegotiations: returnedData },
             });
-            return;
+            return response;
           }
           case AWAITING_APPROVALS: {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { awaitingApprovals: returnedData },
             });
-            return;
+            return response;
           }
           case OFFER_RELEASED: {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { offerReleased: returnedData },
             });
-            return;
+            return response;
           }
           case OFFER_ACCEPTED: {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { offerAccepted: returnedData },
             });
-            return;
+            return response;
           }
           case OFFER_REJECTED: {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { rejectedOffers: returnedData },
             });
-            return;
+            return response;
           }
           case OFFER_WITHDRAWN: {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { withdrawnOffers: returnedData },
             });
-            return;
+            return response;
           }
           default:
-            return;
+            return response;
         }
       } catch (errors) {
         dialog(errors);
+        return '';
       }
     },
     *handleExpiryTicket({ payload }, { call, put, select }) {
@@ -423,6 +430,76 @@ const onboarding = {
             },
           });
         }
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *withdrawTicket({ payload = {}, processStatus = '' }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(withdrawTicket, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+
+        // Refresh table tab OFFER_WITHDRAWN and current tab which has implemented action withdraw
+
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+          },
+        });
+        yield put({
+          type: 'fetchOnboardList',
+          payload: {
+            processStatus,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *deleteTicketDraft({ payload = {}, processStatus = '' }, { call, put }) {
+      let response;
+      try {
+        const { id = '', tenantId = '' } = payload;
+        const req = {
+          rookieID: id,
+          tenantId,
+        };
+        response = yield call(deleteDraft, req);
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+
+        // deleteTicket
+        yield put({
+          type: 'deleteTicket',
+          payload: id,
+        });
+        yield put({
+          type: 'fetchTotalNumberOfOnboardingListEffect',
+        });
+
+        if (processStatus === NEW_PROCESS_STATUS.DRAFT) {
+          yield put({
+            type: 'fetchOnboardList',
+            payload: {
+              processStatus,
+            },
+          });
+          yield put({
+            type: 'fetchOnboardListAll',
+            payload: {},
+          });
+        }
+
+        notification.success({ message: 'Delete ticket successfully.' });
       } catch (error) {
         dialog(error);
       }

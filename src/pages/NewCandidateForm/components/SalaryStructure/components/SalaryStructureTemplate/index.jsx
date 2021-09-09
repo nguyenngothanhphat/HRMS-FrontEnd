@@ -1,16 +1,15 @@
 /* eslint-disable react/jsx-props-no-spreading */
+import { Button, Col, Input, Row, Spin } from 'antd';
+import { toNumber, toString, trim, trimStart } from 'lodash';
 import React, { PureComponent } from 'react';
-import { Button, Input, Row, Col, Spin } from 'antd';
-import { formatMessage, connect, history } from 'umi';
+import { connect, formatMessage, history } from 'umi';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
-import { trim, trimStart, toString, toNumber } from 'lodash';
-import editIcon from './assets/editIcon.png';
-import styles from './index.less';
 import { Page } from '../../../../utils';
-import SalaryReference from './SalaryReference/index';
+import styles from './index.less';
 import ModalWaitAccept from './ModalWaitAccept/index';
+import SalaryReference from './SalaryReference/index';
 
 @connect(
   ({
@@ -19,6 +18,7 @@ import ModalWaitAccept from './ModalWaitAccept/index';
       cancelCandidate,
       checkMandatory = {},
       currentStep = {},
+      isEditingSalary = false,
       data: {
         listTitle = [],
         title = {},
@@ -30,6 +30,7 @@ import ModalWaitAccept from './ModalWaitAccept/index';
           salaryTemplate: salaryOriginData,
           settings: settingsOriginData = [],
           title: salaryTitleOriginData = {},
+          status: salaryAcceptanceStatus = '',
         } = {},
         candidate,
       } = {},
@@ -78,6 +79,8 @@ import ModalWaitAccept from './ModalWaitAccept/index';
     salaryTitleTempData,
     tempData,
     candidate,
+    salaryAcceptanceStatus,
+    isEditingSalary,
   }),
 )
 class SalaryStructureTemplate extends PureComponent {
@@ -86,7 +89,6 @@ class SalaryStructureTemplate extends PureComponent {
 
     this.state = {
       openModal: '',
-      isEdited: false,
     };
   }
 
@@ -119,30 +121,51 @@ class SalaryStructureTemplate extends PureComponent {
   onClickPrev = () => {
     const { tempData } = this.props;
     const { ticketID = '' } = tempData;
-    history.push(`/onboarding/list/view/${ticketID}/job-details`);
+    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.DOCUMENT_VERIFICATION}`);
   };
 
   onClickNext = () => {
     const {
       dispatch,
       settingsTempData: settings = [],
-      data: { _id, processStatus },
+      data: { _id, processStatus, currentStep },
     } = this.props;
-    if (processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION) {
-      dispatch({
-        type: 'newCandidateForm/updateByHR',
-        payload: {
-          salaryStructure: {
-            settings,
+    if (currentStep === 3) {
+      if (processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION) {
+        dispatch({
+          type: 'newCandidateForm/updateByHR',
+          payload: {
+            salaryStructure: {
+              settings,
+              status: 'IN-PROGRESS',
+            },
+            candidate: _id,
+            tenantId: getCurrentTenant(),
           },
-          candidate: _id,
-          tenantId: getCurrentTenant(),
-        },
-      }).then(({ statusCode }) => {
-        if (statusCode === 200) {
-          this.setState({ openModal: 'ModalWaitAccept' });
-        }
-      });
+        }).then(({ statusCode }) => {
+          if (statusCode === 200) {
+            this.setState({ openModal: 'ModalWaitAccept' });
+          }
+        });
+      } else {
+        const { tempData } = this.props;
+        const { ticketID = '' } = tempData;
+        dispatch({
+          type: 'newCandidateForm/updateByHR',
+          payload: {
+            currentStep: 4,
+            candidate: _id,
+            tenantId: getCurrentTenant(),
+          },
+        });
+        dispatch({
+          type: 'newCandidateForm/save',
+          payload: {
+            currentStep: 4,
+          },
+        });
+        history.push(`/onboarding/list/view/${ticketID}/benefits`);
+      }
     } else {
       const { tempData } = this.props;
       const { ticketID = '' } = tempData;
@@ -150,10 +173,11 @@ class SalaryStructureTemplate extends PureComponent {
     }
   };
 
-  onClickEdit = () => {
-    const { isEdited } = this.state;
-    this.setState({
-      isEdited: !isEdited,
+  handleEditSalary = (value) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'newCandidateForm/save',
+      payload: { isEditingSalary: value },
     });
   };
 
@@ -164,16 +188,11 @@ class SalaryStructureTemplate extends PureComponent {
       payload: { settings },
     });
 
-    this.setState({
-      isEdited: false,
-    });
+    this.handleEditSalary(false);
   };
 
   onClickSubmit = () => {
-    const { isEdited } = this.state;
-    this.setState({
-      isEdited: !isEdited,
-    });
+    this.handleEditSalary(false);
   };
 
   handleChange = (e, key) => {
@@ -261,29 +280,6 @@ class SalaryStructureTemplate extends PureComponent {
     );
   };
 
-  _renderButtons = () => {
-    const { isEdited } = this.state;
-    const { processStatus } = this.props;
-    if (
-      processStatus === NEW_PROCESS_STATUS.DRAFT ||
-      processStatus === NEW_PROCESS_STATUS.PROFILE_VERIFICATION ||
-      processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION ||
-      processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION
-    ) {
-      return (
-        <div className={styles.buttons}>
-          {!isEdited && (
-            <Button type="primary" onClick={() => this.onClickEdit('edit')}>
-              <img src={editIcon} alt="icon" />{' '}
-              {formatMessage({ id: 'component.salaryStructureTemplate.edit' })}
-            </Button>
-          )}
-        </div>
-      );
-    }
-    return <div />;
-  };
-
   convertValue = (value) => {
     const str = toString(value);
     const list = str.split('.');
@@ -309,9 +305,9 @@ class SalaryStructureTemplate extends PureComponent {
   };
 
   _renderVaule = (item) => {
-    const { isEdited } = this.state;
+    const { isEditingSalary } = this.props;
 
-    if (!isEdited)
+    if (!isEditingSalary)
       return (
         <div key={item.key} className={styles.salary__right__text}>
           {this.renderSingle(item.value, item.unit)}
@@ -338,70 +334,48 @@ class SalaryStructureTemplate extends PureComponent {
     );
   };
 
-  _renderStatus = () => {
-    const { checkMandatory } = this.props;
-    const { filledSalaryStructure } = checkMandatory;
-    return !filledSalaryStructure ? (
-      <div className={styles.normalText}>
-        <div className={styles.redText}>*</div>
-        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
-      </div>
-    ) : (
-      <div className={styles.greenText}>
-        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
-      </div>
-    );
-  };
-
   _renderBottomBar = () => {
-    const { processStatus } = this.props;
-    const { isEdited } = this.state;
+    const { isEditingSalary, salaryAcceptanceStatus, loadingEditSalary = false } = this.props;
     return (
       <div className={styles.bottomBar}>
-        <Row align="middle">
-          <Col span={16}>
-            <div className={styles.bottomBar__status}>
-              {processStatus === 'DRAFT' ? this._renderStatus() : null}
-            </div>
-          </Col>
-          {isEdited ? (
-            <Col className={styles.bottomBar__button} span={8}>
-              <Button
-                type="secondary"
-                onClick={this.onCancel}
-                className={styles.bottomBar__button__secondary}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="primary"
-                htmlType="submit"
-                onClick={this.onClickSubmit}
-                className={styles.bottomBar__button__prmary}
-              >
-                Update
-              </Button>
-            </Col>
-          ) : (
-            <Col className={styles.bottomBar__button} span={8}>
-              <Button
-                type="secondary"
-                onClick={this.onClickPrev}
-                className={styles.bottomBar__button__secondary}
-              >
-                Previous
-              </Button>
-              <Button
-                type="primary"
-                htmlType="submit"
-                onClick={this.onClickNext}
-                className={styles.bottomBar__button__prmary}
-              >
-                Next
-              </Button>
-            </Col>
-          )}
-        </Row>
+        {isEditingSalary ? (
+          <div className={styles.bottomBar__button} span={24}>
+            <Button
+              type="secondary"
+              onClick={this.onCancel}
+              className={styles.bottomBar__button__secondary}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={this.onClickSubmit}
+              className={styles.bottomBar__button__prmary}
+            >
+              Update
+            </Button>
+          </div>
+        ) : (
+          <div className={styles.bottomBar__button} span={24}>
+            <Button
+              type="secondary"
+              onClick={this.onClickPrev}
+              className={styles.bottomBar__button__secondary}
+            >
+              Previous
+            </Button>
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={this.onClickNext}
+              className={styles.bottomBar__button__prmary}
+              loading={loadingEditSalary}
+            >
+              {salaryAcceptanceStatus === 'ACCEPTED' ? 'Next' : 'Send to candidate'}
+            </Button>
+          </div>
+        )}
       </div>
     );
   };
@@ -415,8 +389,9 @@ class SalaryStructureTemplate extends PureComponent {
       settingsTempData: settings = [],
       grade = '',
       title = {},
+      isEditingSalary,
     } = this.props;
-
+    console.log('isEditingSalary', isEditingSalary);
     const { openModal } = this.state;
     return (
       <div className={styles.salaryStructureTemplate}>
@@ -498,7 +473,6 @@ class SalaryStructureTemplate extends PureComponent {
           <Spin className={styles.spin} />
         ) : (
           <>
-            {this._renderButtons()}
             <div className={styles.salaryStructureTemplate_table}>
               <Row className={styles.salary}>
                 <Col span={12} className={styles.salary__left}>

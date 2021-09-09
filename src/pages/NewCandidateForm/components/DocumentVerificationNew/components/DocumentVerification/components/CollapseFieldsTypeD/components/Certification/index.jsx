@@ -112,7 +112,7 @@ class Certification extends PureComponent {
               onChange={(e) => this.handleInputDelay(e.target?.value, 'alias')}
             />
           </Form.Item>
-          <Form.Item>
+          {/* <Form.Item>
             <Form.Item name="limited" valuePropName="checked" noStyle>
               <Checkbox disabled={disabled} onChange={(e) => this.handleCheckBox(e, 'limited')}>
                 Limitted validity period
@@ -165,6 +165,7 @@ class Certification extends PureComponent {
               </Col>
             )}
           </Row>
+        */}
         </Form>
         {index + 1 < length && <Divider />}
       </div>

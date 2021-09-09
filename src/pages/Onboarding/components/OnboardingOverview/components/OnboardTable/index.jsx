@@ -6,7 +6,11 @@ import moment from 'moment';
 // import CustomModal from '@/components/CustomModal/index';
 // import ProfileModalContent from '../FinalOffers/components/ProfileModalContent';
 import MenuIcon from '@/assets/menuDots.svg';
-import { NEW_PROCESS_STATUS, PROCESS_STATUS } from '@/utils/onboarding';
+import {
+  NEW_PROCESS_STATUS,
+  ONBOARDING_FORM_LINK,
+  ONBOARDING_FORM_STEP_LINK,
+} from '@/utils/onboarding';
 import { getAuthority, getCurrentTenant } from '@/utils/authority';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 import { getActionText, getColumnWidth } from './utils';
@@ -44,14 +48,7 @@ class OnboardTable extends Component {
     };
   }
 
-  handleActionClick = (ticketType) => {
-    const { SENT_FINAL_OFFERS, ACCEPTED_FINAL_OFFERS } = PROCESS_STATUS;
-    if (ticketType === SENT_FINAL_OFFERS || ticketType === ACCEPTED_FINAL_OFFERS) {
-      this.setState((prevState) => ({ openModal: !prevState.openModal }));
-    }
-  };
-
-  handleActionDelete = (id) => {
+  handleActionDelete = (id, processStatus) => {
     const { dispatch } = this.props;
 
     if (!dispatch) {
@@ -59,16 +56,25 @@ class OnboardTable extends Component {
     }
 
     dispatch({
-      type: 'onboard/deleteTicketDraft',
+      type: 'onboarding/deleteTicketDraft',
       payload: {
         id,
         tenantId: getCurrentTenant(),
       },
+      processStatus,
     });
   };
 
-  handleActionWithDraw = (id) => {
-    console.log(id);
+  handleActionWithDraw = (candidate, processStatus) => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: 'onboarding/withdrawTicket',
+      payload: {
+        candidate,
+      },
+      processStatus,
+    });
   };
 
   closeModal = () => {
@@ -92,13 +98,16 @@ class OnboardTable extends Component {
   //   );
   //   // return <ModalContent closeModal={this.closeModal} />;
   // };
-  fetchData = () => {};
 
-  renderCandidateId = (candidateId, type) => {
+  renderCandidateId = (candidateId, row) => {
     const id = candidateId.replace('#', '') || '';
+    const { currentStep = 0 } = row;
+    const find = ONBOARDING_FORM_STEP_LINK.find((v) => v.id === currentStep) || {
+      link: ONBOARDING_FORM_LINK.BASIC_INFORMATION,
+    };
     return (
-      <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-        <span onClick={() => this.handleActionClick(type)}>{candidateId}</span>
+      <Link className={styles.candidateId} to={`/onboarding/list/view/${id}/${find.link}`}>
+        <span>{candidateId}</span>
       </Link>
     );
   };
@@ -168,7 +177,8 @@ class OnboardTable extends Component {
       ASSIGNEE_MANAGER,
       PROCESS_STATUS: PROCESS_STATUS_1,
     } = COLUMN_NAME;
-    const actionText = getActionText(type);
+
+    const { list = [] } = this.props;
 
     const columns = [
       {
@@ -176,8 +186,8 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.candidateId' }),
         dataIndex: 'candidateId',
         key: 'candidateId',
-        width: getColumnWidth('candidateId', type),
-        render: (candidateId) => this.renderCandidateId(candidateId, type),
+        width: getColumnWidth('candidateId', type, list.length),
+        render: (candidateId, row) => this.renderCandidateId(candidateId, row),
         columnName: ID,
         fixed: 'left',
       },
@@ -188,7 +198,7 @@ class OnboardTable extends Component {
         key: 'candidateID2',
         render: (candidateId) => this.renderName(candidateId),
         columnName: NAME,
-        width: getColumnWidth('candidateName', type),
+        width: getColumnWidth('candidateName', type, list.length),
         align: 'left',
       },
       {
@@ -196,19 +206,9 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.position' }),
         dataIndex: 'position',
         key: 'position',
-        render: (position) => <span>{position || '-'}</span>,
+        render: (position) => <span className={styles.position}>{position || '-'}</span>,
         columnName: POSITION,
-        width: getColumnWidth('position', type),
-        align: 'left',
-      },
-      {
-        // title: 'Location',
-        title: formatMessage({ id: 'component.onboardingOverview.location' }),
-        dataIndex: 'location',
-        key: 'location',
-        render: (location) => <span>{location || '-'}</span>,
-        columnName: LOCATION,
-        width: getColumnWidth('location', type),
+        width: getColumnWidth('position', type, list.length),
         align: 'left',
       },
       {
@@ -216,9 +216,19 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
         dataIndex: 'dateJoin',
         key: 'dateJoin',
-        render: (dateJoin) => <span>{dateJoin || '-'}</span>,
+        render: (dateJoin) => <span className={styles.dateJoin}>{dateJoin || '-'}</span>,
         columnName: DATE_JOIN,
-        width: getColumnWidth('dateJoin', type),
+        width: getColumnWidth('dateJoin', type, list.length),
+        align: 'left',
+      },
+      {
+        // title: 'Location',
+        title: formatMessage({ id: 'component.onboardingOverview.location' }),
+        dataIndex: 'location',
+        key: 'location',
+        render: (location) => <span className={styles.location}>{location || '-'}</span>,
+        columnName: LOCATION,
+        width: getColumnWidth('location', type, list.length),
         align: 'left',
       },
       {
@@ -234,7 +244,7 @@ class OnboardTable extends Component {
           </span>
         ),
         columnName: ASSIGN_TO,
-        width: getColumnWidth('assignTo', type),
+        width: getColumnWidth('assignTo', type, list.length),
         align: 'left',
       },
       {
@@ -251,22 +261,23 @@ class OnboardTable extends Component {
           </span>
         ),
         columnName: ASSIGNEE_MANAGER,
-        width: getColumnWidth('assigneeManager', type),
+        width: getColumnWidth('assigneeManager', type, list.length),
         align: 'left',
       },
       {
         title: 'Status',
         dataIndex: 'processStatus',
         key: 'processStatus',
-        render: (processStatus) => <Tag color="geekblue">{processStatus}</Tag>,
+        render: (processStatus) => <span className={styles.processStatus}>{processStatus}</span>,
         columnName: PROCESS_STATUS_1,
-        width: getColumnWidth('processStatus', type),
+        width: getColumnWidth('processStatus', type, list.length),
         align: 'left',
+        fixed: 'right',
       },
       {
         dataIndex: 'actions',
         key: 'actions',
-        width: getColumnWidth('actions', type),
+        width: getColumnWidth('actions', type, list.length),
         fixed: 'right',
         align: 'center',
         render: (_, row) => {
@@ -277,7 +288,11 @@ class OnboardTable extends Component {
             assignTo = {},
             assigneeManager = {},
             offerExpiryDate = '',
+            candidate = '',
+            currentStep = 0,
           } = row;
+          const actionText = getActionText(type, processStatusId);
+
           const id = candidateId.replace('#', '') || '';
 
           const checkPermission =
@@ -292,13 +307,14 @@ class OnboardTable extends Component {
             actionText,
             processStatusId,
             offerExpiryDate,
+            currentStep,
           };
           if (checkPermission)
             return (
               <Dropdown
                 className={styles.menuIcon}
-                overlay={this.actionMenu(payload)}
-                placement="topLeft"
+                overlay={this.actionMenu(payload, candidate)}
+                placement="bottomRight"
               >
                 <img src={MenuIcon} alt="menu" />
               </Dropdown>
@@ -315,37 +331,40 @@ class OnboardTable extends Component {
     return newColumns;
   };
 
-  actionMenu = (payload = {}) => {
+  actionMenu = (payload = {}, candidate) => {
     const {
       id = '',
       assignToId: currentEmpId = '',
       type = '',
       actionText = '',
       processStatusId = '',
-      offerExpiryDate = '',
+      // offerExpiryDate = '',
+      currentStep = 0,
     } = payload;
 
-    const {
-      FINAL_OFFERS_DRAFT,
+    // const {
+    //   FINAL_OFFERS_DRAFT,
 
-      RENEGOTIATE_PROVISIONAL_OFFERS,
-      RENEGOTIATE_FINAL_OFFERS,
+    //   RENEGOTIATE_PROVISIONAL_OFFERS,
+    //   RENEGOTIATE_FINAL_OFFERS,
 
-      ACCEPTED_PROVISIONAL_OFFERS,
+    //   ACCEPTED_PROVISIONAL_OFFERS,
 
-      APPROVED_OFFERS,
-      ACCEPTED_FINAL_OFFERS,
+    //   APPROVED_OFFERS,
+    //   ACCEPTED_FINAL_OFFERS,
 
-      SENT_FINAL_OFFERS,
-    } = PROCESS_STATUS; // old status
+    //   SENT_FINAL_OFFERS,
+    // } = PROCESS_STATUS; // old status
 
     const { DRAFT } = NEW_PROCESS_STATUS; // new status
 
     const isRemovable = processStatusId === DRAFT;
     const isHRManager = this.checkPermission('hr-manager');
+    const find = ONBOARDING_FORM_STEP_LINK.find((v) => v.id === currentStep) || {
+      link: ONBOARDING_FORM_LINK.BASIC_INFORMATION,
+    };
 
-    const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;
-
+    // const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;
     let menuItem = '';
     switch (processStatusId) {
       // case DRAFT:
@@ -358,125 +377,125 @@ class OnboardTable extends Component {
       //   );
       //   break;
 
-      case RENEGOTIATE_PROVISIONAL_OFFERS:
-      case RENEGOTIATE_FINAL_OFFERS:
-        menuItem = (
-          <>
-            <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData()}>
-                <span>Schedule 1-on-1</span>
-              </Link>
-            </Menu.Item>
-            <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-                <span className={styles.viewDraft}>View Form</span>
-              </Link>
-            </Menu.Item>
-          </>
-        );
-        break;
+      // case RENEGOTIATE_PROVISIONAL_OFFERS:
+      // case RENEGOTIATE_FINAL_OFFERS:
+      //   menuItem = (
+      //     <>
+      //       <Menu.Item>
+      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData()}>
+      //           <span>Schedule 1-on-1</span>
+      //         </Link>
+      //       </Menu.Item>
+      //       <Menu.Item>
+      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+      //           <span className={styles.viewDraft}>View Form</span>
+      //         </Link>
+      //       </Menu.Item>
+      //     </>
+      //   );
+      //   break;
 
-      case ACCEPTED_PROVISIONAL_OFFERS:
-        menuItem = (
-          <Menu.Item>
-            <Link
-              to={`/onboarding/list/view/${id}`}
-              onClick={() => {
-                this.initiateBackgroundCheck(id);
-              }}
-            >
-              <span>Initiate Background Check</span>
-            </Link>
-          </Menu.Item>
-        );
-        break;
+      // case ACCEPTED_PROVISIONAL_OFFERS:
+      //   menuItem = (
+      //     <Menu.Item>
+      //       <Link
+      //         to={`/onboarding/list/view/${id}`}
+      //         onClick={() => {
+      //           this.initiateBackgroundCheck(id);
+      //         }}
+      //       >
+      //         <span>Initiate Background Check</span>
+      //       </Link>
+      //     </Menu.Item>
+      //   );
+      //   break;
 
-      case FINAL_OFFERS_DRAFT:
-        menuItem = (
-          <>
-            <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-                Send for approval
-              </Link>
-            </Menu.Item>
-            <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-                <span className={styles.viewDraft}>View Form</span>
-              </Link>
-            </Menu.Item>
-            <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-                Discard offer
-              </Link>
-            </Menu.Item>
-          </>
-        );
-        break;
+      // case FINAL_OFFERS_DRAFT:
+      //   menuItem = (
+      //     <>
+      //       <Menu.Item>
+      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+      //           Send for approval
+      //         </Link>
+      //       </Menu.Item>
+      //       <Menu.Item>
+      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+      //           <span className={styles.viewDraft}>View Form</span>
+      //         </Link>
+      //       </Menu.Item>
+      //       <Menu.Item>
+      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+      //           Discard offer
+      //         </Link>
+      //       </Menu.Item>
+      //     </>
+      //   );
+      //   break;
 
-      case APPROVED_OFFERS:
-        menuItem = (
-          <>
-            <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-                Send to candidate
-              </Link>
-            </Menu.Item>
-            <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-                <span className={styles.viewDraft}>View Form</span>
-              </Link>
-            </Menu.Item>
-          </>
-        );
-        break;
+      // case APPROVED_OFFERS:
+      //   menuItem = (
+      //     <>
+      //       <Menu.Item>
+      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+      //           Send to candidate
+      //         </Link>
+      //       </Menu.Item>
+      //       <Menu.Item>
+      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+      //           <span className={styles.viewDraft}>View Form</span>
+      //         </Link>
+      //       </Menu.Item>
+      //     </>
+      //   );
+      //   break;
 
-      case SENT_FINAL_OFFERS:
-        menuItem = isExpired ? (
-          <>
-            <Menu.Item>
-              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-                <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
-              </Link>
-            </Menu.Item>
-            <Menu.Item>
-              <span onClick={() => this.handleExpiryTicket(id, 'renew', processStatusId, type)}>
-                Renew
-              </span>
-            </Menu.Item>
-            <Menu.Item>
-              <span onClick={() => this.handleExpiryTicket(id, 'discard', processStatusId, type)}>
-                Discard
-              </span>
-            </Menu.Item>
-          </>
-        ) : (
-          <Menu.Item>
-            <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-              <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
-            </Link>
-          </Menu.Item>
-        );
+      // case SENT_FINAL_OFFERS:
+      //   menuItem = isExpired ? (
+      //     <>
+      //       <Menu.Item>
+      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+      //           <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
+      //         </Link>
+      //       </Menu.Item>
+      //       <Menu.Item>
+      //         <span onClick={() => this.handleExpiryTicket(id, 'renew', processStatusId, type)}>
+      //           Renew
+      //         </span>
+      //       </Menu.Item>
+      //       <Menu.Item>
+      //         <span onClick={() => this.handleExpiryTicket(id, 'discard', processStatusId, type)}>
+      //           Discard
+      //         </span>
+      //       </Menu.Item>
+      //     </>
+      //   ) : (
+      //     <Menu.Item>
+      //       <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+      //         <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
+      //       </Link>
+      //     </Menu.Item>
+      //   );
 
-        break;
+      //   break;
 
-      case ACCEPTED_FINAL_OFFERS:
-        menuItem = (
-          <Menu.Item>
-            <span
-              onClick={() => {
-                this.openModal();
-              }}
-            >
-              Create Profile
-            </span>
-          </Menu.Item>
-        );
-        break;
+      // case ACCEPTED_FINAL_OFFERS:
+      //   menuItem = (
+      //     <Menu.Item>
+      //       <span
+      //         onClick={() => {
+      //           this.openModal();
+      //         }}
+      //       >
+      //         Create Profile
+      //       </span>
+      //     </Menu.Item>
+      //   );
+      //   break;
       default:
         menuItem = (
           <Menu.Item>
-            <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-              <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
+            <Link className={styles.actionText} to={`/onboarding/list/view/${id}/${find.link}`}>
+              <span>{actionText}</span>
             </Link>
           </Menu.Item>
         );
@@ -484,7 +503,7 @@ class OnboardTable extends Component {
     }
 
     return (
-      <Menu>
+      <Menu className={styles.menu}>
         {menuItem}
         {isHRManager && (
           <Menu.Item>
@@ -492,6 +511,7 @@ class OnboardTable extends Component {
               onClick={() =>
                 this.handleReassignModal(true, currentEmpId, id, processStatusId, type)
               }
+              className={styles.actionText}
             >
               Re-assign
             </div>
@@ -499,12 +519,24 @@ class OnboardTable extends Component {
         )}
         {isRemovable && (
           <Menu.Item disabled={!isRemovable}>
-            <div onClick={isRemovable ? () => this.handleActionDelete(id) : () => {}}>Delete</div>
+            <div
+              className={styles.actionText}
+              onClick={isRemovable ? () => this.handleActionDelete(id, processStatusId) : () => {}}
+            >
+              Delete
+            </div>
           </Menu.Item>
         )}
         {!isRemovable && (
           <Menu.Item>
-            <div onClick={!isRemovable ? () => this.handleActionWithDraw(id) : () => {}}>
+            <div
+              onClick={
+                !isRemovable
+                  ? () => this.handleActionWithDraw(candidate, processStatusId)
+                  : () => {}
+              }
+              className={styles.actionText}
+            >
               Withdraw
             </div>
           </Menu.Item>
@@ -612,7 +644,8 @@ class OnboardTable extends Component {
       },
     };
 
-    const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch } = this.props;
+    const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch, loadingSearch } =
+      this.props;
     const { openModal } = this.state;
 
     return (
@@ -638,7 +671,7 @@ class OnboardTable extends Component {
             }}
             columns={this.generateColumns(columnArr, type)}
             dataSource={list}
-            loading={loading || loadingFetch}
+            loading={loading || loadingFetch || loadingSearch}
             pagination={pagination}
             onRow={(record) => {
               return {

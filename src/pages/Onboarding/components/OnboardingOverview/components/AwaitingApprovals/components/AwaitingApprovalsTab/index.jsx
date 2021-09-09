@@ -21,7 +21,15 @@ const { AWAITING_APPROVALS } = TABLE_TYPE;
 
 class AwaitingApprovalsTab extends PureComponent {
   render() {
-    const { list = [], loading, pageSelected, size, total, getPageAndSize = () => {} } = this.props;
+    const {
+      list = [],
+      loading,
+      pageSelected,
+      size,
+      total,
+      getPageAndSize = () => {},
+      loadingSearch,
+    } = this.props;
 
     return (
       <OnboardTable
@@ -40,6 +48,7 @@ class AwaitingApprovalsTab extends PureComponent {
         type={AWAITING_APPROVALS}
         inTab
         loadingFetch={loading}
+        loadingSearch={loadingSearch}
         pageSelected={pageSelected}
         size={size}
         total={total}

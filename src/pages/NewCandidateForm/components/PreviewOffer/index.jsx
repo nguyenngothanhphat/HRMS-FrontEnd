@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { connect, formatMessage } from 'umi';
+import { connect, formatMessage, history } from 'umi';
 import {
   Button,
   Input,
@@ -18,7 +18,7 @@ import moment from 'moment';
 import BigEditVector from '@/assets/bigEditVector.svg';
 import CustomModal from '@/components/CustomModal';
 import { getCurrentTenant } from '@/utils/authority';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import ModalDrawSignature from '@/components/ModalDrawSignature';
 import ModalGenerateSignature from '@/components/ModalGenerateSignature';
 import TextSignature from '@/components/TextSignature';
@@ -49,6 +49,8 @@ const PreviewOffer = (props) => {
     loading2,
     loading3,
     loadingFetchCandidate = false,
+    loadingExtendOfferDate = false,
+    loadingWithdrawOffer = false,
   } = props;
 
   const {
@@ -58,8 +60,10 @@ const PreviewOffer = (props) => {
     staticOfferLetter: staticOfferLetterProp,
     candidateSignature: candidateSignatureProp,
     expiryDate: expiryDateProp = '',
+    oldExpiryDate: oldExpiryDateProp = '',
     assignTo: { _id: assigneeId = '' } = {},
     assigneeManager: { _id: assigneeManagerId = '' } = {},
+    ticketID = '',
   } = tempData;
   const {
     privateEmail: candidateEmailProp = '',
@@ -85,6 +89,7 @@ const PreviewOffer = (props) => {
 
   const [openModal, setOpenModal] = useState(false);
   const [openModal2, setOpenModal2] = useState(false);
+  const [openModal3, setOpenModal3] = useState(false);
 
   const [modalSignature, setModalSignature] = useState('');
   const [isSignatureHR, setIsSignatureHR] = useState(false);
@@ -114,9 +119,9 @@ const PreviewOffer = (props) => {
   // const processStatus = NEW_PROCESS_STATUS.OFFER_WITHDRAWN;
 
   const isTicketAssignee = currentUserId === assigneeId;
-  // const isTicketAssignee = false;
+  // const isTicketAssignee = true;
   const isTicketManager = currentUserId === assigneeManagerId;
-  // const isTicketManager = true;
+  // const isTicketManager = false;
   const isNewOffer = processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION;
   const isAwaitingOffer = processStatus === NEW_PROCESS_STATUS.AWAITING_APPROVALS;
   const isAcceptedOffer = processStatus === NEW_PROCESS_STATUS.OFFER_ACCEPTED;
@@ -264,11 +269,61 @@ const PreviewOffer = (props) => {
     dispatch({
       type: 'newCandidateForm/approveFinalOfferEffect',
       payload: { hrManagerSignature: id, candidate, options: 1, tenantId: getCurrentTenant() },
+      action: 'accept',
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
         setOpenModal(true);
       }
     });
+  };
+
+  const handleExtendOfferDate = async (newDate) => {
+    const { candidate } = data;
+    const res = await dispatch({
+      type: 'newCandidateForm/extendOfferLetterEffect',
+      payload: {
+        candidate,
+        expiryDate: newDate,
+        oldExpiryDate: expiryDateProp,
+      },
+    });
+    if (res.statusCode === 200) {
+      setExtendOfferModalVisible(false);
+    }
+  };
+
+  const handleWithdrawOffer = async (reason) => {
+    const { candidate } = data;
+    const res = await dispatch({
+      type: 'newCandidateForm/withdrawOfferEffect',
+      payload: {
+        candidate,
+        reasonForWithdraw: reason,
+      },
+    });
+    if (res.statusCode === 200) {
+      setWithdrawOfferModalVisible(false);
+    }
+  };
+
+  const handleRejectOffer = async (reason) => {
+    const { id } = hrManagerSignature;
+    const { candidate } = data;
+    const res = await dispatch({
+      type: 'newCandidateForm/approveFinalOfferEffect',
+      payload: {
+        candidate,
+        reasonForRejection: reason,
+        hrManagerSignature: id,
+        options: 2,
+        tenantId: getCurrentTenant(),
+      },
+      action: 'reject',
+    });
+    if (res.statusCode === 200) {
+      setRejectModalVisible(false);
+      setOpenModal3(true);
+    }
   };
 
   useEffect(() => {
@@ -302,17 +357,18 @@ const PreviewOffer = (props) => {
   const closeModal = () => {
     setOpenModal(false);
 
-    dispatch({
-      type: 'newCandidateForm/redirectToOnboardList',
-    });
+    history.push(`/onboarding/list/offer-released`);
   };
 
   const closeModal2 = () => {
     setOpenModal2(false);
+    history.push(`/onboarding/list/awaiting-approvals`);
+  };
 
-    dispatch({
-      type: 'newCandidateForm/redirectToOnboardList',
-    });
+  const closeModal3 = () => {
+    setOpenModal3(false);
+
+    history.push(`/onboarding/list/rejected-offer`);
   };
 
   const renderCandidateSignature = () => {
@@ -702,12 +758,20 @@ const PreviewOffer = (props) => {
           handleSentForApproval();
         }
       };
+
+      const onSecondaryButtonClick = () => {
+        history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.OFFER_DETAILS}`);
+      };
       return (
         <div className={styles.bottomBar}>
           <Row align="middle">
             <Col span={24}>
               <div className={styles.bottomBar__button}>
-                <Button type="secondary" className={styles.bottomBar__button__secondary}>
+                <Button
+                  type="secondary"
+                  className={styles.bottomBar__button__secondary}
+                  onClick={onSecondaryButtonClick}
+                >
                   Previous
                 </Button>
                 {isNewOffer && (
@@ -716,6 +780,7 @@ const PreviewOffer = (props) => {
                     type="primary"
                     className={styles.bottomBar__button__primary}
                     onClick={onPrimaryButtonClick}
+                    loading={loading1}
                   >
                     {hrButtonText()}
                   </Button>
@@ -740,7 +805,7 @@ const PreviewOffer = (props) => {
       };
 
       const managerPrimaryButtonText = () => {
-        if (isAcceptedOffer || isSentOffer) {
+        if (isSentOffer || isAcceptedOffer) {
           return 'Withdraw';
         }
         if (isRejectedOffer) {
@@ -762,7 +827,7 @@ const PreviewOffer = (props) => {
       };
 
       const onPrimaryButtonClick = () => {
-        if (isAcceptedOffer || isSentOffer) {
+        if (isSentOffer || isAcceptedOffer) {
           setWithdrawOfferModalVisible(true);
         }
         if (isNewOffer || isAwaitingOffer) {
@@ -799,6 +864,7 @@ const PreviewOffer = (props) => {
                     onClick={onPrimaryButtonClick}
                     className={styles.bottomBar__button__primary}
                     disabled={checkDisablePrimaryButton()}
+                    loading={loading2}
                   >
                     {managerPrimaryButtonText()}
                   </Button>
@@ -829,7 +895,7 @@ const PreviewOffer = (props) => {
     data: (
       <Typography.Text>
         The offer letter date has been extended from{' '}
-        <span>{expiryDateProp ? moment(expiryDateProp).format('MM.DD.YY') : '-'}</span> to{' '}
+        <span>{oldExpiryDateProp ? moment(oldExpiryDateProp).format('MM.DD.YY') : '-'}</span> to{' '}
         <span>{expiryDateProp ? moment(expiryDateProp).format('MM.DD.YY') : '-'}</span>
       </Typography.Text>
     ),
@@ -855,13 +921,16 @@ const PreviewOffer = (props) => {
   return (
     <Row gutter={[24, 0]} className={styles.previewContainer}>
       <Col xs={24} xl={16} className={styles.left}>
-        <div className={styles.header}>
-          {/* <span className={styles.title}>Offer Letter</span> */}
-          <span />
-          <span className={styles.expiryDate}>
-            Offer will Expires on {expiryDateProp ? moment(expiryDateProp).format('MM.DD.YY') : '-'}
-          </span>
-        </div>
+        {(isAwaitingOffer || isNewOffer || isSentOffer) && (
+          <div className={styles.header}>
+            {/* <span className={styles.title}>Offer Letter</span> */}
+            <span />
+            <span className={styles.expiryDate}>
+              Offer will Expires on{' '}
+              {expiryDateProp ? moment(expiryDateProp).format('MM.DD.YY') : '-'}
+            </span>
+          </div>
+        )}
         <div className={styles.leftContent}>
           <FileContent url={offerLetter} />
         </div>
@@ -902,12 +971,12 @@ const PreviewOffer = (props) => {
         )}
 
         {/* EXTENDED OFFER  */}
-        {/* {isTicketManager && isSentOffer && (
+        {isTicketManager && isSentOffer && oldExpiryDateProp && (
           <>
             <NoteComponent note={ExtendedNote} />
             <div style={{ marginBottom: '24px' }} />
           </>
-        )} */}
+        )}
 
         {/* HR signature */}
         {(isTicketAssignee || isTicketManager) && (
@@ -1181,7 +1250,7 @@ const PreviewOffer = (props) => {
               closeModal={closeModal}
               tempData={tempData}
               candidateEmail={mail}
-              type="hrManager"
+              type="release"
             />
           }
         />
@@ -1194,7 +1263,20 @@ const PreviewOffer = (props) => {
               closeModal={closeModal2}
               tempData={tempData}
               candidateEmail={mail}
-              type="hr"
+              type="send-for-approval"
+            />
+          }
+        />
+
+        <CustomModal
+          open={openModal3}
+          closeModal={closeModal3}
+          content={
+            <ModalContent
+              closeModal={closeModal3}
+              tempData={tempData}
+              candidateEmail={mail}
+              type="reject"
             />
           }
         />
@@ -1204,6 +1286,8 @@ const PreviewOffer = (props) => {
           title="Reason for Offer Rejection"
           visible={rejectModalVisible}
           onClose={() => setRejectModalVisible(false)}
+          onFinish={handleRejectOffer}
+          loading={loading2}
         />
 
         {/* EXTEND OFFER  */}
@@ -1211,6 +1295,9 @@ const PreviewOffer = (props) => {
           title="Extend offer letter date"
           visible={extendOfferModalVisible}
           onClose={() => setExtendOfferModalVisible(false)}
+          onFinish={handleExtendOfferDate}
+          currentExpiryDate={expiryDateProp}
+          loading={loadingExtendOfferDate}
         />
 
         {/* WITHDRAW MODAL  */}
@@ -1219,6 +1306,8 @@ const PreviewOffer = (props) => {
           title="Offer Withdraw"
           visible={withdrawOfferModalVisible}
           onClose={() => setWithdrawOfferModalVisible(false)}
+          loading={loadingWithdrawOffer}
+          onFinish={handleWithdrawOffer}
         />
       </Col>
     </Row>
@@ -1243,5 +1332,7 @@ export default connect(
     loading2: loading.effects['newCandidateForm/approveFinalOfferEffect'],
     loading3: loading.effects['newCandidateForm/updateByHR'],
     loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
+    loadingExtendOfferDate: loading.effects['newCandidateForm/extendOfferLetterEffect'],
+    loadingWithdrawOffer: loading.effects['newCandidateForm/withdrawOfferEffect'],
   }),
 )(PreviewOffer);

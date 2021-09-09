@@ -5,9 +5,7 @@ import styles from './index.less';
 
 const { TextArea } = Input;
 
-@connect(({ loading }) => ({
-  loadingReject: loading.effects['candidatePortal/submitCandidateFinalOffer'],
-}))
+@connect(() => ({}))
 class WithdrawOfferModal extends PureComponent {
   constructor(props) {
     super(props);
@@ -19,7 +17,7 @@ class WithdrawOfferModal extends PureComponent {
   componentDidMount = async () => {};
 
   renderModalHeader = () => {
-    const { title = 'message for Rejection' } = this.props;
+    const { title = 'Message for Rejection' } = this.props;
     return (
       <div className={styles.header}>
         <p className={styles.header__text}>{title}</p>
@@ -56,7 +54,7 @@ class WithdrawOfferModal extends PureComponent {
   };
 
   render() {
-    const { visible = false, loadingReject } = this.props;
+    const { visible = false, loading } = this.props;
     const { message } = this.state;
 
     return (
@@ -77,7 +75,7 @@ class WithdrawOfferModal extends PureComponent {
               htmlType="submit"
               onClick={this.onFinish}
               disabled={!message}
-              loading={loadingReject}
+              loading={loading}
             >
               Withdraw
             </Button>,

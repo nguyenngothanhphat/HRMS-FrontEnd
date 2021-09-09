@@ -21,7 +21,15 @@ const { DRAFT } = TABLE_TYPE;
 
 class DraftTab extends PureComponent {
   render() {
-    const { list = [], loading, pageSelected, size, total, getPageAndSize = () => {} } = this.props;
+    const {
+      list = [],
+      loading,
+      pageSelected,
+      size,
+      total,
+      getPageAndSize = () => {},
+      loadingSearch,
+    } = this.props;
 
     return (
       <OnboardTable
@@ -40,6 +48,7 @@ class DraftTab extends PureComponent {
         type={DRAFT}
         inTab
         loadingFetch={loading}
+        loadingSearch={loadingSearch}
         pageSelected={pageSelected}
         size={size}
         total={total}

@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import s from './index.less';
+import TickMarkIcon from '@/assets/tickMarkIcon.svg';
 
 export default class ItemMenu extends PureComponent {
   getClassName = () => {
@@ -17,9 +18,15 @@ export default class ItemMenu extends PureComponent {
   };
 
   render() {
-    const { item = {}, handelClick = () => {}, selectedItemId, isDisabled = false } = this.props;
+    const {
+      item = {},
+      handelClick = () => {},
+      selectedItemId,
+      isDisabled = false,
+      isCompleted = false,
+    } = this.props;
 
-    const { id = '', name = '', isComplete = false } = item;
+    const { id = '', name = '' } = item;
     const isActive = selectedItemId === id;
     // const className = isActive ? s.itemMenuActive : s.itemMenu;
     const isTabTopActive = id === selectedItemId - 1;
@@ -37,9 +44,7 @@ export default class ItemMenu extends PureComponent {
         style={isTabTopActive ? { borderBottomColor: '#fff' } : {}}
       >
         <p className={s.textName}>{name}</p>
-        {isComplete && (
-          <img src="/assets/images/iconCheck.svg" alt="iconCheck" className={s.iconCheck} />
-        )}
+        {isCompleted && <img src={TickMarkIcon} alt="iconCheck" className={s.iconCheck} />}
       </div>
     );
   }

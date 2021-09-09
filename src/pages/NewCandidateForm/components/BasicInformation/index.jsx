@@ -1,10 +1,10 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-param-reassign */
 import { Button, Col, Form, Input, Row, Skeleton, Typography } from 'antd';
-import { debounce } from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { Page } from '../../utils';
 import MessageBox from '../MessageBox';
@@ -13,7 +13,6 @@ import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
 import BasicInformationHeader from './components/BasicInformationHeader';
 import styles from './index.less';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 
 @connect(({ newCandidateForm: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
   data,
@@ -125,7 +124,7 @@ class BasicInformation extends PureComponent {
             currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 1 : currentStep,
           },
         });
-        history.push(`/onboarding/list/view/${ticketID}/job-details`);
+        history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.JOB_DETAILS}`);
       }
     });
   };
@@ -163,6 +162,13 @@ class BasicInformation extends PureComponent {
   };
 
   _renderForm = () => {
+    const { tempData } = this.props;
+    const { processStatus = '' } = tempData;
+    const disabled = ![
+      NEW_PROCESS_STATUS.DRAFT,
+      NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
+      NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
+    ].includes(processStatus);
     return (
       <div className={styles.basicInformation__form}>
         <Row gutter={[48, 0]}>
@@ -182,6 +188,7 @@ class BasicInformation extends PureComponent {
               ]}
             >
               <Input
+                disabled={disabled}
                 autoComplete="off"
                 // onChange={(e) => this.handleChange(e)}
                 placeholder="First Name"
@@ -205,6 +212,7 @@ class BasicInformation extends PureComponent {
               ]}
             >
               <Input
+                disabled={disabled}
                 autoComplete="off"
                 // onChange={(e) => this.handleChange(e)}
                 placeholder="Middle Name"
@@ -229,6 +237,7 @@ class BasicInformation extends PureComponent {
               ]}
             >
               <Input
+                disabled={disabled}
                 autoComplete="off"
                 // onChange={(e) => this.handleChange(e)}
                 placeholder="Last Name"
@@ -264,6 +273,7 @@ class BasicInformation extends PureComponent {
               ]}
             >
               <Input
+                disabled={disabled}
                 autoComplete="off"
                 // onChange={(e) => this.handleChange(e)}
                 placeholder="Personal Email"
@@ -274,8 +284,6 @@ class BasicInformation extends PureComponent {
               />
             </Form.Item>
           </Col>
-
-          {this._renderEmployeeId()}
 
           <Col xs={24} sm={24} md={24} lg={12} xl={12}>
             <Form.Item
@@ -296,6 +304,7 @@ class BasicInformation extends PureComponent {
               ]}
             >
               <Input
+                disabled={disabled}
                 autoComplete="off"
                 placeholder="Relevant previous experience"
                 className={styles.formInput}
@@ -316,7 +325,12 @@ class BasicInformation extends PureComponent {
       tempData: { processStatus = '' } = {},
     } = this.props;
     const { filledBasicInformation } = checkMandatory;
-    const renderText = processStatus === NEW_PROCESS_STATUS.DRAFT ? 'Next' : 'Update';
+    const renderText = ![
+      NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
+      NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
+    ].includes(processStatus)
+      ? 'Next'
+      : 'Update';
 
     return (
       <div className={styles.bottomBar}>

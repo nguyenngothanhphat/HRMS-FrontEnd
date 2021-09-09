@@ -1,11 +1,13 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import { Tabs, Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Tabs } from 'antd';
+import { debounce } from 'lodash';
+
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import DraftTab from './components/DraftTab';
 
 import styles from '../index.less';
+import SearchOnboarding from '../SearchOnboarding';
 
 const { TabPane } = Tabs;
 
@@ -22,15 +24,29 @@ class Draft extends PureComponent {
     this.state = {
       pageSelected: 1,
       size: 10,
-      // nameSearch: '',
+      nameSearch: '',
+      loadingSearch: false,
     };
+
+    this.setDebounce = debounce((nameSearch) => {
+      this.setState({
+        nameSearch,
+      });
+    }, 500);
   }
 
   componentDidMount = () => {
-    this.fetchOnboardingDraft();
+    this.fetchOnboardingDraft('');
   };
 
-  fetchOnboardingDraft = () => {
+  componentDidUpdate = (prepProps, prepStates) => {
+    const { nameSearch } = this.state;
+    if (prepStates.nameSearch !== nameSearch) {
+      this.fetchOnboardingDraft(nameSearch);
+    }
+  };
+
+  fetchOnboardingDraft = (nameSearch = '') => {
     const { dispatch } = this.props;
 
     if (dispatch) {
@@ -38,8 +54,12 @@ class Draft extends PureComponent {
         type: 'onboarding/fetchOnboardList',
         payload: {
           processStatus: NEW_PROCESS_STATUS.DRAFT,
-          //   name: nameSearch,
+          name: nameSearch,
         },
+      }).then(({ statusCode }) => {
+        if (statusCode === 200) {
+          this.setState({ loadingSearch: false });
+        }
       });
     }
   };
@@ -51,23 +71,28 @@ class Draft extends PureComponent {
     });
   };
 
+  onChangeSearch = (value) => {
+    const formatValue = value.toLowerCase();
+    this.setState({ loadingSearch: true });
+    this.setDebounce(formatValue);
+  };
+
   render() {
     const { drafts: data = [], total = 0, loading } = this.props;
-    const { tabId, pageSelected, size } = this.state;
+    const { tabId, pageSelected, size, loadingSearch } = this.state;
     return (
       <div className={styles.onboardingTab}>
         <div className={styles.tabs}>
           <Tabs
             defaultActiveKey={tabId}
             onChange={this.onChangeTab}
-            tabBarExtraContent={
-              <Input onChange={this.onChange} placeholder="Search" prefix={<SearchOutlined />} />
-            }
+            tabBarExtraContent={<SearchOnboarding onChangeSearch={this.onChangeSearch} />}
           >
             <TabPane tab="Draft" key="1">
               <DraftTab
                 list={data}
                 loading={loading}
+                loadingSearch={loadingSearch}
                 pageSelected={pageSelected}
                 size={size}
                 getPageAndSize={this.getPageAndSize}

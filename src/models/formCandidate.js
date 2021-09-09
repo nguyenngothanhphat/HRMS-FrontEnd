@@ -11,6 +11,7 @@ import {
   updateByHR,
 } from '@/services/newCandidateForm';
 import { dialog } from '@/utils/utils';
+import { ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 
 const info = {
   namespace: 'info',
@@ -307,7 +308,7 @@ const info = {
         const { ticketID = '', _id = '' } = data;
         const rookieId = ticketID;
         yield put({ type: 'save', payload: { rookieId, _id } });
-        history.push(`/onboarding/list/view/${rookieId}/basic-information`);
+        history.push(`/onboarding/list/view/${rookieId}/${ONBOARDING_FORM_LINK.BASIC_INFORMATION}`);
       } catch (error) {
         dialog(error);
       }

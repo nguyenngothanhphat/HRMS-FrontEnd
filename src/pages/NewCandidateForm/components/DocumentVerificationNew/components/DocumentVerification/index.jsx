@@ -3,8 +3,8 @@
 import { Button, Col, notification, Row, Skeleton, Typography } from 'antd';
 import { map } from 'lodash';
 import React, { Component } from 'react';
-import { connect, formatMessage } from 'umi';
-import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { connect, formatMessage, history } from 'umi';
+import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import CustomModal from '@/components/CustomModal';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
@@ -22,18 +22,14 @@ import styles from './styles.less';
 const note = {
   title: 'Note',
   data: (
-    <>
-      <Typography.Text>
-        The candidate must upload all required documents. And, the<span> HR must approve </span>the
-        documents and mark candidate as eligible.
-      </Typography.Text>
-      <br />
-      <Typography.Paragraph className={styles.boldText}>
-        Post this approval, the remaining processes will open for onboarding.
-      </Typography.Paragraph>
-    </>
+    <Typography.Text>
+      Onboarding is a step-by-step process. It takes anywhere around{' '}
+      <span className={styles.textNote}>9-12 standard</span> working days for the entire process to
+      complete.
+    </Typography.Text>
   ),
 };
+
 const camelize = (str) => {
   return str
     .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) => {
@@ -50,7 +46,7 @@ const camelize = (str) => {
       checkMandatory,
       data,
       tableData,
-      tempData: { currentStep = '' },
+      tempData: { currentStep = '', ticketID = '' },
     },
     locationSelection: { listLocationsByCompany = [] } = {},
   }) => ({
@@ -58,6 +54,7 @@ const camelize = (str) => {
     data,
     tableData,
     currentStep,
+    ticketID,
     checkMandatory,
     newCandidateForm,
     listLocationsByCompany,
@@ -80,7 +77,6 @@ class DocumentVerification extends Component {
     };
   }
 
-  // HMMMM
   static getDerivedStateFromProps(props) {
     if ('tempData' in props) {
       return {
@@ -101,39 +97,6 @@ class DocumentVerification extends Component {
       this.firstInit();
     }
   };
-
-  componentWillUnmount() {
-    const { dispatch, tempData = {}, checkMandatory = {}, processStatus = [] } = this.props;
-    if (processStatus === 'SENT-PROVISIONAL-OFFER') {
-      dispatch({
-        type: 'newCandidateForm/save',
-        payload: {
-          tempData: {
-            ...tempData,
-            isSentEmail: true,
-          },
-          checkMandatory: {
-            ...checkMandatory,
-            filledDocumentVerification: false,
-          },
-        },
-      });
-    } else if (processStatus === 'DRAFT') {
-      dispatch({
-        type: 'newCandidateForm/save',
-        payload: {
-          tempData: {
-            ...tempData,
-            isSentEmail: false,
-          },
-          checkMandatory: {
-            ...checkMandatory,
-            filledDocumentVerification: false,
-          },
-        },
-      });
-    }
-  }
 
   componentDidUpdate = (prevProps) => {
     const {
@@ -168,6 +131,7 @@ class DocumentVerification extends Component {
         documentList: listB,
       },
     });
+    this.validateFields();
   };
 
   validateFields = () => {
@@ -211,26 +175,10 @@ class DocumentVerification extends Component {
     } = this.props;
 
     // save step
-    const { candidate = '', processStatus } = data;
-    // const { privateEmail } = tempData;
-    // const { DRAFT, PROFILE_VERIFICATION } = NEW_PROCESS_STATUS;
-
-    // if (processStatus === DRAFT || processStatus === PROFILE_VERIFICATION) {
-    //   if (dispatch && candidate) {
-    //     dispatch({
-    //       type: 'newCandidateForm/updateByHR',
-    //       payload: {
-    //         candidate,
-    //         currentStep: 2,
-    //         privateEmail,
-    //         tenantId: getCurrentTenant(),
-    //       },
-    //     });
-    //   }
-    // }
+    const { processStatus } = data;
 
     const arrToAdjust =
-      processStatus === 'DRAFT'
+      processStatus === NEW_PROCESS_STATUS.DRAFT
         ? JSON.parse(JSON.stringify(data.documentChecklistSetting))
         : JSON.parse(JSON.stringify(tempData.documentChecklistSetting));
 
@@ -314,13 +262,13 @@ class DocumentVerification extends Component {
   // SEND FORM VIA EMAIL AGAIN
   handleSendFormAgain = () => {
     const { dispatch } = this.props;
-    const { tempData: { isSentEmail } = {} } = this.state;
-    dispatch({
-      type: 'newCandidateForm/saveTemp',
-      payload: {
-        isSentEmail: !isSentEmail,
-      },
-    });
+    // const { tempData: { isSentEmail } = {} } = this.state;
+    // dispatch({
+    //   type: 'newCandidateForm/saveTemp',
+    //   payload: {
+    //     isSentEmail: !isSentEmail,
+    //   },
+    // });
     this.setState({ openModalEmail: true });
   };
 
@@ -533,21 +481,6 @@ class DocumentVerification extends Component {
     this.setState({ checkRadioSendMail: e.target.value });
   };
 
-  // added
-  _renderStatus = () => {
-    const { checkMandatory: { filledDocumentVerification = false } = {} } = this.props;
-    return !filledDocumentVerification ? (
-      <div className={styles.normalText}>
-        <div className={styles.redText}>*</div>
-        {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
-      </div>
-    ) : (
-      <div className={styles.greenText}>
-        * {formatMessage({ id: 'component.bottomBar.mandatoryFilled' })}
-      </div>
-    );
-  };
-
   _renderBottomBar = () => {
     const {
       tempData: { isSentEmail = false } = {},
@@ -556,12 +489,13 @@ class DocumentVerification extends Component {
 
     return (
       <div className={styles.bottomBar}>
-        <RenderAddQuestion page={Page.Eligibility_documents} />
         <Row align="middle">
-          <Col span={16}>
-            <div className={styles.bottomBar__status}>{this._renderStatus()}</div>
+          <Col span={12}>
+            <div className={styles.bottomBar__status}>
+              <RenderAddQuestion page={Page.Eligibility_documents} />
+            </div>
           </Col>
-          <Col span={8}>
+          <Col span={12}>
             <div className={styles.bottomBar__button}>
               {' '}
               <Button
@@ -839,14 +773,8 @@ class DocumentVerification extends Component {
 
   // bottom bar
   onClickPrev = () => {
-    // const { currentStep } = this.props;
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'newCandidateForm/save',
-    //   payload: {
-    //     currentStep: currentStep - 1,
-    //   },
-    // });
+    const { ticketID = '' } = this.props;
+    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.JOB_DETAILS}`);
   };
 
   onClickNext = () => {
@@ -1133,7 +1061,7 @@ class DocumentVerification extends Component {
           doc.data.push({
             key: '',
             alias: '',
-            value: false,
+            value: true,
           });
         const itemData = doc.data[index];
         if (type === 'mandatoryToSend') {
@@ -1491,15 +1419,18 @@ class DocumentVerification extends Component {
                   return '';
                 })}
 
-              <CollapseFieldsTypeD
-                certifications={documentCLSTypeD}
-                addCertification={this.addCertification}
-                changeCertification={this.handleChangeCertification}
-                removeCertification={this.removeCertification}
-                processStatus={processStatus}
-                // handleChange={this.handleChangeForD}
-                disabled={this.disableEdit()}
-              />
+              {(documentCLSTypeD?.data?.length > 0 ||
+                processStatus === NEW_PROCESS_STATUS.DRAFT) && (
+                <CollapseFieldsTypeD
+                  certifications={documentCLSTypeD}
+                  addCertification={this.addCertification}
+                  changeCertification={this.handleChangeCertification}
+                  removeCertification={this.removeCertification}
+                  processStatus={processStatus}
+                  // handleChange={this.handleChangeForD}
+                  disabled={this.disableEdit()}
+                />
+              )}
 
               {(processStatus === NEW_PROCESS_STATUS.DRAFT ||
                 documentCLSTByCountryTypeE.length > 0) && (
@@ -1520,12 +1451,9 @@ class DocumentVerification extends Component {
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
             <NoteComponent note={note} />
-            <Row>
-              <MessageBox />
-            </Row>
 
-            {processStatus === NEW_PROCESS_STATUS.DRAFT ||
-            processStatus === NEW_PROCESS_STATUS.PROFILE_VERIFICATION ? (
+            {(processStatus === NEW_PROCESS_STATUS.DRAFT ||
+              processStatus === NEW_PROCESS_STATUS.PROFILE_VERIFICATION) && (
               <SendEmail
                 openModalEmail={openModalEmail}
                 closeModalEmail={this.closeModalEmail}
@@ -1549,9 +1477,11 @@ class DocumentVerification extends Component {
                 dispatch={dispatch}
                 candidate={candidate}
               />
-            ) : (
-              ''
             )}
+
+            <Row>
+              <MessageBox />
+            </Row>
           </Col>
         </Row>
         <CustomModal

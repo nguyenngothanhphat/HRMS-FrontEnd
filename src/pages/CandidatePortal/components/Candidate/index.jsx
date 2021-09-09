@@ -2,7 +2,7 @@ import { Button, Col, Row, Skeleton, Steps } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
-import { candidateLink } from '@/utils/candidatePortal';
+import { CANDIDATE_TASK_LINK } from '@/utils/candidatePortal';
 // import AdditionalQuestion from './components/AdditionalQuestion';
 import BasicInformation from './components/BasicInfomation';
 // import Benefits from './components/Benefits';
@@ -39,17 +39,17 @@ const Candidate = (props) => {
   const getScreenToShow = () => {
     const { params: { action = '' } = {} } = match;
     switch (action) {
-      case candidateLink.reviewProfile:
+      case CANDIDATE_TASK_LINK.REVIEW_PROFILE:
         if (localStep === 1) setScreen(1);
         else setScreen(localStep);
         break;
-      case candidateLink.uploadDocuments:
+      case CANDIDATE_TASK_LINK.UPLOAD_DOCUMENTS:
         setScreen(3);
         break;
-      case candidateLink.salaryNegotiation:
+      case CANDIDATE_TASK_LINK.SALARY_NEGOTIATION:
         setScreen(4);
         break;
-      case candidateLink.acceptOffer:
+      case CANDIDATE_TASK_LINK.ACCEPT_OFFER:
         setScreen(6);
         break;
 
@@ -123,16 +123,16 @@ const Candidate = (props) => {
       { id: 2, title: 'Job Details', disabled: true },
     ];
     switch (action) {
-      case candidateLink.reviewProfile:
+      case CANDIDATE_TASK_LINK.REVIEW_PROFILE:
         return [
           { id: 1, title: 'Basic Information', disabled: true },
           { id: 2, title: 'Job Details', disabled: true },
         ];
-      case candidateLink.uploadDocuments:
+      case CANDIDATE_TASK_LINK.UPLOAD_DOCUMENTS:
         return [{ id: 3, title: 'Upload Documents', disabled: false }];
-      case candidateLink.salaryNegotiation:
+      case CANDIDATE_TASK_LINK.SALARY_NEGOTIATION:
         return [{ id: 4, title: 'Salary Negotiation', disabled: false }];
-      case candidateLink.acceptOffer:
+      case CANDIDATE_TASK_LINK.ACCEPT_OFFER:
         return [{ id: 6, title: 'Offer Letter', disabled: false }];
 
       default:
@@ -165,7 +165,7 @@ const Candidate = (props) => {
     <div className={styles.Candidate}>
       <div className={styles.headerBar}>
         <span className={styles.title}>Candidature for {title?.name}</span>
-        {!window.location.href.includes(candidateLink.acceptOffer) && (
+        {!window.location.href.includes(CANDIDATE_TASK_LINK.ACCEPT_OFFER) && (
           <div className={styles.actionBtn}>
             <Button loading={loadingFinishLater} className={styles.finishLaterBtn} onClick={onBack}>
               Finish Later

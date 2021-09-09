@@ -118,9 +118,7 @@
     }
 
     .ant-btn-primary {
-      position: absolute;
-      top: -5px;
-      right: 0;
+    
       display: flex;
       align-items: baseline;
       justify-content: center;
@@ -462,7 +460,7 @@
     &__button {
       display: flex;
       align-items: center;
-      text-align: right;
+      justify-content: flex-end;
 
       &__disabled {
         opacity: 0.3;
@@ -470,11 +468,10 @@
 
       :global {
         .ant-btn-primary {
-          top: 0;
           // display: none;
           display: flex;
           align-items: center;
-          width: 94px;
+          padding-inline: 25px;
           height: 40px;
           object-fit: contain;
           color: #ffffff;
@@ -495,9 +492,8 @@
         }
 
         .ant-btn-secondary {
-          width: 94px;
+          padding-inline: 25px;
           height: 40px;
-          padding-right: 41px;
           object-fit: contain;
           color: #ffa100;
           font-weight: 500;
