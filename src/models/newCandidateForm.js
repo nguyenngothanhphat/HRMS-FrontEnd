@@ -27,8 +27,13 @@ import {
   generateLink,
   extendOfferLetter,
   withdrawOffer,
+<<<<<<< HEAD
   getReporteesList,
   getListCandidate,
+=======
+  getListCandidate,
+  getReporteesList,
+>>>>>>> d222137d2a2e8487a5f474ac1e2d0929992ffab7
 } from '@/services/newCandidateForm';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
@@ -399,8 +404,10 @@ const newCandidateForm = {
     *fetchEmployeeTypeList(_, { call, put }) {
       try {
         const response = yield call(getEmployeeTypeList);
-        const { statusCode, data: employeeTypeList = [] } = response;
+        const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
+        // to make the full time first
+        const employeeTypeList = data.reverse();
         yield put({
           type: 'saveTemp',
           payload: { employeeTypeList },
@@ -437,13 +444,12 @@ const newCandidateForm = {
         const response = yield call(getReporteesList, {
           ...payload,
           tenantId: getCurrentTenant(),
-          company: [getCurrentCompany()],
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveTemp',
-          payload: { reportees: data },
+          payload: { reporteeList: data },
         });
       } catch (errors) {
         dialog(errors);
@@ -1162,6 +1168,7 @@ const newCandidateForm = {
             //   (data.staticOfferLetter && data.staticOfferLetter.url),
             additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
             isSentEmail: data.processStatus !== NEW_PROCESS_STATUS.DRAFT,
+            prefferedDateOfJoining: data.dateOfJoining,
           },
         });
 

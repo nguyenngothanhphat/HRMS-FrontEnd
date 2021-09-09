@@ -14,7 +14,7 @@
   justify-content: space-between;
   box-sizing: border-box;
   width: 100%;
-  min-height: 300px;
+  // min-height: 300px;
   max-height: 500px;
   margin-top: 24px;
   background: #fff;
@@ -25,26 +25,39 @@
     .senderContainer {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: space-between;
       padding: @commonPadding @inlinePadding;
       border-bottom: 1px solid @borderColor;
+      .titleContainer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
 
-      .info {
-        padding-left: @commonPadding;
-        span {
-          display: block;
-          line-height: 30px;
+        .info {
+          padding-left: @commonPadding;
+          span {
+            display: block;
+            line-height: 30px;
+          }
+          .name {
+            color: @darkColor;
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 16px;
+          }
+          .time {
+            color: @lightGrayColor;
+            font-size: 13px;
+            line-height: 21px;
+          }
         }
-        .name {
-          color: @darkColor;
-          font-weight: 700;
-          font-size: 14px;
-          line-height: 16px;
-        }
-        .time {
-          color: @lightGrayColor;
-          font-size: 13px;
-          line-height: 21px;
+      }
+      .collapse {
+        cursor: pointer;
+        .collapseIcon {
+          color: #2c6df9;
+          font-weight: 500;
+          font-size: 24px;
         }
       }
     }

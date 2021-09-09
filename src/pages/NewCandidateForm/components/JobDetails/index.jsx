@@ -31,6 +31,7 @@ import styles from './index.less';
     loading1: loading.effects['newCandidateForm/fetchDepartmentList'],
     loading2: loading.effects['newCandidateForm/fetchTitleList'],
     loading3: loading.effects['newCandidateForm/fetchManagerList'],
+    loading4: loading.effects['newCandidateForm/fetchReporteesList'],
     loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
     loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
   }),
@@ -95,10 +96,8 @@ class JobDetails extends PureComponent {
     } = this.props;
 
     if (department && workLocation && title && reportingManager && prefferedDateOfJoining) {
-      if (typeof department === 'string') {
-        if (typeof reportingManager === 'string') {
-          checkStatus.filledJobDetail = true;
-        }
+      if (reportingManager?._id) {
+        checkStatus.filledJobDetail = true;
       } else {
         checkStatus.filledJobDetail = true;
       }
@@ -274,10 +273,12 @@ class JobDetails extends PureComponent {
         }
       }
     } else if (name === 'reportingManager') {
+      const { tempData: { managerList = [] } = {} } = this.props;
+      const reportingManager = managerList.find((m) => m._id === value) || {};
       dispatch({
         type: 'newCandidateForm/saveTemp',
         payload: {
-          reportingManager: value,
+          reportingManager,
         },
       });
     } else if (name === 'prefferedDateOfJoining') {
@@ -326,10 +327,10 @@ class JobDetails extends PureComponent {
         dateOfJoining,
         position,
         employeeType: employeeType ? employeeType._id : '',
-        workLocation,
+        workLocation: workLocation ? workLocation._id : '',
         department,
         title,
-        reportingManager,
+        reportingManager: reportingManager ? reportingManager._id : '',
         candidate: _id,
         currentStep: processStatus === NEW_PROCESS_STATUS.DRAFT ? 2 : currentStep,
         tenantId: getCurrentTenant(),
@@ -527,11 +528,19 @@ class JobDetails extends PureComponent {
         candidatesNoticePeriod,
         grade,
         reportees = [],
+        reporteeList = [],
       },
       data,
     } = this.props;
-    const { loading1, loading2, loading3, loading, loadingFetchCandidate, processStatus } =
-      this.props;
+    const {
+      loading1,
+      loading2,
+      loading3,
+      loading4,
+      loading,
+      loadingFetchCandidate,
+      processStatus,
+    } = this.props;
     const { dateOfJoining } = data;
 
     return (
@@ -567,6 +576,7 @@ class JobDetails extends PureComponent {
                       locationList={locationList}
                       titleList={titleList}
                       managerList={managerList}
+                      reporteeList={reporteeList}
                       department={department}
                       workLocation={workLocation}
                       title={title}
@@ -579,6 +589,7 @@ class JobDetails extends PureComponent {
                       loading1={loading1}
                       loading2={loading2}
                       loading3={loading3}
+                      loading4={loading4}
                       data={data}
                       tempData={tempData}
                       disabled={this.disableEdit()}

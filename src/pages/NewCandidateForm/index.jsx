@@ -239,7 +239,7 @@ class NewCandidateForm extends PureComponent {
     this.setState({
       loadingFinishLater: true,
     });
-    await wait(1000).then(() =>
+    await wait(500).then(() =>
       this.setState({
         loadingFinishLater: false,
       }),
@@ -273,7 +273,7 @@ class NewCandidateForm extends PureComponent {
                     loading={loadingFinishLater}
                     onClick={this.handleFinishLater}
                   >
-                    {tabName === 'offer-letter' ? 'Cancel' : 'Finish Later'}
+                    {tabName === ONBOARDING_FORM_LINK.OFFER_LETTER ? 'Cancel' : 'Finish Later'}
                   </Button>
                 </div>
               )}
