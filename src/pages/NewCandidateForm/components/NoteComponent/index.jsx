@@ -1,21 +1,32 @@
-import React from 'react';
-import { Typography, Space } from 'antd';
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
+import { Space } from 'antd';
+import React, { useState } from 'react';
 import lightning from './assets/lightning.svg';
 import styles from './index.less';
 
 const NoteComponent = ({ note = {} }) => {
-  // const renderHTMl = () => {
-  //   return note.data;
-  // };
+  const [visible, setVisible] = useState(true);
+  const handleCollapse = () => {
+    setVisible(!visible);
+  };
   return (
     <div className={styles.NoteComponent}>
-      <Space size="middle">
-        <div>
-          <img src={lightning} alt="lightning icon" />
+      <Space size="middle" className={styles.NoteHeader}>
+        <div className={styles.NoteTitle}>
+          <div>
+            <img src={lightning} alt="lightning icon" />
+          </div>
+          <div className={styles.title}>{note.title}</div>
         </div>
-        <div className={styles.noteTitle}>{note.title}</div>
+        <div className={styles.NoteCollapse} onClick={handleCollapse}>
+          {visible ? (
+            <MinusOutlined className={styles.collapseIcon} />
+          ) : (
+            <PlusOutlined className={styles.collapseIcon} />
+          )}
+        </div>
       </Space>
-      <div className={styles.noteData}>{note.data}</div>
+      {visible && <div className={styles.noteData}>{note.data}</div>}
     </div>
   );
 };

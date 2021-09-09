@@ -11,6 +11,7 @@ class FieldsComponent extends PureComponent {
       departmentList,
       jobGradeList,
       locationList,
+      reporteeList,
       titleList,
       managerList,
       _handleSelect,
@@ -24,6 +25,7 @@ class FieldsComponent extends PureComponent {
       loading1,
       loading2,
       loading3,
+      loading4,
       data,
       tempData,
       processStatus,
@@ -38,6 +40,7 @@ class FieldsComponent extends PureComponent {
           jobGradeList={jobGradeList}
           departmentList={departmentList}
           locationList={locationList}
+          reporteeList={reporteeList}
           titleList={titleList}
           managerList={managerList}
           _handleSelect={_handleSelect}
@@ -50,6 +53,7 @@ class FieldsComponent extends PureComponent {
           loading1={loading1}
           loading2={loading2}
           loading3={loading3}
+          loading4={loading4}
           data={data}
           tempData={tempData}
           processStatus={processStatus}

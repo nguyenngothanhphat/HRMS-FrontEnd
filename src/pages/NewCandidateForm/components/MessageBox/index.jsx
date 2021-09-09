@@ -4,6 +4,7 @@ import { connect } from 'umi';
 import moment from 'moment';
 
 import { io } from 'socket.io-client';
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import ChatEvent from '@/utils/chatSocket';
 import SOCKET_URL from '@/utils/socket';
 
@@ -49,7 +50,7 @@ class MessageBox extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = { activeId: '' };
+    this.state = { activeId: '', contentVisible: true };
     this.mesRef = React.createRef();
   }
 
@@ -119,6 +120,12 @@ class MessageBox extends PureComponent {
     });
   };
 
+  handleCollapse = () => {
+    this.setState(({ contentVisible }) => ({
+      contentVisible: !contentVisible,
+    }));
+  };
+
   saveNewMessage = (message) => {
     const { dispatch } = this.props;
     dispatch({
@@ -149,13 +156,23 @@ class MessageBox extends PureComponent {
 
   // chat container
   renderSender = () => {
+    const { contentVisible } = this.state;
     return (
       <div className={styles.senderContainer}>
-        <div className={styles.avatar}>
-          <img src={MessageIcon} alt="message" />
+        <div className={styles.titleContainer}>
+          <div className={styles.avatar}>
+            <img src={MessageIcon} alt="message" />
+          </div>
+          <div className={styles.info}>
+            <span className={styles.name}>Messages</span>
+          </div>
         </div>
-        <div className={styles.info}>
-          <span className={styles.name}>Messages</span>
+        <div className={styles.collapse} onClick={this.handleCollapse}>
+          {contentVisible ? (
+            <MinusOutlined className={styles.collapseIcon} />
+          ) : (
+            <PlusOutlined className={styles.collapseIcon} />
+          )}
         </div>
       </div>
     );
@@ -277,13 +294,23 @@ class MessageBox extends PureComponent {
 
   // for empty chat
   renderEmptyChat = () => {
+    const { contentVisible } = this.state;
     return (
       <div className={styles.senderContainer} style={{ borderBottom: 'none' }}>
-        <div className={styles.avatar}>
-          <img src={MessageIcon} alt="message" />
+        <div className={styles.titleContainer}>
+          <div className={styles.avatar}>
+            <img src={MessageIcon} alt="message" />
+          </div>
+          <div className={styles.info}>
+            <span className={styles.name}>Send a note</span>
+          </div>
         </div>
-        <div className={styles.info}>
-          <span className={styles.name}>Send a note</span>
+        <div className={styles.collapse} onClick={this.handleCollapse}>
+          {contentVisible ? (
+            <MinusOutlined className={styles.collapseIcon} />
+          ) : (
+            <PlusOutlined className={styles.collapseIcon} />
+          )}
         </div>
       </div>
     );
@@ -313,7 +340,7 @@ class MessageBox extends PureComponent {
 
   render() {
     const { activeConversationMessages: messages = [], loadingMessages = false } = this.props;
-
+    const { contentVisible } = this.state;
     if (loadingMessages) {
       return (
         <div className={styles.MessageBox}>
@@ -326,21 +353,21 @@ class MessageBox extends PureComponent {
 
     if (messages.length === 0) {
       return (
-        <div className={styles.MessageBox}>
+        <div className={styles.MessageBox} style={contentVisible ? { minHeight: '300px' } : {}}>
           <div className={styles.chatContainer}>
             {this.renderEmptyChat()}
-            {this.renderFirstMessageTextArea()}
+            {contentVisible && this.renderFirstMessageTextArea()}
           </div>
         </div>
       );
     }
     return (
-      <div className={styles.MessageBox}>
+      <div className={styles.MessageBox} style={contentVisible ? { minHeight: '300px' } : {}}>
         <div className={styles.chatContainer}>
           {this.renderSender(messages)}
-          {this.renderChatContent(messages)}
+          {contentVisible && this.renderChatContent(messages)}
         </div>
-        {this.renderInput()}
+        {contentVisible && this.renderInput()}
       </div>
     );
   }

@@ -28,6 +28,7 @@ import {
   extendOfferLetter,
   withdrawOffer,
   getListCandidate,
+  getReporteesList,
 } from '@/services/newCandidateForm';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
@@ -44,6 +45,7 @@ import {
   checkDocument,
   sendDocumentStatus,
   getAdditionalQuestion,
+  verifyAllDocuments,
 } from '@/services/formCandidate';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 
@@ -397,8 +399,10 @@ const newCandidateForm = {
     *fetchEmployeeTypeList(_, { call, put }) {
       try {
         const response = yield call(getEmployeeTypeList);
-        const { statusCode, data: employeeTypeList = [] } = response;
+        const { statusCode, data = [] } = response;
         if (statusCode !== 200) throw response;
+        // to make the full time first
+        const employeeTypeList = data.reverse();
         yield put({
           type: 'saveTemp',
           payload: { employeeTypeList },
@@ -424,6 +428,23 @@ const newCandidateForm = {
         yield put({
           type: 'saveTemp',
           payload: { managerList: data },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+
+    *fetchReporteesList({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getReporteesList, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'saveTemp',
+          payload: { reporteeList: data },
         });
       } catch (errors) {
         dialog(errors);
@@ -1142,6 +1163,7 @@ const newCandidateForm = {
             //   (data.staticOfferLetter && data.staticOfferLetter.url),
             additionalQuestions: formatAdditionalQuestion(data.additionalQuestions) || [],
             isSentEmail: data.processStatus !== NEW_PROCESS_STATUS.DRAFT,
+            prefferedDateOfJoining: data.dateOfJoining,
           },
         });
 
@@ -1375,6 +1397,30 @@ const newCandidateForm = {
       const { candidate } = payload;
       try {
         response = yield call(checkDocument, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'fetchDocumentByCandidateID',
+          payload: {
+            candidate,
+            tenantId: payload.tenantId,
+            document: payload.document,
+          },
+        });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+
+    *verifyAllDocuments({ payload }, { put, call }) {
+      let response = {};
+      const { candidate } = payload;
+      try {
+        response = yield call(verifyAllDocuments, {
           ...payload,
           tenantId: getCurrentTenant(),
         });

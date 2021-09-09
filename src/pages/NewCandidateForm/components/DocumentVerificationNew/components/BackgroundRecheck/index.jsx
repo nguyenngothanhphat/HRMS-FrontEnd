@@ -45,6 +45,7 @@ class BackgroundRecheck extends Component {
     super(props);
     this.state = {
       docsList: [],
+      checkedAllDocs: false,
       // openModal: false,
       // modalTitle: '',
     };
@@ -246,17 +247,29 @@ class BackgroundRecheck extends Component {
   };
 
   renderMarkAllDocument = () => {
+    const { checkedAllDocs } = this.state;
     return (
       <div className={styles.markAllDocs}>
-        <Checkbox className={styles.checkbox} onChange={this.onCheckbox}>
+        <Checkbox disabled={checkedAllDocs} className={styles.checkbox} onChange={this.onCheckbox}>
           <div className={styles.markAllDocs__text}>Mark all documents as verified</div>
         </Checkbox>
       </div>
     );
   };
 
-  onCheckbox = (value) => {
-    console.log(value);
+  onCheckbox = (e) => {
+    const { dispatch, candidate } = this.props;
+    const { checked } = e.target;
+    this.setState({ checkedAllDocs: checked });
+
+    if (checked) {
+      dispatch({
+        type: 'newCandidateForm/verifyAllDocuments',
+        payload: {
+          candidate,
+        },
+      });
+    }
   };
 
   onClickPrev = () => {
