@@ -21,7 +21,15 @@ const { PROFILE_VERIFICATION } = TABLE_TYPE;
 
 class ProfileVerificationTab extends PureComponent {
   render() {
-    const { list = [], loading, pageSelected, size, total, getPageAndSize = () => {} } = this.props;
+    const {
+      list = [],
+      loading,
+      pageSelected,
+      size,
+      total,
+      getPageAndSize = () => {},
+      loadingSearch,
+    } = this.props;
 
     return (
       <OnboardTable
@@ -40,6 +48,7 @@ class ProfileVerificationTab extends PureComponent {
         type={PROFILE_VERIFICATION}
         inTab
         loadingFetch={loading}
+        loadingSearch={loadingSearch}
         pageSelected={pageSelected}
         size={size}
         total={total}

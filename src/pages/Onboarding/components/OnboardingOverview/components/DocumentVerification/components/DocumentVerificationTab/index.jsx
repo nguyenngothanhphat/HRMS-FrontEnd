@@ -21,7 +21,15 @@ const { DOCUMENT_VERIFICATION } = TABLE_TYPE;
 
 class DocumentVerificationTab extends PureComponent {
   render() {
-    const { list = [], loading, pageSelected, size, total, getPageAndSize = () => {} } = this.props;
+    const {
+      list = [],
+      loading,
+      pageSelected,
+      size,
+      total,
+      getPageAndSize = () => {},
+      loadingSearch,
+    } = this.props;
 
     return (
       <OnboardTable
@@ -40,6 +48,7 @@ class DocumentVerificationTab extends PureComponent {
         type={DOCUMENT_VERIFICATION}
         inTab
         loadingFetch={loading}
+        loadingSearch={loadingSearch}
         pageSelected={pageSelected}
         size={size}
         total={total}

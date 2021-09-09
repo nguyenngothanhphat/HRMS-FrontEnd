@@ -21,7 +21,15 @@ const { OFFER_ACCEPTED } = TABLE_TYPE;
 
 class OfferAcceptedTab extends PureComponent {
   render() {
-    const { list = [], loading, pageSelected, size, total, getPageAndSize = () => {} } = this.props;
+    const {
+      list = [],
+      loading,
+      pageSelected,
+      size,
+      total,
+      getPageAndSize = () => {},
+      loadingSearch,
+    } = this.props;
 
     return (
       <OnboardTable
@@ -40,6 +48,7 @@ class OfferAcceptedTab extends PureComponent {
         type={OFFER_ACCEPTED}
         inTab
         loadingFetch={loading}
+        loadingSearch={loadingSearch}
         pageSelected={pageSelected}
         size={size}
         total={total}
