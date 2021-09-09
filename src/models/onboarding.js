@@ -263,8 +263,10 @@ const onboarding = {
             currentStatus: processStatus || 'All',
           },
         });
+        return response;
       } catch (errors) {
         dialog(errors);
+        return '';
       }
     },
     *fetchOnboardList({ payload }, { call, put }) {

@@ -642,7 +642,8 @@ class OnboardTable extends Component {
       },
     };
 
-    const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch } = this.props;
+    const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch, loadingSearch } =
+      this.props;
     const { openModal } = this.state;
 
     return (
@@ -668,7 +669,7 @@ class OnboardTable extends Component {
             }}
             columns={this.generateColumns(columnArr, type)}
             dataSource={list}
-            loading={loading || loadingFetch}
+            loading={loading || loadingFetch || loadingSearch}
             pagination={pagination}
             onRow={(record) => {
               return {
