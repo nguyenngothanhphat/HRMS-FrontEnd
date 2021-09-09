@@ -266,7 +266,7 @@ class OnboardTable extends Component {
         title: 'Status',
         dataIndex: 'processStatus',
         key: 'processStatus',
-        render: (processStatus) => <Tag color="geekblue">{processStatus}</Tag>,
+        render: (processStatus) => <span className={styles.processStatus}>{processStatus}</span>,
         columnName: PROCESS_STATUS_1,
         width: getColumnWidth('processStatus', type),
         align: 'left',
