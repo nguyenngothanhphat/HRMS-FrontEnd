@@ -56,7 +56,7 @@ const MENU_DATA = [
   },
   {
     id: 6,
-    name: 'Awaiting approvals',
+    name: 'Awaiting Approvals',
     key: 'awaitingApprovals',
     component: 'AwaitingApprovals',
     quantity: 0,

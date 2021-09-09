@@ -19,6 +19,40 @@
 }
 
 .salaryStructureTemplate {
+  .range {
+    margin: 24px 0;
+    background: #FFFFFF;
+    border: 1px solid #D6DCE0;
+    box-sizing: border-box;
+    border-radius: 5px;
+
+    &__col {
+      padding: 12px 20px;
+      font-size: 13px;
+    }
+
+    &__col__text {
+      padding: 12px 20px;
+      font-size: 13px;
+      color: #707177;
+    }
+
+    .alignButton {
+      height: 100%;
+      margin-right: 32px;
+
+      .btnReference {
+        height: 40px;
+        background: #E4EDFF;
+        border: none;
+        border-radius: 5px;
+        color: #2C6DF9;
+        font-weight: 500;
+        font-size: 14px;
+      }
+    }
+  }
+
   :global {
     .ant-btn.ant-btn-primary {
       display: flex;
@@ -84,9 +118,7 @@
     }
 
     .ant-btn-primary {
-      position: absolute;
-      top: -5px;
-      right: 0;
+    
       display: flex;
       align-items: baseline;
       justify-content: center;
@@ -131,9 +163,7 @@
         }
 
         td:nth-child(2) {
-          font-weight: bold;
           text-align: center;
-          border-right: 1px solid #d6dce0;
           border-left: 1px solid #d6dce0;
         }
 
@@ -142,18 +172,7 @@
         }
       }
 
-      tr:last-child {
-        box-sizing: border-box;
-        height: 80px;
-        border-top: 1px solid #d6dce0;
-        border-bottom: 1px solid #d6dce0;
-        border-collapse: collapse;
 
-        td:first-child {
-          color: #2c6df9;
-          font-weight: bold;
-        }
-      }
     }
 
     .ant-form-item-label>label {
@@ -221,17 +240,12 @@
 
   &_table {
     height: max-content;
-    // margin-bottom: 8 * @spacing-xxs;
-    // min-height: 570px;
-    padding: 30px 0 0 0;
+    padding: 0;
     background-color: #ffffff;
     border: solid 1px #d6dce0;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
     p {
       width: 448px;
       height: 36px;
@@ -241,6 +255,118 @@
       line-height: 1.38;
       letter-spacing: 0.12px;
       text-align: center;
+    }
+
+    .salary {
+      min-height: 450px;
+      border-bottom: solid 1px #D6DCE0;
+
+      &__left {
+        padding: 32px 0 32px 50px;
+        border-right: solid 1px #D6DCE0;
+
+        &__text {
+          margin-bottom: 24px;
+        }
+      }
+
+      &__right {
+        padding: 32px 0 32px 120px;
+
+        &__inputBefore {
+          margin-bottom: 12px;
+
+          :global {
+            .ant-input-group-wrapper {
+              width: 170px;
+
+              .ant-input-group {
+                box-sizing: border-box;
+                width: auto;
+                height: 32px;
+                font-size: 14px;
+                background: #ffffff;
+                border: 1px solid #d6dce4;
+                border-radius: 5px !important;
+
+                .ant-input-group-addon {
+
+                  width: 36px;
+                  background-color: #f4f6f7;
+                  border: none;
+                }
+
+                .ant-input {
+                  height: 32px !important;
+                  padding-left: 20px;
+                  border: none;
+                }
+              }
+            }
+          }
+        }
+
+        &__inputAfter {
+          margin-bottom: 12px;
+
+          :global {
+            .ant-input-group-wrapper {
+              width: 170px;
+
+              .ant-input-group {
+                box-sizing: border-box;
+                height: 32px !important;
+                font-size: 14px;
+                background: #ffffff;
+                border: 1px solid #d6dce4 !important;
+                border-radius: 5px !important;
+
+                .ant-input-group-addon {
+                  // width: 100%;
+                  padding-left: 12px;
+                  color: rgba(22, 28, 41, 0.5);
+                  text-align: left;
+                  background-color: #f4f6f7;
+                  border: none;
+                }
+
+                .ant-input {
+                  // width: 36px;
+                  height: 32px !important;
+                  padding-left: 20px;
+                  border: none;
+                }
+              }
+            }
+          }
+        }
+
+        &__text {
+          margin-bottom: 24px;
+
+        }
+
+        .ofBasic {
+          color: rgba(22, 28, 41, 0.5);
+        }
+      }
+    }
+
+    .salaryTotal {
+      &__left {
+        padding: 24px 0 24px 50px;
+
+        &__text {
+          color: #2C6DF9;
+          font-weight: bold;
+        }
+      }
+
+      &__right {
+        padding: 24px 0 24px 120px;
+
+
+      }
     }
 
     .formNumber {
@@ -299,6 +425,7 @@
     // position: fixed;
     // bottom: 0;
     // width: inherit;
+    margin-top: 32px;
     position: relative;
     display: grid;
     height: 72px;
@@ -333,7 +460,7 @@
     &__button {
       display: flex;
       align-items: center;
-      text-align: right;
+      justify-content: flex-end;
 
       &__disabled {
         opacity: 0.3;
@@ -341,11 +468,10 @@
 
       :global {
         .ant-btn-primary {
-          top: 0;
           // display: none;
           display: flex;
           align-items: center;
-          width: 94px;
+          padding-inline: 25px;
           height: 40px;
           object-fit: contain;
           color: #ffffff;
@@ -366,9 +492,8 @@
         }
 
         .ant-btn-secondary {
-          width: 94px;
+          padding-inline: 25px;
           height: 40px;
-          padding-right: 41px;
           object-fit: contain;
           color: #ffa100;
           font-weight: 500;

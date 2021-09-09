@@ -24,7 +24,7 @@ import styles from './index.less';
         lastName = '',
         processStatus = '',
         privateEmail = '',
-        salaryStructure: { settings = [] },
+        salaryStructure: { status: salaryAcceptanceStatus = '', settings = [] },
       },
     } = {},
   }) => ({
@@ -35,6 +35,7 @@ import styles from './index.less';
     middleName,
     lastName,
     settings,
+    salaryAcceptanceStatus,
     loadingCloseCandidate: loading.effects['newCandidateForm/closeCandidate'],
     loadingSendFormAgain: loading.effects['newCandidateForm/editSalaryStructure'],
   }),
@@ -124,16 +125,10 @@ class SalaryAcceptance extends PureComponent {
   };
 
   _renderStatus = () => {
-    const {
-      processStatus,
-      firstName,
-      middleName,
-      lastName,
-      loadingCloseCandidate,
-      loadingSendFormAgain,
-    } = this.props;
+    const { salaryAcceptanceStatus, firstName, middleName, lastName, loadingSendFormAgain } =
+      this.props;
     const fullName = `${firstName} ${lastName} ${middleName}`;
-    if (processStatus === 'ACCEPT-PROVISIONAL-OFFER') {
+    if (salaryAcceptanceStatus === 'ACCEPTED') {
       return (
         <SalaryAcceptanceContent
           radioTitle={formatMessage({ id: 'component.salaryAcceptance.title1' })}
@@ -142,7 +137,7 @@ class SalaryAcceptance extends PureComponent {
         />
       );
     }
-    if (processStatus === 'RENEGOTIATE-PROVISONAL-OFFER') {
+    if (salaryAcceptanceStatus === 'RENEGOTIATE') {
       return (
         <>
           <SalaryAcceptanceContent
@@ -153,24 +148,7 @@ class SalaryAcceptance extends PureComponent {
         </>
       );
     }
-    if (processStatus === 'DISCARDED-PROVISONAL-OFFER') {
-      return (
-        <>
-          <SalaryAcceptanceContent
-            radioTitle={formatMessage({ id: 'component.salaryAcceptance.title3' })}
-            note={formatMessage({ id: 'component.salaryAcceptance.note3' })}
-            accept={false}
-          />
-          <Button loading={loadingCloseCandidate} type="primary" onClick={this.onCloseCandidate}>
-            {formatMessage({ id: 'component.salaryAcceptance.closeCandidature' })}
-          </Button>
-        </>
-      );
-    }
-    // if (
-    //   processStatus === 'SENT-PROVISIONAL-OFFER' ||
-    //   processStatus === 'PENDING-BACKGROUND-CHECK'
-    // ) {
+
     return (
       <div className={styles.pending}>
         <div className={styles.pendingIcon}>
@@ -189,49 +167,6 @@ class SalaryAcceptance extends PureComponent {
     // return null;
   };
 
-  _renderNegotiationForm = () => {
-    const { privateEmail = '' } = this.props;
-    return (
-      <>
-        <div className={styles.salaryAcceptanceWrapper}>
-          <div className={styles.title}>Step forward</div>
-          <div className={styles.content}>
-            <span className={styles.blueText} onClick={this.handleOpenSchedule}>
-              Schedule a 1-on-1
-            </span>
-            to negotiate the CTC and update the same here.
-            <br />
-            <br />
-            Send the salary structure to the candidate to mark acceptance or
-            <br />
-            <br />
-            <p className={styles.redText} onClick={this.onCloseCandidate}>
-              Close Candidature
-            </p>
-          </div>
-        </div>
-        <SendEmail
-          privateEmail={privateEmail}
-          formatMessage={formatMessage}
-          handleSendEmail={this.handleSendEmail}
-        />
-      </>
-    );
-  };
-
-  handleOpenSchedule = () => {
-    const { visible } = this.state;
-    this.setState({
-      visible: !visible,
-    });
-  };
-
-  handleCandelSchedule = () => {
-    this.setState({
-      visible: false,
-    });
-  };
-
   closeModal = () => {
     this.setState({
       openModal: false,
@@ -239,8 +174,7 @@ class SalaryAcceptance extends PureComponent {
   };
 
   render() {
-    const { processStatus } = this.props;
-    const { visible, openModal } = this.state;
+    const { openModal } = this.state;
 
     return (
       <div className={styles.salaryAcceptance}>
@@ -249,13 +183,7 @@ class SalaryAcceptance extends PureComponent {
           closeModal={this.closeModal}
           content={<ModalContentComponent closeModal={this.closeModal} />}
         />
-        <ScheduleModal
-          visible={visible}
-          modalContent="Schedule 1-on-1"
-          handleCancel={this.handleCandelSchedule}
-        />
         <div className={styles.salaryAcceptanceWrapper}>{this._renderStatus()}</div>
-        {processStatus === 'RENEGOTIATE-PROVISONAL-OFFER' ? this._renderNegotiationForm() : ''}
       </div>
     );
   }

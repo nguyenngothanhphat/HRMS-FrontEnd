@@ -81,6 +81,10 @@ const candidatePortal = {
         _id: '',
         url: '',
       },
+      salaryStructure: {
+        status: '',
+        settings: [],
+      },
       finalOfferCandidateSignature: {
         fileName: '',
         _id: '',
@@ -145,6 +149,7 @@ const candidatePortal = {
             ...data,
             candidate: data._id,
             _id: data._id,
+            salaryStructure: data.salaryStructure,
           },
         });
         yield put({
@@ -309,6 +314,7 @@ const candidatePortal = {
           documentList = [],
           isVerifiedJobDetail,
           isVerifiedBasicInfo,
+          salaryStructure: { status: salaryStatus = '' } = {},
           // isAcceptedJoiningDate,
         } = data || {};
 
@@ -342,8 +348,10 @@ const candidatePortal = {
             break;
 
           case NEW_PROCESS_STATUS.SALARY_NEGOTIATION:
-            // salary structure
-            tempPendingTasks[2].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+            if (['IN-PROGRESS'].includes(salaryStatus)) {
+              // salary structure
+              tempPendingTasks[2].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+            }
             break;
 
           case NEW_PROCESS_STATUS.OFFER_RELEASED:

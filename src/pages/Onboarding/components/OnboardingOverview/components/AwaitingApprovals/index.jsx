@@ -67,7 +67,7 @@ class AwaitingApprovals extends PureComponent {
               <Input onChange={this.onChange} placeholder="Search" prefix={<SearchOutlined />} />
             }
           >
-            <TabPane tab="Awaiting approvals" key="1">
+            <TabPane tab="Awaiting Approvals" key="1">
               <AwaitingApprovalsTab
                 list={data}
                 loading={loading}
