@@ -178,13 +178,15 @@ class OnboardTable extends Component {
       PROCESS_STATUS: PROCESS_STATUS_1,
     } = COLUMN_NAME;
 
+    const { list = [] } = this.props;
+
     const columns = [
       {
         // title: 'Rookie Id',
         title: formatMessage({ id: 'component.onboardingOverview.candidateId' }),
         dataIndex: 'candidateId',
         key: 'candidateId',
-        width: getColumnWidth('candidateId', type),
+        width: getColumnWidth('candidateId', type, list.length),
         render: (candidateId, row) => this.renderCandidateId(candidateId, row),
         columnName: ID,
         fixed: 'left',
@@ -196,7 +198,7 @@ class OnboardTable extends Component {
         key: 'candidateID2',
         render: (candidateId) => this.renderName(candidateId),
         columnName: NAME,
-        width: getColumnWidth('candidateName', type),
+        width: getColumnWidth('candidateName', type, list.length),
         align: 'left',
       },
       {
@@ -206,7 +208,7 @@ class OnboardTable extends Component {
         key: 'position',
         render: (position) => <span className={styles.position}>{position || '-'}</span>,
         columnName: POSITION,
-        width: getColumnWidth('position', type),
+        width: getColumnWidth('position', type, list.length),
         align: 'left',
       },
       {
@@ -216,7 +218,7 @@ class OnboardTable extends Component {
         key: 'dateJoin',
         render: (dateJoin) => <span className={styles.dateJoin}>{dateJoin || '-'}</span>,
         columnName: DATE_JOIN,
-        width: getColumnWidth('dateJoin', type),
+        width: getColumnWidth('dateJoin', type, list.length),
         align: 'left',
       },
       {
@@ -226,7 +228,7 @@ class OnboardTable extends Component {
         key: 'location',
         render: (location) => <span className={styles.location}>{location || '-'}</span>,
         columnName: LOCATION,
-        width: getColumnWidth('location', type),
+        width: getColumnWidth('location', type, list.length),
         align: 'left',
       },
       {
@@ -242,7 +244,7 @@ class OnboardTable extends Component {
           </span>
         ),
         columnName: ASSIGN_TO,
-        width: getColumnWidth('assignTo', type),
+        width: getColumnWidth('assignTo', type, list.length),
         align: 'left',
       },
       {
@@ -259,7 +261,7 @@ class OnboardTable extends Component {
           </span>
         ),
         columnName: ASSIGNEE_MANAGER,
-        width: getColumnWidth('assigneeManager', type),
+        width: getColumnWidth('assigneeManager', type, list.length),
         align: 'left',
       },
       {
@@ -268,14 +270,14 @@ class OnboardTable extends Component {
         key: 'processStatus',
         render: (processStatus) => <span className={styles.processStatus}>{processStatus}</span>,
         columnName: PROCESS_STATUS_1,
-        width: getColumnWidth('processStatus', type),
+        width: getColumnWidth('processStatus', type, list.length),
         align: 'left',
         fixed: 'right',
       },
       {
         dataIndex: 'actions',
         key: 'actions',
-        width: getColumnWidth('actions', type),
+        width: getColumnWidth('actions', type, list.length),
         fixed: 'right',
         align: 'center',
         render: (_, row) => {
