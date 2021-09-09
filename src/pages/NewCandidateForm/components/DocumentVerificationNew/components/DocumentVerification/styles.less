@@ -1,7 +1,7 @@
 @background-grey: #f6f7f9;
 @spacing-xxs: 4px;
 
-.textNote{
+.textNote {
   font-family: Roboto;
   font-style: normal;
   font-weight: 500;
@@ -18,17 +18,21 @@
       border: none !important;
       border-radius: 5px;
     }
+
     .ant-collapse-item {
       border-radius: 5px;
     }
+
     .ant-collapse-content {
       overflow: hidden;
       border-radius: 0 0 5px 5px !important;
     }
-    .ant-collapse > .ant-collapse-item {
+
+    .ant-collapse>.ant-collapse-item {
       border: none;
     }
   }
+
   .leftWrapper {
     .eliContainer {
       width: 100%;
@@ -36,18 +40,21 @@
       font-family: Roboto, sans-serif;
     }
   }
+
   .rightWrapper {
     .boldText {
       margin-top: 16px;
       font-weight: 700;
     }
   }
+
   .refreshBlockD {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 300px;
   }
+
   .bottomBar {
     padding: 4 * @spacing-xxs;
     background-color: #ffffff;
@@ -78,10 +85,15 @@
     }
 
     &__button {
-      text-align: right;
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: space-between;
+      align-items: center;
+
       &__disabled {
         opacity: 0.3;
       }
+
       :global {
         .ant-btn-primary {
           width: 94px;
@@ -98,11 +110,13 @@
           border: solid 1px #ffa100;
           border-radius: 25px;
           box-shadow: none;
+
           &:hover {
             color: #ffffff;
             background-color: #ffa100;
           }
         }
+
         .ant-btn-secondary {
           width: 94px;
           height: 40px;
@@ -119,6 +133,7 @@
       }
     }
   }
+
   .displayButtonChangeEmail {
     display: flex;
     flex-flow: row;
@@ -126,10 +141,12 @@
     justify-content: center;
     margin-top: 5px;
   }
+
   .buttonChangeEmailFilled {
     border-radius: 4px;
   }
 }
+
 .viewLoading {
   width: 300px;
   height: 500px;

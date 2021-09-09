@@ -245,6 +245,7 @@ const defaultState = {
       salaryPosition: '',
       settings: [],
       title: '',
+      status: '',
     },
     id: '',
     candidate: '',
@@ -1024,7 +1025,7 @@ const newCandidateForm = {
           _id,
           title,
           workLocation,
-          salaryStructure: { settings },
+          salaryStructure: { settings, status },
           grade,
           ticketID: rookieId = '',
         } = data;
@@ -1048,6 +1049,7 @@ const newCandidateForm = {
           type: 'saveSalaryStructureOriginData',
           payload: {
             settings,
+            status,
           },
         });
         yield put({
@@ -1529,7 +1531,7 @@ const newCandidateForm = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveTemp',
@@ -1551,7 +1553,7 @@ const newCandidateForm = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data } = response;
+        const { statusCode } = response;
         if (statusCode !== 200) throw response;
         yield put({
           type: 'saveOrigin',

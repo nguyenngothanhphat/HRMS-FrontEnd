@@ -3,15 +3,15 @@ import { Row, Col, Typography, Button, Skeleton } from 'antd';
 import { connect, history, formatMessage } from 'umi';
 // import PreviewOffer from '@/pages/NewCandidateForm/components/PreviewOffer/index';
 import { getCurrentTenant } from '@/utils/authority';
-import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
+// import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
+import { ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import Header from './components/Header';
 import GlobalEmployeeComponent from './components/GlobalEmployeeComponent';
 import IndiaEmployeeComponent from './components/IndiaEmployeeComponent';
 import NoteComponent from '../NoteComponent';
 import styles from './index.less';
-import { Page } from '../../utils';
+// import { Page } from '../../utils';
 import MessageBox from '../MessageBox';
-import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 
 @connect(
   ({
@@ -431,9 +431,9 @@ class Benefits extends PureComponent {
                 handleChange={this.handleChange}
                 benefits={benefits}
               />
-              <div style={{ margin: '32px' }}>
+              {/* <div style={{ margin: '32px' }}>
                 <RenderAddQuestion page={Page.Benefits} />
-              </div>
+              </div> */}
             </div>
 
             <div className={styles.bars}>{this._renderBottomBar()}</div>

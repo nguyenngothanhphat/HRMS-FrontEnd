@@ -361,7 +361,7 @@ class EligibilityDocs extends PureComponent {
         workHistory = [],
       },
       dispatch,
-      candidate,
+      // candidate,
     } = this.props;
     const { generalInfo = {} } = generatedBy;
     const { workEmail: email = '' } = generalInfo;
@@ -513,16 +513,6 @@ class EligibilityDocs extends PureComponent {
     );
   };
 
-  onClickPrev = () => {
-    const { dispatch, localStep } = this.props;
-    dispatch({
-      type: 'candidatePortal/save',
-      payload: {
-        localStep: localStep - 1,
-      },
-    });
-  };
-
   checkAllFieldsValidate = () => {
     const { settings, dispatch } = this.props;
     const valid = settings?.map((question) => {
@@ -566,29 +556,8 @@ class EligibilityDocs extends PureComponent {
     return valid;
   };
 
-  onClickNext = () => {
-    const { dispatch, localStep, _id, settings } = this.props;
-    const messageErr = this.checkAllFieldsValidate();
-    if (!every(messageErr, (message) => message === null)) return;
-    if (_id !== '' && settings && settings.length) {
-      dispatch({
-        type: 'optionalQuestion/updateQuestionByCandidate',
-        payload: {
-          id: _id,
-          settings,
-        },
-      });
-    }
-    // dispatch({
-    //   type: 'candidatePortal/save',
-    //   payload: {
-    //     localStep: localStep + 1,
-    //   },
-    // });
-  };
-
   _renderBottomBar = () => {
-    const { currentStep = 0, isVerifiedBasicInfo, isVerifiedJobDetail } = this.props;
+    const { isVerifiedBasicInfo, isVerifiedJobDetail } = this.props;
     const { loading1 } = this.props;
     const { isSending, isSentEmail } = this.state;
     const checkFull = this.checkFull();
@@ -609,6 +578,8 @@ class EligibilityDocs extends PureComponent {
     );
     return (
       <div className={styles.bottomBar}>
+        <AnswerQuestion page={Page.Eligibility_documents} />
+
         <Row align="middle">
           <Col span={8}>
             {/* <div className={styles.bottomBar__status}>{this._renderStatus()}</div> */}
@@ -632,8 +603,6 @@ class EligibilityDocs extends PureComponent {
   render() {
     const {
       loading,
-      loading2,
-      loadingFile,
       data: {
         attachments,
         documentListToRender,
@@ -645,7 +614,6 @@ class EligibilityDocs extends PureComponent {
     const {
       openModal,
       // isSentEmail,
-      isSending,
     } = this.state;
     // const { generalInfo: { workEmail } = {} || {} } = generatedBy || {};
     // const {  } = user;
@@ -701,10 +669,6 @@ class EligibilityDocs extends PureComponent {
                 />
               )}
             </div>
-            <Row>
-              <AnswerQuestion page={Page.Eligibility_documents} />
-            </Row>
-
             {this._renderBottomBar()}
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>

@@ -1,14 +1,14 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Col, DatePicker, Form, Row, Select, Skeleton } from 'antd';
+import { Button, Col, DatePicker, Form, Row, Select, Skeleton, Space } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
-import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
+// import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import AddDocumentModal from './components/AddDocumentModal';
 import DocumentItem from './components/DocumentItem';
-import { Page } from '../../utils';
+// import { Page } from '../../utils';
 import Template from './components/Template/index';
 import AddTemplateModal from './components/AddTemplateModal';
 import styles from './index.less';
@@ -371,25 +371,28 @@ const OfferDetail = (props) => {
         <Row align="middle">
           <Col span={24}>
             <div className={styles.bottomBar__button}>
-              <Button
-                type="secondary"
-                onClick={onClickPrev}
-                className={styles.bottomBar__button__secondary}
-              >
-                Previous
-              </Button>
+              <Space size={24}>
+                <Button
+                  type="secondary"
+                  onClick={onClickPrev}
+                  className={styles.bottomBar__button__secondary}
+                >
+                  Previous
+                </Button>
 
-              <Button
-                type="primary"
-                onClick={handleButtonAction}
-                loading={loading1}
-                className={`${styles.bottomBar__button__primary} ${
-                  !allFieldsFilled ? styles.bottomBar__button__disabled : ''
-                }`}
-                disabled={!allFieldsFilled}
-              >
-                {currentStep === 5 || !isNewOffer ? 'Next' : 'Update'}
-              </Button>
+                <Button
+                  type="primary"
+                  onClick={handleButtonAction}
+                  loading={loading1}
+                  className={`${styles.bottomBar__button__primary} ${
+                    !allFieldsFilled ? styles.bottomBar__button__disabled : ''
+                  }`}
+                  disabled={!allFieldsFilled}
+                >
+                  {currentStep === 5 || !isNewOffer ? 'Next' : 'Update'}
+                </Button>
+              </Space>
+              {/* <RenderAddQuestion page={Page.Offer_Details} /> */}
             </div>
           </Col>
         </Row>
@@ -656,9 +659,6 @@ const OfferDetail = (props) => {
                       <span className={styles.buttonTitle}>Add Document</span>
                     </div>
                   )}
-                </div>
-                <div style={{ marginTop: '32px' }}>
-                  <RenderAddQuestion page={Page.Offer_Details} />
                 </div>
               </div>
             </div>

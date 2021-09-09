@@ -411,7 +411,7 @@ class BasicInformation extends PureComponent {
                     <hr />
                     {this._renderForm()}
                   </div>
-
+                  {/* <RenderAddQuestion page={Page.Basic_Information} /> */}
                   {this._renderBottomBar()}
                 </Form>
               </div>

@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { Button, Col, Input, Row, Spin } from 'antd';
+import { Button, Col, Input, Row, Spin, Space } from 'antd';
 import { toNumber, toString, trim, trimStart } from 'lodash';
 import React, { PureComponent } from 'react';
-import { connect, formatMessage, history } from 'umi';
+import { connect, history } from 'umi';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
@@ -340,40 +340,45 @@ class SalaryStructureTemplate extends PureComponent {
       <div className={styles.bottomBar}>
         {isEditingSalary ? (
           <div className={styles.bottomBar__button} span={24}>
-            <Button
-              type="secondary"
-              onClick={this.onCancel}
-              className={styles.bottomBar__button__secondary}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={this.onClickSubmit}
-              className={styles.bottomBar__button__prmary}
-            >
-              Update
-            </Button>
+            <Space size={24}>
+              <Button
+                type="secondary"
+                onClick={this.onCancel}
+                className={styles.bottomBar__button__secondary}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={this.onClickSubmit}
+                className={styles.bottomBar__button__prmary}
+              >
+                Update
+              </Button>
+            </Space>
           </div>
         ) : (
           <div className={styles.bottomBar__button} span={24}>
-            <Button
-              type="secondary"
-              onClick={this.onClickPrev}
-              className={styles.bottomBar__button__secondary}
-            >
-              Previous
-            </Button>
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={this.onClickNext}
-              className={styles.bottomBar__button__prmary}
-              loading={loadingEditSalary}
-            >
-              {salaryAcceptanceStatus === 'ACCEPTED' ? 'Next' : 'Send to candidate'}
-            </Button>
+            <Space>
+              <Button
+                type="secondary"
+                onClick={this.onClickPrev}
+                className={styles.bottomBar__button__secondary}
+              >
+                Previous
+              </Button>
+              <Button
+                type="primary"
+                htmlType="submit"
+                onClick={this.onClickNext}
+                className={styles.bottomBar__button__prmary}
+                loading={loadingEditSalary}
+              >
+                {salaryAcceptanceStatus === 'ACCEPTED' ? 'Next' : 'Send to candidate'}
+              </Button>
+            </Space>
+            <RenderAddQuestion page={Page.Salary_Structure} />
           </div>
         )}
       </div>
@@ -522,7 +527,6 @@ class SalaryStructureTemplate extends PureComponent {
                   )}
                 </Col>
               </Row>
-              <RenderAddQuestion page={Page.Salary_Structure} />
             </div>
 
             {this._renderBottomBar()}
