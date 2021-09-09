@@ -106,7 +106,7 @@ class OnboardTable extends Component {
       link: ONBOARDING_FORM_LINK.BASIC_INFORMATION,
     };
     return (
-      <Link to={`/onboarding/list/view/${id}/${find.link}`}>
+      <Link className={styles.candidateId} to={`/onboarding/list/view/${id}/${find.link}`}>
         <span>{candidateId}</span>
       </Link>
     );
