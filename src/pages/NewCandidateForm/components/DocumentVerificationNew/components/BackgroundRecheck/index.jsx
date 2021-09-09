@@ -305,7 +305,12 @@ class BackgroundRecheck extends Component {
               processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION ? 3 : currentStep,
           },
         });
-
+        dispatch({
+          type: 'newCandidateForm/saveTemp',
+          payload: {
+            processStatus: NEW_PROCESS_STATUS.SALARY_NEGOTIATION,
+          },
+        });
         history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`);
       }
     });

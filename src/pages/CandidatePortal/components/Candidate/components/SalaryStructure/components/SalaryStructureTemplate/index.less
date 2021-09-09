@@ -93,7 +93,8 @@
         }
       }
 
-      tr:first-child {}
+      tr:first-child {
+      }
 
       tr:last-child {
         box-sizing: border-box;
@@ -111,7 +112,6 @@
   }
 
   &_select {
-
     // margin-bottom: 30px;
     :global {
       .ant-form-item {
@@ -134,21 +134,14 @@
   }
 
   &_table {
-    // margin-bottom: 8 * @spacing-xxs;
-    // min-height: 570px;
     height: max-content;
-    padding: 30px 0 0 0;
+    padding: 0;
     background-color: #ffffff;
     border: solid 1px #d6dce0;
-    overflow: hidden;
-    border-radius: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
-
-    .title,
-    .value {
+    p {
       width: 448px;
       height: 36px;
       color: #707177;
@@ -157,6 +150,47 @@
       line-height: 1.38;
       letter-spacing: 0.12px;
       text-align: center;
+    }
+
+    .salary {
+      min-height: 450px;
+      border-bottom: solid 1px #d6dce0;
+
+      &__left {
+        padding: 32px 0 32px 50px;
+        border-right: solid 1px #d6dce0;
+
+        &__text {
+          margin-bottom: 24px;
+        }
+      }
+
+      &__right {
+        padding: 32px 0 32px 120px;
+
+        &__text {
+          margin-bottom: 24px;
+        }
+
+        .ofBasic {
+          color: rgba(22, 28, 41, 0.5);
+        }
+      }
+    }
+
+    .salaryTotal {
+      &__left {
+        padding: 24px 0 24px 50px;
+
+        &__text {
+          color: #2c6df9;
+          font-weight: bold;
+        }
+      }
+
+      &__right {
+        padding: 24px 0 24px 120px;
+      }
     }
   }
 
@@ -240,7 +274,6 @@
         .ant-btn-primary {
           display: flex;
           align-items: center;
-          padding-inline: 25px;
           height: 40px;
           object-fit: contain;
           color: #ffffff;
@@ -254,6 +287,7 @@
           border: solid 1px #ffa100;
           border-radius: 25px;
           box-shadow: none;
+          padding-inline: 25px;
 
           &:hover {
             color: #ffffff;
@@ -262,7 +296,6 @@
         }
 
         .ant-btn-secondary {
-          padding-inline: 25px;
           height: 40px;
           object-fit: contain;
           color: #ffa100;
@@ -274,6 +307,7 @@
           border-radius: 25px;
           outline: none;
           box-shadow: none;
+          padding-inline: 25px;
         }
       }
     }

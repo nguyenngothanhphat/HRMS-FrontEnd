@@ -211,7 +211,7 @@ class Benefits extends PureComponent {
   // };
 
   onClickNext = () => {
-    const { hidePreviewOffer, dispatch, currentStep } = this.props;
+    const { hidePreviewOffer, dispatch, currentStep, data: { _id = '' } = {} } = this.props;
     if (hidePreviewOffer) {
       dispatch({
         type: 'newCandidateForm/redirectToOnboardList',
@@ -220,6 +220,14 @@ class Benefits extends PureComponent {
     }
 
     if (currentStep === 4) {
+      dispatch({
+        type: 'newCandidateForm/updateByHR',
+        payload: {
+          currentStep: 5,
+          candidate: _id,
+          tenantId: getCurrentTenant(),
+        },
+      });
       dispatch({
         type: 'newCandidateForm/save',
         payload: {
@@ -245,16 +253,16 @@ class Benefits extends PureComponent {
     const { tempData = {} } = this.props;
     const { ticketID = '' } = tempData;
 
-    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.DOCUMENT_VERIFICATION}`);
+    history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`);
   };
 
   _renderBottomBar = () => {
     // const { checkMandatory } = this.props;
     // const { filledJobDetail } = checkMandatory;
 
-    const { tempData: { processStatus = '' } = {} } = this.props;
+    const { currentStep } = this.props;
 
-    const renderText = processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION ? 'Next' : 'Update';
+    const renderText = currentStep === 4 ? 'Next' : 'Update';
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">

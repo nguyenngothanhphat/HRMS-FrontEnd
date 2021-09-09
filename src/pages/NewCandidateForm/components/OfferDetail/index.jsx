@@ -39,6 +39,8 @@ const OfferDetail = (props) => {
     offerLetterTemplate: offerLetterTemplateProp,
     expiryDate: expiryDateProp,
     ticketID = '',
+    assignTo: { _id: assignToId = '' } = {},
+    assigneeManager: { _id: assigneeManagerId = '' } = {},
   } = tempData;
   const [isAddModalVisible, setAddModalVisible] = useState(false);
   const [isAddTemplateModalVisible, setAddTemplateModalVisible] = useState(false);
@@ -282,7 +284,7 @@ const OfferDetail = (props) => {
         currentStep: 6,
         includeOffer: 3,
         tenantId: getCurrentTenant(),
-
+        expiryDate: expiryDateProp || moment().add('15', 'days'),
         // offerLetter: templateId,
       },
     });
@@ -333,24 +335,20 @@ const OfferDetail = (props) => {
           currentStep: 6,
           offerLetter: templateID,
           tenantId: getCurrentTenant(),
-
+          processStatus:
+            assigneeManagerId === assignToId
+              ? NEW_PROCESS_STATUS.AWAITING_APPROVALS
+              : processStatus,
           // offerTemplate: templateId,
         },
       });
-
-      // Save next step
-      // dispatch({
-      //   type: 'newCandidateForm/save',
-      //   payload: {
-      //     currentStep: nextStep,
-      //   },
-      // });
 
       // Enable preview offer
       dispatch({
         type: 'newCandidateForm/saveTemp',
         payload: {
           disablePreviewOffer: false,
+          expiryDate: expiryDateProp || moment().add('15', 'days'),
         },
       });
 
@@ -390,7 +388,7 @@ const OfferDetail = (props) => {
                 }`}
                 disabled={!allFieldsFilled}
               >
-                Next
+                {currentStep === 5 || !isNewOffer ? 'Next' : 'Update'}
               </Button>
             </div>
           </Col>
@@ -639,12 +637,17 @@ const OfferDetail = (props) => {
 
                 <div className={styles.documentBlock}>
                   <p className={styles.title}>Documents</p>
-                  <p className={styles.subTitle}>
-                    {offerDocumentsProp.length === 0
-                      ? 'Upload all documents'
-                      : 'Uploaded Documents'}
-                  </p>
-
+                  {!disableAll ? (
+                    <p className={styles.subTitle}>
+                      {offerDocumentsProp.length === 0
+                        ? 'Upload all documents'
+                        : 'Uploaded Documents'}
+                    </p>
+                  ) : (
+                    <p className={styles.subTitle}>
+                      {offerDocumentsProp.length === 0 ? 'No Documents' : 'Uploaded Documents'}
+                    </p>
+                  )}
                   {renderDocuments()}
 
                   {!disableAll && (

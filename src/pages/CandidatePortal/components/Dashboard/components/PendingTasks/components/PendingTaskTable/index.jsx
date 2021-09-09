@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Skeleton } from 'antd';
 import { Link } from 'umi';
-import { taskStatus } from '@/utils/candidatePortal';
+import { CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
 import styles from './index.less';
 
 class PendingTaskTable extends PureComponent {
@@ -10,7 +10,7 @@ class PendingTaskTable extends PureComponent {
       <div key={index}>
         <Row span={24} className={styles.eachItem} align="middle">
           <Col span={16}>
-            {item.status === taskStatus.IN_PROGRESS ? (
+            {item.status === CANDIDATE_TASK_STATUS.IN_PROGRESS ? (
               <Link to={`/candidate-portal/ticket/${item.link}`}>{item.name}</Link>
             ) : (
               <span>{item.name}</span>
@@ -28,7 +28,7 @@ class PendingTaskTable extends PureComponent {
   getData = () => {
     const { tasks = [], sliceNumber = 0 } = this.props;
     const tempTasks = tasks.filter(
-      (t) => ![taskStatus.DONE, taskStatus.UPCOMING].includes(t.status),
+      (t) => ![CANDIDATE_TASK_STATUS.DONE, CANDIDATE_TASK_STATUS.UPCOMING].includes(t.status),
     );
     if (sliceNumber === 0 || !sliceNumber) return tempTasks;
     return tempTasks.slice(0, sliceNumber);

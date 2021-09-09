@@ -1,9 +1,12 @@
 import request from '@/utils/request';
 
-const jobGradeLevelList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+// const jobGradeLevelList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
 
-export function getGradeList() {
-  return jobGradeLevelList;
+export function getGradeList(params) {
+  return request('/api/salarystructuretenant/get-list-grade', {
+    method: 'POST',
+    data: params,
+  });
 }
 
 export function SendEmail(payload) {
@@ -90,7 +93,12 @@ export async function getReportingManagerList(params) {
     data: params,
   });
 }
-
+export function getListCandidate(params) {
+  return request('/api/candidatetenant/list', {
+    method: 'POST',
+    data: params,
+  });
+}
 export function getCandidateManagerList(params) {
   return request('/api/candidatetenant/get-candidate-manager', {
     method: 'POST',
@@ -168,9 +176,9 @@ export function getTitleListByCompany(params) {
   });
 }
 
-export function getTableDataByTitle(params) {
+export function getTableDataByGrade(params) {
   // console.log(params);
-  return request('/api/salarystructuretenant/get-by-title', {
+  return request('/api/salarystructuretenant/get-by-grade', {
     method: 'POST',
     data: params,
   });
