@@ -204,19 +204,9 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.position' }),
         dataIndex: 'position',
         key: 'position',
-        render: (position) => <span>{position || '-'}</span>,
+        render: (position) => <span className={styles.position}>{position || '-'}</span>,
         columnName: POSITION,
         width: getColumnWidth('position', type),
-        align: 'left',
-      },
-      {
-        // title: 'Location',
-        title: formatMessage({ id: 'component.onboardingOverview.location' }),
-        dataIndex: 'location',
-        key: 'location',
-        render: (location) => <span>{location || '-'}</span>,
-        columnName: LOCATION,
-        width: getColumnWidth('location', type),
         align: 'left',
       },
       {
@@ -224,9 +214,19 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
         dataIndex: 'dateJoin',
         key: 'dateJoin',
-        render: (dateJoin) => <span>{dateJoin || '-'}</span>,
+        render: (dateJoin) => <span className={styles.dateJoin}>{dateJoin || '-'}</span>,
         columnName: DATE_JOIN,
         width: getColumnWidth('dateJoin', type),
+        align: 'left',
+      },
+      {
+        // title: 'Location',
+        title: formatMessage({ id: 'component.onboardingOverview.location' }),
+        dataIndex: 'location',
+        key: 'location',
+        render: (location) => <span className={styles.location}>{location || '-'}</span>,
+        columnName: LOCATION,
+        width: getColumnWidth('location', type),
         align: 'left',
       },
       {
@@ -492,7 +492,7 @@ class OnboardTable extends Component {
       default:
         menuItem = (
           <Menu.Item>
-            <Link to={`/onboarding/list/view/${id}/${find.link}`}>
+            <Link className={styles.actionText} to={`/onboarding/list/view/${id}/${find.link}`}>
               <span>{actionText}</span>
             </Link>
           </Menu.Item>
@@ -509,6 +509,7 @@ class OnboardTable extends Component {
               onClick={() =>
                 this.handleReassignModal(true, currentEmpId, id, processStatusId, type)
               }
+              className={styles.actionText}
             >
               Re-assign
             </div>
@@ -517,6 +518,7 @@ class OnboardTable extends Component {
         {isRemovable && (
           <Menu.Item disabled={!isRemovable}>
             <div
+              className={styles.actionText}
               onClick={isRemovable ? () => this.handleActionDelete(id, processStatusId) : () => {}}
             >
               Delete
@@ -531,6 +533,7 @@ class OnboardTable extends Component {
                   ? () => this.handleActionWithDraw(candidate, processStatusId)
                   : () => {}
               }
+              className={styles.actionText}
             >
               Withdraw
             </div>
