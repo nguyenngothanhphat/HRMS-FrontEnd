@@ -1,6 +1,7 @@
 import { Button, Form, Input } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import MessageIcon from '@/assets/candidatePortal/messageIcon.svg';
 import styles from './index.less';
 
@@ -14,18 +15,33 @@ class SalaryNote extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { contentVisible: true };
   }
 
-  // for empty chat
+  handleCollapse = () => {
+    this.setState(({ contentVisible }) => ({
+      contentVisible: !contentVisible,
+    }));
+  };
+
   renderHeader = () => {
+    const { contentVisible } = this.state;
     return (
       <div className={styles.headerContainer} style={{ borderBottom: 'none' }}>
-        <div className={styles.avatar}>
-          <img src={MessageIcon} alt="message" />
+        <div className={styles.titleContainer}>
+          <div className={styles.avatar}>
+            <img src={MessageIcon} alt="message" />
+          </div>
+          <div className={styles.info}>
+            <span className={styles.name}>Add a note</span>
+          </div>
         </div>
-        <div className={styles.info}>
-          <span className={styles.name}>Add a note</span>
+        <div className={styles.collapse} onClick={this.handleCollapse}>
+          {contentVisible ? (
+            <MinusOutlined className={styles.collapseIcon} />
+          ) : (
+            <PlusOutlined className={styles.collapseIcon} />
+          )}
         </div>
       </div>
     );
@@ -63,11 +79,12 @@ class SalaryNote extends PureComponent {
   };
 
   render() {
+    const { contentVisible } = this.state;
     return (
       <div className={styles.SalaryNote}>
         <div className={styles.chatContainer}>
           {this.renderHeader()}
-          {this.renderForm()}
+          {contentVisible && this.renderForm()}
         </div>
       </div>
     );
