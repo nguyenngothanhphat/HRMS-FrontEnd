@@ -62,7 +62,7 @@ class SettingLayout extends PureComponent {
     return (
       <div className={s.containerCommonLayout}>
         <Row>
-          <Col span={5} className={s.viewLeft}>
+          <Col sm={24} md={6} xl={5} className={s.viewLeft}>
             <div className={s.viewLeft__menu}>
               {listMenu.map((item) => (
                 <ItemMenu
@@ -83,7 +83,9 @@ class SettingLayout extends PureComponent {
             </div>
           </Col>
           <Col
-            span={19}
+            sm={24}
+            md={18}
+            xl={19}
             className={s.viewRight}
             style={currentPage === 'settings' ? { padding: '0' } : {}}
           >
