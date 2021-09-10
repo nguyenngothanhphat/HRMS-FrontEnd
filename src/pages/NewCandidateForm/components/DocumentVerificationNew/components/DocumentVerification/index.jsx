@@ -74,6 +74,7 @@ class DocumentVerification extends Component {
       educational: {},
       checkRadioSendMail: 0,
       refreshBlockE: false,
+      updating: false,
     };
   }
 
@@ -159,6 +160,7 @@ class DocumentVerification extends Component {
 
   // GET DATA FROM SERVER
   getDataFromServer = () => {
+    this.setState({ updating: true });
     const {
       data = {},
       tempData: {
@@ -219,6 +221,9 @@ class DocumentVerification extends Component {
 
     // set first value for [newPoe - the final poe]
     // this.setState({ newPoe: listSelectedEFinal });
+    setTimeout(() => {
+      this.setState({ updating: false });
+    }, 50);
   };
 
   handleUpdateByHR = (docsListE, checkedListA, checkedListB, checkedListC, docsListD) => {
@@ -1348,7 +1353,7 @@ class DocumentVerification extends Component {
 
   // main
   render() {
-    const { refreshBlockE } = this.state;
+    const { refreshBlockE, updating } = this.state;
     const {
       dispatch,
       newCandidateForm: {
@@ -1394,9 +1399,7 @@ class DocumentVerification extends Component {
             <div className={styles.eliContainer}>
               {/* <Warning formatMessage={formatMessage} /> */}
               <Title />
-              {identityProof.length > 0 &&
-                addressProof.length > 0 &&
-                educational.length > 0 &&
+              {!updating &&
                 documentCLSByCountryTypeABC.map((item) => {
                   const { type = '', name = '', data = [] } = item;
                   const title = `Type ${type}: ${name}`;
