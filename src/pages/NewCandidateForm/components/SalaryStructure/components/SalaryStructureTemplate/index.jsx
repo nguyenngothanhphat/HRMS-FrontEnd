@@ -128,10 +128,14 @@ class SalaryStructureTemplate extends PureComponent {
     const {
       dispatch,
       settingsTempData: settings = [],
+      salaryAcceptanceStatus = '',
       data: { _id, processStatus, currentStep },
     } = this.props;
     if (currentStep === 3) {
-      if (processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION) {
+      if (
+        processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION &&
+        salaryAcceptanceStatus !== 'ACCEPTED'
+      ) {
         dispatch({
           type: 'newCandidateForm/updateByHR',
           payload: {

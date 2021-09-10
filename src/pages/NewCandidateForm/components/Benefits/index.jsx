@@ -210,7 +210,7 @@ class Benefits extends PureComponent {
   //   );
   // };
 
-  onClickNext = () => {
+  onClickNext = async () => {
     const { hidePreviewOffer, dispatch, currentStep, data: { _id = '' } = {} } = this.props;
     if (hidePreviewOffer) {
       dispatch({
@@ -220,7 +220,7 @@ class Benefits extends PureComponent {
     }
 
     if (currentStep === 4) {
-      dispatch({
+      const res = await dispatch({
         type: 'newCandidateForm/updateByHR',
         payload: {
           currentStep: 5,
@@ -228,12 +228,14 @@ class Benefits extends PureComponent {
           tenantId: getCurrentTenant(),
         },
       });
-      dispatch({
-        type: 'newCandidateForm/save',
-        payload: {
-          currentStep: 5,
-        },
-      });
+      if (res.statusCode === 200) {
+        dispatch({
+          type: 'newCandidateForm/save',
+          payload: {
+            currentStep: 5,
+          },
+        });
+      }
     }
 
     const { tempData = {} } = this.props;
