@@ -1,11 +1,12 @@
 /* eslint-disable react/jsx-indent */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
-import { Col, Form, Row, Select, Spin } from 'antd';
+import { Checkbox, Col, Form, Row, Select, Spin, Tag } from 'antd';
 import { isNull } from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
+import CloseTagIcon from '@/assets/closeTagIcon.svg';
 import InternalStyle from './FirstFieldsComponent.less';
 
 const { Option } = Select;
@@ -33,7 +34,9 @@ class FirstFieldsComponent extends PureComponent {
 
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      listReporteesId: [],
+    };
   }
 
   componentDidMount = () => {
@@ -141,6 +144,7 @@ class FirstFieldsComponent extends PureComponent {
 
   onChangeValue = (value, fieldName) => {
     const { _handleSelect = () => {} } = this.props;
+
     switch (fieldName) {
       case 'grade': {
         _handleSelect(value, fieldName);
@@ -183,71 +187,56 @@ class FirstFieldsComponent extends PureComponent {
     }
   };
 
-  onChangeInput = ({ target: { value } }) => {
-    // this.setState({
-    //   inputVal: value,
-    // });
+  onCheckbox = (e) => {
+    const { listReporteesId } = this.state;
+    const arr = [...listReporteesId];
+    arr.push(e.target.value);
 
-    this.setDebounce(value);
+    this.setState({
+      listReporteesId: arr,
+    });
   };
 
-  handleVisibleChange = (visible) => {
-    this.setState({ visible });
+  renderReporteesField = (showReporteesListAB) => {
+    return showReporteesListAB.map((data, index) => {
+      const { firstName, middleName, lastName } = data.generalInfo || {};
+      let fullName = `${firstName} ${middleName} ${lastName}`;
+      if (!middleName) fullName = `${firstName} ${lastName}`;
+      return (
+        <Option disabled value={data._id} key={index}>
+          <Checkbox value={data._id} onChange={this.onCheckbox}>
+            <div>{fullName}</div>
+          </Checkbox>
+        </Option>
+      );
+    });
   };
 
-  // renderMenu = (item, showReporteesListAB) => {
-  //   const style = (index) => {
-  //     if (index % 2 === 0) return InternalStyle.evenClass;
+  renderReporteesName = (showReporteesListAB) => {
+    const { listReporteesId } = this.state;
 
-  //     return InternalStyle.oddClass;
-  //   };
+    if (listReporteesId.length === 0) return null;
 
-  //   return (
-  //     <div className={InternalStyle.dropdown}>
-  //       <div className={InternalStyle.dropdownMenu}>
-  //         {item.title === 'reportees' && showReporteesListAB.length > 0
-  //           ? showReporteesListAB.map((data, index) => (
-  //               <div className={`${InternalStyle.dropdownMenu__menu} ${style(index)}`} key={index}>
-  //                 <Checkbox>
-  //                   <div className={InternalStyle.dropdownMenu__name}>
-  //                     {data.generalInfo && data.generalInfo?.firstName
-  //                       ? `${data.generalInfo?.firstName}`
-  //                       : ''}
-  //                   </div>
-  //                 </Checkbox>
-  //               </div>
-  //             ))
-  //           : null}
-  //       </div>
-  //     </div>
-  //   );
-  // };
-
-  // reporteesField = (item, showReporteesListAB) => {
-  //   const { loading4, disabled } = this.props;
-  //   const { visible } = this.state;
-
-  //   return (
-  //     <Dropdown
-  //       placement="bottomCenter"
-  //       trigger={['click']}
-  //       visible={visible}
-  //       onVisibleChange={this.handleVisibleChange}
-  //       className={InternalStyle.rootDropdown}
-  //       overlay={() => this.renderMenu(item, showReporteesListAB)}
-  //     >
-  //       <Input
-  //         disabled={item.title === 'reportees' && disabled}
-  //         // value={inputVal}
-  //         placeholder={item.placeholder}
-  //         onChange={this.onChangeInput}
-  //         suffix={loading4 ? <LoadingOutlined /> : <DownOutlined />}
-  //         className={InternalStyle.rootDropdown__input}
-  //         loading
-  //       />
-  //     </Dropdown>
-  //   );
-  // };
+    return (
+      <div className={InternalStyle.listTags}>
+        {listReporteesId.map((id) => {
+          const reportee = showReporteesListAB.find((item) => item._id === id);
+          const fullName = `${reportee?.generalInfo?.firstName} ${
+            reportee?.generalInfo?.middleName ? reportee?.generalInfo?.middleName : ''
+          } ${reportee?.generalInfo?.lastName}`;
+          return (
+            <Tag
+              className={InternalStyle.nameTag}
+              closable
+              closeIcon={<img alt="close-tag" src={CloseTagIcon} />}
+            >
+              {fullName}
+            </Tag>
+          );
+        })}
+      </div>
+    );
+  };
 
   render() {
     const {
@@ -358,7 +347,9 @@ class FirstFieldsComponent extends PureComponent {
                           (item.title === 'department' ? loading1 : null)
                         }
                         placeholder={item.placeholder}
-                        className={styles}
+                        className={
+                          item.title === 'reportees' ? InternalStyle.InputReportees : styles
+                        }
                         // onChange={(value) => _handleSelect(value, item.title)}
                         onChange={(value) => this.onChangeValue(value, item.title)}
                         disabled={
@@ -468,19 +459,25 @@ class FirstFieldsComponent extends PureComponent {
                             );
                           })
                         ) : item.title === 'reportees' && showReporteesListAB.length > 0 ? (
-                          showReporteesListAB.map((data, index) => {
-                            const { firstName, middleName, lastName } = data.generalInfo || {};
-                            let fullName = `${firstName} ${middleName} ${lastName}`;
-                            if (!middleName) fullName = `${firstName} ${lastName}`;
-                            return (
-                              <Option value={data._id} key={index}>
-                                {fullName}
-                              </Option>
-                            );
-                          })
+                          // (
+                          //   showReporteesListAB.map((data, index) => {
+                          //     const { firstName, middleName, lastName } = data.generalInfo || {};
+                          //     let fullName = `${firstName} ${middleName} ${lastName}`;
+                          //     if (!middleName) fullName = `${firstName} ${lastName}`;
+                          //     return (
+                          //       <Option value={data._id} key={index}>
+                          //         {fullName}
+                          //       </Option>
+                          //     );
+                          //   })
+                          // )
+                          this.renderReporteesField(showReporteesListAB)
                         ) : null}
                       </Select>
                     </Form.Item>
+                    {item.title === 'reportees'
+                      ? this.renderReporteesName(showReporteesListAB)
+                      : null}
                   </Col>
                 );
               })}
