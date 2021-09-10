@@ -158,7 +158,10 @@ class MessageBox extends PureComponent {
   renderSender = () => {
     const { contentVisible } = this.state;
     return (
-      <div className={styles.senderContainer}>
+      <div
+        className={styles.senderContainer}
+        style={contentVisible ? {} : { borderBottom: 'none' }}
+      >
         <div className={styles.titleContainer}>
           <div className={styles.avatar}>
             <img src={MessageIcon} alt="message" />
