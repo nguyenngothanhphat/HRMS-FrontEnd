@@ -232,7 +232,9 @@ class SalaryStructureTemplate extends PureComponent {
                     if (item.key === 'salary_13')
                       return (
                         <div key={item.key} className={styles.salary__right__text}>
-                          (Basic/12) x The number of months work
+                          {item.value !== 0
+                            ? this.renderSingle(item.value, item.unit)
+                            : '(Basic/12) x The number of months work'}
                         </div>
                       );
                     return this._renderVaule(item);
