@@ -2,10 +2,9 @@ import { connect } from 'umi';
 import { Col } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { MODE } from '@/components/Question/utils';
-import { indexOf } from 'lodash';
-import { PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import QuestionItemView from '../QuestionItemView/index';
-import { Page } from '../../../pages/FormTeamMember/utils';
+import { Page } from '../../../pages/NewCandidateForm/utils';
 
 const AnswerQuestion = React.memo((props) => {
   const {
@@ -13,13 +12,26 @@ const AnswerQuestion = React.memo((props) => {
     data: { settings = [] },
     data,
     dispatch,
-    listPage,
     processStatus,
     messageErrors = [],
     page,
   } = props;
 
-  const [disable, setDisable] = useState(false);
+  const [view, setView] = useState(false);
+
+  const isView = () => {
+    if (
+      processStatus === NEW_PROCESS_STATUS.PROFILE_VERIFICATION &&
+      (page === Page.Basic_Information ||
+        page === Page.Job_Details ||
+        page === Page.Eligibility_documents)
+    )
+      return false;
+    if (processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION && page === Page.Salary_Structure)
+      return false;
+    return true;
+  };
+
   useEffect(() => {
     if (candidate !== '') {
       dispatch({
@@ -29,14 +41,11 @@ const AnswerQuestion = React.memo((props) => {
           page,
         },
       });
+      setView(isView());
     }
   }, [candidate]);
 
-  useEffect(() => {
-    if (indexOf(listPage, page) <= indexOf(listPage, Page.Eligibility_documents)) {
-      setDisable(processStatus !== PROCESS_STATUS.SENT_PROVISIONAL_OFFERS);
-    } else setDisable(processStatus === PROCESS_STATUS.ACCEPTED_FINAL_OFFERS);
-  }, []);
+  useEffect(() => {}, []);
   const onChangeEmployeeAnswers = async (value, key) => {
     const temp = [...settings];
     temp[key].employeeAnswers = value;
@@ -56,7 +65,7 @@ const AnswerQuestion = React.memo((props) => {
       <Col md={24}>
         {settings.map((questionItem, key) => (
           <QuestionItemView
-            mode={disable ? MODE.VIEW : MODE.ANSWER}
+            mode={view ? MODE.VIEW : MODE.ANSWER}
             questionItem={questionItem}
             keyQuestion={key}
             onChangeEmployeeAnswers={onChangeEmployeeAnswers}
@@ -72,7 +81,7 @@ export default connect(
   ({
     dispatch,
     optionalQuestion: { messageErrors, candidate = '', data = {}, listPage } = {},
-    candidatePortal: { processStatus = '' } = {},
+    candidatePortal: { data: { processStatus = '' } } = {},
   }) => ({
     dispatch,
     messageErrors,

@@ -10,7 +10,7 @@ import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 // import BottomBar from '../components/BottomBar';
 import s from './CandidatePortalLayout.less';
-import { taskStatus } from '@/utils/candidatePortal';
+import { CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
 
 const { Header, Content } = Layout;
 
@@ -79,7 +79,10 @@ const CandidatePortalLayout = React.memo((props) => {
   useEffect(() => {
     const currentLink = window.location.href;
     const viewingTask = pendingTasks.find((task) => currentLink.includes(task.id));
-    if (viewingTask && [taskStatus.DONE, taskStatus.UPCOMING].includes(viewingTask?.status)) {
+    if (
+      viewingTask &&
+      [CANDIDATE_TASK_STATUS.DONE, CANDIDATE_TASK_STATUS.UPCOMING].includes(viewingTask?.status)
+    ) {
       history.replace('/candidate-portal');
     }
     return () => {};

@@ -62,6 +62,9 @@ class CandidatePortal extends PureComponent {
       },
     });
     dispatch({
+      type: 'candidatePortal/refreshPendingTasks',
+    });
+    dispatch({
       type: 'conversation/getUserConversationsEffect',
       payload: {
         userId: candidate._id,
@@ -114,6 +117,7 @@ class CandidatePortal extends PureComponent {
           onChange={(key) => {
             history.push(`/candidate-portal/${key}`);
           }}
+          destroyInactiveTabPane
         >
           <TabPane tab="Dashboard" key="dashboard">
             <Dashboard />

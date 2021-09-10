@@ -24,7 +24,9 @@ const CustomModal = (props) => {
     <>
       <Modal
         // className={`${styles.onboardModal} ${styles.testFixed}`}
-        className={docmail === 1 ? styles.root : styles.root1}
+        className={`${
+          docmail === 0 ? styles.CustomModal : `${styles.CustomModal} ${styles.SendMailForm}`
+        }`}
         title={null}
         visible={visible}
         width={width}

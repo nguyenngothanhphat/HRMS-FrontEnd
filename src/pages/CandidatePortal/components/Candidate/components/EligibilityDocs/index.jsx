@@ -1,21 +1,22 @@
 /* eslint-disable no-param-reassign */
-import React, { PureComponent } from 'react';
-import { Typography, Row, Col, Button, Spin, notification, Skeleton } from 'antd';
-import { connect, formatMessage } from 'umi';
-import CustomModal from '@/components/CustomModal';
-import { getCurrentTenant } from '@/utils/authority';
-import AnswerQuestion from '@/components/Question/AnswerQuestion';
-import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
+import { Button, Col, Row, Tooltip, Typography } from 'antd';
 import { every } from 'lodash';
-import Title from './components/Title';
-import CollapseFields from './components/CollapseFields';
-import PreviousEmployment from './components/PreviousEmployment';
+import React, { PureComponent } from 'react';
+import { connect, formatMessage, history } from 'umi';
+import CustomModal from '@/components/CustomModal';
+import AnswerQuestion from '@/components/Question/AnswerQuestion';
+import { SPECIFY, TYPE_QUESTION } from '@/components/Question/utils';
+import { getCurrentTenant } from '@/utils/authority';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import { Page } from '../../../../../NewCandidateForm/utils';
 import MessageBox from '../MessageBox';
 // import StepsComponent from '../StepsComponent';
 import NoteComponent from '../NoteComponent';
+import CollapseFields from './components/CollapseFields';
 // import SendEmail from './components/SendEmail';
 import ModalContentComponent from './components/ModalContentComponent';
-import { Page } from '../../../../../FormTeamMember/utils';
+import PreviousEmployment from './components/PreviousEmployment';
+import Title from './components/Title';
 import styles from './index.less';
 
 const Note = {
@@ -35,7 +36,7 @@ const Note = {
     },
     candidatePortal: {
       data,
-      data: { checkMandatory = {} } = {},
+      data: { isVerifiedBasicInfo, isVerifiedJobDetail, checkMandatory = {} } = {},
       localStep,
       currentStep,
       tempData,
@@ -51,6 +52,8 @@ const Note = {
     tempData,
     checkMandatory,
     candidate,
+    isVerifiedBasicInfo,
+    isVerifiedJobDetail,
     loading: loading.effects['upload/uploadFile'],
     loading1: loading.effects['candidatePortal/sendEmailByCandidate'],
     loading2: loading.effects['candidatePortal/fetchCandidateById'],
@@ -76,20 +79,7 @@ class EligibilityDocs extends PureComponent {
     // this.fetchCandidateAgain();
     this.processData();
     const { data: { processStatus = '' } = {} } = this.props;
-    if (
-      [
-        'ACCEPT-PROVISIONAL-OFFER',
-        'APPROVED-FINAL-OFFER',
-        'SENT-FINAL-OFFERS',
-        'ACCEPT-FINAL-OFFER',
-        'RENEGOTIATE-FINAL-OFFERS',
-        'DISCARDED-PROVISONAL-OFFER',
-        'REJECT-FINAL-OFFER-HR',
-        'REJECT-FINAL-OFFER-CANDIDATE',
-        'PENDING-BACKGROUND-CHECK',
-        'PENDING-APPROVAL-FINAL-OFFER',
-      ].includes(processStatus)
-    ) {
+    if (![NEW_PROCESS_STATUS.PROFILE_VERIFICATION].includes(processStatus)) {
       this.setState({
         isSentEmail: true,
       });
@@ -184,13 +174,18 @@ class EligibilityDocs extends PureComponent {
           };
         });
 
-        const docList = [
+        let docList = [
           { type: 'A', name: 'Identity Proof', data: [...groupA] },
           { type: 'B', name: 'Address Proof', data: [...groupB] },
           { type: 'C', name: 'Educational', data: [...groupC] },
-          { type: 'D', name: 'Technical Certifications', data: [...groupD] },
-          ...groupMultiE,
         ];
+        if (groupD.length > 0) {
+          docList = [
+            ...docList,
+            { type: 'D', name: 'Technical Certifications', data: [...groupD] },
+          ];
+        }
+        docList = [...docList, ...groupMultiE];
 
         await dispatch({
           type: 'candidatePortal/saveOrigin',
@@ -371,7 +366,7 @@ class EligibilityDocs extends PureComponent {
         workHistory = [],
       },
       dispatch,
-      candidate,
+      // candidate,
     } = this.props;
     const { generalInfo = {} } = generatedBy;
     const { workEmail: email = '' } = generalInfo;
@@ -479,13 +474,7 @@ class EligibilityDocs extends PureComponent {
   };
 
   closeModal = () => {
-    const { dispatch } = this.props;
-    this.setState({
-      openModal: false,
-    });
-    dispatch({
-      type: 'candidatePortal/refreshPage',
-    });
+    history.push('/candidate-portal/dashboard');
   };
 
   checkLength = (url) => {
@@ -527,16 +516,6 @@ class EligibilityDocs extends PureComponent {
         {formatMessage({ id: 'component.bottomBar.mandatoryUnfilled' })}
       </div>
     );
-  };
-
-  onClickPrev = () => {
-    const { dispatch, localStep } = this.props;
-    dispatch({
-      type: 'candidatePortal/save',
-      payload: {
-        localStep: localStep - 1,
-      },
-    });
   };
 
   checkAllFieldsValidate = () => {
@@ -582,59 +561,43 @@ class EligibilityDocs extends PureComponent {
     return valid;
   };
 
-  onClickNext = () => {
-    const { dispatch, localStep, _id, settings } = this.props;
-    const messageErr = this.checkAllFieldsValidate();
-    if (!every(messageErr, (message) => message === null)) return;
-    if (_id !== '' && settings && settings.length) {
-      dispatch({
-        type: 'optionalQuestion/updateQuestionByCandidate',
-        payload: {
-          id: _id,
-          settings,
-        },
-      });
-    }
-    // dispatch({
-    //   type: 'candidatePortal/save',
-    //   payload: {
-    //     localStep: localStep + 1,
-    //   },
-    // });
-  };
-
   _renderBottomBar = () => {
-    const { currentStep = 0 } = this.props;
+    const { isVerifiedBasicInfo, isVerifiedJobDetail } = this.props;
     const { loading1 } = this.props;
     const { isSending, isSentEmail } = this.state;
     const checkFull = this.checkFull();
-
+    const isVerifiedProfile = isVerifiedBasicInfo && isVerifiedJobDetail;
+    const submitButton = (
+      <Button
+        type="primary"
+        htmlType="submit"
+        onClick={this.handleSendEmail}
+        className={`${styles.bottomBar__button__primary} ${
+          !checkFull ? styles.bottomBar__button__disabled : ''
+        }`}
+        disabled={!checkFull || !isVerifiedProfile}
+        loading={loading1 || isSending}
+      >
+        {isSentEmail ? 'Submit Again' : 'Submit'}
+      </Button>
+    );
     return (
       <div className={styles.bottomBar}>
+        <AnswerQuestion page={Page.Eligibility_documents} />
+
         <Row align="middle">
           <Col span={8}>
             {/* <div className={styles.bottomBar__status}>{this._renderStatus()}</div> */}
           </Col>
           <Col span={16}>
             <div className={styles.bottomBar__button}>
-              {/* <Button type="secondary" onClick={this.onClickPrev}>
-                Previous
-              </Button> */}
-              <Button
-                type="primary"
-                htmlType="submit"
-                onClick={this.handleSendEmail}
-                // className={`${styles.bottomBar__button__primary} ${
-                //   currentStep < 5 ? styles.bottomBar__button__disabled : ''
-                // }`}
-                className={`${styles.bottomBar__button__primary} ${
-                  !checkFull ? styles.bottomBar__button__disabled : ''
-                }`}
-                disabled={!checkFull}
-                loading={loading1 || isSending}
-              >
-                {isSentEmail ? 'Submit Again' : 'Submit'}
-              </Button>
+              {isVerifiedProfile ? (
+                submitButton
+              ) : (
+                <Tooltip title="You must finish the Review Profile task first!">
+                  {submitButton}
+                </Tooltip>
+              )}
             </div>
           </Col>
         </Row>
@@ -645,8 +608,6 @@ class EligibilityDocs extends PureComponent {
   render() {
     const {
       loading,
-      loading2,
-      loadingFile,
       data: {
         attachments,
         documentListToRender,
@@ -658,7 +619,6 @@ class EligibilityDocs extends PureComponent {
     const {
       openModal,
       // isSentEmail,
-      isSending,
     } = this.state;
     // const { generalInfo: { workEmail } = {} || {} } = generatedBy || {};
     // const {  } = user;
@@ -714,10 +674,6 @@ class EligibilityDocs extends PureComponent {
                 />
               )}
             </div>
-            <Row>
-              <AnswerQuestion page={Page.Eligibility_documents} />
-            </Row>
-
             {this._renderBottomBar()}
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>

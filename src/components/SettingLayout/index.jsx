@@ -3,8 +3,8 @@ import React, { PureComponent } from 'react';
 import { Row, Col, Button } from 'antd';
 import { history } from 'umi';
 import ItemMenu from './components/ItemMenu';
-// import PreviewOffer from '../../pages/FormTeamMember/components/PreviewOffer/index';
-import BasicInformation from '../../pages/FormTeamMember/components/BasicInformation';
+// import PreviewOffer from '../../pages/NewCandidateForm/components/PreviewOffer/index';
+import BasicInformation from '../../pages/NewCandidateForm/components/BasicInformation';
 // import BottomBar from '../BottomBar';
 
 import s from './index.less';
@@ -43,12 +43,12 @@ class SettingLayout extends PureComponent {
   _handlePreviewOffer = () => {
     // const { dispatch } = this.props;
     // dispatch({
-    //   type: 'candidateInfo/save',
+    //   type: 'newCandidateForm/save',
     //   payload: {
     //     displayComponent: <PreviewOffer />,
     //   },
     // });
-    // history.push(`/employee-onboarding/list/review/preview-offer`);
+    // history.push(`/onboarding/list/view/preview-offer`);
   };
 
   _handleClick = (item) => {
@@ -62,7 +62,7 @@ class SettingLayout extends PureComponent {
     return (
       <div className={s.containerCommonLayout}>
         <Row>
-          <Col span={4} className={s.viewLeft}>
+          <Col sm={24} md={6} xl={5} className={s.viewLeft}>
             <div className={s.viewLeft__menu}>
               {listMenu.map((item) => (
                 <ItemMenu
@@ -83,7 +83,9 @@ class SettingLayout extends PureComponent {
             </div>
           </Col>
           <Col
-            span={20}
+            sm={24}
+            md={18}
+            xl={19}
             className={s.viewRight}
             style={currentPage === 'settings' ? { padding: '0' } : {}}
           >

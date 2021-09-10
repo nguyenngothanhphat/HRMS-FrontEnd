@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import SettingLayout from '@/components/SettingLayout';
-import CompanySignatory from '@/pages/EmployeeOnboarding/components/Settings/components/CompanySignatory';
+import CompanySignatory from '@/pages/Onboarding/components/Settings/components/CompanySignatory';
 import CustomEmails from './components/CustomEmails';
 import DocsTemplates from './components/DocsTemplates';
 import Forms from './components/Forms';

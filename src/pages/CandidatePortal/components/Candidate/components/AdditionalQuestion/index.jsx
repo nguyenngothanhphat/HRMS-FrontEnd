@@ -1,14 +1,14 @@
-import QuestionItemView from '@/components/Question/QuestionItemView';
 import { Button, Col, Row, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage } from 'umi';
-import { TYPE_QUESTION, SPECIFY, MODE } from '@/components/Question/utils';
 import { every, indexOf } from 'lodash';
+import { TYPE_QUESTION, SPECIFY, MODE } from '@/components/Question/utils';
+import QuestionItemView from '@/components/Question/QuestionItemView';
 import { PROCESS_STATUS } from '@/utils/onboarding';
 import NoteComponent from '../NoteComponent';
 import StepsComponent from '../StepsComponent';
 import s from './index.less';
-import { Page } from '../../../../../FormTeamMember/utils';
+import { Page } from '../../../../../NewCandidateForm/utils';
 
 const Note = {
   title: 'Note',

@@ -1,10 +1,10 @@
-const candidateLink = {
-  reviewProfile: 'review-profile',
-  uploadDocuments: 'upload-documents',
-  salaryNegotiation: 'salary-negotiation',
-  acceptOffer: 'accept-offer',
+const CANDIDATE_TASK_LINK = {
+  REVIEW_PROFILE: 'review-profile',
+  UPLOAD_DOCUMENTS: 'upload-documents',
+  SALARY_NEGOTIATION: 'salary-negotiation',
+  ACCEPT_OFFER: 'accept-offer',
 };
-const taskStatus = {
+const CANDIDATE_TASK_STATUS = {
   IN_PROGRESS: 'IN-PROGRESS', // doing
   DONE: 'DONE', // done
   RE_SUBMIT: 'RE-SUBMIT', // need to submit again
@@ -12,4 +12,4 @@ const taskStatus = {
   REJECTED: 'REJECTED', // rejected
   RE_NEGOTIATE: 'RE-NEGOTIATE', // for salary structure
 };
-export { candidateLink, taskStatus };
+export { CANDIDATE_TASK_LINK, CANDIDATE_TASK_STATUS };

@@ -1,4 +1,4 @@
-import { Button, Col, notification, Row, Typography } from 'antd';
+import { Button, Col, Row, Typography } from 'antd';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { every } from 'lodash';
 import React, { PureComponent } from 'react';
@@ -6,7 +6,7 @@ import { connect, formatMessage, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import { SPECIFY, TYPE_QUESTION } from '@/components/Question/utils';
 import AnswerQuestion from '@/components/Question/AnswerQuestion';
-import { Page } from '../../../../../FormTeamMember/utils';
+import { Page } from '../../../../../NewCandidateForm/utils';
 import NoteComponent from '../NoteComponent';
 import MessageBox from '../MessageBox';
 import FieldsComponent from './components/FieldsComponent';
@@ -58,11 +58,6 @@ class JobDetails extends PureComponent {
       checkMandatory,
       isCandidateAcceptDOJ = true,
     } = this.props;
-
-    // console.log('dateOfJoining', dateOfJoining);
-    // console.log('prefferedDateOfJoining', prefferedDateOfJoining);
-    // console.log('isCandidateAcceptDOJ', isCandidateAcceptDOJ);
-    // console.log('candidatesNoticePeriod', candidatesNoticePeriod);
 
     if (dateOfJoining && isCandidateAcceptDOJ) {
       dispatch({
@@ -397,9 +392,9 @@ class JobDetails extends PureComponent {
                 _handleSelect={this._handleSelect}
               />
               <Row className={styles.belowPart}>
-                {/* <Col span={24}>
+                <Col span={24}>
                   <AnswerQuestion page={Page.Job_Details} />
-                </Col> */}
+                </Col>
                 <Col span={24} className={styles.verifyCheckbox}>
                   <Checkbox checked={isVerifiedJobDetail} onChange={this.onVerifyThisForm}>
                     I have verified that the above details are correct
