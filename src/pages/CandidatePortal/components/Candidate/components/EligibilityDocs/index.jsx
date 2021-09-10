@@ -639,7 +639,8 @@ class EligibilityDocs extends PureComponent {
               {documentListToRender.length > 0 &&
                 documentListToRender.map((item, index) => {
                   // console.log(index);
-                  if (item.type !== 'E') {
+                  const { type = '', data = [] } = item;
+                  if (type !== 'E' && data.length > 0) {
                     return (
                       <CollapseFields
                         onValuesChange={this.onValuesChange}
