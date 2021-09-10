@@ -202,8 +202,15 @@ class FirstFieldsComponent extends PureComponent {
       const { firstName, middleName, lastName } = data.generalInfo || {};
       let fullName = `${firstName} ${middleName} ${lastName}`;
       if (!middleName) fullName = `${firstName} ${lastName}`;
+
+      const className = index % 2 === 0 ? InternalStyle.evenClass : InternalStyle.oddClass;
       return (
-        <Option disabled value={data._id} key={index}>
+        <Option
+          className={`${InternalStyle.optionSelect} ${className}`}
+          disabled
+          value={data._id}
+          key={index}
+        >
           <Checkbox value={data._id} onChange={this.onCheckbox}>
             <div>{fullName}</div>
           </Checkbox>
@@ -330,7 +337,9 @@ class FirstFieldsComponent extends PureComponent {
                   <Col key={id} xs={24} sm={24} md={12} lg={12} xl={12}>
                     <Form.Item
                       name={item.title}
-                      className={InternalStyle.formItem}
+                      className={`${InternalStyle.formItem} ${
+                        item.title === 'reportees' ? InternalStyle.formItemReportees : ''
+                      }`}
                       label={item.name}
                       rules={[
                         {
