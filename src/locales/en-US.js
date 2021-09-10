@@ -4,7 +4,7 @@ import menu from './en-US/menu';
 import pwa from './en-US/pwa';
 import settingDrawer from './en-US/settingDrawer';
 import settings from './en-US/settings';
-import formTeamMember from './en-US/formTeamMember';
+import newCandidateForm from './en-US/newCandidateForm';
 import commonLayout from './en-US/commonLayout';
 import authLayout from './en-US/authLayout';
 import notFoundPage from './en-US/notFoundPage';
@@ -43,7 +43,7 @@ export default {
   ...settings,
   ...pwa,
   ...component,
-  ...formTeamMember,
+  ...newCandidateForm,
   ...commonLayout,
   ...authLayout,
   ...notFoundPage,

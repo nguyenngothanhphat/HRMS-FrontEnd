@@ -3,12 +3,18 @@
 
 .PreviousEmployment {
   margin-bottom: 1rem;
+  overflow: hidden;
+  border: 1px solid #d6dce0;
+  border-radius: 5px;
   .divider {
     border-bottom: 1px solid @color-grey;
     margin-inline: 16px;
     opacity: 0.2;
   }
   :global {
+    .ant-collapse > .ant-collapse-item {
+      border: none;
+    }
     .ant-collapse-extra {
       font-size: 12px;
       float: none !important;
@@ -31,9 +37,9 @@
       padding: 16px 16px 6px;
     }
     .ant-collapse {
-      border-radius: 5px;
-      // border: solid 1px #d6dce0;
+ 
       overflow: hidden;
+      border: none;
       .ant-collapse-item > .ant-collapse-header {
         background-color: #fff;
         padding: 32px;

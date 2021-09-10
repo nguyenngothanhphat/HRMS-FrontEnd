@@ -110,7 +110,7 @@ class ModalContent extends Component {
         ) : (
           <Link
             to={{
-              pathname: '/employee-onboarding/settings/documents-templates',
+              pathname: '/onboarding/settings/documents-templates',
             }}
           >
             <Button type="primary">{modalContent[content].button}</Button>

@@ -828,8 +828,7 @@ class EditEmailForm extends PureComponent {
                         // mode={valueToBeVerb === 'is' ? '' : 'multiple'}
                         showArrow
                         filterOption={(input, option) =>
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        }
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                         placeholder="Please select a choice"
                         onChange={(value) => this.onChangeCondition(index, 'value', value)}
                         onClick={() => this.onClickCondition(index)}
@@ -1085,7 +1084,7 @@ class EditEmailForm extends PureComponent {
               <Col className={styles.buttons} span={8} offset={16}>
                 <Link
                   to={{
-                    pathname: '/employee-onboarding/settings/custom-emails',
+                    pathname: '/onboarding/settings/custom-emails',
                   }}
                 >
                   <Button type="secondary">

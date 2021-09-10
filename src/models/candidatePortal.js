@@ -11,37 +11,37 @@ import {
   updateByCandidate,
 } from '@/services/candidatePortal';
 import { dialog } from '@/utils/utils';
-import { candidateLink, taskStatus } from '@/utils/candidatePortal';
-import { PROCESS_STATUS } from '@/utils/onboarding';
+import { CANDIDATE_TASK_LINK, CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 
 const pendingTaskDefault = [
   {
-    id: candidateLink.reviewProfile,
+    id: CANDIDATE_TASK_LINK.REVIEW_PROFILE,
     name: 'Review Profile',
     dueDate: '-',
-    link: candidateLink.reviewProfile,
-    status: taskStatus.UPCOMING,
+    link: CANDIDATE_TASK_LINK.REVIEW_PROFILE,
+    status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
   {
-    id: candidateLink.uploadDocuments,
+    id: CANDIDATE_TASK_LINK.UPLOAD_DOCUMENTS,
     name: 'Upload Documents',
     dueDate: '-',
-    link: candidateLink.uploadDocuments,
-    status: taskStatus.UPCOMING,
+    link: CANDIDATE_TASK_LINK.UPLOAD_DOCUMENTS,
+    status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
   {
-    id: candidateLink.salaryNegotiation,
+    id: CANDIDATE_TASK_LINK.SALARY_NEGOTIATION,
     name: 'Salary Negotiation',
     dueDate: '-',
-    link: candidateLink.salaryNegotiation,
-    status: taskStatus.UPCOMING,
+    link: CANDIDATE_TASK_LINK.SALARY_NEGOTIATION,
+    status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
   {
-    id: candidateLink.acceptOffer,
+    id: CANDIDATE_TASK_LINK.ACCEPT_OFFER,
     name: 'Accept Offer',
     dueDate: '-',
-    link: candidateLink.acceptOffer,
-    status: taskStatus.UPCOMING,
+    link: CANDIDATE_TASK_LINK.ACCEPT_OFFER,
+    status: CANDIDATE_TASK_STATUS.UPCOMING,
   },
 ];
 
@@ -80,6 +80,10 @@ const candidatePortal = {
         fileName: '',
         _id: '',
         url: '',
+      },
+      salaryStructure: {
+        status: '',
+        settings: [],
       },
       finalOfferCandidateSignature: {
         fileName: '',
@@ -145,7 +149,11 @@ const candidatePortal = {
             ...data,
             candidate: data._id,
             _id: data._id,
+            salaryStructure: data.salaryStructure,
           },
+        });
+        yield put({
+          type: 'refreshPendingTasks',
         });
         yield put({
           type: 'saveTemp',
@@ -163,9 +171,6 @@ const candidatePortal = {
             salaryStructure: data.salaryStructure.settings,
             checkMandatory: { ...checkMandatory },
           },
-        });
-        yield put({
-          type: 'refreshPendingTasks',
         });
       } catch (error) {
         dialog(error);
@@ -297,82 +302,63 @@ const candidatePortal = {
     *refreshPendingTasks(_, { put, select }) {
       try {
         const dateFormat = 'MM.DD.YY';
-        const tempPendingTasks = pendingTaskDefault;
+        const tempPendingTasks = JSON.parse(JSON.stringify(pendingTaskDefault));
         const {
           // candidate = '',
           // ticketId = '',
           data = {},
         } = yield select((state) => state.candidatePortal);
         const {
-          currentStep,
           processStatus = '',
           expiryDate = '',
           documentList = [],
           isVerifiedJobDetail,
           isVerifiedBasicInfo,
+          salaryStructure: { status: salaryStatus = '' } = {},
           // isAcceptedJoiningDate,
         } = data || {};
 
         switch (processStatus) {
-          case PROCESS_STATUS.SENT_PROVISIONAL_OFFERS:
-            if (currentStep <= 3) {
-              // review profile
-              tempPendingTasks[0].status = taskStatus.IN_PROGRESS;
-              // uploading documents
-              tempPendingTasks[1].status = taskStatus.IN_PROGRESS;
-            }
-            if (currentStep > 3) {
-              // salary structure
-              tempPendingTasks[2].status = taskStatus.IN_PROGRESS;
-            }
+          case NEW_PROCESS_STATUS.PROFILE_VERIFICATION:
+            // review profile
+            tempPendingTasks[0].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+            // uploading documents
+            tempPendingTasks[1].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+
             if (isVerifiedJobDetail && isVerifiedBasicInfo) {
               // review profile
-              tempPendingTasks[0].status = taskStatus.DONE;
+              tempPendingTasks[0].status = CANDIDATE_TASK_STATUS.DONE;
             }
             break;
 
-          case PROCESS_STATUS.ACCEPTED_PROVISIONAL_OFFERS:
-            // case PROCESS_STATUS.RENEGOTIATE_PROVISIONAL_OFFERS:
-            // uploading documents
-            tempPendingTasks[1].status = taskStatus.DONE;
-            break;
-
-          case PROCESS_STATUS.PENDING:
+          case NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION:
             // if there are any resubmit documents, show resubmit tasks
             if (documentList.length > 0) {
               const checkDocumentResubmit = documentList.some(
                 (x) => x.candidateDocumentStatus === 'RE-SUBMIT',
               );
-              const checkDocumentVerified = documentList.some(
-                (x) =>
-                  (x.candidateGroup !== 'E' && x.candidateDocumentStatus === 'PENDING') ||
-                  (x.candidateGroup === 'E' &&
-                    x.employer &&
-                    x.candidateDocumentStatus === 'PENDING'),
-              );
-
               if (checkDocumentResubmit) {
-                tempPendingTasks[1].status = taskStatus.IN_PROGRESS;
+                tempPendingTasks[1].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
                 tempPendingTasks[1].name = 'Resubmit Documents';
-              } else if (!checkDocumentVerified) {
-                // salary structure
-                tempPendingTasks[2].status = taskStatus.IN_PROGRESS;
               }
+            } else {
+              // uploading documents
+              tempPendingTasks[1].status = CANDIDATE_TASK_STATUS.DONE;
             }
             break;
 
-          case PROCESS_STATUS.ELIGIBLE_CANDIDATES:
-          case PROCESS_STATUS.INELIGIBLE_CANDIDATES:
-          case PROCESS_STATUS.RENEGOTIATE_PROVISIONAL_OFFERS:
-            // salary structure
-            tempPendingTasks[2].status = taskStatus.IN_PROGRESS;
+          case NEW_PROCESS_STATUS.SALARY_NEGOTIATION:
+            if (['IN-PROGRESS'].includes(salaryStatus)) {
+              // salary structure
+              tempPendingTasks[2].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
+            }
             break;
 
-          case PROCESS_STATUS.SENT_FINAL_OFFERS:
-          case PROCESS_STATUS.ACCEPTED_FINAL_OFFERS:
-          case PROCESS_STATUS.RENEGOTIATE_FINAL_OFFERS:
+          case NEW_PROCESS_STATUS.OFFER_RELEASED:
+          case NEW_PROCESS_STATUS.OFFER_ACCEPTED:
+          case NEW_PROCESS_STATUS.OFFER_REJECTED:
             // offer letter
-            tempPendingTasks[3].status = taskStatus.IN_PROGRESS;
+            tempPendingTasks[3].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
             tempPendingTasks[3].dueDate = expiryDate ? moment(expiryDate).format(dateFormat) : '';
             break;
 

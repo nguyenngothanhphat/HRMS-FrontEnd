@@ -1,0 +1,88 @@
+.modalCustom {
+  :global {
+    .ant-modal-header {
+      padding: 24px;
+      border-top-left-radius: 8px;
+    }
+
+    .ant-modal-body {
+      height: auto;
+    }
+
+    .ant-modal-content {
+      // min-width: 1000px;
+      border-top-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+
+    .ant-modal-footer {
+      padding: 24px;
+    }
+
+    .ant-modal-close-x {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 54px;
+      height: 48px;
+      color: #fff;
+      background-color: #2c6df9;
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+
+      &:active {
+        opacity: 0.5;
+      }
+    }
+  }
+
+  .pending {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    :global {
+      .ant-btn-primary {
+        width: 70px;
+        height: 40px;
+        margin-top: 15px;
+        object-fit: contain;
+        color: #ffffff;
+        font-weight: 500;
+        font-size: 14px;
+        font-family: 'Roboto';
+        letter-spacing: 0.13px;
+        text-shadow: none;
+        background-color: #ffa100;
+        border: solid 1px #ffa100;
+        border-radius: 25px;
+        box-shadow: none;
+
+        &:hover {
+          color: #ffffff;
+          background-color: #ffa100;
+        }
+      }
+    }
+
+    .pendingIcon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 94px;
+      height: 94px;
+      margin-bottom: 30px;
+      background: #215ad6;
+      border-radius: 50px;
+    }
+
+    p {
+      color: #464646;
+      font-size: 13px;
+      line-height: 18px;
+    }
+  }
+}

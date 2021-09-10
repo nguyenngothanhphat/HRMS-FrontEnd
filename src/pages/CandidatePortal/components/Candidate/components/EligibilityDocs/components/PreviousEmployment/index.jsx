@@ -90,11 +90,7 @@ class PreviousEmployment extends Component {
         currentCompany: null,
       });
     }
-    const {
-      dispatch,
-      candidate,
-      //  renderData = () => {}
-    } = this.props;
+    const { dispatch, candidate, renderData = () => {} } = this.props;
     await dispatch({
       type: 'candidatePortal/updateWorkHistory',
       payload: {
@@ -111,7 +107,7 @@ class PreviousEmployment extends Component {
         tenantId: getCurrentTenant(),
       },
     });
-    // renderData(false);
+    renderData(false);
   };
 
   onValuesChange = async (val, type, workHistoryId) => {
@@ -335,35 +331,32 @@ class PreviousEmployment extends Component {
     const { data: { documentListToRender: docList = [] } = {} } = this.props;
     const docListE = docList.filter((d) => d.type === 'E');
     return (
-      <div className={styles.PreviousEmployment}>
+      <>
         {docListE.length > 0 && (
-          <Collapse
-            accordion
-            defaultActiveKey="1"
-            expandIconPosition="right"
-            expandIcon={(props) => {
-              return props.isActive ? <MinusOutlined /> : <PlusOutlined />;
-            }}
-          >
-            <Collapse.Panel
-              key="1"
-              header={
-                <Checkbox
-                  className={styles.checkbox}
-                  onClick={(e) => e.stopPropagation()}
-                  // onChange={(e) => handleCheckAll(e, defaultArr, item)}
-                  checked
-                >
-                  Type {docListE[0].type}: {docListE[0].name}
-                </Checkbox>
-              }
-              extra="[Can submit any of the below other than (*)mandatory]"
+          <div className={styles.PreviousEmployment}>
+            <Collapse
+              accordion
+              defaultActiveKey="1"
+              expandIconPosition="right"
+              expandIcon={(props) => {
+                return props.isActive ? <MinusOutlined /> : <PlusOutlined />;
+              }}
             >
-              {docListE.map((item, index) => this.renderEmployer(docListE, item, index))}
-            </Collapse.Panel>
-          </Collapse>
+              <Collapse.Panel
+                key="1"
+                header={
+                  <span style={{ display: 'inline-block', marginRight: '20px' }}>
+                    Type {docListE[0].type}: {docListE[0].name}
+                  </span>
+                }
+                extra="[Can submit any of the below other than (*)mandatory]"
+              >
+                {docListE.map((item, index) => this.renderEmployer(docListE, item, index))}
+              </Collapse.Panel>
+            </Collapse>
+          </div>
         )}
-      </div>
+      </>
     );
   }
 }

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 
 import { formatMessage, connect } from 'umi';
-import FileIcon from '@/assets/pdf_icon.png';
 import { Row, Col, Typography, Button } from 'antd';
+import { every } from 'lodash';
+import FileIcon from '@/assets/pdf_icon.png';
 import CustomModal from '@/components/CustomModal/index';
 import AnswerQuestion from '@/components/Question/AnswerQuestion';
 import { TYPE_QUESTION, SPECIFY } from '@/components/Question/utils';
-import { every } from 'lodash';
 import NoteComponent from '../NoteComponent';
 import FileContent from '../FileContent';
 import mockFiles from './components/utils';
-import { Page } from '../../../../../FormTeamMember/utils';
+import { Page } from '../../../../../NewCandidateForm/utils';
 import s from './index.less';
 
 // pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;

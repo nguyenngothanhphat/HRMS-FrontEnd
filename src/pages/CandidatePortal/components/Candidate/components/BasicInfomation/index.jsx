@@ -6,7 +6,7 @@ import { connect, formatMessage } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import { SPECIFY, TYPE_QUESTION } from '@/components/Question/utils';
 import AnswerQuestion from '@/components/Question/AnswerQuestion';
-import { Page } from '../../../../../FormTeamMember/utils';
+import { Page } from '../../../../../NewCandidateForm/utils';
 import MessageBox from '../MessageBox';
 import NoteComponent from '../NoteComponent';
 import BasicInformationHeader from './components/BasicInformationHeader';
@@ -133,23 +133,19 @@ class BasicInformation extends PureComponent {
 
   onFinish = async (values) => {
     const { data } = this.state;
-    const {
-      dispatch,
-      localStep,
-      // _id: id, settings
-    } = this.props;
+    const { dispatch, localStep, _id: id, settings } = this.props;
     const { _id, isVerifiedBasicInfo } = data;
-    // const messageErr = this.checkAllFieldsValidate();
-    // if (!every(messageErr, (message) => message === null)) return;
-    // if (id !== '' && settings && settings.length) {
-    //   dispatch({
-    //     type: 'optionalQuestion/updateQuestionByCandidate',
-    //     payload: {
-    //       id,
-    //       settings,
-    //     },
-    //   });
-    // }
+    const messageErr = this.checkAllFieldsValidate();
+    if (!every(messageErr, (message) => message === null)) return;
+    if (id !== '' && settings && settings.length) {
+      dispatch({
+        type: 'optionalQuestion/updateQuestionByCandidate',
+        payload: {
+          id,
+          settings,
+        },
+      });
+    }
 
     await dispatch({
       type: 'candidatePortal/updateByCandidateEffect',
@@ -272,7 +268,7 @@ class BasicInformation extends PureComponent {
               <Input disabled className={styles.formInput} name="previousExperience" />
             </Form.Item>
           </Col>
-          {/* <AnswerQuestion page={Page.Basic_Information} /> */}
+          <AnswerQuestion page={Page.Basic_Information} />
           <Col span={24} className={styles.verifyCheckbox}>
             <Checkbox checked={isVerifiedBasicInfo} onChange={this.onVerifyThisForm}>
               I have verified that the above details are correct

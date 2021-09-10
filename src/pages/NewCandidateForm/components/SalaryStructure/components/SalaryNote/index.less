@@ -1,0 +1,125 @@
+@darkColor: #161c29;
+@lightGrayColor: #707177;
+@commonPadding: 15px;
+@inlinePadding: 32px;
+@borderColor: #d6dce0;
+@blueColor: #2c6df9;
+@lightBlueColor: #eaf0fe;
+@lightBlueColor2: #e4edff;
+
+.SalaryNote {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  max-height: 500px;
+  margin-top: 24px;
+  background: #fff;
+  border: 1px solid @borderColor;
+  border-radius: 5px;
+  .chatContainer {
+    position: relative;
+    .headerContainer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: @commonPadding @inlinePadding;
+      border-bottom: 1px solid @borderColor;
+
+      .titleContainer {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+
+        .info {
+          padding-left: @commonPadding;
+          span {
+            display: block;
+            line-height: 30px;
+          }
+          .name {
+            color: @darkColor;
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 16px;
+          }
+          .time {
+            color: @lightGrayColor;
+            font-size: 13px;
+            line-height: 21px;
+          }
+        }
+      }
+      .collapse {
+        cursor: pointer;
+        .collapseIcon {
+          color: #2c6df9;
+          font-weight: 500;
+          font-size: 24px;
+        }
+      }
+    }
+  }
+
+  .queryContent {
+    textarea:focus {
+      outline: none !important;
+    }
+
+    padding: @commonPadding @inlinePadding 0 @inlinePadding;
+    .describeText {
+      display: block;
+      margin-bottom: @commonPadding / 2;
+      color: @lightGrayColor;
+      font-size: 13px;
+      line-height: 20px;
+    }
+    .emptySendButton {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: @commonPadding;
+      :global {
+        .ant-btn {
+          background: @blueColor;
+          border: none;
+          border-radius: 45px;
+          outline: none;
+          padding-inline: 24px;
+          span {
+            color: #fff;
+            font-weight: 500;
+          }
+        }
+      }
+    }
+  }
+
+  :global {
+    .ant-form-item-explain {
+      div {
+        font-size: 13px;
+      }
+    }
+    .ant-select-selection-item {
+      color: #161c29 !important;
+    }
+    .ant-input {
+      width: 100%;
+      padding: 5px 11px !important;
+      background: transparent !important;
+      border-color: @borderColor;
+      border-radius: 5px !important;
+    }
+    .ant-form-item-label
+      > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+      display: none;
+    }
+    .ant-form-item-label label {
+      height: 0;
+      color: #707177;
+      font-size: 12px;
+    }
+  }
+}
