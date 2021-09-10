@@ -1,14 +1,13 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-param-reassign */
-import { Button, Checkbox, Col, Row, Skeleton, Typography, Space } from 'antd';
+import { Button, Checkbox, Col, Row, Skeleton, Space } from 'antd';
 import React, { Component } from 'react';
-import { connect, formatMessage, history } from 'umi';
+import { connect, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
-import MessageBox from '@/pages/CandidatePortal/components/Candidate/components/MessageBox';
-import StepsComponent from '@/pages/NewCandidateForm/components/StepsComponent';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import NoteComponent from '../../../NoteComponent';
+import NoteComponent from '../../../NewNoteComponent';
+import MessageBox from '../../../MessageBox';
 // import CloseCandidateModal from './components/CloseCandidateModal';
 import CollapseField from './components/CollapseField';
 import PreviousEmployment from './components/PreviousEmployment';
@@ -407,16 +406,6 @@ class BackgroundRecheck extends Component {
   };
 
   render() {
-    const Note = {
-      title: formatMessage({ id: 'component.noteComponent.title' }),
-      data: (
-        <Typography.Text>
-          Onboarding is a step-by-step process. It takes anywhere around{' '}
-          <span className={styles.textNote}>9-12 standard</span> working days for the entire process
-          to complete.
-        </Typography.Text>
-      ),
-    };
     return (
       <div className={styles.backgroundRecheck}>
         <Row gutter={[24, 0]}>
@@ -434,10 +423,7 @@ class BackgroundRecheck extends Component {
           </Col>
           <Col className={styles.backgroundRecheck__right} xs={24} sm={24} md={24} lg={8} xl={8}>
             <Row>
-              <NoteComponent note={Note} />
-            </Row>
-            <Row className={styles.stepRow}>
-              <StepsComponent />
+              <NoteComponent />
             </Row>
             <Row>
               <MessageBox />

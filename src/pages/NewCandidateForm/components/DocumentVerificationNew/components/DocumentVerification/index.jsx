@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 // import Warning from './components/Warning';
-import { Button, Col, notification, Row, Skeleton, Typography, Space } from 'antd';
+import { Button, Col, notification, Row, Skeleton, Space } from 'antd';
 import { map } from 'lodash';
 import React, { Component } from 'react';
 import { connect, history } from 'umi';
@@ -8,7 +8,7 @@ import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import CustomModal from '@/components/CustomModal';
 import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
-import NoteComponent from '../../../NoteComponent';
+import NoteComponent from '../../../NewNoteComponent';
 import CollapseFieldsTypeABC from './components/CollapseFieldsTypeABC';
 import CollapseFieldsTypeD from './components/CollapseFieldsTypeD';
 import CollapseFieldsTypeE from './components/CollapseFieldsTypeE';
@@ -18,17 +18,6 @@ import MessageBox from '../../../MessageBox';
 import { Page } from '../../../../utils';
 import Title from './components/Title';
 import styles from './styles.less';
-
-const note = {
-  title: 'Note',
-  data: (
-    <Typography.Text>
-      Onboarding is a step-by-step process. It takes anywhere around{' '}
-      <span className={styles.textNote}>9-12 standard</span> working days for the entire process to
-      complete.
-    </Typography.Text>
-  ),
-};
 
 const camelize = (str) => {
   return str
@@ -1458,7 +1447,7 @@ class DocumentVerification extends Component {
             </div>
           </Col>
           <Col span={8} sm={24} md={24} lg={24} xl={8} className={styles.rightWrapper}>
-            <NoteComponent note={note} />
+            <NoteComponent />
 
             {(processStatus === NEW_PROCESS_STATUS.DRAFT ||
               processStatus === NEW_PROCESS_STATUS.PROFILE_VERIFICATION) && (

@@ -1,6 +1,6 @@
 /* eslint-disable compat/compat */
 /* eslint-disable no-param-reassign */
-import { Button, Col, Form, Input, Row, Skeleton, Typography } from 'antd';
+import { Button, Col, Form, Input, Row, Skeleton } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
@@ -9,8 +9,7 @@ import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { Page } from '../../utils';
 import MessageBox from '../MessageBox';
 // import BasicInformationReminder from './components/BasicInformationReminder';
-import NoteComponent from '../NoteComponent';
-import StepsComponent from '../StepsComponent';
+import NoteComponent from '../NewNoteComponent';
 import BasicInformationHeader from './components/BasicInformationHeader';
 import styles from './index.less';
 
@@ -369,16 +368,6 @@ class BasicInformation extends PureComponent {
 
     const { loadingFetchCandidate = false } = this.props;
 
-    const Note = {
-      title: 'Note',
-      data: (
-        <Typography.Text>
-          Onboarding is a step-by-step process. It takes anywhere around <span>9-12 standard</span>{' '}
-          working days for entire process to complete
-        </Typography.Text>
-      ),
-    };
-
     return (
       <Row gutter={[24, 0]}>
         {loadingFetchCandidate ? (
@@ -411,7 +400,6 @@ class BasicInformation extends PureComponent {
                     <hr />
                     {this._renderForm()}
                   </div>
-                  {/* <RenderAddQuestion page={Page.Basic_Information} /> */}
                   {this._renderBottomBar()}
                 </Form>
               </div>
@@ -419,10 +407,7 @@ class BasicInformation extends PureComponent {
             <Col className={styles.RightComponents} xs={24} xl={8}>
               <div className={styles.rightWrapper}>
                 <Row>
-                  <NoteComponent note={Note} />
-                </Row>
-                <Row className={styles.stepRow}>
-                  <StepsComponent />
+                  <NoteComponent />
                 </Row>
                 <Row>
                   <MessageBox />

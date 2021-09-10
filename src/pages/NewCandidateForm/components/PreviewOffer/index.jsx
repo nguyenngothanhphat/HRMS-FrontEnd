@@ -33,7 +33,7 @@ import RejectOfferModal from './components/RejectOfferModal';
 import ExtendOfferModal from './components/ExtendOfferModal';
 import WithdrawOfferModal from './components/WithdrawOfferModal';
 
-import NoteComponent from '../NoteComponent';
+import NoteComponent from '../NewNoteComponent';
 
 import styles from './index.less';
 
@@ -879,48 +879,6 @@ const PreviewOffer = (props) => {
     return '';
   };
 
-  // sent offer information
-  const SentNote = {
-    title: 'Offer Sent',
-    data: (
-      <Typography.Text>
-        The offer has been sent to the candidate to accept. You can either <span>withdraw</span> the
-        offer or <span>extend</span> the offer letter date.
-      </Typography.Text>
-    ),
-  };
-
-  const ExtendedNote = {
-    title: 'Offer letter date extended',
-    data: (
-      <Typography.Text>
-        The offer letter date has been extended from{' '}
-        <span>{oldExpiryDateProp ? moment(oldExpiryDateProp).format('MM.DD.YY') : '-'}</span> to{' '}
-        <span>{expiryDateProp ? moment(expiryDateProp).format('MM.DD.YY') : '-'}</span>
-      </Typography.Text>
-    ),
-  };
-
-  const AcceptedNote = {
-    title: 'Offer Accepted',
-    data: <Typography.Text>The offer has been accepted by the candidate.</Typography.Text>,
-  };
-
-  const WithdrawnNote = {
-    title: 'Offer Withdrawn',
-    data: <Typography.Text>The offer has been withdrawn by the HR Manager.</Typography.Text>,
-  };
-
-  const RejectedNote = {
-    title: 'Offer Rejected',
-    data: <Typography.Text>The offer has been rejected.</Typography.Text>,
-  };
-
-  const SentForApprovalNote = {
-    title: 'Offer Sent For Approval',
-    data: <Typography.Text>The offer has been sent to HR Manager for approval.</Typography.Text>,
-  };
-
   if (loadingFetchCandidate) return <Skeleton />;
   // main
   return (
@@ -946,7 +904,7 @@ const PreviewOffer = (props) => {
         {/* SENT OFFER  */}
         {isTicketManager && isSentOffer && (
           <>
-            <NoteComponent note={SentNote} />
+            <NoteComponent />
             <div style={{ marginBottom: '24px' }} />
           </>
         )}
@@ -954,7 +912,7 @@ const PreviewOffer = (props) => {
         {/* ACCEPTED OFFER  */}
         {isAcceptedOffer && (
           <>
-            <NoteComponent note={AcceptedNote} />
+            <NoteComponent />
             <div style={{ marginBottom: '24px' }} />
           </>
         )}
@@ -962,7 +920,7 @@ const PreviewOffer = (props) => {
         {/* REJECTED OFFER  */}
         {isRejectedOffer && (
           <>
-            <NoteComponent note={RejectedNote} />
+            <NoteComponent />
             <div style={{ marginBottom: '24px' }} />
           </>
         )}
@@ -970,7 +928,7 @@ const PreviewOffer = (props) => {
         {/* WITHDRAWN OFFER  */}
         {isWithdrawnOffer && (
           <>
-            <NoteComponent note={WithdrawnNote} />
+            <NoteComponent />
             <div style={{ marginBottom: '24px' }} />
           </>
         )}
@@ -978,7 +936,7 @@ const PreviewOffer = (props) => {
         {/* EXTENDED OFFER  */}
         {isTicketManager && isSentOffer && oldExpiryDateProp && (
           <>
-            <NoteComponent note={ExtendedNote} />
+            <NoteComponent />
             <div style={{ marginBottom: '24px' }} />
           </>
         )}
@@ -986,7 +944,7 @@ const PreviewOffer = (props) => {
         {/* HR SENT FOR APPROVAL  */}
         {isTicketAssignee && !isTicketManager && isAwaitingOffer && (
           <>
-            <NoteComponent note={SentForApprovalNote} />
+            <NoteComponent />
             <div style={{ marginBottom: '24px' }} />
           </>
         )}

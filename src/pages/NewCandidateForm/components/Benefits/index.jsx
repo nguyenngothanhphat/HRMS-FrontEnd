@@ -8,7 +8,7 @@ import { ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import Header from './components/Header';
 import GlobalEmployeeComponent from './components/GlobalEmployeeComponent';
 import IndiaEmployeeComponent from './components/IndiaEmployeeComponent';
-import NoteComponent from '../NoteComponent';
+import NoteComponent from '../NewNoteComponent';
 import styles from './index.less';
 // import { Page } from '../../utils';
 import MessageBox from '../MessageBox';
@@ -398,16 +398,7 @@ class Benefits extends PureComponent {
         },
       ],
     };
-    const Note = {
-      title: formatMessage({ id: 'component.noteComponent.title' }),
-      data: (
-        <Typography.Text>
-          Please ensure with all your <span>benefit vendor</span> that the documents rolling out to
-          the candidate informing about the terms and condition of all the benefits are{' '}
-          <span className={styles.boldText}>up-to-date</span>
-        </Typography.Text>
-      ),
-    };
+
     const { benefits } = this.state;
     const { loadingFetchCandidate } = this.props;
     if (loadingFetchCandidate) return <Skeleton />;
@@ -444,7 +435,7 @@ class Benefits extends PureComponent {
           <Col className={styles.RightComponents} xs={24} sm={24} md={24} lg={8} xl={8}>
             <div className={styles.rightWrapper}>
               <Row>
-                <NoteComponent note={Note} />
+                <NoteComponent />
                 <MessageBox />
               </Row>
             </div>
