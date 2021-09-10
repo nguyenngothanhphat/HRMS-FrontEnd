@@ -128,7 +128,8 @@ class EmployerComponent extends PureComponent {
           </Col>
         </Row>
 
-        {index + 1 < listLength && <hr className={styles.divider} />}
+        {index + 1 <= listLength && !disabled && <hr className={styles.divider} />}
+        {index + 1 < listLength && disabled && <hr className={styles.divider} />}
       </div>
     );
   }

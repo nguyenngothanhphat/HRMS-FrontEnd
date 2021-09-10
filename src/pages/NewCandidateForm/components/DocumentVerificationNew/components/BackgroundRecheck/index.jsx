@@ -1,17 +1,19 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-param-reassign */
-import { Button, Checkbox, Col, Row, Skeleton, Typography } from 'antd';
+import { Button, Checkbox, Col, Row, Skeleton, Typography, Space } from 'antd';
 import React, { Component } from 'react';
 import { connect, formatMessage, history } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import MessageBox from '@/pages/CandidatePortal/components/Candidate/components/MessageBox';
 import StepsComponent from '@/pages/NewCandidateForm/components/StepsComponent';
+import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import NoteComponent from '../../../NoteComponent';
 // import CloseCandidateModal from './components/CloseCandidateModal';
 import CollapseField from './components/CollapseField';
 import PreviousEmployment from './components/PreviousEmployment';
 import styles from './index.less';
+import { Page } from '../../../../utils';
 
 @connect(
   ({
@@ -323,23 +325,26 @@ class BackgroundRecheck extends Component {
       <div className={styles.bottomBar}>
         <Row align="middle">
           <Col className={styles.bottomBar__button} span={24}>
-            <Button
-              type="secondary"
-              onClick={this.onClickPrev}
-              className={styles.bottomBar__button__secondary}
-            >
-              Previous
-            </Button>
-            <Button
-              type="primary"
-              onClick={this.onClickNext}
-              className={`${styles.bottomBar__button__primary} ${
-                checkStatus !== 1 ? styles.bottomBar__button__disabled : ''
-              }`}
-              disabled={checkStatus !== 1}
-            >
-              Next
-            </Button>
+            <Space size={24}>
+              <Button
+                type="secondary"
+                onClick={this.onClickPrev}
+                className={styles.bottomBar__button__secondary}
+              >
+                Previous
+              </Button>
+              <Button
+                type="primary"
+                onClick={this.onClickNext}
+                className={`${styles.bottomBar__button__primary} ${
+                  checkStatus !== 1 ? styles.bottomBar__button__disabled : ''
+                }`}
+                disabled={checkStatus !== 1}
+              >
+                Next
+              </Button>
+            </Space>
+            <RenderAddQuestion page={Page.Eligibility_documents} />
           </Col>
         </Row>
       </div>

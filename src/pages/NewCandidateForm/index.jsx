@@ -146,7 +146,7 @@ class NewCandidateForm extends PureComponent {
       },
       {
         id: 3,
-        name: 'Eligibility Documents',
+        name: 'Document Verification',
         key: 'backgroundCheck',
         // key: 'eligibilityDocuments',
         component: <DocumentVerificationNew />,

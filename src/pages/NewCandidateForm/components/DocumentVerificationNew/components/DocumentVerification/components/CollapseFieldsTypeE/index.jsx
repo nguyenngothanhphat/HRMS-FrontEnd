@@ -94,7 +94,6 @@ class CollapseFieldsType2 extends PureComponent {
 
             {!disabled && (
               <>
-                {previousEmployment.length > 0 && <hr className={styles.divider} />}
                 <div
                   className={
                     disabled
