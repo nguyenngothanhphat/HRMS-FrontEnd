@@ -201,22 +201,75 @@ class SalaryStructureTemplate extends PureComponent {
 
   handleChange = (e, key) => {
     const { dispatch, settingsTempData: settings = [] } = this.props;
-
     const { value } = e.target;
     const newValue = value.replace(/,/g, '');
 
     const reg = /^\d*(\.\d*)?$/;
 
     if (reg.test(newValue) || newValue === '') {
-      const tempTableData = [...settings];
+      const tempTableData = JSON.parse(JSON.stringify(settings));
+
+      const index = tempTableData.findIndex((data) => data.key === key);
+      tempTableData[index].value = newValue;
+      // const indexBasic = tempTableData.findIndex((data) => data.key === 'basic');
+      // const basic = tempTableData[indexBasic].value;
+      // let sum = 0;
+      // tempTableData.forEach((item) => {
+      //   if (item.operator) {
+      //     let { value: valueSalary } = item;
+      //     if (item.period === 'day') {
+      //       valueSalary *= 22;
+      //     }
+
+      //     if (item.unit === '%') {
+      //       if (item.operator === 'plus') sum += basic * (valueSalary / 100);
+      //       if (item.operator === 'minus') sum -= (basic * valueSalary) / 100;
+      //     } else {
+      //       if (item.operator === 'plus') sum += valueSalary;
+      //       if (item.operator === 'minus') sum -= valueSalary;
+      //     }
+      //   }
+      // });
+      // const indexTotal = tempTableData.findIndex((data) => data.key === 'total_compensation');
+      // tempTableData[indexTotal].value = Math.round(sum);
+      dispatch({
+        type: 'newCandidateForm/saveSalaryStructure',
+        payload: {
+          settings: tempTableData,
+        },
+      });
+    }
+  };
+
+  onBlur = (e, key) => {
+    const { dispatch, settingsTempData: settings = [] } = this.props;
+    const { value } = e.target;
+    const newValue = value.replace(/,/g, '');
+
+    const reg = /^\d*(\.\d*)?$/;
+
+    if (reg.test(newValue) || newValue === '') {
+      const tempTableData = JSON.parse(JSON.stringify(settings));
 
       const index = tempTableData.findIndex((data) => data.key === key);
       tempTableData[index].value = toNumber(newValue);
+      const indexBasic = tempTableData.findIndex((data) => data.key === 'basic');
+      const basic = tempTableData[indexBasic].value;
       let sum = 0;
       tempTableData.forEach((item) => {
-        if (item.key !== 'total_compensation') {
-          if (item.unit === '%') sum += (sum * item.value) / 100;
-          else sum += item.value;
+        if (item.operator) {
+          let { value: valueSalary } = item;
+          if (item.period === 'day') {
+            valueSalary *= 22;
+          }
+
+          if (item.unit === '%') {
+            if (item.operator === 'plus') sum += basic * (valueSalary / 100);
+            if (item.operator === 'minus') sum -= (basic * valueSalary) / 100;
+          } else {
+            if (item.operator === 'plus') sum += valueSalary;
+            if (item.operator === 'minus') sum -= valueSalary;
+          }
         }
       });
       const indexTotal = tempTableData.findIndex((data) => data.key === 'total_compensation');
@@ -324,6 +377,7 @@ class SalaryStructureTemplate extends PureComponent {
             addonAfter="% of Basics"
             value={this.convertVeriable(item.value)}
             onChange={(e) => this.handleChange(e, item.key)}
+            onBlur={(e) => this.onBlur(e, item.key)}
           />
         </div>
       );
@@ -333,6 +387,7 @@ class SalaryStructureTemplate extends PureComponent {
           addonBefore={item.unit}
           value={this.convertValue(item.value)}
           onChange={(e) => this.handleChange(e, item.key)}
+          onBlur={(e) => this.onBlur(e, item.key)}
         />
       </div>
     );
@@ -398,9 +453,7 @@ class SalaryStructureTemplate extends PureComponent {
       settingsTempData: settings = [],
       grade = '',
       title = {},
-      isEditingSalary,
     } = this.props;
-    console.log('isEditingSalary', isEditingSalary);
     const { openModal } = this.state;
     return (
       <div className={styles.salaryStructureTemplate}>
@@ -500,7 +553,9 @@ class SalaryStructureTemplate extends PureComponent {
                       if (item.key === 'salary_13')
                         return (
                           <div key={item.key} className={styles.salary__right__text}>
-                            (Basic/12) x The number of months work
+                            {item.value !== 0
+                              ? this.renderSingle(item.value, item.unit)
+                              : '(Basic/12) x The number of months work'}
                           </div>
                         );
                       return this._renderVaule(item);
@@ -532,7 +587,6 @@ class SalaryStructureTemplate extends PureComponent {
                 </Col>
               </Row>
             </div>
-
             {this._renderBottomBar()}
           </>
         )}

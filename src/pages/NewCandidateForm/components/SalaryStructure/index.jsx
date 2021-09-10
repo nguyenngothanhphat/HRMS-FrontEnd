@@ -19,7 +19,7 @@ import styles from './index.less';
         processStatus = '',
         candidate = '',
         _id: candidateId = '',
-        salaryStructure: { settings = [] },
+        salaryStructure: { status: statusSalary },
         title = {},
       },
       tempData: { salaryTitle = '', salaryNote: salaryNoteTemp = '' } = {},
@@ -36,7 +36,7 @@ import styles from './index.less';
     currentStep,
     salaryTitle,
     title,
-    settings,
+    statusSalary,
     loading2: loading.effects['newCandidateForm/fetchTitleList'],
     loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
     salaryNoteTemp,
@@ -128,7 +128,7 @@ class SalaryStructure extends PureComponent {
     const {
       salaryTitle = '',
       loadingFetchCandidate = false,
-      settings,
+      statusSalary,
       title: { name: jobTitle = '' } = {},
     } = this.props;
 
@@ -148,7 +148,7 @@ class SalaryStructure extends PureComponent {
         </Col>
         <Col xs={24} xl={8}>
           <div className={styles.rightWrapper}>
-            <Row>{settings.length > 0 ? <SalaryAcceptance /> : <NoteComponent />}</Row>
+            <Row>{statusSalary ? <SalaryAcceptance /> : <NoteComponent />}</Row>
             <Row>
               <MessageBox />
             </Row>
