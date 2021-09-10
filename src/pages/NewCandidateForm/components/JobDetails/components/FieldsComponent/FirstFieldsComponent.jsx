@@ -41,7 +41,7 @@ class FirstFieldsComponent extends PureComponent {
   };
 
   componentDidUpdate = (prevProps) => {
-    const { locationList, reportees = [], reporteeList = [] } = this.props;
+    const { tempData: { locationList, reportees = [], reporteeList = [] } = {} } = this.props;
     if (
       JSON.stringify(prevProps.locationList) !== JSON.stringify(locationList) &&
       reportees.length > 0 &&
@@ -54,7 +54,15 @@ class FirstFieldsComponent extends PureComponent {
   fetchData = () => {
     const {
       dispatch,
-      tempData: { departmentList, titleList, managerList, department, title, reportingManager },
+      tempData: {
+        departmentList,
+        titleList,
+        managerList,
+        department,
+        title,
+        reportingManager,
+        workLocation,
+      },
     } = this.props;
     const companyId = getCurrentCompany();
     const tenantId = getCurrentTenant();
@@ -87,14 +95,18 @@ class FirstFieldsComponent extends PureComponent {
         },
       });
     }
-    // if (department && workLocation?._id) {
-    //   this.fetchReportees();
-    // }
+    if (department && workLocation?._id) {
+      this.fetchReportees();
+    }
   };
 
   fetchReportees = (name = '') => {
     const { dispatch } = this.props;
-    const { companiesOfUser = [], workLocation = {}, locationList = [] } = this.props;
+    const {
+      tempData: { locationList, workLocation },
+      companiesOfUser = [],
+    } = this.props;
+
     const currentCompany = getCurrentCompany();
     const currentLocation = workLocation?._id;
     const companyPayload = companiesOfUser.filter((lo) => lo?._id === currentCompany);
