@@ -562,7 +562,7 @@ const PreviewOffer = (props) => {
           // Default image
           <>
             <img className={styles.signatureImg} src={whiteImg} alt="" />
-            {isTicketAssignee && (isNewOffer || isAwaitingOffer) && (
+            {(isTicketAssignee || isTicketManager) && (isNewOffer || isAwaitingOffer) && (
               <button type="submit" onClick={openModalUploadSignature}>
                 {formatMessage({ id: 'component.previewOffer.upload' })}
               </button>
@@ -571,7 +571,7 @@ const PreviewOffer = (props) => {
         ) : (
           <>
             <img className={styles.signatureImg} src={hrSignature.url} alt="" />
-            {isTicketAssignee && (isNewOffer || isAwaitingOffer) && (
+            {(isTicketAssignee || isTicketManager) && (isNewOffer || isAwaitingOffer) && (
               <>
                 <button type="submit" onClick={openModalUploadSignature}>
                   {formatMessage({ id: 'component.previewOffer.uploadNew' })}
@@ -966,7 +966,7 @@ const PreviewOffer = (props) => {
               <p>Undersigned</p>
             )}
 
-            {isTicketAssignee && (isNewOffer || isAwaitingOffer) && (
+            {(isTicketAssignee || isTicketManager) && (isNewOffer || isAwaitingOffer) && (
               <Row>
                 <Col span={24}>
                   <Select
@@ -986,14 +986,19 @@ const PreviewOffer = (props) => {
 
             {renderSignatureHr()}
 
-            {isTicketAssignee && (isNewOffer || isAwaitingOffer) && (
+            {(isTicketAssignee || isTicketManager) && (isNewOffer || isAwaitingOffer) && (
               <div className={styles.submitContainer}>
                 <Button
                   type="primary"
                   onClick={handleHrSignatureSubmit}
-                  disabled={!hrSignature.url && !isTicketAssignee && optionSignature !== 'digital'}
+                  disabled={
+                    !hrSignature.url &&
+                    !(isTicketAssignee || isTicketManager) &&
+                    optionSignature !== 'digital'
+                  }
                   className={`${
-                    (hrSignature.url && isTicketAssignee) || optionSignature === 'digital'
+                    (hrSignature.url && (isTicketAssignee || isTicketManager)) ||
+                    optionSignature === 'digital'
                       ? styles.active
                       : styles.disable
                   }`}
