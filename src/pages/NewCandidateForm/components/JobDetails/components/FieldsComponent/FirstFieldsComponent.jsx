@@ -14,12 +14,18 @@ const { Option } = Select;
   ({
     locationSelection: { listLocationsByCompany = [] } = {},
     user: { currentUser = {}, companiesOfUser = [] },
-    newCandidateForm: { currentStep } = {},
+    newCandidateForm: { currentStep, tempData } = {},
+    loading,
   }) => ({
     currentUser,
     listLocationsByCompany,
     companiesOfUser,
     currentStep,
+    tempData,
+    loading1: loading.effects['newCandidateForm/fetchDepartmentList'],
+    loading2: loading.effects['newCandidateForm/fetchTitleList'],
+    loading3: loading.effects['newCandidateForm/fetchManagerList'],
+    loading4: loading.effects['newCandidateForm/fetchReporteesList'],
   }),
 )
 class FirstFieldsComponent extends PureComponent {
@@ -47,13 +53,8 @@ class FirstFieldsComponent extends PureComponent {
 
   fetchData = () => {
     const {
-      department,
-      title,
-      reportingManager,
       dispatch,
-      managerList,
-      departmentList,
-      titleList,
+      tempData: { departmentList, titleList, managerList, department, title, reportingManager },
     } = this.props;
     const companyId = getCurrentCompany();
     const tenantId = getCurrentTenant();
@@ -93,12 +94,7 @@ class FirstFieldsComponent extends PureComponent {
 
   fetchReportees = (name = '') => {
     const { dispatch } = this.props;
-    const {
-      companiesOfUser = [],
-      workLocation = {},
-      // departmentList = [],
-      locationList = [],
-    } = this.props;
+    const { companiesOfUser = [], workLocation = {}, locationList = [] } = this.props;
     const currentCompany = getCurrentCompany();
     const currentLocation = workLocation?._id;
     const companyPayload = companiesOfUser.filter((lo) => lo?._id === currentCompany);
@@ -245,18 +241,20 @@ class FirstFieldsComponent extends PureComponent {
     const {
       styles,
       dropdownField = [],
-      jobGradeList,
-      departmentList,
-      locationList,
-      reporteeList,
-      titleList,
-      managerList,
-      department,
-      grade,
-      title,
-      workLocation,
-      reportingManager,
-      reportees,
+      tempData: {
+        jobGradeLevelList: jobGradeList,
+        departmentList,
+        locationList,
+        titleList,
+        managerList,
+        department,
+        title,
+        workLocation,
+        reportingManager,
+        grade,
+        reportees = [],
+        reporteeList = [],
+      },
       loading1,
       loading2,
       loading3,
@@ -320,6 +318,7 @@ class FirstFieldsComponent extends PureComponent {
             return 0;
           })
         : [];
+
     return (
       <>
         <div className={InternalStyle.listFields}>

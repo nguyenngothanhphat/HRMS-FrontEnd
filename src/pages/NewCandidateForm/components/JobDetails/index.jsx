@@ -28,10 +28,6 @@ import styles from './index.less';
     tempData,
     listLocationsByCompany,
     companiesOfUser,
-    loading1: loading.effects['newCandidateForm/fetchDepartmentList'],
-    loading2: loading.effects['newCandidateForm/fetchTitleList'],
-    loading3: loading.effects['newCandidateForm/fetchManagerList'],
-    loading4: loading.effects['newCandidateForm/fetchReporteesList'],
     loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
     loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
   }),
@@ -504,36 +500,10 @@ class JobDetails extends PureComponent {
 
     const {
       tempData,
-      tempData: {
-        jobGradeLevelList,
-        employeeTypeList,
-        departmentList,
-        locationList,
-        titleList,
-        managerList,
-        position,
-        employeeType,
-        department,
-        title,
-        workLocation,
-        reportingManager,
-        candidatesNoticePeriod,
-        grade,
-        reportees = [],
-        reporteeList = [],
-      },
+      tempData: { employeeTypeList, position, employeeType },
       data,
     } = this.props;
-    const {
-      loading1,
-      loading2,
-      loading3,
-      loading4,
-      loading,
-      loadingFetchCandidate,
-      processStatus,
-    } = this.props;
-    const { dateOfJoining } = data;
+    const { loading, loadingFetchCandidate, processStatus } = this.props;
 
     return (
       <>
@@ -560,28 +530,9 @@ class JobDetails extends PureComponent {
                       disabled={this.disableEdit()}
                     />
                     <FieldsComponent
-                      processStatus={processStatus}
                       dropdownField={dropdownField}
                       candidateField={candidateField}
-                      departmentList={departmentList}
-                      jobGradeList={jobGradeLevelList}
-                      locationList={locationList}
-                      titleList={titleList}
-                      managerList={managerList}
-                      reporteeList={reporteeList}
-                      department={department}
-                      workLocation={workLocation}
-                      title={title}
-                      grade={grade}
-                      reportingManager={reportingManager}
-                      reportees={reportees}
-                      candidatesNoticePeriod={candidatesNoticePeriod}
-                      prefferedDateOfJoining={dateOfJoining}
                       _handleSelect={this._handleSelect}
-                      loading1={loading1}
-                      loading2={loading2}
-                      loading3={loading3}
-                      loading4={loading4}
                       data={data}
                       tempData={tempData}
                       disabled={this.disableEdit()}
