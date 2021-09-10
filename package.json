@@ -33,7 +33,6 @@
     "tsc": "tsc --noEmit",
     "cypress-test": "cd tests && cd ui_automation_hrms && cypress open",
     "cypress-jenkin": "cd tests && cd ui_automation_hrms && cypress run"
-
   },
   "lint-staged": {
     "**/*.less": "stylelint --syntax less",
