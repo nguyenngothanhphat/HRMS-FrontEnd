@@ -124,7 +124,7 @@ class ReassignModal extends PureComponent {
     const { to = '' } = values;
     if (to) {
       const res = await dispatch({
-        type: 'onboard/reassignTicket',
+        type: 'onboarding/reassignTicket',
         payload: {
           id: reassignTicketId,
           tenantId: getCurrentTenant(),
