@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Tabs, Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
+import { Tabs } from 'antd';
 import { connect } from 'umi';
+import { debounce } from 'lodash';
 
 import AllTab from './components/AllTab';
 import styles from '../index.less';
+import SearchOnboarding from '../SearchOnboarding';
 
 const { TabPane } = Tabs;
 
@@ -21,23 +22,41 @@ class OnboardingAll extends Component {
     this.state = {
       pageSelected: 1,
       size: 10,
-      // nameSearch: '',
+      nameSearch: '',
+      loadingSearch: false,
     };
+
+    this.setDebounce = debounce((nameSearch) => {
+      this.setState({
+        nameSearch,
+      });
+    }, 500);
   }
 
   componentDidMount = () => {
-    this.fetchOnboardingAll();
+    this.fetchOnboardingAll('');
   };
 
-  fetchOnboardingAll = () => {
+  componentDidUpdate = (prepProps, prepStates) => {
+    const { nameSearch } = this.state;
+    if (prepStates.nameSearch !== nameSearch) {
+      this.fetchOnboardingAll(nameSearch);
+    }
+  };
+
+  fetchOnboardingAll = (nameSearch = '') => {
     const { dispatch } = this.props;
 
     if (dispatch) {
       dispatch({
         type: 'onboarding/fetchOnboardListAll',
         payload: {
-          //   name: nameSearch,
+          name: nameSearch,
         },
+      }).then(({ statusCode }) => {
+        if (statusCode === 200) {
+          this.setState({ loadingSearch: false });
+        }
       });
     }
   };
@@ -49,23 +68,28 @@ class OnboardingAll extends Component {
     });
   };
 
+  onChangeSearch = (value) => {
+    const formatValue = value.toLowerCase();
+    this.setState({ loadingSearch: true });
+    this.setDebounce(formatValue);
+  };
+
   render() {
     const { dataAll = [], total = 0, loadingAll } = this.props;
-    const { pageSelected, size } = this.state;
+    const { pageSelected, size, loadingSearch } = this.state;
 
     return (
       <div className={styles.onboardingTab}>
         <div className={styles.tabs}>
           <Tabs
             defaultActiveKey="all"
-            tabBarExtraContent={
-              <Input onChange={this.onChange} placeholder="Search" prefix={<SearchOutlined />} />
-            }
+            tabBarExtraContent={<SearchOnboarding onChangeSearch={this.onChangeSearch} />}
           >
             <TabPane tab="all" key="1">
               <AllTab
                 list={dataAll}
                 loading={loadingAll}
+                loadingSearch={loadingSearch}
                 pageSelected={pageSelected}
                 size={size}
                 getPageAndSize={this.getPageAndSize}

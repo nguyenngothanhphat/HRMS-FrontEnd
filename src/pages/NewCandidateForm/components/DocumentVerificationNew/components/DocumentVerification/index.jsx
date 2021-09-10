@@ -1,9 +1,9 @@
 /* eslint-disable no-param-reassign */
 // import Warning from './components/Warning';
-import { Button, Col, notification, Row, Skeleton, Typography } from 'antd';
+import { Button, Col, notification, Row, Skeleton, Typography, Space } from 'antd';
 import { map } from 'lodash';
 import React, { Component } from 'react';
-import { connect, formatMessage, history } from 'umi';
+import { connect, history } from 'umi';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import CustomModal from '@/components/CustomModal';
@@ -261,7 +261,7 @@ class DocumentVerification extends Component {
 
   // SEND FORM VIA EMAIL AGAIN
   handleSendFormAgain = () => {
-    const { dispatch } = this.props;
+    // const { dispatch } = this.props;
     // const { tempData: { isSentEmail } = {} } = this.state;
     // dispatch({
     //   type: 'newCandidateForm/saveTemp',
@@ -490,31 +490,28 @@ class DocumentVerification extends Component {
     return (
       <div className={styles.bottomBar}>
         <Row align="middle">
-          <Col span={12}>
-            <div className={styles.bottomBar__status}>
-              <RenderAddQuestion page={Page.Eligibility_documents} />
-            </div>
-          </Col>
-          <Col span={12}>
+          <Col span={24}>
             <div className={styles.bottomBar__button}>
-              {' '}
-              <Button
-                type="secondary"
-                onClick={this.onClickPrev}
-                className={styles.bottomBar__button__secondary}
-              >
-                Previous
-              </Button>
-              <Button
-                type="primary"
-                onClick={this.onClickNext}
-                className={`${styles.bottomBar__button__primary} ${
-                  !filledDocumentVerification ? styles.bottomBar__button__disabled : ''
-                }`}
-                disabled={!filledDocumentVerification}
-              >
-                {isSentEmail ? 'Resend' : 'Send'}
-              </Button>
+              <Space size={24}>
+                <Button
+                  type="secondary"
+                  onClick={this.onClickPrev}
+                  className={styles.bottomBar__button__secondary}
+                >
+                  Previous
+                </Button>
+                <Button
+                  type="primary"
+                  onClick={this.onClickNext}
+                  className={`${styles.bottomBar__button__primary} ${
+                    !filledDocumentVerification ? styles.bottomBar__button__disabled : ''
+                  }`}
+                  disabled={!filledDocumentVerification}
+                >
+                  {isSentEmail ? 'Resend' : 'Send'}
+                </Button>
+              </Space>
+              <RenderAddQuestion page={Page.Eligibility_documents} />
             </div>
           </Col>
         </Row>
@@ -610,14 +607,17 @@ class DocumentVerification extends Component {
       // },
     ];
 
-    documentCLS = documentCLS.concat(docsListD);
-    documentCLS = documentCLS.concat(docsListE);
+    if (docsListD.length >= 1) {
+      if (docsListD[0].data.length > 0) {
+        documentCLS = documentCLS.concat(docsListD);
+      }
+    }
 
-    // const documentChecklistSettingE = docsListE.map((value) => {
-    //   return {
-    //     ...value,
-    //   };
-    // });
+    if (docsListE.length >= 1) {
+      if (docsListE[0].data.length > 0) {
+        documentCLS = documentCLS.concat(docsListE);
+      }
+    }
 
     return documentCLS;
   };
@@ -644,6 +644,7 @@ class DocumentVerification extends Component {
         previousExperience,
         salaryStructure,
         // company,
+        processStatus,
       } = {},
     } = this.props;
 
@@ -656,6 +657,7 @@ class DocumentVerification extends Component {
           // technicalCertifications: { checkedList: checkedListD = [] } = {},
           documentChecklistSetting: docsList = [],
         },
+        currentStep,
       } = {},
     } = this.props;
 
@@ -715,6 +717,8 @@ class DocumentVerification extends Component {
           payload: {
             isMarkAsDone: type === 'generate-link',
             isSentEmail: type !== 'generate-link',
+            processStatus:
+              currentStep === 2 ? NEW_PROCESS_STATUS.PROFILE_VERIFICATION : processStatus,
           },
         });
       }

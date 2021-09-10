@@ -1,4 +1,4 @@
-import { Modal, Popover, Table } from 'antd';
+import { Modal, Popover, Table, Avatar } from 'antd';
 import React, { useEffect } from 'react';
 import { connect } from 'umi';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
@@ -18,7 +18,6 @@ const SalaryReference = (props) => {
   }, [openModal]);
 
   const formatNumber = (value) => {
-    // const temp = toString(value);
     const list = trim(value).split('.');
     let num = list[0] === '0' ? list[0] : trimStart(list[0], '0');
     let result = '';
@@ -43,6 +42,50 @@ const SalaryReference = (props) => {
     );
   };
 
+  const contentPopover = (record) => {
+    let candidateName = '';
+    if (record.firstName) candidateName += record.firstName;
+    if (record.middleName) candidateName += ` ${record.middleName}`;
+    if (record.lastName) candidateName += ` ${record.lastName}`;
+    return (
+      <div className={styles.tooltip}>
+        <div className={styles.tooltip__header}>
+          <div className={styles.avatar}>
+            <Avatar size={36} style={{ color: '#f56a00', backgroundColor: '#fde3cf' }}>
+              {record.firstName[0] + record.lastName[0]}
+            </Avatar>
+          </div>
+          <div className={styles.title}>
+            <div className={styles.title__name}>{candidateName}</div>
+            <div className={styles.title__jobtitle}>{record.title.name}</div>
+          </div>
+        </div>
+        <div className={styles.tooltip__main}>
+          {record.salaryStructure.settings.map(
+            (item) =>
+              item.key !== 'total_compensation' &&
+              item.key !== 'salary_13' && (
+                <div className={styles.row} key={item.key}>
+                  <div className={styles.row__title}>{item.title}</div>
+                  <div className={styles.row__salary}>{renderSingle(item.value, item.unit)}</div>
+                </div>
+              ),
+          )}
+        </div>
+        <div className={styles.tooltip__footer}>
+          {record.salaryStructure.settings.map(
+            (item) =>
+              item.key === 'total_compensation' && (
+                <div className={styles.row} key={item.key}>
+                  <div className={styles.row__title}>{item.title}</div>
+                  <div className={styles.row__salary}>{renderSingle(item.value, item.unit)}</div>
+                </div>
+              ),
+          )}
+        </div>
+      </div>
+    );
+  };
   const columns = [
     {
       title: 'Candidate Name',
@@ -55,8 +98,8 @@ const SalaryReference = (props) => {
           if (record.middleName) candidateName += ` ${record.middleName}`;
           if (record.lastName) candidateName += ` ${record.lastName}`;
           return (
-            <Popover content="test" placement="right">
-              <div>{candidateName}</div>
+            <Popover content={contentPopover(record)} placement="right" trigger="hover">
+              <div className={styles.textBlue}>{candidateName}</div>
             </Popover>
           );
         }

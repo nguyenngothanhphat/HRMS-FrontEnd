@@ -1,15 +1,14 @@
 @background-grey: #f6f7f9;
 @spacing-xxs: 4px;
 
-.textNote{
-  font-family: Roboto;
-  font-style: normal;
+.textNote {
+  color: #ffa100;
   font-weight: 500;
   font-size: 14px;
+  font-family: Roboto;
+  font-style: normal;
   line-height: 16px;
   letter-spacing: 0.13125px;
-
-  color: #FFA100;
 }
 
 .DocumentVerification {
@@ -18,17 +17,21 @@
       border: none !important;
       border-radius: 5px;
     }
+
     .ant-collapse-item {
       border-radius: 5px;
     }
+
     .ant-collapse-content {
       overflow: hidden;
       border-radius: 0 0 5px 5px !important;
     }
+
     .ant-collapse > .ant-collapse-item {
       border: none;
     }
   }
+
   .leftWrapper {
     .eliContainer {
       width: 100%;
@@ -36,20 +39,23 @@
       font-family: Roboto, sans-serif;
     }
   }
+
   .rightWrapper {
     .boldText {
       margin-top: 16px;
       font-weight: 700;
     }
   }
+
   .refreshBlockD {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 300px;
   }
+
   .bottomBar {
-    padding: 4 * @spacing-xxs;
+    padding: 15px 15px 15px 24px;
     background-color: #ffffff;
     border: solid 1px #d6dce0;
     border-radius: 5px;
@@ -78,10 +84,15 @@
     }
 
     &__button {
-      text-align: right;
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+      justify-content: space-between;
+
       &__disabled {
         opacity: 0.3;
       }
+
       :global {
         .ant-btn-primary {
           width: 94px;
@@ -98,11 +109,13 @@
           border: solid 1px #ffa100;
           border-radius: 25px;
           box-shadow: none;
+
           &:hover {
             color: #ffffff;
             background-color: #ffa100;
           }
         }
+
         .ant-btn-secondary {
           width: 94px;
           height: 40px;
@@ -119,6 +132,7 @@
       }
     }
   }
+
   .displayButtonChangeEmail {
     display: flex;
     flex-flow: row;
@@ -126,10 +140,12 @@
     justify-content: center;
     margin-top: 5px;
   }
+
   .buttonChangeEmailFilled {
     border-radius: 4px;
   }
 }
+
 .viewLoading {
   width: 300px;
   height: 500px;

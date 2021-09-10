@@ -9,7 +9,7 @@
 @commonPadding: 15px;
 @commonPadding2: 24px;
 
-.textNote{
+.textNote {
   font-family: Roboto;
   font-style: normal;
   font-weight: 500;
@@ -22,28 +22,32 @@
 
 .backgroundRecheck {
   font-size: 13px;
+
   &__title {
     font-size: 16px;
     font-weight: 500;
     color: #161c29;
   }
+
   &__subTitle {
     font-size: 13px;
     color: #707177;
     margin-bottom: 32px;
   }
+
   &__left {
-    .markAllDocs{
+    .markAllDocs {
       border-radius: 5px;
       border: solid 1px #d6dce0;
       background-color: #fff;
       padding: 32px;
       margin-block: @commonPadding2;
 
-      .checkbox{
+      .checkbox {
         padding-right: 1rem;
         color: #161c29;
         font-size: 14px;
+
         &:hover {
           border-radius: 5px;
         }
@@ -53,6 +57,7 @@
             &:hover {
               border-radius: 4px;
             }
+
             .ant-checkbox-inner {
               background: #f6f7f9;
               border-radius: 4px;
@@ -60,6 +65,7 @@
               &:hover {
                 border-radius: 4px;
               }
+
               &:after {
                 border: 2px solid #2c6df9;
                 border-top: 0;
@@ -67,6 +73,7 @@
               }
             }
           }
+
           .ant-checkbox {
             .ant-checkbox-inner {
               background: #f6f7f9;
@@ -74,10 +81,11 @@
             }
           }
 
-          .ant-checkbox-disabled .ant-checkbox-inner{
+          .ant-checkbox-disabled .ant-checkbox-inner {
             border: 1px solid #2c6df9 !important;
           }
         }
+
         span {
           &:last-child {
             // padding-top: 1rem;
@@ -86,13 +94,13 @@
         }
       }
 
-      :global{
-        .ant-checkbox + span{
+      :global {
+        .ant-checkbox+span {
           padding-left: 1rem;
         }
       }
 
-      &__text{
+      &__text {
         font-family: Roboto;
         font-style: normal;
         font-weight: normal;
@@ -102,11 +110,13 @@
       }
     }
   }
+
   &__right {
     .boldText {
       margin-top: 16px;
       font-weight: 700;
     }
+
     .closeWrapper {
       background-color: white;
       margin-top: 10px;
@@ -144,6 +154,7 @@
   }
 
   :global {
+
     .anticon-minus,
     .anticon-plus {
       top: 31px !important;
@@ -181,13 +192,15 @@
     }
 
     &__button {
-      // text-align: right;
       display: flex;
-      justify-content: flex-end;
-      // align-items: center;
+      flex-direction: row-reverse;
+      justify-content: space-between;
+      align-items: center;
+
       &__disabled {
         opacity: 0.3;
       }
+
       :global {
         .ant-btn-primary {
           box-shadow: none;
@@ -204,11 +217,13 @@
           font-weight: 500;
           letter-spacing: 0.13px;
           color: #ffffff;
+
           &:hover {
             background-color: #ffa100;
             color: #ffffff;
           }
         }
+
         .ant-btn-secondary {
           padding-inline: 25px;
           height: 40px;
@@ -226,6 +241,7 @@
     }
   }
 }
+
 .viewLoading {
   margin: 0 auto;
   height: 500px;

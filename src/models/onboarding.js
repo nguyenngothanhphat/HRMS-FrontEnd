@@ -263,8 +263,10 @@ const onboarding = {
             currentStatus: processStatus || 'All',
           },
         });
+        return response;
       } catch (errors) {
         dialog(errors);
+        return '';
       }
     },
     *fetchOnboardList({ payload }, { call, put }) {
@@ -316,69 +318,70 @@ const onboarding = {
               type: 'saveOnboardingOverview',
               payload: { drafts: returnedData },
             });
-            return;
+            return response;
           }
           case PROFILE_VERIFICATION: {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { profileVerifications: returnedData },
             });
-            return;
+            return response;
           }
           case DOCUMENT_VERIFICATION: {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { documentVerifications: returnedData },
             });
-            return;
+            return response;
           }
           case SALARY_NEGOTIATION: {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { salaryNegotiations: returnedData },
             });
-            return;
+            return response;
           }
           case AWAITING_APPROVALS: {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { awaitingApprovals: returnedData },
             });
-            return;
+            return response;
           }
           case OFFER_RELEASED: {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { offerReleased: returnedData },
             });
-            return;
+            return response;
           }
           case OFFER_ACCEPTED: {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { offerAccepted: returnedData },
             });
-            return;
+            return response;
           }
           case OFFER_REJECTED: {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { rejectedOffers: returnedData },
             });
-            return;
+            return response;
           }
           case OFFER_WITHDRAWN: {
             yield put({
               type: 'saveOnboardingOverview',
               payload: { withdrawnOffers: returnedData },
             });
-            return;
+            return response;
           }
           default:
-            return;
+            return response;
         }
       } catch (errors) {
         dialog(errors);
+        return '';
       }
     },
     *handleExpiryTicket({ payload }, { call, put, select }) {

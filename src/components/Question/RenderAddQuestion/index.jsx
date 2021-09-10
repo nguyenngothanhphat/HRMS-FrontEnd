@@ -7,7 +7,7 @@ import ModalAddQuestion from '@/components/ModalAddQuestion';
 import ModalListQuestion from '@/components/ModalListQuestion';
 import EditIcon from '@/assets/editBtnBlue.svg';
 import RemoveIcon from '@/assets/remove.svg';
-import { PROCESS_STATUS } from '@/utils/onboarding';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import { Page } from '../../../pages/NewCandidateForm/utils';
 
 import styles from './index.less';
@@ -27,6 +27,7 @@ const RenderAddQuestion = (props) => {
     data: { _id, settings = [] },
     dispatch,
     processStatus,
+    statusSalary,
     page,
   } = props;
   const [openModal, setOpenModal] = useState('');
@@ -40,21 +41,22 @@ const RenderAddQuestion = (props) => {
 
   const checkEdit = (value) => {
     if (
-      value === Page.Basic_Information ||
-      value === Page.Job_Details ||
-      value === Page.Salary_Structure ||
-      value === Page.Eligibility_documents
+      processStatus === NEW_PROCESS_STATUS.DRAFT &&
+      (value === Page.Basic_Information || value === Page.Job_Details || Page.Eligibility_documents)
     )
-      setIsDisable(
-        processStatus !== 'DRAFT' && processStatus !== PROCESS_STATUS.PROVISIONAL_OFFER_DRAFT,
-      );
-    else
-      setIsDisable(
-        !(
-          processStatus === PROCESS_STATUS.ACCEPTED_PROVISIONAL_OFFERS ||
-          processStatus === PROCESS_STATUS.FINAL_OFFERS_DRAFT
-        ),
-      );
+      return false;
+    if (
+      processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION &&
+      value === Page.Salary_Structure &&
+      !statusSalary
+    )
+      return false;
+    if (
+      processStatus === NEW_PROCESS_STATUS.AWAITING_APPROVALS &&
+      (value === Page.Benefits || value === Page.Offer_Details)
+    )
+      return false;
+    return true;
   };
 
   useEffect(() => {
@@ -66,9 +68,9 @@ const RenderAddQuestion = (props) => {
           page,
         },
       });
-      checkEdit(page);
+      setIsDisable(checkEdit(page));
     }
-  }, [candidate]);
+  }, [candidate, statusSalary]);
   const openModalAdd = () => {
     setOpenModal('AddQuestion');
     setMode(MODE.EDIT);
@@ -177,8 +179,8 @@ const RenderAddQuestion = (props) => {
     <>
       <Row className={styles.RenderAddQuestion}>
         {settings && settings.length > 0 ? (
-          <Col>
-            <Button type="link" onClick={() => openModalEditList(MODE.VIEW)}>
+          <Col span={24} className={styles.RenderAddQuestion__row}>
+            <Button type="link" className={styles.btn} onClick={() => openModalEditList(MODE.VIEW)}>
               Optional Question Onboarding
             </Button>
             {!isDisable && (
@@ -257,7 +259,10 @@ export default connect(
     loading,
     optionalQuestion: { listPage, candidate = '', optionalQuestionId = '', data = {} } = {},
     newCandidateForm: {
-      data: { processStatus },
+      data: {
+        processStatus,
+        salaryStructure: { status: statusSalary = '' },
+      },
     },
   }) => ({
     dispatch,
@@ -266,6 +271,7 @@ export default connect(
     optionalQuestionId,
     data,
     processStatus,
+    statusSalary,
     loading: loading.effects['optionalQuestion/getQuestionByPage'],
   }),
 )(RenderAddQuestion);

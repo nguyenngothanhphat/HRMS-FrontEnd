@@ -106,7 +106,7 @@ class OnboardTable extends Component {
       link: ONBOARDING_FORM_LINK.BASIC_INFORMATION,
     };
     return (
-      <Link to={`/onboarding/list/view/${id}/${find.link}`}>
+      <Link className={styles.candidateId} to={`/onboarding/list/view/${id}/${find.link}`}>
         <span>{candidateId}</span>
       </Link>
     );
@@ -178,13 +178,15 @@ class OnboardTable extends Component {
       PROCESS_STATUS: PROCESS_STATUS_1,
     } = COLUMN_NAME;
 
+    const { list = [] } = this.props;
+
     const columns = [
       {
         // title: 'Rookie Id',
         title: formatMessage({ id: 'component.onboardingOverview.candidateId' }),
         dataIndex: 'candidateId',
         key: 'candidateId',
-        width: getColumnWidth('candidateId', type),
+        width: getColumnWidth('candidateId', type, list.length),
         render: (candidateId, row) => this.renderCandidateId(candidateId, row),
         columnName: ID,
         fixed: 'left',
@@ -196,7 +198,7 @@ class OnboardTable extends Component {
         key: 'candidateID2',
         render: (candidateId) => this.renderName(candidateId),
         columnName: NAME,
-        width: getColumnWidth('candidateName', type),
+        width: getColumnWidth('candidateName', type, list.length),
         align: 'left',
       },
       {
@@ -204,19 +206,9 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.position' }),
         dataIndex: 'position',
         key: 'position',
-        render: (position) => <span>{position || '-'}</span>,
+        render: (position) => <span className={styles.position}>{position || '-'}</span>,
         columnName: POSITION,
-        width: getColumnWidth('position', type),
-        align: 'left',
-      },
-      {
-        // title: 'Location',
-        title: formatMessage({ id: 'component.onboardingOverview.location' }),
-        dataIndex: 'location',
-        key: 'location',
-        render: (location) => <span>{location || '-'}</span>,
-        columnName: LOCATION,
-        width: getColumnWidth('location', type),
+        width: getColumnWidth('position', type, list.length),
         align: 'left',
       },
       {
@@ -224,9 +216,19 @@ class OnboardTable extends Component {
         title: formatMessage({ id: 'component.onboardingOverview.dateJoin' }),
         dataIndex: 'dateJoin',
         key: 'dateJoin',
-        render: (dateJoin) => <span>{dateJoin || '-'}</span>,
+        render: (dateJoin) => <span className={styles.dateJoin}>{dateJoin || '-'}</span>,
         columnName: DATE_JOIN,
-        width: getColumnWidth('dateJoin', type),
+        width: getColumnWidth('dateJoin', type, list.length),
+        align: 'left',
+      },
+      {
+        // title: 'Location',
+        title: formatMessage({ id: 'component.onboardingOverview.location' }),
+        dataIndex: 'location',
+        key: 'location',
+        render: (location) => <span className={styles.location}>{location || '-'}</span>,
+        columnName: LOCATION,
+        width: getColumnWidth('location', type, list.length),
         align: 'left',
       },
       {
@@ -242,7 +244,7 @@ class OnboardTable extends Component {
           </span>
         ),
         columnName: ASSIGN_TO,
-        width: getColumnWidth('assignTo', type),
+        width: getColumnWidth('assignTo', type, list.length),
         align: 'left',
       },
       {
@@ -259,23 +261,23 @@ class OnboardTable extends Component {
           </span>
         ),
         columnName: ASSIGNEE_MANAGER,
-        width: getColumnWidth('assigneeManager', type),
+        width: getColumnWidth('assigneeManager', type, list.length),
         align: 'left',
       },
       {
         title: 'Status',
         dataIndex: 'processStatus',
         key: 'processStatus',
-        render: (processStatus) => <Tag color="geekblue">{processStatus}</Tag>,
+        render: (processStatus) => <span className={styles.processStatus}>{processStatus}</span>,
         columnName: PROCESS_STATUS_1,
-        width: getColumnWidth('processStatus', type),
+        width: getColumnWidth('processStatus', type, list.length),
         align: 'left',
         fixed: 'right',
       },
       {
         dataIndex: 'actions',
         key: 'actions',
-        width: getColumnWidth('actions', type),
+        width: getColumnWidth('actions', type, list.length),
         fixed: 'right',
         align: 'center',
         render: (_, row) => {
@@ -312,7 +314,7 @@ class OnboardTable extends Component {
               <Dropdown
                 className={styles.menuIcon}
                 overlay={this.actionMenu(payload, candidate)}
-                placement="topLeft"
+                placement="bottomRight"
               >
                 <img src={MenuIcon} alt="menu" />
               </Dropdown>
@@ -492,7 +494,7 @@ class OnboardTable extends Component {
       default:
         menuItem = (
           <Menu.Item>
-            <Link to={`/onboarding/list/view/${id}/${find.link}`}>
+            <Link className={styles.actionText} to={`/onboarding/list/view/${id}/${find.link}`}>
               <span>{actionText}</span>
             </Link>
           </Menu.Item>
@@ -501,7 +503,7 @@ class OnboardTable extends Component {
     }
 
     return (
-      <Menu>
+      <Menu className={styles.menu}>
         {menuItem}
         {isHRManager && (
           <Menu.Item>
@@ -509,6 +511,7 @@ class OnboardTable extends Component {
               onClick={() =>
                 this.handleReassignModal(true, currentEmpId, id, processStatusId, type)
               }
+              className={styles.actionText}
             >
               Re-assign
             </div>
@@ -517,6 +520,7 @@ class OnboardTable extends Component {
         {isRemovable && (
           <Menu.Item disabled={!isRemovable}>
             <div
+              className={styles.actionText}
               onClick={isRemovable ? () => this.handleActionDelete(id, processStatusId) : () => {}}
             >
               Delete
@@ -531,6 +535,7 @@ class OnboardTable extends Component {
                   ? () => this.handleActionWithDraw(candidate, processStatusId)
                   : () => {}
               }
+              className={styles.actionText}
             >
               Withdraw
             </div>
@@ -639,7 +644,8 @@ class OnboardTable extends Component {
       },
     };
 
-    const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch } = this.props;
+    const { columnArr, type, inTab, hasCheckbox, loading, loadingFetch, loadingSearch } =
+      this.props;
     const { openModal } = this.state;
 
     return (
@@ -665,7 +671,7 @@ class OnboardTable extends Component {
             }}
             columns={this.generateColumns(columnArr, type)}
             dataSource={list}
-            loading={loading || loadingFetch}
+            loading={loading || loadingFetch || loadingSearch}
             pagination={pagination}
             onRow={(record) => {
               return {
