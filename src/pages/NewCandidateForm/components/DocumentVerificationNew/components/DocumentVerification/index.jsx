@@ -612,11 +612,11 @@ class DocumentVerification extends Component {
       // },
     ];
 
-    if (docsListD.length >= 1) {
-      if (docsListD[0].data.length > 0) {
-        documentCLS = documentCLS.concat(docsListD);
-      }
-    }
+    // if (docsListD.length >= 1) {
+    //   if (docsListD[0].data.length > 0) {
+    documentCLS = documentCLS.concat(docsListD);
+    //   }
+    // }
 
     if (docsListE.length >= 1) {
       if (docsListE[0].data.length > 0) {
