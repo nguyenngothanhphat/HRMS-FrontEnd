@@ -222,7 +222,7 @@ class CollapseFieldsTypeABC extends PureComponent {
                 );
               })}
             </CheckboxGroup>
-            {!disabled && <div className={styles.addBtn__divider} />}
+            {!disabled && data.length > 0 && <div className={styles.addBtn__divider} />}
             <div
               className={
                 visible || disabled

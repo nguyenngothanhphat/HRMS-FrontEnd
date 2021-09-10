@@ -916,6 +916,11 @@ const PreviewOffer = (props) => {
     data: <Typography.Text>The offer has been rejected.</Typography.Text>,
   };
 
+  const SentForApprovalNote = {
+    title: 'Offer Sent For Approval',
+    data: <Typography.Text>The offer has been sent to HR Manager for approval.</Typography.Text>,
+  };
+
   if (loadingFetchCandidate) return <Skeleton />;
   // main
   return (
@@ -974,6 +979,14 @@ const PreviewOffer = (props) => {
         {isTicketManager && isSentOffer && oldExpiryDateProp && (
           <>
             <NoteComponent note={ExtendedNote} />
+            <div style={{ marginBottom: '24px' }} />
+          </>
+        )}
+
+        {/* HR SENT FOR APPROVAL  */}
+        {isTicketAssignee && !isTicketManager && isAwaitingOffer && (
+          <>
+            <NoteComponent note={SentForApprovalNote} />
             <div style={{ marginBottom: '24px' }} />
           </>
         )}
