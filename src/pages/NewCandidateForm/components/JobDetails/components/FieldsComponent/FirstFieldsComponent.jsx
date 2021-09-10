@@ -387,7 +387,7 @@ class FirstFieldsComponent extends PureComponent {
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'grade' &&
                           grade !== null && {
-                            defaultValue: grade || 1,
+                            defaultValue: grade && grade !== 0 ? grade : null,
                           })}
                         // eslint-disable-next-line react/jsx-props-no-spreading
                         {...(item.title === 'reportees' &&

@@ -1375,6 +1375,7 @@ class DocumentVerification extends Component {
     const documentCLSByCountryTypeABC = documentCLSTByCountry.filter((doc) =>
       ['A', 'B', 'C'].includes(doc.type),
     );
+
     // type D
     const documentCLSTypeD = documentChecklistSetting.find((doc) => doc.type === 'D');
 
