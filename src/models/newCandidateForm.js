@@ -653,21 +653,22 @@ const newCandidateForm = {
         const { settings } = data;
         if (statusCode !== 200) throw response;
         if (payload.getSetting) {
-          let sum = 0;
-          const tempTableData = [...settings];
-          tempTableData.forEach((item) => {
-            if (item.key !== 'total_compensation') {
-              if (item.unit === '%') sum += (sum * item.value) / 100;
-              else sum += item.value;
-            }
-          });
-          const indexTotal = tempTableData.findIndex((item) => item.key === 'total_compensation');
-          tempTableData[indexTotal].value = Math.round(sum);
+          // let sum = 0;
+          // const tempTableData = [...settings];
+          // tempTableData.forEach((item) => {
+          //   if (item.key !== 'total_compensation') {
+          //     if (item.unit === '%') sum += (sum * item.value) / 100;
+          //     else sum += item.value;
+          //   }
+          // });
+          // const indexTotal = tempTableData.findIndex((item) => item.key === 'total_compensation');
+          // tempTableData[indexTotal].value = Math.round(sum);
           yield put({
             type: 'saveSalaryStructure',
             payload: {
               salaryTemplate: data,
-              settings: tempTableData,
+              settings,
+              status: '',
             },
           });
 
@@ -675,7 +676,8 @@ const newCandidateForm = {
             type: 'saveSalaryStructureOriginData',
             payload: {
               salaryTemplate: data,
-              settings: tempTableData,
+              settings,
+              status: '',
             },
           });
         } else {
