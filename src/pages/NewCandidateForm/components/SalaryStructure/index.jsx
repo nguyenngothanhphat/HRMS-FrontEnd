@@ -1,10 +1,10 @@
-import { Col, Form, notification, Row, Skeleton, Typography } from 'antd';
+import { Col, Form, notification, Row, Skeleton } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
 import MessageBox from '../MessageBox';
-import NoteComponent from '../NoteComponent';
+import NoteComponent from '../NewNoteComponent';
 import SalaryAcceptance from './components/SalaryAcceptance';
 import SalaryNote from './components/SalaryNote';
 import SalaryStructureHeader from './components/SalaryStructureHeader';
@@ -131,19 +131,6 @@ class SalaryStructure extends PureComponent {
       settings,
       title: { name: jobTitle = '' } = {},
     } = this.props;
-    const Note = {
-      title: 'Note',
-      data: (
-        <Typography.Text>
-          The Salary structure will be sent as a <span>provisional offer</span>. The candidate must
-          accept the and acknowledge the salary structure as a part of final negotiation. <br />
-          <br />
-          <span className="bold-text">
-            Post acceptance of salary structure, the final offer letter will be sent.
-          </span>
-        </Typography.Text>
-      ),
-    };
 
     if (loadingFetchCandidate) return <Skeleton />;
     return (
@@ -161,7 +148,7 @@ class SalaryStructure extends PureComponent {
         </Col>
         <Col xs={24} xl={8}>
           <div className={styles.rightWrapper}>
-            <Row>{settings.length > 0 ? <SalaryAcceptance /> : <NoteComponent note={Note} />}</Row>
+            <Row>{settings.length > 0 ? <SalaryAcceptance /> : <NoteComponent />}</Row>
             <Row>
               <MessageBox />
             </Row>

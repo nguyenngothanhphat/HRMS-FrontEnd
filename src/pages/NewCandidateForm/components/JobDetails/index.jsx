@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Typography, Button, Skeleton } from 'antd';
+import { Row, Col, Button, Skeleton } from 'antd';
 import { connect, formatMessage, history } from 'umi';
 import { isEmpty } from 'lodash';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -8,8 +8,8 @@ import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import Header from './components/Header';
 import RadioComponent from './components/RadioComponent';
 import FieldsComponent from './components/FieldsComponent';
-import StepsComponent from '../StepsComponent';
-import NoteComponent from '../NoteComponent';
+
+import NoteComponent from '../NewNoteComponent';
 import MessageBox from '../MessageBox';
 import { Page } from '../../utils';
 import styles from './index.less';
@@ -501,15 +501,7 @@ class JobDetails extends PureComponent {
         id: 2,
       },
     ];
-    const Note = {
-      title: formatMessage({ id: 'component.noteComponent.title' }),
-      data: (
-        <Typography.Text>
-          Onboarding is a step-by-step process. It takes anywhere around <span>9-12 standard</span>{' '}
-          working days for entire process to complete
-        </Typography.Text>
-      ),
-    };
+
     const {
       tempData,
       tempData: {
@@ -604,10 +596,7 @@ class JobDetails extends PureComponent {
               <Col className={styles.RightComponents} xs={24} xl={8}>
                 <div className={styles.rightWrapper}>
                   <Row>
-                    <NoteComponent note={Note} />
-                  </Row>
-                  <Row className={styles.stepRow}>
-                    <StepsComponent />
+                    <NoteComponent />
                   </Row>
                   <Row>
                     <MessageBox />
