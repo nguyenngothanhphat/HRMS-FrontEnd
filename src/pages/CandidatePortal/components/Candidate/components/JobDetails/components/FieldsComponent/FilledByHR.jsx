@@ -15,6 +15,8 @@ class FilledByHR extends PureComponent {
       position = {},
       grade = '',
     } = data || {};
+
+    const fullNameManager = `${reportingManager?.generalInfo?.firstName} ${reportingManager?.generalInfo?.lastName}`;
     return (
       <div>
         <div className={styles1.FilledByHR}>
@@ -45,7 +47,7 @@ class FilledByHR extends PureComponent {
                       : item.title === 'workLocation'
                       ? workLocation.name
                       : item.title === 'reportingManager'
-                      ? reportingManager?.generalInfo?.firstName
+                      ? fullNameManager
                       : item.title === 'grade'
                       ? grade
                       : null

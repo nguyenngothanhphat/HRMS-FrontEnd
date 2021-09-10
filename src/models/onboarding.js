@@ -7,6 +7,7 @@ import {
   getOnboardingList,
   getTotalNumberOnboardingList,
   handleExpiryTicket,
+  reassignTicket,
   withdrawTicket,
 } from '@/services/onboard';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -500,6 +501,54 @@ const onboarding = {
         }
 
         notification.success({ message: 'Delete ticket successfully.' });
+      } catch (error) {
+        dialog(error);
+      }
+      return response;
+    },
+    *reassignTicket({ payload }, { call, put }) {
+      let response;
+      try {
+        const {
+          id = '',
+          tenantId = '',
+          newAssignee = '',
+          processStatus = '',
+          isAll = false,
+          page = '',
+          limit = '',
+        } = payload;
+
+        const req = {
+          rookieID: id,
+          tenantId,
+          newAssignee,
+        };
+        response = yield call(reassignTicket, req);
+        const { statusCode, message } = response;
+        if (statusCode !== 200) throw response;
+        notification.success({
+          message,
+        });
+        if (!isAll) {
+          yield put({
+            type: 'fetchOnboardList',
+            payload: {
+              tenantId,
+              processStatus,
+            },
+          });
+        } else {
+          yield put({
+            type: 'fetchOnboardListAll',
+            payload: {
+              tenantId,
+              processStatus: '',
+              page,
+              limit,
+            },
+          });
+        }
       } catch (error) {
         dialog(error);
       }

@@ -70,7 +70,7 @@ class OnboardingAll extends Component {
 
   onChangeSearch = (value) => {
     const formatValue = value.toLowerCase();
-    this.setState({ loadingSearch: true });
+    // this.setState({ loadingSearch: true });
     this.setDebounce(formatValue);
   };
 
