@@ -36,6 +36,7 @@ class FirstFieldsComponent extends PureComponent {
     super(props);
     this.state = {
       listReporteesId: [],
+      checked: false,
     };
   }
 
@@ -177,6 +178,7 @@ class FirstFieldsComponent extends PureComponent {
       }
 
       case 'reportees': {
+        this.handleReporteesValue(value);
         _handleSelect(value, fieldName);
         break;
       }
@@ -187,10 +189,29 @@ class FirstFieldsComponent extends PureComponent {
     }
   };
 
+  handleReporteesValue = (arrId) => {
+    const arrTemp = [...arrId];
+
+    this.setState({
+      listReporteesId: arrTemp,
+    });
+  };
+
   onCheckbox = (e) => {
     const { listReporteesId } = this.state;
     const arr = [...listReporteesId];
-    arr.push(e.target.value);
+
+    const check = e.target.checked;
+    const { value } = e.target;
+
+    if (check) {
+      arr.push(value);
+    } else {
+      const index = arr.indexOf(value);
+      if (index > -1) {
+        arr.splice(index, 1);
+      }
+    }
 
     this.setState({
       listReporteesId: arr,
@@ -198,6 +219,19 @@ class FirstFieldsComponent extends PureComponent {
   };
 
   renderReporteesField = (showReporteesListAB) => {
+    const { listReporteesId } = this.state;
+
+    const checkedStatus = (id) => {
+      let check = false;
+      listReporteesId.forEach((itemId) => {
+        if (itemId === id) {
+          check = true;
+        }
+      });
+
+      return check;
+    };
+
     return showReporteesListAB.map((data, index) => {
       const { firstName, middleName, lastName } = data.generalInfo || {};
       let fullName = `${firstName} ${middleName} ${lastName}`;
@@ -207,11 +241,10 @@ class FirstFieldsComponent extends PureComponent {
       return (
         <Option
           className={`${InternalStyle.optionSelect} ${className}`}
-          disabled
           value={data._id}
           key={index}
         >
-          <Checkbox value={data._id} onChange={this.onCheckbox}>
+          <Checkbox value={data._id} onChange={this.onCheckbox} checked={checkedStatus(data._id)}>
             <div>{fullName}</div>
           </Checkbox>
         </Option>
@@ -233,6 +266,7 @@ class FirstFieldsComponent extends PureComponent {
           } ${reportee?.generalInfo?.lastName}`;
           return (
             <Tag
+              key={id}
               className={InternalStyle.nameTag}
               closable
               closeIcon={<img alt="close-tag" src={CloseTagIcon} />}
