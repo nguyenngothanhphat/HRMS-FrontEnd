@@ -106,7 +106,7 @@ class FirstFieldsComponent extends PureComponent {
   fetchReportees = (name = '') => {
     const { dispatch } = this.props;
     const {
-      tempData: { locationList, workLocation },
+      tempData: { locationList, workLocation, reportees = [] },
       companiesOfUser = [],
     } = this.props;
 
@@ -140,6 +140,13 @@ class FirstFieldsComponent extends PureComponent {
         name,
       },
     });
+
+    // Check array reportees is not empty => If yes, then store data to listReporteesId
+    if (reportees.length > 0) {
+      this.setState({
+        listReporteesId: reportees,
+      });
+    }
   };
 
   onChangeValue = (value, fieldName) => {
@@ -277,8 +284,9 @@ class FirstFieldsComponent extends PureComponent {
 
   renderReporteesName = (showReporteesListAB) => {
     const { listReporteesId } = this.state;
+    const { loading4 } = this.props;
 
-    if (listReporteesId.length === 0) return null;
+    if (listReporteesId.length === 0 || loading4) return null;
 
     return (
       <div className={InternalStyle.listTags}>
@@ -411,6 +419,7 @@ class FirstFieldsComponent extends PureComponent {
                       ]}
                     >
                       <Select
+                        menuItemSelectedIcon={null}
                         loading={
                           (item.title === 'title' ? loading2 : null) ||
                           (item.title === 'reportingManager' ? loading3 : null) ||
