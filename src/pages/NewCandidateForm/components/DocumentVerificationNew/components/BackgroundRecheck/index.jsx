@@ -296,7 +296,10 @@ class BackgroundRecheck extends Component {
         candidate,
         tenantId: getCurrentTenant(),
         currentStep: processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION ? 3 : currentStep,
-        processStatus: NEW_PROCESS_STATUS.SALARY_NEGOTIATION,
+        processStatus:
+          processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION
+            ? NEW_PROCESS_STATUS.SALARY_NEGOTIATION
+            : processStatus,
       },
     }).then(({ statusCode }) => {
       if (statusCode === 200) {
@@ -310,7 +313,10 @@ class BackgroundRecheck extends Component {
         dispatch({
           type: 'newCandidateForm/saveTemp',
           payload: {
-            processStatus: NEW_PROCESS_STATUS.SALARY_NEGOTIATION,
+            processStatus:
+              processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION
+                ? NEW_PROCESS_STATUS.SALARY_NEGOTIATION
+                : processStatus,
           },
         });
         history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.SALARY_STRUCTURE}`);

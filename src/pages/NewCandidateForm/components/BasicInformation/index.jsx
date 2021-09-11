@@ -99,8 +99,8 @@ class BasicInformation extends PureComponent {
 
   onFinish = (values) => {
     const { tempData } = this.props;
-    const { dispatch } = this.props;
-    const { _id, ticketID = '', currentStep = '', processStatus = '' } = tempData;
+    const { dispatch,  currentStep = '' } = this.props;
+    const { _id, ticketID = '', processStatus = '' } = tempData;
 
     dispatch({
       type: 'newCandidateForm/updateByHR',
