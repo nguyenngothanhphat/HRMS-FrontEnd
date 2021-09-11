@@ -1,10 +1,9 @@
+import { Typography } from 'antd';
 import React, { PureComponent } from 'react';
-import { Typography, Radio, Row, Col, Input, Button } from 'antd';
-import { connect, formatMessage } from 'umi';
-
-import CustomModal from '@/components/CustomModal';
-import NoteComponent from '@/pages/NewCandidateForm/components/NoteComponent';
+import { connect } from 'umi';
 import { getCurrentTenant } from '@/utils/authority';
+import CustomModal from '@/components/CustomModal';
+import NoteComponent from '../../../NoteComponent';
 import ModalContentComponent from '../ModalContentComponent';
 import SalaryNote from '../SalaryNote';
 import styles from './index.less';
