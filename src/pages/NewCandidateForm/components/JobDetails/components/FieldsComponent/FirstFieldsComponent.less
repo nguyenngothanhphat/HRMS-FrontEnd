@@ -4,76 +4,6 @@
   background: #d6dce0;
 }
 
-.rootDropdown{
-  margin-top: 8px;
-  height: auto;
-
-  &__input{
-    height: 42px;
-    border: 1px solid #d9d9d9;
-    border-radius: 5px;
-  }
-}
-
-.dropdown{
-
-  // ::-webkit-scrollbar {
-  //     width: 9px;
-  //     height: 9px;
-  //     background-color: transparent;
-  //     border: none;
-  //     border-radius: 5px;
-  //   }
-  
-  //   ::-webkit-scrollbar-thumb {
-  //     background-color: #e0e4e9 ;
-  //     border-radius: 5px;
-  //   }
-
-  //   ::-webkit-scrollbar-track {
-  //     background: transparent;
-  //   }
-
-  .dropdownMenu{
-    height: 169px;
-    background-color: #fff;
-    overflow-y: scroll;
-    border-radius: 6px;
-    margin-top: 5px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.232408);
-    -webkit-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.232408);
-    -moz-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.232408);
-    -o-box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.232408);
-  
-    &__name{
-      font-family: Roboto;
-      font-style: normal;
-      font-weight: normal;
-      font-size: 13px;
-      line-height: 15px;
-  
-      color: #707177;
-    }
-  
-    &__menu{
-      padding: 12px 16px;
-  
-      :global{
-  
-      }
-    }
-  
-    .evenClass{
-      background: #FAFAFA;
-      height: 40px;
-    }
-    .oddClass{
-      background: #fff;
-      height: 40px;
-    }
-  }
-}
-
 .listFields {
   :global {
     .ant-form {
@@ -107,9 +37,127 @@
     }
   }
 
-  .formItem {
+  .listTags {
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+
+    :global{
+      .ant-tag-close-icon{
+        padding-left: 8px;
+        font-size: 14px;
+      }
+    }
+
+    .nameTag{
+      background: #F3F4F6;
+      box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+      border-radius: 6px;
+      padding: 8px;
+      margin-bottom: 8px;
+
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 12px;
+      // line-height: 14px;
+      color: #707177;
+    }
   }
-}
+
+  .formItem{
+
+    .InputReportees{
+       width: 100%;
+        margin: 8px 0;
+        background-color: #ffffff;
+        // border: solid 1px #d6dce4;
+        border-radius: 5px;
+
+        
+        :global{
+          .ant-select-selection-overflow-item{
+            display: none;
+          }
+        }
+      }
+      
+      .placeholderReportees{
+        :global{
+          .ant-select-selector::before{
+            content: 'Please select a choice' !important;
+            pointer-events: none;
+            color: #bfbfbf;
+            
+            position: absolute;
+            top: 50%;
+            right: 11px;
+            left: 11px;
+            transform: translateY(-50%);
+          }
+        }
+
+      }
+    }
+  }
+  
+  .formItemReportees{
+    :global{
+      .ant-select-multiple .ant-select-selection-placeholder {
+        display: block !important;
+      }
+    }
+  }
+
+  .optionSelect{
+    padding: 12px 16px !important;
+
+    :global{
+      .ant-checkbox-inner{
+        width: 18px;
+        height: 18px;
+
+        background: #FFFFFF;
+        border: 1px solid #707177;
+        border-radius: 3px;
+      }
+
+      .ant-checkbox-checked .ant-checkbox-inner{
+        background: rgba(226, 228, 232, 0.5) !important;
+      }
+
+      .ant-checkbox-checked .ant-checkbox-inner::after {
+        border: 2px solid #2c6df9;
+        border-top: 0;
+        border-left: 0;
+        width: 6px;
+        height: 11px;
+      }
+
+      
+      .ant-checkbox + span {
+        padding-left: 12px;
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 13px;
+        line-height: 15px;
+
+        color: #707177;
+      }
+
+      .ant-checkbox-wrapper-checked .ant-checkbox + span {
+        font-weight: 700;
+      }
+    }
+  }
+
+  .evenClass{
+    background: #FAFAFA;
+  }
+
 .spin {
   width: 100%;
 }
