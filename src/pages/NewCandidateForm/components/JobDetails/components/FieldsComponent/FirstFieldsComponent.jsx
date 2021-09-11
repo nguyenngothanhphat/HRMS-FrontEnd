@@ -392,6 +392,9 @@ class FirstFieldsComponent extends PureComponent {
           <Form ref={this.formRef}>
             <Row gutter={[24, 0]}>
               {dropdownField.map((item, id) => {
+                const className = `${InternalStyle.InputReportees} ${
+                  listReporteesId.length > 0 ? InternalStyle.placeholderReportees : ''
+                }`;
                 return (
                   <Col key={id} xs={24} sm={24} md={12} lg={12} xl={12}>
                     <Form.Item
@@ -415,11 +418,8 @@ class FirstFieldsComponent extends PureComponent {
                           (item.title === 'department' ? loading1 : null)
                         }
                         placeholder={item.placeholder}
-                        className={
-                          item.title === 'reportees' ? InternalStyle.InputReportees : styles
-                        }
+                        className={item.title === 'reportees' ? className : styles}
                         value={listReporteesId}
-                        // onChange={(value) => _handleSelect(value, item.title)}
                         onChange={(value) => this.onChangeValue(value, item.title)}
                         disabled={
                           !!(item.title === 'grade' && jobGradeList.length <= 0) ||

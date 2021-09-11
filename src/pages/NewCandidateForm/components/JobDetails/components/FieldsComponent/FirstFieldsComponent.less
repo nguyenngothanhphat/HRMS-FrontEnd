@@ -69,11 +69,37 @@
         // border: solid 1px #d6dce4;
         border-radius: 5px;
 
+        
         :global{
           .ant-select-selection-overflow-item{
             display: none;
           }
         }
+      }
+      
+      .placeholderReportees{
+        :global{
+          .ant-select-selector::before{
+            content: 'Please select a choice' !important;
+            pointer-events: none;
+            color: #bfbfbf;
+            
+            position: absolute;
+            top: 50%;
+            right: 11px;
+            left: 11px;
+            transform: translateY(-50%);
+          }
+        }
+
+      }
+    }
+  }
+  
+  .formItemReportees{
+    :global{
+      .ant-select-multiple .ant-select-selection-placeholder {
+        display: block !important;
       }
     }
   }
