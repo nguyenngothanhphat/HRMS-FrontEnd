@@ -17,7 +17,7 @@ import SalaryReference from './SalaryReference/index';
     newCandidateForm: {
       cancelCandidate,
       checkMandatory = {},
-      currentStep = {},
+      currentStep,
       isEditingSalary = false,
       data: {
         listTitle = [],
@@ -129,7 +129,8 @@ class SalaryStructureTemplate extends PureComponent {
       dispatch,
       settingsTempData: settings = [],
       salaryAcceptanceStatus = '',
-      data: { _id, processStatus, currentStep },
+      data: { _id, processStatus },
+      currentStep,
     } = this.props;
     if (currentStep === 3) {
       if (

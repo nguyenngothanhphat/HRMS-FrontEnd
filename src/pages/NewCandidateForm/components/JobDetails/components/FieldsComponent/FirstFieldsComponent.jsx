@@ -284,7 +284,7 @@ class FirstFieldsComponent extends PureComponent {
 
   renderReporteesName = (showReporteesListAB) => {
     const { listReporteesId } = this.state;
-    const { loading4 } = this.props;
+    const { loading4, disabled } = this.props;
 
     if (listReporteesId.length === 0 || loading4) return null;
 
@@ -298,7 +298,7 @@ class FirstFieldsComponent extends PureComponent {
           return (
             <Tag
               key={id}
-              closable
+              closable={!disabled}
               className={InternalStyle.nameTag}
               onClose={() => this.handleCloseTag(id)}
               closeIcon={<img alt="close-tag" src={CloseTagIcon} />}
