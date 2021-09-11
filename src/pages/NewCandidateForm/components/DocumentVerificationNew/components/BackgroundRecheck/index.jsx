@@ -33,6 +33,7 @@ import { Page } from '../../../../utils';
     currentStep,
     processStatus,
     loadingGetById: loading.effects['newCandidateForm/fetchCandidateByRookie'],
+    loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
   }),
 )
 class BackgroundRecheck extends Component {
@@ -294,7 +295,7 @@ class BackgroundRecheck extends Component {
       payload: {
         candidate,
         tenantId: getCurrentTenant(),
-        currentStep: NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION ? 3 : currentStep,
+        currentStep: processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION ? 3 : currentStep,
         processStatus: NEW_PROCESS_STATUS.SALARY_NEGOTIATION,
       },
     }).then(({ statusCode }) => {
@@ -319,6 +320,7 @@ class BackgroundRecheck extends Component {
 
   _renderBottomBar = () => {
     const { docsList } = this.state;
+    const { loadingUpdateByHR = false } = this.props;
     const checkStatus = this.checkStatus(docsList);
     return (
       <div className={styles.bottomBar}>
@@ -339,6 +341,7 @@ class BackgroundRecheck extends Component {
                   checkStatus !== 1 ? styles.bottomBar__button__disabled : ''
                 }`}
                 disabled={checkStatus !== 1}
+                loading={loadingUpdateByHR}
               >
                 Next
               </Button>

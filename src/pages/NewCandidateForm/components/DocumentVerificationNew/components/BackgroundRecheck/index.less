@@ -10,37 +10,36 @@
 @commonPadding2: 24px;
 
 .textNote {
-  font-family: Roboto;
-  font-style: normal;
+  color: #ffa100;
   font-weight: 500;
   font-size: 14px;
+  font-family: Roboto;
+  font-style: normal;
   line-height: 16px;
   letter-spacing: 0.13125px;
-
-  color: #FFA100;
 }
 
 .backgroundRecheck {
   font-size: 13px;
 
   &__title {
-    font-size: 16px;
-    font-weight: 500;
     color: #161c29;
+    font-weight: 500;
+    font-size: 16px;
   }
 
   &__subTitle {
-    font-size: 13px;
-    color: #707177;
     margin-bottom: 32px;
+    color: #707177;
+    font-size: 13px;
   }
 
   &__left {
     .markAllDocs {
-      border-radius: 5px;
-      border: solid 1px #d6dce0;
-      background-color: #fff;
       padding: 32px;
+      background-color: #fff;
+      border: solid 1px #d6dce0;
+      border-radius: 5px;
       margin-block: @commonPadding2;
 
       .checkbox {
@@ -95,18 +94,18 @@
       }
 
       :global {
-        .ant-checkbox+span {
+        .ant-checkbox + span {
           padding-left: 1rem;
         }
       }
 
       &__text {
-        font-family: Roboto;
-        font-style: normal;
+        color: #161c29;
         font-weight: normal;
         font-size: 14px;
+        font-family: Roboto;
+        font-style: normal;
         line-height: 16px;
-        color: #161C29;
       }
     }
   }
@@ -118,15 +117,15 @@
     }
 
     .closeWrapper {
-      background-color: white;
-      margin-top: 10px;
-      padding: 25px 0 20px;
-      border: 1px solid @border-gray;
-      border-radius: 5px;
-      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
+      width: 100%;
+      margin-top: 10px;
+      padding: 25px 0 20px;
+      background-color: white;
+      border: 1px solid @border-gray;
+      border-radius: 5px;
 
       h3 {
         // text-align: center;
@@ -138,23 +137,22 @@
       }
 
       .close {
-        background-color: @red;
-        text-transform: capitalize;
-        padding: 7px 20px;
         margin: 0 auto;
-        font-size: 14px;
-        border-radius: 25px;
+        padding: 7px 20px;
         color: white;
-        border: none;
-        outline: none;
         font-weight: 600;
+        font-size: 14px;
+        text-transform: capitalize;
+        background-color: @red;
+        border: none;
+        border-radius: 25px;
+        outline: none;
         cursor: pointer;
       }
     }
   }
 
   :global {
-
     .anticon-minus,
     .anticon-plus {
       top: 31px !important;
@@ -162,40 +160,40 @@
   }
 
   .bottomBar {
+    padding: @commonPadding;
+    background-color: #ffffff;
+    border: solid 1px #d6dce0;
     border-radius: 5px;
     box-shadow: 0 0 2px 0 rgba(0, 0, 2, 0.15);
-    border: solid 1px #d6dce0;
-    background-color: #ffffff;
-    padding: @commonPadding;
     margin-block: @commonPadding2;
 
     .normalText {
       display: flex;
-      font-family: 'Roboto';
-      font-size: 13px;
-      font-style: italic;
       color: #707177;
+      font-size: 13px;
+      font-family: 'Roboto';
+      font-style: italic;
     }
 
     .redText {
-      font-family: 'Roboto';
-      font-size: 13px;
-      font-style: italic;
       color: #ff4949;
+      font-size: 13px;
+      font-family: 'Roboto';
+      font-style: italic;
     }
 
     .greenText {
-      font-family: 'Roboto';
-      font-size: 13px;
-      font-style: italic;
       color: #47c97f;
+      font-size: 13px;
+      font-family: 'Roboto';
+      font-style: italic;
     }
 
     &__button {
       display: flex;
       flex-direction: row-reverse;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
 
       &__disabled {
         opacity: 0.3;
@@ -203,39 +201,39 @@
 
       :global {
         .ant-btn-primary {
-          box-shadow: none;
-          text-shadow: none;
-          // display: none;
-          padding-inline: 25px;
           height: 40px;
           object-fit: contain;
-          border-radius: 25px;
-          border: solid 1px #ffa100;
-          background-color: #ffa100;
-          font-family: 'Roboto';
-          font-size: 14px;
-          font-weight: 500;
-          letter-spacing: 0.13px;
           color: #ffffff;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: 'Roboto';
+          letter-spacing: 0.13px;
+          text-shadow: none;
+          background-color: #ffa100;
+          border: solid 1px #ffa100;
+          border-radius: 25px;
+          box-shadow: none;
+          // display: none;
+          padding-inline: 25px;
 
           &:hover {
-            background-color: #ffa100;
             color: #ffffff;
+            background-color: #ffa100;
           }
         }
 
         .ant-btn-secondary {
-          padding-inline: 25px;
           height: 40px;
           object-fit: contain;
-          border-radius: 25px;
-          border: solid 0;
-          font-family: 'Roboto';
-          font-size: 14px;
-          font-weight: 500;
-          letter-spacing: 0.13px;
           color: #ffa100;
-          padding-right: 41px;
+          font-weight: 500;
+          font-size: 14px;
+          font-family: 'Roboto';
+          letter-spacing: 0.13px;
+          border: solid 0;
+          border-radius: 25px;
+          padding-inline: 25px;
+          // padding-right: 41px;
         }
       }
     }
@@ -243,7 +241,7 @@
 }
 
 .viewLoading {
-  margin: 0 auto;
-  height: 500px;
   width: 300px;
+  height: 500px;
+  margin: 0 auto;
 }
