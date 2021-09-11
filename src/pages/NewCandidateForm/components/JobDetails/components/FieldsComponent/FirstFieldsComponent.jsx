@@ -36,7 +36,6 @@ class FirstFieldsComponent extends PureComponent {
     super(props);
     this.state = {
       listReporteesId: [],
-      checked: false,
     };
   }
 
@@ -252,6 +251,22 @@ class FirstFieldsComponent extends PureComponent {
     });
   };
 
+  handleCloseTag = (id) => {
+    const { listReporteesId } = this.state;
+    const arrTemp = [...listReporteesId];
+
+    const index = arrTemp.indexOf(id);
+    arrTemp.splice(index, 1);
+
+    this.formRef.current.setFieldsValue({
+      reportees: arrTemp,
+    });
+
+    this.setState({
+      listReporteesId: arrTemp,
+    });
+  };
+
   renderReporteesName = (showReporteesListAB) => {
     const { listReporteesId } = this.state;
 
@@ -267,8 +282,9 @@ class FirstFieldsComponent extends PureComponent {
           return (
             <Tag
               key={id}
-              className={InternalStyle.nameTag}
               closable
+              className={InternalStyle.nameTag}
+              onClose={() => this.handleCloseTag(id)}
               closeIcon={<img alt="close-tag" src={CloseTagIcon} />}
             >
               {fullName}
@@ -304,6 +320,7 @@ class FirstFieldsComponent extends PureComponent {
       disabled,
       currentStep,
     } = this.props;
+    const { listReporteesId } = this.state;
 
     const showManagerListAB =
       managerList.length > 0
@@ -393,6 +410,7 @@ class FirstFieldsComponent extends PureComponent {
                         className={
                           item.title === 'reportees' ? InternalStyle.InputReportees : styles
                         }
+                        value={listReporteesId}
                         // onChange={(value) => _handleSelect(value, item.title)}
                         onChange={(value) => this.onChangeValue(value, item.title)}
                         disabled={
@@ -502,18 +520,6 @@ class FirstFieldsComponent extends PureComponent {
                             );
                           })
                         ) : item.title === 'reportees' && showReporteesListAB.length > 0 ? (
-                          // (
-                          //   showReporteesListAB.map((data, index) => {
-                          //     const { firstName, middleName, lastName } = data.generalInfo || {};
-                          //     let fullName = `${firstName} ${middleName} ${lastName}`;
-                          //     if (!middleName) fullName = `${firstName} ${lastName}`;
-                          //     return (
-                          //       <Option value={data._id} key={index}>
-                          //         {fullName}
-                          //       </Option>
-                          //     );
-                          //   })
-                          // )
                           this.renderReporteesField(showReporteesListAB)
                         ) : null}
                       </Select>
