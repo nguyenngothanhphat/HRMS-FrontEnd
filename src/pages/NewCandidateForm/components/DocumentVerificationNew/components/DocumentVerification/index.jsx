@@ -35,8 +35,9 @@ const camelize = (str) => {
       checkMandatory,
       data,
       tableData,
-      tempData: { currentStep = '', ticketID = '' },
+      tempData: { ticketID = '' },
     },
+    currentStep = '',
     locationSelection: { listLocationsByCompany = [] } = {},
   }) => ({
     tempData,
