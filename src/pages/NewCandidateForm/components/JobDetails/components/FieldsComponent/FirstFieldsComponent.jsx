@@ -252,6 +252,7 @@ class FirstFieldsComponent extends PureComponent {
   };
 
   handleCloseTag = (id) => {
+    const { dispatch } = this.props;
     const { listReporteesId } = this.state;
     const arrTemp = [...listReporteesId];
 
@@ -260,6 +261,13 @@ class FirstFieldsComponent extends PureComponent {
 
     this.formRef.current.setFieldsValue({
       reportees: arrTemp,
+    });
+
+    dispatch({
+      type: 'newCandidateForm/saveTemp',
+      payload: {
+        reportees: arrTemp,
+      },
     });
 
     this.setState({
