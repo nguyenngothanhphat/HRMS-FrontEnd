@@ -803,12 +803,15 @@ const PreviewOffer = (props) => {
       };
 
       const onSecondaryButtonClick = () => {
-        if (isAwaitingOffer) {
+        if (isAwaitingOffer || isNewOffer) {
           setRejectModalVisible(true);
-        }
-        if (isAcceptedOffer || isSentOffer) {
+        } else
+        if (isSentOffer) {
           setExtendOfferModalVisible(true);
+        } else {
+          history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.OFFER_DETAILS}`);
         }
+
       };
 
       const onPrimaryButtonClick = () => {
