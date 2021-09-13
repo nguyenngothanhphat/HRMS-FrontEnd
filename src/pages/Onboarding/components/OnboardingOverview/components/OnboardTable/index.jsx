@@ -576,7 +576,7 @@ class OnboardTable extends Component {
     const { pageSelected, size } = this.props;
 
     await dispatch({
-      type: 'onboard/handleExpiryTicket',
+      type: 'onboarding/handleExpiryTicket',
       payload: {
         id,
         tenantId: getCurrentTenant(),
