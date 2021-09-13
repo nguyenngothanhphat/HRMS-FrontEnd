@@ -64,13 +64,19 @@ class HealthWellbeing extends Component {
   };
 
   planDocuments = (benefit) => {
-    const { documents = [] } = benefit;
+    const { documents = [], country = '' } = benefit;
 
     const arrCost = [
       { id: 1, name: 'annualCost', label: 'Annual Cost' },
       { id: 2, name: 'employeeContribution', label: 'Employee Contribution' },
       { id: 3, name: 'employerContribution', label: "Employer's Contribution" },
     ];
+
+    const getCurrency = () => {
+      if (country === 'VN') return 'VND';
+      if (country === 'US') return '$';
+      return '₹';
+    };
 
     return (
       <div className={styles.planDocuments}>
@@ -122,7 +128,11 @@ class HealthWellbeing extends Component {
                     <Col span={8} key={field.id}>
                       <div className={styles.label}>{field.label}</div>
                       <Form.Item name={field.name}>
-                        <Input disabled className={styles.inputNumber} suffix={<span>₹</span>} />
+                        <Input
+                          disabled
+                          className={styles.inputNumber}
+                          suffix={<span>{getCurrency()}</span>}
+                        />
                       </Form.Item>
                     </Col>
                   ))}

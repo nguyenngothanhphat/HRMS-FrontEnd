@@ -246,7 +246,20 @@ class ModalAddBenefit extends Component {
       listBenefitDefault = [],
       activeKeyTab,
       loadingAddDocument,
+      countryId = '',
     } = this.props;
+
+    const arrCost = [
+      { id: 1, name: 'annualCost', label: 'Annual Cost' },
+      { id: 2, name: 'employeeContribution', label: 'Employee Contribution' },
+      { id: 3, name: 'employerContribution', label: "Employer's Contribution" },
+    ];
+
+    const getCurrency = () => {
+      if (countryId === 'VN') return 'VND';
+      if (countryId === 'US') return '$';
+      return '₹';
+    };
 
     const valueType = this.getValueField(activeKeyTab, 'type');
 
@@ -365,63 +378,28 @@ class ModalAddBenefit extends Component {
                     />
                   </Form.Item>
                 </div>
-                <div className={styles.addBenefit__body_label}>Annual Cost</div>
-                <div className={styles.addBenefit__body_formItem}>
-                  <Form.Item
-                    name="annualCost"
-                    rules={[
-                      {
-                        pattern: /^[0-9]+$/,
-                        message: 'Only number !',
-                      },
-                      {
-                        required: true,
-                        message: 'Please input field !',
-                      },
-                    ]}
-                  >
-                    <Input suffix={<span>₹</span>} placeholder="Type the Annual Cost" />
-                  </Form.Item>
-                </div>
-                <div className={styles.addBenefit__body_label}>Employee Contribution</div>
-                <div className={styles.addBenefit__body_formItem}>
-                  <Form.Item
-                    name="employeeContribution"
-                    rules={[
-                      {
-                        pattern: /^[0-9]+$/,
-                        message: 'Only number !',
-                      },
-                      {
-                        required: true,
-                        message: 'Please input field !',
-                      },
-                    ]}
-                  >
-                    <Input suffix={<span>₹</span>} placeholder="Type the Employee Contribution" />
-                  </Form.Item>
-                </div>
-                <div className={styles.addBenefit__body_label}>Employer&lsquo;s Contribution</div>
-                <div className={styles.addBenefit__body_formItem}>
-                  <Form.Item
-                    name="employerContribution"
-                    rules={[
-                      {
-                        pattern: /^[0-9]+$/,
-                        message: 'Only number !',
-                      },
-                      {
-                        required: true,
-                        message: 'Please input field !',
-                      },
-                    ]}
-                  >
-                    <Input
-                      suffix={<span>₹</span>}
-                      placeholder="Type the Employer&lsquo;s Contribution"
-                    />
-                  </Form.Item>
-                </div>
+                {arrCost.map((item) => (
+                  <>
+                    <div className={styles.addBenefit__body_label}>{item.label}</div>
+                    <div className={styles.addBenefit__body_formItem}>
+                      <Form.Item
+                        name={item.name}
+                        rules={[
+                          {
+                            pattern: /^[0-9]+$/,
+                            message: 'Only number !',
+                          },
+                          {
+                            required: true,
+                            message: 'Please input field !',
+                          },
+                        ]}
+                      >
+                        <Input suffix={getCurrency()} placeholder={`Type the ${item.label}`} />
+                      </Form.Item>
+                    </div>
+                  </>
+                ))}
                 <div className={styles.addBenefit__body_label}>Valid Till</div>
                 <div className={styles.addBenefit__body_formItem}>
                   <Form.Item name="validTill">
