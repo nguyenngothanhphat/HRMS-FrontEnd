@@ -78,6 +78,8 @@ class OnboardingAll extends Component {
     const { dataAll = [], total = 0, loadingAll } = this.props;
     const { pageSelected, size, loadingSearch } = this.state;
 
+    const countData = dataAll.length;
+
     return (
       <div className={styles.onboardingTab}>
         <div className={styles.tabs}>
@@ -85,7 +87,7 @@ class OnboardingAll extends Component {
             defaultActiveKey="all"
             tabBarExtraContent={<SearchOnboarding onChangeSearch={this.onChangeSearch} />}
           >
-            <TabPane tab="all" key="1">
+            <TabPane tab={`all (${countData})`} key="1">
               <AllTab
                 list={dataAll}
                 loading={loadingAll}
