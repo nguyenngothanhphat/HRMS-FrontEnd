@@ -6,6 +6,7 @@ import AddIcon from '@/assets/add-symbols.svg';
 import TrashIcon from '@/assets/trash.svg';
 import iconPDF from '@/assets/pdf-2.svg';
 
+import ViewDocumentModal from '@/components/ViewDocumentModal';
 import styles from './index.less';
 import ModalAddDocument from '../ModalAddDocument';
 
@@ -22,9 +23,12 @@ class HealthWellbeing extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      openViewDoc: false,
       openModal: false,
       idBenefit: '',
       idCountry: '',
+      urlDocument: '',
+      displayDocumentName: '',
     };
 
     this.inputRef = React.createRef();
@@ -39,8 +43,12 @@ class HealthWellbeing extends Component {
     this.setState({ openModal: true, idBenefit: benefitId, idCountry: country });
   };
 
-  closeModal = () => {
-    this.setState({ openModal: false });
+  closeModal = (key) => {
+    if (key === 1) {
+      this.setState({ openViewDoc: false });
+    } else {
+      this.setState({ openModal: false });
+    }
   };
 
   handleRemovePlanDocs = (benefit, documentId) => {
@@ -59,8 +67,13 @@ class HealthWellbeing extends Component {
     });
   };
 
-  onDownload = () => {
-    console.log('ok');
+  openViewDoc = (document) => {
+    const { attachmentName = '', attachmentUrl = '' } = document;
+    this.setState({
+      openViewDoc: true,
+      urlDocument: attachmentUrl,
+      displayDocumentName: attachmentName,
+    });
   };
 
   planDocuments = (benefit) => {
@@ -80,49 +93,29 @@ class HealthWellbeing extends Component {
 
     return (
       <div className={styles.planDocuments}>
-        <div className={styles.planDocuments__first}>
+        <div className={styles.documents}>
           <div className={styles.labelDocs}>{name}</div>
           {documents.map((item) => (
             <>
-              <Row gutter={[24, 0]}>
-                <Col span={15}>
-                  <Form.Item>
-                    <Select
-                      disabled
-                      showSearch
-                      showArrow
-                      ref={this.inputRef}
-                      placeholder="Choice Plan Document"
-                      defaultValue={
-                        <span onClick={this.onDownload} style={{ cursor: 'pointer' }}>
-                          {item?.attachmentName}
-                        </span>
-                      }
-                      suffixIcon={
-                        <img
-                          style={{ marginTop: '-6px', marginLeft: '-12px' }}
-                          alt="pdf-img"
-                          src={iconPDF}
-                        />
-                      }
-                      filterOption={(input, option) => {
-                        return (
-                          option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    />
-                  </Form.Item>
-                </Col>
-                <Col span={8} />
-                <Col
-                  span={1}
-                  style={{ paddingLeft: 0 }}
-                  onClick={() => this.handleRemovePlanDocs(benefit, item?._id || '')}
-                >
-                  <img style={{ cursor: 'pointer' }} alt="delete" src={TrashIcon} />
-                </Col>
-              </Row>
-              <div className={styles.planDocuments__second}>
+              <div className={styles.documents__first}>
+                <Row gutter={[24, 0]}>
+                  <Col span={15}>
+                    <div className={styles.documentName} onClick={() => this.openViewDoc(item)}>
+                      <div className={styles.documentName__text}>{item?.attachmentName}</div>
+                      <img alt="pdf-img" src={iconPDF} />
+                    </div>
+                  </Col>
+                  <Col span={8} />
+                  <Col
+                    span={1}
+                    style={{ paddingLeft: 0 }}
+                    onClick={() => this.handleRemovePlanDocs(benefit, item?._id || '')}
+                  >
+                    <img style={{ cursor: 'pointer' }} alt="delete" src={TrashIcon} />
+                  </Col>
+                </Row>
+              </div>
+              <div className={styles.documents__second}>
                 <Row justify="space-between">
                   {arrCost.map((field) => (
                     <Col span={8} key={field.id}>
@@ -178,7 +171,8 @@ class HealthWellbeing extends Component {
       loadingFetchListBenefit = false,
     } = this.props;
 
-    const { openModal, idBenefit, idCountry } = this.state;
+    const { openModal, idBenefit, idCountry, displayDocumentName, urlDocument, openViewDoc } =
+      this.state;
 
     if (listBenefit.length === 0) return <div style={{ padding: '30px' }} />;
     return (
@@ -216,6 +210,12 @@ class HealthWellbeing extends Component {
           idCountry={idCountry}
           visible={openModal}
           handleCandelModal={this.closeModal}
+        />
+        <ViewDocumentModal
+          visible={openViewDoc}
+          fileName={displayDocumentName}
+          url={urlDocument}
+          onClose={() => this.closeModal(1)}
         />
       </div>
     );

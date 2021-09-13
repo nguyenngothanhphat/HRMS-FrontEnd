@@ -135,28 +135,72 @@
                     }
                 }
                 
-                &__first{
-                    :global{
-                        .ant-select-selection-item{
+                .documents{                
+                    &__first{
+                        width: 100%;
+
+                        .documentName{
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+
+                            background: rgb(255, 255, 255);
+                            border: 1px solid rgb(214, 220, 228);
+                            box-sizing: border-box;
+                            border-radius: 5px;
+                            height: 42px;
+
+                            padding: 4px 11px;
+                            margin-bottom: 24px;
+                            cursor: pointer;
+
+                            &__text{
+                                font-family: Roboto;
+                                font-style: normal;
+                                font-weight: normal;
+                                font-size: 14px;
+                                line-height: 16px;
+                                text-decoration-line: underline;
+            
+                                color: #2C6DF9 !important;
+                            }
+                        }
+                    }
+                    
+                    &__second{
+                        padding-bottom: 24px;
+                        :global {
+                            .ant-select-arrow{
+                                font-family: Roboto;
+                                font-style: normal;
+                                font-weight: normal;
+                                font-size: 14px;
+                                line-height: 16px;
+    
+                                color: #161C29;
+                            }
+    
+                            .ant-form-item{
+                                margin-bottom: 0;
+                            }
+                        }
+    
+                        .inputNumber{
+                            width: 180px;
+                        }
+    
+                        .label{
                             font-family: Roboto;
                             font-style: normal;
                             font-weight: normal;
-                            font-size: 14px;
-                            line-height: 16px;
-                            text-decoration-line: underline;
-        
-                            color: #2C6DF9;
+                            font-size: 13px;
+                            line-height: 15px;
+    
+                            color: #707177;
+                            padding-bottom: 8px;
                         }
-
-                        .ant-select-focused .ant-select-selector,
-                        .ant-select-selector:focus,
-                        .ant-select-selector:active,
-                        .ant-select-open .ant-select-selector {
-                        border-color: #D6DCE4 !important;
-                        box-shadow: none !important;
-                        }
+    
                     }
-
 
                     .labelDocs{
                         font-family: Roboto;
@@ -168,43 +212,9 @@
                         color: #707177;
                         
                         padding-bottom: 16px;
-                    }
+                    }                
                 }
 
-                &__second{
-                    padding-bottom: 24px;
-                    :global {
-                        .ant-select-arrow{
-                            font-family: Roboto;
-                            font-style: normal;
-                            font-weight: normal;
-                            font-size: 14px;
-                            line-height: 16px;
-
-                            color: #161C29;
-                        }
-
-                        .ant-form-item{
-                            margin-bottom: 0;
-                        }
-                    }
-
-                    .inputNumber{
-                        width: 180px;
-                    }
-
-                    .label{
-                        font-family: Roboto;
-                        font-style: normal;
-                        font-weight: normal;
-                        font-size: 13px;
-                        line-height: 15px;
-
-                        color: #707177;
-                        padding-bottom: 8px;
-                    }
-
-                }
             }
         }
     }
