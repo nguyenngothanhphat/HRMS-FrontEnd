@@ -64,7 +64,7 @@ class HealthWellbeing extends Component {
   };
 
   planDocuments = (benefit) => {
-    const { documents = [], country = '' } = benefit;
+    const { documents = [], country = '', name = '' } = benefit;
 
     const arrCost = [
       { id: 1, name: 'annualCost', label: 'Annual Cost' },
@@ -81,7 +81,7 @@ class HealthWellbeing extends Component {
     return (
       <div className={styles.planDocuments}>
         <div className={styles.planDocuments__first}>
-          <div className={styles.labelDocs}>Choice Plan Document (01)</div>
+          <div className={styles.labelDocs}>{name}</div>
           {documents.map((item) => (
             <>
               <Row gutter={[24, 0]}>
