@@ -107,20 +107,20 @@ const OfferDetail = (props) => {
     return () => {};
   }, []);
 
-  // useEffect(() => {
-  //   if (processStatus) {
-  //     setDisableAll(
-  //       [
-  //         NEW_PROCESS_STATUS.AWAITING_APPROVALS,
-  //         NEW_PROCESS_STATUS.OFFER_RELEASED,
-  //         NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
-  //         NEW_PROCESS_STATUS.OFFER_ACCEPTED,
-  //         NEW_PROCESS_STATUS.OFFER_REJECTED,
-  //       ].includes(processStatus),
-  //     );
-  //   }
-  //   return () => {};
-  // }, [processStatus]);
+  useEffect(() => {
+    if (processStatus) {
+      setDisableAll(
+        [
+          NEW_PROCESS_STATUS.AWAITING_APPROVALS,
+          NEW_PROCESS_STATUS.OFFER_RELEASED,
+          NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+          NEW_PROCESS_STATUS.OFFER_ACCEPTED,
+          NEW_PROCESS_STATUS.OFFER_REJECTED,
+        ].includes(processStatus),
+      );
+    }
+    return () => {};
+  }, [processStatus]);
 
   useEffect(() => {
     if (offerLetterTemplateProp) {
