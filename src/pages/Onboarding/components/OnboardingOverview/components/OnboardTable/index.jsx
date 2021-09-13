@@ -338,7 +338,7 @@ class OnboardTable extends Component {
       type = '',
       actionText = '',
       processStatusId = '',
-      // offerExpiryDate = '',
+      offerExpiryDate = '',
       currentStep = 0,
     } = payload;
 
@@ -356,7 +356,7 @@ class OnboardTable extends Component {
     //   SENT_FINAL_OFFERS,
     // } = PROCESS_STATUS; // old status
 
-    const { DRAFT } = NEW_PROCESS_STATUS; // new status
+    const { DRAFT, OFFER_RELEASED } = NEW_PROCESS_STATUS; // new status
 
     const isRemovable = processStatusId === DRAFT;
     const isHRManager = this.checkPermission('hr-manager');
@@ -364,8 +364,9 @@ class OnboardTable extends Component {
       link: ONBOARDING_FORM_LINK.BASIC_INFORMATION,
     };
 
-    // const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;
+    const isExpired = compare(moment(), moment(offerExpiryDate)) === 1;
     let menuItem = '';
+
     switch (processStatusId) {
       // case DRAFT:
       //   menuItem = (
@@ -449,34 +450,34 @@ class OnboardTable extends Component {
       //   );
       //   break;
 
-      // case SENT_FINAL_OFFERS:
-      //   menuItem = isExpired ? (
-      //     <>
-      //       <Menu.Item>
-      //         <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-      //           <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
-      //         </Link>
-      //       </Menu.Item>
-      //       <Menu.Item>
-      //         <span onClick={() => this.handleExpiryTicket(id, 'renew', processStatusId, type)}>
-      //           Renew
-      //         </span>
-      //       </Menu.Item>
-      //       <Menu.Item>
-      //         <span onClick={() => this.handleExpiryTicket(id, 'discard', processStatusId, type)}>
-      //           Discard
-      //         </span>
-      //       </Menu.Item>
-      //     </>
-      //   ) : (
-      //     <Menu.Item>
-      //       <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
-      //         <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
-      //       </Link>
-      //     </Menu.Item>
-      //   );
+      case OFFER_RELEASED:
+        menuItem = isExpired ? (
+          <>
+            <Menu.Item>
+              <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+                <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
+              <span onClick={() => this.handleExpiryTicket(id, 'renew', processStatusId, type)}>
+                Renew
+              </span>
+            </Menu.Item>
+            <Menu.Item>
+              <span onClick={() => this.handleExpiryTicket(id, 'discard', processStatusId, type)}>
+                Discard
+              </span>
+            </Menu.Item>
+          </>
+        ) : (
+          <Menu.Item>
+            <Link to={`/onboarding/list/view/${id}`} onClick={() => this.fetchData(id)}>
+              <span onClick={() => this.handleActionClick(processStatusId)}>{actionText}</span>
+            </Link>
+          </Menu.Item>
+        );
 
-      //   break;
+        break;
 
       // case ACCEPTED_FINAL_OFFERS:
       //   menuItem = (
