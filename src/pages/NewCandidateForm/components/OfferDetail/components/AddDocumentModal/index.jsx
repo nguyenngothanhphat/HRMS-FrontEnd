@@ -1,9 +1,9 @@
-import AttachmentIcon from '@/assets/attachment.svg';
-import ImageIcon from '@/assets/image_icon.png';
-import PDFIcon from '@/assets/pdf_icon.png';
 import { Button, Form, Input, message, Modal, Select, Spin, Tooltip, Upload } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import AttachmentIcon from '@/assets/attachment.svg';
+import ImageIcon from '@/assets/image_icon.png';
+import PDFIcon from '@/assets/pdf_icon.png';
 import TrashIcon from '@/assets/trash.svg';
 import styles from './index.less';
 
@@ -102,13 +102,12 @@ class AddDocumentModal extends PureComponent {
   };
 
   onFinish = async (values) => {
-    const { onAdd = () => {}, defaultTemplates = [], customTemplates = [] } = this.props;
-    const existingDocumentList = [...defaultTemplates, ...customTemplates];
+    const { onAdd = () => {}, documentList = [] } = this.props;
 
     const { name = '', existingDocument = '' } = values;
     const { uploadedFile = {} } = this.state;
 
-    let selectedFile = existingDocumentList.find((doc) => doc._id === existingDocument)?.attachment;
+    let selectedFile = documentList.find((doc) => doc._id === existingDocument)?.attachmentInfo;
     if (!existingDocument) {
       selectedFile = uploadedFile;
     }
@@ -126,7 +125,7 @@ class AddDocumentModal extends PureComponent {
   };
 
   renderDocument = (document) => {
-    const { title = '', _id = '' } = document;
+    const { key = '', _id = '' } = document;
     return (
       <Option value={_id} key={_id} style={{ padding: '10px' }}>
         <div
@@ -136,7 +135,7 @@ class AddDocumentModal extends PureComponent {
           }}
         />
         <span style={{ fontSize: '13px', color: '#161C29' }} className={styles.ccEmail}>
-          {title}
+          {key}
         </span>
       </Option>
     );
@@ -150,15 +149,9 @@ class AddDocumentModal extends PureComponent {
   };
 
   render() {
-    const {
-      loadingUploadAttachment,
-      visible = false,
-      defaultTemplates = [],
-      customTemplates = [],
-    } = this.props;
+    const { loadingUploadAttachment, visible = false, documentList = [] } = this.props;
     const { fileName = '', selectExistDocument = '' } = this.state;
 
-    const existingDocumentList = [...defaultTemplates, ...customTemplates];
     return (
       <>
         <Modal
@@ -228,7 +221,7 @@ class AddDocumentModal extends PureComponent {
                   });
                 }}
               >
-                {existingDocumentList.map((doc) => {
+                {documentList.map((doc) => {
                   return this.renderDocument(doc);
                 })}
               </Select>

@@ -3,7 +3,7 @@ import { Button, Col, DatePicker, Form, Row, Select, Skeleton, Space } from 'ant
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { connect, formatMessage, history } from 'umi';
-import { getCurrentTenant } from '@/utils/authority';
+import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 // import RenderAddQuestion from '@/components/Question/RenderAddQuestion';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import AddDocumentModal from './components/AddDocumentModal';
@@ -24,6 +24,7 @@ const OfferDetail = (props) => {
     loading1,
     loadingFetchCandidate = false,
     currentStep,
+    documentListOnboarding: documentListProps = [],
   } = props;
   const { processStatus = '' } = tempData;
   // const previousStep = currentStep - 1;
@@ -49,6 +50,8 @@ const OfferDetail = (props) => {
 
   const [defaultTemplates, setDefaultTemplates] = useState(defaultTemplatesProp || []);
   const [customTemplates, setCustomTemplates] = useState(customTemplatesProp || []);
+  const [documentList, setDocumentList] = useState(documentListProps);
+
   const [templateList, setTemplateList] = useState(
     [...defaultTemplatesProp, ...customTemplatesProp] || [],
   );
@@ -93,19 +96,31 @@ const OfferDetail = (props) => {
   };
 
   useEffect(() => {
-    if (processStatus) {
-      setDisableAll(
-        [
-          NEW_PROCESS_STATUS.AWAITING_APPROVALS,
-          NEW_PROCESS_STATUS.OFFER_RELEASED,
-          NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
-          NEW_PROCESS_STATUS.OFFER_ACCEPTED,
-          NEW_PROCESS_STATUS.OFFER_REJECTED,
-        ].includes(processStatus),
-      );
-    }
+    dispatch({
+      type: 'newCandidateForm/fetchDocumentListOnboarding',
+      payload: {
+        tenantId: getCurrentTenant(),
+        module: 'ON_BOARDING',
+        company: getCurrentCompany(),
+      },
+    });
     return () => {};
-  }, [processStatus]);
+  }, []);
+
+  // useEffect(() => {
+  //   if (processStatus) {
+  //     setDisableAll(
+  //       [
+  //         NEW_PROCESS_STATUS.AWAITING_APPROVALS,
+  //         NEW_PROCESS_STATUS.OFFER_RELEASED,
+  //         NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+  //         NEW_PROCESS_STATUS.OFFER_ACCEPTED,
+  //         NEW_PROCESS_STATUS.OFFER_REJECTED,
+  //       ].includes(processStatus),
+  //     );
+  //   }
+  //   return () => {};
+  // }, [processStatus]);
 
   useEffect(() => {
     if (offerLetterTemplateProp) {
@@ -477,7 +492,7 @@ const OfferDetail = (props) => {
         name,
         attachmentName: uploadedFile.name,
         attachmentUrl: uploadedFile.url,
-        attachment: uploadedFile.id,
+        attachment: uploadedFile._id,
       },
     ];
 
@@ -682,8 +697,7 @@ const OfferDetail = (props) => {
       <AddDocumentModal
         visible={isAddModalVisible}
         handleModalVisible={handleModalVisible}
-        defaultTemplates={defaultTemplatesProp}
-        customTemplates={customTemplatesProp}
+        documentList={documentListProps}
         onAdd={onAddDocument}
       />
       <AddTemplateModal
@@ -697,11 +711,15 @@ const OfferDetail = (props) => {
 };
 
 export default connect(
-  ({ newCandidateForm: { data, checkMandatory, currentStep, tempData } = {}, loading }) => ({
+  ({
+    newCandidateForm: { data, checkMandatory, currentStep, tempData, documentListOnboarding } = {},
+    loading,
+  }) => ({
     data,
     checkMandatory,
     currentStep,
     tempData,
+    documentListOnboarding,
     loading1: loading.effects['newCandidateForm/createFinalOfferEffect'], // Loading for generating offer service
     loading2: loading.effects['upload/uploadFile'],
     loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
