@@ -115,24 +115,24 @@ class HealthWellbeing extends Component {
                   </Col>
                 </Row>
               </div>
-              <div className={styles.documents__second}>
-                <Row justify="space-between">
-                  {arrCost.map((field) => (
-                    <Col span={8} key={field.id}>
-                      <div className={styles.label}>{field.label}</div>
-                      <Form.Item name={field.name}>
-                        <Input
-                          disabled
-                          className={styles.inputNumber}
-                          suffix={<span>{getCurrency()}</span>}
-                        />
-                      </Form.Item>
-                    </Col>
-                  ))}
-                </Row>
-              </div>
             </>
           ))}
+          <div className={styles.documents__second}>
+            <Row justify="space-between">
+              {arrCost.map((field) => (
+                <Col span={8} key={field.id}>
+                  <div className={styles.label}>{field.label}</div>
+                  <Form.Item name={field.name}>
+                    <Input
+                      disabled
+                      className={styles.inputNumber}
+                      suffix={<span>{getCurrency()}</span>}
+                    />
+                  </Form.Item>
+                </Col>
+              ))}
+            </Row>
+          </div>
         </div>
       </div>
     );
