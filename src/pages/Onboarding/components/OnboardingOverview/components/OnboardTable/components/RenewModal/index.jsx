@@ -50,7 +50,7 @@ class RenewModal extends PureComponent {
     const { expiryDate = '' } = values;
     if (expiryDate) {
       const res = await dispatch({
-        type: 'onboard/handleExpiryTicket',
+        type: 'onboarding/handleExpiryTicket',
         payload: {
           id: ticketId,
           tenantId: getCurrentTenant(),
@@ -118,7 +118,8 @@ class RenewModal extends PureComponent {
                 onChange={(val) =>
                   this.setState({
                     selectedDate: val,
-                  })}
+                  })
+                }
               />
             </Form.Item>
           </Form>

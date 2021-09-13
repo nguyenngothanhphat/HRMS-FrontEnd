@@ -137,11 +137,12 @@ class CollapseField extends Component {
                             if (!fileName) {
                               return;
                             }
-                            const status = processStatus === NEW_PROCESS_STATUS.SALARY_NEGOTIATION;
+                            const status =
+                              processStatus === NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION;
                             if (status) {
-                              this.openDocument(document, 'view');
-                            } else {
                               this.openDocument(document, 'verify');
+                            } else {
+                              this.openDocument(document, 'view');
                             }
                           }}
                           className={styles.file__content__fileName}
