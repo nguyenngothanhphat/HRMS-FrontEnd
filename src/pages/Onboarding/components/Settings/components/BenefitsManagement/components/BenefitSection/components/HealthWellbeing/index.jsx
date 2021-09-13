@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col, Divider, Form, Row, Select, Spin } from 'antd';
+import { Col, Divider, Form, Input, Row, Select, Spin } from 'antd';
 import { connect } from 'umi';
 
 import AddIcon from '@/assets/add-symbols.svg';
@@ -66,6 +66,12 @@ class HealthWellbeing extends Component {
   planDocuments = (benefit) => {
     const { documents = [] } = benefit;
 
+    const arrCost = [
+      { id: 1, name: 'annualCost', label: 'Annual Cost' },
+      { id: 2, name: 'employeeContribution', label: 'Employee Contribution' },
+      { id: 3, name: 'employerContribution', label: "Employer's Contribution" },
+    ];
+
     return (
       <div className={styles.planDocuments}>
         <div className={styles.planDocuments__first}>
@@ -112,64 +118,14 @@ class HealthWellbeing extends Component {
               </Row>
               <div className={styles.planDocuments__second}>
                 <Row justify="space-between">
-                  <Col span={8}>
-                    <div className={styles.label}>Annual Cost</div>
-                    <Form.Item name="annualCost">
-                      <Select
-                        disabled
-                        showSearch
-                        showArrow
-                        className={styles.inputNumber}
-                        placeholder="Choose annual cost"
-                        suffixIcon={<span>₹</span>}
-                        filterOption={(input, option) => {
-                          return (
-                            option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0
-                          );
-                        }}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col span={8}>
-                    <div className={styles.label}>Employee Contribution</div>
-                    <Form.Item name="employeeContribution">
-                      <Select
-                        disabled
-                        showSearch
-                        showArrow
-                        className={styles.inputNumber}
-                        // allowClear
-                        placeholder="Choose employee contribution"
-                        // onChange={this.onChangeSelect}
-                        suffixIcon={<span>₹</span>}
-                        filterOption={(input, option) => {
-                          return (
-                            option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0
-                          );
-                        }}
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col span={8}>
-                    <div className={styles.label}>Employer&lsquo;s Contribution</div>
-                    <Form.Item name="employerContribution">
-                      <Select
-                        disabled
-                        showSearch
-                        showArrow
-                        className={styles.inputNumber}
-                        // allowClear
-                        placeholder="Choose employer's contribution"
-                        // onChange={this.onChangeSelect}
-                        suffixIcon={<span>₹</span>}
-                        filterOption={(input, option) => {
-                          return (
-                            option.props.children[1].toLowerCase().indexOf(input.toLowerCase()) >= 0
-                          );
-                        }}
-                      />
-                    </Form.Item>
-                  </Col>
+                  {arrCost.map((field) => (
+                    <Col span={8} key={field.id}>
+                      <div className={styles.label}>{field.label}</div>
+                      <Form.Item name={field.name}>
+                        <Input disabled className={styles.inputNumber} suffix={<span>₹</span>} />
+                      </Form.Item>
+                    </Col>
+                  ))}
                 </Row>
               </div>
             </>
