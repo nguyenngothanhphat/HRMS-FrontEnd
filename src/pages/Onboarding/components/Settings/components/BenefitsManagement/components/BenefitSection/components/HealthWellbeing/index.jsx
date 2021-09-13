@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Col, Divider, Form, Input, Row, Select, Spin } from 'antd';
+import { Col, Divider, Form, Input, Row, Spin } from 'antd';
 import { connect } from 'umi';
 
 import AddIcon from '@/assets/add-symbols.svg';
