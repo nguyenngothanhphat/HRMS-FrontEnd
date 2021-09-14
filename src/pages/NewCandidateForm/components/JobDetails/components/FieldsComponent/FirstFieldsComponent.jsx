@@ -169,8 +169,9 @@ class FirstFieldsComponent extends PureComponent {
           });
 
           listReporteesTag = listReporteesTag.filter((item) => item !== undefined);
-          listTemp = [...listReporteesTag, ...listTemp];
+          listTemp = [...listReporteesTag, ...listTemp]; // this array maybe has the same (or exist) elements
 
+          // => Fix get a new array with unique element
           const uniqueArr = [...new Set(listTemp.map((item) => item.id))];
           const newListTags = uniqueArr.map((id) => {
             return listTemp.find((temp) => temp.id === id);
