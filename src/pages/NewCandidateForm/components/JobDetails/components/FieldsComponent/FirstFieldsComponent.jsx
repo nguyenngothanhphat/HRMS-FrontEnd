@@ -385,8 +385,8 @@ class FirstFieldsComponent extends PureComponent {
 
   renderReporteesName = () => {
     const { listReporteesTag } = this.state;
-    const { loading4, disabled } = this.props;
-    if (listReporteesTag.length === 0 || loading4) return null;
+    const { disabled } = this.props;
+    if (listReporteesTag.length === 0) return null;
 
     return (
       <div className={InternalStyle.listTags}>
