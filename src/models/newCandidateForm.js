@@ -88,6 +88,7 @@ const defaultState = {
     jobGradeLevelList: [],
     employeeTypeList: [],
     locationList: [],
+    reporteeList: [],
     departmentList: [],
     titleList: [],
     managerList: [],

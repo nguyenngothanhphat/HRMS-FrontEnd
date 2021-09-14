@@ -53,17 +53,8 @@ class FirstFieldsComponent extends PureComponent {
   };
 
   componentDidUpdate = (prevProps, prepStates) => {
-    const { tempData: { locationList, reporteeList = [] } = {} } = this.props;
     const { nameReportees } = this.state;
-    if (
-      JSON.stringify(prevProps.locationList) !== JSON.stringify(locationList) &&
-      reporteeList.length === 0 &&
-      nameReportees === ''
-    ) {
-      this.fetchReportees();
-    }
     if (JSON.stringify(prepStates.nameReportees) !== JSON.stringify(nameReportees)) {
-      console.log('222');
       this.fetchReportees(nameReportees);
     }
   };
@@ -540,6 +531,7 @@ class FirstFieldsComponent extends PureComponent {
                       ]}
                     >
                       <Select
+                        tagRender={() => null}
                         onDeselect={item.title === 'reportees' ? this.onDeselectReportees : null}
                         onSelect={item.title === 'reportees' ? this.onSelectReportees : null}
                         menuItemSelectedIcon={null}
@@ -612,7 +604,9 @@ class FirstFieldsComponent extends PureComponent {
                         filterOption={(input, option) => {
                           if (item.title === 'grade')
                             return option.value.toString().indexOf(input) > -1;
-                          if (item.title === 'reportees') return true;
+                          if (item.title === 'reportees') {
+                            return true;
+                          }
                           return (
                             option.props.children.toLowerCase().indexOf(input.toLowerCase()) > -1
                           );
