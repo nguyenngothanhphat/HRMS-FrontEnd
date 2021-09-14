@@ -285,7 +285,6 @@ class FirstFieldsComponent extends PureComponent {
   renderReporteesName = (showReporteesListAB) => {
     const { listReporteesId } = this.state;
     const { loading4, disabled } = this.props;
-
     if (listReporteesId.length === 0 || loading4) return null;
 
     return (

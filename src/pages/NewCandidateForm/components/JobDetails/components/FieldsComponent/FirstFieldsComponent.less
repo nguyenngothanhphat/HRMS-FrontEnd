@@ -44,13 +44,6 @@
     justify-content: flex-start;
     margin-bottom: 32px;
 
-    :global {
-      .ant-tag-close-icon {
-        // padding-left: 8px;
-        font-size: 14px;
-      }
-    }
-
     .nameTag {
       margin-bottom: 8px;
       padding: 8px;
@@ -64,6 +57,14 @@
       background: #f3f4f6;
       border-radius: 6px;
       box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.1);
+      :global {
+        .ant-tag-close-icon {
+          display: inline-block;
+          margin-left: 10px;
+          font-weight: 500;
+          font-size: 12px;
+        }
+      }
     }
   }
 
@@ -78,6 +79,11 @@
       :global {
         .ant-select-selection-overflow-item {
           display: none;
+        }
+
+        .ant-select-selection-overflow-item-suffix{
+          display: block;
+          padding-left: 8px;
         }
       }
     }

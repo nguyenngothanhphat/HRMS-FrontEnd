@@ -259,18 +259,19 @@ class SalaryStructureTemplate extends PureComponent {
       let sum = 0;
       tempTableData.forEach((item) => {
         if (item.operator) {
-          let { value: valueSalary } = item;
-          if (item.period === 'day') {
-            valueSalary *= 22;
-          }
-
-          if (item.unit === '%') {
-            if (item.operator === 'plus') sum += basic * (valueSalary / 100);
-            if (item.operator === 'minus') sum -= (basic * valueSalary) / 100;
-          } else {
-            if (item.operator === 'plus') sum += valueSalary;
-            if (item.operator === 'minus') sum -= valueSalary;
-          }
+          const { value: valueSalary } = item;
+          // if (item.period === 'day') {
+          //   valueSalary *= 22;
+          // }
+          if (item.unit === '%') sum += basic * (valueSalary / 100);
+          else sum += valueSalary;
+          // if (item.unit === '%') {
+          //   if (item.operator === 'plus') sum += basic * (valueSalary / 100);
+          //   if (item.operator === 'minus') sum -= (basic * valueSalary) / 100;
+          // } else {
+          //   if (item.operator === 'plus') sum += valueSalary;
+          //   if (item.operator === 'minus') sum -= valueSalary;
+          // }
         }
       });
       const indexTotal = tempTableData.findIndex((data) => data.key === 'total_compensation');
