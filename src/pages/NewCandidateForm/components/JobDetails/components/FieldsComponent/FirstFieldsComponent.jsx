@@ -427,7 +427,7 @@ class FirstFieldsComponent extends PureComponent {
                         }
                         placeholder={item.placeholder}
                         className={item.title === 'reportees' ? className : styles}
-                        value={listReporteesId}
+                        value={item.title === 'reportees' ? listReporteesId : null}
                         onChange={(value) => this.onChangeValue(value, item.title)}
                         disabled={
                           !!(item.title === 'grade' && jobGradeList.length <= 0) ||
@@ -486,9 +486,12 @@ class FirstFieldsComponent extends PureComponent {
                         filterOption={(input, option) => {
                           if (item.title === 'grade')
                             return option.value.toString().indexOf(input) > -1;
-                          return option.value.toLowerCase().indexOf(input.toLowerCase()) > -1;
+
+                          return (
+                            option.props.children.toLowerCase().indexOf(input.toLowerCase()) > -1
+                          );
                         }}
-                        mode={item.title === 'reportees' ? 'multiple' : ''}
+                        mode={item.title === 'reportees' ? 'multiple' : null}
                       >
                         {item.title === 'grade' ? (
                           jobGradeList.map((data) => (
