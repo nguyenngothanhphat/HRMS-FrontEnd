@@ -466,7 +466,6 @@ const newCandidateForm = {
         dialog(errors);
       }
     },
-
     *updateByHR({ payload }, { call, put }) {
       let response = {};
       try {
@@ -478,6 +477,22 @@ const newCandidateForm = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *saveNoteSalary({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(updateByHR, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
         dialog(errors);
       }

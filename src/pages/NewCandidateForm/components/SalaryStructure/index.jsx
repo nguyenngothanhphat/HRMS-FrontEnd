@@ -90,7 +90,7 @@ class SalaryStructure extends PureComponent {
     const { salaryNoteState } = this.state;
 
     dispatch({
-      type: 'newCandidateForm/updateByHR',
+      type: 'newCandidateForm/saveNoteSalary',
       payload: {
         salaryNote: salaryNoteState,
         candidate: candidateId,
@@ -126,7 +126,6 @@ class SalaryStructure extends PureComponent {
 
   render() {
     const {
-      salaryTitle = '',
       loadingFetchCandidate = false,
       statusSalary,
       title: { name: jobTitle = '' } = {},
@@ -141,7 +140,7 @@ class SalaryStructure extends PureComponent {
               <div className={styles.salaryStructure__top}>
                 <SalaryStructureHeader jobTitle={jobTitle} />
                 {/* <hr /> */}
-                <SalaryStructureTemplate salaryTitle={salaryTitle} />
+                <SalaryStructureTemplate />
               </div>
             </Form>
           </div>
