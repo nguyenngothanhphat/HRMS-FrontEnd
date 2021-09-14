@@ -259,6 +259,7 @@ class FirstFieldsComponent extends PureComponent {
     this.setState({
       listReporteesId: listReportees,
       listReporteesTag: listTemp,
+      isSearch: false,
     });
   };
 
@@ -281,6 +282,7 @@ class FirstFieldsComponent extends PureComponent {
     this.setState({
       listReporteesId: listReportees,
       listReporteesTag: listTags,
+      isSearch: false,
     });
   };
 
@@ -549,7 +551,7 @@ class FirstFieldsComponent extends PureComponent {
                     >
                       <Select
                         onBlur={() => {
-                          this.setState({ nameReportees: '' });
+                          this.setState({ nameReportees: '', isSearch: false });
                           this.fetchReportees('');
                         }}
                         tagRender={() => null}
