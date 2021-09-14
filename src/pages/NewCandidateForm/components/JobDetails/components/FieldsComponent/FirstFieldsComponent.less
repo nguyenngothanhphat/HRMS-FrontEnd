@@ -162,3 +162,20 @@
 .spin {
   width: 100%;
 }
+
+.dropdownRender{
+  width: 100%;
+  position: relative;
+
+  &__spin{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+  }
+
+  &__menu{
+    opacity: 0.3;
+  }
+}

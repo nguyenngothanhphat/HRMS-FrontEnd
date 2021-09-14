@@ -321,6 +321,7 @@ class FirstFieldsComponent extends PureComponent {
 
   renderReporteesField = (showReporteesListAB) => {
     const { listReporteesId } = this.state;
+    const { loading4 } = this.props;
 
     const checkedStatus = (id) => {
       let check = false;
@@ -344,6 +345,7 @@ class FirstFieldsComponent extends PureComponent {
           className={`${InternalStyle.optionSelect} ${className}`}
           value={data._id}
           key={index}
+          disabled={loading4}
         >
           <Checkbox
             value={data._id}
@@ -421,6 +423,21 @@ class FirstFieldsComponent extends PureComponent {
       });
       this.setDebounce('');
     }
+  };
+
+  dropdownRender = (menu) => {
+    const { loading4 } = this.props;
+
+    return (
+      <div className={InternalStyle.dropdownRender}>
+        {loading4 ? (
+          <div className={InternalStyle.dropdownRender__spin}>
+            <Spin />
+          </div>
+        ) : null}
+        <div className={loading4 ? InternalStyle.dropdownRender__menu : null}>{menu}</div>
+      </div>
+    );
   };
 
   render() {
@@ -531,6 +548,7 @@ class FirstFieldsComponent extends PureComponent {
                       ]}
                     >
                       <Select
+                        onBlur={() => this.fetchReportees('')}
                         tagRender={() => null}
                         onDeselect={item.title === 'reportees' ? this.onDeselectReportees : null}
                         onSelect={item.title === 'reportees' ? this.onSelectReportees : null}
@@ -616,6 +634,9 @@ class FirstFieldsComponent extends PureComponent {
                           item.title === 'reportees'
                             ? (value) => this.onSearchReportees(value)
                             : null
+                        }
+                        dropdownRender={
+                          item.title === 'reportees' ? (menu) => this.dropdownRender(menu) : null
                         }
                       >
                         {item.title === 'grade' ? (
