@@ -52,8 +52,15 @@ class FirstFieldsComponent extends PureComponent {
   };
 
   componentDidUpdate = (prevProps, prepStates) => {
+    const { tempData: { locationList, reporteeList = [] } = {} } = this.props;
     const { nameReportees } = this.state;
-
+    if (
+      JSON.stringify(prevProps.locationList) !== JSON.stringify(locationList) &&
+      reporteeList.length === 0 &&
+      nameReportees === ''
+    ) {
+      this.fetchReportees();
+    }
     if (JSON.stringify(prepStates.nameReportees) !== JSON.stringify(nameReportees)) {
       this.fetchReportees(nameReportees);
     }
