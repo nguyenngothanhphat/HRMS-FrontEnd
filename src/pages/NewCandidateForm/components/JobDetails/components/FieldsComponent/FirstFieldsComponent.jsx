@@ -38,6 +38,7 @@ class FirstFieldsComponent extends PureComponent {
       listReporteesId: [], // store id
       listReporteesTag: [], // store object reportee tag (name,id,...)
       nameReportees: '',
+      isSearch: false,
     };
 
     this.setDebounce = debounce((nameReportees) => {
@@ -62,6 +63,7 @@ class FirstFieldsComponent extends PureComponent {
       this.fetchReportees();
     }
     if (JSON.stringify(prepStates.nameReportees) !== JSON.stringify(nameReportees)) {
+      console.log('222');
       this.fetchReportees(nameReportees);
     }
   };
@@ -167,13 +169,16 @@ class FirstFieldsComponent extends PureComponent {
           });
 
           listReporteesTag = listReporteesTag.filter((item) => item !== undefined);
-
           listTemp = [...listReporteesTag, ...listTemp];
-          listTemp = [...new Set(listTemp)];
+
+          const uniqueArr = [...new Set(listTemp.map((item) => item.id))];
+          const newListTags = uniqueArr.map((id) => {
+            return listTemp.find((temp) => temp.id === id);
+          });
 
           this.setState({
             listReporteesId: reportees,
-            listReporteesTag: listTemp,
+            listReporteesTag: newListTags,
           });
         }
       }
@@ -413,7 +418,17 @@ class FirstFieldsComponent extends PureComponent {
 
   onSearchReportees = (value) => {
     const formatValue = value.toLowerCase();
-    this.setDebounce(formatValue);
+    if (value) {
+      this.setState({
+        isSearch: true,
+      });
+      this.setDebounce(formatValue);
+    } else {
+      this.setState({
+        isSearch: false,
+      });
+      this.setDebounce('');
+    }
   };
 
   render() {
@@ -441,7 +456,7 @@ class FirstFieldsComponent extends PureComponent {
       disabled,
       currentStep,
     } = this.props;
-    const { listReporteesId, nameReportees } = this.state;
+    const { listReporteesId, nameReportees, isSearch } = this.state;
 
     const showManagerListAB =
       managerList.length > 0
@@ -506,7 +521,7 @@ class FirstFieldsComponent extends PureComponent {
             <Row gutter={[24, 0]}>
               {dropdownField.map((item, id) => {
                 const className = `${InternalStyle.InputReportees} ${
-                  listReporteesId.length > 0 ? InternalStyle.placeholderReportees : ''
+                  listReporteesId.length > 0 && !isSearch ? InternalStyle.placeholderReportees : ''
                 }`;
                 return (
                   <Col key={id} xs={24} sm={24} md={12} lg={12} xl={12}>
@@ -602,7 +617,11 @@ class FirstFieldsComponent extends PureComponent {
                           );
                         }}
                         mode={item.title === 'reportees' ? 'multiple' : null}
-                        onSearch={(value) => this.onSearchReportees(value)}
+                        onSearch={
+                          item.title === 'reportees'
+                            ? (value) => this.onSearchReportees(value)
+                            : null
+                        }
                       >
                         {item.title === 'grade' ? (
                           jobGradeList.map((data) => (
