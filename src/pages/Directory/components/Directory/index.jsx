@@ -1,13 +1,13 @@
+import { Layout, message, Skeleton, Tabs } from 'antd';
+import { debounce } from 'lodash';
+import React, { PureComponent } from 'react';
+import { connect, formatMessage } from 'umi';
 import iconDownload from '@/assets/download-icon-yellow.svg';
 import DirectoryTable from '@/components/DirectoryTable';
 import AddEmployeeForm from '@/pages_admin/EmployeesManagement/components/TableContainer/components/AddEmployeeForm';
 import ModalImportEmployee from '@/pages_admin/EmployeesManagement/components/TableContainer/components/ModalImportEmployee';
 import { getCurrentCompany, getCurrentLocation, isOwner } from '@/utils/authority';
 import exportToCsv from '@/utils/exportToCsv';
-import { Layout, message, Skeleton, Tabs } from 'antd';
-import { debounce } from 'lodash';
-import React, { PureComponent } from 'react';
-import { connect, formatMessage } from 'umi';
 import TableFilter from '../TableFilter';
 import styles from './index.less';
 
@@ -338,8 +338,8 @@ class DirectoryComponent extends PureComponent {
 
       let locationPayload = [];
 
-      // if country is not selected, select all
-      if (!currentLocation) {
+      // for all employees & super admin that is in ALL location mode
+      if (!currentLocation || !isOwnerCheck) {
         if (country.length === 0) {
           locationPayload = listCountry.map(({ country: { _id: countryItem1 = '' } = {} }) => {
             let stateList = [];
@@ -385,7 +385,10 @@ class DirectoryComponent extends PureComponent {
             };
           });
         }
-      } else {
+      }
+
+      // only super admin can see directory list by selected location in the dropdown menu
+      if (currentLocation && isOwnerCheck) {
         const currentLocationObj = listLocationsByCompany.find(
           (loc) => loc?._id === currentLocation,
         );
