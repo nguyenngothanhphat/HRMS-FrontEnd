@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { connect } from 'umi';
 import SettingLayout from '@/components/SettingLayout';
 // import BackgroundChecks from './components/BackgroundChecks';
 import CompanySignatory from './components/CompanySignatory';
@@ -67,10 +66,7 @@ export const listMenu = [
     link: 'benefits-management',
   },
 ];
-@connect(({ info: { currentStep = 0, displayComponent = {} } = {} }) => ({
-  currentStep,
-  displayComponent,
-}))
+
 class Settings extends PureComponent {
   render() {
     const { type = '' } = this.props;

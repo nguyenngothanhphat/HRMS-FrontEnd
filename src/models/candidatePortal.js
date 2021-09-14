@@ -373,7 +373,7 @@ const candidatePortal = {
           documentList = [],
           isVerifiedJobDetail,
           isVerifiedBasicInfo,
-          salaryStructure: { status: salaryStatus = '' } = {},
+          salaryStructure: { status: salaryStatus = '', settings: salarySettings } = {},
           // isAcceptedJoiningDate,
           sentDate = '',
         } = data || {};
@@ -412,7 +412,7 @@ const candidatePortal = {
             break;
 
           case NEW_PROCESS_STATUS.SALARY_NEGOTIATION:
-            if (['IN-PROGRESS'].includes(salaryStatus)) {
+            if (['IN-PROGRESS'].includes(salaryStatus) && salarySettings.length) {
               // salary structure
               tempPendingTasks[2].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
               tempPendingTasks[2].dueDate = dueDate;

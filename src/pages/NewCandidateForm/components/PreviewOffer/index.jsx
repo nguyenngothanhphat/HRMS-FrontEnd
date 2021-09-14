@@ -549,7 +549,7 @@ const PreviewOffer = (props) => {
             <img className={styles.signatureImg} src={whiteImg} alt="" />
             {(isTicketAssignee || isTicketManager) && (isNewOffer || isAwaitingOffer) && (
               <button type="submit" onClick={openModalUploadSignature}>
-                {formatMessage({ id: 'component.previewOffer.upload' })}
+                {optionSignature === 'draw' ? 'Click here to draw' : 'Upload'}
               </button>
             )}
           </>
@@ -559,7 +559,7 @@ const PreviewOffer = (props) => {
             {(isTicketAssignee || isTicketManager) && (isNewOffer || isAwaitingOffer) && (
               <>
                 <button type="submit" onClick={openModalUploadSignature}>
-                  {formatMessage({ id: 'component.previewOffer.uploadNew' })}
+                  {optionSignature === 'draw' ? 'Click here to draw' : 'Upload new'}
                 </button>
                 <CancelIcon resetImg={() => resetImg('hr')} />
               </>
@@ -711,7 +711,7 @@ const PreviewOffer = (props) => {
                 setModalSignature(optionSignatureHRManager);
               }}
             >
-              {formatMessage({ id: 'component.previewOffer.uploadNew' })}
+              {optionSignatureHRManager === 'draw' ? 'Click here to draw' : 'Upload new'}
             </button>
 
             <CancelIcon resetImg={() => resetImg('hrManager')} />
@@ -805,13 +805,11 @@ const PreviewOffer = (props) => {
       const onSecondaryButtonClick = () => {
         if (isAwaitingOffer || isNewOffer) {
           setRejectModalVisible(true);
-        } else
-        if (isSentOffer) {
+        } else if (isSentOffer) {
           setExtendOfferModalVisible(true);
         } else {
           history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.OFFER_DETAILS}`);
         }
-
       };
 
       const onPrimaryButtonClick = () => {
@@ -910,6 +908,7 @@ const PreviewOffer = (props) => {
   };
 
   if (loadingFetchCandidate) return <Skeleton />;
+
   // main
   return (
     <Row gutter={[24, 0]} className={styles.previewContainer}>

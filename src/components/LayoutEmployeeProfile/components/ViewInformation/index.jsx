@@ -299,8 +299,6 @@ class ViewInformation extends Component {
       </Menu>
     );
 
-    console.log(placementText);
-
     return (
       <>
         <Dropdown
