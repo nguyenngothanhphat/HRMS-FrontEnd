@@ -552,7 +552,7 @@ class FirstFieldsComponent extends PureComponent {
                       <Select
                         onBlur={() => {
                           this.setState({ nameReportees: '', isSearch: false });
-                          this.fetchReportees('');
+                          if (nameReportees !== '') this.fetchReportees('');
                         }}
                         tagRender={() => null}
                         onDeselect={item.title === 'reportees' ? this.onDeselectReportees : null}
