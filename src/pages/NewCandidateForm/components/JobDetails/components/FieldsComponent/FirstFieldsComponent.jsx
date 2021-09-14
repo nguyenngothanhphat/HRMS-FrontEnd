@@ -35,8 +35,8 @@ class FirstFieldsComponent extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      listReporteesId: [], // store id
-      listReporteesTag: [], // store object reportee tag (name,id,...)
+      listReporteesId: [], // store id reportees from redux
+      listReporteesTag: [], // store object reportee info (name,id,...) => PURPOSE: to render tags name
       nameReportees: '',
       isSearch: false,
     };
@@ -100,10 +100,9 @@ class FirstFieldsComponent extends PureComponent {
 
   fetchReportees = (name = '') => {
     const { dispatch } = this.props;
-    const { listReporteesTag: listTags } = this.state;
 
     const {
-      tempData: { locationList, workLocation, reportees = [] },
+      tempData: { locationList, workLocation },
       companiesOfUser = [],
     } = this.props;
 
@@ -139,7 +138,6 @@ class FirstFieldsComponent extends PureComponent {
     }).then((response) => {
       const { statusCode, data } = response;
       if (statusCode === 200) {
-        // Check array reportees is not empty => If yes, then store data to listReporteesId
         const showReporteesListAB =
           data.length > 0
             ? data.sort((a, b) => {
@@ -151,28 +149,7 @@ class FirstFieldsComponent extends PureComponent {
                 return 0;
               })
             : [];
-
-        let listTemp = [...listTags];
-        if (reportees.length > 0) {
-          let listReporteesTag = reportees.map((id) => {
-            const reportee = showReporteesListAB.find((item) => item._id === id);
-            return reportee;
-          });
-
-          listReporteesTag = listReporteesTag.filter((item) => item !== undefined);
-          listTemp = [...listReporteesTag, ...listTemp]; // this array maybe has the same (or exist) elements
-
-          // => Fix get a new array with unique element
-          const uniqueArr = [...new Set(listTemp.map((item) => item.id))];
-          const newListTags = uniqueArr.map((id) => {
-            return listTemp.find((temp) => temp.id === id);
-          });
-
-          this.setState({
-            listReporteesId: reportees,
-            listReporteesTag: newListTags,
-          });
-        }
+        this.storeReporteesInformation(showReporteesListAB);
       }
     });
   };
@@ -222,6 +199,38 @@ class FirstFieldsComponent extends PureComponent {
       default: {
         break;
       }
+    }
+  };
+
+  /// ///////////////////////////////////////////////// [START] HANDLE REPORTEES FIELD ////////////////////////////////////////////////////
+
+  storeReporteesInformation = (showReporteesListAB) => {
+    const { listReporteesTag: stateListTags } = this.state;
+    const {
+      tempData: { reportees = [] },
+    } = this.props;
+
+    let listTemp = [...stateListTags];
+    if (reportees.length > 0) {
+      // Get an array of object elements base on list IDs in reportees array. => PURPOSE: TO RENDER TAGS NAME
+      let listReporteesTag = reportees.map((id) => {
+        const reportee = showReporteesListAB.find((item) => item._id === id);
+        return reportee;
+      });
+
+      listReporteesTag = listReporteesTag.filter((item) => item !== undefined); // Because showReporteesListAB maybe emtpy when we search then cause returning undefined
+      listTemp = [...listReporteesTag, ...listTemp]; // This array listTemp maybe has the same (or exist) elements between 2 listReporteesTag and listTemp
+
+      // => Therefore, need to fix to get a new array with unique element
+      const uniqueArr = [...new Set(listTemp.map((item) => item.id))];
+      const newListTags = uniqueArr.map((id) => {
+        return listTemp.find((temp) => temp.id === id);
+      });
+
+      this.setState({
+        listReporteesId: reportees,
+        listReporteesTag: newListTags,
+      });
     }
   };
 
@@ -453,6 +462,8 @@ class FirstFieldsComponent extends PureComponent {
     }
   };
 
+  /// ///////////////////////////////////////////////// [END] REPORTEES FIELD ////////////////////////////////////////////////////
+
   render() {
     const {
       styles,
@@ -562,8 +573,9 @@ class FirstFieldsComponent extends PureComponent {
                     >
                       <Select
                         /// /////////////////////// [START] REPORTEES FIELD //////////////////////////
-                        onInputKeyDown={this.onInputKeyDown}
+                        onInputKeyDown={this.onInputKeyDown} // Fix issue pressing BACKSPACE key event
                         onBlur={
+                          // Handle fetch reportees
                           item.title === 'reportees'
                             ? () => {
                                 this.setState({ nameReportees: '', isSearch: false });
