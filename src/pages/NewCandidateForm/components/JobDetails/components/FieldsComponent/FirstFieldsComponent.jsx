@@ -442,6 +442,17 @@ class FirstFieldsComponent extends PureComponent {
     );
   };
 
+  onInputKeyDown = (e) => {
+    const { nameReportees } = this.state;
+
+    if (e.keyCode === 8) {
+      if (nameReportees === '' && e.target.value === '') {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    }
+  };
+
   render() {
     const {
       styles,
@@ -550,13 +561,31 @@ class FirstFieldsComponent extends PureComponent {
                       ]}
                     >
                       <Select
-                        onBlur={() => {
-                          this.setState({ nameReportees: '', isSearch: false });
-                          if (nameReportees !== '') this.fetchReportees('');
-                        }}
+                        /// /////////////////////// [START] REPORTEES FIELD //////////////////////////
+                        onInputKeyDown={this.onInputKeyDown}
+                        onBlur={
+                          item.title === 'reportees'
+                            ? () => {
+                                this.setState({ nameReportees: '', isSearch: false });
+                                if (nameReportees !== '') this.fetchReportees('');
+                              }
+                            : null
+                        }
                         tagRender={() => null}
                         onDeselect={item.title === 'reportees' ? this.onDeselectReportees : null}
                         onSelect={item.title === 'reportees' ? this.onSelectReportees : null}
+                        mode={item.title === 'reportees' ? 'multiple' : null}
+                        onSearch={
+                          item.title === 'reportees'
+                            ? (value) => this.onSearchReportees(value)
+                            : null
+                        }
+                        dropdownRender={
+                          item.title === 'reportees' ? (menu) => this.dropdownRender(menu) : null
+                        }
+                        className={item.title === 'reportees' ? className : styles}
+                        value={item.title === 'reportees' ? listReporteesId : null}
+                        /// /////////////////////// [END] REPORTEES FIELD //////////////////////////
                         menuItemSelectedIcon={null}
                         loading={
                           (item.title === 'title' ? loading2 : null) ||
@@ -565,8 +594,6 @@ class FirstFieldsComponent extends PureComponent {
                           (item.title === 'department' ? loading1 : null)
                         }
                         placeholder={item.placeholder}
-                        className={item.title === 'reportees' ? className : styles}
-                        value={item.title === 'reportees' ? listReporteesId : null}
                         onChange={(value) => this.onChangeValue(value, item.title)}
                         disabled={
                           !!(item.title === 'grade' && jobGradeList.length <= 0) ||
@@ -634,15 +661,6 @@ class FirstFieldsComponent extends PureComponent {
                             option.props.children.toLowerCase().indexOf(input.toLowerCase()) > -1
                           );
                         }}
-                        mode={item.title === 'reportees' ? 'multiple' : null}
-                        onSearch={
-                          item.title === 'reportees'
-                            ? (value) => this.onSearchReportees(value)
-                            : null
-                        }
-                        dropdownRender={
-                          item.title === 'reportees' ? (menu) => this.dropdownRender(menu) : null
-                        }
                       >
                         {item.title === 'grade' ? (
                           jobGradeList.map((data) => (
