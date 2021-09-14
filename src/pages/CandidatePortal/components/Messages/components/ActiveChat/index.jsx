@@ -183,7 +183,9 @@ class ActiveChat extends PureComponent {
 
   // chat input
   renderInput = () => {
-    const { loadingMessages, activeId = '' } = this.props;
+    const { loadingMessages, activeId = '', isReplyable = true } = this.props;
+    const disabled = loadingMessages || !activeId;
+    if (!isReplyable) return '';
     return (
       <div className={styles.inputContainer}>
         <Form ref={this.formRef} name="inputChat" onFinish={this.onSendClick}>
@@ -192,11 +194,11 @@ class ActiveChat extends PureComponent {
               autoSize={{ minRows: 1, maxRows: 4 }}
               maxLength={255}
               placeholder="Type a message..."
-              disabled={loadingMessages || !activeId}
+              disabled={disabled}
             />
           </Form.Item>
           <Form.Item>
-            <Button disabled={loadingMessages || !activeId} htmlType="submit">
+            <Button disabled={disabled} htmlType="submit">
               Send
             </Button>
           </Form.Item>

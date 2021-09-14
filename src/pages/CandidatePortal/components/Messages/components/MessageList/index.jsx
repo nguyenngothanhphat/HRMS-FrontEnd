@@ -10,9 +10,9 @@ class MessageList extends PureComponent {
     return `${str.slice(0, 70)}...`;
   };
 
-  onListClick = (_id) => {
+  onListClick = (_id, isReplyable) => {
     const { onChangeActiveId = () => {} } = this.props;
-    onChangeActiveId(_id);
+    onChangeActiveId(_id, isReplyable);
   };
 
   renderItem = (item, listLength, index) => {
@@ -27,14 +27,14 @@ class MessageList extends PureComponent {
       <div key={index}>
         <div
           className={`${styles.eachItem} ${isActive ? styles.active : ''}`}
-          onClick={() => this.onListClick(item._id)}
+          onClick={() => this.onListClick(item._id, item.isReplyable)}
         >
           <div className={styles.messageIcon}>
             <img src={HRIcon1} alt="message" />
           </div>
           <div className={styles.messageContent}>
             <div className={styles.messageTitleContainer}>
-              <span className={styles.messageTitle}>HR</span>
+              <span className={styles.messageTitle}>{item.title || 'HR'}</span>
               <span className={styles.messageDate}>Today</span>
             </div>
             <span className={styles.message}>

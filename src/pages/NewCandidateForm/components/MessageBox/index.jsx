@@ -11,6 +11,7 @@ import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
 import MessageIcon from '@/assets/candidatePortal/messageIcon.svg';
 
 import styles from './index.less';
+import { getCurrentCompany } from '@/utils/authority';
 
 const { TextArea } = Input;
 
@@ -23,19 +24,23 @@ const { TextArea } = Input;
         candidate = '',
         assignTo = '',
         firstName: candidateFN = '',
+        middleName: candidateMN = '',
         lastName: candidateLN = '',
       },
     } = {},
     conversation = {},
     loading,
+    user: { companiesOfUser = [] },
   }) => ({
     conversation,
     conversationList,
     candidate,
     candidateFN,
+    candidateMN,
     candidateLN,
     assignTo,
     activeConversationMessages,
+    companiesOfUser,
     loadingMessages: loading.effects['conversation/getConversationMessageEffect'],
     loadingAddMessage: loading.effects['conversation/addNewMessageEffect'],
   }),
@@ -80,21 +85,35 @@ class MessageBox extends PureComponent {
       const { statusCode, data = [] } = res || {};
       if (statusCode === 200) {
         if (data.length > 0) {
+          const find = data.find((d) => d.isReplyable) || data[data.length - 1];
           this.setState({
-            activeId: res.data[0]._id,
+            activeId: find._id,
           });
-          this.fetchMessages();
+          this.fetchMessages(find._id);
         } else {
-          const res1 = await dispatch({
-            type: 'conversation/addNewConversationEffect',
-            payload: {
-              senderId: hrId,
-              receiverId: candidate,
-            },
-          });
-          if (res1.statusCode === 200) {
+          const addNewConversation = (isReplyable, title) => {
+            return dispatch({
+              type: 'conversation/addNewConversationEffect',
+              payload: {
+                senderId: hrId,
+                receiverId: candidate,
+                title,
+                isReplyable,
+              },
+            });
+          };
+
+          const { companiesOfUser = [] } = this.props;
+          // get company name
+          const currentCompany = companiesOfUser.find((c) => c._id === getCurrentCompany()) || {};
+          const { name: companyName = '' } = currentCompany;
+
+          const titleList = [`Welcome to ${companyName} !`, `HR ${companyName} !`];
+          const res1 = await addNewConversation(false, titleList[0]);
+          const res2 = await addNewConversation(true, titleList[1]);
+          if (res1.statusCode === 200 && res2.statusCode === 200) {
             await getConversationList();
-            this.setState({ activeId: res1.data._id });
+            this.setState({ activeId: res2.data?._id });
           }
         }
       }
@@ -139,9 +158,8 @@ class MessageBox extends PureComponent {
     }
   };
 
-  fetchMessages = async () => {
+  fetchMessages = async (activeId) => {
     const { dispatch } = this.props;
-    const { activeId } = this.state;
     if (activeId) {
       await dispatch({
         type: 'conversation/getConversationMessageEffect',

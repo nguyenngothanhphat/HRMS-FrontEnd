@@ -25,6 +25,7 @@ class Messages extends PureComponent {
     super(props);
     this.state = {
       activeId: '',
+      isReplyable: true,
     };
   }
 
@@ -56,18 +57,19 @@ class Messages extends PureComponent {
         if (res1.statusCode === 200) {
           getConversationList();
           // set active to created conversation
-          this.setState({ activeId: res1.data?._id });
+          this.setState({ activeId: res1.data?._id, isReplyable: res1.data.isReplyable });
         }
       } else {
         // set active to first message
-        this.setState({ activeId: res.data[0]._id });
+        this.setState({ activeId: res.data[0]._id, isReplyable: res.data[0].isReplyable });
       }
     }
   };
 
-  onChangeActiveId = (activeId) => {
+  onChangeActiveId = (activeId, isReplyable) => {
     this.setState({
       activeId,
+      isReplyable,
     });
     window.scrollTo({
       top: document.body.scrollHeight,
@@ -77,7 +79,7 @@ class Messages extends PureComponent {
   };
 
   render() {
-    const { activeId } = this.state;
+    const { activeId, isReplyable } = this.state;
     const { conversationList = [], loadingFetchConversations = false } = this.props;
     return (
       <div className={styles.Messages}>
@@ -91,7 +93,7 @@ class Messages extends PureComponent {
             />
           </Col>
           <Col xs={24} lg={16}>
-            <ActiveChat activeId={activeId} />
+            <ActiveChat activeId={activeId} isReplyable={isReplyable} />
           </Col>
         </Row>
       </div>

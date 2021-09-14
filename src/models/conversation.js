@@ -76,7 +76,7 @@ const country = {
     },
 
     // MESSAGE
-    *addNewMessageEffect({ payload }, { call, put }) {
+    *addNewMessageEffect({ payload, preventSaveToRedux = false }, { call, put }) {
       let response = {};
       try {
         response = yield call(addNewMessage, {
@@ -86,10 +86,12 @@ const country = {
         });
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveNewMessage',
-          payload: data,
-        });
+        if (!preventSaveToRedux) {
+          yield put({
+            type: 'saveNewMessage',
+            payload: data,
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }
