@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
-import TrashIcon from '@/assets/trash.svg';
 import { Row, Col } from 'antd';
+import TrashIcon from '@/assets/trash.svg';
 import ViewDocumentModal from '@/components/ViewDocumentModal';
 import ImageIcon from '@/assets/image_icon.png';
 import PDFIcon from '@/assets/pdf_icon.png';

@@ -29,6 +29,7 @@ import {
   withdrawOffer,
   getListCandidate,
   getReporteesList,
+  getDocumentSettingList
 } from '@/services/newCandidateForm';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
@@ -46,6 +47,7 @@ import {
   sendDocumentStatus,
   getAdditionalQuestion,
   verifyAllDocuments,
+  fetchDocumentListOnboarding
 } from '@/services/formCandidate';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 
@@ -292,6 +294,7 @@ const defaultState = {
     updatedAt: '',
   },
   isEditingSalary: false,
+  documentListOnboarding: []
 };
 
 const newCandidateForm = {
@@ -1590,6 +1593,25 @@ const newCandidateForm = {
         dialog(errors);
       }
       return response;
+    },
+    *fetchDocumentListOnboarding({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getDocumentSettingList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            documentListOnboarding: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
     },
   },
 
