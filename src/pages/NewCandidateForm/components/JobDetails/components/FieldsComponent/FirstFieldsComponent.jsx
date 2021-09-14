@@ -35,7 +35,8 @@ class FirstFieldsComponent extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      listReporteesId: [],
+      listReporteesId: [], // store id
+      listReporteesTag: [], // store object reportee (name, )
     };
   }
 
@@ -105,6 +106,7 @@ class FirstFieldsComponent extends PureComponent {
 
   fetchReportees = (name = '') => {
     const { dispatch } = this.props;
+
     const {
       tempData: { locationList, workLocation, reportees = [] },
       companiesOfUser = [],
@@ -139,14 +141,34 @@ class FirstFieldsComponent extends PureComponent {
         // limit: 10,
         name,
       },
-    });
+    }).then((response) => {
+      const { statusCode, data } = response;
+      if (statusCode === 200) {
+        // Check array reportees is not empty => If yes, then store data to listReporteesId
+        const showReporteesListAB =
+          data.length > 0
+            ? data.sort((a, b) => {
+                const nameA = a.generalInfo ? a.generalInfo?.firstName.toLowerCase() : '';
+                const nameB = b.generalInfo ? b.generalInfo?.firstName.toLowerCase() : '';
+                if (nameA < nameB) {
+                  return -1;
+                }
+                return 0;
+              })
+            : [];
+        if (reportees.length > 0) {
+          const listReporteesTag = reportees.map((id) => {
+            const reportee = showReporteesListAB.find((item) => item._id === id);
+            return reportee;
+          });
 
-    // Check array reportees is not empty => If yes, then store data to listReporteesId
-    if (reportees.length > 0) {
-      this.setState({
-        listReporteesId: reportees,
-      });
-    }
+          this.setState({
+            listReporteesId: reportees,
+            listReporteesTag,
+          });
+        }
+      }
+    });
   };
 
   onChangeValue = (value, fieldName) => {
@@ -196,31 +218,61 @@ class FirstFieldsComponent extends PureComponent {
   };
 
   handleReporteesValue = (arrId) => {
+    const {
+      tempData: { reporteeList = [] },
+    } = this.props;
+
     const arrTemp = [...arrId];
+
+    const showReporteesListAB =
+      reporteeList.length > 0
+        ? reporteeList.sort((a, b) => {
+            const nameA = a.generalInfo ? a.generalInfo?.firstName.toLowerCase() : '';
+            const nameB = b.generalInfo ? b.generalInfo?.firstName.toLowerCase() : '';
+            if (nameA < nameB) {
+              return -1;
+            }
+            return 0;
+          })
+        : [];
+
+    const arrTags = arrTemp.map((id) => {
+      return showReporteesListAB.find((item) => item.id === id);
+    });
 
     this.setState({
       listReporteesId: arrTemp,
+      listReporteesTag: arrTags,
     });
   };
 
-  onCheckbox = (e) => {
+  onCheckbox = (e, showReporteesListAB) => {
     const { listReporteesId } = this.state;
-    const arr = [...listReporteesId];
+    const arrIDs = [...listReporteesId];
+    let arrTags = [];
 
     const check = e.target.checked;
     const { value } = e.target;
 
     if (check) {
-      arr.push(value);
+      arrIDs.push(value);
+      arrTags = arrIDs.map((id) => {
+        return showReporteesListAB.find((item) => item.id === id);
+      });
     } else {
-      const index = arr.indexOf(value);
+      const index = arrIDs.indexOf(value);
       if (index > -1) {
-        arr.splice(index, 1);
+        arrIDs.splice(index, 1);
+
+        arrTags = arrIDs.map((id) => {
+          return showReporteesListAB.find((item) => item.id === id);
+        });
       }
     }
 
     this.setState({
-      listReporteesId: arr,
+      listReporteesId: arrIDs,
+      listReporteesTag: arrTags,
     });
   };
 
@@ -250,7 +302,11 @@ class FirstFieldsComponent extends PureComponent {
           value={data._id}
           key={index}
         >
-          <Checkbox value={data._id} onChange={this.onCheckbox} checked={checkedStatus(data._id)}>
+          <Checkbox
+            value={data._id}
+            onChange={(e) => this.onCheckbox(e, showReporteesListAB)}
+            checked={checkedStatus(data._id)}
+          >
             <div>{fullName}</div>
           </Checkbox>
         </Option>
@@ -282,24 +338,23 @@ class FirstFieldsComponent extends PureComponent {
     });
   };
 
-  renderReporteesName = (showReporteesListAB) => {
-    const { listReporteesId } = this.state;
+  renderReporteesName = () => {
+    const { listReporteesTag } = this.state;
     const { loading4, disabled } = this.props;
-    if (listReporteesId.length === 0 || loading4) return null;
+    if (listReporteesTag.length === 0 || loading4) return null;
 
     return (
       <div className={InternalStyle.listTags}>
-        {listReporteesId.map((id) => {
-          const reportee = showReporteesListAB.find((item) => item._id === id);
-          const fullName = `${reportee?.generalInfo?.firstName} ${
-            reportee?.generalInfo?.middleName ? reportee?.generalInfo?.middleName : ''
-          } ${reportee?.generalInfo?.lastName}`;
+        {listReporteesTag.map((item) => {
+          const fullName = `${item?.generalInfo?.firstName} ${
+            item?.generalInfo?.middleName ? item?.generalInfo?.middleName : ''
+          } ${item?.generalInfo?.lastName}`;
           return (
             <Tag
-              key={id}
+              key={item.id}
               closable={!disabled}
               className={InternalStyle.nameTag}
-              onClose={() => this.handleCloseTag(id)}
+              onClose={() => this.handleCloseTag(item.id)}
               closeIcon={<img alt="close-tag" src={CloseTagIcon} />}
             >
               {fullName}
@@ -308,6 +363,10 @@ class FirstFieldsComponent extends PureComponent {
         })}
       </div>
     );
+  };
+
+  onSearchReportees = (value) => {
+    console.log(value);
   };
 
   render() {
@@ -486,12 +545,13 @@ class FirstFieldsComponent extends PureComponent {
                         filterOption={(input, option) => {
                           if (item.title === 'grade')
                             return option.value.toString().indexOf(input) > -1;
-
+                          if (item.title === 'reportees') return null;
                           return (
                             option.props.children.toLowerCase().indexOf(input.toLowerCase()) > -1
                           );
                         }}
                         mode={item.title === 'reportees' ? 'multiple' : null}
+                        onSearch={(value) => this.onSearchReportees(value)}
                       >
                         {item.title === 'grade' ? (
                           jobGradeList.map((data) => (
@@ -543,9 +603,7 @@ class FirstFieldsComponent extends PureComponent {
                         ) : null}
                       </Select>
                     </Form.Item>
-                    {item.title === 'reportees'
-                      ? this.renderReporteesName(showReporteesListAB)
-                      : null}
+                    {item.title === 'reportees' ? this.renderReporteesName() : null}
                   </Col>
                 );
               })}

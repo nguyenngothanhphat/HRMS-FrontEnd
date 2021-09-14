@@ -29,7 +29,7 @@ import {
   withdrawOffer,
   getListCandidate,
   getReporteesList,
-  getDocumentSettingList
+  getDocumentSettingList,
 } from '@/services/newCandidateForm';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
@@ -47,7 +47,7 @@ import {
   sendDocumentStatus,
   getAdditionalQuestion,
   verifyAllDocuments,
-  fetchDocumentListOnboarding
+  fetchDocumentListOnboarding,
 } from '@/services/formCandidate';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 
@@ -294,7 +294,7 @@ const defaultState = {
     updatedAt: '',
   },
   isEditingSalary: false,
-  documentListOnboarding: []
+  documentListOnboarding: [],
 };
 
 const newCandidateForm = {
@@ -450,8 +450,10 @@ const newCandidateForm = {
           type: 'saveTemp',
           payload: { reporteeList: data },
         });
+        return response;
       } catch (errors) {
         dialog(errors);
+        return '';
       }
     },
 
