@@ -3,8 +3,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 
-import { io } from 'socket.io-client';
-import SOCKET_URL from '@/utils/socket';
+import socket from '@/utils/socket';
 import ChatEvent from '@/utils/chatSocket';
 
 import SeenIcon from '@/assets/candidatePortal/seen.svg';
@@ -12,8 +11,6 @@ import UnseenIcon from '@/assets/candidatePortal/unseen.svg';
 import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
 
 import styles from './index.less';
-
-const socket = io(SOCKET_URL);
 
 @connect(
   ({
@@ -52,10 +49,12 @@ class ActiveChat extends PureComponent {
     this.scrollToBottom();
     // realtime get message
     const { candidate } = this.props;
-    socket.on(ChatEvent.DISCONNECT);
     socket.emit(ChatEvent.ADD_USER, candidate._id);
-    socket.on(ChatEvent.GET_USER, () => {});
+    socket.on(ChatEvent.GET_USER, (users) => {
+      // console.log('users', users);
+    });
     socket.on(ChatEvent.GET_MESSAGE, (data) => {
+      // console.log('data', data);
       this.saveNewMessage(data);
     });
   }
@@ -63,7 +62,7 @@ class ActiveChat extends PureComponent {
   componentDidUpdate = () => {};
 
   componentWillUnmount = () => {
-    socket.on(ChatEvent.DISCONNECT);
+    // socket.on(ChatEvent.DISCONNECT);
 
     const { dispatch } = this.props;
     dispatch({

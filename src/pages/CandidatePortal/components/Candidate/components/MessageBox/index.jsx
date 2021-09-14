@@ -2,16 +2,13 @@ import { Button, Input, Skeleton, Form } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
-import { io } from 'socket.io-client';
-import SOCKET_URL from '@/utils/socket';
+import socket from '@/utils/socket';
 import ChatEvent from '@/utils/chatSocket';
 
 import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
 import MessageIcon from '@/assets/candidatePortal/messageIcon.svg';
 
 import styles from './index.less';
-
-const socket = io(SOCKET_URL);
 
 const { TextArea } = Input;
 
@@ -75,7 +72,6 @@ class MessageBox extends PureComponent {
         }
       }
 
-      
       // realtime get message
       socket.on(ChatEvent.DISCONNECT);
       socket.emit(ChatEvent.ADD_USER, candidate);

@@ -3,17 +3,14 @@ import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import moment from 'moment';
 
-import { io } from 'socket.io-client';
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
 import ChatEvent from '@/utils/chatSocket';
-import SOCKET_URL from '@/utils/socket';
+import socket from '@/utils/socket';
 
 import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
 import MessageIcon from '@/assets/candidatePortal/messageIcon.svg';
 
 import styles from './index.less';
-
-const socket = io(SOCKET_URL);
 
 const { TextArea } = Input;
 
@@ -60,10 +57,12 @@ class MessageBox extends PureComponent {
     const { dispatch, candidate, assignTo: hrId } = this.props;
 
     // realtime get message
-    socket.on(ChatEvent.DISCONNECT);
     socket.emit(ChatEvent.ADD_USER, hrId?._id || hrId || '');
-    socket.on(ChatEvent.GET_USER, () => {});
+    socket.on(ChatEvent.GET_USER, (users) => {
+      // console.log('users HR', users);
+    });
     socket.on(ChatEvent.GET_MESSAGE, (data) => {
+      // console.log('data HR', data);
       this.saveNewMessage(data);
     });
 

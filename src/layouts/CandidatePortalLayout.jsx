@@ -9,6 +9,7 @@ import { getCurrentCompany } from '@/utils/authority';
 import Authorized from '@/utils/Authorized';
 import { getAuthorityFromRouter } from '@/utils/utils';
 // import BottomBar from '../components/BottomBar';
+import CommonModal from '@/pages/CandidatePortal/components/Dashboard/components/CommonModal';
 import s from './CandidatePortalLayout.less';
 import { CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
 
@@ -43,8 +44,10 @@ const CandidatePortalLayout = React.memo((props) => {
     data: { firstName = '', lastName = '', middleName = '' },
     conversation: { conversationList = [] } = {},
     pendingTasks = [],
+    events = [],
   } = props;
 
+  const [openUpcomingEventModal, setOpenUpcomingEventModal] = useState(false);
   let candidateFullName = `${firstName} ${middleName} ${lastName}`;
   if (!middleName) candidateFullName = `${firstName} ${lastName}`;
 
@@ -149,6 +152,11 @@ const CandidatePortalLayout = React.memo((props) => {
     </Menu>
   );
 
+  const addZeroToNumber = (number) => {
+    if (number < 10 && number >= 0) return `0${number}`.slice(-2);
+    return number;
+  };
+
   return (
     <div className={s.candidate}>
       {/* <Header className={`${s.header} ${s.one}`}> */}
@@ -178,7 +186,7 @@ const CandidatePortalLayout = React.memo((props) => {
             </div>
           )} */}
 
-          <div className={s.headerIcon}>
+          <div className={s.headerIcon} onClick={() => setOpenUpcomingEventModal(true)}>
             <img src={CalendarIcon} alt="calendar" />
           </div>
           <div
@@ -212,6 +220,14 @@ const CandidatePortalLayout = React.memo((props) => {
           </Dropdown>
         </div>
       </Header>
+      <CommonModal
+        title={`Upcoming events (${addZeroToNumber(events.length)})`}
+        content={events}
+        visible={openUpcomingEventModal}
+        onClose={() => setOpenUpcomingEventModal(false)}
+        type="your-activity"
+        tabKey="1"
+      />
       <Authorized authority={authorized.authority} noMatch={noMatch}>
         {loadingFetchCurrent ? (
           <div style={{ margin: '32px 89px' }}>
@@ -252,6 +268,8 @@ export default connect(
       checkMandatory,
       processStatus = '',
       pendingTasks = [],
+      upcomingEvents: events = [],
+      nextSteps: steps = [],
     } = {},
     conversation,
     user: { companiesOfUser = [], currentUser: { candidate = '' } = {} } = {},
@@ -268,6 +286,8 @@ export default connect(
     processStatus,
     companiesOfUser,
     pendingTasks,
+    events,
+    steps,
     loadingFetchCurrent: loading.effects['user/fetchCurrent'],
   }),
 )(CandidatePortalLayout);

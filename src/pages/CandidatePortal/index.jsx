@@ -64,6 +64,7 @@ class CandidatePortal extends PureComponent {
     dispatch({
       type: 'candidatePortal/refreshPendingTasks',
     });
+
     dispatch({
       type: 'conversation/getUserConversationsEffect',
       payload: {

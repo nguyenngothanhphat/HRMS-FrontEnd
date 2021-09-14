@@ -349,7 +349,7 @@ class PreviousEmployment extends Component {
                     Type {docListE[0].type}: {docListE[0].name}
                   </span>
                 }
-                extra="[Can submit any of the below other than (*)mandatory]"
+                // extra="[Can submit any of the below other than (*)mandatory]"
               >
                 {docListE.map((item, index) => this.renderEmployer(docListE, item, index))}
               </Collapse.Panel>
