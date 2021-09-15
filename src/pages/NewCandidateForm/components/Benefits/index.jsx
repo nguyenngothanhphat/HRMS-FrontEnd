@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Typography, Button, Skeleton } from 'antd';
+import { Row, Col, Button, Skeleton } from 'antd';
 import { connect, history, formatMessage } from 'umi';
 // import PreviewOffer from '@/pages/NewCandidateForm/components/PreviewOffer/index';
 import { getCurrentTenant } from '@/utils/authority';
@@ -313,6 +313,26 @@ class Benefits extends PureComponent {
     );
   };
 
+  getBenefitDocuments = (category) => {
+    const { data: { benefits = [] } = {} } = this.props;
+
+    let getBenefits = [];
+    benefits.forEach((benefit) => {
+      if (benefit.category === category) {
+        const docs = [...benefit.documents];
+        const documents = docs.map((doc) => {
+          return {
+            key: doc._id,
+            value: doc.attachmentName,
+          };
+        });
+
+        getBenefits = documents;
+      }
+    });
+    return getBenefits;
+  };
+
   render() {
     const headerText = formatMessage({ id: 'component.Benefits.subHeader' });
     const globalEmployeesCheckbox = {
@@ -320,64 +340,39 @@ class Benefits extends PureComponent {
         {
           value: formatMessage({ id: 'component.Benefits.medical' }),
           title: formatMessage({ id: 'component.Benefits.medical' }),
-          subCheckBox: [
-            {
-              key: 1,
-              value: formatMessage({ id: 'component.Benefits.openAccess' }),
-            },
-            {
-              key: 2,
-              value: formatMessage({ id: 'component.Benefits.OAP' }),
-            },
-          ],
+          // subCheckBox: [
+          //   {
+          //     key: 1,
+          //     value: formatMessage({ id: 'component.Benefits.openAccess' }),
+          //   },
+          //   {
+          //     key: 2,
+          //     value: formatMessage({ id: 'component.Benefits.OAP' }),
+          //   },
+          // ],
+          subCheckBox: this.getBenefitDocuments(
+            formatMessage({ id: 'component.Benefits.medical' }),
+          ),
         },
         {
           value: formatMessage({ id: 'component.Benefits.dental' }),
           title: formatMessage({ id: 'component.Benefits.dental' }),
-          subCheckBox: [
-            {
-              key: 1,
-              value: formatMessage({ id: 'component.Benefits.volDental' }),
-            },
-          ],
+          subCheckBox: this.getBenefitDocuments(formatMessage({ id: 'component.Benefits.dental' })),
         },
         {
           value: formatMessage({ id: 'component.Benefits.vision' }),
           title: formatMessage({ id: 'component.Benefits.vision' }),
-          subCheckBox: [
-            {
-              key: 1,
-              value: formatMessage({ id: 'component.Benefits.visionPro' }),
-            },
-          ],
+          subCheckBox: this.getBenefitDocuments(formatMessage({ id: 'component.Benefits.vision' })),
         },
         {
           value: formatMessage({ id: 'component.Benefits.life' }),
           title: formatMessage({ id: 'component.Benefits.life' }),
-          subCheckBox: [
-            {
-              key: 1,
-              value: formatMessage({ id: 'component.Benefits.basicLife' }),
-            },
-            {
-              key: 2,
-              value: formatMessage({ id: 'component.Benefits.volLife' }),
-            },
-          ],
+          subCheckBox: this.getBenefitDocuments('Life Insurance'),
         },
         {
           value: formatMessage({ id: 'component.Benefits.shortTerm' }),
           title: formatMessage({ id: 'component.Benefits.shortTermTitle' }),
-          subCheckBox: [
-            {
-              key: 1,
-              value: formatMessage({ id: 'component.Benefits.basicLife' }),
-            },
-            {
-              key: 2,
-              value: formatMessage({ id: 'component.Benefits.volLife' }),
-            },
-          ],
+          subCheckBox: this.getBenefitDocuments('Short Term'),
         },
       ],
     };
@@ -411,7 +406,7 @@ class Benefits extends PureComponent {
     };
 
     const { benefits } = this.state;
-    const { loadingFetchCandidate } = this.props;
+    const { loadingFetchCandidate, data: { benefits: listBenefits = [] } = {} } = this.props;
     if (loadingFetchCandidate) return <Skeleton />;
     return (
       <>
@@ -421,11 +416,11 @@ class Benefits extends PureComponent {
               <Header />
               <GlobalEmployeeComponent
                 globalEmployeesCheckbox={globalEmployeesCheckbox}
-                headerText={headerText}
                 onChange={this.onChange}
                 handleCheckAll={this.handleCheckAll}
                 handleChange={this.handleChange}
                 benefits={benefits}
+                listBenefits={listBenefits}
               />
               <IndiaEmployeeComponent
                 IndiaEmployeesCheckbox={IndiaEmployeesCheckbox}

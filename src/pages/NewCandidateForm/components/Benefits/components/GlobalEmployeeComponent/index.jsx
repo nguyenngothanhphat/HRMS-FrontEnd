@@ -2,9 +2,25 @@
 
 import React, { PureComponent } from 'react';
 import { Checkbox, Typography, Row } from 'antd';
+import moment from 'moment';
 import styles from './index.less';
 
 class GlobalEmpoyeeComponent extends PureComponent {
+  getCreateBenefitAt = (category) => {
+    const { listBenefits = [] } = this.props;
+    let createdAt = '';
+
+    listBenefits.forEach((item) => {
+      if (item.category === category) {
+        createdAt = item.createdAt;
+      }
+    });
+
+    createdAt = moment(createdAt).locale('en').format('DD/MM/YYYY');
+
+    return createdAt;
+  };
+
   render() {
     const {
       globalEmployeesCheckbox,
@@ -51,7 +67,7 @@ class GlobalEmpoyeeComponent extends PureComponent {
               </Checkbox>
               <div className={styles.paddingLeft}>
                 <Typography.Title className={styles.headerText} level={4}>
-                  {headerText}
+                  Coverage will take effect on {this.getCreateBenefitAt(item.title)}
                 </Typography.Title>
                 <CheckboxGroup
                   options={item.subCheckBox.map((data) => data.value)}
