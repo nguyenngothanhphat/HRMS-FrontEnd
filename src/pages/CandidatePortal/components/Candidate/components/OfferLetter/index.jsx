@@ -4,7 +4,7 @@ import axios from 'axios';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { connect } from 'umi';
+import { connect, history } from 'umi';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import { getCurrentTenant } from '@/utils/authority';
 import NoteComponent from '@/pages/NewCandidateForm/components/NoteComponent';
@@ -12,6 +12,7 @@ import FileContent from '../FileContent';
 import AcceptOfferModal from './components/AcceptOfferModal';
 import RejectOfferModal from './components/RejectOfferModal';
 import styles from './index.less';
+import NotificationModal from './components/NotificationModal';
 
 const OfferLetter = (props) => {
   const { dispatch, tempData = {}, data = {}, candidate, loading1, processStatus = '' } = props;
@@ -51,6 +52,8 @@ const OfferLetter = (props) => {
 
   const [acceptOfferModalVisible, setAcceptOfferModalVisible] = useState(false);
   const [rejectOfferModalVisible, setRejectOfferModalVisible] = useState(false);
+  const [notificationModalVisible, setNotificationModalVisible] = useState(false);
+  const [action, setAction] = useState('');
 
   // const saveChanges = () => {
   //   // Save changes to redux store
@@ -73,10 +76,9 @@ const OfferLetter = (props) => {
     // window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
   }, []);
 
-  // useEffect(() => {
-  //   // Save changes to store whenever input fields change
-  //   saveChanges();
-  // }, [mail, hrSignature, hrManagerSignature]);
+  const goBackToHome = () => {
+    history.push(`/candidate-portal/dashboard`);
+  };
 
   useEffect(() => {}, [hrSignatureProp, hrManagerSignatureProp]);
 
@@ -102,6 +104,7 @@ const OfferLetter = (props) => {
   }, [candidateSignature]);
 
   const handleFinalSubmit = async (id) => {
+    setAction('accept');
     if (!dispatch) {
       return;
     }
@@ -124,16 +127,18 @@ const OfferLetter = (props) => {
       },
     });
     if (res.statusCode === 200) {
-      dispatch({
-        type: 'candidatePortal/saveOrigin',
-        payload: {
-          processStatus: NEW_PROCESS_STATUS.OFFER_ACCEPTED,
-        },
-      });
+      // dispatch({
+      //   type: 'candidatePortal/saveOrigin',
+      //   payload: {
+      //     processStatus: NEW_PROCESS_STATUS.OFFER_ACCEPTED,
+      //   },
+      // });
+      setNotificationModalVisible(true);
     }
   };
 
   const handleFinalReject = async (reason) => {
+    setAction('reject');
     if (!dispatch) {
       return;
     }
@@ -148,12 +153,13 @@ const OfferLetter = (props) => {
       },
     });
     if (res.statusCode === 200) {
-      dispatch({
-        type: 'candidatePortal/saveOrigin',
-        payload: {
-          processStatus: NEW_PROCESS_STATUS.OFFER_REJECTED,
-        },
-      });
+      // dispatch({
+      //   type: 'candidatePortal/saveOrigin',
+      //   payload: {
+      //     processStatus: NEW_PROCESS_STATUS.OFFER_REJECTED,
+      //   },
+      // });
+      setNotificationModalVisible(true);
     }
   };
 
@@ -287,6 +293,11 @@ const OfferLetter = (props) => {
         visible={rejectOfferModalVisible}
         onClose={() => setRejectOfferModalVisible(false)}
         onFinish={handleFinalReject}
+      />
+      <NotificationModal
+        visible={notificationModalVisible}
+        onClose={goBackToHome}
+        action={action}
       />
     </Row>
   );

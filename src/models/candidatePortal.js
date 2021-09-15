@@ -420,8 +420,8 @@ const candidatePortal = {
             break;
 
           case NEW_PROCESS_STATUS.OFFER_RELEASED:
-          case NEW_PROCESS_STATUS.OFFER_ACCEPTED:
-          case NEW_PROCESS_STATUS.OFFER_REJECTED:
+            // case NEW_PROCESS_STATUS.OFFER_ACCEPTED:
+            // case NEW_PROCESS_STATUS.OFFER_REJECTED:
             // offer letter
             tempPendingTasks[3].status = CANDIDATE_TASK_STATUS.IN_PROGRESS;
             tempPendingTasks[3].dueDate = expiryDate ? moment(expiryDate).format(dateFormat) : '';
