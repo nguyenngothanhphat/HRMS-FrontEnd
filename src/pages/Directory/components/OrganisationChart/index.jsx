@@ -3,7 +3,7 @@ import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/time
 import { connect } from 'umi';
 import moment from 'moment';
 
-import { isEmpty } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import { getCurrentTenant } from '@/utils/authority';
 import OrganizationChart from './components/OrganizationChart';
 import DetailEmployeeChart from './components/EmployeeBox';
@@ -67,7 +67,7 @@ class OrganisationChart extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const { listLocationsByCompany = [] } = this.props;
-    const { status, currentDate, currentTime } = this.state;
+    const { status, currentDate, currentTime, chartDetails } = this.state;
     if (
       JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {
@@ -89,7 +89,7 @@ class OrganisationChart extends Component {
 
     if (JSON.stringify(prevState.currentTime) !== JSON.stringify(currentTime)) {
       // [2] currentTime state changed, then update data
-      this.syncDataInformation(currentTime);
+      this.initSyncDataInformation(currentTime);
     }
   }
 
@@ -109,9 +109,28 @@ class OrganisationChart extends Component {
     });
   };
 
-  syncDataInformation = (currentTime) => {
+  initSyncDataInformation = (currentTime) => {
+    const { chartDetails } = this.state;
     const getCurrentUserdata = this.getDataCurrentUser(currentTime);
-    this.setState({ chartDetails: getCurrentUserdata });
+    if (isEqual(chartDetails, getCurrentUserdata)) {
+      this.setState({ chartDetails: getCurrentUserdata });
+    } else {
+      this.syncDataInformation(currentTime, chartDetails);
+    }
+  };
+
+  syncDataInformation = (currentTime, chartDetails) => {
+    const { timezoneList } = this.state;
+    const { location = {} } = chartDetails;
+
+    if (!isEmpty(location)) {
+      const findTimezone =
+        timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+      const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
+
+      const newChartDetails = { ...chartDetails, localTime: timeData };
+      this.setState({ chartDetails: newChartDetails });
+    }
   };
 
   fetchDataOrgChart = () => {
