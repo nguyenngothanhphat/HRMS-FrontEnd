@@ -8,7 +8,7 @@ const ChatEvent = {
   LAST_MESSAGE: 'lastMessage',
 };
 
-// const SOCKET_URL = 'https://file-stghrms.paxanimi.ai';
-const SOCKET_URL = 'http://localhost:8900';
+const SOCKET_URL = 'https://file-stghrms.paxanimi.ai';
+// const SOCKET_URL = 'http://localhost:8900';
 
 export { ChatEvent, SOCKET_URL };
