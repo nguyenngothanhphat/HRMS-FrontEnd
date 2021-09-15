@@ -32,7 +32,7 @@ class LocalEmployeeComponent extends PureComponent {
 
     const { employeeProvident, paytmWallet, listSelectedEmployee, listSelectedPaytmWallet } =
       benefits;
-    const { name, checkBox } = IndiaEmployeesCheckbox;
+    const { checkBox } = IndiaEmployeesCheckbox;
 
     const CheckboxGroup = Checkbox.Group;
     return (
@@ -73,8 +73,8 @@ class LocalEmployeeComponent extends PureComponent {
               {item.subCheckBox.map((data) => (
                 <Row>
                   <Checkbox
-                    onChange={onChange}
-                    value={item.value}
+                    onChange={(e) => onChange(e, item.value)}
+                    value={data.value}
                     checked={item.title === 'employeeProvident' ? employeeProvident : paytmWallet}
                   >
                     <Typography.Text className={styles.subCheckboxTitle}>

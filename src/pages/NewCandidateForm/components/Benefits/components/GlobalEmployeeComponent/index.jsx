@@ -36,6 +36,8 @@ class GlobalEmpoyeeComponent extends PureComponent {
       listSelectedMedical,
       listSelectedShortTerm,
       listSelectedLife,
+      listSelectedVision,
+      listSelectedDental,
       dental,
       vision,
     } = benefits;
@@ -59,6 +61,10 @@ class GlobalEmpoyeeComponent extends PureComponent {
                     ? life
                     : item.title === 'shortTerm'
                     ? shortTerm
+                    : item.title === 'Dental'
+                    ? dental
+                    : item.title === 'Vision'
+                    ? vision
                     : null
                 }
               >
@@ -76,6 +82,10 @@ class GlobalEmpoyeeComponent extends PureComponent {
                       ? listSelectedLife
                       : item.title === 'shortTerm'
                       ? listSelectedShortTerm
+                      : item.title === 'Dental'
+                      ? listSelectedDental
+                      : item.title === 'Vision'
+                      ? listSelectedVision
                       : []
                   }
                 />
@@ -91,9 +101,21 @@ class GlobalEmpoyeeComponent extends PureComponent {
               {item.subCheckBox.map((data) => (
                 <Row>
                   <Checkbox
-                    onChange={onChange}
-                    value={item.value}
-                    checked={item.title === 'Dental' ? dental : vision}
+                    onChange={(e) => onChange(e, item.value)}
+                    value={data.value}
+                    checked={
+                      item.title === 'Medical'
+                        ? medical
+                        : item.title === 'Life'
+                        ? life
+                        : item.title === 'shortTerm'
+                        ? shortTerm
+                        : item.title === 'Dental'
+                        ? dental
+                        : item.title === 'Vision'
+                        ? vision
+                        : null
+                    }
                   >
                     <Typography.Text className={styles.subCheckboxTitle}>
                       {data.value}

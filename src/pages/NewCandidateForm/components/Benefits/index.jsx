@@ -71,6 +71,28 @@ class Benefits extends PureComponent {
           },
         },
       });
+    } else if (title === 'Dental') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            listSelectedDental: checkedList,
+            dental: checkedList.length === arr.length,
+          },
+        },
+      });
+    } else if (title === 'Vision') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            listSelectedVision: checkedList,
+            vision: checkedList.length === arr.length,
+          },
+        },
+      });
     } else if (title === 'Life') {
       dispatch({
         type: 'info/saveBenefits',
@@ -107,40 +129,90 @@ class Benefits extends PureComponent {
     }
   };
 
-  onChange = (e) => {
+  onChange = (e, title) => {
     const { target } = e;
-    const { value } = target;
+    const { value, checked } = target;
     const { benefits } = this.state;
-    const { vision, dental, paytmWallet } = benefits;
+    const { vision, dental, paytmWallet, life, medical, shortTerm, employeeProvident } = benefits;
     const { dispatch } = this.props;
-    if (value === 'Dental') {
+    console.log(e);
+    console.log(title);
+
+    if (title === 'Dental') {
       dispatch({
         type: 'info/saveBenefits',
         payload: {
           benefits: {
             ...benefits,
             dental: !dental,
+            selectedDental: checked ? value : '',
           },
         },
       });
-    } else if (value === 'Vision') {
+    } else if (title === 'Vision') {
       dispatch({
         type: 'info/saveBenefits',
         payload: {
           benefits: {
             ...benefits,
             vision: !vision,
+            selectedVision: checked ? value : '',
+          },
+        },
+      });
+    } else if (title === 'Life') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            life: !life,
+            selectedLife: checked ? value : '',
+          },
+        },
+      });
+    } else if (title === 'Medical') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            medical: !medical,
+            selectedMedical: checked ? value : '',
+          },
+        },
+      });
+    } else if (title === 'shortTerm') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            shortTerm: !shortTerm,
+            selectedShortTerm: checked ? value : '',
           },
         },
       });
     }
-    if (value === 'Paytm Wallet') {
+    if (title === 'Paytm Wallet') {
       dispatch({
         type: 'info/saveBenefits',
         payload: {
           benefits: {
             ...benefits,
             paytmWallet: !paytmWallet,
+            selectedPaytmWallet: checked ? value : '',
+          },
+        },
+      });
+    } else if (title === 'Employee Provident Fund') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            employeeProvident: !employeeProvident,
+            selectedEmployeeProvident: checked ? value : '',
           },
         },
       });
@@ -158,6 +230,28 @@ class Benefits extends PureComponent {
             ...benefits,
             listSelectedMedical: e.target.checked ? arr.map((data) => data.value) : [],
             medical: e.target.checked,
+          },
+        },
+      });
+    } else if (title === 'Dental') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            listSelectedDental: e.target.checked ? arr.map((data) => data.value) : [],
+            dental: e.target.checked,
+          },
+        },
+      });
+    } else if (title === 'Vision') {
+      dispatch({
+        type: 'info/saveBenefits',
+        payload: {
+          benefits: {
+            ...benefits,
+            listSelectedVision: e.target.checked ? arr.map((data) => data.value) : [],
+            vision: e.target.checked,
           },
         },
       });
@@ -334,7 +428,6 @@ class Benefits extends PureComponent {
   };
 
   render() {
-    const headerText = formatMessage({ id: 'component.Benefits.subHeader' });
     const globalEmployeesCheckbox = {
       checkBox: [
         {
@@ -382,24 +475,24 @@ class Benefits extends PureComponent {
           value: formatMessage({ id: 'component.Benefits.paytm' }),
           title: 'paytmWallet',
           subCheckBox: [
-            // {
-            //   key: 1,
-            //   value: formatMessage({ id: 'component.Benefits.openAccess' }),
-            // },
+            {
+              key: 1,
+              value: formatMessage({ id: 'component.Benefits.openAccess' }),
+            },
+            {
+              key: 2,
+              value: formatMessage({ id: 'component.Benefits.OAP' }),
+            },
           ],
         },
         {
           value: formatMessage({ id: 'component.Benefits.Employee' }),
           title: formatMessage({ id: 'component.Benefits.employeeTitle' }),
           subCheckBox: [
-            // {
-            //   key: 1,
-            //   value: formatMessage({ id: 'component.Benefits.openAccess' }),
-            // },
-            // {
-            //   key: 2,
-            //   value: formatMessage({ id: 'component.Benefits.OAP' }),
-            // },
+            {
+              key: 1,
+              value: formatMessage({ id: 'component.Benefits.openAccess' }),
+            },
           ],
         },
       ],
