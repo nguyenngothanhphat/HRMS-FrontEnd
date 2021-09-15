@@ -7,7 +7,7 @@ import { getCurrentTenant } from '@/utils/authority';
 import { ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 import Header from './components/Header';
 import GlobalEmployeeComponent from './components/GlobalEmployeeComponent';
-import IndiaEmployeeComponent from './components/IndiaEmployeeComponent';
+import LocalEmployeeComponent from './components/LocalEmployeeComponent';
 import NoteComponent from '../NewNoteComponent';
 import styles from './index.less';
 // import { Page } from '../../utils';
@@ -422,13 +422,13 @@ class Benefits extends PureComponent {
                 benefits={benefits}
                 listBenefits={listBenefits}
               />
-              <IndiaEmployeeComponent
+              <LocalEmployeeComponent
                 IndiaEmployeesCheckbox={IndiaEmployeesCheckbox}
-                headerText={headerText}
                 onChange={this.onChange}
                 handleCheckAll={this.handleCheckAll}
                 handleChange={this.handleChange}
                 benefits={benefits}
+                listBenefits={listBenefits}
               />
               {/* <div style={{ margin: '32px' }}>
                 <RenderAddQuestion page={Page.Benefits} />
