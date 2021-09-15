@@ -66,10 +66,11 @@ class OrganisationChart extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { listLocationsByCompany = [] } = this.props;
-    const { status, currentDate, currentTime, chartDetails } = this.state;
+    const { listLocationsByCompany = [], companiesOfUser = [] } = this.props;
+    const { status, currentDate, currentTime } = this.state;
     if (
-      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany) ||
+      JSON.stringify(prevProps.companiesOfUser) !== JSON.stringify(companiesOfUser)
     ) {
       this.fetchAllListUser();
       this.fetchTimezone();
