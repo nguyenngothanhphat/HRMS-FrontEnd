@@ -326,10 +326,10 @@ class Benefits extends PureComponent {
             value: doc.attachmentName,
           };
         });
-
-        getBenefits = documents;
+        getBenefits = [...getBenefits, ...documents];
       }
     });
+
     return getBenefits;
   };
 
@@ -382,24 +382,24 @@ class Benefits extends PureComponent {
           value: formatMessage({ id: 'component.Benefits.paytm' }),
           title: 'paytmWallet',
           subCheckBox: [
-            {
-              key: 1,
-              value: formatMessage({ id: 'component.Benefits.openAccess' }),
-            },
+            // {
+            //   key: 1,
+            //   value: formatMessage({ id: 'component.Benefits.openAccess' }),
+            // },
           ],
         },
         {
           value: formatMessage({ id: 'component.Benefits.Employee' }),
           title: formatMessage({ id: 'component.Benefits.employeeTitle' }),
           subCheckBox: [
-            {
-              key: 1,
-              value: formatMessage({ id: 'component.Benefits.openAccess' }),
-            },
-            {
-              key: 2,
-              value: formatMessage({ id: 'component.Benefits.OAP' }),
-            },
+            // {
+            //   key: 1,
+            //   value: formatMessage({ id: 'component.Benefits.openAccess' }),
+            // },
+            // {
+            //   key: 2,
+            //   value: formatMessage({ id: 'component.Benefits.OAP' }),
+            // },
           ],
         },
       ],

@@ -16,20 +16,15 @@ class GlobalEmpoyeeComponent extends PureComponent {
       }
     });
 
-    createdAt = moment(createdAt).locale('en').format('DD/MM/YYYY');
+    if (createdAt === '') return '';
 
-    return createdAt;
+    createdAt = moment(createdAt).locale('en').format('DD/MM/YYYY');
+    return createdAt ? `Coverage will take effect on${createdAt}` : '';
   };
 
   render() {
-    const {
-      globalEmployeesCheckbox,
-      headerText,
-      onChange,
-      handleCheckAll,
-      handleChange,
-      benefits,
-    } = this.props;
+    const { globalEmployeesCheckbox, onChange, handleCheckAll, handleChange, benefits } =
+      this.props;
     const {
       medical,
       life,
@@ -67,7 +62,7 @@ class GlobalEmpoyeeComponent extends PureComponent {
               </Checkbox>
               <div className={styles.paddingLeft}>
                 <Typography.Title className={styles.headerText} level={4}>
-                  Coverage will take effect on {this.getCreateBenefitAt(item.title)}
+                  {this.getCreateBenefitAt(item.title)}
                 </Typography.Title>
                 <CheckboxGroup
                   options={item.subCheckBox.map((data) => data.value)}
@@ -90,7 +85,7 @@ class GlobalEmpoyeeComponent extends PureComponent {
                 {item.value}
               </Typography.Paragraph>
               <Typography.Title className={styles.headerText} level={4}>
-                {headerText}
+                {this.getCreateBenefitAt(item.title)}
               </Typography.Title>
               {item.subCheckBox.map((data) => (
                 <Row>
