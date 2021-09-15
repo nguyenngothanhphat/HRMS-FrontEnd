@@ -37,6 +37,7 @@ class OrganisationChart extends Component {
       chartDetails: {},
       timezoneList: [],
       currentTime: moment(),
+      currentDate: new Date(),
       status: 0,
     };
     this.myRef = React.createRef();
@@ -59,11 +60,14 @@ class OrganisationChart extends Component {
     });
 
     this.fetchTimezone();
+
+    // sync date
+    this.syncDateTime = setInterval(() => this.syncDate(), 1000);
   }
 
   componentDidUpdate(prevProps, prevState) {
     const { listLocationsByCompany = [] } = this.props;
-    const { status } = this.state;
+    const { status, currentDate, currentTime } = this.state;
     if (
       JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
     ) {
@@ -74,7 +78,41 @@ class OrganisationChart extends Component {
     if (prevState.status !== status) {
       this.fetchDataOrgChart();
     }
+
+    if (
+      JSON.stringify(prevState.currentDate.toLocaleTimeString()) !==
+      JSON.stringify(currentDate.toLocaleTimeString())
+    ) {
+      // [1] syncDateTime() always updates base on currentDate changing => call syncCurrentTime()
+      this.syncCurrentTime();
+    }
+
+    if (JSON.stringify(prevState.currentTime) !== JSON.stringify(currentTime)) {
+      // [2] currentTime state changed, then update data
+      this.syncDataInformation(currentTime);
+    }
   }
+
+  componentWillUnmount() {
+    clearInterval(this.syncDateTime);
+  }
+
+  syncDate = () => {
+    this.setState({
+      currentDate: new Date(),
+    });
+  };
+
+  syncCurrentTime = () => {
+    this.setState({
+      currentTime: moment(),
+    });
+  };
+
+  syncDataInformation = (currentTime) => {
+    const getCurrentUserdata = this.getDataCurrentUser(currentTime);
+    this.setState({ chartDetails: getCurrentUserdata });
+  };
 
   fetchDataOrgChart = () => {
     const { dispatch, myEmployeeId = '' } = this.props;
@@ -87,8 +125,8 @@ class OrganisationChart extends Component {
     });
   };
 
-  getDataCurrentUser = () => {
-    const { timezoneList, currentTime } = this.state;
+  getDataCurrentUser = (currentTime) => {
+    const { timezoneList } = this.state;
     const {
       employee: { _id = '', title = {}, department = {}, generalInfo = {}, location = {} } = {},
     } = this.props;
@@ -116,7 +154,7 @@ class OrganisationChart extends Component {
 
     if (getData.length === 0) {
       const { employee: { _id: currentUserId = '' } = {} } = this.props;
-      const getCurrentUserdata = this.getDataCurrentUser();
+      const getCurrentUserdata = this.getDataCurrentUser(currentTime);
 
       this.setState({ idSelect: currentUserId });
       this.setState({ chartDetails: getCurrentUserdata });
@@ -274,6 +312,7 @@ class OrganisationChart extends Component {
           getTimezoneViaCity(addressLine2),
       });
     });
+
     this.setState({
       timezoneList,
     });
