@@ -7,6 +7,7 @@ import {
   setStatusSeenConversation,
   addNewMessage,
   getConversationMessage,
+  getListLastMessage,
   getLastMessage,
 } from '@/services/conversation';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -16,6 +17,7 @@ const defaultState = {
   conversationList: [],
   activeConversationMessages: [],
   unseenTotal: 0,
+  listLastMessage: [],
 };
 
 const country = {
@@ -164,25 +166,44 @@ const country = {
         dialog(errors);
       }
     },
-  },
-  *getLastMessageEffect({ payload }, { call, put }) {
-    try {
-      const response = yield call(getLastMessage, {
-        ...payload,
-        tenantId: getCurrentTenant(),
-        company: getCurrentCompany(),
-      });
-      const { statusCode, data = [] } = response;
-      if (statusCode !== 200) throw response;
-      // yield put({
-      //   type: 'save',
-      //   payload: {
-      //     lastMessage: data,
-      //   },
-      // });
-    } catch (errors) {
-      dialog(errors);
-    }
+    *getLastMessageEffect({ payload }, { call }) {
+      try {
+        const response = yield call(getLastMessage, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put({
+        //   type: 'save',
+        //   payload: {
+        //     lastMessage: data,
+        //   },
+        // });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getListLastMessageEffect({ payload }, { call, put }) {
+      try {
+        const response = yield call(getListLastMessage, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            listLastMessage: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
   },
   reducers: {
     save(state, action) {

@@ -5,6 +5,7 @@ const ChatEvent = {
   GET_MESSAGE: 'getMessage',
   ADD_USER: 'addUser',
   GET_USER: 'getUsers',
+  LAST_MESSAGE: 'lastMessage',
 };
 
 // const SOCKET_URL = 'https://file-stghrms.paxanimi.ai';

@@ -50,6 +50,13 @@ export async function getConversationMessage(payload) {
   });
 }
 
+export async function getListLastMessage(payload) {
+  return request('/api/messagetenant/get-list-last-message', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function getLastMessage(payload) {
   return request('/api/messagetenant/get-last-message', {
     method: 'POST',

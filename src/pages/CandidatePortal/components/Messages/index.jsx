@@ -44,25 +44,46 @@ class Messages extends PureComponent {
         },
       });
     };
+
+    const getListLastMessage = (conversations) => {
+      return dispatch({
+        type: 'conversation/getListLastMessageEffect',
+        payload: {
+          conversations,
+        },
+      });
+    };
+
     const res = await getConversationList();
     if (res.statusCode === 200) {
-      if (res.data.length === 0) {
-        const res1 = await dispatch({
-          type: 'conversation/addNewConversationEffect',
-          payload: {
-            senderId: candidateId,
-            receiverId: hrId,
-          },
-        });
-        if (res1.statusCode === 200) {
-          getConversationList();
-          // set active to created conversation
-          this.onChangeActiveId(res1.data?._id, res1.data.isReplyable);
-        }
-      } else {
+      // if (res.data.length === 0) {
+      //   const res1 = await dispatch({
+      //     type: 'conversation/addNewConversationEffect',
+      //     payload: {
+      //       senderId: candidateId,
+      //       receiverId: hrId,
+      //     },
+      //   });
+      //   if (res1.statusCode === 200) {
+      //     getConversationList();
+      //     // set active to created conversation
+      //     this.onChangeActiveId(res1.data?._id, res1.data.isReplyable);
+      //   }
+      // } else {
+
+      console.log('res', res);
+      const { data = [] } = res;
+      console.log('data', data);
+      const conversations = data.map((d) => d._id) || [];
+      console.log('conversations', conversations);
+      getListLastMessage(conversations);
+
+      if (data.length > 0) {
         // set active to first message
-        this.onChangeActiveId(res.data[0]._id, res.data[0].isReplyable);
+        this.onChangeActiveId(data[0]._id, data[0].isReplyable);
       }
+
+      // }
     }
   };
 

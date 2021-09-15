@@ -98,16 +98,19 @@ const CandidatePortalLayout = React.memo((props) => {
       // socket.current.on(ChatEvent.GET_USER, (users) => {
       //   console.log('users', users);
       // });
-      socket.current.on(ChatEvent.GET_MESSAGE, (message) => {;
+      socket.current.on(ChatEvent.GET_MESSAGE, (message) => {
         saveNewMessage(message);
         setTimeout(() => {
           fetchUnseenTotal(candidate._id);
         }, 500);
       });
+      // socket.current.on(ChatEvent.LAST_MESSAGE, (message) => {;
+      //   saveLastMessage(message);
+      //   setTimeout(() => {
+      //     fetchUnseenTotal(candidate._id);
+      //   }, 500);
+      // });
     }
-    // return () => {
-    //   socket.disconnect();
-    // };
   }, [candidate]);
 
   useEffect(() => {
