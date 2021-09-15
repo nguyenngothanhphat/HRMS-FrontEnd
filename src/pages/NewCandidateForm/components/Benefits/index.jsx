@@ -135,8 +135,6 @@ class Benefits extends PureComponent {
     const { benefits } = this.state;
     const { vision, dental, paytmWallet, life, medical, shortTerm, employeeProvident } = benefits;
     const { dispatch } = this.props;
-    console.log(e);
-    console.log(title);
 
     if (title === 'Dental') {
       dispatch({
@@ -475,24 +473,24 @@ class Benefits extends PureComponent {
           value: formatMessage({ id: 'component.Benefits.paytm' }),
           title: 'paytmWallet',
           subCheckBox: [
-            {
-              key: 1,
-              value: formatMessage({ id: 'component.Benefits.openAccess' }),
-            },
-            {
-              key: 2,
-              value: formatMessage({ id: 'component.Benefits.OAP' }),
-            },
+            // {
+            //   key: 1,
+            //   value: formatMessage({ id: 'component.Benefits.openAccess' }),
+            // },
           ],
         },
         {
           value: formatMessage({ id: 'component.Benefits.Employee' }),
           title: formatMessage({ id: 'component.Benefits.employeeTitle' }),
           subCheckBox: [
-            {
-              key: 1,
-              value: formatMessage({ id: 'component.Benefits.openAccess' }),
-            },
+            // {
+            //   key: 1,
+            //   value: formatMessage({ id: 'component.Benefits.openAccess' }),
+            // },
+            // {
+            //   key: 2,
+            //   value: formatMessage({ id: 'component.Benefits.OAP' }),
+            // },
           ],
         },
       ],
