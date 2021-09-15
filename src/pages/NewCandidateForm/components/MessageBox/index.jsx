@@ -63,9 +63,9 @@ class MessageBox extends PureComponent {
 
     // realtime get message
     socket.emit(ChatEvent.ADD_USER, hrId?._id || hrId || '');
-    socket.on(ChatEvent.GET_USER, (users) => {
-      // console.log('users HR', users);
-    });
+    // socket.on(ChatEvent.GET_USER, (users) => {
+    //   // console.log('users HR', users);
+    // });
     socket.on(ChatEvent.GET_MESSAGE, (data) => {
       // console.log('data HR', data);
       this.saveNewMessage(data);
@@ -99,6 +99,7 @@ class MessageBox extends PureComponent {
                 receiverId: candidate,
                 title,
                 isReplyable,
+                isSeen: false,
               },
             });
           };
@@ -282,6 +283,7 @@ class MessageBox extends PureComponent {
     const { message } = values;
     if (activeId && message) {
       socket.emit(ChatEvent.SEND_MESSAGE, {
+        conversationId: activeId,
         senderId: hrId?._id || hrId || '',
         receiverId: candidate,
         text: message,

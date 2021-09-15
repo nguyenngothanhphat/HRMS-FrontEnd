@@ -3,8 +3,11 @@ import {
   addNewConversation,
   getConversation,
   getUserConversations,
+  getNumberUnseenConversation,
+  setStatusSeenConversation,
   addNewMessage,
   getConversationMessage,
+  getLastMessage,
 } from '@/services/conversation';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
@@ -12,6 +15,7 @@ const defaultState = {
   activeConversation: {},
   conversationList: [],
   activeConversationMessages: [],
+  unseenTotal: 0,
 };
 
 const country = {
@@ -34,7 +38,7 @@ const country = {
       }
       return response;
     },
-    *getUserConversationsEffect({ payload }, { call, put }) {
+    *getUserConversationsEffect({ payload = {} }, { call, put }) {
       let response = {};
       try {
         response = yield call(getUserConversations, {
@@ -50,6 +54,14 @@ const country = {
             conversationList: data,
           },
         });
+        // if (payload.userId) {
+        //   yield put({
+        //     type: 'conversation/getNumberUnseenConversationEffect',
+        //     payload: {
+        //       userId: payload.userId,
+        //     },
+        //   });
+        // }
       } catch (errors) {
         dialog(errors);
       }
@@ -73,6 +85,42 @@ const country = {
       } catch (errors) {
         dialog(errors);
       }
+    },
+    *setSeenEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(setStatusSeenConversation, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *getNumberUnseenConversationEffect({ payload }, { put, call }) {
+      let response = {};
+      try {
+        response = yield call(getNumberUnseenConversation, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            unseenTotal: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
     },
 
     // MESSAGE
@@ -116,6 +164,25 @@ const country = {
         dialog(errors);
       }
     },
+  },
+  *getLastMessageEffect({ payload }, { call, put }) {
+    try {
+      const response = yield call(getLastMessage, {
+        ...payload,
+        tenantId: getCurrentTenant(),
+        company: getCurrentCompany(),
+      });
+      const { statusCode, data = [] } = response;
+      if (statusCode !== 200) throw response;
+      // yield put({
+      //   type: 'save',
+      //   payload: {
+      //     lastMessage: data,
+      //   },
+      // });
+    } catch (errors) {
+      dialog(errors);
+    }
   },
   reducers: {
     save(state, action) {

@@ -5,13 +5,15 @@ import avtDefault from '@/assets/avtDefault.jpg';
 import CalendarIcon from '@/assets/candidatePortal/leave-application.svg';
 import MessageIcon from '@/assets/candidatePortal/message-circle.svg';
 import Footer from '@/components/Footer';
-import { getCurrentCompany } from '@/utils/authority';
-import Authorized from '@/utils/Authorized';
-import { getAuthorityFromRouter } from '@/utils/utils';
 // import BottomBar from '../components/BottomBar';
 import CommonModal from '@/pages/CandidatePortal/components/Dashboard/components/CommonModal';
-import s from './CandidatePortalLayout.less';
+import { getCurrentCompany } from '@/utils/authority';
+import Authorized from '@/utils/Authorized';
 import { CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
+import ChatEvent from '@/utils/chatSocket';
+import socket from '@/utils/socket';
+import { getAuthorityFromRouter } from '@/utils/utils';
+import s from './CandidatePortalLayout.less';
 
 const { Header, Content } = Layout;
 
@@ -42,7 +44,7 @@ const CandidatePortalLayout = React.memo((props) => {
     ticketId = '',
     // data: { title: { name: titleName = '' } = {} } = {},
     data: { firstName = '', lastName = '', middleName = '' },
-    conversation: { conversationList = [] } = {},
+    conversation: { unseenTotal = 0 } = {},
     pendingTasks = [],
     events = [],
   } = props;
@@ -58,6 +60,15 @@ const CandidatePortalLayout = React.memo((props) => {
     authority: undefined,
   };
 
+  const fetchUnseenTotal = (candidateId) => {
+    dispatch({
+      type: 'conversation/getNumberUnseenConversationEffect',
+      payload: {
+        userId: candidateId,
+      },
+    });
+  };
+
   useEffect(() => {
     if (!candidate) {
       dispatch({
@@ -70,6 +81,18 @@ const CandidatePortalLayout = React.memo((props) => {
         payload: {
           candidate: candidate._id,
         },
+      });
+
+      // realtime message
+      // socket.on(ChatEvent.DISCONNECT);
+      socket.emit(ChatEvent.ADD_USER, candidate._id);
+      // socket.on(ChatEvent.GET_USER, (users) => {
+      //   console.log('users', users);
+      // });
+      socket.on(ChatEvent.GET_MESSAGE, () => {
+        setTimeout(() => {
+          fetchUnseenTotal(candidate._id);
+        }, 100);
       });
     }
   }, [candidate]);
@@ -196,9 +219,7 @@ const CandidatePortalLayout = React.memo((props) => {
             }}
           >
             <img src={MessageIcon} alt="message" />
-            {conversationList.length > 0 && (
-              <div className={s.badgeNumber}>{conversationList.length}</div>
-            )}
+            {unseenTotal > 0 && <div className={s.badgeNumber}>{unseenTotal}</div>}
           </div>
 
           <Dropdown

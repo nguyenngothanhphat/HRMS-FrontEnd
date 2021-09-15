@@ -22,6 +22,19 @@ export async function getConversation(payload) {
   });
 }
 
+export async function getNumberUnseenConversation(payload) {
+  return request('/api/conversationtenant/get-list-unseen', {
+    method: 'POST',
+    data: payload,
+  });
+}
+export async function setStatusSeenConversation(payload) {
+  return request('/api/conversationtenant/set-status-seen', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 // MESSAGE
 export async function addNewMessage(payload) {
   return request('/api/messagetenant/add', {
@@ -32,6 +45,13 @@ export async function addNewMessage(payload) {
 
 export async function getConversationMessage(payload) {
   return request('/api/messagetenant/get-message', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getLastMessage(payload) {
+  return request('/api/messagetenant/get-last-message', {
     method: 'POST',
     data: payload,
   });

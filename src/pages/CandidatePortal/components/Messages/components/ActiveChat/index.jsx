@@ -48,21 +48,21 @@ class ActiveChat extends PureComponent {
   componentDidMount() {
     this.scrollToBottom();
     // realtime get message
-    const { candidate } = this.props;
-    socket.emit(ChatEvent.ADD_USER, candidate._id);
-    socket.on(ChatEvent.GET_USER, (users) => {
-      // console.log('users', users);
-    });
-    socket.on(ChatEvent.GET_MESSAGE, (data) => {
-      // console.log('data', data);
-      this.saveNewMessage(data);
+    // const { candidate } = this.props;
+    // socket.emit(ChatEvent.ADD_USER, candidate._id);
+    // socket.on(ChatEvent.GET_USER, (users) => {
+    //   // console.log('users', users);
+    // });
+    socket.on(ChatEvent.GET_MESSAGE, (message) => {
+      console.log('message a', message);
+      this.saveNewMessage(message);
     });
   }
 
   componentDidUpdate = () => {};
 
   componentWillUnmount = () => {
-    // socket.on(ChatEvent.DISCONNECT);
+    socket.on(ChatEvent.DISCONNECT, () => {});
 
     const { dispatch } = this.props;
     dispatch({
@@ -71,11 +71,17 @@ class ActiveChat extends PureComponent {
   };
 
   saveNewMessage = (message) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'conversation/saveNewMessage',
-      payload: message,
-    });
+    const { dispatch, activeId = '', fetchUnseenTotal = () => {} } = this.props;
+    setTimeout(() => {
+      fetchUnseenTotal();
+    }, 100);
+    const { conversationId = '' } = message;
+    if (conversationId === activeId) {
+      dispatch({
+        type: 'conversation/saveNewMessage',
+        payload: message,
+      });
+    }
   };
 
   fetchMessages = async () => {
@@ -217,6 +223,7 @@ class ActiveChat extends PureComponent {
     const { message } = values;
     if (activeId && message) {
       socket.emit(ChatEvent.SEND_MESSAGE, {
+        conversationId: activeId,
         senderId: candidateId,
         receiverId: assignTo?._id || assignTo || '',
         text: message,
@@ -228,6 +235,7 @@ class ActiveChat extends PureComponent {
           conversationId: activeId,
           sender: candidateId,
           text: message,
+          isSeen: true,
         },
       });
 
@@ -235,6 +243,10 @@ class ActiveChat extends PureComponent {
         this.formRef.current.setFieldsValue({
           message: '',
         });
+        const { fetchUnseenTotal = () => {} } = this.props;
+        setTimeout(() => {
+          fetchUnseenTotal();
+        }, 100);
       }
     }
     this.scrollToBottom();

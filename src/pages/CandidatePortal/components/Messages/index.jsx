@@ -57,11 +57,11 @@ class Messages extends PureComponent {
         if (res1.statusCode === 200) {
           getConversationList();
           // set active to created conversation
-          this.setState({ activeId: res1.data?._id, isReplyable: res1.data.isReplyable });
+          this.onChangeActiveId(res1.data?._id, res1.data.isReplyable);
         }
       } else {
         // set active to first message
-        this.setState({ activeId: res.data[0]._id, isReplyable: res.data[0].isReplyable });
+        this.onChangeActiveId(res.data[0]._id, res.data[0].isReplyable);
       }
     }
   };
@@ -75,6 +75,30 @@ class Messages extends PureComponent {
       top: document.body.scrollHeight,
       left: 0,
       behavior: 'smooth',
+    });
+    this.setSeenStatus(activeId);
+  };
+
+  setSeenStatus = async (conversationId) => {
+    const { dispatch } = this.props;
+    const res1 = await dispatch({
+      type: 'conversation/setSeenEffect',
+      payload: {
+        conversationId,
+      },
+    });
+    if (res1.statusCode === 200) {
+      this.fetchUnseenTotal();
+    }
+  };
+
+  fetchUnseenTotal = () => {
+    const { dispatch, candidate: candidateId = '' } = this.props;
+    dispatch({
+      type: 'conversation/getNumberUnseenConversationEffect',
+      payload: {
+        userId: candidateId,
+      },
     });
   };
 
@@ -93,7 +117,11 @@ class Messages extends PureComponent {
             />
           </Col>
           <Col xs={24} lg={16}>
-            <ActiveChat activeId={activeId} isReplyable={isReplyable} />
+            <ActiveChat
+              activeId={activeId}
+              isReplyable={isReplyable}
+              fetchUnseenTotal={this.fetchUnseenTotal}
+            />
           </Col>
         </Row>
       </div>
