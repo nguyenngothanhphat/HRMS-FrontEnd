@@ -17,12 +17,12 @@ class NoteBox extends Component {
           <div className={styles.headerNote__text}>Note</div>
         </div>
         <div className={styles.headerNote__content}>
-          The candidate must upload all required documents. And, <span>the HR must approve</span>{' '}
-          the documents and mark candidate as eligible.
+          Please add all the Benefits here. Benefits defined here will be available for selection
+          during the onboarding process.
         </div>
-        <div className={styles.headerNote__bottom}>
+        {/* <div className={styles.headerNote__bottom}>
           Post this approval, the remaining processes will open for onboarding.
-        </div>
+        </div> */}
       </div>
     );
   }

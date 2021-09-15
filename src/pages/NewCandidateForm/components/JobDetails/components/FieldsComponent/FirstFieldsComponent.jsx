@@ -2,7 +2,7 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 import { Checkbox, Col, Form, Row, Select, Spin, Tag } from 'antd';
-import { isNull } from 'lodash';
+import { isNull, debounce } from 'lodash';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
@@ -35,37 +35,34 @@ class FirstFieldsComponent extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      listReporteesId: [],
+      listReporteesId: [], // store id reportees from redux
+      listReporteesTag: [], // store object reportee info (name,id,...) => PURPOSE: to render tags name
+      nameReportees: '',
+      isSearch: false,
     };
+
+    this.setDebounce = debounce((nameReportees) => {
+      this.setState({
+        nameReportees,
+      });
+    }, 500);
   }
 
   componentDidMount = () => {
     this.fetchData();
   };
 
-  componentDidUpdate = (prevProps) => {
-    const { tempData: { locationList, reportees = [], reporteeList = [] } = {} } = this.props;
-    if (
-      JSON.stringify(prevProps.locationList) !== JSON.stringify(locationList) &&
-      reportees.length > 0 &&
-      reporteeList.length === 0
-    ) {
-      this.fetchReportees();
+  componentDidUpdate = (prevProps, prepStates) => {
+    const { nameReportees } = this.state;
+    if (JSON.stringify(prepStates.nameReportees) !== JSON.stringify(nameReportees)) {
+      this.fetchReportees(nameReportees);
     }
   };
 
   fetchData = () => {
     const {
       dispatch,
-      tempData: {
-        departmentList,
-        titleList,
-        managerList,
-        department,
-        title,
-        reportingManager,
-        workLocation,
-      },
+      tempData: { departmentList, titleList, managerList, department, title, reportingManager },
     } = this.props;
     const companyId = getCurrentCompany();
     const tenantId = getCurrentTenant();
@@ -98,15 +95,14 @@ class FirstFieldsComponent extends PureComponent {
         },
       });
     }
-    if (department && workLocation?._id) {
-      this.fetchReportees();
-    }
+    this.fetchReportees();
   };
 
   fetchReportees = (name = '') => {
     const { dispatch } = this.props;
+
     const {
-      tempData: { locationList, workLocation, reportees = [] },
+      tempData: { locationList, workLocation },
       companiesOfUser = [],
     } = this.props;
 
@@ -139,14 +135,23 @@ class FirstFieldsComponent extends PureComponent {
         // limit: 10,
         name,
       },
+    }).then((response) => {
+      const { statusCode, data } = response;
+      if (statusCode === 200) {
+        const showReporteesListAB =
+          data.length > 0
+            ? data.sort((a, b) => {
+                const nameA = a.generalInfo ? a.generalInfo?.firstName.toLowerCase() : '';
+                const nameB = b.generalInfo ? b.generalInfo?.firstName.toLowerCase() : '';
+                if (nameA < nameB) {
+                  return -1;
+                }
+                return 0;
+              })
+            : [];
+        this.storeReporteesInformation(showReporteesListAB);
+      }
     });
-
-    // Check array reportees is not empty => If yes, then store data to listReporteesId
-    if (reportees.length > 0) {
-      this.setState({
-        listReporteesId: reportees,
-      });
-    }
   };
 
   onChangeValue = (value, fieldName) => {
@@ -179,13 +184,15 @@ class FirstFieldsComponent extends PureComponent {
 
       case 'reportingManager': {
         _handleSelect(value, fieldName);
-        this.fetchReportees(0, value);
         break;
       }
 
       case 'reportees': {
-        this.handleReporteesValue(value);
         _handleSelect(value, fieldName);
+
+        this.setState({
+          listReporteesId: value,
+        });
         break;
       }
 
@@ -195,37 +202,137 @@ class FirstFieldsComponent extends PureComponent {
     }
   };
 
-  handleReporteesValue = (arrId) => {
-    const arrTemp = [...arrId];
+  /// ///////////////////////////////////////////////// [START] HANDLE REPORTEES FIELD ////////////////////////////////////////////////////
+
+  storeReporteesInformation = (showReporteesListAB) => {
+    const { listReporteesTag: stateListTags } = this.state;
+    const {
+      tempData: { reportees = [] },
+    } = this.props;
+
+    let listTemp = [...stateListTags];
+    if (reportees.length > 0) {
+      // Get an array of object elements base on list IDs in reportees array. => PURPOSE: TO RENDER TAGS NAME
+      let listReporteesTag = reportees.map((id) => {
+        const reportee = showReporteesListAB.find((item) => item._id === id);
+        return reportee;
+      });
+
+      listReporteesTag = listReporteesTag.filter((item) => item !== undefined); // Because showReporteesListAB maybe emtpy when we search then cause returning undefined
+      listTemp = [...listReporteesTag, ...listTemp]; // This array listTemp maybe has the same (or exist) elements between 2 listReporteesTag and listTemp
+
+      // => Therefore, need to fix to get a new array with unique element
+      const uniqueArr = [...new Set(listTemp.map((item) => item.id))];
+      const newListTags = uniqueArr.map((id) => {
+        return listTemp.find((temp) => temp.id === id);
+      });
+
+      this.setState({
+        listReporteesId: reportees,
+        listReporteesTag: newListTags,
+      });
+    }
+  };
+
+  onSelectReportees = (reporteeId) => {
+    const { listReporteesId, listReporteesTag } = this.state;
+    const {
+      tempData: { reporteeList = [] },
+    } = this.props;
+
+    const listReportees = [...listReporteesId];
+    let listTemp = [...listReporteesTag];
+
+    const showReporteesListAB =
+      reporteeList.length > 0
+        ? reporteeList.sort((a, b) => {
+            const nameA = a.generalInfo ? a.generalInfo?.firstName.toLowerCase() : '';
+            const nameB = b.generalInfo ? b.generalInfo?.firstName.toLowerCase() : '';
+            if (nameA < nameB) {
+              return -1;
+            }
+            return 0;
+          })
+        : [];
+
+    listReportees.push(reporteeId);
+
+    let arrTags = listReportees.map((id) => {
+      return showReporteesListAB.find((item) => item.id === id);
+    });
+
+    arrTags = arrTags.filter((item) => item !== undefined);
+    listTemp = [...arrTags, ...listTemp];
+    listTemp = [...new Set(listTemp)];
 
     this.setState({
-      listReporteesId: arrTemp,
+      listReporteesId: listReportees,
+      listReporteesTag: listTemp,
+      isSearch: false,
     });
   };
 
-  onCheckbox = (e) => {
-    const { listReporteesId } = this.state;
-    const arr = [...listReporteesId];
+  onDeselectReportees = (reporteeId) => {
+    const { listReporteesId, listReporteesTag } = this.state;
+    const listReportees = [...listReporteesId];
+    const listTags = [...listReporteesTag];
+
+    const index = listReportees.indexOf(reporteeId);
+    let indexTag = null;
+    listTags.forEach((item, indexItem) => {
+      if (item.id === reporteeId) indexTag = indexItem;
+    });
+
+    if (index > -1 && indexTag > -1 && indexTag !== null) {
+      listReportees.splice(index, 1);
+      listTags.splice(indexTag, 1);
+    }
+
+    this.setState({
+      listReporteesId: listReportees,
+      listReporteesTag: listTags,
+      isSearch: false,
+    });
+  };
+
+  onCheckbox = (e, showReporteesListAB) => {
+    const { listReporteesId, listReporteesTag } = this.state;
+    const arrIDs = [...listReporteesId];
+    let listTags = [...listReporteesTag];
 
     const check = e.target.checked;
     const { value } = e.target;
 
     if (check) {
-      arr.push(value);
+      arrIDs.push(value);
+      let arrTags = arrIDs.map((id) => {
+        return showReporteesListAB.find((item) => item.id === id);
+      });
+      arrTags = arrTags.filter((item) => item !== undefined);
+      listTags = [...arrTags, ...listTags];
+      listTags = [...new Set(listTags)];
     } else {
-      const index = arr.indexOf(value);
-      if (index > -1) {
-        arr.splice(index, 1);
+      const index = arrIDs.indexOf(value);
+      let indexTag = null;
+      listTags.forEach((item, indexItem) => {
+        if (item.id === value) indexTag = indexItem;
+      });
+
+      if (index > -1 && indexTag > -1 && indexTag !== null) {
+        arrIDs.splice(index, 1);
+        listTags.splice(indexTag, 1);
       }
     }
 
     this.setState({
-      listReporteesId: arr,
+      listReporteesId: arrIDs,
+      listReporteesTag: listTags,
     });
   };
 
   renderReporteesField = (showReporteesListAB) => {
     const { listReporteesId } = this.state;
+    const { loading4 } = this.props;
 
     const checkedStatus = (id) => {
       let check = false;
@@ -249,8 +356,13 @@ class FirstFieldsComponent extends PureComponent {
           className={`${InternalStyle.optionSelect} ${className}`}
           value={data._id}
           key={index}
+          disabled={loading4}
         >
-          <Checkbox value={data._id} onChange={this.onCheckbox} checked={checkedStatus(data._id)}>
+          <Checkbox
+            value={data._id}
+            onChange={(e) => this.onCheckbox(e, showReporteesListAB)}
+            checked={checkedStatus(data._id)}
+          >
             <div>{fullName}</div>
           </Checkbox>
         </Option>
@@ -282,24 +394,23 @@ class FirstFieldsComponent extends PureComponent {
     });
   };
 
-  renderReporteesName = (showReporteesListAB) => {
-    const { listReporteesId } = this.state;
-    const { loading4, disabled } = this.props;
-    if (listReporteesId.length === 0 || loading4) return null;
+  renderReporteesName = () => {
+    const { listReporteesTag } = this.state;
+    const { disabled } = this.props;
+    if (listReporteesTag.length === 0) return null;
 
     return (
       <div className={InternalStyle.listTags}>
-        {listReporteesId.map((id) => {
-          const reportee = showReporteesListAB.find((item) => item._id === id);
-          const fullName = `${reportee?.generalInfo?.firstName} ${
-            reportee?.generalInfo?.middleName ? reportee?.generalInfo?.middleName : ''
-          } ${reportee?.generalInfo?.lastName}`;
+        {listReporteesTag.map((item) => {
+          const fullName = `${item?.generalInfo?.firstName} ${
+            item?.generalInfo?.middleName ? item?.generalInfo?.middleName : ''
+          } ${item?.generalInfo?.lastName}`;
           return (
             <Tag
-              key={id}
+              key={item.id}
               closable={!disabled}
               className={InternalStyle.nameTag}
-              onClose={() => this.handleCloseTag(id)}
+              onClose={() => this.handleCloseTag(item.id)}
               closeIcon={<img alt="close-tag" src={CloseTagIcon} />}
             >
               {fullName}
@@ -309,6 +420,49 @@ class FirstFieldsComponent extends PureComponent {
       </div>
     );
   };
+
+  onSearchReportees = (value) => {
+    const formatValue = value.toLowerCase();
+    if (value) {
+      this.setState({
+        isSearch: true,
+      });
+      this.setDebounce(formatValue);
+    } else {
+      this.setState({
+        isSearch: false,
+      });
+      this.setDebounce('');
+    }
+  };
+
+  dropdownRender = (menu) => {
+    const { loading4 } = this.props;
+
+    return (
+      <div className={InternalStyle.dropdownRender}>
+        {loading4 ? (
+          <div className={InternalStyle.dropdownRender__spin}>
+            <Spin />
+          </div>
+        ) : null}
+        <div className={loading4 ? InternalStyle.dropdownRender__menu : null}>{menu}</div>
+      </div>
+    );
+  };
+
+  onInputKeyDown = (e) => {
+    const { nameReportees } = this.state;
+
+    if (e.keyCode === 8) {
+      if (nameReportees === '' && e.target.value === '') {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    }
+  };
+
+  /// ///////////////////////////////////////////////// [END] REPORTEES FIELD ////////////////////////////////////////////////////
 
   render() {
     const {
@@ -335,7 +489,7 @@ class FirstFieldsComponent extends PureComponent {
       disabled,
       currentStep,
     } = this.props;
-    const { listReporteesId } = this.state;
+    const { listReporteesId, nameReportees, isSearch } = this.state;
 
     const showManagerListAB =
       managerList.length > 0
@@ -400,7 +554,7 @@ class FirstFieldsComponent extends PureComponent {
             <Row gutter={[24, 0]}>
               {dropdownField.map((item, id) => {
                 const className = `${InternalStyle.InputReportees} ${
-                  listReporteesId.length > 0 ? InternalStyle.placeholderReportees : ''
+                  listReporteesId.length > 0 && !isSearch ? InternalStyle.placeholderReportees : ''
                 }`;
                 return (
                   <Col key={id} xs={24} sm={24} md={12} lg={12} xl={12}>
@@ -418,6 +572,32 @@ class FirstFieldsComponent extends PureComponent {
                       ]}
                     >
                       <Select
+                        /// /////////////////////// [START] REPORTEES FIELD //////////////////////////
+                        onInputKeyDown={this.onInputKeyDown} // Fix issue pressing BACKSPACE key event
+                        onBlur={
+                          // Handle fetch reportees
+                          item.title === 'reportees'
+                            ? () => {
+                                this.setState({ nameReportees: '', isSearch: false });
+                                if (nameReportees !== '') this.fetchReportees('');
+                              }
+                            : null
+                        }
+                        tagRender={() => null}
+                        onDeselect={item.title === 'reportees' ? this.onDeselectReportees : null}
+                        onSelect={item.title === 'reportees' ? this.onSelectReportees : null}
+                        mode={item.title === 'reportees' ? 'multiple' : null}
+                        onSearch={
+                          item.title === 'reportees'
+                            ? (value) => this.onSearchReportees(value)
+                            : null
+                        }
+                        dropdownRender={
+                          item.title === 'reportees' ? (menu) => this.dropdownRender(menu) : null
+                        }
+                        className={item.title === 'reportees' ? className : styles}
+                        value={item.title === 'reportees' ? listReporteesId : null}
+                        /// /////////////////////// [END] REPORTEES FIELD //////////////////////////
                         menuItemSelectedIcon={null}
                         loading={
                           (item.title === 'title' ? loading2 : null) ||
@@ -426,13 +606,13 @@ class FirstFieldsComponent extends PureComponent {
                           (item.title === 'department' ? loading1 : null)
                         }
                         placeholder={item.placeholder}
-                        className={item.title === 'reportees' ? className : styles}
-                        value={listReporteesId}
                         onChange={(value) => this.onChangeValue(value, item.title)}
                         disabled={
                           !!(item.title === 'grade' && jobGradeList.length <= 0) ||
                           (item.title === 'reportingManager' && managerList.length <= 0) ||
-                          (item.title === 'reportees' && reporteeList.length <= 0) ||
+                          (item.title === 'reportees' &&
+                            reporteeList.length <= 0 &&
+                            nameReportees === '') ||
                           (item.title === 'department' && departmentList.length <= 0) ||
                           (item.title === 'title' && titleList.length <= 0) ||
                           (item.title === 'grade' && disabled) ||
@@ -486,9 +666,13 @@ class FirstFieldsComponent extends PureComponent {
                         filterOption={(input, option) => {
                           if (item.title === 'grade')
                             return option.value.toString().indexOf(input) > -1;
-                          return option.value.toLowerCase().indexOf(input.toLowerCase()) > -1;
+                          if (item.title === 'reportees') {
+                            return true;
+                          }
+                          return (
+                            option.props.children.toLowerCase().indexOf(input.toLowerCase()) > -1
+                          );
                         }}
-                        mode={item.title === 'reportees' ? 'multiple' : ''}
                       >
                         {item.title === 'grade' ? (
                           jobGradeList.map((data) => (
@@ -540,9 +724,7 @@ class FirstFieldsComponent extends PureComponent {
                         ) : null}
                       </Select>
                     </Form.Item>
-                    {item.title === 'reportees'
-                      ? this.renderReporteesName(showReporteesListAB)
-                      : null}
+                    {item.title === 'reportees' ? this.renderReporteesName() : null}
                   </Col>
                 );
               })}

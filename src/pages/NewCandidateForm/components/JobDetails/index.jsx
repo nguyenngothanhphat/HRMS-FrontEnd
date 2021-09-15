@@ -30,6 +30,7 @@ import styles from './index.less';
     companiesOfUser,
     loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
     loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
+    loadingLocationList: loading.effects['newCandidateForm/fetchLocationList'],
   }),
 )
 class JobDetails extends PureComponent {
@@ -503,12 +504,12 @@ class JobDetails extends PureComponent {
       tempData: { employeeTypeList, position, employeeType },
       data,
     } = this.props;
-    const { loading, loadingFetchCandidate, processStatus } = this.props;
+    const { loading, loadingFetchCandidate, processStatus, loadingLocationList } = this.props;
 
     return (
       <>
         <Row gutter={[24, 0]}>
-          {loadingFetchCandidate || loading ? (
+          {loadingFetchCandidate || loading || loadingLocationList ? (
             <div className={styles.viewLoading}>
               <Skeleton />
             </div>
