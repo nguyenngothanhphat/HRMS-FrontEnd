@@ -174,7 +174,19 @@ class HealthWellbeing extends Component {
     const { openModal, idBenefit, idCountry, displayDocumentName, urlDocument, openViewDoc } =
       this.state;
 
-    if (listBenefit.length === 0) return <div style={{ padding: '30px' }} />;
+    if (listBenefit.length === 0)
+      return (
+        <div className={styles.emptyDiv}>
+          <div className={styles.box}>
+            <div className={styles.box__content}>
+              No Benefits found. Please use the{' '}
+              <span style={{ fontWeight: 700 }}>&quot;Add a Benefit&quot;</span> button to set up
+              new benefits.
+            </div>
+          </div>
+        </div>
+      );
+
     return (
       <div className={styles.healthWellbeing}>
         {loadingDeleteBenefit || loadingFetchListBenefit ? (
