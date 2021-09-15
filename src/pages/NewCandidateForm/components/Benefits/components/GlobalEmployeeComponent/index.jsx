@@ -24,14 +24,11 @@ class GlobalEmpoyeeComponent extends PureComponent {
       dental,
       vision,
     } = benefits;
-    const { name, checkBox } = globalEmployeesCheckbox;
+    const { checkBox } = globalEmployeesCheckbox;
 
     const CheckboxGroup = Checkbox.Group;
     return (
       <div className={styles.GlobalEmpoyeeComponent}>
-        <Typography.Title level={5} className={styles.headerPadding}>
-          {name}
-        </Typography.Title>
         {checkBox.map((item) =>
           item.subCheckBox.length > 1 ? (
             <div className={styles.checkBoxHeader}>

@@ -42,7 +42,20 @@ class Benefits extends PureComponent {
 
   componentDidMount() {
     window.scrollTo({ top: 77, behavior: 'smooth' }); // Back to top of the page
+    this.fetchListBenefit();
   }
+
+  fetchListBenefit = () => {
+    const {
+      dispatch,
+      data: { workLocation: { headQuarterAddress: { country = '' } = {} } = {} } = {},
+    } = this.props;
+
+    dispatch({
+      type: 'newCandidateForm/fetchListBenefit',
+      payload: { country },
+    });
+  };
 
   handleChange = (checkedList, arr, title) => {
     const { benefits } = this.state;
@@ -303,7 +316,6 @@ class Benefits extends PureComponent {
   render() {
     const headerText = formatMessage({ id: 'component.Benefits.subHeader' });
     const globalEmployeesCheckbox = {
-      name: formatMessage({ id: 'component.Benefits.globalEmployeeTitle' }),
       checkBox: [
         {
           value: formatMessage({ id: 'component.Benefits.medical' }),
@@ -370,7 +382,6 @@ class Benefits extends PureComponent {
       ],
     };
     const IndiaEmployeesCheckbox = {
-      name: formatMessage({ id: 'component.Benefits.IndiaEmployeeTitle' }),
       checkBox: [
         {
           value: formatMessage({ id: 'component.Benefits.paytm' }),
