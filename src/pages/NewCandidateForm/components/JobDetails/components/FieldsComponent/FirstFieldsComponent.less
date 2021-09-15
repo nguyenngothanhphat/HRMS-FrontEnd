@@ -77,12 +77,12 @@
       border-radius: 5px;
 
       :global {
-        .ant-select-selection-overflow-item {
-          display: none;
-        }
+        // .ant-select-selection-overflow-item {
+        //   display: none;
+        // }
 
         .ant-select-selection-overflow-item-suffix{
-          display: block;
+          // display: block;
           padding-left: 8px;
         }
       }
@@ -105,13 +105,13 @@
   }
 }
 
-.formItemReportees {
-  :global {
-    .ant-select-multiple .ant-select-selection-placeholder {
-      display: block !important;
-    }
-  }
-}
+// .formItemReportees {
+//   :global {
+//     .ant-select-multiple .ant-select-selection-placeholder {
+//       display: block !important;
+//     }
+//   }
+// }
 
 .optionSelect {
   padding: 12px 16px !important;
@@ -161,4 +161,21 @@
 
 .spin {
   width: 100%;
+}
+
+.dropdownRender{
+  width: 100%;
+  position: relative;
+
+  &__spin{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+  }
+
+  &__menu{
+    opacity: 0.3;
+  }
 }
