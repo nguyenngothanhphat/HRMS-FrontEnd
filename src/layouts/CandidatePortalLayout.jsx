@@ -78,6 +78,15 @@ const CandidatePortalLayout = React.memo((props) => {
     });
   };
 
+  const getListLastMessage = () => {
+    dispatch({
+      type: 'conversation/getListLastMessageEffect',
+      payload: {
+        userId: candidate._id,
+      },
+    });
+  };
+
   useEffect(() => {
     if (!candidate) {
       dispatch({
@@ -102,6 +111,7 @@ const CandidatePortalLayout = React.memo((props) => {
         saveNewMessage(message);
         setTimeout(() => {
           fetchUnseenTotal(candidate._id);
+          getListLastMessage();
         }, 500);
       });
       // socket.current.on(ChatEvent.LAST_MESSAGE, (message) => {;

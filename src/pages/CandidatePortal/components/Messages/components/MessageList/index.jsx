@@ -1,44 +1,72 @@
 import React, { PureComponent } from 'react';
 import { Input, Spin } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import moment from 'moment';
 import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
+import HRIcon2 from '@/assets/candidatePortal/HRViolet.svg';
+import HRIcon3 from '@/assets/candidatePortal/HRRed.svg';
 import styles from './index.less';
 
+const avatars = [HRIcon1, HRIcon2, HRIcon3];
 class MessageList extends PureComponent {
-  handleLongString = (str) => {
+  handleLongString = (str = '') => {
     if (str.length <= 70) return str;
     return `${str.slice(0, 70)}...`;
   };
 
-  onListClick = (_id, isReplyable) => {
+  onListClick = (_id, isReplyable, hrAvatar) => {
     const { onChangeActiveId = () => {} } = this.props;
-    onChangeActiveId(_id, isReplyable);
+    onChangeActiveId(_id, isReplyable, hrAvatar);
+  };
+
+  getTime = (dateTime) => {
+    const compare = (dateTimeA, dateTimeB) => {
+      const momentA = moment(dateTimeA).format('DD/MM/YYYY');
+      const momentB = moment(dateTimeB).format('DD/MM/YYYY');
+      if (momentA === momentB) return 1;
+      return 0;
+    };
+
+    const today = moment();
+    const yesterday = moment().add(-1, 'days');
+
+    if (compare(moment(dateTime), moment(today)) === 1) {
+      return 'Today';
+    }
+    if (compare(moment(dateTime), moment(yesterday)) === 1) {
+      return 'Yesterday';
+    }
+    return moment(dateTime).locale('en').format('MMMM Do');
   };
 
   renderItem = (item, listLength, index) => {
     // const { icon } = item;
     // const lastMessage = item.chat[item.chat.length - 1].content || '';
-    const { activeId = '', messages = [] } = this.props;
+    const { activeId = '', messages = [], listLastMessage = [] } = this.props;
     const isActive = activeId === item._id;
 
     const activeIndex = messages.findIndex((val) => val._id === activeId);
+    const lastMessage = listLastMessage.find((message) => message?.conversationId === item._id);
 
+    const hrAvatar = avatars[index % avatars.length];
     return (
       <div key={index}>
         <div
           className={`${styles.eachItem} ${isActive ? styles.active : ''}`}
-          onClick={() => this.onListClick(item._id, item.isReplyable)}
+          onClick={() => this.onListClick(item._id, item.isReplyable, hrAvatar)}
         >
           <div className={styles.messageIcon}>
-            <img src={HRIcon1} alt="message" />
+            <img src={hrAvatar} alt="message" />
           </div>
           <div className={styles.messageContent}>
             <div className={styles.messageTitleContainer}>
               <span className={styles.messageTitle}>{item.title || 'HR'}</span>
-              <span className={styles.messageDate}>Today</span>
+              <span className={styles.messageDate}>
+                {lastMessage ? this.getTime(lastMessage?.createdAt) : ''}
+              </span>
             </div>
             <span className={styles.message}>
-              {this.handleLongString('the last message here') || ''}
+              {lastMessage ? this.handleLongString(lastMessage?.text) : ''}
             </span>
           </div>
         </div>

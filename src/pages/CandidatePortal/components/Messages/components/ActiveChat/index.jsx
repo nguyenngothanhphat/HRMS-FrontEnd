@@ -119,29 +119,54 @@ class ActiveChat extends PureComponent {
     }
   };
 
+  getTime = (dateTime) => {
+    const compare = (dateTimeA, dateTimeB) => {
+      const momentA = moment(dateTimeA).format('DD/MM/YYYY');
+      const momentB = moment(dateTimeB).format('DD/MM/YYYY');
+      if (momentA === momentB) return 1;
+      return 0;
+    };
+
+    const today = moment();
+    const yesterday = moment().add(-1, 'days');
+
+    if (compare(moment(dateTime), moment(today)) === 1) {
+      return 'Today';
+    }
+    if (compare(moment(dateTime), moment(yesterday)) === 1) {
+      return 'Yesterday';
+    }
+    return moment(dateTime).locale('en').format('MMMM Do');
+  };
+
   // chat container
-  renderSender = () => {
+  renderSender = (messages = []) => {
+    const { hrAvatar = '' } = this.props;
+    const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
+
     return (
       <div className={styles.senderContainer}>
         <div className={styles.avatar}>
-          <img src={HRIcon1} alt="message" />
+          <img src={hrAvatar || HRIcon1} alt="message" />
         </div>
         <div className={styles.info}>
           <span className={styles.name}>HR</span>
-          <span className={styles.time}>Today</span>
+          <span className={styles.time}>
+            {lastMessage ? this.getTime(lastMessage?.createdAt) : ''}
+          </span>
         </div>
       </div>
     );
   };
 
   renderChatContent = (chat = []) => {
-    const { candidate: { _id: candidateId = '' } = {} } = this.props;
+    const { hrAvatar = '', candidate: { _id: candidateId = '' } = {}, activeId = '' } = this.props;
     const senderMessage = (item, index) => {
       return (
         <div key={index} className={styles.senderMessage}>
           <div className={styles.above}>
             <div className={styles.avatar}>
-              <img src={HRIcon1} alt="sender-avatar" />
+              <img src={hrAvatar || HRIcon1} alt="sender-avatar" />
             </div>
             <div className={styles.messageBody}>
               <span className={styles.name}>{item.text || ''}</span>
@@ -178,6 +203,9 @@ class ActiveChat extends PureComponent {
     return (
       <div className={styles.contentContainer} ref={this.mesRef}>
         {chat.map((item, index) => {
+          if (item.conversationId !== activeId) {
+            return '';
+          }
           if (item.sender === candidateId || item.senderId === candidateId) {
             return candidateMessage(item, index);
           }
@@ -247,9 +275,10 @@ class ActiveChat extends PureComponent {
         this.formRef.current.setFieldsValue({
           message: '',
         });
-        const { fetchUnseenTotal = () => {} } = this.props;
+        const { fetchUnseenTotal = () => {}, getListLastMessage = () => {} } = this.props;
         setTimeout(() => {
           fetchUnseenTotal();
+          getListLastMessage();
         }, 100);
       }
     }
