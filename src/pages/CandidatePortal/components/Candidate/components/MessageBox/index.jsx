@@ -2,10 +2,11 @@ import { Button, Form, Input, Skeleton } from 'antd';
 import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
+import { io } from 'socket.io-client';
 import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
 import MessageIcon from '@/assets/candidatePortal/messageIcon.svg';
-import ChatEvent from '@/utils/chatSocket';
-import socket from '@/utils/socket';
+import { ChatEvent, SOCKET_URL } from '@/utils/chatSocket';
+
 import styles from './index.less';
 
 const { TextArea } = Input;
@@ -39,6 +40,8 @@ class MessageBox extends PureComponent {
   formRef = React.createRef();
 
   formRefEmptyChat = React.createRef();
+
+  socket = React.createRef();
 
   constructor(props) {
     super(props);
@@ -76,10 +79,7 @@ class MessageBox extends PureComponent {
       // socket.emit(ChatEvent.ADD_USER, candidate);
       // socket.on(ChatEvent.GET_USER, () => {});
 
-      socket.on(ChatEvent.GET_MESSAGE, (newMessage) => {
-        console.log('message b', newMessage);
-        this.saveNewMessage(newMessage);
-      });
+      this.socket.current = io(SOCKET_URL);
     }
   };
 
@@ -94,8 +94,8 @@ class MessageBox extends PureComponent {
   };
 
   componentWillUnmount = () => {
-    socket.on(ChatEvent.DISCONNECT, () => {});
-
+    // socket.on(ChatEvent.DISCONNECT, () => {});
+    // socket.disconnect();
     const { dispatch } = this.props;
     dispatch({
       type: 'conversation/clearState',
@@ -225,7 +225,7 @@ class MessageBox extends PureComponent {
     const { activeId } = this.state;
     const { message } = values;
     if (activeId && message) {
-      socket.emit(ChatEvent.SEND_MESSAGE, {
+      this.socket.current.emit(ChatEvent.SEND_MESSAGE, {
         conversationId: activeId,
         senderId: candidateId,
         receiverId: assignTo?._id || assignTo || '',

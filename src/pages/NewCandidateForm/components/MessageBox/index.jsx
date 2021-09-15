@@ -1,17 +1,14 @@
-import { Button, Input, Skeleton, Form } from 'antd';
-import React, { PureComponent } from 'react';
-import { connect } from 'umi';
-import moment from 'moment';
-
 import { MinusOutlined, PlusOutlined } from '@ant-design/icons';
-import ChatEvent from '@/utils/chatSocket';
-import socket from '@/utils/socket';
-
-import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
-import MessageIcon from '@/assets/candidatePortal/messageIcon.svg';
-
-import styles from './index.less';
+import { Button, Form, Input, Skeleton } from 'antd';
+import moment from 'moment';
+import React, { PureComponent } from 'react';
+import { io } from 'socket.io-client';
+import { connect } from 'umi';
+import { ChatEvent, SOCKET_URL } from '@/utils/chatSocket';
 import { getCurrentCompany } from '@/utils/authority';
+import MessageIcon from '@/assets/candidatePortal/messageIcon.svg';
+import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
+import styles from './index.less';
 
 const { TextArea } = Input;
 
@@ -50,6 +47,8 @@ class MessageBox extends PureComponent {
 
   formRefEmptyChat = React.createRef();
 
+  socket = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = { activeId: '', contentVisible: true };
@@ -61,12 +60,14 @@ class MessageBox extends PureComponent {
 
     const { dispatch, candidate, assignTo: hrId } = this.props;
 
+    this.socket.current = io(SOCKET_URL);
+    console.log('ChatEvent', ChatEvent);
     // realtime get message
-    socket.emit(ChatEvent.ADD_USER, hrId?._id || hrId || '');
-    // socket.on(ChatEvent.GET_USER, (users) => {
+    this.socket.current.emit(ChatEvent.ADD_USER, hrId?._id || hrId || '');
+    // this.socket.current.on(ChatEvent.GET_USER, (users) => {
     //   // console.log('users HR', users);
     // });
-    socket.on(ChatEvent.GET_MESSAGE, (data) => {
+    this.socket.current.on(ChatEvent.GET_MESSAGE, (data) => {
       // console.log('data HR', data);
       this.saveNewMessage(data);
     });
@@ -132,7 +133,7 @@ class MessageBox extends PureComponent {
   };
 
   componentWillUnmount = () => {
-    socket.on(ChatEvent.DISCONNECT);
+    this.socket.current.on(ChatEvent.DISCONNECT);
     const { dispatch } = this.props;
     dispatch({
       type: 'conversation/clearState',
@@ -282,7 +283,7 @@ class MessageBox extends PureComponent {
     const { activeId } = this.state;
     const { message } = values;
     if (activeId && message) {
-      socket.emit(ChatEvent.SEND_MESSAGE, {
+      this.socket.current.emit(ChatEvent.SEND_MESSAGE, {
         conversationId: activeId,
         senderId: hrId?._id || hrId || '',
         receiverId: candidate,

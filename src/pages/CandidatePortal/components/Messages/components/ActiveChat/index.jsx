@@ -1,15 +1,12 @@
-import { Button, Input, Skeleton, Form } from 'antd';
-import React, { PureComponent } from 'react';
-import { connect } from 'umi';
+import { Button, Form, Input, Skeleton } from 'antd';
 import moment from 'moment';
-
-import socket from '@/utils/socket';
-import ChatEvent from '@/utils/chatSocket';
-
-import SeenIcon from '@/assets/candidatePortal/seen.svg';
+import React, { PureComponent } from 'react';
+import { io } from 'socket.io-client';
+import { connect } from 'umi';
+import { ChatEvent, SOCKET_URL } from '@/utils/chatSocket';
 import UnseenIcon from '@/assets/candidatePortal/unseen.svg';
+import SeenIcon from '@/assets/candidatePortal/seen.svg';
 import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
-
 import styles from './index.less';
 
 @connect(
@@ -38,6 +35,8 @@ import styles from './index.less';
 class ActiveChat extends PureComponent {
   formRef = React.createRef();
 
+  socket = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = {};
@@ -49,21 +48,22 @@ class ActiveChat extends PureComponent {
     this.scrollToBottom();
     // realtime get message
     // const { candidate } = this.props;
-    // socket.emit(ChatEvent.ADD_USER, candidate._id);
-    // socket.on(ChatEvent.GET_USER, (users) => {
-    //   // console.log('users', users);
+    this.socket.current = io(SOCKET_URL);
+    // this.socket.current.emit(ChatEvent.ADD_USER, candidate._id);
+    // this.socket.current.on(ChatEvent.GET_USER, (users) => {
+    //   console.log('users messages', users);
     // });
-    socket.on(ChatEvent.GET_MESSAGE, (message) => {
-      console.log('message a', message);
-      this.saveNewMessage(message);
-    });
+    // this.socket.current.on(ChatEvent.GET_MESSAGE, (message) => {
+    //   console.log('message a', message);
+    //   this.saveNewMessage(message);
+    // });
   }
 
   componentDidUpdate = () => {};
 
   componentWillUnmount = () => {
-    socket.on(ChatEvent.DISCONNECT, () => {});
-
+    // socket.on(ChatEvent.DISCONNECT, () => {});
+    // socket.disconnect();
     const { dispatch } = this.props;
     dispatch({
       type: 'conversation/clearState',
@@ -190,8 +190,8 @@ class ActiveChat extends PureComponent {
   // chat input
   renderInput = () => {
     const { loadingMessages, activeId = '', isReplyable = true } = this.props;
-    const disabled = loadingMessages || !activeId;
-    if (!isReplyable) return '';
+    const disabled = loadingMessages || !activeId || !isReplyable;
+    // if (!isReplyable) return '';
     return (
       <div className={styles.inputContainer}>
         <Form ref={this.formRef} name="inputChat" onFinish={this.onSendClick}>
@@ -204,7 +204,11 @@ class ActiveChat extends PureComponent {
             />
           </Form.Item>
           <Form.Item>
-            <Button disabled={disabled} htmlType="submit">
+            <Button
+              disabled={disabled}
+              className={isReplyable ? '' : styles.disabledBtn}
+              htmlType="submit"
+            >
               Send
             </Button>
           </Form.Item>
@@ -222,7 +226,7 @@ class ActiveChat extends PureComponent {
     } = this.props;
     const { message } = values;
     if (activeId && message) {
-      socket.emit(ChatEvent.SEND_MESSAGE, {
+      this.socket.current.emit(ChatEvent.SEND_MESSAGE, {
         conversationId: activeId,
         senderId: candidateId,
         receiverId: assignTo?._id || assignTo || '',

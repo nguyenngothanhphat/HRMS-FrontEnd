@@ -1,6 +1,7 @@
 import { Breadcrumb, Button, Dropdown, Layout, Menu, Result, Skeleton } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { connect, history, Link } from 'umi';
+import { io } from 'socket.io-client';
 import avtDefault from '@/assets/avtDefault.jpg';
 import CalendarIcon from '@/assets/candidatePortal/leave-application.svg';
 import MessageIcon from '@/assets/candidatePortal/message-circle.svg';
@@ -10,8 +11,8 @@ import CommonModal from '@/pages/CandidatePortal/components/Dashboard/components
 import { getCurrentCompany } from '@/utils/authority';
 import Authorized from '@/utils/Authorized';
 import { CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
-import ChatEvent from '@/utils/chatSocket';
-import socket from '@/utils/socket';
+import { ChatEvent, SOCKET_URL } from '@/utils/chatSocket';
+
 import { getAuthorityFromRouter } from '@/utils/utils';
 import s from './CandidatePortalLayout.less';
 
@@ -31,6 +32,7 @@ const noMatch = (
 );
 
 const CandidatePortalLayout = React.memo((props) => {
+  const socket = useRef();
   const {
     children,
     location = {
@@ -69,6 +71,13 @@ const CandidatePortalLayout = React.memo((props) => {
     });
   };
 
+  const saveNewMessage = (message) => {
+    dispatch({
+      type: 'conversation/saveNewMessage',
+      payload: message,
+    });
+  };
+
   useEffect(() => {
     if (!candidate) {
       dispatch({
@@ -84,17 +93,21 @@ const CandidatePortalLayout = React.memo((props) => {
       });
 
       // realtime message
-      // socket.on(ChatEvent.DISCONNECT);
-      socket.emit(ChatEvent.ADD_USER, candidate._id);
-      // socket.on(ChatEvent.GET_USER, (users) => {
+      socket.current = io(SOCKET_URL);
+      socket.current.emit(ChatEvent.ADD_USER, candidate._id);
+      // socket.current.on(ChatEvent.GET_USER, (users) => {
       //   console.log('users', users);
       // });
-      socket.on(ChatEvent.GET_MESSAGE, () => {
+      socket.current.on(ChatEvent.GET_MESSAGE, (message) => {;
+        saveNewMessage(message);
         setTimeout(() => {
           fetchUnseenTotal(candidate._id);
-        }, 100);
+        }, 500);
       });
     }
+    // return () => {
+    //   socket.disconnect();
+    // };
   }, [candidate]);
 
   useEffect(() => {
