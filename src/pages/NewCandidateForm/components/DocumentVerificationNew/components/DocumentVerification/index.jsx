@@ -39,6 +39,8 @@ const camelize = (str) => {
     },
     currentStep = '',
     locationSelection: { listLocationsByCompany = [] } = {},
+    user: { companiesOfUser = [] },
+    conversation: { conversationList = [] } = {},
   }) => ({
     tempData,
     data,
@@ -48,6 +50,8 @@ const camelize = (str) => {
     checkMandatory,
     newCandidateForm,
     listLocationsByCompany,
+    companiesOfUser,
+    conversationList,
     loading4: loading.effects['newCandidateForm/submitPhase1Effect'],
     loadingUpdateByHR: loading.effects['newCandidateForm/updateByHR'],
     loadingFetchCandidate: loading.effects['newCandidateForm/fetchCandidateByRookie'],
@@ -617,6 +621,85 @@ class DocumentVerification extends Component {
     return documentCLS;
   };
 
+  // WELCOME MESSAGE
+  addFirstMessage = async () => {
+    const {
+      tempData: {
+        assignTo: {
+          generalInfo: { firstName: hrFN = '', middleName: hrMN = '', lastName: hrLN = '' } = {} ||
+            {},
+          _id: hrId = '',
+        } = {} || {},
+        firstName: candidateFN = '',
+        middleName: candidateMN = '',
+        lastName: candidateLN = '',
+        titleList = [],
+        title,
+      },
+      companiesOfUser = [],
+      conversationList = [],
+    } = this.props;
+    // get company name
+    const currentCompany = companiesOfUser.find((c) => c._id === getCurrentCompany()) || {};
+    const { name: companyName = '' } = currentCompany;
+    // get candidate name
+    let candidateName = `${candidateFN} ${candidateMN} ${candidateLN}`;
+    if (!candidateMN) candidateName = `${candidateFN} ${candidateLN}`;
+    // get hr name
+    let hrName = `${hrFN} ${hrMN} ${hrLN}`;
+    if (!hrMN) hrName = `${hrFN} ${hrLN}`;
+    // get job title
+    let currentJobTitle = title;
+    if (!currentJobTitle)
+      currentJobTitle = titleList.find((t) => t._id === title?._id || t._id === title) || {};
+    const titleName = currentJobTitle?.name || '-';
+
+    const messages = [
+      {
+        id: 1,
+        title: `Welcome to ${companyName} !`,
+        content: `Hello ${candidateName} !
+        We are excited to have you onboard on this amazing journey with ${companyName}. This kicks off a journey packed with a crazy amount of fun, learning, brand new experiences and a lot more !
+        We wish you lots of success in this new chapter of your life and can't wait to have you onboard !
+        Our HR team will be in touch with you soon to help you complete the onboarding formalities.
+        Regards
+        <CEO Name>
+        C.E.O, ${companyName}`,
+      },
+      {
+        id: 2,
+        title: `HR ${companyName} !`,
+        content: `Hello ${candidateName} !
+        Welcome to ${companyName} !
+        My name is ${hrFN}, I will be helping you with the onboarding process.
+        To proceed with the onboarding process, please go ahead and complete the Pending tasks shown on the Dashboard.
+        Please feel free to reach out to me if you have any questions or issues.
+        Regards
+        ${hrName}
+        ${titleName}, ${companyName}`,
+      },
+    ];
+    const { dispatch } = this.props;
+    const addNewMessage = async (id, senderId, message, preventSaveToRedux) => {
+      await dispatch({
+        type: 'conversation/addNewMessageEffect',
+        payload: {
+          conversationId: id,
+          sender: senderId,
+          text: message,
+        },
+        preventSaveToRedux,
+      });
+    };
+    const conversationIds = conversationList.map((c) => c._id);
+    if (conversationIds.length > 0) {
+      await addNewMessage(conversationIds[0], hrId, messages[0].content, true);
+    }
+    if (conversationIds.length > 1) {
+      await addNewMessage(conversationIds[1], hrId, messages[1].content);
+    }
+  };
+
   // EMAILS
   handleSendEmail = async (type) => {
     const { dispatch } = this.props;
@@ -640,6 +723,7 @@ class DocumentVerification extends Component {
         salaryStructure,
         // company,
         processStatus,
+        isSentEmail = false,
       } = {},
     } = this.props;
 
@@ -695,6 +779,11 @@ class DocumentVerification extends Component {
       company: getCurrentCompany(),
       tenantId: getCurrentTenant(),
     };
+
+    // send welcome messages
+    if (!isSentEmail) {
+      this.addFirstMessage();
+    }
 
     await dispatch({
       type: 'newCandidateForm/submitPhase1Effect',

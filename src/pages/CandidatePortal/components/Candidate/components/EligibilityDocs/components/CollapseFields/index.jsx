@@ -218,7 +218,7 @@ class CollapseField extends Component {
                   Type {item.type}: {item.name}
                 </span>
               }
-              extra="[Can submit any of the below other than (*)mandatory]"
+              // extra="[Can submit any of the below other than (*)mandatory]"
             >
               <Space direction="vertical" className={styles.Space}>
                 <div className={styles.Upload}>
