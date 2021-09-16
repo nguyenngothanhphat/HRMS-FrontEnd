@@ -195,7 +195,8 @@ class DirectoryTable extends Component {
   // };
 
   generateColumns = (sortedName, keyTab) => {
-    const { permissions = {} } = this.props;
+    const { permissions = {}, listLocationsByCompany } = this.props;
+    const { currentTime, timezoneList } = this.state;
 
     const columns = [
       {
@@ -339,15 +340,25 @@ class DirectoryTable extends Component {
         dataIndex: 'manager',
         key: 'manager',
         render: (manager) => (
-          <Popover content={<PopoverInfo data={manager} />} trigger="hover">
-            <span
+          <Popover
+            content={
+              <PopoverInfo
+                listLocationsByCompany={listLocationsByCompany}
+                propsState={{ currentTime, timezoneList }}
+                data={manager}
+              />
+            }
+            placement="bottomRight"
+            trigger="hover"
+          >
+            <Link
               className={styles.managerName}
-              onClick={() =>
+              to={() =>
                 this.handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
               }
             >
               {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
-            </span>
+            </Link>
           </Popover>
         ),
         align: 'left',
@@ -472,6 +483,7 @@ class DirectoryTable extends Component {
     //     companyCurrentEmployee: company?._id,
     //   },
     // });
+
     localStorage.setItem('tenantCurrentEmployee', tenant);
     // localStorage.setItem('companyCurrentEmployee', company?._id);
     // localStorage.setItem('idCurrentEmployee', _id);
@@ -479,13 +491,6 @@ class DirectoryTable extends Component {
     const pathname = isOwner()
       ? `/employees/employee-profile/${userId}`
       : `/directory/employee-profile/${userId}`;
-    // setTimeout(() => {
-    //   history.push({
-    //     pathname,
-    //     // state: { location: name },
-    //   });
-
-    // }, 200);
     return pathname;
   };
 
@@ -681,14 +686,8 @@ class DirectoryTable extends Component {
           <Table
             size="small"
             columns={this.generateColumns(sortedName, keyTab)}
-            // onRow={(record) => {
-            //   return {
-            //     onClick: () => this.handleProfileEmployee(record), // click row
-            //   };
-            // }}
             dataSource={newList}
             rowKey={(record) => record._id}
-            // pagination={{ ...pagination, total: list.length }}
             pagination={pagination}
             loading={loading}
             onChange={this.handleChangeTable}
