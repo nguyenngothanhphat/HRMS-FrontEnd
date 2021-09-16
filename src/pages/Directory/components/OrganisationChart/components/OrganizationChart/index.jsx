@@ -125,6 +125,7 @@ class OrganizationChart extends Component {
   renderCardInfo = (userData, name) => {
     const {
       generalInfo: {
+        legalName = '',
         avatar = '',
         firstName: userFirstName = '',
         middleName: userMiddleName = '',
@@ -136,12 +137,12 @@ class OrganizationChart extends Component {
         headQuarterAddress: { country: { name: countryName = '' } = {} || {} } = {} || {},
       } = {} || {},
     } = userData;
-    const legalName = `${userFirstName} ${userMiddleName} ${userLastName}`;
+    const legalFullName = legalName || `${userFirstName} ${userMiddleName} ${userLastName}`;
     return (
       <div className={styles.node__card} onClick={() => this.clickCardInfo(userData, name)}>
         <Avatar className={styles.avatar} src={avatar} size={42} icon={<UserOutlined />} />
         <div className={styles.node__card__info}>
-          <div className={styles.legalName}>{legalName}</div>
+          <div className={styles.legalName}>{legalFullName}</div>
           <div className={styles.deptName}>{`${jobTitleName}, ${deptName}`}</div>
           <div className={styles.countryName}>{countryName}</div>
         </div>
