@@ -7,6 +7,13 @@ export async function getListRoles(payload) {
   });
 }
 
+export async function getPermissionList(payload) {
+  return request('/api/permission/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function addRole(payload) {
   return request('/api/roletenant/add', {
     method: 'POST',
@@ -60,7 +67,7 @@ export async function getPermissionByIdRole(payload) {
   });
 }
 
-export async function DepartmentFilter(payload) {
+export async function getListDepartments(payload) {
   return request('/api/departmenttenant/list', {
     method: 'POST',
     data: payload,

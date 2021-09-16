@@ -1,11 +1,12 @@
+import { notification } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
-import { notification } from 'antd';
 import {
   getListRoles,
+  getPermissionList,
   getListTitle,
   removeTitle,
-  DepartmentFilter,
+  getListDepartments,
   getListPermissionOfRole,
   updateRoleWithPermission,
   getPermissionByIdRole,
@@ -25,19 +26,20 @@ const adminSetting = {
     listRoleByCompany: [],
     countEmployee: 0,
     idRoles: '',
+    permissionList: [],
     originData: {
       totalTitle: 0,
-      listTitle: [],
+      listTitles: [],
       listRoles: [],
-      listPermission: [],
-      department: [],
+      listPermissions: [],
+      listDepartments: [],
     },
     tempData: {
-      listTitle: [],
+      listTitles: [],
       totalTitle: 0,
-      formatData: [],
-      listPermission: [],
-      department: [],
+      listRoles: [],
+      listPermissions: [],
+      listDepartments: [],
     },
   },
   effects: {
@@ -49,20 +51,26 @@ const adminSetting = {
           tenantId: getCurrentTenant(),
         });
         const { statusCode, data: listRoles = [] } = response;
-        const formatData = listRoles.map((item) => {
-          const { _id, idSync: RolesID, description: Rolesname } = item;
-          return { _id, RolesID, Rolesname };
-        });
         if (statusCode !== 200) throw response;
-        localStorage.setItem('dataRoles', JSON.stringify(formatData));
+        // localStorage.setItem('dataRoles', JSON.stringify(formatData));
         yield put({ type: 'saveOrigin', payload: { listRoles } });
-        yield put({ type: 'saveTemp', payload: { formatData } });
+        yield put({ type: 'saveTemp', payload: { listRoles } });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchPermissionList({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getPermissionList, payload);
+        const { statusCode, data: permissionList = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { permissionList } });
       } catch (errors) {
         dialog(errors);
       }
     },
     *fetchListTitle({ payload: { page, limit } }, { call, put }) {
-      let resp = [];
+      const resp = [];
       try {
         const response = yield call(getListTitle, {
           page,
@@ -70,11 +78,10 @@ const adminSetting = {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data: listTitle = [], total: totalTitle } = response;
+        const { statusCode, data: listTitles = [], total: totalTitle } = response;
         if (statusCode !== 200) throw response;
-        resp = listTitle;
-        yield put({ type: 'saveOrigin', payload: { listTitle, totalTitle } });
-        yield put({ type: 'saveTemp', payload: { listTitle, totalTitle } });
+        yield put({ type: 'saveOrigin', payload: { listTitles, totalTitle } });
+        yield put({ type: 'saveTemp', payload: { listTitles, totalTitle } });
       } catch (errors) {
         dialog(errors);
       }
@@ -119,14 +126,14 @@ const adminSetting = {
 
     *fetchDepartment(_, { call, put }) {
       try {
-        const response = yield call(DepartmentFilter, {
+        const response = yield call(getListDepartments, {
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
-        const { statusCode, data: department = [] } = response;
+        const { statusCode, data: listDepartments = [] } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'saveOrigin', payload: { department } });
-        yield put({ type: 'saveTemp', payload: { department } });
+        yield put({ type: 'saveOrigin', payload: { listDepartments } });
+        yield put({ type: 'saveTemp', payload: { listDepartments } });
       } catch (errors) {
         dialog(errors);
       }
@@ -138,11 +145,11 @@ const adminSetting = {
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, data: listPermission = [] } = response;
+        const { statusCode, data: listPermissions = [] } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'save', payload: { idRoles } });
-        yield put({ type: 'saveOrigin', payload: { listPermission } });
-        yield put({ type: 'saveTemp', payload: { listPermission } });
+        yield put({ type: 'saveOrigin', payload: { listPermissions } });
+        yield put({ type: 'saveTemp', payload: { listPermissions } });
       } catch (errors) {
         dialog(errors);
       }

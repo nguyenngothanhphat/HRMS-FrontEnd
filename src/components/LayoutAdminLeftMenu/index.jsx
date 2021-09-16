@@ -87,7 +87,7 @@ class CommonLayout extends PureComponent {
           </div>
         </Affix>
         <Row className={s.viewRight} gutter={[24, 0]}>
-          <Col span={18}>{displayComponent}</Col>
+          <Col span={24}>{displayComponent}</Col>
         </Row>
       </div>
     );
