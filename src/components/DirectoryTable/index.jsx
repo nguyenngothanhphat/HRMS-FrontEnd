@@ -8,6 +8,7 @@ import moment from 'moment';
 import React, { Component } from 'react';
 import { connect, formatMessage, history, Link } from 'umi';
 import ModalTerminate from './components/ModalTerminate';
+import PopoverInfo from './components/ModalTerminate/PopoverInfo';
 import styles from './index.less';
 
 const departmentTag = [
@@ -338,14 +339,16 @@ class DirectoryTable extends Component {
         dataIndex: 'manager',
         key: 'manager',
         render: (manager) => (
-          <span
-            className={styles.managerName}
-            onClick={() =>
-              this.handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
-            }
-          >
-            {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
-          </span>
+          <Popover content={<PopoverInfo data={manager} />} trigger="hover">
+            <span
+              className={styles.managerName}
+              onClick={() =>
+                this.handleProfileEmployee(manager._id, manager.tenant, manager.generalInfo?.userId)
+              }
+            >
+              {!isEmpty(manager?.generalInfo) ? `${manager?.generalInfo?.legalName}` : ''}
+            </span>
+          </Popover>
         ),
         align: 'left',
         width: '14%',
