@@ -9,12 +9,12 @@ import styles from './index.less';
 @connect(
   ({
     candidatePortal: { pendingTasks = [], data = {}, data: { processStatus = '' } = {} } = {},
-    loading
+    loading,
   }) => ({
     pendingTasks,
     processStatus,
     data,
-    loadingFetchDocument: loading.effects['candidatePortal/fetchDocumentByCandidate']
+    loadingFetchDocument: loading.effects['candidatePortal/fetchDocumentByCandidate'],
   }),
 )
 class PendingTasks extends PureComponent {

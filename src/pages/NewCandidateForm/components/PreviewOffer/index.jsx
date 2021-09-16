@@ -49,6 +49,7 @@ const PreviewOffer = (props) => {
     assignTo: { _id: assigneeId = '' } = {},
     assigneeManager: { _id: assigneeManagerId = '' } = {},
     ticketID = '',
+    offerLetterTemplate: offerLetterTemplateProp = '',
   } = tempData;
   const {
     privateEmail: candidateEmailProp = '',
@@ -570,6 +571,32 @@ const PreviewOffer = (props) => {
     );
   };
 
+  const createFinalOffer = () => {
+    const { _id } = data;
+    dispatch({
+      type: 'newCandidateForm/createFinalOfferEffect',
+      payload: {
+        candidateId: _id,
+        templateId: offerLetterTemplateProp,
+        tenantId: getCurrentTenant(),
+      },
+    }).then((res) => {
+      const { data: { _id: newTemplateId = '', attachment = {} } = {} } = res;
+      if (attachment) {
+        setOfferLetter(attachment.url);
+        dispatch({
+          type: 'newCandidateForm/updateByHR',
+          payload: {
+            candidate: _id,
+            currentStep: 6,
+            offerLetter: newTemplateId,
+            tenantId: getCurrentTenant(),
+          },
+        });
+      }
+    });
+  };
+
   const handleHrManagerSignatureSubmit = async () => {
     const { _id } = data;
     if (!dispatch || !_id) {
@@ -627,6 +654,7 @@ const PreviewOffer = (props) => {
         },
       }).then(({ statusCode }) => {
         if (statusCode === 200) {
+          createFinalOffer();
           setHrManagerSignatureSubmit(true);
         }
       });
@@ -643,6 +671,7 @@ const PreviewOffer = (props) => {
       }).then(({ statusCode }) => {
         if (statusCode === 200) {
           setHrManagerSignatureSubmit(true);
+          createFinalOffer();
         }
       });
     }

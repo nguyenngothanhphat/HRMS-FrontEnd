@@ -3,8 +3,12 @@ import {
   addNewConversation,
   getConversation,
   getUserConversations,
+  getNumberUnseenConversation,
+  setStatusSeenConversation,
   addNewMessage,
   getConversationMessage,
+  getListLastMessage,
+  getLastMessage,
 } from '@/services/conversation';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 
@@ -12,6 +16,8 @@ const defaultState = {
   activeConversation: {},
   conversationList: [],
   activeConversationMessages: [],
+  unseenTotal: 0,
+  listLastMessage: [],
 };
 
 const country = {
@@ -34,7 +40,7 @@ const country = {
       }
       return response;
     },
-    *getUserConversationsEffect({ payload }, { call, put }) {
+    *getUserConversationsEffect({ payload = {} }, { call, put }) {
       let response = {};
       try {
         response = yield call(getUserConversations, {
@@ -50,6 +56,14 @@ const country = {
             conversationList: data,
           },
         });
+        // if (payload.userId) {
+        //   yield put({
+        //     type: 'conversation/getNumberUnseenConversationEffect',
+        //     payload: {
+        //       userId: payload.userId,
+        //     },
+        //   });
+        // }
       } catch (errors) {
         dialog(errors);
       }
@@ -74,9 +88,45 @@ const country = {
         dialog(errors);
       }
     },
+    *setSeenEffect({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(setStatusSeenConversation, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *getNumberUnseenConversationEffect({ payload }, { put, call }) {
+      let response = {};
+      try {
+        response = yield call(getNumberUnseenConversation, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            unseenTotal: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
 
     // MESSAGE
-    *addNewMessageEffect({ payload }, { call, put }) {
+    *addNewMessageEffect({ payload, preventSaveToRedux = false }, { call, put }) {
       let response = {};
       try {
         response = yield call(addNewMessage, {
@@ -86,10 +136,12 @@ const country = {
         });
         const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
-        yield put({
-          type: 'saveNewMessage',
-          payload: data,
-        });
+        if (!preventSaveToRedux) {
+          yield put({
+            type: 'saveNewMessage',
+            payload: data,
+          });
+        }
       } catch (errors) {
         dialog(errors);
       }
@@ -108,6 +160,44 @@ const country = {
           type: 'save',
           payload: {
             activeConversationMessages: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getLastMessageEffect({ payload }, { call }) {
+      try {
+        const response = yield call(getLastMessage, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put({
+        //   type: 'save',
+        //   payload: {
+        //     lastMessage: data,
+        //   },
+        // });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *getListLastMessageEffect({ payload }, { call, put }) {
+      try {
+        const response = yield call(getListLastMessage, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = [] } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            listLastMessage: data,
           },
         });
       } catch (errors) {
