@@ -236,3 +236,10 @@ export async function getDocumentSettingList(payload) {
     data: payload,
   });
 }
+
+export async function getListBenefit(payload) {
+  return request('/api/benefittenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
