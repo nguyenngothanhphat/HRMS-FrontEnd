@@ -1,13 +1,18 @@
 import React, { PureComponent } from 'react';
-import VideoPreview from '@/assets/candidatePortal/videoPreview.svg';
 import { Link } from 'umi';
+import VideoPreview from '@/assets/candidatePortal/videoPreview.svg';
 import styles from './index.less';
 
 const Card1 = () => {
+  const viewCompanyVideo = () => {
+    const win = window.open('https://www.lollypop.design/about/', '_blank');
+    win.focus();
+  };
+
   return (
     <>
       <div className={styles.videoPreview}>
-        <img src={VideoPreview} alt="video" />
+        <img src={VideoPreview} alt="video" onClick={viewCompanyVideo} />
       </div>
       <span className={styles.contentTitle}>Who are we?</span>
       <p className={styles.contentBody}>
@@ -20,7 +25,11 @@ const Card1 = () => {
       </p>
       <span className={styles.contentTitle}>
         Read more about us at-{' '}
-        <Link style={{ fontWeight: 500 }} to="www.terralogic.com">
+        <Link
+          style={{ fontWeight: 500 }}
+          to={{ pathname: 'https://terralogic.com' }}
+          target="_blank"
+        >
           www.terralogic.com
         </Link>
       </span>

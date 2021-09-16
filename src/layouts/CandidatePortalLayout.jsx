@@ -1,16 +1,20 @@
 import { Breadcrumb, Button, Dropdown, Layout, Menu, Result, Skeleton } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { connect, history, Link } from 'umi';
+import { io } from 'socket.io-client';
 import avtDefault from '@/assets/avtDefault.jpg';
 import CalendarIcon from '@/assets/candidatePortal/leave-application.svg';
 import MessageIcon from '@/assets/candidatePortal/message-circle.svg';
 import Footer from '@/components/Footer';
+// import BottomBar from '../components/BottomBar';
+import CommonModal from '@/pages/CandidatePortal/components/Dashboard/components/CommonModal';
 import { getCurrentCompany } from '@/utils/authority';
 import Authorized from '@/utils/Authorized';
-import { getAuthorityFromRouter } from '@/utils/utils';
-// import BottomBar from '../components/BottomBar';
-import s from './CandidatePortalLayout.less';
 import { CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
+import { ChatEvent, SOCKET_URL } from '@/utils/chatSocket';
+
+import { getAuthorityFromRouter } from '@/utils/utils';
+import s from './CandidatePortalLayout.less';
 
 const { Header, Content } = Layout;
 
@@ -28,6 +32,7 @@ const noMatch = (
 );
 
 const CandidatePortalLayout = React.memo((props) => {
+  const socket = useRef();
   const {
     children,
     location = {
@@ -41,10 +46,12 @@ const CandidatePortalLayout = React.memo((props) => {
     ticketId = '',
     // data: { title: { name: titleName = '' } = {} } = {},
     data: { firstName = '', lastName = '', middleName = '' },
-    conversation: { conversationList = [] } = {},
+    conversation: { unseenTotal = 0 } = {},
     pendingTasks = [],
+    events = [],
   } = props;
 
+  const [openUpcomingEventModal, setOpenUpcomingEventModal] = useState(false);
   let candidateFullName = `${firstName} ${middleName} ${lastName}`;
   if (!middleName) candidateFullName = `${firstName} ${lastName}`;
 
@@ -53,6 +60,31 @@ const CandidatePortalLayout = React.memo((props) => {
 
   const authorized = getAuthorityFromRouter(routes, location.pathname || '/') || {
     authority: undefined,
+  };
+
+  const fetchUnseenTotal = (candidateId) => {
+    dispatch({
+      type: 'conversation/getNumberUnseenConversationEffect',
+      payload: {
+        userId: candidateId,
+      },
+    });
+  };
+
+  const saveNewMessage = (message) => {
+    dispatch({
+      type: 'conversation/saveNewMessage',
+      payload: message,
+    });
+  };
+
+  const getListLastMessage = () => {
+    dispatch({
+      type: 'conversation/getListLastMessageEffect',
+      payload: {
+        userId: candidate._id,
+      },
+    });
   };
 
   useEffect(() => {
@@ -68,6 +100,26 @@ const CandidatePortalLayout = React.memo((props) => {
           candidate: candidate._id,
         },
       });
+
+      // realtime message
+      socket.current = io(SOCKET_URL);
+      socket.current.emit(ChatEvent.ADD_USER, candidate._id);
+      // socket.current.on(ChatEvent.GET_USER, (users) => {
+      //   console.log('users', users);
+      // });
+      socket.current.on(ChatEvent.GET_MESSAGE, (message) => {
+        saveNewMessage(message);
+        setTimeout(() => {
+          fetchUnseenTotal(candidate._id);
+          getListLastMessage();
+        }, 500);
+      });
+      // socket.current.on(ChatEvent.LAST_MESSAGE, (message) => {;
+      //   saveLastMessage(message);
+      //   setTimeout(() => {
+      //     fetchUnseenTotal(candidate._id);
+      //   }, 500);
+      // });
     }
   }, [candidate]);
 
@@ -149,6 +201,11 @@ const CandidatePortalLayout = React.memo((props) => {
     </Menu>
   );
 
+  const addZeroToNumber = (number) => {
+    if (number < 10 && number >= 0) return `0${number}`.slice(-2);
+    return number;
+  };
+
   return (
     <div className={s.candidate}>
       {/* <Header className={`${s.header} ${s.one}`}> */}
@@ -178,7 +235,7 @@ const CandidatePortalLayout = React.memo((props) => {
             </div>
           )} */}
 
-          <div className={s.headerIcon}>
+          <div className={s.headerIcon} onClick={() => setOpenUpcomingEventModal(true)}>
             <img src={CalendarIcon} alt="calendar" />
           </div>
           <div
@@ -188,9 +245,7 @@ const CandidatePortalLayout = React.memo((props) => {
             }}
           >
             <img src={MessageIcon} alt="message" />
-            {conversationList.length > 0 && (
-              <div className={s.badgeNumber}>{conversationList.length}</div>
-            )}
+            {unseenTotal > 0 && <div className={s.badgeNumber}>{unseenTotal}</div>}
           </div>
 
           <Dropdown
@@ -212,6 +267,14 @@ const CandidatePortalLayout = React.memo((props) => {
           </Dropdown>
         </div>
       </Header>
+      <CommonModal
+        title={`Upcoming events (${addZeroToNumber(events.length)})`}
+        content={events}
+        visible={openUpcomingEventModal}
+        onClose={() => setOpenUpcomingEventModal(false)}
+        type="your-activity"
+        tabKey="1"
+      />
       <Authorized authority={authorized.authority} noMatch={noMatch}>
         {loadingFetchCurrent ? (
           <div style={{ margin: '32px 89px' }}>
@@ -252,6 +315,8 @@ export default connect(
       checkMandatory,
       processStatus = '',
       pendingTasks = [],
+      upcomingEvents: events = [],
+      nextSteps: steps = [],
     } = {},
     conversation,
     user: { companiesOfUser = [], currentUser: { candidate = '' } = {} } = {},
@@ -268,6 +333,8 @@ export default connect(
     processStatus,
     companiesOfUser,
     pendingTasks,
+    events,
+    steps,
     loadingFetchCurrent: loading.effects['user/fetchCurrent'],
   }),
 )(CandidatePortalLayout);
