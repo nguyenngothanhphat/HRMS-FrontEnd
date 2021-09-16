@@ -317,7 +317,7 @@ const employee = {
         yield put({ type: 'listEmployeeAll', payload: { listEmployeeAll } });
         return response;
       } catch (errors) {
-        dialog(errors);
+        // dialog(errors);
         return 0;
       }
     },
