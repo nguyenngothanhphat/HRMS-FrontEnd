@@ -1,8 +1,10 @@
-import { Button, Form, Input, Modal, Tree } from 'antd';
+import { Button, Form, Input, Modal, Select } from 'antd';
+
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
+const { Option } = Select;
 @connect(({ loading }) => ({ loadingUploadAttachment: loading.effects['upload/uploadFile'] }))
 class EditModal extends PureComponent {
   constructor(props) {
@@ -28,9 +30,9 @@ class EditModal extends PureComponent {
 
   renderHeaderModal = () => {
     const { action = 'add' } = this.props;
-    let title = 'Add New Roles & Permission';
+    let title = 'Add New Department';
     if (action === 'edit') {
-      title = 'Edit New Roles & Permission';
+      title = 'Edit Department';
     }
     return (
       <div className={styles.header}>
@@ -45,55 +47,6 @@ class EditModal extends PureComponent {
     const { onClose = () => {} } = this.props;
     this.setState({ nameState: '', descriptionState: '' });
     onClose(false);
-  };
-
-  renderList = () => {
-    const { permissionList = [] } = this.props;
-    let formatList = permissionList.map((per) => per?.module);
-    formatList = formatList.filter(
-      (value) => value !== undefined && value !== '' && value !== null,
-    );
-    formatList = [...new Set(formatList)];
-
-    const treeData = formatList.map((moduleName, index) => {
-      let result = permissionList.map((per) => {
-        const { _id = '', name = '', module = '' } = per;
-        if (moduleName === module) {
-          return {
-            title: name,
-            key: _id,
-          };
-        }
-        return 0;
-      });
-      result = result.filter((val) => val !== 0);
-
-      return {
-        key: index,
-        title: moduleName,
-        children: result,
-      };
-    });
-    const onCheck = (checkedKeys) => {
-      this.setList(checkedKeys);
-    };
-
-    return (
-      <>
-        <span className={styles.permissionTitle}>Permission</span>
-        <div className={styles.roleList}>
-          <Tree
-            checkable
-            defaultExpandAll={false}
-            // onSelect={onSelect}
-            onCheck={onCheck}
-            treeData={treeData}
-            showLine={{ showLeafIcon: false }}
-            showIcon={false}
-          />
-        </div>
-      </>
-    );
   };
 
   render() {
@@ -138,22 +91,65 @@ class EditModal extends PureComponent {
             }
           >
             <Form.Item
-              rules={[{ required: true, message: 'Please enter role name!' }]}
-              label="Role"
+              rules={[{ required: true, message: 'Please enter department name!' }]}
+              label="Department Name"
               name="name"
               labelCol={{ span: 24 }}
             >
-              <Input placeholder="Role Name" />
+              <Input />
             </Form.Item>
             <Form.Item
-              label="Description"
-              name="description"
+              rules={[{ required: true, message: 'Please enter parent department name!' }]}
+              label="Parent Department Name"
+              name="name"
               labelCol={{ span: 24 }}
-              rules={[{ required: true, message: 'Please enter role description!' }]}
             >
-              <Input placeholder="Role Description" />
+              <Input />
             </Form.Item>
-            {this.renderList()}
+            <Form.Item
+              label="HR Point of Contact"
+              name="HRPOC"
+              labelCol={{ span: 24 }}
+              rules={[{ required: true, message: 'Please select HR Point of Contact' }]}
+            >
+              <Select
+                // filterOption={(input, option) =>
+                //   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                filterOption={(input, option) => {
+                  return (
+                    option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                    0
+                  );
+                }}
+                showSearch
+                allowClear
+              >
+                <Option value="A">A</Option>
+                <Option value="B">B</Option>
+              </Select>
+            </Form.Item>
+            <Form.Item
+              label="Finance Point of Contact"
+              name="financePOC"
+              labelCol={{ span: 24 }}
+              rules={[{ required: true, message: 'Please select Finance Point of Contact' }]}
+            >
+              <Select
+                // filterOption={(input, option) =>
+                //   option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                filterOption={(input, option) => {
+                  return (
+                    option.children[1].props.children.toLowerCase().indexOf(input.toLowerCase()) >=
+                    0
+                  );
+                }}
+                showSearch
+                allowClear
+              >
+                <Option value="A">A</Option>
+                <Option value="B">B</Option>
+              </Select>
+            </Form.Item>
           </Form>
         </Modal>
       </>

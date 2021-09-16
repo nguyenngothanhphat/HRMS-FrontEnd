@@ -124,7 +124,7 @@ const adminSetting = {
       }
     },
 
-    *fetchDepartment(_, { call, put }) {
+    *fetchDepartmentList(_, { call, put }) {
       try {
         const response = yield call(getListDepartments, {
           tenantId: getCurrentTenant(),
@@ -220,7 +220,7 @@ const adminSetting = {
         notification.success({
           message,
         });
-        yield put({ type: 'fetchDepartment' });
+        yield put({ type: 'fetchDepartmentList' });
       } catch (errors) {
         dialog(errors);
       }
@@ -237,7 +237,7 @@ const adminSetting = {
         notification.success({
           message,
         });
-        yield put({ type: 'fetchDepartment' });
+        yield put({ type: 'fetchDepartmentList' });
         return statusCode;
       } catch (errors) {
         dialog(errors);

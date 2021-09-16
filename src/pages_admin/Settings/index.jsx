@@ -9,17 +9,13 @@ import LayoutAdminSetting from '@/components/LayoutAdminLeftMenu';
 // import RolesPermission from './Components/RolesPermission';
 import styles from './index.less';
 import RolePermission from './components/RolePermission';
+import Department from './components/Department';
 
 @connect(({ loading }) => ({ loading: loading.effects['adminSetting/fetchListRoles'] }))
 class Settings extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch({
-      type: 'adminSetting/fetchListRoles',
-    });
-    dispatch({
-      type: 'adminSetting/fetchDepartment',
-    });
+
     dispatch({
       type: 'country/fetchListCountry',
     });
@@ -45,7 +41,7 @@ class Settings extends PureComponent {
       {
         id: 2,
         name: formatMessage({ id: 'pages_admin.setting.Department' }),
-        // component: <Department />,
+        component: <Department />,
         link: 'departments',
       },
       {

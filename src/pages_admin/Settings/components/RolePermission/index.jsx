@@ -1,4 +1,4 @@
-import { Button } from 'antd';
+import { Button, Skeleton } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import CommonTable from '../CommonTable';
@@ -7,10 +7,13 @@ import DeleteIcon from '@/assets/adminSetting/del.svg';
 import styles from './index.less';
 import EditModal from './components/EditModal';
 
-@connect(({ adminSetting: { permissionList = [], tempData: { listRoles = [] } = {} } = {} }) => ({
-  permissionList,
-  listRoles,
-}))
+@connect(
+  ({ loading, adminSetting: { permissionList = [], tempData: { listRoles = [] } = {} } = {} }) => ({
+    permissionList,
+    listRoles,
+    loadingFetchRoleList: loading.effects['adminSetting/fetchListRoles'],
+  }),
+)
 class RolePermission extends PureComponent {
   constructor(props) {
     super(props);
@@ -18,6 +21,13 @@ class RolePermission extends PureComponent {
       modalVisible: false,
     };
   }
+
+  fetchRoleList = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'adminSetting/fetchListRoles',
+    });
+  };
 
   fetchPermissionList = () => {
     const { dispatch } = this.props;
@@ -30,6 +40,7 @@ class RolePermission extends PureComponent {
   };
 
   componentDidMount = () => {
+    this.fetchRoleList();
     this.fetchPermissionList();
   };
 
@@ -90,7 +101,14 @@ class RolePermission extends PureComponent {
 
   render() {
     const { modalVisible } = this.state;
-    const { listRoles = [], permissionList = [] } = this.props;
+    const { listRoles = [], permissionList = [], loadingFetchRoleList = false } = this.props;
+    if (loadingFetchRoleList) {
+      return (
+        <div className={styles.RolePermission}>
+          <Skeleton />
+        </div>
+      );
+    }
     return (
       <div className={styles.RolePermission}>
         {this.renderHeader()}
