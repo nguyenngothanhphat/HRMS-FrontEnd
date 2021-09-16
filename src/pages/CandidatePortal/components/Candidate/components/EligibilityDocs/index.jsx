@@ -23,8 +23,8 @@ const Note = {
   title: 'Note',
   data: (
     <Typography.Text>
-      Onboarding is a step-by-step process. It takes anywhere around <span>9-12 standard</span>{' '}
-      working days for entire process to complete
+      All the documents that are marked as mandatory need to be uploaded and one or more of the
+      documents that are optional can be uploaded.
     </Typography.Text>
   ),
 };

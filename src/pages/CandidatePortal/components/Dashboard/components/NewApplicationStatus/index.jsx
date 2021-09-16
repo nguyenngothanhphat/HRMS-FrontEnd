@@ -1,7 +1,10 @@
 import React, { PureComponent } from 'react';
-import { Row, Col } from 'antd';
+import { Row, Col, message } from 'antd';
 import moment from 'moment';
+import axios from 'axios';
 import styles from './index.less';
+import DownloadIcon from '@/assets/candidatePortal/downloadIcon.svg';
+import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 
 class ApplicationStatus extends PureComponent {
   itemBox = (item, index) => {
@@ -13,11 +16,47 @@ class ApplicationStatus extends PureComponent {
     );
   };
 
+  getTicketStatus = () => {
+    const { data: { processStatus = '' } = {} || {} } = this.props;
+    switch (processStatus) {
+      case NEW_PROCESS_STATUS.OFFER_ACCEPTED:
+        return <span className={`${styles.status} ${styles.accepted}`}>Offer Accepted</span>;
+      case NEW_PROCESS_STATUS.OFFER_REJECTED:
+        return <span className={`${styles.status} ${styles.rejected}`}>Offer Rejected</span>;
+      default:
+        return <span className={styles.status}>Onboarding</span>;
+    }
+  };
+
+  downloadOfferLetter = () => {
+    const { data: { offerLetter: { attachment: { url = '' } = {} || {} } = {} || {} } = {} || {} } =
+      this.props;
+    if (url) {
+      const fileName = url.split('/').pop();
+      message.loading('Downloading file. Please wait...');
+      axios({
+        url,
+        method: 'GET',
+        responseType: 'blob',
+      }).then((resp) => {
+        // eslint-disable-next-line compat/compat
+        const urlDownload = window.URL.createObjectURL(new Blob([resp.data]));
+        const link = document.createElement('a');
+        link.href = urlDownload;
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+      });
+    } else {
+      message.error('Something wrong.');
+    }
+  };
+
   render() {
     const {
       data: {
         title: { name: titleName = '' } = {} || {},
-        assignTo: {
+        reportingManager: {
           generalInfo: { firstName = '', lastName = '', middleName = '' } = {} || {},
         } = {} || {},
         dateOfJoining = '',
@@ -28,6 +67,7 @@ class ApplicationStatus extends PureComponent {
         middleName: candidateMiddleName = '',
         lastName: candidateLastName = '',
         ticketID = '',
+        processStatus = '',
       } = {} || {},
     } = this.props;
 
@@ -39,7 +79,7 @@ class ApplicationStatus extends PureComponent {
 
     const items = [
       {
-        name: 'Name',
+        name: 'Candidate Name',
         value: candidateFullName || '-',
       },
       {
@@ -74,8 +114,16 @@ class ApplicationStatus extends PureComponent {
     return (
       <div className={styles.ApplicationStatus}>
         <div className={styles.header}>
-          <span>Application Status</span>
-          <span className={styles.status}>Onboarding</span>
+          <div className={styles.left}>
+            <span>Application Status</span>
+            {this.getTicketStatus()}
+          </div>
+          {processStatus === NEW_PROCESS_STATUS.OFFER_ACCEPTED && (
+            <div className={styles.right} onClick={this.downloadOfferLetter}>
+              <img src={DownloadIcon} alt="download" />
+              <span className={styles.downloadOfferText}>Download offer letter</span>
+            </div>
+          )}
         </div>
         <Row gutter={[24, 10]} className={styles.content}>
           {items.map((val, index) => this.itemBox(val, index))}

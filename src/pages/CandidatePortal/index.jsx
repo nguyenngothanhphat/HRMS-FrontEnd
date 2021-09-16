@@ -13,13 +13,14 @@ const { TabPane } = Tabs;
     candidatePortal: { localStep, data, tempData } = {},
     user: { currentUser: { candidate = {} } = {} } = {},
     loading,
-    conversation: { conversationList = [] } = {},
+    conversation: { conversationList = [], unseenTotal = 0 } = {},
   }) => ({
     localStep,
     data,
     tempData,
     candidate,
     conversationList,
+    unseenTotal,
     loadingFetchCandidate: loading.effects['candidatePortal/fetchCandidateById'],
   }),
 )
@@ -64,12 +65,21 @@ class CandidatePortal extends PureComponent {
     dispatch({
       type: 'candidatePortal/refreshPendingTasks',
     });
-    dispatch({
+
+    const conversations = await dispatch({
       type: 'conversation/getUserConversationsEffect',
       payload: {
         userId: candidate._id,
       },
     });
+    if (conversations.statusCode === 200) {
+      dispatch({
+        type: 'conversation/getNumberUnseenConversationEffect',
+        payload: {
+          userId: candidate._id,
+        },
+      });
+    }
 
     // get welcome modal from localstorage
     const openWelcomeModal = localStorage.getItem('openWelcomeModal');
@@ -88,7 +98,7 @@ class CandidatePortal extends PureComponent {
   };
 
   renderMessageTitle = () => {
-    const { conversationList = [] } = this.props;
+    const { unseenTotal = 0 } = this.props;
     const addZeroToNumber = (number) => {
       if (number < 10 && number >= 0) return `0${number}`.slice(-2);
       return number;
@@ -97,8 +107,8 @@ class CandidatePortal extends PureComponent {
     return (
       <span className={styles.messageTitle}>
         Messages{' '}
-        {conversationList.length > 0 && (
-          <span className={styles.messageIndex}>{addZeroToNumber(conversationList.length)}</span>
+        {unseenTotal > 0 && (
+          <span className={styles.messageIndex}>{addZeroToNumber(unseenTotal)}</span>
         )}
       </span>
     );
