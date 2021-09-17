@@ -35,7 +35,7 @@ class SettingLayout extends PureComponent {
     const findTab = listMenu.find((menu) => menu.link === tabName) || listMenu[0];
 
     this.setState({
-      selectedItemId: findTab.component ? findTab.id : 1,
+      selectedItemId: findTab.id || 1,
       displayComponent: findTab.component,
     });
   };
