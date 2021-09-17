@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Input, Drawer, Button } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
+import { isEmpty } from 'lodash';
 
 import filterIcon from '@/assets/offboarding-filter.svg';
 import closeIcon from '@/assets/closeIcon.svg';
@@ -15,6 +16,12 @@ class SearchOnboarding extends Component {
     super(props);
     this.state = {
       visible: false,
+      filter: {
+        processStatus: undefined,
+        title: [],
+        location: [],
+      },
+      isFilter: false,
     };
   }
 
@@ -35,30 +42,68 @@ class SearchOnboarding extends Component {
     }
   };
 
+  clearFilter = () => {
+    this.setState({
+      filter: {
+        processStatus: undefined,
+        title: [],
+        location: [],
+      },
+      isFilter: false,
+    });
+  };
+
   openFilter = (visible) => {
     const { dispatch } = this.props;
 
     this.setState({ visible });
-    dispatch({
-      type: 'onboarding/fetchJobTitleList',
-      payload: {},
-    });
 
-    dispatch({
-      type: 'onboarding/fetchLocationList',
-      payload: {},
-    });
+    if (visible) {
+      dispatch({
+        type: 'onboarding/fetchJobTitleList',
+        payload: {},
+      });
+
+      dispatch({
+        type: 'onboarding/fetchLocationList',
+        payload: {},
+      });
+    } else {
+      this.clearFilter();
+    }
   };
 
   onFilterChange = (value) => {
-    console.log(value);
+    const { filter } = this.state;
+
+    if (isEmpty(value?.location) && isEmpty(value?.title) && !value?.processStatus) {
+      this.clearFilter();
+    } else {
+      this.setState({
+        isFilter: true,
+        filter: {
+          ...filter,
+          ...value,
+        },
+      });
+    }
+  };
+
+  onApply = () => {
+    const { filter } = this.state;
+    console.log(filter);
   };
 
   renderFooter = () => {
+    const { isFilter } = this.state;
     return (
       <div className={styles.footer}>
-        <Button className={styles.footer__clear}>Clear</Button>
-        <Button className={styles.footer__apply}>Apply</Button>
+        <Button onClick={() => this.openFilter(false)} className={styles.footer__clear}>
+          Clear
+        </Button>
+        <Button onClick={this.onApply} disabled={!isFilter} className={styles.footer__apply}>
+          Apply
+        </Button>
       </div>
     );
   };
