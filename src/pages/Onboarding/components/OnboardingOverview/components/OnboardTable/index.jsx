@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Table, Empty, Dropdown, Menu, Tag } from 'antd';
+import { Table, Empty, Dropdown, Menu, Popover } from 'antd';
 import { formatMessage, Link, connect, history } from 'umi';
 import moment from 'moment';
 
@@ -12,6 +12,7 @@ import {
   ONBOARDING_FORM_STEP_LINK,
 } from '@/utils/onboarding';
 import { getAuthority, getCurrentTenant } from '@/utils/authority';
+import { getTimezoneViaCity } from '@/utils/times';
 import { COLUMN_NAME, TABLE_TYPE } from '../utils';
 import { getActionText, getColumnWidth } from './utils';
 
@@ -19,6 +20,7 @@ import ReassignModal from './components/ReassignModal';
 import RenewModal from './components/RenewModal';
 
 import styles from './index.less';
+import PopupContentHr from './components/PopupContentHr';
 
 const compare = (dateTimeA, dateTimeB) => {
   const momentA = moment(dateTimeA, 'DD/MM/YYYY');
@@ -45,8 +47,64 @@ class OnboardTable extends Component {
       selectedExpiryTicketId: '',
       expiryStatus: '',
       expiryType: '',
+
+      // popup hover name
+      timezoneList: [],
+      currentTime: moment(),
     };
   }
+
+  componentDidMount() {
+    this.fetchTimezone();
+    this.setCurrentTime();
+  }
+
+  componentDidUpdate(prevProps) {
+    const { listLocationsByCompany = [] } = this.props;
+    if (
+      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+    ) {
+      this.fetchTimezone();
+    }
+  }
+
+  setCurrentTime = () => {
+    // compare two time by hour & minute. If minute changes, get new time
+    const timeFormat = 'HH:mm';
+    const { currentTime } = this.state;
+    const parseTime = (timeString) => moment(timeString, timeFormat);
+    const check = parseTime(moment().format(timeFormat)).isAfter(
+      parseTime(moment(currentTime).format(timeFormat)),
+    );
+
+    if (check) {
+      this.setState({
+        currentTime: moment(),
+      });
+    }
+  };
+
+  fetchTimezone = () => {
+    const { listLocationsByCompany = [] } = this.props;
+    const timezoneList = [];
+    listLocationsByCompany.forEach((location) => {
+      const {
+        headQuarterAddress: { addressLine1 = '', addressLine2 = '', state = '', city = '' } = {},
+        _id = '',
+      } = location;
+      timezoneList.push({
+        locationId: _id,
+        timezone:
+          getTimezoneViaCity(city) ||
+          getTimezoneViaCity(state) ||
+          getTimezoneViaCity(addressLine1) ||
+          getTimezoneViaCity(addressLine2),
+      });
+    });
+    this.setState({
+      timezoneList,
+    });
+  };
 
   handleActionDelete = (id, processStatus) => {
     const { dispatch } = this.props;
@@ -178,7 +236,8 @@ class OnboardTable extends Component {
       PROCESS_STATUS: PROCESS_STATUS_1,
     } = COLUMN_NAME;
 
-    const { list = [] } = this.props;
+    const { list = [], listLocationsByCompany = [] } = this.props;
+    const { timezoneList, currentTime } = this.state;
 
     const columns = [
       {
@@ -236,12 +295,24 @@ class OnboardTable extends Component {
         dataIndex: 'assignTo',
         key: 'assignTo',
         render: (assignTo) => (
-          <span
-            className={styles.renderAssignee}
-            onClick={() => this.viewProfile(assignTo?.generalInfo?.userId)}
+          <Popover
+            content={
+              <PopupContentHr
+                listLocationsByCompany={listLocationsByCompany}
+                propsState={{ currentTime, timezoneList }}
+                dataHR={assignTo}
+              />
+            }
+            trigger="hover"
+            placement="bottomRight"
           >
-            {assignTo?.generalInfo?.firstName + assignTo?.generalInfo?.lastName || '-'}
-          </span>
+            <span
+              className={styles.renderAssignee}
+              onClick={() => this.viewProfile(assignTo?.generalInfo?.userId)}
+            >
+              {assignTo?.generalInfo?.firstName + assignTo?.generalInfo?.lastName || '-'}
+            </span>
+          </Popover>
         ),
         columnName: ASSIGN_TO,
         width: getColumnWidth('assignTo', type, list.length),
@@ -252,13 +323,25 @@ class OnboardTable extends Component {
         dataIndex: 'assigneeManager',
         key: 'assigneeManager',
         render: (assigneeManager) => (
-          <span
-            className={styles.renderAssignee}
-            onClick={() => this.viewProfile(assigneeManager.userId)}
+          <Popover
+            content={
+              <PopupContentHr
+                listLocationsByCompany={listLocationsByCompany}
+                propsState={{ currentTime, timezoneList }}
+                dataHR={assigneeManager}
+              />
+            }
+            trigger="hover"
+            placement="bottomRight"
           >
-            {assigneeManager?.generalInfo?.firstName + assigneeManager?.generalInfo?.lastName ||
-              '-'}
-          </span>
+            <span
+              className={styles.renderAssignee}
+              onClick={() => this.viewProfile(assigneeManager?.generalInfo?.userId)}
+            >
+              {assigneeManager?.generalInfo?.firstName + assigneeManager?.generalInfo?.lastName ||
+                '-'}
+            </span>
+          </Popover>
         ),
         columnName: ASSIGNEE_MANAGER,
         width: getColumnWidth('assigneeManager', type, list.length),
@@ -717,8 +800,16 @@ class OnboardTable extends Component {
 }
 
 // export default OnboardTable;
-export default connect(({ newCandidateForm, loading, user: { currentUser = {} } = {} }) => ({
-  isAddNewMember: newCandidateForm.isAddNewMember,
-  loading: loading.effects['onboard/fetchOnboardList'],
-  currentUser,
-}))(OnboardTable);
+export default connect(
+  ({
+    newCandidateForm,
+    loading,
+    user: { currentUser = {} } = {},
+    locationSelection: { listLocationsByCompany = [] },
+  }) => ({
+    isAddNewMember: newCandidateForm.isAddNewMember,
+    loading: loading.effects['onboard/fetchOnboardList'],
+    currentUser,
+    listLocationsByCompany,
+  }),
+)(OnboardTable);

@@ -68,3 +68,17 @@ export async function withdrawTicket(payload) {
     data: payload,
   });
 }
+
+export async function getPosition(payload) {
+  return request('/api/titletenant/list-by-company', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getLocationList(payload) {
+  return request('/api/locationtenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
