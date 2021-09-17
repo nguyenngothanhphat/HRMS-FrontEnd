@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Input, Drawer } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import { connect } from 'umi';
 
 import filterIcon from '@/assets/offboarding-filter.svg';
 import closeIcon from '@/assets/closeIcon.svg';
@@ -8,6 +9,7 @@ import FilterForm from './components/FilterForm';
 
 import styles from './index.less';
 
+@connect()
 class SearchOnboarding extends Component {
   constructor(props) {
     super(props);
@@ -34,7 +36,18 @@ class SearchOnboarding extends Component {
   };
 
   openFilter = (visible) => {
+    const { dispatch } = this.props;
+
     this.setState({ visible });
+    dispatch({
+      type: 'onboarding/fetchJobTitleList',
+      payload: {},
+    });
+
+    dispatch({
+      type: 'onboarding/fetchLocationList',
+      payload: {},
+    });
   };
 
   render() {
