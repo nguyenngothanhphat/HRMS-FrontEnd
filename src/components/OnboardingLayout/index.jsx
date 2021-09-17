@@ -154,7 +154,7 @@ class OnboardingLayout extends PureComponent {
           </Col>
           <Col lg={18} xl={19}>
             <div className={styles.viewRight}>
-              <p className={styles.pageTitle}>{pageTitle}</p>
+              {/* <p className={styles.pageTitle}>{pageTitle}</p> */}
               {displayComponent}
             </div>
           </Col>

@@ -80,6 +80,7 @@ class Draft extends PureComponent {
   render() {
     const { drafts: data = [], total = 0, loading } = this.props;
     const { tabId, pageSelected, size, loadingSearch } = this.state;
+
     return (
       <div className={styles.onboardingTab}>
         <div className={styles.tabs}>
@@ -88,7 +89,7 @@ class Draft extends PureComponent {
             onChange={this.onChangeTab}
             tabBarExtraContent={<SearchOnboarding onChangeSearch={this.onChangeSearch} />}
           >
-            <TabPane tab="Draft" key="1">
+            <TabPane key="1">
               <DraftTab
                 list={data}
                 loading={loading}
