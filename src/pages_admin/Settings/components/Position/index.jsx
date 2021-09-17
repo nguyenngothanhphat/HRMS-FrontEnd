@@ -12,7 +12,7 @@ import EditModal from './components/EditModal';
   ({ loading, adminSetting: { tempData: { listTitles = [], totalTitle = 0 } = {} } = {} }) => ({
     listTitles,
     totalTitle,
-    loadingfetchPositionList: loading.effects['adminSetting/fetchListTitle'],
+    loadingFetchPositionList: loading.effects['adminSetting/fetchListTitle'],
   }),
 )
 class Position extends PureComponent {
@@ -162,7 +162,7 @@ class Position extends PureComponent {
 
   render() {
     const { modalVisible, selectedPositionID, limit, page } = this.state;
-    const { listTitles = [], loadingfetchPositionList = false, totalTitle = 0 } = this.props;
+    const { listTitles = [], loadingFetchPositionList = false, totalTitle = 0 } = this.props;
     return (
       <div className={styles.Position}>
         {this.renderHeader()}
@@ -174,7 +174,7 @@ class Position extends PureComponent {
           limit={limit}
           total={totalTitle}
           onChangePage={this.onChangePage}
-          loading={loadingfetchPositionList}
+          loading={loadingFetchPositionList}
         />
         <EditModal
           visible={modalVisible}

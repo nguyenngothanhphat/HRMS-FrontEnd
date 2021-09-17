@@ -102,8 +102,22 @@ export async function addDepartment(payload) {
   });
 }
 
+export async function getDepartmentByID(payload) {
+  return request('/api/departmenttenant/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function removeDepartment(payload) {
   return request('/api/departmenttenant/remove', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function updateDepartment(payload) {
+  return request('/api/departmenttenant/update', {
     method: 'POST',
     data: payload,
   });

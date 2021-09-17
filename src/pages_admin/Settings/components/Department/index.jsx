@@ -10,13 +10,14 @@ import EditModal from './components/EditModal';
 
 @connect(({ loading, adminSetting: { tempData: { listDepartments = [] } = {} } = {} }) => ({
   listDepartments,
-  loadingfetchDepartmentList: loading.effects['adminSetting/fetchDepartmentList'],
+  loadingFetchDepartmentList: loading.effects['adminSetting/fetchDepartmentList'],
 }))
 class Department extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       modalVisible: false,
+      selectedDepartmentID: '',
     };
   }
 
@@ -56,8 +57,8 @@ class Department extends PureComponent {
       },
       {
         title: 'Parent Department',
-        dataIndex: 'parentDepartment',
-        key: 'parentDepartment',
+        dataIndex: 'departmentParentName',
+        key: 'departmentParentName',
         width: '20%',
       },
       {
@@ -77,11 +78,11 @@ class Department extends PureComponent {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
-        render: () => {
+        render: (_, row) => {
           return (
             <div className={styles.actions}>
-              <img src={DeleteIcon} alt="" />
-              <img src={EditIcon} alt="" />
+              <img src={DeleteIcon} onClick={() => this.onRemoveDepartment(row)} alt="" />
+              <img src={EditIcon} onClick={() => this.onEditDepartment(row)} alt="" />
             </div>
           );
         },
@@ -89,6 +90,26 @@ class Department extends PureComponent {
     ];
 
     return columns;
+  };
+
+  onEditDepartment = (row) => {
+    this.setState({
+      modalVisible: true,
+      selectedDepartmentID: row._id,
+    });
+  };
+
+  onRemoveDepartment = async (row) => {
+    const { dispatch } = this.props;
+    const res = await dispatch({
+      type: 'adminSetting/removeDepartment',
+      payload: {
+        id: row._id,
+      },
+    });
+    if (res.statusCode === 200) {
+      this.fetchDepartmentList();
+    }
   };
 
   renderHeader = () => {
@@ -120,20 +141,28 @@ class Department extends PureComponent {
   };
 
   render() {
-    const { modalVisible } = this.state;
-    const { listDepartments = [], loadingfetchDepartmentList = false } = this.props;
-    if (loadingfetchDepartmentList) {
-      return (
-        <div className={styles.Department}>
-          <Skeleton />
-        </div>
-      );
-    }
+    const { modalVisible, selectedDepartmentID } = this.state;
+    const { listDepartments = [], loadingFetchDepartmentList = false } = this.props;
     return (
       <div className={styles.Department}>
         {this.renderHeader()}
-        <CommonTable columns={this.generateColumns()} list={listDepartments} />
-        <EditModal visible={modalVisible} onClose={() => this.handleModalVisible(false)} />
+        <CommonTable
+          columns={this.generateColumns()}
+          list={listDepartments}
+          loading={loadingFetchDepartmentList}
+        />
+        <EditModal
+          visible={modalVisible}
+          onClose={() => {
+            this.handleModalVisible(false);
+            this.setState({
+              selectedDepartmentID: '',
+            });
+          }}
+          onRefresh={this.fetchDepartmentList}
+          selectedDepartmentID={selectedDepartmentID}
+          action={selectedDepartmentID ? 'edit' : 'add'}
+        />
       </div>
     );
   }

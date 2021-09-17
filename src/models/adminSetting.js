@@ -18,6 +18,8 @@ import {
   // DEPARTMENT
   addDepartment,
   removeDepartment,
+  getDepartmentByID,
+  updateDepartment,
   getRolesByCompany,
   setupComplete,
   countEmployee,
@@ -49,6 +51,7 @@ const adminSetting = {
       listGrades: [],
     },
     viewingPosition: {},
+    viewingDepartment: {},
   },
   effects: {
     *fetchListRoles({ payload = {} }, { call, put }) {
@@ -248,9 +251,11 @@ const adminSetting = {
       return response;
     },
 
+    // DEPARTMENT
     *addDepartment({ payload }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(addDepartment, {
+        response = yield call(addDepartment, {
           ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -260,14 +265,15 @@ const adminSetting = {
         notification.success({
           message,
         });
-        yield put({ type: 'fetchDepartmentList' });
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
-    *removeDepartment({ payload: { id = '' } }, { call, put }) {
+    *removeDepartment({ payload: { id = '' } }, { call }) {
+      let response = {};
       try {
-        const response = yield call(removeDepartment, {
+        response = yield call(removeDepartment, {
           id,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -277,13 +283,44 @@ const adminSetting = {
         notification.success({
           message,
         });
-        yield put({ type: 'fetchDepartmentList' });
-        return statusCode;
       } catch (errors) {
         dialog(errors);
-        return 0;
       }
+      return response;
     },
+    *fetchDepartmentByID({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getDepartmentByID, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { viewingDepartment: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *updateDepartment({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(updateDepartment, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
     *getRolesByCompany({ payload: { company = '' } }, { call, put }) {
       try {
         const response = yield call(getRolesByCompany, { company, tenantId: getCurrentTenant() });
