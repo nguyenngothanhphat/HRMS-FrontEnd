@@ -3,7 +3,7 @@ import { getCurrentTimeOfTimezoneOption, getTimezoneViaCity } from '@/utils/time
 import { connect } from 'umi';
 import moment from 'moment';
 
-import { isEmpty } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import { getCurrentTenant } from '@/utils/authority';
 import OrganizationChart from './components/OrganizationChart';
 import DetailEmployeeChart from './components/EmployeeBox';
@@ -37,6 +37,7 @@ class OrganisationChart extends Component {
       chartDetails: {},
       timezoneList: [],
       currentTime: moment(),
+      currentDate: new Date(),
       status: 0,
     };
     this.myRef = React.createRef();
@@ -59,13 +60,17 @@ class OrganisationChart extends Component {
     });
 
     this.fetchTimezone();
+
+    // sync date
+    this.syncDateTime = setInterval(() => this.syncDate(), 1000);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { listLocationsByCompany = [] } = this.props;
-    const { status } = this.state;
+    const { listLocationsByCompany = [], companiesOfUser = [] } = this.props;
+    const { status, currentDate, currentTime } = this.state;
     if (
-      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany)
+      JSON.stringify(prevProps.listLocationsByCompany) !== JSON.stringify(listLocationsByCompany) ||
+      JSON.stringify(prevProps.companiesOfUser) !== JSON.stringify(companiesOfUser)
     ) {
       this.fetchAllListUser();
       this.fetchTimezone();
@@ -74,7 +79,60 @@ class OrganisationChart extends Component {
     if (prevState.status !== status) {
       this.fetchDataOrgChart();
     }
+
+    if (
+      JSON.stringify(prevState.currentDate.toLocaleTimeString()) !==
+      JSON.stringify(currentDate.toLocaleTimeString())
+    ) {
+      // [1] syncDateTime() always updates base on currentDate changing => call syncCurrentTime()
+      this.syncCurrentTime();
+    }
+
+    if (JSON.stringify(prevState.currentTime) !== JSON.stringify(currentTime)) {
+      // [2] currentTime state changed, then update data
+      this.initSyncDataInformation(currentTime);
+    }
   }
+
+  componentWillUnmount() {
+    clearInterval(this.syncDateTime);
+  }
+
+  syncDate = () => {
+    this.setState({
+      currentDate: new Date(),
+    });
+  };
+
+  syncCurrentTime = () => {
+    this.setState({
+      currentTime: moment(),
+    });
+  };
+
+  initSyncDataInformation = (currentTime) => {
+    const { chartDetails } = this.state;
+    const getCurrentUserdata = this.getDataCurrentUser(currentTime);
+    if (isEqual(chartDetails, getCurrentUserdata)) {
+      this.setState({ chartDetails: getCurrentUserdata });
+    } else {
+      this.syncDataInformation(currentTime, chartDetails);
+    }
+  };
+
+  syncDataInformation = (currentTime, chartDetails) => {
+    const { timezoneList } = this.state;
+    const { location = {} } = chartDetails;
+
+    if (!isEmpty(location)) {
+      const findTimezone =
+        timezoneList.find((timezone) => timezone.locationId === location._id) || {};
+      const timeData = getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone);
+
+      const newChartDetails = { ...chartDetails, localTime: timeData };
+      this.setState({ chartDetails: newChartDetails });
+    }
+  };
 
   fetchDataOrgChart = () => {
     const { dispatch, myEmployeeId = '' } = this.props;
@@ -87,8 +145,8 @@ class OrganisationChart extends Component {
     });
   };
 
-  getDataCurrentUser = () => {
-    const { timezoneList, currentTime } = this.state;
+  getDataCurrentUser = (currentTime) => {
+    const { timezoneList } = this.state;
     const {
       employee: { _id = '', title = {}, department = {}, generalInfo = {}, location = {} } = {},
     } = this.props;
@@ -116,7 +174,7 @@ class OrganisationChart extends Component {
 
     if (getData.length === 0) {
       const { employee: { _id: currentUserId = '' } = {} } = this.props;
-      const getCurrentUserdata = this.getDataCurrentUser();
+      const getCurrentUserdata = this.getDataCurrentUser(currentTime);
 
       this.setState({ idSelect: currentUserId });
       this.setState({ chartDetails: getCurrentUserdata });
@@ -274,6 +332,7 @@ class OrganisationChart extends Component {
           getTimezoneViaCity(addressLine2),
       });
     });
+
     this.setState({
       timezoneList,
     });
