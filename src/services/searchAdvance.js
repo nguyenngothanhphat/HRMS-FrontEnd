@@ -1,28 +1,21 @@
 import request from '@/utils/request';
 
-export async function searchAdvance(payload) {
-  return request('/api/documenttenant/search-advanced', {
+export async function searchGlobal(payload) {
+  return request('/api/searchtenant/global-search', {
     method: 'POST',
     data: payload,
   });
 }
 
-export async function searchByCategory(payload) {
-  return request('/api/documenttenant/list-by-category', {
+export async function searchEmployee(payload) {
+  return request('/api/searchtenant/employees-advance-search', {
     method: 'POST',
     data: payload,
   });
 }
 
-export async function getHistorySearch(payload) {
-  return request('/api/historysearchtenant/get-by-employee', {
-    method: 'POST',
-    data: payload,
-  });
-}
-
-export async function updateSearchHistory(payload) {
-  return request('/api/historysearchtenant/add-and-update', {
+export async function searchTicket(payload) {
+  return request('/api/searchtenant/tickets-advance-search', {
     method: 'POST',
     data: payload,
   });

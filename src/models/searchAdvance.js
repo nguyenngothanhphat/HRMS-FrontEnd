@@ -1,81 +1,120 @@
-import { getCurrentCompany } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
-import {
-  searchAdvance,
-  searchByCategory,
-  getHistorySearch,
-  updateSearchHistory,
-} from '../services/searchAdvance';
+import { searchGlobal, searchEmployee, searchTicket } from '../services/searchAdvance';
+import { getCurrentTenant, getCurrentCompany } from '../utils/authority';
 
 export default {
   namespace: 'searchAdvance',
   state: {
-    result: {},
-    resultByCategory: [],
-    historySearch: {},
+    keySearch: '',
+    isSearch: false,
+    result: {
+      employees: [],
+      employeeDoc: [],
+      tickets: [],
+    },
+    employeeAdvance: {
+      status: ['ACTIVE'],
+      firstName: '',
+      lastName: '',
+      middleName: '',
+      userId: '',
+      phoneNumber: '',
+      city: '',
+      state: '',
+      country: '',
+      employeeId: '',
+      jobTitle: [],
+      department: '',
+      skill: [],
+      certification: '',
+      location: [],
+      reportingManager: '',
+      classification: [],
+    },
   },
   effects: {
-    *search({ payload = {} }, { call, put, select }) {
-      const { historySearch = {} } = yield select((state) => state.searchAdvance);
-      // const { user: { currentUser: { _id = '' } = {} } = {} } = yield select((state) => state.user);
+    *search({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(searchAdvance, payload);
-        const { statusCode, data: result = {} } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { result } });
-        // handle history search:
-        const { keySearch = '', tenantId, _id } = payload;
-        const { employees = [] } = result;
-        const { key = [] } = historySearch;
-        const newListHistoryKeyword = [keySearch, ...key];
-        const listFilterKeyword = newListHistoryKeyword
-          .filter((value, index, self) => self.findIndex((s) => s === value) === index)
-          .slice(0, 3);
-        const history = {
-          user: _id,
-          key: listFilterKeyword,
-          dataSearch: { employee: employees.slice(0, 4), employeeDoc: [] },
-          tenantId,
+        const response = yield call(searchGlobal, {
+          ...payload,
+          tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
-        };
-        yield put({ type: 'updateSearchHistory', payload: history });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-    *searchByCategory({ payload }, { call, put }) {
-      try {
-        const response = yield call(searchByCategory, payload);
-        const { statusCode, data: resultByCategory = {} } = response;
-        if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { resultByCategory } });
-      } catch (errors) {
-        dialog(errors);
-      }
-    },
-    *getHistorySearch({ payload }, { call, put, select }) {
-      const {
-        currentUser: { _id = '' },
-      } = yield select((state) => state.user);
-      try {
-        const response = yield call(getHistorySearch, {
-          user: _id,
-          tenantId: payload.tenantId,
-          company: payload.company,
         });
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'save', payload: { historySearch: data } });
+        const { employees, employeeDoc, compoffTickets, leaveReqTickets, offBoardingTickets } =
+          data;
+        const tickets = [];
+        compoffTickets.map((item) =>
+          tickets.push({ id: item._id, ticketID: item.ticketID, title: 'Compoff Request' }),
+        );
+        leaveReqTickets.map((item) =>
+          tickets.push({ id: item._id, ticketID: item.ticketID, title: 'Leave Request' }),
+        );
+        offBoardingTickets.map((item) =>
+          tickets.push({ id: item._id, ticketID: item.ticketID, title: 'Offboarding Request' }),
+        );
+
+        for (let i = tickets.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const temp = tickets[i];
+          tickets[i] = tickets[j];
+          tickets[j] = temp;
+        }
+        yield put({
+          type: 'save',
+          payload: {
+            result: {
+              employees,
+              employeeDoc,
+              tickets,
+            },
+          },
+        });
+        // handle history search:
       } catch (errors) {
         dialog(errors);
       }
     },
-    *updateSearchHistory({ payload }, { call, put }) {
+    *searchEmployee({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(updateSearchHistory, payload);
-        const { statusCode } = response;
+        const response = yield call(searchEmployee, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
-        yield put({ type: 'getHistorySearch', payload });
+        const { employees, employeeDoc, compoffTickets, leaveReqTickets, offBoardingTickets } =
+          data;
+        const tickets = [];
+        compoffTickets.map((item) =>
+          tickets.push({ id: item._id, ticketID: item.ticketID, title: 'Compoff Request' }),
+        );
+        leaveReqTickets.map((item) =>
+          tickets.push({ id: item._id, ticketID: item.ticketID, title: 'Leave Request' }),
+        );
+        offBoardingTickets.map((item) =>
+          tickets.push({ id: item._id, ticketID: item.ticketID, title: 'Offboarding Request' }),
+        );
+
+        for (let i = tickets.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          const temp = tickets[i];
+          tickets[i] = tickets[j];
+          tickets[j] = temp;
+        }
+        yield put({
+          type: 'save',
+          payload: {
+            result: {
+              employees,
+              employeeDoc,
+              tickets,
+            },
+          },
+        });
+        // handle history search:
       } catch (errors) {
         dialog(errors);
       }
