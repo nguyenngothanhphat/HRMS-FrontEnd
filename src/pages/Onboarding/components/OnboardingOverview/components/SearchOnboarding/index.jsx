@@ -42,6 +42,7 @@ class SearchOnboarding extends Component {
             visible={visible}
             mask={false}
             closeIcon={<img alt="close" src={closeIcon} />}
+            getContainer
           >
             <FilterForm />
           </Drawer>
