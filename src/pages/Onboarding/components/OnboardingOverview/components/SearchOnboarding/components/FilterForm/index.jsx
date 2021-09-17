@@ -63,6 +63,11 @@ class FilterForm extends Component {
     this.state = {};
   }
 
+  onValuesChange = (value) => {
+    const { onFilterChange = () => {} } = this.props;
+    onFilterChange(value);
+  };
+
   tagRender = (props) => {
     const { label, closable, onClose } = props;
 
@@ -83,8 +88,8 @@ class FilterForm extends Component {
 
     return (
       <div className={styles.filterForm}>
-        <Form layout="horizontal" className={styles.form}>
-          <Form.Item label="BY STATUS">
+        <Form layout="horizontal" className={styles.form} onValuesChange={this.onValuesChange}>
+          <Form.Item label="BY STATUS" name="processStatus">
             <Select
               allowClear
               filterOption={(input, option) =>
@@ -100,7 +105,7 @@ class FilterForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="BY POSITION">
+          <Form.Item label="BY POSITION" name="title">
             <Select
               mode="multiple"
               allowClear
@@ -118,7 +123,7 @@ class FilterForm extends Component {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="BY LOCATION">
+          <Form.Item label="BY LOCATION" name="location">
             <Select
               mode="multiple"
               allowClear

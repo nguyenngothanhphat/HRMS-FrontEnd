@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Input, Drawer } from 'antd';
+import { Input, Drawer, Button } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { connect } from 'umi';
 
@@ -50,6 +50,19 @@ class SearchOnboarding extends Component {
     });
   };
 
+  onFilterChange = (value) => {
+    console.log(value);
+  };
+
+  renderFooter = () => {
+    return (
+      <div className={styles.footer}>
+        <Button className={styles.footer__clear}>Clear</Button>
+        <Button className={styles.footer__apply}>Apply</Button>
+      </div>
+    );
+  };
+
   render() {
     const { onChangeSearch = () => {} } = this.props;
     const { visible } = this.state;
@@ -72,9 +85,9 @@ class SearchOnboarding extends Component {
             visible={visible}
             mask={false}
             closeIcon={<img alt="close" src={closeIcon} />}
-            getContainer
+            footer={this.renderFooter()}
           >
-            <FilterForm />
+            <FilterForm onFilterChange={this.onFilterChange} />
           </Drawer>
         </div>
         <Input
