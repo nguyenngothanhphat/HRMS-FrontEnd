@@ -304,6 +304,7 @@ class OnboardTable extends Component {
               />
             }
             trigger="hover"
+            placement="bottomRight"
           >
             <span
               className={styles.renderAssignee}
@@ -331,6 +332,7 @@ class OnboardTable extends Component {
               />
             }
             trigger="hover"
+            placement="bottomRight"
           >
             <span
               className={styles.renderAssignee}

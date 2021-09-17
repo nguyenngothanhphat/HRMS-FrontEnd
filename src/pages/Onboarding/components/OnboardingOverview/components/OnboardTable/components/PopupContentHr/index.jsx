@@ -67,6 +67,12 @@ class PopupContentHr extends Component {
         <div className={styles.contact}>
           <Row gutter={[24, 24]}>
             <Col span={7}>
+              <div className={styles.contact__title}>Reporting Manager: </div>
+            </Col>
+            <Col span={17}>
+              <div className={styles.contact__value}>{workNumber}</div>
+            </Col>
+            <Col span={7}>
               <div className={styles.contact__title}>Mobile: </div>
             </Col>
             <Col span={17}>
