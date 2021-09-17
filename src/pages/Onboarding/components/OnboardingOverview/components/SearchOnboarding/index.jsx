@@ -91,7 +91,11 @@ class SearchOnboarding extends Component {
 
   onApply = () => {
     const { filter } = this.state;
-    console.log(filter);
+    const payload = {
+      ...filter,
+      processStatus: filter.processStatus || '',
+    };
+    console.log(payload);
   };
 
   renderFooter = () => {
