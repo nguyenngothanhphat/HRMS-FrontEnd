@@ -4,7 +4,7 @@ import { Row, Col, Button } from 'antd';
 import { history } from 'umi';
 import ItemMenu from './components/ItemMenu';
 // import PreviewOffer from '../../pages/NewCandidateForm/components/PreviewOffer/index';
-import BasicInformation from '../../pages/NewCandidateForm/components/BasicInformation';
+
 // import BottomBar from '../BottomBar';
 
 import s from './index.less';
@@ -35,20 +35,9 @@ class SettingLayout extends PureComponent {
     const findTab = listMenu.find((menu) => menu.link === tabName) || listMenu[0];
 
     this.setState({
-      selectedItemId: findTab.id || 1,
-      displayComponent: findTab.component || <BasicInformation />,
+      selectedItemId: findTab.component ? findTab.id : 1,
+      displayComponent: findTab.component,
     });
-  };
-
-  _handlePreviewOffer = () => {
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'newCandidateForm/save',
-    //   payload: {
-    //     displayComponent: <PreviewOffer />,
-    //   },
-    // });
-    // history.push(`/onboarding/list/view/preview-offer`);
   };
 
   _handleClick = (item) => {
@@ -72,14 +61,7 @@ class SettingLayout extends PureComponent {
                   selectedItemId={selectedItemId}
                 />
               ))}
-              <div className={s.viewLeft__menu__btnPreviewOffer}>
-                {currentPage !== 'settings' && (
-                  <Button type="primary" ghost onClick={this._handlePreviewOffer}>
-                    Preview offer letter
-                  </Button>
-                )}
-                {/* <button onClick={this.handleNext}> next </button> */}
-              </div>
+              <div className={s.viewLeft__menu__btnPreviewOffer} />
             </div>
           </Col>
           <Col
