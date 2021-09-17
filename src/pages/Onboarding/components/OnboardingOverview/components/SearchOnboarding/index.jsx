@@ -16,6 +16,23 @@ class SearchOnboarding extends Component {
     };
   }
 
+  componentDidUpdate() {
+    this.disableScrollView();
+  }
+
+  componentWillUnmount() {
+    document.body.style.overflow = 'auto';
+  }
+
+  disableScrollView = () => {
+    const { visible } = this.state;
+    if (visible) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  };
+
   openFilter = (visible) => {
     this.setState({ visible });
   };
