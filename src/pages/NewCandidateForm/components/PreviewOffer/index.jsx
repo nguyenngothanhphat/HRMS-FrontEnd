@@ -49,6 +49,7 @@ const PreviewOffer = (props) => {
     assignTo: { _id: assigneeId = '' } = {},
     assigneeManager: { _id: assigneeManagerId = '' } = {},
     ticketID = '',
+    offerLetterTemplate: offerLetterTemplateProp = '',
   } = tempData;
   const {
     privateEmail: candidateEmailProp = '',
@@ -549,7 +550,7 @@ const PreviewOffer = (props) => {
             <img className={styles.signatureImg} src={whiteImg} alt="" />
             {(isTicketAssignee || isTicketManager) && (isNewOffer || isAwaitingOffer) && (
               <button type="submit" onClick={openModalUploadSignature}>
-                {formatMessage({ id: 'component.previewOffer.upload' })}
+                {optionSignature === 'draw' ? 'Click here to draw' : 'Upload'}
               </button>
             )}
           </>
@@ -559,7 +560,7 @@ const PreviewOffer = (props) => {
             {(isTicketAssignee || isTicketManager) && (isNewOffer || isAwaitingOffer) && (
               <>
                 <button type="submit" onClick={openModalUploadSignature}>
-                  {formatMessage({ id: 'component.previewOffer.uploadNew' })}
+                  {optionSignature === 'draw' ? 'Click here to draw' : 'Upload new'}
                 </button>
                 <CancelIcon resetImg={() => resetImg('hr')} />
               </>
@@ -568,6 +569,32 @@ const PreviewOffer = (props) => {
         )}
       </div>
     );
+  };
+
+  const createFinalOffer = () => {
+    const { _id } = data;
+    dispatch({
+      type: 'newCandidateForm/createFinalOfferEffect',
+      payload: {
+        candidateId: _id,
+        templateId: offerLetterTemplateProp,
+        tenantId: getCurrentTenant(),
+      },
+    }).then((res) => {
+      const { data: { _id: newTemplateId = '', attachment = {} } = {} } = res;
+      if (attachment) {
+        setOfferLetter(attachment.url);
+        dispatch({
+          type: 'newCandidateForm/updateByHR',
+          payload: {
+            candidate: _id,
+            currentStep: 6,
+            offerLetter: newTemplateId,
+            tenantId: getCurrentTenant(),
+          },
+        });
+      }
+    });
   };
 
   const handleHrManagerSignatureSubmit = async () => {
@@ -627,6 +654,7 @@ const PreviewOffer = (props) => {
         },
       }).then(({ statusCode }) => {
         if (statusCode === 200) {
+          createFinalOffer();
           setHrManagerSignatureSubmit(true);
         }
       });
@@ -643,6 +671,7 @@ const PreviewOffer = (props) => {
       }).then(({ statusCode }) => {
         if (statusCode === 200) {
           setHrManagerSignatureSubmit(true);
+          createFinalOffer();
         }
       });
     }
@@ -711,7 +740,7 @@ const PreviewOffer = (props) => {
                 setModalSignature(optionSignatureHRManager);
               }}
             >
-              {formatMessage({ id: 'component.previewOffer.uploadNew' })}
+              {optionSignatureHRManager === 'draw' ? 'Click here to draw' : 'Upload new'}
             </button>
 
             <CancelIcon resetImg={() => resetImg('hrManager')} />
@@ -805,13 +834,11 @@ const PreviewOffer = (props) => {
       const onSecondaryButtonClick = () => {
         if (isAwaitingOffer || isNewOffer) {
           setRejectModalVisible(true);
-        } else
-        if (isSentOffer) {
+        } else if (isSentOffer) {
           setExtendOfferModalVisible(true);
         } else {
           history.push(`/onboarding/list/view/${ticketID}/${ONBOARDING_FORM_LINK.OFFER_DETAILS}`);
         }
-
       };
 
       const onPrimaryButtonClick = () => {
@@ -910,6 +937,7 @@ const PreviewOffer = (props) => {
   };
 
   if (loadingFetchCandidate) return <Skeleton />;
+
   // main
   return (
     <Row gutter={[24, 0]} className={styles.previewContainer}>

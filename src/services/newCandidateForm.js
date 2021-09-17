@@ -229,3 +229,17 @@ export function withdrawOffer(params) {
     data: params,
   });
 }
+
+export async function getDocumentSettingList(payload) {
+  return request('/api/documentcompanytenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getListBenefit(payload) {
+  return request('/api/benefittenant/list', {
+    method: 'POST',
+    data: payload,
+  });
+}

@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Row, Col, Skeleton } from 'antd';
 import { Link } from 'umi';
+import moment from 'moment';
 import { CANDIDATE_TASK_STATUS } from '@/utils/candidatePortal';
 import styles from './index.less';
 
@@ -17,10 +18,35 @@ class PendingTaskTable extends PureComponent {
             )}
           </Col>
           <Col span={8}>
-            <span>{item.dueDate}</span>
+            <span>{item.dueDate ? moment(item.dueDate).format('MM.DD.YY') : '-'}</span>
           </Col>
         </Row>
         {index + 1 < listLength && <div className={styles.divider} />}
+      </div>
+    );
+  };
+
+  renderTasks = () => {
+    const { loading = false } = this.props;
+    if (loading) {
+      return (
+        <div className={styles.taskTableContent}>
+          <Skeleton />
+        </div>
+      );
+    }
+
+    const data = this.getData();
+    if (data.length > 0) {
+      return (
+        <div className={styles.taskTableContent}>
+          {data.map((val, index) => this.renderItem(val, data.length, index))}
+        </div>
+      );
+    }
+    return (
+      <div className={styles.emptyTableContent}>
+        <span>You have no pending tasks</span>
       </div>
     );
   };
@@ -35,9 +61,6 @@ class PendingTaskTable extends PureComponent {
   };
 
   render() {
-    const data = this.getData();
-    const { loading } = this.props;
-
     return (
       <div className={styles.PendingTaskTable}>
         <div className={styles.taskContainer}>
@@ -49,13 +72,7 @@ class PendingTaskTable extends PureComponent {
               <span>Due Date</span>
             </Col>
           </Row>
-          <div className={styles.taskTableContent}>
-            {loading ? (
-              <Skeleton />
-            ) : (
-              data.map((val, index) => this.renderItem(val, data.length, index))
-            )}
-          </div>
+          {this.renderTasks()}
         </div>
       </div>
     );

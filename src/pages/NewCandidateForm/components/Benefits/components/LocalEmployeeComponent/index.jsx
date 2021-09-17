@@ -3,9 +3,10 @@
 import React, { PureComponent } from 'react';
 import { Checkbox, Typography, Row } from 'antd';
 import moment from 'moment';
+
 import styles from './index.less';
 
-class GlobalEmpoyeeComponent extends PureComponent {
+class LocalEmployeeComponent extends PureComponent {
   getCreateBenefitAt = (category) => {
     const { listBenefits = [] } = this.props;
     let createdAt = '';
@@ -27,46 +28,25 @@ class GlobalEmpoyeeComponent extends PureComponent {
   };
 
   render() {
-    const { globalEmployeesCheckbox, onChange, handleCheckAll, handleChange, benefits } =
-      this.props;
-    const {
-      medical,
-      life,
-      shortTerm,
-      listSelectedMedical,
-      listSelectedShortTerm,
-      listSelectedLife,
-      listSelectedVision,
-      listSelectedDental,
-      dental,
-      vision,
-    } = benefits;
-    const { checkBox } = globalEmployeesCheckbox;
+    const { IndiaEmployeesCheckbox, onChange, handleChange, handleCheckAll, benefits } = this.props;
+
+    const { employeeProvident, paytmWallet, listSelectedEmployee, listSelectedPaytmWallet } =
+      benefits;
+    const { checkBox } = IndiaEmployeesCheckbox;
 
     const CheckboxGroup = Checkbox.Group;
     return (
-      <div className={styles.GlobalEmpoyeeComponent}>
+      <div className={styles.LocalEmployeeComponent}>
         {checkBox.map((item) =>
           item.subCheckBox.length > 1 ? (
             <div className={styles.checkBoxHeader}>
               <Checkbox
                 className={
-                  item.value === 'Medical' ? styles.checkboxMedical : styles.checkBoxHeaderTop
+                  item.value === 'Paytm Wallet' ? styles.checkboxMedical : styles.checkBoxHeaderTop
                 }
+                name={item}
                 onChange={(e) => handleCheckAll(e, item.subCheckBox, item.title)}
-                checked={
-                  item.title === 'Medical'
-                    ? medical
-                    : item.title === 'Life'
-                    ? life
-                    : item.title === 'shortTerm'
-                    ? shortTerm
-                    : item.title === 'Dental'
-                    ? dental
-                    : item.title === 'Vision'
-                    ? vision
-                    : null
-                }
+                checked={item.title === 'employeeProvident' ? employeeProvident : paytmWallet}
               >
                 <Typography.Text className={styles.checkBoxTitle}>{item.value}</Typography.Text>
               </Checkbox>
@@ -76,17 +56,9 @@ class GlobalEmpoyeeComponent extends PureComponent {
                   options={item.subCheckBox.map((data) => data.value)}
                   onChange={(e) => handleChange(e, item.subCheckBox, item.title)}
                   value={
-                    item.title === 'Medical'
-                      ? listSelectedMedical
-                      : item.title === 'Life'
-                      ? listSelectedLife
-                      : item.title === 'shortTerm'
-                      ? listSelectedShortTerm
-                      : item.title === 'Dental'
-                      ? listSelectedDental
-                      : item.title === 'Vision'
-                      ? listSelectedVision
-                      : []
+                    item.title === 'employeeProvident'
+                      ? listSelectedEmployee
+                      : listSelectedPaytmWallet
                   }
                 />
               </div>
@@ -103,19 +75,7 @@ class GlobalEmpoyeeComponent extends PureComponent {
                   <Checkbox
                     onChange={(e) => onChange(e, item.value)}
                     value={data.value}
-                    checked={
-                      item.title === 'Medical'
-                        ? medical
-                        : item.title === 'Life'
-                        ? life
-                        : item.title === 'shortTerm'
-                        ? shortTerm
-                        : item.title === 'Dental'
-                        ? dental
-                        : item.title === 'Vision'
-                        ? vision
-                        : null
-                    }
+                    checked={item.title === 'employeeProvident' ? employeeProvident : paytmWallet}
                   >
                     <Typography.Text className={styles.subCheckboxTitle}>
                       {data.value}
@@ -126,10 +86,9 @@ class GlobalEmpoyeeComponent extends PureComponent {
             </div>
           ),
         )}
-        <div className={styles.Line} />
       </div>
     );
   }
 }
 
-export default GlobalEmpoyeeComponent;
+export default LocalEmployeeComponent;

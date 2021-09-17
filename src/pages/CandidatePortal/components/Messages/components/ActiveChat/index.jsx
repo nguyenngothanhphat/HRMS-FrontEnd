@@ -1,19 +1,13 @@
-import { Button, Input, Skeleton, Form } from 'antd';
-import React, { PureComponent } from 'react';
-import { connect } from 'umi';
+import { Button, Form, Input, Skeleton } from 'antd';
 import moment from 'moment';
-
+import React, { PureComponent } from 'react';
 import { io } from 'socket.io-client';
-import SOCKET_URL from '@/utils/socket';
-import ChatEvent from '@/utils/chatSocket';
-
-import SeenIcon from '@/assets/candidatePortal/seen.svg';
+import { connect } from 'umi';
+import { ChatEvent, SOCKET_URL } from '@/utils/chatSocket';
 import UnseenIcon from '@/assets/candidatePortal/unseen.svg';
+import SeenIcon from '@/assets/candidatePortal/seen.svg';
 import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
-
 import styles from './index.less';
-
-const socket = io(SOCKET_URL);
 
 @connect(
   ({
@@ -41,6 +35,8 @@ const socket = io(SOCKET_URL);
 class ActiveChat extends PureComponent {
   formRef = React.createRef();
 
+  socket = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = {};
@@ -51,20 +47,23 @@ class ActiveChat extends PureComponent {
   componentDidMount() {
     this.scrollToBottom();
     // realtime get message
-    const { candidate } = this.props;
-    socket.on(ChatEvent.DISCONNECT);
-    socket.emit(ChatEvent.ADD_USER, candidate._id);
-    socket.on(ChatEvent.GET_USER, () => {});
-    socket.on(ChatEvent.GET_MESSAGE, (data) => {
-      this.saveNewMessage(data);
-    });
+    // const { candidate } = this.props;
+    this.socket.current = io(SOCKET_URL);
+    // this.socket.current.emit(ChatEvent.ADD_USER, candidate._id);
+    // this.socket.current.on(ChatEvent.GET_USER, (users) => {
+    //   console.log('users messages', users);
+    // });
+    // this.socket.current.on(ChatEvent.GET_MESSAGE, (message) => {
+    //   console.log('message a', message);
+    //   this.saveNewMessage(message);
+    // });
   }
 
   componentDidUpdate = () => {};
 
   componentWillUnmount = () => {
-    socket.on(ChatEvent.DISCONNECT);
-
+    // socket.on(ChatEvent.DISCONNECT, () => {});
+    // socket.disconnect();
     const { dispatch } = this.props;
     dispatch({
       type: 'conversation/clearState',
@@ -72,11 +71,17 @@ class ActiveChat extends PureComponent {
   };
 
   saveNewMessage = (message) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'conversation/saveNewMessage',
-      payload: message,
-    });
+    const { dispatch, activeId = '', fetchUnseenTotal = () => {} } = this.props;
+    setTimeout(() => {
+      fetchUnseenTotal();
+    }, 100);
+    const { conversationId = '' } = message;
+    if (conversationId === activeId) {
+      dispatch({
+        type: 'conversation/saveNewMessage',
+        payload: message,
+      });
+    }
   };
 
   fetchMessages = async () => {
@@ -114,29 +119,54 @@ class ActiveChat extends PureComponent {
     }
   };
 
+  getTime = (dateTime) => {
+    const compare = (dateTimeA, dateTimeB) => {
+      const momentA = moment(dateTimeA).format('DD/MM/YYYY');
+      const momentB = moment(dateTimeB).format('DD/MM/YYYY');
+      if (momentA === momentB) return 1;
+      return 0;
+    };
+
+    const today = moment();
+    const yesterday = moment().add(-1, 'days');
+
+    if (compare(moment(dateTime), moment(today)) === 1) {
+      return 'Today';
+    }
+    if (compare(moment(dateTime), moment(yesterday)) === 1) {
+      return 'Yesterday';
+    }
+    return moment(dateTime).locale('en').format('MMMM Do');
+  };
+
   // chat container
-  renderSender = () => {
+  renderSender = (messages = []) => {
+    const { hrAvatar = '' } = this.props;
+    const lastMessage = messages.length > 0 ? messages[messages.length - 1] : null;
+
     return (
       <div className={styles.senderContainer}>
         <div className={styles.avatar}>
-          <img src={HRIcon1} alt="message" />
+          <img src={hrAvatar || HRIcon1} alt="message" />
         </div>
         <div className={styles.info}>
           <span className={styles.name}>HR</span>
-          <span className={styles.time}>Today</span>
+          <span className={styles.time}>
+            {lastMessage ? this.getTime(lastMessage?.createdAt) : ''}
+          </span>
         </div>
       </div>
     );
   };
 
   renderChatContent = (chat = []) => {
-    const { candidate: { _id: candidateId = '' } = {} } = this.props;
+    const { hrAvatar = '', candidate: { _id: candidateId = '' } = {}, activeId = '' } = this.props;
     const senderMessage = (item, index) => {
       return (
         <div key={index} className={styles.senderMessage}>
           <div className={styles.above}>
             <div className={styles.avatar}>
-              <img src={HRIcon1} alt="sender-avatar" />
+              <img src={hrAvatar || HRIcon1} alt="sender-avatar" />
             </div>
             <div className={styles.messageBody}>
               <span className={styles.name}>{item.text || ''}</span>
@@ -173,6 +203,9 @@ class ActiveChat extends PureComponent {
     return (
       <div className={styles.contentContainer} ref={this.mesRef}>
         {chat.map((item, index) => {
+          if (item.conversationId !== activeId) {
+            return '';
+          }
           if (item.sender === candidateId || item.senderId === candidateId) {
             return candidateMessage(item, index);
           }
@@ -184,7 +217,9 @@ class ActiveChat extends PureComponent {
 
   // chat input
   renderInput = () => {
-    const { loadingMessages, activeId = '' } = this.props;
+    const { loadingMessages, activeId = '', isReplyable = true } = this.props;
+    const disabled = loadingMessages || !activeId || !isReplyable;
+    // if (!isReplyable) return '';
     return (
       <div className={styles.inputContainer}>
         <Form ref={this.formRef} name="inputChat" onFinish={this.onSendClick}>
@@ -193,11 +228,15 @@ class ActiveChat extends PureComponent {
               autoSize={{ minRows: 1, maxRows: 4 }}
               maxLength={255}
               placeholder="Type a message..."
-              disabled={loadingMessages || !activeId}
+              disabled={disabled}
             />
           </Form.Item>
           <Form.Item>
-            <Button disabled={loadingMessages || !activeId} htmlType="submit">
+            <Button
+              disabled={disabled}
+              className={isReplyable ? '' : styles.disabledBtn}
+              htmlType="submit"
+            >
               Send
             </Button>
           </Form.Item>
@@ -215,7 +254,8 @@ class ActiveChat extends PureComponent {
     } = this.props;
     const { message } = values;
     if (activeId && message) {
-      socket.emit(ChatEvent.SEND_MESSAGE, {
+      this.socket.current.emit(ChatEvent.SEND_MESSAGE, {
+        conversationId: activeId,
         senderId: candidateId,
         receiverId: assignTo?._id || assignTo || '',
         text: message,
@@ -227,6 +267,7 @@ class ActiveChat extends PureComponent {
           conversationId: activeId,
           sender: candidateId,
           text: message,
+          isSeen: true,
         },
       });
 
@@ -234,6 +275,11 @@ class ActiveChat extends PureComponent {
         this.formRef.current.setFieldsValue({
           message: '',
         });
+        const { fetchUnseenTotal = () => {}, getListLastMessage = () => {} } = this.props;
+        setTimeout(() => {
+          fetchUnseenTotal();
+          getListLastMessage();
+        }, 100);
       }
     }
     this.scrollToBottom();

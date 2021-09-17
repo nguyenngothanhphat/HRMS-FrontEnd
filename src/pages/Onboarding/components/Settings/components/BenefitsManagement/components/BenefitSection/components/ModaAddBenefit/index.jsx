@@ -246,7 +246,20 @@ class ModalAddBenefit extends Component {
       listBenefitDefault = [],
       activeKeyTab,
       loadingAddDocument,
+      countryId = '',
     } = this.props;
+
+    const arrCost = [
+      { id: 1, name: 'annualCost', label: 'Annual Cost' },
+      { id: 2, name: 'employeeContribution', label: 'Employee Contribution' },
+      { id: 3, name: 'employerContribution', label: "Employer's Contribution" },
+    ];
+
+    const getCurrency = () => {
+      if (countryId === 'VN') return 'VND';
+      if (countryId === 'US') return '$';
+      return '₹';
+    };
 
     const valueType = this.getValueField(activeKeyTab, 'type');
 
@@ -353,7 +366,7 @@ class ModalAddBenefit extends Component {
                       },
                     ]}
                   >
-                    <Input placeholder="Type the name of the Benefit Plan" />
+                    <Input placeholder="Type the name of the Benefit Plan" suffix={<div />} />
                   </Form.Item>
                 </div>
                 <div className={styles.addBenefit__body_label}>Deduction Date</div>
@@ -365,84 +378,28 @@ class ModalAddBenefit extends Component {
                     />
                   </Form.Item>
                 </div>
-                <div className={styles.addBenefit__body_label}>Annual Cost</div>
-                <div className={styles.addBenefit__body_formItem}>
-                  <Form.Item name="annualCost">
-                    <Select
-                      showSearch
-                      suffixIcon={<span>₹</span>}
-                      allowClear
-                      // onChange={this.onChangeSelect}
-                      filterOption={(input, option) => {
-                        return (
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {[
-                        { value: '10000', name: '10,000' },
-                        { value: '15000', name: '15,000' },
-                        { value: '20000', name: '20,000' },
-                      ].map((item) => (
-                        <Option value={item.value} key={item.value}>
-                          {item.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className={styles.addBenefit__body_label}>Employee Contribution</div>
-                <div className={styles.addBenefit__body_formItem}>
-                  <Form.Item name="employeeContribution">
-                    <Select
-                      showSearch
-                      suffixIcon={<span>₹</span>}
-                      allowClear
-                      // onChange={this.onChangeSelect}
-                      filterOption={(input, option) => {
-                        return (
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {[
-                        { value: '5000', name: '5,000' },
-                        { value: '10000', name: '10,000' },
-                        { value: '15000', name: '15,000' },
-                      ].map((item) => (
-                        <Option value={item.value} key={item.value}>
-                          {item.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className={styles.addBenefit__body_label}>Employer&lsquo;s Contribution</div>
-                <div className={styles.addBenefit__body_formItem}>
-                  <Form.Item name="employerContribution">
-                    <Select
-                      showSearch
-                      suffixIcon={<span>₹</span>}
-                      allowClear
-                      // onChange={this.onChangeSelect}
-                      filterOption={(input, option) => {
-                        return (
-                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {[
-                        { value: '10000', name: '10,000' },
-                        { value: '15000', name: '15,000' },
-                        { value: '20000', name: '20,000' },
-                      ].map((item) => (
-                        <Option value={item.value} key={item.value}>
-                          {item.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-                </div>
+                {arrCost.map((item) => (
+                  <>
+                    <div className={styles.addBenefit__body_label}>{item.label}</div>
+                    <div className={styles.addBenefit__body_formItem}>
+                      <Form.Item
+                        name={item.name}
+                        rules={[
+                          {
+                            pattern: /^[0-9]+$/,
+                            message: 'Only number !',
+                          },
+                          {
+                            required: true,
+                            message: 'Please input field !',
+                          },
+                        ]}
+                      >
+                        <Input suffix={getCurrency()} placeholder={`Type the ${item.label}`} />
+                      </Form.Item>
+                    </div>
+                  </>
+                ))}
                 <div className={styles.addBenefit__body_label}>Valid Till</div>
                 <div className={styles.addBenefit__body_formItem}>
                   <Form.Item name="validTill">

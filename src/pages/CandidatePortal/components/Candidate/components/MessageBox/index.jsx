@@ -1,20 +1,17 @@
-import { Button, Input, Skeleton, Form } from 'antd';
+import { Button, Form, Input, Skeleton } from 'antd';
+import moment from 'moment';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import moment from 'moment';
 import { io } from 'socket.io-client';
-import SOCKET_URL from '@/utils/socket';
-import ChatEvent from '@/utils/chatSocket';
-
 import HRIcon1 from '@/assets/candidatePortal/HRCyan.svg';
 import MessageIcon from '@/assets/candidatePortal/messageIcon.svg';
+import { ChatEvent, SOCKET_URL } from '@/utils/chatSocket';
 
 import styles from './index.less';
 
-const socket = io(SOCKET_URL);
-
 const { TextArea } = Input;
 
+// const socket = io('http://localhost:8900');
 @connect(
   ({
     conversation: { conversationList = [], activeConversationMessages = [] } = {},
@@ -44,6 +41,8 @@ class MessageBox extends PureComponent {
 
   formRefEmptyChat = React.createRef();
 
+  socket = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = { activeId: '' };
@@ -69,21 +68,18 @@ class MessageBox extends PureComponent {
       if (statusCode === 200) {
         if (data.length > 0) {
           this.setState({
-            activeId: res.data[0]._id,
+            activeId: res.data[data.length - 1]._id,
           });
           this.fetchMessages();
         }
       }
 
-      
       // realtime get message
-      socket.on(ChatEvent.DISCONNECT);
-      socket.emit(ChatEvent.ADD_USER, candidate);
-      socket.on(ChatEvent.GET_USER, () => {});
+      // socket.on(ChatEvent.DISCONNECT);
+      // socket.emit(ChatEvent.ADD_USER, candidate);
+      // socket.on(ChatEvent.GET_USER, () => {});
 
-      socket.on(ChatEvent.GET_MESSAGE, (newMessage) => {
-        this.saveNewMessage(newMessage);
-      });
+      this.socket.current = io(SOCKET_URL);
     }
   };
 
@@ -98,7 +94,8 @@ class MessageBox extends PureComponent {
   };
 
   componentWillUnmount = () => {
-    socket.on(ChatEvent.DISCONNECT);
+    // socket.on(ChatEvent.DISCONNECT, () => {});
+    // socket.disconnect();
     const { dispatch } = this.props;
     dispatch({
       type: 'conversation/clearState',
@@ -228,7 +225,8 @@ class MessageBox extends PureComponent {
     const { activeId } = this.state;
     const { message } = values;
     if (activeId && message) {
-      socket.emit(ChatEvent.SEND_MESSAGE, {
+      this.socket.current.emit(ChatEvent.SEND_MESSAGE, {
+        conversationId: activeId,
         senderId: candidateId,
         receiverId: assignTo?._id || assignTo || '',
         text: message,
@@ -240,6 +238,7 @@ class MessageBox extends PureComponent {
           conversationId: activeId,
           sender: candidateId,
           text: message,
+          isSeen: true,
         },
       });
 
@@ -247,9 +246,22 @@ class MessageBox extends PureComponent {
         this.formRef.current.setFieldsValue({
           message: '',
         });
+        setTimeout(() => {
+          this.fetchUnseenTotal();
+        }, 100);
       }
     }
     this.scrollToBottom();
+  };
+
+  fetchUnseenTotal = () => {
+    const { dispatch, candidate: { _id: candidateId = '' } = {} } = this.props;
+    dispatch({
+      type: 'conversation/getNumberUnseenConversationEffect',
+      payload: {
+        userId: candidateId,
+      },
+    });
   };
 
   // for empty chat

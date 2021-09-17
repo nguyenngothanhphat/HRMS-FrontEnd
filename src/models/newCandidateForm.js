@@ -29,6 +29,8 @@ import {
   withdrawOffer,
   getListCandidate,
   getReporteesList,
+  getDocumentSettingList,
+  getListBenefit,
 } from '@/services/newCandidateForm';
 import { dialog, formatAdditionalQuestion } from '@/utils/utils';
 import { getCurrentTenant, getCurrentCompany } from '@/utils/authority';
@@ -46,6 +48,7 @@ import {
   sendDocumentStatus,
   getAdditionalQuestion,
   verifyAllDocuments,
+  fetchDocumentListOnboarding,
 } from '@/services/formCandidate';
 import { NEW_PROCESS_STATUS, ONBOARDING_FORM_LINK } from '@/utils/onboarding';
 
@@ -86,6 +89,7 @@ const defaultState = {
     jobGradeLevelList: [],
     employeeTypeList: [],
     locationList: [],
+    reporteeList: [],
     departmentList: [],
     titleList: [],
     managerList: [],
@@ -213,6 +217,7 @@ const defaultState = {
       settings: [],
       // title: '',
     },
+    benefits: [],
   },
   data: {
     firstName: null,
@@ -292,6 +297,7 @@ const defaultState = {
     updatedAt: '',
   },
   isEditingSalary: false,
+  documentListOnboarding: [],
 };
 
 const newCandidateForm = {
@@ -447,8 +453,10 @@ const newCandidateForm = {
           type: 'saveTemp',
           payload: { reporteeList: data },
         });
+        return response;
       } catch (errors) {
         dialog(errors);
+        return '';
       }
     },
 
@@ -466,7 +474,6 @@ const newCandidateForm = {
         dialog(errors);
       }
     },
-
     *updateByHR({ payload }, { call, put }) {
       let response = {};
       try {
@@ -478,6 +485,22 @@ const newCandidateForm = {
         const { statusCode, data } = response;
         if (statusCode !== 200) throw response;
         yield put({ type: 'saveOrigin', payload: { ...data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+    *saveNoteSalary({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(updateByHR, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+        // yield put({ type: 'saveOrigin', payload: { ...data } });
       } catch (errors) {
         dialog(errors);
       }
@@ -1575,6 +1598,42 @@ const newCandidateForm = {
         dialog(errors);
       }
       return response;
+    },
+    *fetchDocumentListOnboarding({ payload = {} }, { call, put }) {
+      try {
+        const response = yield call(getDocumentSettingList, {
+          ...payload,
+          company: getCurrentCompany(),
+          tenantId: getCurrentTenant(),
+        });
+        const { statusCode, data } = response;
+        if (statusCode !== 200) throw response;
+        yield put({
+          type: 'save',
+          payload: {
+            documentListOnboarding: data,
+          },
+        });
+      } catch (errors) {
+        dialog(errors);
+      }
+    },
+    *fetchListBenefit({ payload: { country = '' } = {} }, { call, put }) {
+      try {
+        const payload = {
+          country,
+          tenantId: getCurrentTenant(),
+        };
+        const response = yield call(getListBenefit, payload);
+        const { statusCode, data: benefits = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'saveTemp', payload: { benefits } });
+        yield put({ type: 'saveOrigin', payload: { benefits } });
+        return benefits;
+      } catch (errors) {
+        dialog(errors);
+        return {};
+      }
     },
   },
 
