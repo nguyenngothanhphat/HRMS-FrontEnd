@@ -10,19 +10,32 @@ class CommonTable extends Component {
   }
 
   onChangePagination = (pageNumber) => {
-    this.setState({
-      pageSelected: pageNumber,
-    });
+    const { onChangePage = () => {}, isBackendPaging = false } = this.props;
+
+    if (isBackendPaging) {
+      onChangePage(pageNumber);
+    } else {
+      this.setState({
+        pageSelected: pageNumber,
+      });
+    }
   };
 
   render() {
     const { pageSelected } = this.state;
-    const { list = [], columns, loading = false } = this.props;
-    const rowSize = 10;
+    const {
+      list = [],
+      columns,
+      loading = false,
+      page = 1,
+      limit = 10,
+      total: totalProp,
+      isBackendPaging = false,
+    } = this.props;
 
     const pagination = {
       position: ['bottomLeft'],
-      total: list.length,
+      total: isBackendPaging ? totalProp : list.length,
       showTotal: (total, range) => (
         <span>
           {' '}
@@ -33,8 +46,8 @@ class CommonTable extends Component {
           {formatMessage({ id: 'component.directory.pagination.of' })} {total}{' '}
         </span>
       ),
-      pageSize: rowSize,
-      current: pageSelected,
+      pageSize: limit,
+      current: isBackendPaging ? page : pageSelected,
       onChange: this.onChangePagination,
     };
 
@@ -50,7 +63,7 @@ class CommonTable extends Component {
             dataSource={list}
             loading={loading}
             // pagination={list.length > rowSize ? { ...pagination, total: list.length } : false}
-            pagination={{ ...pagination, total: list.length }}
+            pagination={pagination}
             // scroll={{ x: 1000, y: 'max-content' }}
           />
         </div>

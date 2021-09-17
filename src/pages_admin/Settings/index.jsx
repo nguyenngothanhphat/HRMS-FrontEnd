@@ -1,34 +1,32 @@
-import React, { PureComponent } from 'react';
-import { formatMessage, connect } from 'umi';
 import { Affix } from 'antd';
+import React, { PureComponent } from 'react';
+import { connect, formatMessage } from 'umi';
 import { PageContainer } from '@/layouts/layout/src';
 import LayoutAdminSetting from '@/components/LayoutAdminLeftMenu';
-// import Department from './Components/Department';
-// import Position from './Components/Position';
-// import Location from './Components/Location';
-// import RolesPermission from './Components/RolesPermission';
-import styles from './index.less';
-import RolePermission from './components/RolePermission';
 import Department from './components/Department';
+import Grade from './components/Grade';
+import Position from './components/Position';
+import RolePermission from './components/RolePermission';
+import styles from './index.less';
 
-@connect(({ loading }) => ({ loading: loading.effects['adminSetting/fetchListRoles'] }))
+@connect(() => ({}))
 class Settings extends PureComponent {
-  componentDidMount() {
-    const { dispatch } = this.props;
+  // componentDidMount() {
+  // const { dispatch } = this.props;
 
-    dispatch({
-      type: 'country/fetchListCountry',
-    });
-    dispatch({
-      type: 'employee/fetchLocation',
-    });
-    // dispatch({
-    //   type: 'adminSetting/fetchListTitle',
-    // });
-    dispatch({
-      type: 'companiesManagement/fetchCompaniesList',
-    });
-  }
+  // dispatch({
+  //   type: 'country/fetchListCountry',
+  // });
+  // dispatch({
+  //   type: 'employee/fetchLocation',
+  // });
+  // dispatch({
+  //   type: 'adminSetting/fetchListTitle',
+  // });
+  // dispatch({
+  //   type: 'companiesManagement/fetchCompaniesList',
+  // });
+  // }
 
   render() {
     const listMenu = [
@@ -47,13 +45,13 @@ class Settings extends PureComponent {
       {
         id: 3,
         name: formatMessage({ id: 'pages_admin.setting.Positions' }),
-        // component: <Position />,
+        component: <Position />,
         link: 'positions',
       },
       {
         id: 4,
         name: 'Grades',
-        // component: <Location />,
+        component: <Grade />,
         link: 'grades',
       },
     ];

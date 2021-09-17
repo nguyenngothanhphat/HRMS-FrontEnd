@@ -81,6 +81,20 @@ export async function addPosition(payload) {
   });
 }
 
+export async function updatePosition(payload) {
+  return request('/api/titletenant/update', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
+export async function getPositionByID(payload) {
+  return request('/api/titletenant/get-by-id', {
+    method: 'POST',
+    data: payload,
+  });
+}
+
 export async function addDepartment(payload) {
   return request('/api/departmenttenant/add', {
     method: 'POST',

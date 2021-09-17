@@ -10,7 +10,12 @@ import {
   getListPermissionOfRole,
   updateRoleWithPermission,
   getPermissionByIdRole,
+  // POSITION
   addPosition,
+  getPositionByID,
+  updatePosition,
+
+  // DEPARTMENT
   addDepartment,
   removeDepartment,
   getRolesByCompany,
@@ -33,6 +38,7 @@ const adminSetting = {
       listRoles: [],
       listPermissions: [],
       listDepartments: [],
+      listGrades: [],
     },
     tempData: {
       listTitles: [],
@@ -40,7 +46,9 @@ const adminSetting = {
       listRoles: [],
       listPermissions: [],
       listDepartments: [],
+      listGrades: [],
     },
+    viewingPosition: {},
   },
   effects: {
     *fetchListRoles({ payload = {} }, { call, put }) {
@@ -102,9 +110,10 @@ const adminSetting = {
         dialog(errors);
       }
     },
-    *removeTitle({ payload: { id = '' } }, { call }) {
+    *removePosition({ payload: { id = '' } }, { call }) {
+      let response = {};
       try {
-        const response = yield call(removeTitle, {
+        response = yield call(removeTitle, {
           id,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
@@ -114,14 +123,11 @@ const adminSetting = {
         notification.success({
           message,
         });
-        // yield put({
-        //   type: 'fetchListTitle',
-        // });
-        return statusCode;
       } catch (errors) {
         dialog(errors);
         return 0;
       }
+      return response;
     },
 
     *fetchDepartmentList(_, { call, put }) {
@@ -187,8 +193,9 @@ const adminSetting = {
       }
     },
     *addPosition({ payload: { name = '', grade = 1, department = '' } }, { call }) {
+      let response = {};
       try {
-        const response = yield call(addPosition, {
+        response = yield call(addPosition, {
           name,
           grade,
           department,
@@ -202,12 +209,45 @@ const adminSetting = {
         });
         // yield put({ type: 'fetchListTitle' });
         // return
-        return statusCode;
       } catch (errors) {
         dialog(errors);
         return 0;
       }
+      return response;
     },
+    *fetchPositionByID({ payload }, { call, put }) {
+      let response = {};
+      try {
+        response = yield call(getPositionByID, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode, data = {} } = response;
+        if (statusCode !== 200) throw response;
+        yield put({ type: 'save', payload: { viewingPosition: data } });
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
+    *updatePosition({ payload }, { call }) {
+      let response = {};
+      try {
+        response = yield call(updatePosition, {
+          ...payload,
+          tenantId: getCurrentTenant(),
+          company: getCurrentCompany(),
+        });
+        const { statusCode } = response;
+        if (statusCode !== 200) throw response;
+      } catch (errors) {
+        dialog(errors);
+      }
+      return response;
+    },
+
     *addDepartment({ payload }, { call, put }) {
       try {
         const response = yield call(addDepartment, {
