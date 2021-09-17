@@ -34,6 +34,15 @@ class PopupContentHr extends Component {
       employeeType: { name: typeName } = {},
       department: { name: departmentName = '' } = {},
       location: { _id = '' } = {},
+      managerInfo: {
+        generalInfo: {
+          userId: userIdManager = '',
+          legalName: legalNameManager = '',
+          firstName = '',
+          lastName = '',
+          middleName = '',
+        } = {},
+      } = {},
     } = dataHR;
     const findTimezone = timezoneList.find((timezone) => timezone.locationId === _id) || {};
     let filterLocation = listLocationsByCompany.map((item) => (item._id === _id ? item : null));
@@ -46,6 +55,7 @@ class PopupContentHr extends Component {
     const { headQuarterAddress: { state = '', country: { name: countryName = '' } = {} } = {} } =
       filterLocation[0];
     const locationName = `${state}, ${countryName}`;
+    const managerName = legalNameManager || `${firstName} ${middleName} ${lastName}`;
 
     return (
       <div className={styles.popupContent}>
@@ -66,34 +76,39 @@ class PopupContentHr extends Component {
         <Divider className={styles.divider} />
         <div className={styles.contact}>
           <Row gutter={[24, 24]}>
-            <Col span={7}>
+            <Col span={9}>
               <div className={styles.contact__title}>Reporting Manager: </div>
             </Col>
-            <Col span={17}>
-              <div className={styles.contact__value}>{workNumber}</div>
+            <Col span={15}>
+              <div
+                onClick={() => history.push(`/directory/employee-profile/${userIdManager}`)}
+                className={styles.contact__valueManager}
+              >
+                {managerName}
+              </div>
             </Col>
-            <Col span={7}>
+            <Col span={9}>
               <div className={styles.contact__title}>Mobile: </div>
             </Col>
-            <Col span={17}>
+            <Col span={15}>
               <div className={styles.contact__value}>{workNumber}</div>
             </Col>
-            <Col span={7}>
+            <Col span={9}>
               <div className={styles.contact__title}>Email id: </div>
             </Col>
-            <Col span={17}>
+            <Col span={15}>
               <div className={styles.contact__value}>{workEmail}</div>
             </Col>
-            <Col span={7}>
+            <Col span={9}>
               <div className={styles.contact__title}>Location: </div>
             </Col>
-            <Col span={17}>
+            <Col span={15}>
               <div className={styles.contact__value}>{locationName || ''}</div>
             </Col>
-            <Col span={7}>
+            <Col span={9}>
               <div className={styles.contact__title}>Local Time: </div>
             </Col>
-            <Col span={17}>
+            <Col span={15}>
               <div className={styles.contact__value}>
                 {findTimezone && findTimezone.timezone && Object.keys(findTimezone).length > 0
                   ? getCurrentTimeOfTimezoneOption(currentTime, findTimezone.timezone)

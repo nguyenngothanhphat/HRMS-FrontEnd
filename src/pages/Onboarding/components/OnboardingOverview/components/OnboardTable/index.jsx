@@ -336,7 +336,7 @@ class OnboardTable extends Component {
           >
             <span
               className={styles.renderAssignee}
-              onClick={() => this.viewProfile(assigneeManager.userId)}
+              onClick={() => this.viewProfile(assigneeManager?.generalInfo?.userId)}
             >
               {assigneeManager?.generalInfo?.firstName + assigneeManager?.generalInfo?.lastName ||
                 '-'}
