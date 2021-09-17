@@ -2,14 +2,14 @@ import { notification } from 'antd';
 import { getCurrentCompany, getCurrentTenant } from '@/utils/authority';
 import { dialog } from '@/utils/utils';
 import {
-  getListRoles,
+  getRoleList,
   getPermissionList,
   getListTitle,
   removeTitle,
   getListDepartments,
   getListPermissionOfRole,
-  updateRoleWithPermission,
-  getPermissionByIdRole,
+  updateRole,
+  getRoleByID,
   // POSITION
   addPosition,
   getPositionByID,
@@ -52,11 +52,12 @@ const adminSetting = {
     },
     viewingPosition: {},
     viewingDepartment: {},
+    viewingRole: {},
   },
   effects: {
-    *fetchListRoles({ payload = {} }, { call, put }) {
+    *fetchRoleList({ payload = {} }, { call, put }) {
       try {
-        const response = yield call(getListRoles, {
+        const response = yield call(getRoleList, {
           ...payload,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
@@ -163,26 +164,28 @@ const adminSetting = {
         dialog(errors);
       }
     },
-    *fetchPermissionByIdRole({ payload: { id: _id = '' } = {} }, { call }) {
-      let resp = [];
+    *fetchRoleByID({ payload: { id: _id = '' } = {} }, { call, put }) {
+      let response = {};
       try {
-        const response = yield call(getPermissionByIdRole, {
+        response = yield call(getRoleByID, {
           _id,
           company: getCurrentCompany(),
           tenantId: getCurrentTenant(),
         });
-        const { statusCode, data } = response;
+        const { statusCode, data = {} } = response;
         if (statusCode !== 200) throw response;
-        resp = data;
+        yield put({ type: 'save', payload: { viewingRole: data } });
       } catch (errors) {
         dialog(errors);
       }
-      return resp;
+      return response;
     },
-    *updatePermission({ payload: { getValues = {} } }, { call }) {
+    *updateRole({ payload = {} }, { call }) {
+      let response = {};
+
       try {
-        const response = yield call(updateRoleWithPermission, {
-          ...getValues,
+        response = yield call(updateRole, {
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
@@ -194,14 +197,13 @@ const adminSetting = {
       } catch (errors) {
         dialog(errors);
       }
+      return response;
     },
-    *addPosition({ payload: { name = '', grade = 1, department = '' } }, { call }) {
+    *addPosition({ payload = {} }, { call }) {
       let response = {};
       try {
         response = yield call(addPosition, {
-          name,
-          grade,
-          department,
+          ...payload,
           tenantId: getCurrentTenant(),
           company: getCurrentCompany(),
         });
@@ -210,11 +212,8 @@ const adminSetting = {
         notification.success({
           message,
         });
-        // yield put({ type: 'fetchListTitle' });
-        // return
       } catch (errors) {
         dialog(errors);
-        return 0;
       }
       return response;
     },
@@ -252,7 +251,7 @@ const adminSetting = {
     },
 
     // DEPARTMENT
-    *addDepartment({ payload }, { call, put }) {
+    *addDepartment({ payload }, { call }) {
       let response = {};
       try {
         response = yield call(addDepartment, {

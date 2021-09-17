@@ -1,16 +1,26 @@
-import { Button, Form, Input, Modal, Tree } from 'antd';
+import { Button, Form, Input, Modal, Skeleton, Tree } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
 import styles from './index.less';
 
-@connect(({ loading }) => ({ loadingUploadAttachment: loading.effects['upload/uploadFile'] }))
+@connect(
+  ({ loading, adminSetting: { viewingRole = {}, tempData: { listRoles = [] } = {} } = {} }) => ({
+    listRoles,
+    viewingRole,
+    loadingFetchRoleList: loading.effects['adminSetting/fetchRoleList'],
+    loadingFetchRoleByID: loading.effects['adminSetting/fetchRoleByID'],
+    loadingAddRole: loading.effects['adminSetting/addRole'],
+    loadingUpdateRole: loading.effects['adminSetting/updateRole'],
+  }),
+)
 class EditModal extends PureComponent {
+  formRef = React.createRef();
+
   constructor(props) {
     super(props);
     this.state = {
-      nameState: '',
-      descriptionState: '',
       selectedList: [],
+      roleNameState: '',
     };
   }
 
@@ -22,8 +32,22 @@ class EditModal extends PureComponent {
 
   componentDidMount = async () => {};
 
-  handleRemove = () => {
-    this.handlePreview('');
+  componentDidUpdate = (prevProps) => {
+    const { selectedRoleID = '' } = this.props;
+
+    if (selectedRoleID && selectedRoleID !== prevProps.selectedRoleID) {
+      this.fetchRoleByID(selectedRoleID);
+    }
+  };
+
+  fetchRoleByID = (id) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'adminSetting/fetchRoleByID',
+      payload: {
+        id,
+      },
+    });
   };
 
   renderHeaderModal = () => {
@@ -39,11 +63,58 @@ class EditModal extends PureComponent {
     );
   };
 
-  onFinish = async (values) => {};
+  onFinish = async (values) => {
+    const { dispatch, selectedRoleID = '', onRefresh = () => {} } = this.props;
+    const { name = '', description = '' } = values;
+
+    const addRole = async () => {
+      const res = await dispatch({
+        type: 'adminSetting/addRole',
+        payload: {
+          idSync: name,
+          name,
+          description,
+        },
+      });
+      if (res.statusCode === 200) {
+        onRefresh();
+        this.handleCancel();
+      }
+    };
+    const editRole = async () => {
+      const res = await dispatch({
+        type: 'adminSetting/updateRole',
+        payload: {
+          _id: selectedRoleID,
+          name,
+          description,
+        },
+      });
+      if (res.statusCode === 200) {
+        onRefresh();
+        this.handleCancel();
+      }
+    };
+
+    const { action = '' } = this.props;
+    if (action === 'add') {
+      addRole();
+    }
+    if (action === 'edit') {
+      editRole();
+    }
+  };
 
   handleCancel = () => {
-    const { onClose = () => {} } = this.props;
-    this.setState({ nameState: '', descriptionState: '' });
+    const { dispatch, onClose = () => {} } = this.props;
+    this.formRef.current.resetFields();
+    dispatch({
+      type: 'adminSetting/save',
+      payload: {
+        viewingRole: {},
+      },
+    });
+
     onClose(false);
   };
 
@@ -96,9 +167,26 @@ class EditModal extends PureComponent {
     );
   };
 
+  onRoleNameChange = (e) => {
+    const re = /^[A-Za-z][A-Za-z0-9]*$/;
+    if (e.target.value === '' || re.test(e.target.value)) {
+      this.setState({ roleNameState: e.target.value });
+    }
+  };
+
   render() {
-    const { visible = false } = this.props;
-    const { nameState, descriptionState, selectedList } = this.state;
+    const {
+      visible = false,
+      action = '',
+      // listRoles = [],
+      // loadingFetchRoleList = false,
+      loadingFetchRoleByID = false,
+      loadingUpdateRole = false,
+      loadingAddRole = false,
+      viewingRole: { name: nameProp = '', description: descriptionProp = '' } = {},
+    } = this.props;
+
+    const { roleNameState } = this.state;
 
     return (
       <>
@@ -116,45 +204,51 @@ class EditModal extends PureComponent {
               form="myForm"
               key="submit"
               htmlType="submit"
-              disabled={!nameState || !descriptionState || selectedList.length === 0}
-              // loading={loadingReassign}
+              loading={loadingUpdateRole || loadingAddRole}
             >
-              Add
+              {action === 'add' ? 'Add' : 'Update'}
             </Button>,
           ]}
           title={this.renderHeaderModal()}
           centered
           visible={visible}
         >
-          <Form
-            name="basic"
-            // ref={this.formRef}
-            id="myForm"
-            onFinish={this.onFinish}
-            initialValues={
-              {
-                // from: currentEmpId,
-              }
-            }
-          >
-            <Form.Item
-              rules={[{ required: true, message: 'Please enter role name!' }]}
-              label="Role"
-              name="name"
-              labelCol={{ span: 24 }}
+          {loadingFetchRoleByID ? (
+            <Skeleton />
+          ) : (
+            <Form
+              name="basic"
+              ref={this.formRef}
+              id="myForm"
+              onFinish={this.onFinish}
+              initialValues={{
+                name: nameProp,
+                description: descriptionProp,
+              }}
             >
-              <Input placeholder="Role Name" />
-            </Form.Item>
-            <Form.Item
-              label="Description"
-              name="description"
-              labelCol={{ span: 24 }}
-              rules={[{ required: true, message: 'Please enter role description!' }]}
-            >
-              <Input placeholder="Role Description" />
-            </Form.Item>
-            {this.renderList()}
-          </Form>
+              <Form.Item
+                rules={[{ required: true, message: 'Please enter role name!' }]}
+                label="Role"
+                name="name"
+                labelCol={{ span: 24 }}
+              >
+                <Input
+                  value={roleNameState}
+                  placeholder="Role Name"
+                  onChange={this.onRoleNameChange}
+                />
+              </Form.Item>
+              <Form.Item
+                label="Description"
+                name="description"
+                labelCol={{ span: 24 }}
+                rules={[{ required: true, message: 'Please enter role description!' }]}
+              >
+                <Input placeholder="Role Description" />
+              </Form.Item>
+              {this.renderList()}
+            </Form>
+          )}
         </Modal>
       </>
     );

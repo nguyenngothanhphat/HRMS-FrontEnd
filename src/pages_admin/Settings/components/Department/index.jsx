@@ -144,7 +144,10 @@ class Department extends PureComponent {
     const { modalVisible, selectedDepartmentID } = this.state;
     const { listDepartments = [], loadingFetchDepartmentList = false } = this.props;
     return (
-      <div className={styles.Department}>
+      <div
+        className={styles.Department}
+        style={listDepartments.length === 0 ? {} : { paddingBottom: '0' }}
+      >
         {this.renderHeader()}
         <CommonTable
           columns={this.generateColumns()}

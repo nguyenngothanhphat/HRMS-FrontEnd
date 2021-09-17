@@ -1,17 +1,17 @@
-import { Button, Skeleton } from 'antd';
+import { Button } from 'antd';
 import React, { PureComponent } from 'react';
 import { connect } from 'umi';
-import CommonTable from '../CommonTable';
 import EditIcon from '@/assets/adminSetting/edit.svg';
 import DeleteIcon from '@/assets/adminSetting/del.svg';
-import styles from './index.less';
+import CommonTable from '../CommonTable';
 import EditModal from './components/EditModal';
+import styles from './index.less';
 
 @connect(
   ({ loading, adminSetting: { permissionList = [], tempData: { listRoles = [] } = {} } = {} }) => ({
     permissionList,
     listRoles,
-    loadingFetchRoleList: loading.effects['adminSetting/fetchListRoles'],
+    loadingFetchRoleList: loading.effects['adminSetting/fetchRoleList'],
   }),
 )
 class RolePermission extends PureComponent {
@@ -19,13 +19,14 @@ class RolePermission extends PureComponent {
     super(props);
     this.state = {
       modalVisible: false,
+      selectedRoleID: '',
     };
   }
 
   fetchRoleList = () => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'adminSetting/fetchListRoles',
+      type: 'adminSetting/fetchRoleList',
     });
   };
 
@@ -77,11 +78,11 @@ class RolePermission extends PureComponent {
         title: 'Action',
         dataIndex: 'action',
         key: 'action',
-        render: () => {
+        render: (_, row) => {
           return (
             <div className={styles.actions}>
-              <img src={DeleteIcon} alt="" />
-              <img src={EditIcon} alt="" />
+              <img src={DeleteIcon} onClick={() => this.onRemoveRole(row)} alt="" />
+              <img src={EditIcon} onClick={() => this.onEditRole(row)} alt="" />
             </div>
           );
         },
@@ -89,6 +90,26 @@ class RolePermission extends PureComponent {
     ];
 
     return columns;
+  };
+
+  onEditRole = (row) => {
+    this.setState({
+      modalVisible: true,
+      selectedRoleID: row._id,
+    });
+  };
+
+  onRemoveRole = async (row) => {
+    const { dispatch } = this.props;
+    const res = await dispatch({
+      type: 'adminSetting/removeRole',
+      payload: {
+        id: row._id,
+      },
+    });
+    if (res.statusCode === 200) {
+      this.fetchRoleList();
+    }
   };
 
   renderHeader = () => {
@@ -100,23 +121,31 @@ class RolePermission extends PureComponent {
   };
 
   render() {
-    const { modalVisible } = this.state;
+    const { modalVisible, selectedRoleID } = this.state;
     const { listRoles = [], permissionList = [], loadingFetchRoleList = false } = this.props;
-    if (loadingFetchRoleList) {
-      return (
-        <div className={styles.RolePermission}>
-          <Skeleton />
-        </div>
-      );
-    }
     return (
-      <div className={styles.RolePermission}>
+      <div
+        className={styles.RolePermission}
+        style={listRoles.length === 0 ? {} : { paddingBottom: '0' }}
+      >
         {this.renderHeader()}
-        <CommonTable columns={this.generateColumns()} list={listRoles} />
+        <CommonTable
+          loading={loadingFetchRoleList}
+          columns={this.generateColumns()}
+          list={listRoles}
+        />
         <EditModal
           visible={modalVisible}
-          onClose={() => this.handleModalVisible(false)}
+          onClose={() => {
+            this.handleModalVisible(false);
+            this.setState({
+              selectedRoleID: '',
+            });
+          }}
           permissionList={permissionList}
+          onRefresh={this.fetchRoleList}
+          selectedRoleID={selectedRoleID}
+          action={selectedRoleID ? 'edit' : 'add'}
         />
       </div>
     );

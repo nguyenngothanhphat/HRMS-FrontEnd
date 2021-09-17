@@ -1,6 +1,6 @@
 import request from '@/utils/request';
 
-export async function getListRoles(payload) {
+export async function getRoleList(payload) {
   return request('/api/roletenant/list', {
     method: 'POST',
     data: payload,
@@ -53,14 +53,14 @@ export async function getListPermissionOfRole(payload) {
     data: payload,
   });
 }
-export async function updateRoleWithPermission(payload) {
+export async function updateRole(payload) {
   return request('/api/roletenant/update', {
     method: 'POST',
     data: payload,
   });
 }
 
-export async function getPermissionByIdRole(payload) {
+export async function getRoleByID(payload) {
   return request('/api/roletenant/get-by-id', {
     method: 'POST',
     data: payload,

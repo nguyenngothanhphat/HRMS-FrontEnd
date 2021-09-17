@@ -164,7 +164,10 @@ class Position extends PureComponent {
     const { modalVisible, selectedPositionID, limit, page } = this.state;
     const { listTitles = [], loadingFetchPositionList = false, totalTitle = 0 } = this.props;
     return (
-      <div className={styles.Position}>
+      <div
+        className={styles.Position}
+        style={listTitles.length === 0 ? {} : { paddingBottom: '0' }}
+      >
         {this.renderHeader()}
         <CommonTable
           columns={this.generateColumns()}
