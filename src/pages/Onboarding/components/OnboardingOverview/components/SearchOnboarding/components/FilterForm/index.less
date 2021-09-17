@@ -23,7 +23,7 @@
 
         .ant-select-single .ant-select-selector, 
         .ant-select-multiple .ant-select-selector{
-            height: 42px;
+            min-height: 42px;
             background: #FFFFFF;
             border: 1px solid #D6DCE4;
             box-sizing: border-box;
@@ -31,7 +31,52 @@
         }
 
         .ant-select-selector input{
-            height: 100%;
+            min-height: 100%;
+        }
+
+        .ant-select-multiple .ant-select-selection-item, .ant-tag{
+            background: #FFFFFF;
+            border: 1px solid #C9D3DC;
+            box-sizing: border-box;
+            border-radius: 4px;
+
+            width: 100%;
+            padding: 8px;
+            height: 31px;
+
+            font-family: Roboto;
+            font-style: normal;
+            font-weight: normal;
+            font-size: 12px;
+            line-height: 14px;
+            letter-spacing: 0.121875px;
+
+            color: #464646;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .ant-select-selection-overflow-item{
+            margin: 4px;
+        }
+
+        .ant-tag-close-icon{
+            margin-left: 12px;
+        }
+
+        .ant-tag::before{
+            content: '';
+            width: 4px;
+            height: 31px;
+            background: #2C6DF9;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+            display: block;
+            position: absolute;
+            top: -1px;
+            left: -1px;
         }
     }
 

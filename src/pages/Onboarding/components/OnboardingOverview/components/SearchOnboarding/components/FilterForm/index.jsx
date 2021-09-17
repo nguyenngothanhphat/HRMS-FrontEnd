@@ -1,8 +1,9 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Select } from 'antd';
+import { Form, Select, Tag } from 'antd';
 import { connect } from 'umi';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
+import CloseTagIcon from '@/assets/closeTagIcon.svg';
 
 import styles from './index.less';
 
@@ -62,6 +63,21 @@ class FilterForm extends Component {
     this.state = {};
   }
 
+  tagRender = (props) => {
+    const { label, closable, onClose } = props;
+
+    return (
+      <Tag
+        className={styles.tags}
+        closable={closable}
+        onClose={onClose}
+        closeIcon={<img alt="close-tag" src={CloseTagIcon} />}
+      >
+        {label}
+      </Tag>
+    );
+  };
+
   render() {
     const { jobTitleList = [], locationList = [] } = this.props;
 
@@ -93,6 +109,7 @@ class FilterForm extends Component {
               }
               showArrow
               showSearch
+              tagRender={this.tagRender}
             >
               {jobTitleList.map((title) => (
                 <Option key={title._id} value={title._id}>
@@ -110,6 +127,7 @@ class FilterForm extends Component {
               }
               showArrow
               showSearch
+              tagRender={this.tagRender}
             >
               {locationList.map((location) => (
                 <Option key={location._id} value={location._id}>
