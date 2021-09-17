@@ -84,8 +84,6 @@ class DocumentVerification extends PureComponent {
     const { documentVerifications: data = [], total = 0, loading } = this.props;
     const { tabId, pageSelected, size, loadingSearch } = this.state;
 
-    const countData = data.length;
-
     return (
       <div className={styles.onboardingTab}>
         <div className={styles.tabs}>
@@ -94,7 +92,7 @@ class DocumentVerification extends PureComponent {
             onChange={this.onChangeTab}
             tabBarExtraContent={<SearchOnboarding onChangeSearch={this.onChangeSearch} />}
           >
-            <TabPane tab={`Document Verification (${countData})`} key="1">
+            <TabPane key="1">
               <DocumentVerificationTab
                 list={data}
                 loading={loading}

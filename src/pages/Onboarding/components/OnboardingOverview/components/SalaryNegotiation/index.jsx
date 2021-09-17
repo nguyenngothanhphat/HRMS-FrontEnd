@@ -84,8 +84,6 @@ class SalaryNegotiation extends PureComponent {
     const { salaryNegotiations: data = [], total = 0, loading } = this.props;
     const { tabId, pageSelected, size, loadingSearch } = this.state;
 
-    const countData = data.length;
-
     return (
       <div className={styles.onboardingTab}>
         <div className={styles.tabs}>
@@ -94,7 +92,7 @@ class SalaryNegotiation extends PureComponent {
             onChange={this.onChangeTab}
             tabBarExtraContent={<SearchOnboarding onChangeSearch={this.onChangeSearch} />}
           >
-            <TabPane tab={`Salary Negotiation (${countData})`} key="1">
+            <TabPane key="1">
               <SalaryNegotiationTab
                 list={data}
                 loading={loading}
