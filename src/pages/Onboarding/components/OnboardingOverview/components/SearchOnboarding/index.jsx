@@ -18,7 +18,7 @@ class SearchOnboarding extends Component {
         <img alt="filter" src={filterIcon} className={styles.filterIcon} />
         <Input
           onChange={(e) => onChangeSearch(e.target.value)}
-          placeholder="Search"
+          placeholder="Search by name or ID"
           prefix={<SearchOutlined />}
         />
       </div>
