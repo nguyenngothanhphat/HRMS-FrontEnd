@@ -820,6 +820,11 @@ const routes = [
             component: './SearchResult',
           },
           {
+            path: '/search-result/:tabName',
+            hideInMenu: true,
+            component: './SearchResult',
+          },
+          {
             component: './404',
           },
         ],
