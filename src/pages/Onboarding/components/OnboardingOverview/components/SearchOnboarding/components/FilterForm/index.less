@@ -86,6 +86,50 @@
     }
 
     .form{
-        // width: ;
+        width: 100%;
+        
+        .doj{
+            width: 100%;
+            :global{
+                .ant-form-item{
+                    margin-bottom: 0 !important;
+                }
+
+                .ant-picker{
+                    width: 132px;
+                    height: 37px;
+                    background: #FFFFFF;
+                    border: 1px solid #D6DCE4;
+                    border-radius: 5px;
+                }
+            }
+
+            &__label{
+                height: 32px;
+                display: flex;
+                align-items: center;
+            }
+
+            .labelText{
+                font-family: Roboto;
+                font-style: normal;
+                font-weight: normal;
+                font-size: 12px;
+                line-height: 14px;
+                text-transform: uppercase;
+                color: #707177;
+            }
+
+            .labelTo{
+                text-transform: lowercase;
+            }
+            
+            &__date{
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
     }
 }

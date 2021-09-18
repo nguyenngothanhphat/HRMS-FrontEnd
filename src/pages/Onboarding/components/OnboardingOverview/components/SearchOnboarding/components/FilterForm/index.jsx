@@ -1,10 +1,11 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Form, Select, Tag } from 'antd';
+import { DatePicker, Form, Select, Tag } from 'antd';
 import { connect } from 'umi';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import CloseTagIcon from '@/assets/closeTagIcon.svg';
 
+import moment from 'moment';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -60,12 +61,64 @@ const arrStatus = [
 class FilterForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      durationFrom: '',
+      durationTo: '',
+    };
   }
 
   onValuesChange = (value) => {
     const { onFilterChange = () => {} } = this.props;
     onFilterChange(value);
+  };
+
+  disabledDate = (currentDate, type) => {
+    const { durationTo, durationFrom } = this.state;
+
+    if (type === 'from') {
+      return (
+        (currentDate && currentDate > moment(durationTo)) ||
+        moment(currentDate).day() === 0 ||
+        moment(currentDate).day() === 6
+      );
+    }
+
+    return (
+      (currentDate && currentDate < moment(durationFrom)) ||
+      moment(currentDate).day() === 0 ||
+      moment(currentDate).day() === 6
+    );
+  };
+
+  onChangeDate = (value, type) => {
+    switch (type) {
+      case 'from':
+        if (value === null) {
+          this.setState({
+            durationFrom: '',
+          });
+        } else {
+          this.setState({
+            durationFrom: value,
+          });
+        }
+        break;
+
+      case 'to':
+        if (value === null) {
+          this.setState({
+            durationTo: '',
+          });
+        } else {
+          this.setState({
+            durationTo: value,
+          });
+        }
+        break;
+
+      default:
+        break;
+    }
   };
 
   tagRender = (props) => {
@@ -85,6 +138,7 @@ class FilterForm extends Component {
 
   render() {
     const { jobTitleList = [], locationList = [] } = this.props;
+    const dateFormat = 'MM.DD.YY';
 
     return (
       <div className={styles.filterForm}>
@@ -157,6 +211,34 @@ class FilterForm extends Component {
               ))}
             </Select>
           </Form.Item>
+          <div className={styles.doj}>
+            <div className={styles.doj__label}>
+              <div className={styles.labelText}>DOJ</div>
+            </div>
+            <div className={styles.doj__date}>
+              <Form.Item name="dateOfJoinFrom">
+                <DatePicker
+                  disabledDate={(currentDate) => this.disabledDate(currentDate, 'from')}
+                  format={dateFormat}
+                  placeholder="From Date"
+                  onChange={(value) => {
+                    this.onChangeDate(value, 'from');
+                  }}
+                />
+              </Form.Item>
+              <div className={`${styles.labelText} ${styles.labelTo}`}>to</div>
+              <Form.Item name="dateOfJoinTo">
+                <DatePicker
+                  disabledDate={(currentDate) => this.disabledDate(currentDate, 'to')}
+                  format={dateFormat}
+                  placeholder="To Date"
+                  onChange={(value) => {
+                    this.onChangeDate(value, 'to');
+                  }}
+                />
+              </Form.Item>
+            </div>
+          </div>
         </Form>
       </div>
     );
