@@ -17,7 +17,8 @@ class SearchOnboarding extends Component {
     this.state = {
       visible: false,
       filter: {
-        processStatus: undefined,
+        pendingStatus: undefined,
+        otherStatus: undefined,
         title: [],
         location: [],
       },
@@ -45,7 +46,8 @@ class SearchOnboarding extends Component {
   clearFilter = () => {
     this.setState({
       filter: {
-        processStatus: undefined,
+        pendingStatus: undefined,
+        otherStatus: undefined,
         title: [],
         location: [],
       },
@@ -76,7 +78,12 @@ class SearchOnboarding extends Component {
   onFilterChange = (value) => {
     const { filter } = this.state;
 
-    if (isEmpty(value?.location) && isEmpty(value?.title) && !value?.processStatus) {
+    if (
+      isEmpty(value?.location) &&
+      isEmpty(value?.title) &&
+      !value?.pendingStatus &&
+      !value?.otherStatus
+    ) {
       this.clearFilter();
     } else {
       this.setState({
@@ -93,7 +100,8 @@ class SearchOnboarding extends Component {
     const { filter } = this.state;
     const payload = {
       ...filter,
-      processStatus: filter.processStatus || '',
+      pendingStatus: filter.pendingStatus || '',
+      otherStatus: filter.otherStatus || '',
     };
     console.log(payload);
   };
@@ -118,7 +126,7 @@ class SearchOnboarding extends Component {
 
     return (
       <div className={styles.search}>
-        <div>
+        <div className="site-drawer-render-in-current-wrapper">
           <img
             onClick={() => this.openFilter(true)}
             alt="filter"
@@ -135,6 +143,8 @@ class SearchOnboarding extends Component {
             mask={false}
             closeIcon={<img alt="close" src={closeIcon} />}
             footer={this.renderFooter()}
+            // getContainer={false}
+            // style={{ position: 'absolute' }}
           >
             <FilterForm onFilterChange={this.onFilterChange} />
           </Drawer>

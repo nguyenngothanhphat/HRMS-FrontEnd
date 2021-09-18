@@ -89,7 +89,23 @@ class FilterForm extends Component {
     return (
       <div className={styles.filterForm}>
         <Form layout="horizontal" className={styles.form} onValuesChange={this.onValuesChange}>
-          <Form.Item label="BY STATUS" name="processStatus">
+          <Form.Item label="BY PENDING STATUS" name="pendingStatus">
+            <Select
+              allowClear
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+              showArrow
+              showSearch
+            >
+              {arrStatus.map((status) => (
+                <Option key={status.value} value={status.value}>
+                  {status.name}
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+          <Form.Item label="BY OTHER STATUS" name="otherStatus">
             <Select
               allowClear
               filterOption={(input, option) =>
