@@ -4,6 +4,7 @@ import { DatePicker, Form, Select, Tag } from 'antd';
 import { connect } from 'umi';
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import CloseTagIcon from '@/assets/closeTagIcon.svg';
+import CalendarIcon from '@/assets/calendar_icon.svg';
 
 import moment from 'moment';
 import styles from './index.less';
@@ -138,7 +139,7 @@ class FilterForm extends Component {
 
   render() {
     const { jobTitleList = [], locationList = [] } = this.props;
-    const dateFormat = 'MM.DD.YY';
+    const dateFormat = 'MMM DD, YYYY';
 
     return (
       <div className={styles.filterForm}>
@@ -151,6 +152,7 @@ class FilterForm extends Component {
               }
               showArrow
               showSearch
+              placeholder="Select pending status"
             >
               {arrStatus.map((status) => (
                 <Option key={status.value} value={status.value}>
@@ -167,6 +169,7 @@ class FilterForm extends Component {
               }
               showArrow
               showSearch
+              placeholder="Select other status"
             >
               {arrStatus.map((status) => (
                 <Option key={status.value} value={status.value}>
@@ -184,6 +187,7 @@ class FilterForm extends Component {
               }
               showArrow
               showSearch
+              placeholder="Select position"
               tagRender={this.tagRender}
             >
               {jobTitleList.map((title) => (
@@ -202,6 +206,7 @@ class FilterForm extends Component {
               }
               showArrow
               showSearch
+              placeholder="Select location"
               tagRender={this.tagRender}
             >
               {locationList.map((location) => (
@@ -224,6 +229,9 @@ class FilterForm extends Component {
                   onChange={(value) => {
                     this.onChangeDate(value, 'from');
                   }}
+                  suffixIcon={
+                    <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
+                  }
                 />
               </Form.Item>
               <div className={`${styles.labelText} ${styles.labelTo}`}>to</div>
@@ -235,6 +243,9 @@ class FilterForm extends Component {
                   onChange={(value) => {
                     this.onChangeDate(value, 'to');
                   }}
+                  suffixIcon={
+                    <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
+                  }
                 />
               </Form.Item>
             </div>
