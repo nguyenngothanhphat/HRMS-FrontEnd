@@ -246,6 +246,7 @@ class FilterForm extends Component {
                 showSearch
                 placeholder="Select pending status"
                 mode="multiple"
+                tagRender={this.tagRender}
               >
                 {arrStatus.map((status) => {
                   return (
@@ -254,7 +255,7 @@ class FilterForm extends Component {
                         value={status.value}
                         checked={this.checkBoxStatusChecked(status.value, 'pendingStatus')}
                       />
-                      <span className={styles.optionName}>{status.name}</span>
+                      <span>{status.name}</span>
                     </Option>
                   );
                 })}
@@ -270,6 +271,7 @@ class FilterForm extends Component {
                 showSearch
                 placeholder="Select other status"
                 mode="multiple"
+                tagRender={this.tagRender}
               >
                 {arrStatus.map((status) => (
                   <Option key={status.value} value={status.value}>
@@ -277,7 +279,7 @@ class FilterForm extends Component {
                       value={status.value}
                       checked={this.checkBoxStatusChecked(status.value, 'otherStatus')}
                     />
-                    <span className={styles.optionName}>{status.name}</span>
+                    <span>{status.name}</span>
                   </Option>
                 ))}
               </Select>
@@ -300,7 +302,7 @@ class FilterForm extends Component {
                       value={title._id}
                       checked={this.checkBoxStatusChecked(title._id, 'title')}
                     />
-                    <span className={styles.optionName}>{title.name}</span>
+                    <span>{title.name}</span>
                   </Option>
                 ))}
               </Select>
@@ -323,7 +325,7 @@ class FilterForm extends Component {
                       value={location._id}
                       checked={this.checkBoxStatusChecked(location._id, 'location')}
                     />
-                    <span className={styles.optionName}>{location.name}</span>
+                    <span>{location.name}</span>
                   </Option>
                 ))}
               </Select>
