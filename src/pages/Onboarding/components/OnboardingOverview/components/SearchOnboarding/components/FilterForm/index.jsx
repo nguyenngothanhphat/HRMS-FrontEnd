@@ -240,7 +240,7 @@ class FilterForm extends Component {
               <Select
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
                 showArrow
                 showSearch
@@ -265,7 +265,7 @@ class FilterForm extends Component {
               <Select
                 allowClear
                 filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }
                 showArrow
                 showSearch
@@ -288,9 +288,14 @@ class FilterForm extends Component {
               <Select
                 mode="multiple"
                 allowClear
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
+                filterOption={(input, option) => {
+                  const getOptionChildren = option.props.children;
+                  return (
+                    getOptionChildren[1].props.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  );
+                }}
                 showArrow
                 showSearch
                 placeholder="Select position"
@@ -310,10 +315,15 @@ class FilterForm extends Component {
             <Form.Item label="BY LOCATION" name="location">
               <Select
                 mode="multiple"
+                filterOption={(input, option) => {
+                  const getOptionChildren = option.props.children;
+                  return (
+                    getOptionChildren[1].props.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  );
+                }}
                 allowClear
-                filterOption={(input, option) =>
-                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
                 showArrow
                 showSearch
                 placeholder="Select location"
