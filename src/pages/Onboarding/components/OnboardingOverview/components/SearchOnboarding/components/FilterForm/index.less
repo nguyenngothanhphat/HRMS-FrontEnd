@@ -85,11 +85,24 @@
         }
     }
 
+    
     .form{
         width: 100%;
         
         &__top{
             padding: 16px;
+
+
+            :global{
+                .ant-select-item-option-content{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                
+            }
+
         }
         
         .doj{
@@ -185,30 +198,6 @@
                     outline: none;
                 }
             }
-
-            // &__clear, &__apply {
-            //     background: transparent;
-            //     box-shadow: none;
-            //     border: none;
-            //     border-radius: 18px;
-            //     padding: 10px 27px;
-                
-            //     font-family: Roboto;
-            //     font-style: normal;
-            //     font-weight: normal;
-            //     font-size: 13px;
-            //     line-height: 15px;
-            //     letter-spacing: 0.2px;
-
-            //     color: #464646;
-                
-            //     height: 36px;
-            //     outline: none;
-                
-            //     :hover{
-            //         color: #464646;
-            //     }
-            // }
             
             &__apply{
 
@@ -222,5 +211,33 @@
                 color: #FFFFFF !important;
             }
         }
+    }
+}
+
+.optionName{
+    padding-left: 10px !important;
+}
+
+:global{
+    .ant-select-item-option-selected:not(.ant-select-item-option-disabled) .ant-select-item-option-state{
+        display: none !important;
+    }
+
+    .ant-select-item-option-selected:not(.ant-select-item-option-disabled){
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 16px;
+
+        color: #2C6DF9;
+    }
+
+    .ant-select-item-option-selected:not(.ant-select-item-option-disabled), .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+        background-color: #fff;
+    }
+
+    .ant-select-item{
+        padding: 7px 12px;
     }
 }

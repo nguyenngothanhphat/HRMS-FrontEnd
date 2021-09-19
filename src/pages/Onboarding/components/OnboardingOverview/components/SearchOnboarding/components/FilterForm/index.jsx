@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { Button, DatePicker, Divider, Form, Select, Tag } from 'antd';
+import { Button, Checkbox, DatePicker, Divider, Form, Select, Tag } from 'antd';
 import moment from 'moment';
 import { connect } from 'umi';
 import { isEmpty, values } from 'lodash';
@@ -126,18 +126,6 @@ class FilterForm extends Component {
     this.formRef.current.resetFields();
   };
 
-  onValuesChange = (value) => {
-    const { filter } = this.state;
-
-    this.setState({
-      isFilter: true,
-      filter: {
-        ...filter,
-        ...value,
-      },
-    });
-  };
-
   disabledDate = (currentDate, type) => {
     const { durationTo, durationFrom } = this.state;
 
@@ -202,6 +190,33 @@ class FilterForm extends Component {
     );
   };
 
+  checkBoxStatusChecked = (id, field) => {
+    const { filter } = this.state;
+    let check = false;
+
+    if (isEmpty(filter[field])) return check;
+
+    filter[field].forEach((itemId) => {
+      if (itemId === id) {
+        check = true;
+      }
+    });
+
+    return check;
+  };
+
+  onValuesChange = (value) => {
+    const { filter } = this.state;
+
+    this.setState({
+      isFilter: true,
+      filter: {
+        ...filter,
+        ...value,
+      },
+    });
+  };
+
   onFinish = (value) => {
     console.log(value);
   };
@@ -230,12 +245,19 @@ class FilterForm extends Component {
                 showArrow
                 showSearch
                 placeholder="Select pending status"
+                mode="multiple"
               >
-                {arrStatus.map((status) => (
-                  <Option key={status.value} value={status.value}>
-                    {status.name}
-                  </Option>
-                ))}
+                {arrStatus.map((status) => {
+                  return (
+                    <Option key={status.value} value={status.value}>
+                      <Checkbox
+                        value={status.value}
+                        checked={this.checkBoxStatusChecked(status.value, 'pendingStatus')}
+                      />
+                      <span className={styles.optionName}>{status.name}</span>
+                    </Option>
+                  );
+                })}
               </Select>
             </Form.Item>
             <Form.Item label="BY OTHER STATUS" name="otherStatus">
@@ -247,10 +269,15 @@ class FilterForm extends Component {
                 showArrow
                 showSearch
                 placeholder="Select other status"
+                mode="multiple"
               >
                 {arrStatus.map((status) => (
                   <Option key={status.value} value={status.value}>
-                    {status.name}
+                    <Checkbox
+                      value={status.value}
+                      checked={this.checkBoxStatusChecked(status.value, 'otherStatus')}
+                    />
+                    <span className={styles.optionName}>{status.name}</span>
                   </Option>
                 ))}
               </Select>
@@ -269,7 +296,11 @@ class FilterForm extends Component {
               >
                 {jobTitleList.map((title) => (
                   <Option key={title._id} value={title._id}>
-                    {title.name}
+                    <Checkbox
+                      value={title._id}
+                      checked={this.checkBoxStatusChecked(title._id, 'title')}
+                    />
+                    <span className={styles.optionName}>{title.name}</span>
                   </Option>
                 ))}
               </Select>
@@ -288,7 +319,11 @@ class FilterForm extends Component {
               >
                 {locationList.map((location) => (
                   <Option key={location._id} value={location._id}>
-                    {location.name}
+                    <Checkbox
+                      value={location._id}
+                      checked={this.checkBoxStatusChecked(location._id, 'location')}
+                    />
+                    <span className={styles.optionName}>{location.name}</span>
                   </Option>
                 ))}
               </Select>
