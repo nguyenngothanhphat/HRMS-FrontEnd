@@ -144,28 +144,28 @@ class FilterForm extends Component {
     );
   };
 
-  onChangeDate = (value, type) => {
+  onChangeDate = (currentDate, type) => {
     switch (type) {
       case 'dateOfJoinFrom':
-        if (value === null) {
+        if (currentDate === null) {
           this.setState({
             durationFrom: '',
           });
         } else {
           this.setState({
-            durationFrom: value,
+            durationFrom: currentDate,
           });
         }
         break;
 
       case 'dateOfJoinTo':
-        if (value === null) {
+        if (currentDate === null) {
           this.setState({
             durationTo: '',
           });
         } else {
           this.setState({
-            durationTo: value,
+            durationTo: currentDate,
           });
         }
         break;
