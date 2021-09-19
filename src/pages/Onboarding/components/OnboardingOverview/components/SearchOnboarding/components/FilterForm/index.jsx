@@ -1,12 +1,14 @@
 /* eslint-disable react/jsx-curly-newline */
 import React, { Component } from 'react';
-import { DatePicker, Form, Select, Tag } from 'antd';
+import { Button, DatePicker, Divider, Form, Select, Tag } from 'antd';
+import moment from 'moment';
 import { connect } from 'umi';
+import { isEmpty, values } from 'lodash';
+
 import { NEW_PROCESS_STATUS } from '@/utils/onboarding';
 import CloseTagIcon from '@/assets/closeTagIcon.svg';
 import CalendarIcon from '@/assets/calendar_icon.svg';
 
-import moment from 'moment';
 import styles from './index.less';
 
 const { Option } = Select;
@@ -63,14 +65,77 @@ class FilterForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      durationFrom: '',
-      durationTo: '',
+      durationFrom: '', // validate date
+      durationTo: '', // validate date
+      filter: {
+        // store data
+        pendingStatus: undefined,
+        otherStatus: undefined,
+        title: [],
+        location: [],
+        dateOfJoinFrom: null,
+        dateOfJoinTo: null,
+      },
+      isFilter: false, // check enable|disable button Apply
     };
+
+    this.formRef = React.createRef();
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { filter } = this.state;
+
+    if (JSON.stringify(prevState.filter) !== JSON.stringify(filter)) {
+      this.validateFilterFields(filter);
+    }
+  }
+
+  validateFilterFields = (filter) => {
+    if (!filter.dateOfJoinFrom && !filter.dateOfJoinTo) {
+      // in case without filter date
+      const isEmptyValue = values(filter).every(isEmpty);
+      this.setState({
+        isFilter: !isEmptyValue, // if all fields value is empty => means not filtering
+      });
+    } else if (filter.dateOfJoinFrom && filter.dateOfJoinTo) {
+      // in case filter date, must select 2 date fields
+      this.setState({
+        isFilter: true,
+      });
+    } else {
+      this.setState({
+        isFilter: false,
+      });
+    }
+  };
+
+  clearFilter = () => {
+    // press Clear button
+    this.setState({
+      filter: {
+        pendingStatus: undefined,
+        otherStatus: undefined,
+        title: [],
+        location: [],
+        dateOfJoinFrom: null,
+        dateOfJoinTo: null,
+      },
+      isFilter: false,
+    });
+
+    this.formRef.current.resetFields();
+  };
+
   onValuesChange = (value) => {
-    const { onFilterChange = () => {} } = this.props;
-    onFilterChange(value);
+    const { filter } = this.state;
+
+    this.setState({
+      isFilter: true,
+      filter: {
+        ...filter,
+        ...value,
+      },
+    });
   };
 
   disabledDate = (currentDate, type) => {
@@ -137,118 +202,146 @@ class FilterForm extends Component {
     );
   };
 
+  onFinish = (value) => {
+    console.log(value);
+  };
+
   render() {
     const { jobTitleList = [], locationList = [] } = this.props;
+    const { isFilter } = this.state;
     const dateFormat = 'MMM DD, YYYY';
 
     return (
       <div className={styles.filterForm}>
-        <Form layout="horizontal" className={styles.form} onValuesChange={this.onValuesChange}>
-          <Form.Item label="BY PENDING STATUS" name="pendingStatus">
-            <Select
-              allowClear
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-              showArrow
-              showSearch
-              placeholder="Select pending status"
-            >
-              {arrStatus.map((status) => (
-                <Option key={status.value} value={status.value}>
-                  {status.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item label="BY OTHER STATUS" name="otherStatus">
-            <Select
-              allowClear
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-              showArrow
-              showSearch
-              placeholder="Select other status"
-            >
-              {arrStatus.map((status) => (
-                <Option key={status.value} value={status.value}>
-                  {status.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item label="BY POSITION" name="title">
-            <Select
-              mode="multiple"
-              allowClear
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-              showArrow
-              showSearch
-              placeholder="Select position"
-              tagRender={this.tagRender}
-            >
-              {jobTitleList.map((title) => (
-                <Option key={title._id} value={title._id}>
-                  {title.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item label="BY LOCATION" name="location">
-            <Select
-              mode="multiple"
-              allowClear
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
-              showArrow
-              showSearch
-              placeholder="Select location"
-              tagRender={this.tagRender}
-            >
-              {locationList.map((location) => (
-                <Option key={location._id} value={location._id}>
-                  {location.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <div className={styles.doj}>
-            <div className={styles.doj__label}>
-              <div className={styles.labelText}>DOJ</div>
+        <Form
+          layout="horizontal"
+          className={styles.form}
+          onValuesChange={this.onValuesChange}
+          onFinish={this.onFinish}
+          ref={this.formRef}
+        >
+          <div className={styles.form__top}>
+            <Form.Item label="BY PENDING STATUS" name="pendingStatus">
+              <Select
+                allowClear
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                showArrow
+                showSearch
+                placeholder="Select pending status"
+              >
+                {arrStatus.map((status) => (
+                  <Option key={status.value} value={status.value}>
+                    {status.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item label="BY OTHER STATUS" name="otherStatus">
+              <Select
+                allowClear
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                showArrow
+                showSearch
+                placeholder="Select other status"
+              >
+                {arrStatus.map((status) => (
+                  <Option key={status.value} value={status.value}>
+                    {status.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item label="BY POSITION" name="title">
+              <Select
+                mode="multiple"
+                allowClear
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                showArrow
+                showSearch
+                placeholder="Select position"
+                tagRender={this.tagRender}
+              >
+                {jobTitleList.map((title) => (
+                  <Option key={title._id} value={title._id}>
+                    {title.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item label="BY LOCATION" name="location">
+              <Select
+                mode="multiple"
+                allowClear
+                filterOption={(input, option) =>
+                  option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }
+                showArrow
+                showSearch
+                placeholder="Select location"
+                tagRender={this.tagRender}
+              >
+                {locationList.map((location) => (
+                  <Option key={location._id} value={location._id}>
+                    {location.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <div className={styles.doj}>
+              <div className={styles.doj__label}>
+                <div className={styles.labelText}>DOJ</div>
+              </div>
+              <div className={styles.doj__date}>
+                <Form.Item name="dateOfJoinFrom">
+                  <DatePicker
+                    disabledDate={(currentDate) => this.disabledDate(currentDate, 'from')}
+                    format={dateFormat}
+                    placeholder="From Date"
+                    onChange={(value) => {
+                      this.onChangeDate(value, 'from');
+                    }}
+                    suffixIcon={
+                      <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
+                    }
+                  />
+                </Form.Item>
+                <div className={`${styles.labelText} ${styles.labelTo}`}>to</div>
+                <Form.Item name="dateOfJoinTo">
+                  <DatePicker
+                    disabledDate={(currentDate) => this.disabledDate(currentDate, 'to')}
+                    format={dateFormat}
+                    placeholder="To Date"
+                    onChange={(value) => {
+                      this.onChangeDate(value, 'to');
+                    }}
+                    suffixIcon={
+                      <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
+                    }
+                  />
+                </Form.Item>
+              </div>
             </div>
-            <div className={styles.doj__date}>
-              <Form.Item name="dateOfJoinFrom">
-                <DatePicker
-                  disabledDate={(currentDate) => this.disabledDate(currentDate, 'from')}
-                  format={dateFormat}
-                  placeholder="From Date"
-                  onChange={(value) => {
-                    this.onChangeDate(value, 'from');
-                  }}
-                  suffixIcon={
-                    <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
-                  }
-                />
-              </Form.Item>
-              <div className={`${styles.labelText} ${styles.labelTo}`}>to</div>
-              <Form.Item name="dateOfJoinTo">
-                <DatePicker
-                  disabledDate={(currentDate) => this.disabledDate(currentDate, 'to')}
-                  format={dateFormat}
-                  placeholder="To Date"
-                  onChange={(value) => {
-                    this.onChangeDate(value, 'to');
-                  }}
-                  suffixIcon={
-                    <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
-                  }
-                />
-              </Form.Item>
-            </div>
+          </div>
+
+          <Divider className={styles.divider} />
+          <div className={styles.footer}>
+            <Button onClick={this.clearFilter} className={styles.footer__clear}>
+              Clear
+            </Button>
+            <Button
+              onClick={this.onApply}
+              disabled={!isFilter}
+              className={styles.footer__apply}
+              htmlType="submit"
+            >
+              Apply
+            </Button>
           </div>
         </Form>
       </div>
