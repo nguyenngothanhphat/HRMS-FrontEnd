@@ -15,43 +15,43 @@ const { Option } = Select;
 const arrStatus = [
   {
     name: 'All',
-    value: 'ALL',
+    _id: 'ALL',
   },
   {
     name: 'Draft',
-    value: NEW_PROCESS_STATUS.DRAFT,
+    _id: NEW_PROCESS_STATUS.DRAFT,
   },
   {
     name: 'Profile Verification',
-    value: NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
+    _id: NEW_PROCESS_STATUS.PROFILE_VERIFICATION,
   },
   {
     name: 'Document Verification',
-    value: NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
+    _id: NEW_PROCESS_STATUS.DOCUMENT_VERIFICATION,
   },
   {
     name: 'Salary Negotiation',
-    value: NEW_PROCESS_STATUS.SALARY_NEGOTIATION,
+    _id: NEW_PROCESS_STATUS.SALARY_NEGOTIATION,
   },
   {
     name: 'Awaiting approvals',
-    value: NEW_PROCESS_STATUS.AWAITING_APPROVALS,
+    _id: NEW_PROCESS_STATUS.AWAITING_APPROVALS,
   },
   {
     name: 'Offer Released',
-    value: NEW_PROCESS_STATUS.OFFER_RELEASED,
+    _id: NEW_PROCESS_STATUS.OFFER_RELEASED,
   },
   {
     name: 'Offer Accepted',
-    value: NEW_PROCESS_STATUS.OFFER_ACCEPTED,
+    _id: NEW_PROCESS_STATUS.OFFER_ACCEPTED,
   },
   {
     name: 'Offer Rejected',
-    value: NEW_PROCESS_STATUS.OFFER_REJECTED,
+    _id: NEW_PROCESS_STATUS.OFFER_REJECTED,
   },
   {
     name: 'Offer Withdraw',
-    value: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
+    _id: NEW_PROCESS_STATUS.OFFER_WITHDRAWN,
   },
 ];
 
@@ -129,7 +129,7 @@ class FilterForm extends Component {
   disabledDate = (currentDate, type) => {
     const { durationTo, durationFrom } = this.state;
 
-    if (type === 'from') {
+    if (type === 'dateOfJoinFrom') {
       return (
         (currentDate && currentDate > moment(durationTo)) ||
         moment(currentDate).day() === 0 ||
@@ -146,7 +146,7 @@ class FilterForm extends Component {
 
   onChangeDate = (value, type) => {
     switch (type) {
-      case 'from':
+      case 'dateOfJoinFrom':
         if (value === null) {
           this.setState({
             durationFrom: '',
@@ -158,7 +158,7 @@ class FilterForm extends Component {
         }
         break;
 
-      case 'to':
+      case 'dateOfJoinTo':
         if (value === null) {
           this.setState({
             durationTo: '',
@@ -218,13 +218,53 @@ class FilterForm extends Component {
   };
 
   onFinish = (value) => {
+    const payload = { ...value };
+    Object.keys(payload).forEach(
+      (k) =>
+        (payload[k] === null && delete payload[k]) ||
+        (payload[k] === undefined && delete payload[k]) ||
+        (payload[k] === '' && delete payload[k]),
+    );
+
     console.log(value);
+    console.log(payload);
   };
 
   render() {
     const { jobTitleList = [], locationList = [] } = this.props;
     const { isFilter } = this.state;
     const dateFormat = 'MMM DD, YYYY';
+
+    const fieldsArray = [
+      {
+        label: 'BY PENDING STATUS',
+        name: 'pendingStatus',
+        placeholder: 'Select pending status',
+        filterOption: 1,
+        optionArray: arrStatus,
+      },
+      {
+        label: 'BY OTHER STATUS',
+        name: 'otherStatus',
+        placeholder: 'Select other status',
+        filterOption: 1,
+        optionArray: arrStatus,
+      },
+      {
+        label: 'BY POSITION',
+        name: 'title',
+        placeholder: 'Select postion',
+        filterOption: 2,
+        optionArray: jobTitleList,
+      },
+      {
+        label: 'BY LOCATION',
+        name: 'location',
+        placeholder: 'Select location',
+        filterOption: 2,
+        optionArray: locationList,
+      },
+    ];
 
     return (
       <div className={styles.filterForm}>
@@ -236,110 +276,33 @@ class FilterForm extends Component {
           ref={this.formRef}
         >
           <div className={styles.form__top}>
-            <Form.Item label="BY PENDING STATUS" name="pendingStatus">
-              <Select
-                allowClear
-                filterOption={(input, option) =>
-                  option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-                showArrow
-                showSearch
-                placeholder="Select pending status"
-                mode="multiple"
-                tagRender={this.tagRender}
-              >
-                {arrStatus.map((status) => {
-                  return (
-                    <Option key={status.value} value={status.value}>
-                      <Checkbox
-                        value={status.value}
-                        checked={this.checkBoxStatusChecked(status.value, 'pendingStatus')}
-                      />
-                      <span>{status.name}</span>
-                    </Option>
-                  );
-                })}
-              </Select>
-            </Form.Item>
-            <Form.Item label="BY OTHER STATUS" name="otherStatus">
-              <Select
-                allowClear
-                filterOption={(input, option) =>
-                  option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                }
-                showArrow
-                showSearch
-                placeholder="Select other status"
-                mode="multiple"
-                tagRender={this.tagRender}
-              >
-                {arrStatus.map((status) => (
-                  <Option key={status.value} value={status.value}>
-                    <Checkbox
-                      value={status.value}
-                      checked={this.checkBoxStatusChecked(status.value, 'otherStatus')}
-                    />
-                    <span>{status.name}</span>
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item label="BY POSITION" name="title">
-              <Select
-                mode="multiple"
-                allowClear
-                filterOption={(input, option) => {
-                  const getOptionChildren = option.props.children;
-                  return (
-                    getOptionChildren[1].props.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  );
-                }}
-                showArrow
-                showSearch
-                placeholder="Select position"
-                tagRender={this.tagRender}
-              >
-                {jobTitleList.map((title) => (
-                  <Option key={title._id} value={title._id}>
-                    <Checkbox
-                      value={title._id}
-                      checked={this.checkBoxStatusChecked(title._id, 'title')}
-                    />
-                    <span>{title.name}</span>
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item label="BY LOCATION" name="location">
-              <Select
-                mode="multiple"
-                filterOption={(input, option) => {
-                  const getOptionChildren = option.props.children;
-                  return (
-                    getOptionChildren[1].props.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  );
-                }}
-                allowClear
-                showArrow
-                showSearch
-                placeholder="Select location"
-                tagRender={this.tagRender}
-              >
-                {locationList.map((location) => (
-                  <Option key={location._id} value={location._id}>
-                    <Checkbox
-                      value={location._id}
-                      checked={this.checkBoxStatusChecked(location._id, 'location')}
-                    />
-                    <span>{location.name}</span>
-                  </Option>
-                ))}
-              </Select>
-            </Form.Item>
+            {fieldsArray.map((field) => (
+              <Form.Item key={field.name} label={field.label} name={field.name}>
+                <Select
+                  allowClear
+                  showArrow
+                  showSearch
+                  filterOption={(input, option) =>
+                    option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                  }
+                  mode="multiple"
+                  tagRender={this.tagRender}
+                  placeholder={field.placeholder}
+                >
+                  {field.optionArray.map((option) => {
+                    return (
+                      <Option key={option._id} value={option._id}>
+                        <Checkbox
+                          value={option._id}
+                          checked={this.checkBoxStatusChecked(option._id, field.name)}
+                        />
+                        <span>{option.name}</span>
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+            ))}
             <div className={styles.doj}>
               <div className={styles.doj__label}>
                 <div className={styles.labelText}>DOJ</div>
@@ -347,11 +310,11 @@ class FilterForm extends Component {
               <div className={styles.doj__date}>
                 <Form.Item name="dateOfJoinFrom">
                   <DatePicker
-                    disabledDate={(currentDate) => this.disabledDate(currentDate, 'from')}
+                    disabledDate={(currentDate) => this.disabledDate(currentDate, 'dateOfJoinFrom')}
                     format={dateFormat}
                     placeholder="From Date"
                     onChange={(value) => {
-                      this.onChangeDate(value, 'from');
+                      this.onChangeDate(value, 'dateOfJoinFrom');
                     }}
                     suffixIcon={
                       <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
@@ -361,11 +324,11 @@ class FilterForm extends Component {
                 <div className={`${styles.labelText} ${styles.labelTo}`}>to</div>
                 <Form.Item name="dateOfJoinTo">
                   <DatePicker
-                    disabledDate={(currentDate) => this.disabledDate(currentDate, 'to')}
+                    disabledDate={(currentDate) => this.disabledDate(currentDate, 'dateOfJoinTo')}
                     format={dateFormat}
                     placeholder="To Date"
                     onChange={(value) => {
-                      this.onChangeDate(value, 'to');
+                      this.onChangeDate(value, 'dateOfJoinTo');
                     }}
                     suffixIcon={
                       <img alt="calendar-icon" src={CalendarIcon} className={styles.calendarIcon} />
