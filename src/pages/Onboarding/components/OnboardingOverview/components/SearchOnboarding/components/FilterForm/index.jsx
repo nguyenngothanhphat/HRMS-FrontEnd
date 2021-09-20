@@ -285,9 +285,16 @@ class FilterForm extends Component {
                   allowClear
                   showArrow
                   showSearch
-                  filterOption={(input, option) =>
-                    option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                  }
+                  filterOption={(input, option) => {
+                    if (field.name === 'location' || field.name === 'title') {
+                      const arrChild = option.props.children[1];
+                      return (
+                        arrChild.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }
+
+                    return option.value.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                  }}
                   mode="multiple"
                   tagRender={this.tagRender}
                   placeholder={field.placeholder}
